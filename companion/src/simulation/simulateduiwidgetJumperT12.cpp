@@ -12,34 +12,23 @@ SimulatedUIWidgetJumperT12::SimulatedUIWidgetJumperT12(SimulatorInterface *simul
 
   ui->setupUi(this);
 
-  // add actions in order of appearance on the help menu
+  act = new RadioUiAction(3, QList<int>() << Qt::Key_Up << Qt::Key_PageUp, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_UP);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(69, 11, 60, 25), "JumperT12/right_up.png", act));
 
-  QPoint ctr(70, 91);
+  act = new RadioUiAction(2, QList<int>() << Qt::Key_Down << Qt::Key_PageDown, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_DN);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(61, 115, 60, 25), "JumperT12/right_down.png", act));
 
-  polygon.clear();
-  polygon << polyArc(ctr.x(), ctr.y(), 50, -90, 90) << polyArc(ctr.x(), ctr.y(), 22, -90, 90);
-  act = new RadioUiAction(3, QList<int>() << Qt::Key_PageUp << Qt::Key_Up, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_PAGE);
-  addRadioWidget(ui->leftbuttons->addArea(polygon, "JumperT12/left_page.png", act));
+  act = new RadioUiAction(4, QList<int>() << Qt::Key_Right << Qt::Key_Plus, SIMU_STR_HLP_KEY_RGT % "|" % SIMU_STR_HLP_KEY_PLS, SIMU_STR_HLP_ACT_PLS);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(109, 53, 30, 40), "JumperT12/right_right.png", act));
 
-  polygon.clear();
-  polygon << polyArc(ctr.x(),ctr.y(),20);
-  act = new RadioUiAction(0, QList<int>() << Qt::Key_PageDown << Qt::Key_Down, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_MENU_ICN);
-  addRadioWidget(ui->leftbuttons->addArea(polygon, "JumperT12/left_menu.png", act));
+  act = new RadioUiAction(5, QList<int>() << Qt::Key_Left << Qt::Key_Minus, SIMU_STR_HLP_KEY_LFT % "|" % SIMU_STR_HLP_KEY_MIN, SIMU_STR_HLP_ACT_MIN);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(49, 62, 30, 40), "JumperT12/right_left.png", act));
 
+  m_mouseMidClickAction = new RadioUiAction(1, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ENT);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(21, 30, 60, 25), "JumperT12/left_ent.png", m_mouseMidClickAction));
 
-  polygon.clear();
-  polygon << polyArc(ctr.x(), ctr.y(), 50, 90, 270) << polyArc(ctr.x(), ctr.y(), 22, 90, 270);
-  act = new RadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
-  addRadioWidget(ui->leftbuttons->addArea(polygon, "JumperT12/left_exit.png", act));
-
-
-
-  m_scrollUpAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Minus << Qt::Key_Equal << Qt::Key_Left, SIMU_STR_HLP_KEYS_GO_LFT, SIMU_STR_HLP_ACT_ROT_LFT);
-  m_scrollDnAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Right, SIMU_STR_HLP_KEYS_GO_RGT, SIMU_STR_HLP_ACT_ROT_RGT);
-  connectScrollActions();
-
-  m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
-  addRadioWidget(ui->rightbuttons->addArea(polyArc(88, 92, 33), "JumperT12/right_ent.png", m_mouseMidClickAction));
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(21, 80, 60, 60), "JumperT12/left_exit.png", act));
 
   addRadioWidget(ui->leftbuttons->addArea(QRect(9, 154, 30, 30), "JumperT12/left_scrnshot.png", m_screenshotAction));
 
@@ -52,10 +41,10 @@ SimulatedUIWidgetJumperT12::SimulatedUIWidgetJumperT12(SimulatorInterface *simul
   setLcd(ui->lcd);
 
   QString css = "#radioUiWidget {"
-                  "background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1,"
-                    "stop:0 rgba(255, 255, 255, 255),"
-                    "stop:0.757062 rgba(241, 238, 238, 255),"
-                    "stop:1 rgba(247, 245, 245, 255));"
+                "background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1,"
+                "stop:0 rgba(255, 255, 255, 255),"
+                "stop:0.757062 rgba(241, 238, 238, 255),"
+                "stop:1 rgba(247, 245, 245, 255));"
                 "}";
 
   QTimer * tim = new QTimer(this);
@@ -70,4 +59,3 @@ SimulatedUIWidgetJumperT12::~SimulatedUIWidgetJumperT12()
 {
   delete ui;
 }
-

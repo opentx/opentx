@@ -32,7 +32,11 @@
 #elif defined(PCBX9E)
   #include "lua/lua_exports_x9e.inc"
 #elif defined(PCBX7)
+#if defined(PCBREV_T12)
+  #include "lua/lua_exports_t12.inc"
+#else
   #include "lua/lua_exports_x7.inc"
+#endif
 #elif defined(PCBX9LITE)
   #include "lua/lua_exports_x9lite.inc"
 #elif defined(PCBXLITES)
@@ -1521,6 +1525,26 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_LEFT_LONG", EVT_KEY_LONG(KEY_LEFT) },
   { "EVT_RIGHT_LONG", EVT_KEY_LONG(KEY_RIGHT) },
   { "EVT_SHIFT_LONG", EVT_KEY_LONG(KEY_SHIFT) },
+  { "EVT_DOWN_REPT", EVT_KEY_REPT(KEY_DOWN) },
+  { "EVT_UP_REPT", EVT_KEY_REPT(KEY_UP) },
+  { "EVT_LEFT_REPT", EVT_KEY_REPT(KEY_LEFT) },
+  { "EVT_RIGHT_REPT", EVT_KEY_REPT(KEY_RIGHT) },
+  { "FORCE", FORCE },
+  { "ERASE", ERASE },
+  { "ROUND", ROUND },
+#elif  (RADIO_T12)
+  { "EVT_DOWN_FIRST", EVT_KEY_FIRST(KEY_DOWN) },
+  { "EVT_UP_FIRST", EVT_KEY_FIRST(KEY_UP) },
+  { "EVT_LEFT_FIRST", EVT_KEY_FIRST(KEY_LEFT) },
+  { "EVT_RIGHT_FIRST", EVT_KEY_FIRST(KEY_RIGHT) },
+  { "EVT_DOWN_BREAK", EVT_KEY_BREAK(KEY_DOWN) },
+  { "EVT_UP_BREAK", EVT_KEY_BREAK(KEY_UP) },
+  { "EVT_LEFT_BREAK", EVT_KEY_BREAK(KEY_LEFT) },
+  { "EVT_RIGHT_BREAK", EVT_KEY_BREAK(KEY_RIGHT) },
+  { "EVT_DOWN_LONG", EVT_KEY_LONG(KEY_DOWN) },
+  { "EVT_UP_LONG", EVT_KEY_LONG(KEY_UP) },
+  { "EVT_LEFT_LONG", EVT_KEY_LONG(KEY_LEFT) },
+  { "EVT_RIGHT_LONG", EVT_KEY_LONG(KEY_RIGHT) },
   { "EVT_DOWN_REPT", EVT_KEY_REPT(KEY_DOWN) },
   { "EVT_UP_REPT", EVT_KEY_REPT(KEY_UP) },
   { "EVT_LEFT_REPT", EVT_KEY_REPT(KEY_LEFT) },

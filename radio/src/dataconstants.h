@@ -651,7 +651,7 @@ enum MixSources {
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBREV_T12)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
 #endif
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
@@ -739,7 +739,7 @@ enum MixSources {
 };
 
 #if defined(__cplusplus)
-static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+static_assert(MIXSRC_FIRST_LOGICAL_SWITCH >= MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
 #endif
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)

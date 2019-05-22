@@ -269,7 +269,7 @@ void menuRadioSdManager(event_t _event)
       menuVerticalOffset = reusableBuffer.sdManager.offset;
       break;
 
-#if defined(PCBX9) || defined(PCBX7) // TODO NO_MENU_KEY
+#if defined(PCBX9) || (RADIO_X7) // TODO NO_MENU_KEY
     case EVT_KEY_LONG(KEY_MENU):
       if (SD_CARD_PRESENT() && !READ_ONLY() && s_editMode == 0) {
         killEvents(_event);

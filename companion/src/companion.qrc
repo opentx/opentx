@@ -157,11 +157,12 @@
     <file>images/simulator/XLITE/right_left.png</file>
     <file>images/simulator/XLITE/right_up.png</file>
     <file>images/simulator/XLITE/right_down.png</file>
+    <file>images/simulator/JumperT12/right_up.png</file>
+    <file>images/simulator/JumperT12/right_down.png</file>
+    <file>images/simulator/JumperT12/right_right.png</file>
+    <file>images/simulator/JumperT12/right_left.png</file>
+    <file>images/simulator/JumperT12/left_ent.png</file>
     <file>images/simulator/JumperT12/left_exit.png</file>
-    <file>images/simulator/JumperT12/left_menu.png</file>
-    <file>images/simulator/JumperT12/left_page.png</file>
-    <file>images/simulator/JumperT12/left_scrnshot.png</file>
-    <file>images/simulator/JumperT12/right_ent.png</file>
     <file>images/simulator/JumperT12/JumperT12.png</file>
     <file>images/simulator/JumperT12/JumperT12-208.png</file>
     <file>images/simulator/JumperT12/JumperT12-left.png</file>

@@ -21,7 +21,7 @@ SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, QWidget 
   addRadioWidget(ui->leftbuttons->addArea(polyArc(ctr.x(), ctr.y(), 20), "X7/left_menu.png", act));
 
   act = new RadioUiAction(3, QList<int>() << Qt::Key_PageDown << Qt::Key_Down, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_PAGE);
-  addRadioWidget(ui->leftbuttons->addArea(polygon, "X7/left_page.png", act));
+  //addRadioWidget(ui->leftbuttons->addArea(polygon, "X7/left_page.png", act));
 
   polygon.clear();
   polygon << polyArc(ctr.x(), ctr.y(), 50, 90, 270) << polyArc(ctr.x(), ctr.y(), 22, 90, 270);

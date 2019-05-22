@@ -121,6 +121,14 @@ elif options[optcount] == "x12s":
     maxsize = 2 * 1024 * 1024
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "t12":
+    command_options["PCB"] = "X7"
+    command_options["PCBREV_T12"] = "ON"
+    command_options["MULTI_SPORT"] = "ON"
+    firmware_options = options_taranis_x9dp
+    maxsize = 65536 * 8
+    board = BOARD_TARANIS
+    board_family = BOARD_FAMILY_ARM
 else:
     exit(INVALID_BOARD)
 

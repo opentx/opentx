@@ -637,7 +637,7 @@ bool luaLoadFunctionScript(uint8_t index, uint8_t ref)
 {
   if ((ref >= SCRIPT_GFUNC_FIRST) && g_model.noGlobalFunctions)
     return false;
-  
+
   CustomFunctionData & fn = (ref < SCRIPT_GFUNC_FIRST ? g_model.customFn[index] : g_eeGeneral.customFn[index]);
 
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
@@ -883,7 +883,7 @@ void luaDoOneRunStandalone(event_t evt)
       standaloneScript.state = SCRIPT_NOFILE;
       luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
     }
-#if !defined(PCBHORUS) && !defined(PCBXLITE)
+#if !defined(PCBHORUS) && !defined(PCBXLITE) &&  !(RADIO_T12)
   // TODO find another key and add a #define
     else if (evt == EVT_KEY_LONG(KEY_MENU)) {
       killEvents(evt);

@@ -1255,7 +1255,7 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* Jumper T12 board */
-  firmware = new OpenTxFirmware("opentx-jumpert12", QCoreApplication::translate("Firmware", "Jumper T12"), BOARD_JUMPER_T12);
+  firmware = new OpenTxFirmware("opentx-t12", QCoreApplication::translate("Firmware", "Jumper T12"), BOARD_JUMPER_T12);
   addOpenTxCommonOptions(firmware);
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
