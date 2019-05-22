@@ -568,7 +568,7 @@ bool isInternalModuleAvailable(int moduleType)
   if (moduleType == MODULE_TYPE_NONE)
     return true;
 
-#if defined(PXX1) && (defined(INTERNAL_MODULE_PXX1) || !defined(PXX2))
+#if defined(PXX1) && defined(INTERNAL_MODULE_PXX1)
   if (moduleType == MODULE_TYPE_PXX_XJT)
     return !isModuleUSingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
 #else
