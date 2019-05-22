@@ -63,7 +63,7 @@ uint32_t readKeys()
     result |= 1 << KEY_SHIFT;
 #endif
 
-  if (result != 0) TRACE("readKeys(): result=0x%02x", result);
+  // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
 
   return result;
 }

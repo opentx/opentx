@@ -46,8 +46,7 @@
   #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_12 // PE.12
   #define KEYS_GPIO_REG_RIGHT           GPIOE->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_13 // PE.13
-#elif defined(PCBX7)
-#if defined(PCBREV_T12)
+#elif defined(RADIO_T12)
   #define KEYS_GPIO_REG_EXIT            GPIOD->IDR
   #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_2  // PD.02
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
@@ -60,7 +59,7 @@
   #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_7 // PD.07
   #define KEYS_GPIO_REG_RIGHT           GPIOD->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_3 // PD.03
-#else
+#elif defined(RADIO_X7)
   #define KEYS_GPIO_REG_PAGE            GPIOD->IDR
   #define KEYS_GPIO_PIN_PAGE            GPIO_Pin_3  // PD.03
   #define KEYS_GPIO_REG_MENU            GPIOD->IDR
@@ -69,7 +68,6 @@
   #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_2  // PD.02
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_10 // PE.10
-#endif
 #elif defined(PCBX9LITE)
 #define KEYS_GPIO_REG_PAGE            GPIOE->IDR
   #define KEYS_GPIO_PIN_PAGE            GPIO_Pin_8  // PE.08
@@ -107,7 +105,7 @@
   #define ROTARY_ENCODER_EXTI_PortSource   EXTI_PortSourceGPIOD
   #define ROTARY_ENCODER_EXTI_PinSource1   EXTI_PinSource12
   #define ROTARY_ENCODER_EXTI_PinSource2   EXTI_PinSource13
-#elif defined(PCBX7)
+#elif defined(RADIO_X7)
 #define ROTARY_ENCODER_GPIO           GPIOE
 #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_9  // PE.09
 #define ROTARY_ENCODER_GPIO_PIN_B     GPIO_Pin_11 // PE.11
@@ -136,7 +134,7 @@
 #endif
 
 // This is for SIMU: reuse rotary encoder pins to map UP and DOWN keyboard keys
-#if defined(SIMU) && (defined(PCBX9E) || defined(PCBX7) || defined(PCBX9LITE))
+#if defined(SIMU) && (defined(PCBX9E) || defined(RADIO_X7) || defined(PCBX9LITE))
 #define KEYS_GPIO_REG_PLUS            ROTARY_ENCODER_GPIO->IDR
 #define KEYS_GPIO_PIN_PLUS            ROTARY_ENCODER_GPIO_PIN_A
 #define KEYS_GPIO_REG_MINUS           ROTARY_ENCODER_GPIO->IDR
