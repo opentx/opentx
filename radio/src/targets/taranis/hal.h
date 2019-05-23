@@ -723,7 +723,9 @@
 #endif
 
 // Internal Module
+#if !defined(RADIO_T12)
 #define HARDWARE_INTERNAL_MODULE
+#endif
 #if !(defined(PCBXLITES) && !defined(PCBX9LITE))
 #define INTERNAL_MODULE_PXX1
 #endif
