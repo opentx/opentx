@@ -605,6 +605,7 @@ extern const char STR_FLASH_BOOTLOADER[];
 extern const char STR_FLASH_EXTERNAL_DEVICE[];
 extern const char STR_FLASH_RECEIVER_OTA[];
 extern const char STR_FLASH_BLUETOOTH_MODULE[];
+extern const char STR_FLASH_POWER_CONTROL_CHIP[];
 extern const char STR_CURRENT_VERSION[];
 extern const char STR_FLASH_INTERNAL_MODULE[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];

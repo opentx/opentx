@@ -24,7 +24,7 @@
 #include "dataconstants.h"
 #include "frsky_pxx2.h"
 
-class DeviceFirmwareUpdate {
+class FrskyFirmwareUpdate {
     enum State {
       SPORT_IDLE,
       SPORT_POWERUP_REQ,
@@ -38,17 +38,19 @@ class DeviceFirmwareUpdate {
     };
 
   public:
-    DeviceFirmwareUpdate(ModuleIndex module):
+    FrskyFirmwareUpdate(ModuleIndex module):
       module(module) {
     }
 
-    void flashFile(const char * filename);
+    void flashDevice(const char * filename);
+    void flashChip(const char * filename);
 
   protected:
     uint8_t state = SPORT_IDLE;
     uint32_t address = 0;
     ModuleIndex module;
     uint8_t frame[12];
+    uint8_t chipCrc;
 
     void startup();
 
@@ -65,6 +67,14 @@ class DeviceFirmwareUpdate {
     const char * sendReqVersion();
     const char * uploadFile(const char * filename);
     const char * endTransfer();
+
+    void sendChipByte(uint8_t byte, bool crc = true);
+    const char * waitChipAnswer(uint8_t & status);
+    const char * startChipBootloader();
+    const char * sendChipUpgradeCommand(char command, uint16_t packetsCount);
+    const char * sendChipUpgradeData(uint8_t index, uint8_t * data);
+
+    const char * doFlashChip(const char * filename);
 };
 
 #endif // _FRSKY_DEVICE_FIRMWARE_UPDATE_H_

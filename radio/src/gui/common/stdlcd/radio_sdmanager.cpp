@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "io/frsky_device_firmware_update.h"
+#include "io/frsky_sport_update.h"
 
 #define REFRESH_FILES()        do { reusableBuffer.sdManager.offset = 65535; menuVerticalPosition = 0; } while(0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
@@ -186,24 +186,31 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(INTERNAL_MODULE);
-    device.flashFile(lfn);
+    FrskyFirmwareUpdate device(INTERNAL_MODULE);
+    device.flashDevice(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashFile(lfn);
+    FrskyFirmwareUpdate device(EXTERNAL_MODULE);
+    device.flashDevice(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(SPORT_MODULE);
-    device.flashFile(lfn);
+    FrskyFirmwareUpdate device(SPORT_MODULE);
+    device.flashDevice(lfn);
   }
 #if defined(BLUETOOTH)
   else if (result == STR_FLASH_BLUETOOTH_MODULE) {
     getSelectionFullPath(lfn);
     bluetooth.flashFirmware(lfn);
+  }
+#endif
+#if defined(HARDWARE_POWER_CONTROL_CHIP)
+  else if (result == STR_FLASH_POWER_CONTROL_CHIP) {
+    getSelectionFullPath(lfn);
+    FrskyFirmwareUpdate device(SPORT_MODULE);
+    device.flashChip(lfn);
   }
 #endif
 #if defined(PXX2)
@@ -362,6 +369,11 @@ void menuRadioSdManager(event_t _event)
 #if defined(BLUETOOTH)
           if (!READ_ONLY() && !strcasecmp(ext, BLUETOOTH_FIRMWARE_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
+          }
+#endif
+#if defined(HARDWARE_POWER_CONTROL_CHIP)
+          if (!READ_ONLY() && !strcasecmp(ext, POWER_CONTROL_CHIP_FIRMWARE_EXT)) {
+            POPUP_MENU_ADD_ITEM(STR_FLASH_POWER_CONTROL_CHIP);
           }
 #endif
         }
