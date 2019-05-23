@@ -180,24 +180,24 @@ enum BeeperMode {
 };
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  enum ModuleIndex {
-    INTERNAL_MODULE,
-    EXTERNAL_MODULE,
-    SPORT_MODULE,
-  };
-  enum TrainerMode {
-    TRAINER_MODE_MASTER_TRAINER_JACK,
-    TRAINER_MODE_SLAVE,
+enum ModuleIndex {
+  INTERNAL_MODULE,
+  EXTERNAL_MODULE,
+  SPORT_MODULE,
+};
+enum TrainerMode {
+  TRAINER_MODE_MASTER_TRAINER_JACK,
+  TRAINER_MODE_SLAVE,
 #if defined(PCBTARANIS)
-    TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
-    TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
 #endif
-    TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+  TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
 #if defined(BLUETOOTH)
-    TRAINER_MODE_MASTER_BLUETOOTH,
-    TRAINER_MODE_SLAVE_BLUETOOTH,
+  TRAINER_MODE_MASTER_BLUETOOTH,
+  TRAINER_MODE_SLAVE_BLUETOOTH,
 #endif
-  };
+};
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -302,14 +302,14 @@ enum TelemetryUnit {
   UNIT_MINUTES,
   UNIT_SECONDS,
   // FrSky format used for these fields, could be another format in the future
-  UNIT_FIRST_VIRTUAL,
+    UNIT_FIRST_VIRTUAL,
   UNIT_CELLS = UNIT_FIRST_VIRTUAL,
   UNIT_DATETIME,
   UNIT_GPS,
   UNIT_BITFIELD,
   UNIT_TEXT,
   // Internal units (not stored in sensor unit)
-  UNIT_GPS_LONGITUDE,
+    UNIT_GPS_LONGITUDE,
   UNIT_GPS_LATITUDE,
   UNIT_DATETIME_YEAR,
   UNIT_DATETIME_DAY_MONTH,
@@ -318,9 +318,9 @@ enum TelemetryUnit {
 };
 
 #if LCD_W >= 212
-  #define NUM_LINE_ITEMS 3
+#define NUM_LINE_ITEMS 3
 #else
-  #define NUM_LINE_ITEMS 2
+#define NUM_LINE_ITEMS 2
 #endif
 
 #if defined(PCBTARANIS)
@@ -532,9 +532,9 @@ enum SwitchSources {
 };
 
 #if NUM_SWITCHES >= 8
-  #define SWSRC_TRAINER SWSRC_SH2
+#define SWSRC_TRAINER SWSRC_SH2
 #else
-  #define SWSRC_TRAINER SWSRC_LAST_SWITCH,
+#define SWSRC_TRAINER SWSRC_LAST_SWITCH,
 #endif
 
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
@@ -651,15 +651,18 @@ enum MixSources {
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBREV_T12)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
 #endif
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #endif
-#if defined(PCBX7)
+#if defined(RADIO_X7)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
   MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#elif defined(RADIO_T12)            // keep switches for eeprom compatibity, but hide them
+  MIXSRC_SI,
+  MIXSRC_SJ,
 #endif
 #if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
@@ -739,7 +742,7 @@ enum MixSources {
 };
 
 #if defined(__cplusplus)
-static_assert(MIXSRC_FIRST_LOGICAL_SWITCH >= MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
 #endif
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)
