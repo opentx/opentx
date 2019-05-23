@@ -595,6 +595,7 @@ int32_t getVolume(void);
 // Telemetry driver
 #define TELEMETRY_FIFO_SIZE            512
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
+void telemetryPortSetDirectionInput(void);
 void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
