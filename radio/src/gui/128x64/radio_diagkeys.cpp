@@ -57,11 +57,11 @@ void menuRadioDiagKeys(event_t event)
         lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
         displayKeyState(5*FW+4, y, KEY_MENU+(TRM_BASE-1-i));
       }
-#elif defined(PCBXLITE) && defined(RADIO_X7)
+#elif defined(KEYS_GPIO_REG_SHIFT)
       y = MENU_HEADER_HEIGHT + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
       displayKeyState(5*FW+2, y, KEY_SHIFT+(TRM_BASE-1-i));
-#elif !defined(RADIO_T12)
+#elif defined(KEYS_GPIO_REG_MENU)
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
       displayKeyState(5*FW+2, y, KEY_MENU+(TRM_BASE-1-i));
