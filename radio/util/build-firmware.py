@@ -123,7 +123,7 @@ elif options[optcount] == "x12s":
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "t12":
     command_options["PCB"] = "X7"
-    command_options["PCBREV_T12"] = "ON"
+    command_options["PCBREV"] = "T12"
     command_options["MULTI_SPORT"] = "ON"
     firmware_options = options_taranis_x9dp
     maxsize = 65536 * 8

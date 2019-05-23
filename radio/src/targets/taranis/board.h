@@ -265,7 +265,7 @@ enum EnumKeys
 {
 #if defined(PCBXLITE)
   KEY_SHIFT,
-#elif !defined(PCBREV_T12)
+#elif !defined(RADIO_T12)
   KEY_MENU,
 #endif
   KEY_EXIT,

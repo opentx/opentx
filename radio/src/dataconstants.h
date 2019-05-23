@@ -302,14 +302,14 @@ enum TelemetryUnit {
   UNIT_MINUTES,
   UNIT_SECONDS,
   // FrSky format used for these fields, could be another format in the future
-    UNIT_FIRST_VIRTUAL,
+  UNIT_FIRST_VIRTUAL,
   UNIT_CELLS = UNIT_FIRST_VIRTUAL,
   UNIT_DATETIME,
   UNIT_GPS,
   UNIT_BITFIELD,
   UNIT_TEXT,
   // Internal units (not stored in sensor unit)
-    UNIT_GPS_LONGITUDE,
+  UNIT_GPS_LONGITUDE,
   UNIT_GPS_LATITUDE,
   UNIT_DATETIME_YEAR,
   UNIT_DATETIME_DAY_MONTH,
@@ -318,13 +318,13 @@ enum TelemetryUnit {
 };
 
 #if LCD_W >= 212
-#define NUM_LINE_ITEMS 3
+  #define NUM_LINE_ITEMS 3
 #else
-#define NUM_LINE_ITEMS 2
+  #define NUM_LINE_ITEMS 2
 #endif
 
 #if defined(PCBTARANIS)
-#define MAX_TELEM_SCRIPT_INPUTS  8
+  #define MAX_TELEM_SCRIPT_INPUTS  8
 #endif
 
 enum TelemetryScreenType {
@@ -532,9 +532,9 @@ enum SwitchSources {
 };
 
 #if NUM_SWITCHES >= 8
-#define SWSRC_TRAINER SWSRC_SH2
+  #define SWSRC_TRAINER SWSRC_SH2
 #else
-#define SWSRC_TRAINER SWSRC_LAST_SWITCH,
+  define SWSRC_TRAINER SWSRC_LAST_SWITCH,
 #endif
 
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
