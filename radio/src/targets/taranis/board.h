@@ -435,7 +435,7 @@ uint32_t readTrims(void);
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 
-#if defined(PCBX9E) || defined(PCBX7) || defined(PCBX9LITE)
+#if defined(PCBX9E) || defined(RADIO_X7) || defined(PCBX9LITE)
 // Rotary Encoder driver
 #define ROTARY_ENCODER_NAVIGATION
 void rotaryEncoderInit(void);
