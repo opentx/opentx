@@ -425,8 +425,16 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             fswtchParam[i]->setDecimals(model->gvarData[gvidx].prec);
             fswtchParam[i]->setSingleStep(model->gvarData[gvidx].multiplierGet());
             fswtchParam[i]->setSuffix(model->gvarData[gvidx].unitToString());
-            fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
-            fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            if (cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
+              double rng = abs(model->gvarData[gvidx].getMax() - model->gvarData[gvidx].getMin());
+              rng *= model->gvarData[gvidx].multiplierGet();
+              fswtchParam[i]->setMinimum(-rng);
+              fswtchParam[i]->setMaximum(rng);
+            }
+            else {
+              fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
+              fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            }
             fswtchParam[i]->setValue(cfn.param * model->gvarData[gvidx].multiplierGet());
           }
           else {
