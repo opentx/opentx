@@ -21,8 +21,9 @@
 #ifndef _MODULES_H_
 #define _MODULES_H_
 
-#include "myeeprom.h"
 #include "bitfield.h"
+
+
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
@@ -34,7 +35,7 @@ inline bool isModuleMultimodule(uint8_t idx)
 
 inline bool isModuleMultimoduleDSM2(uint8_t idx)
 {
-  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol(true) == MM_RF_PROTO_DSM2;
+  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2;
 }
 #else
 inline bool isModuleMultimodule(uint8_t)
@@ -50,17 +51,17 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 
 inline bool isModuleXJT(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_XJT;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX1_XJT;
 }
 
 inline bool isModuleXJT2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_ISRM;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX2_ISRM;
 }
 
 inline bool isModuleXJTVariant(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_XJT || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_ISRM;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX1_XJT || g_model.moduleData[idx].type == MODULE_TYPE_PXX2_ISRM;
 }
 
 
@@ -104,12 +105,12 @@ inline bool isModulePPM(uint8_t idx)
 
 inline bool isModuleR9M(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_R9M || g_model.moduleData[idx].type == MODULE_TYPE_PXX_R9M_LITE;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX1_R9M || g_model.moduleData[idx].type == MODULE_TYPE_PXX1_R9M_LITE;
 }
 
 inline bool isModuleR9M2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M_LITE || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M_LITE_PRO;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX2_R9M || g_model.moduleData[idx].type == MODULE_TYPE_PXX2_R9M_LITE || g_model.moduleData[idx].type == MODULE_TYPE_PXX2_R9M_LITE_PRO;
 }
 
 
@@ -146,6 +147,17 @@ inline bool isModulePXX(uint8_t idx)
 inline bool isModulePXX2(uint8_t idx)
 {
   return isModuleXJT2(idx) || isModuleR9M2(idx);
+}
+
+inline bool isModuleRFAccess(uint8_t idx)
+{
+  if (isModuleXJT2(idx)) {
+    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX2_ACCESS;
+  }
+  else if (isModuleR9M2(idx))
+    return true;
+  else
+    return false;
 }
 
 #if defined(DSM2)

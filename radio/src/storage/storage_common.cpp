@@ -56,8 +56,8 @@ void preModelLoad()
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 static void fixUpModel()
 {
-  // Ensure that when rfProtocol is ACCST_RF_PROTO_OFF the type of the module is MODULE_TYPE_NONE
-  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX_XJT && g_model.moduleData[INTERNAL_MODULE].rfProtocol == ACCST_RF_PROTO_OFF)
+  // Ensure that when rfProtocol is MODULE_SUBTYPE_PXX1_OFF the type of the module is MODULE_TYPE_NONE
+  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX1_XJT && g_model.moduleData[INTERNAL_MODULE].rfProtocol == MODULE_SUBTYPE_PXX1_OFF)
     g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
 }
 #endif

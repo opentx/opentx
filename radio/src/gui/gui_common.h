@@ -116,7 +116,7 @@ void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 
 // model_setup Defines that are used in all uis in the same way
 #define INTERNAL_MODULE_CHANNELS_ROWS   IF_INTERNAL_MODULE_ON((uint8_t)1)
-#define EXTERNAL_MODULE_CHANNELS_ROWS   IF_EXTERNAL_MODULE_ON((isModuleDSM2(EXTERNAL_MODULE) || isModuleCrossfire(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE) || (isModuleMultimodule(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) != MM_RF_PROTO_DSM2)) ? (uint8_t)0 : (uint8_t)1)
+#define EXTERNAL_MODULE_CHANNELS_ROWS   IF_EXTERNAL_MODULE_ON((isModuleDSM2(EXTERNAL_MODULE) || isModuleCrossfire(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE) || (isModuleMultimodule(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) != MODULE_SUBTYPE_MULTI_DSM2)) ? (uint8_t)0 : (uint8_t)1)
 
 
 #if defined(MULTIMODULE)
@@ -127,7 +127,7 @@ void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 #define MULTIMODULE_SUBTYPE_ROWS(x)     isModuleMultimodule(x) ? MULTIMODULE_RFPROTO_ROWS(x) : HIDDEN_ROW,
 #define MULTIMODULE_HAS_SUBTYPE(x)      (getMultiProtocolDefinition(x)->maxSubtype > 0)
 #define MULTIMODULE_HASOPTIONS(x)       (getMultiProtocolDefinition(x)->optionsstr != nullptr)
-#define MULTI_MAX_RX_NUM(x)             (g_model.moduleData[x].getMultiProtocol(true) == MM_RF_PROTO_OLRS ? 4 : 15)
+#define MULTI_MAX_RX_NUM(x)             (g_model.moduleData[x].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_OLRS ? 4 : 15)
 #define MULTIMODULE_HASFAILSAFE(x)      (isModuleMultimodule(x) && multiModuleStatus.isValid() && multiModuleStatus.supportsFailsafe())
 #define MULTIMODULE_OPTIONS_ROW         (isModuleMultimodule(EXTERNAL_MODULE) && MULTIMODULE_HASOPTIONS(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true))) ? (uint8_t) 0: HIDDEN_ROW
 
@@ -153,14 +153,14 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #endif
 
 #define MAX_RX_NUM(x)                  (isModuleDSM2(x) ? 20 : isModuleMultimodule(x) ? MULTI_MAX_RX_NUM(x) : 63)
-#define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == ACCST_RF_PROTO_D8)
-#define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== ACCST_RF_PROTO_D16) || isModuleR9M(x))
+#define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D8)
+#define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== MODULE_SUBTYPE_PXX1_ACCST_D16) || isModuleR9M(x))
 
 #define FAILSAFE_ROWS(x)               ((isModuleXJTVariant(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x) || isModuleR9M2(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 
 #define EXTERNAL_MODULE_OPTION_ROW    (isModuleR9M(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
 
-#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_R9M_LITE ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
+#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX1_R9M_LITE ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
 
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
