@@ -198,7 +198,7 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(RADIO_X7) || defined(PCBX9LITE)
+#if defined(KEYS_GPIO_REG_PAGE)
     case EVT_KEY_LONG(KEY_PAGE):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);
@@ -230,7 +230,7 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(RADIO_X7) || defined(PCBX9LITE)
+#if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif

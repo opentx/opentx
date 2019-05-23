@@ -27,7 +27,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
-#if defined(RADIO_X7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
