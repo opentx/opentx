@@ -118,7 +118,7 @@ class SwitchesConversionTable: public ConversionTable {
       if (version >= 218) {
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, -1), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), val++);
-        for (int i=1; i<=CPN_MAX_SENSORS; i++) {
+        for (int i=1; i<=MAX_TELEMETRY_SENSORS(board, version); i++) {
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
@@ -248,7 +248,7 @@ class SourcesConversionTable: public ConversionTable {
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 2), val++); // Timer1
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 3), val++); // Timer2
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 4), val++); // Timer3
-        for (unsigned i=0; i<CPN_MAX_SENSORS*3; ++i) {
+        for (unsigned i=0; i<MAX_TELEMETRY_SENSORS(board, version)*3; ++i) {
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
         }
       }
@@ -2296,6 +2296,14 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new CharField<216>(this, modelData.topbarData, false, "Top bar blob"));
     internalField.Append(new SpareBitsField<8>(this)); // current view
   }
+  else if (version >= 219) {
+    for (int i = 0; i < 4; i++) {
+      internalField.Append(new UnsignedField<2>(this, modelData.frsky.screens[i].type));
+    }
+    for (int i = 0; i < 4; i++) {
+      internalField.Append(new FrskyScreenField(this, modelData.frsky.screens[i], board, version, variant));
+    }
+  }
 }
 
 void OpenTxModelData::beforeExport()
@@ -2656,7 +2664,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   if (version >= 219) {
     internalField.Append(new ZCharField<8>(this, generalData.registrationId, "PXX2 Registration ID"));
   }
-  
+
   if (version >= 219 && (IS_TARANIS_XLITES(board) || IS_HORUS(board))) {
     internalField.Append(new SignedField<8>(this, generalData.gyroMax, "Gyro full scale"));
     internalField.Append(new SignedField<8>(this, generalData.gyroOffset, "Gyro Offset"));
