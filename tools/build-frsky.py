@@ -40,7 +40,9 @@ def build(board, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    os.system("cmake -DPCB=%s %s -DFRSKY_RELEASE=YES %s" % (board, cmake_options, srcdir))
+    command = "cmake -DPCB=%s %s -DFRSKY_RELEASE=YES %s" % (board, cmake_options, srcdir)
+    print(command)
+    os.system(command)
     os.system("make firmware -j6")
     os.chdir(cwd)
     index = 0
