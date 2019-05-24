@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "io/frsky_sport_update.h"
+#include "io/frsky_firmware_update.h"
 
 #define REFRESH_FILES()        do { reusableBuffer.sdManager.offset = 65535; menuVerticalPosition = 0; } while(0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
@@ -186,19 +186,19 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    FrskyFirmwareUpdate device(INTERNAL_MODULE);
-    device.flashDevice(lfn);
+    FrskyDeviceFirmwareUpdate device(INTERNAL_MODULE);
+    device.flashFirmware(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
-    FrskyFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashDevice(lfn);
+    FrskyDeviceFirmwareUpdate device(EXTERNAL_MODULE);
+    device.flashFirmware(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    FrskyFirmwareUpdate device(SPORT_MODULE);
-    device.flashDevice(lfn);
+    FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
+    device.flashFirmware(lfn);
   }
 #if defined(BLUETOOTH)
   else if (result == STR_FLASH_BLUETOOTH_MODULE) {
@@ -209,8 +209,8 @@ void onSdManagerMenu(const char * result)
 #if defined(HARDWARE_POWER_CONTROL_CHIP)
   else if (result == STR_FLASH_POWER_CONTROL_CHIP) {
     getSelectionFullPath(lfn);
-    FrskyFirmwareUpdate device(SPORT_MODULE);
-    device.flashChip(lfn);
+    FrskyChipFirmwareUpdate device;
+    device.flashFirmware(lfn);
   }
 #endif
 #if defined(PXX2)

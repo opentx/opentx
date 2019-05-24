@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "frsky_sport_update.h"
+#include "frsky_firmware_update.h"
 
 #define PRIM_REQ_POWERUP    0
 #define PRIM_REQ_VERSION    1
@@ -33,7 +33,7 @@
 #define PRIM_END_DOWNLOAD   0x83
 #define PRIM_DATA_CRC_ERR   0x84
 
-void FrskyFirmwareUpdate::processFrame(const uint8_t * frame)
+void FrskyDeviceFirmwareUpdate::processFrame(const uint8_t * frame)
 {
   if (frame[0] == 0x5E && frame[1] == 0x50) {
     switch (frame[2]) {
@@ -68,7 +68,7 @@ void FrskyFirmwareUpdate::processFrame(const uint8_t * frame)
   }
 }
 
-void FrskyFirmwareUpdate::startup()
+void FrskyDeviceFirmwareUpdate::startup()
 {
   switch(module) {
 #if defined(INTMODULE_USART)
@@ -90,7 +90,7 @@ void FrskyFirmwareUpdate::startup()
     SPORT_UPDATE_POWER_ON();
 }
 
-const uint8_t * FrskyFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
+const uint8_t * FrskyDeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
 {
   uint8_t len = 0;
   bool bytestuff = false;
@@ -121,7 +121,7 @@ const uint8_t * FrskyFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint
   return &frame[1];
 }
 
-const uint8_t * FrskyFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
+const uint8_t * FrskyDeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
 {
   for (int i=timeout; i>=0; i--) {
     uint8_t byte ;
@@ -135,7 +135,7 @@ const uint8_t * FrskyFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
   return nullptr;
 }
 
-const uint8_t * FrskyFirmwareUpdate::readFrame(uint32_t timeout)
+const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
   switch(module) {
 #if defined(INTMODULE_USART)
@@ -148,7 +148,7 @@ const uint8_t * FrskyFirmwareUpdate::readFrame(uint32_t timeout)
   }
 }
 
-bool FrskyFirmwareUpdate::waitState(State newState, uint32_t timeout)
+bool FrskyDeviceFirmwareUpdate::waitState(State newState, uint32_t timeout)
 {
 #if defined(SIMU)
   UNUSED(state);
@@ -172,7 +172,7 @@ bool FrskyFirmwareUpdate::waitState(State newState, uint32_t timeout)
 #endif
 }
 
-void FrskyFirmwareUpdate::startFrame(uint8_t command)
+void FrskyDeviceFirmwareUpdate::startFrame(uint8_t command)
 {
   frame[0] = 0x50;
   frame[1] = command;
@@ -180,7 +180,7 @@ void FrskyFirmwareUpdate::startFrame(uint8_t command)
 }
 
 // TODO merge this function
-void FrskyFirmwareUpdate::sendFrame()
+void FrskyDeviceFirmwareUpdate::sendFrame()
 {
   uint8_t * ptr = outputTelemetryBuffer.data;
   *ptr++ = 0x7E;
@@ -207,7 +207,7 @@ void FrskyFirmwareUpdate::sendFrame()
   }
 }
 
-const char * FrskyFirmwareUpdate::sendPowerOn()
+const char * FrskyDeviceFirmwareUpdate::sendPowerOn()
 {
   state = SPORT_POWERUP_REQ;
   waitState(SPORT_IDLE, 50); // Wait 50ms and clear the fifo
@@ -238,7 +238,7 @@ const char * FrskyFirmwareUpdate::sendPowerOn()
 #endif
 }
 
-const char * FrskyFirmwareUpdate::sendReqVersion()
+const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
 {
   waitState(SPORT_IDLE, 20); // Clear the fifo
   state = SPORT_VERSION_REQ;
@@ -252,7 +252,7 @@ const char * FrskyFirmwareUpdate::sendReqVersion()
   return "Version request failed";
 }
 
-const char * FrskyFirmwareUpdate::uploadFile(const char * filename)
+const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 {
   FIL file;
   uint32_t buffer[1024 / sizeof(uint32_t)];
@@ -297,7 +297,7 @@ const char * FrskyFirmwareUpdate::uploadFile(const char * filename)
   }
 }
 
-const char * FrskyFirmwareUpdate::endTransfer()
+const char * FrskyDeviceFirmwareUpdate::endTransfer()
 {
   if (!waitState(SPORT_DATA_REQ, 2000))
     return "Device refused data";
@@ -309,7 +309,7 @@ const char * FrskyFirmwareUpdate::endTransfer()
   return nullptr;
 }
 
-void FrskyFirmwareUpdate::flashDevice(const char * filename)
+void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 {
   pausePulses();
 
@@ -367,7 +367,7 @@ void FrskyFirmwareUpdate::flashDevice(const char * filename)
   resumePulses();
 }
 
-const char * FrskyFirmwareUpdate::waitChipAnswer(uint8_t & status)
+const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 {
   telemetryPortSetDirectionInput();
 
@@ -395,7 +395,7 @@ const char * FrskyFirmwareUpdate::waitChipAnswer(uint8_t & status)
   return nullptr;
 }
 
-const char * FrskyFirmwareUpdate::startChipBootloader()
+const char * FrskyChipFirmwareUpdate::startBootloader()
 {
   telemetryPortSetDirectionOutput();
 
@@ -417,115 +417,115 @@ const char * FrskyFirmwareUpdate::startChipBootloader()
     sportSendByte(0x7F);*/
 
   uint8_t status;
-  const char * result = waitChipAnswer(status);
+  const char * result = waitAnswer(status);
   if (result)
     return result;
 
   return status == 0x08 ? nullptr : "Bootloader failed";
 }
 
-void FrskyFirmwareUpdate::sendChipByte(uint8_t byte, bool crc)
+void FrskyChipFirmwareUpdate::sendByte(uint8_t byte, bool crc)
 {
   sportSendByte(byte);
   if (crc) {
-    chipCrc ^= byte;
+    crc ^= byte;
   }
 }
 
-const char * FrskyFirmwareUpdate::sendChipUpgradeCommand(char command, uint32_t packetsCount)
+const char * FrskyChipFirmwareUpdate::sendUpgradeCommand(char command, uint32_t packetsCount)
 {
   telemetryPortSetDirectionOutput();
 
-  chipCrc = 0;
+  crc = 0;
 
   // Head
-  sendChipByte(0x7F, false);
-  sendChipByte(0xFE, false);
+  sendByte(0x7F, false);
+  sendByte(0xFE, false);
 
   // Addr
-  sendChipByte(0xFA);
+  sendByte(0xFA);
 
   // Cmd
-  sendChipByte(command);
+  sendByte(command);
 
   // Packets count
-  sendChipByte(packetsCount >> 8);
-  sendChipByte(packetsCount);
+  sendByte(packetsCount >> 8);
+  sendByte(packetsCount);
 
   // Len
-  sendChipByte('E' == command ? 0x00 : 0x0C);
-  sendChipByte(0x40);
+  sendByte('E' == command ? 0x00 : 0x0C);
+  sendByte(0x40);
 
   // Data
   for (uint8_t i=0; i < 0x40; i++)
-    sendChipByte('E' == command ? 0xF7 : 0x7F);
+    sendByte('E' == command ? 0xF7 : 0x7F);
 
   // Checksum
-  sendChipByte(chipCrc, false);
+  sendByte(crc, false);
 
   // Tail
-  sendChipByte(0x0D, false);
-  sendChipByte(0x0A, false);
+  sendByte(0x0D, false);
+  sendByte(0x0A, false);
 
   uint8_t status;
-  const char * result = waitChipAnswer(status);
+  const char * result = waitAnswer(status);
   if (result)
     return result;
 
   return status == 0x00 ? nullptr : "Upgrade failed";
 }
 
-const char * FrskyFirmwareUpdate::sendChipUpgradeData(uint8_t index, uint8_t * data)
+const char * FrskyChipFirmwareUpdate::sendUpgradeData(uint8_t index, uint8_t * data)
 {
   telemetryPortSetDirectionOutput();
 
-  chipCrc = 0;
+  crc = 0;
 
   // Head
-  sendChipByte(0x7F, false);
-  sendChipByte(0xFE, false);
+  sendByte(0x7F, false);
+  sendByte(0xFE, false);
 
   // Addr
-  sendChipByte(0xFA);
+  sendByte(0xFA);
 
   // Cmd
-  sendChipByte('W');
+  sendByte('W');
 
   // Packets count
-  sendChipByte(index >> 8);
-  sendChipByte(index);
+  sendByte(index >> 8);
+  sendByte(index);
 
   // Len
-  sendChipByte(0x00);
-  sendChipByte(0x40);
+  sendByte(0x00);
+  sendByte(0x40);
 
   // Data
   for (uint8_t i = 0; i < 0x40; i++)
-    sendChipByte(*data++);
+    sendByte(*data++);
 
   // Checksum
-  sendChipByte(chipCrc, false);
+  sendByte(crc, false);
 
   // Tail
-  sendChipByte(0x0D, false);
-  sendChipByte(0x0A, false);
+  sendByte(0x0D, false);
+  sendByte(0x0A, false);
 
   uint8_t status;
-  const char * result = waitChipAnswer(status);
+  const char * result = waitAnswer(status);
   if (result)
     return result;
 
   return status == 0x00 ? nullptr : "Upgrade failed";
 }
 
-const char * FrskyFirmwareUpdate::doFlashChip(const char * filename)
+const char * FrskyChipFirmwareUpdate::doFlashFirmware(const char * filename)
 {
   const char * result;
   FIL file;
   uint8_t buffer[64];
   UINT count;
 
-  result = startChipBootloader();
+  result = startBootloader();
   if (result)
     return result;
 
@@ -536,7 +536,7 @@ const char * FrskyFirmwareUpdate::doFlashChip(const char * filename)
   uint32_t packetsCount = (f_size(&file) + sizeof(buffer) - 1) / sizeof(buffer);
   drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, 0, packetsCount);
 
-  result = sendChipUpgradeCommand('A', packetsCount);
+  result = sendUpgradeCommand('A', packetsCount);
   if (result)
     return result;
 
@@ -547,7 +547,7 @@ const char * FrskyFirmwareUpdate::doFlashChip(const char * filename)
       f_close(&file);
       return "Error reading file";
     }
-    result = sendChipUpgradeData(index + 1, buffer);
+    result = sendUpgradeData(index + 1, buffer);
     if (result)
       return result;
     if (++index == packetsCount)
@@ -556,10 +556,10 @@ const char * FrskyFirmwareUpdate::doFlashChip(const char * filename)
 
   f_close(&file);
 
-  return sendChipUpgradeCommand('E', packetsCount);
+  return sendUpgradeCommand('E', packetsCount);
 }
 
-void FrskyFirmwareUpdate::flashChip(const char * filename)
+void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
 {
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
@@ -578,7 +578,7 @@ void FrskyFirmwareUpdate::flashChip(const char * filename)
 
   telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
 
-  const char * result = doFlashChip(filename);
+  const char * result = doFlashFirmware(filename);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();
@@ -595,8 +595,6 @@ void FrskyFirmwareUpdate::flashChip(const char * filename)
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
-  waitState(SPORT_IDLE, 500); // Clear the fifo
-
   /* wait 2s off */
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
@@ -610,6 +608,5 @@ void FrskyFirmwareUpdate::flashChip(const char * filename)
     setupPulses(EXTERNAL_MODULE);
   }
 
-  state = SPORT_IDLE;
   resumePulses();
 }

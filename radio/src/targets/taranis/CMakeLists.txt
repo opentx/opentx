@@ -219,7 +219,7 @@ add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
 
 set(SRC
   ${SRC}
-  io/frsky_sport_update.cpp
+  io/frsky_firmware_update.cpp
   )
 
 set(GUI_SRC

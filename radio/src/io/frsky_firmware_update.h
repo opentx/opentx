@@ -18,13 +18,13 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
-#define _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
+#ifndef _FRSKY_FIRMWARE_UPDATE_H_
+#define _FRSKY_FIRMWARE_UPDATE_H_
 
 #include "dataconstants.h"
 #include "frsky_pxx2.h"
 
-class FrskyFirmwareUpdate {
+class FrskyDeviceFirmwareUpdate {
     enum State {
       SPORT_IDLE,
       SPORT_POWERUP_REQ,
@@ -38,12 +38,11 @@ class FrskyFirmwareUpdate {
     };
 
   public:
-    FrskyFirmwareUpdate(ModuleIndex module):
+    FrskyDeviceFirmwareUpdate(ModuleIndex module):
       module(module) {
     }
 
-    void flashDevice(const char * filename);
-    void flashChip(const char * filename);
+    void flashFirmware(const char * filename);
 
   protected:
     uint8_t state = SPORT_IDLE;
@@ -67,14 +66,26 @@ class FrskyFirmwareUpdate {
     const char * sendReqVersion();
     const char * uploadFile(const char * filename);
     const char * endTransfer();
-
-    void sendChipByte(uint8_t byte, bool crc = true);
-    const char * waitChipAnswer(uint8_t & status);
-    const char * startChipBootloader();
-    const char * sendChipUpgradeCommand(char command, uint32_t packetsCount);
-    const char * sendChipUpgradeData(uint8_t index, uint8_t * data);
-
-    const char * doFlashChip(const char * filename);
 };
 
-#endif // _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
+class FrskyChipFirmwareUpdate {
+  public:
+    FrskyChipFirmwareUpdate()
+    {
+    }
+
+    void flashFirmware(const char * filename);
+
+  protected:
+    uint8_t crc;
+
+    void sendByte(uint8_t byte, bool crc = true);
+    const char * waitAnswer(uint8_t & status);
+    const char * startBootloader();
+    const char * sendUpgradeCommand(char command, uint32_t packetsCount);
+    const char * sendUpgradeData(uint8_t index, uint8_t * data);
+
+    const char * doFlashFirmware(const char * filename);
+};
+
+#endif // _FRSKY_FIRMWARE_UPDATE_H_
