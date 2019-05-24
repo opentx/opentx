@@ -963,6 +963,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
       variantError = true;
     }
   }
+  else if (IS_TARANIS_X9LITE(board)) {
+    if (variant != TARANIS_X9LITE_VARIANT) {
+      variantError = true;
+    }
+  }
   else if (IS_TARANIS(board)) {
     if (variant != 0) {
       variantError = true;
