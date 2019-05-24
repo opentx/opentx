@@ -33,15 +33,8 @@ set(SRC
   gui/navigation/common.cpp
   )
 
-if(NAVIGATION_TYPE STREQUAL 9x)
-  add_definitions(-DNAVIGATION_9X)
-elseif(NAVIGATION_TYPE STREQUAL x9d)
-  add_definitions(-DNAVIGATION_X9D)
-elseif(NAVIGATION_TYPE STREQUAL x7)
-  add_definitions(-DNAVIGATION_X7)
-elseif(NAVIGATION_TYPE STREQUAL xlite)
-  add_definitions(-DNAVIGATION_XLITE)
-endif()
+string(TOUPPER ${NAVIGATION_TYPE} NAVIGATION_TYPE)
+add_definitions(-DNAVIGATION_${NAVIGATION_TYPE})
 
 include_directories(gui gui/${GUI_DIR})
 
