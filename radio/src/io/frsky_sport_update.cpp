@@ -400,17 +400,15 @@ const char * FrskyFirmwareUpdate::startChipBootloader()
   telemetryPortSetDirectionOutput();
 
   sportSendByte(0x01);
+
   for (uint8_t i = 0; i < 30; i++)
     sportSendByte(0x7E);
-<<<<<<< HEAD
-  for (uint32_t i=0; i < 100; i++)
-  {
-	RTOS_WAIT_MS(20);
-=======
-  for (uint8_t i = 0; i < 50; i++)
->>>>>>> f092d94d436bc9ddb7aa28404aa90f2688488472
+
+  for (uint32_t i = 0; i < 100; i++) {
+    RTOS_WAIT_MS(20);
     sportSendByte(0x7F);
   }
+
   sportSendByte(0xFA);
 
   /*for (uint8_t i=0; i < 30; i++)
@@ -455,21 +453,12 @@ const char * FrskyFirmwareUpdate::sendChipUpgradeCommand(char command, uint16_t 
   sendChipByte(packetsCount);
 
   // Len
-<<<<<<< HEAD
-  sendChipByte('E'==command?0x00:0x0c);
+  sendChipByte('E' == command ? 0x00 : 0x0C);
   sendChipByte(0x40);
 
   // Data
   for (uint8_t i=0; i < 0x40; i++)
-    sendChipByte('E'==command?0xF7:0x7F);
-=======
-  sendChipByte(0x0C, false);
-  sendChipByte(0x40, false);
-
-  // Data
-  for (uint8_t i = 0; i < 0x40; i++)
-    sendChipByte(0x7F);
->>>>>>> f092d94d436bc9ddb7aa28404aa90f2688488472
+    sendChipByte('E' == command ? 0xF7 : 0x7F);
 
   // Checksum
   sendChipByte(chipCrc, false);
@@ -504,7 +493,7 @@ const char * FrskyFirmwareUpdate::sendChipUpgradeData(uint8_t index, uint8_t * d
 
   // Packets count
   sendChipByte(index >> 8);
-  sendChipByte(index+1);
+  sendChipByte(index);
 
   // Len
   sendChipByte(0x00);
@@ -558,7 +547,7 @@ const char * FrskyFirmwareUpdate::doFlashChip(const char * filename)
       f_close(&file);
       return "Error reading file";
     }
-    result = sendChipUpgradeData(index, buffer);
+    result = sendChipUpgradeData(index + 1, buffer);
     if (result)
       return result;
     if (++index == packetsCount)
