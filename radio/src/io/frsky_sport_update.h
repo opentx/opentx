@@ -71,7 +71,7 @@ class FrskyFirmwareUpdate {
     void sendChipByte(uint8_t byte, bool crc = true);
     const char * waitChipAnswer(uint8_t & status);
     const char * startChipBootloader();
-    const char * sendChipUpgradeCommand(char command, uint16_t packetsCount);
+    const char * sendChipUpgradeCommand(char command, uint32_t packetsCount);
     const char * sendChipUpgradeData(uint8_t index, uint8_t * data);
 
     const char * doFlashChip(const char * filename);

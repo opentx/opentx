@@ -432,7 +432,7 @@ void FrskyFirmwareUpdate::sendChipByte(uint8_t byte, bool crc)
   }
 }
 
-const char * FrskyFirmwareUpdate::sendChipUpgradeCommand(char command, uint16_t packetsCount)
+const char * FrskyFirmwareUpdate::sendChipUpgradeCommand(char command, uint32_t packetsCount)
 {
   telemetryPortSetDirectionOutput();
 
@@ -533,14 +533,14 @@ const char * FrskyFirmwareUpdate::doFlashChip(const char * filename)
     return "Error opening file";
   }
 
-  uint16_t packetsCount = (f_size(&file) + sizeof(buffer) - 1) / sizeof(buffer);
+  uint32_t packetsCount = (f_size(&file) + sizeof(buffer) - 1) / sizeof(buffer);
   drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, 0, packetsCount);
 
   result = sendChipUpgradeCommand('A', packetsCount);
   if (result)
     return result;
 
-  uint16_t index = 0;
+  uint32_t index = 0;
   while (1) {
     drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, index, packetsCount);
     if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
