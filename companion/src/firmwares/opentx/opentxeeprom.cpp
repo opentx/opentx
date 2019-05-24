@@ -1938,15 +1938,29 @@ class SensorField: public TransformedField {
       internalField.Append(new UnsignedField<16>(this, _id, "id/persistentValue"));
       internalField.Append(new UnsignedField<8>(this, _instance, "instance/formula"));
       internalField.Append(new ZCharField<4>(this, sensor.label));
-      internalField.Append(new UnsignedField<1>(this, sensor.type, "type"));
-      internalField.Append(new UnsignedField<5>(this, sensor.unit, "unit"));
-      internalField.Append(new UnsignedField<2>(this, sensor.prec, "prec"));
-      internalField.Append(new BoolField<1>(this, sensor.autoOffset));
-      internalField.Append(new BoolField<1>(this, sensor.filter));
-      internalField.Append(new BoolField<1>(this, sensor.logs));
-      internalField.Append(new BoolField<1>(this, sensor.persistent));
-      internalField.Append(new BoolField<1>(this, sensor.onlyPositive));
-      internalField.Append(new UnsignedField<3>(this, _subid, "subid"));
+      if (version >= 219) {
+        internalField.Append(new UnsignedField<8>(this, _subid, "subid"));
+        internalField.Append(new UnsignedField<2>(this, sensor.type, "type"));
+        internalField.Append(new UnsignedField<6>(this, sensor.unit, "unit"));
+        internalField.Append(new UnsignedField<2>(this, sensor.prec, "prec"));
+        internalField.Append(new BoolField<1>(this, sensor.autoOffset));
+        internalField.Append(new BoolField<1>(this, sensor.filter));
+        internalField.Append(new BoolField<1>(this, sensor.logs));
+        internalField.Append(new BoolField<1>(this, sensor.persistent));
+        internalField.Append(new BoolField<1>(this, sensor.onlyPositive));
+        internalField.Append(new SpareBitsField<1>(this));
+      }
+      else {
+        internalField.Append(new UnsignedField<1>(this, sensor.type, "type"));
+        internalField.Append(new UnsignedField<5>(this, sensor.unit, "unit"));
+        internalField.Append(new UnsignedField<2>(this, sensor.prec, "prec"));
+        internalField.Append(new BoolField<1>(this, sensor.autoOffset));
+        internalField.Append(new BoolField<1>(this, sensor.filter));
+        internalField.Append(new BoolField<1>(this, sensor.logs));
+        internalField.Append(new BoolField<1>(this, sensor.persistent));
+        internalField.Append(new BoolField<1>(this, sensor.onlyPositive));
+        internalField.Append(new UnsignedField<3>(this, _subid, "subid"));
+      }
       internalField.Append(new UnsignedField<32>(this, _param, "param"));
     }
 
