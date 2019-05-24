@@ -514,7 +514,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 #if defined(PCBXLITE)
 bool isR9MModeAvailable(int mode)
 {
-#if defined(MODULE_R9M_FLEX_FW)
+#if defined(MODULE_R9M_FLEX)
   return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
 #else
   return mode <= MODULE_SUBTYPE_R9M_EU;
@@ -524,7 +524,7 @@ bool isR9MModeAvailable(int mode)
 #else
 bool isR9MModeAvailable(int mode)
 {
-#if defined(MODULE_R9M_FLEX_FW)
+#if defined(MODULE_R9M_FLEX)
   return mode < MODULE_SUBTYPE_R9M_EUPLUS;
 #else
   return true;
