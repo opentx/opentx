@@ -83,8 +83,14 @@ void telemetryPortSetDirectionOutput()
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE; // turn off receiver
 }
 
+void sportWaitTransmissionComplete()
+{
+  while (!(TELEMETRY_USART->SR & USART_SR_TC));
+}
+
 void telemetryPortSetDirectionInput()
 {
+  sportWaitTransmissionComplete();
   TELEMETRY_DIR_INPUT();
   TELEMETRY_USART->CR1 |= USART_CR1_RE; // turn on receiver
 }
