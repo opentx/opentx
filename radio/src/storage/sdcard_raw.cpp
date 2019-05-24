@@ -92,7 +92,7 @@ const char * openFile(const char * fullpath, FIL * file, uint16_t * size, uint8_
   }
 
   *version = (uint8_t)buf[4];
-  if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || *version < FIRST_CONV_EEPROM_VER || *version > EEPROM_VER || buf[5] != 'M') {
+  if (*(uint32_t*)&buf[0] != OTX_FOURCC || *version < FIRST_CONV_EEPROM_VER || *version > EEPROM_VER || buf[5] != 'M') {
     f_close(file);
     return STR_INCOMPATIBLE;
   }
