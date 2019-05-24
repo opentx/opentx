@@ -376,7 +376,7 @@ const char * FrskyFirmwareUpdate::waitChipAnswer(uint8_t & status)
     uint8_t retry = 0;
     while(1) {
       if (telemetryGetByte(&buffer[i])) {
-        if ((i == 0 && buffer[0] != 0x7E) ||
+        if ((i == 0 && buffer[0] != 0x7F) ||
             (i == 1 && buffer[1] != 0xFE) ||
             (i == 10 && buffer[10] != 0x0D) ||
             (i == 11 && buffer[11] != 0x0A)) {
@@ -400,9 +400,9 @@ const char * FrskyFirmwareUpdate::startChipBootloader()
   telemetryPortSetDirectionOutput();
 
   sportSendByte(0x01);
-  for (uint8_t i=0; i < 30; i++)
+  for (uint8_t i = 0; i < 30; i++)
     sportSendByte(0x7E);
-  for (uint8_t i=0; i < 50; i++)
+  for (uint8_t i = 0; i < 50; i++)
     sportSendByte(0x7F);
   sportSendByte(0xFA);
 
@@ -448,11 +448,11 @@ const char * FrskyFirmwareUpdate::sendChipUpgradeCommand(char command, uint16_t 
   sendChipByte(packetsCount);
 
   // Len
-  sendChipByte(0x00, false);
+  sendChipByte(0x0C, false);
   sendChipByte(0x40, false);
 
   // Data
-  for (uint8_t i=0; i < 0x40; i++)
+  for (uint8_t i = 0; i < 0x40; i++)
     sendChipByte(0x7F);
 
   // Checksum
@@ -477,7 +477,7 @@ const char * FrskyFirmwareUpdate::sendChipUpgradeData(uint8_t index, uint8_t * d
   chipCrc = 0;
 
   // Head
-  sendChipByte(0x7E, false);
+  sendChipByte(0x7F, false);
   sendChipByte(0xFE, false);
 
   // Addr
