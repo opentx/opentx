@@ -33,6 +33,34 @@
 #define PRIM_END_DOWNLOAD   0x83
 #define PRIM_DATA_CRC_ERR   0x84
 
+const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data)
+{
+  FIL file;
+  UINT count;
+
+  if (f_open(&file, filename, FA_READ) != FR_OK) {
+    return "Error opening file";
+  }
+
+  if (f_read(&file, &data, sizeof(data), &count) != FR_OK || count != sizeof(data)) {
+    f_close(&file);
+    return "Error reading file";
+  }
+
+  uint32_t size = f_size(&file);
+  f_close(&file);
+
+  if (data.fourcc != 0x4B535246) {
+    return "Wrong format";
+  }
+
+  if (size != sizeof(data) + data.size) {
+    return "Wrong size";
+  }
+
+  return nullptr;
+}
+
 void FrskyDeviceFirmwareUpdate::processFrame(const uint8_t * frame)
 {
   if (frame[0] == 0x5E && frame[1] == 0x50) {
@@ -533,7 +561,13 @@ const char * FrskyChipFirmwareUpdate::doFlashFirmware(const char * filename)
     return "Error opening file";
   }
 
-  uint32_t packetsCount = (f_size(&file) + sizeof(buffer) - 1) / sizeof(buffer);
+  FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *)buffer;
+  if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+    f_close(&file);
+    return "Format error";
+  }
+
+  uint32_t packetsCount = (information->size + sizeof(buffer) - 1) / sizeof(buffer);
   drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, 0, packetsCount);
 
   result = sendUpgradeCommand('A', packetsCount);

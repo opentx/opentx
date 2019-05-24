@@ -361,19 +361,29 @@ void menuRadioSdManager(event_t _event)
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
-#if defined(PXX2)
-            POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA);
-#endif
           }
+          else if (!READ_ONLY() && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+            FrSkyFirmwareInformation information;
+            if (readFirmwareInformation(line, information) == nullptr) {
+              if (information.productFamily == FIRMWARE_FAMILY_INTERNAL_MODULE)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+              if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
+              if (HAS_SPORT_UPDATE_CONNECTOR() && (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR))
+                POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+#if defined(PXX2)
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA);
 #endif
 #if defined(BLUETOOTH)
-          if (!READ_ONLY() && !strcasecmp(ext, BLUETOOTH_FIRMWARE_EXT)) {
-            POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
-          }
+              if (information.productFamily == FIRMWARE_FAMILY_BLUETOOTH_CHIP)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
 #endif
 #if defined(HARDWARE_POWER_CONTROL_CHIP)
-          if (!READ_ONLY() && !strcasecmp(ext, POWER_CONTROL_CHIP_FIRMWARE_EXT)) {
-            POPUP_MENU_ADD_ITEM(STR_FLASH_POWER_CONTROL_CHIP);
+              if (information.productFamily == FIRMWARE_FAMILY_POWER_CONTROL_CHIP)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_POWER_CONTROL_CHIP);
+#endif
+            }
           }
 #endif
         }

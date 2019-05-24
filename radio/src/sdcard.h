@@ -68,8 +68,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
-#define BLUETOOTH_FIRMWARE_EXT  ".bin"
-#define POWER_CONTROL_CHIP_FIRMWARE_EXT ".bin"
+#define UPDATE_FIRMWARE_EXT ".frsk"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 

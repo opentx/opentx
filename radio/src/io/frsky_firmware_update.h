@@ -24,6 +24,29 @@
 #include "dataconstants.h"
 #include "frsky_pxx2.h"
 
+enum FrskyFirmwareProductFamily {
+  FIRMWARE_FAMILY_INTERNAL_MODULE,
+  FIRMWARE_FAMILY_EXTERNAL_MODULE,
+  FIRMWARE_FAMILY_RECEIVER,
+  FIRMWARE_FAMILY_SENSOR,
+  FIRMWARE_FAMILY_BLUETOOTH_CHIP,
+  FIRMWARE_FAMILY_POWER_CONTROL_CHIP,
+};
+
+PACK(struct FrSkyFirmwareInformation {
+  uint32_t fourcc;
+  uint32_t size;
+  uint8_t productFamily;
+  uint8_t productId;
+  uint8_t versionMajor;
+  uint8_t versionMinor;
+  uint8_t versionRevision;
+  uint8_t spare;
+  uint16_t crc;
+});
+
+const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data);
+
 class FrskyDeviceFirmwareUpdate {
     enum State {
       SPORT_IDLE,
@@ -49,7 +72,6 @@ class FrskyDeviceFirmwareUpdate {
     uint32_t address = 0;
     ModuleIndex module;
     uint8_t frame[12];
-    uint8_t chipCrc;
 
     void startup();
 

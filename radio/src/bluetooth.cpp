@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "io/frsky_firmware_update.h"
 
 #if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE) || defined(USEHORUSBT)
 #define BLUETOOTH_COMMAND_NAME         "AT+NAME"
@@ -717,13 +718,21 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
     return "Error opening file";
   }
 
+  FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *)buffer;
+  if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+    f_close(&file);
+    return "Format error";
+  }
+
   drawProgressScreen(getBasename(filename), STR_FLASH_ERASE, 0, 0);
 
-  result = bootloaderEraseFlash(CC26XX_FIRMWARE_BASE, f_size(&file));
-  if (result)
+  result = bootloaderEraseFlash(CC26XX_FIRMWARE_BASE, information->size);
+  if (result) {
+    f_close(&file);
     return result;
+  }
 
-  uint32_t size = min<uint32_t>(CC26XX_FIRMWARE_SIZE, f_size(&file));
+  uint32_t size = min<uint32_t>(CC26XX_FIRMWARE_SIZE, information->size);
   drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, 0, size);
 
   result = bootloaderStartWriteFlash(CC26XX_FIRMWARE_BASE, size);
