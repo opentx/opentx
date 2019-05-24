@@ -309,10 +309,6 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   //display test
   lcdClear();
-
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
-  g_model.voltsSource = FRSKY_VOLTS_SOURCE_A1;
-#endif
 }
 
 TEST(FrSkySPORT, StrangeCellsBug)
@@ -389,10 +385,6 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 
   //display test
   lcdClear();
-
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
-  g_model.voltsSource = FRSKY_VOLTS_SOURCE_A1;
-#endif
 }
 
 void generateSportFasVoltagePacket(uint8_t * packet, uint32_t voltage)
