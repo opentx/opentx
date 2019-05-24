@@ -434,7 +434,7 @@ const char * FrskyFirmwareUpdate::sendChipUpgradeCommand(char command, uint16_t 
   chipCrc = 0;
 
   // Head
-  sendChipByte(0x7E, false);
+  sendChipByte(0x7F, false);
   sendChipByte(0xFE, false);
 
   // Addr
