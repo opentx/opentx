@@ -495,7 +495,7 @@ const char * FrskyFirmwareUpdate::sendChipUpgradeData(uint8_t index, uint8_t * d
   sendChipByte(0x40, false);
 
   // Data
-  for (uint8_t i=0; i < 0x40; i++)
+  for (uint8_t i = 0; i < 0x40; i++)
     sendChipByte(*data++);
 
   // Checksum
