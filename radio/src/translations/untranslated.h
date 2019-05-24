@@ -84,7 +84,7 @@
 
 #if defined(PXX1)
 #define LEN_MODULE_PROTOCOLS           "\010"
-#define TR_MODULE_PROTOCOLS            "OFF\0    ""PPM\0    ""XJT\0    ""XJT2\0   ""DSM2\0   ""CRSF\0   ""MULT\0   ""R9M\0    ""R9M2\0   ""R9MLite\0""R9ML2\0  ""R9MLP\0  ""SBUS"
+#define TR_MODULE_PROTOCOLS            "OFF\0    ""PPM\0    ""XJT\0    ""ISRM\0   ""DSM2\0   ""CRSF\0   ""MULT\0   ""R9M\0    ""R9M2\0   ""R9MLite\0""R9ML2\0  ""R9MLP\0  ""SBUS"
 #else
 #define LEN_MODULE_PROTOCOLS           "\010"
 #define TR_MODULE_PROTOCOLS            "OFF\0    ""PPM\0    ""ACCST\0  ""ISRM\0   ""DSM2\0   ""CRSF\0   ""MULT\0   ""---\0    ""R9M\0    ""---\0    ""R9ML\0   ""R9MLP\0  ""SBUS\0"
@@ -93,8 +93,13 @@
 #define LEN_ACCST_RF_PROTOCOLS         "\004"
 #define TR_ACCST_RF_PROTOCOLS          "OFF\0""D16\0""D8\0 ""LR12"
 
+#if defined(PXX1)
+#define LEN_ISRM_PXX2_RF_PROTOCOLS     "\006"
+#define TR_ISRM_PXX2_RF_PROTOCOLS      "ACCESS""D16\0  ""LR12"
+#else
 #define LEN_ISRM_PXX2_RF_PROTOCOLS     "\012"
 #define TR_ISRM_PXX2_RF_PROTOCOLS      "OFF\0      ""ACCESS\0   ""ACCST D16\0""ACCST LR12"
+#endif
 
 #define LEN_R9M_PXX2_RF_PROTOCOLS      "\006"
 #define TR_R9M_PXX2_RF_PROTOCOLS       "ACCESS""FCC\0  ""EU\0   ""Flex"
