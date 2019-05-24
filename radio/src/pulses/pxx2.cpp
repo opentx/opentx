@@ -38,7 +38,7 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 
 void Pxx2Pulses::addFlag1(uint8_t module)
 {
-  uint8_t flag1 = g_model.moduleData[module].rfProtocol << 4;
+  uint8_t flag1 = g_model.moduleData[module].subType << 4;
   Pxx2Transport::addByte(flag1);
 }
 
