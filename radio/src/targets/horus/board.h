@@ -108,14 +108,6 @@ extern uint16_t sessionTimer;
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
 
-#if defined(PCBX10)
-  #define NUM_SLIDERS                  2
-  #define NUM_PWMSTICKS                4
-#else
-  #define NUM_SLIDERS                  4
-  #define NUM_PWMSTICKS                0
-#endif
-
 // Board driver
 void boardPreInit(void);
 void boardInit(void);
@@ -142,19 +134,6 @@ void delay_ms(uint32_t ms);
 #else
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
-
-#if NUM_PWMSTICKS > 0
-PACK(typedef struct {
-  uint8_t sticksPwmDisabled : 1;
-  uint8_t pxx2Enabled : 1;
-}) HardwareOptions;
-#else
-PACK(typedef struct {
-  uint8_t pxx2Enabled : 1;
-}) HardwareOptions;
-#endif
-
-extern HardwareOptions hardwareOptions;
 
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
@@ -213,6 +192,7 @@ void SDRAM_Init(void);
 #define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
+#define INTERNAL_MODULE_PXX1
 
 #if !defined(PXX2)
   #define IS_PXX2_INTERNAL_ENABLED()            (false)
@@ -302,8 +282,12 @@ enum EnumSwitches
   SW_SF,
   SW_SG,
   SW_SH,
+  SW_GMBL,
+  SW_GMBR,
   NUM_SWITCHES
 };
+
+#define STORAGE_NUM_SWITCHES           10
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
 #define DEFAULT_SWITCH_CONFIG          (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
@@ -334,8 +318,20 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
+  SW_SGMBL0,
+  SW_SGMBL1,
+  SW_SGMBL2,
+  SW_SGMBR0,
+  SW_SGMBR1,
+  SW_SGMBR2,
   NUM_SWITCHES_POSITIONS
 };
+
+
+#if defined(__cplusplus)
+static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+#endif
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
@@ -388,8 +384,26 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
+
+#if defined(PCBX10)
+#define NUM_POTS                       5
+#else
 #define NUM_POTS                       3
+#endif
+
 #define NUM_XPOTS                      NUM_POTS
+#define STORAGE_NUM_POTS               5
+
+#if defined(PCBX10)
+  #define NUM_SLIDERS                  2
+  #define NUM_PWMSTICKS                4
+#else
+  #define NUM_SLIDERS                  4
+  #define NUM_PWMSTICKS                0
+#endif
+
+#define STORAGE_NUM_SLIDERS            4
+
 enum Analogs {
   STICK1,
   STICK2,
@@ -399,7 +413,10 @@ enum Analogs {
   POT1 = POT_FIRST,
   POT2,
   POT3,
-  POT_LAST = POT3,
+#if defined(PCBX10)
+  EXT1,
+  EXT2,
+#endif
   SLIDER_FIRST,
   SLIDER1 = SLIDER_FIRST,
   SLIDER2,
@@ -414,14 +431,17 @@ enum Analogs {
 #endif
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
+#if defined(PCBX12S)
   MOUSE1, // TODO why after voltage?
   MOUSE2,
+#endif
   NUM_ANALOGS,
   TX_RTC = NUM_ANALOGS
 };
 
 #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
 #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 3) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
+#define POT_LAST (SLIDER_FIRST - 1)
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
@@ -452,12 +472,13 @@ void adcInit(void);
 void adcRead(void);
 uint16_t getRTCBattVoltage();
 uint16_t getAnalogValue(uint8_t index);
-#define NUM_MOUSE_ANALOGS              2
-#if defined(PCBX10)
-  #define NUM_DUMMY_ANAS               2
+
+#if defined(PCBX12S)
+  #define NUM_MOUSE_ANALOGS            2
 #else
-  #define NUM_DUMMY_ANAS               0
+  #define NUM_MOUSE_ANALOGS            0
 #endif
+#define STORAGE_NUM_MOUSE_ANALOGS      2
 
 #if NUM_PWMSTICKS > 0
 #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
@@ -643,5 +664,18 @@ void checkTrainerSettings(void);
 extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> auxSerialRxFifo;
 #endif
+
+#if NUM_PWMSTICKS > 0
+PACK(typedef struct {
+  uint8_t sticksPwmDisabled : 1;
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+#else
+PACK(typedef struct {
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+#endif
+
+extern HardwareOptions hardwareOptions;
 
 #endif // _BOARD_HORUS_H_

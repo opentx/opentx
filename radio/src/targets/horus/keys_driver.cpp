@@ -187,6 +187,8 @@ uint32_t switchState(uint8_t index)
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
+    ADD_2POS_CASE(GMBL);
+    ADD_2POS_CASE(GMBR);
 #endif
     default:
       break;

@@ -614,7 +614,7 @@ PACK(struct ModelData {
 
   NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
   NOBACKUP(uint8_t potsWarnEnabled);
-  NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS]);
+  NOBACKUP(int8_t potsWarnPosition[STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS]);
 
   NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];)
 
@@ -659,7 +659,7 @@ PACK(struct TrainerData {
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
 #endif
 
-#if defined(GYRO)
+#if defined(PCBXLITES) || defined(PCBHORUS)
   #define GYRO_FIELDS \
     int8_t   gyroMax; \
     int8_t   gyroOffset;
@@ -669,12 +669,13 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS) || defined(PCBNV14)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t  auxSerialMode:4); \
-    uint8_t  slidersConfig:4; \
+    NOBACKUP(uint8_t auxSerialMode); \
+    uint8_t  slidersConfig; \
     uint32_t switchConfig; \
-    uint8_t  potsConfig; /* two bits per pot */ \
-    NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
-    NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME]); \
+    uint16_t potsConfig; /* two bits per pot */ \
+    uint8_t slidersConfig; /* 1 bit per slider */ \
+    NOBACKUP(char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]); \
+    NOBACKUP(char anaNames[NUM_STICKS + STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
     NOBACKUP(uint8_t spare:1); \
     NOBACKUP(uint8_t blOffBright:7); \
@@ -733,7 +734,7 @@ PACK(struct TrainerData {
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
-  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+  CalibData calib[NUM_STICKS + STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS];
   NOBACKUP(uint16_t chkSum);
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
@@ -820,15 +821,13 @@ PACK(struct RadioData {
    other than the CPU arch and board type so changes in other
    defines also trigger the struct size changes */
 
-template <typename ToCheck, size_t expectedSize, size_t realSize = sizeof(ToCheck)>
-void check_size() {
-  static_assert(expectedSize == realSize, "struct size changed");
-}
+#include "chksize.h"
+
+#define CHKSIZE(x, y) check_size<struct x, y>()
+#define CHKTYPE(x, y) check_size<x, y>()
 
 static inline void check_struct()
 {
-#define CHKSIZE(x, y) check_size<struct x, y>()
-#define CHKTYPE(x, y) check_size<x, y>()
 
   CHKSIZE(CurveRef, 2);
 
@@ -937,11 +936,10 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9734);
+  CHKSIZE(RadioData, 883);
+  CHKSIZE(ModelData, 9736);
 #endif
 
 #undef CHKSIZE
-#undef CHKSIZEUNION
 }
 #endif /* BACKUP */

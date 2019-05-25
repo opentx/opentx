@@ -22,6 +22,7 @@
 #define _MYEEPROM_H_
 
 #include "datastructs.h"
+#include "bitfield.h"
 
 #define EEPROM_VER             219
 #define FIRST_CONV_EEPROM_VER  216
@@ -79,7 +80,23 @@
 #define MODEL_GVAR_MAX(idx)            (CFN_GVAR_CST_MAX - g_model.gvars[idx].max)
 
 #if defined(PCBFRSKY) || defined(PCBNV14)
-  #define SWITCH_CONFIG(x)            ((g_eeGeneral.switchConfig >> (2*(x))) & 0x03)
+  enum SwitchConfig {
+    SWITCH_NONE,
+    SWITCH_TOGGLE,
+    SWITCH_2POS,
+    SWITCH_3POS,
+  };
+  enum PotConfig {
+    POT_NONE,
+    POT_WITH_DETENT,
+    POT_MULTIPOS_SWITCH,
+    POT_WITHOUT_DETENT
+  };
+  enum SliderConfig {
+    SLIDER_NONE,
+    SLIDER_WITH_DETENT,
+  };
+  #define SWITCH_CONFIG(x)            (bfGet<uint32_t>(g_eeGeneral.switchConfig, 2*(x), 2))
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_CONFIG_3POS(x)           (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_CONFIG_TOGGLE(x)         (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
@@ -97,8 +114,6 @@
   #include "layout.h"
   #include "theme.h"
   #include "topbar.h"
-#else
-  #define THEME_DATA
 #endif
 
 #define SWITCHES_DELAY()            uint8_t(15+g_eeGeneral.switchesDelay)
@@ -273,12 +288,19 @@ enum SwashType {
 #define TIMER_COUNTDOWN_START(x)       10
 #endif
 
-enum XJTRFProtocols {
-  RF_PROTO_OFF = -1,
-  RF_PROTO_X16,
-  RF_PROTO_D8,
-  RF_PROTO_LR12,
-  RF_PROTO_LAST = RF_PROTO_LR12
+enum {
+  ACCST_RF_PROTO_OFF = -1,
+  ACCST_RF_PROTO_D16,
+  ACCST_RF_PROTO_D8,
+  ACCST_RF_PROTO_LR12,
+  ACCST_RF_PROTO_LAST = ACCST_RF_PROTO_LR12
+};
+
+enum {
+  ACCESS_RF_PROTO_ACCESS,
+  ACCESS_RF_PROTO_D16,
+  ACCESS_RF_PROTO_LR12,
+  ACCESS_RF_PROTO_LAST = ACCESS_RF_PROTO_LR12
 };
 
 enum R9MSubTypes
@@ -373,8 +395,8 @@ enum MMRFrskySubtypes {
   MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH
 };
 
-#define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == RF_PROTO_X16)
-#define HAS_RF_PROTOCOL_MODELINDEX(rf) (((rf) == RF_PROTO_X16) || ((rf) == RF_PROTO_LR12))
+#define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == ACCST_RF_PROTO_D16)
+#define HAS_RF_PROTOCOL_MODELINDEX(rf) (((rf) == ACCST_RF_PROTO_D16) || ((rf) == ACCST_RF_PROTO_LR12))
 
 enum DSM2Protocols {
   DSM2_PROTO_LP45,

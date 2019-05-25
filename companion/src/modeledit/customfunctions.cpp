@@ -119,6 +119,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     // The label
     QLabel * label = new QLabel(this);
     label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
     label->setProperty("index", i);
     if (model)

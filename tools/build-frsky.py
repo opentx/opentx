@@ -12,13 +12,19 @@ options = {
     "XLITES": {
         "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
-        "GVARS": "YES"
+        "GVARS": "YES",
+        "PPM": "NO",
+        "DSM2": "NO",
+        "SBUS": "NO",
     },
     "X9LITE": {
         "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
-        "DEFAULT_MODE": "2"
+        "PPM": "NO",
+        "DSM2": "NO",
+        "SBUS": "NO",
+        "DEFAULT_MODE": "2",
     }
 }
 
@@ -34,7 +40,9 @@ def build(board, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    os.system("cmake -DPCB=%s %s %s" % (board, cmake_options, srcdir))
+    command = "cmake -DPCB=%s %s -DFRSKY_RELEASE=YES %s" % (board, cmake_options, srcdir)
+    print(command)
+    os.system(command)
     os.system("make firmware -j6")
     os.chdir(cwd)
     index = 0

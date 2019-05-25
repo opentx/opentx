@@ -78,6 +78,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9-Lite";
     case BOARD_TARANIS_XLITE:
       return "OpenTX for FrSky Taranis X-Lite";
+    case BOARD_TARANIS_XLITES:
+      return "OpenTX for FrSky Taranis X-Lite S/Pro";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -134,7 +136,7 @@ bool OpenTxEepromInterface::saveToByteArray(const T & src, QByteArray & data, ui
   QByteArray raw;
   T srcCopy(src); // work on a copy of radio data, because Export() will modify it!
   M manager(srcCopy, board, version, 0);
-  // manager.Dump();
+  // manager.dump();
   manager.Export(raw);
   data.resize(8);
   *((uint32_t*)&data.data()[0]) = Boards::getFourCC(board);
@@ -152,7 +154,7 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data,
   if (manager.Import(data) != 0) {
     return false;
   }
-  // manager.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
+  // manager.dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
   return true;
 }
 
@@ -230,7 +232,6 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
     errors.set(HAS_WARNINGS);
-    showEepromWarnings(NULL, CPN_STR_TTL_WARNING, errors.to_ulong());
   }
   else if (version_error == NOT_OPENTX) {
     dbg << " not open9x";
@@ -332,7 +333,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   }
 
   OpenTxGeneralData generator((GeneralSettings &)radioData.generalSettings, board, version, variant);
-  // generator.Dump();
+  // generator.dump();
   QByteArray data;
   generator.Export(data);
   int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (const uint8_t *)data.constData(), data.size());
@@ -344,7 +345,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   for (int i = 0; i < getCurrentFirmware()->getCapability(Models); i++) {
     if (i < (int)radioData.models.size() && !radioData.models[i].isEmpty()) {
       OpenTxModelData generator((ModelData &)radioData.models[i], board, version, variant);
-      // generator.Dump();
+      // generator.dump();
       QByteArray data;
       generator.Export(data);
       int sz = efile->writeRlc2(FILE_MODEL(i), FILE_TYP_MODEL, (const uint8_t *)data.constData(), data.size());
@@ -391,7 +392,7 @@ int OpenTxEepromInterface::getSize(const GeneralSettings &settings)
 
   GeneralSettings srcCopy(settings); // work on a copy of settings data, because Export() may modify it!
   OpenTxGeneralData open9xGeneral(srcCopy, board, 255, getCurrentFirmware()->getVariantNumber());
-  // open9xGeneral.Dump();
+  // open9xGeneral.dump();
 
   QByteArray eeprom;
   open9xGeneral.Export(eeprom);
@@ -778,11 +779,12 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_LP45:
           case PULSES_DSM2:
           case PULSES_DSMX:
-          case PULSES_CROSSFIRE:
           case PULSES_SBUS:
             return 1;
           case PULSES_MULTIMODULE:
             return id.contains("multimodule") ? 1 : 0;
+          case PULSES_CROSSFIRE:
+            return id.contains("crossfire") ? 1 : 0;
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
             return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
@@ -909,7 +911,14 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
         return OLD_VERSION;
       }
     case 218:
+      // ACCESS
+      // switches add for X7/X10/X12S
+      // 60 sensors for X12
+      return OLD_VERSION;
+
+    case 219:
       break;
+
     default:
       return NOT_OPENTX;
   }
@@ -951,6 +960,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
   else if (IS_TARANIS_XLITE(board)) {
     if (variant != TARANIS_XLITE_VARIANT) {
+      variantError = true;
+    }
+  }
+  else if (IS_TARANIS_X9LITE(board)) {
+    if (variant != TARANIS_X9LITE_VARIANT) {
       variantError = true;
     }
   }
@@ -1136,15 +1150,19 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
   firmware->addOption("luac", Firmware::tr("Enable Lua compiler"));
+  firmware->addOption("crossfire", Firmware::tr("Support for Crossfire TX Module"));
   addOpenTxRfOptions(firmware);
 }
 
-void addOpenTxTaranisOptions(OpenTxFirmware * firmware, bool intppm = true)
+void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
 {
   addOpenTxFrskyOptions(firmware);
-  if (intppm)
-    firmware->addOption("internalppm", Firmware::tr("Support for PPM internal module hack"));
   addOpenTxFontOptions(firmware);
+}
+
+void addPPMInternalModuleHack(OpenTxFirmware * firmware)
+{
+  firmware->addOption("internalppm", Firmware::tr("Support for PPM internal module hack"));
 }
 
 void addOpenTxArm9xOptions(OpenTxFirmware * firmware, bool dblkeys = true)
@@ -1173,12 +1191,14 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x9d+", Firmware::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
   addOpenTxTaranisOptions(firmware);
+  addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", Firmware::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", Firmware::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
+  addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky Taranis X9E board */
@@ -1186,28 +1206,29 @@ void registerOpenTxFirmwares()
   firmware->addOption("shutdownconfirm", Firmware::tr("Confirmation before radio shutdown"));
   firmware->addOption("horussticks", Firmware::tr("Horus gimbals installed (Hall sensors)"));
   addOpenTxTaranisOptions(firmware);
+  addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
-  addOpenTxTaranisOptions(firmware, false);
+  addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
-  addOpenTxTaranisOptions(firmware, false);
+  addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite S/PRO board */
-  firmware = new OpenTxFirmware("opentx-xlites", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
-  // firmware->addOption("stdr9m", QCoreApplication::translate("Firmware", "Use JR-sized R9M module"));
+  firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
+  firmware->addOption("internalpxx1", Firmware::tr("Support for PXX1 internal module replacement"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", Firmware::tr("FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
   // firmware->addOption("stdr9m", Firmware::tr("Use JR-sized R9M module"));
-  addOpenTxTaranisOptions(firmware, false);
+  addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X10 board */

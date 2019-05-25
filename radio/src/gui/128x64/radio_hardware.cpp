@@ -248,7 +248,7 @@ void menuRadioHardware(event_t event)
     switch(k) {
       case ITEM_RADIO_HARDWARE_LABEL_STICKS:
         lcdDrawTextAlignedLeft(y, STR_STICKS);
-        lcdDrawText(HW_SETTINGS_COLUMN2, y, STR_CALIB_BTN, attr);
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, BUTTON(TR_CALIBRATION), attr);
         if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
           pushMenu(menuRadioCalibration);
         }
@@ -400,7 +400,7 @@ void menuRadioHardware(event_t event)
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
         lcdDrawTextAlignedLeft(y, STR_BLUETOOTH_PIN_CODE);
-        lcdDrawText(HW_SETTINGS_COLUMN2, y, "0000");
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, "000000");
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR:

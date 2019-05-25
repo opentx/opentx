@@ -36,9 +36,9 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
   return flag0;
 }
 
-void Pxx2Pulses::addFlag1()
+void Pxx2Pulses::addFlag1(uint8_t module)
 {
-  uint8_t flag1 = 0;
+  uint8_t flag1 = g_model.moduleData[module].rfProtocol << 4;
   Pxx2Transport::addByte(flag1);
 }
 
@@ -110,7 +110,7 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   uint8_t flag0 = addFlag0(module);
 
   // Flag1
-  addFlag1();
+  addFlag1(module);
 
   // Failsafe / Channels
   if (flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE)
@@ -180,7 +180,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
       flag0 |= PXX2_TX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
     if (destination->state == PXX2_SETTINGS_WRITE) {
-      uint8_t flag1 = destination->rfProtocol << 4;
+      uint8_t flag1 = 0;
       if (destination->externalAntenna)
         flag1 |= PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA;
       Pxx2Transport::addByte(flag1);

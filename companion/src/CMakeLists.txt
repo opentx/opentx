@@ -123,7 +123,7 @@ configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_B
 ### Generate .qm files and assemble resource (qrc) file.
 
 # available Companion translations (src/translations/*.ts)
-set(LANGUAGES cs de en es fi fr it pl sv zh_CN)
+set(LANGUAGES cs de en es fi fr it pl sv zh_CN ja)
 foreach(language ${LANGUAGES})
   list(APPEND companion_TS translations/companion_${language}.ts)
 endforeach(language)
@@ -329,20 +329,21 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 ############# Install ####################
 
 # Generate list of simulator plugins, used by all platforms
-file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/Release/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
 string(TOLOWER ${PCB} FLAVOUR)
 if(POLICY CMP0026)
   cmake_policy(SET CMP0026 OLD)  # https://cmake.org/cmake/help/v3.0/policy/CMP0026.html
 endif()
+
 if(SIMU_TARGET)
   get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
   list(APPEND simulator_plugins "${current_plugin}")
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
   message(STATUS "install " ${CMAKE_BINARY_DIR} " to " ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
@@ -368,7 +369,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(OperatingSystem "Linux")
 
 elseif(WIN32)
-
   if(NOT WIN_DO_FULL_INSTALL)
     # Just copy supporting DLLs to build folder
     set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
@@ -397,7 +397,8 @@ elseif(WIN32)
   if(MSVC)
     set(wdqtopts ${wdqtopts} --no-compiler-runtime)  # --compiler-runtime includes vcredist_x86, but we just copy the required DLLs manually
   endif()
-  set(wdqtopts ${wdqtopts} -dir "${INSTALL_DESTINATION}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SIMULATOR_NAME}.exe")
+  set(wdqtopts ${wdqtopts} -dir "\"${INSTALL_DESTINATION}\"" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/${SIMULATOR_NAME}.exe")
+
   # Add installer command to execute windeployqt
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
 
@@ -444,7 +445,6 @@ endif() # WIN32 install
 
 # Create Windows installer with NSIS
 if(WIN32)
-
   find_program(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
     "C:/Program Files (x86)/NSIS"
@@ -459,7 +459,7 @@ if(WIN32)
 
     add_custom_target(installer
       # The 'install' target prepares all the distro files, make sure it has been executed first.
-      COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install
+      COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install --config Release
       COMMAND "${NSIS_EXE}" "${NSI_FILE}"
       DEPENDS "${NSI_FILE}"
       COMMENT "Building Windows NSIS installer..."

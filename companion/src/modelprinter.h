@@ -75,7 +75,7 @@ class ModelPrinter: public QObject
     QString printInputLine(const ExpoData & ed);
     QString printMixerLine(const MixData & md, bool showMultiplex, int highlightedSource = 0);
     QString printLogicalSwitchLine(int idx);
-    QString printCustomFunctionLine(int idx);
+    QString printCustomFunctionLine(int idx, bool gfunc = false);
     QString printChannelName(int idx);
     QString printCurveName(int idx);
     QString printCurve(int idx);
@@ -131,6 +131,7 @@ class ModelPrinter: public QObject
     QString printSensorDetails(unsigned int idx);
     QString printTelemetryScreenType(unsigned int val);
     QString printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width);
+    QString printChecklist();
 
   private:
     Firmware * firmware;

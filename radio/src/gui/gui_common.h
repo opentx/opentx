@@ -171,8 +171,8 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #endif
 
 #define MAX_RX_NUM(x)                  (isModuleDSM2(x) ? 20 : isModuleMultimodule(x) ? MULTI_MAX_RX_NUM(x) : 63)
-#define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
-#define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== RF_PROTO_X16) || isModuleR9M(x))
+#define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == ACCST_RF_PROTO_D8)
+#define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== ACCST_RF_PROTO_D16) || isModuleR9M(x))
 
 #define FAILSAFE_ROWS(x)               ((isModuleXJTVariant(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x) || isModuleR9M2(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 

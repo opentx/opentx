@@ -614,7 +614,7 @@ PACK(typedef struct {
 }) GVarData_v217;
 
 PACK(typedef struct {
-  ModelHeader header;
+  ModelHeader_v218 header;
   TimerData_v217 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim

@@ -268,7 +268,7 @@ void generalDefault()
   g_eeGeneral.stickMode = DEFAULT_MODE - 1;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(FRSKY_RELEASE)
   g_eeGeneral.templateSetup = 17; /* TAER */
 #endif
 
@@ -1366,7 +1366,7 @@ void doMixerCalculations()
   getSwitchesPosition(!s_mixer_first_run_done);
   DEBUG_TIMER_STOP(debugTimerGetSwitches);
 
-#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
+#if defined(PCBSKY9X) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
@@ -1579,12 +1579,10 @@ void opentxClose(uint8_t shutdown)
 
   storageFlushCurrentModel();
 
-#if !defined(REVA)
   if (sessionTimer > 0) {
     g_eeGeneral.globalTimer += sessionTimer;
     sessionTimer = 0;
   }
-#endif
 
 #if defined(PCBSKY9X)
   uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration) / 8192 / 36;

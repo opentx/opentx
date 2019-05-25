@@ -342,8 +342,8 @@ enum TelemetryScreenType {
 #define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
 
-#define FAILSAFE_CHANNEL_HOLD          2000
-#define FAILSAFE_CHANNEL_NOPULSE       2001
+constexpr int16_t FAILSAFE_CHANNEL_HOLD = 2000;
+constexpr int16_t FAILSAFE_CHANNEL_NOPULSE = 2001;
 
 #define LEN_SCRIPT_FILENAME            6
 #define LEN_SCRIPT_NAME                6
@@ -383,6 +383,7 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
+#endif
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBXLITES)
   SWSRC_SE0,
   SWSRC_SE1,
@@ -443,8 +444,17 @@ enum SwitchSources {
   SWSRC_SR1,
   SWSRC_SR2,
 #endif
-  SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + NUM_SWITCHES_POSITIONS - 1,
-#else // neither Taranis nor Horus
+
+#if defined(PCBHORUS)
+  SWSRC_GMBL0,
+  SWSRC_GMBL1,
+  SWSRC_GMBL2,
+  SWSRC_GMBR0,
+  SWSRC_GMBR1,
+  SWSRC_GMBR2,
+#endif
+
+#if defined(PCBSKY9X)
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
   SWSRC_ID2,
@@ -456,11 +466,13 @@ enum SwitchSources {
   SWSRC_TRN,
   SWSRC_TRAINER = SWSRC_TRN,
   SWSRC_LAST_SWITCH = SWSRC_TRN,
+#else
+  SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + NUM_SWITCHES_POSITIONS - 1,
 #endif
 
 #if NUM_XPOTS > 0
   SWSRC_FIRST_MULTIPOS_SWITCH,
-  SWSRC_LAST_MULTIPOS_SWITCH = SWSRC_FIRST_MULTIPOS_SWITCH + (NUM_XPOTS*XPOTS_MULTIPOS_COUNT) - 1,
+  SWSRC_LAST_MULTIPOS_SWITCH = SWSRC_FIRST_MULTIPOS_SWITCH + (NUM_POTS * XPOTS_MULTIPOS_COUNT) - 1,
 #endif
 
   SWSRC_FIRST_TRIM,
@@ -468,12 +480,14 @@ enum SwitchSources {
   SWSRC_TrimRudRight,
   SWSRC_TrimEleDown,
   SWSRC_TrimEleUp,
+
 #if NUM_TRIMS > 2
   SWSRC_TrimThrDown,
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
 #endif
+
 #if NUM_TRIMS > 4
   SWSRC_TrimT5Down,
   SWSRC_TrimT5Up,
@@ -488,16 +502,7 @@ enum SwitchSources {
   SWSRC_FIRST_LOGICAL_SWITCH,
   SWSRC_SW1 = SWSRC_FIRST_LOGICAL_SWITCH,
   SWSRC_SW2,
-  SWSRC_SW3,
-  SWSRC_SW4,
-  SWSRC_SW5,
-  SWSRC_SW6,
-  SWSRC_SW7,
-  SWSRC_SW8,
-  SWSRC_SW9,
-  SWSRC_SWA,
-  SWSRC_SWB,
-  SWSRC_SWC,
+  // ...
   SWSRC_LAST_LOGICAL_SWITCH = SWSRC_FIRST_LOGICAL_SWITCH+MAX_LOGICAL_SWITCHES-1,
 
   SWSRC_ON,
@@ -560,9 +565,16 @@ enum MixSources {
   MIXSRC_FIRST_SLIDER,
   MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
   MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
+#if defined(PCBX12S)
   MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
   MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
   MIXSRC_LAST_POT = MIXSRC_RS,
+#endif
+#if defined(PCBX10)
+  MIXSRC_EXT1,                          LUA_EXPORT("ext1", "Ext 1")
+  MIXSRC_EXT2,                          LUA_EXPORT("ext2", "Ext 2")
+  MIXSRC_LAST_POT = MIXSRC_EXT2,
+#endif
 #elif defined(PCBX9E)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
@@ -634,6 +646,7 @@ enum MixSources {
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
+#endif
 #if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
 #endif
@@ -662,7 +675,11 @@ enum MixSources {
   MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
 #endif
-#else
+#if defined(PCBHORUS)
+  MIXSRC_GMBL,                      LUA_EXPORT("gmbl", "Switch Left gimbal")
+  MIXSRC_GMBR,                      LUA_EXPORT("gmbr", "Switch right gimbal")
+#endif
+#if defined(PCBSKY9X)
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
   MIXSRC_THR,
   MIXSRC_RUD,

@@ -292,7 +292,7 @@ void menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VCURVEFUNC, 4-ed->mode, 1, 3, attr, event);
         break;
     }
     y += FH;

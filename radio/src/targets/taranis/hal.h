@@ -702,8 +702,8 @@
 
 // Internal Module
 #define HARDWARE_INTERNAL_MODULE
-#if defined(PCBXLITES) || defined(PCBX9LITE)
-  #define INTMODULE_NO_PXX1
+#if !(defined(PCBXLITES) && !defined(PCBX9LITE))
+  #define INTERNAL_MODULE_PXX1
 #endif
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
@@ -1215,11 +1215,7 @@
   #define I2C_SCL_GPIO_PinSource        GPIO_PinSource6
   #define I2C_SDA_GPIO_PinSource        GPIO_PinSource7
 #endif
-#if defined(REV4a)
-  #define I2C_SPEED                     100000
-#else
-  #define I2C_SPEED                     400000
-#endif
+#define I2C_SPEED                       400000
 #define I2C_ADDRESS_EEPROM              0xA2
 #define I2C_ADDRESS_VOLUME              0x5C
 #define I2C_FLASH_PAGESIZE              64

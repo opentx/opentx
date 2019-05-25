@@ -72,7 +72,7 @@ void dacTimerStart()
   // Sound_g.Frequency = 1000 ;
 }
 
-// Configure DAC0 (or DAC1 for REVA)
+// Configure DAC0
 // Not sure why PB14 has not be allocated to the DAC, although it is an EXTRA function
 // So maybe it is automatically done
 void dacInit()
@@ -83,17 +83,11 @@ void dacInit()
 
   Dacc *dacptr = DACC;
 
-#if defined(REVA)
-  dacptr->DACC_MR = 0x0B010215L ;                       // 0000 1011 0000 0001 0000 0010 0001 0101
-  dacptr->DACC_CHER     = 2 ;                                                   // Enable channel 1
-#else
   dacptr->DACC_MR = 0x0B000215L ;			// 0000 1011 0000 0001 0000 0010 0001 0101
   dacptr->DACC_CHER     = 1 ;                                                   // Enable channel 0
-#endif
-
   dacptr->DACC_CDR = 2048 ;						// Half amplitude
-
   dacptr->DACC_PTCR = DACC_PTCR_TXTEN ;
+
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
@@ -154,15 +148,9 @@ void audioInit()
   dacInit() ;
 
   pioptr = PIOA ;
-#if defined(REVA)
-  pioptr->PIO_CODR = 0x00010000L ;      // Set bit A16 OFF
-  pioptr->PIO_PER = 0x00010000L ;               // Enable bit A16 (Stock buzzer)
-  pioptr->PIO_OER = 0x00010000L ;               // Set bit A16 as output
-#else
   pioptr->PIO_CODR = 0x02000000L ;      // Set bit A25 OFF
   pioptr->PIO_PER = 0x02000000L ;               // Enable bit A25 (Stock buzzer)
   pioptr->PIO_OER = 0x02000000L ;               // Set bit A25 as output
-#endif
 
 #if defined(REVX)
   configure_pins( PIO_PC26, PIN_ENABLE | PIN_LOW | PIN_OUTPUT | PIN_PORTC | PIN_NO_PULLUP ) ;

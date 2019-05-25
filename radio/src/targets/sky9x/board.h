@@ -96,33 +96,18 @@ enum EnumSwitches
 #define IS_3POS(sw)                    ((sw) == 0)
 #define IS_TOGGLE(sw)                  ((sw) == SWSRC_TRN)
 
-#if defined(REVA)
-  #define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
-  #define KEYS_GPIO_REG_EXIT           PIOA->PIO_PDSR
-  #define KEYS_GPIO_REG_UP             PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_DOWN           PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_RIGHT          PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_LEFT           PIOC->PIO_PDSR
-  #define KEYS_GPIO_PIN_MENU           0x00000040
-  #define KEYS_GPIO_PIN_EXIT           0x80000000
-  #define KEYS_GPIO_PIN_UP             0x00000004
-  #define KEYS_GPIO_PIN_DOWN           0x00000008
-  #define KEYS_GPIO_PIN_RIGHT          0x00000010
-  #define KEYS_GPIO_PIN_LEFT           0x00000020
-#else
-  #define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
-  #define KEYS_GPIO_REG_EXIT           PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_UP             PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_DOWN           PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_RIGHT          PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_LEFT           PIOC->PIO_PDSR
-  #define KEYS_GPIO_PIN_MENU           0x00000020
-  #define KEYS_GPIO_PIN_EXIT           0x01000000
-  #define KEYS_GPIO_PIN_UP             0x00000002
-  #define KEYS_GPIO_PIN_DOWN           0x00000020
-  #define KEYS_GPIO_PIN_RIGHT          0x00000010
-  #define KEYS_GPIO_PIN_LEFT           0x00000008
-#endif
+#define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
+#define KEYS_GPIO_REG_EXIT           PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_UP             PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_DOWN           PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_RIGHT          PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_LEFT           PIOC->PIO_PDSR
+#define KEYS_GPIO_PIN_MENU           0x00000020
+#define KEYS_GPIO_PIN_EXIT           0x01000000
+#define KEYS_GPIO_PIN_UP             0x00000002
+#define KEYS_GPIO_PIN_DOWN           0x00000020
+#define KEYS_GPIO_PIN_RIGHT          0x00000010
+#define KEYS_GPIO_PIN_LEFT           0x00000008
 
 #if defined(REVX)
   #define TRIMS_GPIO_REG_LHL           PIOB->PIO_PDSR
@@ -152,15 +137,6 @@ enum EnumSwitches
   #define TRIMS_GPIO_PIN_LHR           0x00800000
   #define TRIMS_GPIO_PIN_LVU           0x10000000
   #define TRIMS_GPIO_PIN_RVD           0x00000002
-  #define TRIMS_GPIO_PIN_RHR           0x00000200
-#elif defined(REVA)
-  #define TRIMS_GPIO_PIN_LHL           0x00000080
-  #define TRIMS_GPIO_PIN_LVD           0x08000000
-  #define TRIMS_GPIO_PIN_RVU           0x40000000
-  #define TRIMS_GPIO_PIN_RHL           0x20000000
-  #define TRIMS_GPIO_PIN_LHR           0x00000010
-  #define TRIMS_GPIO_PIN_LVU           0x10000000
-  #define TRIMS_GPIO_PIN_RVD           0x00000400
   #define TRIMS_GPIO_PIN_RHR           0x00000200
 #else
   #define TRIMS_GPIO_PIN_LHL           0x00800000
@@ -222,14 +198,12 @@ extern uint8_t temperature ;              // Raw temp reading
 extern uint8_t maxTemperature ;           // Raw temp reading
 uint8_t getTemperature();
 
-#if !defined(REVA)
 extern uint16_t Current_analogue;
 extern uint16_t Current_max;
 extern uint32_t Current_accumulator;
 extern uint32_t Current_used;
 extern uint16_t sessionTimer;
 void calcConsumption();
-#endif
 
 // Trainer driver
 #define SLAVE_MODE()                   (pwrCheck() == e_power_trainer)
@@ -302,8 +276,11 @@ extern "C" {
 
 // ADC driver
 #define NUM_POTS                       3
+#define STORAGE_NUM_POTS               3
 #define NUM_SLIDERS                    0
+#define STORAGE_NUM_SLIDERS            0
 #define NUM_XPOTS                      0
+#define STORAGE_NUM_MOUSE_ANALOGS      0
 enum Analogs {
   STICK1,
   STICK2,
@@ -315,9 +292,7 @@ enum Analogs {
   POT3,
   POT_LAST = POT3,
   TX_VOLTAGE,
-#if !defined(REVA)
   TX_CURRENT,
-#endif
   NUM_ANALOGS
 };
 enum CalibratedAnalogs {
@@ -340,7 +315,6 @@ void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
 void setSticksGain(uint8_t gains);
 #define NUM_MOUSE_ANALOGS              0
-#define NUM_DUMMY_ANAS                 0
 
 // Battery driver
 uint16_t getBatteryVoltage();          // returns current battery voltage in 10mV steps
@@ -382,9 +356,7 @@ void btPushByte(uint8_t data);
 
 // Power driver
 #define TRAINER_PWR
-#if !defined(REVA)
 #define SOFT_PWR_CTRL
-#endif
 void pwrInit();
 void pwrOff();
 uint32_t pwrCheck();

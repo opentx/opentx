@@ -41,6 +41,11 @@ int convertSource_218_to_219(int source)
     source += 2;
 #endif
 
+#if defined(PCBHORUS)
+  if (source >= MIXSRC_GMBL)
+    source += 2;
+#endif
+
   return source;
 }
 
@@ -48,12 +53,21 @@ int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBHORUS)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
+#endif
 
+#if defined(PCBX7)
   if (swtch >= SWSRC_SI0)
-    return swtch + 2 * 3;
+    swtch += 2 * 3;
+#endif
+
+#if defined(PCBHORUS)
+  if (swtch >= SWSRC_GMBL0)
+    swtch += 2 * 3;
+  if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH + 3 * XPOTS_MULTIPOS_COUNT)
+    swtch += 2 * XPOTS_MULTIPOS_COUNT;
 #endif
 
   return swtch;
@@ -63,8 +77,14 @@ void convertModelData_218_to_219(ModelData &model)
 {
   static_assert(sizeof(ModelData_v218) <= sizeof(ModelData), "ModelData size has been reduced");
 
+#if defined(STM32)
+  ModelData_v218 * oldModelAllocated = (ModelData_v218 *)malloc(sizeof(ModelData_v218));
+  ModelData_v218 &oldModel = *oldModelAllocated;
+#else
   ModelData_v218 oldModel;
-  memcpy(&oldModel, &model, sizeof(oldModel));
+#endif
+
+  memcpy(&oldModel, &model, sizeof(ModelData_v218));
   ModelData_v219 & newModel = (ModelData_v219 &) model;
 
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));
@@ -215,13 +235,14 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
 #if defined(PCBHORUS)
-  memcpy(newModel.screenData, oldModel.screenData,
-          sizeof(newModel.screenData) +
-          sizeof(newModel.topbarData))
-#endif
-
+//  memcpy(newModel.screenData, oldModel.screenData,
+//          sizeof(newModel.screenData) +
+//          sizeof(newModel.topbarData))
+#else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
+#endif
+
 #if defined(PCBX7)
   for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
     uint8_t screenType = (newModel.screensType >> (2*i)) & 0x03;
@@ -238,5 +259,36 @@ void convertModelData_218_to_219(ModelData &model)
       }
     }
   }
+#endif
+
+#if defined(PCBHORUS)
+  free(oldModelAllocated);
+#endif
+}
+
+void convertRadioData_218_to_219(RadioData & settings)
+{
+  settings.version = 219;
+
+#if defined(PCBHORUS)
+  RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
+
+  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData, serial2Mode) - offsetof(RadioData, chkSum));
+  memcpy(&settings.calib[NUM_STICKS + 5], &settings_v218.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
+  memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
+
+  settings.serial2Mode = settings_v218.serial2Mode;
+  settings.switchConfig = settings_v218.switchConfig;
+  settings.potsConfig = settings_v218.potsConfig;
+  settings.slidersConfig = settings_v218.slidersConfig;
+
+  memcpy(&settings.switchNames[0], &settings_v218.switchNames[0], 8 * LEN_SWITCH_NAME);
+  memclear(&settings.switchNames[8], 2 * LEN_SWITCH_NAME);
+
+  memcpy(&settings.anaNames[0], &settings_v218.anaNames[0], (NUM_STICKS + 3) * LEN_ANA_NAME);
+  memclear(&settings.anaNames[NUM_STICKS + 3], 2 * LEN_SWITCH_NAME);
+  memcpy(&settings.anaNames[NUM_STICKS + 5], &settings_v218.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
+
+  memcpy(&settings.currModelFilename[0], &settings_v218.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
 #endif
 }
