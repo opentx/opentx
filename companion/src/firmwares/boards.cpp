@@ -266,8 +266,6 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_JUMPER_T12(board))
-        return 2;
       else
         return 3;
 

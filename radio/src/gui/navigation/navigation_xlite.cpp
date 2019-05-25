@@ -30,13 +30,13 @@ horzpos_t menuHorizontalPosition;
 int8_t  checkIncDec_Ret;
 
 #if defined(RADIO_T12)
-#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & ((1<<KEY_UP))) == ((1<<KEY_UP)))
+#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
 // set to 0
-#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & ((1<<KEY_DOWN))) ==  ((1<<KEY_DOWN)))
+#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
 // set to max
-#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & ((1<<KEY_RIGHT))) == ((1<<KEY_RIGHT)))
+#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
 // set to min
-#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & ((1<<KEY_LEFT))) == ((1<<KEY_LEFT)))
+#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 #else
 // invert the value
 #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & ((1<<KEY_SHIFT) + (1<<KEY_UP))) == ((1<<KEY_SHIFT) + (1<<KEY_UP)))

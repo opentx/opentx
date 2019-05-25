@@ -549,7 +549,8 @@ void menuModelSetup(event_t event)
     0, // Global functions
 
     uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
-#if !defined(RADIO_T12)
+
+    #if !defined(HARDWARE_INTERNAL_MODULE)
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
       INTERNAL_MODULE_CHANNELS_ROWS,                               // Channels min and count

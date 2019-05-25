@@ -476,6 +476,7 @@ void modelDefault(uint8_t id)
 #elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #elif defined(RADIO_T12)
+  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
 #endif
 
