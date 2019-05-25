@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -61,9 +61,9 @@ void lcdHardwareInit()
   LCD_SPI->CR2 = 0;
   LCD_SPI->CR1 |= SPI_CR1_MSTR;	// Make sure in case SSM/SSI needed to be set first
   LCD_SPI->CR1 |= SPI_CR1_SPE;
-  
+
   LCD_NCS_HIGH();
-  
+
   GPIO_InitStructure.GPIO_Pin = LCD_NCS_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -81,7 +81,7 @@ void lcdHardwareInit()
   GPIO_InitStructure.GPIO_Pin = LCD_CLK_GPIO_PIN | LCD_MOSI_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_Init(LCD_SPI_GPIO, &GPIO_InitStructure);
-  
+
   GPIO_PinAFConfig(LCD_SPI_GPIO, LCD_MOSI_GPIO_PinSource, LCD_GPIO_AF);
   GPIO_PinAFConfig(LCD_SPI_GPIO, LCD_CLK_GPIO_PinSource, LCD_GPIO_AF);
 
@@ -103,6 +103,20 @@ void lcdHardwareInit()
 #if LCD_W == 128
 void lcdStart()
 {
+#if defined(RADIO_T12)
+  // Jumper has the screen inverted.
+  lcdWriteCommand(0xe2); // (14) Soft reset
+  lcdWriteCommand(0xa0); // Set seg
+  lcdWriteCommand(0xc8); // Set com
+  lcdWriteCommand(0xf8); // Set booster
+  lcdWriteCommand(0x00); // 5x
+  lcdWriteCommand(0xa3); // Set bias=1/6
+  lcdWriteCommand(0x22); // Set internal rb/ra=5.0
+  lcdWriteCommand(0x2f); // All built-in power circuits on
+  lcdWriteCommand(0x24); // Set contrast //schumixmd value 24
+  lcdWriteCommand(0x36); // Set Vop
+  lcdWriteCommand(0xa6); // Set display mode
+#else
   lcdWriteCommand(0xe2); // (14) Soft reset
   lcdWriteCommand(0xa1); // Set seg
   lcdWriteCommand(0xc0); // Set com
@@ -114,8 +128,9 @@ void lcdStart()
   lcdWriteCommand(0x81); // Set contrast
   lcdWriteCommand(0x36); // Set Vop
   lcdWriteCommand(0xa6); // Set display mode
+#endif
 }
-#else
+
 void lcdStart()
 {
   lcdWriteCommand(0x2F); // Internal pump control
@@ -155,7 +170,7 @@ void lcdWriteAddress(uint8_t x, uint8_t y)
 {
   lcdWriteCommand(x & 0x0F); // Set Column Address LSB CA[3:0]
   lcdWriteCommand((x>>4) | 0x10); // Set Column Address MSB CA[7:4]
-    
+
   lcdWriteCommand((y&0x0F) | 0x60); // Set Row Address LSB RA [3:0]
   lcdWriteCommand(((y>>4) & 0x0F) | 0x70); // Set Row Address MSB RA [7:4]
 }
@@ -181,8 +196,10 @@ void lcdRefresh(bool wait)
   for (uint8_t y=0; y < 8; y++, p+=LCD_W) {
     lcdWriteCommand(0x10); // Column addr 0
     lcdWriteCommand(0xB0 | y); // Page addr y
+#if !defined(RADIO_T12)
     lcdWriteCommand(0x04);
-    
+#endif
+
     LCD_NCS_LOW();
     LCD_A0_HIGH();
 
@@ -192,7 +209,7 @@ void lcdRefresh(bool wait)
     LCD_DMA_Stream->M0AR = (uint32_t)p;
     LCD_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA & TC interrupts
     LCD_SPI->CR2 |= SPI_CR2_TXDMAEN;
-  
+
     WAIT_FOR_DMA_END();
 
     LCD_NCS_HIGH();
@@ -204,7 +221,7 @@ void lcdRefresh(bool wait)
   lcd_busy = true;
 
   lcdWriteAddress(0, 0);
-	
+
   LCD_NCS_LOW();
   LCD_A0_HIGH();
 
@@ -300,7 +317,7 @@ void lcdInitFinish()
     The longer initialization time seems to only be needed for regular Taranis,
     the Taranis Plus (9XE) has been tested to work without any problems at -18 deg Celsius.
     Therefore the delay for T+ is lower.
-    
+
     If radio is reset by watchdog or boot-loader the wait is skipped, but the LCD
     is initialized in any case.
 
@@ -316,7 +333,7 @@ void lcdInitFinish()
     delay_ms(RESET_WAIT_DELAY_MS);
 #endif
   }
-  
+
   lcdStart();
   lcdWriteCommand(0xAF); // dc2=1, IC into exit SLEEP MODE, dc3=1 gray=ON, dc4=1 Green Enhanc mode disabled
   delay_ms(20); // needed for internal DC-DC converter startup
@@ -331,7 +348,7 @@ void lcdSetRefVolt(uint8_t val)
 #if LCD_W != 128
   WAIT_FOR_DMA_END();
 #endif
-  
+
   lcdWriteCommand(0x81); // Set Vop
   lcdWriteCommand(val+LCD_CONTRAST_OFFSET); // 0-255
 }
