@@ -314,7 +314,7 @@
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_2  // PE.02
 #elif defined(PCBX9LITE)
-// no SWD
+  // no SWD
 #else
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_7  // PE.07
@@ -334,7 +334,7 @@
   #define SWITCHES_GPIO_REG_E           GPIOC->IDR
   #define SWITCHES_GPIO_PIN_E           GPIO_Pin_13 // PC.13
 #elif defined(PCBX7) || defined(PCBXLITE)
-// no SWE
+  // no SWE
 #else
   #define SWITCHES_GPIO_REG_E_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_E_H         GPIO_Pin_3  // PB.03
@@ -1330,12 +1330,12 @@
 #define SD_SPI_BaudRatePrescaler        SPI_BaudRatePrescaler_4 // 10.5<20MHZ, make sure < 20MHZ
 
 #if !defined(BOOT)
-#define SD_USE_DMA                    // Enable the DMA for SD
-#define SD_DMA_Stream_SPI_RX          DMA1_Stream3
-#define SD_DMA_Stream_SPI_TX          DMA1_Stream4
-#define SD_DMA_FLAG_SPI_TC_RX         DMA_FLAG_TCIF3
-#define SD_DMA_FLAG_SPI_TC_TX         DMA_FLAG_TCIF4
-#define SD_DMA_Channel_SPI            DMA_Channel_0
+  #define SD_USE_DMA                    // Enable the DMA for SD
+  #define SD_DMA_Stream_SPI_RX          DMA1_Stream3
+  #define SD_DMA_Stream_SPI_TX          DMA1_Stream4
+  #define SD_DMA_FLAG_SPI_TC_RX         DMA_FLAG_TCIF3
+  #define SD_DMA_FLAG_SPI_TC_TX         DMA_FLAG_TCIF4
+  #define SD_DMA_Channel_SPI            DMA_Channel_0
 #endif
 
 // Audio
@@ -1436,11 +1436,11 @@
   #define BT_RCC_APB1Periph             RCC_APB1Periph_USART3
   #define BT_RCC_APB2Periph             0
   #define BT_EN_GPIO                    GPIOE
-#if defined(PCBXLITE)
-  #define BT_EN_GPIO_PIN              GPIO_Pin_15 // PE.15
-#else
-  #define BT_EN_GPIO_PIN              GPIO_Pin_12 // PE.12
-#endif
+  #if defined(PCBXLITE)
+    #define BT_EN_GPIO_PIN              GPIO_Pin_15 // PE.15
+  #else
+    #define BT_EN_GPIO_PIN              GPIO_Pin_12 // PE.12
+  #endif
   #define BT_USART_GPIO                 GPIOB
   #define BT_TX_GPIO_PIN                GPIO_Pin_10 // PB.10
   #define BT_RX_GPIO_PIN                GPIO_Pin_11 // PB.11
