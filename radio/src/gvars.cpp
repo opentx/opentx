@@ -48,7 +48,7 @@ int16_t getGVarValue(int8_t gv, int8_t fm)
 
 int32_t getGVarValuePrec1(int8_t gv, int8_t fm)
 {
-  int8_t idx = (gv >= 0 ? gv : -idx - 1);
+  int8_t idx = (gv >= 0 ? gv : -gv - 1);
   int8_t mul = (g_model.gvars[idx].prec == 0 ? 10 : 1); // explicit cast to `int` needed, othervise gv is promoted to double!
   if (gv < 0) {
     mul = -mul;
