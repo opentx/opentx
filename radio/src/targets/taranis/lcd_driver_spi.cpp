@@ -130,7 +130,7 @@ void lcdStart()
   lcdWriteCommand(0xa6); // Set display mode
 #endif
 }
-
+#else
 void lcdStart()
 {
   lcdWriteCommand(0x2F); // Internal pump control
