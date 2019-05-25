@@ -186,7 +186,6 @@ if [[ " T12 ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-
 if [[ " DEFAULT ALL " =~ " ${FLAVOR} " ]] ; then
   # Companion
   rm -rf *

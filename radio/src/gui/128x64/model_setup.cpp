@@ -550,7 +550,7 @@ void menuModelSetup(event_t event)
 
     uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
 
-    #if defined(HARDWARE_INTERNAL_MODULE)
+#if defined(HARDWARE_INTERNAL_MODULE)
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
       INTERNAL_MODULE_CHANNELS_ROWS,                               // Channels min and count
@@ -564,6 +564,7 @@ void menuModelSetup(event_t event)
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 2
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 3
 #endif
+
     LABEL(ExternalModule),
       EXTERNAL_MODULE_MODE_ROWS,
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
