@@ -153,6 +153,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i+1));
     edit->setContextMenuPolicy(Qt::CustomContextMenu);
+    edit->setToolTip(tr("Popup menu available"));
     connect(edit, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
     connect(edit, SIGNAL(clicked()), this, SLOT(editCurve()));
     if (i<limit) {
