@@ -76,10 +76,9 @@ void menuModelSelect(event_t event)
     event = EVT_ENTRY_UP;
   }
 
-  event_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
-
-  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
-    _event_ -= KEY_EXIT;
+  event_t _event_ = event;
+  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event)) {
+    _event_ = 0;
   }
 
   int8_t oldSub = menuVerticalPosition;
