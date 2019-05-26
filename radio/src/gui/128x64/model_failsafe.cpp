@@ -102,7 +102,7 @@ void menuModelFailsafe(event_t event)
     }
     else {
 #if defined(PPM_UNIT_US)
-      lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
+      lcdDrawNumber(xValue, y, PPM_CH_CENTER(k)+failsafeValue/2, RIGHT|flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
       lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
 #else
