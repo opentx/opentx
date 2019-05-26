@@ -512,6 +512,24 @@ void onBluetoothConnectMenu(const char * result)
 }
 #endif
 
+#if defined(HARDWARE_INTERNAL_MODULE)
+  #define INTERNAL_MODULE_ROWS \
+    LABEL(InternalModule), \
+      INTERNAL_MODULE_MODE_ROWS, \
+      INTERNAL_MODULE_CHANNELS_ROWS, \
+      IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      ANTENNA_ROW \
+      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 1), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0),
+#else
+  #define INTERNAL_MODULE_ROWS
+#endif
+
 void menuModelSetup(event_t event)
 {
 #if defined(EXTERNAL_ANTENNA)
@@ -550,20 +568,7 @@ void menuModelSetup(event_t event)
 
     uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
 
-#if defined(HARDWARE_INTERNAL_MODULE)
-    LABEL(InternalModule),
-      INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
-      INTERNAL_MODULE_CHANNELS_ROWS,                               // Channels min and count
-      IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // RxNum
-      ANTENNA_ROW
-      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Failsafe
-      IF_PXX2_MODULE(INTERNAL_MODULE, 1),                          // Range check and Register buttons
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Module options
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 1
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 2
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 3
-#endif
+    INTERNAL_MODULE_ROWS
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_MODE_ROWS,
