@@ -94,6 +94,13 @@ extern "C" {
 }
 #endif
 
+#if defined(PCBX9E) || defined(RADIO_X7) || defined(PCBX9LITE)
+// Rotary Encoder driver
+#define ROTARY_ENCODER_NAVIGATION
+void rotaryEncoderInit(void);
+void rotaryEncoderCheck(void);
+#endif
+
 #define FLASHSIZE                       0x80000
 #define BOOTLOADER_SIZE                 0x8000
 #define FIRMWARE_ADDRESS                0x08000000
@@ -267,24 +274,44 @@ int sbusGetByte(uint8_t * byte);
 // Keys driver
 enum EnumKeys
 {
-#if defined(PCBXLITE)
+#if defined(KEYS_GPIO_REG_SHIFT)
   KEY_SHIFT,
 #endif
-#if !defined(RADIO_T12)
+
+#if defined(KEYS_GPIO_REG_MENU)
   KEY_MENU,
 #endif
+
   KEY_EXIT,
   KEY_ENTER,
-#if defined(NAVIGATION_XLITE)
+
+#if defined(KEYS_GPIO_REG_DOWN)
   KEY_DOWN,
   KEY_UP,
+#endif
+
+#if defined(KEYS_GPIO_REG_RIGHT)
   KEY_RIGHT,
   KEY_LEFT,
-#else
+#endif
+
+#if defined(KEYS_GPIO_REG_PAGE)
   KEY_PAGE,
+#endif
+
+#if defined(KEYS_GPIO_REG_PLUS)
   KEY_PLUS,
   KEY_MINUS,
 #endif
+
+  KEY_COUNT,
+  KEY_MAX = KEY_COUNT - 1,
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  KEY_PLUS,
+  KEY_MINUS,
+#endif
+
 
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
@@ -439,13 +466,6 @@ uint32_t readKeys(void);
 uint32_t readTrims(void);
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
-
-#if defined(PCBX9E) || defined(RADIO_X7) || defined(PCBX9LITE)
-// Rotary Encoder driver
-#define ROTARY_ENCODER_NAVIGATION
-void rotaryEncoderInit(void);
-void rotaryEncoderCheck(void);
-#endif
 
 // WDT driver
 #define WDTO_500MS                      500
