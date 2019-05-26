@@ -63,6 +63,9 @@ enum EnumKeys
   KEY_RIGHT,
   KEY_LEFT,
 
+  KEY_COUNT,
+  KEY_MAX = KEY_COUNT - 1,
+
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,

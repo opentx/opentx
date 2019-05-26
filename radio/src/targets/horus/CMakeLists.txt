@@ -1,7 +1,7 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
 option(PXX1 "PXX1 protocol support" ON)
-option(PXX2 "PXX2 protocol support" ON)
+option(PXX2 "PXX2 protocol support" OFF)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)

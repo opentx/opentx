@@ -27,7 +27,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
@@ -156,7 +156,7 @@ void title(const char * s);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 #else
@@ -169,7 +169,7 @@ void title(const char * s);
   MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), lines_count);
 #define SUBMENU_NOTITLE(lines_count, ...) \

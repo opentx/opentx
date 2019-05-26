@@ -180,24 +180,24 @@ enum BeeperMode {
 };
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  enum ModuleIndex {
-    INTERNAL_MODULE,
-    EXTERNAL_MODULE,
-    SPORT_MODULE,
-  };
-  enum TrainerMode {
-    TRAINER_MODE_MASTER_TRAINER_JACK,
-    TRAINER_MODE_SLAVE,
+enum ModuleIndex {
+  INTERNAL_MODULE,
+  EXTERNAL_MODULE,
+  SPORT_MODULE,
+};
+enum TrainerMode {
+  TRAINER_MODE_MASTER_TRAINER_JACK,
+  TRAINER_MODE_SLAVE,
 #if defined(PCBTARANIS)
-    TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
-    TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
 #endif
-    TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+  TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
 #if defined(BLUETOOTH)
-    TRAINER_MODE_MASTER_BLUETOOTH,
-    TRAINER_MODE_SLAVE_BLUETOOTH,
+  TRAINER_MODE_MASTER_BLUETOOTH,
+  TRAINER_MODE_SLAVE_BLUETOOTH,
 #endif
-  };
+};
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -324,7 +324,7 @@ enum TelemetryUnit {
 #endif
 
 #if defined(PCBTARANIS)
-#define MAX_TELEM_SCRIPT_INPUTS  8
+  #define MAX_TELEM_SCRIPT_INPUTS  8
 #endif
 
 enum TelemetryScreenType {
@@ -657,9 +657,12 @@ enum MixSources {
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #endif
-#if defined(PCBX7)
+#if defined(RADIO_X7)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
   MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#elif defined(RADIO_T12)            // keep switches for eeprom compatibity, but hide them
+  MIXSRC_SI,
+  MIXSRC_SJ,
 #endif
 #if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")

@@ -250,8 +250,10 @@ void Open9xSim::updateKeysAndSwitches(bool start)
     KEY_Down,      KEY_DOWN,
     KEY_Right,     KEY_RIGHT,
     KEY_Left,      KEY_LEFT,
-#elif defined(PCBXLITE)
+#elif defined(PCBXLITE) || defined(RADIO_T12)
+  #if defined(KEYS_GPIO_REG_SHIFT)
     KEY_Shift_L,   KEY_SHIFT,
+  #endif
     KEY_Return,    KEY_ENTER,
     KEY_BackSpace, KEY_EXIT,
     KEY_Right,     KEY_RIGHT,
