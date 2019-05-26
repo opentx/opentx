@@ -65,12 +65,17 @@ void menuRadioDiagKeys(event_t event)
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
       displayKeyState(5*FW+2, y, KEY_MENU+(TRM_BASE-1-i));
+#else
+      y = MENU_HEADER_HEIGHT + FH*i;
+      lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
+      displayKeyState(5*FW+2, y, KEY_DOWN+(TRM_BASE-1-i));
 #endif
     }
 
 #if defined(PCBTARANIS)
     if (i < NUM_SWITCHES) {
       if (SWITCH_EXISTS(i)) {
+        y = MENU_HEADER_HEIGHT + FH*i;
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
         drawSwitch(8*FW+4, y, sw, 0);

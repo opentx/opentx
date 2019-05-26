@@ -362,14 +362,17 @@
 #define TR_VSWASHTYPE                  "---\0""120\0""120X""140\0""90\0"
 
 #if defined(PCBHORUS)
-#define LEN_VKEYS              "\006"
-#define TR_VKEYS               "Menu\0 ""Exit\0 ""Enter\0""Up\0   ""Down\0 ""Right\0""Left"
+  #define LEN_VKEYS                    "\006"
+  #define TR_VKEYS                     "Menu\0 ""Exit\0 ""Enter\0""Up\0   ""Down\0 ""Right\0""Left"
+#elif defined(RADIO_T12)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
 #elif defined(PCBTARANIS)
-#define LEN_VKEYS              "\005"
-#define TR_VKEYS               "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
 #else
-#define LEN_VKEYS              "\005"
-#define TR_VKEYS               "Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0"
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0"
 #endif
 
 #define LEN_VRENCODERS         "\003"
