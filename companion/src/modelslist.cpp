@@ -755,11 +755,18 @@ bool TreeModel::isModelIdUnique(unsigned modelIdx)
   int cnt = 0;
   for (unsigned i=0; i<radioData->models.size(); i++) {
     ModelData & model = radioData->models[i];
-    for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
-      if (!model.moduleData[j].protocol == PULSES_OFF && model.moduleData[j].modelId == modelIdx) {
-        cnt++;
+    if (!model.isEmpty()) {
+      for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
+        if (!model.moduleData[j].protocol == PULSES_OFF && model.moduleData[j].modelId == modelIdx) {
+          if (cnt < 1) {
+            cnt++;
+          }
+          else {
+            return false;
+          }
+        }
       }
     }
   }
-  return (cnt < 2 ? true : false);
+  return true;
 }
