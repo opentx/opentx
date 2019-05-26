@@ -365,7 +365,7 @@ void menuRadioSetup(event_t event)
         SLIDER_5POS(y, g_eeGeneral.hapticStrength, STR_HAPTICSTRENGTH, event, attr);
         break;
 #endif
-        
+
 #if defined(GYRO)
       case ITEM_SETUP_GYRO_LABEL:
         lcdDrawTextAlignedLeft(y, STR_GYRO_LABEL);
@@ -395,7 +395,7 @@ void menuRadioSetup(event_t event)
         }
         break;
 #endif
-        
+
       case ITEM_SETUP_CONTRAST:
         lcdDrawTextAlignedLeft(y, STR_CONTRAST);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);

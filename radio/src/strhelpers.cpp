@@ -272,7 +272,11 @@ char * getSwitchString(char * dest, swsrc_t idx)
       if (swinfo.quot >= 5)
         *s++ = 'H' + swinfo.quot - 5;
       else if (swinfo.quot == 4)
+#if defined(RADIO_T12)
+        *s++ = 'G';
+#else
         *s++ = 'F';
+#endif
       else
         *s++ = 'A'+swinfo.quot;
 #else

@@ -77,7 +77,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_BEEP_CENTER,
   ITEM_MODEL_SETUP_USE_GLOBAL_FUNCTIONS,
   ITEM_MODEL_SETUP_REGISTRATION_ID,
-#if defined(PCBTARANIS)
+#if defined(HARDWARE_INTERNAL_MODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_MODE,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS,
@@ -154,13 +154,14 @@ enum MenuModelSetupItems {
 #define IF_PXX2_MODULE(module, xxx)      (isModulePXX2(module) ? (uint8_t)(xxx) : HIDDEN_ROW)
 #define IF_NOT_PXX2_MODULE(module, xxx)  (isModulePXX2(module) ? HIDDEN_ROW : (uint8_t)(xxx))
 
-#if defined(PCBTARANIS)
+#if defined(HARDWARE_INTERNAL_MODULE)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
   #define CURRENT_RECEIVER_EDITED(k)      (k - (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1 : ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_1))
 #elif defined(PCBSKY9X)
   #define CURRENT_MODULE_EDITED(k)       (k >= ITEM_MODEL_SETUP_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
   #define CURRENT_MODULE_EDITED(k)       (EXTERNAL_MODULE)
+  #define CURRENT_RECEIVER_EDITED(k)      (k - ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1)
 #endif
 
 #if defined(PCBXLITE)
@@ -511,6 +512,24 @@ void onBluetoothConnectMenu(const char * result)
 }
 #endif
 
+#if defined(HARDWARE_INTERNAL_MODULE)
+  #define INTERNAL_MODULE_ROWS \
+    LABEL(InternalModule), \
+      INTERNAL_MODULE_MODE_ROWS, \
+      INTERNAL_MODULE_CHANNELS_ROWS, \
+      IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      ANTENNA_ROW \
+      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 1), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0), \
+      IF_PXX2_MODULE(INTERNAL_MODULE, 0),
+#else
+  #define INTERNAL_MODULE_ROWS
+#endif
+
 void menuModelSetup(event_t event)
 {
 #if defined(EXTERNAL_ANTENNA)
@@ -549,18 +568,7 @@ void menuModelSetup(event_t event)
 
     uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
 
-    LABEL(InternalModule),
-      INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
-      INTERNAL_MODULE_CHANNELS_ROWS,                               // Channels min and count
-      IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // RxNum
-      ANTENNA_ROW
-      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Failsafe
-      IF_PXX2_MODULE(INTERNAL_MODULE, 1),                          // Range check and Register buttons
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Module options
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 1
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 2
-      IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 3
+    INTERNAL_MODULE_ROWS
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_MODE_ROWS,
@@ -1250,7 +1258,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS:
 #endif
 #if defined(PCBSKY9X)
@@ -1452,7 +1460,9 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTRA_MODULE_BIND:
 #endif
 #if defined(PCBTARANIS)
+#if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_NPXX2_BIND:
+#endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NPXX2_BIND:
 #endif
       {
@@ -1620,7 +1630,7 @@ void menuModelSetup(event_t event)
       }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_FAILSAFE:
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE: {
@@ -1862,7 +1872,7 @@ void menuModelSetup(event_t event)
   // some field just finished being edited
   if (old_editMode > 0 && s_editMode == 0) {
     switch(menuVerticalPosition) {
-#if defined(PCBTARANIS)
+#if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_NPXX2_BIND:
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM:
         if (menuHorizontalPosition == 0)

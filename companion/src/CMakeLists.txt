@@ -333,7 +333,11 @@ file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/Release/*opentx-*simulator${CMA
 
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
-string(TOLOWER ${PCB} FLAVOUR)
+if(PCB STREQUAL X7 AND PCBREV STREQUAL T12)
+  set(FLAVOUR t12)
+else()
+  string(TOLOWER ${PCB} FLAVOUR)
+endif()
 if(POLICY CMP0026)
   cmake_policy(SET CMP0026 OLD)  # https://cmake.org/cmake/help/v3.0/policy/CMP0026.html
 endif()

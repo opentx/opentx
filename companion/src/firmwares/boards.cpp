@@ -83,6 +83,8 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_STOCK:
     case BOARD_M128:
       return 0;
+    case BOARD_JUMPER_T12:
+      return 0x3D78746F;
     case BOARD_UNKNOWN:
       break;
   }
@@ -112,6 +114,7 @@ const int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
+    case BOARD_JUMPER_T12:
       return EESIZE_TARANIS;
     case BOARD_UNKNOWN:
       return EESIZE_MAX;
@@ -221,6 +224,18 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
+  else if (IS_JUMPER_T12(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS, "SA"},
+      {SWITCH_3POS, "SB"},
+      {SWITCH_3POS, "SC"},
+      {SWITCH_3POS, "SD"},
+      {SWITCH_2POS, "SG"},
+      {SWITCH_2POS, "SH"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
   else {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "3POS"},
@@ -247,7 +262,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
     case Pots:
       if (IS_TARANIS_X9LITE(board))
         return 1;
-      else if (IS_TARANIS_SMALL(board))
+      else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -302,6 +317,8 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 4;
       else if (IS_HORUS_OR_TARANIS(board))
         return 8;
+      else if (IS_JUMPER_T12(board))
+        return 6;
       else
         return 7;
 

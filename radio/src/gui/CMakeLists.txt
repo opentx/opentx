@@ -33,6 +33,9 @@ set(SRC
   gui/navigation/common.cpp
   )
 
+string(TOUPPER ${NAVIGATION_TYPE} NAVIGATION_TYPE)
+add_definitions(-DNAVIGATION_${NAVIGATION_TYPE})
+
 include_directories(gui gui/${GUI_DIR})
 
 if(GUI_DIR STREQUAL 128x64 OR GUI_DIR STREQUAL 212x64)

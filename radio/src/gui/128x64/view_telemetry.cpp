@@ -216,7 +216,7 @@ enum NavigationDirection {
 #define decrTelemetryScreen() direction = up
 #define incrTelemetryScreen() direction = down
 
-#if defined(PCBXLITE)
+#if defined(NAVIGATION_XLITE)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_LEFT)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_LONG(KEY_RIGHT)
 #elif defined(PCBX7)
