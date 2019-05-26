@@ -907,7 +907,7 @@
 #define TR_OWN                 "Propio"
 #define TR_DATE                "Fecha"
 #define TR_MONTHS              { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
-#define TR_ROTARY_ENCODER      "R.E"
+#define TR_ROTARY_ENCODER      "R.E."
 #define TR_CHANNELS_MONITOR    "MONITOR CANALES"
 #define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "Path too long"
