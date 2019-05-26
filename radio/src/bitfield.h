@@ -33,11 +33,9 @@ inline T bfBit(uint8_t n)
   return T(1) << n;
 }
 
-#define BFBIT_GET(y, mask)        ( y & (mask) )
 #define BFBIT_SET(y, mask)        ( y |=  (mask) )
 #define BFBIT_CLEAR(y, mask)      ( y &= ~(mask) )
 #define BFBIT_FLIP(y, mask)       ( y ^=  (mask) )
-#define BF_SINGLE_BIT_GET(y, i)    BFBIT_GET(y, bfBit(i))
 #define BF_SINGLE_BIT_SET(y, i)    BFBIT_SET(y, bfBit(i))
 
 //! Create a bitmask of length 'len'.
@@ -68,7 +66,7 @@ inline T bfGet(T y, uint8_t start, uint8_t len)
   return ((y)>>(start)) & bfBitmask<T>(len);
 }
 
-//! Insert 'len' bits of 'x 'into 'y', starting at bit 'start' from 'y'.
+//! Insert 'len' bits of 'x 'into 'y', starting at bit 'start' from  'y'.
 template <class T>
 inline T bfSet(T to, T from, uint8_t start, uint8_t len)
 {
@@ -76,15 +74,15 @@ inline T bfSet(T to, T from, uint8_t start, uint8_t len)
 }
 
 template <class T>
-inline T BF_BIT_GET(T y, T mask)
+inline T bfBitGet(T y, T mask)
 {
   return (y & mask);
 }
 
 template <class T>
-inline T BF_SINGLE_BIT_GET(T y, uint8_t i)
+inline T bfSingleBitGet(T y, uint8_t i)
 {
-  return BF_BIT_GET(y, BF_BIT<T>(i));
+  return bfBitGet(y, bfBit<T>(i));
 }
 
 #endif //BITFIELD_H

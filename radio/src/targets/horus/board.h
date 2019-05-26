@@ -413,10 +413,6 @@ enum Analogs {
   POT1 = POT_FIRST,
   POT2,
   POT3,
-#if defined(PCBX10)
-  EXT1,
-  EXT2,
-#endif
   SLIDER_FIRST,
   SLIDER1 = SLIDER_FIRST,
   SLIDER2,
@@ -434,6 +430,10 @@ enum Analogs {
 #if defined(PCBX12S)
   MOUSE1, // TODO why after voltage?
   MOUSE2,
+#endif
+#if defined(PCBX10)
+  EXT1,
+  EXT2,
 #endif
   NUM_ANALOGS,
   TX_RTC = NUM_ANALOGS

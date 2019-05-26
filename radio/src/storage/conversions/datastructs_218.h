@@ -561,7 +561,7 @@ static inline void check_struct_218()
 #endif
 
 #if defined(COLORLCD)
-  #include "gui/480x272/theme.h"
+  #include "gui/colorlcd/theme.h"
   #define THEME_NAME_LEN 8
   #define THEME_DATA \
     char themeName[THEME_NAME_LEN]; \

@@ -324,7 +324,7 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
 
     // Backlight mode
-    new StaticText(window, grid.getLabelSlot(true), STR_BL_MODE_DUR);
+    new StaticText(window, grid.getLabelSlot(true), STR_MODE);
     new Choice(window, grid.getFieldSlot(2,0), STR_VBLMODE, e_backlight_mode_off, e_backlight_mode_on, GET_SET_DEFAULT(g_eeGeneral.backlightMode));
     //grid.nextLine();
 

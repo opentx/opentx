@@ -270,7 +270,7 @@ void RadioCalibrationPage::nextStep()
       break;
 
     case CALIB_STORE:
-      text->setText(STR_CALIB_DONE);
+      text->setText(TR_CALIB_DONE);
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
       menuCalibrationState = CALIB_FINISHED;

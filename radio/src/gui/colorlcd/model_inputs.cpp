@@ -187,7 +187,7 @@ class InputEditWindow: public Page {
 
       // Side
       new StaticText(window, grid.getLabelSlot(), STR_SIDE);
-      new Choice(window, grid.getFieldSlot(), STR_VSIDE, 1, 3,
+      new Choice(window, grid.getFieldSlot(), STR_VCURVEFUNC, 1, 3,
                  [=]() -> int16_t {
                    return 4 - line->mode;
                  },
@@ -261,16 +261,16 @@ class InputEditWindow: public Page {
       new StaticText(window, grid.getLabelSlot(), STR_FLMODE);
       TextButton * flightmode = nullptr;
       for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-        char fm[2] = { char('0' + i), '\0' };
+        char fm[2] = { char('0' + i), '\0'};
         if (i > 0 && (i % 4) == 0)
           grid.nextLine();
         flightmode = new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
-                       [=]() -> uint8_t {
-                         BF_BIT_FLIP(line->flightModes, BF_BIT<uint32_t>(i));
-                         SET_DIRTY();
-                         return !(BF_SINGLE_BIT_GET(line->flightModes, i));
-                       },
-                       BF_SINGLE_BIT_GET(line->flightModes, i) ? 0 : BUTTON_CHECKED);
+                                    [=]() -> uint8_t {
+                                        BFBIT_FLIP(line->flightModes, bfBit<uint32_t>(i));
+                                        SET_DIRTY();
+                                        return !(bfSingleBitGet(line->flightModes, i));
+                                    },
+                                    bfSingleBitGet(line->flightModes, i) ? 0 : BUTTON_CHECKED);
       }
       grid.nextLine();
       window->setLastField(flightmode);

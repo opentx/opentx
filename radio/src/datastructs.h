@@ -670,7 +670,6 @@ PACK(struct TrainerData {
 #if defined(PCBHORUS) || defined(PCBNV14)
   #define EXTRA_GENERAL_FIELDS \
     NOBACKUP(uint8_t auxSerialMode); \
-    uint8_t  slidersConfig; \
     uint32_t switchConfig; \
     uint16_t potsConfig; /* two bits per pot */ \
     uint8_t slidersConfig; /* 1 bit per slider */ \
@@ -715,7 +714,6 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(COLORLCD)
-
   #include "theme.h"
   #define THEME_NAME_LEN 8
   #define THEME_DATA \

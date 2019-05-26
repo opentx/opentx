@@ -352,7 +352,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER1_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT STR_NAME, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT TR_NAME, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
@@ -373,7 +373,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER2_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT STR_NAME, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT TR_NAME, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER2_MINUTE_BEEP:
@@ -395,7 +395,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER3_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT STR_NAME, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT TR_NAME, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER3_MINUTE_BEEP:
@@ -663,7 +663,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
-        lcdDrawTextAlignedLeft(y, TR_INTERNALRF);
+        lcdDrawTextAlignedLeft(y, STR_INTERNALRF);
         break;
 
 #if defined(INTERNAL_MODULE_PPM)
@@ -696,8 +696,7 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
         if (attr) {
-          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, -1, ACCST_RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
-
+          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, ACCST_RF_PROTO_OFF, ACCST_RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
           if (checkIncDec_Ret) {
             g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_PXX_XJT;
             g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;

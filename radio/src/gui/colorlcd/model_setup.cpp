@@ -232,10 +232,10 @@ class ModuleWindow : public Window {
 
       // Module parameters
       if (isModuleXJT(moduleIndex)) {
-        auto xjtChoice = new Choice(this, grid.getFieldSlot(2, 1), STR_XJT_PROTOCOLS, RF_PROTO_OFF, RF_PROTO_LAST,
+        auto xjtChoice = new Choice(this, grid.getFieldSlot(2, 1), STR_ACCST_RF_PROTOCOLS, ACCST_RF_PROTO_OFF, ACCST_RF_PROTO_LAST,
                                     GET_SET_DEFAULT(g_model.moduleData[moduleIndex].rfProtocol));
         xjtChoice->setAvailableHandler([](int index) {
-          return index != RF_PROTO_OFF;
+          return index != ACCST_RF_PROTO_OFF;
         });
       }
 
@@ -430,7 +430,7 @@ class ModuleWindow : public Window {
                 // TODO PINMAP SCREEN
                 return 0;
             });
-            new TextButton(this, grid.getFieldSlot(2, 1), STR_DEL_BUTTON, [=]() {
+            new TextButton(this, grid.getFieldSlot(2, 1), STR_DELETE, [=]() {
                 // TODO pxx2DeleteReceiver(moduleIndex, receiverCount);
                 update();
                 failSafeChoice->setFocus(); // TODO lazy
@@ -461,7 +461,7 @@ class ModuleWindow : public Window {
           char label[] = "Receiver X";
           label[sizeof(label) - 2] = '1' + receiverCount;
           new Subtitle(this, grid.getLabelSlot(true), label);
-          auto addButton = new TextButton(this, grid.getFieldSlot(), STR_RXADD_BUTTON);
+          auto addButton = new TextButton(this, grid.getFieldSlot(), "Add");
           addButton->setPressHandler([=]() {
             // TODO pxx2AddReceiver(moduleIndex, receiverCount);
             update();
@@ -580,7 +580,7 @@ void ModelSetupPage::build(FormWindow * window)
     new StaticText(window, grid.getLabelSlot(true), STR_BEEPCOUNTDOWN);
     grid.nextLine();
     new Choice(group, timerGrid.getSlot(2, 0), STR_VBEEPCOUNTDOWN, COUNTDOWN_SILENT, COUNTDOWN_COUNT - 1, GET_SET_DEFAULT(timer->countdownBeep));
-    new Choice(group, timerGrid.getSlot(2, 1), STR_COUNTDOWNVALUES, 0, 3, GET_SET_WITH_OFFSET(timer->countdownStart, 2));
+    new Choice(group, timerGrid.getSlot(2, 1), STR_VBEEPCOUNTDOWN, 0, 3, GET_SET_WITH_OFFSET(timer->countdownStart, 2));
     timerGrid.nextLine();
 
     // Timer persistent
@@ -669,14 +669,14 @@ void ModelSetupPage::build(FormWindow * window)
       if (i > 0 && (i % 3) == 0)
         switchesGrid.nextLine();
       auto button = new TextButton(group, switchesGrid.getSlot(3, i % 3), getSwitchWarningString(s, i), nullptr,
-                                   (BF_GET(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
+                                   (bfGet(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
       button->setPressHandler([button, i] {
-        swarnstate_t newstate = BF_GET(g_model.switchWarningState, 3 * i, 3);
+        swarnstate_t newstate = bfGet(g_model.switchWarningState, 3 * i, 3);
         if (newstate == 1 && SWITCH_CONFIG(i) != SWITCH_3POS)
           newstate = 3;
         else
           newstate = (newstate + 1) % 4;
-        BF_SET(g_model.switchWarningState, newstate, 3 * i, 3);
+        bfSet(g_model.switchWarningState, newstate, 3 * i, 3);
         SET_DIRTY();
         button->setText(getSwitchWarningString(i));
         return newstate > 0;
@@ -701,11 +701,11 @@ void ModelSetupPage::build(FormWindow * window)
 
       auto button = new TextButton(group, centerGrid.getSlot(3, i % 3), getStringAtIndex(s, STR_RETA123, i),
                      [=]() -> uint8_t {
-                       BF_BIT_FLIP(g_model.beepANACenter, BF_BIT<BeepANACenter>(i));
+                       BFBIT_FLIP(g_model.beepANACenter, bfBit<BeepANACenter>(i));
                        SET_DIRTY();
-                       return BF_SINGLE_BIT_GET<BeepANACenter>(g_model.beepANACenter, i);
+                       return bfSingleBitGet<BeepANACenter>(g_model.beepANACenter, i);
                      },
-                     BF_SINGLE_BIT_GET(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
+                                   bfSingleBitGet(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
       if (i == 0)
         group->setFirstField(button);
       else if (i == NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1)
@@ -721,14 +721,14 @@ void ModelSetupPage::build(FormWindow * window)
 
   // Internal module
   {
-    new Subtitle(window, grid.getLineSlot(), STR_INTERNALRF);
+    new Subtitle(window, grid.getLineSlot(), TR_INTERNALRF);
     grid.nextLine();
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, INTERNAL_MODULE));
   }
 
   // External module
   {
-    new Subtitle(window, grid.getLineSlot(), STR_EXTERNALRF);
+    new Subtitle(window, grid.getLineSlot(), TR_EXTERNALRF);
     grid.nextLine();
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, EXTERNAL_MODULE));
   }
