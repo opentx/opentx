@@ -285,7 +285,7 @@ enum EnumSwitches
   NUM_SWITCHES
 };
 
-#define STORAGE_NUM_SWITCHES           10
+#define STORAGE_NUM_SWITCHES           NUM_SWITCHES
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
 enum EnumSwitchesPositions
@@ -320,12 +320,12 @@ enum EnumSwitchesPositions
   SW_SGMBR0,
   SW_SGMBR1,
   SW_SGMBR2,
-  NUM_SWITCHES_POSITIONS
+  STORAGE_NUM_SWITCHES_POSITIONS
 };
 
 
 #if defined(__cplusplus)
-static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+static_assert(STORAGE_NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
 #endif
 
 void keysInit(void);
