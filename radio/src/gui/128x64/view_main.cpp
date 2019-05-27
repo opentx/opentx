@@ -493,12 +493,13 @@ void menuMainView(event_t event)
         }
       }
 #elif defined(PCBTARANIS)
-      for (int i=0; i<NUM_SWITCHES; ++i) {
+      uint8_t switches = min(NUM_SWITCHES, 6);
+      for (int i=0; i<switches; ++i) {
         if (SWITCH_EXISTS(i)) {
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
-          if (i >= NUM_SWITCHES/2) {
+          if (i >= switches/2) {
             x = 16*FW+1;
-            y -= (NUM_SWITCHES/2)*FH;
+            y -= (switches/2)*FH;
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
           getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
