@@ -532,9 +532,12 @@ bool isR9MModeAvailable(int mode)
 }
 #endif
 
-bool isPXX2ChannelsCountAllowed(int channels)
+bool isPxx2IsrmChannelsCountAllowed(int channels)
 {
-  return (channels % 8 == 0);
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D16)
+    return (channels <= 8);
+  else
+    return (channels % 8 == 0);
 }
 
 bool isModuleUSingSport(uint8_t moduleBay, uint8_t moduleType)

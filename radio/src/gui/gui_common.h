@@ -54,7 +54,7 @@ bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isR9MModeAvailable(int mode);
-bool isPXX2ChannelsCountAllowed(int channels);
+bool isPxx2IsrmChannelsCountAllowed(int channels);
 bool isExternalModuleAvailable(int moduleType);
 bool isInternalModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
