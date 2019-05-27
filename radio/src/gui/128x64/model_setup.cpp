@@ -1021,7 +1021,7 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE: {
         lcdDrawTextAlignedLeft(y, STR_MODE);
-#if defined(INTERNAL_MODULE_PXX1)
+#if defined(PXX1)
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(INTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
