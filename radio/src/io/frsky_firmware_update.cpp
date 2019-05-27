@@ -452,10 +452,10 @@ const char * FrskyChipFirmwareUpdate::startBootloader()
   return status == 0x08 ? nullptr : "Bootloader failed";
 }
 
-void FrskyChipFirmwareUpdate::sendByte(uint8_t byte, bool crc)
+void FrskyChipFirmwareUpdate::sendByte(uint8_t byte, bool crcFlag)
 {
   sportSendByte(byte);
-  if (crc) {
+  if (crcFlag) {
     crc ^= byte;
   }
 }
