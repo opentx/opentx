@@ -154,10 +154,12 @@ inline bool isModuleRFAccess(uint8_t idx)
   if (isModuleXJT2(idx)) {
     return g_model.moduleData[idx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
   }
-  else if (isModuleR9M2(idx))
-    return true;
-  else
+  else if (isModuleR9M2(idx)) {
+    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_PXX2_ACCESS;
+  }
+  else {
     return false;
+  }
 }
 
 #if defined(DSM2)
