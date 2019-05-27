@@ -290,6 +290,15 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
     return "Error opening file";
   }
 
+  const char * ext = getFileExtension(filename);
+  if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+    FrSkyFirmwareInformation *information = (FrSkyFirmwareInformation *) buffer;
+    if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+      f_close(&file);
+      return "Format error";
+    }
+  }
+
   waitState(SPORT_IDLE, 200); // Clear the fifo
   state = SPORT_DATA_TRANSFER;
   startFrame(PRIM_CMD_DOWNLOAD);
