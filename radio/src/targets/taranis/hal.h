@@ -136,14 +136,6 @@
   #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource12
 #endif
 
-// This is for SIMU: reuse rotary encoder pins to map UP and DOWN keyboard keys
-#if defined(SIMU) && defined(ROTARY_ENCODER_NAVIGATION)
-  #define KEYS_GPIO_REG_PLUS            ROTARY_ENCODER_GPIO->IDR
-  #define KEYS_GPIO_PIN_PLUS            ROTARY_ENCODER_GPIO_PIN_A
-  #define KEYS_GPIO_REG_MINUS           ROTARY_ENCODER_GPIO->IDR
-  #define KEYS_GPIO_PIN_MINUS           ROTARY_ENCODER_GPIO_PIN_B
-#endif
-
 // Trims
 #if defined(PCBX9E)
   #define TRIMS_GPIO_REG_LHL            GPIOG->IDR
