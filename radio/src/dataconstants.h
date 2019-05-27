@@ -421,18 +421,6 @@ enum SwitchSources {
   SWSRC_SJ2,
 #endif
 
-#if defined(HARDWARE_SWITCH_I)
-  SWSRC_SI0,
-  SWSRC_SI1,
-  SWSRC_SI2,
-#endif
-
-#if defined(HARDWARE_SWITCH_J)
-  SWSRC_SJ0,
-  SWSRC_SJ1,
-  SWSRC_SJ2,
-#endif
-
 #if defined(HARDWARE_SWITCH_K)
   SWSRC_SK0,
   SWSRC_SK1,
