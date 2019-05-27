@@ -58,11 +58,19 @@ enum menuRadioHwItems {
 #if defined(USEHORUSBT)
   CASE_BLUETOOTH(ITEM_RADIO_HARDWARE_BLUETOOTH_NAME)
 #endif
+#if defined(SERIAL2)
   ITEM_RADIO_HARDWARE_UART3_MODE,
+#endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
+
+#if defined(SERIAL2)
+  #define AUX_SERIAL_ROWS 0,
+#else
+  #define AUX_SERIAL_ROWS
+#endif
 
 #define HW_SETTINGS_COLUMN 15*FW
 
@@ -91,7 +99,7 @@ enum menuRadioHwItems {
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0, 1 });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS AUX_SERIAL_ROWS 1 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -225,12 +233,14 @@ void menuRadioHardware(event_t event)
 #endif
 #endif
 
+#if defined(SERIAL2)
       case ITEM_RADIO_HARDWARE_UART3_MODE:
         g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
         }
         break;
+#endif
 
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:
       {
