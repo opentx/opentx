@@ -807,7 +807,13 @@
   #define PWR_ON_GPIO_PIN               GPIO_Pin_0  // PD.00
 #endif
 
-#if defined(PCBXLITE)
+#if defined(PCBX9DP) && PCBREV >= 2019
+  #define STATUS_LEDS
+  #define GPIO_LED_GPIO_ON              GPIO_ResetBits
+  #define GPIO_LED_GPIO_OFF             GPIO_SetBits
+  #define LED_GREEN_GPIO                GPIOA
+  #define LED_GREEN_GPIO_PIN            GPIO_Pin_13 // PA.13
+#elif defined(PCBXLITE)
   #define STATUS_LEDS
   #define GPIO_LED_GPIO_ON              GPIO_ResetBits
   #define GPIO_LED_GPIO_OFF             GPIO_SetBits
@@ -1532,7 +1538,7 @@
   #define HAPTIC_GPIO_PinSource         GPIO_PinSource10
   #define HAPTIC_GPIO                   GPIOA
   #define HAPTIC_GPIO_PIN               GPIO_Pin_10 // PA.10
-  #define HAPTIC_GPIO_AF                GPIO_AF_TIM10
+  #define HAPTIC_GPIO_AF                GPIO_AF_TIM1
   #define HAPTIC_TIMER                  TIM1
   #define HAPTIC_TIMER_FREQ             (PERI2_FREQUENCY * TIMER_MULT_APB2)
   #define HAPTIC_COUNTER_REGISTER       HAPTIC_TIMER->CCR3
