@@ -540,6 +540,11 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
   else
     return (channels % 8 == 0);
 }
+#else
+bool isPxx2IsrmChannelsCountAllowed(int channels)
+{
+  return true;
+}
 #endif
 
 bool isModuleUSingSport(uint8_t moduleBay, uint8_t moduleType)
