@@ -285,7 +285,7 @@ enum EnumSwitches
   NUM_SWITCHES
 };
 
-#define STORAGE_NUM_SWITCHES           10
+#define STORAGE_NUM_SWITCHES           NUM_SWITCHES
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
 enum EnumSwitchesPositions

@@ -443,26 +443,26 @@ enum EnumSwitchesPositions
 };
 
 #if defined(PCBXLITES)
-  #define STORAGE_NUM_SWITCHES          6
   #define NUM_SWITCHES                  6
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #elif defined(PCBXLITE)
-  #define STORAGE_NUM_SWITCHES          6
   #define NUM_SWITCHES                  4
+  #define STORAGE_NUM_SWITCHES          6
 #elif defined(PCBT12)
-  #define STORAGE_NUM_SWITCHES          8
   #define NUM_SWITCHES                  6
+  #define STORAGE_NUM_SWITCHES          8
 #elif defined(PCBX7)
-  #define STORAGE_NUM_SWITCHES          8
   #define NUM_SWITCHES                  8
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #elif defined(PCBX9LITE)
-  #define STORAGE_NUM_SWITCHES          5
   #define NUM_SWITCHES                  5
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #elif defined(PCBX9E)
-  #define STORAGE_NUM_SWITCHES          18
   #define NUM_SWITCHES                  18 // yes, it's perfect like that !
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #else
-  #define STORAGE_NUM_SWITCHES          8
   #define NUM_SWITCHES                  8
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #endif
 
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
