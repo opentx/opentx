@@ -732,7 +732,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
     return result;
   }
 
-  uint32_t size = min<uint32_t>(CC26XX_FIRMWARE_SIZE, information->size);
+  uint32_t size = information->size;
   drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, 0, size);
 
   result = bootloaderStartWriteFlash(CC26XX_FIRMWARE_BASE, size);
