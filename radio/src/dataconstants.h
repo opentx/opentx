@@ -370,112 +370,121 @@ enum SwitchSources {
 
   SWSRC_FIRST_SWITCH,
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(STORAGE_SWITCH_A)
   SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,
+#endif
+
+#if defined(STORAGE_SWITCH_B)
   SWSRC_SB0,
   SWSRC_SB1,
   SWSRC_SB2,
+#endif
+
+#if defined(STORAGE_SWITCH_C)
   SWSRC_SC0,
   SWSRC_SC1,
   SWSRC_SC2,
+#endif
+
+#if defined(STORAGE_SWITCH_D)
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
 #endif
 
-#if defined(HARDWARE_SWITCH_E)
+#if defined(STORAGE_SWITCH_E)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
 #endif
 
-#if defined(HARDWARE_SWITCH_F)
+#if defined(STORAGE_SWITCH_F)
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
 #endif
 
-#if defined(HARDWARE_SWITCH_G)
+#if defined(STORAGE_SWITCH_G)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
 #endif
 
-#if defined(HARDWARE_SWITCH_H)
+#if defined(STORAGE_SWITCH_H)
   SWSRC_SH0,
   SWSRC_SH1,
   SWSRC_SH2,
 #endif
 
-#if defined(HARDWARE_SWITCH_I)
+#if defined(STORAGE_SWITCH_I)
   SWSRC_SI0,
   SWSRC_SI1,
   SWSRC_SI2,
 #endif
 
-#if defined(HARDWARE_SWITCH_J)
+#if defined(STORAGE_SWITCH_J)
   SWSRC_SJ0,
   SWSRC_SJ1,
   SWSRC_SJ2,
 #endif
 
-#if defined(HARDWARE_SWITCH_K)
+#if defined(STORAGE_SWITCH_K)
   SWSRC_SK0,
   SWSRC_SK1,
   SWSRC_SK2,
 #endif
 
-#if defined(HARDWARE_SWITCH_L)
+#if defined(STORAGE_SWITCH_L)
   SWSRC_SL0,
   SWSRC_SL1,
   SWSRC_SL2,
 #endif
 
-#if defined(HARDWARE_SWITCH_M)
+#if defined(STORAGE_SWITCH_M)
   SWSRC_SM0,
   SWSRC_SM1,
   SWSRC_SM2,
 #endif
 
-#if defined(HARDWARE_SWITCH_N)
+#if defined(STORAGE_SWITCH_N)
   SWSRC_SN0,
   SWSRC_SN1,
   SWSRC_SN2,
 #endif
 
-#if defined(HARDWARE_SWITCH_O)
+#if defined(STORAGE_SWITCH_O)
   SWSRC_SO0,
   SWSRC_SO1,
   SWSRC_SO2,
 #endif
 
-#if defined(HARDWARE_SWITCH_P)
+#if defined(STORAGE_SWITCH_P)
   SWSRC_SP0,
   SWSRC_SP1,
   SWSRC_SP2,
 #endif
 
-#if defined(HARDWARE_SWITCH_Q)
+#if defined(STORAGE_SWITCH_Q)
   SWSRC_SQ0,
   SWSRC_SQ1,
   SWSRC_SQ2,
 #endif
 
-#if defined(HARDWARE_SWITCH_R)
+#if defined(STORAGE_SWITCH_R)
   SWSRC_SR0,
   SWSRC_SR1,
   SWSRC_SR2,
 #endif
 
-#if defined(HARDWARE_SWITCH_GMBL)
+#if defined(STORAGE_SWITCH_GMBL)
   SWSRC_GMBL0,
   SWSRC_GMBL1,
   SWSRC_GMBL2,
 #endif
 
-#if defined(HARDWARE_SWITCH_GMBR)
+#if defined(STORAGE_SWITCH_GMBR)
   SWSRC_GMBR0,
   SWSRC_GMBR1,
   SWSRC_GMBR2,
@@ -494,7 +503,7 @@ enum SwitchSources {
   SWSRC_TRAINER = SWSRC_TRN,
   SWSRC_LAST_SWITCH = SWSRC_TRN,
 #else
-  SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + NUM_SWITCHES_POSITIONS - 1,
+  SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES_POSITIONS - 1,
 #endif
 
 #if NUM_XPOTS > 0

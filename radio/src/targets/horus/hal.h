@@ -67,54 +67,66 @@
 #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource10
 
 // Switches
+#define STORAGE_SWITCH_A
 #define HARDWARE_SWITCH_A
 #define SWITCHES_GPIO_REG_A_H           GPIOH->IDR
 #define SWITCHES_GPIO_PIN_A_H           GPIO_Pin_9  // PH.09
 #define SWITCHES_GPIO_REG_A_L           GPIOI->IDR
 #define SWITCHES_GPIO_PIN_A_L           GPIO_Pin_15 // PI.15
+#define STORAGE_SWITCH_B
 #define HARDWARE_SWITCH_B
 #define SWITCHES_GPIO_REG_B_H           GPIOH->IDR
 #define SWITCHES_GPIO_PIN_B_H           GPIO_Pin_12 // PH.12
 #define SWITCHES_GPIO_REG_B_L           GPIOB->IDR
 #define SWITCHES_GPIO_PIN_B_L           GPIO_Pin_12 // PB.12
+#define STORAGE_SWITCH_C
 #define HARDWARE_SWITCH_C
 #define SWITCHES_GPIO_REG_C_H           GPIOD->IDR
 #define SWITCHES_GPIO_PIN_C_H           GPIO_Pin_11 // PD.11
 #define SWITCHES_GPIO_REG_C_L           GPIOB->IDR
 #define SWITCHES_GPIO_PIN_C_L           GPIO_Pin_15 // PB.15
+#define STORAGE_SWITCH_D
 #define HARDWARE_SWITCH_D
 #define SWITCHES_GPIO_REG_D_H           GPIOJ->IDR
 #define SWITCHES_GPIO_PIN_D_H           GPIO_Pin_7  // PJ.07
 #define SWITCHES_GPIO_REG_D_L           GPIOG->IDR
 #define SWITCHES_GPIO_PIN_D_L           GPIO_Pin_2  // PG.02
+#define STORAGE_SWITCH_E
 #define HARDWARE_SWITCH_E
 #define SWITCHES_GPIO_REG_E_H           GPIOH->IDR
 #define SWITCHES_GPIO_PIN_E_H           GPIO_Pin_4  // PH.04
 #define SWITCHES_GPIO_REG_E_L           GPIOE->IDR
 #define SWITCHES_GPIO_PIN_E_L           GPIO_Pin_3  // PE.03
+#define STORAGE_SWITCH_F
 #define HARDWARE_SWITCH_F
 #define SWITCHES_GPIO_REG_F             GPIOH->IDR
 #define SWITCHES_GPIO_PIN_F             GPIO_Pin_3  // PH.03
+#define STORAGE_SWITCH_G
 #define HARDWARE_SWITCH_G
 #define SWITCHES_GPIO_REG_G_H           GPIOG->IDR
 #define SWITCHES_GPIO_PIN_G_H           GPIO_Pin_6  // PG.06
 #define SWITCHES_GPIO_REG_G_L           GPIOG->IDR
 #define SWITCHES_GPIO_PIN_G_L           GPIO_Pin_3  // PG.03
+#define STORAGE_SWITCH_H
 #define HARDWARE_SWITCH_H
 #define SWITCHES_GPIO_REG_H             GPIOG->IDR
 #define SWITCHES_GPIO_PIN_H             GPIO_Pin_7  // PG.07
 
 #if defined(PCBX10)
+  #define STORAGE_SWITCH_GMBL
   #define HARDWARE_SWITCH_GMBL
   #define SWITCHES_GPIO_REG_GMBL        GPIOH->IDR
   #define SWITCHES_GPIO_PIN_GMBL        GPIO_Pin_14 // PH.14
+  #define STORAGE_SWITCH_GMBR
   #define HARDWARE_SWITCH_GMBR
   #define SWITCHES_GPIO_REG_GMBR        GPIOH->IDR
   #define SWITCHES_GPIO_PIN_GMBR        GPIO_Pin_15 // PH.15
 #elif defined(PCBX12S)
+  #define STORAGE_SWITCH_GMBL
   #define HARDWARE_SWITCH_GMBL
   #define SWITCHES_GPIO_REG_GMBL        GPIOB->IDR
   #define SWITCHES_GPIO_PIN_GMBL        GPIO_Pin_1 // PB.01
+  #define STORAGE_SWITCH_GMBR
   #define HARDWARE_SWITCH_GMBR
   #define SWITCHES_GPIO_REG_GMBR        GPIOB->IDR
   #define SWITCHES_GPIO_PIN_GMBR        GPIO_Pin_0 // PB.00
