@@ -50,7 +50,7 @@ const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInforma
   uint32_t size = f_size(&file);
   f_close(&file);
 
-  if (data.fourcc != 0x4B535246) {
+  if (data.headerVersion != 1 && data.fourcc != 0x4B535246) {
     return "Wrong format";
   }
 

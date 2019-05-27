@@ -35,13 +35,13 @@ enum FrskyFirmwareProductFamily {
 
 PACK(struct FrSkyFirmwareInformation {
   uint32_t fourcc;
+  uint8_t headerVersion;
+  uint8_t firmwareVersionMajor;
+  uint8_t firmwareVersionMinor;
+  uint8_t firmwareVersionRevision;
   uint32_t size;
   uint8_t productFamily;
   uint8_t productId;
-  uint8_t versionMajor;
-  uint8_t versionMinor;
-  uint8_t versionRevision;
-  uint8_t spare;
   uint16_t crc;
 });
 
