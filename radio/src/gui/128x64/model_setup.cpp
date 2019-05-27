@@ -142,12 +142,6 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_LINES_COUNT
 };
 
-#if defined(PCBSKY9X)
-  #define FIELD_PROTOCOL_MAX             2
-#else
-  #define FIELD_PROTOCOL_MAX             1
-#endif
-
 #define MODEL_SETUP_2ND_COLUMN           (LCD_W-11*FW)
 #define MODEL_SETUP_BIND_OFS             2*FW+1
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
