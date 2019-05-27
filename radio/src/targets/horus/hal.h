@@ -107,10 +107,17 @@
 #if defined(PCBX10)
   #define HARDWARE_SWITCH_GMBL
   #define SWITCHES_GPIO_REG_GMBL        GPIOH->IDR
-  #define SWITCHES_GPIO_PIN_GMBL        GPIO_Pin_14
+  #define SWITCHES_GPIO_PIN_GMBL        GPIO_Pin_14 // PH.14
   #define HARDWARE_SWITCH_GMBR
   #define SWITCHES_GPIO_REG_GMBR        GPIOH->IDR
-  #define SWITCHES_GPIO_PIN_GMBR        GPIO_Pin_15
+  #define SWITCHES_GPIO_PIN_GMBR        GPIO_Pin_15 // PH.15
+#elif defined(PCBX12S)
+  #define HARDWARE_SWITCH_GMBL
+  #define SWITCHES_GPIO_REG_GMBL        GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_GMBL        GPIO_Pin_1 // PB.01
+  #define HARDWARE_SWITCH_GMBR
+  #define SWITCHES_GPIO_REG_GMBR        GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_GMBR        GPIO_Pin_0 // PB.00
 #endif
 
 // Trims
