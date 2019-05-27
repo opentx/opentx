@@ -26,7 +26,7 @@
 #include "pulses_common.h"
 #include "pulses/pxx1.h"
 #include "pulses/pxx2.h"
-#include "modules.h"
+#include "modules_helpers.h"
 #include "ff.h"
 
 #if NUM_MODULES > 1
@@ -415,5 +415,5 @@ enum R9MLBTPowerValues {
 };
 
 #define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_R9M) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
+#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX1_R9M) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
 #endif // _PULSES_H_

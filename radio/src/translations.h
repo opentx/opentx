@@ -161,7 +161,8 @@ extern const char STR_R9M_LITE_FCC_POWER_VALUES[];
 extern const char STR_R9M_LITE_LBT_POWER_VALUES[];
 extern const char STR_TELEMETRY_PROTOCOLS[];
 extern const char STR_ACCST_RF_PROTOCOLS[];
-extern const char STR_ACCESS_RF_PROTOCOLS[];
+extern const char STR_ISRM_PXX2_RF_PROTOCOLS[];
+extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 
 #if defined(MULTIMODULE)

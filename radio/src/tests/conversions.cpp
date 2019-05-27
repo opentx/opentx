@@ -47,7 +47,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_EQ(SWASH_TYPE_120X, g_model.swashR.type);
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
-  EXPECT_EQ(MODULE_TYPE_PXX_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
+  EXPECT_EQ(MODULE_TYPE_PXX1_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
   EXPECT_EQ(MODULE_SUBTYPE_R9M_FCC, g_model.moduleData[EXTERNAL_MODULE].subType);
   EXPECT_ZSTREQ("Thr", g_model.inputNames[0]);
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
@@ -66,7 +66,7 @@ TEST(Conversions, ConversionX7From22)
   eeLoadModel(0);
 
   EXPECT_ZSTREQ("Test", g_model.header.name);
-  EXPECT_EQ(MODULE_TYPE_PXX_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
+  EXPECT_EQ(MODULE_TYPE_PXX1_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
   EXPECT_EQ(MODULE_SUBTYPE_R9M_EU, g_model.moduleData[EXTERNAL_MODULE].subType);
   EXPECT_EQ(80, g_model.mixData[0].weight);
   EXPECT_EQ(80, g_model.expoData[0].weight);
@@ -111,7 +111,7 @@ TEST(Conversions, ConversionHorusFrom22)
   EXPECT_ZSTREQ("Tes", g_model.flightModeData[0].name);
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
-  EXPECT_EQ(MODULE_TYPE_PXX_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
+  EXPECT_EQ(MODULE_TYPE_PXX1_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
   EXPECT_EQ(MODULE_SUBTYPE_R9M_EU, g_model.moduleData[EXTERNAL_MODULE].subType);
   EXPECT_ZSTREQ("Rud", g_model.inputNames[0]);
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);

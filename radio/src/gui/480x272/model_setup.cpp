@@ -941,9 +941,9 @@ bool menuModelSetup(event_t event)
             }
           }
           else if (isModuleXJT(INTERNAL_MODULE)) {
-            g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, ACCST_RF_PROTO_D16, ACCST_RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+            g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, MODULE_SUBTYPE_PXX1_ACCST_D16, MODULE_SUBTYPE_PXX1_LAST, EE_MODEL, isRfProtocolAvailable);
             if (checkIncDec_Ret) {
-              g_model.moduleData[0].type = MODULE_TYPE_PXX_XJT;
+              g_model.moduleData[0].type = MODULE_TYPE_PXX1_XJT;
               g_model.moduleData[0].channelsStart = 0;
               g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
             }
@@ -1161,15 +1161,15 @@ bool menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
 #if defined(MULTIMODULE)
               else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-                int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MM_RF_PROTO_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
-                CHECK_INCDEC_MODELVAR(event, multiRfProto, MM_RF_PROTO_FIRST, MM_RF_PROTO_LAST);
+                int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
+                CHECK_INCDEC_MODELVAR(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST);
                 if (checkIncDec_Ret) {
-                  g_model.moduleData[EXTERNAL_MODULE].multi.customProto = (multiRfProto == MM_RF_PROTO_CUSTOM);
+                  g_model.moduleData[EXTERNAL_MODULE].multi.customProto = (multiRfProto == MODULE_SUBTYPE_MULTI_CUSTOM);
                   if (!g_model.moduleData[EXTERNAL_MODULE].multi.customProto)
                     g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
                   g_model.moduleData[EXTERNAL_MODULE].subType = 0;
                   // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                  if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2) {
+                  if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
                     g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 1;
                   }
                   else {
@@ -1189,7 +1189,7 @@ bool menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].subType = newR9MType;
               }
               else {
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, ACCST_RF_PROTO_D16, ACCST_RF_PROTO_LAST);
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, MODULE_SUBTYPE_PXX1_ACCST_D16, MODULE_SUBTYPE_PXX1_LAST);
               }
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
@@ -1394,7 +1394,7 @@ bool menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == ACCST_RF_PROTO_D16)) {
+                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D16)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
                       uint8_t default_selection = 0; // R9M_LBT should default to 0 as available options are variables
                       if (isModuleR9M_LBT(moduleIdx)) {
@@ -1501,15 +1501,15 @@ bool menuModelSetup(event_t event)
           if (pdef->optionsstr)
             lcdDrawText(MENUS_MARGIN_LEFT, y, pdef->optionsstr);
 
-          if (multi_proto == MM_RF_PROTO_FS_AFHDS2A)
+          if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
             optionValue = 50 + 5 * optionValue;
 
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
           if (attr) {
-            if (multi_proto == MM_RF_PROTO_FS_AFHDS2A) {
+            if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 70);
             }
-            else if (multi_proto == MM_RF_PROTO_OLRS) {
+            else if (multi_proto == MODULE_SUBTYPE_MULTI_OLRS) {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -1, 7);
             }
             else {
@@ -1559,7 +1559,7 @@ bool menuModelSetup(event_t event)
 
 #if defined(MULTIMODULE)
     case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:
-      if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2)
+      if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_DSM_AUTODTECT);
       else
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_AUTOBIND);
