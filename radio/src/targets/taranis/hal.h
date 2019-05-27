@@ -269,7 +269,7 @@
   #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_5  // PA.05
 #elif defined(PCBX7)
   #define STORAGE_SWITCH_B
-#define HARDWARE_SWITCH_B
+  #define HARDWARE_SWITCH_B
   #define SWITCHES_GPIO_REG_B_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_15 // PE.15
   #define SWITCHES_GPIO_REG_B_H         GPIOA->IDR
@@ -427,7 +427,7 @@
   // no SWG
 #elif defined(RADIO_T12)
   #define STORAGE_SWITCH_G
-#define HARDWARE_SWITCH_G
+  #define HARDWARE_SWITCH_G
   #define SWITCHES_GPIO_REG_G           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_G           GPIO_Pin_14 // PE.14
 #else
@@ -453,7 +453,7 @@
   // no SWH
 #elif defined(PCBX7)
   #define STORAGE_SWITCH_H
-#define HARDWARE_SWITCH_H
+  #define HARDWARE_SWITCH_H
   #define SWITCHES_GPIO_REG_H           GPIOD->IDR
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_14 // PD.14
 #else
@@ -466,9 +466,9 @@
 // X7 P400 P401 headers additionnal momentary switches
 #if defined(PCBX7)
   #define STORAGE_SWITCH_I
-#define HARDWARE_SWITCH_I
+  #define HARDWARE_SWITCH_I
   #define STORAGE_SWITCH_J
-#define HARDWARE_SWITCH_J
+  #define HARDWARE_SWITCH_J
   #define SWITCHES_GPIO_REG_I           GPIOC->IDR
   #define SWITCHES_GPIO_PIN_I           GPIO_Pin_13  //PC.13
   #define SWITCHES_GPIO_REG_J           GPIOC->IDR
@@ -477,7 +477,7 @@
 
 #if defined(PCBX9E)
   #define STORAGE_SWITCH_I
-#define HARDWARE_SWITCH_I
+  #define HARDWARE_SWITCH_I
   #define SWITCHES_GPIO_REG_I_H         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_I_H         GPIO_Pin_15 // PF.15
   #define SWITCHES_GPIO_REG_I_L         GPIOE->IDR
