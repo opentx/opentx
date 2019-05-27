@@ -383,6 +383,7 @@
   #define SWITCHES_GPIO_REG_F           GPIOA->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_5  // PA.05
 #else
+  #define HARDWARE_SWITCH_F
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14
 #endif
