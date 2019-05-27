@@ -220,7 +220,21 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
   }
 }
 
-void Pxx2Pulses::setupBindFrame(uint8_t module)
+void Pxx2Pulses::setupAccstBindFrame(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
+  Pxx2Transport::addByte(0x01); // DATA0
+  for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+    Pxx2Transport::addByte(0x00);
+  }
+  if (g_model.moduleData[module].type == MODULE_TYPE_PXX2_ISRM)
+    Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiver_telem_off << 7) + (g_model.moduleData[module].pxx.receiver_telem_off << 6));
+  else
+    Pxx2Transport::addByte(0x00);
+  Pxx2Transport::addByte(g_model.header.modelId[module]);
+}
+
+void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
 {
   BindInformation * destination = moduleState[module].bindInformation;
 
@@ -236,13 +250,13 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
   if (destination->step == BIND_INFO_REQUEST) {
-    Pxx2Transport::addByte(0x02);
+    Pxx2Transport::addByte(0x02); // DATA0
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
   }
   else if (destination->step == BIND_START) {
-    Pxx2Transport::addByte(0x01);
+    Pxx2Transport::addByte(0x01); // DATA0
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
@@ -250,7 +264,7 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
-    Pxx2Transport::addByte(0x00);
+    Pxx2Transport::addByte(0x00); // DATA0
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
       Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
@@ -343,7 +357,10 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupRegisterFrame(module);
       break;
     case MODULE_MODE_BIND:
-      setupBindFrame(module);
+      if (g_model.moduleData[module].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS || g_model.moduleData[module].subType == MODULE_SUBTYPE_R9M_PXX2_ACCESS)
+        setupAccessBindFrame(module);
+      else
+        setupAccstBindFrame(module);
       break;
     case MODULE_MODE_RESET:
       setupResetFrame(module);
