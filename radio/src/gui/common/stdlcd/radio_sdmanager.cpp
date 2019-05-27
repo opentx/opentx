@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "io/frsky_device_firmware_update.h"
+#include "io/frsky_firmware_update.h"
 
 #define REFRESH_FILES()        do { reusableBuffer.sdManager.offset = 65535; menuVerticalPosition = 0; } while(0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
@@ -186,24 +186,31 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(INTERNAL_MODULE);
-    device.flashFile(lfn);
+    FrskyDeviceFirmwareUpdate device(INTERNAL_MODULE);
+    device.flashFirmware(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashFile(lfn);
+    FrskyDeviceFirmwareUpdate device(EXTERNAL_MODULE);
+    device.flashFirmware(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(SPORT_MODULE);
-    device.flashFile(lfn);
+    FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
+    device.flashFirmware(lfn);
   }
 #if defined(BLUETOOTH)
   else if (result == STR_FLASH_BLUETOOTH_MODULE) {
     getSelectionFullPath(lfn);
     bluetooth.flashFirmware(lfn);
+  }
+#endif
+#if defined(HARDWARE_POWER_CONTROL_CHIP)
+  else if (result == STR_FLASH_POWER_CONTROL_CHIP) {
+    getSelectionFullPath(lfn);
+    FrskyChipFirmwareUpdate device;
+    device.flashFirmware(lfn);
   }
 #endif
 #if defined(PXX2)
@@ -354,14 +361,29 @@ void menuRadioSdManager(event_t _event)
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
-#if defined(PXX2)
-            POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA);
-#endif
           }
+          else if (!READ_ONLY() && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+            FrSkyFirmwareInformation information;
+            if (readFirmwareInformation(line, information) == nullptr) {
+              if (information.productFamily == FIRMWARE_FAMILY_INTERNAL_MODULE)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+              if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
+              if (HAS_SPORT_UPDATE_CONNECTOR() && (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR))
+                POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+#if defined(PXX2)
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA);
 #endif
 #if defined(BLUETOOTH)
-          if (!READ_ONLY() && !strcasecmp(ext, BLUETOOTH_FIRMWARE_EXT)) {
-            POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
+              if (information.productFamily == FIRMWARE_FAMILY_BLUETOOTH_CHIP)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
+#endif
+#if defined(HARDWARE_POWER_CONTROL_CHIP)
+              if (information.productFamily == FIRMWARE_FAMILY_POWER_CONTROL_CHIP)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_POWER_CONTROL_CHIP);
+#endif
+            }
           }
 #endif
         }

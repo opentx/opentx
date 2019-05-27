@@ -18,13 +18,36 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
-#define _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
+#ifndef _FRSKY_FIRMWARE_UPDATE_H_
+#define _FRSKY_FIRMWARE_UPDATE_H_
 
 #include "dataconstants.h"
 #include "frsky_pxx2.h"
 
-class DeviceFirmwareUpdate {
+enum FrskyFirmwareProductFamily {
+  FIRMWARE_FAMILY_INTERNAL_MODULE,
+  FIRMWARE_FAMILY_EXTERNAL_MODULE,
+  FIRMWARE_FAMILY_RECEIVER,
+  FIRMWARE_FAMILY_SENSOR,
+  FIRMWARE_FAMILY_BLUETOOTH_CHIP,
+  FIRMWARE_FAMILY_POWER_CONTROL_CHIP,
+};
+
+PACK(struct FrSkyFirmwareInformation {
+  uint32_t fourcc;
+  uint8_t headerVersion;
+  uint8_t firmwareVersionMajor;
+  uint8_t firmwareVersionMinor;
+  uint8_t firmwareVersionRevision;
+  uint32_t size;
+  uint8_t productFamily;
+  uint8_t productId;
+  uint16_t crc;
+});
+
+const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data);
+
+class FrskyDeviceFirmwareUpdate {
     enum State {
       SPORT_IDLE,
       SPORT_POWERUP_REQ,
@@ -38,11 +61,11 @@ class DeviceFirmwareUpdate {
     };
 
   public:
-    DeviceFirmwareUpdate(ModuleIndex module):
+    FrskyDeviceFirmwareUpdate(ModuleIndex module):
       module(module) {
     }
 
-    void flashFile(const char * filename);
+    void flashFirmware(const char * filename);
 
   protected:
     uint8_t state = SPORT_IDLE;
@@ -67,4 +90,24 @@ class DeviceFirmwareUpdate {
     const char * endTransfer();
 };
 
-#endif // _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
+class FrskyChipFirmwareUpdate {
+  public:
+    FrskyChipFirmwareUpdate()
+    {
+    }
+
+    void flashFirmware(const char * filename);
+
+  protected:
+    uint8_t crc;
+
+    void sendByte(uint8_t byte, bool crc = true);
+    const char * waitAnswer(uint8_t & status);
+    const char * startBootloader();
+    const char * sendUpgradeCommand(char command, uint32_t packetsCount);
+    const char * sendUpgradeData(uint8_t index, uint8_t * data);
+
+    const char * doFlashFirmware(const char * filename);
+};
+
+#endif // _FRSKY_FIRMWARE_UPDATE_H_
