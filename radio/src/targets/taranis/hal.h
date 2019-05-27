@@ -223,25 +223,25 @@
 
 // Switches
 #if defined(PCBX9E)
-  #define(HARDWARE_SWITCH_A)
+  #define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_H         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_10 // PD.10
   #define SWITCHES_GPIO_REG_A_L         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_14 // PD.14
 #elif defined(PCBXLITE) || defined(PCBX9LITE)
-  #define(HARDWARE_SWITCH_A)
+  #define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_H       GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_1  // PE.01
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_0  // PE.00
 #elif defined(PCBX7)
-  #define(HARDWARE_SWITCH_A)
+  #define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_7  // PE.07
   #define SWITCHES_GPIO_REG_A_H       GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_13 // PE.13
 #else
-  #define(HARDWARE_SWITCH_A)
+  #define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_H       GPIOB->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_5  // PB.05
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
