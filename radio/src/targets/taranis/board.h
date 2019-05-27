@@ -94,9 +94,8 @@ extern "C" {
 }
 #endif
 
-#if defined(PCBX9E) || defined(RADIO_X7) || defined(PCBX9LITE)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 // Rotary Encoder driver
-#define ROTARY_ENCODER_NAVIGATION
 void rotaryEncoderInit(void);
 void rotaryEncoderCheck(void);
 #endif

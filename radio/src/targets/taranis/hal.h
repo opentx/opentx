@@ -94,6 +94,7 @@
 
 // Rotary Encoder
 #if defined(PCBX9E)
+  #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO           GPIOD
   #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_12 // PD.12
   #define ROTARY_ENCODER_GPIO_PIN_B     GPIO_Pin_13 // PD.13
@@ -106,6 +107,7 @@
   #define ROTARY_ENCODER_EXTI_PinSource1   EXTI_PinSource12
   #define ROTARY_ENCODER_EXTI_PinSource2   EXTI_PinSource13
 #elif defined(RADIO_X7)
+  #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO           GPIOE
   #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_9  // PE.09
   #define ROTARY_ENCODER_GPIO_PIN_B     GPIO_Pin_11 // PE.11
@@ -120,6 +122,7 @@
   #define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource9
   #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource11
 #elif defined(PCBX9LITE)
+  #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO           GPIOE
   #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_10 // PE.10
   #define ROTARY_ENCODER_GPIO_PIN_B     GPIO_Pin_12 // PE.12
