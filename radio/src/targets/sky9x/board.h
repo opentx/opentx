@@ -51,6 +51,8 @@ void rotaryEncoderEnd();
 
 // Keys driver
 #define NUM_SWITCHES                   7
+#define STORAGE_NUM_SWITCHES           NUM_SWITCHES
+
 enum EnumKeys
 {
   KEY_MENU,

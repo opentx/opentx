@@ -441,23 +441,32 @@ enum EnumSwitchesPositions
 #endif
   NUM_SWITCHES_POSITIONS
 };
+
 #if defined(PCBXLITES)
+  #define STORAGE_NUM_SWITCHES          6
   #define NUM_SWITCHES                  6
 #elif defined(PCBXLITE)
+  #define STORAGE_NUM_SWITCHES          6
   #define NUM_SWITCHES                  4
+#elif defined(PCBT12)
+  #define STORAGE_NUM_SWITCHES          8
+  #define NUM_SWITCHES                  6
 #elif defined(PCBX7)
+  #define STORAGE_NUM_SWITCHES          8
   #define NUM_SWITCHES                  8
 #elif defined(PCBX9LITE)
+  #define STORAGE_NUM_SWITCHES          5
   #define NUM_SWITCHES                  5
 #elif defined(PCBX9E)
-  #define NUM_SWITCHES                  18 // yes, it's a lot!
+  #define STORAGE_NUM_SWITCHES          18
+  #define NUM_SWITCHES                  18 // yes, it's perfect like that !
 #else
+  #define STORAGE_NUM_SWITCHES          8
   #define NUM_SWITCHES                  8
 #endif
 
-#if defined(__cplusplus)
-static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
-#endif
+#define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
+#define NUM_SWITCHES_POSITIONS          (NUM_SWITCHES * 3)
 
 void keysInit(void);
 uint8_t keyState(uint8_t index);

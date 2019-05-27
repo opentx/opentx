@@ -223,25 +223,30 @@
 
 // Switches
 #if defined(PCBX9E)
+  #define STORAGE_SWITCH_A
+#define HARDWARE_SWITCH_A
   #define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_H         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_10 // PD.10
   #define SWITCHES_GPIO_REG_A_L         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_14 // PD.14
 #elif defined(PCBXLITE) || defined(PCBX9LITE)
-  #define HARDWARE_SWITCH_A
+  #define STORAGE_SWITCH_A
+#define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_H       GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_1  // PE.01
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_0  // PE.00
 #elif defined(PCBX7)
-  #define HARDWARE_SWITCH_A
+  #define STORAGE_SWITCH_A
+#define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_7  // PE.07
   #define SWITCHES_GPIO_REG_A_H       GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_13 // PE.13
 #else
-  #define HARDWARE_SWITCH_A
+  #define STORAGE_SWITCH_A
+#define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_H       GPIOB->IDR
   #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_5  // PB.05
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
@@ -249,31 +254,36 @@
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_B
+  #define STORAGE_SWITCH_B
+#define HARDWARE_SWITCH_B
   #define SWITCHES_GPIO_REG_B_H         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_11 // PG.11
   #define SWITCHES_GPIO_REG_B_L         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_10 // PG.10
 #elif defined(PCBXLITE)
-  #define HARDWARE_SWITCH_B
+  #define STORAGE_SWITCH_B
+#define HARDWARE_SWITCH_B
   #define SWITCHES_GPIO_REG_B_L         GPIOA->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_6  // PA.06
   #define SWITCHES_GPIO_REG_B_H         GPIOA->IDR
   #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_5  // PA.05
 #elif defined(PCBX7)
-  #define HARDWARE_SWITCH_B
+  #define STORAGE_SWITCH_B
+#define HARDWARE_SWITCH_B
   #define SWITCHES_GPIO_REG_B_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_15 // PE.15
   #define SWITCHES_GPIO_REG_B_H         GPIOA->IDR
   #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_5  // PA.05
 #elif defined(PCBX9LITE)
-  #define HARDWARE_SWITCH_B
+  #define STORAGE_SWITCH_B
+#define HARDWARE_SWITCH_B
   #define SWITCHES_GPIO_REG_B_L         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_4  // PB.04
   #define SWITCHES_GPIO_REG_B_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_5  // PB.05
 #else
-  #define HARDWARE_SWITCH_B
+  #define STORAGE_SWITCH_B
+#define HARDWARE_SWITCH_B
   #define SWITCHES_GPIO_REG_B_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_1  // PE.01
   #define SWITCHES_GPIO_REG_B_L         GPIOE->IDR
@@ -281,25 +291,29 @@
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_C
+  #define STORAGE_SWITCH_C
+#define HARDWARE_SWITCH_C
   #define SWITCHES_GPIO_REG_C_H         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_13 // PF.13
   #define SWITCHES_GPIO_REG_C_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_14 // PF.14
 #elif defined(PCBXLITE) || defined(PCBX9LITE)
-  #define HARDWARE_SWITCH_C
+  #define STORAGE_SWITCH_C
+#define HARDWARE_SWITCH_C
   #define SWITCHES_GPIO_REG_C_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_2  // PE.02
   #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_3  // PE.03
 #elif defined(PCBX7)
-  #define HARDWARE_SWITCH_C
+  #define STORAGE_SWITCH_C
+#define HARDWARE_SWITCH_C
   #define SWITCHES_GPIO_REG_C_L         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_11 // PD.11
   #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_0  // PE.00
 #else
-  #define HARDWARE_SWITCH_C
+  #define STORAGE_SWITCH_C
+#define HARDWARE_SWITCH_C
   #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_15 // PE.15
   #define SWITCHES_GPIO_REG_C_L         GPIOA->IDR
@@ -307,25 +321,29 @@
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_D
+  #define STORAGE_SWITCH_D
+#define HARDWARE_SWITCH_D
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_1  // PE.01
   #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_2  // PE.02
 #elif defined(PCBX9DP)
-  #define HARDWARE_SWITCH_D
+  #define STORAGE_SWITCH_D
+#define HARDWARE_SWITCH_D
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_7  // PE.07
   #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_13 // PE.13
 #elif defined(PCBXLITE)
-  #define HARDWARE_SWITCH_D
+  #define STORAGE_SWITCH_D
+#define HARDWARE_SWITCH_D
   #define SWITCHES_GPIO_REG_D_L         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_4  // PB.04
   #define SWITCHES_GPIO_REG_D_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_5  // PB.05
 #elif defined(PCBX7)
-  #define HARDWARE_SWITCH_D
+  #define STORAGE_SWITCH_D
+#define HARDWARE_SWITCH_D
   #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_1  // PE.01
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
@@ -333,7 +351,8 @@
 #elif defined(PCBX9LITE)
   // no SWD
 #else
-  #define HARDWARE_SWITCH_D
+  #define STORAGE_SWITCH_D
+#define HARDWARE_SWITCH_D
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_7  // PE.07
   #define SWITCHES_GPIO_REG_D_L         GPIOB->IDR
@@ -341,23 +360,27 @@
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_E
+  #define STORAGE_SWITCH_E
+#define HARDWARE_SWITCH_E
   #define SWITCHES_GPIO_REG_E_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_E_H         GPIO_Pin_7  // PE.07
   #define SWITCHES_GPIO_REG_E_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_E_L         GPIO_Pin_13 // PE.13
 #elif defined(PCBXLITES)
-  #define HARDWARE_SWITCH_E
+  #define STORAGE_SWITCH_E
+#define HARDWARE_SWITCH_E
   #define SWITCHES_GPIO_REG_E           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_E           GPIO_Pin_5  // PE.05
 #elif defined(PCBX9LITE)
-  #define HARDWARE_SWITCH_E
+  #define STORAGE_SWITCH_E
+#define HARDWARE_SWITCH_E
   #define SWITCHES_GPIO_REG_E           GPIOC->IDR
   #define SWITCHES_GPIO_PIN_E           GPIO_Pin_13 // PC.13
 #elif defined(PCBX7) || defined(PCBXLITE)
   // no SWE
 #else
-  #define HARDWARE_SWITCH_E
+  #define STORAGE_SWITCH_E
+#define HARDWARE_SWITCH_E
   #define SWITCHES_GPIO_REG_E_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_E_H         GPIO_Pin_3  // PB.03
   #define SWITCHES_GPIO_REG_E_L         GPIOB->IDR
@@ -365,31 +388,37 @@
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_F
+  #define STORAGE_SWITCH_F
+#define HARDWARE_SWITCH_F
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_11 // PE.11
 #elif defined(PCBXLITES)
-  #define HARDWARE_SWITCH_F
+  #define STORAGE_SWITCH_F
+#define HARDWARE_SWITCH_F
   #define SWITCHES_GPIO_REG_F           GPIOC->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_3  // PC.03
 #elif defined(PCBXLITE)
   // no SWF
 #elif defined(PCBX7)
-  #define HARDWARE_SWITCH_F
+  #define STORAGE_SWITCH_F
+#define HARDWARE_SWITCH_F
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14
 #elif defined(PCBX9LITE)
-  #define HARDWARE_SWITCH_F
+  #define STORAGE_SWITCH_F
+#define HARDWARE_SWITCH_F
   #define SWITCHES_GPIO_REG_F           GPIOA->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_5  // PA.05
 #else
-  #define HARDWARE_SWITCH_F
+  #define STORAGE_SWITCH_F
+#define HARDWARE_SWITCH_F
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_G
+  #define STORAGE_SWITCH_G
+#define HARDWARE_SWITCH_G
   #define SWITCHES_GPIO_REG_G_H         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_3  // PF.03
   #define SWITCHES_GPIO_REG_G_L         GPIOF->IDR
@@ -397,11 +426,13 @@
 #elif defined(RADIO_X7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // no SWG
 #elif defined(RADIO_T12)
-  #define HARDWARE_SWITCH_G
+  #define STORAGE_SWITCH_G
+#define HARDWARE_SWITCH_G
   #define SWITCHES_GPIO_REG_G           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_G           GPIO_Pin_14 // PE.14
 #else
-  #define HARDWARE_SWITCH_G
+  #define STORAGE_SWITCH_G
+#define HARDWARE_SWITCH_G
   #define SWITCHES_GPIO_REG_G_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_9  // PE.09
   #define SWITCHES_GPIO_REG_G_L         GPIOE->IDR
@@ -409,29 +440,35 @@
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_H
+  #define STORAGE_SWITCH_H
+#define HARDWARE_SWITCH_H
   #define SWITCHES_GPIO_REG_H           GPIOF->IDR
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_1  // PF.01
 #elif defined(PCBX9DP)
-  #define HARDWARE_SWITCH_H
+  #define STORAGE_SWITCH_H
+#define HARDWARE_SWITCH_H
   #define SWITCHES_GPIO_REG_H           GPIOD->IDR
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_14 // PD.14
 #elif defined(PCBXLITE) || defined(PCBX9LITE)
   // no SWH
 #elif defined(PCBX7)
-  #define HARDWARE_SWITCH_H
+  #define STORAGE_SWITCH_H
+#define HARDWARE_SWITCH_H
   #define SWITCHES_GPIO_REG_H           GPIOD->IDR
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_14 // PD.14
 #else
-  #define HARDWARE_SWITCH_H
+  #define STORAGE_SWITCH_H
+#define HARDWARE_SWITCH_H
   #define SWITCHES_GPIO_REG_H           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_13 // PE.13
 #endif
 
 // X7 P400 P401 headers additionnal momentary switches
 #if defined(PCBX7)
-  #define HARDWARE_SWITCH_I
-  #define HARDWARE_SWITCH_J
+  #define STORAGE_SWITCH_I
+#define HARDWARE_SWITCH_I
+  #define STORAGE_SWITCH_J
+#define HARDWARE_SWITCH_J
   #define SWITCHES_GPIO_REG_I           GPIOC->IDR
   #define SWITCHES_GPIO_PIN_I           GPIO_Pin_13  //PC.13
   #define SWITCHES_GPIO_REG_J           GPIOC->IDR
@@ -439,52 +476,62 @@
 #endif
 
 #if defined(PCBX9E)
-  #define HARDWARE_SWITCH_I
+  #define STORAGE_SWITCH_I
+#define HARDWARE_SWITCH_I
   #define SWITCHES_GPIO_REG_I_H         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_I_H         GPIO_Pin_15 // PF.15
   #define SWITCHES_GPIO_REG_I_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_I_L         GPIO_Pin_14 // PE.14
-  #define HARDWARE_SWITCH_J
+  #define STORAGE_SWITCH_J
+#define HARDWARE_SWITCH_J
   #define SWITCHES_GPIO_REG_J_H         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_J_H         GPIO_Pin_7  // PG.07
   #define SWITCHES_GPIO_REG_J_L         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_J_L         GPIO_Pin_8  // PG.08
-  #define HARDWARE_SWITCH_k
+  #define STORAGE_SWITCH_k
+#define HARDWARE_SWITCH_k
   #define SWITCHES_GPIO_REG_K_H         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_K_H         GPIO_Pin_13 // PG.13
   #define SWITCHES_GPIO_REG_K_L         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_K_L         GPIO_Pin_12 // PG.12
-  #define HARDWARE_SWITCH_L
+  #define STORAGE_SWITCH_L
+#define HARDWARE_SWITCH_L
   #define SWITCHES_GPIO_REG_L_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_L_H         GPIO_Pin_9  // PE.09
   #define SWITCHES_GPIO_REG_L_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_L_L         GPIO_Pin_8  // PE.08
-  #define HARDWARE_SWITCH_M
+  #define STORAGE_SWITCH_M
+#define HARDWARE_SWITCH_M
   #define SWITCHES_GPIO_REG_M_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_M_H         GPIO_Pin_15 // PE.15
   #define SWITCHES_GPIO_REG_M_L         GPIOA->IDR
   #define SWITCHES_GPIO_PIN_M_L         GPIO_Pin_5  // PA.05
-  #define HARDWARE_SWITCH_N
+  #define STORAGE_SWITCH_N
+#define HARDWARE_SWITCH_N
   #define SWITCHES_GPIO_REG_N_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_N_H         GPIO_Pin_3  // PB.03
   #define SWITCHES_GPIO_REG_N_L         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_N_L         GPIO_Pin_4  // PB.04
-  #define HARDWARE_SWITCH_O
+  #define STORAGE_SWITCH_O
+#define HARDWARE_SWITCH_O
   #define SWITCHES_GPIO_REG_O_H         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_O_H         GPIO_Pin_7  // PF.07
   #define SWITCHES_GPIO_REG_O_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_O_L         GPIO_Pin_10 // PE.10
-  #define HARDWARE_SWITCH_P
+  #define STORAGE_SWITCH_P
+#define HARDWARE_SWITCH_P
   #define SWITCHES_GPIO_REG_P_H         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_P_H         GPIO_Pin_11 // PF.11
   #define SWITCHES_GPIO_REG_P_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_P_L         GPIO_Pin_12 // PF.12
-  #define HARDWARE_SWITCH_Q
+  #define STORAGE_SWITCH_Q
+#define HARDWARE_SWITCH_Q
   #define SWITCHES_GPIO_REG_Q_H         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_Q_H         GPIO_Pin_5  // PF.05
   #define SWITCHES_GPIO_REG_Q_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_Q_L         GPIO_Pin_6  // PF.06
-  #define HARDWARE_SWITCH_R
+  #define STORAGE_SWITCH_R
+#define HARDWARE_SWITCH_R
   #define SWITCHES_GPIO_REG_R_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_R_H         GPIO_Pin_5  // PB.05
   #define SWITCHES_GPIO_REG_R_L         GPIOE->IDR

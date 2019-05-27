@@ -320,12 +320,12 @@ enum EnumSwitchesPositions
   SW_SGMBR0,
   SW_SGMBR1,
   SW_SGMBR2,
-  NUM_SWITCHES_POSITIONS
+  STORAGE_NUM_SWITCHES_POSITIONS
 };
 
 
 #if defined(__cplusplus)
-static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+static_assert(STORAGE_NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
 #endif
 
 void keysInit(void);
