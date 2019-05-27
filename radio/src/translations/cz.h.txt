@@ -727,7 +727,7 @@
 #define TR_MODULE_BINDING              TR("Bind...","Párování")
 #define TR_REBIND                      "Nutno přepárovat"
 #define TR_REG_OK                      "Registrace ok"
-#define TR_BIND_OK                     "Úspěšné párovaní"
+#define TR_BIND_OK                     "úspěšné párovaní"
 #define TR_BINDING_CH1_8_TELEM_ON      "k1-8 telem zap"
 #define TR_BINDING_CH1_8_TELEM_OFF     "k1-8 telem vyp"
 #define TR_BINDING_CH9_16_TELEM_ON     "k9-16 telem zap"
@@ -894,7 +894,7 @@
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash S.Portem", "Flash S.Portem")
 #define TR_FLASH_RECEIVER_OTA          "Flash příjímače OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash modulu BT", "Flash modulu Bluetooth")
-#define TR_FLASH_POWER_CONTROL_CHIP          "Flash battery chip"
+#define TR_FLASH_POWER_CONTROL_CHIP    "Flash batery čipu"
 #define TR_CURRENT_VERSION             TR("Současná ver. ", "Současná verze: ")
 #define TR_FLASH_INTERNAL_MODULE       TR("Flash vnitř. modulu", "Flash vnitřního modulu")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. modulu", "Flash externího zařízení")
@@ -960,7 +960,7 @@
 #define TR_PXX2_SELECT_RX              "Vyber RX..."
 #define TR_PXX2_DEFAULT                "<výchozí>"
 #define TR_BT_SELECT_DEVICE            "Vyberte zařízení..."
-#define TR_DISCOVER             "Hledat"
+#define TR_DISCOVER                    "Hledat"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Čekám..."
 #define TR_RECEIVER_DELETE             "Smazat přijímač?"
