@@ -105,7 +105,7 @@ elseif(PCB STREQUAL X9LITE)
   set(LUA_EXPORT lua_export_x9lite)
   set(FLAVOUR x9lite)
   add_definitions(-DBOARD_NAME="x9lite")
-  add_definitions(-DPCBX9LITE -DPCBX9 -DSOFTWARE_VOLUME)
+  add_definitions(-DPCBX9LITE -DPCBX9 -DSOFTWARE_VOLUME -DHARDWARE_POWER_CONTROL_CHIP)
   add_definitions(-DEEPROM_VARIANT=0x0800)
   set(PXX2 ON)
   set(GUI_DIR 128x64)
@@ -143,7 +143,7 @@ elseif(PCB STREQUAL XLITES)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_xlites)
   set(FLAVOUR xlites)
-  add_definitions(-DPCBXLITES -DPCBXLITE -DSOFTWARE_VOLUME -DEXTERNAL_ANTENNA -DSTICKS_PWM)
+  add_definitions(-DPCBXLITES -DPCBXLITE -DSOFTWARE_VOLUME -DEXTERNAL_ANTENNA -DSTICKS_PWM -DHARDWARE_POWER_CONTROL_CHIP)
   add_definitions(-DEEPROM_VARIANT=0x1000)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(GUI_DIR 128x64)
@@ -229,7 +229,7 @@ add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
 
 set(SRC
   ${SRC}
-  io/frsky_device_firmware_update.cpp
+  io/frsky_firmware_update.cpp
   )
 
 set(GUI_SRC
