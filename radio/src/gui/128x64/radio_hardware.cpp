@@ -154,6 +154,12 @@ void menuRadioHardware(event_t event)
   MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, HEADER_LINE+ITEM_RADIO_HARDWARE_MAX, { HEADER_LINE_COLUMNS LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0/*max bauds*/, BLUETOOTH_ROWS 0/*jitter filter*/ });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
+ 
+#if defined(BLUETOOTH)
+  if (g_eeGeneral.bluetoothMode != BLUETOOTH_OFF && !IS_BLUETOOTH_CHIP_PRESENT()) {
+    g_eeGeneral.bluetoothMode = BLUETOOTH_OFF;
+  }
+#endif
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
@@ -248,9 +254,6 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawTextAlignedLeft(y, STR_BLUETOOTH);
         lcdDrawTextAtIndex(HW_SETTINGS_COLUMN2, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, attr);
-        if (g_eeGeneral.bluetoothMode != BLUETOOTH_OFF && !IS_BLUETOOTH_CHIP_PRESENT()) {
-          g_eeGeneral.bluetoothMode = BLUETOOTH_OFF;
-        }
         if (attr) {
           g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER);
         }
