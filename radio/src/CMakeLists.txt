@@ -46,7 +46,7 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
-option(MODULE_R9M_FLEX_FW "Add R9M options for non certified firmwwares" OFF)
+option(MODULE_R9M_FLEX "Add R9M options for non certified firmwwares" OFF)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -308,8 +308,8 @@ if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
 endif()
 
-if(MODULE_R9M_FLEX_FW)
-  add_definitions(-DMODULE_R9M_FLEX_FW)
+if(MODULE_R9M_FLEX)
+  add_definitions(-DMODULE_R9M_FLEX)
 endif()
 
 if(FRSKY_RELEASE)

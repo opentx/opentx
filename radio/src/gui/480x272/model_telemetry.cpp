@@ -114,7 +114,7 @@ enum MenuModelTelemetryFrskyItems {
   #define VARIO_ROWS
 #endif
 #define RSSI_ROWS                     LABEL(RSSI), 0, 0, 0,
-#define TELEMETRY_TYPE_ROWS           (g_model.moduleData[INTERNAL_MODULE].rfProtocol == ACCST_RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
+#define TELEMETRY_TYPE_ROWS           (g_model.moduleData[INTERNAL_MODULE].rfProtocol == MODULE_SUBTYPE_PXX1_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
 
 void onSensorMenu(const char * result)
 {
@@ -274,7 +274,7 @@ bool menuModelTelemetryFrsky(event_t event)
 #if defined(MULTIMODULE)
         if (!IS_INTERNAL_MODULE_ON() &&
           g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE  &&
-          g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
+          g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
           lcdDrawText(MENUS_MARGIN_LEFT, y, "RSNR");
         else
 #endif

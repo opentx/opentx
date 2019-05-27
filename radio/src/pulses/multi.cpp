@@ -160,7 +160,7 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_DSM2) {
+  if (g_model.moduleData[port].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
 
     // Autobinding should always be done in DSMX 11ms
     if (g_model.moduleData[port].multi.autoBindMode && moduleState[port].mode == MODULE_MODE_BIND)
@@ -180,7 +180,7 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
   if (type >= 25)
     type = type + 1;
 
-  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_FRSKY) {
+  if (g_model.moduleData[port].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_FRSKY) {
     if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       type = 3;
@@ -204,7 +204,7 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
 
   // Set the highest bit of option byte in AFHDS2A protocol to instruct MULTI to passthrough telemetry bytes instead
   // of sending Frsky D telemetry
-  if (g_model.moduleData[port].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
+  if (g_model.moduleData[port].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
     optionValue = optionValue | 0x80;
 
   // For custom protocol send unmodified type byte
@@ -225,7 +225,7 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
 
   // protocol byte
   protoByte |= (type & 0x1f);
-  if (g_model.moduleData[port].getMultiProtocol(true) != MM_RF_PROTO_DSM2)
+  if (g_model.moduleData[port].getMultiProtocol(true) != MODULE_SUBTYPE_MULTI_DSM2)
     protoByte |= (g_model.moduleData[port].multi.autoBindMode << 6);
 
   sendByteSbus(protoByte);
