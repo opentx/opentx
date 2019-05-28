@@ -155,7 +155,7 @@ inline bool isModuleRFAccess(uint8_t idx)
     return g_model.moduleData[idx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
   }
   else if (isModuleR9M2(idx)) {
-    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_PXX2_ACCESS;
+    return true;
   }
   else {
     return false;

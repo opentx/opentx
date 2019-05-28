@@ -227,10 +227,7 @@ void Pxx2Pulses::setupAccstBindFrame(uint8_t module)
   for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
     Pxx2Transport::addByte(0x00);
   }
-  if (g_model.moduleData[module].type == MODULE_TYPE_PXX2_ISRM)
-    Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiver_telem_off << 7) + (g_model.moduleData[module].pxx.receiver_telem_off << 6));
-  else
-    Pxx2Transport::addByte(0x00);
+  Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiver_telem_off << 7) + (g_model.moduleData[module].pxx.receiver_telem_off << 6));
   Pxx2Transport::addByte(g_model.header.modelId[module]);
 }
 
@@ -357,10 +354,10 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupRegisterFrame(module);
       break;
     case MODULE_MODE_BIND:
-      if (g_model.moduleData[module].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS || g_model.moduleData[module].subType == MODULE_SUBTYPE_R9M_PXX2_ACCESS)
-        setupAccessBindFrame(module);
-      else
+      if (g_model.moduleData[module].type == MODULE_TYPE_PXX2_ISRM && g_model.moduleData[module].subType != MODULE_SUBTYPE_ISRM_PXX2_ACCESS)
         setupAccstBindFrame(module);
+      else
+        setupAccessBindFrame(module);
       break;
     case MODULE_MODE_RESET:
       setupResetFrame(module);

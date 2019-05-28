@@ -7,6 +7,8 @@ option(TRACE_SD_CARD "Traces SD enabled" OFF)
 option(TRACE_FATFS "Traces FatFS enabled" OFF)
 option(TRACE_AUDIO "Traces audio enabled" OFF)
 option(DEBUG_TRACE_BUFFER "Debug Trace Screen" OFF)
+option(XJT "XJT TX Module" ON)
+option(R9M_SIZE_STD "R9M standard size TX Module" ON)
 option(PPM "PPM TX Module" ON)
 option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
@@ -115,6 +117,14 @@ if(PXX2)
     ${PULSES_SRC}
     pxx2.cpp
     )
+endif()
+
+if(XJT)
+  add_definitions(-DXJT)
+endif()
+
+if(R9M_SIZE_STD)
+  add_definitions(-DR9M_SIZE_STD)
 endif()
 
 if(MULTIMODULE)
