@@ -153,7 +153,8 @@ extern const char STR_JACKMODES[];
 extern const char STR_VFAILSAFE[];
 
 extern const char STR_VTRAINERMODES[];
-extern const char STR_MODULE_PROTOCOLS[];
+extern const char STR_EXTERNAL_MODULE_PROTOCOLS[];
+extern const char STR_INTERNAL_MODULE_PROTOCOLS[];
 extern const char STR_R9M_REGION[];
 extern const char STR_R9M_FCC_POWER_VALUES[];
 extern const char STR_R9M_LBT_POWER_VALUES[];
