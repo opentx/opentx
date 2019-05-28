@@ -512,7 +512,7 @@ const char * FrskyChipFirmwareUpdate::sendUpgradeCommand(char command, uint32_t 
   return status == 0x00 ? nullptr : "Upgrade failed";
 }
 
-const char * FrskyChipFirmwareUpdate::sendUpgradeData(uint8_t index, uint8_t * data)
+const char * FrskyChipFirmwareUpdate::sendUpgradeData(uint32_t index, uint8_t * data)
 {
   telemetryPortSetDirectionOutput();
 

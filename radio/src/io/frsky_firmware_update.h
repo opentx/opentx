@@ -105,7 +105,7 @@ class FrskyChipFirmwareUpdate {
     const char * waitAnswer(uint8_t & status);
     const char * startBootloader();
     const char * sendUpgradeCommand(char command, uint32_t packetsCount);
-    const char * sendUpgradeData(uint8_t index, uint8_t * data);
+    const char * sendUpgradeData(uint32_t index, uint8_t * data);
 
     const char * doFlashFirmware(const char * filename);
 };
