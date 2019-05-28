@@ -63,22 +63,23 @@
         <location filename="../storage/appdata.cpp" line="591"/>
         <source>Application Settings have been saved to
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Les paramètres de l&apos;application ont été enregistrés dans
+ %1</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="594"/>
         <source>Could not save Application Settings to file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;enregistrer les paramètres de l&apos;application dans le fichier &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="596"/>
         <source>because the file could not be saved (check access permissions).</source>
-        <translation type="unfinished"></translation>
+        <translation>car le fichier n&apos;a pas pu être enregistré (vérifiez les autorisations d&apos;accès).</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="598"/>
         <source>for unknown reasons.</source>
-        <translation type="unfinished"></translation>
+        <translation>pour des raisons inconnues.</translation>
     </message>
 </context>
 <context>
@@ -86,7 +87,7 @@
     <message>
         <location filename="../warnings.h" line="94"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished">Afficher ce message lors du prochain démarrage ?</translation>
+        <translation>Afficher ce message lors du prochain démarrage ?</translation>
     </message>
 </context>
 <context>
@@ -627,7 +628,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.cpp" line="180"/>
         <source>Note: Nightly builds are not available in this version, Release/RC update channel will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Remarque: Les versions &quot; Nightly builds&quot; ne sont pas disponibles dans cette version. Le canal de mise à jour Release/RC sera utilisé.</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="227"/>
@@ -912,7 +913,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="71"/>
         <source>Line nn, Col nn</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne nn, Col nn</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="100"/>
@@ -996,7 +997,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="123"/>
         <source>Line %1, Col %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne %1, Col %2</translation>
     </message>
 </context>
 <context>
@@ -1024,7 +1025,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../constants.h" line="69"/>
         <source>Application Settings</source>
-        <translation type="unfinished">Réglages de l&apos;application</translation>
+        <translation>Réglages de l&apos;application</translation>
     </message>
     <message>
         <location filename="../constants.h" line="55"/>
@@ -1049,17 +1050,17 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../warnings.h" line="45"/>
         <source>&lt;p&gt;The radio type in the selected profile does not exist. Using the default type instead.&lt;/p&gt; &lt;p&gt;&lt;b&gt;Please update your profile settings!&lt;/b&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt; Le type de radio sélectionnée dans le profil n&apos;existe pas. Utilisez plutôt le type par défaut. &lt;/p&gt; &lt;p&gt;&lt;b&gt;Veuillez mettre à jour les paramètres de votre profil!&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="472"/>
         <source>Select or create a file for exported Settings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez ou créez un fichier pour les paramètres exportés:</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="482"/>
         <source>Press the &apos;Retry&apos; button to choose another file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Appuyez sur le bouton &apos;Réessayer&apos; pour choisir un autre fichier.</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="493"/>
@@ -1089,33 +1090,34 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../companion.cpp" line="59"/>
         <source>The saved settings could not be imported, please try again or continue with current settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les paramètres enregistrés ne peuvent pas être importés. Veuillez réessayer ou continuer avec les paramètres actuels.</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="72"/>
         <source>Import from File</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer depuis le fichier</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="73"/>
         <source>Import from v%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer depuis v%1</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="74"/>
         <source>Do not import</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne pas importer</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="79"/>
         <source>We have found possible Companion settings backup file(s).
 Do you want to import settings from a file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Nous avons trouvé un ou plusieurs fichiers de sauvegarde des paramètres Companion.
+Voulez-vous importer les paramètres depuis un fichier?</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="81"/>
         <source>Import settings from a file, or start with current values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importez les paramètres depuis un fichier ou commencez avec les valeurs actuelles.</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="84"/>
@@ -1123,62 +1125,65 @@ Do you want to import settings from a file?</source>
 Do you want to import them?
 
 If you have a settings backup file, you may import that instead.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nous avons trouvé des paramètres existants pour la version Companion: %1.
+Voulez-vous les importer?
+
+Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;importer à la place.</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="105"/>
         <source>Select %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez %1:</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="126"/>
         <source>Save application settings to file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer les paramètres de l&apos;application dans un fichier...</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="127"/>
         <source>Load application settings from file or previous version...</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger les paramètres de l&apos;application depuis un fichier ou depuis la version précédente...</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="128"/>
         <source>Reset ALL application settings to default and remove radio profiles...</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser TOUS les paramètres de l&apos;application aux valeurs par défaut et supprimer les profils radio...</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="129"/>
         <source>Exit before settings initialization and application startup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitter avant l&apos;initialisation des paramètres et le démarrage de l&apos;application.</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="130"/>
         <source>Print version number and exit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le numéro de version et quittez.</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="131"/>
         <source>Print this help text.</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher ce texte d&apos;aide.</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="179"/>
         <source>Reset ALL application settings to default values and remove radio profiles, are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser TOUS les paramètres de l&apos;application aux valeurs par défaut et supprimer les profils radio, êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="184"/>
         <source>Would you like to perform a backup first?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous d&apos;abord effectuer une sauvegarde?</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="191"/>
         <source>Application settings were reset and saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les paramètres de l&apos;application ont été réinitialisés et sauvegardés.</translation>
     </message>
     <message>
         <location filename="../storage/appdata.h" line="58"/>
         <source>settings</source>
-        <translation type="unfinished"></translation>
+        <translation>paramètres</translation>
     </message>
 </context>
 <context>
@@ -1458,7 +1463,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="209"/>
@@ -1796,7 +1801,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="122"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="126"/>
@@ -2166,17 +2171,17 @@ Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le
     <message>
         <location filename="../downloaddialog.ui" line="14"/>
         <source>Downloading: </source>
-        <translation type="unfinished">Téléchargement: </translation>
+        <translation>Téléchargement: </translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="49"/>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Impossible d&apos;enregistrer le fichier %1 : %2.</translation>
+        <translation>Impossible d&apos;enregistrer le fichier %1: %2.</translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="87"/>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Le téléchargement a échoué: %1.</translation>
+        <translation>Le téléchargement a échoué: %1.</translation>
     </message>
 </context>
 <context>
@@ -2431,7 +2436,7 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="78"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="216"/>
@@ -2535,274 +2540,279 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="48"/>
         <source>Synchronize Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchroniser les fichiers</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="62"/>
         <source>Are you sure you wish to abort the sync?</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes-vous sûr de vouloir annuler la synchronisation?</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="131"/>
         <source>Source Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosssier Source:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="137"/>
         <source>Destination Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier Destination:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
         <source>%1%2 Both directions, to destination folder first</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Destination</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
         <source>%1%2 Both directions, to source folder first</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Source</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
         <source> %1  Only from source folder to destination folder</source>
-        <translation type="unfinished"></translation>
+        <translation> %1 Uniquement du dossier Source vers le dossier Destination</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
         <source> %1  Only from destination folder to source folder</source>
-        <translation type="unfinished"></translation>
+        <translation> %1 Uniquement du dossier Destination vers le dossier Source</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="151"/>
         <source>How to handle overwriting files which already exist in the destination folder.</source>
-        <translation type="unfinished">Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier de destination.</translation>
+        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier Destination.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="152"/>
         <source>Copy only if newer and different (compare contents)</source>
-        <translation type="unfinished">Copiez seulement si &quot;plus récent et différent&quot; (comparez le contenu)</translation>
+        <translation>Copiez seulement si &quot;plus récent et différent&quot; (comparez le contenu)</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="153"/>
         <source>Copy only if newer (do not compare contents)</source>
-        <translation type="unfinished">Copier uniquement si &quot;plus récent&quot; (ne pas comparer le contenu)</translation>
+        <translation>Copier uniquement si &quot;plus récent&quot; (ne pas comparer le contenu)</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="154"/>
         <source>Copy only if different (ignore file time stamps)</source>
-        <translation type="unfinished">Copier uniquement si &quot;différent&quot; (ignorer les horodatages des fichiers)</translation>
+        <translation>Copier uniquement si &quot;différent&quot; (ignorer l&apos;horodatage des fichiers)</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="155"/>
         <source>Always copy (force overwite existing files)</source>
-        <translation type="unfinished">Toujours copier (écraser tous les fichiers existants)</translation>
+        <translation>Toujours copier (écraser tous les fichiers existants)</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="161"/>
         <source>Any size</source>
-        <translation type="unfinished">Toutes tailles</translation>
+        <translation>Toutes tailles</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="162"/>
         <source>Skip files larger than this size. Enter zero for unlimited.</source>
-        <translation type="unfinished">Ignorer tous les fichiers plus grands que cette taille. Entrez 0 pour illimité.</translation>
+        <translation>Ignorer tous les fichiers plus grands que cette taille. Entrez 0 pour illimité.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="167"/>
         <source>Minimum reporting level. Events of this type and of higher importance are shown.
 WARNING: High log rates may make the user interface temporarily unresponsive.</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveau de rapport au minimum. Les événements de ce type et d&apos;une plus grande importance sont indiqués.
+ATTENTION: un taux de rapport élevé peut rendre l&apos;interface utilisateur temporairement inutilisable.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="169"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauté</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="170"/>
         <source>Created</source>
-        <translation type="unfinished"></translation>
+        <translation>Créé</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="171"/>
         <source>Updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Mis à jour</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="173"/>
         <source>Errors Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur seulement</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="176"/>
         <source>Test-run only</source>
-        <translation type="unfinished">Essai</translation>
+        <translation>Essai</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="177"/>
         <source>Run as normal but do not actually copy anything. Useful for verifying results before real sync.</source>
-        <translation type="unfinished">Exécutez normalement, mais ne rien copier. Utile pour vérifier les résultats avant la synchronisation réelle.</translation>
+        <translation>Exécutez normalement, mais ne rien copier. Utile pour vérifier les résultats avant la synchronisation réelle.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="183"/>
         <source>Log Level:</source>
-        <translation type="unfinished"></translation>
+        <translation>Niveau de rapport:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="188"/>
         <source>Filters:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtres:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="189"/>
         <source>The &quot;Include&quot; filter will only copy files which match the pattern(s).
 The &quot;Exclude&quot; filter will skip files matching the filter pattern(s).
 The Include filter is evaluated first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le filtre &quot;Inclure&quot; ne copie que les fichiers correspondant à la (aux) régle(s).
+Le filtre &quot;Exclure&quot; ignorera les fichiers correspondant à la (aux) régle(s).
+Le filtre &quot;Inclure&quot; est évalué en premier.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="195"/>
         <source>One or more file pattern(s) to exclude, separated by commas.
 Blank means exclude none. ?, *, and [...] wildcards accepted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une ou plusieurs règle(s) de fichier(s) à exclure, séparés par des virgules.
+Blanc signifie &quot;exclure aucun&quot;.Les métacaractères ?, * et [...] sont acceptés.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="199"/>
         <source>One or more file pattern(s) to include, separated by commas.
 Blank means include all. ?, *, and [...] wildcards accepted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une ou plusieurs règle(s) de fichier(s) à inclure, séparés par des virgules.
+Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont acceptés.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="203"/>
         <source>Include:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inclure:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="205"/>
         <source>Exclude:</source>
-        <translation type="unfinished"></translation>
+        <translation>Exclure:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="210"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensible aux majuscules et minuscules</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="211"/>
         <location filename="../dialogs/filesyncdialog.cpp" line="217"/>
         <source>Follow links</source>
-        <translation type="unfinished"></translation>
+        <translation>Suivez les liens</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="212"/>
         <source>Include hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Inclure fichier/dossier caché</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="216"/>
         <source>Recursive</source>
-        <translation type="unfinished"></translation>
+        <translation>Récursif</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="218"/>
         <source>Skip empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauter vide</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="219"/>
         <source>Apply filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer les filtres</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="229"/>
         <source>Filter Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Options des Filtres:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="231"/>
         <source>Folder Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Options des Dossiers:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="243"/>
         <location filename="../dialogs/filesyncdialog.cpp" line="272"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="244"/>
         <source>Show extra options</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les options supplémentaires</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="247"/>
         <source>Reset to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser les paramètres par défaut</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="262"/>
         <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="279"/>
         <source>Sync. Direction:</source>
-        <translation type="unfinished">Direction de la synchro.:</translation>
+        <translation>Direction de la synchro.:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="281"/>
         <source>Existing Files:</source>
-        <translation type="unfinished">Fichiers existants:</translation>
+        <translation>Fichiers existants:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="283"/>
         <source>Max. File Size:</source>
-        <translation type="unfinished">Taille max fichier:</translation>
+        <translation>Taille Max Fichier:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="324"/>
         <source> MB</source>
-        <translation type="unfinished"></translation>
+        <translation>Mo</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="336"/>
         <source> KB</source>
-        <translation type="unfinished"></translation>
+        <translation>ko</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="425"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="425"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="436"/>
         <source>Total: &lt;b&gt;%1&lt;/b&gt;; Created: &lt;b&gt;%2&lt;/b&gt;; Updated: &lt;b&gt;%3&lt;/b&gt;; Skipped: &lt;b&gt;%4&lt;/b&gt;; Errors: &lt;font color=%6&gt;&lt;b&gt;%5&lt;/b&gt;&lt;/font&gt;;</source>
-        <translation type="unfinished"></translation>
+        <translation>Total: &lt;b&gt;%1&lt;/b&gt;; Créé(s): &lt;b&gt;%2&lt;/b&gt;; Mis à jour: &lt;b&gt;%3&lt;/b&gt;; Sauté(s): &lt;b&gt;%4&lt;/b&gt;; Erreur(s): &lt;font color=%6&gt;&lt;b&gt;%5&lt;/b&gt;&lt;/font&gt;;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="437"/>
         <source>Current: &lt;b&gt;%1&lt;/b&gt; of </source>
-        <translation type="unfinished"></translation>
+        <translation>Courant: &lt;b&gt;%1&lt;/b&gt; de </translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="488"/>
         <source>Source folder not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier Source non trouvé.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="490"/>
         <source>Destination folder not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier Destination non trouvé.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="492"/>
         <source>Source and destination folders are the same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les dossiers Source et Destination sont les mêmes.</translation>
     </message>
 </context>
 <context>
@@ -2914,7 +2924,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
         <source>FrSky Taranis X9-Lite</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
@@ -2924,12 +2934,12 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1235"/>
         <source>FrSky Taranis X-Lite S/PRO</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
         <source>Support for PXX1 internal module replacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du module interne PXX1 de remplacement</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1241"/>
@@ -2954,7 +2964,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1258"/>
         <source>Jumper T12</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1269"/>
@@ -2980,7 +2990,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
         <source>Support for Crossfire TX Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du module TX Crossfire</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1186"/>
@@ -3088,7 +3098,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../fwpreferencesdialog.cpp" line="51"/>
         <source>Unknown</source>
-        <translation type="unfinished">Inconnu</translation>
+        <translation>Inconnu</translation>
     </message>
 </context>
 <context>
@@ -3587,7 +3597,7 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="39"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="102"/>
@@ -4444,17 +4454,17 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2387"/>
         <source>Jack Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode Jack</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2400"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2405"/>
         <source>Trainer</source>
-        <translation type="unfinished">Écolage</translation>
+        <translation>Écolage</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1454"/>
@@ -4526,7 +4536,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1847"/>
         <source>DMS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2320"/>
@@ -5716,7 +5726,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="56"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="109"/>
@@ -6318,22 +6328,22 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="344"/>
         <source>Companion update check failed, new version information not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>La vérification de mise à jour de Companion a échoué, les infos sur une nouvelle version sont introuvables.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="462"/>
         <source>Firmware update check failed, new version information not found or invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>La vérification de mise à jour du Firmware a échoué, les infos sur une nouvelle version sont introuvables ou invalides.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="849"/>
         <source>Local Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier local</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="850"/>
         <source>Radio Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="932"/>
@@ -6524,22 +6534,22 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1193"/>
         <source>Export Application Settings..</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter les réglages de l&apos;application...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1193"/>
         <source>Save all the current %1 and Simulator settings (including radio profiles) to a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrez tous les réglages actuels %1 et du simulateur (y compris les profils radio) dans un fichier.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1194"/>
         <source>Import Application Settings..</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer les réglages de l&apos;application...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1194"/>
         <source>Load %1 and Simulator settings from a prevously exported settings file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger les réglages %1 et les réglages de Simulation depuis un fichier précédemment exporté.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1196"/>
@@ -6669,52 +6679,52 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1657"/>
         <source>Are you sure you wish to delete the &quot;%1&quot; radio profile? There is no way to undo this action!</source>
-        <translation>Etes-vous sûr de vouloir supprimer le profil radio %1 ? Cette action est irréversible !</translation>
+        <translation>Etes-vous sûr de vouloir supprimer le profil radio %1? Cette action est irréversible!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1678"/>
         <source>Please save or close all modified files before importing settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez sauvegarder ou fermer tous les fichiers modifiés avant d&apos;importer les réglages</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1681"/>
         <source>&lt;html&gt;&lt;p&gt;%1 and Simulator settings can be imported (restored) from a previosly saved export (backup) file. This will replace current settings with any settings found in the file.&lt;/p&gt;&lt;p&gt;An automatic backup of the current settings will be attempted. But if the current settings are useful then it is recommended that you make a manual backup first.&lt;/p&gt;&lt;p&gt;For best results when importing settings, &lt;b&gt;close any other %1 windows you may have open, and make sure the standalone Simulator application is not running.&lt;/p&gt;&lt;p&gt;Do you wish to continue?&lt;/p&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;p&gt;%1 et les réglages du simulateur peuvent être importés (restaurés) à partir d’un fichier d’exportation (sauvegarde) préalablement sauvegardé. Ceci remplacera les réglages actuels par tous les réglages trouvés dans le fichier.&lt;/p&gt;&lt;p&gt;Une sauvegarde automatique des réglages actuels sera tentée. Mais si les réglages actuels sont utiles, il est recommandé de commencer par une sauvegarde manuelle.&lt;/p&gt;&lt;p&gt;Pour obtenir de meilleurs résultats lors de l&apos;importation des réglages,&lt;b&gt; fermez les autres fenêtres %1 que vous avez éventuellement ouvertes et assurez-vous que l&apos;application autonome Simulator n&apos;est pas en cours d&apos;exécution. &lt;/p&gt;&lt;p&gt;Souhaitez-vous continuer? &lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1689"/>
         <source>Confirm Settings Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmer les réglages d&apos;importation</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1694"/>
         <source>Select %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez %1:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1699"/>
         <source>backup</source>
-        <translation type="unfinished"></translation>
+        <translation>sauvegarde</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1701"/>
         <source>Press the &apos;Ignore&apos; button to continue anyway.</source>
-        <translation type="unfinished"></translation>
+        <translation>Appuyez sur le bouton &apos;Ignorer&apos; pour continuer quand même.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1711"/>
         <source>The settings could not be imported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les réglages n&apos;ont pas pu être importés.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1714"/>
         <source>&lt;html&gt;&lt;p&gt;New settings have been imported from:&lt;br&gt; %1.&lt;/p&gt;&lt;p&gt;%2 will now re-initialize.&lt;/p&gt;&lt;p&gt;Note that you may need to close and restart %2 before some settings like language and icon theme take effect.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;p&gt;Les nouveaux réglages ont été importés depuis:&lt;br&gt; %1. &lt;/p&gt;&lt;p&gt;%2 sera maintenant réinitialisé.&lt;/p&gt;&lt;p&gt;Notez que vous devrez peut-être fermer et redémarrer %2 avant que certains réglages tels que la langue et le thème d’icône prennent effet.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1721"/>
         <source>&lt;p&gt;The previous settings were backed up to:&lt;br&gt; %1&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Les réglages précédents ont été sauvegardés sous:&lt;br&gt; %1 &lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1308"/>
@@ -8377,7 +8387,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="1464"/>
         <source>Error: Unable to open or read file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur: Impossible d&apos;ouvrir ou de lire le fichier!</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="314"/>
@@ -8791,7 +8801,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="121"/>
         <source>Auto &lt;= 1W - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto &lt;= 1W - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="122"/>
@@ -9264,17 +9274,17 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="949"/>
         <source>GF%1</source>
-        <translation type="unfinished">FG%1</translation>
+        <translation>FG%1</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="954"/>
         <source>Global Functions</source>
-        <translation type="unfinished">Fonctions globales</translation>
+        <translation>Fonctions globales</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="974"/>
         <source>Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="756"/>
@@ -10761,12 +10771,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/setup.cpp" line="1364"/>
         <source>Profile Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Réglages du profil</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1364"/>
         <source>SD structure path not specified or invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin de la structure SD non spécifié ou invalide</translation>
     </message>
 </context>
 <context>
@@ -11732,76 +11742,80 @@ Erreur: %2</translation>
     <message>
         <location filename="../process_sync.cpp" line="110"/>
         <source>Gathering file information for %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Collecte des informations depuis le fichier %1...</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="111"/>
         <source>No files found in %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun fichier trouvé dans %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="177"/>
         <source>Synchronization aborted at %1 of %2 files.</source>
-        <translation type="unfinished"></translation>
+        <translation>La synchronisation a été annulée à %1 des fichiers %2.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="179"/>
         <source>Synchronization finished with %1 files in %2m %3s.</source>
-        <translation type="unfinished"></translation>
+        <translation>La synchronisation s&apos;est terminée avec %1 fichiers en %2m %3s.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="248"/>
         <source>Synchronizing: %1
     To: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisation: %1
+    Vers: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="249"/>
         <source>Starting synchronization:
   %1 -&gt; %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrage de la synchronisation:
+  %1 -&gt; %2
+</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="265"/>
         <source>
 Too many errors, giving up.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Trop d&apos;erreurs, abandon.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="276"/>
         <source>Skipping filtered file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer le fichier filtré: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="279"/>
         <source>Skipping linked file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer le fichier lié: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="293"/>
         <source>Aborted synchronization of:</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisation annulée de:</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="295"/>
         <source>Finished synchronizing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisation terminée:</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="297"/>
         <source>Created: %1; Updated: %2; Skipped: %3; Errors: %4;</source>
-        <translation type="unfinished"></translation>
+        <translation>Créé(s): %1; Mis à jour: %2; Ignoré(s): %3; Erreur(s): %4;</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="332"/>
         <source>Directory exists: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Le dossier existe: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="349"/>
         <source>At least one of the file modification dates is in the future, error on: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Au moins une des dates de modification du fichier est dans le futur, erreur sur: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="354"/>
@@ -11826,12 +11840,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../process_sync.cpp" line="387"/>
         <source>Replacing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacement du fichier: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="395"/>
         <source>Creating file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Création du fichier: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="389"/>
@@ -12707,22 +12721,22 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2987"/>
         <source>Setting RSSI to zero simulates telemetry and radio link loss.</source>
-        <translation type="unfinished"></translation>
+        <translation>Régler le RSSI à zéro simule la perte de liaison radio et de télémétrie.</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2990"/>
         <source>Set RSSI to zero when paused.</source>
-        <translation type="unfinished"></translation>
+        <translation>Régler le RSSI à zéro lors d&apos;une pause.</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3003"/>
         <source>Stop sending telemetry data when the Telemetry Simulator window is hidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrêtez d&apos;envoyer des données de télémétrie lorsque la case est cochée.</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3006"/>
         <source>Pause simulation when hidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pause la simulation.</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2704"/>
