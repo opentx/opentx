@@ -514,7 +514,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 #if defined(PCBXLITE)
 bool isR9MModeAvailable(int mode)
 {
-#if defined(MODULE_R9M_FLEX)
+#if defined(R9M_PROTO_FLEX)
   return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
 #else
   return mode <= MODULE_SUBTYPE_R9M_EU;
@@ -524,7 +524,7 @@ bool isR9MModeAvailable(int mode)
 #else
 bool isR9MModeAvailable(int mode)
 {
-#if defined(MODULE_R9M_FLEX)
+#if defined(R9M_PROTO_FLEX)
   return mode < MODULE_SUBTYPE_R9M_EUPLUS;
 #else
   return true;
@@ -611,7 +611,12 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if defined(FRSKY_RELEASE)
+#if !defined(XJT)
+  if (moduleType == MODULE_TYPE_PXX1_XJT)
+    return false;
+#endif
+
+#if !defined(R9M_SIZE_STD)
   if (moduleType == MODULE_TYPE_PXX1_R9M)
     return false;
 #endif

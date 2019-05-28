@@ -41,7 +41,7 @@ options_sky9x = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "flexr9m": ("MODULE_R9M_FLEX", "YES", None)
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
 options_ar9x = {
@@ -63,7 +63,7 @@ options_ar9x = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     # "rtc": ("RTCLOCK", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "flexr9m": ("MODULE_R9M_FLEX", "YES", None)
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
 options_taranis_x9d = {
