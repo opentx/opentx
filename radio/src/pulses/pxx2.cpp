@@ -354,7 +354,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupRegisterFrame(module);
       break;
     case MODULE_MODE_BIND:
-      if (g_model.moduleData[module].type == MODULE_TYPE_PXX2_ISRM && g_model.moduleData[module].subType != MODULE_SUBTYPE_ISRM_PXX2_ACCESS)
+      if (g_model.moduleData[module].type == MODULE_TYPE_ISRM_PXX2 && g_model.moduleData[module].subType != MODULE_SUBTYPE_ISRM_PXX2_ACCESS)
         setupAccstBindFrame(module);
       else
         setupAccessBindFrame(module);

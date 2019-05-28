@@ -51,17 +51,17 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 
 inline bool isModuleXJT(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX1_XJT;
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT_PXX1;
 }
 
 inline bool isModuleXJT2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX2_ISRM;
+  return g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2;
 }
 
 inline bool isModuleXJTVariant(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX1_XJT || g_model.moduleData[idx].type == MODULE_TYPE_PXX2_ISRM;
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT_PXX1 || g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2;
 }
 
 
@@ -105,12 +105,12 @@ inline bool isModulePPM(uint8_t idx)
 
 inline bool isModuleR9M(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX1_R9M || g_model.moduleData[idx].type == MODULE_TYPE_PXX1_R9M_LITE;
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX1;
 }
 
 inline bool isModuleR9M2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_PXX2_R9M || g_model.moduleData[idx].type == MODULE_TYPE_PXX2_R9M_LITE || g_model.moduleData[idx].type == MODULE_TYPE_PXX2_R9M_LITE_PRO;
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
 }
 
 

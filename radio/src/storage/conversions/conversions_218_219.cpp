@@ -180,9 +180,9 @@ void convertModelData_218_to_219(ModelData &model)
   for (int i=0; i<NUM_MODULES; i++) {
     memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], 4);
     memcpy(((uint8_t *)&newModel.moduleData[i]) + 4, ((uint8_t *)&oldModel.moduleData[i]) + 64 + 4, 2);
-    if (newModel.moduleData[i].type >= MODULE_TYPE_PXX2_ISRM)
+    if (newModel.moduleData[i].type >= MODULE_TYPE_ISRM_PXX2)
       newModel.moduleData[i].type += 1;
-    if (newModel.moduleData[i].type >= MODULE_TYPE_PXX2_R9M)
+    if (newModel.moduleData[i].type >= MODULE_TYPE_R9M_PXX2)
       newModel.moduleData[i].type += 4;
   }
 

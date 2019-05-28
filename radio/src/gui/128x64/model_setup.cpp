@@ -1034,7 +1034,7 @@ void menuModelSetup(event_t event)
           else if (isModuleXJT(INTERNAL_MODULE)) {
             g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, 0, MODULE_SUBTYPE_PXX1_LAST, EE_MODEL, isRfProtocolAvailable);
             if (checkIncDec_Ret) {
-              g_model.moduleData[0].type = MODULE_TYPE_PXX1_XJT;
+              g_model.moduleData[0].type = MODULE_TYPE_XJT_PXX1;
               g_model.moduleData[0].channelsStart = 0;
               g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
             }
@@ -1045,7 +1045,7 @@ void menuModelSetup(event_t event)
         }
 #else
       uint8_t index = 0;
-      if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX2_ISRM) {
+      if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_ISRM_PXX2) {
         index = 1 + g_model.moduleData[INTERNAL_MODULE].subType;
       }
       lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ISRM_PXX2_RF_PROTOCOLS, index, attr);
@@ -1054,7 +1054,7 @@ void menuModelSetup(event_t event)
         if (checkIncDec_Ret) {
           memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
           if (index > 0) {
-            g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_PXX2_ISRM;
+            g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_ISRM_PXX2;
             g_model.moduleData[INTERNAL_MODULE].subType = index - 1;
             g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
           }
@@ -1305,7 +1305,7 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), moduleData.type == MODULE_TYPE_PXX2_ISRM ? isPxx2IsrmChannelsCountAllowed : nullptr);
+                CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), moduleData.type == MODULE_TYPE_ISRM_PXX2 ? isPxx2IsrmChannelsCountAllowed : nullptr);
                 if ((k == ITEM_MODEL_SETUP_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }
@@ -1764,7 +1764,7 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
           if (isModuleR9M_FCC_VARIANT(moduleIdx)) {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Lite FCC has only one setting
-            if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_PXX1_R9M_LITE) { // R9M lite FCC has only one power value, so displayed for info only
+            if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_R9M_LITE_PXX1) { // R9M lite FCC has only one power value, so displayed for info only
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT);
               if (attr)
                 REPEAT_LAST_CURSOR_MOVE();
@@ -1775,7 +1775,7 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_FCC_POWER_MAX);
             }
           }
-          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_PXX1_R9M_LITE) {
+          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_R9M_LITE_PXX1) {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LITE_LBT_POWER_MAX);
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr) {
@@ -1788,7 +1788,7 @@ void menuModelSetup(event_t event)
               reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
             }
           }
-          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_PXX1_R9M) {
+          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_R9M_PXX1) {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LBT_POWER_MAX);
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr) {
