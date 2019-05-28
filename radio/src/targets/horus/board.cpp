@@ -138,7 +138,7 @@ void boardInit()
                          AUDIO_RCC_AHB1Periph |
                          KEYS_RCC_AHB1Periph |
                          ADC_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
@@ -154,7 +154,7 @@ void boardInit()
                          ADC_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
-                         SERIAL_RCC_APB1Periph |
+                         AUX_SERIAL_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
                          TRAINER_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |

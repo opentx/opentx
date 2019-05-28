@@ -763,9 +763,9 @@ void hapticOff(void);
 #endif
 
 // Second serial port driver
-#if defined(SERIAL_GPIO)
+#if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
-#define SERIAL2
+#define AUX_SERIAL
 extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
