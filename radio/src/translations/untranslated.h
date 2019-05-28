@@ -82,9 +82,9 @@
 
 #define TR_VSRCRAW                     "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS TR_GYR_VSRCRAW "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
 
-#if defined(PXX1)
-#define LEN_MODULE_PROTOCOLS           "\010"
-#define TR_MODULE_PROTOCOLS            "OFF\0    ""PPM\0    ""XJT\0    ""ISRM\0   ""DSM2\0   ""CRSF\0   ""MULT\0   ""R9M\0    ""R9M2\0   ""R9MLite\0""R9ML2\0  ""R9MLP\0  ""SBUS"
+#if 1  // defined(PXX1)
+#define LEN_MODULE_PROTOCOLS           "\014"
+#define TR_MODULE_PROTOCOLS            "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS"
 #else
 #define LEN_MODULE_PROTOCOLS           "\010"
 #define TR_MODULE_PROTOCOLS            "OFF\0    ""PPM\0    ""ACCST\0  ""ISRM\0   ""DSM2\0   ""CRSF\0   ""MULT\0   ""---\0    ""R9M\0    ""---\0    ""R9ML\0   ""R9MLP\0  ""SBUS\0"

@@ -1015,7 +1015,6 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE: {
         lcdDrawTextAlignedLeft(y, STR_MODE);
-#if defined(PXX1)
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(INTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
@@ -1043,24 +1042,6 @@ void menuModelSetup(event_t event)
             g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_LAST, EE_MODEL, isRfProtocolAvailable);
           }
         }
-#else
-        uint8_t index = 0;
-        if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX2_ISRM) {
-          index = 1 + g_model.moduleData[INTERNAL_MODULE].subType;
-        }
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ISRM_PXX2_RF_PROTOCOLS, index, attr);
-        if (attr) {
-          index = checkIncDec(event, index, 0, 3, EE_MODEL);
-          if (checkIncDec_Ret) {
-            memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
-            if (index > 0) {
-              g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_PXX2_ISRM;
-              g_model.moduleData[INTERNAL_MODULE].subType = index - 1;
-              g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-            }
-          }
-        }
-#endif
         break;
       }
 #endif
@@ -1078,8 +1059,6 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
-        if (isModuleR9M2(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_R9M_PXX2_RF_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==1 ? attr : 0);
         if (isModuleXJT(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleDSM2(EXTERNAL_MODULE))
@@ -1117,8 +1096,6 @@ void menuModelSetup(event_t event)
               }
               break;
             case 1:
-              if (isModuleR9M2(EXTERNAL_MODULE))
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_R9M_PXX2_LAST);
               if (isModuleDSM2(EXTERNAL_MODULE))
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
               else if (isModuleR9M(EXTERNAL_MODULE)) {

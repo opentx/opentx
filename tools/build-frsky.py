@@ -10,19 +10,25 @@ import tempfile
 
 options = {
     "XLITES": {
-        "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "PXX1": "YES",
+        "XJT": "NO",
+        "R9M_SIZE_STD": "NO",
         "PPM": "NO",
         "DSM2": "NO",
+        "CROSSFIRE": "NO",
         "SBUS": "NO",
     },
     "X9LITE": {
-        "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "PXX1": "YES",
+        "XJT": "NO",
+        "R9M_SIZE_STD": "NO",
         "PPM": "NO",
         "DSM2": "NO",
+        "CROSSFIRE": "NO",
         "SBUS": "NO",
         "DEFAULT_MODE": "2",
     },
