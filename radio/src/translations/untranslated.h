@@ -82,18 +82,16 @@
 
 #define TR_VSRCRAW                     "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS TR_GYR_VSRCRAW "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
 
-#if 1  // defined(PXX1)
-#define LEN_MODULE_PROTOCOLS           "\014"
-#define TR_MODULE_PROTOCOLS            "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS"
-#else
-#define LEN_MODULE_PROTOCOLS           "\010"
-#define TR_MODULE_PROTOCOLS            "OFF\0    ""PPM\0    ""ACCST\0  ""ISRM\0   ""DSM2\0   ""CRSF\0   ""MULT\0   ""---\0    ""R9M\0    ""---\0    ""R9ML\0   ""R9MLP\0  ""SBUS\0"
-#endif
+#define LEN_EXTERNAL_MODULE_PROTOCOLS  "\014"
+#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS"
+
+#define LEN_INTERNAL_MODULE_PROTOCOLS  LEN_EXTERNAL_MODULE_PROTOCOLS
+#define TR_INTERNAL_MODULE_PROTOCOLS   TR_EXTERNAL_MODULE_PROTOCOLS
 
 #define LEN_ACCST_RF_PROTOCOLS         "\004"
 #define TR_ACCST_RF_PROTOCOLS          "OFF\0""D16\0""D8\0 ""LR12"
 
-#if defined(PXX1)
+#if defined(INTERNAL_MODULE_PXX1)
 #define LEN_ISRM_PXX2_RF_PROTOCOLS     "\006"
 #define TR_ISRM_PXX2_RF_PROTOCOLS      "ACCESS""D16\0  ""LR12"
 #else
