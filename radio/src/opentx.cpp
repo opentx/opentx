@@ -1811,7 +1811,7 @@ void opentxInit()
 #endif
 #endif  // #if !defined(EEPROM)
 
-#if defined(SERIAL2)
+#if defined(AUX_SERIAL)
   serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
 #endif
 
