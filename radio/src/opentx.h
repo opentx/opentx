@@ -125,10 +125,10 @@
   #define CASE_FRSKY(x)
 #endif
 
-#if defined(PXX)
-  #define CASE_PXX(x) x,
+#if defined(PXX1)
+  #define CASE_PXX1(x) x,
 #else
-  #define CASE_PXX(x)
+  #define CASE_PXX1(x)
 #endif
 
 #if defined(PXX2)
