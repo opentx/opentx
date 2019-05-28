@@ -1362,7 +1362,7 @@ static int luaSerialWrite(lua_State * L)
     while(wr_len--) usbSerialPutc(*p++);
   }
   #endif
-  #if defined(SERIAL2)
+  #if defined(AUX_SERIAL)
   if (serial2Mode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;

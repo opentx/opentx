@@ -629,7 +629,7 @@ extern uint8_t gpsTraceEnabled;
 void gpsSendByte(uint8_t byte);
 
 // Second serial port driver
-#define SERIAL2
+#define AUX_SERIAL
 #define DEBUG_BAUDRATE                 115200
 extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);

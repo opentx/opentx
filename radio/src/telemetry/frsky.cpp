@@ -27,7 +27,7 @@ void processFrskyTelemetryData(uint8_t data)
   btPushByte(data);
 #endif
 
-#if defined(SERIAL2)
+#if defined(AUX_SERIAL)
   if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
     serial2Putc(data);
   }
