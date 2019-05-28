@@ -165,8 +165,6 @@ const uint8_t MONITOR_ICONS[] = {
 
 bool menuModelSetup(event_t event);
 bool menuModelFailsafe(event_t event);
-bool menuModelModuleOptions(event_t event);
-bool menuModelReceiverOptions(event_t event);
 bool menuModelHeli(event_t event);
 bool menuModelFlightModesAll(event_t event);
 bool menuModelExposAll(event_t event);
