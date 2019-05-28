@@ -1059,7 +1059,7 @@ void convertModelData_216_to_217(ModelData &model)
   }
 
 #if defined(PCBTARANIS)
-  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_PXX1_XJT;
+  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT_PXX1;
 #endif
   newModel.moduleData[EXTERNAL_MODULE].type = oldModel.externalModule;
 
@@ -1140,7 +1140,7 @@ void convertModelData_217_to_218(ModelData &model)
   for (int i=0; i<MAX_OUTPUT_CHANNELS; i++) {
     newModel.limitData[i] = oldModel.limitData[i];
 #if defined(PCBTARANIS)
-    if (newModel.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX1_XJT || newModel.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX1_XJT) {
+    if (newModel.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1 || newModel.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1) {
       newModel.limitData[i].ppmCenter = (oldModel.limitData[i].ppmCenter * 612) / 1024;
     }
 #endif
