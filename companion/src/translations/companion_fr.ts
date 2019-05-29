@@ -8696,8 +8696,8 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="771"/>
-        <source>WARNING: Requires non-certified R9M firmware!</source>
-        <translation>ATTENTION: Nécessite un firmware R9M non certifié!</translation>
+        <source>WARNING: Requires non-certified firmware!</source>
+        <translation>ATTENTION: Nécessite un firmware non certifié!</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="797"/>

@@ -754,7 +754,7 @@ void menuModelSetup(event_t event)
 
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL:
-        lcdDrawTextAlignedLeft(y, TR_INTERNALRF);
+        lcdDrawTextAlignedLeft(y, STR_INTERNALRF);
         break;
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE:
@@ -817,7 +817,7 @@ void menuModelSetup(event_t event)
 #endif
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL:
-        lcdDrawTextAlignedLeft(y, TR_EXTERNALRF);
+        lcdDrawTextAlignedLeft(y, STR_EXTERNALRF);
         break;
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:
@@ -863,8 +863,9 @@ void menuModelSetup(event_t event)
               break;
 
               case 1:
-                if (isModuleDSM2(EXTERNAL_MODULE))
+                if (isModuleDSM2(EXTERNAL_MODULE)) {
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
+                }
                 else if (isModuleR9M(EXTERNAL_MODULE)) {
                   g_model.moduleData[EXTERNAL_MODULE].subType = checkIncDec(event,
                                                                             g_model.moduleData[EXTERNAL_MODULE].subType,
@@ -872,13 +873,6 @@ void menuModelSetup(event_t event)
                                                                             MODULE_SUBTYPE_R9M_LAST,
                                                                             EE_MODEL,
                                                                             isR9MModeAvailable);
-#if defined(R9M_PROTO_FLEX)
-                  if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU && old_editMode && !s_editMode) {
-                    POPUP_WARNING(STR_R9MFLEXWARN1);
-                    const char *w = STR_R9MFLEXWARN2;
-                    SET_WARNING_INFO(w, strlen(w), 0);
-                  }
-#endif
                 }
 
 #if defined(MULTIMODULE)
@@ -911,13 +905,21 @@ void menuModelSetup(event_t event)
                 }
             }
           }
-          else {
-#if defined(R9M_PROTO_FLEX)
-            if (isModuleR9M(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU && old_editMode) {
-              POPUP_WARNING(STR_R9MFLEXWARN1);
-              SET_WARNING_INFO(STR_R9MFLEXWARN2, sizeof(TR_R9MFLEXWARN2), 0);
+          else if (old_editMode > 0) {
+            if (isModuleR9M(EXTERNAL_MODULE)) {
+              if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
+                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+              }
+              else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
+                POPUP_WARNING(STR_R9M_PROTO_EU_WARN1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+              }
+              else {
+                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+              }
             }
-#endif
           }
         }
         break;
