@@ -754,7 +754,7 @@ void menuModelSetup(event_t event)
 
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL:
-        lcdDrawTextAlignedLeft(y, TR_INTERNALRF);
+        lcdDrawTextAlignedLeft(y, STR_INTERNALRF);
         break;
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE:
@@ -817,7 +817,7 @@ void menuModelSetup(event_t event)
 #endif
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL:
-        lcdDrawTextAlignedLeft(y, TR_EXTERNALRF);
+        lcdDrawTextAlignedLeft(y, STR_EXTERNALRF);
         break;
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:

@@ -414,6 +414,8 @@ extern const char STR_REG_OK[];
 extern const char STR_BIND_OK[];
 #endif
 
+extern const char STR_INTERNALRF[];
+extern const char STR_EXTERNALRF[];
 extern const char STR_MODULE_TELEMETRY[];
 extern const char STR_MODULE_TELEM_ON[];
 extern const char STR_FAILSAFE[];

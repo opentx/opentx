@@ -642,7 +642,7 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, TR_INTERNALRF);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_INTERNALRF);
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
@@ -685,7 +685,7 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, TR_EXTERNALRF);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_EXTERNALRF);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
