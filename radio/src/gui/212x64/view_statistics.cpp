@@ -27,7 +27,7 @@
 
 void menuStatisticsView(event_t event)
 {
-  TITLE(STR_MENUSTAT);
+  title(STR_MENUSTAT);
 
   switch(event)
   {
@@ -105,7 +105,7 @@ void menuStatisticsView(event_t event)
 
 void menuStatisticsDebug(event_t event)
 {
-  TITLE(STR_MENUDEBUG);
+  title(STR_MENUDEBUG);
 
 #if defined(WATCHDOG_TEST)
   if (warningResult) {
@@ -200,7 +200,7 @@ void menuStatisticsDebug(event_t event)
 
 void menuStatisticsDebug2(event_t event)
 {
-  TITLE(STR_MENUDEBUG);
+  title(STR_MENUDEBUG);
 
   switch(event)
   {
