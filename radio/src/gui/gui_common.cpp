@@ -598,7 +598,7 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
-#if !defined(HARDWARE_EXTERNAL_MODULE_SFF)
+#if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (moduleType == MODULE_TYPE_R9M_LITE_PXX1 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2)
     return false;
 #endif
