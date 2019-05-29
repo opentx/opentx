@@ -11,8 +11,6 @@ set(GUI_SRC
   model_setup.cpp
   model_outputs.cpp
   model_failsafe.cpp
-  model_module_options.cpp
-  model_receiver_options.cpp
   model_logical_switches.cpp
   model_special_functions.cpp
   model_telemetry.cpp
@@ -32,6 +30,14 @@ set(SRC
   gui/navigation/navigation_${NAVIGATION_TYPE}.cpp
   gui/navigation/common.cpp
   )
+
+if (PXX2)
+  set(GUI_SRC
+    ${GUI_SRC}
+    model_module_options.cpp
+    model_receiver_options.cpp
+    )
+endif()
 
 string(TOUPPER ${NAVIGATION_TYPE} NAVIGATION_TYPE)
 add_definitions(-DNAVIGATION_${NAVIGATION_TYPE})
