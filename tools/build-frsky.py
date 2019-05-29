@@ -33,12 +33,15 @@ options = {
         "DEFAULT_MODE": "2",
     },
     "X9D+": {
-        "PXX1": "NO",
         "PCBREV": "2019",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "PXX1": "YES",
+        "XJT": "NO",
+        "R9M_SIZE_STD": "NO",
         "PPM": "NO",
         "DSM2": "NO",
+        "CROSSFIRE": "NO",
         "SBUS": "NO",
         "DEFAULT_MODE": "2",
     }
