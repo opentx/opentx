@@ -2550,32 +2550,32 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="131"/>
         <source>Source Folder:</source>
-        <translation>Dosssier Source:</translation>
+        <translation>Dosssier Local:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="137"/>
         <source>Destination Folder:</source>
-        <translation>Dossier Destination:</translation>
+        <translation>Dossier Radio:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
         <source>%1%2 Both directions, to destination folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Destination</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Radio</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
         <source>%1%2 Both directions, to source folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Source</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Local</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
         <source> %1  Only from source folder to destination folder</source>
-        <translation> %1 Uniquement du dossier Source vers le dossier Destination</translation>
+        <translation> %1 Uniquement du dossier Local vers le dossier Radio</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
         <source> %1  Only from destination folder to source folder</source>
-        <translation> %1 Uniquement du dossier Destination vers le dossier Source</translation>
+        <translation> %1 Uniquement du dossier Radio vers le dossier Local</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="151"/>
@@ -2802,17 +2802,17 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="488"/>
         <source>Source folder not found.</source>
-        <translation>Dossier Source non trouvé.</translation>
+        <translation>Dossier Local non trouvé.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="490"/>
         <source>Destination folder not found.</source>
-        <translation>Dossier Destination non trouvé.</translation>
+        <translation>Dossier Radio non trouvé.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="492"/>
         <source>Source and destination folders are the same.</source>
-        <translation>Les dossiers Source et Destination sont les mêmes.</translation>
+        <translation>Les dossiers Local et Radio sont les mêmes.</translation>
     </message>
 </context>
 <context>
@@ -6338,7 +6338,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="849"/>
         <source>Local Folder</source>
-        <translation>Dossier local</translation>
+        <translation>Dossier Local</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="850"/>
