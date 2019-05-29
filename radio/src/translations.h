@@ -414,6 +414,8 @@ extern const char STR_REG_OK[];
 extern const char STR_BIND_OK[];
 #endif
 
+extern const char STR_INTERNALRF[];
+extern const char STR_EXTERNALRF[];
 extern const char STR_MODULE_TELEMETRY[];
 extern const char STR_MODULE_TELEM_ON[];
 extern const char STR_FAILSAFE[];
@@ -721,8 +723,10 @@ extern const char STR_CHANNELRANGE[];
 extern const char STR_ANTENNASELECTION[];
 extern const char STR_ANTENNACONFIRM1[];
 extern const char STR_ANTENNACONFIRM2[];
-extern const char STR_R9MFLEXWARN1[];
-extern const char STR_R9MFLEXWARN2[];
+extern const char STR_R9M_PROTO_FLEX_WARN1[];
+extern const char STR_R9M_PROTO_FCC_WARN1[];
+extern const char STR_R9M_PROTO_EU_WARN1[];
+extern const char STR_R9M_PROTO_WARN2[];
 extern const char STR_SET[];
 extern const char STR_PREFLIGHT[];
 extern const char STR_CHECKLIST[];

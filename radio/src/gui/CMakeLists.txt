@@ -5,14 +5,11 @@ set(GUI_SRC
   fonts.cpp
   popups.cpp
   widgets.cpp
-  menus.cpp
   menu_model.cpp
   model_select.cpp
   model_setup.cpp
   model_outputs.cpp
   model_failsafe.cpp
-  model_module_options.cpp
-  model_receiver_options.cpp
   model_logical_switches.cpp
   model_special_functions.cpp
   model_telemetry.cpp
@@ -32,6 +29,7 @@ set(SRC
   gui/navigation/navigation_${NAVIGATION_TYPE}.cpp
   gui/navigation/common.cpp
   )
+
 
 string(TOUPPER ${NAVIGATION_TYPE} NAVIGATION_TYPE)
 add_definitions(-DNAVIGATION_${NAVIGATION_TYPE})

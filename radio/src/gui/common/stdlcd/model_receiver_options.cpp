@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
+#include "opentx.h"
 
-#define RECEIVER_OPTIONS_2ND_COLUMN 200
+#define RECEIVER_OPTIONS_2ND_COLUMN 80
 
 extern uint8_t g_moduleIdx;
 
@@ -43,13 +43,13 @@ enum {
   ITEM_RECEIVER_PINMAP_FIRST
 };
 
-bool menuModelReceiverOptions(event_t event)
+void menuModelReceiverOptions(event_t event)
 {
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   uint8_t wbar = LCD_W / 2 - 20;
   auto outputsCount = min<uint8_t>(16, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
 
-  SIMPLE_SUBMENU(STR_RECEIVER_OPTIONS, ICON_RADIO, ITEM_RECEIVER_PINMAP_FIRST + outputsCount);
+  SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + outputsCount);
 
   if (event == EVT_ENTRY) {
 #if defined(SIMU)
@@ -67,13 +67,14 @@ bool menuModelReceiverOptions(event_t event)
   }
 
   if (menuEvent) {
+    killEvents(KEY_EXIT);
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION(STR_UPDATE_RX_OPTIONS, onRxOptionsUpdateConfirm);
     }
     else {
-      return true;
+      return;
     }
   }
 
@@ -87,30 +88,30 @@ bool menuModelReceiverOptions(event_t event)
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
-    return true;
+    return;
   }
 
   int8_t sub = menuVerticalPosition;
-  drawReceiverName(130, 0, g_moduleIdx, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
+  lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
+  drawReceiverName(FW * 13, 0, g_moduleIdx, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
+  lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
-    for (uint8_t k=0; k<NUM_BODY_LINES+1; k++) {
+    for (uint8_t k=0; k<LCD_LINES-1; k++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
       LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
       switch (i) {
         case ITEM_RECEIVER_TELEMETRY:
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "Telemetry disabled");
-          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telem. disabled", attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
           break;
 
         case ITEM_RECEIVER_PWM_RATE:
-          lcdDrawText(MENUS_MARGIN_LEFT, y, isModuleR9M2(g_moduleIdx) ? "6.67ms PWM": "9ms PWM");
-          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9M2(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
@@ -123,9 +124,9 @@ bool menuModelReceiverOptions(event_t event)
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
             uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
             int32_t channelValue = channelOutputs[channel];
-            lcdDrawText(MENUS_MARGIN_LEFT, y, "Pin");
-            lcdDrawNumber(lcdNextPos + 1, y, pin + 1);
-            putsChn(80, y, channel + 1, attr);
+            lcdDrawText(0, y, STR_PIN);
+            lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
+            putsChn(7 * FW, y, channel + 1, attr);
 
             // Channel
             if (attr) {
@@ -151,7 +152,6 @@ bool menuModelReceiverOptions(event_t event)
     }
   }
   else {
-    lcdDrawCenteredText(LCD_H/2, "Waiting for RX...");
+    lcdDrawCenteredText(LCD_H/2, STR_WAITING_FOR_RX);
   }
-  return true;
 }

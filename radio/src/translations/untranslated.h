@@ -82,8 +82,14 @@
 
 #define TR_VSRCRAW                     "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS TR_GYR_VSRCRAW "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
 
+#if defined(R9M_PROTO_FLEX)
+#define TR_MODULE_R9M_LITE "R9ML\0       "
+#else
+#define TR_MODULE_R9M_LITE "R9MLite\0    "
+#endif
+
 #define LEN_EXTERNAL_MODULE_PROTOCOLS  "\014"
-#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS"
+#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""R9MLP ACCESS""SBUS"
 
 #define LEN_INTERNAL_MODULE_PROTOCOLS  LEN_EXTERNAL_MODULE_PROTOCOLS
 #define TR_INTERNAL_MODULE_PROTOCOLS   TR_EXTERNAL_MODULE_PROTOCOLS
@@ -101,6 +107,21 @@
 
 #define LEN_R9M_PXX2_RF_PROTOCOLS      "\006"
 #define TR_R9M_PXX2_RF_PROTOCOLS       "ACCESS""FCC\0  ""EU\0   ""Flex"
+
+#define LEN_R9M_REGION                 "\006"
+#define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
+
+#define LEN_R9M_LITE_FCC_POWER_VALUES  "\010"
+#define TR_R9M_LITE_FCC_POWER_VALUES   "(100 mW)"
+
+#define LEN_R9M_LITE_LBT_POWER_VALUES  "\015"
+#define TR_R9M_LITE_LBT_POWER_VALUES   "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
+
+#define LEN_R9M_FCC_POWER_VALUES       "\006"
+#define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
+
+#define LEN_R9M_LBT_POWER_VALUES       "\013"
+#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
 
 #define LEN_DSM_PROTOCOLS              "\004"
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"

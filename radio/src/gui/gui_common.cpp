@@ -515,7 +515,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 bool isR9MModeAvailable(int mode)
 {
 #if defined(R9M_PROTO_FLEX)
-  return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
+  return true;
 #else
   return mode <= MODULE_SUBTYPE_R9M_EU;
 #endif
@@ -547,7 +547,7 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 }
 #endif
 
-bool isModuleUSingSport(uint8_t moduleBay, uint8_t moduleType)
+bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
 {
   switch(moduleType) {
     case MODULE_TYPE_NONE:
@@ -555,17 +555,14 @@ bool isModuleUSingSport(uint8_t moduleBay, uint8_t moduleType)
     case MODULE_TYPE_PPM:
     case MODULE_TYPE_DSM2:
     case MODULE_TYPE_MULTIMODULE:
+    case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_LITE_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
       return false;
 
-    case MODULE_TYPE_ISRM_PXX2:
+    case MODULE_TYPE_XJT_PXX1:
       if (moduleBay == EXTERNAL_MODULE)
         return false;
-
-#if defined(INTMODULE_USART)
-      return false;
-#endif
 
     default:
       return true;
@@ -580,7 +577,7 @@ bool isInternalModuleAvailable(int moduleType)
 
 #if defined(PXX1) && defined(INTERNAL_MODULE_PXX1)
   if (moduleType == MODULE_TYPE_XJT_PXX1)
-    return !isModuleUSingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
+    return !isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
 #else
   if (moduleType == MODULE_TYPE_XJT_PXX1)
     return false;
@@ -591,7 +588,7 @@ bool isInternalModuleAvailable(int moduleType)
 #if defined(INTMODULE_USART)
     return true;
 #else
-    return (!isModuleUSingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type));
+    return (!isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type));
 #endif
 #endif
 
@@ -601,7 +598,7 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
-#if !defined(PCBXLITE) && !defined(PCBX9LITE)
+#if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (moduleType == MODULE_TYPE_R9M_LITE_PXX1 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2)
     return false;
 #endif
@@ -651,11 +648,11 @@ bool isExternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (isModuleUSingSport(EXTERNAL_MODULE, moduleType) && isModuleUSingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
+  if (isModuleUsingSport(EXTERNAL_MODULE, moduleType) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
     return false;
 #endif
 
-#if !defined(EXTERNAL_MODULE_PPM)
+#if !defined(PPM)
   if (moduleType == MODULE_TYPE_PPM)
     return false;
 #endif
