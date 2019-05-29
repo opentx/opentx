@@ -54,7 +54,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 
 void menuModelLogicalSwitchOne(event_t event)
 {
-  TITLE(STR_MENULOGICALSWITCH);
+  title(STR_MENULOGICALSWITCH);
 
   LogicalSwitchData * cs = lswAddress(s_currIdx);
 

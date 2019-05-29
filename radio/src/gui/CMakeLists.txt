@@ -5,7 +5,6 @@ set(GUI_SRC
   fonts.cpp
   popups.cpp
   widgets.cpp
-  menus.cpp
   menu_model.cpp
   model_select.cpp
   model_setup.cpp
@@ -31,13 +30,6 @@ set(SRC
   gui/navigation/common.cpp
   )
 
-if (PXX2)
-  set(GUI_SRC
-    ${GUI_SRC}
-    model_module_options.cpp
-    model_receiver_options.cpp
-    )
-endif()
 
 string(TOUPPER ${NAVIGATION_TYPE} NAVIGATION_TYPE)
 add_definitions(-DNAVIGATION_${NAVIGATION_TYPE})

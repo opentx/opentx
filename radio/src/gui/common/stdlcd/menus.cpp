@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -27,9 +27,10 @@ uint8_t menuLevel = 0;
 
 void popMenu()
 {
-  assert(menuLevel>0);
-  menuLevel = menuLevel-1;
+  assert(menuLevel > 0);
+  menuLevel = menuLevel - 1;
   menuEvent = EVT_ENTRY_UP;
+  // TODO ? AUDIO_KEY_PRESS();
   TRACE("popMenu(%d)", menuLevel);
 }
 
@@ -44,6 +45,7 @@ void chainMenu(MenuHandlerFunc newMenu)
 {
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  // TODO ? AUDIO_KEY_PRESS();
   TRACE("chainMenu(%d, %p)", menuLevel, newMenu);
 }
 
@@ -67,21 +69,6 @@ void pushMenu(MenuHandlerFunc newMenu)
 
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  // ? AUDIO_KEY_PRESS();
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
-}
-
-void menuModelNotes(event_t event)
-{
-  if (event == EVT_ENTRY) {
-    strcpy(s_text_file, MODELS_PATH "/");
-    char *buf = strcat_modelname(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
-    strcpy(buf, TEXT_EXT);
-  }
-
-  menuTextView(event);
-}
-
-void pushModelNotes()
-{
-  pushMenu(menuModelNotes);
 }

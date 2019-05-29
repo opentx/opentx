@@ -27,7 +27,7 @@
 
 void menuStatisticsView(event_t event)
 {
-  TITLE(STR_MENUSTAT);
+  title(STR_MENUSTAT);
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
@@ -116,7 +116,7 @@ void menuStatisticsView(event_t event)
 
 void menuStatisticsDebug(event_t event)
 {
-  TITLE(STR_MENUDEBUG);
+  title(STR_MENUDEBUG);
 
   switch (event) {
     case EVT_KEY_LONG(KEY_ENTER):
@@ -242,7 +242,7 @@ void menuStatisticsDebug(event_t event)
 #if defined(STM32)
 void menuStatisticsDebug2(event_t event)
 {
-  TITLE(STR_MENUDEBUG);
+  title(STR_MENUDEBUG);
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_ENTER):

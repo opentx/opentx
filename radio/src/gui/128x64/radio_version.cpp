@@ -63,7 +63,7 @@ void menuRadioModulesVersion(event_t event)
     return;
   }
 
-  TITLE(STR_MENU_MODULES_RX_VERSION);
+  title(STR_MENU_MODULES_RX_VERSION);
 
   if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardwareAndSettings.updateTime) {
     // menuVerticalOffset = 0;

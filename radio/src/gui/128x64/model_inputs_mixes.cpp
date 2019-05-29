@@ -378,7 +378,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
-  TITLE(STR_MIXER);
+  title(STR_MIXER);
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(lcdLastRightPos+1*FW, 0, md2->destCh+1,0);
 

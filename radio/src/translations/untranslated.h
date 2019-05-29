@@ -108,6 +108,21 @@
 #define LEN_R9M_PXX2_RF_PROTOCOLS      "\006"
 #define TR_R9M_PXX2_RF_PROTOCOLS       "ACCESS""FCC\0  ""EU\0   ""Flex"
 
+#define LEN_R9M_REGION                 "\006"
+#define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
+
+#define LEN_R9M_LITE_FCC_POWER_VALUES  "\010"
+#define TR_R9M_LITE_FCC_POWER_VALUES   "(100 mW)"
+
+#define LEN_R9M_LITE_LBT_POWER_VALUES  "\015"
+#define TR_R9M_LITE_LBT_POWER_VALUES   "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
+
+#define LEN_R9M_FCC_POWER_VALUES       "\006"
+#define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
+
+#define LEN_R9M_LBT_POWER_VALUES       "\013"
+#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
+
 #define LEN_DSM_PROTOCOLS              "\004"
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"
 

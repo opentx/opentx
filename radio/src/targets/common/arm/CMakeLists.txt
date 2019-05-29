@@ -95,6 +95,10 @@ endif()
 
 # Protocols supported
 
+if(PPM)
+  add_definitions(-DPPM)
+endif()
+
 if(DSM2)
   add_definitions(-DDSM2)
 endif()

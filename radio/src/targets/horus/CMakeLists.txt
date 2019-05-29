@@ -102,6 +102,7 @@ set(GUI_SRC
   topbar.cpp
   layout.cpp
   widget.cpp
+  menus.cpp
   ${THEMES_SRC}
   ${LAYOUTS_SRC}
   ${WIDGETS_SRC}
@@ -115,15 +116,6 @@ if(INTERNAL_GPS)
   set(SRC ${SRC} gps.cpp)
   add_definitions(-DINTERNAL_GPS)
   message("Horus: Internal GPS enabled")
-endif()
-
-if(PXX2)
-  set(GUI_SRC
-    ${GUI_SRC}
-    radio_tools.cpp
-    radio_power_meter.cpp
-    radio_spectrum_analyser.cpp
-    )
 endif()
 
 set(AUX_SERIAL_DRIVER ../common/arm/stm32/serial2_driver.cpp)

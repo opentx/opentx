@@ -655,7 +655,7 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if !defined(EXTERNAL_MODULE_PPM)
+#if !defined(PPM)
   if (moduleType == MODULE_TYPE_PPM)
     return false;
 #endif

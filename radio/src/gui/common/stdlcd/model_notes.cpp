@@ -20,52 +20,6 @@
 
 #include "opentx.h"
 
-MenuHandlerFunc menuHandlers[5];
-uint8_t menuEvent = 0;
-uint8_t menuVerticalPositions[4];
-uint8_t menuLevel = 0;
-
-void popMenu()
-{
-  assert(menuLevel>0);
-  menuLevel = menuLevel-1;
-  menuEvent = EVT_ENTRY_UP;
-  AUDIO_KEY_PRESS();
-  TRACE("popMenu(%d)", menuLevel);
-}
-
-void chainMenu(MenuHandlerFunc newMenu)
-{
-  menuHandlers[menuLevel] = newMenu;
-  menuEvent = EVT_ENTRY;
-  AUDIO_KEY_PRESS();
-  TRACE("chainMenu(%d, %p)", menuLevel, newMenu);
-}
-
-void pushMenu(MenuHandlerFunc newMenu)
-{
-  killEvents(KEY_ENTER);
-
-  if (menuLevel == 0) {
-    if (newMenu == menuRadioSetup)
-      menuVerticalPositions[0] = 1;
-    if (newMenu == menuModelSelect)
-      menuVerticalPositions[0] = 0;
-  }
-  else {
-    menuVerticalPositions[menuLevel] = menuVerticalPosition;
-  }
-
-  menuLevel++;
-
-  assert(menuLevel < DIM(menuHandlers));
-
-  menuHandlers[menuLevel] = newMenu;
-  menuEvent = EVT_ENTRY;
-  AUDIO_KEY_PRESS();
-  TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
-}
-
 void menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {
