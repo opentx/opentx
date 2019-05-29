@@ -56,7 +56,6 @@
 #define IS_KEY_BREAK(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK)
 
 #if defined(PCBXLITE)
-  typedef uint16_t event_t;
   #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)
   #define EVT_ROTARY_LEFT              0xDF00
@@ -64,7 +63,6 @@
   #define IS_NEXT_EVENT(event)         (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))
 #elif (defined(PCBHORUS) || defined(PCBTARANIS)) && defined(ROTARY_ENCODER_NAVIGATION)
-  typedef uint16_t event_t;
   #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)
   #define EVT_ROTARY_LEFT              0xDF00
@@ -72,7 +70,6 @@
   #define IS_NEXT_EVENT(event)         (event==EVT_ROTARY_RIGHT)
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_ROTARY_LEFT)
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-  typedef uint8_t event_t;
   #define EVT_ROTARY_BREAK             0xcf
   #define EVT_ROTARY_LONG              0xce
   #define EVT_ROTARY_LEFT              0xdf
@@ -80,7 +77,6 @@
   #define IS_NEXT_EVENT(event)         (event==EVT_ROTARY_RIGHT || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_ROTARY_LEFT || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))
 #else
-  typedef uint8_t event_t;
   #define IS_NEXT_EVENT(event)         (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))
 #endif

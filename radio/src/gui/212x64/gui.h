@@ -169,49 +169,50 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #define CURSOR_ON_LINE()         (menuHorizontalPosition<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-void check(const char * title, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
-void check_simple(const char *title, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
-void check_submenu_simple(const char * title, event_t event, uint8_t maxrow);
+void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check_submenu_simple(event_t event, uint8_t maxrow);
 
 void title(const char * s);
 #define TITLE(str) title(str)
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#define MENU_CHECK(title, tab, menu, lines_count) \
-  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
+#define MENU_CHECK(tab, menu, lines_count) \
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 
-#define MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count) \
-  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
+#define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
 
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK(title, tab, menu, lines_count)
+  MENU_CHECK(tab, menu, lines_count); \
+  TITLE(title)
 
 #define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count)
-
-#define SIMPLE_MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
-  check(title, event, menu, tab, DIM(tab), NULL, 0, lines_count, flags)
+  MENU_CHECK_FLAGS(tab, menu, flags, lines_count); \
+  TITLE(title)
 
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
-  check_simple(title, event, menu, tab, DIM(tab), lines_count)
+  check_simple(event, menu, tab, DIM(tab), lines_count); \
+  TITLE(title)
 
-#define SUBMENU_NOTITLE(lines_count, ...) { \
+#define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(NULL, event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  }
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count);
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(title, event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
+  TITLE(title)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(NULL, event, lines_count);
+  check_submenu_simple(event, lines_count)
 
 #define SIMPLE_SUBMENU(title, lines_count) \
-  check_submenu_simple(title, event, lines_count)
+  SIMPLE_SUBMENU_NOTITLE(lines_count); \
+  TITLE(title)
 
 typedef int choice_t;
 

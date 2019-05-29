@@ -336,7 +336,7 @@ void onLongMenuPress(const char * result)
 
 tmr10ms_t menuEntryTime;
 
-void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
   vertpos_t l_posVert = menuVerticalPosition;
   horzpos_t l_posHorz = menuHorizontalPosition;
@@ -577,23 +577,19 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
     drawVerticalScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, menuVerticalOffset, linesCount, NUM_BODY_LINES);
   }
 
-  if (name) {
-    title(name);
-  }
-
   menuVerticalPosition = l_posVert;
   menuHorizontalPosition = l_posHorz;
 }
 
 
-void check_simple(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
-  check(name, event, curr, menuTab, menuTabSize, 0, 0, rowcount);
+  check(event, curr, menuTab, menuTabSize, 0, 0, rowcount);
 }
 
-void check_submenu_simple(const char * name, event_t event, uint8_t rowcount)
+void check_submenu_simple(event_t event, uint8_t rowcount)
 {
-  check_simple(name, event, 0, 0, 0, rowcount);
+  check_simple(event, 0, nullptr, 0, rowcount);
 }
 
 void repeatLastCursorMove(event_t event)
