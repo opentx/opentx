@@ -972,10 +972,14 @@
 // External Module
 #define EXTMODULE_PULSES
 
-#if defined(PCBXLITE) || defined(PCBX9LITE)
+#if defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define HARDWARE_EXTERNAL_MODULE_SIZE_SML
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
-  #if defined(PCBX9LITE)
+  #if defined(PCBX9DP) && PCBREV >= 2019
+    #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
+    #define EXTMODULE_PWR_GPIO          GPIOD
+    #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_8  // PD.08
+  #elif defined(PCBX9LITE)
     #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
     #define EXTMODULE_PWR_GPIO          GPIOA
     #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_8  // PA.08
