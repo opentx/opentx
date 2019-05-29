@@ -809,8 +809,8 @@
 
 #if defined(PCBX9DP) && PCBREV >= 2019
   #define STATUS_LEDS
-  #define GPIO_LED_GPIO_ON              GPIO_ResetBits
-  #define GPIO_LED_GPIO_OFF             GPIO_SetBits
+  #define GPIO_LED_GPIO_ON              GPIO_SetBits
+  #define GPIO_LED_GPIO_OFF             GPIO_RetBits
   #define LED_GREEN_GPIO                GPIOA
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_13 // PA.13
 #elif defined(PCBXLITE)
