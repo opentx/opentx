@@ -874,6 +874,7 @@ void menuModelSetup(event_t event)
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
                 }
                 break;
+
 #if defined(MULTIMODULE)
               case 2:
                 if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto) {
@@ -886,6 +887,7 @@ void menuModelSetup(event_t event)
                     CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, pdef->maxSubtype);
                 }
                 break;
+
               case 3:
                 // Custom protocol, third column is subtype
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
