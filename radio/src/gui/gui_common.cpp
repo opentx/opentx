@@ -555,17 +555,14 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
     case MODULE_TYPE_PPM:
     case MODULE_TYPE_DSM2:
     case MODULE_TYPE_MULTIMODULE:
+    case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_LITE_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
       return false;
 
-    case MODULE_TYPE_ISRM_PXX2:
+    case MODULE_TYPE_XJT_PXX1:
       if (moduleBay == EXTERNAL_MODULE)
         return false;
-
-#if defined(INTMODULE_USART)
-      return false;
-#endif
 
     default:
       return true;
