@@ -118,15 +118,6 @@ if(INTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
 
-if(PXX2)
-  set(GUI_SRC
-    ${GUI_SRC}
-    radio_tools.cpp
-    radio_power_meter.cpp
-    radio_spectrum_analyser.cpp
-    )
-endif()
-
 set(AUX_SERIAL_DRIVER ../common/arm/stm32/serial2_driver.cpp)
 
 set(GVAR_SCREEN model_gvars.cpp)
