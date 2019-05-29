@@ -768,7 +768,7 @@
            </palette>
           </property>
           <property name="text">
-           <string>WARNING: Requires non-certified R9M firmware!</string>
+           <string>WARNING: Requires non-certified firmware!</string>
           </property>
          </widget>
         </item>
