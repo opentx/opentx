@@ -11,6 +11,8 @@ set(GUI_SRC
   model_setup.cpp
   model_outputs.cpp
   model_failsafe.cpp
+  model_module_options.cpp
+  model_receiver_options.cpp
   model_logical_switches.cpp
   model_special_functions.cpp
   model_telemetry.cpp
