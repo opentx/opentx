@@ -667,9 +667,9 @@ const pm_char STR_SUBTYPE_SYMAX[] PROGMEM =      "\003""Std""X5C";
 const pm_char STR_SUBTYPE_SLT[] PROGMEM =        "\006""V1_6ch""V2_8ch""Q100\0 ""Q200\0 ""MR100\0";
 const pm_char STR_SUBTYPE_CX10[] PROGMEM =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041";
 const pm_char STR_SUBTYPE_CG023[] PROGMEM =      "\005""Std\0 ""YD829";
-const pm_char STR_SUBTYPE_BAYANG[] PROGMEM =     "\007"" Std\0  "" H8S3D\0"" X16 AH""IRDrone";
+const pm_char STR_SUBTYPE_BAYANG[] PROGMEM =     "\007"" Std\0  "" H8S3D\0"" X16 AH""IRDrone"" DHD_D4";
 const pm_char STR_SUBTYPE_MT99[] PROGMEM =       "\006"" MT99\0"" H7\0  "" YZ\0  "" LS\0  "" FY805";
-const pm_char STR_SUBTYPE_MJXQ[] PROGMEM =       "\005""WLH08""X600\0""X800\0""H26D\0""E010\0""H26WH";
+const pm_char STR_SUBTYPE_MJXQ[] PROGMEM =       "\007""WLH08\0 ""X600\0  ""X800\0  ""H26D\0  ""E010\0  ""H26WH\0 ""Phoenix";
 const pm_char STR_SUBTYPE_FY326[] PROGMEM =      "\005""Std\0 ""FY319";
 const pm_char STR_SUBTYPE_HONTAI[] PROGMEM =     "\007"" Std\0  ""JJRC X1"" X5C1\0 "" FQ_951";
 const pm_char STR_SUBTYPE_AFHDS2A[] PROGMEM =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
@@ -680,42 +680,46 @@ const pm_char STR_SUBTYPE_CABELL[] PROGMEM =     "\007""V3\0    ""V3 Telm""-\0  
 const pm_char STR_SUBTYPE_H83D[] PROGMEM =       "\007""Std\0   ""H20H\0  ""H20Mini""H30Mini";
 const pm_char STR_SUBTYPE_CORONA[] PROGMEM =     "\006"" V1\0  "" V2\0  "" FD V3";
 const pm_char STR_SUBTYPE_HITEC[] PROGMEM =      "\007""Optima\0""Opt Hub""Minima\0";
-const pm_char STR_SUBTYPE_E01X[] PROGMEM =       "\004""E012""E015";
+const pm_char STR_SUBTYPE_BUGS_MINI[] PROGMEM =  "\006"" Std\0 ""Bugs3H";
+const pm_char STR_SUBTYPE_E01X[] PROGMEM =       "\005""E012\0""E015\0""E016H";
+const pm_char STR_SUBTYPE_GD00X[] PROGMEM =      "\005""GD_V1""GD_V2";
 
 const mm_protocol_definition multi_protocols[] = {
 
-  {MM_RF_PROTO_FLYSKY,     4, false,      STR_SUBTYPE_FLYSKY,  nullptr},
-  {MM_RF_PROTO_HUBSAN,     2, false,      STR_SUBTYPE_HUBSAN,  STR_MULTI_VIDFREQ},
-  {MM_RF_PROTO_FRSKY,      5, false,      STR_SUBTYPE_FRSKY,   STR_MULTI_RFTUNE},
-  {MM_RF_PROTO_HISKY,      1, false,      STR_SUBTYPE_HISKY,   nullptr},
-  {MM_RF_PROTO_V2X2,       1, false,      STR_SUBTYPE_V2X2,    nullptr},
-  {MM_RF_PROTO_DSM2,       3, false,      STR_SUBTYPE_DSM,     nullptr},
-  {MM_RF_PROTO_YD717,      4, false,      STR_SUBTYPE_YD717,   nullptr},
-  {MM_RF_PROTO_KN,         1, false,      STR_SUBTYPE_KN,      nullptr},
-  {MM_RF_PROTO_SYMAX,      1, false,      STR_SUBTYPE_SYMAX,   nullptr},
-  {MM_RF_PROTO_SLT,        4, false,      STR_SUBTYPE_SLT,     nullptr},
-  {MM_RF_PROTO_CX10,       6, false,      STR_SUBTYPE_CX10,    nullptr},
-  {MM_RF_PROTO_CG023,      1, false,      STR_SUBTYPE_CG023,   nullptr},
-  {MM_RF_PROTO_BAYANG,     3, false,      STR_SUBTYPE_BAYANG,  STR_MULTI_TELEMETRY},
-  {MM_RF_PROTO_MT99XX,     4, false,      STR_SUBTYPE_MT99,    nullptr},
-  {MM_RF_PROTO_MJXQ,       5, false,      STR_SUBTYPE_MJXQ,    nullptr},
-  {MM_RF_PROTO_FY326,      1, false,      STR_SUBTYPE_FY326,   nullptr},
-  {MM_RF_PROTO_SFHSS,      0, true,       NO_SUBTYPE,          STR_MULTI_RFTUNE},
-  {MM_RF_PROTO_HONTAI,     3, false,      STR_SUBTYPE_HONTAI,  nullptr},
-  {MM_RF_PROTO_OLRS,       0, false,      NO_SUBTYPE,          STR_MULTI_RFPOWER},
-  {MM_RF_PROTO_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A, STR_MULTI_SERVOFREQ},
-  {MM_RF_PROTO_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,    nullptr},
-  {MM_RF_PROTO_WK_2X01,    5, false,      STR_SUBTYPE_WK2x01,  nullptr},
-  {MM_RF_PROTO_Q303,       3, false,      STR_SUBTYPE_Q303,    nullptr},
-  {MM_RF_PROTO_CABELL,     7, false,      STR_SUBTYPE_CABELL,  STR_MULTI_OPTION},
-  {MM_RF_PROTO_H83D,       3, false,      STR_SUBTYPE_H83D,    nullptr},
-  {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,  STR_MULTI_RFTUNE},
-  {MM_RF_PROTO_HITEC,      2, false,      STR_SUBTYPE_HITEC,   STR_MULTI_RFTUNE},
-  {MM_RF_PROTO_E01X,       1, false,      STR_SUBTYPE_E01X,    nullptr},
-  {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,          STR_MULTI_OPTION},
+  {MM_RF_PROTO_FLYSKY,     4, false,      STR_SUBTYPE_FLYSKY,    nullptr},
+  {MM_RF_PROTO_HUBSAN,     2, false,      STR_SUBTYPE_HUBSAN,    STR_MULTI_VIDFREQ},
+  {MM_RF_PROTO_FRSKY,      5, false,      STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_HISKY,      1, false,      STR_SUBTYPE_HISKY,     nullptr},
+  {MM_RF_PROTO_V2X2,       1, false,      STR_SUBTYPE_V2X2,      nullptr},
+  {MM_RF_PROTO_DSM2,       3, false,      STR_SUBTYPE_DSM,       nullptr},
+  {MM_RF_PROTO_YD717,      4, false,      STR_SUBTYPE_YD717,     nullptr},
+  {MM_RF_PROTO_KN,         1, false,      STR_SUBTYPE_KN,        nullptr},
+  {MM_RF_PROTO_SYMAX,      1, false,      STR_SUBTYPE_SYMAX,     nullptr},
+  {MM_RF_PROTO_SLT,        4, false,      STR_SUBTYPE_SLT,       nullptr},
+  {MM_RF_PROTO_CX10,       6, false,      STR_SUBTYPE_CX10,      nullptr},
+  {MM_RF_PROTO_CG023,      1, false,      STR_SUBTYPE_CG023,     nullptr},
+  {MM_RF_PROTO_BAYANG,     4, false,      STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
+  {MM_RF_PROTO_MT99XX,     4, false,      STR_SUBTYPE_MT99,      nullptr},
+  {MM_RF_PROTO_MJXQ,       6, false,      STR_SUBTYPE_MJXQ,      STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_FY326,      1, false,      STR_SUBTYPE_FY326,     nullptr},
+  {MM_RF_PROTO_SFHSS,      0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_HONTAI,     3, false,      STR_SUBTYPE_HONTAI,    nullptr},
+  {MM_RF_PROTO_OLRS,       0, false,      NO_SUBTYPE,            STR_MULTI_RFPOWER},
+  {MM_RF_PROTO_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
+  {MM_RF_PROTO_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,      nullptr},
+  {MM_RF_PROTO_WK_2X01,    5, false,      STR_SUBTYPE_WK2x01,    nullptr},
+  {MM_RF_PROTO_Q303,       3, false,      STR_SUBTYPE_Q303,      nullptr},
+  {MM_RF_PROTO_CABELL,     7, false,      STR_SUBTYPE_CABELL,    STR_MULTI_OPTION},
+  {MM_RF_PROTO_H83D,       3, false,      STR_SUBTYPE_H83D,      nullptr},
+  {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,    STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
+  {MM_RF_PROTO_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
+  {MM_RF_PROTO_GD00X,      1, false,      STR_SUBTYPE_GD00X,     nullptr},
+  {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
-  {0xfe,                   0, false,      NO_SUBTYPE,          nullptr}
+  {0xfe,                   0, false,      NO_SUBTYPE,            nullptr}
 };
 
 #undef NO_SUBTYPE
