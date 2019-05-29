@@ -515,7 +515,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 bool isR9MModeAvailable(int mode)
 {
 #if defined(R9M_PROTO_FLEX)
-  return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
+  return true;
 #else
   return mode <= MODULE_SUBTYPE_R9M_EU;
 #endif
