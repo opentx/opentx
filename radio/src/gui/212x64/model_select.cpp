@@ -236,7 +236,7 @@ void menuModelSelect(event_t event)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
-  TITLE(STR_MENUMODELSEL);
+  title(STR_MENUMODELSEL);
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;

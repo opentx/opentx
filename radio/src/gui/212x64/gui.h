@@ -91,7 +91,7 @@ extern int8_t s_editMode; // global editmode
 #define INCDEC_REP10                   0x40
 #define NO_DBLKEYS                     0x80
 
-#define INCDEC_DECLARE_VARS(f)         uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+#define INCDEC_DECLARE_VARS(f)         uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = nullptr
 #define INCDEC_SET_FLAG(f)             incdecFlag = (f)
 #define INCDEC_ENABLE_CHECK(fn)        isValueAvailable = fn
 #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
@@ -136,7 +136,7 @@ extern const CheckIncDecStops &stopsSwitch;
 #define CATEGORY_END(val)                                          \
   (val), (val+1)
 
-int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=nullptr, const CheckIncDecStops &stops=stops100);
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
@@ -174,7 +174,6 @@ void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, u
 void check_submenu_simple(event_t event, uint8_t maxrow);
 
 void title(const char * s);
-#define TITLE(str) title(str)
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
@@ -184,35 +183,35 @@ void title(const char * s);
 #define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
 
-#define MENU(title, tab, menu, lines_count, ...) \
+#define MENU(name, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   MENU_CHECK(tab, menu, lines_count); \
-  TITLE(title)
+  title(name)
 
-#define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
+#define MENU_FLAGS(name, tab, menu, flags, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   MENU_CHECK_FLAGS(tab, menu, flags, lines_count); \
-  TITLE(title)
+  title(name)
 
-#define SIMPLE_MENU(title, tab, menu, lines_count) \
+#define SIMPLE_MENU(name, tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), lines_count); \
-  TITLE(title)
+  title(name)
 
 #define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count);
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, lines_count);
 
-#define SUBMENU(title, lines_count, ...) \
+#define SUBMENU(name, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  TITLE(title)
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
+  title(name)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
   check_submenu_simple(event, lines_count)
 
-#define SIMPLE_SUBMENU(title, lines_count) \
+#define SIMPLE_SUBMENU(name, lines_count) \
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
-  TITLE(title)
+  title(name)
 
 typedef int choice_t;
 

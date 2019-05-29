@@ -98,7 +98,7 @@ enum MenuModelOutputsOneItems {
 
 void menuModelLimitsOne(event_t event)
 {
-  TITLE(STR_MENULIMITS);
+  title(STR_MENULIMITS);
   LimitData * ld = limitAddress(s_currIdx);
 
   putsChn(11*FW, 0, s_currIdx+1, 0);
