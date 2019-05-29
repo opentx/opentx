@@ -257,7 +257,10 @@ void onBluetoothConnectMenu(const char * result)
 #endif
 
 #include "common/stdlcd/model_setup_pxx1.cpp"
+
+#if defined(PXX2)
 #include "common/stdlcd/model_setup_pxx2.cpp"
+#endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
   #define INTERNAL_MODULE_ROWS \
