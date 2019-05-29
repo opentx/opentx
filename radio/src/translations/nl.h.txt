@@ -989,8 +989,10 @@ TR_GYR_VSRCRAW
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenna selection")
 #define TR_ANTENNACONFIRM1     "Antennes wisselen?"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Is er zeker een antenne geplaatst!")
-#define TR_R9MFLEXWARN1                "Requires non"
-#define TR_R9MFLEXWARN2                "certified R9M firm."
+#define TR_R9M_PROTO_FLEX_WARN1                "Requires non"
+#define TR_R9M_PROTO_FCC_WARN1         "Requires FCC"
+#define TR_R9M_PROTO_EU_WARN1          "Requires EU"
+#define TR_R9M_PROTO_WARN2                "certified firmware"
 #define TR_LOWALARM            INDENT "Waarschuwing"
 #define TR_CRITICALALARM       INDENT "Kritiek Alarm"
 #define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")

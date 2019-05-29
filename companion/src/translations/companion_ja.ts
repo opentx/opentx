@@ -8650,7 +8650,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="771"/>
-        <source>WARNING: Requires non-certified R9M firmware!</source>
+        <source>WARNING: Requires non-certified firmware!</source>
         <translation>警告: 未認定のR9Mファームウェアが必要です！</translation>
     </message>
     <message>
