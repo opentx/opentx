@@ -33,26 +33,6 @@ void drawSleepBitmap()
   lcdRefresh();
 }
 
-#if defined(PWR_BUTTON_PRESS)
-const unsigned char SHUTDOWN_BITMAP[]  = {
-  #include "../../bitmaps/212x64/shutdown.lbm"
-};
-
-#define SHUTDOWN_BITMAP_WIDTH          60
-#define SHUTDOWN_BITMAP_HEIGHT         60
-void drawShutdownAnimation(uint32_t index, const char * message)
-{
-  index /= (PWR_PRESS_SHUTDOWN_DELAY / 4);
-  lcdRefreshWait();
-  lcdClear();
-  lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, SHUTDOWN_BITMAP, (3 - index) * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
-  if (message) {
-    lcdDrawText((LCD_W - getTextWidth(message)) / 2, LCD_H-2*FH, message);
-  }
-  lcdRefresh();
-}
-#endif
-
 void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
 #define BOX_CENTERY   (LCD_H-BOX_WIDTH/2-10)
