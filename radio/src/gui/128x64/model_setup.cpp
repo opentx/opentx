@@ -795,9 +795,7 @@ void menuModelSetup(event_t event)
       }
       lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ISRM_PXX2_RF_PROTOCOLS, index, attr);
       if (attr) {
-        // TODO change this once ACCST is available on ACCESS
-        // index = checkIncDec(event, index, 0, MODULE_SUBTYPE_ISRM_PXX2_LAST + 1 /* because of --- */, EE_MODEL);
-        index = checkIncDec(event, index, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCESS + 1 /* because of --- */, EE_MODEL);
+        index = checkIncDec(event, index, 0, MODULE_SUBTYPE_ISRM_PXX2_LAST + 1 /* because of --- */, EE_MODEL);
         if (checkIncDec_Ret) {
           memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
           if (index > 0) {
