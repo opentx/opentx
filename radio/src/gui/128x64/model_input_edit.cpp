@@ -26,7 +26,7 @@
 int expoFn(int x)
 {
   ExpoData * ed = expoAddress(s_currIdx);
-  int16_t anas[NUM_INPUTS] = {0};
+  int16_t anas[MAX_INPUTS] = {0};
   applyExpos(anas, e_perout_mode_inactive_flight_mode, ed->srcRaw, x);
   return anas[ed->chn];
 }
