@@ -1617,7 +1617,7 @@ void opentxResume()
 
 void instantTrim()
 {
-  int16_t  anas_0[NUM_INPUTS];
+  int16_t  anas_0[MAX_INPUTS];
   evalInputs(e_perout_mode_notrainer | e_perout_mode_nosticks);
   memcpy(anas_0, anas, sizeof(anas_0));
 
