@@ -545,7 +545,7 @@ void MdiChild::initModelsList()
 
   if (firmware->getCapability(Capability::HasModelCategories)) {
     ui->modelsList->header()->resizeSection(0, ui->modelsList->header()->sectionSize(0) * 2);   // pad out categories and model names
-    }
+  }
   else {
     ui->modelsList->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);           // minimise Index
     ui->modelsList->header()->resizeSection(1, ui->modelsList->header()->sectionSize(1) * 1.5); // pad out model names
