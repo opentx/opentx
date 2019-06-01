@@ -757,11 +757,8 @@ bool TreeModel::isModelIdUnique(unsigned modelIdx)
     ModelData & model = radioData->models[i];
     if (!model.isEmpty()) {
       for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
-        if (!model.moduleData[j].protocol == PULSES_OFF && model.moduleData[j].modelId == modelIdx) {
-          if (cnt < 1) {
-            cnt++;
-          }
-          else {
+        if (model.moduleData[j].protocol != PULSES_OFF && model.moduleData[j].modelId == modelIdx) {
+          if (++cnt > 1) {
             return false;
           }
         }
