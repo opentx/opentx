@@ -104,7 +104,7 @@ const Multiprotocols multiProtocols {
   {MM_RF_CUSTOM_SELECTED,  7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
   
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
-  { 0xfe,                  0, false,      NO_SUBTYPE,            nullptr}
+  {0xfe,                   0, false,      NO_SUBTYPE,            nullptr}
 };
 
 int Multiprotocols::MultiProtocolDefinition::getOptionMin() const {
@@ -142,7 +142,7 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
     "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","Open LRS",
     "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002", "Cabell", "ESky 150", "H8 3D", "Corona", "CFlie",
-    "Hitec", "Wfly", "Bugs", "Bugs Mini", "Traxxas", "NCC-1701-A", "E01X", "V911S", "GD00X"
+    "Hitec", "Wfly", "Bugs", "Bugs Mini", "Traxxas", "NCC-1701-A", "E01X", "V911S", "GD00X", "V761"
   });
 
   if (protocol == MM_RF_CUSTOM_SELECTED || custom)
