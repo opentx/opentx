@@ -38,6 +38,45 @@ INIT_STOPS(stops100, 3, -100, 0, 100)
 INIT_STOPS(stops1000, 3, -1000, 0, 1000)
 INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1), SWSRC_LAST)
 
+int checkIncDecSelection = 0;
+
+void onSourceLongEnterPress(const char * result)
+{
+  if (result == STR_MENU_INPUTS)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
+#if defined(LUA_MODEL_SCRIPTS)
+    else if (result == STR_MENU_LUA)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
+#endif
+  else if (result == STR_MENU_STICKS)
+    checkIncDecSelection = MIXSRC_FIRST_STICK;
+  else if (result == STR_MENU_POTS)
+    checkIncDecSelection = MIXSRC_FIRST_POT;
+  else if (result == STR_MENU_MAX)
+    checkIncDecSelection = MIXSRC_MAX;
+  else if (result == STR_MENU_HELI)
+    checkIncDecSelection = MIXSRC_FIRST_HELI;
+  else if (result == STR_MENU_TRIMS)
+    checkIncDecSelection = MIXSRC_FIRST_TRIM;
+  else if (result == STR_MENU_SWITCHES)
+    checkIncDecSelection = MIXSRC_FIRST_SWITCH;
+  else if (result == STR_MENU_TRAINER)
+    checkIncDecSelection = MIXSRC_FIRST_TRAINER;
+  else if (result == STR_MENU_CHANNELS)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
+  else if (result == STR_MENU_GVARS)
+    checkIncDecSelection = MIXSRC_FIRST_GVAR;
+  else if (result == STR_MENU_TELEMETRY) {
+    for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
+      TelemetrySensor * sensor = & g_model.telemetrySensors[i];
+      if (sensor->isAvailable()) {
+        checkIncDecSelection = MIXSRC_FIRST_TELEM + 3*i;
+        break;
+      }
+    }
+  }
+}
+
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;

@@ -334,6 +334,10 @@ enum EnumKeys
 #elif defined(NAVIGATION_XLITE)
   #define KEY_PLUS                      KEY_RIGHT
   #define KEY_MINUS                     KEY_LEFT
+#elif defined(NAVIGATION_9X)
+  #define KEY_MENU                      KEY_ENTER
+  #define KEY_MINUS                     KEY_DOWN
+  #define KEY_PLUS                      KEY_UP
 #else
   #define KEY_UP                        KEY_PLUS
   #define KEY_DOWN                      KEY_MINUS
