@@ -164,7 +164,11 @@ void ModelData::clear()
   moduleData[1].ppm.delay = 300;
   moduleData[2].ppm.delay = 300;
   int board = getCurrentBoard();
-  if (IS_HORUS_OR_TARANIS(board)) {
+  if (IS_ACCESS_RADIO(board)) {
+    moduleData[0].protocol = PULSES_ACCESS_ISRM;
+    moduleData[1].protocol = PULSES_OFF;
+  }
+  else if (IS_HORUS_OR_TARANIS(board)) {
     moduleData[0].protocol = PULSES_PXX_XJT_X16;
     moduleData[1].protocol = PULSES_OFF;
   }
