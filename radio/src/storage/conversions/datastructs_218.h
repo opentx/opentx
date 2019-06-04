@@ -506,7 +506,7 @@ static inline void check_struct_218()
 #if defined(PCBHORUS)
 #define EXTRA_GENERAL_FIELDS_218 \
     EXTRA_GENERAL_FIELDS_GENERAL_218 \
-    uint8_t  serial2Mode:4; \
+    uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
@@ -526,7 +526,7 @@ static inline void check_struct_218()
 #endif
 #define EXTRA_GENERAL_FIELDS_218 \
     EXTRA_GENERAL_FIELDS_GENERAL_218 \
-    uint8_t  serial2Mode:4; \
+    uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \

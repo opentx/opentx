@@ -311,7 +311,7 @@ int sbusGetByte(uint8_t * byte)
 #endif
 #if defined(AUX_SERIAL_USART)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-      return serial2RxFifo.pop(*byte);
+      return auxSerialRxFifo.pop(*byte);
 #endif
     default:
       return false;

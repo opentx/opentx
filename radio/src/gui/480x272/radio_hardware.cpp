@@ -218,9 +218,9 @@ bool menuRadioHardware(event_t event)
 #if defined(AUX_SERIAL)
       case ITEM_RADIO_HARDWARE_UART3_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UART3MODE);
-        g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
+        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_UART3MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
-          serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
+          auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
         }
         break;
 #endif

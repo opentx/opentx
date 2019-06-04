@@ -178,7 +178,7 @@ void boardInit()
   delaysInit();
 
 #if defined(DEBUG)
-  serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
+  auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
   __enable_irq();
@@ -261,7 +261,7 @@ void checkTrainerSettings()
         stop_trainer_ppm();
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        serial2Stop();
+        auxSerialStop();
     }
 
     currentTrainerMode = requiredTrainerMode;
@@ -270,8 +270,8 @@ void checkTrainerSettings()
         init_trainer_ppm();
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
-          serial2SbusInit();
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
+          auxSerialSbusInit();
           break;
         }
         // no break

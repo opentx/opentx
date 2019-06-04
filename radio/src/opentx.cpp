@@ -1812,7 +1812,7 @@ void opentxInit()
 #endif  // #if !defined(EEPROM)
 
 #if defined(AUX_SERIAL)
-  serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
+  auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
 #endif
 
 #if defined(PCBTARANIS)
