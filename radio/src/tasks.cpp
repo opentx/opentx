@@ -200,7 +200,7 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
   }
   else {
     // for now assume mixer calculation takes 2 ms.
-    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK) - 1 /* 1 tick in advance*/;
+    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
   }
 
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
