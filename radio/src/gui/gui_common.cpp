@@ -535,10 +535,9 @@ bool isR9MModeAvailable(int mode)
 #if defined(PXX2)
 bool isPxx2IsrmChannelsCountAllowed(int channels)
 {
-  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D16)
-    return (channels <= 8);
-  else
-    return (channels % 8 == 0);
+  if (g_model.moduleData[INTERNAL_MODULE].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16 && channels > 8)
+    return false;
+  return (channels % 8 == 0);
 }
 #else
 bool isPxx2IsrmChannelsCountAllowed(int channels)
