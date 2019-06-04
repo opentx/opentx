@@ -1022,7 +1022,6 @@
   #define TRAINER_DETECT_GPIO_PIN       GPIO_Pin_11 // PD.11
 #endif
   #define TRAINER_TIMER                 TIM4
-  #define TRAINER_TIMER_IRQn            TIM4_IRQn
   #define TRAINER_GPIO_AF               GPIO_AF_TIM4 // TIM4_CH1 (Out) + TIM4_CH2 (In)
   #define TRAINER_TIMER_IRQn            TIM4_IRQn
   #define TRAINER_TIMER_IRQHandler      TIM4_IRQHandler
@@ -1043,6 +1042,8 @@
   #define TRAINER_TIMER                 TIM4
   #define TRAINER_RCC_AHB1Periph        0
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM4
+  #define TRAINER_TIMER_IRQn            TIM4_IRQn
+  #define TRAINER_TIMER_IRQHandler      TIM4_IRQHandler
 #else
   #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM3
