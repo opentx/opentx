@@ -41,6 +41,7 @@ void intmoduleSendNextFrame()
     case PROTOCOL_CHANNELS_PXX1_PULSES:
     {
 #if 0
+      // TODO this will be needed if we want to use HEARTBEAT for synchro with the module
       INTMODULE_TIMER->ARR = TIMER_2MHz_TIMER->CNT - HeartbeatCapture > 0x2A00 ? 17979 : 18019;
 #endif
       INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
