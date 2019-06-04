@@ -185,8 +185,8 @@ void processCrossfireTelemetryFrame()
 void processCrossfireTelemetryData(uint8_t data)
 {
 #if defined(AUX_SERIAL)
-  if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
-    serial2Putc(data);
+  if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    auxSerialPutc(data);
   }
 #endif
 

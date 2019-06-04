@@ -28,7 +28,7 @@
 /** Pins description corresponding to Rxd,Txd, (UART pins) */
 #define SECOND_SERIAL_PINS        {PINS_UART}
 
-Fifo<uint8_t, 512> serial2RxFifo;
+Fifo<uint8_t, 512> auxSerialRxFifo;
 
 #if !defined(SIMU)
 /*
@@ -37,7 +37,7 @@ Fifo<uint8_t, 512> serial2RxFifo;
  * This function is synchronous (i.e. uses polling).
  * c  Character to send.
  */
-void serial2Putc(const unsigned char c)
+void auxSerialPutc(const unsigned char c)
 {
   Uart *pUart = SECOND_SERIAL_UART;
 
@@ -48,7 +48,7 @@ void serial2Putc(const unsigned char c)
   pUart->UART_THR = c;
 }
 
-uint8_t serial2TracesEnabled()
+uint8_t auxSerialTracesEnabled()
 {
   return false;
 }
@@ -101,7 +101,7 @@ extern "C" void UART0_IRQHandler()
 {
   if ( SECOND_SERIAL_UART->UART_SR & UART_SR_RXRDY )
   {
-    serial2RxFifo.push(SECOND_SERIAL_UART->UART_RHR);
+    auxSerialRxFifo.push(SECOND_SERIAL_UART->UART_RHR);
   }
 }
 
@@ -110,14 +110,14 @@ extern "C" void UART0_IRQHandler()
 #endif
 
 #if defined(TELEMETRY_FRSKY)
-void serial2TelemetryInit(unsigned int /*protocol*/)
+void auxSerialTelemetryInit(unsigned int /*protocol*/)
 {
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
 }
 
 bool telemetrySecondPortReceive(uint8_t & data)
 {
-  return serial2RxFifo.pop(data);
+  return auxSerialRxFifo.pop(data);
 }
 #endif
 

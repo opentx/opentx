@@ -31,8 +31,8 @@ void serialPutc(char c) {
     usbSerialPutc(c);
 #endif
 #if defined(AUX_SERIAL)
-  if (serial2TracesEnabled())
-    serial2Putc(c);
+  if (auxSerialTracesEnabled())
+    auxSerialPutc(c);
 #endif
 }
 

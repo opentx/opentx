@@ -1363,10 +1363,10 @@ static int luaSerialWrite(lua_State * L)
   }
   #endif
   #if defined(AUX_SERIAL)
-  if (serial2Mode == UART_MODE_LUA) {
+  if (auxSerialMode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;
-    while(wr_len--) serial2Putc(*p++);
+    while(wr_len--) auxSerialPutc(*p++);
   }
   #endif
 #else
