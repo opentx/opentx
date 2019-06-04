@@ -210,10 +210,6 @@ int main()
 
   keysInit();
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  rotaryEncoderInit();
-#endif
-
   boardPreInit();
 
   // wait for inputs to stabilize
@@ -226,6 +222,10 @@ int main()
     // Start main application
     jumpTo(APP_START_ADDRESS);
   }
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotaryEncoderInit();
+#endif
 
   pwrInit();
   delaysInit(); // needed for lcdInit()
