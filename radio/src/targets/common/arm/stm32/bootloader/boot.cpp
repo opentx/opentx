@@ -36,13 +36,13 @@
 
 typedef void (*voidFunction)(void);
 
-#define jumpTo(addr) {                                          \
+#define jumpTo(addr) do {                                       \
         SCB->VTOR = addr;                                       \
         __set_MSP(*(__IO uint32_t*)addr);                       \
         uint32_t     jumpAddress = *(uint32_t*)(addr + 4);      \
         voidFunction jumpFn = (voidFunction)jumpAddress;        \
         jumpFn();                                               \
-    }
+    } while(0)
 
 // Bootloader marker:
 // -> used to detect valid bootloader files
