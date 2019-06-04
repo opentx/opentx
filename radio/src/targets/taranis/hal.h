@@ -1040,8 +1040,9 @@
   #define TRAINER_CCER_POLARYTY         TIM_CCER_CC1P
   #define TRAINER_IN_CCER               TIM_CCER_CC2E
 #elif defined(PCBXLITE)
+  #define TRAINER_TIMER                 TIM4
   #define TRAINER_RCC_AHB1Periph        0
-  #define TRAINER_RCC_APB1Periph        0
+  #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM4
 #else
   #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM3
