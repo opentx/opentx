@@ -255,16 +255,19 @@ void extmoduleSendNextFrame();
   #define init_trainer_capture()
   #define stop_trainer_capture()
 #endif
-#if defined(TRAINER_MODULE_HEARTBEAT)
-  void init_cppm_on_heartbeat_capture(void);
-  void stop_cppm_on_heartbeat_capture(void);
-  void init_sbus_on_heartbeat_capture(void);
-  void stop_sbus_on_heartbeat_capture(void);
+#if defined(TRAINER_MODULE_CPPM)
+  void init_trainer_module_cppm(void);
+  void stop_trainer_module_cppm(void);
 #else
-  #define init_cppm_on_heartbeat_capture()
-  #define stop_cppm_on_heartbeat_capture()
-  #define init_sbus_on_heartbeat_capture()
-  #define stop_sbus_on_heartbeat_capture()
+  #define init_trainer_module_cppm()
+  #define stop_trainer_module_cppm()
+#endif
+#if defined(TRAINER_MODULE_SBUS)
+  void init_trainer_module_sbus(void);
+  void stop_trainer_module_sbus(void);
+#else
+  #define init_trainer_module_sbus()
+  #define stop_trainer_module_sbus()
 #endif
 
 // SBUS

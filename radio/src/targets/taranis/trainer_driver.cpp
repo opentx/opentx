@@ -20,8 +20,8 @@
 
 #include "opentx.h"
 
-#if defined(HEARTBEAT_USART)
-DMAFifo<32> heartbeatFifo __DMA (HEARTBEAT_DMA_Stream);
+#if defined(TRAINER_MODULE_SBUS_USART)
+DMAFifo<32> heartbeatFifo __DMA (TRAINER_MODULE_SBUS_DMA_Stream);
 #endif
 
 void trainerSendNextFrame();
@@ -161,7 +161,7 @@ extern "C" void TRAINER_TIMER_IRQHandler()
     }
   }
 
-#if defined(TRAINER_MODULE_HEARTBEAT)
+#if defined(TRAINER_MODULE_CPPM)
   if ((TRAINER_TIMER->DIER & TIM_DIER_CC2IE) && (TRAINER_TIMER->SR & TIM_SR_CC2IF)) {
     // capture mode on heartbeat pin (external module)
     capture = TRAINER_TIMER->CCR2;
@@ -197,20 +197,20 @@ extern "C" void TRAINER_TIMER_IRQHandler()
 #endif
 }
 
-#if defined(TRAINER_MODULE_HEARTBEAT)
-void init_cppm_on_heartbeat_capture()
+#if defined(TRAINER_MODULE_CPPM)
+void init_trainer_module_cppm()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(HEARTBEAT_GPIO, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF_CAPTURE);
+  GPIO_PinAFConfig(TRAINER_MODULE_CPPM_GPIO, TRAINER_MODULE_CPPM_GPIO_PinSource, TRAINER_MODULE_CPPM_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = TRAINER_MODULE_CPPM_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
+  GPIO_Init(TRAINER_MODULE_CPPM_GPIO, &GPIO_InitStructure);
 
   TRAINER_TIMER->ARR = 0xFFFF;
   TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
@@ -225,7 +225,7 @@ void init_cppm_on_heartbeat_capture()
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
 }
 
-void stop_cppm_on_heartbeat_capture()
+void stop_trainer_module_cppm()
 {
   TRAINER_TIMER->DIER = 0;
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;                             // Stop counter
@@ -237,22 +237,22 @@ void stop_cppm_on_heartbeat_capture()
 }
 #endif
 
-#if defined(HEARTBEAT_USART)
-void init_sbus_on_heartbeat_capture()
+#if defined(TRAINER_MODULE_SBUS)
+void init_trainer_module_sbus()
 {
   EXTERNAL_MODULE_ON();
 
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  GPIO_PinAFConfig(GPIOC, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF_SBUS);
+  GPIO_PinAFConfig(GPIOC, TRAINER_MODULE_CPPM_GPIO_PinSource, TRAINER_MODULE_SBUS_GPIO_AF);
 
-  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = TRAINER_MODULE_CPPM_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
+  GPIO_Init(TRAINER_MODULE_CPPM_GPIO, &GPIO_InitStructure);
 
   USART_InitStructure.USART_BaudRate = 100000;
   USART_InitStructure.USART_WordLength = USART_WordLength_9b;
@@ -260,14 +260,14 @@ void init_sbus_on_heartbeat_capture()
   USART_InitStructure.USART_Parity = USART_Parity_Even;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Rx;
-  USART_Init(HEARTBEAT_USART, &USART_InitStructure);
+  USART_Init(TRAINER_MODULE_SBUS_USART, &USART_InitStructure);
 
   DMA_InitTypeDef DMA_InitStructure;
   heartbeatFifo.clear();
-  USART_ITConfig(HEARTBEAT_USART, USART_IT_RXNE, DISABLE);
-  USART_ITConfig(HEARTBEAT_USART, USART_IT_TXE, DISABLE);
-  DMA_InitStructure.DMA_Channel = HEARTBEAT_DMA_Channel;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&HEARTBEAT_USART->DR);
+  USART_ITConfig(TRAINER_MODULE_SBUS_USART, USART_IT_RXNE, DISABLE);
+  USART_ITConfig(TRAINER_MODULE_SBUS_USART, USART_IT_TXE, DISABLE);
+  DMA_InitStructure.DMA_Channel = TRAINER_MODULE_SBUS_DMA_Channel;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&TRAINER_MODULE_SBUS_USART->DR);
   DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(heartbeatFifo.buffer());
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
   DMA_InitStructure.DMA_BufferSize = heartbeatFifo.size();
@@ -281,19 +281,19 @@ void init_sbus_on_heartbeat_capture()
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(HEARTBEAT_DMA_Stream, &DMA_InitStructure);
-  USART_DMACmd(HEARTBEAT_USART, USART_DMAReq_Rx, ENABLE);
-  USART_Cmd(HEARTBEAT_USART, ENABLE);
-  DMA_Cmd(HEARTBEAT_DMA_Stream, ENABLE);
+  DMA_Init(TRAINER_MODULE_SBUS_DMA_Stream, &DMA_InitStructure);
+  USART_DMACmd(TRAINER_MODULE_SBUS_USART, USART_DMAReq_Rx, ENABLE);
+  USART_Cmd(TRAINER_MODULE_SBUS_USART, ENABLE);
+  DMA_Cmd(TRAINER_MODULE_SBUS_DMA_Stream, ENABLE);
 }
 
-void stop_sbus_on_heartbeat_capture()
+void stop_trainer_module_sbus()
 {
-  DMA_Cmd(HEARTBEAT_DMA_Stream, DISABLE);
-  USART_Cmd(HEARTBEAT_USART, DISABLE);
-  USART_DMACmd(HEARTBEAT_USART, USART_DMAReq_Rx, DISABLE);
-  DMA_DeInit(HEARTBEAT_DMA_Stream);
-  NVIC_DisableIRQ(HEARTBEAT_USART_IRQn);
+  DMA_Cmd(TRAINER_MODULE_SBUS_DMA_Stream, DISABLE);
+  USART_Cmd(TRAINER_MODULE_SBUS_USART, DISABLE);
+  USART_DMACmd(TRAINER_MODULE_SBUS_USART, USART_DMAReq_Rx, DISABLE);
+  DMA_DeInit(TRAINER_MODULE_SBUS_DMA_Stream);
+  NVIC_DisableIRQ(TRAINER_MODULE_SBUS_USART_IRQn);
 
   if (!IS_EXTERNAL_MODULE_ENABLED()) {
     EXTERNAL_MODULE_OFF();
@@ -305,7 +305,7 @@ void stop_sbus_on_heartbeat_capture()
 int sbusGetByte(uint8_t * byte)
 {
   switch (currentTrainerMode) {
-#if defined(HEARTBEAT_USART)
+#if defined(TRAINER_MODULE_SBUS_USART)
     case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
       return heartbeatFifo.pop(*byte);
 #endif

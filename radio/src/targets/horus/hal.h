@@ -625,7 +625,7 @@
 #endif
 
 // Heartbeat (not used)
-#define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define TRAINER_MODULE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
 #define HEARTBEAT_GPIO                  GPIOD
 #define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
 
