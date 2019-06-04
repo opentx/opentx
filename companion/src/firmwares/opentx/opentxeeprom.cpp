@@ -2207,7 +2207,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new SignedField<8>(this, modelData.moduleData[module].ppm.frameLength));
     if (version >= 219) {
       // TODO ACCESS
-      internalField.Append(new SpareBitsField<(1 + 3 * 8 - 2) * 8>(this));
+      internalField.Append(new CharField<1 + 3 * 8 - 2>(this, modelData.moduleData[module].access.data));
     }
   }
 
@@ -2310,10 +2310,10 @@ void OpenTxModelData::beforeExport()
 {
   // qDebug() << QString("before export model") << modelData.name;
 
-  for (int module=0; module<3; module++) {
+  for (int module=0; module<2; module++) {
     if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
       modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
-      if (! (modelData.moduleData[module].protocol == PULSES_PXX_R9M)) {
+      if (modelData.moduleData[module].protocol != PULSES_PXX_R9M) {
         subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
       }
       int pxxByte = (modelData.moduleData[module].pxx.power & 0x03)
@@ -2362,7 +2362,7 @@ void OpenTxModelData::afterImport()
     modelData.moduleData[0].protocol = PULSES_PXX_XJT_X16;
   }
 
-  for (int module=0; module<3; module++) {
+  for (int module=0; module<2; module++) {
     if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16 || modelData.moduleData[module].protocol == PULSES_LP45) {
       if (subprotocols[module] >= 0)
         modelData.moduleData[module].protocol += subprotocols[module];

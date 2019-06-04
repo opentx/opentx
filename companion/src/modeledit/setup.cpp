@@ -255,8 +255,10 @@ ModulePanel::~ModulePanel()
 
 bool ModulePanel::moduleHasFailsafes()
 {
-  return (((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 || (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M)
-         && firmware->getCapability(HasFailsafe));
+  return firmware->getCapability(HasFailsafe) && (
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_ISRM ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M);
 }
 
 void ModulePanel::setupFailsafes()
@@ -362,6 +364,9 @@ void ModulePanel::update()
   if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
     switch (protocol) {
+      case PULSES_ACCESS_ISRM:
+        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
+        break;
       case PULSES_PXX_R9M:
         mask |= MASK_R9M | MASK_SUBTYPES;
       case PULSES_PXX_XJT_X16:
@@ -371,7 +376,7 @@ void ModulePanel::update()
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
         if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 || protocol==PULSES_PXX_R9M)
           mask |= MASK_RX_NUMBER;
-        if ((IS_HORUS(board) || IS_TARANIS_XLITE(board)) && moduleIdx==0)
+        if ((IS_HORUS(board) || board == Board::BOARD_TARANIS_XLITE) && moduleIdx == 0)
           mask |= MASK_ANTENNA;
         break;
       case PULSES_LP45:
@@ -555,7 +560,7 @@ void ModulePanel::update()
 
   if (mask & MASK_CHANNELS_RANGE) {
     ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
-    ui->channelsCount->setMaximum(qMin(16, 33-ui->channelsStart->value()));
+    ui->channelsCount->setMaximum(qMin(24, 33-ui->channelsStart->value()));
   }
 }
 

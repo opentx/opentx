@@ -195,7 +195,7 @@ class Boards
 #define IS_TARANIS_XLITE(board)        (board==Board::BOARD_TARANIS_XLITE || board==Board::BOARD_TARANIS_XLITES)
 #define IS_TARANIS_XLITES(board)       (board==Board::BOARD_TARANIS_XLITES)
 #define IS_TARANIS_X7(board)           (board==Board::BOARD_TARANIS_X7)
-#define IS_TARANIS_X9LITE(board)           (board==Board::BOARD_TARANIS_X9LITE)
+#define IS_TARANIS_X9LITE(board)       (board==Board::BOARD_TARANIS_X9LITE)
 #define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9D(board)          (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP)
 #define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
@@ -208,6 +208,7 @@ class Boards
 #define IS_HORUS_OR_TARANIS(board)     (IS_HORUS(board) || IS_TARANIS(board))
 #define IS_STM32(board)                (IS_TARANIS(board) || IS_HORUS(board))
 #define IS_ARM(board)                  (IS_STM32(board) || IS_SKY9X(board))
+#define IS_ACCESS_RADIO(board)         (IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITES(board))
 #define HAS_LARGE_LCD(board)           (IS_HORUS(board) || IS_TARANIS_X9(board))
 
 #endif // _BOARDS_H_

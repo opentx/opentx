@@ -137,7 +137,6 @@ class ModuleData {
     unsigned int failsafeMode;
     int          failsafeChannels[CPN_MAX_CHNOUT];
 
-
     struct {
       int delay;
       bool pulsePol;           // false = positive
@@ -161,6 +160,11 @@ class ModuleData {
       bool sport_out;
     } pxx;
 
+    struct {
+      // unsigned int receivers;
+      // char         receiverName[3][8];
+      char data[1 + 3 * 8];
+    } access;
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     void convert(RadioDataConversionState & cstate);
