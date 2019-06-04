@@ -256,7 +256,7 @@ ModulePanel::~ModulePanel()
 bool ModulePanel::moduleHasFailsafes()
 {
   return (((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 || (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M)
-         && firmware->getCapability(HasFailsafe));;
+         && firmware->getCapability(HasFailsafe));
 }
 
 void ModulePanel::setupFailsafes()

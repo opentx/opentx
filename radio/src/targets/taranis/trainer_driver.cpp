@@ -26,6 +26,7 @@ DMAFifo<32> heartbeatFifo __DMA (TRAINER_MODULE_SBUS_DMA_Stream);
 
 void trainerSendNextFrame();
 
+#if defined(TRAINER_GPIO)
 void init_trainer_ppm()
 {
   GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_OUT_GPIO_PinSource, TRAINER_GPIO_AF);
@@ -131,6 +132,7 @@ void trainerSendNextFrame()
   TRAINER_TIMER->DIER |= TIM_DIER_UIE; // Enable this interrupt
 #endif
 }
+#endif
 
 #if defined(TRAINER_DMA_STREAM)
 extern "C" void TRAINER_DMA_IRQHandler()
@@ -152,6 +154,7 @@ extern "C" void TRAINER_TIMER_IRQHandler()
   uint16_t capture = 0;
   bool doCapture = false;
 
+#if defined(TRAINER_GPIO)
   // What mode? in or out?
   if ((TRAINER_TIMER->DIER & TRAINER_IN_INTERRUPT_ENABLE) && (TRAINER_TIMER->SR & TRAINER_IN_INTERRUPT_FLAG)) {
     // capture mode on trainer jack
@@ -160,6 +163,7 @@ extern "C" void TRAINER_TIMER_IRQHandler()
       doCapture = true;
     }
   }
+#endif
 
 #if defined(TRAINER_MODULE_CPPM)
   if ((TRAINER_TIMER->DIER & TIM_DIER_CC2IE) && (TRAINER_TIMER->SR & TIM_SR_CC2IF)) {
@@ -175,6 +179,7 @@ extern "C" void TRAINER_TIMER_IRQHandler()
     captureTrainerPulses(capture);
   }
 
+#if defined(TRAINER_GPIO)
   // PPM out compare interrupt
   if ((TRAINER_TIMER->DIER & TRAINER_OUT_INTERRUPT_ENABLE) && (TRAINER_TIMER->SR & TRAINER_OUT_INTERRUPT_FLAG)) {
     // compare interrupt
@@ -183,9 +188,9 @@ extern "C" void TRAINER_TIMER_IRQHandler()
     setupPulsesPPMTrainer();
     trainerSendNextFrame();
   }
+#endif
 
-#if !defined(TRAINER_DMA_STREAM)
-  // PPM out update interrupt
+#if defined(TRAINER_GPIO) && !defined(TRAINER_DMA_STREAM)  // PPM out update interrupt
   if ((TRAINER_TIMER->DIER & TIM_DIER_UIE) && (TRAINER_TIMER->SR & TIM_SR_UIF)) {
     TRAINER_TIMER->SR &= ~TIM_SR_UIF; // Clear flag
     TRAINER_TIMER->ARR = *trainerPulsesData.ppm.ptr++;

@@ -189,13 +189,6 @@ else()
     )
 endif()
 
-if(NOT PCB STREQUAL XLITE)
-  set(TARGET_SRC
-    ${TARGET_SRC}
-    trainer_driver.cpp
-    )
-endif()
-
 if(PCB STREQUAL X9E OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -258,6 +251,7 @@ set(TARGET_SRC
   ${LED_DRIVER}
   backlight_driver.cpp
   extmodule_driver.cpp
+  trainer_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp
   )
