@@ -1162,26 +1162,52 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 
-// Heartbeat
+// Heartbeat for XJT synchro
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
-  #define HEARTBEAT_RCC_APB2Periph      0
   #define HEARTBEAT_GPIO                GPIOD
-  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15 // PD.15
+  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15
+  #define HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+  #define HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
+  #define HEARTBEAT_EXTI_LINE           EXTI_Line15
+  #define HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
+  #define HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
 #else
-  #define TRAINER_MODULE_HEARTBEAT
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
-  #define HEARTBEAT_RCC_APB2Periph      RCC_APB2Periph_USART6
   #define HEARTBEAT_GPIO                GPIOC
-  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_7  // PC.07
-  #define HEARTBEAT_GPIO_PinSource      GPIO_PinSource7
-  #define HEARTBEAT_GPIO_AF_SBUS        GPIO_AF_USART6
-  #define HEARTBEAT_GPIO_AF_CAPTURE     GPIO_AF_TIM3
-  #define HEARTBEAT_USART               USART6
-  #define HEARTBEAT_USART_IRQHandler    USART6_IRQHandler
-  #define HEARTBEAT_USART_IRQn          USART6_IRQn
-  #define HEARTBEAT_DMA_Stream          DMA2_Stream1
-  #define HEARTBEAT_DMA_Channel         DMA_Channel_5
+  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_7
+  #define HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
+  #define HEARTBEAT_EXTI_LINE           EXTI_Line7
+  #define HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  #define HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+#endif
+
+// Trainer / Trainee from the module bay
+#if defined(PCBXLITE) || defined(PCBX9LITE)
+  #define TRAINER_MODULE_CPPM
+  #define TRAINER_MODULE_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define TRAINER_MODULE_RCC_APB1Periph      RCC_APB1Periph_TIM4
+  #define TRAINER_MODULE_RCC_APB2Periph      0
+  #define TRAINER_MODULE_CPPM_GPIO           HEARTBEAT_GPIO
+  #define TRAINER_MODULE_CPPM_GPIO_PIN       HEARTBEAT_GPIO_PIN
+  #define TRAINER_MODULE_CPPM_GPIO_PinSource GPIO_PinSource15
+  #define TRAINER_MODULE_CPPM_GPIO_AF        GPIO_AF_TIM4
+#else
+  #define TRAINER_MODULE_CPPM
+  #define TRAINER_MODULE_SBUS
+  #define TRAINER_MODULE_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define TRAINER_MODULE_RCC_APB2Periph      RCC_APB2Periph_USART6
+  #define TRAINER_MODULE_CPPM_GPIO           HEARTBEAT_GPIO
+  #define TRAINER_MODULE_CPPM_GPIO_PIN       HEARTBEAT_GPIO_PIN
+  #define TRAINER_MODULE_CPPM_GPIO_PinSource GPIO_PinSource7
+  #define TRAINER_MODULE_SBUS_GPIO_AF        GPIO_AF_USART6
+  #define TRAINER_MODULE_CPPM_GPIO_AF        GPIO_AF_TIM3
+  #define TRAINER_MODULE_SBUS_USART               USART6
+  #define TRAINER_MODULE_SBUS_USART_IRQHandler    USART6_IRQHandler
+  #define TRAINER_MODULE_SBUS_USART_IRQn          USART6_IRQn
+  #define TRAINER_MODULE_SBUS_DMA_Stream          DMA2_Stream1
+  #define TRAINER_MODULE_SBUS_DMA_Channel         DMA_Channel_5
 #endif
 
 // USB
