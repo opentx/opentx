@@ -107,7 +107,7 @@ void menuRadioModulesVersion(event_t event)
 
     // Module model
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
-      lcdDrawText(INDENT_WIDTH, y, "Model");
+      lcdDrawText(INDENT_WIDTH, y, "Module");
       uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
       lcdDrawText(COLUMN2_X, y, PXX2modulesModels[modelId]);
     }
@@ -115,7 +115,6 @@ void menuRadioModulesVersion(event_t event)
 
     // Module version
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
-      lcdDrawText(INDENT_WIDTH, y, "Version");
       if (reusableBuffer.hardwareAndSettings.modules[module].information.modelID) {
         drawPXX2FullVersion(COLUMN2_X, y, reusableBuffer.hardwareAndSettings.modules[module].information.hwVersion, reusableBuffer.hardwareAndSettings.modules[module].information.swVersion);
         static const char * variants[] = {"FCC", "EU", "FLEX"};
