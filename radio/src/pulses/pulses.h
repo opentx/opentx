@@ -103,6 +103,7 @@ PACK(struct ModuleInformation {
   PXX2HardwareInformation information;
   struct {
     PXX2HardwareInformation information;
+    tmr10ms_t timestamp;
   } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
 });
 
