@@ -148,6 +148,7 @@ const int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
+    case BOARD_JUMPER_T12:
       return FSIZE_TARANIS;
     case BOARD_X12S:
     case BOARD_X10:
@@ -200,6 +201,18 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
+  else if (IS_JUMPER_T12(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS, "SA"},
+      {SWITCH_3POS, "SB"},
+      {SWITCH_3POS, "SC"},
+      {SWITCH_3POS, "SD"},
+      {SWITCH_2POS, "SG"},
+      {SWITCH_2POS, "SH"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
   else if (IS_HORUS_OR_TARANIS(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
@@ -220,18 +233,6 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
       {SWITCH_3POS,   "SP"},
       {SWITCH_3POS,   "SQ"},
       {SWITCH_3POS,   "SR"}
-    };
-    if (index < DIM(switches))
-      return switches[index];
-  }
-  else if (IS_JUMPER_T12(board)) {
-    const Board::SwitchInfo switches[] = {
-      {SWITCH_3POS, "SA"},
-      {SWITCH_3POS, "SB"},
-      {SWITCH_3POS, "SC"},
-      {SWITCH_3POS, "SD"},
-      {SWITCH_2POS, "SG"},
-      {SWITCH_2POS, "SH"}
     };
     if (index < DIM(switches))
       return switches[index];
@@ -311,14 +312,14 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 5;
       else if (IS_TARANIS_X7(board))
         return 8;
+      else if (IS_JUMPER_T12(board))
+        return 6;
       else if (IS_TARANIS_XLITES(board))
         return 6;
       else if (IS_TARANIS_XLITE(board))
         return 4;
       else if (IS_HORUS_OR_TARANIS(board))
         return 8;
-      else if (IS_JUMPER_T12(board))
-        return 6;
       else
         return 7;
 
@@ -472,7 +473,9 @@ const QString Boards::getBoardName(Board::Type board)
       return "MEGA2560";
     case BOARD_TARANIS_X7:
       return "Taranis X7/X7S";
-     case BOARD_TARANIS_XLITE:
+    case BOARD_JUMPER_T12:
+      return "Jumper T12";
+    case BOARD_TARANIS_XLITE:
       return "Taranis X-Lite";
     case BOARD_TARANIS_XLITES:
       return "Taranis X-Lite S/PRO";

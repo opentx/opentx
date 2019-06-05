@@ -269,6 +269,7 @@ void convertModelData_218_to_219(ModelData &model)
 void convertRadioData_218_to_219(RadioData & settings)
 {
   settings.version = 219;
+  settings.variant = EEPROM_VARIANT;
 
 #if defined(PCBHORUS)
   RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
