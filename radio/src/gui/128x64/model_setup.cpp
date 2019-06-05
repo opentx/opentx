@@ -173,10 +173,11 @@ enum MenuModelSetupItems {
   #define CURRENT_RECEIVER_EDITED(k)      (k - ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1)
 #endif
 
+#define MAX_SWITCH_PER_LINE             (getSwitchWarningsCount() > 5 ? 4 : 5)
 #if defined(PCBXLITE)
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 4 ? TITLE_ROW : HIDDEN_ROW) // X-Lite needs an additional column for full line selection (<])
 #else
-  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW)
+  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > MAX_SWITCH_PER_LINE ? TITLE_ROW : HIDDEN_ROW)
 #endif
 
 #define IF_INTERNAL_MODULE_ON(x)       (IS_INTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW)
@@ -558,7 +559,7 @@ void menuModelSetup(event_t event)
           uint8_t length = STR_VSRCRAW[0];
           horzpos_t l_posHorz = menuHorizontalPosition;
 
-          if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 4*(NUM_BODY_LINES-i)) {
+          if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > MAX_SWITCH_PER_LINE*(NUM_BODY_LINES-i)) {
             if (CURSOR_MOVED_LEFT(event))
               menuVerticalOffset--;
             else
@@ -603,7 +604,7 @@ void menuModelSetup(event_t event)
           int current = 0;
           for (int i = 0; i < switchWarningsCount; i++) {
             if (SWITCH_WARNING_ALLOWED(i)) {
-              div_t qr = div(current, 4);
+              div_t qr = div(current, MAX_SWITCH_PER_LINE);
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && attr && l_posHorz == current && old_posHorz >= 0) {
                 g_model.switchWarningEnable ^= (1 << i);
                 storageDirty(EE_MODEL);
