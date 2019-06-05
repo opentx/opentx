@@ -292,9 +292,10 @@ void menuModelSetup(event_t event)
 #endif
 
   int8_t old_editMode = s_editMode;
-  int8_t old_posHorz = menuHorizontalPosition;
 
 #if defined(PCBTARANIS)
+  int8_t old_posHorz = menuHorizontalPosition;
+
   MENU_TAB({
     HEADER_LINE_COLUMNS
     0,
