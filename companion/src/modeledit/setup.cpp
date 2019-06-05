@@ -1051,7 +1051,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->trimsDisplay->hide();
   }
 
-  for (int i=0; i<firmware->getCapability(NumModules); i++) {
+  for (int i=firmware->getCapability(NumFirstUsableModule); i<firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], &ModulePanel::modified, this, &SetupPanel::modified);

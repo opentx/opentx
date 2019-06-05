@@ -776,7 +776,19 @@ bool eeLoadGeneral()
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(RADIO_T12)
+  if (g_eeGeneral.variant != (EEPROM_VARIANT & 0xFFFE)) {
+    TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
+    return false;
+  }
+  else if (g_eeGeneral.variant != EEPROM_VARIANT && g_eeGeneral.version ==  218) {
+    TRACE("V218 T12/X7 detected, allowing use", g_eeGeneral.variant, EEPROM_VARIANT); // Production firmware use v218 X7 variant
+  }
+  else {
+    TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
+    return false;
+  }
+#elif defined(PCBTARANIS)
   if (g_eeGeneral.variant != EEPROM_VARIANT) {
     TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
     return false;
