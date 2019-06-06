@@ -32,6 +32,12 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
+#if defined(DEBUG_LATENCY)
+#define HEARBEAT_OFFSET unsigned(6000 + g_model.flightModeData[0].gvars[0] * 100)
+#else
+constexpr int HEARBEAT_OFFSET = 6000;
+#endif
+
 void intmoduleSendNextFrame()
 {
   switch (moduleState[INTERNAL_MODULE].protocol) {
@@ -40,7 +46,7 @@ void intmoduleSendNextFrame()
     {
       uint32_t last = intmodulePulsesData.pxx.getLast();
       if (heartbeatCapture.valid) {
-        if (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > 17000)
+        if (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
           last -= 21;
         else
           last += 19;
