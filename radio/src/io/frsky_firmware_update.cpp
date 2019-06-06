@@ -165,6 +165,8 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
+  RTOS_WAIT_MS(1);
+
   switch(module) {
 #if defined(INTMODULE_USART)
     case INTERNAL_MODULE:
@@ -238,7 +240,10 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
 const char * FrskyDeviceFirmwareUpdate::sendPowerOn()
 {
   state = SPORT_POWERUP_REQ;
-  waitState(SPORT_IDLE, 50); // Wait 50ms and clear the fifo
+
+  RTOS_WAIT_MS(50);
+  telemetryClearFifo();
+
   for (int i=0; i<10; i++) {
     // max 10 attempts
     startFrame(PRIM_REQ_POWERUP);
@@ -268,7 +273,9 @@ const char * FrskyDeviceFirmwareUpdate::sendPowerOn()
 
 const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
 {
-  waitState(SPORT_IDLE, 20); // Clear the fifo
+  RTOS_WAIT_MS(20);
+  telemetryClearFifo();
+
   state = SPORT_VERSION_REQ;
   for (int i=0; i<10; i++) {
     // max 10 attempts
@@ -299,7 +306,9 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
     }
   }
 
-  waitState(SPORT_IDLE, 200); // Clear the fifo
+  RTOS_WAIT_MS(200);
+  telemetryClearFifo();
+
   state = SPORT_DATA_TRANSFER;
   startFrame(PRIM_CMD_DOWNLOAD);
   sendFrame();
@@ -385,11 +394,10 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
-  waitState(SPORT_IDLE, 500); // Clear the fifo
-
   /* wait 2s off */
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
+  telemetryClearFifo();
 
   if (intPwr) {
     INTERNAL_MODULE_ON();
