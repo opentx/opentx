@@ -39,7 +39,7 @@ void intmoduleSendNextFrame()
     case PROTOCOL_CHANNELS_PXX1_PULSES:
     {
       if (heartbeatCapture.valid) {
-        INTMODULE_TIMER->ARR = TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > 17000 ? 17979 : 18019;
+        INTMODULE_TIMER->ARR = (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp) > 17000 ? 17979 : 18019;
       }
       INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA

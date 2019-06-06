@@ -119,14 +119,6 @@ void per10ms()
     }
 #endif
     g_ms100 = 0;
-
-#if defined(DEBUG_LATENCY)
-    latencyToggleSwitch ^= 1;
-    if (latencyToggleSwitch)
-      sportUpdatePowerOn();
-    else
-      sportUpdatePowerOff();
-#endif
   }
 #endif
 
@@ -1351,6 +1343,19 @@ void doMixerCalculations()
   static tmr10ms_t lastTMR = 0;
 
   tmr10ms_t tmr10ms = get_tmr10ms();
+
+#if defined(DEBUG_LATENCY)
+  static tmr10ms_t lastLatencyToggle = 0;
+  if (tmr10ms - lastLatencyToggle >= 10) {
+    lastLatencyToggle = tmr10ms;
+    latencyToggleSwitch ^= 1;
+    if (latencyToggleSwitch)
+      sportUpdatePowerOn();
+    else
+      sportUpdatePowerOff();
+  }
+#endif
+
   uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
   // handle tick10ms overrun
   // correct overflow handling costs a lot of code; happens only each 11 min;
