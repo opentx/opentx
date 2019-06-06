@@ -886,7 +886,7 @@
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash S.Portem", "Flash S.Portem")
 #define TR_FLASH_RECEIVER_OTA          "Flash příjímače OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash modulu BT", "Flash modulu Bluetooth")
-#define TR_FLASH_POWER_MANAGEMENT_UNIT    "Flash batery čipu"
+#define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Flash řízení spotř.", "Flash jednotky řízení spotřeby")
 #define TR_CURRENT_VERSION             TR("Současná ver. ", "Současná verze: ")
 #define TR_FLASH_INTERNAL_MODULE       TR("Flash vnitř. modulu", "Flash vnitřního modulu")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. modulu", "Flash externího zařízení")
@@ -984,10 +984,10 @@
 #define TR_ANTENNASELECTION            TR(INDENT "Antenna", INDENT "Volba antény")
 #define TR_ANTENNACONFIRM1             "Opravdu přepnout?"
 #define TR_ANTENNACONFIRM2             TR("Zkont. anténu", "Ujisti se že je anténa připojena!")
-#define TR_R9M_PROTO_FLEX_WARN1                "Potřebuje"
-#define TR_R9M_PROTO_FCC_WARN1         "Requires FCC"
-#define TR_R9M_PROTO_EU_WARN1          "Requires EU"
-#define TR_R9M_PROTO_WARN2                "necertifikovaný R9M firm."
+#define TR_R9M_PROTO_FLEX_WARN1        "Potřebuje"
+#define TR_R9M_PROTO_FCC_WARN1         "Potřebuje FCC"
+#define TR_R9M_PROTO_EU_WARN1          "Potřebuje EU"
+#define TR_R9M_PROTO_WARN2             "necertifikovaný R9M firm."
 #define TR_LOWALARM                    INDENT "Nízký Alarm"
 #define TR_CRITICALALARM               INDENT "Kritický Alarm"
 #define TR_RSSIALARM_WARN              TR("RSSI","RSSI TELEMETRIE")
