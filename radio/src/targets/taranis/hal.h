@@ -1165,7 +1165,7 @@
 #endif
 
 // Heartbeat for XJT synchro
-#if defined(PCBXLITE) || defined(PCBX9LITE)
+#if defined(PCBXLITE)
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
   #define HEARTBEAT_GPIO                GPIOD
   #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15
@@ -1174,6 +1174,15 @@
   #define HEARTBEAT_EXTI_LINE           EXTI_Line15
   #define HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
   #define HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+#elif defined(PCBX9LITE)
+  #define HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler
+  #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define HEARTBEAT_GPIO                GPIOD
+  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15
+  #define HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+  #define HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
+  #define HEARTBEAT_EXTI_LINE           EXTI_Line15
+  #define HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
 #elif defined(RADIO_X7)
   #define HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC

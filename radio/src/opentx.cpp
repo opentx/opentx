@@ -47,6 +47,10 @@ union ReusableBuffer reusableBuffer __DMA;
 uint8_t* MSC_BOT_Data = reusableBuffer.MSC_BOT_Data;
 #endif
 
+#if defined(DEBUG_LATENCY)
+uint8_t latencyToggleSwitch = 0;
+#endif
+
 const uint8_t bchout_ar[]  = {
     0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
     0x4B, 0x4E, 0x63, 0x6C, 0x72, 0x78,
@@ -115,6 +119,14 @@ void per10ms()
     }
 #endif
     g_ms100 = 0;
+
+#if defined(DEBUG_LATENCY)
+    latencyToggleSwitch ^= 1;
+    if (latencyToggleSwitch)
+      sportUpdatePowerOn();
+    else
+      sportUpdatePowerOff();
+#endif
   }
 #endif
 
