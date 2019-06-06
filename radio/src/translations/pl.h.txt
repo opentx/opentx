@@ -898,7 +898,7 @@
 #define TR_MIXERS_MONITOR      "MONITOR MIKSER"
 #define TR_PATH_TOO_LONG       "Ścieżka za długa"
 #define TR_VIEW_TEXT           "Pokaż tekst"
-#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
+#define TR_FLASH_BOOTLOADER    "Flash bootloader"
 #define TR_FLASH_EXTERNAL_DEVICE "Sflashuj Moduł Zewnętrzny"
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetooth module")
