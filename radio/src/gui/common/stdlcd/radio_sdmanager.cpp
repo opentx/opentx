@@ -206,7 +206,7 @@ void onSdManagerMenu(const char * result)
     bluetooth.flashFirmware(lfn);
   }
 #endif
-#if defined(HARDWARE_POWER_CONTROL_CHIP)
+#if defined(HARDWARE_POWER_MANAGEMENT_UNIT)
   else if (result == STR_FLASH_POWER_MANAGEMENT_UNIT) {
     getSelectionFullPath(lfn);
     FrskyChipFirmwareUpdate device;
@@ -379,7 +379,7 @@ void menuRadioSdManager(event_t _event)
               if (information.productFamily == FIRMWARE_FAMILY_BLUETOOTH_CHIP)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
 #endif
-#if defined(HARDWARE_POWER_CONTROL_CHIP)
+#if defined(HARDWARE_POWER_MANAGEMENT_UNIT)
               if (information.productFamily == FIRMWARE_FAMILY_POWER_MANAGEMENT_UNIT)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_POWER_MANAGEMENT_UNIT);
 #endif

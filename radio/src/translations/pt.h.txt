@@ -888,7 +888,7 @@
 #define TR_MIXERS_MONITOR      "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG       "Path too long"
 #define TR_VIEW_TEXT           "View text"
-#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
+#define TR_FLASH_BOOTLOADER    "Flash bootloader"
 #define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetooth module")
