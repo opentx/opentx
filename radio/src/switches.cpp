@@ -458,6 +458,11 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
   else if (cs_idx == SWSRC_TELEMETRY_STREAMING) {
     result = TELEMETRY_STREAMING();
   }
+#if defined(DEBUG_LATENCY)
+  else if (cs_idx == SWSRC_LATENCY_TOGGLE) {
+    result = latencyToggleSwitch;
+  }
+#endif
   else if (cs_idx >= SWSRC_FIRST_FLIGHT_MODE) {
 #if defined(FLIGHT_MODES)
     uint8_t idx = cs_idx - SWSRC_FIRST_FLIGHT_MODE;

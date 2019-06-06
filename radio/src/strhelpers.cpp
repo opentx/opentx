@@ -321,6 +321,11 @@ char * getSwitchString(char * dest, swsrc_t idx)
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
     strcpy(s, "Tele");
   }
+#if defined(DEBUG_LATENCY)
+  else if (idx == SWSRC_LATENCY_TOGGLE) {
+    strcpy(s, "Ltc");
+  }
+#endif
   else {
     zchar2str(s, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN);
   }
