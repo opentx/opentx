@@ -38,10 +38,11 @@ void intmoduleSendNextFrame()
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
     {
+      uint32_t last = intmodulePulsesData.pxx.getLast();
       if (heartbeatCapture.valid) {
-        INTMODULE_TIMER->ARR = (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp) > 17000 ? 17979 : 18019;
+        intmodulePulsesData.pxx.setLast((TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp) > 17000 ? last - 21 : last + 19);
       }
-      INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
+      INTMODULE_TIMER->CCR2 = last - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
       INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
