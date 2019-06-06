@@ -40,7 +40,11 @@ void intmoduleSendNextFrame()
     {
       uint32_t last = intmodulePulsesData.pxx.getLast();
       if (heartbeatCapture.valid) {
-        intmodulePulsesData.pxx.setLast((TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp) > 17000 ? last - 21 : last + 19);
+        if (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > 17000)
+          last -= 21;
+        else
+          last += 19;
+        intmodulePulsesData.pxx.setLast(last);
       }
       INTMODULE_TIMER->CCR2 = last - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
