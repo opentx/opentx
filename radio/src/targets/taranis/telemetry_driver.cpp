@@ -198,3 +198,8 @@ uint8_t telemetryGetByte(uint8_t * byte)
   return telemetryFifo.pop(*byte);
 #endif
 }
+
+void telemetryClearFifo()
+{
+  telemetryFifo.clear();
+}

@@ -696,6 +696,7 @@ void telemetryPortSetDirectionOutput(void);
 void sportSendByte(uint8_t byte);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
+void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
