@@ -1170,7 +1170,7 @@
   #define HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
 #endif
 
-// Heartbeat for XJT synchro
+// Heartbeat for iXJT / ISRM synchro
 #if defined(PCBXLITE)
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
   #define HEARTBEAT_GPIO                GPIOD
