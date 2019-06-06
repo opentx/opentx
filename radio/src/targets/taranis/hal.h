@@ -1164,6 +1164,12 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 
+#if defined(PCBXLITES) || defined(PCBX9LITE)
+  #define HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
+#else
+  #define HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
+#endif
+
 // Heartbeat for XJT synchro
 #if defined(PCBXLITE)
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
