@@ -511,7 +511,6 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
-#if defined(PCBXLITE)
 bool isR9MModeAvailable(int mode)
 {
 #if defined(R9M_PROTO_FLEX)
@@ -520,17 +519,6 @@ bool isR9MModeAvailable(int mode)
   return mode <= MODULE_SUBTYPE_R9M_EU;
 #endif
 }
-
-#else
-bool isR9MModeAvailable(int mode)
-{
-#if defined(R9M_PROTO_FLEX)
-  return mode < MODULE_SUBTYPE_R9M_EUPLUS;
-#else
-  return true;
-#endif
-}
-#endif
 
 #if defined(PXX2)
 bool isPxx2IsrmChannelsCountAllowed(int channels)
