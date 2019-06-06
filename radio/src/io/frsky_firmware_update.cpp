@@ -404,8 +404,12 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   resumePulses();
 }
 
+#define CHIP_FIRMWARE_UPDATE_TIMEOUT  20000 /* 20s */
+
 const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 {
+  watchdogSuspend(CHIP_FIRMWARE_UPDATE_TIMEOUT);
+
   telemetryPortSetDirectionInput();
 
   uint8_t buffer[12];
@@ -422,7 +426,7 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
         }
         break;
       }
-      if (++retry == 20000) {
+      if (++retry == CHIP_FIRMWARE_UPDATE_TIMEOUT) {
         return "No answer";
       }
       RTOS_WAIT_MS(1);
