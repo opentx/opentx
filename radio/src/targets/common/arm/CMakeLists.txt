@@ -17,6 +17,7 @@ option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger
 option(MULTI_SPORT "SPORT telemetry support" OFF)
 option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
+option(DEBUG_LATENCY "Debug latency" OFF)
 option(DEBUG_USB_INTERRUPTS "Count individual USB interrupts" OFF)
 option(DEBUG_TASKS "Task switching statistics" OFF)
 option(DEBUG_TIMERS "Time critical parts of the code" OFF)
@@ -69,6 +70,10 @@ endif()
 if(DEBUG_TIMERS)
   add_definitions(-DDEBUG_TIMERS)
   set(DEBUG ON)
+endif()
+
+if(DEBUG_LATENCY)
+  add_definitions(-DDEBUG_LATENCY)
 endif()
 
 if(CLI)

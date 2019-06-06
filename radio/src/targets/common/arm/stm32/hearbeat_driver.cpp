@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-volatile uint32_t HearbeatCapture = 0;
+volatile XjtHeartbeatCapture heartbeatCapture;
 
 void init_xjt_heartbeat()
 {
@@ -44,17 +44,38 @@ void init_xjt_heartbeat()
 
   NVIC_SetPriority(HEARTBEAT_EXTI_IRQn, 0); // Highest priority interrupt
   NVIC_EnableIRQ(HEARTBEAT_EXTI_IRQn);
+  heartbeatCapture.valid = true;
 }
 
 void stop_xjt_heartbeat()
 {
+  heartbeatCapture.valid = false;
+
+#if !defined(HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler)
   NVIC_DisableIRQ(HEARTBEAT_EXTI_IRQn);
+#endif
+
+  EXTI_InitTypeDef EXTI_InitStructure;
+  EXTI_StructInit(&EXTI_InitStructure);
+  EXTI_InitStructure.EXTI_Line = HEARTBEAT_EXTI_LINE;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+  EXTI_InitStructure.EXTI_LineCmd = DISABLE;
+  EXTI_Init(&EXTI_InitStructure);
 }
 
-extern "C" void HEARTBEAT_EXTI_IRQHandler()
+void check_xjt_heartbeat()
 {
   if (EXTI_GetITStatus(HEARTBEAT_EXTI_LINE) != RESET) {
-    HearbeatCapture = TIMER_2MHz_TIMER->CNT;
+    heartbeatCapture.timestamp = TIMER_2MHz_TIMER->CNT;
+    heartbeatCapture.count++;
     EXTI_ClearITPendingBit(HEARTBEAT_EXTI_LINE);
   }
 }
+
+#if !defined(HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler)
+extern "C" void HEARTBEAT_EXTI_IRQHandler()
+{
+  check_xjt_heartbeat();
+}
+#endif

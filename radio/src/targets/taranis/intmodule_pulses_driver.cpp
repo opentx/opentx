@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-extern volatile uint32_t HeartbeatCapture;
-
 void intmoduleStop()
 {
   INTERNAL_MODULE_OFF();
@@ -40,10 +38,9 @@ void intmoduleSendNextFrame()
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
     {
-#if 0
-      // TODO this will be needed if we want to use HEARTBEAT for synchro with the module
-      INTMODULE_TIMER->ARR = TIMER_2MHz_TIMER->CNT - HeartbeatCapture > 0x2A00 ? 17979 : 18019;
-#endif
+      if (heartbeatCapture.valid) {
+        INTMODULE_TIMER->ARR = TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > 17000 ? 17979 : 18019;
+      }
       INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;

@@ -1174,6 +1174,15 @@
   #define HEARTBEAT_EXTI_LINE           EXTI_Line15
   #define HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
   #define HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+#elif defined(RADIO_X7)
+  #define HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler
+  #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define HEARTBEAT_GPIO                GPIOC
+  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_7
+  #define HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
+  #define HEARTBEAT_EXTI_LINE           EXTI_Line7
+  #define HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
 #else
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
   #define HEARTBEAT_GPIO                GPIOC

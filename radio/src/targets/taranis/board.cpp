@@ -362,14 +362,15 @@ void checkTrainerSettings()
         stop_trainer_ppm();
         break;
       case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        stop_trainer_module_cppm() ;
+        stop_trainer_module_cppm();
         break;
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        stop_trainer_module_sbus() ;
+        stop_trainer_module_sbus();
         break;
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         auxSerialStop();
+        break;
 #endif
     }
 
@@ -397,6 +398,11 @@ void checkTrainerSettings()
         init_trainer_capture();
         break;
     }
+
+    if (requiredTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE || requiredTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
+      stop_xjt_heartbeat();
+    else
+      init_xjt_heartbeat();
   }
 }
 
