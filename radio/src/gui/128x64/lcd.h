@@ -46,6 +46,7 @@
 
 /* lcd text flags */
 #define INVERS                         0x02
+
 #if defined(BOLD_FONT)
   #define BOLD                         0x40
 #else
@@ -68,6 +69,7 @@
 #define MODE(flags)                    ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 #define LEFT                           0x00 /* fake */
 #define RIGHT                          0x04 /* align right */
+#define CENTERED                       0x20
 #define IS_LEFT_ALIGNED(att)           !((att) & RIGHT)
 #define IS_RIGHT_ALIGNED(att)          (!IS_LEFT_ALIGNED(att))
 

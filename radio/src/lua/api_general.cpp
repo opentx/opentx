@@ -1432,6 +1432,7 @@ const luaR_value_entry opentxConstants[] = {
   { "BLINK", BLINK },
   { "RIGHT", RIGHT },
   { "LEFT", LEFT },
+  { "CENTER", CENTERED },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
   { "VALUE", INPUT_TYPE_VALUE },

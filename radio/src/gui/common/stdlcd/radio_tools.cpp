@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <algorithm>
 #include "opentx.h"
 
 extern uint8_t g_moduleIdx;
@@ -44,29 +45,70 @@ void addRadioModuleTool(uint8_t index, const char * label, void (* tool)(event_t
   }
 }
 
-void addRadioScriptTool(uint8_t index, const char * label)
+#define TOOL_NAME_MAXLEN  16
+
+bool readToolName(const char * filename, char * name)
 {
+  FIL file;
+  char buffer[1024];
+  UINT count;
+
+  if (f_open(&file, filename, FA_READ) != FR_OK) {
+    return "Error opening file";
+  }
+
+  if (f_read(&file, &buffer, sizeof(buffer), &count) != FR_OK) {
+    f_close(&file);
+    return false;
+  }
+
+  const char * tns = "TNS|";
+  auto * start = std::search(buffer, buffer + sizeof(buffer), tns, tns + 4);
+  if (start >= buffer + sizeof(buffer))
+    return false;
+
+  start += 4;
+
+  const char * tne = "|TNE";
+  auto * end = std::search(buffer, buffer + sizeof(buffer), tne, tne + 4);
+  if (end >= buffer + sizeof(buffer) || end <= start)
+    return false;
+
+  uint8_t len = end - start;
+  if (len > TOOL_NAME_MAXLEN)
+    return false;
+
+  strncpy(name, start, len);
+  memclear(name + len, TOOL_NAME_MAXLEN + 1 - len);
+
+  return true;
+}
+
+void addRadioScriptTool(uint8_t index, const char * filename)
+{
+  TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
+  strcat(path, filename);
+
+  char toolName[TOOL_NAME_MAXLEN + 1];
+  const char * label;
+  if (readToolName(path, toolName)) {
+    label = toolName;
+  }
+  else {
+    char * ext = (char *)getFileExtension(filename);
+    *ext = '\0';
+    label = filename;
+  }
+
   if (addRadioTool(index, label)) {
-    TCHAR lfn[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
-    strcat(lfn, label);
-    luaExec(lfn);
+    luaExec(path);
   }
 }
 
 bool isRadioScriptTool(const char * filename)
 {
   const char * ext = getFileExtension(filename);
-  if (!strcasecmp(ext, SCRIPT_BIN_EXT))
-    return true;
-
-  if (!strcasecmp(ext, SCRIPT_EXT)) {
-    TCHAR lfn[_MAX_LFN + 1] = SCRIPTS_TOOLS_PATH "/";
-    strcat(lfn, filename);
-    if (!isFileAvailable(lfn))
-      return true;
-  }
-
-  return false;
+  return ext && !strcasecmp(ext, SCRIPT_EXT);
 }
 
 void menuRadioTools(event_t event)
