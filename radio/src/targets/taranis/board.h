@@ -270,7 +270,7 @@ void extmoduleSendNextFrame();
   #define stop_trainer_module_sbus()
 #endif
 
-#if defined(HEARTBEAT_GPIO)
+#if defined(INTMODULE_HEARTBEAT_GPIO)
 void init_xjt_heartbeat();
 void stop_xjt_heartbeat();
 void check_xjt_heartbeat();

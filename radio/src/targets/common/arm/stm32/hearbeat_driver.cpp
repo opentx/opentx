@@ -29,21 +29,21 @@ void init_xjt_heartbeat()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
-  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_HEARTBEAT_GPIO_PIN;
+  GPIO_Init(INTMODULE_HEARTBEAT_GPIO, &GPIO_InitStructure);
 
-  SYSCFG_EXTILineConfig(HEARTBEAT_EXTI_PortSource, HEARTBEAT_EXTI_PinSource);
+  SYSCFG_EXTILineConfig(INTMODULE_HEARTBEAT_EXTI_PortSource, INTMODULE_HEARTBEAT_EXTI_PinSource);
 
   EXTI_InitTypeDef EXTI_InitStructure;
   EXTI_StructInit(&EXTI_InitStructure);
-  EXTI_InitStructure.EXTI_Line = HEARTBEAT_EXTI_LINE;
+  EXTI_InitStructure.EXTI_Line = INTMODULE_HEARTBEAT_EXTI_LINE;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
-  NVIC_SetPriority(HEARTBEAT_EXTI_IRQn, 0); // Highest priority interrupt
-  NVIC_EnableIRQ(HEARTBEAT_EXTI_IRQn);
+  NVIC_SetPriority(INTMODULE_HEARTBEAT_EXTI_IRQn, 0); // Highest priority interrupt
+  NVIC_EnableIRQ(INTMODULE_HEARTBEAT_EXTI_IRQn);
   heartbeatCapture.valid = true;
 }
 
@@ -51,30 +51,30 @@ void stop_xjt_heartbeat()
 {
   heartbeatCapture.valid = false;
 
-#if !defined(HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler)
-  NVIC_DisableIRQ(HEARTBEAT_EXTI_IRQn);
+#if !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+  NVIC_DisableIRQ(INTMODULE_HEARTBEAT_EXTI_IRQn);
 #endif
 
   EXTI_InitTypeDef EXTI_InitStructure;
   EXTI_StructInit(&EXTI_InitStructure);
-  EXTI_InitStructure.EXTI_Line = HEARTBEAT_EXTI_LINE;
+  EXTI_InitStructure.EXTI_Line = INTMODULE_HEARTBEAT_EXTI_LINE;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = HEARTBEAT_TRIGGER;
+  EXTI_InitStructure.EXTI_Trigger = INTMODULE_HEARTBEAT_TRIGGER;
   EXTI_InitStructure.EXTI_LineCmd = DISABLE;
   EXTI_Init(&EXTI_InitStructure);
 }
 
 void check_xjt_heartbeat()
 {
-  if (EXTI_GetITStatus(HEARTBEAT_EXTI_LINE) != RESET) {
+  if (EXTI_GetITStatus(INTMODULE_HEARTBEAT_EXTI_LINE) != RESET) {
     heartbeatCapture.timestamp = TIMER_2MHz_TIMER->CNT;
     heartbeatCapture.count++;
-    EXTI_ClearITPendingBit(HEARTBEAT_EXTI_LINE);
+    EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
   }
 }
 
-#if !defined(HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler)
-extern "C" void HEARTBEAT_EXTI_IRQHandler()
+#if !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+extern "C" void INTMODULE_HEARTBEAT_EXTI_IRQHandler()
 {
   check_xjt_heartbeat();
 }

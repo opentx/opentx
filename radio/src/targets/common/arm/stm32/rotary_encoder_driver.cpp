@@ -91,7 +91,7 @@ extern "C" void ROTARY_ENCODER_EXTI_IRQHandler1(void)
   }
 #endif
 
-#if !defined(BOOT) && defined(HEARTBEAT_ROTARY_ENCODER_SAME_EXTI_IRQHandler)
+#if !defined(BOOT) && defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
   check_xjt_heartbeat();
 #endif
 }
