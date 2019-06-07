@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-volatile XjtHeartbeatCapture heartbeatCapture;
+volatile HeartbeatCapture heartbeatCapture;
 
 void init_xjt_heartbeat()
 {

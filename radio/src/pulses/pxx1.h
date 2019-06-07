@@ -23,13 +23,13 @@
 
 #include "pxx.h"
 
-struct XjtHeartbeatCapture {
+struct HeartbeatCapture {
   uint32_t timestamp;
   uint32_t count;
   uint8_t valid;
 };
 
-extern volatile XjtHeartbeatCapture heartbeatCapture;
+extern volatile HeartbeatCapture heartbeatCapture;
 
 class Pxx1CrcMixin {
   protected:

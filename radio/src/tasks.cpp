@@ -134,17 +134,28 @@ TASK_FUNCTION(mixerTask)
 
     uint32_t now = RTOS_GET_MS();
     bool run = false;
-    if ((now - lastRunTime) >= 10) {     // run at least every 10ms
+
+    if ((now - lastRunTime) >= 10) {
+      // run at least every 10ms
       run = true;
     }
-    else if (now == nextMixerTime[0]) {
-      run = true;
-    }
-#if NUM_MODULES >= 2
-    else if (now == nextMixerTime[1]) {
+
+#if defined(PXX2)
+    if (moduleState[0].protocol == PROTOCOL_CHANNELS_PXX2 && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
       run = true;
     }
 #endif
+
+    if (now == nextMixerTime[0]) {
+      run = true;
+    }
+
+#if NUM_MODULES >= 2
+    if (now == nextMixerTime[1]) {
+      run = true;
+    }
+#endif
+
     if (!run) {
       continue;  // go back to sleep
     }
