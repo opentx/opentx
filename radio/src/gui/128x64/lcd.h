@@ -81,27 +81,26 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-  #define FONTSIZE_MASK                0x0700
-  #define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
-  #define TINSIZE                      0x0100
-  #define SMLSIZE                      0x0200
-  #define MIDSIZE                      0x0300
-  #define DBLSIZE                      0x0400
-  #define XXLSIZE                      0x0500
-  #define ERASEBG                      0x8000
-  #define VERTICAL                     0x0800
+#define FONTSIZE_MASK                0x0700
+#define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
+#define TINSIZE                      0x0100
+#define SMLSIZE                      0x0200
+#define MIDSIZE                      0x0300
+#define DBLSIZE                      0x0400
+#define XXLSIZE                      0x0500
+#define ERASEBG                      0x8000
+#define VERTICAL                     0x0800
 
-  #define TIMEBLINK                    0x1000
-  #define TIMEHOUR                     0x2000
-  #define STREXPANDED                  0x4000
+#define TIMEBLINK                    0x1000
+#define TIMEHOUR                     0x2000
+#define STREXPANDED                  0x4000
 
-  typedef uint32_t LcdFlags;
+typedef uint32_t LcdFlags;
 
 #define display_t                      uint8_t
 #define DISPLAY_BUFFER_SIZE            (LCD_W*((LCD_H+7)/8))
 
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
-
 extern coord_t lcdLastRightPos;
 extern coord_t lcdLastLeftPos;
 extern coord_t lcdNextPos;

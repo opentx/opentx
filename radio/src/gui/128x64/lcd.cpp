@@ -488,7 +488,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   if (neg) {
     *--s = '-';
   }
-  flags &= ~LEADING0;
+  flags &= ~(LEADING0 | PREC1 | PREC2);
   lcdDrawText(x, y, s, flags);
 }
 #endif
