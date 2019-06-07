@@ -754,7 +754,7 @@ void displayAcknowledgeLuaError(event_t event)
   warningResult = false;
   displayLuaError(warningText);
   if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-    warningText = NULL;
+    warningText = nullptr;
   }
 }
 
@@ -792,6 +792,7 @@ void luaError(lua_State * L, uint8_t error, bool acknowledge)
 
   if (acknowledge) {
     warningText = errorTitle;
+    warningType = WARNING_TYPE_INFO;
     popupFunc = displayAcknowledgeLuaError;
   }
   else {
