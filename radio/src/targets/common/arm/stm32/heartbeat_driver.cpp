@@ -22,7 +22,8 @@
 
 volatile HeartbeatCapture heartbeatCapture;
 
-void init_xjt_heartbeat()
+#if defined(INTMODULE_HEARTBEAT_GPIO)
+void init_intmodule_heartbeat()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
@@ -47,7 +48,7 @@ void init_xjt_heartbeat()
   heartbeatCapture.valid = true;
 }
 
-void stop_xjt_heartbeat()
+void stop_intmodule_heartbeat()
 {
   heartbeatCapture.valid = false;
 
@@ -72,8 +73,9 @@ void check_xjt_heartbeat()
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
   }
 }
+#endif
 
-#if !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+#if defined(INTMDULE_HEARTBEAT) && !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
 extern "C" void INTMODULE_HEARTBEAT_EXTI_IRQHandler()
 {
   check_xjt_heartbeat();

@@ -1182,8 +1182,8 @@
   #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
 #elif defined(PCBX9LITE)
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
-  #define INTMODULE_HEARTBEAT_GPIO                GPIOC
-  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_9
+  // #define INTMODULE_HEARTBEAT_GPIO                GPIOC
+  // #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_9
   #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource9
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line9

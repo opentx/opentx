@@ -400,9 +400,9 @@ void checkTrainerSettings()
     }
 
     if (requiredTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE || requiredTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
-      stop_xjt_heartbeat();
+      stop_intmodule_heartbeat();
     else
-      init_xjt_heartbeat();
+      init_intmodule_heartbeat();
   }
 }
 

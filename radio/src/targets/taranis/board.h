@@ -271,12 +271,12 @@ void extmoduleSendNextFrame();
 #endif
 
 #if defined(INTMODULE_HEARTBEAT_GPIO)
-void init_xjt_heartbeat();
-void stop_xjt_heartbeat();
+void init_intmodule_heartbeat();
+void stop_intmodule_heartbeat();
 void check_xjt_heartbeat();
 #else
-#define init_xjt_heartbeat()
-#define stop_xjt_heartbeat()
+#define init_intmodule_heartbeat()
+#define stop_intmodule_heartbeat()
 #define check_xjt_heartbeat()
 #endif
 
