@@ -72,9 +72,16 @@ if(DEBUG_TIMERS)
   set(DEBUG ON)
 endif()
 
-if(DEBUG_LATENCY)
+if(DEBUG_LATENCY STREQUAL MIXER_RF)
   add_definitions(-DDEBUG_LATENCY)
+  add_definitions(-DDEBUG_LATENCY_MIXER_RF)
 endif()
+
+if(DEBUG_LATENCY STREQUAL RF_ONLY)
+  add_definitions(-DDEBUG_LATENCY)
+  add_definitions(-DDEBUG_LATENCY_RF_ONLY)
+endif()
+
 
 if(CLI)
   add_definitions(-DCLI)

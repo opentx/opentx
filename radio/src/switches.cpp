@@ -431,7 +431,7 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
   else if (cs_idx == SWSRC_ON) {
     result = true;
   }
-#if defined(DEBUG_LATENCY)
+#if defined(DEBUG_LATENCY_MIXER_RF)
   else if (cs_idx == SWSRC_LATENCY_TOGGLE) {
     result = latencyToggleSwitch;
   }
