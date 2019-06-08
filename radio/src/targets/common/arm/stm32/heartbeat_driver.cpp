@@ -75,7 +75,7 @@ void check_xjt_heartbeat()
 }
 #endif
 
-#if defined(INTMDULE_HEARTBEAT) && !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+#if defined(INTMODULE_HEARTBEAT) && !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
 extern "C" void INTMODULE_HEARTBEAT_EXTI_IRQHandler()
 {
   check_xjt_heartbeat();
