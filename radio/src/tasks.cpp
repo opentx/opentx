@@ -140,7 +140,7 @@ TASK_FUNCTION(mixerTask)
       run = true;
     }
 
-#if defined(PXX2) && defined(INTMDULE_HEARTBEAT)
+#if defined(PXX2) && defined(INTMODULE_HEARTBEAT)
     if (moduleState[0].protocol == PROTOCOL_CHANNELS_PXX2 && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
       run = true;
     }
