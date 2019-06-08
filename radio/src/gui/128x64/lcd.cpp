@@ -316,15 +316,16 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
     width = getTextWidth(s, len, flags);
     x -= width;
   }
+  else if (flags & CENTERED) {
+    width = getTextWidth(s, len, flags);
+    x -= width / 2;
+  }
 #endif
 
   bool setx = false;
   while (len--) {
     unsigned char c;
-    switch (flags & (BSS+ZCHAR)) {
-      case BSS:
-        c = *s;
-        break;
+    switch (flags & ZCHAR) {
 #if !defined(BOOT)
       case ZCHAR:
         c = zchar2char(*s);
@@ -419,7 +420,7 @@ void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s,uint8_t idx, LcdFla
 {
   uint8_t length;
   length = *(s++);
-  lcdDrawSizedText(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
+  lcdDrawSizedText(x, y, s+length*idx, length, flags & ~ZCHAR);
 }
 
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
@@ -445,7 +446,6 @@ void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags)
     val >>= 4;
   }
 }
-
 
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
 {
@@ -484,7 +484,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   if (neg) {
     *--s = '-';
   }
-  flags &= ~LEADING0;
+  flags &= ~(LEADING0 | PREC1 | PREC2);
   lcdDrawText(x, y, s, flags);
 }
 #endif

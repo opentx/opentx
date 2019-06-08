@@ -41,33 +41,29 @@
 
 #define BITMAP_BUFFER_SIZE(w, h)       (2 + (w) * (((h)+7)/8))
 
-/* lcd common flags */
+/* lcdDrawText flags */
 #define BLINK                          0x01
-
-/* lcd text flags */
 #define INVERS                         0x02
 #if defined(BOLD_FONT)
   #define BOLD                         0x40
 #else
   #define BOLD                         0x00
 #endif
-
-/* lcd putc flags */
+#define LEFT                           0x00 /* fake */
+#define RIGHT                          0x04 /* align right */
+#define CENTERED                       0x20
 #define CONDENSED                      0x08
 #define FIXEDWIDTH                     0x10
-/* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-  #define BSS                          0x00
 #define ZCHAR                          0x80
 
-/* lcd outdez flags */
+/* lcdDrawNumber additional flags */
 #define LEADING0                       0x10
 #define PREC1                          0x20
 #define PREC2                          0x30
 #define MODE(flags)                    ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
-#define LEFT                           0x00 /* fake */
-#define RIGHT                          0x04 /* align right */
+
 #define IS_LEFT_ALIGNED(att)           !((att) & RIGHT)
 #define IS_RIGHT_ALIGNED(att)          (!IS_LEFT_ALIGNED(att))
 
@@ -79,27 +75,26 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-  #define FONTSIZE_MASK                0x0700
-  #define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
-  #define TINSIZE                      0x0100
-  #define SMLSIZE                      0x0200
-  #define MIDSIZE                      0x0300
-  #define DBLSIZE                      0x0400
-  #define XXLSIZE                      0x0500
-  #define ERASEBG                      0x8000
-  #define VERTICAL                     0x0800
+#define FONTSIZE_MASK                0x0700
+#define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
+#define TINSIZE                      0x0100
+#define SMLSIZE                      0x0200
+#define MIDSIZE                      0x0300
+#define DBLSIZE                      0x0400
+#define XXLSIZE                      0x0500
+#define ERASEBG                      0x8000
+#define VERTICAL                     0x0800
 
-  #define TIMEBLINK                    0x1000
-  #define TIMEHOUR                     0x2000
-  #define STREXPANDED                  0x4000
+#define TIMEBLINK                    0x1000
+#define TIMEHOUR                     0x2000
+#define STREXPANDED                  0x4000
 
-  typedef uint32_t LcdFlags;
+typedef uint32_t LcdFlags;
 
 #define display_t                      uint8_t
 #define DISPLAY_BUFFER_SIZE            (LCD_W*((LCD_H+7)/8))
 
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
-
 extern coord_t lcdLastRightPos;
 extern coord_t lcdLastLeftPos;
 extern coord_t lcdNextPos;

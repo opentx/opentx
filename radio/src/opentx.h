@@ -1189,6 +1189,11 @@ union ReusableBuffer
   } hardwareAndSettings;
 
   struct {
+    ModuleInformation modules[NUM_MODULES];
+    uint8_t linesCount;
+  } radioTools;
+
+  struct {
     uint8_t stickMode;
   } generalSettings;
 
