@@ -21,7 +21,6 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
-
 #define BOX_WIDTH                      31
 #define coord_t                        int
 #define scoord_t                       int
@@ -45,6 +44,7 @@
 #define BOLD                           0x04
 #define LEFT                           0x00
 #define RIGHT                          0x08
+#define CENTERED                       0x20
 #define FIXEDWIDTH                     0x10
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */

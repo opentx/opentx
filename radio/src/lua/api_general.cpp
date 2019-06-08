@@ -1418,7 +1418,7 @@ const luaL_Reg opentxLib[] = {
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
 #endif
   { "serialWrite", luaSerialWrite },
-  { NULL, NULL }  /* sentinel */
+  { nullptr, nullptr }  /* sentinel */
 };
 
 const luaR_value_entry opentxConstants[] = {
@@ -1432,6 +1432,7 @@ const luaR_value_entry opentxConstants[] = {
   { "BLINK", BLINK },
   { "RIGHT", RIGHT },
   { "LEFT", LEFT },
+  { "CENTER", CENTERED },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
   { "VALUE", INPUT_TYPE_VALUE },
@@ -1622,5 +1623,5 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_BITFIELD", UNIT_BITFIELD},
   {"UNIT_TEXT", UNIT_TEXT},
 #endif
-  { NULL, 0 }  /* sentinel */
+  { nullptr, 0 }  /* sentinel */
 };
