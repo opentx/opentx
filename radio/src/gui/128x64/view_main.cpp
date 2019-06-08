@@ -530,7 +530,6 @@ void menuMainView(event_t event)
 #endif
     }
     else {
-
       // Logical Switches
       uint8_t index = 0;
       uint8_t y = LCD_H-20;
