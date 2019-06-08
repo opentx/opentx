@@ -90,6 +90,10 @@ extern "C" void ROTARY_ENCODER_EXTI_IRQHandler1(void)
     EXTI_ClearITPendingBit(ROTARY_ENCODER_EXTI_LINE2);
   }
 #endif
+
+#if !defined(BOOT) && defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+  check_xjt_heartbeat();
+#endif
 }
 
 #if defined(ROTARY_ENCODER_EXTI_IRQn2)

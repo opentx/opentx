@@ -648,7 +648,7 @@
 #define TR_US                         "us"
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "Tmix max"
-#define TR_FREESTACKMINB     "Freier Stack"
+#define TR_FREE_STACK     "Freier Stack"
 #define TR_MENUTORESET         CENTER TR_ENTER " für Reset"
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"

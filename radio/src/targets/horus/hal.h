@@ -626,8 +626,9 @@
 
 // Heartbeat (not used)
 #define TRAINER_MODULE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
-#define HEARTBEAT_GPIO                  GPIOD
-#define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
+#define INTMODULE_HEARTBEAT_GPIO        GPIOD
+#define INTMODULE_HEARTBEAT_GPIO_PIN    GPIO_Pin_12 // PD.12
+#define INTMODULE_HEARTBEAT_TRIGGER     EXTI_Trigger_Falling
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)

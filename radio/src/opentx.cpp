@@ -47,6 +47,10 @@ union ReusableBuffer reusableBuffer __DMA;
 uint8_t* MSC_BOT_Data = reusableBuffer.MSC_BOT_Data;
 #endif
 
+#if defined(DEBUG_LATENCY)
+uint8_t latencyToggleSwitch = 0;
+#endif
+
 const uint8_t bchout_ar[]  = {
     0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
     0x4B, 0x4E, 0x63, 0x6C, 0x72, 0x78,
@@ -1339,6 +1343,19 @@ void doMixerCalculations()
   static tmr10ms_t lastTMR = 0;
 
   tmr10ms_t tmr10ms = get_tmr10ms();
+
+#if defined(DEBUG_LATENCY)
+  static tmr10ms_t lastLatencyToggle = 0;
+  if (tmr10ms - lastLatencyToggle >= 10) {
+    lastLatencyToggle = tmr10ms;
+    latencyToggleSwitch ^= 1;
+    if (latencyToggleSwitch)
+      sportUpdatePowerOn();
+    else
+      sportUpdatePowerOff();
+  }
+#endif
+
   uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
   // handle tick10ms overrun
   // correct overflow handling costs a lot of code; happens only each 11 min;

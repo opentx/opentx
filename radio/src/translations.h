@@ -333,7 +333,7 @@ extern const char STR_TX[];
 extern const char STR_NODATA[];
 extern const char STR_US[];
 extern const char STR_TMIXMAXMS[];
-extern const char STR_FREESTACKMINB[];
+extern const char STR_FREE_STACK[];
 extern const char STR_MENUTORESET[];
 extern const char STR_PPM_TRAINER[];
 extern const char STR_CH[];
