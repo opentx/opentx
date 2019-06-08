@@ -60,6 +60,12 @@ void Pxx2Pulses::addChannels(uint8_t module)
   for (int8_t i = 0; i < count; i++, channel++) {
     int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
     pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+#if defined(DEBUG_LATENCY_RF_ONLY)
+    if (latencyToggleSwitch)
+      pulseValue = 1;
+    else
+      pulseValue = 2046;
+#endif
     if (i & 1)
       addPulsesValues(pulseValueLow, pulseValue);
     else

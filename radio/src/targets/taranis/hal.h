@@ -1164,36 +1164,80 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 
-// Heartbeat for XJT synchro
-#if defined(PCBXLITE) || defined(PCBX9LITE)
-  #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
-  #define HEARTBEAT_GPIO                GPIOD
-  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15
-  #define HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
-  #define HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
-  #define HEARTBEAT_EXTI_LINE           EXTI_Line15
-  #define HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
-  #define HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+#if defined(PCBXLITES) || defined(PCBX9LITE)
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
 #else
-  #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
-  #define HEARTBEAT_GPIO                GPIOC
-  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_7
-  #define HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
-  #define HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
-  #define HEARTBEAT_EXTI_LINE           EXTI_Line7
-  #define HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
-  #define HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
+#endif
+
+// Heartbeat for iXJT / ISRM synchro
+#if defined(PCBXLITE)
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOD
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_15
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+#elif defined(PCBX9LITE)
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  // #define INTMODULE_HEARTBEAT_GPIO                GPIOC
+  // #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_9
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource9
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line9
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+#elif defined(RADIO_X7)
+  #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+#else
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+#endif
+
+#if defined(PCBX9LITE)
+  #define EXTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define EXTMODULE_HEARTBEAT_GPIO                GPIOD
+  #define EXTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_15
+  #define EXTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+  #define EXTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
+  #define EXTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
+  #define EXTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
+  #define EXTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
 #endif
 
 // Trainer / Trainee from the module bay
-#if defined(PCBXLITE) || defined(PCBX9LITE)
+#if defined(PCBX9LITE)
   #define TRAINER_MODULE_CPPM
-  #define TRAINER_MODULE_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define TRAINER_MODULE_RCC_AHB1Periph      EXTMODULE_HEARTBEAT_RCC_AHB1Periph
   #define TRAINER_MODULE_RCC_APB1Periph      RCC_APB1Periph_TIM4
   #define TRAINER_MODULE_RCC_APB2Periph      0
-  #define TRAINER_MODULE_CPPM_GPIO           HEARTBEAT_GPIO
-  #define TRAINER_MODULE_CPPM_GPIO_PIN       HEARTBEAT_GPIO_PIN
-  #define TRAINER_MODULE_CPPM_GPIO_PinSource GPIO_PinSource15
+  #define TRAINER_MODULE_CPPM_GPIO           EXTMODULE_HEARTBEAT_GPIO
+  #define TRAINER_MODULE_CPPM_GPIO_PIN       EXTMODULE_HEARTBEAT_GPIO_PIN
+  #define TRAINER_MODULE_CPPM_GPIO_PinSource EXTMODULE_HEARTBEAT_EXTI_PinSource
+  #define TRAINER_MODULE_CPPM_GPIO_AF        GPIO_AF_TIM4
+#elif defined(PCBXLITE)
+  #define TRAINER_MODULE_CPPM
+  #define TRAINER_MODULE_RCC_AHB1Periph      INTMODULE_HEARTBEAT_RCC_AHB1Periph
+  #define TRAINER_MODULE_RCC_APB1Periph      RCC_APB1Periph_TIM4
+  #define TRAINER_MODULE_RCC_APB2Periph      0
+  #define TRAINER_MODULE_CPPM_GPIO           INTMODULE_HEARTBEAT_GPIO
+  #define TRAINER_MODULE_CPPM_GPIO_PIN       INTMODULE_HEARTBEAT_GPIO_PIN
+  #define TRAINER_MODULE_CPPM_GPIO_PinSource INTMODULE_HEARTBEAT_EXTI_PinSource
   #define TRAINER_MODULE_CPPM_GPIO_AF        GPIO_AF_TIM4
 #else
   #define TRAINER_MODULE_CPPM
@@ -1201,9 +1245,9 @@
   #define TRAINER_MODULE_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
   #define TRAINER_MODULE_RCC_APB2Periph      RCC_APB2Periph_USART6
   #define TRAINER_MODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
-  #define TRAINER_MODULE_CPPM_GPIO           HEARTBEAT_GPIO
-  #define TRAINER_MODULE_CPPM_GPIO_PIN       HEARTBEAT_GPIO_PIN
-  #define TRAINER_MODULE_CPPM_GPIO_PinSource GPIO_PinSource7
+  #define TRAINER_MODULE_CPPM_GPIO           INTMODULE_HEARTBEAT_GPIO
+  #define TRAINER_MODULE_CPPM_GPIO_PIN       INTMODULE_HEARTBEAT_GPIO_PIN
+  #define TRAINER_MODULE_CPPM_GPIO_PinSource INTMODULE_HEARTBEAT_EXTI_PinSource
   #define TRAINER_MODULE_SBUS_GPIO_AF        GPIO_AF_USART6
   #define TRAINER_MODULE_CPPM_GPIO_AF        GPIO_AF_TIM3
   #define TRAINER_MODULE_SBUS_USART               USART6

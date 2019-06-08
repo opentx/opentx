@@ -184,7 +184,7 @@ void menuStatisticsDebug(event_t event)
   lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW4, usbWraps, LEFT);
 #endif
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW5, STR_FREESTACKMINB);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW5, STR_FREE_STACK);
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW5+1, "[M]", SMLSIZE);
   lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, menusStack.available(), LEFT);
   lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW5+1, "[X]", SMLSIZE);

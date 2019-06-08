@@ -530,7 +530,6 @@ void menuMainView(event_t event)
 #endif
     }
     else {
-
       // Logical Switches
       uint8_t index = 0;
       uint8_t y = LCD_H-20;
@@ -552,7 +551,7 @@ void menuMainView(event_t event)
   }
 
   // And ! in case of unexpected shutdown
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
+#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
   lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
 #else
   if (unexpectedShutdown) {

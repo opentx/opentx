@@ -1386,4 +1386,8 @@ inline bool isSimu()
 #endif
 }
 
+#if defined(DEBUG_LATENCY)
+extern uint8_t latencyToggleSwitch;
+#endif
+
 #endif // _OPENTX_H_

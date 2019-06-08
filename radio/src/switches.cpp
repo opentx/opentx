@@ -431,6 +431,11 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
   else if (cs_idx == SWSRC_ON) {
     result = true;
   }
+#if defined(DEBUG_LATENCY)
+  else if (cs_idx == SWSRC_LATENCY_TOGGLE) {
+    result = latencyToggleSwitch;
+  }
+#endif
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if (flags & GETSWITCH_MIDPOS_DELAY)

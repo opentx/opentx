@@ -58,8 +58,12 @@ template <class T, int SIZE>
 class PulsesBuffer: public DataBuffer<T, SIZE> {
   public:
     T getLast() {
-        return *(DataBuffer<T, SIZE>::ptr - 1);
+      return *(DataBuffer<T, SIZE>::ptr - 1);
     };
+
+    void setLast(T value) {
+      *(DataBuffer<T, SIZE>::ptr - 1) = value;
+    }
 };
 
 #endif

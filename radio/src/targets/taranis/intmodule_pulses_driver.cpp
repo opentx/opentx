@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-extern volatile uint32_t HeartbeatCapture;
-
 void intmoduleStop()
 {
   INTERNAL_MODULE_OFF();
@@ -34,17 +32,27 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
+#if defined(DEBUG_LATENCY)
+#define HEARBEAT_OFFSET unsigned(5500 + g_model.flightModeData[0].gvars[0] * 100)
+#else
+constexpr int HEARBEAT_OFFSET = 5500;
+#endif
+
 void intmoduleSendNextFrame()
 {
   switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
     {
-#if 0
-      // TODO this will be needed if we want to use HEARTBEAT for synchro with the module
-      INTMODULE_TIMER->ARR = TIMER_2MHz_TIMER->CNT - HeartbeatCapture > 0x2A00 ? 17979 : 18019;
-#endif
-      INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
+      uint32_t last = intmodulePulsesData.pxx.getLast();
+      if (heartbeatCapture.valid) {
+        if (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
+          last -= 21;
+        else
+          last += 19;
+        intmodulePulsesData.pxx.setLast(last);
+      }
+      INTMODULE_TIMER->CCR2 = last - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
       INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
