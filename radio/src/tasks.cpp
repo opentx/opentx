@@ -134,17 +134,28 @@ TASK_FUNCTION(mixerTask)
 
     uint32_t now = RTOS_GET_MS();
     bool run = false;
-    if ((now - lastRunTime) >= 10) {     // run at least every 10ms
+
+    if ((now - lastRunTime) >= 10) {
+      // run at least every 10ms
       run = true;
     }
-    else if (now == nextMixerTime[0]) {
-      run = true;
-    }
-#if NUM_MODULES >= 2
-    else if (now == nextMixerTime[1]) {
+
+#if defined(PXX2) && defined(INTMODULE_HEARTBEAT)
+    if (moduleState[0].protocol == PROTOCOL_CHANNELS_PXX2 && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
       run = true;
     }
 #endif
+
+    if (now == nextMixerTime[0]) {
+      run = true;
+    }
+
+#if NUM_MODULES >= 2
+    if (now == nextMixerTime[1]) {
+      run = true;
+    }
+#endif
+
     if (!run) {
       continue;  // go back to sleep
     }
@@ -200,7 +211,7 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
   }
   else {
     // for now assume mixer calculation takes 2 ms.
-    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK) - 1 /* 1 tick in advance*/;
+    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
   }
 
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);

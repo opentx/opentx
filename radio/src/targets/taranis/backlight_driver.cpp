@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -62,7 +62,7 @@ uint8_t isBacklightEnabled()
 void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = BACKLIGHT_GPIO_PIN_1|BACKLIGHT_GPIO_PIN_2;
+  GPIO_InitStructure.GPIO_Pin = BACKLIGHT_GPIO_PIN_1 | BACKLIGHT_GPIO_PIN_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -97,7 +97,7 @@ uint8_t isBacklightEnabled()
 {
   return (BACKLIGHT_TIMER->CCR4 != 0 || BACKLIGHT_TIMER->CCR2 != 0);
 }
-#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
 void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;

@@ -27,6 +27,9 @@
 #include "modelprinter.h"
 #include "multiprotocols.h"
 #include "checklistdialog.h"
+#include "helpers.h"
+
+#include <QDir>
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawSwitchFilterItemModel * switchModel):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -221,7 +224,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
         ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
   }
-  for (int i=0; i<=MM_RF_PROTO_LAST; i++) {
+  for (int i=0; i<=MODULE_SUBTYPE_MULTI_LAST; i++) {
     ui->multiProtocol->addItem(Multiprotocols::protocolToString(i), i);
   }
 
@@ -252,8 +255,10 @@ ModulePanel::~ModulePanel()
 
 bool ModulePanel::moduleHasFailsafes()
 {
-  return (((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 || (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M)
-         && firmware->getCapability(HasFailsafe));;
+  return firmware->getCapability(HasFailsafe) && (
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_ISRM ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M);
 }
 
 void ModulePanel::setupFailsafes()
@@ -359,6 +364,9 @@ void ModulePanel::update()
   if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
     switch (protocol) {
+      case PULSES_ACCESS_ISRM:
+        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
+        break;
       case PULSES_PXX_R9M:
         mask |= MASK_R9M | MASK_SUBTYPES;
       case PULSES_PXX_XJT_X16:
@@ -368,7 +376,7 @@ void ModulePanel::update()
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
         if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 || protocol==PULSES_PXX_R9M)
           mask |= MASK_RX_NUMBER;
-        if ((IS_HORUS(board) || IS_TARANIS_XLITE(board)) && moduleIdx==0)
+        if ((IS_HORUS(board) || board == Board::BOARD_TARANIS_XLITE) && moduleIdx == 0)
           mask |= MASK_ANTENNA;
         break;
       case PULSES_LP45:
@@ -395,7 +403,7 @@ void ModulePanel::update()
       case PULSES_MULTIMODULE:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE | MASK_SUBTYPES;
         max_rx_num = 15;
-        if (module.multi.rfProtocol == MM_RF_PROTO_DSM2)
+        if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
           mask |= MASK_CHANNELS_COUNT;
         else
           module.channelsCount = 16;
@@ -552,7 +560,7 @@ void ModulePanel::update()
 
   if (mask & MASK_CHANNELS_RANGE) {
     ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
-    ui->channelsCount->setMaximum(qMin(16, 33-ui->channelsStart->value()));
+    ui->channelsCount->setMaximum(qMin(24, 33-ui->channelsStart->value()));
   }
 }
 
@@ -1043,7 +1051,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->trimsDisplay->hide();
   }
 
-  for (int i=0; i<firmware->getCapability(NumModules); i++) {
+  for (int i=firmware->getCapability(NumFirstUsableModule); i<firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], &ModulePanel::modified, this, &SetupPanel::modified);
@@ -1355,6 +1363,13 @@ void SetupPanel::onBeepCenterToggled(bool checked)
 
 void SetupPanel::on_editText_clicked()
 {
-  ChecklistDialog *g = new ChecklistDialog(this, ui->name->text());
-  g->exec();
+  const QString path = Helpers::getChecklistsPath();
+  QDir d(path);
+  if (!d.exists()) {
+    QMessageBox::critical(this, tr("Profile Settings"), tr("SD structure path not specified or invalid"));
+  }
+  else {
+    ChecklistDialog *g = new ChecklistDialog(this, model);
+    g->exec();
+  }
 }

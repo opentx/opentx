@@ -125,10 +125,10 @@
   #define CASE_FRSKY(x)
 #endif
 
-#if defined(PXX)
-  #define CASE_PXX(x) x,
+#if defined(PXX1)
+  #define CASE_PXX1(x) x,
 #else
-  #define CASE_PXX(x)
+  #define CASE_PXX1(x)
 #endif
 
 #if defined(PXX2)
@@ -179,7 +179,7 @@
   #define CASE_PCBX9E(x)
 #endif
 
-#if defined(PCBSKY9X) && !defined(PCBAR9X) && !defined(REVA)
+#if defined(PCBSKY9X) && !defined(PCBAR9X)
   #define TX_CAPACITY_MEASUREMENT
   #define CASE_CAPACITY(x) x,
 #else
@@ -316,7 +316,7 @@ void memswap(void * a, void * b, uint8_t size);
 #include "timers.h"
 #include "storage/storage.h"
 #include "pulses/pulses.h"
-#include "pulses/modules.h"
+#include "pulses/modules_helpers.h"
 
 #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
 #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
@@ -396,12 +396,12 @@ extern uint8_t channel_order(uint8_t x);
   #define ROTENC_DELAY_HIGHSPEED       16
 #endif
 
-#define HEART_TIMER_10MS               1
-#define HEART_TIMER_PULSES             2 // when multiple modules this is the first one
+constexpr uint8_t HEART_TIMER_10MS = 0x01;
+constexpr uint8_t HEART_TIMER_PULSES = 0x02; // when multiple modules this is the first one
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-#define HEART_WDT_CHECK                (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
+constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1));
 #else
-#define HEART_WDT_CHECK                (HEART_TIMER_10MS + HEART_TIMER_PULSES)
+constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + HEART_TIMER_PULSES);
 #endif
 extern uint8_t heartbeat;
 
@@ -748,8 +748,6 @@ extern int32_t            chans[MAX_OUTPUT_CHANNELS];
 extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMITS) of the last perMain
 extern int16_t            channelOutputs[MAX_OUTPUT_CHANNELS];
 
-#define NUM_INPUTS      (MAX_INPUTS)
-
 int expo(int x, int k);
 
 inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax, LcdFlags * flags = 0)
@@ -801,6 +799,14 @@ inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax,
     valMin = -valMax;
   }
 }
+#if defined(GVAR_MAX)
+inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
+{
+  int16_t rng = abs(valMax - valMin);
+  valMin = -rng;
+  valMax = rng;
+}
+#endif
 
 // Curves
 enum BaseCurves {
@@ -857,9 +863,9 @@ LogicalSwitchData * lswAddress(uint8_t idx);
 
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-extern int8_t  virtualInputsTrims[NUM_INPUTS];
+extern int8_t  virtualInputsTrims[MAX_INPUTS];
 
-extern int16_t anas [NUM_INPUTS];
+extern int16_t anas [MAX_INPUTS];
 extern int16_t trims[NUM_TRIMS];
 extern BeepANACenter bpanaCenter;
 
@@ -1164,7 +1170,7 @@ union ReusableBuffer
     uint16_t offset;
     uint16_t count;
     char originalName[SD_SCREEN_FILE_LENGTH+1];
-    BindInformation otaInformation;
+    OtaUpdateInformation otaUpdateInformation;
     char otaReceiverVersion[sizeof(TR_CURRENT_VERSION) + 12];
   } sdManager;
 #endif
@@ -1183,6 +1189,11 @@ union ReusableBuffer
   } hardwareAndSettings;
 
   struct {
+    ModuleInformation modules[NUM_MODULES];
+    uint8_t linesCount;
+  } radioTools;
+
+  struct {
     uint8_t stickMode;
   } generalSettings;
 
@@ -1197,6 +1208,7 @@ union ReusableBuffer
     uint16_t freqDefault;
     uint16_t freqMax;
     uint16_t freqMin;
+    uint8_t dirty;
   } spectrumAnalyser;
 
   struct
@@ -1205,6 +1217,7 @@ union ReusableBuffer
     int16_t power;
     int16_t peak;
     uint8_t attn;
+    uint8_t dirty;
   } powerMeter;
 
   struct
@@ -1372,5 +1385,9 @@ inline bool isSimu()
   return false;
 #endif
 }
+
+#if defined(DEBUG_LATENCY)
+extern uint8_t latencyToggleSwitch;
+#endif
 
 #endif // _OPENTX_H_

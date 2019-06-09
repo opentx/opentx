@@ -30,12 +30,10 @@ volatile uint32_t Tenms ;
 volatile uint8_t lcdLock;
 volatile uint32_t lcdInputs;
 
-#if !defined(REVA)
 uint16_t Current_analogue;
 uint16_t Current_max;
 uint32_t Current_accumulator;
 uint32_t Current_used;
-#endif
 
 extern "C" void sam_boot( void ) ;
 
@@ -49,49 +47,15 @@ extern "C" void sam_boot( void ) ;
 // PC21, PC19, PC15 (PPM2 output)
 inline void config_free_pins()
 {
-#if defined(REVA)
-  Pio * pioptr = PIOA ;
-  pioptr->PIO_PER = 0x03800000L ;         // Enable bits A25,24,23
-  pioptr->PIO_ODR = 0x03800000L ;         // Set as input
-  pioptr->PIO_PUER = 0x03800000L ;        // Enable pullups
-
-  pioptr = PIOB ;
-  pioptr->PIO_PER = 0x00002080L ;         // Enable bits B13, 7
-  pioptr->PIO_ODR = 0x00002080L ;         // Set as input
-  pioptr->PIO_PUER = 0x00002080L ;        // Enable pullups
-
-  pioptr = PIOC ;
-  pioptr->PIO_PER = 0x01700000L ;         // Enable bits C24,22,21,20
-  pioptr->PIO_ODR = 0x01700000L ;         // Set as input
-  pioptr->PIO_PUER = 0x01700000L ;        // Enable pullups
-#else
   configure_pins( PIO_PB14, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
-#endif
 }
 
 // Assumes PMC has already enabled clocks to ports
 inline void setup_switches()
 {
-#if defined(REVA)
-  Pio *pioptr = PIOA ;
-  pioptr->PIO_PER = 0xF8008184 ;          // Enable bits
-  pioptr->PIO_ODR = 0xF8008184 ;          // Set bits input
-  pioptr->PIO_PUER = 0xF8008184 ;         // Set bits with pullups
-
-  pioptr = PIOB ;
-  pioptr->PIO_PER = 0x00000010 ;          // Enable bits
-  pioptr->PIO_ODR = 0x00000010 ;          // Set bits input
-  pioptr->PIO_PUER = 0x00000010 ;         // Set bits with pullups
-
-  pioptr = PIOC ;
-  pioptr->PIO_PER = 0x10014900 ;          // Enable bits
-  pioptr->PIO_ODR = 0x10014900 ;          // Set bits input
-  pioptr->PIO_PUER = 0x10014900 ;         // Set bits with pullups
-#else
   configure_pins( 0x01808087, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP ) ;
   configure_pins( 0x00000030, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
   configure_pins( 0x91114900, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;
-#endif
 }
 
 #if !defined(SIMU)
@@ -228,19 +192,10 @@ void init_pwm()
   MATRIX->CCFG_SYSIO |= 0x00000020L ;                             // Disable TDO let PB5 work!
 
   /* Configure PIO */
-#if defined(REVA)
-  Pio *pioptr = PIOB ;
-  pioptr->PIO_PER = 0x00000020L ;         // Enable bit B5
-  pioptr->PIO_ODR = 0x00000020L ;         // set as input
-#else
   configure_pins( PIO_PA16, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_C | PIN_PORTA | PIN_NO_PULLUP ) ;
-#endif
 
   configure_pins( PIO_PC18, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
-
-#if !defined(REVA)
   configure_pins( PIO_PC22, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
-#endif
 
   // Configure clock - depends on MCK frequency
   timer = Master_frequency / 2000000 ;
@@ -258,7 +213,6 @@ void init_pwm()
   pwmptr->PWM_CH_NUM[0].PWM_CDTYUPD = 40 ;                // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID0 ;                                               // Enable channel 0
 
-#if !defined(REVA)
   // PWM2 for HAPTIC drive 100Hz test
   pwmptr->PWM_CH_NUM[2].PWM_CMR = 0x0000000C ;    // CLKB
   pwmptr->PWM_CH_NUM[2].PWM_CPDR = 100 ;                  // Period
@@ -267,8 +221,7 @@ void init_pwm()
   pwmptr->PWM_CH_NUM[2].PWM_CDTYUPD = 40 ;                // Duty
   pwmptr->PWM_OOV &= ~0x00040000 ;      // Force low
   pwmptr->PWM_OSS = 0x00040000 ;  // Force low
-  // pwmptr->PWM_ENA = PWM_ENA_CHID2 ;                   // Enable channel 2 // TODO on REVA?
-#endif
+  // pwmptr->PWM_ENA = PWM_ENA_CHID2 ;                   // Enable channel 2
 }
 
 // LCD i/o pins
@@ -287,11 +240,7 @@ void init_pwm()
 // LCD_D7      PC1
 
 #define LCD_DATA        0x000000FFL
-#if defined(REVA)
-#define LCD_A0    0x00008000L
-#else
 #define LCD_A0    0x00000080L
-#endif
 #define LCD_RnW   0x00002000L
 #define LCD_E     0x00001000L
 #define LCD_CS1   0x04000000L
@@ -411,46 +360,20 @@ void boardInit()
 
   PIOC->PIO_PER = PIO_PC25 ;            // Enable bit C25 (USB-detect)
 
-#if defined(REVA)
-  // On REVB, PA21 is used as AD8, and measures current consumption.
-  pioptr = PIOA ;
-  pioptr->PIO_PER = PIO_PA21 ;            // Enable bit A21 (EXT3)
-  pioptr->PIO_OER = PIO_PA21 ;            // Set bit A21 as output
-  pioptr->PIO_SODR = PIO_PA21 ;   // Set bit A21 ON
-
-  // Configure RF_power (PC17) and PPM-jack-in (PC19), neither need pullups
-  pioptr->PIO_PER = 0x000A0000L ;         // Enable bit C19, C17
-  pioptr->PIO_ODR = 0x000A0000L ;         // Set bits C19 and C17 as input
-#endif
-
-#if !defined(REVA)
   pwrInit() ;
-#endif
 
   config_free_pins() ;
 
   // Next section configures the key inputs on the LCD data
   pioptr = PIOC;
-#if defined(REVA)
-  pioptr->PIO_PER = 0x0000003DL ;         // Enable bits 2,3,4,5, 0
-  pioptr->PIO_OER = PIO_PC0 ;             // Set bit 0 output
-  pioptr->PIO_ODR = 0x0000003CL ;         // Set bits 2, 3, 4, 5 input
-  pioptr->PIO_PUER = 0x0000003CL ;                // Set bits 2, 3, 4, 5 with pullups
-#else
   pioptr->PIO_PER = 0x0000003BL ;         // Enable bits 1,3,4,5, 0
   pioptr->PIO_OER = PIO_PC0 ;             // Set bit 0 output
   pioptr->PIO_ODR = 0x0000003AL ;         // Set bits 1, 3, 4, 5 input
   pioptr->PIO_PUER = 0x0000003AL ;                // Set bits 1, 3, 4, 5 with pullups
-#endif
 
   pioptr = PIOB ;
-#if defined(REVA)
-  pioptr->PIO_PUER = PIO_PB6 ;                                    // Enable pullup on bit B6 (MENU)
-  pioptr->PIO_PER = PIO_PB6 ;                                     // Enable bit B6
-#else
   pioptr->PIO_PUER = PIO_PB5 ;                                    // Enable pullup on bit B5 (MENU)
   pioptr->PIO_PER = PIO_PB5 ;                                     // Enable bit B5
-#endif
 
   setup_switches() ;
 
@@ -497,14 +420,13 @@ void end_bt_tx_interrupt()
   NVIC_DisableIRQ(UART1_IRQn) ;
 }
 
-#if !defined(REVA)
 uint16_t getCurrent()
 {
   static uint16_t Current ;
   static uint32_t Current_sum ;
   static uint8_t  Current_count ;
 
-  Current_sum += anaIn(8); // TODO enum
+  Current_sum += anaIn(TX_CURRENT);
   if (++Current_count >= 50) {
     Current = Current_sum / 5 ;
     Current_sum = 0 ;
@@ -514,7 +436,6 @@ uint16_t getCurrent()
   uint32_t current_scale = 488 + g_eeGeneral.txCurrentCalibration ;
   return (current_scale * Current) / 8192;
 }
-#endif
 
 uint8_t getTemperature()
 {
@@ -567,8 +488,6 @@ void setSticksGain(uint8_t gains)
   padc->ADC_COR = offset;
 }
 
-
-#if !defined(REVA)
 void calcConsumption()
 {
   Current_accumulator += Current_analogue ;
@@ -579,7 +498,6 @@ void calcConsumption()
     Current_accumulator = 0 ;
   }
 }
-#endif
 
 void checkTrainerSettings()
 {

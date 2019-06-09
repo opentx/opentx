@@ -75,7 +75,7 @@ void menuModelFlightModeOne(event_t event)
 
   check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_FLIGHT_MODE_MAX - HEADER_LINE - (s_currIdx==0 ? (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_SWITCH-1) : 0));
 
-  TITLE(STR_MENUFLIGHTMODE);
+  title(STR_MENUFLIGHTMODE);
 
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #else

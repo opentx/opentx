@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-uint8_t serial2TracesEnabled();
+uint8_t auxSerialTracesEnabled();
 
 #if defined(SIMU)
   typedef void (*traceCallbackFunc)(const char * text);
@@ -45,7 +45,7 @@ uint8_t serial2TracesEnabled();
   #define debugPrintf(...) printf(__VA_ARGS__)
 #elif defined(DEBUG) && defined(CLI)
   #define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
-#elif defined(DEBUG) && defined(SERIAL2)
+#elif defined(DEBUG) && defined(AUX_SERIAL)
   #define debugPrintf(...) do { serialPrintf(__VA_ARGS__); } while(0)
 #else
   #define debugPrintf(...)
@@ -157,27 +157,27 @@ void dumpTraceBuffer();
 
 #else  // #if defined(DEBUG_TRACE_BUFFER)
 
-#define TRACE_EVENT(condition, event, data)  
-#define TRACEI_EVENT(condition, event, data)  
+#define TRACE_EVENT(condition, event, data)
+#define TRACEI_EVENT(condition, event, data)
 
 #endif // #if defined(DEBUG_TRACE_BUFFER)
 
 #if defined(TRACE_SD_CARD)
   #define TRACE_SD_CARD_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
 #else
-  #define TRACE_SD_CARD_EVENT(condition, event, data)  
+  #define TRACE_SD_CARD_EVENT(condition, event, data)
 #endif
 #if defined(TRACE_FATFS)
   #define TRACE_FATFS_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
 #else
-  #define TRACE_FATFS_EVENT(condition, event, data)  
+  #define TRACE_FATFS_EVENT(condition, event, data)
 #endif
 #if defined(TRACE_AUDIO)
   #define TRACE_AUDIO_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
   #define TRACEI_AUDIO_EVENT(condition, event, data) TRACEI_EVENT(condition, event, data)
 #else
-  #define TRACE_AUDIO_EVENT(condition, event, data)  
-  #define TRACEI_AUDIO_EVENT(condition, event, data)  
+  #define TRACE_AUDIO_EVENT(condition, event, data)
+  #define TRACEI_AUDIO_EVENT(condition, event, data)
 #endif
 
 

@@ -213,7 +213,7 @@ const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMa
   if (!extMaxLen) {
     extMaxLen = LEN_FILE_EXTENSION_MAX;
   }
-  if (fnlen != NULL) {
+  if (fnlen != nullptr) {
     *fnlen = (uint8_t)len;
   }
   for (int i=len-1; i >= 0 && len-i <= extMaxLen; --i) {
@@ -224,10 +224,10 @@ const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMa
       return &filename[i];
     }
   }
-  if (extlen != NULL) {
+  if (extlen != nullptr) {
     *extlen = 0;
   }
-  return NULL;
+  return nullptr;
 }
 
 /**

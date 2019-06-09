@@ -22,41 +22,15 @@
 #define _MENUS_H_
 
 #include "keys.h"
+#include "common/stdlcd/menus.h"
 
 #if defined(PCBTARANIS)
-typedef int8_t horzpos_t;
 #define NAVIGATION_LINE_BY_LINE        0x40
 #define IS_LINE_SELECTED(sub, k)       ((sub)==(k) && menuHorizontalPosition < 0)
 #else
-typedef uint8_t horzpos_t;
 #define NAVIGATION_LINE_BY_LINE        0
 #define IS_LINE_SELECTED(sub, k)       (false)
 #endif
-
-#if defined(SDCARD)
-typedef uint16_t vertpos_t;
-#else
-typedef uint8_t vertpos_t;
-#endif
-
-typedef void (*MenuHandlerFunc)(event_t event);
-
-extern tmr10ms_t menuEntryTime;
-
-extern vertpos_t menuVerticalPosition;
-extern horzpos_t menuHorizontalPosition;
-extern vertpos_t menuVerticalOffset;
-extern uint8_t menuCalibrationState;
-
-extern MenuHandlerFunc menuHandlers[5];
-extern uint8_t menuVerticalPositions[4];
-extern uint8_t menuLevel;
-extern uint8_t menuEvent;
-
-void chainMenu(MenuHandlerFunc newMenu);
-void pushMenu(MenuHandlerFunc newMenu);
-void popMenu();
-void abortPopMenu();
 
 inline bool isRadioMenuDisplayed()
 {
@@ -66,11 +40,6 @@ inline bool isRadioMenuDisplayed()
 inline bool isModelMenuDisplayed()
 {
   return menuVerticalPositions[0] == 0;
-}
-
-inline MenuHandlerFunc lastPopMenu()
-{
-  return menuHandlers[menuLevel+1];
 }
 
 void onMainViewMenu(const char * result);
@@ -106,7 +75,7 @@ void menuRadioSpectrumAnalyser(event_t event);
 void menuRadioPowerMeter(event_t event);
 void menuRadioCalibration(event_t event);
 
-static const MenuHandlerFunc menuTabGeneral[]  = {
+static const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT]  = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
 #if defined(PXX2)

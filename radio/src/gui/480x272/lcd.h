@@ -34,8 +34,6 @@
 
 #define lcdint_t                       int32_t
 
-#define BSS                            0x00
-
 /* lcd common flags */
 #define BLINK                          0x01
 

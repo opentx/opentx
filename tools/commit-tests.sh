@@ -47,7 +47,7 @@ fi
 : ${SRCDIR:=$(dirname "$SCRIPT")/..}
 
 : ${COMMON_OPTIONS:="-DCMAKE_BUILD_TYPE=Debug -DTRACE_SIMPGMSPACE=NO -DVERBOSE_CMAKELISTS=YES -DCMAKE_RULE_MESSAGES=OFF -Wno-dev"}
-if (( $WERROR )); then COMMON_OPTIONS+=" -DWARNINGS_AS_ERRORS=YES"; fi
+if (( $WERROR )); then COMMON_OPTIONS+=" -DWARNINGS_AS_ERRORS=YES -DMULTIMODULE=YES"; fi
 
 : ${EXTRA_OPTIONS:="$EXTRA_OPTIONS"}
 
@@ -63,7 +63,7 @@ cd build
 if [[ " SKY9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Sky9x
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES DLUA=YES -DMULTIMODULE=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES DLUA=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
@@ -87,10 +87,10 @@ if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ " X3 ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on X3
+if [[ " X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
+  # OpenTX on X9LITE
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X3 -DHELI=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=X9LITE -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
@@ -159,19 +159,19 @@ if [[ " X10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ " X12Sr10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on Horus beta boards
+if [[ " X12S HORUS ALL " =~ " ${FLAVOR} " ]] ; then
+  # OpenTX on Horus
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X12S -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ " X12S HORUS ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on Horus
+if [[ " T12 ALL " =~ " ${FLAVOR} " ]] ; then
+  # OpenTX on T12
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=X7 -DPCBREV=T12 -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}

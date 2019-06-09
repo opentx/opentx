@@ -269,10 +269,14 @@ char * getSwitchString(char * dest, swsrc_t idx)
     else {
       *s++ = 'S';
 #if defined(PCBX7)
-      if (swinfo.quot == 5)
-        *s++ = 'H';
+      if (swinfo.quot >= 5)
+        *s++ = 'H' + swinfo.quot - 5;
       else if (swinfo.quot == 4)
+#if defined(RADIO_T12)
+        *s++ = 'G';
+#else
         *s++ = 'F';
+#endif
       else
         *s++ = 'A'+swinfo.quot;
 #else
@@ -317,6 +321,11 @@ char * getSwitchString(char * dest, swsrc_t idx)
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
     strcpy(s, "Tele");
   }
+#if defined(DEBUG_LATENCY)
+  else if (idx == SWSRC_LATENCY_TOGGLE) {
+    strcpy(s, "Ltc");
+  }
+#endif
   else {
     zchar2str(s, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN);
   }

@@ -132,7 +132,7 @@ TEST(evalLogicalSwitches, playFile)
 }
 #endif
 
-#if defined(PCBTARANIS) && NUM_SWITCHES >= 8
+#if defined(PCBTARANIS) && NUM_SWITCHES >= 8 && !defined(PCBX7)
 TEST(getSwitch, edgeInstant)
 {
   MODEL_RESET();

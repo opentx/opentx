@@ -41,6 +41,7 @@
   #define PXX2_TYPE_ID_SPECTRUM     0x02
 
 #define PXX2_TYPE_C_OTA             0xFE
+  #define PXX2_TYPE_ID_OTA          0x02
 
 #define PXX2_CHANNELS_FLAG0_FAILSAFE         (1 << 6)
 #define PXX2_CHANNELS_FLAG0_RANGECHECK       (1 << 7)
@@ -130,6 +131,15 @@ enum PXX2BindSteps {
   BIND_OK
 };
 
+enum PXX2OtaUpdateSteps {
+  OTA_UPDATE_START = BIND_OK + 1,
+  OTA_UPDATE_START_ACK,
+  OTA_UPDATE_TRANSFER,
+  OTA_UPDATE_TRANSFER_ACK,
+  OTA_UPDATE_EOF,
+  OTA_UPDATE_EOF_ACK
+};
+
 enum PXX2ReceiverStatus {
   PXX2_HARDWARE_INFO,
   PXX2_SETTINGS_READ,
@@ -178,6 +188,8 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public Pxx2CrcMixin {
 };
 
 class Pxx2Pulses: public Pxx2Transport {
+  friend class Pxx2OtaUpdate;
+
   public:
     void setupFrame(uint8_t module);
 
@@ -186,7 +198,9 @@ class Pxx2Pulses: public Pxx2Transport {
 
     void setupRegisterFrame(uint8_t module);
 
-    void setupBindFrame(uint8_t module);
+    void setupAccstBindFrame(uint8_t module);
+
+    void setupAccessBindFrame(uint8_t module);
 
     void setupResetFrame(uint8_t module);
 
@@ -203,6 +217,8 @@ class Pxx2Pulses: public Pxx2Transport {
     void setupSpectrumAnalyser(uint8_t module);
 
     void setupPowerMeter(uint8_t module);
+
+    void sendOtaUpdate(uint8_t module, const char * rxName, uint32_t address, const char * data);
 
     void addHead()
     {
@@ -222,7 +238,7 @@ class Pxx2Pulses: public Pxx2Transport {
 
     uint8_t addFlag0(uint8_t module);
 
-    void addFlag1();
+    void addFlag1(uint8_t module);
 
     void addPulsesValues(uint16_t low, uint16_t high);
 
@@ -263,6 +279,25 @@ class Pxx2Pulses: public Pxx2Transport {
         Pxx2Transport::initBuffer();
       }
     }
+};
+
+class Pxx2OtaUpdate {
+  public:
+    Pxx2OtaUpdate(uint8_t module, const char * rxName):
+      module(module),
+      rxName(rxName)
+    {
+    }
+
+    void flashFirmware(const char * filename);
+
+  protected:
+    uint8_t module;
+    const char * rxName;
+
+    const char * doFlashFirmware(const char * filename);
+    bool waitStep(uint8_t step, uint8_t timeout);
+    const char * nextStep(uint8_t step, const char * rxName, uint32_t address, const uint8_t * buffer);
 };
 
 #endif

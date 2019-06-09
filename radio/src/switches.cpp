@@ -132,12 +132,12 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(0, SW_SA);
   CHECK_3POS(1, SW_SB);
   CHECK_3POS(2, SW_SC);
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
   CHECK_3POS(3, SW_SD);
 #endif
-#if defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBXLITES) || defined(PCBX9LITE)
   CHECK_2POS(SW_SE);
-#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // No SE
 #else
   CHECK_3POS(4, SW_SE);
@@ -147,12 +147,12 @@ void getSwitchesPosition(bool startup)
 #else
   CHECK_2POS(SW_SF);
 #endif
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // No SG
 #else
   CHECK_3POS(5, SW_SG);
 #endif
-#if defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBXLITE) || defined(PCBX9LITE)
   // No SH
 #else
   CHECK_2POS(SW_SH);
@@ -431,6 +431,11 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
   else if (cs_idx == SWSRC_ON) {
     result = true;
   }
+#if defined(DEBUG_LATENCY)
+  else if (cs_idx == SWSRC_LATENCY_TOGGLE) {
+    result = latencyToggleSwitch;
+  }
+#endif
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if (flags & GETSWITCH_MIDPOS_DELAY)
@@ -737,7 +742,7 @@ void checkSwitches()
 
       lcdRefresh();
       lcdSetContrast();
-      clearKeyEvents();
+      waitKeysReleased();
 
       last_bad_switches = switches_states;
     }

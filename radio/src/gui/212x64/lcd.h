@@ -21,7 +21,6 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
-
 #define BOX_WIDTH                      31
 #define coord_t                        int
 #define scoord_t                       int
@@ -45,6 +44,7 @@
 #define BOLD                           0x04
 #define LEFT                           0x00
 #define RIGHT                          0x08
+#define CENTERED                       0x20
 #define FIXEDWIDTH                     0x10
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
@@ -114,7 +114,7 @@ void lcdDrawText(coord_t x, coord_t y, const char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const char * s);
 
-#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
+#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(s)*FW+FW+1)/2, y, s)
 
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode, uint8_t len);

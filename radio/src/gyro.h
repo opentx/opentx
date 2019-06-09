@@ -36,12 +36,13 @@ class GyroBuffer {
     uint8_t index;
 
   public:
-    void read(int32_t values[GYRO_VALUES_COUNT]);
+    int read(int32_t values[GYRO_VALUES_COUNT]);
 };
 
 class Gyro {
   protected:
     GyroBuffer gyroBuffer;
+    uint8_t errors = 0;
 
   public:
     int16_t outputs[2];

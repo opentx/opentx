@@ -24,11 +24,15 @@
 #include "boards.h"
 #include "helpers_html.h"
 #include "multiprotocols.h"
+#include "appdata.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QFile>
 #include <QUrl>
+#include <QTextStream>
+
+extern AppData g;
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
 {
@@ -649,10 +653,17 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
   return result;
 }
 
-QString ModelPrinter::printCustomFunctionLine(int idx)
+QString ModelPrinter::printCustomFunctionLine(int idx, bool gfunc)
 {
   QString result;
-  const CustomFunctionData & cf = model.customFn[idx];
+  CustomFunctionData cf;
+  if (gfunc) {
+    if (model.noGlobalFunctions)
+      return result;
+    cf = generalSettings.customFn[idx];
+  }
+  else
+    cf = model.customFn[idx];
   if (cf.swtch.type == SWITCH_TYPE_NONE)
     return result;
 
@@ -1063,7 +1074,7 @@ QString ModelPrinter::printTelemetrySource(int val)
 {
   QStringList strings = QStringList() << tr("None");
 
-  for (int i=1; i<=CPN_MAX_SENSORS; ++i) {
+  for (unsigned i=1; i<=CPN_MAX_SENSORS; ++i) {
     strings << QString("%1").arg(model.sensorData[i-1].label);
   }
 
@@ -1444,4 +1455,22 @@ QString ModelPrinter::printTelemetryScreen(unsigned int idx, unsigned int line, 
     strl << QString("%1.lua").arg(screen.body.script.filename);
   }
   return (hd.count() > 1 ? doTableRow(hd, width / hd.count(), "left", "", true) : "" ) + doTableRow(strl, width / strl.count());
+}
+
+QString ModelPrinter::printChecklist()
+{
+  if (!model.displayChecklist)
+    return "";
+  QString str = tr("Error: Unable to open or read file!");
+  QFile file(Helpers::getChecklistFilePath(&model));
+  if (file.open(QFile::ReadOnly | QFile::Text)) {
+    QTextStream in(&file);
+    if (in.status() == QTextStream::Ok) {
+      str = in.readAll();
+      str.replace("\n", "<br />");
+      str.remove("\r");
+    }
+    file.close();
+  }
+  return str;
 }

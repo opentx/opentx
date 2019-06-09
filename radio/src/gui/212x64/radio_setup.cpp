@@ -82,7 +82,7 @@ enum MenuRadioSetupItems {
   CASE_GPS(ITEM_SETUP_TIMEZONE)
   CASE_GPS(ITEM_SETUP_ADJUST_RTC)
   CASE_GPS(ITEM_SETUP_GPSFORMAT)
-  CASE_PXX(ITEM_SETUP_COUNTRYCODE)
+  CASE_PXX1(ITEM_SETUP_COUNTRYCODE)
   ITEM_SETUP_LANGUAGE,
   ITEM_SETUP_IMPERIAL,
   IF_FAI_CHOICE(ITEM_SETUP_FAI)
@@ -116,7 +116,7 @@ void menuRadioSetup(event_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, ITEM_SETUP_MAX, { 2, 2, 0, 1, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, 0, 0, 0, 0, LABEL(BACKLIGHT), 0, 0, 0, CASE_PCBX9E_PCBX9DP(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, IF_FAI_CHOICE(0) 0, 0, 0, LABEL(TX_MODE), 0, 1/*to force edit mode*/ });
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, ITEM_SETUP_MAX, { 2, 2, 0, 1, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, 0, 0, 0, 0, LABEL(BACKLIGHT), 0, 0, 0, CASE_PCBX9E_PCBX9DP(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX1(0) 0, 0, IF_FAI_CHOICE(0) 0, 0, 0, LABEL(TX_MODE), 0, 1/*to force edit mode*/ });
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -502,7 +502,7 @@ void menuRadioSetup(event_t event)
           g_eeGeneral.stickMode = reusableBuffer.generalSettings.stickMode;
           checkTHR();
           resumePulses();
-          clearKeyEvents();
+          waitKeysReleased();
         }
         break;
     }

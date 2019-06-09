@@ -41,7 +41,7 @@ options_sky9x = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "flexr9m": ("MODULE_R9M_FLEX_FW", "YES", None)
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
 options_ar9x = {
@@ -63,10 +63,10 @@ options_ar9x = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     # "rtc": ("RTCLOCK", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "flexr9m": ("MODULE_R9M_FLEX_FW", "YES", None)
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
-options_taranis = {
+options_taranis_x9d = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
@@ -77,13 +77,14 @@ options_taranis = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
+    "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
 }
 
-options_taranisplus = {
+options_taranis_x9dp = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
@@ -94,13 +95,32 @@ options_taranisplus = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
+    "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
 }
 
-options_xlite = {
+options_taranis_x9lite = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "sqt5font": ("FONT", "SQT5", None),
+    "noras": ("RAS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
+    "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "internalpxx1": ("INTERNAL_MODULE_PXX1", "NO", "YES"),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
+}
+
+options_taranis_xlite = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
@@ -113,10 +133,10 @@ options_xlite = {
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "stdr9m": ("MODULE_R9M_FULLSIZE", "YES", None),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
 }
 
-options_taranisx9e = {
+options_taranis_xlites = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
@@ -126,14 +146,32 @@ options_taranisx9e = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
+    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
+    "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "internalpxx1": ("INTERNAL_MODULE_PXX1", "NO", "YES"),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
+}
+
+options_taranis_x9e = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "sqt5font": ("FONT", "SQT5", None),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "horussticks": ("STICKS", "HORUS", "STANDARD"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
 }
 
-options_x12s = {
+options_horus_x12s = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
@@ -145,9 +183,10 @@ options_x12s = {
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
 }
 
-options_x10 = {
+options_horus_x10 = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
@@ -158,4 +197,5 @@ options_x10 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "crossfire": ("CROSSFIRE", "YES", "NO")
 }

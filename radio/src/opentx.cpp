@@ -47,6 +47,10 @@ union ReusableBuffer reusableBuffer __DMA;
 uint8_t* MSC_BOT_Data = reusableBuffer.MSC_BOT_Data;
 #endif
 
+#if defined(DEBUG_LATENCY)
+uint8_t latencyToggleSwitch = 0;
+#endif
+
 const uint8_t bchout_ar[]  = {
     0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
     0x4B, 0x4E, 0x63, 0x6C, 0x72, 0x78,
@@ -242,7 +246,7 @@ void generalDefault()
   g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
 #elif defined(PCBX7)
   g_eeGeneral.potsConfig = (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
-#elif defined(PCBX3)
+#elif defined(PCBX9LITE)
   g_eeGeneral.potsConfig = (POT_WITH_DETENT << 0); // S1 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
@@ -253,9 +257,11 @@ void generalDefault()
   g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBXLITE)
   g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-#elif defined(PCBX7)
+#elif defined(RADIO_X7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
-#elif defined(PCBX3)
+#elif defined(RADIO_T12)
+  g_eeGeneral.switchConfig = (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+#elif defined(PCBX9LITE)
   g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
@@ -269,10 +275,10 @@ void generalDefault()
     g_eeGeneral.vBatMax = BATTERY_MAX - 120;
 
 #if defined(DEFAULT_MODE)
-  g_eeGeneral.stickMode = DEFAULT_MODE-1;
+  g_eeGeneral.stickMode = DEFAULT_MODE - 1;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(FRSKY_RELEASE)
   g_eeGeneral.templateSetup = 17; /* TAER */
 #endif
 
@@ -470,11 +476,14 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT;
+#if defined(HARDWARE_INTERNAL_MODULE)
+  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
 #elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
+#elif defined(RADIO_T12)
+  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
+  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
 #endif
 
 #if defined(PCBXLITE)
@@ -873,7 +882,7 @@ void checkAll()
     readModelNotes();
   }
 
-  if (!clearKeyEvents()) {
+  if (!waitKeysReleased()) {
     showMessageBox(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
@@ -1334,6 +1343,19 @@ void doMixerCalculations()
   static tmr10ms_t lastTMR = 0;
 
   tmr10ms_t tmr10ms = get_tmr10ms();
+
+#if defined(DEBUG_LATENCY)
+  static tmr10ms_t lastLatencyToggle = 0;
+  if (tmr10ms - lastLatencyToggle >= 10) {
+    lastLatencyToggle = tmr10ms;
+    latencyToggleSwitch ^= 1;
+    if (latencyToggleSwitch)
+      sportUpdatePowerOn();
+    else
+      sportUpdatePowerOff();
+  }
+#endif
+
   uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
   // handle tick10ms overrun
   // correct overflow handling costs a lot of code; happens only each 11 min;
@@ -1348,7 +1370,7 @@ void doMixerCalculations()
   getSwitchesPosition(!s_mixer_first_run_done);
   DEBUG_TIMER_STOP(debugTimerGetSwitches);
 
-#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
+#if defined(PCBSKY9X) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
@@ -1556,12 +1578,10 @@ void opentxClose(uint8_t shutdown)
 
   storageFlushCurrentModel();
 
-#if !defined(REVA)
   if (sessionTimer > 0) {
     g_eeGeneral.globalTimer += sessionTimer;
     sessionTimer = 0;
   }
-#endif
 
 #if defined(PCBSKY9X)
   uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration) / 8192 / 36;
@@ -1614,7 +1634,7 @@ void opentxResume()
 
 void instantTrim()
 {
-  int16_t  anas_0[NUM_INPUTS];
+  int16_t  anas_0[MAX_INPUTS];
   evalInputs(e_perout_mode_notrainer | e_perout_mode_nosticks);
   memcpy(anas_0, anas, sizeof(anas_0));
 
@@ -1808,8 +1828,8 @@ void opentxInit()
 #endif
 #endif  // #if !defined(EEPROM)
 
-#if defined(SERIAL2)
-  serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
+#if defined(AUX_SERIAL)
+  auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
 #endif
 
 #if defined(PCBTARANIS)
@@ -1855,7 +1875,7 @@ void opentxInit()
     opentxStart();
   }
 
-	// TODO Horus does not need this
+  // TODO Horus does not need this
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);

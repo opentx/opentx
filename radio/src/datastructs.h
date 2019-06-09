@@ -400,12 +400,13 @@ PACK(struct TelemetrySensor {
 
 PACK(struct TrainerModuleData {
   uint8_t mode:3;
-  uint8_t spare:5;
+  uint8_t spare1:5;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   int8_t frameLength;
   int8_t  delay:6;
   uint8_t pulsePol:1;
+  uint8_t spare2:1;
 });
 
 /*
@@ -539,7 +540,7 @@ PACK(struct CustomScreenData {
   uint8_t view;
 #endif
 
-#if defined(PCBX9)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   #define TOPBAR_DATA \
     NOBACKUP(uint8_t voltsSource); \
     NOBACKUP(uint8_t altitudeSource);
@@ -596,6 +597,7 @@ PACK(struct ModelData {
 
   NOBACKUP(uint8_t spare1:6);
   NOBACKUP(uint8_t potsWarnMode:2);
+
   ModuleData moduleData[NUM_MODULES];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
@@ -604,7 +606,7 @@ PACK(struct ModelData {
 
   NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
   NOBACKUP(uint8_t potsWarnEnabled);
-  NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS]);
+  NOBACKUP(int8_t potsWarnPosition[STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS]);
 
   NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];)
 
@@ -649,7 +651,7 @@ PACK(struct TrainerData {
   #define SPLASH_MODE int8_t splashMode:3
 #endif
 
-#if defined(GYRO)
+#if defined(PCBXLITES) || defined(PCBHORUS)
   #define GYRO_FIELDS \
     int8_t   gyroMax; \
     int8_t   gyroOffset;
@@ -659,12 +661,12 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t  serial2Mode:4); \
-    uint8_t  slidersConfig:4; \
+    NOBACKUP(uint8_t auxSerialMode); \
     uint32_t switchConfig; \
-    uint8_t  potsConfig; /* two bits per pot */ \
-    NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
-    NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME]); \
+    uint16_t potsConfig; /* two bits per pot */ \
+    uint8_t slidersConfig; /* 1 bit per slider */ \
+    NOBACKUP(char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]); \
+    NOBACKUP(char anaNames[NUM_STICKS + STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
     NOBACKUP(uint8_t spare:1); \
     NOBACKUP(uint8_t blOffBright:7); \
@@ -678,13 +680,13 @@ PACK(struct TrainerData {
     #define BLUETOOTH_FIELDS
   #endif
   #define EXTRA_GENERAL_FIELDS \
-    uint8_t  serial2Mode:4; \
+    uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
     swconfig_t switchConfig; \
-    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]; \
     BLUETOOTH_FIELDS
 #elif defined(PCBSKY9X)
@@ -697,7 +699,7 @@ PACK(struct TrainerData {
     uint8_t  optrexDisplay; \
     uint8_t  sticksGain; \
     uint8_t  rotarySteps; \
-    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
 #else
   #define EXTRA_GENERAL_FIELDS
@@ -714,15 +716,15 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(BUZZER)
-  #define BUZZER_FIELD int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+  #define BUZZER_FIELD int8_t buzzerMode:2    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
 #else
-  #define BUZZER_FIELD int8_t spareRadio:2;
+  #define BUZZER_FIELD int8_t spareRadio:2
 #endif
 
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
-  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+  CalibData calib[NUM_STICKS + STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS];
   NOBACKUP(uint16_t chkSum);
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
@@ -731,19 +733,19 @@ PACK(struct RadioData {
   NOBACKUP(int8_t backlightMode);
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
-  BUZZER_FIELD
+  NOBACKUP(BUZZER_FIELD); /* 2bits */
   NOBACKUP(uint8_t fai:1);
   NOBACKUP(int8_t beepMode:2);      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   NOBACKUP(uint8_t alarmsFlash:1);
   NOBACKUP(uint8_t disableMemoryWarning:1);
   NOBACKUP(uint8_t disableAlarmWarning:1);
   uint8_t stickMode:2;
-  NOBACKUP(int8_t timezone:5);
-  NOBACKUP(uint8_t adjustRTC:1);
+  int8_t timezone:5;
+  uint8_t adjustRTC:1;
   NOBACKUP(uint8_t inactivityTimer);
   uint8_t telemetryBaudrate:3;
   SPLASH_MODE; /* 3bits */
-  NOBACKUP(int8_t hapticMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   int8_t switchesDelay;
   NOBACKUP(uint8_t lightAutoOff);
   NOBACKUP(uint8_t templateSetup);   // RETA order for receiver channels
@@ -809,15 +811,13 @@ PACK(struct RadioData {
    other than the CPU arch and board type so changes in other
    defines also trigger the struct size changes */
 
-template <typename ToCheck, size_t expectedSize, size_t realSize = sizeof(ToCheck)>
-void check_size() {
-  static_assert(expectedSize == realSize, "struct size changed");
-}
+#include "chksize.h"
+
+#define CHKSIZE(x, y) check_size<struct x, y>()
+#define CHKTYPE(x, y) check_size<x, y>()
 
 static inline void check_struct()
 {
-#define CHKSIZE(x, y) check_size<struct x, y>()
-#define CHKTYPE(x, y) check_size<x, y>()
 
   CHKSIZE(CurveRef, 2);
 
@@ -826,7 +826,7 @@ static inline void check_struct()
 
   CHKSIZE(VarioData, 5);
 
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
@@ -909,10 +909,10 @@ static inline void check_struct()
   CHKSIZE(RadioData, 860);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBXLITE)
-  CHKSIZE(RadioData, 852);
+  CHKSIZE(RadioData, 858);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
-  CHKSIZE(RadioData, 858);
+  CHKSIZE(RadioData, 864);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
@@ -924,11 +924,10 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9734);
+  CHKSIZE(RadioData, 883);
+  CHKSIZE(ModelData, 9736);
 #endif
 
 #undef CHKSIZE
-#undef CHKSIZEUNION
 }
 #endif /* BACKUP */

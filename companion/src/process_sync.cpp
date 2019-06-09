@@ -171,7 +171,7 @@ void SyncProcess::run()
 
 void SyncProcess::finish()
 {
-  const std::lldiv_t elapsed = std::lldiv(m_startTime.secsTo(QDateTime::currentDateTime()), 60);
+  const lldiv_t elapsed = lldiv(m_startTime.secsTo(QDateTime::currentDateTime()), 60);
   QString endStr = testRunStr;
   if (m_stat.index < m_stat.count)
     endStr.append(tr("Synchronization aborted at %1 of %2 files.").arg(m_stat.index).arg(m_stat.count));

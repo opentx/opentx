@@ -54,7 +54,7 @@ uint8_t getRequiredProtocol(uint8_t module)
       protocol = PROTOCOL_CHANNELS_PPM;
       break;
 
-    case MODULE_TYPE_XJT:
+    case MODULE_TYPE_XJT_PXX1:
 #if defined(INTMODULE_USART)
       if (module == INTERNAL_MODULE) {
         protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
@@ -63,18 +63,18 @@ uint8_t getRequiredProtocol(uint8_t module)
 #endif
       // no break
 
-    case MODULE_TYPE_R9M:
+    case MODULE_TYPE_R9M_PXX1:
       protocol = PROTOCOL_CHANNELS_PXX1_PULSES;
       break;
 
-    case MODULE_TYPE_R9M_LITE:
+    case MODULE_TYPE_R9M_LITE_PXX1:
       protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
       break;
 
-    case MODULE_TYPE_XJT2:
-    case MODULE_TYPE_R9M2:
-    case MODULE_TYPE_R9M_LITE2:
-    case MODULE_TYPE_R9M_LITE_PRO2:
+    case MODULE_TYPE_ISRM_PXX2:
+    case MODULE_TYPE_R9M_PXX2:
+    case MODULE_TYPE_R9M_LITE_PXX2:
+    case MODULE_TYPE_R9M_LITE_PRO_PXX2:
       protocol = PROTOCOL_CHANNELS_PXX2;
       break;
 
@@ -173,13 +173,18 @@ void disablePulses(uint8_t module, uint8_t protocol)
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
 #endif
+
+#if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       disable_serial(module);
       break;
+#endif
 
+#if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       disable_ppm(module);
       break;
+#endif
   }
 }
 
@@ -226,13 +231,17 @@ void enablePulses(uint8_t module, uint8_t protocol)
       break;
 #endif
 
+#if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
       break;
+#endif
 
+#if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       init_ppm(module);
       break;
+#endif
 
     default:
       // TODO some reworking needed here ...
@@ -263,11 +272,18 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2:
       intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
-      scheduleNextMixerCalculation(INTERNAL_MODULE, moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER ? PXX2_TOOLS_PERIOD : PXX2_PERIOD);
+      if (moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER) {
+        scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);
+      }
+#if !defined(INTMODULE_HEARTBEAT)
+      else {
+        scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD);
+      }
+#endif
       break;
 #endif
 
-#if defined(PCBTARANIS) && defined(TARANIS_INTERNAL_PPM)
+#if defined(PCBTARANIS) && defined(INTERNAL_MODULE_PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPM(&extmodulePulsesData.ppm, g_model.moduleData[INTERNAL_MODULE].channelsStart, g_model.moduleData[INTERNAL_MODULE].channelsCount, g_model.moduleData[INTERNAL_MODULE].ppm.frameLength);
       scheduleNextMixerCalculation(INTERNAL_MODULE, PPM_PERIOD(INTERNAL_MODULE));
@@ -303,10 +319,12 @@ void setupPulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
+#if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       setupPulsesSbus();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, SBUS_PERIOD);
       break;
+#endif
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_DSM2_LP45:
@@ -331,10 +349,12 @@ void setupPulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
+#if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMExternalModule();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
       break;
+#endif
 
     default:
       break;

@@ -31,10 +31,12 @@
   #include "lua/lua_exports_x10.inc"
 #elif defined(PCBX9E)
   #include "lua/lua_exports_x9e.inc"
-#elif defined(PCBX7)
+#elif defined(RADIO_X7)
   #include "lua/lua_exports_x7.inc"
-#elif defined(PCBX3)
-  #include "lua/lua_exports_x3.inc"
+#elif defined(RADIO_T12)
+  #include "lua/lua_exports_t12.inc"
+#elif defined(PCBX9LITE)
+  #include "lua/lua_exports_x9lite.inc"
 #elif defined(PCBXLITES)
   #include "lua/lua_exports_xlites.inc"
 #elif defined(PCBXLITE)
@@ -454,6 +456,30 @@ static int luaSportTelemetryPush(lua_State * L)
         return 1;
       }
     }
+
+    // sensor not found, we send the frame to the SPORT line
+    {
+      SportTelemetryPacket packet;
+      packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
+      packet.primId = luaL_checkunsigned(L, 2);
+      packet.dataId = dataId;
+      packet.value = luaL_checkunsigned(L, 4);
+      outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+#if defined(PXX2)
+      uint8_t destination = (IS_INTERNAL_MODULE_ON() ? INTERNAL_MODULE : EXTERNAL_MODULE);
+
+      if (isModulePXX2(destination)) {
+        outputTelemetryBuffer.setDestination(destination << 2);
+      }
+      else {
+        outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+      }
+#else
+      outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+#endif
+      lua_pushboolean(L, true);
+      return 1;
+    }
   }
 
   lua_pushboolean(L, false);
@@ -483,7 +509,8 @@ When called without parameters, it will only return the status of the output buf
 
 @retval boolean  data queued in output buffer or not.
 
-@status current Introduced in 2.2.0
+@status current Introduced in 2.3
+
 */
 
 static int luaAccessTelemetryPush(lua_State * L)
@@ -1335,11 +1362,11 @@ static int luaSerialWrite(lua_State * L)
     while(wr_len--) usbSerialPutc(*p++);
   }
   #endif
-  #if defined(SERIAL2)
-  if (serial2Mode == UART_MODE_LUA) {
+  #if defined(AUX_SERIAL)
+  if (auxSerialMode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;
-    while(wr_len--) serial2Putc(*p++);
+    while(wr_len--) auxSerialPutc(*p++);
   }
   #endif
 #else
@@ -1391,7 +1418,7 @@ const luaL_Reg opentxLib[] = {
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
 #endif
   { "serialWrite", luaSerialWrite },
-  { NULL, NULL }  /* sentinel */
+  { nullptr, nullptr }  /* sentinel */
 };
 
 const luaR_value_entry opentxConstants[] = {
@@ -1405,6 +1432,7 @@ const luaR_value_entry opentxConstants[] = {
   { "BLINK", BLINK },
   { "RIGHT", RIGHT },
   { "LEFT", LEFT },
+  { "CENTER", CENTERED },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
   { "VALUE", INPUT_TYPE_VALUE },
@@ -1419,11 +1447,11 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBX3)
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBX9LITE)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
-#if !defined(PCBXLITE) && !defined(PCBX3)
+#if !defined(PCBXLITE) && !defined(PCBX9LITE)
   { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SH", MIXSRC_SH },
 #endif
@@ -1503,6 +1531,26 @@ const luaR_value_entry opentxConstants[] = {
   { "FORCE", FORCE },
   { "ERASE", ERASE },
   { "ROUND", ROUND },
+#elif defined(RADIO_T12)
+  { "EVT_DOWN_FIRST", EVT_KEY_FIRST(KEY_DOWN) },
+  { "EVT_UP_FIRST", EVT_KEY_FIRST(KEY_UP) },
+  { "EVT_LEFT_FIRST", EVT_KEY_FIRST(KEY_LEFT) },
+  { "EVT_RIGHT_FIRST", EVT_KEY_FIRST(KEY_RIGHT) },
+  { "EVT_DOWN_BREAK", EVT_KEY_BREAK(KEY_DOWN) },
+  { "EVT_UP_BREAK", EVT_KEY_BREAK(KEY_UP) },
+  { "EVT_LEFT_BREAK", EVT_KEY_BREAK(KEY_LEFT) },
+  { "EVT_RIGHT_BREAK", EVT_KEY_BREAK(KEY_RIGHT) },
+  { "EVT_DOWN_LONG", EVT_KEY_LONG(KEY_DOWN) },
+  { "EVT_UP_LONG", EVT_KEY_LONG(KEY_UP) },
+  { "EVT_LEFT_LONG", EVT_KEY_LONG(KEY_LEFT) },
+  { "EVT_RIGHT_LONG", EVT_KEY_LONG(KEY_RIGHT) },
+  { "EVT_DOWN_REPT", EVT_KEY_REPT(KEY_DOWN) },
+  { "EVT_UP_REPT", EVT_KEY_REPT(KEY_UP) },
+  { "EVT_LEFT_REPT", EVT_KEY_REPT(KEY_LEFT) },
+  { "EVT_RIGHT_REPT", EVT_KEY_REPT(KEY_RIGHT) },
+  { "FORCE", FORCE },
+  { "ERASE", ERASE },
+  { "ROUND", ROUND },
 #elif defined(PCBTARANIS)
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
@@ -1575,5 +1623,5 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_BITFIELD", UNIT_BITFIELD},
   {"UNIT_TEXT", UNIT_TEXT},
 #endif
-  { NULL, 0 }  /* sentinel */
+  { nullptr, 0 }  /* sentinel */
 };

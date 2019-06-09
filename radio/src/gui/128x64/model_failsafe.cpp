@@ -22,9 +22,9 @@
 
 extern uint8_t g_moduleIdx;
 
-void onFailsafeMenu(const char *result)
+void onFailsafeMenu(const char * result)
 {
-  uint8_t sub = menuVerticalPosition + HEADER_LINE;
+  uint8_t sub = menuVerticalPosition;
   int16_t & failsafe = g_model.failsafeChannels[sub];
   int32_t channelValue = channelOutputs[sub];
 
@@ -45,18 +45,18 @@ void onFailsafeMenu(const char *result)
 
 void menuModelFailsafe(event_t event)
 {
-  uint8_t sub = menuVerticalPosition + HEADER_LINE;
+  uint8_t sub = menuVerticalPosition;
   const coord_t x = 1;
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
 
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
-  lcdDrawTextAlignedCenter(0, FAILSAFESET);
+  lcdDrawTextAlignedCenter(0, TR_FAILSAFESET);
   lcdInvertLine(0);
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
-    uint8_t k = i + menuVerticalOffset + HEADER_LINE;
+    uint8_t k = i + menuVerticalOffset;
     LcdFlags attr = (sub == k) ? INVERS : 0;
 
     uint8_t wbar = LCD_W - FW * 4 - FWNUM * 4;
@@ -64,7 +64,7 @@ void menuModelFailsafe(event_t event)
     wbar -= 6;
 #endif
 
-    if (sub==k && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    if (sub == k && !READ_ONLY() && event == EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_NONE);
       POPUP_MENU_ADD_ITEM(STR_HOLD);
@@ -73,11 +73,8 @@ void menuModelFailsafe(event_t event)
       POPUP_MENU_START(onFailsafeMenu);
     }
 
-    const int32_t channelValue = channelOutputs[k];
-    int32_t failsafeValue = g_model.failsafeChannels[k];
-
     // Channel
-    putsChn(0, y, k, SMLSIZE);
+    putsChn(0, y, k + 1, SMLSIZE);
 
     // Value
     LcdFlags flags = TINSIZE;
@@ -85,25 +82,27 @@ void menuModelFailsafe(event_t event)
       flags |= INVERS;
       if (s_editMode > 0) {
         flags |= BLINK;
+        CHECK_INCDEC_MODELVAR(event, g_model.failsafeChannels[k], -lim, +lim);
         if (g_model.failsafeChannels[k] > +lim && g_model.failsafeChannels[k] < FAILSAFE_CHANNEL_HOLD) {
           g_model.failsafeChannels[k] = 0; // switching from HOLD/NOPULSE to value edit
         }
-        CHECK_INCDEC_MODELVAR(event, g_model.failsafeChannels[k], -lim, +lim);
       }
     }
 
+    const int32_t channelValue = channelOutputs[k];
+    int32_t failsafeValue = g_model.failsafeChannels[k];
     const coord_t xValue = x+LCD_W-4-wbar;
     if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-      lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
+      lcdDrawText(xValue, y, STR_HOLD_UPPERCASE, RIGHT|flags);
       failsafeValue = 0;
     }
     else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-      lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
+      lcdDrawText(xValue, y, STR_NONE_UPPERCASE, RIGHT|flags);
       failsafeValue = 0;
     }
     else {
 #if defined(PPM_UNIT_US)
-      lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
+      lcdDrawNumber(xValue, y, PPM_CH_CENTER(k)+failsafeValue/2, RIGHT|flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
       lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
 #else

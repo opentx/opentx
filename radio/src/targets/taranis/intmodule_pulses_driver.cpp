@@ -32,12 +32,27 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
+#if defined(DEBUG_LATENCY)
+#define HEARBEAT_OFFSET unsigned(5500 + g_model.flightModeData[0].gvars[0] * 100)
+#else
+constexpr int HEARBEAT_OFFSET = 5500;
+#endif
+
 void intmoduleSendNextFrame()
 {
   switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
-      INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
+    {
+      uint32_t last = intmodulePulsesData.pxx.getLast();
+      if (heartbeatCapture.valid) {
+        if (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
+          last -= 21;
+        else
+          last += 19;
+        intmodulePulsesData.pxx.setLast(last);
+      }
+      INTMODULE_TIMER->CCR2 = last - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
       INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
@@ -45,9 +60,10 @@ void intmoduleSendNextFrame()
       INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.pxx.getSize();
       INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
       break;
+    }
 #endif
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
     case PROTOCOL_CHANNELS_PPM:
       INTMODULE_TIMER->CCR3 = GET_MODULE_PPM_DELAY(INTERNAL_MODULE) * 2;
       INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_MODULE_PPM_POLARITY(INTERNAL_MODULE) ? 0 : TIM_CCER_CC3P);
@@ -107,7 +123,7 @@ void intmodulePxxStart()
   NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
 }
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
 void intmodulePpmStart()
 {
   INTERNAL_MODULE_ON();
@@ -139,7 +155,7 @@ void intmodulePpmStart()
   NVIC_EnableIRQ(INTMODULE_TIMER_CC_IRQn);
   NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
 }
-#endif // defined(TARANIS_INTERNAL_PPM)
+#endif // defined(INTERNAL_MODULE_PPM)
 
 extern "C" void INTMODULE_DMA_STREAM_IRQHandler()
 {

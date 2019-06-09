@@ -21,8 +21,8 @@
 #include "opentx.h"
 #include "timers.h"
 
-int8_t  virtualInputsTrims[NUM_INPUTS];
-int16_t anas [NUM_INPUTS] = {0};
+int8_t  virtualInputsTrims[MAX_INPUTS];
+int16_t anas [MAX_INPUTS] = {0};
 int16_t trims[NUM_TRIMS] = {0};
 int32_t chans[MAX_OUTPUT_CHANNELS] = {0};
 BeepANACenter bpanaCenter = 0;

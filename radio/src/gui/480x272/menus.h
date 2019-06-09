@@ -126,17 +126,7 @@ enum EnumTabModel {
   MENU_MODEL_PAGES_COUNT
 };
 
-const uint8_t RADIO_ICONS[] = {
-  ICON_RADIO,
-  ICON_RADIO_SETUP,
-  ICON_RADIO_SD_BROWSER,
-  ICON_RADIO_GLOBAL_FUNCTIONS,
-  ICON_RADIO_TRAINER,
-  ICON_RADIO_HARDWARE,
-  ICON_RADIO_VERSION
-};
-
-const uint8_t MODEL_ICONS[] = {
+const uint8_t MODEL_ICONS[MENU_MODEL_PAGES_COUNT + 1] = {
   ICON_MODEL,
   ICON_MODEL_SETUP,
   CASE_HELI(ICON_MODEL_HELI)
@@ -175,8 +165,6 @@ const uint8_t MONITOR_ICONS[] = {
 
 bool menuModelSetup(event_t event);
 bool menuModelFailsafe(event_t event);
-bool menuModelModuleOptions(event_t event);
-bool menuModelReceiverOptions(event_t event);
 bool menuModelHeli(event_t event);
 bool menuModelFlightModesAll(event_t event);
 bool menuModelExposAll(event_t event);
@@ -197,14 +185,21 @@ extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 enum EnumTabRadio {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
-#if defined(PXX2)
-  MENU_RADIO_TOOLS,
-#endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
   MENU_RADIO_VERSION,
   MENU_RADIO_PAGES_COUNT
+};
+
+const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
+  ICON_RADIO,
+  ICON_RADIO_SETUP,
+  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_GLOBAL_FUNCTIONS,
+  ICON_RADIO_TRAINER,
+  ICON_RADIO_HARDWARE,
+  ICON_RADIO_VERSION
 };
 
 bool menuRadioSetup(event_t event);

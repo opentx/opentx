@@ -182,15 +182,15 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
     ADD_3POS_CASE(D, 3);
 #endif
-#if defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBXLITES) || defined(PCBX9LITE)
     ADD_2POS_CASE(E);
     ADD_2POS_CASE(F);
-    // no SWG and SWH on XLITES and X3
-#elif defined(PCBXLITE) || defined(PCBX3)
-    // no SWE, SWF, SWG and SWH on X3 and XLITE
+    // no SWG and SWH on XLITES and X9
+#elif defined(PCBXLITE) || defined(PCBX9LITE)
+    // no SWE, SWF, SWG and SWH on X9LITE and XLITE
 #elif defined(PCBX7)
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
@@ -228,7 +228,7 @@ void keysInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 
 #if defined(KEYS_GPIOA_PINS)
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOA_PINS;

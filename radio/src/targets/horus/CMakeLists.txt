@@ -1,7 +1,7 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
 option(PXX1 "PXX1 protocol support" ON)
-option(PXX2 "PXX2 protocol support" ON)
+option(PXX2 "PXX2 protocol support" OFF)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
@@ -90,9 +90,6 @@ set(GUI_SRC
   bitmaps.cpp
   radio_sdmanager.cpp
   radio_hardware.cpp
-  radio_power_meter.cpp
-  radio_spectrum_analyser.cpp
-  radio_tools.cpp
   model_inputs.cpp
   model_mixes.cpp
   model_curves.cpp
@@ -105,6 +102,7 @@ set(GUI_SRC
   topbar.cpp
   layout.cpp
   widget.cpp
+  menus.cpp
   ${THEMES_SRC}
   ${LAYOUTS_SRC}
   ${WIDGETS_SRC}
@@ -120,7 +118,7 @@ if(INTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
 
-set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
+set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 
 set(GVAR_SCREEN model_gvars.cpp)
 
@@ -151,7 +149,7 @@ add_definitions(-DBLUETOOTH)
 set(SRC
   ${SRC}
   bluetooth.cpp
-  io/frsky_device_firmware_update.cpp
+  io/frsky_firmware_update.cpp
   )
 
 set(STM32LIB_SRC

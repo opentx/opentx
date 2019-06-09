@@ -1043,12 +1043,12 @@ Do you want to import them?</source>
     </message>
     <message>
         <location filename="../warnings.h" line="24"/>
-        <source>&lt;p&gt;&lt;b&gt;Welcome to OpenTX v%1.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;As the first step, please configure the initial Radio Profile by selecting your Radio Type, Menu Language, and Build Options.&lt;/p&gt;&lt;p&gt;You may also want to take this time to review the other available options in the displayed Settings dialog.&lt;/p&gt;&lt;p&gt;After saving your settings, we recommend you download the latest firmware for your radio by using the &lt;i&gt;File -&amp;gt; Download&lt;/i&gt; menu option.&lt;/p&gt;&lt;p&gt;Please visit &lt;a href=&apos;http://www.open-tx.org&apos;&gt;open-tx.org&lt;/a&gt; for latest news, updates and documentation. Thank you for choosing OpenTX!&lt;/p&gt;- The OpenTX Team.</source>
+        <source>&lt;p&gt;&lt;b&gt;Welcome to OpenTX %1.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;As the first step, please configure the initial Radio Profile by selecting your Radio Type, Menu Language, and Build Options.&lt;/p&gt;&lt;p&gt;You may also want to take this time to review the other available options in the displayed Settings dialog.&lt;/p&gt;&lt;p&gt;After saving your settings, we recommend you download the latest firmware for your radio by using the &lt;i&gt;File -&amp;gt; Download&lt;/i&gt; menu option.&lt;/p&gt;&lt;p&gt;Please visit &lt;a href=&apos;http://www.open-tx.org&apos;&gt;open-tx.org&lt;/a&gt; for latest news, updates and documentation. Thank you for choosing OpenTX!&lt;/p&gt;- The OpenTX Team.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../warnings.h" line="32"/>
-        <source>&lt;p&gt;&lt;b&gt;Thank you for upgrading to OpenTX v%1.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully  to learn about the changes, and thoroughly check each of your models for proper function.&lt;/p&gt;&lt;p&gt;Please visit &lt;a href=&apos;http://www.open-tx.org&apos;&gt;open-tx.org&lt;/a&gt; for release notes and other documentation.&lt;/p&gt;- The OpenTX Team.</source>
+        <source>&lt;p&gt;&lt;b&gt;Thank you for upgrading to OpenTX %1.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully  to learn about the changes, and thoroughly check each of your models for proper function.&lt;/p&gt;&lt;p&gt;Please visit &lt;a href=&apos;http://www.open-tx.org&apos;&gt;open-tx.org&lt;/a&gt; for release notes and other documentation.&lt;/p&gt;- The OpenTX Team.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

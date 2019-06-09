@@ -27,7 +27,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(NAVIGATION_X7)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
@@ -71,7 +71,7 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_REP10                   0x40
 #define NO_DBLKEYS                     0x80
 
-#define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+#define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = nullptr
 #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
 #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
 #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
@@ -152,65 +152,45 @@ void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, u
 void check_submenu_simple(event_t event, uint8_t maxrow);
 
 void title(const char * s);
-#define TITLE(str) title(str)
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#if defined(PCBX7) || defined(PCBX3)
 #define MENU_CHECK(tab, menu, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
-#else
-#define MENU_CHECK(tab, menu, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
-#endif
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE)
 
-#define MENU(title, tab, menu, lines_count, ...) \
+#define MENU(name, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   MENU_CHECK(tab, menu, lines_count); \
-  TITLE(title)
+  title(name)
 
-#if defined(PCBX7) || defined(PCBX3)
-#define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), lines_count);
 #define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count);
-#define SUBMENU(title, lines_count, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  TITLE(title)
-#define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, lines_count);
-#else
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE);
+
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), (lines_count)-1);
-#define SUBMENU_NOTITLE(lines_count, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1);
-
-#define SUBMENU(title, lines_count, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
-  TITLE(title)
+  check_simple(event, menu, tab, DIM(tab), (lines_count)-HEADER_LINE);
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, (lines_count)-1);
+  check_submenu_simple(event, (lines_count)-HEADER_LINE);
 
-#endif
+#define SUBMENU(name, lines_count, ...) \
+  MENU_TAB(__VA_ARGS__); \
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE); \
+  title(name)
 
-#define SIMPLE_MENU(title, tab, menu, lines_count) \
+#define SIMPLE_MENU(name, tab, menu, lines_count) \
   SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
-  TITLE(title)
+  title(name)
 
-#define SIMPLE_SUBMENU(title, lines_count) \
+#define SIMPLE_SUBMENU(name, lines_count) \
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
-  TITLE(title)
+  title(name)
 
 typedef int choice_t;
 
 choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char * label, LcdFlags attr, event_t event);
-int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t event);
+swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event);
 
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
 
@@ -289,7 +269,7 @@ void readModelNotes();
 #endif
 
 // TODO enum
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
 #define EDIT_MODE_INIT                 0
 #else
 #define EDIT_MODE_INIT                 -1

@@ -47,9 +47,11 @@ namespace Board {
     BOARD_X10,
     BOARD_TARANIS_XLITE,
     BOARD_TARANIS_XLITES,
-    BOARD_TARANIS_X3,
-    BOARD_ENUM_COUNT
+    BOARD_TARANIS_X9LITE,
+    BOARD_JUMPER_T12
   };
+
+  constexpr int BOARD_TYPE_MAX = BOARD_JUMPER_T12 ;
 
   enum PotType
   {
@@ -114,6 +116,7 @@ namespace Board {
     FactoryInstalledPots,
     Sliders,
     MouseAnalogs,
+    GyroAnalogs,
     MaxAnalogs,
     MultiposPots,
     MultiposPotsPositions,
@@ -188,23 +191,24 @@ class Boards
 #define IS_2560(board)                 (board==Board::BOARD_GRUVIN9X || board==Board::BOARD_MEGA2560)
 #define IS_SKY9X(board)                (board==Board::BOARD_SKY9X || board==Board::BOARD_9XRPRO || board==Board::BOARD_AR9X)
 #define IS_9XRPRO(board)               (board==Board::BOARD_9XRPRO)
+#define IS_JUMPER_T12(board)           (board==Board::BOARD_JUMPER_T12)
 #define IS_TARANIS_XLITE(board)        (board==Board::BOARD_TARANIS_XLITE || board==Board::BOARD_TARANIS_XLITES)
 #define IS_TARANIS_XLITES(board)       (board==Board::BOARD_TARANIS_XLITES)
 #define IS_TARANIS_X7(board)           (board==Board::BOARD_TARANIS_X7)
-#define IS_TARANIS_X3(board)           (board==Board::BOARD_TARANIS_X3)
+#define IS_TARANIS_X9LITE(board)       (board==Board::BOARD_TARANIS_X9LITE)
 #define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9D(board)          (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP)
 #define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
-#define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_X3(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_XLITES(board))
-#define IS_TARANIS_SMALL(board)        (board==Board::BOARD_TARANIS_X7 || board==Board::BOARD_TARANIS_XLITE || board==Board::BOARD_TARANIS_XLITES || board==Board::BOARD_TARANIS_X3)
-#define IS_TARANIS_NOT_X9E(board)      (IS_TARANIS(board) && !IS_TARANIS_X9E(board))
+#define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITE(board) || IS_JUMPER_T12(board))
+#define IS_TARANIS_SMALL(board)        (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || IS_JUMPER_T12(board))
 #define IS_HORUS_X12S(board)           (board==Board::BOARD_X12S)
 #define IS_HORUS_X10(board)            (board==Board::BOARD_X10)
 #define IS_HORUS(board)                (IS_HORUS_X12S(board) || IS_HORUS_X10(board))
 #define IS_HORUS_OR_TARANIS(board)     (IS_HORUS(board) || IS_TARANIS(board))
 #define IS_STM32(board)                (IS_TARANIS(board) || IS_HORUS(board))
 #define IS_ARM(board)                  (IS_STM32(board) || IS_SKY9X(board))
+#define IS_ACCESS_RADIO(board)         (IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITES(board))
 #define HAS_LARGE_LCD(board)           (IS_HORUS(board) || IS_TARANIS_X9(board))
 
 #endif // _BOARDS_H_

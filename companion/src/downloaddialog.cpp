@@ -25,9 +25,9 @@
 
 #include <QTime>
 
-downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt):
+DownloadDialog::DownloadDialog(QWidget *parent, QString src, QString tgt):
   QDialog(parent),
-  ui(new Ui::downloadDialog),
+  ui(new Ui::DownloadDialog),
   reply(nullptr),
   file(nullptr),
   aborted(false)
@@ -58,13 +58,13 @@ downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt):
     }
 }
 
-downloadDialog::~downloadDialog()
+DownloadDialog::~DownloadDialog()
 {
   delete ui;
   delete file;
 }
 
-void downloadDialog::reject()
+void DownloadDialog::reject()
 {
   if (reply && reply->isRunning()) {
     aborted = true;
@@ -75,7 +75,7 @@ void downloadDialog::reject()
   QDialog::reject();
 }
 
-void downloadDialog::httpFinished()
+void DownloadDialog::httpFinished()
 {
   file->flush();
   file->close();
@@ -98,20 +98,20 @@ void downloadDialog::httpFinished()
     reject();
 }
 
-void downloadDialog::httpReadyRead()
+void DownloadDialog::httpReadyRead()
 {
   if (file) {
     file->write(reply->readAll());
   }
 }
 
-void downloadDialog::updateDataReadProgress(qint64 bytesRead, qint64 totalBytes)
+void DownloadDialog::updateDataReadProgress(qint64 bytesRead, qint64 totalBytes)
 {
   ui->progressBar->setMaximum(totalBytes);
   ui->progressBar->setValue(bytesRead);
 }
 
-void downloadDialog::fileError()
+void DownloadDialog::fileError()
 {
   delete file;
   file = NULL;
@@ -119,7 +119,7 @@ void downloadDialog::fileError()
 }
 
 #if 0
-void downloadDialog::closeEvent( QCloseEvent * event)
+void DownloadDialog::closeEvent( QCloseEvent * event)
 {
   // Delay closing 2 seconds to avoid unpleasant flashing download dialogs
   QTime closeTime= QTime::currentTime().addSecs(2);

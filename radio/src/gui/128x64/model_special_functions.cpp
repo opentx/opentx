@@ -370,6 +370,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                 break;
               default: // FUNC_ADJUST_GVAR_INC
                 getMixSrcRange(CFN_GVAR_INDEX(cfn) + MIXSRC_FIRST_GVAR, val_min, val_max);
+                getGVarIncDecRange(val_min, val_max);
                 lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, (val_displayed < 0 ? "-= " : "+= "), attr);
                 drawGVarValue(lcdNextPos, y, CFN_GVAR_INDEX(cfn), abs(val_displayed), attr|LEFT);
                 break;
@@ -388,7 +389,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
           if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
             if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -435,7 +436,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           break;
       }
     }
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
     if (sub==k && menuHorizontalPosition<0 && CFN_SWITCH(cfn)) {
       lcdInvertLine(i+1);
     }
@@ -445,7 +446,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 void menuModelSpecialFunctions(event_t event)
 {
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
   const CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     menuHorizontalPosition = 0;
@@ -455,7 +456,7 @@ void menuModelSpecialFunctions(event_t event)
 
   menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
 
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
     menuHorizontalPosition = -1;
   }
