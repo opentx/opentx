@@ -14,12 +14,9 @@ local function create(zone, options)
 end
 
 local function update(wgt, options)
-  if (wgt==nil) then
-    print("update(nil)")
-    return
-  end
+  if (wgt == nil) then return end
   wgt.options = options
-  print("TimerNumB:" .. options.Timer)
+  --print("TimerNumB:" .. options.Timer)
 end
 
 local function background(wgt)
@@ -28,11 +25,11 @@ end
 
 ------------------------------------------------------------
 
--- This size is for top bar wgts
+-- Zone size: top bar widgets
 local function refreshZoneTiny(wgt)
 end
 
---- Size is 160x32 1/8th
+--- Zone size: 160x32 1/8th
 local function refreshZoneSmall(wgt)
   local t1 = model.getTimer(wgt.options.Timer-1)
   local timerInfo = string.format("T%s: ", wgt.options.Timer)
@@ -41,7 +38,8 @@ local function refreshZoneSmall(wgt)
   return
 end
 
---- Size is 225x98 1/4th  (no sliders/trim)
+--- Zone size: 180x70 1/4th  (with sliders/trim)
+--- Zone size: 225x98 1/4th  (no sliders/trim)
 local function refreshZoneMedium(wgt)
   local t1 = model.getTimer(wgt.options.Timer-1)
   --print(t1.value)
@@ -50,7 +48,7 @@ local function refreshZoneMedium(wgt)
   lcd.drawTimer(wgt.zone.x, wgt.zone.y+3, t1.value, XXLSIZE + CUSTOM_COLOR)
 end
 
---- Size is 192x152 1/2
+--- Zone size: 192x152 1/2
 local function refreshZoneLarge(wgt)
   local t1 = model.getTimer(wgt.options.Timer-1)
   --print(t1.value)
@@ -59,8 +57,8 @@ local function refreshZoneLarge(wgt)
   lcd.drawTimer(wgt.zone.x, wgt.zone.y+15, t1.value, XXLSIZE + CUSTOM_COLOR)
 end
 
---- Size is 390x172 1/1
---- Size is 460x252 1/1 (no sliders/trim/topbar)
+--- Zone size: 390x172 1/1
+--- Zone size: 460x252 1/1 (no sliders/trim/topbar)
 local function refreshZoneXLarge(wgt)
   local t1 = model.getTimer(wgt.options.Timer-1)
   --print(t1.value)
