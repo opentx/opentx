@@ -16,7 +16,7 @@
 ---- #                                                                       #
 ---- #########################################################################
 
--- Widget to show the name of the model on the bar on top
+-- Horus Widget that show the name of the model on the bar on top
 -- Offer Shmuely
 -- Date: 2019
 -- ver: 0.3
@@ -40,10 +40,7 @@ local function background(wgt)
 end
 
 function refresh(wgt)
-  if (wgt == nil) then
-    print("refresh(nil)")
-    return
-  end
+  if (wgt == nil) then return end
 
   lcd.setColor(CUSTOM_COLOR, wgt.options.TextColor)
   lcd.drawText(wgt.zone.x, wgt.zone.y, wgt.modelName, LEFT + DBLSIZE + CUSTOM_COLOR);
