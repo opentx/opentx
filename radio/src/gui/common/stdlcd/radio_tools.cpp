@@ -32,6 +32,7 @@ bool addRadioTool(uint8_t index, const char * label)
   lcdDrawText(3*FW, y, label, (sub == index ? INVERS  : 0));
   if (attr && s_editMode > 0) {
     s_editMode = 0;
+    killAllEvents();
     return true;
   }
   return false;
@@ -101,6 +102,7 @@ void addRadioScriptTool(uint8_t index, const char * filename)
   }
 
   if (addRadioTool(index, label)) {
+    f_chdir("/SCRIPTS/TOOLS/");
     luaExec(path);
   }
 }

@@ -513,6 +513,21 @@ When called without parameters, it will only return the status of the output buf
 
 */
 
+bool getDefaultAccessDestination(uint8_t & destination)
+{
+  for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+    TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    if (sensor.type == TELEM_TYPE_CUSTOM) {
+      TelemetryItem sensorItem = telemetryItems[i];
+      if (sensorItem.isFresh()) {
+        destination = sensor.frskyInstance.rxIndex;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 static int luaAccessTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
@@ -521,13 +536,25 @@ static int luaAccessTelemetryPush(lua_State * L)
   }
 
   if (outputTelemetryBuffer.isAvailable()) {
-    uint8_t module = luaL_checkunsigned(L, 1);
+    int8_t module = luaL_checkinteger(L, 1);
     uint8_t rxUid = luaL_checkunsigned(L, 2);
+    uint8_t destination;
+
+    if (module < 0) {
+      if (!getDefaultAccessDestination(destination)) {
+        lua_pushboolean(L, false);
+        return 1;
+      }
+    }
+    else {
+      destination = (module << 2) + rxUid;
+    }
+
     outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 3));
     outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 4);
     outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 5);
     outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 6);
-    outputTelemetryBuffer.setDestination((module << 2) + rxUid);
+    outputTelemetryBuffer.setDestination(destination);
     lua_pushboolean(L, true);
     return 1;
   }

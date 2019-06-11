@@ -79,7 +79,7 @@ void onSdFormatConfirm(const char * result)
 #endif
     audioQueue.stopSD();
     if (sdCardFormat()) {
-      f_chdir("/");
+      f_chdir(ROOT_PATH);
       REFRESH_FILES();
     }
   }
