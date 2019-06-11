@@ -46,7 +46,7 @@ void intmoduleSendNextFrame()
     {
       uint32_t last = intmodulePulsesData.pxx.getLast();
       if (heartbeatCapture.valid) {
-        if (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
+        if (getTmr2MHz() - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
           last -= 21;
         else
           last += 19;

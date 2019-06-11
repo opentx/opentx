@@ -273,11 +273,11 @@ void extmoduleSendNextFrame();
 #if defined(INTMODULE_HEARTBEAT_GPIO)
 void init_intmodule_heartbeat();
 void stop_intmodule_heartbeat();
-void check_xjt_heartbeat();
+void check_intmodule_heartbeat();
 #else
 #define init_intmodule_heartbeat()
 #define stop_intmodule_heartbeat()
-#define check_xjt_heartbeat()
+#define check_intmodule_heartbeat()
 #endif
 
 // SBUS
