@@ -77,7 +77,7 @@ void sportOutputPushPacket(SportTelemetryPacket * packet)
     crc &= 0x00ff;
   }
 
-  telemetryOutputPushByte(0xFF-crc);
+  sportOutputPushByte(0xFF - crc);
   telemetryOutputSetTrigger(packet->raw[0]); // physicalId
 }
 
