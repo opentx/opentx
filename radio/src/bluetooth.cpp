@@ -419,9 +419,9 @@ void Bluetooth::wakeup()
       }
       else {
 #if defined(PCBHORUS)
-        cur = strAppend(cur, "Horus");
+        cur = strAppend(cur, "horus");
 #else
-        cur = strAppend(cur, "Taranis");
+        cur = strAppend(cur, "taranis");
 #endif
       }
       writeString(command);
