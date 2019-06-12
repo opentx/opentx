@@ -698,66 +698,31 @@ bool isTelemetryProtocolAvailable(int protocol)
   return true;
 }
 
-#if defined(PCBHORUS)
 bool isTrainerModeAvailable(int mode)
 {
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+    return false;
+
+#if !defined(PCBX9D) && !defined(PCBX9DP)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return false;
+#endif
+
+#if defined(PCBX9E)
+  if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    return false;
+#elif defined(BLUETOOTH)
+  if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
+    return false;
+#endif
+
+#if defined(PCBXLITE)
+  if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
+    return false;
+#endif
+
   return true;
 }
-#elif defined(PCBX9E)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-#if defined(USEHORUSBT)
-  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
-#else
-  else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
-#endif
-    return false;
-  else
-    return true;
-}
-#elif defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-  else
-    return true;
-}
-#elif defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITE)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
-    return false;
-#if defined(BLUETOOTH)
-  else if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return false;
-#endif
-  else
-    return true;
-}
-#elif defined(PCBXLITES)
-bool isTrainerModeAvailable(int mode)
-{
-  if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
-    return true;
-  else if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return true;
-  else
-    return false;
-}
-#elif defined(PCBXLITE)
-bool isTrainerModeAvailable(int mode)
-{
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return true;
-  else
-    return false;
-}
-#endif
 
 bool modelHasNotes()
 {

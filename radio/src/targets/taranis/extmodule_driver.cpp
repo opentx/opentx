@@ -27,8 +27,7 @@ void extmoduleStop()
   EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
 
 #if defined(EXTMODULE_USART)
-  NVIC_DisableIRQ(EXTMODULE_USART_DMA_STREAM_IRQn);
-  EXTMODULE_USART_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+  EXTMODULE_USART_TX_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
 
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN | EXTMODULE_RX_GPIO_PIN;
@@ -126,13 +125,6 @@ void extmoduleInvertedSerialStart(uint32_t baudrate)
 {
   EXTERNAL_MODULE_ON();
 
-  NVIC_InitTypeDef NVIC_InitStructure;
-  NVIC_InitStructure.NVIC_IRQChannel = EXTMODULE_USART_DMA_STREAM_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-
   // TX + RX Pins
   GPIO_PinAFConfig(EXTMODULE_USART_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_USART_GPIO_AF);
   GPIO_PinAFConfig(EXTMODULE_USART_GPIO, EXTMODULE_RX_GPIO_PinSource, EXTMODULE_USART_GPIO_AF);
@@ -167,8 +159,8 @@ void extmoduleInvertedSerialStart(uint32_t baudrate)
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
   DMA_InitTypeDef DMA_InitStructure;
-  DMA_DeInit(EXTMODULE_USART_DMA_STREAM);
-  DMA_InitStructure.DMA_Channel = EXTMODULE_USART_DMA_CHANNEL;
+  DMA_DeInit(EXTMODULE_USART_TX_DMA_STREAM);
+  DMA_InitStructure.DMA_Channel = EXTMODULE_USART_TX_DMA_CHANNEL;
   DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&EXTMODULE_USART->DR);
   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
   DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(data);
@@ -183,14 +175,10 @@ void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(EXTMODULE_USART_DMA_STREAM, &DMA_InitStructure);
-  DMA_Cmd(EXTMODULE_USART_DMA_STREAM, ENABLE);
+  DMA_Init(EXTMODULE_USART_TX_DMA_STREAM, &DMA_InitStructure);
+  DMA_Cmd(EXTMODULE_USART_TX_DMA_STREAM, ENABLE);
   USART_DMACmd(EXTMODULE_USART, USART_DMAReq_Tx, ENABLE);
 }
-
-// TODO remove this when we have adaptative speed
-//uint8_t counter = 0;
-//#include <stdio.h>
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void EXTMODULE_USART_IRQHandler(void)
@@ -201,9 +189,6 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
     uint8_t data = EXTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
       extmoduleFifo.errors++;
-//      if (!counter++) {
-//        TRACE_NOCRLF("%02X ", (uint8_t)status);
-//      }
     }
     else {
       extmoduleFifo.push(data);

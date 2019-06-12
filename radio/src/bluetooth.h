@@ -19,7 +19,7 @@
  */
 
 enum BluetoothStates {
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
   BLUETOOTH_INIT,
   BLUETOOTH_WAIT_TTM,
   BLUETOOTH_WAIT_BAUDRATE_CHANGE,
