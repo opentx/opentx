@@ -70,11 +70,11 @@
 #define LEN_TRNCHN                     "\003"
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
 
-#define LEN_AUX_SERIALMODES                 "\016"
+#define LEN_AUX_SERIAL_MODES           "\016"
 #if defined(CLI) || defined(DEBUG)
-#define TR_AUX_SERIALMODES                  "Debug\0        ""Recopie Telem\0""Télémétrie In\0""Ecolage SBUS\0 ""LUA\0          "
+#define TR_AUX_SERIAL_MODES            "Debug\0        ""Recopie Telem\0""Télémétrie In\0""Ecolage SBUS\0 ""LUA\0          "
 #else
-#define TR_AUX_SERIALMODES                  "OFF\0          ""Recopie Telem\0""Télémétrie In\0""Ecolage SBUS\0 ""LUA\0          "
+#define TR_AUX_SERIAL_MODES            "OFF\0          ""Recopie Telem\0""Télémétrie In\0""Ecolage SBUS\0 ""LUA\0          "
 #endif
 
 #define LEN_SWTYPES                    "\006"
@@ -1035,7 +1035,7 @@
 #define TR_PREFLIGHT                   "Vérifications avant vol"
 #define TR_CHECKLIST                   TR(INDENT "Notes", INDENT "Afficher notes")
 #define TR_FAS_OFFSET                  TR(INDENT "Corr FAS", INDENT "Correction FAS")
-#define TR_AUX_SERIALMODE                   "Port série"
+#define TR_AUX_SERIAL_MODE                   "Port série"
 #define TR_SCRIPT                      "Script"
 #define TR_INPUTS                      "Entrées"
 #define TR_OUTPUTS                     "Sorties"
