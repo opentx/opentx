@@ -1414,7 +1414,7 @@ void menuModelSetup(event_t event)
 
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
-        if (s_editMode && isModuleR9M2(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
+        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
           moduleInformation.information.modelID = 0;
           moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
         }

@@ -263,7 +263,12 @@ void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
+    if (isModuleR9MAccess(module)) {
+      Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
+    }
+    else {
+      Pxx2Transport::addByte(0x00);
+    }
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {

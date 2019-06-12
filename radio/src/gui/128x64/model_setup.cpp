@@ -1194,7 +1194,7 @@ void menuModelSetup(event_t event)
 
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
-        if (s_editMode && isModuleR9M2(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
+        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
           moduleInformation.information.modelID = 0;
           moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
         }
@@ -1338,7 +1338,7 @@ void menuModelSetup(event_t event)
             if (attr && l_posHorz > 0) {
               if (s_editMode > 0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D16) || (isModuleXJT2(moduleIdx) && g_model.moduleData[moduleIdx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16) || (isModuleR9M2(moduleIdx) && g_model.moduleData[moduleIdx].subType != MODULE_SUBTYPE_R9M_PXX2_ACCESS)) {
+                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D16) || (isModuleXJT2(moduleIdx) && g_model.moduleData[moduleIdx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16) || (isModuleR9MAccess(moduleIdx) && g_model.moduleData[moduleIdx].subType != MODULE_SUBTYPE_R9M_PXX2_ACCESS)) {
 #if defined(PCBXLITE)
                     if (EVT_KEY_MASK(event) == KEY_ENTER) {
 #elif defined(PCBSKY9X) || defined(PCBAR9X)

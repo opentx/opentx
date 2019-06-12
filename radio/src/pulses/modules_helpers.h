@@ -108,7 +108,7 @@ inline bool isModuleR9M(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX1;
 }
 
-inline bool isModuleR9M2(uint8_t idx)
+inline bool isModuleR9MAccess(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
 }
@@ -146,7 +146,7 @@ inline bool isModulePXX(uint8_t idx)
 
 inline bool isModulePXX2(uint8_t idx)
 {
-  return isModuleXJT2(idx) || isModuleR9M2(idx);
+  return isModuleXJT2(idx) || isModuleR9MAccess(idx);
 }
 
 inline bool isModuleRFAccess(uint8_t idx)
@@ -154,7 +154,7 @@ inline bool isModuleRFAccess(uint8_t idx)
   if (isModuleXJT2(idx)) {
     return g_model.moduleData[idx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
   }
-  else if (isModuleR9M2(idx)) {
+  else if (isModuleR9MAccess(idx)) {
     return true;
   }
   else {
