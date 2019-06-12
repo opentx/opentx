@@ -59,7 +59,7 @@ enum menuRadioHwItems {
   CASE_BLUETOOTH(ITEM_RADIO_HARDWARE_BLUETOOTH_NAME)
 #endif
 #if defined(AUX_SERIAL)
-  ITEM_RADIO_HARDWARE_UART3_MODE,
+  ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_DEBUG,
@@ -234,8 +234,8 @@ void menuRadioHardware(event_t event)
 #endif
 
 #if defined(AUX_SERIAL)
-      case ITEM_RADIO_HARDWARE_UART3_MODE:
-        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
+      case ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE:
+        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN, y, STR_AUX_SERIALMODE, STR_AUX_SERIALMODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
         }

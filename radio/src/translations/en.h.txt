@@ -70,11 +70,11 @@
 #define LEN_TRNCHN                     "\003"
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
 
-#define LEN_UART3MODES                 "\015"
+#define LEN_AUX_SERIALMODES                 "\015"
 #if defined(CLI) || defined(DEBUG)
-#define TR_UART3MODES                  "Debug\0       ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
+#define TR_AUX_SERIALMODES                  "Debug\0       ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
 #else
-#define TR_UART3MODES                  "OFF\0         ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
+#define TR_AUX_SERIALMODES                  "OFF\0         ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
 #endif
 
 #define LEN_SWTYPES                    "\006"
@@ -1024,7 +1024,7 @@
 #define TR_PREFLIGHT                   "Preflight Checks"
 #define TR_CHECKLIST                   TR(INDENT "Checklist", INDENT "Display checklist")
 #define TR_FAS_OFFSET                  TR(INDENT "FAS Ofs", INDENT "FAS offset")
-#define TR_UART3MODE                   "Serial port"
+#define TR_AUX_SERIALMODE                   "Serial port"
 #define TR_SCRIPT                      "Script"
 #define TR_INPUTS                      "Inputs"
 #define TR_OUTPUTS                     "Outputs"
