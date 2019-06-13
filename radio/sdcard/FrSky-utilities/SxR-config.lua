@@ -258,9 +258,9 @@ end
 
 -- Main
 local function runFieldsPage(event)
-    if event == EVT_EXIT_BREAK then -- exit script
+    if event == EVT_VIRTUAL_EXIT then -- exit script
         return 2
-    elseif event == EVT_ENTER_BREAK or event == EVT_ROT_BREAK then -- toggle editing/selecting current field
+    elseif event == EVT_VIRTUAL_ENTER then -- toggle editing/selecting current field
         if fields[current][4] ~= nil then
             edit = not edit
             if edit == false then
@@ -268,15 +268,15 @@ local function runFieldsPage(event)
             end
         end
     elseif edit then
-        if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT then
+        if event == EVT_VIRTUAL_NEXT then
             addField(1)
-        elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT then
+        elseif event == EVT_VIRTUAL_PREVIOUS then
             addField(-1)
         end
     else
-        if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT then
+        if event == EVT_VIRTUAL_NEXT then
             selectField(1)
-        elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT then
+        elseif event == EVT_VIRTUAL_PREVIOUS then
             selectField(-1)
         end
     end
@@ -302,7 +302,7 @@ local function runConfigPage(event)
                 if wingBitmaps[1 + fields[1][4]] == nil then
                     wingBitmaps[1 + fields[1][4]] = Bitmap.open(wingBitmapsFile[1 + fields[1][4]])
                 end
-                lcd.drawBitmap(wingBitmapsFile[1 + fields[1][4]], 10, 90)
+                lcd.drawBitmap(wingBitmaps[1 + fields[1][4]], 10, 90)
             else
                 lcd.drawPixmap(20, 28, wingBitmapsFile[1 + fields[1][4]])
             end
@@ -346,9 +346,9 @@ local function run(event)
     if event == nil then
         error("Cannot be run as a model script!")
         return 2
-    elseif event == EVT_PAGE_BREAK or event == EVT_PAGEDN_FIRST then
+    elseif event == EVT_VIRTUAL_NEXT_PAGE then
         selectPage(1)
-    elseif event == EVT_PAGE_LONG or event == EVT_PAGEUP_FIRST then
+    elseif event == EVT_VIRTUAL_PREVIOUS_PAGE then
         killEvents(event);
         selectPage(-1)
     end
