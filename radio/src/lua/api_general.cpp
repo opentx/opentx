@@ -1067,7 +1067,7 @@ Returns radio timers
 
 @retval table with elements:
 * `gtimer` (number) radio global timer in seconds
-* `session` (number) radio Session in seconds
+* `session` (number) radio session in seconds
 * `ttimer` (number) radio throttle timer in seconds
 * `tptimer` (number) radio throttle percent timer in seconds
 
@@ -1437,7 +1437,7 @@ static int luaGetUsage(lua_State * L)
                     if set to 'ttimer', radio throttle timer is reset too
                     if set to  'tptimer', radio throttle percent timer is reset too
 
-@status current Introduced in 2.2.2
+@status current Introduced in 2.2.2, param added in 2.3
 */
 static int luaResetGlobalTimer(lua_State * L)
 {
