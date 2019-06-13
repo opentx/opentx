@@ -416,7 +416,7 @@ static int luaModelInsertInput(lua_State *L)
         expo->curve.value = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "carryTrim")) {
-        expo->carryTrim= lua_toboolean(L, -1);
+        expo->carryTrim = lua_toboolean(L, -1);
       }
     }
   }
