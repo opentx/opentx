@@ -251,7 +251,7 @@ bool isReceiverCompatibleWithOTA(uint8_t module)
 {
   for (uint8_t receiver = 0; receiver < PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
     uint8_t modelId = reusableBuffer.sdManager.modules[module].receivers[receiver].information.modelID;
-    if (modelId < DIM(PXX2receiversModels)) {
+    if (modelId > 0 && modelId < DIM(PXX2receiversModels)) {
       if (isReceiverOptionAvailable(modelId, RECEIVER_OPTION_OTA)) {
         return true;
       }
