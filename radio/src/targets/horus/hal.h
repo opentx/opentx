@@ -279,9 +279,10 @@
 
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
-#define PWR_ON_GPIO                        GPIOJ
-#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
+#define PWR_ON_GPIO                     GPIOJ
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
+#define PWR_SWITCH_GPIO                 GPIOJ
+#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 // S.Port update connector
 #define SPORT_MAX_BAUDRATE              250000 // < 400000

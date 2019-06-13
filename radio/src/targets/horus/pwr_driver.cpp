@@ -48,7 +48,7 @@ void pwrInit()
 
   // PWR SWITCH
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
-  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
+  GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
   // PCBREV
   // TODO to be removed on X10?
