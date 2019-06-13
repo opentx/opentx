@@ -335,8 +335,9 @@ Return input data for given input and line number
  * `switch` (number) input switch index
  * `curveType` (number) curve type (function, expo, custom curve)
  * `curveValue` (number) curve index
+ * `carryTrim` (boolean) input trims applied
 
-@status current Introduced in 2.0.0, curveType/curveValue added in 2.3
+@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3
 */
 static int luaModelGetInput(lua_State *L)
 {
@@ -354,6 +355,7 @@ static int luaModelGetInput(lua_State *L)
     lua_pushtableinteger(L, "switch", expo->swtch);
     lua_pushtableinteger(L, "curveType", expo->curve.type);
     lua_pushtableinteger(L, "curveValue", expo->curve.value);
+    lua_pushtableinteger(L, "carryTrim", expo->carryTrim);
   }
   else {
     lua_pushnil(L);
@@ -372,7 +374,7 @@ Insert an Input at specified line
 
 @param value (table) input data, see model.getInput()
 
-@status current Introduced in 2.0.0, curveType/curveValue added in 2.3
+@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3
 */
 static int luaModelInsertInput(lua_State *L)
 {
@@ -412,6 +414,9 @@ static int luaModelInsertInput(lua_State *L)
       }
       else if (!strcmp(key, "curveValue")) {
         expo->curve.value = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "carryTrim")) {
+        expo->carryTrim= lua_toboolean(L, -1);
       }
     }
   }
