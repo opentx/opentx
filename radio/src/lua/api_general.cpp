@@ -1061,22 +1061,24 @@ static int luaGetGeneralSettings(lua_State * L)
 }
 
 /*luadoc
-@function getGlobalTimers()
+@function getGlobalTimer()
 
 Returns radio timers
 
 @retval table with elements:
 * `gtimer` (number) radio global timer in seconds
+* `session` (number) radio Session in seconds
 * `ttimer` (number) radio throttle timer in seconds
 * `tptimer` (number) radio throttle percent timer in seconds
 
 @status current Introduced added in 2.3.0.
 
 */
-static int luaGetGlobalTimers(lua_State * L)
+static int luaGetGlobalTimer(lua_State * L)
 {
   lua_newtable(L);
   lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer + sessionTimer);
+  lua_pushtableinteger(L, "session", sessionTimer);
   lua_pushtableinteger(L, "ttimer", s_timeCumThr);
   lua_pushtableinteger(L, "tptimer", s_timeCum16ThrP/16);
   return 1;
@@ -1426,11 +1428,14 @@ static int luaGetUsage(lua_State * L)
 }
 
 /*luadoc
-@function resetGlobalTimer([all])
+@function resetGlobalTimer([type])
 
-@param (optional) : if set to "ALL", Throttle and Throttle Percent timers are reset too
+ Resets the radio global timer to 0.
 
-Resets the radio global timer to 0.
+@param (optional) : if set to 'all', throttle ,throttle percent and session timers are reset too
+                    if set to 'session', radio session timer is reset too
+                    if set to 'ttimer', radio throttle timer is reset too
+                    if set to  'tptimer', radio throttle percent timer is reset too
 
 @status current Introduced in 2.2.2
 */
@@ -1439,8 +1444,18 @@ static int luaResetGlobalTimer(lua_State * L)
   g_eeGeneral.globalTimer = 0;
   size_t length;
   const char *option = luaL_optlstring(L, 1, "", &length);
-  if (!strcmp(option, "ALL")) {
+  if (!strcmp(option, "all")) {
+    sessionTimer = 0;
     s_timeCumThr = 0;
+    s_timeCum16ThrP = 0;
+  }
+  else if (!strcmp(option, "session")) {
+    sessionTimer = 0;
+  }
+  else if (!strcmp(option, "ttimer")) {
+    s_timeCumThr = 0;
+  }
+  else if (!strcmp(option, "tptimer")) {
     s_timeCum16ThrP = 0;
   }
   storageDirty(EE_GENERAL);
@@ -1493,7 +1508,7 @@ const luaL_Reg opentxLib[] = {
 #endif
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
-  { "getGlobalTimers", luaGetGlobalTimers },
+  { "getGlobalTimer", luaGetGlobalTimer },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
