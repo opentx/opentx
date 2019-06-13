@@ -909,15 +909,15 @@ void menuModelSetup(event_t event)
             if (isModuleR9M(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
                 POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN_LINE2), 0);
               }
               else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
                 POPUP_WARNING(STR_R9M_PROTO_EU_WARN1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN_LINE2), 0);
               }
               else {
                 POPUP_WARNING(STR_R9M_PROTO_FCC_WARN1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN_LINE2), 0);
               }
             }
           }
