@@ -1168,7 +1168,6 @@ union ReusableBuffer
     char originalName[SD_SCREEN_FILE_LENGTH+1];
     OtaUpdateInformation otaUpdateInformation;
     char otaReceiverVersion[sizeof(TR_CURRENT_VERSION) + 12];
-    ModuleInformation modules[NUM_MODULES];
   } sdManager;
 #endif
 
