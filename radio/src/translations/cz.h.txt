@@ -984,10 +984,10 @@
 #define TR_ANTENNASELECTION            TR(INDENT "Antenna", INDENT "Volba antény")
 #define TR_ANTENNACONFIRM1             "Opravdu přepnout?"
 #define TR_ANTENNACONFIRM2             TR("Zkont. anténu", "Ujisti se že je anténa připojena!")
-#define TR_R9M_PROTO_FLEX_WARN1        "Potřebuje"
-#define TR_R9M_PROTO_FCC_WARN1         "Potřebuje FCC"
-#define TR_R9M_PROTO_EU_WARN1          "Potřebuje EU"
-#define TR_R9M_PROTO_WARN2             "necertifikovaný R9M firm."
+#define TR_R9M_PROTO_FLEX_WARN_LINE1        "Potřebuje"
+#define TR_R9M_PROTO_FCC_WARN_LINE1         "Potřebuje FCC"
+#define TR_R9M_PROTO_EU_WARN_LINE1          "Potřebuje EU"
+#define TR_R9M_PROTO_WARN_LINE2             "necertifikovaný R9M firm."
 #define TR_LOWALARM                    INDENT "Nízký Alarm"
 #define TR_CRITICALALARM               INDENT "Kritický Alarm"
 #define TR_RSSIALARM_WARN              TR("RSSI","RSSI TELEMETRIE")
@@ -1141,6 +1141,9 @@
 #define TR_FLASH_WRITE                 "Zápis flash..."
 #define TR_OTA_UPDATE                  "Aktualizace OTA..."
 #define TR_MODULE_RESET                "Reset modulu..."
+#define TR_UNKNOWN_RX                  "Unknown RX"
+#define TR_UNSUPPORTED_RX              "Unsupported RX"
+#define TR_OTA_UPDATE_ERROR            "OTA update error"
 #define TR_DEVICE_RESET                "Reset zařízení..."
 #define TR_ALTITUDE                    INDENT "Výška"
 #define TR_SCALE                       "Měřítko"

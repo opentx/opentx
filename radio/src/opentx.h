@@ -1103,9 +1103,7 @@ void opentxResume();
 
 union ReusableBuffer
 {
-  // ARM 334 bytes
-  struct
-  {
+  struct {
 #if defined(EEPROM_RLC) && LCD_W < 212
     uint16_t eepromfree;
 #endif
@@ -1146,7 +1144,6 @@ union ReusableBuffer
 #endif
   } moduleSetup;
 
-  // 103 bytes
   struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
@@ -1163,7 +1160,6 @@ union ReusableBuffer
   } calib;
 
 #if defined(SDCARD)
-  // 274 bytes
   struct {
     char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
     uint32_t available;
@@ -1197,8 +1193,7 @@ union ReusableBuffer
     uint8_t stickMode;
   } generalSettings;
 
-  struct
-  {
+  struct {
     uint8_t bars[LCD_W];
     uint32_t freq;
     uint32_t span;
@@ -1211,8 +1206,7 @@ union ReusableBuffer
     uint8_t dirty;
   } spectrumAnalyser;
 
-  struct
-  {
+  struct {
     uint32_t freq;
     int16_t power;
     int16_t peak;
@@ -1220,8 +1214,7 @@ union ReusableBuffer
     uint8_t dirty;
   } powerMeter;
 
-  struct
-  {
+  struct {
     int8_t preset;
   } curveEdit;
 

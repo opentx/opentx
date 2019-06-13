@@ -635,7 +635,7 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
 
   const char * result = doFlashFirmware(filename);
 
-  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1);
   BACKLIGHT_ENABLE();
 
   if (result) {
