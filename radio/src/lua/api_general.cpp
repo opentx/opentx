@@ -1061,7 +1061,7 @@ static int luaGetGeneralSettings(lua_State * L)
 }
 
 /*luadoc
-@function getSystemTimers()
+@function getGlobalTimers()
 
 Returns radio timers
 
@@ -1073,7 +1073,7 @@ Returns radio timers
 @status current Introduced added in 2.3.0.
 
 */
-static int luaGetSystemTimers(lua_State * L)
+static int luaGetGlobalTimers(lua_State * L)
 {
   lua_newtable(L);
   lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer + sessionTimer);
@@ -1436,7 +1436,7 @@ static int luaResetGlobalTimer(lua_State * L)
   g_eeGeneral.globalTimer = 0;
   size_t length;
   const char *option = luaL_optlstring(L, 1, "", &length);
-  if(!strcmp(option, "ALL")) {
+  if (!strcmp(option, "ALL")) {
     s_timeCumThr = 0;
     s_timeCum16ThrP = 0;
   }
@@ -1490,7 +1490,7 @@ const luaL_Reg opentxLib[] = {
 #endif
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
-  { "getSystemTimers", luaGetSystemTimers },
+  { "getGlobalTimers", luaGetGlobalTimers },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
