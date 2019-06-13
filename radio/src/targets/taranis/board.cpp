@@ -192,10 +192,7 @@ void boardInit()
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 
-#if !defined(PCBX9E)
-  // some X9E boards need that the pwrInit() is moved a little bit later
   pwrInit();
-#endif
 
 #if defined(STATUS_LEDS)
   ledInit();
@@ -247,7 +244,7 @@ void boardInit()
 #if defined(PWR_BUTTON_PRESS)
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcdClear();
-#if defined(PCBX9E)
+#if LCD_DEPTH > 1
     lcdDrawBitmap(76, 2, bmp_lock, 0, 60);
 #else
     lcdDrawFilledRect(LCD_W / 2 - 18, LCD_H / 2 - 3, 6, 6, SOLID, 0);
@@ -263,7 +260,7 @@ void boardInit()
       if (duration < PWR_PRESS_DURATION_MIN) {
         unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
         lcdClear();
-#if defined(PCBX9E)
+#if LCD_DEPTH > 1
         lcdDrawBitmap(76, 2, bmp_startup, index*60, 60);
 #else
         for(uint8_t i= 0; i < 4; i++) {
@@ -280,7 +277,7 @@ void boardInit()
       else {
         if (pwr_on != 1) {
           pwr_on = 1;
-          pwrInit();
+          pwrOn();
           backlightInit();
           haptic.play(15, 3, PLAY_NOW);
         }
@@ -293,14 +290,16 @@ void boardInit()
     }
   }
   else {
-    pwrInit();
+    pwrOn();
     backlightInit();
   }
+#else // defined(PWR_BUTTON_PRESS)
+  pwrOn();
+  backlightInit();
+#endif
+
 #if defined(TOPLCD_GPIO)
   toplcdInit();
-#endif
-#else // defined(PWR_BUTTON_PRESS)
-  backlightInit();
 #endif
 
   if (HAS_SPORT_UPDATE_CONNECTOR()) {

@@ -23,12 +23,11 @@
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  
-  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
@@ -58,21 +57,10 @@ void pwrInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
 #endif
-
-  pwrOn();
 }
 
 void pwrOn()
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
-  
   GPIO_SetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 

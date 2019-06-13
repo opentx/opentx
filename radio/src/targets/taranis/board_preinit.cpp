@@ -22,14 +22,18 @@
 
 void boardPreInit()
 {
-#if defined(INTMODULE_BOOTCMD_GPIO)
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 
+  // Board PWR kept OFF
+  GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
+  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
 
+#if defined(INTMODULE_BOOTCMD_GPIO)
   GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_BOOTCMD_GPIO_PIN;
   GPIO_Init(INTMODULE_BOOTCMD_GPIO, &GPIO_InitStructure);

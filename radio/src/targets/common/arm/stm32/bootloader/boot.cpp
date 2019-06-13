@@ -228,6 +228,7 @@ int main()
 #endif
 
   pwrInit();
+  pwrOn();
   delaysInit(); // needed for lcdInit()
 
 #if defined(DEBUG)
