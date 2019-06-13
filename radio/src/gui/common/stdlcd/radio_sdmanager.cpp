@@ -114,11 +114,14 @@ void onUpdateStateChanged()
         SET_WARNING_INFO(reusableBuffer.sdManager.otaReceiverVersion, tmp - reusableBuffer.sdManager.otaReceiverVersion, 0);
       }
       else {
-        // TODO
+        POPUP_WARNING("OTA update");
+        SET_WARNING_INFO("unsupported", strlen("unsupported"), 0);
+        moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
       }
     }
     else {
-      // TODO
+      POPUP_WARNING("Unknown RX model");
+      moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
     }
   }
 }
