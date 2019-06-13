@@ -247,6 +247,19 @@ void onUpdateReceiverSelection(const char * result)
 }
 #endif
 
+bool isReceiverCompatibleWithOTA(uint8_t module)
+{
+  for (uint8_t receiver = 0; receiver < PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
+    uint8_t modelId = reusableBuffer.sdManager.modules[module].receivers[receiver].information.modelID;
+    if (modelId < DIM(PXX2receiversModels)) {
+      if (isReceiverOptionAvailable(modelId, RECEIVER_OPTION_OTA)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 void menuRadioSdManager(event_t _event)
 {
 #if LCD_DEPTH > 1
@@ -262,6 +275,17 @@ void menuRadioSdManager(event_t _event)
 
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, HEADER_LINE + reusableBuffer.sdManager.count);
+
+#if defined(PXX2)
+  if (_event == EVT_ENTRY || _event == EVT_ENTRY_UP) {
+    memclear(&reusableBuffer.sdManager.modules, sizeof(reusableBuffer.sdManager.modules));
+    for (uint8_t module = 0; module < NUM_MODULES; module++) {
+      if (isModulePXX2(module) && (module == INTERNAL_MODULE ? IS_INTERNAL_MODULE_ON() : IS_EXTERNAL_MODULE_ON())) {
+        moduleState[module].readModuleInformation(&reusableBuffer.sdManager.modules[module], 0, PXX2_MAX_RECEIVERS_PER_MODULE - 1);
+      }
+    }
+  }
+#endif
 
   switch (_event) {
     case EVT_ENTRY:
@@ -372,7 +396,7 @@ void menuRadioSdManager(event_t _event)
               if (HAS_SPORT_UPDATE_CONNECTOR() && (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR))
                 POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
 #if defined(PXX2)
-              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER)
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER && isReceiverCompatibleWithOTA(EXTERNAL_MODULE))
                 POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA);
 #endif
 #if defined(BLUETOOTH)

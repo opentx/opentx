@@ -259,6 +259,10 @@ inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
   return moduleOptions[modelId] & (1 << option);
 }
 
+enum {
+  RECEIVER_OPTION_OTA,
+};
+
 /* Options order:
  * - OTA (0x01)
  */
@@ -292,8 +296,8 @@ static const uint8_t receiverOptions[] = {
   0b11111110, // R9-MINI
   0b11111110, // R9-MM
   0b11111110, // R9-STAB
-  0b11111110, // R9-MINI+OTA
-  0b11111110, // R9-MM+OTA
+  0b11111111, // R9-MINI+OTA
+  0b11111111, // R9-MM+OTA
 };
 
 inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
