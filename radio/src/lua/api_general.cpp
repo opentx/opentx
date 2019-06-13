@@ -1108,6 +1108,8 @@ Run function (key pressed)
 
 @status current Introduced in 2.0.0
 */
+
+/* TODO : fix, broken by popups rewrite
 static int luaPopupInput(lua_State * L)
 {
   event_t event = luaL_checkinteger(L, 2);
@@ -1130,6 +1132,7 @@ static int luaPopupInput(lua_State * L)
   warningText = NULL;
   return 1;
 }
+*/
 
 /*luadoc
 @function popupWarning(title, event)
