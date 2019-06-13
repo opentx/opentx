@@ -801,7 +801,7 @@ Return the internal GPS position or nil if no valid hardware found
  * 'speed' (number) internal GPSspeed in 0.1m/s
  * 'heading'  (number) internal GPS ground course estimation in degrees * 10
 
-@status current Introduced in 2.3.0
+@status current Introduced in 2.2.2
 */
 static int luaGetTxGPS(lua_State * L)
 {
@@ -1044,7 +1044,7 @@ Returns (some of) the general radio settings
  * `gtimer` (number) radio global timer in seconds (does not include current session)
 
 @status current Introduced in 2.0.6, `imperial` added in TODO,
-`language` and `voice` added in 2.2.0, gtimer added in 2.3.0.
+`language` and `voice` added in 2.2.0, gtimer added in 2.2.2.
 
 */
 static int luaGetGeneralSettings(lua_State * L)
@@ -1059,6 +1059,82 @@ static int luaGetGeneralSettings(lua_State * L)
   lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer);
   return 1;
 }
+
+/*luadoc
+@function getGlobalTimer()
+
+Returns radio timers
+
+@retval table with elements:
+* `gtimer` (number) radio global timer in seconds
+* `session` (number) radio session in seconds
+* `ttimer` (number) radio throttle timer in seconds
+* `tptimer` (number) radio throttle percent timer in seconds
+
+@status current Introduced added in 2.3.0.
+
+*/
+static int luaGetGlobalTimer(lua_State * L)
+{
+  lua_newtable(L);
+  lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer + sessionTimer);
+  lua_pushtableinteger(L, "session", sessionTimer);
+  lua_pushtableinteger(L, "ttimer", s_timeCumThr);
+  lua_pushtableinteger(L, "tptimer", s_timeCum16ThrP/16);
+  return 1;
+}
+
+/*luadoc
+@function popupInput(title, event, input, min, max)
+
+Raises a pop-up on screen that allows uses input
+
+@param title (string) text to display
+
+@param event (number) the event variable that is passed in from the
+Run function (key pressed)
+
+@param input (number) value that can be adjusted by the +/­- keys
+
+@param min  (number) min value that input can reach (by pressing the -­ key)
+
+@param max  (number) max value that input can reach
+
+@retval number result of the input adjustment
+
+@retval "OK" user pushed ENT key
+
+@retval "CANCEL" user pushed EXIT key
+
+@notice Use only from stand-alone and telemetry scripts.
+
+@status current Introduced in 2.0.0
+*/
+
+/* TODO : fix, broken by popups rewrite
+static int luaPopupInput(lua_State * L)
+{
+  event_t event = luaL_checkinteger(L, 2);
+  warningInputValue = luaL_checkinteger(L, 3);
+  warningInputValueMin = luaL_checkinteger(L, 4);
+  warningInputValueMax = luaL_checkinteger(L, 5);
+  warningText = luaL_checkstring(L, 1);
+  warningType = WARNING_TYPE_INPUT;
+  runPopupWarning(event);
+  if (warningResult) {
+    warningResult = 0;
+    lua_pushstring(L, "OK");
+  }
+  else if (!warningText) {
+    lua_pushstring(L, "CANCEL");
+  }
+  else {
+    lua_pushinteger(L, warningInputValue);
+  }
+  warningText = NULL;
+  return 1;
+}
+*/
 
 /*luadoc
 @function popupWarning(title, event)
@@ -1352,15 +1428,36 @@ static int luaGetUsage(lua_State * L)
 }
 
 /*luadoc
-@function resetGlobalTimer()
+@function resetGlobalTimer([type])
 
-Resets the radio global timer to 0.
+ Resets the radio global timer to 0.
 
-@status current Introduced in 2.3.0
+@param (optional) : if set to 'all', throttle ,throttle percent and session timers are reset too
+                    if set to 'session', radio session timer is reset too
+                    if set to 'ttimer', radio throttle timer is reset too
+                    if set to  'tptimer', radio throttle percent timer is reset too
+
+@status current Introduced in 2.2.2, param added in 2.3
 */
 static int luaResetGlobalTimer(lua_State * L)
 {
   g_eeGeneral.globalTimer = 0;
+  size_t length;
+  const char *option = luaL_optlstring(L, 1, "", &length);
+  if (!strcmp(option, "all")) {
+    sessionTimer = 0;
+    s_timeCumThr = 0;
+    s_timeCum16ThrP = 0;
+  }
+  else if (!strcmp(option, "session")) {
+    sessionTimer = 0;
+  }
+  else if (!strcmp(option, "ttimer")) {
+    s_timeCumThr = 0;
+  }
+  else if (!strcmp(option, "tptimer")) {
+    s_timeCum16ThrP = 0;
+  }
   storageDirty(EE_GENERAL);
   return 0;
 }
@@ -1411,6 +1508,7 @@ const luaL_Reg opentxLib[] = {
 #endif
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
+  { "getGlobalTimer", luaGetGlobalTimer },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
