@@ -1641,6 +1641,9 @@ const luaR_value_entry opentxConstants[] = {
 #elif defined(KEYS_GPIO_REG_UP) && defined(KEYS_GPIO_REG_DOWN)
   { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_UP) },
   { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_LONG(KEY_DOWN) },
+#elif defined(KEYS_GPIO_REG_PAGE)
+  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_PAGE) },
+  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PAGE) },
 #endif
 
 // Virtual exit
