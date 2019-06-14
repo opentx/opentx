@@ -70,7 +70,6 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/backlight_driver.cpp
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
   ../../../../../targets/${TARGET_DIR}/diskio.cpp
-  ../../../../../targets/${TARGET_DIR}/board_preinit.cpp
   ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
