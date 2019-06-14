@@ -1442,7 +1442,7 @@ static int luaGetUsage(lua_State * L)
 static int luaResetGlobalTimer(lua_State * L)
 {
   size_t length;
-  const char * option = luaL_optlstring(L, 1, "all", &length);
+  const char * option = luaL_optlstring(L, 1, "total", &length);
   if (!strcmp(option, "all")) {
     g_eeGeneral.globalTimer = 0;
     sessionTimer = 0;
