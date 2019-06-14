@@ -2,7 +2,6 @@ option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
 option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module replacement" OFF)
-option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
 
@@ -184,10 +183,6 @@ else()
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
     )
-  set(PULSES_SRC
-    ${PULSES_SRC}
-    ../sbus.cpp
-    )
 endif()
 
 if(PCB STREQUAL X9E OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
@@ -246,6 +241,11 @@ if(STATUS_LEDS)
   set(LED_DRIVER led_driver.cpp)
 endif()
 
+set(SRC
+  ${SRC}
+  sbus.cpp
+  )
+
 set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
@@ -285,9 +285,5 @@ endif()
 if(INTERNAL_MODULE_PXX1)
   add_definitions(-DINTERNAL_MODULE_PXX1)
 endif()
-
-if(USEHORUSBT)
-  add_definitions(-DUSEHORUSBT)
-endif(USEHORUSBT)
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})

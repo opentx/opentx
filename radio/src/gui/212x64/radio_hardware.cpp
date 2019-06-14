@@ -55,9 +55,6 @@ enum menuRadioHwItems {
   CASE_PCBX9E(ITEM_RADIO_HARDWARE_SQ)
   CASE_PCBX9E(ITEM_RADIO_HARDWARE_SR)
   CASE_BLUETOOTH(ITEM_RADIO_HARDWARE_BLUETOOTH_MODE)
-#if defined(USEHORUSBT)
-  CASE_BLUETOOTH(ITEM_RADIO_HARDWARE_BLUETOOTH_NAME)
-#endif
 #if defined(AUX_SERIAL)
   ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
 #endif
@@ -88,10 +85,10 @@ enum menuRadioHwItems {
   #define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #endif
 
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
-  #define BLUETOOTH_ROWS 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0),
+#if defined(BLUETOOTH)
+#define BLUETOOTH_ROWS (uint8_t)0,
 #else
-  #define BLUETOOTH_ROWS (uint8_t)0,
+#define BLUETOOTH_ROWS
 #endif
 
 #define SWITCH_TYPE_MAX(sw)   ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
@@ -218,19 +215,9 @@ void menuRadioHardware(event_t event)
           lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH);
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, attr);
           if (attr) {
-#if defined(USEHORUSBT)
-            g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER);
-#else
             g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TELEMETRY);
-#endif
           }
           break;
-#if defined(USEHORUSBT)
-        case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
-          lcdDrawText(INDENT_WIDTH, y, STR_NAME);
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
-          break;
-#endif
 #endif
 
 #if defined(AUX_SERIAL)

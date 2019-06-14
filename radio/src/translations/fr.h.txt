@@ -876,7 +876,7 @@
 #define TR_BLUETOOTH_PIN_CODE          TR(INDENT "PIN code", "PIN code")
 #define TR_BAUDRATE                    "Baudrate BT"
 #define LEN_BLUETOOTH_MODES            "\012"
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
 #define TR_BLUETOOTH_MODES             "---\0      ""Activé\0   "
 #else
 #define TR_BLUETOOTH_MODES             "---\0      ""Télémétrie""Ecolage\0"

@@ -859,7 +859,7 @@
 #define TR_BLUETOOTH_PIN_CODE          TR(INDENT "PIN kód", "PIN kód")
 #define TR_BAUDRATE                    "Baudrate BT"
 #define LEN_BLUETOOTH_MODES            "\012"
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
 #define TR_BLUETOOTH_MODES             "---\0      ""Povoleno\0 "
 #else
 #define TR_BLUETOOTH_MODES             "---\0      ""Telemetrie""Trenér\0   "
