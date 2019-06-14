@@ -211,8 +211,8 @@ void calcConsumption();
 // Trainer driver
 #define SLAVE_MODE()                   (pwrCheck() == e_power_trainer)
 #define TRAINER_CONNECTED()            (PIOA->PIO_PDSR & PIO_PA8)
-void init_trainer_ppm();
 void init_trainer_capture();
+void stop_trainer_capture();
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256
