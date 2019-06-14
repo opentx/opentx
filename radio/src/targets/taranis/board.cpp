@@ -275,7 +275,7 @@ void boardOff()
 
   BACKLIGHT_DISABLE();
 
-#if defined(TOPLCD_GPIO)
+#if defined(TOPLCD_GPIO) && !defined(BOOT)
   toplcdOff();
 #endif
 
