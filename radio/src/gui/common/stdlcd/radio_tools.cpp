@@ -48,6 +48,7 @@ void addRadioModuleTool(uint8_t index, const char * label, void (* tool)(event_t
 
 #define TOOL_NAME_MAXLEN  16
 
+#if defined(LUA)
 bool readToolName(const char * filename, char * name)
 {
   FIL file;
@@ -112,6 +113,7 @@ bool isRadioScriptTool(const char * filename)
   const char * ext = getFileExtension(filename);
   return ext && !strcasecmp(ext, SCRIPT_EXT);
 }
+#endif
 
 void menuRadioTools(event_t event)
 {
@@ -144,6 +146,7 @@ void menuRadioTools(event_t event)
     addRadioModuleTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
 #endif
 
+#if defined(LUA)
   FILINFO fno;
   DIR dir;
 
@@ -160,6 +163,7 @@ void menuRadioTools(event_t event)
         addRadioScriptTool(index++, fno.fname);
     }
   }
+#endif
 
   if (index == 0) {
     lcdDrawCenteredText(LCD_H/2, STR_NO_TOOLS);
