@@ -127,7 +127,6 @@ set(GVAR_SCREEN model_gvars.cpp)
 set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
-  timers_driver.cpp
   led_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
