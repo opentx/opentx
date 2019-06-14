@@ -1077,10 +1077,10 @@ Returns radio timers
 static int luaGetGlobalTimer(lua_State * L)
 {
   lua_newtable(L);
-  lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer + sessionTimer);
+  lua_pushtableinteger(L, "total", g_eeGeneral.globalTimer + sessionTimer);
   lua_pushtableinteger(L, "session", sessionTimer);
-  lua_pushtableinteger(L, "ttimer", s_timeCumThr);
-  lua_pushtableinteger(L, "tptimer", s_timeCum16ThrP/16);
+  lua_pushtableinteger(L, "throttle", s_timeCumThr);
+  lua_pushtableinteger(L, "throttlepct", s_timeCum16ThrP/16);
   return 1;
 }
 
@@ -1441,21 +1441,25 @@ static int luaGetUsage(lua_State * L)
 */
 static int luaResetGlobalTimer(lua_State * L)
 {
-  g_eeGeneral.globalTimer = 0;
   size_t length;
-  const char *option = luaL_optlstring(L, 1, "", &length);
+  const char * option = luaL_optlstring(L, 1, "all", &length);
   if (!strcmp(option, "all")) {
+    g_eeGeneral.globalTimer = 0;
     sessionTimer = 0;
     s_timeCumThr = 0;
     s_timeCum16ThrP = 0;
   }
+  else if (!strcmp(option, "total")) {
+    g_eeGeneral.globalTimer = 0;
+    sessionTimer = 0;
+  }
   else if (!strcmp(option, "session")) {
     sessionTimer = 0;
   }
-  else if (!strcmp(option, "ttimer")) {
+  else if (!strcmp(option, "throttle")) {
     s_timeCumThr = 0;
   }
-  else if (!strcmp(option, "tptimer")) {
+  else if (!strcmp(option, "throttlepct")) {
     s_timeCum16ThrP = 0;
   }
   storageDirty(EE_GENERAL);
