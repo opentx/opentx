@@ -135,6 +135,14 @@
   #define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource10
   #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource12
 #endif
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  #define ROTARY_ENCODER_RCC_APB1Periph   RCC_APB1Periph_TIM5
+  #define ROTARY_ENCODER_TIMER            TIM5
+  #define ROTARY_ENCODER_TIMER_IRQn       TIM5_IRQn
+  #define ROTARY_ENCODER_TIMER_IRQHandler TIM5_IRQHandler
+#else
+  #define ROTARY_ENCODER_RCC_APB1Periph   0
+#endif
 
 // Trims
 #if defined(PCBX9E)

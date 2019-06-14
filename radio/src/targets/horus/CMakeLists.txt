@@ -128,6 +128,7 @@ set(TARGET_SRC
   led_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
+  ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/bluetooth_driver.cpp
   ../common/arm/stm32/rotary_encoder_driver.cpp

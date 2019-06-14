@@ -124,6 +124,10 @@ void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
 
+// Timers driver
+void init2MhzTimer();
+void init5msTimer();
+
 // Delays driver
 #ifdef __cplusplus
 extern "C" {
