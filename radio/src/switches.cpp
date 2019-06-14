@@ -558,6 +558,10 @@ void checkSwitches()
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
 #endif
 
+#if defined(PWR_BUTTON_PRESS)
+  bool refresh = false;
+#endif
+
   while (1) {
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
@@ -747,7 +751,27 @@ void checkSwitches()
       last_bad_switches = switches_states;
     }
 
-    if (pwrCheck() == e_power_off || keyDown()) break;
+    if (keyDown())
+      break;
+
+#if defined(PWR_BUTTON_PRESS)
+    uint32_t power = pwrCheck();
+    if (power == e_power_off) {
+      break;
+    }
+    else if (power == e_power_press) {
+      refresh = true;
+    }
+    else if (power == e_power_on && refresh) {
+      last_bad_switches = 0xff;
+      last_bad_pots = 0xff;
+      refresh = false;
+    }
+#else
+    if (pwrCheck() == e_power_off) {
+      break;
+    }
+#endif
 
     doLoopCommonActions();
 
