@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "pulses/pxx2.h"
+#include "io/frsky_firmware_update.h"
 
 uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
@@ -452,7 +453,20 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
     return "Open file failed";
   }
 
-  uint32_t size = f_size(&file);
+  uint32_t size;
+  const char * ext = getFileExtension(filename);
+  if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+    FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *) buffer;
+    if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+      f_close(&file);
+      return "Format error";
+    }
+    size = information->size;
+  }
+  else {
+    size = f_size(&file);
+  }
+
   uint32_t done = 0;
   while (1) {
     drawProgressScreen(getBasename(filename), STR_OTA_UPDATE, done, size);
