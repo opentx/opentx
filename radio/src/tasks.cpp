@@ -128,7 +128,7 @@ TASK_FUNCTION(mixerTask)
     }
 #else
     if (isForcePowerOffRequested()) {
-      pwrOff();
+      boardOff();
     }
 #endif
 

@@ -269,7 +269,7 @@ void boardInit()
 
 void boardOff()
 {
-#if defined(STATUS_LEDS)
+#if defined(STATUS_LEDS) && !defined(BOOT)
   ledOff();
 #endif
 
@@ -288,6 +288,31 @@ void boardOff()
   lcdOff();
   SysTick->CTRL = 0; // turn off systick
   pwrOff();
+
+  // disable interrupts
+  __disable_irq();
+
+  while (1) {
+    wdt_reset();
+#if defined(PWR_BUTTON_PRESS)
+    // X9E/X7 needs watchdog reset because CPU is still running while
+    // the power key is held pressed by the user.
+    // The power key should be released by now, but we must make sure
+    if (!pwrPressed()) {
+      // Put the CPU into sleep to reduce the consumption,
+      // it might help with the RTC reset issue
+      PWR->CR |= PWR_CR_CWUF;
+      /* Select STANDBY mode */
+      PWR->CR |= PWR_CR_PDDS;
+      /* Set SLEEPDEEP bit of Cortex System Control Register */
+      SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+      /* Request Wait For Event */
+      __WFE();
+    }
+#endif
+  }
+
+  // this function must not return!
 }
 
 uint8_t currentTrainerMode = 0xff;
