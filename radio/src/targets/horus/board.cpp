@@ -189,7 +189,7 @@ void boardInit()
 
 void boardOff()
 {
-  BACKLIGHT_DISABLE();
+  backlightEnable(0);
 
   while (pwrPressed()) {
     wdt_reset();
