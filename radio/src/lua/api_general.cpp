@@ -1472,7 +1472,7 @@ static int luaResetGlobalTimer(lua_State * L)
 
 Writes a string to the serial port. The string is allowed to contain any character, including 0.
 
-@status current Introducted in TODO
+@status current Introduced in TODO
 */
 static int luaSerialWrite(lua_State * L)
 {
