@@ -28,6 +28,7 @@
 #include <math.h>
 #include "definitions.h"
 #include "opentx_types.h"
+#include "debounce.h"
 
 #if defined(STM32)
 #include "usbd_conf.h"

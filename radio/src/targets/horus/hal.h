@@ -54,6 +54,7 @@
 #endif
 
 // Rotary Encoder
+#define ROTARY_ENCODER_RCC_APB1Periph   RCC_APB1Periph_TIM4
 #define ROTARY_ENCODER_GPIO             GPIOH
 #define ROTARY_ENCODER_GPIO_PIN_A       GPIO_Pin_11 // PH.11
 #define ROTARY_ENCODER_GPIO_PIN_B       GPIO_Pin_10 // PH.10
@@ -65,6 +66,9 @@
 #define ROTARY_ENCODER_EXTI_PortSource  EXTI_PortSourceGPIOH
 #define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource11
 #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource10
+#define ROTARY_ENCODER_TIMER            TIM4
+#define ROTARY_ENCODER_TIMER_IRQn       TIM4_IRQn
+#define ROTARY_ENCODER_TIMER_IRQHandler TIM4_IRQHandler
 
 // Switches
 #define STORAGE_SWITCH_A
