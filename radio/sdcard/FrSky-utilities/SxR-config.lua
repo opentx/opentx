@@ -268,9 +268,9 @@ local function runFieldsPage(event)
             end
         end
     elseif edit then
-        if event == EVT_VIRTUAL_NEXT then
+        if event == EVT_VIRTUAL_NEXT or event == EVT_VIRTUAL_NEXT_REP  then
             addField(1)
-        elseif event == EVT_VIRTUAL_PREVIOUS then
+        elseif event == EVT_VIRTUAL_PREVIOUS or event == EVT_VIRTUAL_PREVIOUS_REP then
             addField(-1)
         end
     else
