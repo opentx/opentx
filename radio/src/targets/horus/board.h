@@ -108,7 +108,6 @@ extern uint16_t sessionTimer;
 #endif
 
 // Board driver
-void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
 

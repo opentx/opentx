@@ -122,6 +122,7 @@ void boardInit()
                          ENABLE);
 
   pwrInit();
+  pwrOn();
   delaysInit();
 
 #if defined(DEBUG)

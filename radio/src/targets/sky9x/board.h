@@ -34,7 +34,6 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS               0x00400000
 
 // Board driver
-void boardPreInit(void);
 void boardInit(void);
 #define boardOff()  pwrOff()
 

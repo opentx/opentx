@@ -120,7 +120,6 @@ void rotaryEncoderCheck(void);
 extern uint16_t sessionTimer;
 
 // Board driver
-void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
 
