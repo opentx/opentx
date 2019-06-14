@@ -21,10 +21,6 @@
 #include "pwr.h"
 #include "board.h"
 
-uint32_t shutdownRequest;          // Stores intentional shutdown to avoid reboot loop
-uint32_t shutdownReason;           // Used for detecting unexpected reboots regardless of reason
-uint32_t powerupReason __NOINIT;   // Stores power up reason beyond initialization for emergency mode activation
-
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -86,23 +82,6 @@ void pwrOn()
 
 void pwrOff()
 {
-#if defined(PCBX12S)
-  // Shutdown the Audio amp
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
-  GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
-#endif
-
-  // Shutdown the Haptic
-  hapticDone();
-
-  shutdownRequest = SHUTDOWN_REQUEST;
-  shutdownReason = NORMAL_POWER_OFF;
   GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 

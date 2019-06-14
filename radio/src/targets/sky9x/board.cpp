@@ -498,16 +498,6 @@ void calcConsumption()
   }
 }
 
-void checkTrainerSettings()
-{
-  if (SLAVE_MODE()) {
-    PIOC->PIO_PDR = PIO_PC22;
-  }
-  else {
-    PIOC->PIO_PER = PIO_PC22;
-  }
-}
-
 uint16_t getBatteryVoltage()
 {
   int32_t instant_vbat = anaIn(TX_VOLTAGE);  // using filtered ADC value on purpose

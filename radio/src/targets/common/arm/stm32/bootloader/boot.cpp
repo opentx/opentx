@@ -209,8 +209,8 @@ int main()
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG, ENABLE);
 
   keysInit();
-
-  boardPreInit();
+  pwrInit();
+  pwrOff();
 
   // wait for inputs to stabilize
   for (uint32_t i = 0; i < 50000; i += 1) {
@@ -227,7 +227,6 @@ int main()
   rotaryEncoderInit();
 #endif
 
-  pwrInit();
   pwrOn();
   delaysInit(); // needed for lcdInit()
 
@@ -489,12 +488,7 @@ int main()
 
     if (state != ST_FLASHING && state != ST_USB) {
       if (pwrOffPressed()) {
-        lcdClear();
-        lcdOff(); // this drains LCD caps
-        pwrOff();
-        for (;;) {
-          // Wait for power to go off
-        }
+        boardOff();
       }
     }
 

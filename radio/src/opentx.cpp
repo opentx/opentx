@@ -954,14 +954,14 @@ void checkThrottleStick()
     }
 
 #if defined(PWR_BUTTON_PRESS)
-    uint32_t pwr_check = pwrCheck();
-    if (pwr_check == e_power_off) {
+    uint32_t power = pwrCheck();
+    if (power == e_power_off) {
       break;
     }
-    else if (pwr_check == e_power_press) {
+    else if (power == e_power_press) {
       refresh = true;
     }
-    else if (pwr_check == e_power_on && refresh) {
+    else if (power == e_power_on && refresh) {
       RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_NONE);
       refresh = false;
     }
@@ -1885,10 +1885,6 @@ void opentxInit()
   lcdSetContrast();
 #endif
   backlightOn();
-
-#if defined(PCBSKY9X) && !defined(SIMU)
-  init_trainer_capture();
-#endif
 
   startPulses();
 

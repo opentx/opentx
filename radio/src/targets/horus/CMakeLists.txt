@@ -108,10 +108,12 @@ set(GUI_SRC
   ${WIDGETS_SRC}
   rle.cpp
   )
+
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
   add_definitions(-DDISK_CACHE)
 endif()
+
 if(INTERNAL_GPS)
   set(SRC ${SRC} gps.cpp)
   add_definitions(-DINTERNAL_GPS)
@@ -128,6 +130,7 @@ set(TARGET_SRC
   led_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
+  ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/bluetooth_driver.cpp

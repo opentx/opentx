@@ -741,7 +741,7 @@ extern uint8_t g_vbat100mV;
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
 extern uint8_t            g_beepCnt;
 
-#include "trainer_input.h"
+#include "trainer.h"
 
 extern int32_t            chans[MAX_OUTPUT_CHANNELS];
 extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMITS) of the last perMain

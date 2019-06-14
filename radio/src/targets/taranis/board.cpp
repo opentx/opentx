@@ -269,13 +269,13 @@ void boardInit()
 
 void boardOff()
 {
-#if defined(STATUS_LEDS)
+#if defined(STATUS_LEDS) && !defined(BOOT)
   ledOff();
 #endif
 
   BACKLIGHT_DISABLE();
 
-#if defined(TOPLCD_GPIO)
+#if defined(TOPLCD_GPIO) && !defined(BOOT)
   toplcdOff();
 #endif
 
@@ -288,64 +288,33 @@ void boardOff()
   lcdOff();
   SysTick->CTRL = 0; // turn off systick
   pwrOff();
-}
 
-uint8_t currentTrainerMode = 0xff;
+  // disable interrupts
+  __disable_irq();
 
-void checkTrainerSettings()
-{
-  uint8_t requiredTrainerMode = g_model.trainerData.mode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        stop_trainer_capture();
-        break;
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        stop_trainer_module_cppm();
-        break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        stop_trainer_module_sbus();
-        break;
-#if defined(TRAINER_BATTERY_COMPARTMENT)
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        auxSerialStop();
-        break;
-#endif
+  while (1) {
+    wdt_reset();
+#if defined(SIMU)
+    return;
+#elif defined(PWR_BUTTON_PRESS)
+    // X9E/X7 needs watchdog reset because CPU is still running while
+    // the power key is held pressed by the user.
+    // The power key should be released by now, but we must make sure
+    if (!pwrPressed()) {
+      // Put the CPU into sleep to reduce the consumption,
+      // it might help with the RTC reset issue
+      PWR->CR |= PWR_CR_CWUF;
+      /* Select STANDBY mode */
+      PWR->CR |= PWR_CR_PDDS;
+      /* Set SLEEPDEEP bit of Cortex System Control Register */
+      SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+      /* Request Wait For Event */
+      __WFE();
     }
-
-    currentTrainerMode = requiredTrainerMode;
-    switch (requiredTrainerMode) {
-      case TRAINER_MODE_SLAVE:
-        init_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-         init_trainer_module_cppm();
-         break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-         init_trainer_module_sbus();
-         break;
-#if defined(TRAINER_BATTERY_COMPARTMENT)
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
-          auxSerialSbusInit();
-          break;
-        }
-        // no break
 #endif
-      default:
-        // master is default
-        init_trainer_capture();
-        break;
-    }
-
-    if (requiredTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE || requiredTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
-      stop_intmodule_heartbeat();
-    else
-      init_intmodule_heartbeat();
   }
+
+  // this function must not return!
 }
 
 uint16_t getBatteryVoltage()

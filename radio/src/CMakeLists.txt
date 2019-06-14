@@ -325,7 +325,7 @@ set(SRC
   mixer.cpp
   stamp.cpp
   timers.cpp
-  trainer_input.cpp
+  trainer.cpp
   )
 
 if(GUI)
