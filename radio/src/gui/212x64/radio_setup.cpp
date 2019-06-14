@@ -500,7 +500,7 @@ void menuRadioSetup(event_t event)
         else if (reusableBuffer.generalSettings.stickMode != g_eeGeneral.stickMode) {
           pausePulses();
           g_eeGeneral.stickMode = reusableBuffer.generalSettings.stickMode;
-          checkTHR();
+          checkThrottleStick();
           resumePulses();
           waitKeysReleased();
         }

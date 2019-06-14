@@ -57,9 +57,14 @@ const uint8_t bchout_ar[]  = {
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
     0xC6, 0xC9, 0xD2, 0xD8, 0xE1, 0xE4 };
 
+uint8_t channel_order(uint8_t setup, uint8_t x)
+{
+  return ((*(bchout_ar + setup) >> (6 - (x - 1) * 2)) & 3) + 1;
+}
+
 uint8_t channel_order(uint8_t x)
 {
-  return ( ((*(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
+  return channel_order(g_eeGeneral.templateSetup, x);
 }
 
 /*
@@ -867,9 +872,10 @@ void checkAll()
   checkLowEEPROM();
 #endif
 
-  if (g_eeGeneral.chkSum == evalChkSum()) {
-    checkTHR();
-  }
+  // we don't check the throttle stick if the radio is not calibrated
+  if (g_eeGeneral.chkSum == evalChkSum())
+    checkThrottleStick();
+
   checkSwitches();
   checkFailsafe();
   checkRSSIAlarmsDisabled();
@@ -906,28 +912,32 @@ void checkLowEEPROM()
 }
 #endif
 
-void checkTHR()
+bool isThrottleWarningAlertNeeded()
 {
-  uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS+NUM_SLIDERS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
+  if (g_model.disableThrottleWarning) {
+    return false;
+  }
+
   // throttle channel is either the stick according stick mode (already handled in evalInputs)
   // or P1 to P3;
   // in case an output channel is choosen as throttle source (thrTraceSrc>NUM_POTS+NUM_SLIDERS) we assume the throttle stick is the input
   // no other information available at the moment, and good enough to my option (otherwise too much exceptions...)
-
-  if (g_model.disableThrottleWarning) {
-    return;
-  }
+  uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS+NUM_SLIDERS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
 
   GET_ADC_IF_MIXER_NOT_RUNNING();
-
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
   int16_t v = calibratedAnalogs[thrchn];
-  if (g_model.thrTraceSrc && g_model.throttleReversed) { //TODO : proper review of THR source definition and handling
+  if (g_model.thrTraceSrc && g_model.throttleReversed) { // TODO : proper review of THR source definition and handling
     v = -v;
   }
-  if (v <= THRCHK_DEADBAND-1024) {
-    return; // prevent warning if throttle input OK
+  return v > THRCHK_DEADBAND - 1024;
+}
+
+void checkThrottleStick()
+{
+  if (!isThrottleWarningAlertNeeded()) {
+    return;
   }
 
   // first - display warning; also deletes inputs if any have been before
@@ -938,15 +948,9 @@ void checkTHR()
   bool refresh = false;
 #endif
 
-  while (1) {
-
-    GET_ADC_IF_MIXER_NOT_RUNNING();
-
-    evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
-
-    v = calibratedAnalogs[thrchn];
-    if (g_model.thrTraceSrc && g_model.throttleReversed) { //TODO : proper review of THR source definition and handling
-      v = -v;
+  while (!getEvent()) {
+    if (!isThrottleWarningAlertNeeded()) {
+      return;
     }
 
 #if defined(PWR_BUTTON_PRESS)
@@ -966,10 +970,6 @@ void checkTHR()
       break;
     }
 #endif
-
-    if (keyDown() || v <= THRCHK_DEADBAND-1024) {
-      break;
-    }
 
     doLoopCommonActions();
 

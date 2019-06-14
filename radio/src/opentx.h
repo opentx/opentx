@@ -616,7 +616,7 @@ extern uint16_t maxMixerDuration;
 #endif
 
 void checkLowEEPROM();
-void checkTHR();
+void checkThrottleStick();
 void checkSwitches();
 void checkAlarm();
 void checkAll();
