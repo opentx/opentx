@@ -35,7 +35,7 @@ void intmoduleStop()
 #if defined(DEBUG_LATENCY)
 #define HEARBEAT_OFFSET unsigned(5500 + g_model.flightModeData[0].gvars[0] * 100)
 #else
-constexpr int HEARBEAT_OFFSET = 5500;
+constexpr unsigned HEARBEAT_OFFSET = 5500;
 #endif
 
 void intmoduleSendNextFrame()
