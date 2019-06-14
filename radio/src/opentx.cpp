@@ -1886,10 +1886,6 @@ void opentxInit()
 #endif
   backlightOn();
 
-#if defined(PCBSKY9X) && !defined(SIMU)
-  init_trainer_capture();
-#endif
-
   startPulses();
 
   wdt_enable(WDTO_500MS);

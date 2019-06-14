@@ -248,10 +248,10 @@ void extmoduleSendNextFrame();
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
 #if defined(TRAINER_GPIO)
-  void init_trainer_ppm(void);
-  void stop_trainer_ppm(void);
-  void init_trainer_capture(void);
-  void stop_trainer_capture(void);
+  void init_trainer_ppm();
+  void stop_trainer_ppm();
+  void init_trainer_capture();
+  void stop_trainer_capture();
 #else
   #define init_trainer_ppm()
   #define stop_trainer_ppm()
@@ -259,15 +259,15 @@ void extmoduleSendNextFrame();
   #define stop_trainer_capture()
 #endif
 #if defined(TRAINER_MODULE_CPPM)
-  void init_trainer_module_cppm(void);
-  void stop_trainer_module_cppm(void);
+  void init_trainer_module_cppm();
+  void stop_trainer_module_cppm();
 #else
   #define init_trainer_module_cppm()
   #define stop_trainer_module_cppm()
 #endif
 #if defined(TRAINER_MODULE_SBUS)
-  void init_trainer_module_sbus(void);
-  void stop_trainer_module_sbus(void);
+  void init_trainer_module_sbus();
+  void stop_trainer_module_sbus();
 #else
   #define init_trainer_module_sbus()
   #define stop_trainer_module_sbus()
@@ -875,9 +875,6 @@ void setTopBatteryValue(uint32_t volts);
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
-
-extern uint8_t currentTrainerMode;
-void checkTrainerSettings(void);
 
 #if defined(__cplusplus)
 #include "fifo.h"

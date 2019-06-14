@@ -18,10 +18,10 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TRAINER_INPUT_H_
-#define _TRAINER_INPUT_H_
+#ifndef _TRAINER_H_
+#define _TRAINER_H_
 
-#include "opentx.h"
+#include "dataconstants.h"
 
 // Trainer input channels
 extern int16_t ppmInput[MAX_TRAINER_CHANNELS];
@@ -30,9 +30,11 @@ extern int16_t ppmInput[MAX_TRAINER_CHANNELS];
 #define PPM_IN_VALID_TIMEOUT 100 // 1s
 extern uint8_t ppmInputValidityTimer;
 
+extern uint8_t currentTrainerMode;
 #define IS_TRAINER_INPUT_VALID() (ppmInputValidityTimer != 0)
 
 void checkTrainerSignalWarning();
+void checkTrainerSettings();
 
 // Needs to be inlined to avoid slow function calls in ISR routines
 inline void captureTrainerPulses(uint16_t capture)
@@ -66,4 +68,4 @@ inline void captureTrainerPulses(uint16_t capture)
   }
 }
 
-#endif // _TRAINER_INPUT_H_
+#endif // _TRAINER_H_

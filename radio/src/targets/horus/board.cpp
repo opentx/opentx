@@ -29,6 +29,10 @@ extern "C" {
 }
 #endif
 
+uint32_t shutdownRequest;          // Stores intentional shutdown to avoid reboot loop
+uint32_t shutdownReason;           // Used for detecting unexpected reboots regardless of reason
+uint32_t powerupReason __NOINIT;   // Stores power up reason beyond initialization for emergency mode activation
+
 HardwareOptions hardwareOptions;
 
 void watchdogInit(unsigned int duration)
@@ -212,42 +216,6 @@ void boardOff()
   shutdownReason = NORMAL_POWER_OFF;
 
   pwrOff();
-}
-
-uint8_t currentTrainerMode = 0xff;
-
-void checkTrainerSettings()
-{
-  uint8_t requiredTrainerMode = g_model.trainerData.mode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        stop_trainer_capture();
-        break;
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        auxSerialStop();
-    }
-
-    currentTrainerMode = requiredTrainerMode;
-    switch (requiredTrainerMode) {
-      case TRAINER_MODE_SLAVE:
-        init_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
-          auxSerialSbusInit();
-          break;
-        }
-        // no break
-      default:
-        // master is default
-        init_trainer_capture();
-        break;
-    }
-  }
 }
 
 uint16_t getBatteryVoltage()

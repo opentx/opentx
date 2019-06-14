@@ -21,10 +21,6 @@
 #include "pwr.h"
 #include "board.h"
 
-uint32_t shutdownRequest;          // Stores intentional shutdown to avoid reboot loop
-uint32_t shutdownReason;           // Used for detecting unexpected reboots regardless of reason
-uint32_t powerupReason __NOINIT;   // Stores power up reason beyond initialization for emergency mode activation
-
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;

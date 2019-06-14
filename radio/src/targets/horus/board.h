@@ -218,6 +218,9 @@ void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
 void disable_serial(uint8_t module);
 
+void init_intmodule_heartbeat();
+void check_intmodule_heartbeat();
+
 void intmoduleStop();
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void intmodulePxxStart();
@@ -506,6 +509,8 @@ extern "C" {
 
 // Power driver
 #define SOFT_PWR_CTRL
+extern uint32_t shutdownRequest; // Stores intentional shutdown to avoid reboot loop
+extern uint32_t shutdownReason; // Used for detecting unexpected reboots regardless of reason
 void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
@@ -653,9 +658,6 @@ void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
 void bluetoothDisable(void);
-
-extern uint8_t currentTrainerMode;
-void checkTrainerSettings(void);
 
 #if defined(__cplusplus)
 #include "fifo.h"
