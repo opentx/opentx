@@ -310,7 +310,7 @@ void Bluetooth::wakeup(void)
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
         if (len > 0) {
           for (int i = 0; i < len; i++) {
-            *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+            *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
           }
           *cur = '\0';
         }
@@ -413,7 +413,7 @@ void Bluetooth::wakeup()
       uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
       if (len > 0) {
         for (int i = 0; i < len; i++) {
-          *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+          *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
         }
         *cur = '\0';
       }
