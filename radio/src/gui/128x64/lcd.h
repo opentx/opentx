@@ -141,8 +141,6 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
-#define FlightModesType uint16_t
-
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
 void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att, LcdFlags att2);
 void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags=0);
