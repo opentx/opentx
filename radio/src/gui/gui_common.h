@@ -91,7 +91,7 @@ void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 
 #include "telemetry/telemetry_sensors.h"
-void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags flags);
+void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags flags);
 void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags flags=0);
 void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags=0);
 void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags flags=0);
