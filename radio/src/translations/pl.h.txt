@@ -549,7 +549,7 @@
 #define TR_ELEDIRECTION        TR("Ster Wysokośc","Dług. Kierunku cyklu")
 #define TR_AILDIRECTION        TR("Kierunek Lotk","Lateral cyc. direction")
 #define TR_COLDIRECTION        TR("PIT Direction","Coll. pitch direction")
-#define TR_MODE                INDENT "Tryb"
+#define TR_MODE                "Tryb"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "BrakWoln.Expo!"
 #define TR_NOFREEMIXER         "BrakWoln.Mixów!"

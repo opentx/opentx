@@ -21,13 +21,13 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
+typedef int coord_t;
+typedef uint32_t LcdFlags;
+typedef uint8_t display_t;
+
 #define BOX_WIDTH                      31
-#define coord_t                        int
-#define scoord_t                       int
 #define CENTER                         "\015"
 #define CENTER_OFS                     (7*FW-FW/2)
-
-#define lcdint_t                       int32_t
 
 #define FW                             6
 #define FWNUM                          5
@@ -84,9 +84,6 @@
 #define GREY_DEFAULT                   GREY(11)
 #define COLOUR_MASK(x)                 ((x) & 0x0F0000)
 
-#define LcdFlags                       uint32_t
-
-#define display_t                      uint8_t
 #define DISPLAY_BUFFER_SIZE            (LCD_W*LCD_H*4/8)
 
 #if (defined(PCBX9E) || defined(PCBX9DP)) && defined(LCD_DUAL_BUFFER)
@@ -135,11 +132,9 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
-#define putstime_t int32_t
-
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
-inline void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att, LcdFlags att2);
+inline void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att)
 {
   drawTimer(x, y, tme, att, att);
 }
@@ -151,11 +146,11 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
 void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
-void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att=0);
-void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
+void lcdDrawSolidVerticalLine(coord_t x, coord_t y, coord_t h, LcdFlags att=0);
+void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att=0);
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
-inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att=0)
+void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+inline void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags att=0)
 {
   lcdDrawFilledRect(x, y, w, h, SOLID, att);
 }

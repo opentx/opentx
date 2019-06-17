@@ -550,7 +550,7 @@
 #define TR_ELEDIRECTION        TR("ELE Direccion","Largo cyc. direccion")
 #define TR_AILDIRECTION        TR("AIL Direccion","Lateral cyc. direccion")
 #define TR_COLDIRECTION        TR("PIT Direccion","Coll. pitch direccion")
-#define TR_MODE                INDENT"Modo"
+#define TR_MODE                "Modo"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No expo libre!"
 #define TR_NOFREEMIXER         "No mezcla lib!"
