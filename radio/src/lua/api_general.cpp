@@ -1705,6 +1705,10 @@ const luaR_value_entry opentxConstants[] = {
   KEY_EVENTS(ENTER, KEY_ENTER),
 #endif
 
+#if defined(KEYS_GPIO_REG_MENU)
+  KEY_EVENTS(MENU, KEY_MENU),
+#endif
+
 #if defined(KEYS_GPIO_REG_RIGHT) && defined(NAVIGATION_HORUS)
   KEY_EVENTS(TELEM, KEY_TELEM),
 #elif defined(KEYS_GPIO_REG_RIGHT)
