@@ -83,7 +83,7 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
 }
 
-void extmodulePxxStart()
+void extmodulePxx1PulsesStart()
 {
   EXTERNAL_MODULE_ON();
 
@@ -125,11 +125,6 @@ void extmodulePxxStart()
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
-}
-
-void extmodulePxx2Start()
-{
-  // TODO just enable the S.PORT line (or let telemetry init do it)
 }
 
 #if defined(DSM2)
@@ -284,6 +279,6 @@ extern "C" void EXTMODULE_TIMER_IRQHandler()
 {
   EXTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  if (setupPulses(EXTERNAL_MODULE))
+  if (setupPulsesExternalModule())
     extmoduleSendNextFrame();
 }

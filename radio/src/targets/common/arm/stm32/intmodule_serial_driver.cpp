@@ -41,7 +41,7 @@ void intmoduleStop()
   GPIO_ResetBits(INTMODULE_GPIO, INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN);
 }
 
-void intmodulePxxStart()
+void intmodulePxx1SerialStart()
 {
   intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, false);
 }

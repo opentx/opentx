@@ -197,7 +197,6 @@ set(FIRMWARE_TARGET_SRC
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  pulses_driver.cpp
   keys_driver.cpp
   telemetry_driver.cpp
   )

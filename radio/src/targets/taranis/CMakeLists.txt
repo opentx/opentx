@@ -178,7 +178,7 @@ if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE)
     ${TARGET_SRC}
     ../common/arm/stm32/intmodule_serial_driver.cpp
     )
-else()
+elseif(NOT (PCB STREQUAL X7 AND PCBREV STREQUAL T12))
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp

@@ -83,12 +83,7 @@ void intmoduleSendNextFrame()
   }
 }
 
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
-{
-  // nothing, the pulses will be sent through telemetry port
-}
-
-void intmodulePxxStart()
+void intmodulePxx1PulsesStart()
 {
   INTERNAL_MODULE_ON();
 
@@ -172,7 +167,7 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  if (setupPulses(INTERNAL_MODULE)) {
+  if (setupPulsesInternalModule()) {
     intmoduleSendNextFrame();
   }
 }
