@@ -588,7 +588,7 @@
 #define TR_RENAVIG                     "Navig. RotEnc"
 #define TR_THROTTLE_LABEL              "Plyn"
 #define TR_THROTTLEREVERSE             TR("ReversPlyn", INDENT"Revers plynu")
-#define TR_MINUTEBEEP                  TR(INDENT"Minuta", INDENT"Oznamovat minuty")
+#define TR_MINUTEBEEP                  TR("Minuta", "Oznamovat minuty")
 #define TR_BEEPCOUNTDOWN               INDENT"Odpočet"
 #define TR_PERSISTENT                  INDENT"Trvalé"
 #define TR_BACKLIGHT_LABEL             "Podsvětlení"

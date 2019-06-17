@@ -605,7 +605,7 @@
 #define TR_RENAVIG             "Navig EncRot "
 #define TR_THROTTLE_LABEL      "Motore"
 #define TR_THROTTLEREVERSE     TR("Mot inv.", INDENT "Motore Inverso")
-#define TR_MINUTEBEEP          INDENT"Minuto"
+#define TR_MINUTEBEEP          "Minuto"
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Conto rov", INDENT"Conto rovescia")
 #define TR_PERSISTENT          TR(INDENT"Persist.", INDENT"Persistente")
 #define TR_BACKLIGHT_LABEL     TR("Retroillum.", "Retroilluminazione")

@@ -595,7 +595,7 @@
 #define TR_RENAVIG             "Drehgeb. Navig."
 #define TR_THROTTLE_LABEL      "Gas-Kontrolle"
 #define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
-#define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
+#define TR_MINUTEBEEP          TR("Min-Alarm", "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
 #define TR_PERSISTENT          TR(INDENT "Permanent", INDENT "Permanent")
 #define TR_BACKLIGHT_LABEL     "LCD-Beleuchtung"

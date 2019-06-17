@@ -591,7 +591,7 @@
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Inverte Acel.", INDENT "Inverte Acel.")
-#define TR_MINUTEBEEP          INDENT "Beep Minuto"
+#define TR_MINUTEBEEP          "Beep Minuto"
 #define TR_BEEPCOUNTDOWN       INDENT "Beep Regressivo"
 #define TR_PERSISTENT          INDENT "Persist."
 #define TR_BACKLIGHT_LABEL     "Backlight"

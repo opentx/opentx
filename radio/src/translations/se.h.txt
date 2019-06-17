@@ -604,7 +604,7 @@
 #define TR_RENAVIG             "RotEnk Navig"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Inv.Gas", INDENT "Inverterad Gas")
-#define TR_MINUTEBEEP          INDENT "Minutpip"
+#define TR_MINUTEBEEP          "Minutpip"
 #define TR_BEEPCOUNTDOWN       INDENT "Nedräkning"
 #define TR_PERSISTENT          TR("Jämt på ", INDENT"Alltid På")
 #define TR_BACKLIGHT_LABEL     "Belysning"

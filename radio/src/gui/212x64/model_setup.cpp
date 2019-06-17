@@ -405,7 +405,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_SETUP_TIMER1_MINUTE_BEEP:
-        g_model.timers[0].minuteBeep = editCheckBox(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        g_model.timers[0].minuteBeep = editCheckBox(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, INDENT TR_MINUTEBEEP, attr, event);
         break;
 
       case ITEM_MODEL_SETUP_TIMER1_COUNTDOWN_BEEP:
@@ -426,7 +426,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_SETUP_TIMER2_MINUTE_BEEP:
-        g_model.timers[1].minuteBeep = editCheckBox(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        g_model.timers[1].minuteBeep = editCheckBox(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, INDENT TR_MINUTEBEEP, attr, event);
         break;
 
       case ITEM_MODEL_SETUP_TIMER2_COUNTDOWN_BEEP:
@@ -448,7 +448,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_SETUP_TIMER3_MINUTE_BEEP:
-        g_model.timers[2].minuteBeep = editCheckBox(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        g_model.timers[2].minuteBeep = editCheckBox(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, INDENT TR_MINUTEBEEP, attr, event);
         break;
 
       case ITEM_MODEL_SETUP_TIMER3_COUNTDOWN_BEEP:

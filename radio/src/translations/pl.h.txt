@@ -605,7 +605,7 @@
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Gaz    "
 #define TR_THROTTLEREVERSE     TR("OdwrGaz", INDENT "OdwrGaz")
-#define TR_MINUTEBEEP          TR(INDENT "Minuta", INDENT "PikCoMinutę")
+#define TR_MINUTEBEEP          TR("Minuta", "PikCoMinutę")
 #define TR_BEEPCOUNTDOWN       INDENT "Odliczanie"
 #define TR_PERSISTENT          TR(INDENT "Dokł.", INDENT "Dokładny")
 #define TR_BACKLIGHT_LABEL     "Podświetl"
