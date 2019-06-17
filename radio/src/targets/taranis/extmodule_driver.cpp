@@ -196,20 +196,10 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
     status = EXTMODULE_USART->SR;
   }
 }
-
-void extmodulePxx2Start()
-{
-  extmoduleInvertedSerialStart(PXX2_EXTERNAL_MODULE_BAUDRATE);
-}
-#else
-void extmodulePxx2Start()
-{
-  // TODO just enable the S.PORT line (or let telemetry init do it)
-}
 #endif
 
 #if defined(PXX1)
-void extmodulePxxPulsesStart()
+void extmodulePxx1PulsesStart()
 {
   EXTERNAL_MODULE_ON();
 
@@ -246,7 +236,7 @@ void extmodulePxxPulsesStart()
 #endif
 
 #if defined(PXX1) && defined(EXTMODULE_USART)
-void extmodulePxxSerialStart()
+void extmodulePxx1SerialStart()
 {
   extmoduleInvertedSerialStart(EXTMODULE_PXX_SERIAL_BAUDRATE);
 }
@@ -340,7 +330,7 @@ extern "C" void EXTMODULE_TIMER_CC_IRQHandler()
 {
   EXTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  if (setupPulses(EXTERNAL_MODULE)) {
+  if (setupPulsesExternalModule()) {
     extmoduleSendNextFrame();
   }
 }

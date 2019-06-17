@@ -359,14 +359,17 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 {
   pausePulses();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
+  INTERNAL_MODULE_OFF();
+#endif
+
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
+  EXTERNAL_MODULE_OFF();
+
+  SPORT_UPDATE_POWER_OFF();
 
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
-
-  INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
-  SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
   watchdogSuspend(2000);
@@ -399,13 +402,16 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   RTOS_WAIT_MS(2000);
   telemetryClearFifo();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
-    setupPulses(INTERNAL_MODULE);
+    setupPulsesInternalModule();
   }
+#endif
+
   if (extPwr) {
     EXTERNAL_MODULE_ON();
-    setupPulses(EXTERNAL_MODULE);
+    setupPulsesExternalModule();
   }
 
   state = SPORT_IDLE;
@@ -620,11 +626,14 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
 
   pausePulses();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
-  uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
-
   INTERNAL_MODULE_OFF();
+#endif
+
+  uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
+
   SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
@@ -646,7 +655,10 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();
+#endif
+
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
@@ -654,13 +666,16 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
-    setupPulses(INTERNAL_MODULE);
+    setupPulsesInternalModule();
   }
+#endif
+
   if (extPwr) {
     EXTERNAL_MODULE_ON();
-    setupPulses(EXTERNAL_MODULE);
+    setupPulsesExternalModule();
   }
 
   resumePulses();

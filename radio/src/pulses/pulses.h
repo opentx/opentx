@@ -302,7 +302,8 @@ union TrainerPulsesData {
 
 extern TrainerPulsesData trainerPulsesData;
 
-bool setupPulses(uint8_t module);
+bool setupPulsesInternalModule();
+bool setupPulsesExternalModule();
 void setupPulsesDSM2();
 void setupPulsesCrossfire();
 void setupPulsesMultimodule();
@@ -314,28 +315,26 @@ void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
 void sendByteSbus(uint8_t b);
-
-#if defined(HUBSAN)
-void Hubsan_Init();
-#endif
+void intmodulePxx1PulsesStart();
+void intmodulePxx1SerialStart();
+void extmodulePxx1PulsesStart();
+void extmodulePxx1SerialStart();
+void extmodulePpmStart();
+void intmoduleStop();
+void extmoduleStop();
 
 inline void startPulses()
 {
   s_pulses_paused = false;
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  setupPulses(INTERNAL_MODULE);
-  setupPulses(EXTERNAL_MODULE);
-#else
-  setupPulses(EXTERNAL_MODULE);
+#if defined(HARDWARE_INTERNAL_MODULE)
+  setupPulsesInternalModule();
 #endif
 
-#if defined(PCBSKY9X)
-  init_ppm(EXTRA_MODULE);
-#endif
+  setupPulsesExternalModule();
 
-#if defined(HUBSAN)
-  Hubsan_Init();
+#if defined(HARDWARE_EXTRA_MODULE)
+  extramodulePpmStart();
 #endif
 }
 

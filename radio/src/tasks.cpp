@@ -87,15 +87,16 @@ bool isModuleSynchronous(uint8_t module)
 
 void sendSynchronousPulses()
 {
-  for (uint8_t module = 0; module < NUM_MODULES; module++) {
-    if (isModuleSynchronous(module) && setupPulses(module)) {
 #if defined(HARDWARE_INTERNAL_MODULE)
-      if (module == INTERNAL_MODULE)
-        intmoduleSendNextFrame();
+  if (isModuleSynchronous(INTERNAL_MODULE)) {
+    if (setupPulsesInternalModule())
+      intmoduleSendNextFrame();
+  }
 #endif
-      if (module == EXTERNAL_MODULE)
-        extmoduleSendNextFrame();
-    }
+
+  if (isModuleSynchronous(EXTERNAL_MODULE)) {
+    if (setupPulsesExternalModule())
+      extmoduleSendNextFrame();
   }
 }
 
