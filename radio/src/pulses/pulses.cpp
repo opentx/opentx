@@ -160,7 +160,7 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      // TODO
+      EXTERNAL_MODULE_ON();
       break;
 #endif
 
