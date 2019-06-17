@@ -200,9 +200,6 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #endif
 
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-#if defined(INTERNAL_MODULE_PPM)
-void intmodulePpmStart(void);
-#endif
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 

@@ -172,6 +172,12 @@ extern Pmc pmc;
 extern Ssc ssc;
 #undef SSC
 #define SSC (&ssc)
+extern Pmc pmc;
+#undef PMC
+#define PMC (&pmc)
+extern Tc tc1;
+#undef TC1
+#define TC1 (&tc1)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
 extern Dacc dacc;
