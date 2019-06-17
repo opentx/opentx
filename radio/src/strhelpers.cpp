@@ -44,6 +44,15 @@ char zchar2char(int8_t idx)
   return ' ';
 }
 
+char char2lower(char c)
+{
+  if(c >= 'A' && c <= 'Z'){
+    return c+32;
+  }
+  else
+    return c;
+}
+
 int8_t char2zchar(char c)
 {
   if (c == '_') return 37;

@@ -311,12 +311,12 @@ void Bluetooth::wakeup(void)
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
         if (len > 0) {
           for (int i = 0; i < len; i++) {
-            *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+            *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
           }
           *cur = '\0';
         }
         else {
-          cur = strAppend(cur, "Taranis-X9E");
+          cur = strAppend(cur, FLAVOUR);
         }
         writeString(command);
         state = BLUETOOTH_WAIT_TTM;
@@ -414,16 +414,12 @@ void Bluetooth::wakeup()
       uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
       if (len > 0) {
         for (int i = 0; i < len; i++) {
-          *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+          *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
         }
         *cur = '\0';
       }
       else {
-#if defined(PCBHORUS)
-        cur = strAppend(cur, "Horus");
-#else
-        cur = strAppend(cur, "Taranis");
-#endif
+        cur = strAppend(cur, FLAVOUR);
       }
       writeString(command);
       state = BLUETOOTH_STATE_NAME_SENT;

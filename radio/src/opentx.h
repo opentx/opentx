@@ -433,6 +433,7 @@ extern struct t_inactivity inactivity;
 
 char hex2zchar(uint8_t hex);
 char zchar2char(int8_t idx);
+char char2lower(char c);
 int8_t char2zchar(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
