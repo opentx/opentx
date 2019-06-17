@@ -315,7 +315,7 @@ void Bluetooth::wakeup(void)
           *cur = '\0';
         }
         else {
-          cur = strAppend(cur, "Taranis-X9E");
+          cur = strAppend(cur, FLAVOUR);
         }
         writeString(command);
         state = BLUETOOTH_WAIT_TTM;
@@ -418,11 +418,7 @@ void Bluetooth::wakeup()
         *cur = '\0';
       }
       else {
-#if defined(PCBHORUS)
-        cur = strAppend(cur, "horus");
-#else
-        cur = strAppend(cur, "taranis");
-#endif
+        cur = strAppend(cur, FLAVOUR);
       }
       writeString(command);
       state = BLUETOOTH_STATE_NAME_SENT;
