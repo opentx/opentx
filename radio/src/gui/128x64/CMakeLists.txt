@@ -10,7 +10,7 @@ set(GUI_SRC
   model_setup.cpp
   model_failsafe.cpp
   model_logical_switches.cpp
-  special_functions.cpp
+  model_special_functions.cpp
   model_outputs.cpp
   model_telemetry.cpp
   model_telemetry_sensor.cpp
