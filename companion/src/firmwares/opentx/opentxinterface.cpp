@@ -550,7 +550,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case Haptic:
       return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_SMALL(board) || IS_TARANIS_X9E(board) || IS_HORUS(board) || IS_JUMPER_T12(board) || id.contains("haptic"));
     case ModelTrainerEnable:
-      if (IS_HORUS_OR_TARANIS(board))
+      if (IS_HORUS_OR_TARANIS(board) && board!=Board::BOARD_TARANIS_XLITE)
         return 1;
       else
         return 0;
@@ -624,6 +624,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return (IS_ARM(board) ? 32 : 0);
     case NumModules:
       return (IS_ARM(board) ? 2 : 1);
+    case NumFirstUsableModule:
+      return (IS_JUMPER_T12(board) ? 1 : 0);
     case HasModuleR9MFlex:
       return id.contains("flexr9m");
     case HasModuleR9MMini:
@@ -789,7 +791,10 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_SBUS:
             return 1;
           case PULSES_MULTIMODULE:
-            return id.contains("multimodule") ? 1 : 0;
+            if(IS_JUMPER_T12(board))
+              return 1;
+            else
+              return id.contains("multimodule") ? 1 : 0;
           case PULSES_CROSSFIRE:
             return id.contains("crossfire") ? 1 : 0;
           case PULSES_ACCESS_R9M_LITE:
@@ -975,13 +980,13 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
       variantError = true;
     }
   }
-  else if (IS_TARANIS(board)) {
-    if (variant != 0) {
+  else if (IS_JUMPER_T12(board)) {
+    if (variant != JUMPER_T12_VARIANT) {
       variantError = true;
     }
   }
-  else if (IS_JUMPER_T12(board)) {
-    if (variant != JUMPER_T12_VARIANT) {
+  else if (IS_TARANIS(board)) {
+    if (variant != 0) {
       variantError = true;
     }
   }

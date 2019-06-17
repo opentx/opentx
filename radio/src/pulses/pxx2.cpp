@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "pulses/pxx2.h"
+#include "io/frsky_firmware_update.h"
 
 uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
@@ -60,6 +61,12 @@ void Pxx2Pulses::addChannels(uint8_t module)
   for (int8_t i = 0; i < count; i++, channel++) {
     int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
     pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+#if defined(DEBUG_LATENCY_RF_ONLY)
+    if (latencyToggleSwitch)
+      pulseValue = 1;
+    else
+      pulseValue = 2046;
+#endif
     if (i & 1)
       addPulsesValues(pulseValueLow, pulseValue);
     else
@@ -227,7 +234,7 @@ void Pxx2Pulses::setupAccstBindFrame(uint8_t module)
   for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
     Pxx2Transport::addByte(0x00);
   }
-  Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiver_telem_off << 7) + (g_model.moduleData[module].pxx.receiver_telem_off << 6));
+  Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiver_channel_9_16 << 7) + (g_model.moduleData[module].pxx.receiver_telem_off << 6));
   Pxx2Transport::addByte(g_model.header.modelId[module]);
 }
 
@@ -257,7 +264,12 @@ void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
+    if (isModuleR9MAccess(module)) {
+      Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
+    }
+    else {
+      Pxx2Transport::addByte(0x00);
+    }
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
@@ -441,7 +453,20 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
     return "Open file failed";
   }
 
-  uint32_t size = f_size(&file);
+  uint32_t size;
+  const char * ext = getFileExtension(filename);
+  if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+    FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *) buffer;
+    if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+      f_close(&file);
+      return "Format error";
+    }
+    size = information->size;
+  }
+  else {
+    size = f_size(&file);
+  }
+
   uint32_t done = 0;
   while (1) {
     drawProgressScreen(getBasename(filename), STR_OTA_UPDATE, done, size);

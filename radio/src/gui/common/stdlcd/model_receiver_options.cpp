@@ -111,7 +111,7 @@ void menuModelReceiverOptions(event_t event)
           break;
 
         case ITEM_RECEIVER_PWM_RATE:
-          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9M2(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9MAccess(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
@@ -122,7 +122,8 @@ void menuModelReceiverOptions(event_t event)
         {
           uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
-            uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
+            uint8_t & mapping = reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
+            uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + mapping;
             int32_t channelValue = channelOutputs[channel];
             lcdDrawText(0, y, STR_PIN);
             lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
@@ -130,9 +131,8 @@ void menuModelReceiverOptions(event_t event)
 
             // Channel
             if (attr) {
-              channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
+              mapping = checkIncDec(event, mapping, 0, sentModuleChannels(g_moduleIdx) - 1);
               if (checkIncDec_Ret) {
-                reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = channel;
                 reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
               }
             }

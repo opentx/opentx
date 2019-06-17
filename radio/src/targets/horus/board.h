@@ -108,9 +108,12 @@ extern uint16_t sessionTimer;
 #endif
 
 // Board driver
-void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
+
+// Timers driver
+void init2MhzTimer();
+void init5msTimer();
 
 // Delays driver
 #ifdef __cplusplus
@@ -205,28 +208,15 @@ void SDRAM_Init(void);
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #endif
 
-void init_ppm(uint8_t module);
-void disable_ppm(uint8_t module);
-void init_pxx1_pulses(uint8_t module);
-void init_pxx1_serial(uint8_t module);
-void disable_pxx1_pulses(uint8_t module);
-void disable_pxx1_serial(uint8_t module);
-void init_pxx2(uint8_t module);
-void disable_pxx2(uint8_t module);
-void disable_serial(uint8_t module);
+void init_intmodule_heartbeat();
+void check_intmodule_heartbeat();
 
-void intmoduleStop();
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-void intmodulePxxStart();
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
-void extmoduleStop();
-void extmodulePpmStart();
-void extmodulePxxStart();
-void extmodulePxx2Start();
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -503,6 +493,8 @@ extern "C" {
 
 // Power driver
 #define SOFT_PWR_CTRL
+extern uint32_t shutdownRequest; // Stores intentional shutdown to avoid reboot loop
+extern uint32_t shutdownReason; // Used for detecting unexpected reboots regardless of reason
 void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
@@ -600,6 +592,7 @@ void telemetryPortSetDirectionOutput(void);
 void sportSendByte(uint8_t byte);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
+void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // Sport update driver
@@ -631,18 +624,18 @@ void gpsSendByte(uint8_t byte);
 // Second serial port driver
 #define AUX_SERIAL
 #define DEBUG_BAUDRATE                 115200
-extern uint8_t serial2Mode;
-void serial2Init(unsigned int mode, unsigned int protocol);
-void serial2Putc(char c);
-#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
-void serial2SbusInit(void);
-void serial2Stop(void);
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit(void);
+void auxSerialStop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
 #define BT_TX_FIFO_SIZE    64
 #define BT_RX_FIFO_SIZE    128
-#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
+#define BLUETOOTH_BOOTLOADER_BAUDRATE  230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
 void bluetoothInit(uint32_t baudrate, bool enable);
@@ -650,14 +643,11 @@ void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
 void bluetoothDisable(void);
 
-extern uint8_t currentTrainerMode;
-void checkTrainerSettings(void);
-
 #if defined(__cplusplus)
 #include "fifo.h"
 #include "dmafifo.h"
 extern DMAFifo<512> telemetryFifo;
-extern DMAFifo<32> serial2RxFifo;
+extern DMAFifo<32> auxSerialRxFifo;
 #endif
 
 #if NUM_PWMSTICKS > 0

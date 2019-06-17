@@ -165,6 +165,8 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
+  RTOS_WAIT_MS(1);
+
   switch(module) {
 #if defined(INTMODULE_USART)
     case INTERNAL_MODULE:
@@ -238,7 +240,10 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
 const char * FrskyDeviceFirmwareUpdate::sendPowerOn()
 {
   state = SPORT_POWERUP_REQ;
-  waitState(SPORT_IDLE, 50); // Wait 50ms and clear the fifo
+
+  RTOS_WAIT_MS(50);
+  telemetryClearFifo();
+
   for (int i=0; i<10; i++) {
     // max 10 attempts
     startFrame(PRIM_REQ_POWERUP);
@@ -268,7 +273,9 @@ const char * FrskyDeviceFirmwareUpdate::sendPowerOn()
 
 const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
 {
-  waitState(SPORT_IDLE, 20); // Clear the fifo
+  RTOS_WAIT_MS(20);
+  telemetryClearFifo();
+
   state = SPORT_VERSION_REQ;
   for (int i=0; i<10; i++) {
     // max 10 attempts
@@ -292,14 +299,16 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 
   const char * ext = getFileExtension(filename);
   if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
-    // FrSkyFirmwareInformation *information = (FrSkyFirmwareInformation *) buffer;
+    // FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *) buffer;
     if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
       f_close(&file);
       return "Format error";
     }
   }
 
-  waitState(SPORT_IDLE, 200); // Clear the fifo
+  RTOS_WAIT_MS(200);
+  telemetryClearFifo();
+
   state = SPORT_DATA_TRANSFER;
   startFrame(PRIM_CMD_DOWNLOAD);
   sendFrame();
@@ -350,14 +359,17 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 {
   pausePulses();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
+  INTERNAL_MODULE_OFF();
+#endif
+
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
+  EXTERNAL_MODULE_OFF();
+
+  SPORT_UPDATE_POWER_OFF();
 
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
-
-  INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
-  SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
   watchdogSuspend(2000);
@@ -385,27 +397,33 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
-  waitState(SPORT_IDLE, 500); // Clear the fifo
-
   /* wait 2s off */
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
+  telemetryClearFifo();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
-    setupPulses(INTERNAL_MODULE);
+    setupPulsesInternalModule();
   }
+#endif
+
   if (extPwr) {
     EXTERNAL_MODULE_ON();
-    setupPulses(EXTERNAL_MODULE);
+    setupPulsesExternalModule();
   }
 
   state = SPORT_IDLE;
   resumePulses();
 }
 
+#define CHIP_FIRMWARE_UPDATE_TIMEOUT  20000 /* 20s */
+
 const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 {
+  watchdogSuspend(CHIP_FIRMWARE_UPDATE_TIMEOUT);
+
   telemetryPortSetDirectionInput();
 
   uint8_t buffer[12];
@@ -422,7 +440,7 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
         }
         break;
       }
-      if (++retry == 20000) {
+      if (++retry == CHIP_FIRMWARE_UPDATE_TIMEOUT) {
         return "No answer";
       }
       RTOS_WAIT_MS(1);
@@ -608,11 +626,14 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
 
   pausePulses();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
-  uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
-
   INTERNAL_MODULE_OFF();
+#endif
+
+  uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
+
   SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
@@ -623,7 +644,7 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
 
   const char * result = doFlashFirmware(filename);
 
-  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1);
   BACKLIGHT_ENABLE();
 
   if (result) {
@@ -634,7 +655,10 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();
+#endif
+
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
@@ -642,13 +666,16 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
-    setupPulses(INTERNAL_MODULE);
+    setupPulsesInternalModule();
   }
+#endif
+
   if (extPwr) {
     EXTERNAL_MODULE_ON();
-    setupPulses(EXTERNAL_MODULE);
+    setupPulsesExternalModule();
   }
 
   resumePulses();

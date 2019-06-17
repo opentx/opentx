@@ -121,7 +121,7 @@ set(TARGET_SRC
   haptic_driver.cpp
   sdcard_driver.cpp
   massstorage.cpp
-  serial2_driver.cpp
+  aux_serial_driver.cpp
   audio_driver.cpp
   trainer_driver.cpp
   )

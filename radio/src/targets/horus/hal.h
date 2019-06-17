@@ -54,6 +54,7 @@
 #endif
 
 // Rotary Encoder
+#define ROTARY_ENCODER_RCC_APB1Periph   RCC_APB1Periph_TIM4
 #define ROTARY_ENCODER_GPIO             GPIOH
 #define ROTARY_ENCODER_GPIO_PIN_A       GPIO_Pin_11 // PH.11
 #define ROTARY_ENCODER_GPIO_PIN_B       GPIO_Pin_10 // PH.10
@@ -65,6 +66,9 @@
 #define ROTARY_ENCODER_EXTI_PortSource  EXTI_PortSourceGPIOH
 #define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource11
 #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource10
+#define ROTARY_ENCODER_TIMER            TIM4
+#define ROTARY_ENCODER_TIMER_IRQn       TIM4_IRQn
+#define ROTARY_ENCODER_TIMER_IRQHandler TIM4_IRQHandler
 
 // Switches
 #define STORAGE_SWITCH_A
@@ -279,9 +283,10 @@
 
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
-#define PWR_GPIO                        GPIOJ
-#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
+#define PWR_ON_GPIO                     GPIOJ
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
+#define PWR_SWITCH_GPIO                 GPIOJ
+#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 // S.Port update connector
 #define SPORT_MAX_BAUDRATE              250000 // < 400000
@@ -625,9 +630,16 @@
 #endif
 
 // Heartbeat (not used)
-#define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
-#define HEARTBEAT_GPIO                  GPIOD
-#define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
+#define INTMODULE_HEARTBEAT
+#define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+#define INTMODULE_HEARTBEAT_GPIO                GPIOD
+#define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_12
+#define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+#define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource12
+#define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line12
+#define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
+#define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
+#define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)

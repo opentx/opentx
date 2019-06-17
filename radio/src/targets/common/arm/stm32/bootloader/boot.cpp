@@ -36,13 +36,13 @@
 
 typedef void (*voidFunction)(void);
 
-#define jumpTo(addr) {                                          \
+#define jumpTo(addr) do {                                       \
         SCB->VTOR = addr;                                       \
         __set_MSP(*(__IO uint32_t*)addr);                       \
         uint32_t     jumpAddress = *(uint32_t*)(addr + 4);      \
         voidFunction jumpFn = (voidFunction)jumpAddress;        \
         jumpFn();                                               \
-    }
+    } while(0)
 
 // Bootloader marker:
 // -> used to detect valid bootloader files
@@ -201,7 +201,7 @@ int main()
                          AUX_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph, ENABLE);
 
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph | LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
                          INTERRUPT_xMS_RCC_APB1Periph | I2C_RCC_APB1Periph |
                          AUX_SERIAL_RCC_APB1Periph |
                          SD_RCC_APB1Periph, ENABLE);
@@ -209,12 +209,8 @@ int main()
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG, ENABLE);
 
   keysInit();
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  rotaryEncoderInit();
-#endif
-
-  boardPreInit();
+  pwrInit();
+  pwrOff();
 
   // wait for inputs to stabilize
   for (uint32_t i = 0; i < 50000; i += 1) {
@@ -227,14 +223,19 @@ int main()
     jumpTo(APP_START_ADDRESS);
   }
 
-  pwrInit();
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotaryEncoderInit();
+#endif
+
+  pwrOn();
   delaysInit(); // needed for lcdInit()
 
 #if defined(DEBUG)
-  serial2Init(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+  auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
   __enable_irq();
+
   TRACE("\nBootloader started :)");
 
   lcdInit();
@@ -487,12 +488,7 @@ int main()
 
     if (state != ST_FLASHING && state != ST_USB) {
       if (pwrOffPressed()) {
-        lcdClear();
-        lcdOff(); // this drains LCD caps
-        pwrOff();
-        for (;;) {
-          // Wait for power to go off
-        }
+        boardOff();
       }
     }
 

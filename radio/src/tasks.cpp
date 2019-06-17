@@ -87,15 +87,16 @@ bool isModuleSynchronous(uint8_t module)
 
 void sendSynchronousPulses()
 {
-  for (uint8_t module = 0; module < NUM_MODULES; module++) {
-    if (isModuleSynchronous(module) && setupPulses(module)) {
 #if defined(HARDWARE_INTERNAL_MODULE)
-      if (module == INTERNAL_MODULE)
-        intmoduleSendNextFrame();
+  if (isModuleSynchronous(INTERNAL_MODULE)) {
+    if (setupPulsesInternalModule())
+      intmoduleSendNextFrame();
+  }
 #endif
-      if (module == EXTERNAL_MODULE)
-        extmoduleSendNextFrame();
-    }
+
+  if (isModuleSynchronous(EXTERNAL_MODULE)) {
+    if (setupPulsesExternalModule())
+      extmoduleSendNextFrame();
   }
 }
 
@@ -107,8 +108,8 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   while (1) {
-#if defined(PCBX9D) || defined(PCBX7)
-    // SBUS on Hearbeat PIN (which is a serial RX)
+#if defined(PCBTARANIS) && defined(SBUS)
+    // SBUS trainer
     processSbusInput();
 #endif
 
@@ -128,23 +129,34 @@ TASK_FUNCTION(mixerTask)
     }
 #else
     if (isForcePowerOffRequested()) {
-      pwrOff();
+      boardOff();
     }
 #endif
 
     uint32_t now = RTOS_GET_MS();
     bool run = false;
-    if ((now - lastRunTime) >= 10) {     // run at least every 10ms
+
+    if ((now - lastRunTime) >= 10) {
+      // run at least every 10ms
       run = true;
     }
-    else if (now == nextMixerTime[0]) {
-      run = true;
-    }
-#if NUM_MODULES >= 2
-    else if (now == nextMixerTime[1]) {
+
+#if defined(PXX2) && defined(INTMODULE_HEARTBEAT)
+    if (moduleState[0].protocol == PROTOCOL_CHANNELS_PXX2 && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
       run = true;
     }
 #endif
+
+    if (now == nextMixerTime[0]) {
+      run = true;
+    }
+
+#if NUM_MODULES >= 2
+    if (now == nextMixerTime[1]) {
+      run = true;
+    }
+#endif
+
     if (!run) {
       continue;  // go back to sleep
     }
@@ -200,7 +212,7 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
   }
   else {
     // for now assume mixer calculation takes 2 ms.
-    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK) - 1 /* 1 tick in advance*/;
+    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
   }
 
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);

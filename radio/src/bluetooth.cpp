@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
-#if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE) || defined(USEHORUSBT)
+#if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE)
 #define BLUETOOTH_COMMAND_NAME         "AT+NAME"
 #define BLUETOOTH_ANSWER_NAME          "OK+"
 #define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"
@@ -75,7 +75,8 @@ char * Bluetooth::readline(bool error_reset)
 
   while (1) {
     if (!btRxFifo.pop(byte)) {
-#if defined(PCBX9E) && !defined(USEHORUSBT)     // X9E BT module can get unresponsive
+#if defined(PCBX9E)
+      // X9E BT module can get unresponsive
       TRACE("NO RESPONSE FROM BT MODULE");
 #endif
       return nullptr;
@@ -290,7 +291,7 @@ void Bluetooth::receiveTrainer()
   }
 }
 
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
 void Bluetooth::wakeup(void)
 {
 #if !defined(SIMU)
@@ -310,12 +311,12 @@ void Bluetooth::wakeup(void)
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
         if (len > 0) {
           for (int i = 0; i < len; i++) {
-            *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+            *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
           }
           *cur = '\0';
         }
         else {
-          cur = strAppend(cur, "Taranis-X9E");
+          cur = strAppend(cur, FLAVOUR);
         }
         writeString(command);
         state = BLUETOOTH_WAIT_TTM;
@@ -413,16 +414,12 @@ void Bluetooth::wakeup()
       uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
       if (len > 0) {
         for (int i = 0; i < len; i++) {
-          *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+          *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
         }
         *cur = '\0';
       }
       else {
-#if defined(PCBHORUS)
-        cur = strAppend(cur, "Horus");
-#else
-        cur = strAppend(cur, "Taranis");
-#endif
+        cur = strAppend(cur, FLAVOUR);
       }
       writeString(command);
       state = BLUETOOTH_STATE_NAME_SENT;

@@ -23,29 +23,35 @@
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  
-  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+
+  // Board PWR
+  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
+  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
+
+#if defined(INTMODULE_BOOTCMD_GPIO)
+  GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_BOOTCMD_GPIO_PIN;
+  GPIO_Init(INTMODULE_BOOTCMD_GPIO, &GPIO_InitStructure);
+#endif
+
+  // Internal module power
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
+  // External module power
   EXTERNAL_MODULE_PWR_OFF();
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
-#if defined(PCBREV_GPIO_PIN)
-  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
-#endif
-
-  GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+
+  // PWR switch
+  GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
 #if defined(TRAINER_DETECT_GPIO_PIN)
@@ -53,57 +59,28 @@ void pwrInit()
   GPIO_Init(TRAINER_DETECT_GPIO, &GPIO_InitStructure);
 #endif
 
-#if defined(INTMODULE_USART) && defined(HEARTBEAT_GPIO_PIN)
-  GPIO_SetBits(HEARTBEAT_GPIO, HEARTBEAT_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
+#if defined(INTMODULE_USART) && defined(TRAINER_MODULE_CPPM_GPIO_PIN)
+  GPIO_SetBits(TRAINER_MODULE_CPPM_GPIO, TRAINER_MODULE_CPPM_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = TRAINER_MODULE_CPPM_GPIO_PIN;
+  GPIO_Init(TRAINER_MODULE_CPPM_GPIO, &GPIO_InitStructure);
 #endif
 
-  pwrOn();
+#if defined(PCBREV_GPIO_PIN)
+  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+#endif
 }
 
 void pwrOn()
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  
-  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
-  
   GPIO_SetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 
 void pwrOff()
 {
   GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
-
-  // disable interrupts
-  __disable_irq();
-
-  while (1) {
-    wdt_reset();
-#if defined(PWR_BUTTON_PRESS)
-    // X9E/X7 needs watchdog reset because CPU is still running while
-    // the power key is held pressed by the user.
-    // The power key should be released by now, but we must make sure
-    if (!pwrPressed()) {
-      // Put the CPU into sleep to reduce the consumption,
-      // it might help with the RTC reset issue
-      PWR->CR |= PWR_CR_CWUF;
-      /* Select STANDBY mode */
-      PWR->CR |= PWR_CR_PDDS;
-      /* Set SLEEPDEEP bit of Cortex System Control Register */
-      SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-      /* Request Wait For Event */
-      __WFE();
-    }
-#endif
-  }
-  // this function must not return!
 }
 
 uint32_t pwrPressed()

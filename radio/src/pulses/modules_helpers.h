@@ -23,8 +23,6 @@
 
 #include "bitfield.h"
 
-
-
 #define CROSSFIRE_CHANNELS_COUNT        16
 
 #if defined(MULTIMODULE)
@@ -108,7 +106,7 @@ inline bool isModuleR9M(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX1;
 }
 
-inline bool isModuleR9M2(uint8_t idx)
+inline bool isModuleR9MAccess(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
 }
@@ -146,7 +144,7 @@ inline bool isModulePXX(uint8_t idx)
 
 inline bool isModulePXX2(uint8_t idx)
 {
-  return isModuleXJT2(idx) || isModuleR9M2(idx);
+  return isModuleXJT2(idx) || isModuleR9MAccess(idx);
 }
 
 inline bool isModuleRFAccess(uint8_t idx)
@@ -154,7 +152,7 @@ inline bool isModuleRFAccess(uint8_t idx)
   if (isModuleXJT2(idx)) {
     return g_model.moduleData[idx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
   }
-  else if (isModuleR9M2(idx)) {
+  else if (isModuleR9MAccess(idx)) {
     return true;
   }
   else {
@@ -259,6 +257,52 @@ static const uint8_t moduleOptions[] = {
 inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
 {
   return moduleOptions[modelId] & (1 << option);
+}
+
+enum {
+  RECEIVER_OPTION_OTA,
+};
+
+/* Options order:
+ * - OTA (0x01)
+ */
+static const uint8_t receiverOptions[] = {
+#if defined(SIMU)
+  0b11111111, // None = display all options on SIMU
+#else
+  0b00000000, // None = display all options on SIMU
+#endif
+  0b11111110, // X8R
+  0b11111110, // RX8R
+  0b11111110, // RX8R-PRO
+  0b11111110, // RX6R
+  0b11111110, // RX4R
+  0b11111110, // G-RX8
+  0b11111110, // G-RX6
+  0b11111110, // X6R
+  0b11111110, // X4R
+  0b11111110, // X4R-SB
+  0b11111110, // XSR
+  0b11111110, // XSR-M
+  0b11111110, // RXSR
+  0b11111110, // S6R
+  0b11111110, // S8R
+  0b11111110, // XM
+  0b11111110, // XM+
+  0b11111110, // XMR
+  0b11111110, // R9
+  0b11111110, // R9-SLIM
+  0b11111110, // R9-SLIM+
+  0b11111110, // R9-MINI
+  0b11111110, // R9-MM
+  0b11111110, // R9-STAB
+  0b11111111, // R9-MINI+OTA
+  0b11111111, // R9-MM+OTA
+};
+
+inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
+{
+  return receiverOptions[modelId] & (1 << option);
 }
 
 inline bool isDefaultModelRegistrationID()

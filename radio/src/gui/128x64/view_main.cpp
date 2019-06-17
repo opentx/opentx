@@ -492,6 +492,16 @@ void menuMainView(event_t event)
           drawSwitch(x[i], y[i], sw, 0);
         }
       }
+#elif defined(PCBXLITES)
+      static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
+      static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 4*FH+1, 6*FH+1, 6*FH+1, 5*FH+1, 5*FH+1};
+      for (int i=0; i<NUM_SWITCHES; ++i) {
+        if (SWITCH_EXISTS(i)) {
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+          drawSwitch(x[i], y[i], sw, 0);
+        }
+      }
 #elif defined(PCBTARANIS)
       uint8_t switches = min(NUM_SWITCHES, 6);
       for (int i=0; i<switches; ++i) {
@@ -520,7 +530,6 @@ void menuMainView(event_t event)
 #endif
     }
     else {
-
       // Logical Switches
       uint8_t index = 0;
       uint8_t y = LCD_H-20;
@@ -542,7 +551,7 @@ void menuMainView(event_t event)
   }
 
   // And ! in case of unexpected shutdown
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
+#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
   lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
 #else
   if (unexpectedShutdown) {

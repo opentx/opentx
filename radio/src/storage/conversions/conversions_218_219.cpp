@@ -269,15 +269,16 @@ void convertModelData_218_to_219(ModelData &model)
 void convertRadioData_218_to_219(RadioData & settings)
 {
   settings.version = 219;
+  settings.variant = EEPROM_VARIANT;
 
 #if defined(PCBHORUS)
   RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
 
-  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData, serial2Mode) - offsetof(RadioData, chkSum));
+  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData, auxSerialMode) - offsetof(RadioData, chkSum));
   memcpy(&settings.calib[NUM_STICKS + 5], &settings_v218.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
   memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
 
-  settings.serial2Mode = settings_v218.serial2Mode;
+  settings.auxSerialMode = settings_v218.auxSerialMode;
   settings.switchConfig = settings_v218.switchConfig;
   settings.potsConfig = settings_v218.potsConfig;
   settings.slidersConfig = settings_v218.slidersConfig;

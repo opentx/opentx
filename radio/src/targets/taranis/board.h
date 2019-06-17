@@ -120,9 +120,12 @@ void rotaryEncoderCheck(void);
 extern uint16_t sessionTimer;
 
 // Board driver
-void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
+
+// Timers driver
+void init2MhzTimer();
+void init5msTimer();
 
 // Delays driver
 #ifdef __cplusplus
@@ -196,29 +199,10 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #endif
 
-void init_ppm(uint8_t module);
-void disable_ppm(uint8_t module);
-void init_pxx2(uint8_t module);
-void disable_pxx2(uint8_t module);
-void init_pxx1_pulses(uint8_t module);
-void init_pxx1_serial(uint8_t module);
-void disable_pxx1_pulses(uint8_t module);
-void disable_pxx1_serial(uint8_t module);
-void disable_serial(uint8_t module);
-void intmoduleStop();
-void intmodulePxxStart();
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-#if defined(INTERNAL_MODULE_PPM)
-void intmodulePpmStart(void);
-#endif
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
-void extmoduleStop();
-void extmodulePpmStart();
-void extmodulePxxPulsesStart();
-void extmodulePxxSerialStart();
-void extmodulePxx2Start();
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
@@ -245,26 +229,39 @@ void extmoduleSendNextFrame();
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
 #if defined(TRAINER_GPIO)
-  void init_trainer_ppm(void);
-  void stop_trainer_ppm(void);
-  void init_trainer_capture(void);
-  void stop_trainer_capture(void);
+  void init_trainer_ppm();
+  void stop_trainer_ppm();
+  void init_trainer_capture();
+  void stop_trainer_capture();
 #else
   #define init_trainer_ppm()
   #define stop_trainer_ppm()
   #define init_trainer_capture()
   #define stop_trainer_capture()
 #endif
-#if defined(TRAINER_MODULE_HEARTBEAT)
-  void init_cppm_on_heartbeat_capture(void);
-  void stop_cppm_on_heartbeat_capture(void);
-  void init_sbus_on_heartbeat_capture(void);
-  void stop_sbus_on_heartbeat_capture(void);
+#if defined(TRAINER_MODULE_CPPM)
+  void init_trainer_module_cppm();
+  void stop_trainer_module_cppm();
 #else
-  #define init_cppm_on_heartbeat_capture()
-  #define stop_cppm_on_heartbeat_capture()
-  #define init_sbus_on_heartbeat_capture()
-  #define stop_sbus_on_heartbeat_capture()
+  #define init_trainer_module_cppm()
+  #define stop_trainer_module_cppm()
+#endif
+#if defined(TRAINER_MODULE_SBUS)
+  void init_trainer_module_sbus();
+  void stop_trainer_module_sbus();
+#else
+  #define init_trainer_module_sbus()
+  #define stop_trainer_module_sbus()
+#endif
+
+#if defined(INTMODULE_HEARTBEAT_GPIO)
+void init_intmodule_heartbeat();
+void stop_intmodule_heartbeat();
+void check_intmodule_heartbeat();
+#else
+#define init_intmodule_heartbeat()
+#define stop_intmodule_heartbeat()
+#define check_intmodule_heartbeat()
 #endif
 
 // SBUS
@@ -334,6 +331,10 @@ enum EnumKeys
 #elif defined(NAVIGATION_XLITE)
   #define KEY_PLUS                      KEY_RIGHT
   #define KEY_MINUS                     KEY_LEFT
+#elif defined(NAVIGATION_9X)
+  #define KEY_MENU                      KEY_ENTER
+  #define KEY_MINUS                     KEY_DOWN
+  #define KEY_PLUS                      KEY_UP
 #else
   #define KEY_UP                        KEY_PLUS
   #define KEY_DOWN                      KEY_MINUS
@@ -689,6 +690,7 @@ void telemetryPortSetDirectionOutput(void);
 void sportSendByte(uint8_t byte);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
+void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
@@ -766,18 +768,18 @@ void hapticOff(void);
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
 #define AUX_SERIAL
-extern uint8_t serial2Mode;
-void serial2Init(unsigned int mode, unsigned int protocol);
-void serial2Putc(char c);
-#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
-void serial2SbusInit(void);
-void serial2Stop(void);
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit(void);
+void auxSerialStop(void);
 #endif
 
 // BT driver
 #define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_DEFAULT_BAUDRATE      115200
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
 #define BLUETOOTH_FACTORY_BAUDRATE      9600
 #else
 #define BLUETOOTH_FACTORY_BAUDRATE      57600
@@ -855,9 +857,6 @@ void setTopBatteryValue(uint32_t volts);
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
-extern uint8_t currentTrainerMode;
-void checkTrainerSettings(void);
-
 #if defined(__cplusplus)
 #include "fifo.h"
 #include "dmafifo.h"
@@ -869,7 +868,7 @@ void checkTrainerSettings(void);
 #endif
 
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
-extern DMAFifo<32> serial2RxFifo;
+extern DMAFifo<32> auxSerialRxFifo;
 #endif
 
 // Gyro driver

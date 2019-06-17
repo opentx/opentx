@@ -28,6 +28,7 @@
 #include <math.h>
 #include "definitions.h"
 #include "opentx_types.h"
+#include "debounce.h"
 
 #if defined(STM32)
 #include "usbd_conf.h"
@@ -200,7 +201,7 @@
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && isFaiForbidden(idx))
 
 #if defined(BLUETOOTH)
-  #if defined(X9E) && !defined(USEHORUSBT)
+  #if defined(X9E)
     #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
     #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
   #else
@@ -432,6 +433,7 @@ extern struct t_inactivity inactivity;
 
 char hex2zchar(uint8_t hex);
 char zchar2char(int8_t idx);
+char char2lower(char c);
 int8_t char2zchar(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
@@ -542,8 +544,6 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
-#elif defined(PCBHORUS)
-  #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
 #endif
@@ -616,7 +616,7 @@ extern uint16_t maxMixerDuration;
 #endif
 
 void checkLowEEPROM();
-void checkTHR();
+void checkThrottleStick();
 void checkSwitches();
 void checkAlarm();
 void checkAll();
@@ -742,13 +742,11 @@ extern uint8_t g_vbat100mV;
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
 extern uint8_t            g_beepCnt;
 
-#include "trainer_input.h"
+#include "trainer.h"
 
 extern int32_t            chans[MAX_OUTPUT_CHANNELS];
 extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMITS) of the last perMain
 extern int16_t            channelOutputs[MAX_OUTPUT_CHANNELS];
-
-#define NUM_INPUTS      (MAX_INPUTS)
 
 int expo(int x, int k);
 
@@ -801,6 +799,14 @@ inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax,
     valMin = -valMax;
   }
 }
+#if defined(GVAR_MAX)
+inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
+{
+  int16_t rng = abs(valMax - valMin);
+  valMin = -rng;
+  valMax = rng;
+}
+#endif
 
 // Curves
 enum BaseCurves {
@@ -857,9 +863,9 @@ LogicalSwitchData * lswAddress(uint8_t idx);
 
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-extern int8_t  virtualInputsTrims[NUM_INPUTS];
+extern int8_t  virtualInputsTrims[MAX_INPUTS];
 
-extern int16_t anas [NUM_INPUTS];
+extern int16_t anas [MAX_INPUTS];
 extern int16_t trims[NUM_TRIMS];
 extern BeepANACenter bpanaCenter;
 
@@ -1097,9 +1103,7 @@ void opentxResume();
 
 union ReusableBuffer
 {
-  // ARM 334 bytes
-  struct
-  {
+  struct {
 #if defined(EEPROM_RLC) && LCD_W < 212
     uint16_t eepromfree;
 #endif
@@ -1140,7 +1144,6 @@ union ReusableBuffer
 #endif
   } moduleSetup;
 
-  // 103 bytes
   struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
@@ -1157,7 +1160,6 @@ union ReusableBuffer
   } calib;
 
 #if defined(SDCARD)
-  // 274 bytes
   struct {
     char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
     uint32_t available;
@@ -1183,11 +1185,15 @@ union ReusableBuffer
   } hardwareAndSettings;
 
   struct {
+    ModuleInformation modules[NUM_MODULES];
+    uint8_t linesCount;
+  } radioTools;
+
+  struct {
     uint8_t stickMode;
   } generalSettings;
 
-  struct
-  {
+  struct {
     uint8_t bars[LCD_W];
     uint32_t freq;
     uint32_t span;
@@ -1200,8 +1206,7 @@ union ReusableBuffer
     uint8_t dirty;
   } spectrumAnalyser;
 
-  struct
-  {
+  struct {
     uint32_t freq;
     int16_t power;
     int16_t peak;
@@ -1209,8 +1214,7 @@ union ReusableBuffer
     uint8_t dirty;
   } powerMeter;
 
-  struct
-  {
+  struct {
     int8_t preset;
   } curveEdit;
 
@@ -1374,5 +1378,9 @@ inline bool isSimu()
   return false;
 #endif
 }
+
+#if defined(DEBUG_LATENCY)
+extern uint8_t latencyToggleSwitch;
+#endif
 
 #endif // _OPENTX_H_

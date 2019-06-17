@@ -211,10 +211,10 @@ end
 
 -- Main1
 local function runFieldsPage(event)
-  if event == EVT_EXIT_BREAK then
+  if event == EVT_VIRTUAL_EXIT then
     telemetryUnIdle(0x80)
     return 2
-  elseif event == EVT_ENTER_BREAK or event == EVT_ROT_BREAK then
+  elseif event == EVT_VIRTUAL_ENTER then
     if fields[current][4] ~= nil then
       edit = not edit
       if edit == false then
@@ -222,15 +222,15 @@ local function runFieldsPage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT or event == EVT_RIGHT_FIRST then
+    if event == EVT_VIRTUAL_NEXT or event == EVT_VIRTUAL_NEXT_REPT then
       addField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT or event == EVT_LEFT_FIRST then
+    elseif event == EVT_VIRTUAL_PREVIOUS or event == EVT_VIRTUAL_PREVIOUS_REPT then
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_DOWN_FIRST then
+    if event == EVT_VIRTUAL_NEXT then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT or event == EVT_UP_FIRST then
+    elseif event == EVT_VIRTUAL_PREVIOUS then
       selectField(-1)
     end
   end

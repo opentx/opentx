@@ -70,11 +70,11 @@
 #define LEN_TRNCHN                     "\003"
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
 
-#define LEN_UART3MODES                 "\015"
+#define LEN_AUX_SERIAL_MODES           "\015"
 #if defined(CLI) || defined(DEBUG)
-#define TR_UART3MODES                  "Debug\0       ""S-Port Mirror""Telemetry\0   ""SBUS Trainer\0""LUA\0         "
+#define TR_AUX_SERIAL_MODES            "Debug\0       ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
 #else
-#define TR_UART3MODES                  "OFF\0         ""S-Port Mirror""Telemetry\0   ""SBUS Trainer\0""LUA\0         "
+#define TR_AUX_SERIAL_MODES            "OFF\0         ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
 #endif
 
 #define LEN_SWTYPES                    "\006"
@@ -643,7 +643,7 @@
 #define TR_US                         "us"
 #define TR_TMR1JITTERUS                "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS                 "Tmix max"
-#define TR_FREESTACKMINB             "Free Stack"
+#define TR_FREE_STACK             "Free stack"
 #define TR_MENUTORESET                 CENTER TR_ENTER " to reset"
 #define TR_PPM_TRAINER                 "TR"
 #define TR_CH                          "CH"
@@ -861,7 +861,7 @@
 #define TR_BLUETOOTH_PIN_CODE          TR(INDENT "PIN code", "PIN code")
 #define TR_BAUDRATE                    "BT Baudrate"
 #define LEN_BLUETOOTH_MODES            "\011"
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
 #define TR_BLUETOOTH_MODES             "---\0     ""Enabled\0 "
 #else
 #define TR_BLUETOOTH_MODES             "---\0     ""Telemetry""Trainer\0"
@@ -884,11 +884,11 @@
 #define TR_MIXERS_MONITOR              "MIXERS MONITOR"
 #define TR_PATH_TOO_LONG               "Path too long"
 #define TR_VIEW_TEXT                   "View text"
-#define TR_FLASH_BOOTLOADER            "Flash bootLoader"
+#define TR_FLASH_BOOTLOADER            "Flash bootloader"
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash S.Port", "Flash S.Port device")
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetooth module")
-#define TR_FLASH_POWER_CONTROL_CHIP    "Flash power chip"
+#define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Flash pwr mngt unit", "Flash power management unit")
 #define TR_CURRENT_VERSION             TR("Curr Vers: ", "Current version: ")
 #define TR_FLASH_INTERNAL_MODULE       TR("Flash int. module", "Flash internal module")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. module", "Flash external module")
@@ -990,10 +990,10 @@
 #define TR_ANTENNASELECTION            TR(INDENT "Antenna", TR(INDENT "Antenna", INDENT "Antenna selection"))
 #define TR_ANTENNACONFIRM1             "Really switch?"
 #define TR_ANTENNACONFIRM2             TR("Check antenna", "Make sure antenna is installed!")
-#define TR_R9M_PROTO_FLEX_WARN1        "Requires FLEX non"
-#define TR_R9M_PROTO_FCC_WARN1         "Requires FCC"
-#define TR_R9M_PROTO_EU_WARN1          "Requires EU"
-#define TR_R9M_PROTO_WARN2             "certified firmware"
+#define TR_R9M_PROTO_FLEX_WARN_LINE1   "Requires FLEX non"
+#define TR_R9M_PROTO_FCC_WARN_LINE1    "Requires FCC"
+#define TR_R9M_PROTO_EU_WARN_LINE1     "Requires EU"
+#define TR_R9M_PROTO_WARN_LINE2        "certified firmware"
 #define TR_LOWALARM                    INDENT "Low alarm"
 #define TR_CRITICALALARM               INDENT "Critical alarm"
 #define TR_RSSIALARM_WARN              "RSSI"
@@ -1024,7 +1024,7 @@
 #define TR_PREFLIGHT                   "Preflight Checks"
 #define TR_CHECKLIST                   TR(INDENT "Checklist", INDENT "Display checklist")
 #define TR_FAS_OFFSET                  TR(INDENT "FAS Ofs", INDENT "FAS offset")
-#define TR_UART3MODE                   "Serial port"
+#define TR_AUX_SERIAL_MODE                   "Serial port"
 #define TR_SCRIPT                      "Script"
 #define TR_INPUTS                      "Inputs"
 #define TR_OUTPUTS                     "Outputs"
@@ -1142,6 +1142,9 @@
 #define TR_FLASH_WRITE                 "Flash write..."
 #define TR_OTA_UPDATE                  "OTA update..."
 #define TR_MODULE_RESET                "Module reset..."
+#define TR_UNKNOWN_RX                  "Unknown RX"
+#define TR_UNSUPPORTED_RX              "Unsupported RX"
+#define TR_OTA_UPDATE_ERROR            "OTA update error"
 #define TR_DEVICE_RESET                "Device reset..."
 #define TR_ALTITUDE                    INDENT "Altitude"
 #define TR_SCALE                       "Scale"

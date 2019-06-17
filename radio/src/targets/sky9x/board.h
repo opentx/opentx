@@ -34,7 +34,6 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS               0x00400000
 
 // Board driver
-void boardPreInit(void);
 void boardInit(void);
 #define boardOff()  pwrOff()
 
@@ -212,8 +211,8 @@ void calcConsumption();
 // Trainer driver
 #define SLAVE_MODE()                   (pwrCheck() == e_power_trainer)
 #define TRAINER_CONNECTED()            (PIOA->PIO_PDSR & PIO_PA8)
-void checkTrainerSettings();
 void init_trainer_capture();
+void stop_trainer_capture();
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256
@@ -230,14 +229,6 @@ uint32_t readTrims(void);
 #define KEYS_PRESSED()                 readKeys()
 
 // Pulses driver
-void init_no_pulses(uint32_t port);
-void init_ppm(uint32_t port);
-void disable_ppm(uint32_t port);
-void init_pxx1_pulses(uint32_t port);
-void disable_pxx1_pulses(uint32_t port);
-void disable_serial(uint32_t port);
-void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
-void disable_module_timer( uint32_t module_index);
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
 
@@ -388,8 +379,8 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 void sportSendBuffer(const uint8_t * buffer, uint32_t size);
 
 // Second UART driver
-void serial2TelemetryInit(unsigned int protocol);
-void serial2Putc(const unsigned char c);
+void auxSerialTelemetryInit(unsigned int protocol);
+void auxSerialPutc(const unsigned char c);
 #if defined(__cplusplus)
 bool telemetrySecondPortReceive(uint8_t & data);
 #endif

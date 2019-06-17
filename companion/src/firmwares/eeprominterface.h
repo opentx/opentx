@@ -107,6 +107,7 @@ enum Capability {
   HasFailsafe,
   HasSoundMixer,
   NumModules,
+  NumFirstUsableModule,
   HasModuleR9MFlex,
   HasModuleR9MMini,
   PPMCenter,

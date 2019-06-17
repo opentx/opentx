@@ -18,8 +18,38 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _DEBOUNCE_H_
+#define _DEBOUNCE_H_
+
 #include "board.h"
 
-void boardPreInit()
+template <class T>
+class Debounce
 {
-}
+  public:
+    T debounce(T state)
+    {
+      if (state == lastState)
+        debouncedState = state;
+      else
+        lastState = state;
+      return debouncedState;
+    }
+
+  private:
+    T lastState;
+    T debouncedState;
+};
+
+#if defined(STM32)
+class PinDebounce: public Debounce<uint8_t>
+{
+  public:
+    uint8_t debounce(GPIO_TypeDef * GPIOx, uint16_t GPIO_Pin)
+    {
+      return Debounce<uint8_t>::debounce(GPIO_ReadInputDataBit(GPIOx, GPIO_Pin));
+    }
+};
+#endif
+
+#endif // _DEBOUNCE_H_

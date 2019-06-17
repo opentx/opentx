@@ -229,7 +229,6 @@ void logsWrite()
 #endif
 
 #if defined(TELEMETRY_FRSKY)
-
       for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
         if (isTelemetryFieldAvailable(i)) {
           TelemetrySensor & sensor = g_model.telemetrySensors[i];

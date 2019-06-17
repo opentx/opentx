@@ -32,12 +32,27 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
+#if defined(DEBUG_LATENCY)
+#define HEARBEAT_OFFSET unsigned(5500 + g_model.flightModeData[0].gvars[0] * 100)
+#else
+constexpr unsigned HEARBEAT_OFFSET = 5500;
+#endif
+
 void intmoduleSendNextFrame()
 {
   switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
-      INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
+    {
+      uint32_t last = intmodulePulsesData.pxx.getLast();
+      if (heartbeatCapture.valid) {
+        if (getTmr2MHz() - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
+          last -= 21;
+        else
+          last += 19;
+        intmodulePulsesData.pxx.setLast(last);
+      }
+      INTMODULE_TIMER->CCR2 = last - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
       INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
@@ -45,6 +60,7 @@ void intmoduleSendNextFrame()
       INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.pxx.getSize();
       INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
       break;
+    }
 #endif
 
 #if defined(INTERNAL_MODULE_PPM)
@@ -67,12 +83,7 @@ void intmoduleSendNextFrame()
   }
 }
 
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
-{
-  // nothing, the pulses will be sent through telemetry port
-}
-
-void intmodulePxxStart()
+void intmodulePxx1PulsesStart()
 {
   INTERNAL_MODULE_ON();
 
@@ -156,7 +167,7 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  if (setupPulses(INTERNAL_MODULE)) {
+  if (setupPulsesInternalModule()) {
     intmoduleSendNextFrame();
   }
 }

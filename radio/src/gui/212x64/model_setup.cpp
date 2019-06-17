@@ -229,14 +229,8 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
-  #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetooth.distantAddr[0] == 0 || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
-  #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
-#else
-  #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : HIDDEN_ROW)
-  #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
-#endif
+#define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : HIDDEN_ROW)
+#define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 
 #define TIMER_ROWS(x)                     2|NAVIGATION_LINE_BY_LINE, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
 
@@ -779,12 +773,6 @@ void menuModelSetup(event_t event)
         if (attr) {
           g_model.trainerData.mode = checkIncDec(event, g_model.trainerData.mode, 0, TRAINER_MODE_MAX(), EE_MODEL, isTrainerModeAvailable);
         }
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
-        if (attr && checkIncDec_Ret) {
-          bluetooth.state = BLUETOOTH_STATE_OFF;
-          bluetooth.distantAddr[0] = 0;
-        }
-#endif
         break;
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL:
@@ -898,16 +886,16 @@ void menuModelSetup(event_t event)
           else if (old_editMode > 0) {
             if (isModuleR9M(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN_LINE1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
               }
               else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_EU_WARN1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+                POPUP_WARNING(STR_R9M_PROTO_EU_WARN_LINE1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
               }
               else {
-                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN2, sizeof(TR_R9M_PROTO_WARN2), 0);
+                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN_LINE1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
               }
             }
           }
@@ -918,48 +906,6 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
         break;
 
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
-    case ITEM_MODEL_SETUP_TRAINER_LINE1:
-      if (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
-        if (attr) {
-          s_editMode = 0;
-        }
-        if (bluetooth.distantAddr[0]) {
-          lcdDrawText(INDENT_WIDTH, y+1, bluetooth.distantAddr, TINSIZE);
-          if (bluetooth.state != BLUETOOTH_STATE_CONNECTED) {
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), menuHorizontalPosition == 0 ? attr : 0);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW, y, BUTTON("Clear"), menuHorizontalPosition == 1 ? attr : 0);
-          }
-          else {
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Clear"), attr);
-          }
-          if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
-            if (bluetooth.state == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
-              bluetooth.state = BLUETOOTH_STATE_OFF;
-              bluetooth.distantAddr[0] = 0;
-            }
-            else {
-              bluetooth.state = BLUETOOTH_STATE_BIND_REQUESTED;
-            }
-          }
-        }
-        else {
-          lcdDrawText(INDENT_WIDTH, y, "---");
-          if (bluetooth.state < BLUETOOTH_STATE_IDLE)
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Init"), attr);
-          else
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Discover"), attr);
-          if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
-            if (bluetooth.state < BLUETOOTH_STATE_IDLE)
-              bluetooth.state = BLUETOOTH_STATE_OFF;
-            else
-              bluetooth.state = BLUETOOTH_STATE_DISCOVER_REQUESTED;
-          }
-        }
-        break;
-      }
-      // no break
-#else
       case ITEM_MODEL_SETUP_TRAINER_LINE1:
         lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
@@ -977,7 +923,6 @@ void menuModelSetup(event_t event)
           }
         }
         break;
-#endif
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_CHANNELS:
@@ -1414,7 +1359,7 @@ void menuModelSetup(event_t event)
 
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
-        if (s_editMode && isModuleR9M2(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
+        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
           moduleInformation.information.modelID = 0;
           moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
         }

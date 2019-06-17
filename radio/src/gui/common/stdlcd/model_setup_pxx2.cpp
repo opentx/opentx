@@ -50,10 +50,10 @@ void onPXX2R9MBindModeMenu(const char * result)
   else if (result == STR_16CH_WITHOUT_TELEMETRY) {
     reusableBuffer.moduleSetup.bindInformation.lbtMode = 2;
   }
-  else if (result == STR_FLEX_868) {
+  else if (result == STR_FLEX_915) {
     reusableBuffer.moduleSetup.bindInformation.flexMode = 0;
   }
-  else if (result == STR_FLEX_915) {
+  else if (result == STR_FLEX_868) {
     reusableBuffer.moduleSetup.bindInformation.flexMode = 1;
   }
   else {
@@ -83,14 +83,14 @@ void onPXX2BindMenu(const char * result)
   if (result != STR_EXIT) {
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
     reusableBuffer.moduleSetup.bindInformation.selectedReceiverIndex = (result - reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]);
-    if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_EU) {
+    if (isModuleR9MAccess(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_EU) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
       POPUP_MENU_ADD_ITEM(STR_8CH_WITH_TELEMETRY);
       POPUP_MENU_ADD_ITEM(STR_16CH_WITH_TELEMETRY);
       POPUP_MENU_ADD_ITEM(STR_16CH_WITHOUT_TELEMETRY);
       POPUP_MENU_START(onPXX2R9MBindModeMenu);
     }
-    else if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_FLEX) {
+    else if (isModuleR9MAccess(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_FLEX) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
       POPUP_MENU_ADD_ITEM(STR_FLEX_868);
       POPUP_MENU_ADD_ITEM(STR_FLEX_915);
@@ -142,7 +142,7 @@ void onPXX2ReceiverMenu(const char * result)
   else if (result == STR_BIND) {
     memclear(&reusableBuffer.moduleSetup.bindInformation, sizeof(BindInformation));
     reusableBuffer.moduleSetup.bindInformation.rxUid = receiverIdx;
-    if (isModuleR9M2(moduleIdx)) {
+    if (isModuleR9MAccess(moduleIdx)) {
 #if defined(SIMU)
       reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID = 1;
       reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant = 2;

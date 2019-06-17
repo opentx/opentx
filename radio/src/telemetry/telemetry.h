@@ -217,7 +217,7 @@ class OutputTelemetryBuffer {
         crc += crc >> 8; // 0-100
         crc &= 0x00ff;
       }
-      pushByte(0xFF - crc);
+      pushByteWithBytestuffing(0xFF - crc);
     }
 
   public:

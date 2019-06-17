@@ -511,7 +511,6 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
-#if defined(PCBXLITE)
 bool isR9MModeAvailable(int mode)
 {
 #if defined(R9M_PROTO_FLEX)
@@ -521,24 +520,12 @@ bool isR9MModeAvailable(int mode)
 #endif
 }
 
-#else
-bool isR9MModeAvailable(int mode)
-{
-#if defined(R9M_PROTO_FLEX)
-  return mode < MODULE_SUBTYPE_R9M_EUPLUS;
-#else
-  return true;
-#endif
-}
-#endif
-
 #if defined(PXX2)
 bool isPxx2IsrmChannelsCountAllowed(int channels)
 {
-  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D16)
-    return (channels <= 8);
-  else
-    return (channels % 8 == 0);
+  if (g_model.moduleData[INTERNAL_MODULE].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16 && channels > 8)
+    return false;
+  return (channels % 8 == 0);
 }
 #else
 bool isPxx2IsrmChannelsCountAllowed(int channels)
@@ -687,7 +674,7 @@ bool isRfProtocolAvailable(int protocol)
 bool isTelemetryProtocolAvailable(int protocol)
 {
 #if defined(PCBTARANIS)
-  if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY && g_eeGeneral.serial2Mode != UART_MODE_TELEMETRY) {
+  if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY && g_eeGeneral.auxSerialMode != UART_MODE_TELEMETRY) {
     return false;
   }
 #endif
@@ -711,66 +698,33 @@ bool isTelemetryProtocolAvailable(int protocol)
   return true;
 }
 
-#if defined(PCBHORUS)
 bool isTrainerModeAvailable(int mode)
 {
+#if defined(PCBTARANIS)
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+    return false;
+#endif
+
+#if !defined(PCBSKY9X) && !defined(TRAINER_BATTERY_COMPARTMENT)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return false;
+#endif
+
+#if defined(PCBX9E)
+  if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    return false;
+#elif defined(BLUETOOTH)
+  if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
+    return false;
+#endif
+
+#if defined(PCBXLITE)
+  if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
+    return false;
+#endif
+
   return true;
 }
-#elif defined(PCBX9E)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-#if defined(USEHORUSBT)
-  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
-#else
-  else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
-#endif
-    return false;
-  else
-    return true;
-}
-#elif defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-  else
-    return true;
-}
-#elif defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITE)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
-    return false;
-#if defined(BLUETOOTH)
-  else if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return false;
-#endif
-  else
-    return true;
-}
-#elif defined(PCBXLITES)
-bool isTrainerModeAvailable(int mode)
-{
-  if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
-    return true;
-  else if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return true;
-  else
-    return false;
-}
-#elif defined(PCBXLITE)
-bool isTrainerModeAvailable(int mode)
-{
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return true;
-  else
-    return false;
-}
-#endif
 
 bool modelHasNotes()
 {
@@ -875,7 +829,9 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
-  {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     nullptr},
+  {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)

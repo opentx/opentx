@@ -104,6 +104,7 @@ QString ModuleData::protocolToString(unsigned protocol)
     "TBS Crossfire",
     "DIY Multiprotocol Module",
     "FrSky PXX R9M",
+    "FrSky PXX R9M Lite",
     "SBUS output at VBat",
     "FrSky ACCESS ISRM",
     "FrSky ACCESS R9M",

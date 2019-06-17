@@ -95,6 +95,8 @@ static const char * const PXX2receiversModels[] = {
   "R9-MINI",
   "R9-MM",
   "R9-STAB",
+  "R9-MINI-OTA", // this one has OTA (different bootloader)
+  "R9-MM-OTA", // this one has OTA (different bootloader)
 };
 
 enum PXX2ModuleModelID {

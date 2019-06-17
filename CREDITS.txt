@@ -40,8 +40,7 @@ Michael Byrne
 <a href="http://www.craftandtheoryllc.com">Craft & Theory (monthly)</a>
 <a href="https://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
 <a href="https://www.team-blacksheep.com">Team BlackSheep</a>
-<a href="https://www.3dxr.co.uk">Team BlackSheep</a>
-www.3dxr.co.uk
+<a href="https://www.3dxr.co.uk">3DXR</a>
 
 [People who have donated to OpenTX]
 Mario Sette
@@ -1517,3 +1516,5 @@ Pierre Malriq
 Jean Gaillard
 Michel Garbarino
 For Our Better World
+Lothar Herrl
+James Rhodes

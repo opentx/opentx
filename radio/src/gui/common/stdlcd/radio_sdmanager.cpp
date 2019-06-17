@@ -79,7 +79,7 @@ void onSdFormatConfirm(const char * result)
 #endif
     audioQueue.stopSD();
     if (sdCardFormat()) {
-      f_chdir("/");
+      f_chdir(ROOT_PATH);
       REFRESH_FILES();
     }
   }
@@ -101,14 +101,29 @@ void onUpdateConfirmation(const char * result)
 void onUpdateStateChanged()
 {
   if (reusableBuffer.sdManager.otaUpdateInformation.step == BIND_INFO_REQUEST) {
-    POPUP_CONFIRMATION(PXX2receiversModels[reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.modelID], onUpdateConfirmation);
-    char * tmp = strAppend(reusableBuffer.sdManager.otaReceiverVersion, TR_CURRENT_VERSION);
-    tmp = strAppendUnsigned(tmp, 1 + reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.major);
-    *tmp++ = '.';
-    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.minor);
-    *tmp++ = '.';
-    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.revision);
-    SET_WARNING_INFO(reusableBuffer.sdManager.otaReceiverVersion, tmp - reusableBuffer.sdManager.otaReceiverVersion, 0);
+    uint8_t modelId = reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.modelID;
+    if (modelId > 0 && modelId < DIM(PXX2receiversModels)) {
+      if (isReceiverOptionAvailable(modelId, RECEIVER_OPTION_OTA)) {
+        POPUP_CONFIRMATION(PXX2receiversModels[modelId], onUpdateConfirmation);
+        char *tmp = strAppend(reusableBuffer.sdManager.otaReceiverVersion, TR_CURRENT_VERSION);
+        tmp = strAppendUnsigned(tmp, 1 + reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.major);
+        *tmp++ = '.';
+        tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.minor);
+        *tmp++ = '.';
+        tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.revision);
+        SET_WARNING_INFO(reusableBuffer.sdManager.otaReceiverVersion, tmp - reusableBuffer.sdManager.otaReceiverVersion, 0);
+      }
+      else {
+        POPUP_WARNING(STR_OTA_UPDATE_ERROR);
+        SET_WARNING_INFO(STR_UNSUPPORTED_RX, sizeof(TR_UNSUPPORTED_RX) - 1, 0);
+        moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+      }
+    }
+    else {
+      POPUP_WARNING(STR_OTA_UPDATE_ERROR);
+      SET_WARNING_INFO(STR_UNKNOWN_RX, sizeof(TR_UNKNOWN_RX) - 1, 0);
+      moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    }
   }
 }
 #endif
@@ -206,8 +221,8 @@ void onSdManagerMenu(const char * result)
     bluetooth.flashFirmware(lfn);
   }
 #endif
-#if defined(HARDWARE_POWER_CONTROL_CHIP)
-  else if (result == STR_FLASH_POWER_CONTROL_CHIP) {
+#if defined(HARDWARE_POWER_MANAGEMENT_UNIT)
+  else if (result == STR_FLASH_POWER_MANAGEMENT_UNIT) {
     getSelectionFullPath(lfn);
     FrskyChipFirmwareUpdate device;
     device.flashFirmware(lfn);
@@ -379,9 +394,9 @@ void menuRadioSdManager(event_t _event)
               if (information.productFamily == FIRMWARE_FAMILY_BLUETOOTH_CHIP)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
 #endif
-#if defined(HARDWARE_POWER_CONTROL_CHIP)
-              if (information.productFamily == FIRMWARE_FAMILY_POWER_CONTROL_CHIP)
-                POPUP_MENU_ADD_ITEM(STR_FLASH_POWER_CONTROL_CHIP);
+#if defined(HARDWARE_POWER_MANAGEMENT_UNIT)
+              if (information.productFamily == FIRMWARE_FAMILY_POWER_MANAGEMENT_UNIT)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_POWER_MANAGEMENT_UNIT);
 #endif
             }
           }

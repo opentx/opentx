@@ -21,44 +21,43 @@
 #include "pwr.h"
 #include "board.h"
 
-uint32_t shutdownRequest;          // Stores intentional shutdown to avoid reboot loop
-uint32_t shutdownReason;           // Used for detecting unexpected reboots regardless of reason
-uint32_t powerupReason __NOINIT;   // Stores power up reason beyond initialization for emergency mode activation
-
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  // Init Module PWR
+
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+
+  // Internal module PWR
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
+  // External module PWR
   GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 
-  // Init PWR SWITCH PIN
+  // PWR SWITCH
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
-  GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+  GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
-  // Init PCBREV PIN
+  // PCBREV
   // TODO to be removed on X10?
   GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
 
-  // Init SD-DETECT PIN
+  // SD-DETECT PIN
   GPIO_ResetBits(SD_PRESENT_GPIO, SD_PRESENT_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = SD_PRESENT_GPIO_PIN;
   GPIO_Init(SD_PRESENT_GPIO, &GPIO_InitStructure);
 
-  // Init TRAINER DETECT PIN
+  // TRAINER DETECT PIN
   GPIO_InitStructure.GPIO_Pin = TRAINER_DETECT_GPIO_PIN;
   GPIO_Init(TRAINER_DETECT_GPIO, &GPIO_InitStructure);
 
@@ -73,9 +72,9 @@ void pwrOn()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
 
-  GPIO_SetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
+  GPIO_SetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 
   shutdownRequest = NO_SHUTDOWN_REQUEST;
   shutdownReason = DIRTY_SHUTDOWN;
@@ -83,29 +82,12 @@ void pwrOn()
 
 void pwrOff()
 {
-#if defined(PCBX12S)
-  // Shutdown the Audio amp
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
-  GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
-#endif
-
-  // Shutdown the Haptic
-  hapticDone();
-
-  shutdownRequest = SHUTDOWN_REQUEST;
-  shutdownReason = NORMAL_POWER_OFF;
-  GPIO_ResetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
+  GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 
 uint32_t pwrPressed()
 {
-  return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
+  return GPIO_ReadInputDataBit(PWR_ON_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
 }
 
 void pwrResetHandler()

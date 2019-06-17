@@ -44,6 +44,11 @@ char zchar2char(int8_t idx)
   return ' ';
 }
 
+char char2lower(char c)
+{
+  return (c >= 'A' && c <= 'Z') ? c + 32 : c;
+}
+
 int8_t char2zchar(char c)
 {
   if (c == '_') return 37;
@@ -321,6 +326,11 @@ char * getSwitchString(char * dest, swsrc_t idx)
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
     strcpy(s, "Tele");
   }
+#if defined(DEBUG_LATENCY)
+  else if (idx == SWSRC_LATENCY_TOGGLE) {
+    strcpy(s, "Ltc");
+  }
+#endif
   else {
     zchar2str(s, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN);
   }

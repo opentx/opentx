@@ -288,7 +288,7 @@ void telemetryInit(uint8_t protocol)
 #if defined(AUX_SERIAL) || defined(PCBSKY9X)
   else if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     telemetryPortInit(0, TELEMETRY_SERIAL_DEFAULT);
-    serial2TelemetryInit(PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY);
+    auxSerialTelemetryInit(PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY);
   }
 #endif
 

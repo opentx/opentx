@@ -157,6 +157,14 @@
   #define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource10
   #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource12
 #endif
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  #define ROTARY_ENCODER_RCC_APB1Periph   RCC_APB1Periph_TIM5
+  #define ROTARY_ENCODER_TIMER            TIM5
+  #define ROTARY_ENCODER_TIMER_IRQn       TIM5_IRQn
+  #define ROTARY_ENCODER_TIMER_IRQHandler TIM5_IRQHandler
+#else
+  #define ROTARY_ENCODER_RCC_APB1Periph   0
+#endif
 
 // Trims
 #if defined(PCBX9E)
@@ -853,7 +861,7 @@
   #define INTERNAL_MODULE_PXX1
 #endif
 #if defined(PCBXLITE) || defined(PCBX9LITE)
-  #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
+  #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #if defined(PCBXLITES) || defined(PCBX9LITE)
     #define INTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
@@ -882,10 +890,6 @@
     #define INTMODULE_BOOTCMD_GPIO        GPIOC
     #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_8  // PC.08
   #endif
-  // #define INTMODULE_TIMER               TIM3
-  // #define INTMODULE_TIMER_IRQn          TIM3_IRQn
-  // #define INTMODULE_TIMER_IRQHandler    TIM3_IRQHandler
-  // #define INTMODULE_TIMER_FREQ          (PERI1_FREQUENCY * TIMER_MULT_APB1)
 #elif defined(PCBX9DP) && PCBREV >= 2019
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
@@ -1013,9 +1017,10 @@
   #define EXTMODULE_USART                       USART6
   #define EXTMODULE_USART_IRQn                  USART6_IRQn
   #define EXTMODULE_USART_IRQHandler            USART6_IRQHandler
-  #define EXTMODULE_USART_DMA_CHANNEL           DMA_Channel_5
-  #define EXTMODULE_USART_DMA_STREAM            DMA2_Stream6
-  #define EXTMODULE_USART_DMA_STREAM_IRQn       DMA2_Stream6_IRQn
+  #define EXTMODULE_USART_TX_DMA_CHANNEL        DMA_Channel_5
+  #define EXTMODULE_USART_TX_DMA_STREAM         DMA2_Stream6
+  #define EXTMODULE_USART_RX_DMA_CHANNEL        DMA_Channel_5
+  #define EXTMODULE_USART_RX_DMA_STREAM         DMA2_Stream1
 #elif defined(RADIO_T12)
   //Jumper T12v2 external module configured
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
@@ -1081,7 +1086,6 @@
   #define TRAINER_DETECT_GPIO_PIN       GPIO_Pin_11 // PD.11
 #endif
   #define TRAINER_TIMER                 TIM4
-  #define TRAINER_TIMER_IRQn            TIM4_IRQn
   #define TRAINER_GPIO_AF               GPIO_AF_TIM4 // TIM4_CH1 (Out) + TIM4_CH2 (In)
   #define TRAINER_TIMER_IRQn            TIM4_IRQn
   #define TRAINER_TIMER_IRQHandler      TIM4_IRQHandler
@@ -1099,8 +1103,11 @@
   #define TRAINER_CCER_POLARYTY         TIM_CCER_CC1P
   #define TRAINER_IN_CCER               TIM_CCER_CC2E
 #elif defined(PCBXLITE)
+  #define TRAINER_TIMER                 TIM4
   #define TRAINER_RCC_AHB1Periph        0
-  #define TRAINER_RCC_APB1Periph        0
+  #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM4
+  #define TRAINER_TIMER_IRQn            TIM4_IRQn
+  #define TRAINER_TIMER_IRQHandler      TIM4_IRQHandler
 #else
   #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM3
@@ -1221,26 +1228,116 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 
-// Heartbeat
-#if defined(PCBXLITE) || defined(PCBX9LITE)
-  #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
-  #define HEARTBEAT_RCC_APB2Periph      0
-  #define HEARTBEAT_GPIO                GPIOD
-  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15 // PD.15
+#if defined(PCBXLITES) || defined(PCBX9LITE)
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
 #else
-  #define TRAINER_MODULE_HEARTBEAT
-  #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
-  #define HEARTBEAT_RCC_APB2Periph      RCC_APB2Periph_USART6
-  #define HEARTBEAT_GPIO                GPIOC
-  #define HEARTBEAT_GPIO_PIN            GPIO_Pin_7  // PC.07
-  #define HEARTBEAT_GPIO_PinSource      GPIO_PinSource7
-  #define HEARTBEAT_GPIO_AF_SBUS        GPIO_AF_USART6
-  #define HEARTBEAT_GPIO_AF_CAPTURE     GPIO_AF_TIM3
-  #define HEARTBEAT_USART               USART6
-  #define HEARTBEAT_USART_IRQHandler    USART6_IRQHandler
-  #define HEARTBEAT_USART_IRQn          USART6_IRQn
-  #define HEARTBEAT_DMA_Stream          DMA2_Stream1
-  #define HEARTBEAT_DMA_Channel         DMA_Channel_5
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
+#endif
+
+// Heartbeat for iXJT / ISRM synchro
+#if defined(PCBXLITE)
+  #define INTMODULE_HEARTBEAT
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOD
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_15
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+#elif defined(PCBX9LITE)
+  // #define INTMODULE_HEARTBEAT
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  // #define INTMODULE_HEARTBEAT_GPIO                GPIOC
+  // #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_9
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource9
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line9
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+#elif defined(RADIO_X7)
+  #define INTMODULE_HEARTBEAT
+  #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+#else
+  #define INTMODULE_HEARTBEAT
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOC
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+#endif
+
+#if defined(PCBX9LITE)
+  #define EXTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define EXTMODULE_HEARTBEAT_GPIO                GPIOD
+  #define EXTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_15
+  #define EXTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+  #define EXTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
+  #define EXTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
+  #define EXTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
+  #define EXTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+#endif
+
+// Trainer / Trainee from the module bay
+#if defined(PCBX9LITE) ||  defined(PCBXLITE)
+  #define TRAINER_MODULE_CPPM
+  #define TRAINER_MODULE_SBUS
+  #define TRAINER_MODULE_RCC_AHB1Periph      0
+  #define TRAINER_MODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
+  #define TRAINER_MODULE_RCC_APB2Periph      0
+  #define TRAINER_MODULE_CPPM_GPIO           EXTMODULE_USART_GPIO
+  #define TRAINER_MODULE_CPPM_GPIO_PIN       EXTMODULE_RX_GPIO_PIN
+  #define TRAINER_MODULE_CPPM_GPIO_PinSource EXTMODULE_RX_GPIO_PinSource
+  #define TRAINER_MODULE_CPPM_GPIO_AF        GPIO_AF_TIM3
+  #define TRAINER_MODULE_CPPM_TIMER          TIM3
+  #define TRAINER_MODULE_CPPM_COUNTER_REGISTER TRAINER_MODULE_CPPM_TIMER->CCR2
+  #define TRAINER_MODULE_CPPM_INTERRUPT_ENABLE TIM_DIER_CC2IE
+  #define TRAINER_MODULE_CPPM_INTERRUPT_FLAG   TIM_SR_CC2IF
+  #define TRAINER_MODULE_CPPM_CCMR1            (TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0)
+  #define TRAINER_MODULE_CPPM_CCER             TIM_CCER_CC2E
+  #define TRAINER_MODULE_CPPM_TIMER_IRQn       TIM3_IRQn
+  #define TRAINER_MODULE_CPPM_TIMER_IRQHandler TIM3_IRQHandler
+  #define TRAINER_MODULE_SBUS_GPIO             EXTMODULE_USART_GPIO
+  #define TRAINER_MODULE_SBUS_GPIO_PIN         EXTMODULE_RX_GPIO_PIN
+  #define TRAINER_MODULE_SBUS_GPIO_AF          EXTMODULE_USART_GPIO_AF
+  #define TRAINER_MODULE_SBUS_USART            EXTMODULE_USART
+  #define TRAINER_MODULE_SBUS_GPIO_PinSource   EXTMODULE_RX_GPIO_PinSource
+  #define TRAINER_MODULE_SBUS_DMA_STREAM       EXTMODULE_USART_RX_DMA_STREAM
+  #define TRAINER_MODULE_SBUS_DMA_CHANNEL      EXTMODULE_USART_RX_DMA_CHANNEL
+#else
+  #define TRAINER_MODULE_CPPM
+  #define TRAINER_MODULE_SBUS
+  #define TRAINER_MODULE_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define TRAINER_MODULE_RCC_APB2Periph      RCC_APB2Periph_USART6
+  #define TRAINER_MODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
+  #define TRAINER_MODULE_CPPM_TIMER          TRAINER_TIMER
+  #define TRAINER_MODULE_CPPM_GPIO           INTMODULE_HEARTBEAT_GPIO
+  #define TRAINER_MODULE_CPPM_GPIO_PIN       INTMODULE_HEARTBEAT_GPIO_PIN
+  #define TRAINER_MODULE_CPPM_GPIO_PinSource INTMODULE_HEARTBEAT_EXTI_PinSource
+  #define TRAINER_MODULE_CPPM_INTERRUPT_ENABLE TIM_DIER_CC2IE
+  #define TRAINER_MODULE_CPPM_INTERRUPT_FLAG   TIM_SR_CC2IF
+  #define TRAINER_MODULE_CPPM_CCMR1            (TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0)
+  #define TRAINER_MODULE_CPPM_CCER             TIM_CCER_CC2E
+  #define TRAINER_MODULE_CPPM_COUNTER_REGISTER TRAINER_TIMER->CCR2
+  #define TRAINER_MODULE_CPPM_TIMER_IRQn       TRAINER_TIMER_IRQn
+  #define TRAINER_MODULE_CPPM_GPIO_AF          GPIO_AF_TIM3
+  #define TRAINER_MODULE_SBUS_GPIO_AF          GPIO_AF_USART6
+  #define TRAINER_MODULE_SBUS_USART            USART6
+  #define TRAINER_MODULE_SBUS_GPIO             INTMODULE_HEARTBEAT_GPIO
+  #define TRAINER_MODULE_SBUS_GPIO_PIN         INTMODULE_HEARTBEAT_GPIO_PIN
+  #define TRAINER_MODULE_SBUS_GPIO_PinSource   INTMODULE_HEARTBEAT_EXTI_PinSource
+  #define TRAINER_MODULE_SBUS_DMA_STREAM       DMA2_Stream1
+  #define TRAINER_MODULE_SBUS_DMA_CHANNEL      DMA_Channel_5
 #endif
 
 // USB

@@ -53,6 +53,12 @@
 
 #define FIND_FIELD_DESC  0x01
 
+#define KEY_EVENTS(xxx, yyy)  \
+  { "EVT_"#xxx"_FIRST",  EVT_KEY_FIRST(yyy) }, \
+  { "EVT_"#xxx"_BREAK",  EVT_KEY_BREAK(yyy) }, \
+  { "EVT_"#xxx"_LONG",  EVT_KEY_LONG(yyy) }, \
+  { "EVT_"#xxx"_REPT",  EVT_KEY_REPT(yyy) }
+
 /*luadoc
 @function getVersion()
 
@@ -513,6 +519,21 @@ When called without parameters, it will only return the status of the output buf
 
 */
 
+bool getDefaultAccessDestination(uint8_t & destination)
+{
+  for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+    TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    if (sensor.type == TELEM_TYPE_CUSTOM) {
+      TelemetryItem sensorItem = telemetryItems[i];
+      if (sensorItem.isFresh()) {
+        destination = sensor.frskyInstance.rxIndex;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 static int luaAccessTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
@@ -521,13 +542,25 @@ static int luaAccessTelemetryPush(lua_State * L)
   }
 
   if (outputTelemetryBuffer.isAvailable()) {
-    uint8_t module = luaL_checkunsigned(L, 1);
+    int8_t module = luaL_checkinteger(L, 1);
     uint8_t rxUid = luaL_checkunsigned(L, 2);
+    uint8_t destination;
+
+    if (module < 0) {
+      if (!getDefaultAccessDestination(destination)) {
+        lua_pushboolean(L, false);
+        return 1;
+      }
+    }
+    else {
+      destination = (module << 2) + rxUid;
+    }
+
     outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 3));
     outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 4);
     outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 5);
     outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 6);
-    outputTelemetryBuffer.setDestination((module << 2) + rxUid);
+    outputTelemetryBuffer.setDestination(destination);
     lua_pushboolean(L, true);
     return 1;
   }
@@ -774,7 +807,7 @@ Return the internal GPS position or nil if no valid hardware found
  * 'speed' (number) internal GPSspeed in 0.1m/s
  * 'heading'  (number) internal GPS ground course estimation in degrees * 10
 
-@status current Introduced in 2.3.0
+@status current Introduced in 2.2.2
 */
 static int luaGetTxGPS(lua_State * L)
 {
@@ -1017,7 +1050,7 @@ Returns (some of) the general radio settings
  * `gtimer` (number) radio global timer in seconds (does not include current session)
 
 @status current Introduced in 2.0.6, `imperial` added in TODO,
-`language` and `voice` added in 2.2.0, gtimer added in 2.3.0.
+`language` and `voice` added in 2.2.0, gtimer added in 2.2.2.
 
 */
 static int luaGetGeneralSettings(lua_State * L)
@@ -1032,6 +1065,82 @@ static int luaGetGeneralSettings(lua_State * L)
   lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer);
   return 1;
 }
+
+/*luadoc
+@function getGlobalTimer()
+
+Returns radio timers
+
+@retval table with elements:
+* `gtimer` (number) radio global timer in seconds
+* `session` (number) radio session in seconds
+* `ttimer` (number) radio throttle timer in seconds
+* `tptimer` (number) radio throttle percent timer in seconds
+
+@status current Introduced added in 2.3.0.
+
+*/
+static int luaGetGlobalTimer(lua_State * L)
+{
+  lua_newtable(L);
+  lua_pushtableinteger(L, "total", g_eeGeneral.globalTimer + sessionTimer);
+  lua_pushtableinteger(L, "session", sessionTimer);
+  lua_pushtableinteger(L, "throttle", s_timeCumThr);
+  lua_pushtableinteger(L, "throttlepct", s_timeCum16ThrP/16);
+  return 1;
+}
+
+/*luadoc
+@function popupInput(title, event, input, min, max)
+
+Raises a pop-up on screen that allows uses input
+
+@param title (string) text to display
+
+@param event (number) the event variable that is passed in from the
+Run function (key pressed)
+
+@param input (number) value that can be adjusted by the +/­- keys
+
+@param min  (number) min value that input can reach (by pressing the -­ key)
+
+@param max  (number) max value that input can reach
+
+@retval number result of the input adjustment
+
+@retval "OK" user pushed ENT key
+
+@retval "CANCEL" user pushed EXIT key
+
+@notice Use only from stand-alone and telemetry scripts.
+
+@status current Introduced in 2.0.0
+*/
+
+/* TODO : fix, broken by popups rewrite
+static int luaPopupInput(lua_State * L)
+{
+  event_t event = luaL_checkinteger(L, 2);
+  warningInputValue = luaL_checkinteger(L, 3);
+  warningInputValueMin = luaL_checkinteger(L, 4);
+  warningInputValueMax = luaL_checkinteger(L, 5);
+  warningText = luaL_checkstring(L, 1);
+  warningType = WARNING_TYPE_INPUT;
+  runPopupWarning(event);
+  if (warningResult) {
+    warningResult = 0;
+    lua_pushstring(L, "OK");
+  }
+  else if (!warningText) {
+    lua_pushstring(L, "CANCEL");
+  }
+  else {
+    lua_pushinteger(L, warningInputValue);
+  }
+  warningText = NULL;
+  return 1;
+}
+*/
 
 /*luadoc
 @function popupWarning(title, event)
@@ -1325,15 +1434,40 @@ static int luaGetUsage(lua_State * L)
 }
 
 /*luadoc
-@function resetGlobalTimer()
+@function resetGlobalTimer([type])
 
-Resets the radio global timer to 0.
+ Resets the radio global timer to 0.
 
-@status current Introduced in 2.3.0
+@param (optional) : if set to 'all', throttle ,throttle percent and session timers are reset too
+                    if set to 'session', radio session timer is reset too
+                    if set to 'ttimer', radio throttle timer is reset too
+                    if set to  'tptimer', radio throttle percent timer is reset too
+
+@status current Introduced in 2.2.2, param added in 2.3
 */
 static int luaResetGlobalTimer(lua_State * L)
 {
-  g_eeGeneral.globalTimer = 0;
+  size_t length;
+  const char * option = luaL_optlstring(L, 1, "total", &length);
+  if (!strcmp(option, "all")) {
+    g_eeGeneral.globalTimer = 0;
+    sessionTimer = 0;
+    s_timeCumThr = 0;
+    s_timeCum16ThrP = 0;
+  }
+  else if (!strcmp(option, "total")) {
+    g_eeGeneral.globalTimer = 0;
+    sessionTimer = 0;
+  }
+  else if (!strcmp(option, "session")) {
+    sessionTimer = 0;
+  }
+  else if (!strcmp(option, "throttle")) {
+    s_timeCumThr = 0;
+  }
+  else if (!strcmp(option, "throttlepct")) {
+    s_timeCum16ThrP = 0;
+  }
   storageDirty(EE_GENERAL);
   return 0;
 }
@@ -1344,7 +1478,7 @@ static int luaResetGlobalTimer(lua_State * L)
 
 Writes a string to the serial port. The string is allowed to contain any character, including 0.
 
-@status current Introducted in TODO
+@status current Introduced in TODO
 */
 static int luaSerialWrite(lua_State * L)
 {
@@ -1363,10 +1497,10 @@ static int luaSerialWrite(lua_State * L)
   }
   #endif
   #if defined(AUX_SERIAL)
-  if (serial2Mode == UART_MODE_LUA) {
+  if (auxSerialMode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;
-    while(wr_len--) serial2Putc(*p++);
+    while(wr_len--) auxSerialPutc(*p++);
   }
   #endif
 #else
@@ -1384,6 +1518,7 @@ const luaL_Reg opentxLib[] = {
 #endif
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
+  { "getGlobalTimer", luaGetGlobalTimer },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
@@ -1418,7 +1553,7 @@ const luaL_Reg opentxLib[] = {
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
 #endif
   { "serialWrite", luaSerialWrite },
-  { NULL, NULL }  /* sentinel */
+  { nullptr, nullptr }  /* sentinel */
 };
 
 const luaR_value_entry opentxConstants[] = {
@@ -1432,6 +1567,7 @@ const luaR_value_entry opentxConstants[] = {
   { "BLINK", BLINK },
   { "RIGHT", RIGHT },
   { "LEFT", LEFT },
+  { "CENTER", CENTERED },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
   { "VALUE", INPUT_TYPE_VALUE },
@@ -1500,84 +1636,138 @@ const luaR_value_entry opentxConstants[] = {
 #else
   { "FIXEDWIDTH", FIXEDWIDTH },
 #endif
+
+// Virtual Page Next/Previous
+#if defined(KEYS_GPIO_REG_PGUP) && defined(KEYS_GPIO_REG_PGDN)
+  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_FIRST(KEY_PGUP) },
+  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_FIRST(KEY_PGDN) },
+#elif defined(KEYS_GPIO_REG_PGDN)
+  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_PGDN) },
+  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PGDN) },
+#elif defined(KEYS_GPIO_REG_UP) && defined(KEYS_GPIO_REG_DOWN)
+  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_UP) },
+  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_LONG(KEY_DOWN) },
+#elif defined(KEYS_GPIO_REG_PAGE)
+  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_PAGE) },
+  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PAGE) },
+#endif
+
+// Virtual exit
+  { "EVT_VIRTUAL_EXIT",  EVT_KEY_BREAK(KEY_EXIT) },
+
+// Virtual enter
+#if defined(KEYS_GPIO_REG_ENTER)
+  { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
+  { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
+#endif
+
+// Virtual menu
+#if defined(KEYS_GPIO_REG_MENU)
+  { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MENU) },
+  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
+#elif defined(KEYS_GPIO_REG_SHIFT)
+  { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_SHIFT) },
+  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_SHIFT) },
+#endif
+
+// Virtual generic plus-next-right minus-previous-left
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  { "EVT_VIRTUAL_NEXT", EVT_ROTARY_RIGHT},
+  { "EVT_VIRTUAL_PREVIOUS", EVT_ROTARY_LEFT },
+#elif defined(KEYS_GPIO_REG_RIGHT) && defined(KEYS_GPIO_REG_LEFT)
+  { "EVT_VIRTUAL_NEXT",  EVT_KEY_FIRST(KEY_RIGHT) },
+  { "EVT_VIRTUAL_NEXT_REPT",  EVT_KEY_REPT(KEY_RIGHT) },
+  { "EVT_VIRTUAL_PREVIOUS",  EVT_KEY_FIRST(KEY_LEFT) },
+  { "EVT_VIRTUAL_PREVIOUS_REPT",  EVT_KEY_REPT(KEY_LEFT) },
+#elif defined(KEYS_GPIO_REG_PLUS) && defined(KEYS_GPIO_REG_MINUS)
+  { "EVT_VIRTUAL_NEXT", EVT_KEY_FIRST(KEY_PLUS) },
+  { "EVT_VIRTUAL_NEXT_REPT", EVT_KEY_REPT(KEY_PLUS) },
+  { "EVT_VIRTUAL_PREVIOUS", EVT_KEY_FIRST(KEY_MINUS) },
+  { "EVT_VIRTUAL_PREVIOUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
+#endif
+
 #if defined(PCBHORUS)
+#if defined(KEYS_GPIO_REG_PGUP)
   { "EVT_PAGEUP_FIRST",  EVT_KEY_FIRST(KEY_PGUP) },
+#endif
   { "EVT_PAGEDN_FIRST",  EVT_KEY_FIRST(KEY_PGDN) },
+  { "EVT_PAGEDN_BREAK",  EVT_KEY_BREAK(KEY_PGDN) },
+  { "EVT_PAGEDN_LONG",  EVT_KEY_LONG(KEY_PGDN) },
   { "EVT_TELEM_FIRST",  EVT_KEY_FIRST(KEY_TELEM) },
   { "EVT_MODEL_FIRST",  EVT_KEY_FIRST(KEY_MODEL) },
   { "EVT_SYS_FIRST",  EVT_KEY_FIRST(KEY_RADIO) },
   { "EVT_RTN_FIRST",  EVT_KEY_FIRST(KEY_EXIT) },
-#elif defined(PCBXLITE)
-  { "EVT_DOWN_FIRST", EVT_KEY_FIRST(KEY_DOWN) },
-  { "EVT_UP_FIRST", EVT_KEY_FIRST(KEY_UP) },
-  { "EVT_LEFT_FIRST", EVT_KEY_FIRST(KEY_LEFT) },
-  { "EVT_RIGHT_FIRST", EVT_KEY_FIRST(KEY_RIGHT) },
-  { "EVT_SHIFT_FIRST", EVT_KEY_FIRST(KEY_SHIFT) },
-  { "EVT_DOWN_BREAK", EVT_KEY_BREAK(KEY_DOWN) },
-  { "EVT_UP_BREAK", EVT_KEY_BREAK(KEY_UP) },
-  { "EVT_LEFT_BREAK", EVT_KEY_BREAK(KEY_LEFT) },
-  { "EVT_RIGHT_BREAK", EVT_KEY_BREAK(KEY_RIGHT) },
-  { "EVT_SHIFT_BREAK", EVT_KEY_BREAK(KEY_SHIFT) },
-  { "EVT_DOWN_LONG", EVT_KEY_LONG(KEY_DOWN) },
-  { "EVT_UP_LONG", EVT_KEY_LONG(KEY_UP) },
-  { "EVT_LEFT_LONG", EVT_KEY_LONG(KEY_LEFT) },
-  { "EVT_RIGHT_LONG", EVT_KEY_LONG(KEY_RIGHT) },
-  { "EVT_SHIFT_LONG", EVT_KEY_LONG(KEY_SHIFT) },
-  { "EVT_DOWN_REPT", EVT_KEY_REPT(KEY_DOWN) },
-  { "EVT_UP_REPT", EVT_KEY_REPT(KEY_UP) },
-  { "EVT_LEFT_REPT", EVT_KEY_REPT(KEY_LEFT) },
-  { "EVT_RIGHT_REPT", EVT_KEY_REPT(KEY_RIGHT) },
-  { "FORCE", FORCE },
-  { "ERASE", ERASE },
-  { "ROUND", ROUND },
-#elif defined(RADIO_T12)
-  { "EVT_DOWN_FIRST", EVT_KEY_FIRST(KEY_DOWN) },
-  { "EVT_UP_FIRST", EVT_KEY_FIRST(KEY_UP) },
-  { "EVT_LEFT_FIRST", EVT_KEY_FIRST(KEY_LEFT) },
-  { "EVT_RIGHT_FIRST", EVT_KEY_FIRST(KEY_RIGHT) },
-  { "EVT_DOWN_BREAK", EVT_KEY_BREAK(KEY_DOWN) },
-  { "EVT_UP_BREAK", EVT_KEY_BREAK(KEY_UP) },
-  { "EVT_LEFT_BREAK", EVT_KEY_BREAK(KEY_LEFT) },
-  { "EVT_RIGHT_BREAK", EVT_KEY_BREAK(KEY_RIGHT) },
-  { "EVT_DOWN_LONG", EVT_KEY_LONG(KEY_DOWN) },
-  { "EVT_UP_LONG", EVT_KEY_LONG(KEY_UP) },
-  { "EVT_LEFT_LONG", EVT_KEY_LONG(KEY_LEFT) },
-  { "EVT_RIGHT_LONG", EVT_KEY_LONG(KEY_RIGHT) },
-  { "EVT_DOWN_REPT", EVT_KEY_REPT(KEY_DOWN) },
-  { "EVT_UP_REPT", EVT_KEY_REPT(KEY_UP) },
-  { "EVT_LEFT_REPT", EVT_KEY_REPT(KEY_LEFT) },
-  { "EVT_RIGHT_REPT", EVT_KEY_REPT(KEY_RIGHT) },
-  { "FORCE", FORCE },
-  { "ERASE", ERASE },
-  { "ROUND", ROUND },
-#elif defined(PCBTARANIS)
-  { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
-  { "EVT_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
-  { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
-  { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
-  { "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS) },
-  { "EVT_MINUS_BREAK", EVT_KEY_BREAK(KEY_MINUS) },
-  { "EVT_PLUS_FIRST", EVT_KEY_FIRST(KEY_PLUS) },
-  { "EVT_MINUS_FIRST", EVT_KEY_FIRST(KEY_MINUS) },
-  { "EVT_PLUS_REPT", EVT_KEY_REPT(KEY_PLUS) },
-  { "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
-#if LCD_DEPTH > 1
-  { "FILL_WHITE", FILL_WHITE },
-  { "GREY_DEFAULT", GREY_DEFAULT },
-#endif
-  { "FORCE", FORCE },
-  { "ERASE", ERASE },
-  { "ROUND", ROUND },
-#endif
-  { "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
-  { "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
+#elif defined(KEYS_GPIO_REG_EXIT)
   { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
+#endif
+
+#if defined(KEYS_GPIO_REG_ENTER)
+  KEY_EVENTS(ENTER, KEY_ENTER),
+#endif
+
+#if defined(KEYS_GPIO_REG_MENU)
+  KEY_EVENTS(MENU, KEY_MENU),
+#endif
+
+#if defined(KEYS_GPIO_REG_RIGHT) && defined(NAVIGATION_HORUS)
+  KEY_EVENTS(TELEM, KEY_TELEM),
+#elif defined(KEYS_GPIO_REG_RIGHT)
+  KEY_EVENTS(RIGHT, KEY_RIGHT),
+#endif
+
+#if defined(KEYS_GPIO_REG_UP) && defined(NAVIGATION_HORUS)
+  KEY_EVENTS(MODEL, KEY_MODEL),
+#elif defined(KEYS_GPIO_REG_UP)
+  KEY_EVENTS(UP, KEY_UP),
+#endif
+
+#if defined(KEYS_GPIO_REG_LEFT) && defined(NAVIGATION_HORUS)
+  KEY_EVENTS(SYS, KEY_RADIO),
+#elif defined(KEYS_GPIO_REG_LEFT)
+  KEY_EVENTS(LEFT, KEY_LEFT),
+#endif
+
+#if defined(KEYS_GPIO_REG_PGUP)
+  KEY_EVENTS(PAGEUP, KEY_PGUP),
+#endif
+
+#if defined(KEYS_GPIO_REG_PGDN)
+  KEY_EVENTS(PAGEDN, KEY_PGDN),
+#endif
+
+#if defined(KEYS_GPIO_REG_PAGE)
+  KEY_EVENTS(PAGE, KEY_PAGE),
+#endif
+
+#if defined(KEYS_GPIO_REG_SHIFT)
+  KEY_EVENTS(SHIFT, KEY_SHIFT),
+#endif
+
+#if defined(KEYS_GPIO_REG_PLUS)
+  KEY_EVENTS(PLUS, KEY_PLUS),
+#endif
+
+#if defined(KEYS_GPIO_REG_MINUS)
+  KEY_EVENTS(MINUS, KEY_MINUS),
+#endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  { "EVT_ROT_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
-  { "EVT_ROT_LONG", EVT_KEY_LONG(KEY_ENTER) },
+  KEY_EVENTS(ROT, KEY_ENTER),
   { "EVT_ROT_LEFT", EVT_ROTARY_LEFT },
   { "EVT_ROT_RIGHT", EVT_ROTARY_RIGHT },
 #endif
+
+#if LCD_DEPTH > 1 && !defined(COLORLCD)
+  { "FILL_WHITE", FILL_WHITE },
+  { "GREY_DEFAULT", GREY_DEFAULT },
+#endif
+
+#if LCD_W <= 212
+  { "FORCE", FORCE },
+  { "ERASE", ERASE },
+  { "ROUND", ROUND },
+#endif
+
   { "SOLID", SOLID },
   { "DOTTED", DOTTED },
   { "LCD_W", LCD_W },
@@ -1622,5 +1812,5 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_BITFIELD", UNIT_BITFIELD},
   {"UNIT_TEXT", UNIT_TEXT},
 #endif
-  { NULL, 0 }  /* sentinel */
+  { nullptr, 0 }  /* sentinel */
 };

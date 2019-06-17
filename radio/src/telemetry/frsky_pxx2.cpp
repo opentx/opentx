@@ -58,6 +58,7 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
   }
   else if (index < PXX2_MAX_RECEIVERS_PER_MODULE && modelId < DIM(PXX2receiversModels)) {
     memcpy(&destination->receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
+    destination->receivers[index].timestamp = get_tmr10ms();
   }
 }
 

@@ -60,6 +60,7 @@ Pio Pioa, Piob, Pioc;
 Pmc pmc;
 Ssc ssc;
 Pwm pwm;
+Tc tc1;
 Twi Twio;
 Usart Usart0;
 Dacc dacc;

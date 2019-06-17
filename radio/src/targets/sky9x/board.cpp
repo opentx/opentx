@@ -148,7 +148,6 @@ void interrupt5ms()
   static uint32_t pre_scale ;             // Used to get 10 Hz counter
 
   HAPTIC_HEARTBEAT();
-  AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {
     BUZZER_HEARTBEAT();
@@ -496,16 +495,6 @@ void calcConsumption()
     OneSecTimer -= 100 ;
     Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
     Current_accumulator = 0 ;
-  }
-}
-
-void checkTrainerSettings()
-{
-  if (SLAVE_MODE()) {
-    PIOC->PIO_PDR = PIO_PC22;
-  }
-  else {
-    PIOC->PIO_PER = PIO_PC22;
   }
 }
 
