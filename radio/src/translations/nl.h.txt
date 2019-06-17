@@ -589,7 +589,6 @@ TR_GYR_VSRCRAW
 #define TR_RENAVIG             "Stappenschakelaar"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")
-#define TR_TIMER_NAME          INDENT "Naam"
 #define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
 #define TR_PERSISTENT          TR(INDENT "Vasth.", INDENT "Vasthouden")
