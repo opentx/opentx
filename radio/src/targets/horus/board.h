@@ -608,7 +608,6 @@ void sportUpdatePowerOff(void);
 void hapticInit(void);
 void hapticDone(void);
 void hapticOff(void);
-#define HAPTIC_OFF()                   hapticOff()
 void hapticOn(uint32_t pwmPercent);
 
 // GPS driver
