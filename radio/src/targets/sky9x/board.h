@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
+#include "../opentx_constants.h"
 
 extern uint16_t ResetReason;
 
