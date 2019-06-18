@@ -192,12 +192,12 @@ set(SRC
 
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
+  keys_driver.cpp
   diskio.cpp
 )
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  keys_driver.cpp
   telemetry_driver.cpp
   )
 

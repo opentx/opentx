@@ -455,18 +455,17 @@ TEST_F(MixerTest, SlowOnPhase)
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 
-
 TEST_F(MixerTest, SlowOnSwitchSource)
 {
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBSKY9X)
+  g_model.mixData[0].srcRaw = MIXSRC_THR;
+  int switchIndex = 1;
+#else
   g_eeGeneral.switchConfig = 0x03;
   g_model.mixData[0].srcRaw = MIXSRC_SA;
-  int switch_index = 0;
-#else
-  g_model.mixData[0].srcRaw = MIXSRC_THR;
-  int switch_index = 1;
+  int switchIndex = 0;
 #endif
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].speedUp = SLOW_STEP*5;
@@ -474,11 +473,11 @@ TEST_F(MixerTest, SlowOnSwitchSource)
 
   s_mixer_first_run_done = true;
 
-  simuSetSwitch(switch_index, -1);
+  simuSetSwitch(switchIndex, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
 
-  simuSetSwitch(switch_index, 1);
+  simuSetSwitch(switchIndex, 1);
   CHECK_SLOW_MOVEMENT(0, +1, 500);
 }
 

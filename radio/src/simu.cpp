@@ -315,44 +315,44 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
   else { \
     state##key = false; \
   } \
-  simuSetSwitch(swtch, state_##swtch-states);
+  simuSetSwitch(swtch, state_##swtch-states)
 
-#if defined(PCBX9E)
-  SWITCH_KEY(A, 0, 3);
-  SWITCH_KEY(B, 1, 3);
-  SWITCH_KEY(C, 2, 3);
-  SWITCH_KEY(D, 3, 3);
-  SWITCH_KEY(E, 4, 3);
-  SWITCH_KEY(F, 5, 3);
-  SWITCH_KEY(G, 6, 3);
-  SWITCH_KEY(H, 7, 3);
-  SWITCH_KEY(I, 8, 3);
-  SWITCH_KEY(J, 9, 3);
-  SWITCH_KEY(K, 10, 3);
-  SWITCH_KEY(L, 11, 3);
-  SWITCH_KEY(M, 12, 3);
-  SWITCH_KEY(N, 13, 3);
-  SWITCH_KEY(O, 14, 3);
-  SWITCH_KEY(P, 15, 3);
-  SWITCH_KEY(Q, 16, 3);
-  SWITCH_KEY(R, 17, 3);
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-  SWITCH_KEY(A, 0, 3);
-  SWITCH_KEY(B, 1, 3);
-  SWITCH_KEY(C, 2, 3);
-  SWITCH_KEY(D, 3, 3);
-  SWITCH_KEY(E, 4, 3);
-  SWITCH_KEY(F, 5, 2);
-  SWITCH_KEY(G, 6, 3);
-  SWITCH_KEY(H, 7, 2);
-#else
-  SWITCH_KEY(1, 0, 2);
+#if defined(PCBSKY9X)
+  SWITCH_KEY(1, 0, 3);
   SWITCH_KEY(2, 1, 2);
   SWITCH_KEY(3, 2, 2);
-  SWITCH_KEY(4, 3, 3);
+  SWITCH_KEY(4, 3, 2);
   SWITCH_KEY(5, 4, 2);
   SWITCH_KEY(6, 5, 2);
   SWITCH_KEY(7, 6, 2);
+#else
+  SWITCH_KEY(A, 0, 3);
+  SWITCH_KEY(B, 1, 3);
+  SWITCH_KEY(C, 2, 3);
+  SWITCH_KEY(D, 3, 3);
+
+  #if defined(PCBX7) || defined(PCBXLITE)
+    SWITCH_KEY(F, 4, 2);
+    SWITCH_KEY(H, 5, 2);
+  #else
+    SWITCH_KEY(E, 4, 3);
+    SWITCH_KEY(F, 5, 2);
+    SWITCH_KEY(G, 6, 3);
+    SWITCH_KEY(H, 7, 2);
+  #endif
+
+  #if defined(PCBX9E)
+    SWITCH_KEY(I, 8, 3);
+    SWITCH_KEY(J, 9, 3);
+    SWITCH_KEY(K, 10, 3);
+    SWITCH_KEY(L, 11, 3);
+    SWITCH_KEY(M, 12, 3);
+    SWITCH_KEY(N, 13, 3);
+    SWITCH_KEY(O, 14, 3);
+    SWITCH_KEY(P, 15, 3);
+    SWITCH_KEY(Q, 16, 3);
+    SWITCH_KEY(R, 17, 3);
+  #endif
 #endif
 }
 
@@ -384,49 +384,6 @@ long OpenTxSim::onTimeout(FXObject*, FXSelector, void*)
     else {
       rotencAction = false;
     }
-#endif
-
-#if defined(PCBX9E)
-    SWITCH_KEY(A, 0, 3);
-    SWITCH_KEY(B, 1, 3);
-    SWITCH_KEY(C, 2, 3);
-    SWITCH_KEY(D, 3, 3);
-    SWITCH_KEY(E, 4, 3);
-    SWITCH_KEY(F, 5, 2);
-    SWITCH_KEY(G, 6, 3);
-    SWITCH_KEY(H, 7, 2);
-    SWITCH_KEY(I, 8, 3);
-    SWITCH_KEY(J, 9, 3);
-    SWITCH_KEY(K, 10, 3);
-    SWITCH_KEY(L, 11, 3);
-    SWITCH_KEY(M, 12, 3);
-    SWITCH_KEY(N, 13, 3);
-    SWITCH_KEY(O, 14, 3);
-    SWITCH_KEY(P, 15, 3);
-    SWITCH_KEY(Q, 16, 3);
-    SWITCH_KEY(R, 17, 3);
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-    SWITCH_KEY(A, 0, 3);
-    SWITCH_KEY(B, 1, 3);
-    SWITCH_KEY(C, 2, 3);
-    SWITCH_KEY(D, 3, 3);
-#if defined(PCBX7)
-    SWITCH_KEY(F, 4, 2);
-    SWITCH_KEY(H, 5, 2);
-#else
-    SWITCH_KEY(E, 4, 3);
-    SWITCH_KEY(F, 5, 2);
-    SWITCH_KEY(G, 6, 3);
-    SWITCH_KEY(H, 7, 2);
-#endif
-#else
-    SWITCH_KEY(1, 0, 2);
-    SWITCH_KEY(2, 1, 2);
-    SWITCH_KEY(3, 2, 2);
-    SWITCH_KEY(4, 3, 3);
-    SWITCH_KEY(5, 4, 2);
-    SWITCH_KEY(6, 5, 2);
-    SWITCH_KEY(7, 6, 2);
 #endif
   }
 

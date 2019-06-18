@@ -52,6 +52,7 @@ void rotaryEncoderEnd();
 // Keys driver
 #define NUM_SWITCHES                   7
 #define STORAGE_NUM_SWITCHES           NUM_SWITCHES
+#define NUM_SWITCHES_POSITIONS         9
 
 enum EnumKeys
 {
@@ -220,7 +221,6 @@ void stop_trainer_capture();
 void flashWrite(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
-uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);

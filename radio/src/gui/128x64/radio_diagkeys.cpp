@@ -22,7 +22,7 @@
 
 void displayKeyState(uint8_t x, uint8_t y, uint8_t key)
 {
-  uint8_t t = keyState(key);
+  uint8_t t = keys[key].state();
   lcdDrawChar(x, y, t+'0', t ? INVERS : 0);
 }
 

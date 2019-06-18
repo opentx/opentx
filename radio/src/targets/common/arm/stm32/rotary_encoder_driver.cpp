@@ -71,7 +71,7 @@ void rotaryEncoderInit()
 void rotaryEncoderCheck()
 {
   uint8_t newPosition = ROTARY_ENCODER_POSITION();
-  if (newPosition != rotencPosition && !keyState(KEY_ENTER)) {
+  if (newPosition != rotencPosition && !(readKeys() & (1 << KEY_ENTER))) {
     if ((rotencPosition & 0x01) ^ ((newPosition & 0x02) >> 1)) {
       --rotencValue;
     }

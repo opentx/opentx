@@ -525,13 +525,13 @@ swsrc_t getMovedSwitch()
   // -4..-8 for all other switches if changed to false
   // 9 for Trainer switch if changed to true; Change to false is ignored
   swarnstate_t mask = 0x80;
-  for (uint8_t i=NUM_PSWITCH; i>1; i--) {
+  for (uint8_t i=NUM_SWITCHES_POSITIONS; i>1; i--) {
     bool prev;
     prev = (switches_states & mask);
     // don't use getSwitch here to always get the proper value, even getSwitch manipulates
     bool next = switchState(i-1);
     if (prev != next) {
-      if (((i<NUM_PSWITCH) && (i>3)) || next==true)
+      if (((i<NUM_SWITCHES_POSITIONS) && (i>3)) || next==true)
         result = next ? i : -i;
       if (i<=3 && result==0) result = 1;
       switches_states ^= mask;
