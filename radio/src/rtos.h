@@ -114,9 +114,10 @@ extern "C++" {
   #define TASK_FUNCTION(task)           void * task(void * pdata)
 
   template<int SIZE>
-  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char *, FakeTaskStack<SIZE> &, unsigned, unsigned)
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name, FakeTaskStack<SIZE> &, unsigned, unsigned)
   {
     pthread_create(&taskId, nullptr, task, nullptr);
+    pthread_setname_np(taskId, name);
   }
 
   #define TASK_RETURN()                 return nullptr

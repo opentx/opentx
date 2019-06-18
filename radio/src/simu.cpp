@@ -42,14 +42,14 @@
 #define W2 LCD_W*LCD_ZOOM
 #define H2 LCD_H*LCD_ZOOM
 
-class Open9xSim: public FXMainWindow
+class OpenTxSim: public FXMainWindow
 {
-  FXDECLARE(Open9xSim)
+  FXDECLARE(OpenTxSim)
 
   public:
-    Open9xSim(){};
-    Open9xSim(FXApp* a);
-    ~Open9xSim();
+    OpenTxSim(){};
+    OpenTxSim(FXApp* a);
+    ~OpenTxSim();
     void updateKeysAndSwitches(bool start=false);
     long onKeypress(FXObject*,FXSelector,void*);
     long onTimeout(FXObject*,FXSelector,void*);
@@ -60,28 +60,26 @@ class Open9xSim: public FXMainWindow
     void setPixel(int x, int y, FXColor color);
 
   private:
-    FXImage       *bmp;
-    FXImageFrame  *bmf;
-    bool           firstTime;
+    FXImage * bmp;
+    FXImageFrame * bmf;
 
   public:
-    FXSlider      *sliders[NUM_STICKS];
-    FXKnob        *knobs[NUM_POTS+NUM_SLIDERS];
+    FXSlider * sliders[NUM_STICKS];
+    FXKnob * knobs[NUM_POTS+NUM_SLIDERS];
 };
 
 // Message Map
-FXDEFMAP(Open9xSim) Open9xSimMap[] = {
-//Message_Type   _________ ID____Message_Handler_______
-  FXMAPFUNC(SEL_TIMEOUT,   2,    Open9xSim::onTimeout),
-  FXMAPFUNC(SEL_KEYPRESS,  0,    Open9xSim::onKeypress),
+FXDEFMAP(OpenTxSim) OpenTxSimMap[] = {
+  // Message_Type   _______ID____Message_Handler_______
+  FXMAPFUNC(SEL_TIMEOUT,   2,    OpenTxSim::onTimeout),
+  FXMAPFUNC(SEL_KEYPRESS,  0,    OpenTxSim::onKeypress),
 };
 
-FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
+FXIMPLEMENT(OpenTxSim,FXMainWindow,OpenTxSimMap,ARRAYNUMBER(OpenTxSimMap))
 
-Open9xSim::Open9xSim(FXApp* a):
+OpenTxSim::OpenTxSim(FXApp* a):
   FXMainWindow(a, "OpenTX Simu", NULL, NULL, DECOR_ALL, 20, 90, 0, 0)
 {
-  firstTime = true;
   memset(displayBuf, 0, DISPLAY_BUFFER_SIZE * sizeof(display_t));
   bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
@@ -89,8 +87,8 @@ Open9xSim::Open9xSim(FXApp* a):
   SDL_Init(SDL_INIT_AUDIO);
 #endif
 
-  FXHorizontalFrame *hf11=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
-  FXHorizontalFrame *hf1=new FXHorizontalFrame(this,LAYOUT_FILL_X);
+  FXHorizontalFrame * hf11 = new FXHorizontalFrame(this,LAYOUT_CENTER_X);
+  FXHorizontalFrame * hf1 = new FXHorizontalFrame(this,LAYOUT_FILL_X);
 
   //rh lv rv lh
   for (int i=0; i<4; i++) {
@@ -131,16 +129,19 @@ Open9xSim::Open9xSim(FXApp* a):
   }
 
   bmf = new FXImageFrame(this,bmp);
+  bmf->enable();
+  bmf->setTarget(this);
 
   updateKeysAndSwitches(true);
 
   getApp()->addTimeout(this, 2, 100);
 }
 
-Open9xSim::~Open9xSim()
+OpenTxSim::~OpenTxSim()
 {
   StopSimu();
   StopAudioThread();
+
 #if defined(EEPROM)
   StopEepromThread();
 #endif
@@ -162,7 +163,7 @@ Open9xSim::~Open9xSim()
 #endif
 }
 
-void Open9xSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int h)
+void OpenTxSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int h)
 {
   FXPNGImage snapshot(getApp(), NULL, IMAGE_OWNED, w, h);
 
@@ -187,59 +188,62 @@ void Open9xSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int
   }
 }
 
-void Open9xSim::makeSnapshot(const FXDrawable* drawable)
+void OpenTxSim::makeSnapshot(const FXDrawable* drawable)
 {
-     // Construct and create an FXImage object
-     FXPNGImage snapshot(getApp(), NULL, 0, drawable->getWidth(), drawable->getHeight());
-     snapshot.create();
+  // Construct and create an FXImage object
+  FXPNGImage snapshot(getApp(), NULL, 0, drawable->getWidth(), drawable->getHeight());
+  snapshot.create();
 
-     // Create a window device context and lock it onto the image
-     FXDCWindow dc(&snapshot);
+  // Create a window device context and lock it onto the image
+  FXDCWindow dc(&snapshot);
 
-     // Draw from the widget to this
-     dc.drawArea(drawable, 0, 0, drawable->getWidth(), drawable->getHeight(), 0, 0);
+  // Draw from the widget to this
+  dc.drawArea(drawable, 0, 0, drawable->getWidth(), drawable->getHeight(), 0, 0);
 
-     // Release lock
-     dc.end();
+  // Release lock
+  dc.end();
 
-     // Grab pixels from server side back to client side
-     snapshot.restore();
+  // Grab pixels from server side back to client side
+  snapshot.restore();
 
-     // Save recovered pixels to a file
-     FXFileStream stream;
-     char buf[100];
+  // Save recovered pixels to a file
+  FXFileStream stream;
+  char buf[100];
 
-     do {
-       stream.close();
-       sprintf(buf,"snapshot_%02d.png", ++g_snapshot_idx);
-     } while (stream.open(buf, FXStreamLoad));
+  do {
+    stream.close();
+    sprintf(buf, "snapshot_%02d.png", ++g_snapshot_idx);
+  } while (stream.open(buf, FXStreamLoad));
 
-     if (stream.open(buf, FXStreamSave)) {
-         snapshot.savePixels(stream);
-         stream.close();
-         printf("Snapshot written: %s\n", buf);
-     }
-     else {
-       printf("Cannot create snapshot %s\n", buf);
-     }
+  if (stream.open(buf, FXStreamSave)) {
+    snapshot.savePixels(stream);
+    stream.close();
+    printf("Snapshot written: %s\n", buf);
+  }
+  else {
+    printf("Cannot create snapshot %s\n", buf);
+  }
 }
 
-void Open9xSim::doEvents()
+void OpenTxSim::doEvents()
 {
   getApp()->runOneEvent(false);
 }
 
-long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
+long OpenTxSim::onKeypress(FXObject *, FXSelector, void * v)
 {
-  FXEvent *evt=(FXEvent*)v;
-  // printf("keypress %x\n", evt->code);
-  if (evt->code=='s') {
+  FXEvent *evt = (FXEvent *)v;
+
+  // TRACE("keypress %x", evt->code);
+
+  if (evt->code == 's') {
     makeSnapshot(bmf);
   }
+
   return 0;
 }
 
-void Open9xSim::updateKeysAndSwitches(bool start)
+void OpenTxSim::updateKeysAndSwitches(bool start)
 {
   static int keys1[] = {
 #if defined(PCBHORUS)
@@ -352,7 +356,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
 #endif
 }
 
-long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
+long OpenTxSim::onTimeout(FXObject*, FXSelector, void*)
 {
   if (hasFocus()) {
 #if defined(COPROCESSOR)
@@ -442,7 +446,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
   #define BL_COLOR FXRGB(150, 200, 152)
 #endif
 
-void Open9xSim::setPixel(int x, int y, FXColor color)
+void OpenTxSim::setPixel(int x, int y, FXColor color)
 {
 #if LCD_ZOOM > 1
   for (int i=0; i<LCD_ZOOM; ++i) {
@@ -455,17 +459,17 @@ void Open9xSim::setPixel(int x, int y, FXColor color)
 #endif
 }
 
-void Open9xSim::refreshDisplay()
+void OpenTxSim::refreshDisplay()
 {
   if (simuLcdRefresh) {
     simuLcdRefresh = false;
     FXColor offColor = isBacklightEnabled() ? BL_COLOR : FXRGB(200, 200, 200);
-#if LCD_W == 128
+#if LCD_DEPTH == 1
     FXColor onColor = FXRGB(0, 0, 0);
 #endif
     for (int x=0; x<LCD_W; x++) {
       for (int y=0; y<LCD_H; y++) {
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
     	display_t z = simuLcdBuf[y * LCD_W + x];
     	if (1) {
           if (z == 0) {
@@ -479,7 +483,7 @@ void Open9xSim::refreshDisplay()
             setPixel(x, y, color);
           }
     	}
-#elif LCD_W >= 212
+#elif LCD_DEPTH == 4
         display_t * p = &simuLcdBuf[y / 2 * LCD_W + x];
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
@@ -506,15 +510,16 @@ void Open9xSim::refreshDisplay()
   }
 }
 
-Open9xSim *th9xSim;
+OpenTxSim * opentxSim;
+
 void doFxEvents()
 {
   //puts("doFxEvents");
-  th9xSim->getApp()->runOneEvent(false);
-  th9xSim->refreshDisplay();
+  opentxSim->getApp()->runOneEvent(false);
+  opentxSim->refreshDisplay();
 }
 
-int main(int argc,char **argv)
+int main(int argc, char ** argv)
 {
   // Each FOX GUI program needs one, and only one, application object.
   // The application objects coordinates some common stuff shared between
@@ -537,15 +542,15 @@ int main(int argc,char **argv)
   // drag handles, and so on the Window Manager is supposed to give this
   // window.
   //FXMainWindow *main=new FXMainWindow(&application,"Hello",NULL,NULL,DECOR_ALL);
-  th9xSim = new Open9xSim(&application);
+  opentxSim = new OpenTxSim(&application);
   application.create();
 
   // Pretty self-explanatory:- this shows the window, and places it in the
   // middle of the screen.
 #ifndef __APPLE__
-  th9xSim->show(PLACEMENT_SCREEN);
+  opentxSim->show(PLACEMENT_SCREEN);
 #else
-  th9xSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
+  opentxSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
 #endif
 
 #if defined(TELEMETRY_FRSKY) && !defined(TELEMETRY_FRSKY_SPORT)
@@ -568,9 +573,9 @@ int main(int argc,char **argv)
 uint16_t anaIn(uint8_t chan)
 {
   if (chan<NUM_STICKS)
-    return th9xSim->sliders[chan]->getValue();
+    return opentxSim->sliders[chan]->getValue();
   else if (chan<NUM_STICKS+NUM_POTS+NUM_SLIDERS)
-    return th9xSim->knobs[chan-NUM_STICKS]->getValue();
+    return opentxSim->knobs[chan-NUM_STICKS]->getValue();
 #if defined(PCBHORUS)
   else if (chan == TX_VOLTAGE)
     return 1737;      //~10.6V
@@ -603,5 +608,5 @@ uint16_t getAnalogValue(uint8_t index)
 
 void createBitmap(int index, uint16_t *data, int x, int y, int w, int h)
 {
-  th9xSim->createBitmap(index, data, x, y, w, h);
+  opentxSim->createBitmap(index, data, x, y, w, h);
 }

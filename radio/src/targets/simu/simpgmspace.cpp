@@ -554,7 +554,8 @@ void StartAudioThread(int volumeGain)
   struct sched_param sp;
   sp.sched_priority = SCHED_RR;
   pthread_attr_setschedparam(&attr, &sp);
-  pthread_create(&simuAudio.threadPid, &attr, &audioThread, NULL);
+  pthread_create(&simuAudio.threadPid, &attr, &audioThread, nullptr);
+  pthread_setname_np(simuAudio.threadPid, "audio");
   return;
 }
 
