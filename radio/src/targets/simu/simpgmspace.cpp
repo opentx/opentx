@@ -527,6 +527,18 @@ uint32_t readTrims()
 
 uint32_t switchState(uint8_t index)
 {
+#if defined(PCBSKY9X)
+  switch(index) {
+    case 0:
+      return switchesStates[0] < 0;
+    case 1:
+      return switchesStates[0] == 0;
+    case 2:
+      return switchesStates[0] > 0;
+    default:
+      return switchesStates[index - 2] > 0;
+  }
+#else
   div_t qr = div(index, 3);
   int state = switchesStates[qr.quot];
   switch (qr.rem) {
@@ -537,6 +549,7 @@ uint32_t switchState(uint8_t index)
     default:
       return state == 0;
   }
+#endif
 }
 
 #if defined(STM32)
