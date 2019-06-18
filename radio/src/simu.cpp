@@ -51,8 +51,8 @@ class OpenTxSim: public FXMainWindow
     OpenTxSim(FXApp* a);
     ~OpenTxSim();
     void updateKeysAndSwitches(bool start=false);
-    long onKeypress(FXObject*,FXSelector,void*);
-    long onTimeout(FXObject*,FXSelector,void*);
+    long onKeypress(FXObject*, FXSelector, void*);
+    long onTimeout(FXObject*, FXSelector, void*);
     void createBitmap(int index, uint16_t *data, int x, int y, int w, int h);
     void makeSnapshot(const FXDrawable* drawable);
     void doEvents();
@@ -75,36 +75,36 @@ FXDEFMAP(OpenTxSim) OpenTxSimMap[] = {
   FXMAPFUNC(SEL_KEYPRESS,  0,    OpenTxSim::onKeypress),
 };
 
-FXIMPLEMENT(OpenTxSim,FXMainWindow,OpenTxSimMap,ARRAYNUMBER(OpenTxSimMap))
+FXIMPLEMENT(OpenTxSim, FXMainWindow, OpenTxSimMap, ARRAYNUMBER(OpenTxSimMap))
 
 OpenTxSim::OpenTxSim(FXApp* a):
-  FXMainWindow(a, "OpenTX Simu", NULL, NULL, DECOR_ALL, 20, 90, 0, 0)
+  FXMainWindow(a, "OpenTX Simu", nullptr, nullptr, DECOR_ALL, 20, 90, 0, 0)
 {
   memset(displayBuf, 0, DISPLAY_BUFFER_SIZE * sizeof(display_t));
-  bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
+  bmp = new FXPPMImage(getApp(), nullptr, IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
 #if defined(SIMU_AUDIO)
   SDL_Init(SDL_INIT_AUDIO);
 #endif
 
-  FXHorizontalFrame * hf11 = new FXHorizontalFrame(this,LAYOUT_CENTER_X);
-  FXHorizontalFrame * hf1 = new FXHorizontalFrame(this,LAYOUT_FILL_X);
+  FXHorizontalFrame * hf11 = new FXHorizontalFrame(this, LAYOUT_CENTER_X);
+  FXHorizontalFrame * hf1 = new FXHorizontalFrame(this, LAYOUT_FILL_X);
 
   //rh lv rv lh
   for (int i=0; i<4; i++) {
     switch (i) {
 #define L LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FIX_X|LAYOUT_FIX_Y
       case 0:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,10,110,100,20);
+        sliders[i]=new FXSlider(hf1, nullptr, 0, L|SLIDER_HORIZONTAL, 10, 110, 100, 20);
         break;
       case 1:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,110,10,20,100);
+        sliders[i]=new FXSlider(hf1, nullptr, 0, L|SLIDER_VERTICAL, 110, 10, 20, 100);
         break;
       case 2:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,130,10,20,100);
+        sliders[i]=new FXSlider(hf1, nullptr, 0, L|SLIDER_VERTICAL, 130, 10, 20, 100);
         break;
       case 3:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,150,110,100,20);
+        sliders[i]=new FXSlider(hf1, nullptr, 0, L|SLIDER_HORIZONTAL, 150, 110, 100, 20);
         break;
       default:;
     }
@@ -114,7 +114,7 @@ OpenTxSim::OpenTxSim(FXApp* a):
   }
 
   for(int i=0; i<NUM_POTS+NUM_SLIDERS; i++){
-    knobs[i]= new FXKnob(hf11,NULL,0,KNOB_TICKS|LAYOUT_LEFT);
+    knobs[i]= new FXKnob(hf11, nullptr, 0, KNOB_TICKS|LAYOUT_LEFT);
     knobs[i]->setValue(0);
 
 #if defined(PCBHORUS)
@@ -128,7 +128,7 @@ OpenTxSim::OpenTxSim(FXApp* a):
     knobs[i]->setRange(-1024, 1024);
   }
 
-  bmf = new FXImageFrame(this,bmp);
+  bmf = new FXImageFrame(this, bmp);
   bmf->enable();
   bmf->setTarget(this);
 
@@ -165,7 +165,7 @@ OpenTxSim::~OpenTxSim()
 
 void OpenTxSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int h)
 {
-  FXPNGImage snapshot(getApp(), NULL, IMAGE_OWNED, w, h);
+  FXPNGImage snapshot(getApp(), nullptr, IMAGE_OWNED, w, h);
 
   for (int i=0; i<w; i++) {
     for (int j=0; j<h; j++) {
@@ -177,7 +177,7 @@ void OpenTxSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int
 
   FXFileStream stream;
   char buf[32];
-  sprintf(buf,"%02d.png", index);
+  sprintf(buf, "%02d.png", index);
   if (stream.open(buf, FXStreamSave)) {
     snapshot.savePixels(stream);
     stream.close();
@@ -191,7 +191,7 @@ void OpenTxSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int
 void OpenTxSim::makeSnapshot(const FXDrawable* drawable)
 {
   // Construct and create an FXImage object
-  FXPNGImage snapshot(getApp(), NULL, 0, drawable->getWidth(), drawable->getHeight());
+  FXPNGImage snapshot(getApp(), nullptr, 0, drawable->getWidth(), drawable->getHeight());
   snapshot.create();
 
   // Create a window device context and lock it onto the image
@@ -473,10 +473,10 @@ void OpenTxSim::refreshDisplay()
     	display_t z = simuLcdBuf[y * LCD_W + x];
     	if (1) {
           if (z == 0) {
-            setPixel(x, y, FXRGB(0,0,0));
+            setPixel(x, y, FXRGB(0, 0, 0));
           }
           else if (z == 0xFFFF) {
-            setPixel(x, y, FXRGB(255,255,255));
+            setPixel(x, y, FXRGB(255, 255, 255));
           }
           else {
             FXColor color = FXRGB(255*((z&0xF800)>>11)/0x1f, 255*((z&0x07E0)>>5)/0x3F, 255*(z&0x001F)/0x01F);
@@ -534,14 +534,14 @@ int main(int argc, char ** argv)
   // because FOX may sometimes need to filter out some of the arguments.
   // This opens up the display as well, and reads the registry database
   // so that persistent settings are now available.
-  application.init(argc,argv);
+  application.init(argc, argv);
 
   // This creates the main window. We pass in the title to be displayed
   // above the window, and possibly some icons for when its iconified.
   // The decorations determine stuff like the borders, close buttons,
   // drag handles, and so on the Window Manager is supposed to give this
   // window.
-  //FXMainWindow *main=new FXMainWindow(&application,"Hello",NULL,NULL,DECOR_ALL);
+  //FXMainWindow *main=new FXMainWindow(&application, "Hello", nullptr, nullptr, DECOR_ALL);
   opentxSim = new OpenTxSim(&application);
   application.create();
 
