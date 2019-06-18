@@ -531,9 +531,9 @@ uint32_t switchState(uint8_t index)
   int state = switchesStates[qr.quot];
   switch (qr.rem) {
     case 0:
-      return state > 0;
-    case 2:
       return state < 0;
+    case 2:
+      return state > 0;
     default:
       return state == 0;
   }
