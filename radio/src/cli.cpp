@@ -960,13 +960,13 @@ int cliDisplay(const char ** argv)
       uint8_t len = STR_VKEYS[0];
       strncpy(name, STR_VKEYS+1+len*i, len);
       name[len] = '\0';
-      serialPrint("[%s] = %s", name, keyState(i) ? "on" : "off");
+      serialPrint("[%s] = %s", name, keys[i].state() ? "on" : "off");
     }
 #if defined(ROTARY_ENCODER_NAVIGATION)
     serialPrint("[Enc.] = %d", rotencValue / ROTARY_ENCODER_GRANULARITY);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
-      serialPrint("[Trim%d] = %s", i-TRM_BASE, keyState(i) ? "on" : "off");
+      serialPrint("[Trim%d] = %s", i-TRM_BASE, keys[i].state() ? "on" : "off");
     }
     for (int i=MIXSRC_FIRST_SWITCH; i<=MIXSRC_LAST_SWITCH; i++) {
       mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;

@@ -309,16 +309,12 @@ enum EnumSwitchesPositions
   SW_SGMBR0,
   SW_SGMBR1,
   SW_SGMBR2,
-  STORAGE_NUM_SWITCHES_POSITIONS
+  NUM_SWITCHES_POSITIONS
 };
 
-
-#if defined(__cplusplus)
-static_assert(STORAGE_NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
-#endif
+#define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
 
 void keysInit(void);
-uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 #define KEYS_PRESSED()                          (readKeys())

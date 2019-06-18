@@ -249,8 +249,6 @@
   #define SW_DSM2_BIND     SW_TRN
 #endif
 
-#define NUM_PSWITCH                    (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
-
 #include "myeeprom.h"
 
 inline void memclear(void * p, size_t size)
@@ -447,11 +445,7 @@ div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
 
-#if defined(PCBHORUS)
-  uint16_t trimDown(uint16_t idx); // TODO why?
-#else
-  uint8_t trimDown(uint8_t idx);
-#endif
+bool trimDown(uint8_t idx);
 void readKeysAndTrims();
 
 uint16_t evalChkSum();

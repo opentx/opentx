@@ -100,7 +100,7 @@ uint32_t readTrims()
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+bool trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }
@@ -167,11 +167,6 @@ void readKeysAndTrims()
         xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
-
-uint8_t keyState(uint8_t index)
-{
-  return keys[index].state();
-}
 
 #if !defined(BOOT)
 uint32_t switchState(uint8_t index)
