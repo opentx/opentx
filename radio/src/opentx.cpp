@@ -1481,26 +1481,18 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-
-#define OPENTX_START_NO_SPLASH  0x01
-#define OPENTX_START_NO_CHECKS  0x02
-
 #if !defined(OPENTX_START_DEFAULT_ARGS)
   #define OPENTX_START_DEFAULT_ARGS  0
 #endif
 
-void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
+void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
 {
-  TRACE("opentxStart(%u)", startType);
+  TRACE("opentxStart(%u)", startOptions);
 
-  if (startType & OPENTX_START_NO_CHECKS) {
-    return;
-  }
-
-  uint8_t calibration_needed = (g_eeGeneral.chkSum != evalChkSum());
+  uint8_t calibration_needed = !(startOptions & OPENTX_START_NO_CALIBRATION) && (g_eeGeneral.chkSum != evalChkSum());
 
 #if defined(GUI)
-  if (!calibration_needed && !(startType & OPENTX_START_NO_SPLASH)) {
+  if (!calibration_needed && !(startOptions & OPENTX_START_NO_SPLASH)) {
     doSplash();
   }
 #endif
@@ -1523,7 +1515,7 @@ void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
   if (calibration_needed) {
     chainMenu(menuFirstCalib);
   }
-  else {
+  else if (!(startOptions & OPENTX_START_NO_CHECKS)) {
     checkAlarm();
     checkAll();
     PLAY_MODEL_NAME();
@@ -1601,7 +1593,8 @@ void opentxResume()
   loadFontCache();
 #endif
 
-  opentxStart(OPENTX_START_NO_SPLASH);
+  // removed to avoid the double warnings (throttle, switch, etc.)
+  // opentxStart(OPENTX_START_NO_SPLASH | OPENTX_START_NO_CALIBRATION | OPENTX_START_NO_CHECKS);
 
   referenceSystemAudioFiles();
 

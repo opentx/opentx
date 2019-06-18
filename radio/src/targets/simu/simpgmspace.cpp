@@ -173,10 +173,10 @@ void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
   if (simu_running)
     return;
 
-  moduleState[0].protocol = PROTOCOL_CHANNELS_UNINITIALIZED;
+  stopPulses();
   menuLevel = 0;
 
-  simu_start_mode = (tests ? 0 : 0x02 /* OPENTX_START_NO_CHECKS */);
+  simu_start_mode = (tests ? 0 : OPENTX_START_NO_SPLASH | OPENTX_START_NO_CALIBRATION | OPENTX_START_NO_CHECKS);
   simu_shutdown = false;
 
   simuFatfsSetPaths(sdPath, settingsPath);
