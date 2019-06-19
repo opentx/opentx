@@ -137,6 +137,11 @@ void boardInit()
 
   pwrInit();
 
+#if defined(AUTOUPDATE)
+  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
+  sportSendByteLoop(0xFE);
+#endif
+
 #if defined(STATUS_LEDS)
   ledInit();
   ledGreen();

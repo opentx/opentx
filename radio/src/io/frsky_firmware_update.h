@@ -65,7 +65,7 @@ class FrskyDeviceFirmwareUpdate {
       module(module) {
     }
 
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename);
 
   protected:
     uint8_t state = SPORT_IDLE;
@@ -96,7 +96,7 @@ class FrskyChipFirmwareUpdate {
     {
     }
 
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename, bool wait = true);
 
   protected:
     uint8_t crc;
