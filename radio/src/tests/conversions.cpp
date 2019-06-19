@@ -52,7 +52,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_ZSTREQ("Thr", g_model.inputNames[0]);
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
-  EXPECT_EQ(10, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
 }
 #endif
 
@@ -116,7 +116,7 @@ TEST(Conversions, ConversionHorusFrom22)
   EXPECT_ZSTREQ("Rud", g_model.inputNames[0]);
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
-  EXPECT_EQ(10, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
 }
 #endif
 
