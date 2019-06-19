@@ -215,7 +215,9 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
   for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
-    memmove(&newModel.telemetrySensors[i], &oldModel.telemetrySensors[i], 7);
+    newModel.telemetrySensors[i].id = oldModel.telemetrySensors[i].id;
+    newModel.telemetrySensors[i].instance = 0xE0 + (oldModel.telemetrySensors[i].instance & 0x1F) - 1;
+    memcpy(newModel.telemetrySensors[i].label, oldModel.telemetrySensors[i].label, TELEM_LABEL_LEN); // id + instance + label
     newModel.telemetrySensors[i].subId = oldModel.telemetrySensors[i].subId;
     newModel.telemetrySensors[i].type = oldModel.telemetrySensors[i].type;
     newModel.telemetrySensors[i].unit = oldModel.telemetrySensors[i].unit;
@@ -227,7 +229,7 @@ void convertModelData_218_to_219(ModelData &model)
     newModel.telemetrySensors[i].logs = oldModel.telemetrySensors[i].logs;
     newModel.telemetrySensors[i].persistent = oldModel.telemetrySensors[i].persistent;
     newModel.telemetrySensors[i].onlyPositive = oldModel.telemetrySensors[i].onlyPositive;
-    memmove(((uint8_t *)&newModel.telemetrySensors[i]) + 10, ((uint8_t *)&oldModel.telemetrySensors[i]) + 9, 4);
+    memcpy(((uint8_t *)&newModel.telemetrySensors[i]) + 10, ((uint8_t *)&oldModel.telemetrySensors[i]) + 9, 4);
   }
 
 #if defined(PCBX9E)
