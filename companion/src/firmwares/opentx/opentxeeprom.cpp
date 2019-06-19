@@ -2662,7 +2662,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   if (version >= 219) {
-    internalField.Append(new ZCharField<8>(this, generalData.registrationId, "PXX2 Registration ID"));
+    internalField.Append(new ZCharField<8>(this, generalData.registrationId, "ACCESS Registration ID"));
   }
 
   if (version >= 219 && (IS_TARANIS_XLITES(board) || IS_HORUS(board))) {
