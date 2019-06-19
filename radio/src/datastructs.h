@@ -334,7 +334,8 @@ PACK(struct TelemetrySensor {
   };
   char     label[TELEM_LABEL_LEN]; // user defined label
   uint8_t  subId;
-  uint8_t  type:2;                   // 0=custom / 1=calculated// user can choose what unit to display each value in
+  uint8_t  type:1; // 0=custom / 1=calculated // user can choose what unit to display each value in
+  uint8_t  spare1:1;
   uint8_t  unit:6;
   uint8_t  prec:2;
   uint8_t  autoOffset:1;
@@ -342,7 +343,7 @@ PACK(struct TelemetrySensor {
   uint8_t  logs:1;
   uint8_t  persistent:1;
   uint8_t  onlyPositive:1;
-  uint8_t  spare:1;
+  uint8_t  spare2:1;
   union {
     NOBACKUP(PACK(struct {
       uint16_t ratio;

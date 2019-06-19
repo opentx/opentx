@@ -216,7 +216,10 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
     newModel.telemetrySensors[i].id = oldModel.telemetrySensors[i].id;
-    newModel.telemetrySensors[i].instance = 0xE0 + (oldModel.telemetrySensors[i].instance & 0x1F) - 1;
+    if (oldModel.telemetrySensors[i].type == 0)
+      newModel.telemetrySensors[i].instance = 0xE0 + (oldModel.telemetrySensors[i].instance & 0x1F) - 1;
+    else
+      newModel.telemetrySensors[i].instance = oldModel.telemetrySensors[i].instance;
     memcpy(newModel.telemetrySensors[i].label, oldModel.telemetrySensors[i].label, TELEM_LABEL_LEN); // id + instance + label
     newModel.telemetrySensors[i].subId = oldModel.telemetrySensors[i].subId;
     newModel.telemetrySensors[i].type = oldModel.telemetrySensors[i].type;
