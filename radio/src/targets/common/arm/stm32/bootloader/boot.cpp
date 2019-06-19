@@ -17,21 +17,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 #include "opentx.h"
 #include "boot.h"
 #include "bin_files.h"
 
 #if defined(PCBXLITE)
-#define BOOTLOADER_KEYS                 0x0F
+  #define BOOTLOADER_KEYS                 0x0F
 #else
-#define BOOTLOADER_KEYS                 0x42
+  #define BOOTLOADER_KEYS                 0x42
 #endif
+
 #define APP_START_ADDRESS               (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
 
 #if defined(EEPROM)
-#define MAIN_MENU_LEN 3
+  #define MAIN_MENU_LEN 3
 #else
-#define MAIN_MENU_LEN 2
+  #define MAIN_MENU_LEN 2
 #endif
 
 typedef void (*voidFunction)(void);

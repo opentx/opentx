@@ -312,7 +312,6 @@ enum EnumKeys
   KEY_MINUS,
 #endif
 
-
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
