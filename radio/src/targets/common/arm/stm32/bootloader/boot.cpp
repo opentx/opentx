@@ -63,9 +63,7 @@ uint32_t eepromWritten = 0;
 #endif
 
 volatile uint8_t tenms = 1;
-
 FlashCheckRes valid;
-
 MemoryType memoryType;
 uint32_t unlocked = 0;
 
