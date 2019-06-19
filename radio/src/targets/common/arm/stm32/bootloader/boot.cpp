@@ -212,22 +212,18 @@ int main()
   pwrInit();
   pwrOff();
 
-  // wait for inputs to stabilize
-  for (uint32_t i = 0; i < 50000; i += 1) {
-    wdt_reset();
-  }
-
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
     // Start main application
     jumpTo(APP_START_ADDRESS);
   }
 
+  pwrOn();
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   rotaryEncoderInit();
 #endif
 
-  pwrOn();
   delaysInit(); // needed for lcdInit()
 
 #if defined(DEBUG)
