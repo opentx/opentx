@@ -1819,9 +1819,9 @@ void opentxInit()
 #endif
 
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-  #if !defined(SOFTWARE_VOLUME)
-    setScaledVolume(currentSpeakerVolume);
-  #endif
+#if !defined(SOFTWARE_VOLUME)
+  setScaledVolume(currentSpeakerVolume);
+#endif
 
   referenceSystemAudioFiles();
   audioQueue.start();
@@ -1890,7 +1890,6 @@ int main()
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
-  wdt_disable();
 
   boardInit();
 
@@ -1898,29 +1897,12 @@ int main()
   loadFonts();
 #endif
 
-#if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBHORUS)
-  // TODO remove this
-  lcdInit();
-#endif
-
 #if !defined(SIMU)
   stackPaint();
 #endif
 
-#if defined(GUI) && !defined(PCBTARANIS)
-  // lcdSetRefVolt(25);
-#endif
-
 #if defined(SPLASH) && (defined(PCBTARANIS) || defined(PCBHORUS))
   drawSplash();
-#endif
-
-#if defined(DSM2_SERIAL) && !defined(TELEMETRY_FRSKY)
-  DSM2_Init();
-#endif
-
-#if defined(MENU_ROTARY_SW)
-  init_rotary_sw();
 #endif
 
 #if defined(PCBHORUS)

@@ -343,7 +343,6 @@ extern uint32_t powerupReason;
 #define DIRTY_SHUTDOWN                          0xCAFEDEAD
 #define NORMAL_POWER_OFF                        ~DIRTY_SHUTDOWN
 
-#define wdt_disable()
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)
   #define WAS_RESET_BY_WATCHDOG()               (false)

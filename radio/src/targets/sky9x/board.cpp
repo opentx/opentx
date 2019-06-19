@@ -401,6 +401,8 @@ void boardInit()
   rotaryEncoderInit();
 #endif
 
+  lcdInit();
+
   init_SDcard();
 }
 #else

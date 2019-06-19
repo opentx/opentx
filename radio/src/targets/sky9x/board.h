@@ -254,11 +254,9 @@ extern "C" {
 
 // WDT driver
 #if defined(WATCHDOG_DISABLED) || defined(SIMU)
-  #define wdt_disable()
   #define wdt_enable(x)
   #define wdt_reset()
 #else
-  #define wdt_disable()
   #define wdt_enable(x)                WDT->WDT_MR = 0x3FFF207F
   #define wdt_reset()                  WDT->WDT_CR = 0xA5000001
 #endif
