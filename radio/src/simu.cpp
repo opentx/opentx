@@ -331,14 +331,14 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
   SWITCH_KEY(C, 2, 3);
   SWITCH_KEY(D, 3, 3);
 
-  #if defined(PCBX7) || defined(PCBXLITE)
-    SWITCH_KEY(F, 4, 2);
-    SWITCH_KEY(H, 5, 2);
-  #else
+  #if defined(HARDWARE_SWITCH_G)
     SWITCH_KEY(E, 4, 3);
     SWITCH_KEY(F, 5, 2);
     SWITCH_KEY(G, 6, 3);
     SWITCH_KEY(H, 7, 2);
+  #elif defined(HARDWARE_SWITCH_F) && defined(HARDWARE_SWITCH_H)
+    SWITCH_KEY(F, 4, 2);
+    SWITCH_KEY(H, 5, 2);
   #endif
 
   #if defined(PCBX9E)
