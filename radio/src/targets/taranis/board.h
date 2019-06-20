@@ -455,7 +455,7 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          6
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
   #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
-#elif defined(PCBT12)
+#elif defined(RADIO_T12)
   #define NUM_SWITCHES                  6
   #define STORAGE_NUM_SWITCHES          8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
