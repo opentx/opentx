@@ -22,6 +22,7 @@
 #define _FRSKY_FIRMWARE_UPDATE_H_
 
 #include "dataconstants.h"
+#include "definitions.h"
 #include "frsky_pxx2.h"
 
 enum FrskyFirmwareProductFamily {
