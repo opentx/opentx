@@ -683,6 +683,8 @@ const pm_char STR_SUBTYPE_HITEC[] PROGMEM =      "\007""Optima\0""Opt Hub""Minim
 const pm_char STR_SUBTYPE_BUGS_MINI[] PROGMEM =  "\006"" Std\0 ""Bugs3H";
 const pm_char STR_SUBTYPE_E01X[] PROGMEM =       "\005""E012\0""E015\0""E016H";
 const pm_char STR_SUBTYPE_GD00X[] PROGMEM =      "\005""GD_V1""GD_V2";
+const pm_char STR_SUBTYPE_REDPINE[] PROGMEM =    "\005"" Fast"" Slow";
+const pm_char STR_SUBTYPE_POTENSIC[] PROGMEM =   "\004"" A20""  -\0";
 
 const mm_protocol_definition multi_protocols[] = {
 
@@ -715,7 +717,11 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_PROTO_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
   {MM_RF_PROTO_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
   {MM_RF_PROTO_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
-  {MM_RF_PROTO_GD00X,      1, false,      STR_SUBTYPE_GD00X,     nullptr},
+  {MM_RF_PROTO_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_REDPINE,    1, false,      STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_POTENSIC,   1, false,      STR_SUBTYPE_POTENSIC,  nullptr},
   {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
