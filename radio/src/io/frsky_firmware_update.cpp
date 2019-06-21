@@ -355,7 +355,7 @@ const char * FrskyDeviceFirmwareUpdate::endTransfer()
   return nullptr;
 }
 
-void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
+const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 {
   pausePulses();
 
@@ -416,6 +416,8 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 
   state = SPORT_IDLE;
   resumePulses();
+
+  return result;
 }
 
 #define CHIP_FIRMWARE_UPDATE_TIMEOUT  20000 /* 20s */
@@ -452,8 +454,6 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 
 const char * FrskyChipFirmwareUpdate::startBootloader()
 {
-  telemetryPortSetDirectionOutput();
-
   sportSendByte(0x01);
 
   for (uint8_t i = 0; i < 30; i++)
@@ -489,8 +489,6 @@ void FrskyChipFirmwareUpdate::sendByte(uint8_t byte, bool crcFlag)
 
 const char * FrskyChipFirmwareUpdate::sendUpgradeCommand(char command, uint32_t packetsCount)
 {
-  telemetryPortSetDirectionOutput();
-
   crc = 0;
 
   // Head
@@ -532,8 +530,6 @@ const char * FrskyChipFirmwareUpdate::sendUpgradeCommand(char command, uint32_t 
 
 const char * FrskyChipFirmwareUpdate::sendUpgradeData(uint32_t index, uint8_t * data)
 {
-  telemetryPortSetDirectionOutput();
-
   crc = 0;
 
   // Head
@@ -620,7 +616,7 @@ const char * FrskyChipFirmwareUpdate::doFlashFirmware(const char * filename)
   return sendUpgradeCommand('E', packetsCount);
 }
 
-void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
+const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, bool wait)
 {
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
@@ -636,9 +632,11 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
 
   SPORT_UPDATE_POWER_OFF();
 
-  /* wait 2s off */
-  watchdogSuspend(2000);
-  RTOS_WAIT_MS(2000);
+  if (wait) {
+    /* wait 2s off */
+    watchdogSuspend(2000);
+    RTOS_WAIT_MS(2000);
+  }
 
   telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
 
@@ -654,13 +652,6 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
   else {
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
-
-#if defined(HARDWARE_INTERNAL_MODULE)
-  INTERNAL_MODULE_OFF();
-#endif
-
-  EXTERNAL_MODULE_OFF();
-  SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
   watchdogSuspend(2000);
@@ -679,4 +670,6 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
   }
 
   resumePulses();
+
+  return result;
 }

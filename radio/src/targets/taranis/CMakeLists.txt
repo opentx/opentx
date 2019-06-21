@@ -4,6 +4,7 @@ option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
 option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module replacement" OFF)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
+option(AUTOUPDATE "Auto update internal chips from SD" OFF)
 
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
@@ -202,6 +203,10 @@ if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLI
     ${SRC}
     bluetooth.cpp
     )
+endif()
+
+if(AUTOUPDATE)
+  add_definitions(-DAUTOUPDATE)
 endif()
 
 set(HSE_VALUE 12000000)

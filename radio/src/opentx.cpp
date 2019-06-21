@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <io/frsky_firmware_update.h>
 #include "opentx.h"
 
 RadioData  g_eeGeneral;
@@ -1753,10 +1754,19 @@ void opentxInit()
     unexpectedShutdown = 1;
   }
 
-#if defined(SDCARD) && !defined(PCBMEGA2560)
+#if defined(SDCARD)
   // SDCARD related stuff, only done if not unexpectedShutdown
   if (!unexpectedShutdown) {
     sdInit();
+
+#if defined(AUTOUPDATE)
+    if (f_stat(AUTOUPDATE_FILENAME, nullptr) == FR_OK) {
+      FrskyChipFirmwareUpdate device;
+      if (device.flashFirmware(AUTOUPDATE_FILENAME, false) == nullptr)
+        f_unlink(AUTOUPDATE_FILENAME);
+    }
+#endif
+
     logsInit();
   }
 #endif

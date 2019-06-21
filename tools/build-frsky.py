@@ -12,6 +12,7 @@ options = {
     "XLITES": {
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "AUTOUPDATE": "YES",
         "PXX1": "YES",
         "XJT": "NO",
         "R9M_SIZE_STD": "NO",
@@ -23,6 +24,7 @@ options = {
     "X9LITE": {
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "AUTOUPDATE": "YES",
         "PXX1": "YES",
         "XJT": "NO",
         "R9M_SIZE_STD": "NO",

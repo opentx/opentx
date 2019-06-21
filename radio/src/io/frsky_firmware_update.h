@@ -22,6 +22,7 @@
 #define _FRSKY_FIRMWARE_UPDATE_H_
 
 #include "dataconstants.h"
+#include "definitions.h"
 #include "frsky_pxx2.h"
 
 enum FrskyFirmwareProductFamily {
@@ -65,7 +66,7 @@ class FrskyDeviceFirmwareUpdate {
       module(module) {
     }
 
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename);
 
   protected:
     uint8_t state = SPORT_IDLE;
@@ -96,7 +97,7 @@ class FrskyChipFirmwareUpdate {
     {
     }
 
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename, bool wait = true);
 
   protected:
     uint8_t crc;
