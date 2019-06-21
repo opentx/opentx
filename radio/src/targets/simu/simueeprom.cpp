@@ -73,6 +73,8 @@ void eepromSimuWriteBlock(uint8_t * buffer, size_t address, size_t size)
 volatile uint8_t eepromTransferComplete = 1;
 void * eeprom_thread_function(void *)
 {
+  eeprom_thread_running = true;
+
   while (!sem_wait(eeprom_write_sem)) {
     if (!eeprom_thread_running)
       return nullptr;
@@ -85,7 +87,8 @@ void * eeprom_thread_function(void *)
     }
     eepromTransferComplete = 1;
   }
-  return 0;
+
+  return nullptr;
 }
 
 uint8_t eepromReadStatus()
@@ -162,13 +165,7 @@ void StartEepromThread(const char * filename)
   sem_init(eeprom_write_sem, 0, 0);
 #endif
 
-  if (!pthread_create(&eeprom_thread_pid, nullptr, &eeprom_thread_function, nullptr)) {
-    pthread_setname_np(eeprom_thread_pid, "eeprom");
-    eeprom_thread_running = true;
-  }
-  else {
-    perror("Could not create eeprom thread.");
-  }
+  RTOS_CREATE_TASK(eeprom_thread_pid, eeprom_thread_function, "eeprom");
 }
 
 void StopEepromThread()
