@@ -117,8 +117,9 @@ void lcdStart()
   lcdWriteCommand(0xa3); // Set bias=1/6
   lcdWriteCommand(0x22); // Set internal rb/ra=5.0
   lcdWriteCommand(0x2f); // All built-in power circuits on
-  lcdWriteCommand(0x24); // Set contrast
-  lcdWriteCommand(0x36); // Set Vop
+  lcdWriteCommand(0x24); // Power control set
+  lcdWriteCommand(0x81); // Set contrast
+  lcdWriteCommand(0x0A); // Set Vop
   lcdWriteCommand(0xa6); // Set display mode
 #else
   lcdWriteCommand(0xe2); // (14) Soft reset
