@@ -408,10 +408,6 @@ void lcdSetRefVolt(uint8_t val)
 }
 #endif
 
-void adcPrepareBandgap()
-{
-}
-
 #if defined(PCBTARANIS)
 void lcdOff()
 {
