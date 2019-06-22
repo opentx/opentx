@@ -1686,18 +1686,7 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_PREVIOUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
 #endif
 
-#if defined(PCBHORUS)
-#if defined(KEYS_GPIO_REG_PGUP)
-  { "EVT_PAGEUP_FIRST",  EVT_KEY_FIRST(KEY_PGUP) },
-#endif
-  { "EVT_PAGEDN_FIRST",  EVT_KEY_FIRST(KEY_PGDN) },
-  { "EVT_PAGEDN_BREAK",  EVT_KEY_BREAK(KEY_PGDN) },
-  { "EVT_PAGEDN_LONG",  EVT_KEY_LONG(KEY_PGDN) },
-  { "EVT_TELEM_FIRST",  EVT_KEY_FIRST(KEY_TELEM) },
-  { "EVT_MODEL_FIRST",  EVT_KEY_FIRST(KEY_MODEL) },
-  { "EVT_SYS_FIRST",  EVT_KEY_FIRST(KEY_RADIO) },
-  { "EVT_RTN_FIRST",  EVT_KEY_FIRST(KEY_EXIT) },
-#elif defined(KEYS_GPIO_REG_EXIT)
+#if defined(KEYS_GPIO_REG_EXIT)
   { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
 #endif
 
@@ -1725,6 +1714,12 @@ const luaR_value_entry opentxConstants[] = {
   KEY_EVENTS(SYS, KEY_RADIO),
 #elif defined(KEYS_GPIO_REG_LEFT)
   KEY_EVENTS(LEFT, KEY_LEFT),
+#endif
+
+#if defined(KEYS_GPIO_REG_DOWN) && defined(NAVIGATION_HORUS)
+  { "EVT_RTN_FIRST", EVT_KEY_BREAK(KEY_EXIT) },
+#else
+  KEY_EVENTS(DOWN, KEY_DOWN),
 #endif
 
 #if defined(KEYS_GPIO_REG_PGUP)
