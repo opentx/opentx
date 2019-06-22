@@ -186,6 +186,10 @@ void convertModelData_218_to_219(ModelData &model)
       newModel.moduleData[i].type += 4;
   }
 
+#if defined(RADIO_T12)
+  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE; // Early t12 firmware had unused INT settings that need to be cleared
+#endif
+
   for (uint8_t module=0; module<2; module++) {
     if (oldModel.moduleData[module].failsafeMode == FAILSAFE_CUSTOM) {
       memcpy(newModel.failsafeChannels, oldModel.moduleData[module].failsafeChannels, sizeof(newModel.failsafeChannels));
@@ -296,5 +300,9 @@ void convertRadioData_218_to_219(RadioData & settings)
   memcpy(&settings.anaNames[NUM_STICKS + 5], &settings_v218.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
 
   memcpy(&settings.currModelFilename[0], &settings_v218.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
+#endif
+
+#if defined(RADIO_T12)
+  g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
 #endif
 }
