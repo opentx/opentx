@@ -117,8 +117,8 @@
 #define LEN_R9M_LITE_LBT_POWER_VALUES  "\015"
 #define TR_R9M_LITE_LBT_POWER_VALUES   "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
 
-#define LEN_R9M_FCC_POWER_VALUES       "\006"
-#define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
+#define LEN_R9M_FCC_POWER_VALUES       "\012"
+#define TR_R9M_FCC_POWER_VALUES        "10 mW    \0" "100 mW   \0" "500 mW   \0" "1 W (auto)"
 
 #define LEN_R9M_LBT_POWER_VALUES       "\013"
 #define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
