@@ -32,31 +32,27 @@ void menuRadioDiagKeys(event_t event)
 
   lcdDrawText(24*FW, MENU_HEADER_HEIGHT + 1, STR_VTRIM);
 
-  for (uint8_t i=0; i<NUM_TRIMS_KEYS; i++) {
-    coord_t y;
-
-    y = MENU_HEADER_HEIGHT + 1 + FH + FH * (i / 2);
-    if (i & 1) lcdDraw1bitBitmap(24 * FW, y, sticks, i / 2, 0);
+  for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + FH + FH * (i / 2);
+    if (i & 1)
+      lcdDraw1bitBitmap(24 * FW, y, sticks, i / 2, 0);
     displayKeyState(i & 1 ? 30 * FW : 28 * FW, y, TRM_BASE + i);
   }
 
-  for (uint8_t i=0; i<= KEY_MAX; i++) {
-    coord_t y;
-
-    y = MENU_HEADER_HEIGHT + 1 + FH * i;
+  for (uint8_t i = 0; i <= KEY_MAX; i++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + FH * i;
     lcdDrawTextAtIndex(0, y, STR_VKEYS, (i), 0);
     displayKeyState(5 * FW + 2, y, i);
   }
 
-  for (uint8_t i=0, cnt=0; i<= NUM_SWITCHES; i++) {
-    coord_t y,x;
-
-    if(SWITCH_EXISTS(i)) {
-      x = 4*FH*(cnt/6);
-      y = MENU_HEADER_HEIGHT + 1 + FH*((cnt++)%6);
-      getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
-      getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-      drawSwitch(8*FW+x, y, sw, 0);
+  for (uint8_t i = 0, cnt = 0; i <= NUM_SWITCHES; i++) {
+    if (SWITCH_EXISTS(i)) {
+      div_t qr = div(cnt++, 6);
+      coord_t x = 4 * FH * qr.quot;
+      coord_t y = MENU_HEADER_HEIGHT + 1 + FH * qr.rem;
+      getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+      getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+      drawSwitch(8 * FW + x, y, sw, 0);
     }
   }
 
