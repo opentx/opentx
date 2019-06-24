@@ -757,7 +757,7 @@ class MixField: public TransformedField {
       }
     }
 
-    virtual void beforeExport()
+    virtual void beforeExport() override
     {
       if (mix.destCh && mix.srcRaw.type != SOURCE_TYPE_NONE) {
         _destCh = mix.destCh - 1;
@@ -793,7 +793,7 @@ class MixField: public TransformedField {
         splitGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (mix.srcRaw.type != SOURCE_TYPE_NONE) {
         mix.destCh = _destCh + 1;
@@ -1049,7 +1049,7 @@ class CurvesField: public TransformedField {
       }
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       memset(_points, 0, sizeof(_points));
 
@@ -1084,7 +1084,7 @@ class CurvesField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       int * cur = &_points[0];
 
@@ -1170,61 +1170,6 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
     }
 };
 
-class AndSwitchesConversionTable: public ConversionTable {
-
-  public:
-    AndSwitchesConversionTable(Board::Type board, unsigned int version)
-    {
-      int val=0;
-      addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
-
-      if (IS_STM32(board)) {
-        for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
-          int s = switchIndex(i, board, version);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
-        }
-        for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-        }
-      }
-      else if (IS_SKY9X(board)) {
-        for (int i=1; i<=8; i++) {
-          int s = switchIndex(i, board, version);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
-        }
-        for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-        }
-      }
-      else {
-        for (int i=1; i<=9; i++) {
-          int s = switchIndex(i, board, version);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
-        }
-        for (int i=1; i<=7; i++) {
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-        }
-      }
-    }
-
-    static ConversionTable * getInstance(Board::Type board, unsigned int version)
-    {
-      return new SwitchesConversionTable(board, version);
-    }
-
-
-  protected:
-
-    void addConversion(const RawSwitch & sw, const int b)
-    {
-      ConversionTable::addConversion(sw.toValue(), b);
-    }
-};
-
 class LogicalSwitchField: public TransformedField {
   public:
     LogicalSwitchField(DataField * parent, LogicalSwitchData & csw, Board::Type board, unsigned int version, unsigned int variant, ModelData * model=nullptr):
@@ -1238,7 +1183,6 @@ class LogicalSwitchField: public TransformedField {
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0)),
       switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
-      andswitchesConversionTable(AndSwitchesConversionTable::getInstance(board, version)),
       v1(0),
       v2(0),
       v3(0)
@@ -1247,7 +1191,7 @@ class LogicalSwitchField: public TransformedField {
         internalField.Append(new ConversionField< UnsignedField<8> >(this, csw.func, &functionsConversionTable, "Function"));
         internalField.Append(new SignedField<10>(this, v1));
         internalField.Append(new SignedField<10>(this, v3));
-        internalField.Append(new ConversionField< SignedField<9> >(this, (int &)csw.andsw, andswitchesConversionTable, "AND switch"));
+        internalField.Append(new ConversionField< SignedField<9> >(this, (int &)csw.andsw, switchesConversionTable, "AND switch"));
         internalField.Append(new SpareBitsField<1>(this)); // TODO extra switch mode
         internalField.Append(new SpareBitsField<2>(this));
         internalField.Append(new SignedField<16>(this, v2));
@@ -1263,16 +1207,15 @@ class LogicalSwitchField: public TransformedField {
       internalField.Append(new ConversionField< UnsignedField<8> >(this, csw.delay, 0, scale));
       internalField.Append(new ConversionField< UnsignedField<8> >(this, csw.duration, 0, scale));
       if (version == 217) {
-        internalField.Append(new ConversionField< SignedField<8> >(this, (int &)csw.andsw, andswitchesConversionTable, "AND switch"));
+        internalField.Append(new ConversionField< SignedField<8> >(this, (int &)csw.andsw, switchesConversionTable, "AND switch"));
       }
     }
 
     ~LogicalSwitchField()
     {
-      delete andswitchesConversionTable;
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (csw.func == LS_FN_TIMER) {
         v1 = csw.val1;
@@ -1297,7 +1240,7 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (csw.func == LS_FN_TIMER) {
         csw.val1 = v1;
@@ -1334,7 +1277,6 @@ class LogicalSwitchField: public TransformedField {
     LogicalSwitchesFunctionsTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     SwitchesConversionTable * switchesConversionTable;
-    ConversionTable * andswitchesConversionTable;
     int v1;
     int v2;
     int v3;
@@ -1408,12 +1350,12 @@ class SwitchesWarningField: public TransformedField {
     {
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       _sw = sw;
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       sw = _sw;
       qCDebug(eepromImport) << QString("imported %1").arg(internalField.getName());
@@ -1591,101 +1533,6 @@ class ArmCustomFunctionField: public TransformedField {
     char _param[10];
     int _active;
     unsigned int _mode;
-};
-
-class AvrCustomFunctionField: public TransformedField {
-  public:
-    AvrCustomFunctionField(DataField * parent, CustomFunctionData & fn, Board::Type board, unsigned int version, unsigned int variant):
-      TransformedField(parent, internalField),
-      internalField(this, "CustomFunction"),
-      fn(fn),
-      board(board),
-      version(version),
-      variant(variant),
-      functionsConversionTable(board, version),
-      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0)),
-      _param(0),
-      _mode(0),
-      _union_param(0),
-      _active(0)
-    {
-      internalField.Append(new SwitchField<6>(this, fn.swtch, board, version));
-      internalField.Append(new ConversionField< UnsignedField<4> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
-      internalField.Append(new UnsignedField<5>(this, _union_param));
-      internalField.Append(new UnsignedField<1>(this, _active));
-      internalField.Append(new UnsignedField<8>(this, _param));
-    }
-
-    virtual void beforeExport()
-    {
-      _param = fn.param;
-      _active = (fn.enabled ? 1 : 0);
-
-      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
-        _union_param = fn.func - FuncOverrideCH1;
-      }
-      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
-        _union_param = fn.func - FuncTrainer;
-      }
-      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-        _union_param = fn.adjustMode;
-        _union_param += (fn.func - FuncAdjustGV1) << 2;
-        if (fn.adjustMode == 1)
-          sourcesConversionTable->exportValue(fn.param, (int &)_param);
-        else if (fn.adjustMode == 2)
-          _param = RawSource(fn.param).index;
-      }
-      else if (fn.func == FuncPlayValue) {
-        _union_param = fn.repeatParam / 10;
-        sourcesConversionTable->exportValue(fn.param, (int &)_param);
-      }
-      else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
-        _union_param = fn.repeatParam / 10;
-      }
-    }
-
-    virtual void afterImport()
-    {
-      fn.param = _param;
-      fn.enabled = (_active & 0x01);
-
-      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
-        fn.func = AssignFunc(fn.func + _union_param);
-        fn.param = (int8_t)fn.param;
-      }
-      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
-        fn.func = AssignFunc(fn.func + _union_param);
-      }
-      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-        fn.func = AssignFunc(fn.func + (_union_param >> 2));
-        fn.adjustMode = (_union_param & 0x03);
-        if (fn.adjustMode == 1)
-          sourcesConversionTable->importValue(_param, (int &)fn.param);
-        else if (fn.adjustMode == 2)
-          fn.param = RawSource(SOURCE_TYPE_GVAR, _param).toValue();
-      }
-      else if (fn.func == FuncPlayValue) {
-        fn.repeatParam = _union_param * 10;
-        sourcesConversionTable->importValue(_param, (int &)fn.param);
-      }
-      else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
-        fn.repeatParam = _union_param * 10;
-      }
-      qCDebug(eepromImport) << QString("imported %1").arg(internalField.getName());
-    }
-
-  protected:
-    StructField internalField;
-    CustomFunctionData & fn;
-    Board::Type board;
-    unsigned int version;
-    unsigned int variant;
-    CustomFunctionsConversionTable functionsConversionTable;
-    SourcesConversionTable * sourcesConversionTable;
-    unsigned int _param;
-    unsigned int _mode;
-    unsigned int _union_param;
-    unsigned int _active;
 };
 
 class FrskyScreenField: public DataField {
@@ -2304,6 +2151,10 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
       internalField.Append(new FrskyScreenField(this, modelData.frsky.screens[i], board, version, variant));
     }
   }
+
+  if (version >= 219) {
+    internalField.Append(new ZCharField<8>(this, modelData.registrationId, "ACCESS Registration ID"));
+  }
 }
 
 void OpenTxModelData::beforeExport()
@@ -2371,7 +2222,7 @@ void OpenTxModelData::afterImport()
     }
     else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
       // Copy data from ppm struct to multi struct
-      unsigned int multiByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
+      auto multiByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
       modelData.moduleData[module].multi.rfProtocol = (subprotocols[module] & 0x0f) | ((multiByte & 0x3) << 4);
       modelData.moduleData[module].multi.customProto = (multiByte & 0x80) == 0x80;
       modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
@@ -2382,7 +2233,7 @@ void OpenTxModelData::afterImport()
     if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
         modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
       // Do the same for pxx
-      unsigned int pxxByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
+      auto pxxByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
       modelData.moduleData[module].pxx.power = pxxByte & 0x03;
       modelData.moduleData[module].pxx.receiver_telem_off = static_cast<bool>(pxxByte & (1 << 4));
       modelData.moduleData[module].pxx.receiver_channel_9_16 = static_cast<bool>(pxxByte & (1 << 5));
@@ -2405,7 +2256,7 @@ void OpenTxModelData::afterImport()
 }
 
 OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant):
-  TransformedField(NULL, internalField),
+  TransformedField(nullptr, internalField),
   internalField(this, "General Settings"),
   generalData(generalData),
   board(board),

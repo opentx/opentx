@@ -203,6 +203,8 @@ class ModelData {
 
     TopbarData topbarData;
 
+    char registrationId[8+1];
+
     void clear();
     bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
