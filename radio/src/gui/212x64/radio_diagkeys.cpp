@@ -30,30 +30,29 @@ void menuRadioDiagKeys(event_t event)
 {
   SIMPLE_SUBMENU(STR_MENU_RADIO_SWITCHES, 1);
 
-  lcdDrawText(14*FW, MENU_HEADER_HEIGHT + 1, STR_VTRIM);
+  lcdDrawText(24*FW, MENU_HEADER_HEIGHT + 1, STR_VTRIM);
 
-  for (uint8_t i=0; i<9; i++) {
-    coord_t y;
+  for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + FH + FH * (i / 2);
+    if (i & 1)
+      lcdDraw1bitBitmap(24 * FW, y, sticks, i / 2, 0);
+    displayKeyState(i & 1 ? 30 * FW : 28 * FW, y, TRM_BASE + i);
+  }
 
-    if (i < NUM_TRIMS_KEYS) {
-      y = MENU_HEADER_HEIGHT + 1 + FH + FH*(i/2);
-      if (i&1) lcdDraw1bitBitmap(14*FW, y, sticks, i/2, 0);
-      displayKeyState(i&1? 20*FW : 18*FW, y, TRM_BASE+i);
-    }
+  for (uint8_t i = 0; i <= KEY_MAX; i++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + FH * i;
+    lcdDrawTextAtIndex(0, y, STR_VKEYS, (i), 0);
+    displayKeyState(5 * FW + 2, y, i);
+  }
 
-    if (i <= KEY_MAX) {
-      y = MENU_HEADER_HEIGHT + 1 + FH*i;
-      lcdDrawTextAtIndex(0, y, STR_VKEYS, (5-i), 0);
-      displayKeyState(5*FW+2, y, i);
-    }
-
-    if (i < NUM_SWITCHES) {
-      if (SWITCH_EXISTS(i)) {
-        y = MENU_HEADER_HEIGHT + 1 + FH*i;
-        getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
-        getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        drawSwitch(8*FW+4, y, sw, 0);
-      }
+  for (uint8_t i = 0, cnt = 0; i <= NUM_SWITCHES; i++) {
+    if (SWITCH_EXISTS(i)) {
+      div_t qr = div(cnt++, 6);
+      coord_t x = 4 * FH * qr.quot;
+      coord_t y = MENU_HEADER_HEIGHT + 1 + FH * qr.rem;
+      getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+      getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+      drawSwitch(8 * FW + x, y, sw, 0);
     }
   }
 
