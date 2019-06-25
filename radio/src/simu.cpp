@@ -232,7 +232,7 @@ void OpenTxSim::doEvents()
 
 long OpenTxSim::onKeypress(FXObject *, FXSelector, void * v)
 {
-  FXEvent *evt = (FXEvent *)v;
+  auto * evt = (FXEvent *)v;
 
   // TRACE("keypress %x", evt->code);
 
@@ -245,7 +245,7 @@ long OpenTxSim::onKeypress(FXObject *, FXSelector, void * v)
 
 void OpenTxSim::updateKeysAndSwitches(bool start)
 {
-  static int keys1[] = {
+  static int keys[] = {
 #if defined(PCBHORUS)
     KEY_Page_Up,   KEY_PGUP,
     KEY_Page_Down, KEY_PGDN,
@@ -283,8 +283,8 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
 #endif
   };
 
-  for (unsigned int i=0; i<DIM(keys1); i+=2) {
-    simuSetKey(keys1[i+1], start ? false : getApp()->getKeyState(keys1[i]));
+  for (unsigned int i=0; i<DIM(keys); i+=2) {
+    simuSetKey(keys[i+1], start ? false : getApp()->getKeyState(keys[i]));
   }
 
 #ifdef __APPLE__

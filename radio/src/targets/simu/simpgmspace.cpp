@@ -142,12 +142,16 @@ void simuInit()
 bool keysStates[NUM_KEYS] = { false };
 void simuSetKey(uint8_t key, bool state)
 {
+  // TRACE("simuSetKey(%d, %d)", key, state);
+  assert(key < DIM(keysStates));
   keysStates[key] = state;
 }
 
-bool trimsStates[NUM_TRIMS*2] = { false };
+bool trimsStates[NUM_TRIMS * 2] = { false };
 void simuSetTrim(uint8_t trim, bool state)
 {
+  // TRACE("simuSetTrim(%d, %d)", trim, state);
+  assert(trim < DIM(trimsStates));
   trimsStates[trim] = state;
 }
 
@@ -155,6 +159,7 @@ int8_t switchesStates[NUM_SWITCHES] = { -1 };
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // TRACE("simuSetSwitch(%d, %d)", swtch, state);
+  assert(swtch < DIM(switchesStates));
   switchesStates[swtch] = state;
 }
 
