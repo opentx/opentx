@@ -891,7 +891,7 @@
     #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_8  // PC.08
   #endif
 #elif defined(PCBX9DP) && PCBREV >= 2019
-  #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
+  #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
   #define INTMODULE_PWR_GPIO            GPIOA
@@ -1641,7 +1641,7 @@
   #define HAPTIC_GPIO                   GPIOA
   #define HAPTIC_GPIO_PIN               GPIO_Pin_10 // PA.10
   #define HAPTIC_GPIO_AF                GPIO_AF_TIM1
-  #define HAPTIC_TIMER                  TIM1
+  #define HAPTIC_TIMER                  TIM1 // Timer1 Channel3
   #define HAPTIC_TIMER_FREQ             (PERI2_FREQUENCY * TIMER_MULT_APB2)
   #define HAPTIC_COUNTER_REGISTER       HAPTIC_TIMER->CCR3
   #define HAPTIC_CCMR2                  TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2
