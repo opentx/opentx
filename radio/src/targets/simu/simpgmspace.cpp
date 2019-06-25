@@ -463,14 +463,18 @@ void pwrInit()
 void readKeysAndTrims()
 {
   uint8_t index = 0;
-  uint32_t in = readKeys();
+  uint32_t keys_input = readKeys();
   for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(keys_input & i);
   }
 
-  in = readTrims();
+  uint32_t trims_input = readTrims();
   for (uint8_t i = 1; i != uint8_t(1 << 8); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(trims_input & i);
+  }
+
+  if (keys_input || trims_input) {
+    backlightOn();
   }
 }
 
