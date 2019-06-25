@@ -61,6 +61,7 @@ elseif(PCB STREQUAL X9D+)
     add_definitions(-DSOFTWARE_VOLUME -DPWR_BUTTON_${PWR_BUTTON})
     set(STATUS_LEDS YES)
     set(PXX2 ON)
+    set(PXX_FREQUENCY "HIGH")
   else()
     set(CPU_TYPE STM32F2)
     set(CPU_TYPE_FULL STM32F205xE)  # for size report
