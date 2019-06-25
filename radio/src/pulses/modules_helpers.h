@@ -22,6 +22,7 @@
 #define _MODULES_H_
 
 #include "bitfield.h"
+#include "definitions.h"
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
