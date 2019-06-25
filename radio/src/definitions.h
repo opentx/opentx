@@ -67,7 +67,8 @@
   #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
 #endif
 
-// returns the number of elements of an array
-#define DIM(arr) (sizeof((arr)) / sizeof((arr)[0]))
+#if !defined(DIM)
+  #define DIM(__arr) (sizeof((__arr)) / sizeof((__arr)[0]))
+#endif
 
 #endif // _DEFINITIONS_H_
