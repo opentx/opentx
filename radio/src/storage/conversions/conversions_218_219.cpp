@@ -270,7 +270,7 @@ void convertModelData_218_to_219(ModelData &model)
   }
 #endif
 
-#if defined(PCBHORUS)
+#if defined(STM32)
   free(oldModelAllocated);
 #endif
 }
