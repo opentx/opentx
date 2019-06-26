@@ -2150,6 +2150,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     for (int i = 0; i < 4; i++) {
       internalField.Append(new FrskyScreenField(this, modelData.frsky.screens[i], board, version, variant));
     }
+    internalField.Append(new SpareBitsField<8>(this)); // current view
   }
 
   if (version >= 219) {
