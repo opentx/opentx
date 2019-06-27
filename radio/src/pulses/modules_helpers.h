@@ -22,6 +22,7 @@
 #define _MODULES_H_
 
 #include "bitfield.h"
+#include "definitions.h"
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
@@ -242,7 +243,7 @@ static const uint8_t moduleOptions[] = {
 #if defined(SIMU)
   0b11111111, // None = display all options on SIMU
 #else
-  0b00000000, // None = display all options on SIMU
+  0b00000000, // None = no option available on unknown modules
 #endif
   0b11110001, // XJT
   0b11110001, // ISRM
@@ -254,9 +255,17 @@ static const uint8_t moduleOptions[] = {
   0b11110100, // ISRM-N
 };
 
+inline uint8_t getModuleOptions(uint8_t modelId)
+{
+  if (modelId < DIM(moduleOptions))
+    return moduleOptions[modelId];
+  else
+    return moduleOptions[0];
+}
+
 inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
 {
-  return moduleOptions[modelId] & (1 << option);
+  return getModuleOptions(modelId) & (1 << option);
 }
 
 enum {
@@ -299,6 +308,14 @@ static const uint8_t receiverOptions[] = {
   0b11111111, // R9-MINI+OTA
   0b11111111, // R9-MM+OTA
 };
+
+inline uint8_t getReceiverOptions(uint8_t modelId)
+{
+  if (modelId < DIM(receiverOptions))
+    return receiverOptions[modelId];
+  else
+    return receiverOptions[0];
+}
 
 inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 {

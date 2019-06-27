@@ -535,7 +535,7 @@
 #define TR_ELEDIRECTION        "PFD Sentido"
 #define TR_AILDIRECTION        "AIL Sentido"
 #define TR_COLDIRECTION        "COL Sentido"
-#define TR_MODE                INDENT"Modo"
+#define TR_MODE                "Modo"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
@@ -591,8 +591,7 @@
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Inverte Acel.", INDENT "Inverte Acel.")
-#define TR_TIMER_NAME          INDENT "Name"
-#define TR_MINUTEBEEP          INDENT "Beep Minuto"
+#define TR_MINUTEBEEP          "Beep Minuto"
 #define TR_BEEPCOUNTDOWN       INDENT "Beep Regressivo"
 #define TR_PERSISTENT          INDENT "Persist."
 #define TR_BACKLIGHT_LABEL     "Backlight"

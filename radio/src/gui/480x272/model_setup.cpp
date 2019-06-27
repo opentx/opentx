@@ -342,12 +342,12 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER1_NAME:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMER_NAME);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT TR_NAME);
         editName(MODEL_SETUP_2ND_COLUMN, y, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT TR_MINUTEBEEP);
         g_model.timers[0].minuteBeep = editCheckBox(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
@@ -366,12 +366,12 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER2_NAME:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMER_NAME);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT TR_NAME);
         editName(MODEL_SETUP_2ND_COLUMN, y, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER2_MINUTE_BEEP:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT TR_MINUTEBEEP);
         g_model.timers[1].minuteBeep = editCheckBox(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
@@ -391,12 +391,12 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER3_NAME:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMER_NAME);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT TR_NAME);
         editName(MODEL_SETUP_2ND_COLUMN, y, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER3_MINUTE_BEEP:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT TR_MINUTEBEEP);
         g_model.timers[2].minuteBeep = editCheckBox(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 

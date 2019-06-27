@@ -249,8 +249,6 @@
   #define SW_DSM2_BIND     SW_TRN
 #endif
 
-#define NUM_PSWITCH                    (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
-
 #include "myeeprom.h"
 
 inline void memclear(void * p, size_t size)
@@ -399,10 +397,10 @@ extern uint8_t channel_order(uint8_t x);
 
 constexpr uint8_t HEART_TIMER_10MS = 0x01;
 constexpr uint8_t HEART_TIMER_PULSES = 0x02; // when multiple modules this is the first one
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1));
+#if defined(HARDWARE_INTERNAL_MODULE)
+constexpr uint8_t HEART_WDT_CHECK = HEART_TIMER_10MS + (HEART_TIMER_PULSES << INTERNAL_MODULE) + (HEART_TIMER_PULSES << EXTERNAL_MODULE);
 #else
-constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + HEART_TIMER_PULSES);
+constexpr uint8_t HEART_WDT_CHECK = HEART_TIMER_10MS + (HEART_TIMER_PULSES << EXTERNAL_MODULE);
 #endif
 extern uint8_t heartbeat;
 
@@ -447,11 +445,7 @@ div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
 
-#if defined(PCBHORUS)
-  uint16_t trimDown(uint16_t idx); // TODO why?
-#else
-  uint8_t trimDown(uint8_t idx);
-#endif
+bool trimDown(uint8_t idx);
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
@@ -639,9 +633,6 @@ void checkBacklight();
 void doLoopCommonActions();
 
 #define BITMASK(bit) (1<<(bit))
-
-/// returns the number of elements of an array
-#define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
 
 template<class t> inline t min(t a, t b) { return a<b?a:b; }
 template<class t> inline t max(t a, t b) { return a>b?a:b; }
@@ -1081,6 +1072,10 @@ void checkBattery();
 void opentxClose(uint8_t shutdown=true);
 void opentxInit();
 void opentxResume();
+
+constexpr uint8_t OPENTX_START_NO_SPLASH = 0x01;
+constexpr uint8_t OPENTX_START_NO_CALIBRATION = 0x02;
+constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
 
 #if defined(STATUS_LEDS)
   #define LED_ERROR_BEGIN()            ledRed()

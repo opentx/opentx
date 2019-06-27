@@ -548,7 +548,7 @@
 #define TR_ELEDIRECTION        "HöJD Riktning"
 #define TR_AILDIRECTION        "SKEV Riktning"
 #define TR_COLDIRECTION        "PITCH Riktn. "
-#define TR_MODE                INDENT"Läge"
+#define TR_MODE                "Läge"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expo saknas!"
 #define TR_NOFREEMIXER         "Mixer saknas!"
@@ -604,8 +604,7 @@
 #define TR_RENAVIG             "RotEnk Navig"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Inv.Gas", INDENT "Inverterad Gas")
-#define TR_TIMER_NAME          INDENT "Namn"
-#define TR_MINUTEBEEP          INDENT "Minutpip"
+#define TR_MINUTEBEEP          "Minutpip"
 #define TR_BEEPCOUNTDOWN       INDENT "Nedräkning"
 #define TR_PERSISTENT          TR("Jämt på ", INDENT"Alltid På")
 #define TR_BACKLIGHT_LABEL     "Belysning"

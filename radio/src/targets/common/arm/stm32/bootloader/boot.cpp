@@ -17,21 +17,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 #include "opentx.h"
 #include "boot.h"
 #include "bin_files.h"
 
 #if defined(PCBXLITE)
-#define BOOTLOADER_KEYS                 0x0F
+  #define BOOTLOADER_KEYS                 0x0F
 #else
-#define BOOTLOADER_KEYS                 0x42
+  #define BOOTLOADER_KEYS                 0x42
 #endif
+
 #define APP_START_ADDRESS               (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
 
 #if defined(EEPROM)
-#define MAIN_MENU_LEN 3
+  #define MAIN_MENU_LEN 3
 #else
-#define MAIN_MENU_LEN 2
+  #define MAIN_MENU_LEN 2
 #endif
 
 typedef void (*voidFunction)(void);
@@ -63,9 +65,7 @@ uint32_t eepromWritten = 0;
 #endif
 
 volatile uint8_t tenms = 1;
-
 FlashCheckRes valid;
-
 MemoryType memoryType;
 uint32_t unlocked = 0;
 
@@ -83,6 +83,7 @@ void interrupt10ms(void)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   static rotenc_t rePreviousValue;
+
   rotenc_t reNewValue = (rotencValue / ROTARY_ENCODER_GRANULARITY);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
@@ -212,22 +213,18 @@ int main()
   pwrInit();
   pwrOff();
 
-  // wait for inputs to stabilize
-  for (uint32_t i = 0; i < 50000; i += 1) {
-    wdt_reset();
-  }
-
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
     // Start main application
     jumpTo(APP_START_ADDRESS);
   }
 
+  pwrOn();
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   rotaryEncoderInit();
 #endif
 
-  pwrOn();
   delaysInit(); // needed for lcdInit()
 
 #if defined(DEBUG)

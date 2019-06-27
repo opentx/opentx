@@ -134,6 +134,11 @@ void boardInit()
 
   pwrInit();
 
+#if defined(AUTOUPDATE)
+  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
+  sportSendByteLoop(0x7E);
+#endif
+
 #if defined(STATUS_LEDS)
   ledInit();
   ledGreen();
@@ -203,7 +208,7 @@ void boardInit()
 #if LCD_DEPTH > 1
         lcdDrawBitmap(76, 2, bmp_startup, index*60, 60);
 #else
-        for(uint8_t i= 0; i < 4; i++) {
+        for(uint8_t i = 0; i < 4; i++) {
           if (index >= i) {
             lcdDrawFilledRect(LCD_W / 2 - 18 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
           }

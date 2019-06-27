@@ -32,8 +32,6 @@
 
 #define CENTER
 
-#define lcdint_t                       int32_t
-
 /* lcd common flags */
 #define BLINK                          0x01
 

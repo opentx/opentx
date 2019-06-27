@@ -186,6 +186,10 @@ void convertModelData_218_to_219(ModelData &model)
       newModel.moduleData[i].type += 4;
   }
 
+#if defined(RADIO_T12)
+  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE; // Early t12 firmware had unused INT settings that need to be cleared
+#endif
+
   for (uint8_t module=0; module<2; module++) {
     if (oldModel.moduleData[module].failsafeMode == FAILSAFE_CUSTOM) {
       memcpy(newModel.failsafeChannels, oldModel.moduleData[module].failsafeChannels, sizeof(newModel.failsafeChannels));
@@ -215,7 +219,12 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
   for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
-    memmove(&newModel.telemetrySensors[i], &oldModel.telemetrySensors[i], 7);
+    newModel.telemetrySensors[i].id = oldModel.telemetrySensors[i].id;
+    if (oldModel.telemetrySensors[i].type == 0)
+      newModel.telemetrySensors[i].instance = 0xE0 + (oldModel.telemetrySensors[i].instance & 0x1F) - 1;
+    else
+      newModel.telemetrySensors[i].instance = oldModel.telemetrySensors[i].instance;
+    memcpy(newModel.telemetrySensors[i].label, oldModel.telemetrySensors[i].label, TELEM_LABEL_LEN); // id + instance + label
     newModel.telemetrySensors[i].subId = oldModel.telemetrySensors[i].subId;
     newModel.telemetrySensors[i].type = oldModel.telemetrySensors[i].type;
     newModel.telemetrySensors[i].unit = oldModel.telemetrySensors[i].unit;
@@ -227,7 +236,7 @@ void convertModelData_218_to_219(ModelData &model)
     newModel.telemetrySensors[i].logs = oldModel.telemetrySensors[i].logs;
     newModel.telemetrySensors[i].persistent = oldModel.telemetrySensors[i].persistent;
     newModel.telemetrySensors[i].onlyPositive = oldModel.telemetrySensors[i].onlyPositive;
-    memmove(((uint8_t *)&newModel.telemetrySensors[i]) + 10, ((uint8_t *)&oldModel.telemetrySensors[i]) + 9, 4);
+    memcpy(((uint8_t *)&newModel.telemetrySensors[i]) + 10, ((uint8_t *)&oldModel.telemetrySensors[i]) + 9, 4);
   }
 
 #if defined(PCBX9E)
@@ -261,7 +270,7 @@ void convertModelData_218_to_219(ModelData &model)
   }
 #endif
 
-#if defined(PCBHORUS)
+#if defined(STM32)
   free(oldModelAllocated);
 #endif
 }
@@ -291,5 +300,9 @@ void convertRadioData_218_to_219(RadioData & settings)
   memcpy(&settings.anaNames[NUM_STICKS + 5], &settings_v218.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
 
   memcpy(&settings.currModelFilename[0], &settings_v218.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
+#endif
+
+#if defined(RADIO_T12)
+  g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
 #endif
 }

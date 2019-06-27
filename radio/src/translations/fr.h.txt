@@ -548,7 +548,7 @@
 #define TR_ELEDIRECTION                TR("Inv. longitud.", "Inversion longitudinal")
 #define TR_AILDIRECTION                TR("Inv. latéral", "Inversion latéral")
 #define TR_COLDIRECTION                TR("Inv. collectif", "Inversion collectif")
-#define TR_MODE                        INDENT "Mode"
+#define TR_MODE                        "Mode"
 #define TR_SUBTYPE                     INDENT "Sous-type"
 #define TR_NOFREEEXPO                  "Max expos atteint!"
 #define TR_NOFREEMIXER                 "Max mixages atteint!"
@@ -604,8 +604,7 @@
 #define TR_RENAVIG                     "Navig EncRot"
 #define TR_THROTTLE_LABEL              "Gaz"
 #define TR_THROTTLEREVERSE             TR("Inv. gaz", INDENT "Inversion gaz")
-#define TR_TIMER_NAME                  INDENT "Nom"
-#define TR_MINUTEBEEP                  TR(INDENT "Bip min.", INDENT "Annonces minutes")
+#define TR_MINUTEBEEP                  TR("Bip min.", "Annonces minutes")
 #define TR_BEEPCOUNTDOWN               TR(INDENT "Bip fin", INDENT "Compte à rebours")
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistant")
 #define TR_BACKLIGHT_LABEL             "Rétroéclairage"

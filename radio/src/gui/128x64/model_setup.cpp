@@ -138,11 +138,11 @@ enum MenuModelSetupItems {
     ITEM_MODEL_SETUP_TRAINER_BLUETOOTH,
   #endif
   ITEM_MODEL_SETUP_TRAINER_CHANNELS,
-  ITEM_MODEL_SETUP_TRAINER_PARAMS,
+  ITEM_MODEL_SETUP_TRAINER_PPM_PARAMS,
 #elif defined(PCBXLITE)
   ITEM_MODEL_SETUP_TRAINER_BLUETOOTH,
   ITEM_MODEL_SETUP_TRAINER_CHANNELS,
-  ITEM_MODEL_SETUP_TRAINER_PARAMS,
+  ITEM_MODEL_SETUP_TRAINER_PPM_PARAMS,
 #endif
   ITEM_MODEL_SETUP_LINES_COUNT
 };
@@ -219,8 +219,8 @@ enum MenuModelSetupItems {
     #define TRAINER_BLUETOOTH_ROW
   #endif
   #define TRAINER_CHANNELS_ROW           (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
-  #define TRAINER_PARAMS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
-  #define TRAINER_ROWS                   LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
+  #define TRAINER_PPM_PARAMS_ROW         (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_ROWS                   LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PPM_PARAMS_ROW
 #elif defined(PCBXLITES)
   #define ANTENNA_ROW                    IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(0)),
   #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
@@ -228,8 +228,8 @@ enum MenuModelSetupItems {
   #define TRAINER_BLUETOOTH_S_ROW        (bluetooth.distantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
   #define TRAINER_BLUETOOTH_ROW          (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
   #define TRAINER_CHANNELS_ROW           (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
-  #define TRAINER_PARAMS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
-  #define TRAINER_ROWS                   LABEL(Trainer), 0, IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
+  #define TRAINER_PPM_PARAMS_ROW         (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_ROWS                   LABEL(Trainer), 0, IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), TRAINER_CHANNELS_ROW, TRAINER_PPM_PARAMS_ROW
 #elif defined(PCBXLITE)
   #define ANTENNA_ROW                    IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(0)),
   #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
@@ -237,7 +237,8 @@ enum MenuModelSetupItems {
   #define TRAINER_BLUETOOTH_S_ROW        (bluetooth.distantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
   #define TRAINER_BLUETOOTH_ROW          (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
   #define TRAINER_CHANNELS_ROW           (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
-  #define TRAINER_ROWS                   IF_BT_TRAINER_ON(LABEL(Trainer)), IF_BT_TRAINER_ON(0), IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), IF_BT_TRAINER_ON(TRAINER_CHANNELS_ROW)
+  #define TRAINER_PPM_PARAMS_ROW         (HIDDEN_ROW) // xlite has only BT trainer, so never PPM
+  #define TRAINER_ROWS                   IF_BT_TRAINER_ON(LABEL(Trainer)), IF_BT_TRAINER_ON(0), IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), IF_BT_TRAINER_ON(TRAINER_CHANNELS_ROW), TRAINER_PPM_PARAMS_ROW
 #else
   #define TRAINER_ROWS
 #endif
@@ -449,7 +450,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_TIMER3_NAME:
       {
         TimerData * timer = &g_model.timers[k>=ITEM_MODEL_SETUP_TIMER3 ? 2 : (k>=ITEM_MODEL_SETUP_TIMER2 ? 1 : 0)];
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, timer->name, sizeof(timer->name), event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT TR_NAME, timer->name, sizeof(timer->name), event, attr);
         break;
       }
 
@@ -458,7 +459,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_TIMER3_MINUTE_BEEP:
       {
         TimerData * timer = &g_model.timers[k>=ITEM_MODEL_SETUP_TIMER3 ? 2 : (k>=ITEM_MODEL_SETUP_TIMER2 ? 1 : 0)];
-        timer->minuteBeep = editCheckBox(timer->minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        timer->minuteBeep = editCheckBox(timer->minuteBeep, MODEL_SETUP_2ND_COLUMN, y, INDENT TR_MINUTEBEEP, attr, event);
         break;
       }
 
@@ -759,7 +760,7 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE:
       {
-        lcdDrawTextAlignedLeft(y, STR_MODE);
+        lcdDrawTextAlignedLeft(y, INDENT TR_MODE);
 #if defined(INTERNAL_MODULE_PXX1)
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_INTERNAL_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(INTERNAL_MODULE))
@@ -821,7 +822,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:
-        lcdDrawTextAlignedLeft(y, STR_MODE);
+        lcdDrawTextAlignedLeft(y, INDENT TR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_EXTERNAL_MODULE_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
@@ -963,7 +964,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_SETUP_TRAINER_MODE:
-        lcdDrawTextAlignedLeft(y, STR_MODE);
+        lcdDrawTextAlignedLeft(y, INDENT TR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerData.mode, attr);
         if (attr) {
           g_model.trainerData.mode = checkIncDec(event, g_model.trainerData.mode, 0, TRAINER_MODE_MAX(), EE_MODEL, isTrainerModeAvailable);
@@ -1081,7 +1082,7 @@ void menuModelSetup(event_t event)
       }
 
 #if defined(PCBX7) || defined(PCBX9LITE) || defined(PCBXLITE)
-      case ITEM_MODEL_SETUP_TRAINER_PARAMS:
+      case ITEM_MODEL_SETUP_TRAINER_PPM_PARAMS:
         lcdDrawTextAlignedLeft(y, STR_PPMFRAME);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.trainerData.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);

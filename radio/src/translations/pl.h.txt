@@ -549,7 +549,7 @@
 #define TR_ELEDIRECTION        TR("Ster Wysokośc","Dług. Kierunku cyklu")
 #define TR_AILDIRECTION        TR("Kierunek Lotk","Lateral cyc. direction")
 #define TR_COLDIRECTION        TR("PIT Direction","Coll. pitch direction")
-#define TR_MODE                INDENT "Tryb"
+#define TR_MODE                "Tryb"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "BrakWoln.Expo!"
 #define TR_NOFREEMIXER         "BrakWoln.Mixów!"
@@ -605,8 +605,7 @@
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Gaz    "
 #define TR_THROTTLEREVERSE     TR("OdwrGaz", INDENT "OdwrGaz")
-#define TR_TIMER_NAME          INDENT "Nazwa"
-#define TR_MINUTEBEEP          TR(INDENT "Minuta", INDENT "PikCoMinutę")
+#define TR_MINUTEBEEP          TR("Minuta", "PikCoMinutę")
 #define TR_BEEPCOUNTDOWN       INDENT "Odliczanie"
 #define TR_PERSISTENT          TR(INDENT "Dokł.", INDENT "Dokładny")
 #define TR_BACKLIGHT_LABEL     "Podświetl"

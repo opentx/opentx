@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include "../definitions.h"
+#include "../opentx_constants.h"
 #include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
@@ -311,7 +312,6 @@ enum EnumKeys
   KEY_MINUS,
 #endif
 
-
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
@@ -448,31 +448,45 @@ enum EnumSwitchesPositions
 #if defined(PCBXLITES)
   #define NUM_SWITCHES                  6
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
 #elif defined(PCBXLITE)
   #define NUM_SWITCHES                  4
   #define STORAGE_NUM_SWITCHES          6
-#elif defined(PCBT12)
-  #define NUM_SWITCHES                  6
-  #define STORAGE_NUM_SWITCHES          8
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
+#elif defined(RADIO_T12)
+  #define NUM_SWITCHES                  8
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITHOUT_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBX9LITE)
   #define NUM_SWITCHES                  5
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0); // S1 = pot with detent
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's perfect like that !
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+  #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 #else
   #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+  #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 #endif
 
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
-#define NUM_SWITCHES_POSITIONS          (NUM_SWITCHES * 3)
 
 void keysInit(void);
-uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
@@ -488,7 +502,6 @@ uint32_t readTrims(void);
   #define wdt_enable(x)                 watchdogInit(x)
   #define wdt_reset()                   IWDG->KR = 0xAAAA
 #endif
-#define wdt_disable()
 void watchdogInit(unsigned int duration);
 #define WAS_RESET_BY_SOFTWARE()             (RCC->CSR & RCC_CSR_SFTRSTF)
 #define WAS_RESET_BY_WATCHDOG()             (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
@@ -691,6 +704,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 void telemetryPortSetDirectionInput(void);
 void telemetryPortSetDirectionOutput(void);
 void sportSendByte(uint8_t byte);
+void sportSendByteLoop(uint8_t byte);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
 void telemetryClearFifo();

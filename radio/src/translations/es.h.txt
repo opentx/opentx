@@ -550,7 +550,7 @@
 #define TR_ELEDIRECTION        TR("ELE Direccion","Largo cyc. direccion")
 #define TR_AILDIRECTION        TR("AIL Direccion","Lateral cyc. direccion")
 #define TR_COLDIRECTION        TR("PIT Direccion","Coll. pitch direccion")
-#define TR_MODE                INDENT"Modo"
+#define TR_MODE                "Modo"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No expo libre!"
 #define TR_NOFREEMIXER         "No mezcla lib!"
@@ -606,8 +606,7 @@
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Invert_Acel", INDENT "Invertir Acel.")
-#define TR_TIMER_NAME          INDENT "Name"
-#define TR_MINUTEBEEP          TR(INDENT"Minuto", INDENT"Cada Minuto")
+#define TR_MINUTEBEEP          TR("Minuto", "Cada Minuto")
 #define TR_BEEPCOUNTDOWN       INDENT"Cuentaatras"
 #define TR_PERSISTENT          TR(INDENT"Persist.", INDENT"Persistente")
 #define TR_BACKLIGHT_LABEL     "Luz Fondo"

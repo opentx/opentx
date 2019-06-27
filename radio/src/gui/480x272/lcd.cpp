@@ -250,7 +250,7 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), flags);
 }
 
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags flags)
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags flags)
 {
   char str[LEN_TIMER_STRING];
   getTimerString(str, tme, (flags & TIMEHOUR) != 0);

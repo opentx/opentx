@@ -549,7 +549,7 @@
 #define TR_ELEDIRECTION        TR("Direzione ELE","Direzione Long. cyc.")
 #define TR_AILDIRECTION        TR("Direzione AIL","Direzione Lateral cyc.")
 #define TR_COLDIRECTION        TR("Direzione PIT","Direzione Coll. Passo")
-#define TR_MODE                INDENT"Modo"
+#define TR_MODE                "Modo"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expo pieni!"
 #define TR_NOFREEMIXER         "Mixer pieni!"
@@ -605,8 +605,7 @@
 #define TR_RENAVIG             "Navig EncRot "
 #define TR_THROTTLE_LABEL      "Motore"
 #define TR_THROTTLEREVERSE     TR("Mot inv.", INDENT "Motore Inverso")
-#define TR_TIMER_NAME          INDENT "Nome"
-#define TR_MINUTEBEEP          INDENT"Minuto"
+#define TR_MINUTEBEEP          "Minuto"
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Conto rov", INDENT"Conto rovescia")
 #define TR_PERSISTENT          TR(INDENT"Persist.", INDENT"Persistente")
 #define TR_BACKLIGHT_LABEL     TR("Retroillum.", "Retroilluminazione")

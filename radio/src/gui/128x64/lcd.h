@@ -23,14 +23,13 @@
 
 #include <inttypes.h>
 
+typedef int coord_t;
+typedef uint32_t LcdFlags;
+typedef uint8_t display_t;
+
 #define BOX_WIDTH                      23
-#define coord_t                        uint8_t
-#define scoord_t                       int8_t
 #define CENTER
 #define CENTER_OFS                     0
-
-  typedef int32_t lcdint_t;
-  typedef uint32_t lcduint_t;
 
 #define FW                             6
 #define FWNUM                          5
@@ -89,9 +88,6 @@
 #define TIMEHOUR                     0x2000
 #define STREXPANDED                  0x4000
 
-typedef uint32_t LcdFlags;
-
-#define display_t                      uint8_t
 #define DISPLAY_BUFFER_SIZE            (LCD_W*((LCD_H+7)/8))
 
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
@@ -122,8 +118,8 @@ void lcdDrawTextAlignedLeft(coord_t y, const char * s);
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags=0);
 
-void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode, uint8_t len);
-void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
+void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode, uint8_t len);
+void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode=0);
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags att=0);
@@ -145,14 +141,10 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
-
-  #define putstime_t int32_t
-  #define FlightModesType uint16_t
-
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att, LcdFlags att2);
 void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags=0);
-inline void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
+inline void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att)
 {
   drawTimer(x, y, tme, att, att);
 }
@@ -164,13 +156,11 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
 void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
-  void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att=0);
-  void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
-
-  void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
-
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
-inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att=0)
+void lcdDrawSolidVerticalLine(coord_t x, coord_t y, coord_t h, LcdFlags att=0);
+void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att=0);
+void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+inline void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags att=0)
 {
   lcdDrawFilledRect(x, y, w, h, SOLID, att);
 }
@@ -178,7 +168,10 @@ void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, 
 
 void lcdInvertLine(int8_t line);
 #define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
-inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcdDrawRect(x, y, w, w, SOLID, att); }
+inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
+{
+  lcdDrawRect(x, y, w, w, SOLID, att);
+}
 
 void drawTelemetryTopBar();
 
@@ -188,7 +181,7 @@ void drawTelemetryTopBar();
   lcdDrawSolidVerticalLine(xx+1,yy-ll,ll)
 
 
-void lcdClear(void);
+void lcdClear();
 void lcdDraw1bitBitmap(coord_t x, coord_t y, const unsigned char * img, uint8_t idx, LcdFlags att=0);
 inline void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bitmap)
 {

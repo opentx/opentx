@@ -117,8 +117,8 @@
 #define LEN_R9M_LITE_LBT_POWER_VALUES  "\015"
 #define TR_R9M_LITE_LBT_POWER_VALUES   "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
 
-#define LEN_R9M_FCC_POWER_VALUES       "\006"
-#define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
+#define LEN_R9M_FCC_POWER_VALUES       "\012"
+#define TR_R9M_FCC_POWER_VALUES        "10 mW\0    " "100 mW\0   " "500 mW\0   " "1 W (auto)"
 
 #define LEN_R9M_LBT_POWER_VALUES       "\013"
 #define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
@@ -127,4 +127,4 @@
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS            "\006"
-#define TR_MULTI_PROTOCOLS             "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXq\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OpnLrs""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 ""GW008\0""DM002\0""Cabell""Esy150""H8 3D\0""Corona""CFlie\0""Hitec\0""WFly\0 ""Bugs\0 ""BugMin""Traxas""NC1701""E01X\0 ""V911S\0""GD00X\0""V761\0 ""KF606\0"
+#define TR_MULTI_PROTOCOLS             "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXq\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OpnLrs""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 ""GW008\0""DM002\0""Cabell""Esy150""H8 3D\0""Corona""CFlie\0""Hitec\0""WFly\0 ""Bugs\0 ""BugMin""Traxas""NC1701""E01X\0 ""V911S\0""GD00X\0""V761\0 ""KF606\0""Redpin""Potens"

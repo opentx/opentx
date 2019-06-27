@@ -90,6 +90,7 @@ set(FIRMWARE_TARGET_SRC
   eeprom_driver.cpp
   lcd_driver.cpp
   pwr_driver.cpp
+  keys_driver.cpp
   usb/device/core/USBD_UDP.c
   usb/device/core/USBDDriver.c
   usb/device/massstorage/MSDDriver.c
@@ -115,7 +116,6 @@ set(TARGET_SRC
   telemetry_driver.cpp
   adc_driver.cpp
   pulses_driver.cpp
-  keys_driver.cpp
   audio_driver.cpp
   buzzer_driver.cpp
   haptic_driver.cpp

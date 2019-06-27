@@ -542,7 +542,7 @@
 #define TR_ELEDIRECTION        TR("ELE Direction","Long. cyc. direction")
 #define TR_AILDIRECTION        TR("AIL Direction","Lateral cyc. direction")
 #define TR_COLDIRECTION        TR("PIT Direction","Coll. pitch direction")
-#define TR_MODE                INDENT"Mode"
+#define TR_MODE                "Mode"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
@@ -598,8 +598,7 @@
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("T-Reverse", INDENT "Throttle reverse")
-#define TR_TIMER_NAME          INDENT "Name"
-#define TR_MINUTEBEEP          TR(INDENT"Minute", INDENT"Minute call")
+#define TR_MINUTEBEEP          TR("Minute", "Minute call")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_PERSISTENT          TR(INDENT"Persist.", INDENT"Persistent")
 #define TR_BACKLIGHT_LABEL     "Backlight"

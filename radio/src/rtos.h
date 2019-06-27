@@ -28,7 +28,6 @@ extern "C++" {
 #endif
 
 #if defined(SIMU)
-
   #include <pthread.h>
   #include <semaphore.h>
 
@@ -113,10 +112,20 @@ extern "C++" {
 
   #define TASK_FUNCTION(task)           void * task(void * pdata)
 
-  template<int SIZE>
-  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char *, FakeTaskStack<SIZE> &, unsigned, unsigned)
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name)
   {
     pthread_create(&taskId, nullptr, task, nullptr);
+#ifdef __linux__
+    pthread_setname_np(taskId, name);
+#endif
+  }
+
+template<int SIZE>
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name, FakeTaskStack<SIZE> &, unsigned size = 0, unsigned priority = 0)
+  {
+    UNUSED(size);
+    UNUSED(priority);
+    RTOS_CREATE_TASK(taskId, task, name);
   }
 
   #define TASK_RETURN()                 return nullptr
@@ -137,9 +146,7 @@ extern "C++" {
   {
     return (uint32_t)(simuTimerMicros() / 1000);
   }
-
 #elif defined(RTOS_COOS)
-
 #ifdef __cplusplus
   extern "C" {
 #endif

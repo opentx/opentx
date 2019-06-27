@@ -539,7 +539,7 @@
 #define TR_ELEDIRECTION        TR("Nick   Richtung", "Nick   Servo Richtung")
 #define TR_AILDIRECTION        TR("Roll   Richtung", "Roll   Servo Richtung")
 #define TR_COLDIRECTION        TR("Pitch Richtung", "Pitch Servo Richtung")
-#define TR_MODE                INDENT "Modus"
+#define TR_MODE                "Modus"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expos voll!"
 #define TR_NOFREEMIXER         "Mischer voll!"
@@ -595,8 +595,7 @@
 #define TR_RENAVIG             "Drehgeb. Navig."
 #define TR_THROTTLE_LABEL      "Gas-Kontrolle"
 #define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
-#define TR_TIMER_NAME          INDENT "Name"
-#define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
+#define TR_MINUTEBEEP          TR("Min-Alarm", "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
 #define TR_PERSISTENT          TR(INDENT "Permanent", INDENT "Permanent")
 #define TR_BACKLIGHT_LABEL     "LCD-Beleuchtung"

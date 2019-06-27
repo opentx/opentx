@@ -286,7 +286,7 @@ void menuTraceBuffer(event_t event)
     const struct TraceElement * te = getTraceElement(k);
     if (te) {
       //time
-      putstime_t tme = te->time % SECS_PER_DAY;
+      int32_t tme = te->time % SECS_PER_DAY;
       drawTimer(4*FW, y, tme, TIMEHOUR|LEFT, TIMEHOUR|LEFT);
       //event
       lcdDrawNumber(14*FW, y, te->event, LEADING0|LEFT, 3);

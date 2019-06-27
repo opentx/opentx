@@ -20,8 +20,8 @@
 
 #include "opentx.h"
 
-const char * eepromFile = NULL;
-FILE * fp = NULL;
+const char * eepromFile = nullptr;
+FILE * fp = nullptr;
 
 uint32_t eeprom_pointer;
 uint8_t * eeprom_buffer_data;
@@ -33,7 +33,7 @@ bool eeprom_thread_running = false;
 #if defined(EEPROM_SIZE)
 uint8_t eeprom[EEPROM_SIZE];
 #else
-uint8_t * eeprom = NULL;
+uint8_t * eeprom = nullptr;
 #endif
 
 sem_t * eeprom_write_sem;
@@ -73,9 +73,11 @@ void eepromSimuWriteBlock(uint8_t * buffer, size_t address, size_t size)
 volatile uint8_t eepromTransferComplete = 1;
 void * eeprom_thread_function(void *)
 {
+  eeprom_thread_running = true;
+
   while (!sem_wait(eeprom_write_sem)) {
     if (!eeprom_thread_running)
-      return NULL;
+      return nullptr;
     assert(eeprom_buffer_size);
     if (eeprom_read_operation) {
       eepromReadBlock(eeprom_buffer_data, eeprom_pointer, eeprom_buffer_size);
@@ -85,7 +87,8 @@ void * eeprom_thread_function(void *)
     }
     eepromTransferComplete = 1;
   }
-  return 0;
+
+  return nullptr;
 }
 
 uint8_t eepromReadStatus()
@@ -162,17 +165,14 @@ void StartEepromThread(const char * filename)
   sem_init(eeprom_write_sem, 0, 0);
 #endif
 
-  if (!pthread_create(&eeprom_thread_pid, NULL, &eeprom_thread_function, NULL))
-    eeprom_thread_running = true;
-  else
-    perror("Could not create eeprom thread.");
+  RTOS_CREATE_TASK(eeprom_thread_pid, eeprom_thread_function, "eeprom");
 }
 
 void StopEepromThread()
 {
   eeprom_thread_running = false;
   sem_post(eeprom_write_sem);
-  pthread_join(eeprom_thread_pid, NULL);
+  pthread_join(eeprom_thread_pid, nullptr);
 
 #ifdef __APPLE__
   sem_close(eeprom_write_sem);

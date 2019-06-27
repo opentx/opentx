@@ -231,7 +231,7 @@ bool menuStatsTraces(event_t event)
     const struct TraceElement * te = getTraceElement(k);
     if (te) {
       // time
-      putstime_t tme = te->time % SECS_PER_DAY;
+      int32_t tme = te->time % SECS_PER_DAY;
       drawTimer(STATS_TRACES_TIME_POS, y, tme, TIMEHOUR|LEFT);
       // event
       lcdDrawNumber(STATS_TRACES_EVENT_POS, y, te->event, LEADING0|LEFT, 3);

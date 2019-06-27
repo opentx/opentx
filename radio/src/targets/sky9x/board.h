@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
+#include "../opentx_constants.h"
 
 extern uint16_t ResetReason;
 
@@ -51,6 +52,7 @@ void rotaryEncoderEnd();
 // Keys driver
 #define NUM_SWITCHES                   7
 #define STORAGE_NUM_SWITCHES           NUM_SWITCHES
+#define NUM_SWITCHES_POSITIONS         9
 
 enum EnumKeys
 {
@@ -219,7 +221,6 @@ void stop_trainer_capture();
 void flashWrite(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
-uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
@@ -253,11 +254,9 @@ extern "C" {
 
 // WDT driver
 #if defined(WATCHDOG_DISABLED) || defined(SIMU)
-  #define wdt_disable()
   #define wdt_enable(x)
   #define wdt_reset()
 #else
-  #define wdt_disable()
   #define wdt_enable(x)                WDT->WDT_MR = 0x3FFF207F
   #define wdt_reset()                  WDT->WDT_CR = 0xA5000001
 #endif

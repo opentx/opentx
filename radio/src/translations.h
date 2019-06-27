@@ -288,7 +288,6 @@ extern const char STR_MODEL_STILL_POWERED[];
 extern const char STR_MODEL_SHUTDOWN[];
 extern const char STR_PRESS_ENTER_TO_CONFIRM[];
 extern const char STR_THROTTLEREVERSE[];
-extern const char STR_TIMER_NAME[];
 extern const char STR_MINUTEBEEP[];
 extern const char STR_BEEPCOUNTDOWN[];
 extern const char STR_PERSISTENT[];

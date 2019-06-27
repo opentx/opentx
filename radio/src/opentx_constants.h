@@ -18,19 +18,34 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _OPENTX_TYPES_H_
-#define _OPENTX_TYPES_H_
+#ifndef _OPENTX_CONSTANTS_H_
+#define _OPENTX_CONSTANTS_H_
 
-#include <inttypes.h>
+enum SwitchConfig {
+  SWITCH_NONE,
+  SWITCH_TOGGLE,
+  SWITCH_2POS,
+  SWITCH_3POS,
+};
 
-typedef uint32_t tmr10ms_t;
-typedef int32_t rotenc_t;
-typedef int32_t getvalue_t;
-typedef uint32_t mixsrc_t;
-typedef int32_t swsrc_t;
-typedef int16_t safetych_t;
-typedef uint32_t bitfield_channels_t;
-typedef uint16_t event_t;
-typedef uint16_t FlightModesType;
+enum PotConfig {
+  POT_NONE,
+  POT_WITH_DETENT,
+  POT_MULTIPOS_SWITCH,
+  POT_WITHOUT_DETENT
+};
 
-#endif // _OPENTX_TYPES_H_
+enum SliderConfig {
+  SLIDER_NONE,
+  SLIDER_WITH_DETENT,
+};
+
+enum CalibrationState {
+  CALIB_START,
+  CALIB_SET_MIDPOINT,
+  CALIB_MOVE_STICKS,
+  CALIB_STORE,
+  CALIB_FINISHED
+};
+
+#endif // _OPENTX_CONSTANTS_H_

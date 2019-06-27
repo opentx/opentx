@@ -353,15 +353,35 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_PXX2
 };
 
-inline bool pulsesStarted() { return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
-inline void pausePulses() { s_pulses_paused = true; }
-inline void resumePulses() { s_pulses_paused = false; }
+inline void stopPulses()
+{
+  s_pulses_paused = true;
+  moduleState[0].protocol = PROTOCOL_CHANNELS_UNINITIALIZED;
+}
 
-#define SEND_FAILSAFE_NOW(idx) moduleState[idx].counter = 1
+inline bool pulsesStarted()
+{
+  return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED;
+}
+
+inline void pausePulses()
+{
+  s_pulses_paused = true;
+}
+
+inline void resumePulses()
+{
+  s_pulses_paused = false;
+}
+
+inline void SEND_FAILSAFE_NOW(uint8_t idx)
+{
+  moduleState[idx].counter = 1;
+}
 
 inline void SEND_FAILSAFE_1S()
 {
-  for (int i=0; i<NUM_MODULES; i++) {
+  for (uint8_t i=0; i<NUM_MODULES; i++) {
     moduleState[i].counter = 100;
   }
 }
@@ -369,7 +389,6 @@ inline void SEND_FAILSAFE_1S()
 // Assign failsafe values using the current channel outputs
 // for channels not set previously to HOLD or NOPULSE
 void setCustomFailsafe(uint8_t moduleIndex);
-
 
 enum R9MLiteLBTPowerValues {
   R9M_LITE_LBT_POWER_25 = 0,

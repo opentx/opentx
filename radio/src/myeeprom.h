@@ -80,23 +80,7 @@
 #define MODEL_GVAR_MAX(idx)            (CFN_GVAR_CST_MAX - g_model.gvars[idx].max)
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  enum SwitchConfig {
-    SWITCH_NONE,
-    SWITCH_TOGGLE,
-    SWITCH_2POS,
-    SWITCH_3POS,
-  };
-  enum PotConfig {
-    POT_NONE,
-    POT_WITH_DETENT,
-    POT_MULTIPOS_SWITCH,
-    POT_WITHOUT_DETENT
-  };
-  enum SliderConfig {
-    SLIDER_NONE,
-    SLIDER_WITH_DETENT,
-  };
-  #define SWITCH_CONFIG(x)            (bfGet<uint32_t>(g_eeGeneral.switchConfig, 2*(x), 2))
+  #define SWITCH_CONFIG(x)            (bfGet<swconfig_t>(g_eeGeneral.switchConfig, 2*(x), 2))
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_CONFIG_3POS(x)           (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_CONFIG_TOGGLE(x)         (SWITCH_CONFIG(x) == SWITCH_TOGGLE)

@@ -266,8 +266,6 @@ bool menuScreensTheme(event_t event);
 bool menuRadioSpectrumAnalyser(event_t event);
 bool menuRadioPowerMeter(event_t event);
 
-typedef uint16_t FlightModesType;
-
 extern int8_t checkIncDec_Ret;  // global helper vars
 
 #define EDIT_SELECT_FIELD  0

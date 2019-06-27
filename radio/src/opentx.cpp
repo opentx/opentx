@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <io/frsky_firmware_update.h>
 #include "opentx.h"
 
 RadioData  g_eeGeneral;
@@ -235,41 +236,22 @@ void generalDefault()
   g_eeGeneral.version  = EEPROM_VER;
   g_eeGeneral.variant = EEPROM_VARIANT;
 
-#if !defined(PCBHORUS)
+#if defined(PCBHORUS)
+  g_eeGeneral.blOffBright = 20;
+#else
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
-#if defined(PCBHORUS)
-  #if PCBREV >= 13
-    g_eeGeneral.potsConfig = 0x1B;  // S1 = pot, 6P = multipos, S2 = pot with detent
-  #else
-    g_eeGeneral.potsConfig = 0x19;  // S1 = pot without detent, 6P = multipos, S2 = pot with detent
-  #endif
-  g_eeGeneral.slidersConfig = 0x0f; // 4 sliders
-  g_eeGeneral.blOffBright = 20;
-#elif defined(PCBXLITE)
-  g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
-#elif defined(PCBX7)
-  g_eeGeneral.potsConfig = (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
-#elif defined(PCBX9LITE)
-  g_eeGeneral.potsConfig = (POT_WITH_DETENT << 0); // S1 = pot with detent
-#elif defined(PCBTARANIS)
-  g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
-  g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
+#if defined(DEFAULT_POTS_CONFIG)
+  g_eeGeneral.potsConfig = DEFAULT_POTS_CONFIG;
 #endif
 
-#if defined(PCBXLITES)
-  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-#elif defined(PCBXLITE)
-  g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-#elif defined(RADIO_X7)
-  g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
-#elif defined(RADIO_T12)
-  g_eeGeneral.switchConfig = (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-#elif defined(PCBX9LITE)
-  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-  g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
+#if defined(DEFAULT_SWITCH_CONFIG)
+  g_eeGeneral.switchConfig = DEFAULT_SWITCH_CONFIG;
+#endif
+
+#if defined(DEFAULT_SLIDERS_CONFIG)
+  g_eeGeneral.slidersConfig = DEFAULT_SLIDERS_CONFIG;
 #endif
 
   // vBatWarn is voltage in 100mV, vBatMin is in 100mV but with -9V offset, vBatMax has a -12V offset
@@ -311,7 +293,7 @@ void generalDefault()
   strcpy(g_eeGeneral.currModelFilename, DEFAULT_MODEL_FILENAME);
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   strcpy(g_eeGeneral.themeName, theme->getName());
   theme->init();
 #endif
@@ -1500,26 +1482,18 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-
-#define OPENTX_START_NO_SPLASH  0x01
-#define OPENTX_START_NO_CHECKS  0x02
-
 #if !defined(OPENTX_START_DEFAULT_ARGS)
   #define OPENTX_START_DEFAULT_ARGS  0
 #endif
 
-void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
+void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
 {
-  TRACE("opentxStart(%u)", startType);
+  TRACE("opentxStart(%u)", startOptions);
 
-  if (startType & OPENTX_START_NO_CHECKS) {
-    return;
-  }
-
-  uint8_t calibration_needed = (g_eeGeneral.chkSum != evalChkSum());
+  uint8_t calibration_needed = !(startOptions & OPENTX_START_NO_CALIBRATION) && (g_eeGeneral.chkSum != evalChkSum());
 
 #if defined(GUI)
-  if (!calibration_needed && !(startType & OPENTX_START_NO_SPLASH)) {
+  if (!calibration_needed && !(startOptions & OPENTX_START_NO_SPLASH)) {
     doSplash();
   }
 #endif
@@ -1542,7 +1516,7 @@ void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
   if (calibration_needed) {
     chainMenu(menuFirstCalib);
   }
-  else {
+  else if (!(startOptions & OPENTX_START_NO_CHECKS)) {
     checkAlarm();
     checkAll();
     PLAY_MODEL_NAME();
@@ -1563,7 +1537,7 @@ void opentxClose(uint8_t shutdown)
 #endif
 #if defined(LUA)
     luaClose(&lsScripts);
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
     luaClose(&lsWidgets);
 #endif
 #endif
@@ -1614,12 +1588,14 @@ void opentxResume()
 
   sdMount();
   storageReadAll();
-#if defined(PCBHORUS)
+
+#if defined(COLORLCD)
   loadTheme();
   loadFontCache();
 #endif
 
-  opentxStart(OPENTX_START_NO_SPLASH);
+  // removed to avoid the double warnings (throttle, switch, etc.)
+  // opentxStart(OPENTX_START_NO_SPLASH | OPENTX_START_NO_CALIBRATION | OPENTX_START_NO_CHECKS);
 
   referenceSystemAudioFiles();
 
@@ -1778,10 +1754,19 @@ void opentxInit()
     unexpectedShutdown = 1;
   }
 
-#if defined(SDCARD) && !defined(PCBMEGA2560)
+#if defined(SDCARD)
   // SDCARD related stuff, only done if not unexpectedShutdown
   if (!unexpectedShutdown) {
     sdInit();
+
+#if defined(AUTOUPDATE)
+    if (f_stat(AUTOUPDATE_FILENAME, nullptr) == FR_OK) {
+      FrskyChipFirmwareUpdate device;
+      if (device.flashFirmware(AUTOUPDATE_FILENAME, false) == nullptr)
+        f_unlink(AUTOUPDATE_FILENAME);
+    }
+#endif
+
     logsInit();
   }
 #endif
@@ -1790,7 +1775,7 @@ void opentxInit()
   storageReadCurrentModel();
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   if (!unexpectedShutdown) {
     // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
     // but we only remember the pointer to in in constructor.
@@ -1844,9 +1829,9 @@ void opentxInit()
 #endif
 
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-  #if !defined(SOFTWARE_VOLUME)
-    setScaledVolume(currentSpeakerVolume);
-  #endif
+#if !defined(SOFTWARE_VOLUME)
+  setScaledVolume(currentSpeakerVolume);
+#endif
 
   referenceSystemAudioFiles();
   audioQueue.start();
@@ -1861,7 +1846,7 @@ void opentxInit()
   btInit();
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   loadTheme();
   loadFontCache();
 #endif
@@ -1915,38 +1900,19 @@ int main()
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
-  wdt_disable();
 
   boardInit();
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   loadFonts();
-#endif
-
-
-#if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBHORUS)
-  // TODO remove this
-  lcdInit();
 #endif
 
 #if !defined(SIMU)
   stackPaint();
 #endif
 
-#if defined(GUI) && !defined(PCBTARANIS)
-  // lcdSetRefVolt(25);
-#endif
-
 #if defined(SPLASH) && (defined(PCBTARANIS) || defined(PCBHORUS))
   drawSplash();
-#endif
-
-#if defined(DSM2_SERIAL) && !defined(TELEMETRY_FRSKY)
-  DSM2_Init();
-#endif
-
-#if defined(MENU_ROTARY_SW)
-  init_rotary_sw();
 #endif
 
 #if defined(PCBHORUS)

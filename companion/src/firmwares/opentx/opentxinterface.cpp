@@ -1229,6 +1229,7 @@ void registerOpenTxFirmwares()
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky X7 board */
@@ -1240,6 +1241,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
   firmware->addOption("internalpxx1", Firmware::tr("Support for PXX1 internal module replacement"));
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite board */
@@ -1262,6 +1264,7 @@ void registerOpenTxFirmwares()
   /* Jumper T12 board */
   firmware = new OpenTxFirmware("opentx-t12", QCoreApplication::translate("Firmware", "Jumper T12"), BOARD_JUMPER_T12);
   addOpenTxCommonOptions(firmware);
+  firmware->addOption("multimodule", Firmware::tr("Support for the DIY-Multiprotocol-TX-Module"));
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
