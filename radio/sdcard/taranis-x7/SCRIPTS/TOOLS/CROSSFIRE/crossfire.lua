@@ -1,3 +1,4 @@
+local toolName = "TNS|Crossfire setup|TNE"
 ---- #########################################################################
 ---- #                                                                       #
 ---- # Copyright (C) OpenTX                                                  #

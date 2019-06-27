@@ -86,7 +86,7 @@ bool readToolName(const char * filename, char * name)
   return true;
 }
 
-void addSpecificRadioScriptTool(uint8_t index, const char * path)
+void addRadioScriptTool(uint8_t index, const char * path)
 {
   char toolName[TOOL_NAME_MAXLEN + 1];
   const char * label;
@@ -94,29 +94,9 @@ void addSpecificRadioScriptTool(uint8_t index, const char * path)
     label = toolName;
   }
   else {
-    return;
-  }
-
-  if (addRadioTool(index, label)) {
-    f_chdir("/SCRIPTS/TOOLS/");
-    luaExec(path);
-  }
-}
-
-void addRadioScriptTool(uint8_t index, const char * filename)
-{
-  TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
-  strcat(path, filename);
-
-  char toolName[TOOL_NAME_MAXLEN + 1];
-  const char * label;
-  if (readToolName(path, toolName)) {
-    label = toolName;
-  }
-  else {
-    char * ext = (char *)getFileExtension(filename);
+    char * ext = (char *)getFileExtension(path);
     *ext = '\0';
-    label = filename;
+    label = getBasename(path);
   }
 
   if (addRadioTool(index, label)) {
@@ -168,20 +148,23 @@ void menuRadioTools(event_t event)
   DIR dir;
 
 #if defined(CROSSFIRE)
-  addSpecificRadioScriptTool(index++, "/CROSSFIRE/crossfire.lua");
+  if(isFileAvailable(SCRIPTS_TOOLS_PATH "/CROSSFIRE/crossfire.lua"))
+    addRadioScriptTool(index++, SCRIPTS_TOOLS_PATH "/CROSSFIRE/crossfire.lua");
 #endif
 
   FRESULT res = f_opendir(&dir, SCRIPTS_TOOLS_PATH);
   if (res == FR_OK) {
     for (;;) {
+      TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       if (fno.fattrib & AM_DIR) continue;            /* Skip subfolders */
       if (fno.fattrib & AM_HID) continue;            /* Skip hidden files */
       if (fno.fattrib & AM_SYS) continue;            /* Skip system files */
 
+      strcat(path, fno.fname);
       if (isRadioScriptTool(fno.fname))
-        addRadioScriptTool(index++, fno.fname);
+        addRadioScriptTool(index++, path);
     }
   }
 #endif
