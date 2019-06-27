@@ -680,34 +680,43 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(HARDWARE_SWITCH_A)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
+#if defined(HARDWARE_SWITCH_E)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
+#elif defined(STORAGE_SWITCH_E)
+  MIXSRC_SE,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(HARDWARE_SWITCH_F)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
+#elif defined(STORAGE_SWITCH_F)
+  MIXSRC_SF,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
+#if defined(HARDWARE_SWITCH_G)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
+#elif defined(STORAGE_SWITCH_G)
+  MIXSRC_SG,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
+#if defined(HARDWARE_SWITCH_H)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
+#elif defined(STORAGE_SWITCH_H)
+  MIXSRC_SH,
 #endif
-#if defined(RADIO_X7)
+#if defined(HARDWARE_SWITCH_I)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
-  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
-#elif defined(RADIO_T12)            // keep switches for eeprom compatibity, but hide them
+#elif defined(STORAGE_SWITCH_I)
   MIXSRC_SI,
+#endif
+#if defined(HARDWARE_SWITCH_J)
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#elif defined(STORAGE_SWITCH_J)
   MIXSRC_SJ,
 #endif
-#if defined(PCBX9E)
-  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
-  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#if defined(HARDWARE_SWITCH_K)
   MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K")
   MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
   MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
