@@ -303,6 +303,7 @@ void convertRadioData_218_to_219(RadioData & settings)
 #endif
 
 #if defined(RADIO_T12)
+  g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, SWITCH_2POS, 10, 2);  // T12 comes with wrongly defined pot2
   g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
 #endif
 }

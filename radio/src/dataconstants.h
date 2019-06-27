@@ -684,7 +684,11 @@ enum MixSources {
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
+#endif
+#if defined(HARDWARE_SWITCH_D)
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
+#elif defined(STORAGE_SWITCH_D)
+  MIXSRC_SD,
 #endif
 #if defined(HARDWARE_SWITCH_E)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
@@ -792,7 +796,7 @@ enum MixSources {
 };
 
 #if defined(__cplusplus)
-static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
 #endif
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)
