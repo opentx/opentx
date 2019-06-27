@@ -12,6 +12,7 @@ set(GUI_SRC
   ../common/stdlcd/model_receiver_options.cpp
   ../common/stdlcd/model_notes.cpp
   ../common/stdlcd/model_curves.cpp
+  ../common/stdlcd/radio_tools.cpp
   model_curve_edit.cpp
   )
 
@@ -29,7 +30,6 @@ endif()
 if(PXX2)
   set(GUI_SRC
     ${GUI_SRC}
-    ../common/stdlcd/radio_tools.cpp
     ../common/stdlcd/radio_spectrum_analyser.cpp
     ../common/stdlcd/radio_power_meter.cpp
     )

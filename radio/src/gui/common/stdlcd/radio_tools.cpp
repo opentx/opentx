@@ -86,6 +86,23 @@ bool readToolName(const char * filename, char * name)
   return true;
 }
 
+void addSpecificRadioScriptTool(uint8_t index, const char * path)
+{
+  char toolName[TOOL_NAME_MAXLEN + 1];
+  const char * label;
+  if (readToolName(path, toolName)) {
+    label = toolName;
+  }
+  else {
+    return;
+  }
+
+  if (addRadioTool(index, label)) {
+    f_chdir("/SCRIPTS/TOOLS/");
+    luaExec(path);
+  }
+}
+
 void addRadioScriptTool(uint8_t index, const char * filename)
 {
   TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
@@ -149,6 +166,10 @@ void menuRadioTools(event_t event)
 #if defined(LUA)
   FILINFO fno;
   DIR dir;
+
+#if defined(CROSSFIRE)
+  addSpecificRadioScriptTool(index++, "/CROSSFIRE/crossfire.lua");
+#endif
 
   FRESULT res = f_opendir(&dir, SCRIPTS_TOOLS_PATH);
   if (res == FR_OK) {
