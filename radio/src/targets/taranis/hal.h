@@ -426,12 +426,7 @@
   #define SWITCHES_GPIO_PIN_G_L         GPIO_Pin_4  // PF.04
 #elif defined(RADIO_X7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // no SWG
-#elif defined(RADIO_T12)
-  #define STORAGE_SWITCH_G
-  #define HARDWARE_SWITCH_G
-  #define SWITCHES_GPIO_REG_G           GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_G           GPIO_Pin_14 // PE.14
-#else
+#elif !defined(RADIO_T12)
   #define STORAGE_SWITCH_G
   #define HARDWARE_SWITCH_G
   #define SWITCHES_GPIO_REG_G_H         GPIOE->IDR
