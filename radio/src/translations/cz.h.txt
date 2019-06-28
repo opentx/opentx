@@ -802,6 +802,7 @@
 #define TR_NIGHTLY_WARNING             TR("NOČNÍ", "NOČNÍ SESTAVENÍ")
 #define TR_NIGHTLY_NOTSAFE             "Verze není bezpečná k létání"
 #define TR_WRONG_SDCARDVERSION         "Očekávaná ver.: "
+#define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
 #define TR_WRONG_PCBREV                "Jiná verze PCB/firmware"
 #define TR_EMERGENCY_MODE              "NOUZOVÝ REŽIM"
 #define TR_PCBREV_ERROR                "Chyba PCB"

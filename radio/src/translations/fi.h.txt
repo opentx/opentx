@@ -817,6 +817,7 @@
 #define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
 #define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
+#define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
 #define TR_WRONG_PCBREV        "Wrong PCB detected"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
 #define TR_PCBREV_ERROR        "PCB error"

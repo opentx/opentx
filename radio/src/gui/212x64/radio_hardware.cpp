@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuRadioHwItems {
+enum {
   ITEM_RADIO_HARDWARE_LABEL_STICKS,
   ITEM_RADIO_HARDWARE_STICK1,
   ITEM_RADIO_HARDWARE_STICK2,

@@ -23,63 +23,14 @@
 
 #include "../definitions.h"
 #include "../opentx_constants.h"
-#include "cpu_id.h"
-
-#if defined(__cplusplus) && !defined(SIMU)
-extern "C" {
-#endif
-
-#if __clang__
-// clang is very picky about the use of "register"
-// Tell clang to ignore the warnings for the following files
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#endif
-
-#if !defined(LUA_EXPORT_GENERATION)
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_pwr.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_flash.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dbgmcu.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h"
-#endif
-
-#if __clang__
-// Restore warnings about registers
-#pragma clang diagnostic pop
-#endif
-
-#include "usb_driver.h"
-
-#if !defined(SIMU)
-#include "usbd_cdc_core.h"
-#include "usbd_msc_core.h"
-#include "usbd_hid_core.h"
-#include "usbd_usr.h"
-#include "usbd_desc.h"
-#include "usb_conf.h"
-#include "usbd_conf.h"
-#endif
-
+#include "board_common.h"
 #include "hal.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
-}
+#if !defined(LUA_EXPORT_GENERATION)
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
 #endif
 
 #define FLASHSIZE                      0x200000
@@ -415,8 +366,10 @@ enum Analogs {
   EXT1,
   EXT2,
 #endif
-  NUM_ANALOGS,
-  TX_RTC = NUM_ANALOGS
+  TX_TEMPERATURE,
+  TX_INTREF,
+  TX_RTC_VOLTAGE,
+  NUM_ANALOGS
 };
 
 #define POT_LAST (SLIDER_FIRST - 1)
@@ -449,11 +402,7 @@ enum CalibratedAnalogs {
 
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
-extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
-void adcInit(void);
-void adcRead(void);
-uint16_t getRTCBattVoltage();
-uint16_t getAnalogValue(uint8_t index);
+extern uint16_t adcValues[NUM_ANALOGS];
 
 #if defined(PCBX12S)
   #define NUM_MOUSE_ANALOGS            2
@@ -483,7 +432,6 @@ extern volatile uint32_t pwm_interrupt_count;
   #define BATTERY_MIN       85 // 8.5V
   #define BATTERY_MAX       115 // 11.5V
 #endif
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {

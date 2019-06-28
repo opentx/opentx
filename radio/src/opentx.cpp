@@ -58,14 +58,14 @@ const uint8_t bchout_ar[]  = {
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
     0xC6, 0xC9, 0xD2, 0xD8, 0xE1, 0xE4 };
 
-uint8_t channel_order(uint8_t setup, uint8_t x)
+uint8_t channelOrder(uint8_t setup, uint8_t x)
 {
   return ((*(bchout_ar + setup) >> (6 - (x - 1) * 2)) & 3) + 1;
 }
 
-uint8_t channel_order(uint8_t x)
+uint8_t channelOrder(uint8_t x)
 {
-  return channel_order(g_eeGeneral.templateSetup, x);
+  return channelOrder(g_eeGeneral.templateSetup, x);
 }
 
 /*
@@ -280,7 +280,7 @@ void generalDefault()
 
   for (int i=0; i<NUM_STICKS; ++i) {
     g_eeGeneral.trainer.mix[i].mode = 2;
-    g_eeGeneral.trainer.mix[i].srcChn = channel_order(i+1) - 1;
+    g_eeGeneral.trainer.mix[i].srcChn = channelOrder(i+1) - 1;
     g_eeGeneral.trainer.mix[i].studWeight = 100;
   }
 
@@ -326,7 +326,7 @@ void defaultInputs()
   clearInputs();
 
   for (int i=0; i<NUM_STICKS; i++) {
-    uint8_t stick_index = channel_order(i+1);
+    uint8_t stick_index = channelOrder(i+1);
     ExpoData *expo = expoAddress(i);
     expo->srcRaw = MIXSRC_Rud - 1 + stick_index;
     expo->curve.type = CURVE_REF_EXPO;
@@ -824,6 +824,17 @@ void checkSDVersion()
 }
 #endif
 
+#if defined(STM32)
+static void checkRTCBattery()
+{
+  if (getRTCBatteryVoltage() < 200) {
+    ALERT(STR_WARNING, STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
+  }
+
+  disableVBatBridge();
+}
+#endif
+
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 void checkFailsafe()
 {
@@ -855,8 +866,9 @@ void checkAll()
 #endif
 
   // we don't check the throttle stick if the radio is not calibrated
-  if (g_eeGeneral.chkSum == evalChkSum())
+  if (g_eeGeneral.chkSum == evalChkSum()) {
     checkThrottleStick();
+  }
 
   checkSwitches();
   checkFailsafe();
@@ -864,6 +876,10 @@ void checkAll()
 
 #if defined(SDCARD)
   checkSDVersion();
+#endif
+
+#if defined(STM32)
+  checkRTCBattery();
 #endif
 
   if (g_model.displayChecklist && modelHasNotes()) {

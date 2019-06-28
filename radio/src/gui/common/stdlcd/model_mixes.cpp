@@ -65,7 +65,7 @@ void insertMix(uint8_t idx)
   mix->destCh = s_currCh-1;
   mix->srcRaw = s_currCh;
   if (!isSourceAvailable(mix->srcRaw)) {
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
     while (!isSourceAvailable(mix->srcRaw)) {
       mix->srcRaw += 1;
     }

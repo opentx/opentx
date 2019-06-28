@@ -477,7 +477,7 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_RX_CHANNEL_ORD:
         lcdDrawTextAlignedLeft(y, STR_RXCHANNELORD); // RAET->AETR
         for (uint8_t i=1; i<=4; i++) {
-          putsChnLetter(RADIO_SETUP_2ND_COLUMN - FW + i*FW, y, channel_order(i), attr);
+          putsChnLetter(RADIO_SETUP_2ND_COLUMN - FW + i*FW, y, channelOrder(i), attr);
         }
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
         break;

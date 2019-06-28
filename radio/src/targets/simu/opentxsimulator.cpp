@@ -25,7 +25,7 @@
   #define MAX_LOGICAL_SWITCHES    NUM_CSW
 #endif
 
-  #define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
+#define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
 
 #define OTXS_DBG    qDebug() << "(" << simuTimerMicros() << "us)"
 
@@ -93,6 +93,7 @@ void OpenTxSimulator::init()
 {
   if (isRunning())
     return;
+
   OTXS_DBG;
 
   if (!m_timer10ms) {
@@ -109,6 +110,13 @@ void OpenTxSimulator::init()
 
   QMutexLocker lckr(&m_mtxSimuMain);
   memset(g_anas, 0, sizeof(g_anas));
+
+#if defined(STM32)
+  g_anas[TX_INTREF] = 826; // 3V VDD
+  g_anas[TX_RTC_VOLTAGE] = 800;   // 2,34V
+  g_anas[TX_TEMPERATURE] = 520;
+#endif
+
   simuInit();
 }
 

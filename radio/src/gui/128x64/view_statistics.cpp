@@ -108,6 +108,11 @@ void menuStatisticsDebug(event_t event)
   title(STR_MENUDEBUG);
 
   switch (event) {
+    case EVT_ENTRY:
+    case EVT_ENTRY_UP:
+      enableVBatBridge();
+      break;
+
     case EVT_KEY_LONG(KEY_ENTER):
 #if defined(PCBSKY9X)
       g_eeGeneral.mAhUsed = 0;
@@ -126,6 +131,7 @@ void menuStatisticsDebug(event_t event)
     case EVT_KEY_FIRST(KEY_UP):
 #if defined(NAVIGATION_X7)
     case EVT_KEY_BREAK(KEY_PAGE):
+      disableVBatBridge();
       chainMenu(menuStatisticsDebug2);
       return;
 #endif
@@ -135,10 +141,12 @@ void menuStatisticsDebug(event_t event)
     case EVT_KEY_LONG(KEY_PAGE):
 #endif
       killEvents(event);
+      disableVBatBridge();
       chainMenu(menuStatisticsView);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      disableVBatBridge();
       chainMenu(menuMainView);
       break;
   }
@@ -166,14 +174,6 @@ void menuStatisticsDebug(event_t event)
   // consumption
   lcdDrawTextAlignedLeft(y, STR_CPU_MAH);
   drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
-  y += FH;
-#endif
-
-#if defined(PCBSKY9X)
-  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
-  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, LEFT);
-  lcdDrawChar(MENU_DEBUG_COL2_OFS, y, '>');
-  drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, y, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
   y += FH;
 #endif
 
@@ -243,6 +243,22 @@ void menuStatisticsDebug(event_t event)
   else
     lcdDrawText(MENU_DEBUG_COL1_OFS, y, "---");
   y += FH;
+#endif
+
+#if defined(STM32)
+  lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
+  putsVolts(MENU_DEBUG_COL1_OFS, y, getRTCBatteryVoltage(), PREC2|LEFT);
+  y += FH;
+#endif
+
+#if defined(PCBSKY9X)
+  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, LEFT);
+  lcdDrawChar(MENU_DEBUG_COL2_OFS, y, '>');
+  drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, y, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
+#else
+  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, PREC1|LEFT);
 #endif
 
   lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);

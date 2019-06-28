@@ -24,79 +24,9 @@
 #include <inttypes.h>
 #include "../definitions.h"
 #include "../opentx_constants.h"
-#include "cpu_id.h"
-
-#if defined(__cplusplus) && !defined(SIMU)
-extern "C" {
-#endif
-
-#if __clang__
-// clang is very picky about the use of "register"
-// tell it to ignore for the STM32 includes instead of modyfing the orginal files
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#endif
-
-#if defined(LUA_EXPORT_GENERATION)
-  // no includes
-#elif defined(STM32F4)
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_pwr.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_flash.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dbgmcu.h"
-  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h"
-#else
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rcc.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_syscfg.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_exti.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_tim.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_adc.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_spi.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_i2c.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rtc.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_pwr.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dma.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_usart.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_flash.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dbgmcu.h"
-  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
-#endif
-
-#if __clang__
-// Restore warnings about registers
-#pragma clang diagnostic pop
-#endif
-
-#include "usb_driver.h"
-
-#if !defined(SIMU)
-  #include "usbd_cdc_core.h"
-  #include "usbd_msc_core.h"
-  #include "usbd_hid_core.h"
-  #include "usbd_usr.h"
-  #include "usbd_desc.h"
-  #include "usb_conf.h"
-  #include "usbd_conf.h"
-#endif
-
+#include "board_common.h"
 #include "hal.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
-}
-#endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 // Rotary Encoder driver
@@ -535,8 +465,10 @@ enum Analogs {
   SLIDER2,
 #endif
   TX_VOLTAGE,
-  NUM_ANALOGS,
-  TX_RTC = NUM_ANALOGS
+  TX_TEMPERATURE,
+  TX_INTREF,
+  TX_RTC_VOLTAGE,
+  NUM_ANALOGS
 };
 
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
@@ -551,7 +483,7 @@ enum Analogs {
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
-  void sticksPwmInit(void);
+  void sticksPwmInit();
   void sticksPwmRead(uint16_t * values);
   extern volatile uint32_t pwm_interrupt_count; // TODO => reusable buffer (boot section)
   #define NUM_TRIMS_KEYS                4
@@ -606,14 +538,9 @@ enum CalibratedAnalogs {
 
 #define IS_SLIDER(x)                    ((x)>POT_LAST && (x)<TX_VOLTAGE)
 
-void adcInit(void);
-void adcRead(void);
-extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
-uint16_t getAnalogValue(uint8_t index);
-uint16_t getRTCBattVoltage();
+extern uint16_t adcValues[NUM_ANALOGS];
 
 // Battery driver
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 #if defined(PCBX9E)
   // NI-MH 9.6V
   #define BATTERY_WARN                  87 // 8.7V

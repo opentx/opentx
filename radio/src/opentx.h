@@ -363,7 +363,7 @@ extern const uint8_t modn12x3[];
   #define CONVERT_MODE_TRIMS(x)  CONVERT_MODE(x)
 #endif
 
-extern uint8_t channel_order(uint8_t x);
+extern uint8_t channelOrder(uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
