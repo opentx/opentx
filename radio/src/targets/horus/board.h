@@ -65,18 +65,6 @@ void boardOff(void);
 void init2MhzTimer();
 void init5msTimer();
 
-// Delays driver
-#ifdef __cplusplus
-extern "C" {
-#endif
-void delaysInit(void);
-void delay_01us(uint16_t nb);
-void delay_us(uint16_t nb);
-void delay_ms(uint32_t ms);
-#ifdef __cplusplus
-}
-#endif
-
 // PCBREV driver
 #define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
 #if defined(SIMU) || defined(PCBX10)

@@ -61,18 +61,6 @@ void boardOff(void);
 void init2MhzTimer();
 void init5msTimer();
 
-// Delays driver
-#ifdef __cplusplus
-extern "C" {
-#endif
-void delaysInit(void);
-void delay_01us(uint16_t nb);
-void delay_us(uint16_t nb);
-void delay_ms(uint32_t ms);
-#ifdef __cplusplus
-}
-#endif
-
 // SD driver
 #define BLOCK_SIZE                      512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
