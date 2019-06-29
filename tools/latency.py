@@ -148,8 +148,6 @@ def main():
 
     print_statistics(trigger_transitions, sbus_frames, args.highval, args.lowval)
 
-    # draw(args.file, args.trigger, args.pwm, args.sbus)
-
 
 if __name__ == "__main__":
     main()
