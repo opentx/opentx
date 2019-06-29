@@ -88,6 +88,17 @@ void watchdogSuspend(uint32_t timeout)
   watchdogTimeout = timeout;
 }
 
+#if defined(DEBUG_LATENCY)
+void toggleLatencySwitch()
+{
+  latencyToggleSwitch ^= 1;
+  if (latencyToggleSwitch)
+    sportUpdatePowerOn();
+  else
+    sportUpdatePowerOff();
+}
+#endif
+
 void per10ms()
 {
   g_tmr10ms++;
@@ -110,6 +121,14 @@ void per10ms()
     trimsDisplayTimer--;
   else
     trimsDisplayMask = 0;
+
+#if defined(DEBUG_LATENCY_END_TO_END)
+  static tmr10ms_t lastLatencyToggle = 0;
+  if (g_tmr10ms - lastLatencyToggle == 10) {
+    lastLatencyToggle = g_tmr10ms;
+    toggleLatencySwitch();
+  }
+#endif
 
 #if defined(RTCLOCK)
   /* Update global Date/Time every 100 per10ms cycles */
@@ -1326,15 +1345,11 @@ void doMixerCalculations()
 
   tmr10ms_t tmr10ms = get_tmr10ms();
 
-#if defined(DEBUG_LATENCY)
+#if defined(DEBUG_LATENCY_MIXER_RF) || defined(DEBUG_LATENCY_RF_ONLY)
   static tmr10ms_t lastLatencyToggle = 0;
   if (tmr10ms - lastLatencyToggle >= 10) {
     lastLatencyToggle = tmr10ms;
-    latencyToggleSwitch ^= 1;
-    if (latencyToggleSwitch)
-      sportUpdatePowerOn();
-    else
-      sportUpdatePowerOff();
+    toggleLatencySwitch();
   }
 #endif
 
