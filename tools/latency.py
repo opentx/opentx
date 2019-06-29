@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
-# import pygal
 import csv
 
 
@@ -55,6 +54,9 @@ class SBusFrame:
 
     def start(self):
         return self.transitions[0][0]
+
+    def end(self):
+        return self.transitions[-1][0]
 
     def is_after(self, t):
         return self.start() >= t
@@ -97,17 +99,15 @@ class SBusFrame:
         return result
 
 
-def print_statistics(trigger_transitions, sbus_frames):
+def print_statistics(trigger_transitions, sbus_frames, highval, lowval):
     mini, maxi = None, None
     count = 0
     sum = 0
     for t0, val in trigger_transitions[1:]:
-        byte = 0x13 if val == 1 else 0xAC
+        byte = highval if val == 1 else lowval
         for frame in sbus_frames:
             if frame.is_after(t0) and frame.byte(1) == byte:
-                delay = frame.start() - t0
-                if delay > 23:
-                    print("%.1fms @ %fs" % (delay, t0 / 1000))
+                delay = frame.end() - t0
                 count += 1
                 sum += delay
                 if mini is None or delay < mini[0]:
@@ -128,6 +128,8 @@ def main():
     parser.add_argument('--trigger', help='The column in the csv file where is your trigger', type=int, required=True)
     parser.add_argument('--pwm', help='The column in the csv file where is your PWM output', type=int)
     parser.add_argument('--sbus', help='The column in the csv file where is your SBUS output', type=int)
+    parser.add_argument('--highval', help='The value of SBUS byte 2 when trigger=HIGH', type=int, default=0x13)
+    parser.add_argument('--lowval', help='The value of SBUS byte 2 when trigger=LOW', type=int, default=0xAC)
     args = parser.parse_args()
     if not args.pwm and not args.sbus:
         print("Either a PWM or SBUS column in CSV must be specified")
@@ -141,7 +143,7 @@ def main():
         if frame.is_lost():
             print("Frame lost bit @ %fs" % frame.start())
 
-    print_statistics(trigger_transitions, sbus_frames)
+    print_statistics(trigger_transitions, sbus_frames, args.highval, args.lowval)
 
     # draw(args.file, args.trigger, args.pwm, args.sbus)
 
