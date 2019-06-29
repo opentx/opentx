@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2014 Savoir-Faire Linux Inc.
-# Authors:
-#   Sebastien Bourdelin <sebastien.bourdelin@savoirfairelinux.com>
+# Copyright (C) OpenTX
+#
+# Based on code named
+#   th9x - http://code.google.com/p/th9x
+#   er9x - http://code.google.com/p/er9x
+#   gruvin9x - http://code.google.com/p/gruvin9x
+#
+# License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License Version 2 as
+# it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 import argparse
 import csv
@@ -102,14 +105,14 @@ class SBusFrame:
 def print_statistics(trigger_transitions, sbus_frames, highval, lowval):
     mini, maxi = None, None
     count = 0
-    sum = 0
+    total = 0
     for t0, val in trigger_transitions[1:]:
         byte = highval if val == 1 else lowval
         for frame in sbus_frames:
             if frame.is_after(t0) and frame.byte(1) == byte:
                 delay = frame.end() - t0
                 count += 1
-                sum += delay
+                total += delay
                 if mini is None or delay < mini[0]:
                     mini = (delay, t0, frame, val, byte)
                 if maxi is None or delay > maxi[0]:
@@ -117,7 +120,7 @@ def print_statistics(trigger_transitions, sbus_frames, highval, lowval):
                 break
 
     print("Count = %d transitions" % count)
-    print("Average = %.1fms" % (sum / count))
+    print("Average = %.1fms" % (total / count))
     print("Mini = %.1fms @ %fs" % (mini[0], mini[1] / 1000))
     print("Maxi = %.1fms @ %fs" % (maxi[0], maxi[1] / 1000))
 
