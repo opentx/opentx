@@ -119,10 +119,11 @@ def print_statistics(trigger_transitions, sbus_frames, highval, lowval):
                     maxi = (delay, t0, frame)
                 break
 
-    print("Count = %d transitions" % count)
-    print("Average = %.1fms" % (total / count))
-    print("Mini = %.1fms @ %fs" % (mini[0], mini[1] / 1000))
-    print("Maxi = %.1fms @ %fs" % (maxi[0], maxi[1] / 1000))
+    print("Delay between the switch toggle and the end of the SBUS frame:")
+    print("  Count = %d transitions" % count)
+    print("  Average = %.1fms" % (total / count))
+    print("  Mini = %.1fms @ %fs" % (mini[0], mini[1] / 1000))
+    print("  Maxi = %.1fms @ %fs" % (maxi[0], maxi[1] / 1000))
 
 
 def main():
