@@ -91,7 +91,6 @@ WizMix::operator ModelData()
   int throttleChannel = -1;
 
   ModelData model;
-  //ModelData model(originalModelData);
   model.category = originalModelData.category;
   model.used = true;
   model.moduleData[0].modelId = modelId;
@@ -102,7 +101,7 @@ WizMix::operator ModelData()
 
   // Safe copy model name
   strncpy(model.name, name, WIZ_MODEL_NAME_LENGTH);
-  model.name[WIZ_MODEL_NAME_LENGTH] = 0;
+  model.name[WIZ_MODEL_NAME_LENGTH] = '\0';
 
   // Add the channel mixes
   for (int i=0; i<WIZ_MAX_CHANNELS; i++ )
@@ -112,22 +111,27 @@ WizMix::operator ModelData()
     addMix(model, ch.input1, ch.weight1, i, mixIndex);
     addMix(model, ch.input2, ch.weight2, i, mixIndex);
 
-    if ((ch.input1 == THROTTLE_INPUT || ch.input2 == THROTTLE_INPUT) &&  options[THROTTLE_CUT_OPTION]) {
-      // Add the Throttle Cut option
-      MixData & mix = model.mixData[mixIndex++];
-      mix.destCh = i+1;
-      mix.srcRaw = SOURCE_TYPE_MAX;
-      mix.weight = -100;
-      mix.swtch.type = SWITCH_TYPE_SWITCH;
-      mix.swtch.index = IS_ARM(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
-      mix.mltpx = MLTPX_REP;
-      strncpy(mix.name, "Cut", MIXDATA_NAME_LEN);
-      mix.name[MIXDATA_NAME_LEN] = '\0';
+    if (ch.input1 == THROTTLE_INPUT || ch.input2 == THROTTLE_INPUT) {
+      throttleChannel++;
+      if (options[THROTTLE_CUT_OPTION]) {
+        // Add the Throttle Cut option
+        MixData & mix = model.mixData[mixIndex++];
+        mix.destCh = i+1;
+        mix.srcRaw = SOURCE_TYPE_MAX;
+        mix.weight = -100;
+        mix.swtch.type = SWITCH_TYPE_SWITCH;
+        mix.swtch.index = IS_ARM(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
+        mix.mltpx = MLTPX_REP;
+        strncpy(mix.name, "Cut", MIXDATA_NAME_LEN);
+        mix.name[MIXDATA_NAME_LEN] = '\0';
+      }
     }
   }
 
   // Add the Flight Timer option
-  if (options[FLIGHT_TIMER_OPTION] ){
+  if (options[FLIGHT_TIMER_OPTION] && throttleChannel >=0){
+    strncpy(model.timers[timerIndex].name, "Flt", TIMER_NAME_LEN);
+    model.timers[timerIndex].name[TIMER_NAME_LEN] = '\0';
     model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
     model.timers[timerIndex].mode.index = TMRMODE_THR_TRG;
     timerIndex++;
@@ -135,6 +139,8 @@ WizMix::operator ModelData()
 
   // Add the Throttle Timer option
   if (options[THROTTLE_TIMER_OPTION] && throttleChannel >=0){
+    strncpy(model.timers[timerIndex].name, "Thr", TIMER_NAME_LEN);
+    model.timers[timerIndex].name[TIMER_NAME_LEN] = '\0';
     model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
     model.timers[timerIndex].mode.index = TMRMODE_THR;
     timerIndex++;
