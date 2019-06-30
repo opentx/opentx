@@ -45,6 +45,7 @@ WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId, const Mod
   vehicle(NOVEHICLE)
 {
   strncpy(name, originalModelData.name, WIZ_MODEL_NAME_LENGTH);
+  name[WIZ_MODEL_NAME_LENGTH] = '\0';
 }
 
 
