@@ -130,7 +130,7 @@ WizMix::operator ModelData()
   }
 
   // Add the Flight Timer option
-  if (options[FLIGHT_TIMER_OPTION] && throttleChannel >=0){
+  if (options[FLIGHT_TIMER_OPTION] && throttleChannel >= 0){
     strncpy(model.timers[timerIndex].name, "Flt", TIMER_NAME_LEN);
     model.timers[timerIndex].name[TIMER_NAME_LEN] = '\0';
     model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
@@ -139,7 +139,7 @@ WizMix::operator ModelData()
   }
 
   // Add the Throttle Timer option
-  if (options[THROTTLE_TIMER_OPTION] && throttleChannel >=0){
+  if (options[THROTTLE_TIMER_OPTION] && throttleChannel >= 0){
     strncpy(model.timers[timerIndex].name, "Thr", TIMER_NAME_LEN);
     model.timers[timerIndex].name[TIMER_NAME_LEN] = '\0';
     model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
