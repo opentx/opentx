@@ -130,6 +130,21 @@
   #define MAX_TELEMETRY_SENSORS_218        32
 #endif
 
+#if defined(COLORLCD)
+typedef uint32_t swarnstate218_t;
+#elif defined(PCBX9E)
+typedef uint64_t swconfig218_t;
+typedef uint64_t swarnstate218_t;
+typedef uint32_t swarnenable218_t;
+#elif defined(PCBTARANIS)
+typedef uint16_t swconfig218_t;
+typedef uint16_t swarnstate218_t;
+typedef uint8_t swarnenable218_t;
+#else
+typedef uint8_t swarnstate218_t;
+typedef uint8_t swarnenable218_t;
+#endif
+
 PACK(typedef struct {
   uint8_t type:4;
   int8_t  rfProtocol:4;
@@ -416,7 +431,7 @@ PACK(struct ModelHeader_v218 {
 #if defined(COLORLCD)
 #define SWITCH_WARNING_DATA_218
 #else
-#define SWITCH_WARNING_DATA_218 swarnenable_t switchWarningEnable;
+#define SWITCH_WARNING_DATA_218 swarnenable218_t switchWarningEnable;
 #endif
 
 PACK(struct ModelData_v218 {
@@ -448,7 +463,7 @@ PACK(struct ModelData_v218 {
 
   uint8_t thrTraceSrc;
 
-  swarnstate_t  switchWarningState;
+  swarnstate218_t  switchWarningState;
 
   SWITCH_WARNING_DATA_218
 
@@ -530,8 +545,8 @@ static inline void check_struct_218()
     uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
-    swarnstate_t switchUnlockStates; \
-    swconfig_t switchConfig; \
+    swarnstate218_t switchUnlockStates; \
+    swconfig218_t switchConfig; \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218]; \
     BLUETOOTH_FIELDS

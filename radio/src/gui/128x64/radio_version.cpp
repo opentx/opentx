@@ -109,7 +109,7 @@ void menuRadioModulesVersion(event_t event)
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Module");
       uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
-      lcdDrawText(COLUMN2_X, y, PXX2modulesModels[modelId]);
+      lcdDrawText(COLUMN2_X, y, getPXX2ModuleName(modelId));
     }
     y += FH;
 

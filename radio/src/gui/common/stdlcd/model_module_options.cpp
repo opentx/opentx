@@ -42,7 +42,7 @@ enum {
   ITEM_MODULE_SETTINGS_COUNT
 };
 
-#define IF_MODULE_OPTIONS(option, count) uint8_t(isModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
+#define IF_MODULE_OPTIONS(option, count) uint8_t(isPXX2ModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
 
 bool isPowerAvailable(int value)
 {
@@ -87,7 +87,7 @@ void menuModelModuleOptions(event_t event)
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
   // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
-  uint8_t optionsAvailable = getModuleOptions(modelId) & ((1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
+  uint8_t optionsAvailable = getPXX2ModuleOptions(modelId) & ((1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
 
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
     !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
@@ -132,7 +132,7 @@ void menuModelModuleOptions(event_t event)
 
   int8_t sub = menuVerticalPosition;
   lcdDrawTextAlignedLeft(0, STR_MODULE_OPTIONS);
-  lcdDrawText(lcdLastRightPos + 3, 0, PXX2modulesModels[modelId]);
+  lcdDrawText(lcdLastRightPos + 3, 0, getPXX2ModuleName(modelId));
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
