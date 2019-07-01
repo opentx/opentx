@@ -92,7 +92,7 @@ class SBusFrame:
         current_frame = None
         last = 0
         for t, value in transitions:
-            if t - last > 5:
+            if t - last > 2:
                 if current_frame:
                     result.append(current_frame)
                 current_frame = SBusFrame()
