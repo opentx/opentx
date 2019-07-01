@@ -81,7 +81,7 @@ class SBusFrame:
         return value
 
     def is_lost(self):
-        return self.byte(23) != 0
+        return self.byte(23) & 0x04
 
     def __str__(self):
         return "%.03fms " % self.start() + " ".join(["%02X" % self.byte(i) for i in range(25)])
