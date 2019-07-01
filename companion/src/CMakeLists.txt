@@ -394,7 +394,7 @@ elseif(WIN32)
 
   # Qt dlls (using windeployqt)
   ## Qt translations are already packaged into our custom qrc. Also don't need software rendering engines.
-  set(wdqtopts --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle)
+  set(wdqtopts --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle -svg)
   if(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(wdqtopts ${wdqtopts} --release)  # release builds aren't always properly detected with mingw
   endif()
