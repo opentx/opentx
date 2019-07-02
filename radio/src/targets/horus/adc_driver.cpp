@@ -40,8 +40,6 @@ uint16_t adcValues[NUM_ANALOGS] __DMA;
 #define RESETCMD                       0x4000
 #define MANUAL_MODE                    0x1000 // manual mode channel 0
 
-#define SAMPTIME                       2 // sample time = 28 cycles
-
 uint16_t SPIx_ReadWriteByte(uint16_t value)
 {
   while (SPI_I2S_GetFlagStatus(ADC_SPI, SPI_I2S_FLAG_TXE) == RESET);
