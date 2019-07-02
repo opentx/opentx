@@ -211,6 +211,26 @@ void menuStatisticsDebug(event_t event)
   lcdDrawNumber(lcdLastRightPos, y, stackAvailable(), LEFT);
   y += FH;
 
+#if defined(DEBUG_LATENCY)
+  lcdDrawTextAlignedLeft(y, "Hearbeat");
+  if (heartbeatCapture.valid)
+    lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, heartbeatCapture.count, LEFT);
+  else
+    lcdDrawText(MENU_DEBUG_COL1_OFS, y, "---");
+  y += FH;
+#endif
+
+#if defined(STM32)
+  lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
+  putsVolts(MENU_DEBUG_COL1_OFS, y, getRTCBatteryVoltage(), PREC2|LEFT);
+  y += FH;
+#endif
+
+#if defined(STM32)
+  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, PREC1|LEFT);
+#endif
+
   lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
@@ -234,7 +254,6 @@ void menuStatisticsDebug2(event_t event)
       killEvents(event);
       chainMenu(menuStatisticsDebug);
       break;
-
 
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);

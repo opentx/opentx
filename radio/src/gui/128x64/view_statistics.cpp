@@ -275,7 +275,7 @@ void menuStatisticsDebug2(event_t event)
 {
   title(STR_MENUDEBUG);
 
-  switch (event) {
+  switch(event) {
     case EVT_KEY_FIRST(KEY_ENTER):
       telemetryErrors  = 0;
       break;
