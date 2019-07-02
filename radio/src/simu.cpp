@@ -554,6 +554,14 @@ uint16_t anaIn(uint8_t chan)
   else if (chan == TX_VOLTAGE)
     return 1500;
 #endif
+#if defined(STM32)
+  else if (chan == TX_INTREF)
+    return 826; // 3V VDD
+  else if (chan == TX_TEMPERATURE)
+    return 520;
+  else if (chan == TX_RTC_VOLTAGE)
+    return 800; // 2.34V
+#endif
   else
     return 0;
 }
