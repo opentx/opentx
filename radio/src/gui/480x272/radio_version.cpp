@@ -23,6 +23,7 @@
 bool menuRadioVersion(event_t event)
 {
   char id[27];
+
 #if 0
   if (warningResult) {
     warningResult = 0;
@@ -36,12 +37,12 @@ bool menuRadioVersion(event_t event)
 
   SIMPLE_MENU(STR_MENUVERSION, RADIO_ICONS, menuTabGeneral, MENU_RADIO_VERSION, 0);
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, vers_stamp);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, date_stamp);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, time_stamp);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, eeprom_stamp);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 5*FH, "UID:");
-  lcdDrawText(MENUS_MARGIN_LEFT + 64, MENU_CONTENT_TOP + 5*FH, id);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, vers_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, date_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, time_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, eeprom_stamp);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, "UID:");
+  lcdDrawText(MENUS_MARGIN_LEFT + 64, MENU_CONTENT_TOP + 4*FH, id);
 
 #if 0
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
