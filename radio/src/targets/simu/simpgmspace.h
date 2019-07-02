@@ -211,12 +211,7 @@ extern Pwm pwm;
 #define PWM (&pwm)
 #endif
 
-#if defined(EEPROM_SIZE)
-extern uint8_t eeprom[EEPROM_SIZE];
-#else
 extern uint8_t * eeprom;
-#endif
-
 extern void startPdcUsartReceive() ;
 extern uint32_t txPdcUsart( uint8_t *buffer, uint32_t size );
 extern uint32_t txPdcPending();

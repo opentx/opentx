@@ -236,7 +236,7 @@
 #elif defined(PCBX10)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            (RCC_APB1Periph_TIM5)
-  #define ADC_RCC_APB2Periph            (RCC_APB2Periph_ADC3)
+  #define ADC_RCC_APB2Periph            (RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC3)
   #define ADC_GPIO_PIN_STICK_LH         GPIO_Pin_0      // PA.00
   #define ADC_GPIO_PIN_STICK_LV         GPIO_Pin_1      // PA.01
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_2      // PA.02

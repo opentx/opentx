@@ -554,7 +554,7 @@ uint16_t anaIn(uint8_t chan)
   else if (chan == TX_VOLTAGE)
     return 1500;
 #endif
-#if defined(STM32)
+#if defined(PCBTARANIS)
   else if (chan == TX_INTREF)
     return 826; // 3V VDD
   else if (chan == TX_TEMPERATURE)

@@ -541,6 +541,7 @@ extern const char STR_NIGHTLY_WARNING[];
 extern const char STR_NIGHTLY_NOTSAFE[];
 extern const char STR_WRONG_SDCARDVERSION[];
 extern const char STR_WARN_RTC_BATTERY_LOW[];
+extern const char STR_BATTERY[];
 extern const char STR_WRONG_PCBREV[];
 extern const char STR_EMERGENCY_MODE[];
 extern const char STR_NO_FAILSAFE[];

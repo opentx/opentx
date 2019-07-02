@@ -828,7 +828,7 @@ void checkSDVersion()
 static void checkRTCBattery()
 {
   if (getRTCBatteryVoltage() < 200) {
-    ALERT(STR_WARNING, STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
+    ALERT("BATTERY", STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
   }
 
   disableVBatBridge();
