@@ -647,7 +647,7 @@
   #define TR_TMIXMAXMS         "Tmix max"
   #define TR_FREE_STACK     "Free stack"
 
-#define TR_MENUTORESET         CENTER TR_ENTER " to reset"
+#define TR_MENUTORESET         TR_ENTER " to reset"
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"

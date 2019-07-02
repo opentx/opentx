@@ -30,6 +30,13 @@
 #include "opentx_types.h"
 #include "debounce.h"
 
+
+#if defined(SIMU)
+#include "targets/simu/simpgmspace.h"
+#endif
+
+#include "board.h"
+
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
@@ -220,8 +227,6 @@
 #define RESXul     1024ul
 #define RESXl      1024l
 
-#include "board.h"
-
 #if defined(JACK_DETECT_GPIO)
 #define CASE_JACK_DETECT(x) x,
 #else
@@ -230,10 +235,6 @@
 
 #if defined(DISK_CACHE)
   #include "disk_cache.h"
-#endif
-
-#if defined(SIMU)
-  #include "targets/simu/simpgmspace.h"
 #endif
 
 #include "debug.h"

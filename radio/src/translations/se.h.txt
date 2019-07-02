@@ -655,7 +655,7 @@
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "Tmix max"
 #define TR_FREE_STACK     "Free stack"
-#define TR_MENUTORESET         CENTER TR_ENTER " Nollar"
+#define TR_MENUTORESET         TR_ENTER " Nollar"
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "KN"
 #define TR_MODEL               "Modell"

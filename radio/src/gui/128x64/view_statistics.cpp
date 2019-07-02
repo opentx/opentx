@@ -57,6 +57,7 @@ void menuStatisticsView(event_t event)
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
       break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
@@ -125,6 +126,10 @@ void menuStatisticsDebug(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
+#if defined(LUA)
+      maxLuaInterval = 0;
+      maxLuaDuration = 0;
+#endif
       maxMixerDuration  = 0;
       break;
 
@@ -133,7 +138,7 @@ void menuStatisticsDebug(event_t event)
     case EVT_KEY_BREAK(KEY_PAGE):
       disableVBatBridge();
       chainMenu(menuStatisticsDebug2);
-      return;
+      break;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -261,7 +266,7 @@ void menuStatisticsDebug(event_t event)
   drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, PREC1|LEFT);
 #endif
 
-  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 
@@ -307,7 +312,7 @@ void menuStatisticsDebug2(event_t event)
   y += FH;
 #endif
 
-  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 #endif

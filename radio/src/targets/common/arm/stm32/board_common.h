@@ -106,12 +106,16 @@ uint16_t getRTCBatteryVoltage();
 // Measuring VBAT puts considerable drain (22 µA) on the battery instead of normal drain (~10 nA)
 static inline void enableVBatBridge()
 {
+#if !defined(SIMU)
   ADC->CCR |= ADC_CCR_VBATE;
+#endif
 }
 
 static inline void disableVBatBridge()
 {
+#if !defined(SIMU)
   ADC->CCR &= ~ADC_CCR_VBATE;
+#endif
 }
 
 // Delays driver
