@@ -148,7 +148,8 @@ int main(int argc, char **argv)
 {
   QCoreApplication app(argc, argv);
   simuInit();
-  StartEepromThread(NULL);
+  StartEepromThread(nullptr);
+  eeprom = (uint8_t *)malloc(EEPROM_SIZE);
   menuLevel = 0;
   menuHandlers[0] = menuMainView;
   InitGoogleTest(&argc, argv);
