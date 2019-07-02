@@ -180,11 +180,11 @@ void adcSingleRead()
   ADC_MAIN->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC_SET_DMA_FLAGS();
   ADC_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
-  ADC_MAIN->CR2 |= (uint32_t) ADC_CR2_SWSTART;
+  ADC_MAIN->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 
 #if defined(PCBX10)
   ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
-  ADC1->CR2 |= (uint32_t) ADC_CR2_SWSTART;
+  ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 #endif
 
 #if defined(PCBX9E)

@@ -21,6 +21,7 @@
 #include "opentx.h"
 
 uint16_t adcValues[NUM_ANALOGS] __DMA;
+uint16_t rtcBatteryVoltage;
 
 #define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
 #define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
@@ -113,9 +114,9 @@ void adcInit()
 
   ADC3->CR1 = ADC_CR1_SCAN;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC3->SQR1 = (5 - 1) << 20;
+  ADC3->SQR1 = (2 - 1) << 20;
   ADC3->SQR2 = 0;
-  ADC3->SQR3 = (ADC_CHANNEL_MOUSE1 << 0) + (ADC_CHANNEL_MOUSE2 << 5) + (ADC_Channel_TempSensor << 10) + (ADC_Channel_Vrefint << 15) + (ADC_Channel_Vbat << 20);
+  ADC3->SQR3 = (ADC_CHANNEL_MOUSE1 << 0) + (ADC_CHANNEL_MOUSE2 << 5);
   ADC3->SMPR1 = (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + (ADC_SAMPTIME << 24);
   ADC3->SMPR2 = (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + (ADC_SAMPTIME << 24) + (ADC_SAMPTIME << 27);
   ADC->CCR = 0;
@@ -126,24 +127,19 @@ void adcInit()
   ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
   ADC_DMA_Stream->NDTR = 2;
   ADC_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
-}
 
-// Returns temperature in 10*C
-uint16_t getTemperature()
-{
- // VDD IN 1/10 mV
-  int vdd =  2048 * 12100 / anaIn(TX_INTREF);
-  int vtemp = vdd * anaIn(TX_TEMPERATURE) / 2048;
-
-  // From Doc ID 15818 Rev 7 for STM32F2:
-  // 25 C = 0.76V,  2.5 mV/C
-
-  return (vtemp - 7600) * 10 / 25 + 250;
+  ADC1->CR1 = ADC_CR1_SCAN;
+  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
+  ADC1->SQR1 = (1 - 1) << 20;
+  ADC1->SQR2 = 0;
+  ADC1->SQR3 = (ADC_Channel_Vbat << 0);
+  ADC1->SMPR1 = (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + (ADC_SAMPTIME << 24);
+  ADC1->SMPR2 = (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + (ADC_SAMPTIME << 24) + (ADC_SAMPTIME << 27);
 }
 
 uint16_t getRTCBatteryVoltage()
 {
-  return (uint16_t )(12100 *  2048 / anaIn(TX_INTREF)  * anaIn(TX_RTC_VOLTAGE) / 204800 * 2);
+  return rtcBatteryVoltage * 330 / 2048;
 }
 
 const uint16_t adcCommands[MOUSE1+2] =
@@ -213,13 +209,14 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
 void adcOnChipReadStart()
 {
   ADC_DMA_Stream->CR &= ~DMA_SxCR_EN;           // Disable DMA
-  ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC3->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC_DMA->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0; // Write ones to clear bits
   ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
   ADC_DMA_Stream->NDTR = 2;
   ADC_DMA_Stream->CR |= DMA_SxCR_EN;            // Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+
+  ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 }
 
@@ -262,6 +259,10 @@ void adcRead()
 
   for (uint8_t x=0; x<NUM_ANALOGS-MOUSE1; x++) {
     adcValues[MOUSE1+x] = temp[x] >> 2;
+  }
+
+  if (ADC->CCR & ADC_CCR_VBATE) {
+    rtcBatteryVoltage = ADC1->DR;
   }
 }
 

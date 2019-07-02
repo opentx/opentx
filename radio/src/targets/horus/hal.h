@@ -214,7 +214,7 @@
 #if defined(PCBX12S)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            0
-  #define ADC_RCC_APB2Periph            (RCC_APB2Periph_SPI4 | RCC_APB2Periph_ADC3)
+  #define ADC_RCC_APB2Periph            (RCC_APB2Periph_SPI4 | RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC3)
   #define ADC_SPI                       SPI4
   #define ADC_GPIO_AF                   GPIO_AF_SPI4
   #define ADC_SPI_GPIO                  GPIOE
