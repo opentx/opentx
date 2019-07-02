@@ -131,10 +131,10 @@ void adcInit()
 }
 
 // Returns temperature in 10*C
-uint32_t getTemperature()
+uint16_t getTemperature()
 {
  // VDD IN 1/10 mV
-  int vdd =  2048 * 12100/ anaIn(TX_INTREF);
+  int vdd =  2048 * 12100 / anaIn(TX_INTREF);
   int vtemp = vdd * anaIn(TX_TEMPERATURE) / 2048;
 
   // From Doc ID 15818 Rev 7 for STM32F2:
@@ -143,9 +143,9 @@ uint32_t getTemperature()
   return (vtemp - 7600) * 10 / 25 + 250;
 }
 
-uint32_t getRTCBatteryVoltage()
+uint16_t getRTCBatteryVoltage()
 {
-  return (uint16_t )(12100 *  2048 /anaIn(TX_INTREF)  * anaIn(TX_RTC_VOLTAGE) / 204800 * 2);
+  return (uint16_t )(12100 *  2048 / anaIn(TX_INTREF)  * anaIn(TX_RTC_VOLTAGE) / 204800 * 2);
 }
 
 const uint16_t adcCommands[MOUSE1+2] =
