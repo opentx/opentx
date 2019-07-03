@@ -112,21 +112,20 @@ void adcInit()
 #elif defined(PCBXLITE)
   if (STICKS_PWM_ENABLED()) {
     ADC_MAIN->SQR2 = 0;
-    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1 << 0) + (ADC_CHANNEL_POT2 << 5) + (ADC_CHANNEL_BATT << 10) + (ADC_Channel_TempSensor << 15) + (ADC_Channel_Vrefint << 20) + (ADC_Channel_Vbat << 25);
+    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1 << 0) + (ADC_CHANNEL_POT2 << 5) + (ADC_CHANNEL_BATT << 10) + (ADC_Channel_Vrefint << 15) + (ADC_Channel_Vbat << 20);
   }
   else {
-    ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT << 0) + (ADC_Channel_TempSensor << 5) + (ADC_Channel_Vrefint << 10) + (ADC_Channel_Vbat << 15);
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT << 0) + (ADC_Channel_Vrefint << 5) + (ADC_Channel_Vbat << 10);
     ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);
   }
 #elif defined(PCBX7)
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT << 0) + (ADC_Channel_TempSensor << 5) + (ADC_Channel_Vrefint << 10) + (ADC_Channel_Vbat << 15);
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT << 0) + (ADC_Channel_Vrefint << 5) + (ADC_Channel_Vbat << 10);
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);
 #elif defined(PCBX9LITE)
-  ADC_MAIN->SQR2 = (ADC_Channel_TempSensor << 0) + (ADC_Channel_Vrefint << 5) + (ADC_Channel_Vbat << 10);
+  ADC_MAIN->SQR2 = (ADC_Channel_Vrefint << 0) + (ADC_Channel_Vbat << 5);
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_BATT << 25);
 #elif defined(PCBX9D) || defined(PCBX9DP)
-  ADC_MAIN->SQR1 |= (ADC_Channel_Vbat<<0);
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3 << 0) + (ADC_CHANNEL_SLIDER1 << 5) + (ADC_CHANNEL_SLIDER2 << 10) + (ADC_CHANNEL_BATT << 15) + (ADC_Channel_TempSensor << 20) + (ADC_Channel_Vrefint << 25);
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3 << 0) + (ADC_CHANNEL_SLIDER1 << 5) + (ADC_CHANNEL_SLIDER2 << 10) + (ADC_CHANNEL_BATT << 15) + (ADC_Channel_Vrefint << 20) + (ADC_Channel_Vbat << 25);
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);
 #endif
 
@@ -253,18 +252,6 @@ uint16_t getRTCBatteryVoltage()
   return rtcBatteryVoltage * 330 / 2048;
 }
 #else
-// Returns temperature in 10*C
-uint16_t getTemperature()
-{
-  // VDD IN 1/10 mV
-  int vdd =  2048 * 12100 / anaIn(TX_INTREF);
-  int vtemp = vdd * anaIn(TX_TEMPERATURE) / 2048;
-
-  // From Doc ID 15818 Rev 7 for STM32F2:
-  // 25 C = 0.76V,  2.5 mV/C
-  return (vtemp - 7600) * 10 / 25 + 250;
-}
-
 uint16_t getRTCBatteryVoltage()
 {
   return (uint16_t )(12100 * 2048 / anaIn(TX_INTREF) * anaIn(TX_RTC_VOLTAGE) / 204800 * 2);

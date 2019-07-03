@@ -103,7 +103,6 @@ void adcInit();
 void adcRead();
 uint16_t getAnalogValue(uint8_t index);
 uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
-uint16_t getTemperature();
 uint16_t getRTCBatteryVoltage();
 
 // STM32 uses a 25K+25K voltage divider bridge to measure the battery voltage
