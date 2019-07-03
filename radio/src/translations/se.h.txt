@@ -915,7 +915,7 @@
 #define TR_EXTERNALRF          "Extern Radiomodul"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafeläge")
 #define TR_FAILSAFESET         "FailsafeInställning"
-#define TR_REG_ID                      TR("Reg. ID", "Registration ID")
+#define TR_REG_ID                      "Reg. ID"
 #define TR_OWNER_ID                    "Owner ID"
 #define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "Hold"

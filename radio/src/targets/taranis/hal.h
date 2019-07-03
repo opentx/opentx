@@ -1247,19 +1247,20 @@
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15 // PE.15
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define SPORT_MAX_BAUDRATE            400000
+  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
+  #define SPORT_UPDATE_PWR_GPIO         GPIOD
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_4  // PD.04
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #else
   #define SPORT_MAX_BAUDRATE            400000
   #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 
-#if defined(PCBXLITES) || defined(PCBX9LITE)
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
-#else
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
-#endif
-
 // Heartbeat for iXJT / ISRM synchro
-#if defined(PCBXLITE)
+#if defined(PCBXLITES)
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
   #define INTMODULE_HEARTBEAT_GPIO                GPIOD
@@ -1269,16 +1270,29 @@
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
   #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
+#elif defined(PCBXLITE)
+  #define INTMODULE_HEARTBEAT
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOD
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_15
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
 #elif defined(PCBX9LITE)
   // #define INTMODULE_HEARTBEAT
-  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
-  // #define INTMODULE_HEARTBEAT_GPIO                GPIOC
-  // #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_9
-  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
-  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource9
-  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line9
-  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
-  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      0 // RCC_AHB1Periph_GPIOC
+  // #define INTMODULE_HEARTBEAT_GPIO             GPIOC
+  // #define INTMODULE_HEARTBEAT_GPIO_PIN         GPIO_Pin_9
+  // #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
+  // #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource9
+  // #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line9
+  // #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  // #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+  // #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
 #elif defined(RADIO_X7)
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
@@ -1289,6 +1303,18 @@
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define INTMODULE_HEARTBEAT
+  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOB
+  #define INTMODULE_HEARTBEAT_GPIO                GPIOB
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_1
+  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOB
+  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource1
+  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line1
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI1_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI1_IRQHandler
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
 #else
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
@@ -1299,6 +1325,7 @@
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
   #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
+  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
 #endif
 
 #if defined(PCBX9LITE)
