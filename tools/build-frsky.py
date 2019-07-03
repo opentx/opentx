@@ -38,6 +38,7 @@ options = {
         "PCBREV": "2019",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "AUTOUPDATE": "YES",
         "PXX1": "YES",
         "XJT": "NO",
         "R9M_SIZE_STD": "NO",
