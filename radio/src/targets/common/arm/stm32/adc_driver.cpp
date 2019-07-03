@@ -26,24 +26,24 @@
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, 1, 1,1};
 #elif defined(PCBX9E)
 #if defined(HORUS_STICKS)
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1,  -1,-1,-1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1,-1,-1};
 #else
-  const int8_t adcDirection[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1,  -1,-1,-1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1,-1,-1};
 #endif
   const uint8_t adcMapping[NUM_ANALOGS] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
                                             13 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
                                             14 /*SLIDER1*/, 15 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
-                                            9 /*TX_VOLTAGE*/, 10 /*TX_TEMP*/, 11 /*ADC_INTREF*/, 12 /*TX_VBAT*/ };
+                                            9 /*TX_VOLTAGE*/, 11 /*ADC_INTREF*/, 12 /*TX_VBAT*/ };
 #elif defined(PCBX9DP)
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,-1,  1,1,  1,  1,1,1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,-1,  1,1,  1,  1,1};
 #elif defined(PCBX7)
-  const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,  1,1,1};
+  const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,  1,1};
 #elif defined(PCBX9LITE)
   const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,1};
 #elif defined(PCBXLITE)
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,-1,1,  -1,1,  1,  1,1,1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,-1,1,  -1,1,  1,  1,1};
 #else
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1,  1,1,1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1,  1,1};
 #endif
 
 #if NUM_PWMSTICKS > 0
