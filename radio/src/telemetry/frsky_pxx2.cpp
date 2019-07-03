@@ -211,20 +211,20 @@ void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  uint32_t * frequency = (uint32_t *)&frame[4];
-  int8_t * power = (int8_t *)&frame[8];
+  uint32_t frequency = *((uint32_t *)&frame[4]);
+  int8_t power = *((int8_t *)&frame[8]);
 
   // center = 2440000000;  // 2440MHz
   // span = 40000000;  // 40MHz
   // left = 2440000000 - 20000000
   // step = 10000
 
-  // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
+  int32_t offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+  TRACE("Fq=%u => %d, Pw=%d", frequency, offset, int32_t(power));
 
-  int32_t position = *frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
-  uint32_t x = (position * LCD_W / 8) / (reusableBuffer.spectrumAnalyser.span / 8);
+  uint32_t x = offset / reusableBuffer.spectrumAnalyser.step;
   if (x < LCD_W) {
-    reusableBuffer.spectrumAnalyser.bars[x] = 0x80 + *power;
+    reusableBuffer.spectrumAnalyser.bars[x] = 0x80 + power;
   }
 }
 
