@@ -323,7 +323,7 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 
     for (uint32_t i=0; i<count; i++) {
       if (!waitState(SPORT_DATA_REQ, 2000)) {
-        return "Device refused data";
+        return "Data refused";
       }
       startFrame(PRIM_DATA_WORD);
       uint32_t offset = (address & 1023) >> 2; // 32 bit word offset into buffer
@@ -346,11 +346,11 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 const char * FrskyDeviceFirmwareUpdate::endTransfer()
 {
   if (!waitState(SPORT_DATA_REQ, 2000))
-    return "Device refused data";
+    return "Data refused";
   startFrame(PRIM_DATA_EOF);
   sendFrame();
   if (!waitState(SPORT_COMPLETE, 2000)) {
-    return "Device rejected firmware";
+    return "Firmware rejected";
   }
   return nullptr;
 }

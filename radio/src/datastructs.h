@@ -697,7 +697,7 @@ PACK(struct TrainerData {
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
     int8_t   txCurrentCalibration; \
-    int8_t   temperatureWarn; \
+    int8_t   spare; \
     uint8_t  mAhWarn; \
     uint16_t mAhUsed; \
     int8_t   temperatureCalib; \

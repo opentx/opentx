@@ -438,11 +438,6 @@ uint16_t getCurrent()
   return (current_scale * Current) / 8192;
 }
 
-uint8_t getTemperature()
-{
-  return temperature + g_eeGeneral.temperatureCalib;
-}
-
 #define STICK_LV_GAIN 0x01
 #define STICK_LH_GAIN 0x02
 #define STICK_RV_GAIN 0x04

@@ -776,7 +776,7 @@ PACK(typedef struct {
 
   uint8_t  backlightBright;
   int8_t   txCurrentCalibration;
-  int8_t   temperatureWarn;
+  int8_t   spare;
   uint8_t  mAhWarn;
   uint16_t mAhUsed;
   uint32_t globalTimer;
@@ -883,7 +883,6 @@ void convertRadioData_217_to_218(RadioData &settings)
 
 #if defined(PCBSKY9X)
   settings.txCurrentCalibration = settings_v217.txCurrentCalibration;
-  settings.temperatureWarn = settings_v217.temperatureWarn;
   settings.mAhWarn = settings_v217.mAhWarn;
   settings.mAhUsed = settings_v217.mAhUsed;
   settings.temperatureCalib = settings_v217.temperatureCalib;

@@ -256,16 +256,6 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 #endif
 
-#if defined(PCBSKY9X)
-  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
-  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, LEFT);
-  lcdDrawChar(MENU_DEBUG_COL2_OFS, y, '>');
-  drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, y, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
-#else
-  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
-  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, PREC1|LEFT);
-#endif
-
   lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }

@@ -130,8 +130,6 @@ class GeneralSettings {
     unsigned int   backlightBright;
     unsigned int   backlightOffBright;
     int switchesDelay;
-    int    temperatureCalib;
-    int    temperatureWarn;
     unsigned int mAhWarn;
     unsigned int mAhUsed;
     unsigned int globalTimer;

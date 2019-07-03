@@ -118,9 +118,6 @@ enum {
 #if defined(TX_CAPACITY_MEASUREMENT)
   ITEM_RADIO_HARDWARE_CAPACITY_CALIB,
 #endif
-#if defined(PCBSKY9X)
-  ITEM_RADIO_HARDWARE_TEMPERATURE_CALIB,
-#endif
 #if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
 #endif
@@ -183,12 +180,6 @@ enum {
   #define TX_CAPACITY_MEASUREMENT_ROWS
 #endif
 
-#if defined(PCBSKY9X)
-  #define TEMPERATURE_CALIB_ROWS         0,
-#else
-  #define TEMPERATURE_CALIB_ROWS
-#endif
-
 #if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
   #define MAX_BAUD_ROWS                  0,
 #else
@@ -214,8 +205,6 @@ void menuRadioHardware(event_t event)
     0 /* battery calib */,
 
     TX_CAPACITY_MEASUREMENT_ROWS
-
-    TEMPERATURE_CALIB_ROWS
 
     MAX_BAUD_ROWS
 
@@ -345,16 +334,6 @@ void menuRadioHardware(event_t event)
         drawValueWithUnit(HW_SETTINGS_COLUMN2, y, getCurrent(), UNIT_MILLIAMPS, attr);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
-        }
-        break;
-#endif
-
-#if defined(PCBSKY9X)
-      case ITEM_RADIO_HARDWARE_TEMPERATURE_CALIB:
-        lcdDrawTextAlignedLeft(y, STR_TEMP_CALIB);
-        drawValueWithUnit(HW_SETTINGS_COLUMN2, y, getTemperature(), UNIT_TEMPERATURE, attr) ;
-        if (attr) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
         }
         break;
 #endif

@@ -189,9 +189,6 @@ void checkBatteryAlarms()
     // TRACE("checkBatteryAlarms(): battery low");
   }
 #if defined(PCBSKY9X)
-  else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    AUDIO_TX_TEMP_HIGH();
-  }
   else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) { // TODO move calculation into board file
     AUDIO_TX_MAH_HIGH();
   }
