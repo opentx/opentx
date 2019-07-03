@@ -310,6 +310,13 @@ void lcdInit()
   Finishes LCD initialization. It is called auto-magically when first LCD command is
   issued by the other parts of the code.
 */
+
+#if defined(PCBX9DP) && PCBREV >= 2019
+  #define LCD_DELAY_NEEDED() true
+#else
+  #define LCD_DELAY_NEEDED() (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
+#endif
+
 void lcdInitFinish()
 {
   lcdInitFinished = true;
@@ -331,9 +338,9 @@ void lcdInitFinish()
     initialization (without reset) is also recommended by the data sheet.
   */
 
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+  if (LCD_DELAY_NEEDED()) {
 #if !defined(BOOT)
-    while (g_tmr10ms < (RESET_WAIT_DELAY_MS/10)); // wait measured from the power-on
+    while (g_tmr10ms < (RESET_WAIT_DELAY_MS / 10)); // wait measured from the power-on
 #else
     delay_ms(RESET_WAIT_DELAY_MS);
 #endif
