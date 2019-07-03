@@ -318,6 +318,11 @@ enum EnumSwitchesPositions
   SW_SH1,
   SW_SH2,
 #endif
+#if defined(PCBX9DP) && PCBREV >= 2019
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+#endif
 #if defined(PCBX7)
   SW_SI0,
   SW_SI1,
@@ -408,10 +413,10 @@ enum EnumSwitchesPositions
 
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
 
-void keysInit(void);
+void keysInit();
 uint32_t switchState(uint8_t index);
-uint32_t readKeys(void);
-uint32_t readTrims(void);
+uint32_t readKeys();
+uint32_t readTrims();
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 
