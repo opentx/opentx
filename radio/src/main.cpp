@@ -184,7 +184,7 @@ void checkEeprom()
 void checkBatteryAlarms()
 {
   // TRACE("checkBatteryAlarms()");
-  if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
+  if (IS_TXBATT_WARNING()) {
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
   }

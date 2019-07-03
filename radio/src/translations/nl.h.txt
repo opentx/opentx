@@ -642,7 +642,7 @@ TR_GYR_VSRCRAW
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "Tmix max"
 #define TR_FREE_STACK     "Free stack"
-#define TR_MENUTORESET         CENTER TR_ENTER" voor Reset"
+#define TR_MENUTORESET         TR_ENTER" voor Reset"
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
@@ -807,6 +807,8 @@ TR_GYR_VSRCRAW
 #define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
 #define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION TR("Verwachte ver: ","Verwachte versie: ")
+#define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
+#define TR_BATTERY                     "BATTERY"
 #define TR_WRONG_PCBREV        "Verkeerde PCB gedetecteerd"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
 #define TR_PCBREV_ERROR        "PCB fout"

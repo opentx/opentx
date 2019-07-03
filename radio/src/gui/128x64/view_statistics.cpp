@@ -57,6 +57,7 @@ void menuStatisticsView(event_t event)
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
       break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
@@ -108,6 +109,11 @@ void menuStatisticsDebug(event_t event)
   title(STR_MENUDEBUG);
 
   switch (event) {
+    case EVT_ENTRY:
+    case EVT_ENTRY_UP:
+      enableVBatBridge();
+      break;
+
     case EVT_KEY_LONG(KEY_ENTER):
 #if defined(PCBSKY9X)
       g_eeGeneral.mAhUsed = 0;
@@ -120,14 +126,19 @@ void menuStatisticsDebug(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
+#if defined(LUA)
+      maxLuaInterval = 0;
+      maxLuaDuration = 0;
+#endif
       maxMixerDuration  = 0;
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
 #if defined(NAVIGATION_X7)
     case EVT_KEY_BREAK(KEY_PAGE):
+      disableVBatBridge();
       chainMenu(menuStatisticsDebug2);
-      return;
+      break;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -135,10 +146,12 @@ void menuStatisticsDebug(event_t event)
     case EVT_KEY_LONG(KEY_PAGE):
 #endif
       killEvents(event);
+      disableVBatBridge();
       chainMenu(menuStatisticsView);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      disableVBatBridge();
       chainMenu(menuMainView);
       break;
   }
@@ -166,14 +179,6 @@ void menuStatisticsDebug(event_t event)
   // consumption
   lcdDrawTextAlignedLeft(y, STR_CPU_MAH);
   drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
-  y += FH;
-#endif
-
-#if defined(PCBSKY9X)
-  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
-  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, LEFT);
-  lcdDrawChar(MENU_DEBUG_COL2_OFS, y, '>');
-  drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, y, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
   y += FH;
 #endif
 
@@ -245,7 +250,23 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 #endif
 
-  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
+#if defined(STM32)
+  lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
+  putsVolts(MENU_DEBUG_COL1_OFS, y, getRTCBatteryVoltage(), PREC2|LEFT);
+  y += FH;
+#endif
+
+#if defined(PCBSKY9X)
+  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, LEFT);
+  lcdDrawChar(MENU_DEBUG_COL2_OFS, y, '>');
+  drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, y, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
+#else
+  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, PREC1|LEFT);
+#endif
+
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 
@@ -254,7 +275,7 @@ void menuStatisticsDebug2(event_t event)
 {
   title(STR_MENUDEBUG);
 
-  switch (event) {
+  switch(event) {
     case EVT_KEY_FIRST(KEY_ENTER):
       telemetryErrors  = 0;
       break;
@@ -291,7 +312,7 @@ void menuStatisticsDebug2(event_t event)
   y += FH;
 #endif
 
-  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 #endif

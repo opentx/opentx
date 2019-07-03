@@ -82,6 +82,10 @@ if(DEBUG_LATENCY STREQUAL RF_ONLY)
   add_definitions(-DDEBUG_LATENCY_RF_ONLY)
 endif()
 
+if(DEBUG_LATENCY STREQUAL END_TO_END)
+  add_definitions(-DDEBUG_LATENCY)
+  add_definitions(-DDEBUG_LATENCY_END_TO_END)
+endif()
 
 if(CLI)
   add_definitions(-DCLI)

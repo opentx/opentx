@@ -457,7 +457,7 @@ bool menuRadioSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RXCHANNELORD); // RAET->AETR
         char s[5];
         for (uint8_t i=0; i<4; i++) {
-          s[i] = STR_RETA123[channel_order(i+1)];
+          s[i] = STR_RETA123[channelOrder(i+1)];
         }
         s[4] = '\0';
         lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, s, attr);

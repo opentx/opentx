@@ -131,31 +131,30 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(0, SW_SA);
   CHECK_3POS(1, SW_SB);
   CHECK_3POS(2, SW_SC);
-#if !defined(PCBX9LITE)
-  CHECK_3POS(3, SW_SD);
-#endif
-#if defined(PCBXLITES) || defined(PCBX9LITE)
+
+#if defined(PCBX9LITE)
+  CHECK_2POS(SW_SD);
   CHECK_2POS(SW_SE);
-#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
-  // No SE
-#else
-  CHECK_3POS(4, SW_SE);
-#endif
-#if defined(PCBXLITE) && !defined(PCBXLITES)
-  // No SF
-#else
+#elif defined(PCBXLITES)
+  CHECK_3POS(3, SW_SD);
+  CHECK_2POS(SW_SE);
   CHECK_2POS(SW_SF);
-#endif
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
-  // No SG
+  // no SWG and SWH on XLITES
+#elif defined(PCBXLITE)
+  CHECK_3POS(3, SW_SD);
+  // no SWE, SWF, SWG and SWH on XLITE
+#elif defined(PCBX7)
+  CHECK_3POS(3, SW_SD);
+  CHECK_2POS(SW_SF);
+  CHECK_2POS(SW_SH);
 #else
+  CHECK_3POS(3, SW_SD);
+  CHECK_3POS(4, SW_SE);
+  CHECK_2POS(SW_SF);
   CHECK_3POS(5, SW_SG);
-#endif
-#if defined(PCBXLITE) || defined(PCBX9LITE)
-  // No SH
-#else
   CHECK_2POS(SW_SH);
 #endif
+
 #if defined(PCBX9E)
   CHECK_3POS(6, SW_SI);
   CHECK_3POS(7, SW_SJ);

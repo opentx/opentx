@@ -29,8 +29,7 @@ void menuStatisticsView(event_t event)
 {
   title(STR_MENUSTAT);
 
-  switch(event)
-  {
+  switch(event) {
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuStatisticsDebug);
@@ -46,7 +45,7 @@ void menuStatisticsView(event_t event)
 #endif
       break;
 
-    case EVT_KEY_LONG(KEY_MENU):      // historical
+    case EVT_KEY_LONG(KEY_MENU):  // historical
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
@@ -116,14 +115,19 @@ void menuStatisticsDebug(event_t event)
   }
 #endif
 
-  switch(event)
-  {
+  switch(event) {
+    case EVT_ENTRY:
+    case EVT_ENTRY_UP:
+      enableVBatBridge();
+      break;
+
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
-      storageDirty(EE_GENERAL);
       sessionTimer = 0;
+      storageDirty(EE_GENERAL);
       killEvents(event);
       break;
+
     case EVT_KEY_FIRST(KEY_ENTER):
 #if defined(LUA)
       maxLuaInterval = 0;
@@ -132,20 +136,24 @@ void menuStatisticsDebug(event_t event)
       maxMixerDuration  = 0;
       break;
 
-    case EVT_KEY_FIRST(KEY_DOWN):
-    case EVT_KEY_LONG(KEY_PAGE):
-      killEvents(event);
-      chainMenu(menuStatisticsView);
-      break;
-
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_BREAK(KEY_PAGE):
+      disableVBatBridge();
       chainMenu(menuStatisticsDebug2);
       break;
 
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+      disableVBatBridge();
+      chainMenu(menuStatisticsView);
+      break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
+      disableVBatBridge();
       chainMenu(menuMainView);
       break;
+
 #if defined(WATCHDOG_TEST)
     case EVT_KEY_LONG(KEY_MENU):
       {
@@ -157,44 +165,73 @@ void menuStatisticsDebug(event_t event)
 #endif
   }
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Free Mem");
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW3, availableMemory(), LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW3, "b");
+  uint8_t y = FH + 1;
+
+#if defined(STM32) && !defined(SIMU) && defined(DEBUG)
+  lcdDrawTextAlignedLeft(y, "Usb");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, charsWritten, LEFT);
+  lcdDrawText(lcdLastRightPos, y, " ");
+  lcdDrawNumber(lcdLastRightPos, y, APP_Rx_ptr_in, LEFT);
+  lcdDrawText(lcdLastRightPos, y, " ");
+  lcdDrawNumber(lcdLastRightPos, y, APP_Rx_ptr_out, LEFT);
+  lcdDrawText(lcdLastRightPos, y, " ");
+  lcdDrawNumber(lcdLastRightPos, y, usbWraps, LEFT);
+  y += FH;
+#endif
+
+#if defined(STM32)
+  lcdDrawTextAlignedLeft(y, "Free Mem");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, availableMemory(), LEFT);
+  lcdDrawText(lcdLastRightPos, y, "b");
+  y += FH;
+#endif
 
 #if defined(LUA)
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "Lua scripts");
-  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2+1, "[Duration]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW2, 10*maxLuaDuration, LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW2+1, "[Interval]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW2, 10*maxLuaInterval, LEFT);
+  lcdDrawTextAlignedLeft(y, "Lua scripts");
+  lcdDrawText(MENU_DEBUG_COL1_OFS, y+1, "[Duration]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, y, 10*maxLuaDuration, LEFT);
+  lcdDrawText(lcdLastRightPos+2, y+1, "[Interval]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, y, 10*maxLuaInterval, LEFT);
+  y += FH;
 #endif
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW1, "ms");
+  lcdDrawTextAlignedLeft(y, STR_TMIXMAXMS);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
+  lcdDrawText(lcdLastRightPos, y, "ms");
+  y += FH;
 
-#if !defined(SIMU) && defined(DEBUG)
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW4, "Usb");
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW4, charsWritten, LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, " ");
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW4, APP_Rx_ptr_in, LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, " ");
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW4, APP_Rx_ptr_out, LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, " ");
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW4, usbWraps, LEFT);
+  lcdDrawTextAlignedLeft(y, STR_FREE_STACK);
+  lcdDrawText(MENU_DEBUG_COL1_OFS, y+1, "[M]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, y, menusStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, y+1, "[X]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, y, mixerStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, y+1, "[A]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, y, audioStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, y+1, "[I]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, y, stackAvailable(), LEFT);
+  y += FH;
+
+#if defined(DEBUG_LATENCY)
+  lcdDrawTextAlignedLeft(y, "Hearbeat");
+  if (heartbeatCapture.valid)
+    lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, heartbeatCapture.count, LEFT);
+  else
+    lcdDrawText(MENU_DEBUG_COL1_OFS, y, "---");
+  y += FH;
 #endif
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW5, STR_FREE_STACK);
-  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW5+1, "[M]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, menusStack.available(), LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW5+1, "[X]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, mixerStack.available(), LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW5+1, "[A]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, audioStack.available(), LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW5+1, "[I]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, stackAvailable(), LEFT);
+#if defined(STM32)
+  lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
+  putsVolts(MENU_DEBUG_COL1_OFS, y, getRTCBatteryVoltage(), PREC2|LEFT);
+  y += FH;
+#endif
 
-  lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
+#if defined(STM32)
+  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, PREC1|LEFT);
+#endif
+
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 
@@ -202,11 +239,7 @@ void menuStatisticsDebug2(event_t event)
 {
   title(STR_MENUDEBUG);
 
-  switch(event)
-  {
-
-
-
+  switch(event) {
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_BREAK(KEY_PAGE):
 #if defined(DEBUG_TRACE_BUFFER)
@@ -222,7 +255,6 @@ void menuStatisticsDebug2(event_t event)
       chainMenu(menuStatisticsDebug);
       break;
 
-
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
@@ -237,7 +269,7 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
 
 
-  lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 

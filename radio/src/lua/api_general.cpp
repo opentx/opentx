@@ -1220,7 +1220,7 @@ Get stick that is assigned to a channel. See Default Channel Order in General Se
 static int luaDefaultStick(lua_State * L)
 {
   uint8_t channel = luaL_checkinteger(L, 1);
-  lua_pushinteger(L, channel_order(channel+1)-1);
+  lua_pushinteger(L, channelOrder(channel+1)-1);
   return 1;
 }
 
@@ -1308,7 +1308,7 @@ static int luaDefaultChannel(lua_State * L)
 {
   uint8_t stick = luaL_checkinteger(L, 1);
   for (int i=1; i<=4; i++) {
-    int tmp = channel_order(i) - 1;
+    int tmp = channelOrder(i) - 1;
     if (tmp == stick) {
       lua_pushinteger(L, i-1);
       return 1;

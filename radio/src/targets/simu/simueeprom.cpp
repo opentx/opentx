@@ -22,20 +22,12 @@
 
 const char * eepromFile = nullptr;
 FILE * fp = nullptr;
-
 uint32_t eeprom_pointer;
 uint8_t * eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;
 bool eeprom_read_operation;
-
 bool eeprom_thread_running = false;
-
-#if defined(EEPROM_SIZE)
-uint8_t eeprom[EEPROM_SIZE];
-#else
 uint8_t * eeprom = nullptr;
-#endif
-
 sem_t * eeprom_write_sem;
 
 void eepromReadBlock (uint8_t * buffer, size_t address, size_t size)
