@@ -2920,7 +2920,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1232"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1244"/>
         <source>Support for auto update on boot</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge de la mise à jour automatique au démarrage</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
@@ -4054,7 +4054,7 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="573"/>
         <source>Country Code</source>
-        <translation>Zone géograhpique RF</translation>
+        <translation>Zone géographique RF</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="566"/>
@@ -13244,7 +13244,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../modelslist.cpp" line="151"/>
         <source>RX #</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="691"/>
