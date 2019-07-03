@@ -44,15 +44,14 @@ WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId, const Mod
   originalModelData(modelData),
   vehicle(NOVEHICLE)
 {
-  strncpy(name, originalModelData.name, WIZ_MODEL_NAME_LENGTH);
-  name[WIZ_MODEL_NAME_LENGTH] = '\0';
+  memset(name, 0, sizeof(name));
+  strncpy(name, originalModelData.name, sizeof(name)-1);
 }
-
 
 void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int weight)
 {
-  strncpy(mix.name, name, MIXDATA_NAME_LEN);
-  mix.name[MIXDATA_NAME_LEN] = '\0';
+  memset(mix.name, 0, sizeof(mix.name));
+  strncpy(mix.name, name, sizeof(mix.name)-1);
   mix.destCh = channel;
   mix.srcRaw = RawSource(SOURCE_TYPE_MAX);
   mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);
@@ -76,7 +75,7 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
     }
     else if (input==FLAPS_INPUT){
       // There ought to be some kind of constants for switches somewhere...
-      maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isHorusOrTaranis ? SWITCH_SA0 :-SWITCH_ELE ,  weight); //Taranis-Horus SA-UP, 9X ELE-UP
+      maxMixSwitch((char *)"Flaps Up", model.mixData[mixIndex++], channel+1, isHorusOrTaranis ? SWITCH_SA0 :-SWITCH_ELE ,  weight); //Taranis-Horus SA-UP, 9X ELE-UP
       maxMixSwitch((char *)"Flaps Dn", model.mixData[mixIndex++], channel+1, isHorusOrTaranis ? SWITCH_SA2 : SWITCH_ELE , -weight); //Taranis-Horus SA-DOWN, 9X ELE-DOWN
 
     }
@@ -101,8 +100,8 @@ WizMix::operator ModelData()
   int timerIndex = 0;
 
   // Safe copy model name
-  strncpy(model.name, name, WIZ_MODEL_NAME_LENGTH);
-  model.name[WIZ_MODEL_NAME_LENGTH] = '\0';
+  memset(model.name, 0, sizeof(model.name));
+  strncpy(model.name, name, sizeof(model.name)-1);
 
   // Add the channel mixes
   for (int i=0; i<WIZ_MAX_CHANNELS; i++ )
@@ -123,16 +122,16 @@ WizMix::operator ModelData()
         mix.swtch.type = SWITCH_TYPE_SWITCH;
         mix.swtch.index = IS_ARM(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
         mix.mltpx = MLTPX_REP;
+        memset(mix.name, 0, sizeof(mix.name));
         strncpy(mix.name, "Cut", MIXDATA_NAME_LEN);
-        mix.name[MIXDATA_NAME_LEN] = '\0';
       }
     }
   }
 
   // Add the Flight Timer option
   if (options[FLIGHT_TIMER_OPTION] && throttleChannel >= 0){
-    strncpy(model.timers[timerIndex].name, "Flt", TIMER_NAME_LEN);
-    model.timers[timerIndex].name[TIMER_NAME_LEN] = '\0';
+    memset(model.timers[timerIndex].name, 0, sizeof(model.timers[timerIndex].name));
+    strncpy(model.timers[timerIndex].name, "Flt", sizeof(model.timers[timerIndex].name)-1);
     model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
     model.timers[timerIndex].mode.index = TMRMODE_THR_TRG;
     timerIndex++;
@@ -140,8 +139,8 @@ WizMix::operator ModelData()
 
   // Add the Throttle Timer option
   if (options[THROTTLE_TIMER_OPTION] && throttleChannel >= 0){
-    strncpy(model.timers[timerIndex].name, "Thr", TIMER_NAME_LEN);
-    model.timers[timerIndex].name[TIMER_NAME_LEN] = '\0';
+    memset(model.timers[timerIndex].name, 0, sizeof(model.timers[timerIndex].name));
+    strncpy(model.timers[timerIndex].name, "Thr", sizeof(model.timers[timerIndex].name)-1);
     model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
     model.timers[timerIndex].mode.index = TMRMODE_THR;
     timerIndex++;
