@@ -658,7 +658,7 @@
   #define TR_TMIXMAXMS                 "Tmix max"
   #define TR_FREE_STACK             "Free stack"
 
-#define TR_MENUTORESET                 CENTER TR_ENTER" pour reset"
+#define TR_MENUTORESET                 TR_ENTER" pour reset"
 #define TR_PPM_TRAINER                 "TR"
 #define TR_CH                          "CH"
 #define TR_MODEL                       "MODELE"
@@ -820,6 +820,8 @@
 #define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
 #define TR_NIGHTLY_NOTSAFE             "Version de test uniq."
 #define TR_WRONG_SDCARDVERSION         "Version requise: "
+#define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
+#define TR_BATTERY                     "BATTERY"
 #define TR_WRONG_PCBREV                "PCB incorrect détecté"
 #define TR_EMERGENCY_MODE              "MODE SECOURS"
 #define TR_PCBREV_ERROR                "Erreur PCB"

@@ -50,6 +50,7 @@ DMA_Stream_TypeDef dma1_stream1, dma1_stream2, dma1_stream3, dma1_stream4, dma1_
 DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 SysTick_Type systick;
+ADC_Common_TypeDef adc;
 #else
 Pio Pioa, Piob, Pioc;
 Pmc pmc;

@@ -30,6 +30,13 @@
 #include "opentx_types.h"
 #include "debounce.h"
 
+
+#if defined(SIMU)
+#include "targets/simu/simpgmspace.h"
+#endif
+
+#include "board.h"
+
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
@@ -220,8 +227,6 @@
 #define RESXul     1024ul
 #define RESXl      1024l
 
-#include "board.h"
-
 #if defined(JACK_DETECT_GPIO)
 #define CASE_JACK_DETECT(x) x,
 #else
@@ -230,10 +235,6 @@
 
 #if defined(DISK_CACHE)
   #include "disk_cache.h"
-#endif
-
-#if defined(SIMU)
-  #include "targets/simu/simpgmspace.h"
 #endif
 
 #include "debug.h"
@@ -363,7 +364,7 @@ extern const uint8_t modn12x3[];
   #define CONVERT_MODE_TRIMS(x)  CONVERT_MODE(x)
 #endif
 
-extern uint8_t channel_order(uint8_t x);
+extern uint8_t channelOrder(uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
@@ -1140,9 +1141,9 @@ union ReusableBuffer
   } moduleSetup;
 
   struct {
-    int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
-    int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
-    int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+    int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
+    int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
+    int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
     uint8_t state;
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     struct {

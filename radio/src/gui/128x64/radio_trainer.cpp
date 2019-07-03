@@ -39,7 +39,7 @@ void menuRadioTrainer(event_t event)
     y = MENU_HEADER_HEIGHT + 1 + FH;
 
     for (uint8_t i=HEADER_LINE; i<HEADER_LINE+NUM_STICKS; i++) {
-      uint8_t chan = channel_order(i+1-HEADER_LINE);
+      uint8_t chan = channelOrder(i+1-HEADER_LINE);
       volatile TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
 
       drawSource(0, y, MIXSRC_Rud-1+chan, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);
