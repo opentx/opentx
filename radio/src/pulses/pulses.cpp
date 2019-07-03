@@ -164,7 +164,8 @@ void enablePulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(PXX2)
+#if defined(PXX2) && !defined(PCBX9DP)
+      // TODO EXTERNAL_MODULE_PXX2
     case PROTOCOL_CHANNELS_PXX2:
       extmoduleInvertedSerialStart(PXX2_EXTERNAL_MODULE_BAUDRATE);
       break;

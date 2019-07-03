@@ -588,7 +588,6 @@
 #endif
 
 // External Module
-#define EXTMODULE_PULSES
 #define EXTMODULE_PWR_GPIO              GPIOB
 #define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3  // PB.03
 #if defined(PCBX10) || PCBREV >= 13
