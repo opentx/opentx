@@ -1321,7 +1321,7 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="209"/>
@@ -1649,7 +1649,7 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="122"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="126"/>
@@ -2281,7 +2281,7 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="78"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="216"/>
@@ -3476,7 +3476,7 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="39"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="104"/>
@@ -3937,7 +3937,7 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="573"/>
         <source>Country Code</source>
-        <translation>Zone géograhpique RF</translation>
+        <translation>Zone géographique RF</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="566"/>
@@ -4208,7 +4208,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1440"/>
         <source>DMS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2179"/>
@@ -5589,7 +5589,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="55"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="108"/>
@@ -8734,7 +8734,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="117"/>
         <source>Auto &lt;= 1W - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto &lt;= 1W - 16VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="118"/>
