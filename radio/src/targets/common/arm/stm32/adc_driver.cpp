@@ -39,7 +39,7 @@
 #elif defined(PCBX7)
   const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,  1,1,1};
 #elif defined(PCBX9LITE)
-  const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,1,1};
+  const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,1};
 #elif defined(PCBXLITE)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,-1,1,  -1,1,  1,  1,1,1};
 #else
