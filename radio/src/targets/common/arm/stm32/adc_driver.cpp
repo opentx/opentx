@@ -187,7 +187,7 @@ void adcSingleRead()
 
 #if defined(PCBX9E)
   ADC_EXT_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
-  ADC_EXT->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
+  ADC_EXT->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC_EXT_SET_DMA_FLAGS();
   ADC_EXT_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
   ADC_EXT->CR2 |= (uint32_t)ADC_CR2_SWSTART;
