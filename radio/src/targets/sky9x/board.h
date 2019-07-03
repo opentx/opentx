@@ -199,10 +199,6 @@ void usbMassStorage();
 void configure_pins( uint32_t pins, uint16_t config );
 uint16_t getCurrent();
 
-extern uint8_t temperature ;              // Raw temp reading
-extern uint8_t maxTemperature ;           // Raw temp reading
-uint8_t getTemperature();
-
 extern uint16_t Current_analogue;
 extern uint16_t Current_max;
 extern uint32_t Current_accumulator;

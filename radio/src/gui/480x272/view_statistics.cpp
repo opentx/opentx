@@ -160,12 +160,6 @@ bool menuStatsDebug(event_t event)
   y += FH;
 #endif
 
-//#if defined(STM32)
-//  lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CPU_TEMP);
-//  drawValueWithUnit(MENU_STATS_COLUMN1, y, getTemperature(), UNIT_TEMPERATURE, PREC1|LEFT);
-//  y += FH;
-//#endif
-
 #if defined(DISK_CACHE)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "SD cache hits");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");

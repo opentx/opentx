@@ -112,9 +112,8 @@ void OpenTxSimulator::init()
   memset(g_anas, 0, sizeof(g_anas));
 
 #if defined(PCBTARANIS)
-  g_anas[TX_INTREF] = 826; // 3V VDD
-  g_anas[TX_RTC_VOLTAGE] = 800;   // 2,34V
-  g_anas[TX_TEMPERATURE] = 520;
+  g_anas[TX_INTREF] = 826;  // 3V VDD
+  g_anas[TX_RTC_VOLTAGE] = 800;  // 2,34V
 #endif
 
   simuInit();
