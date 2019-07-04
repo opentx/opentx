@@ -1167,12 +1167,6 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 
-#if defined(PCBXLITES) || defined(PCBX9LITE)
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
-#else
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
-#endif
-
 // Heartbeat for iXJT / ISRM synchro
 #if defined(PCBXLITE)
   #define INTMODULE_HEARTBEAT
