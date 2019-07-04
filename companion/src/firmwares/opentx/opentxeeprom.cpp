@@ -258,7 +258,7 @@ class SourcesConversionTable: public ConversionTable {
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 2), val++); // Timer1
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 3), val++); // Timer2
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 4), val++); // Timer3
-        for (unsigned i=0; i<MAX_TELEMETRY_SENSORS(board, version)*3; ++i) {
+        for (int i=0; i<MAX_TELEMETRY_SENSORS(board, version)*3; ++i) {
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
         }
       }

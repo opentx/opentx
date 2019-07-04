@@ -69,8 +69,6 @@ void sig(int sgn)
 
 #include <inttypes.h>
 #include <stdio.h>
-#include <pthread.h>
-#include <semaphore.h>
 #include <stddef.h>
 #include <errno.h>
 

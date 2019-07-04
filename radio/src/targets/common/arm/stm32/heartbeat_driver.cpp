@@ -60,7 +60,7 @@ void stop_intmodule_heartbeat()
   EXTI_StructInit(&EXTI_InitStructure);
   EXTI_InitStructure.EXTI_Line = INTMODULE_HEARTBEAT_EXTI_LINE;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = INTMODULE_HEARTBEAT_TRIGGER;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
   EXTI_InitStructure.EXTI_LineCmd = DISABLE;
   EXTI_Init(&EXTI_InitStructure);
 }
