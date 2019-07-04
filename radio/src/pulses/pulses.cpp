@@ -68,6 +68,7 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 
     case MODULE_TYPE_R9M_LITE_PXX1:
+    case MODULE_TYPE_R9M_LITE_PRO_PXX1:
       protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
       break;
 

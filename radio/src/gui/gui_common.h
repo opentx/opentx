@@ -154,13 +154,13 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 
 #define MAX_RX_NUM(x)                  (isModuleDSM2(x) ? 20 : isModuleMultimodule(x) ? MULTI_MAX_RX_NUM(x) : 63)
 #define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D8)
-#define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== MODULE_SUBTYPE_PXX1_ACCST_D16) || isModuleR9M(x))
+#define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== MODULE_SUBTYPE_PXX1_ACCST_D16) || isModuleR9MNonAccess(x))
 
-#define FAILSAFE_ROWS(x)               ((isModuleXJTVariant(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x) || isModuleR9MAccess(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
+#define FAILSAFE_ROWS(x)               ((isModuleXJTVariant(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 
-#define EXTERNAL_MODULE_OPTION_ROW    (isModuleR9M(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
+#define EXTERNAL_MODULE_OPTION_ROW    (isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
 
-#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PXX1 ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
+#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE)) ? (isModuleR9MLite(EXTERNAL_MODULE) ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
 
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
