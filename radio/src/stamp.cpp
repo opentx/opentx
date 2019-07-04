@@ -28,6 +28,8 @@
 
 #if defined(PCBHORUS)
 #define TAB "\037\075"
+#else
+#define TAB "\037\033"
 #endif
 
 #if defined(COLORLCD)
@@ -35,12 +37,10 @@
   const char date_stamp[]  =   "DATE" TAB ": " DATE;
   const char time_stamp[]  =   "TIME" TAB ": " TIME;
   const char eeprom_stamp[]  = "EEPR" TAB ": " EEPROM_STR;
-#elif defined(PCBTARANIS) && defined(BOARD_NAME)
-  const char vers_stamp[]  = "FW\037\033: " "opentx-" BOARD_NAME "\036VERS\037\033: " VERSION " (" GIT_STR ")" "\036DATE\037\033: " DATE " " TIME "\036EEPR\037\033: " EEPROM_STR;
-#elif defined(PCBTARANIS)
-  const char vers_stamp[]  = "FW\037\033: " "opentx-" FLAVOUR "\036VERS\037\033: " VERSION " (" GIT_STR ")" "\036DATE\037\033: " DATE " " TIME "\036EEPR\037\033: " EEPROM_STR;
+#elif defined(BOARD_NAME)
+  const char vers_stamp[]  = "FW" TAB ": opentx-" BOARD_NAME "\036VERS" TAB ": " VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #else
-  const char vers_stamp[]  = "FW\037\033: " "opentx-" FLAVOUR "\036VERS\037\033: " VERSION "\036DATE\037\033: " DATE "\036TIME\037\033: " TIME "\036EEPR\037\033: " EEPROM_STR;
+  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": " VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #endif
 
 /**

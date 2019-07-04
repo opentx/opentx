@@ -207,20 +207,20 @@ void menuRadioVersion(event_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, ITEM_RADIO_VERSION_COUNT);
 
-  lcdDrawText(FW, FH + 2, vers_stamp, SMLSIZE);
-
-  coord_t y = MENU_HEADER_HEIGHT + 4*FH;
+  coord_t y = MENU_HEADER_HEIGHT + 2;
+  lcdDrawText(FW, y, vers_stamp, SMLSIZE);
+  y += 4 * (FH - 1);
 
 #if defined(COPROCESSOR)
-  if (Coproc_valid == 1) {
-    lcdDrawTextAlignedLeft(y, "CoPr:");
-    lcdDraw8bitsNumber(10*FW, y, Coproc_read);
-  }
-  else {
-    lcdDrawTextAlignedLeft(y, "CoPr: ---");
-  }
-  y += FH;
+  lcdDrawText(FW, y, "COPR\037\033: ", SMLSIZE);
+  if (Coproc_valid == 1)
+    lcdDrawNumber(lcdNextPos, y, Coproc_read, SMLSIZE);
+  else
+    lcdDrawText(lcdNextPos, y, "---", SMLSIZE);
+  y += FH - 1;
 #endif
+
+  y += 2;
 
 #if defined(PXX2)
   lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_MODULES_RX_VERSION), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
