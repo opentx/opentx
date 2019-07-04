@@ -13,6 +13,7 @@ set(GUI_SRC
   ../common/stdlcd/model_notes.cpp
   ../common/stdlcd/model_curves.cpp
   ../common/stdlcd/radio_tools.cpp
+  ../common/stdlcd/radio_version.cpp
   model_curve_edit.cpp
   )
 
