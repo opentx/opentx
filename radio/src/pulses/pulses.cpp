@@ -72,10 +72,13 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 
     case MODULE_TYPE_ISRM_PXX2:
+    case MODULE_TYPE_R9M_LITE_PRO_PXX2:
+      protocol = PROTOCOL_CHANNELS_PXX2_HIGHSPEED;
+      break;
+
     case MODULE_TYPE_R9M_PXX2:
     case MODULE_TYPE_R9M_LITE_PXX2:
-    case MODULE_TYPE_R9M_LITE_PRO_PXX2:
-      protocol = PROTOCOL_CHANNELS_PXX2;
+      protocol = PROTOCOL_CHANNELS_PXX2_LOWSPEED;
       break;
 
     case MODULE_TYPE_SBUS:
@@ -165,8 +168,12 @@ void enablePulsesExternalModule(uint8_t protocol)
 #endif
 
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2:
-      extmoduleInvertedSerialStart(PXX2_EXTERNAL_MODULE_BAUDRATE);
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
+      extmoduleInvertedSerialStart(PXX2_HIGHSPEED_BAUDRATE);
+      break;
+
+    case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
+      extmoduleInvertedSerialStart(PXX2_LOWSPEED_BAUDRATE);
       break;
 #endif
 
@@ -206,12 +213,13 @@ void setupPulsesExternalModule(uint8_t protocol)
 #if defined(PXX1) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
-      scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX_SERIAL_PERIOD);
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX1_SERIAL_PERIOD);
       break;
 #endif
 
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2:
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
+    case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
       extmodulePulsesData.pxx2.setupFrame(EXTERNAL_MODULE);
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PXX2_PERIOD);
       break;
@@ -278,8 +286,8 @@ void enablePulsesInternalModule(uint8_t protocol)
 #endif
 
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2:
-      intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, true);
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
+      intmoduleSerialStart(PXX2_HIGHSPEED_BAUDRATE, true);
       break;
 #endif
 
@@ -294,19 +302,19 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(HARDWARE_INTERNAL_MODULE) && defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       intmodulePulsesData.pxx.setupFrame(INTERNAL_MODULE);
-      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX_PERIOD);
+      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
       break;
 #endif
 
 #if defined(PXX1) && defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
-      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX_PERIOD);
+      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
       break;
 #endif
 
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2:
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
       intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
       if (moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER) {
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);

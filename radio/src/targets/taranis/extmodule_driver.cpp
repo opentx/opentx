@@ -238,7 +238,7 @@ void extmodulePxx1PulsesStart()
 #if defined(PXX1) && defined(EXTMODULE_USART)
 void extmodulePxx1SerialStart()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_PXX_SERIAL_BAUDRATE);
+  extmoduleInvertedSerialStart(EXTMODULE_PXX1_SERIAL_BAUDRATE);
 }
 #endif
 
@@ -276,12 +276,9 @@ void extmoduleSendNextFrame()
 #endif
 
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2:
-      #if defined(EXTMODULE_USART)
-        extmoduleSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
-      #else
-        sportSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
-      #endif
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
+    case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
+      extmoduleSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
       break;
 #endif
 
