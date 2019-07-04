@@ -40,12 +40,7 @@ options = {
         "GVARS": "YES",
         "AUTOUPDATE": "YES",
         "PXX1": "YES",
-        "XJT": "NO",
-        "R9M_SIZE_STD": "NO",
-        "PPM": "NO",
-        "DSM2": "NO",
         "CROSSFIRE": "NO",
-        "SBUS": "NO",
         "DEFAULT_MODE": "2",
     }
 }
