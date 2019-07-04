@@ -168,6 +168,7 @@ void OpenTxSimulator::setRadioData(const QByteArray & data)
 {
 #if defined(EEPROM_SIZE)
   QMutexLocker lckr(&m_mtxRadioData);
+  eeprom = (uint8_t *)malloc(qMin<int>(EEPROM_SIZE, data.size()));
   memcpy(eeprom, data.data(), qMin<int>(EEPROM_SIZE, data.size()));
 #endif
 }
