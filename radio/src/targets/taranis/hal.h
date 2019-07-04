@@ -587,7 +587,7 @@
   #define KEYS_GPIOE_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15)
 #elif defined(PCBX9DP)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
-  #define KEYS_GPIOA_PINS               (GPIO_Pin_5)
+  #define KEYS_GPIOA_PINS               (SWITCHES_GPIO_PIN_C_L)
   #define KEYS_GPIOB_PINS               (SWITCHES_GPIO_PIN_E_L | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_A_H)
   #define KEYS_GPIOC_PINS               (TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_RHR)
   #define KEYS_GPIOD_PINS               (KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE | SWITCHES_GPIO_PIN_H)
@@ -981,9 +981,6 @@
 // External Module
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define HARDWARE_EXTERNAL_MODULE_SIZE_SML
-#endif
-
-#if defined(PCBXLITE) || defined(PCBX9LITE)
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
   #if defined(PCBX9LITE)
     #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
@@ -1260,7 +1257,7 @@
 #endif
 
 // Heartbeat for iXJT / ISRM synchro
-#if defined(PCBXLITES)
+#if defined(PCBXLITE)
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
   #define INTMODULE_HEARTBEAT_GPIO                GPIOD
@@ -1270,18 +1267,6 @@
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
   #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
-#elif defined(PCBXLITE)
-  #define INTMODULE_HEARTBEAT
-  #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
-  #define INTMODULE_HEARTBEAT_GPIO                GPIOD
-  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_15
-  #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
-  #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource15
-  #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line15
-  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
-  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI15_10_IRQHandler
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
 #elif defined(PCBX9LITE)
   // #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      0 // RCC_AHB1Periph_GPIOC
@@ -1303,7 +1288,6 @@
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
 #elif defined(PCBX9DP) && PCBREV >= 2019
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOB
@@ -1314,7 +1298,6 @@
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line1
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI1_IRQn
   #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI1_IRQHandler
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
 #else
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
@@ -1325,7 +1308,6 @@
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
   #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
-  #define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
 #endif
 
 #if defined(PCBX9LITE)
