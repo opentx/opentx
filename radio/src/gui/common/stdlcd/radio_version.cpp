@@ -152,6 +152,9 @@ void menuRadioModulesVersion(event_t event)
   }
   else {
     menuVerticalOffset = 0;
+    if (lines == 0) {
+
+    }
   }
 
   switch(event) {

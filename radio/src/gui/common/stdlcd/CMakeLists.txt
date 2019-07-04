@@ -14,6 +14,7 @@ set(GUI_SRC
   ../common/stdlcd/model_curves.cpp
   ../common/stdlcd/radio_tools.cpp
   ../common/stdlcd/radio_version.cpp
+  ../common/stdlcd/radio_trainer.cpp
   model_curve_edit.cpp
   )
 

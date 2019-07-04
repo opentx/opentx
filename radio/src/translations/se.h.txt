@@ -552,12 +552,12 @@
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expo saknas!"
 #define TR_NOFREEMIXER         "Mixer saknas!"
-#define TR_SOURCE              INDENT"Källa"
+#define TR_SOURCE              "Källa"
 #define TR_WEIGHT              "Vikt"
 #define TR_EXPO                TR("Expo","Exponentiell")
 #define TR_SIDE                "Sida"
 #define TR_DIFFERENTIAL        "Diff."
-#define TR_OFFSET              INDENT"Offset"
+#define TR_OFFSET              "Offset"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define DREX_CHBOX_OFFSET      30

@@ -65,7 +65,7 @@
 #define TR_VBLMODE       "OFF ""Chav""Stks""Tudo""ON\0"
 
 #define LEN_TRNMODE      "\003"
-#define TR_TRNMODE       "OFF"" +="" :="
+#define TR_TRNMODE       "OFF""+=\0"":="
 
 #define LEN_TRNCHN       "\003"
 #define TR_TRNCHN        "CH1CH2CH3CH4"
@@ -539,12 +539,12 @@
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
-#define TR_SOURCE              INDENT"Fonte"
+#define TR_SOURCE              "Fonte"
 #define TR_WEIGHT              "Quantia"
 #define TR_EXPO                "Exponen"
 #define TR_SIDE                "Lado"
 #define TR_DIFFERENTIAL        "Diferencial"
-#define TR_OFFSET              INDENT"Desvio"
+#define TR_OFFSET              "Desvio"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define DREX_CHBOX_OFFSET      30

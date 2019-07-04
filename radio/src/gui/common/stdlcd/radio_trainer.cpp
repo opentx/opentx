@@ -20,40 +20,46 @@
 
 #include "opentx.h"
 
-#define TRAINER_CALIB_POS 12
+#if LCD_W >= 212
+  #define TRAINER_CALIB_COLUMN_WIDTH 12
+#else
+  #define TRAINER_CALIB_COLUMN_WIDTH 8
+#endif
 
 void menuRadioTrainer(event_t event)
 {
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, 0, 0 });
+  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? HEADER_LINE : HEADER_LINE+6), { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, 0, 0 });
 
   if (slave) {
-    lcdDrawText(7*FW, 4*FH, STR_SLAVE);
+    lcdDrawText(LCD_W/2, 4*FH, STR_SLAVE, CENTERED);
     return;
   }
 
   LcdFlags attr;
   LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-  lcdDrawText(3*FW, MENU_HEADER_HEIGHT+1, STR_MODESRC);
+  lcdDrawText(5*FW, MENU_HEADER_HEIGHT+1, STR_MODE);
+  lcdDrawText(11*FW, MENU_HEADER_HEIGHT+1, "%", RIGHT);
+  lcdDrawText(12*FW, MENU_HEADER_HEIGHT+1, STR_SOURCE);
 
   y = MENU_HEADER_HEIGHT + 1 + FH;
 
-  for (int i=0; i<NUM_STICKS; i++) {
-    uint8_t chan = channelOrder(i+1);
+  for (uint8_t i=HEADER_LINE; i<HEADER_LINE+NUM_STICKS; i++) {
+    uint8_t chan = channelOrder(i+1-HEADER_LINE);
     TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
 
-    putsStickName(0, y, chan-1, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);
+    drawSource(0, y, MIXSRC_Rud-1+chan, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);
 
-    for (int j=0; j<3; j++) {
+    for (uint8_t j=0; j<3; j++) {
 
       attr = ((menuVerticalPosition==i && menuHorizontalPosition==j) ? blink : 0);
 
-      switch(j) {
+      switch (j) {
         case 0:
-          lcdDrawTextAtIndex(4*FW, y, STR_TRNMODE, td->mode, attr);
+          lcdDrawTextAtIndex(5*FW, y, STR_TRNMODE, td->mode, attr);
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
           break;
 
@@ -71,16 +77,17 @@ void menuRadioTrainer(event_t event)
     y += FH;
   }
 
-  attr = (menuVerticalPosition==4) ? blink : 0;
+  attr = (menuVerticalPosition==HEADER_LINE+4) ? blink : 0;
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
   lcdDrawNumber(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1|RIGHT);
   if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-  attr = (menuVerticalPosition==5) ? INVERS : 0;
-  if (attr) s_editMode = 0;
+  attr = (menuVerticalPosition==HEADER_LINE+5) ? INVERS : 0;
+  if (attr)
+    s_editMode = 0;
   lcdDrawText(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
-  for (int i=0; i<4; i++) {
-    uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
+  for (uint8_t i=0; i<4; i++) {
+    uint8_t x = (i*TRAINER_CALIB_COLUMN_WIDTH + 16) * FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
     lcdDrawNumber(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, PREC1|RIGHT);
 #else
@@ -89,6 +96,7 @@ void menuRadioTrainer(event_t event)
   }
 
   if (attr) {
+    s_editMode = 0;
     if (event==EVT_KEY_LONG(KEY_ENTER)){
       memcpy(g_eeGeneral.trainer.calib, ppmInput, sizeof(g_eeGeneral.trainer.calib));
       storageDirty(EE_GENERAL);

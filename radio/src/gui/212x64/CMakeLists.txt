@@ -16,7 +16,6 @@ set(GUI_SRC
   model_telemetry_sensor.cpp
   menu_radio.cpp
   radio_setup.cpp
-  radio_trainer.cpp
   radio_hardware.cpp
   radio_calibration.cpp
   view_main.cpp
