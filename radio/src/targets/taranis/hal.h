@@ -694,16 +694,21 @@
   #define ADC_CHANNEL_STICK_LV          ADC_Channel_3  // ADC1_IN3
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_6  // PA.06
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_0  // PB.00
-  #define ADC_GPIO_PIN_POT3             GPIO_Pin_1  // PB.01
+  #if PCBREV < 2019
+    #define ADC_GPIO_PIN_POT3           GPIO_Pin_1  // PB.01
+    #define ADC_GPIOB_PINS              (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT3)
+    #define ADC_CHANNEL_POT3            ADC_Channel_9
+  #else
+    #define ADC_GPIOB_PINS              (ADC_GPIO_PIN_POT2)
+    #define ADC_CHANNEL_POT3            0
+  #endif
   #define ADC_GPIO_PIN_SLIDER1          GPIO_Pin_4  // PC.04
   #define ADC_GPIO_PIN_SLIDER2          GPIO_Pin_5  // PC.05
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
   #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1)
-  #define ADC_GPIOB_PINS                (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT3)
   #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
   #define ADC_CHANNEL_POT1              ADC_Channel_6
   #define ADC_CHANNEL_POT2              ADC_Channel_8
-  #define ADC_CHANNEL_POT3              ADC_Channel_9
   #define ADC_CHANNEL_SLIDER1           ADC_Channel_14
   #define ADC_CHANNEL_SLIDER2           ADC_Channel_15
   #define ADC_CHANNEL_BATT              ADC_Channel_10
@@ -979,14 +984,18 @@
 #endif
 
 // External Module
-#if defined(PCBXLITE) || defined(PCBX9LITE)
-  #define HARDWARE_EXTERNAL_MODULE_SIZE_SML
+#if defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
-  #if defined(PCBX9LITE)
-    #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #if defined(PCBX9DP) && PCBREV >= 2019
+    #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
+    #define EXTMODULE_PWR_GPIO          GPIOD
+    #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_8  // PD.08
+  #elif defined(PCBX9LITE)
+    #define HARDWARE_EXTERNAL_MODULE_SIZE_SML    #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
     #define EXTMODULE_PWR_GPIO          GPIOA
     #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_8  // PA.08
   #else
+    #define HARDWARE_EXTERNAL_MODULE_SIZE_SML
     #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
     #define EXTMODULE_PWR_GPIO          GPIOD
     #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_11 // PD.11
@@ -1291,7 +1300,7 @@
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOB
   #define INTMODULE_HEARTBEAT_GPIO                GPIOB
-  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_1
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_1  // PB.01
   #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOB
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource1
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line1
