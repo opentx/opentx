@@ -207,10 +207,9 @@ void menuRadioVersion(event_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, ITEM_RADIO_VERSION_COUNT);
 
-  coord_t y = MENU_HEADER_HEIGHT + 1;
-  lcdDrawTextAlignedLeft(y, vers_stamp);
-  y += 4*FH;
-  // TODO this was good on AVR radios, but horrible now ...
+  lcdDrawText(FW, FH + 2, vers_stamp, SMLSIZE);
+
+  coord_t y = MENU_HEADER_HEIGHT + 4*FH;
 
 #if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
