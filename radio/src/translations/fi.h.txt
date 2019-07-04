@@ -65,7 +65,7 @@
 #define TR_VBLMODE             TR("OFF\0""Keys""Ctrl""Both""ON\0 ", "OFF\0    ""Keys\0   ""Controls""Both\0   ""ON\0     ")
 
 #define LEN_TRNMODE            "\003"
-#define TR_TRNMODE             "OFF"" +="" :="
+#define TR_TRNMODE             "OFF""+=\0"":="
 
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
@@ -546,12 +546,12 @@
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
-#define TR_SOURCE              INDENT"Source"
+#define TR_SOURCE              "Source"
 #define TR_WEIGHT              "Weight"
 #define TR_EXPO                TR("Expo","Exponential")
 #define TR_SIDE                "Side"
 #define TR_DIFFERENTIAL        "Differ"
-#define TR_OFFSET              INDENT"Offset"
+#define TR_OFFSET              "Offset"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define DREX_CHBOX_OFFSET      30
@@ -713,10 +713,10 @@
 #define TR_MONITOR_CHANNELS4   "CHANNELS MONITOR 25/32"
 #define TR_MONITOR_OUTPUT_DESC "Outputs"
 #define TR_MONITOR_MIXER_DESC  "Mixers"
-#define TR_RECEIVER_NUM               TR("RxNum", INDENT"Receiver No.")
-#define TR_RECEIVER            INDENT "Receiver"
+#define TR_RECEIVER_NUM        TR("RxNum", INDENT"Receiver No.")
+#define TR_RECEIVER            "Receiver"
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
-#define TR_MULTI_TELEMETRY             "Telemetry"
+#define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
 #define TR_MULTI_RFPOWER       INDENT "RF Power"
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
@@ -911,6 +911,9 @@
 #define TR_WRITING             "Writing..."
 #define TR_CONFIRM_FORMAT      "Confirm Format?"
 #define TR_INTERNALRF          "Internal RF"
+#define TR_INTERNAL_MODULE             "Internal module"
+#define TR_EXTERNAL_MODULE             "External module"
+#define TR_NO_MODULE_INFORMATION       "No module information"
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            INDENT "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
@@ -988,7 +991,7 @@
 #define TR_TRAINER             "Trainer"
 #define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
 #define TR_MODELIDUSED         TR("ID used in:", "Receiver ID used in:")
-#define TR_MODULE              INDENT "Module"
+#define TR_MODULE              "Module"
 #define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
 #define TR_TELEMETRY_SENSORS   "Sensors"

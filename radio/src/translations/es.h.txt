@@ -65,7 +65,7 @@
 #define TR_VBLMODE             "OFF ""Keys""Stks""Both""ON\0"
 
 #define LEN_TRNMODE            "\003"
-#define TR_TRNMODE             "OFF"" +="" :="
+#define TR_TRNMODE             "OFF""+=\0"":="
 
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
@@ -554,12 +554,12 @@
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No expo libre!"
 #define TR_NOFREEMIXER         "No mezcla lib!"
-#define TR_SOURCE              INDENT"Fuente"
+#define TR_SOURCE              "Fuente"
 #define TR_WEIGHT              "Cantidad"
 #define TR_EXPO                TR("Expo","Exponencial")
 #define TR_SIDE                "Lado"
 #define TR_DIFFERENTIAL        "Diferenc"
-#define TR_OFFSET              INDENT"Offset"
+#define TR_OFFSET              "Offset"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define DREX_CHBOX_OFFSET      30
@@ -721,7 +721,7 @@
 #define TR_MONITOR_OUTPUT_DESC "Outputs"
 #define TR_MONITOR_MIXER_DESC  "Mixers"
 #define TR_RECEIVER_NUM        TR("RxNum", INDENT"Receptor No.")
-#define TR_RECEIVER            INDENT "Receiver"
+#define TR_RECEIVER            "Receiver"
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
@@ -918,6 +918,9 @@
 #define TR_WRITING             "Writing..."
 #define TR_CONFIRM_FORMAT      "Confirm Format?"
 #define TR_INTERNALRF          "Interna RF"
+#define TR_INTERNAL_MODULE             "Internal module"
+#define TR_EXTERNAL_MODULE             "External module"
+#define TR_NO_MODULE_INFORMATION       "No module information"
 #define TR_EXTERNALRF          "Externa RF"
 #define TR_FAILSAFE            INDENT"Modo sgdad."
 #define TR_FAILSAFESET         "AJUSTES SGDAD."
@@ -995,7 +998,7 @@
 #define TR_TRAINER             "Aprendiz"
 #define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
-#define TR_MODULE              INDENT "Modulo"
+#define TR_MODULE              "Modulo"
 #define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
 #define TR_TELEMETRY_SENSORS   "Sensors"

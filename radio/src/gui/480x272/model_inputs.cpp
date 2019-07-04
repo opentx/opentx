@@ -239,7 +239,7 @@ bool menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_SOURCE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOURCE);
         drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, menuHorizontalPosition==0 ? attr : 0);
         if (attr && menuHorizontalPosition==0) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
         if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
@@ -263,7 +263,7 @@ bool menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_OFFSET:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_OFFSET));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_OFFSET);
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
 

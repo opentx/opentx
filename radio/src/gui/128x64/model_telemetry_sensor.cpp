@@ -234,7 +234,7 @@ void menuModelSensor(event_t event)
           break;
         }
         else {
-          lcdDrawTextAlignedLeft(y, NO_INDENT(STR_OFFSET));
+          lcdDrawTextAlignedLeft(y, STR_OFFSET);
           if (attr) CHECK_INCDEC_MODELVAR(event, sensor->custom.offset, -30000, +30000);
           if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
           lcdDrawNumber(SENSOR_2ND_COLUMN, y, sensor->custom.offset, LEFT|attr);
@@ -247,7 +247,7 @@ void menuModelSensor(event_t event)
 
       case SENSOR_FIELD_PARAM4:
       {
-        drawStringWithIndex(0, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
+        drawStringWithIndex(0, y, STR_SOURCE, k-SENSOR_FIELD_PARAM1+1);
         int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
           source = checkIncDec(event, source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
