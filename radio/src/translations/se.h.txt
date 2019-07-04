@@ -713,11 +713,11 @@
 #define TR_MONITOR_CHANNELS4   "CHANNELS MONITOR 25/32"
 #define TR_MONITOR_OUTPUT_DESC "Outputs"
 #define TR_MONITOR_MIXER_DESC  "Mixers"
-  #define TR_RECEIVER_NUM             TR(INDENT "RxNum", INDENT "Mottagare Nr.")
-#define TR_RECEIVER            INDENT "Receiver"
+#define TR_RECEIVER_NUM        TR(INDENT "RxNum", INDENT "Mottagare Nr.")
+#define TR_RECEIVER            "Receiver"
 #define TR_SYNCMENU            "Synk [MENU]"
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
-#define TR_MULTI_TELEMETRY             "Telemetry"
+#define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
 #define TR_MULTI_RFPOWER       INDENT "RF Power"
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
@@ -912,6 +912,9 @@
 #define TR_WRITING             "\032Skriver..."
 #define TR_CONFIRM_FORMAT      "Formatera Minnet?"
 #define TR_INTERNALRF          "Intern Radio"
+#define TR_INTERNAL_MODULE             "Internal module"
+#define TR_EXTERNAL_MODULE             "External module"
+#define TR_NO_MODULE_INFORMATION       "No module information"
 #define TR_EXTERNALRF          "Extern Radiomodul"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafeläge")
 #define TR_FAILSAFESET         "FailsafeInställning"
@@ -989,7 +992,7 @@
 #define TR_TRAINER             "Trainer"
 #define TR_ANTENNAPROBLEM      CENTER "Fel på TX-antennen"
 #define TR_MODELIDUSED         TR("ID finns redan","ModellID används redan")
-#define TR_MODULE              INDENT "Modul"
+#define TR_MODULE              "Modul"
 #define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE      "Telemetrityp"
 #define TR_TELEMETRY_SENSORS   "Sensorer"

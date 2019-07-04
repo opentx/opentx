@@ -703,10 +703,10 @@ TR_GYR_VSRCRAW
 #define TR_MONITOR_SWITCHES    "LOGISCHE SCHAKELAARS MONITOR"
 #define TR_MONITOR_OUTPUT_DESC "Outputs"
 #define TR_MONITOR_MIXER_DESC  "Mixers"
-  #define TR_RECEIVER_NUM      TR(INDENT "RxNum", INDENT "Receiver Nr.")
-  #define TR_RECEIVER          INDENT "Receiver"
+#define TR_RECEIVER_NUM        TR(INDENT "RxNum", INDENT "Receiver Nr.")
+#define TR_RECEIVER            "Receiver"
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
-#define TR_MULTI_TELEMETRY             "Telemetry"
+#define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
 #define TR_MULTI_RFPOWER       INDENT "RF Power"
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
@@ -901,6 +901,9 @@ TR_GYR_VSRCRAW
 #define TR_WRITING             "\032Schrijven..."
 #define TR_CONFIRM_FORMAT      "Formatteren bevestigen?"
 #define TR_INTERNALRF          "Interne RF"
+#define TR_INTERNAL_MODULE             "Internal module"
+#define TR_EXTERNAL_MODULE             "External module"
+#define TR_NO_MODULE_INFORMATION       "No module information"
 #define TR_EXTERNALRF          "Externe RF"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafe Modus")
 #define TR_FAILSAFESET         "Failsafe instellen"
@@ -978,7 +981,7 @@ TR_GYR_VSRCRAW
 #define TR_TRAINER             "Trainer Poort"
 #define TR_ANTENNAPROBLEM      CENTER "TX-Antenneprobleem!"
 #define TR_MODELIDUSED         TR("ID al gebruikt", "Model-ID al gebruikt")
-#define TR_MODULE              INDENT "Module-Type"
+#define TR_MODULE              "Module-Type"
 #define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetrietype")
 #define TR_TELEMETRY_SENSORS   "Sensoren"

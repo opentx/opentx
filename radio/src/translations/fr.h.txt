@@ -716,8 +716,8 @@
 #define TR_MONITOR_SWITCHES            "INTERS LOGIQUES"
 #define TR_MONITOR_OUTPUT_DESC         "Sorties"
 #define TR_MONITOR_MIXER_DESC          "Mixeurs"
-  #define TR_RECEIVER_NUM              TR(INDENT "NumRx", INDENT "No. récepteur")
-  #define TR_RECEIVER                  INDENT "Récept."
+#define TR_RECEIVER_NUM                TR(INDENT "NumRx", INDENT "No. récepteur")
+#define TR_RECEIVER                    "Récept."
 #define TR_MULTI_RFTUNE                TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
 #define TR_MULTI_TELEMETRY             "Télémétrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
@@ -913,6 +913,9 @@
 #define TR_WRITING                     TR("\14Ecriture...", "\032Ecriture...")
 #define TR_CONFIRM_FORMAT              "Confirmer Formatage?"
 #define TR_INTERNALRF                  "HF interne"
+#define TR_INTERNAL_MODULE             "Internal module"
+#define TR_EXTERNAL_MODULE             "External module"
+#define TR_NO_MODULE_INFORMATION       "No module information"
 #define TR_EXTERNALRF                  "HF externe"
 #define TR_FAILSAFE                    TR(INDENT "Failsafe", INDENT "Type failsafe")
 #define TR_FAILSAFESET                 "REGLAGES FAILSAFE"
@@ -990,7 +993,7 @@
 #define TR_TRAINER                     "Ecolage"
 #define TR_ANTENNAPROBLEM              CENTER "Antenne radio défect.!"
 #define TR_MODELIDUSED                 TR("ID affecté à :", "No de récepteur utilisé par :")
-#define TR_MODULE                      INDENT "Module"
+#define TR_MODULE                      "Module"
 #define TR_RX_NAME                     "Nom Rx"
 #define TR_TELEMETRY_TYPE              TR("Type tél.", "Type télémétrie")
 #define TR_TELEMETRY_SENSORS           "Capteurs"
