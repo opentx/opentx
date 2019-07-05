@@ -12,12 +12,15 @@ set(GUI_SRC
   ../common/stdlcd/model_receiver_options.cpp
   ../common/stdlcd/model_notes.cpp
   ../common/stdlcd/model_curves.cpp
-  ../common/stdlcd/radio_tools.cpp
   ../common/stdlcd/radio_hardware.cpp
   ../common/stdlcd/radio_version.cpp
   ../common/stdlcd/radio_trainer.cpp
   model_curve_edit.cpp
   )
+
+if(PXX2 OR LUA)
+  set(GUI_SRC ${GUI_SRC} ../common/stdlcd/radio_tools.cpp)
+endif()
 
 if(HELI)
   set(GUI_SRC ${GUI_SRC} ../common/stdlcd/model_heli.cpp)
