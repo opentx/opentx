@@ -305,8 +305,6 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
 {
   // TODO QMessageBox::warning should not be called here
 
-  qDebug() << "ICI";
-
   if (version == 0) {
     version = getLastDataVersion(board);
   }

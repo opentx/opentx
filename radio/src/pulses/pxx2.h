@@ -118,7 +118,7 @@ static const uint8_t PXX2modulesOptions[] = {
   0b11110101, // ISRM-S
   0b11110010, // R9M
   0b11110010, // R9MLite
-  0b11111110, // R9MLite-PRO
+  0b11110110, // R9MLite-PRO
   0b11110100, // ISRM-N
   0b11110100, // ISRM-S-X9
   0b11110100, // ISRM-S-X10

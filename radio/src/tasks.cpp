@@ -76,7 +76,7 @@ bool isForcePowerOffRequested()
 bool isModuleSynchronous(uint8_t module)
 {
   uint8_t protocol = moduleState[module].protocol;
-  if (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
+  if (protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || protocol == PROTOCOL_CHANNELS_PXX2_LOWSPEED || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
     return true;
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   if (protocol == PROTOCOL_CHANNELS_PXX1_SERIAL)
@@ -142,7 +142,7 @@ TASK_FUNCTION(mixerTask)
     }
 
 #if defined(PXX2) && defined(INTMODULE_HEARTBEAT)
-    if (moduleState[0].protocol == PROTOCOL_CHANNELS_PXX2 && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
+    if (moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
       run = true;
     }
 #endif
