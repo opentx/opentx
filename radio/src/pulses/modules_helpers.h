@@ -251,7 +251,7 @@ static const uint8_t moduleOptions[] = {
   0b11110101, // ISRM-S
   0b11110010, // R9M
   0b11110010, // R9MLite
-  0b11111110, // R9MLite-PRO
+  0b11110110, // R9MLite-PRO
   0b11110100, // ISRM-N
 };
 
