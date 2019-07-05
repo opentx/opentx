@@ -193,7 +193,7 @@ class LatencyStatistics:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('file', help='File to parse', type=argparse.FileType('r'))
+    parser.add_argument('file', help='file to parse', type=argparse.FileType('r'))
     parser.add_argument('--trigger', help='column in the CSV file where is the trigger', type=int, required=True)
     parser.add_argument('--pwm', help='column in the CSV file where is the PWM output', type=int)
     parser.add_argument('--sbus', help='column in the CSV file where is the SBUS output', type=int)
@@ -202,7 +202,7 @@ def main():
     parser.add_argument('--lowval', help='value of channel when trigger=LOW', type=int, default=-100)
     parser.add_argument('--export', help='CSV file to export latency values')
     parser.add_argument('--title', help='CSV column title', default="Unknown")
-    parser.add_argument('--append', action='store_true')
+    parser.add_argument('--append', help='export CSV file in append mode', action='store_true')
     args = parser.parse_args()
 
     trigger_transitions = build_transitions_array(args.file, args.trigger)
