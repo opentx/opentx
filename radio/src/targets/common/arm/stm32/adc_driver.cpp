@@ -211,7 +211,7 @@ void adcSingleRead()
 #endif
 
 #if defined(PCBX10)
-  if (ADC->CCR & ADC_CCR_VBATE) {
+  if (isVBatBridgeEnabled()) {
     rtcBatteryVoltage = ADC1->DR;
   }
 #endif

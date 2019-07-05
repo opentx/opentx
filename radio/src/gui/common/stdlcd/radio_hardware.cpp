@@ -96,31 +96,71 @@ enum {
   ITEM_RADIO_HARDWARE_STICK4,
   ITEM_RADIO_HARDWARE_LABEL_POTS,
   ITEM_RADIO_HARDWARE_POT1,
-#if !defined(PCBX9LITE)
+#if defined(HARDWARE_POT2)
   ITEM_RADIO_HARDWARE_POT2,
+#endif
+#if defined(HARDWARE_POT3)
+  ITEM_RADIO_HARDWARE_POT3,
+#endif
+#if defined(HARDWARE_POT4)
+  ITEM_RADIO_HARDWARE_POT4,
+#endif
+#if NUM_SLIDERS > 0
+  ITEM_RADIO_HARDWARE_SLIDER1,
+  ITEM_RADIO_HARDWARE_SLIDER2,
+#endif
+#if NUM_SLIDERS > 2
+  ITEM_RADIO_HARDWARE_SLIDER3,
+  ITEM_RADIO_HARDWARE_SLIDER4,
 #endif
   ITEM_RADIO_HARDWARE_LABEL_SWITCHES,
   ITEM_RADIO_HARDWARE_SA,
   ITEM_RADIO_HARDWARE_SB,
   ITEM_RADIO_HARDWARE_SC,
   ITEM_RADIO_HARDWARE_SD,
-#if NUM_SWITCHES >= 5
+#if defined(HARDWARE_SWITCH_E)
+  ITEM_RADIO_HARDWARE_SE,
+#endif
+#if defined(HARDWARE_SWITCH_F)
   ITEM_RADIO_HARDWARE_SF,
 #endif
-#if NUM_SWITCHES >= 6
+#if defined(HARDWARE_SWITCH_G)
+  ITEM_RADIO_HARDWARE_SG,
+#endif
+#if defined(HARDWARE_SWITCH_H)
   ITEM_RADIO_HARDWARE_SH,
 #endif
-#if NUM_SWITCHES >= 8
+#if defined(HARDWARE_SWITCH_I)
   ITEM_RADIO_HARDWARE_SI,
+#endif
+#if defined(HARDWARE_SWITCH_J)
   ITEM_RADIO_HARDWARE_SJ,
 #endif
+#if defined(HARDWARE_SWITCH_K)
+  ITEM_RADIO_HARDWARE_SK,
+  ITEM_RADIO_HARDWARE_SL,
+  ITEM_RADIO_HARDWARE_SM,
+  ITEM_RADIO_HARDWARE_SN,
+  ITEM_RADIO_HARDWARE_SO,
+  ITEM_RADIO_HARDWARE_SP,
+  ITEM_RADIO_HARDWARE_SQ,
+  ITEM_RADIO_HARDWARE_SR,
+#endif
+
   ITEM_RADIO_HARDWARE_BATTERY_CALIB,
+
+#if defined(STM32)
+  ITEM_RADIO_HARDWARE_RTC_BATTERY,
+#endif
+
 #if defined(TX_CAPACITY_MEASUREMENT)
   ITEM_RADIO_HARDWARE_CAPACITY_CALIB,
 #endif
+
 #if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
 #endif
+
 #if defined(BLUETOOTH)
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
@@ -128,40 +168,55 @@ enum {
   ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #endif
+
+#if defined(AUX_SERIAL)
+  ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
+#endif
+
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_RAS,
   ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
 
-#if defined(PCBX9LITE)
-#define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1
-#else
-#define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#if (NUM_POTS + NUM_SLIDERS) == 1
+  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1
+#elif (NUM_POTS + NUM_SLIDERS) == 2
+  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#elif (NUM_POTS + NUM_SLIDERS) == 3
+  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#elif (NUM_POTS + NUM_SLIDERS) == 4
+  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#elif (NUM_POTS + NUM_SLIDERS) == 5
+  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#elif (NUM_POTS + NUM_SLIDERS) == 8
+  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #endif
 
-#if NUM_SWITCHES == 8
-#if defined(RADIO_T12)
-#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|HIDDEN_ROW, NAVIGATION_LINE_BY_LINE|HIDDEN_ROW
-#else
-#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
-#endif
+#if defined(PCBX9E)
+  #define SWITCHES_ROWS           NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#elif defined(RADIO_T12)
+  #define SWITCHES_ROWS           NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|HIDDEN_ROW, NAVIGATION_LINE_BY_LINE|HIDDEN_ROW
+#elif NUM_SWITCHES == 9
+  #define SWITCHES_ROWS           NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#elif NUM_SWITCHES == 8
+  #define SWITCHES_ROWS           NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #elif NUM_SWITCHES == 6
-#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define SWITCHES_ROWS           NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #elif NUM_SWITCHES == 5
-#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define SWITCHES_ROWS           NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #elif NUM_SWITCHES == 4
-#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define SWITCHES_ROWS           NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #endif
 
-#if defined(PCBX9LITE)
+#if !defined(BLUETOOTH)
   #define BLUETOOTH_ROWS
-#elif defined(PCBTARANIS)
-  #define BLUETOOTH_ROWS                 uint8_t(IS_BLUETOOTH_CHIP_PRESENT() ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? -1 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
-#elif defined(BLUETOOTH)
+#elif defined(PCBX9E)
+  #define BLUETOOTH_ROWS
+#elif defined(PCBSKY9X)
   #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #else
-  #define BLUETOOTH_ROWS
+  #define BLUETOOTH_ROWS                 uint8_t(IS_BLUETOOTH_CHIP_PRESENT() ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? -1 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #endif
 
 #if defined(PCBX9LITE)
@@ -170,8 +225,16 @@ enum {
   #define SWITCH_TYPE_MAX(sw)            (sw >= MIXSRC_SE-MIXSRC_FIRST_SWITCH ? SWITCH_2POS : SWITCH_3POS)
 #elif defined(PCBXLITE)
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
+#elif defined(PCBX9E)
+  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #else
-  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH <= sw) ? SWITCH_2POS : SWITCH_3POS)
+#endif
+
+#if defined(STM32)
+  #define RTC_ROW                        READONLY_ROW,
+#else
+  #define RTC_ROW
 #endif
 
 #if defined(TX_CAPACITY_MEASUREMENT)
@@ -186,8 +249,19 @@ enum {
   #define MAX_BAUD_ROWS
 #endif
 
-#define HW_SETTINGS_COLUMN1            30
-#define HW_SETTINGS_COLUMN2            (30 + 5*FW)
+#if defined(AUX_SERIAL)
+  #define AUX_SERIAL_ROWS 0,
+#else
+  #define AUX_SERIAL_ROWS
+#endif
+
+#if LCD_W >= 212
+  #define HW_SETTINGS_COLUMN1            12*FW
+  #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 6*FW)
+#else
+  #define HW_SETTINGS_COLUMN1            30
+  #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 5*FW)
+#endif
 
 void menuRadioHardware(event_t event)
 {
@@ -202,16 +276,21 @@ void menuRadioHardware(event_t event)
       POTS_ROWS,
     LABEL(Switches),
       SWITCHES_ROWS,
-    0 /* battery calib */,
 
+    0 /* battery calib */,
+    RTC_ROW
     TX_CAPACITY_MEASUREMENT_ROWS
 
     MAX_BAUD_ROWS
 
     BLUETOOTH_ROWS
-    0 /* jitter filter */,
-    READONLY_ROW,
-    1 /* debugs */,
+
+    AUX_SERIAL_ROWS
+
+    0 /* ADC filter */,
+    READONLY_ROW /* RAS */,
+
+    1 /* debugs */
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -219,6 +298,7 @@ void menuRadioHardware(event_t event)
 #if defined(BLUETOOTH)
   if (g_eeGeneral.bluetoothMode != BLUETOOTH_OFF && !IS_BLUETOOTH_CHIP_PRESENT()) {
     g_eeGeneral.bluetoothMode = BLUETOOTH_OFF;
+    storageDirty(EE_GENERAL);
   }
 #endif
 
@@ -230,8 +310,8 @@ void menuRadioHardware(event_t event)
         k++;
       }
     }
-    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
-    uint8_t attr = (sub == k ? blink : 0);
+    LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags attr = (sub == k ? blink : 0);
 
     switch(k) {
       case ITEM_RADIO_HARDWARE_LABEL_STICKS:
@@ -241,6 +321,7 @@ void menuRadioHardware(event_t event)
           pushMenu(menuRadioCalibration);
         }
         break;
+
       case ITEM_RADIO_HARDWARE_STICK1:
       case ITEM_RADIO_HARDWARE_STICK2:
       case ITEM_RADIO_HARDWARE_STICK3:
@@ -253,8 +334,14 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_POT1:
-#if !defined(PCBX9LITE)
+#if defined(HARDWARE_POT2)
       case ITEM_RADIO_HARDWARE_POT2:
+#endif
+#if defined(HARDWARE_POT3)
+      case ITEM_RADIO_HARDWARE_POT3:
+#endif
+#if defined(HARDWARE_POT4)
+      case ITEM_RADIO_HARDWARE_POT4:
 #endif
       {
         int idx = k - ITEM_RADIO_HARDWARE_POT1;
@@ -272,6 +359,29 @@ void menuRadioHardware(event_t event)
         break;
       }
 
+#if NUM_SLIDERS > 0
+      case ITEM_RADIO_HARDWARE_SLIDER1:
+      case ITEM_RADIO_HARDWARE_SLIDER2:
+#if NUM_SLIDERS > 2
+      case ITEM_RADIO_HARDWARE_SLIDER3:
+      case ITEM_RADIO_HARDWARE_SLIDER4:
+#endif
+      {
+        int idx = k - ITEM_RADIO_HARDWARE_SLIDER1;
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_POTS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
+        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx]) || (attr && menuHorizontalPosition == 0 && s_editMode > 0))
+          editName(HW_SETTINGS_COLUMN1, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
+        else
+          lcdDrawMMM(HW_SETTINGS_COLUMN1, y, menuHorizontalPosition == 0 ? attr : 0);
+        uint8_t mask = (0x01 << idx);
+        uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
+        potType = editChoice(HW_SETTINGS_COLUMN2, y, "", STR_SLIDERTYPES, potType, SLIDER_NONE, SLIDER_WITH_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
+        g_eeGeneral.slidersConfig &= ~mask;
+        g_eeGeneral.slidersConfig |= (potType << idx);
+        break;
+      }
+#endif
+
       case ITEM_RADIO_HARDWARE_LABEL_SWITCHES:
         lcdDrawTextAlignedLeft(y, STR_SWITCHES);
         break;
@@ -280,18 +390,36 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_SB:
       case ITEM_RADIO_HARDWARE_SC:
       case ITEM_RADIO_HARDWARE_SD:
-#if NUM_SWITCHES >= 5
+#if defined(HARDWARE_SWITCH_E)
+      case ITEM_RADIO_HARDWARE_SE:
+#endif
+#if defined(HARDWARE_SWITCH_F)
       case ITEM_RADIO_HARDWARE_SF:
 #endif
-#if NUM_SWITCHES >= 6
+#if defined(HARDWARE_SWITCH_G)
+      case ITEM_RADIO_HARDWARE_SG:
+#endif
+#if defined(HARDWARE_SWITCH_H)
       case ITEM_RADIO_HARDWARE_SH:
 #endif
-#if NUM_SWITCHES >= 8
+#if defined(HARDWARE_SWITCH_I)
       case ITEM_RADIO_HARDWARE_SI:
+#endif
+#if defined(HARDWARE_SWITCH_J)
       case ITEM_RADIO_HARDWARE_SJ:
 #endif
+#if defined(HARDWARE_SWITCH_K)
+      case ITEM_RADIO_HARDWARE_SK:
+      case ITEM_RADIO_HARDWARE_SL:
+      case ITEM_RADIO_HARDWARE_SM:
+      case ITEM_RADIO_HARDWARE_SN:
+      case ITEM_RADIO_HARDWARE_SO:
+      case ITEM_RADIO_HARDWARE_SP:
+      case ITEM_RADIO_HARDWARE_SQ:
+      case ITEM_RADIO_HARDWARE_SR:
+#endif
       {
-        int index = k-ITEM_RADIO_HARDWARE_SA;
+        int index = k - ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && s_editMode > 0 && menuHorizontalPosition == 0))
@@ -326,6 +454,13 @@ void menuRadioHardware(event_t event)
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
         }
         break;
+
+#if defined(STM32)
+      case ITEM_RADIO_HARDWARE_RTC_BATTERY:
+        lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
+        putsVolts(HW_SETTINGS_COLUMN2, y, getRTCBatteryVoltage(), PREC2|LEFT);
+        break;
+#endif
 
 #if defined(TX_CAPACITY_MEASUREMENT)
       case ITEM_RADIO_HARDWARE_CAPACITY_CALIB:
@@ -384,6 +519,15 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
         lcdDrawText(INDENT_WIDTH, y, STR_NAME);
         editName(HW_SETTINGS_COLUMN2, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
+        break;
+#endif
+
+#if defined(AUX_SERIAL)
+      case ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE:
+        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_AUX_SERIAL_MODE, STR_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
+        if (attr && checkIncDec_Ret) {
+          auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
+        }
         break;
 #endif
 

@@ -68,7 +68,6 @@ set(GUI_SRC
   model_display.cpp
   radio_diagkeys.cpp
   radio_diaganas.cpp
-  radio_hardware.cpp
   view_telemetry.cpp
   view_about.cpp
   )

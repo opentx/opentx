@@ -117,6 +117,11 @@ static inline void disableVBatBridge()
   ADC->CCR &= ~ADC_CCR_VBATE;
 }
 
+static inline bool isVBatBridgeEnabled()
+{
+  return ADC->CCR & ADC_CCR_VBATE;
+}
+
 // Delays driver
 #ifdef __cplusplus
 extern "C" {
