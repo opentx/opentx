@@ -23,6 +23,7 @@
 
 #include "lcd.h"
 #include "keys.h"
+#include "telemetry/telemetry_sensors.h"
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   #define CASE_EVT_ROTARY_LEFT         case EVT_ROTARY_LEFT:
@@ -90,7 +91,6 @@ void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 
 swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 
-#include "telemetry/telemetry_sensors.h"
 void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags flags);
 void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags flags=0);
 void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags=0);
@@ -160,7 +160,7 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 
 #define EXTERNAL_MODULE_OPTION_ROW    (isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
 
-#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE)) ? (isModuleR9MLite(EXTERNAL_MODULE) ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
+#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE)) ? (isModuleR9MLiteNonPro(EXTERNAL_MODULE) ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
 
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);

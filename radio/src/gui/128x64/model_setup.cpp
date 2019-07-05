@@ -1525,51 +1525,53 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        if (isModuleR9MNonAccess(moduleIdx)) {
+        auto & module = g_model.moduleData[moduleIdx];
+
+        if (isModuleTypeR9MNonAccess(module.type)) {
           lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
           if (isModuleR9M_FCC_VARIANT(moduleIdx)) {
-            g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Lite FCC has only one setting
-            if (isModuleR9MLite(moduleIdx)) { // R9M lite FCC has only one power value, so displayed for info only
-              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT);
+            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Lite FCC has only one setting
+            if (isModuleTypeR9MLiteNonPro(module.type)) { // R9M lite FCC has only one power value, so displayed for info only
+              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_FCC_POWER_VALUES, module.pxx.power, LEFT);
               if (attr)
                 REPEAT_LAST_CURSOR_MOVE();
             }
             else {
-              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
+              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, module.pxx.power, LEFT | attr);
               if (attr)
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_FCC_POWER_MAX);
+                CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_FCC_POWER_MAX);
             }
           }
-          else if (isModuleR9MLite(moduleIdx)) {
-            g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LITE_LBT_POWER_MAX);
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
+          else if (isModuleTypeR9MLiteNonPro(module.type)) {
+            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_LITE_LBT_POWER_MAX);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_LBT_POWER_VALUES, module.pxx.power, LEFT | attr);
             if (attr) {
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_LITE_LBT_POWER_MAX);
+              CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LITE_LBT_POWER_MAX);
             }
-            if (attr && s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
-              if (reusableBuffer.moduleSetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power < 5) { //switching between mode 2 and 3 does not require rebind
+            if (attr && s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power) {
+              if (reusableBuffer.moduleSetup.r9mPower + module.pxx.power < 5) { //switching between mode 2 and 3 does not require rebind
                 POPUP_WARNING(STR_REBIND);
               }
-              reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+              reusableBuffer.moduleSetup.r9mPower = module.pxx.power;
             }
           }
           else {
-            g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LBT_POWER_MAX);
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
+            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_LBT_POWER_MAX);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, module.pxx.power, LEFT | attr);
             if (attr) {
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_LBT_POWER_MAX);
+              CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LBT_POWER_MAX);
             }
-            if (attr && s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
-              if (reusableBuffer.moduleSetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power < 5) { //switching between mode 2 and 3 does not require rebind
+            if (attr && s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power) {
+              if (reusableBuffer.moduleSetup.r9mPower + module.pxx.power < 5) { //switching between mode 2 and 3 does not require rebind
                 POPUP_WARNING(STR_REBIND);
               }
-              reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+              reusableBuffer.moduleSetup.r9mPower = module.pxx.power;
             }
           }
         }
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(moduleIdx)) {
-          g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
+          module.multi.lowPowerMode = editCheckBox(module.multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
         }
 #endif
 

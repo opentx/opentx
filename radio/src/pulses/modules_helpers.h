@@ -137,9 +137,24 @@ inline bool isModuleR9M(uint8_t idx)
   return isModuleTypeR9M(g_model.moduleData[idx].type);
 }
 
+inline bool isModuleTypeR9MLiteNonPro(uint8_t type)
+{
+  return type == MODULE_TYPE_R9M_LITE_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX2;
+}
+
+inline bool isModuleR9MLiteNonPro(uint8_t idx)
+{
+  return isModuleTypeR9MLiteNonPro(g_model.moduleData[idx].type);
+}
+
+inline bool isModuleTypeR9MLitePro(uint8_t type)
+{
+  return type == MODULE_TYPE_R9M_LITE_PRO_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
+}
+
 inline bool isModuleTypeR9MLite(uint8_t type)
 {
-  return type == MODULE_TYPE_R9M_LITE_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX2 || type == MODULE_TYPE_R9M_LITE_PRO_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
+  return isModuleTypeR9MLiteNonPro(type) || isModuleTypeR9MLitePro(type);
 }
 
 inline bool isModuleR9MLite(uint8_t idx)
