@@ -102,28 +102,43 @@ class SBusFrame:
         return result
 
 
-def print_statistics(trigger_transitions, sbus_frames, highval, lowval):
-    mini, maxi = None, None
-    count = 0
-    total = 0
-    for t0, val in trigger_transitions[1:]:
-        byte = highval if val == 1 else lowval
-        for frame in sbus_frames:
-            if frame.is_after(t0) and frame.byte(1) == byte:
-                delay = frame.end() - t0
-                count += 1
-                total += delay
-                if mini is None or delay < mini[0]:
-                    mini = (delay, t0, frame, val, byte)
-                if maxi is None or delay > maxi[0]:
-                    maxi = (delay, t0, frame)
-                break
+class LatencyStatistics:
+    def __init__(self, trigger_transitions, sbus_frames, highval, lowval):
+        self.trigger_transitions = trigger_transitions
+        self.sbus_frames = sbus_frames
+        self.highval = highval
+        self.lowval = lowval
 
-    print("Delay between the switch toggle and the end of the SBUS frame:")
-    print("  Count = %d transitions" % count)
-    print("  Average = %.1fms" % (total / count))
-    print("  Mini = %.1fms @ %fs" % (mini[0], mini[1] / 1000))
-    print("  Maxi = %.1fms @ %fs" % (maxi[0], maxi[1] / 1000))
+    def iter(self):
+        for t0, val in self.trigger_transitions[1:]:
+            byte = self.highval if val == 1 else self.lowval
+            for frame in self.sbus_frames:
+                if frame.is_after(t0) and frame.byte(1) == byte:
+                    delay = frame.end() - t0
+                    yield (t0, val, frame, delay)
+                    break
+
+    def export(self, f):
+        for t0, val, frame, delay in self.iter():
+            f.write("%f\n" % delay)
+
+    def print(self):
+        mini, maxi = None, None
+        count = 0
+        total = 0
+        for t0, val, frame, delay in self.iter():
+            count += 1
+            total += delay
+            if mini is None or delay < mini[0]:
+                mini = (delay, t0, frame)
+            if maxi is None or delay > maxi[0]:
+                maxi = (delay, t0, frame)
+
+        print("Delay between the switch toggle and the end of the SBUS frame:")
+        print("  Count = %d transitions" % count)
+        print("  Average = %.1fms" % (total / count))
+        print("  Mini = %.1fms @ %fs" % (mini[0], mini[1] / 1000))
+        print("  Maxi = %.1fms @ %fs" % (maxi[0], maxi[1] / 1000))
 
 
 def main():
@@ -134,6 +149,7 @@ def main():
     parser.add_argument('--sbus', help='The column in the csv file where is your SBUS output', type=int)
     parser.add_argument('--highval', help='The value of SBUS byte 2 when trigger=HIGH', type=int, default=0x13)
     parser.add_argument('--lowval', help='The value of SBUS byte 2 when trigger=LOW', type=int, default=0xAC)
+    parser.add_argument('--export', help='CSV file to export latency values', type=argparse.FileType('w'))
     args = parser.parse_args()
     if not args.pwm and not args.sbus:
         print("Either a PWM or SBUS column in CSV must be specified")
@@ -147,7 +163,10 @@ def main():
         if frame.is_lost():
             print("Frame lost bit @ %fs" % frame.start())
 
-    print_statistics(trigger_transitions, sbus_frames, args.highval, args.lowval)
+    statistics = LatencyStatistics(trigger_transitions, sbus_frames, args.highval, args.lowval)
+    if args.export:
+        statistics.export(args.export)
+    statistics.print()
 
 
 if __name__ == "__main__":
