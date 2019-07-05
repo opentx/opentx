@@ -132,9 +132,10 @@ class PwmFrame(Frame):
 
 
 class LatencyStatistics:
-    def __init__(self, trigger_transitions, frames, highval, lowval):
+    def __init__(self, trigger_transitions, frames, channel, highval, lowval):
         self.trigger_transitions = trigger_transitions
         self.frames = frames
+        self.channel = channel
         self.highval = highval
         self.lowval = lowval
 
@@ -142,9 +143,9 @@ class LatencyStatistics:
         for t0, val in self.trigger_transitions[1:]:
             value = self.highval if val == 1 else self.lowval
             for frame in self.frames:
-                if frame.is_after(t0) and frame.value(0) == value:
+                if frame.is_after(t0) and frame.value(self.channel) == value:
                     delay = frame.end() - t0
-                    yield (t0, val, frame, delay)
+                    yield (t0, val, delay)
                     break
 
     @staticmethod
@@ -167,7 +168,7 @@ class LatencyStatistics:
         with open(path, 'w') as f:
             self.append_to_line(f, title, 0, lines, columns)
             index = 1
-            for t0, val, frame, delay in self.iter():
+            for t0, val, delay in self.iter():
                 self.append_to_line(f, str(delay), index, lines, columns)
                 index += 1
 
@@ -175,13 +176,13 @@ class LatencyStatistics:
         mini, maxi = None, None
         count = 0
         total = 0
-        for t0, val, frame, delay in self.iter():
+        for t0, val, delay in self.iter():
             count += 1
             total += delay
             if mini is None or delay < mini[0]:
-                mini = (delay, t0, frame)
+                mini = (delay, t0)
             if maxi is None or delay > maxi[0]:
-                maxi = (delay, t0, frame)
+                maxi = (delay, t0)
 
         print("Delay between the switch toggle and the end of the SBUS frame:")
         print("  Count = %d transitions" % count)
@@ -193,11 +194,12 @@ class LatencyStatistics:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('file', help='File to parse', type=argparse.FileType('r'))
-    parser.add_argument('--trigger', help='The column in the csv file where is your trigger', type=int, required=True)
-    parser.add_argument('--pwm', help='The column in the csv file where is your PWM output', type=int)
-    parser.add_argument('--sbus', help='The column in the csv file where is your SBUS output', type=int)
-    parser.add_argument('--highval', help='The value of SBUS byte 2 when trigger=HIGH', type=int, default=+100)
-    parser.add_argument('--lowval', help='The value of SBUS byte 2 when trigger=LOW', type=int, default=-100)
+    parser.add_argument('--trigger', help='column in the CSV file where is the trigger', type=int, required=True)
+    parser.add_argument('--pwm', help='column in the CSV file where is the PWM output', type=int)
+    parser.add_argument('--sbus', help='column in the CSV file where is the SBUS output', type=int)
+    parser.add_argument('--channel', help='channel to check', type=int, default=0)
+    parser.add_argument('--highval', help='value of channel when trigger=HIGH', type=int, default=+100)
+    parser.add_argument('--lowval', help='value of channel when trigger=LOW', type=int, default=-100)
     parser.add_argument('--export', help='CSV file to export latency values')
     parser.add_argument('--title', help='CSV column title', default="Unknown")
     parser.add_argument('--append', action='store_true')
@@ -218,7 +220,7 @@ def main():
         print("Either a PWM or SBUS column in CSV must be specified")
         exit()
 
-    statistics = LatencyStatistics(trigger_transitions, frames, args.highval, args.lowval)
+    statistics = LatencyStatistics(trigger_transitions, frames, args.channel, args.highval, args.lowval)
     if args.export:
         statistics.export(args.export, args.title, args.append)
     statistics.print()
