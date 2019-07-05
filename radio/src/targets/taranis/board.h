@@ -132,11 +132,12 @@ void extmoduleSendNextFrame();
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
-#if defined(PCBX9E)
-  #define TRAINER_CONNECTED()           (true)
-#elif defined(PCBX7) || defined(PCBX9LITE)
-  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
+
+#if defined(PCBX9D) || (defined(PCBX9DP) && PCBREV < 2019)
+  // Trainer detect is a switch on the jack
+  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #elif defined(PCBXLITES)
+  // Trainer is on the same connector than Headphones
   enum JackState
   {
     SPEAKER_ACTIVE,
@@ -146,10 +147,13 @@ void extmoduleSendNextFrame();
   extern uint8_t jackState;
   #define TRAINER_CONNECTED()           (jackState == TRAINER_ACTIVE)
 #elif defined(PCBXLITE)
-  #define TRAINER_CONNECTED()           false // there is no Trainer jack on Taranis X-Lite
+  // No Tainer jack on Taranis X-Lite
+  #define TRAINER_CONNECTED()           false
 #else
-  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
+  // Trainer detect catches PPM, detection would use more CPU
+  #define TRAINER_CONNECTED()           true
 #endif
+
 #if defined(TRAINER_GPIO)
   void init_trainer_ppm();
   void stop_trainer_ppm();
