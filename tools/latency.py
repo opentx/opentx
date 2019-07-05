@@ -22,6 +22,7 @@
 
 import argparse
 import csv
+import os
 
 
 def build_transitions_array(f, column):
@@ -118,9 +119,29 @@ class LatencyStatistics:
                     yield (t0, val, frame, delay)
                     break
 
-    def export(self, f):
-        for t0, val, frame, delay in self.iter():
-            f.write("%f\n" % delay)
+    @staticmethod
+    def append_to_line(f, s, index, lines, columns):
+        if columns == 0:
+            f.write(s)
+        elif index < len(lines):
+            f.write(lines[index].strip() + ";" + s)
+        else:
+            f.write(";" * columns + s)
+        f.write("\n")
+
+    def export(self, path, title, append):
+        lines = []
+        columns = 0
+        if append and os.path.exists(path):
+            with open(path, 'r') as f:
+                lines = f.readlines()
+                columns = len(lines[0].split(";"))
+        with open(path, 'w') as f:
+            self.append_to_line(f, title, 0, lines, columns)
+            index = 1
+            for t0, val, frame, delay in self.iter():
+                self.append_to_line(f, str(delay), index, lines, columns)
+                index += 1
 
     def print(self):
         mini, maxi = None, None
@@ -149,7 +170,9 @@ def main():
     parser.add_argument('--sbus', help='The column in the csv file where is your SBUS output', type=int)
     parser.add_argument('--highval', help='The value of SBUS byte 2 when trigger=HIGH', type=int, default=0x13)
     parser.add_argument('--lowval', help='The value of SBUS byte 2 when trigger=LOW', type=int, default=0xAC)
-    parser.add_argument('--export', help='CSV file to export latency values', type=argparse.FileType('w'))
+    parser.add_argument('--export', help='CSV file to export latency values')
+    parser.add_argument('--title', help='CSV column title', default="Unknown")
+    parser.add_argument('--append', action='store_true')
     args = parser.parse_args()
     if not args.pwm and not args.sbus:
         print("Either a PWM or SBUS column in CSV must be specified")
@@ -165,7 +188,7 @@ def main():
 
     statistics = LatencyStatistics(trigger_transitions, sbus_frames, args.highval, args.lowval)
     if args.export:
-        statistics.export(args.export)
+        statistics.export(args.export, args.title, args.append)
     statistics.print()
 
 
