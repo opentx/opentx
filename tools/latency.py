@@ -49,7 +49,7 @@ def build_transitions_array(f, column):
     return debounced
 
 
-class SBusFrame:
+class Frame:
     def __init__(self):
         self.transitions = []
 
@@ -65,7 +65,7 @@ class SBusFrame:
     def is_after(self, t):
         return self.start() >= t
 
-    def value(self, time):
+    def output(self, time):
         value = 0
         for t, v in self.transitions:
             if t > time:
@@ -73,48 +73,76 @@ class SBusFrame:
             value = v
         return value
 
-    def byte(self, index):
-        t = self.start() + 0.12 * index + 0.015
-        value = 0
-        for bit in range(8):
-            value += (1 - self.value(t)) << bit
-            t += 0.010
-        return value
-
-    def is_lost(self):
-        return self.byte(23) & 0x04
-
-    def __str__(self):
-        return "%.03fms " % self.start() + " ".join(["%02X" % self.byte(i) for i in range(25)])
-
-    @staticmethod
-    def get_frames(transitions):
+    @classmethod
+    def get_frames(cls, transitions):
         result = []
         current_frame = None
         last = 0
         for t, value in transitions:
-            if t - last > 2:
+            if t - last > 3:
                 if current_frame:
                     result.append(current_frame)
-                current_frame = SBusFrame()
+                current_frame = cls()
             if current_frame is not None:
                 current_frame.push(t, value)
             last = t
         return result
 
 
+class SBusFrame(Frame):
+    def byte(self, index):
+        t = self.start() + 0.12 * index + 0.015
+        value = 0
+        for bit in range(8):
+            value += (1 - self.output(t)) << bit
+            t += 0.010
+        return value
+
+    def is_lost(self):
+        return self.byte(23) & 0x04
+
+    def value(self, channel):
+        bits_available = 0
+        bits = 0
+        byte = 0
+        value = None
+        for i in range(channel + 1):
+            while bits_available < 11:
+                byte += 1
+                bits |= self.byte(byte) << bits_available
+                bits_available += 8
+            value = ((bits & 0b11111111111) - 0x3E0) * 5 / 8
+            bits_available -= 11
+            bits >>= 11
+        return round((value * 100) / 512)
+
+    def __str__(self):
+        return "%.03fms " % self.start() + " ".join(["%02X" % self.byte(i) for i in range(25)])
+
+
+class PwmFrame(Frame):
+    def duration(self):
+        return self.end() - self.start()
+
+    def value(self, channel):
+        return round((self.duration() * 1000 - 1500) * 100 / 512)
+
+    def __str__(self):
+        return "%.03fms %d" % (self.start(), self.value(0))
+
+
 class LatencyStatistics:
-    def __init__(self, trigger_transitions, sbus_frames, highval, lowval):
+    def __init__(self, trigger_transitions, frames, highval, lowval):
         self.trigger_transitions = trigger_transitions
-        self.sbus_frames = sbus_frames
+        self.frames = frames
         self.highval = highval
         self.lowval = lowval
 
     def iter(self):
         for t0, val in self.trigger_transitions[1:]:
-            byte = self.highval if val == 1 else self.lowval
-            for frame in self.sbus_frames:
-                if frame.is_after(t0) and frame.byte(1) == byte:
+            value = self.highval if val == 1 else self.lowval
+            for frame in self.frames:
+                if frame.is_after(t0) and frame.value(0) == value:
                     delay = frame.end() - t0
                     yield (t0, val, frame, delay)
                     break
@@ -168,25 +196,29 @@ def main():
     parser.add_argument('--trigger', help='The column in the csv file where is your trigger', type=int, required=True)
     parser.add_argument('--pwm', help='The column in the csv file where is your PWM output', type=int)
     parser.add_argument('--sbus', help='The column in the csv file where is your SBUS output', type=int)
-    parser.add_argument('--highval', help='The value of SBUS byte 2 when trigger=HIGH', type=int, default=0x13)
-    parser.add_argument('--lowval', help='The value of SBUS byte 2 when trigger=LOW', type=int, default=0xAC)
+    parser.add_argument('--highval', help='The value of SBUS byte 2 when trigger=HIGH', type=int, default=+100)
+    parser.add_argument('--lowval', help='The value of SBUS byte 2 when trigger=LOW', type=int, default=-100)
     parser.add_argument('--export', help='CSV file to export latency values')
     parser.add_argument('--title', help='CSV column title', default="Unknown")
     parser.add_argument('--append', action='store_true')
     args = parser.parse_args()
-    if not args.pwm and not args.sbus:
-        print("Either a PWM or SBUS column in CSV must be specified")
-        exit()
 
     trigger_transitions = build_transitions_array(args.file, args.trigger)
 
-    sbus_transitions = build_transitions_array(args.file, args.sbus)
-    sbus_frames = SBusFrame.get_frames(sbus_transitions)
-    for frame in sbus_frames:
-        if frame.is_lost():
-            print("Frame lost bit @ %fs" % frame.start())
+    if args.sbus:
+        sbus_transitions = build_transitions_array(args.file, args.sbus)
+        frames = SBusFrame.get_frames(sbus_transitions)
+        for frame in frames:
+            if frame.is_lost():
+                print("Frame lost bit @ %fs" % (frame.start() / 1000))
+    elif args.pwm:
+        pwm_transitions = build_transitions_array(args.file, args.pwm)
+        frames = PwmFrame.get_frames(pwm_transitions)
+    else:
+        print("Either a PWM or SBUS column in CSV must be specified")
+        exit()
 
-    statistics = LatencyStatistics(trigger_transitions, sbus_frames, args.highval, args.lowval)
+    statistics = LatencyStatistics(trigger_transitions, frames, args.highval, args.lowval)
     if args.export:
         statistics.export(args.export, args.title, args.append)
     statistics.print()
