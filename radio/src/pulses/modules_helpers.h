@@ -48,9 +48,14 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 }
 #endif
 
+inline bool isModuleTypeXJT(uint8_t type)
+{
+  return type == MODULE_TYPE_XJT_PXX1;
+}
+
 inline bool isModuleXJT(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT_PXX1;
+  return isModuleTypeXJT(g_model.moduleData[idx].type);
 }
 
 inline bool isModuleXJT2(uint8_t idx)
@@ -102,45 +107,79 @@ inline bool isModulePPM(uint8_t idx)
 }
 #endif
 
-inline bool isModuleR9M(uint8_t idx)
+inline bool isModuleTypeR9MNonAccess(uint8_t type)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX1;
+  return type == MODULE_TYPE_R9M_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX1;
+}
+
+inline bool isModuleR9MNonAccess(uint8_t idx)
+{
+  return isModuleTypeR9MNonAccess(g_model.moduleData[idx].type);
+}
+
+inline bool isModuleTypeR9MAccess(uint8_t type)
+{
+  return type == MODULE_TYPE_R9M_PXX2 || type == MODULE_TYPE_R9M_LITE_PXX2 || type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
 }
 
 inline bool isModuleR9MAccess(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
+  return isModuleTypeR9MAccess(g_model.moduleData[idx].type);
 }
 
+inline bool isModuleTypeR9M(uint8_t type)
+{
+  return isModuleTypeR9MNonAccess(type) || isModuleTypeR9MAccess(type);
+}
+
+inline bool isModuleR9M(uint8_t idx)
+{
+  return isModuleTypeR9M(g_model.moduleData[idx].type);
+}
+
+inline bool isModuleTypeR9MLite(uint8_t type)
+{
+  return type == MODULE_TYPE_R9M_LITE_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX2 || type == MODULE_TYPE_R9M_LITE_PRO_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
+}
+
+inline bool isModuleR9MLite(uint8_t idx)
+{
+  return isModuleTypeR9MLite(g_model.moduleData[idx].type);
+}
 
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
 }
 
 inline bool isModuleR9M_LBT(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
 }
 
 inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
 }
 
 inline bool isModuleR9M_EUPLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EUPLUS;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EUPLUS;
 }
 
 inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_AUPLUS;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_AUPLUS;
 }
 
-inline bool isModulePXX(uint8_t idx)
+inline bool isModuleTypePXX1(uint8_t type)
 {
-  return isModuleXJT(idx) || isModuleR9M(idx);
+  return isModuleTypeXJT(type) || isModuleTypeR9MNonAccess(type);
+}
+
+inline bool isModulePXX1(uint8_t idx)
+{
+  return isModuleTypePXX1(g_model.moduleData[idx].type);
 }
 
 inline bool isModulePXX2(uint8_t idx)

@@ -27,21 +27,22 @@
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
 
-#define PXX2_EXTERNAL_MODULE_BAUDRATE      230400
+#define PXX2_LOWSPEED_BAUDRATE             230400
+#define PXX2_HIGHSPEED_BAUDRATE            450000
 #define PXX2_PERIOD                        4 // 4ms
 #define PXX2_TOOLS_PERIOD                  1 // 1ms
 #define PXX2_FRAME_MAXLENGTH               64
 
 #define PXX_PULSES_PERIOD                  9/*ms*/
-#define EXTMODULE_PXX_SERIAL_PERIOD        4/*ms*/
-#define EXTMODULE_PXX_SERIAL_BAUDRATE      420000
+#define EXTMODULE_PXX1_SERIAL_PERIOD       4/*ms*/
+#define EXTMODULE_PXX1_SERIAL_BAUDRATE     420000
 
 #if defined(PXX_FREQUENCY_HIGH)
-  #define INTMODULE_PXX_BAUDRATE           450000
-  #define INTMODULE_PXX_PERIOD             4/*ms*/
+  #define INTMODULE_PXX1_SERIAL_BAUDRATE   450000
+  #define INTMODULE_PXX1_SERIAL_PERIOD     4/*ms*/
 #else
-  #define INTMODULE_PXX_BAUDRATE           115200
-  #define INTMODULE_PXX_PERIOD             9/*ms*/
+  #define INTMODULE_PXX1_SERIAL_BAUDRATE   115200
+  #define INTMODULE_PXX1_SERIAL_PERIOD     9/*ms*/
 #endif
 
 #if defined(PXX_FREQUENCY_HIGH) && (!defined(INTMODULE_USART) || !defined(EXTMODULE_USART))
