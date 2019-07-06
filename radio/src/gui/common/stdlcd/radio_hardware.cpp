@@ -302,6 +302,13 @@ void menuRadioHardware(event_t event)
   }
 #endif
 
+  if (menuEvent) {
+    disableVBatBridge();
+  }
+  else if (event == EVT_ENTRY) {
+    enableVBatBridge();
+  }
+
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
