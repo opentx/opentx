@@ -488,6 +488,7 @@
 
 #define TR_MENUWHENDONE                CENTER "\011" TR_ENTER " > DALŠÍ"
 #define TR_FREE                        TR("volné:", "volných")
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL                 "SMAZAT" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL                "Kopíruji model.."
 #define TR_MOVINGMODEL                 "Přesouvám model."

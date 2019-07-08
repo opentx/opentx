@@ -487,6 +487,7 @@ TR_GYR_VSRCRAW
 #endif
 
 #define TR_FREE                "vrij"
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "WIS" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL        "Kopieer Model"
 #define TR_MOVINGMODEL         "Verplaats Model"

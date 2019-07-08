@@ -490,6 +490,7 @@
 #endif
 
 #define TR_FREE                        "free"
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL                 "DELETE" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL                "Copying model..."
 #define TR_MOVINGMODEL                 "Moving model..."

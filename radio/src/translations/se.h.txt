@@ -500,6 +500,7 @@
 
 #define TR_MENUWHENDONE        CENTER "\011" TR_ENTER " Avslutar "
 #define TR_FREE                "kvar"
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "Radera Modell"
 #define TR_COPYINGMODEL        "Kopierar Modell "
 #define TR_MOVINGMODEL         "Flyttar Modell "

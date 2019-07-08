@@ -85,16 +85,6 @@ void menuRadioModulesVersion(event_t event)
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
 
   for (uint8_t module=0; module<NUM_MODULES; module++) {
-    if (module == INTERNAL_MODULE) {
-      if (!isModulePXX2(INTERNAL_MODULE) || !IS_INTERNAL_MODULE_ON()) {
-        continue;
-      }
-    }
-    else if (module == EXTERNAL_MODULE) {
-      if (!isModulePXX2(EXTERNAL_MODULE) || !IS_EXTERNAL_MODULE_ON()) {
-        continue;
-      }
-    }
 
     // Label
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
@@ -108,6 +98,30 @@ void menuRadioModulesVersion(event_t event)
     // Module model
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, STR_MODULE);
+      if (module == INTERNAL_MODULE) {
+        if (!IS_INTERNAL_MODULE_ON()) {
+          lcdDrawText(COLUMN2_X, y, STR_OFF);
+          y += FH;
+          continue;
+        }
+        if (!isModulePXX2(INTERNAL_MODULE)) {
+          lcdDrawText(COLUMN2_X, y, TR("no info", "no information"));
+          y += FH;
+          continue;
+        }
+      }
+      else if (module == EXTERNAL_MODULE) {
+        if (!IS_EXTERNAL_MODULE_ON()) {
+          lcdDrawText(COLUMN2_X, y, STR_OFF);
+          y += FH;
+          continue;
+        }
+        if (!isModulePXX2(EXTERNAL_MODULE)) {
+          lcdDrawText(COLUMN2_X, y, "no information");
+          y += FH;
+          continue;
+        }
+      }
       uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
       lcdDrawText(COLUMN2_X, y, PXX2modulesModels[modelId]);
     }
@@ -150,13 +164,6 @@ void menuRadioModulesVersion(event_t event)
   if (lines > NUM_BODY_LINES) {
     drawVerticalScrollbar(LCD_W-1, FH, LCD_H-FH, menuVerticalOffset, lines, NUM_BODY_LINES);
   }
-  else {
-    menuVerticalOffset = 0;
-    if (lines == 0) {
-      lcdDrawText(LCD_W/2, 4*FH, STR_NO_MODULE_INFORMATION, CENTERED);
-    }
-  }
-
   switch(event) {
     case EVT_KEY_PREVIOUS_LINE:
       if (lines > NUM_BODY_LINES) {
