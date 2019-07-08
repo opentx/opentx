@@ -245,16 +245,16 @@ bool menuModelSensor(event_t event)
       case SENSOR_FIELD_PARAM4:
       {
         drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_SOURCE, k-SENSOR_FIELD_PARAM1+1);
-        int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
+        int8_t * source = &sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
-          source = checkIncDec(event, source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+          *source = checkIncDec(event, *source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
-        if (source < 0) {
+        if (*source < 0) {
           lcdDrawText(SENSOR_2ND_COLUMN, y, "-", attr);
-          drawSource(SENSOR_2ND_COLUMN+5, y, MIXSRC_FIRST_TELEM+3*(-1-source), attr);
+          drawSource(SENSOR_2ND_COLUMN+5, y, MIXSRC_FIRST_TELEM+3*(-1-*source), attr);
         }
         else {
-          drawSource(SENSOR_2ND_COLUMN, y, source ? MIXSRC_FIRST_TELEM+3*(source-1) : 0, attr);
+          drawSource(SENSOR_2ND_COLUMN, y, *source ? MIXSRC_FIRST_TELEM+3*(*source-1) : 0, attr);
         }
         break;
       }
