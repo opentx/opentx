@@ -25,17 +25,17 @@ extern uint8_t g_moduleIdx;
 void onFailsafeMenu(const char * result)
 {
   uint8_t sub = menuVerticalPosition;
-  int16_t & failsafe = g_model.failsafeChannels[sub];
+  int16_t * failsafe = &g_model.failsafeChannels[sub];
   int32_t channelValue = channelOutputs[sub];
 
   if (result == STR_NONE) {
-    failsafe = FAILSAFE_CHANNEL_NOPULSE;
+    *failsafe = FAILSAFE_CHANNEL_NOPULSE;
   }
   else if (result == STR_HOLD) {
-    failsafe = FAILSAFE_CHANNEL_HOLD;
+    *failsafe = FAILSAFE_CHANNEL_HOLD;
   }
   else if (result == STR_CHANNEL2FAILSAFE) {
-    failsafe = channelValue;
+    *failsafe = channelValue;
   }
   else if (result == STR_CHANNELS2FAILSAFE) {
     setCustomFailsafe(g_moduleIdx);
