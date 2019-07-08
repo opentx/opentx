@@ -58,8 +58,8 @@ echo "Check if Macosc companion is needed"
 if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ]; then
   echo "Build Macosx companion"
   cd ${output}/companion/macosx
-  wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
-  wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
+  wget --tries=1 -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
+  wget --tries=1 -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
   chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
 fi
 
