@@ -49,7 +49,7 @@ echo "Check if Windows companion is needed"
 if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
   echo "Build Windows companion"
   cd ${output}/companion/windows
-  wget -qO- http://winbox.open-tx.org/companion-builds/compile23.php?branch=$branch\&suffix=${suffix}
+  wget  --tries=1 --read-timeout=6000 -O- http://winbox.open-tx.org/companion-builds/compile23.php?branch=$branch\&suffix=${suffix}
   wget -O companion-windows-${version}${suffix}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}${suffix}.exe
   chmod -Rf g+w companion-windows-${version}${suffix}.exe
 fi
@@ -59,7 +59,7 @@ if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ];
   echo "Build Macosx companion"
   cd ${output}/companion/macosx
   wget --tries=1 -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
-  wget --tries=1 -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
+  wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
   chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
 fi
 
