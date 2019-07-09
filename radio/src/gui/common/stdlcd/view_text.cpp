@@ -166,7 +166,7 @@ void menuTextView(event_t event)
 #else
   // TODO?
 #endif
-  lcdDrawText(LCD_W/2-strlen(getBasename(title))*FW/2, 0, getBasename(title));
+  lcdDrawText(LCD_W/2, 0, getBasename(title), CENTERED);
   lcdInvertLine(0);
 
   if (lines_count > LCD_LINES-1) {

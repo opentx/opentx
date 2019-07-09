@@ -846,11 +846,12 @@ void checkSDVersion()
 #if defined(STM32)
 static void checkRTCBattery()
 {
-  if (getRTCBatteryVoltage() < 200) {
-    ALERT("BATTERY", STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
+  if (isVBatBridgeEnabled()) {
+    if (getRTCBatteryVoltage() < 200) {
+      ALERT("BATTERY", STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
+    }
+    disableVBatBridge();
   }
-
-  disableVBatBridge();
 }
 #endif
 

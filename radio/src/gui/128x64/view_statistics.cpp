@@ -250,12 +250,6 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 #endif
 
-#if defined(STM32)
-  lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
-  putsVolts(MENU_DEBUG_COL1_OFS, y, getRTCBatteryVoltage(), PREC2|LEFT);
-  y += FH;
-#endif
-
   lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }

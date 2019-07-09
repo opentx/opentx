@@ -718,7 +718,7 @@ bool isTrainerModeAvailable(int mode)
     return false;
 #endif
 
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) && !defined(PCBXLITES)
   if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
     return false;
 #endif

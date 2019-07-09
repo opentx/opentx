@@ -487,6 +487,7 @@
 
 #define TR_MENUWHENDONE      CENTER"\006" TR_ENTER "QDO PRONTO"
 #define TR_FREE                "Livre"
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "EXCLUI MODELO"
 #define TR_COPYINGMODEL        "Copiando modelo"
 #define TR_MOVINGMODEL         "Movendo modelo"

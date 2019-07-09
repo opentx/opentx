@@ -305,8 +305,12 @@ void adcInit();
 void adcRead();
 uint16_t getAnalogValue(uint8_t index);
 void setSticksGain(uint8_t gains);
-#define enableVBatBridge()             do { } while(0)
-#define disableVBatBridge()
+inline void enableVBatBridge()
+{
+}
+inline void disableVBatBridge()
+{
+}
 
 // Battery driver
 uint16_t getBatteryVoltage();          // returns current battery voltage in 10mV steps

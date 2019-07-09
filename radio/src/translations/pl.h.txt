@@ -505,6 +505,7 @@
 
 #define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " > DALEJ"
 #define TR_FREE                "woln"
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "SKASUJ MODEL"
 #define TR_COPYINGMODEL        "Kopiuj model.."
 #define TR_MOVINGMODEL         "Przenieś model."
@@ -714,7 +715,7 @@
 #define TR_MONITOR_CHANNELS4   "CHANNELS MONITOR 25/32"
 #define TR_MONITOR_OUTPUT_DESC "Outputs"
 #define TR_MONITOR_MIXER_DESC  "Mixers"
-  #define TR_RECEIVER_NUM      TR( INDENT "Nr RX",INDENT "Nr odbiornika")
+  #define TR_RECEIVER_NUM      TR("Nr RX", "Nr odbiornika")
   #define TR_RECEIVER          INDENT "Receiver"
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY             "Telemetry"

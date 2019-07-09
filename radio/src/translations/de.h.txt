@@ -495,6 +495,7 @@
 #endif
 
 #define TR_FREE                "frei"
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "Modell löschen?"
 #define TR_COPYINGMODEL        "Kopiere Modell"
 #define TR_MOVINGMODEL         "Schiebe Modell"
@@ -705,7 +706,7 @@
 #define TR_MONITOR_SWITCHES    "LOGIK SCHALTER MONITOR"
 #define TR_MONITOR_OUTPUT_DESC "Kanäle"
 #define TR_MONITOR_MIXER_DESC  "Mischer"
-#define TR_RECEIVER_NUM        TR(INDENT "Empf Nr.", INDENT "Empfänger Nummer")
+#define TR_RECEIVER_NUM        TR("Empf Nr.", "Empfänger Nummer")
 #define TR_RECEIVER            "Receiver"
 #define TR_MULTI_RFTUNE        TR(INDENT "RF Freq.", INDENT "RF Freq. Feintuning")
 #define TR_MULTI_TELEMETRY             "Telemetry"

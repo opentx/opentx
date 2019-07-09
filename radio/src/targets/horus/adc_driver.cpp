@@ -261,7 +261,7 @@ void adcRead()
     adcValues[MOUSE1+x] = temp[x] >> 2;
   }
 
-  if (ADC->CCR & ADC_CCR_VBATE) {
+  if (isVBatBridgeEnabled()) {
     rtcBatteryVoltage = ADC1->DR;
   }
 }

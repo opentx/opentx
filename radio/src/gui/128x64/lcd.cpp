@@ -52,7 +52,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   assert(lines <= 5);
 
   for (int8_t i=0; i<width+2; i++) {
-    if (x<LCD_W) {
+    if (x >= 0 && x < LCD_W) {
       uint8_t b[5] = { 0 };
       if (i==0) {
         if (x==0 || !inv) {

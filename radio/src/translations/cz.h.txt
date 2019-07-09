@@ -488,6 +488,7 @@
 
 #define TR_MENUWHENDONE                CENTER "\011" TR_ENTER " > DALŠÍ"
 #define TR_FREE                        TR("volné:", "volných")
+#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL                 "SMAZAT" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL                "Kopíruji model.."
 #define TR_MOVINGMODEL                 "Přesouvám model."
@@ -698,7 +699,7 @@
 #define TR_MONITOR_CHANNELS4           "MONITOR KANÁLŮ 25/32"
 #define TR_MONITOR_OUTPUT_DESC         "Výstupy"
 #define TR_MONITOR_MIXER_DESC          "Mixy"
-#define TR_RECEIVER_NUM                TR(INDENT "RX číslo", INDENT "Číslo přijímače")
+#define TR_RECEIVER_NUM                TR("RX číslo", "Číslo přijímače")
 #define TR_RECEIVER                    "Přijímač"
 #define TR_MULTI_RFTUNE                TR(INDENT "Ladění frek", INDENT "Jemné ladění frek. RF")
 #define TR_MULTI_TELEMETRY             "Telemetrie"

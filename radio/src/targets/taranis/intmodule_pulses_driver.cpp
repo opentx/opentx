@@ -32,11 +32,8 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
-#if defined(DEBUG_LATENCY)
-#define HEARBEAT_OFFSET unsigned(5500 + g_model.flightModeData[0].gvars[0] * 100)
-#else
-constexpr unsigned HEARBEAT_OFFSET = 5500;
-#endif
+// #define HEARBEAT_OFFSET unsigned(6000 + g_model.flightModeData[0].gvars[0] * 100)
+constexpr unsigned HEARBEAT_OFFSET = 6000;
 
 void intmoduleSendNextFrame()
 {
