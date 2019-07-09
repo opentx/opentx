@@ -127,6 +127,13 @@ void extmodulePxx1PulsesStart()
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
 }
 
+void extmoduleInvertedSerialStart(uint32_t baudrate)
+{
+  EXTERNAL_MODULE_ON();
+
+  // TODO
+}
+
 #if defined(DSM2)
 void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
 {

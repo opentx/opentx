@@ -75,7 +75,7 @@ enum
   inline void POPUP_INPUT(const char * s, PopupFunc func) { }
   inline void SET_WARNING_INFO(const char * info, uint8_t length, uint8_t flags) { }
 #else
-  #define DISPLAY_WARNING              (*popupFunc)
+  #define DISPLAY_WARNING(evt)              (*popupFunc)(evt)
   inline void CLEAR_POPUP()
   {
     warningText = nullptr;

@@ -73,22 +73,41 @@ void showMessageBox(const char * title)
   lcdRefresh();
 }
 
+void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h)
+{
+  lcdDrawSolidFilledRect(x + 1, y + 1, w - 2, h - 2, TEXT_BGCOLOR);
+  lcdDrawSolidRect(x, y, w, h, 1, ALARM_COLOR);
+}
+
 void runPopupWarning(event_t event)
 {
   warningResult = false;
 
-  theme->drawMessageBox(warningText, warningInfoText,  WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT), warningType);
+  theme->drawMessageBox(warningText, warningInfoText, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT), warningType);
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
+        // key ignored, the user has to press [EXIT]
         break;
-      if (warningType != WARNING_TYPE_INFO)
-        warningResult = true;
+
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        warningType = WARNING_TYPE_ASTERISK;
+        warningText = nullptr;
+        if (popupMenuHandler)
+          popupMenuHandler(STR_OK);
+        else
+          warningResult = true;
+        break;
+      }
       // no break
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      warningText = NULL;
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        if (popupMenuHandler)
+          popupMenuHandler(STR_EXIT);
+      }
+      warningText = nullptr;
       warningType = WARNING_TYPE_ASTERISK;
       break;
   }
@@ -148,8 +167,7 @@ const char * runPopupMenu(event_t event)
 
   int y = (LCD_H - (display_count*(FH+1))) / 2;
 
-  lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, TEXT_BGCOLOR);
-  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, 1, ALARM_COLOR);
+  drawPopupBackgroundAndBorder(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
     if (i == popupMenuSelectedItem) {

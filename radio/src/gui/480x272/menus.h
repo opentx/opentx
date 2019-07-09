@@ -475,14 +475,14 @@ void insertMix(uint8_t idx);
 
 void copySelection(char * dst, const char * src, uint8_t size);
 
+void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h);
 void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
 
 extern void (* popupFunc)(event_t event);
 extern uint8_t warningInfoFlags;
 
-#define DISPLAY_WARNING                (*popupFunc)
-
+#define DISPLAY_WARNING(evt)                (*popupFunc)(evt)
 #define POPUP_INFORMATION(s)           (warningText = s, warningType = WARNING_TYPE_INFO, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)

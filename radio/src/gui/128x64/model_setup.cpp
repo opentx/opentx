@@ -277,16 +277,18 @@ void onBluetoothConnectMenu(const char * result)
   #define INTERNAL_MODULE_ROWS
 #endif
 
-void menuModelSetup(event_t event)
-{
 #if defined(EXTERNAL_ANTENNA)
-  // Switch to external antenna confirmation
-  if (warningResult) {
-    warningResult = 0;
+void onAntennaSwitchConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    // Switch to external antenna confirmation
     g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = XJT_EXTERNAL_ANTENNA;
   }
+}
 #endif
 
+void menuModelSetup(event_t event)
+{
   int8_t old_editMode = s_editMode;
 
 #if defined(PCBTARANIS)
@@ -1113,7 +1115,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        lcdDrawTextAlignedLeft(y, STR_RECEIVER_NUM);
+        lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], attr | LEADING0 | LEFT, 2);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
@@ -1225,7 +1227,7 @@ void menuModelSetup(event_t event)
 
         if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
           killEvents(event);
-          if (!isSimu() && isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+          if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
             onPXX2ReceiverMenu(STR_BIND);
           }
           else {
@@ -1300,7 +1302,7 @@ void menuModelSetup(event_t event)
             if (attr) l_posHorz += 1;
           }
           else {
-            lcdDrawTextAlignedLeft(y, STR_RECEIVER_NUM);
+            lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
           }
           if (isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx)) {
             if (xOffsetBind)
@@ -1457,12 +1459,12 @@ void menuModelSetup(event_t event)
       }
       break;
 
-#if defined(PCBXLITE)
+#if defined(EXTERNAL_ANTENNA)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA:
       {
         uint8_t newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNASELECTION, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna, 0, 1, attr, event);
         if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
-          POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, nullptr);
+          POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onAntennaSwitchConfirm);
           const char * w = STR_ANTENNACONFIRM2;
           SET_WARNING_INFO(w, strlen(w), 0);
         }
@@ -1472,6 +1474,7 @@ void menuModelSetup(event_t event)
         break;
       }
 #endif
+
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);

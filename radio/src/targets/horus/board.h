@@ -154,6 +154,7 @@ void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendNextFrame();
 
 // Trainer driver
