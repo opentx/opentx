@@ -419,7 +419,7 @@ end
 
 -- Main
 local function runDevicePage(event)
-  if event == EVT_EXIT_BREAK then             -- exit script
+  if event == EVT_VIRTUAL_EXIT then             -- exit script
     if edit == true then
       edit = false
       local field = getField(lineIndex)
@@ -430,7 +430,7 @@ local function runDevicePage(event)
     else
       return "crossfire.lua"
     end
-  elseif event == EVT_ROT_BREAK or event == EVT_RIGHT_BREAK then        -- toggle editing/selecting current field
+  elseif event == EVT_VIRTUAL_ENTER then        -- toggle editing/selecting current field
     local field = getField(lineIndex)
     if field.name then
       if field.type == 10 then
@@ -451,15 +451,15 @@ local function runDevicePage(event)
       end
     end
   elseif edit then
-    if event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
+    if event == EVT_VIRTUAL_NEXT or event == EVT_VIRTUAL_NEXT_REPT then
       incrField(1)
-    elseif event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
+    elseif event == EVT_VIRTUAL_PREVIOUS or event == EVT_VIRTUAL_PREVIOUS_REPT then
       incrField(-1)
     end
   else
-    if event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
+    if event == EVT_VIRTUAL_NEXT then
       selectField(1)
-    elseif event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
+    elseif event == EVT_VIRTUAL_PREVIOUS then
       selectField(-1)
     end
   end
