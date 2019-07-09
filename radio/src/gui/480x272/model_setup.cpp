@@ -144,10 +144,7 @@ const char * STR_BIND_FLEX_915 = "Flex 915MHz";
 
 void onPXX2R9MBindModeMenu(const char * result)
 {
-  if (result == STR_BIND_8CH_WITH_TELEM) {
-    reusableBuffer.moduleSetup.bindInformation.lbtMode = 0;
-  }
-  else if (result == STR_BIND_16CH_WITH_TELEM) {
+  if (result == STR_BIND_16CH_WITH_TELEM) {
     reusableBuffer.moduleSetup.bindInformation.lbtMode = 1;
   }
   else if (result == STR_BIND_16CH_WITHOUT_TELEM) {
@@ -246,7 +243,6 @@ void onPXX2BindMenu(const char * result)
     reusableBuffer.moduleSetup.bindInformation.selectedReceiverIndex = (result - reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]);
     if (isModuleR9MAccess(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_EU) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
-      POPUP_MENU_ADD_ITEM(STR_8CH_WITH_TELEMETRY);
       POPUP_MENU_ADD_ITEM(STR_16CH_WITH_TELEMETRY);
       POPUP_MENU_ADD_ITEM(STR_16CH_WITHOUT_TELEMETRY);
       POPUP_MENU_START(onPXX2R9MBindModeMenu);
