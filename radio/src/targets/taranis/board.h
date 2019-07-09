@@ -473,26 +473,32 @@ enum Analogs {
   NUM_ANALOGS
 };
 
-#define NUM_POTS                        (POT_LAST - POT_FIRST + 1)
-#define NUM_XPOTS                       NUM_POTS
-#define NUM_SLIDERS                     (TX_VOLTAGE - POT_LAST - 1)
-#define NUM_TRIMS                       4
-#define NUM_MOUSE_ANALOGS               0
-#define STORAGE_NUM_MOUSE_ANALOGS       0
-
 #if defined(PCBX9LITE)
+  #define NUM_POTS                      1
+  #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              1
   #define STORAGE_NUM_SLIDERS           0
 #elif defined(PCBXLITE) || defined(PCBX7)
+  #define NUM_POTS                      2
+  #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              2
   #define STORAGE_NUM_SLIDERS           0
 #elif defined(PCBX9E)
+  #define NUM_POTS                      4
+  #define NUM_SLIDERS                   4
   #define STORAGE_NUM_POTS              4
   #define STORAGE_NUM_SLIDERS           4
 #else
+  #define NUM_POTS                      3
+  #define NUM_SLIDERS                   2
   #define STORAGE_NUM_POTS              3
   #define STORAGE_NUM_SLIDERS           2
 #endif
+
+#define NUM_XPOTS                       NUM_POTS
+#define NUM_TRIMS                       4
+#define NUM_MOUSE_ANALOGS               0
+#define STORAGE_NUM_MOUSE_ANALOGS       0
 
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
