@@ -51,6 +51,7 @@
 #define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED  (1 << 7)
 #define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
+#define PXX2_RX_SETTINGS_FLAG1_FPORT               (1 << 3)
 
 #define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
 #define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)

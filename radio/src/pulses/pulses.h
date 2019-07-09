@@ -123,6 +123,7 @@ class ReceiverSettings {
     uint8_t dirty;
     uint8_t telemetryDisabled;
     uint8_t pwmRate;
+    uint8_t fport;
     uint8_t outputsCount;
     uint8_t outputsMapping[24];
 };

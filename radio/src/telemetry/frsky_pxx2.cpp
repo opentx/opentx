@@ -88,6 +88,9 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FPORT)
+    reusableBuffer.hardwareAndSettings.receiverSettings.fport = 1;
+
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
     reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = 1;
 

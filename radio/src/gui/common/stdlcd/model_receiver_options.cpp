@@ -40,6 +40,7 @@ void onRxOptionsUpdateConfirm(const char * result)
 enum {
   ITEM_RECEIVER_TELEMETRY,
   ITEM_RECEIVER_PWM_RATE,
+  ITEM_RECEIVER_SPORT_FPORT,
   ITEM_RECEIVER_PINMAP_FIRST
 };
 
@@ -117,8 +118,15 @@ void menuModelReceiverOptions(event_t event)
           }
           break;
 
+        case ITEM_RECEIVER_SPORT_FPORT:
+          reusableBuffer.hardwareAndSettings.receiverSettings.fport = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.fport, RECEIVER_OPTIONS_2ND_COLUMN, y, "F.Port", attr, event);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+          }
+          break;
+
         default:
-          // Pin
+        // Pin
         {
           uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {

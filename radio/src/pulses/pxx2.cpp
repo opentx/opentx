@@ -214,6 +214,8 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED;
       if (reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.fport)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_FPORT;
       Pxx2Transport::addByte(flag1);
       uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
       for (int i = 0; i < outputsCount; i++) {
