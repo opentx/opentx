@@ -385,9 +385,6 @@
   #define TR_VKEYS                     "Menu\0""Exit\0""Bas\0 ""Haut\0""Droit""Gauch"
 #endif
 
-#define LEN_VRENCODERS                 "\003"
-#define TR_VRENCODERS                  "REa""REb"
-
 #define LEN_VSWITCHES                  "\003"
 #define LEN_VSRCRAW                    "\004"
 

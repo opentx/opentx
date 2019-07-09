@@ -135,11 +135,6 @@ extern const char STR_INPUTNAMES[];
 #endif
 
 extern const char STR_VTMRMODES[];
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-extern const char STR_VRENCODERS[];
-#endif
-
 extern const char STR_VPERSISTENT[];
 
 extern const char STR_VLCD[];
