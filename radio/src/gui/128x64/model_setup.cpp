@@ -1526,23 +1526,24 @@ void menuModelSetup(event_t event)
         auto & module = g_model.moduleData[moduleIdx];
 
         if (isModuleTypeR9MNonAccess(module.type)) {
-          lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
+          lcdDrawTextAlignedLeft(y, STR_RFPOWER);
           if (isModuleR9M_FCC_VARIANT(moduleIdx)) {
-            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Lite FCC has only one setting
             if (isModuleTypeR9MLiteNonPro(module.type)) { // R9M lite FCC has only one power value, so displayed for info only
-              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_FCC_POWER_VALUES, module.pxx.power, LEFT);
+              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_FCC_POWER_VALUES, 0, LEFT);
               if (attr) {
                 REPEAT_LAST_CURSOR_MOVE();
               }
             }
             else {
+              module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Sanitize
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, module.pxx.power, LEFT | attr);
-              if (attr)
+              if (attr) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_FCC_POWER_MAX);
+              }
             }
           }
           else if (isModuleTypeR9MLiteNonPro(module.type)) {
-            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_LITE_LBT_POWER_MAX);
+            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_LITE_LBT_POWER_MAX); // Sanitize
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_LBT_POWER_VALUES, module.pxx.power, LEFT | attr);
             if (attr) {
               CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LITE_LBT_POWER_MAX);
@@ -1555,7 +1556,7 @@ void menuModelSetup(event_t event)
             }
           }
           else {
-            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_LBT_POWER_MAX);
+            module.pxx.power = min((uint8_t)module.pxx.power, (uint8_t)R9M_LBT_POWER_MAX); // Sanitize
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, module.pxx.power, LEFT | attr);
             if (attr) {
               CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LBT_POWER_MAX);

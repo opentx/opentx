@@ -778,7 +778,7 @@ extern const char STR_ADDMAINVIEW[];
 extern const char STR_BACKGROUND_COLOR[];
 extern const char STR_MAIN_COLOR[];
 extern const char STR_TEXT_VIEWER[];
-extern const char STR_MULTI_RFPOWER[];
+extern const char STR_RFPOWER[];
 
 extern const char STR_BYTES[];
 extern const char STR_ANTENNAPROBLEM[];

@@ -1217,7 +1217,7 @@ void menuModelSetup(event_t event)
     {
       uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
       if (isModuleR9MNonAccess(moduleIdx)) {
-        lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
+        lcdDrawTextAlignedLeft(y, TR_RFPOWER);
         if (isModuleR9M_FCC_VARIANT(moduleIdx)) {
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
           if (attr)
