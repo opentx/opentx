@@ -1170,14 +1170,10 @@ union ReusableBuffer
   struct {
     ModuleInformation modules[NUM_MODULES];
     uint32_t updateTime;
-
     union {
       ModuleSettings moduleSettings;
       ReceiverSettings receiverSettings;
     };
-
-    uint8_t moduleSettingsDirty;
-
   } hardwareAndSettings;
 
   struct {

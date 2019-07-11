@@ -384,6 +384,15 @@ static const uint8_t receiverOptions[] = {
   0b11111111, // R9-MM+OTA
 };
 
+enum ModuleCapabilities {
+  MODULE_CAPABILITY_COUNT
+};
+
+enum ReceiverCapabilities {
+  RECEIVER_CAPABILITY_FPORT,
+  RECEIVER_CAPABILITY_COUNT
+};
+
 inline uint8_t getReceiverOptions(uint8_t modelId)
 {
   if (modelId < DIM(receiverOptions))

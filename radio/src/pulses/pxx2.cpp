@@ -187,7 +187,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
 {
   ModuleSettings * destination = moduleState[module].moduleSettings;
 
-  if (get_tmr10ms() > destination->retryTime) {
+  if (get_tmr10ms() > destination->timeout) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TX_SETTINGS);
     uint8_t flag0 = 0;
     if (destination->state == PXX2_SETTINGS_WRITE)
@@ -200,7 +200,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
       Pxx2Transport::addByte(flag1);
       Pxx2Transport::addByte(destination->txPower);
     }
-    destination->retryTime = get_tmr10ms() + 200/*next try in 2s*/;
+    destination->timeout = get_tmr10ms() + 200/*next try in 2s*/;
   }
   else {
     setupChannelsFrame(module);

@@ -94,6 +94,8 @@ PACK(struct PXX2HardwareInformation {
   PXX2Version hwVersion;
   PXX2Version swVersion;
   uint8_t variant;
+  uint32_t capabilities; // variable length
+  uint8_t capabilityNotSupported;
 });
 
 PACK(struct ModuleInformation {
@@ -110,9 +112,10 @@ PACK(struct ModuleInformation {
 class ModuleSettings {
   public:
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
-    tmr10ms_t retryTime;
+    tmr10ms_t timeout;
     uint8_t externalAntenna;
     int8_t txPower;
+    uint8_t dirty;
 };
 
 class ReceiverSettings {
@@ -167,6 +170,7 @@ PACK(struct ModuleState {
   union {
     ModuleInformation * moduleInformation;
     ModuleSettings * moduleSettings;
+    ReceiverSettings * receiverSettings;
     BindInformation * bindInformation;
     OtaUpdateInformation * otaUpdateInformation;
   };
@@ -196,8 +200,21 @@ PACK(struct ModuleState {
   {
     moduleSettings = source;
     moduleSettings->state = PXX2_SETTINGS_WRITE;
-    moduleSettings->retryTime = 0;
+    moduleSettings->timeout = 0;
     mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+  void readReceiverSettings(ReceiverSettings * destination)
+  {
+    receiverSettings = destination;
+    receiverSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+  void writeReceiverSettings(ReceiverSettings * source)
+  {
+    receiverSettings = source;
+    receiverSettings->state = PXX2_SETTINGS_WRITE;
+    receiverSettings->timeout = 0;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 });
 
