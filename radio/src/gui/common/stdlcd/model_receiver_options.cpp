@@ -130,7 +130,7 @@ void menuModelReceiverOptions(event_t event)
 
       switch (i) {
         case ITEM_RECEIVER_SETTINGS_TELEMETRY:
-          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telem. disabled", attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, STR_TELEMETRY_DISABLED, attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
@@ -151,11 +151,11 @@ void menuModelReceiverOptions(event_t event)
           break;
 
         case ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1:
-          lcdDrawText(LCD_W/2, y+1, "More options available", SMLSIZE|CENTERED);
+          lcdDrawText(LCD_W/2, y+1, STR_MORE_OPTIONS_AVAILABLE, SMLSIZE|CENTERED);
           break;
 
         case ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2:
-          lcdDrawText(LCD_W/2, y+1, "OpenTX update required", SMLSIZE|CENTERED);
+          lcdDrawText(LCD_W/2, y+1, STR_OPENTX_UPGRADE_REQUIRED, SMLSIZE|CENTERED);
           break;
 
         default:
