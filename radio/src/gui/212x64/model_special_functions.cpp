@@ -214,8 +214,12 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else
 #endif
           if (func == FUNC_TRAINER) {
-            maxParam = NUM_STICKS;
-            drawSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+            maxParam = NUM_STICKS + 1;
+            uint8_t param = CFN_CH_INDEX(cfn);
+            if (param == NUM_STICKS + 1)
+              lcdDrawText(lcdNextPos, y, "Chans", attr);
+            else
+              drawSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
           }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {

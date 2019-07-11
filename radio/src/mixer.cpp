@@ -222,6 +222,17 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
 // rescaled from -262144 to 262144
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
+    // safety channel available for channel check
+    return calc100toRESX(safetyCh[channel]);
+  }
+#endif
+
+  if (isFunctionActive(FUNCTION_TRAINER_CHANNELS) && IS_TRAINER_INPUT_VALID()) {
+    return ppmInput[channel];
+  }
+
   LimitData * lim = limitAddress(channel);
 
   if (lim->curve) {
@@ -275,17 +286,12 @@ int16_t applyLimits(uint8_t channel, int32_t value)
     ofs += tmp;  // ofs can to added directly because already recalculated,
   }
 
-  if (ofs > lim_p) ofs = lim_p;
-  if (ofs < lim_n) ofs = lim_n;
-
-  if (lim->revert) ofs = -ofs; // finally do the reverse.
-
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
-    // safety channel available for channel check
-    ofs = calc100toRESX(safetyCh[channel]);
-  }
-#endif
+  if (ofs > lim_p)
+    ofs = lim_p;
+  if (ofs < lim_n)
+    ofs = lim_n;
+  if (lim->revert)
+    ofs = -ofs; // finally do the reverse.
 
   return ofs;
 }
@@ -465,12 +471,12 @@ void evalInputs(uint8_t mode)
         v = 0;
       }
 
-      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && IS_TRAINER_INPUT_VALID()) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER_STICK1+ch) && IS_TRAINER_INPUT_VALID()) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
           uint8_t chStud = td->srcChn;
-          int32_t vStud  = (ppmInput[chStud]- g_eeGeneral.trainer.calib[chStud]);
+          int32_t vStud  = (ppmInput[chStud] - g_eeGeneral.trainer.calib[chStud]);
           vStud *= td->studWeight;
           vStud /= 50;
           switch (td->mode) {

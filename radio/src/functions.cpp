@@ -165,11 +165,13 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
 
           case FUNC_TRAINER:
           {
-            uint8_t mask = 0x0f;
-            if (CFN_CH_INDEX(cfn) > 0) {
-              mask = (1<<(CFN_CH_INDEX(cfn)-1));
-            }
-            newActiveFunctions |= mask;
+            uint8_t param = CFN_CH_INDEX(cfn);
+            if (param == 0)
+              newActiveFunctions |= 0x0F;
+            else if (param <= NUM_STICKS)
+              newActiveFunctions |= (1 << (param-1));
+            else if (param == NUM_STICKS + 1)
+              newActiveFunctions |= (1 << FUNCTION_TRAINER_CHANNELS);
             break;
           }
 
