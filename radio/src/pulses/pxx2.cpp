@@ -39,8 +39,15 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 
 void Pxx2Pulses::addFlag1(uint8_t module)
 {
-  uint8_t flag1 = g_model.moduleData[module].subType << 4;
-  Pxx2Transport::addByte(flag1);
+  uint8_t subType;
+  if (isModuleXJT(module)) {
+    static const uint8_t PXX2_XJT_MODULE_SUBTYPES[] = {0x01, 0x03, 0x02};
+    subType = PXX2_XJT_MODULE_SUBTYPES[subType];
+  }
+  else {
+    subType = g_model.moduleData[module].subType;
+  }
+  Pxx2Transport::addByte(subType << 4);
 }
 
 void Pxx2Pulses::addPulsesValues(uint16_t low, uint16_t high)

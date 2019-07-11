@@ -393,10 +393,9 @@ inline void SEND_FAILSAFE_1S()
 void setCustomFailsafe(uint8_t moduleIndex);
 
 enum R9MLiteLBTPowerValues {
-  R9M_LITE_LBT_POWER_25 = 0,
-  R9M_LITE_LBT_POWER_25_16,
-  R9M_LITE_LBT_POWER_100,
-  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100
+  R9M_LITE_LBT_POWER_25_TELEM = 0,
+  R9M_LITE_LBT_POWER_100_NOTELEM,
+  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100_NOTELEM
 };
 
 enum R9MFCCPowerValues {
@@ -416,5 +415,5 @@ enum R9MLBTPowerValues {
 };
 
 #define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
+#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100_NOTELEM))
 #endif // _PULSES_H_

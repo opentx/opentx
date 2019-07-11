@@ -383,7 +383,7 @@ void applyDefaultTemplate()
 #if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
-  if (isModulePXX1(module) && IS_D8_RX(module))
+  if (isModuleXJTD8(module))
     return;
 
   uint8_t modelId = g_model.header.modelId[module];
@@ -453,7 +453,7 @@ uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
 
   uint8_t new_id = 1;
   uint8_t tst_mask = 1;
-  for (;new_id < MAX_RX_NUM(module); new_id++) {
+  for (;new_id < getMaxRxNum(module); new_id++) {
     if (!(usedModelIds[new_id >> 3] & tst_mask)) {
       // found free ID
       return new_id;
@@ -859,9 +859,9 @@ static void checkRTCBattery()
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
-    if (isModulePXX1(i)) {
+    if (isModuleFailsafeAvailable(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
-      if (HAS_RF_PROTOCOL_FAILSAFE(moduleData.rfProtocol) && moduleData.failsafeMode == FAILSAFE_NOT_SET) {
+      if (moduleData.failsafeMode == FAILSAFE_NOT_SET) {
         ALERT(STR_FAILSAFEWARN, STR_NO_FAILSAFE, AU_ERROR);
         break;
       }

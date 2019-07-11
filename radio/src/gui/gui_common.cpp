@@ -586,7 +586,7 @@ bool isInternalModuleAvailable(int moduleType)
 bool isExternalModuleAvailable(int moduleType)
 {
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-  if (isModuleTypeR9MLite(moduleType))
+  if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
 #endif
 
@@ -600,16 +600,16 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if !defined(R9M_SIZE_STD)
+#if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_STD)
   if (moduleType == MODULE_TYPE_R9M_PXX1)
     return false;
 #endif
 
-  if (moduleType == MODULE_TYPE_ISRM_PXX2 || moduleType == MODULE_TYPE_R9M_PXX2)
-    return false;
+  if (moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_ISRM_PXX2)
+    return false; // doesn't exist for now
 
 #if !defined(PXX2)
-  if (moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
+  if (moduleType == MODULE_TYPE_XJT_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
     return false;
   }
 #endif

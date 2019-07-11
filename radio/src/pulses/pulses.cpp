@@ -74,6 +74,7 @@ uint8_t getRequiredProtocol(uint8_t module)
 
     case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
+    case MODULE_TYPE_XJT_LITE_PXX2:
       protocol = PROTOCOL_CHANNELS_PXX2_HIGHSPEED;
       break;
 

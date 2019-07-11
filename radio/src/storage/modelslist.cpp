@@ -542,7 +542,7 @@ uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
 
   uint8_t new_id = 1;
   uint8_t tst_mask = 1;
-  for (;new_id < MAX_RX_NUM(moduleIdx); new_id++) {
+  for (;new_id < getMaxRxNum(moduleIdx); new_id++) {
     if (!(usedModelIds[new_id >> 3] & tst_mask)) {
       // found free ID
       return new_id;
