@@ -23,6 +23,9 @@
 
 #include "bitfield.h"
 #include "definitions.h"
+#if defined(MULTIMODULE)
+#include "telemetry/multi.h"
+#endif
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
