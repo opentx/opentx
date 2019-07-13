@@ -65,7 +65,7 @@ bool GeneralSettings::isSliderAvailable(int index) const
 
 GeneralSettings::GeneralSettings()
 {
-  memset(this, 0, sizeof(GeneralSettings));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(GeneralSettings));
 
   contrast  = 25;
 
