@@ -1455,7 +1455,7 @@ void doMixerCalculations()
         s_cnt_1s -= 10;
         sessionTimer += 1;
         inactivity.counter++;
-        if ((((uint8_t)inactivity.counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && inactivity.counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
+        if ((((uint8_t)inactivity.counter) & 0x07) == 0x01 && g_eeGeneral.inactivityTimer && inactivity.counter > ((uint16_t)g_eeGeneral.inactivityTimer * 60))
           AUDIO_INACTIVITY();
 
 #if defined(AUDIO)
@@ -1466,8 +1466,9 @@ void doMixerCalculations()
 
         val = s_sum_samples_thr_1s / s_cnt_samples_thr_1s;
         s_timeCum16ThrP += (val>>3);  // s_timeCum16ThrP would overrun if we would store throttle value with higher accuracy; therefore stay with 16 steps
-        if (val) s_timeCumThr += 1;
-        s_sum_samples_thr_1s>>=2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
+        if (val)
+          s_timeCumThr += 1;
+        s_sum_samples_thr_1s >>= 2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
 
 #if defined(THRTRACE)
         // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
