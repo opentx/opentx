@@ -222,9 +222,9 @@ void FlashEEpromDialog::on_burnButton_clicked()
     Storage storage(eepromFilename);
     if (storage.load(*radioData)) {
       if (ui->patchCalibration->isChecked())
-        patch |= patchCalibration(radioData.get());
+        patch |= patchCalibration(radioData.data());
       if (ui->patchHardwareSettings->isChecked())
-        patch |= patchHardwareSettings(radioData.get());
+        patch |= patchHardwareSettings(radioData.data());
     }
 
     if (patch) {
