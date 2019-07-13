@@ -670,6 +670,7 @@
 #define TIMER_2MHz_TIMER                TIM7
 
 // Bluetooth
+#define STORAGE_BLUETOOTH
 #define BT_RCC_APB2Periph               RCC_APB2Periph_USART6
 #define BT_USART                        USART6
 #define BT_GPIO_AF                      GPIO_AF_USART6

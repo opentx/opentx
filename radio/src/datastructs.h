@@ -677,7 +677,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #elif defined(PCBTARANIS)
-  #if defined(BLUETOOTH)
+  #if defined(STORAGE_BLUETOOTH)
     #define BLUETOOTH_FIELDS \
       uint8_t spare; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
@@ -922,11 +922,9 @@ static inline void check_struct()
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
   CHKSIZE(ModelData, 6614);
-#elif defined(PCBX9DP) && PCBREV >= 2019
-  // TODO
 #elif defined(PCBX9D) || defined(PCBX9DP)
-  CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6601);
+  CHKSIZE(RadioData, 898);
+  CHKSIZE(ModelData, 6604);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);

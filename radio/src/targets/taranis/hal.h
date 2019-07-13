@@ -492,6 +492,8 @@
   #define HARDWARE_SWITCH_I
   #define SWITCHES_GPIO_REG_I           GPIOD->IDR
   #define SWITCHES_GPIO_PIN_I           GPIO_Pin_10 // PD.10
+#elif defined(PCBX9D) || defined(PCBX9DP)
+  #define STORAGE_SWITCH_I
 #endif
 
 // X7 P400 P401 headers additionnal momentary switches
@@ -1736,6 +1738,7 @@
 
 // Bluetooth
 #if defined(PCBX9E)
+  #define STORAGE_BLUETOOTH
   #define BT_USART                     USART6
   #define BT_GPIO_AF                   GPIO_AF_USART6
   #define BT_USART_IRQn                USART6_IRQn
@@ -1755,6 +1758,7 @@
   #define BT_RX_GPIO_PinSource         GPIO_PinSource9
   #define BT_USART_IRQHandler          USART6_IRQHandler
 #elif defined(PCBX7) || defined(PCBXLITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+  #define STORAGE_BLUETOOTH
   #define BT_RCC_APB1Periph             RCC_APB1Periph_USART3
   #define BT_RCC_APB2Periph             0
   #if defined(PCBX9DP)
@@ -1781,6 +1785,8 @@
   #define BT_USART_IRQn                 USART3_IRQn
   // #define BT_DMA_Stream_RX              DMA1_Stream1
   // #define BT_DMA_Channel_RX             DMA_Channel_4
+#elif defined(PCBX9D) || defined(PCBX9DP)
+  #define STORAGE_BLUETOOTH
 #else
   #define BT_RCC_AHB1Periph            0
   #define BT_RCC_APB1Periph            0
