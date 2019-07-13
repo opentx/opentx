@@ -54,7 +54,7 @@ RawSwitch ersky9xToSwitch(int8_t sw)
 
 t_Ersky9xTrainerMix::t_Ersky9xTrainerMix()
 {
-  memset(this, 0, sizeof(t_Ersky9xTrainerMix));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xTrainerMix));
 }
 
 t_Ersky9xTrainerMix::operator TrainerMix()
@@ -69,7 +69,7 @@ t_Ersky9xTrainerMix::operator TrainerMix()
 
 t_Ersky9xTrainerData::t_Ersky9xTrainerData()
 {
-  memset(this, 0, sizeof(t_Ersky9xTrainerData));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xTrainerData));
 }
 
 t_Ersky9xTrainerData::operator TrainerData ()
@@ -84,7 +84,7 @@ t_Ersky9xTrainerData::operator TrainerData ()
 
 t_Ersky9xGeneral::t_Ersky9xGeneral()
 {
-  memset(this, 0, sizeof(t_Ersky9xGeneral));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xGeneral));
 }
 
 Ersky9xGeneral::operator GeneralSettings ()
@@ -157,7 +157,7 @@ Ersky9xGeneral::operator GeneralSettings ()
 
 t_Ersky9xLimitData::t_Ersky9xLimitData()
 {
-  memset(this, 0, sizeof(t_Ersky9xLimitData));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xLimitData));
 }
 
 t_Ersky9xLimitData::operator LimitData ()
@@ -172,7 +172,7 @@ t_Ersky9xLimitData::operator LimitData ()
 
 t_Ersky9xMixData_v10::t_Ersky9xMixData_v10()
 {
-  memset(this, 0, sizeof(t_Ersky9xMixData_v10));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xMixData_v10));
 }
 
 t_Ersky9xMixData_v10::operator MixData ()
@@ -242,7 +242,7 @@ t_Ersky9xMixData_v10::operator MixData ()
 
 t_Ersky9xMixData_v11::t_Ersky9xMixData_v11()
 {
-  memset(this, 0, sizeof(t_Ersky9xMixData_v11));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xMixData_v11));
 }
 
 t_Ersky9xMixData_v11::operator MixData ()
@@ -416,17 +416,17 @@ Ersky9xLogicalSwitchData_v11::operator LogicalSwitchData ()
 
 t_Ersky9xSafetySwData_v10::t_Ersky9xSafetySwData_v10()
 {
-  memset(this, 0, sizeof(t_Ersky9xSafetySwData_v10));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xSafetySwData_v10));
 }
 
 t_Ersky9xSafetySwData_v11::t_Ersky9xSafetySwData_v11()
 {
-  memset(this, 0, sizeof(t_Ersky9xSafetySwData_v11));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xSafetySwData_v11));
 }
 
 t_Ersky9xFrSkyChannelData_v10::t_Ersky9xFrSkyChannelData_v10()
 {
-  memset(this, 0, sizeof(t_Ersky9xFrSkyChannelData_v10));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xFrSkyChannelData_v10));
 }
 
 t_Ersky9xFrSkyChannelData_v10::operator FrSkyChannelData ()
@@ -450,7 +450,7 @@ t_Ersky9xFrSkyChannelData_v10::operator FrSkyChannelData ()
 
 t_Ersky9xFrSkyChannelData_v11::t_Ersky9xFrSkyChannelData_v11()
 {
-  memset(this, 0, sizeof(t_Ersky9xFrSkyChannelData_v11));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xFrSkyChannelData_v11));
 }
 
 t_Ersky9xFrSkyChannelData_v11::operator FrSkyChannelData ()
@@ -474,7 +474,7 @@ t_Ersky9xFrSkyChannelData_v11::operator FrSkyChannelData ()
 
 t_Ersky9xFrSkyData_v10::t_Ersky9xFrSkyData_v10()
 {
-  memset(this, 0, sizeof(t_Ersky9xFrSkyData_v10));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xFrSkyData_v10));
 }
 
 t_Ersky9xFrSkyData_v10::operator FrSkyData ()
@@ -487,7 +487,7 @@ t_Ersky9xFrSkyData_v10::operator FrSkyData ()
 
 t_Ersky9xFrSkyData_v11::t_Ersky9xFrSkyData_v11()
 {
-  memset(this, 0, sizeof(t_Ersky9xFrSkyData_v11));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xFrSkyData_v11));
 }
 
 t_Ersky9xFrSkyData_v11::operator FrSkyData ()

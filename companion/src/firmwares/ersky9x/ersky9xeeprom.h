@@ -129,7 +129,7 @@ PACK(typedef struct t_Ersky9xExpoData {
   int8_t  drSw1;
   int8_t  drSw2;
 
-  t_Ersky9xExpoData() { memset(this, 0, sizeof(t_Ersky9xExpoData)); }
+  t_Ersky9xExpoData() { memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xExpoData)); }
 }) Ersky9xExpoData;
 
 
@@ -196,7 +196,7 @@ PACK(typedef struct t_Ersky9xLogicalSwitchData_v10 { // Custom Switches data
   uint8_t func;
 
   operator LogicalSwitchData();
-  t_Ersky9xLogicalSwitchData_v10() { memset(this, 0, sizeof(t_Ersky9xLogicalSwitchData_v10)); }
+  t_Ersky9xLogicalSwitchData_v10() { memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xLogicalSwitchData_v10)); }
 }) Ersky9xLogicalSwitchData_v10;
 
 PACK(typedef struct t_Ersky9xLogicalSwitchData_v11 { // Custom Switches data
@@ -207,7 +207,7 @@ PACK(typedef struct t_Ersky9xLogicalSwitchData_v11 { // Custom Switches data
   uint8_t res ;
 
   operator LogicalSwitchData();
-  t_Ersky9xLogicalSwitchData_v11() { memset(this, 0, sizeof(t_Ersky9xLogicalSwitchData_v11)); }
+  t_Ersky9xLogicalSwitchData_v11() { memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xLogicalSwitchData_v11)); }
 }) Ersky9xLogicalSwitchData_v11;
 
 PACK(typedef struct t_Ersky9xSafetySwData_v10 { // Custom Switches data
@@ -372,7 +372,7 @@ PACK(typedef struct t_Ersky9xModelData_v10 {
   Ersky9xFrSkyData_v10 frsky;
   Ersky9xTimerMode_v10 timer[2] ;
   operator ModelData();
-  t_Ersky9xModelData_v10() { memset(this, 0, sizeof(t_Ersky9xModelData_v10)); }
+  t_Ersky9xModelData_v10() { memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xModelData_v10)); }
 }) Ersky9xModelData_v10;
 
 PACK(typedef struct t_Ersky9xModelData_v11 {
@@ -430,7 +430,7 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
   Ersky9xGvarData gvars[ERSKY9X_MAX_GVARS] ;
 
   operator ModelData();
-  t_Ersky9xModelData_v11() { memset(this, 0, sizeof(t_Ersky9xModelData_v11)); }
+  t_Ersky9xModelData_v11() { memset(reinterpret_cast<void *>(this), 0, sizeof(t_Ersky9xModelData_v11)); }
 }) Ersky9xModelData_v11;
 
 #endif // _ERSKY9XEEPROM_H_
