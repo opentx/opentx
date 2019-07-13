@@ -1379,4 +1379,13 @@ inline bool isSimu()
 extern uint8_t latencyToggleSwitch;
 #endif
 
+inline bool isAsteriskDisplayed()
+{
+#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
+  return true;
+#endif
+
+  return unexpectedShutdown;
+}
+
 #endif // _OPENTX_H_
