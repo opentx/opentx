@@ -262,6 +262,20 @@ void convertModelData_218_to_219(ModelData &model)
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
+  for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
+    if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_VALUES) {
+      for (int j = 0; j < 4; j++) {
+        for (int k = 0; k < NUM_LINE_ITEMS; k++) {
+          newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(oldModel.frsky.screens[i].lines[j].sources[k]);
+        }
+      }
+    }
+    else if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_GAUGES) {
+      for (int j = 0; j < 4; j++) {
+        newModel.screens[i].bars[j].source = convertSource_218_to_219(oldModel.frsky.screens[i].bars[j].source);
+      }
+    }
+  }
 #endif
 
 #if defined(PCBX7)
@@ -346,4 +360,9 @@ void convertRadioData_218_to_219(RadioData & settings)
   g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, SWITCH_2POS, 10, 2);  // T12 comes with wrongly defined pot2
   g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
 #endif
+
+#if defined(STM32)
+  free(oldSettingsAllocated);
+#endif
+
 }
