@@ -196,6 +196,15 @@ void convertModelData_218_to_219(ModelData &model)
       newModel.moduleData[i].type += 1;
     if (newModel.moduleData[i].type >= MODULE_TYPE_R9M_PXX2)
       newModel.moduleData[i].type += 4;
+    if (newModel.moduleData[i].type == MODULE_TYPE_XJT_PXX1) {
+      newModel.moduleData[i].subType = newModel.moduleData[i].rfProtocol;
+#if defined(PCBX9DP) && PCBREV >= 2019
+      if (i == INTERNAL_MODULE) {
+        newModel.moduleData[i].type = MODULE_TYPE_ISRM_PXX2;
+        newModel.moduleData[i].subType = MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16;
+      }
+#endif
+    }
   }
 
 #if defined(RADIO_T12)
@@ -305,6 +314,11 @@ void convertRadioData_218_to_219(RadioData & settings)
 {
   settings.version = 219;
   settings.variant = EEPROM_VARIANT;
+
+#if defined(PCBX9DP) && PCBREV >= 2019
+  // force re-calibration
+  settings.chkSum = 0xFFFF;
+#endif
 
 #if defined(STM32)
   RadioData_v218 * oldSettingsAllocated = (RadioData_v218 *)malloc(sizeof(RadioData_v218));
