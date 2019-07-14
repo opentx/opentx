@@ -467,7 +467,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_STICK_MODE:
       {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_MODE));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
         char s[2] = " ";
         s[0] = '1'+reusableBuffer.generalSettings.stickMode;
         lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, s, attr);
