@@ -141,7 +141,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_GPS_LATITUDE) {
 #if defined(INTERNAL_GPS)
-    if (gpsData.fix) {
+    if (gpsData.fix  && gpsData.hdop < PILOTPOS_MIN_HDOP) {
       pilotLatitude = gpsData.latitude;
       distFromEarthAxis = getDistFromEarthAxis(pilotLatitude);
     }
@@ -156,7 +156,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_GPS_LONGITUDE) {
 #if defined(INTERNAL_GPS)
-    if (gpsData.fix) {
+    if (gpsData.fix && gpsData.hdop < PILOTPOS_MIN_HDOP) {
       pilotLongitude = gpsData.longitude;
     }
 #endif

@@ -547,6 +547,9 @@ uint8_t gpsGetByte(uint8_t * byte);
 extern uint8_t gpsTraceEnabled;
 #endif
 void gpsSendByte(uint8_t byte);
+#if defined(PCBX12S)
+#define PILOTPOS_MIN_HDOP             500
+#endif
 
 // Second serial port driver
 #define AUX_SERIAL
