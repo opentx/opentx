@@ -168,7 +168,17 @@ bool menuStatsDebug(event_t event)
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Telem RX Errs");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, telemetryErrors, LEFT);
-  // y += FH;
+  y += FH;
+
+#if defined(INTERNAL_GPS)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Internal GPS");
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Fix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+2, y, (gpsData.fix ? "Yes" : "No"), LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Sats]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, gpsData.numSat, LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Hdop]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, gpsData.hdop, PREC2|LEFT);
+#endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
