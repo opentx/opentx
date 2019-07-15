@@ -92,10 +92,18 @@ void watchdogSuspend(uint32_t timeout)
 void toggleLatencySwitch()
 {
   latencyToggleSwitch ^= 1;
+
+#if defined(PCBHORUS)
+  if (latencyToggleSwitch)
+    GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+  else
+    GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+#else
   if (latencyToggleSwitch)
     sportUpdatePowerOn();
   else
     sportUpdatePowerOff();
+#endif
 }
 #endif
 

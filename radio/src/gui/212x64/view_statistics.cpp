@@ -220,7 +220,7 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 #endif
 
-  lcdDrawText(LCD_W/2, 7*F&H+1, STR_MENUTORESET, CENTERED);
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 
