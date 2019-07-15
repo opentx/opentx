@@ -121,13 +121,14 @@ void FrskyDeviceFirmwareUpdate::startup()
 bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout)
 {
   uint32_t elapsed = 0;
-  uint8_t index = 0;
 
   watchdogSuspend(timeout);
 
   switch(module) {
 #if defined(INTMODULE_USART)
     case INTERNAL_MODULE:
+    {
+      uint8_t index = 0;
       while (index < count && elapsed < timeout) {
         if (intmoduleFifo.pop(buffer[index])) {
           ++index;
@@ -139,6 +140,7 @@ bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint
         }
       }
       break;
+    }
 #endif
 
     default:
