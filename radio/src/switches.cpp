@@ -455,6 +455,9 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
     idx = (CONVERT_MODE_TRIMS(idx/2) << 1) + (idx & 1);
     result = trimDown(idx);
   }
+  else if (cs_idx == SWSRC_RADIO_ACTIVITY) {
+    result = (inactivity.counter < 2);
+  }
   else if (cs_idx >= SWSRC_FIRST_SENSOR) {
     result = !telemetryItems[cs_idx-SWSRC_FIRST_SENSOR].isOld();
   }
