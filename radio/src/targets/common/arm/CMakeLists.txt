@@ -190,7 +190,7 @@ set(SRC
   telemetry/frsky_d.cpp
   telemetry/frsky_sport.cpp
   telemetry/frsky_pxx2.cpp
-  crc16.cpp
+  crc.cpp
   vario.cpp
   )
 

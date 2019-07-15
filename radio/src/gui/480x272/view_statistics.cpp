@@ -166,9 +166,21 @@ bool menuStatsDebug(event_t event)
   y += FH;
 #endif
 
+#if defined(DEBUG_LATENCY)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Hearbeat");
+  if (heartbeatCapture.valid)
+    lcdDrawNumber(MENU_STATS_COLUMN1, y, heartbeatCapture.count, LEFT);
+  else
+    lcdDrawText(MENU_STATS_COLUMN1, y, "---");
+  y += FH;
+#endif
+
+#if 0
+  // TODO in a debug mode?
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Telem RX Errs");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, telemetryErrors, LEFT);
   y += FH;
+#endif
 
 #if defined(INTERNAL_GPS)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Internal GPS");

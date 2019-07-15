@@ -864,9 +864,10 @@
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
   #define INTMODULE_DMA_CHANNEL         DMA_Channel_4
   #if defined(PCBXLITES)
-    #define INTMODULE_BOOTCMD_GPIO        GPIOC
-    #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_8  // PC.08
+    #define INTMODULE_BOOTCMD_GPIO      GPIOC
+    #define INTMODULE_BOOTCMD_GPIO_PIN  GPIO_Pin_8  // PC.08
   #endif
+#define INTMODULE_FLASH_BAUDRATE        57600
 #elif defined(PCBX9E) || defined(PCBX9DP) || defined(RADIO_X7)
   #define INTMODULE_PULSES
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)

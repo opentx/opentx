@@ -946,9 +946,7 @@ inline void customFunctionsReset()
 }
 
 #include "telemetry/telemetry.h"
-
-uint8_t crc8(const uint8_t * ptr, uint32_t len);
-uint16_t crc16(const uint8_t * ptr, uint32_t len);
+#include "crc.h"
 
 #define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */
 #define PLAY_NOW                  0x10

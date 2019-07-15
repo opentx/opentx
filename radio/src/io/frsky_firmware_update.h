@@ -79,12 +79,14 @@ class FrskyDeviceFirmwareUpdate {
     void startFrame(uint8_t command);
     void sendFrame();
 
+    bool readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout);
     const uint8_t * readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout);
     const uint8_t * readHalfDuplexFrame(uint32_t timeout);
     const uint8_t * readFrame(uint32_t timeout);
     bool waitState(State state, uint32_t timeout);
     void processFrame(const uint8_t * frame);
 
+    const char * doFlashFirmware(const char * filename);
     const char * sendPowerOn();
     const char * sendReqVersion();
     const char * uploadFile(const char * filename);

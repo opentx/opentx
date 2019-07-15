@@ -571,6 +571,7 @@
   #define INTMODULE_BOOTCMD_GPIO        GPIOI
   #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_9  // PI.09
 #endif
+#define INTMODULE_FLASH_BAUDRATE        38400
 #if defined(PCBX10) || PCBREV >= 13
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
