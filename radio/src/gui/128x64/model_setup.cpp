@@ -359,7 +359,8 @@ void menuModelSetup(event_t event)
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE + ITEM_MODEL_SETUP_LINES_COUNT);
   title(STR_MENUSETUP);
 
-  if (event == EVT_ENTRY) {
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
+    memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
