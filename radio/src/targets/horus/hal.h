@@ -565,8 +565,8 @@
 #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF7
 #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
 #if defined(PCBX12S)
-  #define INTMODULE_BOOT_GPIO           GPIOI
-  #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PC.02
+  #define INTMODULE_BOOT_GPIO           GPIOC
+  #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_2  // PC.02
 #elif defined(PCBX10)
   #define INTMODULE_BOOT_GPIO           GPIOI
   #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PI.09

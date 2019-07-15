@@ -150,6 +150,7 @@ void init_intmodule_heartbeat();
 void check_intmodule_heartbeat();
 
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmoduleSendByte(uint8_t byte);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
