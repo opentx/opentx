@@ -76,9 +76,14 @@ inline bool isModuleXJTD16(uint8_t idx)
   return isModuleXJT(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 }
 
-inline bool isModuleACCESS(uint8_t idx)
+inline bool isModuleISRM(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2;
+}
+
+inline bool isModuleISRMAccess(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2 && g_model.moduleData[idx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
 }
 
 #if defined(CROSSFIRE)
@@ -216,12 +221,12 @@ inline bool isModulePXX1(uint8_t idx)
 
 inline bool isModulePXX2(uint8_t idx)
 {
-  return isModuleACCESS(idx) || isModuleR9MAccess(idx);
+  return isModuleISRM(idx) || isModuleR9MAccess(idx);
 }
 
 inline bool isModuleRFAccess(uint8_t idx)
 {
-  if (isModuleACCESS(idx)) {
+  if (isModuleISRM(idx)) {
     return g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
   }
   else if (isModuleR9MAccess(idx)) {
@@ -422,7 +427,7 @@ inline bool isModuleModelIndexAvailable(uint8_t idx)
   if (isModuleDSM2(idx))
     return true;
 
-  if (isModuleACCESS(idx))
+  if (isModuleISRM(idx))
     return true;
 
   return false;
@@ -431,7 +436,7 @@ inline bool isModuleModelIndexAvailable(uint8_t idx)
 inline bool isModuleFailsafeAvailable(uint8_t idx)
 {
 #if defined(PXX2)
-  if (isModuleACCESS(idx))
+  if (isModuleISRM(idx))
     return true;
 #endif
 
@@ -464,6 +469,8 @@ inline uint8_t getMaxRxNum(uint8_t idx)
 
 inline const char * getModuleDelay(uint8_t idx)
 {
+  if (isModuleISRM(idx))
+
   if (isModuleXJTD16(idx) || isModuleR9MNonAccess(idx))
     return sentModuleChannels(idx) > 8 ? "(18ms)" : "(9ms)";
 
