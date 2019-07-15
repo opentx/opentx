@@ -62,6 +62,17 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
 #endif
   }
+  else if (menuEvent) {
+    killEvents(KEY_EXIT);
+    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
+      abortPopMenu();
+      POPUP_CONFIRMATION(STR_UPDATE_RX_OPTIONS, onRxOptionsUpdateConfirm);
+    }
+    else {
+      return;
+    }
+  }
 
   uint8_t receiverId = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.modelID;
@@ -80,18 +91,6 @@ void menuModelReceiverOptions(event_t event)
       moduleState[g_moduleIdx].readReceiverSettings(&reusableBuffer.hardwareAndSettings.receiverSettings);
     else
       moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], receiverId, receiverId);
-  }
-
-  if (menuEvent) {
-    killEvents(KEY_EXIT);
-    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
-      abortPopMenu();
-      POPUP_CONFIRMATION(STR_UPDATE_RX_OPTIONS, onRxOptionsUpdateConfirm);
-    }
-    else {
-      return;
-    }
   }
 
   if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
