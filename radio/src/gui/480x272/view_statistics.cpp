@@ -160,7 +160,7 @@ bool menuStatsDebug(event_t event)
   y += FH;
 #endif
 
-#if defined(DISK_CACHE)
+#if defined(DISK_CACHE) && defined(DEBUG)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "SD cache hits");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");
   y += FH;
@@ -175,8 +175,7 @@ bool menuStatsDebug(event_t event)
   y += FH;
 #endif
 
-#if 0
-  // TODO in a debug mode?
+#if defined(DEBUG)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Telem RX Errs");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, telemetryErrors, LEFT);
   y += FH;
