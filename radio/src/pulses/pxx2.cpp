@@ -39,8 +39,15 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 
 void Pxx2Pulses::addFlag1(uint8_t module)
 {
-  uint8_t flag1 = g_model.moduleData[module].subType << 4;
-  Pxx2Transport::addByte(flag1);
+  uint8_t subType;
+  if (isModuleXJT(module)) {
+    static const uint8_t PXX2_XJT_MODULE_SUBTYPES[] = {0x01, 0x03, 0x02};
+    subType = PXX2_XJT_MODULE_SUBTYPES[min<uint8_t>(g_model.moduleData[module].subType, 2)];
+  }
+  else {
+    subType = g_model.moduleData[module].subType;
+  }
+  Pxx2Transport::addByte(subType << 4);
 }
 
 void Pxx2Pulses::addPulsesValues(uint16_t low, uint16_t high)
@@ -180,7 +187,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
 {
   ModuleSettings * destination = moduleState[module].moduleSettings;
 
-  if (get_tmr10ms() > destination->retryTime) {
+  if (get_tmr10ms() > destination->timeout) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TX_SETTINGS);
     uint8_t flag0 = 0;
     if (destination->state == PXX2_SETTINGS_WRITE)
@@ -193,7 +200,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
       Pxx2Transport::addByte(flag1);
       Pxx2Transport::addByte(destination->txPower);
     }
-    destination->retryTime = get_tmr10ms() + 200/*next try in 2s*/;
+    destination->timeout = get_tmr10ms() + 200/*next try in 2s*/;
   }
   else {
     setupChannelsFrame(module);

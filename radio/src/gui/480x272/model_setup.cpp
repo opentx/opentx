@@ -372,7 +372,7 @@ void startRegisterDialog(uint8_t module)
 
 void checkModelIdUnique(uint8_t moduleIdx)
 {
-  if (isModulePXX1(moduleIdx) && IS_D8_RX(moduleIdx))
+  if (isModuleXJTD8(moduleIdx))
     return;
 
   char * warn_buf = reusableBuffer.moduleSetup.msg;
@@ -609,7 +609,7 @@ bool menuModelSetup(event_t event)
          LABEL(InternalModule),
            INTERNAL_MODULE_TYPE_ROWS,
            INTERNAL_MODULE_CHANNELS_ROWS,
-           IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleXJT(INTERNAL_MODULE) ? (HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1) : (isModulePPM(INTERNAL_MODULE) ? (uint8_t)1 : HIDDEN_ROW))),
+           IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(IF_INTERNAL_MODULE_ON(isModuleModelIndexAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1))),
            IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum
            ANTENNA_ROW
            IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
@@ -623,7 +623,7 @@ bool menuModelSetup(event_t event)
            EXTERNAL_MODULE_MODE_ROWS,
            MULTIMODULE_STATUS_ROWS
            EXTERNAL_MODULE_CHANNELS_ROWS,
-           ((isModuleXJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) || isModuleSBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (isModulePPM(EXTERNAL_MODULE) || isModulePXX1(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
+           EXTERNAL_MODULE_BIND_ROWS,
            FAILSAFE_ROWS(EXTERNAL_MODULE),
            EXTERNAL_MODULE_OPTION_ROW,
            MULTIMODULE_MODULE_ROWS
@@ -990,7 +990,7 @@ bool menuModelSetup(event_t event)
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_INTERNAL_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(INTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
-        else if (isModuleXJT2(INTERNAL_MODULE))
+        else if (isModuleACCESS(INTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_ISRM_PXX2_RF_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].subType, menuHorizontalPosition==1 ? attr : 0);
         if (attr) {
           if (menuHorizontalPosition == 0) {
@@ -1145,12 +1145,9 @@ bool menuModelSetup(event_t event)
           drawStringWithIndex(MODEL_SETUP_2ND_COLUMN, y, STR_CH, moduleData.channelsStart+1, menuHorizontalPosition==0 ? attr : 0);
           lcdDrawText(lcdNextPos+5, y, "-");
           drawStringWithIndex(lcdNextPos+5, y, STR_CH, moduleData.channelsStart+sentModuleChannels(moduleIdx), menuHorizontalPosition==1 ? attr : 0);
-          if (IS_R9M_OR_XJTD16(moduleIdx)) {
-            if (sentModuleChannels(moduleIdx) > 8)
-              lcdDrawText(lcdNextPos + 15, y, "(18ms)");
-            else
-              lcdDrawText(lcdNextPos + 15, y, "(9ms)");
-          }
+          const char * delay = getModuleDelay(moduleIdx);
+          if (delay)
+            lcdDrawText(lcdNextPos + 15, y, delay);
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
               case 0:
@@ -1273,7 +1270,7 @@ bool menuModelSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER_NUM);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], attr | LEADING0 | LEFT, 2);
         if (attr) {
-          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
+          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
           if (event == EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(event);
             uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);
@@ -1434,7 +1431,7 @@ bool menuModelSetup(event_t event)
         else {
           int l_posHorz = menuHorizontalPosition;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
-          if (isModuleXJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
+          if (!isModuleModelIndexAvailable(moduleIdx)) {
             xOffsetBind = 0;
             lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
@@ -1447,7 +1444,7 @@ bool menuModelSetup(event_t event)
               lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
+                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
                 if (event == EVT_KEY_LONG(KEY_ENTER)) {
                   killEvents(event);
                   uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);

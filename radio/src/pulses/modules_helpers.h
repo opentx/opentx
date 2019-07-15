@@ -23,6 +23,9 @@
 
 #include "bitfield.h"
 #include "definitions.h"
+#if defined(MULTIMODULE)
+#include "telemetry/multi.h"
+#endif
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
@@ -50,7 +53,7 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 
 inline bool isModuleTypeXJT(uint8_t type)
 {
-  return type == MODULE_TYPE_XJT_PXX1;
+  return type == MODULE_TYPE_XJT_PXX1 || type == MODULE_TYPE_XJT_LITE_PXX2;
 }
 
 inline bool isModuleXJT(uint8_t idx)
@@ -58,16 +61,25 @@ inline bool isModuleXJT(uint8_t idx)
   return isModuleTypeXJT(g_model.moduleData[idx].type);
 }
 
-inline bool isModuleXJT2(uint8_t idx)
+inline bool isModuleXJTD8(uint8_t idx)
+{
+  return isModuleXJT(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D8;
+}
+
+inline bool isModuleXJTLR12(uint8_t idx)
+{
+  return isModuleXJT(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_LR12;
+}
+
+inline bool isModuleXJTD16(uint8_t idx)
+{
+  return isModuleXJT(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
+}
+
+inline bool isModuleACCESS(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2;
 }
-
-inline bool isModuleXJTVariant(uint8_t idx)
-{
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT_PXX1 || g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2;
-}
-
 
 #if defined(CROSSFIRE)
 inline bool isModuleCrossfire(uint8_t idx)
@@ -164,27 +176,32 @@ inline bool isModuleR9MLite(uint8_t idx)
 
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_FCC;
+}
+
+inline bool isModuleTypeLite(uint8_t type)
+{
+  return isModuleTypeR9MLite(type) || type == MODULE_TYPE_XJT_LITE_PXX2;
 }
 
 inline bool isModuleR9M_LBT(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_EU;
 }
 
 inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol != MODULE_SUBTYPE_R9M_EU;
 }
 
 inline bool isModuleR9M_EUPLUS(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EUPLUS;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_EUPLUS;
 }
 
 inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_AUPLUS;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_AUPLUS;
 }
 
 inline bool isModuleTypePXX1(uint8_t type)
@@ -199,13 +216,13 @@ inline bool isModulePXX1(uint8_t idx)
 
 inline bool isModulePXX2(uint8_t idx)
 {
-  return isModuleXJT2(idx) || isModuleR9MAccess(idx);
+  return isModuleACCESS(idx) || isModuleR9MAccess(idx);
 }
 
 inline bool isModuleRFAccess(uint8_t idx)
 {
-  if (isModuleXJT2(idx)) {
-    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
+  if (isModuleACCESS(idx)) {
+    return g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_ISRM_PXX2_ACCESS;
   }
   else if (isModuleR9MAccess(idx)) {
     return true;
@@ -251,7 +268,7 @@ inline int8_t maxModuleChannels_M8(uint8_t idx)
   if (isExtraModule(idx))
     return MAX_EXTRA_MODULE_CHANNELS_M8;
   else if (isModuleXJT(idx))
-    return maxChannelsXJT[1 + g_model.moduleData[idx].rfProtocol];
+    return maxChannelsXJT[1 + g_model.moduleData[idx].subType];
   else
     return maxChannelsModules[g_model.moduleData[idx].type];
 }
@@ -264,6 +281,10 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return 0; // 8 channels
   else if (isModuleMultimoduleDSM2(idx))
     return -1; // 7 channels
+  else if (isModuleXJTD8(idx))
+    return 0;  // 8 channels
+  else if (isModuleXJTLR12(idx))
+    return 4;  // 12 channels
   else if (isModulePXX2(idx))
     return 8; // 16 channels
   else
@@ -363,6 +384,15 @@ static const uint8_t receiverOptions[] = {
   0b11111111, // R9-MM+OTA
 };
 
+enum ModuleCapabilities {
+  MODULE_CAPABILITY_COUNT
+};
+
+enum ReceiverCapabilities {
+  RECEIVER_CAPABILITY_FPORT,
+  RECEIVER_CAPABILITY_COUNT
+};
+
 inline uint8_t getReceiverOptions(uint8_t modelId)
 {
   if (modelId < DIM(receiverOptions))
@@ -373,12 +403,71 @@ inline uint8_t getReceiverOptions(uint8_t modelId)
 
 inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 {
-  return receiverOptions[modelId] & (1 << option);
+  return getReceiverOptions(modelId) & (1 << option);
 }
 
 inline bool isDefaultModelRegistrationID()
 {
   return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
+}
+
+inline bool isModuleModelIndexAvailable(uint8_t idx)
+{
+  if (isModuleXJT(idx))
+    return g_model.moduleData[idx].subType != MODULE_SUBTYPE_PXX1_ACCST_D8;
+
+  if (isModuleR9M(idx))
+    return true;
+
+  if (isModuleDSM2(idx))
+    return true;
+
+  if (isModuleACCESS(idx))
+    return true;
+
+  return false;
+}
+
+inline bool isModuleFailsafeAvailable(uint8_t idx)
+{
+#if defined(PXX2)
+  if (isModuleACCESS(idx))
+    return true;
+#endif
+
+  if (isModuleXJT(idx))
+    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
+
+#if defined(MULTIMODULE)
+  if (isModuleMultimodule(idx))
+    return multiModuleStatus.isValid() && multiModuleStatus.supportsFailsafe();
+#endif
+
+  if (isModuleR9M(idx))
+    return true;
+
+  return false;
+}
+
+inline uint8_t getMaxRxNum(uint8_t idx)
+{
+  if (isModuleDSM2(idx))
+    return 20;
+
+#if defined(MULTIMODULE)
+  if (isModuleMultimodule(idx))
+    return g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_OLRS ? 4 : 15;
+#endif
+
+  return 63;
+}
+
+inline const char * getModuleDelay(uint8_t idx)
+{
+  if (isModuleXJTD16(idx) || isModuleR9MNonAccess(idx))
+    return sentModuleChannels(idx) > 8 ? "(18ms)" : "(9ms)";
+
+  return nullptr;
 }
 
 #endif // _MODULES_H_

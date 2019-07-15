@@ -94,6 +94,8 @@ PACK(struct PXX2HardwareInformation {
   PXX2Version hwVersion;
   PXX2Version swVersion;
   uint8_t variant;
+  uint32_t capabilities; // variable length
+  uint8_t capabilityNotSupported;
 });
 
 PACK(struct ModuleInformation {
@@ -110,9 +112,10 @@ PACK(struct ModuleInformation {
 class ModuleSettings {
   public:
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
-    tmr10ms_t retryTime;
+    tmr10ms_t timeout;
     uint8_t externalAntenna;
     int8_t txPower;
+    uint8_t dirty;
 };
 
 class ReceiverSettings {
@@ -167,6 +170,7 @@ PACK(struct ModuleState {
   union {
     ModuleInformation * moduleInformation;
     ModuleSettings * moduleSettings;
+    ReceiverSettings * receiverSettings;
     BindInformation * bindInformation;
     OtaUpdateInformation * otaUpdateInformation;
   };
@@ -196,8 +200,21 @@ PACK(struct ModuleState {
   {
     moduleSettings = source;
     moduleSettings->state = PXX2_SETTINGS_WRITE;
-    moduleSettings->retryTime = 0;
+    moduleSettings->timeout = 0;
     mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+  void readReceiverSettings(ReceiverSettings * destination)
+  {
+    receiverSettings = destination;
+    receiverSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+  void writeReceiverSettings(ReceiverSettings * source)
+  {
+    receiverSettings = source;
+    receiverSettings->state = PXX2_SETTINGS_WRITE;
+    receiverSettings->timeout = 0;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 });
 
@@ -393,10 +410,9 @@ inline void SEND_FAILSAFE_1S()
 void setCustomFailsafe(uint8_t moduleIndex);
 
 enum R9MLiteLBTPowerValues {
-  R9M_LITE_LBT_POWER_25 = 0,
-  R9M_LITE_LBT_POWER_25_16,
-  R9M_LITE_LBT_POWER_100,
-  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100
+  R9M_LITE_LBT_POWER_25_TELEM = 0,
+  R9M_LITE_LBT_POWER_100_NOTELEM,
+  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100_NOTELEM
 };
 
 enum R9MFCCPowerValues {
@@ -416,5 +432,5 @@ enum R9MLBTPowerValues {
 };
 
 #define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
+#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100_NOTELEM))
 #endif // _PULSES_H_
