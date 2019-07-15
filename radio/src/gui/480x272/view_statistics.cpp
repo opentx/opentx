@@ -167,7 +167,7 @@ bool menuStatsDebug(event_t event)
 #endif
 
 #if defined(DEBUG_LATENCY)
-  lcdDrawText(MENUS_MARGIN_LEFT, y, "Hearbeat");
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Heartbeat");
   if (heartbeatCapture.valid)
     lcdDrawNumber(MENU_STATS_COLUMN1, y, heartbeatCapture.count, LEFT);
   else
