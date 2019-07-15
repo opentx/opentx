@@ -180,12 +180,12 @@ void menuModelReceiverOptions(event_t event)
 
             // Bargraph
 #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-            lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
+            lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 2, wbar + 1, 4);
 #endif
             const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-            const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
-            lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
+            const coord_t xChannel = (channelValue > 0) ? RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 : RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 + 1 - lenChannel;
             lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+            lcdDrawHorizontalLine(xChannel, y + 4, lenChannel, SOLID, 0);
           }
           break;
         }
