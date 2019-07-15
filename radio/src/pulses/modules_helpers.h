@@ -469,8 +469,6 @@ inline uint8_t getMaxRxNum(uint8_t idx)
 
 inline const char * getModuleDelay(uint8_t idx)
 {
-  if (isModuleISRM(idx))
-
   if (isModuleXJTD16(idx) || isModuleR9MNonAccess(idx))
     return sentModuleChannels(idx) > 8 ? "(18ms)" : "(9ms)";
 
