@@ -1042,7 +1042,7 @@ bool menuModelSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_EXTERNAL_MODULE_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
         else if (isModuleDSM2(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         else if (isModuleR9MNonAccess(EXTERNAL_MODULE))
@@ -1108,7 +1108,7 @@ bool menuModelSetup(event_t event)
                                                                             MODULE_SUBTYPE_R9M_LAST, EE_MODEL, isR9MModeAvailable);
                 }
                 else {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, MODULE_SUBTYPE_PXX1_ACCST_D16, MODULE_SUBTYPE_PXX1_LAST);
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_PXX1_ACCST_D16, MODULE_SUBTYPE_PXX1_LAST);
                 }
                 if (checkIncDec_Ret) {
                   g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
