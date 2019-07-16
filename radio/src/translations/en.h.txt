@@ -368,13 +368,6 @@
   #define TR_VKEYS                     "Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0"
 #endif
 
-#define LEN_VRENCODERS                 "\003"
-#if defined(ROTARY_ENCODERS)
-#define TR_VRENCODERS                  "REa""REb"
-#else
-#define TR_VRENCODERS                  "RE\0"
-#endif
-
 #define LEN_VSWITCHES                  "\003"
 #define LEN_VSRCRAW                    "\004"
 
@@ -706,7 +699,7 @@
 #define TR_MULTI_RFTUNE                TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Vid. freq.", INDENT "Video frequency")
-#define TR_MULTI_RFPOWER               INDENT "RF Power"
+#define TR_RFPOWER               INDENT "RF Power"
 #define TR_MULTI_OPTION                TR(INDENT "Option", INDENT "Option value")
 #define TR_MULTI_AUTOBIND              TR(INDENT "Autobind",INDENT "Bind on powerup")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodetect", INDENT "Autodetect format")
@@ -901,6 +894,9 @@
 #define TR_INTERNALRF                  "Internal RF"
 #define TR_INTERNAL_MODULE             "Internal module"
 #define TR_EXTERNAL_MODULE             "External module"
+#define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
+#define TR_TELEMETRY_DISABLED          "Telem. disabled"
+#define TR_MORE_OPTIONS_AVAILABLE      "More options available"
 #define TR_NO_MODULE_INFORMATION       "No module information"
 #define TR_EXTERNALRF                  "External RF"
 #define TR_FAILSAFE                    TR(INDENT "Failsafe", INDENT "Failsafe mode")

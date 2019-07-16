@@ -135,11 +135,6 @@ extern const char STR_INPUTNAMES[];
 #endif
 
 extern const char STR_VTMRMODES[];
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-extern const char STR_VRENCODERS[];
-#endif
-
 extern const char STR_VPERSISTENT[];
 
 extern const char STR_VLCD[];
@@ -161,8 +156,8 @@ extern const char STR_R9M_LBT_POWER_VALUES[];
 extern const char STR_R9M_LITE_FCC_POWER_VALUES[];
 extern const char STR_R9M_LITE_LBT_POWER_VALUES[];
 extern const char STR_TELEMETRY_PROTOCOLS[];
-extern const char STR_ACCST_RF_PROTOCOLS[];
-extern const char STR_ISRM_PXX2_RF_PROTOCOLS[];
+extern const char STR_XJT_ACCST_RF_PROTOCOLS[];
+extern const char STR_ISRM_RF_PROTOCOLS[];
 extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 
@@ -295,7 +290,7 @@ extern const char STR_PERSISTENT[];
 extern const char STR_BACKLIGHT_LABEL[];
 extern const char STR_BLDELAY[];
 
-#if defined(PWM_BACKLIGHT) || defined(PCBHORUS)
+#if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 extern const char STR_BLONBRIGHTNESS[];
 extern const char STR_BLOFFBRIGHTNESS[];
 #endif
@@ -417,6 +412,9 @@ extern const char STR_BIND_OK[];
 extern const char STR_INTERNALRF[];
 extern const char STR_INTERNAL_MODULE[];
 extern const char STR_EXTERNAL_MODULE[];
+extern const char STR_OPENTX_UPGRADE_REQUIRED[];
+extern const char STR_TELEMETRY_DISABLED[];
+extern const char STR_MORE_OPTIONS_AVAILABLE[];
 extern const char STR_NO_MODULE_INFORMATION[];
 extern const char STR_EXTERNALRF[];
 extern const char STR_MODULE_TELEMETRY[];
@@ -783,7 +781,7 @@ extern const char STR_ADDMAINVIEW[];
 extern const char STR_BACKGROUND_COLOR[];
 extern const char STR_MAIN_COLOR[];
 extern const char STR_TEXT_VIEWER[];
-extern const char STR_MULTI_RFPOWER[];
+extern const char STR_RFPOWER[];
 
 extern const char STR_BYTES[];
 extern const char STR_ANTENNAPROBLEM[];

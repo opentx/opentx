@@ -51,6 +51,7 @@
 #define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED  (1 << 7)
 #define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
+#define PXX2_RX_SETTINGS_FLAG1_FPORT               (1 << 3)
 
 #define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
 #define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)
@@ -137,6 +138,10 @@ inline bool isPXX2ModuleOptionAvailable(uint8_t modelId, uint8_t option)
   return getPXX2ModuleOptions(modelId) & (1 << option);
 }
 
+enum ModuleCapabilities {
+  MODULE_CAPABILITY_COUNT
+};
+
 static const char * const PXX2receiversModels[] = {
   "---",
   "X8R",
@@ -166,10 +171,6 @@ static const char * const PXX2receiversModels[] = {
   "R9-MINI-OTA", // this one has OTA (different bootloader)
   "R9-MM-OTA", // this one has OTA (different bootloader)
 };
-
-
-
-
 
 enum {
   RECEIVER_OPTION_OTA,
@@ -212,6 +213,11 @@ static const uint8_t receiverOptions[] = {
   0b11111111, // R9-MM+OTA
 };
 
+enum ReceiverCapabilities {
+  RECEIVER_CAPABILITY_FPORT,
+  RECEIVER_CAPABILITY_COUNT
+};
+
 inline uint8_t getReceiverOptions(uint8_t modelId)
 {
   if (modelId < DIM(receiverOptions))
@@ -222,7 +228,7 @@ inline uint8_t getReceiverOptions(uint8_t modelId)
 
 inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 {
-  return receiverOptions[modelId] & (1 << option);
+  return getReceiverOptions(modelId) & (1 << option);
 }
 
 enum PXX2Variant {

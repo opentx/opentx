@@ -160,15 +160,36 @@ bool menuStatsDebug(event_t event)
   y += FH;
 #endif
 
-#if defined(DISK_CACHE)
+#if defined(DISK_CACHE) && defined(DEBUG)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "SD cache hits");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");
   y += FH;
 #endif
 
+#if defined(DEBUG_LATENCY)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Heartbeat");
+  if (heartbeatCapture.valid)
+    lcdDrawNumber(MENU_STATS_COLUMN1, y, heartbeatCapture.count, LEFT);
+  else
+    lcdDrawText(MENU_STATS_COLUMN1, y, "---");
+  y += FH;
+#endif
+
+#if defined(DEBUG)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Telem RX Errs");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, telemetryErrors, LEFT);
-  // y += FH;
+  y += FH;
+#endif
+
+#if defined(INTERNAL_GPS)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Internal GPS");
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Fix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+2, y, (gpsData.fix ? "Yes" : "No"), LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Sats]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, gpsData.numSat, LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Hdop]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, gpsData.hdop, PREC2|LEFT);
+#endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;

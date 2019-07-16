@@ -23,9 +23,9 @@
 
 #if defined(DEBUG) || defined(CLI)
 void dumpStart(unsigned int size);
-void dumpBody(const uint8_t * data, unsigned int size);
+void dumpBody(const void * data, unsigned int size);
 void dumpEnd();
-void dump(const uint8_t * data, unsigned int size);
+void dump(const void * data, unsigned int size);
 #else
 #define dump(data, size)
 #endif

@@ -141,8 +141,8 @@ TASK_FUNCTION(mixerTask)
       run = true;
     }
 
-#if defined(PXX2) && defined(INTMODULE_HEARTBEAT)
-    if (moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
+#if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
+    if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
       run = true;
     }
 #endif

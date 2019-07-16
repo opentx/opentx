@@ -105,6 +105,12 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
   }
 }
 
+void intmoduleSendByte(uint8_t byte)
+{
+  while (!(INTMODULE_USART->SR & USART_SR_TXE));
+  USART_SendData(INTMODULE_USART, byte);
+}
+
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
   if (size == 0)

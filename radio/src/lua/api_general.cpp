@@ -361,7 +361,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 /*luadoc
 @function sportTelemetryPop()
 
-Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x52FF
+Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x50FF
 (frame ID == 0x10), as well as packets with a frame ID equal 0x32 (regardless of the data ID) will be passed to
 the LUA telemetry receive queue.
 
@@ -806,6 +806,7 @@ Return the internal GPS position or nil if no valid hardware found
  * 'alt' (number) internal GPS altitude in 0.1m
  * 'speed' (number) internal GPSspeed in 0.1m/s
  * 'heading'  (number) internal GPS ground course estimation in degrees * 10
+ * 'hdop' (number)  internal GPS horizontal dilution of precision
 
 @status current Introduced in 2.2.2
 */
@@ -819,6 +820,7 @@ static int luaGetTxGPS(lua_State * L)
   lua_pushtableinteger(L, "alt", gpsData.altitude);
   lua_pushtableinteger(L, "speed", gpsData.speed);
   lua_pushtableinteger(L, "heading", gpsData.groundCourse);
+  lua_pushtableinteger(L, "hdop", gpsData.hdop);
   if (gpsData.fix)
     lua_pushtableboolean(L, "fix", true);
   else

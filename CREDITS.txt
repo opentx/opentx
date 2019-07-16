@@ -1523,3 +1523,6 @@ James Snodgrass
 Dwayne Carden
 Gerald Migely
 Mark Schmidt
+Hendrik Goessaert
+Arturas Giedraitis
+Paul Vernon

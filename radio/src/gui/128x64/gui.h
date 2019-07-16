@@ -165,13 +165,13 @@ void title(const char * s);
 
 #define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE);
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), (lines_count)-HEADER_LINE);
+  check_simple(event, menu, tab, DIM(tab), (lines_count)-HEADER_LINE)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, (lines_count)-HEADER_LINE);
+  check_submenu_simple(event, (lines_count)-HEADER_LINE)
 
 #define SUBMENU(name, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \

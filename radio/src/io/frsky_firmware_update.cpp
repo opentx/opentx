@@ -101,7 +101,7 @@ void FrskyDeviceFirmwareUpdate::startup()
   switch(module) {
 #if defined(INTMODULE_USART)
     case INTERNAL_MODULE:
-      intmoduleSerialStart(57600, true);
+      intmoduleSerialStart(INTMODULE_FLASH_BAUDRATE, true);
       break;
 #endif
 
@@ -116,6 +116,37 @@ void FrskyDeviceFirmwareUpdate::startup()
     EXTERNAL_MODULE_ON();
   else
     SPORT_UPDATE_POWER_ON();
+}
+
+bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout)
+{
+  watchdogSuspend(timeout);
+
+  switch(module) {
+#if defined(INTMODULE_USART)
+    case INTERNAL_MODULE:
+    {
+      uint32_t elapsed = 0;
+      uint8_t index = 0;
+      while (index < count && elapsed < timeout) {
+        if (intmoduleFifo.pop(buffer[index])) {
+          ++index;
+        }
+        else {
+          RTOS_WAIT_MS(1);
+          if (++elapsed == timeout)
+            return false;
+        }
+      }
+      break;
+    }
+#endif
+
+    default:
+      break;
+  }
+
+  return true;
 }
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
@@ -215,7 +246,7 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
   uint8_t * ptr = outputTelemetryBuffer.data;
   *ptr++ = 0x7E;
   *ptr++ = 0xFF;
-  frame[7] = crc16(frame, 7);
+  frame[7] = crc16(CRC_1021, frame, 7);
   for (int i=0; i<8; i++) {
     if (frame[i] == 0x7E || frame[i] == 0x7D) {
       *ptr++ = 0x7D;
@@ -298,6 +329,61 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
     }
   }
 
+#if defined(PCBHORUS)
+  uint8_t frame[8];
+
+  if (!readBuffer(frame, 8, 100) || frame[0] != 0x01) {
+    return TR("Not responding", "Device not responding");
+  }
+
+  intmoduleSendByte(0x81);
+  readBuffer(frame, 1, 100);
+
+  if (!readBuffer(frame, 8, 100) || frame[0] != 0x02) {
+    return TR("Not responding", "Device not responding");
+  }
+
+  intmoduleSendByte(0x82);
+  readBuffer(frame, 1, 100);
+
+  uint8_t index = 0;
+  while (1) {
+    drawProgressScreen(getBasename(filename), STR_WRITING, file.fptr, file.obj.objsize);
+
+    if (f_read(&file, buffer, 1024, &count) != FR_OK) {
+      f_close(&file);
+      return "Error reading file";
+    }
+
+    if (!readBuffer(frame, 2, 100))
+      return "Data refused";
+
+    if (frame[0] != 0x11 || frame[1] != index)
+      return "Wrong request";
+
+    if (count == 0) {
+      f_close(&file);
+      intmoduleSendByte(0xA1);
+      RTOS_WAIT_MS(50);
+      return nullptr;
+    }
+
+    if (count < 1024)
+      memset(((uint8_t *)buffer) + count, 0, 1024 - count);
+
+    intmoduleSendByte(frame[0] + 0x80);
+    intmoduleSendByte(frame[1]);
+
+    uint16_t crc_16 = crc16(CRC_1189, (uint8_t *)buffer, 1024, crc16(CRC_1189, &frame[1], 1));
+    for (unsigned i = 0; i < sizeof(buffer); i++) {
+      intmoduleSendByte(((uint8_t *)buffer)[i]);
+    }
+    intmoduleSendByte(crc_16 >> 8);
+    intmoduleSendByte(crc_16);
+
+    index++;
+  }
+#else
   RTOS_WAIT_MS(200);
   telemetryClearFifo();
 
@@ -333,6 +419,7 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
       return nullptr;
     }
   }
+#endif
 }
 
 const char * FrskyDeviceFirmwareUpdate::endTransfer()
@@ -345,6 +432,28 @@ const char * FrskyDeviceFirmwareUpdate::endTransfer()
     return "Firmware rejected";
   }
   return nullptr;
+}
+
+const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
+{
+  const char * result;
+
+#if defined(PCBHORUS)
+  if (module == INTERNAL_MODULE) {
+    intmoduleSerialStart(38400, true);
+    GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+    result = uploadFile(filename);
+    GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+    return result;
+  }
+#endif
+
+  result = sendPowerOn();
+  if (!result) result = sendReqVersion();
+  if (!result) result = uploadFile(filename);
+  if (!result) result = endTransfer();
+
+  return result;
 }
 
 const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
@@ -369,10 +478,7 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 
   startup();
 
-  const char * result = sendPowerOn();
-  if (!result) result = sendReqVersion();
-  if (!result) result = uploadFile(filename);
-  if (!result) result = endTransfer();
+  const char * result = doFlashFirmware(filename);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();

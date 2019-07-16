@@ -326,6 +326,9 @@ char * getSwitchString(char * dest, swsrc_t idx)
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
     strcpy(s, "Tele");
   }
+  else if (idx == SWSRC_RADIO_ACTIVITY) {
+    strcpy(s, "Act");
+  }
 #if defined(DEBUG_LATENCY)
   else if (idx == SWSRC_LATENCY_TOGGLE) {
     strcpy(s, "Ltc");

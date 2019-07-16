@@ -86,11 +86,11 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif event == EVT_EXIT_BREAK then
+  elseif event == EVT_VIRTUAL_EXIT then
     return 2
-  elseif event == EVT_ROT_LEFT or event == EVT_DOWN_BREAK then
+  elseif event == EVT_VIRTUAL_NEXT then
     selectDevice(1)
-  elseif event == EVT_ROT_RIGHT or event == EVT_UP_BREAK then
+  elseif event == EVT_VIRTUAL_PREVIOUS then
     selectDevice(-1)
   end
 
@@ -101,7 +101,7 @@ local function run(event)
   else
     for i=1, #devices do
       local attr = (lineIndex == i and INVERS or 0)
-      if (event == EVT_ROT_BREAK or event == EVT_RIGHT_BREAK) and attr == INVERS then
+      if event == EVT_VIRTUAL_ENTER and attr == INVERS then
           crossfireTelemetryPush(0x28, { devices[i].id, 0xEA })
           return "device.lua"
       end

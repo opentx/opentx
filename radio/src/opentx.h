@@ -260,7 +260,7 @@ inline void memclear(void * p, size_t size)
 inline bool is_memclear(void * p, size_t size)
 {
   uint8_t * buf = (uint8_t *)p;
-  return buf[0] == 0 && !memcmp(buf, buf + 1, size - 1);
+  return buf[0] == 0 && memcmp(buf, buf + 1, size - 1) == 0;
 }
 
 void memswap(void * a, void * b, uint8_t size);
@@ -946,9 +946,7 @@ inline void customFunctionsReset()
 }
 
 #include "telemetry/telemetry.h"
-
-uint8_t crc8(const uint8_t * ptr, uint32_t len);
-uint16_t crc16(const uint8_t * ptr, uint32_t len);
+#include "crc.h"
 
 #define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */
 #define PLAY_NOW                  0x10
@@ -1170,14 +1168,10 @@ union ReusableBuffer
   struct {
     ModuleInformation modules[NUM_MODULES];
     uint32_t updateTime;
-
     union {
       ModuleSettings moduleSettings;
       ReceiverSettings receiverSettings;
     };
-
-    uint8_t moduleSettingsDirty;
-
   } hardwareAndSettings;
 
   struct {

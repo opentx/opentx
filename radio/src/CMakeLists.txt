@@ -16,6 +16,7 @@ set_property(CACHE PPM_UNIT PROPERTY STRINGS US PERCENT_PREC1 PERCENT_PREC0)
 set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
 set(FONT "STD" CACHE STRING "Choose font : STD or SQT5")
 set_property(CACHE FONT PROPERTY STRINGS SQT5)
+set(POPUP_LEVEL 3 CACHE INT "Popup level")
 
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -315,6 +316,8 @@ endif()
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
 endif()
+
+add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})
 
 set(SRC
   ${SRC}

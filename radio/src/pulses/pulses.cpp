@@ -74,6 +74,7 @@ uint8_t getRequiredProtocol(uint8_t module)
 
     case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
+    case MODULE_TYPE_XJT_LITE_PXX2:
       protocol = PROTOCOL_CHANNELS_PXX2_HIGHSPEED;
       break;
 
@@ -311,7 +312,9 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX1) && defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
+#if !defined(INTMODULE_HEARTBEAT)
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
+#endif
       break;
 #endif
 

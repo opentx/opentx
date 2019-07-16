@@ -53,12 +53,17 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 
   uint8_t index = frame[3];
   uint8_t modelId = frame[4];
+  uint8_t length = min<uint8_t>(frame[0] - 3, sizeof(PXX2HardwareInformation));
   if (index == PXX2_HW_INFO_TX_ID && modelId < DIM(PXX2modulesNames)) {
-    memcpy(&destination->information, &frame[4], sizeof(PXX2HardwareInformation));
+    memcpy(&destination->information, &frame[4], length);
+    if (destination->information.capabilities & ~((1 << MODULE_CAPABILITY_COUNT) - 1))
+      destination->information.capabilityNotSupported = true;
   }
   else if (index < PXX2_MAX_RECEIVERS_PER_MODULE && modelId < DIM(PXX2receiversModels)) {
-    memcpy(&destination->receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
+    memcpy(&destination->receivers[index].information, &frame[4], length);
     destination->receivers[index].timestamp = get_tmr10ms();
+    if (destination->receivers[index].information.capabilities & ~((1 << RECEIVER_CAPABILITY_COUNT) - 1))
+      destination->information.capabilityNotSupported = true;
   }
 }
 
@@ -78,7 +83,7 @@ void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
   destination->txPower = frame[5];
 
   destination->state = PXX2_SETTINGS_OK;
-  destination->retryTime = 0;
+  destination->timeout = 0;
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
@@ -88,20 +93,25 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
+  ReceiverSettings * destination = moduleState[module].receiverSettings;
+
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FPORT)
+    destination->fport = 1;
+
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
-    reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = 1;
+    destination->pwmRate = 1;
 
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED)
-    reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = 1;
+    destination->telemetryDisabled = 1;
 
   uint8_t outputsCount = min<uint8_t>(16, frame[0] - 4);
-  reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = outputsCount;
+  destination->outputsCount = outputsCount;
   for (uint8_t pin = 0; pin < outputsCount; pin++) {
-    reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = frame[5 + pin];
+    destination->outputsMapping[pin] = frame[5 + pin];
   }
 
-  reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_OK;
-  reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
+  destination->state = PXX2_SETTINGS_OK;
+  destination->timeout = 0;
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 

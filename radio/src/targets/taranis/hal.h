@@ -886,6 +886,7 @@
 #if !defined(PCBXLITES) && !defined(PCBX9LITE) && !(defined(PCBX9DP) && PCBREV >= 2019)
   #define INTERNAL_MODULE_PXX1
 #endif
+#define INTMODULE_FLASH_BAUDRATE        57600
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
@@ -913,8 +914,8 @@
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
   #define INTMODULE_DMA_CHANNEL         DMA_Channel_4
   #if defined(PCBXLITES)
-    #define INTMODULE_BOOTCMD_GPIO        GPIOC
-    #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_8  // PC.08
+    #define INTMODULE_BOOTCMD_GPIO      GPIOC
+    #define INTMODULE_BOOTCMD_GPIO_PIN  GPIO_Pin_8  // PC.08
   #endif
 #elif defined(PCBX9DP) && PCBREV >= 2019
   #define INTMODULE_RCC_APB1Periph      0
@@ -1282,6 +1283,7 @@
 #endif
 
 // Heartbeat for iXJT / ISRM synchro
+#define INTMODULE_HEARTBEAT_TRIGGER               EXTI_Trigger_Falling
 #if defined(PCBXLITE)
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD

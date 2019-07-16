@@ -586,7 +586,7 @@ bool isInternalModuleAvailable(int moduleType)
 bool isExternalModuleAvailable(int moduleType)
 {
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-  if (isModuleTypeR9MLite(moduleType))
+  if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
 #endif
 
@@ -600,16 +600,16 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if !defined(R9M_SIZE_STD)
+#if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_STD)
   if (moduleType == MODULE_TYPE_R9M_PXX1)
     return false;
 #endif
 
-  if (moduleType == MODULE_TYPE_ISRM_PXX2 || moduleType == MODULE_TYPE_R9M_PXX2)
-    return false;
+  if (moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_ISRM_PXX2)
+    return false; // doesn't exist for now
 
 #if !defined(PXX2)
-  if (moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
+  if (moduleType == MODULE_TYPE_XJT_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
     return false;
   }
 #endif
@@ -820,7 +820,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FY326,      1, false,      STR_SUBTYPE_FY326,     nullptr},
   {MODULE_SUBTYPE_MULTI_SFHSS,      0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HONTAI,     3, false,      STR_SUBTYPE_HONTAI,    nullptr},
-  {MODULE_SUBTYPE_MULTI_OLRS,       0, false,      NO_SUBTYPE,            STR_MULTI_RFPOWER},
+  {MODULE_SUBTYPE_MULTI_OLRS,       0, false,      NO_SUBTYPE,            STR_RFPOWER},
   {MODULE_SUBTYPE_MULTI_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
   {MODULE_SUBTYPE_MULTI_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,      nullptr},
   {MODULE_SUBTYPE_MULTI_WK_2X01,    5, false,      STR_SUBTYPE_WK2x01,    nullptr},

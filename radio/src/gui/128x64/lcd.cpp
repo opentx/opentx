@@ -802,7 +802,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   lcdDrawText(x, y, s, att);
 }
 
-void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)

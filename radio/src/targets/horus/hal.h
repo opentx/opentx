@@ -565,12 +565,13 @@
 #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF7
 #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
 #if defined(PCBX12S)
-  #define INTMODULE_BOOT_GPIO           GPIOI
-  #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PC.02
+  #define INTMODULE_BOOTCMD_GPIO        GPIOC
+  #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_2  // PC.02
 #elif defined(PCBX10)
-  #define INTMODULE_BOOT_GPIO           GPIOI
-  #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PI.09
+  #define INTMODULE_BOOTCMD_GPIO        GPIOI
+  #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_9  // PI.09
 #endif
+#define INTMODULE_FLASH_BAUDRATE        38400
 #if defined(PCBX10) || PCBREV >= 13
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
@@ -626,7 +627,7 @@
   #define EXTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
 #endif
 
-// Heartbeat (not used)
+// Heartbeat
 #define INTMODULE_HEARTBEAT
 #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
 #define INTMODULE_HEARTBEAT_GPIO                GPIOD
@@ -636,6 +637,11 @@
 #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line12
 #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
 #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
+#if defined(PXX2)
+#define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
+#else
+#define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
+#endif
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)
