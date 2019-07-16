@@ -89,12 +89,10 @@ ISTR(VANTENNATYPES);
 ISTR(VBEEPLEN);
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
 ISTR(AUX_SERIAL_MODES);
 ISTR(SWTYPES);
 ISTR(POTTYPES);
 ISTR(SLIDERTYPES);
-#endif
 
 #if defined(PCBSKY9X) && defined(REVX)
 ISTR(VOUTPUT_TYPE);
@@ -589,7 +587,7 @@ const char STR_RECEIVER_OPTIONS[] = TR_RECEIVER_OPTIONS;
 const char STR_ASSIGN_SPLASH[] = TR_ASSIGN_SPLASH;
 #endif
 
-#if !defined(PCBHORUS)
+#if !defined(COLORLCD)
 const char STR_MENUWHENDONE[] = TR_MENUWHENDONE;
 #endif
 
@@ -623,7 +621,7 @@ const char STR_GYRO_OFFSET[] = TR_GYRO_OFFSET;
 const char STR_GYRO_MAX[] = TR_GYRO_MAX;
 #endif
 
-#if defined(PWM_BACKLIGHT) || defined(PCBHORUS)
+#if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 const char STR_BLONBRIGHTNESS[] = TR_BLONBRIGHTNESS;
 const char STR_BLOFFBRIGHTNESS[] = TR_BLOFFBRIGHTNESS;
 #endif

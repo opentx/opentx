@@ -454,6 +454,11 @@ inline bool isModuleFailsafeAvailable(uint8_t idx)
   return false;
 }
 
+inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
+{
+  return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
+}
+
 inline uint8_t getMaxRxNum(uint8_t idx)
 {
   if (isModuleDSM2(idx))

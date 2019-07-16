@@ -1038,7 +1038,7 @@ void menuModelSetup(event_t event)
           else {
             lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
           }
-          if (isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx)) {
+          if (isModuleBindRangeAvailable(moduleIdx)) {
             if (xOffsetBind)
               lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0) {
