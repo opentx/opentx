@@ -1183,6 +1183,7 @@
 #endif
 
 // Heartbeat for iXJT / ISRM synchro
+#define INTMODULE_HEARTBEAT_TRIGGER               EXTI_Trigger_Falling
 #if defined(PCBXLITE)
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD

@@ -311,7 +311,9 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX1) && defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
+#if !defined(INTMODULE_HEARTBEAT)
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
+#endif
       break;
 #endif
 
