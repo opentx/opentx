@@ -111,6 +111,7 @@ void onPXX2BindMenu(const char * result)
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
     moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
+    s_editMode = 0;
   }
 }
 

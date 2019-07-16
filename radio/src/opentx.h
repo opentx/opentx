@@ -260,7 +260,7 @@ inline void memclear(void * p, size_t size)
 inline bool is_memclear(void * p, size_t size)
 {
   uint8_t * buf = (uint8_t *)p;
-  return buf[0] == 0 && !memcmp(buf, buf + 1, size - 1);
+  return buf[0] == 0 && memcmp(buf, buf + 1, size - 1) == 0;
 }
 
 void memswap(void * a, void * b, uint8_t size);
