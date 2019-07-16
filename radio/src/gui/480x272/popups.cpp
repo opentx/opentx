@@ -156,9 +156,13 @@ const char * runPopupMenu(event_t event)
 
     case EVT_KEY_BREAK(KEY_ENTER):
       result = popupMenuItems[popupMenuSelectedItem + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
-      // no break
+      popupMenuItemsCount = 0;
+      popupMenuSelectedItem = 0;
+      popupMenuOffset = 0;
+      break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
+      result = STR_EXIT;
       popupMenuItemsCount = 0;
       popupMenuSelectedItem = 0;
       popupMenuOffset = 0;
