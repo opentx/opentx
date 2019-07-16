@@ -361,7 +361,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 /*luadoc
 @function sportTelemetryPop()
 
-Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x52FF
+Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x50FF
 (frame ID == 0x10), as well as packets with a frame ID equal 0x32 (regardless of the data ID) will be passed to
 the LUA telemetry receive queue.
 
