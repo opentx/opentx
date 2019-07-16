@@ -340,6 +340,15 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
   closeUpdatesWaitDialog();
 
   QString version = seekCodeString(qba, "VERSION");
+  const QString errorString = seekCodeString(qba, "ERROR");
+
+  if (errorString == "NO_RC")
+    return onUpdatesError(tr("No Companion release candidates are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_NIGHTLY")
+    return onUpdatesError(tr("No nightly Companion builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_RELEASE")
+    return onUpdatesError(tr("No Companion release builds are currently being served for this version, please switch release channel"));
+
   if (version.isNull())
     return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
@@ -456,7 +465,21 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
   const QString versionString = seekCodeString(qba, "VERSION");
   const QString dateString = seekCodeString(qba, "DATE");
+  const QString errorString = seekCodeString(qba, "ERROR");
+  const QString blockedRadios = seekCodeString(qba, "BLOCK");
   long version;
+  
+  if (errorString == "NO_RC")
+    return onUpdatesError(tr("No firmware release candidates are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_NIGHTLY")
+    return onUpdatesError(tr("No firmware nightly builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_RELEASE")
+    return onUpdatesError(tr("No firmware release builds are currently being served for this version, please switch release channel"));
+
+  QString variant = Firmware::getCurrentVariant()->getId();
+  QStringList splitId = variant.split("-");
+  if (blockedRadios.contains(splitId.value(1)))
+    return onUpdatesError(tr("This radio (%1) is not currently available in this firmware release channel").arg(getCurrentFirmware()->getName()));
 
   if (versionString.isNull() || dateString.isNull() || (version = version2index(versionString)) <= 0)
     return onUpdatesError(tr("Firmware update check failed, new version information not found or invalid."));
