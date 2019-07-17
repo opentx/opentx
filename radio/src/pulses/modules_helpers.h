@@ -527,11 +527,13 @@ inline bool isBindCh9To16Allowed(uint8_t moduleIndex)
 
 inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
 {
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (moduleIndex == INTERNAL_MODULE)
     return isSportLineUsedByInternalModule();
 
   if (isSportLineUsedByInternalModule())
     return false;
+#endif
 
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PXX1) {
     if (isModuleR9M_LBT(EXTERNAL_MODULE))
