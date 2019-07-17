@@ -114,14 +114,14 @@
 #define LEN_R9M_LITE_FCC_POWER_VALUES  "\010"
 #define TR_R9M_LITE_FCC_POWER_VALUES   "(100mW)"
 
-#define LEN_R9M_LITE_LBT_POWER_VALUES  "\017"
-#define TR_R9M_LITE_LBT_POWER_VALUES   "25mW 8CH Tel\0  ""100mW 8CH NoTel"
+#define LEN_R9M_LITE_LBT_POWER_VALUES  "\014"
+#define TR_R9M_LITE_LBT_POWER_VALUES   "25mW 8CH\0   ""25mW 16CH\0  ""100mW NoTele"
 
-#define LEN_R9M_FCC_POWER_VALUES       "\012"
-#define TR_R9M_FCC_POWER_VALUES        "10 mW\0    " "100 mW\0   " "500 mW\0   " "1 W (auto)"
+#define LEN_R9M_FCC_POWER_VALUES       "\011"
+#define TR_R9M_FCC_POWER_VALUES        "10mW\0    " "100mW\0   " "500mW\0   " "1W (auto)"
 
-#define LEN_R9M_LBT_POWER_VALUES       "\013"
-#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
+#define LEN_R9M_LBT_POWER_VALUES       "\014"
+#define TR_R9M_LBT_POWER_VALUES        "25mW 8CH\0   ""25mW 16CH\0  ""200mW NoTele""500mW NoTele"
 
 #define LEN_DSM_PROTOCOLS              "\004"
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"
