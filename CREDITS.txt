@@ -1526,3 +1526,4 @@ Mark Schmidt
 Hendrik Goessaert
 Arturas Giedraitis
 Paul Vernon
+Rick Smith
