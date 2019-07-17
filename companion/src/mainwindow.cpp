@@ -475,6 +475,30 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     return onUpdatesError(tr("No firmware nightly builds are currently being served for this version, please switch release channel"));
   else if (errorString == "NO_RELEASE")
     return onUpdatesError(tr("No firmware release builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "MOVE_TO_RC") {
+    QMessageBox msgbox;
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Release candidate builds are now available for this version, would you like to switch to using them?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgbox.setDefaultButton(QMessageBox::Yes);
+      
+    if(msgbox.exec() == QMessageBox::Yes) {
+      g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RC_TESTING));
+      return onUpdatesError(tr("Channel changed to RC, please restart the download process"));
+    }
+  }
+  else if (errorString == "MOVE_TO_RELEASE") {
+    QMessageBox msgbox;
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Official release builds are now available for this version, would you like to switch to using them?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgbox.setDefaultButton(QMessageBox::Yes);
+      
+    if(msgbox.exec() == QMessageBox::Yes) {
+      g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RELEASE_STABLE));
+      return onUpdatesError(tr("Channel changed to Release, please restart the download process"));
+    }
+  }
 
   QString variant = Firmware::getCurrentVariant()->getId();
   QStringList splitId = variant.split("-");
