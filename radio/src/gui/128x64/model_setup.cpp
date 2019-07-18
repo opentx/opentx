@@ -910,6 +910,7 @@ void menuModelSetup(event_t event)
                 }
             }
           }
+#if POPUP_LEVEL > 1
           else if (old_editMode > 0) {
             if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
@@ -928,6 +929,7 @@ void menuModelSetup(event_t event)
 #endif
             }
           }
+#endif
         }
         break;
 
