@@ -229,7 +229,7 @@ inline uint8_t getPXX2ReceiverOptions(uint8_t modelId)
     return PXX2ReceiverOptions[0];
 }
 
-inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
+inline bool isPXX2ReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 {
   return getPXX2ReceiverOptions(modelId) & (1 << option);
 }
