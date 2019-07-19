@@ -227,6 +227,23 @@
   #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_14 // PE.14
   #define TRIMS_GPIO_REG_RHL            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_9  // PD.09
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_3  // PE.03
+  #define TRIMS_GPIO_REG_LHR            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_4  // PE.04
+  #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_6  // PE.06
+  #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_5  // PE.05
+  #define TRIMS_GPIO_REG_RVD            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_3  // PC.03
+  #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
+  #define TRIMS_GPIO_REG_RHL            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_13 // PC.13
+  #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_1  // PC.01
 #else
   #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PE.04
@@ -1272,9 +1289,9 @@
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #elif defined(PCBX9DP) && PCBREV >= 2019
   #define SPORT_MAX_BAUDRATE            400000
-  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
-  #define SPORT_UPDATE_PWR_GPIO         GPIOD
-  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_4  // PD.04
+  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOA
+  #define SPORT_UPDATE_PWR_GPIO         GPIOA
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_14 // PA.14
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #else

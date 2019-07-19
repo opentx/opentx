@@ -660,11 +660,11 @@ void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
-#if defined(PCBXLITE) || defined(PCBX9LITE)
-  #define HAS_SPORT_UPDATE_CONNECTOR()  true
-#elif defined(PCBX7)
+#if defined(PCBX7)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
+#elif defined(SPORT_UPDATE_PWR_GPIO)
+  #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #else
   #define HAS_SPORT_UPDATE_CONNECTOR()  false
 #endif
