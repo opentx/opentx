@@ -1206,12 +1206,31 @@ void menuModelSetup(event_t event)
 
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
-        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
-          moduleInformation.information.modelID = 0;
-          moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && reusableBuffer.moduleSetup.bindInformation.step < 0) {
+          lcdDrawNumber(lcdNextPos, y, reusableBuffer.moduleSetup.bindInformation.step);
+          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_MODULE_TX_INFORMATION_REQUEST && moduleInformation.information.modelID) {
+            // For R9M ACCESS the module information has been requested to know if we are in EU mode. We just receive it here and continue
+            if (moduleInformation.information.variant == PXX2_VARIANT_EU) {
+              // In EU mode we will need the power of the module to know if telemetry can be proposed
+              reusableBuffer.moduleSetup.bindInformation.step = BIND_MODULE_TX_SETTINGS_REQUEST;
+#if defined(SIMU)
+              reusableBuffer.moduleSetup.pxx2.moduleSettings.txPower = 14;
+#else
+              moduleState[moduleIdx].readModuleSettings(&reusableBuffer.moduleSetup.pxx2.moduleSettings);
+#endif
+            }
+            else {
+              reusableBuffer.moduleSetup.bindInformation.step = 0;
+              moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+            }
+          }
+          else if (reusableBuffer.moduleSetup.bindInformation.step == BIND_MODULE_TX_SETTINGS_REQUEST && reusableBuffer.moduleSetup.pxx2.moduleSettings.txPower > 0) {
+            // We just receive the module settings (for TX power)
+            reusableBuffer.moduleSetup.bindInformation.step = 0;
+            moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+          }
         }
-
-        if (attr && (moduleState[moduleIdx].mode == 0 || s_editMode == 0)) {
+        else if (attr && (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL || s_editMode == 0)) {
           if (moduleState[moduleIdx].mode) {
             moduleState[moduleIdx].mode = 0;
             removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);

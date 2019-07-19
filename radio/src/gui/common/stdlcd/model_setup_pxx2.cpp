@@ -82,9 +82,10 @@ void onPXX2BindMenu(const char * result)
     reusableBuffer.moduleSetup.bindInformation.selectedReceiverIndex = (result - reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]);
     if (isModuleR9MAccess(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_EU) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
-      POPUP_MENU_ADD_ITEM(STR_16CH_WITH_TELEMETRY);
-      POPUP_MENU_ADD_ITEM(STR_16CH_WITHOUT_TELEMETRY);
-      POPUP_MENU_START(onPXX2R9MBindModeMenu);
+      if (reusableBuffer.moduleSetup.pxx2.moduleSettings.txPower <= 14)
+        onPXX2R9MBindModeMenu(STR_16CH_WITH_TELEMETRY);
+      else
+        onPXX2R9MBindModeMenu(STR_16CH_WITHOUT_TELEMETRY);
     }
     else if (isModuleR9MAccess(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_FLEX) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
@@ -140,6 +141,7 @@ void onPXX2ReceiverMenu(const char * result)
     memclear(&reusableBuffer.moduleSetup.bindInformation, sizeof(BindInformation));
     reusableBuffer.moduleSetup.bindInformation.rxUid = receiverIdx;
     if (isModuleR9MAccess(moduleIdx)) {
+      reusableBuffer.moduleSetup.bindInformation.step = BIND_MODULE_TX_INFORMATION_REQUEST;
 #if defined(SIMU)
       reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID = 1;
       reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant = 2;

@@ -133,7 +133,7 @@ class ReceiverSettings {
 
 class BindInformation {
   public:
-    uint8_t step;
+    int8_t step;
     uint32_t timeout;
     char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
     uint8_t candidateReceiversCount;

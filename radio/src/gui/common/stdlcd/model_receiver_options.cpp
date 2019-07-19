@@ -24,11 +24,17 @@
 
 extern uint8_t g_moduleIdx;
 
+enum {
+  RECEIVER_SETTINGS_OK = 0,
+  RECEIVER_SETTINGS_DIRTY = 1,
+  RECEIVER_SETTINGS_WRITING = 2,
+};
+
 void onRxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 2;
+    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_WRITING;
     reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
     moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
@@ -38,8 +44,8 @@ void onRxOptionsUpdateConfirm(const char * result)
 }
 
 enum {
-  ITEM_RECEIVER_SETTINGS_TELEMETRY,
   ITEM_RECEIVER_SETTINGS_PWM_RATE,
+  ITEM_RECEIVER_SETTINGS_TELEMETRY,
   ITEM_RECEIVER_SETTINGS_SPORT_FPORT,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2,
@@ -62,7 +68,21 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
 #endif
   }
-  else if (menuEvent) {
+
+  uint8_t receiverId = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
+  uint8_t receiverModelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.modelID;
+  uint8_t receiverVariant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.variant;
+
+  SUBMENU_NOTITLE(ITEM_RECEIVER_SETTINGS_PINMAP_FIRST + outputsCount, {
+    0, // PWM rate
+    isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 /*25mW*/ ? READONLY_ROW : (uint8_t)0, // Telemetry
+    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
+    uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
+    uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
+    0 // channels ...
+  });
+
+  if (menuEvent) {
     killEvents(KEY_EXIT);
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
@@ -74,37 +94,27 @@ void menuModelReceiverOptions(event_t event)
     }
   }
 
-  uint8_t receiverId = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
-  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.modelID;
-
-  SUBMENU_NOTITLE(ITEM_RECEIVER_SETTINGS_PINMAP_FIRST + outputsCount, {
-    0, // Telemetry
-    0, // PWM rate
-    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
-    uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
-    uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
-    0 // channels ...
-  });
-
   if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
-    if (modelId)
-      moduleState[g_moduleIdx].readReceiverSettings(&reusableBuffer.hardwareAndSettings.receiverSettings);
-    else
+    if (!receiverModelId)
       moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], receiverId, receiverId);
+    else if (isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && !reusableBuffer.hardwareAndSettings.moduleSettings.txPower)
+      moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
+    else
+      moduleState[g_moduleIdx].readReceiverSettings(&reusableBuffer.hardwareAndSettings.receiverSettings);
   }
 
   if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
     killEvents(event);
-    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 0;
+    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_OK;
     moduleState[g_moduleIdx].writeReceiverSettings(&reusableBuffer.hardwareAndSettings.receiverSettings);
   }
 
-  if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == RECEIVER_SETTINGS_WRITING && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
     return;
   }
 
-  if (modelId != 0 && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
+  if (receiverModelId && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
     menuVerticalPosition = 0;
     while (menuVerticalPosition < ITEM_RECEIVER_SETTINGS_PINMAP_FIRST && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
       ++menuVerticalPosition;
@@ -128,24 +138,24 @@ void menuModelReceiverOptions(event_t event)
       LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
       switch (i) {
-        case ITEM_RECEIVER_SETTINGS_TELEMETRY:
-          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, STR_TELEMETRY_DISABLED, attr, event);
-          if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
-          }
-          break;
-
         case ITEM_RECEIVER_SETTINGS_PWM_RATE:
           reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9MAccess(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
+          }
+          break;
+
+        case ITEM_RECEIVER_SETTINGS_TELEMETRY:
+          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, STR_TELEMETRY_DISABLED, attr, event);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
           }
           break;
 
         case ITEM_RECEIVER_SETTINGS_SPORT_FPORT:
           reusableBuffer.hardwareAndSettings.receiverSettings.fport = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.fport, RECEIVER_OPTIONS_2ND_COLUMN, y, "F.Port", attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
           }
           break;
 
@@ -173,7 +183,7 @@ void menuModelReceiverOptions(event_t event)
             if (attr) {
               mapping = checkIncDec(event, mapping, 0, sentModuleChannels(g_moduleIdx) - 1);
               if (checkIncDec_Ret) {
-                reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+                reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
               }
             }
 
