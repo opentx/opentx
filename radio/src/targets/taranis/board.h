@@ -565,6 +565,7 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATTERY_MIN                   60 // 6.0V
   #define BATTERY_MAX                   80 // 8.0V
 #endif
+
 #if defined(PCBXLITE)
   #define BATT_SCALE                    131
 #elif defined(PCBX7)

@@ -360,7 +360,7 @@ static const uint8_t moduleOptions[] = {
   0b11110100, // ISRM-N
 };
 
-inline uint8_t getModuleOptions(uint8_t modelId)
+inline uint8_t getPXX2ModuleOptions(uint8_t modelId)
 {
   if (modelId < DIM(moduleOptions))
     return moduleOptions[modelId];
@@ -370,7 +370,7 @@ inline uint8_t getModuleOptions(uint8_t modelId)
 
 inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
 {
-  return getModuleOptions(modelId) & (1 << option);
+  return getPXX2ModuleOptions(modelId) & (1 << option);
 }
 
 enum {
@@ -423,7 +423,7 @@ enum ReceiverCapabilities {
   RECEIVER_CAPABILITY_COUNT
 };
 
-inline uint8_t getReceiverOptions(uint8_t modelId)
+inline uint8_t getPXX2ReceiverOptions(uint8_t modelId)
 {
   if (modelId < DIM(receiverOptions))
     return receiverOptions[modelId];
@@ -433,7 +433,7 @@ inline uint8_t getReceiverOptions(uint8_t modelId)
 
 inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 {
-  return getReceiverOptions(modelId) & (1 << option);
+  return getPXX2ReceiverOptions(modelId) & (1 << option);
 }
 
 inline bool isDefaultModelRegistrationID()

@@ -123,7 +123,7 @@ void menuRadioModulesVersion(event_t event)
         }
       }
       uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
-      lcdDrawText(COLUMN2_X, y, PXX2modulesModels[modelId]);
+      lcdDrawText(COLUMN2_X, y, getPXX2ModuleName(modelId));
     }
     y += FH;
 
@@ -147,7 +147,7 @@ void menuRadioModulesVersion(event_t event)
           lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER);
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
           uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.modelID;
-          lcdDrawText(COLUMN2_X, y, PXX2receiversModels[modelId]);
+          lcdDrawText(COLUMN2_X, y, getPXX2ReceiverName(modelId));
         }
         y += FH;
 

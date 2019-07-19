@@ -58,7 +58,7 @@
 
 #define PXX2_HW_INFO_TX_ID                         0xFF
 
-static const char * const PXX2modulesModels[] = {
+static const char * const PXX2ModulesModels[] = {
   "---",
   "XJT",
   "ISRM",
@@ -70,7 +70,15 @@ static const char * const PXX2modulesModels[] = {
   "ISRM-N"
 };
 
-static const char * const PXX2receiversModels[] = {
+inline const char * getPXX2ModuleName(uint8_t modelId)
+{
+  if (modelId < DIM(PXX2ModulesModels))
+    return PXX2ModulesModels[modelId];
+  else
+    return PXX2ModulesModels[0];
+}
+
+static const char * const PXX2ReceiversModels[] = {
   "---",
   "X8R",
   "RX8R",
@@ -99,6 +107,14 @@ static const char * const PXX2receiversModels[] = {
   "R9-MINI-OTA", // this one has OTA (different bootloader)
   "R9-MM-OTA", // this one has OTA (different bootloader)
 };
+
+inline const char * getPXX2ReceiverName(uint8_t modelId)
+{
+  if (modelId < DIM(PXX2ReceiversModels))
+    return PXX2ReceiversModels[modelId];
+  else
+    return PXX2ReceiversModels[0];
+}
 
 enum PXX2ModuleModelID {
   PXX2_MODULE_NONE,
