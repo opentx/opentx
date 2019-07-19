@@ -32,7 +32,7 @@
 #define MENU_BODY_TOP    (FH + 1)
 #define MENU_BODY_BOTTOM (LCD_H)
 
-constexpr uint8_t COLUMN2_X = 11 * FW;
+constexpr uint8_t COLUMN2_X = 10 * FW;
 
 #if defined(PXX2)
 void drawPXX2Version(coord_t x, coord_t y, PXX2Version version)
