@@ -585,6 +585,8 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATT_SCALE                    123
 #elif defined(PCBX9LITE)
   #define BATT_SCALE                    117
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define BATT_SCALE                    117
 #else
   #define BATT_SCALE                    150
 #endif
