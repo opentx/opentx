@@ -50,7 +50,7 @@ enum {
   ITEM_MODULE_SETTINGS_COUNT
 };
 
-#define IF_MODULE_OPTIONS(option, count) uint8_t(isModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
+#define IF_MODULE_OPTIONS(option, count) uint8_t(isPXX2ModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
 
 bool isPowerAvailable(int value)
 {
