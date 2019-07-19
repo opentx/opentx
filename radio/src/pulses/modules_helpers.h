@@ -23,6 +23,7 @@
 
 #include "bitfield.h"
 #include "definitions.h"
+#include "telemetry/telemetry.h"
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
 #endif
@@ -79,6 +80,16 @@ inline bool isModuleXJTD16(uint8_t idx)
 inline bool isModuleISRM(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2;
+}
+
+inline bool isModuleISRMD16(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_ISRM_PXX2 && g_model.moduleData[idx].subType == MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16;
+}
+
+inline bool isModuleD16(uint8_t idx)
+{
+  return isModuleXJTD16(idx) || isModuleISRMD16(idx);
 }
 
 inline bool isModuleISRMAccess(uint8_t idx)
@@ -181,7 +192,7 @@ inline bool isModuleR9MLite(uint8_t idx)
 
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_FCC;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
 }
 
 inline bool isModuleTypeLite(uint8_t type)
@@ -191,22 +202,22 @@ inline bool isModuleTypeLite(uint8_t type)
 
 inline bool isModuleR9M_LBT(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
 }
 
 inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol != MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
 }
 
 inline bool isModuleR9M_EUPLUS(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_EUPLUS;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EUPLUS;
 }
 
 inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
-  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].rfProtocol == MODULE_SUBTYPE_R9M_AUPLUS;
+  return isModuleR9MNonAccess(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_AUPLUS;
 }
 
 inline bool isModuleTypePXX1(uint8_t type)
@@ -270,12 +281,26 @@ constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
 
 inline int8_t maxModuleChannels_M8(uint8_t idx)
 {
-  if (isExtraModule(idx))
+  if (isExtraModule(idx)) {
     return MAX_EXTRA_MODULE_CHANNELS_M8;
-  else if (isModuleXJT(idx))
+  }
+  else if (isModuleXJT(idx)) {
     return maxChannelsXJT[1 + g_model.moduleData[idx].subType];
-  else
+  }
+  else if (isModuleR9M(idx)) {
+    if (isModuleR9M_LBT(idx)) {
+      if (isModuleR9MLite(idx))
+        return g_model.moduleData[idx].pxx.power == R9M_LITE_LBT_POWER_25_8CH ? 0 : 8;
+      else
+        return g_model.moduleData[idx].pxx.power == R9M_LBT_POWER_25_8CH ? 0 : 8;
+    }
+    else {
+      return 8; // always 16 channels in FCC / FLEX
+    }
+  }
+  else {
     return maxChannelsModules[g_model.moduleData[idx].type];
+  }
 }
 
 inline int8_t defaultModuleChannels_M8(uint8_t idx)
@@ -378,4 +403,47 @@ inline const char * getModuleDelay(uint8_t idx)
   return nullptr;
 }
 
+inline bool isBindCh9To16Allowed(uint8_t moduleIndex)
+{
+  if (g_model.moduleData[moduleIndex].channelsCount <= 0) {
+    return false;
+  }
+
+  if (isModuleR9M_LBT(moduleIndex)) {
+    if (isModuleR9MLite(moduleIndex))
+      return g_model.moduleData[moduleIndex].pxx.power != R9M_LBT_POWER_25_8CH;
+    else
+      return g_model.moduleData[moduleIndex].pxx.power != R9M_LITE_LBT_POWER_25_8CH;
+  }
+  else {
+    return true;
+  }
+}
+
+inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
+{
+#if defined(HARDWARE_INTERNAL_MODULE)
+  if (moduleIndex == INTERNAL_MODULE)
+    return isSportLineUsedByInternalModule();
+
+  if (isSportLineUsedByInternalModule())
+    return false;
+#endif
+
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PXX1) {
+    if (isModuleR9M_LBT(EXTERNAL_MODULE))
+      return g_model.moduleData[EXTERNAL_MODULE].pxx.power < R9M_LITE_LBT_POWER_100_16CH_NOTELEM;
+    else
+      return true;
+  }
+
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PRO_PXX1) {
+    if (isModuleR9M_LBT(EXTERNAL_MODULE))
+      return g_model.moduleData[EXTERNAL_MODULE].pxx.power < R9M_LBT_POWER_200_16CH_NOTELEM;
+    else
+      return true;
+  }
+
+  return true;
+}
 #endif // _MODULES_H_

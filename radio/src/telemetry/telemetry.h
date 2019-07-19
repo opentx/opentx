@@ -237,10 +237,16 @@ extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
-#if defined(STM32)
-#define IS_TELEMETRY_INTERNAL_MODULE() (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+inline bool isSportLineUsedByInternalModule()
+{
+  return g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1;
+}
 #else
-#define IS_TELEMETRY_INTERNAL_MODULE() (false)
+inline bool isSportLineUsedByInternalModule()
+{
+  return false;
+}
 #endif
 
 void processPXX2Frame(uint8_t module, uint8_t *frame);

@@ -72,7 +72,7 @@ enum PXX2ModuleModelID {
   PXX2_MODULE_ISRM_S_X10
 };
 
-static const char * const PXX2modulesNames[] = {
+static const char * const PXX2ModulesNames[] = {
   "---",
   "XJT",
   "ISRM",
@@ -88,26 +88,26 @@ static const char * const PXX2modulesNames[] = {
 
 inline const char * getPXX2ModuleName(uint8_t modelId)
 {
-  if (modelId < DIM(PXX2modulesNames))
-    return PXX2modulesNames[modelId];
+  if (modelId < DIM(PXX2ModulesNames))
+    return PXX2ModulesNames[modelId];
   else
-    return PXX2modulesNames[0];
+    return PXX2ModulesNames[0];
 }
 
-enum PXX2ModuleModelOption {
+enum {
   MODULE_OPTION_EXTERNAL_ANTENNA,
   MODULE_OPTION_POWER,
   MODULE_OPTION_SPECTRUM_ANALYSER,
   MODULE_OPTION_POWER_METER,
 };
 
-/* Options order:
+/* Module options order:
  * - External antenna (0x01)
  * - Power (0x02)
  * - Spektrum analyser (0x04)
  * - Power meter (0x08)
  */
-static const uint8_t PXX2modulesOptions[] = {
+static const uint8_t PXX2ModuleOptions[] = {
 #if defined(SIMU)
   0b11111111, // None = display all options on SIMU
 #else
@@ -127,10 +127,10 @@ static const uint8_t PXX2modulesOptions[] = {
 
 inline uint8_t getPXX2ModuleOptions(uint8_t modelId)
 {
-  if (modelId < DIM(PXX2modulesOptions))
-    return PXX2modulesOptions[modelId];
+  if (modelId < DIM(PXX2ModuleOptions))
+    return PXX2ModuleOptions[modelId];
   else
-    return PXX2modulesOptions[0];
+    return PXX2ModuleOptions[0];
 }
 
 inline bool isPXX2ModuleOptionAvailable(uint8_t modelId, uint8_t option)
@@ -142,7 +142,7 @@ enum ModuleCapabilities {
   MODULE_CAPABILITY_COUNT
 };
 
-static const char * const PXX2receiversModels[] = {
+static const char * const PXX2ReceiversNames[] = {
   "---",
   "X8R",
   "RX8R",
@@ -172,14 +172,22 @@ static const char * const PXX2receiversModels[] = {
   "R9-MM-OTA", // this one has OTA (different bootloader)
 };
 
+inline const char * getPXX2ReceiverName(uint8_t modelId)
+{
+  if (modelId < DIM(PXX2ReceiversNames))
+    return PXX2ReceiversNames[modelId];
+  else
+    return PXX2ReceiversNames[0];
+}
+
 enum {
   RECEIVER_OPTION_OTA,
 };
 
-/* Options order:
+/* Receiver options order:
  * - OTA (0x01)
  */
-static const uint8_t receiverOptions[] = {
+static const uint8_t PXX2ReceiverOptions[] = {
 #if defined(SIMU)
   0b11111111, // None = display all options on SIMU
 #else
@@ -213,23 +221,23 @@ static const uint8_t receiverOptions[] = {
   0b11111111, // R9-MM+OTA
 };
 
-enum ReceiverCapabilities {
-  RECEIVER_CAPABILITY_FPORT,
-  RECEIVER_CAPABILITY_COUNT
-};
-
-inline uint8_t getReceiverOptions(uint8_t modelId)
+inline uint8_t getPXX2ReceiverOptions(uint8_t modelId)
 {
-  if (modelId < DIM(receiverOptions))
-    return receiverOptions[modelId];
+  if (modelId < DIM(PXX2ReceiverOptions))
+    return PXX2ReceiverOptions[modelId];
   else
-    return receiverOptions[0];
+    return PXX2ReceiverOptions[0];
 }
 
 inline bool isReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 {
-  return getReceiverOptions(modelId) & (1 << option);
+  return getPXX2ReceiverOptions(modelId) & (1 << option);
 }
+
+enum ReceiverCapabilities {
+  RECEIVER_CAPABILITY_FPORT,
+  RECEIVER_CAPABILITY_COUNT
+};
 
 enum PXX2Variant {
   PXX2_VARIANT_NONE,
@@ -246,6 +254,8 @@ enum PXX2RegisterSteps {
 };
 
 enum PXX2BindSteps {
+  BIND_MODULE_TX_INFORMATION_REQUEST = -2,
+  BIND_MODULE_TX_SETTINGS_REQUEST = -1,
   BIND_INIT,
   BIND_RX_NAME_SELECTED,
   BIND_INFO_REQUEST,

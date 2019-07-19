@@ -84,6 +84,7 @@ enum MenuModelSetupItems {
 
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER,
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
@@ -95,7 +96,6 @@ enum MenuModelSetupItems {
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AUTOBIND,
 #endif
-  ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER,
   ITEM_MODEL_SETUP_TRAINER_LABEL,
   ITEM_MODEL_SETUP_TRAINER_MODE,
 #if defined(BLUETOOTH)
@@ -116,6 +116,8 @@ enum MenuModelSetupItems {
 
 #define CURRENT_MODULE_EDITED(k)       (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
 #define CURRENT_RECEIVER_EDITED(k)      (k - (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? k : ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_1))
+
+#include "common/stdlcd/model_setup_pxx1.cpp"
 
 bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
 {
@@ -178,7 +180,6 @@ void onPXX2R9MBindModeMenu(const char * result)
 #endif
 }
 
-#define HEADER_LINE 0
 // TODO code duplicated
 
 
@@ -388,33 +389,6 @@ void checkModelIdUnique(uint8_t moduleIdx)
   }
 }
 
-void onBindMenu(const char * result)
-{
-  uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
-
-  if (result == STR_BINDING_1_8_TELEM_ON) {
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = false;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
-  }
-  else if (result == STR_BINDING_1_8_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
-  }
-  else if (result == STR_BINDING_9_16_TELEM_ON) {
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = false;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = true;
-  }
-  else if (result == STR_BINDING_9_16_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = true;
-  }
-  else {
-    return;
-  }
-
-  moduleState[moduleIdx].mode = MODULE_MODE_BIND;
-}
-
 void onModelSetupBitmapMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {
@@ -622,13 +596,13 @@ bool menuModelSetup(event_t event)
 
          LABEL(ExternalModule),
            EXTERNAL_MODULE_MODE_ROWS,
+           EXTERNAL_MODULE_POWER_ROW,
            MULTIMODULE_STATUS_ROWS
            EXTERNAL_MODULE_CHANNELS_ROWS,
            EXTERNAL_MODULE_BIND_ROWS,
            FAILSAFE_ROWS(EXTERNAL_MODULE),
            EXTERNAL_MODULE_OPTION_ROW,
            MULTIMODULE_MODULE_ROWS
-           EXTERNAL_MODULE_POWER_ROW,
 
          TRAINER_ROWS
        });
@@ -1133,6 +1107,26 @@ bool menuModelSetup(event_t event)
 #endif
             }
           }
+#if POPUP_LEVEL > 1
+          else if (old_editMode > 0) {
+            if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
+              if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
+                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN_LINE1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+              }
+#if POPUP_LEVEL >= 3
+              else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
+                POPUP_WARNING(STR_R9M_PROTO_EU_WARN_LINE1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+              }
+              else {
+                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN_LINE1);
+                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+              }
+#endif
+            }
+          }
+#endif          
         }
         break;
 
@@ -1468,29 +1462,9 @@ bool menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9MNonAccess(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == MODULE_SUBTYPE_PXX1_ACCST_D16)) {
+                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-                      uint8_t default_selection = 0; // R9M_LBT should default to 0 as available options are variables
-                      if (isModuleR9M_LBT(moduleIdx)) {
-                        if (BIND_TELEM_ALLOWED(moduleIdx))
-                          POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_OFF);
-                        if (BIND_TELEM_ALLOWED(moduleIdx) && BIND_CH9TO16_ALLOWED(moduleIdx))
-                          POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
-                        if (BIND_CH9TO16_ALLOWED(moduleIdx))
-                          POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
-                      }
-                      else {
-                        if (BIND_TELEM_ALLOWED(moduleIdx))
-                          POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_OFF);
-                        if (BIND_TELEM_ALLOWED(moduleIdx))
-                          POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
-                        default_selection = g_model.moduleData[moduleIdx].pxx.receiver_telem_off + (g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 << 1);
-                      }
-                      POPUP_MENU_SELECT_ITEM(default_selection);
-                      POPUP_MENU_START(onBindMenu);
+                      startBindMenu(moduleIdx);
                       continue;
                     }
                     if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
@@ -1536,7 +1510,7 @@ bool menuModelSetup(event_t event)
             menuHorizontalPosition = 0;
           if (menuHorizontalPosition==0) {
             if (s_editMode>0) {
-              CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.failsafeMode, FAILSAFE_LAST);
+              CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.failsafeMode, isModuleR9M(moduleIdx) ? FAILSAFE_NOPULSES : FAILSAFE_LAST);
               if (checkIncDec_Ret) SEND_FAILSAFE_NOW(moduleIdx);
             }
           }
@@ -1592,12 +1566,19 @@ bool menuModelSetup(event_t event)
           }
         }
 #endif
-        if (isModuleSBUS(moduleIdx)) {
+        if (isModuleR9MNonAccess(moduleIdx)) {
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_TELEMETRY);
+          if (isSportLineUsedByInternalModule())
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
+          else
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEM_ON);
+        }
+        else if (isModuleSBUS(moduleIdx)) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WARN_BATTVOLTAGE);
           drawValueWithUnit(MODEL_SETUP_4TH_COLUMN, y, getBatteryVoltage(), UNIT_VOLTS, attr|PREC2|LEFT);
         }
-      }
         break;
+      }
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER:
       {

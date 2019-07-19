@@ -548,6 +548,9 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
       return false;
 
     case MODULE_TYPE_XJT_PXX1:
+      // External XJT has a physical switch to disable S.PORT
+    case MODULE_TYPE_R9M_PXX1:
+      // R9M telemetry is disabled by pulses (pxx1.cpp)
       if (moduleBay == EXTERNAL_MODULE)
         return false;
 
