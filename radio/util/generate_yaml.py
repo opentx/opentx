@@ -11,6 +11,9 @@ import jinja2
 
 DEBUG_ATTRS = ['layoutData','topbarData','widgetData']
 
+#USE_FAKE_STRUCT = False
+USE_FAKE_STRUCT = True
+
 def node_children(node):
     l = list(c for c in node.get_children() if c is not None)
     if len(l) > 0:
@@ -64,6 +67,20 @@ def map_type(type_name):
 
 def mangle_type(type_name):
     return type_name.replace(':','_')
+
+# Cursor or Type
+def get_type(obj):
+    if isinstance(obj,Cursor):
+        return obj.type
+    else:
+        return obj
+
+def is_string(type):
+    if type.kind == TypeKind.CONSTANTARRAY:
+        if type.element_type.spelling == 'char':
+            return True
+
+    return False
 
 class AST_Element:
     def __init__(self, name, cursor):
@@ -126,7 +143,7 @@ class FieldAST(AST_Element):
             self.length = t.element_count
 
             if self.type == 'char':
-                self.type   = 'string'
+                self.type = 'string'
         else:
             self.type = map_type(t.spelling)
 
@@ -135,6 +152,9 @@ class StructAST(AST_Element):
     type = 'struct'
 
     def __init__(self, name, cursor, alt_name=''):
+
+        self.var_name = name
+
         if len(alt_name) > 0:
             name = alt_name
 
@@ -156,6 +176,7 @@ class EnumAST(AST_Element):
     type = 'enum'
 
     def __init__(self, name, cursor):
+        self.var_name = name
         super(EnumAST, self).__init__('enum_' + name, cursor)
 
 class AST:
@@ -279,15 +300,24 @@ def parse_field_record(f, node):
     st = parse_node(RootAST,decl,alt_name)
     if st is not None:
         f.var_type = st.name
+        f.var_name = alt_name
         f.type = st.type
 
 def make_fake_array_struct(f, node_type, use_idx):
 
+    # if not USE_FAKE_STRUCT:
+    #     f.var_type = node_type.spelling
+    #     # if is_string(get_type(node_type)):
+    #     #     f.type = 'array'
+    #     #     f.length = get_type(node_type).element_count
+    #     return
+
     field = FieldAST('val', node_type)
+    #field.is_fake = True
     type_name = field.type + '_' + str(field.bits)
     struct_name = 'struct_' + type_name
 
-    if not RootAST.has_struct(struct_name):
+    if USE_FAKE_STRUCT and not RootAST.has_struct(struct_name):
         #print("# field created " + struct_name)
         st = StructAST(type_name, node_type)
         st.append(field)
@@ -295,8 +325,11 @@ def make_fake_array_struct(f, node_type, use_idx):
         st.use_idx = use_idx
         RootAST.append(st)
 
+    f.var_name = f.type
     f.type = 'array'
     f.var_type = struct_name
+    #f.var_name = field.type
+
         
 def parse_field_array(f, node):
     et = node.type.element_type
@@ -315,14 +348,17 @@ def parse_field_array(f, node):
         if elmt_st is not None:
             f.type = 'array'
             f.var_type = elmt_st.name
+            f.var_name = elmt_st.var_name
             # mark array usage for unions
             elmt_st.used_in_arrays = True
         elif elmt_decl.kind == CursorKind.TYPEDEF_DECL:
             # it's some typedef
+            #print_error("TYPEDEF {} {}".format(f.name, elmt_decl.spelling));
             make_fake_array_struct(f, elmt_decl, use_idx)
         elif et.kind == TypeKind.CONSTANTARRAY:
             # it's an array:
             #   let's create a fake struct with the element type
+            #print_error("ARRAY {} {}".format(f.name, elmt_decl.spelling));
             make_fake_array_struct(f, et, use_idx)
         else:
             pass
