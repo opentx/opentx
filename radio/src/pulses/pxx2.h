@@ -58,7 +58,7 @@
 
 #define PXX2_HW_INFO_TX_ID                         0xFF
 
-static const char * const PXX2ModulesModels[] = {
+static const char * const PXX2ModulesNames[] = {
   "---",
   "XJT",
   "ISRM",
@@ -72,13 +72,13 @@ static const char * const PXX2ModulesModels[] = {
 
 inline const char * getPXX2ModuleName(uint8_t modelId)
 {
-  if (modelId < DIM(PXX2ModulesModels))
-    return PXX2ModulesModels[modelId];
+  if (modelId < DIM(PXX2ModulesNames))
+    return PXX2ModulesNames[modelId];
   else
-    return PXX2ModulesModels[0];
+    return PXX2ModulesNames[0];
 }
 
-static const char * const PXX2ReceiversModels[] = {
+static const char * const PXX2ReceiversNames[] = {
   "---",
   "X8R",
   "RX8R",
@@ -110,10 +110,10 @@ static const char * const PXX2ReceiversModels[] = {
 
 inline const char * getPXX2ReceiverName(uint8_t modelId)
 {
-  if (modelId < DIM(PXX2ReceiversModels))
-    return PXX2ReceiversModels[modelId];
+  if (modelId < DIM(PXX2ReceiversNames))
+    return PXX2ReceiversNames[modelId];
   else
-    return PXX2ReceiversModels[0];
+    return PXX2ReceiversNames[0];
 }
 
 enum PXX2ModuleModelID {
