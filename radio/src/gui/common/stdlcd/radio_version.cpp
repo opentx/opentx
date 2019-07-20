@@ -86,7 +86,7 @@ enum menuRadioFirmwareOptionsItems {
 
 void menuRadioFirmwareOptions(event_t event)
 {
-  SIMPLE_SUBMENU(STR_MENU_FIRM_OPTIONS, ITEM_FW_OPT_SHUTDOWN_MAX-1);
+  SIMPLE_SUBMENU(STR_MENU_FIRM_OPTIONS, ITEM_FW_OPT_SHUTDOWN_MAX+1);
 
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
   uint8_t lines = (y - (FH + 1)) / FH + menuVerticalOffset;
@@ -114,10 +114,11 @@ void menuRadioFirmwareOptions(event_t event)
       break;
   }
 
+  uint8_t sub = menuVerticalPosition - HEADER_LINE;
+
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
     uint8_t k = i + menuVerticalOffset;
-    uint8_t sub = menuVerticalPosition - HEADER_LINE;
     LcdFlags blink = ((s_editMode > 0) ? BLINK | INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
