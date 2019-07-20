@@ -502,7 +502,6 @@
 
 #define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " Conferma"
 #define TR_FREE                "disp"
-#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "Elimina modello?"
 #define TR_COPYINGMODEL        "Copia in corso.."
 #define TR_MOVINGMODEL         "Spostamento..."
@@ -564,6 +563,7 @@
 #define TR_FLMODE              "Fase"
 #define TR_MIXWARNING          "Avviso"
 #define TR_OFF                 "OFF"
+#define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "MultPx"
 #define TR_DELAYDOWN           "Post.Giù "
 #define TR_DELAYUP             "Post.Sù"

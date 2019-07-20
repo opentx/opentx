@@ -492,7 +492,6 @@
 #endif
 
 #define TR_FREE                "frei"
-#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "Modell löschen?"
 #define TR_COPYINGMODEL        "Kopiere Modell"
 #define TR_MOVINGMODEL         "Schiebe Modell"
@@ -554,6 +553,7 @@
 #define TR_FLMODE              TR("Phase", "Phasen")
 #define TR_MIXWARNING          "Warnung"
 #define TR_OFF                 "AUS"
+#define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Wirkung"
 #define TR_DELAYDOWN           "Verz. Dn"
 #define TR_DELAYUP             "Verz. Up"

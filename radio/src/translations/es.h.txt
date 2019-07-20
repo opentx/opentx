@@ -499,7 +499,6 @@
 
 #define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " AL ACABAR "
 #define TR_FREE                "libre"
-#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "BORRAR MODELO"
 #define TR_COPYINGMODEL        "Copiando modelo.."
 #define TR_MOVINGMODEL         "Mover modelo..."
@@ -565,6 +564,7 @@
 #define TR_FLMODE              TR("Modo","Modos")
 #define TR_MIXWARNING          "Aviso"
 #define TR_OFF                 "OFF"
+#define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Multpx"
 #define TR_DELAYDOWN           "Delay Dn"
 #define TR_DELAYUP             "Delay Up"

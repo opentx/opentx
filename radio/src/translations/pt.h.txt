@@ -484,7 +484,6 @@
 
 #define TR_MENUWHENDONE      CENTER"\006" TR_ENTER "QDO PRONTO"
 #define TR_FREE                "Livre"
-#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "EXCLUI MODELO"
 #define TR_COPYINGMODEL        "Copiando modelo"
 #define TR_MOVINGMODEL         "Movendo modelo"
@@ -550,6 +549,7 @@
 #define TR_FLMODE              "Fase"
 #define TR_MIXWARNING          "Aviso"
 #define TR_OFF                 "OFF"
+#define TR_NO_INFORMATION      TR("No info", "No information")
 #define TR_MULTPX              "Aplicar"
 #define TR_DELAYDOWN           "Atraso Dn"
 #define TR_DELAYUP             "Atraso Up"

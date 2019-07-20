@@ -193,7 +193,6 @@ extern const char STR_MENUWHENDONE[];
 #endif
 
 extern const char STR_FREE[];
-extern const char STR_NO_INFO[];
 #define LEN_FREE PSIZE(TR_FREE)
 extern const char STR_DELETEMODEL[];
 extern const char STR_COPYINGMODEL[];
@@ -250,6 +249,7 @@ extern const char STR_CURVE[];
 extern const char STR_FLMODE[];
 extern const char STR_MIXWARNING[];
 extern const char STR_OFF[];
+extern const char STR_NO_INFORMATION[];
 extern const char STR_MULTPX[];
 extern const char STR_DELAYDOWN[];
 extern const char STR_DELAYUP[];

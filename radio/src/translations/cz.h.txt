@@ -481,7 +481,6 @@
 
 #define TR_MENUWHENDONE                CENTER "\011" TR_ENTER " > DALŠÍ"
 #define TR_FREE                        TR("volné:", "volných")
-#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL                 "SMAZAT" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL                "Kopíruji model.."
 #define TR_MOVINGMODEL                 "Přesouvám model."
@@ -543,6 +542,7 @@
 #define TR_FLMODE                      "Režim"
 #define TR_MIXWARNING                  "Varování"
 #define TR_OFF                         "VYP"
+#define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX                      TR("Mat.operace", "Operace")
 #define TR_DELAYDOWN                   TR3("Zpoždění Vyp", "Zdržet(x)", "Zpoždění Vyp")
 #define TR_DELAYUP                     TR3("Zpoždění Zap", "Zdržet(\43)", "Zpoždění Zap")
