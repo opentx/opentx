@@ -34,31 +34,59 @@
 
 constexpr uint8_t COLUMN2_X = 10 * FW;
 
-#if defined(PXX2)
-void drawPXX2Version(coord_t x, coord_t y, PXX2Version version)
-{
-  if (version.major == 0xFF && version.minor == 0x0F && version.revision == 0x0F) {
-    lcdDrawText(x, y, "---");
-  }
-  else {
-    lcdDrawNumber(x, y, 1 + version.major, LEFT);
-    lcdDrawChar(lcdNextPos, y, '.');
-    lcdDrawNumber(lcdNextPos, y, version.minor, LEFT);
-    lcdDrawChar(lcdNextPos, y, '.');
-    lcdDrawNumber(lcdNextPos, y, version.revision, LEFT);
-  }
-}
-
-void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Version swVersion)
-{
-  drawPXX2Version(x, y, hwVersion);
-  lcdDrawText(lcdNextPos, y, "/");
-  drawPXX2Version(lcdNextPos, y, swVersion);
-}
+enum menuRadioFirmwareOptionsItems {
+#if defined(CROSSFIRE)
+  ITEM_FW_OPT_CROSSFIRE,
+#endif
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+  ITEM_FW_OPT_MODULE_D16_EU_ONLY_SUPPORT,
+#endif
+#if defined(FAI)
+  ITEM_FW_OPT_FAI,
+#endif
+#if defined(FAI_CHOICE)
+  ITEM_FW_OPT_FAI_CHOICE,
+#endif
+#if defined(R9M_PROTO_FLEX)
+  ITEM_FW_OPT_R9M_PROTO_FLEX,
+#endif
+#if !defined(GVARS)
+  ITEM_FW_OPT_NO_GVARS,
+#endif
+#if !defined(HELI)
+  ITEM_FW_OPT_NO_HELI,
+#endif
+#if defined(HORUS_STICKS)
+  ITEM_FW_OPT_HORUS_STICKS,
+#endif
+#if defined(INTERNAL_MODULE_PPM)
+  ITEM_FW_OPT_INTERNAL_MODULE_PPM,
+#endif
+#if defined(MULTIMODULE)
+  ITEM_FW_OPT_MULTIMODULE,
+#endif
+#if defined(LUA_MODEL_SCRIPTS)
+  ITEM_FW_OPT_LUA_MODEL_SCRIPTS,
+#endif
+#if defined(LUA_COMPILER)
+  ITEM_FW_OPT_LUA_COMPILER,
+#endif
+#if !defined(OVERRIDE_CHANNEL_FUNCTION)
+  ITEM_FW_OPT_NO_OVERRIDE_CHANNEL_FUNCTION,
+#endif
+#if defined(PPM_UNIT_US)
+  ITEM_FW_OPT_PPM_UNIT_US,
+#endif
+#if defined(SHUTDOWN_CONFIRMATION)
+  ITEM_FW_OPT_SHUTDOWN_CONFIRMATION,
+#endif
+// TODO : SQT5 font
+    ITEM_FW_OPT_SHUTDOWN_MAX
+};
 
 void menuRadioFirmwareOptions(event_t event)
 {
-  title(TR_MENU_FIRM_OPTIONS);
+  SIMPLE_SUBMENU(STR_MENU_FIRM_OPTIONS, ITEM_FW_OPT_SHUTDOWN_MAX-1);
 
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
   uint8_t lines = (y - (FH + 1)) / FH + menuVerticalOffset;
@@ -85,6 +113,114 @@ void menuRadioFirmwareOptions(event_t event)
         popMenu();
       break;
   }
+
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
+    uint8_t k = i + menuVerticalOffset;
+    uint8_t sub = menuVerticalPosition - HEADER_LINE;
+    LcdFlags blink = ((s_editMode > 0) ? BLINK | INVERS : INVERS);
+    LcdFlags attr = (sub == k ? blink : 0);
+
+    switch(k) {
+#if defined(CROSSFIRE)
+      case ITEM_FW_OPT_CROSSFIRE:
+        lcdDrawText(INDENT_WIDTH, y, "crossfire", attr);
+        break;
+#endif
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+      case ITEM_FW_OPT_MODULE_D16_EU_ONLY_SUPPORT:
+        lcdDrawText(INDENT_WIDTH, y, "eu", attr);
+        break;
+#endif
+#if defined(FAI)
+      case ITEM_FW_OPT_FAI:
+        lcdDrawText(INDENT_WIDTH, y, "faimode", attr);
+        break;
+#endif
+#if defined(FAI_CHOICE)
+      case ITEM_FW_OPT_FAI_CHOICE:
+        lcdDrawText(INDENT_WIDTH, y, "faichoice", attr);
+        break;
+#endif
+#if defined(R9M_PROTO_FLEX)
+      case ITEM_FW_OPT_R9M_PROTO_FLEX:
+        lcdDrawText(INDENT_WIDTH, y, "flexr9m", attr);
+        break;
+#endif
+#if !defined(GVARS)
+      case ITEM_FW_OPT_NO_GVARS:
+        lcdDrawText(INDENT_WIDTH, y, "nogvars", attr);
+        break;
+#endif
+#if !defined(HELI)
+      case ITEM_FW_OPT_NO_HELI:
+        lcdDrawText(INDENT_WIDTH, y, "noheli", attr);
+        break;
+#endif
+#if defined(HORUS_STICKS)
+      case ITEM_FW_OPT_HORUS_STICKS:
+        lcdDrawText(INDENT_WIDTH, y, "horussticks", attr);
+        break;
+#endif
+#if defined(INTERNAL_MODULE_PPM)
+      case ITEM_FW_OPT_INTERNAL_MODULE_PPM:
+        lcdDrawText(INDENT_WIDTH, y, "internalppm", attr);
+        break;
+#endif
+#if defined(MULTIMODULE)
+      case ITEM_FW_OPT_MULTIMODULE:
+        lcdDrawText(INDENT_WIDTH, y, "multimodule", attr);
+        break;
+#endif
+#if defined(LUA_MODEL_SCRIPTS)
+      case ITEM_FW_OPT_LUA_MODEL_SCRIPTS:
+        lcdDrawText(INDENT_WIDTH, y, "lua", attr);
+        break;
+#endif
+#if defined(LUA_COMPILER)
+      case ITEM_FW_OPT_LUA_COMPILER:
+        lcdDrawText(INDENT_WIDTH, y, "luac", attr);
+        break;
+#endif
+#if !defined(OVERRIDE_CHANNEL_FUNCTION)
+      case ITEM_FW_OPT_NO_OVERRIDE_CHANNEL_FUNCTION:
+        lcdDrawText(INDENT_WIDTH, y, "nooverridech", attr);
+        break;
+#endif
+#if defined(PPM_UNIT_US)
+      case ITEM_FW_OPT_PPM_UNIT_US:
+        lcdDrawText(INDENT_WIDTH, y, "ppmus", attr);
+        break;
+#endif
+#if defined(SHUTDOWN_CONFIRMATION)
+      case ITEM_FW_OPT_SHUTDOWN_CONFIRMATION:
+        lcdDrawText(INDENT_WIDTH, y, "shutdownconfirm", attr);
+        break;
+#endif
+    }
+  }
+}
+
+#if defined(PXX2)
+void drawPXX2Version(coord_t x, coord_t y, PXX2Version version)
+{
+  if (version.major == 0xFF && version.minor == 0x0F && version.revision == 0x0F) {
+    lcdDrawText(x, y, "---");
+  }
+  else {
+    lcdDrawNumber(x, y, 1 + version.major, LEFT);
+    lcdDrawChar(lcdNextPos, y, '.');
+    lcdDrawNumber(lcdNextPos, y, version.minor, LEFT);
+    lcdDrawChar(lcdNextPos, y, '.');
+    lcdDrawNumber(lcdNextPos, y, version.revision, LEFT);
+  }
+}
+
+void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Version swVersion)
+{
+  drawPXX2Version(x, y, hwVersion);
+  lcdDrawText(lcdNextPos, y, "/");
+  drawPXX2Version(lcdNextPos, y, swVersion);
 }
 
 void menuRadioModulesVersion(event_t event)
