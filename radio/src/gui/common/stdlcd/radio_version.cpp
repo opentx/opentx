@@ -35,6 +35,9 @@
 constexpr uint8_t COLUMN2_X = 10 * FW;
 
 enum menuRadioFirmwareOptionsItems {
+#if defined(AUTOUPDATE)
+  ITEM_FW_OPT_AUTOUPDATE,
+#endif
 #if defined(CROSSFIRE)
   ITEM_FW_OPT_CROSSFIRE,
 #endif
@@ -52,6 +55,9 @@ enum menuRadioFirmwareOptionsItems {
 #endif
 #if !defined(GVARS)
   ITEM_FW_OPT_NO_GVARS,
+#endif
+#if defined(HAPTIC) && defined(PCBX9D)
+  ITEM_FW_OPT_HAPTIC,
 #endif
 #if !defined(HELI)
   ITEM_FW_OPT_NO_HELI,
@@ -76,6 +82,9 @@ enum menuRadioFirmwareOptionsItems {
 #endif
 #if defined(PPM_UNIT_US)
   ITEM_FW_OPT_PPM_UNIT_US,
+#endif
+#if defined(NO_RAS)
+  ITEM_FW_OPT_NO_RAS,
 #endif
 #if defined(SHUTDOWN_CONFIRMATION)
   ITEM_FW_OPT_SHUTDOWN_CONFIRMATION,
@@ -120,6 +129,11 @@ void menuRadioFirmwareOptions(event_t event)
     LcdFlags attr = (menuVerticalPosition == k ? (s_editMode > 0 ? BLINK | INVERS : INVERS) : 0);
 
     switch(k) {
+#if defined(AUTOUPDATE)
+      case ITEM_FW_OPT_AUTOUPDATE:
+        lcdDrawText(INDENT_WIDTH, y, "autoupdate", attr);
+        break;
+#endif
 #if defined(CROSSFIRE)
       case ITEM_FW_OPT_CROSSFIRE:
         lcdDrawText(INDENT_WIDTH, y, "crossfire", attr);
@@ -148,6 +162,11 @@ void menuRadioFirmwareOptions(event_t event)
 #if !defined(GVARS)
       case ITEM_FW_OPT_NO_GVARS:
         lcdDrawText(INDENT_WIDTH, y, "nogvars", attr);
+        break;
+#endif
+#if defined(HAPTIC) && defined(PCBX9D)
+      case ITEM_FW_OPT_HAPTIC:
+        lcdDrawText(INDENT_WIDTH, y, "haptic", attr);
         break;
 #endif
 #if !defined(HELI)
@@ -190,6 +209,12 @@ void menuRadioFirmwareOptions(event_t event)
         lcdDrawText(INDENT_WIDTH, y, "ppmus", attr);
         break;
 #endif
+#if defined(NO_RAS)
+      case ITEM_FW_OPT_NO_RAS:
+        lcdDrawText(INDENT_WIDTH, y, "noras", attr);
+        break;
+#endif
+
 #if defined(SHUTDOWN_CONFIRMATION)
       case ITEM_FW_OPT_SHUTDOWN_CONFIRMATION:
         lcdDrawText(INDENT_WIDTH, y, "shutdownconfirm", attr);
