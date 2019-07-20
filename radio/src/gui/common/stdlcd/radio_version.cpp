@@ -56,6 +56,37 @@ void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Versio
   drawPXX2Version(lcdNextPos, y, swVersion);
 }
 
+void menuRadioFirmwareOptions(event_t event)
+{
+  title(TR_MENU_FIRM_OPTIONS);
+
+  coord_t y = (FH + 1) - menuVerticalOffset * FH;
+  uint8_t lines = (y - (FH + 1)) / FH + menuVerticalOffset;
+
+  switch(event) {
+    case EVT_KEY_PREVIOUS_LINE:
+      if (lines > NUM_BODY_LINES) {
+        if (menuVerticalOffset-- == 0)
+          menuVerticalOffset = lines - 1;
+      }
+      break;
+
+    case EVT_KEY_NEXT_LINE:
+      if (lines > NUM_BODY_LINES) {
+        if (++menuVerticalOffset + NUM_BODY_LINES > lines)
+          menuVerticalOffset = 0;
+      }
+      break;
+
+    case EVT_KEY_BREAK(KEY_EXIT):
+      if (menuVerticalOffset != 0)
+        menuVerticalOffset = 0;
+      else
+        popMenu();
+      break;
+  }
+}
+
 void menuRadioModulesVersion(event_t event)
 {
   if (menuEvent) {
@@ -191,26 +222,12 @@ void menuRadioModulesVersion(event_t event)
 enum MenuRadioVersionItems
 {
   ITEM_RADIO_VERSION_FIRST = HEADER_LINE - 1,
+  ITEM_RADIO_FIRMWARE_OPTIONS,
 #if defined(PXX2)
   ITEM_RADIO_MODULES_VERSION,
 #endif
-#if defined(EEPROM_RLC)
-  ITEM_RADIO_BACKUP_EEPROM,
-  ITEM_RADIO_FACTORY_RESET,
-#endif
   ITEM_RADIO_VERSION_COUNT
 };
-
-#if defined(EEPROM_RLC)
-void onFactoryResetConfirm(const char * result)
-{
-  if (result == STR_OK) {
-    showMessageBox(STR_STORAGE_FORMAT);
-    storageEraseAll(false);
-    NVIC_SystemReset();
-  }
-}
-#endif
 
 void menuRadioVersion(event_t event)
 {
@@ -228,31 +245,21 @@ void menuRadioVersion(event_t event)
     lcdDrawText(lcdNextPos, y, "---", SMLSIZE);
   y += FH - 1;
 #endif
-
   y += 2;
 
-#if defined(PXX2)
+  lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_FIRMWARE_OPTIONS), menuVerticalPosition == ITEM_RADIO_FIRMWARE_OPTIONS ? INVERS : 0);
+  y += FH;
+  if (menuVerticalPosition == ITEM_RADIO_FIRMWARE_OPTIONS && event == EVT_KEY_BREAK(KEY_ENTER)) {
+    s_editMode = EDIT_SELECT_FIELD;
+    pushMenu(menuRadioFirmwareOptions);
+  }
+
+  #if defined(PXX2)
   lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_MODULES_RX_VERSION), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
   y += FH;
   if (menuVerticalPosition == ITEM_RADIO_MODULES_VERSION && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
     pushMenu(menuRadioModulesVersion);
-  }
-#endif
-
-#if defined(EEPROM_RLC)
-  lcdDrawText(INDENT_WIDTH, y, BUTTON(STR_EEBACKUP), menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM ? INVERS : 0);
-  y += FH;
-  if (menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM && event == EVT_KEY_BREAK(KEY_ENTER)) {
-    s_editMode = EDIT_SELECT_FIELD;
-    eepromBackup();
-  }
-
-  lcdDrawText(INDENT_WIDTH, y, BUTTON(STR_FACTORYRESET), menuVerticalPosition == ITEM_RADIO_FACTORY_RESET ? INVERS : 0);
-  // y += FH;
-  if (menuVerticalPosition == ITEM_RADIO_FACTORY_RESET && event == EVT_KEY_BREAK(KEY_ENTER)) {
-    s_editMode = EDIT_SELECT_FIELD;
-    POPUP_CONFIRMATION(STR_CONFIRMRESET, onFactoryResetConfirm);
   }
 #endif
 }

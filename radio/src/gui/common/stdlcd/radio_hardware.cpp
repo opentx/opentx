@@ -176,6 +176,10 @@ enum {
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_RAS,
   ITEM_RADIO_HARDWARE_DEBUG,
+#if defined(EEPROM_RLC)
+  ITEM_RADIO_BACKUP_EEPROM,
+  ITEM_RADIO_FACTORY_RESET,
+#endif
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -263,6 +267,17 @@ enum {
   #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 5*FW)
 #endif
 
+#if defined(EEPROM_RLC)
+void onFactoryResetConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    showMessageBox(STR_STORAGE_FORMAT);
+    storageEraseAll(false);
+    NVIC_SystemReset();
+  }
+}
+#endif
+
 void menuRadioHardware(event_t event)
 {
   MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, HEADER_LINE + ITEM_RADIO_HARDWARE_MAX, {
@@ -294,7 +309,7 @@ void menuRadioHardware(event_t event)
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
- 
+
 #if defined(BLUETOOTH)
   if (g_eeGeneral.bluetoothMode != BLUETOOTH_OFF && !IS_BLUETOOTH_CHIP_PRESENT()) {
     g_eeGeneral.bluetoothMode = BLUETOOTH_OFF;
@@ -569,6 +584,22 @@ void menuRadioHardware(event_t event)
             pushMenu(menuRadioDiagAnalogs);
           else
             pushMenu(menuRadioDiagKeys);
+        }
+        break;
+
+      case ITEM_RADIO_BACKUP_EEPROM:
+        lcdDrawText(0, y, BUTTON(STR_EEBACKUP), attr);
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+          s_editMode = EDIT_SELECT_FIELD;
+          eepromBackup();
+        }
+        break;
+
+      case ITEM_RADIO_FACTORY_RESET:
+        lcdDrawText(0, y, BUTTON(STR_FACTORYRESET), attr);
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+          s_editMode = EDIT_SELECT_FIELD;
+          POPUP_CONFIRMATION(STR_CONFIRMRESET, onFactoryResetConfirm);
         }
         break;
     }
