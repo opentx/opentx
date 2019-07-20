@@ -85,7 +85,6 @@ void menuRadioModulesVersion(event_t event)
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
 
   for (uint8_t module=0; module<NUM_MODULES; module++) {
-
     // Label
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       if (module == INTERNAL_MODULE)
@@ -105,7 +104,7 @@ void menuRadioModulesVersion(event_t event)
           continue;
         }
         if (!isModulePXX2(INTERNAL_MODULE)) {
-          lcdDrawText(COLUMN2_X, y, TR("no info", "no information"));
+          lcdDrawText(COLUMN2_X, y, STR_NO_INFORMATION);
           y += FH;
           continue;
         }
@@ -117,7 +116,7 @@ void menuRadioModulesVersion(event_t event)
           continue;
         }
         if (!isModulePXX2(EXTERNAL_MODULE)) {
-          lcdDrawText(COLUMN2_X, y, "no information");
+          lcdDrawText(COLUMN2_X, y, STR_NO_INFORMATION);
           y += FH;
           continue;
         }

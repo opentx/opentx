@@ -501,7 +501,6 @@
 
 #define TR_MENUWHENDONE                CENTER "\006" TR_ENTER " QUAND PRET"
 #define TR_FREE                        "disp"
-#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL                 "SUPPRIMER" BREAKSPACE "MODELE"
 #define TR_COPYINGMODEL                "Copie..."
 #define TR_MOVINGMODEL                 "Déplacement..."
@@ -563,6 +562,7 @@
 #define TR_FLMODE                      TR("Phase", "Phases")
 #define TR_MIXWARNING                  "Alerte"
 #define TR_OFF                         "OFF"
+#define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX                      "Opération"
 #define TR_DELAYDOWN                   "Retard bas"
 #define TR_DELAYUP                     "Retard haut"

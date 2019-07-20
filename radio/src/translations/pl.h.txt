@@ -502,7 +502,6 @@
 
 #define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " > DALEJ"
 #define TR_FREE                "woln"
-#define TR_NO_INFO                     TR("no info", "no information")
 #define TR_DELETEMODEL         "SKASUJ MODEL"
 #define TR_COPYINGMODEL        "Kopiuj model.."
 #define TR_MOVINGMODEL         "Przenieś model."
@@ -564,6 +563,7 @@
 #define TR_FLMODE              "Tryb"
 #define TR_MIXWARNING          "UWAGA"
 #define TR_OFF                 "Wył."
+#define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Złącz."
 #define TR_DELAYDOWN           "Opózn.(-)"
 #define TR_DELAYUP             "Opózn.(+)"
