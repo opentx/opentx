@@ -424,7 +424,7 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)
   if (moduleIndex == INTERNAL_MODULE)
-    return isSportLineUsedByInternalModule();
+    return isModuleISRM(moduleIndex) || isSportLineUsedByInternalModule();
 
   if (isSportLineUsedByInternalModule())
     return false;
