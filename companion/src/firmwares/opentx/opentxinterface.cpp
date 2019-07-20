@@ -1238,7 +1238,6 @@ void registerOpenTxFirmwares()
   /* FrSky X-Lite S/PRO board */
   firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
-  firmware->addOption("internalpxx1", Firmware::tr("Support for PXX1 internal module replacement"));
   firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
