@@ -813,7 +813,7 @@
   #define ADC_GPIOC_PINS                (GPIO_Pin_0 | GPIO_Pin_1)
   #define ADC_CHANNEL_POT1              ADC_Channel_11 // ADC1_IN11
   #define ADC_CHANNEL_BATT              ADC_Channel_10 // ADC1_IN10
-  #define ADC_VREF_PREC2                330
+  #define ADC_VREF_PREC2                300
 #else
   #define HARDWARE_POT1
   #define HARDWARE_POT2

@@ -384,7 +384,7 @@
 #define LEN_VSRCRAW            "\004"
 
 
-#define TR_STICKS_VSRCRAW      TR("Rod\0""Hjd\0""Gas\0""Ske\0", "\307Rod""\307Hjd""\307Gas""\307Ske")
+#define TR_STICKS_VSRCRAW      "\307Rod""\307Hjd""\307Gas""\307Ske"
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW     "\313Rod""\313Hjd""\313Gas""\313Ske""\313T5\0""\313T6\0"
