@@ -248,12 +248,12 @@ void adcRead()
 #if defined(PCBX10)
 uint16_t getRTCBatteryVoltage()
 {
-  return rtcBatteryVoltage * 330 / 2048;
+  return (rtcBatteryVoltage * ADC_VREF_PREC2) / 2048;
 }
 #else
 uint16_t getRTCBatteryVoltage()
 {
-  return (uint16_t )(12100 * 2048 / anaIn(TX_INTREF) * anaIn(TX_RTC_VOLTAGE) / 204800 * 2);
+  return (getAnalogValue(TX_RTC_VOLTAGE) * ADC_VREF_PREC2) / 2048;
 }
 #endif
 

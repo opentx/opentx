@@ -233,6 +233,7 @@
   #define ADC_DMA                       DMA2
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SAMPTIME                  3
+  #define ADC_VREF_PREC2                300
 #elif defined(PCBX10)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            (RCC_APB1Periph_TIM5)
@@ -277,6 +278,7 @@
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
+  #define ADC_VREF_PREC2                250
 #endif
 
 // Power
