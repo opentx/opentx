@@ -62,7 +62,7 @@ void menuModelReceiverOptions(event_t event)
   auto outputsCount = min<uint8_t>(16, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
 
   if (event == EVT_ENTRY) {
-    memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
+    // reusableBuffer.hardwareSettings should have been cleared before calling this menu
 #if defined(SIMU)
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_OK;
     reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
@@ -123,7 +123,7 @@ void menuModelReceiverOptions(event_t event)
 
   int8_t sub = menuVerticalPosition;
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
-  drawReceiverName(FW * 13, 0, g_moduleIdx, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
+  drawReceiverName(lcdNextPos + FW, 0, g_moduleIdx, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
