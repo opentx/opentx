@@ -550,8 +550,6 @@ uint16_t anaIn(uint8_t chan)
     return 1500;
 #endif
 #if defined(PCBTARANIS)
-  else if (chan == TX_INTREF)
-    return 826; // 3V VDD
   else if (chan == TX_RTC_VOLTAGE)
     return 800; // 2.34V
 #endif

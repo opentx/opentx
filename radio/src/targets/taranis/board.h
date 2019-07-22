@@ -469,7 +469,6 @@ enum Analogs {
   SLIDER2,
 #endif
   TX_VOLTAGE,
-  TX_INTREF,
   TX_RTC_VOLTAGE,
   NUM_ANALOGS
 };
