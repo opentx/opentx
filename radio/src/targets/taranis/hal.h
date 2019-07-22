@@ -725,9 +725,11 @@
     #define ADC_GPIO_PIN_POT3           GPIO_Pin_1  // PB.01
     #define ADC_GPIOB_PINS              (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT3)
     #define ADC_CHANNEL_POT3            ADC_Channel_9
+    #define ADC_VREF_PREC2              330
   #else
     #define ADC_GPIOB_PINS              (ADC_GPIO_PIN_POT2)
     #define ADC_CHANNEL_POT3            0
+    #define ADC_VREF_PREC2              300
   #endif
   #define ADC_GPIO_PIN_SLIDER1          GPIO_Pin_4  // PC.04
   #define ADC_GPIO_PIN_SLIDER2          GPIO_Pin_5  // PC.05
@@ -739,7 +741,6 @@
   #define ADC_CHANNEL_SLIDER1           ADC_Channel_14
   #define ADC_CHANNEL_SLIDER2           ADC_Channel_15
   #define ADC_CHANNEL_BATT              ADC_Channel_10
-  #define ADC_VREF_PREC2                330
 #elif defined(PCBXLITE)
   #define HARDWARE_POT1
   #define HARDWARE_POT2
