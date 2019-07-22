@@ -385,7 +385,7 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
-#define TR_STICKS_VSRCRAW      TR("Sei\0""Höh\0""Gas\0""Que\0", "\307Sei""\307Höh""\307Gas""\307Que")
+#define TR_STICKS_VSRCRAW      "\307Sei""\307Höh""\307Gas""\307Que"
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW     "\313Sei""\313Höh""\313Gas""\313Que""\313T5\0""\313T6\0"
@@ -854,7 +854,7 @@
 #define TR_HARDWARE            TR("Hardware einst. ", "Namen und Hardware einst.")
 #define TR_FORMATTING          "Formatierung..."
 #define TR_TEMP_CALIB          "Temp.  abgl."
-#define TR_TIME                "Uhrzeit:"
+#define TR_TIME                "Uhrzeit"
 #define TR_MAXBAUDRATE         "Max Baud"
 
 #define TR_BLUETOOTH            "Bluetooth"
@@ -881,7 +881,7 @@
 #define TR_GLOBAL_VAR          "Globale Variable"
 #define TR_MENUGLOBALVARS      "GLOBALE VARIABLEN"
 #define TR_OWN                 "Eigen"
-#define TR_DATE                "Datum:"
+#define TR_DATE                "Datum"
 #define TR_MONTHS              { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" }
 #define TR_ROTARY_ENCODER      "Drehgeber"
 #define TR_CHANNELS_MONITOR    "Kanal-Monitor==>"
