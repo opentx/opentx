@@ -169,8 +169,12 @@ void menuModelModuleOptions(event_t event)
             lcdDrawText(lcdNextPos, y, ")");
             if (attr) {
               reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
-              if (checkIncDec_Ret)
-                reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_DIRTY | MODULE_SETTINGS_REBIND;
+              if (checkIncDec_Ret) {
+                reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_DIRTY;
+                if (reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant == PXX2_VARIANT_EU) {
+                  reusableBuffer.hardwareAndSettings.moduleSettings.dirty |= MODULE_SETTINGS_REBIND;
+                }
+              }
               if (s_editMode == 0 && (reusableBuffer.hardwareAndSettings.moduleSettings.dirty & MODULE_SETTINGS_REBIND)) {
                 reusableBuffer.hardwareAndSettings.moduleSettings.dirty &= ~MODULE_SETTINGS_REBIND;
                 POPUP_WARNING(STR_REBIND);
