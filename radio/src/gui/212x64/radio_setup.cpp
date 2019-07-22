@@ -78,6 +78,9 @@ enum MenuRadioSetupItems {
   CASE_PCBX9E_PCBX9DP(ITEM_RADIO_SETUP_BACKLIGHT_COLOR)
   ITEM_RADIO_SETUP_FLASH_BEEP,
   CASE_SPLASH_PARAM(ITEM_RADIO_SETUP_DISABLE_SPLASH)
+#if defined(PXX2)
+  ITEM_RADIO_SETUP_OWNER_ID,
+#endif
   CASE_GPS(ITEM_RADIO_SETUP_LABEL_GPS)
   CASE_GPS(ITEM_RADIO_SETUP_TIMEZONE)
   CASE_GPS(ITEM_RADIO_SETUP_ADJUST_RTC)
@@ -116,7 +119,58 @@ void menuRadioSetup(event_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, ITEM_RADIO_SETUP_MAX, { 2, 2, 0, 1, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, 0, 0, 0, 0, LABEL(BACKLIGHT), 0, 0, 0, CASE_PCBX9E_PCBX9DP(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX1(0) 0, 0, IF_FAI_CHOICE(0) 0, 0, 0, LABEL(TX_MODE), 0, 1/*to force edit mode*/ });
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, ITEM_RADIO_SETUP_MAX, {
+    2, // date
+    2, // time
+    0, // battery calibration
+    1, // battery range
+    LABEL(SOUND),
+      0, // beep mode
+      0, // general volume
+      0, // beep volume
+      0, // beep length
+      0, // speaker piutch
+      0, // wav volume
+      0, // background volume
+    CASE_VARIO(LABEL(VARIO))
+      CASE_VARIO(0)
+      CASE_VARIO(0)
+      CASE_VARIO(0)
+      CASE_VARIO(0)
+    CASE_HAPTIC(LABEL(HAPTIC))
+      CASE_HAPTIC(0) // haptic mode
+      CASE_HAPTIC(0) // haptic length
+      CASE_HAPTIC(0) // haptic strength
+    0, // contrast
+    LABEL(ALARMS),
+      0, // battery warning
+      0, // inactivity warning
+      0, // memory warning
+      0, // alarm warning
+      0, // RSSI power off alarm
+    LABEL(BACKLIGHT),
+      0, // backlight mode
+      0, // backlight delay
+      0, // brightness
+      CASE_PCBX9E_PCBX9DP(0) // backlight color
+      0, // flash beep
+    CASE_SPLASH_PARAM(0) // disable splash
+    CASE_PXX2(0)
+    CASE_GPS(LABEL(GPS))
+      CASE_GPS(0) // timezone
+      CASE_GPS(0) // adjust RTC
+      CASE_GPS(0) // GPS format
+      CASE_PXX1(0) // country code
+    0, // language
+    0, // imperial
+    IF_FAI_CHOICE(0)
+    0, // switches delay
+    0, // USB mode
+    0, // RX channels order
+    LABEL(TX_MODE),
+      0, // sticks mode
+      1 /*to force edit mode*/
+  });
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -366,6 +420,12 @@ void menuRadioSetup(event_t event)
       case ITEM_RADIO_SETUP_FLASH_BEEP:
         g_eeGeneral.alarmsFlash = editCheckBox(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
         break;
+
+#if defined(PXX2)
+      case ITEM_RADIO_SETUP_OWNER_ID:
+        editSingleName(RADIO_SETUP_2ND_COLUMN, y, STR_OWNER_ID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);
+        break;
+#endif
 
       case ITEM_RADIO_SETUP_BACKLIGHT_DELAY:
         lcdDrawTextAlignedLeft(y, STR_BLDELAY);
