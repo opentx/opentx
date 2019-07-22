@@ -51,7 +51,7 @@
   #define NUM_ANALOGS_ADC              (STICKS_PWM_ENABLED() ? (NUM_ANALOGS - NUM_PWMSTICKS) : NUM_ANALOGS)
 #elif defined(PCBX9E)
   #define FIRST_ANALOG_ADC             0
-  #define NUM_ANALOGS_ADC              12
+  #define NUM_ANALOGS_ADC              11
   #define NUM_ANALOGS_ADC_EXT          (NUM_ANALOGS - NUM_ANALOGS_ADC)
 #else
   #define FIRST_ANALOG_ADC             0
