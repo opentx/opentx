@@ -660,6 +660,7 @@ inline void resumeMixerCalculations()
 }
 #endif
 
+void setDefaultOwnerId();
 void generalDefault();
 void modelDefault(uint8_t id);
 

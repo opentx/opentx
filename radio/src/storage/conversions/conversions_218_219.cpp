@@ -315,11 +315,6 @@ void convertRadioData_218_to_219(RadioData & settings)
   settings.version = 219;
   settings.variant = EEPROM_VARIANT;
 
-#if defined(PCBX9DP) && PCBREV >= 2019
-  // force re-calibration
-  settings.chkSum = 0xFFFF;
-#endif
-
 #if defined(STM32)
   RadioData_v218 * oldSettingsAllocated = (RadioData_v218 *)malloc(sizeof(RadioData_v218));
   RadioData_v218 & oldSettings = *oldSettingsAllocated;
@@ -375,8 +370,13 @@ void convertRadioData_218_to_219(RadioData & settings)
   g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
 #endif
 
+#if defined(PCBX9DP) && PCBREV >= 2019
+  // force re-calibration
+  settings.chkSum = 0xFFFF;
+  setDefaultOwnerId();
+#endif
+
 #if defined(STM32)
   free(oldSettingsAllocated);
 #endif
-
 }
