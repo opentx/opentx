@@ -519,6 +519,11 @@ uint32_t readTrims()
     }
   }
 
+#if defined(PCBXLITE)
+  if (IS_SHIFT_PRESSED())
+    result = ((result & 0x03) << 6) | ((result & 0x0c) << 2);
+#endif
+
   return result;
 }
 
