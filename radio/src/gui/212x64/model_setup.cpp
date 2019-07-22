@@ -1390,7 +1390,6 @@ void menuModelSetup(event_t event)
       }
       break;
 #endif
-
     }
   }
 
