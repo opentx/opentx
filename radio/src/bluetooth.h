@@ -57,7 +57,7 @@ class Bluetooth
 
     void forwardTelemetry(const uint8_t * packet);
     void wakeup();
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename);
 
     volatile uint8_t state;
     char localAddr[LEN_BLUETOOTH_ADDR+1];

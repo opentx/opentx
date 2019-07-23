@@ -754,7 +754,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   }
 }
 
-void Bluetooth::flashFirmware(const char * filename)
+const char * Bluetooth::flashFirmware(const char * filename)
 {
   drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
@@ -791,4 +791,6 @@ void Bluetooth::flashFirmware(const char * filename)
 
   state = BLUETOOTH_STATE_OFF;
   resumePulses();
+
+  return result;
 }
