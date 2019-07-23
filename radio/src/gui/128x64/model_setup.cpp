@@ -1207,7 +1207,6 @@ void menuModelSetup(event_t event)
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
         if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && reusableBuffer.moduleSetup.bindInformation.step < 0) {
-          lcdDrawNumber(lcdNextPos, y, reusableBuffer.moduleSetup.bindInformation.step);
           if (reusableBuffer.moduleSetup.bindInformation.step == BIND_MODULE_TX_INFORMATION_REQUEST && moduleInformation.information.modelID) {
             // For R9M ACCESS the module information has been requested to know if we are in EU mode. We just receive it here and continue
             if (moduleInformation.information.variant == PXX2_VARIANT_EU) {
