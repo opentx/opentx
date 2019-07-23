@@ -103,6 +103,12 @@ void sportSendByte(uint8_t byte)
   USART_SendData(TELEMETRY_USART, byte);
 }
 
+void sportStopSendByteLoop()
+{
+  DMA_Cmd(TELEMETRY_DMA_Stream_TX, DISABLE);
+  DMA_DeInit(TELEMETRY_DMA_Stream_TX);
+}
+
 void sportSendByteLoop(uint8_t byte)
 {
   telemetryPortSetDirectionOutput();

@@ -642,6 +642,7 @@ void telemetryPortSetDirectionInput(void);
 void telemetryPortSetDirectionOutput(void);
 void sportSendByte(uint8_t byte);
 void sportSendByteLoop(uint8_t byte);
+void sportStopSendByteLoop();
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
 void telemetryClearFifo();

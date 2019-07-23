@@ -47,7 +47,7 @@ void Bluetooth::write(const uint8_t * data, uint8_t length)
   TRACE_NOCRLF("BT>");
   for (int i=0; i<length; i++) {
     TRACE_NOCRLF(" %02X", data[i]);
-    if (btTxFifo.isFull()) {
+    while (btTxFifo.isFull()) {
       if (!bluetoothIsWriting())
         bluetoothWriteWakeup();
       RTOS_WAIT_MS(1);
@@ -491,13 +491,13 @@ uint8_t Bluetooth::bootloaderChecksum(uint8_t command, const uint8_t * data, uin
   return sum;
 }
 
-uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint8_t timeout)
+uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint32_t timeout)
 {
   watchdogSuspend(timeout / 10);
 
   uint8_t len = 0;
   while (len < size) {
-    uint8_t elapsed = 0;
+    uint32_t elapsed = 0;
     uint8_t byte;
     while (!btRxFifo.pop(byte)) {
       if (elapsed++ >= timeout) {
@@ -513,7 +513,7 @@ uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint8_t timeout)
 #define BLUETOOTH_ACK   0xCC
 #define BLUETOOTH_NACK  0x33
 
-const char * Bluetooth::bootloaderWaitCommandResponse(uint8_t timeout)
+const char * Bluetooth::bootloaderWaitCommandResponse(uint32_t timeout)
 {
   uint8_t response[2];
   if (read(response, sizeof(response), timeout) != sizeof(response)) {
