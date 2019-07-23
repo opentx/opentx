@@ -90,12 +90,12 @@ enum menuRadioFirmwareOptionsItems {
   ITEM_FW_OPT_SHUTDOWN_CONFIRMATION,
 #endif
 // TODO : SQT5 font
-    ITEM_FW_OPT_SHUTDOWN_MAX
+    ITEM_FW_OPT_MAX
 };
 
 void menuRadioFirmwareOptions(event_t event)
 {
-  SIMPLE_SUBMENU(STR_MENU_FIRM_OPTIONS, ITEM_FW_OPT_SHUTDOWN_MAX);
+  SIMPLE_SUBMENU(STR_MENU_FIRM_OPTIONS, ITEM_FW_OPT_MAX);
 
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
   uint8_t lines = (y - (FH + 1)) / FH + menuVerticalOffset;
