@@ -1806,6 +1806,7 @@ void opentxInit()
     sdInit();
 
 #if defined(AUTOUPDATE)
+    sportStopSendByteLoop();
     if (f_stat(AUTOUPDATE_FILENAME, nullptr) == FR_OK) {
       FrSkyFirmwareInformation information;
       if (readFirmwareInformation(AUTOUPDATE_FILENAME, information) == nullptr) {
