@@ -63,7 +63,7 @@ bool menuRadioVersion(event_t event)
     coord_t width = getTextWidth(option);
 
     if((lcdNextPos + 5 + width) > LCD_W) {
-      lcdDrawText(lcdNextPos, y, ", ");
+      lcdDrawText(lcdNextPos, y, ",");
       lcdNextPos = MENUS_MARGIN_LEFT;
       y += FH;
     }
@@ -71,6 +71,6 @@ bool menuRadioVersion(event_t event)
       lcdDrawText(lcdNextPos, y, ", ");
     lcdDrawText(lcdNextPos, y, option);
   }
-  
+
   return true;
 }

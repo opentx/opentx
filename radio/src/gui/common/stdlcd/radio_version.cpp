@@ -46,7 +46,7 @@ void menuRadioFirmwareOptions(event_t event)
     coord_t width = getTextWidth(option);
 
     if((lcdNextPos + 5 + width) > LCD_W) {
-      lcdDrawText(lcdNextPos, y, ", ");
+      lcdDrawText(lcdNextPos, y, ",");
       lcdNextPos = INDENT_WIDTH;
       y += FH;
     }
