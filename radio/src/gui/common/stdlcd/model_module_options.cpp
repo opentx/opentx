@@ -43,6 +43,12 @@ void onTxOptionsUpdateConfirm(const char * result)
   }
 }
 
+bool isTelemetryAvailable()
+{
+  return reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant != PXX2_VARIANT_EU ||
+         reusableBuffer.hardwareAndSettings.moduleSettings.txPower <= 14;
+}
+
 enum {
   ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA,
   ITEM_MODULE_SETTINGS_POWER,
@@ -96,7 +102,7 @@ void menuModelModuleOptions(event_t event)
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
     !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
-    IF_MODULE_OPTIONS(MODULE_OPTION_POWER, reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 ? READONLY_ROW : HIDDEN_ROW)
+    IF_MODULE_OPTIONS(MODULE_OPTION_POWER, isTelemetryAvailable() ? HIDDEN_ROW : READONLY_ROW)
   });
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
@@ -168,10 +174,11 @@ void menuModelModuleOptions(event_t event)
             drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
             lcdDrawText(lcdNextPos, y, ")");
             if (attr) {
+              bool previousTelemetry = isTelemetryAvailable();
               reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
               if (checkIncDec_Ret) {
                 reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_DIRTY;
-                if (reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant == PXX2_VARIANT_EU) {
+                if (previousTelemetry != isTelemetryAvailable()) {
                   reusableBuffer.hardwareAndSettings.moduleSettings.dirty |= MODULE_SETTINGS_REBIND;
                 }
               }
