@@ -164,7 +164,7 @@ static const char * const PXX2ReceiversNames[] = {
   "R9-STAB",
   "R9-MINI-OTA", // this one has OTA (different bootloader)
   "R9-MM-OTA", // this one has OTA (different bootloader)
-  "R9-SLIM-OTA", // this one has OTA (different bootloader)
+  "R9-SLIM+-OTA", // this one has OTA (different bootloader)
 };
 
 inline const char * getPXX2ReceiverName(uint8_t modelId)
