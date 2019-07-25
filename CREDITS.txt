@@ -1529,3 +1529,5 @@ Paul Vernon
 Rick Smith
 Marcin Galczynski
 Tom Knudtson
+Sascha Heinrich
+James Snodgrass
