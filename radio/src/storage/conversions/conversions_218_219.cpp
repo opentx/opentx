@@ -318,9 +318,8 @@ void convertRadioData_218_to_219(RadioData & settings)
 #if defined(STM32)
   RadioData_v218 * oldSettingsAllocated = (RadioData_v218 *)malloc(sizeof(RadioData_v218));
   RadioData_v218 & oldSettings = *oldSettingsAllocated;
-#endif
-
   memcpy(&oldSettings, &settings, sizeof(RadioData_v218));
+#endif
 
 #if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7)
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
