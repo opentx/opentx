@@ -39,20 +39,27 @@ constexpr uint8_t COLUMN2_X = 10 * FW;
 void menuRadioFirmwareOptions(event_t event)
 {
   title(STR_MENU_FIRM_OPTIONS);
+
   coord_t y = MENU_HEADER_HEIGHT + 1;
   lcdNextPos = INDENT_WIDTH;
+
   for (uint8_t i=0; options[i]; i++) {
     const char * option = options[i];
-    coord_t width = getTextWidth(option);
 
-    if((lcdNextPos + 5 + width) > LCD_W) {
-      lcdDrawText(lcdNextPos, y, ",");
+    if (i > 0) {
+      lcdDrawText(lcdNextPos, y, ", ");
+    }
+
+    if (lcdNextPos + getTextWidth(option) + 5 > LCD_W) {
       lcdNextPos = INDENT_WIDTH;
       y += FH;
     }
-    if (i > 0 && lcdNextPos !=INDENT_WIDTH)
-      lcdDrawText(lcdNextPos, y, ", ");
+
     lcdDrawText(lcdNextPos, y, option);
+  }
+
+  if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+    popMenu();
   }
 }
 
@@ -185,6 +192,7 @@ void menuRadioModulesVersion(event_t event)
   if (lines > NUM_BODY_LINES) {
     drawVerticalScrollbar(LCD_W-1, FH, LCD_H-FH, menuVerticalOffset, lines, NUM_BODY_LINES);
   }
+
   switch(event) {
     case EVT_KEY_PREVIOUS_LINE:
       if (lines > NUM_BODY_LINES) {
