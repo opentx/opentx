@@ -1016,6 +1016,9 @@ int cliDisplay(const char ** argv)
         case 2:
           tim = TIM2;
           break;
+        case 8:
+          tim = TIM8;
+          break;
         case 13:
           tim = TIM13;
           break;

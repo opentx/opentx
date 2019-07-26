@@ -44,15 +44,16 @@ void watchdogInit(unsigned int duration)
 #if defined(PWR_BUTTON_PRESS)
   #define PWR_PRESS_DURATION_MIN        100 // 1s
   #define PWR_PRESS_DURATION_MAX        500 // 5s
-#endif
 
-#if (defined(PCBX9E) && !defined(SIMU))
-const unsigned char bmp_startup[]  = {
-  #include "startup.lbm"
-};
-const unsigned char bmp_lock[]  = {
-  #include "lock.lbm"
-};
+  #if LCD_DEPTH > 1
+    const unsigned char bmp_startup[] = {
+      #include "startup.lbm"
+    };
+
+    const unsigned char bmp_lock[] = {
+      #include "lock.lbm"
+    };
+  #endif
 #endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)

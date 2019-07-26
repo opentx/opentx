@@ -660,6 +660,7 @@ inline void resumeMixerCalculations()
 }
 #endif
 
+void setDefaultOwnerId();
 void generalDefault();
 void modelDefault(uint8_t id);
 
@@ -1371,5 +1372,14 @@ inline bool isSimu()
 #if defined(DEBUG_LATENCY)
 extern uint8_t latencyToggleSwitch;
 #endif
+
+inline bool isAsteriskDisplayed()
+{
+#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
+  return true;
+#endif
+
+  return unexpectedShutdown;
+}
 
 #endif // _OPENTX_H_

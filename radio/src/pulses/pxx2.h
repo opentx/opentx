@@ -67,7 +67,9 @@ enum PXX2ModuleModelID {
   PXX2_MODULE_R9M,
   PXX2_MODULE_R9M_LITE,
   PXX2_MODULE_R9M_LITE_PRO,
-  PXX2_MODULE_ISRM_N
+  PXX2_MODULE_ISRM_N,
+  PXX2_MODULE_ISRM_S_X9,
+  PXX2_MODULE_ISRM_S_X10
 };
 
 static const char * const PXX2ModulesNames[] = {
@@ -79,7 +81,9 @@ static const char * const PXX2ModulesNames[] = {
   "R9M",
   "R9MLite",
   "R9MLite-PRO",
-  "ISRM-N"
+  "ISRM-N",
+  "ISRM-S-X9",
+  "ISRM-S-X10",
 };
 
 inline const char * getPXX2ModuleName(uint8_t modelId)
@@ -117,6 +121,8 @@ static const uint8_t PXX2ModuleOptions[] = {
   0b11110010, // R9MLite
   0b11110110, // R9MLite-PRO
   0b11110100, // ISRM-N
+  0b11110100, // ISRM-S-X9
+  0b11110100, // ISRM-S-X10
 };
 
 inline uint8_t getPXX2ModuleOptions(uint8_t modelId)

@@ -89,6 +89,7 @@ TEST(Conversions, ConversionX7From22)
 
   EXPECT_EQ(TELEMETRY_SCREEN_TYPE_VALUES, g_model.screensType & 0x03);
   EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.screens[0].lines[0].sources[0]);
+  EXPECT_EQ(MIXSRC_TIMER3, g_model.screens[0].lines[0].sources[1]);
 }
 #endif
 

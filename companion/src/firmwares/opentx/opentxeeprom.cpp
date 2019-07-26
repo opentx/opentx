@@ -18,12 +18,13 @@
  * GNU General Public License for more details.
  */
 
+#include <stdlib.h>
+#include <algorithm>
 #include "boards.h"
 #include "helpers.h"
 #include "opentxeeprom.h"
 #include "customdebug.h"
-#include <stdlib.h>
-#include <algorithm>
+#include "opentxinterface.h"
 
 using namespace Board;
 
@@ -31,8 +32,17 @@ using namespace Board;
 #define MAX_SLIDERS(board)                    (IS_HORUS_X10(board) ? 4 : (Boards::getCapability(board, Board::Sliders))) //TODO need to be remove when x10 eeprom gets fixed
 #define MAX_MOUSE_ANALOGS(board)              (IS_HORUS_X10(board) ? 2 : (Boards::getCapability(board, Board::MouseAnalogs))) //TODO need to be remove when x10 eeprom gets fixed
 #define MAX_GYRO_ANALOGS(board, version)      (version >= 219 ? Boards::getCapability(board, Board::GyroAnalogs) : 0)
-#define MAX_SWITCHES(board, version)          (version <= 218 && IS_TARANIS_X7(board) ? 6 : Boards::getCapability(board, Board::Switches))
-#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : 8)  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
+
+inline int MAX_SWITCHES(Board::Type board, int version)
+{
+  if (version <= 218 && IS_TARANIS_X7(board))
+    return 6;
+  if (version <= 218 && IS_TARANIS_X9D(board))
+    return 8;
+  return Boards::getCapability(board, Board::Switches);
+}
+
+#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : (version >= 219 ? 16 : 8))  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
 #define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9

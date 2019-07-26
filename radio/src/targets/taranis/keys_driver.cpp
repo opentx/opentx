@@ -141,7 +141,7 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 0: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
+      break
 #else
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
@@ -149,24 +149,25 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 2: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
-#endif
-  #define ADD_3POS_CASE(x, i) \
-    case SW_S ## x ## 0: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
-      break; \
-    case SW_S ## x ## 1: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 2: \
-      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
       break
+#endif
+
+#define ADD_3POS_CASE(x, i) \
+  case SW_S ## x ## 0: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break; \
+  case SW_S ## x ## 1: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    break; \
+  case SW_S ## x ## 2: \
+    xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break
 
 #if !defined(BOOT)
 uint32_t switchState(uint8_t index)
@@ -199,6 +200,10 @@ uint32_t switchState(uint8_t index)
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
+#endif
+
+#if defined(PCBX9DP) && PCBREV >= 2019
+    ADD_2POS_CASE(I);
 #endif
 
 #if defined(PCBX9E)

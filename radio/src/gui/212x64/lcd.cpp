@@ -632,13 +632,14 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
       lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx+1, att);
   }
   else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
-    idx = idx-MIXSRC_FIRST_SWITCH;
+    idx = idx - MIXSRC_FIRST_SWITCH;
     if (ZEXIST(g_eeGeneral.switchNames[idx])) {
       lcdDrawChar(x, y, '\312', att); //switch symbol
       lcdDrawSizedText(lcdNextPos, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
     }
-    else
-      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx+MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1, att);
+    else {
+      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1, att);
+    }
   }
   else if (idx < MIXSRC_SW1)
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);

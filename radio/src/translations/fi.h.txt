@@ -871,7 +871,7 @@
 #define TR_BLUETOOTH_INIT       "Init"
 #define TR_BLUETOOTH_DIST_ADDR  INDENT "Dist addr"
 #define TR_BLUETOOTH_LOCAL_ADDR INDENT "Local addr"
-#define TR_BLUETOOTH_PIN_CODE   TR(INDENT "PIN code", "PIN code")
+#define TR_BLUETOOTH_PIN_CODE   "PIN code"
 #define TR_BAUDRATE             "BT Baudrate"
 #define LEN_BLUETOOTH_MODES     "\011"
 #if defined(PCBX9E)
@@ -901,7 +901,7 @@
 #define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetooth module")
-#define TR_FLASH_POWER_MANAGEMENT_UNIT          TR("Flash pwr mngt unit", "Flash power management unit")
+#define TR_FLASH_POWER_MANAGEMENT_UNIT          "Flash pwr mngt unit"
 #define TR_CURRENT_VERSION             TR("Current vers. ", "Current version: ")
 #define TR_FLASH_INTERNAL_MODULE "Flash Internal Module"
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
@@ -919,7 +919,7 @@
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            INDENT "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
-#define TR_REG_ID                      TR("Reg. ID", "Registration ID")
+#define TR_REG_ID                      "Reg. ID"
 #define TR_OWNER_ID                    "Owner ID"
 #define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "Hold"

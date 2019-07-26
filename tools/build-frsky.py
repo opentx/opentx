@@ -33,6 +33,15 @@ options = {
         "CROSSFIRE": "NO",
         "SBUS": "NO",
         "DEFAULT_MODE": "2",
+    },
+    "X9D+": {
+        "PCBREV": "2019",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "AUTOUPDATE": "YES",
+        "PXX1": "YES",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
     }
 }
 

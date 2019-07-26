@@ -12,10 +12,11 @@ if(PCB STREQUAL X9E)
   set(CPU_TYPE STM32F4)
   set(CPU_TYPE_FULL STM32F407xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
+  add_definitions(-DSTM32F40_41xxx)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x9e)
   set(FLAVOUR x9e)
-  add_definitions(-DSTM32F40_41xxx -DPCBX9E -DPCBX9)
+  add_definitions(-DPCBX9E -DPCBX9)
   add_definitions(-DEEPROM_VARIANT=0x8000)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(FIRMWARE_TARGET_SRC
@@ -35,9 +36,6 @@ if(PCB STREQUAL X9E)
   set(GVAR_SCREEN model_gvars.cpp)
   set(STATUS_LEDS NO)
 elseif(PCB STREQUAL X9D+)
-  set(CPU_TYPE STM32F2)
-  set(CPU_TYPE_FULL STM32F205xE)  # for size report
-  set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x9d)
   set(FLAVOUR x9d+)
@@ -48,9 +46,30 @@ elseif(PCB STREQUAL X9D+)
   set(BITMAPS_TARGET taranis_bitmaps)
   set(FONTS_TARGET taranis_fonts)
   set(LCD_DRIVER lcd_driver_spi.cpp)
-  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
-  set(STATUS_LEDS NO)
+  set(PCBREV 2014 CACHE STRING "PCB Revision")
+  add_definitions(-DPCBREV=${PCBREV})
+  if (${PCBREV} STREQUAL 2019)
+    set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+    set(CPU_TYPE STM32F4)
+    set(CPU_TYPE_FULL STM32F407xE)  # for size report
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      startup_stm32f40_41xxx.s
+      )
+    set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
+    add_definitions(-DSTM32F40_41xxx)
+    add_definitions(-DSOFTWARE_VOLUME -DPWR_BUTTON_${PWR_BUTTON} -DHARDWARE_POWER_MANAGEMENT_UNIT)
+    set(STATUS_LEDS YES)
+    set(PXX2 ON)
+    set(PXX_FREQUENCY "HIGH")
+  else()
+    set(CPU_TYPE STM32F2)
+    set(CPU_TYPE_FULL STM32F205xE)  # for size report
+    set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+    set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+    set(STATUS_LEDS NO)
+  endif()
 elseif(PCB STREQUAL X9D)
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
@@ -169,7 +188,7 @@ if(PCB STREQUAL XLITES)
     )
 endif()
 
-if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019))
   add_definitions(-DINTERNAL_MODULE_SERIAL)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
@@ -185,14 +204,14 @@ elseif(NOT (PCB STREQUAL X7 AND PCBREV STREQUAL T12))
     )
 endif()
 
-if(PCB STREQUAL X9E OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
+if(PCB STREQUAL X9E OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019) OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/rotary_encoder_driver.cpp
     )
 endif()
 
-if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019))
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
     ${TARGET_SRC}

@@ -21,14 +21,14 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
-#if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE)
-#define BLUETOOTH_COMMAND_NAME         "AT+NAME"
-#define BLUETOOTH_ANSWER_NAME          "OK+"
-#define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"
-#else
+#if defined(PCBX9E)
 #define BLUETOOTH_COMMAND_NAME         "TTM:REN-"
 #define BLUETOOTH_ANSWER_NAME          "TTM:REN"
 #define BLUETOOTH_COMMAND_BAUD_115200  "TTM:BPS-115200"
+#else
+#define BLUETOOTH_COMMAND_NAME         "AT+NAME"
+#define BLUETOOTH_ANSWER_NAME          "OK+"
+#define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"
 #endif
 
 #if defined(_MSC_VER)

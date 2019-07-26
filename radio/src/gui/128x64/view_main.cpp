@@ -548,13 +548,9 @@ void menuMainView(event_t event)
   }
 
   // And ! in case of unexpected shutdown
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
-  lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
-#else
-  if (unexpectedShutdown) {
-    lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
+  if (isAsteriskDisplayed()) {
+    lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
   }
-#endif
 
 #if defined(GVARS)
   if (gvarDisplayTimer > 0) {

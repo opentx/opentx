@@ -498,16 +498,20 @@ PACK(struct ModelHeader {
 });
 
 #if defined(COLORLCD)
-typedef uint16_t swconfig_t;
+typedef uint32_t swconfig_t;
 typedef uint32_t swarnstate_t;
 #elif defined(PCBX9E)
 typedef uint64_t swconfig_t;
 typedef uint64_t swarnstate_t;
 typedef uint32_t swarnenable_t;
+#elif defined(PCBX9D) || defined(PCBX9DP)
+typedef uint32_t swconfig_t;
+typedef uint32_t swarnstate_t;
+typedef uint16_t swarnenable_t; // TODO remove it in 2.4
 #elif defined(PCBTARANIS)
 typedef uint16_t swconfig_t;
 typedef uint16_t swarnstate_t;
-typedef uint8_t swarnenable_t;
+typedef uint8_t swarnenable_t; // TODO remove it in 2.4
 #else
 typedef uint8_t swarnstate_t;
 typedef uint8_t swarnenable_t;
@@ -519,7 +523,7 @@ typedef uint8_t swarnenable_t;
 #else
   #define SWITCHES_WARNING_DATA \
     swarnstate_t  switchWarningState; \
-    swarnenable_t switchWarningEnable;
+    swarnenable_t switchWarningEnable; // TODO remove it in 2.4
 #endif
 
 #if defined(PCBHORUS)
@@ -663,7 +667,7 @@ PACK(struct TrainerData {
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
     NOBACKUP(uint8_t auxSerialMode); \
-    uint32_t switchConfig; \
+    swconfig_t switchConfig; \
     uint16_t potsConfig; /* two bits per pot */ \
     uint8_t slidersConfig; /* 1 bit per slider */ \
     NOBACKUP(char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]); \
@@ -673,7 +677,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #elif defined(PCBTARANIS)
-  #if defined(BLUETOOTH)
+  #if defined(STORAGE_BLUETOOTH)
     #define BLUETOOTH_FIELDS \
       uint8_t spare; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
@@ -919,8 +923,8 @@ static inline void check_struct()
   CHKSIZE(RadioData, 960);
   CHKSIZE(ModelData, 6614);
 #elif defined(PCBX9D) || defined(PCBX9DP)
-  CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6601);
+  CHKSIZE(RadioData, 898);
+  CHKSIZE(ModelData, 6604);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);

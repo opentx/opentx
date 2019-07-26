@@ -35,10 +35,16 @@ typedef ModelData ModelData_v219;
 int convertSource_218_to_219(int source)
 {
   // on X7: 2 additional switches
+  // on X9D / X9D+: 1 additional switch
 
 #if defined(PCBX7)
   if (source >= MIXSRC_SI)
     source += 2;
+#endif
+
+#if defined(PCBX9D) || defined(PCBX9DP)
+  if (source >= MIXSRC_SI)
+    source += 1;
 #endif
 
 #if defined(PCBHORUS)
@@ -52,8 +58,9 @@ int convertSource_218_to_219(int source)
 int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
+  // on X9D / X9D+: 1 additional switch
 
-#if defined(PCBX7) || defined(PCBHORUS)
+#if defined(PCBX7) || defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
 #endif
@@ -61,6 +68,11 @@ int convertSwitch_218_to_219(int swtch)
 #if defined(PCBX7)
   if (swtch >= SWSRC_SI0)
     swtch += 2 * 3;
+#endif
+
+#if defined(PCBX9D) || defined(PCBX9DP)
+  if (swtch >= SWSRC_SI0)
+    swtch += 3;
 #endif
 
 #if defined(PCBHORUS)
@@ -184,6 +196,15 @@ void convertModelData_218_to_219(ModelData &model)
       newModel.moduleData[i].type += 1;
     if (newModel.moduleData[i].type >= MODULE_TYPE_R9M_PXX2)
       newModel.moduleData[i].type += 4;
+    if (newModel.moduleData[i].type == MODULE_TYPE_XJT_PXX1) {
+      newModel.moduleData[i].subType = newModel.moduleData[i].rfProtocol;
+#if defined(PCBX9DP) && PCBREV >= 2019
+      if (i == INTERNAL_MODULE) {
+        newModel.moduleData[i].type = MODULE_TYPE_ISRM_PXX2;
+        newModel.moduleData[i].subType = MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16;
+      }
+#endif
+    }
   }
 
 #if defined(RADIO_T12)
@@ -250,21 +271,18 @@ void convertModelData_218_to_219(ModelData &model)
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
-#endif
-
-#if defined(PCBX7)
   for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
     uint8_t screenType = (newModel.screensType >> (2*i)) & 0x03;
     if (screenType == TELEMETRY_SCREEN_TYPE_VALUES) {
       for (int j = 0; j < 4; j++) {
         for (int k = 0; k < NUM_LINE_ITEMS; k++) {
-          newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(newModel.screens[i].lines[j].sources[k]);
+          newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(oldModel.frsky.screens[i].lines[j].sources[k]);
         }
       }
     }
     else if (screenType == TELEMETRY_SCREEN_TYPE_GAUGES) {
       for (int j = 0; j < 4; j++) {
-        newModel.screens[i].bars[j].source = convertSource_218_to_219(newModel.screens[i].bars[j].source);
+        newModel.screens[i].bars[j].source = convertSource_218_to_219(oldModel.frsky.screens[i].bars[j].source);
       }
     }
   }
@@ -280,30 +298,67 @@ void convertRadioData_218_to_219(RadioData & settings)
   settings.version = 219;
   settings.variant = EEPROM_VARIANT;
 
-#if defined(PCBHORUS)
-  RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
+#if defined(STM32)
+  RadioData_v218 * oldSettingsAllocated = (RadioData_v218 *)malloc(sizeof(RadioData_v218));
+  RadioData_v218 & oldSettings = *oldSettingsAllocated;
+  memcpy(&oldSettings, &settings, sizeof(RadioData_v218));
+#endif
 
-  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData, auxSerialMode) - offsetof(RadioData, chkSum));
-  memcpy(&settings.calib[NUM_STICKS + 5], &settings_v218.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7)
+  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
+    CustomFunctionData & cf = settings.customFn[i];
+    cf.swtch = convertSwitch_218_to_219(cf.swtch);
+  }
+#endif
+
+#if defined(PCBX9D) || defined(PCBX9DP)
+  // no bluetooth before PCBREV 2019
+  settings.auxSerialMode = oldSettings.auxSerialMode;
+  settings.slidersConfig = oldSettings.slidersConfig;
+  settings.potsConfig = oldSettings.potsConfig;
+  settings.backlightColor = oldSettings.backlightColor;
+  settings.switchUnlockStates = oldSettings.switchUnlockStates;
+  settings.switchConfig = oldSettings.switchConfig;
+#if defined(PCBX9DP) && PCBREV >= 2019
+  settings.switchConfig |= SWITCH_TOGGLE << 16;
+#endif
+  memcpy(&settings.switchNames[0], &oldSettings.switchNames[0], 8 * LEN_SWITCH_NAME);
+  memclear(&settings.switchNames[8], LEN_SWITCH_NAME);
+  memcpy(&settings.anaNames[0], &oldSettings.anaNames[0], (NUM_STICKS+NUM_POTS+NUM_SLIDERS) * LEN_ANA_NAME);
+#endif
+
+#if defined(PCBHORUS)
+  memcpy(&settings.chkSum, &oldSettings.chkSum, offsetof(RadioData, auxSerialMode) - offsetof(RadioData, chkSum));
+  memcpy(&settings.calib[NUM_STICKS + 5], &oldSettings.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
   memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
 
-  settings.auxSerialMode = settings_v218.auxSerialMode;
-  settings.switchConfig = settings_v218.switchConfig;
-  settings.potsConfig = settings_v218.potsConfig;
-  settings.slidersConfig = settings_v218.slidersConfig;
+  settings.auxSerialMode = oldSettings.auxSerialMode;
+  settings.switchConfig = oldSettings.switchConfig;
+  settings.potsConfig = oldSettings.potsConfig;
+  settings.slidersConfig = oldSettings.slidersConfig;
 
-  memcpy(&settings.switchNames[0], &settings_v218.switchNames[0], 8 * LEN_SWITCH_NAME);
+  memcpy(&settings.switchNames[0], &oldSettings.switchNames[0], 8 * LEN_SWITCH_NAME);
   memclear(&settings.switchNames[8], 2 * LEN_SWITCH_NAME);
 
-  memcpy(&settings.anaNames[0], &settings_v218.anaNames[0], (NUM_STICKS + 3) * LEN_ANA_NAME);
+  memcpy(&settings.anaNames[0], &oldSettings.anaNames[0], (NUM_STICKS + 3) * LEN_ANA_NAME);
   memclear(&settings.anaNames[NUM_STICKS + 3], 2 * LEN_SWITCH_NAME);
-  memcpy(&settings.anaNames[NUM_STICKS + 5], &settings_v218.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
+  memcpy(&settings.anaNames[NUM_STICKS + 5], &oldSettings.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
 
-  memcpy(&settings.currModelFilename[0], &settings_v218.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
+  memcpy(&settings.currModelFilename[0], &oldSettings.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
 #endif
 
 #if defined(RADIO_T12)
   g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, SWITCH_2POS, 10, 2);  // T12 comes with wrongly defined pot2
   g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
+#endif
+
+#if defined(PCBX9DP) && PCBREV >= 2019
+  // force re-calibration
+  settings.chkSum = 0xFFFF;
+  setDefaultOwnerId();
+#endif
+
+#if defined(STM32)
+  free(oldSettingsAllocated);
 #endif
 }

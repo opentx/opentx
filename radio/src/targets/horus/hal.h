@@ -591,7 +591,6 @@
 #endif
 
 // External Module
-#define EXTMODULE_PULSES
 #define EXTMODULE_PWR_GPIO              GPIOB
 #define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3  // PB.03
 #if defined(PCBX10) || PCBREV >= 13
@@ -679,6 +678,7 @@
 #define TIMER_2MHz_TIMER                TIM7
 
 // Bluetooth
+#define STORAGE_BLUETOOTH
 #define BT_RCC_APB2Periph               RCC_APB2Periph_USART6
 #define BT_USART                        USART6
 #define BT_GPIO_AF                      GPIO_AF_USART6

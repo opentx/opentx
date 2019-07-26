@@ -133,11 +133,12 @@ void extmoduleSendNextFrame();
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
-#if defined(PCBX9E)
-  #define TRAINER_CONNECTED()           (true)
-#elif defined(PCBX7) || defined(PCBX9LITE)
-  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
+
+#if defined(PCBX9D) || (defined(PCBX9DP) && PCBREV < 2019)
+  // Trainer detect is a switch on the jack
+  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #elif defined(PCBXLITES)
+  // Trainer is on the same connector than Headphones
   enum JackState
   {
     SPEAKER_ACTIVE,
@@ -147,10 +148,13 @@ void extmoduleSendNextFrame();
   extern uint8_t jackState;
   #define TRAINER_CONNECTED()           (jackState == TRAINER_ACTIVE)
 #elif defined(PCBXLITE)
-  #define TRAINER_CONNECTED()           false // there is no Trainer jack on Taranis X-Lite
+  // No Tainer jack on Taranis X-Lite
+  #define TRAINER_CONNECTED()           false
 #else
-  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
+  // Trainer detect catches PPM, detection would use more CPU
+  #define TRAINER_CONNECTED()           true
 #endif
+
 #if defined(TRAINER_GPIO)
   void init_trainer_ppm();
   void stop_trainer_ppm();
@@ -323,6 +327,11 @@ enum EnumSwitchesPositions
   SW_SH1,
   SW_SH2,
 #endif
+#if defined(PCBX9DP) && PCBREV >= 2019
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+#endif
 #if defined(PCBX7)
   SW_SI0,
   SW_SI1,
@@ -397,9 +406,15 @@ enum EnumSwitchesPositions
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
   #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
-#else
-  #define NUM_SWITCHES                  8
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define NUM_SWITCHES                  9
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 16) + (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+  #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
+#elif defined(PCBX9D) || defined(PCBX9DP)
+  #define NUM_SWITCHES                  8
+  #define STORAGE_NUM_SWITCHES          9
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
   #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
@@ -407,10 +422,10 @@ enum EnumSwitchesPositions
 
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
 
-void keysInit(void);
+void keysInit();
 uint32_t switchState(uint8_t index);
-uint32_t readKeys(void);
-uint32_t readTrims(void);
+uint32_t readKeys();
+uint32_t readTrims();
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 
@@ -483,8 +498,6 @@ enum Analogs {
   #define STORAGE_NUM_POTS              3
   #define STORAGE_NUM_SLIDERS           2
 #endif
-
-#define NUM_XPOTS                       NUM_POTS
 
 #define NUM_XPOTS                       NUM_POTS
 #define NUM_TRIMS                       4
@@ -575,6 +588,8 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATT_SCALE                    123
 #elif defined(PCBX9LITE)
   #define BATT_SCALE                    117
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define BATT_SCALE                    117
 #else
   #define BATT_SCALE                    150
 #endif
@@ -649,11 +664,11 @@ void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
-#if defined(PCBXLITE) || defined(PCBX9LITE)
-  #define HAS_SPORT_UPDATE_CONNECTOR()  true
-#elif defined(PCBX7)
+#if defined(PCBX7)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
+#elif defined(SPORT_UPDATE_PWR_GPIO)
+  #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #else
   #define HAS_SPORT_UPDATE_CONNECTOR()  false
 #endif
@@ -766,7 +781,6 @@ void ledBlue(void);
 #define LCD_W                           212
 #define LCD_H                           64
 #define LCD_DEPTH                       4
-#define IS_LCD_RESET_NEEDED()           (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
 #define LCD_CONTRAST_MIN                0
 #define LCD_CONTRAST_MAX                45
 #define LCD_CONTRAST_DEFAULT            25
@@ -779,6 +793,13 @@ void ledBlue(void);
 #define LCD_CONTRAST_MAX                30
 #define LCD_CONTRAST_DEFAULT            20
 #endif
+
+#if defined(PCBX9D) || defined(PCBX9E) || (defined(PCBX9DP) && PCBREV < 2019)
+#define IS_LCD_RESET_NEEDED()           (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
+#else
+#define IS_LCD_RESET_NEEDED()           true
+#endif
+
 void lcdInit(void);
 void lcdInitFinish(void);
 void lcdOff(void);
