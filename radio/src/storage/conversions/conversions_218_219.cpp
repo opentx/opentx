@@ -272,34 +272,17 @@ void convertModelData_218_to_219(ModelData &model)
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
   for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
-    if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_VALUES) {
+    uint8_t screenType = (newModel.screensType >> (2*i)) & 0x03;
+    if (screenType == TELEMETRY_SCREEN_TYPE_VALUES) {
       for (int j = 0; j < 4; j++) {
         for (int k = 0; k < NUM_LINE_ITEMS; k++) {
           newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(oldModel.frsky.screens[i].lines[j].sources[k]);
         }
       }
     }
-    else if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_GAUGES) {
-      for (int j = 0; j < 4; j++) {
-        newModel.screens[i].bars[j].source = convertSource_218_to_219(oldModel.frsky.screens[i].bars[j].source);
-      }
-    }
-  }
-#endif
-
-#if defined(PCBX7)
-  for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
-    uint8_t screenType = (newModel.screensType >> (2*i)) & 0x03;
-    if (screenType == TELEMETRY_SCREEN_TYPE_VALUES) {
-      for (int j = 0; j < 4; j++) {
-        for (int k = 0; k < NUM_LINE_ITEMS; k++) {
-          newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(newModel.screens[i].lines[j].sources[k]);
-        }
-      }
-    }
     else if (screenType == TELEMETRY_SCREEN_TYPE_GAUGES) {
       for (int j = 0; j < 4; j++) {
-        newModel.screens[i].bars[j].source = convertSource_218_to_219(newModel.screens[i].bars[j].source);
+        newModel.screens[i].bars[j].source = convertSource_218_to_219(oldModel.frsky.screens[i].bars[j].source);
       }
     }
   }
