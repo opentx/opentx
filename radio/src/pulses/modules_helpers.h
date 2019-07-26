@@ -279,27 +279,27 @@ static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
 
-inline int8_t maxModuleChannels_M8(uint8_t idx)
+inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
 {
-  if (isExtraModule(idx)) {
+  if (isExtraModule(moduleIdx)) {
     return MAX_EXTRA_MODULE_CHANNELS_M8;
   }
-  else if (isModuleXJT(idx)) {
-    return maxChannelsXJT[1 + g_model.moduleData[idx].subType];
+  else if (isModuleXJT(moduleIdx)) {
+    return maxChannelsXJT[1 + g_model.moduleData[moduleIdx].subType];
   }
-  else if (isModuleR9M(idx)) {
-    if (isModuleR9M_LBT(idx)) {
-      if (isModuleR9MLite(idx))
-        return g_model.moduleData[idx].pxx.power == R9M_LITE_LBT_POWER_25_8CH ? 0 : 8;
+  else if (isModuleR9M(moduleIdx)) {
+    if (isModuleR9M_LBT(moduleIdx)) {
+      if (isModuleR9MLite(moduleIdx))
+        return g_model.moduleData[moduleIdx].pxx.power == R9M_LITE_LBT_POWER_25_8CH ? 0 : 8;
       else
-        return g_model.moduleData[idx].pxx.power == R9M_LBT_POWER_25_8CH ? 0 : 8;
+        return g_model.moduleData[moduleIdx].pxx.power == R9M_LBT_POWER_25_8CH ? 0 : 8;
     }
     else {
       return 8; // always 16 channels in FCC / FLEX
     }
   }
   else {
-    return maxChannelsModules[g_model.moduleData[idx].type];
+    return maxChannelsModules[g_model.moduleData[moduleIdx].type];
   }
 }
 
@@ -336,18 +336,21 @@ inline bool isDefaultModelRegistrationID()
   return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
 }
 
-inline bool isModuleModelIndexAvailable(uint8_t idx)
+inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
 {
-  if (isModuleXJT(idx))
-    return g_model.moduleData[idx].subType != MODULE_SUBTYPE_PXX1_ACCST_D8;
+  if (isModuleXJT(moduleIdx))
+    return g_model.moduleData[moduleIdx].subType != MODULE_SUBTYPE_PXX1_ACCST_D8;
 
-  if (isModuleR9M(idx))
+  if (isModuleR9M(moduleIdx))
     return true;
 
-  if (isModuleDSM2(idx))
+  if (isModuleDSM2(moduleIdx))
     return true;
 
-  if (isModuleISRM(idx))
+  if (isModuleISRM(moduleIdx))
+    return true;
+
+  if (isModuleMultimodule(moduleIdx))
     return true;
 
   return false;

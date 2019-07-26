@@ -584,7 +584,7 @@ bool menuModelSetup(event_t event)
          LABEL(InternalModule),
            INTERNAL_MODULE_TYPE_ROWS,
            INTERNAL_MODULE_CHANNELS_ROWS,
-           IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(IF_INTERNAL_MODULE_ON(isModuleModelIndexAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1))),
+           IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(IF_INTERNAL_MODULE_ON(isModuleRxNumAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1))),
            IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum
            ANTENNA_ROW
            IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
@@ -1426,7 +1426,7 @@ bool menuModelSetup(event_t event)
         else {
           int l_posHorz = menuHorizontalPosition;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
-          if (!isModuleModelIndexAvailable(moduleIdx)) {
+          if (!isModuleRxNumAvailable(moduleIdx)) {
             xOffsetBind = 0;
             lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
@@ -1547,7 +1547,7 @@ bool menuModelSetup(event_t event)
           const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true);
           const mm_protocol_definition *pdef = getMultiProtocolDefinition(multi_proto);
           if (pdef->optionsstr)
-            lcdDrawText(MENUS_MARGIN_LEFT, y, pdef->optionsstr);
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, pdef->optionsstr);
 
           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
             optionValue = 50 + 5 * optionValue;

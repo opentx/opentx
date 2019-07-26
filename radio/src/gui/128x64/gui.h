@@ -76,11 +76,6 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
 #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
-// mawrow special values
-#define READONLY_ROW   ((uint8_t)-1)
-#define TITLE_ROW      READONLY_ROW
-#define HIDDEN_ROW     ((uint8_t)-2)
-
 struct CheckIncDecStops {
   const int count;
   const int stops[];

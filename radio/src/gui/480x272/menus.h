@@ -283,10 +283,7 @@ extern int8_t s_editMode;       // global editmode
 #define NO_DBLKEYS                     0x80
 
 // mawrow special values
-#define READONLY_ROW                   ((uint8_t)-1)
-#define TITLE_ROW                      READONLY_ROW
-#define ORPHAN_ROW                     ((uint8_t)-2)
-#define HIDDEN_ROW                     ((uint8_t)-3)
+#define ORPHAN_ROW                     ((uint8_t)-3)
 #define NAVIGATION_LINE_BY_LINE        0x40
 #define CURSOR_ON_LINE()               (menuHorizontalPosition<0)
 
