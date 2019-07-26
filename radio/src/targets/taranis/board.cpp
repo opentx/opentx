@@ -45,13 +45,15 @@ void watchdogInit(unsigned int duration)
   #define PWR_PRESS_DURATION_MIN        100 // 1s
   #define PWR_PRESS_DURATION_MAX        500 // 5s
 
-  const unsigned char bmp_startup[] = {
-    #include "startup.lbm"
-  };
+  #if LCD_DEPTH > 1
+    const unsigned char bmp_startup[] = {
+      #include "startup.lbm"
+    };
 
-  const unsigned char bmp_lock[] = {
-    #include "lock.lbm"
-  };
+    const unsigned char bmp_lock[] = {
+      #include "lock.lbm"
+    };
+  #endif
 #endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
