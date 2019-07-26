@@ -1813,10 +1813,13 @@
   // #define BT_DMA_Channel_RX             DMA_Channel_4
 #elif defined(PCBX9D) || defined(PCBX9DP)
   #define STORAGE_BLUETOOTH
+  #define BT_RCC_AHB1Periph             0
+  #define BT_RCC_APB1Periph             0
+  #define BT_RCC_APB2Periph             0
 #else
-  #define BT_RCC_AHB1Periph            0
-  #define BT_RCC_APB1Periph            0
-  #define BT_RCC_APB2Periph            0
+  #define BT_RCC_AHB1Periph             0
+  #define BT_RCC_APB1Periph             0
+  #define BT_RCC_APB2Periph             0
 #endif
 
 // Xms Interrupt
