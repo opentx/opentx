@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "options.h"
 
 bool menuRadioVersion(event_t event)
 {
@@ -52,6 +53,24 @@ bool menuRadioVersion(event_t event)
     POPUP_MENU_START(onVersionMenu);
   }
 #endif
+
+  coord_t y = MENU_CONTENT_TOP + 5*FH;
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "OPTS:");
+  lcdNextPos = MENUS_MARGIN_LEFT + 64;
+
+  for (uint8_t i=0; options[i]; i++) {
+    const char * option = options[i];
+    coord_t width = getTextWidth(option);
+
+    if((lcdNextPos + 5 + width) > LCD_W) {
+      lcdDrawText(lcdNextPos, y, ",");
+      lcdNextPos = MENUS_MARGIN_LEFT;
+      y += FH;
+    }
+    if (i > 0 && lcdNextPos !=MENUS_MARGIN_LEFT)
+      lcdDrawText(lcdNextPos, y, ", ");
+    lcdDrawText(lcdNextPos, y, option);
+  }
 
   return true;
 }
