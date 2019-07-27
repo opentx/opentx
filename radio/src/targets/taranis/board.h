@@ -535,6 +535,9 @@ extern HardwareOptions hardwareOptions;
 #elif !defined(PXX1) || defined(PCBXLITES) || defined(PCBX9LITE)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
   #define IS_PXX1_INTERNAL_ENABLED()            (false)
+#elif defined(INTERNAL_MODULE_PXX1)
+  #define IS_PXX2_INTERNAL_ENABLED()            (false)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #else
   // TODO #define PXX2_PROBE
   // TODO #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
