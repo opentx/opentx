@@ -36,6 +36,12 @@ int convertSource_218_to_219(int source)
 {
   // on X7: 2 additional switches
   // on X9D / X9D+: 1 additional switch
+  // on xlite : 2 more storage switches
+
+#if defined(PCBXLITE)
+  if (source >= MIXSRC_SE)
+    source += 2;
+#endif
 
 #if defined(PCBX7)
   if (source >= MIXSRC_SI)
@@ -59,10 +65,16 @@ int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
   // on X9D / X9D+: 1 additional switch
+  // on xlite : 2 more storage switches
 
-#if defined(PCBX7) || defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP)
+#if defined(PCBX7) || defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBXLITE)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
+#endif
+
+#if defined(PCBXLITE)
+  if (swtch >= SWSRC_SE0)
+    swtch += 2 * 3;
 #endif
 
 #if defined(PCBX7)
@@ -162,6 +174,8 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_FLIGHT_MODES_218; i++) {
     memmove(&newModel.flightModeData[i], &oldModel.flightModeData[i], sizeof(FlightModeData_v218));
+    FlightModeData & sw = newModel.flightModeData[i];
+    sw.swtch = convertSwitch_218_to_219(sw.swtch);
   }
 
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
@@ -304,7 +318,7 @@ void convertRadioData_218_to_219(RadioData & settings)
   memcpy(&oldSettings, &settings, sizeof(RadioData_v218));
 #endif
 
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7) || defined(PCBXLITE)
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
     CustomFunctionData & cf = settings.customFn[i];
     cf.swtch = convertSwitch_218_to_219(cf.swtch);
