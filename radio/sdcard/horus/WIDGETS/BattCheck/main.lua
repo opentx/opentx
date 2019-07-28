@@ -111,21 +111,16 @@ local function calculateBatteryData(wgt)
     return
   end
 
-  if isEmpty(wgt.cellDataLowest) then
-    for k, v in pairs(newCellData) do
-      wgt.cellDataLowest[k] = v
-    end
-  end
-  -- this is necessary for simu where cellcount can change
+  -- this is necessary for simu where cell-count can change
   if #wgt.cellDataLowest ~= #newCellData then
+    wgt.cellDataLowest = {}
     for k, v in pairs(newCellData) do
       wgt.cellDataLowest[k] = v
     end
   end
   -- stores the lowest cell values in historical table
   for k, v in pairs(newCellData) do
-    if v < wgt.cellDataLowest[k]
-    then
+    if v < wgt.cellDataLowest[k] then
       wgt.cellDataLowest[k] = v
     end
   end
@@ -190,11 +185,11 @@ end
 
 -- color for battery
 -- This function returns green at 100%, red bellow 30% and graduate in between
-local function getPercentColor(cpercent)
-  if cpercent < 30 then
+local function getPercentColor(percent)
+  if percent < 30 then
     return lcd.RGB(0xff, 0, 0)
   else
-    g = math.floor(0xdf * cpercent / 100)
+    g = math.floor(0xdf * percent / 100)
     r = 0xdf - g
     return lcd.RGB(r, g, 0)
   end
@@ -202,18 +197,20 @@ end
 
 -- color for cell
 -- This function returns green at gvalue, red at rvalue and graduate in between
-local function getRangeColor(value, gvalue, rvalue)
-  local range = math.abs(gvalue - rvalue) --only use local variables!!
-  if gvalue > rvalue and not range==0 then
-    if value > gvalue then return lcd.RGB(0, 0xdf, 0) end
-    if value < rvalue then return lcd.RGB(0xdf, 0, 0) end
-    g = math.floor(0xdf * (value-rvalue) / range)
+local function getRangeColor(value, green_value, red_value)
+  local range = math.abs(green_value - red_value)
+  if range==0 then return lcd.RGB(0, 0xdf, 0) end
+
+  if green_value > red_value then
+    if value > green_value then return lcd.RGB(0, 0xdf, 0) end
+    if value < red_value then return lcd.RGB(0xdf, 0, 0) end
+    g = math.floor(0xdf * (value - red_value) / range)
     r = 0xdf - g
     return lcd.RGB(r, g, 0)
   else
-    if value > gvalue then return lcd.RGB(0, 0xdf, 0) end
-    if value < rvalue then return lcd.RGB(0xdf, 0, 0) end
-    r = math.floor(0xdf * (value-gvalue) / range)
+    if value > green_value then return lcd.RGB(0, 0xdf, 0) end
+    if value < red_value then return lcd.RGB(0xdf, 0, 0) end
+    r = math.floor(0xdf * (value - green_value) / range)
     g = 0xdf - r
     return lcd.RGB(r, g, 0)
   end
