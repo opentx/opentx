@@ -81,6 +81,8 @@ TEST(Conversions, ConversionX7From22)
   EXPECT_EQ(-100, g_model.limitData[0].max);
 
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
+  EXPECT_ZSTREQ("FMtest", g_model.flightModeData[1].name);
+  EXPECT_EQ(45, g_model.flightModeData[1].swtch);
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
 
   EXPECT_EQ(LS_FUNC_VPOS, g_model.logicalSw[0].func);
