@@ -1842,17 +1842,7 @@ void opentxInit()
     // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
     // but we only remember the pointer to in in constructor.
     // The storageReadAll() needs topbar object, so it must be created here
-#if __clang__
-// clang does not like this at all, turn into a warning so that -Werror does not stop here
-// taking address of packed member 'topbarData' of class or structure 'ModelData' may result in an unaligned pointer value [-Werror,-Waddress-of-packed-member]
-#pragma clang diagnostic push
-#pragma clang diagnostic warning "-Waddress-of-packed-member"
-#endif
     topbar = new Topbar(&g_model.topbarData);
-#if __clang__
-// Restore warnings
-#pragma clang diagnostic pop
-#endif
 
     // lua widget state must also be prepared before the call to storageReadAll()
     LUA_INIT_THEMES_AND_WIDGETS();
