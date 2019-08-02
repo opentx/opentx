@@ -210,9 +210,34 @@ enum FrSkyDataState {
 #define ALARM_GREATER(channel, alarm)     ((g_model.frsky.channels[channel].alarms_greater >> alarm) & 1)
 #define ALARM_LEVEL(channel, alarm)       ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
 
-#define TELEMETRY_STREAMING()           (telemetryData.rssi.value > 0)
-#define TELEMETRY_RSSI()                (telemetryData.rssi.value)
-#define TELEMETRY_RSSI_MIN()            (telemetryData.rssi.min)
+class TelemetryData {
+  public:
+    TelemetryExpiringDecorator<TelemetryValue> swrInternal;
+    TelemetryExpiringDecorator<TelemetryValue> swrExternal;
+    TelemetryFilterDecorator<TelemetryValue> rssi;
+    uint16_t xjtVersion;
+    bool varioHighPrecision;
+
+    void setSwr(uint8_t module, uint8_t value)
+    {
+      if (module == 0)
+        swrInternal.set(value);
+      else
+        swrExternal.set(value);
+    }
+};
+
+extern TelemetryData telemetryData;
+
+inline bool TELEMETRY_STREAMING()
+{
+  return telemetryData.rssi.value() > 0;
+}
+
+inline uint8_t TELEMETRY_RSSI()
+{
+  return telemetryData.rssi.value();
+}
 
 #define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  1
 
@@ -279,25 +304,6 @@ extern uint8_t telemetryProtocol;
 void telemetryInit(uint8_t protocol);
 
 void telemetryInterrupt10ms();
-
-class TelemetryData {
-  public:
-    TelemetryExpiringDecorator<TelemetryValue> swrInternal;
-    TelemetryExpiringDecorator<TelemetryValue> swrExternal;
-    TelemetryFilterDecorator<TelemetryValue> rssi;
-    uint16_t xjtVersion;
-    bool varioHighPrecision;
-
-    void setSwr(uint8_t module, uint8_t value)
-    {
-      if (module == 0)
-        swrInternal.set(value);
-      else
-        swrExternal.set(value);
-    }
-};
-
-extern TelemetryData telemetryData;
 
 bool pushFrskyTelemetryData(uint8_t data); // returns true when end of frame detected
 void processFrskyTelemetryData(uint8_t data);

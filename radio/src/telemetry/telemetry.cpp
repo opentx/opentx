@@ -71,10 +71,10 @@ inline bool isBadAntennaDetected()
   if (!isRasValueValid())
     return false;
 
-  if (telemetryData.swrInternal.isFresh() && telemetryData.swrInternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+  if (telemetryData.swrInternal.isFresh() && telemetryData.swrInternal.value() > FRSKY_BAD_ANTENNA_THRESHOLD)
     return true;
 
-  if (telemetryData.swrExternal.isFresh() && telemetryData.swrExternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+  if (telemetryData.swrExternal.isFresh() && telemetryData.swrExternal.value() > FRSKY_BAD_ANTENNA_THRESHOLD)
     return true;
 
   return false;

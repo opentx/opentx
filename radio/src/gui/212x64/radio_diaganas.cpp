@@ -40,11 +40,10 @@ void menuRadioDiagAnalogs(event_t event)
   }
 
   // RAS
-  if((isModuleXJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (isModulePXX1(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
+  if ((isModuleXJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (isModulePXX1(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
     lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH, "RAS");
-    lcdDrawNumber(10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.swrInternal.value, RIGHT);
+    lcdDrawNumber(10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.swrInternal.value(), RIGHT);
     lcdDrawText(LCD_W/2, MENU_HEADER_HEIGHT+6*FH, "XJTVER");
     lcdDrawNumber(LCD_W/2 + 10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.xjtVersion, RIGHT);
-
   }
 }
