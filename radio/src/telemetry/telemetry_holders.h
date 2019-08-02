@@ -47,7 +47,7 @@ class TelemetryFilterDecorator: public T {
     uint8_t values[TELEMETRY_AVERAGE_COUNT];
     void set(uint8_t value)
     {
-      if (this->value == 0) {
+      if (this->value == 0 || value == 0) {
         memset(values, value, TELEMETRY_AVERAGE_COUNT);
         this->value = value;
       }
