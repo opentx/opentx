@@ -221,7 +221,7 @@ class TelemetryData {
 
     void clear()
     {
-      memclear(this, sizeof(*this));
+      memset(this, 0, sizeof(*this));
     }
 };
 
