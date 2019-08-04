@@ -385,8 +385,8 @@ void menuModelMixAll(event_t event)
       break;
   }
 
-  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW+FW/2, 0, getMixesCount(), RIGHT);
-  lcdDrawText(FW*sizeof(TR_MIXER)+FW+FW/2, 0, STR_MAX(MAX_MIXERS));
+  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW/2, 0, getMixesCount(), 0);
+  lcdDrawText(lcdNextPos, 0, STR_MAX(MAX_MIXERS));
 
   // Value
   uint8_t index = mixAddress(s_currIdx)->destCh;
