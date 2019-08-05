@@ -13,7 +13,7 @@ int32_t  yaml_str2int(const char* val, uint8_t val_len);
 uint32_t yaml_str2uint(const char* val, uint8_t val_len);
 
 char* yaml_unsigned2str(uint32_t i);
-char* yaml_signed2str(int i);
+char* yaml_signed2str(int32_t i);
 
 int32_t yaml_to_signed(uint32_t i, uint32_t bits);
 

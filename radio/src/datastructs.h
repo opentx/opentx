@@ -423,17 +423,17 @@ PACK(struct TrainerModuleData {
 // Only used in case switch and if statements as "virtual" protocol
 #define MM_RF_CUSTOM_SELECTED 0xff
 PACK(struct ModuleData {
-  uint8_t type:4 ENUM(ModuleTypes);
-  int8_t  rfProtocol:4 ENUM(XJTRFProtocols) ENUM(DSM2Protocols);
+  uint8_t type:4 ENUM(ModuleType);
+  int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  union {
-    struct {
+  //union {
+  //struct {
       uint8_t failsafeMode:4;  // only 3 bits used
       uint8_t subType:3;
       uint8_t invertedSerial:1; // telemetry serial inverted from standard
-    };
-  };
+  //};
+  //};
 
   union {
     uint8_t raw[PXX2_MAX_RECEIVERS_PER_MODULE * PXX2_LEN_RX_NAME + 1];
@@ -947,8 +947,8 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 867);
-  CHKSIZE(ModelData, 10664);
+  CHKSIZE(RadioData, 903);
+  CHKSIZE(ModelData, 11020);
 #endif
 
 #undef CHKSIZE
