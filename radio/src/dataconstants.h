@@ -22,6 +22,7 @@
 #define _DATACONSTANTS_H_
 
 #include "board.h"
+#include "storage/yaml/yaml_defs.h"
 
 #define NUM_STICKS                     4
 
@@ -593,7 +594,7 @@ enum MixSources {
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
 
-  MIXSRC_FIRST_STICK,
+  MIXSRC_FIRST_STICK SKIP,
   MIXSRC_Rud = MIXSRC_FIRST_STICK,      LUA_EXPORT("rud", "Rudder")
   MIXSRC_Ele,                           LUA_EXPORT("ele", "Elevator")
   MIXSRC_Thr,                           LUA_EXPORT("thr", "Throttle")

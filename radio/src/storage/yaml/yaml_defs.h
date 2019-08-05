@@ -9,6 +9,7 @@
 
 /* public definitions */
 #define ENUM(label) _yaml_attribute("enum:" _yaml_note(label))
+#define SKIP        _yaml_attribute("skip:true")
 #define USE_IDX     _yaml_attribute("idx:true")
 #define FUNC(name)  _yaml_attribute("func:" _yaml_note(name))
 #define NAME(label) _yaml_attribute("name:" _yaml_note(label))
@@ -19,6 +20,7 @@
 #else
 
 #define ENUM(label)
+#define SKIP
 #define USE_IDX
 #define FUNC(name)
 #define NAME(label)

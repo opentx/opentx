@@ -404,6 +404,12 @@ def parse_field(ast,node):
 
 def parse_enum_field(ast,node):
 
+    ann = get_annotations(node)
+    if len(ann) > 0:
+        for a in ann:
+            if a['type'] == 'skip':
+                return
+    
     enum_value = node.spelling
     if '_' in enum_value:
         enum_value = enum_value[enum_value.index('_')+1:]
@@ -412,7 +418,6 @@ def parse_enum_field(ast,node):
     st.value = node.spelling #node.enum_value
     ast.append(st)
     # debug
-    ann = get_annotations(node)
     if len(ann) > 0:
         #print(ann)
         st.ann = ann
@@ -480,7 +485,7 @@ for lib in CLANG_LIB_LOCATIONS:
 
 # compile source file
 index = Index.create()
-translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11'] + sys.argv[4:])
+translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11', '-Wno-deprecated-register'] + sys.argv[4:])
 
 def show_tu_diags(diags, prefix=''):
     tu_errors =  0

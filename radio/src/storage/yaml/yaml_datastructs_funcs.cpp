@@ -12,7 +12,7 @@ static uint32_t in_read_weight(const YamlNode* node, const char* val, uint8_t va
         && (val[3] >= '1')
         && (val[3] <= '9')) {
 
-        printf("%.*s -> %i\n", val_len, val, GVAR_SMALL - (val[3] - '0'));
+        TRACE("%.*s -> %i\n", val_len, val, GVAR_SMALL - (val[3] - '0'));
         return GVAR_SMALL - (val[3] - '0'); // -GVx => 128 - x
     }
 
@@ -22,7 +22,7 @@ static uint32_t in_read_weight(const YamlNode* node, const char* val, uint8_t va
         && (val[2] >= '1')
         && (val[2] <= '9')) {
 
-        printf("%.*s -> %i\n", val_len, val, -GVAR_SMALL + (val[2] - '1'));
+        TRACE("%.*s -> %i\n", val_len, val, -GVAR_SMALL + (val[2] - '1'));
         return -GVAR_SMALL + (val[2] - '1'); //  GVx => -128 + (x-1)
     }
 
