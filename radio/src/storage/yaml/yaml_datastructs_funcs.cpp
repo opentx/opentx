@@ -165,3 +165,9 @@ static const struct YamlNode struct_sliderConfig[] = {
     YAML_ENUM( "type", 1, enum_SliderConfig),
     YAML_END
 };
+
+static bool cfn_is_active(uint8_t* data, uint32_t bitoffs)
+{
+    data += bitoffs >> 3UL;
+    return ((CustomFunctionData*)data)->swtch;
+}
