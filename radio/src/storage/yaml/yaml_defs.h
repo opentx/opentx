@@ -13,9 +13,14 @@
 #define USE_IDX     _yaml_attribute("idx:true")
 #define FUNC(name)  _yaml_attribute("func:" _yaml_note(name))
 #define NAME(label) _yaml_attribute("name:" _yaml_note(label))
+
 #define CUST(read,write)                        \
   _yaml_attribute("read:" _yaml_note(read))     \
   _yaml_attribute("write:" _yaml_note(write))
+
+#define ARRAY(elmt_size,elmt_type,fcn)    \
+    _yaml_attribute("array:" _yaml_note(elmt_size) "|" \
+                    _yaml_note(elmt_type) "|" _yaml_note(fcn))
 
 #else
 
@@ -25,6 +30,7 @@
 #define FUNC(name)
 #define NAME(label)
 #define CUST(read,write)
+#define ARRAY(elmt_size,elmt_type,fcn)
 
 #endif
 
