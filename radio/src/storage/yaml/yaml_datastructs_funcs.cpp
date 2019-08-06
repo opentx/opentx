@@ -124,3 +124,44 @@ static uint8_t select_sensor_cfg(uint8_t* data, uint32_t bitoffs)
     // always use 'param'
     return 5;
 }
+
+static const struct YamlIdStr enum_SwitchConfig[] = {
+  {  SWITCH_NONE, "none"  },
+  {  SWITCH_TOGGLE, "toggle"  },
+  {  SWITCH_2POS, "2pos"  },
+  {  SWITCH_3POS, "3pos"  },
+  {  0, NULL  }
+};
+
+//TODO: add attribute to change int type to ARRAY (instead of manually patching)
+static const struct YamlNode struct_switchConfig[] = {
+    YAML_IDX, //TODO: replace with switch name!
+    YAML_ENUM( "type", 2, enum_SwitchConfig),
+    YAML_END
+};
+
+static const struct YamlIdStr enum_PotConfig[] = {
+  {  POT_NONE, "none" },
+  {  POT_WITH_DETENT, "with_detent" },
+  {  POT_MULTIPOS_SWITCH, "multipos_switch" },
+  {  POT_WITHOUT_DETENT, "without_detent" },
+  {  0, NULL }
+};
+
+static const struct YamlNode struct_potConfig[] = {
+    YAML_IDX, //TODO: replace with switch name!
+    YAML_ENUM( "type", 2, enum_PotConfig),
+    YAML_END
+};
+
+static const struct YamlIdStr enum_SliderConfig[] = {
+  {  SLIDER_NONE, "none" },
+  {  SLIDER_WITH_DETENT, "with_detent" },
+  {  0, NULL }
+};
+
+static const struct YamlNode struct_sliderConfig[] = {
+    YAML_IDX, //TODO: replace with switch name!
+    YAML_ENUM( "type", 1, enum_SliderConfig),
+    YAML_END
+};
