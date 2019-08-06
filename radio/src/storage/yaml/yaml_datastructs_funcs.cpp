@@ -57,44 +57,69 @@ static bool in_write_weight(const YamlNode* node, uint32_t val, yaml_writer_func
     return true;
 }
 
-static uint8_t select_zov(uint8_t* data)
+static uint8_t select_zov(uint8_t* data, uint32_t bitoffs)
 {
+    data += bitoffs >> 3UL;
     data -= sizeof(ZoneOptionValueEnum);
     ZoneOptionValueEnum* p_zovt = (ZoneOptionValueEnum*)data;
     return *p_zovt;
 }
 
-static uint8_t select_mod_type(uint8_t* data)
+static uint8_t select_mod_type(uint8_t* data, uint32_t bitoffs)
 {
-    //TODO: check ModuleData::type
+    data += bitoffs >> 3UL;
+    data -= offsetof(ModuleData, ppm);
+
+    switch(((ModuleData*)data)->type) {
+    case MODULE_TYPE_NONE:
+    case MODULE_TYPE_PPM:
+    case MODULE_TYPE_DSM2:
+    case MODULE_TYPE_CROSSFIRE:
+        return 0;
+    case MODULE_TYPE_MULTIMODULE:
+        return 1;
+    case MODULE_TYPE_XJT_PXX1:
+    case MODULE_TYPE_R9M_PXX1:
+    case MODULE_TYPE_R9M_LITE_PXX1:
+    case MODULE_TYPE_R9M_LITE_PRO_PXX1:
+        return 2;
+    case MODULE_TYPE_SBUS:
+        return 3;
+    case MODULE_TYPE_ISRM_PXX2:
+    case MODULE_TYPE_R9M_PXX2:
+    case MODULE_TYPE_R9M_LITE_PXX2:
+    case MODULE_TYPE_R9M_LITE_PRO_PXX2:
+    case MODULE_TYPE_XJT_LITE_PXX2:
+        return 4;
+    }
     return 0;
 }
 
-static uint8_t select_custom_fn(uint8_t* data)
+static uint8_t select_custom_fn(uint8_t* data, uint32_t bitoffs)
 {
     // always use 'all'
     return 1;
 }
 
-static uint8_t select_script_input(uint8_t* data)
+static uint8_t select_script_input(uint8_t* data, uint32_t bitoffs)
 {
     // always use 'value'
     return 0;
 }
 
-static uint8_t select_id1(uint8_t* data)
+static uint8_t select_id1(uint8_t* data, uint32_t bitoffs)
 {
     // always use 'id'
     return 0;
 }
 
-static uint8_t select_id2(uint8_t* data)
+static uint8_t select_id2(uint8_t* data, uint32_t bitoffs)
 {
     // always use 'instance'
     return 0;
 }
 
-static uint8_t select_sensor_cfg(uint8_t* data)
+static uint8_t select_sensor_cfg(uint8_t* data, uint32_t bitoffs)
 {
     // always use 'param'
     return 5;
