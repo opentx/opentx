@@ -681,9 +681,9 @@ PACK(struct TrainerData {
 #if defined(PCBHORUS) || defined(PCBNV14)
   #define EXTRA_GENERAL_FIELDS \
     NOBACKUP(uint8_t auxSerialMode); \
-    swconfig_t switchConfig; \
-    uint16_t potsConfig; /* two bits per pot */ \
-    uint8_t slidersConfig; /* 1 bit per slider */ \
+    swconfig_t switchConfig ARRAY(2,struct_switchConfig,nullptr);       \
+    uint16_t potsConfig ARRAY(2,struct_potConfig,nullptr); /* two bits per pot */ \
+    uint8_t slidersConfig ARRAY(1,struct_sliderConfig,nullptr); /* 1 bit per slider */ \
     NOBACKUP(char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]); \
     NOBACKUP(char anaNames[NUM_STICKS + STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
@@ -700,11 +700,11 @@ PACK(struct TrainerData {
   #endif
   #define EXTRA_GENERAL_FIELDS \
     uint8_t  auxSerialMode:4; \
-    uint8_t  slidersConfig:4; \
-    uint8_t  potsConfig; /* two bits per pot */\
+    uint8_t  slidersConfig:4 ARRAY(1,struct_sliderConfig,nullptr); \
+    uint8_t  potsConfig ARRAY(2,struct_potConfig,nullptr); /* two bits per pot */\
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
-    swconfig_t switchConfig; \
+    swconfig_t switchConfig ARRAY(2,struct_switchConfig,nullptr); \
     char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]; \
     BLUETOOTH_FIELDS

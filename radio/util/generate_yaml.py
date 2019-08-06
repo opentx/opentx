@@ -395,6 +395,13 @@ def parse_field(ast,node):
                 f.f_read = a['val']
             elif a['type'] == 'write':
                 f.f_write = a['val']
+            elif a['type'] == 'array':
+                array_attrs = a['val'].split('|')
+                elmt_size = int(array_attrs[0])
+                f.var_type = array_attrs[1]
+                f.type = 'array'
+                f.length = int(f.bits / elmt_size)
+                f.func = array_attrs[2]
 
     if len(f.name) == 0:
         print_error("in '{}', field of type '{}' does not have a name".format(ast.name,f.var_type))
