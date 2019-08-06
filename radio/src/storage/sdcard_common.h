@@ -43,7 +43,7 @@ const char * loadModel(const char * filename, bool alarms=true);
 const char * createModel();
 const char * writeModel();
 
-const char * loadRadioSettingsSettings();
+const char * loadRadioSettings();
 const char * writeGeneralSettings();
 
 #endif

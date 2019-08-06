@@ -129,7 +129,7 @@ void storageReadAll()
 {
   TRACE("storageReadAll");
 
-  if (loadRadioSettingsSettings() != NULL) {
+  if (loadRadioSettings() != NULL) {
     storageEraseAll(true);
   }
 

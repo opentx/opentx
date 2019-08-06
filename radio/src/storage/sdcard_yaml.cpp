@@ -74,7 +74,7 @@ void storageCreateModelsList()
 //
 
 
-const char * loadRadioSettingsSettings()
+const char * loadRadioSettings()
 {
     // YAML reader
     TRACE("YAML radio settings reader");
