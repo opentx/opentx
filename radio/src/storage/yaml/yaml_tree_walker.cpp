@@ -419,21 +419,29 @@ bool YamlTreeWalker::generate(yaml_writer_func wf, void* opaque)
             if (node->type != YDT_ARRAY && node->type != YDT_UNION)
                 return false; // Error in the structure (probably)
 
-            // walk to next non-empty element
-            while (toNextElmt()) {
-                if (!isElmtEmpty(data)) {
-                    new_elmt = true;
-                    break;
-                }
-            }
+            // if parent is a union, no need to output the other elements...
+            const YamlNode* parent = getParent();
+            if (parent && (parent->type == YDT_UNION)) {
 
-            if (new_elmt)
-                continue;
+                if (!toParent())
+                    return false;
+            }
+            else {
+                // walk to next non-empty element
+                while (toNextElmt()) {
+                    if (!isElmtEmpty(data)) {
+                        new_elmt = true;
+                        break;
+                    }
+                }
+
+                if (new_elmt)
+                    continue;
+            }
 
             // no next element, go up
-            if (!toParent()) {
+            if (!toParent())
                 return true;
-            }
 
             toNextAttr();
             continue;
@@ -466,10 +474,18 @@ bool YamlTreeWalker::generate(yaml_writer_func wf, void* opaque)
                 if (!yaml_output_attr(data, getBitOffset(), attr, wf, opaque))
                     return false; // TODO: error handling???
 
-                if (!toParent())
-                    return false;
+                if (attr->type != YDT_ARRAY
+                    && attr->type != YDT_UNION) {
 
-                toNextAttr();
+                    if (!toParent())
+                        return false;
+
+                    toNextAttr();
+                }
+                else {
+                    if (!toChild() && !toParent())
+                        return false;
+                }
                 continue;
             }
 
