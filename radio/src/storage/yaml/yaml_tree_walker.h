@@ -28,12 +28,19 @@ class YamlTreeWalker
 
     uint32_t getAttrOfs() { return stack[stack_level].bit_ofs; }
     uint32_t getLevelOfs() {
-        if (stack_level < NODE_STACK_DEPTH - 1) {
+        if (hasParent()) {
             return stack[stack_level + 1].getOfs();
         }
         return 0;
     }
 
+    const YamlNode* getParent() {
+        if (hasParent())
+            return stack[stack_level + 1].node;
+
+        return nullptr;
+    }
+    
     void setNode(const YamlNode* node) { stack[stack_level].node = node; }
     void setAttrIdx(uint8_t idx) { stack[stack_level].attr_idx = idx; }
 
@@ -44,6 +51,8 @@ class YamlTreeWalker
 
     bool empty() { return stack_level == NODE_STACK_DEPTH; }
     bool full()  { return stack_level == 0; }
+
+    bool hasParent() { return stack_level < NODE_STACK_DEPTH -1; }
     
     // return true on success
     bool push();
