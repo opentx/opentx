@@ -148,8 +148,7 @@ static bool yaml_output_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* nod
                     p_out = yaml_unsigned2str(i);
                     break;
                 case YDT_ENUM:
-                    p_out = yaml_output_enum(yaml_to_signed(i,node->size),
-                                             node->u._enum.choices);
+                    p_out = yaml_output_enum(i, node->u._enum.choices);
                     break;
 
                 case YDT_ARRAY:
