@@ -67,14 +67,41 @@ uint32_t yaml_get_bits(uint8_t* src, uint32_t bit_ofs, uint32_t bits)
     return i;
 }
 
-bool yaml_is_zero(uint8_t* data, uint32_t bits)
+bool yaml_is_zero(uint8_t* data, uint32_t bitoffs, uint32_t bits)
 {
     uint8_t res = 0;
 
-    // assume bits is a multiple of 8
+    // // assume bits is a multiple of 8
+    // while(bits >= 8) {
+    //     res |= *(data++);
+    //     bits -= 8;
+    // }
+
+    uint8_t* src = data + (bitoffs >> 3UL);
+    uint32_t bit_ofs = bitoffs & 0x7;
+
+    if (bit_ofs) {
+        res = (*(src++) & MASK_UPPER(bit_ofs)) >> bit_ofs;
+
+        if (bits <= 8 - bit_ofs) {
+            res |= MASK_LOWER(bits);
+            return !res;
+        }
+
+        //bit_shift = 8 - bit_ofs;
+        bits     -= 8 - bit_ofs;//bit_shift;
+    }
+    
     while(bits >= 8) {
-        res |= *(data++);
-        bits -= 8;
+
+        res |= (uint32_t)*(src++);// << bit_shift;
+
+        bits      -= 8;
+        //bit_shift += 8;
+    }
+
+    if (bits) {
+        res |= ((uint32_t)*src & MASK_LOWER(bits));// << bit_shift;
     }
 
     return !res;

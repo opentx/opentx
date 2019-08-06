@@ -67,6 +67,7 @@ static void yaml_set_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* node,
 
 static const char* yaml_output_enum(int32_t i, const struct YamlIdStr* choices)
 {
+    //TRACE("<choice = %d>", i);
     while(choices->str) {
         if (i == choices->id)
             break;
@@ -331,9 +332,9 @@ bool YamlTreeWalker::isElmtEmpty(uint8_t* data)
 
         // assume structs aligned on 8bit boundaries
         if (node->u._array.u._a.is_active)
-            return !node->u._array.u._a.is_active(data + (bit_ofs >> 3));
+            return !node->u._array.u._a.is_active(data, bit_ofs);
 
-        return yaml_is_zero(data + (bit_ofs >> 3), node->size);
+        return yaml_is_zero(data, bit_ofs, node->size);
     }
     else if ((node->type == YDT_UNION) && hasParent()) {
 
@@ -463,7 +464,8 @@ bool YamlTreeWalker::generate(yaml_writer_func wf, void* opaque)
                     return false; // TODO: error handling???
 
                 // grab attr idx...
-                uint8_t idx = node->u._array.u.select_member(data + (getBitOffset()>>3UL));
+                uint8_t idx = node->u._array.u.select_member(data, getBitOffset());
+                TRACE("<idx = %d>", idx);
                 setAttrIdx(idx);
 
                 attr = getAttr();
@@ -557,8 +559,9 @@ bool YamlTreeWalker::generate(yaml_writer_func wf, void* opaque)
 void YamlTreeWalker::dump_stack()
 {
     for (int i=0; i<NODE_STACK_DEPTH; i++) {
-        const State& st = stack[i];
-        TRACE(" [%p|%u|%i|%i]",st.node,st.bit_ofs,st.attr_idx,st.elmts);
+        TRACE(" [%p|%u|%i|%i]",
+              stack[i].node,stack[i].bit_ofs,
+              stack[i].attr_idx,stack[i].elmts);
     }
     TRACE("\n");
 }

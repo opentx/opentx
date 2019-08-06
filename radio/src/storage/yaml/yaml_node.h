@@ -31,13 +31,13 @@ typedef bool (*yaml_writer_func)(void* opaque, const char* str, size_t len);
 
 struct YamlNode
 {
-    typedef bool (*is_active_func)(uint8_t* data);
+    typedef bool (*is_active_func)(uint8_t* data, uint32_t bitoffs);
 
     typedef uint32_t (*cust_to_uint_func)(const YamlNode* node, const char* val, uint8_t val_len);
 
     typedef bool (*uint_to_cust_func)(const YamlNode* node, uint32_t val, yaml_writer_func wf, void* opaque);
 
-    typedef uint8_t (*select_member_func)(uint8_t* data);
+    typedef uint8_t (*select_member_func)(uint8_t* data, uint32_t bitoffs);
     
     uint8_t      type;
     uint32_t     size;  // bits
