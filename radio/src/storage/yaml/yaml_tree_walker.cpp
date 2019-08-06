@@ -34,8 +34,8 @@ static void yaml_set_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* node,
 {
     uint32_t i = 0;
 
-    TRACE("set(%s, %.*s, bit-ofs=%u, bits=%u)\n",
-           node->tag, val_len, val, bit_ofs, node->size);
+    //TRACE("set(%s, %.*s, bit-ofs=%u, bits=%u)\n",
+    //       node->tag, val_len, val, bit_ofs, node->size);
 
     ptr += bit_ofs >> 3UL;
     bit_ofs &= 0x07;
@@ -465,7 +465,7 @@ bool YamlTreeWalker::generate(yaml_writer_func wf, void* opaque)
 
                 // grab attr idx...
                 uint8_t idx = node->u._array.u.select_member(data, getBitOffset());
-                TRACE("<idx = %d>", idx);
+                //TRACE("<idx = %d>", idx);
                 setAttrIdx(idx);
 
                 attr = getAttr();
