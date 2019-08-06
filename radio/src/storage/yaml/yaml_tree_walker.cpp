@@ -335,12 +335,12 @@ bool YamlTreeWalker::isElmtEmpty(uint8_t* data)
 
         return yaml_is_zero(data + (bit_ofs >> 3), node->size);
     }
-    else if (node->type == YDT_UNION
-             && stack_level < NODE_STACK_DEPTH - 1) {
+    else if ((node->type == YDT_UNION) && hasParent()) {
 
         bit_ofs = getLevelOfs();
 
-        return node->u._array.u.select_member; //TODO!
+        TRACE("<not empty>");
+        return false;//node->u._array.u.select_member; //TODO!
             // // assume structs aligned on 8bit boundaries
             // && !node->_array.is_active(data + (bit_ofs >> 3));
     }
