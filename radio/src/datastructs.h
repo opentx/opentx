@@ -597,7 +597,7 @@ PACK(struct ModelData {
   int8_t    points[MAX_CURVE_POINTS];
 
   LogicalSwitchData logicalSw[MAX_LOGICAL_SWITCHES];
-  CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
+  CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS] FUNC(cfn_is_active);
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
@@ -802,7 +802,7 @@ PACK(struct RadioData {
   NOBACKUP(int8_t   varioPitch);
   NOBACKUP(int8_t   varioRange);
   NOBACKUP(int8_t   varioRepeat);
-  CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
+  CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS] FUNC(cfn_is_active);
 
   EXTRA_GENERAL_FIELDS
 
