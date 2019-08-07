@@ -39,6 +39,7 @@ const struct YamlIdStr enum_ZoneOptionValueEnum[] = {
   {  0, NULL  }
 };
 const struct YamlIdStr enum_MixSources[] = {
+  {  MIXSRC_NONE, "NONE"  },
   {  MIXSRC_Rud, "Rud"  },
   {  MIXSRC_Ele, "Ele"  },
   {  MIXSRC_Thr, "Thr"  },
@@ -52,6 +53,7 @@ const struct YamlIdStr enum_MixSources[] = {
   {  MIXSRC_EXT2, "EXT2"  },
   {  MIXSRC_MOUSE1, "MOUSE1"  },
   {  MIXSRC_MOUSE2, "MOUSE2"  },
+  {  MIXSRC_MAX, "MAX"  },
   {  MIXSRC_CYC1, "CYC1"  },
   {  MIXSRC_CYC2, "CYC2"  },
   {  MIXSRC_CYC3, "CYC3"  },
@@ -327,7 +329,7 @@ static const struct YamlNode struct_MixData[] = {
   YAML_IDX,
   YAML_SIGNED_CUST( "weight", 11, in_read_weight, in_write_weight ),
   YAML_UNSIGNED( "destCh", 5 ),
-  YAML_UNSIGNED( "srcRaw", 10 ),
+  YAML_UNSIGNED_CUST( "srcRaw", 10, r_mixSrcRaw, w_mixSrcRaw ),
   YAML_UNSIGNED( "carryTrim", 1 ),
   YAML_UNSIGNED( "mixWarn", 2 ),
   YAML_UNSIGNED( "mltpx", 2 ),

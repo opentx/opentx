@@ -138,7 +138,8 @@ static bool yaml_output_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* nod
 
             if ((node->type == YDT_SIGNED || node->type == YDT_UNSIGNED)
                 && node->u._cust.uint_to_cust) {
-                return node->u._cust.uint_to_cust(node, i, wf, opaque);
+                return node->u._cust.uint_to_cust(node, i, wf, opaque)
+                    && wf(opaque, "\r\n", 2);
             }
             else {
                 switch(node->type) {
@@ -164,10 +165,7 @@ static bool yaml_output_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* nod
             return false;
     }
 
-    if (!wf(opaque, "\r\n", 2))
-        return false;
-
-    return true;
+    return wf(opaque, "\r\n", 2);
 }
 
 YamlTreeWalker::YamlTreeWalker()
