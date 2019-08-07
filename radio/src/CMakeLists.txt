@@ -139,7 +139,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
 
 set(SRC ${SRC} storage/storage_common.cpp)
 if(${STORAGE} STREQUAL SDCARD)
-  set(SRC ${SRC} storage/sdcard_common.cpp)
+  set(SRC ${SRC} storage/modelslist.cpp storage/sdcard_common.cpp)
   if(${STORAGE_FORMAT} STREQUAL BIN)
     set(SRC ${SRC} storage/sdcard_raw.cpp)
     add_definitions(-DSDCARD_RAW)
