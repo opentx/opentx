@@ -38,7 +38,7 @@ void Dialog::paint(BitmapBuffer * dc)
   dc->drawSolidFilledRect(1, 1, width() - 3, PAGE_LINE_HEIGHT, TITLE_BGCOLOR);
   dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, title.c_str(), MENU_TITLE_COLOR);
 
-  lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
+  lcdSetColor(g_eeGeneral.themeData.options[0].value.unsignedValue);
   dc->drawSolidFilledRect(1, PAGE_LINE_HEIGHT + 1, width() - 3, height() - PAGE_LINE_HEIGHT - 3, CUSTOM_COLOR);
 }
 
