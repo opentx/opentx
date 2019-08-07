@@ -402,6 +402,8 @@ def parse_field(ast,node):
                 f.type = 'array'
                 f.length = int(f.bits / elmt_size)
                 f.func = array_attrs[2]
+            elif a['type'] == 'skip':
+                f.skip = True
 
     if len(f.name) == 0:
         print_error("in '{}', field of type '{}' does not have a name".format(ast.name,f.var_type))

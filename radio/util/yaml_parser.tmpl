@@ -27,7 +27,9 @@ static const struct YamlNode {{ struct.name }}[] = {
   {% endif%}
 {% endif %}
   {% for elmt in struct.get_elmts() %}
-    {% if elmt.type == 'string' %}
+    {% if elmt.skip %}
+  YAML_PADDING( {{ elmt.bits }} ),
+    {% elif elmt.type == 'string' %}
   YAML_STRING("{{ max_len(elmt.name) }}", {{elmt.length}}),
     {% elif elmt.type in ['signed','unsigned'] %}
       {% if elmt.f_read and elmt.f_write %}
