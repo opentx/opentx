@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "gui/colorlcd/modelslist.h"
+#include "modelslist.h"
 #include "conversions/conversions.h"
 
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
