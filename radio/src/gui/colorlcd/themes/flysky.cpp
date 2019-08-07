@@ -334,7 +334,7 @@ class FlyskyTheme: public Theme
         dc->drawBitmap(0, 0, backgroundBitmap);
       }
       else {
-        lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
+        lcdSetColor(g_eeGeneral.themeData.options[0].value.unsignedValue);
         dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
       }
     }
