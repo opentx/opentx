@@ -5,7 +5,7 @@
 //
 
 {% for enum in root.get_enums() %}
-static const struct YamlIdStr {{ enum.name }}[] = {
+const struct YamlIdStr {{ enum.name }}[] = {
   {% for elmt in enum.get_elmts() %}
   {  {{ elmt.value }}, "{{ max_len(elmt.name) }}"  },
   {% endfor %}

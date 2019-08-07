@@ -75,7 +75,7 @@ PACK(struct CurveRef {
 PACK(struct MixData {
   int16_t  weight:11 CUST(in_read_weight,in_write_weight);       // GV1=-1024, -GV1=1023
   uint16_t destCh:5;
-  uint16_t srcRaw:10; // srcRaw=0 means not used
+  uint16_t srcRaw:10 ENUM(MixSources); // srcRaw=0 means not used
   uint16_t carryTrim:1;
   uint16_t mixWarn:2;       // mixer warning
   uint16_t mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=

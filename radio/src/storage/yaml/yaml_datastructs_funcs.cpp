@@ -1,5 +1,6 @@
 #include "opentx.h"
 #include "yaml_bits.h"
+#include "yaml_tree_walker.h"
 
 #define GVAR_SMALL 128
 
@@ -125,43 +126,77 @@ static uint8_t select_sensor_cfg(uint8_t* data, uint32_t bitoffs)
     return 5;
 }
 
+extern const struct YamlIdStr enum_MixSources[];
+
+static uint32_t sw_read(const char* val, uint8_t val_len)
+{
+    return yaml_parse_enum(enum_MixSources, val, val_len) - MIXSRC_FIRST_SWITCH;
+}
+
+static bool sw_write(uint32_t idx, yaml_writer_func wf, void* opaque)
+{
+    const char* str = yaml_output_enum(idx + MIXSRC_FIRST_SWITCH, enum_MixSources);
+    return wf(opaque, str, strlen(str));
+}
+
 static const struct YamlIdStr enum_SwitchConfig[] = {
-  {  SWITCH_NONE, "none"  },
-  {  SWITCH_TOGGLE, "toggle"  },
-  {  SWITCH_2POS, "2pos"  },
-  {  SWITCH_3POS, "3pos"  },
-  {  0, NULL  }
+    {  SWITCH_NONE, "none"  },
+    {  SWITCH_TOGGLE, "toggle"  },
+    {  SWITCH_2POS, "2pos"  },
+    {  SWITCH_3POS, "3pos"  },
+    {  0, NULL  }
 };
 
-//TODO: add attribute to change int type to ARRAY (instead of manually patching)
 static const struct YamlNode struct_switchConfig[] = {
-    YAML_IDX, //TODO: replace with switch name!
+    YAML_IDX_CUST( "sw", sw_read, sw_write ),
     YAML_ENUM( "type", 2, enum_SwitchConfig),
     YAML_END
 };
 
+static uint32_t pot_read(const char* val, uint8_t val_len)
+{
+    return yaml_parse_enum(enum_MixSources, val, val_len) - MIXSRC_FIRST_POT;
+}
+
+static bool pot_write(uint32_t idx, yaml_writer_func wf, void* opaque)
+{
+    const char* str = yaml_output_enum(idx + MIXSRC_FIRST_POT, enum_MixSources);
+    return wf(opaque, str, strlen(str));
+}
+
 static const struct YamlIdStr enum_PotConfig[] = {
-  {  POT_NONE, "none" },
-  {  POT_WITH_DETENT, "with_detent" },
-  {  POT_MULTIPOS_SWITCH, "multipos_switch" },
-  {  POT_WITHOUT_DETENT, "without_detent" },
-  {  0, NULL }
+    {  POT_NONE, "none" },
+    {  POT_WITH_DETENT, "with_detent" },
+    {  POT_MULTIPOS_SWITCH, "multipos_switch" },
+    {  POT_WITHOUT_DETENT, "without_detent" },
+    {  0, NULL }
 };
 
 static const struct YamlNode struct_potConfig[] = {
-    YAML_IDX, //TODO: replace with switch name!
+    YAML_IDX_CUST( "pot", pot_read, pot_write ),
     YAML_ENUM( "type", 2, enum_PotConfig),
     YAML_END
 };
 
+static uint32_t slider_read(const char* val, uint8_t val_len)
+{
+    return yaml_parse_enum(enum_MixSources, val, val_len) - MIXSRC_FIRST_SLIDER;
+}
+
+static bool slider_write(uint32_t idx, yaml_writer_func wf, void* opaque)
+{
+    const char* str = yaml_output_enum(idx + MIXSRC_FIRST_SLIDER, enum_MixSources);
+    return wf(opaque, str, strlen(str));
+}
+
 static const struct YamlIdStr enum_SliderConfig[] = {
-  {  SLIDER_NONE, "none" },
-  {  SLIDER_WITH_DETENT, "with_detent" },
-  {  0, NULL }
+    {  SLIDER_NONE, "none" },
+    {  SLIDER_WITH_DETENT, "with_detent" },
+    {  0, NULL }
 };
 
 static const struct YamlNode struct_sliderConfig[] = {
-    YAML_IDX, //TODO: replace with switch name!
+    YAML_IDX_CUST( "sl", slider_read, slider_write ),
     YAML_ENUM( "type", 1, enum_SliderConfig),
     YAML_END
 };
