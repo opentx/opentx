@@ -4,7 +4,7 @@
 // Enums first
 //
 
-static const struct YamlIdStr enum_Functions[] = {
+const struct YamlIdStr enum_Functions[] = {
   {  FUNC_OVERRIDE_CHANNEL, "OVERRIDE_CHANNEL"  },
   {  FUNC_TRAINER, "TRAINER"  },
   {  FUNC_INSTANT_TRIM, "INSTANT_TRIM"  },
@@ -31,49 +31,36 @@ static const struct YamlIdStr enum_Functions[] = {
   {  FUNC_MAX, "MAX"  },
   {  0, NULL  }
 };
-static const struct YamlIdStr enum_ZoneOptionValueEnum[] = {
+const struct YamlIdStr enum_ZoneOptionValueEnum[] = {
   {  ZOV_Unsigned, "Unsigned"  },
   {  ZOV_Signed, "Signed"  },
   {  ZOV_Bool, "Bool"  },
   {  ZOV_String, "String"  },
   {  0, NULL  }
 };
-static const struct YamlIdStr enum_MixSources[] = {
-  {  MIXSRC_NONE, "NONE"  },
-  {  MIXSRC_FIRST_INPUT, "FIRST_INPUT"  },
-  {  MIXSRC_LAST_INPUT, "LAST_INPUT"  },
-  {  MIXSRC_FIRST_LUA, "FIRST_LUA"  },
-  {  MIXSRC_LAST_LUA, "LAST_LUA"  },
+const struct YamlIdStr enum_MixSources[] = {
   {  MIXSRC_Rud, "Rud"  },
   {  MIXSRC_Ele, "Ele"  },
   {  MIXSRC_Thr, "Thr"  },
   {  MIXSRC_Ail, "Ail"  },
-  {  MIXSRC_FIRST_POT, "FIRST_POT"  },
   {  MIXSRC_S1, "S1"  },
   {  MIXSRC_6POS, "6POS"  },
   {  MIXSRC_S2, "S2"  },
-  {  MIXSRC_FIRST_SLIDER, "FIRST_SLIDER"  },
   {  MIXSRC_S3, "S3"  },
   {  MIXSRC_S4, "S4"  },
   {  MIXSRC_EXT1, "EXT1"  },
   {  MIXSRC_EXT2, "EXT2"  },
-  {  MIXSRC_LAST_POT, "LAST_POT"  },
   {  MIXSRC_MOUSE1, "MOUSE1"  },
   {  MIXSRC_MOUSE2, "MOUSE2"  },
-  {  MIXSRC_MAX, "MAX"  },
-  {  MIXSRC_FIRST_HELI, "FIRST_HELI"  },
   {  MIXSRC_CYC1, "CYC1"  },
   {  MIXSRC_CYC2, "CYC2"  },
   {  MIXSRC_CYC3, "CYC3"  },
-  {  MIXSRC_FIRST_TRIM, "FIRST_TRIM"  },
   {  MIXSRC_TrimRud, "TrimRud"  },
   {  MIXSRC_TrimEle, "TrimEle"  },
   {  MIXSRC_TrimThr, "TrimThr"  },
   {  MIXSRC_TrimAil, "TrimAil"  },
   {  MIXSRC_TrimT5, "TrimT5"  },
   {  MIXSRC_TrimT6, "TrimT6"  },
-  {  MIXSRC_LAST_TRIM, "LAST_TRIM"  },
-  {  MIXSRC_FIRST_SWITCH, "FIRST_SWITCH"  },
   {  MIXSRC_SA, "SA"  },
   {  MIXSRC_SB, "SB"  },
   {  MIXSRC_SC, "SC"  },
@@ -84,12 +71,7 @@ static const struct YamlIdStr enum_MixSources[] = {
   {  MIXSRC_SH, "SH"  },
   {  MIXSRC_GMBL, "GMBL"  },
   {  MIXSRC_GMBR, "GMBR"  },
-  {  MIXSRC_FIRST_LOGICAL_SWITCH, "FIRST_LOGICAL_SWITCH"  },
   {  MIXSRC_SW1, "SW1"  },
-  {  MIXSRC_LAST_LOGICAL_SWITCH, "LAST_LOGICAL_SWITCH"  },
-  {  MIXSRC_FIRST_TRAINER, "FIRST_TRAINER"  },
-  {  MIXSRC_LAST_TRAINER, "LAST_TRAINER"  },
-  {  MIXSRC_FIRST_CH, "FIRST_CH"  },
   {  MIXSRC_CH1, "CH1"  },
   {  MIXSRC_CH2, "CH2"  },
   {  MIXSRC_CH3, "CH3"  },
@@ -106,27 +88,15 @@ static const struct YamlIdStr enum_MixSources[] = {
   {  MIXSRC_CH14, "CH14"  },
   {  MIXSRC_CH15, "CH15"  },
   {  MIXSRC_CH16, "CH16"  },
-  {  MIXSRC_LAST_CH, "LAST_CH"  },
-  {  MIXSRC_FIRST_GVAR, "FIRST_GVAR"  },
   {  MIXSRC_GVAR1, "GVAR1"  },
-  {  MIXSRC_LAST_GVAR, "LAST_GVAR"  },
   {  MIXSRC_TX_VOLTAGE, "TX_VOLTAGE"  },
   {  MIXSRC_TX_TIME, "TX_TIME"  },
-  {  MIXSRC_FIRST_RESERVE, "FIRST_RESERVE"  },
-  {  MIXSRC_RESERVE2, "RESERVE2"  },
-  {  MIXSRC_RESERVE3, "RESERVE3"  },
-  {  MIXSRC_RESERVE4, "RESERVE4"  },
-  {  MIXSRC_LAST_RESERVE, "LAST_RESERVE"  },
-  {  MIXSRC_FIRST_TIMER, "FIRST_TIMER"  },
   {  MIXSRC_TIMER1, "TIMER1"  },
   {  MIXSRC_TIMER2, "TIMER2"  },
   {  MIXSRC_TIMER3, "TIMER3"  },
-  {  MIXSRC_LAST_TIMER, "LAST_TIMER"  },
-  {  MIXSRC_FIRST_TELEM, "FIRST_TELEM"  },
-  {  MIXSRC_LAST_TELEM, "LAST_TELEM"  },
   {  0, NULL  }
 };
-static const struct YamlIdStr enum_LogicalSwitchesFunctions[] = {
+const struct YamlIdStr enum_LogicalSwitchesFunctions[] = {
   {  LS_FUNC_NONE, "FUNC_NONE"  },
   {  LS_FUNC_VEQUAL, "FUNC_VEQUAL"  },
   {  LS_FUNC_VALMOSTEQUAL, "FUNC_VALMOSTEQUAL"  },
@@ -150,7 +120,7 @@ static const struct YamlIdStr enum_LogicalSwitchesFunctions[] = {
   {  LS_FUNC_MAX, "FUNC_MAX"  },
   {  0, NULL  }
 };
-static const struct YamlIdStr enum_ModuleType[] = {
+const struct YamlIdStr enum_ModuleType[] = {
   {  MODULE_TYPE_NONE, "TYPE_NONE"  },
   {  MODULE_TYPE_PPM, "TYPE_PPM"  },
   {  MODULE_TYPE_XJT_PXX1, "TYPE_XJT_PXX1"  },

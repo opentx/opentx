@@ -114,4 +114,9 @@ public:
     static const YamlParserCalls* get_parser_calls();
 };
 
+// utils
+uint32_t yaml_parse_enum(const struct YamlIdStr* choices, const char* val, uint8_t val_len);
+const char* yaml_output_enum(int32_t i, const struct YamlIdStr* choices);
+
+
 #endif

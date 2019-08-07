@@ -577,14 +577,14 @@ enum SwitchSources {
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
 
 enum MixSources {
-  MIXSRC_NONE,
+  MIXSRC_NONE SKIP,
 
-  MIXSRC_FIRST_INPUT,                   LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
-  MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
+  MIXSRC_FIRST_INPUT SKIP,              LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
+  MIXSRC_LAST_INPUT SKIP = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
 
 #if defined(LUA_INPUTS)
-  MIXSRC_FIRST_LUA,                     LUA_EXPORT_MULTIPLE("lua", "Lua mix output %d", MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)
-  MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
+  MIXSRC_FIRST_LUA SKIP,                LUA_EXPORT_MULTIPLE("lua", "Lua mix output %d", MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)
+  MIXSRC_LAST_LUA SKIP = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
 
   MIXSRC_FIRST_STICK SKIP,
@@ -593,8 +593,8 @@ enum MixSources {
   MIXSRC_Thr,                           LUA_EXPORT("thr", "Throttle")
   MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
-  MIXSRC_LAST_STICK = MIXSRC_Ail,
-  MIXSRC_FIRST_POT,
+  MIXSRC_LAST_STICK SKIP = MIXSRC_Ail,
+  MIXSRC_FIRST_POT SKIP,
 #if defined(PCBHORUS)
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
   MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
@@ -603,7 +603,7 @@ enum MixSources {
   MIXSRC_EXT1,                          LUA_EXPORT("ext1", "Ext 1")
   MIXSRC_EXT2,                          LUA_EXPORT("ext2", "Ext 2")
 #endif
-  MIXSRC_FIRST_SLIDER,
+  MIXSRC_FIRST_SLIDER SKIP,
 #if defined(PCBX12S)
   MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
   MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
@@ -613,7 +613,7 @@ enum MixSources {
   MIXSRC_LS = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("ls", "Left slider")
   MIXSRC_RS,                            LUA_EXPORT("rs", "Right slider")
 #endif
-  MIXSRC_LAST_POT = MIXSRC_RS,
+  MIXSRC_LAST_POT SKIP = MIXSRC_RS,
 #elif defined(PCBX9E)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
@@ -624,27 +624,27 @@ enum MixSources {
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider (X9E only)")
   MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider (X9E only)")
-  MIXSRC_LAST_POT = MIXSRC_SLIDER4,
+  MIXSRC_LAST_POT SKIP = MIXSRC_SLIDER4,
 #elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBNV14)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
-  MIXSRC_LAST_POT = MIXSRC_POT2,
+  MIXSRC_LAST_POT SKIP = MIXSRC_POT2,
 #elif defined(PCBX9LITE)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
-  MIXSRC_LAST_POT = MIXSRC_POT1,
+  MIXSRC_LAST_POT SKIP = MIXSRC_POT1,
 #elif defined(PCBTARANIS)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
-  MIXSRC_FIRST_SLIDER,
+  MIXSRC_FIRST_SLIDER SKIP,
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
-  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
+  MIXSRC_LAST_POT SKIP = MIXSRC_SLIDER2,
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
   MIXSRC_P3,
-  MIXSRC_LAST_POT = MIXSRC_P3,
+  MIXSRC_LAST_POT SKIP = MIXSRC_P3,
 #endif
 
 #if defined(PCBHORUS)
@@ -657,15 +657,15 @@ enum MixSources {
   MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
-  MIXSRC_MAX,
+  MIXSRC_MAX SKIP,
 
-  MIXSRC_FIRST_HELI,
+  MIXSRC_FIRST_HELI SKIP,
   MIXSRC_CYC1 = MIXSRC_FIRST_HELI,     LUA_EXPORT("cyc1", "Cyclic 1")
   MIXSRC_CYC2,                         LUA_EXPORT("cyc2", "Cyclic 2")
   MIXSRC_CYC3,                         LUA_EXPORT("cyc3", "Cyclic 3")
   MIXSRC_LAST_HELI = MIXSRC_CYC3,
 
-  MIXSRC_FIRST_TRIM,
+  MIXSRC_FIRST_TRIM SKIP,
   MIXSRC_TrimRud = MIXSRC_FIRST_TRIM,  LUA_EXPORT("trim-rud", "Rudder trim")
   MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
   MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
@@ -673,12 +673,12 @@ enum MixSources {
 #if defined(PCBHORUS)
   MIXSRC_TrimT5,                       LUA_EXPORT("trim-t5", "Aux trim T5")
   MIXSRC_TrimT6,                       LUA_EXPORT("trim-t6", "Aux trim T6")
-  MIXSRC_LAST_TRIM = MIXSRC_TrimT6,
+  MIXSRC_LAST_TRIM SKIP = MIXSRC_TrimT6,
 #else
-  MIXSRC_LAST_TRIM = MIXSRC_TrimAil,
+  MIXSRC_LAST_TRIM SKIP = MIXSRC_TrimAil,
 #endif
 
-  MIXSRC_FIRST_SWITCH,
+  MIXSRC_FIRST_SWITCH SKIP,
 
 #if defined(HARDWARE_SWITCH_A)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
@@ -739,14 +739,14 @@ enum MixSources {
   MIXSRC_GEA,
   MIXSRC_TRN,
 #endif
-  MIXSRC_FIRST_LOGICAL_SWITCH,
+  MIXSRC_FIRST_LOGICAL_SWITCH SKIP,
   MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", MAX_LOGICAL_SWITCHES)
-  MIXSRC_LAST_LOGICAL_SWITCH = MIXSRC_FIRST_LOGICAL_SWITCH+MAX_LOGICAL_SWITCHES-1,
+  MIXSRC_LAST_LOGICAL_SWITCH SKIP = MIXSRC_FIRST_LOGICAL_SWITCH+MAX_LOGICAL_SWITCHES-1,
 
-  MIXSRC_FIRST_TRAINER,                     LUA_EXPORT_MULTIPLE("trn", "Trainer input %d", MAX_TRAINER_CHANNELS)
-  MIXSRC_LAST_TRAINER = MIXSRC_FIRST_TRAINER+MAX_TRAINER_CHANNELS-1,
+  MIXSRC_FIRST_TRAINER SKIP,                LUA_EXPORT_MULTIPLE("trn", "Trainer input %d", MAX_TRAINER_CHANNELS)
+  MIXSRC_LAST_TRAINER SKIP = MIXSRC_FIRST_TRAINER+MAX_TRAINER_CHANNELS-1,
 
-  MIXSRC_FIRST_CH,
+  MIXSRC_FIRST_CH SKIP,
   MIXSRC_CH1 = MIXSRC_FIRST_CH,             LUA_EXPORT_MULTIPLE("ch", "Channel CH%d", MAX_OUTPUT_CHANNELS)
   MIXSRC_CH2,
   MIXSRC_CH3,
@@ -763,32 +763,32 @@ enum MixSources {
   MIXSRC_CH14,
   MIXSRC_CH15,
   MIXSRC_CH16,
-  MIXSRC_LAST_CH = MIXSRC_CH1+MAX_OUTPUT_CHANNELS-1,
+  MIXSRC_LAST_CH SKIP = MIXSRC_CH1+MAX_OUTPUT_CHANNELS-1,
 
-  MIXSRC_FIRST_GVAR,
+  MIXSRC_FIRST_GVAR SKIP,
   MIXSRC_GVAR1 = MIXSRC_FIRST_GVAR,         LUA_EXPORT_MULTIPLE("gvar", "Global variable %d", MAX_GVARS)
-  MIXSRC_LAST_GVAR = MIXSRC_FIRST_GVAR+MAX_GVARS-1,
+  MIXSRC_LAST_GVAR SKIP = MIXSRC_FIRST_GVAR+MAX_GVARS-1,
 
   MIXSRC_TX_VOLTAGE,                        LUA_EXPORT("tx-voltage", "Transmitter battery voltage [volts]")
   MIXSRC_TX_TIME,                           LUA_EXPORT("clock", "RTC clock [minutes from midnight]")
 #if defined(INTERNAL_GPS)
   MIXSRC_TX_GPS,
-  MIXSRC_FIRST_RESERVE,
+  MIXSRC_FIRST_RESERVE SKIP,
 #else
-  MIXSRC_FIRST_RESERVE,
-  MIXSRC_RESERVE2,
+  MIXSRC_FIRST_RESERVE SKIP,
+  MIXSRC_RESERVE2 SKIP,
 #endif
-  MIXSRC_RESERVE3,
-  MIXSRC_RESERVE4,
-  MIXSRC_LAST_RESERVE,
-  MIXSRC_FIRST_TIMER,
+  MIXSRC_RESERVE3 SKIP,
+  MIXSRC_RESERVE4 SKIP,
+  MIXSRC_LAST_RESERVE SKIP,
+  MIXSRC_FIRST_TIMER SKIP,
   MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT("timer1", "Timer 1 value [seconds]")
   MIXSRC_TIMER2,                            LUA_EXPORT("timer2", "Timer 2 value [seconds]")
   MIXSRC_TIMER3,                            LUA_EXPORT("timer3", "Timer 3 value [seconds]")
-  MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
+  MIXSRC_LAST_TIMER SKIP = MIXSRC_TIMER3,
 
-  MIXSRC_FIRST_TELEM,                       LUA_EXPORT_MULTIPLE("telem", "Telemetry sensor %d", MAX_TELEMETRY_SENSORS)
-  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
+  MIXSRC_FIRST_TELEM SKIP,                  LUA_EXPORT_MULTIPLE("telem", "Telemetry sensor %d", MAX_TELEMETRY_SENSORS)
+  MIXSRC_LAST_TELEM SKIP = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 };
 
 #if defined(__cplusplus)

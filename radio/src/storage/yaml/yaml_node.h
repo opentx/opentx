@@ -38,6 +38,9 @@ struct YamlNode
     typedef bool (*uint_to_cust_func)(const YamlNode* node, uint32_t val, yaml_writer_func wf, void* opaque);
 
     typedef uint8_t (*select_member_func)(uint8_t* data, uint32_t bitoffs);
+
+    typedef uint32_t (*cust_idx_read_func)(const char* val, uint8_t val_len);
+    typedef bool (*cust_idx_write_func)(uint32_t idx, yaml_writer_func wf, void* opaque);
     
     uint8_t      type;
     uint32_t     size;  // bits
@@ -63,6 +66,11 @@ struct YamlNode
             cust_to_uint_func cust_to_uint;
             uint_to_cust_func uint_to_cust;
         } _cust;
+
+        struct {
+            cust_idx_read_func  read;
+            cust_idx_write_func write;
+        } _cust_idx;
     } u;
 };
 
@@ -71,7 +79,10 @@ struct YamlNode
     .tag_len=(sizeof(str)-1), .tag=(str)
 
 #define YAML_IDX                                \
-    { .type=YDT_IDX , .size=0, YAML_TAG("idx") }
+    { .type=YDT_IDX, .size=0, YAML_TAG("idx") }
+
+#define YAML_IDX_CUST(tag, f_read, f_write)                             \
+    { .type=YDT_IDX, .size=0, YAML_TAG(tag), .u={._cust_idx={.read=(f_read), .write=(f_write) }} }
 
 #define YAML_SIGNED(tag, bits)                          \
     { .type=YDT_SIGNED, .size=(bits), YAML_TAG(tag) }

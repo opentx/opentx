@@ -15,7 +15,7 @@ static void copy_string(char* dst, const char* src, uint8_t len)
     dst[len] = '\0';
 }
 
-static uint32_t parse_enum(const struct YamlIdStr* choices, const char* val, uint8_t val_len)
+uint32_t yaml_parse_enum(const struct YamlIdStr* choices, const char* val, uint8_t val_len)
 {
     while (choices->str) {
 
@@ -56,7 +56,7 @@ static void yaml_set_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* node,
             : yaml_str2uint(val, val_len);
         break;
     case YDT_ENUM:
-        i = parse_enum(node->u._enum.choices, val, val_len);
+        i = yaml_parse_enum(node->u._enum.choices, val, val_len);
         break;
     default:
         break;
@@ -65,7 +65,7 @@ static void yaml_set_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* node,
     yaml_put_bits(ptr, i, bit_ofs, node->size);
 }
 
-static const char* yaml_output_enum(int32_t i, const struct YamlIdStr* choices)
+const char* yaml_output_enum(int32_t i, const struct YamlIdStr* choices)
 {
     //TRACE("<choice = %d>", i);
     while(choices->str) {
@@ -390,12 +390,19 @@ void YamlTreeWalker::setAttrValue(char* buf, uint8_t len)
     if (!buf || !len)
         return;
 
-    if (getAttr()->type == YDT_IDX) {
-        uint32_t i = yaml_str2uint(buf, len);
+    const YamlNode* attr = getAttr();
+    if (attr->type == YDT_IDX) {
+
+        uint32_t i = 0;
+        if (attr->u._cust_idx.read)
+            i = attr->u._cust_idx.read(buf, len);
+        else
+            i = yaml_str2uint(buf, len);
+
         while ((i > getElmts()) && toNextElmt());
     }
     else {
-        yaml_set_attr(data, getBitOffset(), getAttr(), buf, len);
+        yaml_set_attr(data, getBitOffset(), attr, buf, len);
         //walker.dump_stack();
     }
 }
@@ -537,12 +544,21 @@ bool YamlTreeWalker::generate(yaml_writer_func wf, void* opaque)
 
         if (attr->type == YDT_IDX) {
 
-            if (!wf(opaque, "idx: ", 5))
+            if (!wf(opaque, attr->tag, attr->tag_len))
                 return false;
 
-            char* idx = yaml_unsigned2str(getElmts());
-            if (!wf(opaque, idx, strlen(idx)))
+            if (!wf(opaque, ": ", 2))
                 return false;
+
+            if (attr->u._cust_idx.write) {
+                if (!attr->u._cust_idx.write(getElmts(),wf,opaque))
+                    return false;
+            }
+            else {
+                char* idx = yaml_unsigned2str(getElmts());
+                if (!wf(opaque, idx, strlen(idx)))
+                    return false;
+            }
 
             if (!wf(opaque, "\r\n", 2))
                 return false;
