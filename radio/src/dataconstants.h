@@ -584,7 +584,7 @@ enum SwitchSources {
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
 
 enum MixSources {
-  MIXSRC_NONE SKIP,
+  MIXSRC_NONE,
 
   MIXSRC_FIRST_INPUT SKIP,              LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
   MIXSRC_LAST_INPUT SKIP = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
@@ -661,7 +661,7 @@ enum MixSources {
   MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
-  MIXSRC_MAX SKIP,
+  MIXSRC_MAX,
 
   MIXSRC_FIRST_HELI SKIP,
   MIXSRC_CYC1 = MIXSRC_FIRST_HELI,     LUA_EXPORT("cyc1", "Cyclic 1")

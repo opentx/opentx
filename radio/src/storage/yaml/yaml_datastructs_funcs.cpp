@@ -36,28 +36,51 @@ static bool in_write_weight(const YamlNode* node, uint32_t val, yaml_writer_func
     
     if (sval > GVAR_SMALL-11 && sval < GVAR_SMALL-1) {
         char n = GVAR_SMALL - sval + '0';
-        if (!wf(opaque, "-GV", 3)
-            || !wf(opaque, &n, 1)
-            || !wf(opaque, "\r\n", 2))
-            return false;
-        return true;
+        return wf(opaque, "-GV", 3) && wf(opaque, &n, 1);
     }
     else if (sval < -GVAR_SMALL+11 && sval > -GVAR_SMALL+1) {
         char n = val - GVAR_SMALL + '1';
-        if (!wf(opaque, "GV", 2)
-            || !wf(opaque, &n, 1)
-            || !wf(opaque, "\r\n", 2))
-            return false;
-        return true;
+        return wf(opaque, "GV", 2) && wf(opaque, &n, 1);
     }
 
     char* s = yaml_signed2str(sval);
-    if (!wf(opaque, s, strlen(s))
-        || !wf(opaque, "\r\n", 2))
-        return false;
-    return true;
+    return wf(opaque, s, strlen(s));
 }
 
+extern const struct YamlIdStr enum_MixSources[];
+
+static uint32_t r_mixSrcRaw(const YamlNode* node, const char* val, uint8_t val_len)
+{
+    if (val_len > 0 && val[0] == 'I') {
+        return yaml_str2uint(val+1, val_len-1) + MIXSRC_FIRST_INPUT;
+    }
+
+    return yaml_parse_enum(enum_MixSources, val, val_len);
+}
+
+static bool w_mixSrcRaw(const YamlNode* node, uint32_t val, yaml_writer_func wf, void* opaque)
+{
+    const char* str = nullptr;
+
+    if (val >= MIXSRC_FIRST_INPUT
+        && val <= MIXSRC_LAST_INPUT) {
+
+        if (!wf(opaque, "I", 1))
+            return false;
+
+        str = yaml_unsigned2str(val - MIXSRC_FIRST_INPUT);
+    }
+    else {
+        str = yaml_output_enum(val, enum_MixSources);
+    }
+
+    if (str) {
+        return wf(opaque, str, strlen(str));
+    }
+
+    return true;
+}
+    
 static uint8_t select_zov(uint8_t* data, uint32_t bitoffs)
 {
     data += bitoffs >> 3UL;
@@ -125,8 +148,6 @@ static uint8_t select_sensor_cfg(uint8_t* data, uint32_t bitoffs)
     // always use 'param'
     return 5;
 }
-
-extern const struct YamlIdStr enum_MixSources[];
 
 static uint32_t sw_read(const char* val, uint8_t val_len)
 {
