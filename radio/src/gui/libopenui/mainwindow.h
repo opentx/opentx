@@ -42,7 +42,7 @@ class MainWindow: public Window {
     }
 #endif
 
-    void checkEvents(bool trash=true);
+    void checkEventsMW(bool trash=true);
 
     void invalidate()
     {

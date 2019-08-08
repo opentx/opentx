@@ -40,7 +40,7 @@ void MainWindow::emptyTrash()
   trash.clear();
 }
 
-void MainWindow::checkEvents(bool trash)
+void MainWindow::checkEventsMW(bool trash)
 {
 #if defined(HARDWARE_TOUCH)
   if (touchState.Event == TE_DOWN) {
@@ -107,7 +107,7 @@ bool MainWindow::refresh()
 
 void MainWindow::run(bool trash)
 {
-  checkEvents(trash);
+  checkEventsMW(trash);
   if (refresh()) {
     lcdRefresh();
   }
