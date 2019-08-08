@@ -26,7 +26,17 @@
 
 #if defined(LUA_EXPORT_GENERATION)
 // no includes
-#elif defined(STM32F4)
+#else
+
+#if __clang__
+// clang is very picky about the use of "register"
+// Tell clang to ignore the warnings for the following files
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+#endif
+
+#if defined(STM32F4)
+
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
@@ -62,20 +72,15 @@
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
 #endif
 
-#if defined(__cplusplus) && !defined(SIMU)
-extern "C" {
-#endif
-
-#if __clang__
-// clang is very picky about the use of "register"
-// Tell clang to ignore the warnings for the following files
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#endif
-
 #if __clang__
 // Restore warnings about registers
 #pragma clang diagnostic pop
+#endif
+
+#endif
+
+#if defined(__cplusplus) && !defined(SIMU)
+extern "C" {
 #endif
 
 #include "usb_driver.h"
