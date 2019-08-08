@@ -249,9 +249,11 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 inline uint8_t EXTERNAL_MODULE_MODE_ROWS() {
   if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
     return 1;
+#if defined(MULTIMODULE)
   else if (isModuleMultimodule(EXTERNAL_MODULE)) {
     return 2 + MULTIMODULE_RFPROTO_ROWS(EXTERNAL_MODULE);
   }
+#endif
   else
     return 0;
 }
@@ -907,14 +909,14 @@ void menuModelSetup(event_t event)
 #endif
             }
           }
-#if POPUP_LEVEL > 1          
+#if POPUP_LEVEL > 1
           else if (old_editMode > 0) {
             if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
                 POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN_LINE1);
                 SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
               }
-#if POPUP_LEVEL >= 3              
+#if POPUP_LEVEL >= 3
               else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
                 POPUP_WARNING(STR_R9M_PROTO_EU_WARN_LINE1);
                 SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
@@ -923,10 +925,10 @@ void menuModelSetup(event_t event)
                 POPUP_WARNING(STR_R9M_PROTO_FCC_WARN_LINE1);
                 SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
               }
-#endif              
+#endif
             }
           }
-#endif          
+#endif
         }
         break;
 
