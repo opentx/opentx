@@ -214,6 +214,7 @@ void ViewMain::onKeyEvent(event_t event)
       menu->addLine(STR_ABOUT_US, [=]() {
           // TODO
       });
+      killEvents(event);
   }
 }
 #endif
