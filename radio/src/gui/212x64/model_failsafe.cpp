@@ -129,11 +129,11 @@ void menuModelFailsafe(event_t event)
 
       const coord_t xValue = x - barW;
       if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-        lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
+        lcdDrawText(xValue, y, STR_HOLD_UPPERCASE, RIGHT|flags);
         failsafeValue = 0;
       }
       else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-        lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
+        lcdDrawText(xValue, y, STR_NONE_UPPERCASE, RIGHT|flags);
         failsafeValue = 0;
       }
       else {
