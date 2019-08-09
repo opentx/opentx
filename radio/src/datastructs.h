@@ -778,8 +778,8 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t unexpectedShutdown:1);
   NOBACKUP(uint8_t speakerPitch);
   NOBACKUP(int8_t speakerVolume);
-  NOBACKUP(int8_t vBatMin);
-  NOBACKUP(int8_t vBatMax);
+  NOBACKUP(int8_t vBatMin CUST(r_vbat_min,w_vbat_min));
+  NOBACKUP(int8_t vBatMax CUST(r_vbat_max,w_vbat_max));
 
   NOBACKUP(uint8_t  backlightBright);
   NOBACKUP(uint32_t globalTimer);

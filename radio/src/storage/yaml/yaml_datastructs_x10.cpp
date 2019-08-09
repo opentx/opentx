@@ -28,6 +28,7 @@ const struct YamlIdStr enum_Functions[] = {
   {  FUNC_HAPTIC, "HAPTIC"  },
   {  FUNC_LOGS, "LOGS"  },
   {  FUNC_BACKLIGHT, "BACKLIGHT"  },
+  {  FUNC_TEST, "TEST"  },
   {  FUNC_MAX, "MAX"  },
   {  0, NULL  }
 };
@@ -257,8 +258,8 @@ static const struct YamlNode struct_RadioData[] = {
   YAML_UNSIGNED( "unexpectedShutdown", 1 ),
   YAML_UNSIGNED( "speakerPitch", 8 ),
   YAML_SIGNED( "speakerVolume", 8 ),
-  YAML_SIGNED( "vBatMin", 8 ),
-  YAML_SIGNED( "vBatMax", 8 ),
+  YAML_SIGNED_CUST( "vBatMin", 8, r_vbat_min, w_vbat_min ),
+  YAML_SIGNED_CUST( "vBatMax", 8, r_vbat_max, w_vbat_max ),
   YAML_UNSIGNED( "backlightBright", 8 ),
   YAML_UNSIGNED( "globalTimer", 32 ),
   YAML_UNSIGNED( "bluetoothBaudrate", 4 ),

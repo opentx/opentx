@@ -80,7 +80,31 @@ static bool w_mixSrcRaw(const YamlNode* node, uint32_t val, yaml_writer_func wf,
 
     return true;
 }
-    
+
+static uint32_t r_vbat_min(const YamlNode* node, const char* val, uint8_t val_len)
+{
+    int32_t v = yaml_str2int(val, val_len);
+    return (uint32_t)(v - 90);
+}
+
+static bool w_vbat_min(const YamlNode* node, uint32_t val, yaml_writer_func wf, void* opaque)
+{
+    char* s = yaml_signed2str(yaml_to_signed(val,node->size) + 90);
+    return wf(opaque, s, strlen(s));
+}
+
+static uint32_t r_vbat_max(const YamlNode* node, const char* val, uint8_t val_len)
+{
+    int32_t v = yaml_str2int(val, val_len);
+    return (uint32_t)(v - 120);
+}
+
+static bool w_vbat_max(const YamlNode* node, uint32_t val, yaml_writer_func wf, void* opaque)
+{
+    char* s = yaml_signed2str(yaml_to_signed(val,node->size) + 120);
+    return wf(opaque, s, strlen(s));
+}
+
 static uint8_t select_zov(uint8_t* data, uint32_t bitoffs)
 {
     data += bitoffs >> 3UL;
