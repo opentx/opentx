@@ -241,6 +241,7 @@ char * getGVarString(char * dest, int idx)
   return dest;
 }
 
+#if !defined(PCBSKY9X)
 char * getSwitchName(char * dest, swsrc_t idx)
 {
   div_t swinfo = switchInfo(idx);
@@ -267,6 +268,7 @@ char * getSwitchName(char * dest, swsrc_t idx)
   }
   return dest;
 }
+#endif
 
 char * getSwitchString(char * dest, swsrc_t idx)
 {
