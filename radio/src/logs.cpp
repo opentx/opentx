@@ -28,10 +28,10 @@ uint8_t logDelay;
 void writeHeader();
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-#define GET_SWITCH_STATE(sw)  (getValue(MIXSRC_FIRST_SWITCH+sw) < 0 ? -1 : getValue(MIXSRC_FIRST_SWITCH+sw) > 0 ? 1 : 0)
+  #define GET_SWITCH_STATE(sw)  (getValue(MIXSRC_FIRST_SWITCH+sw) < 0 ? -1 : getValue(MIXSRC_FIRST_SWITCH+sw) > 0 ? 1 : 0)
 #else
-#define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
-#define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
+  #define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
+  #define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
 #endif
 
 void logsInit()
