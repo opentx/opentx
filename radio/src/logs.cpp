@@ -28,13 +28,11 @@ uint8_t logDelay;
 void writeHeader();
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define GET_2POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
+#define GET_SWITCH_STATE(sw)  (getValue(MIXSRC_FIRST_SWITCH+sw) < 0 ? -1 : getValue(MIXSRC_FIRST_SWITCH+sw) > 0 ? 1 : 0)
 #else
-  #define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
-#endif
-
+#define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
 #define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
-
+#endif
 
 void logsInit()
 {
@@ -166,18 +164,18 @@ void writeHeader()
     }
     f_putc(',', &g_oLogFile);
   }
-#if defined(PCBX7)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
-#elif defined(PCBXLITE)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD"
-#elif defined(PCBXLITES)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF"
-#elif defined(PCBX9LITE)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SE,SF"
-#else
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
-#endif
-  f_puts(STR_SWITCHES_LOG_HEADER ",LSW,", &g_oLogFile);
+
+  for(uint8_t i=0; i<NUM_SWITCHES; i++) {
+    if (SWITCH_EXISTS(i)) {
+      char s[LEN_SWITCH_NAME + 2];
+      char * temp;
+      temp = getSwitchName(s, SWSRC_FIRST_SWITCH + i * 3);
+      *temp++ = ',';
+      *temp = '\0';
+      f_puts(s, &g_oLogFile);
+    }
+  }
+  f_puts("LSW,", &g_oLogFile);
 #else
   f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN,", &g_oLogFile);
 #endif
@@ -272,46 +270,13 @@ void logsWrite()
         f_printf(&g_oLogFile, "%d,", calibratedAnalogs[i]);
       }
 
-// TODO: use hardware config to populate
-#if defined(PCBX9LITE)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_2POS_STATE(SD),
-          GET_2POS_STATE(SE),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
-#elif defined(PCBXLITE)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_3POS_STATE(SD),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
-#elif defined(PCBX7)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_3POS_STATE(SD),
-          GET_2POS_STATE(SF),
-          GET_2POS_STATE(SH),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_3POS_STATE(SD),
-          GET_3POS_STATE(SE),
-          GET_2POS_STATE(SF),
-          GET_3POS_STATE(SG),
-          GET_2POS_STATE(SH),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+      for(uint8_t i=0; i<NUM_SWITCHES; i++) {
+        if (SWITCH_EXISTS(i)) {
+          f_printf(&g_oLogFile, "%d,", GET_SWITCH_STATE(i));
+        }
+      }
+      f_printf(&g_oLogFile, "0x%08X%08X,", getLogicalSwitchesStates(32), getLogicalSwitchesStates(0));
 #else
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,",
           GET_2POS_STATE(THR),
