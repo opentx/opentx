@@ -194,7 +194,7 @@ PACK(struct FlightModeData {
   int16_t spare:7 SKIP;
   uint8_t fadeIn;
   uint8_t fadeOut;
-  gvar_t gvars[MAX_GVARS];
+  gvar_t gvars[MAX_GVARS] FUNC(gvar_is_active);
 });
 
 /*
@@ -599,7 +599,7 @@ PACK(struct ModelData {
   LogicalSwitchData logicalSw[MAX_LOGICAL_SWITCHES];
   CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS] FUNC(cfn_is_active);
   SwashRingData swashR;
-  FlightModeData flightModeData[MAX_FLIGHT_MODES];
+  FlightModeData flightModeData[MAX_FLIGHT_MODES] FUNC(fmd_is_active);
 
   NOBACKUP(uint8_t thrTraceSrc);
 

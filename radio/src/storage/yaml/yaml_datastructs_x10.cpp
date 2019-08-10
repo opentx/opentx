@@ -426,7 +426,7 @@ static const struct YamlNode struct_FlightModeData[] = {
   YAML_PADDING( 7 ),
   YAML_UNSIGNED( "fadeIn", 8 ),
   YAML_UNSIGNED( "fadeOut", 8 ),
-  YAML_ARRAY("gvars", 16, 9, struct_signed_16, NULL),
+  YAML_ARRAY("gvars", 16, 9, struct_signed_16, gvar_is_active),
   YAML_END
 };
 static const struct YamlNode struct_GVarData[] = {
@@ -672,7 +672,7 @@ static const struct YamlNode struct_ModelData[] = {
   YAML_ARRAY("logicalSw", 72, 64, struct_LogicalSwitchData, NULL),
   YAML_ARRAY("customFn", 72, 64, struct_CustomFunctionData, cfn_is_active),
   YAML_STRUCT("swashR", 64, struct_SwashRingData, NULL),
-  YAML_ARRAY("flightModeData", 352, 9, struct_FlightModeData, NULL),
+  YAML_ARRAY("flightModeData", 352, 9, struct_FlightModeData, fmd_is_active),
   YAML_UNSIGNED( "thrTraceSrc", 8 ),
   YAML_UNSIGNED( "switchWarningState", 32 ),
   YAML_ARRAY("gvars", 56, 9, struct_GVarData, NULL),

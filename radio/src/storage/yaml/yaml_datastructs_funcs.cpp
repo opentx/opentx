@@ -251,3 +251,28 @@ static bool cfn_is_active(uint8_t* data, uint32_t bitoffs)
     data += bitoffs >> 3UL;
     return ((CustomFunctionData*)data)->swtch;
 }
+
+static bool gvar_is_active(uint8_t* data, uint32_t bitoffs)
+{
+    gvar_t* gvar = (gvar_t*)(data + (bitoffs>>3UL));
+    return *gvar != GVAR_MAX+1;
+}
+
+static bool fmd_is_active(uint8_t* data, uint32_t bitoffs)
+{
+    uint32_t data_ofs = bitoffs >> 3UL;
+    if (data_ofs == offsetof(ModelData, flightModeData)) {
+        return !yaml_is_zero(data, bitoffs, sizeof(FlightModeData)*8);
+    }
+
+    bool is_active = !yaml_is_zero(data, bitoffs,
+                                   (sizeof(FlightModeData)
+                                    - sizeof(FlightModeData::gvars))*8);
+
+    FlightModeData* fmd = (FlightModeData*)(data + data_ofs);
+    for (uint8_t i=0; i<MAX_GVARS; i++) {
+        is_active |= fmd->gvars[i] != GVAR_MAX+1;
+    }
+
+    return is_active;
+}
