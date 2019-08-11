@@ -167,11 +167,10 @@ void writeHeader()
 
   for(uint8_t i=0; i<NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
-      char s[LEN_SWITCH_NAME + 2];
+      char s[LEN_SWITCH_NAME + 2] = {0};
       char * temp;
       temp = getSwitchName(s, SWSRC_FIRST_SWITCH + i * 3);
-      *temp++ = ',';
-      *temp = '\0';
+      *temp = ',';
       f_puts(s, &g_oLogFile);
     }
   }
