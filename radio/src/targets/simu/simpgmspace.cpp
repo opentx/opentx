@@ -719,3 +719,21 @@ uint16_t getCurrent()
 void calcConsumption()
 {
 }
+
+#if defined(HEADPHONE_TRAINER_SWITCH_GPIO)
+void enableHeadphone()
+{
+}
+
+void enableTrainer()
+{
+}
+
+void enableSpeaker()
+{
+}
+
+void disableSpeaker()
+{
+}
+#endif
