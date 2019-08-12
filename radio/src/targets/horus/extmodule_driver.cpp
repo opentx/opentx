@@ -69,21 +69,25 @@ void extmodulePpmStart()
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop timer
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   EXTMODULE_TIMER->ARR = 45000;
+
 #if defined(PCBX10) || PCBREV >= 13
+  EXTMODULE_TIMER->CCR3 = GET_MODULE_PPM_DELAY(EXTERNAL_MODULE)*2;
+  EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_MODULE_PPM_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC3P : 0);
   EXTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2; // PWM mode 1
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE;
   EXTMODULE_TIMER->EGR = 1; // Reloads register values now
-  EXTMODULE_TIMER->DIER = TIM_DIER_UDE; // Update DMA request
-  EXTMODULE_TIMER->CR1 = TIM_CR1_CEN; // Start timer
 #else
   EXTMODULE_TIMER->CCR1 = GET_MODULE_PPM_DELAY(EXTERNAL_MODULE)*2;
   EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | (GET_MODULE_PPM_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC1P : 0);
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
   EXTMODULE_TIMER->EGR = 1; // Reloads register values now
-  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Update DMA request
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE; // PWM mode 1
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN; // Start timer
 #endif
+
+  EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE | TIM_DIER_CC2IE; // Enable this interrupt
+  EXTMODULE_TIMER->CR1 = TIM_CR1_CEN; // Start timer
 
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
@@ -91,6 +95,7 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
 }
 
+#if defined(PXX1)
 void extmodulePxx1PulsesStart()
 {
   EXTERNAL_MODULE_ON();
@@ -115,25 +120,27 @@ void extmodulePxx1PulsesStart()
   EXTMODULE_TIMER->CCR3 = 18;
   EXTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_0; // Force O/P high
   EXTMODULE_TIMER->EGR = 1; // Restart
-  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2;
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 #else
   EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P | TIM_CCER_CC1NE | TIM_CCER_CC1NP; //  TIM_CCER_CC1E | TIM_CCER_CC1P;
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 18;
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
   EXTMODULE_TIMER->EGR = 1; // Restart
-  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 #endif
+
+  EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE | TIM_DIER_CC2IE; // Enable DMA on update
+  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
 }
+#endif
 
 void extmoduleInvertedSerialStart(uint32_t baudrate)
 {
@@ -142,7 +149,6 @@ void extmoduleInvertedSerialStart(uint32_t baudrate)
   // TODO
 }
 
-#if defined(DSM2)
 void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
 {
   EXTERNAL_MODULE_ON();
@@ -167,26 +173,26 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool i
   EXTMODULE_TIMER->CCR3 = 0;
   EXTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_0; // Force O/P high
   EXTMODULE_TIMER->EGR = 1; // Restart
-  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_0;
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 #else
   EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P;
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 0;
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
   EXTMODULE_TIMER->EGR = 1; // Restart
-  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 #endif
+
+  EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE | TIM_DIER_CC2IE;
+  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
 }
-#endif
 
 #if defined(EXTMODULE_USART)
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
