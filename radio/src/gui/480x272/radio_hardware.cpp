@@ -50,8 +50,8 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SG,
   ITEM_RADIO_HARDWARE_SH,
-  ITEM_RADIO_HARDWARE_GMBL,
-  ITEM_RADIO_HARDWARE_GMBR,
+  ITEM_RADIO_HARDWARE_SI, // Gimbal switch left
+  ITEM_RADIO_HARDWARE_SJ, // Gimbal switch right
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
@@ -73,7 +73,7 @@ enum MenuRadioHardwareItems {
 #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0)
 
 // TODO should be moved to the HAL
-#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_GMBL-MIXSRC_FIRST_SWITCH == sw || MIXSRC_GMBR-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 
 bool menuRadioHardware(event_t event)
 {
@@ -165,8 +165,8 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_SF:
       case ITEM_RADIO_HARDWARE_SG:
       case ITEM_RADIO_HARDWARE_SH:
-      case ITEM_RADIO_HARDWARE_GMBL:
-      case ITEM_RADIO_HARDWARE_GMBR:
+      case ITEM_RADIO_HARDWARE_SI:
+      case ITEM_RADIO_HARDWARE_SJ:
       {
         int index = k - ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);

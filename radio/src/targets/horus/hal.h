@@ -117,23 +117,27 @@
 #define SWITCHES_GPIO_PIN_H             GPIO_Pin_7  // PG.07
 
 #if defined(PCBX10)
-  #define STORAGE_SWITCH_GMBL
-  #define HARDWARE_SWITCH_GMBL
-  #define SWITCHES_GPIO_REG_GMBL        GPIOH->IDR
-  #define SWITCHES_GPIO_PIN_GMBL        GPIO_Pin_14 // PH.14
-  #define STORAGE_SWITCH_GMBR
-  #define HARDWARE_SWITCH_GMBR
-  #define SWITCHES_GPIO_REG_GMBR        GPIOH->IDR
-  #define SWITCHES_GPIO_PIN_GMBR        GPIO_Pin_15 // PH.15
+  // Gimbal switch left
+  #define STORAGE_SWITCH_I
+  #define HARDWARE_SWITCH_I
+  #define SWITCHES_GPIO_REG_I        GPIOH->IDR
+  #define SWITCHES_GPIO_PIN_I        GPIO_Pin_14 // PH.14
+  // Gimbal switch right
+  #define STORAGE_SWITCH_J
+  #define HARDWARE_SWITCH_J
+  #define SWITCHES_GPIO_REG_J        GPIOH->IDR
+  #define SWITCHES_GPIO_PIN_J        GPIO_Pin_15 // PH.15
 #elif defined(PCBX12S)
-  #define STORAGE_SWITCH_GMBL
-  #define HARDWARE_SWITCH_GMBL
-  #define SWITCHES_GPIO_REG_GMBL        GPIOB->IDR
-  #define SWITCHES_GPIO_PIN_GMBL        GPIO_Pin_1 // PB.01
-  #define STORAGE_SWITCH_GMBR
-  #define HARDWARE_SWITCH_GMBR
-  #define SWITCHES_GPIO_REG_GMBR        GPIOB->IDR
-  #define SWITCHES_GPIO_PIN_GMBR        GPIO_Pin_0 // PB.00
+  // Gimbal switch left
+  #define STORAGE_SWITCH_I
+  #define HARDWARE_SWITCH_I
+  #define SWITCHES_GPIO_REG_I        GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_I        GPIO_Pin_1 // PB.01
+  // Gimbal switch right
+  #define STORAGE_SWITCH_J
+  #define HARDWARE_SWITCH_J
+  #define SWITCHES_GPIO_REG_J        GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_J        GPIO_Pin_0 // PB.00
 #endif
 
 // Trims
