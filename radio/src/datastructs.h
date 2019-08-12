@@ -81,7 +81,7 @@ PACK(struct MixData {
   uint16_t mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
   uint16_t spare:1 SKIP;
   int32_t  offset:14;
-  int32_t  swtch:9;
+  int32_t  swtch:9 CUST(r_swtchSrc,w_swtchSrc);
   uint32_t flightModes:9;
   CurveRef curve;
   uint8_t  delayUp;
@@ -101,7 +101,7 @@ PACK(struct ExpoData {
   uint16_t srcRaw:10 ENUM(MixSources);
   int16_t  carryTrim:6;
   uint32_t chn:5;
-  int32_t  swtch:9;
+  int32_t  swtch:9 CUST(r_swtchSrc,w_swtchSrc);
   uint32_t flightModes:9;
   int32_t  weight:8 CUST(in_read_weight,in_write_weight);
   int32_t  spare:1 SKIP;
@@ -154,7 +154,7 @@ PACK(struct LogicalSwitchData {
 #endif
 
 PACK(struct CustomFunctionData {
-  int16_t  swtch:9;
+  int16_t  swtch:9 CUST(r_swtchSrc,w_swtchSrc);
   uint16_t func:7 ENUM(Functions);
   PACK(union {
     NOBACKUP(PACK(struct {
@@ -190,7 +190,7 @@ typedef int16_t gvar_t;
 PACK(struct FlightModeData {
   trim_t trim[NUM_TRIMS];
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
-  int16_t swtch:9;       // swtch of phase[0] is not used
+  int16_t swtch:9 ENUM(SwitchSources) CUST(r_swtchSrc,w_swtchSrc); // swtch of phase[0] is not used
   int16_t spare:7 SKIP;
   uint8_t fadeIn;
   uint8_t fadeOut;
