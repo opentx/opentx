@@ -22,13 +22,16 @@
 #include "ff.h"
 
 FIL g_oLogFile __DMA;
-const char * g_logError = NULL;
+const char * g_logError = nullptr;
 uint8_t logDelay;
 
 void writeHeader();
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define GET_SWITCH_STATE(sw)  (getValue(MIXSRC_FIRST_SWITCH+sw) < 0 ? -1 : getValue(MIXSRC_FIRST_SWITCH+sw) > 0 ? 1 : 0)
+  int getSwitchState(uint8_t swtch) {
+    int value = getValue(MIXSRC_FIRST_SWITCH + swtch);
+    return (value == 0) ? 0 : (value < 0) ? -1 : +1;
+  }
 #else
   #define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
   #define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
@@ -106,7 +109,7 @@ const char * logsOpen()
     writeHeader();
   }
 
-  return NULL;
+  return nullptr;
 }
 
 tmr10ms_t lastLogTime = 0;
@@ -165,12 +168,13 @@ void writeHeader()
     f_putc(',', &g_oLogFile);
   }
 
-  for(uint8_t i=0; i<NUM_SWITCHES; i++) {
+  for (uint8_t i=0; i<NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
-      char s[LEN_SWITCH_NAME + 2] = {0};
+      char s[LEN_SWITCH_NAME + 2];
       char * temp;
       temp = getSwitchName(s, SWSRC_FIRST_SWITCH + i * 3);
-      *temp = ',';
+      *temp++ = ',';
+      *temp = '\0';
       f_puts(s, &g_oLogFile);
     }
   }
@@ -193,7 +197,7 @@ uint32_t getLogicalSwitchesStates(uint8_t first)
 
 void logsWrite()
 {
-  static const char * error_displayed = NULL;
+  static const char * error_displayed = nullptr;
 
   if (isFunctionActive(FUNCTION_LOGS) && logDelay > 0) {
     tmr10ms_t tmr10ms = get_tmr10ms();
@@ -202,7 +206,7 @@ void logsWrite()
 
       if (!g_oLogFile.obj.fs) {
         const char * result = logsOpen();
-        if (result != NULL) {
+        if (result) {
           if (result != error_displayed) {
             error_displayed = result;
             POPUP_WARNING(result);
@@ -270,9 +274,9 @@ void logsWrite()
       }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-      for(uint8_t i=0; i<NUM_SWITCHES; i++) {
+      for (uint8_t i=0; i<NUM_SWITCHES; i++) {
         if (SWITCH_EXISTS(i)) {
-          f_printf(&g_oLogFile, "%d,", GET_SWITCH_STATE(i));
+          f_printf(&g_oLogFile, "%d,", getSwitchState(i));
         }
       }
       f_printf(&g_oLogFile, "0x%08X%08X,", getLogicalSwitchesStates(32), getLogicalSwitchesStates(0));
@@ -298,7 +302,7 @@ void logsWrite()
     }
   }
   else {
-    error_displayed = NULL;
+    error_displayed = nullptr;
     if (g_oLogFile.obj.fs) {
       logsClose();
     }
