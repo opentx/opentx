@@ -241,7 +241,36 @@ char * getGVarString(char * dest, int idx)
   return dest;
 }
 
-char * getSwitchString(char * dest, swsrc_t idx)
+#if !defined(PCBSKY9X)
+char * getSwitchName(char * dest, swsrc_t idx)
+{
+  div_t swinfo = switchInfo(idx);
+  if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
+    dest += zchar2str(dest, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
+    // TODO tous zchar2str
+  }
+  else {
+    *dest++ = 'S';
+#if defined(PCBX7)
+    if (swinfo.quot >= 5)
+        *dest++ = 'H' + swinfo.quot - 5;
+      else if (swinfo.quot == 4)
+#if defined(RADIO_T12)
+        *dest++ = 'G';
+#else
+        *dest++ = 'F';
+#endif
+      else
+        *dest++ = 'A'+swinfo.quot;
+#else
+    *dest++ = 'A' + swinfo.quot;
+#endif
+  }
+  return dest;
+}
+#endif
+
+char * getSwitchPositionName(char * dest, swsrc_t idx)
 {
   if (idx == SWSRC_NONE) {
     return getStringAtIndex(dest, STR_VSWITCHES, 0);
@@ -267,27 +296,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
   #define IDX_ON_IN_STR_VSWITCHES      (IDX_TRIMS_IN_STR_VSWITCHES+SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM+1)
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
-    if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
-      s += zchar2str(s, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
-      // TODO tous zchar2str
-    }
-    else {
-      *s++ = 'S';
-#if defined(PCBX7)
-      if (swinfo.quot >= 5)
-        *s++ = 'H' + swinfo.quot - 5;
-      else if (swinfo.quot == 4)
-#if defined(RADIO_T12)
-        *s++ = 'G';
-#else
-        *s++ = 'F';
-#endif
-      else
-        *s++ = 'A'+swinfo.quot;
-#else
-      *s++ = 'A' + swinfo.quot;
-#endif
-    }
+    s = getSwitchName(s, idx);
     *s++ = "\300-\301"[swinfo.rem];
     *s = '\0';
   }
@@ -396,7 +405,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
     }
   }
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH) {
-    getSwitchString(dest, SWSRC_SW1 + idx - MIXSRC_SW1);
+    getSwitchPositionName(dest, SWSRC_SW1 + idx - MIXSRC_SW1);
   }
   else if (idx <= MIXSRC_LAST_TRAINER) {
     strAppendStringWithIndex(dest, STR_PPM_TRAINER, idx - MIXSRC_FIRST_TRAINER + 1);

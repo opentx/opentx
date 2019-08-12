@@ -35,7 +35,8 @@ char * strAppendStringWithIndex(char * dest, const char * s, int idx);
 char * getTimerString(char * dest, int32_t tme, uint8_t hours=0);
 char * getCurveString(char * dest, int idx);
 char * getGVarString(char * dest, int idx);
-char * getSwitchString(char * dest, swsrc_t idx);
+char * getSwitchPositionName(char * dest, swsrc_t idx);
+char * getSwitchName(char * dest, swsrc_t idx);
 char * getSourceString(char * dest, mixsrc_t idx);
 #endif
 
