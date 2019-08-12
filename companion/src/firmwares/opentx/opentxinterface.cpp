@@ -1211,9 +1211,8 @@ void registerOpenTxFirmwares()
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
 
-  /* FrSky Taranis X9D+ board */
+  /* FrSky Taranis X9D+ 2019 board */
   firmware = new OpenTxFirmware("opentx-x9d+2019", Firmware::tr("FrSky Taranis X9D+ 2019"), BOARD_TARANIS_X9DP_2019);
-  firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
