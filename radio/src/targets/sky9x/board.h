@@ -35,8 +35,8 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS               0x00400000
 
 // Board driver
-void boardInit(void);
-#define boardOff()  pwrOff()
+void boardInit();
+void boardOff();
 
 // Rotary Encoder driver
 void rotaryEncoderInit();
@@ -252,9 +252,11 @@ extern "C" {
 #if defined(WATCHDOG_DISABLED) || defined(SIMU)
   #define wdt_enable(x)
   #define wdt_reset()
+  #define IS_RESET_REASON_WATCHDOG()   false
 #else
   #define wdt_enable(x)                WDT->WDT_MR = 0x3FFF207F
   #define wdt_reset()                  WDT->WDT_CR = 0xA5000001
+  #define IS_RESET_REASON_WATCHDOG()   ((ResetReason & RSTC_SR_RSTTYP) == (2 << 8))
 #endif
 
 // Backlight driver

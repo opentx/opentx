@@ -198,7 +198,7 @@ void displayBattVoltage()
   putsVBat(VBATT_X-8, VBATT_Y+1, RIGHT);
   lcdDrawSolidFilledRect(VBATT_X-25, VBATT_Y+9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X-4, VBATT_Y+10, 3);
-  uint8_t count = GET_TXBATT_BARS();
+  uint8_t count = GET_TXBATT_BARS(20);
   for (uint8_t i=0; i<count; i+=2)
     lcdDrawSolidVerticalLine(VBATT_X-24+i, VBATT_Y+10, 3);
   if (!IS_TXBATT_WARNING() || BLINK_ON_PHASE)

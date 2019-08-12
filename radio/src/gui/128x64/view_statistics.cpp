@@ -157,7 +157,7 @@ void menuStatisticsDebug(event_t event)
   }
 
 #if defined(PCBSKY9X)
-  if ((ResetReason&RSTC_SR_RSTTYP) == (2<<8)) {
+  if (IS_RESET_REASON_WATCHDOG()) {
     lcdDrawText(LCD_W-8*FW, 0, "WATCHDOG");
   }
   else if (unexpectedShutdown) {

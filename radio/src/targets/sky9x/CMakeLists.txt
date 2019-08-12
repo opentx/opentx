@@ -82,6 +82,7 @@ endif()
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/loadboot.cpp
+  board.cpp
   core_cm3.c
   board_lowlevel.c
   crt.c
@@ -111,7 +112,6 @@ set(FIRMWARE_TARGET_SRC
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  board.cpp
   telemetry_driver.cpp
   adc_driver.cpp
   pulses_driver.cpp

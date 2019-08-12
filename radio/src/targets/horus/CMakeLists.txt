@@ -126,7 +126,6 @@ set(GVAR_SCREEN model_gvars.cpp)
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  board.cpp
   led_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
@@ -140,6 +139,7 @@ set(TARGET_SRC
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
+  board.cpp
   backlight_driver.cpp
   pwr_driver.cpp
   sdram_driver.c

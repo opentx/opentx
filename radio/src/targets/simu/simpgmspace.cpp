@@ -356,7 +356,7 @@ void * audioThread(void *)
   */
   if ( SDL_OpenAudio(&wanted, &have) < 0 ) {
     fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-    return 0;
+    return nullptr;
   }
   SDL_PauseAudio(0);
 
@@ -365,7 +365,7 @@ void * audioThread(void *)
     sleep(1);
   }
   SDL_CloseAudio();
-  return 0;
+  return nullptr;
 }
 
 void StartAudioThread(int volumeGain)
@@ -425,6 +425,18 @@ void telemetryPortInit(uint8_t baudrate)
 }
 
 void telemetryPortInit()
+{
+}
+
+void sportUpdatePowerOn()
+{
+}
+
+void sportUpdatePowerOff()
+{
+}
+
+void boardInit()
 {
 }
 
@@ -648,21 +660,80 @@ void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef * RTC_DateStruct)
   RTC_DateStruct->RTC_Date = timeinfo->tm_mday;
 }
 
+void unlockFlash()
+{
+}
 
-void unlockFlash() { }
-void lockFlash() { }
-void flashWrite(uint32_t *address, uint32_t *buffer) { simuSleep(100); }
-uint32_t isBootloaderStart(const uint8_t * block) { return 1; }
+void lockFlash()
+{
+}
+
+void flashWrite(uint32_t *address, uint32_t *buffer)
+{
+  simuSleep(100);
+}
+
+uint32_t isBootloaderStart(const uint8_t * block)
+{
+  return 1;
+}
 #endif // defined(STM32)
 
-#if defined(PCBHORUS)
-void LCD_ControlLight(uint16_t dutyCycle) { }
-#endif
-
 #if defined(PCBXLITES)
-bool isJackPlugged() { return false; }
+bool isJackPlugged()
+{
+  return false;
+}
 #endif
 
 void serialPrintf(const char * format, ...) { }
 void serialCrlf() { }
 void serialPutc(char c) { }
+
+uint16_t getBatteryVoltage()
+{
+  return (BATTERY_MAX + BATTERY_WARN) * 5;
+}
+
+void boardOff()
+{
+}
+
+#if defined(PCBHORUS) || defined(PCBTARANIS)
+HardwareOptions hardwareOptions;
+#endif
+
+uint32_t Master_frequency = 0;
+uint32_t Current_used = 0;
+uint16_t Current_max = 0;
+
+void setSticksGain(uint8_t)
+{
+}
+
+uint16_t getCurrent()
+{
+  return 10;
+}
+
+void calcConsumption()
+{
+}
+
+#if defined(HEADPHONE_TRAINER_SWITCH_GPIO)
+void enableHeadphone()
+{
+}
+
+void enableTrainer()
+{
+}
+
+void enableSpeaker()
+{
+}
+
+void disableSpeaker()
+{
+}
+#endif

@@ -271,7 +271,6 @@ set(SRC
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  board.cpp
   ${LED_DRIVER}
   backlight_driver.cpp
   extmodule_driver.cpp
@@ -292,6 +291,7 @@ endif()
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
+  board.cpp
   i2c_driver.cpp
   pwr_driver.cpp
   ../common/arm/loadboot.cpp

@@ -20,12 +20,12 @@
 
 #include "opentx.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 extern "C" {
 #endif
 #include "usb_dcd_int.h"
 #include "usb_bsp.h"
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 }
 #endif
 
@@ -78,7 +78,6 @@ void boardInit()
   initialise_monitor_handles();
 #endif
 
-#if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |
@@ -182,7 +181,6 @@ void boardInit()
 #endif
 
   ledBlue();
-#endif
 }
 
 void boardOff()
