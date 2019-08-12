@@ -42,13 +42,14 @@ namespace Board {
     BOARD_TARANIS_X7,
     BOARD_TARANIS_X9D,
     BOARD_TARANIS_X9DP,
+    BOARD_TARANIS_X9DP_2019,
     BOARD_TARANIS_X9E,
     BOARD_X12S,
     BOARD_X10,
     BOARD_TARANIS_XLITE,
     BOARD_TARANIS_XLITES,
     BOARD_TARANIS_X9LITE,
-    BOARD_JUMPER_T12
+    BOARD_JUMPER_T12,
   };
 
   constexpr int BOARD_TYPE_MAX = BOARD_JUMPER_T12 ;
@@ -196,8 +197,8 @@ class Boards
 #define IS_TARANIS_XLITES(board)       (board==Board::BOARD_TARANIS_XLITES)
 #define IS_TARANIS_X7(board)           (board==Board::BOARD_TARANIS_X7)
 #define IS_TARANIS_X9LITE(board)       (board==Board::BOARD_TARANIS_X9LITE)
-#define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
-#define IS_TARANIS_X9D(board)          (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP)
+#define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9DP_2019 || board==Board::BOARD_TARANIS_X9E)
+#define IS_TARANIS_X9D(board)          (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9DP_2019)
 #define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITE(board) || IS_JUMPER_T12(board))

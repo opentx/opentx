@@ -72,6 +72,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_X9DP:
       return "OpenTX for FrSky Taranis X9D+";
+    case BOARD_TARANIS_X9DP_2019:
+      return "OpenTX for FrSky Taranis X9D+ 2019";
     case BOARD_TARANIS_X9E:
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
@@ -1204,6 +1206,13 @@ void registerOpenTxFirmwares()
 
   /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", Firmware::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
+  firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
+  addOpenTxTaranisOptions(firmware);
+  addPPMInternalModuleHack(firmware);
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky Taranis X9D+ board */
+  firmware = new OpenTxFirmware("opentx-x9d+2019", Firmware::tr("FrSky Taranis X9D+ 2019"), BOARD_TARANIS_X9DP_2019);
   firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
