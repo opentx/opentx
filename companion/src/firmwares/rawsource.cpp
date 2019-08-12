@@ -128,13 +128,13 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_T2_MAX:
             result.min = -30;
             result.max = 225;
-            result.unit = trUtf8("°C");
+            result.unit = tr("°C");
             break;
           case TELEMETRY_SOURCE_HDG:
             result.step = 2;
             result.max = 360;
             result.offset = 256;
-            result.unit = trUtf8("°");
+            result.unit = tr("°");
             break;
           case TELEMETRY_SOURCE_RPM:
           case TELEMETRY_SOURCE_RPM_MAX:

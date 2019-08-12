@@ -323,13 +323,13 @@ QString MainWindow::seekCodeString(const QByteArray & qba, const QString & label
 {
   int posLabel = qba.indexOf(label);
   if (posLabel < 0)
-    return QString::null;
+    return QString();
   int start = qba.indexOf("\"", posLabel + label.length());
   if (start < 0)
-    return QString::null;
+    return QString();
   int end = qba.indexOf("\"", start + 1);
   if (end < 0)
-    return QString::null;
+    return QString();
   return qba.mid(start + 1, end - start - 1);
 }
 
@@ -529,10 +529,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(fullVersionString));
-      QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-      msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+      QAbstractButton *YesButton = msgBox.addButton(tr("Yes"), QMessageBox::YesRole);
+      msgBox.addButton(tr("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
-        rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        rnButton = msgBox.addButton(tr("Release Notes"), QMessageBox::ActionRole);
       }
       msgBox.setIcon(QMessageBox::Question);
       msgBox.resize(0, 0);
@@ -558,10 +558,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(currentVersionString).arg(fullVersionString));
-      QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-      msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+      QAbstractButton *YesButton = msgBox.addButton(tr("Yes"), QMessageBox::YesRole);
+      msgBox.addButton(tr("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
-        rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        rnButton = msgBox.addButton(tr("Release Notes"), QMessageBox::ActionRole);
       }
       msgBox.setIcon(QMessageBox::Question);
       msgBox.resize(0,0);
