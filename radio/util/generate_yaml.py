@@ -382,7 +382,8 @@ def parse_field(ast,node):
     if len(ann) > 0:
         for a in ann:
             if a['type'] == 'enum':
-                f.type = 'enum'
+                if not hasattr(f,'f_read'):
+                    f.type = 'enum'
                 enum_name = 'enum_' + a['val']
                 f.var_type = enum_name
                 if not RootAST.has_enum(enum_name):
