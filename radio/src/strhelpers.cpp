@@ -270,7 +270,7 @@ char * getSwitchName(char * dest, swsrc_t idx)
 }
 #endif
 
-char * getSwitchString(char * dest, swsrc_t idx)
+char * getSwitchPositionName(char * dest, swsrc_t idx)
 {
   if (idx == SWSRC_NONE) {
     return getStringAtIndex(dest, STR_VSWITCHES, 0);
@@ -405,7 +405,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
     }
   }
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH) {
-    getSwitchString(dest, SWSRC_SW1 + idx - MIXSRC_SW1);
+    getSwitchPositionName(dest, SWSRC_SW1 + idx - MIXSRC_SW1);
   }
   else if (idx <= MIXSRC_LAST_TRAINER) {
     strAppendStringWithIndex(dest, STR_PPM_TRAINER, idx - MIXSRC_FIRST_TRAINER + 1);
