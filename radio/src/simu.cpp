@@ -528,27 +528,6 @@ uint16_t anaIn(uint8_t chan)
     return opentxSim->sliders[chan]->getValue();
   else if (chan<NUM_STICKS+NUM_POTS+NUM_SLIDERS)
     return opentxSim->knobs[chan-NUM_STICKS]->getValue();
-#if defined(PCBHORUS)
-  else if (chan == TX_VOLTAGE)
-    return 1737;      //~10.6V
-#elif defined(PCBX9E)
-  else if (chan == TX_VOLTAGE)
-    return 1420;      //~10.6V
-#elif defined(PCBXLITE)
-  else if (chan == TX_VOLTAGE)
-    return 1100;
-#elif defined(PCBTARANIS)
-  else if (chan == TX_VOLTAGE)
-    return 1000;      //~7.4V
-#elif defined(PCBSKY9X)
-  else if (chan == TX_VOLTAGE)
-    return 5.1*1500/11.3;
-  else if (chan == TX_CURRENT)
-    return 100;
-#else
-  else if (chan == TX_VOLTAGE)
-    return 1500;
-#endif
 #if defined(PCBTARANIS)
   else if (chan == TX_RTC_VOLTAGE)
     return 800; // 2.34V

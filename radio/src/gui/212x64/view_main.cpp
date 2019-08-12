@@ -294,7 +294,7 @@ void displayTopBar()
   lcdDrawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
 
   /* The inside of the Batt gauge */
-  displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(), IS_TXBATT_WARNING());
+  displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(10), IS_TXBATT_WARNING());
 
   /* The inside of the RSSI gauge */
   if (TELEMETRY_RSSI() > 0) {

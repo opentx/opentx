@@ -721,16 +721,7 @@ extern const char vers_stamp[];
  * @param buffer If non-null find the firmware version in the buffer instead
  * @return The opentx version string starting with "opentx-" or "no version found" if the version string is not found
  */
-const char* getOtherVersion(char* buffer);
-
-extern uint8_t g_vbat100mV;
-#if LCD_W > 128
-  #define GET_TXBATT_BARS() (limit<int8_t>(0, div_and_round(10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90), 30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 10))
-#else
-  #define GET_TXBATT_BARS() (limit<int8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20))
-#endif
-#define IS_TXBATT_WARNING() (g_vbat100mV <= g_eeGeneral.vBatWarn)
-
+const char * getOtherVersion(char * buffer);
 
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
 extern uint8_t            g_beepCnt;
@@ -1258,6 +1249,18 @@ inline int div_and_round(int num, int den)
     num -= den / 2;
   }
   return num / den;
+}
+
+extern uint8_t g_vbat100mV;
+
+inline uint8_t GET_TXBATT_BARS(uint8_t barsMax)
+{
+  return limit<int8_t>(0, div_and_round(barsMax * (g_vbat100mV - g_eeGeneral.vBatMin - 90), 30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), barsMax);
+}
+
+inline bool IS_TXBATT_WARNING()
+{
+  return g_vbat100mV <= g_eeGeneral.vBatWarn;
 }
 
 #if defined(TELEMETRY_FRSKY)

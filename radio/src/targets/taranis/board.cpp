@@ -20,12 +20,12 @@
 
 #include "opentx.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 extern "C" {
 #endif
 #include "usb_dcd_int.h"
 #include "usb_bsp.h"
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 }
 #endif
 
@@ -81,7 +81,6 @@ void sportUpdatePowerOff()
 
 void boardInit()
 {
-#if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
                          KEYS_RCC_AHB1Periph |
@@ -267,8 +266,6 @@ void boardInit()
 #if defined(GYRO)
   gyroInit();
 #endif
-
-#endif // !defined(SIMU)
 }
 
 void boardOff()
@@ -298,9 +295,7 @@ void boardOff()
 
   while (1) {
     wdt_reset();
-#if defined(SIMU)
-    return;
-#elif defined(PWR_BUTTON_PRESS)
+#if defined(PWR_BUTTON_PRESS)
     // X9E/X7 needs watchdog reset because CPU is still running while
     // the power key is held pressed by the user.
     // The power key should be released by now, but we must make sure
