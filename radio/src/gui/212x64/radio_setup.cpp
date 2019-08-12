@@ -486,7 +486,7 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(PXX)
+#if defined(PXX1)
       case ITEM_RADIO_SETUP_COUNTRYCODE:
         g_eeGeneral.countryCode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODE, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
         break;

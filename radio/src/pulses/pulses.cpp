@@ -73,12 +73,12 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 
     case MODULE_TYPE_ISRM_PXX2:
-    case MODULE_TYPE_R9M_LITE_PRO_PXX2:
     case MODULE_TYPE_XJT_LITE_PXX2:
+    case MODULE_TYPE_R9M_PXX2:
+    case MODULE_TYPE_R9M_LITE_PRO_PXX2:
       protocol = PROTOCOL_CHANNELS_PXX2_HIGHSPEED;
       break;
 
-    case MODULE_TYPE_R9M_PXX2:
     case MODULE_TYPE_R9M_LITE_PXX2:
       protocol = PROTOCOL_CHANNELS_PXX2_LOWSPEED;
       break;
@@ -169,7 +169,7 @@ void enablePulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(PXX2) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+#if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
       extmoduleInvertedSerialStart(PXX2_HIGHSPEED_BAUDRATE);
       break;
