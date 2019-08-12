@@ -498,17 +498,17 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="747"/>
         <source>Use releases (stable)</source>
-        <translation>Utiliser version officielle (stable)</translation>
+        <translation>Utiliser version &quot;officielle&quot; (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="752"/>
         <source>Use releases and release candidates (testing)</source>
-        <translation>Utiliser version officielle et candidate (test)</translation>
+        <translation>Utiliser version &quot;candidate&quot; (test)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="757"/>
         <source>Use nightly builds (unstable)</source>
-        <translation>Utiliser version &quot;nightly builds&quot; (unstable)</translation>
+        <translation>Utiliser version &quot;nightly&quot; (unstable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="794"/>
@@ -628,7 +628,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.cpp" line="180"/>
         <source>Note: Nightly builds are not available in this version, Release/RC update channel will be used.</source>
-        <translation>Remarque: Les versions &quot; Nightly builds&quot; ne sont pas disponibles dans cette version. Le canal de mise à jour Release/RC sera utilisé.</translation>
+        <translation>Remarque: la version &quot; nightly&quot; n&apos;est pas disponible dans cette version. Le canal de mise à jour &quot;officiel&quot; sera utilisé.</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="227"/>
@@ -2889,7 +2889,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
         <source>FrSky Taranis X9D+ 2019</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
@@ -6467,17 +6467,17 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="346"/>
         <source>No Companion release candidates are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune version &quot;candidate&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="348"/>
         <source>No nightly Companion builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune version &quot;nightly&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
         <source>No Companion release builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune version &quot;officielle&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="378"/>
@@ -6487,42 +6487,42 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="473"/>
         <source>No firmware release candidates are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun firmware &quot;candidate&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="475"/>
         <source>No firmware nightly builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun firmware &quot;nightly&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="477"/>
         <source>No firmware release builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun firmware &quot;officiel&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="481"/>
         <source>Release candidate builds are now available for this version, would you like to switch to using them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Une version &quot;candidate&quot; est maintenant disponible pour cette version, voulez-vous commuter de canal afin de l&apos;utiliser?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="487"/>
         <source>Channel changed to RC, please restart the download process</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal commuté sur &quot;candidate&quot;, veuillez redémarrer le processus de téléchargement</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="493"/>
         <source>Official release builds are now available for this version, would you like to switch to using them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Une version &quot;officielle&quot; est maintenant disponible pour cette version, voulez-vous commuter de canal afin de l&apos;utiliser?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="499"/>
         <source>Channel changed to Release, please restart the download process</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal commuté sur &quot;officiel&quot;, veuillez redémarrer le processus de téléchargement</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="506"/>
         <source>This radio (%1) is not currently available in this firmware release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Le firmware pour cette radio (%1) n&apos;est actuellement pas disponible dans le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="530"/>
