@@ -87,9 +87,7 @@ enum {
   CASE_PWM_BACKLIGHT(ITEM_RADIO_SETUP_BACKLIGHT_BRIGHTNESS_ON)
   ITEM_RADIO_SETUP_FLASH_BEEP,
   CASE_SPLASH_PARAM(ITEM_RADIO_SETUP_DISABLE_SPLASH)
-#if defined(PXX2)
-  ITEM_RADIO_SETUP_OWNER_ID,
-#endif
+  CASE_PXX2(ITEM_RADIO_SETUP_OWNER_ID)
   CASE_GPS(ITEM_RADIO_SETUP_TIMEZONE)
   ITEM_RADIO_SETUP_ADJUST_RTC,
   CASE_GPS(ITEM_RADIO_SETUP_GPSFORMAT)
@@ -530,7 +528,7 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(PXX)
+#if defined(PXX1)
       case ITEM_RADIO_SETUP_COUNTRYCODE:
         g_eeGeneral.countryCode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODE, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
         break;
