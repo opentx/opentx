@@ -477,17 +477,17 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="801"/>
         <source>Use releases (stable)</source>
-        <translation>Utiliser version officielle (stable)</translation>
+        <translation>Utiliser version &quot;officielle&quot; (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="806"/>
         <source>Use releases and release candidates (testing)</source>
-        <translation>Utiliser version officielle et candidate (test)</translation>
+        <translation>Utiliser version &quot;candidate&quot; (test)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="811"/>
         <source>Use nightly builds (unstable)</source>
-        <translation>Utiliser version &quot;nightly builds&quot; (unstable)</translation>
+        <translation>Utiliser version &quot;nightly&quot; (unstable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="848"/>
