@@ -226,7 +226,7 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
       {SWITCH_2POS,   "SF"},
       {SWITCH_3POS,   "SG"},
       {SWITCH_TOGGLE, "SH"},
-      {SWITCH_3POS,   "SI"},
+      {board == Board::BOARD_TARANIS_X9DP_2019 ? SWITCH_TOGGLE : SWITCH_3POS,   "SI"},
       {SWITCH_3POS,   "SJ"},
       {SWITCH_3POS,   "SK"},
       {SWITCH_3POS,   "SL"},
@@ -321,6 +321,8 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 6;
       else if (IS_TARANIS_XLITE(board))
         return 4;
+      else if (board == Board::BOARD_TARANIS_X9DP_2019)
+        return 9;
       else if (IS_HORUS_OR_TARANIS(board))
         return 8;
       else
