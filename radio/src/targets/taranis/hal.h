@@ -907,7 +907,9 @@
 #if !defined(RADIO_T12)
   #define HARDWARE_INTERNAL_MODULE
 #endif
-#if !defined(PCBXLITES) && !defined(PCBX9LITE) && !(defined(PCBX9DP) && PCBREV >= 2019)
+#if defined(PCBXLITES) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+  #define INTERNAL_MODULE_PXX2
+#else
   #define INTERNAL_MODULE_PXX1
 #endif
 #define INTMODULE_FLASH_BAUDRATE        57600
