@@ -443,7 +443,7 @@ void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, con
   bool added = false;
   // Convert set into list and sort it alphabetically case insensitive
   QStringList list = QStringList::fromSet(set);
-  qSort(list.begin(), list.end(), caseInsensitiveLessThan);
+  std::sort(list.begin(), list.end(), caseInsensitiveLessThan);
   foreach (QString entry, list) {
     b->addItem(entry);
     if (entry == current) {
