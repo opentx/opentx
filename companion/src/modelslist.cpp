@@ -726,17 +726,13 @@ void TreeModel::refresh()
         protocol = model.moduleData[j].protocol;
         // These are the only RXs that allow nominating RX # but changing RX or copying models can leave residual configuration which can cause issues
         // if (protocol == PULSES_PXX_XJT_X16 || protocol == PULSES_PXX_XJT_LR12 || protocol == PULSES_PXX_R9M || protocol == PULSES_DSMX || protocol == PULSES_MULTIMODULE) {
-        if (!protocol == PULSES_OFF && model.moduleData[j].modelId > 0) {
+        if (protocol != PULSES_OFF && model.moduleData[j].modelId > 0) {
           if (!rxs.isEmpty()) {
             rxs.append(", ");
           }
           unsigned mdlidx = model.moduleData[j].modelId;
           rxs.append(QString("%1").arg(uint(mdlidx), 2, 10, QChar('0')));
           if (!isModelIdUnique(mdlidx)) {
-            current->setHighlightRX(true);
-          }
-          ModelData & mdl = radioData->models[mdlidx-1];
-          if (mdl.isEmpty()) {
             current->setHighlightRX(true);
           }
         }
