@@ -455,6 +455,9 @@ void GeneralSetupPanel::setValues()
 
   ui->pwrOnSpeed->setValue(generalSettings.pwrOnSpeed);
   ui->pwrOffSpeed->setValue(generalSettings.pwrOffSpeed);
+
+    // TODO: only if ACCESS available??
+  ui->registrationId->setText(generalSettings.registrationId);
 }
 
 void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
@@ -744,6 +747,15 @@ void GeneralSetupPanel::unlockSwitchEdited()
 void GeneralSetupPanel::on_blAlarm_ChkB_stateChanged()
 {
   generalSettings.flashBeep = ui->blAlarm_ChkB->isChecked();
+  emit modified();
+}
+
+void GeneralSetupPanel::on_ownerID_editingFinished()
+{
+  //copy ownerID back to generalSettings.registrationId
+  QByteArray array = ui->registrationId->text().toLocal8Bit();
+  strncpy(generalSettings.registrationId, "pafleraf", 9);
+  generalSettings.registrationId[8] = '\0';
   emit modified();
 }
 
