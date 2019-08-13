@@ -53,10 +53,15 @@ void pwrInit()
   GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
   // PCBREV
-  // TODO to be removed on X10?
+#if defined(PCBX10)
+  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
+  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+  hardwareOptions.pcbrev = PCBREV_VALUE();
+#else
   GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+#endif
 
   // SD-DETECT PIN
   GPIO_ResetBits(SD_PRESENT_GPIO, SD_PRESENT_GPIO_PIN);

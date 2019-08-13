@@ -34,7 +34,7 @@ void backlightInit()
 
   // TIMER init
 #if defined(PCBX12S)
-  if (IS_HORUS_PROD()) {
+  if (IS_X12S_PROD()) {
     BACKLIGHT_TIMER->ARR = 100;
     BACKLIGHT_TIMER->PSC = BACKLIGHT_TIMER_FREQ / 10000 - 1; // 1kHz
     BACKLIGHT_TIMER->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2; // PWM
@@ -68,7 +68,7 @@ void backlightInit()
 void backlightEnable(uint8_t dutyCycle)
 {
 #if defined(PCBX12S)
-  if (IS_HORUS_PROD()) {
+  if (IS_X12S_PROD()) {
     BACKLIGHT_TIMER->CCR4 = dutyCycle;
   }
   else {

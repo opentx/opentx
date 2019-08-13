@@ -18,13 +18,21 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _BOARD_HORUS_H_
-#define _BOARD_HORUS_H_
+#ifndef _BOARD_H_
+#define _BOARD_H_
 
 #include "../definitions.h"
 #include "../opentx_constants.h"
 #include "board_common.h"
 #include "hal.h"
+
+PACK(typedef struct {
+  uint8_t pcbrev : 2;
+  uint8_t sticksPwmDisabled : 1;
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
 
 #if !defined(LUA_EXPORT_GENERATION)
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
@@ -58,21 +66,38 @@ extern uint16_t sessionTimer;
 #endif
 
 // Board driver
-void boardInit(void);
-void boardOff(void);
+void boardInit();
+void boardOff();
 
 // Timers driver
 void init2MhzTimer();
 void init5msTimer();
 
 // PCBREV driver
-#define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
-#if defined(SIMU) || defined(PCBX10)
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
-#elif PCBREV >= 13
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_HORUS_PROD()
+enum {
+  // X12S
+  PCBREV_X12S_PROD = 0,
+
+  // X10
+  PCBREV_X10 = 0,
+  PCBREV_X10_EXPRESS = 3,
+};
+
+#if defined(SUMU)
+#define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
+#elif defined(PCBX10)
+#define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
+#define IS_X10_EXPRESS() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
 #else
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
+inline bool IS_X12S_PROD()
+{
+  return hardwareOptions.pcbrev == PCBREV_X12S_PROD;
+}
+#if PCBREV >= 13
+  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_X12S_PROD()
+#else
+  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_X12S_PROD())
+#endif
 #endif
 
 // SD driver
@@ -88,7 +113,7 @@ void sdInit(void);
 void sdMount(void);
 void sdDone(void);
 #define sdPoll10ms()
-uint32_t sdMounted(void);
+uint32_t sdMounted();
 #else
 #define SD_IS_HC()                     (0)
 #define SD_GET_SPEED()                 (0)
@@ -155,6 +180,7 @@ void intmoduleSendNextFrame();
 
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleInvertedSerialStart(uint32_t baudrate);
+void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
 
 // Trainer driver
@@ -552,6 +578,7 @@ void gpsSendByte(uint8_t byte);
 #endif
 
 // Second serial port driver
+#if defined(PCBX12S)
 #define AUX_SERIAL
 #define DEBUG_BAUDRATE                 115200
 extern uint8_t auxSerialMode;
@@ -560,6 +587,7 @@ void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
 void auxSerialSbusInit(void);
 void auxSerialStop(void);
+#endif
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
@@ -580,17 +608,4 @@ extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> auxSerialRxFifo;
 #endif
 
-#if NUM_PWMSTICKS > 0
-PACK(typedef struct {
-  uint8_t sticksPwmDisabled : 1;
-  uint8_t pxx2Enabled : 1;
-}) HardwareOptions;
-#else
-PACK(typedef struct {
-  uint8_t pxx2Enabled : 1;
-}) HardwareOptions;
-#endif
-
-extern HardwareOptions hardwareOptions;
-
-#endif // _BOARD_HORUS_H_
+#endif // _BOARD_H_
