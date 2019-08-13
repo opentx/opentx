@@ -1728,9 +1728,9 @@ class TelemetryCurrentSourceConversionTable: public ConversionTable
     }
 };
 
-class FrskyField: public StructField {
+class Frsky218Field: public StructField {
   public:
-    FrskyField(DataField * parent, FrSkyData & frsky, RSSIAlarmData & rssiAlarms, Board::Type board, unsigned int version, unsigned int variant):
+    Frsky218Field(DataField * parent, FrSkyData & frsky, RSSIAlarmData & rssiAlarms, Board::Type board, unsigned int version, unsigned int variant):
       StructField(parent, "FrSky"),
       telemetryVarioSourceConversionTable(board, version),
       screenTypesConversionTable(board, version),
@@ -1775,6 +1775,20 @@ class FrskyField: public StructField {
     ScreenTypesConversionTable screenTypesConversionTable;
     TelemetryVoltsSourceConversionTable telemetryVoltsSourceConversionTable;
     TelemetryCurrentSourceConversionTable telemetryCurrentSourceConversionTable;
+};
+
+class VarioField: public StructField {
+  public:
+    VarioField(DataField * parent, FrSkyData & frsky, Board::Type board, unsigned int version, unsigned int variant):
+      StructField(parent, "Vario")
+    {
+      Append(new UnsignedField<7>(this, frsky.varioSource, "Vario Source"));
+      Append(new BoolField<1>(this, frsky.varioCenterSilent));
+      Append(new SignedField<8>(this, frsky.varioCenterMax));
+      Append(new SignedField<8>(this, frsky.varioCenterMin));
+      Append(new SignedField<8>(this, frsky.varioMin));
+      Append(new SignedField<8>(this, frsky.varioMax));
+    }
 };
 
 /*
@@ -2029,20 +2043,23 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     }
   }
 
-  // TODO rename to VARIO
-  internalField.Append(new FrskyField(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
-
-  if (version >= 219) {
-    // TODO RSSI SOURCE
-    internalField.Append(new SpareBitsField<8>(this));
+  if (version <= 218) {
+    internalField.Append(new Frsky218Field(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
+  }
+  else {
+    internalField.Append(new VarioField(this, modelData.frsky, board, version, variant));
+    internalField.Append(new UnsignedField<8>(this, modelData.rssiSource));
 
     if (IS_TARANIS_X9(board)) {
       // TODO TOPBAR
       internalField.Append(new SpareBitsField<16>(this));
     }
 
-    // TODO RSSI ALARMS
-    internalField.Append(new SpareBitsField<16>(this));
+    internalField.Append(new BoolField<1>(this, modelData.rssiAlarms.disabled));
+    internalField.Append(new SpareBitsField<1>(this));
+    internalField.Append(new ConversionField<SignedField<6> >(this, modelData.rssiAlarms.warning, -45));
+    internalField.Append(new SpareBitsField<2>(this));
+    internalField.Append(new ConversionField<SignedField<6> >(this, modelData.rssiAlarms.critical, -42));
   }
 
   if (IS_STM32(board) && version <= 218) {

@@ -185,6 +185,7 @@ class ModelData {
     MavlinkData mavlink;
     unsigned int telemetryProtocol;
     FrSkyData frsky;
+    unsigned int  rssiSource;
     RSSIAlarmData rssiAlarms;
 
     char bitmap[10+1];
