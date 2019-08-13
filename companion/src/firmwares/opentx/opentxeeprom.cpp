@@ -42,7 +42,18 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   return Boards::getCapability(board, Board::Switches);
 }
 
-#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : (version >= 219 ? 16 : 8))  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
+// bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
+inline int MAX_SWITCH_SLOTS(Board::Type board, int version)
+{
+  if (IS_TARANIS_X9E(board))
+    return 32;
+
+  if (version >= 219 && IS_TARANIS_X9D(board))
+    return 16;
+
+  return 8;
+}
+
 #define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9
@@ -2325,7 +2336,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   internalField.Append(new UnsignedField<8>(this, generalData.inactivityTimer));
-  internalField.Append(new SpareBitsField<3>(this));
+  internalField.Append(new SpareBitsField<3>(this)); // telemetryBaudrate
   if (IS_HORUS(board))
     internalField.Append(new SpareBitsField<3>(this));
   else if (IS_TARANIS(board))
