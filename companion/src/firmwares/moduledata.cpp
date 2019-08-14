@@ -106,10 +106,11 @@ QString ModuleData::protocolToString(unsigned protocol)
     "FrSky PXX R9M",
     "FrSky PXX R9M Lite",
     "SBUS output at VBat",
-    "FrSky ACCESS ISRM",
+    "FrSky ACCESS ISRM", "FrSky ACCST ISRM D16",
     "FrSky ACCESS R9M",
     "FrSky ACCESS R9M Lite",
-    "FrSky ACCESS R9M Lite Pro"
+    "FrSky ACCESS R9M Lite Pro",
+    "FrSky XJT lite (D16)", "FrSky XJT lite (D8)", "FrSky XJT lite (LR12)"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);

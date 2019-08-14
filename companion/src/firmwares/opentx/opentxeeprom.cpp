@@ -2222,7 +2222,8 @@ void OpenTxModelData::beforeExport()
 
   for (int module=0; module<2; module++) {
     if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
-      modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
+        modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
+
       if (modelData.moduleData[module].protocol != PULSES_PXX_R9M) {
         subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
       }
@@ -2232,7 +2233,6 @@ void OpenTxModelData::beforeExport()
       modelData.moduleData[module].ppm.delay = 300 + 50 * pxxByte;
       modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].pxx.external_antenna;
       modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].pxx.sport_out;
-
     }
     else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX) {
       subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
@@ -2246,6 +2246,9 @@ void OpenTxModelData::beforeExport()
       modelData.moduleData[module].ppm.frameLength = modelData.moduleData[module].multi.optionValue;
       modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].multi.lowPowerMode;
       modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].multi.autoBindMode;
+    }
+    else if (modelData.moduleData[module].protocol == PULSES_ACCST_ISRM_D16 || modelData.moduleData[module].protocol == PULSES_ACCESS_ISRM) {
+      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_ACCESS_ISRM;
     }
     else {
       subprotocols[module] = (module == 0 ? -1 : 0);
@@ -2273,7 +2276,9 @@ void OpenTxModelData::afterImport()
   }
 
   for (int module=0; module<2; module++) {
-    if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16 || modelData.moduleData[module].protocol == PULSES_LP45) {
+    if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16
+        || modelData.moduleData[module].protocol == PULSES_LP45
+        || modelData.moduleData[module].protocol == PULSES_ACCESS_ISRM) {
       if (subprotocols[module] >= 0)
         modelData.moduleData[module].protocol += subprotocols[module];
       else

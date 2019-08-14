@@ -166,19 +166,20 @@ void TimerPanel::on_name_editingFinished()
 #define FAILSAFE_CHANNEL_HOLD    2000
 #define FAILSAFE_CHANNEL_NOPULSE 2001
 
-#define MASK_PROTOCOL       1
-#define MASK_CHANNELS_COUNT 2
-#define MASK_RX_NUMBER      4
-#define MASK_CHANNELS_RANGE 8
-#define MASK_PPM_FIELDS     16
-#define MASK_FAILSAFES      32
-#define MASK_OPEN_DRAIN     64
-#define MASK_MULTIMODULE    128
-#define MASK_ANTENNA        256
-#define MASK_MULTIOPTION    512
-#define MASK_R9M            1024
-#define MASK_SBUSPPM_FIELDS 2048
-#define MASK_SUBTYPES       4096
+#define MASK_PROTOCOL       (1<<0)
+#define MASK_CHANNELS_COUNT (1<<1)
+#define MASK_RX_NUMBER      (1<<2)
+#define MASK_CHANNELS_RANGE (1<<3)
+#define MASK_PPM_FIELDS     (1<<4)
+#define MASK_FAILSAFES      (1<<5)
+#define MASK_OPEN_DRAIN     (1<<6)
+#define MASK_MULTIMODULE    (1<<7)
+#define MASK_ANTENNA        (1<<8)
+#define MASK_MULTIOPTION    (1<<9)
+#define MASK_R9M            (1<<10)
+#define MASK_SBUSPPM_FIELDS (1<<11)
+#define MASK_SUBTYPES       (1<<12)
+#define MASK_ACCESS         (1<<13)
 
 quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
 
@@ -232,6 +233,8 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   ui->btnGrpValueType->setId(ui->optUs, FAILSAFE_DISPLAY_USEC);
   ui->btnGrpValueType->button(failsafesValueDisplayType)->setChecked(true);
 
+  ui->registrationId->setText(model.registrationId);
+
   setupFailsafes();
 
   disableMouseScrolling();
@@ -257,8 +260,13 @@ bool ModulePanel::moduleHasFailsafes()
 {
   return firmware->getCapability(HasFailsafe) && (
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_ISRM ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCST_ISRM_D16 ||
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M);
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE_PRO ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_XJT_LITE_X16);
 }
 
 void ModulePanel::setupFailsafes()
@@ -364,18 +372,30 @@ void ModulePanel::update()
   if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
     switch (protocol) {
-      case PULSES_ACCESS_ISRM:
-        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
-        break;
       case PULSES_PXX_R9M:
         mask |= MASK_R9M | MASK_SUBTYPES;
+      case PULSES_ACCESS_R9M:
+      case PULSES_ACCESS_R9M_LITE:
+      case PULSES_ACCESS_R9M_LITE_PRO:
+      case PULSES_ACCESS_ISRM:
+      case PULSES_ACCST_ISRM_D16:
+      case PULSES_XJT_LITE_X16:
+      case PULSES_XJT_LITE_D8:
+      case PULSES_XJT_LITE_LR12:
       case PULSES_PXX_XJT_X16:
       case PULSES_PXX_XJT_D8:
       case PULSES_PXX_XJT_LR12:
       case PULSES_PXX_DJT:
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 || protocol==PULSES_PXX_R9M)
+        // ACCST Rx ID
+        if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 ||
+            protocol==PULSES_PXX_R9M || protocol==PULSES_ACCST_ISRM_D16 ||
+            protocol==PULSES_XJT_LITE_X16 || protocol==PULSES_XJT_LITE_LR12)
           mask |= MASK_RX_NUMBER;
+        // ACCESS
+        else if (protocol==PULSES_ACCESS_ISRM || protocol==PULSES_ACCESS_R9M ||
+                 protocol==PULSES_ACCESS_R9M_LITE || protocol==PULSES_ACCESS_R9M_LITE_PRO)
+          mask |= MASK_RX_NUMBER | MASK_ACCESS;
         if ((IS_HORUS(board) || board == Board::BOARD_TARANIS_XLITE) && moduleIdx == 0)
           mask |= MASK_ANTENNA;
         break;
@@ -492,10 +512,17 @@ void ModulePanel::update()
   if (mask & MASK_SUBTYPES) {
     unsigned numEntries = 2;  // R9M FCC/EU
     unsigned i = 0;
-    if (mask & MASK_MULTIMODULE)
+    switch(protocol){
+    case PULSES_MULTIMODULE:
       numEntries = (module.multi.customProto ? 8 : pdef.numSubTypes());
-    else if (firmware->getCapability(HasModuleR9MFlex))
-      i = 2;
+      break;
+    case PULSES_PXX_R9M:
+      if (firmware->getCapability(HasModuleR9MFlex))
+        i = 2;
+      break;
+    default:
+      break;
+    }
     numEntries += i;
     const QSignalBlocker blocker(ui->multiSubType);
     ui->multiSubType->clear();
@@ -523,6 +550,21 @@ void ModulePanel::update()
     ui->optionValue->setMaximum(pdef.getOptionMax());
     ui->optionValue->setValue(module.multi.optionValue);
     ui->label_option->setText(qApp->translate("Multiprotocols", qPrintable(pdef.optionsstr)));
+  }
+
+  if (mask & MASK_ACCESS) {
+    if (QString(generalSettings.registrationId) == ui->registrationId->text()) {
+      ui->registrationIdLabel->hide();
+      ui->registrationId->hide();
+    }
+    else {
+      ui->registrationIdLabel->show();
+      ui->registrationId->show();
+    }
+  }
+  else {
+    ui->registrationIdLabel->hide();
+    ui->registrationId->hide();
   }
 
   // Failsafes

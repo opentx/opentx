@@ -83,7 +83,8 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_PXX_XJT_D8, val);
       addConversion(PULSES_PXX_XJT_LR12, val++);
 
-      addConversion(PULSES_ACCESS_ISRM, val++);
+      addConversion(PULSES_ACCESS_ISRM, val);
+      addConversion(PULSES_ACCST_ISRM_D16, val++);
 
       addConversion(PULSES_LP45, val);
       addConversion(PULSES_DSM2, val);
@@ -99,6 +100,10 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_ACCESS_R9M_LITE_PRO, val++);
 
       addConversion(PULSES_SBUS, val++);
+
+      addConversion(PULSES_XJT_LITE_X16, val);
+      addConversion(PULSES_XJT_LITE_D8, val);
+      addConversion(PULSES_XJT_LITE_LR12, val++);
     }
 };
 

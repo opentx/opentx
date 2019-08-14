@@ -772,11 +772,12 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_PPM:
             return id.contains("internalppm") ? 1 : 0;
           case PULSES_ACCESS_ISRM:
+          case PULSES_ACCST_ISRM_D16:
             return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
           default:
             return 0;
         }
-
+        
       case 1:
         switch (proto) {
           case PULSES_OFF:
@@ -801,6 +802,10 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return id.contains("crossfire") ? 1 : 0;
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
+          case PULSES_XJT_LITE_X16:
+          case PULSES_XJT_LITE_D8:
+          case PULSES_XJT_LITE_LR12:
             return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
           default:
             return 0;
