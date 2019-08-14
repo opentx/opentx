@@ -179,6 +179,7 @@ bool menuModelCustomScripts(event_t event);
 bool menuModelTelemetryFrsky(event_t event);
 bool menuModelSensor(event_t event);
 bool menuModelExpoOne(event_t event);
+bool menuModelModuleOptions(event_t event);
 
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 

@@ -59,7 +59,7 @@ bool menuModelSensor(event_t event)
 
   SUBMENU("SENSOR", ICON_MODEL_TELEMETRY, SENSOR_FIELD_MAX, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_ONLYPOS_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
   lcdDrawNumber(lcdNextPos, 3, s_currIdx+1, MENU_TITLE_COLOR|LEFT);
-  drawSensorCustomValue(50, 3+FH, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), MENU_TITLE_COLOR|LEFT);
+  drawSensorCustomValue(50, 3 + FH, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), MENU_TITLE_COLOR|LEFT);
 
   for (uint8_t i=0; i<NUM_BODY_LINES+1; i++) {
     coord_t y = MENU_CONTENT_TOP - FH - 2 + i*FH;
