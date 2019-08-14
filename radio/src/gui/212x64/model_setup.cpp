@@ -246,12 +246,13 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 
 #define TIMER_ROWS(x)                     2|NAVIGATION_LINE_BY_LINE, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
 
-inline uint8_t EXTERNAL_MODULE_MODE_ROWS() {
+inline uint8_t EXTERNAL_MODULE_MODE_ROW()
+{
   if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
     return 1;
 #if defined(MULTIMODULE)
   else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-    return 2 + MULTIMODULE_RFPROTO_ROWS(EXTERNAL_MODULE);
+    return 2 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
   }
 #endif
   else
@@ -362,7 +363,7 @@ void menuModelSetup(event_t event)
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // Receiver 3
 
     LABEL(ExternalModule),
-      EXTERNAL_MODULE_MODE_ROWS(),
+      EXTERNAL_MODULE_MODE_ROW(),
       MULTIMODULE_STATUS_ROWS
       EXTERNAL_MODULE_CHANNELS_ROWS,
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, EXTERNAL_MODULE_BIND_ROWS),

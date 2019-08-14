@@ -498,7 +498,18 @@ int getSwitchWarningsCount()
 
 #define TIMER_ROWS(x)                        NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 
-#define EXTERNAL_MODULE_MODE_ROWS            (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+inline uint8_t EXTERNAL_MODULE_MODE_ROW()
+{
+  if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
+    return 1;
+#if defined(MULTIMODULE)
+  else if (isModuleMultimodule(EXTERNAL_MODULE)) {
+    return 2 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
+  }
+#endif
+  else
+    return 0;
+}
 
 #if TIMERS == 1
 #define TIMERS_ROWS                          TIMER_ROWS(0)
@@ -599,14 +610,20 @@ bool menuModelSetup(event_t event)
            IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), /* Receiver 3 */
 
          LABEL(ExternalModule),
-           EXTERNAL_MODULE_MODE_ROWS,
-           EXTERNAL_MODULE_POWER_ROW,
+           EXTERNAL_MODULE_MODE_ROW(),
            MULTIMODULE_STATUS_ROWS
            EXTERNAL_MODULE_CHANNELS_ROWS,
-           EXTERNAL_MODULE_BIND_ROWS,
-           FAILSAFE_ROWS(EXTERNAL_MODULE),
-           EXTERNAL_MODULE_OPTION_ROW,
+           IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, EXTERNAL_MODULE_BIND_ROWS),
+           IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // RxNum for ACCESS
+           IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, EXTERNAL_MODULE_OPTION_ROW),
            MULTIMODULE_MODULE_ROWS
+           EXTERNAL_MODULE_POWER_ROW,
+           FAILSAFE_ROWS(EXTERNAL_MODULE),
+           IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),   // Range check and Register buttons
+           IF_PXX2_MODULE(EXTERNAL_MODULE, 0),        // Module options
+           IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 1
+           IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 2
+           IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 3
 
          TRAINER_ROWS
        });

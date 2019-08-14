@@ -141,11 +141,11 @@ inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
 {
   return getMultiProtocolDefinition(moduleIdx)->maxSubtype > 0;
 }
-inline uint8_t MULTIMODULE_RFPROTO_ROWS(uint8_t moduleIdx)
+inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
 {
   return (g_model.moduleData[moduleIdx].multi.customProto ? (uint8_t) 1 : MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol(true)) ? (uint8_t) 0 : HIDDEN_ROW);
 }
-#define MULTIMODULE_SUBTYPE_ROWS(x)     isModuleMultimodule(x) ? MULTIMODULE_RFPROTO_ROWS(x) : HIDDEN_ROW,
+#define MULTIMODULE_SUBTYPE_ROWS(x)     isModuleMultimodule(x) ? MULTIMODULE_RFPROTO_COLUMNS(x) : HIDDEN_ROW,
 #define MULTIMODULE_HASOPTIONS(x)       (getMultiProtocolDefinition(x)->optionsstr != nullptr)
 #define MULTIMODULE_OPTIONS_ROW         (isModuleMultimodule(EXTERNAL_MODULE) && MULTIMODULE_HASOPTIONS(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true))) ? (uint8_t) 0: HIDDEN_ROW
 
