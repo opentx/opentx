@@ -1,5 +1,5 @@
-option(DISK_CACHE "Enable SD card disk cache" YES)
-option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
+option(DISK_CACHE "Enable SD card disk cache" ON)
+option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
 
@@ -28,6 +28,7 @@ endif()
 
 if (PCB STREQUAL X10)
   set(FLAVOUR x10)
+  set(PCBREV "STD" CACHE STRING "PCB Revision")
   add_definitions(-DPCBX10)
   add_definitions(-DSOFTWARE_VOLUME)
   set(TARGET_SRC
@@ -40,6 +41,13 @@ if (PCB STREQUAL X10)
   set(FONTS_TARGET x10_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x10)
+  if (PCBREV STREQUAL EXPRESS)
+    option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
+    option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
+  else()
+    option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
+    option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
+  endif()
 elseif (PCB STREQUAL X12S)
   set(FLAVOUR x12s)
   set(PCBREV "13" CACHE STRING "PCB Revision")
@@ -59,13 +67,15 @@ elseif (PCB STREQUAL X12S)
     adc_driver.cpp
     gps_driver.cpp
     )
-
+  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
   set(BITMAPS_TARGET x12s_bitmaps)
   set(FONTS_TARGET x12s_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x12s)
-  add_definitions(-DPCBREV=${PCBREV})
 endif()
+
+add_definitions(-DPCBREV=${PCBREV})
+add_definitions(-DPCBREV_${PCBREV})
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
 
@@ -120,8 +130,6 @@ if(INTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
 
-set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
-
 set(GVAR_SCREEN model_gvars.cpp)
 
 set(TARGET_SRC
@@ -170,4 +178,12 @@ if(PYTHONINTERP_FOUND)
     COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > storage/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
+endif()
+
+if(INTERNAL_MODULE_PXX1)
+  add_definitions(-DINTERNAL_MODULE_PXX1)
+endif()
+
+if(INTERNAL_MODULE_PXX2)
+  add_definitions(-DINTERNAL_MODULE_PXX2)
 endif()

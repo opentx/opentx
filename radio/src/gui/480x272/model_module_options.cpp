@@ -21,7 +21,7 @@
 #include <opentx.h>
 #include <math.h>
 
-#define RECEIVER_OPTIONS_2ND_COLUMN  (11*FW)
+#define RECEIVER_OPTIONS_2ND_COLUMN  200
 
 extern uint8_t g_moduleIdx;
 
@@ -86,7 +86,7 @@ bool isPowerAvailable(int value)
   }
 }
 
-void menuModelModuleOptions(event_t event)
+bool menuModelModuleOptions(event_t event)
 {
   if (event == EVT_ENTRY) {
     memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
@@ -99,11 +99,13 @@ void menuModelModuleOptions(event_t event)
   // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
   uint8_t optionsAvailable = getPXX2ModuleOptions(modelId) & ((1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
 
-  SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
+  SUBMENU(STR_MODULE_OPTIONS, ICON_MODEL_SETUP, ITEM_MODULE_SETTINGS_COUNT, {
     !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_POWER, isTelemetryAvailable() ? HIDDEN_ROW : READONLY_ROW)
   });
+
+  lcdDrawText(50, 3 + FH, getPXX2ModuleName(modelId), MENU_TITLE_COLOR);
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
     if (!modelId)
@@ -120,7 +122,7 @@ void menuModelModuleOptions(event_t event)
       POPUP_CONFIRMATION(STR_UPDATE_TX_OPTIONS, onTxOptionsUpdateConfirm);
     }
     else {
-      return;
+      return false;
     }
   }
 
@@ -132,7 +134,7 @@ void menuModelModuleOptions(event_t event)
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty == MODULE_SETTINGS_WRITING && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
-    return;
+    return false;
   }
 
   if (modelId != 0 && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
@@ -143,13 +145,10 @@ void menuModelModuleOptions(event_t event)
   }
 
   int8_t sub = menuVerticalPosition;
-  lcdDrawTextAlignedLeft(0, STR_MODULE_OPTIONS);
-  lcdDrawText(lcdLastRightPos + 3, 0, getPXX2ModuleName(modelId));
-  lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     if (optionsAvailable) {
-      for (uint8_t k=0; k<LCD_LINES-1; k++) {
+      for (uint8_t k=0; k<NUM_BODY_LINES + 1/*plus one line in submenus*/; k++) {
         coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
         uint8_t i = k + menuVerticalOffset;
         for (int j=0; j<=i; ++j) {
@@ -161,14 +160,15 @@ void menuModelModuleOptions(event_t event)
 
         switch (i) {
           case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
-            reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, STR_EXT_ANTENNA, attr, event);
+            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_EXT_ANTENNA);
+            reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
             if (attr && checkIncDec_Ret) {
               reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_DIRTY;
             }
             break;
 
           case ITEM_MODULE_SETTINGS_POWER:
-            lcdDrawText(0, y, STR_POWER);
+            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_POWER);
             lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
             lcdDrawText(lcdNextPos, y, "dBm(");
             drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
@@ -205,4 +205,6 @@ void menuModelModuleOptions(event_t event)
     lcdDrawCenteredText(LCD_H/2, STR_WAITING_FOR_TX);
     s_editMode = 0;
   }
+
+  return true;
 }

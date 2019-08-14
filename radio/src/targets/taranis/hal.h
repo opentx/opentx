@@ -703,7 +703,7 @@
   #define ADC_EXT_SET_DMA_FLAGS()       ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_EXT_TRANSFER_COMPLETE()   (ADC_DMA->LISR & DMA_LISR_TCIF0)
   #define ADC_EXT_SAMPTIME              3    // sample time = 56 cycles
-  #define ADC_VREF_PREC2                330
+  #define ADC_VREF_PREC2                200
 #elif defined(PCBX9DP)
   #define HARDWARE_POT1
   #define HARDWARE_POT2
@@ -907,7 +907,9 @@
 #if !defined(RADIO_T12)
   #define HARDWARE_INTERNAL_MODULE
 #endif
-#if !defined(PCBXLITES) && !defined(PCBX9LITE) && !(defined(PCBX9DP) && PCBREV >= 2019)
+#if defined(PCBXLITES) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+  #define INTERNAL_MODULE_PXX2
+#else
   #define INTERNAL_MODULE_PXX1
 #endif
 #define INTMODULE_FLASH_BAUDRATE        57600
@@ -1046,7 +1048,7 @@
   #define EXTERNAL_MODULE_PWR_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
   #define IS_EXTERNAL_MODULE_ON()       (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
   #define EXTMODULE_TX_GPIO             GPIOC
-  #define EXTMODULE_USART_GPIO          GPIOC
+  #define EXTMODULE_USART_GPIO          EXTMODULE_TX_GPIO
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PC.06
   #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource6
   #define EXTMODULE_RX_GPIO_PIN         GPIO_Pin_7  // PC.07

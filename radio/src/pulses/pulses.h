@@ -281,7 +281,7 @@ union InternalModulePulsesData {
 
 union ExternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(EXTMODULE_USART)
+  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     UartPxx1Pulses pxx_uart;
   #endif
   #if defined(PPM_PIN_SERIAL)
