@@ -30,6 +30,7 @@ endif()
 
 if (PCB STREQUAL X10)
   set(FLAVOUR x10)
+  set(PCBREV "STD" CACHE STRING "PCB Revision")
   add_definitions(-DPCBX10)
   add_definitions(-DSOFTWARE_VOLUME)
   set(TARGET_SRC
@@ -66,8 +67,10 @@ elseif (PCB STREQUAL X12S)
   set(FONTS_TARGET x12s_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x12s)
-  add_definitions(-DPCBREV=${PCBREV})
 endif()
+
+add_definitions(-DPCBREV=${PCBREV})
+add_definitions(-DPCBREV_${PCBREV})
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
 

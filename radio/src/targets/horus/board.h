@@ -76,28 +76,28 @@ void init5msTimer();
 // PCBREV driver
 enum {
   // X12S
-  PCBREV_X12S_PROD = 0,
+  PCBREV_X12S_GTE13 = 0,
+  PCBREV_X12S_LT13 = 1,
 
   // X10
-  PCBREV_X10 = 0,
+  PCBREV_X10_STD = 0,
   PCBREV_X10_EXPRESS = 3,
 };
 
-#if defined(SUMU)
-#define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
+#if defined(SIMU)
+  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
 #elif defined(PCBX10)
-#define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
-#define IS_X10_EXPRESS() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
+  #if defined(PCBREV_EXPRESS)
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
+  #else
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_STD)
+  #endif
 #else
-inline bool IS_X12S_PROD()
-{
-  return hardwareOptions.pcbrev == PCBREV_X12S_PROD;
-}
-#if PCBREV >= 13
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_X12S_PROD()
-#else
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_X12S_PROD())
-#endif
+  #if PCBREV >= 13
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X12S_GTE13)
+  #else
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X12S_LT13)
+  #endif
 #endif
 
 // SD driver

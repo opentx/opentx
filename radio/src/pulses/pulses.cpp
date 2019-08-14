@@ -61,7 +61,8 @@ uint8_t getRequiredProtocol(uint8_t module)
         break;
       }
 #endif
-      // no break
+      protocol = PROTOCOL_CHANNELS_PXX1_PULSES;
+      break;
 
     case MODULE_TYPE_R9M_PXX1:
       protocol = PROTOCOL_CHANNELS_PXX1_PULSES;
@@ -216,7 +217,7 @@ void setupPulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(PXX1) && defined(EXTMODULE_USART)
+#if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
       scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX1_SERIAL_PERIOD);

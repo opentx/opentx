@@ -23,13 +23,13 @@
 
 #include <inttypes.h>
 
-#if defined(PCBX12S) && PCBREV < 13
-  #define pulse_duration_t             uint32_t
-  #define trainer_pulse_duration_t     uint16_t
+#if defined(EXTMODULE_TIMER_32BITS)
+  typedef uint32_t pulse_duration_t;
 #else
-  #define pulse_duration_t             uint16_t
-  #define trainer_pulse_duration_t     uint16_t
+  typedef uint16_t pulse_duration_t;
 #endif
+
+typedef uint16_t trainer_pulse_duration_t;
 
 template <class T, int SIZE>
 class DataBuffer {
