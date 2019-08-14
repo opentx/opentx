@@ -42,7 +42,18 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   return Boards::getCapability(board, Board::Switches);
 }
 
-#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : (version >= 219 ? 16 : 8))  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
+// bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
+inline int MAX_SWITCH_SLOTS(Board::Type board, int version)
+{
+  if (IS_TARANIS_X9E(board))
+    return 32;
+
+  if (version >= 219 && IS_TARANIS_X9D(board))
+    return 16;
+
+  return 8;
+}
+
 #define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9
@@ -1717,9 +1728,9 @@ class TelemetryCurrentSourceConversionTable: public ConversionTable
     }
 };
 
-class FrskyField: public StructField {
+class Frsky218Field: public StructField {
   public:
-    FrskyField(DataField * parent, FrSkyData & frsky, RSSIAlarmData & rssiAlarms, Board::Type board, unsigned int version, unsigned int variant):
+    Frsky218Field(DataField * parent, FrSkyData & frsky, RSSIAlarmData & rssiAlarms, Board::Type board, unsigned int version, unsigned int variant):
       StructField(parent, "FrSky"),
       telemetryVarioSourceConversionTable(board, version),
       screenTypesConversionTable(board, version),
@@ -1764,6 +1775,20 @@ class FrskyField: public StructField {
     ScreenTypesConversionTable screenTypesConversionTable;
     TelemetryVoltsSourceConversionTable telemetryVoltsSourceConversionTable;
     TelemetryCurrentSourceConversionTable telemetryCurrentSourceConversionTable;
+};
+
+class VarioField: public StructField {
+  public:
+    VarioField(DataField * parent, FrSkyData & frsky, Board::Type board, unsigned int version, unsigned int variant):
+      StructField(parent, "Vario")
+    {
+      Append(new UnsignedField<7>(this, frsky.varioSource, "Vario Source"));
+      Append(new BoolField<1>(this, frsky.varioCenterSilent));
+      Append(new SignedField<8>(this, frsky.varioCenterMax));
+      Append(new SignedField<8>(this, frsky.varioCenterMin));
+      Append(new SignedField<8>(this, frsky.varioMin));
+      Append(new SignedField<8>(this, frsky.varioMax));
+    }
 };
 
 /*
@@ -2018,20 +2043,23 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     }
   }
 
-  // TODO rename to VARIO
-  internalField.Append(new FrskyField(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
-
-  if (version >= 219) {
-    // TODO RSSI SOURCE
-    internalField.Append(new SpareBitsField<8>(this));
+  if (version <= 218) {
+    internalField.Append(new Frsky218Field(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
+  }
+  else {
+    internalField.Append(new VarioField(this, modelData.frsky, board, version, variant));
+    internalField.Append(new UnsignedField<8>(this, modelData.rssiSource));
 
     if (IS_TARANIS_X9(board)) {
       // TODO TOPBAR
       internalField.Append(new SpareBitsField<16>(this));
     }
 
-    // TODO RSSI ALARMS
-    internalField.Append(new SpareBitsField<16>(this));
+    internalField.Append(new BoolField<1>(this, modelData.rssiAlarms.disabled));
+    internalField.Append(new SpareBitsField<1>(this));
+    internalField.Append(new ConversionField<SignedField<6> >(this, modelData.rssiAlarms.warning, -45));
+    internalField.Append(new SpareBitsField<2>(this));
+    internalField.Append(new ConversionField<SignedField<6> >(this, modelData.rssiAlarms.critical, -42));
   }
 
   if (IS_STM32(board) && version <= 218) {
@@ -2325,7 +2353,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   internalField.Append(new UnsignedField<8>(this, generalData.inactivityTimer));
-  internalField.Append(new SpareBitsField<3>(this));
+  internalField.Append(new SpareBitsField<3>(this)); // telemetryBaudrate
   if (IS_HORUS(board))
     internalField.Append(new SpareBitsField<3>(this));
   else if (IS_TARANIS(board))
