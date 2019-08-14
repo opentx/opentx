@@ -76,8 +76,8 @@ void init5msTimer();
 // PCBREV driver
 enum {
   // X12S
-  PCBREV_X12S_GTE13 = 0,
-  PCBREV_X12S_LT13 = 1,
+  PCBREV_X12S_LT13 = 0,
+  PCBREV_X12S_GTE13 = 1,
 
   // X10
   PCBREV_X10_STD = 0,
