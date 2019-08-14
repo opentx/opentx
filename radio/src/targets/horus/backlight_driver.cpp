@@ -64,13 +64,10 @@ void backlightInit()
 
 void backlightEnable(uint8_t dutyCycle)
 {
-#if defined(PCBX12S)
-  if (IS_X12S_PROD()) {
-    BACKLIGHT_TIMER->CCR4 = dutyCycle;
-  }
-  else {
-    BACKLIGHT_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX - dutyCycle;
-  }
+#if defined(PCBX12S) && PCBREV >= 13
+  BACKLIGHT_TIMER->CCR4 = dutyCycle;
+#elif defined(PCBX12S)
+  BACKLIGHT_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #elif defined(PCBX10)
   BACKLIGHT_TIMER->CCR3 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #endif
