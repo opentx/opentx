@@ -703,7 +703,7 @@
   #define ADC_EXT_SET_DMA_FLAGS()       ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_EXT_TRANSFER_COMPLETE()   (ADC_DMA->LISR & DMA_LISR_TCIF0)
   #define ADC_EXT_SAMPTIME              3    // sample time = 56 cycles
-  #define ADC_VREF_PREC2                330
+  #define ADC_VREF_PREC2                200
 #elif defined(PCBX9DP)
   #define HARDWARE_POT1
   #define HARDWARE_POT2

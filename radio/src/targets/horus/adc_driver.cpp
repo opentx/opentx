@@ -139,7 +139,7 @@ void adcInit()
 
 uint16_t getRTCBatteryVoltage()
 {
-  return rtcBatteryVoltage * 330 / 2048;
+  return (rtcBatteryVoltage * ADC_VREF_PREC2) / 2048;
 }
 
 const uint16_t adcCommands[MOUSE1+2] =
