@@ -502,7 +502,7 @@ Manche Droit:  Profondeur, Direction
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="752"/>
-        <source>Use releases and release candidates (testing)</source>
+        <source>Use release candidates (testing)</source>
         <translation>Utiliser version &quot;candidate&quot; (test)</translation>
     </message>
     <message>

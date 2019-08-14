@@ -452,7 +452,7 @@ Behöver inte vara samma som menyspråk</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use releases and release candidates (testing)</source>
+        <source>Use release candidates (testing)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
