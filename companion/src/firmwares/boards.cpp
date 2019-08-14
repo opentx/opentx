@@ -320,7 +320,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else if (IS_TARANIS_XLITES(board))
         return 6;
       else if (IS_TARANIS_XLITE(board))
-        return 4;
+        return 6;
       else if (board == Board::BOARD_TARANIS_X9DP_2019)
         return 9;
       else if (IS_HORUS_OR_TARANIS(board))
