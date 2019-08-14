@@ -78,6 +78,8 @@ enum MenuRadioSetupItems {
   CASE_PCBX9E_PCBX9DP(ITEM_RADIO_SETUP_BACKLIGHT_COLOR)
   ITEM_RADIO_SETUP_FLASH_BEEP,
   CASE_SPLASH_PARAM(ITEM_RADIO_SETUP_DISABLE_SPLASH)
+  CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_ON_SPEED)
+  CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_OFF_SPEED)
 #if defined(PXX2)
   ITEM_RADIO_SETUP_OWNER_ID,
 #endif
@@ -155,6 +157,8 @@ void menuRadioSetup(event_t event)
       CASE_PCBX9E_PCBX9DP(0) // backlight color
       0, // flash beep
     CASE_SPLASH_PARAM(0) // disable splash
+    CASE_PWR_BUTTON_PRESS(0) // pwr on speed
+    CASE_PWR_BUTTON_PRESS(0) // pwr off speed
     CASE_PXX2(0)
     CASE_GPS(LABEL(GPS))
       CASE_GPS(0) // timezone
@@ -463,6 +467,20 @@ void menuRadioSetup(event_t event)
           lcdDrawMMM(RADIO_SETUP_2ND_COLUMN, y, attr);
         }
         if (attr) g_eeGeneral.splashMode = -checkIncDecGen(event, -g_eeGeneral.splashMode, -3, 4);
+        break;
+#endif
+
+#if defined(PWR_BUTTON_PRESS)
+    case ITEM_RADIO_SETUP_PWR_ON_SPEED:
+        lcdDrawTextAlignedLeft(y, STR_PWR_ON_SPEED);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOnSpeed, attr|LEFT);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOnSpeed, 0, 3);
+        break;
+
+    case ITEM_RADIO_SETUP_PWR_OFF_SPEED:
+        lcdDrawTextAlignedLeft(y, STR_PWR_OFF_SPEED);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOffSpeed, attr|LEFT);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOffSpeed, 0, 3);
         break;
 #endif
 

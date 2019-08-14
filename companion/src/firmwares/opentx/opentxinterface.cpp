@@ -734,6 +734,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_HORUS(board);
     case HasSwitchableJack:
       return IS_TARANIS_XLITES(board);
+    case PwrButtonPress:
+      return IS_HORUS_OR_TARANIS(board) && (board!=Board::BOARD_TARANIS_X9D) && (board!=Board::BOARD_TARANIS_X9DP);
     default:
       return 0;
   }

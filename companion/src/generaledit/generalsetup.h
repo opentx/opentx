@@ -88,6 +88,8 @@ class GeneralSetupPanel : public GeneralPanel
     void on_vBatMaxDSB_editingFinished();
     void on_contrastSB_editingFinished();
 
+    void on_pwrOnSpeed_valueChanged();
+    void on_pwrOffSpeed_valueChanged();
 
   private:
     Ui::GeneralSetup *ui;

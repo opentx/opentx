@@ -596,6 +596,8 @@ TR_GYR_VSRCRAW
 #define TR_BLOFFBRIGHTNESS     INDENT "Uit-Helderheid"
 #define TR_BLCOLOR             INDENT "Kleur"
 #define TR_SPLASHSCREEN        "Startscherm Aan"
+#define TR_PWR_ON_SPEED                "Pwr On speed"
+#define TR_PWR_OFF_SPEED               "Pwr Off speed"
 #define TR_THROTTLEWARNING     TR(INDENT "T-Warning", INDENT "Throttle Status")
 #define TR_SWITCHWARNING       TR(INDENT "S-Warning", INDENT "Switch Posities")
 #define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")

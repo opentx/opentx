@@ -213,6 +213,17 @@ int main()
   pwrInit();
   pwrOff();
 
+  // wait a bit for the inputs to stabilize...
+  // ... otherwise the bootloader cannot be started
+  //     when the power on delay is cut to 0.
+  for (int i=0; i<5000;i++)
+    readTrims();
+
+  // avoid booting after DFU bootloader
+  if (!pwrPressed()) {
+    boardOff();
+  }
+  
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
     // Start main application

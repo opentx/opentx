@@ -148,7 +148,8 @@ enum Capability {
   HasBatMeterRange,
   DangerousFunctions,
   HasModelCategories,
-  HasSwitchableJack
+  HasSwitchableJack,
+  PwrButtonPress
 };
 
 class EEPROMInterface

@@ -771,7 +771,14 @@ PACK(struct RadioData {
   NOBACKUP(uint32_t globalTimer);
   NOBACKUP(uint8_t  bluetoothBaudrate:4);
   NOBACKUP(uint8_t  bluetoothMode:4);
-  NOBACKUP(uint8_t  countryCode);
+  NOBACKUP(uint8_t  countryCode:2);
+#if defined(PCBHORUS) || defined(PCBTARANIS)
+  NOBACKUP(uint8_t  pwrOnSpeed:2);
+  NOBACKUP(uint8_t  pwrOffSpeed:2);
+  NOBACKUP(uint8_t  spareCC:2);
+#else
+  NOBACKUP(uint8_t  spareCC:6);
+#endif
   NOBACKUP(uint8_t  imperial:1);
   NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */
   NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1);

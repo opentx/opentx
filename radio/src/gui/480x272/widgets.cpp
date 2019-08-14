@@ -391,8 +391,10 @@ void drawSleepBitmap()
 }
 
 #define SHUTDOWN_CIRCLE_DIAMETER       150
-void drawShutdownAnimation(uint32_t duration, const char * message)
+void drawShutdownAnimation(uint32_t duration, uint32_t total_duration, const char * message)
 {
+  if (total_duration == 0) return;
+  
   static uint32_t lastDuration = 0xffffffff;
   static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));
 
@@ -404,7 +406,7 @@ void drawShutdownAnimation(uint32_t duration, const char * message)
     }
     else {
       lcdRestoreBackupBuffer();
-      int quarter = duration / (PWR_PRESS_SHUTDOWN_DELAY / 5);
+      int quarter = duration / (total_duration / 5);
       if (quarter >= 1) lcdDrawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 2) lcdDrawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 3) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
@@ -413,7 +415,7 @@ void drawShutdownAnimation(uint32_t duration, const char * message)
   }
   else {
     lcd->clear();
-    int quarter = duration / (PWR_PRESS_SHUTDOWN_DELAY / 5);
+    int quarter = duration / (total_duration / 5);
     for (int i=1; i<=4; i++) {
       if (quarter >= i) {
         lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, TEXT_BGCOLOR);
