@@ -209,12 +209,13 @@ void onPXX2ReceiverMenu(const char * result)
     memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
     reusableBuffer.hardwareAndSettings.receiverSettings.receiverId = receiverIdx;
     g_moduleIdx = moduleIdx;
-    // TODO pushMenu(menuModelReceiverOptions);
+    pushMenu(menuModelReceiverOptions);
   }
   else if (result == STR_BIND) {
     memclear(&reusableBuffer.moduleSetup.bindInformation, sizeof(BindInformation));
     reusableBuffer.moduleSetup.bindInformation.rxUid = receiverIdx;
     if (isModuleR9MAccess(moduleIdx)) {
+      reusableBuffer.moduleSetup.bindInformation.step = BIND_MODULE_TX_INFORMATION_REQUEST;
 #if defined(SIMU)
       reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID = 1;
       reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant = 2;

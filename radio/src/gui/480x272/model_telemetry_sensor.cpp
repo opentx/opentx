@@ -61,7 +61,7 @@ bool menuModelSensor(event_t event)
   lcdDrawNumber(lcdNextPos, 3, s_currIdx+1, MENU_TITLE_COLOR|LEFT);
   drawSensorCustomValue(50, 3 + FH, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), MENU_TITLE_COLOR|LEFT);
 
-  for (uint8_t i=0; i<NUM_BODY_LINES+1; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES + 1/*plus one line in submenus*/; i++) {
     coord_t y = MENU_CONTENT_TOP - FH - 2 + i*FH;
     int k = i + menuVerticalOffset;
 

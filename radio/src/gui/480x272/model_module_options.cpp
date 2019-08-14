@@ -148,7 +148,7 @@ bool menuModelModuleOptions(event_t event)
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     if (optionsAvailable) {
-      for (uint8_t k=0; k<NUM_BODY_LINES-1; k++) {
+      for (uint8_t k=0; k<NUM_BODY_LINES + 1/*plus one line in submenus*/; k++) {
         coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
         uint8_t i = k + menuVerticalOffset;
         for (int j=0; j<=i; ++j) {
