@@ -305,7 +305,11 @@ void menuRadioHardware(event_t event)
     0 /* ADC filter */,
     READONLY_ROW /* RAS */,
 
-    1 /* debugs */
+    1 /* debugs */,
+
+    0,
+
+    0
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -588,7 +592,7 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_BACKUP_EEPROM:
-        lcdDrawText(0, y, BUTTON(STR_EEBACKUP), attr);
+        lcdDrawText(LCD_W / 2, y, BUTTON(STR_EEBACKUP), attr | CENTERED);
         if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
           s_editMode = EDIT_SELECT_FIELD;
           eepromBackup();
@@ -596,7 +600,7 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_FACTORY_RESET:
-        lcdDrawText(0, y, BUTTON(STR_FACTORYRESET), attr);
+        lcdDrawText(LCD_W / 2, y, BUTTON(STR_FACTORYRESET), attr | CENTERED);
         if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
           s_editMode = EDIT_SELECT_FIELD;
           POPUP_CONFIRMATION(STR_CONFIRMRESET, onFactoryResetConfirm);
