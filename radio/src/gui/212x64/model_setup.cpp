@@ -1407,78 +1407,8 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1:
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_2:
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_3:
-      {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        ModuleInformation & moduleInformation = reusableBuffer.moduleSetup.pxx2.moduleInformation;
-
-        drawStringWithIndex(INDENT_WIDTH, y, STR_RECEIVER, receiverIdx + 1);
-
-        if (!(g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx))) {
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, attr);
-          if (attr && s_editMode > 0) {
-            s_editMode = 0;
-            killEvents(event);
-            g_model.moduleData[moduleIdx].pxx2.receivers |= (1 << receiverIdx);
-            memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
-            storageDirty(EE_MODEL);
-          }
-          else {
-            break;
-          }
-        }
-
-        drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
-
-        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
-          moduleInformation.information.modelID = 0;
-          moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
-        }
-
-        if (attr && (moduleState[moduleIdx].mode == 0 || s_editMode == 0)) {
-          if (moduleState[moduleIdx].mode) {
-            moduleState[moduleIdx].mode = 0;
-            removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
-            killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
-            event = 0;
-            CLEAR_POPUP();
-          }
-          s_editMode = 0;
-        }
-
-        if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT) {
-            if (reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
-              popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
-              for (uint8_t i = 0; i < popupMenuItemsCount; i++) {
-                popupMenuItems[i] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[i];
-              }
-              popupMenuTitle = STR_PXX2_SELECT_RX;
-              CLEAR_POPUP();
-              POPUP_MENU_START(onPXX2BindMenu);
-            }
-            else {
-              POPUP_WAIT(STR_WAITING_FOR_RX);
-            }
-          }
-        }
-
-        if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
-          killEvents(event);
-          if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
-            onPXX2ReceiverMenu(STR_BIND);
-          }
-          else {
-            POPUP_MENU_ADD_ITEM(STR_BIND);
-            POPUP_MENU_ADD_ITEM(STR_OPTIONS);
-            POPUP_MENU_ADD_ITEM(STR_SHARE);
-            POPUP_MENU_ADD_ITEM(STR_DELETE);
-            POPUP_MENU_ADD_ITEM(STR_RESET);
-          }
-          POPUP_MENU_START(onPXX2ReceiverMenu);
-        }
-      }
-      break;
+        modelSetupModulePxx2ReceiverLine(CURRENT_MODULE_EDITED(k), CURRENT_RECEIVER_EDITED(k), y, event, attr);
+        break;
 #endif
     }
   }

@@ -20,6 +20,16 @@
 
 #include "opentx.h"
 
+bool isPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  return g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx);
+}
+
+void setPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  g_model.moduleData[moduleIdx].pxx2.receivers |= (1 << receiverIdx);
+}
+
 bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
 {
   return is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
@@ -259,4 +269,85 @@ void startRegisterDialog(uint8_t module)
   s_editMode = 0;
   killAllEvents();
   POPUP_INPUT("", runPopupRegister);
+}
+
+void modelSetupModulePxx2ReceiverLine(uint8_t moduleIdx, uint8_t receiverIdx, coord_t y, event_t event, LcdFlags attr)
+{
+  ModuleInformation & moduleInformation = reusableBuffer.moduleSetup.pxx2.moduleInformation;
+
+  drawStringWithIndex(INDENT_WIDTH, y, STR_RECEIVER, receiverIdx + 1);
+
+  if (!isPXX2ReceiverUsed(moduleIdx, receiverIdx)) {
+    lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, attr);
+    if (attr && s_editMode > 0) {
+      killEvents(event);
+      setPXX2ReceiverUsed(moduleIdx, receiverIdx);
+      memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
+      onPXX2ReceiverMenu(STR_BIND);
+    }
+    return;
+  }
+
+  drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
+
+  if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && reusableBuffer.moduleSetup.bindInformation.step < 0) {
+    if (reusableBuffer.moduleSetup.bindInformation.step == BIND_MODULE_TX_INFORMATION_REQUEST && moduleInformation.information.modelID) {
+      // For R9M ACCESS the module information has been requested to know if we are in EU mode. We just receive it here and continue
+      if (moduleInformation.information.variant == PXX2_VARIANT_EU) {
+        // In EU mode we will need the power of the module to know if telemetry can be proposed
+        reusableBuffer.moduleSetup.bindInformation.step = BIND_MODULE_TX_SETTINGS_REQUEST;
+#if defined(SIMU)
+        reusableBuffer.moduleSetup.pxx2.moduleSettings.txPower = 14;
+#else
+        moduleState[moduleIdx].readModuleSettings(&reusableBuffer.moduleSetup.pxx2.moduleSettings);
+#endif
+      }
+      else {
+        reusableBuffer.moduleSetup.bindInformation.step = 0;
+        moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+      }
+    }
+    else if (reusableBuffer.moduleSetup.bindInformation.step == BIND_MODULE_TX_SETTINGS_REQUEST && reusableBuffer.moduleSetup.pxx2.moduleSettings.txPower > 0) {
+      // We just receive the module settings (for TX power)
+      reusableBuffer.moduleSetup.bindInformation.step = 0;
+      moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+    }
+  }
+  else if (attr && (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL || s_editMode == 0)) {
+    if (moduleState[moduleIdx].mode) {
+      moduleState[moduleIdx].mode = 0;
+      removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
+      killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
+      event = 0;
+      CLEAR_POPUP();
+    }
+    s_editMode = 0;
+  }
+
+  if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
+    if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT) {
+      if (reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
+        popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+        for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
+          popupMenuItems[rx] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[rx];
+        }
+        popupMenuTitle = STR_PXX2_SELECT_RX;
+        CLEAR_POPUP();
+        POPUP_MENU_START(onPXX2BindMenu);
+      }
+      else {
+        POPUP_WAIT(STR_WAITING_FOR_RX);
+      }
+    }
+  }
+
+  if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
+    killEvents(event);
+    POPUP_MENU_ADD_ITEM(STR_BIND);
+    POPUP_MENU_ADD_ITEM(STR_OPTIONS);
+    POPUP_MENU_ADD_ITEM(STR_SHARE);
+    POPUP_MENU_ADD_ITEM(STR_DELETE);
+    POPUP_MENU_ADD_ITEM(STR_RESET);
+    POPUP_MENU_START(onPXX2ReceiverMenu);
+  }
 }

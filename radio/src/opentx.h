@@ -451,15 +451,22 @@ void readKeysAndTrims();
 
 uint16_t evalChkSum();
 
+void alert(const char * title, const char * msg, uint8_t sound);
+
 #if !defined(GUI)
   #define RAISE_ALERT(...)
   #define ALERT(...)
 #else
-  #define RAISE_ALERT(title, msg, info, sound) showAlertBox(title, msg, info, sound)
-  #define ALERT(title, msg, sound) alert(title, msg, sound)
-#endif
+  inline void RAISE_ALERT(const char * title, const char * msg, const char * info, uint8_t sound)
+  {
+    showAlertBox(title, msg, info, sound);
+  }
 
-void alert(const char * t, const char * s , uint8_t sound);
+  inline void ALERT(const char * title, const char * msg, uint8_t sound)
+  {
+    alert(title, msg, sound);
+  }
+#endif
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
