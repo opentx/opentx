@@ -61,7 +61,7 @@ bool isSwitchAvailableInTimers(int swtch);
 bool isR9MModeAvailable(int mode);
 bool isPxx2IsrmChannelsCountAllowed(int channels);
 bool isExternalModuleAvailable(int moduleType);
-bool isInternalModuleAvailable(int module);
+bool isInternalModuleAvailable(int moduleType);
 bool isRfProtocolAvailable(int protocol);
 bool isTelemetryProtocolAvailable(int protocol);
 bool isTrainerModeAvailable(int mode);
