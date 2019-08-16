@@ -126,6 +126,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupPotType(1, ui->pot2Label, ui->pot2Name, ui->pot2Type);
   setupPotType(2, ui->pot3Label, ui->pot3Name, ui->pot3Type);
   setupPotType(3, ui->pot4Label, ui->pot4Name, ui->pot4Type);
+  setupPotType(4, ui->pot5Label, ui->pot5Name, ui->pot5Type);
 
   setupSliderType(0, ui->lsLabel, ui->lsName, ui->lsType);
   setupSliderType(1, ui->rsLabel, ui->rsName, ui->rsType);

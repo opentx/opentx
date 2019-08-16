@@ -270,8 +270,18 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
+      else if (IS_HORUS_X10(board))
+        return 5;
+      else if (IS_HORUS_X12S(board))
+        return 3;
       else
         return 3;
+
+    case PotsStorage:
+      if (IS_HORUS(board))
+        return 5;
+      else
+        return getCapability(board, Pots);
 
     case FactoryInstalledPots:
       if (IS_TARANIS_X9(board))
@@ -287,8 +297,14 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 0;
 
+    case SlidersStorage:
+      if (IS_HORUS_X10(board))
+        return 4;
+      else
+        return getCapability(board, Sliders);
+      
     case MouseAnalogs:
-      if (IS_HORUS_X12S(board))
+      if (IS_HORUS(board))
         return 2;
       else
         return 0;
@@ -321,10 +337,12 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 6;
       else if (IS_TARANIS_XLITE(board))
         return 6;
+      else if (IS_TARANIS(board))
+        return 8;
       else if (board == Board::BOARD_TARANIS_X9DP_2019)
         return 9;
-      else if (IS_HORUS_OR_TARANIS(board))
-        return 8;
+      else if (IS_HORUS(board))
+        return 10;
       else
         return 7;
 
@@ -450,6 +468,8 @@ const QString Boards::getAnalogInputName(Board::Type board, int index)
       "S1",
       "6P",
       "S2",
+      "EX1",
+      "EX2",
       "LS",
       "RS"
     };

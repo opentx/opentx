@@ -342,22 +342,30 @@ void convertRadioData_218_to_219(RadioData & settings)
 #endif
 
 #if defined(PCBHORUS)
+  // 2 new pots from X10:
+  //  - copy btw. 'chkSum' and 'auxSerialMode' (excl.)
   memcpy(&settings.chkSum, &oldSettings.chkSum, offsetof(RadioData, auxSerialMode) - offsetof(RadioData, chkSum));
+  //  - move calibration data
   memcpy(&settings.calib[NUM_STICKS + 5], &oldSettings.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
   memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
 
+  // move fields after custom functions
   settings.auxSerialMode = oldSettings.auxSerialMode;
   settings.switchConfig = oldSettings.switchConfig;
   settings.potsConfig = oldSettings.potsConfig;
   settings.slidersConfig = oldSettings.slidersConfig;
 
+  // 2 new switches
   memcpy(&settings.switchNames[0], &oldSettings.switchNames[0], 8 * LEN_SWITCH_NAME);
   memclear(&settings.switchNames[8], 2 * LEN_SWITCH_NAME);
 
+  // 2 new pots for X10
+  //  - split 'anaNames' (sticks + 3 old pots, 2 new pots, other old analogs)
   memcpy(&settings.anaNames[0], &oldSettings.anaNames[0], (NUM_STICKS + 3) * LEN_ANA_NAME);
   memclear(&settings.anaNames[NUM_STICKS + 3], 2 * LEN_SWITCH_NAME);
   memcpy(&settings.anaNames[NUM_STICKS + 5], &oldSettings.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
 
+  //  - copy rest of RadioData struct
   memcpy(&settings.currModelFilename[0], &oldSettings.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
 #endif
 
