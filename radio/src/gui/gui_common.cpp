@@ -161,57 +161,57 @@ bool isSourceAvailable(int source)
   if (source < 0)
     return false;
 
-  if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
+  if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT) {
     return isInputAvailable(source - MIXSRC_FIRST_INPUT);
   }
 
 #if defined(LUA_MODEL_SCRIPTS)
-  if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA) {
-    div_t qr = div(source-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+  if (source >= MIXSRC_FIRST_LUA && source <= MIXSRC_LAST_LUA) {
+    div_t qr = div(source - MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
     return (qr.rem<scriptInputsOutputs[qr.quot].outputsCount);
   }
 #elif defined(LUA_INPUTS)
-  if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA)
+  if (source >= MIXSRC_FIRST_LUA && source <= MIXSRC_LAST_LUA)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
-    return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+  if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT) {
+    return IS_POT_SLIDER_AVAILABLE(POT1+source - MIXSRC_FIRST_POT);
   }
 
 #if defined(PCBX10)
-  if (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2)
+  if (source >= MIXSRC_MOUSE1 && source <= MIXSRC_MOUSE2)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
-    return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  if (source >= MIXSRC_FIRST_SWITCH && source <= MIXSRC_LAST_SWITCH) {
+    return SWITCH_EXISTS(source - MIXSRC_FIRST_SWITCH);
   }
 
 #if !defined(HELI)
-  if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
+  if (source >= MIXSRC_CYC1 && source <= MIXSRC_CYC3)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH) {
-    return isChannelUsed(source-MIXSRC_FIRST_CH);
+  if (source >= MIXSRC_FIRST_CH && source <= MIXSRC_LAST_CH) {
+    return isChannelUsed(source - MIXSRC_FIRST_CH);
   }
 
-  if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = lswAddress(source-MIXSRC_FIRST_LOGICAL_SWITCH);
+  if (source >= MIXSRC_FIRST_LOGICAL_SWITCH && source <= MIXSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = lswAddress(source - MIXSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
 
 #if !defined(GVARS)
-  if (source>=MIXSRC_GVAR1 && source<=MIXSRC_LAST_GVAR)
+  if (source >= MIXSRC_GVAR1 && source <= MIXSRC_LAST_GVAR)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_RESERVE && source<=MIXSRC_LAST_RESERVE)
+  if (source >= MIXSRC_FIRST_RESERVE && source <= MIXSRC_LAST_RESERVE)
     return false;
 
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
-    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+  if (source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
+    div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     if (qr.rem == 0)
       return isTelemetryFieldAvailable(qr.quot);
     else
@@ -223,7 +223,7 @@ bool isSourceAvailable(int source)
 
 bool isSourceAvailableInGlobalFunctions(int source)
 {
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+  if (source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
     return false;
   }
   return isSourceAvailable(source);
@@ -234,8 +234,8 @@ bool isSourceAvailableInCustomSwitches(int source)
   bool result = isSourceAvailable(source);
 
 #if defined(TELEMETRY_FRSKY)
-  if (result && source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
-    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+  if (result && source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
+    div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     result = isTelemetryFieldComparisonAvailable(qr.quot);
   }
 #endif
@@ -246,7 +246,7 @@ bool isSourceAvailableInCustomSwitches(int source)
 bool isInputSourceAvailable(int source)
 {
   if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT)
-    return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+    return IS_POT_SLIDER_AVAILABLE(POT1+source - MIXSRC_FIRST_POT);
 
 #if defined(GYRO)
   if (source >= MIXSRC_GYRO1 && source <= MIXSRC_GYRO2)
