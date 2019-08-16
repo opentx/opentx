@@ -170,8 +170,8 @@ class GeneralSettings {
     int gyroMax;
     int gyroOffset;
 
-    unsigned int pwrOnSpeed;
-    unsigned int pwrOffSpeed;
+    int pwrOnSpeed;
+    int pwrOffSpeed;
     
     bool switchPositionAllowedTaranis(int index) const;
     bool switchSourceAllowedTaranis(int index) const;

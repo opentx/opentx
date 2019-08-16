@@ -1729,17 +1729,10 @@ void copyTrimsToOffset(uint8_t ch)
 }
 
 
-const uint8_t _pwrOnOffDuration_lookup[] = {
-  200, // 2s
-  100, // 1s
-  50,  // 0.5s
-  0,   // none
-};
-
 #if defined(STARTUP_ANIMATION)
 
-#define PWR_PRESS_DURATION_MIN() (_pwrOnOffDuration_lookup[g_eeGeneral.pwrOnSpeed & 3])
-#define PWR_PRESS_DURATION_MAX        500 // 5s
+#define PWR_PRESS_DURATION_MIN() (2 - g_eeGeneral.pwrOnSpeed)
+#define PWR_PRESS_DURATION_MAX   500 // 5s
 
 void runStartupAnimation()
 {
@@ -2035,7 +2028,7 @@ int main()
 #if !defined(SIMU)
 #if defined(PWR_BUTTON_PRESS)
 
-#define PWR_PRESS_SHUTDOWN_DELAY() (_pwrOnOffDuration_lookup[g_eeGeneral.pwrOffSpeed & 3])
+#define PWR_PRESS_SHUTDOWN_DELAY() (2 - g_eeGeneral.pwrOffSpeed)
 
 uint32_t pwr_press_time = 0;
 

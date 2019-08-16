@@ -385,7 +385,7 @@ bool menuRadioSetup(event_t event)
 #if defined(PWR_BUTTON_PRESS)
       case ITEM_SETUP_PWR_OFF_SPEED:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PWR_OFF_SPEED);
-        g_eeGeneral.pwrOffSpeed = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.pwrOffSpeed, 0, 3, attr);
+        g_eeGeneral.pwrOffSpeed = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.pwrOffSpeed, -1, 2, attr);
         break;
 #endif
 

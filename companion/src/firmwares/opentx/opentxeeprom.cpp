@@ -2407,8 +2407,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   internalField.Append(new UnsignedField<2>(this, generalData.countryCode));
 
   if (version >= 219 && IS_HORUS_OR_TARANIS(board)) {
-    internalField.Append(new UnsignedField<2>(this, generalData.pwrOnSpeed, "Power On Speed"));
-    internalField.Append(new UnsignedField<2>(this, generalData.pwrOffSpeed, "Power Off Speed"));
+    internalField.Append(new SignedField<2>(this, generalData.pwrOnSpeed, "Power On Speed"));
+    internalField.Append(new SignedField<2>(this, generalData.pwrOffSpeed, "Power Off Speed"));
     internalField.Append(new SpareBitsField<2>(this));
   }
   else {

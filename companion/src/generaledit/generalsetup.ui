@@ -2423,8 +2423,11 @@ p, li { white-space: pre-wrap; }
      </item>
      <item row="11" column="1">
       <widget class="QSlider" name="pwrOnSpeed">
+       <property name="minimum">
+        <number>-1</number>
+       </property>
        <property name="maximum">
-        <number>3</number>
+        <number>2</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -2433,8 +2436,11 @@ p, li { white-space: pre-wrap; }
      </item>
      <item row="12" column="1">
       <widget class="QSlider" name="pwrOffSpeed">
+       <property name="minimum">
+        <number>-1</number>
+       </property>
        <property name="maximum">
-        <number>3</number>
+        <number>2</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
