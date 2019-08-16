@@ -32,13 +32,13 @@ const unsigned char bmp_sleep[]  = {
 
 void drawStartupAnimation(uint32_t duration)
 {
-  uint8_t index = limit<uint8_t>(0, duration / (PWR_PRESS_DURATION_MIN / 4), 3);
+  uint8_t index = limit<uint8_t>(0, duration / (PWR_PRESS_DURATION_MIN / 5), 4);
 
   lcdRefreshWait();
   lcdClear();
 
   for (uint8_t i = 0; i < 4; i++) {
-    if (index >= i) {
+    if (index > i) {
       lcdDrawFilledRect(LCD_W / 2 - 18 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
     }
   }
@@ -55,7 +55,7 @@ void drawShutdownAnimation(uint32_t duration, const char * message)
   lcdClear();
 
   for (uint8_t i = 0; i < 4; i++) {
-    if (3 - index >= i) {
+    if (4 - index > i) {
       lcdDrawFilledRect(LCD_W / 2 - 18 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
     }
   }
