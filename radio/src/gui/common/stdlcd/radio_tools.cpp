@@ -89,19 +89,16 @@ bool readToolName(const char * filename, char * name)
 void addRadioScriptTool(uint8_t index, const char * path)
 {
   char toolName[TOOL_NAME_MAXLEN + 1];
-  const char * label;
-  char * ext = (char *)getFileExtension(path);
-  if (readToolName(path, toolName)) {
-    label = toolName;
-  }
-  else {
-    *ext = '\0';
-    label = getBasename(path);
+
+  if (!readToolName(path, toolName)) {
+    strAppendFilename(toolName, getBasename(path), TOOL_NAME_MAXLEN);
   }
 
-  if (addRadioTool(index, label)) {
-    f_chdir("/SCRIPTS/TOOLS/");
-    *ext = '.';
+  if (addRadioTool(index, toolName)) {
+    char toolPath[_MAX_LFN];
+    strcpy(toolPath, path);
+    *((char *)getBasename(toolPath)-1) = '\0';
+    f_chdir(toolPath);
     luaExec(path);
   }
 }
