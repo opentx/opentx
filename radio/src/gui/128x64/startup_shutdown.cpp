@@ -28,11 +28,11 @@ const unsigned char bmp_sleep[]  = {
 #include "sleep.lbm"
 };
 
-void drawStartupAnimation(uint32_t duration, uint32_t total_duration)
+void drawStartupAnimation(uint32_t duration, uint32_t totalDuration)
 {
-  if (total_duration == 0) return;
+  if (totalDuration == 0) return;
 
-  uint8_t index = limit<uint8_t>(0, duration / (total_duration / 5), 4);
+  uint8_t index = limit<uint8_t>(0, duration / (totalDuration / 5), 4);
 
   lcdRefreshWait();
   lcdClear();
@@ -47,11 +47,11 @@ void drawStartupAnimation(uint32_t duration, uint32_t total_duration)
   lcdRefreshWait();
 }
 
-void drawShutdownAnimation(uint32_t duration, uint32_t total_duration, const char * message)
+void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message)
 {
-  if (total_duration == 0) return;
+  if (totalDuration == 0) return;
 
-  uint8_t index = limit<uint8_t>(0, duration / (total_duration / 5), 4);
+  uint8_t index = limit<uint8_t>(0, duration / (totalDuration / 5), 4);
 
   lcdRefreshWait();
   lcdClear();

@@ -36,8 +36,8 @@ inline void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att = 0)
   drawTimer(x, y, tme, att, att);
 }
 
-void drawStartupAnimation(uint32_t duration, uint32_t total_duration);
-void drawShutdownAnimation(uint32_t duration, uint32_t total_duration, const char * message);
+void drawStartupAnimation(uint32_t duration, uint32_t totalDuration);
+void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message);
 void drawSleepBitmap();
 
 #endif // _COMMON_DRAW_FUNCTIONS_H_
