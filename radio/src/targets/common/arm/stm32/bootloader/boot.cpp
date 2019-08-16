@@ -216,8 +216,6 @@ int main()
   // wait a bit for the inputs to stabilize...
   // ... otherwise the bootloader cannot be started
   //     when the power on delay is cut to 0.
-  for (int i=0; i<5000;i++)
-    readTrims();
 
   // avoid booting after DFU bootloader
   if (!pwrPressed()) {
