@@ -67,7 +67,8 @@ enum MenuIcons {
   ICON_OPENTX,
   ICON_RADIO,
   ICON_RADIO_SETUP,
-  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_SD_MANAGER,
+  ICON_RADIO_TOOLS,
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
   ICON_RADIO_HARDWARE,
@@ -187,6 +188,9 @@ extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 enum EnumTabRadio {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
+#if defined(LUA) || defined(PXX2)
+  MENU_RADIO_TOOLS,
+#endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -197,7 +201,10 @@ enum EnumTabRadio {
 const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
   ICON_RADIO,
   ICON_RADIO_SETUP,
-  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_SD_MANAGER,
+#if defined(LUA) || defined(PXX2)
+  ICON_RADIO_TOOLS,
+#endif
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
   ICON_RADIO_HARDWARE,
@@ -212,6 +219,8 @@ bool menuRadioTrainer(event_t event);
 bool menuRadioVersion(event_t event);
 bool menuRadioHardware(event_t event);
 bool menuRadioCalibration(event_t event);
+bool menuRadioSpectrumAnalyser(event_t event);
+bool menuRadioPowerMeter(event_t event);
 
 extern const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT];
 
@@ -265,8 +274,6 @@ bool menuAboutView(event_t event);
 bool menuMainViewChannelsMonitor(event_t event);
 bool menuTextView(event_t event);
 bool menuScreensTheme(event_t event);
-bool menuRadioSpectrumAnalyser(event_t event);
-bool menuRadioPowerMeter(event_t event);
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 

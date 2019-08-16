@@ -54,7 +54,9 @@ void menuTraceBuffer(event_t event);
 enum MenuRadioIndexes {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
+#if defined(LUA) || defined(PXX2)
   MENU_RADIO_TOOLS,
+#endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,

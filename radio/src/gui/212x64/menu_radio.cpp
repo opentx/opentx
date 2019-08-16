@@ -23,7 +23,9 @@
 const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT] = {
   menuRadioSetup,
   menuRadioSdManager,
+#if defined(LUA) || defined(PXX2)
   menuRadioTools,
+#endif
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,

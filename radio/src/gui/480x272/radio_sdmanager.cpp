@@ -33,7 +33,7 @@ BitmapBuffer * currentBitmap = NULL;
 
 bool menuRadioSdManagerInfo(event_t event)
 {
-  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, ICON_RADIO_SD_BROWSER, 1);
+  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, ICON_RADIO_SD_MANAGER, 1);
 
   lcdDrawText(MENUS_MARGIN_LEFT, 2*FH, STR_SD_TYPE);
   lcdDrawText(100, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
