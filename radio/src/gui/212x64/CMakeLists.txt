@@ -5,6 +5,7 @@ set(GUI_SRC
   fonts.cpp
   popups.cpp
   widgets.cpp
+  startup_shutdown.cpp
   menu_model.cpp
   model_select.cpp
   model_setup.cpp

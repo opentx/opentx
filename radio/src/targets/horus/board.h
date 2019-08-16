@@ -429,7 +429,7 @@ extern uint16_t adcValues[NUM_ANALOGS];
 
 #if NUM_PWMSTICKS > 0
 #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
-void sticksPwmInit(void);
+void sticksPwmInit();
 void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;
 #else
@@ -457,13 +457,13 @@ extern "C" {
 #define SOFT_PWR_CTRL
 extern uint32_t shutdownRequest; // Stores intentional shutdown to avoid reboot loop
 extern uint32_t shutdownReason; // Used for detecting unexpected reboots regardless of reason
-void pwrInit(void);
-uint32_t pwrCheck(void);
-void pwrOn(void);
-void pwrOff(void);
-void pwrResetHandler(void);
-uint32_t pwrPressed(void);
-uint32_t pwrPressedDuration(void);
+void pwrInit();
+uint32_t pwrCheck();
+void pwrOn();
+void pwrOff();
+void pwrResetHandler();
+bool pwrPressed();
+uint32_t pwrPressedDuration();
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else
@@ -471,10 +471,10 @@ uint32_t pwrPressedDuration(void);
 #endif
 
 // Led driver
-void ledInit(void);
-void ledOff(void);
-void ledRed(void);
-void ledBlue(void);
+void ledInit();
+void ledOff();
+void ledRed();
+void ledBlue();
 #if defined(PCBX10)
   void ledGreen();
 #endif
@@ -483,15 +483,15 @@ void ledBlue(void);
 #define LCD_W                          480
 #define LCD_H                          272
 #define LCD_DEPTH                      16
-void lcdInit(void);
-void lcdRefresh(void);
+void lcdInit();
+void lcdRefresh();
 void lcdCopy(void * dest, void * src);
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
 void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format);
-void lcdStoreBackupBuffer(void);
-int lcdRestoreBackupBuffer(void);
+void lcdStoreBackupBuffer();
+int lcdRestoreBackupBuffer();
 void lcdSetContrast();
 #define lcdOff()              backlightEnable(0) /* just disable the backlight */
 #define lcdSetRefVolt(...)

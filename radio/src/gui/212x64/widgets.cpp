@@ -20,19 +20,6 @@
 
 #include "opentx.h"
 
-const unsigned char SLEEP_BITMAP[]  = {
-  #include "../../bitmaps/212x64/sleep.lbm"
-};
-
-#define SLEEP_BITMAP_WIDTH             60
-#define SLEEP_BITMAP_HEIGHT            60
-void drawSleepBitmap()
-{
-  lcdClear();
-  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, SLEEP_BITMAP, 0, SLEEP_BITMAP_WIDTH);
-  lcdRefresh();
-}
-
 void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
 #define BOX_CENTERY   (LCD_H-BOX_WIDTH/2-10)

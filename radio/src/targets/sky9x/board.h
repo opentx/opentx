@@ -161,11 +161,11 @@ enum EnumSwitches
 #define LCD_CONTRAST_MIN               10
 #define LCD_CONTRAST_MAX               45
 #define LCD_CONTRAST_DEFAULT           25
-void lcdInit(void);
-void lcdRefresh(void);
+void lcdInit();
+void lcdRefresh();
 #define lcdRefreshWait()
 void lcdSetRefVolt(uint8_t val);
-void lcdSetContrast(void);
+void lcdSetContrast();
 
 // USB driver
 void usbMassStorage();
@@ -218,8 +218,8 @@ void flashWrite(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
 uint32_t switchState(uint8_t index);
-uint32_t readKeys(void);
-uint32_t readTrims(void);
+uint32_t readKeys();
+uint32_t readTrims();
 #define NUM_TRIMS                      4
 #define NUM_TRIMS_KEYS                 (NUM_TRIMS * 2)
 #define TRIMS_PRESSED()                readTrims()
@@ -342,7 +342,7 @@ extern int8_t Coproc_maxtemp;
 
 // Haptic driver
 #define HAPTIC_PWM
-void hapticOff(void);
+void hapticOff();
 void hapticOn(uint32_t pwmPercent);
 
 // BlueTooth driver
@@ -357,8 +357,9 @@ void btPushByte(uint8_t data);
 #define SOFT_PWR_CTRL
 void pwrInit();
 void pwrOff();
+void pwrOn();
 uint32_t pwrCheck();
-uint32_t pwrPressed();
+bool pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
 
 // EEPROM driver
@@ -366,7 +367,7 @@ uint32_t pwrPressed();
 #define EEPROM_BLOCK_SIZE     (4*1024)
 void eepromInit();
 uint8_t eepromReadStatus();
-uint8_t eepromIsTransferComplete(void);
+uint8_t eepromIsTransferComplete();
 void eepromBlockErase(uint32_t address);
 void eepromStartRead(uint8_t * buffer, size_t address, size_t size);
 void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);

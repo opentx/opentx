@@ -24,6 +24,7 @@
 #include "gui_common.h"
 #include "menus.h"
 #include "popups.h"
+#include "common/stdlcd/draw_functions.h"
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
@@ -192,7 +193,6 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
 #if defined(GVARS)
 #define GVAR_MENU_ITEM(x, y, v, min, max, attr, editflags, event) editGVarFieldValue(x, y, v, min, max, attr, editflags, event)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
-void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
 void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags=0);
 void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags);
 #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
