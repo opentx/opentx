@@ -180,7 +180,7 @@ bool isSourceAvailable(int source)
   }
 
 #if defined(PCBX10)
-  if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
+  if (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2)
     return false;
 #endif
 
@@ -253,7 +253,12 @@ bool isInputSourceAvailable(int source)
     return true;
 #endif
 
-  if (source >= MIXSRC_Rud && source <= MIXSRC_MAX)
+#if defined(PCBX10)
+  if (source >= MIXSRC_MOUSE1 && source <= MIXSRC_MOUSE2)
+    return false;
+#endif
+
+  if (source >= MIXSRC_Rud && source < MIXSRC_MAX)
     return true;
 
   if (source >= MIXSRC_FIRST_TRIM && source <= MIXSRC_LAST_TRIM)

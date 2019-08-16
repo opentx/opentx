@@ -478,17 +478,6 @@ enum SwitchSources {
   SWSRC_SR2,
 #endif
 
-#if defined(STORAGE_SWITCH_GMBL)
-  SWSRC_GMBL0,
-  SWSRC_GMBL1,
-  SWSRC_GMBL2,
-#endif
-
-#if defined(STORAGE_SWITCH_GMBR)
-  SWSRC_GMBR0,
-  SWSRC_GMBR1,
-  SWSRC_GMBR2,
-#endif
 
 #if defined(PCBSKY9X)
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
@@ -604,19 +593,21 @@ enum MixSources {
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
   MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
   MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
-  MIXSRC_FIRST_SLIDER,
-  MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
-  MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
-#if defined(PCBX12S)
-  MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
-  MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
-  MIXSRC_LAST_POT = MIXSRC_RS,
-#endif
 #if defined(PCBX10)
   MIXSRC_EXT1,                          LUA_EXPORT("ext1", "Ext 1")
   MIXSRC_EXT2,                          LUA_EXPORT("ext2", "Ext 2")
-  MIXSRC_LAST_POT = MIXSRC_EXT2,
 #endif
+  MIXSRC_FIRST_SLIDER,
+#if defined(PCBX12S)
+  MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
+  MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
+  MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
+  MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
+#else
+  MIXSRC_LS = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("ls", "Left slider")
+  MIXSRC_RS,                            LUA_EXPORT("rs", "Right slider")
+#endif
+  MIXSRC_LAST_POT = MIXSRC_RS,
 #elif defined(PCBX9E)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
@@ -731,10 +722,6 @@ enum MixSources {
   MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
   MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
-#endif
-#if defined(PCBHORUS)
-  MIXSRC_GMBL,                      LUA_EXPORT("gmbl", "Switch Left gimbal")
-  MIXSRC_GMBR,                      LUA_EXPORT("gmbr", "Switch right gimbal")
 #endif
 #if defined(PCBSKY9X)
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,

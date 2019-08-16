@@ -54,7 +54,7 @@ int convertSource_218_to_219(int source)
 #endif
 
 #if defined(PCBHORUS)
-  if (source >= MIXSRC_GMBL)
+  if (source >= MIXSRC_SI)
     source += 2;
 #endif
 
@@ -88,7 +88,7 @@ int convertSwitch_218_to_219(int swtch)
 #endif
 
 #if defined(PCBHORUS)
-  if (swtch >= SWSRC_GMBL0)
+  if (swtch >= SWSRC_SI0)
     swtch += 2 * 3;
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH + 3 * XPOTS_MULTIPOS_COUNT)
     swtch += 2 * XPOTS_MULTIPOS_COUNT;
