@@ -749,7 +749,7 @@ Mode 4:
              </item>
              <item>
               <property name="text">
-               <string>Use releases and release candidates (testing)</string>
+               <string>Use release candidates (testing)</string>
               </property>
              </item>
              <item>

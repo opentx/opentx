@@ -404,7 +404,7 @@ Mode 4:
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="752"/>
-        <source>Use releases and release candidates (testing)</source>
+        <source>Use release candidates (testing)</source>
         <translation>リリースとRC (Test版) を使用</translation>
     </message>
     <message>
