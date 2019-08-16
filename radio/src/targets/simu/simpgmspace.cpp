@@ -458,11 +458,7 @@ uint32_t pwrCheck()
   return simu_shutdown ? e_power_off : e_power_on;
 }
 
-void pwrOff()
-{
-}
-
-uint32_t pwrPressed()
+bool pwrPressed()
 {
   // TODO: simulate power button
 #if defined(PWR_SWITCH_GPIO)  // STM32
@@ -475,6 +471,14 @@ uint32_t pwrPressed()
 }
 
 void pwrInit()
+{
+}
+
+void pwrOn()
+{
+}
+
+void pwrOff()
 {
 }
 

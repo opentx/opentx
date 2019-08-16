@@ -30,8 +30,8 @@
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 // Rotary Encoder driver
-void rotaryEncoderInit(void);
-void rotaryEncoderCheck(void);
+void rotaryEncoderInit();
+void rotaryEncoderCheck();
 #endif
 
 #define FLASHSIZE                       0x80000
@@ -54,8 +54,8 @@ void rotaryEncoderCheck(void);
 extern uint16_t sessionTimer;
 
 // Board driver
-void boardInit(void);
-void boardOff(void);
+void boardInit();
+void boardOff();
 
 // Timers driver
 void init2MhzTimer();
@@ -64,8 +64,8 @@ void init5msTimer();
 // SD driver
 #define BLOCK_SIZE                      512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
-uint32_t sdIsHC(void);
-uint32_t sdGetSpeed(void);
+uint32_t sdIsHC();
+uint32_t sdGetSpeed();
 #define SD_IS_HC()                      (sdIsHC())
 #define SD_GET_SPEED()                  (sdGetSpeed())
 #define SD_GET_FREE_BLOCKNR()           (sdGetFreeSectors())
@@ -83,18 +83,18 @@ uint32_t sdGetSpeed(void);
   #define sdMount()
   #define SD_CARD_PRESENT()               true
 #else
-void sdInit(void);
-void sdMount(void);
-void sdDone(void);
-void sdPoll10ms(void);
-uint32_t sdMounted(void);
+void sdInit();
+void sdMount();
+void sdDone();
+void sdPoll10ms();
+uint32_t sdMounted();
 #define SD_CARD_PRESENT()               ((SD_GPIO_PRESENT_GPIO->IDR & SD_GPIO_PRESENT_GPIO_PIN) == 0)
 #endif
 
 // Flash Write driver
 #define FLASH_PAGESIZE 256
-void unlockFlash(void);
-void lockFlash(void);
+void unlockFlash();
+void lockFlash();
 void flashWrite(uint32_t * address, uint32_t * buffer);
 uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
@@ -603,15 +603,16 @@ extern "C" {
 
 // Power driver
 #define SOFT_PWR_CTRL
-void pwrInit(void);
-uint32_t pwrCheck(void);
-void pwrOn(void);
-void pwrOff(void);
-uint32_t pwrPressed(void);
+void pwrInit();
+uint32_t pwrCheck();
+void pwrOn();
+void pwrOff();
+bool pwrPressed();
 #if defined(PWR_BUTTON_PRESS)
-uint32_t pwrPressedDuration(void);
+#define STARTUP_ANIMATION
+uint32_t pwrPressedDuration();
 #endif
-void pwrResetHandler(void);
+void pwrResetHandler();
 
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()           false
@@ -620,10 +621,10 @@ void pwrResetHandler(void);
 #endif
 
 // Backlight driver
-void backlightInit(void);
-void backlightDisable(void);
+void backlightInit();
+void backlightDisable();
 #define BACKLIGHT_DISABLE()             backlightDisable()
-uint8_t isBacklightEnabled(void);
+uint8_t isBacklightEnabled();
 #if defined(PCBX9E) || defined(PCBX9DP)
   void backlightEnable(uint8_t level, uint8_t color);
   #define BACKLIGHT_ENABLE()            backlightEnable(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
@@ -646,7 +647,7 @@ uint8_t isBacklightEnabled(void);
 // I2C driver: EEPROM + Audio Volume
 #define EEPROM_SIZE                   (32*1024)
 
-void i2cInit(void);
+void i2cInit();
 void eepromReadBlock(uint8_t * buffer, size_t address, size_t size);
 void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
 uint8_t eepromIsTransferComplete();
@@ -656,8 +657,8 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
-void telemetryPortSetDirectionInput(void);
-void telemetryPortSetDirectionOutput(void);
+void telemetryPortSetDirectionInput();
+void telemetryPortSetDirectionOutput();
 void sportSendByte(uint8_t byte);
 void sportSendByteLoop(uint8_t byte);
 void sportStopSendByteLoop();
@@ -678,9 +679,9 @@ extern uint32_t telemetryErrors;
 
 // Sport update driver
 #if defined(SPORT_UPDATE_PWR_GPIO)
-void sportUpdateInit(void);
-void sportUpdatePowerOn(void);
-void sportUpdatePowerOff(void);
+void sportUpdateInit();
+void sportUpdatePowerOn();
+void sportUpdatePowerOff();
 #define SPORT_UPDATE_POWER_ON()         sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()        sportUpdatePowerOff()
 #else
@@ -690,38 +691,38 @@ void sportUpdatePowerOff(void);
 #endif
 
 // Audio driver
-void audioInit(void) ;
-void audioEnd(void) ;
-void dacStart(void);
-void dacStop(void);
+void audioInit() ;
+void audioEnd() ;
+void dacStart();
+void dacStop();
 void setSampleRate(uint32_t frequency);
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
 #if !defined(SOFTWARE_VOLUME)
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
-int32_t getVolume(void);
+int32_t getVolume();
 #endif
 #if defined(AUDIO_SPEAKER_ENABLE_GPIO)
-void initSpeakerEnable(void);
+void initSpeakerEnable();
 void enableSpeaker();
 void disableSpeaker();
 #else
-static inline void initSpeakerEnable(void) { }
-static inline void enableSpeaker(void) { }
-static inline void disableSpeaker(void) { }
+static inline void initSpeakerEnable() { }
+static inline void enableSpeaker() { }
+static inline void disableSpeaker() { }
 #endif
 #if defined(HEADPHONE_TRAINER_SWITCH_GPIO)
-void initHeadphoneTrainerSwitch(void);
-void enableHeadphone(void);
-void enableTrainer(void);
+void initHeadphoneTrainerSwitch();
+void enableHeadphone();
+void enableTrainer();
 #else
-static inline void initHeadphoneTrainerSwitch(void) { }
-static inline void enableHeadphone(void) { }
-static inline void enableTrainer(void) { }
+static inline void initHeadphoneTrainerSwitch() { }
+static inline void enableHeadphone() { }
+static inline void enableTrainer() { }
 #endif
 #if defined(JACK_DETECT_GPIO)
-void initJackDetect(void);
+void initJackDetect();
 bool isJackPlugged();
 #endif
 void audioConsumeCurrentBuffer();
@@ -729,12 +730,12 @@ void audioConsumeCurrentBuffer();
 #define audioEnableIrq()                __enable_irq()
 
 // Haptic driver
-void hapticInit(void);
-void hapticOff(void);
+void hapticInit();
+void hapticOff();
 #if defined(HAPTIC_PWM)
   void hapticOn(uint32_t pwmPercent);
 #else
-  void hapticOn(void);
+  void hapticOn();
 #endif
 
 // Second serial port driver
@@ -745,8 +746,8 @@ extern uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
-void auxSerialSbusInit(void);
-void auxSerialStop(void);
+void auxSerialSbusInit();
+void auxSerialStop();
 #endif
 
 // BT driver
@@ -760,9 +761,9 @@ void auxSerialStop(void);
 #define BT_TX_FIFO_SIZE    64
 #define BT_RX_FIFO_SIZE    128
 void bluetoothInit(uint32_t baudrate, bool enable);
-void bluetoothWriteWakeup(void);
-uint8_t bluetoothIsWriting(void);
-void bluetoothDisable(void);
+void bluetoothWriteWakeup();
+uint8_t bluetoothIsWriting();
+void bluetoothDisable();
 #if defined(PCBX9LITE)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
 #elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
@@ -773,11 +774,11 @@ void bluetoothDisable(void);
 #endif
 
 // LED driver
-void ledInit(void);
-void ledOff(void);
-void ledRed(void);
-void ledGreen(void);
-void ledBlue(void);
+void ledInit();
+void ledOff();
+void ledRed();
+void ledGreen();
+void ledBlue();
 
 // LCD driver
 #if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
@@ -803,9 +804,9 @@ void ledBlue(void);
 #define IS_LCD_RESET_NEEDED()           true
 #endif
 
-void lcdInit(void);
-void lcdInitFinish(void);
-void lcdOff(void);
+void lcdInit();
+void lcdInitFinish();
+void lcdOff();
 
 // TODO lcdRefreshWait() stub in simpgmspace and remove LCD_DUAL_BUFFER
 #if defined(LCD_DMA) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
@@ -814,19 +815,19 @@ void lcdRefreshWait();
 #define lcdRefreshWait()
 #endif
 #if defined(PCBX9D) || defined(SIMU) || !defined(__cplusplus)
-void lcdRefresh(void);
+void lcdRefresh();
 #else
 void lcdRefresh(bool wait=true); // TODO uint8_t wait to simplify this
 #endif
 void lcdSetRefVolt(unsigned char val);
-void lcdSetContrast(void);
+void lcdSetContrast();
 
 // Top LCD driver
 #if defined(TOPLCD_GPIO)
-void toplcdInit(void);
-void toplcdOff(void);
-void toplcdRefreshStart(void);
-void toplcdRefreshEnd(void);
+void toplcdInit();
+void toplcdOff();
+void toplcdRefreshStart();
+void toplcdRefreshEnd();
 void setTopFirstTimer(int32_t value);
 void setTopSecondTimer(uint32_t value);
 void setTopRssi(uint32_t rssi);

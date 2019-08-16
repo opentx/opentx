@@ -96,14 +96,14 @@ void pwrOff()
   GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 
-uint32_t pwrPressed()
+bool pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_ON_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
 }
 
 void pwrResetHandler()
 {
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
+  RCC->AHB1ENR |= PWR_RCC_AHB1Periph;
 
   // these two NOPs are needed (see STM32F errata sheet) before the peripheral
   // register can be written after the peripheral clock was enabled
@@ -137,9 +137,11 @@ void pwrResetHandler()
     if (shutdownReason == DIRTY_SHUTDOWN) {
       powerupReason = DIRTY_SHUTDOWN;
     }
-#else
-   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-#endif
     pwrOn();
   }
+#else
+   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+     pwrOn();
+   }
+#endif
 }

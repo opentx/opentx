@@ -235,17 +235,3 @@ void drawStatusLine()
   }
 }
 #endif
-
-const unsigned char SLEEP_BITMAP[]  = {
-#include "sleep.lbm"
-};
-
-#define SLEEP_BITMAP_WIDTH             60
-#define SLEEP_BITMAP_HEIGHT            60
-
-void drawSleepBitmap()
-{
-  lcdClear();
-  lcdDraw1bitBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, SLEEP_BITMAP, 0);
-  lcdRefresh();
-}

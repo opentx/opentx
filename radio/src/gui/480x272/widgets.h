@@ -28,8 +28,6 @@
 #define OPTION_MENU_TITLE_BAR          0x02
 #define OPTION_MENU_NO_SCROLLBAR       0x04
 
-#define OPTION_SLIDER_INVERS           INVERS
-#define OPTION_SLIDER_BLINK            BLINK
 #define OPTION_SLIDER_VERTICAL         0x04
 #define OPTION_SLIDER_EMPTY_BAR        0x08
 #define OPTION_SLIDER_DBL_COLOR        0x10
@@ -68,10 +66,10 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 #endif
 
 // Screen templates
-void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons=NULL, uint32_t options=0);
+void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons=nullptr, uint32_t options=0);
 void drawSplash();
 void drawSleepBitmap();
-void drawShutdownAnimation(uint32_t index, const char * message);
+void drawShutdownAnimation(uint32_t duration, const char * message);
 
 // Main view standard widgets
 void drawTopBar();

@@ -1728,6 +1728,38 @@ void copyTrimsToOffset(uint8_t ch)
   storageDirty(EE_MODEL);
 }
 
+#if defined(STARTUP_ANIMATION)
+#define PWR_PRESS_DURATION_MIN        100 // 1s
+#define PWR_PRESS_DURATION_MAX        500 // 5s
+
+void runStartupAnimation()
+{
+  tmr10ms_t start = get_tmr10ms();
+  tmr10ms_t duration = 0;
+  bool isPowerOn = false;
+
+  while (pwrPressed()) {
+    duration = get_tmr10ms() - start;
+    if (duration < PWR_PRESS_DURATION_MIN) {
+      drawStartupAnimation(duration);
+    }
+    else if (duration >= PWR_PRESS_DURATION_MAX) {
+      drawSleepBitmap();
+      backlightDisable();
+    }
+    else if (!isPowerOn) {
+      isPowerOn = true;
+      pwrOn();
+      haptic.play(15, 3, PLAY_NOW);
+    }
+  }
+
+  if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
+    boardOff();
+  }
+}
+#endif
+
 void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 {
   int16_t zeros[MAX_OUTPUT_CHANNELS];
@@ -1783,12 +1815,21 @@ void opentxInit()
   #endif
 #endif
 
-#if defined(RTCLOCK) && !defined(COPROCESSOR)
-  rtcInit(); // RTC must be initialized before rambackupRestore() is called
-#endif
-
 #if defined(EEPROM)
   storageReadRadioSettings();
+#endif
+
+  BACKLIGHT_ENABLE(); // we start the backlight during the startup animation
+
+#if defined(STARTUP_ANIMATION)
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    pwrOn();
+  }
+  else {
+    runStartupAnimation();
+  }
+#else // defined(PWR_BUTTON_PRESS)
+  pwrOn();
 #endif
 
   // Radios handle UNEXPECTED_SHUTDOWN() differently:
@@ -1963,7 +2004,7 @@ int main()
   stackPaint();
 #endif
 
-#if defined(SPLASH) && (defined(PCBTARANIS) || defined(PCBHORUS))
+#if defined(SPLASH) && !defined(STARTUP_ANIMATION)
   drawSplash();
 #endif
 

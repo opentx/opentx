@@ -41,21 +41,6 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
-#if defined(PWR_BUTTON_PRESS)
-  #define PWR_PRESS_DURATION_MIN        100 // 1s
-  #define PWR_PRESS_DURATION_MAX        500 // 5s
-
-  #if LCD_DEPTH > 1
-    const unsigned char bmp_startup[] = {
-      #include "startup.lbm"
-    };
-
-    const unsigned char bmp_lock[] = {
-      #include "lock.lbm"
-    };
-  #endif
-#endif
-
 #if defined(SPORT_UPDATE_PWR_GPIO)
 void sportUpdateInit()
 {
@@ -189,63 +174,6 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if defined(PWR_BUTTON_PRESS)
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-    lcdClear();
-#if LCD_DEPTH > 1
-    lcdDrawBitmap(76, 2, bmp_lock, 0, 60);
-#else
-    lcdDrawFilledRect(LCD_W / 2 - 18, LCD_H / 2 - 3, 6, 6, SOLID, 0);
-#endif
-    lcdRefresh();
-    lcdRefreshWait();
-
-    tmr10ms_t start = get_tmr10ms();
-    tmr10ms_t duration = 0;
-    uint8_t pwr_on = 0;
-    while (pwrPressed()) {
-      duration = get_tmr10ms() - start;
-      if (duration < PWR_PRESS_DURATION_MIN) {
-        unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
-        lcdClear();
-#if LCD_DEPTH > 1
-        lcdDrawBitmap(76, 2, bmp_startup, index*60, 60);
-#else
-        for(uint8_t i = 0; i < 4; i++) {
-          if (index >= i) {
-            lcdDrawFilledRect(LCD_W / 2 - 18 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
-          }
-        }
-#endif
-      }
-      else if (duration >= PWR_PRESS_DURATION_MAX) {
-        drawSleepBitmap();
-        backlightDisable();
-      }
-      else {
-        if (pwr_on != 1) {
-          pwr_on = 1;
-          pwrOn();
-          backlightInit();
-          haptic.play(15, 3, PLAY_NOW);
-        }
-      }
-      lcdRefresh();
-      lcdRefreshWait();
-    }
-    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
-      boardOff();
-    }
-  }
-  else {
-    pwrOn();
-    backlightInit();
-  }
-#else // defined(PWR_BUTTON_PRESS)
-  pwrOn();
-  backlightInit();
-#endif
-
 #if defined(TOPLCD_GPIO)
   toplcdInit();
 #endif
@@ -266,6 +194,12 @@ void boardInit()
 #if defined(GYRO)
   gyroInit();
 #endif
+
+#if defined(RTCLOCK) && !defined(COPROCESSOR)
+  rtcInit(); // RTC must be initialized before rambackupRestore() is called
+#endif
+
+  backlightInit();
 }
 
 void boardOff()

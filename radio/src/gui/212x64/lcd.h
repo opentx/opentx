@@ -117,7 +117,6 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode, uint8_t len);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
 
-void drawStringWithIndex(coord_t x, coord_t y, const char *str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void drawSwitch(coord_t x, coord_t y, int32_t swtch, LcdFlags att=0);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
@@ -131,13 +130,6 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
-
-void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
-void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att, LcdFlags att2);
-inline void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att)
-{
-  drawTimer(x, y, tme, att, att);
-}
 
 #define SOLID                          0xff
 #define DOTTED                         0x55
@@ -163,8 +155,6 @@ inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
 void lcdInvertLine(int8_t line);
 #define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
 
-void drawShutdownAnimation(uint32_t index, const char * message);
-void drawSleepBitmap();
 void drawTelemetryTopBar();
 
 #define V_BAR(xx, yy, ll)    \
