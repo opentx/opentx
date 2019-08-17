@@ -473,13 +473,13 @@ void menuRadioSetup(event_t event)
 #if defined(PWR_BUTTON_PRESS)
       case ITEM_RADIO_SETUP_PWR_ON_SPEED:
         lcdDrawTextAlignedLeft(y, STR_PWR_ON_SPEED);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOnSpeed + 1, attr|LEFT);
+        drawSlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOnSpeed +1, 3, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOnSpeed, -1, 2);
         break;
 
       case ITEM_RADIO_SETUP_PWR_OFF_SPEED:
         lcdDrawTextAlignedLeft(y, STR_PWR_OFF_SPEED);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOffSpeed + 1, attr|LEFT);
+        drawSlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOffSpeed +1, 3, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOffSpeed, -1, 2);
         break;
 #endif
