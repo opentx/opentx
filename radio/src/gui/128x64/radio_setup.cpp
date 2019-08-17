@@ -87,6 +87,8 @@ enum {
   CASE_PWM_BACKLIGHT(ITEM_RADIO_SETUP_BACKLIGHT_BRIGHTNESS_ON)
   ITEM_RADIO_SETUP_FLASH_BEEP,
   CASE_SPLASH_PARAM(ITEM_RADIO_SETUP_DISABLE_SPLASH)
+  CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_ON_SPEED)
+  CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_OFF_SPEED)
   CASE_PXX2(ITEM_RADIO_SETUP_OWNER_ID)
   CASE_GPS(ITEM_RADIO_SETUP_TIMEZONE)
   ITEM_RADIO_SETUP_ADJUST_RTC,
@@ -155,7 +157,8 @@ void menuRadioSetup(event_t event)
     CASE_PWM_BACKLIGHT(0)
     0,
     CASE_SPLASH_PARAM(0)
-
+    CASE_PWR_BUTTON_PRESS(0)
+    CASE_PWR_BUTTON_PRESS(0)
     CASE_PXX2(0) /* owner registration ID */
 
     CASE_GPS(0)
@@ -506,6 +509,20 @@ void menuRadioSetup(event_t event)
       }
 #endif
 
+#if defined(PWR_BUTTON_PRESS)
+      case ITEM_RADIO_SETUP_PWR_ON_SPEED:
+        lcdDrawTextAlignedLeft(y, STR_PWR_ON_SPEED);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOnSpeed + 1, attr|LEFT);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOnSpeed, -1, 2);
+        break;
+
+      case ITEM_RADIO_SETUP_PWR_OFF_SPEED:
+        lcdDrawTextAlignedLeft(y, STR_PWR_OFF_SPEED);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.pwrOffSpeed + 1, attr|LEFT);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOffSpeed, -1, 2);
+        break;
+#endif
+      
 #if defined(PXX2)
       case ITEM_RADIO_SETUP_OWNER_ID:
         editSingleName(RADIO_SETUP_2ND_COLUMN, y, STR_OWNER_ID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);

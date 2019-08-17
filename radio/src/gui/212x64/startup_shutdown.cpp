@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-#define PWR_PRESS_DURATION_MIN        100 // 1s
-#define PWR_PRESS_DURATION_MAX        500 // 5s
 
 #define ANIMATIONS_BITMAP_WIDTH       60
 #define ANIMATIONS_BITMAP_HEIGHT      60
@@ -42,9 +40,12 @@ const unsigned char bmp_sleep[] = {
 #include "sleep.lbm"
 };
 
-void drawStartupAnimation(uint32_t duration)
+void drawStartupAnimation(uint32_t duration, uint32_t totalDuration)
 {
-  uint8_t index = limit<uint8_t>(0, duration / (PWR_PRESS_DURATION_MIN / 5), 4);
+  if (totalDuration == 0)
+    return;
+
+  uint8_t index = limit<uint8_t>(0, duration / (totalDuration / 5), 4);
 
   lcdRefreshWait();
   lcdClear();
@@ -57,9 +58,12 @@ void drawStartupAnimation(uint32_t duration)
   lcdRefresh();
 }
 
-void drawShutdownAnimation(uint32_t duration, const char * message)
+void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message)
 {
-  uint8_t index = limit<uint8_t>(0, duration / (PWR_PRESS_SHUTDOWN_DELAY / 4), 3);
+  if (totalDuration == 0)
+    return;
+
+  uint8_t index = limit<uint8_t>(0, duration / (totalDuration / 4), 3);
 
   lcdRefreshWait();
   lcdClear();

@@ -127,6 +127,12 @@
   #define CASE_SPLASH(x)
 #endif
 
+#if defined(PWR_BUTTON_PRESS)
+  #define CASE_PWR_BUTTON_PRESS(x) x,
+#else
+  #define CASE_PWR_BUTTON_PRESS(x)
+#endif
+
 #if defined(TELEMETRY_FRSKY)
   #define CASE_FRSKY(x) x,
 #else
@@ -292,8 +298,6 @@ void memswap(void * a, void * b, uint8_t size);
 #else
   #define pwrOffPressed()              (!pwrPressed())
 #endif
-
-#define PWR_PRESS_SHUTDOWN_DELAY       300 // 3s
 
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)           g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)

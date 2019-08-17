@@ -296,6 +296,10 @@ extern const char STR_BLOFFBRIGHTNESS[];
 #endif
 
 extern const char STR_SPLASHSCREEN[];
+#if defined(PWR_BUTTON_PRESS)
+extern const char STR_PWR_ON_SPEED[];
+extern const char STR_PWR_OFF_SPEED[];
+#endif
 extern const char STR_THROTTLEWARNING[];
 extern const char STR_SWITCHWARNING[];
 extern const char STR_POTWARNINGSTATE[];
