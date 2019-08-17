@@ -115,7 +115,7 @@ PACK(struct ExpoData {
 PACK(struct LimitData {
   int32_t min:11;
   int32_t max:11;
-  int32_t ppmCenter:10;
+  int32_t ppmCenter:10; // TODO can be reduced to 8 bits
   int16_t offset:11;
   uint16_t symetrical:1;
   uint16_t revert:1;
