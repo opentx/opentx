@@ -1733,7 +1733,7 @@ void copyTrimsToOffset(uint8_t ch)
 
 inline uint32_t PWR_PRESS_DURATION_MIN()
 {
-  return 2 - g_eeGeneral.pwrOnSpeed;
+  return (2 - g_eeGeneral.pwrOnSpeed) * 100;
 }
 
 constexpr uint32_t PWR_PRESS_DURATION_MAX = 500; // 5s
@@ -2034,7 +2034,7 @@ int main()
 
 inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 {
-  return 2 - g_eeGeneral.pwrOffSpeed;
+  return (2 - g_eeGeneral.pwrOffSpeed) * 100;
 }
 
 uint32_t pwr_press_time = 0;
