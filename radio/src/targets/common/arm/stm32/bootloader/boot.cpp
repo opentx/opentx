@@ -213,15 +213,12 @@ int main()
   pwrInit();
   pwrOff();
 
+#if defined(PCBHORUS)
   // wait a bit for the inputs to stabilize...
   // ... otherwise the bootloader cannot be started
   //     when the power on delay is cut to 0.
+#endif
 
-  // avoid booting after DFU bootloader
-  if (!pwrPressed()) {
-    boardOff();
-  }
-  
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
     // Start main application
