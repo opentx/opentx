@@ -114,8 +114,10 @@ namespace Board {
   enum Capability {
     Sticks,
     Pots,
+    PotsStorage,
     FactoryInstalledPots,
     Sliders,
+    SlidersStorage,
     MouseAnalogs,
     GyroAnalogs,
     MaxAnalogs,
