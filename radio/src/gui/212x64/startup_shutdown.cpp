@@ -42,7 +42,8 @@ const unsigned char bmp_sleep[] = {
 
 void drawStartupAnimation(uint32_t duration, uint32_t totalDuration)
 {
-  if (totalDuration == 0) return;
+  if (totalDuration == 0)
+    return;
 
   uint8_t index = limit<uint8_t>(0, duration / (totalDuration / 5), 4);
 
@@ -59,7 +60,8 @@ void drawStartupAnimation(uint32_t duration, uint32_t totalDuration)
 
 void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message)
 {
-  if (totalDuration == 0) return;
+  if (totalDuration == 0)
+    return;
 
   uint8_t index = limit<uint8_t>(0, duration / (totalDuration / 4), 3);
 
