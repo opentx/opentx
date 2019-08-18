@@ -104,7 +104,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool i
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
-  EXTMODULE_TIMER->ARR = 45000;
+  EXTMODULE_TIMER->ARR = period_half_us;
   EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE | TIM_DIER_CC2IE;
@@ -279,7 +279,7 @@ void extmoduleSendNextFrame()
       break;
 #endif
 
-#if defined(DSM2)
+#if defined(SBUS) || defined(DSM2) || defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_SBUS:
       EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? 0 : EXTMODULE_TIMER_OUTPUT_POLARITY); // reverse polarity for Sbus if needed
       // no break
