@@ -53,14 +53,10 @@ void pwrInit()
   GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
   // PCBREV
-#if defined(PCBX10)
+#if defined(PCBREV_GPIO_PIN)
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
   hardwareOptions.pcbrev = PCBREV_VALUE();
-#else
-  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
-  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
 #endif
 
   // SD-DETECT PIN
