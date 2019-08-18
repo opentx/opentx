@@ -48,6 +48,7 @@ enum PulsesProtocol {
   PULSES_MULTIMODULE,
   PULSES_PXX_R9M,
   PULSES_PXX_R9M_LITE,
+  PULSES_PXX_R9M_LITE_PRO,
   PULSES_SBUS,
   PULSES_ACCESS_ISRM,
   PULSES_ACCST_ISRM_D16,
@@ -130,13 +131,18 @@ enum ModuleSubtypeR9M {
   MODULE_SUBTYPE_R9M_LAST=MODULE_SUBTYPE_R9M_AUPLUS
 };
 
+constexpr unsigned int PXX2_MAX_RECEIVERS_PER_MODULE = 3;
+constexpr unsigned int PXX2_LEN_RX_NAME              = 8;
+
 class ModuleData {
   Q_DECLARE_TR_FUNCTIONS(ModuleData)
 
   public:
     ModuleData() { clear(); }
     unsigned int modelId;
-    int          protocol;
+    unsigned int protocol;   // type in datastructs.h
+    int          rfProtocol; // rfProtocol in datastructs.h
+  
     unsigned int subType;
     bool         invertedSerial;
     unsigned int channelsStart;
@@ -144,14 +150,14 @@ class ModuleData {
     unsigned int failsafeMode;
     int          failsafeChannels[CPN_MAX_CHNOUT];
 
-    struct {
+    struct PPM {
       int delay;
       bool pulsePol;           // false = positive
       bool outputType;         // false = open drain, true = push pull
       int frameLength;
     } ppm;
 
-    struct {
+    struct Multi {
       unsigned int rfProtocol;
       bool autoBindMode;
       bool lowPowerMode;
@@ -159,18 +165,17 @@ class ModuleData {
       int optionValue;
     } multi;
 
-    struct {
-      int power;                   // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
+    struct PXX {
+      unsigned int power;          // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
       bool receiver_telem_off;     // false = receiver telem enabled
       bool receiver_channel_9_16;  // false = pwm out 1-8, true 9-16
       bool external_antenna;       // false = internal antenna, true = external antenna
       bool sport_out;
     } pxx;
 
-    struct {
-      // unsigned int receivers;
-      // char         receiverName[3][8];
-      char data[1 + 3 * 8];
+    struct Access {
+      unsigned int receivers;
+      char         receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
     } access;
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }

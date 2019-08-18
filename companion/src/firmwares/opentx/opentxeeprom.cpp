@@ -1939,14 +1939,213 @@ class SensorField: public TransformedField {
 int exportPpmDelay(int delay) { return (delay - 300) / 50; }
 int importPpmDelay(int delay) { return 300 + 50 * delay; }
 
+class ModuleUnionField: public UnionField<unsigned int> {
+
+  class PPMField: public UnionField::UnionMember, public StructField {
+    public:
+      PPMField(DataField * parent, ModuleData::PPM& ppm):
+        StructField(parent, "PPM")
+      {
+        Append(new ConversionField< SignedField<6> >(parent, ppm.delay, exportPpmDelay, importPpmDelay));
+        Append(new BoolField<1>(parent, ppm.pulsePol));
+        Append(new BoolField<1>(parent, ppm.outputType));
+        Append(new SignedField<8>(parent, ppm.frameLength));
+      }
+
+      virtual bool select(const unsigned int& attr) const
+      {
+        return true; // take what's left
+      }
+
+      virtual DataField* getField()
+      {
+        return this;
+      }
+  };
+
+  class MultiField: public UnionField::TransformedMember {
+    public:
+      MultiField(DataField * parent, ModuleData& module):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "Multi"),
+        module(module),
+        rfProtExtra(0)
+      {
+        ModuleData::Multi& multi = module.multi;
+        internalField.Append(new UnsignedField<2>(this, rfProtExtra));
+        internalField.Append(new SpareBitsField<3>(this));
+        internalField.Append(new BoolField<1>(this, multi.autoBindMode));
+        internalField.Append(new BoolField<1>(this, multi.lowPowerMode));
+        internalField.Append(new BoolField<1>(this, multi.customProto));
+        internalField.Append(new SignedField<8>(this, multi.optionValue));
+      }
+
+      virtual bool select(const unsigned int& attr) const
+      {
+        return attr==PULSES_MULTIMODULE;
+      }
+
+      virtual void beforeExport()
+      {
+        module.rfProtocol = module.multi.rfProtocol & 0xf;
+        rfProtExtra = (module.multi.rfProtocol >> 4) & 0x03;
+      }
+
+      virtual void afterImport()
+      {
+        module.multi.rfProtocol =
+          (rfProtExtra & 0x3) << 4 | (module.rfProtocol & 0xf);
+      }
+
+    private:
+      StructField  internalField;
+      ModuleData&  module;
+      unsigned int rfProtExtra;
+  };
+
+  class PxxField: public UnionField::TransformedMember {
+    public:
+      PxxField(DataField * parent, ModuleData& module):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "Pxx"),
+        module(module)
+      {
+        ModuleData::PXX& pxx = module.pxx;
+        internalField.Append(new UnsignedField<2>(this, pxx.power));
+        internalField.Append(new SpareBitsField<2>(this));
+        internalField.Append(new BoolField<1>(this, pxx.receiver_telem_off));
+        internalField.Append(new BoolField<1>(this, pxx.receiver_channel_9_16));
+        internalField.Append(new BoolField<1>(this, pxx.external_antenna));
+        internalField.Append(new BoolField<1>(this, pxx.sport_out));
+      }
+
+      bool select(const unsigned int& attr) const {
+        return attr==PULSES_PXX_XJT_X16 ||
+          attr==PULSES_PXX_DJT ||
+          attr==PULSES_PXX_R9M ||
+          attr==PULSES_PXX_R9M_LITE;
+      }
+
+      virtual void beforeExport()
+      {
+        if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
+          module.subType = module.protocol - PULSES_PXX_XJT_X16;
+        }
+      }
+
+      virtual void afterImport()
+      {
+        if (module.protocol == PULSES_PXX_XJT_X16) {
+          module.protocol += module.subType;
+        }
+      }
+
+    private:
+      StructField internalField;
+      ModuleData& module;
+  };
+
+  class AccessField: public UnionField::TransformedMember {
+    public:
+      AccessField(DataField * parent, ModuleData& module):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "Access"),
+        module(module)
+      {
+        internalField.Append(new UnsignedField<3>(this, module.access.receivers));
+        internalField.Append(new SpareBitsField<5>(this));
+
+        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++)
+          internalField.Append(new CharField<8>(this, module.access.receiverName[i]));
+      }
+
+      bool select(const unsigned int& attr) const {
+        return attr >= PULSES_ACCESS_ISRM && attr <= PULSES_ACCESS_R9M_LITE_PRO;
+      }
+
+      virtual void beforeExport()
+      {
+        if (module.protocol == PULSES_ACCST_ISRM_D16 ||
+            module.protocol == PULSES_ACCESS_ISRM) {
+          module.subType = module.protocol - PULSES_ACCESS_ISRM;
+        }
+      }
+
+      virtual void afterImport()
+      {
+        if (module.protocol == PULSES_ACCESS_ISRM) {
+          module.protocol += module.subType;
+        }
+      }
+
+    private:
+      StructField internalField;
+      ModuleData& module;
+  };
+
+  public:
+    ModuleUnionField(DataField * parent, ModuleData & module):
+      UnionField<unsigned int>(parent, module.protocol)
+    {
+      Append(new AccessField(parent, module));
+      Append(new PxxField(parent, module));
+      Append(new MultiField(parent, module));
+      Append(new PPMField(parent, module.ppm));
+    }
+};
+
+
+class ModuleField: public TransformedField {
+  public:
+    ModuleField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
+      TransformedField(parent, internalField),
+      internalField(this, "Module"),
+      module(module),
+      protocolsConversionTable(board)
+    {
+      internalField.Append(new ConversionField<UnsignedField<4> >(this, module.protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
+      internalField.Append(new SignedField<4>(this, module.rfProtocol));
+      internalField.Append(new UnsignedField<8>(this, module.channelsStart));
+      internalField.Append(new ConversionField<SignedField<8> >(this, module.channelsCount, -8));
+      internalField.Append(new UnsignedField<4>(this, module.failsafeMode));
+      internalField.Append(new UnsignedField<3>(this, module.subType));
+      internalField.Append(new BoolField<1>(this, module.invertedSerial));
+      if (version <= 218) {
+        for (int i=0; i<32; i++) {
+          internalField.Append(new SignedField<16>(this, module.failsafeChannels[i]));
+        }
+      }
+
+      internalField.Append(new ModuleUnionField(parent, module));
+    }
+
+    virtual void beforeExport()
+    {
+      if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
+        module.rfProtocol = module.protocol - PULSES_LP45;
+      }
+    }
+
+    virtual void afterImport()
+    {
+      if (module.protocol == PULSES_LP45) {
+        module.protocol += module.rfProtocol;
+      }
+    }
+  
+  private:
+    StructField              internalField;
+    ModuleData&              module;
+    ProtocolsConversionTable protocolsConversionTable;
+};
+
 OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsigned int version, unsigned int variant):
   TransformedField(nullptr, internalField),
   internalField(this, "ModelData"),
   modelData(modelData),
   board(board),
   version(version),
-  variant(variant),
-  protocolsConversionTable(board)
+  variant(variant)
 {
   sprintf(name, "Model %s", modelData.name);
 
@@ -2094,26 +2293,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   int modulesCount = (version <= 218 ? 3 : 2);
   for (int module=0; module<modulesCount; module++) {
-    internalField.Append(new ConversionField<SignedField<4> >(this, modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
-    internalField.Append(new SignedField<4>(this, subprotocols[module]));
-    internalField.Append(new UnsignedField<8>(this, modelData.moduleData[module].channelsStart));
-    internalField.Append(new ConversionField<SignedField<8> >(this, modelData.moduleData[module].channelsCount, -8));
-    internalField.Append(new UnsignedField<4>(this, modelData.moduleData[module].failsafeMode));
-    internalField.Append(new UnsignedField<3>(this, modelData.moduleData[module].subType));
-    internalField.Append(new BoolField<1>(this, modelData.moduleData[module].invertedSerial));
-    if (version <= 218) {
-      for (int i=0; i<32; i++) {
-        internalField.Append(new SignedField<16>(this, modelData.moduleData[module].failsafeChannels[i]));
-      }
-    }
-    internalField.Append(new ConversionField< SignedField<6> >(this, modelData.moduleData[module].ppm.delay, exportPpmDelay, importPpmDelay));
-    internalField.Append(new BoolField<1>(this, modelData.moduleData[module].ppm.pulsePol));
-    internalField.Append(new BoolField<1>(this, modelData.moduleData[module].ppm.outputType));
-    internalField.Append(new SignedField<8>(this, modelData.moduleData[module].ppm.frameLength));
-    if (version >= 219) {
-      // TODO ACCESS
-      internalField.Append(new CharField<1 + 3 * 8 - 2>(this, modelData.moduleData[module].access.data));
-    }
+
+    internalField.Append(new ModuleField(this, modelData.moduleData[module], board, version));
   }
 
   if (version >= 219) {
@@ -2221,38 +2402,6 @@ void OpenTxModelData::beforeExport()
   // qDebug() << QString("before export model") << modelData.name;
 
   for (int module=0; module<2; module++) {
-    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
-        modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
-
-      if (modelData.moduleData[module].protocol != PULSES_PXX_R9M) {
-        subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
-      }
-      int pxxByte = (modelData.moduleData[module].pxx.power & 0x03)
-                    | modelData.moduleData[module].pxx.receiver_telem_off << 4
-                    | modelData.moduleData[module].pxx.receiver_channel_9_16 << 5;
-      modelData.moduleData[module].ppm.delay = 300 + 50 * pxxByte;
-      modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].pxx.external_antenna;
-      modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].pxx.sport_out;
-    }
-    else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX) {
-      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
-    }
-    else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
-      // copy multi settings to ppm settings to get them written to the eeprom
-      // (reverse the int => ms logic of the ppm delay) since only ppm is written
-      subprotocols[module] = modelData.moduleData[module].multi.rfProtocol & (0x1f);
-      int multiByte = ((modelData.moduleData[module].multi.rfProtocol >> 4) & 0x03) | (modelData.moduleData[module].multi.customProto << 7);
-      modelData.moduleData[module].ppm.delay = 300 + 50 * multiByte;
-      modelData.moduleData[module].ppm.frameLength = modelData.moduleData[module].multi.optionValue;
-      modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].multi.lowPowerMode;
-      modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].multi.autoBindMode;
-    }
-    else if (modelData.moduleData[module].protocol == PULSES_ACCST_ISRM_D16 || modelData.moduleData[module].protocol == PULSES_ACCESS_ISRM) {
-      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_ACCESS_ISRM;
-    }
-    else {
-      subprotocols[module] = (module == 0 ? -1 : 0);
-    }
   }
 
   if (IS_HORUS(board)) {
@@ -2271,39 +2420,9 @@ void OpenTxModelData::afterImport()
 {
   qCDebug(eepromImport) << QString("OpenTxModelData::afterImport()") << modelData.name;
 
+  // ??? what's this ???
   if (IS_HORUS(board)) {
     modelData.moduleData[0].protocol = PULSES_PXX_XJT_X16;
-  }
-
-  for (int module=0; module<2; module++) {
-    if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16
-        || modelData.moduleData[module].protocol == PULSES_LP45
-        || modelData.moduleData[module].protocol == PULSES_ACCESS_ISRM) {
-      if (subprotocols[module] >= 0)
-        modelData.moduleData[module].protocol += subprotocols[module];
-      else
-        modelData.moduleData[module].protocol = PULSES_OFF;
-    }
-    else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
-      // Copy data from ppm struct to multi struct
-      auto multiByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
-      modelData.moduleData[module].multi.rfProtocol = (subprotocols[module] & 0x0f) | ((multiByte & 0x3) << 4);
-      modelData.moduleData[module].multi.customProto = (multiByte & 0x80) == 0x80;
-      modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
-      modelData.moduleData[module].multi.lowPowerMode = modelData.moduleData[module].ppm.outputType;
-      modelData.moduleData[module].multi.autoBindMode = modelData.moduleData[module].ppm.pulsePol;
-    }
-
-    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
-        modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
-      // Do the same for pxx
-      auto pxxByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
-      modelData.moduleData[module].pxx.power = pxxByte & 0x03;
-      modelData.moduleData[module].pxx.receiver_telem_off = static_cast<bool>(pxxByte & (1 << 4));
-      modelData.moduleData[module].pxx.receiver_channel_9_16 = static_cast<bool>(pxxByte & (1 << 5));
-      modelData.moduleData[module].pxx.sport_out = modelData.moduleData[module].ppm.outputType;
-      modelData.moduleData[module].pxx.external_antenna = modelData.moduleData[module].ppm.pulsePol;
-    }
   }
 
   if (IS_HORUS(board)) {
