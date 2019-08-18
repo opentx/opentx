@@ -247,6 +247,10 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   connect(this, &ModulePanel::channelsRangeChanged, this, &ModulePanel::setupFailsafes);
   connect(ui->btnGrpValueType, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &ModulePanel::onFailsafesDisplayValueTypeChanged);
 
+  connect(ui->clearRx1, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
+  connect(ui->clearRx2, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
+  connect(ui->clearRx3, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
+
   lock = false;
 
 }
@@ -561,17 +565,17 @@ void ModulePanel::update()
   ui->registrationIdLabel->setVisible(mask & MASK_ACCESS);
   ui->registrationId->setVisible(mask & MASK_ACCESS);
 
-  ui->rx1Label->setVisible(mask & MASK_ACCESS);
-  ui->clearRx1->setVisible(mask & MASK_ACCESS);
-  ui->rx1->setVisible(mask & MASK_ACCESS);
+  ui->rx1Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
+  ui->clearRx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
+  ui->rx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
 
-  ui->rx2Label->setVisible(mask & MASK_ACCESS);
-  ui->clearRx2->setVisible(mask & MASK_ACCESS);
-  ui->rx2->setVisible(mask & MASK_ACCESS);
+  ui->rx2Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
+  ui->clearRx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
+  ui->rx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
 
-  ui->rx3Label->setVisible(mask & MASK_ACCESS);
-  ui->clearRx3->setVisible(mask & MASK_ACCESS);
-  ui->rx3->setVisible(mask & MASK_ACCESS);
+  ui->rx3Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
+  ui->clearRx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
+  ui->rx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
 
   // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
@@ -873,6 +877,30 @@ void ModulePanel::updateFailsafe(int channel)
 
   if (!valDisable)
     setChannelFailsafeValue(channel, failsafeValue, (FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC));
+}
+
+void ModulePanel::onClearAccessRxClicked()
+{
+  QPushButton *button = qobject_cast<QPushButton *>(sender());
+
+  if (button == ui->clearRx1) {
+    module.access.receivers &= ~(1<<0);
+    ui->rx1->clear();
+    update();
+    emit modified();
+  }
+  else if (button == ui->clearRx2) {
+    module.access.receivers &= ~(1<<1);
+    ui->rx2->clear();
+    update();
+    emit modified();
+  }
+  else if (button == ui->clearRx3) {
+    module.access.receivers &= ~(1<<2);
+    ui->rx3->clear();
+    update();
+    emit modified();
+  }
 }
 
 /******************************************************************************/
@@ -1421,3 +1449,4 @@ void SetupPanel::on_editText_clicked()
     g->exec();
   }
 }
+
