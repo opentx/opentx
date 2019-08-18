@@ -131,8 +131,8 @@ enum ModuleSubtypeR9M {
   MODULE_SUBTYPE_R9M_LAST=MODULE_SUBTYPE_R9M_AUPLUS
 };
 
-constexpr unsigned int PXX2_MAX_RECEIVERS_PER_MODULE = 3;
-constexpr unsigned int PXX2_LEN_RX_NAME              = 8;
+constexpr int PXX2_MAX_RECEIVERS_PER_MODULE = 3;
+constexpr int PXX2_LEN_RX_NAME              = 8;
 
 class ModuleData {
   Q_DECLARE_TR_FUNCTIONS(ModuleData)
