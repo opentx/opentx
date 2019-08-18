@@ -95,7 +95,7 @@ void insertExpo(uint8_t idx)
   ExpoData * expo = expoAddress(idx);
   memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
   memclear(expo, sizeof(ExpoData));
-  expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+  expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
   expo->curve.type = CURVE_REF_EXPO;
   expo->mode = 3; // pos+neg
   expo->chn = s_currCh - 1;
@@ -239,7 +239,7 @@ bool menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_SOURCE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOURCE);
         drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, menuHorizontalPosition==0 ? attr : 0);
         if (attr && menuHorizontalPosition==0) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
         if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
@@ -263,7 +263,7 @@ bool menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_OFFSET:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_OFFSET));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_OFFSET);
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
 

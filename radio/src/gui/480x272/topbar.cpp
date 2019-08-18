@@ -82,7 +82,7 @@ void drawTopBar()
     lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_4, MENU_TITLE_COLOR);
 
   /* Tx battery */
-  uint8_t bars = limit<int8_t>(0, 6 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 5);
+  uint8_t bars = GET_TXBATT_BARS(5);
   lcdDrawBitmapPattern(LCD_W-130, 24, LBM_TOPMENU_TXBATT, MENU_TITLE_COLOR);
   for (unsigned int i = 0; i < 5; i++) {
     lcdDrawSolidFilledRect(LCD_W-122+4*i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_TITLE_COLOR);

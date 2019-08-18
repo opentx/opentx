@@ -141,6 +141,15 @@ if [[ " X9D+ X9 ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
+if [[ " X9D+2019 X9 ALL " =~ " ${FLAVOR} " ]] ; then
+  # OpenTX on X9D+ 2019
+  rm -rf *
+  cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DPCBREV=2019 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  make -j${CORES} ${FIRMARE_TARGET}
+  make -j${CORES} libsimulator
+  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+fi
+
 if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Taranis X9E
   rm -rf *

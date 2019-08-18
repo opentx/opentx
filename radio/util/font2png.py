@@ -29,7 +29,7 @@ def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, backg
     coords = []
     font_filename = 'fonts/' + fontname + '.ttf'
 
-    print 'Font filename: %s' % font_filename
+    print("Font filename: %s" % font_filename)
     font = ImageFont.truetype(font_filename, fontsize)
 
     extraImage = None
@@ -40,7 +40,7 @@ def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, backg
         extraImage = extraImage.convert('RGB');
 
     except IOError:
-        print 'Missing extra symbol filename %s' % extraFilename
+        print("Missing extra symbol filename %s" % extraFilename)
 
     def getCharWidth(c):
         if c in chars_extra:
@@ -67,7 +67,7 @@ def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, backg
 
     width = getFontWidth()
     image = Image.new('RGB', (width, fontsize + 4), background)
-    draw  = ImageDraw.Draw(image)
+    draw = ImageDraw.Draw(image)
 
     width = 0
     for c in chars:
@@ -80,7 +80,7 @@ def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, backg
             pass
         else:
             w, h = font.getsize(c)
-            draw.text( (width + 1, fontoffset) , c, fill=foreground, font=font)
+            draw.text((width + 1, fontoffset), c, fill=foreground, font=font)
 
         width += getCharWidth(c)
 

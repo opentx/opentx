@@ -24,11 +24,17 @@
 
 extern uint8_t g_moduleIdx;
 
+enum {
+  RECEIVER_SETTINGS_OK = 0,
+  RECEIVER_SETTINGS_DIRTY = 1,
+  RECEIVER_SETTINGS_WRITING = 2,
+};
+
 void onRxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 2;
+    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_WRITING;
     reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
     moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
@@ -38,10 +44,16 @@ void onRxOptionsUpdateConfirm(const char * result)
 }
 
 enum {
-  ITEM_RECEIVER_TELEMETRY,
-  ITEM_RECEIVER_PWM_RATE,
-  ITEM_RECEIVER_PINMAP_FIRST
+  ITEM_RECEIVER_SETTINGS_PWM_RATE,
+  ITEM_RECEIVER_SETTINGS_TELEMETRY,
+  ITEM_RECEIVER_SETTINGS_SPORT_FPORT,
+  ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1,
+  ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2,
+  ITEM_RECEIVER_SETTINGS_PINMAP_FIRST
 };
+
+
+#define IF_RECEIVER_CAPABILITY(capability, count) uint8_t((reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilities & (1 << capability)) ? count : HIDDEN_ROW)
 
 void menuModelReceiverOptions(event_t event)
 {
@@ -49,22 +61,26 @@ void menuModelReceiverOptions(event_t event)
   uint8_t wbar = LCD_W / 2 - 20;
   auto outputsCount = min<uint8_t>(16, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
 
-  SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + outputsCount);
-
   if (event == EVT_ENTRY) {
+    // reusableBuffer.hardwareSettings should have been cleared before calling this menu
 #if defined(SIMU)
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_OK;
     reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
-#else
-    // no need to initialize reusableBuffer.hardwareAndSettings.receiverSettings.state to PXX2_HARDWARE_INFO
-    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], reusableBuffer.hardwareAndSettings.receiverSettings.receiverId, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
 #endif
   }
 
-  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
-    reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_READ;
-    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
-  }
+  uint8_t receiverId = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
+  uint8_t receiverModelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.modelID;
+  uint8_t receiverVariant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.variant;
+
+  SUBMENU_NOTITLE(ITEM_RECEIVER_SETTINGS_PINMAP_FIRST + outputsCount, {
+    0, // PWM rate
+    isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 /*25mW*/ ? READONLY_ROW : (uint8_t)0, // Telemetry
+    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
+    uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
+    uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
+    0 // channels ...
+  });
 
   if (menuEvent) {
     killEvents(KEY_EXIT);
@@ -78,49 +94,83 @@ void menuModelReceiverOptions(event_t event)
     }
   }
 
-  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
-    killEvents(event);
-    reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 0;
-    reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
-    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
+    if (!receiverModelId)
+      moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], receiverId, receiverId);
+    else if (isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && !reusableBuffer.hardwareAndSettings.moduleSettings.txPower)
+      moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
+    else
+      moduleState[g_moduleIdx].readReceiverSettings(&reusableBuffer.hardwareAndSettings.receiverSettings);
   }
 
-  if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
+  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
+    killEvents(event);
+    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_OK;
+    moduleState[g_moduleIdx].writeReceiverSettings(&reusableBuffer.hardwareAndSettings.receiverSettings);
+  }
+
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == RECEIVER_SETTINGS_WRITING && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
     return;
   }
 
+  if (receiverModelId && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
+    menuVerticalPosition = 0;
+    while (menuVerticalPosition < ITEM_RECEIVER_SETTINGS_PINMAP_FIRST && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
+      ++menuVerticalPosition;
+    }
+  }
+
   int8_t sub = menuVerticalPosition;
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
-  drawReceiverName(FW * 13, 0, g_moduleIdx, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
+  drawReceiverName(lcdNextPos + FW, 0, g_moduleIdx, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
+      for (int j=0; j<=i; ++j) {
+        if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
+          ++i;
+        }
+      }
       LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
       switch (i) {
-        case ITEM_RECEIVER_TELEMETRY:
-          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telem. disabled", attr, event);
+        case ITEM_RECEIVER_SETTINGS_PWM_RATE:
+          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9MAccess(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
           }
           break;
 
-        case ITEM_RECEIVER_PWM_RATE:
-          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9M2(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
+        case ITEM_RECEIVER_SETTINGS_TELEMETRY:
+          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, STR_TELEMETRY_DISABLED, attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
           }
+          break;
+
+        case ITEM_RECEIVER_SETTINGS_SPORT_FPORT:
+          reusableBuffer.hardwareAndSettings.receiverSettings.fport = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.fport, RECEIVER_OPTIONS_2ND_COLUMN, y, "F.Port", attr, event);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
+          }
+          break;
+
+        case ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1:
+          lcdDrawText(LCD_W/2, y+1, STR_MORE_OPTIONS_AVAILABLE, SMLSIZE|CENTERED);
+          break;
+
+        case ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2:
+          lcdDrawText(LCD_W/2, y+1, STR_OPENTX_UPGRADE_REQUIRED, SMLSIZE|CENTERED);
           break;
 
         default:
-          // Pin
+        // Pin
         {
-          uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
+          uint8_t pin = i - ITEM_RECEIVER_SETTINGS_PINMAP_FIRST;
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
             uint8_t & mapping = reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
             uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + mapping;
@@ -133,18 +183,18 @@ void menuModelReceiverOptions(event_t event)
             if (attr) {
               mapping = checkIncDec(event, mapping, 0, sentModuleChannels(g_moduleIdx) - 1);
               if (checkIncDec_Ret) {
-                reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+                reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
               }
             }
 
             // Bargraph
 #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-            lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
+            lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 2, wbar + 1, 4);
 #endif
             const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-            const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
-            lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
+            const coord_t xChannel = (channelValue > 0) ? RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 : RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 + 1 - lenChannel;
             lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+            lcdDrawHorizontalLine(xChannel, y + 4, lenChannel, SOLID, 0);
           }
           break;
         }

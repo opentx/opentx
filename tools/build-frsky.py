@@ -12,9 +12,10 @@ options = {
     "XLITES": {
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "AUTOUPDATE": "YES",
         "PXX1": "YES",
         "XJT": "NO",
-        "R9M_SIZE_STD": "NO",
+        "MODULE_SIZE_STD": "NO",
         "PPM": "NO",
         "DSM2": "NO",
         "CROSSFIRE": "NO",
@@ -23,13 +24,23 @@ options = {
     "X9LITE": {
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "AUTOUPDATE": "YES",
         "PXX1": "YES",
         "XJT": "NO",
-        "R9M_SIZE_STD": "NO",
+        "MODULE_SIZE_STD": "NO",
         "PPM": "NO",
         "DSM2": "NO",
         "CROSSFIRE": "NO",
         "SBUS": "NO",
+        "DEFAULT_MODE": "2",
+    },
+    "X9D+": {
+        "PCBREV": "2019",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "AUTOUPDATE": "YES",
+        "PXX1": "YES",
+        "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
     }
 }

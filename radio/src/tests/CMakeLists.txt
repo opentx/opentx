@@ -1,4 +1,4 @@
-set(GTEST_ROOT /usr CACHE string "Base path to Google Test headers and source.")
+set(GTEST_ROOT /usr CACHE STRING "Base path to Google Test headers and source.")
 
 find_path(GTEST_INCDIR gtest/gtest.h HINTS "${GTEST_ROOT}/include" DOC "Path to Google Test header files folder ('gtest/gtest.h').")
 find_path(GTEST_SRCDIR src/gtest-all.cc HINTS "${GTEST_ROOT}" "${GTEST_ROOT}/src/gtest" DOC "Path of Google Test 'src' folder.")
@@ -34,7 +34,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
   endif()
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 ${WARNING_FLAGS}")
 
   use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 

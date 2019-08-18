@@ -6,6 +6,7 @@ import sys
 import subprocess
 import shutil
 import filelock
+
 from fwoptions import *
 
 # Error codes
@@ -95,6 +96,14 @@ elif options[optcount] == "x9d":
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x9d+":
     command_options["PCB"] = "X9D+"
+    command_options["MULTI_SPORT"] = "ON"
+    firmware_options = options_taranis_x9dp
+    maxsize = 65536 * 8
+    board = BOARD_TARANIS
+    board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "x9d+2019":
+    command_options["PCB"] = "X9D+"
+    command_options["PCBREV"] = "2019"
     command_options["MULTI_SPORT"] = "ON"
     firmware_options = options_taranis_x9dp
     maxsize = 65536 * 8

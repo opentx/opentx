@@ -166,7 +166,7 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
   }
 
 #if defined(CLI)
-  if (!(getSelectedUsbMode() == USB_SERIAL_MODE)) {
+  if (getSelectedUsbMode() != USB_SERIAL_MODE) {
     // Receive
     uint32_t status = AUX_SERIAL_USART->SR;
     while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {

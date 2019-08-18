@@ -79,7 +79,7 @@ class Fifo
 
     void flush()
     {
-      while (!isEmpty()) {};
+      while (!isEmpty());
     }
 
     uint32_t size() const

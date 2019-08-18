@@ -9,38 +9,20 @@ macro(add_lua_export_target target)
 endmacro(add_lua_export_target)
 
 set(LUA_INCLUDES
-  -DCPUARM -DLUA -DLUA_INPUTS
+  -DCPUARM -DLUA -DLUA_INPUTS -DLUA_EXPORT_GENERATION -DSIMU
   -I${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}
   -I${RADIO_SRC_DIRECTORY}/thirdparty
   -I${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32
-  -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/include
-  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_OTG_Driver/inc
-  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc
-  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/cdc/inc
-  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc
-  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc
-  )
-
-set(LUA_INCLUDES_STM32F2
-  ${LUA_INCLUDES}
-  -DSTM32F2
-  -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/Device/ST/STM32F2xx/Include
-  )
-
-set(LUA_INCLUDES_STM32F4
-  ${LUA_INCLUDES}
-  -DSTM32F4
-  -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Include
   )
 
 if(PYTHONINTERP_FOUND)
-  add_lua_export_target(x9lite  ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9LITE -DPCBX9)
-  add_lua_export_target(x7      ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX7  -DRADIO_X7)
-  add_lua_export_target(xlite   ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBXLITE)
-  add_lua_export_target(xlites  ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBXLITES -DPCBXLITE -DGYRO)
-  add_lua_export_target(x9d     ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9D -DPCBX9)
-  add_lua_export_target(x9e     ${LUA_INCLUDES_STM32F4} -DPCBTARANIS -DPCBX9E -DPCBX9 -DSTM32F40_41xxx)
-  add_lua_export_target(x10     ${LUA_INCLUDES_STM32F4} -DPCBHORUS   -DPCBX10  -DSTM32F40_41xxx)
-  add_lua_export_target(x12s    ${LUA_INCLUDES_STM32F4} -DPCBHORUS   -DPCBX12S -DSTM32F40_41xxx)
-  add_lua_export_target(t12     ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX7 -DRADIO_T12)
+  add_lua_export_target(x9lite  ${LUA_INCLUDES} -DPCBTARANIS -DPCBX9LITE -DPCBX9)
+  add_lua_export_target(x7      ${LUA_INCLUDES} -DPCBTARANIS -DPCBX7  -DRADIO_X7)
+  add_lua_export_target(xlite   ${LUA_INCLUDES} -DPCBTARANIS -DPCBXLITE)
+  add_lua_export_target(xlites  ${LUA_INCLUDES} -DPCBTARANIS -DPCBXLITES -DPCBXLITE -DGYRO)
+  add_lua_export_target(x9d     ${LUA_INCLUDES} -DPCBTARANIS -DPCBX9D -DPCBX9)
+  add_lua_export_target(x9e     ${LUA_INCLUDES} -DPCBTARANIS -DPCBX9E -DPCBX9)
+  add_lua_export_target(x10     ${LUA_INCLUDES} -DPCBHORUS   -DPCBX10)
+  add_lua_export_target(x12s    ${LUA_INCLUDES} -DPCBHORUS   -DPCBX12S)
+  add_lua_export_target(t12     ${LUA_INCLUDES} -DPCBTARANIS -DPCBX7 -DRADIO_T12)
 endif()

@@ -69,8 +69,6 @@ void sig(int sgn)
 
 #include <inttypes.h>
 #include <stdio.h>
-#include <pthread.h>
-#include <semaphore.h>
 #include <stddef.h>
 #include <errno.h>
 
@@ -87,6 +85,7 @@ extern RCC_TypeDef rcc;
 extern DMA_Stream_TypeDef dma1_stream0, dma1_stream1, dma1_stream2, dma1_stream3, dma1_stream4, dma1_stream5, dma1_stream6, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
 extern DMA_TypeDef dma2;
 extern SysTick_Type systick;
+extern ADC_Common_TypeDef adc;
 #undef SysTick
 #define SysTick (&systick)
 #undef GPIOA
@@ -165,6 +164,8 @@ extern SysTick_Type systick;
 #define DMA2_Stream7 (&dma2_stream7)
 #undef DMA2
 #define DMA2 (&dma2)
+#undef ADC
+#define ADC (&adc)
 #elif defined(PCBSKY9X)
 extern Pmc pmc;
 #undef PMC
@@ -172,6 +173,12 @@ extern Pmc pmc;
 extern Ssc ssc;
 #undef SSC
 #define SSC (&ssc)
+extern Pmc pmc;
+#undef PMC
+#define PMC (&pmc)
+extern Tc tc1;
+#undef TC1
+#define TC1 (&tc1)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
 extern Dacc dacc;
@@ -202,12 +209,7 @@ extern Pwm pwm;
 #define PWM (&pwm)
 #endif
 
-#if defined(EEPROM_SIZE)
-extern uint8_t eeprom[EEPROM_SIZE];
-#else
 extern uint8_t * eeprom;
-#endif
-
 extern void startPdcUsartReceive() ;
 extern uint32_t txPdcUsart( uint8_t *buffer, uint32_t size );
 extern uint32_t txPdcPending();

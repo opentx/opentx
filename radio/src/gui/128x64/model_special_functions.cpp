@@ -446,7 +446,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 void menuModelSpecialFunctions(event_t event)
 {
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
   const CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     menuHorizontalPosition = 0;
@@ -456,7 +456,7 @@ void menuModelSpecialFunctions(event_t event)
 
   menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
 
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
     menuHorizontalPosition = -1;
   }

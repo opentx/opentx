@@ -47,13 +47,13 @@ void menuModelFailsafe(event_t event)
         s_editMode = 0;
       }
       else {
-        int16_t & failsafe = g_model.failsafeChannels[menuVerticalPosition];
-        if (failsafe < FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_HOLD;
-        else if (failsafe == FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_NOPULSE;
+        int16_t * failsafe = &g_model.failsafeChannels[menuVerticalPosition];
+        if (*failsafe < FAILSAFE_CHANNEL_HOLD)
+          *failsafe = FAILSAFE_CHANNEL_HOLD;
+        else if (*failsafe == FAILSAFE_CHANNEL_HOLD)
+          *failsafe = FAILSAFE_CHANNEL_NOPULSE;
         else
-          failsafe = 0;
+          *failsafe = 0;
       }
     }
     else {
@@ -129,11 +129,11 @@ void menuModelFailsafe(event_t event)
 
       const coord_t xValue = x - barW;
       if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-        lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
+        lcdDrawText(xValue, y, STR_HOLD_UPPERCASE, RIGHT|flags);
         failsafeValue = 0;
       }
       else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-        lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
+        lcdDrawText(xValue, y, STR_NONE_UPPERCASE, RIGHT|flags);
         failsafeValue = 0;
       }
       else {

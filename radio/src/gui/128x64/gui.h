@@ -24,6 +24,7 @@
 #include "gui_common.h"
 #include "menus.h"
 #include "popups.h"
+#include "common/stdlcd/draw_functions.h"
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
@@ -75,11 +76,6 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
 #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
 #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-
-// mawrow special values
-#define READONLY_ROW   ((uint8_t)-1)
-#define TITLE_ROW      READONLY_ROW
-#define HIDDEN_ROW     ((uint8_t)-2)
 
 struct CheckIncDecStops {
   const int count;
@@ -165,13 +161,13 @@ void title(const char * s);
 
 #define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE);
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), (lines_count)-HEADER_LINE);
+  check_simple(event, menu, tab, DIM(tab), (lines_count)-HEADER_LINE)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, (lines_count)-HEADER_LINE);
+  check_submenu_simple(event, (lines_count)-HEADER_LINE)
 
 #define SUBMENU(name, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
@@ -197,7 +193,6 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
 #if defined(GVARS)
 #define GVAR_MENU_ITEM(x, y, v, min, max, attr, editflags, event) editGVarFieldValue(x, y, v, min, max, attr, editflags, event)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
-void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
 void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags=0);
 void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags);
 #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)

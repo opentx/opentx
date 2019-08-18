@@ -184,14 +184,11 @@ void checkEeprom()
 void checkBatteryAlarms()
 {
   // TRACE("checkBatteryAlarms()");
-  if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
+  if (IS_TXBATT_WARNING()) {
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
   }
 #if defined(PCBSKY9X)
-  else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    AUDIO_TX_TEMP_HIGH();
-  }
   else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) { // TODO move calculation into board file
     AUDIO_TX_MAH_HIGH();
   }
@@ -544,7 +541,7 @@ void perMain()
   setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
   setTopRssi(TELEMETRY_RSSI());
   setTopBatteryValue(g_vbat100mV);
-  setTopBatteryState(GET_TXBATT_BARS(), IS_TXBATT_WARNING());
+  setTopBatteryState(GET_TXBATT_BARS(10), IS_TXBATT_WARNING());
   toplcdRefreshEnd();
 #endif
 

@@ -2,9 +2,9 @@ option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
 option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module replacement" OFF)
-option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
+option(AUTOUPDATE "Auto update internal chips from SD" OFF)
 
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
@@ -12,10 +12,11 @@ if(PCB STREQUAL X9E)
   set(CPU_TYPE STM32F4)
   set(CPU_TYPE_FULL STM32F407xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
+  add_definitions(-DSTM32F40_41xxx)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x9e)
   set(FLAVOUR x9e)
-  add_definitions(-DSTM32F40_41xxx -DPCBX9E -DPCBX9)
+  add_definitions(-DPCBX9E -DPCBX9)
   add_definitions(-DEEPROM_VARIANT=0x8000)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(FIRMWARE_TARGET_SRC
@@ -35,9 +36,6 @@ if(PCB STREQUAL X9E)
   set(GVAR_SCREEN model_gvars.cpp)
   set(STATUS_LEDS NO)
 elseif(PCB STREQUAL X9D+)
-  set(CPU_TYPE STM32F2)
-  set(CPU_TYPE_FULL STM32F205xE)  # for size report
-  set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x9d)
   set(FLAVOUR x9d+)
@@ -48,9 +46,30 @@ elseif(PCB STREQUAL X9D+)
   set(BITMAPS_TARGET taranis_bitmaps)
   set(FONTS_TARGET taranis_fonts)
   set(LCD_DRIVER lcd_driver_spi.cpp)
-  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
-  set(STATUS_LEDS NO)
+  set(PCBREV 2014 CACHE STRING "PCB Revision")
+  add_definitions(-DPCBREV=${PCBREV})
+  if (${PCBREV} STREQUAL 2019)
+    set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+    set(CPU_TYPE STM32F4)
+    set(CPU_TYPE_FULL STM32F407xE)  # for size report
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      startup_stm32f40_41xxx.s
+      )
+    set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
+    add_definitions(-DSTM32F40_41xxx)
+    add_definitions(-DSOFTWARE_VOLUME -DPWR_BUTTON_${PWR_BUTTON} -DHARDWARE_POWER_MANAGEMENT_UNIT)
+    set(STATUS_LEDS YES)
+    set(PXX2 ON)
+    set(PXX_FREQUENCY "HIGH")
+  else()
+    set(CPU_TYPE STM32F2)
+    set(CPU_TYPE_FULL STM32F205xE)  # for size report
+    set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+    set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+    set(STATUS_LEDS NO)
+  endif()
 elseif(PCB STREQUAL X9D)
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
@@ -78,7 +97,6 @@ elseif(PCB STREQUAL X7)
     set(LUA_EXPORT lua_export_t12)
     set(FLAVOUR t12)
     set(NAVIGATION_TYPE 9x)
-    set(MULTIMODULE ON)
     add_definitions(-DRADIO_T12)
     add_definitions(-DEEPROM_VARIANT=0x4001)
   else()
@@ -129,6 +147,7 @@ elseif(PCB STREQUAL XLITE)
   add_definitions(-DPCBXLITE -DSOFTWARE_VOLUME -DEXTERNAL_ANTENNA -DSTICKS_PWM)
   add_definitions(-DEEPROM_VARIANT=0x2000)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+  set(PXX2 ON)
   set(GUI_DIR 128x64)
   set(NAVIGATION_TYPE xlite)
   set(BITMAPS_TARGET 9x_bitmaps)
@@ -170,7 +189,7 @@ if(PCB STREQUAL XLITES)
     )
 endif()
 
-if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019))
   add_definitions(-DINTERNAL_MODULE_SERIAL)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
@@ -179,25 +198,21 @@ if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE)
     ${TARGET_SRC}
     ../common/arm/stm32/intmodule_serial_driver.cpp
     )
-else()
+elseif(NOT (PCB STREQUAL X7 AND PCBREV STREQUAL T12))
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
     )
-  set(PULSES_SRC
-    ${PULSES_SRC}
-    ../sbus.cpp
-    )
 endif()
 
-if(PCB STREQUAL X9E OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
+if(PCB STREQUAL X9E OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019) OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/rotary_encoder_driver.cpp
     )
 endif()
 
-if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019))
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -207,6 +222,10 @@ if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLI
     ${SRC}
     bluetooth.cpp
     )
+endif()
+
+if(AUTOUPDATE)
+  add_definitions(-DAUTOUPDATE)
 endif()
 
 set(HSE_VALUE 12000000)
@@ -234,7 +253,6 @@ set(GUI_SRC
   model_display.cpp
   radio_diagkeys.cpp
   radio_diaganas.cpp
-  radio_hardware.cpp
   view_channels.cpp
   view_telemetry.cpp
   view_about.cpp
@@ -246,13 +264,18 @@ if(STATUS_LEDS)
   set(LED_DRIVER led_driver.cpp)
 endif()
 
+set(SRC
+  ${SRC}
+  sbus.cpp
+  )
+
 set(TARGET_SRC
   ${TARGET_SRC}
-  board.cpp
   ${LED_DRIVER}
   backlight_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
+  ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp
   ../common/arm/stm32/heartbeat_driver.cpp
@@ -268,6 +291,7 @@ endif()
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
+  board.cpp
   i2c_driver.cpp
   pwr_driver.cpp
   ../common/arm/loadboot.cpp
@@ -284,9 +308,5 @@ endif()
 if(INTERNAL_MODULE_PXX1)
   add_definitions(-DINTERNAL_MODULE_PXX1)
 endif()
-
-if(USEHORUSBT)
-  add_definitions(-DUSEHORUSBT)
-endif(USEHORUSBT)
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})

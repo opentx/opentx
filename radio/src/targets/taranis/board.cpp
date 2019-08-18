@@ -20,12 +20,12 @@
 
 #include "opentx.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 extern "C" {
 #endif
 #include "usb_dcd_int.h"
 #include "usb_bsp.h"
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 }
 #endif
 
@@ -40,78 +40,6 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xAAAA;      // reload
   IWDG->KR = 0xCCCC;      // start
 }
-
-// Starts TIMER at 2MHz
-void init2MhzTimer()
-{
-  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;       // 0.5 uS, 2 MHz
-  TIMER_2MHz_TIMER->ARR = 65535;
-  TIMER_2MHz_TIMER->CR2 = 0;
-  TIMER_2MHz_TIMER->CR1 = TIM_CR1_CEN;
-}
-
-// Starts TIMER at 200Hz (5ms)
-void init5msTimer()
-{
-  INTERRUPT_xMS_TIMER->ARR = 4999 ; // 5mS in uS
-  INTERRUPT_xMS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ; // 1uS
-  INTERRUPT_xMS_TIMER->CCER = 0 ;
-  INTERRUPT_xMS_TIMER->CCMR1 = 0 ;
-  INTERRUPT_xMS_TIMER->EGR = 0 ;
-  INTERRUPT_xMS_TIMER->CR1 = 5 ;
-  INTERRUPT_xMS_TIMER->DIER |= 1 ;
-  NVIC_EnableIRQ(INTERRUPT_xMS_IRQn) ;
-  NVIC_SetPriority(INTERRUPT_xMS_IRQn, 7);
-}
-
-void stop5msTimer( void )
-{
-  INTERRUPT_xMS_TIMER->CR1 = 0 ;        // stop timer
-  NVIC_DisableIRQ(INTERRUPT_xMS_IRQn) ;
-}
-
-// TODO use the same than board_sky9x.cpp
-void interrupt5ms()
-{
-  static uint32_t pre_scale ;       // Used to get 10 Hz counter
-
-  AUDIO_HEARTBEAT();
-
-#if defined(HAPTIC)
-  HAPTIC_HEARTBEAT();
-#endif
-
-  if (++pre_scale >= 2) {
-    pre_scale = 0 ;
-    DEBUG_TIMER_START(debugTimerPer10ms);
-    DEBUG_TIMER_SAMPLE(debugTimerPer10msPeriod);
-    per10ms();
-    DEBUG_TIMER_STOP(debugTimerPer10ms);
-  }
-}
-
-#if !defined(SIMU)
-extern "C" void INTERRUPT_xMS_IRQHandler()
-{
-  INTERRUPT_xMS_TIMER->SR &= ~TIM_SR_UIF ;
-  interrupt5ms() ;
-  DEBUG_INTERRUPT(INT_5MS);
-}
-#endif
-
-#if defined(PWR_BUTTON_PRESS)
-  #define PWR_PRESS_DURATION_MIN        100 // 1s
-  #define PWR_PRESS_DURATION_MAX        500 // 5s
-#endif
-
-#if (defined(PCBX9E) && !defined(SIMU))
-const unsigned char bmp_startup[]  = {
-  #include "startup.lbm"
-};
-const unsigned char bmp_lock[]  = {
-  #include "lock.lbm"
-};
-#endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
 void sportUpdateInit()
@@ -138,7 +66,6 @@ void sportUpdatePowerOff()
 
 void boardInit()
 {
-#if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
                          KEYS_RCC_AHB1Periph |
@@ -160,7 +87,8 @@ void boardInit()
                          GYRO_RCC_AHB1Periph,
                          ENABLE);
 
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph |
+                         LCD_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          ADC_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph |
@@ -192,9 +120,11 @@ void boardInit()
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 
-#if !defined(PCBX9E)
-  // some X9E boards need that the pwrInit() is moved a little bit later
   pwrInit();
+
+#if defined(AUTOUPDATE)
+  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
+  sportSendByteLoop(0x7E);
 #endif
 
 #if defined(STATUS_LEDS)
@@ -245,62 +175,13 @@ void boardInit()
 #endif
 
 #if defined(PWR_BUTTON_PRESS)
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-    lcdClear();
-#if defined(PCBX9E)
-    lcdDrawBitmap(76, 2, bmp_lock, 0, 60);
-#else
-    lcdDrawFilledRect(LCD_W / 2 - 18, LCD_H / 2 - 3, 6, 6, SOLID, 0);
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    pwrOn();
+  }
 #endif
-    lcdRefresh();
-    lcdRefreshWait();
 
-    tmr10ms_t start = get_tmr10ms();
-    tmr10ms_t duration = 0;
-    uint8_t pwr_on = 0;
-    while (pwrPressed()) {
-      duration = get_tmr10ms() - start;
-      if (duration < PWR_PRESS_DURATION_MIN) {
-        unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
-        lcdClear();
-#if defined(PCBX9E)
-        lcdDrawBitmap(76, 2, bmp_startup, index*60, 60);
-#else
-        for(uint8_t i= 0; i < 4; i++) {
-          if (index >= i) {
-            lcdDrawFilledRect(LCD_W / 2 - 18 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
-          }
-        }
-#endif
-      }
-      else if (duration >= PWR_PRESS_DURATION_MAX) {
-        drawSleepBitmap();
-        backlightDisable();
-      }
-      else {
-        if (pwr_on != 1) {
-          pwr_on = 1;
-          pwrInit();
-          backlightInit();
-          haptic.play(15, 3, PLAY_NOW);
-        }
-      }
-      lcdRefresh();
-      lcdRefreshWait();
-    }
-    if (duration < PWR_PRESS_DURATION_MIN || duration >= PWR_PRESS_DURATION_MAX) {
-      boardOff();
-    }
-  }
-  else {
-    pwrInit();
-    backlightInit();
-  }
 #if defined(TOPLCD_GPIO)
   toplcdInit();
-#endif
-#else // defined(PWR_BUTTON_PRESS)
-  backlightInit();
 #endif
 
   if (HAS_SPORT_UPDATE_CONNECTOR()) {
@@ -316,24 +197,26 @@ void boardInit()
 
   initHeadphoneTrainerSwitch();
 
-  vbattRTC = getRTCBattVoltage();
-
 #if defined(GYRO)
   gyroInit();
 #endif
 
-#endif // !defined(SIMU)
+#if defined(RTCLOCK) && !defined(COPROCESSOR)
+  rtcInit(); // RTC must be initialized before rambackupRestore() is called
+#endif
+
+  backlightInit();
 }
 
 void boardOff()
 {
-#if defined(STATUS_LEDS)
+#if defined(STATUS_LEDS) && !defined(BOOT)
   ledOff();
 #endif
 
   BACKLIGHT_DISABLE();
 
-#if defined(TOPLCD_GPIO)
+#if defined(TOPLCD_GPIO) && !defined(BOOT)
   toplcdOff();
 #endif
 
@@ -346,71 +229,38 @@ void boardOff()
   lcdOff();
   SysTick->CTRL = 0; // turn off systick
   pwrOff();
-}
 
-uint8_t currentTrainerMode = 0xff;
+  // disable interrupts
+  __disable_irq();
 
-void checkTrainerSettings()
-{
-  uint8_t requiredTrainerMode = g_model.trainerData.mode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        stop_trainer_capture();
-        break;
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        stop_trainer_module_cppm();
-        break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        stop_trainer_module_sbus();
-        break;
-#if defined(TRAINER_BATTERY_COMPARTMENT)
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        auxSerialStop();
-        break;
-#endif
+  while (1) {
+    wdt_reset();
+#if defined(PWR_BUTTON_PRESS)
+    // X9E/X7 needs watchdog reset because CPU is still running while
+    // the power key is held pressed by the user.
+    // The power key should be released by now, but we must make sure
+    if (!pwrPressed()) {
+      // Put the CPU into sleep to reduce the consumption,
+      // it might help with the RTC reset issue
+      PWR->CR |= PWR_CR_CWUF;
+      /* Select STANDBY mode */
+      PWR->CR |= PWR_CR_PDDS;
+      /* Set SLEEPDEEP bit of Cortex System Control Register */
+      SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+      /* Request Wait For Event */
+      __WFE();
     }
-
-    currentTrainerMode = requiredTrainerMode;
-    switch (requiredTrainerMode) {
-      case TRAINER_MODE_SLAVE:
-        init_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-         init_trainer_module_cppm();
-         break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-         init_trainer_module_sbus();
-         break;
-#if defined(TRAINER_BATTERY_COMPARTMENT)
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
-          auxSerialSbusInit();
-          break;
-        }
-        // no break
 #endif
-      default:
-        // master is default
-        init_trainer_capture();
-        break;
-    }
-
-    if (requiredTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE || requiredTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
-      stop_intmodule_heartbeat();
-    else
-      init_intmodule_heartbeat();
   }
+
+  // this function must not return!
 }
 
 uint16_t getBatteryVoltage()
 {
   int32_t instant_vbat = anaIn(TX_VOLTAGE); // using filtered ADC value on purpose
   instant_vbat = (instant_vbat * BATT_SCALE * (128 + g_eeGeneral.txVoltageCalibration) ) / 26214;
-  instant_vbat += 20; // add 0.2V because of the diode TODO check if this is needed, but removal will beak existing calibrations!!!
+  instant_vbat += 20; // add 0.2V because of the diode TODO check if this is needed, but removal will break existing calibrations!
   return (uint16_t)instant_vbat;
 }
 

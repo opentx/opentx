@@ -134,6 +134,7 @@ typedef struct gpsDataNmea_s
   uint16_t altitude;
   uint16_t speed;
   uint16_t groundCourse;
+  uint16_t hdop;
   uint32_t date;
   uint32_t time;
 } gpsDataNmea_t;
@@ -207,6 +208,9 @@ bool gpsNewFrameNMEA(char c)
             case 7:
               gps_Msg.numSat = grab_fields(string, 0);
               break;
+            case 8:
+              gps_Msg.hdop = grab_fields(string, 1) * 10;
+              break;
             case 9:
               gps_Msg.altitude = grab_fields(string, 0);     // altitude in meters added by Mis
               break;
@@ -258,6 +262,7 @@ bool gpsNewFrameNMEA(char c)
               frameOK = 1;
               gpsData.fix = gps_Msg.fix;
               gpsData.numSat = gps_Msg.numSat;
+              gpsData.hdop = gps_Msg.hdop;
               if (gps_Msg.fix) {
                 __disable_irq();    // do the atomic update of lat/lon
                 gpsData.latitude = gps_Msg.latitude;

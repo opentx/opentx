@@ -25,10 +25,17 @@
 
 extern uint8_t g_moduleIdx;
 
+enum {
+  MODULE_SETTINGS_OK = 0,
+  MODULE_SETTINGS_DIRTY = 1,
+  MODULE_SETTINGS_REBIND = 2,
+  MODULE_SETTINGS_WRITING = 4,
+};
+
 void onTxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
-    reusableBuffer.hardwareAndSettings.moduleSettingsDirty = 2;
+    reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_WRITING;
     moduleState[g_moduleIdx].writeModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
   }
   else {
@@ -36,13 +43,20 @@ void onTxOptionsUpdateConfirm(const char * result)
   }
 }
 
+bool isTelemetryAvailable()
+{
+  return reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant != PXX2_VARIANT_EU ||
+         reusableBuffer.hardwareAndSettings.moduleSettings.txPower <= 14;
+}
+
 enum {
   ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA,
   ITEM_MODULE_SETTINGS_POWER,
+  ITEM_MODULE_SETTINGS_TELEMETRY,
   ITEM_MODULE_SETTINGS_COUNT
 };
 
-#define IF_MODULE_OPTIONS(option, count) uint8_t(isModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
+#define IF_MODULE_OPTIONS(option, count) uint8_t(isPXX2ModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
 
 bool isPowerAvailable(int value)
 {
@@ -51,8 +65,8 @@ bool isPowerAvailable(int value)
 
   if (modelId == PXX2_MODULE_R9M_LITE) {
     if (variant == PXX2_VARIANT_EU)
-      return (value == 14 /* 25 mW */ ||
-              value == 20 /* 100 mW */);
+      return (value == 14 /* 25 mW with telemetry */ ||
+              value == 20 /* 100 mW without telemetry */);
     else
       return value == 20; /* 100 mW */
   }
@@ -78,33 +92,30 @@ void menuModelModuleOptions(event_t event)
     memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
 #if defined(SIMU)
     reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
-#else
-    // no need to initialize reusableBuffer.hardwareAndSettings.moduleState.state to PXX2_HARDWARE_INFO
-    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
 #endif
   }
 
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
   // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
-
-  uint8_t optionsAvailable = moduleOptions[modelId] & ((1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
+  uint8_t optionsAvailable = getPXX2ModuleOptions(modelId) & ((1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
 
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
     !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
+    IF_MODULE_OPTIONS(MODULE_OPTION_POWER, isTelemetryAvailable() ? HIDDEN_ROW : READONLY_ROW)
   });
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
-    if (modelId)
-      moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
-    else
+    if (!modelId)
       moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+    else
+      moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
   }
 
   if (menuEvent) {
     killEvents(KEY_EXIT);
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
+    if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION(STR_UPDATE_TX_OPTIONS, onTxOptionsUpdateConfirm);
     }
@@ -113,14 +124,15 @@ void menuModelModuleOptions(event_t event)
     }
   }
 
-  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
+  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
     killEvents(event);
-    reusableBuffer.hardwareAndSettings.moduleSettingsDirty = 0;
+    reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_OK;
     moduleState[g_moduleIdx].writeModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
   }
 
-  if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty == 2 && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty == MODULE_SETTINGS_WRITING && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
+    return;
   }
 
   if (modelId != 0 && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
@@ -132,7 +144,7 @@ void menuModelModuleOptions(event_t event)
 
   int8_t sub = menuVerticalPosition;
   lcdDrawTextAlignedLeft(0, STR_MODULE_OPTIONS);
-  lcdDrawText(lcdLastRightPos + 3, 0, PXX2modulesModels[modelId]);
+  lcdDrawText(lcdLastRightPos + 3, 0, getPXX2ModuleName(modelId));
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
@@ -149,9 +161,9 @@ void menuModelModuleOptions(event_t event)
 
         switch (i) {
           case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
-            reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
+            reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, STR_EXT_ANTENNA, attr, event);
             if (attr && checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+              reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_DIRTY;
             }
             break;
 
@@ -162,11 +174,24 @@ void menuModelModuleOptions(event_t event)
             drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
             lcdDrawText(lcdNextPos, y, ")");
             if (attr) {
+              bool previousTelemetry = isTelemetryAvailable();
               reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
               if (checkIncDec_Ret) {
-                reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+                reusableBuffer.hardwareAndSettings.moduleSettings.dirty = MODULE_SETTINGS_DIRTY;
+                if (previousTelemetry != isTelemetryAvailable()) {
+                  reusableBuffer.hardwareAndSettings.moduleSettings.dirty |= MODULE_SETTINGS_REBIND;
+                }
+              }
+              if (s_editMode == 0 && (reusableBuffer.hardwareAndSettings.moduleSettings.dirty & MODULE_SETTINGS_REBIND)) {
+                reusableBuffer.hardwareAndSettings.moduleSettings.dirty &= ~MODULE_SETTINGS_REBIND;
+                POPUP_WARNING(STR_REBIND);
               }
             }
+            break;
+
+          case ITEM_MODULE_SETTINGS_TELEMETRY:
+            // only displayed in EU mode when TX power > 25mW
+            lcdDrawText(RECEIVER_OPTIONS_2ND_COLUMN, y, "Telem OFF", attr | SMLSIZE);
             break;
         }
       }

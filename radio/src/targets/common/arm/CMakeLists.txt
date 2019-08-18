@@ -8,7 +8,7 @@ option(TRACE_FATFS "Traces FatFS enabled" OFF)
 option(TRACE_AUDIO "Traces audio enabled" OFF)
 option(DEBUG_TRACE_BUFFER "Debug Trace Screen" OFF)
 option(XJT "XJT TX Module" ON)
-option(R9M_SIZE_STD "R9M standard size TX Module" ON)
+option(MODULE_SIZE_STD "Standard size TX Module" ON)
 option(PPM "PPM TX Module" ON)
 option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
@@ -82,6 +82,10 @@ if(DEBUG_LATENCY STREQUAL RF_ONLY)
   add_definitions(-DDEBUG_LATENCY_RF_ONLY)
 endif()
 
+if(DEBUG_LATENCY STREQUAL END_TO_END)
+  add_definitions(-DDEBUG_LATENCY)
+  add_definitions(-DDEBUG_LATENCY_END_TO_END)
+endif()
 
 if(CLI)
   add_definitions(-DCLI)
@@ -139,8 +143,8 @@ if(XJT)
   add_definitions(-DXJT)
 endif()
 
-if(R9M_SIZE_STD)
-  add_definitions(-DR9M_SIZE_STD)
+if(MODULE_SIZE_STD)
+  add_definitions(-DHARDWARE_EXTERNAL_MODULE_SIZE_STD)
 endif()
 
 if(MULTIMODULE)
@@ -186,19 +190,18 @@ set(SRC
   telemetry/frsky_d.cpp
   telemetry/frsky_sport.cpp
   telemetry/frsky_pxx2.cpp
-  crc16.cpp
+  crc.cpp
   vario.cpp
   )
 
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
+  keys_driver.cpp
   diskio.cpp
 )
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  pulses_driver.cpp
-  keys_driver.cpp
   telemetry_driver.cpp
   )
 

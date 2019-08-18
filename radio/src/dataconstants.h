@@ -478,17 +478,6 @@ enum SwitchSources {
   SWSRC_SR2,
 #endif
 
-#if defined(STORAGE_SWITCH_GMBL)
-  SWSRC_GMBL0,
-  SWSRC_GMBL1,
-  SWSRC_GMBL2,
-#endif
-
-#if defined(STORAGE_SWITCH_GMBR)
-  SWSRC_GMBR0,
-  SWSRC_GMBR1,
-  SWSRC_GMBR2,
-#endif
 
 #if defined(PCBSKY9X)
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
@@ -552,6 +541,8 @@ enum SwitchSources {
   SWSRC_FIRST_SENSOR,
   SWSRC_LAST_SENSOR = SWSRC_FIRST_SENSOR+MAX_TELEMETRY_SENSORS-1,
 
+  SWSRC_RADIO_ACTIVITY,
+
 #if defined(DEBUG_LATENCY)
   SWSRC_LATENCY_TOGGLE,
 #endif
@@ -602,19 +593,21 @@ enum MixSources {
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
   MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
   MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
-  MIXSRC_FIRST_SLIDER,
-  MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
-  MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
-#if defined(PCBX12S)
-  MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
-  MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
-  MIXSRC_LAST_POT = MIXSRC_RS,
-#endif
 #if defined(PCBX10)
   MIXSRC_EXT1,                          LUA_EXPORT("ext1", "Ext 1")
   MIXSRC_EXT2,                          LUA_EXPORT("ext2", "Ext 2")
-  MIXSRC_LAST_POT = MIXSRC_EXT2,
 #endif
+  MIXSRC_FIRST_SLIDER,
+#if defined(PCBX12S)
+  MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
+  MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
+  MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
+  MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
+#else
+  MIXSRC_LS = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("ls", "Left slider")
+  MIXSRC_RS,                            LUA_EXPORT("rs", "Right slider")
+#endif
+  MIXSRC_LAST_POT = MIXSRC_RS,
 #elif defined(PCBX9E)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
@@ -680,34 +673,47 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(HARDWARE_SWITCH_A)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
+#endif
+#if defined(HARDWARE_SWITCH_D)
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
+#elif defined(STORAGE_SWITCH_D)
+  MIXSRC_SD,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
+#if defined(HARDWARE_SWITCH_E)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
+#elif defined(STORAGE_SWITCH_E)
+  MIXSRC_SE,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(HARDWARE_SWITCH_F)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
+#elif defined(STORAGE_SWITCH_F)
+  MIXSRC_SF,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
+#if defined(HARDWARE_SWITCH_G)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
+#elif defined(STORAGE_SWITCH_G)
+  MIXSRC_SG,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
+#if defined(HARDWARE_SWITCH_H)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
+#elif defined(STORAGE_SWITCH_H)
+  MIXSRC_SH,
 #endif
-#if defined(RADIO_X7)
+#if defined(HARDWARE_SWITCH_I)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
-  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
-#elif defined(RADIO_T12)            // keep switches for eeprom compatibity, but hide them
+#elif defined(STORAGE_SWITCH_I)
   MIXSRC_SI,
+#endif
+#if defined(HARDWARE_SWITCH_J)
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#elif defined(STORAGE_SWITCH_J)
   MIXSRC_SJ,
 #endif
-#if defined(PCBX9E)
-  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
-  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#if defined(HARDWARE_SWITCH_K)
   MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K")
   MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
   MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
@@ -716,10 +722,6 @@ enum MixSources {
   MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
   MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
-#endif
-#if defined(PCBHORUS)
-  MIXSRC_GMBL,                      LUA_EXPORT("gmbl", "Switch Left gimbal")
-  MIXSRC_GMBR,                      LUA_EXPORT("gmbr", "Switch right gimbal")
 #endif
 #if defined(PCBSKY9X)
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
@@ -783,7 +785,7 @@ enum MixSources {
 };
 
 #if defined(__cplusplus)
-static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
 #endif
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)

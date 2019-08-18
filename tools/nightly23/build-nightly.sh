@@ -34,6 +34,8 @@ echo "Build firmware stamps"
 docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
 docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
 cp -f  ${workdir}/binaries/stamp-opentx.txt ${output}/firmware
+# These radios are currently not enabled
+echo "#define BLOCK   \"x10,x12s\"" >> ${output}/firmware/stamp-opentx.txt
 docker exec companion rm -rf build
 
 echo "Check if Linux companion is needed"
@@ -49,7 +51,7 @@ echo "Check if Windows companion is needed"
 if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
   echo "Build Windows companion"
   cd ${output}/companion/windows
-  wget -qO- http://winbox.open-tx.org/companion-builds/compile23.php?branch=$branch\&suffix=${suffix}
+  wget  --tries=1 --read-timeout=6000 -O- http://winbox.open-tx.org/companion-builds/compile23.php?branch=$branch\&suffix=${suffix}
   wget -O companion-windows-${version}${suffix}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}${suffix}.exe
   chmod -Rf g+w companion-windows-${version}${suffix}.exe
 fi
@@ -58,7 +60,7 @@ echo "Check if Macosc companion is needed"
 if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ]; then
   echo "Build Macosx companion"
   cd ${output}/companion/macosx
-  wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
+  wget --tries=1 -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
   wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
   chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
 fi

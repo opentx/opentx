@@ -114,7 +114,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
     memclear(mix, sizeof(MixData));
     mix->destCh = s_currCh-1;
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
     mix->weight = 100;
   }
   resumeMixerCalculations();
@@ -397,7 +397,7 @@ void menuModelMixOne(event_t event)
         editSingleName(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
         break;
       case MIX_FIELD_SOURCE:
-        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_SOURCE));
+        drawFieldLabel(COLUMN_X, y, STR_SOURCE);
         drawSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
@@ -407,7 +407,7 @@ void menuModelMixOne(event_t event)
         break;
       case MIX_FIELD_OFFSET:
       {
-        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_OFFSET));
+        drawFieldLabel(COLUMN_X, y, STR_OFFSET);
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);

@@ -198,7 +198,7 @@ void displayBattVoltage()
   putsVBat(VBATT_X-8, VBATT_Y+1, RIGHT);
   lcdDrawSolidFilledRect(VBATT_X-25, VBATT_Y+9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X-4, VBATT_Y+10, 3);
-  uint8_t count = GET_TXBATT_BARS();
+  uint8_t count = GET_TXBATT_BARS(20);
   for (uint8_t i=0; i<count; i+=2)
     lcdDrawSolidVerticalLine(VBATT_X-24+i, VBATT_Y+10, 3);
   if (!IS_TXBATT_WARNING() || BLINK_ON_PHASE)
@@ -213,10 +213,7 @@ void displayBattVoltage()
 #if defined(PCBSKY9X)
 void displayVoltageOrAlarm()
 {
-  if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    drawValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE|RIGHT);
-  }
-  else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+  if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
     drawValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE|RIGHT);
   }
   else {
@@ -551,13 +548,9 @@ void menuMainView(event_t event)
   }
 
   // And ! in case of unexpected shutdown
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
-  lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
-#else
-  if (unexpectedShutdown) {
-    lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
+  if (isAsteriskDisplayed()) {
+    lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
   }
-#endif
 
 #if defined(GVARS)
   if (gvarDisplayTimer > 0) {

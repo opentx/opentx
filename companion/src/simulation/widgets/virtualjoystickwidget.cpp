@@ -444,7 +444,11 @@ QLayout *VirtualJoystickWidget::createNodeValueLayout(QChar type, QLabel *& valL
   val->setObjectName(QString("val_%1").arg(type));
   val->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
   val->setAlignment(Qt::AlignCenter);
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   val->setMinimumWidth(val->fontMetrics().width("-100 "));
+#else
+  val->setMinimumWidth(val->fontMetrics().horizontalAdvance("-100 "));
+#endif
   QVBoxLayout * layout = new QVBoxLayout();
   layout->setContentsMargins(2, 2, 2, 2);
   layout->setSpacing(2);

@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
+#include "../opentx_constants.h"
 
 extern uint16_t ResetReason;
 
@@ -34,9 +35,8 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS               0x00400000
 
 // Board driver
-void boardPreInit(void);
-void boardInit(void);
-#define boardOff()  pwrOff()
+void boardInit();
+void boardOff();
 
 // Rotary Encoder driver
 void rotaryEncoderInit();
@@ -52,6 +52,7 @@ void rotaryEncoderEnd();
 // Keys driver
 #define NUM_SWITCHES                   7
 #define STORAGE_NUM_SWITCHES           NUM_SWITCHES
+#define NUM_SWITCHES_POSITIONS         9
 
 enum EnumKeys
 {
@@ -160,11 +161,11 @@ enum EnumSwitches
 #define LCD_CONTRAST_MIN               10
 #define LCD_CONTRAST_MAX               45
 #define LCD_CONTRAST_DEFAULT           25
-void lcdInit(void);
-void lcdRefresh(void);
+void lcdInit();
+void lcdRefresh();
 #define lcdRefreshWait()
 void lcdSetRefVolt(uint8_t val);
-void lcdSetContrast(void);
+void lcdSetContrast();
 
 // USB driver
 void usbMassStorage();
@@ -198,10 +199,6 @@ void usbMassStorage();
 void configure_pins( uint32_t pins, uint16_t config );
 uint16_t getCurrent();
 
-extern uint8_t temperature ;              // Raw temp reading
-extern uint8_t maxTemperature ;           // Raw temp reading
-uint8_t getTemperature();
-
 extern uint16_t Current_analogue;
 extern uint16_t Current_max;
 extern uint32_t Current_accumulator;
@@ -212,32 +209,23 @@ void calcConsumption();
 // Trainer driver
 #define SLAVE_MODE()                   (pwrCheck() == e_power_trainer)
 #define TRAINER_CONNECTED()            (PIOA->PIO_PDSR & PIO_PA8)
-void checkTrainerSettings();
 void init_trainer_capture();
+void stop_trainer_capture();
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256
 void flashWrite(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
-uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
-uint32_t readKeys(void);
-uint32_t readTrims(void);
+uint32_t readKeys();
+uint32_t readTrims();
 #define NUM_TRIMS                      4
 #define NUM_TRIMS_KEYS                 (NUM_TRIMS * 2)
 #define TRIMS_PRESSED()                readTrims()
 #define KEYS_PRESSED()                 readKeys()
 
 // Pulses driver
-void init_no_pulses(uint32_t port);
-void init_ppm(uint32_t port);
-void disable_ppm(uint32_t port);
-void init_pxx1_pulses(uint32_t port);
-void disable_pxx1_pulses(uint32_t port);
-void disable_serial(uint32_t port);
-void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
-void disable_module_timer( uint32_t module_index);
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
 
@@ -262,13 +250,13 @@ extern "C" {
 
 // WDT driver
 #if defined(WATCHDOG_DISABLED) || defined(SIMU)
-  #define wdt_disable()
   #define wdt_enable(x)
   #define wdt_reset()
+  #define IS_RESET_REASON_WATCHDOG()   false
 #else
-  #define wdt_disable()
   #define wdt_enable(x)                WDT->WDT_MR = 0x3FFF207F
   #define wdt_reset()                  WDT->WDT_CR = 0xA5000001
+  #define IS_RESET_REASON_WATCHDOG()   ((ResetReason & RSTC_SR_RSTTYP) == (2 << 8))
 #endif
 
 // Backlight driver
@@ -284,6 +272,7 @@ extern "C" {
 #define NUM_SLIDERS                    0
 #define STORAGE_NUM_SLIDERS            0
 #define NUM_XPOTS                      0
+#define NUM_MOUSE_ANALOGS              0
 #define STORAGE_NUM_MOUSE_ANALOGS      0
 enum Analogs {
   STICK1,
@@ -315,10 +304,15 @@ enum CalibratedAnalogs {
 #define IS_SLIDER(x)                   false
 #define STICKS_PWM_ENABLED()           false
 void adcInit();
-void adcRead(void);
+void adcRead();
 uint16_t getAnalogValue(uint8_t index);
 void setSticksGain(uint8_t gains);
-#define NUM_MOUSE_ANALOGS              0
+inline void enableVBatBridge()
+{
+}
+inline void disableVBatBridge()
+{
+}
 
 // Battery driver
 uint16_t getBatteryVoltage();          // returns current battery voltage in 10mV steps
@@ -348,7 +342,7 @@ extern int8_t Coproc_maxtemp;
 
 // Haptic driver
 #define HAPTIC_PWM
-void hapticOff(void);
+void hapticOff();
 void hapticOn(uint32_t pwmPercent);
 
 // BlueTooth driver
@@ -363,8 +357,9 @@ void btPushByte(uint8_t data);
 #define SOFT_PWR_CTRL
 void pwrInit();
 void pwrOff();
+void pwrOn();
 uint32_t pwrCheck();
-uint32_t pwrPressed();
+bool pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
 
 // EEPROM driver
@@ -372,7 +367,7 @@ uint32_t pwrPressed();
 #define EEPROM_BLOCK_SIZE     (4*1024)
 void eepromInit();
 uint8_t eepromReadStatus();
-uint8_t eepromIsTransferComplete(void);
+uint8_t eepromIsTransferComplete();
 void eepromBlockErase(uint32_t address);
 void eepromStartRead(uint8_t * buffer, size_t address, size_t size);
 void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);

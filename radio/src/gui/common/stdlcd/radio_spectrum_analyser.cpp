@@ -51,7 +51,7 @@ void menuRadioSpectrumAnalyser(event_t event)
     return;
   }
 
-  if (isModuleR9M2(g_moduleIdx)) {
+  if (isModuleR9MAccess(g_moduleIdx)) {
     reusableBuffer.spectrumAnalyser.spanDefault = 20;
     reusableBuffer.spectrumAnalyser.spanMax = 40;
     reusableBuffer.spectrumAnalyser.freqDefault = 890;

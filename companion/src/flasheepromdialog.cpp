@@ -29,10 +29,9 @@
 #include "splashlibrarydialog.h"
 
 FlashEEpromDialog::FlashEEpromDialog(QWidget *parent, const QString &filename):
-QDialog(parent),
-ui(new Ui::FlashEEpromDialog),
-eepromFilename(filename),
-radioData(new RadioData())
+  QDialog(parent),
+  ui(new Ui::FlashEEpromDialog),
+  eepromFilename(filename)
 {
   ui->setupUi(this);
   ui->profileLabel->setText(tr("Current profile: %1").arg(g.profile[g.id()].name()));
@@ -42,7 +41,7 @@ radioData(new RadioData())
   }
   QString backupPath = g.profile[g.id()].pBackupDir();
   if (backupPath.isEmpty()) {
-    backupPath=g.backupDir();
+    backupPath = g.backupDir();
     ui->backupBeforeWrite->setChecked(g.enableBackup() || g.profile[g.id()].penableBackup());
   }
   if (backupPath.isEmpty() || !QDir(backupPath).exists()) {
@@ -123,7 +122,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString & filename)
   return result;
 }
 
-bool FlashEEpromDialog::patchCalibration()
+bool FlashEEpromDialog::patchCalibration(RadioData * radioData)
 {
   QString calib = g.profile[g.id()].stickPotCalib();
   QString trainercalib = g.profile[g.id()].trainerCalib();
@@ -168,7 +167,7 @@ bool FlashEEpromDialog::patchCalibration()
   }
 }
 
-bool FlashEEpromDialog::patchHardwareSettings()
+bool FlashEEpromDialog::patchHardwareSettings(RadioData * radioData)
 {
   QString DisplaySet = g.profile[g.id()].display();
   QString BeeperSet = g.profile[g.id()].beeper();
@@ -215,32 +214,37 @@ bool FlashEEpromDialog::patchHardwareSettings()
 
 void FlashEEpromDialog::on_burnButton_clicked()
 {
-  // patch the eeprom if needed
-  bool patch = false;
-  if (ui->patchCalibration->isChecked()) {
-    patch |= patchCalibration();
-  }
-  if (ui->patchHardwareSettings->isChecked()) {
-    patch |= patchHardwareSettings();
-  }
   QString filename = eepromFilename;
-  if (patch) {
-    QString filename = generateProcessUniqueTempFileName("temp.bin");
-    QFile file(filename);
-    uint8_t *eeprom = (uint8_t*)malloc(Boards::getEEpromSize(getCurrentBoard()));
-    int eeprom_size = getCurrentEEpromInterface()->save(eeprom, *radioData, 0, getCurrentFirmware()->getVariantNumber());
-    if (eeprom_size == 0) {
-      return;
+  bool patch = false;
+
+  if (ui->patchCalibration->isChecked() || ui->patchHardwareSettings->isChecked()) {
+    QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
+    Storage storage(eepromFilename);
+    if (storage.load(*radioData)) {
+      if (ui->patchCalibration->isChecked())
+        patch |= patchCalibration(radioData.data());
+      if (ui->patchHardwareSettings->isChecked())
+        patch |= patchHardwareSettings(radioData.data());
     }
-    if (!file.open(QIODevice::WriteOnly)) {
-      QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr("Cannot write file %1:\n%2.").arg(filename).arg(file.errorString()));
-      return;
-    }
-    QTextStream outputStream(&file);
-    long result = file.write((char*)eeprom, eeprom_size);
-    if (result != eeprom_size) {
-      QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
-      return;
+
+    if (patch) {
+      filename = generateProcessUniqueTempFileName("patched.bin");
+      QFile file(filename);
+      uint8_t *eeprom = (uint8_t*)malloc(Boards::getEEpromSize(getCurrentBoard()));
+      int eeprom_size = getCurrentEEpromInterface()->save(eeprom, *radioData, 0, getCurrentFirmware()->getVariantNumber());
+      if (eeprom_size == 0) {
+        return;
+      }
+      if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr("Cannot write file %1:\n%2.").arg(filename).arg(file.errorString()));
+        return;
+      }
+      QTextStream outputStream(&file);
+      long result = file.write((char*)eeprom, eeprom_size);
+      if (result != eeprom_size) {
+        QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
+        return;
+      }
     }
   }
 

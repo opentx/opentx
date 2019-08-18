@@ -28,6 +28,14 @@
 #include <math.h>
 #include "definitions.h"
 #include "opentx_types.h"
+#include "debounce.h"
+
+
+#if defined(SIMU)
+#include "targets/simu/simpgmspace.h"
+#endif
+
+#include "board.h"
 
 #if defined(STM32)
 #include "usbd_conf.h"
@@ -119,6 +127,12 @@
   #define CASE_SPLASH(x)
 #endif
 
+#if defined(PWR_BUTTON_PRESS)
+  #define CASE_PWR_BUTTON_PRESS(x) x,
+#else
+  #define CASE_PWR_BUTTON_PRESS(x)
+#endif
+
 #if defined(TELEMETRY_FRSKY)
   #define CASE_FRSKY(x) x,
 #else
@@ -200,7 +214,7 @@
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && isFaiForbidden(idx))
 
 #if defined(BLUETOOTH)
-  #if defined(X9E) && !defined(USEHORUSBT)
+  #if defined(X9E)
     #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
     #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
   #else
@@ -219,8 +233,6 @@
 #define RESXul     1024ul
 #define RESXl      1024l
 
-#include "board.h"
-
 #if defined(JACK_DETECT_GPIO)
 #define CASE_JACK_DETECT(x) x,
 #else
@@ -229,10 +241,6 @@
 
 #if defined(DISK_CACHE)
   #include "disk_cache.h"
-#endif
-
-#if defined(SIMU)
-  #include "targets/simu/simpgmspace.h"
 #endif
 
 #include "debug.h"
@@ -248,8 +256,6 @@
   #define SW_DSM2_BIND     SW_TRN
 #endif
 
-#define NUM_PSWITCH                    (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
-
 #include "myeeprom.h"
 
 inline void memclear(void * p, size_t size)
@@ -260,7 +266,7 @@ inline void memclear(void * p, size_t size)
 inline bool is_memclear(void * p, size_t size)
 {
   uint8_t * buf = (uint8_t *)p;
-  return buf[0] == 0 && !memcmp(buf, buf + 1, size - 1);
+  return buf[0] == 0 && memcmp(buf, buf + 1, size - 1) == 0;
 }
 
 void memswap(void * a, void * b, uint8_t size);
@@ -292,8 +298,6 @@ void memswap(void * a, void * b, uint8_t size);
 #else
   #define pwrOffPressed()              (!pwrPressed())
 #endif
-
-#define PWR_PRESS_SHUTDOWN_DELAY       300 // 3s
 
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)           g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)
@@ -364,7 +368,7 @@ extern const uint8_t modn12x3[];
   #define CONVERT_MODE_TRIMS(x)  CONVERT_MODE(x)
 #endif
 
-extern uint8_t channel_order(uint8_t x);
+extern uint8_t channelOrder(uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
@@ -398,10 +402,10 @@ extern uint8_t channel_order(uint8_t x);
 
 constexpr uint8_t HEART_TIMER_10MS = 0x01;
 constexpr uint8_t HEART_TIMER_PULSES = 0x02; // when multiple modules this is the first one
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1));
+#if defined(HARDWARE_INTERNAL_MODULE)
+constexpr uint8_t HEART_WDT_CHECK = HEART_TIMER_10MS + (HEART_TIMER_PULSES << INTERNAL_MODULE) + (HEART_TIMER_PULSES << EXTERNAL_MODULE);
 #else
-constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + HEART_TIMER_PULSES);
+constexpr uint8_t HEART_WDT_CHECK = HEART_TIMER_10MS + (HEART_TIMER_PULSES << EXTERNAL_MODULE);
 #endif
 extern uint8_t heartbeat;
 
@@ -432,6 +436,7 @@ extern struct t_inactivity inactivity;
 
 char hex2zchar(uint8_t hex);
 char zchar2char(int8_t idx);
+char char2lower(char c);
 int8_t char2zchar(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
@@ -445,24 +450,27 @@ div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
 
-#if defined(PCBHORUS)
-  uint16_t trimDown(uint16_t idx); // TODO why?
-#else
-  uint8_t trimDown(uint8_t idx);
-#endif
+bool trimDown(uint8_t idx);
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
+
+void alert(const char * title, const char * msg, uint8_t sound);
 
 #if !defined(GUI)
   #define RAISE_ALERT(...)
   #define ALERT(...)
 #else
-  #define RAISE_ALERT(title, msg, info, sound) showAlertBox(title, msg, info, sound)
-  #define ALERT(title, msg, sound) alert(title, msg, sound)
-#endif
+  inline void RAISE_ALERT(const char * title, const char * msg, const char * info, uint8_t sound)
+  {
+    showAlertBox(title, msg, info, sound);
+  }
 
-void alert(const char * t, const char * s , uint8_t sound);
+  inline void ALERT(const char * title, const char * msg, uint8_t sound)
+  {
+    alert(title, msg, sound);
+  }
+#endif
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
@@ -542,8 +550,6 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
-#elif defined(PCBHORUS)
-  #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
 #endif
@@ -616,7 +622,7 @@ extern uint16_t maxMixerDuration;
 #endif
 
 void checkLowEEPROM();
-void checkTHR();
+void checkThrottleStick();
 void checkSwitches();
 void checkAlarm();
 void checkAll();
@@ -639,9 +645,6 @@ void checkBacklight();
 void doLoopCommonActions();
 
 #define BITMASK(bit) (1<<(bit))
-
-/// returns the number of elements of an array
-#define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
 
 template<class t> inline t min(t a, t b) { return a<b?a:b; }
 template<class t> inline t max(t a, t b) { return a>b?a:b; }
@@ -668,6 +671,7 @@ inline void resumeMixerCalculations()
 }
 #endif
 
+void setDefaultOwnerId();
 void generalDefault();
 void modelDefault(uint8_t id);
 
@@ -728,21 +732,12 @@ extern const char vers_stamp[];
  * @param buffer If non-null find the firmware version in the buffer instead
  * @return The opentx version string starting with "opentx-" or "no version found" if the version string is not found
  */
-const char* getOtherVersion(char* buffer);
-
-extern uint8_t g_vbat100mV;
-#if LCD_W > 128
-  #define GET_TXBATT_BARS() (limit<int8_t>(0, div_and_round(10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90), 30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 10))
-#else
-  #define GET_TXBATT_BARS() (limit<int8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20))
-#endif
-#define IS_TXBATT_WARNING() (g_vbat100mV <= g_eeGeneral.vBatWarn)
-
+const char * getOtherVersion(char * buffer);
 
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
 extern uint8_t            g_beepCnt;
 
-#include "trainer_input.h"
+#include "trainer.h"
 
 extern int32_t            chans[MAX_OUTPUT_CHANNELS];
 extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMITS) of the last perMain
@@ -954,9 +949,7 @@ inline void customFunctionsReset()
 }
 
 #include "telemetry/telemetry.h"
-
-uint8_t crc8(const uint8_t * ptr, uint32_t len);
-uint16_t crc16(const uint8_t * ptr, uint32_t len);
+#include "crc.h"
 
 #define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */
 #define PLAY_NOW                  0x10
@@ -1082,6 +1075,10 @@ void opentxClose(uint8_t shutdown=true);
 void opentxInit();
 void opentxResume();
 
+constexpr uint8_t OPENTX_START_NO_SPLASH = 0x01;
+constexpr uint8_t OPENTX_START_NO_CALIBRATION = 0x02;
+constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
+
 #if defined(STATUS_LEDS)
   #define LED_ERROR_BEGIN()            ledRed()
   #define LED_ERROR_END()              ledBlue()
@@ -1103,9 +1100,7 @@ void opentxResume();
 
 union ReusableBuffer
 {
-  // ARM 334 bytes
-  struct
-  {
+  struct {
 #if defined(EEPROM_RLC) && LCD_W < 212
     uint16_t eepromfree;
 #endif
@@ -1137,6 +1132,7 @@ union ReusableBuffer
       };
       uint8_t resetReceiverFlags;
       ModuleInformation moduleInformation;
+      ModuleSettings moduleSettings;
     } pxx2;
 #if defined(BLUETOOTH)
     struct {
@@ -1146,11 +1142,10 @@ union ReusableBuffer
 #endif
   } moduleSetup;
 
-  // 103 bytes
   struct {
-    int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
-    int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
-    int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+    int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
+    int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
+    int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
     uint8_t state;
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     struct {
@@ -1163,7 +1158,6 @@ union ReusableBuffer
   } calib;
 
 #if defined(SDCARD)
-  // 274 bytes
   struct {
     char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
     uint32_t available;
@@ -1178,14 +1172,8 @@ union ReusableBuffer
   struct {
     ModuleInformation modules[NUM_MODULES];
     uint32_t updateTime;
-
-    union {
-      ModuleSettings moduleSettings;
-      ReceiverSettings receiverSettings;
-    };
-
-    uint8_t moduleSettingsDirty;
-
+    ModuleSettings moduleSettings;
+    ReceiverSettings receiverSettings; // when dealing with receiver settings, we also need module settings
   } hardwareAndSettings;
 
   struct {
@@ -1197,8 +1185,7 @@ union ReusableBuffer
     uint8_t stickMode;
   } generalSettings;
 
-  struct
-  {
+  struct {
     uint8_t bars[LCD_W];
     uint32_t freq;
     uint32_t span;
@@ -1211,8 +1198,7 @@ union ReusableBuffer
     uint8_t dirty;
   } spectrumAnalyser;
 
-  struct
-  {
+  struct {
     uint32_t freq;
     int16_t power;
     int16_t peak;
@@ -1220,8 +1206,7 @@ union ReusableBuffer
     uint8_t dirty;
   } powerMeter;
 
-  struct
-  {
+  struct {
     int8_t preset;
   } curveEdit;
 
@@ -1275,6 +1260,18 @@ inline int div_and_round(int num, int den)
     num -= den / 2;
   }
   return num / den;
+}
+
+extern uint8_t g_vbat100mV;
+
+inline uint8_t GET_TXBATT_BARS(uint8_t barsMax)
+{
+  return limit<int8_t>(0, div_and_round(barsMax * (g_vbat100mV - g_eeGeneral.vBatMin - 90), 30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), barsMax);
+}
+
+inline bool IS_TXBATT_WARNING()
+{
+  return g_vbat100mV <= g_eeGeneral.vBatWarn;
 }
 
 #if defined(TELEMETRY_FRSKY)
@@ -1389,5 +1386,14 @@ inline bool isSimu()
 #if defined(DEBUG_LATENCY)
 extern uint8_t latencyToggleSwitch;
 #endif
+
+inline bool isAsteriskDisplayed()
+{
+#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
+  return true;
+#endif
+
+  return unexpectedShutdown;
+}
 
 #endif // _OPENTX_H_

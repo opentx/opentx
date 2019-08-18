@@ -71,10 +71,10 @@ inline bool isBadAntennaDetected()
   if (!isRasValueValid())
     return false;
 
-  if (telemetryData.swrInternal.isFresh() && telemetryData.swrInternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+  if (telemetryData.swrInternal.isFresh() && telemetryData.swrInternal.value() > FRSKY_BAD_ANTENNA_THRESHOLD)
     return true;
 
-  if (telemetryData.swrExternal.isFresh() && telemetryData.swrExternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+  if (telemetryData.swrExternal.isFresh() && telemetryData.swrExternal.value() > FRSKY_BAD_ANTENNA_THRESHOLD)
     return true;
 
   return false;
@@ -210,15 +210,12 @@ void telemetryInterrupt10ms()
 {
 
   if (TELEMETRY_STREAMING()) {
-    if (!TELEMETRY_OPENXSENSOR()) {
-      for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-        const TelemetrySensor & sensor = g_model.telemetrySensors[i];
-        if (sensor.type == TELEM_TYPE_CALCULATED) {
-          telemetryItems[i].per10ms(sensor);
-        }
+    for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+      const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+      if (sensor.type == TELEM_TYPE_CALCULATED) {
+        telemetryItems[i].per10ms(sensor);
       }
     }
-
   }
 
 #if defined(WS_HOW_HIGH)

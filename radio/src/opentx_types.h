@@ -31,5 +31,6 @@ typedef int32_t swsrc_t;
 typedef int16_t safetych_t;
 typedef uint32_t bitfield_channels_t;
 typedef uint16_t event_t;
+typedef uint16_t FlightModesType;
 
 #endif // _OPENTX_TYPES_H_

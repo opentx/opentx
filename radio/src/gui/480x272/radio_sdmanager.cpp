@@ -33,7 +33,7 @@ BitmapBuffer * currentBitmap = NULL;
 
 bool menuRadioSdManagerInfo(event_t event)
 {
-  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, ICON_RADIO_SD_BROWSER, 1);
+  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, ICON_RADIO_SD_MANAGER, 1);
 
   lcdDrawText(MENUS_MARGIN_LEFT, 2*FH, STR_SD_TYPE);
   lcdDrawText(100, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
@@ -242,9 +242,6 @@ bool menuRadioSdManager(event_t _event)
               POPUP_MENU_ADD_ITEM(STR_ASSIGN_SPLASH);
             }
           }
-          else if (!strcasecmp(ext, TEXT_EXT)) {
-            POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
-          }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
             if (HAS_SPORT_UPDATE_CONNECTOR())
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
@@ -253,6 +250,9 @@ bool menuRadioSdManager(event_t _event)
           }
           else if (isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
+          }
+          if (isExtensionMatching(ext, TEXT_EXT) || isExtensionMatching(ext, SCRIPTS_EXT)) {
+            POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
           }
         }
         if (!READ_ONLY()) {

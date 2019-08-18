@@ -185,6 +185,7 @@ class ModelData {
     MavlinkData mavlink;
     unsigned int telemetryProtocol;
     FrSkyData frsky;
+    unsigned int  rssiSource;
     RSSIAlarmData rssiAlarms;
 
     char bitmap[10+1];
@@ -202,6 +203,8 @@ class ModelData {
     CustomScreenData customScreenData[5];
 
     TopbarData topbarData;
+
+    char registrationId[8+1];
 
     void clear();
     bool isEmpty() const;

@@ -161,57 +161,57 @@ bool isSourceAvailable(int source)
   if (source < 0)
     return false;
 
-  if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
+  if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT) {
     return isInputAvailable(source - MIXSRC_FIRST_INPUT);
   }
 
 #if defined(LUA_MODEL_SCRIPTS)
-  if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA) {
-    div_t qr = div(source-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+  if (source >= MIXSRC_FIRST_LUA && source <= MIXSRC_LAST_LUA) {
+    div_t qr = div(source - MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
     return (qr.rem<scriptInputsOutputs[qr.quot].outputsCount);
   }
 #elif defined(LUA_INPUTS)
-  if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA)
+  if (source >= MIXSRC_FIRST_LUA && source <= MIXSRC_LAST_LUA)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
-    return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+  if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT) {
+    return IS_POT_SLIDER_AVAILABLE(POT1+source - MIXSRC_FIRST_POT);
   }
 
 #if defined(PCBX10)
-  if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
+  if (source >= MIXSRC_MOUSE1 && source <= MIXSRC_MOUSE2)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
-    return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  if (source >= MIXSRC_FIRST_SWITCH && source <= MIXSRC_LAST_SWITCH) {
+    return SWITCH_EXISTS(source - MIXSRC_FIRST_SWITCH);
   }
 
 #if !defined(HELI)
-  if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
+  if (source >= MIXSRC_CYC1 && source <= MIXSRC_CYC3)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH) {
-    return isChannelUsed(source-MIXSRC_FIRST_CH);
+  if (source >= MIXSRC_FIRST_CH && source <= MIXSRC_LAST_CH) {
+    return isChannelUsed(source - MIXSRC_FIRST_CH);
   }
 
-  if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = lswAddress(source-MIXSRC_FIRST_LOGICAL_SWITCH);
+  if (source >= MIXSRC_FIRST_LOGICAL_SWITCH && source <= MIXSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = lswAddress(source - MIXSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
 
 #if !defined(GVARS)
-  if (source>=MIXSRC_GVAR1 && source<=MIXSRC_LAST_GVAR)
+  if (source >= MIXSRC_GVAR1 && source <= MIXSRC_LAST_GVAR)
     return false;
 #endif
 
-  if (source>=MIXSRC_FIRST_RESERVE && source<=MIXSRC_LAST_RESERVE)
+  if (source >= MIXSRC_FIRST_RESERVE && source <= MIXSRC_LAST_RESERVE)
     return false;
 
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
-    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+  if (source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
+    div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     if (qr.rem == 0)
       return isTelemetryFieldAvailable(qr.quot);
     else
@@ -223,7 +223,7 @@ bool isSourceAvailable(int source)
 
 bool isSourceAvailableInGlobalFunctions(int source)
 {
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
+  if (source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
     return false;
   }
   return isSourceAvailable(source);
@@ -234,8 +234,8 @@ bool isSourceAvailableInCustomSwitches(int source)
   bool result = isSourceAvailable(source);
 
 #if defined(TELEMETRY_FRSKY)
-  if (result && source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
-    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+  if (result && source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
+    div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     result = isTelemetryFieldComparisonAvailable(qr.quot);
   }
 #endif
@@ -246,14 +246,19 @@ bool isSourceAvailableInCustomSwitches(int source)
 bool isInputSourceAvailable(int source)
 {
   if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT)
-    return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+    return IS_POT_SLIDER_AVAILABLE(POT1+source - MIXSRC_FIRST_POT);
 
 #if defined(GYRO)
   if (source >= MIXSRC_GYRO1 && source <= MIXSRC_GYRO2)
     return true;
 #endif
 
-  if (source >= MIXSRC_Rud && source <= MIXSRC_MAX)
+#if defined(PCBX10)
+  if (source >= MIXSRC_MOUSE1 && source <= MIXSRC_MOUSE2)
+    return false;
+#endif
+
+  if (source >= MIXSRC_Rud && source < MIXSRC_MAX)
     return true;
 
   if (source >= MIXSRC_FIRST_TRIM && source <= MIXSRC_LAST_TRIM)
@@ -548,6 +553,9 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
       return false;
 
     case MODULE_TYPE_XJT_PXX1:
+      // External XJT has a physical switch to disable S.PORT
+    case MODULE_TYPE_R9M_PXX1:
+      // R9M telemetry is disabled by pulses (pxx1.cpp)
       if (moduleBay == EXTERNAL_MODULE)
         return false;
 
@@ -562,22 +570,23 @@ bool isInternalModuleAvailable(int moduleType)
   if (moduleType == MODULE_TYPE_NONE)
     return true;
 
+  if (moduleType == MODULE_TYPE_XJT_PXX1) {
 #if defined(PXX1) && defined(INTERNAL_MODULE_PXX1)
-  if (moduleType == MODULE_TYPE_XJT_PXX1)
     return !isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
-#else
-  if (moduleType == MODULE_TYPE_XJT_PXX1)
-    return false;
 #endif
+  }
 
-#if defined(PXX2)
-  if (moduleType == MODULE_TYPE_ISRM_PXX2)
-#if defined(INTMODULE_USART)
+  if (moduleType == MODULE_TYPE_ISRM_PXX2) {
+#if defined(PXX2) && defined(INTERNAL_MODULE_PXX2)
     return true;
-#else
-    return (!isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type));
 #endif
+  }
+
+  if (moduleType == MODULE_TYPE_PPM) {
+#if defined(PPM) && defined(INTERNAL_MODULE_PPM)
+    return true;
 #endif
+  }
 
   return false;
 }
@@ -586,12 +595,12 @@ bool isInternalModuleAvailable(int moduleType)
 bool isExternalModuleAvailable(int moduleType)
 {
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-  if (moduleType == MODULE_TYPE_R9M_LITE_PXX1 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2)
+  if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
 #endif
 
 #if !defined(PXX1)
-  if (moduleType == MODULE_TYPE_XJT_PXX1 || moduleType == MODULE_TYPE_R9M_PXX1 || moduleType == MODULE_TYPE_R9M_LITE_PXX1)
+  if (isModuleTypePXX1(moduleType))
     return false;
 #endif
 
@@ -600,16 +609,16 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if !defined(R9M_SIZE_STD)
-  if (moduleType == MODULE_TYPE_R9M_PXX1)
+#if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_STD)
+  if (moduleType == MODULE_TYPE_R9M_PXX1 || moduleType == MODULE_TYPE_R9M_PXX2)
     return false;
 #endif
 
-  if (moduleType == MODULE_TYPE_ISRM_PXX2 || moduleType == MODULE_TYPE_R9M_PXX2)
-    return false;
+  if (moduleType == MODULE_TYPE_ISRM_PXX2)
+    return false; // doesn't exist for now
 
 #if !defined(PXX2)
-  if (moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
+  if (moduleType == MODULE_TYPE_XJT_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
     return false;
   }
 #endif
@@ -698,66 +707,33 @@ bool isTelemetryProtocolAvailable(int protocol)
   return true;
 }
 
-#if defined(PCBHORUS)
 bool isTrainerModeAvailable(int mode)
 {
+#if defined(PCBTARANIS)
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+    return false;
+#endif
+
+#if !defined(PCBSKY9X) && !defined(TRAINER_BATTERY_COMPARTMENT)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return false;
+#endif
+
+#if defined(PCBX9E)
+  if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    return false;
+#elif defined(BLUETOOTH)
+  if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
+    return false;
+#endif
+
+#if defined(PCBXLITE) && !defined(PCBXLITES)
+  if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
+    return false;
+#endif
+
   return true;
 }
-#elif defined(PCBX9E)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-#if defined(USEHORUSBT)
-  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
-#else
-  else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
-#endif
-    return false;
-  else
-    return true;
-}
-#elif defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-  else
-    return true;
-}
-#elif defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITE)
-bool isTrainerModeAvailable(int mode)
-{
-  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
-    return false;
-  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
-    return false;
-#if defined(BLUETOOTH)
-  else if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return false;
-#endif
-  else
-    return true;
-}
-#elif defined(PCBXLITES)
-bool isTrainerModeAvailable(int mode)
-{
-  if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
-    return true;
-  else if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return true;
-  else
-    return false;
-}
-#elif defined(PCBXLITE)
-bool isTrainerModeAvailable(int mode)
-{
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return true;
-  else
-    return false;
-}
-#endif
 
 bool modelHasNotes()
 {
@@ -803,7 +779,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 // local strings
 
 const char STR_SUBTYPE_FLYSKY[] =     "\004""Std\0""V9x9""V6x6""V912""CX20";
-const char STR_SUBTYPE_HUBSAN[] =     "\005"" H107"" H301"" H501";
+const char STR_SUBTYPE_HUBSAN[] =     "\004""H107""H301""H501";
 const char STR_SUBTYPE_FRSKY[] =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch";
 const char STR_SUBTYPE_HISKY[] =      "\005""Std\0 ""HK310";
 const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506";
@@ -814,22 +790,24 @@ const char STR_SUBTYPE_SYMAX[] =      "\003""Std""X5C";
 const char STR_SUBTYPE_SLT[] =        "\006""V1_6ch""V2_8ch""Q100\0 ""Q200\0 ""MR100\0";
 const char STR_SUBTYPE_CX10[] =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041";
 const char STR_SUBTYPE_CG023[] =      "\005""Std\0 ""YD829";
-const char STR_SUBTYPE_BAYANG[] =     "\007"" Std\0  "" H8S3D\0"" X16 AH""IRDrone"" DHD D4";
-const char STR_SUBTYPE_MT99[] =       "\006"" MT99\0"" H7\0  "" YZ\0  "" LS\0  "" FY805";
+const char STR_SUBTYPE_BAYANG[] =     "\007""Std\0   ""H8S3D\0 ""X16 AH\0 ""IRDrone""DHD D4";
+const char STR_SUBTYPE_MT99[] =       "\006""MT99\0 ""H7\0   ""YZ\0   ""LS\0   ""FY805";
 const char STR_SUBTYPE_MJXQ[] =       "\007""WLH08\0 ""X600\0  ""X800\0  ""H26D\0  ""E010\0  ""H26WH\0 ""Phoenix";
 const char STR_SUBTYPE_FY326[] =      "\005""Std\0 ""FY319";
-const char STR_SUBTYPE_HONTAI[] =     "\007"" Std\0  ""JJRC X1"" X5C1\0 "" FQ_951";
+const char STR_SUBTYPE_HONTAI[] =     "\007""Std\0   ""JJRC X1""X5C1\0  ""FQ_951";
 const char STR_SUBTYPE_AFHDS2A[] =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
 const char STR_SUBTYPE_Q2X2[] =       "\004""Q222""Q242""Q282";
 const char STR_SUBTYPE_WK2x01[] =     "\006""WK2801""WK2401""W6_5_1""W6_6_1""W6_HeL""W6_HeI";
 const char STR_SUBTYPE_Q303[] =       "\006""Std\0  ""CX35\0 ""CX10D\0""CX10WD";
 const char STR_SUBTYPE_CABELL[] =     "\007""V3\0    ""V3 Telm""-\0     ""-\0     ""-\0     ""-\0     ""F-Safe\0""Unbind\0";
 const char STR_SUBTYPE_H83D[] =       "\007""Std\0   ""H20H\0  ""H20Mini""H30Mini";
-const char STR_SUBTYPE_CORONA[] =     "\006"" V1\0  "" V2\0  "" FD V3";
+const char STR_SUBTYPE_CORONA[] =     "\005""V1\0  ""V2\0  ""FD V3";
 const char STR_SUBTYPE_HITEC[] =      "\007""Optima\0""Opt Hub""Minima\0";
-const char STR_SUBTYPE_BUGS_MINI[] =  "\006"" Std\0 ""Bugs3H";
+const char STR_SUBTYPE_BUGS_MINI[] =  "\006""Std\0  ""Bugs3H";
 const char STR_SUBTYPE_E01X[] =       "\005""E012\0""E015\0""E016H";
 const char STR_SUBTYPE_GD00X[] =      "\005""GD_V1""GD_V2";
+const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
+const char STR_SUBTYPE_POTENSIC[] =   "\003""A20""---";
 
 const mm_protocol_definition multi_protocols[] = {
 
@@ -851,7 +829,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FY326,      1, false,      STR_SUBTYPE_FY326,     nullptr},
   {MODULE_SUBTYPE_MULTI_SFHSS,      0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HONTAI,     3, false,      STR_SUBTYPE_HONTAI,    nullptr},
-  {MODULE_SUBTYPE_MULTI_OLRS,       0, false,      NO_SUBTYPE,            STR_MULTI_RFPOWER},
+  {MODULE_SUBTYPE_MULTI_OLRS,       0, false,      NO_SUBTYPE,            STR_RFPOWER},
   {MODULE_SUBTYPE_MULTI_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
   {MODULE_SUBTYPE_MULTI_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,      nullptr},
   {MODULE_SUBTYPE_MULTI_WK_2X01,    5, false,      STR_SUBTYPE_WK2x01,    nullptr},
@@ -862,9 +840,11 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
+  {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_REDPINE,    1, false,      STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_POTENSIC,   1, false,      STR_SUBTYPE_POTENSIC,  nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)

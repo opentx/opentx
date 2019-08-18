@@ -448,7 +448,7 @@ Może być różny od języka firmware</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="806"/>
-        <source>Use releases and release candidates (testing)</source>
+        <source>Use release candidates (testing)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

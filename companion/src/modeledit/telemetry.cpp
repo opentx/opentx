@@ -830,7 +830,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   if (IS_ARM(firmware->getBoard())) {
-	ui->varioSource->setField(model.frsky.varioSource, this);
+    ui->varioSource->setField(model.frsky.varioSource, this);
     ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
     ui->A1GB->hide();
     ui->A2GB->hide();
@@ -844,7 +844,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
   else {
     ui->sensorsGB->hide();
-	ui->altimetryGB->hide();
+    ui->altimetryGB->hide();
     analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
     ui->A1Layout->addWidget(analogs[0]);
     connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
@@ -893,6 +893,7 @@ void TelemetryPanel::update()
       ui->telemetryProtocol->setCurrentIndex(0);
     }
 
+    populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
     populateTelemetrySourcesComboBox(ui->voltsSource, model, false);
     populateTelemetrySourcesComboBox(ui->altitudeSource, model, false);
     populateTelemetrySourcesComboBox(ui->varioSource, model, false);
@@ -934,10 +935,18 @@ void TelemetryPanel::setup()
     ui->rssiAlarmWarningSB->setValue(model->rssiAlarms.warning);
     ui->rssiAlarmCriticalSB->setValue(model->rssiAlarms.critical);
     if (!IS_ARM(firmware->getBoard())) {
+      ui->rssiSourceLabel->hide();
+      ui->rssiSourceCB->hide();
       ui->rssiAlarmWarningCB->setCurrentIndex(model->rssiAlarms.level[0]);
       ui->rssiAlarmCriticalCB->setCurrentIndex(model->rssiAlarms.level[1]);
     }
     else {
+      ui->rssiSourceLabel->show();
+      ui->rssiSourceLabel->setText(tr("Source"));
+      ui->rssiSourceCB->setField(model->rssiSource, this);
+      ui->rssiSourceCB->show();
+      populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
+      
       ui->rssiAlarmWarningCB->hide();
       ui->rssiAlarmCriticalCB->hide();
       ui->rssiAlarmWarningLabel->setText(tr("Low Alarm"));

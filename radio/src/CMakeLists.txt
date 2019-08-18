@@ -16,6 +16,7 @@ set_property(CACHE PPM_UNIT PROPERTY STRINGS US PERCENT_PREC1 PERCENT_PREC0)
 set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
 set(FONT "STD" CACHE STRING "Choose font : STD or SQT5")
 set_property(CACHE FONT PROPERTY STRINGS SQT5)
+set(POPUP_LEVEL 2 CACHE STRING "Popup level")
 
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -314,7 +315,10 @@ endif()
 
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
+    set(POPUP_LEVEL 3)
 endif()
+
+add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})
 
 set(SRC
   ${SRC}
@@ -325,7 +329,7 @@ set(SRC
   mixer.cpp
   stamp.cpp
   timers.cpp
-  trainer_input.cpp
+  trainer.cpp
   )
 
 if(GUI)
@@ -357,7 +361,7 @@ endforeach()
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 
 if(NOT MSVC)
-  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
+  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wno-address-of-packed-member -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
   if(WARNINGS_AS_ERRORS)
     set(WARNING_FLAGS "${WARNING_FLAGS} -Werror")
   endif(WARNINGS_AS_ERRORS)

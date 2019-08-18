@@ -67,7 +67,8 @@ enum MenuIcons {
   ICON_OPENTX,
   ICON_RADIO,
   ICON_RADIO_SETUP,
-  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_SD_MANAGER,
+  ICON_RADIO_TOOLS,
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
   ICON_RADIO_HARDWARE,
@@ -179,12 +180,17 @@ bool menuModelCustomScripts(event_t event);
 bool menuModelTelemetryFrsky(event_t event);
 bool menuModelSensor(event_t event);
 bool menuModelExpoOne(event_t event);
+bool menuModelModuleOptions(event_t event);
+bool menuModelReceiverOptions(event_t event);
 
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 
 enum EnumTabRadio {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
+#if defined(LUA) || defined(PXX2)
+  MENU_RADIO_TOOLS,
+#endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -195,7 +201,10 @@ enum EnumTabRadio {
 const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
   ICON_RADIO,
   ICON_RADIO_SETUP,
-  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_SD_MANAGER,
+#if defined(LUA) || defined(PXX2)
+  ICON_RADIO_TOOLS,
+#endif
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
   ICON_RADIO_HARDWARE,
@@ -210,6 +219,8 @@ bool menuRadioTrainer(event_t event);
 bool menuRadioVersion(event_t event);
 bool menuRadioHardware(event_t event);
 bool menuRadioCalibration(event_t event);
+bool menuRadioSpectrumAnalyser(event_t event);
+bool menuRadioPowerMeter(event_t event);
 
 extern const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT];
 
@@ -263,10 +274,6 @@ bool menuAboutView(event_t event);
 bool menuMainViewChannelsMonitor(event_t event);
 bool menuTextView(event_t event);
 bool menuScreensTheme(event_t event);
-bool menuRadioSpectrumAnalyser(event_t event);
-bool menuRadioPowerMeter(event_t event);
-
-typedef uint16_t FlightModesType;
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
@@ -285,10 +292,7 @@ extern int8_t s_editMode;       // global editmode
 #define NO_DBLKEYS                     0x80
 
 // mawrow special values
-#define READONLY_ROW                   ((uint8_t)-1)
-#define TITLE_ROW                      READONLY_ROW
-#define ORPHAN_ROW                     ((uint8_t)-2)
-#define HIDDEN_ROW                     ((uint8_t)-3)
+#define ORPHAN_ROW                     ((uint8_t)-3)
 #define NAVIGATION_LINE_BY_LINE        0x40
 #define CURSOR_ON_LINE()               (menuHorizontalPosition<0)
 
@@ -477,14 +481,14 @@ void insertMix(uint8_t idx);
 
 void copySelection(char * dst, const char * src, uint8_t size);
 
+void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h);
 void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
 
 extern void (* popupFunc)(event_t event);
 extern uint8_t warningInfoFlags;
 
-#define DISPLAY_WARNING                (*popupFunc)
-
+#define DISPLAY_WARNING(evt)                (*popupFunc)(evt)
 #define POPUP_INFORMATION(s)           (warningText = s, warningType = WARNING_TYPE_INFO, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)

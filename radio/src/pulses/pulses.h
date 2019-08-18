@@ -94,6 +94,8 @@ PACK(struct PXX2HardwareInformation {
   PXX2Version hwVersion;
   PXX2Version swVersion;
   uint8_t variant;
+  uint32_t capabilities; // variable length
+  uint8_t capabilityNotSupported;
 });
 
 PACK(struct ModuleInformation {
@@ -110,9 +112,10 @@ PACK(struct ModuleInformation {
 class ModuleSettings {
   public:
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
-    tmr10ms_t retryTime;
+    tmr10ms_t timeout;
     uint8_t externalAntenna;
     int8_t txPower;
+    uint8_t dirty;
 };
 
 class ReceiverSettings {
@@ -123,13 +126,14 @@ class ReceiverSettings {
     uint8_t dirty;
     uint8_t telemetryDisabled;
     uint8_t pwmRate;
+    uint8_t fport;
     uint8_t outputsCount;
     uint8_t outputsMapping[24];
 };
 
 class BindInformation {
   public:
-    uint8_t step;
+    int8_t step;
     uint32_t timeout;
     char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
     uint8_t candidateReceiversCount;
@@ -166,6 +170,7 @@ PACK(struct ModuleState {
   union {
     ModuleInformation * moduleInformation;
     ModuleSettings * moduleSettings;
+    ReceiverSettings * receiverSettings;
     BindInformation * bindInformation;
     OtaUpdateInformation * otaUpdateInformation;
   };
@@ -195,8 +200,21 @@ PACK(struct ModuleState {
   {
     moduleSettings = source;
     moduleSettings->state = PXX2_SETTINGS_WRITE;
-    moduleSettings->retryTime = 0;
+    moduleSettings->timeout = 0;
     mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+  void readReceiverSettings(ReceiverSettings * destination)
+  {
+    receiverSettings = destination;
+    receiverSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+  void writeReceiverSettings(ReceiverSettings * source)
+  {
+    receiverSettings = source;
+    receiverSettings->state = PXX2_SETTINGS_WRITE;
+    receiverSettings->timeout = 0;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 });
 
@@ -263,7 +281,7 @@ union InternalModulePulsesData {
 
 union ExternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(EXTMODULE_USART)
+  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     UartPxx1Pulses pxx_uart;
   #endif
   #if defined(PPM_PIN_SERIAL)
@@ -302,7 +320,8 @@ union TrainerPulsesData {
 
 extern TrainerPulsesData trainerPulsesData;
 
-bool setupPulses(uint8_t module);
+bool setupPulsesInternalModule();
+bool setupPulsesExternalModule();
 void setupPulsesDSM2();
 void setupPulsesCrossfire();
 void setupPulsesMultimodule();
@@ -314,28 +333,26 @@ void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
 void sendByteSbus(uint8_t b);
-
-#if defined(HUBSAN)
-void Hubsan_Init();
-#endif
+void intmodulePxx1PulsesStart();
+void intmodulePxx1SerialStart();
+void extmodulePxx1PulsesStart();
+void extmodulePxx1SerialStart();
+void extmodulePpmStart();
+void intmoduleStop();
+void extmoduleStop();
 
 inline void startPulses()
 {
   s_pulses_paused = false;
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  setupPulses(INTERNAL_MODULE);
-  setupPulses(EXTERNAL_MODULE);
-#else
-  setupPulses(EXTERNAL_MODULE);
+#if defined(HARDWARE_INTERNAL_MODULE)
+  setupPulsesInternalModule();
 #endif
 
-#if defined(PCBSKY9X)
-  init_ppm(EXTRA_MODULE);
-#endif
+  setupPulsesExternalModule();
 
-#if defined(HUBSAN)
-  Hubsan_Init();
+#if defined(HARDWARE_EXTRA_MODULE)
+  extramodulePpmStart();
 #endif
 }
 
@@ -351,18 +368,39 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_CROSSFIRE,
   PROTOCOL_CHANNELS_MULTIMODULE,
   PROTOCOL_CHANNELS_SBUS,
-  PROTOCOL_CHANNELS_PXX2
+  PROTOCOL_CHANNELS_PXX2_LOWSPEED,
+  PROTOCOL_CHANNELS_PXX2_HIGHSPEED,
 };
 
-inline bool pulsesStarted() { return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
-inline void pausePulses() { s_pulses_paused = true; }
-inline void resumePulses() { s_pulses_paused = false; }
+inline void stopPulses()
+{
+  s_pulses_paused = true;
+  moduleState[0].protocol = PROTOCOL_CHANNELS_UNINITIALIZED;
+}
 
-#define SEND_FAILSAFE_NOW(idx) moduleState[idx].counter = 1
+inline bool pulsesStarted()
+{
+  return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED;
+}
+
+inline void pausePulses()
+{
+  s_pulses_paused = true;
+}
+
+inline void resumePulses()
+{
+  s_pulses_paused = false;
+}
+
+inline void SEND_FAILSAFE_NOW(uint8_t idx)
+{
+  moduleState[idx].counter = 1;
+}
 
 inline void SEND_FAILSAFE_1S()
 {
-  for (int i=0; i<NUM_MODULES; i++) {
+  for (uint8_t i=0; i<NUM_MODULES; i++) {
     moduleState[i].counter = 100;
   }
 }
@@ -372,29 +410,4 @@ inline void SEND_FAILSAFE_1S()
 void setCustomFailsafe(uint8_t moduleIndex);
 
 
-enum R9MLiteLBTPowerValues {
-  R9M_LITE_LBT_POWER_25 = 0,
-  R9M_LITE_LBT_POWER_25_16,
-  R9M_LITE_LBT_POWER_100,
-  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100
-};
-
-enum R9MFCCPowerValues {
-  R9M_FCC_POWER_10 = 0,
-  R9M_FCC_POWER_100,
-  R9M_FCC_POWER_500,
-  R9M_FCC_POWER_1000,
-  R9M_FCC_POWER_MAX = R9M_FCC_POWER_1000
-};
-
-enum R9MLBTPowerValues {
-  R9M_LBT_POWER_25 = 0,
-  R9M_LBT_POWER_25_16,
-  R9M_LBT_POWER_200,
-  R9M_LBT_POWER_500,
-  R9M_LBT_POWER_MAX = R9M_LBT_POWER_500
-};
-
-#define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
 #endif // _PULSES_H_

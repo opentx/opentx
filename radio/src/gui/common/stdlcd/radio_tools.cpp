@@ -32,6 +32,7 @@ bool addRadioTool(uint8_t index, const char * label)
   lcdDrawText(3*FW, y, label, (sub == index ? INVERS  : 0));
   if (attr && s_editMode > 0) {
     s_editMode = 0;
+    killAllEvents();
     return true;
   }
   return false;
@@ -47,6 +48,7 @@ void addRadioModuleTool(uint8_t index, const char * label, void (* tool)(event_t
 
 #define TOOL_NAME_MAXLEN  16
 
+#if defined(LUA)
 bool readToolName(const char * filename, char * name)
 {
   FIL file;
@@ -84,23 +86,19 @@ bool readToolName(const char * filename, char * name)
   return true;
 }
 
-void addRadioScriptTool(uint8_t index, const char * filename)
+void addRadioScriptTool(uint8_t index, const char * path)
 {
-  TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
-  strcat(path, filename);
-
   char toolName[TOOL_NAME_MAXLEN + 1];
-  const char * label;
-  if (readToolName(path, toolName)) {
-    label = toolName;
-  }
-  else {
-    char * ext = (char *)getFileExtension(filename);
-    *ext = '\0';
-    label = filename;
+
+  if (!readToolName(path, toolName)) {
+    strAppendFilename(toolName, getBasename(path), TOOL_NAME_MAXLEN);
   }
 
-  if (addRadioTool(index, label)) {
+  if (addRadioTool(index, toolName)) {
+    char toolPath[_MAX_LFN];
+    strcpy(toolPath, path);
+    *((char *)getBasename(toolPath)-1) = '\0';
+    f_chdir(toolPath);
     luaExec(path);
   }
 }
@@ -110,6 +108,7 @@ bool isRadioScriptTool(const char * filename)
   const char * ext = getFileExtension(filename);
   return ext && !strcasecmp(ext, SCRIPT_EXT);
 }
+#endif
 
 void menuRadioTools(event_t event)
 {
@@ -129,35 +128,44 @@ void menuRadioTools(event_t event)
   uint8_t index = 0;
 
 #if defined(PXX2)
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
     addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
     addRadioModuleTool(index++, STR_POWER_METER_INT, menuRadioPowerMeter, INTERNAL_MODULE);
 
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
     addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
 
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
     addRadioModuleTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
 #endif
 
+#if defined(LUA)
   FILINFO fno;
   DIR dir;
+
+#if defined(CROSSFIRE)
+  if(isFileAvailable(SCRIPTS_TOOLS_PATH "/CROSSFIRE/crossfire.lua"))
+    addRadioScriptTool(index++, SCRIPTS_TOOLS_PATH "/CROSSFIRE/crossfire.lua");
+#endif
 
   FRESULT res = f_opendir(&dir, SCRIPTS_TOOLS_PATH);
   if (res == FR_OK) {
     for (;;) {
+      TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       if (fno.fattrib & AM_DIR) continue;            /* Skip subfolders */
       if (fno.fattrib & AM_HID) continue;            /* Skip hidden files */
       if (fno.fattrib & AM_SYS) continue;            /* Skip system files */
 
+      strcat(path, fno.fname);
       if (isRadioScriptTool(fno.fname))
-        addRadioScriptTool(index++, fno.fname);
+        addRadioScriptTool(index++, path);
     }
   }
+#endif
 
   if (index == 0) {
     lcdDrawCenteredText(LCD_H/2, STR_NO_TOOLS);

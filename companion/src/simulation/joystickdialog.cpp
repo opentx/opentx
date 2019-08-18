@@ -45,14 +45,14 @@ joystickDialog::joystickDialog(QWidget *parent, int stick) :
   };
   memcpy(jscal, jscaltmp, sizeof (jscal));
 
-  foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
+  foreach(QComboBox *cb, findChildren<QComboBox *>(QRegularExpression("jsmapCB_[0-9]+"))) {
     populateSourceCombo(cb);
     sticks[cb->property("channel").toUInt()] = cb;
   }
-  foreach(QCheckBox *ib, findChildren<QCheckBox *>(QRegExp("ChInv_[0-9]+"))) {
+  foreach(QCheckBox *ib, findChildren<QCheckBox *>(QRegularExpression("ChInv_[0-9]+"))) {
     invert[ib->property("channel").toUInt()] = ib;
   }
-  foreach(QSlider *sl, findChildren<QSlider *>(QRegExp("Ch_[0-9]+"))) {
+  foreach(QSlider *sl, findChildren<QSlider *>(QRegularExpression("Ch_[0-9]+"))) {
     sliders[sl->property("channel").toUInt()] = sl;
   }
 

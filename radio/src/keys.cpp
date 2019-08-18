@@ -85,6 +85,7 @@ void Key::input(bool val)
         m_cnt = 0;
       }
       break;
+
     case KSTATE_START:
       // TRACE("key %d FIRST", key());
       putEvent(EVT_KEY_FIRST(key()));

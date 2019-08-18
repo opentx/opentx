@@ -68,7 +68,6 @@ set(GUI_SRC
   model_display.cpp
   radio_diagkeys.cpp
   radio_diaganas.cpp
-  radio_hardware.cpp
   view_telemetry.cpp
   view_about.cpp
   )
@@ -83,6 +82,7 @@ endif()
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/loadboot.cpp
+  board.cpp
   core_cm3.c
   board_lowlevel.c
   crt.c
@@ -90,6 +90,7 @@ set(FIRMWARE_TARGET_SRC
   eeprom_driver.cpp
   lcd_driver.cpp
   pwr_driver.cpp
+  keys_driver.cpp
   usb/device/core/USBD_UDP.c
   usb/device/core/USBDDriver.c
   usb/device/massstorage/MSDDriver.c
@@ -111,11 +112,9 @@ set(FIRMWARE_TARGET_SRC
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  board.cpp
   telemetry_driver.cpp
   adc_driver.cpp
   pulses_driver.cpp
-  keys_driver.cpp
   audio_driver.cpp
   buzzer_driver.cpp
   haptic_driver.cpp

@@ -39,7 +39,7 @@ void init_intmodule_heartbeat()
   EXTI_StructInit(&EXTI_InitStructure);
   EXTI_InitStructure.EXTI_Line = INTMODULE_HEARTBEAT_EXTI_LINE;
   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+  EXTI_InitStructure.EXTI_Trigger = INTMODULE_HEARTBEAT_TRIGGER;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
@@ -65,10 +65,14 @@ void stop_intmodule_heartbeat()
   EXTI_Init(&EXTI_InitStructure);
 }
 
-void check_xjt_heartbeat()
+void check_intmodule_heartbeat()
 {
   if (EXTI_GetITStatus(INTMODULE_HEARTBEAT_EXTI_LINE) != RESET) {
-    heartbeatCapture.timestamp = TIMER_2MHz_TIMER->CNT;
+#if defined(INTMODULE_USART)
+    heartbeatCapture.timestamp = RTOS_GET_MS();
+#else
+    heartbeatCapture.timestamp = getTmr2MHz();
+#endif
     heartbeatCapture.count++;
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
   }
@@ -78,6 +82,6 @@ void check_xjt_heartbeat()
 #if defined(INTMODULE_HEARTBEAT) && !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
 extern "C" void INTMODULE_HEARTBEAT_EXTI_IRQHandler()
 {
-  check_xjt_heartbeat();
+  check_intmodule_heartbeat();
 }
 #endif

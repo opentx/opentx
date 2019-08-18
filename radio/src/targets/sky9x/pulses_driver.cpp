@@ -108,21 +108,13 @@ void init_second_ppm(uint32_t period)
   setExtraModulePolarity();
 }
 
+/*
+// TODO re-add it later
 void disable_second_ppm()
 {
   Pio * pioptr = PIOC;
   pioptr->PIO_PER = PIO_PC15;           // Assign C17 to PIO
   PWM->PWM_IDR1 = PWM_IDR1_CHID1;
-}
-
-void init_no_pulses(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    init_main_ppm(3000, 0);
-  }
-  else {
-    // TODO
-  }
 }
 
 void init_module_timer(uint32_t port, uint32_t period, uint8_t state)
@@ -132,32 +124,16 @@ void init_module_timer(uint32_t port, uint32_t period, uint8_t state)
     init_main_ppm(3000, 0);
   }
 }
+*/
 
-void disable_module_timer(uint32_t port)
+void extmodulePpmStart()
 {
-  if (port == EXTERNAL_MODULE) {
-    disable_ppm(EXTERNAL_MODULE);
-  }
+  init_main_ppm(3000, 1);
 }
 
-void init_ppm(uint32_t port)
+void extramodulePpmStart()
 {
-  if (port == EXTERNAL_MODULE) {
-    init_main_ppm(3000, 1);
-  }
-  else {
-    init_second_ppm(3000);
-  }
-}
-
-void disable_ppm(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    disable_main_ppm();
-  }
-  else {
-    disable_second_ppm();
-  }
+  init_second_ppm(3000);
 }
 
 // Initialise the SSC to allow PXX output.
@@ -201,26 +177,16 @@ void disable_ssc()
   sscptr->SSC_CR = SSC_CR_TXDIS;
 }
 
-void init_pxx1_pulses(uint32_t port)
+void extmodulePxx1PulsesStart()
 {
-  if (port == EXTERNAL_MODULE) {
-    init_main_ppm(2500 * 2, 0);
-    init_ssc(125);                      // 8us per bit
-  }
-  else {
-    // TODO
-  }
+  init_main_ppm(2500 * 2, 0);
+  init_ssc(125); // 8us per bit
 }
 
-void disable_pxx1_pulses(uint32_t port)
+void extmoduleStop()
 {
-  if (port == EXTERNAL_MODULE) {
-    disable_ssc();
-    disable_ppm(EXTERNAL_MODULE);
-  }
-  else {
-    // TODO
-  }
+  disable_ssc();
+  disable_main_ppm();
 }
 
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted)
@@ -236,21 +202,10 @@ void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inver
   }
 }
 
-void disable_serial(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    disable_ssc();
-    disable_ppm(EXTERNAL_MODULE);
-  }
-  else {
-    // TODO
-  }
-}
-
 void extmoduleSendNextFrame()
 {
-
 }
+
 #if !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
 {
@@ -272,7 +227,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 2500 * 2) {
-          setupPulses(EXTERNAL_MODULE);
+          setupPulsesExternalModule();
           setExternalModulePolarity();
         }
         else {
@@ -297,7 +252,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 2500 * 2) {
-          setupPulses(EXTERNAL_MODULE);
+          setupPulsesExternalModule();
         }
         else {
           // Kick off serial output here
@@ -323,7 +278,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 3500 * 2) {
-          setupPulses(EXTERNAL_MODULE);
+          setupPulsesExternalModule();
         }
         else {
           // Kick off serial output here
@@ -338,7 +293,7 @@ extern "C" void PWM_IRQHandler(void)
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = *extmodulePulsesData.ppm.ptr++;
         if (*extmodulePulsesData.ppm.ptr == 0) {
           setExternalModulePolarity();
-          setupPulses(EXTERNAL_MODULE);
+          setupPulsesExternalModule();
         }
         break;
 

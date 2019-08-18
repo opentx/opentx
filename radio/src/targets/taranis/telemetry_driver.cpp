@@ -97,8 +97,44 @@ void telemetryPortSetDirectionInput()
 
 void sportSendByte(uint8_t byte)
 {
+  telemetryPortSetDirectionOutput();
+
   while (!(TELEMETRY_USART->SR & USART_SR_TXE));
   USART_SendData(TELEMETRY_USART, byte);
+}
+
+void sportStopSendByteLoop()
+{
+  DMA_Cmd(TELEMETRY_DMA_Stream_TX, DISABLE);
+  DMA_DeInit(TELEMETRY_DMA_Stream_TX);
+}
+
+void sportSendByteLoop(uint8_t byte)
+{
+  telemetryPortSetDirectionOutput();
+
+  outputTelemetryBuffer.data[0] = byte;
+
+  DMA_InitTypeDef DMA_InitStructure;
+  DMA_DeInit(TELEMETRY_DMA_Stream_TX);
+  DMA_InitStructure.DMA_Channel = TELEMETRY_DMA_Channel_TX;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&TELEMETRY_USART->DR);
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(outputTelemetryBuffer.data);
+  DMA_InitStructure.DMA_BufferSize = 1;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(TELEMETRY_DMA_Stream_TX, &DMA_InitStructure);
+  DMA_Cmd(TELEMETRY_DMA_Stream_TX, ENABLE);
+  USART_DMACmd(TELEMETRY_USART, USART_DMAReq_Tx, ENABLE);
 }
 
 void sportSendBuffer(const uint8_t * buffer, uint32_t count)

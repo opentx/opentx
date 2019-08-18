@@ -18,69 +18,27 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _BOARD_HORUS_H_
-#define _BOARD_HORUS_H_
+#ifndef _BOARD_H_
+#define _BOARD_H_
 
 #include "../definitions.h"
-#include "cpu_id.h"
-
-#if defined(__cplusplus) && !defined(SIMU)
-extern "C" {
-#endif
-
-#if __clang__
-// clang is very picky about the use of "register"
-// Tell clang to ignore the warnings for the following files
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#endif
-
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_pwr.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_flash.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dbgmcu.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
-
-#if defined(PCBX10)
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
-#endif
-
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h"
-
-#if __clang__
-// Restore warnings about registers
-#pragma clang diagnostic pop
-#endif
-
-#include "usb_driver.h"
-
-#if !defined(SIMU)
-#include "usbd_cdc_core.h"
-#include "usbd_msc_core.h"
-#include "usbd_hid_core.h"
-#include "usbd_usr.h"
-#include "usbd_desc.h"
-#include "usb_conf.h"
-#include "usbd_conf.h"
-#endif
-
+#include "../opentx_constants.h"
+#include "board_common.h"
 #include "hal.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
-}
+PACK(typedef struct {
+  uint8_t pcbrev : 2;
+  uint8_t sticksPwmDisabled : 1;
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
+#if !defined(LUA_EXPORT_GENERATION)
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
 #endif
 
 #define FLASHSIZE                      0x200000
@@ -108,30 +66,38 @@ extern uint16_t sessionTimer;
 #endif
 
 // Board driver
-void boardPreInit(void);
-void boardInit(void);
-void boardOff(void);
+void boardInit();
+void boardOff();
 
-// Delays driver
-#ifdef __cplusplus
-extern "C" {
-#endif
-void delaysInit(void);
-void delay_01us(uint16_t nb);
-void delay_us(uint16_t nb);
-void delay_ms(uint32_t ms);
-#ifdef __cplusplus
-}
-#endif
+// Timers driver
+void init2MhzTimer();
+void init5msTimer();
 
 // PCBREV driver
-#define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
-#if defined(SIMU) || defined(PCBX10)
+enum {
+  // X12S
+  PCBREV_X12S_LT13 = 0,
+  PCBREV_X12S_GTE13 = 1,
+
+  // X10
+  PCBREV_X10_STD = 0,
+  PCBREV_X10_EXPRESS = 3,
+};
+
+#if defined(SIMU)
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
-#elif PCBREV >= 13
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_HORUS_PROD()
+#elif defined(PCBX10)
+  #if defined(PCBREV_EXPRESS)
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
+  #else
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_STD)
+  #endif
 #else
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
+  #if PCBREV >= 13
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X12S_GTE13)
+  #else
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X12S_LT13)
+  #endif
 #endif
 
 // SD driver
@@ -147,7 +113,7 @@ void sdInit(void);
 void sdMount(void);
 void sdDone(void);
 #define sdPoll10ms()
-uint32_t sdMounted(void);
+uint32_t sdMounted();
 #else
 #define SD_IS_HC()                     (0)
 #define SD_GET_SPEED()                 (0)
@@ -190,7 +156,6 @@ void SDRAM_Init(void);
 #define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#define INTERNAL_MODULE_PXX1
 
 #if !defined(PXX2)
   #define IS_PXX2_INTERNAL_ENABLED()            (false)
@@ -205,28 +170,18 @@ void SDRAM_Init(void);
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #endif
 
-void init_ppm(uint8_t module);
-void disable_ppm(uint8_t module);
-void init_pxx1_pulses(uint8_t module);
-void init_pxx1_serial(uint8_t module);
-void disable_pxx1_pulses(uint8_t module);
-void disable_pxx1_serial(uint8_t module);
-void init_pxx2(uint8_t module);
-void disable_pxx2(uint8_t module);
-void disable_serial(uint8_t module);
+void init_intmodule_heartbeat();
+void check_intmodule_heartbeat();
 
-void intmoduleStop();
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-void intmodulePxxStart();
+void intmoduleSendByte(uint8_t byte);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleInvertedSerialStart(uint32_t baudrate);
+void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
-void extmoduleStop();
-void extmodulePpmStart();
-void extmodulePxxStart();
-void extmodulePxx2Start();
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -280,8 +235,8 @@ enum EnumSwitches
   SW_SF,
   SW_SG,
   SW_SH,
-  SW_GMBL,
-  SW_GMBR,
+  SW_SI,
+  SW_SJ,
   NUM_SWITCHES
 };
 
@@ -314,22 +269,18 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
-  SW_SGMBL0,
-  SW_SGMBL1,
-  SW_SGMBL2,
-  SW_SGMBR0,
-  SW_SGMBR1,
-  SW_SGMBR2,
-  STORAGE_NUM_SWITCHES_POSITIONS
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+  SW_SJ0,
+  SW_SJ1,
+  SW_SJ2,
+  NUM_SWITCHES_POSITIONS
 };
 
-
-#if defined(__cplusplus)
-static_assert(STORAGE_NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
-#endif
+#define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
 
 void keysInit(void);
-uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 #define KEYS_PRESSED()                          (readKeys())
@@ -358,7 +309,6 @@ extern uint32_t powerupReason;
 #define DIRTY_SHUTDOWN                          0xCAFEDEAD
 #define NORMAL_POWER_OFF                        ~DIRTY_SHUTDOWN
 
-#define wdt_disable()
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)
   #define WAS_RESET_BY_WATCHDOG()               (false)
@@ -409,15 +359,15 @@ enum Analogs {
   POT1 = POT_FIRST,
   POT2,
   POT3,
+#if defined(PCBX10)
+  EXT1,
+  EXT2,
+#endif
+  POT_LAST = POT_FIRST + NUM_POTS - 1,
   SLIDER_FIRST,
-  SLIDER1 = SLIDER_FIRST,
-  SLIDER2,
-#if defined(PCBX12S)
   SLIDER_FRONT_LEFT = SLIDER_FIRST,
   SLIDER_FRONT_RIGHT,
-  SLIDER_REAR_LEFT,
-  SLIDER_REAR_RIGHT,
-#else
+#if defined(PCBX12S)
   SLIDER_REAR_LEFT,
   SLIDER_REAR_RIGHT,
 #endif
@@ -427,15 +377,20 @@ enum Analogs {
   MOUSE1, // TODO why after voltage?
   MOUSE2,
 #endif
-#if defined(PCBX10)
-  EXT1,
-  EXT2,
-#endif
-  NUM_ANALOGS,
-  TX_RTC = NUM_ANALOGS
+  NUM_ANALOGS
 };
 
-#define POT_LAST (SLIDER_FIRST - 1)
+#define SLIDER1 SLIDER_FRONT_LEFT
+#define SLIDER2 SLIDER_FRONT_RIGHT
+
+#define DEFAULT_SWITCH_CONFIG  (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+#define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+
+#if defined(PCBX12S)
+#define DEFAULT_SLIDERS_CONFIG (SLIDER_WITH_DETENT << 3) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
+#else
+#define DEFAULT_SLIDERS_CONFIG (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
+#endif
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
@@ -451,6 +406,8 @@ enum CalibratedAnalogs {
   CALIBRATED_SLIDER_REAR_LEFT,
   CALIBRATED_SLIDER_REAR_RIGHT,
 #else
+  CALIBRATED_POT_EXT1,
+  CALIBRATED_POT_EXT2,
   CALIBRATED_SLIDER_REAR_LEFT,
   CALIBRATED_SLIDER_REAR_RIGHT,
 #endif
@@ -461,11 +418,7 @@ enum CalibratedAnalogs {
 
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
-extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
-void adcInit(void);
-void adcRead(void);
-uint16_t getRTCBattVoltage();
-uint16_t getAnalogValue(uint8_t index);
+extern uint16_t adcValues[NUM_ANALOGS];
 
 #if defined(PCBX12S)
   #define NUM_MOUSE_ANALOGS            2
@@ -476,7 +429,7 @@ uint16_t getAnalogValue(uint8_t index);
 
 #if NUM_PWMSTICKS > 0
 #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
-void sticksPwmInit(void);
+void sticksPwmInit();
 void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;
 #else
@@ -495,7 +448,6 @@ extern volatile uint32_t pwm_interrupt_count;
   #define BATTERY_MIN       85 // 8.5V
   #define BATTERY_MAX       115 // 11.5V
 #endif
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -503,13 +455,15 @@ extern "C" {
 
 // Power driver
 #define SOFT_PWR_CTRL
-void pwrInit(void);
-uint32_t pwrCheck(void);
-void pwrOn(void);
-void pwrOff(void);
-void pwrResetHandler(void);
-uint32_t pwrPressed(void);
-uint32_t pwrPressedDuration(void);
+extern uint32_t shutdownRequest; // Stores intentional shutdown to avoid reboot loop
+extern uint32_t shutdownReason; // Used for detecting unexpected reboots regardless of reason
+void pwrInit();
+uint32_t pwrCheck();
+void pwrOn();
+void pwrOff();
+void pwrResetHandler();
+bool pwrPressed();
+uint32_t pwrPressedDuration();
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else
@@ -517,10 +471,10 @@ uint32_t pwrPressedDuration(void);
 #endif
 
 // Led driver
-void ledInit(void);
-void ledOff(void);
-void ledRed(void);
-void ledBlue(void);
+void ledInit();
+void ledOff();
+void ledRed();
+void ledBlue();
 #if defined(PCBX10)
   void ledGreen();
 #endif
@@ -529,14 +483,15 @@ void ledBlue(void);
 #define LCD_W                          480
 #define LCD_H                          272
 #define LCD_DEPTH                      16
-void lcdInit(void);
-void lcdRefresh(void);
+void lcdInit();
+void lcdRefresh();
+void lcdCopy(void * dest, void * src);
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
 void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format);
-void lcdStoreBackupBuffer(void);
-int lcdRestoreBackupBuffer(void);
+void lcdStoreBackupBuffer();
+int lcdRestoreBackupBuffer();
 void lcdSetContrast();
 #define lcdOff()              backlightEnable(0) /* just disable the backlight */
 #define lcdSetRefVolt(...)
@@ -618,7 +573,6 @@ void sportUpdatePowerOff(void);
 void hapticInit(void);
 void hapticDone(void);
 void hapticOff(void);
-#define HAPTIC_OFF()                   hapticOff()
 void hapticOn(uint32_t pwmPercent);
 
 // GPS driver
@@ -628,8 +582,12 @@ uint8_t gpsGetByte(uint8_t * byte);
 extern uint8_t gpsTraceEnabled;
 #endif
 void gpsSendByte(uint8_t byte);
+#if defined(PCBX12S)
+#define PILOTPOS_MIN_HDOP             500
+#endif
 
 // Second serial port driver
+#if defined(PCBX12S)
 #define AUX_SERIAL
 #define DEBUG_BAUDRATE                 115200
 extern uint8_t auxSerialMode;
@@ -638,6 +596,7 @@ void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
 void auxSerialSbusInit(void);
 void auxSerialStop(void);
+#endif
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
@@ -651,9 +610,6 @@ void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
 void bluetoothDisable(void);
 
-extern uint8_t currentTrainerMode;
-void checkTrainerSettings(void);
-
 #if defined(__cplusplus)
 #include "fifo.h"
 #include "dmafifo.h"
@@ -661,17 +617,4 @@ extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> auxSerialRxFifo;
 #endif
 
-#if NUM_PWMSTICKS > 0
-PACK(typedef struct {
-  uint8_t sticksPwmDisabled : 1;
-  uint8_t pxx2Enabled : 1;
-}) HardwareOptions;
-#else
-PACK(typedef struct {
-  uint8_t pxx2Enabled : 1;
-}) HardwareOptions;
-#endif
-
-extern HardwareOptions hardwareOptions;
-
-#endif // _BOARD_HORUS_H_
+#endif // _BOARD_H_

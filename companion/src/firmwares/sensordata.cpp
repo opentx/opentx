@@ -52,9 +52,9 @@ QString SensorData::unitString() const
     case UNIT_FEET:
       return tr("f");
     case UNIT_CELSIUS:
-      return trUtf8("°C");
+      return tr("°C");
     case UNIT_FAHRENHEIT:
-      return trUtf8("°F");
+      return tr("°F");
     case UNIT_PERCENT:
       return tr("%");
     case UNIT_MAH:
@@ -70,9 +70,9 @@ QString SensorData::unitString() const
     case UNIT_G:
       return tr("g");
     case UNIT_DEGREE:
-      return trUtf8("°");
+      return tr("°");
     case UNIT_RADIANS:
-      return trUtf8("Rad");
+      return tr("Rad");
     case UNIT_HOURS:
       return tr("hours");
     case UNIT_MINUTES:

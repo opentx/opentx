@@ -26,7 +26,6 @@
 
 uint16_t ResetReason;
 uint32_t Master_frequency ;
-volatile uint32_t Tenms ;
 volatile uint8_t lcdLock;
 volatile uint32_t lcdInputs;
 
@@ -58,7 +57,6 @@ inline void setup_switches()
   configure_pins( 0x91114900, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;
 }
 
-#if !defined(SIMU)
 inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock)
 {
   Uart *pUart = BT_USART;
@@ -85,7 +83,7 @@ inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock)
 
   /* Enable receiver and transmitter */
   pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
-  
+
 #if 0
   pUart->UART_IER = UART_IER_RXRDY ;
   NVIC_EnableIRQ(UART1_IRQn) ;
@@ -148,7 +146,6 @@ void interrupt5ms()
   static uint32_t pre_scale ;             // Used to get 10 Hz counter
 
   HAPTIC_HEARTBEAT();
-  AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {
     BUZZER_HEARTBEAT();
@@ -248,72 +245,59 @@ void init_pwm()
 
 void configure_pins( uint32_t pins, uint16_t config )
 {
-        Pio *pioptr ;
+  Pio * pioptr;
 
-        pioptr = PIOA + ( ( config & PIN_PORT_MASK ) >> 6) ;
-        if ( config & PIN_PULLUP )
-        {
-                pioptr->PIO_PPDDR = pins ;
-                pioptr->PIO_PUER = pins ;
-        }
-        else
-        {
-                pioptr->PIO_PUDR = pins ;
-        }
+  pioptr = PIOA + ((config & PIN_PORT_MASK) >> 6);
+  if (config & PIN_PULLUP) {
+    pioptr->PIO_PPDDR = pins;
+    pioptr->PIO_PUER = pins;
+  }
+  else {
+    pioptr->PIO_PUDR = pins;
+  }
 
-        if ( config & PIN_PULLDOWN )
-        {
-                pioptr->PIO_PUDR = pins ;
-                pioptr->PIO_PPDER = pins ;
-        }
-        else
-        {
-                pioptr->PIO_PPDDR = pins ;
-        }
+  if (config & PIN_PULLDOWN) {
+    pioptr->PIO_PUDR = pins;
+    pioptr->PIO_PPDER = pins;
+  }
+  else {
+    pioptr->PIO_PPDDR = pins;
+  }
 
-        if ( config & PIN_HIGH )
-        {
-                pioptr->PIO_SODR = pins ;
-        }
-        else
-        {
-                pioptr->PIO_CODR = pins ;
-        }
+  if (config & PIN_HIGH) {
+    pioptr->PIO_SODR = pins;
+  }
+  else {
+    pioptr->PIO_CODR = pins;
+  }
 
-        if ( config & PIN_INPUT )
-        {
-                pioptr->PIO_ODR = pins ;
-        }
-        else
-        {
-                pioptr->PIO_OER = pins ;
-        }
+  if (config & PIN_INPUT) {
+    pioptr->PIO_ODR = pins;
+  }
+  else {
+    pioptr->PIO_OER = pins;
+  }
 
-        if ( config & PIN_PERI_MASK_L )
-        {
-                pioptr->PIO_ABCDSR[0] |= pins ;
-        }
-        else
-        {
-                pioptr->PIO_ABCDSR[0] &= ~pins ;
-        }
-        if ( config & PIN_PERI_MASK_H )
-        {
-                pioptr->PIO_ABCDSR[1] |= pins ;
-        }
-        else
-        {
-                pioptr->PIO_ABCDSR[1] &= ~pins ;
-        }
+  if (config & PIN_PERI_MASK_L) {
+    pioptr->PIO_ABCDSR[0] |= pins;
+  }
+  else {
+    pioptr->PIO_ABCDSR[0] &= ~pins;
+  }
 
-        if ( config & PIN_ENABLE )
-        {
-                pioptr->PIO_PER = pins ;
-        }
-        else
-        {
-                pioptr->PIO_PDR = pins ;
-        }
+  if (config & PIN_PERI_MASK_H) {
+    pioptr->PIO_ABCDSR[1] |= pins;
+  }
+  else {
+    pioptr->PIO_ABCDSR[1] &= ~pins;
+  }
+
+  if (config & PIN_ENABLE) {
+    pioptr->PIO_PER = pins;
+  }
+  else {
+    pioptr->PIO_PDR = pins;
+  }
 }
 
 void opentxBootloader();
@@ -346,7 +330,6 @@ void i2cInit()
   TWI0->TWI_MMR = 0x002F0000 ;          // Device 5E (>>1) and master is writing
   NVIC_EnableIRQ(TWI0_IRQn) ;
 }
-#endif
 
 void boardInit()
 {
@@ -402,6 +385,8 @@ void boardInit()
   rotaryEncoderInit();
 #endif
 
+  lcdInit();
+
   init_SDcard();
 }
 #else
@@ -435,11 +420,6 @@ uint16_t getCurrent()
 
   uint32_t current_scale = 488 + g_eeGeneral.txCurrentCalibration ;
   return (current_scale * Current) / 8192;
-}
-
-uint8_t getTemperature()
-{
-  return temperature + g_eeGeneral.temperatureCalib;
 }
 
 #define STICK_LV_GAIN 0x01
@@ -499,20 +479,15 @@ void calcConsumption()
   }
 }
 
-void checkTrainerSettings()
-{
-  if (SLAVE_MODE()) {
-    PIOC->PIO_PDR = PIO_PC22;
-  }
-  else {
-    PIOC->PIO_PER = PIO_PC22;
-  }
-}
-
 uint16_t getBatteryVoltage()
 {
   int32_t instant_vbat = anaIn(TX_VOLTAGE);  // using filtered ADC value on purpose
   instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
   instant_vbat /= 5530;
   return (uint16_t)instant_vbat;
+}
+
+void boardOff()
+{
+  pwrOff();
 }

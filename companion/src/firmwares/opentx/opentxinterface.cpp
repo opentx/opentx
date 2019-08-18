@@ -72,6 +72,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_X9DP:
       return "OpenTX for FrSky Taranis X9D+";
+    case BOARD_TARANIS_X9DP_2019:
+      return "OpenTX for FrSky Taranis X9D+ 2019";
     case BOARD_TARANIS_X9E:
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
@@ -304,8 +306,6 @@ void OpenTxEepromInterface::showErrors(const QString & title, const QStringList 
 int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, uint8_t version, uint32_t variant)
 {
   // TODO QMessageBox::warning should not be called here
-
-  qDebug() << "ICI";
 
   if (version == 0) {
     version = getLastDataVersion(board);
@@ -734,6 +734,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_HORUS(board);
     case HasSwitchableJack:
       return IS_TARANIS_XLITES(board);
+    case PwrButtonPress:
+      return IS_HORUS_OR_TARANIS(board) && (board!=Board::BOARD_TARANIS_X9D) && (board!=Board::BOARD_TARANIS_X9DP);
     default:
       return 0;
   }
@@ -1211,6 +1213,12 @@ void registerOpenTxFirmwares()
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
 
+  /* FrSky Taranis X9D+ 2019 board */
+  firmware = new OpenTxFirmware("opentx-x9d+2019", Firmware::tr("FrSky Taranis X9D+ 2019"), BOARD_TARANIS_X9DP_2019);
+  addOpenTxTaranisOptions(firmware);
+  addPPMInternalModuleHack(firmware);
+  registerOpenTxFirmware(firmware);
+
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", Firmware::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", Firmware::tr("Haptic module installed"));
@@ -1229,6 +1237,7 @@ void registerOpenTxFirmwares()
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky X7 board */
@@ -1239,7 +1248,7 @@ void registerOpenTxFirmwares()
   /* FrSky X-Lite S/PRO board */
   firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
-  firmware->addOption("internalpxx1", Firmware::tr("Support for PXX1 internal module replacement"));
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite board */
@@ -1262,6 +1271,7 @@ void registerOpenTxFirmwares()
   /* Jumper T12 board */
   firmware = new OpenTxFirmware("opentx-t12", QCoreApplication::translate("Firmware", "Jumper T12"), BOARD_JUMPER_T12);
   addOpenTxCommonOptions(firmware);
+  firmware->addOption("multimodule", Firmware::tr("Support for the DIY-Multiprotocol-TX-Module"));
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
@@ -1321,7 +1331,6 @@ OpenTxEepromInterface * loadFromByteArray(T & dest, const QByteArray & data)
 template <class T, class M>
 bool saveToByteArray(const T & dest, QByteArray & data)
 {
-  qDebug() << "ICI SAVE";
   Board::Type board = getCurrentBoard();
   foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
     if (eepromInterface->getBoard() == board) {

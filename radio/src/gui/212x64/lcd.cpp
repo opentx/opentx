@@ -477,7 +477,7 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
 }
 #endif
 
-void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
+void lcdDrawSolidVerticalLine(coord_t x, coord_t y, coord_t h, LcdFlags att)
 {
   lcdDrawVerticalLine(x, y, h, SOLID, att);
 }
@@ -492,9 +492,9 @@ void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFla
 }
 
 #if !defined(BOOT)
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
-  for (scoord_t i=y; i<(scoord_t)(y+h); i++) {
+  for (coord_t i=y; i<y+h; i++) {
     if ((att&ROUND) && (i==y || i==y+h-1))
       lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
     else
@@ -526,7 +526,7 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), att, att);
 }
 
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att, LcdFlags att2)
 {
   div_t qr;
 
@@ -632,13 +632,14 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
       lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx+1, att);
   }
   else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
-    idx = idx-MIXSRC_FIRST_SWITCH;
+    idx = idx - MIXSRC_FIRST_SWITCH;
     if (ZEXIST(g_eeGeneral.switchNames[idx])) {
       lcdDrawChar(x, y, '\312', att); //switch symbol
       lcdDrawSizedText(lcdNextPos, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
     }
-    else
-      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx+MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1, att);
+    else {
+      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1, att);
+    }
   }
   else if (idx < MIXSRC_SW1)
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
@@ -695,7 +696,7 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
 void drawSwitch(coord_t x, coord_t y, int32_t idx, LcdFlags flags)
 {
   char s[8];
-  getSwitchString(s, idx);
+  getSwitchPositionName(s, idx);
   lcdDrawText(x, y, s, flags);
 }
 
@@ -706,7 +707,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
-void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)
@@ -735,7 +736,7 @@ void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
   }
 }
 
-void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
+void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
@@ -887,7 +888,7 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
   }
 }
 
-void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att)
 {
   if (x >= LCD_W) return;
   if (y >= LCD_H) return;

@@ -255,6 +255,17 @@ ui(new Ui::GeneralSetup)
     ui->splashScreenChkB->setChecked(!generalSettings.splashMode);
   }
 
+  if (!firmware->getCapability(PwrButtonPress)) {
+    ui->pwrOnSpeedLabel->hide();
+    ui->pwrOnSpeed->hide();
+    ui->pwrOffSpeedLabel->hide();
+    ui->pwrOffSpeed->hide();
+  }
+  else if (!IS_TARANIS(firmware->getBoard())) {
+    ui->pwrOnSpeedLabel->hide();
+    ui->pwrOnSpeed->hide();
+  }
+  
   setValues();
 
   lock = false;
@@ -441,6 +452,9 @@ void GeneralSetupPanel::setValues()
     ui->vBatMinDSB->setValue((double)(generalSettings.vBatMin + 90) / 10);
     ui->vBatMaxDSB->setValue((double)(generalSettings.vBatMax + 120) / 10);
   }
+
+  ui->pwrOnSpeed->setValue(generalSettings.pwrOnSpeed);
+  ui->pwrOffSpeed->setValue(generalSettings.pwrOffSpeed);
 }
 
 void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
@@ -493,6 +507,17 @@ void GeneralSetupPanel::on_splashScreenDuration_currentIndexChanged(int index)
   emit modified();
 }
 
+void GeneralSetupPanel::on_pwrOnSpeed_valueChanged()
+{
+  generalSettings.pwrOnSpeed = ui->pwrOnSpeed->value();
+  emit modified();
+}
+
+void GeneralSetupPanel::on_pwrOffSpeed_valueChanged()
+{
+  generalSettings.pwrOffSpeed = ui->pwrOffSpeed->value();
+  emit modified();
+}
 
 void GeneralSetupPanel::on_beepVolume_SL_valueChanged()
 {

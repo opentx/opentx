@@ -250,7 +250,7 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), flags);
 }
 
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags flags)
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags flags)
 {
   char str[LEN_TIMER_STRING];
   getTimerString(str, tme, (flags & TIMEHOUR) != 0);
@@ -290,7 +290,7 @@ void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att)
 void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
 {
   char s[8];
-  getSwitchString(s, idx);
+  getSwitchPositionName(s, idx);
   lcdDrawText(x, y, s, flags);
 }
 
@@ -301,7 +301,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
-void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT) {

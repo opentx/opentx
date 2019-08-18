@@ -130,8 +130,6 @@ class GeneralSettings {
     unsigned int   backlightBright;
     unsigned int   backlightOffBright;
     int switchesDelay;
-    int    temperatureCalib;
-    int    temperatureWarn;
     unsigned int mAhWarn;
     unsigned int mAhUsed;
     unsigned int globalTimer;
@@ -172,6 +170,9 @@ class GeneralSettings {
     int gyroMax;
     int gyroOffset;
 
+    int pwrOnSpeed;
+    int pwrOffSpeed;
+    
     bool switchPositionAllowedTaranis(int index) const;
     bool switchSourceAllowedTaranis(int index) const;
     bool isPotAvailable(int index) const;

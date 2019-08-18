@@ -57,6 +57,7 @@ void menuStatisticsView(event_t event)
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
       break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
@@ -64,15 +65,15 @@ void menuStatisticsView(event_t event)
 
   // Session and Total timers
   lcdDrawText(STATS_1ST_COLUMN, FH*1+1, "SES", BOLD);
-  drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer, 0, 0);
+  drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer);
   lcdDrawText(STATS_1ST_COLUMN, FH*2+1, "TOT", BOLD);
   drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*2+1, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
 
   // Throttle special timers
   lcdDrawText(STATS_2ND_COLUMN, FH*0+1, "THR", BOLD);
-  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*0+1, s_timeCumThr, 0, 0);
+  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*0+1, s_timeCumThr);
   lcdDrawText(STATS_2ND_COLUMN, FH*1+1, "TH%", BOLD);
-  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*1+1, s_timeCum16ThrP/16, 0, 0);
+  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*1+1, s_timeCum16ThrP/16);
 
   // Timers
   for (int i=0; i<TIMERS; i++) {
@@ -80,7 +81,7 @@ void menuStatisticsView(event_t event)
     if (timersStates[i].val > 3600)
       drawTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, TIMEHOUR, 0);
     else
-      drawTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, 0, 0);
+      drawTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val);
   }
 
 #if defined(THRTRACE)
@@ -108,6 +109,11 @@ void menuStatisticsDebug(event_t event)
   title(STR_MENUDEBUG);
 
   switch (event) {
+    case EVT_ENTRY:
+    case EVT_ENTRY_UP:
+      enableVBatBridge();
+      break;
+
     case EVT_KEY_LONG(KEY_ENTER):
 #if defined(PCBSKY9X)
       g_eeGeneral.mAhUsed = 0;
@@ -120,14 +126,19 @@ void menuStatisticsDebug(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
+#if defined(LUA)
+      maxLuaInterval = 0;
+      maxLuaDuration = 0;
+#endif
       maxMixerDuration  = 0;
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
 #if defined(NAVIGATION_X7)
     case EVT_KEY_BREAK(KEY_PAGE):
+      disableVBatBridge();
       chainMenu(menuStatisticsDebug2);
-      return;
+      break;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -135,16 +146,18 @@ void menuStatisticsDebug(event_t event)
     case EVT_KEY_LONG(KEY_PAGE):
 #endif
       killEvents(event);
+      disableVBatBridge();
       chainMenu(menuStatisticsView);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      disableVBatBridge();
       chainMenu(menuMainView);
       break;
   }
 
 #if defined(PCBSKY9X)
-  if ((ResetReason&RSTC_SR_RSTTYP) == (2<<8)) {
+  if (IS_RESET_REASON_WATCHDOG()) {
     lcdDrawText(LCD_W-8*FW, 0, "WATCHDOG");
   }
   else if (unexpectedShutdown) {
@@ -166,14 +179,6 @@ void menuStatisticsDebug(event_t event)
   // consumption
   lcdDrawTextAlignedLeft(y, STR_CPU_MAH);
   drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
-  y += FH;
-#endif
-
-#if defined(PCBSKY9X)
-  lcdDrawTextAlignedLeft(y, STR_CPU_TEMP);
-  drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, getTemperature(), UNIT_TEMPERATURE, LEFT);
-  lcdDrawChar(MENU_DEBUG_COL2_OFS, y, '>');
-  drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, y, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
   y += FH;
 #endif
 
@@ -237,7 +242,7 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 
 #if defined(DEBUG_LATENCY)
-  lcdDrawTextAlignedLeft(y, "Hearbeat");
+  lcdDrawTextAlignedLeft(y, "Heartbeat");
   if (heartbeatCapture.valid)
     lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, heartbeatCapture.count, LEFT);
   else
@@ -245,7 +250,7 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 #endif
 
-  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 
@@ -254,7 +259,7 @@ void menuStatisticsDebug2(event_t event)
 {
   title(STR_MENUDEBUG);
 
-  switch (event) {
+  switch(event) {
     case EVT_KEY_FIRST(KEY_ENTER):
       telemetryErrors  = 0;
       break;
@@ -291,7 +296,7 @@ void menuStatisticsDebug2(event_t event)
   y += FH;
 #endif
 
-  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
+  lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }
 #endif

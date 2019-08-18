@@ -77,7 +77,7 @@ bool isFileAvailable(const char * path, bool exclDir)
     FILINFO fno;
     return (f_stat(path, &fno) == FR_OK && !(fno.fattrib & AM_DIR));
   }
-  return f_stat(path, 0) == FR_OK;
+  return f_stat(path, nullptr) == FR_OK;
 }
 
 /**

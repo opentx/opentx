@@ -259,7 +259,7 @@ PACK(typedef struct t_Er9xModelData {
   Er9xFlightModeData flightModeData[ER9X_MAX_MODES] ;
   
   operator ModelData();
-  t_Er9xModelData() { memset(this, 0, sizeof(t_Er9xModelData)); }
+  t_Er9xModelData() { memset(reinterpret_cast<void *>(this), 0, sizeof(t_Er9xModelData)); }
 }) Er9xModelData;
 
 #endif // _ER9XEEPROM_H_

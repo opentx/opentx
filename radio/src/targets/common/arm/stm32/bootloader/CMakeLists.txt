@@ -2,7 +2,7 @@
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10)
+if(CPU_TYPE_FULL STREQUAL STM32F429xI)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../f4/system_stm32f4xx.c
@@ -19,7 +19,7 @@ if(PCB STREQUAL X12S OR PCB STREQUAL X10)
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/misc.c
     )
-elseif(PCB STREQUAL X9E)
+elseif(CPU_TYPE_FULL STREQUAL STM32F407xE)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../f4/system_stm32f4xx.c
@@ -70,7 +70,7 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/backlight_driver.cpp
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
   ../../../../../targets/${TARGET_DIR}/diskio.cpp
-  ../../../../../targets/${TARGET_DIR}/board_preinit.cpp
+  ../../../../../targets/${TARGET_DIR}/board.cpp
   ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
@@ -85,7 +85,7 @@ set(BOOTLOADER_SRC
   bin_files.cpp
   )
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
+if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019) OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../targets/common/arm/stm32/rotary_encoder_driver.cpp
@@ -97,9 +97,7 @@ if(NOT (PCB STREQUAL X10 OR PCB STREQUAL X12S))
     ${BOOTLOADER_SRC}
     ../../../../../targets/${TARGET_DIR}/i2c_driver.cpp
     )
-
   remove_definitions(-DDEBUG)
-
 else()
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
@@ -130,7 +128,6 @@ add_definitions(-DBOOT)
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 # use smaller nano libc
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs")
-
 
 add_executable(bootloader ${BOOTLOADER_SRC})
 add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)

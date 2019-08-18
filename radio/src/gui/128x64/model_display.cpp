@@ -237,11 +237,11 @@ void menuModelDisplay(event_t event)
         else {
           for (int c=0; c<NUM_LINE_ITEMS; c++) {
             LcdFlags cellAttr = (menuHorizontalPosition==c ? attr : 0);
-            source_t & value = g_model.screens[screenIndex].lines[lineIndex].sources[c];
+            source_t * value = &g_model.screens[screenIndex].lines[lineIndex].sources[c];
             const coord_t pos[] = {DISPLAY_COL1, DISPLAY_COL2, DISPLAY_COL3};
-            drawSource(pos[c], y, value, cellAttr);
+            drawSource(pos[c], y, *value, cellAttr);
             if (cellAttr && s_editMode>0) {
-              value = checkIncDec(event, value, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
+              *value = checkIncDec(event, *value, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
             }
           }
           if (attr && menuHorizontalPosition == NUM_LINE_ITEMS) {

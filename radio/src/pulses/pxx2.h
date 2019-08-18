@@ -51,13 +51,28 @@
 #define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED  (1 << 7)
 #define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
+#define PXX2_RX_SETTINGS_FLAG1_FPORT               (1 << 3)
 
 #define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
 #define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)
 
 #define PXX2_HW_INFO_TX_ID                         0xFF
 
-static const char * const PXX2modulesModels[] = {
+enum PXX2ModuleModelID {
+  PXX2_MODULE_NONE,
+  PXX2_MODULE_XJT,
+  PXX2_MODULE_ISRM,
+  PXX2_MODULE_ISRM_PRO,
+  PXX2_MODULE_ISRM_S,
+  PXX2_MODULE_R9M,
+  PXX2_MODULE_R9M_LITE,
+  PXX2_MODULE_R9M_LITE_PRO,
+  PXX2_MODULE_ISRM_N,
+  PXX2_MODULE_ISRM_S_X9,
+  PXX2_MODULE_ISRM_S_X10
+};
+
+static const char * const PXX2ModulesNames[] = {
   "---",
   "XJT",
   "ISRM",
@@ -66,10 +81,68 @@ static const char * const PXX2modulesModels[] = {
   "R9M",
   "R9MLite",
   "R9MLite-PRO",
-  "ISRM-N"
+  "ISRM-N",
+  "ISRM-S-X9",
+  "ISRM-S-X10",
 };
 
-static const char * const PXX2receiversModels[] = {
+inline const char * getPXX2ModuleName(uint8_t modelId)
+{
+  if (modelId < DIM(PXX2ModulesNames))
+    return PXX2ModulesNames[modelId];
+  else
+    return PXX2ModulesNames[0];
+}
+
+enum {
+  MODULE_OPTION_EXTERNAL_ANTENNA,
+  MODULE_OPTION_POWER,
+  MODULE_OPTION_SPECTRUM_ANALYSER,
+  MODULE_OPTION_POWER_METER,
+};
+
+/* Module options order:
+ * - External antenna (0x01)
+ * - Power (0x02)
+ * - Spektrum analyser (0x04)
+ * - Power meter (0x08)
+ */
+static const uint8_t PXX2ModuleOptions[] = {
+#if defined(SIMU)
+  0b11111111, // None = display all options on SIMU
+#else
+  0b00000000, // None = no option available on unknown modules
+#endif
+  0b11110001, // XJT
+  0b11110001, // ISRM
+  0b11111101, // ISRM-PRO
+  0b11110101, // ISRM-S
+  0b11110010, // R9M
+  0b11110010, // R9MLite
+  0b11110110, // R9MLite-PRO
+  0b11110100, // ISRM-N
+  0b11110100, // ISRM-S-X9
+  0b11110100, // ISRM-S-X10
+};
+
+inline uint8_t getPXX2ModuleOptions(uint8_t modelId)
+{
+  if (modelId < DIM(PXX2ModuleOptions))
+    return PXX2ModuleOptions[modelId];
+  else
+    return PXX2ModuleOptions[0];
+}
+
+inline bool isPXX2ModuleOptionAvailable(uint8_t modelId, uint8_t option)
+{
+  return getPXX2ModuleOptions(modelId) & (1 << option);
+}
+
+enum ModuleCapabilities {
+  MODULE_CAPABILITY_COUNT
+};
+
+static const char * const PXX2ReceiversNames[] = {
   "---",
   "X8R",
   "RX8R",
@@ -95,17 +168,77 @@ static const char * const PXX2receiversModels[] = {
   "R9-MINI",
   "R9-MM",
   "R9-STAB",
+  "R9-MINI-OTA", // this one has OTA (different bootloader)
+  "R9-MM-OTA", // this one has OTA (different bootloader)
+  "R9-SLIM+-OTA", // this one has OTA (different bootloader)
 };
 
-enum PXX2ModuleModelID {
-  PXX2_MODULE_NONE,
-  PXX2_MODULE_XJT,
-  PXX2_MODULE_IXJT,
-  PXX2_MODULE_IXJT_PRO,
-  PXX2_MODULE_IXJT_S,
-  PXX2_MODULE_R9M,
-  PXX2_MODULE_R9M_LITE,
-  PXX2_MODULE_R9M_LITE_PRO,
+inline const char * getPXX2ReceiverName(uint8_t modelId)
+{
+  if (modelId < DIM(PXX2ReceiversNames))
+    return PXX2ReceiversNames[modelId];
+  else
+    return PXX2ReceiversNames[0];
+}
+
+enum {
+  RECEIVER_OPTION_OTA,
+};
+
+/* Receiver options order:
+ * - OTA (0x01)
+ */
+static const uint8_t PXX2ReceiverOptions[] = {
+#if defined(SIMU)
+  0b11111111, // None = display all options on SIMU
+#else
+  0b00000000, // None = display all options on SIMU
+#endif
+  0b11111110, // X8R
+  0b11111110, // RX8R
+  0b11111110, // RX8R-PRO
+  0b11111110, // RX6R
+  0b11111110, // RX4R
+  0b11111110, // G-RX8
+  0b11111110, // G-RX6
+  0b11111110, // X6R
+  0b11111110, // X4R
+  0b11111110, // X4R-SB
+  0b11111110, // XSR
+  0b11111110, // XSR-M
+  0b11111110, // RXSR
+  0b11111110, // S6R
+  0b11111110, // S8R
+  0b11111110, // XM
+  0b11111110, // XM+
+  0b11111110, // XMR
+  0b11111110, // R9
+  0b11111110, // R9-SLIM
+  0b11111110, // R9-SLIM+
+  0b11111110, // R9-MINI
+  0b11111110, // R9-MM
+  0b11111110, // R9-STAB
+  0b11111111, // R9-MINI+OTA
+  0b11111111, // R9-MM+OTA
+  0b11111111, // R9-SLIM+OTA
+};
+
+inline uint8_t getPXX2ReceiverOptions(uint8_t modelId)
+{
+  if (modelId < DIM(PXX2ReceiverOptions))
+    return PXX2ReceiverOptions[modelId];
+  else
+    return PXX2ReceiverOptions[0];
+}
+
+inline bool isPXX2ReceiverOptionAvailable(uint8_t modelId, uint8_t option)
+{
+  return getPXX2ReceiverOptions(modelId) & (1 << option);
+}
+
+enum ReceiverCapabilities {
+  RECEIVER_CAPABILITY_FPORT,
+  RECEIVER_CAPABILITY_COUNT
 };
 
 enum PXX2Variant {
@@ -123,6 +256,8 @@ enum PXX2RegisterSteps {
 };
 
 enum PXX2BindSteps {
+  BIND_MODULE_TX_INFORMATION_REQUEST = -2,
+  BIND_MODULE_TX_SETTINGS_REQUEST = -1,
   BIND_INIT,
   BIND_RX_NAME_SELECTED,
   BIND_INFO_REQUEST,

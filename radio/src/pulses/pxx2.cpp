@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "pulses/pxx2.h"
+#include "io/frsky_firmware_update.h"
 
 uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
@@ -38,8 +39,15 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 
 void Pxx2Pulses::addFlag1(uint8_t module)
 {
-  uint8_t flag1 = g_model.moduleData[module].subType << 4;
-  Pxx2Transport::addByte(flag1);
+  uint8_t subType;
+  if (isModuleXJT(module)) {
+    static const uint8_t PXX2_XJT_MODULE_SUBTYPES[] = {0x01, 0x03, 0x02};
+    subType = PXX2_XJT_MODULE_SUBTYPES[min<uint8_t>(g_model.moduleData[module].subType, 2)];
+  }
+  else {
+    subType = g_model.moduleData[module].subType;
+  }
+  Pxx2Transport::addByte(subType << 4);
 }
 
 void Pxx2Pulses::addPulsesValues(uint16_t low, uint16_t high)
@@ -179,7 +187,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
 {
   ModuleSettings * destination = moduleState[module].moduleSettings;
 
-  if (get_tmr10ms() > destination->retryTime) {
+  if (get_tmr10ms() > destination->timeout) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TX_SETTINGS);
     uint8_t flag0 = 0;
     if (destination->state == PXX2_SETTINGS_WRITE)
@@ -192,7 +200,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
       Pxx2Transport::addByte(flag1);
       Pxx2Transport::addByte(destination->txPower);
     }
-    destination->retryTime = get_tmr10ms() + 200/*next try in 2s*/;
+    destination->timeout = get_tmr10ms() + 200/*next try in 2s*/;
   }
   else {
     setupChannelsFrame(module);
@@ -213,6 +221,8 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED;
       if (reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.fport)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_FPORT;
       Pxx2Transport::addByte(flag1);
       uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
       for (int i = 0; i < outputsCount; i++) {
@@ -263,7 +273,12 @@ void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
+    if (isModuleR9MAccess(module)) {
+      Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
+    }
+    else {
+      Pxx2Transport::addByte(destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
+    }
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
@@ -362,6 +377,8 @@ void Pxx2Pulses::setupFrame(uint8_t module)
     case MODULE_MODE_BIND:
       if (g_model.moduleData[module].type == MODULE_TYPE_ISRM_PXX2 && g_model.moduleData[module].subType != MODULE_SUBTYPE_ISRM_PXX2_ACCESS)
         setupAccstBindFrame(module);
+      else if (g_model.moduleData[module].type == MODULE_TYPE_XJT_LITE_PXX2)
+        setupAccstBindFrame(module);
       else
         setupAccessBindFrame(module);
       break;
@@ -447,7 +464,20 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
     return "Open file failed";
   }
 
-  uint32_t size = f_size(&file);
+  uint32_t size;
+  const char * ext = getFileExtension(filename);
+  if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+    FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *) buffer;
+    if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+      f_close(&file);
+      return "Format error";
+    }
+    size = information->size;
+  }
+  else {
+    size = f_size(&file);
+  }
+
   uint32_t done = 0;
   while (1) {
     drawProgressScreen(getBasename(filename), STR_OTA_UPDATE, done, size);

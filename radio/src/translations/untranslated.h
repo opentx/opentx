@@ -31,10 +31,10 @@
 
 #if defined(PCBX12S)
   #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0""\310JSx""\310JSy"
-  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312GML""\312GMR"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0"
 #elif defined(PCBX10)
-  #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\310EX1""\310EX2""\311LS\0""\311RS\0""\313L1\0""\313L2\0"
-  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312GML""\312GMR"
+  #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\310EX1""\310EX2""\311LS\0""\311RS\0""\310JSx""\310JSy"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0"
 #elif defined(PCBX9E)
   #define TR_POTS_VSRCRAW              "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
@@ -53,6 +53,9 @@
 #elif defined(PCBX9LITE)
   #define TR_POTS_VSRCRAW              "\310S1\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0"
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0"
 #elif defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
@@ -89,20 +92,20 @@
 #endif
 
 #define LEN_EXTERNAL_MODULE_PROTOCOLS  "\014"
-#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""R9MLP ACCESS""SBUS"
+#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""R9MLP\0      ""R9MLP ACCESS""SBUS\0       ""XJT Lite"
 
 #define LEN_INTERNAL_MODULE_PROTOCOLS  LEN_EXTERNAL_MODULE_PROTOCOLS
 #define TR_INTERNAL_MODULE_PROTOCOLS   TR_EXTERNAL_MODULE_PROTOCOLS
 
-#define LEN_ACCST_RF_PROTOCOLS         "\004"
-#define TR_ACCST_RF_PROTOCOLS          "OFF\0""D16\0""D8\0 ""LR12"
+#define LEN_XJT_ACCST_RF_PROTOCOLS         "\004"
+#define TR_XJT_ACCST_RF_PROTOCOLS          "OFF\0""D16\0""D8\0 ""LR12"
 
 #if defined(INTERNAL_MODULE_PXX1)
-#define LEN_ISRM_PXX2_RF_PROTOCOLS     "\006"
-#define TR_ISRM_PXX2_RF_PROTOCOLS      "ACCESS""D16\0  ""LR12"
+#define LEN_ISRM_RF_PROTOCOLS     "\006"
+#define TR_ISRM_RF_PROTOCOLS      "ACCESS""D16\0  ""LR12"
 #else
-#define LEN_ISRM_PXX2_RF_PROTOCOLS     "\012"
-#define TR_ISRM_PXX2_RF_PROTOCOLS      "OFF\0      ""ACCESS\0   ""ACCST D16\0""ACCST LR12"
+#define LEN_ISRM_RF_PROTOCOLS     "\012"
+#define TR_ISRM_RF_PROTOCOLS      "OFF\0      ""ACCESS\0   ""ACCST D16\0""ACCST LR12""ACCST D8"
 #endif
 
 #define LEN_R9M_PXX2_RF_PROTOCOLS      "\006"
@@ -112,19 +115,19 @@
 #define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
 
 #define LEN_R9M_LITE_FCC_POWER_VALUES  "\010"
-#define TR_R9M_LITE_FCC_POWER_VALUES   "(100 mW)"
+#define TR_R9M_LITE_FCC_POWER_VALUES   "(100mW)"
 
-#define LEN_R9M_LITE_LBT_POWER_VALUES  "\015"
-#define TR_R9M_LITE_LBT_POWER_VALUES   "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
+#define LEN_R9M_LITE_LBT_POWER_VALUES  "\014"
+#define TR_R9M_LITE_LBT_POWER_VALUES   "25mW 8CH\0   ""25mW 16CH\0  ""100mW NoTele"
 
-#define LEN_R9M_FCC_POWER_VALUES       "\006"
-#define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
+#define LEN_R9M_FCC_POWER_VALUES       "\011"
+#define TR_R9M_FCC_POWER_VALUES        "10mW\0    " "100mW\0   " "500mW\0   " "1W (auto)"
 
-#define LEN_R9M_LBT_POWER_VALUES       "\013"
-#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
+#define LEN_R9M_LBT_POWER_VALUES       "\014"
+#define TR_R9M_LBT_POWER_VALUES        "25mW 8CH\0   ""25mW 16CH\0  ""200mW NoTele""500mW NoTele"
 
 #define LEN_DSM_PROTOCOLS              "\004"
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS            "\006"
-#define TR_MULTI_PROTOCOLS             "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXq\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OpnLrs""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 ""GW008\0""DM002\0""Cabell""Esy150""H8 3D\0""Corona""CFlie\0""Hitec\0""WFly\0 ""Bugs\0 ""BugMin""Traxas""NC1701""E01X\0 ""V911S\0""GD00X\0""V761\0 ""KF606\0"
+#define TR_MULTI_PROTOCOLS             "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXq\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OpnLrs""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 ""GW008\0""DM002\0""Cabell""Esy150""H8 3D\0""Corona""CFlie\0""Hitec\0""WFly\0 ""Bugs\0 ""BugMin""Traxas""NC1701""E01X\0 ""V911S\0""GD00X\0""V761\0 ""KF606\0""Redpin""Potens"

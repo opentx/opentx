@@ -100,7 +100,7 @@ uint32_t readTrims()
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+bool trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }
@@ -141,7 +141,7 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 0: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
+      break
 #else
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
@@ -149,29 +149,25 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 2: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
-#endif
-  #define ADD_3POS_CASE(x, i) \
-    case SW_S ## x ## 0: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
-      break; \
-    case SW_S ## x ## 1: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 2: \
-      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
       break
+#endif
 
-uint8_t keyState(uint8_t index)
-{
-  return keys[index].state();
-}
+#define ADD_3POS_CASE(x, i) \
+  case SW_S ## x ## 0: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break; \
+  case SW_S ## x ## 1: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    break; \
+  case SW_S ## x ## 2: \
+    xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break
 
 #if !defined(BOOT)
 uint32_t switchState(uint8_t index)
@@ -182,24 +178,34 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
-#if !defined(PCBX9LITE)
+
+#if defined(PCBX9LITE)
+    ADD_2POS_CASE(D);
+    ADD_2POS_CASE(E);
+#elif defined(PCBXLITES)
     ADD_3POS_CASE(D, 3);
-#endif
-#if defined(PCBXLITES) || defined(PCBX9LITE)
     ADD_2POS_CASE(E);
     ADD_2POS_CASE(F);
-    // no SWG and SWH on XLITES and X9
-#elif defined(PCBXLITE) || defined(PCBX9LITE)
-    // no SWE, SWF, SWG and SWH on X9LITE and XLITE
+    // no SWG and SWH on XLITES
+#elif defined(PCBXLITE)
+    ADD_3POS_CASE(D, 3);
+    // no SWE, SWF, SWG and SWH on XLITE
 #elif defined(PCBX7)
+    ADD_3POS_CASE(D, 3);
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
 #else
+    ADD_3POS_CASE(D, 3);
     ADD_3POS_CASE(E, 4);
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
 #endif
+
+#if defined(PCBX9DP) && PCBREV >= 2019
+    ADD_2POS_CASE(I);
+#endif
+
 #if defined(PCBX9E)
     ADD_3POS_CASE(I, 8);
     ADD_3POS_CASE(J, 9);

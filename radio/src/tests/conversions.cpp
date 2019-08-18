@@ -52,7 +52,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_ZSTREQ("Thr", g_model.inputNames[0]);
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
-  EXPECT_EQ(10, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
 }
 #endif
 
@@ -77,10 +77,12 @@ TEST(Conversions, ConversionX7From22)
 
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
-  EXPECT_EQ(10, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
   EXPECT_EQ(-100, g_model.limitData[0].max);
 
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
+  EXPECT_ZSTREQ("FMtest", g_model.flightModeData[1].name);
+  EXPECT_EQ(45, g_model.flightModeData[1].swtch);
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
 
   EXPECT_EQ(LS_FUNC_VPOS, g_model.logicalSw[0].func);
@@ -89,6 +91,7 @@ TEST(Conversions, ConversionX7From22)
 
   EXPECT_EQ(TELEMETRY_SCREEN_TYPE_VALUES, g_model.screensType & 0x03);
   EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.screens[0].lines[0].sources[0]);
+  EXPECT_EQ(MIXSRC_TIMER3, g_model.screens[0].lines[0].sources[1]);
 }
 #endif
 
@@ -116,7 +119,7 @@ TEST(Conversions, ConversionHorusFrom22)
   EXPECT_ZSTREQ("Rud", g_model.inputNames[0]);
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
-  EXPECT_EQ(10, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
 }
 #endif
 

@@ -50,14 +50,14 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SG,
   ITEM_RADIO_HARDWARE_SH,
-  ITEM_RADIO_HARDWARE_GMBL,
-  ITEM_RADIO_HARDWARE_GMBR,
+  ITEM_RADIO_HARDWARE_SI, // Gimbal switch left
+  ITEM_RADIO_HARDWARE_SJ, // Gimbal switch right
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #if defined(AUX_SERIAL)
-  ITEM_RADIO_HARDWARE_UART3_MODE,
+  ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_BAT_CAL,
@@ -73,7 +73,7 @@ enum MenuRadioHardwareItems {
 #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0)
 
 // TODO should be moved to the HAL
-#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_GMBL-MIXSRC_FIRST_SWITCH == sw || MIXSRC_GMBR-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 
 bool menuRadioHardware(event_t event)
 {
@@ -165,8 +165,8 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_SF:
       case ITEM_RADIO_HARDWARE_SG:
       case ITEM_RADIO_HARDWARE_SH:
-      case ITEM_RADIO_HARDWARE_GMBL:
-      case ITEM_RADIO_HARDWARE_GMBR:
+      case ITEM_RADIO_HARDWARE_SI:
+      case ITEM_RADIO_HARDWARE_SJ:
       {
         int index = k - ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);
@@ -187,7 +187,7 @@ bool menuRadioHardware(event_t event)
         lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
         if (attr) {
           g_eeGeneral.telemetryBaudrate = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.telemetryBaudrate, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
-          if (checkIncDec_Ret) {
+          if (checkIncDec_Ret && IS_EXTERNAL_MODULE_ON()) {
             pauseMixerCalculations();
             pausePulses();
             EXTERNAL_MODULE_OFF();
@@ -216,9 +216,9 @@ bool menuRadioHardware(event_t event)
         break;
 
 #if defined(AUX_SERIAL)
-      case ITEM_RADIO_HARDWARE_UART3_MODE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UART3MODE);
-        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_UART3MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
+      case ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUX_SERIAL_MODE);
+        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
         }

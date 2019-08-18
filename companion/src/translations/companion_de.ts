@@ -456,7 +456,7 @@ die kann von der Menüsprache abweichen</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="806"/>
-        <source>Use releases and release candidates (testing)</source>
+        <source>Use release candidates (testing)</source>
         <translation>Releases und Release Candidates (testing)</translation>
     </message>
     <message>

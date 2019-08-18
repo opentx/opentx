@@ -101,7 +101,7 @@ void FrskyDeviceFirmwareUpdate::startup()
   switch(module) {
 #if defined(INTMODULE_USART)
     case INTERNAL_MODULE:
-      intmoduleSerialStart(57600, true);
+      intmoduleSerialStart(INTMODULE_FLASH_BAUDRATE, true);
       break;
 #endif
 
@@ -116,6 +116,37 @@ void FrskyDeviceFirmwareUpdate::startup()
     EXTERNAL_MODULE_ON();
   else
     SPORT_UPDATE_POWER_ON();
+}
+
+bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout)
+{
+  watchdogSuspend(timeout);
+
+  switch(module) {
+#if defined(INTMODULE_USART)
+    case INTERNAL_MODULE:
+    {
+      uint32_t elapsed = 0;
+      uint8_t index = 0;
+      while (index < count && elapsed < timeout) {
+        if (intmoduleFifo.pop(buffer[index])) {
+          ++index;
+        }
+        else {
+          RTOS_WAIT_MS(1);
+          if (++elapsed == timeout)
+            return false;
+        }
+      }
+      break;
+    }
+#endif
+
+    default:
+      break;
+  }
+
+  return true;
 }
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
@@ -215,7 +246,7 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
   uint8_t * ptr = outputTelemetryBuffer.data;
   *ptr++ = 0x7E;
   *ptr++ = 0xFF;
-  frame[7] = crc16(frame, 7);
+  frame[7] = crc16(CRC_1021, frame, 7);
   for (int i=0; i<8; i++) {
     if (frame[i] == 0x7E || frame[i] == 0x7D) {
       *ptr++ = 0x7D;
@@ -259,16 +290,8 @@ const char * FrskyDeviceFirmwareUpdate::sendPowerOn()
   if (!IS_FRSKY_SPORT_PROTOCOL()) {
     return TR("Not responding", "Not S.Port 2");
   }
-#if defined(PCBX7)
-  if (IS_PCBREV_40()) {
-    return TR("Bottom pin no resp", "Bottom pin not responding");
-  }
-  else {
-    return TR("Device pin no resp", "Device pin not responding");
-  }
-#else
+
   return TR("Not responding", "Device not responding");
-#endif
 }
 
 const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
@@ -299,13 +322,68 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 
   const char * ext = getFileExtension(filename);
   if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
-    // FrSkyFirmwareInformation *information = (FrSkyFirmwareInformation *) buffer;
+    // FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *) buffer;
     if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
       f_close(&file);
       return "Format error";
     }
   }
 
+#if defined(PCBHORUS)
+  uint8_t frame[8];
+
+  if (!readBuffer(frame, 8, 100) || frame[0] != 0x01) {
+    return TR("Not responding", "Device not responding");
+  }
+
+  intmoduleSendByte(0x81);
+  readBuffer(frame, 1, 100);
+
+  if (!readBuffer(frame, 8, 100) || frame[0] != 0x02) {
+    return TR("Not responding", "Device not responding");
+  }
+
+  intmoduleSendByte(0x82);
+  readBuffer(frame, 1, 100);
+
+  uint8_t index = 0;
+  while (1) {
+    drawProgressScreen(getBasename(filename), STR_WRITING, file.fptr, file.obj.objsize);
+
+    if (f_read(&file, buffer, 1024, &count) != FR_OK) {
+      f_close(&file);
+      return "Error reading file";
+    }
+
+    if (!readBuffer(frame, 2, 100))
+      return "Data refused";
+
+    if (frame[0] != 0x11 || frame[1] != index)
+      return "Wrong request";
+
+    if (count == 0) {
+      f_close(&file);
+      intmoduleSendByte(0xA1);
+      RTOS_WAIT_MS(50);
+      return nullptr;
+    }
+
+    if (count < 1024)
+      memset(((uint8_t *)buffer) + count, 0, 1024 - count);
+
+    intmoduleSendByte(frame[0] + 0x80);
+    intmoduleSendByte(frame[1]);
+
+    uint16_t crc_16 = crc16(CRC_1189, (uint8_t *)buffer, 1024, crc16(CRC_1189, &frame[1], 1));
+    for (unsigned i = 0; i < sizeof(buffer); i++) {
+      intmoduleSendByte(((uint8_t *)buffer)[i]);
+    }
+    intmoduleSendByte(crc_16 >> 8);
+    intmoduleSendByte(crc_16);
+
+    index++;
+  }
+#else
   RTOS_WAIT_MS(200);
   telemetryClearFifo();
 
@@ -323,7 +401,7 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 
     for (uint32_t i=0; i<count; i++) {
       if (!waitState(SPORT_DATA_REQ, 2000)) {
-        return "Device refused data";
+        return "Data refused";
       }
       startFrame(PRIM_DATA_WORD);
       uint32_t offset = (address & 1023) >> 2; // 32 bit word offset into buffer
@@ -341,32 +419,58 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
       return nullptr;
     }
   }
+#endif
 }
 
 const char * FrskyDeviceFirmwareUpdate::endTransfer()
 {
   if (!waitState(SPORT_DATA_REQ, 2000))
-    return "Device refused data";
+    return "Data refused";
   startFrame(PRIM_DATA_EOF);
   sendFrame();
   if (!waitState(SPORT_COMPLETE, 2000)) {
-    return "Device rejected firmware";
+    return "Firmware rejected";
   }
   return nullptr;
 }
 
-void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
+const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
+{
+  const char * result;
+
+#if defined(PCBHORUS)
+  if (module == INTERNAL_MODULE) {
+    intmoduleSerialStart(38400, true);
+    GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+    result = uploadFile(filename);
+    GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+    return result;
+  }
+#endif
+
+  result = sendPowerOn();
+  if (!result) result = sendReqVersion();
+  if (!result) result = uploadFile(filename);
+  if (!result) result = endTransfer();
+
+  return result;
+}
+
+const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 {
   pausePulses();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
+  INTERNAL_MODULE_OFF();
+#endif
+
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
+  EXTERNAL_MODULE_OFF();
+
+  SPORT_UPDATE_POWER_OFF();
 
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
-
-  INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
-  SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
   watchdogSuspend(2000);
@@ -374,10 +478,7 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
 
   startup();
 
-  const char * result = sendPowerOn();
-  if (!result) result = sendReqVersion();
-  if (!result) result = uploadFile(filename);
-  if (!result) result = endTransfer();
+  const char * result = doFlashFirmware(filename);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();
@@ -399,17 +500,22 @@ void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   RTOS_WAIT_MS(2000);
   telemetryClearFifo();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
-    setupPulses(INTERNAL_MODULE);
+    setupPulsesInternalModule();
   }
+#endif
+
   if (extPwr) {
     EXTERNAL_MODULE_ON();
-    setupPulses(EXTERNAL_MODULE);
+    setupPulsesExternalModule();
   }
 
   state = SPORT_IDLE;
   resumePulses();
+
+  return result;
 }
 
 #define CHIP_FIRMWARE_UPDATE_TIMEOUT  20000 /* 20s */
@@ -446,8 +552,6 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 
 const char * FrskyChipFirmwareUpdate::startBootloader()
 {
-  telemetryPortSetDirectionOutput();
-
   sportSendByte(0x01);
 
   for (uint8_t i = 0; i < 30; i++)
@@ -483,8 +587,6 @@ void FrskyChipFirmwareUpdate::sendByte(uint8_t byte, bool crcFlag)
 
 const char * FrskyChipFirmwareUpdate::sendUpgradeCommand(char command, uint32_t packetsCount)
 {
-  telemetryPortSetDirectionOutput();
-
   crc = 0;
 
   // Head
@@ -526,8 +628,6 @@ const char * FrskyChipFirmwareUpdate::sendUpgradeCommand(char command, uint32_t 
 
 const char * FrskyChipFirmwareUpdate::sendUpgradeData(uint32_t index, uint8_t * data)
 {
-  telemetryPortSetDirectionOutput();
-
   crc = 0;
 
   // Head
@@ -614,28 +714,33 @@ const char * FrskyChipFirmwareUpdate::doFlashFirmware(const char * filename)
   return sendUpgradeCommand('E', packetsCount);
 }
 
-void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
+const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, bool wait)
 {
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   pausePulses();
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
-  uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
-
   INTERNAL_MODULE_OFF();
+#endif
+
+  uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
+
   SPORT_UPDATE_POWER_OFF();
 
-  /* wait 2s off */
-  watchdogSuspend(2000);
-  RTOS_WAIT_MS(2000);
+  if (wait) {
+    /* wait 2s off */
+    watchdogSuspend(2000);
+    RTOS_WAIT_MS(2000);
+  }
 
   telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
 
   const char * result = doFlashFirmware(filename);
 
-  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1);
   BACKLIGHT_ENABLE();
 
   if (result) {
@@ -646,22 +751,23 @@ void FrskyChipFirmwareUpdate::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
-  INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
-  SPORT_UPDATE_POWER_OFF();
-
   /* wait 2s off */
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
-    setupPulses(INTERNAL_MODULE);
+    setupPulsesInternalModule();
   }
+#endif
+
   if (extPwr) {
     EXTERNAL_MODULE_ON();
-    setupPulses(EXTERNAL_MODULE);
+    setupPulsesExternalModule();
   }
 
   resumePulses();
+
+  return result;
 }

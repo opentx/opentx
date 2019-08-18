@@ -25,7 +25,7 @@
   #define MAX_LOGICAL_SWITCHES    NUM_CSW
 #endif
 
-  #define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
+#define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
 
 #define OTXS_DBG    qDebug() << "(" << simuTimerMicros() << "us)"
 
@@ -93,6 +93,7 @@ void OpenTxSimulator::init()
 {
   if (isRunning())
     return;
+
   OTXS_DBG;
 
   if (!m_timer10ms) {
@@ -109,6 +110,11 @@ void OpenTxSimulator::init()
 
   QMutexLocker lckr(&m_mtxSimuMain);
   memset(g_anas, 0, sizeof(g_anas));
+
+#if defined(PCBTARANIS)
+  g_anas[TX_RTC_VOLTAGE] = 800;  // 2,34V
+#endif
+
   simuInit();
 }
 
@@ -161,6 +167,7 @@ void OpenTxSimulator::setRadioData(const QByteArray & data)
 {
 #if defined(EEPROM_SIZE)
   QMutexLocker lckr(&m_mtxRadioData);
+  eeprom = (uint8_t *)malloc(qMin<int>(EEPROM_SIZE, data.size()));
   memcpy(eeprom, data.data(), qMin<int>(EEPROM_SIZE, data.size()));
 #endif
 }
