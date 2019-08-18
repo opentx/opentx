@@ -623,7 +623,7 @@ void ModulePanel::on_trainerMode_currentIndexChanged(int index)
 
 void ModulePanel::onProtocolChanged(int index)
 {
-  if (!lock && module.protocol != ui->protocol->itemData(index).toInt()) {
+  if (!lock && module.protocol != ui->protocol->itemData(index).toUInt()) {
     module.protocol = ui->protocol->itemData(index).toInt();
     update();
     emit modified();
@@ -648,7 +648,7 @@ void ModulePanel::on_antennaMode_currentIndexChanged(int index)
 
 void ModulePanel::on_r9mPower_currentIndexChanged(int index)
 {
-  if (!lock && module.pxx.power != index) {
+  if (!lock && module.pxx.power != (unsigned int)index) {
     module.pxx.power = index;
     emit modified();
   }
