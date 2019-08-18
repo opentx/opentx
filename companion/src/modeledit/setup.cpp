@@ -553,19 +553,25 @@ void ModulePanel::update()
   }
 
   if (mask & MASK_ACCESS) {
-    if (QString(generalSettings.registrationId) == ui->registrationId->text()) {
-      ui->registrationIdLabel->hide();
-      ui->registrationId->hide();
-    }
-    else {
-      ui->registrationIdLabel->show();
-      ui->registrationId->show();
-    }
+    ui->rx1->setText(module.access.receiverName[0]);
+    ui->rx2->setText(module.access.receiverName[1]);
+    ui->rx3->setText(module.access.receiverName[2]);
   }
-  else {
-    ui->registrationIdLabel->hide();
-    ui->registrationId->hide();
-  }
+
+  ui->registrationIdLabel->setVisible(mask & MASK_ACCESS);
+  ui->registrationId->setVisible(mask & MASK_ACCESS);
+
+  ui->rx1Label->setVisible(mask & MASK_ACCESS);
+  ui->clearRx1->setVisible(mask & MASK_ACCESS);
+  ui->rx1->setVisible(mask & MASK_ACCESS);
+
+  ui->rx2Label->setVisible(mask & MASK_ACCESS);
+  ui->clearRx2->setVisible(mask & MASK_ACCESS);
+  ui->rx2->setVisible(mask & MASK_ACCESS);
+
+  ui->rx3Label->setVisible(mask & MASK_ACCESS);
+  ui->clearRx3->setVisible(mask & MASK_ACCESS);
+  ui->rx3->setVisible(mask & MASK_ACCESS);
 
   // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
