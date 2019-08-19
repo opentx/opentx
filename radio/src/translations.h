@@ -384,6 +384,7 @@ extern const char STR_GF[];
 
 #if defined(MULTIMODULE)
 extern const char STR_MULTI_CUSTOM[];
+extern const char STR_MULTI_FIXEDID[];
 extern const char STR_MULTI_OPTION[];
 extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
