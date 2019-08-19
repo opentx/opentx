@@ -121,6 +121,6 @@ void menuRadioSpectrumAnalyser(event_t event)
   }
 
   int8_t y = max<int8_t>(FH, LCD_H - peak_y - FH);
-  lcdDrawNumber(min<uint8_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / 128)) / 1000000, TINSIZE);
+  lcdDrawNumber(min<uint8_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / LCD_W)) / 1000000, TINSIZE);
   lcdDrawText(lcdLastRightPos, y, "M", TINSIZE);
 }
