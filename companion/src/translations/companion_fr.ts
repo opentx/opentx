@@ -98,37 +98,37 @@
         <translation>Éditer les réglages</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="42"/>
+        <location filename="../apppreferencesdialog.ui" line="52"/>
         <source>Radio Profile</source>
         <translation>Profil de radio</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="543"/>
+        <location filename="../apppreferencesdialog.ui" line="535"/>
         <source>Default Channel Order</source>
         <translation>Ordre des voies par défaut</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="367"/>
+        <location filename="../apppreferencesdialog.ui" line="359"/>
         <source>Build Options</source>
         <translation>Options de compilation</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="660"/>
+        <location filename="../apppreferencesdialog.ui" line="652"/>
         <source>Menu Language</source>
         <translation>Langue des menus</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="476"/>
+        <location filename="../apppreferencesdialog.ui" line="468"/>
         <source>Default Stick Mode</source>
         <translation>Mode par défaut</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="125"/>
+        <location filename="../apppreferencesdialog.ui" line="117"/>
         <source>Select Image</source>
         <translation>Sélectionner une image</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="489"/>
+        <location filename="../apppreferencesdialog.ui" line="481"/>
         <source>Mode selection:
 
 Mode 1:
@@ -169,444 +169,449 @@ Manche Droit:  Profondeur, Direction
 </translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="514"/>
+        <location filename="../apppreferencesdialog.ui" line="506"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mode 1 (DIR PROF GAZ AIL)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="519"/>
+        <location filename="../apppreferencesdialog.ui" line="511"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mode 2 (DIR GAZ PROF AIL)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="524"/>
+        <location filename="../apppreferencesdialog.ui" line="516"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation>Mode 3 (AIL PROF GAZ DIR)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="529"/>
+        <location filename="../apppreferencesdialog.ui" line="521"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mode 4 (AIL GAZ PROF DIR)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="108"/>
+        <location filename="../apppreferencesdialog.ui" line="100"/>
         <source>Splash Screen</source>
         <translation>Ecran d&apos;accueil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="425"/>
-        <location filename="../apppreferencesdialog.ui" line="608"/>
+        <location filename="../apppreferencesdialog.ui" line="417"/>
+        <location filename="../apppreferencesdialog.ui" line="600"/>
         <source>The profile specific folder,  if set, will override general Backup folder</source>
         <translation>Dossier de sauvegarde spécifique au profil courant, si défini remplace le réglage de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="428"/>
+        <location filename="../apppreferencesdialog.ui" line="420"/>
         <source>Backup folder</source>
         <translation>Dossier de sauvegarde</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="582"/>
+        <location filename="../apppreferencesdialog.ui" line="574"/>
         <source>If set it will override the application general setting</source>
         <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="559"/>
+        <location filename="../apppreferencesdialog.ui" line="551"/>
         <source>if set, will override general backup enable</source>
         <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="224"/>
+        <location filename="../apppreferencesdialog.ui" line="216"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="231"/>
+        <location filename="../apppreferencesdialog.ui" line="223"/>
         <source>R E T A</source>
         <translation>D P G A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="236"/>
+        <location filename="../apppreferencesdialog.ui" line="228"/>
         <source>R E A T</source>
         <translation>D P A G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="241"/>
+        <location filename="../apppreferencesdialog.ui" line="233"/>
         <source>R T E A</source>
         <translation>D G P A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="246"/>
+        <location filename="../apppreferencesdialog.ui" line="238"/>
         <source>R T A E</source>
         <translation>D G A P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="251"/>
+        <location filename="../apppreferencesdialog.ui" line="243"/>
         <source>R A E T</source>
         <translation>D A P G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="256"/>
+        <location filename="../apppreferencesdialog.ui" line="248"/>
         <source>R A T E</source>
         <translation>D A G P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="261"/>
+        <location filename="../apppreferencesdialog.ui" line="253"/>
         <source>E R T A</source>
         <translation>P D G A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="266"/>
+        <location filename="../apppreferencesdialog.ui" line="258"/>
         <source>E R A T</source>
         <translation>P D A G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="271"/>
+        <location filename="../apppreferencesdialog.ui" line="263"/>
         <source>E T R A</source>
         <translation>P G D A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="276"/>
+        <location filename="../apppreferencesdialog.ui" line="268"/>
         <source>E T A R</source>
         <translation>P G A D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="281"/>
+        <location filename="../apppreferencesdialog.ui" line="273"/>
         <source>E A R T</source>
         <translation>P A D G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="286"/>
+        <location filename="../apppreferencesdialog.ui" line="278"/>
         <source>E A T R</source>
         <translation>P A G D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="291"/>
+        <location filename="../apppreferencesdialog.ui" line="283"/>
         <source>T R E A</source>
         <translation>G D P A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="296"/>
+        <location filename="../apppreferencesdialog.ui" line="288"/>
         <source>T R A E</source>
         <translation>G D A P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="301"/>
+        <location filename="../apppreferencesdialog.ui" line="293"/>
         <source>T E R A</source>
         <translation>G P D A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="306"/>
+        <location filename="../apppreferencesdialog.ui" line="298"/>
         <source>T E A R</source>
         <translation>G P A D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="311"/>
+        <location filename="../apppreferencesdialog.ui" line="303"/>
         <source>T A R E</source>
         <translation>G A D P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="316"/>
+        <location filename="../apppreferencesdialog.ui" line="308"/>
         <source>T A E R</source>
         <translation>G A P D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="321"/>
+        <location filename="../apppreferencesdialog.ui" line="313"/>
         <source>A R E T</source>
         <translation>A D P G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="326"/>
+        <location filename="../apppreferencesdialog.ui" line="318"/>
         <source>A R T E</source>
         <translation>A D G P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="331"/>
+        <location filename="../apppreferencesdialog.ui" line="323"/>
         <source>A E R T</source>
         <translation>A P D G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="336"/>
+        <location filename="../apppreferencesdialog.ui" line="328"/>
         <source>A E T R</source>
         <translation>A P G D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="341"/>
+        <location filename="../apppreferencesdialog.ui" line="333"/>
         <source>A T R E</source>
         <translation>A G D P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="346"/>
+        <location filename="../apppreferencesdialog.ui" line="338"/>
         <source>A T E R</source>
         <translation>A G P D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="390"/>
-        <location filename="../apppreferencesdialog.ui" line="611"/>
-        <location filename="../apppreferencesdialog.ui" line="887"/>
-        <location filename="../apppreferencesdialog.ui" line="914"/>
-        <location filename="../apppreferencesdialog.ui" line="1083"/>
-        <location filename="../apppreferencesdialog.ui" line="1294"/>
+        <location filename="../apppreferencesdialog.ui" line="382"/>
+        <location filename="../apppreferencesdialog.ui" line="603"/>
+        <location filename="../apppreferencesdialog.ui" line="854"/>
+        <location filename="../apppreferencesdialog.ui" line="888"/>
+        <location filename="../apppreferencesdialog.ui" line="1050"/>
+        <location filename="../apppreferencesdialog.ui" line="1293"/>
         <source>Select Folder</source>
         <translation>Sélectionner dossier</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1062"/>
+        <location filename="../apppreferencesdialog.ui" line="1029"/>
         <source>Select Executable</source>
         <translation>Sélectionner exécutable</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1374"/>
+        <location filename="../apppreferencesdialog.ui" line="1129"/>
+        <source>Release channel</source>
+        <translation>Canal de version</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="1143"/>
+        <source>Releases (stable)</source>
+        <translation>Officielle (stable)</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="1148"/>
+        <source>Release candidates (testing)</source>
+        <translation>Candidate (test)</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="1153"/>
+        <source>Nightly builds (unstable)</source>
+        <translation>Nighlty (instable)</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="1373"/>
         <source>Simulator Volume Gain</source>
         <translation>Gain de volume du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="409"/>
+        <location filename="../apppreferencesdialog.ui" line="401"/>
         <source>Profile Name</source>
         <translation>Nom du profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="169"/>
+        <location filename="../apppreferencesdialog.ui" line="161"/>
         <source>Clear Image</source>
         <translation>Effacer l&apos;image</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="383"/>
+        <location filename="../apppreferencesdialog.ui" line="375"/>
         <source>Append version number to FW file name</source>
         <translation>Ajouter le numéro de version au nom du fichier téléchargé</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="198"/>
+        <location filename="../apppreferencesdialog.ui" line="190"/>
         <source>Offer to write FW to Tx after download</source>
         <translation>Proposer de transférer le firmware à la radio après téléchargement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="644"/>
+        <location filename="../apppreferencesdialog.ui" line="636"/>
         <source>Radio Type</source>
         <translation>Type de radio</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="463"/>
+        <location filename="../apppreferencesdialog.ui" line="455"/>
         <source>Other Settings</source>
         <translation>Autres réglages</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="624"/>
+        <location filename="../apppreferencesdialog.ui" line="616"/>
         <source>General Settings</source>
         <translation>Paramètres généraux</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="598"/>
+        <location filename="../apppreferencesdialog.ui" line="590"/>
         <source>SD Structure path</source>
         <translation>Chemin de la structure de la carte SD</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="707"/>
+        <location filename="../apppreferencesdialog.ui" line="699"/>
         <source>Application Settings</source>
         <translation>Réglages de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="862"/>
+        <location filename="../apppreferencesdialog.ui" line="803"/>
         <source>Show splash screen when Companion starts</source>
         <translation>Afficher l&apos;écran d&apos;accueil au lancement de Companion</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="730"/>
+        <location filename="../apppreferencesdialog.ui" line="722"/>
         <source>Automatic check for Companion updates</source>
         <translation>Vérifier la présence de mises à jour de Companion automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="562"/>
-        <location filename="../apppreferencesdialog.ui" line="993"/>
+        <location filename="../apppreferencesdialog.ui" line="554"/>
+        <location filename="../apppreferencesdialog.ui" line="973"/>
         <source>Enable automatic backup before writing firmware</source>
         <translation>Sauvegarder les réglages et modèles automatiquement lors des transferts</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="720"/>
+        <location filename="../apppreferencesdialog.ui" line="712"/>
         <source>Automatic check for OpenTX firmware updates</source>
         <translation>Vérifier la présence de mises à jour de firmware automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1122"/>
+        <location filename="../apppreferencesdialog.ui" line="1085"/>
         <source>Splash Screen Library</source>
         <translation>Bibliothèque d&apos;écrans d&apos;accueil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="822"/>
+        <location filename="../apppreferencesdialog.ui" line="789"/>
         <source>Google Earth Executable</source>
         <translation>Exécutable Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1027"/>
+        <location filename="../apppreferencesdialog.ui" line="994"/>
         <source>Only show user splash images</source>
         <translation>Ne montrer que les images de l&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1032"/>
+        <location filename="../apppreferencesdialog.ui" line="999"/>
         <source>Show user and companion splash images</source>
         <translation>Montrer les images de Companion et de l&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1142"/>
+        <location filename="../apppreferencesdialog.ui" line="1072"/>
         <source>User Splash Screens</source>
         <translation>Ecrans d&apos;accueil personnalisés</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="835"/>
+        <location filename="../apppreferencesdialog.ui" line="819"/>
         <source>Automatic Backup Folder</source>
         <translation>Dossier de sauvegardes automatiques</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1178"/>
+        <location filename="../apppreferencesdialog.ui" line="1177"/>
         <source>Simulator Settings</source>
         <translation>Paramètres du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1323"/>
+        <location filename="../apppreferencesdialog.ui" line="1322"/>
         <source>Simulator BackLight</source>
         <translation>Rétroéclairage du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1287"/>
+        <location filename="../apppreferencesdialog.ui" line="1286"/>
         <source>Enable</source>
         <translation>Actif</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1155"/>
+        <location filename="../apppreferencesdialog.ui" line="1098"/>
         <source>Action on New Model</source>
         <translation>Action par défaut &quot;Ajout Modèle&quot;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="955"/>
+        <location filename="../apppreferencesdialog.ui" line="935"/>
         <source>Use model wizard</source>
         <translation>Assistant</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="965"/>
+        <location filename="../apppreferencesdialog.ui" line="945"/>
         <source>Open model editor</source>
         <translation>Éditer modèle</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="975"/>
+        <location filename="../apppreferencesdialog.ui" line="955"/>
         <source>Just create the model</source>
         <translation>Créer modèle</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="943"/>
+        <location filename="../apppreferencesdialog.ui" line="897"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option  maintains the behaviour from older OpenTx versions where empty model slots are preserved when a model is deleted or moved. &lt;/p&gt;&lt;p&gt;When this option is de-selected, the other models may be re-arranged to fill the gap left by the removed  model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;&lt;u&gt;/!\&lt;/u&gt; Uniquement pour les radios sans catégories &lt;u&gt;/!\&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Cette option maintient le comportement des anciennes versions d’OpenTx où les emplacements des modèles vides sont conservés lorsqu&apos;un modèle est supprimé ou déplacé.&lt;/p&gt;&lt;p&gt;Lorsque cette option est désélectionnée, les autres modèles peuvent être réarrangés pour combler l&apos;écart laissé par le modèle supprimé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="747"/>
-        <source>Use releases (stable)</source>
-        <translation>Utiliser version &quot;officielle&quot; (stable)</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="752"/>
-        <source>Use release candidates (testing)</source>
-        <translation>Utiliser version &quot;candidate&quot; (test)</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="757"/>
-        <source>Use nightly builds (unstable)</source>
-        <translation>Utiliser version &quot;nightly&quot; (unstable)</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="794"/>
+        <location filename="../apppreferencesdialog.ui" line="761"/>
         <source>most recently used files</source>
         <translation>fichiers récemment utilisés</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="809"/>
+        <location filename="../apppreferencesdialog.ui" line="776"/>
         <source>Startup Settings</source>
         <translation>Paramètres de démarrage</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="855"/>
+        <location filename="../apppreferencesdialog.ui" line="832"/>
         <source>Remember</source>
         <translation>Mémoriser</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="929"/>
+        <location filename="../apppreferencesdialog.ui" line="913"/>
         <source>Output Logs Folder</source>
         <translation>Dossier des logs sauvegardés</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="946"/>
+        <location filename="../apppreferencesdialog.ui" line="900"/>
         <source>Remove empty model slots when deleting models (only applies for radios w/out categories)</source>
         <translation>Supprimer les emplacements vides lors de la suppression de modèles</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1006"/>
+        <location filename="../apppreferencesdialog.ui" line="926"/>
         <source>Debug Output Logging</source>
         <translation>Log les messages de debug</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1094"/>
+        <location filename="../apppreferencesdialog.ui" line="1107"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all debugging messages generated by the desktop Companion/Simulator applications. An OpenTX developer may request this to help diagnose an issue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Garder un log de tous les messages de débogage générés par les applications Companion/Simulateur. Un développeur OpenTX peut demander ce log afin d&apos;aider à diagnostiquer un problème.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1097"/>
+        <location filename="../apppreferencesdialog.ui" line="1110"/>
         <source>Application (Companion/Simulator)</source>
         <translation>Application (Companion/Simulateur)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1104"/>
+        <location filename="../apppreferencesdialog.ui" line="1117"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all messages generated by the radio firmware when running in Simulator. This is the same information one would also see in the Simulator &lt;span style=&quot; font-style:italic;&quot;&gt;Debug Output&lt;/span&gt; window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Conserver un log de tous les messages générés par le firmware radio lors de l&apos;exécution du Simulateur. C&apos;est la même information visible depuis le Simulateur dans la &lt;span style=&quot; font-style:italic;&quot;&gt;Fenêtre de débogage&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1107"/>
+        <location filename="../apppreferencesdialog.ui" line="1120"/>
         <source>Radio Firmware (in Simulator)</source>
         <translation>Firmware radio (Simulateur)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1214"/>
+        <location filename="../apppreferencesdialog.ui" line="1213"/>
         <source>Blue</source>
         <translation>Bleu</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1219"/>
+        <location filename="../apppreferencesdialog.ui" line="1218"/>
         <source>Green</source>
         <translation>Vert</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1224"/>
+        <location filename="../apppreferencesdialog.ui" line="1223"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1229"/>
+        <location filename="../apppreferencesdialog.ui" line="1228"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1234"/>
+        <location filename="../apppreferencesdialog.ui" line="1233"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1248"/>
+        <location filename="../apppreferencesdialog.ui" line="1247"/>
         <source>Screenshot capture folder</source>
         <translation>Dossier des captures d&apos;écran</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1310"/>
+        <location filename="../apppreferencesdialog.ui" line="1309"/>
         <source>Joystick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1200"/>
+        <location filename="../apppreferencesdialog.ui" line="1199"/>
         <source>Calibrate</source>
         <translation>Calibrer</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1274"/>
+        <location filename="../apppreferencesdialog.ui" line="1273"/>
         <source>Only capture to clipboard</source>
         <translation>Capturer dans le presse-papiers uniquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1361"/>
+        <location filename="../apppreferencesdialog.ui" line="1360"/>
         <source>Remember simulator switch values</source>
         <translation>Mémoriser les positions des inters du simulateur</translation>
     </message>
@@ -723,58 +728,58 @@ Manche Droit:  Profondeur, Direction
 <context>
     <name>Boards</name>
     <message>
-        <location filename="../firmwares/boards.cpp" line="359"/>
+        <location filename="../firmwares/boards.cpp" line="377"/>
         <source>Left Horizontal</source>
         <translation>Gauche Horizontal</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="360"/>
+        <location filename="../firmwares/boards.cpp" line="378"/>
         <source>Left Vertical</source>
         <translation>Gauche Vertical</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="361"/>
+        <location filename="../firmwares/boards.cpp" line="379"/>
         <source>Right Vertical</source>
         <translation>Droit Vertical</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="362"/>
+        <location filename="../firmwares/boards.cpp" line="380"/>
         <source>Right Horizontal</source>
         <translation>Droit Horizontal</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="363"/>
+        <location filename="../firmwares/boards.cpp" line="381"/>
         <source>Aux. 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="364"/>
+        <location filename="../firmwares/boards.cpp" line="382"/>
         <source>Aux. 2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="369"/>
-        <location filename="../firmwares/boards.cpp" line="508"/>
+        <location filename="../firmwares/boards.cpp" line="387"/>
+        <location filename="../firmwares/boards.cpp" line="528"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="379"/>
+        <location filename="../firmwares/boards.cpp" line="397"/>
         <source>Rud</source>
         <translation>Dir</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="380"/>
+        <location filename="../firmwares/boards.cpp" line="398"/>
         <source>Ele</source>
         <translation>Prf</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="381"/>
+        <location filename="../firmwares/boards.cpp" line="399"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="382"/>
+        <location filename="../firmwares/boards.cpp" line="400"/>
         <source>Ail</source>
         <translation></translation>
     </message>
@@ -2024,48 +2029,48 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
         <translation>Erreur de conversion du champ %1</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="329"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="357"/>
         <source>Switch</source>
         <translation>Interrupteur</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="330"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="358"/>
         <source>Switch </source>
         <translation>L&apos;interrupteur </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="330"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="358"/>
         <source> cannot be exported on this board!</source>
         <translation> n&apos;est pas supporté sur cette carte !</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="365"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="393"/>
         <source>Source</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="365"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="393"/>
         <source>Source %1 cannot be exported on this board!</source>
         <translation>La source %1 n&apos;est pas supportée sur cette plateforme !</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1074"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1102"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1081"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1109"/>
         <source>OpenTx only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1401"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1405"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1429"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1433"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX ne supporte pas cette fonction sur cette carte</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2049"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2097"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX ne supporte pas ce protocole radio</translation>
     </message>
@@ -2807,254 +2812,254 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
 <context>
     <name>Firmware</name>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
         <source>Channel values displayed in us</source>
         <translation>Positions de voies affichées en µs</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1146"/>
         <source>No OverrideCH functions available</source>
         <translation>Désactive la fonction spéciale &quot;Remplacer VOIExx&quot;</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1139"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1141"/>
         <source>Possibility to enable FAI MODE (no telemetry) at field</source>
         <translation>Possibilité d&apos;activer le mode FAI (télémétrie désactivée) sur le terrain</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1140"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
         <source>FAI MODE (no telemetry) always enabled</source>
         <translation>Mode FAI (télémétrie toujours désactivée)</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1151"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1153"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1274"/>
         <source>Support for the DIY-Multiprotocol-TX-Module</source>
         <translation>Support du module &quot;Multiprotocol&quot;</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1149"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1151"/>
         <source>Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015</source>
         <translation>Masque le protocole D8. Légalement obligatoire sur les radios Européennes importées après le 1er janvier 2015</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1166"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1168"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>Supprimer le menu HELICO et les mixages cycliques</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1167"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1274"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1169"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1276"/>
         <source>Disable Global variables</source>
         <translation>Supprimer le support des variables globales</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1168"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
         <source>Enable Lua custom scripts screen</source>
         <translation>Activer l&apos;écran des scripts Lua personnalisés</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1169"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1276"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1171"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
         <source>Enable Lua compiler</source>
         <translation>Activer le compilateur Lua</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1182"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1184"/>
         <source>Support for PPM internal module hack</source>
         <translation>Support du remplacement du module interne par un module PPM</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1160"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
         <source>Use alternative SQT5 font</source>
         <translation>Utiliser la police alternative SQT5</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1209"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1211"/>
         <source>Disable RAS (SWR)</source>
         <translation>Désactiver le RAS (SWR). Utile uniquement pour les X9D+ avec un RAS/SWR non fonctionnel</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
         <source>Pots use in menus navigation</source>
         <translation>Support de la navigation dans les menus avec les POTS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1208"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1210"/>
         <source>FrSky Taranis X9D+</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
         <source>FrSky Taranis X9D+ 2019</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
         <source>FrSky Taranis X9D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1224"/>
         <source>Haptic module installed</source>
         <translation>Module vibreur installé</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1228"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
         <source>FrSky Taranis X9E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1231"/>
         <source>Confirmation before radio shutdown</source>
         <translation>Confirmation avant l&apos;arrêt de la radio</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1232"/>
         <source>Horus gimbals installed (Hall sensors)</source>
         <translation>Manches Horus à effet HALL installés</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
         <source>FrSky Taranis X9-Lite</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1240"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1251"/>
         <source>Support for auto update on boot</source>
         <translation>Prise en charge de la mise à jour automatique au démarrage</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1244"/>
         <source>FrSky Taranis X7 / X7S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1247"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
         <source>FrSky Taranis X-Lite S/PRO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1253"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1255"/>
         <source>FrSky Taranis X-Lite</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1259"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <source>FrSky Horus X10 / X10S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1266"/>
         <source>FrSky Horus X12S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1266"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1268"/>
         <source>Use ONLY with first DEV pcb version</source>
         <translation>Exclusivement pour les Horus DEV</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
         <source>Jumper T12</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1284"/>
         <source>Turnigy 9XR-PRO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1188"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
         <source>Enable HELI menu and cyclic mix support</source>
         <translation>Activer le menu hélico et les mixages CCPM</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1189"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
         <source>Global variables</source>
         <translation>Variables globales</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1150"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
         <source>Enable non certified firmwares</source>
         <translation>Activer les firmwares non certifiés</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1172"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
         <source>Support for Crossfire TX Module</source>
         <translation>Prise en charge du module TX Crossfire</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
         <source>In model setup menus automatically set source by moving the control</source>
         <translation>Sélectionner les sources des mixeurs en bougeant le contrôle désiré</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1194"/>
         <source>In model setup menus automatically set switch by moving the control</source>
         <translation>Sélectionner les interrupteurs en bougeant le contrôle désiré</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
         <source>No graphical check boxes and sliders</source>
         <translation>Pas de cases à cocher et de curseurs graphiques</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1194"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
         <source>Battery graph</source>
         <translation>Graphique de la batterie</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>Ne pas mettre les lignes actives en gras</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
         <source>Turnigy 9XR with m128 chip</source>
         <translation>Turnigy 9XR avec une puce m128</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1299"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
         <source>Turnigy 9XR</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
         <source>9X with stock board</source>
         <translation>9X avec carte mère d&apos;origine</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1200"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
         <translation>Permet la remise à zéro des valeurs en pressant haut-bas en même temps, valeur min avec gauche/bas, valeur max avec haut/droite, inversion avec gauche/droite</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
         <source>9X with stock board and m128 chip</source>
         <translation>Carte 9x avec un chip m128</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1289"/>
         <source>9X with AR9X board</source>
         <translation>9X avec carte AR9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1294"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1296"/>
         <source>9X with Sky9x board</source>
         <translation>9X avec carte Sky9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1305"/>
         <source>9X with Gruvin9x board</source>
         <translation>9X avec carte Gruvin9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1306"/>
         <source>DIY MEGA2560 radio</source>
         <translation>Radio DIY à base de MEGA2560</translation>
     </message>
@@ -4169,7 +4174,7 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="912"/>
-        <location filename="../generaledit/generalsetup.ui" line="1148"/>
+        <location filename="../generaledit/generalsetup.ui" line="2356"/>
         <source> ms</source>
         <translation></translation>
     </message>
@@ -4202,7 +4207,7 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1009"/>
-        <location filename="../generaledit/generalsetup.ui" line="1140"/>
+        <location filename="../generaledit/generalsetup.ui" line="2348"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -4252,7 +4257,7 @@ p, li { white-space: pre-wrap; }
         <translation>Luminosité écran éteint</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1235"/>
+        <location filename="../generaledit/generalsetup.ui" line="1262"/>
         <source>Mode selection:
 
 Mode 1:
@@ -4293,27 +4298,27 @@ Mode 4:
 </translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1260"/>
+        <location filename="../generaledit/generalsetup.ui" line="1287"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mode 1 (DIR PRF GAZ AIL)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1265"/>
+        <location filename="../generaledit/generalsetup.ui" line="1292"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mode 2 (DIR GAZ PRF AIL)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1270"/>
+        <location filename="../generaledit/generalsetup.ui" line="1297"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation>Mode 3 (AIL PRF GAZ DIR)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1275"/>
+        <location filename="../generaledit/generalsetup.ui" line="1302"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mode 4 (AIL GAZ PRF DIR)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1323"/>
+        <location filename="../generaledit/generalsetup.ui" line="1335"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -4323,292 +4328,302 @@ Mode 4:
         <translation>Si vous activez l&apos;option FAI, seuls les capteurs RSSI et BtRx vont fonctionner. Cette fonction ne peut pas être désactivée sur la radio.</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1330"/>
+        <location filename="../generaledit/generalsetup.ui" line="1342"/>
         <source>R E T A</source>
         <translation>D P G A</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1335"/>
+        <location filename="../generaledit/generalsetup.ui" line="1347"/>
         <source>R E A T</source>
         <translation>D P A G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1340"/>
+        <location filename="../generaledit/generalsetup.ui" line="1352"/>
         <source>R T E A</source>
         <translation>D G P A</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1345"/>
+        <location filename="../generaledit/generalsetup.ui" line="1357"/>
         <source>R T A E</source>
         <translation>D G A P</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1350"/>
+        <location filename="../generaledit/generalsetup.ui" line="1362"/>
         <source>R A E T</source>
         <translation>D A P G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1355"/>
+        <location filename="../generaledit/generalsetup.ui" line="1367"/>
         <source>R A T E</source>
         <translation>D A G P</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1360"/>
+        <location filename="../generaledit/generalsetup.ui" line="1372"/>
         <source>E R T A</source>
         <translation>P D G A</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1365"/>
+        <location filename="../generaledit/generalsetup.ui" line="1377"/>
         <source>E R A T</source>
         <translation>P D A G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1370"/>
+        <location filename="../generaledit/generalsetup.ui" line="1382"/>
         <source>E T R A</source>
         <translation>P G D A</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1375"/>
+        <location filename="../generaledit/generalsetup.ui" line="1387"/>
         <source>E T A R</source>
         <translation>P G A D</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1380"/>
+        <location filename="../generaledit/generalsetup.ui" line="1392"/>
         <source>E A R T</source>
         <translation>P A D G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1385"/>
+        <location filename="../generaledit/generalsetup.ui" line="1397"/>
         <source>E A T R</source>
         <translation>P A G D</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1390"/>
+        <location filename="../generaledit/generalsetup.ui" line="1402"/>
         <source>T R E A</source>
         <translation>G D P A</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1395"/>
+        <location filename="../generaledit/generalsetup.ui" line="1407"/>
         <source>T R A E</source>
         <translation>G D A P</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1400"/>
+        <location filename="../generaledit/generalsetup.ui" line="1412"/>
         <source>T E R A</source>
         <translation>G P D A</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1405"/>
+        <location filename="../generaledit/generalsetup.ui" line="1417"/>
         <source>T E A R</source>
         <translation>G P A D</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1410"/>
+        <location filename="../generaledit/generalsetup.ui" line="1422"/>
         <source>T A R E</source>
         <translation>G A D P</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1415"/>
+        <location filename="../generaledit/generalsetup.ui" line="1427"/>
         <source>T A E R</source>
         <translation>G A P D</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1420"/>
+        <location filename="../generaledit/generalsetup.ui" line="1432"/>
         <source>A R E T</source>
         <translation>A D P G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1425"/>
+        <location filename="../generaledit/generalsetup.ui" line="1437"/>
         <source>A R T E</source>
         <translation>A D G P</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1430"/>
+        <location filename="../generaledit/generalsetup.ui" line="1442"/>
         <source>A E R T</source>
         <translation>A P D G</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1435"/>
+        <location filename="../generaledit/generalsetup.ui" line="1447"/>
         <source>A E T R</source>
         <translation>A P G D</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1440"/>
+        <location filename="../generaledit/generalsetup.ui" line="1452"/>
         <source>A T R E</source>
         <translation>A G D P</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1445"/>
+        <location filename="../generaledit/generalsetup.ui" line="1457"/>
         <source>A T E R</source>
         <translation>A G P D</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1477"/>
+        <location filename="../generaledit/generalsetup.ui" line="1555"/>
+        <source>Power On Speed</source>
+        <translation>Vitesse d&apos;allumage</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/generalsetup.ui" line="2382"/>
         <source>USB Mode</source>
         <translation>Mode USB</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2387"/>
+        <location filename="../generaledit/generalsetup.ui" line="2420"/>
+        <source>Power Off Speed</source>
+        <translation>Vitesse d&apos;extinction</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/generalsetup.ui" line="1562"/>
         <source>Jack Mode</source>
         <translation>Mode Jack</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2400"/>
+        <location filename="../generaledit/generalsetup.ui" line="1916"/>
         <source>Audio</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2405"/>
+        <location filename="../generaledit/generalsetup.ui" line="1921"/>
         <source>Trainer</source>
         <translation>Écolage</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1454"/>
-        <location filename="../generaledit/generalsetup.ui" line="2395"/>
+        <location filename="../generaledit/generalsetup.ui" line="1911"/>
+        <location filename="../generaledit/generalsetup.ui" line="2390"/>
         <source>Ask on Connect</source>
         <translation>Demander à la connexion</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1459"/>
+        <location filename="../generaledit/generalsetup.ui" line="2395"/>
         <source>Joystick (HID)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1464"/>
+        <location filename="../generaledit/generalsetup.ui" line="2400"/>
         <source>USB Mass Storage</source>
         <translation>Stockage USB (SD)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1469"/>
+        <location filename="../generaledit/generalsetup.ui" line="2405"/>
         <source>USB Serial (CDC)</source>
         <translation>Port série USB (Debug)</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1283"/>
+        <location filename="../generaledit/generalsetup.ui" line="2375"/>
         <source>Stick Mode</source>
         <translation>Mode</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1304"/>
+        <location filename="../generaledit/generalsetup.ui" line="1193"/>
         <source>Metric</source>
         <translation>Métrique</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1309"/>
+        <location filename="../generaledit/generalsetup.ui" line="1198"/>
         <source>Imperial</source>
         <translation>Impérial</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1296"/>
+        <location filename="../generaledit/generalsetup.ui" line="1588"/>
         <source>Default Channel Order</source>
         <translation>Ordre des voies par défaut</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1127"/>
+        <location filename="../generaledit/generalsetup.ui" line="1185"/>
         <source>GPS Coordinates</source>
         <translation>Coordonnées GPS</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1169"/>
+        <location filename="../generaledit/generalsetup.ui" line="1638"/>
         <source>Min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1176"/>
-        <location filename="../generaledit/generalsetup.ui" line="1205"/>
+        <location filename="../generaledit/generalsetup.ui" line="1645"/>
+        <location filename="../generaledit/generalsetup.ui" line="1674"/>
         <source>v</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1198"/>
+        <location filename="../generaledit/generalsetup.ui" line="1667"/>
         <source>Max</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1531"/>
+        <location filename="../generaledit/generalsetup.ui" line="2179"/>
         <source>RSSI Poweroff Warning</source>
         <translation>Vérifier RSSI à l&apos;extinction</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1847"/>
+        <location filename="../generaledit/generalsetup.ui" line="2008"/>
         <source>DMS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2320"/>
+        <location filename="../generaledit/generalsetup.ui" line="1890"/>
         <source>Inactivity Timer</source>
         <translation>Alerte d&apos;inactivité</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2358"/>
+        <location filename="../generaledit/generalsetup.ui" line="2335"/>
         <source>Show Splash Screen on Startup</source>
         <translation>Afficher l&apos;écran de démarrage</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2380"/>
+        <location filename="../generaledit/generalsetup.ui" line="1142"/>
         <source>Contrast</source>
         <translation>Contraste</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2282"/>
+        <location filename="../generaledit/generalsetup.ui" line="2106"/>
         <source>Battery Meter Range</source>
         <translation>Plage de l&apos;indicateur de batterie</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2301"/>
+        <location filename="../generaledit/generalsetup.ui" line="1629"/>
         <source>Haptic Strength</source>
         <translation>Puissance vibreur</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2263"/>
+        <location filename="../generaledit/generalsetup.ui" line="1322"/>
         <source>LCD Display Type</source>
         <translation>Type de LCD</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2190"/>
+        <location filename="../generaledit/generalsetup.ui" line="1218"/>
         <source>&quot;No Sound&quot; Warning</source>
         <translation>Alerte &quot;son coupé&quot;</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2225"/>
+        <location filename="../generaledit/generalsetup.ui" line="1610"/>
         <source>Battery Warning</source>
         <translation>Alerte batterie</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2244"/>
+        <location filename="../generaledit/generalsetup.ui" line="2033"/>
         <source>Haptic Length</source>
         <translation>Durée vibreur</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2203"/>
+        <location filename="../generaledit/generalsetup.ui" line="1575"/>
         <source>MAVLink Baud Rate</source>
         <translation>Baudrate Mavlink</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1585"/>
-        <location filename="../generaledit/generalsetup.ui" line="2155"/>
+        <location filename="../generaledit/generalsetup.ui" line="1162"/>
+        <location filename="../generaledit/generalsetup.ui" line="2300"/>
         <source>Quiet</source>
         <translation>Mode silencieux</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2160"/>
+        <location filename="../generaledit/generalsetup.ui" line="1167"/>
         <source>Only Alarms</source>
         <translation>Seulement les alarmes</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1595"/>
-        <location filename="../generaledit/generalsetup.ui" line="2165"/>
+        <location filename="../generaledit/generalsetup.ui" line="1172"/>
+        <location filename="../generaledit/generalsetup.ui" line="2310"/>
         <source>No Keys</source>
         <translation>Touches silencieuses</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1600"/>
-        <location filename="../generaledit/generalsetup.ui" line="2170"/>
+        <location filename="../generaledit/generalsetup.ui" line="1177"/>
+        <location filename="../generaledit/generalsetup.ui" line="2315"/>
         <source>All</source>
         <translation>Tous</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2083"/>
+        <location filename="../generaledit/generalsetup.ui" line="1496"/>
         <source>Battery warning voltage.
 This is the threashhold where the battery warning sounds.
 
@@ -4619,116 +4634,116 @@ Seuil auquel se déclenche l&apos;alarme de batterie.
 Plage de valeurs: 5v...10v</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2018"/>
+        <location filename="../generaledit/generalsetup.ui" line="2218"/>
         <source>Standard</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2023"/>
+        <location filename="../generaledit/generalsetup.ui" line="2223"/>
         <source>Optrex</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1992"/>
+        <location filename="../generaledit/generalsetup.ui" line="1243"/>
         <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
         <translation>Si différent de 0, émission d&apos;un bip sonore régulier si aucune action n&apos;a été effectuée sur l&apos;émetteur depuis le temps spécifié (en minutes).
 Réinitialisation en agissant sur n&apos;importe lequel des manches / touches de navigation.</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1995"/>
+        <location filename="../generaledit/generalsetup.ui" line="1246"/>
         <source> min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1909"/>
-        <location filename="../generaledit/generalsetup.ui" line="1912"/>
+        <location filename="../generaledit/generalsetup.ui" line="1813"/>
+        <location filename="../generaledit/generalsetup.ui" line="1816"/>
         <source>Show splash screen on startup</source>
         <translation>Affiche l&apos;écran d&apos;accueil au démarrage</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1929"/>
+        <location filename="../generaledit/generalsetup.ui" line="1833"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1934"/>
+        <location filename="../generaledit/generalsetup.ui" line="1838"/>
         <source>2s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1939"/>
+        <location filename="../generaledit/generalsetup.ui" line="1843"/>
         <source>3s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1944"/>
+        <location filename="../generaledit/generalsetup.ui" line="1848"/>
         <source>4s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1949"/>
+        <location filename="../generaledit/generalsetup.ui" line="1853"/>
         <source>6s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1954"/>
+        <location filename="../generaledit/generalsetup.ui" line="1858"/>
         <source>8s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1959"/>
+        <location filename="../generaledit/generalsetup.ui" line="1863"/>
         <source>10s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1964"/>
+        <location filename="../generaledit/generalsetup.ui" line="1868"/>
         <source>15s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1721"/>
+        <location filename="../generaledit/generalsetup.ui" line="1930"/>
         <source>4800 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1726"/>
+        <location filename="../generaledit/generalsetup.ui" line="1935"/>
         <source>9600 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1731"/>
+        <location filename="../generaledit/generalsetup.ui" line="1940"/>
         <source>14400 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1736"/>
+        <location filename="../generaledit/generalsetup.ui" line="1945"/>
         <source>19200 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1741"/>
+        <location filename="../generaledit/generalsetup.ui" line="1950"/>
         <source>38400 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1746"/>
+        <location filename="../generaledit/generalsetup.ui" line="1955"/>
         <source>57600 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1751"/>
+        <location filename="../generaledit/generalsetup.ui" line="1960"/>
         <source>76800 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1756"/>
+        <location filename="../generaledit/generalsetup.ui" line="1965"/>
         <source>115200 Baud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1496"/>
-        <location filename="../generaledit/generalsetup.ui" line="1823"/>
-        <location filename="../generaledit/generalsetup.ui" line="1872"/>
+        <location filename="../generaledit/generalsetup.ui" line="1716"/>
+        <location filename="../generaledit/generalsetup.ui" line="2071"/>
+        <location filename="../generaledit/generalsetup.ui" line="2125"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -4753,72 +4768,72 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Alerte mode silencieux - Avertissement si les bips sont désactivés&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1621"/>
-        <location filename="../generaledit/generalsetup.ui" line="1777"/>
+        <location filename="../generaledit/generalsetup.ui" line="1771"/>
+        <location filename="../generaledit/generalsetup.ui" line="2244"/>
         <source>X-Short</source>
         <translation>Très court</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1626"/>
-        <location filename="../generaledit/generalsetup.ui" line="1782"/>
+        <location filename="../generaledit/generalsetup.ui" line="1776"/>
+        <location filename="../generaledit/generalsetup.ui" line="2249"/>
         <source>Short</source>
         <translation>Court</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1631"/>
-        <location filename="../generaledit/generalsetup.ui" line="1787"/>
+        <location filename="../generaledit/generalsetup.ui" line="1781"/>
+        <location filename="../generaledit/generalsetup.ui" line="2254"/>
         <source>Normal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1636"/>
-        <location filename="../generaledit/generalsetup.ui" line="1792"/>
+        <location filename="../generaledit/generalsetup.ui" line="1786"/>
+        <location filename="../generaledit/generalsetup.ui" line="2259"/>
         <source>Long</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1641"/>
-        <location filename="../generaledit/generalsetup.ui" line="1797"/>
+        <location filename="../generaledit/generalsetup.ui" line="1791"/>
+        <location filename="../generaledit/generalsetup.ui" line="2264"/>
         <source>X-Long</source>
         <translation>Très long</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="2339"/>
+        <location filename="../generaledit/generalsetup.ui" line="2160"/>
         <source>Low EEPROM Warning</source>
         <translation>Avertissement EEPROM faible</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1852"/>
+        <location filename="../generaledit/generalsetup.ui" line="2013"/>
         <source>NMEA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1713"/>
+        <location filename="../generaledit/generalsetup.ui" line="1471"/>
         <source>Play Delay (switch mid position)</source>
         <translation>Délai position centrale inters</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1668"/>
+        <location filename="../generaledit/generalsetup.ui" line="2413"/>
         <source>Measurement Units</source>
         <translation>Unités de mesure</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1687"/>
+        <location filename="../generaledit/generalsetup.ui" line="2198"/>
         <source>Haptic Mode</source>
         <translation>Mode du vibreur</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1550"/>
+        <location filename="../generaledit/generalsetup.ui" line="1751"/>
         <source>Beeper Length</source>
         <translation>Durée des bips</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1661"/>
+        <location filename="../generaledit/generalsetup.ui" line="2052"/>
         <source>Beeper Mode</source>
         <translation>Réglage des bips</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1575"/>
+        <location filename="../generaledit/generalsetup.ui" line="2290"/>
         <source>Beeper volume
 
 0 - Quiet.  No beeps at all.
@@ -4835,7 +4850,7 @@ Long : bips plus longs.
 Extra long : bips extra longs.</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1590"/>
+        <location filename="../generaledit/generalsetup.ui" line="2305"/>
         <source>Alarms Only</source>
         <translation>Seulement les Alarmes</translation>
     </message>
@@ -4843,127 +4858,127 @@ Extra long : bips extra longs.</translation>
 <context>
     <name>GeneralSetupPanel</name>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="322"/>
+        <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>OFF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="322"/>
+        <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Keys</source>
         <translation>Touches</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="322"/>
+        <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Sticks</source>
         <translation>Manches</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="322"/>
+        <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Keys + Sticks</source>
         <translation>Touches + manches</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="322"/>
+        <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>ON</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>English</source>
         <translation>Anglais</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Dutch</source>
         <translation>Hollandais</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>French</source>
         <translation>Français</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Italian</source>
         <translation>Italien</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>German</source>
         <translation>Allemand</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Czech</source>
         <translation>Tchèque</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Slovak</source>
         <translation>Slovaque</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Spanish</source>
         <translation>Espagnol</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Polish</source>
         <translation>Polonais</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Portuguese</source>
         <translation>Portugais</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Swedish</source>
         <translation>Suédois</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Hungarian</source>
         <translation>Hongrois</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="336"/>
+        <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Russian</source>
         <translation>Russe</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="409"/>
+        <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>No</source>
         <translation>Non</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="409"/>
+        <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>RotEnc A</source>
         <translation>Sel.Rot. A</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="409"/>
+        <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>Rot Enc B</source>
         <translation>Sel.Rot. B</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="409"/>
+        <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>Rot Enc C</source>
         <translation>Sel.Rot. C</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="409"/>
+        <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>Rot Enc D</source>
         <translation>Sel.Rot. D</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="409"/>
+        <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>Rot Enc E</source>
         <translation>Sel.Rot. E</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.cpp" line="450"/>
+        <location filename="../generaledit/generalsetup.cpp" line="464"/>
         <source>If you enable FAI, only RSSI and RxBt sensors will keep working.
 This function cannot be disabled by the radio.
 Are you sure ?</source>
@@ -4998,237 +5013,242 @@ Cette fonction ne peut pas être désactivée sur la radio.
         <translation>Formulaire</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="29"/>
+        <location filename="../generaledit/hardware.ui" line="303"/>
         <source>SQ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="43"/>
+        <location filename="../generaledit/hardware.ui" line="826"/>
         <source>SR</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="64"/>
+        <location filename="../generaledit/hardware.ui" line="1016"/>
         <source>LS2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="91"/>
+        <location filename="../generaledit/hardware.ui" line="613"/>
         <source>SP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="98"/>
+        <location filename="../generaledit/hardware.ui" line="1086"/>
         <source>SO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="105"/>
+        <location filename="../generaledit/hardware.ui" line="144"/>
         <source>S4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="119"/>
+        <location filename="../generaledit/hardware.ui" line="911"/>
         <source>RS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="126"/>
+        <location filename="../generaledit/hardware.ui" line="214"/>
         <source>SB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="133"/>
+        <location filename="../generaledit/hardware.ui" line="454"/>
         <source>PPM 2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="168"/>
+        <location filename="../generaledit/hardware.ui" line="334"/>
         <source>OFF</source>
         <translation>Eteint</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="173"/>
+        <location filename="../generaledit/hardware.ui" line="339"/>
         <source>S-Port Mirror</source>
         <translation>Recopie S. Port</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="178"/>
+        <location filename="../generaledit/hardware.ui" line="344"/>
         <source>Telemetry</source>
         <translation>Télémetrie</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="183"/>
+        <location filename="../generaledit/hardware.ui" line="349"/>
         <source>SBUS Trainer</source>
         <translation>Écolage SBUS</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="188"/>
+        <location filename="../generaledit/hardware.ui" line="354"/>
         <source>Debug</source>
         <translation>Débogage</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="217"/>
+        <location filename="../generaledit/hardware.ui" line="1093"/>
+        <source>S5</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="46"/>
         <source>Rud</source>
         <translation>Dir</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="234"/>
+        <location filename="../generaledit/hardware.ui" line="870"/>
         <source>PPM 3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="248"/>
+        <location filename="../generaledit/hardware.ui" line="402"/>
         <source>S1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="262"/>
+        <location filename="../generaledit/hardware.ui" line="497"/>
         <source>S2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="269"/>
+        <location filename="../generaledit/hardware.ui" line="39"/>
         <source>S3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="276"/>
+        <location filename="../generaledit/hardware.ui" line="388"/>
         <source>PPM 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="302"/>
+        <location filename="../generaledit/hardware.ui" line="161"/>
         <source>Serial Port</source>
         <translation>Port série</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="315"/>
+        <location filename="../generaledit/hardware.ui" line="471"/>
         <source>v</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="334"/>
+        <location filename="../generaledit/hardware.ui" line="207"/>
         <source>PPM Multiplier</source>
         <translation>Coeff. multiplicateur PPM</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="373"/>
+        <location filename="../generaledit/hardware.ui" line="1079"/>
         <source>Current Offset</source>
         <translation>Correction  courant</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="380"/>
+        <location filename="../generaledit/hardware.ui" line="684"/>
         <source>PPM 4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="394"/>
+        <location filename="../generaledit/hardware.ui" line="546"/>
         <source>SA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="401"/>
+        <location filename="../generaledit/hardware.ui" line="1023"/>
         <source>Ele</source>
         <translation>Prf</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="422"/>
+        <location filename="../generaledit/hardware.ui" line="447"/>
         <source>Ail</source>
         <translation>Ail</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="436"/>
+        <location filename="../generaledit/hardware.ui" line="1072"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="450"/>
+        <location filename="../generaledit/hardware.ui" line="409"/>
         <source>SC</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="464"/>
+        <location filename="../generaledit/hardware.ui" line="918"/>
         <source>LS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="498"/>
+        <location filename="../generaledit/hardware.ui" line="395"/>
         <source>SD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="537"/>
+        <location filename="../generaledit/hardware.ui" line="925"/>
         <source>Battery Offset</source>
         <translation>Correction tension </translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="570"/>
+        <location filename="../generaledit/hardware.ui" line="1037"/>
         <source>SE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="597"/>
+        <location filename="../generaledit/hardware.ui" line="776"/>
         <source>SF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="624"/>
+        <location filename="../generaledit/hardware.ui" line="863"/>
         <source>SG</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="651"/>
+        <location filename="../generaledit/hardware.ui" line="606"/>
         <source>SH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="665"/>
+        <location filename="../generaledit/hardware.ui" line="932"/>
         <source>SI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="679"/>
+        <location filename="../generaledit/hardware.ui" line="416"/>
         <source>SJ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="693"/>
+        <location filename="../generaledit/hardware.ui" line="884"/>
         <source>SK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="707"/>
+        <location filename="../generaledit/hardware.ui" line="430"/>
         <source>SL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="714"/>
+        <location filename="../generaledit/hardware.ui" line="242"/>
         <source>SM</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="728"/>
+        <location filename="../generaledit/hardware.ui" line="1051"/>
         <source>SN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="755"/>
+        <location filename="../generaledit/hardware.ui" line="263"/>
         <source>RS2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="965"/>
+        <location filename="../generaledit/hardware.ui" line="177"/>
         <source>Bluetooth</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="989"/>
+        <location filename="../generaledit/hardware.ui" line="769"/>
         <source>ADC Filter</source>
         <translation>Filtre ADC</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="1037"/>
+        <location filename="../generaledit/hardware.ui" line="739"/>
         <source>Device Name:</source>
         <translation>Nom de l&apos;appareil:</translation>
     </message>
@@ -5278,22 +5298,22 @@ Cette fonction ne peut pas être désactivée sur la radio.
         <translation>Curseur avec centre</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="169"/>
+        <location filename="../generaledit/hardware.cpp" line="170"/>
         <source>OFF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="171"/>
+        <location filename="../generaledit/hardware.cpp" line="172"/>
         <source>Enabled</source>
         <translation>Activé</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="174"/>
+        <location filename="../generaledit/hardware.cpp" line="175"/>
         <source>Telemetry</source>
         <translation>Télémétrie</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="175"/>
+        <location filename="../generaledit/hardware.cpp" line="176"/>
         <source>Trainer</source>
         <translation>Écolage</translation>
     </message>
@@ -11953,66 +11973,66 @@ Trop d&apos;erreurs, abandon.</translation>
 <context>
     <name>Telemetry</name>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="309"/>
+        <location filename="../modeledit/telemetry.ui" line="319"/>
         <source>A1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="343"/>
+        <location filename="../modeledit/telemetry.ui" line="353"/>
         <source>A2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="243"/>
+        <location filename="../modeledit/telemetry.ui" line="86"/>
         <source>RSSI</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="125"/>
+        <location filename="../modeledit/telemetry.ui" line="108"/>
         <source>Alarm 1</source>
         <translation>Alarme 1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="87"/>
-        <location filename="../modeledit/telemetry.ui" line="139"/>
+        <location filename="../modeledit/telemetry.ui" line="150"/>
+        <location filename="../modeledit/telemetry.ui" line="247"/>
         <source>----</source>
         <translation>----</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="92"/>
-        <location filename="../modeledit/telemetry.ui" line="144"/>
+        <location filename="../modeledit/telemetry.ui" line="155"/>
+        <location filename="../modeledit/telemetry.ui" line="252"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="97"/>
-        <location filename="../modeledit/telemetry.ui" line="149"/>
+        <location filename="../modeledit/telemetry.ui" line="160"/>
+        <location filename="../modeledit/telemetry.ui" line="257"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="102"/>
-        <location filename="../modeledit/telemetry.ui" line="154"/>
+        <location filename="../modeledit/telemetry.ui" line="165"/>
+        <location filename="../modeledit/telemetry.ui" line="262"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="174"/>
+        <location filename="../modeledit/telemetry.ui" line="233"/>
         <source>Alarm 2</source>
         <translation>Alarme 2</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="916"/>
+        <location filename="../modeledit/telemetry.ui" line="926"/>
         <source>Serial Protocol</source>
         <translation>Protocole Série</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="739"/>
+        <location filename="../modeledit/telemetry.ui" line="749"/>
         <source>Volt source</source>
         <translation>Source de mesure de tension</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="781"/>
+        <location filename="../modeledit/telemetry.ui" line="791"/>
         <source>Current source</source>
         <translation>Source de mesure de courant</translation>
     </message>
@@ -12022,117 +12042,122 @@ Trop d&apos;erreurs, abandon.</translation>
         <translation>Protocole</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="930"/>
+        <location filename="../modeledit/telemetry.ui" line="940"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="935"/>
+        <location filename="../modeledit/telemetry.ui" line="945"/>
         <source>FrSky Sensor Hub</source>
         <translation>Sensor Hub FrSky</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="816"/>
+        <location filename="../modeledit/telemetry.ui" line="826"/>
         <source>Blades</source>
         <translation>Pales</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="385"/>
+        <location filename="../modeledit/telemetry.ui" line="395"/>
         <source>Sink Max</source>
         <translation>Chute max</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="495"/>
+        <location filename="../modeledit/telemetry.ui" line="505"/>
         <source>Climb Max</source>
         <translation>Montée max</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="511"/>
+        <location filename="../modeledit/telemetry.ui" line="521"/>
         <source>Sink Min</source>
         <translation>Chute min</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="527"/>
+        <location filename="../modeledit/telemetry.ui" line="537"/>
         <source>Climb Min</source>
         <translation>Montée min</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="543"/>
+        <location filename="../modeledit/telemetry.ui" line="553"/>
         <source>Center Silent</source>
         <translation>Neutre silencieux</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="578"/>
+        <location filename="../modeledit/telemetry.ui" line="588"/>
         <source>Vario source</source>
         <translation>Source vario</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="565"/>
+        <location filename="../modeledit/telemetry.ui" line="575"/>
         <source>Vario limits</source>
         <translation>Limites vario</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="263"/>
+        <location filename="../modeledit/telemetry.ui" line="214"/>
         <source>Disable telemetry audio warnings</source>
         <translation>Désactiver les avertissements audio de la télémétrie</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="601"/>
+        <location filename="../modeledit/telemetry.ui" line="270"/>
+        <source>Source</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.ui" line="611"/>
         <source>Altimetry</source>
         <translation>Altitude</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="635"/>
+        <location filename="../modeledit/telemetry.ui" line="645"/>
         <source>Altitude source</source>
         <translation>Source de l&apos;altitude</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="648"/>
+        <location filename="../modeledit/telemetry.ui" line="658"/>
         <source>Volts source</source>
         <translation>Source de la tension</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="671"/>
+        <location filename="../modeledit/telemetry.ui" line="681"/>
         <source>Top Bar</source>
         <translation>Barre de titre de l&apos;écran d&apos;accueil</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="836"/>
+        <location filename="../modeledit/telemetry.ui" line="846"/>
         <source> mAh</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="852"/>
+        <location filename="../modeledit/telemetry.ui" line="862"/>
         <source> A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="903"/>
+        <location filename="../modeledit/telemetry.ui" line="913"/>
         <source>Various</source>
         <translation>Divers</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="978"/>
+        <location filename="../modeledit/telemetry.ui" line="988"/>
         <source>Sensors</source>
         <translation>Capteurs</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="985"/>
+        <location filename="../modeledit/telemetry.ui" line="995"/>
         <source>Disable multi sensor handling</source>
         <translation>Désactiver la gestion des capteurs multiples</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="823"/>
+        <location filename="../modeledit/telemetry.ui" line="833"/>
         <source>mAh count</source>
         <translation>Valeur enregistrée</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="877"/>
+        <location filename="../modeledit/telemetry.ui" line="887"/>
         <source>FAS Offset</source>
         <translation>Décalage FAS</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="884"/>
+        <location filename="../modeledit/telemetry.ui" line="894"/>
         <source>Persistent mAh</source>
         <translation>Mémorisation des mAh</translation>
     </message>
@@ -12302,17 +12327,17 @@ Trop d&apos;erreurs, abandon.</translation>
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="917"/>
+        <location filename="../modeledit/telemetry.cpp" line="918"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="918"/>
+        <location filename="../modeledit/telemetry.cpp" line="919"/>
         <source>FrSky D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="921"/>
+        <location filename="../modeledit/telemetry.cpp" line="922"/>
         <source>FrSky D (cable)</source>
         <translation>FrSky D (câble)</translation>
     </message>
@@ -12322,79 +12347,84 @@ Trop d&apos;erreurs, abandon.</translation>
         <translation>Ecran de télémesure %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="943"/>
+        <location filename="../modeledit/telemetry.cpp" line="945"/>
+        <source>Source</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="952"/>
         <source>Low Alarm</source>
         <translation>Alarme basse</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="944"/>
+        <location filename="../modeledit/telemetry.cpp" line="953"/>
         <source>Critical Alarm</source>
         <translation>Alarme critique</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="986"/>
+        <location filename="../modeledit/telemetry.cpp" line="995"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="989"/>
+        <location filename="../modeledit/telemetry.cpp" line="998"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (non supporté)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1033"/>
+        <location filename="../modeledit/telemetry.cpp" line="1042"/>
         <source>Alti</source>
         <translation>Alt</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1034"/>
+        <location filename="../modeledit/telemetry.cpp" line="1043"/>
         <source>Alti+</source>
         <translation>Alt+</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1035"/>
+        <location filename="../modeledit/telemetry.cpp" line="1044"/>
         <source>VSpeed</source>
         <translation>Vitesse verticale</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1036"/>
-        <location filename="../modeledit/telemetry.cpp" line="1044"/>
-        <location filename="../modeledit/telemetry.cpp" line="1059"/>
+        <location filename="../modeledit/telemetry.cpp" line="1045"/>
+        <location filename="../modeledit/telemetry.cpp" line="1053"/>
+        <location filename="../modeledit/telemetry.cpp" line="1068"/>
         <source>A1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1037"/>
-        <location filename="../modeledit/telemetry.cpp" line="1045"/>
-        <location filename="../modeledit/telemetry.cpp" line="1060"/>
+        <location filename="../modeledit/telemetry.cpp" line="1046"/>
+        <location filename="../modeledit/telemetry.cpp" line="1054"/>
+        <location filename="../modeledit/telemetry.cpp" line="1069"/>
         <source>A2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1047"/>
-        <location filename="../modeledit/telemetry.cpp" line="1062"/>
+        <location filename="../modeledit/telemetry.cpp" line="1056"/>
+        <location filename="../modeledit/telemetry.cpp" line="1071"/>
         <source>A3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1048"/>
-        <location filename="../modeledit/telemetry.cpp" line="1063"/>
+        <location filename="../modeledit/telemetry.cpp" line="1057"/>
+        <location filename="../modeledit/telemetry.cpp" line="1072"/>
         <source>A4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1050"/>
-        <location filename="../modeledit/telemetry.cpp" line="1065"/>
+        <location filename="../modeledit/telemetry.cpp" line="1059"/>
+        <location filename="../modeledit/telemetry.cpp" line="1074"/>
         <source>FAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1051"/>
+        <location filename="../modeledit/telemetry.cpp" line="1060"/>
         <source>Cells</source>
         <translation>Velm</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1058"/>
+        <location filename="../modeledit/telemetry.cpp" line="1067"/>
         <source>---</source>
         <translation></translation>
     </message>
