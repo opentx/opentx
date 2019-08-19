@@ -88,6 +88,15 @@ if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
 endif()
 
+if(INTERNAL_MODULE_PXX1)
+  add_definitions(-DINTERNAL_MODULE_PXX1)
+endif()
+
+if(INTERNAL_MODULE_PXX2)
+  set(PXX2 ON)
+  add_definitions(-DINTERNAL_MODULE_PXX2)
+endif()
+
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
 file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/themes/*.cpp)
@@ -123,13 +132,13 @@ if(PXX2 OR LUA)
   set(GUI_SRC ${GUI_SRC} radio_tools.cpp)
 endif()
 
-#if(PXX2)
-#  set(GUI_SRC
-#    ${GUI_SRC}
-#    ../common/stdlcd/radio_spectrum_analyser.cpp
-#    ../common/stdlcd/radio_power_meter.cpp
-#    )
-#endif()
+if(PXX2)
+  set(GUI_SRC
+    ${GUI_SRC}
+    radio_spectrum_analyser.cpp
+#   radio_power_meter.cpp
+    )
+endif()
 
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
@@ -190,13 +199,4 @@ if(PYTHONINTERP_FOUND)
     COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > storage/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
-endif()
-
-if(INTERNAL_MODULE_PXX1)
-  add_definitions(-DINTERNAL_MODULE_PXX1)
-endif()
-
-if(INTERNAL_MODULE_PXX2)
-  set(PXX2 ON)
-  add_definitions(-DINTERNAL_MODULE_PXX2)
 endif()

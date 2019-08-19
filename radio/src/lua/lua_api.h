@@ -171,6 +171,10 @@ void registerBitmapClass(lua_State * L);
 void luaSetInstructionsLimit(lua_State* L, int count);
 int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode);
 
+#define TOOL_NAME_MAXLEN  16
+bool readToolName(char * toolName, const char * filename);
+bool isRadioScriptTool(const char * filename);
+
 struct LuaMemTracer {
   const char * script;
   int lineno;

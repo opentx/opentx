@@ -301,6 +301,9 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
   if (reusableBuffer.spectrumAnalyser.dirty) {
     reusableBuffer.spectrumAnalyser.dirty = false;
+#if defined(PCBHORUS)
+    memclear(&reusableBuffer.spectrumAnalyser.max, sizeof(reusableBuffer.spectrumAnalyser.max));
+#endif
     addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
     Pxx2Transport::addByte(0x00);
     Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);

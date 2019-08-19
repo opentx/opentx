@@ -28,9 +28,9 @@ enum SpectrumFields {
   SPECTRUM_FIELDS_MAX
 };
 
-void menuRadioSpectrumAnalyser(event_t event)
+bool menuRadioSpectrumAnalyser(event_t event)
 {
-  SUBMENU(STR_MENU_SPECTRUM_ANALYSER, 1, {1});
+  SUBMENU(STR_MENU_SPECTRUM_ANALYSER, ICON_RADIO, 1, {1});
 
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H/2, STR_STOPPING);
@@ -39,7 +39,7 @@ void menuRadioSpectrumAnalyser(event_t event)
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(1000);
     RTOS_WAIT_MS(1000);
-    return;
+    return false;
   }
 
   if (moduleState[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
@@ -49,10 +49,10 @@ void menuRadioSpectrumAnalyser(event_t event)
         killEvents(event);
         popMenu();
       }
-      return;
+      return false;
     }
 
-    memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
+    memclear(&reusableBuffer.spectrumAnalyser, sizeof(reusableBuffer.spectrumAnalyser));
 
     if (isModuleR9MAccess(g_moduleIdx)) {
       reusableBuffer.spectrumAnalyser.spanDefault = 20;
@@ -82,9 +82,9 @@ void menuRadioSpectrumAnalyser(event_t event)
     switch (i) {
       case SPECTRUM_FREQUENCY: {
         uint16_t frequency = reusableBuffer.spectrumAnalyser.freq / 1000000;
-        lcdDrawText(1, 10, "F:", 0);
-        lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, attr);
-        lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
+        lcdDrawText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, "F:", TEXT_INVERTED_COLOR);
+        lcdDrawNumber(lcdNextPos + 2, MENU_FOOTER_TOP, frequency, attr | TEXT_INVERTED_COLOR);
+        lcdDrawText(lcdNextPos + 2, MENU_FOOTER_TOP, "MHz", TEXT_INVERTED_COLOR);
         if (attr) {
           reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, reusableBuffer.spectrumAnalyser.freqMin, reusableBuffer.spectrumAnalyser.freqMax, 0)) * 1000000;
           if (checkIncDec_Ret) {
@@ -96,9 +96,9 @@ void menuRadioSpectrumAnalyser(event_t event)
 
       case SPECTRUM_SPAN:
         uint8_t span = reusableBuffer.spectrumAnalyser.span / 1000000;
-        lcdDrawText(lcdLastRightPos + 5, 10, "S:", 0);
-        lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.span/1000000, attr);
-        lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
+        lcdDrawText(MENUS_MARGIN_LEFT + 100, MENU_FOOTER_TOP, "S:", TEXT_INVERTED_COLOR);
+        lcdDrawNumber(lcdNextPos + 2, MENU_FOOTER_TOP, reusableBuffer.spectrumAnalyser.span/1000000, attr | TEXT_INVERTED_COLOR);
+        lcdDrawText(lcdNextPos + 2, MENU_FOOTER_TOP, "MHz", TEXT_INVERTED_COLOR);
         if (attr) {
           reusableBuffer.spectrumAnalyser.span = checkIncDec(event, span, 1, reusableBuffer.spectrumAnalyser.spanMax, 0) * 1000000;
           if (checkIncDec_Ret) {
@@ -110,18 +110,63 @@ void menuRadioSpectrumAnalyser(event_t event)
     }
   }
 
-  uint8_t peak_y = 1;
-  uint8_t peak_x = 0;
-  for (uint8_t i=0; i<LCD_W; i++) {
-    uint8_t h = min<uint8_t >(reusableBuffer.spectrumAnalyser.bars[i] >> 1, LCD_H);
-    if (h > peak_y) {
-      peak_x = i;
-      peak_y = h;
-    }
-    lcdDrawSolidVerticalLine(i, LCD_H - h, h);
+  for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000; frequency < reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2; frequency += 10000000) {
+    int32_t offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+    uint32_t x = offset / reusableBuffer.spectrumAnalyser.step;
+    if (x > 0 && x < LCD_W - 1)
+      lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, STASHED, CURVE_AXIS_COLOR);
   }
 
-  int8_t y = max<int8_t>(FH, LCD_H - peak_y - FH);
-  lcdDrawNumber(min<uint8_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / LCD_W)) / 1000000, TINSIZE);
-  lcdDrawText(lcdLastRightPos, y, "M", TINSIZE);
+  for (coord_t y = MENU_HEADER_HEIGHT + (MENU_FOOTER_TOP - MENU_HEADER_HEIGHT) / 8; y < MENU_FOOTER_TOP; y += (MENU_FOOTER_TOP - MENU_HEADER_HEIGHT) / 8) {
+    lcdDrawHorizontalLine(0, y, LCD_W, STASHED, CURVE_AXIS_COLOR);
+  }
+
+  coord_t peak_y = LCD_H;
+  coord_t peak_x = 0;
+
+  coord_t prev_yv = (coord_t)-1;
+  for (coord_t xv=0; xv<LCD_W; xv++) {
+    coord_t yv = MENU_FOOTER_TOP - limit<int>(0, reusableBuffer.spectrumAnalyser.bars[xv] << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
+    if (prev_yv != (coord_t)-1) {
+      if (yv < peak_y) {
+        peak_x = xv;
+        peak_y = yv;
+      }
+      if (prev_yv < yv) {
+        for (int y=prev_yv; y<=yv; y+=1) {
+          lcdDrawPoint(xv, y, TEXT_COLOR);
+        }
+      }
+      else {
+        for (int y=yv; y<=prev_yv; y+=1) {
+          lcdDrawPoint(xv, y, TEXT_COLOR);
+        }
+      }
+    }
+    prev_yv = yv;
+  }
+
+  prev_yv = (coord_t)-1;
+  for (coord_t xv=0; xv<LCD_W; xv++) {
+    coord_t yv = MENU_FOOTER_TOP - limit<int>(0, reusableBuffer.spectrumAnalyser.max[xv] << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
+    if (prev_yv != (coord_t)-1) {
+      if (prev_yv < yv) {
+        for (int y=prev_yv; y<=yv; y+=1) {
+          lcdDrawPoint(xv, y, TEXT_INVERTED_BGCOLOR);
+        }
+      }
+      else {
+        for (int y=yv; y<=prev_yv; y+=1) {
+          lcdDrawPoint(xv, y, TEXT_INVERTED_BGCOLOR);
+        }
+      }
+    }
+    prev_yv = yv;
+  }
+
+  coord_t y = max<coord_t>(MENU_HEADER_HEIGHT + 1, peak_y - FH);
+  lcdDrawNumber(limit<coord_t>(20, peak_x, LCD_W - 20), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / LCD_W)) / 1000000, TINSIZE | CENTERED);
+  lcdDrawText(lcdNextPos, y, "M", TINSIZE);
+
+  return true;
 }

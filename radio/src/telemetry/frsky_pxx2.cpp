@@ -238,6 +238,10 @@ void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
   uint32_t x = offset / reusableBuffer.spectrumAnalyser.step;
   if (x < LCD_W) {
     reusableBuffer.spectrumAnalyser.bars[x] = 0x80 + power;
+#if defined(COLORLCD)
+    if (reusableBuffer.spectrumAnalyser.bars[x] > reusableBuffer.spectrumAnalyser.max[x])
+      reusableBuffer.spectrumAnalyser.max[x] = reusableBuffer.spectrumAnalyser.bars[x];
+#endif
   }
 }
 

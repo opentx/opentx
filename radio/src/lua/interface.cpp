@@ -22,6 +22,7 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <algorithm>
 #include "opentx.h"
 #include "bin_allocator.h"
 #include "lua_api.h"
@@ -1073,7 +1074,6 @@ uint32_t luaGetMemUsed(lua_State * L)
   return L ? (lua_gc(L, LUA_GCCOUNT, 0) << 10) + lua_gc(L, LUA_GCCOUNTB, 0) : 0;
 }
 
-
 void luaInit()
 {
   TRACE("luaInit");
@@ -1115,4 +1115,47 @@ void luaInit()
       luaDisable();
     }
   }
+}
+
+bool readToolName(char * toolName, const char * filename)
+{
+  FIL file;
+  char buffer[1024];
+  UINT count;
+
+  if (f_open(&file, filename, FA_READ) != FR_OK) {
+    return "Error opening file";
+  }
+
+  if (f_read(&file, &buffer, sizeof(buffer), &count) != FR_OK) {
+    f_close(&file);
+    return false;
+  }
+
+  const char * tns = "TNS|";
+  auto * start = std::search(buffer, buffer + sizeof(buffer), tns, tns + 4);
+  if (start >= buffer + sizeof(buffer))
+    return false;
+
+  start += 4;
+
+  const char * tne = "|TNE";
+  auto * end = std::search(buffer, buffer + sizeof(buffer), tne, tne + 4);
+  if (end >= buffer + sizeof(buffer) || end <= start)
+    return false;
+
+  uint8_t len = end - start;
+  if (len > TOOL_NAME_MAXLEN)
+    return false;
+
+  strncpy(toolName, start, len);
+  memclear(toolName + len, TOOL_NAME_MAXLEN + 1 - len);
+
+  return true;
+}
+
+bool isRadioScriptTool(const char * filename)
+{
+  const char * ext = getFileExtension(filename);
+  return ext && !strcasecmp(ext, SCRIPT_EXT);
 }
