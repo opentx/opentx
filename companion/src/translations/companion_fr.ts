@@ -357,22 +357,22 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="1129"/>
         <source>Release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal de version</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1143"/>
         <source>Releases (stable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Officielle (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1148"/>
         <source>Release candidates (testing)</source>
-        <translation type="unfinished"></translation>
+        <translation>Candidate (test)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1153"/>
         <source>Nightly builds (unstable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nighlty (instable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1373"/>
@@ -4450,7 +4450,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1555"/>
         <source>Power On Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse d&apos;allumage</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2382"/>
@@ -4460,7 +4460,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2420"/>
         <source>Power Off Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse d&apos;extinction</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1562"/>
@@ -5085,7 +5085,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.ui" line="1093"/>
         <source>S5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="46"/>
@@ -12099,7 +12099,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.ui" line="270"/>
         <source>Source</source>
-        <translation type="unfinished">Source</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="611"/>
@@ -12349,7 +12349,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="945"/>
         <source>Source</source>
-        <translation type="unfinished">Source</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="952"/>
