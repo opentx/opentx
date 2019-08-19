@@ -845,6 +845,8 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false,      STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_POTENSIC,   1, false,      STR_SUBTYPE_POTENSIC,  nullptr},
+  {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false,      NO_SUBTYPE,            nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
