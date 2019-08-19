@@ -197,5 +197,6 @@ if(INTERNAL_MODULE_PXX1)
 endif()
 
 if(INTERNAL_MODULE_PXX2)
+  set(PXX2 ON)
   add_definitions(-DINTERNAL_MODULE_PXX2)
 endif()
