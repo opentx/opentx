@@ -335,6 +335,8 @@ file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/Release/*opentx-*simulator${CMA
 # add its library name to be sure
 if(PCB STREQUAL X7 AND PCBREV STREQUAL T12)
   set(FLAVOUR t12)
+elseif(PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019)
+  set(FLAVOUR x9d+2019)
 else()
   string(TOLOWER ${PCB} FLAVOUR)
 endif()
