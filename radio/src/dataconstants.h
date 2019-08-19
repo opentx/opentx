@@ -828,9 +828,7 @@ enum Functions {
   FUNC_HAPTIC,
   FUNC_LOGS,
   FUNC_BACKLIGHT,
-#if defined(PCBTARANIS)
   FUNC_SCREENSHOT,
-#endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in Companion
 #endif

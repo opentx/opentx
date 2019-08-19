@@ -197,8 +197,6 @@ inline display_t getPixel(uint8_t x, uint8_t y)
   return ((pixel & mask) ? 0xf : 0);
 }
 
-const char * writeScreenshot();
-
 uint8_t getTextWidth(const char * s, uint8_t len=0, LcdFlags flags=0);
 
 #endif // _LCD_H_

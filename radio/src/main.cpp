@@ -528,12 +528,10 @@ void perMain()
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
 
-#if defined(PCBTARANIS)
   if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
     writeScreenshot();
     mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
   }
-#endif
 
 #if defined(PCBX9E) && !defined(SIMU)
   toplcdRefreshStart();
