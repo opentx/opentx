@@ -258,7 +258,6 @@ set(GUI_SRC
   view_telemetry.cpp
   view_about.cpp
   bmp.cpp
-  ../screenshot.cpp
   )
 
 if(STATUS_LEDS)

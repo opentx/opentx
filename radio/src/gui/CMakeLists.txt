@@ -5,6 +5,7 @@ set(SRC
   ${SRC}
   gui/navigation/common.cpp
   gui/navigation/navigation_${NAVIGATION_TYPE}.cpp
+  gui/screenshot.cpp
   )
 
 string(TOUPPER ${NAVIGATION_TYPE} NAVIGATION_TYPE)

@@ -163,4 +163,6 @@ inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
 
+const char * writeScreenshot();
+
 #endif // _GUI_COMMON_H_
