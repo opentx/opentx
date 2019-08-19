@@ -87,6 +87,10 @@
   #warning "Unknown board!"
 #endif
 
+#define MAX_TELEMETRY_SCREENS 4
+#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.screensType >> (2*(screenIndex))) & 0x03)
+#define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
+
 #define MAX_TIMERS                     3
 #define NUM_CAL_PPM                    4
 
@@ -164,11 +168,11 @@ enum MainViews {
 };
 #else
 enum MainViews {
-  VIEW_OUTPUTS_VALUES,
+  VIEW_OUTPUTS_VALUES = MAX_TELEMETRY_SCREENS,
   VIEW_OUTPUTS_BARS,
   VIEW_INPUTS,
   VIEW_TIMER2,
-  VIEW_COUNT
+  VIEW_COUNT = VIEW_TIMER2
 };
 #endif
 
@@ -338,9 +342,6 @@ enum TelemetryScreenType {
   TELEMETRY_SCREEN_TYPE_MAX = TELEMETRY_SCREEN_TYPE_GAUGES
 #endif
 };
-#define MAX_TELEMETRY_SCREENS 4
-#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.screensType >> (2*(screenIndex))) & 0x03)
-#define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
 
 constexpr int16_t FAILSAFE_CHANNEL_HOLD = 2000;
 constexpr int16_t FAILSAFE_CHANNEL_NOPULSE = 2001;

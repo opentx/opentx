@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+extern bool displayCustomTelemetryScreen(uint8_t index);
+
 #define BIGSIZE       DBLSIZE
 #if defined (PCBTARANIS)
   #define LBOX_CENTERX  (LCD_W/4 + 14)
@@ -413,7 +415,18 @@ void menuMainView(event_t event)
     }
   }
 
-  if (view_base < VIEW_INPUTS) {
+  if (view_base < MAX_TELEMETRY_SCREENS) {
+    //TELEMETRY SCREENS
+    if (TELEMETRY_SCREEN_TYPE(view_base) != TELEMETRY_SCREEN_TYPE_NONE) {
+      lcdClear();
+      displayCustomTelemetryScreen(view_base);
+    }
+    else {
+      g_eeGeneral.view = (view_base == 0 ? VIEW_COUNT-1 : view_base-1);
+      storageDirty(EE_GENERAL);
+    }
+  }
+  else if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
     lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
