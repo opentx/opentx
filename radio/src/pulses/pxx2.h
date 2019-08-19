@@ -58,6 +58,12 @@
 
 #define PXX2_HW_INFO_TX_ID                         0xFF
 
+#if defined(COLORLCD)
+  #define SPECTRUM_ANALYSER_POWER_FLOOR   -120 /*dBm*/
+#else
+  #define SPECTRUM_ANALYSER_POWER_FLOOR   -120 /*dBm*/
+#endif
+
 enum PXX2ModuleModelID {
   PXX2_MODULE_NONE,
   PXX2_MODULE_XJT,

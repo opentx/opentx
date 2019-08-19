@@ -110,14 +110,18 @@ bool menuRadioSpectrumAnalyser(event_t event)
     }
   }
 
-  for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000; frequency < reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2; frequency += 10000000) {
-    int32_t offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
-    uint32_t x = offset / reusableBuffer.spectrumAnalyser.step;
-    if (x > 0 && x < LCD_W - 1)
-      lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, STASHED, CURVE_AXIS_COLOR);
+  for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000; ; frequency += 10000000) {
+    int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+    int x = offset / reusableBuffer.spectrumAnalyser.step;
+    if (x >= LCD_W - 1)
+      break;
+    lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, STASHED, CURVE_AXIS_COLOR);
   }
 
-  for (coord_t y = MENU_HEADER_HEIGHT + (MENU_FOOTER_TOP - MENU_HEADER_HEIGHT) / 8; y < MENU_FOOTER_TOP; y += (MENU_FOOTER_TOP - MENU_HEADER_HEIGHT) / 8) {
+  for (uint8_t power = 20; ; power += 20) {
+    int y = MENU_FOOTER_TOP - 1 - limit<int>(0, power << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
+    if (y <= MENU_HEADER_HEIGHT)
+      break;
     lcdDrawHorizontalLine(0, y, LCD_W, STASHED, CURVE_AXIS_COLOR);
   }
 
@@ -126,7 +130,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
 
   coord_t prev_yv = (coord_t)-1;
   for (coord_t xv=0; xv<LCD_W; xv++) {
-    coord_t yv = MENU_FOOTER_TOP - limit<int>(0, reusableBuffer.spectrumAnalyser.bars[xv] << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
+    coord_t yv = MENU_FOOTER_TOP - 1 - limit<int>(0, reusableBuffer.spectrumAnalyser.bars[xv] << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
     if (prev_yv != (coord_t)-1) {
       if (yv < peak_y) {
         peak_x = xv;
@@ -148,7 +152,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
 
   prev_yv = (coord_t)-1;
   for (coord_t xv=0; xv<LCD_W; xv++) {
-    coord_t yv = MENU_FOOTER_TOP - limit<int>(0, reusableBuffer.spectrumAnalyser.max[xv] << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
+    coord_t yv = MENU_FOOTER_TOP - 1 - limit<int>(0, reusableBuffer.spectrumAnalyser.max[xv] << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
     if (prev_yv != (coord_t)-1) {
       if (prev_yv < yv) {
         for (int y=prev_yv; y<=yv; y+=1) {
