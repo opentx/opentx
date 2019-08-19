@@ -653,6 +653,9 @@ void TelemetrySensorPanel::update()
     ui->id->hide();
     ui->instanceLabel->hide();
     ui->instance->hide();
+    ui->rxLabel->hide();
+    ui->moduleLabel->hide();
+    ui->rxOrMod->hide();
     ui->formula->show();
     ui->formula->setCurrentIndex(sensor.formula);
     isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
@@ -676,6 +679,29 @@ void TelemetrySensorPanel::update()
     ui->id->show();
     ui->instanceLabel->show();
     ui->instance->show();
+
+    const ModuleData& module = model->moduleData[sensor.moduleIdx];
+    if (module.isPxx2Module()) {
+      ui->rxLabel->show();
+      ui->moduleLabel->hide();
+      if (module.access.receivers & (1 << sensor.rxIdx)) {
+        ui->rxOrMod->setText(module.access.receiverName[sensor.rxIdx]);
+      }
+      else {
+        // receiver does not seem to be active
+        ui->rxOrMod->clear();
+      }
+    }
+    else {
+      ui->rxLabel->hide();
+      ui->moduleLabel->show();
+      if (sensor.moduleIdx)
+        ui->rxOrMod->setText(tr("Internal Module"));
+      else
+        ui->rxOrMod->setText(tr("External Module"));
+    }
+    ui->rxOrMod->show();
+
     ui->formula->hide();
     isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
     ratioFieldsDisplayed = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);

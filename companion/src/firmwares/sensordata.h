@@ -111,6 +111,8 @@ class SensorData {
     unsigned int id;
     unsigned int subid;
     unsigned int instance;
+    unsigned int rxIdx;
+    unsigned int moduleIdx;
     unsigned int persistentValue;
     unsigned int formula;
     char label[4+1];

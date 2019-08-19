@@ -30,6 +30,20 @@ void ModuleData::convert(RadioDataConversionState & cstate)
   }
 }
 
+bool ModuleData::isPxx2Module() const
+{
+  switch(protocol){
+    case PULSES_ACCESS_ISRM:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_XJT_LITE_X16:
+      return true;
+    default:
+      return false;
+  }
+}
+
 QString ModuleData::rfProtocolToString() const
 {
   switch (protocol) {

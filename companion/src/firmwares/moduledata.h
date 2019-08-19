@@ -175,11 +175,12 @@ class ModuleData {
 
     struct Access {
       unsigned int receivers;
-      char         receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
+      char         receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME+1];
     } access;
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     void convert(RadioDataConversionState & cstate);
+    bool isPxx2Module() const;
     QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); }
     QString rfProtocolToString() const;
     QString subTypeToString(int type = -1) const;

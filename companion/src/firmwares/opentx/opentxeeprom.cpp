@@ -1868,7 +1868,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _subid = sensor.subid;
-        _instance = sensor.instance;
+        // keep highest 3 bits from instance (rxIdx & moduleIdx are read-only)
+        _instance = (sensor.instance & 0x1F) | (_instance & 0xE0);
         _ratio = sensor.ratio;
         _offset = sensor.offset;
       }
@@ -1891,7 +1892,9 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.subid = _subid;
-        sensor.instance = _instance;
+        sensor.instance = _instance & 0x1F;        // 5 bits instance
+        sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
+        sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
         sensor.ratio = _ratio;
         sensor.offset = _offset;
       }
@@ -2056,7 +2059,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
         internalField.Append(new SpareBitsField<5>(this));
 
         for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++)
-          internalField.Append(new CharField<8>(this, module.access.receiverName[i]));
+          internalField.Append(new CharField<8>(this, receiverName[i]));
       }
 
       bool select(const unsigned int& attr) const {
@@ -2076,11 +2079,24 @@ class ModuleUnionField: public UnionField<unsigned int> {
         if (module.protocol == PULSES_ACCESS_ISRM) {
           module.protocol += module.subType;
         }
+        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
+          for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
+
+            if (pos == PXX2_LEN_RX_NAME || receiverName[i][pos] == ' '
+                || receiverName[i][pos] == '\0') {
+
+              module.access.receiverName[i][pos] = '\0';
+              break;
+            }
+            module.access.receiverName[i][pos] = receiverName[i][pos];
+          }
+        }
       }
 
     private:
       StructField internalField;
       ModuleData& module;
+      char        receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME+1];
   };
 
   public:
