@@ -414,12 +414,14 @@ void menuMainView(event_t event)
       drawRSSIGauge();
     }
   }
+  TRACE("VIEW:%d/%d", view_base,VIEW_COUNT);
 
-  if (view_base < MAX_TELEMETRY_SCREENS) {
+  if (view_base > VIEW_TIMER2) {
+    TRACE("TELEM:%d",view_base - VIEW_TIMER2);
     //TELEMETRY SCREENS
-    if (TELEMETRY_SCREEN_TYPE(view_base) != TELEMETRY_SCREEN_TYPE_NONE) {
+    if (TELEMETRY_SCREEN_TYPE(view_base - VIEW_TIMER2) != TELEMETRY_SCREEN_TYPE_NONE) {
       lcdClear();
-      displayCustomTelemetryScreen(view_base);
+      displayCustomTelemetryScreen(view_base - VIEW_TIMER2);
     }
     else {
       g_eeGeneral.view = (view_base == 0 ? VIEW_COUNT-1 : view_base-1);
