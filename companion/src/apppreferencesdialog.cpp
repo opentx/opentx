@@ -188,7 +188,7 @@ void AppPreferencesDialog::initSettings()
   ui->backLightColor->setCurrentIndex(g.backLight());
   ui->volumeGain->setValue(profile.volumeGain() / 10.0);
 
-  if (IS_TARANIS(getCurrentBoard())) {
+  if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
     ui->backLightColor->setEnabled(false);
   }
 
