@@ -33,7 +33,9 @@
 #define MENU_BODY_TOP    (FH + 1)
 #define MENU_BODY_BOTTOM (LCD_H)
 
+#if defined(PXX2)
 constexpr uint8_t COLUMN2_X = 10 * FW;
+#endif
 
 
 void menuRadioFirmwareOptions(event_t event)
