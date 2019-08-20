@@ -2612,13 +2612,17 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new ArmCustomFunctionField(this, generalData.customFn[i], board, version, variant));
     }
   }
-
+  
   if (IS_STM32(board)) {
     if (version >= 218) {
       internalField.Append(new UnsignedField<4>(this, generalData.hw_uartMode));
-      // not on Horus...
-      for (uint8_t i=0; i<4; i++) {
-        internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
+      if (!IS_HORUS(board)) {
+        for (uint8_t i=0; i<4; i++) {
+          internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
+        }
+      }
+      else {
+        internalField.Append(new SpareBitsField<4>(this));
       }
     }
     else {
@@ -2676,6 +2680,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
 
   if (IS_TARANIS_X9E(board))
     internalField.Append(new SpareBitsField<64>(this)); // switchUnlockStates
+  else if (IS_TARANIS_X9D(board))
+    internalField.Append(new SpareBitsField<32>(this)); // switchUnlockStates
   else if (IS_TARANIS(board))
     internalField.Append(new SpareBitsField<16>(this)); // switchUnlockStates
 
@@ -2730,7 +2736,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new UnsignedField<7>(this, generalData.backlightOffBright));
     internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
   }
-  else if (IS_TARANIS_X9E(board) || (version >= 219 && (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_XLITES(board)))) {
+  else if (IS_TARANIS_X9E(board) || (version >= 219 && (IS_TARANIS_X7(board) || IS_TARANIS_X9D(board) || IS_TARANIS_XLITE(board)))) {
     internalField.Append(new SpareBitsField<8>(this));
     internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
   }
