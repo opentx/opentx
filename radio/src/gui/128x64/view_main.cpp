@@ -386,6 +386,7 @@ void menuMainView(event_t event)
   }
 
   {
+    if(!IS_TELEMETRY_VIEW_DISPLAYED()) {
     // Flight Mode Name
     uint8_t mode = mixerCurrentFlightMode;
     lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
@@ -410,9 +411,8 @@ void menuMainView(event_t event)
 
   if (view_base > VIEW_TIMER2) {
     //TELEMETRY SCREENS
-    if (TELEMETRY_SCREEN_TYPE(view_base - VIEW_TIMER2 - 1) != TELEMETRY_SCREEN_TYPE_NONE) {
-      lcdClear();
-      if (!displayTelemetryScreen(view_base - VIEW_TIMER2 -1)) {
+    if (TELEMETRY_SCREEN_TYPE(view_base - VIEW_FIRST_TELEM) != TELEMETRY_SCREEN_TYPE_NONE) {
+      if (!displayTelemetryScreen(view_base - VIEW_FIRST_TELEM)) {
         lcdDrawText(2 * FW, 3 * FH, "No Telemetry Screens");
         displayRssiLine();
       }

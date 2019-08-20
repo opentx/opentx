@@ -195,6 +195,7 @@ bool displayTelemetryScreen(uint8_t index)
     return false;
   }
 
+  lcdClear();
   drawTelemetryTopBar();
 
   if (index < MAX_TELEMETRY_SCREENS) {
