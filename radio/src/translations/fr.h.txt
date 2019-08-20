@@ -1163,9 +1163,9 @@
 #define TR_SERVOS_KO                   "Servos KO"
 #define TR_INVERTED_SERIAL             INDENT "Inversé"
 #define TR_IGNORE_INSTANCE             TR(INDENT "Ign. inst", INDENT "Ignorer instance")
-#define TR_DISCOVER_SENSORS            INDENT "Découvrir capteurs"
-#define TR_STOP_DISCOVER_SENSORS       INDENT "Terminer découverte"
-#define TR_DELETE_ALL_SENSORS          TR(INDENT "Suppr. tous capteurs", INDENT "Supprimer tous capteurs")
+#define TR_DISCOVER_SENSORS            "Découvrir capteurs"
+#define TR_STOP_DISCOVER_SENSORS       "Terminer découverte"
+#define TR_DELETE_ALL_SENSORS          TR("Suppr. tous capteurs", "Supprimer tous capteurs")
 #define TR_CONFIRMDELETE               TR("Tout effacer?", "Vraiment tout " LCDW_128_480_LINEBREAK "effacer ?")
 #define TR_SELECT_WIDGET               "Sélect. widget"
 #define TR_REMOVE_WIDGET               "Supprimer widget"

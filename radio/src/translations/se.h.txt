@@ -1156,9 +1156,9 @@
 //TODO: translation
 #define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     TR(INDENT "Inst.fel", INDENT "Hantera Instansfel")
-#define TR_DISCOVER_SENSORS    INDENT "Sök nya sensorer"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Avbryt sökning"
-#define TR_DELETE_ALL_SENSORS  INDENT "Ta bort alla sensorer"
+#define TR_DISCOVER_SENSORS    "Sök nya sensorer"
+#define TR_STOP_DISCOVER_SENSORS "Avbryt sökning"
+#define TR_DELETE_ALL_SENSORS  "Ta bort alla sensorer"
 #define TR_CONFIRMDELETE       "Ta bort alla?"
 #define TR_SELECT_WIDGET       "Select widget"
 #define TR_REMOVE_WIDGET       "Remove widget"

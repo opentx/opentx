@@ -1156,9 +1156,9 @@
 //TODO: translation
 #define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj przypadek"
-#define TR_DISCOVER_SENSORS    INDENT "Znajdź nowe czujniki"
-#define TR_STOP_DISCOVER_SENSORS INDENT "Szukanie STOP "
-#define TR_DELETE_ALL_SENSORS  INDENT "Usuń czujniki     "
+#define TR_DISCOVER_SENSORS    "Znajdź nowe czujniki"
+#define TR_STOP_DISCOVER_SENSORS "Szukanie STOP "
+#define TR_DELETE_ALL_SENSORS  "Usuń czujniki     "
 #define TR_CONFIRMDELETE       "Usunąć wszystkie?"
 #define TR_SELECT_WIDGET       "Select widget"
 #define TR_REMOVE_WIDGET       "Remove widget"

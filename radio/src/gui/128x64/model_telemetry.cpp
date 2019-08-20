@@ -197,7 +197,7 @@ void menuModelTelemetryFrsky(event_t event)
         break;
 
       case ITEM_TELEMETRY_DISCOVER_SENSORS:
-        lcdDrawText(0, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
+        lcdDrawText(INDENT_WIDTH, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           allowNewSensors = !allowNewSensors;
@@ -220,7 +220,7 @@ void menuModelTelemetryFrsky(event_t event)
         break;
 
       case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
-        lcdDrawText(0, y, STR_DELETE_ALL_SENSORS, attr);
+        lcdDrawText(INDENT_WIDTH, y, STR_DELETE_ALL_SENSORS, attr);
         if (attr) {
           s_editMode = 0;
           if (event == EVT_KEY_BREAK(KEY_ENTER)) {
