@@ -20,35 +20,6 @@
 
 #include "opentx.h"
 
-bool isPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  return g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx);
-}
-
-void setPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  g_model.moduleData[moduleIdx].pxx2.receivers |= (1 << receiverIdx);
-}
-
-bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  return is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
-}
-
-void removePXX2Receiver(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
-  g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
-  storageDirty(EE_MODEL);
-}
-
-void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
-    removePXX2Receiver(moduleIdx, receiverIdx);
-  }
-}
-
 void onPXX2R9MBindModeMenu(const char * result)
 {
   if (result == STR_16CH_WITH_TELEMETRY) {
@@ -68,6 +39,7 @@ void onPXX2R9MBindModeMenu(const char * result)
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
     moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+    reusableBuffer.moduleSetup.bindInformation.step = 0;
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
     return;
   }
@@ -279,8 +251,7 @@ void modelSetupModulePxx2ReceiverLine(uint8_t moduleIdx, uint8_t receiverIdx, co
 
   if (!isPXX2ReceiverUsed(moduleIdx, receiverIdx)) {
     lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, attr);
-    if (attr && s_editMode > 0) {
-      killEvents(event);
+    if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
       setPXX2ReceiverUsed(moduleIdx, receiverIdx);
       memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
       onPXX2ReceiverMenu(STR_BIND);

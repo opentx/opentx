@@ -192,7 +192,19 @@ enum MenuModelSetupItems {
 #endif
 
 #define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
-#define EXTERNAL_MODULE_TYPE_ROWS      (isModulePXX1(EXTERNAL_MODULE) || isModulePXX2(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+
+inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
+{
+  if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
+    return 1;
+#if defined(MULTIMODULE)
+  else if (isModuleMultimodule(EXTERNAL_MODULE)) {
+    return 1;
+  }
+#endif
+  else
+    return 0;
+}
 
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
 #define TIMER_ROWS                     2, 0, 0, 0, 0
@@ -315,7 +327,7 @@ void menuModelSetup(event_t event)
     INTERNAL_MODULE_ROWS
 
     LABEL(ExternalModule),
-      EXTERNAL_MODULE_TYPE_ROWS,
+      EXTERNAL_MODULE_TYPE_ROW(),
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
       EXTERNAL_MODULE_POWER_ROW,
       MULTIMODULE_STATUS_ROWS
@@ -336,7 +348,7 @@ void menuModelSetup(event_t event)
 #else
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, LABEL(PreflightCheck), 0, 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS-1, 0,
     LABEL(ExternalModule),
-    EXTERNAL_MODULE_TYPE_ROWS,
+    EXTERNAL_MODULE_TYPE_ROW(),
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
     MULTIMODULE_STATUS_ROWS
     EXTERNAL_MODULE_CHANNELS_ROWS,
@@ -851,7 +863,7 @@ void menuModelSetup(event_t event)
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
                   if (isModuleSBUS(EXTERNAL_MODULE))
                     g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
-                  if (isModulePPM(EXTERNAL_MODULE))
+                  else if (isModulePPM(EXTERNAL_MODULE))
                     SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
                 }
               }

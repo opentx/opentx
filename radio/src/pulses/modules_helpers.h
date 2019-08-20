@@ -449,4 +449,34 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
 
   return true;
 }
+
+inline bool isPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  return g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx);
+}
+
+inline void setPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  g_model.moduleData[moduleIdx].pxx2.receivers |= (1 << receiverIdx);
+}
+
+inline bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  return is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
+}
+
+inline void removePXX2Receiver(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
+  g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
+  storageDirty(EE_MODEL);
+}
+
+inline void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+    removePXX2Receiver(moduleIdx, receiverIdx);
+  }
+}
+
 #endif // _MODULES_H_

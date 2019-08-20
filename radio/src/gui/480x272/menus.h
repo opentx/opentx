@@ -330,7 +330,7 @@ extern const CheckIncDecStops &stopsSwitch;
   (val), (val+1)
 
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
-swsrc_t checkIncDecMovedSwitch(swsrc_t val);
+
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
@@ -438,11 +438,15 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
 
 extern uint8_t s_curveChan;
 
-#define WARNING_TYPE_ALERT     0
-#define WARNING_TYPE_ASTERISK  1
-#define WARNING_TYPE_CONFIRM   2
-#define WARNING_TYPE_INPUT     3
-#define WARNING_TYPE_INFO      4
+enum
+{
+  WARNING_TYPE_WAIT,
+  WARNING_TYPE_INFO,
+  WARNING_TYPE_ASTERISK,
+  WARNING_TYPE_CONFIRM,
+  WARNING_TYPE_INPUT,
+  WARNING_TYPE_ALERT
+};
 
 extern const char * warningText;
 extern const char * warningInfoText;
@@ -489,8 +493,6 @@ extern void (* popupFunc)(event_t event);
 extern uint8_t warningInfoFlags;
 
 #define DISPLAY_WARNING(evt)                (*popupFunc)(evt)
-#define POPUP_INFORMATION(s)           (warningText = s, warningType = WARNING_TYPE_INFO, warningInfoText = 0, popupFunc = runPopupWarning)
-#define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)
 #define SET_WARNING_INFO(info, len, flags)    (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
 
@@ -512,6 +514,35 @@ extern uint8_t popupMenuOffsetType;
 extern uint8_t popupMenuSelectedItem;
 const char * runPopupMenu(event_t event);
 extern void (*popupMenuHandler)(const char * result);
+
+inline void CLEAR_POPUP()
+{
+  warningText = nullptr;
+}
+
+inline void POPUP_WAIT(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_WAIT;
+  popupFunc = runPopupWarning;
+}
+
+inline void POPUP_INFORMATION(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_INFO;
+  popupFunc = runPopupWarning;
+}
+
+inline void POPUP_WARNING(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_ASTERISK;
+  popupFunc = runPopupWarning;
+}
 
 inline void POPUP_CONFIRMATION(const char *s, void (* confirmHandler)(const char *) = nullptr)
 {

@@ -122,47 +122,22 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_SLIDPOT_SPACING    45
 
 #define CURRENT_MODULE_EDITED(k)       (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
-#define CURRENT_RECEIVER_EDITED(k)      (k - (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? k : ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_1))
+#define CURRENT_RECEIVER_EDITED(k)      (k - (k >= ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1 : ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_1))
 
 #include "common/stdlcd/model_setup_pxx1.cpp"
 
-bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  return is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
-}
-
-void removePXX2Receiver(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
-  g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
-  storageDirty(EE_MODEL);
-}
-
-void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
-{
-  if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
-    removePXX2Receiver(moduleIdx, receiverIdx);
-  }
-}
-
-const char * STR_BIND_8CH_WITH_TELEM = TR("8CH with telem.", "8CH with telemetry");
-const char * STR_BIND_16CH_WITH_TELEM = TR("16CH with telem.", "16CH with telemetry");
-const char * STR_BIND_16CH_WITHOUT_TELEM = TR("16CH without telem.", "16CH without telemetry");
-const char * STR_BIND_FLEX_868 = "Flex 868MHz";
-const char * STR_BIND_FLEX_915 = "Flex 915MHz";
-
 void onPXX2R9MBindModeMenu(const char * result)
 {
-  if (result == STR_BIND_16CH_WITH_TELEM) {
+  if (result == STR_16CH_WITH_TELEMETRY) {
     reusableBuffer.moduleSetup.bindInformation.lbtMode = 1;
   }
-  else if (result == STR_BIND_16CH_WITHOUT_TELEM) {
+  else if (result == STR_16CH_WITHOUT_TELEMETRY) {
     reusableBuffer.moduleSetup.bindInformation.lbtMode = 2;
   }
-  else if (result == STR_BIND_FLEX_868) {
+  else if (result == STR_FLEX_915) {
     reusableBuffer.moduleSetup.bindInformation.flexMode = 0;
   }
-  else if (result == STR_BIND_FLEX_915) {
+  else if (result == STR_FLEX_868) {
     reusableBuffer.moduleSetup.bindInformation.flexMode = 1;
   }
   else {
@@ -170,6 +145,7 @@ void onPXX2R9MBindModeMenu(const char * result)
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition);
     moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+    reusableBuffer.moduleSetup.bindInformation.step = 0;
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
     return;
   }
@@ -498,7 +474,7 @@ int getSwitchWarningsCount()
 
 #define TIMER_ROWS(x)                        NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 
-inline uint8_t EXTERNAL_MODULE_MODE_ROW()
+inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 {
   if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
     return 1;
@@ -592,7 +568,7 @@ bool menuModelSetup(event_t event)
            IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), /* Receiver 3 */
 
          LABEL(ExternalModule),
-           EXTERNAL_MODULE_MODE_ROW(),
+           EXTERNAL_MODULE_TYPE_ROW(),
            MULTIMODULE_STATUS_ROWS
            EXTERNAL_MODULE_CHANNELS_ROWS,
            IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, EXTERNAL_MODULE_BIND_ROWS),
@@ -1044,19 +1020,21 @@ bool menuModelSetup(event_t event)
           if (s_editMode > 0) {
             switch (menuHorizontalPosition) {
               case 0:
-                g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type,
-                                                                       MODULE_TYPE_NONE, MODULE_TYPE_COUNT - 1, EE_MODEL,
-                                                                       isExternalModuleAvailable);
+              {
+                uint8_t moduleType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_COUNT - 1, EE_MODEL,
+                                                 isExternalModuleAvailable);
                 if (checkIncDec_Ret) {
-                  g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
-                  g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
+                  memclear(&g_model.moduleData[EXTERNAL_MODULE], sizeof(g_model.moduleData[EXTERNAL_MODULE]));
+                  g_model.moduleData[EXTERNAL_MODULE].type = moduleType;
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
                   if (isModuleSBUS(EXTERNAL_MODULE))
                     g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
-                  if (isModulePPM(EXTERNAL_MODULE))
+                  else if (isModulePPM(EXTERNAL_MODULE))
                     SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
                 }
                 break;
+              }
+
               case 1:
                 if (isModuleDSM2(EXTERNAL_MODULE))
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
@@ -1092,6 +1070,7 @@ bool menuModelSetup(event_t event)
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
                 }
                 break;
+
 #if defined(MULTIMODULE)
               case 2:
                 if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto) {
@@ -1264,6 +1243,7 @@ bool menuModelSetup(event_t event)
 #endif
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER_NUM);
@@ -1283,6 +1263,7 @@ bool menuModelSetup(event_t event)
       break;
 
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_REGISTER_RANGE:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_REGISTER_RANGE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MODULE);
@@ -1321,6 +1302,9 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_1:
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_2:
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_3:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_2:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_3:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
@@ -1328,60 +1312,75 @@ bool menuModelSetup(event_t event)
 
         drawStringWithIndex(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER, receiverIdx + 1);
 
-        if (!(g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx))) {
+        if (!isPXX2ReceiverUsed(moduleIdx, receiverIdx)) {
           drawButton(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, attr);
-          if (attr && s_editMode > 0) {
-            s_editMode = 0;
-            killEvents(event);
-            g_model.moduleData[moduleIdx].pxx2.receivers |= (1 << receiverIdx);
+          if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+            setPXX2ReceiverUsed(moduleIdx, receiverIdx);
             memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
-            storageDirty(EE_MODEL);
+            onPXX2ReceiverMenu(STR_BIND);
           }
-          else {
-            break;
-          }
+          break;
         }
 
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
-        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
-          moduleInformation.information.modelID = 0;
-          moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+        if (s_editMode && isModuleR9MAccess(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && reusableBuffer.moduleSetup.bindInformation.step < 0) {
+          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_MODULE_TX_INFORMATION_REQUEST && moduleInformation.information.modelID) {
+            // For R9M ACCESS the module information has been requested to know if we are in EU mode. We just receive it here and continue
+            if (moduleInformation.information.variant == PXX2_VARIANT_EU) {
+              // In EU mode we will need the power of the module to know if telemetry can be proposed
+              reusableBuffer.moduleSetup.bindInformation.step = BIND_MODULE_TX_SETTINGS_REQUEST;
+#if defined(SIMU)
+              reusableBuffer.moduleSetup.pxx2.moduleSettings.txPower = 14;
+              break;
+#else
+              moduleState[moduleIdx].readModuleSettings(&reusableBuffer.moduleSetup.pxx2.moduleSettings);
+#endif
+            }
+            else {
+              reusableBuffer.moduleSetup.bindInformation.step = 0;
+              moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+            }
+          }
+          else if (reusableBuffer.moduleSetup.bindInformation.step == BIND_MODULE_TX_SETTINGS_REQUEST && reusableBuffer.moduleSetup.pxx2.moduleSettings.txPower > 0) {
+            // We just receive the module settings (for TX power)
+            reusableBuffer.moduleSetup.bindInformation.step = 0;
+            moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
+          }
         }
-
-        if (attr && (moduleState[moduleIdx].mode == 0 || s_editMode == 0)) {
+        else if (attr && (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL || s_editMode == 0)) {
           if (moduleState[moduleIdx].mode) {
             moduleState[moduleIdx].mode = 0;
             removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
             killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
             event = 0;
+            CLEAR_POPUP();
           }
           s_editMode = 0;
         }
 
         if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT && reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
-            popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
-            for (uint8_t i=0; i<popupMenuItemsCount; i++) {
-              popupMenuItems[i] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[i];
+          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT) {
+            if (reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
+              popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+              for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
+                popupMenuItems[rx] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[rx];
+              }
+              // popupMenuTitle = STR_PXX2_SELECT_RX;
+              POPUP_MENU_START(onPXX2BindMenu);
             }
-            //popupMenuTitle = STR_PXX2_SELECT_RX;  // TODO : fix
-            POPUP_MENU_START(onPXX2BindMenu);
+            else {
+              POPUP_WAIT(STR_WAITING_FOR_RX);
+            }
           }
         }
 
-        if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
-          killEvents(event);
-          if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
-            onPXX2ReceiverMenu(STR_BIND);
-          }
-          else {
-            POPUP_MENU_ADD_ITEM(STR_BIND);
-            POPUP_MENU_ADD_ITEM(STR_OPTIONS);
-            POPUP_MENU_ADD_ITEM(STR_SHARE);
-            POPUP_MENU_ADD_ITEM(STR_DELETE);
-            POPUP_MENU_ADD_ITEM(STR_RESET);
-          }
+        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+          POPUP_MENU_ADD_ITEM(STR_BIND);
+          POPUP_MENU_ADD_ITEM(STR_OPTIONS);
+          POPUP_MENU_ADD_ITEM(STR_SHARE);
+          POPUP_MENU_ADD_ITEM(STR_DELETE);
+          POPUP_MENU_ADD_ITEM(STR_RESET);
           POPUP_MENU_START(onPXX2ReceiverMenu);
         }
       }

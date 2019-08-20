@@ -75,7 +75,6 @@ void startBindMenu(uint8_t moduleIdx)
   if (isTelemAllowedOnBind(moduleIdx) && g_model.moduleData[moduleIdx].pxx.receiver_telem_off)
     selection += 1;
 
-
   POPUP_MENU_SELECT_ITEM(selection);
   POPUP_MENU_START(onBindMenu);
 }
