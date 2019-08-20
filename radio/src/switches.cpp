@@ -285,7 +285,6 @@ bool getLogicalSwitch(uint8_t idx)
     }
     else {
       mixsrc_t v1 = ls->v1;
-#if defined(TELEMETRY_FRSKY)
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {
         if (!TELEMETRY_STREAMING() || IS_FAI_FORBIDDEN(v1-1)) {
@@ -303,17 +302,6 @@ bool getLogicalSwitch(uint8_t idx)
       else {
         y = calc100toRESX(ls->v2);
       }
-#else
-      if (v1 >= MIXSRC_FIRST_TELEM) {
-        y = (int16_t)3 * (128+ls->v2); // it's a Timer
-      }
-      else if (v1 >= MIXSRC_GVAR1) {
-        y = ls->v2; // it's a GVAR
-      }
-      else {
-        y = calc100toRESX(ls->v2);
-      }
-#endif
 
       switch (ls->func) {
         case LS_FUNC_VEQUAL:
@@ -370,9 +358,7 @@ bool getLogicalSwitch(uint8_t idx)
     }
   }
 
-#if defined(TELEMETRY_FRSKY)
 DurationAndDelayProcessing:
-#endif
 
     if (ls->delay || ls->duration) {
       LogicalSwitchContext &context = lswFm[mixerCurrentFlightMode].lsw[idx];

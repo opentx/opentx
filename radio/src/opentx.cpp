@@ -196,11 +196,9 @@ void per10ms()
   }
 #endif
 
-#if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_JETI)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
     telemetryInterrupt10ms();
   }
-#endif
 
   // These moved here from evalFlightModeMixes() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)
@@ -674,7 +672,6 @@ getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
   return value;
 }
 
-#if defined(TELEMETRY_FRSKY)
 ls_telemetry_value_t minTelemValue(source_t channel)
 {
   return 0;
@@ -684,7 +681,6 @@ ls_telemetry_value_t maxTelemValue(source_t channel)
 {
   return 30000;
 }
-#endif
 
 #define INAC_STICKS_SHIFT   6
 #define INAC_SWITCHES_SHIFT 8
@@ -1330,9 +1326,7 @@ void flightReset(uint8_t check)
   }
 #endif
 
-#if defined(TELEMETRY_FRSKY)
   telemetryReset();
-#endif
 
   s_mixer_first_run_done = false;
 
@@ -1580,9 +1574,7 @@ void opentxClose(uint8_t shutdown)
     watchdogSuspend(2000/*20s*/);
     pausePulses();   // stop mixer task to disable trims processing while in shutdown
     AUDIO_BYE();
-#if defined(TELEMETRY_FRSKY)
     // TODO needed? telemetryEnd();
-#endif
 #if defined(LUA)
     luaClose(&lsScripts);
 #if defined(COLORLCD)

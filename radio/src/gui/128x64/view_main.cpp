@@ -47,15 +47,12 @@
 #define TRIM_LH_POS   (TRIM_LH_X-4*FW)
 #define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
 #define TRIM_RH_POS   (TRIM_RH_X-4*FW)
-#if defined(TELEMETRY_FRSKY)
 #define RSSSI_X       (30)
 #define RSSSI_Y       (31)
 #define RSSI_MAX      105
-#endif
 
 #define TRIM_LEN      23
 
-#if defined(TELEMETRY_FRSKY)
 void drawRSSIGauge()
 {
   uint8_t bar = (RSSI_MAX - g_model.rssiAlarms.getWarningRssi()) / 4;
@@ -66,7 +63,6 @@ void drawRSSIGauge()
     }
   }
 }
-#endif
 
 void drawPotsBars()
 {
@@ -276,15 +272,11 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
-#if defined(TELEMETRY_FRSKY)
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-#endif
   }
-#if defined(TELEMETRY_FRSKY)
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
   }
-#endif
   else if (result == STR_RESET_FLIGHT) {
     flightReset();
   }
@@ -385,11 +377,7 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_TELEMETRY:
-#if defined(TELEMETRY_FRSKY)
       chainMenu(menuViewTelemetryFrsky);
-#else
-      chainMenu(menuStatisticsDebug);
-#endif
       killEvents(event);
       break;
 
@@ -419,12 +407,10 @@ void menuMainView(event_t event)
     // Trims sliders
     displayTrims(mode);
 
-#if defined(TELEMETRY_FRSKY)
     // RSSI gauge
     if (TELEMETRY_RSSI() > 0) {
       drawRSSIGauge();
     }
-#endif
   }
 
   if (view_base < VIEW_INPUTS) {

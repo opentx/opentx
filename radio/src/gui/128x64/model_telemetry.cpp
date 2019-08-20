@@ -118,9 +118,9 @@ void onDeleteAllSensorsConfirm(const char * result)
   }
 }
 
-void menuModelTelemetryFrsky(event_t event)
+void menuModelTelemetry(event_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
+  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
 

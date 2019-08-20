@@ -529,7 +529,7 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(TELEMETRY_FRSKY) && defined(GPS)
+#if defined(GPS)
       case ITEM_RADIO_SETUP_TIMEZONE:
         lcdDrawTextAlignedLeft(y, STR_TIMEZONE);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.timezone, attr|LEFT);

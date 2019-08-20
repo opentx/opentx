@@ -616,7 +616,6 @@ const char STR_BLONBRIGHTNESS[] = TR_BLONBRIGHTNESS;
 const char STR_BLOFFBRIGHTNESS[] = TR_BLOFFBRIGHTNESS;
 #endif
 
-#if defined(TELEMETRY_FRSKY)
 const char STR_TIMEZONE[] = TR_TIMEZONE;
 const char STR_ADJUST_RTC[] = TR_ADJUST_RTC;
 const char STR_GPS[] = TR_GPS;
@@ -625,7 +624,6 @@ const char STR_VARIO[] = TR_VARIO;
 const char STR_PITCH_AT_ZERO[] = TR_PITCH_AT_ZERO;
 const char STR_PITCH_AT_MAX[] = TR_PITCH_AT_MAX;
 const char STR_REPEAT_AT_ZERO[] = TR_REPEAT_AT_ZERO;
-#endif
 
 #if defined(EEPROM)
 const char STR_BAD_RADIO_DATA[] = TR_BADEEPROMDATA;
@@ -644,9 +642,7 @@ const char STR_STORAGE_FORMAT[] = TR_STORAGE_FORMAT;
 const char STR_MENUCUSTOMSCRIPTS[] = TR_MENUCUSTOMSCRIPTS;
 #endif
 
-#if defined(TELEMETRY_FRSKY)
 const char STR_MENUTELEMETRY[] = TR_MENUTELEMETRY;
-#endif
 
 #if defined(DSM2) || defined(PXX)
 const char STR_RECEIVER_NUM[] = TR_RECEIVER_NUM;

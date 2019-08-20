@@ -169,10 +169,10 @@ if(CROSSFIRE)
 endif()
 
 add_definitions(-DCPUARM)
-add_definitions(-DTELEMETRY_FRSKY -DTELEMETRY_FRSKY_SPORT -DGPS)
-
+add_definitions(-DGPS)
 add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE)
 add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
+
 include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
 foreach(LANGUAGE ${TTS_LANGUAGES})
   string(TOLOWER ${LANGUAGE} lang_lower)

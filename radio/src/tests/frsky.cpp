@@ -21,17 +21,10 @@
 #include "gtests.h"
 
 void frskyDProcessPacket(const uint8_t *packet);
-
-#if defined(TELEMETRY_FRSKY_SPORT)
 bool checkSportPacket(const uint8_t *packet);
 void sportProcessTelemetryPacket(const uint8_t * packet);
 bool checkSportPacket(const uint8_t *packet);
-void frskyCalculateCellStats(void);
-void displayVoltagesScreen();
-#endif
 
-
-#if defined(TELEMETRY_FRSKY)
 TEST(FrSky, TelemetryValueWithMinAveraging)
 {
   /*
@@ -147,9 +140,6 @@ TEST(FrSky, Gps)
   EXPECT_EQ(telemetryItems[0].gps.longitude, 45341666);
 }
 
-#endif // defined(TELEMETRY_FRSKY)
-
-#if defined(TELEMETRY_FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)
 {
   // Packet downstream
@@ -487,4 +477,3 @@ TEST(FrSkySPORT, frskyCurrent)
   EXPECT_EQ(telemetryItems[0].valueMax, 505);
 }
 
-#endif  //#if defined(TELEMETRY_FRSKY_SPORT)

@@ -103,7 +103,7 @@
   #define CASE_PWM_BACKLIGHT(x)
 #endif
 
-#if defined(TELEMETRY_FRSKY) && defined(GPS)
+#if defined(GPS)
   #define CASE_GPS(x) x,
 #else
   #define CASE_GPS(x)
@@ -131,12 +131,6 @@
   #define CASE_PWR_BUTTON_PRESS(x) x,
 #else
   #define CASE_PWR_BUTTON_PRESS(x)
-#endif
-
-#if defined(TELEMETRY_FRSKY)
-  #define CASE_FRSKY(x) x,
-#else
-  #define CASE_FRSKY(x)
 #endif
 
 #if defined(PXX1)
@@ -1238,13 +1232,8 @@ char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defa
 // Stick tolerance varies between transmitters, Higher is better
 #define STICK_TOLERANCE 64
 
-#if defined(TELEMETRY_FRSKY)
   ls_telemetry_value_t minTelemValue(source_t channel);
   ls_telemetry_value_t maxTelemValue(source_t channel);
-#else
-  #define minTelemValue(channel) 255
-  #define maxTelemValue(channel) 255
-#endif
 
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
@@ -1277,7 +1266,6 @@ inline bool IS_TXBATT_WARNING()
   return g_vbat100mV <= g_eeGeneral.vBatWarn;
 }
 
-#if defined(TELEMETRY_FRSKY)
 enum TelemetryViews {
   TELEMETRY_CUSTOM_SCREEN_1,
   TELEMETRY_CUSTOM_SCREEN_2,
@@ -1287,7 +1275,6 @@ enum TelemetryViews {
 };
 
 extern uint8_t s_frsky_view;
-#endif
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
 

@@ -180,11 +180,9 @@ TASK_FUNCTION(mixerTask)
       }
 #endif
 
-#if defined(TELEMETRY_FRSKY)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
-#endif
 
       if (heartbeat == HEART_WDT_CHECK) {
         wdt_reset();

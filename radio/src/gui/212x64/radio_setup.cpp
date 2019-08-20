@@ -484,7 +484,7 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(TELEMETRY_FRSKY) && defined(GPS)
+#if defined(GPS)
       case ITEM_RADIO_SETUP_LABEL_GPS:
         lcdDrawTextAlignedLeft(y, STR_GPS);
         break;

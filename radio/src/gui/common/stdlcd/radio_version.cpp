@@ -35,7 +35,6 @@
 
 constexpr uint8_t COLUMN2_X = 10 * FW;
 
-
 void menuRadioFirmwareOptions(event_t event)
 {
   title(STR_MENU_FIRM_OPTIONS);

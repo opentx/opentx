@@ -123,7 +123,7 @@ enum EnumTabModel {
 #if defined(LUA_MODEL_SCRIPTS)
   MENU_MODEL_CUSTOM_SCRIPTS,
 #endif
-  CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
+  MENU_MODEL_TELEMETRY,
   MENU_MODEL_PAGES_COUNT
 };
 
@@ -177,7 +177,7 @@ bool menuModelGVars(event_t event);
 bool menuModelLogicalSwitches(event_t event);
 bool menuModelSpecialFunctions(event_t event);
 bool menuModelCustomScripts(event_t event);
-bool menuModelTelemetryFrsky(event_t event);
+bool menuModelTelemetry(event_t event);
 bool menuModelSensor(event_t event);
 bool menuModelExpoOne(event_t event);
 bool menuModelModuleOptions(event_t event);

@@ -262,11 +262,7 @@
 
 #define LEN_VFSWRESET          TR("\004", "\011")  /*9 decimal*/
 
-#if defined(TELEMETRY_FRSKY)
-  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetra")
-#else
-  #define TR_FSW_RESET_TELEM
-#endif
+#define TR_FSW_RESET_TELEM   TR("Telm", "Telemetra")
 
 #if LCD_W >= 212
   #define TR_FSW_RESET_TIMERS  "Timer 1\0 ""Timer 2\0 ""Timer 3\0 "

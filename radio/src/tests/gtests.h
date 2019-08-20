@@ -80,13 +80,11 @@ inline void MIXER_RESET()
 
 inline void TELEMETRY_RESET()
 {
-#if defined(TELEMETRY_FRSKY)
   telemetryData.clear();
   telemetryData.rssi.set(100);
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     telemetryItems[i].clear();
   }
-#endif
   memclear(g_model.telemetrySensors, sizeof(g_model.telemetrySensors));
 }
 

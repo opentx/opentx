@@ -37,7 +37,7 @@ const MenuHandlerFunc menuTabModel[] = {
 #if defined(LUA_MODEL_SCRIPTS)
   menuModelCustomScripts,
 #endif
-  CASE_FRSKY(menuModelTelemetryFrsky)
+  menuModelTelemetry,
   menuModelDisplay
 };
 

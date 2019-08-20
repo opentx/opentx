@@ -505,9 +505,6 @@ int main(int argc, char ** argv)
   opentxSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
 #endif
 
-#if defined(TELEMETRY_FRSKY) && !defined(TELEMETRY_FRSKY_SPORT)
-  telemetryStreaming = 1;
-#endif
 
   printf("Model size = %d\n", (int)sizeof(g_model));
 

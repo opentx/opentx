@@ -501,16 +501,12 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
   int index = availableTelemetryIndex();
   if (index >= 0) {
     switch (protocol) {
-#if defined(TELEMETRY_FRSKY_SPORT)
       case TELEM_PROTO_FRSKY_SPORT:
         frskySportSetDefault(index, id, subId, instance);
         break;
-#endif
-#if defined(TELEMETRY_FRSKY)
       case TELEM_PROTO_FRSKY_D:
         frskyDSetDefault(index, id);
         break;
-#endif
 #if defined(CROSSFIRE)
       case TELEM_PROTO_CROSSFIRE:
         crossfireSetDefault(index, id, instance);

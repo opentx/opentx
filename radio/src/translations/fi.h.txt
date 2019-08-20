@@ -259,11 +259,7 @@
 
 #define LEN_VFSWRESET          TR("\004", "\011")
 
-#if defined(TELEMETRY_FRSKY)
-  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetry")
-#else
-  #define TR_FSW_RESET_TELEM
-#endif
+#define TR_FSW_RESET_TELEM   TR("Telm", "Telemetry")
 
 #if defined(PCBTARANIS)
   #define TR_FSW_RESET_TIMERS  "Timer 1\0 ""Timer 2\0 ""Timer 3\0 "

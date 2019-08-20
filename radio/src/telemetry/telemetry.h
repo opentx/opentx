@@ -21,11 +21,7 @@
 #ifndef _TELEMETRY_H_
 #define _TELEMETRY_H_
 
-#if defined(TELEMETRY_FRSKY)
-  // FrSky Telemetry
-  #include "frsky.h"
-#endif
-
+#include "frsky.h"
 #include "crossfire.h"
 #if defined(MULTIMODULE)
   #include "spektrum.h"
