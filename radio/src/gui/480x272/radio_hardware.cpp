@@ -177,7 +177,7 @@ bool menuRadioHardware(event_t event)
           lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
         config = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
-          g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
+          g_eeGeneral.switchConfig = bfSet<swconfig_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
         }
         break;
       }
