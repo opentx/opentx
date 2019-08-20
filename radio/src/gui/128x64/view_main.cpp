@@ -20,7 +20,8 @@
 
 #include "opentx.h"
 
-extern bool displayCustomTelemetryScreen(uint8_t index);
+extern bool displayTelemetryScreen(uint8_t index);
+extern void displayRssiLine();
 
 #define BIGSIZE       DBLSIZE
 #if defined (PCBTARANIS)
@@ -229,7 +230,6 @@ void displayVoltageOrAlarm()
 #define EVT_KEY_PREVIOUS_PAGE          EVT_ROTARY_LEFT
 #define EVT_KEY_MODEL_MENU             EVT_KEY_BREAK(KEY_MENU)
 #define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_MENU)
-#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_PAGE)
 #elif defined(NAVIGATION_XLITE)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_UP)
@@ -238,7 +238,6 @@ void displayVoltageOrAlarm()
 #define EVT_KEY_PREVIOUS_PAGE          EVT_KEY_BREAK(KEY_LEFT)
 #define EVT_KEY_MODEL_MENU             EVT_KEY_LONG(KEY_RIGHT)
 #define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_LEFT)
-#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_DOWN)
 #define EVT_KEY_STATISTICS             EVT_KEY_LONG(KEY_UP)
 #else
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_BREAK(KEY_MENU)
@@ -249,7 +248,6 @@ void displayVoltageOrAlarm()
 #define EVT_KEY_MODEL_MENU             EVT_KEY_LONG(KEY_RIGHT)
 #define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_LEFT)
 #define EVT_KEY_LAST_MENU              EVT_KEY_LONG(KEY_MENU)
-#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_DOWN)
 #define EVT_KEY_STATISTICS             EVT_KEY_LONG(KEY_UP)
 #endif
 
@@ -292,7 +290,7 @@ void onMainViewMenu(const char *result)
 
 void menuMainView(event_t event)
 {
-  uint8_t view = g_eeGeneral.view;
+  uint8_t view = g_model.view;
   uint8_t view_base = view & 0x0f;
 
   switch (event) {
@@ -315,10 +313,10 @@ void menuMainView(event_t event)
     case EVT_KEY_PREVIOUS_PAGE:
       if (view_base <= VIEW_INPUTS) {
         if (view_base == VIEW_INPUTS)
-          g_eeGeneral.view ^= ALTERNATE_VIEW;
+          g_model.view ^= ALTERNATE_VIEW;
         else
-          g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
-        storageDirty(EE_GENERAL);
+          g_model.view = (g_model.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
+        storageDirty(EE_MODEL);
         AUDIO_KEY_PRESS();
       }
       break;
@@ -361,13 +359,13 @@ void menuMainView(event_t event)
     case EVT_KEY_PREVIOUS_VIEW:
     case EVT_KEY_NEXT_VIEW:
       // TODO try to split those 2 cases on 9X
-      g_eeGeneral.view = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
-      storageDirty(EE_GENERAL);
+      g_model.view = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
+      storageDirty(EE_MODEL);
       break;
 #else
     case EVT_KEY_NEXT_VIEW:
-      g_eeGeneral.view = (view_base == 0 ? VIEW_COUNT-1 : view_base-1);
-      storageDirty(EE_GENERAL);
+      g_model.view = (view_base == 0 ? VIEW_COUNT : view_base-1);
+      storageDirty(EE_MODEL);
       break;
 #endif
 
@@ -377,11 +375,6 @@ void menuMainView(event_t event)
       killEvents(event);
       break;
 #endif
-
-    case EVT_KEY_TELEMETRY:
-      chainMenu(menuViewTelemetryFrsky);
-      killEvents(event);
-      break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
 #if defined(GVARS)
@@ -414,28 +407,29 @@ void menuMainView(event_t event)
       drawRSSIGauge();
     }
   }
-  TRACE("VIEW:%d/%d", view_base,VIEW_COUNT);
 
   if (view_base > VIEW_TIMER2) {
-    TRACE("TELEM:%d",view_base - VIEW_TIMER2);
     //TELEMETRY SCREENS
-    if (TELEMETRY_SCREEN_TYPE(view_base - VIEW_TIMER2) != TELEMETRY_SCREEN_TYPE_NONE) {
+    if (TELEMETRY_SCREEN_TYPE(view_base - VIEW_TIMER2 - 1) != TELEMETRY_SCREEN_TYPE_NONE) {
       lcdClear();
-      displayCustomTelemetryScreen(view_base - VIEW_TIMER2);
+      if (!displayTelemetryScreen(view_base - VIEW_TIMER2 -1)) {
+        lcdDrawText(2 * FW, 3 * FH, "No Telemetry Screens");
+        displayRssiLine();
+      }
     }
     else {
-      g_eeGeneral.view = (view_base == 0 ? VIEW_COUNT-1 : view_base-1);
-      storageDirty(EE_GENERAL);
+      g_model.view = (view_base == 0 ? VIEW_COUNT : view_base-1);
+      storageDirty(EE_MODEL);
     }
   }
   else if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
-    lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
+    lcdDrawSolidHorizontalLine(38 + (g_model.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
-      uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
+      uint8_t chan = 8*(g_model.view / ALTERNATE_VIEW) + i;
 
       int16_t val = channelOutputs[chan];
 
@@ -585,5 +579,4 @@ void menuMainView(event_t event)
 #undef EVT_KEY_MODEL_MENU
 #undef EVT_KEY_GENERAL_MENU
 #undef EVT_KEY_LAST_MENU
-#undef EVT_KEY_TELEMETRY
 #undef EVT_KEY_STATISTICS

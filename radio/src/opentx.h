@@ -1273,8 +1273,7 @@ enum TelemetryViews {
   TELEMETRY_CUSTOM_SCREEN_4,
   TELEMETRY_VIEW_MAX = TELEMETRY_CUSTOM_SCREEN_4
 };
-
-extern uint8_t s_frsky_view;
+#endif
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
 
