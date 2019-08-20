@@ -341,8 +341,7 @@ void modelSetupModulePxx2ReceiverLine(uint8_t moduleIdx, uint8_t receiverIdx, co
     }
   }
 
-  if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
-    killEvents(event);
+  if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
     POPUP_MENU_ADD_ITEM(STR_BIND);
     POPUP_MENU_ADD_ITEM(STR_OPTIONS);
     POPUP_MENU_ADD_ITEM(STR_SHARE);

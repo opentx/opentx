@@ -1538,7 +1538,6 @@ void menuModelSetup(event_t event)
       }
 #endif
 
-
 #if 0
       case ITEM_MODEL_SETUP_PPM2_PROTOCOL:
         lcdDrawTextAlignedLeft(y, "Port2");

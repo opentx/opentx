@@ -152,15 +152,6 @@ class OtaUpdateInformation: public BindInformation {
 
 typedef void (* ModuleCallback)();
 
-#if defined(SIMU)
-  #define BIND_INFO \
-    bindInformation->candidateReceiversCount = 2; \
-    strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1"); \
-    strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2"); 
-#else
-  #define BIND_INFO
-#endif
-
 PACK(struct ModuleState {
   uint8_t protocol:4;
   uint8_t mode:4;
@@ -181,7 +172,11 @@ PACK(struct ModuleState {
     bindInformation = destination;
     callback = bindCallback;
     mode = MODULE_MODE_BIND;
-    BIND_INFO;
+#if defined(SIMU)
+     bindInformation->candidateReceiversCount = 2;
+     strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1");
+     strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2");
+#endif
   }
   void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
   {

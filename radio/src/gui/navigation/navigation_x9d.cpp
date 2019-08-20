@@ -373,7 +373,8 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_editMode > 1) break;
+      if (s_editMode > 1) 
+        break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
         AUDIO_KEY_PRESS();
