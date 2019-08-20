@@ -696,9 +696,9 @@ void TelemetrySensorPanel::update()
       ui->rxLabel->hide();
       ui->moduleLabel->show();
       if (sensor.moduleIdx)
-        ui->rxOrMod->setText(tr("Internal Module"));
+        ui->rxOrMod->setText(tr("Internal"));
       else
-        ui->rxOrMod->setText(tr("External Module"));
+        ui->rxOrMod->setText(tr("External"));
     }
     ui->rxOrMod->show();
 
