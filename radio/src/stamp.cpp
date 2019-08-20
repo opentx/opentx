@@ -47,7 +47,7 @@
  * Retrieves the version of the bootloader or firmware
  * @return
  */
-#if defined(STM32)
+#if defined(STM32) && !defined(SIMU)
 
 __SECTION_USED(".fwversiondata")   const char firmware_version[] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
 __SECTION_USED(".bootversiondata") const char boot_version[] =     "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";

@@ -49,14 +49,8 @@
 #define LEN_MMMINV             "\003"
 #define TR_MMMINV              "---""INV"
 
-#define LEN_NCHANNELS          "\004"
-#define TR_NCHANNELS           "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
-
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Stil\0""Alarm""NoKey""Alles"
-
-#define LEN_VBEEPLEN           "\005"
-#define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG           "\003"
 #define TR_VRENAVIG            "UITREaREb"
@@ -84,12 +78,8 @@
 #define LEN_POTTYPES           TR("\013","\021")
 #define TR_POTTYPES            TR("None\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ", "Geen\0            ""Pot met Klik\0    ""Standenschakelaar""Pot zonder Klik\0 ")
 
-
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Geen\0 ""Schuif"
-
-#define LEN_DATETIME           "\006"
-#define TR_DATETIME            "DATUM:""TIJD: "
 
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
@@ -157,9 +147,6 @@
 #endif
 
 #define TR_VPROTOS             "PPM\0  " TR_PXX TR_DSM2
-
-#define LEN_POSNEG             "\003"
-#define TR_POSNEG              "POS""NEG"
 
 #if defined(PCBSKY9X) && defined(REVX)
   #define LEN_VOUTPUT_TYPE     "\011"
@@ -299,37 +286,16 @@
 #define LENGTH_UNIT_METR       "m\0 "
 #define SPEED_UNIT_METR        "kmh"
 
-  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
-  #define TR_VUNITSSYSTEM      TR("Mtrsch""Engels", "Metrisch\0 ""Engels\0   ")
-  #define LEN_VTELEMUNIT       "\003"
+#define LEN_VUNITSSYSTEM     TR("\006", "\010")
+#define TR_VUNITSSYSTEM      TR("Mtrsch""Engels", "Metrisch\0 ""Engels\0   ")
+#define LEN_VTELEMUNIT       "\003"
 #define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz"
 
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
 
-#define LEN_VALARM             "\003"
-#define TR_VALARM              "---""Gel""Ora""Rod"
-
-#define LEN_VALARMFN           "\001"
-#define TR_VALARMFN            "<>"
-
-#define LEN_VTELPROTO          "\007"
-#define TR_VTELPROTO           "Geen\0  ""Hub\0   ""WSHHigh"
-
-  #define LEN_AMPSRC           TR("\003", "\005")
-  #define TR_AMPSRC            TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0 ""A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
-  #define LEN_VOLTSRC          TR("\003", "\005")
-  #define TR_VOLTSRC           TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
-
-#define LEN_VARIOSRC           "\004"
-#if defined(TELEMETRY_FRSKY_SPORT)
-  #define TR_VARIOSRC          "VSpd""A1\0 ""A2\0 ""dTE\0"
-#else
-  #define TR_VARIOSRC          "Alt\0""Alt+""VSpd""A1\0 ""A2\0"
-#endif
-
-  #define LEN_VTELEMSCREENTYPE "\006"
-  #define TR_VTELEMSCREENTYPE  "Geen\0 ""Nums\0 ""Balken""Script"
+#define LEN_VTELEMSCREENTYPE   "\006"
+#define TR_VTELEMSCREENTYPE    "Geen\0 ""Nums\0 ""Balken""Script"
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "DMS\0""NMEA"
