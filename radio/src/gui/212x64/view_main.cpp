@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+uint8_t currentMainView;
+
 #define BIGSIZE       MIDSIZE
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 16)
 #define RBOX_CENTERX  (LCD_W-LBOX_CENTERX-1)
@@ -329,19 +331,6 @@ void displayTimers()
   }
 }
 
-void menuMainViewChannelsMonitor(event_t event)
-{
-  switch(event) {
-    case EVT_KEY_BREAK(KEY_PAGE):
-    case EVT_KEY_BREAK(KEY_EXIT):
-      chainMenu(menuMainView);
-      event = 0;
-      break;
-  }
-
-  return menuChannelsView(event);
-}
-
 void onMainViewMenu(const char *result)
 {
   if (result == STR_RESET_TIMER1) {
@@ -433,6 +422,7 @@ int getSwitchCount()
 void menuMainView(event_t event)
 {
   static bool secondPage = false;
+  uint8_t view_base = currentMainView & 0x0f;
 
   switch(event) {
 
@@ -469,17 +459,21 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_BREAK(KEY_PAGE):
-      storageDirty(EE_MODEL);
-      g_model.view += 1;
-      if (g_model.view >= VIEW_COUNT) {
-        g_model.view = 0;
-        chainMenu(menuMainViewChannelsMonitor);
-      }
-      break;
-
     case EVT_KEY_LONG(KEY_PAGE):
-      chainMenu(menuViewTelemetryFrsky);
-      killEvents(event);
+      if (event == EVT_KEY_LONG(KEY_PAGE))
+        killEvents(event);
+      if (view_base >= VIEW_FIRST_TELEM || view_base == 0) {
+        do {
+          currentMainView = (event == EVT_KEY_LONG(KEY_PAGE) ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
+          view_base = currentMainView & 0x0f;
+        }
+        while ( view_base >= VIEW_FIRST_TELEM && TELEMETRY_SCREEN_TYPE(view_base - VIEW_FIRST_TELEM) == TELEMETRY_SCREEN_TYPE_NONE);
+      }
+      else
+        currentMainView = (event == EVT_KEY_LONG(KEY_PAGE) ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
+      view_base = currentMainView & 0x0f;
+      g_model.view = bfSet(g_model.view, view_base, 0, 4);
+      storageDirty(EE_MODEL);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):

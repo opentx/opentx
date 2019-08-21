@@ -370,7 +370,6 @@ void menuMainView(event_t event)
       else
         currentMainView = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
       view_base = currentMainView & 0x0f;
-      g_model.view = 0x40;
       g_model.view = bfSet(g_model.view, view_base, 0, 4);
       storageDirty(EE_MODEL);
       break;

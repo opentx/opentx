@@ -309,8 +309,8 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
 #define displayFlightModes(...)
 #endif
 
-#define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
-#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetryFrsky
-#define IS_OTHER_VIEW_DISPLAYED()      (menuHandlers[0] == menuMainViewChannelsMonitor || menuHandlers[0] == menuChannelsView)
+#define IS_MAIN_VIEW_DISPLAYED()       (menuLevel == 0 && menuHandlers[0]==menuMainView)
+#define IS_TELEMETRY_VIEW_DISPLAYED()  (IS_MAIN_VIEW_DISPLAYED() && currentMainView >= VIEW_FIRST_TELEM)
+#define IS_OTHER_VIEW_DISPLAYED()      (IS_MAIN_VIEW_DISPLAYED() && currentMainView == VIEW_MONITOR)
 
 #endif // _GUI_H_
