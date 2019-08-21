@@ -9,6 +9,15 @@ import tempfile
 
 
 options = {
+    "XLITE": {
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MODULE_SIZE_STD": "NO",
+        "PPM": "NO",
+        "DSM2": "NO",
+        "CROSSFIRE": "NO",
+        "SBUS": "NO",
+    },
     "XLITES": {
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
