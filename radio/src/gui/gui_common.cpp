@@ -562,6 +562,17 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
   }
 }
 
+bool isMainViewAvailable(int view)
+{
+  if (view < VIEW_FIRST_TELEM)
+    return true;
+
+  if(TELEMETRY_SCREEN_TYPE(view) != TELEMETRY_SCREEN_TYPE_NONE)
+    return true;
+
+  return false;
+}
+
 #if defined(HARDWARE_INTERNAL_MODULE)
 bool isInternalModuleAvailable(int moduleType)
 {

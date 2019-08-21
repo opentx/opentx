@@ -403,6 +403,9 @@
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
+#define LEN_MAINVIEWS                   "\007"
+#define TR_MAINVIEWS                    "Values\0""Bars\0  ""Sticks\0""Timers\0""Telem 1""Telem 2""Telem 3""Telem 4""Last\0  "
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT                       "\007"
@@ -445,6 +448,7 @@
 #define TR_LOADINGMODEL                "Aktivuji model.."
 #define TR_NAME                        "Název"
 #define TR_MODELNAME                   TR("Model", "Název modelu")
+#define TR_STARTVIEW                   "Start view"
 #define TR_PHASENAME                   "Název"
 #define TR_MIXNAME                     "Název"
 #define TR_INPUTNAME                   "Název"

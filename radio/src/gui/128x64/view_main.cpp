@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 
+uint8_t currentMainView;
 extern bool displayTelemetryScreen(uint8_t index);
 extern void displayRssiLine();
 
@@ -225,6 +226,7 @@ void displayVoltageOrAlarm()
 
 #if defined(NAVIGATION_X7)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
 #define EVT_KEY_PREVIOUS_PAGE          EVT_ROTARY_LEFT
@@ -290,8 +292,7 @@ void onMainViewMenu(const char *result)
 
 void menuMainView(event_t event)
 {
-  uint8_t view = g_model.view;
-  uint8_t view_base = view & 0x0f;
+  uint8_t view_base = currentMainView & 0x0f;
 
   switch (event) {
     case EVT_ENTRY:
@@ -313,10 +314,9 @@ void menuMainView(event_t event)
     case EVT_KEY_PREVIOUS_PAGE:
       if (view_base <= VIEW_INPUTS) {
         if (view_base == VIEW_INPUTS)
-          g_model.view ^= ALTERNATE_VIEW;
+          currentMainView ^= ALTERNATE_VIEW;
         else
-          g_model.view = (g_model.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
-        storageDirty(EE_MODEL);
+          currentMainView= (currentMainView + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
         AUDIO_KEY_PRESS();
       }
       break;
@@ -354,20 +354,26 @@ void menuMainView(event_t event)
       break;
 #endif
 
-#if defined(EVT_KEY_PREVIOUS_VIEW)
-      // TODO try to split those 2 cases on 9X
     case EVT_KEY_PREVIOUS_VIEW:
     case EVT_KEY_NEXT_VIEW:
-      // TODO try to split those 2 cases on 9X
-      g_model.view = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
-      storageDirty(EE_MODEL);
-      break;
-#else
-    case EVT_KEY_NEXT_VIEW:
-      g_model.view = (view_base == 0 ? VIEW_COUNT : view_base-1);
-      storageDirty(EE_MODEL);
-      break;
+#if defined(NAVIGATION_X7)
+      if (event == EVT_KEY_PREVIOUS_VIEW)
+        killEvents(event);
 #endif
+      if (view_base >= VIEW_FIRST_TELEM || view_base == 0) {
+        do {
+          currentMainView = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
+          view_base = currentMainView & 0x0f;
+        }
+        while ( view_base >= VIEW_FIRST_TELEM && TELEMETRY_SCREEN_TYPE(view_base - VIEW_FIRST_TELEM) == TELEMETRY_SCREEN_TYPE_NONE);
+      }
+      else
+        currentMainView = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
+      view_base = currentMainView & 0x0f;
+      g_model.view = 0x40;
+      g_model.view = bfSet(g_model.view, view_base, 0, 4);
+      storageDirty(EE_MODEL);
+      break;
 
 #if defined(EVT_KEY_STATISTICS)
     case EVT_KEY_STATISTICS:
@@ -418,18 +424,19 @@ void menuMainView(event_t event)
       }
     }
     else {
-      g_model.view = (view_base == 0 ? VIEW_COUNT : view_base-1);
+      currentMainView = (view_base == 0 ? VIEW_COUNT : view_base-1);
+      g_model.view = bfSet(g_model.view, currentMainView, 0, 4);
       storageDirty(EE_MODEL);
     }
   }
   else if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
-    lcdDrawSolidHorizontalLine(38 + (g_model.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
+    lcdDrawSolidHorizontalLine(38 + (currentMainView / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
-      uint8_t chan = 8*(g_model.view / ALTERNATE_VIEW) + i;
+      uint8_t chan = 8*(currentMainView / ALTERNATE_VIEW) + i;
 
       int16_t val = channelOutputs[chan];
 
@@ -469,7 +476,7 @@ void menuMainView(event_t event)
     }
   }
   else if (view_base == VIEW_INPUTS) {
-    if (view == VIEW_INPUTS) {
+    if (currentMainView == VIEW_INPUTS) {
       // Sticks + Pots
       doMainScreenGraphics();
 

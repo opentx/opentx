@@ -309,7 +309,7 @@ void showAlertBox(const char * title, const char * text, const char * action , u
 #define LOAD_MODEL_BITMAP()
 
 #define IS_MAIN_VIEW_DISPLAYED()       (menuLevel == 0 && menuHandlers[0]==menuMainView)
-#define IS_TELEMETRY_VIEW_DISPLAYED()  (IS_MAIN_VIEW_DISPLAYED() && g_model.view >= VIEW_FIRST_TELEM)
+#define IS_TELEMETRY_VIEW_DISPLAYED()  (IS_MAIN_VIEW_DISPLAYED() && currentMainView >= VIEW_FIRST_TELEM)
 
 #define IS_OTHER_VIEW_DISPLAYED()      false
 

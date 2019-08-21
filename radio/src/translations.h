@@ -171,6 +171,7 @@ extern const char STR_VFORMULAS[];
 extern const char STR_VPREC[];
 extern const char STR_VCELLINDEX[];
 extern const char STR_VANTENNATYPES[];
+extern const char STR_MAINVIEWS[];
 
 #if defined(BLUETOOTH)
 extern const char STR_BLUETOOTH[];
@@ -686,6 +687,7 @@ inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags)
 inline PLAY_FUNCTION(playDuration, int seconds, uint8_t flags) { currentLanguagePack->playDuration(seconds, flags, id); }
 
 extern const char STR_MODELNAME[];
+extern const char STR_STARTVIEW[];
 extern const char STR_PHASENAME[];
 extern const char STR_MIXNAME[];
 extern const char STR_INPUTNAME[];

@@ -421,6 +421,9 @@
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
+#define LEN_MAINVIEWS                   "\007"
+#define TR_MAINVIEWS                    "Values\0""Bars\0  ""Sticks\0""Timers\0""Telem 1""Telem 2""Telem 3""Telem 4""Last\0  "
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT                       "   "
@@ -463,6 +466,7 @@
 #define TR_LOADINGMODEL        "Cargar modelo..."
 #define TR_NAME                "Nom."
 #define TR_MODELNAME           "Nom.Modelo"
+#define TR_STARTVIEW                   "Start view"
 #define TR_PHASENAME           "Nom.Fase "
 #define TR_MIXNAME             "Nom.Mezcla"
 #define TR_INPUTNAME           "Input Name"
