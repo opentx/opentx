@@ -181,6 +181,10 @@ void boardInit()
 #endif
 
   ledBlue();
+
+#if defined(RTCLOCK) && !defined(COPROCESSOR)
+  rtcInit(); // RTC must be initialized before rambackupRestore() is called
+#endif
 }
 
 void boardOff()
