@@ -245,7 +245,9 @@ void menuRadioVersion(event_t event)
     lcdDrawText(lcdNextPos, y, "---", SMLSIZE);
   y += FH - 1;
 #endif
+
   y += 2;
+
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_FIRMWARE_OPTIONS), menuVerticalPosition == ITEM_RADIO_FIRMWARE_OPTIONS ? INVERS : 0);
   y += FH;
@@ -254,6 +256,7 @@ void menuRadioVersion(event_t event)
     pushMenu(menuRadioFirmwareOptions);
   }
 #endif
+
 #if defined(PXX2)
   lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_MODULES_RX_VERSION), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
   y += FH;
