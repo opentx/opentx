@@ -66,7 +66,7 @@ elseif (PCB STREQUAL X12S)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
-    adc_driver.cpp
+    x12s_adc_driver.cpp
     gps_driver.cpp
     )
   set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
