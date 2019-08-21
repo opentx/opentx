@@ -174,7 +174,7 @@ void enablePulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(PXX2)
+#if defined(PXX2) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
       extmoduleInvertedSerialStart(PXX2_HIGHSPEED_BAUDRATE);
       break;
