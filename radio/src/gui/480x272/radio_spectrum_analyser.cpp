@@ -30,7 +30,7 @@ enum SpectrumFields {
 
 bool menuRadioSpectrumAnalyser(event_t event)
 {
-  SUBMENU(STR_MENU_SPECTRUM_ANALYSER, ICON_RADIO, 1, {1});
+  SUBMENU(STR_MENU_SPECTRUM_ANALYSER, ICON_RADIO_SPECTRUM_ANALYSER, 1, {1});
 
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H/2, STR_STOPPING);
