@@ -326,6 +326,10 @@ set(simu_SRCS simulator.cpp )
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
 target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 
+if(NOT MSVC)
+  add_subdirectory(tests)
+endif()
+
 ############# Install ####################
 
 # Generate list of simulator plugins, used by all platforms
