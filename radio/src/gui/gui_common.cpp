@@ -562,6 +562,7 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
   }
 }
 
+#if !defined(COLORLCD)
 bool isMainViewAvailable(int view)
 {
   if (view < VIEW_FIRST_TELEM)
@@ -572,6 +573,7 @@ bool isMainViewAvailable(int view)
 
   return false;
 }
+#endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
 bool isInternalModuleAvailable(int moduleType)
