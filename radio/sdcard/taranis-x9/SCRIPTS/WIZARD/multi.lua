@@ -20,8 +20,8 @@ local ROLL_PAGE = 1
 local PITCH_PAGE = 2
 local YAW_PAGE = 3
 local ARM_PAGE = 4
-local MODE_PAGE = 5
-local BEEPER_PAGE = 6
+local BEEPER_PAGE = 5
+local MODE_PAGE = 6
 local CONFIRMATION_PAGE = 7
 
 -- Navigation variables
@@ -340,6 +340,7 @@ end
 -- Confirmation Menu
 local function drawNextCHLine(x, y, label, channel)
   lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+48, y, ":", 0);
   lcd.drawSource(x+52, y, MIXSRC_CH1+channel, 0)
   y = y + 8
   if y > 50 then
@@ -351,6 +352,7 @@ end
 
 local function drawNextSWLine(x, y, label, switch)
   lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+76, y, ":", 0);
   lcd.drawText(x+80, y, switches[switch], 0)
   y = y + 8
   if y > 50 then
@@ -366,15 +368,15 @@ local function drawConfirmationMenu()
   lcd.clear()
   lcd.drawText(48, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
-  x, y = drawNextCHLine(x, y, "Throttle:", thrCH1)
-  x, y = drawNextCHLine(x, y, "Roll:", rollCH1)
-  x, y = drawNextCHLine(x, y, "Pitch:", pitchCH1)
-  x, y = drawNextCHLine(x, y, "Yaw:", yawCH1)
+  x, y = drawNextCHLine(x, y, "Throttle", thrCH1)
+  x, y = drawNextCHLine(x, y, "Roll", rollCH1)
+  x, y = drawNextCHLine(x, y, "Pitch", pitchCH1)
+  x, y = drawNextCHLine(x, y, "Yaw", yawCH1)
   x = 95
   y = 12
-  x, y = drawNextSWLine(x, y, "Arm switch:", armSW1)
-  x, y = drawNextSWLine(x, y, "Mode switch:", modeSW1)
-  x, y = drawNextSWLine(x, y, "Beeper switch:", beeperSW1)
+  x, y = drawNextSWLine(x, y, "Arm switch", armSW1)
+  x, y = drawNextSWLine(x, y, "Beeper switch", beeperSW1)
+  x, y = drawNextSWLine(x, y, "Mode switch", modeSW1)
   lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
   lcd.drawPixmap(LCD_W-18, 0, "confirm-tick.bmp")
@@ -396,7 +398,7 @@ end
 local function applySettings()
   model.defaultInputs()
   model.deleteMixes()
-  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Throttle")
+  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   addMix(rollCH1,  MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   addMix(yawCH1,   MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")
   addMix(pitchCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Pitch")

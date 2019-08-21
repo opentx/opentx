@@ -338,10 +338,10 @@ local function drawConfirmationMenu()
   if engineMode == 1 then
     x, y = drawNextLine(x, y, "Throttle", thrCH1)
   end
-  x, y = drawNextLine(x, y, "Elev L", elevCH1)
-  x, y = drawNextLine(x, y, "Elev R", elevCH2)
+  x, y = drawNextLine(x, y, "Elevon L", elevCH1)
+  x, y = drawNextLine(x, y, "Elevon R", elevCH2)
   if rudderMode == 1 then
-    drawNextLine(x, y, "Rudder:", rudCH1)
+    drawNextLine(x, y, "Rudder", rudCH1)
   end
   lcd.drawText(48, LCD_H-8, "Long [ENT] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)

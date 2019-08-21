@@ -165,8 +165,8 @@ end
 -- Init function
 local function init()
   thrCH1 = defaultChannel(2)
-  rollCH1 = defaultChannel(3)
-  yawCH1 = defaultChannel(0)
+  rollCH1 = defaultChannel(0)
+  yawCH1 = defaultChannel(3)
   pitchCH1 = defaultChannel(1)
   local ver, radio, maj, minor, rev = getVersion()
   if string.match(radio, "x7") then
@@ -352,15 +352,15 @@ local function drawConfirmationMenu()
   lcd.clear()
   lcd.drawText(0, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
-  x, y = drawNextLine(x, y, "Throttle:", thrCH1)
-  x, y = drawNextLine(x, y, "Roll:", rollCH1)
-  x, y = drawNextLine(x, y, "Pitch:", pitchCH1)
-  x, y = drawNextLine(x, y, "Yaw:", yawCH1)
+  x, y = drawNextLine(x, y, "Throttle", thrCH1)
+  x, y = drawNextLine(x, y, "Roll", rollCH1)
+  x, y = drawNextLine(x, y, "Pitch", pitchCH1)
+  x, y = drawNextLine(x, y, "Yaw", yawCH1)
   local x = 72
   local y = 12
-  x, y = drawNextSWLine(x, y, "Arm:", armSW1)
-  x, y = drawNextSWLine(x, y, "Mode:", modeSW1)
-  x, y = drawNextSWLine(x, y, "Beeper:", beeperSW1)
+  x, y = drawNextSWLine(x, y, "Arm", armSW1)
+  x, y = drawNextSWLine(x, y, "Mode", modeSW1)
+  x, y = drawNextSWLine(x, y, "Beeper", beeperSW1)
   lcd.drawText(0, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
   fieldsMax = 0
