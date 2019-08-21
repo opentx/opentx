@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
+#include "opentx.h"
 
 uint8_t telemetryStreaming = 0;
 uint8_t R9ModuleStreaming = 0;

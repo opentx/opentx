@@ -136,7 +136,7 @@ if(PXX2)
   set(GUI_SRC
     ${GUI_SRC}
     radio_spectrum_analyser.cpp
-#   radio_power_meter.cpp
+    radio_power_meter.cpp
     )
 endif()
 
