@@ -429,6 +429,7 @@ end
 -- Confirmation Menu
 local function drawNextLine(x, y, label, channel)
   lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+26, y, ":", 0);
   lcd.drawSource(x+30, y, MIXSRC_CH1+channel, 0)
   y = y + 8
   if y > 50 then
