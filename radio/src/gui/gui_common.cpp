@@ -567,7 +567,7 @@ bool isMainViewAvailable(int view)
   if (view < VIEW_FIRST_TELEM)
     return true;
 
-  if(TELEMETRY_SCREEN_TYPE(view) != TELEMETRY_SCREEN_TYPE_NONE)
+  if(TELEMETRY_SCREEN_TYPE(view - VIEW_FIRST_TELEM) != TELEMETRY_SCREEN_TYPE_NONE)
     return true;
 
   return false;
