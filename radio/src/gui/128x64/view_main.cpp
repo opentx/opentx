@@ -391,8 +391,7 @@ void menuMainView(event_t event)
       break;
   }
 
-  {
-    if(!IS_TELEMETRY_VIEW_DISPLAYED()) {
+  if(!IS_TELEMETRY_VIEW_DISPLAYED()) {
     // Flight Mode Name
     uint8_t mode = mixerCurrentFlightMode;
     lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);

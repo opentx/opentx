@@ -1275,7 +1275,6 @@ enum TelemetryViews {
 };
 
 extern uint8_t currentMainView;
-#endif
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
 

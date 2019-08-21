@@ -424,7 +424,7 @@
 #if LCD_W == 128
   #define LEN_MAINVIEWS                   "\007"
   #define TR_MAINVIEWS                    "Values\0""Bars\0  ""Sticks\0""Timers\0""Telem 1""Telem 2""Telem 3""Telem 4""Last\0  "
-elif LCD_W == 212
+#elif LCD_W == 212
   #define LEN_MAINVIEWS                   "\010"
   #define TR_MAINVIEWS                    "Timers\0 ""Inputs\0 ""Switches""Telem 1\0""Telem 2\0""Telem 3\0""Telem 4\0""Last\0   "
 #endif
