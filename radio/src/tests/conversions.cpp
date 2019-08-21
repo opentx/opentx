@@ -53,6 +53,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
   EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ(MIXSRC_FIRST_TELEM, g_model.logicalSw[0].v1);
 }
 #endif
 
