@@ -23,3 +23,5 @@ ENV PATH $PATH:/opt/gcc-arm-none-eabi/bin:/opentx/code/radio/util
 
 ARG OPENTX_VERSION_SUFFIX=
 ENV OPENTX_VERSION_SUFFIX ${OPENTX_VERSION_SUFFIX}
+
+WORKDIR /build
