@@ -160,7 +160,7 @@ void displayCustomTelemetryScreen(uint8_t index)
 {
   TelemetryScreenData & screen = g_model.screens[index];
 
-  if (IS_BARS_SCREEN(s_frsky_view)) {
+  if (IS_BARS_SCREEN(index)) {
     return displayGaugesTelemetryScreen(screen);
   }
 
