@@ -92,6 +92,7 @@ set(FIRMWARE_TARGET_SRC
   massstorage.cpp
   usb/device/core/USBD_UDP.c
   usb/device/core/USBDDriver.c
+  usb_driver.cpp
   usb/device/massstorage/MSDDriver.c
   usb/device/massstorage/MSDDStateMachine.c
   usb/device/massstorage/MSDLun.c
