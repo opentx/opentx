@@ -625,11 +625,13 @@ void backlightInit();
 void backlightDisable();
 #define BACKLIGHT_DISABLE()             backlightDisable()
 uint8_t isBacklightEnabled();
-#if defined(PCBX9E) || defined(PCBX9DP)
-  void backlightEnable(uint8_t level, uint8_t color);
+#if !defined(__cplusplus)
+  #define backlightEnable(...)
+#elif defined(PCBX9E) || defined(PCBX9DP)
+  void backlightEnable(uint8_t level = 0, uint8_t color = 0);
   #define BACKLIGHT_ENABLE()            backlightEnable(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
 #else
-  void backlightEnable(uint8_t level);
+  void backlightEnable(uint8_t level = 0);
   #define BACKLIGHT_ENABLE()            backlightEnable(g_eeGeneral.backlightBright)
 #endif
 
