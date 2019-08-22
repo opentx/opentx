@@ -440,7 +440,6 @@ void menuModelSetup(event_t event)
           uint8_t view = checkIncDec(event, g_model.view >> 4, 0, VIEW_COUNT + 1, EE_MODEL, isMainViewAvailable);
           if (checkIncDec_Ret) {
             g_model.view = bfSet(g_model.view, view, 4, 4);
-            TRACE("STORING VIEW : %d in %d", view, g_model.view);
           }
         }
         break;

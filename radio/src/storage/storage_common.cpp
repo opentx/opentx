@@ -112,7 +112,6 @@ void postModelLoad(bool alarms)
     currentMainView = g_model.view & 0x0f;
   else
     currentMainView = (g_model.view & 0xf0) >> 4;
-  TRACE("LOADING MAINVIEW : %d out of %d", currentMainView, g_model.view);
 #endif
 }
 
