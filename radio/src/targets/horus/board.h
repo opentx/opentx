@@ -614,7 +614,8 @@ void bluetoothDisable();
 #include "fifo.h"
 #include "dmafifo.h"
 extern DMAFifo<512> telemetryFifo;
-extern DMAFifo<32> auxSerialRxFifo;
+typedef DMAFifo<32> AuxSerialRxFifo;
+extern AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
 #endif // _BOARD_H_

@@ -850,7 +850,8 @@ void setTopBatteryValue(uint32_t volts);
 #endif
 
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
-extern DMAFifo<32> auxSerialRxFifo;
+typedef DMAFifo<32> AuxSerialRxFifo;
+extern AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
 // Gyro driver

@@ -18,6 +18,7 @@ include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/cdc/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc/)
 include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
+
 set(STM32USB_SRC
   STM32_USB_OTG_Driver/src/usb_core.c
   STM32_USB_OTG_Driver/src/usb_dcd.c
@@ -26,20 +27,19 @@ set(STM32USB_SRC
   STM32_USB_Device_Library/Core/src/usbd_ioreq.c
   STM32_USB_Device_Library/Core/src/usbd_req.c
   )
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/rtc_driver.cpp
-  ../common/arm/stm32/cpu_id.cpp
   ${AUX_SERIAL_DRIVER}
-  )
-set(FIRMWARE_TARGET_SRC
-  ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/delays.cpp
   ../common/arm/stm32/usb_bsp.c
   ../common/arm/stm32/usbd_desc.c
   ../common/arm/stm32/usbd_usr.cpp
   ../common/arm/stm32/usb_driver.cpp
   ../common/arm/stm32/flash_driver.cpp
+  ../common/arm/stm32/usbd_storage_msd.cpp
+  ../common/arm/stm32/usbd_hid_joystick.c
   )
 
 if(DEBUG OR CLI OR USB_SERIAL)
@@ -60,16 +60,6 @@ set(STM32USB_SRC
   STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
   STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
   STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
-  )
-
-set(FIRMWARE_TARGET_SRC
-  ${FIRMWARE_TARGET_SRC}
-  ../common/arm/stm32/usbd_storage_msd.cpp
-  )
-
-set(FIRMWARE_TARGET_SRC
-  ${FIRMWARE_TARGET_SRC}
-  ../common/arm/stm32/usbd_hid_joystick.c
   )
 
 if(GVARS)
@@ -98,6 +88,11 @@ foreach(FILE ${STM32USB_SRC})
     ${STM32USB_DIR}/${FILE}
     )
 endforeach()
+
+set(TARGET_SRC
+  ${TARGET_SRC}
+  ../common/arm/stm32/cpu_id.cpp
+  )
 
 set(SRC
   ${SRC}

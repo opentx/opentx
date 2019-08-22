@@ -22,7 +22,7 @@
 
 uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> auxSerialTxFifo;
-DMAFifo<32> auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
+AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 
 void auxSerialSetup(unsigned int baudrate, bool dma)
 {

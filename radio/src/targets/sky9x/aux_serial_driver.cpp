@@ -99,8 +99,7 @@ void SECOND_UART_Stop()
 
 extern "C" void UART0_IRQHandler()
 {
-  if ( SECOND_SERIAL_UART->UART_SR & UART_SR_RXRDY )
-  {
+  if (SECOND_SERIAL_UART->UART_SR & UART_SR_RXRDY) {
     auxSerialRxFifo.push(SECOND_SERIAL_UART->UART_RHR);
   }
 }
