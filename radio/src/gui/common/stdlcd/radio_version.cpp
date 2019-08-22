@@ -241,8 +241,8 @@ void menuRadioVersion(event_t event)
 
 #if defined(COPROCESSOR)
   lcdDrawText(FW, y, "COPR\037\033: ", SMLSIZE);
-  if (Coproc_valid == 1)
-    lcdDrawNumber(lcdNextPos, y, Coproc_read, SMLSIZE);
+  if (coprocData.valid == 1)
+    lcdDrawNumber(lcdNextPos, y, coprocData.read, SMLSIZE);
   else
     lcdDrawText(lcdNextPos, y, "---", SMLSIZE);
   y += FH - 1;

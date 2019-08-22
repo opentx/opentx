@@ -360,8 +360,8 @@ long OpenTxSim::onTimeout(FXObject*, FXSelector, void*)
 {
   if (hasFocus()) {
 #if defined(COPROCESSOR)
-    Coproc_temp = 23;
-    Coproc_maxtemp = 28;
+    coprocData.temp = 23;
+    coprocData.maxtemp = 28;
 #endif
 
     updateKeysAndSwitches();

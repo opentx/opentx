@@ -742,6 +742,18 @@ void disableSpeaker()
 }
 #endif
 
+#if defined(COPROCESSOR)
+CoprocData coprocData;
+
+void coprocReadData(bool)
+{
+}
+#endif
+
+void rtcInit()
+{
+}
+
 void rtcSetTime(const struct gtm * t)
 {
 }

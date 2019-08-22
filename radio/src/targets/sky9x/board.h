@@ -340,10 +340,15 @@ void coprocWriteData(uint8_t *data, uint32_t size);
 void coprocReadData(bool onlytemp=false);
 #endif
 extern int8_t volumeRequired;
-extern uint8_t Coproc_read;
-extern int8_t Coproc_valid;
-extern int8_t Coproc_temp;
-extern int8_t Coproc_maxtemp;
+
+struct CoprocData {
+  uint8_t read;
+  int8_t valid;
+  int8_t temp;
+  int8_t maxtemp;
+};
+
+extern CoprocData coprocData;
 
 // Haptic driver
 #define HAPTIC_PWM
