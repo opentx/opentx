@@ -500,6 +500,7 @@
 #define TR_FLMODE                      "Režim"
 #define TR_MIXWARNING                  "Varování"
 #define TR_OFF                         "VYP"
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("Není info.", "Žádná informace")
 #define TR_MULTPX                      TR("Mat.operace", "Operace")
 #define TR_DELAYDOWN                   TR3("Zpoždění Vyp", "Zdržet(x)", "Zpoždění Vyp")
@@ -943,8 +944,11 @@
 #define TR_UNIT                        "Jednotky"
 #define TR_TELEMETRY_NEWSENSOR         INDENT "Přidat senzor ručně"
 #define TR_CHANNELRANGE                TR(INDENT "Kanály", INDENT "Rozsah kanálů")
-#define TR_ANTENNASELECTION            TR(INDENT "Antenna", INDENT "Volba antény")
 #define TR_ANTENNACONFIRM1             "Opravdu přepnout?"
+#define LEN_ANTENNA_MODES     "\011"
+#define TR_ANTENNA_MODES               "Internal\0""Ask\0     ""Per model""External"
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2             TR("Zkont. anténu", "Ujisti se že je anténa připojena!")
 #define TR_R9M_PROTO_FLEX_WARN_LINE1   "Vyžaduje FLEX"
 #define TR_R9M_PROTO_FCC_WARN_LINE1    "Vyžaduje FCC"

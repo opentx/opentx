@@ -28,9 +28,7 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-uint8_t unexpectedShutdown = 0;
-
-uint16_t vbattRTC;
+GlobalData globalData;
 
 /* ARM: mixer duration in 0.5us */
 uint16_t maxMixerDuration;
@@ -1838,12 +1836,12 @@ void opentxInit()
   //  * radios without CPU controlled power can only use Reset status register (if available)
   if (UNEXPECTED_SHUTDOWN()) {
     TRACE("Unexpected Shutdown detected");
-    unexpectedShutdown = 1;
+    globalData.unexpectedShutdown = 1;
   }
 
 #if defined(SDCARD)
   // SDCARD related stuff, only done if not unexpectedShutdown
-  if (!unexpectedShutdown) {
+  if (!globalData.unexpectedShutdown) {
     sdInit();
 
 #if defined(AUTOUPDATE)
@@ -1877,7 +1875,7 @@ void opentxInit()
 #endif
 
 #if defined(COLORLCD)
-  if (!unexpectedShutdown) {
+  if (!globalData.unexpectedShutdown) {
     // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
     // but we only remember the pointer to in in constructor.
     // The storageReadAll() needs topbar object, so it must be created here
@@ -1891,7 +1889,7 @@ void opentxInit()
   // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
 #if defined(RAMBACKUP)
-  if (unexpectedShutdown) {
+  if (globalData.unexpectedShutdown) {
     // SDCARD not available, try to restore last model from RAM
     TRACE("rambackupRestore");
     rambackupRestore();
@@ -1947,7 +1945,7 @@ void opentxInit()
     backlightOn();
   }
 
-  if (!unexpectedShutdown) {
+  if (!globalData.unexpectedShutdown) {
     opentxStart();
   }
 

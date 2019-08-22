@@ -166,8 +166,8 @@ PACK(typedef struct {
     struct {
       uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
       uint8_t spare1:2;
-      uint8_t receiver_telem_off:1;     // false = receiver telem enabled
-      uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
+      uint8_t receiverTelemetryOff:1;     // false = receiver telem enabled
+      uint8_t receiverHigherChannels:1;  // false = pwm out 1-8, true 9-16
       uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
       uint8_t fast:1;
       uint8_t spare2;

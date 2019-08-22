@@ -2016,8 +2016,8 @@ class ModuleUnionField: public UnionField<unsigned int> {
         ModuleData::PXX& pxx = module.pxx;
         internalField.Append(new UnsignedField<2>(this, pxx.power));
         internalField.Append(new SpareBitsField<2>(this));
-        internalField.Append(new BoolField<1>(this, pxx.receiver_telem_off));
-        internalField.Append(new BoolField<1>(this, pxx.receiver_channel_9_16));
+        internalField.Append(new BoolField<1>(this, pxx.receiverTelemetryOff));
+        internalField.Append(new BoolField<1>(this, pxx.receiverHigherChannels));
         internalField.Append(new BoolField<1>(this, pxx.external_antenna));
         internalField.Append(new BoolField<1>(this, pxx.sport_out));
       }

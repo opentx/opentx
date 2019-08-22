@@ -522,6 +522,7 @@
 #define TR_FLMODE              TR("Modo","Modos")
 #define TR_MIXWARNING          "Aviso"
 #define TR_OFF                 "OFF"
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Multpx"
 #define TR_DELAYDOWN           "Delay Dn"
@@ -969,8 +970,11 @@
 #define TR_UNIT                "Unit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
-#define TR_ANTENNASELECTION    TR(INDENT "Antenna", TR(INDENT "Antenna", INDENT "Antenna selection"))
 #define TR_ANTENNACONFIRM1     "Really switch?"
+#define LEN_ANTENNA_MODES     "\011"
+#define TR_ANTENNA_MODES               "Internal\0""Ask\0     ""Per model""External"
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Make sure antenna is installed!")
 #define TR_R9M_PROTO_FLEX_WARN_LINE1                "Requires non"
 #define TR_R9M_PROTO_FCC_WARN_LINE1         "Requires FCC"

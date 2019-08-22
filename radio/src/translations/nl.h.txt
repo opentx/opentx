@@ -502,6 +502,7 @@ TR_GYR_VSRCRAW
 #define TR_FLMODE              TR("Mode", "Modes")
 #define TR_MIXWARNING          "Melding"
 #define TR_OFF                 "UIT"
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Multpx"
 #define TR_DELAYDOWN           "Vertr.Dn"
@@ -951,8 +952,11 @@ TR_GYR_VSRCRAW
 #define TR_UNIT                "Eenheid"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor toevoegen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanalen", INDENT "Uitgangs Kanalen")  //wg 9XR-Pro
-#define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenna selection")
 #define TR_ANTENNACONFIRM1     "Antennes wisselen?"
+#define LEN_ANTENNA_MODES     "\011"
+#define TR_ANTENNA_MODES               "Internal\0""Ask\0     ""Per model""External"
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Is er zeker een antenne geplaatst!")
 #define TR_R9M_PROTO_FLEX_WARN_LINE1                "Requires non"
 #define TR_R9M_PROTO_FCC_WARN_LINE1         "Requires FCC"

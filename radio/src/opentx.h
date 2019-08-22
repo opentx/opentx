@@ -565,10 +565,6 @@ extern uint8_t trimsDisplayMask;
 
 void flightReset(uint8_t check=true);
 
-extern uint8_t unexpectedShutdown;
-
-extern uint16_t vbattRTC;
-
 extern uint16_t maxMixerDuration;
 
 #define DURATION_MS_PREC2(x) ((x)/20)
@@ -1055,6 +1051,14 @@ void setMFP();
 void clearMFP();
 #endif
 
+struct GlobalData {
+  uint8_t unexpectedShutdown:1;
+  uint8_t externalAntennaEnabled:1;
+  uint8_t spare:6;
+};
+
+extern GlobalData globalData;
+
 extern uint8_t requiredSpeakerVolume;
 
 enum MainRequest {
@@ -1383,7 +1387,7 @@ inline bool isAsteriskDisplayed()
   return true;
 #endif
 
-  return unexpectedShutdown;
+  return globalData.unexpectedShutdown;
 }
 
 #endif // _OPENTX_H_

@@ -490,7 +490,7 @@ void perMain()
   event_t evt = getEvent(false);
 
 #if defined(RAMBACKUP)
-  if (unexpectedShutdown) {
+  if (globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
   }
@@ -507,7 +507,7 @@ void perMain()
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
+  if (!SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }
