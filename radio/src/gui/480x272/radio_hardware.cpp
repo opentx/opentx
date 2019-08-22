@@ -269,6 +269,9 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNA);
         g_eeGeneral.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_ANTENNA_MODES, g_eeGeneral.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
+        if (attr && checkIncDec_Ret) {
+          checkExternalAntenna();
+        }
         break;
 #endif
 
@@ -285,7 +288,7 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_JITTER_FILTER);
-        uint8_t b = 1-g_eeGeneral.jitterFilter;
+        uint8_t b = 1 - g_eeGeneral.jitterFilter;
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }

@@ -561,6 +561,9 @@ void menuRadioHardware(event_t event)
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
         g_eeGeneral.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_ANTENNA, STR_ANTENNA_MODES, g_eeGeneral.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
+        if (attr && checkIncDec_Ret) {
+          checkExternalAntenna();
+        }
         break;
 #endif
 

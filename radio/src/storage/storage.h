@@ -52,6 +52,7 @@ void storageFlushCurrentModel();
 
 void preModelLoad();
 void postModelLoad(bool alarms);
+void checkExternalAntenna();
 
 #if defined(EEPROM_RLC)
 #include "eeprom_common.h"

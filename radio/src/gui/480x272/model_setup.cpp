@@ -967,6 +967,9 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_ANTENNA);
         g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event, [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
+        if (attr && checkIncDec_Ret) {
+          checkExternalAntenna();
+        }
         break;
 #endif
 
