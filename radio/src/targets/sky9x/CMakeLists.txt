@@ -27,7 +27,7 @@ elseif(PCB STREQUAL AR9X)
   include_directories(${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi)
   set(TARGET_SRC
     ${TARGET_SRC}
-    ${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c
+    ../../${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c
     i2c_driver.cpp
     rtc_ds3231_driver.cpp
     )
