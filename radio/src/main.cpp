@@ -312,7 +312,8 @@ void guiMain(event_t evt)
           }
           if (menu) {
             const char * result = runPopupMenu(evt);
-            if (popupMenuItemsCount == 0) {
+            if (result) {
+              TRACE("popupMenuHandler(%s)", result);
               popupMenuHandler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;

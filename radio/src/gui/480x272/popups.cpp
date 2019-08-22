@@ -20,13 +20,13 @@
 
 #include "opentx.h"
 
-const char *warningText = NULL;
+const char *warningText = nullptr;
 const char *warningInfoText;
 uint8_t     warningInfoLength;
 uint8_t     warningType;
 uint8_t     warningResult = 0;
 uint8_t     warningInfoFlags = ZCHAR;
-void        (*popupFunc)(event_t event) = NULL;
+PopupFunc popupFunc = nullptr;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     popupMenuSelectedItem = 0;
 uint16_t    popupMenuItemsCount = 0;
@@ -115,7 +115,7 @@ void runPopupWarning(event_t event)
 
 const char * runPopupMenu(event_t event)
 {
-  const char * result = NULL;
+  const char * result = nullptr;
 
   uint8_t display_count = min<unsigned int>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
 

@@ -22,6 +22,7 @@
 #define _MENUS_H_
 
 #include "keys.h"
+#include "audio.h"
 
 #define MENU_COLUMN2_X         280
 #define MIXES_2ND_COLUMN       140
@@ -490,16 +491,16 @@ void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h);
 void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
 
-extern void (* popupFunc)(event_t event);
+typedef void (* PopupFunc)(event_t event);
+extern PopupFunc popupFunc;
+
 extern uint8_t warningInfoFlags;
 
-#define DISPLAY_WARNING(evt)                (*popupFunc)(evt)
-#define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)
-#define SET_WARNING_INFO(info, len, flags)    (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
+inline void DISPLAY_WARNING(event_t event)
+{
+  (*popupFunc)(event);
+}
 
-#define POPUP_MENU_ADD_ITEM(s)         do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuItemsCount < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuItemsCount++] = s; } while (0)
-#define POPUP_MENU_SELECT_ITEM(s)      popupMenuSelectedItem =  (s > 0 ? (s < popupMenuItemsCount ? s : popupMenuItemsCount - 1) : 0)
-#define POPUP_MENU_START(func)         do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while(0)
 #define POPUP_MENU_MAX_LINES           12
 #define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
@@ -514,7 +515,42 @@ enum {
 extern uint8_t popupMenuOffsetType;
 extern uint8_t popupMenuSelectedItem;
 const char * runPopupMenu(event_t event);
-extern void (*popupMenuHandler)(const char * result);
+
+typedef void         (* PopupMenuHandler)(const char * result);
+extern PopupMenuHandler popupMenuHandler;
+
+inline void POPUP_INPUT(const char * s, PopupFunc func)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_INPUT;
+  popupFunc = func;
+}
+
+inline void SET_WARNING_INFO(const char * info, uint8_t length, uint8_t flags)
+{
+  warningInfoText = info;
+  warningInfoLength = length;
+  warningInfoFlags = flags;
+}
+
+inline void POPUP_MENU_ADD_ITEM(const char * s)
+{
+  popupMenuOffsetType = MENU_OFFSET_INTERNAL;
+  if (popupMenuItemsCount < POPUP_MENU_MAX_LINES)
+    popupMenuItems[popupMenuItemsCount++] = s;
+}
+
+inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
+{
+  popupMenuSelectedItem =  (index > 0 ? (index < popupMenuItemsCount ? index : popupMenuItemsCount - 1) : 0);
+}
+
+inline void POPUP_MENU_START(PopupMenuHandler handler)
+{
+  popupMenuHandler = handler;
+  AUDIO_KEY_PRESS();
+}
 
 inline void CLEAR_POPUP()
 {
