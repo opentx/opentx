@@ -493,4 +493,6 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
     setDefaultPpmFrameLength(EXTERNAL_MODULE);
 }
 
+extern bool isExternalAntennaEnabled();
+
 #endif // _MODULES_HELPERS_H_

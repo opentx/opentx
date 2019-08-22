@@ -224,6 +224,7 @@ set(PULSES_SRC
   ${PULSES_SRC}
   pulses.cpp
   ppm.cpp
+  modules_helpers.cpp
   )
 
 if(DSM2)

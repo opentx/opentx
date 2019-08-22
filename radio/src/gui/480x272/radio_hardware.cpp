@@ -58,9 +58,15 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
+
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA,
+#endif
+
 #if defined(AUX_SERIAL)
   ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
 #endif
+
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_MAX
 };
@@ -75,6 +81,12 @@ enum MenuRadioHardwareItems {
 
 // TODO should be moved to the HAL
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  #define EXTERNAL_ANTENNA_ROW         0,
+#else
+  #define EXTERNAL_ANTENNA_ROW
+#endif
 
 bool menuRadioHardware(event_t event)
 {
@@ -99,6 +111,8 @@ bool menuRadioHardware(event_t event)
     0, /* max baudrate */
 
     BLUETOOTH_ROWS,
+
+    EXTERNAL_ANTENNA_ROW
 
     0, /* aux serial mode */
     0, /* ADC filter */
@@ -242,14 +256,21 @@ bool menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
-        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_PIN_CODE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH_PIN_CODE);
         lcdDrawText(HW_SETTINGS_COLUMN+50, y, "000000", 0);
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
-        lcdDrawText(INDENT_WIDTH, y, STR_NAME);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_NAME);
         editName(HW_SETTINGS_COLUMN+50, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
         break;
+
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+      case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNA);
+        g_eeGeneral.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_ANTENNA_MODES, g_eeGeneral.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
+        break;
+#endif
 
 #if defined(AUX_SERIAL)
       case ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE:

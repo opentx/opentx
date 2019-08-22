@@ -109,7 +109,7 @@ void drawCurve(coord_t offset=0);
 
 #if defined(COLORLCD)
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags=0, const char * prefix=nullptr, const char * suffix=nullptr);
-int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags flags, event_t event);
+int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags flags, event_t event, IsValueAvailable isValueAvailable=nullptr);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags flags, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags flags, event_t event);
 void drawFatalErrorScreen(const char * message);

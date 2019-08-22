@@ -511,6 +511,7 @@
 #define TR_FLMODE              TR("Phase", "Phasen")
 #define TR_MIXWARNING          "Warnung"
 #define TR_OFF                 "AUS"
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Wirkung"
 #define TR_DELAYDOWN           "Verz. Dn"
@@ -954,8 +955,11 @@
 #define TR_UNIT                "Einheit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor hinzufügen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
-#define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenne auswählen")
 #define TR_ANTENNACONFIRM1     "Ant. umschalten"
+#define LEN_ANTENNA_MODES      "\011"
+#define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Ist eine externe Antenne installiert?")
 #define TR_R9M_PROTO_FLEX_WARN_LINE1                "Requires non"
 #define TR_R9M_PROTO_FCC_WARN_LINE1         "Requires FCC"

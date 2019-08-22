@@ -87,7 +87,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM,
-#if defined(EXTERNAL_ANTENNA)
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA,
 #endif
   ITEM_MODEL_SETUP_INTERNAL_MODULE_FAILSAFE,
@@ -221,8 +221,13 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 #define TRAINER_BLUETOOTH_S_ROW        (bluetooth.distantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
 #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
 
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+#define EXTERNAL_ANTENNA_ROW             ((isModuleXJT(INTERNAL_MODULE) && g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL) ? (uint8_t)0 : HIDDEN_ROW),
+#else
+#define EXTERNAL_ANTENNA_ROW
+#endif
+
 #if defined(PCBX7) || defined(PCBX9LITE)
-  #define ANTENNA_ROW
   #if defined(BLUETOOTH)
     #define TRAINER_BLUETOOTH_ROW        (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW)),
   #else
@@ -231,12 +236,10 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
   #define TRAINER_PPM_PARAMS_ROW         (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
   #define TRAINER_ROWS                   LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PPM_PARAMS_ROW
 #elif defined(PCBXLITES)
-  #define ANTENNA_ROW                    IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(0)),
   #define TRAINER_BLUETOOTH_ROW          (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
   #define TRAINER_PPM_PARAMS_ROW         (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
   #define TRAINER_ROWS                   LABEL(Trainer), 0, IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), TRAINER_CHANNELS_ROW, TRAINER_PPM_PARAMS_ROW
 #elif defined(PCBXLITE)
-  #define ANTENNA_ROW                    IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(0)),
   #define TRAINER_BLUETOOTH_ROW          (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
   #define TRAINER_ROWS                   IF_BT_TRAINER_ON(LABEL(Trainer)), IF_BT_TRAINER_ON(0), IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), IF_BT_TRAINER_ON(TRAINER_CHANNELS_ROW), HIDDEN_ROW /* xlite has only BT trainer, so never PPM */
 #else
@@ -271,7 +274,7 @@ void onBluetoothConnectMenu(const char * result)
       INTERNAL_MODULE_CHANNELS_ROWS, \
       IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleRxNumAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1)), \
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), /* RxNum */ \
-      ANTENNA_ROW \
+      EXTERNAL_ANTENNA_ROW \
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), /* Failsafe */ \
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), /* Range check and Register buttons */ \
       IF_PXX2_MODULE(INTERNAL_MODULE, 0), /* Module options */ \
@@ -280,16 +283,6 @@ void onBluetoothConnectMenu(const char * result)
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), /* Receiver 3 */
 #else
   #define INTERNAL_MODULE_ROWS
-#endif
-
-#if defined(EXTERNAL_ANTENNA)
-void onAntennaSwitchConfirm(const char * result)
-{
-  if (result == STR_OK) {
-    // Switch to external antenna confirmation
-    g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = XJT_EXTERNAL_ANTENNA;
-  }
-}
 #endif
 
 void menuModelSetup(event_t event)
@@ -1375,20 +1368,17 @@ void menuModelSetup(event_t event)
       }
       break;
 
-#if defined(EXTERNAL_ANTENNA)
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA:
-      {
-        uint8_t newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNASELECTION, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna, 0, 1, attr, event);
-        if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
-          POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onAntennaSwitchConfirm);
-          const char * w = STR_ANTENNACONFIRM2;
-          SET_WARNING_INFO(w, strlen(w), 0);
-        }
-        else {
-          g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = newAntennaSel;
-        }
+        lcdDrawText(INDENT_WIDTH, y, STR_ANTENNA);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode + 2, attr);
+        g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = checkIncDec(event,
+                                                                                  g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode,
+                                                                                  EXTERNAL_ANTENNA_DISABLE,
+                                                                                  EXTERNAL_ANTENNA_ENABLE,
+                                                                                  EE_MODEL,
+                                                                                  [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
         break;
-      }
 #endif
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS:

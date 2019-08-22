@@ -62,11 +62,41 @@ static void fixUpModel()
 }
 #endif
 
+#if defined(EXTERNAL_ANTENNA) && defined(INTERNAL_MODULE_PXX1)
+void checkExternalAntenna();
+void onAntennaSelection(const char * result)
+{
+  if (result == STR_USE_INTERNAL_ANTENNA) {
+    globalData.externalAntennaEnabled = true;
+  }
+  else if (result == STR_USE_EXTERNAL_ANTENNA) {
+    globalData.externalAntennaEnabled = false;
+  }
+  else {
+    checkExternalAntenna();
+  }
+}
+
+void checkExternalAntenna()
+{
+  if (!isModuleXJT(INTERNAL_MODULE))
+    return;
+
+  if (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_ASK ||
+    (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode == EXTERNAL_ANTENNA_ASK)) {
+    POPUP_MENU_ADD_ITEM(STR_USE_INTERNAL_ANTENNA);
+    POPUP_MENU_ADD_ITEM(STR_USE_EXTERNAL_ANTENNA);
+    POPUP_MENU_START(onAntennaSelection);
+  }
+}
+#endif
+
 void postModelLoad(bool alarms)
 {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   fixUpModel();
 #endif
+
   AUDIO_FLUSH();
   flightReset(false);
 
@@ -83,6 +113,10 @@ void postModelLoad(bool alarms)
   }
 
   LOAD_MODEL_CURVES();
+
+#if defined(EXTERNAL_ANTENNA) && defined(INTERNAL_MODULE_PXX1)
+  checkExternalAntenna();
+#endif
 
   resumeMixerCalculations();
   if (pulsesStarted()) {
@@ -105,6 +139,7 @@ void postModelLoad(bool alarms)
 
   LOAD_MODEL_BITMAP();
   LUA_LOAD_MODEL_SCRIPTS();
+
   SEND_FAILSAFE_1S();
 }
 
