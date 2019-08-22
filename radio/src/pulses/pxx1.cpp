@@ -54,7 +54,7 @@ void Pxx1Pulses<PxxTransport>::addExtraFlags(uint8_t module)
   // Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise)
   uint8_t extraFlags = 0;
 
-#if defined(PCBHORUS) || defined(PCBXLITE)
+#if defined(EXTERNAL_ANTENNA)
   if (module == INTERNAL_MODULE && isExternalAntennaEnabled()) {
     extraFlags |= (1 << 0);
   }

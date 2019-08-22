@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 
+#if defined(EXTERNAL_ANTENNA)
 bool isExternalAntennaEnabled()
 {
   switch (g_eeGeneral.externalAntennaMode) {
@@ -40,3 +41,4 @@ bool isExternalAntennaEnabled()
       return globalData.externalAntennaEnabled;
   }
 }
+#endif
