@@ -1372,12 +1372,18 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA:
         lcdDrawText(INDENT_WIDTH, y, STR_ANTENNA);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode + 2, attr);
-        g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = checkIncDec(event,
-                                                                                  g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode,
-                                                                                  EXTERNAL_ANTENNA_DISABLE,
-                                                                                  EXTERNAL_ANTENNA_ENABLE,
-                                                                                  EE_MODEL,
-                                                                                  [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
+        if (attr) {
+          g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = checkIncDec(event,
+                                                                                    g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode,
+                                                                                    EXTERNAL_ANTENNA_DISABLE,
+                                                                                    EXTERNAL_ANTENNA_ENABLE,
+                                                                                    EE_MODEL,
+                                                                                    [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
+
+          if (checkIncDec_Ret) {
+            checkExternalAntenna();
+          }
+        }
         break;
 #endif
 

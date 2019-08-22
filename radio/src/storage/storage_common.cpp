@@ -63,7 +63,6 @@ static void fixUpModel()
 #endif
 
 #if defined(EXTERNAL_ANTENNA) && defined(INTERNAL_MODULE_PXX1)
-void checkExternalAntenna();
 void onAntennaSelection(const char * result)
 {
   if (result == STR_USE_INTERNAL_ANTENNA) {
