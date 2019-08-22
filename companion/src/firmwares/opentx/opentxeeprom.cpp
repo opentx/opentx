@@ -2072,6 +2072,18 @@ class ModuleUnionField: public UnionField<unsigned int> {
             module.protocol == PULSES_ACCESS_ISRM) {
           module.subType = module.protocol - PULSES_ACCESS_ISRM;
         }
+        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
+          for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
+
+            if (pos == PXX2_LEN_RX_NAME
+                || module.access.receiverName[i][pos] == '\0') {
+
+              memset(module.access.receiverName[i]+pos,'\0',PXX2_LEN_RX_NAME-pos);
+              break;
+            }
+            receiverName[i][pos] = module.access.receiverName[i][pos];
+          }
+        }
       }
 
       virtual void afterImport()
