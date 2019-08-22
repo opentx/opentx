@@ -25,9 +25,9 @@ elseif(PCB STREQUAL AR9X)
   add_definitions(-Dat91sam3s8 -DPCBAR9X -DSOFTWARE_VOLUME)
   set(FLAVOUR ar9x)
   include_directories(${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi)
-  set(SRC ${SRC} ${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c)
   set(TARGET_SRC
     ${TARGET_SRC}
+    ${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c
     i2c_driver.cpp
     rtc_ds3231_driver.cpp
     )
