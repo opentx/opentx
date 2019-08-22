@@ -159,13 +159,13 @@ void menuRadioSetup(event_t event)
     CASE_SPLASH_PARAM(0) // disable splash
     CASE_PWR_BUTTON_PRESS(0) // pwr on speed
     CASE_PWR_BUTTON_PRESS(0) // pwr off speed
-    CASE_PXX2(0)
+    CASE_PXX2(0) // owner registration ID
     CASE_GPS(LABEL(GPS))
       CASE_GPS(0) // timezone
       CASE_GPS(0) // adjust RTC
       CASE_GPS(0) // GPS format
-      CASE_PXX1(0) // country code
-    0, // language
+    CASE_PXX1(0) // country code
+    0, // voice language
     0, // imperial
     IF_FAI_CHOICE(0)
     0, // switches delay
