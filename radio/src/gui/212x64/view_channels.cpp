@@ -36,7 +36,8 @@ void menuChannelsView(event_t event)
   switch(event)
   {
     case EVT_KEY_BREAK(KEY_EXIT):
-      popMenu();
+      if(menuLevel > 0)
+        popMenu();
       break;
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_LEFT):
