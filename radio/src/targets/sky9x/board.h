@@ -228,6 +228,11 @@ uint32_t readTrims();
 // Pulses driver
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
+void module_output_active();
+inline void EXTERNAL_MODULE_ON()
+{
+  module_output_active();
+}
 
 // SD driver
 #if defined(SIMU)
@@ -377,6 +382,9 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
+inline void telemetryPortSetDirectionOutput()
+{
+}
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
