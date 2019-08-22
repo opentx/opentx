@@ -40,7 +40,6 @@ options_sky9x = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -62,7 +61,6 @@ options_ar9x = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     # "rtc": ("RTCLOCK", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -80,8 +78,6 @@ options_taranis_x9d = {
     "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -99,8 +95,6 @@ options_taranis_x9dp = {
     "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -118,9 +112,7 @@ options_taranis_x9lite = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
     "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -136,8 +128,6 @@ options_taranis_xlite = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -154,9 +144,7 @@ options_taranis_xlites = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
     "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -174,8 +162,6 @@ options_taranis_x9e = {
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "horussticks": ("STICKS", "HORUS", "STANDARD"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -189,9 +175,7 @@ options_horus_x12s = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }
 
@@ -205,7 +189,5 @@ options_horus_x10 = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "crossfire": ("CROSSFIRE", "YES", "NO"),
     "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
 }

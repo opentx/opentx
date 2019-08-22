@@ -1,3 +1,4 @@
+option(CROSSFIRE "Crossfire TX Module" ON)
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
@@ -310,3 +311,15 @@ if(INTERNAL_MODULE_PXX1)
 endif()
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
+
+if(CROSSFIRE)
+  add_definitions(-DCROSSFIRE)
+  set(PULSES_SRC
+          ${PULSES_SRC}
+          crossfire.cpp
+          )
+  set(SRC
+          ${SRC}
+          telemetry/crossfire.cpp
+          )
+endif()

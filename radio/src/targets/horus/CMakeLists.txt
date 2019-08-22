@@ -1,3 +1,4 @@
+option(CROSSFIRE "Crossfire TX Module" ON)
 option(DISK_CACHE "Enable SD card disk cache" ON)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
 option(PXX1 "PXX1 protocol support" ON)
@@ -201,4 +202,16 @@ if(PYTHONINTERP_FOUND)
     COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > storage/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
+endif()
+
+if(CROSSFIRE)
+  add_definitions(-DCROSSFIRE)
+  set(PULSES_SRC
+          ${PULSES_SRC}
+          crossfire.cpp
+          )
+  set(SRC
+          ${SRC}
+          telemetry/crossfire.cpp
+          )
 endif()

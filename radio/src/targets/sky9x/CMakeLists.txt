@@ -1,3 +1,4 @@
+option(CROSSFIRE "Crossfire TX Module" OFF)
 set(ARCH ARM)
 set(LUA NO)
 set(MCU cortex-m3)
@@ -129,3 +130,15 @@ set(SRC
   ${SRC}
   debug.cpp
   )
+
+if(CROSSFIRE)
+  add_definitions(-DCROSSFIRE)
+  set(PULSES_SRC
+          ${PULSES_SRC}
+          crossfire.cpp
+          )
+  set(SRC
+          ${SRC}
+          telemetry/crossfire.cpp
+          )
+endif()
