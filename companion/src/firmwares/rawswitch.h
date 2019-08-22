@@ -91,11 +91,11 @@ class RawSwitch {
     QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL, const ModelData * const modelData = NULL) const;
     bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
 
-    bool operator== ( const RawSwitch& other) {
+    bool operator== ( const RawSwitch& other) const {
       return (this->type == other.type) && (this->index == other.index);
     }
 
-    bool operator!= ( const RawSwitch& other) {
+    bool operator!= ( const RawSwitch& other) const {
       return (this->type != other.type) || (this->index != other.index);
     }
 

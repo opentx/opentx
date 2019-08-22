@@ -178,7 +178,7 @@ class EEPROMInterface
     virtual int getSize(const GeneralSettings &) = 0;
 
     //static void showEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
-    static void showEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
+    static QString getEepromWarnings(unsigned long errorsFound);
 
   protected:
 

@@ -8,6 +8,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   target_include_directories(gtests-cpn-lib PUBLIC ${GTEST_INCDIR} ${GTEST_INCDIR}/gtest ${GTEST_SRCDIR})
   add_definitions(-DGTESTS)
   set(TESTS_PATH ${COMPANION_SRC_DIRECTORY}/tests)
+  set(RADIO_TESTS_PATH ${RADIO_SRC_DIRECTORY}/tests)
   configure_file(${TESTS_PATH}/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
 
   include_directories(${CMAKE_CURRENT_BINARY_DIR})

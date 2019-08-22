@@ -25,56 +25,6 @@
 #include <math.h>
 #include <gtest/gtest.h>
 
-// #if defined(PCBTARANIS) || defined(PCBHORUS)
-// #define RADIO_RESET() \
-//   g_eeGeneral.switchConfig = 0x00007bff
-// #else
-//   #define RADIO_RESET()
-// #endif
-
-// inline void SYSTEM_RESET()
-// {
-// #if defined(EEPROM)
-//   memset(modelHeaders, 0, sizeof(modelHeaders));
-// #endif
-//   generalDefault();
-//   g_eeGeneral.templateSetup = 0;
-//   for (int i=0; i<NUM_SWITCHES; i++) {
-//     simuSetSwitch(i, -1);
-//   }
-// }
-
-// inline void MODEL_RESET()
-// {
-//   memset(&g_model, 0, sizeof(g_model));
-//   memset(&anaInValues, 0, sizeof(anaInValues));
-//   extern uint8_t s_mixer_first_run_done;
-//   s_mixer_first_run_done = false;
-//   lastFlightMode = 255;
-// }
-
-// inline void MIXER_RESET()
-// {
-//   memset(channelOutputs, 0, sizeof(channelOutputs));
-//   memset(chans, 0, sizeof(chans));
-//   memset(ex_chans, 0, sizeof(ex_chans));
-//   memset(act, 0, sizeof(act));
-//   memset(swOn, 0, sizeof(swOn));
-//   mixerCurrentFlightMode = lastFlightMode = 0;
-//   lastAct = 0;
-//   logicalSwitchesReset();
-// }
-
-// inline void TELEMETRY_RESET()
-// {
-//   telemetryData.clear();
-//   telemetryData.rssi.set(100);
-//   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-//     telemetryItems[i].clear();
-//   }
-//   memclear(g_model.telemetrySensors, sizeof(g_model.telemetrySensors));
-// }
-
 class OpenTxTest : public testing::Test 
 {
   protected:  // You should make the members protected s.t. they can be
@@ -85,11 +35,6 @@ class OpenTxTest : public testing::Test
     // Otherwise, this can be skipped.
     virtual void SetUp() 
     {
-      // SYSTEM_RESET();
-      // MODEL_RESET();
-      // MIXER_RESET();
-      // modelDefault(0);
-      // RADIO_RESET();
     }
 };
 
