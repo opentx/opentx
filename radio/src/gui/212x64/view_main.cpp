@@ -516,7 +516,7 @@ void menuMainView(event_t event)
   if (getSwitchCount() > 8) {
     for (int i=0; i<NUM_SWITCHES; ++i) {
       div_t qr = div(i, 9);
-      if (g_model.view == VIEW_INPUTS) {
+      if (view_base == VIEW_INPUTS) {
         div_t qr2 = div(qr.rem, 5);
         if (i >= 14) qr2.rem += 1;
         const coord_t x[4] = { 50, 142 };
@@ -534,20 +534,20 @@ void menuMainView(event_t event)
       if (SWITCH_EXISTS(i)) {
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        drawSwitch((g_model.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
+        drawSwitch((view_base == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
         index++;
       }
     }
   }
 
-  if (g_model.view == VIEW_TIMERS) {
+  if (view_base == VIEW_TIMERS) {
     displayTimers();
   }
-  else if (g_model.view == VIEW_INPUTS) {
+  else if (view_base == VIEW_INPUTS) {
     // Sticks
     doMainScreenGraphics();
   }
-  else {
+  else if (view_base == VIEW_SWITCHES) {
     // Logical Switches
     int sw = (secondPage && MAX_LOGICAL_SWITCHES > 32 ? 32 : 0);
     const int end = sw + 32;
@@ -572,6 +572,10 @@ void menuMainView(event_t event)
         lcdDrawRect(x, y, 4, 8);
       }
     }
+  }
+  else if (view_base == VIEW_MONITOR) {
+    lcdClear();
+    menuChannelsView(event);
   }
 
 #if defined(GVARS)

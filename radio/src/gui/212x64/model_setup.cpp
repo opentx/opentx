@@ -36,6 +36,7 @@ uint8_t getSwitchWarningsCount()
 enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_NAME,
   ITEM_MODEL_SETUP_BITMAP,
+  ITEM_MODEL_SETUP_START_VIEW,
   ITEM_MODEL_SETUP_TIMER1,
   ITEM_MODEL_SETUP_TIMER1_NAME,
   ITEM_MODEL_SETUP_TIMER1_PERSISTENT,
@@ -323,6 +324,7 @@ void menuModelSetup(event_t event)
 
     0, // Model name
     0, // Model image
+    0, // Start view
 
     TIMERS_ROWS,
 
@@ -427,6 +429,17 @@ void menuModelSetup(event_t event)
           }
           else {
             POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
+          }
+        }
+        break;
+
+      case ITEM_MODEL_SETUP_START_VIEW:
+        lcdDrawTextAlignedLeft(y, STR_STARTVIEW);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MAINVIEWS, g_model.view >> 4, attr);
+        if (attr && s_editMode > 0) {
+          uint8_t view = checkIncDec(event, g_model.view >> 4, 0, 8, EE_MODEL, isMainViewAvailable);
+          if (checkIncDec_Ret) {
+            g_model.view = bfSet(g_model.view, view, 4, 4);
           }
         }
         break;
