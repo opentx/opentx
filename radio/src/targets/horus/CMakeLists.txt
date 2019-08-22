@@ -1,4 +1,3 @@
-option(CROSSFIRE "Crossfire TX Module" ON)
 option(DISK_CACHE "Enable SD card disk cache" ON)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
 option(PXX1 "PXX1 protocol support" ON)
@@ -204,14 +203,3 @@ if(PYTHONINTERP_FOUND)
   )
 endif()
 
-if(CROSSFIRE)
-  add_definitions(-DCROSSFIRE)
-  set(PULSES_SRC
-          ${PULSES_SRC}
-          crossfire.cpp
-          )
-  set(SRC
-          ${SRC}
-          telemetry/crossfire.cpp
-          )
-endif()

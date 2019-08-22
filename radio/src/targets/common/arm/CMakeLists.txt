@@ -12,6 +12,7 @@ option(MODULE_SIZE_STD "Standard size TX Module" ON)
 option(PPM "PPM TX Module" ON)
 option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
+option(CROSSFIRE "Crossfire TX Module" ON)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(MULTI_SPORT "SPORT telemetry support" OFF)
 option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
@@ -153,6 +154,18 @@ endif()
 
 if(MULTI_SPORT)
   add_definitions(-DMULTI_SPORT)
+endif()
+
+if(CROSSFIRE)
+  add_definitions(-DCROSSFIRE)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    crossfire.cpp
+    )
+  set(SRC
+    ${SRC}
+    telemetry/crossfire.cpp
+    )
 endif()
 
 add_definitions(-DCPUARM)
