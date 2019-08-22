@@ -103,15 +103,15 @@ enum {
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
-uint32_t sdIsHC(void);
-uint32_t sdGetSpeed(void);
+uint32_t sdIsHC();
+uint32_t sdGetSpeed();
 #define SD_IS_HC()                     (sdIsHC())
 #define SD_GET_SPEED()                 (sdGetSpeed())
 #define SD_GET_FREE_BLOCKNR()          (sdGetFreeSectors())
 #define SD_CARD_PRESENT()              (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
-void sdInit(void);
-void sdMount(void);
-void sdDone(void);
+void sdInit();
+void sdMount();
+void sdDone();
 #define sdPoll10ms()
 uint32_t sdMounted();
 #else
@@ -134,14 +134,14 @@ DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
 
 // Flash Write driver
 #define FLASH_PAGESIZE                 256
-void unlockFlash(void);
-void lockFlash(void);
+void unlockFlash();
+void lockFlash();
 void flashWrite(uint32_t * address, uint32_t * buffer);
 uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
 
 // SDRAM driver
-void SDRAM_Init(void);
+void SDRAM_Init();
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
@@ -184,10 +184,10 @@ void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
 
 // Trainer driver
-void init_trainer_ppm(void);
-void stop_trainer_ppm(void);
-void init_trainer_capture(void);
-void stop_trainer_capture(void);
+void init_trainer_ppm();
+void stop_trainer_ppm();
+void init_trainer_capture();
+void stop_trainer_capture();
 
 // Keys driver
 enum EnumKeys
@@ -280,9 +280,9 @@ enum EnumSwitchesPositions
 
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
 
-void keysInit(void);
+void keysInit();
 uint32_t switchState(uint8_t index);
-uint32_t readKeys(void);
+uint32_t readKeys();
 #define KEYS_PRESSED()                          (readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(in)             ((in & ((1<<KEY_RIGHT) + (1<<KEY_LEFT))) == ((1<<KEY_RIGHT) + (1<<KEY_LEFT)))
 #define DBLKEYS_PRESSED_UP_DWN(in)              ((in & ((1<<KEY_UP) + (1<<KEY_DOWN))) == ((1<<KEY_UP) + (1<<KEY_DOWN)))
@@ -292,13 +292,13 @@ uint32_t readKeys(void);
 // Trims driver
 #define NUM_TRIMS                               6
 #define NUM_TRIMS_KEYS                          (NUM_TRIMS * 2)
-uint32_t readTrims(void);
+uint32_t readTrims();
 #define TRIMS_PRESSED()                         (readTrims())
 
 // Rotary encoder driver
 #define ROTARY_ENCODER_NAVIGATION
-void rotaryEncoderInit(void);
-void rotaryEncoderCheck(void);
+void rotaryEncoderInit();
+void rotaryEncoderCheck();
 
 // WDT driver
 #define WDTO_500MS                              500
@@ -502,7 +502,7 @@ void backlightInit();
 #if defined(SIMU) || !defined(__cplusplus)
 #define backlightEnable(...)
 #else
-void backlightEnable(uint8_t dutyCycle);
+void backlightEnable(uint8_t dutyCycle = 0);
 #endif
 #define BACKLIGHT_LEVEL_MAX   100
 #if defined(PCBX12S)
@@ -532,8 +532,8 @@ void usbJoystickUpdate();
 #endif
 
 // Audio driver
-void audioInit(void);
-void audioConsumeCurrentBuffer(void);
+void audioInit();
+void audioConsumeCurrentBuffer();
 #define audioDisableIrq()             // interrupts must stay enabled on Horus
 #define audioEnableIrq()              // interrupts must stay enabled on Horus
 #if defined(PCBX12S)
@@ -543,15 +543,15 @@ void setSampleRate(uint32_t frequency);
 #endif
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
-int32_t getVolume(void);
+int32_t getVolume();
 #define VOLUME_LEVEL_MAX               23
 #define VOLUME_LEVEL_DEF               12
 
 // Telemetry driver
 #define TELEMETRY_FIFO_SIZE            512
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
-void telemetryPortSetDirectionInput(void);
-void telemetryPortSetDirectionOutput(void);
+void telemetryPortSetDirectionInput();
+void telemetryPortSetDirectionOutput();
 void sportSendByte(uint8_t byte);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
@@ -560,8 +560,8 @@ extern uint32_t telemetryErrors;
 
 // Sport update driver
 #if defined(PCBX10)
-void sportUpdatePowerOn(void);
-void sportUpdatePowerOff(void);
+void sportUpdatePowerOn();
+void sportUpdatePowerOff();
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
 #else
@@ -570,9 +570,9 @@ void sportUpdatePowerOff(void);
 #endif
 
 // Haptic driver
-void hapticInit(void);
-void hapticDone(void);
-void hapticOff(void);
+void hapticInit();
+void hapticDone();
+void hapticOff();
 void hapticOn(uint32_t pwmPercent);
 
 // GPS driver
@@ -594,8 +594,8 @@ extern uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
-void auxSerialSbusInit(void);
-void auxSerialStop(void);
+void auxSerialSbusInit();
+void auxSerialStop();
 #endif
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
@@ -606,9 +606,9 @@ void auxSerialStop(void);
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
 void bluetoothInit(uint32_t baudrate, bool enable);
-void bluetoothWriteWakeup(void);
-uint8_t bluetoothIsWriting(void);
-void bluetoothDisable(void);
+void bluetoothWriteWakeup();
+uint8_t bluetoothIsWriting();
+void bluetoothDisable();
 
 #if defined(__cplusplus)
 #include "fifo.h"
