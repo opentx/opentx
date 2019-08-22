@@ -22,8 +22,6 @@
 
 #define STATUS_BAR_Y     (7*FH+1)
 
-uint8_t s_frsky_view = 0;
-
 #define BAR_LEFT    30
 #define BAR_WIDTH   152
 
@@ -171,7 +169,7 @@ bool displayTelemetryScreen(uint8_t index)
 {
 #if defined(LUA)
   if (TELEMETRY_SCREEN_TYPE(index) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
-    uint8_t state = isTelemetryScriptAvailable(s_frsky_view);
+    uint8_t state = isTelemetryScriptAvailable(index);
     switch (state) {
       case SCRIPT_OK:
         return true;  // contents will be drawed by Lua Task
