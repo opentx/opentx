@@ -741,3 +741,7 @@ void disableSpeaker()
 {
 }
 #endif
+
+void rtcSetTime(const struct gtm * t)
+{
+}
