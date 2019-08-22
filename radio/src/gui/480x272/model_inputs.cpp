@@ -178,7 +178,6 @@ bool menuModelExpoOne(event_t event)
 
   SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, ICON_MODEL_INPUTS, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER|OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW), 0, 0, CURVE_ROWS, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
   lcdDrawSizedText(50, 3+FH, g_model.inputNames[ed->chn], LEN_INPUT_NAME, ZCHAR|MENU_TITLE_COLOR);
-  lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 230, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
   int sub = menuVerticalPosition;
 
