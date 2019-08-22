@@ -653,6 +653,9 @@ void TelemetrySensorPanel::update()
     ui->id->hide();
     ui->instanceLabel->hide();
     ui->instance->hide();
+    ui->rxLabel->hide();
+    ui->moduleLabel->hide();
+    ui->rxOrMod->hide();
     ui->formula->show();
     ui->formula->setCurrentIndex(sensor.formula);
     isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
@@ -676,6 +679,14 @@ void TelemetrySensorPanel::update()
     ui->id->show();
     ui->instanceLabel->show();
     ui->instance->show();
+
+    bool is_pxx2 = model->moduleData[sensor.moduleIdx].isPxx2Module();
+    ui->rxLabel->setVisible(is_pxx2);
+    ui->moduleLabel->setVisible(!is_pxx2);
+
+    ui->rxOrMod->setText(sensor.getRxOrModName(model));
+    ui->rxOrMod->show();
+
     ui->formula->hide();
     isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
     ratioFieldsDisplayed = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
@@ -741,14 +752,24 @@ void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model
   cb->clear();
   if (negative) {
     for (int i=-CPN_MAX_SENSORS; i<0; ++i) {
-      if (model->sensorData[-i-1].isAvailable())
-        cb->addItem(QString("-%1").arg(model->sensorData[-i-1].label), i);
+      const SensorData& sensor = model->sensorData[-i-1];
+      if (sensor.isAvailable()) {
+        if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
+          cb->addItem(QString("-%1 (%2)").arg(sensor.label, sensor.getRxOrModName(model)), i);
+        else
+          cb->addItem(QString("-%1").arg(sensor.label), i);
+      }
     }
   }
   cb->addItem("---", 0);
   for (unsigned i=1; i<=CPN_MAX_SENSORS; ++i) {
-    if (model->sensorData[i-1].isAvailable())
-      cb->addItem(model->sensorData[i-1].label, i);
+    const SensorData& sensor = model->sensorData[i-1];
+    if (sensor.isAvailable()) {
+      if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
+        cb->addItem(QString("%1 (%2)").arg(sensor.label, sensor.getRxOrModName(model)), i);
+      else
+        cb->addItem(QString("%1").arg(sensor.label), i);
+    }
   }
 }
 

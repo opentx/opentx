@@ -333,14 +333,12 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 8;
       else if (IS_JUMPER_T12(board))
         return 6;
-      else if (IS_TARANIS_XLITES(board))
-        return 6;
       else if (IS_TARANIS_XLITE(board))
         return 6;
-      else if (IS_TARANIS(board))
-        return 8;
       else if (board == Board::BOARD_TARANIS_X9DP_2019)
         return 9;
+      else if (IS_TARANIS(board))
+        return 8;
       else if (IS_HORUS(board))
         return 10;
       else

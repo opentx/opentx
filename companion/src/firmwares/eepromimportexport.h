@@ -585,6 +585,78 @@ class TransformedField: public DataField {
     DataField & field;
 };
 
+template<class selectorT>
+class UnionField: public DataField {
+  public:
+
+    class UnionMember {
+      public:
+        virtual ~UnionMember() {}
+        virtual bool select(const selectorT& attr) const = 0;
+        virtual DataField* getField() = 0;
+    };
+  
+    class TransformedMember: public UnionMember, public TransformedField {
+      public:
+        TransformedMember(DataField* parent, DataField& field):
+          TransformedField(parent, field)
+        {
+        }
+        virtual DataField* getField()
+        {
+          return this;
+        }
+    };
+
+    UnionField(DataField * parent, selectorT& selectField, const char * name="Union"):
+      DataField(parent, name), selectField(selectField), maxSize(0)
+    {
+    }
+
+    ~UnionField() {
+      foreach(UnionMember *member, members) {
+        delete member;
+      }
+    }
+
+    inline void Append(UnionMember * member) {
+      members.append(member);
+      if (member->getField()->size() > maxSize)
+        maxSize = member->getField()->size();
+    }
+
+    virtual void ExportBits(QBitArray & output)
+    {
+      foreach(UnionMember *member, members) {
+        if (member->select(selectField)) {
+          member->getField()->ExportBits(output);
+          break;
+        }
+      }
+      output.resize(maxSize);
+    }
+
+    virtual void ImportBits(const QBitArray & input)
+    {
+      foreach(UnionMember *member, members) {
+        if (member->select(selectField)) {
+          member->getField()->ImportBits(input);
+          break;
+        }
+      }
+    }
+
+    virtual unsigned int size()
+    {
+      return maxSize;
+    }
+
+  protected:
+    selectorT&           selectField;
+    QList<UnionMember *> members;
+    unsigned int         maxSize;
+};
+
 class ConversionTable {
 
   public:
