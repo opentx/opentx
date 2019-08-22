@@ -25,6 +25,8 @@
 
 constexpr int CPN_MAX_SENSORS = 60;
 
+class ModelData;
+
 class SensorData {
   Q_DECLARE_TR_FUNCTIONS(SensorData)
 
@@ -146,6 +148,7 @@ class SensorData {
     void updateUnit();
     QString unitString() const;
     QString nameToString(int index) const;
+    QString getRxOrModName(const ModelData* model) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
 };
 
