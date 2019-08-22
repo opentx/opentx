@@ -167,10 +167,10 @@ void displayCustomTelemetryScreen(uint8_t index)
   displayNumbersTelemetryScreen(screen);
 }
 
-bool displayTelemetryScreen()
+bool displayTelemetryScreen(uint8_t index)
 {
 #if defined(LUA)
-  if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
+  if (TELEMETRY_SCREEN_TYPE(index) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
     uint8_t state = isTelemetryScriptAvailable(s_frsky_view);
     switch (state) {
       case SCRIPT_OK:
@@ -187,78 +187,15 @@ bool displayTelemetryScreen()
   }
 #endif
 
-  if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_NONE) {
+  if (TELEMETRY_SCREEN_TYPE(index) == TELEMETRY_SCREEN_TYPE_NONE) {
     return false;
   }
 
   drawTelemetryTopBar();
 
-  if (s_frsky_view < MAX_TELEMETRY_SCREENS) {
-    displayCustomTelemetryScreen(s_frsky_view);
+  if (index < MAX_TELEMETRY_SCREENS) {
+    displayCustomTelemetryScreen(index);
   }
 
   return true;
-}
-
-enum NavigationDirection {
-  none,
-  up,
-  down
-};
-
-#define decrTelemetryScreen() direction = up
-#define incrTelemetryScreen() direction = down
-
-void menuViewTelemetryFrsky(event_t event)
-{
-  enum NavigationDirection direction = none;
-
-  switch (event) {
-    case EVT_KEY_FIRST(KEY_EXIT):
-    case EVT_KEY_LONG(KEY_EXIT):
-      killEvents(event);
-      chainMenu(menuMainView);
-      break;
-
-    case EVT_KEY_LONG(KEY_PAGE):
-      killEvents(event);
-      // no break;
-
-    case EVT_KEY_FIRST(KEY_UP):
-      decrTelemetryScreen();
-      break;
-
-    case EVT_KEY_BREAK(KEY_PAGE):
-    case EVT_KEY_FIRST(KEY_DOWN):
-      incrTelemetryScreen();
-      break;
-
-    case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
-      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      POPUP_MENU_START(onMainViewMenu);
-      break;
-  }
-
-  for (int i=0; i<=TELEMETRY_SCREEN_TYPE_MAX; i++) {
-    if (direction == up) {
-      if (s_frsky_view-- == 0)
-        s_frsky_view = TELEMETRY_VIEW_MAX;
-    }
-    else if (direction == down) {
-      if (s_frsky_view++ == TELEMETRY_VIEW_MAX)
-        s_frsky_view = 0;
-    }
-    else {
-      direction = down;
-    }
-    if (displayTelemetryScreen()) {
-      return;
-    }
-  }
-
-  drawTelemetryTopBar();
-  lcdDrawText(8*FW, 3*FH, "No Telemetry Screens");
-  displayRssiLine();
 }

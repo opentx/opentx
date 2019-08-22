@@ -408,7 +408,7 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_STARTVIEW);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MAINVIEWS, g_model.view >> 4, attr);
         if (attr && s_editMode > 0) {
-          uint8_t view = checkIncDec(event, g_model.view >> 4, 0, 8, EE_MODEL, isMainViewAvailable);
+          uint8_t view = checkIncDec(event, g_model.view >> 4, 0, VIEW_COUNT + 1, EE_MODEL, isMainViewAvailable);
           if (checkIncDec_Ret) {
             g_model.view = bfSet(g_model.view, view, 4, 4);
           }

@@ -21,6 +21,7 @@
 #include "opentx.h"
 
 uint8_t currentMainView;
+extern bool displayTelemetryScreen(uint8_t index);
 
 #define BIGSIZE       MIDSIZE
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 16)
@@ -493,49 +494,51 @@ void menuMainView(event_t event)
       secondPage = !secondPage;
       break;
   }
+  if (!IS_OTHER_VIEW_DISPLAYED()) {
+    // Flight Mode Name
+    int mode = mixerCurrentFlightMode;
+    lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR | PHASE_FLAGS);
 
-  // Flight Mode Name
-  int mode = mixerCurrentFlightMode;
-  lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
+    // Model Name
+    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
 
-  // Model Name
-  putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+    // Trims sliders
+    displayTrims(mode);
 
-  // Trims sliders
-  displayTrims(mode);
+    // Top bar
+    displayTopBar();
 
-  // Top bar
-  displayTopBar();
+    // Sliders (Pots / Sliders)
+    drawSliders();
 
-  // Sliders (Pots / Sliders)
-  drawSliders();
+    lcdDrawBitmap(BITMAP_X, BITMAP_Y, modelBitmap);
 
-  lcdDrawBitmap(BITMAP_X, BITMAP_Y, modelBitmap);
-
-  // Switches
-  if (getSwitchCount() > 8) {
-    for (int i=0; i<NUM_SWITCHES; ++i) {
-      div_t qr = div(i, 9);
-      if (view_base == VIEW_INPUTS) {
-        div_t qr2 = div(qr.rem, 5);
-        if (i >= 14) qr2.rem += 1;
-        const coord_t x[4] = { 50, 142 };
-        const coord_t y[4] = { 25, 42, 25, 42 };
-        displaySwitch(x[qr.quot]+qr2.rem*4, y[qr2.quot], 3, i);
-      }
-      else {
-        displaySwitch(17+qr.rem*6, 25+qr.quot*17, 5, i);
+    // Switches
+    if (getSwitchCount() > 8) {
+      for (int i = 0; i < NUM_SWITCHES; ++i) {
+        div_t qr = div(i, 9);
+        if (view_base == VIEW_INPUTS) {
+          div_t qr2 = div(qr.rem, 5);
+          if (i >= 14) qr2.rem += 1;
+          const coord_t x[4] = {50, 142};
+          const coord_t y[4] = {25, 42, 25, 42};
+          displaySwitch(x[qr.quot] + qr2.rem * 4, y[qr2.quot], 3, i);
+        }
+        else {
+          displaySwitch(17 + qr.rem * 6, 25 + qr.quot * 17, 5, i);
+        }
       }
     }
-  }
-  else {
-    int index = 0;
-    for (int i=0; i<NUM_SWITCHES; ++i) {
-      if (SWITCH_EXISTS(i)) {
-        getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
-        getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        drawSwitch((view_base == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
-        index++;
+    else {
+      int index = 0;
+      for (int i = 0; i < NUM_SWITCHES; ++i) {
+        if (SWITCH_EXISTS(i)) {
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+          drawSwitch((view_base == VIEW_INPUTS) ? (index < 4 ? 8 * FW + 1 : 23 * FW + 2) : (index < 4 ? 3 * FW + 1 : 8 * FW - 2), (index % 4) * FH + 3 * FH, sw,
+                     0);
+          index++;
+        }
       }
     }
   }
@@ -576,6 +579,16 @@ void menuMainView(event_t event)
   else if (view_base == VIEW_MONITOR) {
     lcdClear();
     menuChannelsView(event);
+  }
+  else if (view_base >= VIEW_FIRST_TELEM) {
+    if (TELEMETRY_SCREEN_TYPE(view_base - VIEW_FIRST_TELEM) != TELEMETRY_SCREEN_TYPE_NONE) {
+      displayTelemetryScreen(view_base - VIEW_FIRST_TELEM);
+    }
+    else {
+      currentMainView = (view_base == 0 ? VIEW_COUNT : view_base-1);
+      g_model.view = bfSet(g_model.view, currentMainView, 0, 4);
+      storageDirty(EE_MODEL);
+    }
   }
 
 #if defined(GVARS)

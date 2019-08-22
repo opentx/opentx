@@ -108,10 +108,11 @@ void postModelLoad(bool alarms)
   SEND_FAILSAFE_1S();
 
 #if !defined(COLORLCD)
-  if ((g_model.view & 0xf0) == 0x40)
+  if ((g_model.view & 0xf0) == ((VIEW_COUNT + 1) << 4))
     currentMainView = g_model.view & 0x0f;
   else
     currentMainView = (g_model.view & 0xf0) >> 4;
+  TRACE("LOADING MAINVIEW : %d out of %d", currentMainView, g_model.view);
 #endif
 }
 

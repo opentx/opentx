@@ -38,7 +38,6 @@ void onMainViewMenu(const char * result);
 void menuFirstCalib(event_t event);
 void menuChannelsView(event_t event);
 void menuMainView(event_t event);
-void menuViewTelemetryFrsky(event_t event);
 void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 void menuModelNotes(event_t event);
 void menuStatisticsView(event_t event);
