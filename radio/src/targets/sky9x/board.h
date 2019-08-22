@@ -341,6 +341,7 @@ void coprocReadData(bool onlytemp=false);
 #endif
 extern int8_t volumeRequired;
 
+#if defined(COPROCESSOR)
 struct CoprocData {
   uint8_t read;
   int8_t valid;
@@ -349,6 +350,7 @@ struct CoprocData {
 };
 
 extern CoprocData coprocData;
+#endif
 
 // Haptic driver
 #define HAPTIC_PWM
