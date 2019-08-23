@@ -102,7 +102,7 @@ TEST(X10Conversions, ConversionRadioFrom22)
   simuFatfsSetPaths(TESTS_PATH "/tests/", TESTS_PATH "/tests/");
   loadRadioSettings("/radio_22_x10.bin");
 
-  EXPECT_EQ(218, g_eeGeneral.version);
+  EXPECT_EQ(219, g_eeGeneral.version);
   EXPECT_STRNEQ("en", g_eeGeneral.ttsLanguage);
   EXPECT_STRNEQ("model1.bin", g_eeGeneral.currModelFilename);
 }

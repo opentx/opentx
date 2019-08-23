@@ -532,10 +532,16 @@ PACK(struct ModelData_v218 {
   #define THEME_DATA
 #endif
 
+#if defined(PCBHORUS)
+  #define NUM_CALIBRATION_INPUTS  13
+#else
+  #define NUM_CALIBRATION_INPUTS  (NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS)
+#endif
+
 PACK(struct RadioData_v218 {
   uint8_t version;
   uint16_t variant;
-  CalibData calib[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
+  CalibData calib[NUM_CALIBRATION_INPUTS];
   uint16_t chkSum;
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
