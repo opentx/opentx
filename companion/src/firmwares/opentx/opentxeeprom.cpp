@@ -71,7 +71,15 @@ inline int MAX_SWITCH_SLOTS(Board::Type board, int version)
   return 8;
 }
 
-#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
+inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
+{
+  if (version < 219 && IS_TARANIS_X7(board))
+    return Boards::getCapability(board, Board::SwitchPositions) - 2*3;
+
+  return Boards::getCapability(board, Board::SwitchPositions);
+}
+
+//#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3
@@ -1892,7 +1900,7 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.subid = _subid;
-        sensor.instance = _instance & 0x1F;        // 5 bits instance
+        sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
         sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
         sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
         sensor.ratio = _ratio;
@@ -2112,10 +2120,11 @@ class ModuleUnionField: public UnionField<unsigned int> {
   };
 
   public:
-    ModuleUnionField(DataField * parent, ModuleData & module):
+    ModuleUnionField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
       UnionField<unsigned int>(parent, module.protocol)
     {
-      Append(new AccessField(parent, module));
+      if (version >= 219)
+        Append(new AccessField(parent, module));
       Append(new PxxField(parent, module));
       Append(new MultiField(parent, module));
       Append(new PPMField(parent, module.ppm));
@@ -2129,7 +2138,7 @@ class ModuleField: public TransformedField {
       TransformedField(parent, internalField),
       internalField(this, "Module"),
       module(module),
-      protocolsConversionTable(board)
+      protocolsConversionTable(board, version)
     {
       internalField.Append(new ConversionField<UnsignedField<4> >(this, module.protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
       internalField.Append(new SignedField<4>(this, module.rfProtocol));
@@ -2144,7 +2153,7 @@ class ModuleField: public TransformedField {
         }
       }
 
-      internalField.Append(new ModuleUnionField(parent, module));
+      internalField.Append(new ModuleUnionField(parent, module, board, version));
     }
 
     virtual void beforeExport()
