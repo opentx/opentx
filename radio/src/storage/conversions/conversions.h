@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+void convertRadioData(int version);
 void convertModelData(int version);
 
 bool eeConvert();

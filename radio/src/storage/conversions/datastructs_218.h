@@ -554,9 +554,9 @@ PACK(struct RadioData_v218 {
   int8_t timezone:5;
   uint8_t adjustRTC:1;
   uint8_t inactivityTimer;
+  uint8_t telemetryBaudrate:3;
   int8_t splashMode:3;
   int8_t hapticMode:2;
-  int8_t spare2:3;
   int8_t switchesDelay;
   uint8_t lightAutoOff;
   uint8_t templateSetup;   // RETA order for receiver channels

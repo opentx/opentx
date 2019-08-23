@@ -309,6 +309,8 @@ void convertModelData_218_to_219(ModelData &model)
 
 void convertRadioData_218_to_219(RadioData & settings)
 {
+  TRACE("Radio conversion from v218 to v219");
+
   settings.version = 219;
   settings.variant = EEPROM_VARIANT;
 

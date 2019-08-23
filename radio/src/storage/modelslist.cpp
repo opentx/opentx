@@ -72,6 +72,8 @@ const BitmapBuffer * ModelCell::getBuffer()
 
 void ModelCell::loadBitmap()
 {
+  uint8_t version;
+
   PACK(struct {
     ModelHeader header;
     TimerData timers[MAX_TIMERS];
@@ -87,7 +89,7 @@ void ModelCell::loadBitmap()
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
   }
   else {
-    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel));
+    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
   }
 
   buffer->clear(TEXT_BGCOLOR);

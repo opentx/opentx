@@ -21,8 +21,36 @@
 #include "opentx.h"
 #include "conversions.h"
 
+void convertRadioData(int version)
+{
+  TRACE("convertRadioData(%d)", version);
+
+#if EEPROM_CONVERSIONS < 217
+  if (version == 216) {
+    version = 217;
+    convertRadioData_216_to_217(g_eeGeneral);
+  }
+#endif
+
+#if EEPROM_CONVERSIONS < 218
+  if (version == 217) {
+    version = 218;
+    convertRadioData_217_to_218(g_eeGeneral);
+  }
+#endif
+
+#if EEPROM_CONVERSIONS < 219
+  if (version == 218) {
+    version = 219;
+    convertRadioData_218_to_219(g_eeGeneral);
+  }
+#endif
+}
+
 void convertModelData(int version)
 {
+  TRACE("convertModelData(%d)", version);
+
 #if EEPROM_CONVERSIONS < 217
   if (version == 216) {
     version = 217;
