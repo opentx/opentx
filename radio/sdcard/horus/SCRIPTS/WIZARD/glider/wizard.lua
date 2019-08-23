@@ -302,8 +302,8 @@ local function runTailConfig(event)
   if fields[1][5] == 2 then
     lcd.drawBitmap(ImgTail, 252, 100)
     lcd.drawBitmap(ImgTailRud, 340, 100)
-    drawMark(415, 150, "A")
-    drawMark(380, 120, "C")
+    drawMark(415, 150, "C")
+    drawMark(380, 120, "A")
     drawMark(390, 185, "B")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     drawMark(152, 124, "A")
@@ -332,7 +332,7 @@ end
 local lineIndex
 local function drawNextLine(text, text2)
   lcd.drawText(40, lineIndex, text, TEXT_COLOR)
-  lcd.drawText(250, lineIndex, text2 + 1, TEXT_COLOR)
+  lcd.drawText(242, lineIndex, ": CH" .. text2 + 1, TEXT_COLOR)
   lineIndex = lineIndex + 20
 end
 
@@ -354,35 +354,35 @@ local function runConfigSummary(event)
   lineIndex = 40
   -- motors
   if(MotorFields[1][5] == 1) then
-    drawNextLine("Motor channel :", MotorFields[2][5])
+    drawNextLine("Motor channel", MotorFields[2][5])
   end
   -- ail
   if(AilFields[1][5] == 1) then
-    drawNextLine("Aileron channel :",AilFields[2][5])
+    drawNextLine("Aileron channel",AilFields[2][5])
   elseif (AilFields[1][5] == 2) then
-    drawNextLine("Aileron Right channel :",AilFields[2][5])
-    drawNextLine("Aileron Left channel :",AilFields[3][5])
+    drawNextLine("Aileron Right channel",AilFields[2][5])
+    drawNextLine("Aileron Left channel",AilFields[3][5])
   end
   -- flaps
   if(FlapsFields[1][5] == 1) then
-    drawNextLine("Flaps channel :",FlapsFields[2][5])
+    drawNextLine("Flaps channel",FlapsFields[2][5])
   elseif (FlapsFields[1][5] == 2) then
-    drawNextLine("Flaps Right channel :",FlapsFields[2][5])
-    drawNextLine("Flaps Left channel :",FlapsFields[3][5])
+    drawNextLine("Flaps Right channel",FlapsFields[2][5])
+    drawNextLine("Flaps Left channel",FlapsFields[3][5])
   end
   -- tail
   if(TailFields[1][5] == 0) then
-    drawNextLine("Elevator channel :",TailFields[2][5])
+    drawNextLine("Elevator channel",TailFields[2][5])
   elseif (TailFields[1][5] == 1) then
-    drawNextLine("Elevator channel :",TailFields[2][5])
-    drawNextLine("Rudder channel :",TailFields[3][5])
+    drawNextLine("Elevator channel",TailFields[2][5])
+    drawNextLine("Rudder channel",TailFields[3][5])
   elseif (TailFields[1][5] == 2) then
-    drawNextLine("Elevator Left channel :",TailFields[2][5])
-    drawNextLine("Rudder channel :",TailFields[3][5])
-    drawNextLine("Elevator Right channel :",TailFields[4][5])
+    drawNextLine("Elevator Right channel",TailFields[2][5])
+    drawNextLine("Rudder channel",TailFields[3][5])
+    drawNextLine("Elevator Left channel",TailFields[4][5])
   elseif (TailFields[1][5] == 3) then
-    drawNextLine("V-Tail Right :", TailFields[2][5])
-    drawNextLine("V-Tail Left :", TailFields[3][5])
+    drawNextLine("V-Tail Right", TailFields[2][5])
+    drawNextLine("V-Tail Left", TailFields[3][5])
   end
   local result = runFieldsPage(event)
   if(fields[1][5] == 1 and edit == false) then
@@ -433,9 +433,9 @@ local function createModel(event)
     addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev")
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
   elseif (TailFields[1][5] == 2) then
-    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevL")
+    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevR")
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
-    addMix(TailFields[4][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevR")
+    addMix(TailFields[4][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevL")
   elseif (TailFields[1][5] == 3) then
     addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleR", 50)
     addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", 50, 1)
