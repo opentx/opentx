@@ -71,7 +71,15 @@ inline int MAX_SWITCH_SLOTS(Board::Type board, int version)
   return 8;
 }
 
-#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
+inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
+{
+  if (version < 219 && IS_TARANIS_X7(board))
+    return Boards::getCapability(board, Board::SwitchPositions) - 2*3;
+
+  return Boards::getCapability(board, Board::SwitchPositions);
+}
+
+//#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3
