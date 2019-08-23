@@ -77,9 +77,23 @@ TEST(Conversions, ConversionX7From22)
   loadEEPROMFile(TESTS_PATH "/tests/eeprom_22_x7.bin");
 
   eepromOpen();
+  eeLoadGeneralSettingsData();
+  convertRadioData_218_to_219(g_eeGeneral);
   eeConvertModel(0, 218);
   eeLoadModel(0);
 
+  EXPECT_EQ(-30, g_eeGeneral.vBatMin);
+  EXPECT_EQ(8, g_eeGeneral.speakerVolume);
+  EXPECT_EQ('e', g_eeGeneral.ttsLanguage[0]);
+  EXPECT_EQ('n', g_eeGeneral.ttsLanguage[1]);
+  
+  EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_eeGeneral.customFn[0].swtch);
+  EXPECT_EQ(FUNC_LOGS, g_eeGeneral.customFn[0].func);
+  EXPECT_EQ(20, g_eeGeneral.customFn[0].all.val);
+
+  EXPECT_ZSTREQ("Tes", g_eeGeneral.switchNames[0]);
+  EXPECT_EQ(SWITCH_3POS, SWITCH_CONFIG(0));
+  
   EXPECT_ZSTREQ("Test", g_model.header.name);
   EXPECT_EQ(MODULE_TYPE_R9M_PXX1, g_model.moduleData[EXTERNAL_MODULE].type);
   EXPECT_EQ(MODULE_SUBTYPE_R9M_EU, g_model.moduleData[EXTERNAL_MODULE].subType);
