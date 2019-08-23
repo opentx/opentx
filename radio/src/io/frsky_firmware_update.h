@@ -24,6 +24,7 @@
 #include "dataconstants.h"
 #include "definitions.h"
 #include "frsky_pxx2.h"
+#include "ff.h"
 
 enum FrskyFirmwareProductFamily {
   FIRMWARE_FAMILY_INTERNAL_MODULE,
@@ -32,6 +33,12 @@ enum FrskyFirmwareProductFamily {
   FIRMWARE_FAMILY_SENSOR,
   FIRMWARE_FAMILY_BLUETOOTH_CHIP,
   FIRMWARE_FAMILY_POWER_MANAGEMENT_UNIT,
+};
+
+enum FrskyFirmwareProductId {
+  FIRMWARE_ID_NONE,
+  FIRMWARE_ID_XJT = 0x01,
+  FIRMWARE_ID_ISRM = 0x02,
 };
 
 PACK(struct FrSkyFirmwareInformation {
@@ -74,8 +81,6 @@ class FrskyDeviceFirmwareUpdate {
     ModuleIndex module;
     uint8_t frame[12];
 
-    void startup();
-
     void startFrame(uint8_t command);
     void sendFrame();
 
@@ -89,7 +94,8 @@ class FrskyDeviceFirmwareUpdate {
     const char * doFlashFirmware(const char * filename);
     const char * sendPowerOn();
     const char * sendReqVersion();
-    const char * uploadFile(const char * filename);
+    const char * uploadFileNormal(const char * filename, FIL * file);
+    const char * uploadFileToHorusXJT(const char * filename, FIL * file);
     const char * endTransfer();
 };
 

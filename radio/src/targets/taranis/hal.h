@@ -912,7 +912,6 @@
 #else
   #define INTERNAL_MODULE_PXX1
 #endif
-#define INTMODULE_FLASH_BAUDRATE        57600
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1

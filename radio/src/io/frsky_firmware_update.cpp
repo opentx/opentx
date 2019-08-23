@@ -96,28 +96,6 @@ void FrskyDeviceFirmwareUpdate::processFrame(const uint8_t * frame)
   }
 }
 
-void FrskyDeviceFirmwareUpdate::startup()
-{
-  switch(module) {
-#if defined(INTMODULE_USART)
-    case INTERNAL_MODULE:
-      intmoduleSerialStart(INTMODULE_FLASH_BAUDRATE, true);
-      break;
-#endif
-
-    default:
-      telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
-      break;
-  }
-
-  if (module == INTERNAL_MODULE)
-    INTERNAL_MODULE_ON();
-  else if (module == EXTERNAL_MODULE)
-    EXTERNAL_MODULE_ON();
-  else
-    SPORT_UPDATE_POWER_ON();
-}
-
 bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout)
 {
   watchdogSuspend(timeout);
@@ -310,10 +288,11 @@ const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
   return "Version request failed";
 }
 
-const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
+const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 {
   FIL file;
-  uint32_t buffer[1024 / sizeof(uint32_t)];
+  const char * result;
+  FrSkyFirmwareInformation information;
   UINT count;
 
   if (f_open(&file, filename, FA_READ) != FR_OK) {
@@ -322,14 +301,57 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 
   const char * ext = getFileExtension(filename);
   if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
-    // FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *) buffer;
-    if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+    if (f_read(&file, &information, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
       f_close(&file);
       return "Format error";
     }
+  } else {
+#if defined(PCBHORUS)
+    information.productId = FIRMWARE_ID_XJT;
+#endif
   }
 
 #if defined(PCBHORUS)
+  if (module == INTERNAL_MODULE && information.productId == FIRMWARE_ID_XJT) {
+    INTERNAL_MODULE_ON();
+    intmoduleSerialStart(38400, true);
+    GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+    result = uploadFileToHorusXJT(filename, &file);
+    GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+    f_close(&file);
+    return result;
+  }
+#endif
+
+  switch (module) {
+#if defined(INTMODULE_USART)
+    case INTERNAL_MODULE:
+      intmoduleSerialStart(57600, true);
+      break;
+#endif
+
+    default:
+      telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
+      break;
+  }
+
+  if (module == INTERNAL_MODULE)
+    INTERNAL_MODULE_ON();
+  else if (module == EXTERNAL_MODULE)
+    EXTERNAL_MODULE_ON();
+  else
+    SPORT_UPDATE_POWER_ON();
+
+  result = uploadFileNormal(filename, &file);
+  f_close(&file);
+  return result;
+}
+
+#if defined(PCBHORUS)
+const char * FrskyDeviceFirmwareUpdate::uploadFileToHorusXJT(const char * filename, FIL * file)
+{
+  uint32_t buffer[1024 / sizeof(uint32_t)];
+  UINT count;
   uint8_t frame[8];
 
   if (!readBuffer(frame, 8, 100) || frame[0] != 0x01) {
@@ -347,11 +369,10 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
   readBuffer(frame, 1, 100);
 
   uint8_t index = 0;
-  while (1) {
-    drawProgressScreen(getBasename(filename), STR_WRITING, file.fptr, file.obj.objsize);
+  while (true) {
+    drawProgressScreen(getBasename(filename), STR_WRITING, file->fptr, file->obj.objsize);
 
-    if (f_read(&file, buffer, 1024, &count) != FR_OK) {
-      f_close(&file);
+    if (f_read(file, buffer, 1024, &count) != FR_OK) {
       return "Error reading file";
     }
 
@@ -362,7 +383,6 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
       return "Wrong request";
 
     if (count == 0) {
-      f_close(&file);
       intmoduleSendByte(0xA1);
       RTOS_WAIT_MS(50);
       return nullptr;
@@ -375,7 +395,7 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
     intmoduleSendByte(frame[1]);
 
     uint16_t crc_16 = crc16(CRC_1189, (uint8_t *)buffer, 1024, crc16(CRC_1189, &frame[1], 1));
-    for (unsigned i = 0; i < sizeof(buffer); i++) {
+    for (size_t i = 0; i < sizeof(buffer); i++) {
       intmoduleSendByte(((uint8_t *)buffer)[i]);
     }
     intmoduleSendByte(crc_16 >> 8);
@@ -383,7 +403,22 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
 
     index++;
   }
-#else
+}
+#endif
+
+const char * FrskyDeviceFirmwareUpdate::uploadFileNormal(const char * filename, FIL * file)
+{
+  uint32_t buffer[1024 / sizeof(uint32_t)];
+  UINT count;
+
+  const char * result = sendPowerOn();
+  if (result)
+    return result;
+
+  result = sendReqVersion();
+  if (result)
+    return result;
+
   RTOS_WAIT_MS(200);
   telemetryClearFifo();
 
@@ -391,9 +426,8 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
   startFrame(PRIM_CMD_DOWNLOAD);
   sendFrame();
 
-  while (1) {
-    if (f_read(&file, buffer, 1024, &count) != FR_OK) {
-      f_close(&file);
+  while (true) {
+    if (f_read(file, buffer, 1024, &count) != FR_OK) {
       return "Error reading file";
     }
 
@@ -410,16 +444,16 @@ const char * FrskyDeviceFirmwareUpdate::uploadFile(const char * filename)
       state = SPORT_DATA_TRANSFER,
       sendFrame();
       if (i == 0) {
-        drawProgressScreen(getBasename(filename), STR_WRITING, file.fptr, file.obj.objsize);
+        drawProgressScreen(getBasename(filename), STR_WRITING, file->fptr, file->obj.objsize);
       }
     }
 
     if (count < 256) {
-      f_close(&file);
-      return nullptr;
+      break;
     }
   }
-#endif
+
+  return endTransfer();
 }
 
 const char * FrskyDeviceFirmwareUpdate::endTransfer()
@@ -432,28 +466,6 @@ const char * FrskyDeviceFirmwareUpdate::endTransfer()
     return "Firmware rejected";
   }
   return nullptr;
-}
-
-const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
-{
-  const char * result;
-
-#if defined(PCBHORUS)
-  if (module == INTERNAL_MODULE) {
-    intmoduleSerialStart(38400, true);
-    GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
-    result = uploadFile(filename);
-    GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
-    return result;
-  }
-#endif
-
-  result = sendPowerOn();
-  if (!result) result = sendReqVersion();
-  if (!result) result = uploadFile(filename);
-  if (!result) result = endTransfer();
-
-  return result;
 }
 
 const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
@@ -475,8 +487,6 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   /* wait 2s off */
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
-
-  startup();
 
   const char * result = doFlashFirmware(filename);
 
