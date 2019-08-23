@@ -486,7 +486,6 @@ void insertMix(uint8_t idx);
 #define WARNING_INFOLINE_Y     (WARNING_LINE_Y+68)
 
 void copySelection(char * dst, const char * src, uint8_t size);
-
 void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h);
 void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
@@ -516,7 +515,7 @@ extern uint8_t popupMenuOffsetType;
 extern uint8_t popupMenuSelectedItem;
 const char * runPopupMenu(event_t event);
 
-typedef void         (* PopupMenuHandler)(const char * result);
+typedef void (* PopupMenuHandler)(const char * result);
 extern PopupMenuHandler popupMenuHandler;
 
 inline void POPUP_INPUT(const char * s, PopupFunc func)

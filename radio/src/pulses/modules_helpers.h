@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MODULES_H_
-#define _MODULES_H_
+#ifndef _MODULES_HELPERS_H_
+#define _MODULES_HELPERS_H_
 
 #include "bitfield.h"
 #include "definitions.h"
@@ -479,4 +479,4 @@ inline void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
   }
 }
 
-#endif // _MODULES_H_
+#endif // _MODULES_HELPERS_H_

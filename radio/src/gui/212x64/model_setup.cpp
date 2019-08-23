@@ -1411,7 +1411,7 @@ void menuModelSetup(event_t event)
   }
 
 #if defined(PXX)
-  if (IS_RANGECHECK_ENABLE()) {
+  if (isModuleInRangeCheckMode()) {
     showMessageBox("RSSI: ");
     lcdDrawNumber(WARNING_LINE_X, 5*FH, TELEMETRY_RSSI(), BOLD | LEFT);
   }

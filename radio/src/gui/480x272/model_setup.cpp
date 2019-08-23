@@ -1369,9 +1369,6 @@ bool menuModelSetup(event_t event)
               // popupMenuTitle = STR_PXX2_SELECT_RX;
               POPUP_MENU_START(onPXX2BindMenu);
             }
-            else {
-              POPUP_WAIT(STR_WAITING_FOR_RX);
-            }
           }
         }
 
@@ -1645,7 +1642,7 @@ bool menuModelSetup(event_t event)
     }
   }
 
-  if (IS_RANGECHECK_ENABLE()) {
+  if (isModuleInRangeCheckMode()) {
     theme->drawMessageBox("RSSI :", NULL, NULL, WARNING_TYPE_INFO);
     lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, TELEMETRY_RSSI(), DBLSIZE|LEFT);
   }
