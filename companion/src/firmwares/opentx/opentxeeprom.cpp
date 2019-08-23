@@ -73,8 +73,10 @@ inline int MAX_SWITCH_SLOTS(Board::Type board, int version)
 
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
-  if (version < 219 && IS_TARANIS_X7(board))
-    return Boards::getCapability(board, Board::SwitchPositions) - 2*3;
+  if (version < 219) {
+    if (IS_TARANIS_X7(board) || IS_HORUS(board))
+      return Boards::getCapability(board, Board::SwitchPositions) - 2*3;
+  }
 
   return Boards::getCapability(board, Board::SwitchPositions);
 }
@@ -252,7 +254,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board,version)+Boards::getCapability(board, Board::Sliders)+Boards::getCapability(board, Board::MouseAnalogs)+MAX_GYRO_ANALOGS(board, version); i++) {
+      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board,version)+Boards::getCapability(board, Board::SlidersStorage)+Boards::getCapability(board, Board::MouseAnalogs)+MAX_GYRO_ANALOGS(board, version); i++) {
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
       }
 
