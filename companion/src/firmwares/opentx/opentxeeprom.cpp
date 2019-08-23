@@ -2115,7 +2115,8 @@ class ModuleUnionField: public UnionField<unsigned int> {
     ModuleUnionField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
       UnionField<unsigned int>(parent, module.protocol)
     {
-      Append(new AccessField(parent, module));
+      if (version >= 219)
+        Append(new AccessField(parent, module));
       Append(new PxxField(parent, module));
       Append(new MultiField(parent, module));
       Append(new PPMField(parent, module.ppm));
