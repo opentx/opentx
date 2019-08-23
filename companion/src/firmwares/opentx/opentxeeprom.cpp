@@ -2112,7 +2112,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
   };
 
   public:
-    ModuleUnionField(DataField * parent, ModuleData & module):
+    ModuleUnionField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
       UnionField<unsigned int>(parent, module.protocol)
     {
       Append(new AccessField(parent, module));
@@ -2129,7 +2129,7 @@ class ModuleField: public TransformedField {
       TransformedField(parent, internalField),
       internalField(this, "Module"),
       module(module),
-      protocolsConversionTable(board)
+      protocolsConversionTable(board, version)
     {
       internalField.Append(new ConversionField<UnsignedField<4> >(this, module.protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
       internalField.Append(new SignedField<4>(this, module.rfProtocol));
@@ -2144,7 +2144,7 @@ class ModuleField: public TransformedField {
         }
       }
 
-      internalField.Append(new ModuleUnionField(parent, module));
+      internalField.Append(new ModuleUnionField(parent, module, board, version));
     }
 
     virtual void beforeExport()

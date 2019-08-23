@@ -73,7 +73,7 @@ class OpenTxGeneralData: public TransformedField {
 class ProtocolsConversionTable: public ConversionTable
 {
   public:
-    ProtocolsConversionTable(Board::Type board)
+    ProtocolsConversionTable(Board::Type board, int version)
     {
       int val = 0;
       addConversion(PULSES_OFF, val++);
@@ -83,8 +83,10 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_PXX_XJT_D8, val);
       addConversion(PULSES_PXX_XJT_LR12, val++);
 
-      addConversion(PULSES_ACCESS_ISRM, val);
-      addConversion(PULSES_ACCST_ISRM_D16, val++);
+      if (version >= 219) {
+        addConversion(PULSES_ACCESS_ISRM, val);
+        addConversion(PULSES_ACCST_ISRM_D16, val++);
+      }
 
       addConversion(PULSES_LP45, val);
       addConversion(PULSES_DSM2, val);
