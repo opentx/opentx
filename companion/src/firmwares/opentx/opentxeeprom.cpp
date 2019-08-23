@@ -1892,7 +1892,7 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.subid = _subid;
-        sensor.instance = _instance & 0x1F;        // 5 bits instance
+        sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
         sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
         sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
         sensor.ratio = _ratio;
