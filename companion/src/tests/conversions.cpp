@@ -2,6 +2,7 @@
 #include "location.h"
 #include "storage/storage.h"
 #include "firmwares/opentx/opentxinterface.h"
+#include "firmwares/customfunctiondata.h"
 
 TEST(Conversions, ConversionX9DPFrom22)
 {
@@ -9,6 +10,16 @@ TEST(Conversions, ConversionX9DPFrom22)
   Storage   store = Storage(RADIO_TESTS_PATH "/eeprom_22_x9d+.bin");
 
   ASSERT_EQ(true, store.load(radioData));
+  
+  ASSERT_EQ(true, store.load(radioData));
+
+  const GeneralSettings& settings = radioData.generalSettings;
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
+  EXPECT_EQ(FuncLogs, settings.customFn[0].func);
+  EXPECT_EQ(20, settings.customFn[0].param);
+
+  EXPECT_STREQ("Tes", settings.switchName[0]);
+  EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
   
   const ModelData& model = radioData.models[0];
   EXPECT_STREQ("Test", model.name);
@@ -37,6 +48,14 @@ TEST(Conversions, ConversionX7From22)
 
   ASSERT_EQ(true, store.load(radioData));
 
+  const GeneralSettings& settings = radioData.generalSettings;
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
+  EXPECT_EQ(FuncLogs, settings.customFn[0].func);
+  EXPECT_EQ(20, settings.customFn[0].param);
+
+  EXPECT_STREQ("Tes", settings.switchName[0]);
+  EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
+  
   const ModelData& model = radioData.models[0];
   EXPECT_STREQ("Test", model.name);
   EXPECT_EQ(PULSES_PXX_R9M, model.moduleData[1].protocol);
