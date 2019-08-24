@@ -66,7 +66,7 @@ if [[ " SKY9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES DLUA=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " AR9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
@@ -75,7 +75,7 @@ if [[ " AR9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=AR9X -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
@@ -84,7 +84,7 @@ if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=9XRPRO -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
@@ -93,7 +93,7 @@ if [[ " X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X9LITE -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
@@ -102,7 +102,7 @@ if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " XLITE ALL " =~ " ${FLAVOR} " ]] ; then
@@ -111,7 +111,7 @@ if [[ " XLITE ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=XLITE -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " XLITES ALL " =~ " ${FLAVOR} " ]] ; then
@@ -120,7 +120,7 @@ if [[ " XLITES ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=XLITES -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X9D X9 ALL " =~ " ${FLAVOR} " ]] ; then
@@ -129,7 +129,7 @@ if [[ " X9D X9 ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X9D+ X9 ALL " =~ " ${FLAVOR} " ]] ; then
@@ -138,7 +138,7 @@ if [[ " X9D+ X9 ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X9D+2019 X9 ALL " =~ " ${FLAVOR} " ]] ; then
@@ -147,7 +147,7 @@ if [[ " X9D+2019 X9 ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DPCBREV=2019 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
@@ -156,7 +156,7 @@ if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
@@ -165,7 +165,7 @@ if [[ " X10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " X12S HORUS ALL " =~ " ${FLAVOR} " ]] ; then
@@ -174,7 +174,7 @@ if [[ " X12S HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " T12 ALL " =~ " ${FLAVOR} " ]] ; then
@@ -183,7 +183,7 @@ if [[ " T12 ALL " =~ " ${FLAVOR} " ]] ; then
   cmake ${COMMON_OPTIONS} -DPCB=X7 -DPCBREV=T12 -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+  make -j${CORES} gtests && ./gtests-radio ${TEST_OPTIONS} && ./gtests-companion ${TEST_OPTIONS}
 fi
 
 if [[ " DEFAULT ALL " =~ " ${FLAVOR} " ]] ; then
