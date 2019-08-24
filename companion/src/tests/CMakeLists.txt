@@ -4,8 +4,8 @@ find_path(GTEST_INCDIR gtest/gtest.h HINTS "${GTEST_ROOT}/include" DOC "Path to 
 find_path(GTEST_SRCDIR src/gtest-all.cc HINTS "${GTEST_ROOT}" "${GTEST_ROOT}/src/gtest" DOC "Path of Google Test 'src' folder.")
 
 if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
-  add_library(gtests-cpn-lib STATIC EXCLUDE_FROM_ALL ${GTEST_SRCDIR}/src/gtest-all.cc )
-  target_include_directories(gtests-cpn-lib PUBLIC ${GTEST_INCDIR} ${GTEST_INCDIR}/gtest ${GTEST_SRCDIR})
+  add_library(gtests-companion-lib STATIC EXCLUDE_FROM_ALL ${GTEST_SRCDIR}/src/gtest-all.cc )
+  target_include_directories(gtests-companion-lib PUBLIC ${GTEST_INCDIR} ${GTEST_INCDIR}/gtest ${GTEST_SRCDIR})
   add_definitions(-DGTESTS)
   set(TESTS_PATH ${COMPANION_SRC_DIRECTORY}/tests)
   set(RADIO_TESTS_PATH ${RADIO_SRC_DIRECTORY}/tests)
@@ -14,8 +14,8 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
   if(WIN32)
-    target_include_directories(gtests-cpn-lib PUBLIC ${WIN_INCLUDE_DIRS})
-    target_link_libraries(gtests-cpn-lib PRIVATE ${WIN_LINK_LIBRARIES})
+    target_include_directories(gtests-companion-lib PUBLIC ${WIN_INCLUDE_DIRS})
+    target_link_libraries(gtests-companion-lib PRIVATE ${WIN_LINK_LIBRARIES})
   endif(WIN32)
 
   file(GLOB TEST_SRC_FILES ${TESTS_PATH}/*.cpp)
@@ -25,10 +25,10 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
 
   use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
-  add_executable(gtests-cpn EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h)
-  add_dependencies(gtests-cpn gtests-cpn-lib)
-  target_link_libraries(gtests-cpn gtests-cpn-lib pthread Qt5::Core Qt5::Widgets ${CPN_COMMON_LIB})
-  message(STATUS "Added optional gtests-cpn target")
+  add_executable(gtests-companion EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h)
+  add_dependencies(gtests-companion gtests-companion-lib)
+  target_link_libraries(gtests-companion gtests-companion-lib pthread Qt5::Core Qt5::Widgets ${CPN_COMMON_LIB})
+  message(STATUS "Added optional gtests-companion target")
 else()
   message(WARNING "WARNING: gtests target will not be available (check that GTEST_INCDIR, GTEST_SRCDIR, and Qt5Widgets are configured).")
 endif()
