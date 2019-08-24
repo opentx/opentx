@@ -42,7 +42,7 @@ class RadioSwitchWidget : public RadioWidget
       init();
     }
 
-    explicit RadioSwitchWidget(Board::SwitchType type, const QString & labelText, int value = 0, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+    explicit RadioSwitchWidget(Board::SwitchType type, const QString & labelText, int value = -1, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(labelText, value, parent, f),
       swType(type)
     {
@@ -127,7 +127,7 @@ class RadioSwitchWidget : public RadioWidget
 
     void resetToggle()
     {
-      setValue(0);
+      setValue(-1);
     }
 
   private slots:
