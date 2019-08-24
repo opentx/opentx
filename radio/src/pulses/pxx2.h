@@ -128,7 +128,7 @@ static const uint8_t PXX2ModuleOptions[] = {
   0b00000110, // R9MLite-PRO
   0b00000100, // ISRM-N
   0b00000100, // ISRM-S-X9
-  0b00001101, // ISRM-S-X10
+  0b00000101, // ISRM-S-X10
 };
 
 inline uint8_t getPXX2ModuleOptions(uint8_t modelId)
