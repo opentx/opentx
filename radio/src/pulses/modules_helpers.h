@@ -23,6 +23,7 @@
 
 #include "bitfield.h"
 #include "definitions.h"
+#include "helpers.h"
 #include "telemetry/telemetry.h"
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
@@ -121,19 +122,15 @@ inline bool isExtraModule(uint8_t)
 }
 #endif
 
-#if defined(INTERNAL_MODULE_PPM)
+inline bool isModuleTypePPM(uint8_t type)
+{
+  return type == MODULE_TYPE_PPM;
+}
+
 inline bool isModulePPM(uint8_t idx)
 {
-  return (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
-         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
+  return isModuleTypePPM(g_model.moduleData[idx].type);
 }
-#else
-inline bool isModulePPM(uint8_t idx)
-{
-  return isExtraModule(idx) ||
-         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
-}
-#endif
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
 {
@@ -477,6 +474,23 @@ inline void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
   if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
     removePXX2Receiver(moduleIdx, receiverIdx);
   }
+}
+
+inline void setDefaultPpmFrameLength(uint8_t moduleIdx)
+{
+  g_model.moduleData[moduleIdx].ppm.frameLength = 4 * max<int>(0, g_model.moduleData[moduleIdx].channelsCount);
+}
+
+inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
+{
+  ModuleData & moduleData = g_model.moduleData[moduleIdx];
+  memclear(&moduleData, sizeof(ModuleData));
+  moduleData.type = moduleType;
+  moduleData.channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
+  if (isModuleSBUS(moduleIdx))
+    moduleData.sbus.refreshRate = -31;
+  else if (isModuleTypePPM(moduleData.type))
+    setDefaultPpmFrameLength(EXTERNAL_MODULE);
 }
 
 #endif // _MODULES_HELPERS_H_

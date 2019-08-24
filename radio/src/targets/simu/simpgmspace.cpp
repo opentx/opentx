@@ -754,6 +754,10 @@ void rtcInit()
 {
 }
 
+void rtcGetTime(struct gtm * t)
+{
+}
+
 void rtcSetTime(const struct gtm * t)
 {
 }
