@@ -1,5 +1,6 @@
 #include "gtests.h"
 #include "location.h"
+#include "storage/otx.h"
 #include "storage/storage.h"
 #include "firmwares/opentx/opentxinterface.h"
 #include "firmwares/customfunctiondata.h"
@@ -102,13 +103,40 @@ bool loadFile(QByteArray & filedata, const QString & filename)
   return true;
 }
 
-TEST(Conversions, ConversionHorusFrom22)
+TEST(Conversions, ConversionX10From22)
 {
-  QByteArray modelByteArray;
-  ASSERT_EQ(true, loadFile(modelByteArray, RADIO_TESTS_PATH "/MODELS/model_22_horus.bin"));
+  QByteArray byteBuffer;
+
+//#define USE_OTX
+
+#if defined(USE_OTX)
+  OtxFormat otx(RADIO_TESTS_PATH "/model_22_x10.otx");
+  RadioData radio;
+  EXPECT_EQ(true, otx.load(radio));
+
+  const GeneralSettings& settings = radio.generalSettings;
+  const ModelData& model = radio.models[0];
+#else  
+  ASSERT_EQ(true, loadFile(byteBuffer, RADIO_TESTS_PATH "/model_22_x10/RADIO/radio.bin"));
+
+  GeneralSettings settings;
+  EXPECT_NE(nullptr, loadRadioSettingsFromByteArray(settings, byteBuffer));
+#endif
+
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
+  EXPECT_EQ(FuncLogs, settings.customFn[0].func);
+  EXPECT_EQ(20, settings.customFn[0].param);
+
+  EXPECT_STREQ("Tes", settings.switchName[0]);
+  EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
+
+#if !defined(USE_OTX)
+  byteBuffer.clear();
+  ASSERT_EQ(true, loadFile(byteBuffer, RADIO_TESTS_PATH "/model_22_x10/MODELS/model1.bin"));
 
   ModelData model;
-  ASSERT_NE(nullptr, loadModelFromByteArray(model, modelByteArray));
+  ASSERT_NE(nullptr, loadModelFromByteArray(model, byteBuffer));
+#endif
   
   EXPECT_STREQ("Test", model.name);
   EXPECT_EQ(80, model.mixData[0].weight);
