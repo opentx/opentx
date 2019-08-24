@@ -27,7 +27,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
 
   add_executable(gtests-companion EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h)
   add_dependencies(gtests-companion gtests-companion-lib)
-  target_link_libraries(gtests-companion gtests-companion-lib pthread Qt5::Core Qt5::Widgets ${CPN_COMMON_LIB})
+  target_link_libraries(gtests-companion gtests-companion-lib simulation firmwares storage common)
   message(STATUS "Added optional gtests-companion target")
 else()
   message(WARNING "WARNING: gtests target will not be available (check that GTEST_INCDIR, GTEST_SRCDIR, and Qt5Widgets are configured).")
