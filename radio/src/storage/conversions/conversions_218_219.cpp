@@ -320,13 +320,6 @@ void convertRadioData_218_to_219(RadioData & settings)
   memcpy(&oldSettings, &settings, sizeof(RadioData_v218));
 #endif
 
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7) || defined(PCBXLITE)
-  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
-    CustomFunctionData & cf = settings.customFn[i];
-    cf.swtch = convertSwitch_218_to_219(cf.swtch);
-  }
-#endif
-
 #if defined(PCBX9D) || defined(PCBX9DP)
   // no bluetooth before PCBREV 2019
   settings.auxSerialMode = oldSettings.auxSerialMode;
@@ -374,6 +367,13 @@ void convertRadioData_218_to_219(RadioData & settings)
 #if defined(RADIO_T12)
   g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, SWITCH_2POS, 10, 2);  // T12 comes with wrongly defined pot2
   g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
+#endif
+
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7) || defined(PCBXLITE) || defined(PCBHORUS)
+  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
+    CustomFunctionData & cf = settings.customFn[i];
+    cf.swtch = convertSwitch_218_to_219(cf.swtch);
+  }
 #endif
 
 #if defined(PCBX9DP) && PCBREV >= 2019
