@@ -67,7 +67,7 @@ bool checkScreenshot_480x272(const QString & test)
   QPainter p(&buffer);
   doPaint_480x272(p);
   QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
-  QImage reference(TESTS_PATH "/tests/" + filename);
+  QImage reference(TESTS_PATH "/" + filename);
 
   if (buffer == reference) {
     return true;

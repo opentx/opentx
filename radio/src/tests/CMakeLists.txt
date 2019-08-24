@@ -9,7 +9,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   add_definitions(-DSIMU)
   add_definitions(-DGTESTS)
   remove_definitions(-DCLI)
-  set(TESTS_PATH ${RADIO_SRC_DIRECTORY})
+  set(TESTS_PATH ${RADIO_SRC_DIRECTORY}/tests)
   configure_file(${RADIO_SRC_DIRECTORY}/tests/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
