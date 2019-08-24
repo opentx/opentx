@@ -107,7 +107,7 @@ TEST(Conversions, ConversionX10From22)
 {
   QByteArray byteBuffer;
 
-//#define USE_OTX
+#define USE_OTX
 
 #if defined(USE_OTX)
   OtxFormat otx(RADIO_TESTS_PATH "/model_22_x10.otx");

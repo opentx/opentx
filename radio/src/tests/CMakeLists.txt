@@ -13,6 +13,12 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   configure_file(${RADIO_SRC_DIRECTORY}/tests/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+  if(PCB STREQUAL X12S OR PCB STREQUAL X10)
+    add_custom_target(x10-model-files
+      mkdir -p ${TESTS_PATH}/model_22_x10 && cd ${TESTS_PATH}/model_22_x10 && unzip -o ../model_22_x10.otx
+    )
+  endif()
+  
   if(WIN32)
     target_include_directories(gtests-lib PUBLIC ${WIN_INCLUDE_DIRS})
     target_link_libraries(gtests-lib PRIVATE ${WIN_LINK_LIBRARIES})
@@ -40,6 +46,9 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
 
   add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp ../targets/simu/simufatfs.cpp)
   add_dependencies(gtests ${FIRMWARE_DEPENDENCIES} gtests-lib)
+  if(PCB STREQUAL X12S OR PCB STREQUAL X10)
+    add_dependencies(gtests x10-model-files)
+  endif()
   target_link_libraries(gtests gtests-lib pthread Qt5::Core Qt5::Widgets)
   message(STATUS "Added optional gtests target")
 else()
