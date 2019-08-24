@@ -51,7 +51,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
   add_executable(gtests-radio EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp ../targets/simu/simufatfs.cpp)
-  add_dependencies(gtests-radio ${FIRMWARE_DEPENDENCIES} gtests-lib)
+  add_dependencies(gtests-radio ${FIRMWARE_DEPENDENCIES} gtests-radio-lib)
   if(PCB STREQUAL X12S OR PCB STREQUAL X10)
     add_dependencies(gtests-radio x10-model-test-files)
   endif()
