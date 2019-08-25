@@ -116,6 +116,12 @@ void convertModelData_218_to_219(ModelData &model)
   memcpy(&oldModel, &model, sizeof(ModelData_v218));
   ModelData_v219 & newModel = (ModelData_v219 &) model;
 
+#if defined(PCBHORUS)
+  // 4 bytes more for the ModelHeader::bitmap
+  memclear(&newModel.header.bitmap[10], 4);
+  memcpy(newModel.timers, oldModel.timers, offsetof(ModelData_v218, mixData) - offsetof(ModelData_v218, timers));
+#endif
+
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));
 
   char name[LEN_MODEL_NAME+1];

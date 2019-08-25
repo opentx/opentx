@@ -165,6 +165,8 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(RED, g_eeGeneral.themeData.options[1].unsignedValue);
 
   EXPECT_ZSTREQ("Test", g_model.header.name);
+  EXPECT_EQ(0, g_model.noGlobalFunctions);
+  EXPECT_EQ(0, g_model.beepANACenter);
   EXPECT_EQ(80, g_model.mixData[0].weight);
   EXPECT_EQ(MIXSRC_MAX, g_model.mixData[2].srcRaw); // MAX
   EXPECT_EQ(MIXSRC_LS, g_model.mixData[3].srcRaw); // LS
