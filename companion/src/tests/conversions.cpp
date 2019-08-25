@@ -123,6 +123,19 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_NE(nullptr, loadRadioSettingsFromByteArray(settings, byteBuffer));
 #endif
 
+  EXPECT_EQ(100, settings.calibSpanNeg[9]);
+  EXPECT_EQ(500, settings.calibMid[9]);
+  EXPECT_EQ(900, settings.calibSpanPos[9]);
+
+  EXPECT_EQ(200, settings.calibSpanNeg[10]);
+  EXPECT_EQ(400, settings.calibMid[10]);
+  EXPECT_EQ(600, settings.calibSpanPos[10]);
+
+  EXPECT_EQ(-23, settings.vBatMin);
+  EXPECT_EQ(20, settings.speakerVolume);
+  EXPECT_STREQ("en", settings.ttsLanguage);
+  EXPECT_STREQ("model1.bin", settings.currModelFilename);
+
   EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
   EXPECT_EQ(FuncLogs, settings.customFn[0].func);
   EXPECT_EQ(20, settings.customFn[0].param);
@@ -134,6 +147,9 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_STREQ("Tes", settings.switchName[0]);
   EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
 
+  EXPECT_STREQ("BT_X10", settings.bluetoothName);
+  EXPECT_STREQ("Default", settings.themeName);
+
 #if !defined(USE_OTX)
   byteBuffer.clear();
   ASSERT_EQ(true, loadFile(byteBuffer, RADIO_TESTS_PATH "/model_22_x10/MODELS/model1.bin"));
@@ -143,6 +159,8 @@ TEST(Conversions, ConversionX10From22)
 #endif
   
   EXPECT_STREQ("Test", model.name);
+  EXPECT_EQ(0, model.noGlobalFunctions);
+  EXPECT_EQ(0, model.beepANACenter);
   EXPECT_EQ(80, model.mixData[0].weight);
   EXPECT_EQ(RawSource(SOURCE_TYPE_MAX), model.mixData[2].srcRaw); // MAX
   EXPECT_EQ(RawSource(SOURCE_TYPE_STICK,4+5), model.mixData[3].srcRaw); // LS
@@ -151,7 +169,7 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(900, model.limitData[0].max); // -100
   EXPECT_EQ(80, model.expoData[0].weight);
   EXPECT_EQ(LS_FN_VPOS, model.logicalSw[0].func);
-  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0).toValue(), model.logicalSw[0].val1);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0).toValue(), model.logicalSw[0].val1); // TR1
   EXPECT_EQ(0, model.logicalSw[0].val2);
   EXPECT_EQ(HELI_SWASH_TYPE_120X, model.swashRingData.type);
   EXPECT_STREQ("Tes", model.flightModeData[0].name);
