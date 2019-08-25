@@ -133,6 +133,15 @@ TEST(Conversions, ConversionX10From22)
   loadModel("model1.bin");
 
   EXPECT_EQ(219, g_eeGeneral.version);
+
+  EXPECT_EQ(100, g_eeGeneral.calib[9].spanNeg);
+  EXPECT_EQ(500, g_eeGeneral.calib[9].mid);
+  EXPECT_EQ(900, g_eeGeneral.calib[9].spanPos);
+
+  EXPECT_EQ(200, g_eeGeneral.calib[10].spanNeg);
+  EXPECT_EQ(400, g_eeGeneral.calib[10].mid);
+  EXPECT_EQ(600, g_eeGeneral.calib[10].spanPos);
+
   EXPECT_EQ(-23, g_eeGeneral.vBatMin);
   EXPECT_EQ(8, g_eeGeneral.speakerVolume);
   EXPECT_STRNEQ("en", g_eeGeneral.ttsLanguage);
@@ -179,6 +188,7 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ((NUM_POTS + NUM_SLIDERS + 3), g_model.thrTraceSrc); // CH3
 
   EXPECT_STREQ("Layout2P1", g_model.screenData[0].layoutName);
+  EXPECT_STREQ("ModelBmp", g_model.screenData[0].layoutData.zones[0].widgetName);
 }
 #endif
 
