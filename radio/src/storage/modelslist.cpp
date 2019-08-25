@@ -80,11 +80,6 @@ void ModelCell::loadBitmap()
   }) partialmodel;
   const char * error = NULL;
 
-  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-  if (buffer == NULL) {
-    return;
-  }
-
   if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
   }
@@ -92,6 +87,13 @@ void ModelCell::loadBitmap()
     error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
   }
 
+  if ((modelName[0] == 0) && ! error)
+    setModelName(partialmodel.header.name); // resets buffer!!!
+
+  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
+  if (buffer == NULL) {
+    return;
+  }
   buffer->clear(TEXT_BGCOLOR);
 
   if (error) {
@@ -99,9 +101,6 @@ void ModelCell::loadBitmap()
     buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
   }
   else {
-    if (modelName[0] == 0)
-      setModelName(partialmodel.header.name);
-
     char timer[LEN_TIMER_STRING];
     buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
     getTimerString(timer, 0);
