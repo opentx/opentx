@@ -748,7 +748,8 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_THROTTLE_TRACE:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRACE);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTraceSrc, NUM_POTS+NUM_SLIDERS+MAX_OUTPUT_CHANNELS);
+        // check if source is available (EXT1 & EXT2 on X10)
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, g_model.thrTraceSrc, NUM_POTS+NUM_SLIDERS+MAX_OUTPUT_CHANNELS, isThrottleSourceAvailable);
         uint8_t idx = g_model.thrTraceSrc + MIXSRC_Thr;
         if (idx > MIXSRC_Thr)
           idx += 1;
