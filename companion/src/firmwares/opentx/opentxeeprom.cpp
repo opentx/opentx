@@ -268,8 +268,13 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board,version)+Boards::getCapability(board, Board::SlidersStorage)+Boards::getCapability(board, Board::MouseAnalogs)+MAX_GYRO_ANALOGS(board, version); i++) {
-        addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
+      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS_STORAGE(board, version)+Boards::getCapability(board, Board::SlidersStorage)+Boards::getCapability(board, Board::MouseAnalogs)+MAX_GYRO_ANALOGS(board, version); i++) {
+
+        int offset = 0;
+        if (version <= 218 && IS_HORUS(board) && i>=CPN_MAX_STICKS+MAX_POTS_STORAGE(board, version))
+          offset += 2;
+          
+        addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
       }
 
       for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++) {

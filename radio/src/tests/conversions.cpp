@@ -144,15 +144,17 @@ TEST(Conversions, ConversionX10From22)
 
   EXPECT_EQ(SWSRC_ON, g_eeGeneral.customFn[1].swtch);
   EXPECT_EQ(FUNC_VOLUME, g_eeGeneral.customFn[1].func);
-  EXPECT_EQ(MIXSRC_LS, g_eeGeneral.customFn[1].all.val);
+  EXPECT_EQ(MIXSRC_RS, g_eeGeneral.customFn[1].all.val);
 
   EXPECT_ZSTREQ("Tes", g_eeGeneral.switchNames[0]);
   EXPECT_EQ(SWITCH_3POS, SWITCH_CONFIG(0));
 
   EXPECT_ZSTREQ("Test", g_model.header.name);
   EXPECT_EQ(80, g_model.mixData[0].weight);
-  EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.mixData[4].srcRaw);
-  EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_model.mixData[4].swtch);
+  EXPECT_EQ(MIXSRC_MAX, g_model.mixData[2].srcRaw); // MAX
+  EXPECT_EQ(MIXSRC_LS, g_model.mixData[3].srcRaw); // LS
+  EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.mixData[5].srcRaw);
+  EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_model.mixData[5].swtch);
   EXPECT_EQ(-100, g_model.limitData[0].max);
   EXPECT_EQ(80, g_model.expoData[0].weight);
   EXPECT_EQ(LS_FUNC_VPOS, g_model.logicalSw[0].func);
