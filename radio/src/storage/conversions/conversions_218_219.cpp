@@ -58,6 +58,11 @@ int convertSource_218_to_219(int source)
     source += 2;
 #endif
 
+#if defined(PCBX10)
+  if ((source == MIXSRC_EXT1) || (source == MIXSRC_EXT2))
+    source += 2;
+#endif
+
   return source;
 }
 
