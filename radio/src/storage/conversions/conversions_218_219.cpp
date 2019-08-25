@@ -184,6 +184,10 @@ void convertModelData_218_to_219(ModelData &model)
   }
 
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
+#if defined(PCBX10)
+  if (newModel.thrTraceSrc > 3) // 0=Thr, 1/2/3=Old 3 Pots, then Sliders
+    newModel.thrTraceSrc += 2;
+#endif
   newModel.switchWarningState = oldModel.switchWarningState;
 #if !defined(COLORLCD)
   newModel.switchWarningEnable = oldModel.switchWarningEnable;

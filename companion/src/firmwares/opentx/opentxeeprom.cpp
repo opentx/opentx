@@ -2494,6 +2494,9 @@ void OpenTxModelData::afterImport()
     }
     modelData.switchWarningStates = newSwitchWarningStates;
   }
+
+  if (version <= 218 && IS_HORUS_X10(board) && modelData.thrTraceSrc > 3)
+    modelData.thrTraceSrc += 2;
 }
 
 OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant):

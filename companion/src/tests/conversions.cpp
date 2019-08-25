@@ -163,4 +163,5 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_STREQ("Tes", model.sensorData[0].label);
   EXPECT_EQ(10, model.sensorData[0].id);
   EXPECT_EQ(9, model.sensorData[0].instance);
+  EXPECT_EQ(5 + 2 + 3, model.thrTraceSrc); // CH3
 }
