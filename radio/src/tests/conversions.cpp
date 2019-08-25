@@ -149,6 +149,12 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_ZSTREQ("Tes", g_eeGeneral.switchNames[0]);
   EXPECT_EQ(SWITCH_3POS, SWITCH_CONFIG(0));
 
+  EXPECT_ZSTREQ("BT_X10", g_eeGeneral.bluetoothName);
+  EXPECT_STREQ("Default", g_eeGeneral.themeName);
+
+  EXPECT_EQ(WHITE, g_eeGeneral.themeData.options[0].unsignedValue);
+  EXPECT_EQ(RED, g_eeGeneral.themeData.options[1].unsignedValue);
+
   EXPECT_ZSTREQ("Test", g_model.header.name);
   EXPECT_EQ(80, g_model.mixData[0].weight);
   EXPECT_EQ(MIXSRC_MAX, g_model.mixData[2].srcRaw); // MAX
@@ -171,6 +177,8 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
   EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
   EXPECT_EQ((NUM_POTS + NUM_SLIDERS + 3), g_model.thrTraceSrc); // CH3
+
+  EXPECT_STREQ("Layout2P1", g_model.screenData[0].layoutName);
 }
 #endif
 

@@ -288,9 +288,9 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
 #if defined(PCBHORUS)
-//  memcpy(newModel.screenData, oldModel.screenData,
-//          sizeof(newModel.screenData) +
-//          sizeof(newModel.topbarData))
+  memcpy(newModel.screenData, oldModel.screenData,
+         sizeof(newModel.screenData) +
+         sizeof(newModel.topbarData));
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
