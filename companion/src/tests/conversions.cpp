@@ -171,6 +171,8 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(LS_FN_VPOS, model.logicalSw[0].func);
   EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0).toValue(), model.logicalSw[0].val1); // TR1
   EXPECT_EQ(0, model.logicalSw[0].val2);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,19*3).toValue(), model.logicalSw[1].val1); // TELE:20
+  EXPECT_EQ(20, model.logicalSw[1].val2);
   EXPECT_EQ(HELI_SWASH_TYPE_120X, model.swashRingData.type);
   EXPECT_STREQ("Tes", model.flightModeData[0].name);
   EXPECT_EQ(10, model.flightModeData[0].gvars[0]);

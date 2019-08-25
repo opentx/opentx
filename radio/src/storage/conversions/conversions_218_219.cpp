@@ -158,9 +158,9 @@ void convertModelData_218_to_219(ModelData &model)
     uint8_t cstate = lswFamily(sw.func);
     if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       LogicalSwitchData & sw = newModel.logicalSw[i];
-      sw.v1 = convertSource_218_to_219((uint8_t)sw.v1);
+      sw.v1 = convertSource_218_to_219(sw.v1);
       if (cstate == LS_FAMILY_COMP) {
-        sw.v2 = convertSource_218_to_219((uint8_t)sw.v2);
+        sw.v2 = convertSource_218_to_219(sw.v2);
       }
     }
     else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
