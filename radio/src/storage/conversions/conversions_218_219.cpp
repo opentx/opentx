@@ -291,6 +291,30 @@ void convertModelData_218_to_219(ModelData &model)
   memcpy(newModel.screenData, oldModel.screenData,
          sizeof(newModel.screenData) +
          sizeof(newModel.topbarData));
+
+  for (int screen=0; screen<MAX_CUSTOM_SCREENS; screen++) {
+    CustomScreenData& screenData = g_model.screenData[screen];
+    if (screenData.layoutName[0] == '\0')
+      continue;
+    for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
+      Layout::ZonePersistentData& zoneData = screenData.layoutData.zones[zone];
+      if (strcmp("Value",zoneData.widgetName))
+        continue;
+
+      ZoneOptionValue& option = zoneData.widgetData.options[0];
+      option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
+    }
+  }
+
+  for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
+    Topbar::ZonePersistentData& zoneData = g_model.topbarData.zones[zone];
+    if (strcmp("Value",zoneData.widgetName))
+      continue;
+
+    ZoneOptionValue& option = zoneData.widgetData.options[0];
+    option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
+  }
+  
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));

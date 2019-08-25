@@ -189,6 +189,9 @@ TEST(Conversions, ConversionX10From22)
 
   EXPECT_STREQ("Layout2P1", g_model.screenData[0].layoutName);
   EXPECT_STREQ("ModelBmp", g_model.screenData[0].layoutData.zones[0].widgetName);
+  EXPECT_STREQ("Value", g_model.topbarData.zones[0].widgetName);
+  EXPECT_EQ(MIXSRC_FIRST_TELEM, g_model.topbarData.zones[0].widgetData.options[0].unsignedValue);
+  EXPECT_EQ(MIXSRC_RS, g_model.screenData[0].layoutData.zones[2].widgetData.options[0].unsignedValue);
 }
 #endif
 
