@@ -137,9 +137,15 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(8, g_eeGeneral.speakerVolume);
   EXPECT_STRNEQ("en", g_eeGeneral.ttsLanguage);
   EXPECT_STRNEQ("model1.bin", g_eeGeneral.currModelFilename);
+
   EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_eeGeneral.customFn[0].swtch);
   EXPECT_EQ(FUNC_LOGS, g_eeGeneral.customFn[0].func);
   EXPECT_EQ(20, g_eeGeneral.customFn[0].all.val);
+
+  EXPECT_EQ(SWSRC_ON, g_eeGeneral.customFn[1].swtch);
+  EXPECT_EQ(FUNC_VOLUME, g_eeGeneral.customFn[1].func);
+  EXPECT_EQ(MIXSRC_LS, g_eeGeneral.customFn[1].all.val);
+
   EXPECT_ZSTREQ("Tes", g_eeGeneral.switchNames[0]);
   EXPECT_EQ(SWITCH_3POS, SWITCH_CONFIG(0));
 

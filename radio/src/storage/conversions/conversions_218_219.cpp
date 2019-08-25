@@ -378,6 +378,9 @@ void convertRadioData_218_to_219(RadioData & settings)
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
     CustomFunctionData & cf = settings.customFn[i];
     cf.swtch = convertSwitch_218_to_219(cf.swtch);
+    if (cf.func == FUNC_PLAY_VALUE || cf.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(cf.func) && cf.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
+      cf.all.val = convertSource_218_to_219(cf.all.val);
+    }
   }
 #endif
 
