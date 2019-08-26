@@ -21,37 +21,36 @@
 #ifndef _DEFINITIONS_H_
 #define _DEFINITIONS_H_
 
-#if defined(SIMU) &&  __GNUC__
-  #define __ALIGNED           __attribute__((aligned(32)))
-  #define __SECTION_USED(s)   __attribute__((used))
-#elif defined(SIMU)
-  #define  __ALIGNED
+#include <inttypes.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+#if !defined(UNUSED)
+  #define UNUSED(x)           ((void)(x)) /* to avoid warnings */
+#endif
+
+#if defined(SIMU)
+  #define __ALIGNED(x)
   #define __SECTION_USED(s)
 #else
-  #define __ALIGNED          __attribute__((aligned(32)))
-  #define __SECTION_USED(s)  __attribute__ ((section(s), used))
+  #define __ALIGNED(x)        __attribute__((aligned(x)))
+  #define __SECTION_USED(s)   __attribute__((section(s), used))
 #endif
 
 #if defined(SIMU)
   #define __DMA
-#elif (defined(STM32F4) && !defined(BOOT)) || defined(PCBHORUS)
-  #define __DMA __attribute__((section(".ram"), aligned(32)))
+#elif (defined(STM32F4) && !defined(BOOT)) || defined(SDRAM)
+  #define __DMA               __attribute__((section(".ram"), aligned(4)))
 #else
-  #define __DMA __ALIGNED
+  #define __DMA               __ALIGNED(4)
 #endif
 
-#if defined(PCBHORUS) && !defined(SIMU)
-  #define __SDRAM   __attribute__((section(".sdram"), aligned(32)))
+#if defined(SDRAM) && !defined(SIMU)
+  #define __SDRAM   __attribute__((section(".sdram"), aligned(4)))
   #define __NOINIT  __attribute__((section(".noinit")))
 #else
   #define __SDRAM   __DMA
   #define __NOINIT
-#endif
-
-#if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
-typedef int32_t int24_t;
-#else
-typedef __int24 int24_t;
 #endif
 
 #if __GNUC__
@@ -61,21 +60,15 @@ typedef __int24 int24_t;
 #endif
 
 #if defined(SIMU)
-  #if !defined(FORCEINLINE)
-    #define FORCEINLINE inline
-  #endif
-  #if !defined(NOINLINE)
-    #define NOINLINE
-  #endif
   #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
 #else
-  #define FORCEINLINE inline __attribute__ ((always_inline))
-  #define NOINLINE    __attribute__ ((noinline))
-  #define SIMU_SLEEP(x)
-  #define SIMU_SLEEP_NORET(x)
   #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
+#endif
+
+#if !defined(DIM)
+  #define DIM(__arr) (sizeof((__arr)) / sizeof((__arr)[0]))
 #endif
 
 #endif // _DEFINITIONS_H_

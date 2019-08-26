@@ -19,7 +19,10 @@ local THROTTLE_PAGE = 0
 local ROLL_PAGE = 1
 local PITCH_PAGE = 2
 local YAW_PAGE = 3
-local CONFIRMATION_PAGE = 4
+local ARM_PAGE = 4
+local MODE_PAGE = 5
+local BEEPER_PAGE = 6
+local CONFIRMATION_PAGE = 7
 
 -- Navigation variables
 local page = THROTTLE_PAGE
@@ -27,13 +30,18 @@ local dirty = true
 local edit = false
 local field = 0
 local fieldsMax = 0
+local comboBoxMode = 0 -- Scrap variable
+local validSwitch = {}
 
 -- Model settings
 local thrCH1 = 0
 local rollCH1 = 0
 local yawCH1 = 0
 local pitchCH1 = 0
-
+local armSW1 = 1
+local beeperSW1 = 1
+local modeSW1 = 1
+local switches = {"SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH"}
 -- Common functions
 local lastBlink = 0
 local function blinkChanged()
@@ -126,12 +134,46 @@ local function channelIncDec(event, value)
   return value
 end
 
+local function switchValueIncDec(event, value, min, max)
+  if edit then
+    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT or event == EVT_ROT_RIGHT then
+      if value < max then
+        value = (value + 1)
+        dirty = true
+      end
+    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT or event == EVT_ROT_LEFT then
+      if value > min then
+        value = (value - 1)
+        dirty = true
+      end
+    end
+  end
+  return value
+end
+
+local function switchIncDec(event, value)
+  if not edit and event==EVT_MENU_BREAK then
+    servoPage = value
+    dirty = true
+  else
+    value = switchValueIncDec(event, value, 1, #validSwitch)
+  end
+  return value
+end
+
 -- Init function
 local function init()
   thrCH1 = defaultChannel(2)
-  rollCH1 = defaultChannel(3)
-  yawCH1 = defaultChannel(0)
+  rollCH1 = defaultChannel(0)
+  yawCH1 = defaultChannel(3)
   pitchCH1 = defaultChannel(1)
+  local ver, radio, maj, minor, rev = getVersion()
+  -- if string.match(radio, "x7") then
+  --   validSwitch = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15}                              -- X7 : 3pos / 3pos / 3pos / 3pos / 2 pos
+  -- if string.match(radio, "xlite") then
+  --   validSwitch = {1, 2, 3, 4, 5, 6, 7, 9, 10, 12}                                             -- xlite : 3pos / 3pos / 2pos / 2pos
+  -- else
+  validSwitch = {1, 2, 3, 4, 5, 6, 7 }     -- X9 : 3pos / 3pos / 3pos / 3pos / 3 pos / 2 pos / 3pos
 end
 
 -- Throttle Menu
@@ -141,7 +183,8 @@ local function drawThrottleMenu()
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-thr.bmp")
-  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
+  lcd.drawText(20, LCD_H-16, "Assign Throttle", 0);
+  lcd.drawText(20, LCD_H-8, "Channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+thrCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -163,7 +206,8 @@ local function drawRollMenu()
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-roll.bmp")
-  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
+  lcd.drawText(20, LCD_H-16, "Assign Roll", 0);
+  lcd.drawText(20, LCD_H-8, "Channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+rollCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -185,7 +229,8 @@ local function drawPitchMenu()
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-pitch.bmp")
-  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
+  lcd.drawText(20, LCD_H-16, "Assign Pitch", 0);
+  lcd.drawText(20, LCD_H-8, "Channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+pitchCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -207,7 +252,8 @@ local function drawYawMenu()
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-yaw.bmp")
-  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
+  lcd.drawText(20, LCD_H-16, "Assign Yaw", 0);
+  lcd.drawText(20, LCD_H-8, "Channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+yawCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -222,10 +268,78 @@ local function yawMenu(event)
   yawCH1 = channelIncDec(event, yawCH1)
 end
 
+-- Arm Menu
+local function drawArmMenu()
+  lcd.clear()
+  lcd.drawText(1, 0, "Select multicopter arm switch", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
+  lcd.drawPixmap(120, 8, "multi-thr.bmp")
+  lcd.drawText(20, LCD_H-16, "Assign AUX1", 0);
+  lcd.drawText(20, LCD_H-8, "Switch", 0);
+  lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+  lcd.drawText(113, LCD_H-8, switches[armSW1], getFieldFlags(0))
+  fieldsMax = 0
+end
+
+local function armMenu(event)
+  if dirty then
+    dirty = false
+    drawArmMenu()
+  end
+  navigate(event, fieldsMax, page-1, page+1)
+  armSW1 = switchIncDec(event, armSW1)
+end
+
+-- Beeper Menu
+local function drawbeeperMenu()
+  lcd.clear()
+  lcd.drawText(1, 0, "Select multicopter beeper switch", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
+  lcd.drawPixmap(120, 8, "multi-thr.bmp")
+  lcd.drawText(20, LCD_H-16, "Assign AUX2", 0);
+  lcd.drawText(20, LCD_H-8, "Switch", 0);
+  lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+  lcd.drawText(113, LCD_H-8, switches[beeperSW1], getFieldFlags(0))
+  fieldsMax = 0
+end
+
+local function beeperMenu(event)
+  if dirty then
+    dirty = false
+    drawbeeperMenu()
+  end
+  navigate(event, fieldsMax, page-1, page+1)
+  beeperSW1 = switchIncDec(event, beeperSW1)
+end
+
+-- Mode Menu
+local function drawmodeMenu()
+  lcd.clear()
+  lcd.drawText(1, 0, "Select multicopter mode switch", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
+  lcd.drawPixmap(120, 8, "multi-thr.bmp")
+  lcd.drawText(20, LCD_H-16, "Assign AUX3", 0);
+  lcd.drawText(20, LCD_H-8, "Switch", 0);
+  lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+  lcd.drawText(113, LCD_H-8, switches[modeSW1], getFieldFlags(0))
+  fieldsMax = 0
+end
+
+local function modeMenu(event)
+  if dirty then
+    dirty = false
+    drawmodeMenu()
+  end
+  navigate(event, fieldsMax, page-1, page+1)
+  modeSW1 = switchIncDec(event, modeSW1)
+end
+
 -- Confirmation Menu
-local function drawNextLine(x, y, label, channel)
+local function drawNextCHLine(x, y, label, channel)
   lcd.drawText(x, y, label, 0);
-  lcd.drawText(x+48, y, ":", 0);
   lcd.drawSource(x+52, y, MIXSRC_CH1+channel, 0)
   y = y + 8
   if y > 50 then
@@ -235,19 +349,36 @@ local function drawNextLine(x, y, label, channel)
   return x, y
 end
 
+local function drawNextSWLine(x, y, label, switch)
+  lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+80, y, switches[switch], 0)
+  y = y + 8
+  if y > 50 then
+    y = 12
+    x = 120
+  end
+  return x, y
+end
+
 local function drawConfirmationMenu()
-  local x = 22
+  local x = 10
   local y = 12
   lcd.clear()
   lcd.drawText(48, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
-  x, y = drawNextLine(x, y, "Throttle", thrCH1)
-  x, y = drawNextLine(x, y, "Roll", rollCH1)
-  x, y = drawNextLine(x, y, "Pitch", pitchCH1)
-  x, y = drawNextLine(x, y, "Yaw", yawCH1)
-  lcd.drawText(48, LCD_H-8, "Long [ENT] to confirm", 0);
+  x, y = drawNextCHLine(x, y, "Throttle:", thrCH1)
+  x, y = drawNextCHLine(x, y, "Roll:", rollCH1)
+  x, y = drawNextCHLine(x, y, "Pitch:", pitchCH1)
+  x, y = drawNextCHLine(x, y, "Yaw:", yawCH1)
+  x = 95
+  y = 12
+  x, y = drawNextSWLine(x, y, "Arm switch:", armSW1)
+  x, y = drawNextSWLine(x, y, "Mode switch:", modeSW1)
+  x, y = drawNextSWLine(x, y, "Beeper switch:", beeperSW1)
+  lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
-  lcd.drawPixmap(LCD_W-18, LCD_H-17, "confirm-tick.bmp")
+  lcd.drawPixmap(LCD_W-18, 0, "confirm-tick.bmp")
+  lcd.drawPixmap(0, LCD_H-17, "confirm-plane.bmp")
   fieldsMax = 0
 end
 
@@ -265,10 +396,13 @@ end
 local function applySettings()
   model.defaultInputs()
   model.deleteMixes()
-  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
+  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Throttle")
   addMix(rollCH1,  MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   addMix(yawCH1,   MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")
   addMix(pitchCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Pitch")
+  addMix(4, MIXSRC_SA + armSW1 - 1, "Arm")
+  addMix(5, MIXSRC_SA + beeperSW1 - 1, "Beeper")
+  addMix(6, MIXSRC_SA + modeSW1 - 1, "Mode")
 end
 
 local function confirmationMenu(event)
@@ -277,7 +411,7 @@ local function confirmationMenu(event)
     drawConfirmationMenu()
   end
 
-  navigate(event, fieldsMax, YAW_PAGE, page)
+  navigate(event, fieldsMax, BEEPER_PAGE, page)
 
   if event == EVT_EXIT_BREAK then
     return 2
@@ -303,6 +437,12 @@ local function run(event)
     yawMenu(event)
   elseif page == PITCH_PAGE then
     pitchMenu(event)
+  elseif page == ARM_PAGE then
+    armMenu(event)
+  elseif page == MODE_PAGE then
+    modeMenu(event)
+  elseif page == BEEPER_PAGE then
+    beeperMenu(event)
   elseif page == CONFIRMATION_PAGE then
     return confirmationMenu(event)
   end

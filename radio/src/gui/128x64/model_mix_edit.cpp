@@ -26,7 +26,7 @@ enum MixFields {
   MIX_FIELD_WEIGHT,
   MIX_FIELD_OFFSET,
   MIX_FIELD_TRIM,
-  CASE_CURVES(MIX_FIELD_CURVE)
+  MIX_FIELD_CURVE,
   CASE_FLIGHT_MODES(MIX_FIELD_FLIGHT_MODE)
   MIX_FIELD_SWITCH,
   MIX_FIELD_WARNING,
@@ -85,15 +85,10 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
-  if (event == EVT_KEY_LONG(KEY_MENU)) {
-    // TODO pushMenu(menuChannelsView);
-    killEvents(event);
-  }
-
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(PSIZE(TR_MIXER)*FW+FW, 0, md2->destCh+1,0);
   
-  SUBMENU(STR_MIXER, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+  SUBMENU(STR_MIXER, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
   
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
@@ -115,7 +110,7 @@ void menuModelMixOne(event_t event)
         break;
 
       case MIX_FIELD_SOURCE:
-        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
+        lcdDrawTextAlignedLeft(y, STR_SOURCE);
         drawSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
@@ -127,7 +122,7 @@ void menuModelMixOne(event_t event)
 
       case MIX_FIELD_OFFSET:
       {
-        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_OFFSET));
+        lcdDrawTextAlignedLeft(y, STR_OFFSET);
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
@@ -142,12 +137,10 @@ void menuModelMixOne(event_t event)
         if (attr) md2->carryTrim = !checkIncDecModel(event, !md2->carryTrim, 0, 1);
         break;
 
-#if defined(CURVES)
       case MIX_FIELD_CURVE:
         lcdDrawTextAlignedLeft(y, STR_CURVE);
         editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, event, attr);
         break;
-#endif
 
 #if defined(FLIGHT_MODES)
       case MIX_FIELD_FLIGHT_MODE:

@@ -168,14 +168,8 @@ TEST_F(TrimsTest, invertedThrottlePlusThrottleTrim)
 TEST_F(TrimsTest, throttleTrimWithZeroWeightOnThrottle)
 {
   g_model.thrTrim = 1;
-#if defined(VIRTUAL_INPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
-#else
-  ExpoData *expo = expoAddress(0);
-  expo->mode = 3;
-  expo->chn = THR_STICK;
-#endif
   expo->weight = 0;
   // stick max + trim max
   anaInValues[THR_STICK] = +1024;
@@ -245,14 +239,8 @@ TEST_F(TrimsTest, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 {
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
-#if defined(VIRTUAL_INPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
-#else
-  ExpoData *expo = expoAddress(0);
-  expo->mode = 3;
-  expo->chn = THR_STICK;
-#endif
   expo->weight = 0;
   // stick max + trim max
   anaInValues[THR_STICK] = +1024;
@@ -318,46 +306,13 @@ TEST_F(TrimsTest, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
   EXPECT_EQ(channelOutputs[2], 0);
 }
 
-#if !defined(VIRTUAL_INPUTS)
-TEST_F(TrimsTest, greaterTrimLink)
-{
-  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
-  setTrimValue(3, RUD_STICK, 32);
-  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(1, RUD_STICK), RUD_STICK), 32);
-}
-
-TEST_F(TrimsTest, chainedTrims)
-{
-  setTrimValue(0, RUD_STICK, 32);
-  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+1); // link to FP0 trim
-  setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
-}
-
-TEST_F(TrimsTest, infiniteChainedTrims)
-{
-  setTrimValue(0, RUD_STICK, 32);
-  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
-  setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
-  setTrimValue(3, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP2 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
-}
-#endif
-
 TEST_F(TrimsTest, CopyTrimsToOffset)
 {
   setTrimValue(0, ELE_STICK, -100); // -100 on elevator
-#if defined(CPUARM)
   evalFunctions(g_model.customFn, modelFunctionsContext); // it disables all safety channels
   copyTrimsToOffset(1);
   EXPECT_EQ(getTrimValue(0, ELE_STICK), -100); // unchanged
   EXPECT_EQ(g_model.limitData[1].offset, -195);
-#else
-  evalFunctions(); // it disables all safety channels
-  copyTrimsToOffset(1);
-  EXPECT_EQ(getTrimValue(0, ELE_STICK), -100); // unchanged
-  EXPECT_EQ(g_model.limitData[1].offset, -200);
-#endif
 }
 
 TEST_F(TrimsTest, CopySticksToOffset)
@@ -375,7 +330,6 @@ TEST_F(TrimsTest, InstantTrim)
   EXPECT_EQ(25, getTrimValue(0, AIL_STICK));
 }
 
-#if defined(VIRTUAL_INPUTS)
 TEST_F(TrimsTest, InstantTrimNegativeCurve)
 {
   ExpoData *expo = expoAddress(AIL_STICK);
@@ -390,7 +344,6 @@ TEST_F(TrimsTest, InstantTrimNegativeCurve)
   instantTrim();
   EXPECT_EQ(128, getTrimValue(0, AIL_STICK));
 }
-#endif
 
 TEST(Curves, LinearIntpol)
 {
@@ -408,127 +361,6 @@ TEST(Curves, LinearIntpol)
 }
 
 
-#if !defined(CPUARM)
-TEST(FlightModes, nullFadeOut_posFadeIn)
-{
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  lastFlightMode = 255;
-  simuSetSwitch(3, 1);
-  g_model.flightModeData[1].swtch = SWSRC_ID1;
-  g_model.flightModeData[1].fadeIn = 15;
-  evalMixes(1);
-  simuSetSwitch(3, 0);
-  evalMixes(1);
-  // run mixes enough time to fade out flight modes (otherwise the mixer internal state flightModesFade  could affect other tests)
-  simuSetSwitch(3, 1);
-  for(int n=0; n<200; n++) {
-    evalMixes(1);  
-  }
-}
-
-TEST_F(MixerTest, R2029Comment)
-{
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].srcRaw = MIXSRC_CH2;
-  g_model.mixData[0].swtch = -SWSRC_THR;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[1].destCh = 1;
-  g_model.mixData[1].srcRaw = MIXSRC_Thr;
-  g_model.mixData[1].swtch = SWSRC_THR;
-  g_model.mixData[1].weight = 100;
-  anaInValues[THR_STICK] = 1024;
-  simuSetSwitch(1, 1);
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 0);
-  EXPECT_EQ(chans[1], CHANNEL_MAX);
-  simuSetSwitch(1, 0);
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 0);
-  EXPECT_EQ(chans[1], 0);
-  simuSetSwitch(1, 1);
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 0);
-  EXPECT_EQ(chans[1], CHANNEL_MAX);
-}
-
-TEST_F(MixerTest, Cascaded3Channels)
-{
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].srcRaw = MIXSRC_CH2;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[1].destCh = 1;
-  g_model.mixData[1].srcRaw = MIXSRC_CH3;
-  g_model.mixData[1].weight = 100;
-  g_model.mixData[2].destCh = 2;
-  g_model.mixData[2].srcRaw = MIXSRC_THR;
-  g_model.mixData[2].weight = 100;
-  simuSetSwitch(1, 1);
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], CHANNEL_MAX);
-  EXPECT_EQ(chans[1], CHANNEL_MAX);
-  EXPECT_EQ(chans[2], CHANNEL_MAX);
-}
-
-TEST_F(MixerTest, CascadedOrderedChannels)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].srcRaw = MIXSRC_THR;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[1].destCh = 1;
-  g_model.mixData[1].srcRaw = MIXSRC_CH1;
-  g_model.mixData[1].weight = 100;
-  simuSetSwitch(1, 1);
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], CHANNEL_MAX);
-  EXPECT_EQ(chans[1], CHANNEL_MAX);
-}
-
-TEST_F(MixerTest, Cascaded5Channels)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].srcRaw = MIXSRC_CH2;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[1].destCh = 1;
-  g_model.mixData[1].srcRaw = MIXSRC_CH3;
-  g_model.mixData[1].weight = 100;
-  g_model.mixData[2].destCh = 2;
-  g_model.mixData[2].srcRaw = MIXSRC_CH4;
-  g_model.mixData[2].weight = 100;
-  g_model.mixData[3].destCh = 3;
-  g_model.mixData[3].srcRaw = MIXSRC_CH5;
-  g_model.mixData[3].weight = 100;
-  g_model.mixData[4].destCh = 4;
-  g_model.mixData[4].srcRaw = MIXSRC_THR;
-  g_model.mixData[4].weight = 100;
-  for (uint8_t i=0; i<10; i++) {
-    simuSetSwitch(1, 1);
-    evalMixes(1);
-    EXPECT_EQ(chans[0], CHANNEL_MAX);
-    EXPECT_EQ(chans[1], CHANNEL_MAX);
-    EXPECT_EQ(chans[2], CHANNEL_MAX);
-    EXPECT_EQ(chans[3], CHANNEL_MAX);
-    EXPECT_EQ(chans[4], CHANNEL_MAX);
-    simuSetSwitch(1, 0);
-    evalMixes(1);
-    EXPECT_EQ(chans[0], -CHANNEL_MAX);
-    EXPECT_EQ(chans[1], -CHANNEL_MAX);
-    EXPECT_EQ(chans[2], -CHANNEL_MAX);
-    EXPECT_EQ(chans[3], -CHANNEL_MAX);
-    EXPECT_EQ(chans[4], -CHANNEL_MAX);
-  }
-}
-#endif
 
 TEST_F(MixerTest, InfiniteRecursiveChannels)
 {
@@ -600,56 +432,6 @@ TEST_F(MixerTest, RecursiveAddChannelAfterInactivePhase)
   EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
-#if !defined(CPUARM)
-TEST_F(MixerTest, SlowOnSwitch)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_MAX;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].swtch = SWSRC_THR;
-  g_model.mixData[0].speedUp = SLOW_STEP*5;
-  g_model.mixData[0].speedDown = SLOW_STEP*5;
-
-  s_mixer_first_run_done = true;
-
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 0);
-
-  simuSetSwitch(1, 1);
-  CHECK_SLOW_MOVEMENT(0, +1, 250);
-
-  simuSetSwitch(1, -1);
-  CHECK_SLOW_MOVEMENT(0, -1, 250);
-}
-
-TEST_F(MixerTest, SlowUpOnSwitch)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_MAX;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].swtch = SWSRC_THR;
-  g_model.mixData[0].speedUp = SLOW_STEP*5;
-  g_model.mixData[0].speedDown = 0;
-
-  simuSetSwitch(1, 0);
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  s_mixer_first_run_done = true;
-  EXPECT_EQ(chans[0], 0);
-
-  simuSetSwitch(1, 1);
-  CHECK_SLOW_MOVEMENT(0, +1, 250);
-
-  simuSetSwitch(1, 0);
-  evalFlightModeMixes(e_perout_mode_normal, 1);
-  EXPECT_EQ(chans[0], 0);
-
-  lastAct = 0;
-  simuSetSwitch(1, 1);
-  CHECK_SLOW_MOVEMENT(0, +1, 100);
-}
-#endif
 
 TEST_F(MixerTest, SlowOnPhase)
 {
@@ -673,48 +455,17 @@ TEST_F(MixerTest, SlowOnPhase)
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 
-#if !defined(CPUARM)
-TEST_F(MixerTest, SlowOnSwitchAndPhase)
-{
-  g_model.flightModeData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_MAX;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].swtch = TR(SWSRC_THR, SWSRC_SA0);
-#if defined(CPUARM)
-  g_model.mixData[0].flightModes = 0x2 + 0x4 + 0x8 + 0x10 + 0x20 + 0x40 + 0x80 + 0x100 /*only enabled in phase 0*/;
-#else
-  g_model.mixData[0].flightModes = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
-#endif
-  g_model.mixData[0].speedUp = SLOW_STEP*5;
-  g_model.mixData[0].speedDown = SLOW_STEP*5;
-
-  s_mixer_first_run_done = true;
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 0);
-
-  simuSetSwitch(1, 1);
-  mixerCurrentFlightMode = 0;
-  CHECK_SLOW_MOVEMENT(0, +1, 250);
-
-  simuSetSwitch(1, -1);
-  mixerCurrentFlightMode = 1;
-  CHECK_SLOW_MOVEMENT(0, -1, 250);
-}
-#endif
-
 TEST_F(MixerTest, SlowOnSwitchSource)
 {
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBSKY9X)
+  g_model.mixData[0].srcRaw = MIXSRC_THR;
+  int switchIndex = 1;
+#else
   g_eeGeneral.switchConfig = 0x03;
   g_model.mixData[0].srcRaw = MIXSRC_SA;
-  int switch_index = 0;
-#else
-  g_model.mixData[0].srcRaw = MIXSRC_THR;
-  int switch_index = 1;
+  int switchIndex = 0;
 #endif
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].speedUp = SLOW_STEP*5;
@@ -722,11 +473,11 @@ TEST_F(MixerTest, SlowOnSwitchSource)
 
   s_mixer_first_run_done = true;
 
-  simuSetSwitch(switch_index, -1);
+  simuSetSwitch(switchIndex, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
 
-  simuSetSwitch(switch_index, 1);
+  simuSetSwitch(switchIndex, 1);
   CHECK_SLOW_MOVEMENT(0, +1, 500);
 }
 
@@ -775,86 +526,6 @@ TEST_F(MixerTest, DelayOnSwitch)
   EXPECT_EQ(chans[0], 0);
 }
 
-#if !defined(CPUARM)
-TEST_F(MixerTest, SlowAndDelayOnReplace3POSSource)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_REP;
-  g_model.mixData[0].srcRaw = MIXSRC_3POS;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].delayUp = 10;
-  g_model.mixData[0].speedUp = SLOW_STEP*5;
-  g_model.mixData[0].speedDown = SLOW_STEP*5;
-
-  s_mixer_first_run_done = true;
-
-  simuSetSwitch(0, -1);
-  CHECK_SLOW_MOVEMENT(0, -1, 250);
-  EXPECT_EQ(chans[0], -CHANNEL_MAX);
-
-  simuSetSwitch(0, 0);
-  CHECK_DELAY(0, 500);
-  CHECK_SLOW_MOVEMENT(0, +1, 250/*half course*/);
-  EXPECT_EQ(chans[0], 0);
-
-  simuSetSwitch(0, 1);
-  CHECK_DELAY(0, 500);
-  CHECK_SLOW_MOVEMENT(0, +1, 250);
-}
-#endif
-
-#if !defined(CPUARM)
-TEST_F(MixerTest, SlowOnSwitchReplace)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_MAX;
-  g_model.mixData[0].weight = 50;
-  g_model.mixData[1].destCh = 0;
-  g_model.mixData[1].mltpx = MLTPX_REP;
-  g_model.mixData[1].srcRaw = MIXSRC_MAX;
-  g_model.mixData[1].weight = 100;
-  g_model.mixData[1].swtch = SWSRC_THR;
-  g_model.mixData[1].speedDown = SLOW_STEP*5;
-
-  simuSetSwitch(1, 0);
-  evalFlightModeMixes(e_perout_mode_normal, 1);
-  EXPECT_EQ(chans[0], CHANNEL_MAX/2);
-
-  simuSetSwitch(1, 1);
-  evalFlightModeMixes(e_perout_mode_normal, 1);
-  // slow is not applied, but it's better than the first mix not applied at all!
-  EXPECT_EQ(chans[0], CHANNEL_MAX);
-
-  simuSetSwitch(1, 0);
-  evalFlightModeMixes(e_perout_mode_normal, 1);
-  // slow is not applied, but it's better than the first mix not applied at all!
-  EXPECT_EQ(chans[0], CHANNEL_MAX/2);
-}
-#endif
-
-#if !defined(VIRTUAL_INPUTS)
-TEST_F(MixerTest, NoTrimOnInactiveMix)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_Thr;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].swtch = SWSRC_THR;
-  g_model.mixData[0].speedUp = SLOW_STEP*5;
-  g_model.mixData[0].speedDown = SLOW_STEP*5;
-  setTrimValue(0, 2, 256);
-
-  s_mixer_first_run_done = true;
-
-  simuSetSwitch(1, 1);
-  CHECK_SLOW_MOVEMENT(0, 1, 100);
-
-  simuSetSwitch(1, -1);
-  CHECK_SLOW_MOVEMENT(0, -1, 100);
-}
-#endif
-
 TEST_F(MixerTest, SlowOnMultiply)
 {
   g_model.mixData[0].destCh = 0;
@@ -881,8 +552,29 @@ TEST_F(MixerTest, SlowOnMultiply)
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 }
 
+TEST_F(TrimsTest, throttleTrimEle) {
+  SYSTEM_RESET();
+  MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
+  g_eeGeneral.templateSetup = 17;
+  applyDefaultTemplate();
+  g_model.thrTrim = 1;
+// checks ELE sticks are not affected by throttleTrim
+// stick max + trim min
+  anaInValues[ELE_STICK] = +1024;
+  setTrimValue(0, ELE_STICK, TRIM_MIN);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 1024 - 250);
+  SYSTEM_RESET();
+  MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
+  g_eeGeneral.templateSetup = 0;
+  applyDefaultTemplate();
+}
 
-#if defined(HELI) && defined(VIRTUAL_INPUTS)
+#if defined(HELI)
 TEST(Heli, BasicTest)
 {
   SYSTEM_RESET();
@@ -948,22 +640,6 @@ TEST(Heli, Mode2Test)
   EXPECT_EQ(chans[1], CHANNEL_MAX/2);
   EXPECT_EQ(chans[2], CHANNEL_MAX/2);
   SYSTEM_RESET();
-}
-#endif
-
-#if defined(HELI) && !defined(VIRTUAL_INPUTS)
-TEST(Heli, SimpleTest)
-{
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  applyTemplate(TMPL_HELI_SETUP);
-  anaInValues[ELE_STICK] = 1024;
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], -CHANNEL_MAX);
-  EXPECT_EQ(chans[1], CHANNEL_MAX/2);
-  EXPECT_EQ(chans[1], CHANNEL_MAX/2);
 }
 #endif
 

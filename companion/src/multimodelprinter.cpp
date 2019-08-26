@@ -61,43 +61,18 @@ void MultiModelPrinter::MultiColumns::beginCompare()
   compareColumns = new QString[count];
 }
 
-void MultiModelPrinter::MultiColumns::endCompare(const QString & color)
+void MultiModelPrinter::MultiColumns::endCompare()
 {
   for (int i=0; i<count; i++) {
-    QString cellColor = color;
+    QString style = "";
     if (i==0 && count>1 && compareColumns[0]!=compareColumns[1])
-      cellColor = "green";
+      style = "mpc-diff1";
     else if (i>0 && compareColumns[i]!=compareColumns[0])
-      cellColor = "red";
-    // font instructions must be applied at table cell level if they exist in the comparison string
-    if (compareColumns[i].indexOf(QString("<td")) > -1) {
-      QString t = compareColumns[i];
-      int p1 = 0;
-      int p2 = 0;
-      int p3 = 0;
-      while (t.indexOf(QString("<td"), p1) > -1) {
-        p1 = t.indexOf(QString("<td"), p1);
-        p2 = t.indexOf(QString(">"), p1 + 3);
-        p3 = t.indexOf(QString("</td>"), p2 + 1);
-        QString td = t.mid(p2 + 1, p3 - (p2 + 1));
-        // remove existing font instructions from current cell
-        if (td.contains(QString("<font "))) {
-          int p4 = t.indexOf(QString("<font "), p2 + 1);
-          int p5 = t.indexOf(QString("</font>"), p4) + 6;
-          if (p5 < p3)
-            t.remove(p4, p5 - p4 + 1);
-        }
-        t.insert(p2 + 1, QString("<font color='%1'>").arg(cellColor));
-        p3 = t.indexOf(QString("</td>"), p2);
-        t.insert(p3, QString("</font>"));
-        p1 = p3 + QString("</font></td>").size();
-      }
-      compareColumns[i] = t;
-      columns[i].append(QString("%1").arg(compareColumns[i]));
-    }
-    else {
-      columns[i].append(QString("<font color='%1'>%2</font>").arg(cellColor).arg(compareColumns[i]));
-    }
+      style = "mpc-diff2";
+    if (style!="")
+      columns[i].append(QString("<span class='%1'>%2</span>").arg(style).arg(compareColumns[i]));
+    else
+      columns[i].append(compareColumns[i]);
   }
   delete[] compareColumns;
   compareColumns = NULL;
@@ -250,7 +225,7 @@ void MultiModelPrinter::MultiColumns::appendFieldSeparator(const bool sep)
 
 QString MultiModelPrinter::printTitle(const QString & label)
 {
-  return QString("<tr><td colspan='%1'><h2>").arg(modelPrinterMap.count()) + label + "</h2></td></tr>";
+  return QString("<tr><td class=mpc-section-title colspan='%1'>").arg(modelPrinterMap.count()) + label + "</td></tr>";
 }
 
 MultiModelPrinter::MultiModelPrinter(Firmware * firmware):
@@ -292,9 +267,13 @@ void MultiModelPrinter::clearModels()
 QString MultiModelPrinter::print(QTextDocument * document)
 {
   if (document) document->clear();
-
-  QString str = "<table border='1' cellspacing='0' cellpadding='3' width='100%' style='font-family: monospace;'>";
+  Stylesheet css(MODEL_PRINT_CSS);
+  if (css.load(Stylesheet::StyleType::STYLE_TYPE_EFFECTIVE))
+    document->setDefaultStyleSheet(css.text());
+  QString str = "<table cellspacing='0' cellpadding='3' width='100%'>";   // attributes not settable via QT stylesheet
   str.append(printSetup());
+  if (firmware->getCapability(HasDisplayText))
+    str.append(printChecklist());
   if (firmware->getCapability(Timers)) {
     str.append(printTimers());
   }
@@ -306,10 +285,12 @@ QString MultiModelPrinter::print(QTextDocument * document)
   str.append(printInputs());
   str.append(printMixers());
   str.append(printOutputs());
-  str += printCurves(document);
+  str.append(printCurves(document));
   if (firmware->getCapability(Gvars) && !firmware->getCapability(GvarsFlightModes))
     str.append(printGvars());
   str.append(printLogicalSwitches());
+  if (firmware->getCapability(GlobalFunctions))
+    str.append(printGlobalFunctions());
   str.append(printSpecialFunctions());
   if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY) {
     str.append(printTelemetry());
@@ -328,7 +309,7 @@ QString MultiModelPrinter::printSetup()
 
   MultiColumns columns(modelPrinterMap.size());
   columns.appendSectionTableStart();
-  ROWLABELCOMPARECELL(tr("Name"), 25, model->name, 75);
+  ROWLABELCOMPARECELL(tr("Name"), 20, model->name, 80);
   ROWLABELCOMPARECELL(tr("EEprom Size"), 0, modelPrinter->printEEpromSize(), 0);
   if (firmware->getCapability(ModelImage)) {
     ROWLABELCOMPARECELL(tr("Model Image"), 0, model->bitmap, 0);
@@ -351,18 +332,18 @@ QString MultiModelPrinter::printTimers()
   QString str;
   MultiColumns columns(modelPrinterMap.size());
   columns.appendSectionTableStart();
-  columns.appendRowHeader(QStringList() << tr("Timers") << tr("Time") << tr("Switch") << tr("Countdown") << tr("Minute call") << tr("Persistence"));
+  columns.appendRowHeader(QStringList() << tr("Timers") << tr("Time") << tr("Switch") << tr("Countdown") << tr("Min.call") << tr("Persist"));
 
   for (int i=0; i<firmware->getCapability(Timers); i++) {
     columns.appendRowStart();
     columns.appendCellStart(20, true);
     COMPARE(modelPrinter->printTimerName(i));
     columns.appendCellEnd(true);
-    COMPARECELL(modelPrinter->printTimerTimeValue(model->timers[i].val));
-    COMPARECELL(model->timers[i].mode.toString());
-    COMPARECELL(modelPrinter->printTimerCountdownBeep(model->timers[i].countdownBeep));
-    COMPARECELL(modelPrinter->printTimerMinuteBeep(model->timers[i].minuteBeep));
-    COMPARECELL(modelPrinter->printTimerPersistent(model->timers[i].persistent));
+    COMPARECELLWIDTH(modelPrinter->printTimerTimeValue(model->timers[i].val), 15);
+    COMPARECELLWIDTH(model->timers[i].mode.toString(), 15);
+    COMPARECELLWIDTH(modelPrinter->printTimerCountdownBeep(model->timers[i].countdownBeep), 15);
+    COMPARECELLWIDTH(modelPrinter->printTimerMinuteBeep(model->timers[i].minuteBeep), 15);
+    COMPARECELLWIDTH(modelPrinter->printTimerPersistent(model->timers[i].persistent), 20);
     columns.appendRowEnd();
   }
   columns.appendTableEnd();
@@ -377,10 +358,10 @@ QString MultiModelPrinter::printModules()
   columns.appendSectionTableStart();
   for (int i=0; i<firmware->getCapability(NumModules); i++) {
     columns.appendRowStart();
-    columns.appendCellStart(25, true);
+    columns.appendCellStart(20, true);
     COMPARE(modelPrinter->printModuleType(i));
     columns.appendCellEnd(true);
-    COMPARECELLWIDTH(modelPrinter->printModule(i), 75);
+    COMPARECELLWIDTH(modelPrinter->printModule(i), 80);
     columns.appendRowEnd();
   }
   if (firmware->getCapability(ModelTrainerEnable))
@@ -439,22 +420,22 @@ QString MultiModelPrinter::printFlightModes()
   {
     MultiColumns columns(modelPrinterMap.size());
     columns.appendSectionTableStart();
-    QStringList hd = QStringList() << tr("Flight mode") << tr("Switch") << tr("Fade IN") << tr("Fade OUT");
+    QStringList hd = QStringList() << tr("Flight mode") << tr("Switch") << tr("F.In") << tr("F.Out");
     for (int i=0; i < getBoardCapability(getCurrentBoard(), Board::NumTrims); i++) {
       hd << RawSource(SOURCE_TYPE_TRIM, i).toString();
     }
     columns.appendRowHeader(hd);
-
+    int wd = 80/(getBoardCapability(getCurrentBoard(), Board::NumTrims) + 3);
     for (int i=0; i<firmware->getCapability(FlightModes); i++) {
       columns.appendRowStart();
-      columns.appendCellStart(0,true);
+      columns.appendCellStart(20,true);
       COMPARE(modelPrinter->printFlightModeName(i));
       columns.appendCellEnd(true);
-      COMPARECELL(modelPrinter->printFlightModeSwitch(model->flightModeData[i].swtch));
-      COMPARECELL(model->flightModeData[i].fadeIn);
-      COMPARECELL(model->flightModeData[i].fadeOut);
+      COMPARECELLWIDTH(modelPrinter->printFlightModeSwitch(model->flightModeData[i].swtch), wd);
+      COMPARECELLWIDTH(model->flightModeData[i].fadeIn, wd);
+      COMPARECELLWIDTH(model->flightModeData[i].fadeOut, wd);
       for (int k=0; k < getBoardCapability(getCurrentBoard(), Board::NumTrims); k++) {
-        COMPARECELL(modelPrinter->printTrim(i, k));
+        COMPARECELLWIDTH(modelPrinter->printTrim(i, k), wd);
       }
       columns.appendRowEnd();
     }
@@ -468,7 +449,7 @@ QString MultiModelPrinter::printFlightModes()
   if ((gvars && firmware->getCapability(GvarsFlightModes)) || firmware->getCapability(RotaryEncoders)) {
     MultiColumns columns(modelPrinterMap.size());
     columns.appendSectionTableStart();
-    QStringList hd = QStringList() << tr("Global variables");
+    QStringList hd = QStringList() << tr("Global vars");
     if (firmware->getCapability(GvarsFlightModes)) {
       for (int i=0; i<gvars; i++) {
         hd << tr("GV%1").arg(i+1);
@@ -478,11 +459,11 @@ QString MultiModelPrinter::printFlightModes()
       hd << tr("RE%1").arg(i+1);
     }
     columns.appendRowHeader(hd);
-
+    int wd = 80/gvars;
     if (firmware->getCapability(GvarsFlightModes)) {
-      columns.appendRowStart(tr("Name"));
+      columns.appendRowStart(tr("Name"), 20);
       for (int i=0; i<gvars; i++) {
-        COMPARECELL(model->gvarData[i].name);
+        COMPARECELLWIDTH(model->gvarData[i].name, wd);
       }
       columns.appendRowEnd();
       columns.appendRowStart(tr("Unit"));
@@ -549,7 +530,14 @@ QString MultiModelPrinter::printOutputs()
   if (firmware->getCapability(SYMLimits))
     hd << tr("Linear");
   columns.appendRowHeader(hd);
-
+  int cols = 4;
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard()))
+    cols++;
+  if (firmware->getCapability(PPMCenter))
+    cols++;
+  if (firmware->getCapability(SYMLimits))
+    cols++;
+  int wd = 80/cols;
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
     int count = 0;
     for (int k=0; k < modelPrinterMap.size(); k++)
@@ -557,21 +545,21 @@ QString MultiModelPrinter::printOutputs()
     if (!count)
       continue;
     columns.appendRowStart();
-    columns.appendCellStart(0, true);
+    columns.appendCellStart(20, true);
     COMPARE(modelPrinter->printChannelName(i));
     columns.appendCellEnd(true);
-    COMPARECELL(modelPrinter->printOutputOffset(i));
-    COMPARECELL(modelPrinter->printOutputMin(i));
-    COMPARECELL(modelPrinter->printOutputMax(i));
-    COMPARECELL(modelPrinter->printOutputRevert(i));
+    COMPARECELLWIDTH(modelPrinter->printOutputOffset(i), wd);
+    COMPARECELLWIDTH(modelPrinter->printOutputMin(i), wd);
+    COMPARECELLWIDTH(modelPrinter->printOutputMax(i), wd);
+    COMPARECELLWIDTH(modelPrinter->printOutputRevert(i), wd);
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-      COMPARECELL(modelPrinter->printOutputCurve(i));
+      COMPARECELLWIDTH(modelPrinter->printOutputCurve(i), wd);
     }
     if (firmware->getCapability(PPMCenter)) {
-      COMPARECELL(modelPrinter->printOutputPpmCenter(i));
+      COMPARECELLWIDTH(modelPrinter->printOutputPpmCenter(i), wd);
     }
     if (firmware->getCapability(SYMLimits)) {
-      COMPARECELL(modelPrinter->printOutputSymetrical(i));
+      COMPARECELLWIDTH(modelPrinter->printOutputSymetrical(i), wd);
     }
     columns.appendRowEnd();
   }
@@ -768,7 +756,7 @@ QString MultiModelPrinter::printTelemetry()
     columns.appendRowHeader(QStringList() << tr("Analogs") << tr("Unit") << tr("Scale") << tr("Offset"));
     for (int i=0; i<2; i++) {
       columns.appendRowStart(QString("A%1").arg(i+1), 20);
-      COMPARECELLWIDTH(getFrSkyUnits(model->frsky.channels[i].type), 20);
+      COMPARECELLWIDTH(FrSkyChannelData::unitString(model->frsky.channels[i].type), 20);
       COMPARECELLWIDTH(QString::number((model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ? 10.0 : 1)), 10, (model->frsky.channels[i].type==0 ? 1 : 0)), 20);
       COMPARECELLWIDTH(QString::number((model->frsky.channels[i].offset*(model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ?10.0 : 1)))/255, 10, (model->frsky.channels[i].type==0 ? 1 : 0)), 40);
       columns.appendRowEnd();
@@ -785,10 +773,10 @@ QString MultiModelPrinter::printTelemetry()
   {
     columns.appendRowStart(tr("RSSI Alarms"), 20);
     columns.appendCellStart(80);
-    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Low") : getFrSkyAlarmType(model->rssiAlarms.level[0])), false);
+    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Low") : FrSkyAlarmData::alarmLevelName(model->rssiAlarms.level[0])), false);
     columns.append(": ");
     COMPARESTRING("", QString("&lt; %1").arg(QString::number(model->rssiAlarms.warning, 10)), true);
-    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Critical") : getFrSkyAlarmType(model->rssiAlarms.level[1])), false);
+    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Critical") : FrSkyAlarmData::alarmLevelName(model->rssiAlarms.level[1])), false);
     columns.append(": ");
     COMPARESTRING("", QString("&lt; %1").arg(QString::number(model->rssiAlarms.critical, 10)), true);
     COMPARESTRING(tr("Telemetry audio"), modelPrinter->printRssiAlarmsDisabled(model->rssiAlarms.disabled), false);
@@ -875,8 +863,7 @@ QString MultiModelPrinter::printSensors()
   int count = 0;
   columns.appendSectionTableStart();
   columns.appendRowHeader(QStringList() << tr("Name") << tr("Type") << tr("Parameters"));
-  //columns.appendRowHeader(QStringList() << tr("Name") << tr("Type") << tr("Formula/Source") << tr("Unit") << tr("Prec") << tr("Ratio") << tr("Ofst") << tr("A.Ofst") << tr("Fltr") << tr("Pers.") << tr("+ve") << tr("Log"));
-  for (int i=0; i<CPN_MAX_SENSORS; ++i) {
+  for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
     bool tsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
       if (modelPrinterMap.value(k).first->sensorData[i].isAvailable()) {
@@ -887,12 +874,11 @@ QString MultiModelPrinter::printSensors()
     if (!tsEmpty) {
       count++;
       columns.appendRowStart();
-      columns.appendCellStart(15, true);
+      columns.appendCellStart(20, true);
       COMPARE(model->sensorData[i].nameToString(i));
       columns.appendCellEnd(true);
       COMPARECELLWIDTH(modelPrinter->printSensorTypeCond(i), 15);
-      COMPARECELLWIDTH(modelPrinter->printSensorParams(i), 70);
-      //COMPARESTRING("", modelPrinter->printSensorDetails(i), 0);
+      COMPARECELLWIDTH(modelPrinter->printSensorParams(i), 65);
       columns.appendRowEnd();
     }
   }
@@ -913,7 +899,7 @@ QString MultiModelPrinter::printTelemetryScreens()
   for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); ++i) {
     bool tsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
-      if (!modelPrinterMap.value(k).first->frsky.screens[i].type == TELEMETRY_SCREEN_NONE) {
+      if (!(modelPrinterMap.value(k).first->frsky.screens[i].type == TELEMETRY_SCREEN_NONE)) {
         tsEmpty = false;
         break;
       }
@@ -931,6 +917,62 @@ QString MultiModelPrinter::printTelemetryScreens()
   columns.appendTableEnd();
   if (count > 0) {
     str.append(printTitle(tr("Telemetry Screens")));
+    str.append(columns.print());
+  }
+  return str;
+}
+
+QString MultiModelPrinter::printGlobalFunctions()
+{
+  QString str;
+  QString txt;
+  int count = 0;
+  int idx = -1;
+  MultiColumns columns(modelPrinterMap.size());
+  columns.appendSectionTableStart();
+
+  for (int k=0; k < modelPrinterMap.size(); k++) {
+    if (!modelPrinterMap.value(k).first->noGlobalFunctions) {
+      idx = k;
+      break;
+    }
+  }
+
+  if (idx > -1) {
+    ModelPrinter * modelPrinter = modelPrinterMap.value(idx).second;
+    (void)(modelPrinter);
+
+    for (int i=0; i < firmware->getCapability(GlobalFunctions); i++) {
+      txt = modelPrinter->printCustomFunctionLine(i, true);
+      if (!txt.isEmpty()) {
+        count++;
+        ROWLABELCOMPARECELL(tr("GF%1").arg(i+1), 20, modelPrinter->printCustomFunctionLine(i, true), 80);
+      }
+    }
+    columns.appendTableEnd();
+    if (count > 0) {
+      str.append(printTitle(tr("Global Functions")));
+      str.append(columns.print());
+    }
+  }
+  return str;
+}
+
+QString MultiModelPrinter::printChecklist()
+{
+  QString str;
+  MultiColumns columns(modelPrinterMap.size());
+  bool isChecklist = false;
+  for (int k=0; k < modelPrinterMap.size(); k++) {
+    if (modelPrinterMap.value(k).first->displayChecklist) {
+      isChecklist = true;
+      break;
+    }
+  }
+  if (isChecklist) {
+    columns.appendSectionTableStart();
+    ROWLABELCOMPARECELL(tr("Checklist"), 20, modelPrinter->printChecklist(), 80);
+    columns.appendTableEnd();
     str.append(columns.print());
   }
   return str;

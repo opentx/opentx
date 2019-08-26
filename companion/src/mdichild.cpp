@@ -80,6 +80,7 @@ MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
   connect(ui->modelsList, &QTreeView::customContextMenuRequested, this, &MdiChild::showModelsListContextMenu);
   connect(ui->modelsList, &QTreeView::pressed, this, &MdiChild::onItemSelected);
   connect(ui->modelsList->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &MdiChild::onCurrentItemChanged);
+  connect(QGuiApplication::clipboard(), &QClipboard::dataChanged, this, &MdiChild::updateNavigation);
 
   if (!(isMaximized() || isMinimized())) {
     QByteArray geo = g.mdiWinGeo();
@@ -120,6 +121,8 @@ void MdiChild::closeEvent(QCloseEvent *event)
     event->ignore();
     return;
   }
+  event->accept();
+
   if (!isMinimized()) {
     QByteArray geo;
     if (isMaximized())
@@ -131,15 +134,16 @@ void MdiChild::closeEvent(QCloseEvent *event)
     g.mdiWinGeo(geo);
   }
 
+  if (!isVisible())
+    return;
+
   QByteArray state;
   QDataStream stream(&state, QIODevice::WriteOnly);
   stream << stateDataVersion
-        << (firmware->getCapability(Capability::HasModelCategories) ? categoriesToolbar->isVisible() : showCatToolbar)
-        << modelsToolbar->isVisible()
-        << radioToolbar->isVisible();
+         << (firmware->getCapability(Capability::HasModelCategories) ? categoriesToolbar->isVisible() : showCatToolbar)
+         << modelsToolbar->isVisible()
+         << radioToolbar->isVisible();
   g.mdiWinState(state);
-
-  event->accept();
 }
 
 void MdiChild::resizeEvent(QResizeEvent * event)
@@ -530,7 +534,6 @@ void MdiChild::initModelsList()
   connect(modelsListModel, &QAbstractItemModel::dataChanged, this, &MdiChild::onDataChanged);
 
   ui->modelsList->setModel(modelsListModel);
-  ui->modelsList->header()->setVisible(!firmware->getCapability(Capability::HasModelCategories));
   if (IS_HORUS(board)) {
     ui->modelsList->setIndentation(20);
     // ui->modelsList->resetIndentation(); // introduced in next Qt versions ...
@@ -539,6 +542,14 @@ void MdiChild::initModelsList()
     ui->modelsList->setIndentation(0);
   }
   refresh();
+
+  if (firmware->getCapability(Capability::HasModelCategories)) {
+    ui->modelsList->header()->resizeSection(0, ui->modelsList->header()->sectionSize(0) * 2);   // pad out categories and model names
+  }
+  else {
+    ui->modelsList->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);           // minimise Index
+    ui->modelsList->header()->resizeSection(1, ui->modelsList->header()->sectionSize(1) * 1.5); // pad out model names
+  }
 }
 
 void MdiChild::refresh()
@@ -891,9 +902,9 @@ int MdiChild::newModel(int modelIndex, int categoryIndex)
   setSelectedModel(modelIndex);
   //qDebug() << modelIndex << categoryIndex << isNewModel;
 
-  if (isNewModel && g.newModelAction() == 1)
+  if (isNewModel && g.newModelAction() == AppData::MODEL_ACT_WIZARD)
     openModelWizard(modelIndex);
-  else if (g.newModelAction() == 2)
+  else if (g.newModelAction() == AppData::MODEL_ACT_EDITOR)
     openModelEditWindow(modelIndex);
 
   return modelIndex;
@@ -1090,7 +1101,6 @@ void MdiChild::copyGeneralSettings()
   QMimeData * mimeData = modelsListModel->getGeneralMimeData();
   modelsListModel->getHeaderMimeData(mimeData);
   QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
-  updateNavigation();
 }
 
 void MdiChild::pasteGeneralSettings()
@@ -1109,9 +1119,7 @@ void MdiChild::copy()
   QMimeData * mimeData = modelsListModel->getModelsMimeData(ui->modelsList->selectionModel()->selectedRows());
   modelsListModel->getHeaderMimeData(mimeData);
   QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
-
   clearCutList();  // clear the list by default, populate afterwards, eg. in cut().
-  updateNavigation();
 }
 
 void MdiChild::cut()
@@ -1259,7 +1267,7 @@ void MdiChild::openModelEditWindow(int row)
   gStopwatch.report("ModelEdit creation");
   ModelEdit * t = new ModelEdit(this, radioData, (row), firmware);
   gStopwatch.report("ModelEdit created");
-  t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + model.name);
+  t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + QString(model.name) + QString("   (%1)").arg(userFriendlyCurrentFile()));
   connect(t, &ModelEdit::modified, this, &MdiChild::setModified);
   gStopwatch.report("STARTING MODEL EDIT");
   t->show();
@@ -1326,7 +1334,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
   QString warning = storage.warning();
   if (!warning.isEmpty()) {
-    // TODO EEPROMInterface::showEepromWarnings(this, CPN_STR_TTL_WARNING, warning);
+    QMessageBox::warning(this, CPN_STR_TTL_WARNING, warning);
   }
 
   if (resetCurrentFile) {
@@ -1449,7 +1457,7 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
 {
   QMessageBox::StandardButtons btns;
   QMessageBox::StandardButton dfltBtn;
-  QString q = tr("<p><b>Current radio type is not compatible with file %1, models and settings need to be converted.</b></p>").arg(userFriendlyCurrentFile());
+  QString q = tr("<p><b>Currently selected radio type (%1) is not compatible with file %3 (from %2), models and settings need to be converted.</b></p>").arg(Boards::getBoardName(to)).arg(Boards::getBoardName(from)).arg(userFriendlyCurrentFile());
   if (newFile) {
     q.append(tr("Do you wish to continue with the conversion?"));
     btns = (QMessageBox::Yes | QMessageBox::No);

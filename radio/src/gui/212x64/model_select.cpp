@@ -52,10 +52,10 @@ void onModelSelectMenu(const char * result)
   else if (result == STR_DELETE_MODEL) {
     char * nametmp =  reusableBuffer.modelsel.mainname;
     strcat_modelname (nametmp, sub);
-    POPUP_CONFIRMATION(STR_DELETEMODEL);
+    POPUP_CONFIRMATION(STR_DELETEMODEL, nullptr);
     SET_WARNING_INFO(nametmp, sizeof(g_model.header.name), 0);
   }
-  else {
+  else if (result != STR_EXIT) {
     // The user choosed a file on SD to restore
     storageCheck(true);
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
@@ -83,7 +83,7 @@ void menuModelSelect(event_t event)
 
   int8_t oldSub = menuVerticalPosition;
 
-  check_submenu_simple(NULL, _event_, MAX_MODELS);
+  check_submenu_simple(_event_, MAX_MODELS);
 
   if (s_editMode > 0) s_editMode = 0;
 
@@ -102,7 +102,7 @@ void menuModelSelect(event_t event)
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
           char * nametmp =  reusableBuffer.modelsel.mainname;
           strcat_modelname (nametmp, sub);
-          POPUP_CONFIRMATION(STR_DELETEMODEL);
+          POPUP_CONFIRMATION(STR_DELETEMODEL, nullptr);
           SET_WARNING_INFO(nametmp, sizeof(g_model.header.name), 0);
           killEvents(event);
           break;
@@ -236,7 +236,7 @@ void menuModelSelect(event_t event)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
-  TITLE(STR_MENUMODELSEL);
+  title(STR_MENUMODELSEL);
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;

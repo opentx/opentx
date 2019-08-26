@@ -98,7 +98,9 @@ class DefaultTheme: public Theme
 #endif
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
       loadMenuIcon(ICON_RADIO_SETUP, "mask_radio_setup.png");
-      loadMenuIcon(ICON_RADIO_SD_BROWSER, "mask_radio_sd_browser.png");
+      loadMenuIcon(ICON_RADIO_SD_MANAGER, "mask_radio_sd_browser.png");
+      loadMenuIcon(ICON_RADIO_TOOLS, "mask_radio_tools.png");
+      loadMenuIcon(ICON_RADIO_SPECTRUM_ANALYSER, "/mask_radio_spectrum_analyser.png");
       loadMenuIcon(ICON_RADIO_GLOBAL_FUNCTIONS, "mask_radio_global_functions.png");
       loadMenuIcon(ICON_RADIO_TRAINER, "mask_radio_trainer.png");
       loadMenuIcon(ICON_RADIO_HARDWARE, "mask_radio_hardware.png");
@@ -175,7 +177,7 @@ class DefaultTheme: public Theme
 
       delete calibHorus;
 #if defined(PCBX10)
-      if(ANALOGS_PWM_ENABLED()) {
+      if(STICKS_PWM_ENABLED()) {
         calibHorus = BitmapBuffer::load(getThemePath("X10S.bmp"));
       }
       else {

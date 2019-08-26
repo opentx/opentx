@@ -25,10 +25,7 @@ uint8_t coprocReadDataPending ;
 uint8_t coprocWriteDataPending ;
 uint8_t CoProc_appgo_pending ;
 uint8_t Volume_read ;
-uint8_t Coproc_read ;
-int8_t Coproc_temp ;
-int8_t Coproc_maxtemp=-127 ;
-int8_t Coproc_valid ;
+CoprocData coprocData;
 bool get_onlytemp;
 #if !defined(SIMU)
 // TODO not used? static uint8_t *Twi_read_address ;
@@ -71,7 +68,7 @@ void i2cCheck()
     TWI0->TWI_CR = TWI_CR_STOP ;    // Stop Tx
   }
   else if (coprocReadDataPending) {
-    Coproc_valid = 0 ;
+    coprocData.valid = 0 ;
     coprocReadDataPending = 0 ;
     TWI0->TWI_MMR = 0x00351000 ;    // Device 35 and master is reading
     TwiOperation = TWI_READ_COPROC ;
@@ -142,15 +139,15 @@ extern "C" void TWI0_IRQHandler()
     }
     else
     {
-      Coproc_valid = -1 ;
+      coprocData.valid = -1 ;
     }
   }
 
   if ( TwiOperation == TWI_WAIT_STOP )
   {
-    Coproc_valid = 1 ;
-    Coproc_read = Co_proc_status[0] ;
-    if ( Coproc_read & 0x80 ) {
+    coprocData.valid = 1 ;
+    coprocData.read = Co_proc_status[0] ;
+    if ( coprocData.read & 0x80 ) {
       // Bootloader
       CoProc_appgo_pending = 1 ;  // Action application
     }
@@ -167,9 +164,9 @@ extern "C" void TWI0_IRQHandler()
         utm.tm_year = (Co_proc_status[6] + ( Co_proc_status[7] << 8 )) - TM_YEAR_BASE;
         g_rtcTime = gmktime(&utm);
       }
-      Coproc_temp = Co_proc_status[8];
-      if (Coproc_temp > Coproc_maxtemp)
-        Coproc_maxtemp=Coproc_temp;
+      coprocData.temp = Co_proc_status[8];
+      if (coprocData.temp > coprocData.maxtemp)
+        coprocData.maxtemp = coprocData.temp;
     }
     TWI0->TWI_PTCR = TWI_PTCR_RXTDIS ;  // Stop transfers
     if ( TWI0->TWI_SR & TWI_SR_RXRDY ) {

@@ -1,3 +1,10 @@
+
+option(SIMU_TARGET "Configure libsimulator/simu targets (can be turned off for compiling Companion only)" ON)
+if(NOT SIMU_TARGET)
+  message(STATUS "libsimulator/simu targets disabled")
+  return()
+endif()
+
 foreach(FILE ${SRC})
   set(SIMU_SRC ${SIMU_SRC} ../../${FILE})
 endforeach()
@@ -9,6 +16,10 @@ set(SIMU_SRC
   simufatfs.cpp
   simudisk.cpp
   )
+
+if(SIMU_DISKIO)
+  set(SIMU_SRC ${SIMU_SRC} ../../${FATFS_DIR}/ff.c ../../${FATFS_DIR}/option/ccsbcs.c)
+endif()
 
 remove_definitions(-DCLI)
 
@@ -31,8 +42,7 @@ if(Qt5Widgets_FOUND)
   add_library(${SIMULATOR_TARGET} SHARED ${SIMULATOR_SRC})
   add_dependencies(${SIMULATOR_TARGET} ${FIRMWARE_DEPENDENCIES})
   target_compile_definitions(${SIMULATOR_TARGET} PUBLIC ${APP_COMMON_DEFINES})  # set in top-level CMakeLists
-  target_link_libraries(${SIMULATOR_TARGET} ${SDL_LIBRARY})
-  qt5_use_modules(${SIMULATOR_TARGET} Core)
+  target_link_libraries(${SIMULATOR_TARGET} ${SDL_LIBRARY} Qt5::Core)
   add_custom_target(libsimulator DEPENDS ${SIMULATOR_TARGET})
 
   # Prepare the "all-simu-libs" target to build simulator libraries for *every* supported PCB type (PCB_TYPES list)
@@ -64,7 +74,10 @@ if(WIN32)
 endif(WIN32)
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
+  set(CMAKE_CXX_FLAGS "/EHsc")
+  if(NOT CLANG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /LD /MP")
+  endif()
 else()
   if(MINGW)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw

@@ -24,7 +24,6 @@
 #include <QtWidgets>
 #include "eeprominterface.h"
 #include "firmwareinterface.h"
-#include "xmlinterface.h"
 
 namespace Ui
 {

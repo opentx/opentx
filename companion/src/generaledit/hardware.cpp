@@ -41,6 +41,14 @@ void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * na
         label->setText("SH");
       }
     }
+    if (IS_JUMPER_T12(board)) {
+      if (index == 4) {
+        label->setText("SG");
+      }
+      else if (index == 5) {
+        label->setText("SH");
+      }
+    }
   }
   else {
     label->hide();
@@ -118,6 +126,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupPotType(1, ui->pot2Label, ui->pot2Name, ui->pot2Type);
   setupPotType(2, ui->pot3Label, ui->pot3Name, ui->pot3Type);
   setupPotType(3, ui->pot4Label, ui->pot4Name, ui->pot4Type);
+  setupPotType(4, ui->pot5Label, ui->pot5Name, ui->pot5Type);
 
   setupSliderType(0, ui->lsLabel, ui->lsName, ui->lsType);
   setupSliderType(1, ui->rsLabel, ui->rsName, ui->rsType);
@@ -157,8 +166,16 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->txCurrentCalibrationLabel->hide();
   }
 
-  if (IS_TARANIS_X9E(board) || IS_HORUS(board)) {
-    ui->bluetoothEnable->setChecked(generalSettings.bluetoothEnable);
+  if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_HORUS(board) || IS_JUMPER_T12(board)) {
+    ui->bluetoothMode->addItem(tr("OFF"), 0);
+    if (IS_TARANIS_X9E(board)) {
+      ui->bluetoothMode->addItem(tr("Enabled"), 1);
+    }
+    else {
+      ui->bluetoothMode->addItem(tr("Telemetry"), 1);
+      ui->bluetoothMode->addItem(tr("Trainer"), 2);
+    }
+    ui->bluetoothMode->setField(generalSettings.bluetoothMode, this);
     ui->bluetoothName->setField(generalSettings.bluetoothName, 10, this);
   }
   else {
@@ -236,12 +253,6 @@ void HardwarePanel::on_txCurrentCalibration_editingFinished()
     generalSettings.txCurrentCalibration = ui->txCurrentCalibration->value();
     emit modified();
   }
-}
-
-void HardwarePanel::on_bluetoothEnable_stateChanged(int)
-{
-  generalSettings.bluetoothEnable = ui->bluetoothEnable->isChecked();
-  emit modified();
 }
 
 void HardwarePanel::setValues()

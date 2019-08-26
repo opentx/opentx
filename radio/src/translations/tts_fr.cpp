@@ -52,22 +52,12 @@ enum FrenchPrompts {
   FR_PROMPT_VIRGULE_BASE = 180, //,0 - ,9
 };
 
-#if defined(VOICE)
 
-#if defined(CPUARM)
   #define FR_PUSH_UNIT_PROMPT(u) fr_pushUnitPrompt((u), id)
-#else
-  #define FR_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
-#endif
 
 I18N_PLAY_FUNCTION(fr, pushUnitPrompt, uint8_t unitprompt)
 {
-#if defined(CPUARM)
   PUSH_UNIT_PROMPT(unitprompt, 0);
-#else
-  unitprompt = FR_PROMPT_UNITS_BASE + unitprompt*2;
-  PUSH_NUMBER_PROMPT(unitprompt);
-#endif
 }
 
 #define FEMININ 0x80
@@ -89,31 +79,12 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     div_t qr = div((int)number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);
@@ -197,4 +168,3 @@ I18N_PLAY_FUNCTION(fr, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(fr, "Francais");
 
-#endif

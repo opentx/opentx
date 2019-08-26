@@ -38,20 +38,24 @@ class ProgressWidget : public QWidget
   public:
     explicit ProgressWidget(QWidget *parent);
     ~ProgressWidget();
+    QString getText() const;
+    int maximum();
+    bool isEmpty() const;
+    bool detailsVisible() const;
+
+  public slots:
     void lock(bool lock);
     void addText(const QString &text, const bool richText = false);
     void addHtml(const QString &text);
-    void addMessage(const QString & text, const int & type = QtInfoMsg);
-    QString getText();
+    void addMessage(const QString & text, const int & type = QtInfoMsg, bool richText = false);
     void setInfo(const QString &text);
     void setMaximum(int value);
-    int maximum();
     void setValue(int value);
     void setProgressColor(const QColor &color);
     void addSeparator();
     void forceOpen();
     void stop();
-    bool isEmpty() const;
+    void clearDetails() const;
 
   signals:
     void detailsToggled();
@@ -59,11 +63,13 @@ class ProgressWidget : public QWidget
     void stopped();
 
   protected slots:
-    void on_checkBox_toggled(bool checked);
-    void shrink();
+    void toggleDetails();
+    void onShowDetailsToggled(bool checked);
 
   private:
     Ui::ProgressWidget *ui;
+    bool m_forceOpen;
+    bool m_hasDetails;
 };
 
 #endif // _PROGRESSWIDGET_H_

@@ -37,7 +37,7 @@ uint8_t getMappedChar(uint8_t c)
   if (c == 0)
     result = 0;
 #if defined(TRANSLATIONS_FR)
-  else if (c >= 0x80 && c <= 0x85) {
+  else if (c >= 0x80 && c <= 0x84) {
     result = 115 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_DE)
@@ -45,8 +45,32 @@ uint8_t getMappedChar(uint8_t c)
     result = 120 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_CZ)
-  else if (c >= 0x80 && c < 0x80+30) {
+  else if (c >= 0x80 && c <= 0x80+29) {
     result = 127 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_ES)
+  else if (c >= 0x80 && c <= 0x81) {
+    result = 157 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_FI)
+  else if (c >= 0x80 && c <= 0x85) {
+    result = 159 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_IT)
+  else if (c >= 0x80 && c <= 0x81) {
+    result = 165 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_PL)
+  else if (c >= 0x80 && c <= 0x80+17) {
+    result = 167 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_PT)
+  else if (c >= 0x80 && c <= 0x80+21) {
+    result = 185 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_SE)
+  else if (c >= 0x80 && c <= 0x85) {
+    result = 207 + c - 0x80;
   }
 #endif
   else if (c < 0xC0)
@@ -78,7 +102,7 @@ void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags)
 {
   uint32_t fontindex = FONTINDEX(flags);
-  const pm_uchar * font = fontsTable[fontindex];
+  const unsigned char * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
   lcdPutFontPattern(x, y, font, fontspecs, getMappedChar(c), flags);
 }
@@ -106,7 +130,7 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   for (int i=0; len==0 || i<len; ++i) {
 
 #if !defined(BOOT)
-    char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
 #else
     char c = *s;
 #endif
@@ -118,10 +142,10 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   return result;
 }
 
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags)
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags)
 {
   uint8_t length;
-  length = pgm_read_byte(s++);
+  length = *(s++);
   lcdDrawSizedText(x, y, s+length*idx, length, flags & ~ZCHAR);
 }
 
@@ -226,7 +250,7 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), flags);
 }
 
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags flags)
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags flags)
 {
   char str[LEN_TIMER_STRING];
   getTimerString(str, tme, (flags & TIMEHOUR) != 0);
@@ -266,7 +290,7 @@ void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att)
 void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
 {
   char s[8];
-  getSwitchString(s, idx);
+  getSwitchPositionName(s, idx);
   lcdDrawText(x, y, s, flags);
 }
 
@@ -277,7 +301,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
-void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT) {

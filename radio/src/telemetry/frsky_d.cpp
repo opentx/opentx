@@ -20,17 +20,6 @@
 
 #include "opentx.h"
 
-#if (defined(FRSKY_HUB) || defined(WS_HOW_HIGH))
-void checkMinMaxAltitude()
-{
-  if (TELEMETRY_RELATIVE_BARO_ALT_BP > telemetryData.hub.maxAltitude)
-    telemetryData.hub.maxAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
-  if (TELEMETRY_RELATIVE_BARO_ALT_BP < telemetryData.hub.minAltitude)
-    telemetryData.hub.minAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
-}
-#endif
-
-#if defined(FRSKY_HUB)
 void parseTelemHubByte(uint8_t byte)
 {
   static int8_t structPos;
@@ -57,7 +46,7 @@ void parseTelemHubByte(uint8_t byte)
       state = TS_IDLE;
     }
     else {
-      structPos = byte * 2;
+      structPos = byte;
       state = TS_DATA_LOW;
     }
     return;
@@ -69,165 +58,8 @@ void parseTelemHubByte(uint8_t byte)
   }
 
   state = TS_IDLE;
-
-#if defined(GPS)
-  if ((uint8_t)structPos == offsetof(FrskyTelemetryData, gpsLatitude_bp)) {
-    if (lowByte || byte)
-      telemetryData.hub.gpsFix = 1;
-    else if (telemetryData.hub.gpsFix > 0 && telemetryData.hub.gpsLatitude_bp > 1)
-      telemetryData.hub.gpsFix = 0;
-  }
-  else if ((uint8_t)structPos == offsetof(FrskyTelemetryData, gpsLongitude_bp)) {
-    if (lowByte || byte)
-      telemetryData.hub.gpsFix = 1;
-    else if (telemetryData.hub.gpsFix > 0 && telemetryData.hub.gpsLongitude_bp > 1)
-      telemetryData.hub.gpsFix = 0;
-  }
-  
-  if ((uint8_t)structPos == offsetof(FrskyTelemetryData, gpsAltitude_bp) ||
-      ((uint8_t)structPos >= offsetof(FrskyTelemetryData, gpsAltitude_ap) && (uint8_t)structPos <= offsetof(FrskyTelemetryData, gpsLatitudeNS) && (uint8_t)structPos != offsetof(FrskyTelemetryData, baroAltitude_bp) && (uint8_t)structPos != offsetof(FrskyTelemetryData, baroAltitude_ap))) {
-    // If we don't have a fix, we may discard the value
-    if (telemetryData.hub.gpsFix <= 0)
-      return;
-  }
-#endif  // #if defined(GPS)
-
-  ((uint8_t*)&telemetryData.hub)[structPos] = lowByte;
-  ((uint8_t*)&telemetryData.hub)[structPos+1] = byte;
-
-  switch ((uint8_t)structPos) {
-
-    case offsetof(FrskyTelemetryData, rpm):
-      telemetryData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+2);
-      if (telemetryData.hub.rpm > telemetryData.hub.maxRpm)
-        telemetryData.hub.maxRpm = telemetryData.hub.rpm;
-      break;
-
-    case offsetof(FrskyTelemetryData, temperature1):
-      if (telemetryData.hub.temperature1 > telemetryData.hub.maxTemperature1)
-        telemetryData.hub.maxTemperature1 = telemetryData.hub.temperature1;
-      break;
-
-    case offsetof(FrskyTelemetryData, temperature2):
-      if (telemetryData.hub.temperature2 > telemetryData.hub.maxTemperature2)
-        telemetryData.hub.maxTemperature2 = telemetryData.hub.temperature2;
-      break;
-
-    case offsetof(FrskyTelemetryData, current):
-#if defined(FAS_OFFSET) || !defined(CPUM64)
-      if ((int16_t)telemetryData.hub.current > 0 && ((int16_t)telemetryData.hub.current + g_model.frsky.fasOffset) > 0)
-        telemetryData.hub.current += g_model.frsky.fasOffset;
-      else
-        telemetryData.hub.current = 0;
-#endif
-      if (telemetryData.hub.current > telemetryData.hub.maxCurrent)
-        telemetryData.hub.maxCurrent = telemetryData.hub.current;
-      break;
-
-    case offsetof(FrskyTelemetryData, currentConsumption):
-      // we receive data from openXsensor. stops the calculation of consumption and power
-      telemetryData.hub.openXsensor = 1;
-      break;
-
-    case offsetof(FrskyTelemetryData, volts_ap):
-#if defined(FAS_PROTOTYPE)
-      telemetryData.hub.vfas = (telemetryData.hub.volts_bp * 10 + telemetryData.hub.volts_ap);
-#else
-      telemetryData.hub.vfas = ((telemetryData.hub.volts_bp * 10 + telemetryData.hub.volts_ap) * 21) / 11;
-#endif
-      /* TODO later if (!telemetryData.hub.minVfas || telemetryData.hub.minVfas > telemetryData.hub.vfas)
-        telemetryData.hub.minVfas = telemetryData.hub.vfas; */
-      break;
-
-    case offsetof(FrskyTelemetryData, baroAltitude_bp):
-      // First received barometer altitude => Altitude offset
-      if (!telemetryData.hub.baroAltitudeOffset)
-        telemetryData.hub.baroAltitudeOffset = -telemetryData.hub.baroAltitude_bp;
-      telemetryData.hub.baroAltitude_bp += telemetryData.hub.baroAltitudeOffset;
-      checkMinMaxAltitude();
-      break;
-
-#if defined(GPS)
-    case offsetof(FrskyTelemetryData, gpsAltitude_ap):
-      if (!telemetryData.hub.gpsAltitudeOffset)
-        telemetryData.hub.gpsAltitudeOffset = -telemetryData.hub.gpsAltitude_bp;
-      telemetryData.hub.gpsAltitude_bp += telemetryData.hub.gpsAltitudeOffset;
-      if (!telemetryData.hub.baroAltitudeOffset) {
-        if (telemetryData.hub.gpsAltitude_bp > telemetryData.hub.maxAltitude)
-          telemetryData.hub.maxAltitude = telemetryData.hub.gpsAltitude_bp;
-        if (telemetryData.hub.gpsAltitude_bp < telemetryData.hub.minAltitude)
-          telemetryData.hub.minAltitude = telemetryData.hub.gpsAltitude_bp;
-      }
-      if (!telemetryData.hub.pilotLatitude && !telemetryData.hub.pilotLongitude) {
-        // First received GPS position => Pilot GPS position
-        getGpsPilotPosition();
-      }
-      else if (telemetryData.hub.gpsDistNeeded || menuHandlers[menuLevel] == menuViewTelemetryFrsky) {
-        getGpsDistance();
-      }
-      break;
-
-    case offsetof(FrskyTelemetryData, gpsSpeed_bp):
-      // Speed => Max speed
-      if (telemetryData.hub.gpsSpeed_bp > telemetryData.hub.maxGpsSpeed)
-        telemetryData.hub.maxGpsSpeed = telemetryData.hub.gpsSpeed_bp;
-      break;
-#endif
-
-    case offsetof(FrskyTelemetryData, volts):
-      frskyUpdateCells();
-      break;
-
-    case offsetof(FrskyTelemetryData, accelX):
-    case offsetof(FrskyTelemetryData, accelY):
-    case offsetof(FrskyTelemetryData, accelZ):
-      *(int16_t*)(&((uint8_t*)&telemetryData.hub)[structPos]) /= 10;
-      break;
-
-#if 0
-    case offsetof(FrskyTelemetryData, gpsAltitude_bp):
-    case offsetof(FrskyTelemetryData, fuelLevel):
-    case offsetof(FrskyTelemetryData, gpsLongitude_bp):
-    case offsetof(FrskyTelemetryData, gpsLatitude_bp):
-    case offsetof(FrskyTelemetryData, gpsCourse_bp):
-    case offsetof(FrskyTelemetryData, day):
-    case offsetof(FrskyTelemetryData, year):
-    case offsetof(FrskyTelemetryData, sec):
-    case offsetof(FrskyTelemetryData, gpsSpeed_ap):
-    case offsetof(FrskyTelemetryData, gpsLongitude_ap):
-    case offsetof(FrskyTelemetryData, gpsLatitude_ap):
-    case offsetof(FrskyTelemetryData, gpsCourse_ap):
-    case offsetof(FrskyTelemetryData, gpsLongitudeEW):
-    case offsetof(FrskyTelemetryData, gpsLatitudeNS):
-    case offsetof(FrskyTelemetryData, varioSpeed):
-    case offsetof(FrskyTelemetryData, power): /* because sent by openXsensor */
-    case offsetof(FrskyTelemetryData, vfas):
-    case offsetof(FrskyTelemetryData, volts_bp):
-      break;
-
-    default:
-      *((uint16_t *)(((uint8_t*)&telemetryData.hub) + structPos)) = previousValue;
-      break;
-#endif
-  }
+  processHubPacket(structPos, (byte << 8) + lowByte);
 }
-#endif  // #if defined(FRSKY_HUB)
-
-#if defined(WS_HOW_HIGH)
-void parseTelemWSHowHighByte(uint8_t byte)
-{
-  if (wshhStreaming < (WSHH_TIMEOUT10ms - 10)) {
-    ((uint8_t*)&telemetryData.hub)[offsetof(FrskyTelemetryData, baroAltitude_bp)] = byte;
-    checkMinMaxAltitude();
-  }
-  else {
-    // At least 100mS passed since last data received
-    ((uint8_t*)&telemetryData.hub)[offsetof(FrskyTelemetryData, baroAltitude_bp)+1] = byte;
-  }
-  // baroAltitude_bp unit here is feet!
-  wshhStreaming = WSHH_TIMEOUT10ms; // reset counter
-}
-#endif
 
 void frskyDProcessPacket(const uint8_t *packet)
 {
@@ -236,98 +68,238 @@ void frskyDProcessPacket(const uint8_t *packet)
   {
     case LINKPKT: // A1/A2/RSSI values
     {
-      telemetryData.analog[TELEM_ANA_A1].set(packet[1], g_model.frsky.channels[TELEM_ANA_A1].type);
-      telemetryData.analog[TELEM_ANA_A2].set(packet[2], g_model.frsky.channels[TELEM_ANA_A2].type);
-      telemetryData.rssi[0].set(packet[3]);
-      telemetryData.rssi[1].set(packet[4] / 2);
+      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A1_ID, 0, 0, packet[1], UNIT_VOLTS, 0);
+      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A2_ID, 0, 0, packet[2], UNIT_VOLTS, 0);
+      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_RSSI_ID, 0, 0, packet[3], UNIT_RAW, 0);
+      telemetryData.rssi.set(packet[3]);
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
-      link_counter += 256 / FRSKY_D_AVERAGING;
-#if defined(VARIO)
-      uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
-      if (varioSource < 2) {
-        telemetryData.hub.varioSpeed = applyChannelRatio(varioSource, telemetryData.analog[varioSource].value);
-      }
-#endif
       break;
     }
-#if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
+
     case USRPKT: // User Data packet
       uint8_t numBytes = 3 + (packet[1] & 0x07); // sanitize in case of data corruption leading to buffer overflow
       for (uint8_t i=3; i<numBytes; i++) {
-#if defined(FRSKY_HUB)
-        if (IS_USR_PROTO_FRSKY_HUB()) {
-          parseTelemHubByte(packet[i]);
-        }
-#endif
-#if defined(WS_HOW_HIGH)
-        if (IS_USR_PROTO_WS_HOW_HIGH()) {
-          parseTelemWSHowHighByte(packet[i]);
-        }
-#endif
+        parseTelemHubByte(packet[i]);
       }
       break;
-#endif  // #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
   }
 }
 
-// Alarms level sent to the FrSky module
+struct FrSkyDSensor {
+  const uint8_t id;
+  const char * name;
+  const TelemetryUnit unit;
+  const uint8_t prec;
+};
 
-uint8_t frskyAlarmsSendState = 0 ;
+const FrSkyDSensor frskyDSensors[] = {
+  { D_RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
+  { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
+  { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
+  { RPM_ID, ZSTR_RPM, UNIT_RPMS, 0 },
+  { FUEL_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
+  { TEMP1_ID, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
+  { TEMP2_ID, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
+  { CURRENT_ID, ZSTR_CURR, UNIT_AMPS, 1 },
+  { ACCEL_X_ID, ZSTR_ACCX, UNIT_G, 3 },
+  { ACCEL_Y_ID, ZSTR_ACCY, UNIT_G, 3 },
+  { ACCEL_Z_ID, ZSTR_ACCZ, UNIT_G, 3 },
+  { VARIO_ID, ZSTR_VSPD, UNIT_METERS_PER_SECOND, 2 },
+  { VFAS_ID, ZSTR_VFAS, UNIT_VOLTS, 2 },
+  { BARO_ALT_AP_ID, ZSTR_ALT, UNIT_METERS, 1 },   // we map hi precision vario into PREC1!
+  { VOLTS_AP_ID, ZSTR_VFAS, UNIT_VOLTS, 2 },
+  { GPS_SPEED_BP_ID, ZSTR_GSPD, UNIT_KTS, 0 },
+  { GPS_COURS_BP_ID, ZSTR_HDG, UNIT_DEGREE, 0 },
+  { VOLTS_ID, ZSTR_CELLS, UNIT_CELLS, 2 },
+  { GPS_ALT_BP_ID, ZSTR_GPSALT, UNIT_METERS, 0 },
+  { GPS_HOUR_MIN_ID, ZSTR_GPSDATETIME, UNIT_DATETIME, 0 },
+  { GPS_LAT_AP_ID, ZSTR_GPS, UNIT_GPS, 0 },
+  { 0, NULL, UNIT_RAW, 0 } // sentinel
+};
 
-void frskyPushValue(uint8_t *&ptr, uint8_t value)
+const FrSkyDSensor * getFrSkyDSensor(uint8_t id)
 {
-  // byte stuff the only byte than might need it
-  bool bytestuff = false;
-
-  if (value == START_STOP) {
-    bytestuff = true;
-    value = 0x5e;
+  const FrSkyDSensor * result = NULL;
+  for (const FrSkyDSensor * sensor = frskyDSensors; sensor->id; sensor++) {
+    if (id == sensor->id) {
+      result = sensor;
+      break;
+    }
   }
-  else if (value == BYTESTUFF) {
-    bytestuff = true;
-    value = 0x5d;
-  }
-
-  *ptr++ = value;
-  if (bytestuff)
-    *ptr = BYTESTUFF;
+  return result;
 }
 
-void frskySendPacket(uint8_t type, uint8_t value, uint8_t p1, uint8_t p2)
+uint8_t lastId = 0;
+uint16_t lastBPValue = 0;
+uint16_t lastAPValue = 0;
+
+int32_t getFrSkyDProtocolGPSValue(int32_t sign)
 {
-  uint8_t *ptr = &frskyTxBuffer[0];
+  div_t qr = div(lastBPValue, 100);
+  return sign * (((uint32_t) (qr.quot) * 1000000) + (((uint32_t) (qr.rem) * 10000 + lastAPValue) * 5) / 3);
+}
 
-  *ptr++ = START_STOP;        // End of packet
-  *ptr++ = 0x00;
-  *ptr++ = 0x00;
-  *ptr++ = 0x00;
-  *ptr++ = 0x00;
-  *ptr++ = 0x00;
-  *ptr++ = (IS_SOUND_OFF() ? alarm_off : p2);
-  *ptr++ = p1;
-  frskyPushValue(ptr, value);
-  *ptr++ = type;
-  *ptr++ = START_STOP; // Start of packet
+void processHubPacket(uint8_t id, int16_t value)
+{
+  TelemetryUnit unit = UNIT_RAW;
+  uint8_t precision = 0;
+  int32_t data = value;
 
-  frskyTxBufferCount = ptr - &frskyTxBuffer[0];
-#if !defined(SIMU)
-  telemetryTransmitBuffer();
+  if (id > FRSKY_LAST_ID || id == GPS_SPEED_AP_ID || id == GPS_ALT_AP_ID || id == GPS_COURS_AP_ID) {
+    return;
+  }
+
+  if (id == GPS_LAT_BP_ID || id == GPS_LONG_BP_ID || id == BARO_ALT_BP_ID || id == VOLTS_BP_ID) {
+    lastId = id;
+    lastBPValue = value;
+    return;
+  }
+
+  if (id == GPS_LAT_AP_ID) {
+    if (lastId == GPS_LAT_BP_ID) {
+      lastId = id;
+      lastAPValue = data;
+    }
+    return;
+  }
+  else if (id == GPS_LONG_AP_ID) {
+    if (lastId == GPS_LONG_BP_ID) {
+      lastId = id;
+      lastAPValue = data;
+    }
+    return;
+  }
+  else if (id == GPS_LAT_NS_ID) {
+    if (lastId == GPS_LAT_AP_ID) {
+      id = GPS_LAT_AP_ID;
+      unit = UNIT_GPS_LATITUDE;
+      data = getFrSkyDProtocolGPSValue(value == 'N' ? 1 : -1);
+    }
+    else {
+      return;
+    }
+  }
+  else if (id == GPS_LONG_EW_ID) {
+    if (lastId == GPS_LONG_AP_ID) {
+      id = GPS_LAT_AP_ID;
+      unit = UNIT_GPS_LONGITUDE;
+      data = getFrSkyDProtocolGPSValue(value == 'E' ? 1 : -1);
+    }
+    else {
+      return;
+    }
+  }
+  else if (id == BARO_ALT_AP_ID) {
+    if (lastId == BARO_ALT_BP_ID) {
+      if (data > 9 || telemetryData.varioHighPrecision) {
+        telemetryData.varioHighPrecision = true;
+        data /= 10;    // map hi precision vario into low precision. Altitude is stored in 0.1m anyways
+      }
+      data = (int16_t)lastBPValue * 10 + (((int16_t)lastBPValue < 0) ? -data : data);
+      unit = UNIT_METERS;
+      precision = 1;
+    }
+    else {
+      return;
+    }
+  }
+  else if (id == VOLTS_AP_ID) {
+    if (lastId == VOLTS_BP_ID) {
+#if defined(FAS_PROTOTYPE)
+      data = lastBPValue * 100 + value * 10;
+#else
+      data = ((lastBPValue * 100 + value * 10) * 210) / 110;
 #endif
-}
-
-void frskyDSendNextAlarm(void)
-{
-  if (frskyTxBufferCount)
-    return; // we only have one buffer. If it's in use, then we can't send yet.
-
-  // Now send a packet
-  frskyAlarmsSendState -= 1;
-  uint8_t alarm = 1 - (frskyAlarmsSendState % 2);
-  if (frskyAlarmsSendState < SEND_MODEL_ALARMS) {
-    uint8_t channel = 1 - (frskyAlarmsSendState / 2);
-    frskySendPacket(A22PKT + frskyAlarmsSendState, g_model.frsky.channels[channel].alarms_value[alarm], ALARM_GREATER(channel, alarm), ALARM_LEVEL(channel, alarm));
+      unit = UNIT_VOLTS;
+      precision = 2;
+    }
+    else {
+      return;
+    }
+  }
+  else if (id == VOLTS_ID) {
+    unit = UNIT_CELLS;
+    uint32_t cellData = (uint32_t)data;
+    data = ((cellData & 0x00F0) << 12) + (((((cellData & 0xFF00) >> 8) + ((cellData & 0x000F) << 8))) / 5);
+  }
+  else if (id == GPS_DAY_MONTH_ID) {
+    id = GPS_HOUR_MIN_ID;
+    unit = UNIT_DATETIME_DAY_MONTH;
+  }
+  else if (id == GPS_HOUR_MIN_ID) {
+    unit = UNIT_DATETIME_HOUR_MIN;
+  }
+  else if (id == GPS_SEC_ID) {
+    id = GPS_HOUR_MIN_ID;
+    unit = UNIT_DATETIME_SEC;
+  }
+  else if (id == GPS_YEAR_ID) {
+    id = GPS_HOUR_MIN_ID;
+    unit = UNIT_DATETIME_YEAR;
   }
   else {
-    frskySendPacket(RSSI1PKT-alarm, getRssiAlarmValue(alarm), 0, (2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4);
+    const FrSkyDSensor * sensor = getFrSkyDSensor(id);
+    if (sensor) {
+      unit = sensor->unit;
+      precision = sensor->prec;
+    }
   }
+  if (id == RPM_ID) {
+    data = data * 60;
+  }
+  else if (id == VFAS_ID) {
+    if (data >= VFAS_D_HIPREC_OFFSET) {
+      // incoming value has a resolution of 0.01V and added offset of VFAS_D_HIPREC_OFFSET
+      data -= VFAS_D_HIPREC_OFFSET;
+    }
+    else {
+      // incoming value has a resolution of 0.1V
+      data *= 10;
+    }
+  }
+  
+  setTelemetryValue(TELEM_PROTO_FRSKY_D, id, 0, 0, data, unit, precision);
+}
+
+void frskyDSetDefault(int index, uint16_t id)
+{
+  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+
+  telemetrySensor.id = id;
+  telemetrySensor.instance = 0;
+
+  const FrSkyDSensor * sensor = getFrSkyDSensor(id);
+  if (sensor) {
+    TelemetryUnit unit = sensor->unit;
+    uint8_t prec = min<uint8_t>(2, sensor->prec);
+    telemetrySensor.init(sensor->name, unit, prec);
+    if (id == D_RSSI_ID) {
+      telemetrySensor.filter = 1;
+      telemetrySensor.logs = true;
+    }
+    else if (id >= D_A1_ID && id <= D_A2_ID) {
+      telemetrySensor.custom.ratio = 132;
+      telemetrySensor.filter = 1;
+    }
+    else if (id == CURRENT_ID) {
+      telemetrySensor.onlyPositive = 1;
+    }
+    else if (id == BARO_ALT_AP_ID) {
+      telemetrySensor.autoOffset = 1;
+    }
+    if (unit == UNIT_RPMS) {
+      telemetrySensor.custom.ratio = 1;
+      telemetrySensor.custom.offset = 1;
+    }
+    else if (unit == UNIT_METERS) {
+      if (IS_IMPERIAL_ENABLE()) {
+        telemetrySensor.unit = UNIT_FEET;
+      }
+    }
+  }
+  else {
+    telemetrySensor.init(id);
+  }
+
+  storageDirty(EE_MODEL);
 }

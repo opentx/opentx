@@ -33,8 +33,10 @@
 #include "simulatormainwindow.h"
 #include "storage/sdcard.h"
 
+#include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QDir>
 
 using namespace Helpers;
 
@@ -75,6 +77,42 @@ const QColor colors[CPN_MAX_CURVES] = {
   QColor(255,127,0),
 };
 
+
+/*
+ * CompanionIcon
+*/
+
+static QString iconThemeFolder(int theme_set)
+{
+  switch(theme_set) {
+    case 0:
+      return QStringLiteral("classic");
+    case 2:
+      return QStringLiteral("monowhite");
+    case 3:
+      return QStringLiteral("monochrome");
+    case 4:
+      return QStringLiteral("monoblue");
+    default:
+      return QStringLiteral("yerico");
+  }
+}
+
+CompanionIcon::CompanionIcon(const QString &baseimage)
+{
+  addImage(baseimage);
+}
+
+void CompanionIcon::addImage(const QString & baseimage, Mode mode, State state)
+{
+  const QString theme = iconThemeFolder(g.theme());
+  addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16), mode, state);
+  addFile(":/themes/"+theme+"/24/"+baseimage, QSize(24,24), mode, state);
+  addFile(":/themes/"+theme+"/32/"+baseimage, QSize(32,32), mode, state);
+  addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48), mode, state);
+}
+
+
 /*
  * GVarGroup
 */
@@ -87,6 +125,9 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
   dsb(dynamic_cast<QDoubleSpinBox *>(weightSB)),
   weightCB(weightCB),
   weight(weight),
+  deflt(deflt),
+  mini(mini),
+  maxi(maxi),
   step(step),
   lock(true)
 {
@@ -102,31 +143,7 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
     }
   }
 
-  int val;
-
-  if (weight>maxi || weight<mini) {
-    val = deflt;
-    weightGV->setChecked(true);
-    weightSB->hide();
-    weightCB->show();
-  }
-  else {
-    val = weight;
-    weightGV->setChecked(false);
-    weightSB->show();
-    weightCB->hide();
-  }
-
-  if (sb) {
-    sb->setMinimum(mini);
-    sb->setMaximum(maxi);
-    sb->setValue(val);
-  }
-  else {
-    dsb->setMinimum(mini*step);
-    dsb->setMaximum(maxi*step);
-    dsb->setValue(val*step);
-  }
+  setWeight(weight);
 
   connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
 
@@ -156,6 +173,43 @@ void GVarGroup::valuesChanged()
     emit valueChanged();
   }
 }
+
+void GVarGroup::setWeight(int val)
+{
+  lock = true;
+
+  int tval;
+
+  if (val>maxi || val<mini) {
+    tval = deflt;
+    weightGV->setChecked(true);
+    weightSB->hide();
+    weightCB->setCurrentIndex(weightCB->findData(val));
+    if (weightCB->currentIndex() == -1)
+      weightCB->setCurrentIndex(getCurrentFirmware()->getCapability(Gvars));
+    weightCB->show();
+  }
+  else {
+    tval = val;
+    weightGV->setChecked(false);
+    weightSB->show();
+    weightCB->hide();
+  }
+
+  if (sb) {
+    sb->setMinimum(mini);
+    sb->setMaximum(maxi);
+    sb->setValue(tval);
+  }
+  else {
+    dsb->setMinimum(mini*step);
+    dsb->setMaximum(maxi*step);
+    dsb->setValue(tval*step);
+  }
+
+  lock = false;
+}
+
 
 /*
  * CurveGroup
@@ -319,6 +373,7 @@ void CurveGroup::valuesChanged()
   }
 }
 
+
 /*
  * Helpers namespace functions
 */
@@ -375,6 +430,11 @@ void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
   }
 }
 
+static bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
+{
+  return s1.toLower() < s2.toLower();
+}
+
 void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)
 {
   b->clear();
@@ -383,7 +443,7 @@ void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, con
   bool added = false;
   // Convert set into list and sort it alphabetically case insensitive
   QStringList list = QStringList::fromSet(set);
-  qSort(list.begin(), list.end(), caseInsensitiveLessThan);
+  std::sort(list.begin(), list.end(), caseInsensitiveLessThan);
   foreach (QString entry, list) {
     b->addItem(entry);
     if (entry == current) {
@@ -406,175 +466,22 @@ void Helpers::getFileComboBoxValue(QComboBox * b, char * dest, int length)
   }
 }
 
-void Helpers::addRawSourceItems(QStandardItemModel * itemModel, const RawSourceType & type, int count, const GeneralSettings * const generalSettings,
-                                const ModelData * const model, const int start)
+void Helpers::exportAppSettings(QWidget * dlgParent)
 {
-  for (int i = start; i < start + count; i++) {
-    RawSource src = RawSource(type, i);
-    if (!src.isAvailable(model, generalSettings, getCurrentBoard()))
-      continue;
+  static QString lastExpFile = CPN_SETTINGS_INI_PATH.arg(QDateTime::currentDateTime().toString("dd-MMM-yy"));
+  const QString expFile = QFileDialog::getSaveFileName(dlgParent, QCoreApplication::translate("Companion", "Select or create a file for exported Settings:"), lastExpFile, CPN_STR_APP_SETTINGS_FILTER);
+  if (expFile.isEmpty())
+    return;
 
-    QStandardItem * modelItem = new QStandardItem(src.toString(model, generalSettings));
-    modelItem->setData(src.toValue(), Qt::UserRole);
-    itemModel->appendRow(modelItem);
+  lastExpFile = expFile;
+  QString resultMsg;
+  if (g.exportSettingsToFile(expFile, resultMsg)) {
+    QMessageBox::information(dlgParent, CPN_STR_APP_NAME, resultMsg);
+    return;
   }
-}
-
-QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const model, unsigned int flags)
-{
-  QStandardItemModel * itemModel = new QStandardItemModel();
-  Boards board = Boards(getCurrentBoard());
-  Firmware * fw = getCurrentFirmware();
-
-  if (flags & POPULATE_NONE) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_NONE, 1, generalSettings, model);
-  }
-
-  if (flags & POPULATE_SCRIPT_OUTPUTS) {
-    for (int i=0; i < getCurrentFirmware()->getCapability(LuaScripts); i++) {
-      addRawSourceItems(itemModel, SOURCE_TYPE_LUA_OUTPUT, fw->getCapability(LuaOutputsPerScript), generalSettings, model, i * 16);
-    }
-  }
-
-  if (model && (flags & POPULATE_VIRTUAL_INPUTS)) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_VIRTUAL_INPUT, fw->getCapability(VirtualInputs), generalSettings, model);
-  }
-
-  if (flags & POPULATE_SOURCES) {
-    int totalSources = CPN_MAX_STICKS + board.getCapability(Board::Pots) + board.getCapability(Board::Sliders) +  board.getCapability(Board::MouseAnalogs);
-    addRawSourceItems(itemModel, SOURCE_TYPE_STICK, totalSources, generalSettings, model);
-    addRawSourceItems(itemModel, SOURCE_TYPE_ROTARY_ENCODER, fw->getCapability(RotaryEncoders), generalSettings, model);
-  }
-
-  if (flags & POPULATE_TRIMS) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_TRIM, board.getCapability(Board::NumTrims), generalSettings, model);
-  }
-
-  if (flags & POPULATE_SOURCES) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_MAX, 1, generalSettings, model);
-  }
-
-  if (flags & POPULATE_SWITCHES) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_SWITCH, board.getCapability(Board::Switches), generalSettings, model);
-    addRawSourceItems(itemModel, SOURCE_TYPE_CUSTOM_SWITCH, fw->getCapability(LogicalSwitches), generalSettings, model);
-  }
-
-  if (flags & POPULATE_SOURCES) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_CYC, CPN_MAX_CYC, generalSettings, model);
-    addRawSourceItems(itemModel, SOURCE_TYPE_PPM, fw->getCapability(TrainerInputs), generalSettings, model);
-    addRawSourceItems(itemModel, SOURCE_TYPE_CH, fw->getCapability(Outputs), generalSettings, model);
-  }
-
-  if (flags & POPULATE_TELEMETRY) {
-    int count = 0;
-    if (IS_ARM(board.getBoardType())) {
-      addRawSourceItems(itemModel, SOURCE_TYPE_SPECIAL, 5, generalSettings, model);
-      count = CPN_MAX_SENSORS * 3;
-    }
-    else {
-      count = ((flags & POPULATE_TELEMETRYEXT) ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT);
-    }
-    if (model && count)
-      addRawSourceItems(itemModel, SOURCE_TYPE_TELEMETRY, count, generalSettings, model);
-  }
-
-  if (flags & POPULATE_GVARS) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_GVAR, fw->getCapability(Gvars), generalSettings, model);
-  }
-
-  return itemModel;
-}
-
-QString image2qstring(QImage image)
-{
-    if (image.isNull())
-      return "";
-    QBuffer buffer;
-    image.save(&buffer, "PNG");
-    QString ImageStr;
-    int b=0;
-    int size=buffer.data().size();
-    for (int j = 0; j < size; j++) {
-      b=buffer.data().at(j);
-      ImageStr += QString("%1").arg(b&0xff, 2, 16, QChar('0'));
-    }
-    return ImageStr;
-}
-
-int findmult(float value, float base)
-{
-  int vvalue = value*10;
-  int vbase = base*10;
-  vvalue--;
-
-  int mult = 0;
-  for (int i=8; i>=0; i--) {
-    if (vvalue/vbase >= (1<<i)) {
-      mult = i+1;
-      break;
-    }
-  }
-
-  return mult;
-}
-
-// TODO: Move to FrSkyAlarmData
-QString getFrSkyAlarmType(int alarm)
-{
-  switch (alarm) {
-    case 1:
-      return QCoreApplication::translate("FrSkyAlarmData", "Yellow");
-    case 2:
-      return QCoreApplication::translate("FrSkyAlarmData", "Orange");
-    case 3:
-      return QCoreApplication::translate("FrSkyAlarmData", "Red");
-    default:
-      return "----";
-  }
-}
-
-// TODO: move to FrSkyChannelData
-QString getFrSkyUnits(int units)
-{
-  switch(units) {
-    case 1:
-      return QCoreApplication::translate("FrSkyChannelData", "---");
-    default:
-      return QCoreApplication::translate("FrSkyChannelData", "V");
-  }
-}
-
-QString getTheme()
-{
-  int theme_set = g.theme();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    case 2:
-      Theme="monowhite";
-      break;
-    case 3:
-      Theme="monochrome";
-      break;
-    case 4:
-      Theme="monoblue";
-      break;
-    default:
-      Theme="yerico";
-      break;
-  }
-  return Theme;
-}
-
-CompanionIcon::CompanionIcon(const QString &baseimage)
-{
-  static QString theme = getTheme();
-  addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16));
-  addFile(":/themes/"+theme+"/24/"+baseimage, QSize(24,24));
-  addFile(":/themes/"+theme+"/32/"+baseimage, QSize(32,32));
-  addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
+  resultMsg.append("\n" % QCoreApplication::translate("Companion", "Press the 'Retry' button to choose another file."));
+  if (QMessageBox::warning(dlgParent, CPN_STR_APP_NAME, resultMsg, QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry)
+    exportAppSettings(dlgParent);
 }
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
@@ -682,7 +589,7 @@ const QString index2version(int index)
     if (nightly > 0 && nightly < 900) {
       result += "N" + QString::number(nightly);
     }
-    else if (nightly >= 900 && nightly < 1000) {
+    else if (nightly >= 900 && nightly < 999) {
       result += "RC" + QString::number(nightly-900);
     }
   }
@@ -737,11 +644,6 @@ QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int ma
     }
   }
   return result;
-}
-
-bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
-{
-  return s1.toLower() < s2.toLower();
 }
 
 bool GpsGlitchFilter::isGlitch(GpsCoord coord)
@@ -907,4 +809,51 @@ void TableLayout::pushRowsUp(int row)
   // Push rows upward
   // addDoubleSpring(gridLayout, 5, num_fsw+1);
 
+}
+
+QString Helpers::getChecklistsPath()
+{
+  return QDir::toNativeSeparators(g.profile[g.id()].sdPath() + "/MODELS/");   // TODO : add sub folder to constants
+}
+
+QString Helpers::getChecklistFilename(const ModelData * model)
+{
+  QString name = model->name;
+  name.replace(" ", "_");
+  name.append(".txt");          // TODO : add to constants
+  return name;
+}
+
+QString Helpers::getChecklistFilePath(const ModelData * model)
+{
+  return getChecklistsPath() + getChecklistFilename(model);
+}
+
+QString Helpers::removeAccents(const QString & str)
+{
+  // UTF-8 ASCII Table
+  static const QHash<QString, QVariant> map = {
+    {"a", QRegularExpression("[áâãàä]")},
+    {"A", QRegularExpression("[ÁÂÃÀÄ]")},
+    {"e", QRegularExpression("[éèêě]")},
+    {"E", QRegularExpression("[ÉÈÊĚ]")},
+    {"o", QRegularExpression("[óôõö]")},
+    {"O", QRegularExpression("[ÓÔÕÖ]")},
+    {"u", QRegularExpression("[úü]")},
+    {"U", QRegularExpression("[ÚÜ]")},
+    {"i", "í"}, {"I", "Í"},
+    {"c", "ç"}, {"C", "Ç"},
+    {"y", "ý"}, {"Y", "Ý"},
+    {"s", "š"}, {"S", "Š"},
+    {"r", "ř"}, {"R", "Ř"}
+  };
+
+  QString result(str);
+  for (QHash<QString, QVariant>::const_iterator it = map.cbegin(), en = map.cend(); it != en; ++it) {
+    if (it.value().canConvert<QRegularExpression>())
+      result.replace(it.value().toRegularExpression(), it.key());
+    else
+      result.replace(it.value().toString(), it.key());
+  }
+  return result;
 }

@@ -106,19 +106,6 @@ class OpenTxFirmware: public Firmware
       addLanguage("pl");
       addLanguage("pt");
       addLanguage("se");
-
-      addTTSLanguage("en");
-      addTTSLanguage("cz");
-      addTTSLanguage("de");
-      addTTSLanguage("es");
-      addTTSLanguage("fr");
-      addTTSLanguage("hu");
-      addTTSLanguage("it");
-      addTTSLanguage("nl");
-      addTTSLanguage("pl");
-      addTTSLanguage("pt");
-      addTTSLanguage("se");
-      addTTSLanguage("sk");
     }
 
     virtual Firmware * getFirmwareVariant(const QString & id);

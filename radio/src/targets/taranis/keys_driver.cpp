@@ -20,29 +20,33 @@
 
 #include "opentx.h"
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-uint32_t rotencPosition;
-#endif
-
 uint32_t readKeys()
 {
   uint32_t result = 0;
+
   if (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
     result |= 1 << KEY_ENTER;
+
+#if defined(KEYS_GPIO_PIN_MENU)
   if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 1 << KEY_MENU;
+#endif
+
 #if defined(KEYS_GPIO_PIN_PAGE)
   if (~KEYS_GPIO_REG_PAGE & KEYS_GPIO_PIN_PAGE)
     result |= 1 << KEY_PAGE;
 #endif
+
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
+
 #if defined(KEYS_GPIO_PIN_PLUS)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
     result |= 1 << KEY_MINUS;
 #endif
+
 #if defined(KEYS_GPIO_PIN_LEFT)
   if (~KEYS_GPIO_REG_LEFT & KEYS_GPIO_PIN_LEFT)
     result |= 1 << KEY_LEFT;
@@ -52,6 +56,11 @@ uint32_t readKeys()
     result |= 1 << KEY_UP;
   if (~KEYS_GPIO_REG_DOWN & KEYS_GPIO_PIN_DOWN)
     result |= 1 << KEY_DOWN;
+#endif
+
+#if defined(KEYS_GPIO_PIN_SHIFT)
+  if (~KEYS_GPIO_REG_SHIFT & KEYS_GPIO_PIN_SHIFT)
+    result |= 1 << KEY_SHIFT;
 #endif
 
   // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
@@ -72,7 +81,10 @@ uint32_t readTrims()
   if (~TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
     result |= 0x08;
 
-#if !defined(PCBXLITE)
+#if defined(PCBXLITE)
+  if (IS_SHIFT_PRESSED())
+    result = ((result & 0x03) << 6) | ((result & 0x0c) << 2);
+#else
   if (~TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
     result |= 0x10;
   if (~TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
@@ -88,44 +100,37 @@ uint32_t readTrims()
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+bool trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }
 
-uint8_t keyDown()
+bool keyDown()
 {
-  return readKeys();
+  return readKeys() || readTrims();
 }
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-void checkRotaryEncoder()
-{
-  uint32_t newpos = ROTARY_ENCODER_POSITION();
-  if (newpos != rotencPosition && !keyState(KEY_ENTER)) {
-    if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
-      --rotencValue[0];
-    }
-    else {
-      ++rotencValue[0];
-    }
-    rotencPosition = newpos;
-  }
-}
-#endif
 
 /* TODO common to ARM */
 void readKeysAndTrims()
 {
   uint8_t index = 0;
-  uint32_t in = readKeys();
+  uint32_t keys_input = readKeys();
   for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(keys_input & i);
   }
 
-  in = readTrims();
+  uint32_t trims_input = readTrims();
   for (uint8_t i = 1; i != uint8_t(1 << 8); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(trims_input & i);
+  }
+
+#if defined(PWR_BUTTON_PRESS)
+  if ((keys_input || trims_input || pwrPressed()) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+#else
+  if ((keys_input || trims_input) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+#endif
+    // on keypress turn the light on
+    backlightOn();
   }
 }
 
@@ -136,7 +141,7 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 0: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
+      break
 #else
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
@@ -144,29 +149,25 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 2: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
-#endif
-  #define ADD_3POS_CASE(x, i) \
-    case SW_S ## x ## 0: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
-      break; \
-    case SW_S ## x ## 1: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 2: \
-      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
       break
+#endif
 
-uint8_t keyState(uint8_t index)
-{
-  return keys[index].state();
-}
+#define ADD_3POS_CASE(x, i) \
+  case SW_S ## x ## 0: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break; \
+  case SW_S ## x ## 1: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    break; \
+  case SW_S ## x ## 2: \
+    xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break
 
 #if !defined(BOOT)
 uint32_t switchState(uint8_t index)
@@ -176,20 +177,35 @@ uint32_t switchState(uint8_t index)
   switch (index) {
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
-#if !defined(PCBXLITE)
     ADD_3POS_CASE(C, 2);
+
+#if defined(PCBX9LITE)
+    ADD_2POS_CASE(D);
+    ADD_2POS_CASE(E);
+#elif defined(PCBXLITES)
     ADD_3POS_CASE(D, 3);
-#endif
-#if defined(PCBXLITE)
+    ADD_2POS_CASE(E);
+    ADD_2POS_CASE(F);
+    // no SWG and SWH on XLITES
+#elif defined(PCBXLITE)
+    ADD_3POS_CASE(D, 3);
+    // no SWE, SWF, SWG and SWH on XLITE
 #elif defined(PCBX7)
+    ADD_3POS_CASE(D, 3);
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
 #else
+    ADD_3POS_CASE(D, 3);
     ADD_3POS_CASE(E, 4);
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
 #endif
+
+#if defined(PCBX9DP) && PCBREV >= 2019
+    ADD_2POS_CASE(I);
+#endif
+
 #if defined(PCBX9E)
     ADD_3POS_CASE(I, 8);
     ADD_3POS_CASE(J, 9);
@@ -218,7 +234,7 @@ void keysInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 
 #if defined(KEYS_GPIOA_PINS)
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOA_PINS;
@@ -253,9 +269,5 @@ void keysInit()
 #if defined(KEYS_GPIOG_PINS)
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
   GPIO_Init(GPIOG, &GPIO_InitStructure);
-#endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  rotencPosition = ROTARY_ENCODER_POSITION();
 #endif
 }

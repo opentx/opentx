@@ -20,32 +20,6 @@
 
 #include "gtests.h"
 
-#if !defined(VIRTUAL_INPUTS)
-TEST(getSwitch, undefCSW)
-{
-  MODEL_RESET();
-  EXPECT_EQ(getSwitch(NUM_PSWITCH), false);
-  EXPECT_EQ(getSwitch(-NUM_PSWITCH), true); // no good answer there!
-}
-#endif
-
-#if !defined(CPUARM)
-TEST(getSwitch, circularCSW)
-{
-  MODEL_RESET();
-  MIXER_RESET();
-  g_model.logicalSw[0] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_OR };
-  g_model.logicalSw[1] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_AND };
-
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-  EXPECT_EQ(getSwitch(-SWSRC_SW1), true);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
-  EXPECT_EQ(getSwitch(-SWSRC_SW2), true);
-}
-#endif
-
-#if defined(VIRTUAL_INPUTS)
 void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16_t _v3 = 0, uint8_t _delay = 0, uint8_t _duration = 0, int8_t _andsw = 0)
 {
   g_model.logicalSw[index].func = _func;
@@ -56,7 +30,6 @@ void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16
   g_model.logicalSw[index].duration = _duration;
   g_model.logicalSw[index].andsw = _andsw;
 }
-#endif
 
 #if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)
@@ -99,38 +72,6 @@ TEST(getSwitch, nullSW)
   EXPECT_EQ(getSwitch(0), true);
 }
 
-#if !defined(CPUARM)
-TEST(getSwitch, recursiveSW)
-{
-  MODEL_RESET();
-  MIXER_RESET();
-
-  g_model.logicalSw[0] = { SWSRC_RUD, -SWSRC_SW2, LS_FUNC_OR };
-  g_model.logicalSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
-
-  simuSetSwitch(2, 0);  // RUD 0
-  simuSetSwitch(3, 0);  // ELE 0
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
-
-  LS_RECURSIVE_EVALUATION_RESET();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
-
-  simuSetSwitch(2, 1);  // RUD 1
-  LS_RECURSIVE_EVALUATION_RESET();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
-
-  LS_RECURSIVE_EVALUATION_RESET();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
-}
-#endif // #if !defined(CPUARM)
 
 #if defined(PCBTARANIS)
 TEST(getSwitch, inputWithTrim)
@@ -191,7 +132,7 @@ TEST(evalLogicalSwitches, playFile)
 }
 #endif
 
-#if defined(PCBTARANIS) && NUM_SWITCHES >= 8
+#if defined(PCBTARANIS) && NUM_SWITCHES >= 8 && !defined(PCBX7)
 TEST(getSwitch, edgeInstant)
 {
   MODEL_RESET();

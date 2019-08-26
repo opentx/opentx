@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -23,6 +23,7 @@
 #include <string.h>
 #include "opentx.h"
 #include "timers.h"
+#include "conversions/conversions.h"
 
 #define EEPROM_MARK           0x84697771 /* thanks ;) */
 #define EEPROM_ZONE_SIZE      (8*1024)
@@ -63,16 +64,12 @@ uint8_t eepromWriteBuffer[EEPROM_BUFFER_SIZE] __DMA;
 
 void eepromWaitReadStatus()
 {
-  while (eepromReadStatus() == 0) {
-    SIMU_SLEEP(5/*ms*/);
-  }
+  while (!eepromReadStatus()) { }
 }
 
 void eepromWaitTransferComplete()
 {
-  while (!eepromIsTransferComplete()) {
-    SIMU_SLEEP(5/*ms*/);
-  }
+  while (!eepromIsTransferComplete()) { }
 }
 
 void eepromEraseBlock(uint32_t address, bool blocking=true)
@@ -305,7 +302,7 @@ void eepromWriteWait(EepromWriteState state/* = EEPROM_IDLE*/)
   while (eepromWriteState != state) {
 #if defined(STM32)
     // Waits a little bit for CS transitions
-    CoTickDelay(1/*2ms*/);
+    RTOS_WAIT_MS(2);
 #endif
     eepromWriteProcess();
 #ifdef SIMU
@@ -440,7 +437,7 @@ uint16_t eeModelSize(uint8_t index)
 }
 
 #if defined(SDCARD)
-const pm_char * eeBackupModel(uint8_t i_fileSrc)
+const char * eeBackupModel(uint8_t i_fileSrc)
 {
   char * buf = reusableBuffer.modelsel.mainname;
   FIL archiveFile;
@@ -468,7 +465,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   }
 
 #if defined(PCBSKY9X)
-  strcpy(statusLineMsg, PSTR("File "));
+  strcpy(statusLineMsg, "File ");
   strcpy(statusLineMsg+5, &buf[sizeof(MODELS_PATH)]);
 #endif
 
@@ -507,7 +504,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   return NULL;
 }
 
-const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
+const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 {
   char * buf = reusableBuffer.modelsel.mainname;
   FIL restoreFile;
@@ -541,7 +538,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   }
 
   uint8_t version = (uint8_t)buf[4];
-  if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
+  if (*(uint32_t*)&buf[0] != OTX_FOURCC || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
     f_close(&restoreFile);
     return STR_INCOMPATIBLE;
   }
@@ -588,7 +585,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
 #if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
-    ConvertModel(i_fileDst, version);
+    eeConvertModel(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);
   }
 #endif

@@ -46,14 +46,18 @@ class TelemetrySimulator : public QWidget
     explicit TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator);
     virtual ~TelemetrySimulator();
 
-  signals:
+  public slots:
+    bool generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_t appId, uint32_t data);
 
+  signals:
     void telemetryDataChanged(const QByteArray data);
 
   protected slots:
 
-    virtual void hideEvent(QHideEvent *event);
-    virtual void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *event) override;
+    void showEvent(QShowEvent *event) override;
+    void startTelemetry();
+    void stopTelemetry();
     void onSimulatorStarted();
     void onSimulatorStopped();
     void setupDataFields();
@@ -77,7 +81,6 @@ class TelemetrySimulator : public QWidget
     QTimer logTimer;
     SimulatorInterface *simulator;
     bool m_simuStarted;
-    bool m_telemEnable;
     bool m_logReplayEnable;
 
   // protected classes follow
@@ -204,7 +207,6 @@ class TelemetrySimulator : public QWidget
         uint32_t encodeLatLon(double latLon, bool isLat);
         uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
     };  // GPSEmulator
-
 };  // TelemetrySimulator
 
 #endif // _TELEMETRYSIMU_H_

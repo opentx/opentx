@@ -81,7 +81,7 @@ void Layout2P1::refresh()
     lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
                                               sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
                                               ZCHAR | SMLSIZE) / 2,
-                     237,
+                     232,
                      g_model.flightModeData[mixerCurrentFlightMode].name,
                      sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
   }

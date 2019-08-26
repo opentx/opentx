@@ -36,7 +36,10 @@ void drawMainPots()
 {
   // The 3 pots
   drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedAnalogs[CALIBRATED_POT1], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
-  drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
+  if (IS_POT_MULTIPOS(POT2))
+    drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
+  else
+    drawHorizontalSlider(LCD_W/2-40, POTS_LINE_Y, 80, calibratedAnalogs[CALIBRATED_POT2], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
   drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedAnalogs[CALIBRATED_POT3], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
 
   // The 2 rear sliders
@@ -52,6 +55,10 @@ void drawTrims(uint8_t flightMode)
     unsigned int stickIndex = CONVERT_MODE(i);
     coord_t xm = x[stickIndex];
     int32_t trim = getTrimValue(flightMode, i);
+
+
+    if(getRawTrimValue(flightMode, i).mode == TRIM_MODE_NONE)
+      continue;
 
     if (vert[i]) {
       if (g_model.extendedTrims == 1) {

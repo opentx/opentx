@@ -374,7 +374,7 @@ void setTopSecondTimer(uint32_t value)
   uint32_t secs = qr.rem;
   qr = div(qr.quot, 60);
   uint32_t mins = qr.rem;
-  uint32_t hours = qr.quot;
+  uint32_t hours = min(qr.quot, 99);
 
   qr = div(secs, 10);
   segs = OpTimeLCDsegs[qr.rem];

@@ -47,7 +47,7 @@ RawSourceRange FrSkyChannelData::getRange() const
 
 void FrSkyScreenData::clear()
 {
-  memset(this, 0, sizeof(FrSkyScreenData));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(FrSkyScreenData));
   if (!IS_ARM(getCurrentBoard())) {
     type = TELEMETRY_SCREEN_NUMBERS;
   }

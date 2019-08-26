@@ -90,10 +90,10 @@ void Theme::drawBackground() const
 
 void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
 {
-  //if (flags & MESSAGEBOX_TYPE_ALERT) {
+//  if (type == WARNING_TYPE_ALERT) {
     drawBackground();
     lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, TEXT_INVERTED_COLOR | OPACITY(8));
-  //}
+//  }
 
   if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
     lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, asterisk);
@@ -144,9 +144,9 @@ void loadTheme(Theme * new_theme)
 
 void loadTheme()
 {
-  char name[sizeof(g_eeGeneral.themeName)+1];
+  char name[THEME_NAME_LEN + 1];
   memset(name, 0, sizeof(name));
-  strncpy(name, g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
+  strncpy(name, g_eeGeneral.themeName, THEME_NAME_LEN);
   Theme * new_theme = getTheme(name);
   if (new_theme) {
     loadTheme(new_theme);

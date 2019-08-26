@@ -34,6 +34,14 @@ void popMenu()
   TRACE("popMenu(%d)", menuLevel);
 }
 
+void abortPopMenu()
+{
+  menuLevel = menuLevel + 1;
+  menuEvent = 0;
+  TRACE("popMenu(%d) aborted", menuLevel);
+}
+
+
 void chainMenu(MenuHandlerFunc newMenu)
 {
   menuHandlers[menuLevel] = newMenu;
@@ -64,6 +72,32 @@ void pushMenu(MenuHandlerFunc newMenu)
   menuEvent = EVT_ENTRY;
   AUDIO_KEY_PRESS();
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
+}
+
+void readModelNotes()
+{
+  LED_ERROR_BEGIN();
+
+  strcpy(s_text_file, MODELS_PATH "/");
+  char *buf = strcat_currentmodelname(&s_text_file[sizeof(MODELS_PATH)]);
+  strcpy(buf, TEXT_EXT);
+  if (!isFileAvailable(s_text_file)) {
+    char *buf = strAppendFilename(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+    strcpy(buf, TEXT_EXT);
+  }
+
+  waitKeysReleased();
+  event_t event = EVT_ENTRY;
+  while (event != EVT_KEY_FIRST(KEY_EXIT)) {
+    lcdRefreshWait();
+    lcdClear();
+    menuTextView(event);
+    event = getEvent();
+    lcdRefresh();
+    wdt_reset();
+  }
+
+  LED_ERROR_END();
 }
 
 bool menuModelNotes(event_t event)

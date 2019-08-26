@@ -22,14 +22,13 @@
 #include <string.h>
 #include "opentx.h"
 #include "timers.h"
+#include "conversions/conversions.h"
 
 uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
 EeFs      eeFs;
 
-#if defined(CPUARM)
 blkid_t   freeBlocks = 0;
-#endif
 
 uint8_t s_sync_write = false;
 
@@ -42,13 +41,9 @@ static uint8_t EeFsRead(blkid_t blk, uint8_t ofs)
 
 static blkid_t EeFsGetLink(blkid_t blk)
 {
-#if defined(CPUARM)
   blkid_t ret;
   eepromReadBlock((uint8_t *)&ret, blk*BS+BLOCKS_OFFSET, sizeof(blkid_t));
   return ret;
-#else
-  return EeFsRead(blk, 0);
-#endif
 }
 
 static void EeFsSetLink(blkid_t blk, blkid_t val)
@@ -85,16 +80,7 @@ static void EeFsFlush()
 
 uint16_t EeFsGetFree()
 {
-#if defined(CPUARM)
   int32_t ret = freeBlocks * (BS-sizeof(blkid_t));
-#else
-  int16_t ret = 0;
-  blkid_t i = eeFs.freeList;
-  while (i) {
-    ret += BS-sizeof(blkid_t);
-    i = EeFsGetLink(i);
-  }
-#endif
   ret += eeFs.files[FILE_TMP].size;
   ret -= eeFs.files[FILE_MODEL(g_eeGeneral.currModel)].size;
   return (ret > 0 ? ret : 0);
@@ -106,15 +92,11 @@ static void EeFsFree(blkid_t blk)
   blkid_t i = blk;
   blkid_t tmp;
 
-#if defined(CPUARM)
   freeBlocks++;
-#endif
 
   while ((tmp=EeFsGetLink(i))) {
     i = tmp;
-#if defined(CPUARM)
     freeBlocks++;
-#endif
   }
 
   EeFsSetLink(i, eeFs.freeList);
@@ -130,13 +112,9 @@ void eepromCheck()
   memclear(bufp, BLOCKS);
   blkid_t blk ;
 
-#if defined(CPUARM)
   blkid_t blocksCount;
-#endif
   for (uint8_t i=0; i<=MAXFILES; i++) {
-#if defined(CPUARM)
     blocksCount = 0;
-#endif
     blkid_t blk = (i==MAXFILES ? eeFs.freeList : eeFs.files[i].startBlk);
     blkid_t lastBlk = 0;
     while (blk) {
@@ -153,9 +131,7 @@ void eepromCheck()
         blk = 0; // abort
       }
       else {
-#if defined(CPUARM)
         blocksCount++;
-#endif
         bufp[blk] = i+1;
         lastBlk   = blk;
         blk       = EeFsGetLink(blk);
@@ -163,15 +139,11 @@ void eepromCheck()
     }
   }
 
-#if defined(CPUARM)
   freeBlocks = blocksCount;
-#endif
 
   for (blk=FIRSTBLK; blk<BLOCKS; blk++) {
     if (!bufp[blk]) { // unused block
-#if defined(CPUARM)
       freeBlocks++;
-#endif
       EeFsSetLink(blk, eeFs.freeList);
       eeFs.freeList = blk; // chain in front
       EeFsFlushFreelist();
@@ -201,9 +173,7 @@ void storageFormat()
   }
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
-#if defined(CPUARM)
   freeBlocks = BLOCKS;
-#endif
   EeFsFlush();
 
   ENABLE_SYNC_WRITE(false);
@@ -313,15 +283,17 @@ uint16_t RlcFile::readRlc(uint8_t *buf, uint16_t i_len)
     memclear(&buf[i], ln);
     i        += ln;
     m_zeroes -= ln;
-    if (m_zeroes) break;
+    if (m_zeroes)
+      break;
 
     ln = min<uint16_t>(m_bRlc, i_len-i);
     uint8_t lr = read(&buf[i], ln);
     i        += lr ;
     m_bRlc   -= lr;
-    if(m_bRlc) break;
+    if (m_bRlc) break;
 
-    if (read(&m_bRlc, 1) !=1) break; // read how many bytes to read
+    if (read(&m_bRlc, 1) != 1)
+      break; // read how many bytes to read
 
     assert(m_bRlc & 0x7f);
 
@@ -329,7 +301,7 @@ uint16_t RlcFile::readRlc(uint8_t *buf, uint16_t i_len)
       m_zeroes  =(m_bRlc>>4) & 0x7;
       m_bRlc    = m_bRlc & 0x0f;
     }
-    else if(m_bRlc&0x40) {
+    else if (m_bRlc&0x40) {
       m_zeroes  = m_bRlc & 0x3f;
       m_bRlc    = 0;
     }
@@ -358,9 +330,7 @@ void RlcFile::nextWriteStep()
   if (!m_currBlk && m_pos==0) {
     eeFs.files[FILE_TMP].startBlk = m_currBlk = eeFs.freeList;
     if (m_currBlk) {
-#if defined(CPUARM)
       freeBlocks--;
-#endif
       eeFs.freeList = EeFsGetLink(m_currBlk);
       m_write_step |= WRITE_FIRST_LINK;
       EeFsFlushFreelist();
@@ -397,9 +367,7 @@ void RlcFile::nextWriteStep()
     switch (m_write_step & 0x0f) {
       case WRITE_NEXT_LINK_1:
         m_currBlk = eeFs.freeList;
-#if defined(CPUARM)
         freeBlocks--;
-#endif
         eeFs.freeList = EeFsGetLink(eeFs.freeList);
         m_write_step += 1;
         EeFsFlushFreelist();
@@ -476,7 +444,7 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 }
 
 #if defined(SDCARD)
-const pm_char * eeBackupModel(uint8_t i_fileSrc)
+const char * eeBackupModel(uint8_t i_fileSrc)
 {
   char * buf = reusableBuffer.modelsel.mainname;
   UINT written;
@@ -485,7 +453,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   logsClose();
 
   // check and create folder here
-  strcpy_P(buf, STR_MODELS_PATH);
+  strcpy(buf, STR_MODELS_PATH);
   const char * error = sdCheckAndCreateDirectory(buf);
   if (error) {
     return error;
@@ -502,7 +470,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
       len = i+1;
     if (len) {
       if (buf[i])
-        buf[i] = idx2char(buf[i]);
+        buf[i] = zchar2char(buf[i]);
       else
         buf[i] = '_';
     }
@@ -511,7 +479,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
   if (len == 0) {
     uint8_t num = i_fileSrc + 1;
-    strcpy_P(&buf[sizeof(MODELS_PATH)], STR_MODEL);
+    strcpy(&buf[sizeof(MODELS_PATH)], STR_MODEL);
     buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
     buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');
     len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
@@ -522,7 +490,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   len = tmp - buf;
 #endif
 
-  strcpy_P(&buf[len], STR_MODELS_EXT);
+  strcpy(&buf[len], STR_MODELS_EXT);
 
 #ifdef SIMU
   TRACE("SD-card backup filename=%s", buf);
@@ -559,7 +527,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   return NULL;
 }
 
-const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
+const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 {
   char * buf = reusableBuffer.modelsel.mainname;
   UINT read;
@@ -567,10 +535,10 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   // we must close the logs as we reuse the same FIL structure
   logsClose();
 
-  strcpy_P(buf, STR_MODELS_PATH);
+  strcpy(buf, STR_MODELS_PATH);
   buf[sizeof(MODELS_PATH)-1] = '/';
   strcpy(&buf[sizeof(MODELS_PATH)], model_name);
-  strcpy_P(&buf[strlen(buf)], STR_MODELS_EXT);
+  strcpy(&buf[strlen(buf)], STR_MODELS_EXT);
 
   FRESULT result = f_open(&g_oLogFile, buf, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
@@ -589,7 +557,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   }
 
   uint8_t version = (uint8_t)buf[4];
-  if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
+  if (*(uint32_t*)&buf[0] != OTX_FOURCC || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
     f_close(&g_oLogFile);
     return STR_INCOMPATIBLE;
   }
@@ -631,14 +599,12 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 #if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
     storageCheck(true);
-    ConvertModel(i_fileDst, version);
+    eeConvertModel(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);
   }
 #endif
 
-#if defined(CPUARM)
   eeLoadModelHeader(i_fileDst, &modelHeaders[i_fileDst]);
-#endif
 
   return NULL;
 }
@@ -652,9 +618,6 @@ void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_l
   m_rlc_buf = buf;
   m_rlc_len = i_len;
   m_cur_rlc_len = 0;
-#if defined (EEPROM_PROGRESS_BAR)
-  m_ratio = (typ == FILE_TYP_MODEL ? 100 : 10);
-#endif
 
   do {
     nextRlcWriteStep();
@@ -722,14 +685,10 @@ void RlcFile::nextRlcWriteStep()
         // TODO reuse EeFsFree!!!
         blkid_t prev_freeList = eeFs.freeList;
         eeFs.freeList = fri;
-#if defined(CPUARM)
         freeBlocks++;
-#endif
         while (EeFsGetLink(fri)) {
           fri = EeFsGetLink(fri);
-#if defined(CPUARM)
           freeBlocks++;
-#endif
         }
         m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP1;
         EeFsSetLink(fri, prev_freeList);
@@ -783,32 +742,17 @@ void RlcFile::flush()
   ENABLE_SYNC_WRITE(false);
 }
 
-#if defined (EEPROM_PROGRESS_BAR)
-void RlcFile::drawProgressBar(uint8_t x)
-{
-  if (storageDirtyMsk || isWriting() || eeprom_buffer_size) {
-    uint8_t len = storageDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
-    lcdDrawFilledRect(x+1, 0, 5, FH, SOLID, ERASE);
-    lcdDrawFilledRect(x+2, 7-len, 3, len);
-  }
-}
-#endif
-
 // For conversions ...
-#if defined(CPUARM)
 uint16_t eeLoadGeneralSettingsData()
 {
   memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
   theFile.openRlc(FILE_GENERAL);
   return theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
 }
-#endif
 
 uint16_t eeLoadModelData(uint8_t index)
 {
-#if defined(CPUARM)
   memset(&g_model, 0, sizeof(g_model));
-#endif
   theFile.openRlc(FILE_MODEL(index));
   return theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 }
@@ -832,7 +776,19 @@ bool eeLoadGeneral()
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(RADIO_T12)
+  if (g_eeGeneral.variant != (EEPROM_VARIANT & 0xFFFE)) {
+    TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
+    return false;
+  }
+  else if (g_eeGeneral.variant != EEPROM_VARIANT && g_eeGeneral.version ==  218) {
+    TRACE("V218 T12/X7 detected, allowing use", g_eeGeneral.variant, EEPROM_VARIANT); // Production firmware use v218 X7 variant
+  }
+  else {
+    TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
+    return false;
+  }
+#elif defined(PCBTARANIS)
   if (g_eeGeneral.variant != EEPROM_VARIANT) {
     TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
     return false;
@@ -886,7 +842,6 @@ void storageCheck(bool immediately)
   }
 }
 
-#if defined(CPUARM)
 void eeLoadModelHeader(uint8_t id, ModelHeader *header)
 {
   memclear(header, sizeof(ModelHeader));
@@ -922,12 +877,11 @@ void eeDeleteModel(uint8_t idx)
   EFile::rm(FILE_MODEL(idx));
   memset(&modelHeaders[idx], 0, sizeof(ModelHeader));
 }
-#endif
 
 #if defined(SDCARD)
 void eepromBackup()
 {
-  char filename[60];
+  char path[60];
   uint8_t buffer[1024];
   FIL file;
 
@@ -944,21 +898,25 @@ void eepromBackup()
   }
 
   // prepare the filename...
-  char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
+  char * tmp = strAppend(path, EEPROMS_PATH "/eeprom");
 #if defined(RTCLOCK)
   tmp = strAppendDate(tmp, true);
 #endif
   strAppend(tmp, EEPROM_EXT);
 
   // open the file for writing...
-  f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS);
+  f_open(&file, path, FA_WRITE | FA_CREATE_ALWAYS);
 
   for (int i=0; i<EEPROM_SIZE; i+=1024) {
     UINT count;
     eepromReadBlock(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
-    drawProgressBar(STR_WRITING, i, EEPROM_SIZE);
-    SIMU_SLEEP(100/*ms*/);
+    drawProgressScreen("EEPROM Backup", STR_WRITING, i, EEPROM_SIZE);
+#if defined(SIMU)
+    // add an artificial delay and check for simu quit
+    if (SIMU_SLEEP_OR_EXIT_MS(100))
+      break;
+#endif
   }
 
   f_close(&file);

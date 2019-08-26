@@ -106,6 +106,9 @@ namespace Simulator
 
 struct SimulatorOptions
 {
+    // NOTE: now that the main property/settings system is easier to use, it would probably be better to add new settings directly to Profiles.
+    // TODO: perhaps refactor this some day.
+
     enum StartupDataTypes {
       START_WITH_FILE = 0,
       START_WITH_FOLDER,
@@ -113,10 +116,6 @@ struct SimulatorOptions
       START_WITH_RAWDATA
     };
 
-  private:
-    quint16 _version = SIMULATOR_OPTIONS_VERSION;  // structure definition version
-
-  public:
     // v1 fields
     quint8  startupDataType = START_WITH_FILE;
     QString firmwareId;
@@ -131,6 +130,8 @@ struct SimulatorOptions
     QByteArray dbgConsoleState;       // DebugOutput UI state
     QByteArray radioOutputsState;     // RadioOutputsWidget UI state
 
+    quint16 loadedVersion() const { return m_version; }  //! loaded structure definition version (0 if none/error)
+
     friend QDataStream & operator << (QDataStream &out, const SimulatorOptions & o)
     {
       out << quint16(SIMULATOR_OPTIONS_VERSION) << o.startupDataType << o.firmwareId << o.dataFile << o.dataFolder
@@ -140,14 +141,37 @@ struct SimulatorOptions
 
     friend QDataStream & operator >> (QDataStream &in, SimulatorOptions & o)
     {
-      if (o._version <= SIMULATOR_OPTIONS_VERSION) {
-        in >> o._version >> o.startupDataType >> o.firmwareId >> o.dataFile >> o.dataFolder
+      in >> o.m_version;
+      if (o.m_version && o.m_version <= SIMULATOR_OPTIONS_VERSION) {
+        in >> o.startupDataType >> o.firmwareId >> o.dataFile >> o.dataFolder
            >> o.sdPath >> o.windowGeometry >> o.controlsState >> o.lcdColor;
-        if (o._version >= 2)
+        if (o.m_version >= 2)
           in >> o.windowState >> o.dbgConsoleState >> o.radioOutputsState;
+      }
+      else {
+        qWarning() << "Error loading SimulatorOptions, saved version not valid:" << o.m_version << "Expected <=" << SIMULATOR_OPTIONS_VERSION;
+        o.m_version = 0;
       }
       return in;
     }
+
+    inline bool operator == (const SimulatorOptions &rhs) const
+    {
+      bool ret = (dataFile == rhs.dataFile && dataFolder == rhs.dataFolder && sdPath == rhs.sdPath &&
+                  windowGeometry == rhs.windowGeometry && lcdColor == rhs.lcdColor &&
+                  windowState == rhs.windowState && dbgConsoleState == rhs.dbgConsoleState && radioOutputsState == rhs.radioOutputsState);
+      if (!ret || controlsState.size() != rhs.controlsState.size()) {
+        return false;
+      }
+      int i = 0;
+      for (const QByteArray &cs : controlsState) {
+        if (cs != rhs.controlsState.at(i++)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    inline bool operator != (const SimulatorOptions &rhs) const { return !(*this == rhs); }
 
     friend QDebug operator << (QDebug d, const SimulatorOptions & o)
     {
@@ -156,6 +180,12 @@ struct SimulatorOptions
                   << "; sdPath=" << o.sdPath << "; startupDataType=" << o.startupDataType;
       return d;
     }
+
+    // this is a silly operator for this case, but required for QMetaType::registerComparators() to use our == comparison operators when casting as QVariant.
+    inline bool operator < (const SimulatorOptions &rhs) const { return firmwareId < rhs.firmwareId; }
+
+  private:
+    quint16 m_version = 0;
 };
 
 Q_DECLARE_METATYPE(SimulatorOptions)

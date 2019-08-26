@@ -16,14 +16,12 @@ set(modeledit_NAMES
 )
 
 set(modeledit_SRCS
-  switchitemmodel.cpp
   flightmodes.cpp
   inputs.cpp
   mixes.cpp
   channels.cpp
   logicalswitches.cpp
   customfunctions.cpp
-  # templates.cpp
   mixerslistwidget.cpp
   # node.cpp  ## node and edge are built in common lib because also used by simulator
   # edge.cpp  ## commenting them here avoids a "duplicate target" warning eg. from ninja
@@ -36,7 +34,6 @@ set(modeledit_HDRS
   channels.h
   logicalswitches.h
   customfunctions.h
-  # templates.h
   mixerslistwidget.h
   # node.h
 )
@@ -60,5 +57,4 @@ qt5_wrap_ui(modeledit_SRCS ${modeledit_UIS})
 qt5_wrap_cpp(modeledit_SRCS ${modeledit_HDRS})
 
 add_library(modeledit ${modeledit_SRCS})
-qt5_use_modules(modeledit Widgets Xml Multimedia)
-target_link_libraries(modeledit PRIVATE ${CPN_COMMON_LIB})
+target_link_libraries(modeledit PRIVATE datamodels ${CPN_COMMON_LIB} Qt5::Multimedia)

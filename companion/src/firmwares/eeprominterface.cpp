@@ -103,20 +103,18 @@ void EEPROMInterface::showEepromErrors(QWidget *parent, const QString &title, co
 #endif
 
 // TODO: No GUI here, e.g. return string list instead
-void EEPROMInterface::showEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound)
+QString EEPROMInterface::getEepromWarnings(unsigned long errorsFound)
 {
   std::bitset<NUM_ERRORS> errors((unsigned long long)errorsFound);
   QStringList warningsList;
-  if (errors.test(WARNING_WRONG_FIRMWARE)) { warningsList << tr("- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
-  if (errors.test(OLD_VERSION)) { warningsList << tr("- Your eeprom is from an old version of OpenTX, upgrading!\n To keep your original file as a backup, please choose File -> Save As specifying a different name."); }
+  if (errors.test(WARNING_WRONG_FIRMWARE)) {
+    warningsList << tr("- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used");
+  }
+  if (errors.test(OLD_VERSION)) {
+    warningsList << tr("- Your eeprom is from an old version of OpenTX, upgrading!\n To keep your original file as a backup, please choose File -> Save As specifying a different name.");
+  }
 
-  QMessageBox msgBox(parent);
-  msgBox.setWindowTitle(title);
-  msgBox.setIcon(QMessageBox::Warning);
-  msgBox.setText(tr("Warnings!"));
-  msgBox.setInformativeText(warningsList.join("\n"));
-  msgBox.setStandardButtons(QMessageBox::Ok);
-  msgBox.exec();
+  return warningsList.join("\n");
 }
 
 
@@ -126,8 +124,8 @@ void EEPROMInterface::showEepromWarnings(QWidget *parent, const QString &title, 
 
 // static
 QVector<Firmware *> Firmware::registeredFirmwares;
-Firmware * Firmware::defaultVariant = NULL;
-Firmware * Firmware::currentVariant = NULL;
+Firmware * Firmware::defaultVariant = nullptr;
+Firmware * Firmware::currentVariant = nullptr;
 
 // static
 Firmware * Firmware::getFirmwareForId(const QString & id)
@@ -142,19 +140,13 @@ Firmware * Firmware::getFirmwareForId(const QString & id)
   return defaultVariant;
 }
 
-void Firmware::addOption(const char *option, QString tooltip, uint32_t variant)
-{
-  Option options[] = { { option, tooltip, variant }, { NULL } };
-  addOptions(options);
-}
-
 unsigned int Firmware::getVariantNumber()
 {
   unsigned int result = 0;
   const Firmware * base = getFirmwareBase();
   QStringList options = id.mid(base->getId().length()+1).split("-", QString::SkipEmptyParts);
   foreach(QString option, options) {
-    foreach(QList<Option> group, base->opts) {
+    foreach(OptionsGroup group, base->opts) {
       foreach(Option opt, group) {
         if (opt.name == option) {
           result += opt.variant;
@@ -165,21 +157,27 @@ unsigned int Firmware::getVariantNumber()
   return result;
 }
 
-void Firmware::addLanguage(const char *lang)
+void Firmware::addLanguage(const char * lang)
 {
   languages.push_back(lang);
 }
 
-void Firmware::addTTSLanguage(const char *lang)
+//void Firmware::addTTSLanguage(const char * lang)
+//{
+//  ttslanguages.push_back(lang);
+//}
+
+void Firmware::addOption(const char * option, const QString & tooltip, unsigned variant)
 {
-  ttslanguages.push_back(lang);
+  addOption(Option(option, tooltip, variant));
 }
 
-void Firmware::addOptions(Option options[])
+void Firmware::addOption(const Option & option)
 {
-  QList<Option> opts;
-  for (int i=0; options[i].name; i++) {
-    opts.push_back(options[i]);
-  }
-  this->opts.push_back(opts);
+  addOptionsGroup({option});
+}
+
+void Firmware::addOptionsGroup(const OptionsGroup & options)
+{
+  this->opts.append(options);
 }

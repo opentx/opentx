@@ -53,9 +53,9 @@ enum MultiBufferState : uint8_t {
 
 MultiBufferState guessProtocol()
 {
-  if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_DSM2)
+  if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_DSM2)
     return SpektrumTelemetryFallback;
-  else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
+  else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
     return FlyskyTelemetryFallback;
   else
     return FrskyTelemetryFallback;
@@ -90,7 +90,7 @@ static void processMultiSyncPacket(const uint8_t *data)
   multiSyncStatus.calcAdjustedRefreshRate(data[0] << 8 | data[1], data[2] << 8 | data[3]);
 
 #if !defined(PPM_PIN_SERIAL)
-  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n", modulePulsesData[EXTERNAL_MODULE].dsm2.rest,
+  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n", extmodulePulsesData.dsm2.rest,
         multiSyncStatus.inputLag, oldlag-multiSyncStatus.inputLag, multiSyncStatus.target, multiSyncStatus.interval, multiSyncStatus.refreshRate, multiSyncStatus.adjustedRefreshRate/50,
         multiSyncStatus.getAdjustedRefreshRate());
 #endif
@@ -109,10 +109,12 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       if (len >= 5)
         processMultiStatusPacket(data);
       break;
+
     case DSMBindPacket:
       if (len >= 10)
         processDSMBindPacket(data);
       break;
+
     case SpektrumTelemetry:
       // processSpektrumPacket expects data[0] to be the telemetry indicator 0xAA but does not check it,
       // just send one byte of our header instead
@@ -121,41 +123,50 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       else
         TRACE("[MP] Received spektrum telemetry len %d < 17", len);
       break;
+
     case FlyskyIBusTelemetry:
       if (len >= 28)
         processFlySkyPacket(data);
       else
         TRACE("[MP] Received IBUS telemetry len %d < 28", len);
       break;
+
     case FrSkyHubTelemetry:
       if (len >= 4)
         frskyDProcessPacket(data);
       else
         TRACE("[MP] Received Frsky HUB telemetry len %d < 4", len);
       break;
+
+#if defined(MULTI_SPORT)
     case FrSkySportTelemtry:
       if (len >= 4)
         sportProcessTelemetryPacket(data);
       else
         TRACE("[MP] Received sport telemetry len %d < 4", len);
       break;
+#endif
+
     case InputSync:
       if (len >= 6)
         processMultiSyncPacket(data);
       else
         TRACE("[MP] Received input sync len %d < 6", len);
       break;
+
     case ConfigCommand:
       // Just an ack to our command, ignore for now
       break;
+
+#if defined(MULTI_SPORT) && defined(LUA)
     case FrskySportPolling:
-      #if defined(LUA)
-      if (len >= 1 && outputTelemetryBufferSize > 0 && data[0] == outputTelemetryBufferTrigger) {
+      if (len >= 1 && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data[0] == outputTelemetryBuffer.sport.physicalId) {
         TRACE("MP Sending sport data out.");
-        sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
+        sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
       }
-      #endif
       break;
+#endif
+
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);
       break;

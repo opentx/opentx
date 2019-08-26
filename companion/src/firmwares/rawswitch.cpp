@@ -77,7 +77,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
           if (generalSettings)
             swName = QString(generalSettings->switchName[qr.quot]);
           if (swName.isEmpty())
-            swName = getSwitchInfo(board, qr.quot).name;
+            swName = Boards::getSwitchInfo(board, qr.quot).name;
           return swName + directionIndicators.at(qr.rem > -1 && qr.rem < directionIndicators.size() ? qr.rem : 1);
         }
         else {
@@ -142,7 +142,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
   }
 }
 
-bool RawSwitch::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board)
+bool RawSwitch::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board) const
 {
   if (board == Board::BOARD_UNKNOWN)
     board = getCurrentBoard();
@@ -208,8 +208,30 @@ RawSwitch RawSwitch::convert(RadioDataConversionState & cstate)
         delta = 6;  // SH to SH
       }
     }
+    else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+      if (srcIdx == 4 || srcIdx == 5) {
+        delta = 3;  // SE to SD & SF to SF
+        if (srcIdx == 4)
+          evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (srcIdx == 6) {
+        delta = 9;  // SG to SD
+        evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (srcIdx == 7) {
+        delta = 6;  // SH to SH
+      }
+    }
     // Compensate for SE and SG on X9/Horus board if converting from X7
     else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+      if (srcIdx == 4) {
+        delta = -3;  // SF to SF
+      }
+      else if (srcIdx == 5) {
+        delta = -6;  // SH to SH
+      }
+    }
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
       if (srcIdx == 4) {
         delta = -3;  // SF to SF
       }

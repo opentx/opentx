@@ -23,20 +23,9 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "modelslist.h"
+#include "styleeditdialog.h"
 #include <QPrinter>
 #include <QPrintDialog>
-
-//class DragDropHeader {
-//  public:
-//    DragDropHeader():
-//      general_settings(false),
-//      models_count(0)
-//    {
-//    }
-//    bool general_settings;
-//    uint8_t models_count;
-//    uint8_t models[CPN_MAX_MODELS];
-//};
 
 CompareDialog::CompareDialog(QWidget * parent, Firmware * firmware):
   QDialog(parent, Qt::Window),
@@ -188,4 +177,11 @@ void CompareDialog::on_printFileButton_clicked()
     printer.setOutputFileName(filename);
     ui->textEdit->print(&printer);
   }
+}
+
+void CompareDialog::on_styleButton_clicked()
+{
+  StyleEditDialog *g = new StyleEditDialog(this, MODEL_PRINT_CSS);
+  if (g->exec() == QDialog::Accepted)
+    compare();
 }

@@ -52,6 +52,18 @@ class RawSwitch {
   Q_DECLARE_TR_FUNCTIONS(RawSwitch)
 
   public:
+    enum SwitchContext
+    {
+      LogicalSwitchesContext  = 0x01,
+      SpecialFunctionsContext = 0x02,
+      GlobalFunctionsContext  = 0x04,
+      TimersContext           = 0x08,
+      MixesContext            = 0x10,
+
+      AllModelContexts        = SpecialFunctionsContext | LogicalSwitchesContext | TimersContext | MixesContext,
+      AllSwitchContexts       = AllModelContexts | GlobalFunctionsContext
+    };
+
     RawSwitch():
       type(SWITCH_TYPE_NONE),
       index(0)
@@ -77,13 +89,13 @@ class RawSwitch {
 
     RawSwitch convert(RadioDataConversionState & cstate);
     QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL, const ModelData * const modelData = NULL) const;
-    bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN);
+    bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
 
-    bool operator== ( const RawSwitch& other) {
+    bool operator== ( const RawSwitch& other) const {
       return (this->type == other.type) && (this->index == other.index);
     }
 
-    bool operator!= ( const RawSwitch& other) {
+    bool operator!= ( const RawSwitch& other) const {
       return (this->type != other.type) || (this->index != other.index);
     }
 

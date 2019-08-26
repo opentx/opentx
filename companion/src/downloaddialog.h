@@ -28,33 +28,42 @@
 #include <QFile>
 
 namespace Ui {
-    class downloadDialog;
+  class DownloadDialog;
 }
 
-class downloadDialog : public QDialog
+class DownloadDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    explicit downloadDialog(QWidget *parent = 0, QString src = "", QString tgt = "");
-    ~downloadDialog();
+  public:
+    explicit DownloadDialog(QWidget *parent = 0, QString src = "", QString tgt = "");
 
-private slots:
+    ~DownloadDialog();
+
+  public slots:
+
+    virtual void reject() override;
+
+  private slots:
+
     void fileError();
+
     void httpFinished();
+
     void httpReadyRead();
+
     void updateDataReadProgress(qint64 bytesRead, qint64 totalBytes);
 
-private:
+  private:
 #if 0
-    void closeEvent( QCloseEvent * event);
+    void closeEvent(QCloseEvent * event);
 #endif
-    Ui::downloadDialog *ui;
+    Ui::DownloadDialog *ui;
 
     QNetworkAccessManager qnam;
     QNetworkReply *reply;
     QFile *file;
-
+    bool aborted;
 };
 
 #endif // _DOWNLOADDIALOG_H_

@@ -1,18 +1,23 @@
-option(DISK_CACHE "Enable SD card disk cache" YES)
-option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
-set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+option(DISK_CACHE "Enable SD card disk cache" ON)
+option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
+option(PXX1 "PXX1 protocol support" ON)
+option(PXX2 "PXX2 protocol support" OFF)
 
+set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
 set(SDCARD YES)
 set(EEPROM SDCARD)
 set(HAPTIC YES)
 set(GUI_DIR 480x272)
+set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
+set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
+
 # for size report script
 set(CPU_TYPE_FULL STM32F429xI)
 set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
@@ -23,20 +28,29 @@ endif()
 
 if (PCB STREQUAL X10)
   set(FLAVOUR x10)
+  set(PCBREV "STD" CACHE STRING "PCB Revision")
   add_definitions(-DPCBX10)
   add_definitions(-DSOFTWARE_VOLUME)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
-    ../common/arm/stm32/analog_adc_driver.cpp
-    ../common/arm/stm32/analog_pwm_driver.cpp
+    ../common/arm/stm32/adc_driver.cpp
+    ../common/arm/stm32/sticks_pwm_driver.cpp
     )
-
   set(BITMAPS_TARGET x10_bitmaps)
   set(FONTS_TARGET x10_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x10)
+  if (PCBREV STREQUAL EXPRESS)
+    option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
+    option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
+  else()
+    option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
+    option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
+  endif()
 elseif (PCB STREQUAL X12S)
+  option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
+  option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
   set(FLAVOUR x12s)
   set(PCBREV "13" CACHE STRING "PCB Revision")
   if(${PCBREV} GREATER 10)
@@ -52,16 +66,18 @@ elseif (PCB STREQUAL X12S)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
-    adc_driver.cpp
+    x12s_adc_driver.cpp
     gps_driver.cpp
     )
-
+  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
   set(BITMAPS_TARGET x12s_bitmaps)
   set(FONTS_TARGET x12s_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x12s)
-  add_definitions(-DPCBREV=${PCBREV})
 endif()
+
+add_definitions(-DPCBREV=${PCBREV})
+add_definitions(-DPCBREV_${PCBREV})
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
 
@@ -72,6 +88,15 @@ add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
 
 if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
+endif()
+
+if(INTERNAL_MODULE_PXX1)
+  add_definitions(-DINTERNAL_MODULE_PXX1)
+endif()
+
+if(INTERNAL_MODULE_PXX2)
+  set(PXX2 ON)
+  add_definitions(-DINTERNAL_MODULE_PXX2)
 endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
@@ -98,37 +123,54 @@ set(GUI_SRC
   topbar.cpp
   layout.cpp
   widget.cpp
+  menus.cpp
   ${THEMES_SRC}
   ${LAYOUTS_SRC}
   ${WIDGETS_SRC}
+  rle.cpp
   )
+
+if(PXX2 OR LUA)
+  set(GUI_SRC ${GUI_SRC} radio_tools.cpp)
+endif()
+
+if(PXX2)
+  set(GUI_SRC
+    ${GUI_SRC}
+    radio_spectrum_analyser.cpp
+    radio_power_meter.cpp
+    )
+endif()
+
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
   add_definitions(-DDISK_CACHE)
 endif()
+
 if(INTERNAL_GPS)
   set(SRC ${SRC} gps.cpp)
   add_definitions(-DINTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
 
-set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
-
 set(GVAR_SCREEN model_gvars.cpp)
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  board.cpp
   led_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
+  ../common/arm/stm32/heartbeat_driver.cpp
+  ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/bluetooth_driver.cpp
+  ../common/arm/stm32/rotary_encoder_driver.cpp
   )
 
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
+  board.cpp
   backlight_driver.cpp
   pwr_driver.cpp
   sdram_driver.c
@@ -142,6 +184,7 @@ add_definitions(-DBLUETOOTH)
 set(SRC
   ${SRC}
   bluetooth.cpp
+  io/frsky_firmware_update.cpp
   )
 
 set(STM32LIB_SRC
@@ -155,7 +198,8 @@ set(STM32LIB_SRC
 if(PYTHONINTERP_FOUND)
   add_custom_target(datacopy
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DCPUARM -DBACKUP > storage/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > storage/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
 endif()
+

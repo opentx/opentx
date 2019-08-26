@@ -47,7 +47,8 @@ QStringList const Translations::getAvailableTranslations()
                           //<< "pt_PT"
                           //<< "ru_RU"
             << "sv_SE"
-            << "zh_CN" ;
+            << "zh_CN"
+            << "ja_JP" ;
   }
   return locales;
 }

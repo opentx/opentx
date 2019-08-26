@@ -60,8 +60,12 @@ void bootloaderFlash(const char * filename)
     for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
       flashWrite(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
     }
-    drawProgressBar(STR_WRITING, i, BOOTLOADER_SIZE);
-    SIMU_SLEEP(30/*ms*/);
+    drawProgressScreen("Bootloader", STR_WRITING, i, BOOTLOADER_SIZE);
+#if defined(SIMU)
+    // add an artificial delay and check for simu quit
+    if (SIMU_SLEEP_OR_EXIT_MS(30))
+      break;
+#endif
   }
 
   if (unlocked) {

@@ -296,7 +296,8 @@ uint8_t BitmapBuffer::drawCharWithoutCache(coord_t x, coord_t y, const uint8_t *
 {
   coord_t offset = spec[index];
   coord_t width = spec[index+1] - offset;
-  if (width > 0) drawBitmapPattern(x, y, font, flags, offset, width);
+  if (width > 0)
+    drawBitmapPattern(x, y, font, flags, offset, width);
   return width;
 }
 
@@ -304,7 +305,8 @@ uint8_t BitmapBuffer::drawCharWithCache(coord_t x, coord_t y, const BitmapBuffer
 {
   coord_t offset = spec[index];
   coord_t width = spec[index+1] - offset;
-  drawBitmap(x, y, font, offset, 0, width);
+  if (width > 0)
+    drawBitmap(x, y, font, offset, 0, width);
   return width;
 }
 
@@ -316,7 +318,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
   uint32_t fontindex = FONTINDEX(flags);
-  const pm_uchar * font = fontsTable[fontindex];
+  const unsigned char * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
   BitmapBuffer * fontcache = NULL;
 
@@ -385,7 +387,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 #if defined(BOOT)
     unsigned char c = *s;
 #else
-    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    unsigned char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
 #endif
     if (setpos) {
       pos = c;
@@ -489,6 +491,8 @@ void BitmapBuffer::drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * 
   }
 }
 
+#if !defined(BOOT)
+
 BitmapBuffer * BitmapBuffer::load(const char * filename)
 {
   const char * ext = getFileExtension(filename);
@@ -537,23 +541,23 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
 
   FRESULT result = f_open(&imgFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
-    return NULL;
+    return nullptr;
   }
 
   if (f_size(&imgFile) < 14) {
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   result = f_read(&imgFile, buf, 14, &read);
   if (result != FR_OK || read != 14) {
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   if (buf[0] != 'B' || buf[1] != 'M') {
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   uint32_t fsize  = *((uint32_t *)&buf[2]);
@@ -563,7 +567,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
   result = f_read(&imgFile, buf, len, &read);
   if (result != FR_OK || read != len) {
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   uint32_t ihsize = *((uint32_t *)&buf[0]); /* more header size */
@@ -571,7 +575,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
   /* invalid header size */
   if (ihsize + 14 > hsize) {
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   /* sometimes file size is set to some headers size, set a real size in that case */
@@ -581,7 +585,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
   /* declared file size less than header size */
   if (fsize <= hsize) {
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   uint32_t w, h;
@@ -603,12 +607,12 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
       break;
     default:
       f_close(&imgFile);
-      return NULL;
+      return nullptr;
   }
 
   if (*((uint16_t *)&buf[0]) != 1) { /* planes */
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   uint16_t depth = *((uint16_t *)&buf[2]);
@@ -618,7 +622,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
   if (depth == 4) {
     if (f_lseek(&imgFile, hsize-64) != FR_OK || f_read(&imgFile, buf, 64, &read) != FR_OK || read != 64) {
       f_close(&imgFile);
-      return NULL;
+      return nullptr;
     }
     for (uint8_t i=0; i<16; i++) {
       palette[i] = buf[4*i];
@@ -627,14 +631,14 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
   else {
     if (f_lseek(&imgFile, hsize) != FR_OK) {
       f_close(&imgFile);
-      return NULL;
+      return nullptr;
     }
   }
 
   BitmapBuffer * bmp = new BitmapBuffer(BMP_RGB565, w, h);
-  if (bmp == NULL || bmp->getData() == NULL) {
+  if (bmp == nullptr || bmp->getData() == nullptr) {
     f_close(&imgFile);
-    return NULL;
+    return nullptr;
   }
 
   uint32_t rowSize;
@@ -650,7 +654,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
           if (result != FR_OK || read != 4) {
             f_close(&imgFile);
             delete bmp;
-            return NULL;
+            return nullptr;
           }
           if (hasAlpha) {
             *dst = ARGB(pixel & 0xff, (pixel >> 24) & 0xff, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff);
@@ -684,7 +688,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
         if (result != FR_OK || read != rowSize) {
           f_close(&imgFile);
           delete bmp;
-          return NULL;
+          return nullptr;
         }
         display_t * dst = bmp->getPixelPtr(0, i);
         for (uint32_t j=0; j<w; j++) {
@@ -699,7 +703,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
     default:
       f_close(&imgFile);
       delete bmp;
-      return NULL;
+      return nullptr;
   }
 
   f_close(&imgFile);
@@ -743,7 +747,6 @@ void *stb_realloc(void *ptr, unsigned int oldsz, unsigned int newsz)
 }
 #endif // #if defined(TRACE_STB_MALLOC)
 
-
 #include "thirdparty/Stb/stb_image.h"
 
 // fill 'data' with 'size' bytes.  return number of bytes actually read
@@ -784,7 +787,7 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
 {
   FRESULT result = f_open(&imgFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
-    return NULL;
+    return nullptr;
   }
 
   int w, h, n;
@@ -792,7 +795,7 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
   f_close(&imgFile);
 
   if (!img) {
-    return NULL;
+    return nullptr;
   }
 
   // convert to RGB565 or ARGB4444 format
@@ -800,7 +803,7 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
   if (bmp == NULL) {
     TRACE("load_stb() malloc failed");
     stbi_image_free(img);
-    return NULL;
+    return nullptr;
   }
 
 #if 0
@@ -831,3 +834,4 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
   stbi_image_free(img);
   return bmp;
 }
+#endif

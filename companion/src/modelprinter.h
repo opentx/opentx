@@ -37,7 +37,7 @@ class CurveImage
   public:
     CurveImage();
     void drawCurve(const CurveData & curve, QColor color);
-    const QImage & get() const { return image; };
+    const QImage & get() const { return image; }
 
   protected:
     int size;
@@ -57,11 +57,6 @@ class ModelPrinter: public QObject
     QString printEEpromSize();
     QString printTrimIncrementMode();
     QString printThrottle();
-    static QString printModuleProtocol(unsigned int protocol);
-    static QString printMultiRfProtocol(int rfProtocol, bool custom);
-    static QString printR9MPowerValue(unsigned subType, unsigned val, bool telem);
-    static QString printMultiSubType(unsigned rfProtocol, bool custom, unsigned int subType);
-    static QString printModuleSubType(unsigned protocol, unsigned subType, unsigned rfProtocol = 0, bool custom = false);
     QString printFlightModeSwitch(const RawSwitch & swtch);
     QString printFlightModeName(int index);
     QString printFlightModes(unsigned int flightModes);
@@ -80,7 +75,7 @@ class ModelPrinter: public QObject
     QString printInputLine(const ExpoData & ed);
     QString printMixerLine(const MixData & md, bool showMultiplex, int highlightedSource = 0);
     QString printLogicalSwitchLine(int idx);
-    QString printCustomFunctionLine(int idx);
+    QString printCustomFunctionLine(int idx, bool gfunc = false);
     QString printChannelName(int idx);
     QString printCurveName(int idx);
     QString printCurve(int idx);
@@ -136,6 +131,7 @@ class ModelPrinter: public QObject
     QString printSensorDetails(unsigned int idx);
     QString printTelemetryScreenType(unsigned int val);
     QString printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width);
+    QString printChecklist();
 
   private:
     Firmware * firmware;

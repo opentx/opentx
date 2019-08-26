@@ -40,7 +40,7 @@ const LayoutFactory * getLayoutFactory(const char * name)
       return (*it);
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
@@ -49,22 +49,24 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
   if (factory) {
     return factory->load(persistentData);
   }
-  return NULL;
+  return nullptr;
 }
 
 void loadCustomScreens()
 {
   for (unsigned int i=0; i<MAX_CUSTOM_SCREENS; i++) {
     delete customScreens[i];
-    char name[sizeof(g_model.screenData[i].layoutName)+1];
+    char name[LAYOUT_NAME_LEN + 1];
     memset(name, 0, sizeof(name));
-    strncpy(name, g_model.screenData[i].layoutName, sizeof(g_model.screenData[i].layoutName));
+    strncpy(name, g_model.screenData[i].layoutName, LAYOUT_NAME_LEN);
     customScreens[i] = loadLayout(name, &g_model.screenData[i].layoutData);
   }
 
-  if (customScreens[0] == NULL && getRegisteredLayouts().size()) {
+  if (customScreens[0] == nullptr && getRegisteredLayouts().size()) {
     customScreens[0] = getRegisteredLayouts().front()->create(&g_model.screenData[0].layoutData);
   }
 
-  topbar->load();
+  if (topbar) {
+    topbar->load();
+  }
 }

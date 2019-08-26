@@ -25,6 +25,7 @@
 #include "radiodata.h"
 
 class RawSwitchFilterItemModel;
+class RawSourceFilterItemModel;
 class TimerEdit;
 
 class LogicalSwitchesPanel : public ModelPanel
@@ -38,7 +39,7 @@ class LogicalSwitchesPanel : public ModelPanel
     virtual void update();
 
   private slots:
-    void setDataModels();
+    void updateDataModels();
     void functionChanged();
     void v1Edited(int value);
     void v2Edited(int value);
@@ -66,7 +67,7 @@ class LogicalSwitchesPanel : public ModelPanel
     QComboBox * cswitchSource1[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cswitchSource2[CPN_MAX_LOGICAL_SWITCHES];
     RawSwitchFilterItemModel * rawSwitchItemModel;
-    QStandardItemModel * rawSourceItemModel;
+    RawSourceFilterItemModel * rawSourceItemModel;
     int selectedSwitch;
 
     void populateCSWCB(QComboBox *b);

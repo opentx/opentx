@@ -20,11 +20,11 @@
 
 #include "flightmodes.h"
 #include "ui_flightmode.h"
-#include "switchitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 #include "customdebug.h"
 
-FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware):
+FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchFilterItemModel * switchModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::FlightMode),
   phaseIdx(phaseIdx),
@@ -36,11 +36,12 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   ui->setupUi(this);
 
   ui->labelName->setContextMenuPolicy(Qt::CustomContextMenu);
+  ui->labelName->setToolTip(tr("Popup menu available"));
   connect(ui->labelName, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(name_customContextMenuRequested(const QPoint &)));
 
   int modesCount = firmware->getCapability(FlightModes);
 
-  // Phase name
+  // Flight mode name
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   if (modesCount) {
     ui->name->setValidator(new QRegExpValidator(rx, this));
@@ -51,12 +52,10 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     ui->name->setDisabled(true);
   }
 
-  // Phase switch
+  // Flight mode switch
   if (phaseIdx > 0) {
-    rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, MixesContext);
-    ui->swtch->setModel(rawSwitchItemModel);
-    ui->swtch->setCurrentIndex(ui->swtch->findData(phase.swtch.toValue()));
-    connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
+    ui->swtch->setModel(switchModel);
+    connect(ui->swtch, SIGNAL(activated(int)), this, SLOT(phaseSwitchChanged(int)));
   }
   else {
     ui->swtch->hide();
@@ -287,11 +286,8 @@ FlightModePanel::~FlightModePanel()
 
 void FlightModePanel::update()
 {
-  if (rawSwitchItemModel) {
-    rawSwitchItemModel->update();
-  }
-
   ui->name->setText(phase.name);
+  ui->swtch->setCurrentIndex(ui->swtch->findData(phase.swtch.toValue()));
 
   int scale = firmware->getCapability(SlowScale);
   ui->fadeIn->setValue(float(phase.fadeIn)/scale);
@@ -382,11 +378,15 @@ void FlightModePanel::phaseName_editingFinished()
     emit nameModified();
 }
 
-void FlightModePanel::phaseSwitch_currentIndexChanged(int index)
+void FlightModePanel::phaseSwitchChanged(int index)
 {
-  if (!lock) {
-    QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
-    phase.swtch = RawSwitch(comboBox->itemData(index).toInt());
+  if (lock)
+    return;
+
+  bool ok;
+  const RawSwitch rs(ui->swtch->itemData(index).toInt(&ok));
+  if (ok && phase.swtch.toValue() != rs.toValue()) {
+    phase.swtch = rs;
     emit modified();
   }
 }
@@ -719,14 +719,18 @@ FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralS
   ModelPanel(parent, model, generalSettings, firmware),
   modesCount(firmware->getCapability(FlightModes))
 {
+
+  RawSwitchFilterItemModel * swModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this);
+  connect(this, &FlightModesPanel::updated, swModel, &RawSwitchFilterItemModel::update);
+
   QGridLayout * gridLayout = new QGridLayout(this);
   tabWidget = new QTabWidget(this);
   for (int i=0; i<modesCount; i++) {
-    FlightModePanel * tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware);
+    FlightModePanel * tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware, swModel);
     tab->setProperty("index", i);
-    panels << tab;
-    connect(tab, SIGNAL(modified()), this, SLOT(onPhaseModified()));
-    connect(tab, SIGNAL(nameModified()), this, SLOT(onPhaseNameChanged()));
+    connect(tab,  &FlightModePanel::modified,     this, &FlightModesPanel::modified);
+    connect(tab,  &FlightModePanel::nameModified, this, &FlightModesPanel::onPhaseNameChanged);
+    connect(this, &FlightModesPanel::updated,     tab,  &FlightModePanel::update);
     tabWidget->addTab(tab, getTabName(i));
   }
   gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
@@ -735,11 +739,6 @@ FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralS
 
 FlightModesPanel::~FlightModesPanel()
 {
-}
-
-void FlightModesPanel::onPhaseModified()
-{
-  emit modified();
 }
 
 QString FlightModesPanel::getTabName(int index)
@@ -764,10 +763,5 @@ void FlightModesPanel::onPhaseNameChanged()
 
 void FlightModesPanel::update()
 {
-  on_tabWidget_currentChanged(tabWidget->currentIndex());
-}
-
-void FlightModesPanel::on_tabWidget_currentChanged(int index)
-{
-  panels[index]->update();
+  emit updated();
 }

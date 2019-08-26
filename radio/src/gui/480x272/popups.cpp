@@ -20,38 +20,19 @@
 
 #include "opentx.h"
 
-const char *warningText = NULL;
+const char *warningText = nullptr;
 const char *warningInfoText;
 uint8_t     warningInfoLength;
 uint8_t     warningType;
 uint8_t     warningResult = 0;
 uint8_t     warningInfoFlags = ZCHAR;
-int16_t     warningInputValue;
-int16_t     warningInputValueMin;
-int16_t     warningInputValueMax;
-void        (*popupFunc)(event_t event) = NULL;
+PopupFunc popupFunc = nullptr;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
-uint8_t     s_menu_item = 0;
-uint16_t    popupMenuNoItems = 0;
+uint8_t     popupMenuSelectedItem = 0;
+uint16_t    popupMenuItemsCount = 0;
 uint16_t    popupMenuOffset = 0;
 uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 void        (*popupMenuHandler)(const char * result);
-
-void runPopupWarningBox()
-{
-  // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_WARNING);
-  // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  // lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, ALARM_COLOR);
-  // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_WARNING);
-}
-
-void drawMessageBox()
-{
-  // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_INFO);
-  // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  // lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, WARNING_COLOR);
-  // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
-}
 
 void drawAlertBox(const char * title, const char * text, const char * action)
 {
@@ -64,7 +45,7 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
   AUDIO_ERROR_MESSAGE(sound);
   lcdRefresh();
   lcdSetContrast();
-  clearKeyEvents();
+  waitKeysReleased();
   backlightOn();
   checkBacklight();
 }
@@ -76,65 +57,94 @@ void showMessageBox(const char * title)
   lcdRefresh();
 }
 
+void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h)
+{
+  lcdDrawSolidFilledRect(x + 1, y + 1, w - 2, h - 2, TEXT_BGCOLOR);
+  lcdDrawSolidRect(x, y, w, h, 1, ALARM_COLOR);
+}
+
 void runPopupWarning(event_t event)
 {
   warningResult = false;
 
-  theme->drawMessageBox(warningText, warningInfoText, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS, warningType);
+  const char * action;
+  switch (warningType) {
+    case WARNING_TYPE_INFO:
+      action = STR_OK;
+      break;
+    case WARNING_TYPE_ASTERISK:
+    case WARNING_TYPE_WAIT:
+      action = STR_EXIT;
+      break;
+    default:
+      action = STR_POPUPS_ENTER_EXIT;
+      break;
+  }
+
+  theme->drawMessageBox(warningText, warningInfoText, action, warningType);
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
+        // key ignored, the user has to press [EXIT]
         break;
-      warningResult = true;
+
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        warningType = WARNING_TYPE_ASTERISK;
+        warningText = nullptr;
+        if (popupMenuHandler)
+          popupMenuHandler(STR_OK);
+        else
+          warningResult = true;
+        break;
+      }
       // no break
+
     case EVT_KEY_BREAK(KEY_EXIT):
-      warningText = NULL;
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        if (popupMenuHandler)
+          popupMenuHandler(STR_EXIT);
+      }
+      warningText = nullptr;
       warningType = WARNING_TYPE_ASTERISK;
-      break;
-    default:
-      if (warningType != WARNING_TYPE_INPUT) break;
-      s_editMode = EDIT_MODIFY_FIELD;
-      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
-      s_editMode = EDIT_SELECT_FIELD;
       break;
   }
 }
 
 const char * runPopupMenu(event_t event)
 {
-  const char * result = NULL;
+  const char * result = nullptr;
 
-  uint8_t display_count = min<unsigned int>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  uint8_t display_count = min<unsigned int>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
 
   switch (event) {
     case EVT_ROTARY_LEFT:
-      if (s_menu_item > 0) {
-        s_menu_item--;
+      if (popupMenuSelectedItem > 0) {
+        popupMenuSelectedItem--;
       }
       else if (popupMenuOffset > 0) {
         popupMenuOffset--;
         result = STR_UPDATE_LIST;
       }
       else {
-        s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
-        if (popupMenuNoItems > MENU_MAX_DISPLAY_LINES) {
-          popupMenuOffset = popupMenuNoItems - MENU_MAX_DISPLAY_LINES;
+        popupMenuSelectedItem = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
+        if (popupMenuItemsCount > MENU_MAX_DISPLAY_LINES) {
+          popupMenuOffset = popupMenuItemsCount - MENU_MAX_DISPLAY_LINES;
           result = STR_UPDATE_LIST;
         }
       }
       break;
 
     case EVT_ROTARY_RIGHT:
-      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
-        s_menu_item++;
+      if (popupMenuSelectedItem < display_count - 1 && popupMenuOffset + popupMenuSelectedItem + 1 < popupMenuItemsCount) {
+        popupMenuSelectedItem++;
       }
-      else if (popupMenuNoItems > popupMenuOffset + display_count) {
+      else if (popupMenuItemsCount > popupMenuOffset + display_count) {
         popupMenuOffset++;
         result = STR_UPDATE_LIST;
       }
       else {
-        s_menu_item = 0;
+        popupMenuSelectedItem = 0;
         if (popupMenuOffset) {
           popupMenuOffset = 0;
           result = STR_UPDATE_LIST;
@@ -143,23 +153,26 @@ const char * runPopupMenu(event_t event)
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
-      // no break
+      result = popupMenuItems[popupMenuSelectedItem + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
+      popupMenuItemsCount = 0;
+      popupMenuSelectedItem = 0;
+      popupMenuOffset = 0;
+      break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      popupMenuNoItems = 0;
-      s_menu_item = 0;
+      result = STR_EXIT;
+      popupMenuItemsCount = 0;
+      popupMenuSelectedItem = 0;
       popupMenuOffset = 0;
       break;
   }
 
   int y = (LCD_H - (display_count*(FH+1))) / 2;
 
-  lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, TEXT_BGCOLOR);
-  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, 1, ALARM_COLOR);
+  drawPopupBackgroundAndBorder(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    if (i == s_menu_item) {
+    if (i == popupMenuSelectedItem) {
       lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
       lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], TEXT_INVERTED_COLOR);
     }
@@ -168,8 +181,8 @@ const char * runPopupMenu(event_t event)
     }
   }
 
-  if (popupMenuNoItems > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  if (popupMenuItemsCount > display_count) {
+    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
   }
 
   return result;

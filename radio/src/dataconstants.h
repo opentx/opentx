@@ -21,6 +21,8 @@
 #ifndef _DATACONSTANTS_H_
 #define _DATACONSTANTS_H_
 
+#include "board.h"
+
 #define NUM_STICKS                     4
 
 #if defined(EXPORT)
@@ -44,8 +46,20 @@
   #define MAX_SCRIPTS                  9
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_TELEMETRY_SENSORS        60
   #define MAX_CUSTOM_SCREENS           5
+#elif defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    64
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS                  7
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        60
 #elif defined(PCBTARANIS)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
@@ -57,7 +71,7 @@
   #define MAX_SCRIPTS                  7
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_TELEMETRY_SENSORS        40
 #elif defined(PCBSKY9X)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
@@ -68,46 +82,12 @@
   #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
-#elif defined(CPUM2560) || defined(CPUM2561)
-  #define MAX_MODELS                   30
-  #define MAX_OUTPUT_CHANNELS          16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES             6
-  #define MAX_MIXERS                   32
-  #define MAX_EXPOS                    16
-  #define MAX_LOGICAL_SWITCHES         12
-  #define MAX_SPECIAL_FUNCTIONS        24 // number of functions assigned to switches
-  #define MAX_TRAINER_CHANNELS         8
-  #define MAX_TELEMETRY_SENSORS        0
-#elif defined(CPUM128)
-  #define MAX_MODELS                   30
-  #define MAX_OUTPUT_CHANNELS          16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES             5
-  #define MAX_MIXERS                   32
-  #define MAX_EXPOS                    14
-  #define MAX_LOGICAL_SWITCHES         12
-  #define MAX_SPECIAL_FUNCTIONS        24 // number of functions assigned to switches
-  #define MAX_TRAINER_CHANNELS         8
-  #define MAX_TELEMETRY_SENSORS        0
+  #define MAX_TELEMETRY_SENSORS        40
 #else
-  #define MAX_MODELS                   16
-  #define MAX_OUTPUT_CHANNELS          16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES             5
-  #define MAX_MIXERS                   32
-  #define MAX_EXPOS                    14
-  #define MAX_LOGICAL_SWITCHES         12
-  #define MAX_SPECIAL_FUNCTIONS        16 // number of functions assigned to switches
-  #define MAX_TRAINER_CHANNELS         8
-  #define MAX_TELEMETRY_SENSORS        0
+  #warning "Unknown board!"
 #endif
 
-#if defined(CPUARM)
-  #define MAX_TIMERS                   3
-#else
-  #define MAX_TIMERS                   2
-#endif
-
-#define NUM_CYC                        3
+#define MAX_TIMERS                     3
 #define NUM_CAL_PPM                    4
 
 enum CurveType {
@@ -116,19 +96,14 @@ enum CurveType {
   CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
 };
 
-#if defined(CPUARM)
-  #define MIN_POINTS_PER_CURVE         3
-#else
-  #define MIN_POINTS_PER_CURVE         3
-#endif
-
+#define MIN_POINTS_PER_CURVE           3
 #define MAX_POINTS_PER_CURVE           17
 
 #if defined(PCBHORUS)
   #define LEN_MODEL_NAME               15
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
-  #define LEN_BITMAP_NAME              10  // TODO next EEPROM change: we need 14 here as we have to store the file extension
+  #define LEN_BITMAP_NAME              14
   #define LEN_EXPOMIX_NAME             6
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
@@ -141,14 +116,14 @@ enum CurveType {
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
   #define LEN_BITMAP_NAME              10
-  #define LEN_EXPOMIX_NAME             8   // TODO next EEPROM change: 6 seem enough
+  #define LEN_EXPOMIX_NAME             6
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
-#elif defined(CPUARM)
+#else
   #define LEN_MODEL_NAME               10
   #define LEN_TIMER_NAME               3
   #define LEN_FLIGHT_MODE_NAME         6
@@ -157,13 +132,8 @@ enum CurveType {
   #define LEN_INPUT_NAME               3
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            6
-  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
+  #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
-#else
-  #define LEN_MODEL_NAME               10
-  #define LEN_FLIGHT_MODE_NAME         6
-  #define MAX_CURVES                   8
-  #define MAX_CURVE_POINTS             (112-MAX_CURVES)
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
@@ -173,34 +143,6 @@ enum CurveType {
 #endif
 
 #define XPOTS_MULTIPOS_COUNT           6
-
-#if defined(PCBSKY9X) && defined(REVX)
-  #define MAX_ROTARY_ENCODERS          1
-  #define NUM_ROTARY_ENCODERS          0
-#elif defined(PCBSKY9X)
-  #define MAX_ROTARY_ENCODERS          1
-  #define NUM_ROTARY_ENCODERS          1
-#elif defined(CPUM2560)
-  #define MAX_ROTARY_ENCODERS          2
-  #define NUM_ROTARY_ENCODERS          2
-#else
-  #define MAX_ROTARY_ENCODERS          0
-  #define NUM_ROTARY_ENCODERS          0
-#endif
-
-#if defined(PCBX10)
-  #define NUM_TRIMS                    (NUM_STICKS + 2)
-  #define NUM_MOUSE_ANALOGS            2
-  #define NUM_DUMMY_ANAS               2
-#elif defined(PCBHORUS)
-  #define NUM_TRIMS                    (NUM_STICKS + 2)
-  #define NUM_MOUSE_ANALOGS            2
-  #define NUM_DUMMY_ANAS               0
-#else
-  #define NUM_TRIMS                    NUM_STICKS
-  #define NUM_MOUSE_ANALOGS            0
-  #define NUM_DUMMY_ANAS               0
-#endif
 
 #if defined(COLORLCD)
 enum MainViews {
@@ -238,29 +180,29 @@ enum BeeperMode {
 };
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  enum ModuleIndex {
-    INTERNAL_MODULE,
-    EXTERNAL_MODULE,
-    TRAINER_MODULE
-  };
-  enum TrainerMode {
-    TRAINER_MODE_MASTER_TRAINER_JACK,
-    TRAINER_MODE_SLAVE,
+enum ModuleIndex {
+  INTERNAL_MODULE,
+  EXTERNAL_MODULE,
+  SPORT_MODULE,
+};
+enum TrainerMode {
+  TRAINER_MODE_MASTER_TRAINER_JACK,
+  TRAINER_MODE_SLAVE,
 #if defined(PCBTARANIS)
-    TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
-    TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
+  TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
 #endif
-    TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+  TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
 #if defined(BLUETOOTH)
-    TRAINER_MODE_MASTER_BLUETOOTH,
-    TRAINER_MODE_SLAVE_BLUETOOTH,
+  TRAINER_MODE_MASTER_BLUETOOTH,
+  TRAINER_MODE_SLAVE_BLUETOOTH,
 #endif
-  };
+};
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
     EXTRA_MODULE,
-    TRAINER_MODULE
+    SPORT_MODULE
   };
 #endif
 
@@ -273,12 +215,12 @@ enum BeeperMode {
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-#define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE)
+  #define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE)
 #elif defined(PCBSKY9X)
   #define IS_INTERNAL_MODULE_ENABLED() (false)
 #endif
-#define IS_EXTERNAL_MODULE_ENABLED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
 
+#define IS_EXTERNAL_MODULE_ENABLED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
 
 enum UartModes {
 #if defined(CLI) || defined(DEBUG)
@@ -289,7 +231,7 @@ enum UartModes {
   UART_MODE_TELEMETRY_MIRROR,
   UART_MODE_TELEMETRY,
   UART_MODE_SBUS_TRAINER,
-  // UART_MODE_CPPM_TRAINER,
+  UART_MODE_LUA,
   UART_MODE_COUNT,
   UART_MODE_MAX = UART_MODE_COUNT-1
 };
@@ -299,14 +241,23 @@ enum UartModes {
   #define LEN_ANA_NAME                 3
   #define LEN_MODEL_FILENAME           16
   #define LEN_BLUETOOTH_NAME           10
-#elif defined(CPUARM)
+#else
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
 #endif
 
-#if defined(CPUARM)
-#define TELEM_LABEL_LEN           4
+enum TelemetryProtocol
+{
+  TELEM_PROTO_FRSKY_D,
+  TELEM_PROTO_FRSKY_SPORT,
+  TELEM_PROTO_CROSSFIRE,
+  TELEM_PROTO_SPEKTRUM,
+  TELEM_PROTO_LUA,
+  TELEM_PROTO_FLYSKY_IBUS,
+};
+
+#define TELEM_LABEL_LEN                4
 enum TelemetryUnit {
   UNIT_RAW,
   UNIT_VOLTS,
@@ -316,10 +267,13 @@ enum TelemetryUnit {
   UNIT_METERS_PER_SECOND,
   UNIT_FEET_PER_SECOND,
   UNIT_KMH,
+  UNIT_SPEED = UNIT_KMH,
   UNIT_MPH,
   UNIT_METERS,
+  UNIT_DIST = UNIT_METERS,
   UNIT_FEET,
   UNIT_CELSIUS,
+  UNIT_TEMPERATURE = UNIT_CELSIUS,
   UNIT_FAHRENHEIT,
   UNIT_PERCENT,
   UNIT_MAH,
@@ -332,6 +286,18 @@ enum TelemetryUnit {
   UNIT_RADIANS,
   UNIT_MILLILITERS,
   UNIT_FLOZ,
+  UNIT_MILLILITERS_PER_MINUTE,
+  UNIT_MAX = UNIT_MILLILITERS_PER_MINUTE,
+  UNIT_SPARE1,
+  UNIT_SPARE2,
+  UNIT_SPARE3,
+  UNIT_SPARE4,
+  UNIT_SPARE5,
+  UNIT_SPARE6,
+  UNIT_SPARE7,
+  UNIT_SPARE8,
+  UNIT_SPARE9,
+  UNIT_SPARE10,
   UNIT_HOURS,
   UNIT_MINUTES,
   UNIT_SECONDS,
@@ -350,113 +316,6 @@ enum TelemetryUnit {
   UNIT_DATETIME_HOUR_MIN,
   UNIT_DATETIME_SEC
 };
-#define UNIT_MAX UNIT_FLOZ
-#define UNIT_DIST UNIT_METERS
-#define UNIT_TEMPERATURE UNIT_CELSIUS
-#define UNIT_SPEED UNIT_KMH
-#else
-#if !defined(CPUARM)
-enum TelemetrySource {
-  TELEM_NONE,
-  TELEM_TX_VOLTAGE,
-  TELEM_TIMER1,
-  TELEM_TIMER2,
-  TELEM_TIMER_MAX=TELEM_TIMER2,
-  TELEM_RSSI_TX,
-  TELEM_RSSI_RX,
-  TELEM_A_FIRST,
-  TELEM_A1=TELEM_A_FIRST,
-  TELEM_A2,
-  TELEM_A_LAST=TELEM_A2,
-  TELEM_ALT,
-  TELEM_RPM,
-  TELEM_FUEL,
-  TELEM_T1,
-  TELEM_T2,
-  TELEM_SPEED,
-  TELEM_DIST,
-  TELEM_GPSALT,
-  TELEM_CELL,
-  TELEM_CELLS_SUM,
-  TELEM_VFAS,
-  TELEM_CURRENT,
-  TELEM_CONSUMPTION,
-  TELEM_POWER,
-  TELEM_ACCx,
-  TELEM_ACCy,
-  TELEM_ACCz,
-  TELEM_HDG,
-  TELEM_VSPEED,
-  TELEM_ASPEED,
-  TELEM_DTE,
-  TELEM_MIN_A_FIRST,
-  TELEM_MIN_A1=TELEM_MIN_A_FIRST,
-  TELEM_MIN_A2,
-  TELEM_MIN_A_LAST=TELEM_MIN_A2,
-  TELEM_MIN_ALT,
-  TELEM_MAX_ALT,
-  TELEM_MAX_RPM,
-  TELEM_MAX_T1,
-  TELEM_MAX_T2,
-  TELEM_MAX_SPEED,
-  TELEM_MAX_DIST,
-  TELEM_MAX_ASPEED,
-  TELEM_MIN_CELL,
-  TELEM_MIN_CELLS_SUM,
-  TELEM_MIN_VFAS,
-  TELEM_MAX_CURRENT,
-  TELEM_MAX_POWER,
-  TELEM_ACC,
-  TELEM_GPS_TIME,
-  TELEM_CSW_MAX = TELEM_MAX_POWER,
-  TELEM_NOUSR_MAX = TELEM_A2,
-#if defined(TELEMETRY_FRSKY)
-  TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
-#else
-  TELEM_DISPLAY_MAX = TELEM_TIMER2, // because used also in PlayValue
-#endif
-  TELEM_STATUS_MAX = TELEM_GPS_TIME,
-  TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
-};
-
-#if defined(FRSKY_HUB)
-  #define NUM_TELEMETRY      TELEM_CSW_MAX
-#elif defined(WS_HOW_HIGH)
-  #define NUM_TELEMETRY      TELEM_ALT
-#elif defined(TELEMETRY_FRSKY)
-  #define NUM_TELEMETRY      TELEM_A2
-#elif defined(TELEMETRY_MAVLINK)
-  #define NUM_TELEMETRY      4
-#else
-  #define NUM_TELEMETRY      TELEM_TIMER2
-#endif
-
-#endif
-
-enum TelemetryUnit {
-  UNIT_VOLTS,
-  UNIT_AMPS,
-  UNIT_METERS_PER_SECOND,
-  UNIT_RAW,
-  UNIT_SPEED,
-  UNIT_DIST,
-  UNIT_TEMPERATURE,
-  UNIT_PERCENT,
-  UNIT_MILLIAMPS,
-  UNIT_A1A2_MAX = UNIT_MILLIAMPS,
-  UNIT_MAH,
-  UNIT_WATTS,
-  UNIT_DB,
-  UNIT_FEET,
-  UNIT_KTS,
-  UNIT_HOURS,
-  UNIT_MINUTES,
-  UNIT_SECONDS,
-  UNIT_RPMS,
-  UNIT_G,
-  UNIT_HDG
-};
-#endif
 
 #if LCD_W >= 212
   #define NUM_LINE_ITEMS 3
@@ -465,10 +324,9 @@ enum TelemetryUnit {
 #endif
 
 #if defined(PCBTARANIS)
-#define MAX_TELEM_SCRIPT_INPUTS  8
+  #define MAX_TELEM_SCRIPT_INPUTS  8
 #endif
 
-#if defined(CPUARM)
 enum TelemetryScreenType {
   TELEMETRY_SCREEN_TYPE_NONE,
   TELEMETRY_SCREEN_TYPE_VALUES,
@@ -481,18 +339,11 @@ enum TelemetryScreenType {
 #endif
 };
 #define MAX_TELEMETRY_SCREENS 4
-#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.frsky.screensType >> (2*(screenIndex))) & 0x03)
+#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
-#else
-#define MAX_FRSKY_A_CHANNELS 2
-#define MAX_TELEMETRY_SCREENS 2
-#define IS_BARS_SCREEN(screenIndex)    (g_model.frsky.screensType & (1<<(screenIndex)))
-#define MIN_BLADES 0 // 2 blades
-#define MAX_BLADES 3 // 5 blades
-#endif
 
-#define FAILSAFE_CHANNEL_HOLD          2000
-#define FAILSAFE_CHANNEL_NOPULSE       2001
+constexpr int16_t FAILSAFE_CHANNEL_HOLD = 2000;
+constexpr int16_t FAILSAFE_CHANNEL_NOPULSE = 2001;
 
 #define LEN_SCRIPT_FILENAME            6
 #define LEN_SCRIPT_NAME                6
@@ -505,104 +356,130 @@ enum PotsWarnMode {
   POTS_WARN_AUTO
 };
 
-#if !defined(PCBSTD)
-  #define LEN_GVAR_NAME                3
-  #define GVAR_MAX                     1024
-  #define GVAR_MIN                     -GVAR_MAX
-#endif
+#define LEN_GVAR_NAME                3
+#define GVAR_MAX                     1024
+#define GVAR_MIN                     -GVAR_MAX
 
 #define RESERVE_RANGE_FOR_GVARS        10
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
 
-#if defined(PCBSTD) && defined(GVARS)
-  #define MAX_GVARS                    5
-#elif defined(PCBSTD)
-  #define MAX_GVARS                    0
-#elif defined(CPUARM)
-  #define MAX_GVARS                    9
-#else
-  #define MAX_GVARS                    5
-#endif
+#define MAX_GVARS                    9
 
 enum SwitchSources {
   SWSRC_NONE = 0,
 
   SWSRC_FIRST_SWITCH,
 
-#if defined(PCBXLITE)
+#if defined(STORAGE_SWITCH_A)
   SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,
+#endif
+
+#if defined(STORAGE_SWITCH_B)
   SWSRC_SB0,
   SWSRC_SB1,
   SWSRC_SB2,
-  SWSRC_LAST_SWITCH = SWSRC_SB2,
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-  SWSRC_SA0 = SWSRC_FIRST_SWITCH,
-  SWSRC_SA1,
-  SWSRC_SA2,
-  SWSRC_SB0,
-  SWSRC_SB1,
-  SWSRC_SB2,
+#endif
+
+#if defined(STORAGE_SWITCH_C)
   SWSRC_SC0,
   SWSRC_SC1,
   SWSRC_SC2,
+#endif
+
+#if defined(STORAGE_SWITCH_D)
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#endif
+
+#if defined(STORAGE_SWITCH_E)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
 #endif
+
+#if defined(STORAGE_SWITCH_F)
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#endif
+
+#if defined(STORAGE_SWITCH_G)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
 #endif
+
+#if defined(STORAGE_SWITCH_H)
   SWSRC_SH0,
   SWSRC_SH1,
   SWSRC_SH2,
-  SWSRC_TRAINER = SWSRC_SH2,
-#if defined(PCBX9E)
+#endif
+
+#if defined(STORAGE_SWITCH_I)
   SWSRC_SI0,
   SWSRC_SI1,
   SWSRC_SI2,
+#endif
+
+#if defined(STORAGE_SWITCH_J)
   SWSRC_SJ0,
   SWSRC_SJ1,
   SWSRC_SJ2,
+#endif
+
+#if defined(STORAGE_SWITCH_K)
   SWSRC_SK0,
   SWSRC_SK1,
   SWSRC_SK2,
+#endif
+
+#if defined(STORAGE_SWITCH_L)
   SWSRC_SL0,
   SWSRC_SL1,
   SWSRC_SL2,
+#endif
+
+#if defined(STORAGE_SWITCH_M)
   SWSRC_SM0,
   SWSRC_SM1,
   SWSRC_SM2,
+#endif
+
+#if defined(STORAGE_SWITCH_N)
   SWSRC_SN0,
   SWSRC_SN1,
   SWSRC_SN2,
+#endif
+
+#if defined(STORAGE_SWITCH_O)
   SWSRC_SO0,
   SWSRC_SO1,
   SWSRC_SO2,
+#endif
+
+#if defined(STORAGE_SWITCH_P)
   SWSRC_SP0,
   SWSRC_SP1,
   SWSRC_SP2,
+#endif
+
+#if defined(STORAGE_SWITCH_Q)
   SWSRC_SQ0,
   SWSRC_SQ1,
   SWSRC_SQ2,
+#endif
+
+#if defined(STORAGE_SWITCH_R)
   SWSRC_SR0,
   SWSRC_SR1,
   SWSRC_SR2,
-  SWSRC_LAST_SWITCH = SWSRC_SR2,
-#else
-  SWSRC_LAST_SWITCH = SWSRC_SH2,
 #endif
-#else
+
+
+#if defined(PCBSKY9X)
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
   SWSRC_ID2,
@@ -614,11 +491,13 @@ enum SwitchSources {
   SWSRC_TRN,
   SWSRC_TRAINER = SWSRC_TRN,
   SWSRC_LAST_SWITCH = SWSRC_TRN,
+#else
+  SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES_POSITIONS - 1,
 #endif
 
 #if NUM_XPOTS > 0
   SWSRC_FIRST_MULTIPOS_SWITCH,
-  SWSRC_LAST_MULTIPOS_SWITCH = SWSRC_FIRST_MULTIPOS_SWITCH + (NUM_XPOTS*XPOTS_MULTIPOS_COUNT) - 1,
+  SWSRC_LAST_MULTIPOS_SWITCH = SWSRC_FIRST_MULTIPOS_SWITCH + (NUM_POTS * XPOTS_MULTIPOS_COUNT) - 1,
 #endif
 
   SWSRC_FIRST_TRIM,
@@ -626,12 +505,14 @@ enum SwitchSources {
   SWSRC_TrimRudRight,
   SWSRC_TrimEleDown,
   SWSRC_TrimEleUp,
+
 #if NUM_TRIMS > 2
   SWSRC_TrimThrDown,
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
 #endif
+
 #if NUM_TRIMS > 4
   SWSRC_TrimT5Down,
   SWSRC_TrimT5Up,
@@ -641,36 +522,29 @@ enum SwitchSources {
 
 #if defined(PCBSKY9X)
   SWSRC_REa,
-#elif defined(CPUM2560)
-  SWSRC_REa,
-  SWSRC_REb,
 #endif
 
   SWSRC_FIRST_LOGICAL_SWITCH,
   SWSRC_SW1 = SWSRC_FIRST_LOGICAL_SWITCH,
   SWSRC_SW2,
-  SWSRC_SW3,
-  SWSRC_SW4,
-  SWSRC_SW5,
-  SWSRC_SW6,
-  SWSRC_SW7,
-  SWSRC_SW8,
-  SWSRC_SW9,
-  SWSRC_SWA,
-  SWSRC_SWB,
-  SWSRC_SWC,
+  // ...
   SWSRC_LAST_LOGICAL_SWITCH = SWSRC_FIRST_LOGICAL_SWITCH+MAX_LOGICAL_SWITCHES-1,
 
   SWSRC_ON,
   SWSRC_ONE,
 
-#if defined(CPUARM)
   SWSRC_FIRST_FLIGHT_MODE,
   SWSRC_LAST_FLIGHT_MODE = SWSRC_FIRST_FLIGHT_MODE+MAX_FLIGHT_MODES-1,
 
   SWSRC_TELEMETRY_STREAMING,
+
   SWSRC_FIRST_SENSOR,
   SWSRC_LAST_SENSOR = SWSRC_FIRST_SENSOR+MAX_TELEMETRY_SENSORS-1,
+
+  SWSRC_RADIO_ACTIVITY,
+
+#if defined(DEBUG_LATENCY)
+  SWSRC_LATENCY_TOGGLE,
 #endif
 
   SWSRC_COUNT,
@@ -680,34 +554,31 @@ enum SwitchSources {
   SWSRC_LAST = SWSRC_COUNT-1,
   SWSRC_FIRST = -SWSRC_LAST,
 
-#if defined(CPUARM)
   SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_COUNT-1,
   SWSRC_LAST_IN_MIXES = SWSRC_COUNT-1,
-#else
-  SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_LAST_LOGICAL_SWITCH,
-  SWSRC_LAST_IN_MIXES = SWSRC_LAST_LOGICAL_SWITCH,
-#endif
 
   SWSRC_FIRST_IN_LOGICAL_SWITCHES = -SWSRC_LAST_IN_LOGICAL_SWITCHES,
   SWSRC_FIRST_IN_MIXES = -SWSRC_LAST_IN_MIXES,
 
-#if defined(CPUARM)
   SWSRC_INVERT = SWSRC_COUNT+1,
-#endif
 };
+
+#if NUM_SWITCHES >= 8
+  #define SWSRC_TRAINER SWSRC_SH2
+#else
+  #define SWSRC_TRAINER SWSRC_LAST_SWITCH,
+#endif
 
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
 
 enum MixSources {
   MIXSRC_NONE,
 
-#if defined(VIRTUAL_INPUTS)
   MIXSRC_FIRST_INPUT,                   LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
   MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
-#endif
 
 #if defined(LUA_INPUTS)
-  MIXSRC_FIRST_LUA,
+  MIXSRC_FIRST_LUA,                     LUA_EXPORT_MULTIPLE("lua", "Lua mix output %d", MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
 
@@ -722,11 +593,20 @@ enum MixSources {
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
   MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
   MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
+#if defined(PCBX10)
+  MIXSRC_EXT1,                          LUA_EXPORT("ext1", "Ext 1")
+  MIXSRC_EXT2,                          LUA_EXPORT("ext2", "Ext 2")
+#endif
   MIXSRC_FIRST_SLIDER,
+#if defined(PCBX12S)
   MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
   MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
   MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
   MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
+#else
+  MIXSRC_LS = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("ls", "Left slider")
+  MIXSRC_RS,                            LUA_EXPORT("rs", "Right slider")
+#endif
   MIXSRC_LAST_POT = MIXSRC_RS,
 #elif defined(PCBX9E)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
@@ -743,6 +623,9 @@ enum MixSources {
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_LAST_POT = MIXSRC_POT2,
+#elif defined(PCBX9LITE)
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
+  MIXSRC_LAST_POT = MIXSRC_POT1,
 #elif defined(PCBTARANIS)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
@@ -754,8 +637,8 @@ enum MixSources {
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
-    MIXSRC_P3,
-    MIXSRC_LAST_POT = MIXSRC_P3,
+  MIXSRC_P3,
+  MIXSRC_LAST_POT = MIXSRC_P3,
 #endif
 
 #if defined(PCBHORUS)
@@ -763,27 +646,17 @@ enum MixSources {
   MIXSRC_MOUSE2,                        LUA_EXPORT("jsy", "Joystick Y")
 #endif
 
-#if defined(PCBSKY9X)
-  MIXSRC_REa,
-  MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REa,
-#elif defined(CPUM2560)
-  MIXSRC_REa,
-  MIXSRC_REb,
-  #if ROTARY_ENCODERS > 2
-    MIXSRC_REc,
-    MIXSRC_REd,
-    MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REd,
-  #else
-    MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REb,
-  #endif
+#if defined(GYRO)
+  MIXSRC_GYRO1,                         LUA_EXPORT("gyrx", "Gyro X")
+  MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
   MIXSRC_MAX,
 
   MIXSRC_FIRST_HELI,
-  MIXSRC_CYC1 = MIXSRC_FIRST_HELI,   LUA_EXPORT("cyc1", "Cyclic 1")
-  MIXSRC_CYC2,                       LUA_EXPORT("cyc2", "Cyclic 2")
-  MIXSRC_CYC3,                       LUA_EXPORT("cyc3", "Cyclic 3")
+  MIXSRC_CYC1 = MIXSRC_FIRST_HELI,     LUA_EXPORT("cyc1", "Cyclic 1")
+  MIXSRC_CYC2,                         LUA_EXPORT("cyc2", "Cyclic 2")
+  MIXSRC_CYC3,                         LUA_EXPORT("cyc3", "Cyclic 3")
 
   MIXSRC_FIRST_TRIM,
   MIXSRC_TrimRud = MIXSRC_FIRST_TRIM,  LUA_EXPORT("trim-rud", "Rudder trim")
@@ -800,26 +673,47 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBXLITE)
-  MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
-  MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
-  MIXSRC_LAST_SWITCH = MIXSRC_SB,
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(HARDWARE_SWITCH_A)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
+#endif
+#if defined(HARDWARE_SWITCH_D)
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-#if !defined(PCBX7)
+#elif defined(STORAGE_SWITCH_D)
+  MIXSRC_SD,
+#endif
+#if defined(HARDWARE_SWITCH_E)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
+#elif defined(STORAGE_SWITCH_E)
+  MIXSRC_SE,
 #endif
+#if defined(HARDWARE_SWITCH_F)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
-#if !defined(PCBX7)
-  MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
+#elif defined(STORAGE_SWITCH_F)
+  MIXSRC_SF,
 #endif
+#if defined(HARDWARE_SWITCH_G)
+  MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
+#elif defined(STORAGE_SWITCH_G)
+  MIXSRC_SG,
+#endif
+#if defined(HARDWARE_SWITCH_H)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
-#if defined(PCBX9E)
+#elif defined(STORAGE_SWITCH_H)
+  MIXSRC_SH,
+#endif
+#if defined(HARDWARE_SWITCH_I)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
+#elif defined(STORAGE_SWITCH_I)
+  MIXSRC_SI,
+#endif
+#if defined(HARDWARE_SWITCH_J)
   MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#elif defined(STORAGE_SWITCH_J)
+  MIXSRC_SJ,
+#endif
+#if defined(HARDWARE_SWITCH_K)
   MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K")
   MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
   MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
@@ -828,11 +722,8 @@ enum MixSources {
   MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
   MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
-  MIXSRC_LAST_SWITCH = MIXSRC_SR,
-#else
-  MIXSRC_LAST_SWITCH = MIXSRC_SH,
 #endif
-#else
+#if defined(PCBSKY9X)
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
   MIXSRC_THR,
   MIXSRC_RUD,
@@ -840,7 +731,6 @@ enum MixSources {
   MIXSRC_AIL,
   MIXSRC_GEA,
   MIXSRC_TRN,
-  MIXSRC_LAST_SWITCH = MIXSRC_TRN,
 #endif
   MIXSRC_FIRST_LOGICAL_SWITCH,
   MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", MAX_LOGICAL_SWITCHES)
@@ -872,7 +762,6 @@ enum MixSources {
   MIXSRC_GVAR1 = MIXSRC_FIRST_GVAR,         LUA_EXPORT_MULTIPLE("gvar", "Global variable %d", MAX_GVARS)
   MIXSRC_LAST_GVAR = MIXSRC_FIRST_GVAR+MAX_GVARS-1,
 
-#if defined(CPUARM)
   MIXSRC_TX_VOLTAGE,                        LUA_EXPORT("tx-voltage", "Transmitter battery voltage [volts]")
   MIXSRC_TX_TIME,                           LUA_EXPORT("clock", "RTC clock [minutes from midnight]")
 #if defined(INTERNAL_GPS)
@@ -890,20 +779,20 @@ enum MixSources {
   MIXSRC_TIMER2,                            LUA_EXPORT("timer2", "Timer 2 value [seconds]")
   MIXSRC_TIMER3,                            LUA_EXPORT("timer3", "Timer 3 value [seconds]")
   MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
-#endif
 
-  MIXSRC_FIRST_TELEM,
-#if defined(CPUARM)
+  MIXSRC_FIRST_TELEM,                       LUA_EXPORT_MULTIPLE("telem", "Telemetry sensor %d", MAX_TELEMETRY_SENSORS)
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
-#else
-  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+NUM_TELEMETRY-1
-#endif
 };
 
-#define MIXSRC_FIRST   (MIXSRC_NONE+1)
-#define MIXSRC_LAST    MIXSRC_LAST_CH
-#define INPUTSRC_FIRST MIXSRC_Rud
-#define INPUTSRC_LAST  MIXSRC_LAST_TELEM
+#if defined(__cplusplus)
+static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+#endif
+
+#define MIXSRC_FIRST        (MIXSRC_NONE + 1)
+#define MIXSRC_LAST         MIXSRC_LAST_CH
+#define MIXSRC_LAST_SWITCH  (MIXSRC_FIRST_SWITCH + NUM_SWITCHES - 1)
+#define INPUTSRC_FIRST      MIXSRC_Rud
+#define INPUTSRC_LAST       MIXSRC_LAST_TELEM
 
 enum BacklightMode {
   e_backlight_mode_off  = 0,
@@ -919,40 +808,27 @@ enum Functions {
   FUNC_TRAINER,
   FUNC_INSTANT_TRIM,
   FUNC_RESET,
-#if defined(CPUARM)
   FUNC_SET_TIMER,
-#endif
   FUNC_ADJUST_GVAR,
-#if defined(CPUARM)
   FUNC_VOLUME,
   FUNC_SET_FAILSAFE,
   FUNC_RANGECHECK,
   FUNC_BIND,
-#endif
   // then the other functions
   FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_TRACK,
-#if !defined(CPUARM)
-  FUNC_PLAY_BOTH,
-#endif
   FUNC_PLAY_VALUE,
-#if defined(CPUARM)
   FUNC_RESERVE4,
   FUNC_PLAY_SCRIPT,
   FUNC_RESERVE5,
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
-#endif
   FUNC_VARIO,
   FUNC_HAPTIC,
-#if !defined(PCBSTD)
   FUNC_LOGS,
-#endif
   FUNC_BACKLIGHT,
-#if defined(PCBTARANIS)
   FUNC_SCREENSHOT,
-#endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in Companion
 #endif
@@ -981,23 +857,11 @@ enum CountDownModes {
 enum ResetFunctionParam {
   FUNC_RESET_TIMER1,
   FUNC_RESET_TIMER2,
-#if defined(CPUARM)
   FUNC_RESET_TIMER3,
-#endif
   FUNC_RESET_FLIGHT,
-#if defined(TELEMETRY_FRSKY)
   FUNC_RESET_TELEMETRY,
-#endif
-#if ROTARY_ENCODERS > 0
-  FUNC_RESET_ROTENC1,
-#endif
-#if ROTARY_ENCODERS > 1
-  FUNC_RESET_ROTENC2,
-#endif
-#if defined(CPUARM)
   FUNC_RESET_PARAM_FIRST_TELEM,
   FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + MAX_TELEMETRY_SENSORS,
-#endif
   FUNC_RESET_PARAMS_COUNT,
   FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1,
 };
@@ -1014,5 +878,10 @@ enum BluetoothModes {
   BLUETOOTH_TELEMETRY,
   BLUETOOTH_TRAINER,
 };
+
+// PXX2 constants
+#define PXX2_LEN_REGISTRATION_ID            8
+#define PXX2_LEN_RX_NAME                    8
+#define PXX2_MAX_RECEIVERS_PER_MODULE       3
 
 #endif // _DATACONSTANTS_H_

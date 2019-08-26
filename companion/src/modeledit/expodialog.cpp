@@ -20,7 +20,7 @@
 
 #include "expodialog.h"
 #include "ui_expodialog.h"
-#include "switchitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,
@@ -62,7 +62,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, model,
                               firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
 
-  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, MixesContext));
+  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this));
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
@@ -75,7 +75,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     }
   }
   else {
-    ui->label_phases->setToolTip(tr("Click to access popup menu"));
+    ui->label_phases->setToolTip(tr("Popup menu available"));
     ui->label_phases->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->label_phases, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(label_phases_customContextMenuRequested(const QPoint &)));
     int mask = 1;
@@ -93,7 +93,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
-    ui->sourceCB->setModel(Helpers::getRawSourceItemModel(&generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY));
+    ui->sourceCB->setModel(new RawSourceFilterItemModel(&generalSettings, &model, (RawSource::InputSourceGroups & ~RawSource::InputsGroup) | RawSource::TelemGroup, this));
     ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(ed->srcRaw.toValue()));
     ui->sourceCB->removeItem(0);
     ui->inputName->setValidator(new QRegExpValidator(rx, this));

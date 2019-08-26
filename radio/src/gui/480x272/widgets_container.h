@@ -47,12 +47,14 @@ class WidgetsContainerInterface
     Widget ** widgets;
 };
 
+#define WIDGET_NAME_LEN   10
+
 template<int N, int O>
 class WidgetsContainer: public WidgetsContainerInterface
 {
   public:
     struct ZonePersistentData {
-      char widgetName[10];
+      char widgetName[WIDGET_NAME_LEN];
       Widget::PersistentData widgetData;
     };
 
@@ -104,9 +106,9 @@ class WidgetsContainer: public WidgetsContainerInterface
         for (unsigned int i=0; i<count; i++) {
           delete widgets[i];
           if (persistentData->zones[i].widgetName[0]) {
-            char name[sizeof(persistentData->zones[i].widgetName)+1];
+            char name[WIDGET_NAME_LEN + 1];
             memset(name, 0, sizeof(name));
-            strncpy(name, persistentData->zones[i].widgetName, sizeof(persistentData->zones[i].widgetName));
+            strncpy(name, persistentData->zones[i].widgetName, WIDGET_NAME_LEN);
             widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
           }
           else {

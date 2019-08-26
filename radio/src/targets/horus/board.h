@@ -18,67 +18,27 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _BOARD_HORUS_H_
-#define _BOARD_HORUS_H_
+#ifndef _BOARD_H_
+#define _BOARD_H_
 
-#include "stddef.h"
-#include "stdbool.h"
-
-#if defined(__cplusplus) && !defined(SIMU)
-extern "C" {
-#endif
-
-#if __clang__
-// clang is very picky about the use of "register"
-// Tell clang to ignore the warnings for the following files
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-register"
-#endif
-
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_pwr.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_flash.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dbgmcu.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
-
-#if defined(PCBX10)
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
-#endif
-
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h"
-
-#if __clang__
-// Restore warnings about registers
-#pragma clang diagnostic pop
-#endif
-
-#include "usb_driver.h"
-
-#if !defined(SIMU)
-#include "usbd_cdc_core.h"
-#include "usbd_msc_core.h"
-#include "usbd_hid_core.h"
-#include "usbd_usr.h"
-#include "usbd_desc.h"
-#include "usb_conf.h"
-#include "usbd_conf.h"
-#endif
-
+#include "../definitions.h"
+#include "../opentx_constants.h"
+#include "board_common.h"
 #include "hal.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
-}
+PACK(typedef struct {
+  uint8_t pcbrev : 2;
+  uint8_t sticksPwmDisabled : 1;
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
+#if !defined(LUA_EXPORT_GENERATION)
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
 #endif
 
 #define FLASHSIZE                      0x200000
@@ -95,12 +55,9 @@ extern "C" {
 #define TIMER_MULT_APB1                2
 #define TIMER_MULT_APB2                2
 
-#define strcpy_P strcpy
-#define strcat_P strcat
-
 extern uint16_t sessionTimer;
 
-#define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#define SLAVE_MODE()                   (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
 #if defined(PCBX10)
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
@@ -109,49 +66,54 @@ extern uint16_t sessionTimer;
 #endif
 
 // Board driver
-void boardInit(void);
-void boardOff(void);
+void boardInit();
+void boardOff();
 
-// Delays driver
-#ifdef __cplusplus
-extern "C" {
-#endif
-void delaysInit(void);
-void delay_01us(uint16_t nb);
-void delay_us(uint16_t nb);
-void delay_ms(uint32_t ms);
-#ifdef __cplusplus
-}
-#endif
+// Timers driver
+void init2MhzTimer();
+void init5msTimer();
 
 // PCBREV driver
-#define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
-#if defined(SIMU) || defined(PCBX10)
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
-#elif PCBREV >= 13
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_HORUS_PROD()
-#else
-  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
-#endif
+enum {
+  // X12S
+  PCBREV_X12S_LT13 = 0,
+  PCBREV_X12S_GTE13 = 1,
 
-// CPU Unique ID
-#define LEN_CPU_UID                    (3*8+2)
-void getCPUUniqueID(char * s);
+  // X10
+  PCBREV_X10_STD = 0,
+  PCBREV_X10_EXPRESS = 3,
+};
+
+#if defined(SIMU)
+  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
+#elif defined(PCBX10)
+  #if defined(PCBREV_EXPRESS)
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
+  #else
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_STD)
+  #endif
+#else
+  #if PCBREV >= 13
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X12S_GTE13)
+  #else
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X12S_LT13)
+  #endif
+#endif
 
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
-uint32_t sdIsHC(void);
-uint32_t sdGetSpeed(void);
+uint32_t sdIsHC();
+uint32_t sdGetSpeed();
 #define SD_IS_HC()                     (sdIsHC())
 #define SD_GET_SPEED()                 (sdGetSpeed())
 #define SD_GET_FREE_BLOCKNR()          (sdGetFreeSectors())
 #define SD_CARD_PRESENT()              (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
-void sdInit(void);
-void sdMount(void);
-void sdDone(void);
+void sdInit();
+void sdMount();
+void sdDone();
 #define sdPoll10ms()
-uint32_t sdMounted(void);
+uint32_t sdMounted();
 #else
 #define SD_IS_HC()                     (0)
 #define SD_GET_SPEED()                 (0)
@@ -172,42 +134,60 @@ DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
 
 // Flash Write driver
 #define FLASH_PAGESIZE                 256
-void unlockFlash(void);
-void lockFlash(void);
+void unlockFlash();
+void lockFlash();
 void flashWrite(uint32_t * address, uint32_t * buffer);
 uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
 
 // SDRAM driver
-void SDRAM_Init(void);
+void SDRAM_Init();
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define INTERNAL_MODULE_OFF()          GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+
+#if defined(INTMODULE_USART)
+  #define INTERNAL_MODULE_OFF()        intmoduleStop()
+#else
+  #define INTERNAL_MODULE_OFF()        GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#endif
+
 #define EXTERNAL_MODULE_ON()           GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#define IS_UART_MODULE(port)           (port == INTERNAL_MODULE)
 
-void init_no_pulses(uint32_t port);
-void disable_no_pulses(uint32_t port);
-void init_ppm(uint32_t module_index);
-void disable_ppm(uint32_t module_index);
-void init_pxx(uint32_t module_index);
-void disable_pxx(uint32_t module_index);
-void init_dsm2(uint32_t module_index);
-void disable_dsm2(uint32_t module_index);
-void init_crossfire(uint32_t module_index);
-void disable_crossfire(uint32_t module_index);
-void init_sbusOut(uint32_t module_index);
-void disable_sbusOut(uint32_t module_index);
+#if !defined(PXX2)
+  #define IS_PXX2_INTERNAL_ENABLED()            (false)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#elif !defined(PXX1)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (false)
+#else
+  // TODO #define PXX2_PROBE
+  // TODO #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#endif
+
+void init_intmodule_heartbeat();
+void check_intmodule_heartbeat();
+
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmoduleSendByte(uint8_t byte);
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
+void intmoduleSendNextFrame();
+
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleInvertedSerialStart(uint32_t baudrate);
+void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
+void extmoduleSendNextFrame();
 
 // Trainer driver
-void init_trainer_ppm(void);
-void stop_trainer_ppm(void);
-void init_trainer_capture(void);
-void stop_trainer_capture(void);
+void init_trainer_ppm();
+void stop_trainer_ppm();
+void init_trainer_capture();
+void stop_trainer_capture();
 
 // Keys driver
 enum EnumKeys
@@ -242,6 +222,9 @@ enum EnumKeys
   NUM_KEYS
 };
 
+#define IS_SHIFT_KEY(index)             (false)
+#define IS_SHIFT_PRESSED()              (false)
+
 enum EnumSwitches
 {
   SW_SA,
@@ -252,8 +235,12 @@ enum EnumSwitches
   SW_SF,
   SW_SG,
   SW_SH,
+  SW_SI,
+  SW_SJ,
   NUM_SWITCHES
 };
+
+#define STORAGE_NUM_SWITCHES           NUM_SWITCHES
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
 enum EnumSwitchesPositions
@@ -282,22 +269,36 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+  SW_SJ0,
+  SW_SJ1,
+  SW_SJ2,
+  NUM_SWITCHES_POSITIONS
 };
-void keysInit(void);
-uint8_t keyState(uint8_t index);
+
+#define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
+
+void keysInit();
 uint32_t switchState(uint8_t index);
-uint32_t readKeys(void);
-uint32_t readTrims(void);
-#define TRIMS_PRESSED()                (readTrims())
-#define KEYS_PRESSED()                 (readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & ((1<<KEY_RIGHT) + (1<<KEY_LEFT))) == ((1<<KEY_RIGHT) + (1<<KEY_LEFT)))
-#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & ((1<<KEY_UP) + (1<<KEY_DOWN))) == ((1<<KEY_UP) + (1<<KEY_DOWN)))
-#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & ((1<<KEY_RIGHT) + (1<<KEY_UP))) == ((1<<KEY_RIGHT) + (1<<KEY_UP)))
-#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & ((1<<KEY_LEFT) + (1<<KEY_DOWN))) == ((1<<KEY_LEFT) + (1<<KEY_DOWN)))
+uint32_t readKeys();
+#define KEYS_PRESSED()                          (readKeys())
+#define DBLKEYS_PRESSED_RGT_LFT(in)             ((in & ((1<<KEY_RIGHT) + (1<<KEY_LEFT))) == ((1<<KEY_RIGHT) + (1<<KEY_LEFT)))
+#define DBLKEYS_PRESSED_UP_DWN(in)              ((in & ((1<<KEY_UP) + (1<<KEY_DOWN))) == ((1<<KEY_UP) + (1<<KEY_DOWN)))
+#define DBLKEYS_PRESSED_RGT_UP(in)              ((in & ((1<<KEY_RIGHT) + (1<<KEY_UP))) == ((1<<KEY_RIGHT) + (1<<KEY_UP)))
+#define DBLKEYS_PRESSED_LFT_DWN(in)             ((in & ((1<<KEY_LEFT) + (1<<KEY_DOWN))) == ((1<<KEY_LEFT) + (1<<KEY_DOWN)))
+
+// Trims driver
+#define NUM_TRIMS                               6
+#define NUM_TRIMS_KEYS                          (NUM_TRIMS * 2)
+uint32_t readTrims();
+#define TRIMS_PRESSED()                         (readTrims())
 
 // Rotary encoder driver
 #define ROTARY_ENCODER_NAVIGATION
-void checkRotaryEncoder(void);
+void rotaryEncoderInit();
+void rotaryEncoderCheck();
 
 // WDT driver
 #define WDTO_500MS                              500
@@ -308,7 +309,6 @@ extern uint32_t powerupReason;
 #define DIRTY_SHUTDOWN                          0xCAFEDEAD
 #define NORMAL_POWER_OFF                        ~DIRTY_SHUTDOWN
 
-#define wdt_disable()
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)
   #define WAS_RESET_BY_WATCHDOG()               (false)
@@ -330,15 +330,26 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
+
+#if defined(PCBX10)
+#define NUM_POTS                       5
+#else
 #define NUM_POTS                       3
+#endif
+
 #define NUM_XPOTS                      NUM_POTS
+#define STORAGE_NUM_POTS               5
+
 #if defined(PCBX10)
   #define NUM_SLIDERS                  2
-  #define NUM_PWMANALOGS               4
+  #define NUM_PWMSTICKS                4
 #else
   #define NUM_SLIDERS                  4
-  #define NUM_PWMANALOGS               0
+  #define NUM_PWMSTICKS                0
 #endif
+
+#define STORAGE_NUM_SLIDERS            4
+
 enum Analogs {
   STICK1,
   STICK2,
@@ -348,25 +359,38 @@ enum Analogs {
   POT1 = POT_FIRST,
   POT2,
   POT3,
-  POT_LAST = POT3,
+#if defined(PCBX10)
+  EXT1,
+  EXT2,
+#endif
+  POT_LAST = POT_FIRST + NUM_POTS - 1,
   SLIDER_FIRST,
-  SLIDER1 = SLIDER_FIRST,
-  SLIDER2,
-#if defined(PCBX12S)
   SLIDER_FRONT_LEFT = SLIDER_FIRST,
   SLIDER_FRONT_RIGHT,
-  SLIDER_REAR_LEFT,
-  SLIDER_REAR_RIGHT,
-#else
+#if defined(PCBX12S)
   SLIDER_REAR_LEFT,
   SLIDER_REAR_RIGHT,
 #endif
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
-  MOUSE1,
+#if defined(PCBX12S)
+  MOUSE1, // TODO why after voltage?
   MOUSE2,
+#endif
   NUM_ANALOGS
 };
+
+#define SLIDER1 SLIDER_FRONT_LEFT
+#define SLIDER2 SLIDER_FRONT_RIGHT
+
+#define DEFAULT_SWITCH_CONFIG  (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+#define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+
+#if defined(PCBX12S)
+#define DEFAULT_SLIDERS_CONFIG (SLIDER_WITH_DETENT << 3) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
+#else
+#define DEFAULT_SLIDERS_CONFIG (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
+#endif
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
@@ -382,6 +406,8 @@ enum CalibratedAnalogs {
   CALIBRATED_SLIDER_REAR_LEFT,
   CALIBRATED_SLIDER_REAR_RIGHT,
 #else
+  CALIBRATED_POT_EXT1,
+  CALIBRATED_POT_EXT2,
   CALIBRATED_SLIDER_REAR_LEFT,
   CALIBRATED_SLIDER_REAR_RIGHT,
 #endif
@@ -393,17 +419,34 @@ enum CalibratedAnalogs {
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
 extern uint16_t adcValues[NUM_ANALOGS];
-void adcInit(void);
-void adcRead(void);
-uint16_t getAnalogValue(uint8_t index);
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
-#if NUM_PWMANALOGS > 0
-extern uint8_t analogs_pwm_disabled;
-#define ANALOGS_PWM_ENABLED()          (analogs_pwm_disabled == false)
-void analogPwmInit(void);
-void analogPwmRead(uint16_t * values);
-void analogPwmCheck();
+
+#if defined(PCBX12S)
+  #define NUM_MOUSE_ANALOGS            2
+#else
+  #define NUM_MOUSE_ANALOGS            0
+#endif
+#define STORAGE_NUM_MOUSE_ANALOGS      2
+
+#if NUM_PWMSTICKS > 0
+#define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
+void sticksPwmInit();
+void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;
+#else
+#define STICKS_PWM_ENABLED()          (false)
+#endif
+
+// Battery driver
+#if defined(PCBX10)
+  // Lipo 2S
+  #define BATTERY_WARN      66 // 6.6V
+  #define BATTERY_MIN       67 // 6.7V
+  #define BATTERY_MAX       83 // 8.3V
+#else
+  // NI-MH 9.6V
+  #define BATTERY_WARN      87 // 8.7V
+  #define BATTERY_MIN       85 // 8.5V
+  #define BATTERY_MAX       115 // 11.5V
 #endif
 
 #if defined(__cplusplus) && !defined(SIMU)
@@ -412,13 +455,15 @@ extern "C" {
 
 // Power driver
 #define SOFT_PWR_CTRL
-void pwrInit(void);
-uint32_t pwrCheck(void);
-void pwrOn(void);
-void pwrOff(void);
-void pwrResetHandler(void);
-uint32_t pwrPressed(void);
-uint32_t pwrPressedDuration(void);
+extern uint32_t shutdownRequest; // Stores intentional shutdown to avoid reboot loop
+extern uint32_t shutdownReason; // Used for detecting unexpected reboots regardless of reason
+void pwrInit();
+uint32_t pwrCheck();
+void pwrOn();
+void pwrOff();
+void pwrResetHandler();
+bool pwrPressed();
+uint32_t pwrPressedDuration();
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else
@@ -426,10 +471,10 @@ uint32_t pwrPressedDuration(void);
 #endif
 
 // Led driver
-void ledInit(void);
-void ledOff(void);
-void ledRed(void);
-void ledBlue(void);
+void ledInit();
+void ledOff();
+void ledRed();
+void ledBlue();
 #if defined(PCBX10)
   void ledGreen();
 #endif
@@ -438,25 +483,26 @@ void ledBlue(void);
 #define LCD_W                          480
 #define LCD_H                          272
 #define LCD_DEPTH                      16
-void lcdInit(void);
-void lcdRefresh(void);
+void lcdInit();
+void lcdRefresh();
+void lcdCopy(void * dest, void * src);
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
 void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format);
-void lcdStoreBackupBuffer(void);
-int lcdRestoreBackupBuffer(void);
+void lcdStoreBackupBuffer();
+int lcdRestoreBackupBuffer();
 void lcdSetContrast();
 #define lcdOff()              backlightEnable(0) /* just disable the backlight */
 #define lcdSetRefVolt(...)
 #define lcdRefreshWait(...)
 
 // Backlight driver
-void backlightInit(void);
-#if defined(SIMU)
+void backlightInit();
+#if defined(SIMU) || !defined(__cplusplus)
 #define backlightEnable(...)
 #else
-void backlightEnable(uint8_t dutyCycle);
+void backlightEnable(uint8_t dutyCycle = 0);
 #endif
 #define BACKLIGHT_LEVEL_MAX   100
 #if defined(PCBX12S)
@@ -465,7 +511,7 @@ void backlightEnable(uint8_t dutyCycle);
 #define BACKLIGHT_LEVEL_MIN   46
 #endif
 #define BACKLIGHT_ENABLE()    backlightEnable(unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : BACKLIGHT_LEVEL_MAX-g_eeGeneral.backlightBright)
-#define BACKLIGHT_DISABLE()   backlightEnable(unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : g_eeGeneral.blOffBright)
+#define BACKLIGHT_DISABLE()   backlightEnable(unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : ((g_eeGeneral.blOffBright == BACKLIGHT_LEVEL_MIN) && (g_eeGeneral.backlightMode != e_backlight_mode_off)) ? 0 : g_eeGeneral.blOffBright)
 #define isBacklightEnabled()  true
 
 #if !defined(SIMU)
@@ -486,8 +532,8 @@ void usbJoystickUpdate();
 #endif
 
 // Audio driver
-void audioInit(void);
-void audioConsumeCurrentBuffer(void);
+void audioInit();
+void audioConsumeCurrentBuffer();
 #define audioDisableIrq()             // interrupts must stay enabled on Horus
 #define audioEnableIrq()              // interrupts must stay enabled on Horus
 #if defined(PCBX12S)
@@ -497,34 +543,36 @@ void setSampleRate(uint32_t frequency);
 #endif
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
-int32_t getVolume(void);
+int32_t getVolume();
 #define VOLUME_LEVEL_MAX               23
 #define VOLUME_LEVEL_DEF               12
 
 // Telemetry driver
 #define TELEMETRY_FIFO_SIZE            512
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
-void telemetryPortSetDirectionOutput(void);
-void sportSendBuffer(uint8_t * buffer, uint32_t count);
+void telemetryPortSetDirectionInput();
+void telemetryPortSetDirectionOutput();
+void sportSendByte(uint8_t byte);
+void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
+void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // Sport update driver
 #if defined(PCBX10)
-void sportUpdatePowerOn(void);
-void sportUpdatePowerOff(void);
+void sportUpdatePowerOn();
+void sportUpdatePowerOff();
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
 #else
-#define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
-#define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()
+#define SPORT_UPDATE_POWER_ON()
+#define SPORT_UPDATE_POWER_OFF()
 #endif
 
 // Haptic driver
-void hapticInit(void);
-void hapticDone(void);
-void hapticOff(void);
-#define HAPTIC_OFF()                   hapticOff()
+void hapticInit();
+void hapticDone();
+void hapticOff();
 void hapticOn(uint32_t pwmPercent);
 
 // GPS driver
@@ -534,35 +582,40 @@ uint8_t gpsGetByte(uint8_t * byte);
 extern uint8_t gpsTraceEnabled;
 #endif
 void gpsSendByte(uint8_t byte);
+#if defined(PCBX12S)
+#define PILOTPOS_MIN_HDOP             500
+#endif
 
 // Second serial port driver
-#define SERIAL2
+#if defined(PCBX12S)
+#define AUX_SERIAL
 #define DEBUG_BAUDRATE                 115200
-extern uint8_t serial2Mode;
-void serial2Init(unsigned int mode, unsigned int protocol);
-void serial2Putc(char c);
-#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
-void serial2SbusInit(void);
-void serial2Stop(void);
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit();
+void auxSerialStop();
+#endif
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
+#define BT_TX_FIFO_SIZE    64
+#define BT_RX_FIFO_SIZE    128
+#define BLUETOOTH_BOOTLOADER_BAUDRATE  230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
-void bluetoothInit(uint32_t baudrate);
-void bluetoothWriteWakeup(void);
-uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
-
-extern uint8_t currentTrainerMode;
-void checkTrainerSettings(void);
+void bluetoothInit(uint32_t baudrate, bool enable);
+void bluetoothWriteWakeup();
+uint8_t bluetoothIsWriting();
+void bluetoothDisable();
 
 #if defined(__cplusplus)
 #include "fifo.h"
 #include "dmafifo.h"
 extern DMAFifo<512> telemetryFifo;
-extern DMAFifo<32> serial2RxFifo;
+typedef DMAFifo<32> AuxSerialRxFifo;
+extern AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
-
-#endif // _BOARD_HORUS_H_
+#endif // _BOARD_H_

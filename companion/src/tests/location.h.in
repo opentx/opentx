@@ -1,0 +1,2 @@
+#define TESTS_PATH        "@TESTS_PATH@"
+#define RADIO_TESTS_PATH  "@RADIO_TESTS_PATH@"

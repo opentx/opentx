@@ -76,29 +76,17 @@ enum PortuguesePrompts {
   PT_PROMPT_WATTS = PT_PROMPT_UNITS_BASE+UNIT_WATTS,
   PT_PROMPT_FEET = PT_PROMPT_UNITS_BASE+UNIT_FEET,
   PT_PROMPT_KTS = PT_PROMPT_UNITS_BASE+UNIT_KTS,
-#if defined(CPUARM)
   PT_PROMPT_MILLILITERS = PT_PROMPT_UNITS_BASE+UNIT_MILLILITERS,
   PT_PROMPT_FLOZ = PT_PROMPT_UNITS_BASE+UNIT_FLOZ,
   PT_PROMPT_FEET_PER_SECOND = PT_PROMPT_UNITS_BASE+UNIT_FEET_PER_SECOND,
-#endif
 };
 
-#if defined(VOICE)
 
-#if defined(CPUARM)
   #define PT_PUSH_UNIT_PROMPT(u) pt_pushUnitPrompt((u), id)
-#else
-  #define PT_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
-#endif
 
 I18N_PLAY_FUNCTION(pt, pushUnitPrompt, uint8_t unitprompt)
 {
-#if defined(CPUARM)
     PUSH_UNIT_PROMPT(unitprompt, 0);
-#else
-  unitprompt = PT_PROMPT_UNITS_BASE + unitprompt*2;
-  PUSH_NUMBER_PROMPT(unitprompt);
-#endif
 }
 
 I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -108,31 +96,12 @@ I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     div_t qr = div((int)number, 10);
     if (qr.rem > 0) {
       PLAY_NUMBER(qr.quot, 0, 0);
@@ -185,25 +154,13 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
     ore=tmp;
     if (tmp > 2) {
       PLAY_NUMBER(tmp, 0, 0);
-#if defined(CPUARM)
       PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
-#else
-      PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
-#endif
     } else if (tmp==2) {
       PUSH_NUMBER_PROMPT(PT_PROMPT_DUAS);
-#if defined(CPUARM)
       PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
-#else
-      PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
-#endif
       } else if (tmp==1) {
       PUSH_NUMBER_PROMPT(PT_PROMPT_UMA);
-#if defined(CPUARM)
       PUSH_UNIT_PROMPT(UNIT_HOURS, 0);
-#else
-      PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
-#endif
     }
   }
 
@@ -212,39 +169,22 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0 || ore >0) {
     if (tmp != 1) {
       PLAY_NUMBER(tmp, 0, 0);
-#if defined(CPUARM)
       PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
-#else
-      PUSH_NUMBER_PROMPT(PT_PROMPT_MINUTOS);
-#endif
     } else {
       PUSH_NUMBER_PROMPT(PT_PROMPT_NUMBERS_BASE+1);
-#if defined(CPUARM)
       PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
-#else
-      PUSH_NUMBER_PROMPT(PT_PROMPT_MINUTO);
-#endif
     }
     PUSH_NUMBER_PROMPT(PT_PROMPT_E);
   }
 
   if (seconds != 1) {
     PLAY_NUMBER(seconds, 0, 0);
-#if defined(CPUARM)
     PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
-#else
-    PUSH_NUMBER_PROMPT(PT_PROMPT_SEGUNDOS);
-#endif
   } else {
     PUSH_NUMBER_PROMPT(PT_PROMPT_NUMBERS_BASE+1);
-#if defined(CPUARM)
     PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
-#else
-    PUSH_NUMBER_PROMPT(PT_PROMPT_SEGUNDO);
-#endif
   }
 }
 
 LANGUAGE_PACK_DECLARE(pt, "Portugues");
 
-#endif

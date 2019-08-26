@@ -21,7 +21,11 @@
 #ifndef _SDCARD_H_
 #define _SDCARD_H_
 
+#if !defined(SIMU)
 #include "ff.h"
+#endif
+
+#include "opentx.h"
 
 #define ROOT_PATH           "/"
 #define MODELS_PATH         ROOT_PATH "MODELS"      // no trailing slash = important
@@ -33,6 +37,7 @@
 #define SYSTEM_SUBDIR       "SYSTEM"
 #define BITMAPS_PATH        ROOT_PATH "IMAGES"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARE"
+#define AUTOUPDATE_FILENAME FIRMWARES_PATH "/autoupdate.frsk"
 #define EEPROMS_PATH        ROOT_PATH "EEPROM"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
@@ -43,6 +48,7 @@
 #define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
 #define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH "/FUNCTIONS"
 #define SCRIPTS_TELEM_PATH  SCRIPTS_PATH "/TELEMETRY"
+#define SCRIPTS_TOOLS_PATH  SCRIPTS_PATH "/TOOLS"
 
 #define LEN_FILE_PATH_MAX   (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + "/"
 
@@ -64,6 +70,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
+#define UPDATE_FIRMWARE_EXT ".frsk"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
@@ -103,7 +110,7 @@ uint32_t sdGetFreeSectors();
 const char * sdCheckAndCreateDirectory(const char * path);
 
 #if !defined(BOOT)
-inline const pm_char * SDCARD_ERROR(FRESULT result)
+inline const char * SDCARD_ERROR(FRESULT result)
 {
   if (result == FR_NOT_READY)
     return STR_NO_SDCARD;
@@ -113,38 +120,34 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 #endif
 
 // NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
-const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL);
+const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t * fnlen=nullptr, uint8_t * extlen=nullptr);
+const char * getBasename(const char * path);
 
-// TODO REMOVE THE O9X FOURCC in 2.3
 #if defined(PCBX12S)
   #define OTX_FOURCC 0x3478746F // otx for X12S
-  #define O9X_FOURCC 0x3178396F // we forgot it in 2.2 RC ..
 #elif defined(PCBX10)
   #define OTX_FOURCC 0x3778746F // otx for X10
-  #define O9X_FOURCC 0x3478746F // match X12S, we forgot OTX_FOURCC before 2.2.1 RC2
 #elif defined(PCBX9E)
   #define OTX_FOURCC 0x3578746F // otx for Taranis X9E
-  #define O9X_FOURCC 0x3378396F // o9x for Taranis X9E
+#elif defined(PCBXLITES)
+  #define OTX_FOURCC 0x3B78746F // otx for Taranis X-Lite S
 #elif defined(PCBXLITE)
   #define OTX_FOURCC 0x3978746F // otx for Taranis X-Lite
-  #define O9X_FOURCC 0x3978396F // o9x for Taranis X-Lite
-#elif defined(PCBX7)
+#elif defined(RADIO_X7)
   #define OTX_FOURCC 0x3678746F // otx for Taranis X7
-  #define O9X_FOURCC 0x3378396F // o9x for Taranis X7
+#elif defined(PCBX9LITE)
+  #define OTX_FOURCC 0x3C78746F // otx for Taranis X9-Lite
 #elif defined(PCBX9D) || defined(PCBX9DP)
   #define OTX_FOURCC 0x3378746F // otx for Taranis X9D
-  #define O9X_FOURCC 0x3378396F // o9x for Taranis X9D
 #elif defined(PCBSKY9X)
   #define OTX_FOURCC 0x3278746F // otx for sky9x
-  #define O9X_FOURCC 0x3278396F // o9x for sky9x
-#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
-  #define OTX_FOURCC 0x3178746F // otx for gruvin9x/MEGA2560
-  #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
+#elif defined(RADIO_T12)
+  #define OTX_FOURCC 0x3D78746F // otx for Jumper T12
 #endif
 
 bool isFileAvailable(const char * filename, bool exclDir = false);
 int findNextFileIndex(char * filename, uint8_t size, const char * directory);
-bool isExtensionMatching(const char * extension, const char * pattern, char * match = NULL);
+bool isExtensionMatching(const char * extension, const char * pattern, char * match = nullptr);
 
 const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);

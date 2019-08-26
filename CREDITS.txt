@@ -40,8 +40,7 @@ Michael Byrne
 <a href="http://www.craftandtheoryllc.com">Craft & Theory (monthly)</a>
 <a href="https://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
 <a href="https://www.team-blacksheep.com">Team BlackSheep</a>
-<a href="https://www.3dxr.co.uk">Team BlackSheep</a>
-www.3dxr.co.uk
+<a href="https://www.3dxr.co.uk">3DXR</a>
 
 [People who have donated to OpenTX]
 Mario Sette
@@ -1381,3 +1380,158 @@ Kevin Karamitros
 Beat Zurflueh
 Frank Morris
 Edwin Butin Bik
+Geir Atle Storhaug
+Ted Hoenderdos
+Sebastian Stefanitsch
+Leif Pernstig
+Michael Garofalo
+Chris Sunman
+Adam Kalus
+Christoffer H Henni
+Michael Stauning
+Stuart Smith
+Giuseppe Esposito 
+Stefano Boggia
+Manuel Peon
+Mark Bennett
+Nicholas Platts
+Carol B Meravi
+Norman Hunt
+Raymond Henderson
+Christopher Marshall
+Christopher Prinos
+AntiSocial Engineering
+Pierre Duvezin-Caubet
+Hermann Haberer
+Guy Poignonec
+Robin Lauff
+Renato Müller
+Hannes Mössler
+Cédric Lagoutte
+Alexander Mathis
+Barry Andersen
+Philippe Glur
+Felix Tang
+Heiko Polig
+Pierre Marty
+Dirk Weiler
+Eddie Ehlin
+John Clarke
+Laurent Thibaudet
+James A Davey
+Stuart Olson
+claudio Piccinini
+Kenneth Kriegel
+Evening Shade Pottery
+Raymond Henderson
+Clifton Hipsher 
+François Carton
+Olivier Portron
+Didier Hochedez
+Julien Gérard
+Christian Syrbe
+Juan Luis Guerrero Portero
+Jonathan Badley
+Ms Place
+Heart of NM LLC
+Daniele Gnesutta
+Erik Peterson
+SkyRaccoon
+James Lummel
+Jürgen Husske
+Marko Domagoj Zic
+Fabrice Debonnet 
+Ms Place
+Jörg Hammer
+Rapid Informatics LLC
+Renaud Perriguey
+Edmond Dufresne
+Jaroslav Gazik
+Philippe Desrichard
+Vincent Heron
+Marcel Schäfer
+Stefano Pascucci
+Frédéric Bourgois
+Stefan Hufnagl
+Jean Philippe Bonacci
+Jack Mitchell
+Santiago Iglesias Garcia
+Steve Kurywchak
+Tore Skjefstad
+Sergio Digiandco di Molino
+Xavier Delepine
+Miles Shearman
+Bernard Teyssier
+Entel Consulting BVBA
+Stuart Olson
+Maximilian Wechselberger
+Kenneth Crump
+Ken Elder
+Darko Perković
+Martin Krueger
+Jack Lopes
+Huguette Viale
+Didier Christien
+Pascal Roublot
+Arnaud Sourisse
+Aldo Midali
+Sidney Gates
+Serhiy Semenenko 
+Miguel Esquer Ramiro
+Stefan Grunenberg
+Ferenc Kunkli
+Stefano Boggia
+Lee Bennett
+Morgantech
+Marek Přikryl
+Peter Scott
+Ernst Camenzind
+Steve Robbins
+Jean Noel Berlan
+Walter Szempruch
+Petr Kysela
+Gerhard Zdzuj
+Joseph S Robinson
+Zdenek Trojanek
+Fred Page
+Burt Pickard-Richardson
+Eric Destrebecq
+Derek Quigley
+Lionel Lunan
+Paul Dittman
+Justin Delaire
+Damir Pooshs
+Alvin Burke
+Pete Rathbun
+Christophe Molliex
+Ulf Hedlund
+Damian Niegowski
+Michae St Cyr
+Ivan Pik
+Rothermann, Kurt
+Antinoro Ferdinando
+Sam Day
+Roman Rychtarik
+Pierre Malriq
+Jean Gaillard
+Michel Garbarino
+For Our Better World
+Lothar Herrl
+James Rhodes
+Edward Glover
+James Snodgrass
+Dwayne Carden
+Gerald Migely
+Mark Schmidt
+Hendrik Goessaert
+Arturas Giedraitis
+Paul Vernon
+Rick Smith
+Marcin Galczynski
+Tom Knudtson
+Sascha Heinrich
+James Snodgrass
+Alain Labonne
+Darko Perković
+Pierre Malriq
+Donald Manson

@@ -55,13 +55,8 @@ enum SlovakPrompts {
 
 };
 
-#if defined(VOICE)
 
-#if defined(CPUARM)
   #define SK_PUSH_UNIT_PROMPT(u, p) sk_pushUnitPrompt((u), (p), id)
-#else
-  #define SK_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
-#endif
 
 #define MUZSKY 0x80
 #define ZENSKY 0x81
@@ -69,22 +64,12 @@ enum SlovakPrompts {
 
 I18N_PLAY_FUNCTION(sk, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
-#if defined(CPUARM)
   if (number == 1)
     PUSH_UNIT_PROMPT(unitprompt, 0);
   else if (number > 1 && number < 5)
     PUSH_UNIT_PROMPT(unitprompt, 1);
   else
     PUSH_UNIT_PROMPT(unitprompt, 2);
-#else
-  unitprompt = SK_PROMPT_UNITS_BASE + unitprompt*4;
-  if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
-  else if (number > 1 && number < 5)
-    PUSH_NUMBER_PROMPT(unitprompt+1);
-  else
-    PUSH_NUMBER_PROMPT(unitprompt+2);
-#endif
 }
 
 I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -95,31 +80,12 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     div_t qr = div((int)number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, ZENSKY);
@@ -138,7 +104,6 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 
   int16_t tmp = number;
 
-#if defined(CPUARM)
   switch(unit) {
     case 0:
       break;
@@ -161,29 +126,6 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       att = MUZSKY;
       break;
   }
-#else
-  switch(unit) {
-    case 0:
-      break;
-    case 4:
-    case 10:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 17:
-    case 18:
-      att = ZENSKY;
-      break;
-    case 8:
-    case 19:
-      att = STREDNI;
-      break;
-    default:
-      att = MUZSKY;
-      break;
-  }
-#endif
 
   if ((number == 1) && (att == MUZSKY)) {
     PUSH_NUMBER_PROMPT(SK_PROMPT_JEDEN);
@@ -254,4 +196,3 @@ I18N_PLAY_FUNCTION(sk, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(sk, "Slovak");
 
-#endif

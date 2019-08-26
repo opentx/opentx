@@ -38,20 +38,6 @@ uint32_t readKeys()
   x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
   x = ~x;
 
-#if defined(REVA)
-  if (x & KEYS_GPIO_PIN_RIGHT)
-    result |= 0x02 << KEY_RIGHT;
-  if (x & KEYS_GPIO_PIN_LEFT)
-    result |= 0x02 << KEY_LEFT;
-  if (x & KEYS_GPIO_PIN_UP)
-    result |= 0x02 << KEY_UP;
-  if (x & KEYS_GPIO_PIN_DOWN)
-    result |= 0x02 << KEY_DOWN;
-  if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
-    result |= 0x02 << KEY_EXIT;
-  if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
-    result |= 0x02 << KEY_MENU;
-#else
   if (x & KEYS_GPIO_PIN_RIGHT)
     result |= 0x02 << KEY_RIGHT;
   if (x & KEYS_GPIO_PIN_UP)
@@ -64,7 +50,6 @@ uint32_t readKeys()
     result |= 0x02 << KEY_EXIT;
   if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 0x02 << KEY_MENU;
-#endif
 
   // TRACE("readKeys(): %x => %x", x, result);
 
@@ -95,12 +80,12 @@ uint32_t readTrims()
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+bool trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }
 
-uint8_t keyDown()
+bool keyDown()
 {
   return readKeys() || REA_DOWN();
 }
@@ -109,28 +94,23 @@ void readKeysAndTrims()
 {
   uint32_t i;
 
-#if ROTARY_ENCODERS > 0
-  keys[BTN_REa].input(REA_DOWN());
-#endif
-
-  uint8_t index = KEY_MENU;
-  uint8_t in = readKeys();
+  uint8_t index = 0;
+  uint8_t keys_input = readKeys();
   for (i = 1; i < 7; i++) {
-    keys[index].input(in & (1 << i));
+    keys[index].input(keys_input & (1 << i));
     ++index;
   }
 
-  in = readTrims();
-
+  uint8_t trims_input = readTrims();
   for (i = 1; i < 256; i <<= 1) {
-    keys[index].input(in & i);
+    keys[index].input(trims_input & i);
     ++index;
   }
-}
 
-uint8_t keyState(uint8_t index)
-{
-  return keys[index].state();
+  if ((keys_input || trims_input) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+    // on keypress turn the light on
+    backlightOn();
+  }
 }
 
 uint32_t switchState(uint8_t index)
@@ -141,13 +121,8 @@ uint32_t switchState(uint8_t index)
   uint32_t xxx = 0;
 
   switch (index) {
-#if defined(REVA)
-    case SW_ELE:
-      xxx = a & 0x00000100; // ELE_DR   PA8
-#else
     case SW_ELE:
       xxx = c & 0x80000000; // ELE_DR   PC31
-#endif
       break;
 
     case SW_AIL:
@@ -176,13 +151,8 @@ uint32_t switchState(uint8_t index)
       xxx = c & 0x00010000; // SW_GEAR     PC16
       break;
 
-#if defined(REVA)
-    case SW_THR:
-      xxx = a & 0x10000000; // SW_TCUT     PA28
-#else
     case SW_THR:
       xxx = c & 0x00100000; // SW_TCUT     PC20
-#endif
       break;
 
     case SW_TRN:

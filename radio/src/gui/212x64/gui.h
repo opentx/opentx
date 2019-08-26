@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -25,6 +25,7 @@
 #include "lcd.h"
 #include "menus.h"
 #include "popups.h"
+#include "common/stdlcd/draw_functions.h"
 
 #define HEADER_LINE                    0
 #define HEADER_LINE_COLUMNS
@@ -32,7 +33,6 @@
 #define DEFAULT_SCROLLBAR_X            (LCD_W-1)
 #define NUM_BODY_LINES                 (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT             FH
-#define MENU_INIT_VPOS                 0
 
 #define MODEL_BITMAP_WIDTH             64
 #define MODEL_BITMAP_HEIGHT            32
@@ -55,11 +55,6 @@ inline void drawFieldLabel(coord_t x, coord_t y, const char * str)
 extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 bool loadModelBitmap(char * name, uint8_t * bitmap);
 
-struct MenuItem {
-  const char * name;
-  const MenuHandlerFunc action;
-};
-
 // Temporary no highlight
 extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
@@ -71,45 +66,34 @@ void drawSplash();
 void drawSecondSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-void displayMenuBar(const MenuItem * menu, int index);
-void drawProgressBar(const char * label, int num, int den);
 void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
 void drawColumnHeader(const char * const * headers, uint8_t index);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 
 void drawAlertBox(const char * title, const char * text, const char * action);
-#define ALERT_SOUND_ARG , uint8_t sound
 void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound);
 
 void doMainScreenGraphics();
 
-typedef uint16_t FlightModesType;
-
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU               -1
 #define EDIT_SELECT_FIELD              0
 #define EDIT_MODIFY_FIELD              1
 #define EDIT_MODIFY_STRING             2
 extern int8_t s_editMode; // global editmode
 
 // checkIncDec flags
-#define EE_GENERAL                     0x01
-#define EE_MODEL                       0x02
+// we leave room for EE_MODEL and EE_GENERAL
 #define NO_INCDEC_MARKS                0x04
 #define INCDEC_SWITCH                  0x08
 #define INCDEC_SOURCE                  0x10
 #define INCDEC_REP10                   0x40
 #define NO_DBLKEYS                     0x80
 
-#define INCDEC_DECLARE_VARS(f)         uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+#define INCDEC_DECLARE_VARS(f)         uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = nullptr
 #define INCDEC_SET_FLAG(f)             incdecFlag = (f)
 #define INCDEC_ENABLE_CHECK(fn)        isValueAvailable = fn
 #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-
-// mawrow special values
-#define TITLE_ROW                      ((uint8_t)-1)
-#define HIDDEN_ROW                     ((uint8_t)-2)
 
 struct CheckIncDecStops
 {
@@ -146,7 +130,7 @@ extern const CheckIncDecStops &stopsSwitch;
 #define CATEGORY_END(val)                                          \
   (val), (val+1)
 
-int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=nullptr, const CheckIncDecStops &stops=stops100);
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
@@ -179,60 +163,59 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #define CURSOR_ON_LINE()         (menuHorizontalPosition<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-void check(const char * title, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
-void check_simple(const char *title, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
-void check_submenu_simple(const char * title, event_t event, uint8_t maxrow);
+void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check_submenu_simple(event_t event, uint8_t maxrow);
 
-void title(const pm_char * s);
-#define TITLE(str) title(str)
+void title(const char * s);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#define MENU_CHECK(title, tab, menu, lines_count) \
-  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
+#define MENU_CHECK(tab, menu, lines_count) \
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 
-#define MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count) \
-  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
+#define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)
 
-#define MENU(title, tab, menu, lines_count, ...) \
+#define MENU(name, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK(title, tab, menu, lines_count)
+  MENU_CHECK(tab, menu, lines_count); \
+  title(name)
 
-#define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
+#define MENU_FLAGS(name, tab, menu, flags, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count)
+  MENU_CHECK_FLAGS(tab, menu, flags, lines_count); \
+  title(name)
 
-#define SIMPLE_MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
-  check(title, event, menu, tab, DIM(tab), NULL, 0, lines_count, flags)
+#define SIMPLE_MENU(name, tab, menu, lines_count) \
+  check_simple(event, menu, tab, DIM(tab), lines_count); \
+  title(name)
 
-#define SIMPLE_MENU(title, tab, menu, lines_count) \
-  check_simple(title, event, menu, tab, DIM(tab), lines_count)
-
-#define SUBMENU_NOTITLE(lines_count, ...) { \
+#define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(NULL, event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  }
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, lines_count);
 
-#define SUBMENU(title, lines_count, ...) \
+#define SUBMENU(name, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(title, event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)
+  check(event, 0, nullptr, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
+  title(name)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(NULL, event, lines_count);
+  check_submenu_simple(event, lines_count)
 
-#define SIMPLE_SUBMENU(title, lines_count) \
-  check_submenu_simple(title, event, lines_count)
+#define SIMPLE_SUBMENU(name, lines_count) \
+  SIMPLE_SUBMENU_NOTITLE(lines_count); \
+  title(name)
 
 typedef int choice_t;
 
-choice_t editChoice(coord_t x, coord_t y, const pm_char *label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, event_t event);
+choice_t editChoice(coord_t x, coord_t y, const char *label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, LcdFlags attr, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event);
 
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
 
 #if defined(GVARS)
-  void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
   void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags=0);
   int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
   #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, editflags, event)
@@ -244,28 +227,18 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
 #endif
 
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
-  
+
 extern uint8_t s_curveChan;
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 
 extern uint8_t editNameCursorPos;
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr=ZCHAR);
-void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active);
+void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8_t size, event_t event, uint8_t active);
 
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
 #define EDIT_DELAY(y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
-#define WARNING_TYPE_ASTERISK          0
-#define WARNING_TYPE_CONFIRM           1
-#define WARNING_TYPE_INPUT             2
-
 void copySelection(char * dst, const char * src, uint8_t size);
-
-extern const pm_char * warningText;
-extern const pm_char * warningInfoText;
-extern uint8_t         warningInfoLength;
-extern uint8_t         warningResult;
-extern uint8_t         warningType;
 
 #define COPY_MODE 1
 #define MOVE_MODE 2
@@ -296,6 +269,7 @@ extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void menuTextView(event_t event);
 void pushMenuTextView(const char *filename);
 void pushModelNotes();
+void readModelNotes();
 
 void menuChannelsView(event_t event);
 
@@ -326,7 +300,7 @@ uint8_t switchToMix(uint8_t source);
 extern coord_t scrollbar_X;
 #define SET_SCROLLBAR_X(x) scrollbar_X = (x);
 
-extern const pm_uchar sticks[] PROGMEM;
+extern const unsigned char sticks[] ;
 
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);

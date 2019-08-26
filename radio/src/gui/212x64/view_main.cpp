@@ -49,11 +49,11 @@
 #define TRIM_LEN 27
 #define MARKER_WIDTH  5
 
-const pm_uchar logo_taranis[] PROGMEM = {
+const unsigned char logo_taranis[]  = {
 #include "logo.lbm"
 };
 
-const pm_uchar icons[] PROGMEM = {
+const unsigned char icons[]  = {
 #include "icons.lbm"
 };
 
@@ -96,6 +96,10 @@ void displayTrims(uint8_t phase)
     int32_t trim = getTrimValue(phase, i);
     int32_t val = trim;
     bool exttrim = false;
+
+    if(getRawTrimValue(phase, i).mode == TRIM_MODE_NONE)
+      continue;
+
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
     }
@@ -218,8 +222,8 @@ void displayTopBar()
 
     /* Rx voltage */
     altitude_icon_x = batt_icon_x+7*FW+3;
-    if (g_model.frsky.voltsSource) {
-      uint8_t item = g_model.frsky.voltsSource-1;
+    if (g_model.voltsSource) {
+      uint8_t item = g_model.voltsSource-1;
       if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & voltsItem = telemetryItems[item];
         if (voltsItem.isAvailable()) {
@@ -230,8 +234,8 @@ void displayTopBar()
     }
 
     /* Altitude */
-    if (g_model.frsky.altitudeSource) {
-      uint8_t item = g_model.frsky.altitudeSource-1;
+    if (g_model.altitudeSource && !IS_FAI_ENABLED()) {
+      uint8_t item = g_model.altitudeSource - 1;
       if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & altitudeItem = telemetryItems[item];
         if (altitudeItem.isAvailable()) {
@@ -245,15 +249,10 @@ void displayTopBar()
 
   /* Notifs icons */
   coord_t x = BAR_NOTIFS_X;
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
-  LCD_NOTIF_ICON(x, ICON_REBOOT);
-  x -= 12;
-#else
-  if (unexpectedShutdown) {
+  if (isAsteriskDisplayed()) {
     LCD_NOTIF_ICON(x, ICON_REBOOT);
     x -= 12;
   }
-#endif
 
   if (usbPlugged()) {
     LCD_NOTIF_ICON(x, ICON_USB);
@@ -295,7 +294,7 @@ void displayTopBar()
   lcdDrawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
 
   /* The inside of the Batt gauge */
-  displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(), IS_TXBATT_WARNING());
+  displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(10), IS_TXBATT_WARNING());
 
   /* The inside of the RSSI gauge */
   if (TELEMETRY_RSSI() > 0) {
@@ -434,8 +433,6 @@ int getSwitchCount()
 void menuMainView(event_t event)
 {
   static bool secondPage = false;
-
-  STICK_SCROLL_DISABLE();
 
   switch(event) {
 
@@ -590,9 +587,9 @@ void menuMainView(event_t event)
     lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
     drawStringWithIndex(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, gvarLastChanged+1);
     lcdDrawSizedText(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
-    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("["), BOLD);
+    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, "[", BOLD);
     drawGVarValue(BITMAP_X+2*FW, BITMAP_Y+2*FH+3, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
-    lcdDrawText(lcdLastRightPos, BITMAP_Y+2*FH+3, PSTR("]"), BOLD);
+    lcdDrawText(lcdLastRightPos, BITMAP_Y+2*FH+3, "]", BOLD);
   }
 #endif
 }

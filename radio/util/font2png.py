@@ -1,61 +1,63 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-try:
-    from PyQt5 import Qt, QtGui, QtCore
-except:
-    from PyQt4 import Qt, QtGui, QtCore
-
+import sys, os
 import glob
 
-app = Qt.QApplication(sys.argv)
+from PIL import Image, ImageDraw, ImageFont
 
-for f in glob.glob("fonts/*.ttf"):
-    QtGui.QFontDatabase.addApplicationFont(f)
-
-chars_en = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~|≥→←↑↓↗↘↙↖△"""
+chars_en = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~|≥"""
 chars_fr = u"""éèàîç"""
 chars_de = u"""ÄäÖöÜüß"""
 chars_cz = u"""ěščřžýáíéňóůúďťĚŠČŘŽÝÁÍÉŇÓÚŮĎŤ"""
+chars_es = u"""Ññ"""
+chars_fi = u"""åäöÅÄÖ"""
+chars_it = u"""àù"""
+chars_pl = u"""ąćęłńóśżźĄĆĘŁŃÓŚŻŹ"""
+chars_pt = u"""ÁáÂâÃãÀàÇçÉéÊêÍíÓóÔôÕõÚú"""
+chars_se = u"""åäöÅÄÖ"""
 
-COUNT_EXTRA_CHARS = 12
+COUNT_EXTRA_CHARS = 21
 
 chars_extra = u"".join([chr(1+i) for i in range(COUNT_EXTRA_CHARS)])
-chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz
+chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz + chars_es + chars_fi + chars_it + chars_pl + chars_se
 
 
-def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):
+def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, background, coordsfile=True):
+
+
     coords = []
-    font = QtGui.QFont(fontname)
-    font.setPixelSize(fontsize)
-    font.setBold(fontbold)
-    font.setHintingPreference(QtGui.QFont.PreferNoHinting)
-    font.setStyleStrategy(QtGui.QFont.PreferAntialias)
-    metrics = QtGui.QFontMetrics(font)
+    font_filename = 'fonts/' + fontname + '.ttf'
 
-    extraFilename = "fonts/extra_%dpx.png" % fontsize
-    extraImage = QtGui.QImage(extraFilename)
-    if extraImage.isNull():
-        # print("No extra font file", extraFilename)
-        extraImage = None
-        extraWidth, extraHeight = 0, 0
-    else:
-        extraWidth, extraHeight = extraImage.size().width() / COUNT_EXTRA_CHARS, extraImage.size().height()
+    print("Font filename: %s" % font_filename)
+    font = ImageFont.truetype(font_filename, fontsize)
+
+    extraImage = None
+    extraFilename = 'fonts/extra_%dpx.png' % fontsize
+
+    try:
+        extraImage = Image.open(extraFilename)
+        extraImage = extraImage.convert('RGB');
+
+    except IOError:
+        print("Missing extra symbol filename %s" % extraFilename)
 
     def getCharWidth(c):
         if c in chars_extra:
-            return extraWidth
+            if extraImage:
+                # Extra characters 16px
+                #if fontsize == 16:
+                if ord(c) <= 9:
+                    return 13
+                else:
+                    return 15
+            else:
+                return 0
         elif c == " ":
             return 4
-        elif c == "." and fontsize <= 8:
-            return 1
         else:
-            r = metrics.boundingRect(c)
-            if fontsize >= 24:
-                return r.width() + 3
-            else:
-                return r.width() + r.left() + 1
+            w, h = font.getsize(c)
+            return w + 1
 
     def getFontWidth():
         width = 0
@@ -63,57 +65,33 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
             width += getCharWidth(c)
         return width
 
-    def getFontTopBottom():
-        top, bottom = 0, 0
-        for i, c in enumerate(chars):
-            r = metrics.boundingRect(chars[i])
-            top = min(top, r.top())
-            bottom = max(bottom, r.bottom())
-        return top, bottom
-
     width = getFontWidth()
-    top, bottom = getFontTopBottom()
-    image = QtGui.QImage(width, fontsize + 4, QtGui.QImage.Format_RGB32)
-    image.fill(background)
-    painter = QtGui.QPainter()
-    painter.begin(image)
-    painter.setFont(font)
-    pen = QtGui.QPen(foreground)
-    painter.setPen(pen)
+    image = Image.new('RGB', (width, fontsize + 4), background)
+    draw = ImageDraw.Draw(image)
+
     width = 0
     for c in chars:
         coords.append(width)
-        painter.setOpacity(1.0)
+
         if c in chars_extra:
             if extraImage and c == chars_extra[0]:
-                for x in range(extraWidth * COUNT_EXTRA_CHARS):
-                    for y in range(extraHeight):
-                        rgb = extraImage.pixel(x, y)
-                        painter.setOpacity(1.0 - float(QtGui.qGray(rgb)) / 256)
-                        painter.drawPoint(x+width, y)
+                image.paste(extraImage.copy(),(width,1))
         elif c == " ":
             pass
-        elif c == "." and fontsize <= 8:
-            painter.drawPoint(width, fontsize)
-        elif (c == u"↑" or c == u"↓") and fontsize == 16:
-            rect = metrics.boundingRect(c)
-            painter.drawText(width - 1, fontsize, c)  # fontsize-bottom+1 -17 / 7
         else:
-            rect = metrics.boundingRect(c)
-            if fontsize >= 24:
-                painter.drawText(width - rect.left() + 1, fontsize - 2, c)  # fontsize-bottom+1 -17 / 7
-            else:
-                painter.drawText(width + 1, fontsize, c)  # fontsize-bottom+1 -17 / 7
+            w, h = font.getsize(c)
+            draw.text((width + 1, fontoffset), c, fill=foreground, font=font)
+
         width += getCharWidth(c)
 
     coords.append(width)
-    painter.end()
+
     image.save(filename + ".png")
     if coordsfile:
         with open(filename + ".specs", "w") as f:
             f.write(",".join(str(tmp) for tmp in coords))
 
-    return coords
 
+# Main
 if __name__ == "__main__":
-    createFontBitmap(sys.argv[4], sys.argv[1], float(sys.argv[2]), sys.argv[3] == "True", QtGui.QColor(0x00, 0x00, 0x00), QtGui.QColor(0xFF, 0xFF, 0xFF))
+    createFontBitmap(sys.argv[4], sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), (0,0,0), (255,255,255))

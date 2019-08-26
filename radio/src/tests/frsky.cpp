@@ -21,70 +21,10 @@
 #include "gtests.h"
 
 void frskyDProcessPacket(const uint8_t *packet);
-
-#if defined(TELEMETRY_FRSKY_SPORT)
 bool checkSportPacket(const uint8_t *packet);
 void sportProcessTelemetryPacket(const uint8_t * packet);
 bool checkSportPacket(const uint8_t *packet);
-void frskyCalculateCellStats(void);
-void displayVoltagesScreen();
-#endif
 
-#if defined(TELEMETRY_FRSKY) && !defined(CPUARM)
-TEST(FrSky, gpsNfuel)
-{
-  MODEL_RESET();
-  TELEMETRY_RESET();
-  g_model.frsky.usrProto = 1;
-  telemetryData.hub.gpsFix = 1;
-
-  uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x14, 0x2c, 0x00, 0x5e, 0x1c, 0x03 };
-  uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x13, 0x38, 0x0c, 0x5e, 0x1b };
-  uint8_t pkt3[] = { 0xfd, 0x07, 0x00, 0xc9, 0x06, 0x5e, 0x23, 0x4e, 0x00, 0x5e };
-  uint8_t pkt4[] = { 0xfd, 0x07, 0x00, 0x12, 0xef, 0x2e, 0x5e, 0x1a, 0x98, 0x26 };
-  uint8_t pkt5[] = { 0xfd, 0x07, 0x00, 0x5e, 0x22, 0x45, 0x00, 0x5e, 0x11, 0x02 };
-  uint8_t pkt6[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x19, 0x93, 0x00, 0x5e, 0x04 };
-  uint8_t pkt7[] = { 0xfd, 0x03, 0x00, 0x64, 0x00, 0x5e };
-  frskyDProcessPacket(pkt1);
-  frskyDProcessPacket(pkt2);
-  frskyDProcessPacket(pkt3);
-  frskyDProcessPacket(pkt4);
-  frskyDProcessPacket(pkt5);
-  frskyDProcessPacket(pkt6);
-  frskyDProcessPacket(pkt7);
-  EXPECT_EQ(telemetryData.hub.gpsCourse_bp, 44);
-  EXPECT_EQ(telemetryData.hub.gpsCourse_ap, 03);
-  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp / 100, 120);
-  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp % 100, 15);
-  EXPECT_EQ(telemetryData.hub.gpsLongitude_ap, 0x2698);
-  EXPECT_EQ(telemetryData.hub.gpsLatitudeNS, 'N');
-  EXPECT_EQ(telemetryData.hub.gpsLongitudeEW, 'E');
-  EXPECT_EQ(telemetryData.hub.fuelLevel, 100);
-}
-
-TEST(FrSky, dateNtime)
-{
-  MODEL_RESET();
-  TELEMETRY_RESET();
-  g_model.frsky.usrProto = 1;
-  telemetryData.hub.gpsFix = 1;
-
-  uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x15, 0x0f, 0x07, 0x5e, 0x16, 0x0b };
-  uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x17, 0x06, 0x12, 0x5e, 0x18 };
-  uint8_t pkt3[] = { 0xfd, 0x03, 0x00, 0x32, 0x00, 0x5e };
-  frskyDProcessPacket(pkt1);
-  frskyDProcessPacket(pkt2);
-  frskyDProcessPacket(pkt3);
-  EXPECT_EQ(telemetryData.hub.day, 15);
-  EXPECT_EQ(telemetryData.hub.month, 07);
-  EXPECT_EQ(telemetryData.hub.year, 11);
-  EXPECT_EQ(telemetryData.hub.hour, 06);
-  EXPECT_EQ(telemetryData.hub.min, 18);
-  EXPECT_EQ(telemetryData.hub.sec, 50);
-}
-#endif
-
-#if defined(TELEMETRY_FRSKY) && defined(CPUARM)
 TEST(FrSky, TelemetryValueWithMinAveraging)
 {
   /*
@@ -97,20 +37,17 @@ TEST(FrSky, TelemetryValueWithMinAveraging)
   uint8_t expected[] = { 10, 12, 17, 25, 35, 45, 55, 65, 75, 85, 92, 97, 100, 100, 100, 100, 100};
   int testPos = 0;
   //test of averaging
-  TelemetryValueWithMin testVal;
-  testVal.value = 0;
+  TelemetryMinDecorator<TelemetryFilterDecorator<TelemetryValue>> testVal;
+  testVal.reset();
   testVal.set(10);
-  EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 10);
-  EXPECT_EQ(testVal.value, expected[testPos++]);
-  for(int n=2; n<10; ++n) {
-    testVal.set(n*10);
-    EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), n*10);
-    EXPECT_EQ(testVal.value, expected[testPos++]);
+  EXPECT_EQ(testVal.value(), expected[testPos++]);
+  for (int n = 2; n < 10; ++n) {
+    testVal.set(n * 10);
+    EXPECT_EQ(testVal.value(), expected[testPos++]);
   }
-  for(int n=2; n<10; ++n) {
+  for (int n = 2; n < 10; ++n) {
     testVal.set(100);
-    EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 100);
-    EXPECT_EQ(testVal.value, expected[testPos++]);
+    EXPECT_EQ(testVal.value(), expected[testPos++]);
   }
 }
 
@@ -203,9 +140,6 @@ TEST(FrSky, Gps)
   EXPECT_EQ(telemetryItems[0].gps.longitude, 45341666);
 }
 
-#endif // defined(TELEMETRY_FRSKY) && defined(CPUARM)
-
-#if defined(TELEMETRY_FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)
 {
   // Packet downstream
@@ -243,8 +177,6 @@ void generateSportCellPacket(uint8_t * packet, uint8_t cells, uint8_t battnumber
   setSportPacketCrc(packet);
 }
 
-#define _V(volts)   (volts/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
-
 TEST(FrSkySPORT, FrSkyDCells)
 {
   MODEL_RESET();
@@ -280,12 +212,12 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   allowNewSensors = true;
 
   // test that simulates 3 cell battery
-  generateSportCellPacket(packet, 3, 0, _V(410), _V(420)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 0, 410, 420); sportProcessTelemetryPacket(packet);
   EXPECT_EQ(checkSportPacket(packet), true) << "Bad CRC generation in setSportPacketCrc()";
-  generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 2, 430,   0); sportProcessTelemetryPacket(packet);
 
-  generateSportCellPacket(packet, 3, 0, _V(405), _V(300)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 0, 405, 300); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 2, 430,   0); sportProcessTelemetryPacket(packet);
 
   EXPECT_EQ(telemetryItems[0].cells.count, 3);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 405);
@@ -296,11 +228,11 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(telemetryItems[0].valueMin, 1135);
   EXPECT_EQ(telemetryItems[0].valueMax, 1260);
 
-  generateSportCellPacket(packet, 3, 0, _V(405), _V(250)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 0, 405, 250); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 2, 430,   0); sportProcessTelemetryPacket(packet);
 
-  generateSportCellPacket(packet, 3, 0, _V(410), _V(420)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 0, 410, 420); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 2, 430,   0); sportProcessTelemetryPacket(packet);
 
   EXPECT_EQ(telemetryItems[0].cells.count, 3);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 410);
@@ -312,9 +244,9 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(telemetryItems[0].valueMax, 1260);
 
   //add another two cells - 5 cell battery
-  generateSportCellPacket(packet, 5, 0, _V(418), _V(408)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 5, 2, _V(415), _V(420)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 0, 418, 408); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 2, 415, 420); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 4, 410,   0); sportProcessTelemetryPacket(packet);
 
   EXPECT_EQ(telemetryItems[0].cells.count, 5);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
@@ -328,9 +260,9 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(telemetryItems[0].valueMax, 2071);
 
   //simulate very low voltage for cell 3
-  generateSportCellPacket(packet, 5, 0, _V(418), _V(408)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 5, 2, _V(100), _V(420)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 0, 418, 408); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 2, 100, 420); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 4, 410,   0); sportProcessTelemetryPacket(packet);
 
   EXPECT_EQ(telemetryItems[0].cells.count, 5);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
@@ -344,10 +276,10 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(telemetryItems[0].valueMax, 2071);
 
   //back to normal (but with reversed order of packets)
-  generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 5, 0, _V(418), _V(408)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 5, 2, _V(412), _V(420)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 5, 4, _V(410), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 4, 410,   0); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 0, 418, 408); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 2, 412, 420); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 5, 4, 410,   0); sportProcessTelemetryPacket(packet);
 
   EXPECT_EQ(telemetryItems[0].cells.count, 5);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
@@ -362,10 +294,6 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   //display test
   lcdClear();
-
-#if !defined(COLORLCD)
-  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
-#endif
 }
 
 TEST(FrSkySPORT, StrangeCellsBug)
@@ -391,8 +319,8 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   allowNewSensors = true;
 
   //sensor 1: 3 cell battery
-  generateSportCellPacket(packet, 3, 0, _V(418), _V(416)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 3, 2, _V(415), _V(  0)); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 0, 418, 416); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 2, 415,   0); sportProcessTelemetryPacket(packet);
 
   EXPECT_EQ(telemetryItems[0].cells.count, 3);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 418);
@@ -404,8 +332,8 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   EXPECT_EQ(telemetryItems[0].valueMax, 1249);
 
   //sensor 2: 4 cell battery
-  generateSportCellPacket(packet, 4, 0, _V(410), _V(420), DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 4, 2, _V(400), _V(405), DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 4, 0, 410, 420, DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 4, 2, 400, 405, DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
 
   EXPECT_EQ(telemetryItems[1].cells.count, 4);
   EXPECT_EQ(telemetryItems[1].cells.values[0].value, 410);
@@ -429,10 +357,10 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   EXPECT_EQ(telemetryItems[2].valueMax, 287);
 
   //now change some voltages
-  generateSportCellPacket(packet, 3, 2, _V(415), _V(  0)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 4, 2, _V(390), _V(370), DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 3, 0, _V(420), _V(410)); sportProcessTelemetryPacket(packet);
-  generateSportCellPacket(packet, 4, 0, _V(410), _V(420), DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 2, 415,   0); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 4, 2, 390, 370, DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 3, 0, 420, 410); sportProcessTelemetryPacket(packet);
+  generateSportCellPacket(packet, 4, 0, 410, 420, DATA_ID_FLVSS+1); sportProcessTelemetryPacket(packet);
 
   telemetryWakeup();
 
@@ -442,10 +370,6 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 
   //display test
   lcdClear();
-
-#if !defined(COLORLCD)
-  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
-#endif
 }
 
 void generateSportFasVoltagePacket(uint8_t * packet, uint32_t voltage)
@@ -553,4 +477,3 @@ TEST(FrSkySPORT, frskyCurrent)
   EXPECT_EQ(telemetryItems[0].valueMax, 505);
 }
 
-#endif  //#if defined(TELEMETRY_FRSKY_SPORT)

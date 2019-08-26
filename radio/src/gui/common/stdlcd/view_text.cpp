@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -94,13 +94,35 @@ void readTextFile(int & lines_count)
   }
 }
 
-#if defined(PCBX7) || defined(PCBX9E)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 #define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
 #define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
 #else
 #define EVT_KEY_NEXT_LINE              EVT_KEY_FIRST(KEY_DOWN)
 #define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)
 #endif
+
+void readModelNotes()
+{
+  LED_ERROR_BEGIN();
+
+  strcpy(s_text_file, MODELS_PATH "/");
+  char *buf = strcat_modelname(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+  strcpy(buf, TEXT_EXT);
+
+  waitKeysReleased();
+  event_t event = EVT_ENTRY;
+  while (event != EVT_KEY_BREAK(KEY_EXIT)) {
+    lcdRefreshWait();
+    lcdClear();
+    menuTextView(event);
+    event = getEvent();
+    lcdRefresh();
+    wdt_reset();
+  }
+
+  LED_ERROR_END();
+}
 
 void menuTextView(event_t event)
 {
@@ -144,7 +166,7 @@ void menuTextView(event_t event)
 #else
   // TODO?
 #endif
-  lcdDrawText(LCD_W/2-strlen(title)*FW/2, 0, title);
+  lcdDrawText(LCD_W/2, 0, getBasename(title), CENTERED);
   lcdInvertLine(0);
 
   if (lines_count > LCD_LINES-1) {

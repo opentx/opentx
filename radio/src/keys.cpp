@@ -42,7 +42,6 @@ event_t s_evt;
 struct t_inactivity inactivity = {0};
 Key keys[NUM_KEYS];
 
-#if defined(CPUARM)
 event_t getEvent(bool trim)
 {
   event_t evt = s_evt;
@@ -57,14 +56,6 @@ event_t getEvent(bool trim)
     return 0;
   }
 }
-#else
-event_t getEvent()
-{
-  event_t evt = s_evt;
-  s_evt = 0;
-  return evt;
-}
-#endif
 
 void Key::input(bool val)
 {
@@ -94,6 +85,7 @@ void Key::input(bool val)
         m_cnt = 0;
       }
       break;
+
     case KSTATE_START:
       // TRACE("key %d FIRST", key());
       putEvent(EVT_KEY_FIRST(key()));
@@ -127,7 +119,8 @@ void Key::input(bool val)
       if ((m_cnt & (m_state-1)) == 0) {
         // this produces repeat events that at first repeat slowly and then increase in speed
         // TRACE("key %d REPEAT", key());
-        putEvent(EVT_KEY_REPT(key()));
+        if (!IS_SHIFT_KEY(key()))
+          putEvent(EVT_KEY_REPT(key()));
       }
       break;
 
@@ -171,24 +164,23 @@ void pauseEvents(event_t event)
 // Disables any further event generation (BREAK and REPEAT) for this key, until the key is released
 void killEvents(event_t event)
 {
-#if defined(ROTARY_ENCODERS)
-  if (event == EVT_ROTARY_LONG) {
-    killEvents(BTN_REa + g_eeGeneral.reNavigation - 1);
-    return;
-  }
-#endif
-
   event = EVT_KEY_MASK(event);
   if (event < (int)DIM(keys)) {
     keys[event].killEvents();
   }
 }
 
-#if defined(CPUARM)
-bool clearKeyEvents()
+void killAllEvents()
+{
+  for (uint8_t key = 0; key < DIM(keys); key++) {
+    keys[key].killEvents();
+  }
+}
+
+bool waitKeysReleased()
 {
 #if defined(PCBSKY9X)
-  CoTickDelay(100);  // 200ms
+  RTOS_WAIT_MS(200); // 200ms
 #endif
 
   // loop until all keys are up
@@ -197,12 +189,7 @@ bool clearKeyEvents()
 #endif
 
   while (keyDown()) {
-
-#if defined(SIMU)
-    SIMU_SLEEP_NORET(1/*ms*/);
-#else
     wdt_reset();
-#endif
 
 #if !defined(BOOT)
     if ((get_tmr10ms() - start) >= 300) {  // wait no more than 3 seconds
@@ -216,26 +203,3 @@ bool clearKeyEvents()
   putEvent(0);
   return true;
 }
-#else
-void clearKeyEvents()
-{
-  // loop until all keys are up
-  while (keyDown()) {
-
-#if defined(SIMU)
-    SIMU_SLEEP(1/*ms*/);
-#else
-    wdt_reset();
-#endif
-
-#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION) && !defined(TELEMETREZ)
-    rotencPoll();
-#endif
-  }
-
-  memclear(keys, sizeof(keys));
-  putEvent(0);
-}
-#endif   // #if defined(CPUARM)
-
-

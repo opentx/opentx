@@ -107,6 +107,9 @@ enum Capability {
   HasFailsafe,
   HasSoundMixer,
   NumModules,
+  NumFirstUsableModule,
+  HasModuleR9MFlex,
+  HasModuleR9MMini,
   PPMCenter,
   PPMUnitMicroseconds,
   SYMLimits,
@@ -144,7 +147,9 @@ enum Capability {
   HasMixerExpo,
   HasBatMeterRange,
   DangerousFunctions,
-  HasModelCategories
+  HasModelCategories,
+  HasSwitchableJack,
+  PwrButtonPress
 };
 
 class EEPROMInterface
@@ -173,7 +178,7 @@ class EEPROMInterface
     virtual int getSize(const GeneralSettings &) = 0;
 
     //static void showEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
-    static void showEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
+    static QString getEepromWarnings(unsigned long errorsFound);
 
   protected:
 
@@ -242,40 +247,37 @@ enum EepromLoadErrors {
   NUM_ERRORS
 };
 
-struct Option {
-  const char * name;
-  QString tooltip;
-  uint32_t variant;
-};
-
 class Firmware
 {
   Q_DECLARE_TR_FUNCTIONS(Firmware)
 
   public:
-    Firmware(const QString & id, const QString & name, Board::Type board):
-      id(id),
-      name(name),
-      board(board),
-      variantBase(0),
-      base(NULL),
-      eepromInterface(NULL)
-    {
-    }
+    struct Option {
+      const char * name = nullptr;
+      QString tooltip;
+      unsigned variant = 0;
 
-    Firmware(Firmware * base, const QString & id, const QString & name, Board::Type board):
+      explicit Option(const char * name, const QString & description, unsigned variant = 0) :
+        name(name), tooltip(description), variant(variant) { }
+    };
+    typedef QList<Option> OptionsGroup;
+    typedef QList<OptionsGroup> OptionsList;
+
+
+    explicit Firmware(const QString & id, const QString & name, Board::Type board) :
+      Firmware(nullptr, id, name, board)
+    { }
+
+    explicit Firmware(Firmware * base, const QString & id, const QString & name, Board::Type board) :
       id(id),
       name(name),
       board(board),
       variantBase(0),
       base(base),
-      eepromInterface(NULL)
-    {
-    }
+      eepromInterface(nullptr)
+    { }
 
-    virtual ~Firmware()
-    {
-    }
+    virtual ~Firmware() { }
 
     inline const Firmware * getFirmwareBase() const
     {
@@ -286,13 +288,15 @@ class Firmware
 
     unsigned int getVariantNumber();
 
-    virtual void addLanguage(const char *lang);
+    virtual void addLanguage(const char * lang);
 
-    virtual void addTTSLanguage(const char *lang);
+    //virtual void addTTSLanguage(const char * lang);
 
-    virtual void addOption(const char *option, QString tooltip="", uint32_t variant=0);
+    virtual void addOption(const char * option, const QString & tooltip = QString(), unsigned variant = 0);
 
-    virtual void addOptions(Option options[]);
+    virtual void addOption(const Option & option);
+
+    virtual void addOptionsGroup(const OptionsGroup & options);
 
     virtual QString getStampUrl() = 0;
 
@@ -325,6 +329,16 @@ class Firmware
       return id;
     }
 
+    QList<const char *> languageList() const
+    {
+      return languages;
+    }
+
+    OptionsList optionGroups() const
+    {
+      return opts;
+    }
+
     virtual int getCapability(Capability) = 0;
 
     virtual QString getAnalogInputName(unsigned int index) = 0;
@@ -341,6 +355,7 @@ class Firmware
     {
       return registeredFirmwares;
     }
+
     static void addRegisteredFirmware(Firmware * fw)
     {
       registeredFirmwares.append(fw);
@@ -359,16 +374,11 @@ class Firmware
     {
       return currentVariant;
     }
+
     static void setCurrentVariant(Firmware * value)
     {
       currentVariant = value;
     }
-
-  public:
-    QList<const char *> languages;
-    QList<const char *> ttslanguages;
-    QList< QList<Option> > opts;
-
 
   protected:
     QString id;
@@ -377,14 +387,13 @@ class Firmware
     unsigned int variantBase;
     Firmware * base;
     EEPROMInterface * eepromInterface;
+    QList<const char *> languages;
+    //QList<const char *> ttslanguages;
+    OptionsList opts;
 
     static QVector<Firmware *> registeredFirmwares;
     static Firmware * defaultVariant;
     static Firmware * currentVariant;
-
-  private:
-    Firmware();
-
 };
 
 inline Firmware * getCurrentFirmware()
@@ -412,11 +421,7 @@ inline int calcRESXto100(int x)
   return divRoundClosest(x*100, 1024);
 }
 
-#define CHECK_IN_ARRAY(T, index) ((unsigned int)index < DIM(T) ? T[(unsigned int)index] : "???")
-
 extern QList<EEPROMInterface *> eepromInterfaces;
-
-bool loadFile(RadioData & radioData, const QString & filename);
 
 
 #endif // _EEPROMINTERFACE_H_

@@ -19,7 +19,7 @@
  */
 
 #include "customfunctions.h"
-#include "switchitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 #include "appdata.h"
 
@@ -76,11 +76,10 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? SpecialFunctionsContext : GlobalFunctionsContext);
-  rawSrcInputsItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
-  rawSrcInputsItemModel->setParent(this);
-  rawSrcAllItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRY|POPULATE_TELEMETRYEXT|POPULATE_SCRIPT_OUTPUTS);
-  rawSrcAllItemModel->setParent(this);
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext, this);
+  rawSrcAllItemModel = new RawSourceFilterItemModel(&generalSettings, model, this);
+  rawSrcInputsItemModel = new RawSourceFilterItemModel(rawSrcAllItemModel->sourceModel(), RawSource::InputSourceGroups, this);
+  rawSrcGVarsItemModel = new RawSourceFilterItemModel(rawSrcAllItemModel->sourceModel(), RawSource::GVarsGroup, this);
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -110,6 +109,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   s1.report("get scripts");
 
   CompanionIcon playIcon("play.png");
+  playIcon.addImage("stop.png", QIcon::Normal, QIcon::On);
 
   QStringList headerLabels;
   headerLabels << "#" << tr("Switch") << tr("Action") << tr("Parameters") << tr("Enable");
@@ -119,6 +119,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     // The label
     QLabel * label = new QLabel(this);
     label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
     label->setProperty("index", i);
     if (model)
@@ -210,12 +211,12 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     paramLayout->addWidget(fswtchBLcolor[i]);
     connect(fswtchBLcolor[i], SIGNAL(sliderReleased()), this, SLOT(customFunctionEdited()));
 
-    playBT[i] = new QPushButton(this);
-    playBT[i]->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+    playBT[i] = new QToolButton(this);
     playBT[i]->setProperty("index", i);
     playBT[i]->setIcon(playIcon);
+    playBT[i]->setCheckable(true);
     paramLayout->addWidget(playBT[i]);
-    connect(playBT[i], SIGNAL(pressed()), this, SLOT(playMusic()));
+    connect(playBT[i], &QToolButton::clicked, this, &CustomFunctionsPanel::toggleSound);
 
     QHBoxLayout * repeatLayout = new QHBoxLayout();
     tableLayout->addLayout(i, 4, repeatLayout);
@@ -249,82 +250,85 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
 CustomFunctionsPanel::~CustomFunctionsPanel()
 {
+  if (mediaPlayer)
+    stopSound(mediaPlayerCurrent);
+}
+
+void CustomFunctionsPanel::updateDataModels()
+{
+  const bool oldLock = lock;
+  lock = true;
+  rawSwitchItemModel->update();
+  rawSrcAllItemModel->update();
+  lock = oldLock;
 }
 
 void CustomFunctionsPanel::onMediaPlayerStateChanged(QMediaPlayer::State state)
 {
-  if (!lock) {
-    lock = true;
-    if (state==QMediaPlayer::StoppedState || state==QMediaPlayer::PausedState) {
-      mediaPlayer->stop();
-      if (mediaPlayerCurrent >= 0) {
-        playBT[mediaPlayerCurrent]->setIcon(CompanionIcon("play.png"));
-        mediaPlayerCurrent = -1;
-      }
-    }
-    lock = false;
-  }
+  if (state != QMediaPlayer::PlayingState)
+    stopSound(mediaPlayerCurrent);
 }
 
 void CustomFunctionsPanel::onMediaPlayerError(QMediaPlayer::Error error)
 {
-  if (!lock) {
-    lock = true;
-    if (mediaPlayerCurrent >= 0) {
-      playBT[mediaPlayerCurrent]->setIcon(CompanionIcon("play.png"));
-      mediaPlayerCurrent = -1;
-    }
-    lock = false;
+  stopSound(mediaPlayerCurrent);
+  QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Error occurred while trying to play sound, possibly the file is already opened. (Err: %1 [%2])").arg(mediaPlayer ? mediaPlayer->errorString() : "").arg(error));
+}
+
+bool CustomFunctionsPanel::playSound(int index)
+{
+  QString path = g.profile[g.id()].sdPath();
+  if (!QDir(path).exists())
+    return false;  // unlikely
+
+  if (mediaPlayer)
+    stopSound(mediaPlayerCurrent);
+
+  if (firmware->getCapability(VoicesAsNumbers)) {  // AVR
+    path.append(QString("/%1.wav").arg(int(fswtchParam[index]->value()), 4, 10, QChar('0')));
+  }
+  else {
+    QString lang(generalSettings.ttsLanguage);
+    if (lang.isEmpty())
+      lang = "en";
+    path.append(QString("/SOUNDS/%1/%2.wav").arg(lang).arg(fswtchParamArmT[index]->currentText()));
+  }
+  if (!QFileInfo::exists(path) || !QFileInfo(path).isReadable()) {
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find or open sound file:\n%1").arg(path));
+    return false;
+  }
+
+  mediaPlayer = new QMediaPlayer(this, QMediaPlayer::LowLatency);
+  mediaPlayer->setMedia(QUrl::fromLocalFile(path));
+  connect(mediaPlayer, &QMediaPlayer::stateChanged, this, &CustomFunctionsPanel::onMediaPlayerStateChanged);
+  connect(mediaPlayer, static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error), this, &CustomFunctionsPanel::onMediaPlayerError);
+  mediaPlayerCurrent = index;
+  mediaPlayer->play();
+  return true;
+}
+
+void CustomFunctionsPanel::stopSound(int index)
+{
+  if (index > -1 && index < (int)DIM(playBT))
+    playBT[index]->setChecked(false);
+  mediaPlayerCurrent = -1;
+  if (mediaPlayer) {
+    disconnect(mediaPlayer, 0, this, 0);
+    mediaPlayer->stop();
+    mediaPlayer->deleteLater();
+    mediaPlayer = nullptr;
   }
 }
 
-void CustomFunctionsPanel::playMusic()
+void CustomFunctionsPanel::toggleSound(bool play)
 {
-  if (!mediaPlayer) {
-    mediaPlayer = new QMediaPlayer(this);
-    connect(mediaPlayer, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(onMediaPlayerStateChanged(QMediaPlayer::State)));
-    connect(mediaPlayer, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(onMediaPlayerError(QMediaPlayer::Error)));
-  }
-
-  int index = sender()->property("index").toInt();
-  QString path = g.profile[g.id()].sdPath();
-  QDir qd(path);
-  QString track;
-  if (qd.exists()) {
-    if (firmware->getCapability(VoicesAsNumbers)) {
-      track = path + QString("/%1.wav").arg(int(fswtchParam[index]->value()), 4, 10, (const QChar)'0');
-    }
-    else {
-      path.append("/SOUNDS/");
-      QString lang = generalSettings.ttsLanguage;
-      if (lang.isEmpty())
-        lang = "en";
-      path.append(lang);
-      if (fswtchParamArmT[index]->currentText() != "----") {
-        track = path + "/" + fswtchParamArmT[index]->currentText() + ".wav";
-      }
-    }
-    QFile file(track);
-    if (!file.exists()) {
-      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find sound file %1!").arg(track));
-      return;
-    }
-
-    if (mediaPlayerCurrent == index) {
-      mediaPlayer->stop();
-      playBT[index]->setIcon(CompanionIcon("play.png"));
-      mediaPlayerCurrent = -1;
-    }
-    else {
-      if (mediaPlayerCurrent >= 0) {
-        playBT[mediaPlayerCurrent]->setIcon(CompanionIcon("play.png"));
-      }
-      mediaPlayerCurrent = index;
-      mediaPlayer->setMedia(QUrl::fromLocalFile(track));
-      mediaPlayer->play();
-      playBT[index]->setIcon(CompanionIcon("stop.png"));
-    }
-  }
+  if (!sender() || !sender()->property("index").isValid())
+    return;
+  const int index = sender()->property("index").toInt();
+  if (play)
+    playBT[index]->setChecked(playSound(index));
+  else
+    stopSound(index);
 }
 
 #define CUSTOM_FUNCTION_NUMERIC_PARAM  (1<<0)
@@ -380,7 +384,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       cfn.swtch = RawSwitch(fswtchSwtch[i]->currentData().toInt());
       cfn.func = func;
       cfn.enabled = fswtchEnable[i]->isChecked();
-      cfn.adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
 
     if (!cfn.isEmpty()) {
@@ -414,6 +417,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         int gvidx = func - FuncAdjustGV1;
         if (modified)
           cfn.adjustMode = fswtchGVmode[i]->currentIndex();
+        fswtchGVmode[i]->setCurrentIndex(cfn.adjustMode);
         widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
         if (cfn.adjustMode==FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
           if (modified)
@@ -422,8 +426,16 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             fswtchParam[i]->setDecimals(model->gvarData[gvidx].prec);
             fswtchParam[i]->setSingleStep(model->gvarData[gvidx].multiplierGet());
             fswtchParam[i]->setSuffix(model->gvarData[gvidx].unitToString());
-            fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
-            fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            if (cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
+              double rng = abs(model->gvarData[gvidx].getMax() - model->gvarData[gvidx].getMin());
+              rng *= model->gvarData[gvidx].multiplierGet();
+              fswtchParam[i]->setMinimum(-rng);
+              fswtchParam[i]->setMaximum(rng);
+            }
+            else {
+              fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
+              fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            }
             fswtchParam[i]->setValue(cfn.param * model->gvarData[gvidx].multiplierGet());
           }
           else {
@@ -589,8 +601,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
 void CustomFunctionsPanel::update()
 {
-  rawSwitchItemModel->update();
-
+  updateDataModels();
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
   for (int i=0; i<num_fsw; i++) {
@@ -735,7 +746,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
         b->setCurrentIndex(b->findData(value));
         break;
       case 2:
-        b->setModel(Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_GVARS));
+        b->setModel(rawSrcGVarsItemModel);
         b->setCurrentIndex(b->findData(value));
         break;
     }

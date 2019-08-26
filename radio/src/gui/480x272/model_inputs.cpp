@@ -26,7 +26,7 @@
 int expoFn(int x)
 {
   ExpoData * ed = expoAddress(s_currIdx);
-  int16_t anas[NUM_INPUTS] = {0};
+  int16_t anas[MAX_INPUTS] = {0};
   applyExpos(anas, e_perout_mode_inactive_flight_mode, ed->srcRaw, x);
   return anas[ed->chn];
 }
@@ -95,7 +95,7 @@ void insertExpo(uint8_t idx)
   ExpoData * expo = expoAddress(idx);
   memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
   memclear(expo, sizeof(ExpoData));
-  expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+  expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
   expo->curve.type = CURVE_REF_EXPO;
   expo->mode = 3; // pos+neg
   expo->chn = s_currCh - 1;
@@ -128,7 +128,7 @@ bool swapExpos(uint8_t & idx, uint8_t up)
   }
 
   if (tgt_idx == MAX_EXPOS) {
-    if (x->chn == NUM_INPUTS-1)
+    if (x->chn == MAX_INPUTS-1)
       return false;
     x->chn++;
     return true;
@@ -141,7 +141,7 @@ bool swapExpos(uint8_t & idx, uint8_t up)
       else return false;
     }
     else {
-      if (x->chn<NUM_INPUTS-1) x->chn++;
+      if (x->chn<MAX_INPUTS-1) x->chn++;
       else return false;
     }
     return true;
@@ -162,7 +162,7 @@ enum ExposFields {
   EXPO_FIELD_SCALE,
   EXPO_FIELD_WEIGHT,
   EXPO_FIELD_OFFSET,
-  CASE_CURVES(EXPO_FIELD_CURVE)
+  EXPO_FIELD_CURVE,
   CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES)
   EXPO_FIELD_SWITCH,
   EXPO_FIELD_SIDE,
@@ -176,9 +176,8 @@ bool menuModelExpoOne(event_t event)
 {
   ExpoData * ed = expoAddress(s_currIdx);
 
-  SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, ICON_MODEL_INPUTS, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER|OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW), 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, ICON_MODEL_INPUTS, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER|OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW), 0, 0, CURVE_ROWS, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
   lcdDrawSizedText(50, 3+FH, g_model.inputNames[ed->chn], LEN_INPUT_NAME, ZCHAR|MENU_TITLE_COLOR);
-  lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 230, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
   int sub = menuVerticalPosition;
 
@@ -239,9 +238,10 @@ bool menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_SOURCE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOURCE);
         drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, menuHorizontalPosition==0 ? attr : 0);
-        if (attr && menuHorizontalPosition==0) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
+        if (attr && menuHorizontalPosition==0)
+          ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
         if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
           drawSensorCustomValue(EXPO_ONE_2ND_COLUMN+75, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|(menuHorizontalPosition==1?attr:0));
           if (attr && menuHorizontalPosition == 1) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
@@ -263,16 +263,14 @@ bool menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_OFFSET:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_OFFSET));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_OFFSET);
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
 
-#if defined(CURVES)
       case EXPO_FIELD_CURVE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CURVE);
         editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, event, attr);
         break;
-#endif
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:
@@ -288,7 +286,7 @@ bool menuModelExpoOne(event_t event)
 
       case EXPO_FIELD_SIDE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SIDE);
-        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN, y, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN, y, STR_VCURVEFUNC, 4-ed->mode, 1, 3, attr, event);
         break;
 
       case EXPO_FIELD_TRIM:
@@ -305,7 +303,7 @@ bool menuModelExpoOne(event_t event)
   return true;
 }
 
-#define _STR_MAX(x) PSTR("/" #x)
+#define _STR_MAX(x) "/" #x
 #define STR_MAX(x) _STR_MAX(x)
 
 #define EXPO_LINE_WEIGHT_POS    125
@@ -501,7 +499,7 @@ bool menuModelExposAll(event_t event)
   int cur = 0;
   int i = 0;
 
-  for (int ch=1; ch<=NUM_INPUTS; ch++) {
+  for (int ch=1; ch<=MAX_INPUTS; ch++) {
     ExpoData * ed;
     coord_t y = MENU_CONTENT_TOP + (cur-menuVerticalOffset)*FH;
     if ((i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed))) {

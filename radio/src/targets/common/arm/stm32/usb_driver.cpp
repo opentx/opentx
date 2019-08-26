@@ -44,28 +44,13 @@ int getSelectedUsbMode()
 
 void setSelectedUsbMode(int mode)
 {
-  selectedUsbMode = usbMode (mode);
+  selectedUsbMode = usbMode(mode);
 }
 
 int usbPlugged()
 {
-  // debounce
-  static uint8_t debounced_state = 0;
-  static uint8_t last_state = 0;
-
-  if (GPIO_ReadInputDataBit(USB_GPIO, USB_GPIO_PIN_VBUS)) {
-    if (last_state) {
-      debounced_state = 1;
-    }
-    last_state = 1;
-  }
-  else {
-    if (!last_state) {
-      debounced_state = 0;
-    }
-    last_state = 0;
-  }
-  return debounced_state;
+  static PinDebounce debounce;
+  return debounce.debounce(USB_GPIO, USB_GPIO_PIN_VBUS);
 }
 
 USB_OTG_CORE_HANDLE USB_OTG_dev;
@@ -151,10 +136,13 @@ void usbJoystickUpdate()
     //analog values
     //uint8_t * p = HID_Buffer + 1;
     for (int i = 0; i < 8; ++i) {
-      int16_t value = channelOutputs[i] / 8;
-      if ( value > 127 ) value = 127;
-      else if ( value < -127 ) value = -127;
-      HID_Buffer[i+3] = static_cast<int8_t>(value);
+
+      int16_t value = channelOutputs[i] + 1024;
+      if ( value > 2047 ) value = 2047;
+      else if ( value < 0 ) value = 0;
+      HID_Buffer[i*2 +3] = static_cast<uint8_t>(value & 0xFF);
+      HID_Buffer[i*2 +4] = static_cast<uint8_t>((value >> 8) & 0x07);
+
     }
     USBD_HID_SendReport(&USB_OTG_dev, HID_Buffer, HID_IN_PACKET);
   }

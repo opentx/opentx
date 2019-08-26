@@ -43,7 +43,7 @@ void dacTimerInit()
   AUDIO_TIMER->CR1 = TIM_CR1_CEN ;
 }
 
-// Configure DAC0 (or DAC1 for REVA)
+// Configure DAC0
 // Not sure why PB14 has not be allocated to the DAC, although it is an EXTRA function
 // So maybe it is automatically done
 void dacInit()
@@ -51,6 +51,17 @@ void dacInit()
   dacTimerInit();
 
   GPIO_InitTypeDef GPIO_InitStructure;
+
+#if defined(AUDIO_MUTE_GPIO_PIN)
+  GPIO_InitStructure.GPIO_Pin = AUDIO_MUTE_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(AUDIO_MUTE_GPIO, &GPIO_InitStructure);
+  GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+#endif
+
   GPIO_InitStructure.GPIO_Pin = AUDIO_OUTPUT_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -83,6 +94,10 @@ void audioConsumeCurrentBuffer()
 
     nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
+#if defined(AUDIO_MUTE_GPIO_PIN)
+      // un-mute
+      GPIO_ResetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+#endif
       AUDIO_DMA_Stream->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
       AUDIO_DMA->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
       AUDIO_DMA_Stream->M0AR = CONVERT_PTR_UINT(nextBuffer->data);
@@ -91,6 +106,12 @@ void audioConsumeCurrentBuffer()
       DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
       DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
     }
+#if defined(AUDIO_MUTE_GPIO_PIN)
+    else {
+      // mute
+      GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+    }
+#endif
   }
 }
 

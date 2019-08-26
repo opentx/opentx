@@ -25,54 +25,72 @@
 #include <QRegExpValidator>
 #include "genericpanel.h"
 
-#define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
-
 class AutoLineEdit: public QLineEdit
 {
   Q_OBJECT
 
   public:
-    explicit AutoLineEdit(QWidget *parent = 0):
+    explicit AutoLineEdit(QWidget *parent = nullptr, bool updateOnChange = false):
       QLineEdit(parent),
       field(NULL),
+      strField(NULL),
       panel(NULL),
       lock(false)
     {
-      QRegExp rx(CHAR_FOR_NAMES_REGEX);
-      setValidator(new QRegExpValidator(rx, this));
-      connect(this, SIGNAL(editingFinished()), this, SLOT(onEdited()));
+      if (updateOnChange)
+        connect(this, &AutoLineEdit::textChanged, this, &AutoLineEdit::onEdited);
+      else
+        connect(this, &AutoLineEdit::editingFinished, this, &AutoLineEdit::onEdited);
     }
 
-    void setField(char * field, int len, GenericPanel * panel=NULL)
+    void setField(char * field, int len, GenericPanel * panel = nullptr)
     {
       this->field = field;
       this->panel = panel;
+      setValidator(new QRegExpValidator(QRegExp("[ A-Za-z0-9_.-,]*"), this));
       setMaxLength(len);
+      updateValue();
+    }
+
+    void setField(QString & field, int len = 0, GenericPanel * panel = nullptr)
+    {
+      strField = &field;
+      this->panel = panel;
+      if (len)
+        setMaxLength(len);
       updateValue();
     }
 
     void updateValue()
     {
       lock = true;
-      if (field) {
+      if (field)
         setText(field);
-      }
+      else if (strField)
+        setText(*strField);
       lock = false;
     }
 
   protected slots:
     void onEdited()
     {
-      if (field && !lock) {
+      if (lock)
+        return;
+
+      if (field)
         strcpy(field, text().toLatin1());
-        if (panel) {
-          emit panel->modified();
-        }
-      }
+      else if (strField)
+        *strField = text();
+      else
+        return;
+
+      if (panel)
+        emit panel->modified();
     }
 
   protected:
     char * field;
+    QString * strField;
     GenericPanel * panel;
     bool lock;
 };

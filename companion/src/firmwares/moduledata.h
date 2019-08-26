@@ -25,6 +25,9 @@
 
 #include <QtCore>
 
+class Firmware;
+class RadioDataConversionState;
+
 enum PulsesProtocol {
   PULSES_OFF,
   PULSES_PPM,
@@ -44,47 +47,74 @@ enum PulsesProtocol {
   PULSES_CROSSFIRE,
   PULSES_MULTIMODULE,
   PULSES_PXX_R9M,
+  PULSES_PXX_R9M_LITE,
+  PULSES_PXX_R9M_LITE_PRO,
   PULSES_SBUS,
+  PULSES_ACCESS_ISRM,
+  PULSES_ACCST_ISRM_D16,
+  PULSES_ACCESS_R9M,
+  PULSES_ACCESS_R9M_LITE,
+  PULSES_ACCESS_R9M_LITE_PRO,
+  PULSES_XJT_LITE_X16,
+  PULSES_XJT_LITE_D8,
+  PULSES_XJT_LITE_LR12,
   PULSES_PROTOCOL_LAST
 };
 
 enum MultiModuleRFProtocols {
-  MM_RF_PROTO_FLYSKY=0,
-  MM_RF_PROTO_FIRST=MM_RF_PROTO_FLYSKY,
-  MM_RF_PROTO_HUBSAN,
-  MM_RF_PROTO_FRSKY,
-  MM_RF_PROTO_HISKY,
-  MM_RF_PROTO_V2X2,
-  MM_RF_PROTO_DSM2,
-  MM_RF_PROTO_DEVO,
-  MM_RF_PROTO_YD717,
-  MM_RF_PROTO_KN,
-  MM_RF_PROTO_SYMAX,
-  MM_RF_PROTO_SLT,
-  MM_RF_PROTO_CX10,
-  MM_RF_PROTO_CG023,
-  MM_RF_PROTO_BAYANG,
-  MM_RF_PROTO_ESky,
-  MM_RF_PROTO_MT99XX,
-  MM_RF_PROTO_MJXQ,
-  MM_RF_PROTO_SHENQI,
-  MM_RF_PROTO_FY326,
-  MM_RF_PROTO_SFHSS,
-  MM_RF_PROTO_J6PRO,
-  MM_RF_PROTO_FQ777,
-  MM_RF_PROTO_ASSAN,
-  MM_RF_PROTO_HONTAI,
-  MM_RF_PROTO_OLRS,
-  MM_RF_PROTO_FS_AFHDS2A,
-  MM_RF_PROTO_Q2X2,
-  MM_RF_PROTO_WK_2X01,
-  MM_RF_PROTO_Q303,
-  MM_RF_PROTO_GW008,
-  MM_RF_PROTO_DM002,
-  MM_RF_PROTO_CABELL,
-  MM_RF_PROTO_ESKY150,
-  MM_RF_PROTO_H83D,
-  MM_RF_PROTO_LAST=MM_RF_PROTO_H83D
+  MODULE_SUBTYPE_MULTI_FLYSKY=0,
+  MODULE_SUBTYPE_MULTI_FIRST=MODULE_SUBTYPE_MULTI_FLYSKY,
+  MODULE_SUBTYPE_MULTI_HUBSAN,
+  MODULE_SUBTYPE_MULTI_FRSKY,
+  MODULE_SUBTYPE_MULTI_HISKY,
+  MODULE_SUBTYPE_MULTI_V2X2,
+  MODULE_SUBTYPE_MULTI_DSM2,
+  MODULE_SUBTYPE_MULTI_DEVO,
+  MODULE_SUBTYPE_MULTI_YD717,
+  MODULE_SUBTYPE_MULTI_KN,
+  MODULE_SUBTYPE_MULTI_SYMAX,
+  MODULE_SUBTYPE_MULTI_SLT,
+  MODULE_SUBTYPE_MULTI_CX10,
+  MODULE_SUBTYPE_MULTI_CG023,
+  MODULE_SUBTYPE_MULTI_BAYANG,
+  MODULE_SUBTYPE_MULTI_ESky,
+  MODULE_SUBTYPE_MULTI_MT99XX,
+  MODULE_SUBTYPE_MULTI_MJXQ,
+  MODULE_SUBTYPE_MULTI_SHENQI,
+  MODULE_SUBTYPE_MULTI_FY326,
+  MODULE_SUBTYPE_MULTI_SFHSS,
+  MODULE_SUBTYPE_MULTI_J6PRO,
+  MODULE_SUBTYPE_MULTI_FQ777,
+  MODULE_SUBTYPE_MULTI_ASSAN,
+  MODULE_SUBTYPE_MULTI_HONTAI,
+  MODULE_SUBTYPE_MULTI_OLRS,
+  MODULE_SUBTYPE_MULTI_FS_AFHDS2A,
+  MODULE_SUBTYPE_MULTI_Q2X2,
+  MODULE_SUBTYPE_MULTI_WK_2X01,
+  MODULE_SUBTYPE_MULTI_Q303,
+  MODULE_SUBTYPE_MULTI_GW008,
+  MODULE_SUBTYPE_MULTI_DM002,
+  MODULE_SUBTYPE_MULTI_CABELL,
+  MODULE_SUBTYPE_MULTI_ESKY150,
+  MODULE_SUBTYPE_MULTI_H83D,
+  MODULE_SUBTYPE_MULTI_CORONA,
+  MODULE_SUBTYPE_MULTI_CFLIE,
+  MODULE_SUBTYPE_MULTI_HITEC,
+  MODULE_SUBTYPE_MULTI_WFLY,
+  MODULE_SUBTYPE_MULTI_BUGS,
+  MODULE_SUBTYPE_MULTI_BUGS_MINI,
+  MODULE_SUBTYPE_MULTI_TRAXXAS,
+  MODULE_SUBTYPE_MULTI_NCC1701,
+  MODULE_SUBTYPE_MULTI_E01X,
+  MODULE_SUBTYPE_MULTI_V911S,
+  MODULE_SUBTYPE_MULTI_GD00X,
+  MODULE_SUBTYPE_MULTI_V761,
+  MODULE_SUBTYPE_MULTI_KF606,
+  MODULE_SUBTYPE_MULTI_REDPINE,
+  MODULE_SUBTYPE_MULTI_POTENSIC,
+  MODULE_SUBTYPE_MULTI_ZSX,
+  MODULE_SUBTYPE_MULTI_FLYZONE,
+  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_FLYZONE
 };
 
 enum TrainerProtocol {
@@ -95,13 +125,26 @@ enum TrainerProtocol {
   TRAINER_MASTER_SBUS_BATT_COMPARTMENT
 };
 
+enum ModuleSubtypeR9M {
+  MODULE_SUBTYPE_R9M_FCC,
+  MODULE_SUBTYPE_R9M_EU,
+  MODULE_SUBTYPE_R9M_EUPLUS,
+  MODULE_SUBTYPE_R9M_AUPLUS,
+  MODULE_SUBTYPE_R9M_LAST=MODULE_SUBTYPE_R9M_AUPLUS
+};
+
+constexpr int PXX2_MAX_RECEIVERS_PER_MODULE = 3;
+constexpr int PXX2_LEN_RX_NAME              = 8;
+
 class ModuleData {
   Q_DECLARE_TR_FUNCTIONS(ModuleData)
 
   public:
     ModuleData() { clear(); }
     unsigned int modelId;
-    int          protocol;
+    unsigned int protocol;   // type in datastructs.h
+    int          rfProtocol; // rfProtocol in datastructs.h
+  
     unsigned int subType;
     bool         invertedSerial;
     unsigned int channelsStart;
@@ -109,15 +152,14 @@ class ModuleData {
     unsigned int failsafeMode;
     int          failsafeChannels[CPN_MAX_CHNOUT];
 
-
-    struct {
+    struct PPM {
       int delay;
       bool pulsePol;           // false = positive
       bool outputType;         // false = open drain, true = push pull
       int frameLength;
     } ppm;
 
-    struct {
+    struct Multi {
       unsigned int rfProtocol;
       bool autoBindMode;
       bool lowPowerMode;
@@ -125,17 +167,29 @@ class ModuleData {
       int optionValue;
     } multi;
 
-    struct {
-      int power;                   // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
+    struct PXX {
+      unsigned int power;          // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
       bool receiver_telem_off;     // false = receiver telem enabled
       bool receiver_channel_9_16;  // false = pwm out 1-8, true 9-16
       bool external_antenna;       // false = internal antenna, true = external antenna
       bool sport_out;
     } pxx;
 
+    struct Access {
+      unsigned int receivers;
+      char         receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME+1];
+    } access;
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
-    QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); } // TODO ModelPrinter
+    void convert(RadioDataConversionState & cstate);
+    bool isPxx2Module() const;
+    QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); }
+    QString rfProtocolToString() const;
+    QString subTypeToString(int type = -1) const;
+    QString powerValueToString(Firmware * fw) const;
+    static QString indexToString(int index, Firmware * fw);
+    static QString protocolToString(unsigned protocol);
+    static QStringList powerValueStrings(int subType, Firmware * fw);
 };
 
 #endif // MODULEDATA_H

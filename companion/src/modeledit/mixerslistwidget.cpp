@@ -20,6 +20,14 @@
 
 #include "mixerslistwidget.h"
 
+#include <QAbstractTextDocumentLayout>
+#include <QAction>
+#include <QApplication>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QPainter>
+#include <QTextFrame>
+
 #define GRP_IS_PARENT      0x01
 #define GRP_HAS_SIBLING    0x02
 #define GRP_HAS_DATA       0x04
@@ -44,14 +52,14 @@ MixersListWidget::MixersListWidget(QWidget * parent, bool expo) :
 
   setFont(defaultFont);
   setContextMenuPolicy(Qt::CustomContextMenu);
-  setSelectionMode(QAbstractItemView::SingleSelection);
+  setSelectionMode(QAbstractItemView::ExtendedSelection);
   setSelectionBehavior(QAbstractItemView::SelectRows);
   setDragEnabled(true);
   setAcceptDrops(true);
   setDragDropMode(QAbstractItemView::DragDrop);
   setDropIndicatorShown(true);
   setItemDelegate(new MixersDelegate(this));        // set custom paint handler
-  setStyle(new MixerItemViewProxyStyle(style()));   // custom element style painter
+  setStyle(new MixerItemViewProxyStyle());          // custom element style painter
 
   itemMimeFmt = (expo ? "application/x-companion-expo-item" : "application/x-companion-mix-item");
 
@@ -186,8 +194,7 @@ void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
   options.text.clear();
 
   QAbstractTextDocumentLayout::PaintContext ctx;
-  if (options.widget)
-    ctx.palette = options.widget->palette();
+  ctx.palette = (options.widget ? options.widget->palette() : QApplication::palette("QListWidgetItem"));
 
   QBrush brush = ((index.data(GroupIdRole).toUInt() % 2) ? ctx.palette.base() : ctx.palette.alternateBase());
   options.backgroundBrush = brush;
@@ -206,17 +213,16 @@ void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
   QStyle * style = (options.widget ? options.widget->style() : QApplication::style());
   style->drawControl(QStyle::CE_ItemViewItem, &options, painter, options.widget);
 
-  QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &options);
+  QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &options, options.widget);
 #ifdef Q_OS_LINUX
   // Workaround for buggy Linux native styles (https://github.com/opentx/opentx/issues/5633)
-  if (options.widget && textRect.width() < options.widget->geometry().width() * 0.75f)
+  if (options.widget && textRect.width() < options.widget->geometry().width() / 2)
     textRect.setWidth(options.widget->geometry().width());
 #endif
-  QRectF clipRect = textRect.translated(-textRect.topLeft());
-  ctx.clip = clipRect;
+  ctx.clip = textRect.translated(-textRect.topLeft());
   painter->save();
   painter->translate(textRect.topLeft());
-  painter->setClipRect(clipRect);
+  painter->setClipRect(ctx.clip);
   doc.documentLayout()->draw(painter, ctx);
   painter->restore();
 }

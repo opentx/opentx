@@ -1,0 +1,220 @@
+;NSIS Modern User Interface
+;Start Menu Folder Selection Example Script
+;Written by Joost Verburg
+
+;--------------------------------
+;Include Modern UI
+
+  !include "MUI2.nsh"
+  !include "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\FileAssociation.nsh"
+
+;--------------------------------
+;General
+
+  ;Name and file
+  Name "OpenTX Companion @VERSION_FAMILY@"
+  OutFile "companion-windows-@VERSION@.exe"
+
+  ;Default installation folder
+  InstallDir "$PROGRAMFILES\OpenTX\Companion @VERSION_FAMILY@"
+
+  ;Get installation folder from registry if available
+  InstallDirRegKey HKCU "Software\OpenTX\Companion @VERSION_FAMILY@" ""
+
+  ;Compressor options
+  SetCompressor /FINAL /SOLID lzma
+  SetCompressorDictSize 64
+
+  ;Request application privileges for Windows Vista
+  RequestExecutionLevel admin
+
+;--------------------------------
+;Variables
+
+  Var StartMenuFolder
+
+;--------------------------------
+;Interface Settings
+
+  !define MUI_ABORTWARNING
+
+;--------------------------------
+;File Exists Macro
+
+; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
+!macro !defineifexist _VAR_NAME _FILE_NAME
+	!tempfile _TEMPFILE
+	!ifdef NSIS_WIN32_MAKENSIS
+		; Windows - cmd.exe
+		!system 'if exist "${_FILE_NAME}" echo !define ${_VAR_NAME} > "${_TEMPFILE}"'
+	!else
+		; Posix - sh
+		!system 'if [ -e "${_FILE_NAME}" ]; then echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"; fi'
+	!endif
+	!include '${_TEMPFILE}'
+	!delfile '${_TEMPFILE}'
+	!undef _TEMPFILE
+!macroend
+!define !defineifexist "!insertmacro !defineifexist"
+
+;--------------------------------
+;Pages
+
+  !insertmacro MUI_PAGE_LICENSE "@NSIS_DISTRO@\license.txt"
+  !insertmacro MUI_PAGE_COMPONENTS
+  !insertmacro MUI_PAGE_DIRECTORY
+
+  ;Start Menu Folder Page Configuration
+  !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\OpenTX\Companion @VERSION_FAMILY@"
+  !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+
+  !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
+
+  !insertmacro MUI_PAGE_INSTFILES
+
+  # These indented statements modify settings for MUI_PAGE_FINISH
+    !define MUI_FINISHPAGE_NOAUTOCLOSE
+    !define MUI_FINISHPAGE_RUN
+    !define MUI_FINISHPAGE_RUN_CHECKED
+    !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
+  #  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+  #  !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
+  !insertmacro MUI_PAGE_FINISH
+
+  !insertmacro MUI_UNPAGE_CONFIRM
+  !insertmacro MUI_UNPAGE_COMPONENTS
+  !insertmacro MUI_UNPAGE_INSTFILES
+
+;--------------------------------
+;Languages
+
+  !insertmacro MUI_LANGUAGE "English"
+  !insertmacro MUI_LANGUAGE "French"
+
+;--------------------------------
+;Installer Sections
+
+Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
+
+  Delete "$INSTDIR\opentx-*-simulator.dll"
+  RMDir /r "$INSTDIR\lang"
+  RMDir /r "$INSTDIR\phonon_backend"
+
+  SetOutPath "$INSTDIR"
+
+  ; Copy the complete distribution folder contents
+  File /r "@NSIS_DISTRO@\*"
+
+  ;Store installation folder
+  WriteRegStr HKCU "Software\OpenTX\Companion @VERSION_FAMILY@" "" $INSTDIR
+
+  ;Associate with extentions .otx
+  ${registerExtension} "$INSTDIR\companion.exe" ".otx" "OpenTX Settings File"
+
+  ;Create uninstaller
+  WriteUninstaller "$INSTDIR\Uninstall.exe"
+
+  ;Registry information for add/remove programs
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayName" "OpenTX Companion @VERSION_FAMILY@"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "Publisher" "OpenTX"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "URLInfoAbout" "http://www.open-tx.org"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
+
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+
+  ;Create shortcuts
+  CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Companion @VERSION_FAMILY@.lnk" "$INSTDIR\companion.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Firmware Simulator @VERSION_FAMILY@.lnk" "$INSTDIR\simulator.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion @VERSION_FAMILY@.lnk" "$INSTDIR\Uninstall.exe"
+
+  !insertmacro MUI_STARTMENU_WRITE_END
+
+SectionEnd
+
+;--------------------------------
+;Descriptions
+
+  ;Language strings
+  LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for OpenTX"
+  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de r�glages et mod�les pour OpenTX"
+
+  ;Assign language strings to sections
+  !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDummy} $(DESC_SecDummy)
+  !insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+;--------------------------------
+;Uninstaller Section
+
+Section "un.OpenTX Companion @VERSION_FAMILY@"
+
+  SectionIn RO  ; Not deselectable
+
+  Delete "$INSTDIR\license.txt"
+  Delete "$INSTDIR\companion.exe"
+  Delete "$INSTDIR\simulator.exe"
+  Delete "$INSTDIR\*opentx-*-simulator.dll"
+  Delete "$INSTDIR\SDL.dll"
+  ; MSVC-specific libs
+  Delete "$INSTDIR\msvcp140.dll"
+  Delete "$INSTDIR\vcruntime140.dll"
+  Delete "$INSTDIR\pthreadVC2.dll"
+  ; Qt libs
+  Delete "$INSTDIR\Qt5*.dll"
+  Delete "$INSTDIR\d3dcompiler_47.dll"
+  Delete "$INSTDIR\libEGL.dll"
+  Delete "$INSTDIR\libGLESV2.dll"
+  ; flashing utils
+  Delete "$INSTDIR\avrdude.exe"
+  Delete "$INSTDIR\avrdude.conf"
+  Delete "$INSTDIR\dfu-util.exe"
+  Delete "$INSTDIR\libusb0.dll"
+  Delete "$INSTDIR\libusb-1.0.dll"
+  ; OpenSSL libs
+  Delete "$INSTDIR\libeay32.dll"
+  Delete "$INSTDIR\ssleay32.dll"
+  ; MinGW libs
+  Delete "$INSTDIR\libgcc_s_dw2-1.dll"
+  Delete "$INSTDIR\libstdc++-6.dll"
+  Delete "$INSTDIR\libwinpthread-1.dll"
+
+  Delete "$INSTDIR\Uninstall.exe"
+
+  ; Qt plugin folders
+  RMDir /r "$INSTDIR\audio"
+  RMDir /r "$INSTDIR\bearer"
+  RMDir /r "$INSTDIR\iconengines"
+  RMDir /r "$INSTDIR\imageformats"
+  RMDir /r "$INSTDIR\mediaservice"
+  RMDir /r "$INSTDIR\platforms"
+  RMDir /r "$INSTDIR\playlistformats"
+  RMDir /r "$INSTDIR\printsupport"
+
+  RMDir "$INSTDIR"
+
+  ${unregisterExtension} ".bin" "BIN File"
+  ${unregisterExtension} ".hex" "HEX File"
+  ${unregisterExtension} ".eepm" "EEPE File"
+  ${unregisterExtension} ".otx" "OpenTX Settings File"
+
+  !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
+
+  Delete "$SMPROGRAMS\$StartMenuFolder\Companion @VERSION_FAMILY@.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Firmware Simulator @VERSION_FAMILY@.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion @VERSION_FAMILY@.lnk"
+  RMDir "$SMPROGRAMS\$StartMenuFolder"
+
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@"
+SectionEnd
+
+Section /o "un.Settings"
+  DeleteRegKey HKCU "Software\OpenTX\Companion @VERSION_FAMILY@"
+SectionEnd
+
+Function LaunchLink
+  ExecShell "" "$INSTDIR\companion.exe"
+FunctionEnd

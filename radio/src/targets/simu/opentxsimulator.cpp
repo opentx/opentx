@@ -25,11 +25,7 @@
   #define MAX_LOGICAL_SWITCHES    NUM_CSW
 #endif
 
-#if defined(CPUARM)
-  #define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
-#else
-  #define GET_SWITCH_BOOL(sw__)    getSwitch(sw__);
-#endif
+#define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
 
 #define OTXS_DBG    qDebug() << "(" << simuTimerMicros() << "us)"
 
@@ -90,13 +86,14 @@ QString OpenTxSimulator::name()
 bool OpenTxSimulator::isRunning()
 {
   QMutexLocker lckr(&m_mtxSimuMain);
-  return (bool)main_thread_running;
+  return simuIsRunning();
 }
 
 void OpenTxSimulator::init()
 {
   if (isRunning())
     return;
+
   OTXS_DBG;
 
   if (!m_timer10ms) {
@@ -113,6 +110,11 @@ void OpenTxSimulator::init()
 
   QMutexLocker lckr(&m_mtxSimuMain);
   memset(g_anas, 0, sizeof(g_anas));
+
+#if defined(PCBTARANIS)
+  g_anas[TX_RTC_VOLTAGE] = 800;  // 2,34V
+#endif
+
   simuInit();
 }
 
@@ -165,6 +167,7 @@ void OpenTxSimulator::setRadioData(const QByteArray & data)
 {
 #if defined(EEPROM_SIZE)
   QMutexLocker lckr(&m_mtxRadioData);
+  eeprom = (uint8_t *)malloc(qMin<int>(EEPROM_SIZE, data.size()));
   memcpy(eeprom, data.data(), qMin<int>(EEPROM_SIZE, data.size()));
 #endif
 }
@@ -211,7 +214,6 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
     i = modn12x3[4 * getStickMode() + idx];
   uint8_t phase = getTrimFlightMode(getFlightMode(), i);
 
-#ifdef CPUARM
   if (!setTrimValue(phase, i, value)) {
     QTimer *timer = new QTimer(this);
     timer->setSingleShot(true);
@@ -222,9 +224,6 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
     });
     timer->start(350);
   }
-#else
-  setTrimValue(phase, i, value);
-#endif
 }
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
@@ -280,10 +279,17 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
 #else
   // TODO : this should probably be handled in the GUI
   int key;
+#if defined(PCBXLITE)
+  if (steps > 0)
+    key = KEY_DOWN;
+  else if (steps < 0)
+    key = KEY_UP;
+#else
   if (steps > 0)
     key = KEY_MINUS;
   else if (steps < 0)
     key = KEY_PLUS;
+#endif
   else
     // Should not happen but Clang complains that key is unset otherwise
     return;
@@ -310,17 +316,12 @@ void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
 
 void OpenTxSimulator::sendTelemetry(const QByteArray data)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   //OTXS_DBG << data;
   sportProcessTelemetryPacket((uint8_t *)data.constData());
-#else
-  Q_UNUSED(data)
-#endif
 }
 
 uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
@@ -329,15 +330,11 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
       }
     }
   }
-#else
-  Q_UNUSED(id)
-#endif
   return defaultValue;
 }
 
 uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
@@ -346,9 +343,6 @@ uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
       }
     }
   }
-#else
-  Q_UNUSED(id)
-#endif
   return 0;
 }
 
@@ -363,9 +357,6 @@ const int OpenTxSimulator::getCapability(Capability cap)
       break;
 
     case CAP_ROTARY_ENC :
-      #ifdef ROTARY_ENCODERS
-        ret = ROTARY_ENCODERS;
-      #endif
       break;
 
     case CAP_ROTARY_ENC_NAV :
@@ -375,9 +366,7 @@ const int OpenTxSimulator::getCapability(Capability cap)
       break;
 
     case CAP_TELEM_FRSKY_SPORT :
-      #ifdef TELEMETRY_FRSKY_SPORT
         ret = 1;
-      #endif
       break;
   }
   return ret;
@@ -473,18 +462,22 @@ void OpenTxSimulator::checkOutputsChanged()
 {
   static TxOutputs lastOutputs;
   static size_t chansDim = DIM(channelOutputs);
+  const static int16_t limit = 512 * 2;
   qint32 tmpVal;
   uint8_t i, idx;
-  uint8_t phase = getFlightMode();  // opentx.cpp
-  uint8_t mode = getStickMode();
+  const uint8_t phase = getFlightMode();  // opentx.cpp
+  const uint8_t mode = getStickMode();
 
   for (i=0; i < chansDim; i++) {
     if (lastOutputs.chans[i] != channelOutputs[i] || m_resetOutputsData) {
-      emit channelOutValueChange(i, channelOutputs[i]);
-      emit channelMixValueChange(i, ex_chans[i]);
+      emit channelOutValueChange(i, channelOutputs[i], (g_model.extendedLimits ? limit * LIMIT_EXT_PERCENT / 100 : limit));
       emit outputValueChange(OUTPUT_SRC_CHAN_OUT, i, channelOutputs[i]);
-      emit outputValueChange(OUTPUT_SRC_CHAN_MIX, i, ex_chans[i]);
       lastOutputs.chans[i] = channelOutputs[i];
+    }
+    if (lastOutputs.ex_chans[i] != ex_chans[i] || m_resetOutputsData) {
+      emit channelMixValueChange(i, ex_chans[i], limit * 2);
+      emit outputValueChange(OUTPUT_SRC_CHAN_MIX, i, ex_chans[i]);
+      lastOutputs.ex_chans[i] = ex_chans[i];
     }
   }
 
@@ -527,10 +520,8 @@ void OpenTxSimulator::checkOutputsChanged()
 #if defined(GVAR_VALUE) && defined(GVARS)
   gVarMode_t gvar;
   for (uint8_t gv=0; gv < MAX_GVARS; gv++) {
-#if !defined(PCBSTD)
     gvar.prec = g_model.gvars[gv].prec;
     gvar.unit = g_model.gvars[gv].unit;
-#endif
     for (uint8_t fm=0; fm < MAX_FLIGHT_MODES; fm++) {
       gvar.mode = fm;
       gvar.value = (int16_t)GVAR_VALUE(gv, getGVarFlightMode(fm, gv));
@@ -580,8 +571,6 @@ const int OpenTxSimulator::voltageToAdc(const int volts)
   ret = (float)volts * 16.2f;
 #elif defined(PCBTARANIS) || defined(PCBSKY9X)
   ret = (float)volts * 13.3f;
-#elif defined(PCBGRUVIN9X)
-  ret = (float)volts * 1.63f;
 #else
   ret = (float)volts * 14.15f;
 #endif
@@ -618,6 +607,8 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return Board::BOARD_X10;
 #elif defined(PCBX7)
       return Board::BOARD_TARANIS_X7;
+#elif defined(PCBX9LITE)
+      return Board::BOARD_TARANIS_X9LITE;
 #elif defined(PCBTARANIS)
       return Board::BOARD_TARANIS_X9D;
 #else

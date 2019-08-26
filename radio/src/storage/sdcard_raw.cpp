@@ -19,6 +19,8 @@
  */
 
 #include "opentx.h"
+#include "modelslist.h"
+#include "conversions/conversions.h"
 
 void getModelPath(char * path, const char * filename)
 {
@@ -30,7 +32,7 @@ void getModelPath(char * path, const char * filename)
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
   TRACE("writeFile(%s)", filename);
-  
+
   FIL file;
   unsigned char buf[8];
   UINT written;
@@ -68,67 +70,85 @@ const char * writeModel()
   return writeFile(path, (uint8_t *)&g_model, sizeof(g_model));
 }
 
-const char * loadFile(const char * filename, uint8_t * data, uint16_t maxsize)
+const char * openFile(const char * fullpath, FIL * file, uint16_t * size, uint8_t * version)
 {
-  TRACE("loadFile(%s)", filename);
-  
-  FIL file;
-  char buf[8];
-  UINT read;
-
-  FRESULT result = f_open(&file, filename, FA_OPEN_EXISTING | FA_READ);
+  FRESULT result = f_open(file, fullpath, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
 
-  if (f_size(&file) < 8) {
-    f_close(&file);
+  if (f_size(file) < 8) {
+    f_close(file);
     return STR_INCOMPATIBLE;
   }
 
-  result = f_read(&file, (uint8_t *)buf, 8, &read);
-  if (result != FR_OK || read != 8) {
-    f_close(&file);
+  UINT read;
+  char buf[8];
+
+  result = f_read(file, (uint8_t *)buf, sizeof(buf), &read);
+  if ((result != FR_OK) || (read != sizeof(buf))) {
+    f_close(file);
     return SDCARD_ERROR(result);
   }
 
-  uint8_t version = (uint8_t)buf[4];
-  if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
-    f_close(&file);
+  *version = (uint8_t)buf[4];
+  if (*(uint32_t*)&buf[0] != OTX_FOURCC || *version < FIRST_CONV_EEPROM_VER || *version > EEPROM_VER || buf[5] != 'M') {
+    f_close(file);
     return STR_INCOMPATIBLE;
   }
 
-  uint16_t size = min<uint16_t>(maxsize, *(uint16_t*)&buf[6]);
-  result = f_read(&file, data, size, &read);
+  *size = *(uint16_t*)&buf[6];
+  return nullptr;
+}
+
+const char * loadFile(const char * fullpath, uint8_t * data, uint16_t maxsize, uint8_t * version)
+{
+  FIL      file;
+  UINT     read;
+  uint16_t size;
+
+  TRACE("loadFile(%s)", fullpath);
+
+  const char * err = openFile(fullpath, &file, &size, version);
+  if (err)
+    return err;
+
+  size = min<uint16_t>(maxsize, size);
+  FRESULT result = f_read(&file, data, size, &read);
   if (result != FR_OK || read != size) {
     f_close(&file);
     return SDCARD_ERROR(result);
   }
 
   f_close(&file);
-  return NULL;
+  return nullptr;
 }
 
-const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
+const char * readModel(const char * filename, uint8_t * buffer, uint32_t size, uint8_t * version)
 {
   char path[256];
   getModelPath(path, filename);
-  return loadFile(path, buffer, size);
+  return loadFile(path, buffer, size, version);
 }
 
 const char * loadModel(const char * filename, bool alarms)
 {
+  uint8_t version;
+
   preModelLoad();
 
-  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model));
+  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model), &version);
   if (error) {
     TRACE("loadModel error=%s", error);
   }
-  
+
   if (error) {
     modelDefault(0) ;
     storageCheck(true);
     alarms = false;
+  }
+  else if (version < EEPROM_VER) {
+    convertModelData(version);
   }
 
   postModelLoad(alarms);
@@ -136,14 +156,25 @@ const char * loadModel(const char * filename, bool alarms)
   return error;
 }
 
-const char * loadRadioSettingsSettings()
+const char * loadRadioSettings(const char * path)
 {
-  const char * error = loadFile(RADIO_SETTINGS_PATH, (uint8_t *)&g_eeGeneral, sizeof(g_eeGeneral));
+  uint8_t version;
+  const char * error = loadFile(path, (uint8_t *)&g_eeGeneral, sizeof(g_eeGeneral), &version);
   if (error) {
-    TRACE("loadRadioSettingsSettings error=%s", error);
+    TRACE("loadRadioSettings error=%s", error);
+    return error;
   }
-  // TODO this is temporary, we only have one model for now
-  return error;
+
+  if (version < EEPROM_VER) {
+    convertRadioData(version);
+  }
+
+  return nullptr;
+}
+
+const char * loadRadioSettings()
+{
+  return loadRadioSettings(RADIO_SETTINGS_PATH);
 }
 
 const char * writeGeneralSettings()
@@ -154,7 +185,7 @@ const char * writeGeneralSettings()
 void storageCheck(bool immediately)
 {
   if (storageDirtyMsk & EE_GENERAL) {
-    TRACE("eeprom write general");
+    TRACE("Storage write general");
     storageDirtyMsk -= EE_GENERAL;
     const char * error = writeGeneralSettings();
     if (error) {
@@ -163,7 +194,7 @@ void storageCheck(bool immediately)
   }
 
   if (storageDirtyMsk & EE_MODEL) {
-    TRACE("eeprom write model");
+    TRACE("Storage write current model");
     storageDirtyMsk -= EE_MODEL;
     const char * error = writeModel();
     if (error) {
@@ -175,24 +206,29 @@ void storageCheck(bool immediately)
 void storageReadAll()
 {
   TRACE("storageReadAll");
-  
-  if (loadRadioSettingsSettings() != NULL) {
+
+  if (loadRadioSettings() != nullptr) {
     storageEraseAll(true);
   }
 
-#if defined(CPUARM)
-  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
+  for (uint8_t i = 0; languagePacks[i] != nullptr; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
       currentLanguagePack = languagePacks[i];
     }
   }
-#endif
 
-  if (loadModel(g_eeGeneral.currModelFilename, false) != NULL) {
+  if (loadModel(g_eeGeneral.currModelFilename, false) != nullptr) {
     sdCheckAndCreateDirectory(MODELS_PATH);
     createModel();
   }
+
+  // Wipe models list in case
+  // it's being reloaded after USB connection
+  modelslist.clear();
+
+  // and reload the list
+  modelslist.load();
 }
 
 void storageCreateModelsList()

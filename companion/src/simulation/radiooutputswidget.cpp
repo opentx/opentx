@@ -27,9 +27,11 @@
 #include "radiodata.h"
 #include "simulator.h"
 
+#include <QScrollBar>
+
 extern AppData g;  // ensure what "g" means
 
-const quint16 RadioOutputsWidget::m_savedViewStateVersion = 1;
+const quint16 RadioOutputsWidget::m_savedViewStateVersion = 2;
 
 RadioOutputsWidget::RadioOutputsWidget(SimulatorInterface * simulator, Firmware * firmware, QWidget *parent) :
   QWidget(parent),
@@ -42,7 +44,12 @@ RadioOutputsWidget::RadioOutputsWidget(SimulatorInterface * simulator, Firmware 
 
   restoreState();
 
+  // link the channels and mixes display horizontal scroll
+  connect(ui->channelsScroll->horizontalScrollBar(), &QScrollBar::sliderMoved, ui->mixersScroll->horizontalScrollBar(), &QScrollBar::setValue);
+  connect(ui->mixersScroll->horizontalScrollBar(), &QScrollBar::sliderMoved, ui->channelsScroll->horizontalScrollBar(), &QScrollBar::setValue);
+
   connect(m_simulator, &SimulatorInterface::channelOutValueChange, this, &RadioOutputsWidget::onChannelOutValueChange);
+  connect(m_simulator, &SimulatorInterface::channelMixValueChange, this, &RadioOutputsWidget::onChannelMixValueChange);
   connect(m_simulator, &SimulatorInterface::virtualSwValueChange, this, &RadioOutputsWidget::onVirtSwValueChange);
   connect(m_simulator, &SimulatorInterface::gVarValueChange, this, &RadioOutputsWidget::onGVarValueChange);
   connect(m_simulator, &SimulatorInterface::phaseChanged, this, &RadioOutputsWidget::onPhaseChanged);
@@ -69,7 +76,8 @@ void RadioOutputsWidget::changeEvent(QEvent *e)
 
 void RadioOutputsWidget::start()
 {
-  setupChannelsDisplay();
+  setupChannelsDisplay(false);
+  setupChannelsDisplay(true);
   setupGVarsDisplay();
   setupLsDisplay();
 }
@@ -91,6 +99,8 @@ void RadioOutputsWidget::saveState()
   stream << m_savedViewStateVersion
          << ui->btnLogiSw->isChecked() << ui->btnGlobalVars->isChecked()  << ui->btnChannels->isChecked()
          << ui->splitter->saveState();
+  // view state version 2
+  stream << ui->btnMixes->isChecked();
 
   SimulatorOptions opts = g.profile[m_radioProfileId].simulatorOptions();
   opts.radioOutputsState = state;
@@ -101,29 +111,39 @@ void RadioOutputsWidget::restoreState()
 {
   quint16 ver = 0;
   QByteArray splitterState;
-  bool ls = true, gv = true, ch = true;
+  bool ls = true, gv = true, ch = true, mx = false;
   QByteArray state = g.profile[m_radioProfileId].simulatorOptions().radioOutputsState;
   QDataStream stream(state);
 
   stream >> ver;
-  if (ver && ver <= m_savedViewStateVersion)
+  if (ver && ver <= m_savedViewStateVersion) {
     stream >> ls >> gv >> ch >> splitterState;
+    if (ver >= 2)
+      stream >> mx;
+  }
 
   ui->btnLogiSw->setChecked(ls);
   ui->btnGlobalVars->setChecked(gv);
   ui->btnChannels->setChecked(ch);
+  ui->btnMixes->setChecked(mx);
   if (!splitterState.isEmpty())
     ui->splitter->restoreState(splitterState);
 }
 
-void RadioOutputsWidget::setupChannelsDisplay()
+void RadioOutputsWidget::setupChannelsDisplay(bool mixes)
 {
   int outputs = std::min(32, m_firmware->getCapability(Capability(Outputs)));
 
   // delete old widgets if already exist
-  m_channelsMap.clear();
-
-  QWidget * oldChanW = ui->channelsScroll->takeWidget();
+  QWidget * oldChanW = nullptr;
+  if (mixes) {
+    m_mixesMap.clear();
+    oldChanW = ui->mixersScroll->takeWidget();
+  }
+  else {
+    m_channelsMap.clear();
+    oldChanW = ui->channelsScroll->takeWidget();
+  }
   if (oldChanW)
     oldChanW->deleteLater();
 
@@ -136,7 +156,10 @@ void RadioOutputsWidget::setupChannelsDisplay()
   channelsLayout->setVerticalSpacing(3);
   channelsLayout->setContentsMargins(5, 5, 5, 5);
 
-  ui->channelsScroll->setWidget(channelsWidget);
+  if (mixes)
+    ui->mixersScroll->setWidget(channelsWidget);
+  else
+    ui->channelsScroll->setWidget(channelsWidget);
 
   // populate outputs
   int column = 0;
@@ -168,7 +191,10 @@ void RadioOutputsWidget::setupChannelsDisplay()
 
     ++column;
 
-    m_channelsMap.insert(i, QPair<QLabel *, QSlider *>(value, slider));
+    if (mixes)
+      m_mixesMap.insert(i, QPair<QLabel *, QSlider *>(value, slider));
+    else
+      m_channelsMap.insert(i, QPair<QLabel *, QSlider *>(value, slider));
   }
 }
 
@@ -264,7 +290,11 @@ QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo
   QFont font = swtch->font();
   font.setBold(true);
   swtch->setFont(font);
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   swtch->setMinimumWidth(swtch->fontMetrics().width("99") + 10);
+#else
+  swtch->setMinimumWidth(swtch->fontMetrics().horizontalAdvance("99") + 10);
+#endif
   font.setBold(false);
   swtch->setFont(font);
   swtch->setText(QString("%1").arg(switchNo+1, 2, 10, QChar('0')));
@@ -273,14 +303,30 @@ QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo
   return swtch;
 }
 
-void RadioOutputsWidget::onChannelOutValueChange(quint8 index, qint32 value)
+void RadioOutputsWidget::onChannelOutValueChange(quint8 index, qint32 value, qint32 limit)
 {
   if (m_channelsMap.contains(index)) {
     QPair<QLabel *, QSlider *> ch = m_channelsMap.value(index);
+    if (ch.second->maximum() != limit) {
+      ch.second->setMaximum(limit);
+      ch.second->setMinimum(-limit);
+    }
     ch.first->setText(QString("%1%").arg(calcRESXto100(value)));
-    ch.second->setValue(qMin(1024, qMax(-1024, value)));
+    ch.second->setValue(qMin(limit, qMax(-limit, value)));
   }
-  //qDebug() << index << value;
+}
+
+void RadioOutputsWidget::onChannelMixValueChange(quint8 index, qint32 value, qint32 limit)
+{
+  if (m_mixesMap.contains(index)) {
+    QPair<QLabel *, QSlider *> ch = m_mixesMap.value(index);
+    if (ch.second->maximum() != limit) {
+      ch.second->setMaximum(limit);
+      ch.second->setMinimum(-limit);
+    }
+    ch.first->setText(QString("%1%").arg(calcRESXto100(value)));
+    ch.second->setValue(qMin(limit, qMax(-limit, value)));
+  }
 }
 
 void RadioOutputsWidget::onVirtSwValueChange(quint8 index, qint32 value)

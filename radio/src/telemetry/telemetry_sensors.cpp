@@ -19,6 +19,8 @@
  */
 
 #include "opentx.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
@@ -28,12 +30,11 @@ bool isFaiForbidden(source_t idx)
   if (idx < MIXSRC_FIRST_TELEM) {
     return false;
   }
-  
+
   TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
 
   switch (telemetryProtocol) {
-
-    case PROTOCOL_FRSKY_SPORT:
+    case PROTOCOL_TELEMETRY_FRSKY_SPORT:
       if (sensor->id == RSSI_ID) {
         return false;
       }
@@ -42,7 +43,7 @@ bool isFaiForbidden(source_t idx)
       }
       break;
 
-    case PROTOCOL_FRSKY_D:
+    case PROTOCOL_TELEMETRY_FRSKY_D:
       if (sensor->id == D_RSSI_ID) {
         return false;
       }
@@ -52,7 +53,7 @@ bool isFaiForbidden(source_t idx)
       break;
 
 #if defined(CROSSFIRE)
-    case PROTOCOL_PULSES_CROSSFIRE:
+    case PROTOCOL_TELEMETRY_CROSSFIRE:
       if (sensor->id == RX_RSSI1_INDEX) {
         return false;
       }
@@ -72,9 +73,9 @@ bool isFaiForbidden(source_t idx)
 uint32_t getDistFromEarthAxis(int32_t latitude)
 {
   uint32_t lat = abs(latitude) / 10000;
-  uint32_t angle2 = (lat*lat) / 10000;
+  uint32_t angle2 = (lat * lat) / 10000;
   uint32_t angle4 = angle2 * angle2;
-  return 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
+  return 139*(((uint32_t)10000000 - ((angle2*(uint32_t)123370)/81) + (angle4/25))/12500);
 }
 
 void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32_t unit, uint32_t prec)
@@ -139,7 +140,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_GPS_LATITUDE) {
 #if defined(INTERNAL_GPS)
-    if (gpsData.fix) {
+    if (gpsData.fix  && gpsData.hdop < PILOTPOS_MIN_HDOP) {
       pilotLatitude = gpsData.latitude;
       distFromEarthAxis = getDistFromEarthAxis(pilotLatitude);
     }
@@ -154,7 +155,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_GPS_LONGITUDE) {
 #if defined(INTERNAL_GPS)
-    if (gpsData.fix) {
+    if (gpsData.fix && gpsData.hdop < PILOTPOS_MIN_HDOP) {
       pilotLongitude = gpsData.longitude;
     }
 #endif
@@ -334,7 +335,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
     case TELEM_FORMULA_DIST:
       if (sensor.dist.gps) {
         TelemetryItem gpsItem = telemetryItems[sensor.dist.gps-1];
-        TelemetryItem * altItem = NULL;
+        TelemetryItem * altItem = nullptr;
         if (!gpsItem.isAvailable()) {
           return;
         }
@@ -353,19 +354,28 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           }
         }
         uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
+#if defined(STM32)
+        uint32_t dist = uint64_t(EARTH_RADIUS * M_PI / 180) * angle / 1000000;
+#else
+        // TODO search later why it breaks Sky9x
         uint32_t dist = EARTH_RADIUS * angle / 1000000;
-        uint32_t result = dist*dist;
+#endif
+        uint32_t result = dist * dist;
 
         angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
+#if defined(STM32)
+        dist = uint64_t(gpsItem.distFromEarthAxis) * angle / 1000000;
+#else
         dist = gpsItem.distFromEarthAxis * angle / 1000000;
-        result += dist*dist;
+#endif
+        result += dist * dist;
 
         // Length on ground (ignoring curvature of the earth)
         result = isqrt32(result);
 
         if (altItem) {
           dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
-          result = dist*dist + result*result;
+          result = (dist * dist) + (result * result);
           result = isqrt32(result);
         }
 
@@ -485,7 +495,7 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
 
   for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.instance == instance || g_model.ignoreSensorIds)) {
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.isSameInstance(protocol, instance) || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
       available = true;
       // we continue search here, because sensors can share the same id and instance
@@ -499,16 +509,12 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
   int index = availableTelemetryIndex();
   if (index >= 0) {
     switch (protocol) {
-#if defined(TELEMETRY_FRSKY_SPORT)
       case TELEM_PROTO_FRSKY_SPORT:
         frskySportSetDefault(index, id, subId, instance);
         break;
-#endif
-#if defined(TELEMETRY_FRSKY)
       case TELEM_PROTO_FRSKY_D:
         frskyDSetDefault(index, id);
         break;
-#endif
 #if defined(CROSSFIRE)
       case TELEM_PROTO_CROSSFIRE:
         crossfireSetDefault(index, id, instance);

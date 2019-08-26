@@ -34,13 +34,7 @@ class QAction;
 class QMenu;
 class QMdiArea;
 class QMdiSubWindow;
-class QSignalMapper;
 QT_END_NAMESPACE
-
-#define CHECK_COMPANION    1
-#define CHECK_FIRMWARE     2
-#define SHOW_DIALOG_WAIT   4
-#define AUTOMATIC_DOWNLOAD 8
 
 class MainWindow : public QMainWindow
 {
@@ -53,12 +47,13 @@ class MainWindow : public QMainWindow
    ~MainWindow();
 
   signals:
+    void firmwareDownloadCompleted();
     void firmwareChanged();
     void startSync();
 
   protected:
-    QString getCompanionUpdateBaseUrl();
-    QString seekCodeString(const QByteArray & qba, const QString & label);
+    QString getCompanionUpdateBaseUrl() const;
+    QString seekCodeString(const QByteArray & qba, const QString & label) const;
 
   protected slots:
     void dowloadLastFirmwareUpdate();
@@ -70,6 +65,7 @@ class MainWindow : public QMainWindow
 
   private slots:
     void openDocURL();
+    void initWindowOptions();
     void retranslateUi(bool showMsg = false);
 
     void setLanguage(const QString & langString);
@@ -84,6 +80,7 @@ class MainWindow : public QMainWindow
     void updateWindowActionTitle(const QMdiSubWindow * win, QAction * act = NULL);
     void onSubwindowTitleChanged();
     void onSubwindowModified();
+    void onCurrentProfileChanged();
 
     void checkForUpdates();
     void checkForFirmwareUpdate();
@@ -128,10 +125,13 @@ class MainWindow : public QMainWindow
     void copyProfile();
     void deleteProfile(const int pid);
     void deleteCurrentProfile();
+    void exportSettings();
+    void importSettings();
     void autoClose();
 
+    void openUpdatesWaitDialog();
     void closeUpdatesWaitDialog();
-    void onUpdatesError();
+    void onUpdatesError(const QString & err);
     void openFile(const QString & fileName, bool updateLastUsedDir = false);
 
   private:
@@ -160,11 +160,12 @@ class MainWindow : public QMainWindow
     bool readEepromFromRadio(const QString & filename);
     bool readFirmwareFromRadio(const QString & filename);
 
+    bool checkProfileRadioExists(int profId);
+
     QMdiArea *mdiArea;
-    QSignalMapper *windowMapper;
 
     QString installer_fileName;
-    downloadDialog * downloadDialog_forWait;
+    DownloadDialog * downloadDialog_forWait;
     unsigned int checkForUpdatesState;
     QString firmwareVersionString;
 
@@ -219,6 +220,8 @@ class MainWindow : public QMainWindow
     QAction *createProfileAct;
     QAction *copyProfileAct;
     QAction *deleteProfileAct;
+    QAction *exportSettingsAct;
+    QAction *importSettingsAct;
     QAction *openDocURLAct;
     QAction *actTabbedWindows;
     QAction *actTileWindows;

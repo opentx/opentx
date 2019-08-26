@@ -31,7 +31,7 @@ void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFla
   lcdDrawText(x, y, s, flags);
 }
 
-void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
+void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
@@ -46,7 +46,7 @@ void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags
 
 int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags attr, event_t event)
 {
-  if (attr & INVERS) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
+  if (attr & INVERS) value = checkIncDec(event, value, min, max, (isModelMenuDisplayed()) ? EE_MODEL : EE_GENERAL);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
   return value;
 }
@@ -82,6 +82,7 @@ void runFatalErrorScreen(const char * message)
       uint32_t pwr_check = pwrCheck();
       if (pwr_check == e_power_off) {
         boardOff();
+        return;  // only happens in SIMU, required for proper shutdown
       }
       else if (pwr_check == e_power_press) {
         refresh = true;
@@ -89,7 +90,32 @@ void runFatalErrorScreen(const char * message)
       else if (pwr_check == e_power_on && refresh) {
         break;
       }
-      SIMU_SLEEP_NORET(1);
+    }
+  }
+}
+
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att)
+{
+  float power_W_PREC1 = pow(10.0, (dBm - 30.0) / 10.0) * 10;
+  if (dBm >= 30) {
+    lcdDrawNumber(x, y, power_W_PREC1, PREC1 | att);
+    lcdDrawText(lcdNextPos, y, "W", att);
+  }
+  else if (dBm < 10) {
+    uint16_t power_MW_PREC1 = round(power_W_PREC1 * 1000);
+    lcdDrawNumber(x, y, power_MW_PREC1, PREC1 | att);
+    lcdDrawText(lcdNextPos, y, "mW", att);
+  }
+  else {
+    uint16_t power_MW = round(power_W_PREC1 * 100);
+    if (power_MW >= 50) {
+      power_MW = (power_MW / 5) * 5;
+      lcdDrawNumber(x, y, power_MW, att);
+      lcdDrawText(lcdNextPos, y, "mW", att);
+    }
+    else {
+      lcdDrawNumber(x, y, power_MW, att);
+      lcdDrawText(lcdNextPos, y, "mW", att);
     }
   }
 }

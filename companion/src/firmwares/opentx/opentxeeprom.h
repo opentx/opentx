@@ -32,7 +32,10 @@
 #define M128_VARIANT                   0x8000
 #define TARANIS_X9E_VARIANT            0x8000
 #define TARANIS_X7_VARIANT             0x4000
-#define TARANIS_XLITE_VARIANT          0x4000
+#define TARANIS_XLITE_VARIANT          0x2000
+#define TARANIS_XLITES_VARIANT         0x1000
+#define TARANIS_X9LITE_VARIANT         0x0800
+#define JUMPER_T12_VARIANT             0x4001
 
 #define SIMU_STOCK_VARIANTS            (GVARS_VARIANT|FRSKY_VARIANT)
 #define SIMU_M128_VARIANTS             (M128_VARIANT|SIMU_STOCK_VARIANTS)
@@ -70,41 +73,40 @@ class OpenTxGeneralData: public TransformedField {
 class ProtocolsConversionTable: public ConversionTable
 {
   public:
-    ProtocolsConversionTable(Board::Type board)
+    ProtocolsConversionTable(Board::Type board, int version)
     {
       int val = 0;
-      if (IS_ARM(board)) {
-        addConversion(PULSES_OFF, val++);
-      }
+      addConversion(PULSES_OFF, val++);
       addConversion(PULSES_PPM, val++);
-      if (!IS_ARM(board)) {
-        addConversion(PULSES_PPM16, val++);
-        addConversion(PULSES_PPMSIM, val++);
+
+      addConversion(PULSES_PXX_XJT_X16, val);
+      addConversion(PULSES_PXX_XJT_D8, val);
+      addConversion(PULSES_PXX_XJT_LR12, val++);
+
+      if (version >= 219) {
+        addConversion(PULSES_ACCESS_ISRM, val);
+        addConversion(PULSES_ACCST_ISRM_D16, val++);
       }
-      if (IS_ARM(board)) {
-        addConversion(PULSES_PXX_XJT_X16, val);
-        addConversion(PULSES_PXX_XJT_D8, val);
-        addConversion(PULSES_PXX_XJT_LR12, val++);
-      }
-      else {
-        addConversion(PULSES_PXX_DJT, val++);
-      }
-      if (IS_ARM(board)) {
-        addConversion(PULSES_LP45, val);
-        addConversion(PULSES_DSM2, val);
-        addConversion(PULSES_DSMX, val++);
-      }
-      else {
-        addConversion(PULSES_LP45, val++);
-        addConversion(PULSES_DSM2, val++);
-        addConversion(PULSES_DSMX, val++);
-      }
-      if (IS_ARM(board)) {
-        addConversion(PULSES_CROSSFIRE, val++);
-        addConversion(PULSES_MULTIMODULE, val++);
-        addConversion(PULSES_PXX_R9M, val++);
-        addConversion(PULSES_SBUS, val++);
-      }
+
+      addConversion(PULSES_LP45, val);
+      addConversion(PULSES_DSM2, val);
+      addConversion(PULSES_DSMX, val++);
+
+      addConversion(PULSES_CROSSFIRE, val++);
+      addConversion(PULSES_MULTIMODULE, val++);
+
+      addConversion(PULSES_PXX_R9M, val++);
+      addConversion(PULSES_ACCESS_R9M, val++);
+      addConversion(PULSES_PXX_R9M_LITE, val++);
+      addConversion(PULSES_ACCESS_R9M_LITE, val++);
+      addConversion(PULSES_PXX_R9M_LITE_PRO, val++);
+      addConversion(PULSES_ACCESS_R9M_LITE_PRO, val++);
+
+      addConversion(PULSES_SBUS, val++);
+
+      addConversion(PULSES_XJT_LITE_X16, val);
+      addConversion(PULSES_XJT_LITE_D8, val);
+      addConversion(PULSES_XJT_LITE_LR12, val++);
     }
 };
 
@@ -147,7 +149,6 @@ class OpenTxModelData: public TransformedField {
     unsigned int variant;
     char name[256];
     int subprotocols[CPN_MAX_MODULES+1/*trainer*/];
-    ProtocolsConversionTable protocolsConversionTable;
     ChannelsConversionTable channelsConversionTable;
     QStringList _errors;
 };

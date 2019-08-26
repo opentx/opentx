@@ -118,7 +118,7 @@ LogsDialog::LogsDialog(QWidget *parent) :
   connect(ui->FieldsTW, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->logTable, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->Reset_PB, SIGNAL(clicked()), this, SLOT(plotLogs()));
-  connect(ui->SaveSession_PB, SIGNAL(clicked()), this, SLOT(on_saveSession_BT_clicked()));
+  connect(ui->SaveSession_PB, SIGNAL(clicked()), this, SLOT(saveSession()));
 }
 
 LogsDialog::~LogsDialog()
@@ -252,7 +252,7 @@ QList<QStringList> LogsDialog::filterGePoints(const QList<QStringList> & input)
     }
   }
   if (gpscol == 0) {
-    QMessageBox::critical(this, tr("Error: no GPS data not found"),
+    QMessageBox::critical(this, tr("Error: no GPS data found"),
       tr("The column containing GPS coordinates must be named \"GPS\".\n\n\
 The columns for altitude \"GAlt\" and for speed \"GSpd\" are optional"));
     return result;
@@ -324,18 +324,9 @@ void LogsDialog::exportToGoogleEarth()
   }
 
   // qDebug() << "gpscol" << gpscol << "altcol" << altcol << "speedcol" << speedcol << "altMultiplier" << altMultiplier;
-  QString geIconFilename = generateProcessUniqueTempFileName("track0.png");
-  if (QFile::exists(geIconFilename)) {
-    QFile::remove(geIconFilename);
-  }
-  QFile::copy(":/images/track0.png", geIconFilename);
-
-  QString geFilename = generateProcessUniqueTempFileName("flight.kml");
-  if (QFile::exists(geFilename)) {
-    QFile::remove(geFilename);
-  }
+  const QString geFilename = generateProcessUniqueTempFileName("flight.kml");
   QFile geFile(geFilename);
-  if (!geFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+  if (!geFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
     QMessageBox::warning(this, CPN_STR_TTL_ERROR,
         tr("Cannot write file %1:\n%2.")
         .arg(geFilename)
@@ -343,13 +334,19 @@ void LogsDialog::exportToGoogleEarth()
     return;
   }
 
+  const QString geIconFilename = QStringLiteral("track0.png");
+  const QString geIconPath = QFileInfo(geFile).absolutePath() + "/" + geIconFilename;
+  if (!QFile::exists(geIconPath)) {
+    QFile::copy(":/images/" + geIconFilename, geIconPath);
+  }
+
   QTextStream outputStream(&geFile);
 
   // file header
   outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n";
   outputStream << "\t<Document>\n\t\t<name>" << logFilename << "</name>\n";
-  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
-  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>0</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>0</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<StyleMap id=\"multiTrack\">\n\t\t\t<Pair>\n\t\t\t\t<key>normal</key>\n\t\t\t\t<styleUrl>#multiTrack_n</styleUrl>\n\t\t\t</Pair>\n\t\t\t<Pair>\n\t\t\t\t<key>highlight</key>\n\t\t\t\t<styleUrl>#multiTrack_h</styleUrl>\n\t\t\t</Pair>\n\t\t</StyleMap>\n";
   outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<Schema id=\"schema\">\n";
@@ -431,8 +428,7 @@ void LogsDialog::exportToGoogleEarth()
   gePath = "/usr/bin/open";
 #endif
   parameters << geFilename;
-  QProcess *process = new QProcess(this);
-  process->start(gePath, parameters);
+  QProcess::startDetached(gePath, parameters);
 }
 
 void LogsDialog::on_mapsButton_clicked()
@@ -613,7 +609,7 @@ void LogsDialog::on_fileOpen_BT_clicked()
   }
 }
 
-void LogsDialog::on_saveSession_BT_clicked()
+void LogsDialog::saveSession()
 {
   int index = ui->sessions_CB->currentIndex();
   // ignore index 0 is its all sessions combined
@@ -834,7 +830,7 @@ void LogsDialog::plotLogs()
     foreach (QModelIndex index, selection) {
       selectedRows.append(index.row());
     }
-    qSort(selectedRows.begin(), selectedRows.end());
+    std::sort(selectedRows.begin(), selectedRows.end());
   } else {
     hasLogSelection = false;
     rowCount = ui->logTable->rowCount();

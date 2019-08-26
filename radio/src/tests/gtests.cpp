@@ -134,21 +134,35 @@ uint16_t getAnalogValue(uint8_t index)
   return anaIn(index);
 }
 
-static char _zchar2stringResult[200];
+static char _stringResult[200];
 const char * zchar2string(const char * zstring, int size)
 {
-  if (size > (int)sizeof(_zchar2stringResult) ) {
-    return 0;
+  if (size > (int)sizeof(_stringResult) ) {
+    return nullptr;
   }
-  zchar2str(_zchar2stringResult, zstring, size);
-  return _zchar2stringResult;
+  zchar2str(_stringResult, zstring, size);
+  return _stringResult;
 }
+
+const char * nchar2string(const char * string, int size)
+{
+  if (size > (int)sizeof(_stringResult) ) {
+    return nullptr;
+  }
+  strncpy(_stringResult, string, size);
+  _stringResult[size] = '\0';
+  return _stringResult;
+}
+
 
 int main(int argc, char **argv)
 {
   QCoreApplication app(argc, argv);
   simuInit();
-  StartEepromThread(NULL);
+  StartEepromThread(nullptr);
+#if defined(EEPROM_SIZE)
+  eeprom = (uint8_t *)malloc(EEPROM_SIZE);
+#endif
   menuLevel = 0;
   menuHandlers[0] = menuMainView;
   InitGoogleTest(&argc, argv);

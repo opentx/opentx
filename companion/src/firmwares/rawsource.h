@@ -213,6 +213,20 @@ class RawSource {
   Q_DECLARE_TR_FUNCTIONS(RawSource)
 
   public:
+    enum SourceGroups {
+      NoneGroup      = 0x001,
+      SourcesGroup   = 0x002,
+      TrimsGroup     = 0x004,
+      SwitchesGroup  = 0x008,
+      GVarsGroup     = 0x010,
+      TelemGroup     = 0x020,
+      InputsGroup    = 0x040,
+      ScriptsGroup   = 0x080,
+
+      InputSourceGroups = NoneGroup | SourcesGroup | TrimsGroup | SwitchesGroup | InputsGroup,
+      AllSourceGroups   = InputSourceGroups | GVarsGroup | TelemGroup | ScriptsGroup
+    };
+
     RawSource():
       type(SOURCE_TYPE_NONE),
       index(0)
@@ -243,13 +257,13 @@ class RawSource {
     bool isPot(int * potsIndex = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
     bool isSlider(int * sliderIndex = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
     bool isTimeBased(Board::Type board = Board::BOARD_UNKNOWN) const;
-    bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN);
+    bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
 
-    bool operator == ( const RawSource & other) {
+    bool operator == ( const RawSource & other) const {
       return (this->type == other.type) && (this->index == other.index);
     }
 
-    bool operator != ( const RawSource & other) {
+    bool operator != ( const RawSource & other) const {
       return (this->type != other.type) || (this->index != other.index);
     }
 

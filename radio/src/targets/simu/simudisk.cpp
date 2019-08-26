@@ -19,13 +19,17 @@
  */
 
 #if defined(SIMU_DISKIO)
-#include "FatFs/diskio.h"
+#include "opentx.h"
+#include "ff.h"
+#include "diskio.h"
 #include <time.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
+FILE * diskImage = 0;
 FATFS g_FATFS_Obj = {0};
 
-pthread_mutex_t ioMutex;
+RTOS_MUTEX_HANDLE ioMutex;
 
 int ff_cre_syncobj (BYTE vol, _SYNC_t* sobj) /* Create a sync object */
 {
@@ -78,7 +82,7 @@ DSTATUS disk_initialize (BYTE pdrv)
 {
   traceDiskStatus();
   TRACE_SIMPGMSPACE("disk_initialize(%u)", pdrv);
-  diskImage = fopen("sdcard.image", "r+");
+  diskImage = fopen("sdcard.image", "rb+");
   return diskImage ? (DSTATUS)0 : (DSTATUS)STA_NODISK;
 }
 

@@ -21,10 +21,12 @@
 #ifndef _CUSTOMFUNCTIONS_H_
 #define _CUSTOMFUNCTIONS_H_
 
-#include <QMediaPlayer>
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+#include <QMediaPlayer>
+
+class RawSourceFilterItemModel;
 class RawSwitchFilterItemModel;
 class TimerEdit;
 
@@ -60,12 +62,15 @@ class CustomFunctionsPanel : public GenericPanel
     CustomFunctionData * functions;
 
   private slots:
+    void updateDataModels();
     void customFunctionEdited();
     void functionEdited();
     void fsw_customContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
     void onChildModified();
-    void playMusic();
+    bool playSound(int index);
+    void stopSound(int index);
+    void toggleSound(bool play);
     void onMediaPlayerStateChanged(QMediaPlayer::State state);
     void onMediaPlayerError(QMediaPlayer::Error error);
     void fswDelete();
@@ -78,8 +83,9 @@ class CustomFunctionsPanel : public GenericPanel
     void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
     RawSwitchFilterItemModel * rawSwitchItemModel;
-    QStandardItemModel * rawSrcInputsItemModel;
-    QStandardItemModel * rawSrcAllItemModel;
+    RawSourceFilterItemModel * rawSrcAllItemModel;
+    RawSourceFilterItemModel * rawSrcInputsItemModel;
+    RawSourceFilterItemModel * rawSrcGVarsItemModel;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
@@ -89,7 +95,7 @@ class CustomFunctionsPanel : public GenericPanel
     QCheckBox * fswtchParamGV[CPN_MAX_SPECIAL_FUNCTIONS];
     QDoubleSpinBox * fswtchParam[CPN_MAX_SPECIAL_FUNCTIONS];
     TimerEdit * fswtchParamTime[CPN_MAX_SPECIAL_FUNCTIONS];
-    QPushButton * playBT[CPN_MAX_SPECIAL_FUNCTIONS];
+    QToolButton * playBT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamArmT[CPN_MAX_SPECIAL_FUNCTIONS];
     QCheckBox * fswtchEnable[CPN_MAX_SPECIAL_FUNCTIONS];

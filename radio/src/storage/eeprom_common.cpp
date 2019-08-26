@@ -78,7 +78,6 @@ void selectModel(uint8_t sub)
   eeLoadModel(sub);
 }
 
-#if defined(CPUARM)
 ModelHeader modelHeaders[MAX_MODELS];
 void eeLoadModelHeaders()
 {
@@ -86,7 +85,6 @@ void eeLoadModelHeaders()
     eeLoadModelHeader(i, &modelHeaders[i]);
   }
 }
-#endif
 
 void storageReadRadioSettings()
 {
@@ -97,14 +95,12 @@ void storageReadRadioSettings()
     eeLoadModelHeaders();
   }
 
-#if defined(CPUARM)
   for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
       currentLanguagePack = languagePacks[i];
     }
   }
-#endif
 }
 
 void storageReadCurrentModel()
@@ -129,7 +125,7 @@ void storageEraseAll(bool warn)
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
   }
 
-  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
+  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, nullptr, AU_NONE);
 
   storageFormat();
   storageDirty(EE_GENERAL|EE_MODEL);

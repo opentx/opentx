@@ -38,6 +38,11 @@
        <verstretch>1</verstretch>
       </sizepolicy>
      </property>
+     <property name="font">
+      <font>
+       <family>Monospace</family>
+      </font>
+     </property>
      <property name="verticalScrollBarPolicy">
       <enum>Qt::ScrollBarAsNeeded</enum>
      </property>
@@ -60,6 +65,13 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetMinimumSize</enum>
      </property>
+     <item>
+      <widget class="QLabel" name="lblCursorPos">
+       <property name="text">
+        <string>Line nn, Col nn</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

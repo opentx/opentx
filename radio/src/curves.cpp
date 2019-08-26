@@ -22,7 +22,6 @@
 
 uint8_t s_curveChan;
 
-#if defined(CPUARM)
 int8_t * curveEnd[MAX_CURVES];
 void loadCurves()
 {
@@ -94,59 +93,7 @@ void resetCustomCurveX(int8_t * points, int noPoints)
     points[noPoints+i] = getCurveX(noPoints, i+1);
   }
 }
-#else
-int8_t * curveAddress(uint8_t idx)
-{
-  return &g_model.points[idx==0 ? 0 : 5*idx+g_model.curves[idx-1]];
-}
 
-CurveInfo curveInfo(uint8_t idx)
-{
-  CurveInfo result;
-  result.crv = curveAddress(idx);
-  int8_t *next = curveAddress(idx+1);
-  uint8_t size = next - result.crv;
-  if ((size & 1) == 0) {
-    result.points = (size / 2) + 1;
-    result.custom = true;
-  }
-  else {
-    result.points = size;
-    result.custom = false;
-  }
-  return result;
-}
-
-bool moveCurve(uint8_t index, int8_t shift, int8_t custom) // TODO move?
-{
-  if (g_model.curves[MAX_CURVES-1] + shift > MAX_CURVE_POINTS-5*MAX_CURVES) {
-    AUDIO_WARNING2();
-    return false;
-  }
-
-  int8_t * crv = curveAddress(index);
-  if (shift < 0) {
-    for (uint8_t i=0; i<custom; i++)
-      crv[i] = crv[2*i];
-  }
-
-  int8_t * nextCrv = curveAddress(index+1);
-  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]-g_model.curves[index]);
-  if (shift < 0) memclear(&g_model.points[MAX_CURVE_POINTS-1] + shift, -shift);
-  while (index<MAX_CURVES) {
-    g_model.curves[index++] += shift;
-  }
-
-  for (uint8_t i=0; i<custom-2; i++) {
-    crv[custom + i] = -100 + ((200 * (i + 1) + custom / 2) / (custom - 1));
-  }
-
-  storageDirty(EE_MODEL);
-  return true;
-}
-#endif
-
-#if defined(CPUARM)
 #define CUSTOM_POINT_X(points, count, idx) ((idx)==0 ? -100 : (((idx)==(count)-1) ? 100 : points[(count)+(idx)-1]))
 int32_t compute_tangent(CurveInfo * crv, int8_t * points, int i)
 {
@@ -261,21 +208,13 @@ int16_t hermite_spline(int16_t x, uint8_t idx)
   }
   return 0;
 }
-#endif
 
 int intpol(int x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
-#if defined(CPUARM)
   CurveInfo & crv = g_model.curves[idx];
   int8_t * points = curveAddress(idx);
   uint8_t count = crv.points+5;
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
-#else
-  CurveInfo crv = curveInfo(idx);
-  int8_t * points = crv.crv;
-  uint8_t count = crv.points;
-  bool custom = crv.custom;
-#endif
   int16_t erg = 0;
 
   x += RESXu;
@@ -308,7 +247,6 @@ int intpol(int x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
   return erg / 25; // 100*D5/RESX;
 }
 
-#if defined(CPUARM)
 int applyCurve(int x, CurveRef & curve)
 {
   switch (curve.type) {
@@ -375,50 +313,14 @@ int applyCustomCurve(int x, uint8_t idx)
   else
     return intpol(x, idx);
 }
-#else
-int applyCurve(int x, int8_t idx)
-{
-  /* already tried to have only one return at the end */
-  switch(idx) {
-    case CURVE_NONE:
-      return x;
-    case CURVE_X_GT0:
-      if (x < 0) x = 0; //x|x>0
-      return x;
-    case CURVE_X_LT0:
-      if (x > 0) x = 0; //x|x<0
-      return x;
-    case CURVE_ABS_X: // x|abs(x)
-      return abs(x);
-    case CURVE_F_GT0: //f|f>0
-      return x > 0 ? RESX : 0;
-    case CURVE_F_LT0: //f|f<0
-      return x < 0 ? -RESX : 0;
-    case CURVE_ABS_F: //f|abs(f)
-      return x > 0 ? RESX : -RESX;
-  }
-  if (idx < 0) {
-    x = -x;
-    idx = -idx + CURVE_BASE - 1;
-  }
-  return applyCustomCurve(x, idx - CURVE_BASE);
-}
-#endif
 
 point_t getPoint(uint8_t i)
 {
   point_t result = {0, 0};
-#if defined(CPUARM)
   CurveInfo & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
   uint8_t count = 5+crv.points;
-#else
-  CurveInfo crv = curveInfo(s_curveChan);
-  int8_t * points = crv.crv;
-  bool custom = crv.custom;
-  uint8_t count = crv.points;
-#endif
   if (i < count) {
     result.x = CURVE_CENTER_X-1-CURVE_SIDE_WIDTH + i*CURVE_SIDE_WIDTH*2/(count-1);
     result.y = CURVE_CENTER_Y - (points[i]) * (CURVE_SIDE_WIDTH-1) / 100;

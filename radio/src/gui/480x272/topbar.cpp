@@ -82,7 +82,7 @@ void drawTopBar()
     lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_4, MENU_TITLE_COLOR);
 
   /* Tx battery */
-  uint8_t bars = limit<int8_t>(0, 6 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 5);
+  uint8_t bars = GET_TXBATT_BARS(5);
   lcdDrawBitmapPattern(LCD_W-130, 24, LBM_TOPMENU_TXBATT, MENU_TITLE_COLOR);
   for (unsigned int i = 0; i < 5; i++) {
     lcdDrawSolidFilledRect(LCD_W-122+4*i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_TITLE_COLOR);
@@ -98,8 +98,8 @@ void drawTopBar()
   // lcdDrawSolidVerticalLine(batt_icon_x+FW+13, BAR_Y+2, 5);
 
   // Rx battery
-  if (g_model.frsky.voltsSource) { // TODO should not be in frsky struct
-    TelemetryItem & item = telemetryItems[g_model.frsky.voltsSource-1];
+  if (g_model.voltsSource) {
+    TelemetryItem & item = telemetryItems[g_model.voltsSource-1];
     if (item.isAvailable()) {
       int32_t value = item.value;
       TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];

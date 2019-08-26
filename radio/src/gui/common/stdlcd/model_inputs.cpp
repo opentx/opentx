@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#define _STR_MAX(x)                     PSTR("/" #x)
+#define _STR_MAX(x)                     "/" #x
 #define STR_MAX(x)                     _STR_MAX(x)
 
 uint8_t getExposCount()
@@ -54,7 +54,7 @@ void insertExpo(uint8_t idx)
   ExpoData * expo = expoAddress(idx);
   memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
   memclear(expo, sizeof(ExpoData));
-  expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+  expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
   expo->curve.type = CURVE_REF_EXPO;
   expo->mode = 3; // pos+neg
   expo->chn = s_currCh - 1;
@@ -87,7 +87,7 @@ bool swapExpos(uint8_t & idx, uint8_t up)
   }
   
   if (tgt_idx == MAX_EXPOS) {
-    if (x->chn == NUM_INPUTS-1)
+    if (x->chn == MAX_INPUTS-1)
       return false;
     x->chn++;
     return true;
@@ -100,7 +100,7 @@ bool swapExpos(uint8_t & idx, uint8_t up)
       else return false;
     }
     else {
-      if (x->chn<NUM_INPUTS-1) x->chn++;
+      if (x->chn<MAX_INPUTS-1) x->chn++;
       else return false;
     }
     return true;
@@ -387,7 +387,7 @@ void menuModelExposAll(event_t event)
   int cur = 0;
   int i = 0;
   
-  for (int ch=1; ch<=NUM_INPUTS; ch++) {
+  for (int ch=1; ch<=MAX_INPUTS; ch++) {
     ExpoData * ed;
     coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
     if (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) {

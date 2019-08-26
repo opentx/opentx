@@ -23,22 +23,10 @@
 
 #include "definitions.h"
 
-#if defined(CPUARM)
   #define blkid_t    uint16_t
   #define EEFS_VERS  5
   #define MAXFILES   62
   #define BS         64
-#elif defined(CPUM2560) || defined(CPUM2561) || defined(CPUM128)
-  #define blkid_t    uint8_t
-  #define EEFS_VERS  5
-  #define MAXFILES   36
-  #define BS         16
-#else
-  #define blkid_t    uint8_t
-  #define EEFS_VERS  4
-  #define MAXFILES   20
-  #define BS         16
-#endif
 
 PACK(struct DirEnt {
   blkid_t  startBlk;
@@ -46,11 +34,7 @@ PACK(struct DirEnt {
   uint16_t typ:4;
 });
 
-#if defined(CPUARM)
   #define EEFS_EXTRA_FIELDS uint8_t  spare[2];
-#else
-  #define EEFS_EXTRA_FIELDS
-#endif
 
 PACK(struct EeFs {
   uint8_t  version;
@@ -74,15 +58,9 @@ extern EeFs eeFs;
 
 #define RESV          sizeof(EeFs)  //reserv for eeprom header with directory (eeFs)
 
-#if defined(CPUM64)
-#define FIRSTBLK      (RESV/BS)
-#define BLOCKS        (EEPROM_SIZE/BS)
-#define BLOCKS_OFFSET 0
-#else
 #define FIRSTBLK      1
 #define BLOCKS        (1+(EEPROM_SIZE-RESV)/BS)
 #define BLOCKS_OFFSET (RESV-BS)
-#endif
 
 uint16_t EeFsGetFree();
 
@@ -144,9 +122,6 @@ class RlcFile: public EFile
     uint8_t m_write1_byte;
     uint8_t m_write_len;
     uint8_t * m_write_buf;
-#if defined (EEPROM_PROGRESS_BAR)
-    uint8_t m_ratio;
-#endif
 
   public:
 
@@ -169,10 +144,6 @@ class RlcFile: public EFile
 
     // read from opened file and decode rlc-coded data
     uint16_t readRlc(uint8_t *buf, uint16_t i_len);
-
-#if defined (EEPROM_PROGRESS_BAR)
-    void drawProgressBar(uint8_t x);
-#endif
 };
 
 extern RlcFile theFile;  //used for any file operation
@@ -194,39 +165,24 @@ inline void eepromWriteProcess()
   theFile.nextWriteStep();
 }
 
-#if defined (EEPROM_PROGRESS_BAR)
-#define DISPLAY_PROGRESS_BAR(x) theFile.drawProgressBar(x)
-#else
-#define DISPLAY_PROGRESS_BAR(x)
-#endif
-
-#if defined(CPUARM)
 bool eeCopyModel(uint8_t dst, uint8_t src);
 void eeSwapModels(uint8_t id1, uint8_t id2);
 void eeDeleteModel(uint8_t idx);
-#else
-#define eeCopyModel(dst, src) theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))
-#define eeSwapModels(id1, id2) EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2))
-#define eeDeleteModel(idx) EFile::rm(FILE_MODEL(idx))
-#endif
 
 #if defined(SDCARD)
-const pm_char * eeBackupModel(uint8_t i_fileSrc);
-const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
+const char * eeBackupModel(uint8_t i_fileSrc);
+const char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 #endif
 
 // For conversions
-#if defined(CPUARM)
-void loadRadioSettingsSettings();
+void loadRadioSettings();
 void loadModel(int index, bool alarms=true);
-#endif
 
 bool eepromOpen();
 void eeLoadModelName(uint8_t id, char *name);
 bool eeLoadGeneral();
 
 // For EEPROM backup/restore
-#if defined(CPUARM)
 inline bool isEepromStart(const void * buffer)
 {
   // OpenTX EEPROM
@@ -249,6 +205,5 @@ inline bool isEepromStart(const void * buffer)
 }
 
 void eepromBackup();
-#endif
 
 #endif // _EEPROM_RLC_H_

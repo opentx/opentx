@@ -26,9 +26,7 @@ enum LimitsItems {
   ITEM_LIMITS_MIN,
   ITEM_LIMITS_MAX,
   ITEM_LIMITS_DIRECTION,
-#if defined(CURVES)
   ITEM_LIMITS_CURVE,
-#endif
 #if defined(PPM_CENTER_ADJUSTABLE)
   ITEM_LIMITS_PPM_CENTER,
 #endif
@@ -141,7 +139,6 @@ bool menuModelLimits(event_t event)
     for (uint8_t j=0; j<ITEM_LIMITS_COUNT; j++) {
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && s_editMode>0) ;
-      if (active) STICK_SCROLL_DISABLE();
       switch(j)
       {
         case ITEM_LIMITS_CH_NAME:
@@ -197,7 +194,6 @@ bool menuModelLimits(event_t event)
           break;
         }
 
-#if defined(CURVES)
         case ITEM_LIMITS_CURVE:
           drawCurveName(LIMITS_CURVE_POS, y, ld->curve, attr);
           if (attr && event==EVT_KEY_LONG(KEY_ENTER) && ld->curve>0) {
@@ -208,7 +204,6 @@ bool menuModelLimits(event_t event)
             CHECK_INCDEC_MODELVAR(event, ld->curve, -MAX_CURVES, +MAX_CURVES);
           }
           break;
-#endif
 
 #if defined(PPM_CENTER_ADJUSTABLE)
         case ITEM_LIMITS_PPM_CENTER:

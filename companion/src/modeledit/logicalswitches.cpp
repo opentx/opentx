@@ -19,22 +19,21 @@
  */
 
 #include "logicalswitches.h"
-#include "switchitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 
 #include <TimerEdit>
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  rawSourceItemModel(NULL),
   selectedSwitch(0)
 {
   Stopwatch s1("LogicalSwitchesPanel");
 
-  int channelsMax = model.getChannelsMax(true);
-  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, LogicalSwitchesContext);
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::LogicalSwitchesContext, this);
 
-  setDataModels();
+  const int srcGroups = firmware->getCapability(GvarsInCS) ? 0 : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
+  rawSourceItemModel = new RawSourceFilterItemModel(&generalSettings, &model, srcGroups, this);
 
   QStringList headerLabels;
   headerLabels << "#" << tr("Function") << tr("V1") << tr("V2") << tr("AND Switch");
@@ -45,6 +44,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
 
   s1.report("header");
 
+  const int channelsMax = model.getChannelsMax(true);
+
   lock = true;
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     // The label
@@ -52,6 +53,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     label->setProperty("index", i);
     label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, i+1).toString());
     label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(csw_customContextMenuRequested(QPoint)));
@@ -161,14 +163,13 @@ LogicalSwitchesPanel::~LogicalSwitchesPanel()
 {
 }
 
-void LogicalSwitchesPanel::setDataModels()
+void LogicalSwitchesPanel::updateDataModels()
 {
-  if (rawSourceItemModel)
-    rawSourceItemModel->deleteLater();
-
-  int srcFlags =  POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0);
-  rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, srcFlags);
-  rawSourceItemModel->setParent(this);
+  const bool oldLock = lock;
+  lock = true;
+  rawSwitchItemModel->update();
+  rawSourceItemModel->update();
+  lock = oldLock;
 }
 
 void LogicalSwitchesPanel::functionChanged()
@@ -179,6 +180,7 @@ void LogicalSwitchesPanel::functionChanged()
   if (model->logicalSw[i].func == newFunc)
     return;
 
+  const unsigned oldFunc = model->logicalSw[i].func;
   CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
   model->logicalSw[i].func = newFunc;
   CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
@@ -194,7 +196,11 @@ void LogicalSwitchesPanel::functionChanged()
       model->logicalSw[i].val2 = -129;
     }
   }
-  updateLine(i);
+  if (bool(oldFunc) != bool(newFunc))
+    update();
+  else
+    updateLine(i);
+
   emit modified();
 }
 
@@ -435,7 +441,6 @@ void LogicalSwitchesPanel::updateLine(int i)
       cswitchDelay[i]->setValue(model->logicalSw[i].delay/10.0);
   }
 
-  rawSwitchItemModel->update();
   lock = false;
 }
 
@@ -508,7 +513,7 @@ void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b)
 
 void LogicalSwitchesPanel::update()
 {
-  setDataModels();
+  updateDataModels();
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     updateLine(i);
   }

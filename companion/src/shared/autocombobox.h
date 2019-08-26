@@ -63,50 +63,53 @@ class AutoComboBox: public QComboBox
     {
       lock = true;
       QComboBox::addItem(item, value);
-      if (field && *field==value) {
-        setCurrentIndex(count()-1);
-      }
       lock = false;
+      updateValue();
     }
 
     void setField(unsigned int & field, GenericPanel * panel=NULL)
     {
       this->field = (int *)&field;
       this->panel = panel;
-      for (int i=0; i<count(); ++i) {
-        if ((int)field == itemData(i))
-          setCurrentIndex(i);
-      }
+      updateValue();
     }
 
     void setField(int & field, GenericPanel * panel=NULL)
     {
       this->field = &field;
       this->panel = panel;
-      for (int i=0; i<count(); ++i) {
-        if ((int)field == itemData(i))
-          setCurrentIndex(i);
-      }
+      updateValue();
     }
 
     void setAutoIndexes()
     {
-      for (int i=0; i<count(); ++i) {
+      for (int i=0; i<count(); ++i)
         setItemData(i, i);
-        if (*this->field == i)
-          setCurrentIndex(i);
-      }
+      updateValue();
     }
+
+    void updateValue()
+    {
+      if (!field)
+        return;
+      lock = true;
+      setCurrentIndex(findData(*field));
+      lock = false;
+    }
+
+  signals:
+    void currentDataChanged(int value);
 
   protected slots:
     void onCurrentIndexChanged(int index)
     {
+      const int val = itemData(index).toInt();
       if (field && !lock) {
-        *field = itemData(index).toInt();
-        if (panel) {
+        *field = val;
+        if (panel)
           emit panel->modified();
-        }
       }
+      emit currentDataChanged(val);
     }
 
   protected:

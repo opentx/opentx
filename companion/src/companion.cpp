@@ -22,6 +22,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QMessageBox>
 #include <QSplashScreen>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
@@ -36,6 +37,7 @@
 #include "simulatorinterface.h"
 #include "storage.h"
 #include "translations.h"
+#include "helpers.h"
 
 #ifdef __APPLE__
 #include <QProxyStyle>
@@ -52,6 +54,84 @@ class MyProxyStyle : public QProxyStyle
  };
 #endif
 
+void importError()
+{
+  QMessageBox::critical(nullptr, CPN_STR_APP_NAME, QCoreApplication::translate("Companion", "The saved settings could not be imported, please try again or continue with current settings."), QMessageBox::Ok, 0);
+}
+
+void checkSettingsImport(bool force = false)
+{
+  QString previousVersion;
+  bool found;
+  if (!(found = g.findPreviousVersionSettings(&previousVersion))) {
+    found = QDir(CPN_SETTINGS_BACKUP_DIR).entryList(QStringList({"*.ini"}), QDir::Files).size() > 0;
+  }
+  if (!found && !force)
+    return;
+
+  const QString impFileBtn = QCoreApplication::translate("Companion", "Import from File");
+  const QString impPrevBtn = QCoreApplication::translate("Companion", "Import from v%1").arg(previousVersion);
+  const QString impNoneBtn = QCoreApplication::translate("Companion", "Do not import");
+
+  QString msg;
+  if (previousVersion.isEmpty()) {
+    if (found)
+      msg = QCoreApplication::translate("Companion", "We have found possible Companion settings backup file(s).\nDo you want to import settings from a file?");
+    else
+      msg = QCoreApplication::translate("Companion", "Import settings from a file, or start with current values.");
+  }
+  else {
+    msg = QCoreApplication::translate("Companion", "We have found existing settings for Companion version: %1.\nDo you want to import them?\n\n" \
+                                                   "If you have a settings backup file, you may import that instead.").arg(previousVersion);
+  }
+
+  const int ret = QMessageBox::question(nullptr, CPN_STR_APP_NAME, msg, impNoneBtn, impFileBtn, (previousVersion.isEmpty() ? QString() : impPrevBtn), 0, 0);
+  if (!ret)
+    return;
+
+  // Import from previous version
+  if (ret == 2) {
+    if (!g.importSettings(previousVersion)) {
+      // very unlikely, but just in case of unexpected error, restart the import
+      importError();
+      checkSettingsImport();
+    }
+    return;
+  }
+
+  // Import from file
+  bool err = false;
+  QString impFile = CPN_SETTINGS_BACKUP_DIR;
+  impFile = QFileDialog::getOpenFileName(nullptr, QCoreApplication::translate("Companion", "Select %1:").arg(CPN_STR_APP_SETTINGS_FILES), impFile, CPN_STR_APP_SETTINGS_FILTER);
+
+  if (!impFile.isEmpty() && QFileInfo(impFile).isReadable()) {
+    QSettings fromSettings(impFile, QSettings::IniFormat);
+    if (g.importSettings(&fromSettings)) {
+      return;
+    }
+    else {
+      importError();
+      err = true;
+    }
+  }
+  // Restart the import prompt if user cancelled the file select dialog but we do have previous settings, or if we had a file import error.
+  if (err || !previousVersion.isEmpty())
+    checkSettingsImport();
+}
+
+void printHelpText()
+{
+  printf(qPrintable(QString(APP_COMPANION % " v%s\n\n")), VERSION);
+  const char tmpl[] = "  %s \t %s\n";
+  printf(tmpl, "--export",   QCoreApplication::translate("Companion", "Save application settings to file...").toUtf8().constData());
+  printf(tmpl, "--import",   QCoreApplication::translate("Companion", "Load application settings from file or previous version...").toUtf8().constData());
+  printf(tmpl, "--defaults", QCoreApplication::translate("Companion", "Reset ALL application settings to default and remove radio profiles...").toUtf8().constData());
+  printf(tmpl, "--quit  ",   QCoreApplication::translate("Companion", "Exit before settings initialization and application startup.").toUtf8().constData());
+  printf(tmpl, "--version",  QCoreApplication::translate("Companion", "Print version number and exit.").toUtf8().constData());
+  printf(tmpl, "--help|-h",  QCoreApplication::translate("Companion", "Print this help text.").toUtf8().constData());
+  fflush(stdout);
+}
+
 int main(int argc, char *argv[])
 {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
@@ -65,6 +145,19 @@ int main(int argc, char *argv[])
   app.setOrganizationDomain(COMPANY_DOMAIN);
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
+  const QStringList args(QApplication::arguments());
+
+  if (args.contains("--help") || args.contains("-h") || args.contains("/?")) {
+    printHelpText();
+    exit(0);
+  }
+
+  if (args.contains("--version")) {
+    printf("%s\n", VERSION);
+    fflush(stdout);
+    exit(0);
+  }
+
   Q_INIT_RESOURCE(companion);
 
   if (AppDebugMessageHandler::instance())
@@ -72,28 +165,45 @@ int main(int argc, char *argv[])
 
   CustomDebug::setFilterRules();
 
-  if (!g.hasCurrentSettings()) {
-    QString previousVersion;
-    if (g.findPreviousVersionSettings(&previousVersion)) {
-       QMessageBox msgBox;
-       msgBox.setText(QCoreApplication::translate("Companion", "We have found existing settings for Companion version: %1.\nDo you want to import them?").arg(previousVersion));
-       msgBox.setIcon(QMessageBox::Information);
-       msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-       msgBox.setDefaultButton(QMessageBox::Yes);
-       int ret = msgBox.exec();
+  // handle settings export/import/reset via CLI
 
-       if (ret == QMessageBox::Yes)
-  	     g.importSettings(previousVersion);
+  bool doExport = args.contains("--export");
+  bool doImport = args.contains("--import");
+  bool doReset = args.contains("--defaults");
+
+  if (doExport)
+    Helpers::exportAppSettings();
+
+  if (doReset) {
+    char ok;
+    printf("%s [Y/N] ", QCoreApplication::translate("Companion", "Reset ALL application settings to default values and remove radio profiles, are you sure?").toUtf8().constData());
+    std::cin >> ok;
+    if (ok != 'Y' && ok != 'y')
+      exit(0);
+    if (!doExport) {
+      printf("%s [Y/N] ", QCoreApplication::translate("Companion", "Would you like to perform a backup first?").toUtf8().constData());
+      std::cin >> ok;
+      if (ok == 'Y' || ok == 'y')
+        Helpers::exportAppSettings();
     }
+    g.resetAllSettings();
+    g.storeAllSettings();
+    std::cout << QCoreApplication::translate("Companion", "Application settings were reset and saved.").toUtf8().constData() << std::endl;
   }
-  g.init();
 
-  QStringList strl = QApplication::arguments();
-  if (strl.contains("--version")) {
-    printf("%s\n", VERSION);
-    fflush(stdout);
+  if (doImport)
+    checkSettingsImport(true);
+
+  // give option to quit before settings init
+  if (args.contains("--quit"))
     exit(0);
-  }
+
+  // end CLI handling
+
+  if (!doImport && g.isFirstUse())
+    checkSettingsImport(false);
+
+  g.init();
 
   QFile dbgLog;
   if (AppDebugMessageHandler::instance() && g.appDebugLog() && !g.appLogsDir().isEmpty() && QDir().mkpath(g.appLogsDir())) {
@@ -127,9 +237,10 @@ int main(int argc, char *argv[])
   registerOpenTxFirmwares();
   SimulatorLoader::registerSimulators();
 
-  if (g.profile[g.id()].fwType().isEmpty()){
-    g.profile[g.id()].fwType(Firmware::getDefaultVariant()->getId());
-    g.profile[g.id()].fwName("");
+  Profile & profile = g.currentProfile();
+  if (profile.fwType().isEmpty()){
+    profile.fwType(Firmware::getDefaultVariant()->getId());
+    profile.fwName("");
   }
 
   QString splashScreen;

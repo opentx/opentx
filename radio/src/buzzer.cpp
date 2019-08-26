@@ -28,7 +28,7 @@ bool warble = false;
 bool warbleC;
 
 // The various "beep" tone lengths
-static const pm_uint8_t beepTab[] PROGMEM = {
+static const uint8_t beepTab[]  = {
     // key, trim, warn2, warn1, error
     1,  1,  2, 10,  60, //xShort
     1,  1,  4, 20,  80, //short
@@ -54,7 +54,7 @@ void beep(uint8_t val)
 #endif
 
   if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && val!=0) || (g_eeGeneral.beepMode==-1 && val>=3)) {
-    _beep(pgm_read_byte(beepTab+5*(2+g_eeGeneral.beepLength)+val));
+    _beep(*(beepTab+5*(2+g_eeGeneral.beepLength)+val));
   }
 }
 

@@ -59,8 +59,8 @@ void luaInitThemesAndWidgets();
 #define lua_pushtableinteger(L, k, v)  (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
 #define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushnumber(L, (v)), lua_settable(L, -3))
 #define lua_pushtablestring(L, k, v)   (lua_pushstring(L, (k)), lua_pushstring(L, (v)), lua_settable(L, -3))
-#define lua_pushtablenzstring(L, k, v) { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
-#define lua_pushtablezstring(L, k, v)  { char tmp[sizeof(v)+1]; zchar2str(tmp, (v), sizeof(v)); lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
+#define lua_pushtablenzstring(L, k, v) { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(tmp)-1); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
+#define lua_pushtablezstring(L, k, v)  { char tmp[sizeof(v)+1]; zchar2str(tmp, (v), sizeof(tmp)-1); lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_registerlib(L, name, tab)  (luaL_newmetatable(L, name), luaL_setfuncs(L, tab, 0), lua_setglobal(L, name))
 
 #define RUN_MIX_SCRIPT        (1 << 0)
@@ -155,9 +155,9 @@ extern uint16_t maxLuaInterval;
 extern uint16_t maxLuaDuration;
 extern uint8_t instructionsPercent;
 
-#if defined(PCBTARANIS)
+#if defined(KEYS_GPIO_REG_PAGE)
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER && ((luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) || (key) != KEY_PAGE))
-#elif defined(PCBHORUS)
+#else
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
 #endif
 struct LuaField {
@@ -170,6 +170,10 @@ void luaRegisterLibraries(lua_State * L);
 void registerBitmapClass(lua_State * L);
 void luaSetInstructionsLimit(lua_State* L, int count);
 int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode);
+
+#define TOOL_NAME_MAXLEN  16
+bool readToolName(char * toolName, const char * filename);
+bool isRadioScriptTool(const char * filename);
 
 struct LuaMemTracer {
   const char * script;

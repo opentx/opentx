@@ -21,6 +21,7 @@
 #include "printdialog.h"
 #include "ui_printdialog.h"
 #include "helpers.h"
+#include "styleeditdialog.h"
 #include <QPrinter>
 #include <QPrintDialog>
 
@@ -31,13 +32,13 @@ PrintDialog::PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings &
   model(model),
   printfilename(filename),
   ui(new Ui::PrintDialog),
-  multimodelprinter(firmware)
+  multiModelPrinter(firmware)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("print.png"));
   setWindowTitle(model.name);
-  multimodelprinter.setModel(0, &model, &generalSettings);
-  ui->textEdit->setHtml(multimodelprinter.print(ui->textEdit->document()));
+  multiModelPrinter.setModel(0, &model, &generalSettings);
+  ui->textEdit->setHtml(multiModelPrinter.print(ui->textEdit->document()));
   if (!printfilename.isEmpty()) {
     printToFile();
     QTimer::singleShot(0, this, SLOT(autoClose()));
@@ -108,4 +109,11 @@ void PrintDialog::printToFile()
 void PrintDialog::autoClose()
 {
   this->close();
+}
+
+void PrintDialog::on_styleButton_clicked()
+{
+  StyleEditDialog *g = new StyleEditDialog(this, MODEL_PRINT_CSS);
+  if (g->exec() == QDialog::Accepted)
+    ui->textEdit->setHtml(multiModelPrinter.print(ui->textEdit->document()));
 }

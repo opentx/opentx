@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-const pm_uchar about_bmp[] PROGMEM = {
+const unsigned char about_bmp[]  = {
 #include "about.lbm"
 };
 
@@ -42,7 +42,7 @@ enum AboutScreens {
 #define ABOUT_X      2
 #define ABOUT_INDENT 4
 
-#if defined(PCBX7)
+#if defined(NAVIGATION_X7)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #else

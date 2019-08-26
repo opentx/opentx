@@ -31,13 +31,13 @@ namespace Ui {
 
 class PrintDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
   public:
     PrintDialog(QWidget * parent, Firmware * firmware, GeneralSettings & generalSettings, ModelData & model, const QString & filename="");
     ~PrintDialog();
     void closeEvent(QCloseEvent * event);
-    
+
     Firmware * firmware;
     GeneralSettings & generalSettings;
     ModelData & model;
@@ -46,7 +46,7 @@ class PrintDialog : public QDialog
 
   protected:
     Ui::PrintDialog *ui;
-    MultiModelPrinter multimodelprinter; // TODO multimodelPrinter
+    MultiModelPrinter multiModelPrinter;
 
     void printToFile();
 
@@ -54,6 +54,7 @@ class PrintDialog : public QDialog
     void on_printButton_clicked();
     void on_printFileButton_clicked();
     void autoClose();
+    void on_styleButton_clicked();
 };
 
 #endif // _PRINTDIALOG_H_

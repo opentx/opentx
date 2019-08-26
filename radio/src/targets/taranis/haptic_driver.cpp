@@ -22,7 +22,7 @@
 
 #if defined(HAPTIC_PWM)
 // TODO test Haptic on X7 (I added PWM support)
-void hapticOff(void)
+void hapticOff()
 {
   HAPTIC_COUNTER_REGISTER = 0;
 }
@@ -35,7 +35,7 @@ void hapticOn(uint32_t pwmPercent)
   HAPTIC_COUNTER_REGISTER = pwmPercent;
 }
 
-void hapticInit(void)
+void hapticInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = HAPTIC_GPIO_PIN;
@@ -49,8 +49,13 @@ void hapticInit(void)
 
   HAPTIC_TIMER->ARR = 100;
   HAPTIC_TIMER->PSC = HAPTIC_TIMER_FREQ / 10000 - 1;
+#if defined(HAPTIC_CCMR1)
   HAPTIC_TIMER->CCMR1 = HAPTIC_CCMR1; // PWM
+#elif defined(HAPTIC_CCMR2)
+  HAPTIC_TIMER->CCMR2 = HAPTIC_CCMR2; // PWM
+#endif
   HAPTIC_TIMER->CCER = HAPTIC_CCER;
+  HAPTIC_TIMER->BDTR = TIM_BDTR_MOE; // Enable output
   HAPTIC_COUNTER_REGISTER = 0;
   HAPTIC_TIMER->EGR = 0;
   HAPTIC_TIMER->CR1 = TIM_CR1_CEN; // Counter enable
@@ -59,7 +64,7 @@ void hapticInit(void)
 #else
 
 // No PWM before X9D+
-void hapticInit(void)
+void hapticInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = HAPTIC_GPIO_PIN;
@@ -70,7 +75,7 @@ void hapticInit(void)
   GPIO_Init(HAPTIC_GPIO, &GPIO_InitStructure);
 }
 
-void hapticOff(void)
+void hapticOff()
 {
   GPIO_ResetBits(HAPTIC_GPIO, HAPTIC_GPIO_PIN);
 }
