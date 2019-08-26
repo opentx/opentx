@@ -85,6 +85,11 @@ void ModelCell::loadBitmap()
   }
   else {
     error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
+    // LEN_BITMAP_NAME has now 4 bytes more
+    if (version <= 218) {
+      memmove(partialmodel.timers, &(partialmodel.header.bitmap[10]), sizeof(TimerData)*MAX_TIMERS);
+      memclear(&(partialmodel.header.bitmap[10]), 4);
+    }
   }
 
   if ((modelName[0] == 0) && ! error)
