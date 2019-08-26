@@ -179,6 +179,7 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(0, g_model.logicalSw[0].v2);
   EXPECT_EQ(MIXSRC_FIRST_TELEM+19*3, g_model.logicalSw[1].v1); // TELE:20
   EXPECT_EQ(20, g_model.logicalSw[1].v2);
+  EXPECT_EQ(SWSRC_FIRST_LOGICAL_SWITCH, g_model.logicalSw[1].andsw);
   EXPECT_EQ(SWASH_TYPE_120X, g_model.swashR.type);
   EXPECT_ZSTREQ("Tes", g_model.flightModeData[0].name);
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);

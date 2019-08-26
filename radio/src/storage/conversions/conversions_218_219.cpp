@@ -170,6 +170,7 @@ void convertModelData_218_to_219(ModelData &model)
     else if (cstate == LS_FAMILY_EDGE) {
       sw.v1 = convertSwitch_218_to_219(sw.v1);
     }
+    sw.andsw = convertSwitch_218_to_219(sw.andsw);
   }
 
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
