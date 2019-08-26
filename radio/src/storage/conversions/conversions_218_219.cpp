@@ -425,6 +425,9 @@ void convertRadioData_218_to_219(RadioData & settings)
   setDefaultOwnerId();
 #endif
 
+  settings.pwrOnSpeed = 0;
+  settings.pwrOffSpeed = 0;
+
 #if defined(STM32)
   free(oldSettingsAllocated);
 #endif
