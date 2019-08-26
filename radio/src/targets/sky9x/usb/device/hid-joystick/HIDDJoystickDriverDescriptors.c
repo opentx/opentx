@@ -40,7 +40,6 @@
 
 #include "HIDDJoystickDriverDescriptors.h"
 #include "HIDDJoystickInputReport.h"
-#include <board.h>
 #include <usb/common/core/USBDeviceDescriptor.h>
 #include <usb/common/core/USBConfigurationDescriptor.h>
 #include <usb/common/core/USBInterfaceDescriptor.h>
