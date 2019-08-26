@@ -180,6 +180,10 @@ TASK_FUNCTION(mixerTask)
       }
 #endif
 
+#if defined(PCBSKY9X) && !defined(SIMU)
+      usbJoystickUpdate();
+#endif
+
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
