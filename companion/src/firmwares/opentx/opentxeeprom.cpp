@@ -40,7 +40,13 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   return Boards::getCapability(board, Board::Switches);
 }
 
-#define MAX_KNOBS(board, version) (IS_HORUS(board) ? 8 : 4)
+inline int MAX_KNOBS(Board::Type board, int version)
+{
+  if (version >= 219 && IS_HORUS(board))
+    return 8;
+
+  return 4;
+}
 
 inline int MAX_POTS(Board::Type board, int version)
 {
@@ -54,6 +60,14 @@ inline int MAX_POTS_STORAGE(Board::Type board, int version)
   if (version <= 218 && IS_HORUS(board))
     return 3;
   return Boards::getCapability(board, Board::PotsStorage);
+}
+
+inline int MAX_SLIDERS_SLOTS(Board::Type board, int version)
+{
+  if (version >= 219 && IS_HORUS(board))
+    return 8;
+
+  return 4;
 }
 
 // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
@@ -254,8 +268,13 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board,version)+Boards::getCapability(board, Board::SlidersStorage)+Boards::getCapability(board, Board::MouseAnalogs)+MAX_GYRO_ANALOGS(board, version); i++) {
-        addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
+      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS_STORAGE(board, version)+Boards::getCapability(board, Board::SlidersStorage)+Boards::getCapability(board, Board::MouseAnalogs)+MAX_GYRO_ANALOGS(board, version); i++) {
+
+        int offset = 0;
+        if (version <= 218 && IS_HORUS(board) && i>=CPN_MAX_STICKS+MAX_POTS_STORAGE(board, version))
+          offset += 2;
+          
+        addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
       }
 
       for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++) {
@@ -2475,6 +2494,9 @@ void OpenTxModelData::afterImport()
     }
     modelData.switchWarningStates = newSwitchWarningStates;
   }
+
+  if (version <= 218 && IS_HORUS_X10(board) && modelData.thrTraceSrc > 3)
+    modelData.thrTraceSrc += 2;
 }
 
 OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant):
@@ -2639,7 +2661,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   if (IS_STM32(board)) {
     if (version >= 218) {
       internalField.Append(new UnsignedField<4>(this, generalData.hw_uartMode));
-      if (!IS_HORUS(board)) {
+      if (!IS_HORUS(board) || version < 219) {
         for (uint8_t i=0; i<4; i++) {
           internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
         }
@@ -2669,17 +2691,18 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
     for (int i=0; i<MAX_KNOBS(board, version); i++) {
 
+      int offset = 0;
       // 2 new pots for Horus from 219 on
-      if (version <= 218 && IS_HORUS(board) && (i == 3))
-        i += 2;
+      if (version <= 218 && IS_HORUS(board) && (i >= 3))
+        offset += 2;
       
       if (i < Boards::getCapability(board, Board::PotsStorage))
-        internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i]));
+        internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i+offset]));
       else
         internalField.Append(new SpareBitsField<2>(this));
     }
-    if (IS_HORUS(board)) {
-      for (int i=0; i<8; i++) {
+    if (IS_HORUS(board) && version >= 219) {
+      for (int i=0; i<MAX_SLIDERS_SLOTS(board,version); i++) {
         if (i <  Boards::getCapability(board, Board::SlidersStorage))
           internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
         else
@@ -2703,7 +2726,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
 
   if (IS_TARANIS_X9E(board))
     internalField.Append(new SpareBitsField<64>(this)); // switchUnlockStates
-  else if (IS_TARANIS_X9D(board))
+  else if (version >= 219 && IS_TARANIS_X9D(board))
     internalField.Append(new SpareBitsField<32>(this)); // switchUnlockStates
   else if (IS_TARANIS(board))
     internalField.Append(new SpareBitsField<16>(this)); // switchUnlockStates
@@ -2721,11 +2744,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     for (int i=0; i<CPN_MAX_STICKS; ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.stickName[i], "Stick name"));
     }
-    for (int i=0; i<Boards::getCapability(board, Board::PotsStorage); ++i) {
-      if (version <= 218 && IS_HORUS(board) && (i == 3)) {
-        // skip not yet existing pots (EXT1 / EXT2 for X10)
-        i += 2;
-      }
+    for (int i=0; i<MAX_POTS_STORAGE(board, version); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.potName[i], "Pot name"));
     }
     for (int i=0; i<Boards::getCapability(board, Board::SlidersStorage); ++i) {
