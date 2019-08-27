@@ -176,10 +176,25 @@ options_horus_x12s = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
-    "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None),
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
 }
 
 options_horus_x10 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None),
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
+}
+
+options_horus_x10express = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
