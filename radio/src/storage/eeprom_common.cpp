@@ -86,9 +86,17 @@ void eeLoadModelHeaders()
   }
 }
 
-void storageReadRadioSettings()
+void storageClearRadioSetting()
 {
-  if (!eepromOpen() || !eeLoadGeneral()) {
+  memclear(&g_eeGeneral, sizeof(RadioData));
+}
+
+void storageReadRadioSettings(bool allowConversion)
+{
+  if (g_eeGeneral.version != 0)
+    return;
+  
+  if (!eepromOpen() || !eeLoadGeneral(allowConversion)) {
     storageEraseAll(true);
   }
   else {
@@ -110,7 +118,7 @@ void storageReadCurrentModel()
 
 void storageReadAll()
 {
-  storageReadRadioSettings();
+  storageReadRadioSettings(true);
   storageReadCurrentModel();
 }
 
