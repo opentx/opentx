@@ -304,21 +304,21 @@ void convertModelData_218_to_219(ModelData &model)
     if (screenData.layoutName[0] == '\0')
       continue;
     for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
-      Layout::ZonePersistentData& zoneData = screenData.layoutData.zones[zone];
-      if (strcmp("Value",zoneData.widgetName))
+      Layout::ZonePersistentData * zoneData = &screenData.layoutData.zones[zone];
+      if (strcmp("Value", zoneData->widgetName))
         continue;
 
-      ZoneOptionValue& option = zoneData.widgetData.options[0];
+      ZoneOptionValue& option = zoneData->widgetData.options[0];
       option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
     }
   }
 
   for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
-    Topbar::ZonePersistentData& zoneData = g_model.topbarData.zones[zone];
-    if (strcmp("Value",zoneData.widgetName))
+    Topbar::ZonePersistentData * zoneData = &g_model.topbarData.zones[zone];
+    if (strcmp("Value", zoneData->widgetName))
       continue;
 
-    ZoneOptionValue& option = zoneData.widgetData.options[0];
+    ZoneOptionValue & option = zoneData->widgetData.options[0];
     option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
   }
   
