@@ -23,7 +23,7 @@
 #if defined(SIMU)
   // not needed
 #elif defined(PCBX10)
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, 1, 1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,1, 1, -1};
 #elif defined(PCBX9E)
 #if defined(HORUS_STICKS)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,-1,  -1,-1,-1};
@@ -98,11 +98,11 @@ void adcInit()
 
 #if defined(PCBX10)
   if (STICKS_PWM_ENABLED()) {
-    ADC_MAIN->SQR2 = (ADC_CHANNEL_EXT1 << 0) + (ADC_CHANNEL_EXT2 << 5);
-    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1 << 0) + (ADC_CHANNEL_POT2 << 5) + (ADC_CHANNEL_POT3 << 10) + (ADC_CHANNEL_SLIDER1 << 15) + (ADC_CHANNEL_SLIDER2 << 20) + (ADC_CHANNEL_BATT << 25);
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_SLIDER2 << 0) + (ADC_CHANNEL_BATT << 5);
+    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1 << 0) + (ADC_CHANNEL_POT2 << 5) + (ADC_CHANNEL_POT3 << 10) + (ADC_CHANNEL_EXT1 << 15) + (ADC_CHANNEL_EXT2 << 20) + (ADC_CHANNEL_SLIDER1 << 25);
   }
   else {
-    ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3 << 0) + (ADC_CHANNEL_SLIDER1 << 5) + (ADC_CHANNEL_SLIDER2 << 10) + (ADC_CHANNEL_BATT << 15) + (ADC_CHANNEL_EXT1 << 20) + (ADC_CHANNEL_EXT2 << 25);
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3 << 0) + (ADC_CHANNEL_EXT1 << 5) + (ADC_CHANNEL_EXT2 << 10) + (ADC_CHANNEL_SLIDER1 << 15) + (ADC_CHANNEL_SLIDER2 << 20) + (ADC_CHANNEL_BATT << 25);
     ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);
   }
 #elif defined(PCBX9E)
@@ -248,7 +248,7 @@ void adcRead()
 #if defined(PCBX10)
 uint16_t getRTCBatteryVoltage()
 {
-  return (rtcBatteryVoltage * ADC_VREF_PREC2) / 2048;
+  return (rtcBatteryVoltage * 2 * ADC_VREF_PREC2) / 2048;
 }
 #else
 uint16_t getRTCBatteryVoltage()

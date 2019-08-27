@@ -6,7 +6,7 @@ set(VERSION_REVISION "0")
 set(VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
-set(SDCARD_REVISION "0019")
+set(SDCARD_REVISION "0020")
 set(SDCARD_VERSION  ${VERSION_MAJOR}.${VERSION_MINOR}V${SDCARD_REVISION})
 
 cmake_minimum_required(VERSION 2.8)
@@ -193,4 +193,15 @@ add_subdirectory(${RADIO_SRC_DIRECTORY})
 
 if(Qt5Core_FOUND AND NOT DISABLE_COMPANION)
   add_subdirectory(${COMPANION_SRC_DIRECTORY})
+  add_custom_target(gtests DEPENDS gtests-radio gtests-companion)
+  add_custom_target(tests
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-radio && ${CMAKE_CURRENT_BINARY_DIR}/gtests-companion
+    DEPENDS gtests
+  )
+else()
+  add_custom_target(gtests DEPENDS gtests-radio)
+  add_custom_target(tests
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-radio
+    DEPENDS gtests
+  )
 endif()

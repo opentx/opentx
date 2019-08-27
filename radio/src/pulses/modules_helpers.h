@@ -18,11 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MODULES_H_
-#define _MODULES_H_
+#ifndef _MODULES_HELPERS_H_
+#define _MODULES_HELPERS_H_
 
 #include "bitfield.h"
 #include "definitions.h"
+#include "helpers.h"
 #include "telemetry/telemetry.h"
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
@@ -121,19 +122,15 @@ inline bool isExtraModule(uint8_t)
 }
 #endif
 
-#if defined(INTERNAL_MODULE_PPM)
+inline bool isModuleTypePPM(uint8_t type)
+{
+  return type == MODULE_TYPE_PPM;
+}
+
 inline bool isModulePPM(uint8_t idx)
 {
-  return (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
-         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
+  return isModuleTypePPM(g_model.moduleData[idx].type);
 }
-#else
-inline bool isModulePPM(uint8_t idx)
-{
-  return isExtraModule(idx) ||
-         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
-}
-#endif
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
 {
@@ -248,29 +245,15 @@ inline bool isModuleRFAccess(uint8_t idx)
   }
 }
 
-#if defined(DSM2)
-inline bool isModuleDSM2(uint8_t idx)
+inline bool isModuleDSM2(uint8_t moduleIdx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_DSM2;
+  return g_model.moduleData[moduleIdx].type == MODULE_TYPE_DSM2;
 }
-#else
-inline bool isModuleDSM2(uint8_t idx)
-{
-  return false;
-}
-#endif
 
-#if defined(SBUS)
-inline bool isModuleSBUS(uint8_t idx)
+inline bool isModuleSBUS(uint8_t moduleIdx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_SBUS;
+  return g_model.moduleData[moduleIdx].type == MODULE_TYPE_SBUS;
 }
-#else
-inline bool isModuleSBUS(uint8_t idx)
-{
-  return false;
-}
-#endif
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
 static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
@@ -449,4 +432,51 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
 
   return true;
 }
-#endif // _MODULES_H_
+
+inline bool isPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  return g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx);
+}
+
+inline void setPXX2ReceiverUsed(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  g_model.moduleData[moduleIdx].pxx2.receivers |= (1 << receiverIdx);
+}
+
+inline bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  return is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
+}
+
+inline void removePXX2Receiver(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
+  g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
+  storageDirty(EE_MODEL);
+}
+
+inline void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+    removePXX2Receiver(moduleIdx, receiverIdx);
+  }
+}
+
+inline void setDefaultPpmFrameLength(uint8_t moduleIdx)
+{
+  g_model.moduleData[moduleIdx].ppm.frameLength = 4 * max<int>(0, g_model.moduleData[moduleIdx].channelsCount);
+}
+
+inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
+{
+  ModuleData & moduleData = g_model.moduleData[moduleIdx];
+  memclear(&moduleData, sizeof(ModuleData));
+  moduleData.type = moduleType;
+  moduleData.channelsCount = defaultModuleChannels_M8(moduleIdx);
+  if (moduleData.type == MODULE_TYPE_SBUS)
+    moduleData.sbus.refreshRate = -31;
+  else if (moduleData.type == MODULE_TYPE_PPM)
+    setDefaultPpmFrameLength(moduleIdx);
+}
+
+#endif // _MODULES_HELPERS_H_

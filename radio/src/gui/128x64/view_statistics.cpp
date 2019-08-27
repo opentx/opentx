@@ -184,18 +184,18 @@ void menuStatisticsDebug(event_t event)
 
 #if defined(COPROCESSOR)
   lcdDrawTextAlignedLeft(y, STR_COPROC_TEMP);
-  if (Coproc_read==0) {
+  if (coprocData.read==0) {
     lcdDrawText(MENU_DEBUG_COL1_OFS, y, "Co Proc NACK",INVERS);
   }
-  else if (Coproc_read==0x81) {
+  else if (coprocData.read==0x81) {
     lcdDrawText(MENU_DEBUG_COL1_OFS, y, "Inst.TinyApp",INVERS);
   }
-  else if (Coproc_read<3) {
+  else if (coprocData.read<3) {
     lcdDrawText(MENU_DEBUG_COL1_OFS, y, "Upgr.TinyApp",INVERS);
   }
   else {
-    drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, Coproc_temp, UNIT_TEMPERATURE, LEFT);
-    drawValueWithUnit(MENU_DEBUG_COL2_OFS, y, Coproc_maxtemp, UNIT_TEMPERATURE, LEFT);
+    drawValueWithUnit(MENU_DEBUG_COL1_OFS, y, coprocData.temp, UNIT_TEMPERATURE, LEFT);
+    drawValueWithUnit(MENU_DEBUG_COL2_OFS, y, coprocData.maxtemp, UNIT_TEMPERATURE, LEFT);
   }
   y += FH;
 #endif

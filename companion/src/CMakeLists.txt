@@ -326,6 +326,10 @@ set(simu_SRCS simulator.cpp )
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
 target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 
+if(NOT MSVC)
+  add_subdirectory(tests)
+endif()
+
 ############# Install ####################
 
 # Generate list of simulator plugins, used by all platforms
@@ -341,6 +345,8 @@ if(PCB STREQUAL X7 AND PCBREV STREQUAL T12)
   set(FLAVOUR t12)
 elseif(PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019)
   set(FLAVOUR x9d+2019)
+elseif(PCB STREQUAL X10 AND PCBREV STREQUAL EXPRESS)
+  set(FLAVOUR x10express)
 else()
   string(TOLOWER ${PCB} FLAVOUR)
 endif()

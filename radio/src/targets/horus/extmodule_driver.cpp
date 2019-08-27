@@ -309,7 +309,7 @@ void extmoduleSendNextFrame()
       break;
 #endif
 
-#if defined(PXX2)
+#if defined(PXX2) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
       extmoduleSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());

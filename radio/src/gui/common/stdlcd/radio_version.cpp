@@ -33,8 +33,9 @@
 #define MENU_BODY_TOP    (FH + 1)
 #define MENU_BODY_BOTTOM (LCD_H)
 
+#if defined(PXX2)
 constexpr uint8_t COLUMN2_X = 10 * FW;
-
+#endif
 
 void menuRadioFirmwareOptions(event_t event)
 {
@@ -240,13 +241,15 @@ void menuRadioVersion(event_t event)
 
 #if defined(COPROCESSOR)
   lcdDrawText(FW, y, "COPR\037\033: ", SMLSIZE);
-  if (Coproc_valid == 1)
-    lcdDrawNumber(lcdNextPos, y, Coproc_read, SMLSIZE);
+  if (coprocData.valid == 1)
+    lcdDrawNumber(lcdNextPos, y, coprocData.read, SMLSIZE);
   else
     lcdDrawText(lcdNextPos, y, "---", SMLSIZE);
   y += FH - 1;
 #endif
+
   y += 2;
+
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_FIRMWARE_OPTIONS), menuVerticalPosition == ITEM_RADIO_FIRMWARE_OPTIONS ? INVERS : 0);
   y += FH;
@@ -255,6 +258,7 @@ void menuRadioVersion(event_t event)
     pushMenu(menuRadioFirmwareOptions);
   }
 #endif
+
 #if defined(PXX2)
   lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_MODULES_RX_VERSION), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
   y += FH;

@@ -49,14 +49,8 @@
 #define LEN_MMMINV                     "\003"
 #define TR_MMMINV                      "---""INV"
 
-#define LEN_NCHANNELS                  "\004"
-#define TR_NCHANNELS                   "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
-
 #define LEN_VBEEPMODE                  "\005"
 #define TR_VBEEPMODE                   "Quiet""Alarm""NoKey""All\0 "
-
-#define LEN_VBEEPLEN                   "\005"
-#define TR_VBEEPLEN                    "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG                   "\003"
 #define TR_VRENAVIG                    "No REaREb"
@@ -85,9 +79,6 @@
 
 #define LEN_SLIDERTYPES                "\006"
 #define TR_SLIDERTYPES                 "None\0 ""Slider"
-
-#define LEN_DATETIME                   "\005"
-#define TR_DATETIME                    "DATE:""TIME:"
 
 #define LEN_VLCD                       "\006"
 #define TR_VLCD                        "NormalOptrex"
@@ -155,9 +146,6 @@
 #endif
 
 #define TR_VPROTOS                     "PPM\0  " TR_PXX TR_DSM2
-
-#define LEN_POSNEG                     "\003"
-#define TR_POSNEG                      "POS""NEG"
 
 #if defined(PCBSKY9X) && defined(REVX)
   #define LEN_VOUTPUT_TYPE             "\011"
@@ -266,23 +254,14 @@
   #define TR_SF_SAFETY                 "---\0      "
 #endif
 
-#if defined(PCBTARANIS)
-  #define TR_SF_SCREENSHOT             "Screenshot"
-#else
-  #define TR_SF_SCREENSHOT
-#endif
+#define TR_SF_SCREENSHOT             "Screenshot"
+#define TR_SF_RESERVE                "[reserve]\0"
 
-#define TR_SF_RESERVE                  "[reserve]\0"
-
-  #define TR_VFSWFUNC                  TR_SF_SAFETY "Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " "SetFailsfe" "RangeCheck" "ModuleBind" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_SF_SCREENSHOT TR_SF_TEST
+#define TR_VFSWFUNC                    TR_SF_SAFETY "Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " "SetFailsfe" "RangeCheck" "ModuleBind" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_SF_SCREENSHOT TR_SF_TEST
 
 #define LEN_VFSWRESET                  TR("\004", "\011")
 
-#if defined(TELEMETRY_FRSKY)
-  #define TR_FSW_RESET_TELEM           TR("Telm", "Telemetry")
-#else
-  #define TR_FSW_RESET_TELEM
-#endif
+#define TR_FSW_RESET_TELEM             TR("Telm", "Telemetry")
 
 #if LCD_W >= 212
   #define TR_FSW_RESET_TIMERS          "Timer 1\0 ""Timer 2\0 ""Timer 3\0 "
@@ -310,29 +289,8 @@
 #define STR_V                          (STR_VTELEMUNIT+1)
 #define STR_A                          (STR_VTELEMUNIT+4)
 
-#define LEN_VALARM                     "\003"
-#define TR_VALARM                      "---""Yel""Org""Red"
-
-#define LEN_VALARMFN                   "\001"
-#define TR_VALARMFN                    "<>"
-
-#define LEN_VTELPROTO                  "\007"
-#define TR_VTELPROTO                   "None\0  ""Hub\0   ""WSHHigh"
-
-#define LEN_AMPSRC                     TR("\003", "\005")
-#define TR_AMPSRC                      TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0 ""A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
-#define LEN_VOLTSRC                    TR("\003", "\005")
-#define TR_VOLTSRC                     TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
-
-#define LEN_VARIOSRC                   "\004"
-#if defined(TELEMETRY_FRSKY_SPORT)
-  #define TR_VARIOSRC                  "VSpd""A1\0 ""A2\0 ""dTE\0"
-#else
-  #define TR_VARIOSRC                  "Alt\0""Alt+""VSpd""A1\0 ""A2\0"
-#endif
-
-  #define LEN_VTELEMSCREENTYPE         "\006"
-  #define TR_VTELEMSCREENTYPE          "None\0 ""Nums\0 ""Bars\0 ""Script"
+#define LEN_VTELEMSCREENTYPE           "\006"
+#define TR_VTELEMSCREENTYPE            "None\0 ""Nums\0 ""Bars\0 ""Script"
 
 #define LEN_GPSFORMAT                  "\004"
 #define TR_GPSFORMAT                   "DMS\0""NMEA"
@@ -1179,9 +1137,9 @@
 #define TR_SERVOS_KO                   "Servos KO"
 #define TR_INVERTED_SERIAL             INDENT "Invert"
 #define TR_IGNORE_INSTANCE             TR(INDENT "No inst.", INDENT "Ignore instances")
-#define TR_DISCOVER_SENSORS            INDENT "Discover new sensors"
-#define TR_STOP_DISCOVER_SENSORS       INDENT "Stop discovery"
-#define TR_DELETE_ALL_SENSORS          INDENT "Delete all sensors"
+#define TR_DISCOVER_SENSORS            "Discover new sensors"
+#define TR_STOP_DISCOVER_SENSORS       "Stop discovery"
+#define TR_DELETE_ALL_SENSORS          "Delete all sensors"
 #define TR_CONFIRMDELETE               "Really " LCDW_128_480_LINEBREAK "delete all ?"
 #define TR_SELECT_WIDGET               "Select widget"
 #define TR_REMOVE_WIDGET               "Remove widget"

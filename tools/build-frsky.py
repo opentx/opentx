@@ -9,6 +9,16 @@ import tempfile
 
 
 options = {
+    "XLITE": {
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MODULE_SIZE_STD": "NO",
+        "PPM": "NO",
+        "DSM2": "NO",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "SBUS": "NO",
+    },
     "XLITES": {
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
@@ -18,6 +28,7 @@ options = {
         "MODULE_SIZE_STD": "NO",
         "PPM": "NO",
         "DSM2": "NO",
+        "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "SBUS": "NO",
     },
@@ -30,6 +41,7 @@ options = {
         "MODULE_SIZE_STD": "NO",
         "PPM": "NO",
         "DSM2": "NO",
+        "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "SBUS": "NO",
         "DEFAULT_MODE": "2",
@@ -40,6 +52,7 @@ options = {
         "GVARS": "YES",
         "AUTOUPDATE": "YES",
         "PXX1": "YES",
+        "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
     }

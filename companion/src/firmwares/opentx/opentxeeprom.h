@@ -73,7 +73,7 @@ class OpenTxGeneralData: public TransformedField {
 class ProtocolsConversionTable: public ConversionTable
 {
   public:
-    ProtocolsConversionTable(Board::Type board)
+    ProtocolsConversionTable(Board::Type board, int version)
     {
       int val = 0;
       addConversion(PULSES_OFF, val++);
@@ -83,7 +83,10 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_PXX_XJT_D8, val);
       addConversion(PULSES_PXX_XJT_LR12, val++);
 
-      addConversion(PULSES_ACCESS_ISRM, val++);
+      if (version >= 219) {
+        addConversion(PULSES_ACCESS_ISRM, val);
+        addConversion(PULSES_ACCST_ISRM_D16, val++);
+      }
 
       addConversion(PULSES_LP45, val);
       addConversion(PULSES_DSM2, val);
@@ -96,9 +99,14 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_ACCESS_R9M, val++);
       addConversion(PULSES_PXX_R9M_LITE, val++);
       addConversion(PULSES_ACCESS_R9M_LITE, val++);
+      addConversion(PULSES_PXX_R9M_LITE_PRO, val++);
       addConversion(PULSES_ACCESS_R9M_LITE_PRO, val++);
 
       addConversion(PULSES_SBUS, val++);
+
+      addConversion(PULSES_XJT_LITE_X16, val);
+      addConversion(PULSES_XJT_LITE_D8, val);
+      addConversion(PULSES_XJT_LITE_LR12, val++);
     }
 };
 
@@ -141,7 +149,6 @@ class OpenTxModelData: public TransformedField {
     unsigned int variant;
     char name[256];
     int subprotocols[CPN_MAX_MODULES+1/*trainer*/];
-    ProtocolsConversionTable protocolsConversionTable;
     ChannelsConversionTable channelsConversionTable;
     QStringList _errors;
 };

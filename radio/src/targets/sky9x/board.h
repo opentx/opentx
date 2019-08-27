@@ -170,6 +170,10 @@ void lcdSetContrast();
 // USB driver
 void usbMassStorage();
 
+#if !defined(SIMU)
+void usbJoystickUpdate();
+#endif
+
 #define PIN_ENABLE                     0x001
 #define PIN_PERIPHERAL                 0x000
 #define PIN_INPUT                      0x002
@@ -228,6 +232,11 @@ uint32_t readTrims();
 // Pulses driver
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
+void module_output_active();
+inline void EXTERNAL_MODULE_ON()
+{
+  module_output_active();
+}
 
 // SD driver
 #if defined(SIMU)
@@ -335,10 +344,17 @@ void coprocWriteData(uint8_t *data, uint32_t size);
 void coprocReadData(bool onlytemp=false);
 #endif
 extern int8_t volumeRequired;
-extern uint8_t Coproc_read;
-extern int8_t Coproc_valid;
-extern int8_t Coproc_temp;
-extern int8_t Coproc_maxtemp;
+
+#if defined(COPROCESSOR)
+struct CoprocData {
+  uint8_t read;
+  int8_t valid;
+  int8_t temp;
+  int8_t maxtemp;
+};
+
+extern CoprocData coprocData;
+#endif
 
 // Haptic driver
 #define HAPTIC_PWM
@@ -377,6 +393,9 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
+inline void telemetryPortSetDirectionOutput()
+{
+}
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );

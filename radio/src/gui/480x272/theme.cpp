@@ -90,10 +90,10 @@ void Theme::drawBackground() const
 
 void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
 {
-  //if (flags & MESSAGEBOX_TYPE_ALERT) {
+//  if (type == WARNING_TYPE_ALERT) {
     drawBackground();
     lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, TEXT_INVERTED_COLOR | OPACITY(8));
-  //}
+//  }
 
   if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
     lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, asterisk);

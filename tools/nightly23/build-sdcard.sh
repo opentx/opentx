@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 branch=2.3
 workdir=/home/opentx/nightly23
@@ -26,10 +27,6 @@ else
   mkdir -p ${workdir}/sdcard/horus/IMAGES
   cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
-  # Get FrSky utilities
-  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/horus/
-  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/taranis-x7/
-  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/taranis-x9/
 
   # Request sound pack generation
   if [[ ! -d /tmp/SOUNDS/fr ]];then

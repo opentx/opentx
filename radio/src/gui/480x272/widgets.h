@@ -76,4 +76,6 @@ void drawTopBar();
 void drawMainPots();
 void drawTrims(uint8_t flightMode);
 
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags);
+
 #endif // _WIDGETS_H_

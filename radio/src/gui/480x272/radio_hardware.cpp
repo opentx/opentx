@@ -52,6 +52,8 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SH,
   ITEM_RADIO_HARDWARE_SI, // Gimbal switch left
   ITEM_RADIO_HARDWARE_SJ, // Gimbal switch right
+  ITEM_RADIO_HARDWARE_BATTERY_CALIB,
+  ITEM_RADIO_HARDWARE_RTC_BATTERY,
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
@@ -60,7 +62,6 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
-  ITEM_RADIO_HARDWARE_BAT_CAL,
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -77,7 +78,31 @@ enum MenuRadioHardwareItems {
 
 bool menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0, BLUETOOTH_ROWS, 0, 0, 0 });
+  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, {
+    0 /* calibration button */,
+
+    LABEL(Sticks),
+      0 /* stick 1 */,
+      0 /* stick 2 */,
+      0 /* stick 3 */,
+      0 /* stick 4 */,
+
+    LABEL(Pots),
+      POTS_ROWS,
+
+    LABEL(Switches),
+      SWITCHES_ROWS,
+
+    0, /* battery */
+    READONLY_ROW, /* RTC */
+
+    0, /* max baudrate */
+
+    BLUETOOTH_ROWS,
+
+    0, /* aux serial mode */
+    0, /* ADC filter */
+  });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -177,10 +202,21 @@ bool menuRadioHardware(event_t event)
           lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
         config = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
-          g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
+          g_eeGeneral.switchConfig = bfSet<swconfig_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
         }
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_BATTERY_CALIB:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);
+        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getBatteryVoltage(), attr|PREC2, 0, NULL, "V");
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
+        break;
+
+      case ITEM_RADIO_HARDWARE_RTC_BATTERY:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RTC_BATT);
+        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getRTCBatteryVoltage(), attr|PREC2, 0, NULL, "V");
+        break;
 
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAXBAUDRATE);
@@ -232,12 +268,6 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
-
-      case ITEM_RADIO_HARDWARE_BAT_CAL:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);
-        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
-        break;
     }
   }
 

@@ -48,14 +48,8 @@
 #define LEN_MMMINV                     "\003"
 #define TR_MMMINV                      "---""INV"
 
-#define LEN_NCHANNELS                  "\004"
-#define TR_NCHANNELS                   "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
-
 #define LEN_VBEEPMODE                  TR("\005","\012")
 #define TR_VBEEPMODE                   TR("Tichý""Alarm""BezKl""Vše\0", "Tichý\0    ""Jen alarm\0""Bez kláves""Vše\0      ")
-
-#define LEN_VBEEPLEN                   "\005"
-#define TR_VBEEPLEN                    "O====""=O===""==O==""===O=""====O"
 
 #define LEN_VRENAVIG                   "\003"
 #define TR_VRENAVIG                    "Ne REaREb"
@@ -84,9 +78,6 @@
 
 #define LEN_SLIDERTYPES                "\006"
 #define TR_SLIDERTYPES                 "Žádný\0""Slider"
-
-#define LEN_DATETIME                   "\006"
-#define TR_DATETIME                    "DATUM:""ČAS:  "
 
 #define LEN_VLCD                       "\006"
 #define TR_VLCD                        "NormalOptrex"
@@ -154,9 +145,6 @@
 #endif
 
 #define TR_VPROTOS                     "PPM\0  " TR_PXX TR_DSM2
-
-#define LEN_POSNEG                     "\003"
-#define TR_POSNEG                      "POZ""NEG"
 
 #if defined(PCBSKY9X) && defined(REVX)
   #define LEN_VOUTPUT_TYPE             "\011"
@@ -263,23 +251,14 @@
   #define TR_SF_SAFETY                 "---\0       "
 #endif
 
-#if defined(PCBTARANIS)
-  #define TR_SF_SCREENSHOT             "Snímek LCD\0"
-#else
-  #define TR_SF_SCREENSHOT
-#endif
-
+#define TR_SF_SCREENSHOT               "Snímek LCD\0"
 #define TR_SF_RESERVE                  "[rezerva]\0 "
 
-  #define TR_VFSWFUNC                  TR_SF_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     ""Změna \0    " TR_ADJUST_GVAR "Hlasitost\0 " "SetFailsafe" "RangeCheck\0" "ModuleBind\0" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_SF_SCREENSHOT TR_SF_TEST
+#define TR_VFSWFUNC                    TR_SF_SAFETY "Trenér \0   ""Insta-Trim\0""Reset\0     ""Změna \0    " TR_ADJUST_GVAR "Hlasitost\0 " "SetFailsafe" "RangeCheck\0" "ModuleBind\0" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_SF_SCREENSHOT TR_SF_TEST
 
 #define LEN_VFSWRESET                  TR("\004", "\012")
 
-#if defined(TELEMETRY_FRSKY)
-  #define TR_FSW_RESET_TELEM           TR("Telm", "Telemetrie")
-#else
-  #define TR_FSW_RESET_TELEM
-#endif
+#define TR_FSW_RESET_TELEM           TR("Telm", "Telemetrie")
 
 #if LCD_W >= 212
   #define TR_FSW_RESET_TIMERS          "Stopky1\0  ""Stopky2\0  ""Stopky3\0  "
@@ -299,37 +278,16 @@
 #define LENGTH_UNIT_METR               "m\0 "
 #define SPEED_UNIT_METR                "kmh"
 
-  #define LEN_VUNITSSYSTEM             TR("\006", "\010")
-  #define TR_VUNITSSYSTEM              TR("Metr.\0""Imper.", "Metrické""Imperial")
-  #define LEN_VTELEMUNIT               "\003"
-  #define TR_VTELEMUNIT                "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz"
+#define LEN_VUNITSSYSTEM             TR("\006", "\010")
+#define TR_VUNITSSYSTEM              TR("Metr.\0""Imper.", "Metrické""Imperial")
+#define LEN_VTELEMUNIT               "\003"
+#define TR_VTELEMUNIT                "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz"
 
 #define STR_V                          (STR_VTELEMUNIT+1)
 #define STR_A                          (STR_VTELEMUNIT+4)
 
-#define LEN_VALARM                     "\004"
-#define TR_VALARM                      "----""žlut""oran""červ"
-
-#define LEN_VALARMFN                   "\001"
-#define TR_VALARMFN                    "<>"
-
-#define LEN_VTELPROTO                  "\007"
-#define TR_VTELPROTO                   "---\0   ""Hub\0   ""WSHHigh"
-
-  #define LEN_AMPSRC                   TR("\003", "\005")
-  #define TR_AMPSRC                    TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0 ""A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
-  #define LEN_VOLTSRC                  TR("\003", "\005")
-  #define TR_VOLTSRC                   TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
-
-#define LEN_VARIOSRC                   "\004"
-#if defined(TELEMETRY_FRSKY_SPORT)
-  #define TR_VARIOSRC                  "VSpd""A1\0 ""A2\0 ""dTE\0"
-#else
-  #define TR_VARIOSRC                  "Alt\0""Alt+""VSpd""A1\0 ""A2\0"
-#endif
-
-  #define LEN_VTELEMSCREENTYPE         "\010"
-  #define TR_VTELEMSCREENTYPE          "Nic\0    ""Hodnota ""Ukazatel""Skript\0"
+#define LEN_VTELEMSCREENTYPE         "\010"
+#define TR_VTELEMSCREENTYPE          "Nic\0    ""Hodnota ""Ukazatel""Skript\0"
 
 #define LEN_GPSFORMAT                  "\004"
 #define TR_GPSFORMAT                   "DMS\0""NMEA"
@@ -1174,9 +1132,9 @@
 //TODO: translation
 #define TR_INVERTED_SERIAL             INDENT "Invert"
 #define TR_IGNORE_INSTANCE             TR(INDENT "Chybné ID", INDENT "Ignoruj chyby ID")
-#define TR_DISCOVER_SENSORS            INDENT "Detekovat nové senzory"
-#define TR_STOP_DISCOVER_SENSORS       INDENT "Zastavit autodetekci"
-#define TR_DELETE_ALL_SENSORS          INDENT "Odebrat všechny senzory"
+#define TR_DISCOVER_SENSORS            "Detekovat nové senzory"
+#define TR_STOP_DISCOVER_SENSORS       "Zastavit autodetekci"
+#define TR_DELETE_ALL_SENSORS          "Odebrat všechny senzory"
 #define TR_CONFIRMDELETE               "Opravdu " LCDW_128_480_LINEBREAK "odstranit vše ?"
 #define TR_SELECT_WIDGET               "Zvolit widget"
 #define TR_REMOVE_WIDGET               "Odstranit widget"

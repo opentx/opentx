@@ -244,6 +244,7 @@ int main()
 
   lcdInit();
   backlightInit();
+  backlightEnable();
 
 #if defined(PCBTARANIS)
   i2cInit();

@@ -360,8 +360,8 @@ long OpenTxSim::onTimeout(FXObject*, FXSelector, void*)
 {
   if (hasFocus()) {
 #if defined(COPROCESSOR)
-    Coproc_temp = 23;
-    Coproc_maxtemp = 28;
+    coprocData.temp = 23;
+    coprocData.maxtemp = 28;
 #endif
 
     updateKeysAndSwitches();
@@ -505,9 +505,6 @@ int main(int argc, char ** argv)
   opentxSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
 #endif
 
-#if defined(TELEMETRY_FRSKY) && !defined(TELEMETRY_FRSKY_SPORT)
-  telemetryStreaming = 1;
-#endif
 
   printf("Model size = %d\n", (int)sizeof(g_model));
 

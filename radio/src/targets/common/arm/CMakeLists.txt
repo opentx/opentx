@@ -12,8 +12,8 @@ option(MODULE_SIZE_STD "Standard size TX Module" ON)
 option(PPM "PPM TX Module" ON)
 option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
-option(CROSSFIRE "Crossfire TX Module" OFF)
-option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" OFF)
+option(CROSSFIRE "Crossfire TX Module" ON)
+option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(MULTI_SPORT "SPORT telemetry support" OFF)
 option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
@@ -169,10 +169,10 @@ if(CROSSFIRE)
 endif()
 
 add_definitions(-DCPUARM)
-add_definitions(-DTELEMETRY_FRSKY -DTELEMETRY_FRSKY_SPORT -DGPS)
-
+add_definitions(-DGPS)
 add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE)
 add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
+
 include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
 foreach(LANGUAGE ${TTS_LANGUAGES})
   string(TOLOWER ${LANGUAGE} lang_lower)

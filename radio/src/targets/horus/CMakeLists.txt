@@ -27,7 +27,6 @@ if(SPLASH STREQUAL OFF)
 endif()
 
 if (PCB STREQUAL X10)
-  set(FLAVOUR x10)
   set(PCBREV "STD" CACHE STRING "PCB Revision")
   add_definitions(-DPCBX10)
   add_definitions(-DSOFTWARE_VOLUME)
@@ -42,13 +41,17 @@ if (PCB STREQUAL X10)
   set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x10)
   if (PCBREV STREQUAL EXPRESS)
+    set(FLAVOUR x10express)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
   else()
+    set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
   endif()
 elseif (PCB STREQUAL X12S)
+  option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
+  option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
   set(FLAVOUR x12s)
   set(PCBREV "13" CACHE STRING "PCB Revision")
   if(${PCBREV} GREATER 10)
@@ -64,7 +67,7 @@ elseif (PCB STREQUAL X12S)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
-    adc_driver.cpp
+    x12s_adc_driver.cpp
     gps_driver.cpp
     )
   set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
@@ -136,7 +139,7 @@ if(PXX2)
   set(GUI_SRC
     ${GUI_SRC}
     radio_spectrum_analyser.cpp
-#   radio_power_meter.cpp
+    radio_power_meter.cpp
     )
 endif()
 
@@ -200,3 +203,4 @@ if(PYTHONINTERP_FOUND)
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
 endif()
+

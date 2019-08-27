@@ -166,19 +166,20 @@ void TimerPanel::on_name_editingFinished()
 #define FAILSAFE_CHANNEL_HOLD    2000
 #define FAILSAFE_CHANNEL_NOPULSE 2001
 
-#define MASK_PROTOCOL       1
-#define MASK_CHANNELS_COUNT 2
-#define MASK_RX_NUMBER      4
-#define MASK_CHANNELS_RANGE 8
-#define MASK_PPM_FIELDS     16
-#define MASK_FAILSAFES      32
-#define MASK_OPEN_DRAIN     64
-#define MASK_MULTIMODULE    128
-#define MASK_ANTENNA        256
-#define MASK_MULTIOPTION    512
-#define MASK_R9M            1024
-#define MASK_SBUSPPM_FIELDS 2048
-#define MASK_SUBTYPES       4096
+#define MASK_PROTOCOL       (1<<0)
+#define MASK_CHANNELS_COUNT (1<<1)
+#define MASK_RX_NUMBER      (1<<2)
+#define MASK_CHANNELS_RANGE (1<<3)
+#define MASK_PPM_FIELDS     (1<<4)
+#define MASK_FAILSAFES      (1<<5)
+#define MASK_OPEN_DRAIN     (1<<6)
+#define MASK_MULTIMODULE    (1<<7)
+#define MASK_ANTENNA        (1<<8)
+#define MASK_MULTIOPTION    (1<<9)
+#define MASK_R9M            (1<<10)
+#define MASK_SBUSPPM_FIELDS (1<<11)
+#define MASK_SUBTYPES       (1<<12)
+#define MASK_ACCESS         (1<<13)
 
 quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
 
@@ -214,7 +215,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   }
 
   // The protocols available on this board
-  for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
+  for (unsigned int i=0; i<PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol) i, moduleIdx)) {
       if (IS_TARANIS_XLITE(firmware->getBoard()) && i == PULSES_PXX_R9M)  //TODO remove when mini are handled as a different module type
         ui->protocol->addItem("FrSky R9M Mini", (QVariant) i);
@@ -232,6 +233,8 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   ui->btnGrpValueType->setId(ui->optUs, FAILSAFE_DISPLAY_USEC);
   ui->btnGrpValueType->button(failsafesValueDisplayType)->setChecked(true);
 
+  ui->registrationId->setText(model.registrationId);
+
   setupFailsafes();
 
   disableMouseScrolling();
@@ -243,6 +246,10 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   connect(ui->multiProtocol, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onMultiProtocolChanged);
   connect(this, &ModulePanel::channelsRangeChanged, this, &ModulePanel::setupFailsafes);
   connect(ui->btnGrpValueType, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &ModulePanel::onFailsafesDisplayValueTypeChanged);
+
+  connect(ui->clearRx1, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
+  connect(ui->clearRx2, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
+  connect(ui->clearRx3, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
 
   lock = false;
 
@@ -257,8 +264,13 @@ bool ModulePanel::moduleHasFailsafes()
 {
   return firmware->getCapability(HasFailsafe) && (
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_ISRM ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCST_ISRM_D16 ||
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M);
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE_PRO ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_XJT_LITE_X16);
 }
 
 void ModulePanel::setupFailsafes()
@@ -364,18 +376,30 @@ void ModulePanel::update()
   if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
     switch (protocol) {
-      case PULSES_ACCESS_ISRM:
-        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
-        break;
       case PULSES_PXX_R9M:
         mask |= MASK_R9M | MASK_SUBTYPES;
+      case PULSES_ACCESS_R9M:
+      case PULSES_ACCESS_R9M_LITE:
+      case PULSES_ACCESS_R9M_LITE_PRO:
+      case PULSES_ACCESS_ISRM:
+      case PULSES_ACCST_ISRM_D16:
+      case PULSES_XJT_LITE_X16:
+      case PULSES_XJT_LITE_D8:
+      case PULSES_XJT_LITE_LR12:
       case PULSES_PXX_XJT_X16:
       case PULSES_PXX_XJT_D8:
       case PULSES_PXX_XJT_LR12:
       case PULSES_PXX_DJT:
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 || protocol==PULSES_PXX_R9M)
+        // ACCST Rx ID
+        if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 ||
+            protocol==PULSES_PXX_R9M || protocol==PULSES_ACCST_ISRM_D16 ||
+            protocol==PULSES_XJT_LITE_X16 || protocol==PULSES_XJT_LITE_LR12)
           mask |= MASK_RX_NUMBER;
+        // ACCESS
+        else if (protocol==PULSES_ACCESS_ISRM || protocol==PULSES_ACCESS_R9M ||
+                 protocol==PULSES_ACCESS_R9M_LITE || protocol==PULSES_ACCESS_R9M_LITE_PRO)
+          mask |= MASK_RX_NUMBER | MASK_ACCESS;
         if ((IS_HORUS(board) || board == Board::BOARD_TARANIS_XLITE) && moduleIdx == 0)
           mask |= MASK_ANTENNA;
         break;
@@ -492,10 +516,17 @@ void ModulePanel::update()
   if (mask & MASK_SUBTYPES) {
     unsigned numEntries = 2;  // R9M FCC/EU
     unsigned i = 0;
-    if (mask & MASK_MULTIMODULE)
+    switch(protocol){
+    case PULSES_MULTIMODULE:
       numEntries = (module.multi.customProto ? 8 : pdef.numSubTypes());
-    else if (firmware->getCapability(HasModuleR9MFlex))
-      i = 2;
+      break;
+    case PULSES_PXX_R9M:
+      if (firmware->getCapability(HasModuleR9MFlex))
+        i = 2;
+      break;
+    default:
+      break;
+    }
     numEntries += i;
     const QSignalBlocker blocker(ui->multiSubType);
     ui->multiSubType->clear();
@@ -524,6 +555,27 @@ void ModulePanel::update()
     ui->optionValue->setValue(module.multi.optionValue);
     ui->label_option->setText(qApp->translate("Multiprotocols", qPrintable(pdef.optionsstr)));
   }
+
+  if (mask & MASK_ACCESS) {
+    ui->rx1->setText(module.access.receiverName[0]);
+    ui->rx2->setText(module.access.receiverName[1]);
+    ui->rx3->setText(module.access.receiverName[2]);
+  }
+
+  ui->registrationIdLabel->setVisible(mask & MASK_ACCESS);
+  ui->registrationId->setVisible(mask & MASK_ACCESS);
+
+  ui->rx1Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
+  ui->clearRx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
+  ui->rx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
+
+  ui->rx2Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
+  ui->clearRx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
+  ui->rx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
+
+  ui->rx3Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
+  ui->clearRx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
+  ui->rx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
 
   // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
@@ -575,7 +627,7 @@ void ModulePanel::on_trainerMode_currentIndexChanged(int index)
 
 void ModulePanel::onProtocolChanged(int index)
 {
-  if (!lock && module.protocol != ui->protocol->itemData(index).toInt()) {
+  if (!lock && module.protocol != ui->protocol->itemData(index).toUInt()) {
     module.protocol = ui->protocol->itemData(index).toInt();
     update();
     emit modified();
@@ -600,7 +652,7 @@ void ModulePanel::on_antennaMode_currentIndexChanged(int index)
 
 void ModulePanel::on_r9mPower_currentIndexChanged(int index)
 {
-  if (!lock && module.pxx.power != index) {
+  if (!lock && module.pxx.power != (unsigned int)index) {
     module.pxx.power = index;
     emit modified();
   }
@@ -825,6 +877,30 @@ void ModulePanel::updateFailsafe(int channel)
 
   if (!valDisable)
     setChannelFailsafeValue(channel, failsafeValue, (FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC));
+}
+
+void ModulePanel::onClearAccessRxClicked()
+{
+  QPushButton *button = qobject_cast<QPushButton *>(sender());
+
+  if (button == ui->clearRx1) {
+    module.access.receivers &= ~(1<<0);
+    ui->rx1->clear();
+    update();
+    emit modified();
+  }
+  else if (button == ui->clearRx2) {
+    module.access.receivers &= ~(1<<1);
+    ui->rx2->clear();
+    update();
+    emit modified();
+  }
+  else if (button == ui->clearRx3) {
+    module.access.receivers &= ~(1<<2);
+    ui->rx3->clear();
+    update();
+    emit modified();
+  }
 }
 
 /******************************************************************************/
@@ -1108,7 +1184,7 @@ void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 {
   if (!lock) {
-    model->thrTraceSrc = index;
+    model->thrTraceSrc = ui->throttleSource->currentData().toUInt();
     emit modified();
   }
 }
@@ -1168,14 +1244,20 @@ void SetupPanel::populateThrottleSourceCB()
   Board::Type board = firmware->getBoard();
   lock = true;
   ui->throttleSource->clear();
-  ui->throttleSource->addItem(tr("THR"));
-  for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++) {
-    ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), i);
+  ui->throttleSource->addItem(tr("THR"), 0);
+
+  int idx=1;
+  for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++, idx++) {
+    if (RawSource(SOURCE_TYPE_STICK,4+i).isAvailable(model,&generalSettings,board)) {
+      ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), idx);
+    }
   }
-  for (int i=0; i<firmware->getCapability(Outputs); i++) {
-    ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings));
+  for (int i=0; i<firmware->getCapability(Outputs); i++, idx++) {
+    ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings), idx);
   }
-  ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
+
+  int thrTraceSrcIdx = ui->throttleSource->findData(model->thrTraceSrc);
+  ui->throttleSource->setCurrentIndex(thrTraceSrcIdx);
   lock = false;
 }
 
@@ -1373,3 +1455,4 @@ void SetupPanel::on_editText_clicked()
     g->exec();
   }
 }
+

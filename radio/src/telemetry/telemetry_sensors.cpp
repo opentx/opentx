@@ -34,7 +34,6 @@ bool isFaiForbidden(source_t idx)
   TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
 
   switch (telemetryProtocol) {
-
     case PROTOCOL_TELEMETRY_FRSKY_SPORT:
       if (sensor->id == RSSI_ID) {
         return false;
@@ -355,11 +354,20 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           }
         }
         uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
+#if defined(STM32)
         uint32_t dist = uint64_t(EARTH_RADIUS * M_PI / 180) * angle / 1000000;
+#else
+        // TODO search later why it breaks Sky9x
+        uint32_t dist = EARTH_RADIUS * angle / 1000000;
+#endif
         uint32_t result = dist * dist;
 
         angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
+#if defined(STM32)
         dist = uint64_t(gpsItem.distFromEarthAxis) * angle / 1000000;
+#else
+        dist = gpsItem.distFromEarthAxis * angle / 1000000;
+#endif
         result += dist * dist;
 
         // Length on ground (ignoring curvature of the earth)
@@ -501,16 +509,12 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
   int index = availableTelemetryIndex();
   if (index >= 0) {
     switch (protocol) {
-#if defined(TELEMETRY_FRSKY_SPORT)
       case TELEM_PROTO_FRSKY_SPORT:
         frskySportSetDefault(index, id, subId, instance);
         break;
-#endif
-#if defined(TELEMETRY_FRSKY)
       case TELEM_PROTO_FRSKY_D:
         frskyDSetDefault(index, id);
         break;
-#endif
 #if defined(CROSSFIRE)
       case TELEM_PROTO_CROSSFIRE:
         crossfireSetDefault(index, id, instance);

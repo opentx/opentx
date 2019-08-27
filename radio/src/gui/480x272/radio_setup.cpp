@@ -67,6 +67,9 @@ enum menuRadioSetupItems {
   ITEM_SETUP_DIM_LEVEL,
   ITEM_SETUP_FLASH_BEEP,
   CASE_PWR_BUTTON_PRESS(ITEM_SETUP_PWR_OFF_SPEED)
+#if defined(PXX2)
+  ITEM_RADIO_SETUP_OWNER_ID,
+#endif
   CASE_GPS(ITEM_SETUP_LABEL_GPS)
   CASE_GPS(ITEM_SETUP_TIMEZONE)
   CASE_GPS(ITEM_SETUP_ADJUST_RTC)
@@ -116,8 +119,21 @@ bool menuRadioSetup(event_t event)
     LABEL(ALARMS), 0, 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_PWR_BUTTON_PRESS(0)
-    CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
-    CASE_PXX1(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - USB mode - Chan order - Mode (1 to 4)
+    CASE_PXX2(0) // owner registration ID
+    CASE_GPS(LABEL(GPS))
+      CASE_GPS(0) // timezone
+      CASE_GPS(0) // adjust RTC
+      CASE_GPS(0) // GPS format
+    CASE_PXX1(0) // country code
+    0, // voice language
+    0, // imperial
+    FAI_CHOICE_ROW
+    0, // switches delay
+    0, // USB mode
+    0, // RX channels order
+    0, // sticks mode
+    1 /*to force edit mode*/
+  }); // Units - Fai choice - Play delay - USB mode - Chan order - Mode (1 to 4)
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -365,6 +381,13 @@ bool menuRadioSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARM);
         g_eeGeneral.alarmsFlash = editCheckBox(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, attr, event ) ;
         break;
+
+#if defined(PXX2)
+      case ITEM_RADIO_SETUP_OWNER_ID:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_OWNER_ID);
+        editName(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);
+        break;
+#endif
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLDELAY);

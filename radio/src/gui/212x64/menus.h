@@ -94,7 +94,7 @@ enum MenuModelIndexes {
 #if defined(LUA_MODEL_SCRIPTS)
   MENU_MODEL_CUSTOM_SCRIPTS,
 #endif
-  MENU_MODEL_TELEMETRY_FRSKY,
+  MENU_MODEL_TELEMETRY,
   MENU_MODEL_DISPLAY,
   MENU_MODEL_PAGES_COUNT
 };
@@ -117,7 +117,7 @@ void menuModelGVars(event_t event);
 void menuModelLogicalSwitches(event_t event);
 void menuModelSpecialFunctions(event_t event);
 void menuModelCustomScripts(event_t event);
-void menuModelTelemetryFrsky(event_t event);
+void menuModelTelemetry(event_t event);
 void menuModelSensor(event_t event);
 void menuModelDisplay(event_t event);
 

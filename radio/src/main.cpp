@@ -312,7 +312,8 @@ void guiMain(event_t evt)
           }
           if (menu) {
             const char * result = runPopupMenu(evt);
-            if (popupMenuItemsCount == 0) {
+            if (result) {
+              TRACE("popupMenuHandler(%s)", result);
               popupMenuHandler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
@@ -528,12 +529,10 @@ void perMain()
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
 
-#if defined(PCBTARANIS)
   if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
     writeScreenshot();
     mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
   }
-#endif
 
 #if defined(PCBX9E) && !defined(SIMU)
   toplcdRefreshStart();

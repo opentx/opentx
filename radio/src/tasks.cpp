@@ -107,7 +107,7 @@ TASK_FUNCTION(mixerTask)
   static uint32_t lastRunTime;
   s_pulses_paused = true;
 
-  while (1) {
+  while (true) {
 #if defined(PCBTARANIS) && defined(SBUS)
     // SBUS trainer
     processSbusInput();
@@ -180,11 +180,13 @@ TASK_FUNCTION(mixerTask)
       }
 #endif
 
-#if defined(TELEMETRY_FRSKY)
+#if defined(PCBSKY9X) && !defined(SIMU)
+      usbJoystickUpdate();
+#endif
+
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
-#endif
 
       if (heartbeat == HEART_WDT_CHECK) {
         wdt_reset();

@@ -20,35 +20,19 @@
 
 #include "opentx.h"
 
-const char *warningText = NULL;
+const char *warningText = nullptr;
 const char *warningInfoText;
 uint8_t     warningInfoLength;
 uint8_t     warningType;
 uint8_t     warningResult = 0;
 uint8_t     warningInfoFlags = ZCHAR;
-void        (*popupFunc)(event_t event) = NULL;
+PopupFunc popupFunc = nullptr;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     popupMenuSelectedItem = 0;
 uint16_t    popupMenuItemsCount = 0;
 uint16_t    popupMenuOffset = 0;
 uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 void        (*popupMenuHandler)(const char * result);
-
-void runPopupWarningBox()
-{
-  // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_WARNING);
-  // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  // lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, ALARM_COLOR);
-  // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_WARNING);
-}
-
-void drawMessageBox()
-{
-  // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_INFO);
-  // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  // lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, WARNING_COLOR);
-  // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
-}
 
 void drawAlertBox(const char * title, const char * text, const char * action)
 {
@@ -83,7 +67,21 @@ void runPopupWarning(event_t event)
 {
   warningResult = false;
 
-  theme->drawMessageBox(warningText, warningInfoText, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT), warningType);
+  const char * action;
+  switch (warningType) {
+    case WARNING_TYPE_INFO:
+      action = STR_OK;
+      break;
+    case WARNING_TYPE_ASTERISK:
+    case WARNING_TYPE_WAIT:
+      action = STR_EXIT;
+      break;
+    default:
+      action = STR_POPUPS_ENTER_EXIT;
+      break;
+  }
+
+  theme->drawMessageBox(warningText, warningInfoText, action, warningType);
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -115,7 +113,7 @@ void runPopupWarning(event_t event)
 
 const char * runPopupMenu(event_t event)
 {
-  const char * result = NULL;
+  const char * result = nullptr;
 
   uint8_t display_count = min<unsigned int>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
 

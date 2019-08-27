@@ -194,11 +194,9 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
                   mainRequestFlags |= (1 << REQUEST_FLIGHT_RESET);     // on systems with threads flightReset() must not be called from the mixers thread!
                 }
                 break;
-#if defined(TELEMETRY_FRSKY)
               case FUNC_RESET_TELEMETRY:
                 telemetryReset();
                 break;
-#endif
             }
             if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
               uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
@@ -338,7 +336,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
           }
 #endif
 
-#if defined(TELEMETRY_FRSKY) && defined(VARIO)
+#if defined(VARIO)
           case FUNC_VARIO:
             newActiveFunctions |= (1 << FUNCTION_VARIO);
             break;
@@ -358,13 +356,11 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
             break;
 
-#if defined(PCBTARANIS)
           case FUNC_SCREENSHOT:
             if (!(functionsContext.activeSwitches & switch_mask)) {
               mainRequestFlags |= (1 << REQUEST_SCREENSHOT);
             }
             break;
-#endif
 
 #if defined(DEBUG)
           case FUNC_TEST:

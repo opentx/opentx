@@ -103,7 +103,7 @@
   #define CASE_PWM_BACKLIGHT(x)
 #endif
 
-#if defined(TELEMETRY_FRSKY) && defined(GPS)
+#if defined(GPS)
   #define CASE_GPS(x) x,
 #else
   #define CASE_GPS(x)
@@ -131,12 +131,6 @@
   #define CASE_PWR_BUTTON_PRESS(x) x,
 #else
   #define CASE_PWR_BUTTON_PRESS(x)
-#endif
-
-#if defined(TELEMETRY_FRSKY)
-  #define CASE_FRSKY(x) x,
-#else
-  #define CASE_FRSKY(x)
 #endif
 
 #if defined(PXX1)
@@ -372,20 +366,21 @@ extern uint8_t channelOrder(uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
+inline bool SPLASH_NEEDED()
+{
 #if defined(COLORLCD)
-  #define SPLASH_NEEDED()              (false)
-#elif defined(PCBTARANIS)
-  #define SPLASH_NEEDED()              (g_eeGeneral.splashMode != 3)
+  return false;
 #else
-  #define SPLASH_NEEDED()              (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_DSM2 && !g_eeGeneral.splashMode)
+  return g_eeGeneral.splashMode != 3;
 #endif
+}
 
 #if defined(PCBHORUS)
   #define SPLASH_TIMEOUT               0 /* we use the splash duration to load stuff from the SD */
 #elif defined(PCBTARANIS)
-  #define SPLASH_TIMEOUT               (g_eeGeneral.splashMode==-4 ? 1500 : (g_eeGeneral.splashMode<=0 ? (400-g_eeGeneral.splashMode*200) : (400-g_eeGeneral.splashMode*100)))
+  #define SPLASH_TIMEOUT               (g_eeGeneral.splashMode == -4 ? 1500 : (g_eeGeneral.splashMode <= 0 ? (400-g_eeGeneral.splashMode * 200) : (400 - g_eeGeneral.splashMode * 100)))
 #else
-  #define SPLASH_TIMEOUT               (4*100)  // 4 seconds
+  #define SPLASH_TIMEOUT               (4 * 100)  // 4 seconds
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -630,12 +625,9 @@ void checkAll();
 void getADC();
 static inline void GET_ADC_IF_MIXER_NOT_RUNNING()
 {
-  do {
-    if (s_pulses_paused) {
-      getADC();
-    }
+  if (s_pulses_paused) {
+    getADC();
   }
-  while(0);
 }
 
 #include "sbus.h"
@@ -645,12 +637,6 @@ void checkBacklight();
 void doLoopCommonActions();
 
 #define BITMASK(bit) (1<<(bit))
-
-template<class t> inline t min(t a, t b) { return a<b?a:b; }
-template<class t> inline t max(t a, t b) { return a>b?a:b; }
-template<class t> inline t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
-template<class t> inline t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
-template<class t> inline void SWAP(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 
 uint16_t isqrt32(uint32_t n);
 
@@ -1238,13 +1224,8 @@ char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defa
 // Stick tolerance varies between transmitters, Higher is better
 #define STICK_TOLERANCE 64
 
-#if defined(TELEMETRY_FRSKY)
   ls_telemetry_value_t minTelemValue(source_t channel);
   ls_telemetry_value_t maxTelemValue(source_t channel);
-#else
-  #define minTelemValue(channel) 255
-  #define maxTelemValue(channel) 255
-#endif
 
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
@@ -1277,7 +1258,6 @@ inline bool IS_TXBATT_WARNING()
   return g_vbat100mV <= g_eeGeneral.vBatWarn;
 }
 
-#if defined(TELEMETRY_FRSKY)
 enum TelemetryViews {
   TELEMETRY_CUSTOM_SCREEN_1,
   TELEMETRY_CUSTOM_SCREEN_2,
@@ -1287,7 +1267,6 @@ enum TelemetryViews {
 };
 
 extern uint8_t s_frsky_view;
-#endif
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
 

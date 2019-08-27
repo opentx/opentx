@@ -233,12 +233,10 @@ bool isSourceAvailableInCustomSwitches(int source)
 {
   bool result = isSourceAvailable(source);
 
-#if defined(TELEMETRY_FRSKY)
   if (result && source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
     div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     result = isTelemetryFieldComparisonAvailable(qr.quot);
   }
-#endif
 
   return result;
 }
@@ -617,7 +615,7 @@ bool isExternalModuleAvailable(int moduleType)
   if (moduleType == MODULE_TYPE_ISRM_PXX2)
     return false; // doesn't exist for now
 
-#if !defined(PXX2)
+#if !defined(PXX2) || !defined(EXTMODULE_USART)
   if (moduleType == MODULE_TYPE_XJT_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
     return false;
   }

@@ -192,7 +192,19 @@ enum MenuModelSetupItems {
 #endif
 
 #define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
-#define EXTERNAL_MODULE_TYPE_ROWS      (isModulePXX1(EXTERNAL_MODULE) || isModulePXX2(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+
+inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
+{
+  if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
+    return 1;
+#if defined(MULTIMODULE)
+  else if (isModuleMultimodule(EXTERNAL_MODULE)) {
+    return 1;
+  }
+#endif
+  else
+    return 0;
+}
 
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
 #define TIMER_ROWS                     2, 0, 0, 0, 0
@@ -315,7 +327,7 @@ void menuModelSetup(event_t event)
     INTERNAL_MODULE_ROWS
 
     LABEL(ExternalModule),
-      EXTERNAL_MODULE_TYPE_ROWS,
+      EXTERNAL_MODULE_TYPE_ROW(),
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
       EXTERNAL_MODULE_POWER_ROW,
       MULTIMODULE_STATUS_ROWS
@@ -336,7 +348,7 @@ void menuModelSetup(event_t event)
 #else
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, LABEL(PreflightCheck), 0, 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS-1, 0,
     LABEL(ExternalModule),
-    EXTERNAL_MODULE_TYPE_ROWS,
+    EXTERNAL_MODULE_TYPE_ROW(),
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
     MULTIMODULE_STATUS_ROWS
     EXTERNAL_MODULE_CHANNELS_ROWS,
@@ -764,10 +776,7 @@ void menuModelSetup(event_t event)
           if (menuHorizontalPosition == 0) {
             uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
             if (checkIncDec_Ret) {
-              // TODO this code should be common, in module.h (X10_new_UI branch)
-              memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
-              g_model.moduleData[INTERNAL_MODULE].type = moduleType;
-              g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
+              setModuleType(INTERNAL_MODULE, moduleType);
             }
           }
           else if (isModuleXJT(INTERNAL_MODULE)) {
@@ -837,22 +846,9 @@ void menuModelSetup(event_t event)
             switch (menuHorizontalPosition) {
               case 0:
               {
-                uint8_t moduleType = checkIncDec(event,
-                                                 g_model.moduleData[EXTERNAL_MODULE].type,
-                                                 MODULE_TYPE_NONE,
-                                                 IS_TRAINER_EXTERNAL_MODULE() ? MODULE_TYPE_NONE :
-                                                 MODULE_TYPE_COUNT - 1,
-                                                 EE_MODEL,
-                                                 isExternalModuleAvailable);
+                uint8_t moduleType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isExternalModuleAvailable);
                 if (checkIncDec_Ret) {
-                  // TODO this code should be common, in module.h (X10_new_UI branch)
-                  memclear(&g_model.moduleData[EXTERNAL_MODULE], sizeof(ModuleData));
-                  g_model.moduleData[EXTERNAL_MODULE].type = moduleType;
-                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
-                  if (isModuleSBUS(EXTERNAL_MODULE))
-                    g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
-                  if (isModulePPM(EXTERNAL_MODULE))
-                    SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
+                  setModuleType(EXTERNAL_MODULE, moduleType);
                 }
               }
               break;
@@ -1078,7 +1074,7 @@ void menuModelSetup(event_t event)
               case 1:
                 CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), moduleData.type == MODULE_TYPE_ISRM_PXX2 ? isPxx2IsrmChannelsCountAllowed : nullptr);
                 if (checkIncDec_Ret && moduleData.type == MODULE_TYPE_PPM) {
-                  SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
+                  setDefaultPpmFrameLength(moduleIdx);
                 }
                 break;
             }
@@ -1538,7 +1534,6 @@ void menuModelSetup(event_t event)
       }
 #endif
 
-
 #if 0
       case ITEM_MODEL_SETUP_PPM2_PROTOCOL:
         lcdDrawTextAlignedLeft(y, "Port2");
@@ -1551,11 +1546,11 @@ void menuModelSetup(event_t event)
           switch (menuHorizontalPosition) {
             case 0:
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[1].channelsStart, 32-8-g_model.moduleData[1].channelsCount);
-              SET_DEFAULT_PPM_FRAME_LENGTH(1);
+              setDefaultPpmFrameLength(1);
               break;
             case 1:
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].channelsCount, -4, min<int8_t>(8, 32-8-g_model.moduleData[1].channelsStart));
-              SET_DEFAULT_PPM_FRAME_LENGTH(1);
+              setDefaultPpmFrameLength(1);
               break;
           }
         }
@@ -1588,7 +1583,7 @@ void menuModelSetup(event_t event)
   }
 
 #if defined(PXX)
-  if (IS_RANGECHECK_ENABLE()) {
+  if (isModuleInRangeCheckMode()) {
     showMessageBox("RSSI: ");
     lcdDrawNumber(WARNING_LINE_X, 5*FH, TELEMETRY_RSSI(), BOLD);
   }

@@ -32,7 +32,6 @@
 #define GET_SBUS_POLARITY(idx)                   g_model.moduleData[idx].sbus.noninverted
 #define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
 #define GET_TRAINER_PPM_DELAY()                  (g_model.trainerData.delay * 50 + 300)
-#define SET_DEFAULT_PPM_FRAME_LENGTH(idx)        g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #if defined(PCBHORUS)
   #define IS_TRAINER_EXTERNAL_MODULE()    false

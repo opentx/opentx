@@ -28,6 +28,18 @@ InternalModulePulsesData intmodulePulsesData __DMA;
 ExternalModulePulsesData extmodulePulsesData __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
+void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCallback)
+{
+  bindInformation = destination;
+  callback = bindCallback;
+  mode = MODULE_MODE_BIND;
+#if defined(SIMU)
+  bindInformation->candidateReceiversCount = 2;
+  strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1");
+  strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2");
+#endif
+}
+
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;
@@ -174,7 +186,7 @@ void enablePulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(PXX2)
+#if defined(PXX2) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
       extmoduleInvertedSerialStart(PXX2_HIGHSPEED_BAUDRATE);
       break;
@@ -338,7 +350,7 @@ void setupPulsesInternalModule(uint8_t protocol)
 
 #if defined(PCBTARANIS) && defined(INTERNAL_MODULE_PPM)
     case PROTOCOL_CHANNELS_PPM:
-      setupPulsesPPM(&extmodulePulsesData.ppm, g_model.moduleData[INTERNAL_MODULE].channelsStart, g_model.moduleData[INTERNAL_MODULE].channelsCount, g_model.moduleData[INTERNAL_MODULE].ppm.frameLength);
+      setupPulsesPPMInternalModule();
       scheduleNextMixerCalculation(INTERNAL_MODULE, PPM_PERIOD(INTERNAL_MODULE));
       break;
 #endif

@@ -94,6 +94,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Horus";
     case BOARD_X10:
       return "OpenTX for FrSky X10";
+    case BOARD_X10_EXPRESS:
+      return "OpenTX for FrSky X10 Express";
     default:
       return "OpenTX for an unknown board";
   }
@@ -756,66 +758,67 @@ QTime OpenTxFirmware::getMaxTimerStart()
     return QTime(0, 59, 59);
 }
 
-int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
+bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
 {
   if (IS_HORUS_OR_TARANIS(board)) {
     switch (port) {
       case 0:
         switch (proto) {
           case PULSES_OFF:
-            return 1;
+            return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 0 : 1;
+            return !(IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
           case PULSES_PXX_XJT_D8:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || id.contains("eu")) ? 0 : 1;
+            return !(IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || id.contains("eu"));
           case PULSES_PPM:
-            return id.contains("internalppm") ? 1 : 0;
+            return id.contains("internalppm");
           case PULSES_ACCESS_ISRM:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
+            return IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_HORUS(board) && id.contains("internalaccess"));
+          case PULSES_ACCST_ISRM_D16:
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
           default:
-            return 0;
+            return false;
         }
-
+        
       case 1:
         switch (proto) {
           case PULSES_OFF:
           case PULSES_PPM:
-            return 1;
+            return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 0 : 1;
+            return !(IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
           case PULSES_PXX_R9M:
           case PULSES_LP45:
           case PULSES_DSM2:
           case PULSES_DSMX:
           case PULSES_SBUS:
-            return 1;
           case PULSES_MULTIMODULE:
-            if(IS_JUMPER_T12(board))
-              return 1;
-            else
-              return id.contains("multimodule") ? 1 : 0;
           case PULSES_CROSSFIRE:
-            return id.contains("crossfire") ? 1 : 0;
+            return true;
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
+          case PULSES_XJT_LITE_X16:
+          case PULSES_XJT_LITE_D8:
+          case PULSES_XJT_LITE_LR12:
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
           default:
-            return 0;
+            return false;
         }
 
       case -1:
         switch (proto) {
           case PULSES_PPM:
-            return 1;
+            return true;
           default:
-            return 0;
+            return false;
         }
 
       default:
-        return 0;
+        return false;
     }
   }
   else if (IS_SKY9X(board)) {
@@ -831,23 +834,22 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_DSM2:
           case PULSES_DSMX:
           case PULSES_SBUS:
-            return 1;
           case PULSES_MULTIMODULE:
-            return id.contains("multimodule") ? 1 : 0;
+            return true;
           default:
-            return 0;
+            return false;
         }
         break;
       case 1:
         switch (proto) {
           case PULSES_PPM:
-            return 1;
+            return true;
           default:
-            return 0;
+            return false;
         }
         break;
       default:
-        return 0;
+        return false;
     }
   }
   else {
@@ -859,9 +861,9 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
         // case PULSES_PXX_DJT:     // Unavailable for now
       case PULSES_PPM16:
       case PULSES_PPMSIM:
-        return 1;
+        return true;
       default:
-        return 0;
+        return false;
     }
   }
 }
@@ -1150,7 +1152,6 @@ void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true)
 {
   static const Firmware::Option opt_eu("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   static const Firmware::Option opt_fl("flexr9m", Firmware::tr("Enable non certified firmwares"));
-  firmware->addOption("multimodule", Firmware::tr("Support for the DIY-Multiprotocol-TX-Module"));
   if (flex)
     firmware->addOptionsGroup({opt_eu, opt_fl});
   else
@@ -1168,8 +1169,6 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
-  firmware->addOption("luac", Firmware::tr("Enable Lua compiler"));
-  firmware->addOption("crossfire", Firmware::tr("Support for Crossfire TX Module"));
   addOpenTxRfOptions(firmware);
 }
 
@@ -1260,23 +1259,28 @@ void registerOpenTxFirmwares()
   /* FrSky X10 board */
   firmware = new OpenTxFirmware("opentx-x10", Firmware::tr("FrSky Horus X10 / X10S"), BOARD_X10);
   addOpenTxFrskyOptions(firmware);
+  firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky X10 Express board */
+  firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 Express"), BOARD_X10_EXPRESS);
+  addOpenTxFrskyOptions(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X12 (Horus) board */
   firmware = new OpenTxFirmware("opentx-x12s", Firmware::tr("FrSky Horus X12S"), BOARD_X12S);
   addOpenTxFrskyOptions(firmware);
+  firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
   firmware->addOption("pcbdev", Firmware::tr("Use ONLY with first DEV pcb version"));
   registerOpenTxFirmware(firmware);
 
   /* Jumper T12 board */
   firmware = new OpenTxFirmware("opentx-t12", QCoreApplication::translate("Firmware", "Jumper T12"), BOARD_JUMPER_T12);
   addOpenTxCommonOptions(firmware);
-  firmware->addOption("multimodule", Firmware::tr("Support for the DIY-Multiprotocol-TX-Module"));
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
-  firmware->addOption("luac", Firmware::tr("Enable Lua compiler"));
-  firmware->addOption("crossfire", Firmware::tr("Support for Crossfire TX Module"));
+  firmware->addOption("flexr9m", Firmware::tr("Enable non certified R9M firmwares"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
 

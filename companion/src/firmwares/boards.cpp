@@ -59,6 +59,7 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_X12S:
       return 0x3478746F;
     case BOARD_X10:
+    case BOARD_X10_EXPRESS:
       return 0x3778746F;
     case BOARD_TARANIS_XLITE:
       return 0x3978746F;
@@ -122,6 +123,7 @@ const int Boards::getEEpromSize(Board::Type board)
       return EESIZE_MAX;
     case BOARD_X12S:
     case BOARD_X10:
+    case BOARD_X10_EXPRESS:
       return 0;
   }
 
@@ -155,6 +157,7 @@ const int Boards::getFlashSize(Type board)
       return FSIZE_TARANIS;
     case BOARD_X12S:
     case BOARD_X10:
+    case BOARD_X10_EXPRESS:
       return FSIZE_HORUS;
     case BOARD_UNKNOWN:
       return FSIZE_MAX;
@@ -333,14 +336,12 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 8;
       else if (IS_JUMPER_T12(board))
         return 6;
-      else if (IS_TARANIS_XLITES(board))
-        return 6;
       else if (IS_TARANIS_XLITE(board))
         return 6;
-      else if (IS_TARANIS(board))
-        return 8;
       else if (board == Board::BOARD_TARANIS_X9DP_2019)
         return 9;
+      else if (IS_TARANIS(board))
+        return 8;
       else if (IS_HORUS(board))
         return 10;
       else
@@ -524,6 +525,8 @@ const QString Boards::getBoardName(Board::Type board)
       return "Horus X12S";
     case BOARD_X10:
       return "Horus X10/X10S";
+    case BOARD_X10_EXPRESS:
+      return "Horus X10 Express";
     default:
       return tr("Unknown");
   }

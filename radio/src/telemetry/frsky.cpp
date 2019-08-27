@@ -100,13 +100,11 @@ bool pushFrskyTelemetryData(uint8_t data)
 
   } // switch
 
-#if defined(TELEMETRY_FRSKY_SPORT)
   if (IS_FRSKY_SPORT_PROTOCOL() && telemetryRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
     // end of frame detected
     dataState = STATE_DATA_IDLE;
     return true;
   }
-#endif
 
   return false;
 }

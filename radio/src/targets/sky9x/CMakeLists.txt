@@ -15,8 +15,8 @@ if(PCB STREQUAL 9XRPRO)
   add_definitions(-Dat91sam3s8 -DREVX)
   set(FLAVOUR 9xrpro)
   set(LINKER_SCRIPT targets/sky9x/sam3s8c_flash.ld)
-  set(TARGET_SRC
-    ${TARGET_SRC}
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
     rtc_driver.cpp
     )
   set(OPENRC_BOOTLOADER bootflash8.lbm)
@@ -25,9 +25,9 @@ elseif(PCB STREQUAL AR9X)
   add_definitions(-Dat91sam3s8 -DPCBAR9X -DSOFTWARE_VOLUME)
   set(FLAVOUR ar9x)
   include_directories(${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi)
-  set(SRC ${SRC} ${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c)
-  set(TARGET_SRC
-    ${TARGET_SRC}
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    ../../${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c
     i2c_driver.cpp
     rtc_ds3231_driver.cpp
     )
@@ -38,8 +38,8 @@ else()
   set(FLAVOUR sky9x)
   set(PCBREV "REVC" CACHE STRING "PCB Revision (REVB/REVC)")
   set_property(CACHE PCBREV PROPERTY STRINGS "REVB" "REVC")
-  set(TARGET_SRC
-    ${TARGET_SRC}
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
     coproc_driver.cpp
     rotary_encoder_driver.cpp
     rtc_driver.cpp
@@ -90,14 +90,20 @@ set(FIRMWARE_TARGET_SRC
   eeprom_driver.cpp
   lcd_driver.cpp
   pwr_driver.cpp
+  joystick.cpp
+  massstorage.cpp
   keys_driver.cpp
   usb/device/core/USBD_UDP.c
   usb/device/core/USBDDriver.c
+  usb_driver.cpp
   usb/device/massstorage/MSDDriver.c
   usb/device/massstorage/MSDDStateMachine.c
   usb/device/massstorage/MSDLun.c
   usb/device/massstorage/MSDDriverDescriptors.c
   usb/device/massstorage/SBCMethods.c
+  usb/device/hid-joystick/HIDDJoystickDriver.c
+  usb/device/hid-joystick/HIDDJoystickDriverDescriptors.c
+  usb/device/hid-joystick/HIDDJoystickInputReport.c
   usb/common/core/USBEndpointDescriptor.c
   usb/common/core/USBGenericRequest.c
   usb/common/core/USBFeatureRequest.c
@@ -107,6 +113,8 @@ set(FIRMWARE_TARGET_SRC
   usb/common/core/USBSetConfigurationRequest.c
   usb/common/core/USBConfigurationDescriptor.c
   usb/common/core/USBGenericDescriptor.c
+  usb/common/hid/HIDIdleRequest.c
+  usb/common/hid/HIDReportRequest.c
   MEDSdcard.c
   )
 
@@ -119,7 +127,6 @@ set(TARGET_SRC
   buzzer_driver.cpp
   haptic_driver.cpp
   sdcard_driver.cpp
-  massstorage.cpp
   aux_serial_driver.cpp
   audio_driver.cpp
   trainer_driver.cpp
@@ -129,3 +136,4 @@ set(SRC
   ${SRC}
   debug.cpp
   )
+

@@ -154,12 +154,6 @@ bool menuStatsDebug(event_t event)
   lcdDrawNumber(lcdNextPos+5, y, audioStack.available(), LEFT);
   y += FH;
 
-#if defined(STM32)
-  lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RTC_BATT);
-  drawValueWithUnit(MENU_STATS_COLUMN1, y, getRTCBatteryVoltage(), UNIT_VOLTS, PREC2|LEFT);
-  y += FH;
-#endif
-
 #if defined(DISK_CACHE) && defined(DEBUG)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "SD cache hits");
   lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");

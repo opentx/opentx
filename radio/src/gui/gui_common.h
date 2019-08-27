@@ -39,7 +39,7 @@
 
 typedef bool (*IsValueAvailable)(int);
 
-int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
+int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=nullptr);
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable);
 
 bool isTrimModeAvailable(int mode);
@@ -108,7 +108,7 @@ void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags flags=0);
 void drawCurve(coord_t offset=0);
 
 #if defined(COLORLCD)
-void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags=0, const char * prefix=NULL, const char * suffix=NULL);
+void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags=0, const char * prefix=nullptr, const char * suffix=nullptr);
 int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags flags, event_t event);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags flags, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags flags, event_t event);
@@ -162,5 +162,7 @@ inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
 #define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE)) ? (isModuleR9MLiteNonPro(EXTERNAL_MODULE) ? (isModuleR9M_FCC_VARIANT(EXTERNAL_MODULE) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
+
+const char * writeScreenshot();
 
 #endif // _GUI_COMMON_H_

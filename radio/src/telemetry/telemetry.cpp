@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
+#include "opentx.h"
 
 uint8_t telemetryStreaming = 0;
 uint8_t R9ModuleStreaming = 0;
@@ -200,7 +200,9 @@ void telemetryWakeup()
       }
       else if (telemetryState == TELEMETRY_OK) {
         telemetryState = TELEMETRY_KO;
-        AUDIO_TELEMETRY_LOST();
+        if (!isModuleInBeepMode()) {
+          AUDIO_TELEMETRY_LOST();
+        }
       }
     }
   }

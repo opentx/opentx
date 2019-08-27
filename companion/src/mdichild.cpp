@@ -1334,7 +1334,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
   QString warning = storage.warning();
   if (!warning.isEmpty()) {
-    // TODO EEPROMInterface::showEepromWarnings(this, CPN_STR_TTL_WARNING, warning);
+    QMessageBox::warning(this, CPN_STR_TTL_WARNING, warning);
   }
 
   if (resetCurrentFile) {

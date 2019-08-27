@@ -316,17 +316,12 @@ void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
 
 void OpenTxSimulator::sendTelemetry(const QByteArray data)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   //OTXS_DBG << data;
   sportProcessTelemetryPacket((uint8_t *)data.constData());
-#else
-  Q_UNUSED(data)
-#endif
 }
 
 uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
@@ -335,15 +330,11 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
       }
     }
   }
-#else
-  Q_UNUSED(id)
-#endif
   return defaultValue;
 }
 
 uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
@@ -352,9 +343,6 @@ uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
       }
     }
   }
-#else
-  Q_UNUSED(id)
-#endif
   return 0;
 }
 
@@ -378,9 +366,7 @@ const int OpenTxSimulator::getCapability(Capability cap)
       break;
 
     case CAP_TELEM_FRSKY_SPORT :
-      #ifdef TELEMETRY_FRSKY_SPORT
         ret = 1;
-      #endif
       break;
   }
   return ret;
