@@ -130,6 +130,12 @@ def main():
         cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_horus_x10
         maxsize = 2 * 1024 * 1024
+    elif board_name == "x10express":
+        cmake_options["PCB"] = "X10"
+        cmake_options["PCBREV"] = "EXPRESS"
+        cmake_options["MULTI_SPORT"] = "ON"
+        firmware_options = options_horus_x10
+        maxsize = 2 * 1024 * 1024
     elif board_name == "x12s":
         cmake_options["PCB"] = "X12S"
         cmake_options["MULTI_SPORT"] = "ON"
