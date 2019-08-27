@@ -161,17 +161,8 @@ PACK(struct ModuleState {
   };
   ModuleCallback callback;
 
-  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr)
-  {
-    bindInformation = destination;
-    callback = bindCallback;
-    mode = MODULE_MODE_BIND;
-#if defined(SIMU)
-     bindInformation->candidateReceiversCount = 2;
-     strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1");
-     strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2");
-#endif
-  }
+  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
+
   void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
   {
     moduleInformation = destination;
