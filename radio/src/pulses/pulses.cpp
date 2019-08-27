@@ -28,6 +28,18 @@ InternalModulePulsesData intmodulePulsesData __DMA;
 ExternalModulePulsesData extmodulePulsesData __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
+void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCallback)
+{
+  bindInformation = destination;
+  callback = bindCallback;
+  mode = MODULE_MODE_BIND;
+#if defined(SIMU)
+  bindInformation->candidateReceiversCount = 2;
+  strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1");
+  strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2");
+#endif
+}
+
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;

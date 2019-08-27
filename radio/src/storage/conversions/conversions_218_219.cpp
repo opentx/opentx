@@ -58,6 +58,11 @@ int convertSource_218_to_219(int source)
     source += 2;
 #endif
 
+#if defined(PCBX10)
+  if ((source == MIXSRC_EXT1) || (source == MIXSRC_EXT2))
+    source += 2;
+#endif
+
   return source;
 }
 
@@ -111,6 +116,12 @@ void convertModelData_218_to_219(ModelData &model)
   memcpy(&oldModel, &model, sizeof(ModelData_v218));
   ModelData_v219 & newModel = (ModelData_v219 &) model;
 
+#if defined(PCBHORUS)
+  // 4 bytes more for the ModelHeader::bitmap
+  memclear(&newModel.header.bitmap[10], 4);
+  memcpy(newModel.timers, oldModel.timers, offsetof(ModelData_v218, mixData) - offsetof(ModelData_v218, timers));
+#endif
+
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));
 
   char name[LEN_MODEL_NAME+1];
@@ -147,9 +158,9 @@ void convertModelData_218_to_219(ModelData &model)
     uint8_t cstate = lswFamily(sw.func);
     if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       LogicalSwitchData & sw = newModel.logicalSw[i];
-      sw.v1 = convertSource_218_to_219((uint8_t)sw.v1);
+      sw.v1 = convertSource_218_to_219(sw.v1);
       if (cstate == LS_FAMILY_COMP) {
-        sw.v2 = convertSource_218_to_219((uint8_t)sw.v2);
+        sw.v2 = convertSource_218_to_219(sw.v2);
       }
     }
     else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
@@ -159,6 +170,7 @@ void convertModelData_218_to_219(ModelData &model)
     else if (cstate == LS_FAMILY_EDGE) {
       sw.v1 = convertSwitch_218_to_219(sw.v1);
     }
+    sw.andsw = convertSwitch_218_to_219(sw.andsw);
   }
 
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
@@ -179,6 +191,10 @@ void convertModelData_218_to_219(ModelData &model)
   }
 
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
+#if defined(PCBX10)
+  if (newModel.thrTraceSrc > 3) // 0=Thr, 1/2/3=Old 3 Pots, then Sliders
+    newModel.thrTraceSrc += 2;
+#endif
   newModel.switchWarningState = oldModel.switchWarningState;
 #if !defined(COLORLCD)
   newModel.switchWarningEnable = oldModel.switchWarningEnable;
@@ -279,9 +295,33 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
 #if defined(PCBHORUS)
-//  memcpy(newModel.screenData, oldModel.screenData,
-//          sizeof(newModel.screenData) +
-//          sizeof(newModel.topbarData))
+  memcpy(newModel.screenData, oldModel.screenData,
+         sizeof(newModel.screenData) +
+         sizeof(newModel.topbarData));
+
+  for (int screen=0; screen<MAX_CUSTOM_SCREENS; screen++) {
+    CustomScreenData& screenData = g_model.screenData[screen];
+    if (screenData.layoutName[0] == '\0')
+      continue;
+    for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
+      Layout::ZonePersistentData * zoneData = &screenData.layoutData.zones[zone];
+      if (strcmp("Value", zoneData->widgetName))
+        continue;
+
+      ZoneOptionValue& option = zoneData->widgetData.options[0];
+      option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
+    }
+  }
+
+  for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
+    Topbar::ZonePersistentData * zoneData = &g_model.topbarData.zones[zone];
+    if (strcmp("Value", zoneData->widgetName))
+      continue;
+
+    ZoneOptionValue & option = zoneData->widgetData.options[0];
+    option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
+  }
+  
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
@@ -318,13 +358,6 @@ void convertRadioData_218_to_219(RadioData & settings)
   RadioData_v218 * oldSettingsAllocated = (RadioData_v218 *)malloc(sizeof(RadioData_v218));
   RadioData_v218 & oldSettings = *oldSettingsAllocated;
   memcpy(&oldSettings, &settings, sizeof(RadioData_v218));
-#endif
-
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7) || defined(PCBXLITE)
-  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
-    CustomFunctionData & cf = settings.customFn[i];
-    cf.swtch = convertSwitch_218_to_219(cf.swtch);
-  }
 #endif
 
 #if defined(PCBX9D) || defined(PCBX9DP)
@@ -376,11 +409,24 @@ void convertRadioData_218_to_219(RadioData & settings)
   g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
 #endif
 
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7) || defined(PCBXLITE) || defined(PCBHORUS)
+  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
+    CustomFunctionData & cf = settings.customFn[i];
+    cf.swtch = convertSwitch_218_to_219(cf.swtch);
+    if (cf.func == FUNC_PLAY_VALUE || cf.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(cf.func) && cf.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
+      cf.all.val = convertSource_218_to_219(cf.all.val);
+    }
+  }
+#endif
+
 #if defined(PCBX9DP) && PCBREV >= 2019
   // force re-calibration
   settings.chkSum = 0xFFFF;
   setDefaultOwnerId();
 #endif
+
+  settings.pwrOnSpeed = 0;
+  settings.pwrOffSpeed = 0;
 
 #if defined(STM32)
   free(oldSettingsAllocated);

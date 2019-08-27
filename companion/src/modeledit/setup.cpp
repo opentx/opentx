@@ -1184,7 +1184,7 @@ void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 {
   if (!lock) {
-    model->thrTraceSrc = index;
+    model->thrTraceSrc = ui->throttleSource->currentData().toUInt();
     emit modified();
   }
 }
@@ -1244,14 +1244,20 @@ void SetupPanel::populateThrottleSourceCB()
   Board::Type board = firmware->getBoard();
   lock = true;
   ui->throttleSource->clear();
-  ui->throttleSource->addItem(tr("THR"));
-  for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++) {
-    ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), i);
+  ui->throttleSource->addItem(tr("THR"), 0);
+
+  int idx=1;
+  for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++, idx++) {
+    if (RawSource(SOURCE_TYPE_STICK,4+i).isAvailable(model,&generalSettings,board)) {
+      ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), idx);
+    }
   }
-  for (int i=0; i<firmware->getCapability(Outputs); i++) {
-    ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings));
+  for (int i=0; i<firmware->getCapability(Outputs); i++, idx++) {
+    ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings), idx);
   }
-  ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
+
+  int thrTraceSrcIdx = ui->throttleSource->findData(model->thrTraceSrc);
+  ui->throttleSource->setCurrentIndex(thrTraceSrcIdx);
   lock = false;
 }
 

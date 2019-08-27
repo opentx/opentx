@@ -86,16 +86,24 @@ void eeLoadModelHeaders()
   }
 }
 
-void storageReadRadioSettings()
+void storageClearRadioSetting()
 {
-  if (!eepromOpen() || !eeLoadGeneral()) {
+  memclear(&g_eeGeneral, sizeof(RadioData));
+}
+
+void storageReadRadioSettings(bool allowConversion)
+{
+  if (g_eeGeneral.version != 0)
+    return;
+  
+  if (!eepromOpen() || !eeLoadGeneral(allowConversion)) {
     storageEraseAll(true);
   }
   else {
     eeLoadModelHeaders();
   }
 
-  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
+  for (uint8_t i=0; languagePacks[i]; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
       currentLanguagePack = languagePacks[i];
@@ -110,7 +118,7 @@ void storageReadCurrentModel()
 
 void storageReadAll()
 {
-  storageReadRadioSettings();
+  storageReadRadioSettings(true);
   storageReadCurrentModel();
 }
 
@@ -125,7 +133,7 @@ void storageEraseAll(bool warn)
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
   }
 
-  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
+  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, nullptr, AU_NONE);
 
   storageFormat();
   storageDirty(EE_GENERAL|EE_MODEL);

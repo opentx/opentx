@@ -107,7 +107,7 @@ TASK_FUNCTION(mixerTask)
   static uint32_t lastRunTime;
   s_pulses_paused = true;
 
-  while (1) {
+  while (true) {
 #if defined(PCBTARANIS) && defined(SBUS)
     // SBUS trainer
     processSbusInput();
@@ -178,6 +178,10 @@ TASK_FUNCTION(mixerTask)
       if (getSelectedUsbMode() == USB_JOYSTICK_MODE) {
         usbJoystickUpdate();
       }
+#endif
+
+#if defined(PCBSKY9X) && !defined(SIMU)
+      usbJoystickUpdate();
 #endif
 
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);

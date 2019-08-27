@@ -1,7 +1,9 @@
 #include "gtests.h"
 #include "location.h"
+#include "storage/otx.h"
 #include "storage/storage.h"
 #include "firmwares/opentx/opentxinterface.h"
+#include "firmwares/customfunctiondata.h"
 
 TEST(Conversions, ConversionX9DPFrom22)
 {
@@ -9,6 +11,16 @@ TEST(Conversions, ConversionX9DPFrom22)
   Storage   store = Storage(RADIO_TESTS_PATH "/eeprom_22_x9d+.bin");
 
   ASSERT_EQ(true, store.load(radioData));
+  
+  ASSERT_EQ(true, store.load(radioData));
+
+  const GeneralSettings& settings = radioData.generalSettings;
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
+  EXPECT_EQ(FuncLogs, settings.customFn[0].func);
+  EXPECT_EQ(20, settings.customFn[0].param);
+
+  EXPECT_STREQ("Tes", settings.switchName[0]);
+  EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
   
   const ModelData& model = radioData.models[0];
   EXPECT_STREQ("Test", model.name);
@@ -37,6 +49,14 @@ TEST(Conversions, ConversionX7From22)
 
   ASSERT_EQ(true, store.load(radioData));
 
+  const GeneralSettings& settings = radioData.generalSettings;
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
+  EXPECT_EQ(FuncLogs, settings.customFn[0].func);
+  EXPECT_EQ(20, settings.customFn[0].param);
+
+  EXPECT_STREQ("Tes", settings.switchName[0]);
+  EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
+  
   const ModelData& model = radioData.models[0];
   EXPECT_STREQ("Test", model.name);
   EXPECT_EQ(PULSES_PXX_R9M, model.moduleData[1].protocol);
@@ -83,23 +103,77 @@ bool loadFile(QByteArray & filedata, const QString & filename)
   return true;
 }
 
-TEST(Conversions, ConversionHorusFrom22)
+TEST(Conversions, ConversionX10From22)
 {
-  QByteArray modelByteArray;
-  ASSERT_EQ(true, loadFile(modelByteArray, RADIO_TESTS_PATH "/MODELS/model_22_horus.bin"));
+  QByteArray byteBuffer;
+
+#define USE_OTX
+
+#if defined(USE_OTX)
+  OtxFormat otx(RADIO_TESTS_PATH "/model_22_x10.otx");
+  RadioData radio;
+  EXPECT_EQ(true, otx.load(radio));
+
+  const GeneralSettings& settings = radio.generalSettings;
+  const ModelData& model = radio.models[0];
+#else  
+  ASSERT_EQ(true, loadFile(byteBuffer, RADIO_TESTS_PATH "/model_22_x10/RADIO/radio.bin"));
+
+  GeneralSettings settings;
+  EXPECT_NE(nullptr, loadRadioSettingsFromByteArray(settings, byteBuffer));
+#endif
+
+  EXPECT_EQ(100, settings.calibSpanNeg[9]);
+  EXPECT_EQ(500, settings.calibMid[9]);
+  EXPECT_EQ(900, settings.calibSpanPos[9]);
+
+  EXPECT_EQ(200, settings.calibSpanNeg[10]);
+  EXPECT_EQ(400, settings.calibMid[10]);
+  EXPECT_EQ(600, settings.calibSpanPos[10]);
+
+  EXPECT_EQ(-23, settings.vBatMin);
+  EXPECT_EQ(20, settings.speakerVolume);
+  EXPECT_STREQ("en", settings.ttsLanguage);
+  EXPECT_STREQ("model1.bin", settings.currModelFilename);
+
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
+  EXPECT_EQ(FuncLogs, settings.customFn[0].func);
+  EXPECT_EQ(20, settings.customFn[0].param);
+
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_ON), settings.customFn[1].swtch);
+  EXPECT_EQ(FuncVolume, settings.customFn[1].func);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_STICK,4+5+1).toValue(), settings.customFn[1].param); // RS
+
+  EXPECT_STREQ("Tes", settings.switchName[0]);
+  EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
+
+  EXPECT_STREQ("BT_X10", settings.bluetoothName);
+  EXPECT_STREQ("Default", settings.themeName);
+
+#if !defined(USE_OTX)
+  byteBuffer.clear();
+  ASSERT_EQ(true, loadFile(byteBuffer, RADIO_TESTS_PATH "/model_22_x10/MODELS/model1.bin"));
 
   ModelData model;
-  ASSERT_NE(nullptr, loadModelFromByteArray(model, modelByteArray));
+  ASSERT_NE(nullptr, loadModelFromByteArray(model, byteBuffer));
+#endif
   
   EXPECT_STREQ("Test", model.name);
+  EXPECT_EQ(0, model.noGlobalFunctions);
+  EXPECT_EQ(0, model.beepANACenter);
   EXPECT_EQ(80, model.mixData[0].weight);
-  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0), model.mixData[4].srcRaw);
-  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), model.mixData[4].swtch);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_MAX), model.mixData[2].srcRaw); // MAX
+  EXPECT_EQ(RawSource(SOURCE_TYPE_STICK,4+5), model.mixData[3].srcRaw); // LS
+  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0), model.mixData[5].srcRaw);
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), model.mixData[5].swtch);
   EXPECT_EQ(900, model.limitData[0].max); // -100
   EXPECT_EQ(80, model.expoData[0].weight);
   EXPECT_EQ(LS_FN_VPOS, model.logicalSw[0].func);
-  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0).toValue(), model.logicalSw[0].val1);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0).toValue(), model.logicalSw[0].val1); // TR1
   EXPECT_EQ(0, model.logicalSw[0].val2);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,19*3).toValue(), model.logicalSw[1].val1); // TELE:20
+  EXPECT_EQ(20, model.logicalSw[1].val2);
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_VIRTUAL,1).toValue(), model.logicalSw[1].andsw);
   EXPECT_EQ(HELI_SWASH_TYPE_120X, model.swashRingData.type);
   EXPECT_STREQ("Tes", model.flightModeData[0].name);
   EXPECT_EQ(10, model.flightModeData[0].gvars[0]);
@@ -110,4 +184,5 @@ TEST(Conversions, ConversionHorusFrom22)
   EXPECT_STREQ("Tes", model.sensorData[0].label);
   EXPECT_EQ(10, model.sensorData[0].id);
   EXPECT_EQ(9, model.sensorData[0].instance);
+  EXPECT_EQ(5 + 2 + 3, model.thrTraceSrc); // CH3
 }

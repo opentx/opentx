@@ -203,7 +203,7 @@ int Er9xInterface::getSize(const GeneralSettings &settings)
   return 0;
 }
 
-int Er9xInterface::isAvailable(PulsesProtocol prot, int port)
+bool Er9xInterface::isAvailable(PulsesProtocol prot, int port)
 {
   switch (prot) {
     case PULSES_PPM:

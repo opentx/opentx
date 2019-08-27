@@ -90,14 +90,20 @@ set(FIRMWARE_TARGET_SRC
   eeprom_driver.cpp
   lcd_driver.cpp
   pwr_driver.cpp
+  joystick.cpp
+  massstorage.cpp
   keys_driver.cpp
   usb/device/core/USBD_UDP.c
   usb/device/core/USBDDriver.c
+  usb_driver.cpp
   usb/device/massstorage/MSDDriver.c
   usb/device/massstorage/MSDDStateMachine.c
   usb/device/massstorage/MSDLun.c
   usb/device/massstorage/MSDDriverDescriptors.c
   usb/device/massstorage/SBCMethods.c
+  usb/device/hid-joystick/HIDDJoystickDriver.c
+  usb/device/hid-joystick/HIDDJoystickDriverDescriptors.c
+  usb/device/hid-joystick/HIDDJoystickInputReport.c
   usb/common/core/USBEndpointDescriptor.c
   usb/common/core/USBGenericRequest.c
   usb/common/core/USBFeatureRequest.c
@@ -107,6 +113,8 @@ set(FIRMWARE_TARGET_SRC
   usb/common/core/USBSetConfigurationRequest.c
   usb/common/core/USBConfigurationDescriptor.c
   usb/common/core/USBGenericDescriptor.c
+  usb/common/hid/HIDIdleRequest.c
+  usb/common/hid/HIDReportRequest.c
   MEDSdcard.c
   )
 
@@ -119,7 +127,6 @@ set(TARGET_SRC
   buzzer_driver.cpp
   haptic_driver.cpp
   sdcard_driver.cpp
-  massstorage.cpp
   aux_serial_driver.cpp
   audio_driver.cpp
   trainer_driver.cpp

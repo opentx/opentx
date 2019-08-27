@@ -32,6 +32,7 @@ void selectModel(uint8_t sub);
   void eeLoadModelHeader(uint8_t id, ModelHeader *header);
   void eeLoadModelHeaders();
 
-void storageReadRadioSettings();
+void storageClearRadioSetting();
+void storageReadRadioSettings(bool allowConversion);
 void storageReadCurrentModel();
 

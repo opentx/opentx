@@ -68,7 +68,6 @@ options_taranis_x9d = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-    "luac": ("LUA_COMPILER", "YES", "NO"),
     "haptic": ("HAPTIC", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
@@ -85,7 +84,6 @@ options_taranis_x9dp = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-    "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
     "noras": ("RAS", "NO", "YES"),
@@ -102,7 +100,6 @@ options_taranis_x9lite = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-    "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "autoupdate": ("AUTOUPDATE", "YES", None),
     "sqt5font": ("FONT", "SQT5", None),
@@ -120,7 +117,6 @@ options_taranis_xlite = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-    "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
     "faimode": ("FAI", "YES", None),
@@ -135,7 +131,6 @@ options_taranis_xlites = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-    "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "autoupdate": ("AUTOUPDATE", "YES", None),
     "sqt5font": ("FONT", "SQT5", None),
@@ -152,7 +147,6 @@ options_taranis_x9e = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-    "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
     "faimode": ("FAI", "YES", None),
@@ -169,17 +163,30 @@ options_horus_x12s = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-    "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
-    "flexr9m": ("R9M_PROTO_FLEX", "YES", None)
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None),
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
 }
 
 options_horus_x10 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
+    "flexr9m": ("R9M_PROTO_FLEX", "YES", None),
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
+}
+
+options_horus_x10express = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),

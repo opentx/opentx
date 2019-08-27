@@ -35,7 +35,7 @@ docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
 docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
 cp -f  ${workdir}/binaries/stamp-opentx.txt ${output}/firmware
 # These radios are currently not enabled
-echo "#define BLOCK   \"x10,x12s\"" >> ${output}/firmware/stamp-opentx.txt
+# echo "#define BLOCK   \"x10,x12s\"" >> ${output}/firmware/stamp-opentx.txt
 docker exec companion rm -rf build
 
 echo "Check if Linux companion is needed"

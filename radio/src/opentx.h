@@ -366,20 +366,21 @@ extern uint8_t channelOrder(uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
+inline bool SPLASH_NEEDED()
+{
 #if defined(COLORLCD)
-  #define SPLASH_NEEDED()              (false)
-#elif defined(PCBTARANIS)
-  #define SPLASH_NEEDED()              (g_eeGeneral.splashMode != 3)
+  return false;
 #else
-  #define SPLASH_NEEDED()              (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_DSM2 && !g_eeGeneral.splashMode)
+  return g_eeGeneral.splashMode != 3;
 #endif
+}
 
 #if defined(PCBHORUS)
   #define SPLASH_TIMEOUT               0 /* we use the splash duration to load stuff from the SD */
 #elif defined(PCBTARANIS)
-  #define SPLASH_TIMEOUT               (g_eeGeneral.splashMode==-4 ? 1500 : (g_eeGeneral.splashMode<=0 ? (400-g_eeGeneral.splashMode*200) : (400-g_eeGeneral.splashMode*100)))
+  #define SPLASH_TIMEOUT               (g_eeGeneral.splashMode == -4 ? 1500 : (g_eeGeneral.splashMode <= 0 ? (400-g_eeGeneral.splashMode * 200) : (400 - g_eeGeneral.splashMode * 100)))
 #else
-  #define SPLASH_TIMEOUT               (4*100)  // 4 seconds
+  #define SPLASH_TIMEOUT               (4 * 100)  // 4 seconds
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)

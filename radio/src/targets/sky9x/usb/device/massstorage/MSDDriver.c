@@ -76,23 +76,23 @@ static void MSDDriver_Reset(void)
 /// request to the Mass Storage device driver handler function.
 /// \param request  Pointer to a USBGenericRequest instance.
 //-----------------------------------------------------------------------------
-void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
-{
-    MSDDriver_RequestHandler(request);
-}
+//void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
+//{
+//    MSDDriver_RequestHandler(request);
+//}
 
 //-----------------------------------------------------------------------------
 /// Invoked when the configuration of the device changes. Resets the mass
 /// storage driver.
 /// \param cfgnum New configuration number.
 //-----------------------------------------------------------------------------
-void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
-{
-    if (cfgnum > 0) {
+//void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
+//{
+//    if (cfgnum > 0) {
 
-        MSDDriver_Reset();
-    }
-}
+//        MSDDriver_Reset();
+//    }
+//}
 
 //-----------------------------------------------------------------------------
 //      Driver functions

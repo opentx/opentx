@@ -178,8 +178,8 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 void loadRadioSettings();
 
 bool eepromOpen();
-void eeLoadModelName(uint8_t id, char *name);
-bool eeLoadGeneral();
+void eeLoadModelName(uint8_t id, char * name);
+bool eeLoadGeneral(bool allowConversion);
 
 // For EEPROM backup/restore
 inline bool isEepromStart(const void * buffer)

@@ -170,6 +170,10 @@ void lcdSetContrast();
 // USB driver
 void usbMassStorage();
 
+#if !defined(SIMU)
+void usbJoystickUpdate();
+#endif
+
 #define PIN_ENABLE                     0x001
 #define PIN_PERIPHERAL                 0x000
 #define PIN_INPUT                      0x002
