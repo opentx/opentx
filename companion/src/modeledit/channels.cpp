@@ -162,11 +162,6 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       curveCB[i] = new QComboBox(this);
       curveCB[i]->setProperty("index", i);
-      int numcurves = firmware->getCapability(NumCurves);
-      for (int j=-numcurves; j<=numcurves; j++) {
-        curveCB[i]->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(&model, false), j);
-      }
-      curveCB[i]->setCurrentIndex(model.limitData[i].curve.value+numcurves);
       connect(curveCB[i], SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
       tableLayout->addWidget(i, col++, curveCB[i]);
     }
@@ -298,7 +293,12 @@ void Channels::updateLine(int i)
   chnMax[i]->setValue(model->limitData[i].max);
   invCB[i]->setCurrentIndex((model->limitData[i].revert) ? 1 : 0);
   if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-    curveCB[i]->setCurrentIndex(model->limitData[i].curve.value + firmware->getCapability(NumCurves));
+    int numcurves = firmware->getCapability(NumCurves);
+    curveCB[i]->clear();
+    for (int j=-numcurves; j<=numcurves; j++) {
+      curveCB[i]->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(model, false), j);
+    }
+    curveCB[i]->setCurrentIndex(model->limitData[i].curve.value + numcurves);
   }
   if (firmware->getCapability(PPMCenter)) {
     centerSB[i]->setValue(model->limitData[i].ppmCenter + 1500);
