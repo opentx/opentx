@@ -163,8 +163,9 @@ void ModelData::clear()
   moduleData[0].ppm.delay = 300;
   moduleData[1].ppm.delay = 300;
   moduleData[2].ppm.delay = 300;
-  int board = getCurrentBoard();
-  if (IS_ACCESS_RADIO(board)) {
+  Firmware * firmware = Firmware::getCurrentVariant();
+  int board = firmware->getBoard();
+  if (firmware->isAvailable(PULSES_ACCESS_ISRM, 0)) {
     moduleData[0].protocol = PULSES_ACCESS_ISRM;
     moduleData[1].protocol = PULSES_OFF;
   }

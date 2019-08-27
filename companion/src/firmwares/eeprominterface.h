@@ -345,7 +345,7 @@ class Firmware
 
     virtual QTime getMaxTimerStart() = 0;
 
-    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
+    virtual bool isAvailable(PulsesProtocol proto, int port=0) = 0;
 
     const int getFlashSize();
 
