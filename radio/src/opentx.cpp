@@ -1725,6 +1725,9 @@ void copyTrimsToOffset(uint8_t ch)
 
 inline uint32_t PWR_PRESS_DURATION_MIN()
 {
+  if (g_eeGeneral.version != EEPROM_VER)
+    return 200;
+
   return (2 - g_eeGeneral.pwrOnSpeed) * 100;
 }
 
