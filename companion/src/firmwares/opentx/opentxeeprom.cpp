@@ -1856,10 +1856,11 @@ class CustomScreenField: public StructField {
 
 class SensorField: public TransformedField {
   public:
-    SensorField(DataField * parent, SensorData & sensor, Board::Type board, unsigned int version):
+  SensorField(DataField * parent, const ModelData& model, SensorData & sensor, Board::Type board, unsigned int version):
       TransformedField(parent, internalField),
       internalField(this, "Sensor"),
       sensor(sensor),
+      model(model),
       version(version),
       _param(0)
     {
@@ -1921,7 +1922,10 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.subid = _subid;
-        sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
+        if (model.moduleData[0].protocol == PULSES_PXX_XJT_X16 || model.moduleData[1].protocol == PULSES_PXX_XJT_X16)
+          sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
+        else
+          sensor.instance = _instance;
         sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
         sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
         sensor.ratio = _ratio;
@@ -1954,6 +1958,7 @@ class SensorField: public TransformedField {
   protected:
     StructField internalField;
     SensorData & sensor;
+    const ModelData& model;
     unsigned int version;
     unsigned int _id;
     unsigned int _subid;
