@@ -432,8 +432,13 @@ When called without parameters, it will only return the status of the output buf
 
 static int luaSportTelemetryPush(lua_State * L)
 {
+  if (telemetryProtocol != PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+    lua_pushboolean(L, false);
+    return 1;
+  }
+
   if (lua_gettop(L) == 0) {
-    lua_pushboolean(L, telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT ? outputTelemetryBuffer.isAvailable() : false);
+    lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
     return 1;
   }
 
@@ -629,8 +634,13 @@ When called without parameters, it will only return the status of the output buf
 */
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
+  if (telemetryProtocol != PROTOCOL_TELEMETRY_CROSSFIRE) {
+    lua_pushboolean(L, false);
+    return 1;
+  }
+
   if (lua_gettop(L) == 0) {
-    lua_pushboolean(L, telemetryProtocol == PROTOCOL_TELEMETRY_CROSSFIRE ? outputTelemetryBuffer.isAvailable() : false);
+    lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
   }
   else if (outputTelemetryBuffer.isAvailable()) {
     uint8_t command = luaL_checkunsigned(L, 1);
