@@ -432,6 +432,11 @@ When called without parameters, it will only return the status of the output buf
 
 static int luaSportTelemetryPush(lua_State * L)
 {
+  if (telemetryProtocol != PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+    lua_pushboolean(L, false);
+    return 1;
+  }
+
   if (lua_gettop(L) == 0) {
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
     return 1;
@@ -629,6 +634,11 @@ When called without parameters, it will only return the status of the output buf
 */
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
+  if (telemetryProtocol != PROTOCOL_TELEMETRY_CROSSFIRE) {
+    lua_pushboolean(L, false);
+    return 1;
+  }
+
   if (lua_gettop(L) == 0) {
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
   }
@@ -1275,7 +1285,7 @@ static int luaSetTelemetryValue(lua_State * L)
     zname[3] = hex2zchar((id & 0x000f) >> 0);
   }
   if (id | subId | instance) {
-    int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
+    int index = setTelemetryValue(PROTOCOL_TELEMETRY_LUA, id, subId, instance, value, unit, prec);
     if (index >= 0) {
       TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
       telemetrySensor.id = id;
@@ -1599,6 +1609,7 @@ const luaR_value_entry opentxConstants[] = {
   { "SHADOWED", SHADOWED },
   { "COLOR", ZoneOption::Color },
   { "BOOL", ZoneOption::Bool },
+  { "STRING", ZoneOption::String },
   { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "TEXT_COLOR", TEXT_COLOR },
   { "TEXT_BGCOLOR", TEXT_BGCOLOR },

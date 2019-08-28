@@ -72,7 +72,6 @@ bool isRssiSensorAvailable(int sensor)
   }
 }
 
-
 bool isSensorAvailable(int sensor)
 {
   if (sensor == 0)

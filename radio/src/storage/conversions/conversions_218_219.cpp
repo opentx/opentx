@@ -271,7 +271,7 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
     newModel.telemetrySensors[i].id = oldModel.telemetrySensors[i].id;
-    if (oldModel.telemetrySensors[i].type == 0)
+    if (oldModel.telemetrySensors[i].type == 0 && (oldModel.moduleData[0].type ==  MODULE_TYPE_XJT_PXX1 || oldModel.moduleData[1].type == MODULE_TYPE_XJT_PXX1))
       newModel.telemetrySensors[i].instance = 0xE0 + (oldModel.telemetrySensors[i].instance & 0x1F) - 1;
     else
       newModel.telemetrySensors[i].instance = oldModel.telemetrySensors[i].instance;
@@ -321,7 +321,7 @@ void convertModelData_218_to_219(ModelData &model)
     ZoneOptionValue & option = zoneData->widgetData.options[0];
     option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
   }
-  
+
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));

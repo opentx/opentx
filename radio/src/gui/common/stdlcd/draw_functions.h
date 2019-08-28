@@ -18,12 +18,13 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _COMMON_DRAW_FUNCTIONS_H_
-#define _COMMON_DRAW_FUNCTIONS_H_
+#ifndef _STDLCD_DRAW_FUNCTIONS_H_
+#define _STDLCD_DRAW_FUNCTIONS_H_
 
 #include "lcd.h"
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags att=0);
+void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att=0);
 
 void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att = 0);
 void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
@@ -40,4 +41,7 @@ void drawStartupAnimation(uint32_t duration, uint32_t totalDuration);
 void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message);
 void drawSleepBitmap();
 
-#endif // _COMMON_DRAW_FUNCTIONS_H_
+void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
+void drawTrimMode(coord_t x, coord_t y, uint8_t flightMode, uint8_t idx, LcdFlags att=0);
+
+#endif // _STDLCD_DRAW_FUNCTIONS_H_

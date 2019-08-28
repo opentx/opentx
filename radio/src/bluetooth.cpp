@@ -95,7 +95,7 @@ char * Bluetooth::readline(bool error_reset)
       state = BLUETOOTH_STATE_OFF;
       wakeupTime = get_tmr10ms() + 100; /* 1s */
 #endif
-      return NULL;
+      return nullptr;
     }
     else
 #endif

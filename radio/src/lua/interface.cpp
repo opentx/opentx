@@ -36,7 +36,7 @@ extern "C" {
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
 #define LUA_WARNING_INFO_LEN               64
 
-lua_State *lsScripts = NULL;
+lua_State *lsScripts = nullptr;
 uint8_t luaState = 0;
 uint8_t luaScriptsCount = 0;
 ScriptInternalData scriptInternalData[MAX_SCRIPTS];
@@ -256,7 +256,7 @@ void luaClose(lua_State ** L)
       if (*L == lsScripts) luaDisable();
     }
     UNPROTECT_LUA();
-    *L = NULL;
+    *L = nullptr;
   }
 }
 
@@ -362,7 +362,7 @@ static void luaDumpState(lua_State * L, const char * filename, const FILINFO * f
     luaU_dump(L, getproto(L->top - 1), luaDumpWriter, &D, stripDebug);
     lua_unlock(L);
     if (f_close(&D) == FR_OK) {
-      if (finfo != NULL)
+      if (finfo != nullptr)
         f_utime(filename, finfo);  // set the file mod time
       TRACE("luaDumpState(%s): Saved bytecode to file.", filename);
     }
@@ -404,7 +404,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 {
   if (luaState == INTERPRETER_PANIC) {
     return SCRIPT_PANIC;
-  } else if (filename == NULL) {
+  } else if (filename == nullptr) {
     return SCRIPT_NOFILE;
   }
 
@@ -412,7 +412,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   char lmode[6] = "bt";
   uint8_t ret = SCRIPT_NOFILE;
 
-  if (mode != NULL) {
+  if (mode != nullptr) {
     strncpy(lmode, mode, sizeof(lmode)-1);
     lmode[sizeof(lmode)-1] = '\0';
   }
@@ -432,7 +432,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 
   fnamelen = strlen(filename);
   // check if file extension is already in the file name and strip it
-  getFileExtension(filename, fnamelen, 0, NULL, &extlen);
+  getFileExtension(filename, fnamelen, 0, nullptr, &extlen);
   fnamelen -= extlen;
   if (fnamelen > sizeof(filenameFull) - sizeof(SCRIPT_BIN_EXT)) {
     TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: filename buffer overflow.\n", filename, lmode);
@@ -507,7 +507,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   TRACE("luaLoadScriptFileToState(%s, %s): loading %s", filename, lmode, filenameFull);
 
   // we don't pass <mode> on to loadfilex() because we want lua to load whatever file we specify, regardless of content
-  lstatus = luaL_loadfilex(L, filenameFull, NULL);
+  lstatus = luaL_loadfilex(L, filenameFull, nullptr);
 #if defined(LUA_COMPILER)
   // Check for bytecode encoding problem, eg. compiled for x64. Unfortunately Lua doesn't provide a unique error code for this. See Lua/src/lundump.c.
   if (lstatus == LUA_ERRSYNTAX && loadFileType == 2 && frLuaS == FR_OK && strstr(lua_tostring(L, -1), "precompiled")) {
@@ -515,7 +515,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
     scriptNeedsCompile = true;
     strcpy(filenameFull + fnamelen, SCRIPT_EXT);
     TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: %s\n\tRetrying with %s\n", filename, lmode, lua_tostring(L, -1), filenameFull);
-    lstatus = luaL_loadfilex(L, filenameFull, NULL);
+    lstatus = luaL_loadfilex(L, filenameFull, nullptr);
   }
   if (lstatus == LUA_OK) {
     if (scriptNeedsCompile && loadFileType == 1) {
@@ -545,7 +545,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   return ret;
 }
 
-static int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
+static int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=nullptr)
 {
   int init = 0;
   int lstatus = 0;
@@ -910,7 +910,7 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
 #if defined(SIMU) || defined(DEBUG)
   const char *filename;
 #endif
-  ScriptInputsOutputs * sio = NULL;
+  ScriptInputsOutputs * sio = nullptr;
 #if SCRIPT_MIX_FIRST > 0
   if ((scriptType & RUN_MIX_SCRIPT) && (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST)) {
 #else
@@ -1082,13 +1082,13 @@ void luaInit()
 
   if (luaState != INTERPRETER_PANIC) {
 #if defined(USE_BIN_ALLOCATOR)
-    lsScripts = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
+    lsScripts = lua_newstate(bin_l_alloc, nullptr);   //we use our own allocator!
 #elif defined(LUA_ALLOCATOR_TRACER)
     memset(&lsScriptsTrace, 0 , sizeof(lsScriptsTrace));
     lsScriptsTrace.script = "lua_newstate(scripts)";
     lsScripts = lua_newstate(tracer_alloc, &lsScriptsTrace);   //we use tracer allocator
 #else
-    lsScripts = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
+    lsScripts = lua_newstate(l_alloc, nullptr);   //we use Lua default allocator
 #endif
     if (lsScripts) {
       // install our panic handler

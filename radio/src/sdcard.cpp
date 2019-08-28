@@ -68,7 +68,7 @@ const char * sdCheckAndCreateDirectory(const char * path)
     f_closedir(&archiveFolder);
   }
 
-  return NULL;
+  return nullptr;
 }
 
 bool isFileAvailable(const char * path, bool exclDir)
@@ -95,7 +95,7 @@ bool isFileAvailable(const char * path, bool exclDir)
   @param match Optional container to hold the matched file extension (wide enough to hold LEN_FILE_EXTENSION_MAX + 1).
   @retval true if a file was found, false otherwise.
 */
-bool isFilePatternAvailable(const char * path, const char * file, const char * pattern = NULL, bool exclDir = true, char * match = NULL)
+bool isFilePatternAvailable(const char * path, const char * file, const char * pattern = nullptr, bool exclDir = true, char * match = nullptr)
 {
   uint8_t fplen;
   char fqfp[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
@@ -110,7 +110,7 @@ bool isFilePatternAvailable(const char * path, const char * file, const char * p
   strcpy(fqfp + fplen, "/");
   strncat(fqfp + (++fplen), file, _MAX_LFN);
 
-  if (pattern == NULL) {
+  if (pattern == nullptr) {
     // no extensions list, just check the filename as-is
     return isFileAvailable(fqfp, exclDir);
   }
@@ -129,13 +129,13 @@ bool isFilePatternAvailable(const char * path, const char * file, const char * p
     while (plen > 0 && ext) {
       strncat(fqfp + len, ext, extlen);
       if (isFileAvailable(fqfp, exclDir)) {
-        if (match != NULL) strncat(&(match[0]='\0'), ext, extlen);
+        if (match != nullptr) strncat(&(match[0]='\0'), ext, extlen);
         return true;
       }
       plen -= extlen;
       if (plen > 0) {
         fqfp[len] = '\0';
-        ext = getFileExtension(pattern, plen, 0, NULL, &extlen);
+        ext = getFileExtension(pattern, plen, 0, nullptr, &extlen);
       }
     }
   }
@@ -147,7 +147,7 @@ char * getFileIndex(char * filename, unsigned int & value)
   value = 0;
   char * pos = (char *)getFileExtension(filename);
   if (!pos || pos == filename)
-    return NULL;
+    return nullptr;
   int multiplier = 1;
   while (pos > filename) {
     pos--;
@@ -179,7 +179,7 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
   uint8_t extlen;
   char * indexPos = getFileIndex(filename, index);
   char extension[LEN_FILE_EXTENSION_MAX+1] = "\0";
-  char * p = (char *)getFileExtension(filename, 0, 0, NULL, &extlen);
+  char * p = (char *)getFileExtension(filename, 0, 0, nullptr, &extlen);
   if (p) strncat(extension, p, sizeof(extension)-1);
   while (1) {
     index++;
@@ -188,7 +188,7 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
     }
     char * pos = strAppendUnsigned(indexPos, index);
     strAppend(pos, extension);
-    if (!isFilePatternAvailable(directory, filename, NULL, false)) {
+    if (!isFilePatternAvailable(directory, filename, nullptr, false)) {
       return index;
     }
   }
@@ -249,12 +249,12 @@ bool isExtensionMatching(const char * extension, const char * pattern, char * ma
   plen = (int)fnlen;
   while (plen > 0 && ext) {
     if (!strncasecmp(extension, ext, extlen)) {
-      if (match != NULL) strncat(&(match[0]='\0'), ext, extlen);
+      if (match != nullptr) strncat(&(match[0]='\0'), ext, extlen);
       return true;
     }
     plen -= extlen;
     if (plen > 0) {
-      ext = getFileExtension(pattern, plen, 0, NULL, &extlen);
+      ext = getFileExtension(pattern, plen, 0, nullptr, &extlen);
     }
   }
   return false;
@@ -275,7 +275,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
 
   if (selection) {
     s_last_flags = flags;
-    if (!isFilePatternAvailable(path, selection, ((flags & LIST_SD_FILE_EXT) ? NULL : extension))) selection = NULL;
+    if (!isFilePatternAvailable(path, selection, ((flags & LIST_SD_FILE_EXT) ? nullptr : extension))) selection = nullptr;
   }
   else {
     flags = s_last_flags;
@@ -475,7 +475,7 @@ const char * sdCopyFile(const char * srcPath, const char * destPath)
     return SDCARD_ERROR(result);
   }
 
-  return NULL;
+  return nullptr;
 }
 
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir)

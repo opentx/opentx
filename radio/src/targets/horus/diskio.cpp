@@ -365,7 +365,7 @@ void sdDone()
 #if defined(LOG_TELEMETRY)
     f_close(&g_telemetryFile);
 #endif
-    f_mount(NULL, "", 0); // unmount SD
+    f_mount(nullptr, "", 0); // unmount SD
   }
 }
 #endif

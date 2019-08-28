@@ -2048,7 +2048,7 @@ uint32_t pwrPressedDuration()
 
 uint32_t pwrCheck()
 {
-  const char * message = NULL;
+  const char * message = nullptr;
 
   enum PwrCheckState {
     PWR_CHECK_ON,
