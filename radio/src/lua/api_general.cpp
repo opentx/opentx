@@ -1609,6 +1609,7 @@ const luaR_value_entry opentxConstants[] = {
   { "SHADOWED", SHADOWED },
   { "COLOR", ZoneOption::Color },
   { "BOOL", ZoneOption::Bool },
+  { "STRING", ZoneOption::String },
   { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "TEXT_COLOR", TEXT_COLOR },
   { "TEXT_BGCOLOR", TEXT_BGCOLOR },
