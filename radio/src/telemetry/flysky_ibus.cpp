@@ -106,17 +106,17 @@ static void processFlySkySensor(const uint8_t *packet)
       else if (sensor->unit == UNIT_VOLTS)
         // Voltage types are signed 16bit integers
         value = (int16_t)value;
-      setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, sensor->unit, sensor->precision);
+      setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, id, 0, instance, value, sensor->unit, sensor->precision);
       return;
     }
   }
-  setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, id, 0, instance, value, UNIT_RAW, 0);
 }
 
 void processFlySkyPacket(const uint8_t *packet)
 {
   // Set TX RSSI Value, reverse MULTIs scaling
-  setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, TX_RSSI_ID, 0, 0, packet[0], UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, TX_RSSI_ID, 0, 0, packet[0], UNIT_RAW, 0);
 
   for (int sensor = 0; sensor < 7; sensor++) {
     int index = 1 + (4 * sensor);

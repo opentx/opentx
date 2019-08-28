@@ -1275,7 +1275,7 @@ static int luaSetTelemetryValue(lua_State * L)
     zname[3] = hex2zchar((id & 0x000f) >> 0);
   }
   if (id | subId | instance) {
-    int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
+    int index = setTelemetryValue(PROTOCOL_TELEMETRY_LUA, id, subId, instance, value, unit, prec);
     if (index >= 0) {
       TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
       telemetrySensor.id = id;
