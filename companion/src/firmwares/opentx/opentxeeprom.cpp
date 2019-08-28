@@ -1922,7 +1922,7 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.subid = _subid;
-        if (model.moduleData[0].protocol == PULSES_PXX_XJT_X16 || model.moduleData[1].protocol == PULSES_PXX_XJT_X16)
+        if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module())
           sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
         else
           sensor.instance = _instance;
@@ -2431,7 +2431,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   for (int i=0; i<MAX_TELEMETRY_SENSORS(board, version); ++i) {
-    internalField.Append(new SensorField(this, modelData.sensorData[i], board, version));
+    internalField.Append(new SensorField(this, modelData, modelData.sensorData[i], board, version));
   }
 
   if (IS_TARANIS_X9E(board)) {
