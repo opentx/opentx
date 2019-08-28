@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _HELPERS_H_
-#define _HELPERS_H_
+#ifndef _OPENTX_HELPERS_H_
+#define _OPENTX_HELPERS_H_
 
 template<class t> inline t min(t a, t b) { return a<b?a:b; }
 template<class t> inline t max(t a, t b) { return a>b?a:b; }
@@ -27,4 +27,4 @@ template<class t> inline t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
 template<class t> inline t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
 template<class t> inline void SWAP(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 
-#endif // _HELPERS_H_
+#endif // _OPENTX_HELPERS_H_
