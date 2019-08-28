@@ -813,21 +813,6 @@ void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att)
   drawSwitch(x, y, mode, att);
 }
 
-void drawTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags att)
-{
-  trim_t v = getRawTrimValue(fm, idx);
-  uint8_t mode = v.mode;
-  uint8_t p = mode >> 1;
-  char s[] = "--";
-  if (mode != TRIM_MODE_NONE) {
-    if (mode % 2 == 0)
-      s[0] = ':';
-    else
-      s[0] = '+';
-    s[1] = '0'+p;
-  }
-  lcdDrawText(x, y, s, att);
-}
 void drawShortTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags att)
 {
   trim_t v = getRawTrimValue(fm, idx);
@@ -838,15 +823,6 @@ void drawShortTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags a
   }
   else {
     lcdDrawChar(x, y, '0'+p, att);
-  }
-}
-
-void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att)
-{
-  // convertUnit(val, unit);
-  lcdDrawNumber(x, y, val, att & (~NO_UNIT));
-  if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcdDrawTextAtIndex(lcdLastRightPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
 }
 

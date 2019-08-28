@@ -718,33 +718,6 @@ void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att)
   drawSwitch(x, y, mode, att);
 }
 
-void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
-{
-  trim_t v = getRawTrimValue(phase, idx);
-  unsigned int mode = v.mode;
-  unsigned int p = mode >> 1;
-
-  if (mode == TRIM_MODE_NONE) {
-    lcdDrawText(x, y, "--", att);
-  }
-  else {
-    if (mode % 2 == 0)
-      lcdDrawChar(x, y, ':', att|FIXEDWIDTH);
-    else
-      lcdDrawChar(x, y, '+', att|FIXEDWIDTH);
-    lcdDrawChar(lcdNextPos, y, '0'+p, att);
-  }
-}
-
-void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att)
-{
-  // convertUnit(val, unit);
-  lcdDrawNumber(x, y, val, att & (~NO_UNIT));
-  if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcdDrawTextAtIndex(lcdLastRightPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
-  }
-}
-
 void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags att, bool seconds=true)
 {
   uint32_t absvalue = abs(value);

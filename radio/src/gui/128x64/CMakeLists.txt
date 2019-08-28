@@ -22,12 +22,6 @@ set(GUI_SRC
   view_statistics.cpp
   )
 
-set(SRC
-  ${SRC}
-  gui/common/widgets.cpp
-  gui/common/arm/widgets.cpp
-  )
-
 if(FLIGHT_MODES)
   set(GUI_SRC
     ${GUI_SRC}
