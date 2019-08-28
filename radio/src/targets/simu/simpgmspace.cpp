@@ -220,8 +220,8 @@ void StopSimu()
 
   simu_shutdown = true;
 
-  pthread_join(mixerTaskId, NULL);
-  pthread_join(menusTaskId, NULL);
+  pthread_join(mixerTaskId, nullptr);
+  pthread_join(menusTaskId, nullptr);
 
   simu_running = false;
 }
@@ -348,7 +348,7 @@ void * audioThread(void *)
   wanted.channels = 1;    /* 1 = mono, 2 = stereo */
   wanted.samples = AUDIO_BUFFER_SIZE*2;  /* Good low-latency value for callback */
   wanted.callback = fillAudioBuffer;
-  wanted.userdata = NULL;
+  wanted.userdata = nullptr;
 
   /*
     SDL_OpenAudio() internally calls SDL_InitSubSystem(SDL_INIT_AUDIO),
@@ -390,7 +390,7 @@ void StartAudioThread(int volumeGain)
 void StopAudioThread()
 {
   simuAudio.threadRunning = false;
-  pthread_join(simuAudio.threadPid, NULL);
+  pthread_join(simuAudio.threadPid, nullptr);
 }
 #endif // #if defined(SIMU_AUDIO)
 

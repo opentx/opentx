@@ -137,7 +137,7 @@ LUA_API lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf) {
 
 LUA_API const lua_Number *lua_version (lua_State *L) {
   static const lua_Number version = LUA_VERSION_NUM;
-  if (L == NULL) return &version;
+  if (L == nullptr) return &version;
   else return G(L)->version;
 }
 
@@ -392,15 +392,15 @@ LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
   if (!ttisstring(o)) {
     lua_lock(L);  /* `luaV_tostring' may create a new string */
     if (!luaV_tostring(L, o)) {  /* conversion failed? */
-      if (len != NULL) *len = 0;
+      if (len != nullptr) *len = 0;
       lua_unlock(L);
-      return NULL;
+      return nullptr;
     }
     luaC_checkGC(L);
     o = index2addr(L, idx);  /* previous call may reallocate the stack */
     lua_unlock(L);
   }
-  if (len != NULL) *len = tsvalue(o)->len;
+  if (len != nullptr) *len = tsvalue(o)->len;
   return svalue(o);
 }
 
@@ -421,7 +421,7 @@ LUA_API lua_CFunction lua_tocfunction (lua_State *L, int idx) {
   if (ttislcf(o)) return lcfvalue(o);
   else if (ttisCclosure(o))
     return clCvalue(o)->f;
-  else return NULL;  /* not a C function */
+  else return nullptr;  /* not a C function */
 }
 
 

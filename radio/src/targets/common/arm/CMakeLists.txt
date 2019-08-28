@@ -14,7 +14,6 @@ option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
 option(CROSSFIRE "Crossfire TX Module" ON)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
-option(MULTI_SPORT "SPORT telemetry support" OFF)
 option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
 option(DEBUG_LATENCY "Debug latency" OFF)
@@ -150,10 +149,6 @@ endif()
 if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
   set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/multi.cpp)
-endif()
-
-if(MULTI_SPORT)
-  add_definitions(-DMULTI_SPORT)
 endif()
 
 if(CROSSFIRE)

@@ -31,7 +31,7 @@ const unsigned char sticks[]  = {
 #define SLIDER_5POS(y, value, label, event, attr) { \
   int8_t tmp = value; \
   drawSlider(RADIO_SETUP_2ND_COLUMN, y, LCD_W - 2 - RADIO_SETUP_2ND_COLUMN, 2+tmp, 4, attr); \
-  value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
+  value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, nullptr, tmp, -2, +2, attr, event); \
 }
 
 #if defined(SPLASH)

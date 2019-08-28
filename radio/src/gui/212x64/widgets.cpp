@@ -92,7 +92,7 @@ choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, LcdFlags attr, event_t event )
 {
   drawCheckBox(x, y, value, attr);
-  return editChoice(x, y, label, NULL, value, 0, 1, attr, event);
+  return editChoice(x, y, label, nullptr, value, 0, 1, attr, event);
 }
 
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event)

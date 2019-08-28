@@ -52,7 +52,7 @@ void firmwareTraceCb(const char * text)
 
 OpenTxSimulator::OpenTxSimulator() :
   SimulatorInterface(),
-  m_timer10ms(NULL),
+  m_timer10ms(nullptr),
   m_resetOutputsData(true),
   m_stopRequested(false)
 {
@@ -62,7 +62,7 @@ OpenTxSimulator::OpenTxSimulator() :
 
 OpenTxSimulator::~OpenTxSimulator()
 {
-  traceCallback = NULL;
+  traceCallback = nullptr;
   tracebackDevices.clear();
 
   if (m_timer10ms)

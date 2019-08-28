@@ -86,65 +86,53 @@ def main():
         maxsize = 65536 * 4
     elif board_name == "x9lite":
         cmake_options["PCB"] = "X9LITE"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_x9lite
         maxsize = 65536 * 8
     elif board_name == "x7":
         cmake_options["PCB"] = "X7"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
     elif board_name == "xlite":
         cmake_options["PCB"] = "XLITE"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_xlite
         maxsize = 65536 * 8
     elif board_name == "xlites":
         cmake_options["PCB"] = "XLITES"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_xlites
         maxsize = 65536 * 8
     elif board_name == "x9d":
         cmake_options["PCB"] = "X9D"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_x9d
         maxsize = 65536 * 8
     elif board_name == "x9d+":
         cmake_options["PCB"] = "X9D+"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
     elif board_name == "x9d+2019":
         cmake_options["PCB"] = "X9D+"
         cmake_options["PCBREV"] = "2019"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
     elif board_name == "x9e":
         cmake_options["PCB"] = "X9E"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_x9e
         maxsize = 65536 * 8
     elif board_name == "x10":
         cmake_options["PCB"] = "X10"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_horus_x10
         maxsize = 2 * 1024 * 1024
     elif board_name == "x10express":
         cmake_options["PCB"] = "X10"
         cmake_options["PCBREV"] = "EXPRESS"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_horus_x10
         maxsize = 2 * 1024 * 1024
     elif board_name == "x12s":
         cmake_options["PCB"] = "X12S"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_horus_x12s
         maxsize = 2 * 1024 * 1024
     elif board_name == "t12":
         cmake_options["PCB"] = "X7"
         cmake_options["PCBREV"] = "T12"
-        cmake_options["MULTI_SPORT"] = "ON"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
     else:

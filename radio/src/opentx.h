@@ -1210,7 +1210,7 @@ extern union ReusableBuffer reusableBuffer;
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 unsigned int effectiveLen(const char * str, unsigned int size);
-char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
+char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=nullptr, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
 #define strcatFlightmodeName(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FM, PSIZE(TR_FM), idx+1)
 #if defined(EEPROM)
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
