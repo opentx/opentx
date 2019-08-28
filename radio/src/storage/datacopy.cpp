@@ -124,13 +124,13 @@ template <class A, class B>
 void copyTimerData(A * dest, B * src)
 {
   dest->mode = src->mode;
+  dest->swtch = src->swtch;
   dest->start = src->start;
   dest->value = src->value;
   dest->countdownBeep = src->countdownBeep;
   dest->minuteBeep = src->minuteBeep;
   dest->persistent = src->persistent;
   dest->countdownStart = src->countdownStart;
-  dest->direction = src->direction;
 }
 
 template <class A, class B>
@@ -214,7 +214,6 @@ void copyModuleData(A * dest, B * src)
   dest->rfProtocol = src->rfProtocol;
   dest->channelsStart = src->channelsStart;
   dest->channelsCount = src->channelsCount;
-  copyModuleData_ppm(&dest->ppm, &src->ppm);
 }
 
 template <class A, class B>
@@ -321,7 +320,7 @@ void copyRadioData(A * dest, B * src)
   }
   dest->stickMode = src->stickMode;
   dest->telemetryBaudrate = src->telemetryBaudrate;
-  dest->splashSpares = src->splashSpares;
+  // dest->splashSpares = src->splashSpares;
   dest->switchesDelay = src->switchesDelay;
   for (int i=0; i<64; i++) {
     copyCustomFunctionData(&dest->customFn[i], &src->customFn[i]);

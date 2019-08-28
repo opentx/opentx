@@ -25,6 +25,7 @@
 #include "definitions.h"
 #include "frsky_pxx2.h"
 #include "ff.h"
+#include "popups.h"
 
 enum FrskyFirmwareProductFamily {
   FIRMWARE_FAMILY_INTERNAL_MODULE,
@@ -73,7 +74,7 @@ class FrskyDeviceFirmwareUpdate {
       module(module) {
     }
 
-    const char * flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename, ProgressHandler progressHandler);
 
   protected:
     uint8_t state = SPORT_IDLE;
@@ -91,11 +92,11 @@ class FrskyDeviceFirmwareUpdate {
     bool waitState(State state, uint32_t timeout);
     void processFrame(const uint8_t * frame);
 
-    const char * doFlashFirmware(const char * filename);
+    const char * doFlashFirmware(const char * filename, ProgressHandler progressHandler);
     const char * sendPowerOn();
     const char * sendReqVersion();
-    const char * uploadFileNormal(const char * filename, FIL * file);
-    const char * uploadFileToHorusXJT(const char * filename, FIL * file);
+    const char * uploadFileNormal(const char * filename, FIL * file, ProgressHandler progressHandler);
+    const char * uploadFileToHorusXJT(const char * filename, FIL * file, ProgressHandler progressHandler);
     const char * endTransfer();
 };
 
@@ -105,7 +106,7 @@ class FrskyChipFirmwareUpdate {
     {
     }
 
-    const char * flashFirmware(const char * filename, bool wait = true);
+    const char * flashFirmware(const char * filename, ProgressHandler progressHandler, bool wait = true);
 
   protected:
     uint8_t crc;
@@ -116,7 +117,7 @@ class FrskyChipFirmwareUpdate {
     const char * sendUpgradeCommand(char command, uint32_t packetsCount);
     const char * sendUpgradeData(uint32_t index, uint8_t * data);
 
-    const char * doFlashFirmware(const char * filename);
+    const char * doFlashFirmware(const char * filename, ProgressHandler progressHandler);
 };
 
 #endif // _FRSKY_FIRMWARE_UPDATE_H_

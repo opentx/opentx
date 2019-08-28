@@ -34,7 +34,7 @@
 #if defined(MULTIMODULE)
 inline bool isModuleMultimodule(uint8_t idx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE;
+  return g_model.moduleData[idx].type == MODULE_TYPE_MULTIMODULE;
 }
 
 inline bool isModuleMultimoduleDSM2(uint8_t idx)
@@ -107,6 +107,18 @@ inline bool isModuleCrossfire(uint8_t idx)
 inline bool isModuleCrossfire(uint8_t idx)
 {
   return false;
+}
+#endif
+
+#if defined(PCBFLYSKY)
+inline bool isModuleFlysky(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_FLYSKY;
+}
+#else
+inline bool isModuleFlysky(uint8_t idx)
+{
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_FLYSKY;
 }
 #endif
 
@@ -256,8 +268,8 @@ inline bool isModuleSBUS(uint8_t moduleIdx)
 }
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
-static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
-static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
+static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
+static const int8_t maxChannelsXJT_M8[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
@@ -268,7 +280,7 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
     return MAX_EXTRA_MODULE_CHANNELS_M8;
   }
   else if (isModuleXJT(moduleIdx)) {
-    return maxChannelsXJT[1 + g_model.moduleData[moduleIdx].subType];
+    return maxChannelsXJT_M8[1 + g_model.moduleData[moduleIdx].subType];
   }
   else if (isModuleR9M(moduleIdx)) {
     if (isModuleR9M_LBT(moduleIdx)) {
@@ -282,8 +294,21 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
     }
   }
   else {
-    return maxChannelsModules[g_model.moduleData[moduleIdx].type];
+    return maxChannelsModules_M8[g_model.moduleData[moduleIdx].type];
   }
+}
+
+inline int8_t maxModuleChannels(uint8_t moduleIdx)
+{
+  return maxModuleChannels_M8(moduleIdx) + 8;
+}
+
+inline int8_t minModuleChannels(uint8_t idx)
+{
+  if (isModuleCrossfire(idx))
+    return 16;
+  else
+    return 1;
 }
 
 inline int8_t defaultModuleChannels_M8(uint8_t idx)
@@ -300,6 +325,8 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return 4;  // 12 channels
   else if (isModulePXX2(idx))
     return 8; // 16 channels
+  else if (isModuleFlysky(idx))
+    return 6; // 14 channels
   else
     return maxModuleChannels_M8(idx);
 }
@@ -334,6 +361,29 @@ inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
     return true;
 
   if (isModuleMultimodule(moduleIdx))
+    return true;
+
+  if(isModuleMultimodule(moduleIdx))
+    return true;
+
+  return false;
+}
+
+inline bool isModuleModelIndexAvailable(uint8_t idx)
+{
+  if (isModuleXJT(idx))
+    return g_model.moduleData[idx].subType != MODULE_SUBTYPE_PXX1_ACCST_D8;
+
+  if (isModuleR9M(idx))
+    return true;
+
+  if (isModuleDSM2(idx))
+    return true;
+
+  if (isModuleISRM(idx))
+    return true;
+
+  if (isModuleMultimodule(idx))
     return true;
 
   return false;

@@ -133,7 +133,7 @@ void checkTrainerSettings()
       stop_intmodule_heartbeat();
     else
       init_intmodule_heartbeat();
-#else
+#elif defined(INTMODULE_HEARTBEAT_GPIO)
     init_intmodule_heartbeat();
 #endif
   }

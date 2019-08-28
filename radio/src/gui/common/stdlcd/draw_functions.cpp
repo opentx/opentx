@@ -217,6 +217,23 @@ void drawGVarName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
+void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
+{
+  lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
+  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
+    editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
+  else
+    lcdDrawMMM(x, y, flags);
+}
+
+bool isSwitchAvailableInCustomFunctions(int swtch)
+{
+  if (menuHandlers[menuLevel] == menuModelSpecialFunctions)
+    return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
+  else
+    return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
+}
+
 void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att)
 {
   float power_W_PREC1 = pow(10.0, (dBm - 30.0) / 10.0) * 10;

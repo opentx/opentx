@@ -69,6 +69,16 @@ void lcdInit()
 {
 }
 
+void lcdCopy(void * dest, void * src)
+{
+
+}
+
+void lcdNextLayer()
+{
+
+}
+
 void toplcdOff()
 {
 }
@@ -703,7 +713,7 @@ void boardOff()
 {
 }
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(PCBFRSKY) || defined(PCBFLYSKY)
 HardwareOptions hardwareOptions;
 #endif
 
@@ -763,7 +773,11 @@ void rtcSetTime(const struct gtm * t)
 }
 
 #if defined(AUX_SERIAL)
+#if defined(AUX_SERIAL_DMA_Stream_RX)
 AuxSerialRxFifo auxSerialRxFifo(nullptr);
+#else
+AuxSerialRxFifo auxSerialRxFifo;
+#endif
 uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol)
 {
@@ -778,6 +792,22 @@ void auxSerialSbusInit()
 }
 
 void auxSerialStop()
+{
+}
+#endif
+
+#if defined(INTMODULE_HEARTBEAT_GPIO)
+volatile HeartbeatCapture heartbeatCapture;
+
+void init_intmodule_heartbeat()
+{
+}
+
+void stop_intmodule_heartbeat()
+{
+}
+
+void check_intmodule_heartbeat()
 {
 }
 #endif

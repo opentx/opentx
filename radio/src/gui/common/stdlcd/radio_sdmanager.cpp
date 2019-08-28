@@ -91,7 +91,7 @@ void onUpdateConfirmation(const char * result)
   if (result == STR_OK) {
     OtaUpdateInformation * destination = moduleState[EXTERNAL_MODULE].otaUpdateInformation;
     Pxx2OtaUpdate otaUpdate(EXTERNAL_MODULE, destination->candidateReceiversNames[destination->selectedReceiverIndex]);
-    otaUpdate.flashFirmware(destination->filename);
+    otaUpdate.flashFirmware(destination->filename, drawProgressScreen);
   }
   else {
     moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
@@ -202,30 +202,30 @@ void onSdManagerMenu(const char * result)
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
     FrskyDeviceFirmwareUpdate device(INTERNAL_MODULE);
-    device.flashFirmware(lfn);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
     FrskyDeviceFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashFirmware(lfn);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
     FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
-    device.flashFirmware(lfn);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
 #if defined(BLUETOOTH)
   else if (result == STR_FLASH_BLUETOOTH_MODULE) {
     getSelectionFullPath(lfn);
-    bluetooth.flashFirmware(lfn);
+    bluetooth.flashFirmware(lfn, drawProgressScreen);
   }
 #endif
 #if defined(HARDWARE_POWER_MANAGEMENT_UNIT)
   else if (result == STR_FLASH_POWER_MANAGEMENT_UNIT) {
     getSelectionFullPath(lfn);
     FrskyChipFirmwareUpdate device;
-    device.flashFirmware(lfn);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
 #endif
 #if defined(PXX2)

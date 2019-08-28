@@ -30,6 +30,8 @@
 #define TIME_T_MIN      (-LONG_MAX)
 #define TIME_T_MAX      (LONG_MAX)
 
+#define SET_LOAD_DATETIME(x)  { rtcSetTime(x); g_rtcTime = gmktime(x); }
+
 typedef long int gtime_t;
 
 struct gtm

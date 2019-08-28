@@ -108,7 +108,10 @@
 #define TR_VDISPLAYTRIMS       "Nie\0  ""Zmień\0""Tak\0"
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Cichy Pik  \0DźwiękWibrac"
+#define TR_VBEEPCOUNTDOWN      "Cichy ""Pik  \0""Dźwięk""Wibrac"
+
+#define LEN_COUNTDOWNVALUES    "\003"
+#define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Ton\0  ""Cicho "
@@ -444,10 +447,10 @@
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_EXIT                      "[RTN]"
+  #define TR_EXIT                      "RTN"
   #define TR_OK                        TR_ENTER
 #else
-  #define TR_EXIT                      "[EXIT]"
+  #define TR_EXIT                      "EXIT"
   #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #endif
 
@@ -464,7 +467,7 @@
 #define TR_COPYINGMODEL        "Kopiuj model.."
 #define TR_MOVINGMODEL         "Przenieś model."
 #define TR_LOADINGMODEL        "Załaduj model.."
-#define TR_NAME                "Nazwa"
+#define STR_NAME                "Nazwa"
 #define TR_MODELNAME           "Nazwa modelu"
 #define TR_PHASENAME           "Nazwa Fazy"
 #define TR_MIXNAME             "Nazwa Mix"
@@ -472,6 +475,7 @@
   #define TR_EXPONAME          "LiniaNazw"
 #define TR_BITMAP              "Obrazek    "
 #define TR_TIMER               TR("Timer", "Timer ")
+#define TR_START                       "Start"
 #define TR_ELIMITS             TR("Limi+25%", "Kanał +/- 125% ")
 #define TR_ETRIMS              TR("E.Trym ", "Poszer Trymery")
 #define TR_TRIMINC             "Krok Trym"
@@ -566,6 +570,7 @@
 #define TR_PERSISTENT          TR(INDENT "Dokł.", INDENT "Dokładny")
 #define TR_BACKLIGHT_LABEL     "Podświetl"
 #define TR_BLDELAY             INDENT"Czas trwania"
+#define TR_BL_MODE_DUR                 INDENT "Mode-Duration"
 #define TR_BLONBRIGHTNESS      INDENT"Jasnośc wł."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jasność wył."
 #define TR_BLCOLOR             INDENT "Color"
@@ -589,8 +594,10 @@
 #define TR_MODESRC             " Tryb\006% Źródło"
 #define TR_MULTIPLIER          "Mnożnik"
 #define TR_CAL                 "Kal."
+#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM               "Trym- +"
 #define TR_BG                  "BG:"
+#define TR_CALIB_DONE          "Calibration completed"
 #if defined(PCBHORUS)
   #define TR_MENUTOSTART       "Press [Enter] to start"
   #define TR_SETMIDPOINT       "Center sticks/pots/sliders and press [Enter]"
@@ -909,6 +916,8 @@
 #define TR_COPY                "Kopiuj"
 #define TR_MOVE                "Przenieś"
 #define TR_PASTE               "Wklej"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Kasuj"
 #define TR_INSERT              "Wstaw"
 #define TR_RESET_FLIGHT        "Zeruj lot"
@@ -959,10 +968,13 @@
 #define TR_TELEMETRY_TYPE      TR("Typ ", "Typ Telemetrii")
 #define TR_TELEMETRY_SENSORS   "Czujniki"
 #define TR_VALUE               "Wartość"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Jedn"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Dodaj nowy czujnik..."
 #define TR_CHANNELRANGE        TR(INDENT "ZakrKn",INDENT "Zakres kanału")
+#define TR_RXFREQUENCY         TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenna selection")
 #define TR_ANTENNACONFIRM1     "Really switch?"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Make sure antenna is installed!")

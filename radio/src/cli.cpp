@@ -413,7 +413,7 @@ void testDrawText()
 
 void testDrawTextVertical()
 {
-  lcdDrawText(30, LCD_H, "The quick brown fox ", TEXT_COLOR|VERTICAL|NO_FONTCACHE);
+  lcdDrawText(30, LCD_H, "The quick brown fox ", TEXT_COLOR|VERTICAL);
 }
 
 void testClear()
@@ -616,7 +616,7 @@ int cliTestMemorySpeed()
   return 0;
 }
 
-#include "storage/modelslist.h"
+#include "modelslist.h"
 using std::list;
 
 int cliTestModelsList()

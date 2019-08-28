@@ -684,7 +684,7 @@ const char * Bluetooth::bootloaderWriteFlash(const uint8_t * data, uint32_t size
   return nullptr;
 }
 
-const char * Bluetooth::doFlashFirmware(const char * filename)
+const char * Bluetooth::doFlashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   const char * result;
   FIL file;
@@ -718,7 +718,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
     return "Format error";
   }
 
-  drawProgressScreen(getBasename(filename), STR_FLASH_ERASE, 0, 0);
+  progressHandler(getBasename(filename), STR_FLASH_ERASE, 0, 0);
 
   result = bootloaderEraseFlash(CC26XX_FIRMWARE_BASE, information->size);
   if (result) {
@@ -727,7 +727,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   }
 
   uint32_t size = information->size;
-  drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, 0, size);
+  progressHandler(getBasename(filename), STR_FLASH_WRITE, 0, size);
 
   result = bootloaderStartWriteFlash(CC26XX_FIRMWARE_BASE, size);
   if (result)
@@ -735,7 +735,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
 
   uint32_t done = 0;
   while (1) {
-    drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, done, size);
+    progressHandler(getBasename(filename), STR_FLASH_WRITE, done, size);
     if (f_read(&file, buffer, min<uint32_t>(sizeof(buffer), size - done), &count) != FR_OK) {
       f_close(&file);
       return "Error reading file";
@@ -751,9 +751,9 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   }
 }
 
-const char * Bluetooth::flashFirmware(const char * filename)
+const char * Bluetooth::flashFirmware(const char * filename, ProgressHandler progressHandler)
 {
-  drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
+  progressHandler(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
   state = BLUETOOTH_STATE_FLASH_FIRMWARE;
 
@@ -767,7 +767,7 @@ const char * Bluetooth::flashFirmware(const char * filename)
   watchdogSuspend(1000);
   RTOS_WAIT_MS(1000);
 
-  const char * result = doFlashFirmware(filename);
+  const char * result = doFlashFirmware(filename, progressHandler);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();
@@ -780,7 +780,7 @@ const char * Bluetooth::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
-  drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
+  progressHandler(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
   /* wait 1s off */
   watchdogSuspend(1000);

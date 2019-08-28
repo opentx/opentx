@@ -22,7 +22,14 @@
 
 uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> auxSerialTxFifo;
+
+#if defined(AUX_SERIAL_DMA_Stream_RX)
 AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
+#else
+AuxSerialRxFifo auxSerialRxFifo;
+#endif
+
+DMAFifo<32> auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 
 void auxSerialSetup(unsigned int baudrate, bool dma)
 {
@@ -47,6 +54,21 @@ void auxSerialSetup(unsigned int baudrate, bool dma)
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(AUX_SERIAL_USART, &USART_InitStructure);
 
+#if defined(AUX_SERIAL_TX_INVERT_GPIO_PIN)
+  GPIO_InitStructure.GPIO_Pin = AUX_SERIAL_TX_INVERT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_Init(AUX_SERIAL_TX_INVERT_GPIO, &GPIO_InitStructure);
+  GPIO_ResetBits(AUX_SERIAL_TX_INVERT_GPIO, AUX_SERIAL_TX_INVERT_GPIO_PIN);
+#endif
+
+#if defined(AUX_SERIAL_RX_INVERT_GPIO_PIN)
+  GPIO_InitStructure.GPIO_Pin = AUX_SERIAL_RX_INVERT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_Init(AUX_SERIAL_RX_INVERT_GPIO, &GPIO_InitStructure);
+  GPIO_ResetBits(AUX_SERIAL_RX_INVERT_GPIO, AUX_SERIAL_RX_INVERT_GPIO_PIN);
+#endif
+
+#if defined(SERIAL_DMA_Stream_RX)
   if (dma) {
     DMA_InitTypeDef DMA_InitStructure;
     auxSerialRxFifo.clear();
@@ -67,18 +89,20 @@ void auxSerialSetup(unsigned int baudrate, bool dma)
     DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
     DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-    DMA_Init(AUX_SERIAL_DMA_Stream_RX, &DMA_InitStructure);
+    DMA_Init(AUX_SERIAL_DMA_Channel_RX, &DMA_InitStructure);
     USART_DMACmd(AUX_SERIAL_USART, USART_DMAReq_Rx, ENABLE);
     USART_Cmd(AUX_SERIAL_USART, ENABLE);
-    DMA_Cmd(AUX_SERIAL_DMA_Stream_RX, ENABLE);
+    DMA_Cmd(AUX_SERIAL_DMA_Channel_RX, ENABLE);
+    return;
   }
-  else {
-    USART_Cmd(AUX_SERIAL_USART, ENABLE);
-    USART_ITConfig(AUX_SERIAL_USART, USART_IT_RXNE, ENABLE);
-    USART_ITConfig(AUX_SERIAL_USART, USART_IT_TXE, DISABLE);
-    NVIC_SetPriority(AUX_SERIAL_USART_IRQn, 7);
-    NVIC_EnableIRQ(AUX_SERIAL_USART_IRQn);
-  }
+#endif
+
+  // no DMA ...
+  USART_Cmd(AUX_SERIAL_USART, ENABLE);
+  USART_ITConfig(AUX_SERIAL_USART, USART_IT_RXNE, ENABLE);
+  USART_ITConfig(AUX_SERIAL_USART, USART_IT_TXE, DISABLE);
+  NVIC_SetPriority(AUX_SERIAL_USART_IRQn, 7);
+  NVIC_EnableIRQ(AUX_SERIAL_USART_IRQn);
 }
 
 void auxSerialInit(unsigned int mode, unsigned int protocol)
@@ -136,7 +160,10 @@ void auxSerialSbusInit()
 
 void auxSerialStop()
 {
+#if defined(AUX_SERIAL_DMA_Stream_RX)
   DMA_DeInit(AUX_SERIAL_DMA_Stream_RX);
+#endif
+
   USART_DeInit(AUX_SERIAL_USART);
 }
 
@@ -149,7 +176,6 @@ uint8_t auxSerialTracesEnabled()
 #endif
 }
 
-#if !defined(SIMU)
 extern "C" void AUX_SERIAL_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_SER2);
@@ -183,4 +209,3 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
   }
 #endif
 }
-#endif

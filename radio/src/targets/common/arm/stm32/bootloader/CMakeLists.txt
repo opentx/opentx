@@ -97,14 +97,15 @@ if(NOT (PCB STREQUAL X10 OR PCB STREQUAL X12S))
     ${BOOTLOADER_SRC}
     ../../../../../targets/${TARGET_DIR}/i2c_driver.cpp
     )
-  remove_definitions(-DDEBUG)
-else()
+endif()
+
+if(PCB STREQUAL X10 OR PCB STREQUAL X12S OR PCB STREQUAL NV14)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
+    ../../../../../gui/libopenui/bitmapbuffer.cpp
     ../../../../../targets/${TARGET_DIR}/sdram_driver.c
     ../../../../../targets/common/arm/stm32/sdio_sd.c
     ../../../../../targets/${TARGET_DIR}/haptic_driver.cpp
-    ../../../../../gui/${GUI_DIR}/bitmapbuffer.cpp
     ../../../../../gui/${GUI_DIR}/rle.cpp
     ../../../../../syscalls.c
     )
@@ -119,6 +120,7 @@ else()
   endif()
 endif()
 
+remove_definitions(-DDEBUG)
 remove_definitions(-DDISK_CACHE)
 remove_definitions(-DLUA)
 remove_definitions(-DCLI)

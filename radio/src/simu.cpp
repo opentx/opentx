@@ -42,6 +42,8 @@
 #define W2 LCD_W*LCD_ZOOM
 #define H2 LCD_H*LCD_ZOOM
 
+extern STRUCT_TOUCH touchState;
+
 class OpenTxSim: public FXMainWindow
 {
   FXDECLARE(OpenTxSim)
@@ -52,6 +54,9 @@ class OpenTxSim: public FXMainWindow
     ~OpenTxSim();
     void updateKeysAndSwitches(bool start=false);
     long onKeypress(FXObject*, FXSelector, void*);
+    long onMouseDown(FXObject*,FXSelector,void*);
+    long onMouseUp(FXObject*,FXSelector,void*);
+    long onMouseMove(FXObject*,FXSelector,void*);
     long onTimeout(FXObject*, FXSelector, void*);
     void createBitmap(int index, uint16_t *data, int x, int y, int w, int h);
     void makeSnapshot(const FXDrawable* drawable);
@@ -73,6 +78,9 @@ FXDEFMAP(OpenTxSim) OpenTxSimMap[] = {
   // Message_Type   _______ID____Message_Handler_______
   FXMAPFUNC(SEL_TIMEOUT,   2,    OpenTxSim::onTimeout),
   FXMAPFUNC(SEL_KEYPRESS,  0,    OpenTxSim::onKeypress),
+  FXMAPFUNC(SEL_LEFTBUTTONPRESS, 0, OpenTxSim::onMouseDown),
+  FXMAPFUNC(SEL_LEFTBUTTONRELEASE, 0, OpenTxSim::onMouseUp),
+  FXMAPFUNC(SEL_MOTION,    0,    OpenTxSim::onMouseMove),
 };
 
 FXIMPLEMENT(OpenTxSim, FXMainWindow, OpenTxSimMap, ARRAYNUMBER(OpenTxSimMap))
@@ -139,6 +147,8 @@ OpenTxSim::OpenTxSim(FXApp* a):
 
 OpenTxSim::~OpenTxSim()
 {
+  TRACE("OpenTxSim::~OpenTxSim()");
+
   StopSimu();
   StopAudioThread();
 
@@ -243,10 +253,65 @@ long OpenTxSim::onKeypress(FXObject *, FXSelector, void * v)
   return 0;
 }
 
+long OpenTxSim::onMouseDown(FXObject*,FXSelector,void*v)
+{
+  FXEvent * evt = (FXEvent *)v;
+  UNUSED(evt);
+
+  // TRACE("onMouseDown %d %d", evt->win_x, evt->win_y);
+
+#if defined(HARDWARE_TOUCH)
+  touchState.Event = TE_DOWN;
+  touchState.startX = touchState.lastX = touchState.X = evt->win_x;
+  touchState.startY = touchState.lastY = touchState.Y = evt->win_y;
+#endif
+
+  return 0;
+}
+
+long OpenTxSim::onMouseUp(FXObject*,FXSelector,void*v)
+{
+  FXEvent * evt = (FXEvent *)v;
+  UNUSED(evt);
+
+  // TRACE("onMouseUp %d %d", evt->win_x, evt->win_y);
+
+#if defined(HARDWARE_TOUCH)
+  if (touchState.Event == TE_DOWN) {
+    touchState.Event = TE_UP;
+    touchState.X = evt->win_x;
+    touchState.Y = evt->win_y;
+  }
+  else {
+    touchState.Event = TE_NONE;
+  }
+#endif
+
+  return 0;
+}
+
+long OpenTxSim::onMouseMove(FXObject*,FXSelector,void*v)
+{
+  FXEvent * evt = (FXEvent *)v;
+  UNUSED(evt);
+
+#if defined(HARDWARE_TOUCH)
+  if (evt->state & LEFTBUTTONMASK && (touchState.Event == TE_SLIDE || abs(evt->win_x - touchState.X) > 5 || abs(evt->win_y - touchState.Y) > 5)) {
+    touchState.Event = TE_SLIDE;
+    touchState.X = evt->win_x;
+    touchState.Y = evt->win_y;
+  }
+#endif
+
+  return 0;
+}
+
 void OpenTxSim::updateKeysAndSwitches(bool start)
 {
   static int keys[] = {
-#if defined(PCBHORUS)
+#if defined(PCBNV14)
+    // no keys
+#elif defined(PCBHORUS)
     KEY_Page_Up,   KEY_PGUP,
     KEY_Page_Down, KEY_PGDN,
     KEY_Return,    KEY_ENTER,

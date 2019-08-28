@@ -66,6 +66,12 @@ uint8_t auxSerialTracesEnabled();
 #define TRACE_WARNING_WP(...) debugPrintf(__VA_ARGS__)
 #define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
 
+#if defined(DEBUG_WINDOWS)
+#define TRACE_WINDOWS(f_, ...)    debugPrintf((f_ "\r\n"), ##__VA_ARGS__)
+#else
+#define TRACE_WINDOWS(...)
+#endif
+
 #if defined(TRACE_LUA_INTERNALS_ENABLED)
   #define TRACE_LUA_INTERNALS(f_, ...)     debugPrintf(("[LUA INT] " f_ "\r\n"), ##__VA_ARGS__)
 
@@ -422,6 +428,10 @@ extern const char * const debugTimerNames[DEBUG_TIMERS_COUNT];
 #define DEBUG_TIMER_SAMPLE(timer)
 
 #endif //#if defined(DEBUG_TIMERS)
+
+#if !defined(SIMU)
+extern uint32_t debugCounter1ms;
+#endif
 
 #endif // _DEBUG_H_
 

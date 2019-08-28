@@ -253,9 +253,11 @@ void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
 
   if (destination->step == BIND_WAIT) {
     if (get_tmr10ms() > destination->timeout) {
-      moduleState[module].mode = MODULE_MODE_NORMAL;
       destination->step = BIND_OK;
+      moduleState[module].mode = MODULE_MODE_NORMAL;
+#if !defined(COLORLCD)
       POPUP_INFORMATION(STR_BIND_OK); // TODO rather use the new callback
+#endif
     }
     return;
   }
@@ -451,7 +453,7 @@ const char * Pxx2OtaUpdate::nextStep(uint8_t step, const char * rxName, uint32_t
   }
 }
 
-const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
+const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
   uint8_t buffer[32];
@@ -483,7 +485,7 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
 
   uint32_t done = 0;
   while (1) {
-    drawProgressScreen(getBasename(filename), STR_OTA_UPDATE, done, size);
+    progressHandler(getBasename(filename), STR_OTA_UPDATE, done, size);
     if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
       f_close(&file);
       return "Read file failed";
@@ -505,7 +507,7 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
   return nextStep(OTA_UPDATE_EOF, nullptr, done, nullptr);
 }
 
-void Pxx2OtaUpdate::flashFirmware(const char * filename)
+void Pxx2OtaUpdate::flashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   pausePulses();
 
@@ -513,7 +515,7 @@ void Pxx2OtaUpdate::flashFirmware(const char * filename)
   RTOS_WAIT_MS(100);
 
   moduleState[module].mode = MODULE_MODE_OTA_UPDATE;
-  const char * result = doFlashFirmware(filename);
+  const char * result = doFlashFirmware(filename, progressHandler);
   moduleState[module].mode = MODULE_MODE_NORMAL;
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );

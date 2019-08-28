@@ -179,12 +179,10 @@ void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
     drawTimer(x, y, timerState.val, att, att);
     uint8_t xLabel = (negative ? x-56 : x-49);
     uint8_t len = zlen(timer.name, LEN_TIMER_NAME);
-    if (len > 0) {
+    if (len > 0)
       lcdDrawSizedText(xLabel, y+FH, timer.name, len, RIGHT | ZCHAR);
-    }
-    else {
-      drawTimerMode(xLabel, y+FH, timer.mode, RIGHT);
-    }
+    else
+      lcdDrawTextAtIndex(xLabel, y+FH, STR_VTMRMODES, timer.mode, RIGHT);
   }
 }
 

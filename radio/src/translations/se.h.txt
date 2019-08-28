@@ -52,6 +52,9 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Tyst\0""Alarm""EjKnp""Alla\0"
 
+#define LEN_COUNTDOWNVALUES    "\003"
+#define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"
+
 #define LEN_VRENAVIG           "\003"
 #define TR_VRENAVIG            "IngREaREb"
 
@@ -421,7 +424,7 @@
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
-  #define INDENT               "   "
+  #define INDENT
   #define LEN_INDENT           3
   #define INDENT_WIDTH         12
   #define BREAKSPACE           "\036"
@@ -432,17 +435,17 @@
   #define BREAKSPACE           " "
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define TR_ENTER                     "[ENTER]"
+#if defined(PCBFRSKY)
+  #define TR_ENTER             "[ENTER]"
 #else
   #define TR_ENTER                     "[MENU]"
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_EXIT                      "[RTN]"
+  #define TR_EXIT                      "RTN"
   #define TR_OK                        TR_ENTER
 #else
-  #define TR_EXIT                      "[EXIT]"
+  #define TR_EXIT                      "EXIT"
   #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #endif
 
@@ -459,7 +462,7 @@
 #define TR_COPYINGMODEL        "Kopierar Modell "
 #define TR_MOVINGMODEL         "Flyttar Modell "
 #define TR_LOADINGMODEL        "Laddar Modell   "
-#define TR_NAME                "Namn"
+#define STR_NAME                "Namn"
 #define TR_MODELNAME           "Modellnamn"
 #define TR_PHASENAME           "Lägesnamn "
 #define TR_MIXNAME             "Mixnamn "
@@ -471,6 +474,7 @@
 #endif
 #define TR_BITMAP              "Modellikon"
 #define TR_TIMER               TR("Timer","Timer ")
+#define TR_START                       "Start"
 #define TR_ELIMITS             TR("Gränser++","Utökade Gränser")
 #define TR_ETRIMS              TR("Trimmar++","Utökade Trimmar")
 #define TR_TRIMINC             TR("Trimning","Trimökning")
@@ -565,6 +569,7 @@
 #define TR_PERSISTENT          TR("Jämt på ", INDENT"Alltid På")
 #define TR_BACKLIGHT_LABEL     "Belysning"
 #define TR_BLDELAY             INDENT "Av efter"
+#define TR_BL_MODE_DUR                 INDENT "Mode-Duration"
 #define TR_BLONBRIGHTNESS      INDENT "På Ljusstyrka"
 #define TR_BLOFFBRIGHTNESS     INDENT "Av Ljusstyrka"
 #define TR_SPLASHSCREEN        "Startbild"
@@ -588,8 +593,10 @@
 #define TR_MODESRC             " Läge\004% Källa"
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
+#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
+#define TR_CALIB_DONE                  "Calibration completed"
 #if defined(PCBHORUS)
   #define TR_MENUTOSTART       "Press [Enter] to start"
   #define TR_SETMIDPOINT       "Center sticks/pots/sliders and press [Enter]"
@@ -909,6 +916,8 @@
 #define TR_COPY                "Kopiera"
 #define TR_MOVE                "Flytta"
 #define TR_PASTE               "Infoga"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Radera"
 #define TR_INSERT              "Addera"
 #define TR_RESET_FLIGHT        "Nollställ Flygning"
@@ -959,10 +968,13 @@
 #define TR_TELEMETRY_TYPE      "Telemetrityp"
 #define TR_TELEMETRY_SENSORS   "Sensorer"
 #define TR_VALUE               "Värde"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Enhet"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Lägg till sensor..."
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
+#define TR_RXFREQUENCY         TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenna selection")
 #define TR_ANTENNACONFIRM1     "Really switch?"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Make sure antenna is installed!")
@@ -1089,7 +1101,7 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Grafikdesigner"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
   #define TR_ABOUT_HARDWARE_2  "Hårdvarudesign/producent"
   #define TR_ABOUT_HARDWARE_3  ""

@@ -29,7 +29,13 @@
 #include "definitions.h"
 #include "opentx_types.h"
 #include "debounce.h"
+#include "opentx_helpers.h"
+#include "touch.h"
+#include "bitfield.h"
 
+#if defined(LIBOPENUI)
+#include "libopenui.h"
+#endif
 
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"
@@ -239,7 +245,7 @@
 
 #include "debug.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   #define SWSRC_THR                    SWSRC_SB2
   #define SWSRC_GEA                    SWSRC_SG2
   #define SWSRC_ID0                    SWSRC_SA0
@@ -363,6 +369,7 @@ extern const uint8_t modn12x3[];
 #endif
 
 extern uint8_t channelOrder(uint8_t x);
+extern uint8_t channelOrder(uint8_t setup, uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
@@ -440,7 +447,7 @@ bool cmpStrWithZchar(const char * charString, const char * zcharString, int size
 #include "keys.h"
 #include "pwr.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY) || defined(PCBNV14)
 div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
@@ -455,6 +462,16 @@ void alert(const char * title, const char * msg, uint8_t sound);
 #if !defined(GUI)
   #define RAISE_ALERT(...)
   #define ALERT(...)
+#elif defined(COLORLCD)
+  void raiseAlert(const char * title, const char * msg, const char * info, uint8_t sound);
+  inline void RAISE_ALERT(const char * title, const char * msg, const char * info, uint8_t sound)
+  {
+    raiseAlert(title, msg, info, sound);
+  }
+  inline void ALERT(const char * title, const char * msg, uint8_t sound)
+  {
+    raiseAlert(title, msg, nullptr, sound);
+  }
 #else
   inline void RAISE_ALERT(const char * title, const char * msg, const char * info, uint8_t sound)
   {
@@ -510,7 +527,7 @@ void evalLogicalSwitches(bool isCurrentFlightmode=true);
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
 #define LS_RECURSIVE_EVALUATION_RESET()
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY) || defined(PCBFLYSKY)
   void getSwitchesPosition(bool startup);
 #else
   #define getSwitchesPosition(...)
@@ -636,8 +653,6 @@ void backlightOn();
 void checkBacklight();
 void doLoopCommonActions();
 
-#define BITMASK(bit) (1<<(bit))
-
 uint16_t isqrt32(uint32_t n);
 
 #if defined(BOOT)
@@ -678,6 +693,9 @@ inline int divRoundClosest(const int n, const int d)
 #define calc100to256_16Bits(x) calc100to256(x)
 #define calc100toRESX_16Bits(x) calc100toRESX(x)
 
+#define calc100to256_16Bits(x) calc100to256(x)
+#define calc100toRESX_16Bits(x) calc100toRESX(x)
+
 inline int calc100to256(int x)
 {
   return divRoundClosest(x*256, 100);
@@ -702,7 +720,6 @@ inline int calcRESXto100(int x)
 {
   return divRoundClosest(x*100, RESX);
 }
-
 
 #if defined(COLORLCD)
 extern const char vers_stamp[];
@@ -801,12 +818,9 @@ enum BaseCurves {
   CURVE_BASE
 };
 int8_t * curveAddress(uint8_t idx);
-struct point_t
-{
-  coord_t x;
-  coord_t y;
-};
+
 point_t getPoint(uint8_t i);
+point_t getPoint(uint8_t curveIndex, uint8_t index);
 typedef CurveData CurveInfo;
 void loadCurves();
 #define LOAD_MODEL_CURVES() loadCurves()
@@ -975,7 +989,7 @@ enum AUDIO_SOUNDS {
   AU_STICK2_MIDDLE,
   AU_STICK3_MIDDLE,
   AU_STICK4_MIDDLE,
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   AU_POT1_MIDDLE,
   AU_POT2_MIDDLE,
 #if defined(PCBX9E)
@@ -1133,7 +1147,7 @@ union ReusableBuffer
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
     int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
     uint8_t state;
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
     struct {
       uint8_t stepsCount;
       int16_t steps[XPOTS_MULTIPOS_COUNT];
@@ -1155,6 +1169,13 @@ union ReusableBuffer
   } sdManager;
 #endif
 
+#if defined(STM32)
+  struct
+  {
+    char id[27];
+  } version;
+#endif
+
   struct {
     ModuleInformation modules[NUM_MODULES];
     uint32_t updateTime;
@@ -1165,6 +1186,7 @@ union ReusableBuffer
   struct {
     ModuleInformation modules[NUM_MODULES];
     uint8_t linesCount;
+    char msg[64];
   } radioTools;
 
   struct {
@@ -1377,5 +1399,7 @@ inline bool isAsteriskDisplayed()
 
   return unexpectedShutdown;
 }
+
+#include "module.h"
 
 #endif // _OPENTX_H_

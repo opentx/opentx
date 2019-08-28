@@ -52,6 +52,9 @@
 #define LEN_VBEEPMODE                  "\005"
 #define TR_VBEEPMODE                   "Aucun""Alarm""NoKey""Tout\0"
 
+#define LEN_COUNTDOWNVALUES             "\003"
+#define TR_COUNTDOWNVALUES              "5s\0""10s""20s""30s"
+
 #define LEN_VRENAVIG                   "\003"
 #define TR_VRENAVIG                    "NonREaREb"
 
@@ -425,7 +428,7 @@
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
-  #define INDENT                       "   "
+  #define INDENT
   #define LEN_INDENT                   3
   #define INDENT_WIDTH                 12
   #define BREAKSPACE                   "\036"
@@ -436,17 +439,17 @@
   #define BREAKSPACE                   " "
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   #define TR_ENTER                     "[ENTER]"
 #else
   #define TR_ENTER                     "[MENU]"
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_EXIT                      "[RTN]"
+  #define TR_EXIT                      "RTN"
   #define TR_OK                        TR_ENTER
 #else
-  #define TR_EXIT                      "[EXIT]"
+  #define TR_EXIT                      "EXIT"
   #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #endif
 
@@ -471,6 +474,7 @@
 #define TR_EXPONAME                    TR("Nom", "Nom ligne")
 #define TR_BITMAP                      "Image du modèle"
 #define TR_TIMER                       "Chrono "
+#define TR_START                       "Start"
 #define TR_ELIMITS                     TR("Limites ét.", "Limites étendues")
 #define TR_ETRIMS                      TR("Trims ét.", "Trims étendus")
 #define TR_TRIMINC                     TR("Pas Trim", "Pas des trims")
@@ -565,6 +569,7 @@
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistant")
 #define TR_BACKLIGHT_LABEL             "Rétroéclairage"
 #define TR_BLDELAY                     INDENT "Durée"
+#define TR_BL_MODE_DUR                 INDENT "Mode-Durée"
 #define TR_BLONBRIGHTNESS              INDENT "Luminosité ON"
 #define TR_BLOFFBRIGHTNESS             INDENT "Luminosité OFF"
 #define TR_BLCOLOR                     INDENT "Couleur"
@@ -588,8 +593,10 @@
 #define TR_MODESRC                     "Mode\006% Source"
 #define TR_MULTIPLIER                  "Multiplieur"
 #define TR_CAL                         "Cal"
+#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM                       "Trim- +"
 #define TR_BG                          "BG:"
+#define TR_CALIB_DONE                  "Calibration completed"
 #if defined(PCBHORUS)
   #define TR_MENUTOSTART               "Presser [Enter] pour commencer"
   #define TR_SETMIDPOINT               "Centrer manches/pots/sliders puis [Enter]"
@@ -910,6 +917,8 @@
 #define TR_COPY                        "Copier"
 #define TR_MOVE                        "Déplacer"
 #define TR_PASTE                       "Coller"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE                      "Supprimer"
 #define TR_INSERT                      "Insérer"
 #define TR_RESET_FLIGHT                TR("Réinit. vol", "Réinitialiser vol")
@@ -960,10 +969,13 @@
 #define TR_TELEMETRY_TYPE              TR("Type tél.", "Type télémétrie")
 #define TR_TELEMETRY_SENSORS           "Capteurs"
 #define TR_VALUE                       "Valeur"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER                 "Timer LCD haut"
 #define TR_UNIT                        "Unité"
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE                TR(INDENT "Canaux", INDENT "Plage de canaux")
+#define TR_RXFREQUENCY                 TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNASELECTION            TR(INDENT "Antenne", INDENT "Choix antenne")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
 #define TR_ANTENNACONFIRM2             TR("Vérif antenne", "Installer l'antenne d'abord!")

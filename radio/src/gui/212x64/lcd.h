@@ -22,6 +22,11 @@
 #define _LCD_H_
 
 typedef int coord_t;
+struct point_t
+{
+  coord_t x;
+  coord_t y;
+};
 typedef uint32_t LcdFlags;
 typedef uint8_t display_t;
 

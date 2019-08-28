@@ -919,8 +919,8 @@ void convertModelData_216_to_217(ModelData &model)
 
   for (uint8_t i=0; i<2; i++) {
     TimerData_v217 & timer = newModel.timers[i];
-    if (oldModel.timers[i].mode >= TMRMODE_COUNT)
-      timer.mode = TMRMODE_COUNT + convertSwitch_216_to_217(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
+    if (oldModel.timers[i].mode >= 5)
+      timer.mode = 5 + convertSwitch_216_to_217(oldModel.timers[i].mode - 5 + 1) - 1;
     else
       timer.mode = convertSwitch_216_to_217(oldModel.timers[i].mode);
     timer.start = oldModel.timers[i].start;
@@ -1088,8 +1088,8 @@ void convertModelData_217_to_218(ModelData &model)
 
   newModel.header = oldModel.header;
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
-    if (oldModel.timers[i].mode >= TMRMODE_COUNT)
-      newModel.timers[i].mode = TMRMODE_COUNT + convertSwitch_217_to_218(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
+    if (oldModel.timers[i].mode >= 5)
+      newModel.timers[i].mode = 5 + convertSwitch_217_to_218(oldModel.timers[i].mode - 5 + 1) - 1;
     else
       newModel.timers[i].mode = convertSwitch_217_to_218(oldModel.timers[i].mode);
     if (oldModel.timers[i].mode)

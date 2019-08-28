@@ -140,7 +140,9 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
             cmpStrWithZchar((char *)&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID)) {
           reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
           moduleState[module].mode = MODULE_MODE_NORMAL;
+#if !defined(COLORLCD)
           POPUP_INFORMATION(STR_REG_OK);
+#endif
         }
       }
       break;

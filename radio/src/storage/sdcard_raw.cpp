@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "modelslist.h"
+#include "gui/colorlcd/modelslist.h"
 #include "conversions/conversions.h"
 
 void getModelPath(char * path, const char * filename)
@@ -147,9 +147,11 @@ const char * loadModel(const char * filename, bool alarms)
     storageCheck(true);
     alarms = false;
   }
+#if defined(EEPROM_CONVERSIONS)
   else if (version < EEPROM_VER) {
     convertModelData(version);
   }
+#endif
 
   postModelLoad(alarms);
 
@@ -165,9 +167,11 @@ const char * loadRadioSettings(const char * path)
     return error;
   }
 
+#if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
     convertRadioData(version);
   }
+#endif
 
   return nullptr;
 }
@@ -225,10 +229,11 @@ void storageReadAll()
 
   // Wipe models list in case
   // it's being reloaded after USB connection
-  modelslist.clear();
+  #warning "TODO modelslist.clear() + load()"
+  // modelslist.clear();
 
   // and reload the list
-  modelslist.load();
+  // modelslist.load();
 }
 
 void storageCreateModelsList()
@@ -274,7 +279,7 @@ void storageEraseAll(bool warn)
 {
   TRACE("storageEraseAll");
 
-#if defined(COLORLCD)
+#if defined(LIBOPENUI)
   // the theme has not been loaded before
   theme->load();
 #endif

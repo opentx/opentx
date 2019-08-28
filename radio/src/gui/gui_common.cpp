@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY) || defined(PCBFLYSKY)
 uint8_t switchToMix(uint8_t source)
 {
   div_t qr = div(source-1, 3);
@@ -283,15 +283,6 @@ bool isInputSourceAvailable(int source)
   return false;
 }
 
-enum SwitchContext
-{
-    LogicalSwitchesContext,
-    ModelCustomFunctionsContext,
-    GeneralCustomFunctionsContext,
-    TimersContext,
-    MixesContext
-};
-
 bool isLogicalSwitchAvailable(int index)
 {
   LogicalSwitchData * lsw = lswAddress(index);
@@ -395,14 +386,6 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
   return isSwitchAvailable(swtch, LogicalSwitchesContext);
 }
 
-bool isSwitchAvailableInCustomFunctions(int swtch)
-{
-  if (menuHandlers[menuLevel] == menuModelSpecialFunctions)
-    return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
-  else
-    return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
-}
-
 bool isSwitchAvailableInMixes(int swtch)
 {
   return isSwitchAvailable(swtch, MixesContext);
@@ -415,23 +398,23 @@ bool isSwitch2POSWarningStateAvailable(int state)
 }
 #endif // #if defined(COLORLCD)
 
-bool isSwitchAvailableInTimers(int swtch)
-{
-  if (swtch >= 0) {
-    if (swtch < TMRMODE_COUNT)
-      return true;
-    else
-      swtch -= TMRMODE_COUNT-1;
-  }
-  else {
-    if (swtch > -TMRMODE_COUNT)
-      return false;
-    else
-      swtch += TMRMODE_COUNT-1;
-  }
-
-  return isSwitchAvailable(swtch, TimersContext);
-}
+//bool isSwitchAvailableInTimers(int swtch)
+//{
+//  if (swtch >= 0) {
+//    if (swtch < TMRMODE_COUNT)
+//      return true;
+//    else
+//      swtch -= TMRMODE_COUNT-1;
+//  }
+//  else {
+//    if (swtch > -TMRMODE_COUNT)
+//      return false;
+//    else
+//      swtch += TMRMODE_COUNT-1;
+//  }
+//
+//  return isSwitchAvailable(swtch, TimersContext);
+//}
 
 bool isThrottleSourceAvailable(int source)
 {
@@ -446,10 +429,10 @@ bool isLogicalSwitchFunctionAvailable(int function)
   return function != LS_FUNC_RANGE;
 }
 
-bool isAssignableFunctionAvailable(int function)
+bool isAssignableFunctionAvailable(int function, CustomFunctionData * functions)
 {
 #if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
-  bool modelFunctions = (menuHandlers[menuLevel] == menuModelSpecialFunctions);
+  bool modelFunctions = (functions == g_model.customFn);
 #endif
 
   switch (function) {
@@ -474,7 +457,7 @@ bool isAssignableFunctionAvailable(int function)
     case FUNC_BIND:
 #endif
 #if !defined(LUA)
-      case FUNC_PLAY_SCRIPT:
+    case FUNC_PLAY_SCRIPT:
 #endif
     case FUNC_RESERVE5:
       return false;
@@ -483,6 +466,13 @@ bool isAssignableFunctionAvailable(int function)
       return true;
   }
 }
+
+#if !defined(COLORLCD)
+bool isAssignableFunctionAvailable(int function)
+{
+  return isAssignableFunctionAvailable(function, menuHandlers[menuLevel] == menuModelSpecialFunctions ? g_model.customFn : g_eeGeneral.customFn);
+}
+#endif
 
 bool isSourceAvailableInGlobalResetSpecialFunction(int index)
 {
@@ -861,12 +851,3 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
   return pdef;
 }
 #endif
-
-void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
-{
-  lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
-  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
-    editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
-  else
-    lcdDrawMMM(x, y, flags);
-}

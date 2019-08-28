@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include "audio.h"
+#include "lcd.h"
 
 extern const char * warningText;
 extern const char * warningInfoText;
@@ -57,6 +58,7 @@ void showAlertBox(const char * title, const char * text, const char * action , u
 
 // Full screen with 2 lines and a progress bar
 void drawProgressScreen(const char * title, const char * message, int num, int den);
+typedef void (* ProgressHandler)(const char *, const char *, int, int);
 
 enum
 {

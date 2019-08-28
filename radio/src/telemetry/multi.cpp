@@ -293,7 +293,7 @@ void MultiModuleSyncStatus::getRefreshString(char *statusText)
 void MultiModuleStatus::getStatusString(char *statusText)
 {
   if (!isValid()) {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
     if (IS_INTERNAL_MODULE_ENABLED())
       strcpy(statusText, STR_DISABLE_INTERNAL);
     else

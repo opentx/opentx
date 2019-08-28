@@ -21,6 +21,8 @@
 #ifndef _FONTS_H_
 #define _FONTS_H_
 
+#include "opentx.h"
+
 #if defined(COLORLCD)
 
 #if !defined(BOOT)
@@ -31,9 +33,7 @@
 
 extern const uint16_t * const fontspecsTable[FONT_TABLE_SIZE];
 extern const uint8_t * fontsTable[FONT_TABLE_SIZE];
-extern BitmapBuffer *  fontCache[2];
 
-void loadFontCache();
 void loadFonts();
 
 #else

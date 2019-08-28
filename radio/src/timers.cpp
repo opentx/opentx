@@ -69,15 +69,18 @@ void saveTimers()
 
 #define THR_TRG_TRESHOLD    13      // approximately 10% full throttle
 
+#warning "Timer mode is switched into (mode + swtch), needs to be taken into account in UI"
+
 void evalTimers(int16_t throttle, uint8_t tick10ms)
 {
   for (uint8_t i=0; i<TIMERS; i++) {
     tmrmode_t timerMode = g_model.timers[i].mode;
-    tmrstart_t timerStart = g_model.timers[i].start;
-    TimerState * timerState = &timersStates[i];
+    int16_t timerSwtch = g_model.timers[i].swtch;
+    if (timerMode && (!timerSwtch || getSwitch(timerSwtch))) {
+      tmrstart_t timerStart = g_model.timers[i].start;
+      TimerState * timerState = &timersStates[i];
 
-    if (timerMode) {
-      if ((timerState->state == TMR_OFF) && (timerMode != TMRMODE_THR_TRG)) {
+      if (timerState->state == TMR_OFF) {
         timerState->state = TMR_RUNNING;
         timerState->cnt = 0;
         timerState->sum = 0;
@@ -96,35 +99,18 @@ void evalTimers(int16_t throttle, uint8_t tick10ms)
         tmrval_t newTimerVal = timerState->val;
         if (timerStart) newTimerVal = timerStart - newTimerVal;
 
-        if (timerMode == TMRMODE_ABS) {
+        if (timerMode == TMRMODE_ON) {
           newTimerVal++;
         }
         else if (timerMode == TMRMODE_THR) {
           if (throttle) newTimerVal++;
         }
-        else if (timerMode == TMRMODE_THR_REL) {
-          if ((timerState->sum/timerState->cnt) >= 128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
+        else {
+          if (timerState->cnt && (timerState->sum / timerState->cnt) >= 128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
             newTimerVal++;  // add second used of throttle
-            timerState->sum -= 128*timerState->cnt;
+            timerState->sum -= 128 * timerState->cnt;
           }
           timerState->cnt = 0;
-        }
-        else if (timerMode == TMRMODE_THR_TRG) {
-          // we can't rely on (throttle || newTimerVal > 0) as a detection if timer should be running
-          // because having persistent timer brakes this rule
-          if ((throttle > THR_TRG_TRESHOLD) && timerState->state == TMR_OFF) {
-            timerState->state = TMR_RUNNING;  // start timer running
-            timerState->cnt = 0;
-            timerState->sum = 0;
-            // TRACE("Timer[%d] THr triggered", i);
-          }
-          if (timerState->state != TMR_OFF) newTimerVal++;
-        }
-        else {
-          if (timerMode > 0) timerMode -= (TMRMODE_COUNT-1);
-          if (getSwitch(timerMode)) {
-            newTimerVal++;
-          }
         }
 
         switch (timerState->state) {
@@ -151,7 +137,7 @@ void evalTimers(int16_t throttle, uint8_t tick10ms)
             if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
               AUDIO_TIMER_COUNTDOWN(i, newTimerVal);
             }
-            if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) {
+            if (g_model.timers[i].minuteBeep && (newTimerVal % 60) == 0) {
               AUDIO_TIMER_MINUTE(newTimerVal);
               // TRACE("Timer[%d] %d minute announcement", i, newTimerVal/60);
             }

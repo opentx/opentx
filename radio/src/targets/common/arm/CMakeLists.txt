@@ -146,6 +146,10 @@ if(MODULE_SIZE_STD)
   add_definitions(-DHARDWARE_EXTERNAL_MODULE_SIZE_STD)
 endif()
 
+if(MULTIMODULE STREQUAL INTERNAL)
+  add_definitions(-DINTERNAL_MODULE_MULTI)
+endif()
+
 if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
   set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/multi.cpp)
@@ -162,6 +166,8 @@ if(CROSSFIRE)
     telemetry/crossfire.cpp
     )
 endif()
+
+add_definitions(-g)
 
 add_definitions(-DCPUARM)
 add_definitions(-DGPS)

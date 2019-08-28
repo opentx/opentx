@@ -284,13 +284,13 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
     key = KEY_DOWN;
   else if (steps < 0)
     key = KEY_UP;
-#else
+#elif defined(HARDWARE_KEYS)
   if (steps > 0)
     key = KEY_MINUS;
   else if (steps < 0)
     key = KEY_PLUS;
-#endif
   else
+#endif
     // Should not happen but Clang complains that key is unset otherwise
     return;
 

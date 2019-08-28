@@ -46,16 +46,19 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_NAME,
   ITEM_MODEL_SETUP_TIMER1,
   ITEM_MODEL_SETUP_TIMER1_NAME,
+  ITEM_MODEL_SETUP_TIMER1_START,
   ITEM_MODEL_SETUP_TIMER1_PERSISTENT,
   ITEM_MODEL_SETUP_TIMER1_MINUTE_BEEP,
   ITEM_MODEL_SETUP_TIMER1_COUNTDOWN_BEEP,
   ITEM_MODEL_SETUP_TIMER2,
   ITEM_MODEL_SETUP_TIMER2_NAME,
+  ITEM_MODEL_SETUP_TIMER2_START,
   ITEM_MODEL_SETUP_TIMER2_PERSISTENT,
   ITEM_MODEL_SETUP_TIMER2_MINUTE_BEEP,
   ITEM_MODEL_SETUP_TIMER2_COUNTDOWN_BEEP,
   ITEM_MODEL_SETUP_TIMER3,
   ITEM_MODEL_SETUP_TIMER3_NAME,
+  ITEM_MODEL_SETUP_TIMER3_START,
   ITEM_MODEL_SETUP_TIMER3_PERSISTENT,
   ITEM_MODEL_SETUP_TIMER3_MINUTE_BEEP,
   ITEM_MODEL_SETUP_TIMER3_COUNTDOWN_BEEP,
@@ -207,7 +210,7 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 }
 
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
-#define TIMER_ROWS                     2, 0, 0, 0, 0
+#define TIMER_ROWS                     1, 0, 1, 0, 0, 0
 
 #if defined(PCBSKY9X)
   #define EXTRA_MODULE_ROWS              LABEL(ExtraModule), 1, 2,
@@ -409,41 +412,42 @@ void menuModelSetup(event_t event)
         unsigned int timerIdx = (k>=ITEM_MODEL_SETUP_TIMER3 ? 2 : (k>=ITEM_MODEL_SETUP_TIMER2 ? 1 : 0));
         TimerData * timer = &g_model.timers[timerIdx];
         drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
-        drawTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, menuHorizontalPosition==0 ? attr : 0);
-        drawTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, RIGHT | (menuHorizontalPosition==1 ? attr : 0), menuHorizontalPosition==2 ? attr : 0);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VTMRMODES, timer->mode, menuHorizontalPosition==0 ? attr : 0);
+        drawSwitch(MODEL_SETUP_2ND_COLUMN+5*FW, y, timer->swtch, menuHorizontalPosition==1 ? attr : 0);
+        if (attr && s_editMode > 0) {
+          switch (menuHorizontalPosition) {
+            case 0:
+              CHECK_INCDEC_MODELVAR_ZERO(event, timer->mode, TMRMODE_MAX);
+              break;
+            case 1:
+              CHECK_INCDEC_MODELSWITCH(event, timer->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
+              break;
+          }
+        }
+        break;
+      }
+
+      case ITEM_MODEL_SETUP_TIMER1_START:
+      case ITEM_MODEL_SETUP_TIMER2_START:
+      case ITEM_MODEL_SETUP_TIMER3_START:
+      {
+        lcdDrawText(INDENT_WIDTH, y, STR_START);
+        TimerData *timer = &g_model.timers[k >= ITEM_MODEL_SETUP_TIMER3 ? 2 : (k >= ITEM_MODEL_SETUP_TIMER2 ? 1 : 0)];
+        drawTimer(MODEL_SETUP_2ND_COLUMN, y, timer->start, menuHorizontalPosition == 0 ? attr : 0, menuHorizontalPosition == 1 ? attr : 0);
         if (attr && s_editMode > 0) {
           div_t qr = div(timer->start, 60);
           switch (menuHorizontalPosition) {
             case 0:
-            {
-              swsrc_t timerMode = timer->mode;
-              if (timerMode < 0)
-                timerMode -= TMRMODE_COUNT-1;
-              CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
-              if (timerMode < 0)
-                timerMode += TMRMODE_COUNT-1;
-              timer->mode = timerMode;
-#if defined(AUTOSWITCH)
-              if (s_editMode>0) {
-                int8_t val = timer->mode - (TMRMODE_COUNT-1);
-                int8_t switchVal = checkIncDecMovedSwitch(val);
-                if (val != switchVal) {
-                  timer->mode = switchVal + (TMRMODE_COUNT-1);
-                  storageDirty(EE_MODEL);
-                }
-              }
-#endif
-              break;
-            }
-            case 1:
               CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 539); // 8:59
-              timer->start = qr.rem + qr.quot*60;
+              timer->start = qr.rem + qr.quot * 60;
               break;
-            case 2:
-              qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
-              timer->start -= qr.rem ;
-              if ((int16_t)timer->start < 0) timer->start=0;
-              if ((int16_t)timer->start > 5999) timer->start=32399; // 8:59:59
+            case 1:
+              qr.rem -= checkIncDecModel(event, qr.rem + 2, 1, 62) - 2;
+              timer->start -= qr.rem;
+              if ((int16_t) timer->start < 0)
+                timer->start = 0;
+              if ((int16_t) timer->start > 5999)
+                timer->start = 32399; // 8:59:59
               break;
           }
         }

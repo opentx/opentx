@@ -37,6 +37,8 @@ inline void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att = 0)
   drawTimer(x, y, tme, att, att);
 }
 
+void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att = 0);
+
 void drawStartupAnimation(uint32_t duration, uint32_t totalDuration);
 void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message);
 void drawSleepBitmap();

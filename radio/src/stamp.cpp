@@ -26,17 +26,13 @@
 
 #define EEPROM_STR DEFNUMSTR(EEPROM_VER);
 
-#if defined(PCBHORUS)
-#define TAB "\037\075"
-#else
 #define TAB "\037\033"
-#endif
 
 #if defined(COLORLCD)
-  const char vers_stamp[]  =   "VERS" TAB ": " "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
-  const char date_stamp[]  =   "DATE" TAB ": " DATE;
-  const char time_stamp[]  =   "TIME" TAB ": " TIME;
-  const char eeprom_stamp[]  = "EEPR" TAB ": " EEPROM_STR;
+  const char vers_stamp[]  =   "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+  const char date_stamp[]  =   DATE;
+  const char time_stamp[]  =   TIME;
+  const char eeprom_stamp[]  = EEPROM_STR;
 #elif defined(BOARD_NAME)
   const char vers_stamp[]  = "FW" TAB ": opentx-" BOARD_NAME "\036VERS" TAB ": " VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #else

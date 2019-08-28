@@ -6,6 +6,8 @@ option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
 option(AUTOUPDATE "Auto update internal chips from SD" OFF)
 
+add_definitions(-DPCBFRSKY)
+
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(STICKS "STANDARD" CACHE STRING "Sticks type (STANDARD/HORUS)")
@@ -278,7 +280,6 @@ set(TARGET_SRC
   ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp
-  ../common/arm/stm32/heartbeat_driver.cpp
   )
 
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
@@ -294,6 +295,7 @@ set(FIRMWARE_TARGET_SRC
   board.cpp
   i2c_driver.cpp
   pwr_driver.cpp
+  ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/loadboot.cpp
   )
 

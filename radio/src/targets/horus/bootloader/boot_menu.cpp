@@ -65,11 +65,13 @@ static void bootloaderDrawFooter()
 
 void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
 {
-    // clear screen
-    lcdDrawSolidFilledRect(0, 0, LCD_W-1, LCD_H-1, TEXT_BGCOLOR);
+#if defined(COLORLCD)
+  lcdNextLayer();
+#endif
+
+    lcd->clear(TEXT_BGCOLOR);
     
     if (st == ST_START) {
-
         bootloaderDrawTitle(88, "HORUS BOOTLOADER");
         
         lcdDrawBitmapPattern(90, 72, LBM_FLASH, TEXT_COLOR);

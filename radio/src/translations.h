@@ -66,7 +66,10 @@
 #define HINT(s) s
 #endif
 
-#if LCD_W >= 480
+#if LCD_W < LCD_H    // Portrait mode
+  #define TR3(x, y, z) x
+  #define TR2(x, y) x
+#elif LCD_W >= 480
   #define TR3(x, y, z) z
   #define TR2(x, y) y
 #elif LCD_W >= 212
@@ -140,6 +143,7 @@ extern const char STR_VPERSISTENT[];
 extern const char STR_VLCD[];
 extern const char STR_VUNITSSYSTEM[];
 extern const char STR_VBEEPCOUNTDOWN[];
+extern const char STR_COUNTDOWNVALUES[];
 extern const char STR_VVARIOCENTER[];
 
 extern const char STR_COUNTRYCODES[];
@@ -201,6 +205,7 @@ extern const char STR_LOADINGMODEL[];
 extern const char STR_NAME[];
 extern const char STR_BITMAP[];
 extern const char STR_TIMER[];
+extern const char STR_START[];
 extern const char STR_ELIMITS[];
 extern const char STR_ETRIMS[];
 extern const char STR_TRIMINC[];
@@ -323,6 +328,8 @@ extern const char STR_MODESRC[];
 extern const char STR_MULTIPLIER[];
 #define LEN_MULTIPLIER PSIZE(TR_MULTIPLIER)
 extern const char STR_CAL[];
+extern const char STR_CALIB_DONE[];
+extern const char STR_CALIBRATION[];
 extern const char STR_VTRIM[];
 extern const char STR_MENUTOSTART[];
 extern const char STR_SETMIDPOINT[];
@@ -471,6 +478,8 @@ extern const char STR_INSERT_AFTER[];
 extern const char STR_COPY[];
 extern const char STR_MOVE[];
 extern const char STR_PASTE[];
+extern const char STR_PASTE_AFTER[];
+extern const char STR_PASTE_BEFORE[];
 extern const char STR_INSERT[];
 extern const char STR_DELETE[];
 extern const char STR_RESET_FLIGHT[];
@@ -728,6 +737,7 @@ extern const char STR_BINDING_1_8_TELEM_OFF[];
 extern const char STR_BINDING_9_16_TELEM_ON[];
 extern const char STR_BINDING_9_16_TELEM_OFF[];
 extern const char STR_CHANNELRANGE[];
+extern const char STR_RXFREQUENCY[];
 extern const char STR_ANTENNASELECTION[];
 extern const char STR_ANTENNACONFIRM1[];
 extern const char STR_ANTENNACONFIRM2[];
@@ -749,6 +759,8 @@ extern const char STR_DISABLE_ALARM[];
 extern const char STR_TELEMETRY_TYPE[];
 extern const char STR_TELEMETRY_SENSORS[];
 extern const char STR_VALUE[];
+extern const char STR_REPEAT[];
+extern const char STR_ENABLE[];
 extern const char STR_TOPLCDTIMER[];
 extern const char STR_UNIT[] ;
 extern const char STR_TELEMETRY_NEWSENSOR[];

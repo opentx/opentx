@@ -107,7 +107,10 @@
 #define TR_VDISPLAYTRIMS       "Nein\0 ""Kurz\0 ""Ja\0"  //Trimmwerte Keine, kurze Anzeigen, Ja
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0StimmeHaptik"
+#define TR_VBEEPCOUNTDOWN      "Kein\0 ""Pieps\0""Stimme""Haptik"
+
+#define LEN_COUNTDOWNVALUES    "\003"
+#define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Ton\0  ""Ruhe  "
@@ -428,17 +431,17 @@
   #define BREAKSPACE           " "
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define TR_ENTER                     "[ENTER]"
+#if defined(PCBFRSKY)
+  #define TR_ENTER             "[ENTER]"
 #else
   #define TR_ENTER                     "[MENU]"
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_EXIT                      "[RTN]"
+  #define TR_EXIT                      "RTN"
   #define TR_OK                        TR_ENTER
 #else
-  #define TR_EXIT                      "[EXIT]"
+  #define TR_EXIT                      "EXIT"
   #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #endif
 
@@ -454,7 +457,7 @@
 #define TR_COPYINGMODEL        "Kopiere Modell"
 #define TR_MOVINGMODEL         "Schiebe Modell"
 #define TR_LOADINGMODEL        "Lade Modell..."
-#define TR_NAME                "Name"
+#define STR_NAME                "Name"
 #define TR_MODELNAME           "Modellname"
 #define TR_PHASENAME           "Phase-Name"
 #define TR_MIXNAME             "Mix-Name"
@@ -462,6 +465,7 @@
   #define TR_EXPONAME          "Info"
 #define TR_BITMAP              "Modellfoto"
 #define TR_TIMER               TR("Timer", "Timer ")  // für Timer1 Timer2 Timer3
+#define TR_START                       "Start"
 #define TR_ELIMITS             TR("Erw. Limit", "Erw. Wege auf 150%")
 #define TR_ETRIMS              TR("Erw. Trims", "Erw. Trim  auf 100%")
 #define TR_TRIMINC             TR("Trim Schr.", "Trimmschritte")
@@ -556,6 +560,7 @@
 #define TR_PERSISTENT          TR(INDENT "Permanent", INDENT "Permanent")
 #define TR_BACKLIGHT_LABEL     "LCD-Beleuchtung"
 #define TR_BLDELAY             INDENT "Dauer"
+#define TR_BL_MODE_DUR                 INDENT "Mode-Duration"
 #define TR_BLONBRIGHTNESS      INDENT "An-Helligkeit"
 #define TR_BLOFFBRIGHTNESS     INDENT "Aus-Helligkeit"
 #define TR_BLCOLOR             INDENT "Farbe"
@@ -579,8 +584,10 @@
 #define TR_MODESRC             " Modus\003%  Quelle"
 #define TR_MULTIPLIER          "Multiplik."
 #define TR_CAL                 "Kal."
+#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM               "Trim - +"
 #define TR_BG                  "BG:"
+#define TR_CALIB_DONE                  "Calibration completed"
 #if defined(PCBHORUS)
   #define TR_MENUTOSTART       "Drücke [Enter] zum Start"
   #define TR_SETMIDPOINT       "Knüppel/Potis/Sliders auf Mitte [Enter]"
@@ -900,6 +907,8 @@
 #define TR_COPY                "Zeile kopieren"
 #define TR_MOVE                "Zeile verschieben"
 #define TR_PASTE               "Zeile einfügen"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Zeile löschen"
 #define TR_INSERT              "Neue Zeile"
 #define TR_RESET_FLIGHT        "Reset Flugdaten"
@@ -950,10 +959,13 @@
 #define TR_TELEMETRY_TYPE      TR("Typ", "Telemetrietyp")
 #define TR_TELEMETRY_SENSORS   "Sensoren"
 #define TR_VALUE               "Wert"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Einheit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor hinzufügen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
+#define TR_RXFREQUENCY         TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenne auswählen")
 #define TR_ANTENNACONFIRM1     "Ant. umschalten"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Ist eine externe Antenne installiert?")
@@ -1080,7 +1092,7 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Grafikdesigner"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
   #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
   #define TR_ABOUT_HARDWARE_3  "Firmware contributor"
