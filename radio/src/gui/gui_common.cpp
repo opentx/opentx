@@ -802,13 +802,13 @@ const char STR_SUBTYPE_H83D[] =       "\007""Std\0   ""H20H\0  ""H20Mini""H30Min
 const char STR_SUBTYPE_CORONA[] =     "\005""V1\0  ""V2\0  ""FD V3";
 const char STR_SUBTYPE_HITEC[] =      "\007""Optima\0""Opt Hub""Minima\0";
 const char STR_SUBTYPE_BUGS_MINI[] =  "\006""Std\0  ""Bugs3H";
-const char STR_SUBTYPE_TRAXXAS[] =    "\005"" 6519";
+const char STR_SUBTYPE_TRAXXAS[] =    "\004""6519";
 const char STR_SUBTYPE_E01X[] =       "\005""E012\0""E015\0""E016H";
 const char STR_SUBTYPE_GD00X[] =      "\005""GD_V1""GD_V2";
 const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
-const char STR_SUBTYPE_POTENSIC[] =   "\004"" A20";
+const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
-const char STR_SUBTYPE_FLYZONE[] =    "\006"" FZ410";
+const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
 
 const mm_protocol_definition multi_protocols[] = {
 
