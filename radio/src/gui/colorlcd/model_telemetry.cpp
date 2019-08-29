@@ -64,6 +64,8 @@ class SensorButton : public Button {
       if (telemetryItem.isFresh()) {
         invalidate();
       }
+
+      Button::checkEvents();
     }
 
     void paint(BitmapBuffer * dc) override
@@ -102,7 +104,7 @@ class SensorButton : public Button {
 
 class SensorEditWindow : public Page {
   public:
-    SensorEditWindow(uint8_t index) :
+    explicit SensorEditWindow(uint8_t index) :
       Page(ICON_MODEL_TELEMETRY),
       index(index)
     {
@@ -110,7 +112,7 @@ class SensorEditWindow : public Page {
       buildHeader(&header);
     }
 
-    ~SensorEditWindow()
+    ~SensorEditWindow() override
     {
       body.deleteChildren();
     }
@@ -483,9 +485,9 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   // New sensor button
   new TextButton(window, grid.getLineSlot(), STR_TELEMETRY_NEWSENSOR,
                  [=]() -> uint8_t {
-                   int res = availableTelemetryIndex();
-                   if (res >= 0)
-                     editSensor(window, res);
+                   int idx = availableTelemetryIndex();
+                   if (idx >= 0)
+                     editSensor(window, idx);
                    else
                      new FullScreenDialog(WARNING_TYPE_ALERT, "", STR_TELEMETRYFULL);
                    return 0;
