@@ -129,24 +129,6 @@
   #define TR_RETA123           "RETA123"
 #endif
 
-#define LEN_VPROTOS            "\006"
-
-#if defined(PXX)
-  #define TR_PXX               "PXX\0  "
-#elif defined(DSM2)
-  #define TR_PXX               "[PXX]\0"
-#else
-  #define TR_PXX
-#endif
-
-#if defined(DSM2)
-  #define TR_DSM2              "LP45\0 ""DSM2\0 ""DSMX\0 "
-#else
-  #define TR_DSM2
-#endif
-
-#define TR_VPROTOS             "PPM\0  " TR_PXX TR_DSM2
-
 #if defined(PCBSKY9X) && defined(REVX)
   #define LEN_VOUTPUT_TYPE     "\011"
   #define TR_VOUTPUT_TYPE      "OpenDrain""PushPull\0"
@@ -974,9 +956,9 @@
 #define TR_ANTENNACONFIRM1     "Really switch?"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Make sure antenna is installed!")
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Requires non"
-#define TR_R9M_PROTO_FCC_WARN_LINE1         "Requires FCC"
-#define TR_R9M_PROTO_EU_WARN_LINE1          "Requires EU"
-#define TR_R9M_PROTO_WARN_LINE2                "certified firmware"
+#define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Requires FCC"
+#define TR_MODULE_PROTOCOL_EU_WARN_LINE1          "Requires EU"
+#define TR_MODULE_PROTOCOL_WARN_LINE2                "certified firmware"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
 #define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")
