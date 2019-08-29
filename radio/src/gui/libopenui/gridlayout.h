@@ -117,7 +117,7 @@ class FormGridLayout: public GridLayout {
 
   protected:
     coord_t labelWidth = PAGE_LABEL_WIDTH;
-    coord_t lineMarginLeft = 6;
+    coord_t lineMarginLeft = PAGE_PADDING;
     coord_t lineMarginRight = 10;
 };
 

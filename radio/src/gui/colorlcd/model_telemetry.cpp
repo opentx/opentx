@@ -50,9 +50,10 @@ class SensorSourceChoice : public SourceChoice {
 
 class SensorButton : public Button {
   public:
-    SensorButton(Window * parent, const rect_t &rect, uint8_t index) :
+    SensorButton(Window * parent, const rect_t &rect, uint8_t index, uint8_t number) :
       Button(parent, rect),
-      index(index)
+      index(index),
+      number(number)
     {
     }
 
@@ -60,7 +61,7 @@ class SensorButton : public Button {
 
     void checkEvents() override
     {
-      TelemetryItem &telemetryItem = telemetryItems[index];
+      TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isFresh()) {
         invalidate();
       }
@@ -76,7 +77,7 @@ class SensorButton : public Button {
         dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
       }
 
-      drawNumber(dc, 2, 1, index + 1, LEFT, 0, NULL, ":");
+      drawNumber(dc, 2, 1, number, LEFT, 0, NULL, ":");
 
       lcdDrawSizedText(SENSOR_COL1, line1, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
 
@@ -100,6 +101,7 @@ class SensorButton : public Button {
 
   protected:
     uint8_t index;
+    uint8_t number;
 };
 
 class SensorEditWindow : public Page {
@@ -130,8 +132,6 @@ class SensorEditWindow : public Page {
 
     void updateSensorParametersWindow()
     {
-      return;
-
       // Sensor variable part
       FormGridLayout grid;
       sensorParametersWindow->clear();
@@ -433,15 +433,17 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   uint8_t sensorsCount = getTelemetrySensorsCount();
   if (sensorsCount > 0) {
     new StaticText(window, {SENSOR_COL2, grid.getWindowHeight() + 3, SENSOR_COL3 - SENSOR_COL2, PAGE_LINE_HEIGHT}, STR_VALUE, SMLSIZE | TEXT_DISABLE_COLOR);
-    if (!g_model.ignoreSensorIds && !IS_SPEKTRUM_PROTOCOL())
+    if (!g_model.ignoreSensorIds && !IS_SPEKTRUM_PROTOCOL()) {
       new StaticText(window, {SENSOR_COL3, grid.getWindowHeight() + 3, LCD_W - SENSOR_COL3, PAGE_LINE_HEIGHT}, STR_ID, SMLSIZE | TEXT_DISABLE_COLOR);
+    }
   }
 
   grid.nextLine();
+  grid.setLabelWidth(PAGE_PADDING + PAGE_INDENT_WIDTH);
 
-  for (uint8_t idx = 0; idx < MAX_TELEMETRY_SENSORS; idx++) {
+  for (uint8_t idx = 0, count = 0; idx < MAX_TELEMETRY_SENSORS; idx++) {
     if (g_model.telemetrySensors[idx].isAvailable()) {
-      Button * button = new SensorButton(window, grid.getLineSlot(), idx);
+      Button * button = new SensorButton(window, grid.getFieldSlot(), idx, ++count);
       button->setPressHandler([=]() -> uint8_t {
         button->bringToTop();
         Menu * menu = new Menu();
@@ -507,9 +509,10 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
                  });
   grid.nextLine();
 
+  grid.setLabelWidth(PAGE_PADDING + PAGE_INDENT_WIDTH);
   if (sensorsCount > 0) {
     // Delete all sensors button
-    new TextButton(window, grid.getLineSlot(), STR_DELETE_ALL_SENSORS,
+    new TextButton(window, grid.getFieldSlot(), STR_DELETE_ALL_SENSORS,
                    []() -> uint8_t {
                        new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMDELETE, "", [=]() {
                            for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
@@ -522,6 +525,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   }
 
   // Ignore instance button
+  grid.setLabelWidth(250);
   new StaticText(window, grid.getLabelSlot(true), STR_IGNORE_INSTANCE);
   new CheckBox(window, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.ignoreSensorIds));
   grid.nextLine();
