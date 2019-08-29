@@ -37,6 +37,8 @@ inline int MAX_SWITCHES(Board::Type board, int version)
     return 6;
   if (version <= 218 && (IS_TARANIS_X9D(board) || IS_HORUS(board)))
     return 8;
+  if (IS_TARANIS_X9D(board))
+    return 9;
   return Boards::getCapability(board, Board::Switches);
 }
 
@@ -2302,6 +2304,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new SwitchesWarningField<32>(this, modelData.switchWarningStates, board, version));
   else if (IS_TARANIS_X9E(board))
     internalField.Append(new SwitchesWarningField<64>(this, modelData.switchWarningStates, board, version));
+  else if (IS_TARANIS_X9D(board))
+    internalField.Append(new SwitchesWarningField<32>(this, modelData.switchWarningStates, board, version));
   else if (IS_TARANIS(board))
     internalField.Append(new SwitchesWarningField<16>(this, modelData.switchWarningStates, board, version));
   else
