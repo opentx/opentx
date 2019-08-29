@@ -494,7 +494,7 @@ void hallStick_GetTxDataFromUSB( void )
                 break;
 
             case TRANSFER_DIR_HALLSTICK:
-                onFlySkyUsbDownloadStart(TRANSFER_DIR_HALLSTICK);
+                // onFlySkyUsbDownloadStart(TRANSFER_DIR_HALLSTICK);
 
                 if ( 0xA2 == HallProtocolTx.hallID.ID )
                 {
@@ -513,17 +513,17 @@ void hallStick_GetTxDataFromUSB( void )
                 break;
 
             case TRANSFER_DIR_RFMODULE:
-                onFlySkyUsbDownloadStart(TRANSFER_DIR_RFMODULE);
+                // onFlySkyUsbDownloadStart(TRANSFER_DIR_RFMODULE);
 
                 if ( 0xAE == HallProtocolTx.hallID.ID && HallProtocolTx.length == 0 )
                 {   // 55 AE 00 D3 47
-                    onIntmoduleUsbDownloadStart(INTERNAL_MODULE);
+                    // onIntmoduleUsbDownloadStart(INTERNAL_MODULE);
                     break;
                 }
 
                 //if ( isFlySkyUsbDownload() )
                 {
-                    intmoduleSendBufferDMA( pt, HallProtocolTx.length + 3 + 2 );
+                    // intmoduleSendBufferDMA( pt, HallProtocolTx.length + 3 + 2 );
                 }
                 break;
             }
@@ -532,7 +532,7 @@ void hallStick_GetTxDataFromUSB( void )
 
     if ( !usbPlugged() )
     {
-        onFlySkyUsbDownloadStart(0);
+        // onFlySkyUsbDownloadStart(0);
     }
 }
 
@@ -586,7 +586,7 @@ void hall_stick_loop(void)
                 //TRACE("HALL: %02X %02X %02X ...%04X", pt[0], pt[1], pt[2], HallProtocol.checkSum);
                 pt[HallProtocol.length + 3] = HallProtocol.checkSum & 0xFF;
                 pt[HallProtocol.length + 4] = HallProtocol.checkSum >> 8;
-                usbDownloadTransmit( pt, HallProtocol.length + 5 );
+                // usbDownloadTransmit( pt, HallProtocol.length + 5 );
                 break;
             }
             //printf_log_now = 1;

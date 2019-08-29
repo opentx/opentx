@@ -140,23 +140,23 @@ class SensorEditWindow : public Page {
         new StaticText(sensorOneWindow, grid.getLabelSlot(), STR_FORMULA);
         new Choice(sensorOneWindow, grid.getFieldSlot(), STR_VFORMULAS, 0, TELEM_FORMULA_LAST, GET_DEFAULT(sensor->formula),
                    [=](uint8_t newValue) {
-                     sensor->formula = newValue;
-                     sensor->param = 0;
-                     if (sensor->formula == TELEM_FORMULA_CELL) {
-                       sensor->unit = UNIT_VOLTS;
-                       sensor->prec = 2;
-                     }
-                     else if (sensor->formula == TELEM_FORMULA_DIST) {
-                       sensor->unit = UNIT_DIST;
-                       sensor->prec = 0;
-                     }
-                     else if (sensor->formula == TELEM_FORMULA_CONSUMPTION) {
-                       sensor->unit = UNIT_MAH;
-                       sensor->prec = 0;
-                     }
-                     SET_DIRTY();
-                     telemetryItems[index].clear();
-                     updateSensorOneWindow();
+                       sensor->formula = newValue;
+                       sensor->param = 0;
+                       if (sensor->formula == TELEM_FORMULA_CELL) {
+                         sensor->unit = UNIT_VOLTS;
+                         sensor->prec = 2;
+                       }
+                       else if (sensor->formula == TELEM_FORMULA_DIST) {
+                         sensor->unit = UNIT_DIST;
+                         sensor->prec = 0;
+                       }
+                       else if (sensor->formula == TELEM_FORMULA_CONSUMPTION) {
+                         sensor->unit = UNIT_MAH;
+                         sensor->prec = 0;
+                       }
+                       SET_DIRTY();
+                       telemetryItems[index].clear();
+                       updateSensorOneWindow();
                    });
         grid.nextLine();
       }
@@ -413,7 +413,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   new StaticText(window, grid.getLabelSlot(true), STR_CRITICALALARM);
   edit = new NumberEdit(window, grid.getFieldSlot(), -30, 30, GET_SET_DEFAULT(g_model.rssiAlarms.critical));
   edit->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-    drawNumber(dc, 2, 2, g_model.rssiAlarms.getCriticalRssi(), flags);
+    drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, g_model.rssiAlarms.getCriticalRssi(), flags);
   });
   grid.nextLine();
 
@@ -424,9 +424,15 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   // Sensors
   grid.setLabelWidth(140);
   new Subtitle(window, grid.getLineSlot(), STR_TELEMETRY_SENSORS);
-  new StaticText(window, {SENSOR_COL2, grid.getWindowHeight() + 3, SENSOR_COL3 - SENSOR_COL2, PAGE_LINE_HEIGHT}, STR_VALUE, SMLSIZE | TEXT_DISABLE_COLOR);
-  if (!g_model.ignoreSensorIds && !IS_SPEKTRUM_PROTOCOL())
-    new StaticText(window, {SENSOR_COL3, grid.getWindowHeight() + 3, LCD_W - SENSOR_COL3, PAGE_LINE_HEIGHT}, STR_ID, SMLSIZE | TEXT_DISABLE_COLOR);
+
+  // Sensors columns titles
+  uint8_t sensorsCount = getTelemetrySensorsCount();
+  if (sensorsCount > 0) {
+    new StaticText(window, {SENSOR_COL2, grid.getWindowHeight() + 3, SENSOR_COL3 - SENSOR_COL2, PAGE_LINE_HEIGHT}, STR_VALUE, SMLSIZE | TEXT_DISABLE_COLOR);
+    if (!g_model.ignoreSensorIds && !IS_SPEKTRUM_PROTOCOL())
+      new StaticText(window, {SENSOR_COL3, grid.getWindowHeight() + 3, LCD_W - SENSOR_COL3, PAGE_LINE_HEIGHT}, STR_ID, SMLSIZE | TEXT_DISABLE_COLOR);
+  }
+
   grid.nextLine();
 
   for (uint8_t idx = 0; idx < MAX_TELEMETRY_SENSORS; idx++) {
@@ -467,8 +473,12 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
     }
   }
 
+  grid.setLabelWidth(250);
+
   // Autodiscover button
-  auto discover = new TextButton(window, grid.getLineSlot(), STR_DISCOVER_SENSORS);
+  auto rect = grid.getLabelSlot(true);
+  rect.w -= MENUS_MARGIN_LEFT;
+  auto discover = new TextButton(window, rect, STR_DISCOVER_SENSORS);
   discover->setPressHandler([=]() {
     allowNewSensors = !allowNewSensors;
     if (allowNewSensors) {
@@ -480,10 +490,9 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
       return 0;
     }
   });
-  grid.nextLine();
 
   // New sensor button
-  new TextButton(window, grid.getLineSlot(), STR_TELEMETRY_NEWSENSOR,
+  new TextButton(window, grid.getFieldSlot(), STR_TELEMETRY_NEWSENSOR,
                  [=]() -> uint8_t {
                    int idx = availableTelemetryIndex();
                    if (idx >= 0)
@@ -494,17 +503,19 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
                  });
   grid.nextLine();
 
-  // Delete all sensors button
-  new TextButton(window, grid.getLineSlot(), STR_DELETE_ALL_SENSORS,
-                 []() -> uint8_t {
-                   new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMDELETE, "", [=]() {
-                     for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
-                       delTelemetryIndex(i);
-                     }
+  if (sensorsCount > 0) {
+    // Delete all sensors button
+    new TextButton(window, grid.getLineSlot(), STR_DELETE_ALL_SENSORS,
+                   []() -> uint8_t {
+                       new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMDELETE, "", [=]() {
+                           for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
+                             delTelemetryIndex(i);
+                           }
+                       });
+                       return 0;
                    });
-                   return 0;
-                 });
-  grid.nextLine();
+    grid.nextLine();
+  }
 
   // Ignore instance button
   new StaticText(window, grid.getLabelSlot(true), STR_IGNORE_INSTANCE);
@@ -540,5 +551,6 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
 
   grid.nextLine();
 
+  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }

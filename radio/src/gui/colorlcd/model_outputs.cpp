@@ -26,7 +26,7 @@
 
 class OutputEditWindow : public Page {
   public:
-    OutputEditWindow(uint8_t channel) :
+    explicit OutputEditWindow(uint8_t channel) :
       Page(ICON_MODEL_OUTPUTS),
       channel(channel)
     {
@@ -118,7 +118,7 @@ class OutputLineButton : public Button {
       }
     }
 
-    virtual void paint(BitmapBuffer * dc) override
+    void paint(BitmapBuffer * dc) override
     {
       // first line
       drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, output->min - 1000, PREC1);

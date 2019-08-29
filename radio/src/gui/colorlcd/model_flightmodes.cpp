@@ -42,7 +42,7 @@ class FlightModeGroup: public FormGroup
     {
     }
 
-    void checkEvents()
+    void checkEvents() override
     {
       FormGroup::checkEvents();
       bool newActive = (getFlightMode() == index);

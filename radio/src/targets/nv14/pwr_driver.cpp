@@ -90,7 +90,7 @@ void pwrOff()
   GPIO_ResetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
 }
 
-uint32_t pwrPressed()
+bool pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
 }

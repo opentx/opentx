@@ -121,6 +121,17 @@ bool isTelemetryFieldAvailable(int index)
   return sensor.isAvailable();
 }
 
+uint8_t getTelemetrySensorsCount()
+{
+  uint8_t count = 0;
+  for (auto telemetrySensor : g_model.telemetrySensors) {
+    if (telemetrySensor.isAvailable()) {
+      ++count;
+    }
+  }
+  return count;
+}
+
 bool isTelemetryFieldComparisonAvailable(int index)
 {
   if (!isTelemetryFieldAvailable(index))

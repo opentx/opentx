@@ -89,6 +89,7 @@ bool isAltSensor(int sensor);
 bool isVoltsSensor(int sensor);
 bool isCurrentSensor(int sensor);
 bool isTelemetryFieldAvailable(int index);
+uint8_t getTelemetrySensorsCount();
 bool isTelemetryFieldComparisonAvailable(int index);
 bool isSensorAvailable(int sensor);
 bool isRssiSensorAvailable(int sensor);
