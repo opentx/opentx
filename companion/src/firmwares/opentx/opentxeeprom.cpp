@@ -89,13 +89,18 @@ inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
   if (version < 219) {
     if (IS_TARANIS_X7(board) || IS_HORUS(board))
-      return Boards::getCapability(board, Board::SwitchPositions) - 2*3;
+      return Boards::getCapability(board, Board::SwitchPositions) - 2 * 3;
+    if (IS_TARANIS_X9D(board))
+      return 8 * 3;
+  }
+
+  if (IS_TARANIS_X9D(board)) {
+    return 9 * 3; // all X9D have storage for 9 switches (X9D+ 2019)
   }
 
   return Boards::getCapability(board, Board::SwitchPositions);
 }
 
-//#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3

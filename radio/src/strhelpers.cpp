@@ -293,7 +293,7 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
   }
 #else
   #define IDX_TRIMS_IN_STR_VSWITCHES   (1)
-  #define IDX_ON_IN_STR_VSWITCHES      (IDX_TRIMS_IN_STR_VSWITCHES+SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM+1)
+  #define IDX_ON_IN_STR_VSWITCHES      (IDX_TRIMS_IN_STR_VSWITCHES + SWSRC_LAST_TRIM - SWSRC_FIRST_TRIM + 1)
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     s = getSwitchName(s, idx);
