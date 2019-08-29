@@ -92,7 +92,7 @@
 #endif
 
 #define LEN_EXTERNAL_MODULE_PROTOCOLS  "\014"
-#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""R9MLP\0      ""R9MLP ACCESS""SBUS\0       ""XJT Lite"
+#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULTI\0      ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""R9MLP\0      ""R9MLP ACCESS""SBUS\0       ""XJT Lite"
 
 #define LEN_INTERNAL_MODULE_PROTOCOLS  LEN_EXTERNAL_MODULE_PROTOCOLS
 #define TR_INTERNAL_MODULE_PROTOCOLS   TR_EXTERNAL_MODULE_PROTOCOLS
@@ -130,4 +130,4 @@
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS            "\007"
-#define TR_MULTI_PROTOCOLS             "FlySky\0""Hubsan\0""FrSky\0 ""Hisky\0 ""V2x2\0  ""DSM\0   ""Devo\0  ""YD717\0 ""KN\0    ""SymaX\0 ""SLT\0   ""CX10\0  ""CG023\0 ""Bayang\0""ESky\0  ""MT99XX\0""MJXq\0  ""Shenqi\0""FY326\0 ""SFHSS\0 ""J6 PRO\0""FQ777\0 ""Assan\0 ""Hontai\0""OpenLrs""FS 2A\0 ""Q2x2\0  ""Walk.\0 ""Q303\0  ""GW008\0 ""DM002\0 ""Cabell\0""Esy150\0""H8 3D\0 ""Corona\0""CFlie\0 ""Hitec\0 ""WFly\0  ""Bugs\0  ""BugMin\0""Traxas\0""NC1701\0""E01X\0  ""V911S\0 ""GD00X\0 ""V761\0  ""KF606\0 ""Redpin\0""Potens\0""ZSX\0   ""Flyzone"
+#define TR_MULTI_PROTOCOLS             "FlySky\0""Hubsan\0""FrSky\0 ""Hisky\0 ""V2x2\0  ""DSM\0   ""Devo\0  ""YD717\0 ""KN\0    ""SymaX\0 ""SLT\0   ""CX10\0  ""CG023\0 ""Bayang\0""ESky\0  ""MT99XX\0""MJXq\0  ""Shenqi\0""FY326\0 ""SFHSS\0 ""J6 Pro\0""FQ777\0 ""Assan\0 ""Hontai\0""OpenLrs""FSky 2A""Q2x2\0  ""Walkera""Q303\0  ""GW008\0 ""DM002\0 ""Cabell\0""Esky150""H8 3D\0 ""Corona\0""CFlie\0 ""Hitec\0 ""WFly\0  ""Bugs\0  ""BugMini""Traxxas""NCC1701""E01X\0  ""V911S\0 ""GD00X\0 ""V761\0  ""KF606\0 ""Redpine""Potensi""ZSX\0   ""FlyZone"
