@@ -62,6 +62,11 @@ else
   cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/sdcard/sdcard-taranis-x9-${sdcard_version}.zip *
   cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip *
 
+  # Create symlinks for other radios
+  ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-taranis-xlite-${sdcard_version}.zip
+  ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-taranis-x9lite-${sdcard_version}.zip
+  ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-jumper-t12-${sdcard_version}.zip
+
   # remove LUA stuff for 9x platform
   rm -Rf ${workdir}/sdcard/taranis-x7/SCRIPTS
   rm -Rf ${workdir}/sdcard/taranis-x7/FrSky-utilities

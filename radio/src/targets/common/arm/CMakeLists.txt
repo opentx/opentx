@@ -14,7 +14,6 @@ option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
 option(CROSSFIRE "Crossfire TX Module" ON)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
-option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
 option(DEBUG_LATENCY "Debug latency" OFF)
 option(DEBUG_USB_INTERRUPTS "Count individual USB interrupts" OFF)
@@ -96,10 +95,6 @@ endif()
 
 if(DEBUG)
   add_definitions(-DDEBUG)
-endif()
-
-if(SUPPORT_D16_EU_ONLY)
-  add_definitions(-DMODULE_D16_EU_ONLY_SUPPORT)
 endif()
 
 if(HAPTIC)

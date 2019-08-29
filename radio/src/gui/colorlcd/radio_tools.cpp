@@ -169,7 +169,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
 
 #if defined(PXX2)
   // PXX2 modules tools
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
     new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_SPECTRUM_ANALYSER_INT, [=]() -> uint8_t {
         new RadioSpectrumAnalyser(INTERNAL_MODULE);
@@ -178,7 +178,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
     grid.nextLine();
   }
 
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER)) {
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER)) {
     new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_POWER_METER_INT, [=]() -> uint8_t {
 //        new RadioPowerMeter(INTERNAL_MODULE);
@@ -187,7 +187,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
     grid.nextLine();
   }
 
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
     new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_SPECTRUM_ANALYSER_EXT, [=]() -> uint8_t {
         new RadioSpectrumAnalyser(EXTERNAL_MODULE);
@@ -196,7 +196,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
     grid.nextLine();
   }
 
-  if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER)) {
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER)) {
     new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_POWER_METER_EXT, [=]() -> uint8_t {
 //        new RadioPowerMeter(EXTERNAL_MODULE);

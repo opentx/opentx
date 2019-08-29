@@ -741,7 +741,7 @@ extern const char STR_RXFREQUENCY[];
 extern const char STR_ANTENNASELECTION[];
 extern const char STR_ANTENNACONFIRM1[];
 extern const char STR_ANTENNACONFIRM2[];
-extern const char STR_R9M_PROTO_FLEX_WARN_LINE1[];
+extern const char STR_MODULE_PROTOCOL_FLEX_WARN_LINE1[];
 extern const char STR_R9M_PROTO_FCC_WARN_LINE1[];
 extern const char STR_R9M_PROTO_EU_WARN_LINE1[];
 extern const char STR_R9M_PROTO_WARN_LINE2[];
