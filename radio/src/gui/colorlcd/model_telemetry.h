@@ -27,7 +27,7 @@ class ModelTelemetryPage: public PageTab {
   public:
     ModelTelemetryPage();
 
-    virtual void build(FormWindow * window) override
+    void build(FormWindow * window) override
     {
       build(window, -1);
     }
