@@ -549,6 +549,7 @@
 #define TR_MEMORYWARNING       INDENT "Speicher voll"
 #define TR_ALARMWARNING        TR(INDENT "Alle Töne aus?", INDENT "Alle Töne ganz aus?")
 #define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi-Chk bei aus", INDENT "Prüfe RSSI bei Ausschalten")
+#define TR_FLYSKY_TELEMETRY            TR("FlySky RSSI #", "Use FlySky RSSI value without rescalling")
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"

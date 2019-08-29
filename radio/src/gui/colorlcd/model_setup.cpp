@@ -497,7 +497,7 @@ class ModuleWindow : public Window {
 
       // Module Type
       new StaticText(this, grid.getLabelSlot(true), STR_MODE);
-      moduleChoice = new Choice(this, grid.getFieldSlot(2, 0), STR_INTERNAL_MODULE_PROTOCOLS,
+      moduleChoice = new Choice(this, grid.getFieldSlot(), STR_INTERNAL_MODULE_PROTOCOLS,
                                 MODULE_TYPE_NONE, MODULE_TYPE_COUNT - 1,
                                 GET_DEFAULT(g_model.moduleData[moduleIdx].type),
                                 [=](int32_t newValue) {
@@ -513,7 +513,24 @@ class ModuleWindow : public Window {
       FormField::link(previousField, moduleChoice);
 
       // Module parameters
-      if (isModuleXJT(moduleIdx)) {
+      if (isModuleFlysky(moduleIdx)) {
+        grid.nextLine();
+        rfChoice = new Choice(this, grid.getFieldSlot(), STR_FLYSKY_PROTOCOLS, 0, 3,
+                   GET_DEFAULT(g_model.moduleData[moduleIdx].flysky.mode),
+                   [=](int32_t newValue) -> void {
+                     g_model.moduleData[moduleIdx].flysky.mode = newValue;
+                     SET_DIRTY();
+                     //TODO moduleFlagBackNormal(moduleIdx);
+                     //TODO onFlySkyReceiverSetPulse(INTERNAL_MODULE, newValue);
+                   });
+
+#if defined (PCBNV14)
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_FLYSKY_TELEMETRY);
+        new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.rssiAlarms.flysky_telemetry));
+#endif
+      }
+      else if (isModuleXJT(moduleIdx)) {
         auto xjtChoice = new Choice(this, grid.getFieldSlot(2, 1), STR_XJT_ACCST_RF_PROTOCOLS, MODULE_SUBTYPE_PXX1_OFF, MODULE_SUBTYPE_PXX1_ACCST_LR12,
                                     GET_SET_DEFAULT(g_model.moduleData[moduleIdx].rfProtocol));
         xjtChoice->setAvailableHandler([](int index) {

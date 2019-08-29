@@ -269,7 +269,11 @@ PACK(struct ScriptData {
  */
 PACK(struct RssiAlarmData {
   int8_t disabled:1;
+#if defined (PCBNV14)
+  uint8_t   flysky_telemetry:1; // if set for FlySky receivers use native RSSI values instead of rescaled ones
+#else
   int8_t spare:1;
+#endif
   int8_t warning:6;
   int8_t spare2:2;
   int8_t critical:6;

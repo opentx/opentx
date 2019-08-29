@@ -685,6 +685,7 @@
 #define TR_SYNCMENU                    "[Sync]"
 #define TR_LIMIT                       INDENT"Limit"
 #define TR_MINRSSI                     "Min Rssi"
+#define TR_FLYSKY_TELEMETRY            TR("FlySky RSSI #", "Use FlySky RSSI value without rescalling")
 #define TR_LATITUDE                    "Zem. šířka"
 #define TR_LONGITUDE                   "Zem. délka"
 #define TR_GPSCOORD                    "GPS souřadnice"

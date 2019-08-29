@@ -164,6 +164,7 @@ extern const char STR_XJT_ACCST_RF_PROTOCOLS[];
 extern const char STR_ISRM_RF_PROTOCOLS[];
 extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
+extern const char STR_FLYSKY_PROTOCOLS[];
 
 #if defined(MULTIMODULE)
 extern const char STR_MULTI_PROTOCOLS[];
@@ -315,6 +316,7 @@ extern const char STR_ADJUST_RTC[];
 extern const char STR_GPS[];
 extern const char STR_GPSCOORD[];
 extern const char STR_VARIO[];
+extern const char STR_FLYSKY_TELEMETRY[];
 extern const char STR_PITCH_AT_ZERO[];
 extern const char STR_PITCH_AT_MAX[];
 extern const char STR_REPEAT_AT_ZERO[];
