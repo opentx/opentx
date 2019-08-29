@@ -112,7 +112,6 @@ if(INTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
 
-set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 set(GVAR_SCREEN model_gvars.cpp)
 
 set(TARGET_SRC

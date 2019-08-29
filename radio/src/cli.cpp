@@ -347,7 +347,7 @@ int cliTestNew()
   return 0;
 }
 
-#if defined(COLORLCD)
+#if 0 // TODO later defined(COLORLCD)
 
 extern bool perMainEnabled;
 typedef void (*timedTestFunc_t)(void);
@@ -664,7 +664,7 @@ int cliTest(const char ** argv)
   else if (!strcmp(argv[1], "std::exception")) {
     serialPrint("Not implemented");
   }
-#if defined(COLORLCD)
+#if 0 // TODO later defined(COLORLCD)
   else if (!strcmp(argv[1], "graphics")) {
     return cliTestGraphics();
   }

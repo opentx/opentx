@@ -29,8 +29,6 @@ AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
-DMAFifo<32> auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
-
 void auxSerialSetup(unsigned int baudrate, bool dma)
 {
   USART_InitTypeDef USART_InitStructure;
@@ -89,10 +87,10 @@ void auxSerialSetup(unsigned int baudrate, bool dma)
     DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
     DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-    DMA_Init(AUX_SERIAL_DMA_Channel_RX, &DMA_InitStructure);
+    DMA_Init(AUX_SERIAL_DMA_Stream_RX, &DMA_InitStructure);
     USART_DMACmd(AUX_SERIAL_USART, USART_DMAReq_Rx, ENABLE);
     USART_Cmd(AUX_SERIAL_USART, ENABLE);
-    DMA_Cmd(AUX_SERIAL_DMA_Channel_RX, ENABLE);
+    DMA_Cmd(AUX_SERIAL_DMA_Stream_RX, ENABLE);
     return;
   }
 #endif

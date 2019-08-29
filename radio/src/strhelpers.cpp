@@ -583,6 +583,7 @@ char * strAppendDate(char * str, bool time)
 }
 #endif
 
+#if !defined(BOOT)
 static char tmpHelpersString[32];
 
 char * getSwitchWarningString(swsrc_t idx)
@@ -609,3 +610,4 @@ char * getSwitchPositionName(swsrc_t idx)
 {
   return getSwitchPositionName(tmpHelpersString, idx);
 }
+#endif
