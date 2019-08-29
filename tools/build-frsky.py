@@ -86,7 +86,7 @@ def build(board, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    command = "cmake -DFRSKY_RELEASE=YES %s" % (board, cmake_options, srcdir)
+    command = "cmake %s -DFRSKY_RELEASE=YES %s" % (cmake_options, srcdir)
     print(command)
     os.system(command)
     os.system("make firmware -j6")
@@ -115,7 +115,9 @@ def main():
     parser.add_argument("srcdir", type=dir_path)
 
     args = parser.parse_args()
-    for board in args.boards:
+
+    boards = options.keys() if "ALL" in args.boards else args.boards
+    for board in boards:
         build(board, args.srcdir)
 
 
