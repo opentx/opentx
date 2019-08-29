@@ -16,7 +16,7 @@ Useful links:
 
 ## Purpose of this branch
 
-Enable HAL (Haerdware Abstraction Layer for the STM32F407VET6 chip on the popular STM32FAVE development board. Where this is motivated for the following reasons: 
+Enable HAL (Haerdware Abstraction Layer for the STM32F407VET6 chip on the popular STM32F4VE development board. Where this is motivated for the following reasons: 
 
 * To have a cheap development platform to test on.
 * To have a cheap alaternative to DIY radio platform. (Endless possibilities of design) 
@@ -27,7 +27,7 @@ With in this brach, I hope to provide support for the following cheap LCD screen
 * 3.2 inch TFT LCD screen with resistive touch screens ILI9341 display module for STM32 
 * 5" Graphical LCD Touchscreen, 480x272, SPI, FT800
 
-## More on the STM32F407VET6 and STM32FAVE development Board.
+## More on the STM32F407VET6 and STM32F4VE development Board.
 ![alt text](https://github.com/jemo07/opentx/blob/2.3/stm32407vet6_view01.jpg)
 
 # Microcontroller features
