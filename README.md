@@ -28,7 +28,7 @@ With in this brach, I hope to provide support for the following cheap LCD screen
 * 5" Graphical LCD Touchscreen, 480x272, SPI, FT800
 
 ## More on the STM32F407VET6 and STM32FAVE development Board.
-![alt text](https://os.mbed.com/media/uploads/hudakz/stm32407vet6_view01.jpg)
+![alt text](https://github.com/jemo07/opentx/blob/2.3/stm32407vet6_view01.jpg)
 
 # Microcontroller features
 * STM32F407VET6 in LQFP100 package
@@ -69,6 +69,10 @@ With in this brach, I hope to provide support for the following cheap LCD screen
 * NRF24L01 socket 
 
 # Board pinout
+![alt text](https://github.com/jemo07/opentx/blob/2.3/stm32f407vet6_left02.png)
+![alt text](https://github.com/jemo07/opentx/blob/2.3/stm32f407vet6_right01.png)
+![alt text](https://github.com/jemo07/opentx/blob/2.3/stm32f407vet6_st-link02.png)
+
 
 
 
