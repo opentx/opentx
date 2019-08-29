@@ -9,7 +9,20 @@ import tempfile
 
 
 options = {
-    "XLITE": {
+    "XLITE_FCC": {
+        "PCB": "XLITE",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MODULE_SIZE_STD": "NO",
+        "PPM": "NO",
+        "DSM2": "NO",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "SBUS": "NO",
+    },
+    "XLITE_LBT": {
+        "PCB": "XLITE",
+        "MODULE_PROTOCOL_D8": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
         "MODULE_SIZE_STD": "NO",
@@ -20,6 +33,7 @@ options = {
         "SBUS": "NO",
     },
     "XLITES": {
+        "PCB": "XLITES",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
         "AUTOUPDATE": "YES",
@@ -33,6 +47,7 @@ options = {
         "SBUS": "NO",
     },
     "X9LITE": {
+        "PCB": "X9LITE",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
         "AUTOUPDATE": "YES",
@@ -47,6 +62,7 @@ options = {
         "DEFAULT_MODE": "2",
     },
     "X9D+": {
+        "PCB": "X9D+",
         "PCBREV": "2019",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
@@ -70,7 +86,7 @@ def build(board, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    command = "cmake -DPCB=%s %s -DFRSKY_RELEASE=YES %s" % (board, cmake_options, srcdir)
+    command = "cmake -DFRSKY_RELEASE=YES %s" % (board, cmake_options, srcdir)
     print(command)
     os.system(command)
     os.system("make firmware -j6")

@@ -515,7 +515,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 
 bool isR9MModeAvailable(int mode)
 {
-#if defined(R9M_PROTO_FLEX)
+#if defined(MODULE_PROTOCOL_FLEX)
   return true;
 #else
   return mode <= MODULE_SUBTYPE_R9M_EU;
@@ -660,7 +660,7 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
-#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+#if !defined(MODULE_PROTOCOL_D8)
   if (protocol == MODULE_SUBTYPE_PXX1_ACCST_D8) {
     return false;
   }

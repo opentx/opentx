@@ -967,7 +967,7 @@
 #define TR_ANTENNASELECTION            TR(INDENT "Antenne", INDENT "Choix antenne")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
 #define TR_ANTENNACONFIRM2             TR("Vérif antenne", "Installer l'antenne d'abord!")
-#define TR_R9M_PROTO_FLEX_WARN_LINE1                "Nécessite firm."
+#define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Nécessite firm."
 #define TR_R9M_PROTO_FCC_WARN_LINE1         "Requires FCC"
 #define TR_R9M_PROTO_EU_WARN_LINE1          "Requires EU"
 #define TR_R9M_PROTO_WARN_LINE2                "R9M non certifié"

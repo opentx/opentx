@@ -952,7 +952,7 @@
 #define TR_ANTENNASELECTION            TR(INDENT "Antenna", TR(INDENT "Antenna", INDENT "Antenna selection"))
 #define TR_ANTENNACONFIRM1             "Really switch?"
 #define TR_ANTENNACONFIRM2             TR("Check antenna", "Make sure antenna is installed!")
-#define TR_R9M_PROTO_FLEX_WARN_LINE1   "Requires FLEX non"
+#define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1   "Requires FLEX non"
 #define TR_R9M_PROTO_FCC_WARN_LINE1    "Requires FCC"
 #define TR_R9M_PROTO_EU_WARN_LINE1     "Requires EU"
 #define TR_R9M_PROTO_WARN_LINE2        "certified firmware"

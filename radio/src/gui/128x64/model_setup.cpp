@@ -905,7 +905,7 @@ void menuModelSetup(event_t event)
           else if (old_editMode > 0) {
             if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN_LINE1);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FLEX_WARN_LINE1);
                 SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
               }
 #if POPUP_LEVEL >= 3
@@ -1486,7 +1486,6 @@ void menuModelSetup(event_t event)
               if (attr) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LBT_POWER_MAX);
                 if (s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power) {
-                  TRACE("ON Y PASSE");
                   module.channelsStart = 0;
                   module.channelsCount = maxModuleChannels_M8(moduleIdx);
                   if (reusableBuffer.moduleSetup.r9mPower + module.pxx.power < 5) { //switching between mode 2 and 3 does not require rebind
