@@ -1817,7 +1817,7 @@ void opentxInit()
 #endif
 
 #if defined(EEPROM)
-  bool radioSettingsRead = storageReadRadioSettings(false);
+  bool radioSettingsValid = storageReadRadioSettings(false);
 #endif
 
   BACKLIGHT_ENABLE(); // we start the backlight during the startup animation
@@ -1876,7 +1876,7 @@ void opentxInit()
 #endif
 
 #if defined(EEPROM)
-  if (!radioSettingsRead)
+  if (!radioSettingsValid)
     storageReadRadioSettings();
   storageReadCurrentModel();
 #endif
