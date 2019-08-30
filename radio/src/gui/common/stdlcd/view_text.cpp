@@ -52,13 +52,11 @@ void readModelNotes()
 
 void menuTextView(event_t event)
 {
-  static int lines_count;
-
   switch (event) {
     case EVT_ENTRY:
       menuVerticalOffset = 0;
-      lines_count = 0;
-      sdReadTextFile(reusableBuffer.viewText.filename, reusableBuffer.viewText.lines, lines_count);
+      reusableBuffer.viewText.linesCount = 0;
+      sdReadTextFile(reusableBuffer.viewText.filename, reusableBuffer.viewText.lines, reusableBuffer.viewText.linesCount);
       break;
 
     case EVT_KEY_PREVIOUS_LINE:
@@ -66,15 +64,15 @@ void menuTextView(event_t event)
         break;
       else
         menuVerticalOffset--;
-      sdReadTextFile(reusableBuffer.viewText.filename, reusableBuffer.viewText.lines, lines_count);
+      sdReadTextFile(reusableBuffer.viewText.filename, reusableBuffer.viewText.lines, reusableBuffer.viewText.linesCount);
       break;
 
     case EVT_KEY_NEXT_LINE:
-      if (menuVerticalOffset+LCD_LINES-1 >= lines_count)
+      if (menuVerticalOffset+LCD_LINES-1 >= reusableBuffer.viewText.linesCount)
         break;
       else
         ++menuVerticalOffset;
-      sdReadTextFile(reusableBuffer.viewText.filename, reusableBuffer.viewText.lines, lines_count);
+      sdReadTextFile(reusableBuffer.viewText.filename, reusableBuffer.viewText.lines, reusableBuffer.viewText.linesCount);
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
@@ -95,8 +93,8 @@ void menuTextView(event_t event)
   lcdDrawText(LCD_W/2, 0, getBasename(title), CENTERED);
   lcdInvertLine(0);
 
-  if (lines_count > LCD_LINES-1) {
-    drawVerticalScrollbar(LCD_W-1, FH, LCD_H-FH, menuVerticalOffset, lines_count, LCD_LINES-1);
+  if (reusableBuffer.viewText.linesCount > LCD_LINES-1) {
+    drawVerticalScrollbar(LCD_W-1, FH, LCD_H-FH, menuVerticalOffset, reusableBuffer.viewText.linesCount, LCD_LINES-1);
   }
 }
 

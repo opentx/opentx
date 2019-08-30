@@ -1204,6 +1204,7 @@ union ReusableBuffer
   struct {
     char filename[TEXT_FILENAME_MAXLEN];
     char lines[NUM_BODY_LINES][LCD_COLS + 1];
+    int linesCount;
   } viewText;
 
 #if defined(STM32)
@@ -1277,8 +1278,6 @@ extern uint8_t s_frsky_view;
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
 
-void getGpsPilotPosition();
-void getGpsDistance();
 void varioWakeup();
 
 #if defined(AUDIO) && defined(BUZZER)
