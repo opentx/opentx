@@ -180,7 +180,7 @@ void loadModel(int index, bool alarms=true);
 
 bool eepromOpen();
 void eeLoadModelName(uint8_t id, char * name);
-bool eeLoadGeneral(bool allowConversion);
+bool eeLoadGeneral(bool allowFixes);
 
 // For EEPROM backup/restore
 inline bool isEepromStart(const void * buffer)

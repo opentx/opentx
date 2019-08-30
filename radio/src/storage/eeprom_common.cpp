@@ -86,17 +86,18 @@ void eeLoadModelHeaders()
   }
 }
 
-void storageClearRadioSetting()
+void storageClearRadioSettings()
 {
   memclear(&g_eeGeneral, sizeof(RadioData));
 }
 
-void storageReadRadioSettings(bool allowConversion)
+bool storageReadRadioSettings(bool allowFixes)
 {
-  if (g_eeGeneral.version != 0)
-    return;
-  
-  if (!eepromOpen() || !eeLoadGeneral(allowConversion)) {
+  if (!eepromOpen() || !eeLoadGeneral(allowFixes)) {
+    if (!allowFixes) {
+      storageClearRadioSettings();
+      return false;
+    }
     storageEraseAll(true);
   }
   else {
@@ -109,6 +110,8 @@ void storageReadRadioSettings(bool allowConversion)
       currentLanguagePack = languagePacks[i];
     }
   }
+
+  return true;
 }
 
 void storageReadCurrentModel()
@@ -118,7 +121,7 @@ void storageReadCurrentModel()
 
 void storageReadAll()
 {
-  storageReadRadioSettings(true);
+  storageReadRadioSettings();
   storageReadCurrentModel();
 }
 
