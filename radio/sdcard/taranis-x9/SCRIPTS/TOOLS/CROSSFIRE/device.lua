@@ -401,7 +401,6 @@ local function refreshNext()
     local time = getTime()
     if fieldPopup then
       if time > fieldTimeout then
-        local frame = { deviceId, 0xEA, fieldPopup.id }
         crossfireTelemetryPush(0x2D, { deviceId, 0xEA, fieldPopup.id, 6 })
         fieldTimeout = time + fieldPopup.timeout
       end
