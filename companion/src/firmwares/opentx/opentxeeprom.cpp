@@ -2313,6 +2313,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   if (IS_TARANIS_X9E(board))
     internalField.Append(new UnsignedField<32>(this, modelData.switchWarningEnable));
+  else if (version >= 219 && IS_TARANIS_X9D(board))
+    internalField.Append(new UnsignedField<16>(this, modelData.switchWarningEnable));
   else if (!IS_HORUS(board))
     internalField.Append(new UnsignedField<8>(this, modelData.switchWarningEnable));
 
@@ -2364,8 +2366,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   int modulesCount = (version <= 218 ? 3 : 2);
-  for (int module=0; module<modulesCount; module++) {
-
+  for (int module = 0; module < modulesCount; module++) {
     internalField.Append(new ModuleField(this, modelData.moduleData[module], board, version));
   }
 
