@@ -22,9 +22,6 @@
 
 #define TEXT_FILE_MAXSIZE     2048
 
-char s_text_file[TEXT_FILENAME_MAXLEN];
-char s_text_screen[NUM_BODY_LINES][LCD_COLS+1];
-
 void readTextFile(int & lines_count)
 {
   FIL file;
@@ -36,9 +33,9 @@ void readTextFile(int & lines_count)
   char escape_chars[2];
   int current_line = 0;
 
-  memset(s_text_screen, 0, sizeof(s_text_screen));
+  memclear(reusableBuffer.viewText.lines, sizeof(reusableBuffer.viewText.lines));
 
-  result = f_open(&file, s_text_file, FA_OPEN_EXISTING | FA_READ);
+  result = f_open(&file, reusableBuffer.viewText.filename, FA_OPEN_EXISTING | FA_READ);
   if (result == FR_OK) {
     for (int i=0; i<TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz)==FR_OK && sz==1 && (lines_count==0 || current_line-menuVerticalOffset<NUM_BODY_LINES); i++) {
       if (c == '\n') {
@@ -80,7 +77,7 @@ void readTextFile(int & lines_count)
           c = 0x1D; //tab
         }
         escape = 0;
-        s_text_screen[current_line-menuVerticalOffset][line_length++] = c;
+        reusableBuffer.viewText.lines[current_line-menuVerticalOffset][line_length++] = c;
       }
     }
     if (c != '\n') {
@@ -129,7 +126,7 @@ bool menuTextView(event_t event)
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, s_text_screen[i]);
+    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, reusableBuffer.viewText.lines[i]);
   }
 
 #if 0
@@ -148,7 +145,7 @@ bool menuTextView(event_t event)
 void pushMenuTextView(const char *filename)
 {
   if (strlen(filename) < TEXT_FILENAME_MAXLEN) {
-    strcpy(s_text_file, filename);
+    strcpy(reusableBuffer.viewText.filename, filename);
     pushMenu(menuTextView);
   }
 }

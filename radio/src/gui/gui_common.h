@@ -27,6 +27,7 @@
 
 #define READONLY_ROW                   ((uint8_t)-1)
 #define TITLE_ROW                      READONLY_ROW
+#define LABEL(...)                     READONLY_ROW
 #define HIDDEN_ROW                     ((uint8_t)-2)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)

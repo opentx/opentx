@@ -589,13 +589,9 @@ inline void POPUP_CONFIRMATION(const char *s, void (* confirmHandler)(const char
   popupMenuHandler = confirmHandler;
 }
 
-#define TEXT_FILENAME_MAXLEN           40
-extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void pushMenuTextView(const char * filename);
 void pushModelNotes();
 void readModelNotes();
-
-#define LABEL(...)                     (uint8_t)-1
 
 #define CURSOR_MOVED_LEFT(event)       (event==EVT_ROTARY_LEFT || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (event==EVT_ROTARY_RIGHT || EVT_KEY_MASK(event) == KEY_RIGHT)

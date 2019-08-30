@@ -1075,14 +1075,16 @@ constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
 
 // Re-useable byte array to save having multiple buffers
 #if LCD_W <= 212
-#define SD_SCREEN_FILE_LENGTH          32
+constexpr uint8_t SD_SCREEN_FILE_LENGTH = 32;
 #else
-#define SD_SCREEN_FILE_LENGTH          64
+constexpr uint8_t SD_SCREEN_FILE_LENGTH = 64;
 #endif
 
 #if defined(BLUETOOTH)
 #include "bluetooth.h"
 #endif
+
+constexpr uint8_t TEXT_FILENAME_MAXLEN = 40;
 
 union ReusableBuffer
 {
@@ -1198,6 +1200,11 @@ union ReusableBuffer
   struct {
     int8_t preset;
   } curveEdit;
+
+  struct {
+    char filename[TEXT_FILENAME_MAXLEN];
+    char lines[NUM_BODY_LINES][LCD_COLS + 1];
+  } viewText;
 
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed

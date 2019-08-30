@@ -78,11 +78,11 @@ void readModelNotes()
 {
   LED_ERROR_BEGIN();
 
-  strcpy(s_text_file, MODELS_PATH "/");
-  char *buf = strcat_currentmodelname(&s_text_file[sizeof(MODELS_PATH)]);
+  strcpy(reusableBuffer.viewText.filename, MODELS_PATH "/");
+  char *buf = strcat_currentmodelname(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)]);
   strcpy(buf, TEXT_EXT);
-  if (!isFileAvailable(s_text_file)) {
-    char *buf = strAppendFilename(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+  if (!isFileAvailable(reusableBuffer.viewText.filename)) {
+    char *buf = strAppendFilename(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
     strcpy(buf, TEXT_EXT);
   }
 
@@ -103,11 +103,11 @@ void readModelNotes()
 bool menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {
-    strcpy(s_text_file, MODELS_PATH "/");
-    char *buf = strcat_currentmodelname(&s_text_file[sizeof(MODELS_PATH)]);
+    strcpy(reusableBuffer.viewText.filename, MODELS_PATH "/");
+    char *buf = strcat_currentmodelname(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)]);
     strcpy(buf, TEXT_EXT);
-    if (!isFileAvailable(s_text_file)) {
-      char *buf = strAppendFilename(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+    if (!isFileAvailable(reusableBuffer.viewText.filename)) {
+      char * buf = strAppendFilename(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
       strcpy(buf, TEXT_EXT);
     }
   }
