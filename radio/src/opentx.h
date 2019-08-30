@@ -30,7 +30,6 @@
 #include "opentx_types.h"
 #include "debounce.h"
 
-
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"
 #endif
@@ -413,13 +412,13 @@ void watchdogSuspend(uint32_t timeout);
 
 #define MAX_ALERT_TIME   60
 
-struct t_inactivity
+struct InactivityData
 {
   uint16_t counter;
   uint8_t  sum;
 };
 
-extern struct t_inactivity inactivity;
+extern InactivityData inactivity;
 
 #define LEN_STD_CHARS 40
 
@@ -566,9 +565,13 @@ extern uint8_t trimsDisplayMask;
 
 void flightReset(uint8_t check=true);
 
-extern uint8_t unexpectedShutdown;
+PACK(struct GlobalData {
+  uint8_t unexpectedShutdown:1;
+  uint8_t sdcardPresent:1;
+  uint8_t spare:6;
+});
 
-extern uint16_t vbattRTC;
+extern GlobalData globalData;
 
 extern uint16_t maxMixerDuration;
 
@@ -1207,6 +1210,16 @@ union ReusableBuffer
     int linesCount;
   } viewText;
 
+  struct {
+    bool longNames;
+    bool secondPage;
+    bool mixersView;
+  } viewChannels;
+
+  struct {
+    uint8_t maxNameLen;
+  } modelFailsafe;
+
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
   uint8_t MSC_BOT_Data[MSC_MEDIA_PACKET];
@@ -1374,7 +1387,7 @@ inline bool isAsteriskDisplayed()
   return true;
 #endif
 
-  return unexpectedShutdown;
+  return globalData.unexpectedShutdown;
 }
 
 #endif // _OPENTX_H_
