@@ -140,7 +140,7 @@ class BindInformation {
 
 class OtaUpdateInformation: public BindInformation {
   public:
-    char filename[_MAX_LFN+1];
+    char filename[32+1];
     uint32_t address;
 };
 
