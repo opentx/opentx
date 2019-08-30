@@ -64,6 +64,13 @@ inline int MAX_POTS_STORAGE(Board::Type board, int version)
   return Boards::getCapability(board, Board::PotsStorage);
 }
 
+inline int MAX_SLIDERS_STORAGE(Board::Type board, int version)
+{
+  if (version >= 219 && IS_HORUS(board))
+    return 4;
+  return Boards::getCapability(board, Board::Sliders);
+}
+
 inline int MAX_SLIDERS_SLOTS(Board::Type board, int version)
 {
   if (version >= 219 && IS_HORUS(board))
@@ -2189,14 +2196,14 @@ class ModuleField: public TransformedField {
       internalField.Append(new ModuleUnionField(parent, module, board, version));
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
         module.rfProtocol = module.protocol - PULSES_LP45;
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (module.protocol == PULSES_LP45) {
         module.protocol += module.rfProtocol;
@@ -2431,7 +2438,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
       internalField.Append(new SpareBitsField<1>(this));
   }
 
-  for (int i=0; i < Boards::getCapability(board, Board::Pots) + Boards::getCapability(board, Board::Sliders); i++) {
+  for (int i=0; i < Boards::getCapability(board, Board::Pots) + MAX_SLIDERS_STORAGE(board, version); i++) {
     internalField.Append(new SignedField<8>(this, modelData.potPosition[i]));
   }
 
