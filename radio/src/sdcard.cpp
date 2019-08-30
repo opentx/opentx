@@ -410,6 +410,74 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   return popupMenuItemsCount;
 }
 
+constexpr uint32_t TEXT_FILE_MAXSIZE = 2048;
+
+void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS + 1], int & lines_count)
+{
+  FIL file;
+  int result;
+  char c;
+  unsigned int sz;
+  int line_length = 0;
+  uint8_t escape = 0;
+  char escape_chars[4] = {0};
+  int current_line = 0;
+
+  memclear(lines, NUM_BODY_LINES * (LCD_COLS + 1));
+
+  result = f_open(&file, filename, FA_OPEN_EXISTING | FA_READ);
+  if (result == FR_OK) {
+    for (unsigned i = 0; i < TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz) == FR_OK && sz == 1 && (lines_count == 0 || current_line - menuVerticalOffset < NUM_BODY_LINES); i++) {
+      if (c == '\n') {
+        ++current_line;
+        line_length = 0;
+        escape = 0;
+      }
+      else if (c!='\r' && current_line>=menuVerticalOffset && current_line-menuVerticalOffset<NUM_BODY_LINES && line_length<LCD_COLS) {
+        if (c == '\\' && escape == 0) {
+          escape = 1;
+          continue;
+        }
+        else if (c != '\\' && escape > 0 && escape < sizeof(escape_chars)) {
+          escape_chars[escape - 1] = c;
+          if (escape == 2 && !strncmp(escape_chars, "up", 2)) {
+            c = '\300';
+          }
+          else if (escape == 2 && !strncmp(escape_chars, "dn", 2)) {
+            c = '\301';
+          }
+          else if (escape == 3) {
+            int val = atoi(escape_chars);
+            if (val >= 200 && val < 225) {
+              c = '\200' + val-200;
+            }
+          }
+          else {
+            escape++;
+            continue;
+          }
+        }
+        else if (c=='~') {
+          c = 'z'+1;
+        }
+        else if (c=='\t') {
+          c = 0x1D; //tab
+        }
+        escape = 0;
+        lines[current_line-menuVerticalOffset][line_length++] = c;
+      }
+    }
+    if (c != '\n') {
+      current_line += 1;
+    }
+    f_close(&file);
+  }
+
+  if (lines_count == 0) {
+    lines_count = current_line;
+  }
+}
+
 // returns true if current working dir is at the root level
 bool isCwdAtRoot()
 {

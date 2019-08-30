@@ -160,7 +160,7 @@ void menuStatisticsDebug(event_t event)
   if (IS_RESET_REASON_WATCHDOG()) {
     lcdDrawText(LCD_W-8*FW, 0, "WATCHDOG");
   }
-  else if (unexpectedShutdown) {
+  else if (globalData.unexpectedShutdown) {
     lcdDrawText(LCD_W-13*FW, 0, "UNEXP.SHTDOWN");
   }
 #endif

@@ -231,14 +231,10 @@ void drawStatusLine();
 #define drawStatusLine()
 #endif
 
-#define TEXT_FILENAME_MAXLEN         40
-extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void menuTextView(event_t event);
 void pushMenuTextView(const char *filename);
 void pushModelNotes();
 void readModelNotes();
-
-#define LABEL(...)                     (uint8_t)-1
 
 #define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)

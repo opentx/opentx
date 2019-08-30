@@ -40,21 +40,20 @@ enum LogicalSwitchContextState {
   SWITCH_ENABLE
 };
 
-PACK(typedef struct {
+PACK(struct LogicalSwitchContext {
   uint8_t state:1;
   uint8_t timerState:2;
   uint8_t spare:5;
   uint8_t timer;
   int16_t lastValue;
-}) LogicalSwitchContext;
+});
 
-PACK(typedef struct {
+PACK(struct LogicalSwitchesFlightModeContext {
   LogicalSwitchContext lsw[MAX_LOGICAL_SWITCHES];
-}) LogicalSwitchesFlightModeContext;
+});
 LogicalSwitchesFlightModeContext lswFm[MAX_FLIGHT_MODES];
 
 #define LS_LAST_VALUE(fm, idx) lswFm[fm].lsw[idx].lastValue
-
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 #if defined(PCBX9E)

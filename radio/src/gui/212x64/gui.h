@@ -264,16 +264,12 @@ extern char statusLineMsg[STATUS_LINE_LENGTH];
 void showStatusLine();
 void drawStatusLine();
 
-#define TEXT_FILENAME_MAXLEN           40
-extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void menuTextView(event_t event);
 void pushMenuTextView(const char *filename);
 void pushModelNotes();
 void readModelNotes();
 
 void menuChannelsView(event_t event);
-
-#define LABEL(...) (uint8_t)-1
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 #define CURSOR_MOVED_LEFT(event)       (event==EVT_ROTARY_LEFT)
