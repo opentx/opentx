@@ -672,11 +672,6 @@ getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
   return value;
 }
 
-ls_telemetry_value_t minTelemValue(source_t channel)
-{
-  return 0;
-}
-
 ls_telemetry_value_t maxTelemValue(source_t channel)
 {
   return 30000;
