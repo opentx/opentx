@@ -71,6 +71,27 @@ void rotaryEncoderInit()
 
 void rotaryEncoderCheck()
 {
+#if defined(RADIO_T16)
+  static uint8_t  state = 0;
+  uint8_t pins = ROTARY_ENCODER_POSITION();
+
+  if (pins != (state & 0x03) && !(readKeys() & (1 << KEY_ENTER))) {
+    if ((pins & 0x01) ^ ((pins & 0x02) >> 1)) {
+      if ((state & 0x03) == 3)
+        ++rotencValue;
+      else
+        --rotencValue;
+    }
+    else
+    {
+      if ((state & 0x03) == 3)
+         --rotencValue;
+      else if ((state & 0x03) == 0)
+         ++rotencValue;
+    }
+    state &= ~0x03 ;
+    state |= pins ;
+#else
   uint8_t newPosition = ROTARY_ENCODER_POSITION();
   if (newPosition != rotencPosition && !(readKeys() & (1 << KEY_ENTER))) {
     if ((rotencPosition & 0x01) ^ ((newPosition & 0x02) >> 1)) {
@@ -80,6 +101,7 @@ void rotaryEncoderCheck()
       ++rotencValue;
     }
     rotencPosition = newPosition;
+#endif
 #if !defined(BOOT)
     if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
       backlightOn();

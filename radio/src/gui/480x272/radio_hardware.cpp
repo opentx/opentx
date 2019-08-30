@@ -55,10 +55,11 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_BATTERY_CALIB,
   ITEM_RADIO_HARDWARE_RTC_BATTERY,
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
+#if defined(BLUETOOTH)
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
-
+#endif
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
   ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA,
 #endif
@@ -77,7 +78,11 @@ enum MenuRadioHardwareItems {
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 
-#define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0)
+#if defined(BLUETOOTH)
+  #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0),
+#else
+  #define BLUETOOTH_ROWS
+#endif
 
 // TODO should be moved to the HAL
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
@@ -121,7 +126,7 @@ bool menuRadioHardware(event_t event)
 
     0, /* max baudrate */
 
-    BLUETOOTH_ROWS,
+    BLUETOOTH_ROWS
 
     EXTERNAL_ANTENNA_ROW
 
@@ -270,7 +275,7 @@ bool menuRadioHardware(event_t event)
           }
         }
         break;
-
+#if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH);
         g_eeGeneral.bluetoothMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER, attr, event);
@@ -285,6 +290,7 @@ bool menuRadioHardware(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_NAME);
         editName(HW_SETTINGS_COLUMN+50, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
         break;
+#endif
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:

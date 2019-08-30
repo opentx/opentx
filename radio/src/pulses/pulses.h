@@ -24,8 +24,9 @@
 #include "definitions.h"
 #include "dataconstants.h"
 #include "pulses_common.h"
-#include "pulses/pxx1.h"
-#include "pulses/pxx2.h"
+#include "pxx1.h"
+#include "pxx2.h"
+#include "multi.h"
 #include "modules_helpers.h"
 #include "ff.h"
 
@@ -248,6 +249,10 @@ union InternalModulePulsesData {
   Pxx2Pulses pxx2;
 #endif
 
+#if defined(INTERNAL_MODULE_MULTI) //&& defined(INTMODULE_USART)
+  UartMultiPulses multi;  
+#endif
+  
 #if defined(INTERNAL_MODULE_PPM)
   PpmPulsesData<pulse_duration_t> ppm;
 #endif
@@ -294,11 +299,14 @@ union TrainerPulsesData {
 
 extern TrainerPulsesData trainerPulsesData;
 
+#if defined(HARDWARE_INTERNAL_MODULE)
 bool setupPulsesInternalModule();
+#endif
 bool setupPulsesExternalModule();
 void setupPulsesDSM2();
 void setupPulsesCrossfire();
-void setupPulsesMultimodule();
+void setupPulsesMultiExternalModule();
+void setupPulsesMultiInternalModule();
 void setupPulsesSbus();
 void setupPulsesPPMInternalModule();
 void setupPulsesPPMExternalModule();

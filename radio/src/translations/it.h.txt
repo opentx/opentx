@@ -842,7 +842,9 @@
 #define TR_FLASH_POWER_MANAGEMENT_UNIT          "Flash pwr mngt unit"
 #define TR_CURRENT_VERSION             TR("Current vers. ", "Current version: ")
 #define TR_FLASH_INTERNAL_MODULE "Progr. Modulo Interno"
+#define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
+#define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
 #define TR_WRITING             "\032Scrivendo..."

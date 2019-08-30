@@ -82,9 +82,7 @@ Type 0x06 Flysky AFHDS2 telemetry data
 
 */
 
-
-
-void processMultiTelemetryData(uint8_t data);
+void processMultiTelemetryData(uint8_t data, uint8_t module);
 
 // This should be put into the Module definition if other modules gain this functionality
 struct MultiModuleSyncStatus {
@@ -107,7 +105,7 @@ struct MultiModuleSyncStatus {
 
 };
 
-extern MultiModuleSyncStatus multiSyncStatus;
+MultiModuleSyncStatus& getMultiSyncStatus(uint8_t module);
 
 
 struct MultiModuleStatus {
@@ -131,13 +129,15 @@ struct MultiModuleStatus {
   inline bool inputDetected() { return (bool) (flags & 0x01); }
 };
 
-extern MultiModuleStatus multiModuleStatus;
+MultiModuleStatus& getMultiModuleStatus(uint8_t module);
+
 enum MultiBindStatus : uint8_t {
   MULTI_NORMAL_OPERATION,
   MULTI_BIND_INITIATED,
   MULTI_BIND_FINISHED,
 };
 
-extern uint8_t multiBindStatus;
+uint8_t getMultiBindStatus(uint8_t module);
+void setMultiBindStatus(uint8_t module, uint8_t bindStatus);
 
 #endif //OPENTX_MULTI_H

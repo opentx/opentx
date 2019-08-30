@@ -230,8 +230,6 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 #define INTERNAL_MODULE_TYPE_ROWS         (0) // Module type + RF protocols
 #endif
 
-#define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
-
 #define TRAINER_CHANNELS_ROW              (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
 #define TRAINER_PPM_PARAMS_ROW            (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 #define TRAINER_BLUETOOTH_M_ROW           ((bluetooth.distantAddr[0] == '\0' || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
@@ -352,7 +350,7 @@ void menuModelSetup(event_t event)
 
     LABEL(InternalModule),
       INTERNAL_MODULE_TYPE_ROWS,
-      INTERNAL_MODULE_CHANNELS_ROWS,
+      MODULE_CHANNELS_ROWS(INTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleFailsafeAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1)),
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum for ACCESS
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), // Failsafe
@@ -364,13 +362,13 @@ void menuModelSetup(event_t event)
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_TYPE_ROW(),
-      MULTIMODULE_STATUS_ROWS
-      EXTERNAL_MODULE_CHANNELS_ROWS,
-      IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, EXTERNAL_MODULE_BIND_ROWS),
+      MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
+      MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
+      IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // RxNum for ACCESS
-      IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, EXTERNAL_MODULE_OPTION_ROW),
-      MULTIMODULE_MODULE_ROWS
-      EXTERNAL_MODULE_POWER_ROW,
+      IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
+      MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
+      MODULE_POWER_ROW(EXTERNAL_MODULE),
       FAILSAFE_ROWS(EXTERNAL_MODULE),
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),   // Range check and Register buttons
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),        // Module options
@@ -1019,7 +1017,7 @@ void menuModelSetup(event_t event)
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
-        if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
+        if ((int8_t)MODULE_CHANNELS_ROWS(moduleIdx) >= 0) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
           lcdDrawNumber(lcdLastRightPos, y, moduleData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
           lcdDrawChar(lcdLastRightPos, y, '-');
@@ -1144,8 +1142,8 @@ void menuModelSetup(event_t event)
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
-            if (multiBindStatus == MULTI_BIND_FINISHED) {
-              multiBindStatus = MULTI_NORMAL_OPERATION;
+            if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
+              setMultiBindStatus(moduleIdx, MULTI_NORMAL_OPERATION);
               s_editMode = 0;
             }
 #endif
@@ -1178,7 +1176,7 @@ void menuModelSetup(event_t event)
             moduleState[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
             if (newFlag == MODULE_MODE_BIND)
-              multiBindStatus = MULTI_BIND_INITIATED;
+              setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
 #endif
           }
         }
@@ -1317,7 +1315,7 @@ void menuModelSetup(event_t event)
     {
       lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
       char statusText[64];
-      multiModuleStatus.getStatusString(statusText);
+      getMultiModuleStatus(EXTERNAL_MODULE).getStatusString(statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
@@ -1326,7 +1324,7 @@ void menuModelSetup(event_t event)
     {
       lcdDrawTextAlignedLeft(y, STR_MODULE_SYNC);
       char statusText[64];
-      multiSyncStatus.getRefreshString(statusText);
+      getMultiSyncStatus(EXTERNAL_MODULE).getRefreshString(statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }

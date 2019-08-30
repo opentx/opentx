@@ -112,22 +112,27 @@ extern uint8_t telemetryProtocol;
 
 inline uint8_t modelTelemetryProtocol()
 {
+  bool internalModuleInUse = IS_INTERNAL_MODULE_ENABLED();
+#if defined(INTERNAL_MODULE_MULTI)
+  //internal muli module is not conflicting with external one
+  internalModuleInUse = false;
+#endif
+
 #if defined(CROSSFIRE)
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
     return PROTOCOL_TELEMETRY_CROSSFIRE;
   }
 #endif
 
-  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
+  if (!internalModuleInUse && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
   }
 
 #if defined(MULTIMODULE)
-  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (!internalModuleInUse && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #endif
-
   // default choice
   return PROTOCOL_TELEMETRY_FRSKY_SPORT;
 }

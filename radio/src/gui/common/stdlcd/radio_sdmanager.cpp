@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
+#include "io/multi_firmware_update.h"
 
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
@@ -219,6 +220,16 @@ void onSdManagerMenu(const char * result)
     FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
     device.flashFirmware(lfn);
   }
+#if defined(INTERNAL_MODULE_MULTI)
+  else if (result == STR_FLASH_INTERNAL_MULTI) {
+    getSelectionFullPath(lfn);
+    multiFlashFirmware(INTERNAL_MODULE, lfn);
+  }
+#endif
+  else if (result == STR_FLASH_EXTERNAL_MULTI) {
+    getSelectionFullPath(lfn);
+    multiFlashFirmware(EXTERNAL_MODULE, lfn);
+  }
 #if defined(BLUETOOTH)
   else if (result == STR_FLASH_BLUETOOTH_MODULE) {
     getSelectionFullPath(lfn);
@@ -340,6 +351,9 @@ void menuRadioSdManager(event_t _event)
         break;
       }
 #endif
+      TCHAR lfn[_MAX_LFN + 1];
+      getSelectionFullPath(lfn);
+
       if (SD_CARD_PRESENT() && s_editMode <= 0) {
         killEvents(_event);
         int index = menuVerticalPosition - HEADER_LINE - menuVerticalOffset;
@@ -364,10 +378,19 @@ void menuRadioSdManager(event_t _event)
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
 #endif
+#if defined(MULTIMODULE) && !defined(DISABLE_MULTI_UPDATE)
+          if (!READ_ONLY() && !strcasecmp(ext, MULTI_FIRMWARE_EXT)) {
+            MultiFirmwareInformation information;
+            if (information.readMultiFirmwareInformation(line) == nullptr) {
+#if defined(INTERNAL_MODULE_MULTI)
+              POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MULTI);
+#endif
+              POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MULTI);
+            }
+          }
+#endif
 #if defined(PCBTARANIS)
-          else if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
-            TCHAR lfn[_MAX_LFN + 1];
-            getSelectionFullPath(lfn);
+          if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
             if (isBootloader(lfn)) {
               POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
             }
@@ -378,9 +401,9 @@ void menuRadioSdManager(event_t _event)
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
           }
-          else if (!READ_ONLY() && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+          else if (!READ_ONLY() && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
             FrSkyFirmwareInformation information;
-            if (readFirmwareInformation(line, information) == nullptr) {
+            if (readFrSkyFirmwareInformation(line, information) == nullptr) {
               if (information.productFamily == FIRMWARE_FAMILY_INTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
               if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)

@@ -27,6 +27,8 @@
 
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
+#elif defined(RADIO_T16)
+  #include "lua/lua_exports_t16.inc"
 #elif defined(PCBX10)
   #include "lua/lua_exports_x10.inc"
 #elif defined(PCBX9E)

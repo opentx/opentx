@@ -218,7 +218,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 }
 
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
-uint8_t telemetryGetByte(uint8_t * byte)
+bool telemetryGetByte(uint8_t * byte)
 {
 #if defined(AUX_SERIAL)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
