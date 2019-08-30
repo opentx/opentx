@@ -30,11 +30,6 @@
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
-extern uint8_t R9ModuleStreaming; // >0 (true) == R9 module is connected and sending data 0 = no data detected for some time
-
-#if defined(WS_HOW_HIGH)
-extern uint8_t wshhStreaming;
-#endif
 
 enum TelemetryStates {
   TELEMETRY_INIT,

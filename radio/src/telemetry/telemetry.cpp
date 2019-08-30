@@ -21,13 +21,8 @@
 #include "opentx.h"
 
 uint8_t telemetryStreaming = 0;
-uint8_t R9ModuleStreaming = 0;
 uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t telemetryRxBufferCount = 0;
-
-#if defined(WS_HOW_HIGH)
-uint8_t wshhStreaming = 0;
-#endif
 
 uint8_t telemetryState = TELEMETRY_INIT;
 
@@ -210,7 +205,6 @@ void telemetryWakeup()
 
 void telemetryInterrupt10ms()
 {
-
   if (TELEMETRY_STREAMING()) {
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       const TelemetrySensor & sensor = g_model.telemetrySensors[i];
@@ -220,14 +214,6 @@ void telemetryInterrupt10ms()
     }
   }
 
-#if defined(WS_HOW_HIGH)
-  if (wshhStreaming > 0) {
-    wshhStreaming--;
-  }
-#endif
-  if (R9ModuleStreaming > 0) {
-    R9ModuleStreaming--;
-  }
   if (telemetryStreaming > 0) {
     telemetryStreaming--;
   }
