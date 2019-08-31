@@ -337,7 +337,9 @@ void menuRadioHardware(event_t event)
   }
   else if (event == EVT_ENTRY) {
     enableVBatBridge();
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
     reusableBuffer.radioHardware.externalAntennaMode = g_eeGeneral.externalAntennaMode;
+#endif
   }
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {

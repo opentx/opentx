@@ -582,7 +582,9 @@ bool menuModelSetup(event_t event)
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
     memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
     reusableBuffer.moduleSetup.externalAntennaMode = g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode;
+#endif
   }
 
   if (menuEvent) {
