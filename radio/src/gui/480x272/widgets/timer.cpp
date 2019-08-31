@@ -28,7 +28,7 @@ class TimerWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    virtual void refresh(event_t event=0);
 
     static const ZoneOption options[];
 };
@@ -38,7 +38,7 @@ const ZoneOption TimerWidget::options[] = {
   { NULL, ZoneOption::Bool }
 };
 
-void TimerWidget::refresh()
+void TimerWidget::refresh(event_t event)
 {
   uint32_t index = persistentData->options[0].unsignedValue;
   TimerData & timerData = g_model.timers[index];

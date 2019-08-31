@@ -64,10 +64,10 @@ class Layout2x1: public Layout
       return zone;
     }
 
-    virtual void refresh();
+    virtual void refresh(event_t event=0);
 };
 
-void Layout2x1::refresh()
+void Layout2x1::refresh(event_t event)
 {
   theme->drawBackground();
 
@@ -75,7 +75,7 @@ void Layout2x1::refresh()
     drawTopBar();
   }
 
-  Layout::refresh();
+  Layout::refresh(event);
 }
 
 BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", LBM_LAYOUT_2x1, OPTIONS_LAYOUT_2x1);

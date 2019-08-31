@@ -33,7 +33,7 @@ class OutputsWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    virtual void refresh(event_t event=0);
 
     uint8_t drawChannels(const uint16_t & x, const uint16_t & y, const uint16_t & w, const uint16_t & h, const uint8_t & firstChan, const bool & bg_shown, const uint16_t & bg_color)
     {
@@ -93,7 +93,7 @@ const ZoneOption OutputsWidget::options[] = {
 };
 
 
-void OutputsWidget::refresh()
+void OutputsWidget::refresh(event_t event)
 {
   if (zone.w > 300 && zone.h > 20)
     twoColumns();

@@ -65,10 +65,10 @@ class Layout2P1: public Layout
       return ZONES_LAYOUT_2P1[index];
     }
 
-    virtual void refresh();
+    virtual void refresh(event_t event=0);
 };
 
-void Layout2P1::refresh()
+void Layout2P1::refresh(event_t event)
 {
   theme->drawBackground();
 
@@ -96,7 +96,7 @@ void Layout2P1::refresh()
     drawTrims(mixerCurrentFlightMode);
   }
 
-  Layout::refresh();
+  Layout::refresh(event);
 }
 
 BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);

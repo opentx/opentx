@@ -265,7 +265,7 @@ class LuaWidget: public Widget
 
     virtual void update();
 
-    virtual void refresh();
+    virtual void refresh(event_t event);
 
     virtual void background();
 
@@ -373,7 +373,7 @@ const char * LuaWidget::getErrorMessage() const
   return errorMessage;
 }
 
-void LuaWidget::refresh()
+void LuaWidget::refresh(event_t event)
 {
   if (lsWidgets == 0) return;
 
@@ -387,7 +387,12 @@ void LuaWidget::refresh()
   LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
   lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, factory->refreshFunction);
   lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, widgetData);
-  if (lua_pcall(lsWidgets, 1, 0, 0) != 0) {
+
+  if (event)
+    TRACE("passing event <%d>", event);
+
+  lua_pushinteger(lsWidgets, event);
+  if (lua_pcall(lsWidgets, 2, 0, 0) != 0) {
     setErrorMessage("refresh()");
   }
 }

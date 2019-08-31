@@ -30,7 +30,7 @@ class TextWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    virtual void refresh(event_t event=0);
 
     static const ZoneOption options[];
 };
@@ -43,7 +43,7 @@ const ZoneOption TextWidget::options[] = {
   { NULL, ZoneOption::Bool }
 };
 
-void TextWidget::refresh()
+void TextWidget::refresh(event_t event)
 {
   lcdSetColor(persistentData->options[1].unsignedValue);
   LcdFlags fontsize = FONTSIZE(persistentData->options[2].unsignedValue << 8);

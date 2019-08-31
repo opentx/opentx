@@ -147,6 +147,8 @@ int getMainViewsCount()
 
 bool menuMainView(event_t event)
 {
+  bool forwardEvent = false;
+
   switch (event) {
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
@@ -207,6 +209,10 @@ bool menuMainView(event_t event)
       }
 #endif
       break;
+
+    default:
+      forwardEvent = true;
+      break;
   }
 
   if (g_model.view >= getMainViewsCount()) {
@@ -215,10 +221,15 @@ bool menuMainView(event_t event)
 
   for (uint8_t i=0; i<MAX_CUSTOM_SCREENS; i++) {
     if (customScreens[i]) {
-      if (i == g_model.view)
-        customScreens[i]->refresh();
-      else
+      if (i == g_model.view) {
+        if (forwardEvent && event) {
+          TRACE("forwarding event <%d>", event);
+        }
+        customScreens[i]->refresh(forwardEvent ? event : 0);
+      }
+      else {
         customScreens[i]->background();
+      }
     }
   }
 

@@ -65,10 +65,13 @@ class Layout1x1: public Layout
       return zone;
     }
 
-    virtual void refresh();
+    virtual void refresh(event_t event);
+
+  protected:
+    void drawScreen();
 };
 
-void Layout1x1::refresh()
+void Layout1x1::refresh(event_t event)
 {
   theme->drawBackground();
 
@@ -85,8 +88,7 @@ void Layout1x1::refresh()
     drawMainPots();
     drawTrims(mixerCurrentFlightMode);
   }
-
-  Layout::refresh();
+  Layout::refresh(event);
 }
 
 BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", LBM_LAYOUT_1x1, OPTIONS_LAYOUT_1x1);

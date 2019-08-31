@@ -28,7 +28,7 @@ class GaugeWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    virtual void refresh(event_t event=0);
 
     static const ZoneOption options[];
 };
@@ -41,7 +41,7 @@ const ZoneOption GaugeWidget::options[] = {
   { NULL, ZoneOption::Bool }
 };
 
-void GaugeWidget::refresh()
+void GaugeWidget::refresh(event_t event)
 {
   mixsrc_t index = persistentData->options[0].unsignedValue;
   int32_t min = persistentData->options[1].signedValue;

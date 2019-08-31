@@ -66,7 +66,7 @@ class Widget
       return &persistentData->options[index];
     }
 
-    virtual void refresh() = 0;
+    virtual void refresh(event_t event=0) = 0;
 
     virtual void background()
     {

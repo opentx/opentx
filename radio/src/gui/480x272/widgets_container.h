@@ -127,12 +127,12 @@ class WidgetsContainer: public WidgetsContainerInterface
 
     virtual Zone getZone(unsigned int index) const = 0;
 
-    virtual void refresh()
+    virtual void refresh(event_t event=0)
     {
       if (widgets) {
         for (int i=0; i<N; i++) {
           if (widgets[i]) {
-            widgets[i]->refresh();
+            widgets[i]->refresh(event);
           }
         }
       }
