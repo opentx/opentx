@@ -30,7 +30,6 @@
 #include "opentx_types.h"
 #include "debounce.h"
 
-
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"
 #endif
@@ -413,13 +412,13 @@ void watchdogSuspend(uint32_t timeout);
 
 #define MAX_ALERT_TIME   60
 
-struct t_inactivity
+struct InactivityData
 {
   uint16_t counter;
   uint8_t  sum;
 };
 
-extern struct t_inactivity inactivity;
+extern InactivityData inactivity;
 
 #define LEN_STD_CHARS 40
 
@@ -565,6 +564,15 @@ extern uint8_t trimsDisplayTimer;
 extern uint8_t trimsDisplayMask;
 
 void flightReset(uint8_t check=true);
+
+PACK(struct GlobalData {
+  uint8_t unexpectedShutdown:1;
+  uint8_t sdcardPresent:1;
+  uint8_t externalAntennaEnabled: 1;
+  uint8_t spare:5;
+});
+
+extern GlobalData globalData;
 
 extern uint16_t maxMixerDuration;
 
@@ -1043,14 +1051,6 @@ void setMFP();
 void clearMFP();
 #endif
 
-struct GlobalData {
-  uint8_t unexpectedShutdown:1;
-  uint8_t externalAntennaEnabled:1;
-  uint8_t spare:6;
-};
-
-extern GlobalData globalData;
-
 extern uint8_t requiredSpeakerVolume;
 
 enum MainRequest {
@@ -1079,14 +1079,16 @@ constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
 
 // Re-useable byte array to save having multiple buffers
 #if LCD_W <= 212
-#define SD_SCREEN_FILE_LENGTH          32
+constexpr uint8_t SD_SCREEN_FILE_LENGTH = 32;
 #else
-#define SD_SCREEN_FILE_LENGTH          64
+constexpr uint8_t SD_SCREEN_FILE_LENGTH = 64;
 #endif
 
 #if defined(BLUETOOTH)
 #include "bluetooth.h"
 #endif
+
+constexpr uint8_t TEXT_FILENAME_MAXLEN = 40;
 
 union ReusableBuffer
 {
@@ -1105,6 +1107,7 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
+    int8_t externalAntennaMode;
     BindInformation bindInformation;
     struct {
       union {
@@ -1164,12 +1167,16 @@ union ReusableBuffer
     uint32_t updateTime;
     ModuleSettings moduleSettings;
     ReceiverSettings receiverSettings; // when dealing with receiver settings, we also need module settings
-  } hardwareAndSettings;
+  } hardwareAndSettings; // moduleOptions, receiverOptions, radioVersion
 
   struct {
     ModuleInformation modules[NUM_MODULES];
     uint8_t linesCount;
   } radioTools;
+
+  struct {
+    int8_t externalAntennaMode;
+  } radioHardware;
 
   struct {
     uint8_t stickMode;
@@ -1203,18 +1210,34 @@ union ReusableBuffer
     int8_t preset;
   } curveEdit;
 
+  struct {
+    char filename[TEXT_FILENAME_MAXLEN];
+    char lines[NUM_BODY_LINES][LCD_COLS + 1];
+    int linesCount;
+  } viewText;
+
+  struct {
+    bool longNames;
+    bool secondPage;
+    bool mixersView;
+  } viewChannels;
+
+  struct {
+    uint8_t maxNameLen;
+  } modelFailsafe;
+
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
   uint8_t MSC_BOT_Data[MSC_MEDIA_PACKET];
 #endif
 };
 
-extern union ReusableBuffer reusableBuffer;
+extern ReusableBuffer reusableBuffer;
 
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 unsigned int effectiveLen(const char * str, unsigned int size);
-char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
+char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=nullptr, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
 #define strcatFlightmodeName(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FM, PSIZE(TR_FM), idx+1)
 #if defined(EEPROM)
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
@@ -1228,13 +1251,15 @@ char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defa
 // Stick tolerance varies between transmitters, Higher is better
 #define STICK_TOLERANCE 64
 
-  ls_telemetry_value_t minTelemValue(source_t channel);
-  ls_telemetry_value_t maxTelemValue(source_t channel);
+ls_telemetry_value_t maxTelemValue(source_t channel);
 
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 
-#define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
+inline getvalue_t convertTelemValue(source_t channel, ls_telemetry_value_t value)
+{
+  return convert16bitsTelemValue(channel, value);
+}
 
 inline int div_and_round(int num, int den)
 {
@@ -1274,8 +1299,6 @@ extern uint8_t s_frsky_view;
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
 
-void getGpsPilotPosition();
-void getGpsDistance();
 void varioWakeup();
 
 #if defined(AUDIO) && defined(BUZZER)
@@ -1359,15 +1382,6 @@ enum JackMode {
 #if defined(GYRO)
 #include "gyro.h"
 #endif
-
-inline bool isSimu()
-{
-#if defined(SIMU)
-  return true;
-#else
-  return false;
-#endif
-}
 
 #if defined(DEBUG_LATENCY)
 extern uint8_t latencyToggleSwitch;

@@ -579,8 +579,10 @@ bool menuModelSetup(event_t event)
          TRAINER_ROWS
        });
 
-  if (event == EVT_ENTRY) {
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
+    memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    reusableBuffer.moduleSetup.externalAntennaMode = g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode;
   }
 
   if (menuEvent) {
@@ -590,10 +592,10 @@ bool menuModelSetup(event_t event)
 
   int sub = menuVerticalPosition;
 
-  for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
+  for (uint8_t i = 0; i < NUM_BODY_LINES; ++i) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     uint8_t k = i + menuVerticalOffset;
-    for (int j=0; j<=k; j++) {
+    for (int j = 0; j <= k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
@@ -601,7 +603,7 @@ bool menuModelSetup(event_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
-    switch(k) {
+    switch (k) {
       case ITEM_MODEL_SETUP_NAME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODELNAME);
         editName(MODEL_SETUP_2ND_COLUMN, y, g_model.header.name, sizeof(g_model.header.name), event, attr);
@@ -964,8 +966,9 @@ bool menuModelSetup(event_t event)
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_ANTENNA);
-        g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event, [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
-        if (attr && checkIncDec_Ret) {
+        reusableBuffer.moduleSetup.externalAntennaMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, reusableBuffer.moduleSetup.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event, [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
+        if (!s_editMode && reusableBuffer.moduleSetup.externalAntennaMode != g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode) {
+          g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = reusableBuffer.moduleSetup.externalAntennaMode;
           checkExternalAntenna();
         }
         break;
@@ -1070,17 +1073,17 @@ bool menuModelSetup(event_t event)
           else if (old_editMode > 0) {
             if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FLEX_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #if POPUP_LEVEL >= 3
               else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_EU_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_EU_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
               else {
-                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FCC_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #endif
             }

@@ -1,6 +1,6 @@
 set(GUI_SRC
   ${GUI_SRC}
-  ../common/colorlcd/widgets.cpp
+  ../common/colorlcd/draw_functions.cpp
   )
 
 if(HELI)

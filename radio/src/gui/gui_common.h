@@ -27,6 +27,7 @@
 
 #define READONLY_ROW                   ((uint8_t)-1)
 #define TITLE_ROW                      READONLY_ROW
+#define LABEL(...)                     READONLY_ROW
 #define HIDDEN_ROW                     ((uint8_t)-2)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -95,7 +96,6 @@ void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 
 swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 
-void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags flags);
 void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags flags=0);
 void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags=0);
 void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags flags=0);
@@ -109,14 +109,11 @@ void drawCurve(coord_t offset=0);
 
 #if defined(COLORLCD)
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags=0, const char * prefix=nullptr, const char * suffix=nullptr);
-int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags flags, event_t event, IsValueAvailable isValueAvailable=nullptr);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags flags, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags flags, event_t event);
 void drawFatalErrorScreen(const char * message);
 void runFatalErrorScreen(const char * message);
 #endif
-
-void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 
 // model_setup Defines that are used in all uis in the same way
 #define INTERNAL_MODULE_CHANNELS_ROWS   IF_INTERNAL_MODULE_ON((uint8_t)1)

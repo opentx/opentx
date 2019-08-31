@@ -362,6 +362,7 @@ void menuModelSetup(event_t event)
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
     memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    reusableBuffer.moduleSetup.externalAntennaMode = g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode;
   }
 
 #if (defined(DSM2) || defined(PXX))
@@ -898,17 +899,17 @@ void menuModelSetup(event_t event)
           else if (old_editMode > 0) {
             if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FLEX_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #if POPUP_LEVEL >= 3
               else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_EU_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_EU_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
               else {
-                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FCC_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #endif
             }
@@ -1370,19 +1371,13 @@ void menuModelSetup(event_t event)
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA:
-        lcdDrawText(INDENT_WIDTH, y, STR_ANTENNA);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode + 2, attr);
-        if (attr) {
-          g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = checkIncDec(event,
-                                                                                    g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode,
-                                                                                    EXTERNAL_ANTENNA_DISABLE,
-                                                                                    EXTERNAL_ANTENNA_ENABLE,
-                                                                                    EE_MODEL,
-                                                                                    [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
-
-          if (checkIncDec_Ret) {
-            checkExternalAntenna();
-          }
+        reusableBuffer.moduleSetup.externalAntennaMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA, STR_ANTENNA_MODES,
+                                                                    reusableBuffer.moduleSetup.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE,
+                                                                    EXTERNAL_ANTENNA_ENABLE, attr, event,
+                                                                    [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
+        if (!s_editMode && reusableBuffer.moduleSetup.externalAntennaMode != g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode) {
+          g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = reusableBuffer.moduleSetup.externalAntennaMode;
+          checkExternalAntenna();
         }
         break;
 #endif
@@ -1482,7 +1477,6 @@ void menuModelSetup(event_t event)
               if (attr) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LBT_POWER_MAX);
                 if (s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power) {
-                  TRACE("ON Y PASSE");
                   module.channelsStart = 0;
                   module.channelsCount = maxModuleChannels_M8(moduleIdx);
                   if (reusableBuffer.moduleSetup.r9mPower + module.pxx.power < 5) { //switching between mode 2 and 3 does not require rebind

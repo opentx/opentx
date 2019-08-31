@@ -118,6 +118,14 @@ bool menuRadioHardware(event_t event)
     0, /* ADC filter */
   });
 
+  if (menuEvent) {
+    disableVBatBridge();
+  }
+  else if (event == EVT_ENTRY) {
+    enableVBatBridge();
+    reusableBuffer.radioHardware.externalAntennaMode = g_eeGeneral.externalAntennaMode;
+  }
+
   uint8_t sub = menuVerticalPosition;
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {
@@ -268,8 +276,12 @@ bool menuRadioHardware(event_t event)
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNA);
-        g_eeGeneral.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_ANTENNA_MODES, g_eeGeneral.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
-        if (attr && checkIncDec_Ret) {
+        reusableBuffer.radioHardware.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_ANTENNA_MODES, reusableBuffer.radioHardware.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
+        lcdDrawText(HW_SETTINGS_COLUMN+120, y, "(current: ");
+        lcdDrawTextAtIndex(lcdNextPos, y, STR_ANTENNA_MODES, (globalData.externalAntennaEnabled ? EXTERNAL_ANTENNA_DISABLE : EXTERNAL_ANTENNA_ENABLE) - EXTERNAL_ANTENNA_FIRST);
+        lcdDrawText(lcdNextPos, y, ")");
+        if (!s_editMode && reusableBuffer.radioHardware.externalAntennaMode != g_eeGeneral.externalAntennaMode) {
+          g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
           checkExternalAntenna();
         }
         break;

@@ -3,7 +3,7 @@ add_definitions(-DGRAPHICS)
 set(GUI_SRC
   ${GUI_SRC}
   ../common/stdlcd/menus.cpp
-  ../common/stdlcd/widgets.cpp
+  ../common/stdlcd/draw_functions.cpp
   ../common/stdlcd/popups.cpp
   ../common/stdlcd/model_inputs.cpp
   ../common/stdlcd/model_mixes.cpp

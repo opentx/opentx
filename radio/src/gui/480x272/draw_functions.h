@@ -18,11 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _WIDGETS_H_
-#define _WIDGETS_H_
+#ifndef _DRAW_FUNCTIONS_H_
+#define _DRAW_FUNCTIONS_H_
 
 #include "opentx.h"
-#include <stdio.h>
+#include "common/colorlcd/draw_functions.h"
 
 #define OPTION_MENU_NO_FOOTER          0x01
 #define OPTION_MENU_TITLE_BAR          0x02
@@ -78,4 +78,4 @@ void drawTrims(uint8_t flightMode);
 
 void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags);
 
-#endif // _WIDGETS_H_
+#endif // _DRAW_FUNCTIONS_H_

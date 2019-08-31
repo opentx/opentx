@@ -143,7 +143,7 @@ void copySelection(char * dst, const char * src, uint8_t size)
 void onModelSetupBitmapMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {
-    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
+    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), nullptr)) {
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
     }
   }
@@ -384,7 +384,8 @@ void menuModelSetup(event_t event)
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_LINES_COUNT);
   title(STR_MENUSETUP);
 
-  if (event == EVT_ENTRY) {
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
+    memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
@@ -397,10 +398,10 @@ void menuModelSetup(event_t event)
 
   int sub = menuVerticalPosition;
 
-  for (int i=0; i<NUM_BODY_LINES; ++i) {
+  for (int i = 0; i < NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+menuVerticalOffset;
-    for (int j=0; j<=k; j++) {
+    uint8_t k = i + menuVerticalOffset;
+    for (int j = 0; j <= k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
@@ -408,7 +409,7 @@ void menuModelSetup(event_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
-    switch(k) {
+    switch (k) {
       case ITEM_MODEL_SETUP_NAME:
         editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.header.name, sizeof(g_model.header.name), event, attr);
         memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
@@ -906,17 +907,17 @@ void menuModelSetup(event_t event)
           else if (old_editMode > 0) {
             if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_FLEX_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FLEX_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #if POPUP_LEVEL >= 3
               else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_EU_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_EU_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
               else {
-                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FCC_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #endif
             }

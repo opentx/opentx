@@ -37,6 +37,8 @@ inline int MAX_SWITCHES(Board::Type board, int version)
     return 6;
   if (version <= 218 && (IS_TARANIS_X9D(board) || IS_HORUS(board)))
     return 8;
+  if (IS_TARANIS_X9D(board))
+    return 9;
   return Boards::getCapability(board, Board::Switches);
 }
 
@@ -60,6 +62,13 @@ inline int MAX_POTS_STORAGE(Board::Type board, int version)
   if (version <= 218 && IS_HORUS(board))
     return 3;
   return Boards::getCapability(board, Board::PotsStorage);
+}
+
+inline int MAX_SLIDERS_STORAGE(Board::Type board, int version)
+{
+  if (version >= 219 && IS_HORUS(board))
+    return 4;
+  return Boards::getCapability(board, Board::Sliders);
 }
 
 inline int MAX_SLIDERS_SLOTS(Board::Type board, int version)
@@ -89,13 +98,18 @@ inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
   if (version < 219) {
     if (IS_TARANIS_X7(board) || IS_HORUS(board))
-      return Boards::getCapability(board, Board::SwitchPositions) - 2*3;
+      return Boards::getCapability(board, Board::SwitchPositions) - 2 * 3;
+    if (IS_TARANIS_X9D(board))
+      return 8 * 3;
+  }
+
+  if (IS_TARANIS_X9D(board)) {
+    return 9 * 3; // all X9D have storage for 9 switches (X9D+ 2019)
   }
 
   return Boards::getCapability(board, Board::SwitchPositions);
 }
 
-//#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3
@@ -1856,10 +1870,11 @@ class CustomScreenField: public StructField {
 
 class SensorField: public TransformedField {
   public:
-    SensorField(DataField * parent, SensorData & sensor, Board::Type board, unsigned int version):
+  SensorField(DataField * parent, const ModelData& model, SensorData & sensor, Board::Type board, unsigned int version):
       TransformedField(parent, internalField),
       internalField(this, "Sensor"),
       sensor(sensor),
+      model(model),
       version(version),
       _param(0)
     {
@@ -1921,7 +1936,10 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.subid = _subid;
-        sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
+        if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module())
+          sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
+        else
+          sensor.instance = _instance;
         sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
         sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
         sensor.ratio = _ratio;
@@ -1954,6 +1972,7 @@ class SensorField: public TransformedField {
   protected:
     StructField internalField;
     SensorData & sensor;
+    const ModelData& model;
     unsigned int version;
     unsigned int _id;
     unsigned int _subid;
@@ -2177,14 +2196,14 @@ class ModuleField: public TransformedField {
       internalField.Append(new ModuleUnionField(parent, module, board, version));
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
         module.rfProtocol = module.protocol - PULSES_LP45;
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (module.protocol == PULSES_LP45) {
         module.protocol += module.rfProtocol;
@@ -2292,6 +2311,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new SwitchesWarningField<32>(this, modelData.switchWarningStates, board, version));
   else if (IS_TARANIS_X9E(board))
     internalField.Append(new SwitchesWarningField<64>(this, modelData.switchWarningStates, board, version));
+  else if (version >= 219 && IS_TARANIS_X9D(board))
+    internalField.Append(new SwitchesWarningField<32>(this, modelData.switchWarningStates, board, version));
   else if (IS_TARANIS(board))
     internalField.Append(new SwitchesWarningField<16>(this, modelData.switchWarningStates, board, version));
   else
@@ -2299,6 +2320,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   if (IS_TARANIS_X9E(board))
     internalField.Append(new UnsignedField<32>(this, modelData.switchWarningEnable));
+  else if (version >= 219 && IS_TARANIS_X9D(board))
+    internalField.Append(new UnsignedField<16>(this, modelData.switchWarningEnable));
   else if (!IS_HORUS(board))
     internalField.Append(new UnsignedField<8>(this, modelData.switchWarningEnable));
 
@@ -2350,8 +2373,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   int modulesCount = (version <= 218 ? 3 : 2);
-  for (int module=0; module<modulesCount; module++) {
-
+  for (int module = 0; module < modulesCount; module++) {
     internalField.Append(new ModuleField(this, modelData.moduleData[module], board, version));
   }
 
@@ -2416,7 +2438,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
       internalField.Append(new SpareBitsField<1>(this));
   }
 
-  for (int i=0; i < Boards::getCapability(board, Board::Pots) + Boards::getCapability(board, Board::Sliders); i++) {
+  for (int i=0; i < Boards::getCapability(board, Board::Pots) + MAX_SLIDERS_STORAGE(board, version); i++) {
     internalField.Append(new SignedField<8>(this, modelData.potPosition[i]));
   }
 
@@ -2426,7 +2448,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   for (int i=0; i<MAX_TELEMETRY_SENSORS(board, version); ++i) {
-    internalField.Append(new SensorField(this, modelData.sensorData[i], board, version));
+    internalField.Append(new SensorField(this, modelData, modelData.sensorData[i], board, version));
   }
 
   if (IS_TARANIS_X9E(board)) {

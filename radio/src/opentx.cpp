@@ -30,9 +30,7 @@ Clipboard clipboard;
 
 GlobalData globalData;
 
-/* ARM: mixer duration in 0.5us */
-uint16_t maxMixerDuration;
-
+uint16_t maxMixerDuration; // step = 0.01ms
 uint8_t heartbeat;
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
@@ -668,11 +666,6 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
 {
   return value;
-}
-
-ls_telemetry_value_t minTelemValue(source_t channel)
-{
-  return 0;
 }
 
 ls_telemetry_value_t maxTelemValue(source_t channel)
@@ -1815,8 +1808,7 @@ void opentxInit()
 #endif
 
 #if defined(EEPROM)
-  storageClearRadioSetting();
-  storageReadRadioSettings(false);
+  bool radioSettingsValid = storageReadRadioSettings(false);
 #endif
 
   BACKLIGHT_ENABLE(); // we start the backlight during the startup animation
@@ -1844,6 +1836,8 @@ void opentxInit()
   }
 
 #if defined(SDCARD)
+  globalData.sdcardPresent = SD_CARD_PRESENT();
+
   // SDCARD related stuff, only done if not unexpectedShutdown
   if (!globalData.unexpectedShutdown) {
     sdInit();
@@ -1875,7 +1869,8 @@ void opentxInit()
 #endif
 
 #if defined(EEPROM)
-  storageReadRadioSettings(true);
+  if (!radioSettingsValid)
+    storageReadRadioSettings();
   storageReadCurrentModel();
 #endif
 
@@ -2046,7 +2041,7 @@ uint32_t pwrPressedDuration()
 
 uint32_t pwrCheck()
 {
-  const char * message = NULL;
+  const char * message = nullptr;
 
   enum PwrCheckState {
     PWR_CHECK_ON,

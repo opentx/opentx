@@ -29,7 +29,7 @@ static const char * options[] = {
 #if defined(CROSSFIRE)
   "crossfire",
 #endif
-#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+#if !defined(MODULE_PROTOCOL_D8)
   "eu",
 #endif
 #if defined(FAI)
@@ -38,7 +38,7 @@ static const char * options[] = {
 #if defined(FAI_CHOICE)
   "faichoice",
 #endif
-#if defined(R9M_PROTO_FLEX)
+#if defined(MODULE_PROTOCOL_FLEX)
   "flexr9m",
 #endif
 #if !defined(GVARS)

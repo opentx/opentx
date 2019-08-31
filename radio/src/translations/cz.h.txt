@@ -128,24 +128,6 @@
   #define TR_RETA123                   "SVPK123"
 #endif
 
-#define LEN_VPROTOS                    "\006"
-
-#if defined(PXX)
-  #define TR_PXX                       "PXX\0  "
-#elif defined(DSM2)
-  #define TR_PXX                       "[PXX]\0"
-#else
-  #define TR_PXX
-#endif
-
-#if defined(DSM2)
-  #define TR_DSM2                      "LP45\0 ""DSM2\0 ""DSMX\0 "
-#else
-  #define TR_DSM2
-#endif
-
-#define TR_VPROTOS                     "PPM\0  " TR_PXX TR_DSM2
-
 #if defined(PCBSKY9X) && defined(REVX)
   #define LEN_VOUTPUT_TYPE             "\011"
   #define TR_VOUTPUT_TYPE              "OpenDrain""PushPull\0"
@@ -391,14 +373,6 @@
 
 #define LEN_VCELLINDEX                 "\007"
 #define TR_VCELLINDEX                  "Nízký\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Nejvíce""Delta\0"
-
-#if defined(PCBX10) || defined(PCBXLITE)
-#define LEN_VANTENNATYPES              "\007"
-#define TR_VANTENNATYPES               "Interní""Externí"
-#else
-#define LEN_VANTENNATYPES              "\007"
-#define TR_VANTENNATYPES               "Interní""Ext+Int"
-#endif
 
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
@@ -659,6 +633,7 @@
 #define TR_MULTI_TELEMETRY             "Telemetrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Freq. videa", INDENT "Frekvence videa")
 #define TR_RFPOWER                     INDENT "Výkon RF"
+#define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION                TR(INDENT "Možnosti", INDENT "Hodnota")
 #define TR_MULTI_AUTOBIND              TR(INDENT "Autobind",INDENT "Bind při zapnutí")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodetekce", INDENT "Formát autodetekce")
@@ -950,10 +925,10 @@
 #define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
 #define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2             TR("Zkont. anténu", "Ujisti se že je anténa připojena!")
-#define TR_R9M_PROTO_FLEX_WARN_LINE1   "Vyžaduje FLEX"
-#define TR_R9M_PROTO_FCC_WARN_LINE1    "Vyžaduje FCC"
-#define TR_R9M_PROTO_EU_WARN_LINE1     "Vyžaduje EU"
-#define TR_R9M_PROTO_WARN_LINE2        "firmware."
+#define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1   "Vyžaduje FLEX"
+#define TR_MODULE_PROTOCOL_FCC_WARN_LINE1    "Vyžaduje FCC"
+#define TR_MODULE_PROTOCOL_EU_WARN_LINE1     "Vyžaduje EU"
+#define TR_MODULE_PROTOCOL_WARN_LINE2        "firmware."
 #define TR_LOWALARM                    INDENT "Nízký Alarm"
 #define TR_CRITICALALARM               INDENT "Kritický Alarm"
 #define TR_RSSIALARM_WARN              TR("RSSI","RSSI TELEMETRIE")

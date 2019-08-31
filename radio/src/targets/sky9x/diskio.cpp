@@ -1013,7 +1013,7 @@ void sdDone()
 {
   if (sdMounted()) {
     audioQueue.stopSD();
-    f_mount(NULL, "", 0); // unmount SD
+    f_mount(nullptr, "", 0); // unmount SD
   }
 }
 

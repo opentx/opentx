@@ -156,6 +156,8 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 #define LIST_SD_FILE_EXT    2
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
 
+void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS + 1], int & lines_count);
+
 bool isCwdAtRoot();
 FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime);
 

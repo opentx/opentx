@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <opentx.h>
 #include "opentx.h"
 
 #if defined(PCBSKY9X)
@@ -336,6 +337,7 @@ void menuRadioHardware(event_t event)
   }
   else if (event == EVT_ENTRY) {
     enableVBatBridge();
+    reusableBuffer.radioHardware.externalAntennaMode = g_eeGeneral.externalAntennaMode;
   }
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
@@ -560,8 +562,9 @@ void menuRadioHardware(event_t event)
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
-        g_eeGeneral.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_ANTENNA, STR_ANTENNA_MODES, g_eeGeneral.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
-        if (attr && checkIncDec_Ret) {
+        reusableBuffer.radioHardware.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_ANTENNA, STR_ANTENNA_MODES, reusableBuffer.radioHardware.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
+        if (!s_editMode && reusableBuffer.radioHardware.externalAntennaMode != g_eeGeneral.externalAntennaMode) {
+          g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
           checkExternalAntenna();
         }
         break;

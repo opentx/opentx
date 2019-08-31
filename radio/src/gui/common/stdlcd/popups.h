@@ -144,8 +144,9 @@ enum
 inline void POPUP_MENU_ADD_ITEM(const char * s)
 {
   popupMenuOffsetType = MENU_OFFSET_INTERNAL;
-  if (popupMenuItemsCount < POPUP_MENU_MAX_LINES)
+  if (popupMenuItemsCount < POPUP_MENU_MAX_LINES) {
     popupMenuItems[popupMenuItemsCount++] = s;
+  }
 }
 
 #if defined(SDCARD)
@@ -161,6 +162,7 @@ inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
 
 inline void POPUP_MENU_START(PopupMenuHandler handler)
 {
+  killAllEvents();
   popupMenuHandler = handler;
   AUDIO_KEY_PRESS();
 }

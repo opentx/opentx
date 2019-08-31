@@ -497,12 +497,11 @@ void perMain()
 #endif
 
 #if defined(STM32)
-  static bool sdcard_present_before = SD_CARD_PRESENT();
-  bool sdcard_present_now = SD_CARD_PRESENT();
-  if (sdcard_present_now && !sdcard_present_before) {
+  bool sdcardPresent = SD_CARD_PRESENT();
+  if (sdcardPresent && !globalData.sdcardPresent) {
     sdMount();
   }
-  sdcard_present_before = sdcard_present_now;
+  globalData.sdcardPresent = sdcardPresent;
 #endif
 
 #if !defined(EEPROM)

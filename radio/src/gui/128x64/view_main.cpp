@@ -550,7 +550,7 @@ void menuMainView(event_t event)
       lcdDrawText(lcdLastRightPos, 5*FH, "%", BOLD);
     }
     lcdDrawText(lcdLastRightPos, 5*FH, "]", BOLD);
-    warningText = NULL;
+    warningText = nullptr;
   }
 #endif
 

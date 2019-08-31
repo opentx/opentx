@@ -329,15 +329,12 @@ void stop_trainer_module_sbus()
 }
 #endif
 
-uint32_t ccount = 0;
-
 #if defined(SBUS)
 int sbusGetByte(uint8_t * byte)
 {
   switch (currentTrainerMode) {
 #if defined(TRAINER_MODULE_SBUS_USART)
     case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-      ccount++;
       return trainerSbusFifo.pop(*byte);
 #endif
 #if defined(AUX_SERIAL_USART)

@@ -15,7 +15,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   ASSERT_EQ(true, store.load(radioData));
 
   const GeneralSettings& settings = radioData.generalSettings;
-  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), settings.customFn[0].swtch);
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), settings.customFn[0].swtch);
   EXPECT_EQ(FuncLogs, settings.customFn[0].func);
   EXPECT_EQ(20, settings.customFn[0].param);
 
@@ -24,7 +24,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   
   const ModelData& model = radioData.models[0];
   EXPECT_STREQ("Test", model.name);
-  EXPECT_EQ(RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_SA0), model.timers[0].mode);
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_SWITCH, SWITCH_SA0), model.timers[0].mode);
   EXPECT_EQ(80, model.mixData[0].weight);
   EXPECT_EQ(900, model.limitData[0].max); // -100
   EXPECT_EQ(80, model.expoData[0].weight);

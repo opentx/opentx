@@ -47,7 +47,10 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
-option(R9M_PROTO_FLEX "Add R9M options for non certified firmwwares" OFF)
+option(MODULE_PROTOCOL_FCC "Add support for FCC modules" ON)
+option(MODULE_PROTOCOL_LBT "Add support for EU/LBT modules" ON)
+option(MODULE_PROTOCOL_FLEX "Add support for non certified FLEX modules" OFF)
+option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -309,13 +312,25 @@ if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
 endif()
 
-if(R9M_PROTO_FLEX)
-  add_definitions(-DR9M_PROTO_FLEX)
+if(MODULE_PROTOCOL_FCC)
+  add_definitions(-DMODULE_PROTOCOL_FCC)
+endif()
+
+if(MODULE_PROTOCOL_LBT)
+  add_definitions(-DMODULE_PROTOCOL_LBT)
+endif()
+
+if(MODULE_PROTOCOL_FLEX)
+  add_definitions(-DMODULE_PROTOCOL_FLEX)
+endif()
+
+if(MODULE_PROTOCOL_D8)
+  add_definitions(-DMODULE_PROTOCOL_D8)
 endif()
 
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
-    set(POPUP_LEVEL 3)
+  set(POPUP_LEVEL 3)
 endif()
 
 add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})

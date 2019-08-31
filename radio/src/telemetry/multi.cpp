@@ -138,14 +138,12 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
         TRACE("[MP] Received Frsky HUB telemetry len %d < 4", len);
       break;
 
-#if defined(MULTI_SPORT)
     case FrSkySportTelemtry:
       if (len >= 4)
         sportProcessTelemetryPacket(data);
       else
         TRACE("[MP] Received sport telemetry len %d < 4", len);
       break;
-#endif
 
     case InputSync:
       if (len >= 6)
@@ -158,7 +156,7 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       // Just an ack to our command, ignore for now
       break;
 
-#if defined(MULTI_SPORT) && defined(LUA)
+#if defined(LUA)
     case FrskySportPolling:
       if (len >= 1 && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data[0] == outputTelemetryBuffer.sport.physicalId) {
         TRACE("MP Sending sport data out.");

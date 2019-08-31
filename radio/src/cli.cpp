@@ -70,7 +70,7 @@ int toLongLongInt(const char ** argv, int index, long long int * val)
       base = 16;
       s = &argv[index][2];
     }
-    char * endptr = NULL;
+    char * endptr = nullptr;
     *val = strtoll(s, &endptr, base);
     if (*endptr == '\0')
       return 1;
@@ -782,7 +782,7 @@ const MemArea memAreas[] = {
   { "USART1", USART1, sizeof(USART_TypeDef) },
   { "USART2", USART2, sizeof(USART_TypeDef) },
   { "USART3", USART3, sizeof(USART_TypeDef) },
-  { NULL, NULL, 0 },
+  { nullptr, nullptr, 0 },
 };
 
 int cliSet(const char ** argv)
@@ -947,7 +947,7 @@ int cliDisplay(const char ** argv)
 {
   long long int address = 0;
 
-  for (const MemArea * area = memAreas; area->name != NULL; area++) {
+  for (const MemArea * area = memAreas; area->name != nullptr; area++) {
     if (!strcmp(area->name, argv[1])) {
       dump((uint8_t *)area->start, area->size);
       return 0;
@@ -1218,12 +1218,12 @@ const CliCommand cliCommands[] = {
 #if defined(BLUETOOTH)
   { "bt", cliBlueTooth, "<baudrate>|<command>" },
 #endif
-  { NULL, NULL, NULL }  /* sentinel */
+  { nullptr, nullptr, nullptr }  /* sentinel */
 };
 
 int cliHelp(const char ** argv)
 {
-  for (const CliCommand * command = cliCommands; command->name != NULL; command++) {
+  for (const CliCommand * command = cliCommands; command->name != nullptr; command++) {
     if (argv[1][0] == '\0' || !strcmp(command->name, argv[0])) {
       serialPrint("%s %s", command->name, command->args);
       if (argv[1][0] != '\0') {
@@ -1242,7 +1242,7 @@ int cliExecCommand(const char ** argv)
   if (argv[0][0] == '\0')
     return 0;
 
-  for (const CliCommand * command = cliCommands; command->name != NULL; command++) {
+  for (const CliCommand * command = cliCommands; command->name != nullptr; command++) {
     if (!strcmp(command->name, argv[0])) {
       return command->func(argv);
     }

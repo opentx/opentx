@@ -183,6 +183,7 @@ class ModuleData {
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     void convert(RadioDataConversionState & cstate);
     bool isPxx2Module() const;
+    bool isPxx1Module() const;
     QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); }
     QString rfProtocolToString() const;
     QString subTypeToString(int type = -1) const;

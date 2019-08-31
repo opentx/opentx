@@ -183,8 +183,7 @@ void title(const char * s);
   title(name)
 
 typedef int choice_t;
-
-choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
+choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event, IsValueAvailable isValueAvailable = nullptr);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char * label, LcdFlags attr, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event);
 
@@ -231,14 +230,10 @@ void drawStatusLine();
 #define drawStatusLine()
 #endif
 
-#define TEXT_FILENAME_MAXLEN         40
-extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void menuTextView(event_t event);
 void pushMenuTextView(const char *filename);
 void pushModelNotes();
 void readModelNotes();
-
-#define LABEL(...)                     (uint8_t)-1
 
 #define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)

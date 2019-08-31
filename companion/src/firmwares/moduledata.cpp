@@ -44,6 +44,20 @@ bool ModuleData::isPxx2Module() const
   }
 }
 
+bool ModuleData::isPxx1Module() const
+{
+  switch(protocol){
+    case PULSES_PXX_XJT_X16:
+    case PULSES_PXX_R9M:
+    case PULSES_PXX_R9M_LITE:
+    case PULSES_PXX_R9M_LITE_PRO:
+      return true;
+    default:
+      return false;
+  }
+}
+
+
 QString ModuleData::rfProtocolToString() const
 {
   switch (protocol) {

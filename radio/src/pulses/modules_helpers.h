@@ -23,7 +23,7 @@
 
 #include "bitfield.h"
 #include "definitions.h"
-#include "helpers.h"
+#include "opentx_helpers.h"
 #include "telemetry/telemetry.h"
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
