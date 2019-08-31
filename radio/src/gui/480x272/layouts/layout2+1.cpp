@@ -96,7 +96,7 @@ void Layout2P1::refresh(event_t event)
     drawTrims(mixerCurrentFlightMode);
   }
 
-  Layout::refresh(event);
+  Layout::refresh();
 }
 
 BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);

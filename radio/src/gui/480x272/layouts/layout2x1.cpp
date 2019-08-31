@@ -75,7 +75,7 @@ void Layout2x1::refresh(event_t event)
     drawTopBar();
   }
 
-  Layout::refresh(event);
+  Layout::refresh();
 }
 
 BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", LBM_LAYOUT_2x1, OPTIONS_LAYOUT_2x1);

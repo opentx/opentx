@@ -113,7 +113,7 @@ void Layout2x4::refresh(event_t event)
     lcdDrawSolidFilledRect(250, 50, 180, 170, CUSTOM_COLOR);
   }
 
-  Layout::refresh(event);
+  Layout::refresh();
 }
 
 BaseLayoutFactory<Layout2x4> layout2x4("Layout2x4", LBM_LAYOUT_2x4, OPTIONS_LAYOUT_2x4);
