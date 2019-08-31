@@ -222,9 +222,6 @@ bool menuMainView(event_t event)
   for (uint8_t i=0; i<MAX_CUSTOM_SCREENS; i++) {
     if (customScreens[i]) {
       if (i == g_model.view) {
-        if (forwardEvent && event) {
-          TRACE("forwarding event <%d>", event);
-        }
         customScreens[i]->refresh(forwardEvent ? event : 0);
       }
       else {
