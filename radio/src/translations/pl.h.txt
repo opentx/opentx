@@ -552,8 +552,8 @@
 #define TR_BLOFFBRIGHTNESS     INDENT"Jasność wył."
 #define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Logo ekranu"
-#define TR_PWR_ON_SPEED                "Pwr On speed"
-#define TR_PWR_OFF_SPEED               "Pwr Off speed"
+#define TR_PWR_ON_DELAY                "Pwr Off delay"
+#define TR_PWR_OFF_DELAY               "Pwr Off delay"
 #define TR_THROTTLEWARNING     TR(INDENT"OstrzGaz", INDENT "OstrzeżenieGaz")
 #define TR_SWITCHWARNING       TR(INDENT "OstrzPrzeł", INDENT "PozycjaPrzeł")
 #define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
