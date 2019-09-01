@@ -480,7 +480,7 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
     return 1;
 #if defined(MULTIMODULE)
   else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-    return 2 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
+    return 1 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
   }
 #endif
   else
@@ -528,20 +528,20 @@ bool menuModelSetup(event_t event)
 
   int8_t old_editMode = s_editMode;
   MENU(STR_MENUSETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX,
-       { 0, // Model name 
-         0, // Model bitmap 
+       { 0, // Model name
+         0, // Model bitmap
          TIMERS_ROWS,
          0, // Extended limits
          1, // Extended trims
          0, // Show trims
          0, // Trims step
-         
-         LABEL(Throttle), 
+
+         LABEL(Throttle),
            0, // Throttle reverse
            0, // Throttle trace source
            0, // Throttle trim
-           
-         LABEL(PreflightCheck), 
+
+         LABEL(PreflightCheck),
            0, // Display checklist
            0, // Throttle state
            uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), // Switches warnings
@@ -1099,7 +1099,7 @@ bool menuModelSetup(event_t event)
 #endif
             }
           }
-#endif          
+#endif
         }
         break;
 
