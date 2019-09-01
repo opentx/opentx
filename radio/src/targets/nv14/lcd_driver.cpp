@@ -41,6 +41,50 @@ static void LCD_Delay( void )
   }
 }
 
+enum ENUM_IO_SPEED
+{
+    IO_SPEED_LOW,
+    IO_SPEED_MID,
+    IO_SPEED_QUICK,
+    IO_SPEED_HIGH
+};
+
+enum ENUM_IO_MODE
+{
+    IO_MODE_INPUT,
+    IO_MODE_OUTPUT,
+    IO_MODE_ALTERNATE,
+    IO_MODE_ANALOG
+};
+
+
+void GPIO_SetDirection( GPIO_TypeDef *GPIOx, unsigned char Pin, unsigned char IsInput )
+{
+  unsigned int Mask;
+  unsigned int Position;
+  unsigned int Register;
+
+
+  Position = Pin << 1;
+  Mask = ~( 0x03UL << Position );
+
+  //EnterCritical();
+  Register = GPIOx->OSPEEDR & Mask;
+  Register |= IO_SPEED_HIGH << Position;
+  GPIOx->OSPEEDR = Register;
+  //ExitCritical();
+
+  //EnterCritical();
+  Register = GPIOx->MODER & Mask;
+  if( !IsInput )
+  {
+      Register |= IO_MODE_OUTPUT << Position;
+  }
+
+  GPIOx->MODER = Register;
+  //ExitCritical();
+}
+
 static void LCD_AF_GPIOConfig(void)
 {
   /*

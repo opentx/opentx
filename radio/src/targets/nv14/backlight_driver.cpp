@@ -45,5 +45,7 @@ void backlightInit()
 
 void backlightEnable(uint8_t dutyCycle)
 {
-  BACKLIGHT_TIMER->CCR1 = dutyCycle;
+  // TODO SET provided cycle - for now ensure backlight will be on
+  //BACKLIGHT_TIMER->CCR1 = dutyCycle;
+  BACKLIGHT_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX;
 }

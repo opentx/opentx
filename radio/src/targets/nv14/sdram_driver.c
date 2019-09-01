@@ -203,7 +203,9 @@ void SDRAM_InitSequence(void)
 
 void SDRAM_Init(void)
 {
-  // Clocks must be enabled here, because the SDRAM_Init() is called before main
+  //delay funcion needed
+  delaysInit();
+  // Clocks must be enabled here, because the sdramInit is called before main
   RCC_AHB1PeriphClockCmd(SDRAM_RCC_AHB1Periph, ENABLE);
   RCC_AHB3PeriphClockCmd(SDRAM_RCC_AHB3Periph, ENABLE);
 

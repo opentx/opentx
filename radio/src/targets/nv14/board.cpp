@@ -85,7 +85,6 @@ void interrupt1ms()
   if (pre_scale == 10) {
     pre_scale = 0;
 #if !defined(SIMU)
-    TouchDriver();
     hall_stick_loop();
 #endif
     DEBUG_TIMER_START(debugTimerPer10ms);

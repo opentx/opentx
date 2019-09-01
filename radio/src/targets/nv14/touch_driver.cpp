@@ -25,408 +25,558 @@ enum ENUM_TOUCH_STATE
     TOUCH_SLIDE,
     TOUCH_CLICK
 };
-
-#define TOUCH_DELAY() TouchDelay()
-
-void GPIO_SetDirection( GPIO_TypeDef *GPIOx, unsigned char Pin, unsigned char IsInput )
-{
-  unsigned int Mask;
-  unsigned int Position;
-  unsigned int Register;
-
-
-  Position = Pin << 1;
-  Mask = ~( 0x03UL << Position );
-
-  //EnterCritical();
-  Register = GPIOx->OSPEEDR & Mask;
-  Register |= IO_SPEED_HIGH << Position;
-  GPIOx->OSPEEDR = Register;
-  //ExitCritical();
-
-  //EnterCritical();
-  Register = GPIOx->MODER & Mask;
-  if( !IsInput )
-  {
-      Register |= IO_MODE_OUTPUT << Position;
-  }
-
-  GPIOx->MODER = Register;
-  //ExitCritical();
-}
-
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-void TouchInit( void )
-{
-  SET_TOUCH_RESET_OUT();
-  CLR_TOUCH_RESET();
-  SET_TOUCH_SCL_OUT();
-  SET_TOUCH_SDA_OUT();
-  SET_TOUCH_SCL();
-  SET_TOUCH_SDA();
-  SET_TOUCH_INT_IN();
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-static void TouchConditionDelay( void )
-{
-  volatile unsigned int i;
-
-  for( i = 0; i < 40; i++ )
-  {
-      ;
-  }
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-static void TouchDelay( void )
-{
-  volatile unsigned int i;
-
-  for( i = 0; i < 3; i++ )
-  {
-      ;
-  }
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-static void TouchStart( void )
-{
-  SET_TOUCH_SCL_OUT();
-  SET_TOUCH_SDA_OUT();
-  SET_TOUCH_SCL();
-  SET_TOUCH_SDA();
-  TouchConditionDelay();
-  CLR_TOUCH_SDA();
-  TouchConditionDelay();
-  CLR_TOUCH_SCL();
-  TOUCH_DELAY();
-}
-
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-static void TouchStop( void )
-{
-  CLR_TOUCH_SCL();
-  TOUCH_DELAY();
-  CLR_TOUCH_SDA();
-  SET_TOUCH_SCL();
-  TouchConditionDelay();
-  SET_TOUCH_SDA();
-  TouchConditionDelay();
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-static void  SendAckToTouch( unsigned char Ack )
-{
-  if( Ack )
-  {
-      SET_TOUCH_SDA();
-  }
-  else
-  {
-      CLR_TOUCH_SDA();
-  }
-
-  SET_TOUCH_SCL();
-  TOUCH_DELAY();
-  CLR_TOUCH_SCL();
-  TOUCH_DELAY();
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-static unsigned char GetTouchAck( void )
-{
-  unsigned char i;
-
-  SET_TOUCH_SDA();
-  SET_TOUCH_SDA_IN();
-  SET_TOUCH_SCL();
-  TOUCH_DELAY();
-
-  if( READ_TOUCH_SDA() )
-  {
-      i = 1;
-  }
-  else
-  {
-      i = 0;
-  }
-
-  CLR_TOUCH_SCL();
-  SET_TOUCH_SDA_OUT();
-  return( i );
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-unsigned char  ReceiveByteFromTouch( void )
-{
-  unsigned char i;
-  unsigned char ucReceive = 0;
-
-  SET_TOUCH_SDA_IN();
-
-  for( i = 0; i < 8; i++ )
-  {
-      CLR_TOUCH_SCL();
-      TOUCH_DELAY();
-      ucReceive <<= 1;
-      SET_TOUCH_SCL();
-      TOUCH_DELAY();
-
-      if( READ_TOUCH_SDA() )
-      {
-          ucReceive |= 0x01;
-      }
-  }
-
-  CLR_TOUCH_SCL();
-  SET_TOUCH_SDA_OUT();
-  TOUCH_DELAY();
-  return( ucReceive );
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-static void SendByteToTouch( unsigned char ucSendData )
-{
-  unsigned char i;
-
-  for( i = 0; i < 8; i++ )
-  {
-      CLR_TOUCH_SCL();
-      TOUCH_DELAY();
-      if( ucSendData & 0x80 )
-      {
-          SET_TOUCH_SDA();
-      }
-      else
-      {
-          CLR_TOUCH_SDA();
-      }
-
-      SET_TOUCH_SCL();
-      ucSendData <<= 1;
-      TOUCH_DELAY();
-  }
-
-  CLR_TOUCH_SCL();
-  TOUCH_DELAY();
-}
-/*==================================================================================================
-Name:
-Function:
-Input:
-Output:
-==================================================================================================*/
-unsigned char ReadTouchData( unsigned char *pData, unsigned char Length )
-{
-  unsigned char ucTryCount;
-#if 1
-  ucTryCount = 0;
-  while( ucTryCount < 3 )
-  {
-      do
-      {
-          TouchStart();
-          SendByteToTouch( ( TOUCH_PANEL_ADDRESS << 1 )|0x00 );
-          if( GetTouchAck() )
-          {
-              break;
-          }
-
-          SendByteToTouch( 0x00 );
-          if( GetTouchAck() )
-          {
-              break;
-          }
-
-          TouchStart();
-          SendByteToTouch( ( TOUCH_PANEL_ADDRESS << 1 )|0x01 );
-          if( GetTouchAck() )
-          {
-              break;
-          }
-
-          while( Length )
-          {
-              *pData = ReceiveByteFromTouch();
-              Length--;
-              pData++;
-
-              if( 0 != Length )
-              {
-                  SendAckToTouch( 0 );
-              }
-              else
-              {
-                  SendAckToTouch( 1 );
-              }
-          }
-
-          TouchStop();
-          return( !0 );
-
-      }while( 0 );
-
-      ucTryCount++;
-      TouchStop();
-  }
-#endif
-  return( 0 );
-}
-
-
 signed int x;
 signed int y;
-unsigned char  TouchEvent;
-unsigned char  TouchBuffer[7];
+uint32_t TouchEvent;
 unsigned short Tx;
 unsigned short Ty;
 extern STRUCT_TOUCH touchState; //definition in mainwindow.cpp
-static unsigned char  TouchCycle = 0;
 static unsigned char  TouchState = TOUCH_NONE;
 static unsigned short Txold;
 static unsigned short Tyold;
 static unsigned short TouchStartX;
 static unsigned short TouchStartY;
 
-void TouchDriver( void )
+
+#include "ft6x06.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
+
+#define FT6x06_MAX_INSTANCE  1
+
+#define I2C_TOUCH_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
+#define I2C_TOUCH_RCC_APB1Periph              RCC_APB1Periph_I2C1
+#define I2C_TOUCH                             I2C1
+#define I2C_TOUCH_GPIO                        GPIOB
+#define I2C_TOUCH_SCL_GPIO_PIN                GPIO_Pin_8  // PB.08
+#define I2C_TOUCH_SDA_GPIO_PIN                GPIO_Pin_7  // PB.09
+
+#define I2C_TOUCH_RESET_GPIO            GPIOB
+#define I2C_TOUCH_RESET_GPIO_PIN        GPIO_Pin_12  // PB.12
+#define I2C_TOUCH_INT_GPIO              GPIOB
+#define I2C_TOUCH_INT_GPIO_PIN          GPIO_Pin_9  // PB.09
+
+#define TOUCH_FT6236_I2C_ADDRESS      (0x70>>1)
+
+uint8_t ft6x06[FT6x06_MAX_INSTANCE] = { 0 };
+static ft6x06_handle_TypeDef ft6x06_handle = { FT6206_I2C_NOT_INITIALIZED, 0, 0};
+
+static void I2C_FreeBus(void) {
+    GPIO_InitTypeDef GPIO_InitStructure;
+    // reset i2c bus by setting clk as output and sending manual clock pulses
+    GPIO_InitStructure.GPIO_Pin   = I2C_TOUCH_SCL_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(I2C_TOUCH_GPIO, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin   = I2C_TOUCH_SDA_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(I2C_TOUCH_GPIO, &GPIO_InitStructure);
+
+    //send 100khz clock train for some 100ms
+    tmr10ms_t until = get_tmr10ms() + 11;
+    while(get_tmr10ms() < until){
+        if (GPIO_ReadInputDataBit(I2C_TOUCH_GPIO, I2C_TOUCH_SDA_GPIO_PIN) == 1){
+            TRACE("touch: i2c free again\n");
+            break;
+        }
+        TRACE("FREEEEE");
+        I2C_TOUCH_GPIO->BSRRH = I2C_TOUCH_SCL_GPIO_PIN; //BSRRL
+        delay_us(10);
+        I2C_TOUCH_GPIO->BSRRL  = I2C_TOUCH_SCL_GPIO_PIN;
+        delay_us(10);
+    }
+
+    //send stop condition:
+    GPIO_InitStructure.GPIO_Pin   = I2C_TOUCH_SDA_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(I2C_TOUCH_GPIO, &GPIO_InitStructure);
+
+    //clock is low
+    I2C_TOUCH_GPIO->BSRRH = I2C_TOUCH_SCL_GPIO_PIN;
+    delay_us(10);
+    //sda = lo
+    I2C_TOUCH_GPIO->BSRRL = I2C_TOUCH_SDA_GPIO_PIN;
+    delay_us(10);
+    //clock goes high
+    I2C_TOUCH_GPIO->BSRRH = I2C_TOUCH_SCL_GPIO_PIN;
+    delay_us(10);
+    //sda = hi
+    I2C_TOUCH_GPIO->BSRRL = I2C_TOUCH_SDA_GPIO_PIN;
+    delay_us(10);
+    TRACE("FREE BUS");
+}
+static void Touch_DeInit(void)
 {
-  SET_TOUCH_RESET();
+  I2C_DeInit(I2C_TOUCH);
+  (RCC->APB1RSTR |= (RCC_APB1RSTR_I2C1RST));
+  delay_ms(150);
+  (RCC->APB1RSTR &= ~(RCC_APB1RSTR_I2C1RST));
+}
 
-  TouchCycle++;
+static void I2C_Init(void)
+{
+    Touch_DeInit();
 
-  if( TouchCycle >= 1 )
+    GPIO_InitTypeDef GPIO_InitStructure;
+    EXTI_InitTypeDef EXTI_InitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
+    I2C_InitTypeDef I2C_InitStructure;
+
+
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+
+    RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, ENABLE);
+    RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
+
+    I2C_FreeBus();
+
+    GPIO_PinAFConfig(I2C_TOUCH_GPIO, GPIO_PinSource7, GPIO_AF_I2C1);
+    GPIO_PinAFConfig(I2C_TOUCH_GPIO, GPIO_PinSource8, GPIO_AF_I2C1);
+
+    GPIO_StructInit(&GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Pin   = I2C_TOUCH_SCL_GPIO_PIN | I2C_TOUCH_SDA_GPIO_PIN;
+    GPIO_Init(I2C_TOUCH_GPIO, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = I2C_TOUCH_RESET_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//GPIO_PuPd_NOPULL; //
+    GPIO_Init(I2C_TOUCH_RESET_GPIO, &GPIO_InitStructure);
+
+
+    //https://community.st.com/s/question/0D50X00009XkZ9FSAV/stm32f4-i2c-issues-solved
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+    I2C_StructInit(&I2C_InitStructure);
+    I2C_InitStructure.I2C_ClockSpeed          = 400000;
+    I2C_InitStructure.I2C_Mode                = I2C_Mode_I2C;
+    I2C_InitStructure.I2C_DutyCycle           = I2C_DutyCycle_2;
+    I2C_InitStructure.I2C_Ack                 = I2C_Ack_Enable;
+    I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+    I2C_Init(I2C_TOUCH, &I2C_InitStructure);
+
+    I2C_Init(I2C_TOUCH, &I2C_InitStructure);
+    //I2C_StretchClockCmd(I2C_TOUCH, ENABLE);
+    I2C_Cmd(I2C_TOUCH, ENABLE);
+
+    //ext interupt
+    GPIO_InitStructure.GPIO_Pin  = I2C_TOUCH_INT_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(I2C_TOUCH_INT_GPIO, &GPIO_InitStructure);
+
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource9);
+    EXTI_InitStructure.EXTI_Line = EXTI_Line9;
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+    EXTI_Init(&EXTI_InitStructure);
+
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 8;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
+
+#define I2C_TIMEOUT_MAX 1000
+bool I2C_WaitEvent(uint32_t event)
+{
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (!I2C_CheckEvent(I2C_TOUCH, event)) {
+    if ((timeout--) == 0) return false;
+  }
+  return true;
+}
+
+bool I2C_WaitEventCleared(uint32_t event)
+{
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (I2C_CheckEvent(I2C_TOUCH, event)) {
+    if ((timeout--) == 0) return false;
+  }
+  return true;
+}
+
+bool I2C_Send7BitAddress(uint8_t address, uint16_t direction){
+  I2C_SendData(I2C_TOUCH, (address << 1) | ((direction == I2C_Direction_Receiver) ? 1 : 0));
+  // check if slave acknowledged his address within timeout
+  if(!I2C_WaitEvent(direction == I2C_Direction_Transmitter ? I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED : I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED)) return false;
+  return true;
+}
+
+bool touch_i2c_read(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t len){
+  if (!I2C_WaitEventCleared(I2C_FLAG_BUSY)) return false;
+  I2C_GenerateSTART(I2C_TOUCH, ENABLE);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT)) return false;
+  if(!I2C_Send7BitAddress(addr, I2C_Direction_Transmitter)) return false;
+  I2C_SendData(I2C_TOUCH, reg);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED)) return false;
+  I2C_GenerateSTART(I2C_TOUCH, ENABLE);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT)) return false;
+  if(!I2C_Send7BitAddress(addr, I2C_Direction_Receiver)) return false;
+
+  if (len > 1) I2C_AcknowledgeConfig(I2C_TOUCH, ENABLE);
+
+  while (len) {
+    if (len == 1) I2C_AcknowledgeConfig(I2C_TOUCH, DISABLE);
+    if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_RECEIVED))return false;
+    *data++ = I2C_ReceiveData(I2C_TOUCH);;
+    len--;
+  }
+  I2C_GenerateSTOP(I2C_TOUCH, ENABLE);
+  return true;
+}
+
+static bool touch_i2c_write(uint8_t addr, uint8_t reg, uint8_t *data, uint8_t len)
+{
+  if (!I2C_WaitEventCleared(I2C_FLAG_BUSY)) return false;
+  I2C_GenerateSTART(I2C_TOUCH, ENABLE);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT)) return false;
+
+  if(!I2C_Send7BitAddress(addr, I2C_Direction_Transmitter)) return false;
+  I2C_SendData(I2C_TOUCH, (uint8_t)((reg & 0xFF00) >> 8));
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING)) return false;
+  I2C_SendData(I2C_TOUCH, (uint8_t)(reg & 0x00FF));
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING)) return false;
+  while (len--) {
+    I2C_SendData(I2C_TOUCH, *data);
+    if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING)) return false;
+    data++;
+  }
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED)) return false;
+  I2C_GenerateSTOP(I2C_TOUCH, ENABLE);
+  return true;
+}
+
+
+static void TS_IO_Write(uint8_t addr, uint8_t reg, uint8_t data)
+{
+  uint8_t tryCount = 3;
+  while(!touch_i2c_write(addr, reg, &data, 1)) {
+      if(--tryCount == 0) break;
+      I2C_Init();
+  }
+}
+
+static uint8_t TS_IO_Read(uint8_t addr, uint8_t reg)
+{
+  uint8_t retult;
+  uint8_t tryCount = 3;
+  while(!touch_i2c_read(addr, reg, &retult, 1)) {
+    if(--tryCount == 0) break;
+    I2C_Init();
+  }
+  return retult;
+}
+
+static uint16_t TS_IO_ReadMultiple(uint8_t addr, uint8_t reg, uint8_t *buffer, uint16_t length)
+{
+  uint8_t tryCount = 3;
+  while(!touch_i2c_read(addr, reg, buffer, length)) {
+    if(--tryCount == 0) break;
+    I2C_Init();
+  }
+  return 1;
+}
+
+static uint8_t TS_IO_Read(uint8_t reg) {
+  return TS_IO_Read(TOUCH_FT6236_I2C_ADDRESS, reg);
+}
+
+static void touch_ft6236_debug_info(void) {
+#if defined(DEBUG)
+    TRACE("ft6x36: thrhld = %d", TS_IO_Read(TOUCH_FT6236_REG_TH_GROUP) * 4);
+    TRACE("ft6x36: rep rate=", TS_IO_Read(TOUCH_FT6236_REG_PERIODACTIVE) * 10);
+    TRACE("ft6x36: fw lib 0x%02X %02X", TS_IO_Read(TOUCH_FT6236_REG_LIB_VER_H), TS_IO_Read(TOUCH_FT6236_REG_LIB_VER_L));
+    TRACE("ft6x36: fw v 0x%02X", TS_IO_Read(TOUCH_FT6236_REG_FIRMID));
+    TRACE("ft6x36: CHIP ID 0x%02X", TS_IO_Read(TOUCH_FT6236_REG_CIPHER));
+    TRACE("ft6x36: CTPM ID 0x%02X", TS_IO_Read(TOUCH_FT6236_REG_FOCALTECH_ID));
+    TRACE("ft6x36: rel code 0x%02X", TS_IO_Read(TOUCH_FT6236_REG_RELEASE_CODE_ID));
+#endif
+}
+
+/**
+ * @brief  Return if there is touches detected or not.
+ *         Try to detect new touches and forget the old ones (reset internal global
+ *         variables).
+ * @param  DeviceAddr: Device address on communication Bus.
+ * @retval : Number of active touches detected (can be 0, 1 or 2).
+ */
+static uint8_t ft6x06_TS_DetectTouch(uint16_t DeviceAddr)
+{
+    volatile uint8_t nbTouch = 0;
+
+    /* Read register FT6206_TD_STAT_REG to check number of touches detection */
+    nbTouch = TS_IO_Read(DeviceAddr, FT6206_TD_STAT_REG);
+    nbTouch &= FT6206_TD_STAT_MASK;
+    if(nbTouch > FT6206_MAX_DETECTABLE_TOUCH)
+    {
+        /* If invalid number of touch detected, set it to zero */
+        nbTouch = 0;
+    }
+    /* Update ft6x06 driver internal global : current number of active touches */
+    ft6x06_handle.currActiveTouchNb = nbTouch;
+
+    /* Reset current active touch index on which to work on */
+    ft6x06_handle.currActiveTouchIdx = 0;
+    return(nbTouch);
+}
+
+/**
+ * @brief  Get the touch detailed informations on touch number 'touchIdx' (0..1)
+ *         This touch detailed information contains :
+ *         - weight that was applied to this touch
+ *         - sub-area of the touch in the touch panel
+ *         - event of linked to the touch (press down, lift up, ...)
+ * @param  DeviceAddr: Device address on communication Bus (I2C slave address of FT6x06).
+ * @param  touchIdx : Passed index of the touch (0..1) on which we want to get the
+ *                    detailed information.
+ * @param  pWeight : Pointer to to get the weight information of 'touchIdx'.
+ * @param  pArea   : Pointer to to get the sub-area information of 'touchIdx'.
+ * @param  pEvent  : Pointer to to get the event information of 'touchIdx'.
+
+ * @retval None.
+ */
+static void ft6x06_TS_GetTouchInfo(uint16_t  DeviceAddr,
+        uint32_t   touchIdx,
+        uint32_t * pWeight,
+        uint32_t * pArea,
+        uint32_t * pEvent)
+{
+    uint8_t regAddress = 0;
+    uint8_t dataxy[3];
+
+    if(touchIdx < ft6x06_handle.currActiveTouchNb)
+    {
+        switch(touchIdx)
+        {
+            case 0 :
+                regAddress = FT6206_P1_WEIGHT_REG;
+                break;
+
+            case 1 :
+                regAddress = FT6206_P2_WEIGHT_REG;
+                break;
+
+            default :
+                break;
+
+        } /* end switch(touchIdx) */
+
+        /* Read weight, area and Event Id of touch index */
+        TS_IO_ReadMultiple(DeviceAddr, regAddress, dataxy, sizeof(dataxy));
+
+        /* Return weight of touch index */
+        * pWeight = (dataxy[0] & FT6206_TOUCH_WEIGHT_MASK) >> FT6206_TOUCH_WEIGHT_SHIFT;
+        /* Return area of touch index */
+        * pArea = (dataxy[1] & FT6206_TOUCH_AREA_MASK) >> FT6206_TOUCH_AREA_SHIFT;
+        /* Return Event Id  of touch index */
+        * pEvent = (dataxy[2] & FT6206_TOUCH_EVT_FLAG_MASK) >> FT6206_TOUCH_EVT_FLAG_SHIFT;
+
+    } /* of if(touchIdx < ft6x06_handle.currActiveTouchNb) */
+}
+
+
+/**
+ * @brief  Get the touch screen X and Y positions values
+ *         Manage multi touch thanks to touch Index global
+ *         variable 'ft6x06_handle.currActiveTouchIdx'.
+ * @param  DeviceAddr: Device address on communication Bus.
+ * @param  X: Pointer to X position value
+ * @param  Y: Pointer to Y position value
+ * @retval None.
+ */
+static void ft6x06_TS_GetXY(uint16_t DeviceAddr, uint16_t *X, uint16_t *Y, uint32_t *event)
+{
+    uint8_t regAddress = 0;
+    uint8_t  dataxy[4];
+
+    if(ft6x06_handle.currActiveTouchIdx < ft6x06_handle.currActiveTouchNb)
+    {
+        switch(ft6x06_handle.currActiveTouchIdx)
+        {
+            case 0 :
+                regAddress = FT6206_P1_XH_REG;
+                break;
+            case 1 :
+                regAddress = FT6206_P2_XH_REG;
+                break;
+
+            default :
+                break;
+        }
+
+        /* Read X and Y positions */
+        TS_IO_ReadMultiple(DeviceAddr, regAddress, dataxy, sizeof(dataxy));
+        /* Send back ready X position to caller */
+        *X = ((dataxy[0] & FT6206_MSB_MASK) << 8) | (dataxy[1] & FT6206_LSB_MASK);
+        /* Send back ready Y position to caller */
+        *Y = ((dataxy[2] & FT6206_MSB_MASK) << 8) | (dataxy[3] & FT6206_LSB_MASK);
+
+        *event = (dataxy[0] & FT6206_TOUCH_EVT_FLAG_MASK) >> FT6206_TOUCH_EVT_FLAG_SHIFT;
+        /*
+        uint32_t weight;
+        uint32_t area;
+        ft6x06_TS_GetTouchInfo(DeviceAddr, ft6x06_handle.currActiveTouchIdx, &weight, &area, event);
+        */
+        ft6x06_handle.currActiveTouchIdx++;
+    }
+}
+
+
+static void ft6x06_TS_GetGestureID(uint16_t DeviceAddr, uint32_t * pGestureId)
+{
+    *pGestureId = TS_IO_Read(DeviceAddr, FT6206_GEST_ID_REG);
+}
+
+void TouchReset(){
+  GPIO_ResetBits(I2C_TOUCH_RESET_GPIO, I2C_TOUCH_RESET_GPIO_PIN);
+  delay_ms(20);
+  GPIO_SetBits(I2C_TOUCH_RESET_GPIO, I2C_TOUCH_RESET_GPIO_PIN);
+  delay_ms(300);
+}
+void TouchInit( void )
+{
+  I2C_Init();
+  TouchReset();
+  touch_ft6236_debug_info();
+
+  /* INT generation for new touch available */
+  /* Note TS_INT is active low */
+  uint8_t regValue = 0;
+  regValue = (FT6206_G_MODE_INTERRUPT_TRIGGER & (FT6206_G_MODE_INTERRUPT_MASK >> FT6206_G_MODE_INTERRUPT_SHIFT)) << FT6206_G_MODE_INTERRUPT_SHIFT;
+
+  /* Set interrupt TOUCH_FT6236_I2C_ADDRESS mode in FT6206_GMODE_REG */
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, FT6206_GMODE_REG, regValue);
+  //enter standard mode
+  //TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0,0);
+
+  /*trigger reset */
+  TouchReset();
+
+  //Try to enable gesture
+  /*
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, FT6206_GMODE_REG, regValue);
+
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD1, 0xff);
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD2, 0xff);
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD5, 0xff);
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD6, 0xff);
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD7, 0xff);
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD8, 0xff);
+  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD0, 1);
+  */
+}
+
+
+void handleTouch()
+{
+  ft6x06_TS_GetXY(TOUCH_FT6236_I2C_ADDRESS, &Tx, &Ty, &TouchEvent);
+  uint32_t gesture;
+  ft6x06_TS_GetGestureID(TOUCH_FT6236_I2C_ADDRESS, &gesture);
+#if defined( LCD_DIRECTION ) && ( LCD_DIRECTION == LCD_VERTICAL )
+  Tx=LCD_WIDTH-Tx;
+  Ty=LCD_HEIGHT-Ty;
+#else
+  x = ( LCD_WIDTH - 1 ) - Ty;
+  Ty = Tx;
+  Tx = x;
+#endif
+  if( 2 == TouchEvent )
   {
-      TouchCycle = 0;
-      if( ReadTouchData( TouchBuffer, sizeof( TouchBuffer ) ) )
+      touchState.X = Tx;
+      touchState.Y = Ty;
+
+      if( TOUCH_NONE == TouchState )
       {
-          TouchEvent = TouchBuffer[3] >> 6;
-          Tx = TouchBuffer[3] & 0x0f;
-          Tx <<= 8;
-          Tx |= TouchBuffer[4];
-          Ty = TouchBuffer[5] & 0x0f;
-          Ty <<= 8;
-          Ty |= TouchBuffer[6];
+          touchState.Event = TE_NONE;
+          TouchState = TOUCH_CLICK;
 
-          #if defined( LCD_DIRECTION ) && ( LCD_DIRECTION == LCD_VERTICAL )
-          Tx=LCD_WIDTH-Tx;
-          Ty=LCD_HEIGHT-Ty;
-          #else
-          x = ( LCD_WIDTH - 1 ) - Ty;
-          Ty = Tx;
-          Tx = x;
-          #endif
-          if( 2 == TouchEvent )
+          TouchStartX = Tx;
+          TouchStartY = Ty;
+
+          if (g_eeGeneral.backlightMode & e_backlight_mode_keys)
+            backlightOn(); // TODO is that the best place ?
+      }
+      else
+      {
+          if ( TOUCH_CLICK == TouchState )
           {
-              touchState.X = Tx;
-              touchState.Y = Ty;
+            x = Tx - Txold;
+            y = Ty - Tyold;
 
-              if( TOUCH_NONE == TouchState )
-              {
-                  touchState.Event = TE_NONE;
-                  TouchState = TOUCH_CLICK;
-
-                  TouchStartX = Tx;
-                  TouchStartY = Ty;
-
-                  if (g_eeGeneral.backlightMode & e_backlight_mode_keys)
-                    backlightOn(); // TODO is that the best place ?
-              }
-              else
-              {
-
-                  if ( TOUCH_CLICK == TouchState )
-                  {
-                    x = Tx - Txold;
-                    y = Ty - Tyold;
-
-                    if( ( x >= SLIDE_RANGE ) || ( x <= -SLIDE_RANGE ) || ( y >= SLIDE_RANGE ) || ( y <= -SLIDE_RANGE ) )
-                    {
-                        TouchState = TOUCH_SLIDE;
-                        touchState.Event = TE_SLIDE;
-                    }
-                    else
-                    {
-                        touchState.Event = TE_DOWN;
-                        touchState.startX = touchState.lastX = touchState.X;
-                        touchState.startY = touchState.lastY = touchState.Y;
-                    }
-                  }
-                  else if ( TOUCH_SLIDE == TouchState )
-                  {
-                      touchState.Event = TE_SLIDE;
-                  }
-                  else
-                  {
-                      TouchState = TOUCH_NONE;
-                  }
-              }
-              Txold = Tx;
-              Tyold = Ty;
+            if( ( x >= SLIDE_RANGE ) || ( x <= -SLIDE_RANGE ) || ( y >= SLIDE_RANGE ) || ( y <= -SLIDE_RANGE ) )
+            {
+                TouchState = TOUCH_SLIDE;
+                touchState.Event = TE_SLIDE;
+            }
+            else
+            {
+                touchState.Event = TE_DOWN;
+                touchState.startX = touchState.lastX = touchState.X;
+                touchState.startY = touchState.lastY = touchState.Y;
+            }
+          }
+          else if ( TOUCH_SLIDE == TouchState )
+          {
+              touchState.Event = TE_SLIDE;
           }
           else
           {
-              if ( TOUCH_CLICK == TouchState )
-              {
-                  touchState.X = Txold;
-                  touchState.Y = Tyold;
-                  touchState.Event = TE_UP;
-                  touchState.Time = get_tmr10ms();
-              }
-              else if (get_tmr10ms() > touchState.Time + 50)
-              {
-                  touchState.X = LCD_WIDTH;
-                  touchState.Y = LCD_HEIGHT;
-                  touchState.Event = TE_NONE;
-              }
-
               TouchState = TOUCH_NONE;
           }
       }
-      else
+      Txold = Tx;
+      Tyold = Ty;
+  }
+}
+
+extern "C" void EXTI9_5_IRQHandler(void) {
+
+  if(EXTI_GetITStatus(EXTI_Line9) != RESET) {
+
+    if(ft6x06_TS_DetectTouch(TOUCH_FT6236_I2C_ADDRESS)){
+      handleTouch();
+      /*
+      TRACE("X %d Y %d", x, y);
+      uint32_t gesture;
+      ft6x06_TS_GetGestureID(TOUCH_FT6236_I2C_ADDRESS, &gesture);
+      if(gesture != TOUCH_FT6236_GESTURE_NONE) TRACE("gesture %d", gesture);
+      TS_IO_Read(TOUCH_FT6236_I2C_ADDRESS, 0xD3);
+      if(gesture != TOUCH_FT6236_GESTURE_NONE) TRACE("gesture d3 %d", gesture);
+      */
+    }
+    else
+    {
+      if ( TOUCH_CLICK == TouchState )
+      {
+          touchState.X = Txold;
+          touchState.Y = Tyold;
+          touchState.Event = TE_UP;
+          touchState.Time = get_tmr10ms();
+      }
+      else if (get_tmr10ms() > touchState.Time + 50)
       {
           touchState.X = LCD_WIDTH;
           touchState.Y = LCD_HEIGHT;
           touchState.Event = TE_NONE;
-          TouchState = TOUCH_NONE;
       }
+      TouchState = TOUCH_NONE;
+    }
+    EXTI_ClearITPendingBit(EXTI_Line9);
   }
 }
