@@ -83,9 +83,16 @@ enum MenuRadioHardwareItems {
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
-  #define EXTERNAL_ANTENNA_ROW         0,
+#define EXTERNAL_ANTENNA_ROW         0,
+void onHardwareAntennaSwitchConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    // Switch to external antenna confirmation
+    g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
+  }
+}
 #else
-  #define EXTERNAL_ANTENNA_ROW
+#define EXTERNAL_ANTENNA_ROW
 #endif
 
 bool menuRadioHardware(event_t event)
@@ -280,8 +287,14 @@ bool menuRadioHardware(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNA);
         reusableBuffer.radioHardware.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_ANTENNA_MODES, reusableBuffer.radioHardware.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
         if (!s_editMode && reusableBuffer.radioHardware.externalAntennaMode != g_eeGeneral.externalAntennaMode) {
-          g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
-          checkExternalAntenna();
+          if (!isExternalAntennaEnabled() && (reusableBuffer.radioHardware.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE || (reusableBuffer.radioHardware.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE))) {
+            POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onHardwareAntennaSwitchConfirm);
+            SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
+          }
+          else {
+            g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
+            checkExternalAntenna();
+          }
         }
         break;
 #endif

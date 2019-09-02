@@ -19,7 +19,6 @@
  */
 
 #include <opentx.h>
-#include "opentx.h"
 
 #if defined(PCBSKY9X)
 #define HW_SETTINGS_COLUMN (2+(15*FW))
@@ -227,9 +226,16 @@ enum {
 #endif
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
-  #define EXTERNAL_ANTENNA_ROW           0,
+#define EXTERNAL_ANTENNA_ROW           0,
+void onHardwareAntennaSwitchConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    // Switch to external antenna confirmation
+    g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
+  }
+}
 #else
-  #define EXTERNAL_ANTENNA_ROW
+#define EXTERNAL_ANTENNA_ROW
 #endif
 
 #if defined(PCBX9LITE)
@@ -566,8 +572,14 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
         reusableBuffer.radioHardware.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_ANTENNA, STR_ANTENNA_MODES, reusableBuffer.radioHardware.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
         if (!s_editMode && reusableBuffer.radioHardware.externalAntennaMode != g_eeGeneral.externalAntennaMode) {
-          g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
-          checkExternalAntenna();
+          if (!isExternalAntennaEnabled() && (reusableBuffer.radioHardware.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE || (reusableBuffer.radioHardware.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE))) {
+            POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onHardwareAntennaSwitchConfirm);
+            SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
+          }
+          else {
+            g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
+            checkExternalAntenna();
+          }
         }
         break;
 #endif
