@@ -2481,9 +2481,6 @@ void OpenTxModelData::beforeExport()
 {
   // qDebug() << QString("before export model") << modelData.name;
 
-  for (int module=0; module<2; module++) {
-  }
-
   if (IS_HORUS(board)) {
     uint32_t newSwitchWarningStates = 0;
     for (int i = 0; i < MAX_SWITCHES(board, version); i++) {
@@ -2500,11 +2497,6 @@ void OpenTxModelData::afterImport()
 {
   qCDebug(eepromImport) << QString("OpenTxModelData::afterImport()") << modelData.name;
 
-  // ??? what's this ???
-  if (IS_HORUS(board)) {
-    modelData.moduleData[0].protocol = PULSES_PXX_XJT_X16;
-  }
-
   if (IS_HORUS(board)) {
     uint32_t newSwitchWarningStates = 0;
     for (int i = 0; i < MAX_SWITCHES(board, version); i++) {
@@ -2517,8 +2509,9 @@ void OpenTxModelData::afterImport()
     modelData.switchWarningStates = newSwitchWarningStates;
   }
 
-  if (version <= 218 && IS_HORUS_X10(board) && modelData.thrTraceSrc > 3)
+  if (version <= 218 && IS_HORUS_X10(board) && modelData.thrTraceSrc > 3) {
     modelData.thrTraceSrc += 2;
+  }
 }
 
 OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant):

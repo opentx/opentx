@@ -169,6 +169,8 @@ const char * loadRadioSettings(const char * path)
     convertRadioData(version);
   }
 
+  postRadioSettingsLoad();
+
   return nullptr;
 }
 

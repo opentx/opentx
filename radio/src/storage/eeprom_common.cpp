@@ -111,6 +111,8 @@ bool storageReadRadioSettings(bool allowFixes)
     }
   }
 
+  postRadioSettingsLoad();
+
   return true;
 }
 
