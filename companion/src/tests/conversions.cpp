@@ -163,15 +163,15 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(0, model.beepANACenter);
   EXPECT_EQ(80, model.mixData[0].weight);
   EXPECT_EQ(RawSource(SOURCE_TYPE_MAX), model.mixData[2].srcRaw); // MAX
-  EXPECT_EQ(RawSource(SOURCE_TYPE_STICK,4+5), model.mixData[3].srcRaw); // LS
-  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0), model.mixData[5].srcRaw);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_STICK, 4+5), model.mixData[3].srcRaw); // LS
+  EXPECT_EQ(RawSource(SOURCE_TYPE_PPM, 0), model.mixData[5].srcRaw);
   EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY,1), model.mixData[5].swtch);
   EXPECT_EQ(900, model.limitData[0].max); // -100
   EXPECT_EQ(80, model.expoData[0].weight);
   EXPECT_EQ(LS_FN_VPOS, model.logicalSw[0].func);
   EXPECT_EQ(RawSource(SOURCE_TYPE_PPM,0).toValue(), model.logicalSw[0].val1); // TR1
   EXPECT_EQ(0, model.logicalSw[0].val2);
-  EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,19*3).toValue(), model.logicalSw[1].val1); // TELE:20
+  EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY, 19*3).toValue(), model.logicalSw[1].val1); // TELE:20
   EXPECT_EQ(20, model.logicalSw[1].val2);
   EXPECT_EQ(RawSwitch(SWITCH_TYPE_VIRTUAL,1).toValue(), model.logicalSw[1].andsw);
   EXPECT_EQ(HELI_SWASH_TYPE_120X, model.swashRingData.type);

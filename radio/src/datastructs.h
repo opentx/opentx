@@ -656,7 +656,7 @@ PACK(struct TrainerData {
   #define SPLASH_MODE int8_t splashMode:3
 #endif
 
-#if defined(PCBXLITES) || defined(PCBHORUS)
+#if defined(PCBXLITES)
   #define GYRO_FIELDS \
     int8_t   gyroMax; \
     int8_t   gyroOffset;

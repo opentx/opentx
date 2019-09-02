@@ -524,14 +524,14 @@ PACK(typedef struct {
   ScriptData_v216 scriptsData[MAX_SCRIPTS]; \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t spare[2];
 #elif defined(PCBSKY9X)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
   ModuleData_v216 moduleData[NUM_MODULES+1]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t rxBattAlarms[2];
 #endif
 
@@ -1070,7 +1070,7 @@ void convertModelData_216_to_217(ModelData &model)
 #endif
   newModel.potsWarnMode = oldModel.nPotsToWarn >> 6;
   newModel.potsWarnEnabled = oldModel.nPotsToWarn & 0x1f;
-  memcpy(newModel.potsWarnPosition, oldModel.potPosition, sizeof(newModel.potsWarnPosition));
+  memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
 }
 
 void convertModelData_217_to_218(ModelData &model)

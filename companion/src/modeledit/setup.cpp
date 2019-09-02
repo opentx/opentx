@@ -1387,7 +1387,7 @@ void SetupPanel::updatePotWarnings()
   for (int i=0; i<potWarningCheckboxes.size(); i++) {
     QCheckBox *checkbox = potWarningCheckboxes[i];
     int index = checkbox->property("index").toInt();
-    checkbox->setChecked(!model->potsWarningEnabled[index]);
+    checkbox->setChecked(!model->potsWarnEnabled[index]);
     checkbox->setDisabled(model->potsWarningMode == 0);
   }
   lock = false;
@@ -1397,7 +1397,7 @@ void SetupPanel::potWarningToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-    model->potsWarningEnabled[index] = !checked;
+    model->potsWarnEnabled[index] = !checked;
     updatePotWarnings();
     emit modified();
   }

@@ -69,7 +69,7 @@ inline int MAX_POTS_STORAGE(Board::Type board, int version)
 inline int MAX_POTS_SOURCES(Board::Type board, int version)
 {
   if (version <= 218 && IS_HORUS(board))
-    return 3;
+    return 5;
   return Boards::getCapability(board, Board::Pots);
 }
 
@@ -82,6 +82,8 @@ inline int MAX_SLIDERS_STORAGE(Board::Type board, int version)
 
 inline int MAX_SLIDERS_SOURCES(Board::Type board, int version)
 {
+  if (version <= 218 && IS_HORUS(board))
+    return 2;
   return Boards::getCapability(board, Board::Sliders);
 }
 
@@ -2444,13 +2446,17 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   for (int i=0; i<8; i++) {
     if (i < Boards::getCapability(board, Board::Pots) + Boards::getCapability(board, Board::Sliders))
-      internalField.Append(new BoolField<1>(this, modelData.potsWarningEnabled[i]));
+      internalField.Append(new BoolField<1>(this, modelData.potsWarnEnabled[i]));
     else
       internalField.Append(new SpareBitsField<1>(this));
   }
 
   for (int i=0; i < MAX_POTS_STORAGE(board, version) + MAX_SLIDERS_STORAGE(board, version); i++) {
-    internalField.Append(new SignedField<8>(this, modelData.potPosition[i]));
+    internalField.Append(new SignedField<8>(this, modelData.potsWarnPosition[i]));
+  }
+
+  if (version <= 218 && IS_HORUS_X10(board)) {
+    internalField.Append(new SpareBitsField<16>(this));
   }
 
   if (IS_SKY9X(board)) {
@@ -2549,9 +2555,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   internalField.Append(new UnsignedField<16>(this, generalData.variant));
 
   for (int i=0; i<inputsCount; i++) {
-    if (version <= 218 && IS_HORUS(board) && (i == CPN_MAX_STICKS + 3)) {
-      // skip not yet existing pots (EXT1 / EXT2 for X10)
-      i += 2;
+    if (version <= 218 && IS_HORUS_X10(board) && (i == CPN_MAX_STICKS + 3)) {
+      internalField.Append(new SpareBitsField<16*6>(this));
     }
     internalField.Append(new SignedField<16>(this, generalData.calibMid[i]));
     internalField.Append(new SignedField<16>(this, generalData.calibSpanNeg[i]));
@@ -2559,6 +2564,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   internalField.Append(new UnsignedField<16>(this, chkSum));
+
   if (!IS_HORUS(board)) {
     internalField.Append(new UnsignedField<8>(this, generalData.currModelIndex));
     internalField.Append(new UnsignedField<8>(this, generalData.contrast));
@@ -2698,7 +2704,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         internalField.Append(new SpareBitsField<4>(this));
       }
       else {
-        for (uint8_t i=0; i<SLIDERS_CONFIG_SIZE(board,version) / 2; i++) {
+        for (uint8_t i=0; i<SLIDERS_CONFIG_SIZE(board,version); i++) {
           internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
         }
       }
@@ -2736,7 +2742,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
     
     if (IS_HORUS(board) && version >= 219) {
-      for (int i=0; i<SLIDERS_CONFIG_SIZE(board,version) / 2; i++) {
+      for (int i=0; i<SLIDERS_CONFIG_SIZE(board,version); i++) {
         if (i < MAX_SLIDERS_STORAGE(board, version))
           internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
         else
@@ -2784,6 +2790,9 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
     for (int i=0; i<MAX_SLIDERS_STORAGE(board, version); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.sliderName[i], "Slider name"));
+    }
+    if (version <= 218 && IS_HORUS_X10(board)) {
+      internalField.Append(new SpareBitsField<48>(this)); // DUMMY_ANAS
     }
     internalField.Append(new CharField<17>(this, generalData.currModelFilename, true, "Current model filename"));
   }

@@ -301,7 +301,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 0;
 
     case GyroAnalogs:
-      if (IS_HORUS_X12S(board) || IS_TARANIS_XLITES(board))
+      if (IS_TARANIS_XLITES(board))
         return 2;
       else
         return 0;
