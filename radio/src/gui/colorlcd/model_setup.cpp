@@ -513,25 +513,6 @@ class ModuleWindow : public Window {
       FormField::link(previousField, moduleChoice);
 
       // Module parameters
-#if defined (PCBNV14)
-      if (isModuleFlysky(moduleIdx)) {
-        grid.nextLine();
-        rfChoice = new Choice(this, grid.getFieldSlot(), STR_FLYSKY_PROTOCOLS, 0, 3,
-                   GET_DEFAULT(g_model.moduleData[moduleIdx].flysky.mode),
-                   [=](int32_t newValue) -> void {
-                     g_model.moduleData[moduleIdx].flysky.mode = newValue;
-                     SET_DIRTY();
-                     //TODO moduleFlagBackNormal(moduleIdx);
-                     //TODO onFlySkyReceiverSetPulse(INTERNAL_MODULE, newValue);
-                   });
-
-
-        grid.nextLine();
-        new StaticText(this, grid.getLabelSlot(true), STR_FLYSKY_TELEMETRY);
-        new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.rssiAlarms.flysky_telemetry));
-      }
-      else
-#endif
       if (isModuleXJT(moduleIdx)) {
         auto xjtChoice = new Choice(this, grid.getFieldSlot(2, 1), STR_XJT_ACCST_RF_PROTOCOLS, MODULE_SUBTYPE_PXX1_OFF, MODULE_SUBTYPE_PXX1_ACCST_LR12,
                                     GET_SET_DEFAULT(g_model.moduleData[moduleIdx].rfProtocol));
@@ -653,6 +634,24 @@ class ModuleWindow : public Window {
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_MULTI_LOWPOWER);
         new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.lowPowerMode));
+      }
+#endif
+#if defined (PCBNV14)
+      else if (isModuleFlysky(moduleIdx)) {
+        grid.nextLine();
+        rfChoice = new Choice(this, grid.getFieldSlot(), STR_FLYSKY_PROTOCOLS, 0, 3,
+                   GET_DEFAULT(g_model.moduleData[moduleIdx].flysky.mode),
+                   [=](int32_t newValue) -> void {
+                     g_model.moduleData[moduleIdx].flysky.mode = newValue;
+                     SET_DIRTY();
+                     //TODO moduleFlagBackNormal(moduleIdx);
+                     //TODO onFlySkyReceiverSetPulse(INTERNAL_MODULE, newValue);
+                   });
+
+
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_FLYSKY_TELEMETRY);
+        new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.rssiAlarms.flysky_telemetry));
       }
 #endif
       grid.nextLine();
