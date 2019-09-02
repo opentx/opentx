@@ -153,7 +153,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupSwitchType(17, ui->srLabel, ui->srName, ui->srType);
 
   if (IS_TARANIS(board) && !IS_TARANIS_SMALL(board)) {
-    ui->serialPortMode->setCurrentIndex(generalSettings.hw_uartMode);
+    ui->serialPortMode->setCurrentIndex(generalSettings.auxSerialMode);
   }
   else {
     ui->serialPortMode->setCurrentIndex(0);
@@ -277,6 +277,6 @@ void HardwarePanel::on_txVoltageCalibration_editingFinished()
 
 void HardwarePanel::on_serialPortMode_currentIndexChanged(int index)
 {
-  generalSettings.hw_uartMode = index;
+  generalSettings.auxSerialMode = index;
   emit modified();
 }

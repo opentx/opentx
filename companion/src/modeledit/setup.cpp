@@ -199,7 +199,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
     }
-    if (generalSettings.hw_uartMode != UART_MODE_SBUS_TRAINER) {
+    if (generalSettings.auxSerialMode != UART_MODE_SBUS_TRAINER) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
     }
     ui->trainerMode->setCurrentIndex(model.trainerMode);
