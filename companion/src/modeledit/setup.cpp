@@ -199,7 +199,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
     }
-    if (generalSettings.hw_uartMode != UART_MODE_SBUS_TRAINER) {
+    if (generalSettings.auxSerialMode != UART_MODE_SBUS_TRAINER) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
     }
     ui->trainerMode->setCurrentIndex(model.trainerMode);
@@ -1387,7 +1387,7 @@ void SetupPanel::updatePotWarnings()
   for (int i=0; i<potWarningCheckboxes.size(); i++) {
     QCheckBox *checkbox = potWarningCheckboxes[i];
     int index = checkbox->property("index").toInt();
-    checkbox->setChecked(!model->potsWarningEnabled[index]);
+    checkbox->setChecked(!model->potsWarnEnabled[index]);
     checkbox->setDisabled(model->potsWarningMode == 0);
   }
   lock = false;
@@ -1397,7 +1397,7 @@ void SetupPanel::potWarningToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-    model->potsWarningEnabled[index] = !checked;
+    model->potsWarnEnabled[index] = !checked;
     updatePotWarnings();
     emit modified();
   }

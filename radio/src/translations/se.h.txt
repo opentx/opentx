@@ -543,8 +543,8 @@
 #define TR_BLONBRIGHTNESS      INDENT "På Ljusstyrka"
 #define TR_BLOFFBRIGHTNESS     INDENT "Av Ljusstyrka"
 #define TR_SPLASHSCREEN        "Startbild"
-#define TR_PWR_ON_SPEED                "Pwr On speed"
-#define TR_PWR_OFF_SPEED               "Pwr Off speed"
+#define TR_PWR_ON_DELAY                "Pwr On delay"
+#define TR_PWR_OFF_DELAY               "Pwr Off delay"
 #define TR_BLCOLOR             INDENT "Color"
 #define TR_THROTTLEWARNING     TR("Gasvarning", INDENT "Gasvarning")
 #define TR_SWITCHWARNING       TR("Bryt.varn.", INDENT "Brytarvarning")

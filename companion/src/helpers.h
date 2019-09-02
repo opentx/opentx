@@ -67,6 +67,14 @@ class GVarGroup: public QObject {
 
     void setWeight(int val);
 
+    void setMinimum(int min) {
+      mini = min;
+    }
+
+    void setMaximum(int max) {
+      maxi = max;
+    }
+
   signals:
     void valueChanged();
 

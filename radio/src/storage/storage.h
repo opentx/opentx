@@ -49,7 +49,7 @@ void storageReadAll();
 void storageDirty(uint8_t msk);
 void storageCheck(bool immediately);
 void storageFlushCurrentModel();
-
+void postRadioSettingsLoad();
 void preModelLoad();
 void postModelLoad(bool alarms);
 void checkExternalAntenna();

@@ -27,7 +27,6 @@
 void eeLoadModel(uint8_t index)
 {
   if (index < MAX_MODELS) {
-
     preModelLoad();
 
     uint16_t size = eeLoadModelData(index);
@@ -110,6 +109,8 @@ bool storageReadRadioSettings(bool allowFixes)
       currentLanguagePack = languagePacks[i];
     }
   }
+
+  postRadioSettingsLoad();
 
   return true;
 }
