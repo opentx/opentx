@@ -276,15 +276,9 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else if (IS_HORUS_X10(board))
         return 5;
       else if (IS_HORUS_X12S(board))
-        return 3;
-      else
-        return 3;
-
-    case PotsStorage:
-      if (IS_HORUS(board))
         return 5;
       else
-        return getCapability(board, Pots);
+        return 3;
 
     case FactoryInstalledPots:
       if (IS_TARANIS_X9(board))
@@ -300,12 +294,6 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 0;
 
-    case SlidersStorage:
-      if (IS_HORUS_X10(board))
-        return 4;
-      else
-        return getCapability(board, Sliders);
-      
     case MouseAnalogs:
       if (IS_HORUS(board))
         return 2;
@@ -313,7 +301,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 0;
 
     case GyroAnalogs:
-      if (IS_HORUS_X12S(board) || IS_TARANIS_XLITES(board))
+      if (IS_TARANIS_XLITES(board))
         return 2;
       else
         return 0;
