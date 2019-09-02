@@ -79,6 +79,14 @@ endif()
 option(DISABLE_COMPANION "Disable building companion and simulators" OFF)
 
 if(NOT DISABLE_COMPANION)  # FIXME cosmetics/style
+
+if(APPLE AND EXISTS /usr/local/opt/qt5)
+	# Homebrew installs Qt5 (up to at least 5.9.1) in
+	# /usr/local/qt5, ensure it can be found by CMake since
+	# it is not in the default /usr/local prefix.
+	list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/qt5")
+endif()
+
 find_package(Qt5Core)
 find_package(Qt5Widgets)
 find_package(Qt5Xml)
@@ -186,6 +194,33 @@ if(WIN32)
     set(CMAKE_C_USE_RESPONSE_FILE_FOR_LIBRARIES OFF)
     set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_INCLUDES OFF)
     set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_LIBRARIES OFF)
+  endif()
+endif()
+
+set(GTEST_ROOT /usr CACHE STRING "Base path to Google Test headers and source.")
+
+find_path(GTEST_INCDIR gtest/gtest.h HINTS "${GTEST_ROOT}/include" DOC "Path to Google Test header files folder ('gtest/gtest.h').")
+find_path(GTEST_SRCDIR src/gtest-all.cc HINTS "${GTEST_ROOT}" "${GTEST_ROOT}/src/gtest" DOC "Path of Google Test 'src' folder.")
+
+if(NOT GTEST_INCDIR OR NOT GTEST_SRCDIR)
+  message(STATUS "Googletest will be downloaded")
+  
+  set(GTEST_VERSION 1.8.1)
+
+  set(GTEST_SRCDIR "${RADIO_SRC_DIRECTORY}/tests/googletest-release-${GTEST_VERSION}/googletest")
+  set(GTEST_INCDIR "${GTEST_SRCDIR}/include")
+  
+  set(GTEST_URL     "https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz")
+  set(GTEST_ARCHIVE "${RADIO_SRC_DIRECTORY}/tests/gtest-${GTEST_VERSION}.tar.gz")
+
+  if (NOT EXISTS "${GTEST_ARCHIVE}")
+    file(DOWNLOAD "${GTEST_URL}" ${GTEST_ARCHIVE} SHOW_PROGRESS)
+  endif()
+
+  if (NOT EXISTS "${GTEST_SRCDIR}")
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} -E tar -xf ${GTEST_ARCHIVE}
+      WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}/tests)
   endif()
 endif()
 
