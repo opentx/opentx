@@ -38,8 +38,8 @@ static unsigned short TouchStartX;
 static unsigned short TouchStartY;
 
 
-#include "ft6x06.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
+#include "board.h"
+#include "touch_driver.h"
 
 #define FT6x06_MAX_INSTANCE  1
 
@@ -496,7 +496,7 @@ void handleTouch()
   Ty = Tx;
   Tx = x;
 #endif
-  if( 2 == TouchEvent )
+  if(TouchEvent == FT6206_TOUCH_EVT_FLAG_CONTACT)
   {
       touchState.X = Tx;
       touchState.Y = Ty;
