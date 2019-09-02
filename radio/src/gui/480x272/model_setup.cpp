@@ -968,7 +968,7 @@ bool menuModelSetup(event_t event)
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_ANTENNA);
-        reusableBuffer.moduleSetup.externalAntennaMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, reusableBuffer.moduleSetup.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event, [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
+        reusableBuffer.moduleSetup.externalAntennaMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, reusableBuffer.moduleSetup.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL ? EXTERNAL_ANTENNA_DISABLE : reusableBuffer.moduleSetup.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event, [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
         if (!s_editMode && reusableBuffer.moduleSetup.externalAntennaMode != g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode) {
           g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = reusableBuffer.moduleSetup.externalAntennaMode;
           checkExternalAntenna();

@@ -279,9 +279,6 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNA);
         reusableBuffer.radioHardware.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_ANTENNA_MODES, reusableBuffer.radioHardware.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
-        lcdDrawText(HW_SETTINGS_COLUMN+120, y, "(current: ");
-        lcdDrawTextAtIndex(lcdNextPos, y, STR_ANTENNA_MODES, (globalData.externalAntennaEnabled ? EXTERNAL_ANTENNA_DISABLE : EXTERNAL_ANTENNA_ENABLE) - EXTERNAL_ANTENNA_FIRST);
-        lcdDrawText(lcdNextPos, y, ")");
         if (!s_editMode && reusableBuffer.radioHardware.externalAntennaMode != g_eeGeneral.externalAntennaMode) {
           g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
           checkExternalAntenna();
