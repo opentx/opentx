@@ -56,7 +56,7 @@ void preModelLoad()
 
 void postRadioSettingsLoad()
 {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PXX2)
   if (is_memclear(g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID)) {
     setDefaultOwnerId();
   }
@@ -65,7 +65,7 @@ void postRadioSettingsLoad()
 
 void postModelLoad(bool alarms)
 {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PXX2)
   if (is_memclear(g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID)) {
     memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
   }
