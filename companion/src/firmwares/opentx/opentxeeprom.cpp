@@ -37,6 +37,8 @@ inline int MAX_SWITCHES(Board::Type board, int version)
     return 6;
   if (version <= 218 && (IS_TARANIS_X9D(board) || IS_HORUS(board)))
     return 8;
+  if (version <= 218 && (IS_TARANIS_XLITE(board)))
+    return 4;
   if (IS_TARANIS_X9D(board))
     return 9;
   return Boards::getCapability(board, Board::Switches);
@@ -2794,13 +2796,14 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new CharField<17>(this, generalData.currModelFilename, true, "Current model filename"));
   }
   else if (IS_TARANIS(board)) {
-    for (int i=0; i<SWITCHES_CONFIG_SIZE(board,version) / 2; i++) {
+    for (int i=0; i<SWITCHES_CONFIG_SIZE(board, version) / 2; i++) {
       if (i < MAX_SWITCHES(board, version))
         internalField.Append(new UnsignedField<2>(this, generalData.switchConfig[i]));
       else
         internalField.Append(new SpareBitsField<2>(this));
     }
     for (int i=0; i<MAX_SWITCHES(board, version); ++i) {
+      qDebug() << i << version;
       internalField.Append(new ZCharField<3>(this, generalData.switchName[i], "Switch name"));
     }
     for (int i=0; i<CPN_MAX_STICKS; ++i) {
@@ -2835,7 +2838,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new ZCharField<8>(this, generalData.registrationId, "ACCESS Registration ID"));
   }
 
-  if (version >= 219 && (IS_TARANIS_XLITES(board) || IS_HORUS(board))) {
+  if (version >= 219 && IS_TARANIS_XLITES(board)) {
     internalField.Append(new SignedField<8>(this, generalData.gyroMax, "Gyro full scale"));
     internalField.Append(new SignedField<8>(this, generalData.gyroOffset, "Gyro Offset"));
   }
