@@ -53,20 +53,34 @@ void preModelLoad()
 
   pauseMixerCalculations();
 }
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-static void fixUpModel()
+
+void postRadioSettingsLoad()
 {
-  // Ensure that when rfProtocol is MODULE_SUBTYPE_PXX1_OFF the type of the module is MODULE_TYPE_NONE
-  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1 && g_model.moduleData[INTERNAL_MODULE].rfProtocol == MODULE_SUBTYPE_PXX1_OFF)
-    g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
-}
+#if defined(PXX2)
+  if (is_memclear(g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID)) {
+    setDefaultOwnerId();
+  }
 #endif
+}
 
 void postModelLoad(bool alarms)
 {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  fixUpModel();
+#if defined(PXX2)
+  if (is_memclear(g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID)) {
+    memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
+  }
 #endif
+
+#if defined(HARDWARE_INTERNAL_MODULE)
+  if (!isInternalModuleAvailable(g_model.moduleData[INTERNAL_MODULE].type)) {
+    memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
+  }
+#endif
+
+  if (!isExternalModuleAvailable(g_model.moduleData[EXTERNAL_MODULE].type)) {
+    memclear(&g_model.moduleData[EXTERNAL_MODULE], sizeof(ModuleData));
+  }
+
   AUDIO_FLUSH();
   flightReset(false);
 
