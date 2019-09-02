@@ -2554,13 +2554,17 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   internalField.Append(new UnsignedField<8>(this, generalData.version));
   internalField.Append(new UnsignedField<16>(this, generalData.variant));
 
-  for (int i=0; i<inputsCount; i++) {
+  for (int i=0, input=0; i<inputsCount; i++, input++) {
     if (version <= 218 && IS_HORUS_X10(board) && (i == CPN_MAX_STICKS + 3)) {
-      internalField.Append(new SpareBitsField<16*6>(this));
+      input += 2;
     }
-    internalField.Append(new SignedField<16>(this, generalData.calibMid[i]));
-    internalField.Append(new SignedField<16>(this, generalData.calibSpanNeg[i]));
-    internalField.Append(new SignedField<16>(this, generalData.calibSpanPos[i]));
+    internalField.Append(new SignedField<16>(this, generalData.calibMid[input]));
+    internalField.Append(new SignedField<16>(this, generalData.calibSpanNeg[input]));
+    internalField.Append(new SignedField<16>(this, generalData.calibSpanPos[input]));
+  }
+
+  if (version <= 218 && IS_HORUS_X10(board)) {
+    internalField.Append(new SpareBitsField<16*6>(this));
   }
 
   internalField.Append(new UnsignedField<16>(this, chkSum));
