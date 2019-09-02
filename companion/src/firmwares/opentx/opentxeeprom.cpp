@@ -2803,7 +2803,6 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         internalField.Append(new SpareBitsField<2>(this));
     }
     for (int i=0; i<MAX_SWITCHES(board, version); ++i) {
-      qDebug() << i << version;
       internalField.Append(new ZCharField<3>(this, generalData.switchName[i], "Switch name"));
     }
     for (int i=0; i<CPN_MAX_STICKS; ++i) {
