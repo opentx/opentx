@@ -11,8 +11,6 @@ TEST(Conversions, ConversionX9DPFrom22)
   Storage   store = Storage(RADIO_TESTS_PATH "/eeprom_22_x9d+.bin");
 
   ASSERT_EQ(true, store.load(radioData));
-  
-  ASSERT_EQ(true, store.load(radioData));
 
   const GeneralSettings& settings = radioData.generalSettings;
   EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), settings.customFn[0].swtch);
@@ -40,6 +38,59 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_EQ(10, model.sensorData[0].id);
   EXPECT_EQ(9, model.sensorData[0].instance);
   EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,0).toValue(), model.logicalSw[0].val1);
+}
+
+TEST(Conversions, ConversionX9DPFrom23)
+{
+  RadioData radioData;
+  Storage   store = Storage(RADIO_TESTS_PATH "/eeprom_23_x9d+.bin");
+
+  ASSERT_EQ(true, store.load(radioData));
+
+  const GeneralSettings& settings = radioData.generalSettings;
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), settings.customFn[0].swtch);
+  EXPECT_EQ(FuncLogs, settings.customFn[0].func);
+  EXPECT_EQ(20, settings.customFn[0].param);
+
+  EXPECT_STREQ("Tes", settings.switchName[0]);
+  EXPECT_EQ(Board::SWITCH_3POS, settings.switchConfig[0]);
+
+  const ModelData & model1 = radioData.models[0];
+  EXPECT_STREQ("Test", model1.name);
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_SWITCH, SWITCH_SA0), model1.timers[0].mode);
+  EXPECT_EQ(80, model1.mixData[0].weight);
+  EXPECT_EQ(900, model1.limitData[0].max); // -100
+  EXPECT_EQ(80, model1.expoData[0].weight);
+//  EXPECT_EQ(HELI_SWASH_TYPE_120X, model1.swashRingData.type);
+  EXPECT_EQ(10, model1.flightModeData[0].gvars[0]);
+  EXPECT_STREQ("Tes", model1.gvarData[0].name);
+  EXPECT_EQ(PULSES_ACCST_ISRM_D16, model1.moduleData[0].protocol);
+  EXPECT_EQ(PULSES_PXX_R9M, model1.moduleData[1].protocol);
+  EXPECT_EQ(MODULE_SUBTYPE_R9M_FCC, model1.moduleData[1].subType);
+  EXPECT_STREQ("Rud", model1.inputNames[0]);
+  EXPECT_STREQ("Tes", model1.sensorData[0].label);
+  EXPECT_EQ(10, model1.sensorData[0].id);
+  EXPECT_EQ(10, model1.sensorData[0].instance);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,0).toValue(), model1.logicalSw[0].val1);
+
+  const ModelData & model2 = radioData.models[1];
+  EXPECT_STREQ("Test", model2.name);
+  EXPECT_EQ(RawSwitch(SWITCH_TYPE_SWITCH, SWITCH_SA0), model2.timers[0].mode);
+  EXPECT_EQ(80, model2.mixData[0].weight);
+  EXPECT_EQ(900, model2.limitData[0].max); // -100
+  EXPECT_EQ(80, model2.expoData[0].weight);
+//  EXPECT_EQ(HELI_SWASH_TYPE_120X, model2.swashRingData.type);
+  EXPECT_EQ(10, model2.flightModeData[0].gvars[0]);
+  EXPECT_STREQ("Tes", model2.gvarData[0].name);
+  EXPECT_EQ(PULSES_ACCESS_ISRM, model2.moduleData[0].protocol);
+  EXPECT_EQ(0, model2.moduleData[0].subType);
+  EXPECT_EQ(PULSES_PXX_R9M, model2.moduleData[1].protocol);
+  EXPECT_EQ(MODULE_SUBTYPE_R9M_FCC, model2.moduleData[1].subType);
+  EXPECT_STREQ("Rud", model2.inputNames[0]);
+  EXPECT_STREQ("Tes", model2.sensorData[0].label);
+  EXPECT_EQ(10, model2.sensorData[0].id);
+  EXPECT_EQ(10, model2.sensorData[0].instance);
+  EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,0).toValue(), model2.logicalSw[0].val1);
 }
 
 TEST(Conversions, ConversionX7From22)

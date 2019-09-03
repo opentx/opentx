@@ -45,14 +45,14 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_EQ(8, g_eeGeneral.speakerVolume);
   EXPECT_EQ('e', g_eeGeneral.ttsLanguage[0]);
   EXPECT_EQ('n', g_eeGeneral.ttsLanguage[1]);
-  
+
   EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_eeGeneral.customFn[0].swtch);
   EXPECT_EQ(FUNC_LOGS, g_eeGeneral.customFn[0].func);
   EXPECT_EQ(20, g_eeGeneral.customFn[0].all.val);
 
   EXPECT_ZSTREQ("Tes", g_eeGeneral.switchNames[0]);
   EXPECT_EQ(SWITCH_3POS, SWITCH_CONFIG(0));
-  
+
   EXPECT_ZSTREQ("Test", g_model.header.name);
   EXPECT_EQ(TMRMODE_COUNT - 1 + SWSRC_SA0, g_model.timers[0].mode);
   EXPECT_EQ(80, g_model.mixData[0].weight);
@@ -67,6 +67,48 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
   EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ(MIXSRC_FIRST_TELEM, g_model.logicalSw[0].v1);
+}
+
+TEST(Conversions, ConversionX9DPFrom23)
+{
+  loadEEPROMFile(TESTS_PATH "/eeprom_23_x9d+.bin");
+
+  eepromOpen();
+  eeLoadGeneralSettingsData();
+  eeLoadModel(0);
+
+  EXPECT_EQ(-30, g_eeGeneral.vBatMin);
+  EXPECT_EQ(8, g_eeGeneral.speakerVolume);
+  EXPECT_EQ('e', g_eeGeneral.ttsLanguage[0]);
+  EXPECT_EQ('n', g_eeGeneral.ttsLanguage[1]);
+
+  EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_eeGeneral.customFn[0].swtch);
+  EXPECT_EQ(FUNC_LOGS, g_eeGeneral.customFn[0].func);
+  EXPECT_EQ(20, g_eeGeneral.customFn[0].all.val);
+
+  EXPECT_ZSTREQ("Tes", g_eeGeneral.switchNames[0]);
+  EXPECT_EQ(SWITCH_3POS, SWITCH_CONFIG(0));
+
+  EXPECT_ZSTREQ("Test", g_model.header.name);
+  EXPECT_EQ(TMRMODE_COUNT - 1 + SWSRC_SA0, g_model.timers[0].mode);
+  EXPECT_EQ(80, g_model.mixData[0].weight);
+  EXPECT_EQ(-100, g_model.limitData[0].max); // 90.0
+  EXPECT_EQ(80, g_model.expoData[0].weight);
+  EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
+  EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
+  EXPECT_ZSTREQ("Test", g_model.flightModeData[0].name);
+
+  EXPECT_EQ(MODULE_TYPE_ISRM_PXX2, g_model.moduleData[INTERNAL_MODULE].type);
+  EXPECT_EQ(MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, g_model.moduleData[INTERNAL_MODULE].subType);
+
+  EXPECT_EQ(MODULE_TYPE_R9M_PXX1, g_model.moduleData[EXTERNAL_MODULE].type);
+  EXPECT_EQ(MODULE_SUBTYPE_R9M_FCC, g_model.moduleData[EXTERNAL_MODULE].subType);
+
+  EXPECT_ZSTREQ("Rud", g_model.inputNames[0]);
+  EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
+  EXPECT_EQ(10, g_model.telemetrySensors[0].id);
+  EXPECT_EQ(10, g_model.telemetrySensors[0].frskyInstance.physID);
   EXPECT_EQ(MIXSRC_FIRST_TELEM, g_model.logicalSw[0].v1);
 }
 #endif
