@@ -6,6 +6,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   add_definitions(-DSIMU -DGTESTS)
   remove_definitions(-DCLI)
   set(TESTS_PATH ${RADIO_SRC_DIRECTORY}/tests)
+  set(TESTS_BUILD_PATH ${CMAKE_CURRENT_BINARY_DIR})
   configure_file(${RADIO_SRC_DIRECTORY}/tests/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} -O0")
@@ -13,21 +14,21 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
   if(PCB STREQUAL X12S OR PCB STREQUAL X10)
-    add_custom_command(
-      DEPENDS ${TESTS_PATH}/model_22_x10.otx
-              ${TESTS_PATH}/model_22_x12s.otx
-      OUTPUT ${TESTS_PATH}/model_22_x10/RADIO/radio.bin ${TESTS_PATH}/model_22_x10/RADIO/models.txt ${TESTS_PATH}/model_22_x10/MODELS/model1.bin
-             ${TESTS_PATH}/model_22_x12s/RADIO/radio.bin ${TESTS_PATH}/model_22_x12s/RADIO/models.txt ${TESTS_PATH}/model_22_x12s/MODELS/model1.bin
-      COMMAND mkdir -p model_22_x10 && cd model_22_x10 && unzip -o -DD ../model_22_x10.otx
-      COMMAND mkdir -p model_22_x12s && cd model_22_x12s && unzip -o -DD ../model_22_x12s.otx
-      WORKING_DIRECTORY ${TESTS_PATH}
-    )
-    add_custom_target(x10-model-test-files
-      DEPENDS ${TESTS_PATH}/model_22_x10/RADIO/radio.bin ${TESTS_PATH}/model_22_x10/RADIO/models.txt ${TESTS_PATH}/model_22_x10/MODELS/model1.bin
-    )
-    add_custom_target(x12s-model-test-files
-      DEPENDS ${TESTS_PATH}/model_22_x12s/RADIO/radio.bin ${TESTS_PATH}/model_22_x12s/RADIO/models.txt ${TESTS_PATH}/model_22_x12s/MODELS/model1.bin
+
+    set(EXTRACT_MODEL_FILES model_22_x12s model_22_x10)
+
+    foreach(model_file ${EXTRACT_MODEL_FILES})
+      add_custom_command(
+        DEPENDS ${TESTS_PATH}/${model_file}.otx
+        OUTPUT ${TESTS_BUILD_PATH}/${model_file}/RADIO/radio.bin
+        COMMAND mkdir -p ${model_file} && cd ${model_file} && unzip -o -q -DD ${TESTS_PATH}/${model_file}.otx >/dev/null
+        WORKING_DIRECTORY ${TESTS_BUILD_PATH}
       )
+      add_custom_target(${model_file}_files
+        DEPENDS ${TESTS_BUILD_PATH}/${model_file}/RADIO/radio.bin
+      )
+      set(HORUS_MODEL_FILES ${HORUS_MODEL_FILES} ${model_file}_files)
+    endforeach()
   endif()
   
   if(WIN32)
@@ -54,10 +55,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   add_executable(gtests-radio EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp ../targets/simu/simufatfs.cpp)
   add_dependencies(gtests-radio ${FIRMWARE_DEPENDENCIES} gtests-radio-lib)
   if(PCB STREQUAL X12S OR PCB STREQUAL X10)
-    add_dependencies(gtests-radio
-      x10-model-test-files
-      x12s-model-test-files
-      )
+    add_dependencies(gtests-radio ${HORUS_MODEL_FILES})
   endif()
   target_link_libraries(gtests-radio gtests-radio-lib pthread Qt5::Core Qt5::Widgets)
   message(STATUS "Added optional gtests target")
