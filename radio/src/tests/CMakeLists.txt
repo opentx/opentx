@@ -3,23 +3,31 @@
 if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   add_library(gtests-radio-lib STATIC EXCLUDE_FROM_ALL ${GTEST_SRCDIR}/src/gtest-all.cc )
   target_include_directories(gtests-radio-lib PUBLIC ${GTEST_INCDIR} ${GTEST_INCDIR}/gtest ${GTEST_SRCDIR})
-  add_definitions(-DSIMU)
-  add_definitions(-DGTESTS)
+  add_definitions(-DSIMU -DGTESTS)
   remove_definitions(-DCLI)
   set(TESTS_PATH ${RADIO_SRC_DIRECTORY}/tests)
   configure_file(${RADIO_SRC_DIRECTORY}/tests/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} -O0")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -O0 ${WARNING_FLAGS}")
+  use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
   if(PCB STREQUAL X12S OR PCB STREQUAL X10)
     add_custom_command(
-      MAIN_DEPENDENCY ${TESTS_PATH}/model_22_x10.otx
+      DEPENDS ${TESTS_PATH}/model_22_x10.otx
+              ${TESTS_PATH}/model_22_x12s.otx
       OUTPUT ${TESTS_PATH}/model_22_x10/RADIO/radio.bin ${TESTS_PATH}/model_22_x10/RADIO/models.txt ${TESTS_PATH}/model_22_x10/MODELS/model1.bin
+             ${TESTS_PATH}/model_22_x12s/RADIO/radio.bin ${TESTS_PATH}/model_22_x12s/RADIO/models.txt ${TESTS_PATH}/model_22_x12s/MODELS/model1.bin
       COMMAND mkdir -p model_22_x10 && cd model_22_x10 && unzip -o -DD ../model_22_x10.otx
+      COMMAND mkdir -p model_22_x12s && cd model_22_x12s && unzip -o -DD ../model_22_x12s.otx
       WORKING_DIRECTORY ${TESTS_PATH}
     )
     add_custom_target(x10-model-test-files
       DEPENDS ${TESTS_PATH}/model_22_x10/RADIO/radio.bin ${TESTS_PATH}/model_22_x10/RADIO/models.txt ${TESTS_PATH}/model_22_x10/MODELS/model1.bin
     )
+    add_custom_target(x12s-model-test-files
+      DEPENDS ${TESTS_PATH}/model_22_x12s/RADIO/radio.bin ${TESTS_PATH}/model_22_x12s/RADIO/models.txt ${TESTS_PATH}/model_22_x12s/MODELS/model1.bin
+      )
   endif()
   
   if(WIN32)
@@ -42,15 +50,14 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
   endif()
-  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 ${WARNING_FLAGS}")
-
-  use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
   add_executable(gtests-radio EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp ../targets/simu/simufatfs.cpp)
   add_dependencies(gtests-radio ${FIRMWARE_DEPENDENCIES} gtests-radio-lib)
   if(PCB STREQUAL X12S OR PCB STREQUAL X10)
-    add_dependencies(gtests-radio x10-model-test-files)
+    add_dependencies(gtests-radio
+      x10-model-test-files
+      x12s-model-test-files
+      )
   endif()
   target_link_libraries(gtests-radio gtests-radio-lib pthread Qt5::Core Qt5::Widgets)
   message(STATUS "Added optional gtests target")

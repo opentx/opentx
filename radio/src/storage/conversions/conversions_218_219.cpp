@@ -70,8 +70,8 @@ int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
   // on X9D / X9D+: 1 additional switch
-  // on xlite : 2 more storage switches
-
+  // on XLite: 2 additional storage switches
+  // on X10: 2 additional pots => 12 multipos switches
 #if defined(PCBX7) || defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBXLITE)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
@@ -95,6 +95,9 @@ int convertSwitch_218_to_219(int swtch)
 #if defined(PCBHORUS)
   if (swtch >= SWSRC_SI0)
     swtch += 2 * 3;
+#endif
+
+#if defined(PCBX10)
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH + 3 * XPOTS_MULTIPOS_COUNT)
     swtch += 2 * XPOTS_MULTIPOS_COUNT;
 #endif

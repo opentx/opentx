@@ -56,7 +56,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_ZSTREQ("Test", g_model.header.name);
   EXPECT_EQ(TMRMODE_COUNT - 1 + SWSRC_SA0, g_model.timers[0].mode);
   EXPECT_EQ(80, g_model.mixData[0].weight);
-  EXPECT_EQ(-100, g_model.limitData[0].max);
+  EXPECT_EQ(-100, g_model.limitData[0].max); // 90.0
   EXPECT_EQ(80, g_model.expoData[0].weight);
   EXPECT_EQ(SWASH_TYPE_120X, g_model.swashR.type);
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
@@ -197,7 +197,7 @@ TEST(Conversions, ConversionX7From22)
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
   EXPECT_EQ(10, g_model.telemetrySensors[0].id);
   EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
-  EXPECT_EQ(-100, g_model.limitData[0].max);
+  EXPECT_EQ(-100, g_model.limitData[0].max); // 90.0
 
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
   EXPECT_ZSTREQ("FMtest", g_model.flightModeData[1].name);
@@ -262,7 +262,7 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(MIXSRC_LS, g_model.mixData[3].srcRaw); // LS
   EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.mixData[5].srcRaw);
   EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_model.mixData[5].swtch);
-  EXPECT_EQ(-100, g_model.limitData[0].max);
+  EXPECT_EQ(-100, g_model.limitData[0].max); // 90.0
   EXPECT_EQ(80, g_model.expoData[0].weight);
   EXPECT_EQ(LS_FUNC_VPOS, g_model.logicalSw[0].func);
   EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.logicalSw[0].v1);
@@ -272,6 +272,73 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(SWSRC_FIRST_LOGICAL_SWITCH, g_model.logicalSw[1].andsw);
   EXPECT_EQ(SWASH_TYPE_120X, g_model.swashR.type);
   EXPECT_ZSTREQ("Tes", g_model.flightModeData[0].name);
+  EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
+  EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
+  EXPECT_EQ(MODULE_TYPE_R9M_PXX1, g_model.moduleData[EXTERNAL_MODULE].type);
+  EXPECT_EQ(MODULE_SUBTYPE_R9M_EU, g_model.moduleData[EXTERNAL_MODULE].subType);
+  EXPECT_ZSTREQ("Rud", g_model.inputNames[0]);
+  EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
+  EXPECT_EQ(10, g_model.telemetrySensors[0].id);
+  EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
+  EXPECT_EQ((NUM_POTS + NUM_SLIDERS + 3), g_model.thrTraceSrc); // CH3
+
+  EXPECT_STREQ("Layout2P1", g_model.screenData[0].layoutName);
+  EXPECT_STREQ("ModelBmp", g_model.screenData[0].layoutData.zones[0].widgetName);
+  EXPECT_STREQ("Value", g_model.topbarData.zones[0].widgetName);
+  EXPECT_EQ(MIXSRC_FIRST_TELEM, g_model.topbarData.zones[0].widgetData.options[0].unsignedValue);
+  EXPECT_EQ(MIXSRC_RS, g_model.screenData[0].layoutData.zones[2].widgetData.options[0].unsignedValue);
+}
+#endif
+
+#if defined(PCBX12S)
+TEST(Conversions, ConversionX12SFrom22)
+{
+  simuFatfsSetPaths(TESTS_PATH "/model_22_x12s/", TESTS_PATH "/model_22_x12s/");
+
+  loadRadioSettings("/RADIO/radio.bin");
+  loadModel("model1.bin");
+
+  EXPECT_EQ(219, g_eeGeneral.version);
+  EXPECT_EQ(-30, g_eeGeneral.vBatMin);
+  EXPECT_EQ(8, g_eeGeneral.speakerVolume);
+  EXPECT_STRNEQ("en", g_eeGeneral.ttsLanguage);
+  EXPECT_STRNEQ("model1.bin", g_eeGeneral.currModelFilename);
+
+  EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_eeGeneral.customFn[0].swtch);
+  EXPECT_EQ(FUNC_LOGS, g_eeGeneral.customFn[0].func);
+  EXPECT_EQ(20, g_eeGeneral.customFn[0].all.val);
+
+  EXPECT_EQ(SWSRC_ON, g_eeGeneral.customFn[1].swtch);
+  EXPECT_EQ(FUNC_VOLUME, g_eeGeneral.customFn[1].func);
+  EXPECT_EQ(MIXSRC_RS, g_eeGeneral.customFn[1].all.val);
+
+  EXPECT_ZSTREQ("Tes", g_eeGeneral.switchNames[0]);
+  EXPECT_EQ(SWITCH_3POS, SWITCH_CONFIG(0));
+
+  EXPECT_ZSTREQ("BT", g_eeGeneral.bluetoothName);
+  EXPECT_STREQ("Default", g_eeGeneral.themeName);
+
+  EXPECT_EQ(WHITE, g_eeGeneral.themeData.options[0].unsignedValue);
+  EXPECT_EQ(RED, g_eeGeneral.themeData.options[1].unsignedValue);
+
+  EXPECT_ZSTREQ("Test", g_model.header.name);
+  EXPECT_EQ(0, g_model.noGlobalFunctions);
+  EXPECT_EQ(0, g_model.beepANACenter);
+  EXPECT_EQ(80, g_model.mixData[0].weight);
+  EXPECT_EQ(MIXSRC_MAX, g_model.mixData[2].srcRaw); // MAX
+  EXPECT_EQ(MIXSRC_LS, g_model.mixData[3].srcRaw); // LS
+  EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.mixData[5].srcRaw);
+  EXPECT_EQ(SWSRC_TELEMETRY_STREAMING, g_model.mixData[5].swtch);
+  EXPECT_EQ(-100, g_model.limitData[0].max); // 90.0
+  EXPECT_EQ(80, g_model.expoData[0].weight);
+  EXPECT_EQ(LS_FUNC_VPOS, g_model.logicalSw[0].func);
+  EXPECT_EQ(MIXSRC_FIRST_TRAINER, g_model.logicalSw[0].v1);
+  EXPECT_EQ(0, g_model.logicalSw[0].v2);
+  EXPECT_EQ(MIXSRC_FIRST_TELEM+19*3, g_model.logicalSw[1].v1); // TELE:20
+  EXPECT_EQ(20, g_model.logicalSw[1].v2);
+  EXPECT_EQ(SWSRC_FIRST_LOGICAL_SWITCH, g_model.logicalSw[1].andsw);
+  EXPECT_EQ(SWASH_TYPE_120X, g_model.swashR.type);
+  EXPECT_ZSTREQ("Test", g_model.flightModeData[0].name);
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
   EXPECT_EQ(MODULE_TYPE_R9M_PXX1, g_model.moduleData[EXTERNAL_MODULE].type);
