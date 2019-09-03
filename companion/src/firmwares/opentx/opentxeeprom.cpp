@@ -2205,12 +2205,24 @@ class ModuleField: public TransformedField {
       if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
         module.rfProtocol = module.protocol - PULSES_LP45;
       }
+      else if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
+        module.subType = module.protocol - PULSES_PXX_XJT_X16;
+      }
+      else if (module.protocol >= PULSES_ACCESS_ISRM && module.protocol <= PULSES_ACCST_ISRM_D16) {
+        module.subType = module.protocol - PULSES_ACCESS_ISRM;
+      }
     }
 
     void afterImport() override
     {
       if (module.protocol == PULSES_LP45) {
         module.protocol += module.rfProtocol;
+      }
+      else if (module.protocol == PULSES_PXX_XJT_X16) {
+        module.protocol += module.subType;
+      }
+      else if (module.protocol == PULSES_ACCESS_ISRM) {
+        module.protocol += module.subType;
       }
     }
   

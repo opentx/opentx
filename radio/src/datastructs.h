@@ -418,16 +418,13 @@ PACK(struct TrainerModuleData {
 #define MM_RF_CUSTOM_SELECTED 0xff
 PACK(struct ModuleData {
   uint8_t type:4;
+  // TODO some refactoring is needed, rfProtocol is only used by DSM2 and MULTI, it could be merged with subType
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  union {
-    struct {
-      uint8_t failsafeMode:4;  // only 3 bits used
-      uint8_t subType:3;
-      uint8_t invertedSerial:1; // telemetry serial inverted from standard
-    };
-  };
+  uint8_t failsafeMode:4;  // only 3 bits used
+  uint8_t subType:3;
+  uint8_t invertedSerial:1; // telemetry serial inverted from standard
 
   union {
     struct {
