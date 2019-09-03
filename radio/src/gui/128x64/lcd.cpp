@@ -922,15 +922,34 @@ void lcdDraw1bitBitmap(coord_t x, coord_t y, const uint8_t * img, uint8_t idx, L
   const uint8_t * q = img;
   uint8_t w = *q++;
   uint8_t hb = ((*q++) + 7) / 8;
+  uint8_t yShift = y % 8;
+
   bool inv = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
+
   q += idx*w*hb;
+
   for (uint8_t yb = 0; yb < hb; yb++) {
+
     uint8_t *p = &displayBuf[(y / 8 + yb) * LCD_W + x];
+
     for (coord_t i=0; i<w; i++){
-      uint8_t b = *q++;
+
+      uint8_t b = inv ? ~(*q++) : *q++;
+      
       if (p < DISPLAY_END) {
-        *p++ = inv ? ~b : b;
+
+        if (!yShift) {
+          *p = b;
+        }
+        else {
+          *p = (*p & ((1 << yShift) - 1)) | (b << yShift);
+
+          if (p + LCD_W < DISPLAY_END) {
+            p[LCD_W] = (p[LCD_W] & (0xFF >> yShift)) | (b >> (8 - yShift));
+          }
+        }
       }
+      p++;
     }
   }
 }
