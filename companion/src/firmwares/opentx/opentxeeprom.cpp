@@ -118,6 +118,8 @@ inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
       return Boards::getCapability(board, Board::SwitchPositions) - 2 * 3;
     if (IS_TARANIS_X9D(board))
       return 8 * 3;
+    if (IS_TARANIS_XLITE(board))
+      return 4 * 3;
   }
 
   if (IS_TARANIS_X9D(board)) {
@@ -157,8 +159,8 @@ class SwitchesConversionTable: public ConversionTable {
   public:
     SwitchesConversionTable(Board::Type board, unsigned int version, bool timer=false)
     {
-      int val=0;
-      int offset=0;
+      int val = 0;
+      int offset = 0;
       if (timer) {
         offset = 4;
         for (int i=0; i<5; i++) {
