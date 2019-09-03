@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <algorithm>
 #include "boards.h"
 #include "helpers.h"
@@ -432,7 +432,7 @@ class SwitchField: public ConversionField< SignedField<N> > {
       ConversionField< SignedField<N> >::beforeExport();
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       ConversionField< SignedField<N> >::afterImport();
       sw = RawSwitch(_switch);
@@ -466,7 +466,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
       ConversionField< UnsignedField<N> >::beforeExport();
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       ConversionField< UnsignedField<N> >::afterImport();
       source = RawSource(_source);
@@ -598,7 +598,7 @@ class CurveReferenceField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       curve.type = (CurveReference::CurveRefType)_curve_type;
       curve.value = smallGvarExport(_curve_value);
@@ -730,7 +730,7 @@ class FlightModeField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       for (int i=0; i<CPN_MAX_STICKS+MAX_AUX_TRIMS(board); i++) {
         if (IS_HORUS_OR_TARANIS(board) || version >= 218) {
@@ -855,7 +855,7 @@ class MixField: public TransformedField {
       }
     }
 
-    virtual void beforeExport() override
+    void beforeExport() override
     {
       if (mix.destCh && mix.srcRaw.type != SOURCE_TYPE_NONE) {
         _destCh = mix.destCh - 1;
@@ -873,14 +873,14 @@ class MixField: public TransformedField {
           _curveParam = mix.curve.value;
         }
         else if (mix.curve.type == CurveReference::CURVE_REF_DIFF) {
-          _curveMode = 0;
+          _curveMode = false;
           _curveParam = smallGvarImport(mix.curve.value);
         }
       }
       else {
         mix.clear();
         _destCh = 0;
-        _curveMode = 0;
+        _curveMode = false;
         _curveParam = 0;
       }
 
@@ -919,13 +919,12 @@ class MixField: public TransformedField {
     Board::Type board;
     unsigned int version;
     ModelData * model;
-    unsigned int _destCh;
-    bool _curveMode;
-    int _curveParam;
-    int _weight;
-    int _offset;
-    unsigned int _weightMode;
-    unsigned int _offsetMode;
+    unsigned int _destCh = 0;
+    bool _curveMode = false;
+    int _curveParam = 0;
+    int _weight = 0;
+    int _offset = 0;
+    unsigned int _offsetMode = 0;
 };
 
 class InputField: public TransformedField {
@@ -981,7 +980,7 @@ class InputField: public TransformedField {
       }
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       _weight = smallGvarImport(expo.weight);
 
@@ -1005,7 +1004,7 @@ class InputField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (!IS_STM32(board) && expo.mode) {
         expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
@@ -1033,10 +1032,10 @@ class InputField: public TransformedField {
     ExpoData & expo;
     Board::Type board;
     unsigned int version;
-    bool _curveMode;
-    int  _weight;
-    int  _offset;
-    int  _curveParam;
+    bool _curveMode = false;
+    int  _weight = 0;
+    int  _offset = 0;
+    int  _curveParam = 0;
 };
 
 class LimitField: public StructField {
@@ -1236,8 +1235,8 @@ class CurvesField: public TransformedField {
     unsigned int version;
     int maxCurves;
     int maxPoints;
-    int _curves[CPN_MAX_CURVES];
-    int _points[CPN_MAX_CURVES*CPN_MAX_POINTS*2];
+    int _curves[CPN_MAX_CURVES] = {};
+    int _points[CPN_MAX_CURVES*CPN_MAX_POINTS*2] = {};
 };
 
 class LogicalSwitchesFunctionsTable: public ConversionTable {
@@ -1280,10 +1279,7 @@ class LogicalSwitchField: public TransformedField {
       model(model),
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0)),
-      switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
-      v1(0),
-      v2(0),
-      v3(0)
+      switchesConversionTable(SwitchesConversionTable::getInstance(board, version))
     {
       if (version >= 218) {
         internalField.Append(new ConversionField< UnsignedField<8> >(this, csw.func, &functionsConversionTable, "Function"));
@@ -1309,9 +1305,8 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
-    ~LogicalSwitchField()
-    {
-    }
+    ~LogicalSwitchField() override 
+    = default;
 
     void beforeExport() override
     {
@@ -1375,9 +1370,9 @@ class LogicalSwitchField: public TransformedField {
     LogicalSwitchesFunctionsTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     SwitchesConversionTable * switchesConversionTable;
-    int v1;
-    int v2;
-    int v3;
+    int v1 = 0;
+    int v2 = 0;
+    int v3 = 0;
 };
 
 class CustomFunctionsConversionTable: public ConversionTable {
@@ -1385,7 +1380,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
   public:
     CustomFunctionsConversionTable(Board::Type board, unsigned int version)
     {
-      int val=0;
+      int val = 0;
 
       for (int i=0; i<MAX_CHANNELS(board, version); i++) {
         addConversion(i, val);
@@ -1462,7 +1457,7 @@ class SwitchesWarningField: public TransformedField {
   protected:
     BaseUnsignedField<uint64_t, N> internalField;
     uint64_t & sw;
-    uint64_t _sw;
+    uint64_t _sw = 0;
     Board::Type board;
     unsigned int version;
 };
@@ -1477,10 +1472,7 @@ class ArmCustomFunctionField: public TransformedField {
       version(version),
       variant(variant),
       functionsConversionTable(board, version),
-      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0)),
-      _func(0),
-      _active(0),
-      _mode(0)
+      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0))
     {
       memset(_param, 0, sizeof(_param));
 
@@ -1506,7 +1498,7 @@ class ArmCustomFunctionField: public TransformedField {
       return (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic);
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (fn.swtch.type != SWITCH_TYPE_NONE) {
         _func = fn.func;
@@ -1565,7 +1557,7 @@ class ArmCustomFunctionField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       fn.func = (AssignFunc)_func;
 
@@ -1627,10 +1619,9 @@ class ArmCustomFunctionField: public TransformedField {
     unsigned int variant;
     CustomFunctionsConversionTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
-    unsigned int _func;
-    char _param[10];
-    int _active;
-    unsigned int _mode;
+    unsigned int _func = 0;
+    char _param[10] = {};
+    int _active = 0;
 };
 
 class FrskyScreenField: public DataField {
@@ -1678,7 +1669,7 @@ class FrskyScreenField: public DataField {
         none.Append(new SpareBitsField<20*8>(this));
     }
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       if (screen.type == TELEMETRY_SCREEN_SCRIPT)
         script.ExportBits(output);
@@ -1690,7 +1681,7 @@ class FrskyScreenField: public DataField {
         none.ExportBits(output);
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       qCDebug(eepromImport) << QString("importing %1: type: %2").arg(name).arg(screen.type);
 
@@ -1705,7 +1696,7 @@ class FrskyScreenField: public DataField {
         none.ImportBits(input);
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       // NOTA: screen.type should have been imported first!
       if (screen.type == TELEMETRY_SCREEN_SCRIPT)
@@ -1731,7 +1722,7 @@ class FrskyScreenField: public DataField {
 class RSSIConversionTable: public ConversionTable
 {
   public:
-    RSSIConversionTable(int index)
+    explicit RSSIConversionTable(int index)
     {
       addConversion(0, 2-index);
       addConversion(1, 3-index);
@@ -1740,8 +1731,7 @@ class RSSIConversionTable: public ConversionTable
     }
 
     RSSIConversionTable()
-    {
-    }
+    = default;
 };
 
 class TelemetryVarioSourceConversionTable: public ConversionTable
@@ -1892,8 +1882,7 @@ class SensorField: public TransformedField {
       internalField(this, "Sensor"),
       sensor(sensor),
       model(model),
-      version(version),
-      _param(0)
+      version(version)
     {
       internalField.Append(new UnsignedField<16>(this, _id, "id/persistentValue"));
       internalField.Append(new UnsignedField<8>(this, _instance, "instance/formula"));
@@ -1948,7 +1937,7 @@ class SensorField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
@@ -1991,11 +1980,11 @@ class SensorField: public TransformedField {
     SensorData & sensor;
     const ModelData& model;
     unsigned int version;
-    unsigned int _id;
-    unsigned int _subid;
-    unsigned int _instance;
+    unsigned int _id = 0;
+    unsigned int _subid = 0;
+    unsigned int _instance = 0;
     union {
-      unsigned int _param;
+      unsigned int _param = 0;
       uint8_t _sources[4];
       struct {
         uint16_t _ratio;
@@ -2020,12 +2009,12 @@ class ModuleUnionField: public UnionField<unsigned int> {
         Append(new SignedField<8>(parent, ppm.frameLength));
       }
 
-      virtual bool select(const unsigned int& attr) const
+      bool select(const unsigned int & attr) const override
       {
         return true; // take what's left
       }
 
-      virtual DataField* getField()
+      DataField * getField() override
       {
         return this;
       }
@@ -2048,21 +2037,20 @@ class ModuleUnionField: public UnionField<unsigned int> {
         internalField.Append(new SignedField<8>(this, multi.optionValue));
       }
 
-      virtual bool select(const unsigned int& attr) const
+      bool select(const unsigned int & attr) const override
       {
-        return attr==PULSES_MULTIMODULE;
+        return attr == PULSES_MULTIMODULE;
       }
 
-      virtual void beforeExport()
+      void beforeExport() override
       {
         module.rfProtocol = module.multi.rfProtocol & 0xf;
         rfProtExtra = (module.multi.rfProtocol >> 4) & 0x03;
       }
 
-      virtual void afterImport()
+      void afterImport() override
       {
-        module.multi.rfProtocol =
-          (rfProtExtra & 0x3) << 4 | (module.rfProtocol & 0xf);
+        module.multi.rfProtocol = (rfProtExtra & 0x3) << 4 | (module.rfProtocol & 0xf);
       }
 
     private:
@@ -2087,21 +2075,21 @@ class ModuleUnionField: public UnionField<unsigned int> {
         internalField.Append(new BoolField<1>(this, pxx.sport_out));
       }
 
-      bool select(const unsigned int& attr) const {
+      bool select(const unsigned int& attr) const override {
         return attr==PULSES_PXX_XJT_X16 ||
           attr==PULSES_PXX_DJT ||
           attr==PULSES_PXX_R9M ||
           attr==PULSES_PXX_R9M_LITE;
       }
 
-      virtual void beforeExport()
+      void beforeExport() override
       {
         if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
           module.subType = module.protocol - PULSES_PXX_XJT_X16;
         }
       }
 
-      virtual void afterImport()
+      void afterImport() override
       {
         if (module.protocol == PULSES_PXX_XJT_X16) {
           module.protocol += module.subType;
@@ -2125,13 +2113,15 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
         for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++)
           internalField.Append(new CharField<8>(this, receiverName[i]));
+
+        memset(receiverName, 0, sizeof(receiverName));
       }
 
-      bool select(const unsigned int& attr) const {
+      bool select(const unsigned int& attr) const override {
         return attr >= PULSES_ACCESS_ISRM && attr <= PULSES_ACCESS_R9M_LITE_PRO;
       }
 
-      virtual void beforeExport()
+      void beforeExport() override
       {
         if (module.protocol == PULSES_ACCST_ISRM_D16 ||
             module.protocol == PULSES_ACCESS_ISRM) {
@@ -2151,7 +2141,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
         }
       }
 
-      virtual void afterImport()
+      void afterImport() override
       {
         if (module.protocol == PULSES_ACCESS_ISRM) {
           module.protocol += module.subType;
@@ -2172,8 +2162,8 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
     private:
       StructField internalField;
-      ModuleData& module;
-      char        receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME+1];
+      ModuleData & module;
+      char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME+1] = {};
   };
 
   public:
