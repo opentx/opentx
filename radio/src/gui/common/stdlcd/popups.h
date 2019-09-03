@@ -161,8 +161,10 @@ inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
 
 inline void POPUP_MENU_START(PopupMenuHandler handler)
 {
-  popupMenuHandler = handler;
-  AUDIO_KEY_PRESS();
+  if (handler != popupMenuHandler) {
+    AUDIO_KEY_PRESS();
+    popupMenuHandler = handler;
+  }
 }
 
 #endif // _STDLCD_POPUPS_H_
