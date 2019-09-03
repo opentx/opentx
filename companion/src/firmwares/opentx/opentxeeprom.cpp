@@ -249,8 +249,7 @@ class SwitchesConversionTable: public ConversionTable {
 
     static SwitchesConversionTable * getInstance(Board::Type board, unsigned int version, unsigned long flags=0)
     {
-      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
-        Cache & element = *it;
+      for (auto & element : internalCache) {
         if (element.board == board && element.version == version && element.flags == flags)
           return element.table;
       }
@@ -261,10 +260,8 @@ class SwitchesConversionTable: public ConversionTable {
     }
     static void Cleanup()
     {
-      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
-        Cache & element = *it;
-        if (element.table)
-          delete element.table;
+      for (auto & element : internalCache) {
+        delete element.table;
       }
       internalCache.clear();
     }
@@ -302,7 +299,7 @@ class SourcesConversionTable: public ConversionTable {
 
       for (int i=0; i<CPN_MAX_STICKS + MAX_POTS_SOURCES(board, version) + MAX_SLIDERS_SOURCES(board, version) + Boards::getCapability(board, Board::MouseAnalogs) + MAX_GYRO_ANALOGS(board, version); i++) {
         int offset = 0;
-        if (version <= 218 && IS_HORUS(board) && i>=CPN_MAX_STICKS+MAX_POTS_STORAGE(board, version))
+        if (version <= 218 && IS_HORUS_X10(board) && i >= CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version))
           offset += 2;
           
         addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
