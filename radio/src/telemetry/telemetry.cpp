@@ -148,20 +148,21 @@ void telemetryWakeup()
 
     SCHEDULE_NEXT_ALARMS_CHECK(1/*second*/);
 
-    bool sensor_lost = false;
+    bool sensorLost = false;
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       if (isTelemetryFieldAvailable(i)) {
         TelemetryItem & item = telemetryItems[i];
-        if (item.hasReceiveTime() && item.getDelaySinceLastValue() > TELEMETRY_VALUE_OLD_THRESHOLD) {
+        if (item.timeout == 0) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
           if (sensor->unit != UNIT_DATETIME) {
             item.setOld();
-            sensor_lost = true;
+            sensorLost = true;
           }
         }
       }
     }
-    if (sensor_lost && TELEMETRY_STREAMING() &&  !g_model.rssiAlarms.disabled) {
+
+    if (sensorLost && TELEMETRY_STREAMING() &&  !g_model.rssiAlarms.disabled) {
       audioEvent(AU_SENSOR_LOST);
     }
 
@@ -205,16 +206,17 @@ void telemetryWakeup()
 
 void telemetryInterrupt10ms()
 {
-  if (TELEMETRY_STREAMING()) {
+  if (telemetryStreaming > 0) {
+    bool tick160ms = (telemetryStreaming & 0x0F) == 0;
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       const TelemetrySensor & sensor = g_model.telemetrySensors[i];
       if (sensor.type == TELEM_TYPE_CALCULATED) {
         telemetryItems[i].per10ms(sensor);
       }
+      if (tick160ms && telemetryItems[i].timeout > 0) {
+        telemetryItems[i].timeout--;
+      }
     }
-  }
-
-  if (telemetryStreaming > 0) {
     telemetryStreaming--;
   }
   else {
@@ -228,8 +230,8 @@ void telemetryReset()
 {
   memclear(&telemetryData, sizeof(telemetryData));
 
-  for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
-    telemetryItems[index].clear();
+  for (auto & telemetryItem : telemetryItems) {
+    telemetryItem.clear();
   }
 
   telemetryStreaming = 0; // reset counter only if valid frsky packets are being detected

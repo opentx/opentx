@@ -136,7 +136,7 @@ TASK_FUNCTION(mixerTask)
     uint32_t now = RTOS_GET_MS();
     bool run = false;
 
-    if ((now - lastRunTime) >= 10) {
+    if (now - lastRunTime >= 10) {
       // run at least every 10ms
       run = true;
     }
@@ -160,8 +160,6 @@ TASK_FUNCTION(mixerTask)
     if (!run) {
       continue;  // go back to sleep
     }
-
-    lastRunTime = now;
 
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
@@ -194,10 +192,13 @@ TASK_FUNCTION(mixerTask)
       }
 
       t0 = getTmr2MHz() - t0;
-      if (t0 > maxMixerDuration) maxMixerDuration = t0;
+      if (t0 > maxMixerDuration)
+        maxMixerDuration = t0;
 
       sendSynchronousPulses();
     }
+
+    lastRunTime = now;
   }
 }
 

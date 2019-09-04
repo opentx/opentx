@@ -85,14 +85,12 @@ const FrSkySportSensor sportSensors[] = {
 
 const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
 {
-  const FrSkySportSensor * result = NULL;
   for (const FrSkySportSensor * sensor = sportSensors; sensor->firstId; sensor++) {
     if (id >= sensor->firstId && id <= sensor->lastId && subId == sensor->subId) {
-      result = sensor;
-      break;
+      return sensor;
     }
   }
-  return result;
+  return nullptr;
 }
 
 bool checkSportPacket(const uint8_t * packet)
