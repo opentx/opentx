@@ -80,6 +80,14 @@ endif()
 option(DISABLE_COMPANION "Disable building companion and simulators" OFF)
 
 if(NOT DISABLE_COMPANION)  # FIXME cosmetics/style
+
+if(APPLE AND EXISTS /usr/local/opt/qt5)
+  # Homebrew installs Qt5 (up to at least 5.9.1) in
+  # /usr/local/qt5, ensure it can be found by CMake since
+  # it is not in the default /usr/local prefix.
+  list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/qt5")
+endif()
+
 find_package(Qt5Core)
 find_package(Qt5Widgets)
 find_package(Qt5Xml)
