@@ -33,7 +33,7 @@ void loadEEPROMFile(const char * filename)
 #if defined(PCBX9DP)
 TEST(Conversions, ConversionX9DPFrom22)
 {
-  loadEEPROMFile(TESTS_PATH "/eeprom_22_x9d+.bin");
+  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_22_x9d+.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();
@@ -72,7 +72,7 @@ TEST(Conversions, ConversionX9DPFrom22)
 
 TEST(Conversions, ConversionX9DPFrom23)
 {
-  loadEEPROMFile(TESTS_PATH "/eeprom_23_x9d+.bin");
+  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_23_x9d+.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();
@@ -116,7 +116,7 @@ TEST(Conversions, ConversionX9DPFrom23)
 #if defined(PCBXLITE)
 TEST(Conversions, ConversionXLiteFrom22)
 {
-  loadEEPROMFile(TESTS_PATH "/eeprom_22_xlite.bin");
+  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_22_xlite.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();
@@ -164,7 +164,7 @@ TEST(Conversions, ConversionXLiteFrom22)
 #if defined(PCBX7)
 TEST(Conversions, ConversionX7From22)
 {
-  loadEEPROMFile(TESTS_PATH "/eeprom_22_x7.bin");
+  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_22_x7.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();
@@ -217,7 +217,7 @@ TEST(Conversions, ConversionX7From22)
 #if defined(PCBX10)
 TEST(Conversions, ConversionX10From22)
 {
-  simuFatfsSetPaths(TESTS_PATH "/model_22_x10/", TESTS_PATH "/model_22_x10/");
+  simuFatfsSetPaths(TESTS_BUILD_PATH "/model_22_x10/", TESTS_BUILD_PATH "/model_22_x10/");
 
   loadRadioSettings("/RADIO/radio.bin");
   loadModel("model1.bin");
@@ -293,7 +293,7 @@ TEST(Conversions, ConversionX10From22)
 #if defined(PCBX12S)
 TEST(Conversions, ConversionX12SFrom22)
 {
-  simuFatfsSetPaths(TESTS_PATH "/model_22_x12s/", TESTS_PATH "/model_22_x12s/");
+  simuFatfsSetPaths(TESTS_BUILD_PATH "/model_22_x12s/", TESTS_BUILD_PATH "/model_22_x12s/");
 
   loadRadioSettings("/RADIO/radio.bin");
   loadModel("model1.bin");
