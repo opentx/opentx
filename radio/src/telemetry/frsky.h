@@ -227,11 +227,6 @@ class TelemetryData {
 
 extern TelemetryData telemetryData;
 
-inline bool TELEMETRY_STREAMING()
-{
-  return telemetryData.rssi.value() > 0;
-}
-
 inline uint8_t TELEMETRY_RSSI()
 {
   return telemetryData.rssi.value();

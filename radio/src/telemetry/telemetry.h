@@ -31,6 +31,11 @@
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
 
+inline bool TELEMETRY_STREAMING()
+{
+  return telemetryStreaming > 0;
+}
+
 enum TelemetryStates {
   TELEMETRY_INIT,
   TELEMETRY_OK,
