@@ -139,9 +139,6 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
 
-#define TELEMETRY_ENDPOINT_NONE    0xFF
-#define TELEMETRY_ENDPOINT_SPORT   0x07
-
 class OutputTelemetryBuffer {
   public:
     OutputTelemetryBuffer()
