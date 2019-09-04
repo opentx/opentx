@@ -209,9 +209,8 @@ int main()
 
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG, ENABLE);
 
-  keysInit();
   pwrInit();
-  pwrOff();
+  keysInit();
 
 #if defined(PCBHORUS)
   // wait a bit for the inputs to stabilize...
