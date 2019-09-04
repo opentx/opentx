@@ -2939,12 +2939,12 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
         <source>Support for ACCESS internal module replacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du module de remplacement interne ACCESS</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
         <source>FrSky Horus X10 Express</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
@@ -2964,7 +2964,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
         <source>Enable non certified R9M firmwares</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer les firmwares R9M non certifiés</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
@@ -4325,12 +4325,12 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1120"/>
         <source>Owner Registration ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement ID du propriétaire</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1127"/>
         <source>aaaaaaAA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1359"/>
@@ -4455,7 +4455,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2437"/>
         <source>Power Off Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Délai mise hors tension</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2399"/>
@@ -4657,7 +4657,7 @@ Réinitialisation en agissant sur n&apos;importe lequel des manches / touches de
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1572"/>
         <source>Power On Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Délai mise en tension</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1830"/>
@@ -8738,24 +8738,24 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="245"/>
         <source>Receiver 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Récepteur 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="290"/>
         <location filename="../modeledit/setup_module.ui" line="326"/>
         <location filename="../modeledit/setup_module.ui" line="362"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="302"/>
         <source>Receiver 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Récepteur 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="338"/>
         <source>Receiver 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Récepteur 3</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="411"/>
@@ -8800,7 +8800,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="933"/>
         <source>Registration ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID d&apos;enregistrement</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="985"/>
@@ -9451,7 +9451,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="33"/>
         <source>Fixed ID value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur ID fixe</translation>
     </message>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="34"/>
@@ -10692,12 +10692,12 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="112"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="114"/>
         <source>External</source>
-        <translation type="unfinished">Externe</translation>
+        <translation>Externe</translation>
     </message>
 </context>
 <context>
@@ -12506,12 +12506,12 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="126"/>
         <source>Rx</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="133"/>
         <source>Mod.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="175"/>
