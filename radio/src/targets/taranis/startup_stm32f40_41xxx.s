@@ -71,7 +71,9 @@ defined in linker script */
   .type  Reset_Handler, %function
 Reset_Handler:  
 
-/* Copy the data segment initializers from flash to SRAM */  
+  bl pwrResetHandler    /*jump to WDT reset handler where soft power control pin is turned on as soon as possible */
+
+/* Copy the data segment initializers from flash to SRAM */
   movs  r1, #0
   b  LoopCopyDataInit
 
