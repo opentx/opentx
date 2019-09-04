@@ -142,16 +142,16 @@ void menuModelSensor(event_t event)
         break;
 
       case SENSOR_FILED_RECEIVER_NAME:
-        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+        lcdDrawTextAlignedLeft(y, STR_SOURCE);
         if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT && sensor->frskyInstance.rxIndex != TELEMETRY_ENDPOINT_SPORT) {
           drawReceiverName(SENSOR_2ND_COLUMN, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, 0);
         }
         else if (isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type)) {
           // far from perfect
-          lcdDrawTextAlignedLeft(y, STR_INTERNAL_MODULE);
+          lcdDrawText(SENSOR_2ND_COLUMN, y, STR_INTERNAL_MODULE);
         }
         else {
-          lcdDrawTextAlignedLeft(y, STR_EXTERNAL_MODULE);
+          lcdDrawText(SENSOR_2ND_COLUMN, y, STR_EXTERNAL_MODULE);
         }
         break;
 
