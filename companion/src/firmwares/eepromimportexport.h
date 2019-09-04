@@ -22,23 +22,22 @@
 #define _EEPROMIMPORTEXPORT_H_
 
 #include "customdebug.h"
-
 #include <QtCore>
 #include <QBitArray>
+#include <utility>
 
 class DataField {
   Q_DECLARE_TR_FUNCTIONS(DataField)
 
   public:
-    DataField(DataField * parent, const char * name=""):
+    explicit DataField(DataField * parent, const char * name=""):
       parent(parent),
       name(name)
     {
     }
 
     virtual ~DataField()
-    {
-    }
+    = default;
 
     virtual const QString & getName()
     {
@@ -49,7 +48,7 @@ class DataField {
     virtual void ExportBits(QBitArray & output) = 0;
     virtual void ImportBits(const QBitArray & input) = 0;
 
-    QBitArray bytesToBits(QByteArray bytes)
+    static QBitArray bytesToBits(QByteArray bytes)
     {
       QBitArray bits(bytes.count()*8);
       // Convert from QByteArray to QBitArray
@@ -59,7 +58,7 @@ class DataField {
       return bits;
     }
 
-    QByteArray bitsToBytes(QBitArray bits, int offset=0)
+    static QByteArray bitsToBytes(QBitArray bits, int offset=0)
     {
       QByteArray bytes;
       bytes.resize((offset+bits.count()+7)/8);
@@ -126,16 +125,16 @@ class DataField {
     QString name;
 };
 
-class ProxyField: public DataField {
-  public:
-    explicit ProxyField(DataField * parent):
-      DataField(parent, "Proxy")
-    {
-    }
-
-    virtual DataField * getField() = 0;
-
-};
+//class ProxyField: public DataField {
+//  public:
+//    explicit ProxyField(DataField * parent):
+//      DataField(parent, "Proxy")
+//    {
+//    }
+//
+//    virtual DataField * getField() = 0;
+//
+//};
 
 template<class container, int N>
 class BaseUnsignedField: public DataField {
@@ -164,7 +163,9 @@ class BaseUnsignedField: public DataField {
     {
     }
 
-    virtual void ExportBits(QBitArray & output)
+    BaseUnsignedField() = delete;
+
+    void ExportBits(QBitArray & output) override
     {
       container value = field;
       if (value > max) value = max;
@@ -178,7 +179,7 @@ class BaseUnsignedField: public DataField {
       }
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       field = 0;
       for (int i=0; i<N; i++) {
@@ -188,7 +189,7 @@ class BaseUnsignedField: public DataField {
       qCDebug(eepromImport) << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       return N;
     }
@@ -197,9 +198,6 @@ class BaseUnsignedField: public DataField {
     container & field;
     container min;
     container max;
-
-  private:
-    BaseUnsignedField();
 };
 
 template <int N>
@@ -231,7 +229,9 @@ class BoolField: public DataField {
     {
     }
 
-    virtual void ExportBits(QBitArray & output)
+    BoolField() = delete;
+
+    void ExportBits(QBitArray & output) override
     {
       output.resize(N);
       if (field) {
@@ -239,22 +239,19 @@ class BoolField: public DataField {
       }
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
-      field = input[0] ? true : false;
+      field = input[0];
       qCDebug(eepromImport) << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       return N;
     }
 
   protected:
     bool & field;
-
-  private:
-    BoolField();
 };
 
 template<int N>
@@ -262,17 +259,13 @@ class SignedField: public DataField {
   public:
     SignedField(DataField * parent, int & field):
       DataField(parent, "Signed"),
-      field(field),
-      min(INT_MIN),
-      max(INT_MAX)
+      field(field)
     {
     }
 
     SignedField(DataField * parent, int & field, const char *name):
       DataField(parent, name),
-      field(field),
-      min(INT_MIN),
-      max(INT_MAX)
+      field(field)
     {
     }
 
@@ -284,7 +277,7 @@ class SignedField: public DataField {
     {
     }
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       int value = field;
       if (value > max) value = max;
@@ -297,7 +290,7 @@ class SignedField: public DataField {
       }
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       unsigned int value = 0;
       for (int i=0; i<N; i++) {
@@ -315,25 +308,26 @@ class SignedField: public DataField {
       qCDebug(eepromImport) << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       return N;
     }
 
   protected:
     int & field;
-    int min;
-    int max;
+    int min = INT_MIN;
+    int max = INT_MAX;
 };
 
 template<int N>
 class SpareBitsField: public UnsignedField<N> {
   public:
-    SpareBitsField(DataField * parent):
+    explicit SpareBitsField(DataField * parent):
       UnsignedField<N>(parent, spare, 0, 0, "Spare"),
       spare(0)
     {
     }
+
   protected:
     unsigned int spare;
 };
@@ -348,7 +342,7 @@ class CharField: public DataField {
     {
     }
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       output.resize(N*8);
       int b = 0;
@@ -362,7 +356,7 @@ class CharField: public DataField {
       }
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       unsigned int b = 0;
       for (int i=0; i<N; i++) {
@@ -376,9 +370,9 @@ class CharField: public DataField {
       qCDebug(eepromImport) << QString("\timported %1<%2>: '%3'").arg(name).arg(N).arg(field);
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
-      return 8*N;
+      return 8 * N;
     }
 
   protected:
@@ -423,7 +417,7 @@ class ZCharField: public DataField {
     {
     }
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       output.resize(N*8);
       int b = 0;
@@ -437,7 +431,7 @@ class ZCharField: public DataField {
       }
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       unsigned int b = 0;
       for (int i=0; i<N; i++) {
@@ -459,7 +453,7 @@ class ZCharField: public DataField {
       qCDebug(eepromImport) << QString("\timported %1<%2>: '%3'").arg(name).arg(N).arg(field);
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       return 8*N;
     }
@@ -470,12 +464,12 @@ class ZCharField: public DataField {
 
 class StructField: public DataField {
   public:
-    StructField(DataField * parent, const char * name="Struct"):
+    explicit StructField(DataField * parent, const char * name = "Struct"):
       DataField(parent, name)
     {
     }
 
-    ~StructField() {
+    ~StructField() override {
       foreach(DataField * field, fields) {
         delete field;
       }
@@ -486,7 +480,7 @@ class StructField: public DataField {
       fields.append(field);
     }
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       int offset = 0;
       output.resize(size());
@@ -498,7 +492,7 @@ class StructField: public DataField {
       }
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       qCDebug(eepromImport) << QString("\timporting %1[%2]:").arg(name).arg(fields.size());
       int offset = 0;
@@ -512,7 +506,7 @@ class StructField: public DataField {
       }
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       unsigned int result = 0;
       foreach(DataField *field, fields) {
@@ -543,17 +537,16 @@ class TransformedField: public DataField {
     {
     }
 
-    virtual ~TransformedField()
-    {
-    }
+    ~TransformedField() override
+    = default;
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       beforeExport();
       field.ExportBits(output);
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       qCDebug(eepromImport) << QString("\timporting TransformedField %1:").arg(field.getName());
       field.ImportBits(input);
@@ -561,12 +554,12 @@ class TransformedField: public DataField {
     }
 
 
-    virtual const QString & getName()
+    const QString & getName() override
     {
       return field.getName();
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       return field.size();
     }
@@ -575,7 +568,7 @@ class TransformedField: public DataField {
 
     virtual void afterImport() = 0;
 
-    virtual int dump(int level=0, int offset=0)
+    int dump(int level, int offset) override
     {
       beforeExport();
       return field.dump(level, offset);
@@ -591,7 +584,7 @@ class UnionField: public DataField {
 
     class UnionMember {
       public:
-        virtual ~UnionMember() {}
+        virtual ~UnionMember() = default;
         virtual bool select(const selectorT& attr) const = 0;
         virtual DataField* getField() = 0;
     };
@@ -602,6 +595,7 @@ class UnionField: public DataField {
           TransformedField(parent, field)
         {
         }
+
         virtual DataField* getField()
         {
           return this;
@@ -613,7 +607,7 @@ class UnionField: public DataField {
     {
     }
 
-    ~UnionField() {
+    ~UnionField() override {
       foreach(UnionMember *member, members) {
         delete member;
       }
@@ -625,7 +619,7 @@ class UnionField: public DataField {
         maxSize = member->getField()->size();
     }
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       foreach(UnionMember *member, members) {
         if (member->select(selectField)) {
@@ -636,7 +630,7 @@ class UnionField: public DataField {
       output.resize(maxSize);
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       foreach(UnionMember *member, members) {
         if (member->select(selectField)) {
@@ -646,7 +640,7 @@ class UnionField: public DataField {
       }
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       return maxSize;
     }
@@ -664,8 +658,7 @@ class ConversionTable {
     {
       after = 0;
 
-      for (std::list<ConversionTuple>::iterator it=exportTable.begin(); it!=exportTable.end(); it++) {
-        ConversionTuple & tuple = *it;
+      for (auto & tuple : exportTable) {
         if (before == tuple.a) {
           after = tuple.b;
           return true;
@@ -679,8 +672,7 @@ class ConversionTable {
     {
       after = 0;
 
-      for (std::list<ConversionTuple>::iterator it=importTable.begin(); it!=importTable.end(); it++) {
-        ConversionTuple & tuple = *it;
+      for (auto & tuple : importTable) {
         if (before == tuple.b) {
           after = tuple.a;
           return true;
@@ -711,15 +703,15 @@ class ConversionTable {
       exportTable.push_back(conversion);
     }
 
-    void addImportConversion(const int a, const int b)
-    {
-      importTable.push_back(ConversionTuple(a, b));
-    }
-
-    void addExportConversion(const int a, const int b)
-    {
-      exportTable.push_back(ConversionTuple(a, b));
-    }
+//    void addImportConversion(const int a, const int b)
+//    {
+//      importTable.push_back(ConversionTuple(a, b));
+//    }
+//
+//    void addExportConversion(const int a, const int b)
+//    {
+//      exportTable.push_back(ConversionTuple(a, b));
+//    }
 
     std::list<ConversionTuple> importTable;
     std::list<ConversionTuple> exportTable;
@@ -728,35 +720,21 @@ class ConversionTable {
 template<class T>
 class ConversionField: public TransformedField {
   public:
-    ConversionField(DataField * parent, int & field, ConversionTable *table, const char *name, const QString & error = ""):
+    ConversionField(DataField * parent, int & field, ConversionTable *table, const char *name, QString error = ""):
       TransformedField(parent, internalField),
       internalField(this, _field, name),
       field(field),
-      _field(0),
       table(table),
-      shift(0),
-      scale(1),
-      min(INT_MIN),
-      max(INT_MAX),
-      exportFunc(NULL),
-      importFunc(NULL),
-      error(error)
+      error(std::move(error))
     {
     }
 
-    ConversionField(DataField * parent, unsigned int & field, ConversionTable *table, const char *name, const QString & error = ""):
+    ConversionField(DataField * parent, unsigned int & field, ConversionTable *table, const char *name, QString error = ""):
       TransformedField(parent, internalField),
       internalField(this, (unsigned int &)_field, name),
       field((int &)field),
-      _field(0),
       table(table),
-      shift(0),
-      scale(0),
-      min(INT_MIN),
-      max(INT_MAX),
-      exportFunc(NULL),
-      importFunc(NULL),
-      error(error)
+      error(std::move(error))
     {
     }
 
@@ -764,15 +742,8 @@ class ConversionField: public TransformedField {
       TransformedField(parent, internalField),
       internalField(this, _field),
       field(field),
-      _field(0),
-      table(NULL),
-      shift(0),
-      scale(0),
-      min(INT_MIN),
-      max(INT_MAX),
       exportFunc(exportFunc),
-      importFunc(importFunc),
-      error("")
+      importFunc(importFunc)
     {
     }
 
@@ -780,15 +751,10 @@ class ConversionField: public TransformedField {
       TransformedField(parent, internalField),
       internalField(this, _field, name),
       field(field),
-      _field(0),
-      table(NULL),
       shift(shift),
       scale(scale),
       min(min),
-      max(max),
-      exportFunc(NULL),
-      importFunc(NULL),
-      error("")
+      max(max)
     {
     }
 
@@ -796,25 +762,14 @@ class ConversionField: public TransformedField {
       TransformedField(parent, internalField),
       internalField(this, (unsigned int &)_field),
       field((int &)field),
-      _field(0),
-      table(NULL),
       shift(shift),
-      scale(scale),
-      min(INT_MIN),
-      max(INT_MAX),
-      exportFunc(NULL),
-      importFunc(NULL),
-      error("")
+      scale(scale)
     {
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
-      _field = field;
-
-      if (scale) {
-        _field /= scale;
-      }
+      _field = field / scale;
 
       if (table) {
         if (!table->exportValue(_field, _field)) {
@@ -837,7 +792,7 @@ class ConversionField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       field = _field;
 
@@ -854,24 +809,23 @@ class ConversionField: public TransformedField {
         field = importFunc(field);
       }
 
-      if (scale) {
-        field *= scale;
-      }
+      field *= scale;
+
       qCDebug(eepromImport) << QString("\timported ConversionField<%1>:").arg(internalField.getName()) << QString(" before: %1, after: %2").arg(_field).arg(field);
     }
 
   protected:
     T internalField;
     int & field;
-    int _field;
-    ConversionTable * table;
-    int shift;
-    int scale;
-    int min;
-    int max;
-    int (*exportFunc)(int);
-    int (*importFunc)(int);
-    const QString error;
+    int _field = 0;
+    ConversionTable * table = nullptr;
+    int shift = 0;
+    int scale = 1;
+    int min = INT_MIN;
+    int max = INT_MAX;
+    int (*exportFunc)(int) = nullptr;
+    int (*importFunc)(int) = nullptr;
+    const QString error = "";
 };
 
 #endif // _EEPROMIMPORTEXPORT_H_

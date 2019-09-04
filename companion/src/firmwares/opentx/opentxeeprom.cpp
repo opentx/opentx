@@ -2120,16 +2120,13 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        if (module.protocol == PULSES_ACCST_ISRM_D16 ||
-            module.protocol == PULSES_ACCESS_ISRM) {
+        if (module.protocol == PULSES_ACCST_ISRM_D16 || module.protocol == PULSES_ACCESS_ISRM) {
           module.subType = module.protocol - PULSES_ACCESS_ISRM;
         }
         for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
           for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
 
-            if (pos == PXX2_LEN_RX_NAME
-                || module.access.receiverName[i][pos] == '\0') {
-
+            if (pos == PXX2_LEN_RX_NAME || module.access.receiverName[i][pos] == '\0') {
               memset(module.access.receiverName[i]+pos,'\0',PXX2_LEN_RX_NAME-pos);
               break;
             }
@@ -2145,10 +2142,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
         }
         for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
           for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
-
-            if (pos == PXX2_LEN_RX_NAME || receiverName[i][pos] == ' '
-                || receiverName[i][pos] == '\0') {
-
+            if (pos == PXX2_LEN_RX_NAME || receiverName[i][pos] == ' ' || receiverName[i][pos] == '\0') {
               module.access.receiverName[i][pos] = '\0';
               break;
             }
