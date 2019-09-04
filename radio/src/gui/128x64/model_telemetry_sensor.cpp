@@ -51,7 +51,7 @@ void menuModelSensor(event_t event)
     0, // Name
     0, // Type
     sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, // ID / Formula
-    sensor->type == TELEM_TYPE_CALCULATED ? HIDDEN_ROW : LABEL(Receiver), // Receiver name
+    sensor->type == TELEM_TYPE_CALCULATED ? HIDDEN_ROW : READONLY_ROW, // Receiver name
     ((sensor->type == TELEM_TYPE_CALCULATED && (sensor->formula == TELEM_FORMULA_DIST)) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW), // Unit
     (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW), // Precision
     (sensor->unit >= UNIT_FIRST_VIRTUAL ? HIDDEN_ROW : (uint8_t)0), // Param1
@@ -84,7 +84,6 @@ void menuModelSensor(event_t event)
     LcdFlags attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     switch (k) {
-
       case SENSOR_FIELD_NAME:
         editSingleName(SENSOR_2ND_COLUMN, y, STR_NAME, sensor->label, TELEM_LABEL_LEN, event, attr);
         break;
@@ -144,7 +143,16 @@ void menuModelSensor(event_t event)
 
       case SENSOR_FILED_RECEIVER_NAME:
         lcdDrawTextAlignedLeft(y, STR_RECEIVER);
-        drawReceiverName(SENSOR_2ND_COLUMN, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, 0);
+        if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT && sensor->frskyInstance.rxIndex != TELEMETRY_ENDPOINT_SPORT) {
+          drawReceiverName(SENSOR_2ND_COLUMN, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, 0);
+        }
+        else if (isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type)) {
+          // far from perfect
+          lcdDrawTextAlignedLeft(y, STR_INTERNAL_MODULE);
+        }
+        else {
+          lcdDrawTextAlignedLeft(y, STR_EXTERNAL_MODULE);
+        }
         break;
 
       case SENSOR_FIELD_UNIT:

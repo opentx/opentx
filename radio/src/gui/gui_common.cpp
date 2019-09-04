@@ -538,7 +538,7 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 
 bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
 {
-  switch(moduleType) {
+  switch (moduleType) {
     case MODULE_TYPE_NONE:
     case MODULE_TYPE_SBUS:
     case MODULE_TYPE_PPM:
