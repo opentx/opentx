@@ -295,6 +295,7 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
 #if defined(PCBHORUS)
+#if defined(FIXME) //TODO
   memcpy(newModel.screenData, oldModel.screenData,
          sizeof(newModel.screenData) +
          sizeof(newModel.topbarData));
@@ -321,7 +322,7 @@ void convertModelData_218_to_219(ModelData &model)
     ZoneOptionValue & option = zoneData->widgetData.options[0];
     option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
   }
-
+#endif
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));

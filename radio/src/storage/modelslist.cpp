@@ -127,7 +127,6 @@ void ModelCell::loadBitmap()
       memmove(partialmodel.timers, &(partialmodel.header.bitmap[10]), sizeof(TimerData)*MAX_TIMERS);
       memclear(&(partialmodel.header.bitmap[10]), 4);
     }
-    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel));
 #else
     memset(&partialmodel.header,0,sizeof(partialmodel));
 #endif

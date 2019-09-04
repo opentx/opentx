@@ -22,6 +22,7 @@
 #include "storage.h"
 #include "sdcard_common.h"
 #include "modelslist.h"
+#include "conversions/conversions.h"
 
 // defined either in sdcard_raw.cpp or sdcard_yaml.cpp
 void storageCreateModelsList();
@@ -107,9 +108,11 @@ const char * createModel()
 
 const char * loadModel(const char * filename, bool alarms)
 {
+  uint8_t version;
+  
   preModelLoad();
 
-  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model));
+  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model), &version);
   if (error) {
     TRACE("loadModel error=%s", error);
   }
@@ -118,6 +121,9 @@ const char * loadModel(const char * filename, bool alarms)
     modelDefault(0) ;
     storageCheck(true);
     alarms = false;
+  }
+  else if (version < EEPROM_VER) {
+    convertModelData(version);
   }
 
   postModelLoad(alarms);
