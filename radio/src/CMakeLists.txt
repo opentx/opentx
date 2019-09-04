@@ -137,6 +137,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
 
+include(gui/CMakeLists.txt)
+
 set(SRC ${SRC} storage/storage_common.cpp)
 if(${STORAGE} STREQUAL SDCARD)
   set(SRC ${SRC} storage/modelslist.cpp storage/sdcard_common.cpp)
@@ -167,7 +169,6 @@ endif()
 include(storage/conversions/CMakeLists.txt)
 
 add_subdirectory(lua)
-include(gui/CMakeLists.txt)
 
 if(RAMBACKUP)
   add_definitions(-DRAMBACKUP)
