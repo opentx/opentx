@@ -132,7 +132,7 @@ const char * writeGeneralSettings()
 }
 
 
-const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
+const char * readModel(const char * filename, uint8_t * buffer, uint32_t size, uint8_t * version)
 {
     // YAML reader
     TRACE("YAML model reader");
@@ -146,7 +146,7 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
     // wipe memory before reading YAML
     memset(buffer,0,size);
 
-#if defined(FLIGHT_MODES) && defined(GVARS)
+    //#if defined(FLIGHT_MODES) && defined(GVARS)
     // reset GVars to default values
     // Note: taken from opentx.cpp::modelDefault()
     //TODO: new func in gvars
@@ -155,7 +155,7 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
             g_model.flightModeData[p].gvars[i] = GVAR_MAX+1;
         }
     }
-#endif
+    //#endif
     
     return readYamlFile(path, YamlTreeWalker::get_parser_calls(), &tree);
 }
