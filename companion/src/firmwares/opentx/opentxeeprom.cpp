@@ -2061,7 +2061,8 @@ class ModuleUnionField: public UnionField<unsigned int> {
       PxxField(DataField * parent, ModuleData& module, unsigned int version):
         UnionField::TransformedMember(parent, internalField),
         internalField(this, "Pxx"),
-        module(module)
+        module(module),
+        version(version)
       {
         ModuleData::PXX& pxx = module.pxx;
         internalField.Append(new UnsignedField<2>(this, pxx.power));
