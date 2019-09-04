@@ -769,7 +769,7 @@ class ConversionField: public TransformedField {
 
     void beforeExport() override
     {
-      _field = field / scale;
+       _field = scale ? field / scale : field;
 
       if (table) {
         if (!table->exportValue(_field, _field)) {
@@ -809,7 +809,9 @@ class ConversionField: public TransformedField {
         field = importFunc(field);
       }
 
-      field *= scale;
+      if (scale) {
+        field *= scale;
+      }
 
       qCDebug(eepromImport) << QString("\timported ConversionField<%1>:").arg(internalField.getName()) << QString(" before: %1, after: %2").arg(_field).arg(field);
     }
@@ -820,7 +822,7 @@ class ConversionField: public TransformedField {
     int _field = 0;
     ConversionTable * table = nullptr;
     int shift = 0;
-    int scale = 1;
+    int scale = 0;
     int min = INT_MIN;
     int max = INT_MAX;
     int (*exportFunc)(int) = nullptr;
