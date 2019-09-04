@@ -2058,10 +2058,11 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
   class PxxField: public UnionField::TransformedMember {
     public:
-      PxxField(DataField * parent, ModuleData& module):
+      PxxField(DataField * parent, ModuleData& module, unsigned int version):
         UnionField::TransformedMember(parent, internalField),
         internalField(this, "Pxx"),
-        module(module)
+        module(module),
+        version(version)
       {
         ModuleData::PXX& pxx = module.pxx;
         internalField.Append(new UnsignedField<2>(this, pxx.power));
@@ -2073,7 +2074,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
       }
 
       bool select(const unsigned int& attr) const override {
-        return attr==PULSES_PXX_XJT_X16 ||
+        return (attr >= PULSES_PXX_XJT_X16 && attr <= PULSES_PXX_XJT_LR12) ||
           attr==PULSES_PXX_DJT ||
           attr==PULSES_PXX_R9M ||
           attr==PULSES_PXX_R9M_LITE;
@@ -2089,13 +2090,17 @@ class ModuleUnionField: public UnionField<unsigned int> {
       void afterImport() override
       {
         if (module.protocol == PULSES_PXX_XJT_X16) {
-          module.protocol += module.subType;
+          if (version <= 218)
+            module.protocol += module.rfProtocol;
+          else
+            module.protocol += module.subType;
         }
       }
 
     private:
       StructField internalField;
       ModuleData& module;
+      unsigned int version;
   };
 
   class AccessField: public UnionField::TransformedMember {
@@ -2163,7 +2168,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
     {
       if (version >= 219)
         Append(new AccessField(parent, module));
-      Append(new PxxField(parent, module));
+      Append(new PxxField(parent, module, version));
       Append(new MultiField(parent, module));
       Append(new PPMField(parent, module.ppm));
     }
@@ -2199,24 +2204,12 @@ class ModuleField: public TransformedField {
       if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
         module.rfProtocol = module.protocol - PULSES_LP45;
       }
-      else if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
-        module.subType = module.protocol - PULSES_PXX_XJT_X16;
-      }
-      else if (module.protocol >= PULSES_ACCESS_ISRM && module.protocol <= PULSES_ACCST_ISRM_D16) {
-        module.subType = module.protocol - PULSES_ACCESS_ISRM;
-      }
     }
 
     void afterImport() override
     {
       if (module.protocol == PULSES_LP45) {
         module.protocol += module.rfProtocol;
-      }
-      else if (module.protocol == PULSES_PXX_XJT_X16) {
-        module.protocol += module.subType;
-      }
-      else if (module.protocol == PULSES_ACCESS_ISRM) {
-        module.protocol += module.subType;
       }
     }
   

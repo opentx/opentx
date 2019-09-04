@@ -271,6 +271,7 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_STREQ("Tes", model.flightModeData[0].name);
   EXPECT_EQ(10, model.flightModeData[0].gvars[0]);
   EXPECT_STREQ("Tes", model.gvarData[0].name);
+  EXPECT_EQ(PULSES_PXX_XJT_D8, model.moduleData[0].protocol);
   EXPECT_EQ(PULSES_PXX_R9M, model.moduleData[1].protocol);
   EXPECT_EQ(MODULE_SUBTYPE_R9M_EU, model.moduleData[1].subType);
   EXPECT_STREQ("Rud", model.inputNames[0]);
