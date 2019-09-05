@@ -77,16 +77,33 @@ void onAntennaSelection(const char * result)
   }
 }
 
+void onAntennaSwitchConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    // Switch to external antenna confirmation
+    globalData.externalAntennaEnabled = true;
+  }
+}
+
 void checkExternalAntenna()
 {
-  if (!isModuleXJT(INTERNAL_MODULE))
-    return;
-
-  if (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_ASK ||
-    (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode == EXTERNAL_ANTENNA_ASK)) {
-    POPUP_MENU_ADD_ITEM(STR_USE_INTERNAL_ANTENNA);
-    POPUP_MENU_ADD_ITEM(STR_USE_EXTERNAL_ANTENNA);
-    POPUP_MENU_START(onAntennaSelection);
+  if (isModuleXJT(INTERNAL_MODULE)) {
+    if (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE) {
+      globalData.externalAntennaEnabled = true;
+    }
+    else if (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE && !globalData.externalAntennaEnabled) {
+      POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onAntennaSwitchConfirm);
+      SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
+    }
+    else if (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_ASK || (g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode == EXTERNAL_ANTENNA_ASK)) {
+      globalData.externalAntennaEnabled = false;
+      POPUP_MENU_ADD_ITEM(STR_USE_INTERNAL_ANTENNA);
+      POPUP_MENU_ADD_ITEM(STR_USE_EXTERNAL_ANTENNA);
+      POPUP_MENU_START(onAntennaSelection);
+    }
+  }
+  else {
+    globalData.externalAntennaEnabled = false;
   }
 }
 #endif

@@ -228,6 +228,7 @@ void onAntennaSwitchConfirm(const char * result)
   if (result == STR_OK) {
     // Switch to external antenna confirmation
     g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = EXTERNAL_ANTENNA_ENABLE;
+    globalData.externalAntennaEnabled = true;
   }
 }
 #else

@@ -31,7 +31,6 @@ bool isExternalAntennaEnabled()
     case EXTERNAL_ANTENNA_PER_MODEL:
       switch (g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode) {
         case EXTERNAL_ANTENNA_ENABLE:
-          return true;
         case EXTERNAL_ANTENNA_ASK:
           return globalData.externalAntennaEnabled;
         default:
