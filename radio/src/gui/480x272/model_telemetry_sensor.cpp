@@ -25,6 +25,7 @@ enum SensorFields {
   SENSOR_FIELD_TYPE,
   SENSOR_FIELD_ID,
   SENSOR_FIELD_FORMULA=SENSOR_FIELD_ID,
+  SENSOR_FILED_RECEIVER_NAME,
   SENSOR_FIELD_UNIT,
   SENSOR_FIELD_PRECISION,
   SENSOR_FIELD_PARAM1,
@@ -57,7 +58,23 @@ bool menuModelSensor(event_t event)
 {
   TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
-  SUBMENU("SENSOR", ICON_MODEL_TELEMETRY, SENSOR_FIELD_MAX, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_ONLYPOS_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
+  SUBMENU("SENSOR", ICON_MODEL_TELEMETRY, SENSOR_FIELD_MAX, {
+    0, // Name
+    0, // Type
+    sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, // ID / Formula
+    sensor->type == TELEM_TYPE_CALCULATED ? HIDDEN_ROW : READONLY_ROW, // Receiver name
+    SENSOR_UNIT_ROWS,
+    SENSOR_PREC_ROWS,
+    SENSOR_PARAM1_ROWS,
+    SENSOR_PARAM2_ROWS,
+    SENSOR_PARAM3_ROWS,
+    SENSOR_PARAM4_ROWS,
+    SENSOR_AUTOOFFSET_ROWS,
+    SENSOR_ONLYPOS_ROWS,
+    SENSOR_FILTER_ROWS,
+    SENSOR_PERSISTENT_ROWS,
+    0 // Logs
+  });
   lcdDrawNumber(lcdNextPos, 3, s_currIdx+1, MENU_TITLE_COLOR|LEFT);
   drawSensorCustomValue(50, 3 + FH, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), MENU_TITLE_COLOR|LEFT);
 
@@ -129,6 +146,22 @@ bool menuModelSensor(event_t event)
               sensor->prec = 0;
             }
           }
+        }
+        break;
+
+      case SENSOR_FILED_RECEIVER_NAME:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOURCE);
+        if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT && sensor->frskyInstance.rxIndex != TELEMETRY_ENDPOINT_SPORT) {
+          drawReceiverName(SENSOR_2ND_COLUMN, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, 0);
+        }
+#if defined(HARDWARE_INTERNAL_MODULE)
+        else if (isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type)) {
+          // far from perfect
+          lcdDrawText(SENSOR_2ND_COLUMN, y, STR_INTERNAL_MODULE);
+        }
+#endif
+        else {
+          lcdDrawText(SENSOR_2ND_COLUMN, y, STR_EXTERNAL_MODULE);
         }
         break;
 
