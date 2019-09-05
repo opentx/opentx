@@ -54,6 +54,7 @@ class Bluetooth
   public:
     void writeString(const char * str);
     char * readline(bool error_reset = true);
+    void write(const uint8_t * data, uint8_t length);
 
     void forwardTelemetry(const uint8_t * packet);
     void wakeup();
@@ -66,7 +67,6 @@ class Bluetooth
   protected:
     void pushByte(uint8_t byte);
     uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
-    void write(const uint8_t * data, uint8_t length);
     void appendTrainerByte(uint8_t data);
     void processTrainerFrame(const uint8_t * buffer);
     void processTrainerByte(uint8_t data);
