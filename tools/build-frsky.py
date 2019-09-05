@@ -8,7 +8,7 @@ import shutil
 import tempfile
 
 
-options = {
+boards = {
     "XLITE_FCC": {
         "PCB": "XLITE",
         "LUA": "NO_MODEL_SCRIPTS",
@@ -82,19 +82,24 @@ options = {
     }
 }
 
+translations = [
+    "EN",
+    "CZ"
+]
+
 
 def timestamp():
     return datetime.datetime.now().strftime("%y%m%d")
 
 
-def build(board, srcdir):
-    cmake_options = " ".join(["-D%s=%s" % (key, value) for key, value in options[board].items()])
+def build(board, translation, srcdir):
+    cmake_options = " ".join(["-D%s=%s" % (key, value) for key, value in boards[board].items()])
     cwd = os.getcwd()
     if not os.path.exists("output"):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    command = "cmake %s -DFRSKY_RELEASE=YES %s" % (cmake_options, srcdir)
+    command = "cmake %s -DTRANSLATIONS=%s -DFRSKY_RELEASE=YES %s" % (cmake_options, translation, srcdir)
     print(command)
     os.system(command)
     os.system("make firmware -j6")
@@ -120,13 +125,14 @@ def dir_path(string):
 def main():
     parser = argparse.ArgumentParser(description="Build FrSky firmware")
     parser.add_argument("-b", "--boards", action="append", help="Destination boards", required=True)
+    parser.add_argument("-t", "--translations", action="append", help="Translations", required=True)
     parser.add_argument("srcdir", type=dir_path)
 
     args = parser.parse_args()
 
-    boards = options.keys() if "ALL" in args.boards else args.boards
-    for board in boards:
-        build(board, args.srcdir)
+    for board in (boards.keys() if "ALL" in args.boards else args.boards):
+        for translation in (translations if "ALL" in args.translations else args.translations):
+            build(board, translation, args.srcdir)
 
 
 if __name__ == "__main__":
