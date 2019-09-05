@@ -43,7 +43,7 @@ enum TelemetryStates {
 };
 extern uint8_t telemetryState;
 
-#define TELEMETRY_TIMEOUT10ms          100 // 1 second
+constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
 
 #define TELEMETRY_SERIAL_DEFAULT       0
 #define TELEMETRY_SERIAL_8E2           1

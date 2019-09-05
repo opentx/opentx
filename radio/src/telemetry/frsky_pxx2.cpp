@@ -214,7 +214,9 @@ void processResetFrame(uint8_t module, uint8_t * frame)
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
 {
   uint8_t origin = (module << 2) + (frame[3] & 0x03);
-  sportProcessTelemetryPacketWithoutCrc(origin, &frame[4]);
+  if (origin != TELEMETRY_ENDPOINT_SPORT) {
+    sportProcessTelemetryPacketWithoutCrc(origin, &frame[4]);
+  }
 }
 
 void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)

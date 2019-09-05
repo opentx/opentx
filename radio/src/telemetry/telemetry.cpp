@@ -223,6 +223,9 @@ void telemetryInterrupt10ms()
 #if !defined(SIMU)
     telemetryData.rssi.reset();
 #endif
+    for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+      telemetryItems[i].setOld();
+    }
   }
 }
 
