@@ -112,6 +112,7 @@ enum
     warningType = WARNING_TYPE_CONFIRM;
     popupFunc = runPopupWarning;
     popupMenuHandler = handler;
+    killAllEvents();
   }
 
   inline void POPUP_INPUT(const char * s, PopupFunc func)
