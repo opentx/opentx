@@ -72,8 +72,17 @@ boards = {
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
     },
-    "X7": {
+    "X7_FCC": {
         "PCB": "X7",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
+    },
+    "X7_LBT": {
+        "PCB": "X7",
+        "MODULE_PROTOCOL_D8": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
         "MULTIMODULE": "NO",
