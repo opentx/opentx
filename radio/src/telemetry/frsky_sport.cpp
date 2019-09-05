@@ -85,14 +85,12 @@ const FrSkySportSensor sportSensors[] = {
 
 const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
 {
-  const FrSkySportSensor * result = NULL;
   for (const FrSkySportSensor * sensor = sportSensors; sensor->firstId; sensor++) {
     if (id >= sensor->firstId && id <= sensor->lastId && subId == sensor->subId) {
-      result = sensor;
-      break;
+      return sensor;
     }
   }
-  return result;
+  return nullptr;
 }
 
 bool checkSportPacket(const uint8_t * packet)
@@ -164,10 +162,16 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 #endif
 
   if (primId == DATA_FRAME) {
+    uint8_t originMask = (origin == TELEMETRY_ENDPOINT_SPORT ? 0x02 : origin >> 2);
     uint8_t instance = physicalId + (origin << 5);
     if (dataId == RSSI_ID) {
-      telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
+      if (data > 0) {
+        telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
+        telemetryData.telemetryValid |= originMask;
+      } else {
+        telemetryData.telemetryValid &= ~originMask;
+      }
       if (g_model.rssiSource) {
         TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource - 1];
         if (sensor->isSameInstance(PROTOCOL_TELEMETRY_FRSKY_SPORT, instance)) {
@@ -194,7 +198,8 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
       }
     }
 
-    if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
+    // here we discard the frame if it comes from an origin which has RSSI = 0 (RxBt and RSSI are sent in a loop by the module in some situations)
+    if (TELEMETRY_STREAMING() && (telemetryData.telemetryValid & originMask)/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
       if ((dataId >> 8) == 0) {
         // The old FrSky IDs
         processHubPacket(dataId, HUB_DATA_U16(packet));
@@ -203,6 +208,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
         if (dataId == ADC1_ID || dataId == ADC2_ID || dataId == BATT_ID || dataId == RAS_ID) {
           data = SPORT_DATA_U8(packet);
         }
+
         if (dataId >= GPS_LONG_LATI_FIRST_ID && dataId <= GPS_LONG_LATI_LAST_ID) {
           int32_t value = (data & 0x3fffffff);
           if (data & (1 << 30))

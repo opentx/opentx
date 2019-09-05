@@ -92,7 +92,10 @@ void postModelLoad(bool alarms)
     TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent) {
       telemetryItems[i].value = sensor.persistentValue;
-      telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;   // #3595: make value visible even before the first new value is received)
+      telemetryItems[i].timeout = 0; // make value visible even before the first new value is received)
+    }
+    else {
+      telemetryItems[i].timeout = TELEMETRY_SENSOR_TIMEOUT_UNAVAILABLE;
     }
   }
 

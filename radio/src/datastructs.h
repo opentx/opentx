@@ -319,6 +319,9 @@ PACK(struct VarioData {
  * Telemetry Sensor structure
  */
 
+#define TELEMETRY_ENDPOINT_NONE    0xFF
+#define TELEMETRY_ENDPOINT_SPORT   0x07
+
 PACK(struct TelemetrySensor {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
@@ -379,18 +382,17 @@ PACK(struct TelemetrySensor {
     int32_t getPrecDivisor() const;
     bool isSameInstance(TelemetryProtocol protocol, uint8_t instance)
     {
+      if (this->instance == instance)
+        return true;
+
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
-        if (((this->instance ^ instance) & 0x9F) == 0) {
+        if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
           this->instance = instance; // update the instance in case we had telemetry switching
           return true;
         }
-        else {
-          return false;
-        }
       }
-      else {
-        return this->instance == instance;
-      }
+
+      return false;
     }
   );
 });

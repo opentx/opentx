@@ -31,6 +31,11 @@
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
 
+inline bool TELEMETRY_STREAMING()
+{
+  return telemetryStreaming > 0;
+}
+
 enum TelemetryStates {
   TELEMETRY_INIT,
   TELEMETRY_OK,
@@ -38,7 +43,7 @@ enum TelemetryStates {
 };
 extern uint8_t telemetryState;
 
-#define TELEMETRY_TIMEOUT10ms          100 // 1 second
+constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
 
 #define TELEMETRY_SERIAL_DEFAULT       0
 #define TELEMETRY_SERIAL_8E2           1
@@ -138,9 +143,6 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_START()
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
-
-#define TELEMETRY_ENDPOINT_NONE    0xFF
-#define TELEMETRY_ENDPOINT_SPORT   0x07
 
 class OutputTelemetryBuffer {
   public:
