@@ -547,9 +547,11 @@ inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
 
 inline void POPUP_MENU_START(PopupMenuHandler handler)
 {
-  killAllEvents();
-  popupMenuHandler = handler;
-  AUDIO_KEY_PRESS();
+  if (handler != popupMenuHandler) {
+    killAllEvents();
+    AUDIO_KEY_PRESS();
+    popupMenuHandler = handler;
+  }
 }
 
 inline void CLEAR_POPUP()

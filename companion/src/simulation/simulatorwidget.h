@@ -33,8 +33,6 @@
 #include <QWidget>
 #include <QVector>
 
-void traceCb(const char * text);
-
 class Firmware;
 class SimulatorInterface;
 class SimulatedUIWidget;
@@ -130,9 +128,9 @@ class SimulatorWidget : public QWidget
     QVector<Simulator::keymapHelp_t> keymapHelp;
     QElapsedTimer m_heartbeatTimer;
 
-    SimulatedUIWidget     * radioUiWidget;
-    VirtualJoystickWidget * vJoyLeft;
-    VirtualJoystickWidget * vJoyRight;
+    SimulatedUIWidget     * radioUiWidget = nullptr;
+    VirtualJoystickWidget * vJoyLeft = nullptr;
+    VirtualJoystickWidget * vJoyRight = nullptr;
     QVector<RadioWidget *> m_radioWidgets;
 
     QString sdCardPath;
@@ -141,14 +139,13 @@ class SimulatorWidget : public QWidget
     Board::Type m_board;
     quint8 flags;
     int radioProfileId;
-    bool startupFromFile;
-    bool deleteTempRadioData;
-    bool saveTempRadioData;
+    bool startupFromFile = false;
+    bool deleteTempRadioData = false;
+    bool saveTempRadioData = false;
 
 #ifdef JOYSTICKS
-    Joystick *joystick;
+    Joystick * joystick = nullptr;
 #endif
-
 };
 
 #endif // _SIMULATORWIDGET_H_

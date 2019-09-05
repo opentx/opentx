@@ -50,17 +50,8 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   simulator(simulator),
   firmware(getCurrentFirmware()),
   radioSettings(GeneralSettings()),
-  radioUiWidget(NULL),
-  vJoyLeft(NULL),
-  vJoyRight(NULL),
   m_board(getCurrentBoard()),
-  flags(flags),
-  startupFromFile(false),
-  deleteTempRadioData(false),
-  saveTempRadioData(false)
-#ifdef JOYSTICKS
-  , joystick(NULL)
-#endif
+  flags(flags)
 {
   ui->setupUi(this);
 
@@ -154,20 +145,15 @@ SimulatorWidget::~SimulatorWidget()
 {
   shutdown();
 
-  if (radioUiWidget)
-    delete radioUiWidget;
-  if (vJoyLeft)
-    delete vJoyLeft;
-  if (vJoyRight)
-    delete vJoyRight;
+  delete radioUiWidget;
+  delete vJoyLeft;
+  delete vJoyRight;
 #ifdef JOYSTICKS
-  if (joystick)
-    delete joystick;
+  delete joystick;
 #endif
-  firmware = NULL;
+  firmware = nullptr;
   delete ui;
 }
-
 
 /*
  * Public slots/setters
@@ -570,7 +556,7 @@ void SimulatorWidget::setupRadioWidgets()
       continue;
 
     swcfg = Board::SwitchType(radioSettings.switchConfig[i]);
-    wname = RawSource(RawSourceType::SOURCE_TYPE_SWITCH, i).toString(NULL, &radioSettings);
+    wname = RawSource(RawSourceType::SOURCE_TYPE_SWITCH, i).toString(nullptr, &radioSettings);
     RadioSwitchWidget * sw = new RadioSwitchWidget(swcfg, wname, -1, ui->radioWidgetsHT);
     sw->setIndex(i);
     ui->radioWidgetsHTLayout->addWidget(sw);
@@ -585,7 +571,7 @@ void SimulatorWidget::setupRadioWidgets()
     if (!radioSettings.isPotAvailable(i))
       continue;
 
-    wname = RawSource(RawSourceType::SOURCE_TYPE_STICK, ttlSticks + i).toString(NULL, &radioSettings);
+    wname = RawSource(RawSourceType::SOURCE_TYPE_STICK, ttlSticks + i).toString(nullptr, &radioSettings);
     RadioKnobWidget * pot = new RadioKnobWidget(Board::PotType(radioSettings.potConfig[i]), wname, 0, ui->radioWidgetsHT);
     pot->setIndex(i);
     ui->radioWidgetsHTLayout->insertWidget(midpos++, pot);
@@ -599,7 +585,7 @@ void SimulatorWidget::setupRadioWidgets()
     if (!radioSettings.isSliderAvailable(i))
       continue;
 
-    wname = RawSource(RawSourceType::SOURCE_TYPE_STICK, ttlSticks + ttlKnobs + i).toString(NULL, &radioSettings);
+    wname = RawSource(RawSourceType::SOURCE_TYPE_STICK, ttlSticks + ttlKnobs + i).toString(nullptr, &radioSettings);
     RadioFaderWidget * sl = new RadioFaderWidget(wname, 0, ui->radioWidgetsVC);
     sl->setIndex(i);
     ui->VCGridLayout->addWidget(sl, 0, c++, 1, 1);
@@ -613,7 +599,7 @@ void SimulatorWidget::setupRadioWidgets()
   for (i = extraTrims; i > 0; --i) {
     trswidx -= 2;
     --tridx;
-    wname = RawSource(RawSourceType::SOURCE_TYPE_TRIM, tridx).toString(NULL, &radioSettings);
+    wname = RawSource(RawSourceType::SOURCE_TYPE_TRIM, tridx).toString(nullptr, &radioSettings);
     wname = wname.left(1) % wname.right(1);
     RadioTrimWidget * tw = new RadioTrimWidget(Qt::Vertical, ui->radioWidgetsVC);
     tw->setIndices(tridx, trswidx, trswidx + 1);
@@ -672,7 +658,7 @@ void SimulatorWidget::setupJoysticks()
     if (vJoyRight)
       disconnect(this, 0, vJoyRight, 0);
     joystick->deleteLater();
-    joystick = NULL;
+    joystick = nullptr;
   }
   if (vJoyRight)
     vJoyRight->setStickConstraint((VirtualJoystickWidget::HOLD_X | VirtualJoystickWidget::HOLD_Y), joysticksEnabled);

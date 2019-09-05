@@ -94,7 +94,7 @@ uint32_t Boards::getFourCC(Type board)
   return 0;
 }
 
-const int Boards::getEEpromSize(Board::Type board)
+int Boards::getEEpromSize(Board::Type board)
 {
   switch (board) {
     case BOARD_9X_M64:
@@ -130,7 +130,7 @@ const int Boards::getEEpromSize(Board::Type board)
   return 0;
 }
 
-const int Boards::getFlashSize(Type board)
+int Boards::getFlashSize(Type board)
 {
   switch (board) {
     case BOARD_9X_M64:
@@ -166,7 +166,7 @@ const int Boards::getFlashSize(Type board)
   }
 }
 
-const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
+SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
 {
   if (index < 0)
     return {SWITCH_NOT_AVAILABLE, CPN_STR_UNKNOWN_ITEM};
@@ -260,7 +260,7 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
   return {SWITCH_NOT_AVAILABLE, CPN_STR_UNKNOWN_ITEM};
 }
 
-const int Boards::getCapability(Board::Type board, Board::Capability capability)
+int Boards::getCapability(Board::Type board, Board::Capability capability)
 {
   switch (capability) {
     case Sticks:
@@ -276,7 +276,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else if (IS_HORUS_X10(board))
         return 5;
       else if (IS_HORUS_X12S(board))
-        return 5;
+        return 3;
       else
         return 3;
 
@@ -338,6 +338,8 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
+      if (IS_HORUS_X12S(board))
+        return 8;
       else
         return getCapability(board, Switches);
 
@@ -360,7 +362,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
   return 0;
 }
 
-const QString Boards::getAxisName(int index)
+QString Boards::getAxisName(int index)
 {
   const QString axes[] = {
     tr("Left Horizontal"),
@@ -376,7 +378,7 @@ const QString Boards::getAxisName(int index)
     return tr("Unknown");
 }
 
-const QString Boards::getAnalogInputName(Board::Type board, int index)
+QString Boards::getAnalogInputName(Board::Type board, int index)
 {
   if (index < 0)
     return CPN_STR_UNKNOWN_ITEM;
@@ -442,8 +444,8 @@ const QString Boards::getAnalogInputName(Board::Type board, int index)
       "S1",
       "6P",
       "S2",
-      "L1",
-      "L2",
+      "S3",
+      "S4",
       "LS",
       "RS",
       "JSx",
@@ -469,12 +471,12 @@ const QString Boards::getAnalogInputName(Board::Type board, int index)
   return CPN_STR_UNKNOWN_ITEM;
 }
 
-const bool Boards::isBoardCompatible(Type board1, Type board2)
+bool Boards::isBoardCompatible(Type board1, Type board2)
 {
   return (getFourCC(board1) == getFourCC(board2));
 }
 
-const QString Boards::getBoardName(Board::Type board)
+QString Boards::getBoardName(Board::Type board)
 {
   switch (board) {
     case BOARD_9X_M64:

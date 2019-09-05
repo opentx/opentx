@@ -53,13 +53,15 @@ bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 
 bool GeneralSettings::isPotAvailable(int index) const
 {
-  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Pots)) return false;
+  if (index < 0 || index > getBoardCapability(getCurrentBoard(), Board::Pots))
+    return false;
   return potConfig[index] != Board::POT_NONE;
 }
 
 bool GeneralSettings::isSliderAvailable(int index) const
 {
-  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Sliders)) return false;
+  if (index < 0 || index > getBoardCapability(getCurrentBoard(), Board::Sliders))
+    return false;
   return sliderConfig[index] != Board::SLIDER_NONE;
 }
 

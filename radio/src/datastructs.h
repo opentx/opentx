@@ -319,6 +319,9 @@ PACK(struct VarioData {
  * Telemetry Sensor structure
  */
 
+#define TELEMETRY_ENDPOINT_NONE    0xFF
+#define TELEMETRY_ENDPOINT_SPORT   0x07
+
 PACK(struct TelemetrySensor {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
@@ -379,18 +382,17 @@ PACK(struct TelemetrySensor {
     int32_t getPrecDivisor() const;
     bool isSameInstance(TelemetryProtocol protocol, uint8_t instance)
     {
+      if (this->instance == instance)
+        return true;
+
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
-        if (((this->instance ^ instance) & 0x9F) == 0) {
+        if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
           this->instance = instance; // update the instance in case we had telemetry switching
           return true;
         }
-        else {
-          return false;
-        }
       }
-      else {
-        return this->instance == instance;
-      }
+
+      return false;
     }
   );
 });
@@ -418,16 +420,13 @@ PACK(struct TrainerModuleData {
 #define MM_RF_CUSTOM_SELECTED 0xff
 PACK(struct ModuleData {
   uint8_t type:4;
+  // TODO some refactoring is needed, rfProtocol is only used by DSM2 and MULTI, it could be merged with subType
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  union {
-    struct {
-      uint8_t failsafeMode:4;  // only 3 bits used
-      uint8_t subType:3;
-      uint8_t invertedSerial:1; // telemetry serial inverted from standard
-    };
-  };
+  uint8_t failsafeMode:4;  // only 3 bits used
+  uint8_t subType:3;
+  uint8_t invertedSerial:1; // telemetry serial inverted from standard
 
   union {
     struct {

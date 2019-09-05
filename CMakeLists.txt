@@ -213,14 +213,13 @@ if(NOT GTEST_INCDIR OR NOT GTEST_SRCDIR)
   set(GTEST_URL     "https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz")
   set(GTEST_ARCHIVE "${RADIO_SRC_DIRECTORY}/tests/gtest-${GTEST_VERSION}.tar.gz")
 
-  if (NOT EXISTS "${GTEST_ARCHIVE}")
-    file(DOWNLOAD "${GTEST_URL}" ${GTEST_ARCHIVE} SHOW_PROGRESS)
-  endif()
-
   if (NOT EXISTS "${GTEST_SRCDIR}")
+    file(DOWNLOAD "${GTEST_URL}" ${GTEST_ARCHIVE} SHOW_PROGRESS)
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E tar -xf ${GTEST_ARCHIVE}
       WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}/tests)
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} -E remove -f ${GTEST_ARCHIVE})
   endif()
 endif()
 

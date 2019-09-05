@@ -129,10 +129,11 @@ uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint8_t width, uin
 
   memset(dest, 0, BITMAP_BUFFER_SIZE(w, h) - 2);
 
-  uint8_t rowSize = (w + 7) / 8;
+  uint8_t rowSize;
 
   switch (depth) {
     case 1:
+      rowSize = ((w + 31) / 32) * 4;
       for (int8_t i=h-1; i>=0; i--) {
         result = f_read(&bmpFile, buf, rowSize, &read);
         if (result != FR_OK || read != rowSize) {

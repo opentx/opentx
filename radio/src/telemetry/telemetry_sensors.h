@@ -23,10 +23,9 @@
 
 #include "telemetry.h"
 
-#define TELEMETRY_VALUE_TIMER_CYCLE    128 /* x160ms ~= 20.5s ; must be multiple of 2 to avoid the modulo */
-#define TELEMETRY_VALUE_OLD_THRESHOLD  62 /* x160ms ~= 10s */
-#define TELEMETRY_VALUE_UNAVAILABLE    255
-#define TELEMETRY_VALUE_OLD            254
+constexpr int8_t TELEMETRY_SENSOR_TIMEOUT_UNAVAILABLE = -2;
+constexpr int8_t TELEMETRY_SENSOR_TIMEOUT_OLD = -1;
+constexpr int8_t TELEMETRY_SENSOR_TIMEOUT_START = 125; // * 160ms = 20s
 
 class TelemetryItem
 {
@@ -46,7 +45,7 @@ class TelemetryItem
       int32_t pilotLatitude;
     };
 
-    uint8_t lastReceived;       // for detection of sensor loss
+    int8_t timeout; // for detection of sensor loss
 
     union {
       struct {
@@ -78,12 +77,6 @@ class TelemetryItem
       char text[16];
     };
 
-    static uint8_t now()
-    {
-      // 160ms granularity
-      return (get_tmr10ms() >> 4) & (TELEMETRY_VALUE_TIMER_CYCLE - 1);
-    }
-
     TelemetryItem()
     {
       clear();
@@ -92,7 +85,7 @@ class TelemetryItem
     void clear()
     {
       memset(reinterpret_cast<void*>(this), 0, sizeof(TelemetryItem));
-      lastReceived = TELEMETRY_VALUE_UNAVAILABLE;
+      timeout = TELEMETRY_SENSOR_TIMEOUT_UNAVAILABLE;
     }
 
     void eval(const TelemetrySensor & sensor);
@@ -102,36 +95,28 @@ class TelemetryItem
 
     inline bool isAvailable()
     {
-      return (lastReceived != TELEMETRY_VALUE_UNAVAILABLE);
+      return (timeout != TELEMETRY_SENSOR_TIMEOUT_UNAVAILABLE);
     }
 
     inline bool isOld()
     {
-      return (lastReceived == TELEMETRY_VALUE_OLD);
-    }
-
-    inline bool hasReceiveTime()
-    {
-      return (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE);
-    }
-
-    inline uint8_t getDelaySinceLastValue()
-    {
-      // assumes lastReceived is not a special value (OLD / UNAVAILABLE)
-      return (now() - lastReceived) & (TELEMETRY_VALUE_TIMER_CYCLE - 1);
+      return (timeout == TELEMETRY_SENSOR_TIMEOUT_OLD);
     }
 
     inline bool isFresh()
     {
-      return (hasReceiveTime() && getDelaySinceLastValue() <= 1);
+      return TELEMETRY_SENSOR_TIMEOUT_START - timeout <= 1; // 2 * 160ms
+    }
+
+    inline void setFresh()
+    {
+      timeout = TELEMETRY_SENSOR_TIMEOUT_START;
     }
 
     inline void setOld()
     {
-      lastReceived = TELEMETRY_VALUE_OLD;
+      timeout = TELEMETRY_SENSOR_TIMEOUT_OLD;
     }
-
-    void gpsReceived(); // TODO seems not used
 };
 
 extern TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];

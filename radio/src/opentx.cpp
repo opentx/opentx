@@ -192,9 +192,7 @@ void per10ms()
   }
 #endif
 
-  if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
-    telemetryInterrupt10ms();
-  }
+  telemetryInterrupt10ms();
 
   // These moved here from evalFlightModeMixes() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)

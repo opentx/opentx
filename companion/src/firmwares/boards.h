@@ -170,14 +170,14 @@ class Boards
     const bool isBoardCompatible(Board::Type board2) const { return isBoardCompatible(m_boardType, board2); }
 
     static uint32_t getFourCC(Board::Type board);
-    static const int getEEpromSize(Board::Type board);
-    static const int getFlashSize(Board::Type board);
-    static const Board::SwitchInfo getSwitchInfo(Board::Type board, int index);
-    static const int getCapability(Board::Type board, Board::Capability capability);
-    static const QString getAxisName(int index);
-    static const QString getAnalogInputName(Board::Type board, int index);
-    static const bool isBoardCompatible(Board::Type board1, Board::Type board2);
-    static const QString getBoardName(Board::Type board);
+    static int getEEpromSize(Board::Type board);
+    static int getFlashSize(Board::Type board);
+    static Board::SwitchInfo getSwitchInfo(Board::Type board, int index);
+    static int getCapability(Board::Type board, Board::Capability capability);
+    static QString getAxisName(int index);
+    static QString getAnalogInputName(Board::Type board, int index);
+    static bool isBoardCompatible(Board::Type board1, Board::Type board2);
+    static QString getBoardName(Board::Type board);
 
   protected:
 

@@ -829,8 +829,8 @@
 #define TR_WRITING                     "Writing..."
 #define TR_CONFIRM_FORMAT              "Formatieren bestätigen?"
 #define TR_INTERNALRF                  "Internes HF-Modul"
-#define TR_INTERNAL_MODULE             "Internal module"
-#define TR_EXTERNAL_MODULE             "External module"
+#define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
+#define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade nötig"
 #define TR_TELEMETRY_DISABLED          "Telem. disabled"
 #define TR_MORE_OPTIONS_AVAILABLE      "More options available"

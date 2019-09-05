@@ -18,7 +18,6 @@
  * GNU General Public License for more details.
  */
 
-#include "pwr.h"
 #include "board.h"
 
 void pwrInit()
@@ -67,12 +66,12 @@ void pwrInit()
   // TRAINER DETECT PIN
   GPIO_InitStructure.GPIO_Pin = TRAINER_DETECT_GPIO_PIN;
   GPIO_Init(TRAINER_DETECT_GPIO, &GPIO_InitStructure);
-
-  pwrOn();
 }
 
 void pwrOn()
 {
+  // we keep the init of the PIN to have pwrOn as quick as possible
+
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
