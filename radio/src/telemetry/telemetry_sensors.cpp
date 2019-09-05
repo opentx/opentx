@@ -121,7 +121,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_DATETIME) {
     auto data = uint32_t(newVal);
-    if (data & 0x000000FFu) {
+    if (data & 0x000000ff) {
       datetime.year = (uint16_t) ((data & 0xff000000) >> 24) + 2000;  // SPORT GPS year is only two digits
       datetime.month = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.day = (uint8_t) ((data & 0x0000ff00) >> 8);
@@ -206,8 +206,8 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     }
     if (sensor.filter) {
       if (!isAvailable()) {
-        for (long & filterValue : std.filterValues) {
-          filterValue = newVal;
+        for (int i=0; i<TELEMETRY_AVERAGE_COUNT; i++) {
+          std.filterValues[i] = newVal;
         }
       }
       else {
