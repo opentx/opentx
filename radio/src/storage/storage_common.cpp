@@ -101,6 +101,9 @@ void checkExternalAntenna()
       POPUP_MENU_ADD_ITEM(STR_USE_EXTERNAL_ANTENNA);
       POPUP_MENU_START(onAntennaSelection);
     }
+    else {
+      globalData.externalAntennaEnabled = false;
+    }
   }
   else {
     globalData.externalAntennaEnabled = false;
@@ -142,10 +145,6 @@ void postModelLoad(bool alarms)
   }
 
   LOAD_MODEL_CURVES();
-
-#if defined(EXTERNAL_ANTENNA) && defined(INTERNAL_MODULE_PXX1)
-  checkExternalAntenna();
-#endif
 
   resumeMixerCalculations();
   if (pulsesStarted()) {

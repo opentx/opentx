@@ -941,8 +941,13 @@
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE                TR(INDENT "Canaux", INDENT "Plage de canaux")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
-#define LEN_ANTENNA_MODES     "\011"
-#define TR_ANTENNA_MODES               "Internal\0""Ask\0     ""Per model""External"
+#if defined(PCBX12S)
+#define LEN_ANTENNA_MODES      "\021"
+#define TR_ANTENNA_MODES       "Interne\0         ""Ask\0             ""Par modèle\0      ""Interne + Externe"
+#else
+#define LEN_ANTENNA_MODES      "\011"
+#define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#endif
 #define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
 #define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2             TR("Vérif antenne", "Installer l'antenne d'abord!")

@@ -926,8 +926,13 @@
 #define TR_TELEMETRY_NEWSENSOR          INDENT "Sensor hinzufügen ..."
 #define TR_CHANNELRANGE        			TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
 #define TR_ANTENNACONFIRM1     "Ant. umschalten"
+#if defined(PCBX12S)
+#define LEN_ANTENNA_MODES      "\023"
+#define TR_ANTENNA_MODES       "Internal\0          ""Ask\0               ""Per model\0         ""Internal + External"
+#else
 #define LEN_ANTENNA_MODES      "\011"
 #define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#endif
 #define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
 #define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2     		   TR("Check antenna", "Ist eine externe Antenne installiert?")

@@ -912,6 +912,10 @@ void checkAll()
     }
   }
 
+#if defined(EXTERNAL_ANTENNA) && defined(INTERNAL_MODULE_PXX1)
+  checkExternalAntenna();
+#endif
+
   START_SILENCE_PERIOD();
 }
 #endif // GUI

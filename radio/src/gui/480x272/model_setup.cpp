@@ -511,12 +511,13 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
 #define EXTERNAL_ANTENNA_ROW                 ((isModuleXJT(INTERNAL_MODULE) && g_eeGeneral.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL) ? (uint8_t)0 : HIDDEN_ROW),
-void onAntennaSwitchConfirm(const char * result)
+void onModelAntennaSwitchConfirm(const char * result)
 {
   if (result == STR_OK) {
     // Switch to external antenna confirmation
     g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode = EXTERNAL_ANTENNA_ENABLE;
     globalData.externalAntennaEnabled = true;
+    storageDirty(EE_MODEL);
   }
 }
 #else
@@ -979,7 +980,7 @@ bool menuModelSetup(event_t event)
         reusableBuffer.moduleSetup.externalAntennaMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNA_MODES, reusableBuffer.moduleSetup.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL ? EXTERNAL_ANTENNA_DISABLE : reusableBuffer.moduleSetup.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event, [](int value) { return value != EXTERNAL_ANTENNA_PER_MODEL; });
         if (!s_editMode && reusableBuffer.moduleSetup.externalAntennaMode != g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode) {
           if (reusableBuffer.moduleSetup.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE && !isExternalAntennaEnabled()) {
-            POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onAntennaSwitchConfirm);
+            POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onModelAntennaSwitchConfirm);
             SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
           }
           else {

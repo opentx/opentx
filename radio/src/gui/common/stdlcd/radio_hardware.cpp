@@ -232,6 +232,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   if (result == STR_OK) {
     // Switch to external antenna confirmation
     g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
+    storageDirty(EE_GENERAL);
   }
 }
 #else
