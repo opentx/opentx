@@ -162,7 +162,7 @@ void telemetryWakeup()
       }
     }
 
-    if (sensorLost && TELEMETRY_STREAMING() &&  !g_model.rssiAlarms.disabled) {
+    if (sensorLost && TELEMETRY_STREAMING() && !g_model.rssiAlarms.disabled) {
       audioEvent(AU_SENSOR_LOST);
     }
 

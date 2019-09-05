@@ -105,12 +105,12 @@ class TelemetryItem
 
     inline bool isFresh()
     {
-      return (TELEMETRY_SENSOR_TIMEOUT_START - timeout <= 1 /* 2 * 160ms */);
+      return TELEMETRY_SENSOR_TIMEOUT_START - timeout <= 1; // 2 * 160ms
     }
 
     inline void setFresh()
     {
-      setFresh();
+      timeout = TELEMETRY_SENSOR_TIMEOUT_START;
     }
 
     inline void setOld()
