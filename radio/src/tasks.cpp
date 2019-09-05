@@ -161,6 +161,8 @@ TASK_FUNCTION(mixerTask)
       continue;  // go back to sleep
     }
 
+    lastRunTime = now;
+
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
@@ -197,8 +199,6 @@ TASK_FUNCTION(mixerTask)
 
       sendSynchronousPulses();
     }
-
-    lastRunTime = now;
   }
 }
 
