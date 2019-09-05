@@ -717,7 +717,7 @@ class FlightModeField: public TransformedField {
             trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
           else
             trim = std::max(-500, std::min(500, phase.trim[i]));
-          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
+          if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215)) {
             trimBase[i] = trim >> 2;
             trimExt[i] = (trim & 0x03);
           }
@@ -748,7 +748,7 @@ class FlightModeField: public TransformedField {
           }
           else {
             int trim;
-            if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+            if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215))
               trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
             else
               trim = trimBase[i];
@@ -2081,25 +2081,25 @@ class ModuleUnionField: public UnionField<unsigned int> {
         internalField.Append(new SpareBitsField<2>(this));
         internalField.Append(new BoolField<1>(this, pxx.receiverTelemetryOff));
         internalField.Append(new BoolField<1>(this, pxx.receiverHigherChannels));
-        internalField.Append(new BoolField<1>(this, pxx.external_antenna));
-        internalField.Append(new BoolField<1>(this, pxx.sport_out));
+        internalField.Append(new SignedField<2>(this, pxx.antennaMode));
+        internalField.Append(new SpareBitsField<8>(this));
       }
 
-      bool select(const unsigned int& attr) const {
+      bool select(const unsigned int& attr) const override {
         return attr==PULSES_PXX_XJT_X16 ||
           attr==PULSES_PXX_DJT ||
           attr==PULSES_PXX_R9M ||
           attr==PULSES_PXX_R9M_LITE;
       }
 
-      virtual void beforeExport()
+      void beforeExport() override
       {
         if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
           module.subType = module.protocol - PULSES_PXX_XJT_X16;
         }
       }
 
-      virtual void afterImport()
+      void afterImport() override
       {
         if (module.protocol == PULSES_PXX_XJT_X16) {
           module.protocol += module.subType;

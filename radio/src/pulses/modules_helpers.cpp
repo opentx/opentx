@@ -23,15 +23,15 @@
 #if defined(EXTERNAL_ANTENNA)
 bool isExternalAntennaEnabled()
 {
-  switch (g_eeGeneral.externalAntennaMode) {
-    case EXTERNAL_ANTENNA_DISABLE:
+  switch (g_eeGeneral.antennaMode) {
+    case ANTENNA_MODE_INTERNAL:
       return false;
-    case EXTERNAL_ANTENNA_ENABLE:
+    case ANTENNA_MODE_EXTERNAL:
       return true;
-    case EXTERNAL_ANTENNA_PER_MODEL:
-      switch (g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode) {
-        case EXTERNAL_ANTENNA_ENABLE:
-        case EXTERNAL_ANTENNA_ASK:
+    case ANTENNA_MODE_PER_MODEL:
+      switch (g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode) {
+        case ANTENNA_MODE_EXTERNAL:
+        case ANTENNA_MODE_ASK:
           return globalData.externalAntennaEnabled;
         default:
           return false;

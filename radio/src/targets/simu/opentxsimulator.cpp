@@ -602,7 +602,7 @@ class OpenTxSimulatorFactory: public SimulatorFactory
     virtual Board::Type type()
     {
 #if defined(PCBX12S)
-      return Board::BOARD_X12S;
+      return Board::BOARD_HORUS_X12S;
 #elif defined(PCBX10)
       return Board::BOARD_X10;
 #elif defined(PCBX7)
@@ -612,7 +612,7 @@ class OpenTxSimulatorFactory: public SimulatorFactory
 #elif defined(PCBTARANIS)
       return Board::BOARD_TARANIS_X9D;
 #else
-      return Board::BOARD_STOCK;
+      return Board::BOARD_9X_M64;
 #endif
     }
 };

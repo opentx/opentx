@@ -400,7 +400,7 @@ void ModulePanel::update()
         else if (protocol==PULSES_ACCESS_ISRM || protocol==PULSES_ACCESS_R9M ||
                  protocol==PULSES_ACCESS_R9M_LITE || protocol==PULSES_ACCESS_R9M_LITE_PRO)
           mask |= MASK_RX_NUMBER | MASK_ACCESS;
-        if ((IS_HORUS(board) || board == Board::BOARD_TARANIS_XLITE) && moduleIdx == 0)
+        if (moduleIdx == 0 && HAS_EXTERNAL_ANTENNA(board) && generalSettings.antennaMode == 0 /* per model */)
           mask |= MASK_ANTENNA;
         break;
       case PULSES_LP45:
@@ -486,16 +486,18 @@ void ModulePanel::update()
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
 
-  // Antenna selection on Horus and xlite
-  ui->label_antenna->setVisible(mask & MASK_ANTENNA);
-  ui->antennaMode->setVisible(mask & MASK_ANTENNA);
-  if IS_HORUS_X12S(board) {
-    ui->antennaMode->setItemText(1,tr("Ext. + Int"));
+  // Antenna mode on Horus and XLite
+  if (mask & MASK_ANTENNA) {
+    ui->antennaMode->clear();
+    ui->antennaMode->addItem(tr("Ask"), -1);
+    ui->antennaMode->addItem(tr("Internal"), 0);
+    ui->antennaMode->addItem(IS_HORUS_X12S(board) ? tr("Internal + External") : tr("External"), 1);
+    ui->antennaMode->setField(module.pxx.antennaMode, this);
   }
   else {
-    ui->antennaMode->setItemText(1,tr("External"));
+    ui->antennaLabel->hide();
+    ui->antennaMode->hide();
   }
-  ui->antennaMode->setCurrentIndex(module.pxx.external_antenna);
 
   // R9M options
   ui->r9mPower->setVisible(mask & MASK_R9M);
@@ -638,14 +640,6 @@ void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
 {
   if (!lock && module.ppm.pulsePol != (bool)index) {
     module.ppm.pulsePol = index;
-    emit modified();
-  }
-}
-
-void ModulePanel::on_antennaMode_currentIndexChanged(int index)
-{
-  if (!lock && module.pxx.external_antenna != (bool)index) {
-    module.pxx.external_antenna = index;
     emit modified();
   }
 }

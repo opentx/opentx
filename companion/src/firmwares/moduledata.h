@@ -171,8 +171,7 @@ class ModuleData {
       unsigned int power;          // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
       bool receiverTelemetryOff;     // false = receiver telem enabled
       bool receiverHigherChannels;  // false = pwm out 1-8, true 9-16
-      bool external_antenna;       // false = internal antenna, true = external antenna
-      bool sport_out;
+      int antennaMode;       // false = internal antenna, true = external antenna
     } pxx;
 
     struct Access {

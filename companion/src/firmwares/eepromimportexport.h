@@ -602,6 +602,7 @@ class UnionField: public DataField {
           TransformedField(parent, field)
         {
         }
+
         virtual DataField* getField()
         {
           return this;

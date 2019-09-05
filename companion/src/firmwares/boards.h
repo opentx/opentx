@@ -32,8 +32,8 @@ namespace Board {
   enum Type
   {
     BOARD_UNKNOWN = -1,
-    BOARD_STOCK = 0,
-    BOARD_M128,
+    BOARD_9X_M64 = 0,
+    BOARD_9X_M128,
     BOARD_MEGA2560,
     BOARD_GRUVIN9X,
     BOARD_SKY9X,
@@ -44,7 +44,7 @@ namespace Board {
     BOARD_TARANIS_X9DP,
     BOARD_TARANIS_X9DP_2019,
     BOARD_TARANIS_X9E,
-    BOARD_X12S,
+    BOARD_HORUS_X12S,
     BOARD_X10,
     BOARD_X10_EXPRESS,
     BOARD_TARANIS_XLITE,
@@ -187,29 +187,129 @@ class Boards
 // temporary aliases for transition period, use Boards class instead.
 #define getBoardCapability(b__, c__)   Boards::getCapability(b__, c__)
 
-#define IS_9X(board)                   (board==Board::BOARD_STOCK || board==Board::BOARD_M128)
-#define IS_STOCK(board)                (board==Board::BOARD_STOCK)
-#define IS_M128(board)                 (board==Board::BOARD_M128)
-#define IS_2560(board)                 (board==Board::BOARD_GRUVIN9X || board==Board::BOARD_MEGA2560)
-#define IS_SKY9X(board)                (board==Board::BOARD_SKY9X || board==Board::BOARD_9XRPRO || board==Board::BOARD_AR9X)
-#define IS_9XRPRO(board)               (board==Board::BOARD_9XRPRO)
-#define IS_JUMPER_T12(board)           (board==Board::BOARD_JUMPER_T12)
-#define IS_TARANIS_XLITE(board)        (board==Board::BOARD_TARANIS_XLITE || board==Board::BOARD_TARANIS_XLITES)
-#define IS_TARANIS_XLITES(board)       (board==Board::BOARD_TARANIS_XLITES)
-#define IS_TARANIS_X7(board)           (board==Board::BOARD_TARANIS_X7)
-#define IS_TARANIS_X9LITE(board)       (board==Board::BOARD_TARANIS_X9LITE)
-#define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9DP_2019 || board==Board::BOARD_TARANIS_X9E)
-#define IS_TARANIS_X9D(board)          (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9DP_2019)
-#define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
-#define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
-#define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITE(board) || IS_JUMPER_T12(board))
-#define IS_TARANIS_SMALL(board)        (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || IS_JUMPER_T12(board))
-#define IS_HORUS_X12S(board)           (board==Board::BOARD_X12S)
-#define IS_HORUS_X10(board)            (board==Board::BOARD_X10 || board==Board::BOARD_X10_EXPRESS)
-#define IS_HORUS(board)                (IS_HORUS_X12S(board) || IS_HORUS_X10(board))
-#define IS_HORUS_OR_TARANIS(board)     (IS_HORUS(board) || IS_TARANIS(board))
-#define IS_STM32(board)                (IS_TARANIS(board) || IS_HORUS(board))
-#define IS_ARM(board)                  (IS_STM32(board) || IS_SKY9X(board))
-#define HAS_LARGE_LCD(board)           (IS_HORUS(board) || IS_TARANIS_X9(board))
+inline bool IS_9X(Board::Type board)
+{
+  return board == Board::BOARD_9X_M64 || board == Board::BOARD_9X_M128;
+}
+
+inline bool IS_STOCK(Board::Type board)
+{
+  return board == Board::BOARD_9X_M64;
+}
+
+inline bool IS_M128(Board::Type board)
+{
+  return board == Board::BOARD_9X_M128;
+}
+
+inline bool IS_2560(Board::Type board)
+{
+  return board == Board::BOARD_GRUVIN9X || board == Board::BOARD_MEGA2560;
+}
+
+inline bool IS_SKY9X(Board::Type board)
+{
+  return board == Board::BOARD_SKY9X || board == Board::BOARD_9XRPRO || board == Board::BOARD_AR9X;
+}
+
+inline bool IS_9XRPRO(Board::Type board)
+{
+  return board == Board::BOARD_9XRPRO;
+}
+
+inline bool IS_JUMPER_T12(Board::Type board)
+{
+  return board == Board::BOARD_JUMPER_T12;
+}
+
+inline bool IS_TARANIS_XLITE(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_XLITE || board == Board::BOARD_TARANIS_XLITES;
+}
+
+inline bool IS_TARANIS_XLITES(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_XLITES;
+}
+
+inline bool IS_TARANIS_X7(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X7;
+}
+
+inline bool IS_TARANIS_X9LITE(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X9LITE;
+}
+
+inline bool IS_TARANIS_X9(Board::Type board)
+{
+  return board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9DP_2019 || board==Board::BOARD_TARANIS_X9E;
+}
+
+inline bool IS_TARANIS_X9D(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X9D || board == Board::BOARD_TARANIS_X9DP || board == Board::BOARD_TARANIS_X9DP_2019;
+}
+
+inline bool IS_TARANIS_PLUS(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X9DP || board == Board::BOARD_TARANIS_X9E;
+}
+
+inline bool IS_TARANIS_X9E(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X9E;
+}
+
+inline bool IS_TARANIS(Board::Type board)
+{
+  return IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITE(board) || IS_JUMPER_T12(board);
+}
+
+inline bool IS_TARANIS_SMALL(Board::Type board)
+{
+  return IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || IS_JUMPER_T12(board);
+}
+
+inline bool IS_HORUS_X10(Board::Type board)
+{
+  return board == Board::BOARD_X10 || board == Board::BOARD_X10_EXPRESS;
+}
+
+inline bool IS_HORUS_X12S(Board::Type board)
+{
+  return board == Board::BOARD_HORUS_X12S;
+}
+
+inline bool IS_HORUS(Board::Type board)
+{
+  return IS_HORUS_X12S(board) || IS_HORUS_X10(board);
+}
+
+inline bool IS_HORUS_OR_TARANIS(Board::Type board)
+{
+  return IS_HORUS(board) || IS_TARANIS(board);
+}
+
+inline bool IS_STM32(Board::Type board)
+{
+  return IS_TARANIS(board) || IS_HORUS(board);
+}
+
+inline bool IS_ARM(Board::Type board)
+{
+  return IS_STM32(board) || IS_SKY9X(board);
+}
+
+inline bool HAS_LARGE_LCD(Board::Type board)
+{
+  return IS_HORUS(board) || IS_TARANIS_X9(board);
+}
+
+inline bool HAS_EXTERNAL_ANTENNA(Board::Type board)
+{
+  return (IS_HORUS(board) && board != Board::BOARD_X10_EXPRESS) || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board));
+}
 
 #endif // _BOARDS_H_

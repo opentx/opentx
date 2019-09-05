@@ -48,7 +48,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   RawSourceRange result;
 
   Firmware * firmware = Firmware::getCurrentVariant();
-  int board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:

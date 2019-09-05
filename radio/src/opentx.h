@@ -1107,7 +1107,7 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
-    int8_t externalAntennaMode;
+    int8_t antennaMode;
     BindInformation bindInformation;
     struct {
       union {
@@ -1175,7 +1175,7 @@ union ReusableBuffer
   } radioTools;
 
   struct {
-    int8_t externalAntennaMode;
+    int8_t antennaMode;
   } radioHardware;
 
   struct {

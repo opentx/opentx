@@ -231,7 +231,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 {
   if (result == STR_OK) {
     // Switch to external antenna confirmation
-    g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
+    g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
     storageDirty(EE_GENERAL);
   }
 }
@@ -345,7 +345,7 @@ void menuRadioHardware(event_t event)
   else if (event == EVT_ENTRY) {
     enableVBatBridge();
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
-    reusableBuffer.radioHardware.externalAntennaMode = g_eeGeneral.externalAntennaMode;
+    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
 #endif
   }
 
@@ -571,14 +571,14 @@ void menuRadioHardware(event_t event)
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
       case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
-        reusableBuffer.radioHardware.externalAntennaMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_ANTENNA, STR_ANTENNA_MODES, reusableBuffer.radioHardware.externalAntennaMode, EXTERNAL_ANTENNA_DISABLE, EXTERNAL_ANTENNA_ENABLE, attr, event);
-        if (!s_editMode && reusableBuffer.radioHardware.externalAntennaMode != g_eeGeneral.externalAntennaMode) {
-          if (!isExternalAntennaEnabled() && (reusableBuffer.radioHardware.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE || (reusableBuffer.radioHardware.externalAntennaMode == EXTERNAL_ANTENNA_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.externalAntennaMode == EXTERNAL_ANTENNA_ENABLE))) {
+        reusableBuffer.radioHardware.antennaMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_ANTENNA, STR_ANTENNA_MODES, reusableBuffer.radioHardware.antennaMode, ANTENNA_MODE_INTERNAL, ANTENNA_MODE_EXTERNAL, attr, event);
+        if (!s_editMode && reusableBuffer.radioHardware.antennaMode != g_eeGeneral.antennaMode) {
+          if (!isExternalAntennaEnabled() && (reusableBuffer.radioHardware.antennaMode == ANTENNA_MODE_EXTERNAL || (reusableBuffer.radioHardware.antennaMode == ANTENNA_MODE_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode == ANTENNA_MODE_EXTERNAL))) {
             POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onHardwareAntennaSwitchConfirm);
             SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
           }
           else {
-            g_eeGeneral.externalAntennaMode = reusableBuffer.radioHardware.externalAntennaMode;
+            g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
             checkExternalAntenna();
           }
         }

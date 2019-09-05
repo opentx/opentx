@@ -55,7 +55,7 @@ QStringList getAvrdudeArgs(const QString & cmd, const QString & filename)
   args << "-c" << programmer << "-p";
   if (IS_2560(board))
     args << "m2560";
-  else if (board == Board::BOARD_M128)
+  else if (board == Board::BOARD_9X_M128)
     args << "m128";
   else
     args << mcu;

@@ -449,7 +449,7 @@ PACK(struct ModuleData {
       uint8_t spare1:2;
       uint8_t receiverTelemetryOff:1;     // false = receiver telem enabled
       uint8_t receiverHigherChannels:1;  // false = pwm out 1-8, true 9-16
-      int8_t externalAntennaMode:2;
+      int8_t antennaMode:2;
       uint8_t spare2;
     } pxx);
     NOBACKUP(struct {
@@ -735,7 +735,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t vBatWarn);
   NOBACKUP(int8_t txVoltageCalibration);
   uint8_t backlightMode:3;
-  int8_t externalAntennaMode:2;
+  int8_t antennaMode:2;
   int8_t spare1:3;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
