@@ -67,10 +67,10 @@ void postRadioSettingsLoad()
 void onAntennaSelection(const char * result)
 {
   if (result == STR_USE_INTERNAL_ANTENNA) {
-    globalData.externalAntennaEnabled = true;
+    globalData.externalAntennaEnabled = false;
   }
   else if (result == STR_USE_EXTERNAL_ANTENNA) {
-    globalData.externalAntennaEnabled = false;
+    globalData.externalAntennaEnabled = true;
   }
   else {
     checkExternalAntenna();
