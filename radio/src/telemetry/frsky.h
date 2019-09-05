@@ -209,7 +209,6 @@ class TelemetryData {
     TelemetryExpiringDecorator<TelemetryValue> swrExternal;
     TelemetryFilterDecorator<TelemetryValue> rssi;
     uint16_t xjtVersion;
-    // TODO check if we are packed
     uint8_t varioHighPrecision:1;
     uint8_t telemetryValid:3;
     uint8_t spare:4;
