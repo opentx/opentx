@@ -107,7 +107,7 @@ enum
 
   inline void POPUP_CONFIRMATION(const char * s, PopupMenuHandler handler)
   {
-    if (handler != popupMenuHandler) {
+    if (s != warningText) {
       killAllEvents();
       warningText = s;
       warningInfoText = nullptr;

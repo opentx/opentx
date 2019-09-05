@@ -314,7 +314,9 @@ void guiMain(event_t evt)
             const char * result = runPopupMenu(evt);
             if (result) {
               TRACE("popupMenuHandler(%s)", result);
-              popupMenuHandler(result);
+              auto handler = popupMenuHandler;
+              popupMenuHandler = nullptr;
+              handler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
                 continue;
@@ -453,7 +455,9 @@ void guiMain(event_t evt)
     const char * result = runPopupMenu(evt);
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
-      popupMenuHandler(result);
+      auto handler = popupMenuHandler;
+      popupMenuHandler = nullptr;
+      handler(result);
     }
   }
 

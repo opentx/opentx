@@ -96,6 +96,7 @@ void checkExternalAntenna()
       SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
     }
     else if (g_eeGeneral.antennaMode == ANTENNA_MODE_ASK || (g_eeGeneral.antennaMode == ANTENNA_MODE_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode == ANTENNA_MODE_ASK)) {
+      TRACE("ICI QUESTION");
       globalData.externalAntennaEnabled = false;
       POPUP_MENU_ADD_ITEM(STR_USE_INTERNAL_ANTENNA);
       POPUP_MENU_ADD_ITEM(STR_USE_EXTERNAL_ANTENNA);
