@@ -234,6 +234,9 @@ void onHardwareAntennaSwitchConfirm(const char * result)
     g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
     storageDirty(EE_GENERAL);
   }
+  else {
+    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+  }
 }
 #else
 #define EXTERNAL_ANTENNA_ROW
