@@ -338,6 +338,8 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
+      if (IS_HORUS_X12S(board))
+        return 8;
       else
         return getCapability(board, Switches);
 

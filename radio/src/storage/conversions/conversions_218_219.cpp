@@ -131,6 +131,14 @@ void convertModelData_218_to_219(ModelData &model)
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
   TRACE("Model %s conversion from v218 to v219", name);
 
+  for (uint8_t i=0; i<MAX_TIMERS_218; i++) {
+    TimerData & timer = newModel.timers[i];
+    if (timer.mode >= TMRMODE_COUNT)
+      timer.mode = TMRMODE_COUNT + convertSwitch_218_to_219(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
+    else if (timer.mode < 0)
+      timer.mode = convertSwitch_218_to_219(oldModel.timers[i].mode);
+  }
+
   for (uint8_t i=0; i<MAX_MIXERS_218; i++) {
     memmove(&newModel.mixData[i], &oldModel.mixData[i], sizeof(MixData_v218));
     newModel.mixData[i].srcRaw = convertSource_218_to_219(newModel.mixData[i].srcRaw); // from newModel to avoid overwrite
