@@ -71,6 +71,14 @@ options = {
         "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
+    },
+    "X7": {
+        "PCB": "X7",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
     }
 }
 
