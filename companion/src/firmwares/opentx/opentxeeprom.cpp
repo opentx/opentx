@@ -2570,12 +2570,19 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
   internalField.Append(new UnsignedField<8>(this, generalData.vBatWarn));
   internalField.Append(new SignedField<8>(this, generalData.txVoltageCalibration));
-  internalField.Append(new SignedField<8>(this, generalData.backlightMode));
 
-  for (int i=0; i<CPN_MAX_STICKS; i++) {
+  internalField.Append(new SignedField<3>(this, generalData.backlightMode));
+  if (version >= 219)
+    internalField.Append(new SignedField<2>(this, generalData.antennaMode));
+  else
+    internalField.Append(new SpareBitsField<2>(this));
+  internalField.Append(new SpareBitsField<3>(this));
+
+  for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));
   }
-  for (int i=0; i<CPN_MAX_STICKS; i++) {
+
+  for (int i=0; i<4; i++) {
     internalField.Append(new UnsignedField<6>(this, generalData.trainer.mix[i].src));
     internalField.Append(new UnsignedField<2>(this, generalData.trainer.mix[i].mode));
     internalField.Append(new SignedField<8>(this, generalData.trainer.mix[i].weight));

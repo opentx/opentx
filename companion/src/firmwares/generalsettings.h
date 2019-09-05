@@ -151,7 +151,8 @@ class GeneralSettings {
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
-    unsigned int auxSerialMode;  // UartModes
+    unsigned int auxSerialMode;
+    int antennaMode;
     unsigned int backlightColor;
     CustomFunctionData customFn[CPN_MAX_SPECIAL_FUNCTIONS];
     char switchName[CPN_MAX_SWITCHES][3+1];
