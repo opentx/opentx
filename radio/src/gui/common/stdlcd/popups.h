@@ -107,12 +107,14 @@ enum
 
   inline void POPUP_CONFIRMATION(const char * s, PopupMenuHandler handler)
   {
-    warningText = s;
-    warningInfoText = nullptr;
-    warningType = WARNING_TYPE_CONFIRM;
-    popupFunc = runPopupWarning;
-    popupMenuHandler = handler;
-    killAllEvents();
+    if (handler != popupMenuHandler) {
+      killAllEvents();
+      warningText = s;
+      warningInfoText = nullptr;
+      warningType = WARNING_TYPE_CONFIRM;
+      popupFunc = runPopupWarning;
+      popupMenuHandler = handler;
+    }
   }
 
   inline void POPUP_INPUT(const char * s, PopupFunc func)
@@ -164,8 +166,8 @@ inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
 inline void POPUP_MENU_START(PopupMenuHandler handler)
 {
   if (handler != popupMenuHandler) {
-    AUDIO_KEY_PRESS();
     killAllEvents();
+    AUDIO_KEY_PRESS();
     popupMenuHandler = handler;
   }
 }
