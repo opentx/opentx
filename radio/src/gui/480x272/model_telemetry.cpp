@@ -236,7 +236,7 @@ bool menuModelTelemetry(event_t event)
         }
         else {
           lcdDrawText(TELEM_COL2, y, STR_DEFAULT, attr);
-       }
+        }
         if (attr) {
           g_model.rssiSource = checkIncDec(event, g_model.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
         }
