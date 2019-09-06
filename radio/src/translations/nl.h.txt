@@ -377,14 +377,6 @@ TR_GYR_VSRCRAW
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Laagste""1e Cel\0""2e Cel\0""3e Cel\0""4e Cel\0""5e Cel\0""6e Cel\0""Hoogste""Delta\0 "
 
-#if defined(PCBX10) || defined(PCBXLITE)
-#define LEN_VANTENNATYPES      "\010"
-#define TR_VANTENNATYPES       "Internal""External"
-#else
-#define LEN_VANTENNATYPES      "\010"
-#define TR_VANTENNATYPES       "Internal""Ext+Int\0"
-#endif
-
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
@@ -484,6 +476,7 @@ TR_GYR_VSRCRAW
 #define TR_FLMODE              TR("Mode", "Modes")
 #define TR_MIXWARNING          "Melding"
 #define TR_OFF                 "UIT"
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Multpx"
 #define TR_DELAYDOWN           "Vertr.Dn"
@@ -934,8 +927,16 @@ TR_GYR_VSRCRAW
 #define TR_UNIT                "Eenheid"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor toevoegen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanalen", INDENT "Uitgangs Kanalen")  //wg 9XR-Pro
-#define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenna selection")
 #define TR_ANTENNACONFIRM1     "Antennes wisselen?"
+#if defined(PCBX12S)
+#define LEN_ANTENNA_MODES      "\023"
+#define TR_ANTENNA_MODES       "Internal\0          ""Ask\0               ""Per model\0         ""Internal + External"
+#else
+#define LEN_ANTENNA_MODES      "\011"
+#define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#endif
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Is er zeker een antenne geplaatst!")
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Requires non"
 #define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Requires FCC"

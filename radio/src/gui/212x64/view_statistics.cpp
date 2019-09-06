@@ -115,12 +115,7 @@ void menuStatisticsDebug(event_t event)
   }
 #endif
 
-  switch(event) {
-    case EVT_ENTRY:
-    case EVT_ENTRY_UP:
-      enableVBatBridge();
-      break;
-
+  switch (event) {
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       sessionTimer = 0;

@@ -384,7 +384,8 @@ void menuModelSetup(event_t event)
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_LINES_COUNT);
   title(STR_MENUSETUP);
 
-  if (event == EVT_ENTRY) {
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
+    memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
@@ -397,10 +398,10 @@ void menuModelSetup(event_t event)
 
   int sub = menuVerticalPosition;
 
-  for (int i=0; i<NUM_BODY_LINES; ++i) {
+  for (int i = 0; i < NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+menuVerticalOffset;
-    for (int j=0; j<=k; j++) {
+    uint8_t k = i + menuVerticalOffset;
+    for (int j = 0; j <= k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
@@ -408,7 +409,7 @@ void menuModelSetup(event_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
-    switch(k) {
+    switch (k) {
       case ITEM_MODEL_SETUP_NAME:
         editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.header.name, sizeof(g_model.header.name), event, attr);
         memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));

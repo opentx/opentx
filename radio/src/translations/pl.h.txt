@@ -395,14 +395,6 @@
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Niskie\0""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Wysokie""Delta\0"
 
-#if defined(PCBX10) || defined(PCBXLITE)
-#define LEN_VANTENNATYPES      "\010"
-#define TR_VANTENNATYPES       "Internal""External"
-#else
-#define LEN_VANTENNATYPES      "\010"
-#define TR_VANTENNATYPES       "Internal""Ext+Int\0"
-#endif
-
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
@@ -503,6 +495,7 @@
 #define TR_FLMODE              "Tryb"
 #define TR_MIXWARNING          "UWAGA"
 #define TR_OFF                 "Wył."
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX              "Złącz."
 #define TR_DELAYDOWN           "Opózn.(-)"
@@ -946,8 +939,16 @@
 #define TR_UNIT                "Jedn"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Dodaj nowy czujnik..."
 #define TR_CHANNELRANGE        TR(INDENT "ZakrKn",INDENT "Zakres kanału")
-#define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenna selection")
-#define TR_ANTENNACONFIRM1     "Really switch?"
+#define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
+#if defined(PCBX12S)
+#define LEN_ANTENNA_MODES      "\023"
+#define TR_ANTENNA_MODES       "Internal\0          ""Ask\0               ""Per model\0         ""Internal + External"
+#else
+#define LEN_ANTENNA_MODES      "\011"
+#define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#endif
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Make sure antenna is installed!")
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Requires non"
 #define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Requires FCC"

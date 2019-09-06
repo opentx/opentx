@@ -716,7 +716,7 @@ class FlightModeField: public TransformedField {
             trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
           else
             trim = std::max(-500, std::min(500, phase.trim[i]));
-          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
+          if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215)) {
             trimBase[i] = trim >> 2;
             trimExt[i] = (trim & 0x03);
           }
@@ -747,7 +747,7 @@ class FlightModeField: public TransformedField {
           }
           else {
             int trim;
-            if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+            if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215))
               trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
             else
               trim = trimBase[i];
@@ -1302,7 +1302,7 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
-    ~LogicalSwitchField() override 
+    ~LogicalSwitchField() override
     = default;
 
     void beforeExport() override
@@ -2067,10 +2067,10 @@ class ModuleUnionField: public UnionField<unsigned int> {
         ModuleData::PXX& pxx = module.pxx;
         internalField.Append(new UnsignedField<2>(this, pxx.power));
         internalField.Append(new SpareBitsField<2>(this));
-        internalField.Append(new BoolField<1>(this, pxx.receiver_telem_off));
-        internalField.Append(new BoolField<1>(this, pxx.receiver_channel_9_16));
-        internalField.Append(new BoolField<1>(this, pxx.external_antenna));
-        internalField.Append(new BoolField<1>(this, pxx.sport_out));
+        internalField.Append(new BoolField<1>(this, pxx.receiverTelemetryOff));
+        internalField.Append(new BoolField<1>(this, pxx.receiverHigherChannels));
+        internalField.Append(new SignedField<2>(this, pxx.antennaMode));
+        internalField.Append(new SpareBitsField<8>(this));
       }
 
       bool select(const unsigned int& attr) const override {
@@ -2558,12 +2558,19 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
   internalField.Append(new UnsignedField<8>(this, generalData.vBatWarn));
   internalField.Append(new SignedField<8>(this, generalData.txVoltageCalibration));
-  internalField.Append(new SignedField<8>(this, generalData.backlightMode));
 
-  for (int i=0; i<CPN_MAX_STICKS; i++) {
+  internalField.Append(new SignedField<3>(this, generalData.backlightMode));
+  if (version >= 219)
+    internalField.Append(new SignedField<2>(this, generalData.antennaMode));
+  else
+    internalField.Append(new SpareBitsField<2>(this));
+  internalField.Append(new SpareBitsField<3>(this));
+
+  for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));
   }
-  for (int i=0; i<CPN_MAX_STICKS; i++) {
+
+  for (int i=0; i<4; i++) {
     internalField.Append(new UnsignedField<6>(this, generalData.trainer.mix[i].src));
     internalField.Append(new UnsignedField<2>(this, generalData.trainer.mix[i].mode));
     internalField.Append(new SignedField<8>(this, generalData.trainer.mix[i].weight));

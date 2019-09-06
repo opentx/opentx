@@ -44,9 +44,9 @@ void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att
   }
 }
 
-int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags attr, event_t event)
+int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags attr, event_t event, IsValueAvailable isValueAvailable)
 {
-  if (attr & INVERS) value = checkIncDec(event, value, min, max, (isModelMenuDisplayed()) ? EE_MODEL : EE_GENERAL);
+  if (attr & INVERS) value = checkIncDec(event, value, min, max, (isModelMenuDisplayed()) ? EE_MODEL : EE_GENERAL, isValueAvailable);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
   return value;
 }

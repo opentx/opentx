@@ -69,6 +69,12 @@ void drawTopBar()
     lcdDrawSolidFilledRect(LCD_W-90 + i * 6, 38 - height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
   }
 
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  if (isModuleXJT(INTERNAL_MODULE) && isExternalAntennaEnabled()) {
+    lcdDrawBitmapPattern(LCD_W-94, 4, LBM_TOPMENU_ANTENNA, MENU_TITLE_COLOR);
+  }
+#endif
+
   /* Audio volume */
   lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_SCALE, MENU_TITLE_DISABLE_COLOR);
   if (requiredSpeakerVolume == 0 || g_eeGeneral.beepMode == e_mode_quiet)

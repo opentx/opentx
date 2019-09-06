@@ -50,16 +50,24 @@
 #define RSSSI_X       (30)
 #define RSSSI_Y       (31)
 #define RSSI_MAX      105
-
 #define TRIM_LEN      23
 
-void drawRSSIGauge()
+void drawExternalAntennaAndRSSI()
 {
-  uint8_t bar = (RSSI_MAX - g_model.rssiAlarms.getWarningRssi()) / 4;
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  if (isModuleXJT(INTERNAL_MODULE) && isExternalAntennaEnabled()) {
+    lcdDrawText(VBATT_X-1, VBATT_Y+8, "E", TINSIZE);
+  }
+#endif
 
-  for(uint8_t i=1; i<5;  i++) {
-    if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar*(i-1)) {
-      lcdDrawFilledRect(RSSSI_X + i*4, RSSSI_Y - 2*i, 3, 2*i, SOLID, 0);
+  if (TELEMETRY_RSSI() > 0) {
+    auto warningRSSI = g_model.rssiAlarms.getWarningRssi();
+    int8_t value = TELEMETRY_RSSI() - warningRSSI;
+    uint8_t step = (RSSI_MAX - warningRSSI) / 4;
+    for (uint8_t i = 1; i < 5; i++) {
+      if (value > step * (i - 1)) {
+        lcdDrawFilledRect(RSSSI_X + i * 4, RSSSI_Y - 2 * i + 1, 3, 2 * i - 1, SOLID, 0);
+      }
     }
   }
 }
@@ -407,10 +415,8 @@ void menuMainView(event_t event)
     // Trims sliders
     displayTrims(mode);
 
-    // RSSI gauge
-    if (TELEMETRY_RSSI() > 0) {
-      drawRSSIGauge();
-    }
+    // RSSI gauge / external antenna
+    drawExternalAntennaAndRSSI();
   }
 
   if (view_base < VIEW_INPUTS) {

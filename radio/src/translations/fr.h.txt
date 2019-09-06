@@ -394,14 +394,6 @@
 #define LEN_VCELLINDEX                 "\007"
 #define TR_VCELLINDEX                  "Mini.\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Maxi.\0 ""Diff.\0 "
 
-#if defined(PCBX10) || defined(PCBXLITE)
-#define LEN_VANTENNATYPES              "\007"
-#define TR_VANTENNATYPES               "Interne""Externe"
-#else
-#define LEN_VANTENNATYPES              "\007"
-#define TR_VANTENNATYPES               "Interne""Ext+Int\0"
-#endif
-
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
@@ -502,6 +494,7 @@
 #define TR_FLMODE                      TR("Phase", "Phases")
 #define TR_MIXWARNING                  "Alerte"
 #define TR_OFF                         "OFF"
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX                      "Opération"
 #define TR_DELAYDOWN                   "Retard bas"
@@ -947,8 +940,16 @@
 #define TR_UNIT                        "Unité"
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE                TR(INDENT "Canaux", INDENT "Plage de canaux")
-#define TR_ANTENNASELECTION            TR(INDENT "Antenne", INDENT "Choix antenne")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
+#if defined(PCBX12S)
+#define LEN_ANTENNA_MODES      "\021"
+#define TR_ANTENNA_MODES       "Interne\0         ""Ask\0             ""Par modèle\0      ""Interne + Externe"
+#else
+#define LEN_ANTENNA_MODES      "\011"
+#define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#endif
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2             TR("Vérif antenne", "Installer l'antenne d'abord!")
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Nécessite firm."
 #define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Requires FCC"

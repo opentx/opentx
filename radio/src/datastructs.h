@@ -446,10 +446,9 @@ PACK(struct ModuleData {
     NOBACKUP(struct {
       uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
       uint8_t spare1:2;
-      uint8_t receiver_telem_off:1;     // false = receiver telem enabled
-      uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
-      uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
-      uint8_t fast:1;                   // TODO: to be used later by external module (fast means serial @ high speed)
+      uint8_t receiverTelemetryOff:1;     // false = receiver telem enabled
+      uint8_t receiverHigherChannels:1;  // false = pwm out 1-8, true 9-16
+      int8_t antennaMode:2;
       uint8_t spare2;
     } pxx);
     NOBACKUP(struct {
@@ -672,13 +671,13 @@ PACK(struct TrainerData {
     NOBACKUP(char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]); \
     NOBACKUP(char anaNames[NUM_STICKS + STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
-    NOBACKUP(uint8_t spare4:1); \
+    NOBACKUP(uint8_t spare5:1); \
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #elif defined(PCBTARANIS)
   #if defined(STORAGE_BLUETOOTH)
     #define BLUETOOTH_FIELDS \
-      uint8_t spare4; \
+      uint8_t spare5; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
   #else
     #define BLUETOOTH_FIELDS
@@ -696,7 +695,7 @@ PACK(struct TrainerData {
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
     int8_t   txCurrentCalibration; \
-    int8_t   spare4; \
+    int8_t   spare5; \
     uint8_t  mAhWarn; \
     uint16_t mAhUsed; \
     int8_t   temperatureCalib; \
@@ -722,7 +721,7 @@ PACK(struct TrainerData {
 #if defined(BUZZER)
   #define BUZZER_FIELD int8_t buzzerMode:2    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
 #else
-  #define BUZZER_FIELD int8_t spare3:2
+  #define BUZZER_FIELD int8_t spare4:2
 #endif
 
 PACK(struct RadioData {
@@ -734,7 +733,9 @@ PACK(struct RadioData {
   N_HORUS_FIELD(uint8_t contrast);
   NOBACKUP(uint8_t vBatWarn);
   NOBACKUP(int8_t txVoltageCalibration);
-  NOBACKUP(int8_t backlightMode);
+  uint8_t backlightMode:3;
+  int8_t antennaMode:2;
+  int8_t spare1:3;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */
@@ -755,7 +756,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t templateSetup);   // RETA order for receiver channels
   NOBACKUP(int8_t PPM_Multiplier);
   NOBACKUP(int8_t hapticLength);
-  N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t spare1));
+  N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t spare2));
   N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t stickReverse));
   NOBACKUP(int8_t beepLength:3);
   NOBACKUP(int8_t hapticStrength:3);
@@ -778,7 +779,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1);
   NOBACKUP(uint8_t  USBMode:2);
   NOBACKUP(uint8_t  jackMode:2);
-  NOBACKUP(uint8_t  spare2:1);
+  NOBACKUP(uint8_t  spare3:1);
   NOBACKUP(char     ttsLanguage[2]);
   NOBACKUP(int8_t   beepVolume:4);
   NOBACKUP(int8_t   wavVolume:4);

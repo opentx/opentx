@@ -223,7 +223,6 @@ QString ModelPrinter::printModule(int idx)
         if (module.protocol == PULSES_PXX_R9M) {
           str << printLabelValue(tr("Sub Type"), module.subTypeToString());
           str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
-          str << printLabelValue(tr("Telemetry"), printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
         }
       }
     }

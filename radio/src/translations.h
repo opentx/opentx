@@ -169,7 +169,6 @@ extern const char STR_VSENSORTYPES[];
 extern const char STR_VFORMULAS[];
 extern const char STR_VPREC[];
 extern const char STR_VCELLINDEX[];
-extern const char STR_VANTENNATYPES[];
 
 #if defined(BLUETOOTH)
 extern const char STR_BLUETOOTH[];
@@ -249,6 +248,7 @@ extern const char STR_CURVE[];
 extern const char STR_FLMODE[];
 extern const char STR_MIXWARNING[];
 extern const char STR_OFF[];
+extern const char STR_ANTENNA[];
 extern const char STR_NO_INFORMATION[];
 extern const char STR_MULTPX[];
 extern const char STR_DELAYDOWN[];
@@ -732,6 +732,9 @@ extern const char STR_CHANNELRANGE[];
 extern const char STR_ANTENNASELECTION[];
 extern const char STR_ANTENNACONFIRM1[];
 extern const char STR_ANTENNACONFIRM2[];
+extern const char STR_ANTENNA_MODES[];
+extern const char STR_USE_INTERNAL_ANTENNA[];
+extern const char STR_USE_EXTERNAL_ANTENNA[];
 extern const char STR_MODULE_PROTOCOL_FLEX_WARN_LINE1[];
 extern const char STR_MODULE_PROTOCOL_FCC_WARN_LINE1[];
 extern const char STR_MODULE_PROTOCOL_EU_WARN_LINE1[];

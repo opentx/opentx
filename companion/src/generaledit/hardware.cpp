@@ -183,6 +183,18 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->bluetoothWidget->hide();
   }
 
+  if ((IS_HORUS(board) && board != Board::BOARD_X10_EXPRESS) || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board))) {
+    ui->antennaMode->addItem(tr("Internal"), -2);
+    ui->antennaMode->addItem(tr("Ask"), -1);
+    ui->antennaMode->addItem(tr("Per model"), 0);
+    ui->antennaMode->addItem(IS_HORUS_X12S(board) ? tr("Internal + External") : tr("External"), 1);
+    ui->antennaMode->setField(generalSettings.antennaMode, this);
+  }
+  else {
+    ui->antennaLabel->hide();
+    ui->antennaMode->hide();
+  }
+
   if (IS_HORUS_OR_TARANIS(board)) {
     ui->filterEnable->setChecked(!generalSettings.jitterFilter);
   }

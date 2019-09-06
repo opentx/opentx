@@ -111,7 +111,6 @@ void menuStatisticsDebug(event_t event)
   switch (event) {
     case EVT_ENTRY:
     case EVT_ENTRY_UP:
-      enableVBatBridge();
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):
