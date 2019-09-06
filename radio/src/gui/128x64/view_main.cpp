@@ -63,11 +63,7 @@ void drawRSSIGauge()
 #endif
   for(uint8_t i=1; i<5;  i++) {
     if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar*(i-1)) {
-#if defined(EXTERNAL_ANTENNA)
-      lcdDrawFilledRect(RSSSI_X + i*4, RSSSI_Y - (i==1 ? 1 : 2*i), 3, i==1 ? 1 : 2*i, SOLID, 0);
-#else
-      lcdDrawFilledRect(RSSSI_X + i*4, RSSSI_Y - 2*i, 3, 2*i, SOLID, 0);
-#endif
+      lcdDrawFilledRect(RSSSI_X + i*4, RSSSI_Y - 2*i + 1, 3, 2*i - 1, SOLID, 0);
     }
   }
 }
