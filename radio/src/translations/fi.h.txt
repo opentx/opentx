@@ -938,7 +938,7 @@
 #define TR_UNIT                "Unit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Channel Range"
-#define TR_ANTENNACONFIRM1     "Really switch?"
+#define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
 #define TR_ANTENNA_MODES       "Internal\0          ""Ask\0               ""Per model\0         ""Internal + External"

@@ -583,7 +583,10 @@ inline void POPUP_WARNING(const char * s)
   popupFunc = runPopupWarning;
 }
 
-inline void POPUP_CONFIRMATION(const char *s, void (* confirmHandler)(const char *) = nullptr)
+typedef void (* PopupMenuHandler)(const char * result);
+extern PopupMenuHandler popupMenuHandler;
+
+inline void POPUP_CONFIRMATION(const char *s, PopupMenuHandler confirmHandler)
 {
   warningText = s;
   warningType = WARNING_TYPE_CONFIRM;
