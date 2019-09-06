@@ -57,8 +57,8 @@ void drawRSSIGauge()
 {
   uint8_t bar = (RSSI_MAX - g_model.rssiAlarms.getWarningRssi()) / 4;
 
-#if defined(EXTERNAL_ANTENNA)
-  if (isExternalAntennaEnabled()) {
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  if (isModuleXJT(INTERNAL_MODULE) && isExternalAntennaEnabled()) {
     lcdDrawText(VBATT_X-1, VBATT_Y+8, "E", TINSIZE);
   }
 #endif
