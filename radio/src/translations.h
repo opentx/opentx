@@ -220,6 +220,7 @@ extern const char STR_SWITCH[];
 extern const char STR_TRIMS[];
 extern const char STR_FADEIN[];
 extern const char STR_FADEOUT[];
+extern const char STR_DEFAULT[];
 extern const char STR_CHECKTRIMS[];
 extern const char STR_SWASHTYPE[];
 extern const char STR_COLLECTIVE[];

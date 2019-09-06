@@ -124,6 +124,7 @@ const char STR_SWITCH[] = TR_SWITCH;
 const char STR_TRIMS[] = TR_TRIMS;
 const char STR_FADEIN[] = TR_FADEIN;
 const char STR_FADEOUT[] = TR_FADEOUT;
+const char STR_DEFAULT[] = TR_DEFAULT;
 const char STR_CHECKTRIMS[] = TR_CHECKTRIMS;
 const char STR_MODE[] = TR_MODE;
 const char STR_NOFREEEXPO[] = TR_NOFREEEXPO;
