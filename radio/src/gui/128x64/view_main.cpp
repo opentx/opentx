@@ -56,13 +56,15 @@
 void drawRSSIGauge()
 {
   uint8_t bar = (RSSI_MAX - g_model.rssiAlarms.getWarningRssi()) / 4;
+
 #if defined(EXTERNAL_ANTENNA)
-  if (g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode == ANTENNA_MODE_EXTERNAL) {
+  if (isExternalAntennaEnabled()) {
     lcdDrawText(VBATT_X-1, VBATT_Y+8, "E", TINSIZE);
   }
 #endif
-  for(uint8_t i=1; i<5;  i++) {
-    if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar*(i-1)) {
+
+  for (uint8_t i=1; i<5; i++) {
+    if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar * (i-1)) {
       lcdDrawFilledRect(RSSSI_X + i*4, RSSSI_Y - 2*i + 1, 3, 2*i - 1, SOLID, 0);
     }
   }
