@@ -317,12 +317,12 @@ void watchdogInit(unsigned int duration);
   #define wdt_enable(x)
   #define wdt_reset()
 #else
-  #if defined(WATCHDOG_DISABLED)
-    #define wdt_enable(x)
-    #define wdt_reset()
-  #else
+  #if defined(WATCHDOG)
     #define wdt_enable(x)                       watchdogInit(x)
     #define wdt_reset()                         IWDG->KR = 0xAAAA
+  #else
+    #define wdt_enable(x)
+    #define wdt_reset()
   #endif
   #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
   #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)

@@ -1389,7 +1389,7 @@ extern uint8_t latencyToggleSwitch;
 
 inline bool isAsteriskDisplayed()
 {
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
+#if defined(LOG_TELEMETRY) || !defined(WATCHDOG) || defined(DEBUG_LATENCY)
   return true;
 #endif
 
