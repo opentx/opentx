@@ -9,3 +9,4 @@ build*/
 cmake-build-*/
 /debian/
 /*.vscode
+radio/src/tests/googletest*
