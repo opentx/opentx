@@ -162,7 +162,14 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 #endif
 
   if (primId == DATA_FRAME) {
-    uint8_t originMask = (origin == TELEMETRY_ENDPOINT_SPORT ? 0x02 : origin >> 2);
+    uint8_t originMask;
+    if (origin == TELEMETRY_ENDPOINT_SPORT) {
+      originMask = 0x04;
+    }
+    else {
+      uint8_t moduleIndex = (origin >> 2);
+      originMask = 0x01 << moduleIndex;
+    }
     uint8_t instance = physicalId + (origin << 5);
     if (dataId == RSSI_ID) {
       data = SPORT_DATA_U8(packet);
