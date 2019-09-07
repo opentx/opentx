@@ -177,7 +177,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool i
 #endif
 
   EXTMODULE_TIMER->ARR = period_half_us;
-  EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  EXTMODULE_TIMER->CCR2 = period_half_us - 4000;
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE | TIM_DIER_CC2IE;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
