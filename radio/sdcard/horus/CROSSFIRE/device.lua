@@ -434,7 +434,7 @@ local function runDevicePage(event)
     else
       return "crossfire.lua"
     end
-  elseif event == EVT_VIRTUAL_EXIT then        -- toggle editing/selecting current field
+  elseif event == EVT_VIRTUAL_ENTTER then        -- toggle editing/selecting current field
     local field = getField(lineIndex)
     if field.name then
       if field.type == 10 then
