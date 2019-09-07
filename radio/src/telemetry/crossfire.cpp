@@ -138,7 +138,7 @@ void processCrossfireTelemetryFrame()
               telemetryData.rssi.set(value);
               telemetryStreaming = TELEMETRY_TIMEOUT10ms;
             }
-            else{
+            else {
               telemetryStreaming = 0;
               telemetryData.rssi.reset();
             }
