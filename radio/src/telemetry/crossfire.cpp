@@ -134,8 +134,14 @@ void processCrossfireTelemetryFrame()
           }
           processCrossfireTelemetryValue(i, value);
           if (i == RX_QUALITY_INDEX) {
-            telemetryData.rssi.set(value);
-            telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+            if (value) {
+              telemetryData.rssi.set(value);
+              telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+            }
+            else{
+              telemetryStreaming = 0;
+              telemetryData.rssi.reset();
+            }
           }
         }
       }
