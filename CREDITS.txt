@@ -166,7 +166,7 @@ Eric Burdis
 Nigel Chippindale
 Michael Deasy
 Stephen Stough
-Kenneth Lilja (monthly)
+Kenneth Lilja
 Robert Jero
 Gary Bancroft
 Robert Cotsford
@@ -351,7 +351,6 @@ Roberto Orsello
 David Finger
 Jean-Marie Oddo
 Mike Matheny
-Glen Roe (Showmaster)
 Arron Bates
 Tim Spurr
 Daniel Morgan
@@ -832,7 +831,7 @@ Carsten Wache
 Brock White
 Steven Poretz
 David Huelster
-Gordon Stahl (monthly)
+Gordon Stahl
 John Mathison
 Richard Duczmal
 Gregory Barron
@@ -910,7 +909,7 @@ George Carnie
 Philippe Stofleth
 Tim Dzugan
 Illia Izotov
-Richard Miles (monthly)
+Richard Miles
 Attila Kapolnai
 Gilles Dando
 Denis Roussille
@@ -1009,7 +1008,7 @@ Julien Kieffer
 Gregor Walter
 Carlos Viegas
 Roberto Orsello
-Steve Murray (monthly)
+Steve Murray
 Marcel Schäfer
 Sean Cull
 Holger Bothmer
@@ -1443,7 +1442,7 @@ Marko Domagoj Zic
 Fabrice Debonnet 
 Ms Place
 Jörg Hammer
-Rapid Informatics LLC
+Rapid Informatics LLC (monthly)
 Renaud Perriguey
 Edmond Dufresne
 Jaroslav Gazik
@@ -1537,3 +1536,4 @@ Pierre Malriq
 Donald Manson
 Johannes Ferschl
 Piotr Wysocki
+Thomas Halenbeck (monthly)
