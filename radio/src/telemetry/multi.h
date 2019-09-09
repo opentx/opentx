@@ -80,11 +80,18 @@ Type 0x06 Flysky AFHDS2 telemetry data
    data[0] = RSSI value
    data[1-28] telemetry data
 
+Type 0x0B Spectrum Scanner telemetry data
+   length: 6
+   data[0] = start channel (2400 + x*0.333 Mhz)
+   data[1-5] power levels
+
 */
 
 
 
 void processMultiTelemetryData(uint8_t data);
+
+#define MULTI_SCANNER_MAX_CHANNEL 249
 
 // This should be put into the Module definition if other modules gain this functionality
 struct MultiModuleSyncStatus {
@@ -104,7 +111,6 @@ struct MultiModuleSyncStatus {
     // Initialise to a valid value
     adjustedRefreshRate=9000 * 1000;
   }
-
 };
 
 extern MultiModuleSyncStatus multiSyncStatus;

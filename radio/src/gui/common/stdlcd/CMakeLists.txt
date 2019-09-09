@@ -18,7 +18,7 @@ set(GUI_SRC
   model_curve_edit.cpp
   )
 
-if(PXX2 OR LUA)
+if(PXX2 OR LUA OR MULTI)
   set(GUI_SRC ${GUI_SRC} ../common/stdlcd/radio_tools.cpp)
 endif()
 
@@ -33,10 +33,16 @@ if(SDCARD)
     )
 endif()
 
-if(PXX2)
+if(PXX2 OR MULTI)
   set(GUI_SRC
     ${GUI_SRC}
     ../common/stdlcd/radio_spectrum_analyser.cpp
+    )
+endif()
+
+if(PXX2)
+  set(GUI_SRC
+    ${GUI_SRC}
     ../common/stdlcd/radio_power_meter.cpp
     )
 endif()

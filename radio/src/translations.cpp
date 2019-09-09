@@ -91,7 +91,7 @@ ISTR(VSWASHTYPE);
 ISTR(INPUTNAMES);
 #endif
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
 ISTR(MULTI_PROTOCOLS);
 #endif
 
@@ -654,7 +654,7 @@ const char STR_REG_OK[] = TR_REG_OK;
 const char STR_BIND_OK[] = TR_BIND_OK;
 #endif
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
 const char STR_MULTI_CUSTOM[] = TR_MULTI_CUSTOM;
 const char STR_MULTI_RFTUNE[] = TR_MULTI_RFTUNE;
 const char STR_MULTI_TELEMETRY[] = TR_MULTI_TELEMETRY;

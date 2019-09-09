@@ -45,7 +45,7 @@ enum PulsesProtocol {
   PULSES_PXX_XJT_LR12,
   PULSES_PXX_DJT,
   PULSES_CROSSFIRE,
-  PULSES_MULTIMODULE,
+  PULSES_MULTI,
   PULSES_PXX_R9M,
   PULSES_PXX_R9M_LITE,
   PULSES_PXX_R9M_LITE_PRO,
@@ -144,7 +144,7 @@ class ModuleData {
     unsigned int modelId;
     unsigned int protocol;   // type in datastructs.h
     int          rfProtocol; // rfProtocol in datastructs.h
-  
+
     unsigned int subType;
     bool         invertedSerial;
     unsigned int channelsStart;

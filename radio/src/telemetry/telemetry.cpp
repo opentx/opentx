@@ -43,7 +43,7 @@ void processTelemetryData(uint8_t data)
   }
 #endif
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
     processSpektrumTelemetryData(data);
     return;
@@ -52,7 +52,7 @@ void processTelemetryData(uint8_t data)
     processFlySkyTelemetryData(data);
     return;
   }
-  if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTI) {
     processMultiTelemetryData(data);
     return;
   }
@@ -251,10 +251,10 @@ void telemetryInit(uint8_t protocol)
     telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }
 
-#if defined(MULTIMODULE)
-  else if (protocol == PROTOCOL_TELEMETRY_MULTIMODULE || protocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS) {
+#if defined(MULTI)
+  else if (protocol == PROTOCOL_TELEMETRY_MULTI || protocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS) {
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
-    telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
+    telemetryPortInit(MULTI_BAUDRATE, TELEMETRY_SERIAL_8E2);
 #if defined(LUA)
     outputTelemetryBuffer.reset();
 #endif

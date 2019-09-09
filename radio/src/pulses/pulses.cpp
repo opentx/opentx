@@ -104,9 +104,9 @@ uint8_t getRequiredProtocol(uint8_t module)
       protocol = PROTOCOL_CHANNELS_SBUS;
       break;
 
-#if defined(MULTIMODULE)
-    case MODULE_TYPE_MULTIMODULE:
-      protocol = PROTOCOL_CHANNELS_MULTIMODULE;
+#if defined(MULTI)
+    case MODULE_TYPE_MULTI:
+      protocol = PROTOCOL_CHANNELS_MULTI;
       break;
 #endif
 
@@ -196,9 +196,9 @@ void enablePulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(MULTIMODULE)
-    case PROTOCOL_CHANNELS_MULTIMODULE:
-      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true);
+#if defined(MULTI)
+    case PROTOCOL_CHANNELS_MULTI:
+      extmoduleSerialStart(MULTI_BAUDRATE, MULTI_PERIOD * 2000, true);
       break;
 #endif
 
@@ -267,10 +267,10 @@ void setupPulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(MULTIMODULE)
-    case PROTOCOL_CHANNELS_MULTIMODULE:
-      setupPulsesMultimodule();
-      scheduleNextMixerCalculation(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
+#if defined(MULTI)
+    case PROTOCOL_CHANNELS_MULTI:
+      setupPulsesMultiExternalModule();
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, MULTI_PERIOD);
       break;
 #endif
 
@@ -287,7 +287,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 }
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-void enablePulsesInternalModule(uint8_t protocol)
+static void enablePulsesInternalModule(uint8_t protocol)
 {
   // start new protocol hardware here
 
@@ -306,10 +306,17 @@ void enablePulsesInternalModule(uint8_t protocol)
 
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-      intmoduleSerialStart(PXX2_HIGHSPEED_BAUDRATE, true);
+      intmoduleSerialStart(PXX2_HIGHSPEED_BAUDRATE, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
       break;
 #endif
 
+#if defined(INTERNAL_MODULE_MULTI)
+    case PROTOCOL_CHANNELS_MULTI:
+      intmodulePulsesData.multi.initFrame();
+      intmoduleSerialStart(MULTI_BAUDRATE, true, USART_Parity_Even, USART_StopBits_2, USART_WordLength_9b);
+      intmoduleTimerStart(MULTI_PERIOD);
+      break;
+#endif
     default:
       break;
   }
@@ -341,7 +348,7 @@ void setupPulsesInternalModule(uint8_t protocol)
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);
       }
 #if !defined(INTMODULE_HEARTBEAT)
-      else {
+    else {
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD);
       }
 #endif
@@ -352,6 +359,13 @@ void setupPulsesInternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMInternalModule();
       scheduleNextMixerCalculation(INTERNAL_MODULE, PPM_PERIOD(INTERNAL_MODULE));
+      break;
+#endif
+
+#if defined(INTERNAL_MODULE_MULTI)
+    case PROTOCOL_CHANNELS_MULTI:
+      setupPulsesMultiInternalModule();
+      scheduleNextMixerCalculation(INTERNAL_MODULE, MULTI_PERIOD);
       break;
 #endif
 

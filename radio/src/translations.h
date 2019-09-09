@@ -160,7 +160,7 @@ extern const char STR_ISRM_RF_PROTOCOLS[];
 extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
 extern const char STR_MULTI_PROTOCOLS[];
 #endif
 
@@ -382,7 +382,7 @@ extern const char STR_AND_SWITCH[];
 extern const char STR_SF[];
 extern const char STR_GF[];
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
 extern const char STR_MULTI_CUSTOM[];
 extern const char STR_MULTI_FIXEDID[];
 extern const char STR_MULTI_OPTION[];

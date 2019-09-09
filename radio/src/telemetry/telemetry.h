@@ -23,7 +23,7 @@
 
 #include "frsky.h"
 #include "crossfire.h"
-#if defined(MULTIMODULE)
+#if defined(MULTI)
   #include "spektrum.h"
   #include "flysky_ibus.h"
   #include "multi.h"
@@ -49,7 +49,7 @@ constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
 #define TELEMETRY_SERIAL_8E2           1
 #define TELEMETRY_SERIAL_WITHOUT_DMA   2
 
-#if defined(CROSSFIRE) || defined(MULTIMODULE)
+#if defined(CROSSFIRE) || defined(MULTI)
 #define TELEMETRY_RX_PACKET_SIZE       128
 // multi module Spektrum telemetry is 18 bytes, FlySky is 37 bytes
 #else
@@ -102,9 +102,9 @@ void frskyDSetDefault(int index, uint16_t id);
 
 extern uint8_t telemetryProtocol;
 
-#if defined (MULTIMODULE)
+#if defined (MULTI)
 #define IS_D16_MULTI()                 ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
-#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && IS_D16_MULTI()))
+#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTI && IS_D16_MULTI()))
 #else
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT)
 #endif
@@ -122,9 +122,9 @@ inline uint8_t modelTelemetryProtocol()
     return g_model.telemetryProtocol;
   }
 
-#if defined(MULTIMODULE)
-  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
-    return PROTOCOL_TELEMETRY_MULTIMODULE;
+#if defined(MULTI)
+  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTI) {
+    return PROTOCOL_TELEMETRY_MULTI;
   }
 #endif
 

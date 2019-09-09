@@ -279,14 +279,14 @@ void extmoduleSendNextFrame()
       break;
 #endif
 
-#if defined(SBUS) || defined(DSM2) || defined(MULTIMODULE)
+#if defined(SBUS) || defined(DSM2) || defined(MULTI)
     case PROTOCOL_CHANNELS_SBUS:
       EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? 0 : EXTMODULE_TIMER_OUTPUT_POLARITY); // reverse polarity for Sbus if needed
       // no break
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-    case PROTOCOL_CHANNELS_MULTIMODULE:
+    case PROTOCOL_CHANNELS_MULTI:
       EXTMODULE_TIMER->CCR2 = *(extmodulePulsesData.dsm2.ptr - 1) - 4000; // 2mS in advance
       EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;

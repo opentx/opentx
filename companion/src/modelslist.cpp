@@ -725,7 +725,7 @@ void TreeModel::refresh()
       for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
         protocol = model.moduleData[j].protocol;
         // These are the only RXs that allow nominating RX # but changing RX or copying models can leave residual configuration which can cause issues
-        // if (protocol == PULSES_PXX_XJT_X16 || protocol == PULSES_PXX_XJT_LR12 || protocol == PULSES_PXX_R9M || protocol == PULSES_DSMX || protocol == PULSES_MULTIMODULE) {
+        // if (protocol == PULSES_PXX_XJT_X16 || protocol == PULSES_PXX_XJT_LR12 || protocol == PULSES_PXX_R9M || protocol == PULSES_DSMX || protocol == PULSES_MULTI) {
         if (protocol != PULSES_OFF && model.moduleData[j].modelId > 0) {
           if (!rxs.isEmpty()) {
             rxs.append(", ");

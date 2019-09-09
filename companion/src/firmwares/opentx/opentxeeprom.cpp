@@ -104,7 +104,7 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
 
   if (IS_HORUS(board))
     return 32;
-  
+
   if (version >= 219 && IS_TARANIS_X9D(board))
     return 32;
 
@@ -301,7 +301,7 @@ class SourcesConversionTable: public ConversionTable {
         int offset = 0;
         if (version <= 218 && IS_HORUS_X10(board) && i >= CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version))
           offset += 2;
-          
+
         addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
       }
 
@@ -2036,7 +2036,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       bool select(const unsigned int & attr) const override
       {
-        return attr == PULSES_MULTIMODULE;
+        return attr == PULSES_MULTI;
       }
 
       void beforeExport() override
@@ -2212,7 +2212,7 @@ class ModuleField: public TransformedField {
         module.protocol += module.rfProtocol;
       }
     }
-  
+
   private:
     StructField              internalField;
     ModuleData&              module;
@@ -2690,7 +2690,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new ArmCustomFunctionField(this, generalData.customFn[i], board, version, variant));
     }
   }
-  
+
   if (IS_STM32(board)) {
     if (version >= 218) {
       internalField.Append(new UnsignedField<4>(this, generalData.auxSerialMode));
@@ -2728,13 +2728,13 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       // 2 new pots for Horus from 219 on
       if (version <= 218 && IS_HORUS(board) && (i >= 3))
         offset += 2;
-      
+
       if (i < MAX_POTS_STORAGE(board, version))
         internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i+offset]));
       else
         internalField.Append(new SpareBitsField<2>(this));
     }
-    
+
     if (IS_HORUS(board) && version >= 219) {
       for (int i=0; i<SLIDERS_CONFIG_SIZE(board,version); i++) {
         if (i < MAX_SLIDERS_STORAGE(board, version))
@@ -2742,8 +2742,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         else
           internalField.Append(new SpareBitsField<1>(this));
       }
-    }    
-    
+    }
+
     if (!IS_HORUS(board)) {
       internalField.Append(new UnsignedField<8>(this, generalData.backlightColor));
     }

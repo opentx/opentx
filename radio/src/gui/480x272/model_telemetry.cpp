@@ -134,7 +134,7 @@ bool menuModelTelemetry(event_t event)
         lcdDrawText(TELEM_COL2, y, "---"); // TODO shortcut
       }
       TelemetrySensor * sensor = & g_model.telemetrySensors[index];
-#if defined(MULTIMODULE)
+#if defined(MULTI)
       if (IS_SPEKTRUM_PROTOCOL()) {
           // Spektrum does not (yet?) really support multiple sensor of the same type. But a lot of
           // different sensor display the same information (e.g. voltage, capacity). Show the id
@@ -216,9 +216,9 @@ bool menuModelTelemetry(event_t event)
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
-#if defined(MULTIMODULE)
+#if defined(MULTI)
         if (!IS_INTERNAL_MODULE_ON() &&
-          g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE  &&
+          g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTI  &&
           g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
           lcdDrawText(MENUS_MARGIN_LEFT, y, "RSNR");
         else

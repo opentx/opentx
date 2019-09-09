@@ -25,16 +25,16 @@
 #include "definitions.h"
 #include "opentx_helpers.h"
 #include "telemetry/telemetry.h"
-#if defined(MULTIMODULE)
+#if defined(MULTI)
 #include "telemetry/multi.h"
 #endif
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
 inline bool isModuleMultimodule(uint8_t idx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE;
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTI;
 }
 
 inline bool isModuleMultimoduleDSM2(uint8_t idx)
@@ -349,7 +349,7 @@ inline bool isModuleFailsafeAvailable(uint8_t idx)
   if (isModuleXJT(idx))
     return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
   if (isModuleMultimodule(idx))
     return multiModuleStatus.isValid() && multiModuleStatus.supportsFailsafe();
 #endif
@@ -370,7 +370,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
   if (isModuleDSM2(idx))
     return 20;
 
-#if defined(MULTIMODULE)
+#if defined(MULTI)
   if (isModuleMultimodule(idx))
     return g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_OLRS ? 4 : 15;
 #endif

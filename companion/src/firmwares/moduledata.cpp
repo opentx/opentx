@@ -61,7 +61,7 @@ bool ModuleData::isPxx1Module() const
 QString ModuleData::rfProtocolToString() const
 {
   switch (protocol) {
-    case PULSES_MULTIMODULE:
+    case PULSES_MULTI:
       return Multiprotocols::protocolToString((int)multi.rfProtocol, multi.customProto);
 
     default:
@@ -82,7 +82,7 @@ QString ModuleData::subTypeToString(int type) const
     type = subType;
 
   switch (protocol) {
-    case PULSES_MULTIMODULE:
+    case PULSES_MULTI:
       return Multiprotocols::subTypeToString(multi.customProto ? MM_RF_CUSTOM_SELECTED : (int)multi.rfProtocol, (unsigned)type);
 
     case PULSES_PXX_R9M:

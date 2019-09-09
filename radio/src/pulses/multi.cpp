@@ -35,20 +35,29 @@ static void sendFrameProtocolHeader(uint8_t port, bool failsafe);
 
 void sendChannels(uint8_t port);
 
-static void sendSetupFrame()
+static void sendMulti(uint8_t port, uint8_t b)
+{
+  if (port == INTERNAL_MODULE) {
+    intmodulePulsesData.multi.sendByte(b);
+  }
+  else
+    sendByteSbus(b);
+}
+
+static void sendSetupFrame(uint8_t port)
 {
   // Old multi firmware will mark config messsages as invalid frame and throw them away
-  sendByteSbus('M');
-  sendByteSbus('P');
-  sendByteSbus(0x80);           // Module Configuration
-  sendByteSbus(1);              // 1 byte data
+  sendMulti(port, 'M');
+  sendMulti(port, 'P');
+  sendMulti(port, 0x80);           // Module Configuration
+  sendMulti(port, 1);              // 1 byte data
   uint8_t config = 0x01 | 0x02; // inversion + multi_telemetry
 #if !defined(PPM_PIN_SERIAL)
   // TODO why PPM_PIN_SERIAL would change MULTI protocol?
   config |= 0x04;               // input synchronsisation
 #endif
 
-  sendByteSbus(config);
+  sendMulti(port, config);
 }
 
 static void sendFailsafeChannels(uint8_t port)
@@ -79,17 +88,35 @@ static void sendFailsafeChannels(uint8_t port)
     bits |= pulseValue << bitsavailable;
     bitsavailable += MULTI_CHAN_BITS;
     while (bitsavailable >= 8) {
-      sendByteSbus((uint8_t) (bits & 0xff));
+      sendMulti(port, (uint8_t) (bits & 0xff));
       bits >>= 8;
       bitsavailable -= 8;
     }
   }
 }
 
-void setupPulsesMultimodule()
+void setupPulsesMulti(uint8_t port)
 {
-  static int counter = 0;
+  static int counter[2] = {0,0}; //TODO
 
+  // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
+  counter[port]++;
+  if (counter[port] % 1000 == 500) {
+    sendSetupFrame(port);
+  }
+  else if (counter[port] % 1000 == 0 && g_model.moduleData[port].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
+    sendFrameProtocolHeader(port, true);
+    sendFailsafeChannels(port);
+  }
+  else {
+    // Normal Frame
+    sendFrameProtocolHeader(port, false);
+    sendChannels(port);
+  }
+}
+
+void setupPulsesMultiExternalModule()
+{
 #if defined(PPM_PIN_SERIAL)
   extmodulePulsesData.dsm2.serialByte = 0 ;
   extmodulePulsesData.dsm2.serialBitCount = 0 ;
@@ -100,24 +127,15 @@ void setupPulsesMultimodule()
 
   extmodulePulsesData.dsm2.ptr = extmodulePulsesData.dsm2.pulses;
 
-  // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
-  counter++;
-  if (counter % 1000 == 500) {
-    sendSetupFrame();
-  }
-  else if (counter % 1000 == 0 && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_RECEIVER) {
-    sendFrameProtocolHeader(EXTERNAL_MODULE, true);
-    sendFailsafeChannels(EXTERNAL_MODULE);
-  }
-  else {
-    // Normal Frame
-    sendFrameProtocolHeader(EXTERNAL_MODULE, false);
-    sendChannels(EXTERNAL_MODULE);
-  }
-
+  setupPulsesMulti(EXTERNAL_MODULE);
   putDsm2Flush();
 }
 
+void setupPulsesMultiInternalModule()
+{
+  intmodulePulsesData.multi.initFrame();
+  setupPulsesMulti(INTERNAL_MODULE);
+}
 
 void sendChannels(uint8_t port)
 {
@@ -138,7 +156,7 @@ void sendChannels(uint8_t port)
     bits |= value << bitsavailable;
     bitsavailable += MULTI_CHAN_BITS;
     while (bitsavailable >= 8) {
-      sendByteSbus((uint8_t) (bits & 0xff));
+      sendMulti(port, (uint8_t) (bits & 0xff));
       bits >>= 8;
       bitsavailable -= 8;
     }
@@ -154,6 +172,13 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
   int8_t optionValue = g_model.moduleData[port].multi.optionValue;
 
   uint8_t protoByte = 0;
+  if (moduleState[port].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+    sendMulti(port, (uint8_t) 0x54);  // Header byte
+    sendMulti(port, (uint8_t) 54);    // Spectrum custom protocol
+    sendMulti(port, (uint8_t) 0);
+    sendMulti(port, (uint8_t) 0);
+    return;
+  }
   if (moduleState[port].mode == MODULE_MODE_BIND)
     protoByte |= MULTI_SEND_BIND;
   else if (moduleState[port].mode ==  MODULE_MODE_RANGECHECK)
@@ -216,11 +241,11 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
   if (failsafe)
     headerByte = 0x56;
 
-    // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
+  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
   if (type <= 31)
-    sendByteSbus(headerByte+1);
+    sendMulti(port, headerByte+1);
   else
-    sendByteSbus(headerByte);
+    sendMulti(port, headerByte);
 
 
   // protocol byte
@@ -228,14 +253,14 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
   if (g_model.moduleData[port].getMultiProtocol(true) != MODULE_SUBTYPE_MULTI_DSM2)
     protoByte |= (g_model.moduleData[port].multi.autoBindMode << 6);
 
-  sendByteSbus(protoByte);
+  sendMulti(port, protoByte);
 
   // byte 2, subtype, powermode, model id
-  sendByteSbus((uint8_t) ((g_model.header.modelId[port] & 0x0f)
-                           | ((subtype & 0x7) << 4)
-                           | (g_model.moduleData[port].multi.lowPowerMode << 7))
+  sendMulti(port, (uint8_t) ((g_model.header.modelId[port] & 0x0f)
+                             | ((subtype & 0x7) << 4)
+                             | (g_model.moduleData[port].multi.lowPowerMode << 7))
   );
 
   // byte 3
-  sendByteSbus((uint8_t) optionValue);
+  sendMulti(port, (uint8_t) optionValue);
 }

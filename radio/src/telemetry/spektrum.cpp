@@ -373,7 +373,7 @@ void processSpektrumPacket(const uint8_t *packet)
 void processDSMBindPacket(const uint8_t *packet)
 {
   uint32_t debugval;
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTI && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2
     && g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode) {
 
     int channels = packet[5];
@@ -400,7 +400,7 @@ void processDSMBindPacket(const uint8_t *packet)
   setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 4, 0, 0, debugval, UNIT_RAW, 0);
 
   /* Finally stop binding as the rx just told us that it is bound */
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2 && moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTI && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2 && moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
     multiBindStatus=MULTI_BIND_FINISHED;
   }
 }

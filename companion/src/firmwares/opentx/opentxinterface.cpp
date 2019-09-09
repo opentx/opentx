@@ -779,7 +779,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           default:
             return false;
         }
-        
+
       case 1:
         switch (proto) {
           case PULSES_OFF:
@@ -794,7 +794,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_DSM2:
           case PULSES_DSMX:
           case PULSES_SBUS:
-          case PULSES_MULTIMODULE:
+          case PULSES_MULTI:
           case PULSES_CROSSFIRE:
             return true;
           case PULSES_ACCESS_R9M_LITE:
@@ -833,7 +833,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_DSM2:
           case PULSES_DSMX:
           case PULSES_SBUS:
-          case PULSES_MULTIMODULE:
+          case PULSES_MULTI:
             return true;
           default:
             return false;

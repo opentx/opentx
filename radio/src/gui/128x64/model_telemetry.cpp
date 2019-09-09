@@ -235,8 +235,8 @@ void menuModelTelemetry(event_t event)
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
-#if defined(MULTIMODULE)
-        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
+#if defined(MULTI)
+        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTI && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
           lcdDrawTextAlignedLeft(y, "RSNR");
         else
           lcdDrawTextAlignedLeft(y, "RSSI");

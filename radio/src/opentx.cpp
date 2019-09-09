@@ -1492,7 +1492,7 @@ void doMixerCalculations()
 #if defined(PXX) || defined(DSM2)
     static uint8_t countRangecheck = 0;
     for (uint8_t i=0; i<NUM_MODULES; ++i) {
-#if defined(MULTIMODULE)
+#if defined(MULTI)
       if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || multiModuleStatus.isBinding()) {
 #else
       if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST) {

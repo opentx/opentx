@@ -173,7 +173,7 @@ void TimerPanel::on_name_editingFinished()
 #define MASK_PPM_FIELDS     (1<<4)
 #define MASK_FAILSAFES      (1<<5)
 #define MASK_OPEN_DRAIN     (1<<6)
-#define MASK_MULTIMODULE    (1<<7)
+#define MASK_MULTI    (1<<7)
 #define MASK_ANTENNA        (1<<8)
 #define MASK_MULTIOPTION    (1<<9)
 #define MASK_R9M            (1<<10)
@@ -424,8 +424,8 @@ void ModulePanel::update()
         module.channelsCount = 16;
         mask |=  MASK_SBUSPPM_FIELDS| MASK_CHANNELS_RANGE;
         break;
-      case PULSES_MULTIMODULE:
-        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE | MASK_SUBTYPES;
+      case PULSES_MULTI:
+        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTI | MASK_SUBTYPES;
         max_rx_num = 15;
         if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
           mask |= MASK_CHANNELS_COUNT;
@@ -519,7 +519,7 @@ void ModulePanel::update()
     unsigned numEntries = 2;  // R9M FCC/EU
     unsigned i = 0;
     switch(protocol){
-    case PULSES_MULTIMODULE:
+    case PULSES_MULTI:
       numEntries = (module.multi.customProto ? 8 : pdef.numSubTypes());
       break;
     case PULSES_PXX_R9M:
@@ -538,14 +538,14 @@ void ModulePanel::update()
   }
 
   // Multi settings fields
-  ui->label_multiProtocol->setVisible(mask & MASK_MULTIMODULE);
-  ui->multiProtocol->setVisible(mask & MASK_MULTIMODULE);
+  ui->label_multiProtocol->setVisible(mask & MASK_MULTI);
+  ui->multiProtocol->setVisible(mask & MASK_MULTI);
   ui->label_option->setVisible(mask & MASK_MULTIOPTION);
   ui->optionValue->setVisible(mask & MASK_MULTIOPTION);
-  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
-  ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
+  ui->autoBind->setVisible(mask & MASK_MULTI);
+  ui->lowPower->setVisible(mask & MASK_MULTI);
 
-  if (mask & MASK_MULTIMODULE) {
+  if (mask & MASK_MULTI) {
     ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
     ui->autoBind->setChecked(module.multi.autoBindMode);
     ui->lowPower->setChecked(module.multi.lowPowerMode);

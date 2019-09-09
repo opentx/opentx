@@ -4,6 +4,7 @@ option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
 option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module replacement" OFF)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
+option(MULTI "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(AUTOUPDATE "Auto update internal chips from SD" OFF)
 
 if(PCB STREQUAL X9E)

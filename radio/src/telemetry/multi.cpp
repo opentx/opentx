@@ -25,6 +25,7 @@ MultiModuleStatus multiModuleStatus;
 MultiModuleSyncStatus multiSyncStatus;
 uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
 
+extern uint8_t g_moduleIdx;
 
 enum MultiPacketTypes : uint8_t {
   MultiStatus = 1,
@@ -35,7 +36,9 @@ enum MultiPacketTypes : uint8_t {
   FlyskyIBusTelemetry,
   ConfigCommand,
   InputSync,
-  FrskySportPolling
+  FrskySportPolling,
+  HitecTelemetry,
+  SpectrumScannerPacket
 };
 
 enum MultiBufferState : uint8_t {
@@ -53,9 +56,16 @@ enum MultiBufferState : uint8_t {
 
 MultiBufferState guessProtocol()
 {
-  if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_DSM2)
+  uint32_t port = EXTERNAL_MODULE;
+#if defined(INTERNAL_MODULE_MULTI)
+  if (isModuleMultimodule(INTERNAL_MODULE)) {
+    port = INTERNAL_MODULE;
+  }
+#endif
+
+  if (g_model.moduleData[port].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_DSM2)
     return SpektrumTelemetryFallback;
-  else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
+  else if (g_model.moduleData[port].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
     return FlyskyTelemetryFallback;
   else
     return FrskyTelemetryFallback;
@@ -96,6 +106,26 @@ static void processMultiSyncPacket(const uint8_t *data)
 #endif
 }
 
+static void processMultiScannerPacket(const uint8_t *data)
+{
+  uint8_t cur_channel = data[0];
+  if(moduleState[g_moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+    for (uint8_t channel = 0; channel <5; channel++) {
+      uint8_t power = max<int>(0,(data[channel+1] - 34) >> 1); // remove everything below -120dB
+      coord_t x = cur_channel*2;
+      if (x+1 < LCD_W) {
+        reusableBuffer.spectrumAnalyser.bars[x] = power;
+        reusableBuffer.spectrumAnalyser.bars[x+1] = power;
+        if (power > reusableBuffer.spectrumAnalyser.max[x]) {
+          reusableBuffer.spectrumAnalyser.max[x] = power;
+          reusableBuffer.spectrumAnalyser.max[x+1] = power;
+        }
+      }
+      if(++cur_channel > MULTI_SCANNER_MAX_CHANNEL)
+        cur_channel = 0;
+    }
+  }
+}
 
 static void processMultiTelemetryPaket(const uint8_t *packet)
 {
@@ -165,6 +195,13 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       break;
 #endif
 
+    case SpectrumScannerPacket:
+      if (len == 6)
+        processMultiScannerPacket(data);
+      else
+        TRACE("[MP] Received spectrum scanner len %d != 6", len);
+      break;
+
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);
       break;
@@ -217,7 +254,7 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
 
   // Calculate the time we intentionally were late/early
   if (inputLag > target*10 +30)
-   lagDifference += numsamples*500;
+    lagDifference += numsamples*500;
   else if (inputLag < target*10 - 30)
     lagDifference -= numsamples*500;
 
@@ -251,8 +288,8 @@ uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate() {
   counter = (uint8_t) (counter + 1 % 10);
   uint16_t rate = (uint16_t) ((adjustedRefreshRate + counter * 50) / 500);
   // Check how far off we are from our target, positive means we are too slow, negative we are too fast
- if (inputLag > target*10 +30)
-     return (uint16_t) (rate - 1);
+  if (inputLag > target*10 +30)
+    return (uint16_t) (rate - 1);
   else if (inputLag < target*10 - 30)
     return (uint16_t) (rate + 1);
   else
@@ -294,9 +331,11 @@ void MultiModuleStatus::getStatusString(char *statusText)
 {
   if (!isValid()) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
+#if !defined(INTERNAL_MODULE_MULTI)
     if (IS_INTERNAL_MODULE_ENABLED())
       strcpy(statusText, STR_DISABLE_INTERNAL);
     else
+#endif
 #endif
       strcpy(statusText, STR_MODULE_NO_TELEMETRY);
     return;
@@ -466,9 +505,6 @@ void processMultiTelemetryData(const uint8_t data)
         telemetryRxBufferCount =0;
         multiTelemetryBufferState = NoProtocolDetected;
       }
-
-
   }
-
 }
 

@@ -543,7 +543,7 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
     case MODULE_TYPE_SBUS:
     case MODULE_TYPE_PPM:
     case MODULE_TYPE_DSM2:
-    case MODULE_TYPE_MULTIMODULE:
+    case MODULE_TYPE_MULTI:
     case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_LITE_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
@@ -635,8 +635,8 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if !defined(MULTIMODULE)
-  if (moduleType == MODULE_TYPE_MULTIMODULE)
+#if !defined(MULTI)
+  if (moduleType == MODULE_TYPE_MULTI)
     return false;
 #endif
 
@@ -689,8 +689,8 @@ bool isTelemetryProtocolAvailable(int protocol)
     return false;
   }
 
-#if !defined(MULTIMODULE)
-  if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM || protocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS || protocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
+#if !defined(MULTI)
+  if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM || protocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS || protocol == PROTOCOL_TELEMETRY_MULTI) {
     return false;
   }
 #endif
@@ -763,7 +763,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   }
   return retval;
 }
-#if defined(MULTIMODULE)
+#if defined(MULTI)
 // Third row is number of subtypes -1 (max valid subtype)
 #define NO_SUBTYPE  nullptr
 
