@@ -52,7 +52,7 @@ enum MenuRadioIndexes
 {
   MENU_RADIO_SETUP,
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
-#if defined(LUA) || defined(PXX2)
+#if defined(LUA) || defined(PXX2) || defined(MULTI)
   MENU_RADIO_TOOLS,
 #endif
   MENU_RADIO_SPECIAL_FUNCTIONS,

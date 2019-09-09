@@ -37,10 +37,12 @@ void sendChannels(uint8_t port);
 
 static void sendMulti(uint8_t port, uint8_t b)
 {
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (port == INTERNAL_MODULE) {
     intmodulePulsesData.multi.sendByte(b);
   }
   else
+#endif
     sendByteSbus(b);
 }
 
@@ -133,8 +135,10 @@ void setupPulsesMultiExternalModule()
 
 void setupPulsesMultiInternalModule()
 {
+#if defined(HARDWARE_INTERNAL_MODULE)
   intmodulePulsesData.multi.initFrame();
   setupPulsesMulti(INTERNAL_MODULE);
+#endif
 }
 
 void sendChannels(uint8_t port)

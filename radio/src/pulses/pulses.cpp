@@ -306,7 +306,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
 
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-      intmoduleSerialStart(PXX2_HIGHSPEED_BAUDRATE, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
+      intmoduleSerialStart(PXX2_HIGHSPEED_BAUDRATE, true);
       break;
 #endif
 
