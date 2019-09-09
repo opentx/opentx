@@ -54,7 +54,7 @@ TEST(Conversions, ConversionX9DPFrom23)
   ASSERT_EQ(true, store.load(radioData));
 
   const GeneralSettings& settings = radioData.generalSettings;
-  EXPECT_EQ(8, settings.speakerVolume);
+  EXPECT_EQ(20, settings.speakerVolume);
   EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), settings.customFn[0].swtch);
   EXPECT_EQ(FuncLogs, settings.customFn[0].func);
   EXPECT_EQ(20, settings.customFn[0].param);
