@@ -153,6 +153,10 @@ void convertModelData_218_to_219(ModelData &model)
     memmove(&newModel.expoData[i], &oldModel.expoData[i], sizeof(ExpoData_v218));
     newModel.expoData[i].srcRaw = convertSource_218_to_219(newModel.expoData[i].srcRaw); // from newModel to avoid overwrite
     newModel.expoData[i].swtch = convertSwitch_218_to_219(newModel.expoData[i].swtch); // from newModel to avoid overwrite
+#if LCD_W == 212
+    newModel.expoData[i].offset = oldModel.expoData[i].offset; // 212x64: expo name has been reduced to 6 chars instead of 8
+    newModel.expoData[i].curve = oldModel.expoData[i].curve; // 212x64: expo name has been reduced to 6 chars instead of 8
+#endif
   }
 
   for (uint8_t i=0; i<MAX_CURVES_218; i++) {

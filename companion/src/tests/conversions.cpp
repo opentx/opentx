@@ -26,6 +26,12 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_EQ(80, model.mixData[0].weight);
   EXPECT_EQ(900, model.limitData[0].max); // -100
   EXPECT_EQ(80, model.expoData[0].weight);
+
+  EXPECT_EQ(CurveReference::CURVE_REF_CUSTOM, model.expoData[0].curve.type);
+  EXPECT_EQ(1, model.expoData[0].curve.value);
+  EXPECT_EQ(CurveReference::CURVE_REF_EXPO, model.expoData[1].curve.type);
+  EXPECT_EQ(20, model.expoData[1].curve.value);
+
   EXPECT_EQ(HELI_SWASH_TYPE_120X, model.swashRingData.type);
   EXPECT_EQ(10, model.flightModeData[0].gvars[0]);
   EXPECT_STREQ("Tes", model.gvarData[0].name);
@@ -48,6 +54,7 @@ TEST(Conversions, ConversionX9DPFrom23)
   ASSERT_EQ(true, store.load(radioData));
 
   const GeneralSettings& settings = radioData.generalSettings;
+  EXPECT_EQ(8, settings.speakerVolume);
   EXPECT_EQ(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), settings.customFn[0].swtch);
   EXPECT_EQ(FuncLogs, settings.customFn[0].func);
   EXPECT_EQ(20, settings.customFn[0].param);
