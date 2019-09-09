@@ -342,7 +342,7 @@ void menuMainViewChannelsMonitor(event_t event)
   return menuChannelsView(event);
 }
 
-void onMainViewMenu(const char *result)
+void onMainViewMenu(const char * result)
 {
   if (result == STR_RESET_TIMER1) {
     timerReset(0);
@@ -364,6 +364,7 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_START(onMainViewMenu);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -409,16 +410,6 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
-bool isMenuAvailable(int index)
-{
-  if (index == 4) {
-    return modelHasNotes();
-  }
-  else {
-    return true;
-  }
-}
-
 int getSwitchCount()
 {
   int count = 0;
@@ -435,7 +426,6 @@ void menuMainView(event_t event)
   static bool secondPage = false;
 
   switch(event) {
-
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
