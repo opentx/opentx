@@ -16,6 +16,7 @@ set_property(CACHE PPM_UNIT PROPERTY STRINGS US PERCENT_PREC1 PERCENT_PREC0)
 set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
 set(FONT "STD" CACHE STRING "Choose font : STD or SQT5")
 set_property(CACHE FONT PROPERTY STRINGS SQT5)
+set(POPUP_LEVEL 2 CACHE STRING "Popup level")
 
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -31,7 +32,7 @@ option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(SEMIHOSTING "Enable debugger semihosting" OFF)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
-option(WATCHDOG_DISABLED "Disable hardware Watchdog" OFF)
+option(WATCHDOG "Enable hardware Watchdog" ON)
 if(SDL_FOUND)
   option(SIMU_AUDIO "Enable simulator audio." ON)
 endif()
@@ -46,7 +47,10 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
-option(MODULE_R9M_FLEX_FW "Add R9M options for non certified firmwwares" OFF)
+option(MODULE_PROTOCOL_FCC "Add support for FCC modules" ON)
+option(MODULE_PROTOCOL_LBT "Add support for EU/LBT modules" ON)
+option(MODULE_PROTOCOL_FLEX "Add support for non certified FLEX modules" OFF)
+option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -229,8 +233,8 @@ if(JITTER_MEASURE)
   add_definitions(-DJITTER_MEASURE)
 endif()
 
-if(WATCHDOG_DISABLED)
-  add_definitions(-DWATCHDOG_DISABLED)
+if(WATCHDOG)
+  add_definitions(-DWATCHDOG)
 endif()
 
 if(SIMU_AUDIO)
@@ -308,13 +312,28 @@ if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
 endif()
 
-if(MODULE_R9M_FLEX_FW)
-  add_definitions(-DMODULE_R9M_FLEX_FW)
+if(MODULE_PROTOCOL_FCC)
+  add_definitions(-DMODULE_PROTOCOL_FCC)
+endif()
+
+if(MODULE_PROTOCOL_LBT)
+  add_definitions(-DMODULE_PROTOCOL_LBT)
+endif()
+
+if(MODULE_PROTOCOL_FLEX)
+  add_definitions(-DMODULE_PROTOCOL_FLEX)
+endif()
+
+if(MODULE_PROTOCOL_D8)
+  add_definitions(-DMODULE_PROTOCOL_D8)
 endif()
 
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
+  set(POPUP_LEVEL 3)
 endif()
+
+add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})
 
 set(SRC
   ${SRC}
@@ -325,7 +344,7 @@ set(SRC
   mixer.cpp
   stamp.cpp
   timers.cpp
-  trainer_input.cpp
+  trainer.cpp
   )
 
 if(GUI)
@@ -357,7 +376,7 @@ endforeach()
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 
 if(NOT MSVC)
-  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
+  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wno-address-of-packed-member -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
   if(WARNINGS_AS_ERRORS)
     set(WARNING_FLAGS "${WARNING_FLAGS} -Werror")
   endif(WARNINGS_AS_ERRORS)
@@ -415,7 +434,6 @@ if(NOT MSVC)
   set(OPT s)
 
   if(ARCH STREQUAL ARM)
-
     enable_language(ASM)
     set(CMAKE_C_COMPILER arm-none-eabi-gcc)
     set(CMAKE_CXX_COMPILER arm-none-eabi-g++)

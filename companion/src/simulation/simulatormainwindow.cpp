@@ -153,19 +153,12 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
 
 SimulatorMainWindow::~SimulatorMainWindow()
 {
-  if (m_telemetryDockWidget)
-    delete m_telemetryDockWidget;
-  if (m_trainerDockWidget)
-    delete m_trainerDockWidget;
-  if (m_outputsDockWidget)
-    delete m_outputsDockWidget;
-  if (m_simulatorDockWidget)
-    delete m_simulatorDockWidget;
-  else if (m_simulatorWidget)
-    delete m_simulatorWidget;
-  if (m_consoleDockWidget)
-    delete m_consoleDockWidget;
-
+  delete m_telemetryDockWidget;
+  delete m_trainerDockWidget;
+  delete m_outputsDockWidget;
+  delete m_simulatorDockWidget;
+  delete m_simulatorWidget;
+  delete m_consoleDockWidget;
   delete ui;
 
   if (m_simulator) {
@@ -293,7 +286,7 @@ void SimulatorMainWindow::createDockWidgets()
   if (!m_telemetryDockWidget) {
     SimulatorIcon icon("telemetry");
     m_telemetryDockWidget = new QDockWidget(tr("Telemetry Simulator"), this);
-    TelemetrySimulator * telem = new TelemetrySimulator(this, m_simulator);
+    auto * telem = new TelemetrySimulator(this, m_simulator);
     m_telemetryDockWidget->setWidget(telem);
     m_telemetryDockWidget->setObjectName("TELEMETRY_SIMULATOR");
     addTool(m_telemetryDockWidget, Qt::LeftDockWidgetArea, icon, QKeySequence(tr("F4")));
@@ -302,7 +295,7 @@ void SimulatorMainWindow::createDockWidgets()
   if (!m_trainerDockWidget) {
     SimulatorIcon icon("trainer");
     m_trainerDockWidget = new QDockWidget(tr("Trainer Simulator"), this);
-    TrainerSimulator * trainer = new TrainerSimulator(this, m_simulator);
+    auto * trainer = new TrainerSimulator(this, m_simulator);
     m_trainerDockWidget->setWidget(trainer);
     m_trainerDockWidget->setObjectName("TRAINER_SIMULATOR");
     addTool(m_trainerDockWidget, Qt::TopDockWidgetArea, icon, QKeySequence(tr("F5")));

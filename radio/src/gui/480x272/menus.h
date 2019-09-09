@@ -22,6 +22,7 @@
 #define _MENUS_H_
 
 #include "keys.h"
+#include "audio.h"
 
 #define MENU_COLUMN2_X         280
 #define MIXES_2ND_COLUMN       140
@@ -67,7 +68,8 @@ enum MenuIcons {
   ICON_OPENTX,
   ICON_RADIO,
   ICON_RADIO_SETUP,
-  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_SD_MANAGER,
+  ICON_RADIO_TOOLS,
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
   ICON_RADIO_HARDWARE,
@@ -105,6 +107,7 @@ enum MenuIcons {
   ICON_MONITOR_CHANNELS3,
   ICON_MONITOR_CHANNELS4,
   ICON_MONITOR_LOGICAL_SWITCHES,
+  ICON_RADIO_SPECTRUM_ANALYSER,
   MENUS_ICONS_COUNT
 };
 
@@ -122,7 +125,7 @@ enum EnumTabModel {
 #if defined(LUA_MODEL_SCRIPTS)
   MENU_MODEL_CUSTOM_SCRIPTS,
 #endif
-  CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
+  MENU_MODEL_TELEMETRY,
   MENU_MODEL_PAGES_COUNT
 };
 
@@ -165,8 +168,6 @@ const uint8_t MONITOR_ICONS[] = {
 
 bool menuModelSetup(event_t event);
 bool menuModelFailsafe(event_t event);
-bool menuModelModuleOptions(event_t event);
-bool menuModelReceiverOptions(event_t event);
 bool menuModelHeli(event_t event);
 bool menuModelFlightModesAll(event_t event);
 bool menuModelExposAll(event_t event);
@@ -178,16 +179,18 @@ bool menuModelGVars(event_t event);
 bool menuModelLogicalSwitches(event_t event);
 bool menuModelSpecialFunctions(event_t event);
 bool menuModelCustomScripts(event_t event);
-bool menuModelTelemetryFrsky(event_t event);
+bool menuModelTelemetry(event_t event);
 bool menuModelSensor(event_t event);
 bool menuModelExpoOne(event_t event);
+bool menuModelModuleOptions(event_t event);
+bool menuModelReceiverOptions(event_t event);
 
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 
 enum EnumTabRadio {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
-#if defined(PXX2)
+#if defined(LUA) || defined(PXX2)
   MENU_RADIO_TOOLS,
 #endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
@@ -200,9 +203,9 @@ enum EnumTabRadio {
 const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
   ICON_RADIO,
   ICON_RADIO_SETUP,
-  ICON_RADIO_SD_BROWSER,
-#if defined(PXX2)
-  ICON_RADIO_SETUP,
+  ICON_RADIO_SD_MANAGER,
+#if defined(LUA) || defined(PXX2)
+  ICON_RADIO_TOOLS,
 #endif
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
@@ -218,6 +221,8 @@ bool menuRadioTrainer(event_t event);
 bool menuRadioVersion(event_t event);
 bool menuRadioHardware(event_t event);
 bool menuRadioCalibration(event_t event);
+bool menuRadioSpectrumAnalyser(event_t event);
+bool menuRadioPowerMeter(event_t event);
 
 extern const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT];
 
@@ -271,10 +276,6 @@ bool menuAboutView(event_t event);
 bool menuMainViewChannelsMonitor(event_t event);
 bool menuTextView(event_t event);
 bool menuScreensTheme(event_t event);
-bool menuRadioSpectrumAnalyser(event_t event);
-bool menuRadioPowerMeter(event_t event);
-
-typedef uint16_t FlightModesType;
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
@@ -293,10 +294,7 @@ extern int8_t s_editMode;       // global editmode
 #define NO_DBLKEYS                     0x80
 
 // mawrow special values
-#define READONLY_ROW                   ((uint8_t)-1)
-#define TITLE_ROW                      READONLY_ROW
-#define ORPHAN_ROW                     ((uint8_t)-2)
-#define HIDDEN_ROW                     ((uint8_t)-3)
+#define ORPHAN_ROW                     ((uint8_t)-3)
 #define NAVIGATION_LINE_BY_LINE        0x40
 #define CURSOR_ON_LINE()               (menuHorizontalPosition<0)
 
@@ -334,7 +332,7 @@ extern const CheckIncDecStops &stopsSwitch;
   (val), (val+1)
 
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
-swsrc_t checkIncDecMovedSwitch(swsrc_t val);
+
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
@@ -442,11 +440,15 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
 
 extern uint8_t s_curveChan;
 
-#define WARNING_TYPE_ALERT     0
-#define WARNING_TYPE_ASTERISK  1
-#define WARNING_TYPE_CONFIRM   2
-#define WARNING_TYPE_INPUT     3
-#define WARNING_TYPE_INFO      4
+enum
+{
+  WARNING_TYPE_WAIT,
+  WARNING_TYPE_INFO,
+  WARNING_TYPE_ASTERISK,
+  WARNING_TYPE_CONFIRM,
+  WARNING_TYPE_INPUT,
+  WARNING_TYPE_ALERT
+};
 
 extern const char * warningText;
 extern const char * warningInfoText;
@@ -484,23 +486,20 @@ void insertMix(uint8_t idx);
 #define WARNING_INFOLINE_Y     (WARNING_LINE_Y+68)
 
 void copySelection(char * dst, const char * src, uint8_t size);
-
+void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h);
 void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
 
-extern void (* popupFunc)(event_t event);
+typedef void (* PopupFunc)(event_t event);
+extern PopupFunc popupFunc;
+
 extern uint8_t warningInfoFlags;
 
-#define DISPLAY_WARNING                (*popupFunc)
+inline void DISPLAY_WARNING(event_t event)
+{
+  (*popupFunc)(event);
+}
 
-#define POPUP_INFORMATION(s)           (warningText = s, warningType = WARNING_TYPE_INFO, warningInfoText = 0, popupFunc = runPopupWarning)
-#define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
-#define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)
-#define SET_WARNING_INFO(info, len, flags)    (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
-
-#define POPUP_MENU_ADD_ITEM(s)         do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuItemsCount < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuItemsCount++] = s; } while (0)
-#define POPUP_MENU_SELECT_ITEM(s)      popupMenuSelectedItem =  (s > 0 ? (s < popupMenuItemsCount ? s : popupMenuItemsCount - 1) : 0)
-#define POPUP_MENU_START(func)         do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while(0)
 #define POPUP_MENU_MAX_LINES           12
 #define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
@@ -515,9 +514,79 @@ enum {
 extern uint8_t popupMenuOffsetType;
 extern uint8_t popupMenuSelectedItem;
 const char * runPopupMenu(event_t event);
-extern void (*popupMenuHandler)(const char * result);
 
-inline void POPUP_CONFIRMATION(const char *s, void (* confirmHandler)(const char *) = nullptr)
+typedef void (* PopupMenuHandler)(const char * result);
+extern PopupMenuHandler popupMenuHandler;
+
+inline void POPUP_INPUT(const char * s, PopupFunc func)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_INPUT;
+  popupFunc = func;
+}
+
+inline void SET_WARNING_INFO(const char * info, uint8_t length, uint8_t flags)
+{
+  warningInfoText = info;
+  warningInfoLength = length;
+  warningInfoFlags = flags;
+}
+
+inline void POPUP_MENU_ADD_ITEM(const char * s)
+{
+  popupMenuOffsetType = MENU_OFFSET_INTERNAL;
+  if (popupMenuItemsCount < POPUP_MENU_MAX_LINES)
+    popupMenuItems[popupMenuItemsCount++] = s;
+}
+
+inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
+{
+  popupMenuSelectedItem =  (index > 0 ? (index < popupMenuItemsCount ? index : popupMenuItemsCount - 1) : 0);
+}
+
+inline void POPUP_MENU_START(PopupMenuHandler handler)
+{
+  if (handler != popupMenuHandler) {
+    killAllEvents();
+    AUDIO_KEY_PRESS();
+    popupMenuHandler = handler;
+  }
+}
+
+inline void CLEAR_POPUP()
+{
+  warningText = nullptr;
+}
+
+inline void POPUP_WAIT(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_WAIT;
+  popupFunc = runPopupWarning;
+}
+
+inline void POPUP_INFORMATION(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_INFO;
+  popupFunc = runPopupWarning;
+}
+
+inline void POPUP_WARNING(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_ASTERISK;
+  popupFunc = runPopupWarning;
+}
+
+typedef void (* PopupMenuHandler)(const char * result);
+extern PopupMenuHandler popupMenuHandler;
+
+inline void POPUP_CONFIRMATION(const char *s, PopupMenuHandler confirmHandler)
 {
   warningText = s;
   warningType = WARNING_TYPE_CONFIRM;
@@ -526,13 +595,9 @@ inline void POPUP_CONFIRMATION(const char *s, void (* confirmHandler)(const char
   popupMenuHandler = confirmHandler;
 }
 
-#define TEXT_FILENAME_MAXLEN           40
-extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void pushMenuTextView(const char * filename);
 void pushModelNotes();
 void readModelNotes();
-
-#define LABEL(...)                     (uint8_t)-1
 
 #define CURSOR_MOVED_LEFT(event)       (event==EVT_ROTARY_LEFT || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (event==EVT_ROTARY_RIGHT || EVT_KEY_MASK(event) == KEY_RIGHT)

@@ -26,6 +26,7 @@ extern const uint8_t LBM_DOT[];
 
 // Main view icons
 extern const uint8_t LBM_TOPMENU_USB[];
+extern const uint8_t LBM_TOPMENU_ANTENNA[];
 extern const uint8_t LBM_TOPMENU_VOLUME_0[];
 extern const uint8_t LBM_TOPMENU_VOLUME_1[];
 extern const uint8_t LBM_TOPMENU_VOLUME_2[];

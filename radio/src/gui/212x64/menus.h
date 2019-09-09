@@ -22,26 +22,7 @@
 #define _MENUS_H_
 
 #include "keys.h"
-
-typedef int8_t   horzpos_t;
-typedef uint16_t vertpos_t;
-
-typedef void (*MenuHandlerFunc)(event_t event);
-
-extern tmr10ms_t menuEntryTime;
-extern vertpos_t menuVerticalPosition;
-extern horzpos_t menuHorizontalPosition;
-extern vertpos_t menuVerticalOffset;
-extern uint8_t menuCalibrationState;
-
-extern MenuHandlerFunc menuHandlers[5];
-extern uint8_t menuVerticalPositions[4];
-extern uint8_t menuLevel;
-extern uint8_t menuEvent;
-
-void chainMenu(MenuHandlerFunc newMenu);
-void pushMenu(MenuHandlerFunc newMenu);
-void popMenu();
+#include "common/stdlcd/menus.h"
 
 inline bool isRadioMenuDisplayed()
 {
@@ -54,7 +35,6 @@ inline bool isModelMenuDisplayed()
 }
 
 void onMainViewMenu(const char * result);
-
 void menuFirstCalib(event_t event);
 void menuMainViewChannelsMonitor(event_t event);
 void menuChannelsView(event_t event);
@@ -66,6 +46,7 @@ void menuStatisticsView(event_t event);
 void menuStatisticsDebug(event_t event);
 void menuStatisticsDebug2(event_t event);
 void menuAboutView(event_t event);
+
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(event_t event);
 #endif
@@ -73,7 +54,7 @@ void menuTraceBuffer(event_t event);
 enum MenuRadioIndexes {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
-#if defined(PXX2)
+#if defined(LUA) || defined(PXX2)
   MENU_RADIO_TOOLS,
 #endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
@@ -113,7 +94,7 @@ enum MenuModelIndexes {
 #if defined(LUA_MODEL_SCRIPTS)
   MENU_MODEL_CUSTOM_SCRIPTS,
 #endif
-  MENU_MODEL_TELEMETRY_FRSKY,
+  MENU_MODEL_TELEMETRY,
   MENU_MODEL_DISPLAY,
   MENU_MODEL_PAGES_COUNT
 };
@@ -136,7 +117,7 @@ void menuModelGVars(event_t event);
 void menuModelLogicalSwitches(event_t event);
 void menuModelSpecialFunctions(event_t event);
 void menuModelCustomScripts(event_t event);
-void menuModelTelemetryFrsky(event_t event);
+void menuModelTelemetry(event_t event);
 void menuModelSensor(event_t event);
 void menuModelDisplay(event_t event);
 

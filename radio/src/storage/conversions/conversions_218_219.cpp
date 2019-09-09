@@ -35,14 +35,31 @@ typedef ModelData ModelData_v219;
 int convertSource_218_to_219(int source)
 {
   // on X7: 2 additional switches
+  // on X9D / X9D+: 1 additional switch
+  // on xlite : 2 more storage switches
+
+#if defined(PCBXLITE)
+  if (source >= MIXSRC_SE)
+    source += 2;
+#endif
 
 #if defined(PCBX7)
   if (source >= MIXSRC_SI)
     source += 2;
 #endif
 
+#if defined(PCBX9D) || defined(PCBX9DP)
+  if (source >= MIXSRC_SI)
+    source += 1;
+#endif
+
 #if defined(PCBHORUS)
-  if (source >= MIXSRC_GMBL)
+  if (source >= MIXSRC_SI)
+    source += 2;
+#endif
+
+#if defined(PCBX10)
+  if (source == MIXSRC_EXT1 || source == MIXSRC_EXT2)
     source += 2;
 #endif
 
@@ -52,10 +69,17 @@ int convertSource_218_to_219(int source)
 int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
-
-#if defined(PCBX7) || defined(PCBHORUS)
+  // on X9D / X9D+: 1 additional switch
+  // on XLite: 2 additional storage switches
+  // on X10: 2 additional pots => 12 multipos switches
+#if defined(PCBX7) || defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBXLITE)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
+#endif
+
+#if defined(PCBXLITE)
+  if (swtch >= SWSRC_SE0)
+    swtch += 2 * 3;
 #endif
 
 #if defined(PCBX7)
@@ -63,9 +87,17 @@ int convertSwitch_218_to_219(int swtch)
     swtch += 2 * 3;
 #endif
 
+#if defined(PCBX9D) || defined(PCBX9DP)
+  if (swtch >= SWSRC_SI0)
+    swtch += 3;
+#endif
+
 #if defined(PCBHORUS)
-  if (swtch >= SWSRC_GMBL0)
+  if (swtch >= SWSRC_SI0)
     swtch += 2 * 3;
+#endif
+
+#if defined(PCBX10)
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH + 3 * XPOTS_MULTIPOS_COUNT)
     swtch += 2 * XPOTS_MULTIPOS_COUNT;
 #endif
@@ -87,11 +119,25 @@ void convertModelData_218_to_219(ModelData &model)
   memcpy(&oldModel, &model, sizeof(ModelData_v218));
   ModelData_v219 & newModel = (ModelData_v219 &) model;
 
+#if defined(PCBHORUS)
+  // 4 bytes more for the ModelHeader::bitmap
+  memclear(&newModel.header.bitmap[10], 4);
+  memcpy(newModel.timers, oldModel.timers, offsetof(ModelData_v218, mixData) - offsetof(ModelData_v218, timers));
+#endif
+
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));
 
   char name[LEN_MODEL_NAME+1];
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
   TRACE("Model %s conversion from v218 to v219", name);
+
+  for (uint8_t i=0; i<MAX_TIMERS_218; i++) {
+    TimerData & timer = newModel.timers[i];
+    if (timer.mode >= TMRMODE_COUNT)
+      timer.mode = TMRMODE_COUNT + convertSwitch_218_to_219(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
+    else if (timer.mode < 0)
+      timer.mode = convertSwitch_218_to_219(oldModel.timers[i].mode);
+  }
 
   for (uint8_t i=0; i<MAX_MIXERS_218; i++) {
     memmove(&newModel.mixData[i], &oldModel.mixData[i], sizeof(MixData_v218));
@@ -123,9 +169,9 @@ void convertModelData_218_to_219(ModelData &model)
     uint8_t cstate = lswFamily(sw.func);
     if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       LogicalSwitchData & sw = newModel.logicalSw[i];
-      sw.v1 = convertSource_218_to_219((uint8_t)sw.v1);
+      sw.v1 = convertSource_218_to_219(sw.v1);
       if (cstate == LS_FAMILY_COMP) {
-        sw.v2 = convertSource_218_to_219((uint8_t)sw.v2);
+        sw.v2 = convertSource_218_to_219(sw.v2);
       }
     }
     else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
@@ -135,6 +181,7 @@ void convertModelData_218_to_219(ModelData &model)
     else if (cstate == LS_FAMILY_EDGE) {
       sw.v1 = convertSwitch_218_to_219(sw.v1);
     }
+    sw.andsw = convertSwitch_218_to_219(sw.andsw);
   }
 
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
@@ -150,9 +197,15 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_FLIGHT_MODES_218; i++) {
     memmove(&newModel.flightModeData[i], &oldModel.flightModeData[i], sizeof(FlightModeData_v218));
+    FlightModeData & sw = newModel.flightModeData[i];
+    sw.swtch = convertSwitch_218_to_219(sw.swtch);
   }
 
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
+#if defined(PCBX10)
+  if (newModel.thrTraceSrc > 3) // 0=Thr, 1/2/3=Old 3 Pots, then Sliders
+    newModel.thrTraceSrc += 2;
+#endif
   newModel.switchWarningState = oldModel.switchWarningState;
 #if !defined(COLORLCD)
   newModel.switchWarningEnable = oldModel.switchWarningEnable;
@@ -180,11 +233,24 @@ void convertModelData_218_to_219(ModelData &model)
   for (int i=0; i<NUM_MODULES; i++) {
     memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], 4);
     memcpy(((uint8_t *)&newModel.moduleData[i]) + 4, ((uint8_t *)&oldModel.moduleData[i]) + 64 + 4, 2);
-    if (newModel.moduleData[i].type >= MODULE_TYPE_ACCESS_ISRM)
+    if (newModel.moduleData[i].type >= MODULE_TYPE_ISRM_PXX2)
       newModel.moduleData[i].type += 1;
-    if (newModel.moduleData[i].type >= MODULE_TYPE_ACCESS_R9M)
+    if (newModel.moduleData[i].type >= MODULE_TYPE_R9M_PXX2)
       newModel.moduleData[i].type += 4;
+    if (newModel.moduleData[i].type == MODULE_TYPE_XJT_PXX1) {
+      newModel.moduleData[i].subType = newModel.moduleData[i].rfProtocol;
+#if defined(PCBX9DP) && PCBREV >= 2019
+      if (i == INTERNAL_MODULE) {
+        newModel.moduleData[i].type = MODULE_TYPE_ISRM_PXX2;
+        newModel.moduleData[i].subType = MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16;
+      }
+#endif
+    }
   }
+
+#if defined(RADIO_T12)
+  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE; // Early t12 firmware had unused INT settings that need to be cleared
+#endif
 
   for (uint8_t module=0; module<2; module++) {
     if (oldModel.moduleData[module].failsafeMode == FAILSAFE_CUSTOM) {
@@ -215,7 +281,12 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
   for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
-    memmove(&newModel.telemetrySensors[i], &oldModel.telemetrySensors[i], 7);
+    newModel.telemetrySensors[i].id = oldModel.telemetrySensors[i].id;
+    if (oldModel.telemetrySensors[i].type == 0 && (oldModel.moduleData[0].type ==  MODULE_TYPE_XJT_PXX1 || oldModel.moduleData[1].type == MODULE_TYPE_XJT_PXX1))
+      newModel.telemetrySensors[i].instance = 0xE0 + (oldModel.telemetrySensors[i].instance & 0x1F) - 1;
+    else
+      newModel.telemetrySensors[i].instance = oldModel.telemetrySensors[i].instance;
+    memcpy(newModel.telemetrySensors[i].label, oldModel.telemetrySensors[i].label, TELEM_LABEL_LEN); // id + instance + label
     newModel.telemetrySensors[i].subId = oldModel.telemetrySensors[i].subId;
     newModel.telemetrySensors[i].type = oldModel.telemetrySensors[i].type;
     newModel.telemetrySensors[i].unit = oldModel.telemetrySensors[i].unit;
@@ -227,7 +298,7 @@ void convertModelData_218_to_219(ModelData &model)
     newModel.telemetrySensors[i].logs = oldModel.telemetrySensors[i].logs;
     newModel.telemetrySensors[i].persistent = oldModel.telemetrySensors[i].persistent;
     newModel.telemetrySensors[i].onlyPositive = oldModel.telemetrySensors[i].onlyPositive;
-    memmove(((uint8_t *)&newModel.telemetrySensors[i]) + 10, ((uint8_t *)&oldModel.telemetrySensors[i]) + 9, 4);
+    memcpy(((uint8_t *)&newModel.telemetrySensors[i]) + 10, ((uint8_t *)&oldModel.telemetrySensors[i]) + 9, 4);
   }
 
 #if defined(PCBX9E)
@@ -235,60 +306,140 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
 #if defined(PCBHORUS)
-//  memcpy(newModel.screenData, oldModel.screenData,
-//          sizeof(newModel.screenData) +
-//          sizeof(newModel.topbarData))
+  memcpy(newModel.screenData, oldModel.screenData,
+         sizeof(newModel.screenData) +
+         sizeof(newModel.topbarData));
+
+  for (int screen=0; screen<MAX_CUSTOM_SCREENS; screen++) {
+    CustomScreenData& screenData = g_model.screenData[screen];
+    if (screenData.layoutName[0] == '\0')
+      continue;
+    for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
+      Layout::ZonePersistentData * zoneData = &screenData.layoutData.zones[zone];
+      if (strcmp("Value", zoneData->widgetName))
+        continue;
+
+      ZoneOptionValue& option = zoneData->widgetData.options[0];
+      option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
+    }
+  }
+
+  for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
+    Topbar::ZonePersistentData * zoneData = &g_model.topbarData.zones[zone];
+    if (strcmp("Value", zoneData->widgetName))
+      continue;
+
+    ZoneOptionValue & option = zoneData->widgetData.options[0];
+    option.unsignedValue = convertSource_218_to_219(option.unsignedValue);
+  }
+
 #else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
-#endif
-
-#if defined(PCBX7)
   for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
     uint8_t screenType = (newModel.screensType >> (2*i)) & 0x03;
     if (screenType == TELEMETRY_SCREEN_TYPE_VALUES) {
       for (int j = 0; j < 4; j++) {
         for (int k = 0; k < NUM_LINE_ITEMS; k++) {
-          newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(newModel.screens[i].lines[j].sources[k]);
+          newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(oldModel.frsky.screens[i].lines[j].sources[k]);
         }
       }
     }
     else if (screenType == TELEMETRY_SCREEN_TYPE_GAUGES) {
       for (int j = 0; j < 4; j++) {
-        newModel.screens[i].bars[j].source = convertSource_218_to_219(newModel.screens[i].bars[j].source);
+        newModel.screens[i].bars[j].source = convertSource_218_to_219(oldModel.frsky.screens[i].bars[j].source);
       }
     }
   }
 #endif
 
-#if defined(PCBHORUS)
+#if defined(STM32)
   free(oldModelAllocated);
 #endif
 }
 
 void convertRadioData_218_to_219(RadioData & settings)
 {
+  TRACE("Radio conversion from v218 to v219");
+
   settings.version = 219;
+  settings.variant = EEPROM_VARIANT;
+
+#if defined(STM32)
+  RadioData_v218 * oldSettingsAllocated = (RadioData_v218 *)malloc(sizeof(RadioData_v218));
+  RadioData_v218 & oldSettings = *oldSettingsAllocated;
+  memcpy(&oldSettings, &settings, sizeof(RadioData_v218));
+#endif
+
+#if defined(PCBX9D) || defined(PCBX9DP)
+  // no bluetooth before PCBREV 2019
+  settings.auxSerialMode = oldSettings.auxSerialMode;
+  settings.slidersConfig = oldSettings.slidersConfig;
+  settings.potsConfig = oldSettings.potsConfig;
+  settings.backlightColor = oldSettings.backlightColor;
+  settings.switchUnlockStates = oldSettings.switchUnlockStates;
+  settings.switchConfig = oldSettings.switchConfig;
+#if defined(PCBX9DP) && PCBREV >= 2019
+  settings.switchConfig |= SWITCH_TOGGLE << 16;
+#endif
+  memcpy(&settings.switchNames[0], &oldSettings.switchNames[0], 8 * LEN_SWITCH_NAME);
+  memclear(&settings.switchNames[8], LEN_SWITCH_NAME);
+  memcpy(&settings.anaNames[0], &oldSettings.anaNames[0], (NUM_STICKS+NUM_POTS+NUM_SLIDERS) * LEN_ANA_NAME);
+#endif
 
 #if defined(PCBHORUS)
-  RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
-
-  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData, serial2Mode) - offsetof(RadioData, chkSum));
-  memcpy(&settings.calib[NUM_STICKS + 5], &settings_v218.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
+  // 2 new pots from X10:
+  //  - copy btw. 'chkSum' and 'auxSerialMode' (excl.)
+  memcpy(&settings.chkSum, &oldSettings.chkSum, offsetof(RadioData, auxSerialMode) - offsetof(RadioData, chkSum));
+  //  - move calibration data
+  memcpy(&settings.calib[NUM_STICKS + 5], &oldSettings.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
   memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
 
-  settings.serial2Mode = settings_v218.serial2Mode;
-  settings.switchConfig = settings_v218.switchConfig;
-  settings.potsConfig = settings_v218.potsConfig;
-  settings.slidersConfig = settings_v218.slidersConfig;
+  // move fields after custom functions
+  settings.auxSerialMode = oldSettings.auxSerialMode;
+  settings.switchConfig = oldSettings.switchConfig;
+  settings.potsConfig = oldSettings.potsConfig;
+  settings.slidersConfig = oldSettings.slidersConfig;
 
-  memcpy(&settings.switchNames[0], &settings_v218.switchNames[0], 8 * LEN_SWITCH_NAME);
+  // 2 new switches
+  memcpy(&settings.switchNames[0], &oldSettings.switchNames[0], 8 * LEN_SWITCH_NAME);
   memclear(&settings.switchNames[8], 2 * LEN_SWITCH_NAME);
 
-  memcpy(&settings.anaNames[0], &settings_v218.anaNames[0], (NUM_STICKS + 3) * LEN_ANA_NAME);
+  // 2 new pots for X10
+  //  - split 'anaNames' (sticks + 3 old pots, 2 new pots, other old analogs)
+  memcpy(&settings.anaNames[0], &oldSettings.anaNames[0], (NUM_STICKS + 3) * LEN_ANA_NAME);
   memclear(&settings.anaNames[NUM_STICKS + 3], 2 * LEN_SWITCH_NAME);
-  memcpy(&settings.anaNames[NUM_STICKS + 5], &settings_v218.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
+  memcpy(&settings.anaNames[NUM_STICKS + 5], &oldSettings.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
 
-  memcpy(&settings.currModelFilename[0], &settings_v218.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
+  //  - copy rest of RadioData struct
+  memcpy(&settings.currModelFilename[0], &oldSettings.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
+#endif
+
+#if defined(RADIO_T12)
+  g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, SWITCH_2POS, 10, 2);  // T12 comes with wrongly defined pot2
+  g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, POT_WITHOUT_DETENT, 2, 2);  // T12 comes with wrongly defined pot2
+#endif
+
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX7) || defined(PCBXLITE) || defined(PCBHORUS)
+  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
+    CustomFunctionData & cf = settings.customFn[i];
+    cf.swtch = convertSwitch_218_to_219(cf.swtch);
+    if (cf.func == FUNC_PLAY_VALUE || cf.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(cf.func) && cf.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
+      cf.all.val = convertSource_218_to_219(cf.all.val);
+    }
+  }
+#endif
+
+#if defined(PCBX9DP) && PCBREV >= 2019
+  // force re-calibration
+  settings.chkSum = 0xFFFF;
+  setDefaultOwnerId();
+#endif
+
+  settings.pwrOnSpeed = 0;
+  settings.pwrOffSpeed = 0;
+
+#if defined(STM32)
+  free(oldSettingsAllocated);
 #endif
 }

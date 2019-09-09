@@ -24,11 +24,15 @@
 #include "boards.h"
 #include "helpers_html.h"
 #include "multiprotocols.h"
+#include "appdata.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QFile>
 #include <QUrl>
+#include <QTextStream>
+
+extern AppData g;
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
 {
@@ -219,7 +223,6 @@ QString ModelPrinter::printModule(int idx)
         if (module.protocol == PULSES_PXX_R9M) {
           str << printLabelValue(tr("Sub Type"), module.subTypeToString());
           str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
-          str << printLabelValue(tr("Telemetry"), printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
         }
       }
     }
@@ -649,10 +652,17 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
   return result;
 }
 
-QString ModelPrinter::printCustomFunctionLine(int idx)
+QString ModelPrinter::printCustomFunctionLine(int idx, bool gfunc)
 {
   QString result;
-  const CustomFunctionData & cf = model.customFn[idx];
+  CustomFunctionData cf;
+  if (gfunc) {
+    if (model.noGlobalFunctions)
+      return result;
+    cf = generalSettings.customFn[idx];
+  }
+  else
+    cf = model.customFn[idx];
   if (cf.swtch.type == SWITCH_TYPE_NONE)
     return result;
 
@@ -858,7 +868,7 @@ QString ModelPrinter::printPotWarnings()
     for (int i=0; i<board.getCapability(Board::Pots)+board.getCapability(Board::Sliders); i++) {
       RawSource src(SOURCE_TYPE_STICK, CPN_MAX_STICKS + i);
       if ((src.isPot(&genAryIdx) && generalSettings.isPotAvailable(genAryIdx)) || (src.isSlider(&genAryIdx) && generalSettings.isSliderAvailable(genAryIdx))) {
-        if (!model.potsWarningEnabled[i])
+        if (!model.potsWarnEnabled[i])
           str += src.toString(&model, &generalSettings);
       }
     }
@@ -1444,4 +1454,22 @@ QString ModelPrinter::printTelemetryScreen(unsigned int idx, unsigned int line, 
     strl << QString("%1.lua").arg(screen.body.script.filename);
   }
   return (hd.count() > 1 ? doTableRow(hd, width / hd.count(), "left", "", true) : "" ) + doTableRow(strl, width / strl.count());
+}
+
+QString ModelPrinter::printChecklist()
+{
+  if (!model.displayChecklist)
+    return "";
+  QString str = tr("Error: Unable to open or read file!");
+  QFile file(Helpers::getChecklistFilePath(&model));
+  if (file.open(QFile::ReadOnly | QFile::Text)) {
+    QTextStream in(&file);
+    if (in.status() == QTextStream::Ok) {
+      str = in.readAll();
+      str.replace("\n", "<br />");
+      str.remove("\r");
+    }
+    file.close();
+  }
+  return str;
 }

@@ -97,7 +97,6 @@ class SimulatedUIWidget : public QWidget
     unsigned int m_backLight;
     int m_beepShow;
     int m_beepVal;
-
 };
 
 
@@ -111,6 +110,7 @@ namespace Ui {
   class SimulatedUIWidgetX9E;
   class SimulatedUIWidgetX10;
   class SimulatedUIWidgetX12;
+  class SimulatedUIWidgetJumperT12;
 }
 
 class SimulatedUIWidget9X: public SimulatedUIWidget
@@ -211,6 +211,18 @@ class SimulatedUIWidgetX12: public SimulatedUIWidget
 
   private:
     Ui::SimulatedUIWidgetX12 * ui;
+};
+
+class SimulatedUIWidgetJumperT12: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetJumperT12(SimulatorInterface * simulator, QWidget * parent = NULL);
+    virtual ~SimulatedUIWidgetJumperT12();
+
+  private:
+    Ui::SimulatedUIWidgetJumperT12 * ui;
 };
 
 #endif // SIMULATEDUIWIDGET_H

@@ -18,22 +18,117 @@
  * GNU General Public License for more details.
  */
 
+#include <cstdlib>
+#include <algorithm>
 #include "boards.h"
 #include "helpers.h"
 #include "opentxeeprom.h"
 #include "customdebug.h"
-#include <stdlib.h>
-#include <algorithm>
+#include "opentxinterface.h"
 
 using namespace Board;
 
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_SLIDERS(board)                    (IS_HORUS_X10(board) ? 4 : (Boards::getCapability(board, Board::Sliders))) //TODO need to be remove when x10 eeprom gets fixed
-#define MAX_MOUSE_ANALOGS(board)              (IS_HORUS_X10(board) ? 2 : (Boards::getCapability(board, Board::MouseAnalogs))) //TODO need to be remove when x10 eeprom gets fixed
 #define MAX_GYRO_ANALOGS(board, version)      (version >= 219 ? Boards::getCapability(board, Board::GyroAnalogs) : 0)
-#define MAX_SWITCHES(board, version)          (version <= 218 && IS_TARANIS_X7(board) ? 6 : Boards::getCapability(board, Board::Switches))
-#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : 8)  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
-#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
+
+inline int MAX_SWITCHES(Board::Type board, int version)
+{
+  if (version <= 218 && IS_TARANIS_X7(board))
+    return 6;
+  if (version <= 218 && (IS_TARANIS_X9D(board) || IS_HORUS(board)))
+    return 8;
+  if (version <= 218 && (IS_TARANIS_XLITE(board)))
+    return 4;
+  if (IS_TARANIS_X9D(board))
+    return 9;
+  return Boards::getCapability(board, Board::Switches);
+}
+
+inline int POTS_CONFIG_SIZE(Board::Type board, int version)
+{
+  if (version >= 219 && IS_HORUS(board))
+    return 16;
+
+  return 8;
+}
+
+inline int MAX_POTS(Board::Type board, int version)
+{
+  if (version <= 218 && IS_HORUS(board))
+    return 3;
+  return Boards::getCapability(board, Board::Pots);
+}
+
+inline int MAX_POTS_STORAGE(Board::Type board, int version)
+{
+  if (version <= 218 && IS_HORUS(board))
+    return 3;
+  if (version >= 219 && IS_HORUS(board))
+    return 5;
+  return Boards::getCapability(board, Board::Pots);
+}
+
+inline int MAX_POTS_SOURCES(Board::Type board, int version)
+{
+  if (version <= 218 && IS_HORUS(board))
+    return 5;
+  return Boards::getCapability(board, Board::Pots);
+}
+
+inline int MAX_SLIDERS_STORAGE(Board::Type board, int version)
+{
+  if (version >= 219 && IS_HORUS(board))
+    return 4;
+  return Boards::getCapability(board, Board::Sliders);
+}
+
+inline int MAX_SLIDERS_SOURCES(Board::Type board, int version)
+{
+  if (version <= 218 && IS_HORUS(board))
+    return 2;
+  return Boards::getCapability(board, Board::Sliders);
+}
+
+inline int SLIDERS_CONFIG_SIZE(Board::Type board, int version)
+{
+  if (version >= 219 && IS_HORUS(board))
+    return 8;
+
+  return 4;
+}
+
+inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
+{
+  if (IS_TARANIS_X9E(board))
+    return 64;
+
+  if (IS_HORUS(board))
+    return 32;
+  
+  if (version >= 219 && IS_TARANIS_X9D(board))
+    return 32;
+
+  return 16;
+}
+
+inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
+{
+  if (version < 219) {
+    if (IS_TARANIS_X7(board) || IS_HORUS(board))
+      return Boards::getCapability(board, Board::SwitchPositions) - 2 * 3;
+    if (IS_TARANIS_X9D(board))
+      return 8 * 3;
+    if (IS_TARANIS_XLITE(board))
+      return 4 * 3;
+  }
+
+  if (IS_TARANIS_X9D(board)) {
+    return 9 * 3; // all X9D have storage for 9 switches (X9D+ 2019)
+  }
+
+  return Boards::getCapability(board, Board::SwitchPositions);
+}
+
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3
@@ -64,8 +159,8 @@ class SwitchesConversionTable: public ConversionTable {
   public:
     SwitchesConversionTable(Board::Type board, unsigned int version, bool timer=false)
     {
-      int val=0;
-      int offset=0;
+      int val = 0;
+      int offset = 0;
       if (timer) {
         offset = 4;
         for (int i=0; i<5; i++) {
@@ -84,7 +179,7 @@ class SwitchesConversionTable: public ConversionTable {
       }
 
       if (IS_HORUS_OR_TARANIS(board)) {
-        for (int i=1; i<=Boards::getCapability(board, Board::Pots)*6; i++) {
+        for (int i=1; i<=MAX_POTS(board, version)*6; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
@@ -118,7 +213,7 @@ class SwitchesConversionTable: public ConversionTable {
       if (version >= 218) {
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, -1), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), val++);
-        for (int i=1; i<=CPN_MAX_SENSORS; i++) {
+        for (int i=1; i<=MAX_TELEMETRY_SENSORS(board, version); i++) {
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
@@ -154,8 +249,7 @@ class SwitchesConversionTable: public ConversionTable {
 
     static SwitchesConversionTable * getInstance(Board::Type board, unsigned int version, unsigned long flags=0)
     {
-      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
-        Cache & element = *it;
+      for (auto & element : internalCache) {
         if (element.board == board && element.version == version && element.flags == flags)
           return element.table;
       }
@@ -166,10 +260,8 @@ class SwitchesConversionTable: public ConversionTable {
     }
     static void Cleanup()
     {
-      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
-        Cache & element = *it;
-        if (element.table)
-          delete element.table;
+      for (auto & element : internalCache) {
+        delete element.table;
       }
       internalCache.clear();
     }
@@ -182,7 +274,6 @@ std::list<SwitchesConversionTable::Cache> SwitchesConversionTable::internalCache
 #define FLAG_NOTELEMETRY  0x04
 
 class SourcesConversionTable: public ConversionTable {
-
   public:
     SourcesConversionTable(Board::Type board, unsigned int version, unsigned int variant, unsigned long flags=0)
     {
@@ -206,8 +297,12 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS+Boards::getCapability(board, Board::Pots)+MAX_SLIDERS(board)+MAX_MOUSE_ANALOGS(board)+MAX_GYRO_ANALOGS(board, version); i++) {
-        addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
+      for (int i=0; i<CPN_MAX_STICKS + MAX_POTS_SOURCES(board, version) + MAX_SLIDERS_SOURCES(board, version) + Boards::getCapability(board, Board::MouseAnalogs) + MAX_GYRO_ANALOGS(board, version); i++) {
+        int offset = 0;
+        if (version <= 218 && IS_HORUS_X10(board) && i >= CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version))
+          offset += 2;
+          
+        addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
       }
 
       for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++) {
@@ -248,7 +343,7 @@ class SourcesConversionTable: public ConversionTable {
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 2), val++); // Timer1
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 3), val++); // Timer2
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 4), val++); // Timer3
-        for (unsigned i=0; i<CPN_MAX_SENSORS*3; ++i) {
+        for (int i=0; i<MAX_TELEMETRY_SENSORS(board, version)*3; ++i) {
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
         }
       }
@@ -334,7 +429,7 @@ class SwitchField: public ConversionField< SignedField<N> > {
       ConversionField< SignedField<N> >::beforeExport();
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       ConversionField< SignedField<N> >::afterImport();
       sw = RawSwitch(_switch);
@@ -368,7 +463,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
       ConversionField< UnsignedField<N> >::beforeExport();
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       ConversionField< UnsignedField<N> >::afterImport();
       source = RawSource(_source);
@@ -500,7 +595,7 @@ class CurveReferenceField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       curve.type = (CurveReference::CurveRefType)_curve_type;
       curve.value = smallGvarExport(_curve_value);
@@ -621,7 +716,7 @@ class FlightModeField: public TransformedField {
             trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
           else
             trim = std::max(-500, std::min(500, phase.trim[i]));
-          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
+          if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215)) {
             trimBase[i] = trim >> 2;
             trimExt[i] = (trim & 0x03);
           }
@@ -632,7 +727,7 @@ class FlightModeField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       for (int i=0; i<CPN_MAX_STICKS+MAX_AUX_TRIMS(board); i++) {
         if (IS_HORUS_OR_TARANIS(board) || version >= 218) {
@@ -652,7 +747,7 @@ class FlightModeField: public TransformedField {
           }
           else {
             int trim;
-            if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+            if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215))
               trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
             else
               trim = trimBase[i];
@@ -757,7 +852,7 @@ class MixField: public TransformedField {
       }
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (mix.destCh && mix.srcRaw.type != SOURCE_TYPE_NONE) {
         _destCh = mix.destCh - 1;
@@ -775,14 +870,14 @@ class MixField: public TransformedField {
           _curveParam = mix.curve.value;
         }
         else if (mix.curve.type == CurveReference::CURVE_REF_DIFF) {
-          _curveMode = 0;
+          _curveMode = false;
           _curveParam = smallGvarImport(mix.curve.value);
         }
       }
       else {
         mix.clear();
         _destCh = 0;
-        _curveMode = 0;
+        _curveMode = false;
         _curveParam = 0;
       }
 
@@ -793,7 +888,7 @@ class MixField: public TransformedField {
         splitGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (mix.srcRaw.type != SOURCE_TYPE_NONE) {
         mix.destCh = _destCh + 1;
@@ -821,13 +916,12 @@ class MixField: public TransformedField {
     Board::Type board;
     unsigned int version;
     ModelData * model;
-    unsigned int _destCh;
-    bool _curveMode;
-    int _curveParam;
-    int _weight;
-    int _offset;
-    unsigned int _weightMode;
-    unsigned int _offsetMode;
+    unsigned int _destCh = 0;
+    bool _curveMode = false;
+    int _curveParam = 0;
+    int _weight = 0;
+    int _offset = 0;
+    unsigned int _offsetMode = 0;
 };
 
 class InputField: public TransformedField {
@@ -883,7 +977,7 @@ class InputField: public TransformedField {
       }
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       _weight = smallGvarImport(expo.weight);
 
@@ -907,7 +1001,7 @@ class InputField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (!IS_STM32(board) && expo.mode) {
         expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
@@ -935,10 +1029,10 @@ class InputField: public TransformedField {
     ExpoData & expo;
     Board::Type board;
     unsigned int version;
-    bool _curveMode;
-    int  _weight;
-    int  _offset;
-    int  _curveParam;
+    bool _curveMode = false;
+    int  _weight = 0;
+    int  _offset = 0;
+    int  _curveParam = 0;
 };
 
 class LimitField: public StructField {
@@ -1049,7 +1143,7 @@ class CurvesField: public TransformedField {
       }
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       memset(_points, 0, sizeof(_points));
 
@@ -1084,7 +1178,7 @@ class CurvesField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       int * cur = &_points[0];
 
@@ -1138,8 +1232,8 @@ class CurvesField: public TransformedField {
     unsigned int version;
     int maxCurves;
     int maxPoints;
-    int _curves[CPN_MAX_CURVES];
-    int _points[CPN_MAX_CURVES*CPN_MAX_POINTS*2];
+    int _curves[CPN_MAX_CURVES] = {};
+    int _points[CPN_MAX_CURVES*CPN_MAX_POINTS*2] = {};
 };
 
 class LogicalSwitchesFunctionsTable: public ConversionTable {
@@ -1170,61 +1264,6 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
     }
 };
 
-class AndSwitchesConversionTable: public ConversionTable {
-
-  public:
-    AndSwitchesConversionTable(Board::Type board, unsigned int version)
-    {
-      int val=0;
-      addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
-
-      if (IS_STM32(board)) {
-        for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
-          int s = switchIndex(i, board, version);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
-        }
-        for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-        }
-      }
-      else if (IS_SKY9X(board)) {
-        for (int i=1; i<=8; i++) {
-          int s = switchIndex(i, board, version);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
-        }
-        for (int i=1; i<=MAX_LOGICAL_SWITCHES(board, version); i++) {
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-        }
-      }
-      else {
-        for (int i=1; i<=9; i++) {
-          int s = switchIndex(i, board, version);
-          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
-        }
-        for (int i=1; i<=7; i++) {
-          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-        }
-      }
-    }
-
-    static ConversionTable * getInstance(Board::Type board, unsigned int version)
-    {
-      return new SwitchesConversionTable(board, version);
-    }
-
-
-  protected:
-
-    void addConversion(const RawSwitch & sw, const int b)
-    {
-      ConversionTable::addConversion(sw.toValue(), b);
-    }
-};
-
 class LogicalSwitchField: public TransformedField {
   public:
     LogicalSwitchField(DataField * parent, LogicalSwitchData & csw, Board::Type board, unsigned int version, unsigned int variant, ModelData * model=nullptr):
@@ -1237,17 +1276,13 @@ class LogicalSwitchField: public TransformedField {
       model(model),
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0)),
-      switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
-      andswitchesConversionTable(AndSwitchesConversionTable::getInstance(board, version)),
-      v1(0),
-      v2(0),
-      v3(0)
+      switchesConversionTable(SwitchesConversionTable::getInstance(board, version))
     {
       if (version >= 218) {
         internalField.Append(new ConversionField< UnsignedField<8> >(this, csw.func, &functionsConversionTable, "Function"));
         internalField.Append(new SignedField<10>(this, v1));
         internalField.Append(new SignedField<10>(this, v3));
-        internalField.Append(new ConversionField< SignedField<9> >(this, (int &)csw.andsw, andswitchesConversionTable, "AND switch"));
+        internalField.Append(new ConversionField< SignedField<9> >(this, (int &)csw.andsw, switchesConversionTable, "AND switch"));
         internalField.Append(new SpareBitsField<1>(this)); // TODO extra switch mode
         internalField.Append(new SpareBitsField<2>(this));
         internalField.Append(new SignedField<16>(this, v2));
@@ -1263,16 +1298,14 @@ class LogicalSwitchField: public TransformedField {
       internalField.Append(new ConversionField< UnsignedField<8> >(this, csw.delay, 0, scale));
       internalField.Append(new ConversionField< UnsignedField<8> >(this, csw.duration, 0, scale));
       if (version == 217) {
-        internalField.Append(new ConversionField< SignedField<8> >(this, (int &)csw.andsw, andswitchesConversionTable, "AND switch"));
+        internalField.Append(new ConversionField< SignedField<8> >(this, (int &)csw.andsw, switchesConversionTable, "AND switch"));
       }
     }
 
-    ~LogicalSwitchField()
-    {
-      delete andswitchesConversionTable;
-    }
+    ~LogicalSwitchField() override
+    = default;
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (csw.func == LS_FN_TIMER) {
         v1 = csw.val1;
@@ -1297,7 +1330,7 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (csw.func == LS_FN_TIMER) {
         csw.val1 = v1;
@@ -1334,10 +1367,9 @@ class LogicalSwitchField: public TransformedField {
     LogicalSwitchesFunctionsTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     SwitchesConversionTable * switchesConversionTable;
-    ConversionTable * andswitchesConversionTable;
-    int v1;
-    int v2;
-    int v3;
+    int v1 = 0;
+    int v2 = 0;
+    int v3 = 0;
 };
 
 class CustomFunctionsConversionTable: public ConversionTable {
@@ -1345,7 +1377,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
   public:
     CustomFunctionsConversionTable(Board::Type board, unsigned int version)
     {
-      int val=0;
+      int val = 0;
 
       for (int i=0; i<MAX_CHANNELS(board, version); i++) {
         addConversion(i, val);
@@ -1408,12 +1440,12 @@ class SwitchesWarningField: public TransformedField {
     {
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       _sw = sw;
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       sw = _sw;
       qCDebug(eepromImport) << QString("imported %1").arg(internalField.getName());
@@ -1422,7 +1454,7 @@ class SwitchesWarningField: public TransformedField {
   protected:
     BaseUnsignedField<uint64_t, N> internalField;
     uint64_t & sw;
-    uint64_t _sw;
+    uint64_t _sw = 0;
     Board::Type board;
     unsigned int version;
 };
@@ -1437,10 +1469,7 @@ class ArmCustomFunctionField: public TransformedField {
       version(version),
       variant(variant),
       functionsConversionTable(board, version),
-      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0)),
-      _func(0),
-      _active(0),
-      _mode(0)
+      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0))
     {
       memset(_param, 0, sizeof(_param));
 
@@ -1466,7 +1495,7 @@ class ArmCustomFunctionField: public TransformedField {
       return (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic);
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (fn.swtch.type != SWITCH_TYPE_NONE) {
         _func = fn.func;
@@ -1525,7 +1554,7 @@ class ArmCustomFunctionField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       fn.func = (AssignFunc)_func;
 
@@ -1587,105 +1616,9 @@ class ArmCustomFunctionField: public TransformedField {
     unsigned int variant;
     CustomFunctionsConversionTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
-    unsigned int _func;
-    char _param[10];
-    int _active;
-    unsigned int _mode;
-};
-
-class AvrCustomFunctionField: public TransformedField {
-  public:
-    AvrCustomFunctionField(DataField * parent, CustomFunctionData & fn, Board::Type board, unsigned int version, unsigned int variant):
-      TransformedField(parent, internalField),
-      internalField(this, "CustomFunction"),
-      fn(fn),
-      board(board),
-      version(version),
-      variant(variant),
-      functionsConversionTable(board, version),
-      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, 0)),
-      _param(0),
-      _mode(0),
-      _union_param(0),
-      _active(0)
-    {
-      internalField.Append(new SwitchField<6>(this, fn.swtch, board, version));
-      internalField.Append(new ConversionField< UnsignedField<4> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
-      internalField.Append(new UnsignedField<5>(this, _union_param));
-      internalField.Append(new UnsignedField<1>(this, _active));
-      internalField.Append(new UnsignedField<8>(this, _param));
-    }
-
-    virtual void beforeExport()
-    {
-      _param = fn.param;
-      _active = (fn.enabled ? 1 : 0);
-
-      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
-        _union_param = fn.func - FuncOverrideCH1;
-      }
-      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
-        _union_param = fn.func - FuncTrainer;
-      }
-      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-        _union_param = fn.adjustMode;
-        _union_param += (fn.func - FuncAdjustGV1) << 2;
-        if (fn.adjustMode == 1)
-          sourcesConversionTable->exportValue(fn.param, (int &)_param);
-        else if (fn.adjustMode == 2)
-          _param = RawSource(fn.param).index;
-      }
-      else if (fn.func == FuncPlayValue) {
-        _union_param = fn.repeatParam / 10;
-        sourcesConversionTable->exportValue(fn.param, (int &)_param);
-      }
-      else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
-        _union_param = fn.repeatParam / 10;
-      }
-    }
-
-    virtual void afterImport()
-    {
-      fn.param = _param;
-      fn.enabled = (_active & 0x01);
-
-      if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
-        fn.func = AssignFunc(fn.func + _union_param);
-        fn.param = (int8_t)fn.param;
-      }
-      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
-        fn.func = AssignFunc(fn.func + _union_param);
-      }
-      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-        fn.func = AssignFunc(fn.func + (_union_param >> 2));
-        fn.adjustMode = (_union_param & 0x03);
-        if (fn.adjustMode == 1)
-          sourcesConversionTable->importValue(_param, (int &)fn.param);
-        else if (fn.adjustMode == 2)
-          fn.param = RawSource(SOURCE_TYPE_GVAR, _param).toValue();
-      }
-      else if (fn.func == FuncPlayValue) {
-        fn.repeatParam = _union_param * 10;
-        sourcesConversionTable->importValue(_param, (int &)fn.param);
-      }
-      else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
-        fn.repeatParam = _union_param * 10;
-      }
-      qCDebug(eepromImport) << QString("imported %1").arg(internalField.getName());
-    }
-
-  protected:
-    StructField internalField;
-    CustomFunctionData & fn;
-    Board::Type board;
-    unsigned int version;
-    unsigned int variant;
-    CustomFunctionsConversionTable functionsConversionTable;
-    SourcesConversionTable * sourcesConversionTable;
-    unsigned int _param;
-    unsigned int _mode;
-    unsigned int _union_param;
-    unsigned int _active;
+    unsigned int _func = 0;
+    char _param[10] = {};
+    int _active = 0;
 };
 
 class FrskyScreenField: public DataField {
@@ -1733,7 +1666,7 @@ class FrskyScreenField: public DataField {
         none.Append(new SpareBitsField<20*8>(this));
     }
 
-    virtual void ExportBits(QBitArray & output)
+    void ExportBits(QBitArray & output) override
     {
       if (screen.type == TELEMETRY_SCREEN_SCRIPT)
         script.ExportBits(output);
@@ -1745,7 +1678,7 @@ class FrskyScreenField: public DataField {
         none.ExportBits(output);
     }
 
-    virtual void ImportBits(const QBitArray & input)
+    void ImportBits(const QBitArray & input) override
     {
       qCDebug(eepromImport) << QString("importing %1: type: %2").arg(name).arg(screen.type);
 
@@ -1760,7 +1693,7 @@ class FrskyScreenField: public DataField {
         none.ImportBits(input);
     }
 
-    virtual unsigned int size()
+    unsigned int size() override
     {
       // NOTA: screen.type should have been imported first!
       if (screen.type == TELEMETRY_SCREEN_SCRIPT)
@@ -1786,7 +1719,7 @@ class FrskyScreenField: public DataField {
 class RSSIConversionTable: public ConversionTable
 {
   public:
-    RSSIConversionTable(int index)
+    explicit RSSIConversionTable(int index)
     {
       addConversion(0, 2-index);
       addConversion(1, 3-index);
@@ -1795,8 +1728,7 @@ class RSSIConversionTable: public ConversionTable
     }
 
     RSSIConversionTable()
-    {
-    }
+    = default;
 };
 
 class TelemetryVarioSourceConversionTable: public ConversionTable
@@ -1860,9 +1792,9 @@ class TelemetryCurrentSourceConversionTable: public ConversionTable
     }
 };
 
-class FrskyField: public StructField {
+class Frsky218Field: public StructField {
   public:
-    FrskyField(DataField * parent, FrSkyData & frsky, RSSIAlarmData & rssiAlarms, Board::Type board, unsigned int version, unsigned int variant):
+    Frsky218Field(DataField * parent, FrSkyData & frsky, RSSIAlarmData & rssiAlarms, Board::Type board, unsigned int version, unsigned int variant):
       StructField(parent, "FrSky"),
       telemetryVarioSourceConversionTable(board, version),
       screenTypesConversionTable(board, version),
@@ -1909,6 +1841,20 @@ class FrskyField: public StructField {
     TelemetryCurrentSourceConversionTable telemetryCurrentSourceConversionTable;
 };
 
+class VarioField: public StructField {
+  public:
+    VarioField(DataField * parent, FrSkyData & frsky, Board::Type board, unsigned int version, unsigned int variant):
+      StructField(parent, "Vario")
+    {
+      Append(new UnsignedField<7>(this, frsky.varioSource, "Vario Source"));
+      Append(new BoolField<1>(this, frsky.varioCenterSilent));
+      Append(new SignedField<8>(this, frsky.varioCenterMax));
+      Append(new SignedField<8>(this, frsky.varioCenterMin));
+      Append(new SignedField<8>(this, frsky.varioMin));
+      Append(new SignedField<8>(this, frsky.varioMax));
+    }
+};
+
 /*
  * TODO
  */
@@ -1928,25 +1874,39 @@ class CustomScreenField: public StructField {
 
 class SensorField: public TransformedField {
   public:
-    SensorField(DataField * parent, SensorData & sensor, Board::Type board, unsigned int version):
+  SensorField(DataField * parent, const ModelData& model, SensorData & sensor, Board::Type board, unsigned int version):
       TransformedField(parent, internalField),
       internalField(this, "Sensor"),
       sensor(sensor),
-      version(version),
-      _param(0)
+      model(model),
+      version(version)
     {
       internalField.Append(new UnsignedField<16>(this, _id, "id/persistentValue"));
       internalField.Append(new UnsignedField<8>(this, _instance, "instance/formula"));
       internalField.Append(new ZCharField<4>(this, sensor.label));
-      internalField.Append(new UnsignedField<1>(this, sensor.type, "type"));
-      internalField.Append(new UnsignedField<5>(this, sensor.unit, "unit"));
-      internalField.Append(new UnsignedField<2>(this, sensor.prec, "prec"));
-      internalField.Append(new BoolField<1>(this, sensor.autoOffset));
-      internalField.Append(new BoolField<1>(this, sensor.filter));
-      internalField.Append(new BoolField<1>(this, sensor.logs));
-      internalField.Append(new BoolField<1>(this, sensor.persistent));
-      internalField.Append(new BoolField<1>(this, sensor.onlyPositive));
-      internalField.Append(new UnsignedField<3>(this, _subid, "subid"));
+      if (version >= 219) {
+        internalField.Append(new UnsignedField<8>(this, _subid, "subid"));
+        internalField.Append(new UnsignedField<2>(this, sensor.type, "type"));
+        internalField.Append(new UnsignedField<6>(this, sensor.unit, "unit"));
+        internalField.Append(new UnsignedField<2>(this, sensor.prec, "prec"));
+        internalField.Append(new BoolField<1>(this, sensor.autoOffset));
+        internalField.Append(new BoolField<1>(this, sensor.filter));
+        internalField.Append(new BoolField<1>(this, sensor.logs));
+        internalField.Append(new BoolField<1>(this, sensor.persistent));
+        internalField.Append(new BoolField<1>(this, sensor.onlyPositive));
+        internalField.Append(new SpareBitsField<1>(this));
+      }
+      else {
+        internalField.Append(new UnsignedField<1>(this, sensor.type, "type"));
+        internalField.Append(new UnsignedField<5>(this, sensor.unit, "unit"));
+        internalField.Append(new UnsignedField<2>(this, sensor.prec, "prec"));
+        internalField.Append(new BoolField<1>(this, sensor.autoOffset));
+        internalField.Append(new BoolField<1>(this, sensor.filter));
+        internalField.Append(new BoolField<1>(this, sensor.logs));
+        internalField.Append(new BoolField<1>(this, sensor.persistent));
+        internalField.Append(new BoolField<1>(this, sensor.onlyPositive));
+        internalField.Append(new UnsignedField<3>(this, _subid, "subid"));
+      }
       internalField.Append(new UnsignedField<32>(this, _param, "param"));
     }
 
@@ -1955,7 +1915,8 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _subid = sensor.subid;
-        _instance = sensor.instance;
+        // keep highest 3 bits from instance (rxIdx & moduleIdx are read-only)
+        _instance = (sensor.instance & 0x1F) | (_instance & 0xE0);
         _ratio = sensor.ratio;
         _offset = sensor.offset;
       }
@@ -1973,12 +1934,17 @@ class SensorField: public TransformedField {
       }
     }
 
-    virtual void afterImport()
+    void afterImport() override
     {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         sensor.id = _id;
         sensor.subid = _subid;
-        sensor.instance = _instance;
+        if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module())
+          sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
+        else
+          sensor.instance = _instance;
+        sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
+        sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
         sensor.ratio = _ratio;
         sensor.offset = _offset;
       }
@@ -2009,12 +1975,13 @@ class SensorField: public TransformedField {
   protected:
     StructField internalField;
     SensorData & sensor;
+    const ModelData& model;
     unsigned int version;
-    unsigned int _id;
-    unsigned int _subid;
-    unsigned int _instance;
+    unsigned int _id = 0;
+    unsigned int _subid = 0;
+    unsigned int _instance = 0;
     union {
-      unsigned int _param;
+      unsigned int _param = 0;
       uint8_t _sources[4];
       struct {
         uint16_t _ratio;
@@ -2026,14 +1993,239 @@ class SensorField: public TransformedField {
 int exportPpmDelay(int delay) { return (delay - 300) / 50; }
 int importPpmDelay(int delay) { return 300 + 50 * delay; }
 
+class ModuleUnionField: public UnionField<unsigned int> {
+
+  class PPMField: public UnionField::UnionMember, public StructField {
+    public:
+      PPMField(DataField * parent, ModuleData::PPM& ppm):
+        StructField(parent, "PPM")
+      {
+        Append(new ConversionField< SignedField<6> >(parent, ppm.delay, exportPpmDelay, importPpmDelay));
+        Append(new BoolField<1>(parent, ppm.pulsePol));
+        Append(new BoolField<1>(parent, ppm.outputType));
+        Append(new SignedField<8>(parent, ppm.frameLength));
+      }
+
+      bool select(const unsigned int & attr) const override
+      {
+        return true; // take what's left
+      }
+
+      DataField * getField() override
+      {
+        return this;
+      }
+  };
+
+  class MultiField: public UnionField::TransformedMember {
+    public:
+      MultiField(DataField * parent, ModuleData& module):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "Multi"),
+        module(module),
+        rfProtExtra(0)
+      {
+        ModuleData::Multi& multi = module.multi;
+        internalField.Append(new UnsignedField<2>(this, rfProtExtra));
+        internalField.Append(new SpareBitsField<3>(this));
+        internalField.Append(new BoolField<1>(this, multi.autoBindMode));
+        internalField.Append(new BoolField<1>(this, multi.lowPowerMode));
+        internalField.Append(new BoolField<1>(this, multi.customProto));
+        internalField.Append(new SignedField<8>(this, multi.optionValue));
+      }
+
+      bool select(const unsigned int & attr) const override
+      {
+        return attr == PULSES_MULTIMODULE;
+      }
+
+      void beforeExport() override
+      {
+        module.rfProtocol = module.multi.rfProtocol & 0xf;
+        rfProtExtra = (module.multi.rfProtocol >> 4) & 0x03;
+      }
+
+      void afterImport() override
+      {
+        module.multi.rfProtocol = (rfProtExtra & 0x3) << 4 | (module.rfProtocol & 0xf);
+      }
+
+    private:
+      StructField  internalField;
+      ModuleData&  module;
+      unsigned int rfProtExtra;
+  };
+
+  class PxxField: public UnionField::TransformedMember {
+    public:
+      PxxField(DataField * parent, ModuleData& module, unsigned int version):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "Pxx"),
+        module(module),
+        version(version)
+      {
+        ModuleData::PXX& pxx = module.pxx;
+        internalField.Append(new UnsignedField<2>(this, pxx.power));
+        internalField.Append(new SpareBitsField<2>(this));
+        internalField.Append(new BoolField<1>(this, pxx.receiverTelemetryOff));
+        internalField.Append(new BoolField<1>(this, pxx.receiverHigherChannels));
+        internalField.Append(new SignedField<2>(this, pxx.antennaMode));
+        internalField.Append(new SpareBitsField<8>(this));
+      }
+
+      bool select(const unsigned int& attr) const override {
+        return (attr >= PULSES_PXX_XJT_X16 && attr <= PULSES_PXX_XJT_LR12) ||
+          attr==PULSES_PXX_DJT ||
+          attr==PULSES_PXX_R9M ||
+          attr==PULSES_PXX_R9M_LITE;
+      }
+
+      void beforeExport() override
+      {
+        if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
+          module.subType = module.protocol - PULSES_PXX_XJT_X16;
+        }
+      }
+
+      void afterImport() override
+      {
+        if (module.protocol == PULSES_PXX_XJT_X16) {
+          if (version <= 218)
+            module.protocol += module.rfProtocol;
+          else
+            module.protocol += module.subType;
+        }
+      }
+
+    private:
+      StructField internalField;
+      ModuleData& module;
+      unsigned int version;
+  };
+
+  class AccessField: public UnionField::TransformedMember {
+    public:
+      AccessField(DataField * parent, ModuleData& module):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "Access"),
+        module(module)
+      {
+        internalField.Append(new UnsignedField<3>(this, module.access.receivers));
+        internalField.Append(new SpareBitsField<5>(this));
+
+        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++)
+          internalField.Append(new CharField<8>(this, receiverName[i]));
+
+        memset(receiverName, 0, sizeof(receiverName));
+      }
+
+      bool select(const unsigned int& attr) const override {
+        return attr >= PULSES_ACCESS_ISRM && attr <= PULSES_ACCESS_R9M_LITE_PRO;
+      }
+
+      void beforeExport() override
+      {
+        if (module.protocol == PULSES_ACCST_ISRM_D16 || module.protocol == PULSES_ACCESS_ISRM) {
+          module.subType = module.protocol - PULSES_ACCESS_ISRM;
+        }
+        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
+          for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
+
+            if (pos == PXX2_LEN_RX_NAME || module.access.receiverName[i][pos] == '\0') {
+              memset(module.access.receiverName[i]+pos,'\0',PXX2_LEN_RX_NAME-pos);
+              break;
+            }
+            receiverName[i][pos] = module.access.receiverName[i][pos];
+          }
+        }
+      }
+
+      void afterImport() override
+      {
+        if (module.protocol == PULSES_ACCESS_ISRM) {
+          module.protocol += module.subType;
+        }
+        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
+          for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
+            if (pos == PXX2_LEN_RX_NAME || receiverName[i][pos] == ' ' || receiverName[i][pos] == '\0') {
+              module.access.receiverName[i][pos] = '\0';
+              break;
+            }
+            module.access.receiverName[i][pos] = receiverName[i][pos];
+          }
+        }
+      }
+
+    private:
+      StructField internalField;
+      ModuleData & module;
+      char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME+1] = {};
+  };
+
+  public:
+    ModuleUnionField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
+      UnionField<unsigned int>(parent, module.protocol)
+    {
+      if (version >= 219)
+        Append(new AccessField(parent, module));
+      Append(new PxxField(parent, module, version));
+      Append(new MultiField(parent, module));
+      Append(new PPMField(parent, module.ppm));
+    }
+};
+
+
+class ModuleField: public TransformedField {
+  public:
+    ModuleField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
+      TransformedField(parent, internalField),
+      internalField(this, "Module"),
+      module(module),
+      protocolsConversionTable(board, version)
+    {
+      internalField.Append(new ConversionField<UnsignedField<4> >(this, module.protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
+      internalField.Append(new SignedField<4>(this, module.rfProtocol));
+      internalField.Append(new UnsignedField<8>(this, module.channelsStart));
+      internalField.Append(new ConversionField<SignedField<8> >(this, module.channelsCount, -8));
+      internalField.Append(new UnsignedField<4>(this, module.failsafeMode));
+      internalField.Append(new UnsignedField<3>(this, module.subType));
+      internalField.Append(new BoolField<1>(this, module.invertedSerial));
+      if (version <= 218) {
+        for (int i=0; i<32; i++) {
+          internalField.Append(new SignedField<16>(this, module.failsafeChannels[i]));
+        }
+      }
+
+      internalField.Append(new ModuleUnionField(parent, module, board, version));
+    }
+
+    void beforeExport() override
+    {
+      if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
+        module.rfProtocol = module.protocol - PULSES_LP45;
+      }
+    }
+
+    void afterImport() override
+    {
+      if (module.protocol == PULSES_LP45) {
+        module.protocol += module.rfProtocol;
+      }
+    }
+  
+  private:
+    StructField              internalField;
+    ModuleData&              module;
+    ProtocolsConversionTable protocolsConversionTable;
+};
+
 OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsigned int version, unsigned int variant):
   TransformedField(nullptr, internalField),
   internalField(this, "ModelData"),
   modelData(modelData),
   board(board),
   version(version),
-  variant(variant),
-  protocolsConversionTable(board)
+  variant(variant)
 {
   sprintf(name, "Model %s", modelData.name);
 
@@ -2050,7 +2242,10 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   internalField.Append(new UnsignedField<8>(this, modelData.moduleData[1].modelId));
 
   if (HAS_LARGE_LCD(board)) {
-    internalField.Append(new CharField<10>(this, modelData.bitmap, true, "Model bitmap"));
+    if (version >= 219 && IS_HORUS(board))
+      internalField.Append(new CharField<14>(this, modelData.bitmap, true, "Model bitmap"));
+    else
+      internalField.Append(new CharField<10>(this, modelData.bitmap, true, "Model bitmap"));
   }
 
   for (int i=0; i<MAX_TIMERS(board, version); i++) {
@@ -2119,6 +2314,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new SwitchesWarningField<32>(this, modelData.switchWarningStates, board, version));
   else if (IS_TARANIS_X9E(board))
     internalField.Append(new SwitchesWarningField<64>(this, modelData.switchWarningStates, board, version));
+  else if (version >= 219 && IS_TARANIS_X9D(board))
+    internalField.Append(new SwitchesWarningField<32>(this, modelData.switchWarningStates, board, version));
   else if (IS_TARANIS(board))
     internalField.Append(new SwitchesWarningField<16>(this, modelData.switchWarningStates, board, version));
   else
@@ -2126,6 +2323,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   if (IS_TARANIS_X9E(board))
     internalField.Append(new UnsignedField<32>(this, modelData.switchWarningEnable));
+  else if (version >= 219 && IS_TARANIS_X9D(board))
+    internalField.Append(new UnsignedField<16>(this, modelData.switchWarningEnable));
   else if (!IS_HORUS(board))
     internalField.Append(new UnsignedField<8>(this, modelData.switchWarningEnable));
 
@@ -2147,20 +2346,23 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     }
   }
 
-  // TODO rename to VARIO
-  internalField.Append(new FrskyField(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
-
-  if (version >= 219) {
-    // TODO RSSI SOURCE
-    internalField.Append(new SpareBitsField<8>(this));
+  if (version <= 218) {
+    internalField.Append(new Frsky218Field(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
+  }
+  else {
+    internalField.Append(new VarioField(this, modelData.frsky, board, version, variant));
+    internalField.Append(new UnsignedField<8>(this, modelData.rssiSource));
 
     if (IS_TARANIS_X9(board)) {
       // TODO TOPBAR
       internalField.Append(new SpareBitsField<16>(this));
     }
 
-    // TODO RSSI ALARMS
-    internalField.Append(new SpareBitsField<16>(this));
+    internalField.Append(new BoolField<1>(this, modelData.rssiAlarms.disabled));
+    internalField.Append(new SpareBitsField<1>(this));
+    internalField.Append(new ConversionField<SignedField<6> >(this, modelData.rssiAlarms.warning, -45));
+    internalField.Append(new SpareBitsField<2>(this));
+    internalField.Append(new ConversionField<SignedField<6> >(this, modelData.rssiAlarms.critical, -42));
   }
 
   if (IS_STM32(board) && version <= 218) {
@@ -2174,27 +2376,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   int modulesCount = (version <= 218 ? 3 : 2);
-  for (int module=0; module<modulesCount; module++) {
-    internalField.Append(new ConversionField<SignedField<4> >(this, modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
-    internalField.Append(new SignedField<4>(this, subprotocols[module]));
-    internalField.Append(new UnsignedField<8>(this, modelData.moduleData[module].channelsStart));
-    internalField.Append(new ConversionField<SignedField<8> >(this, modelData.moduleData[module].channelsCount, -8));
-    internalField.Append(new UnsignedField<4>(this, modelData.moduleData[module].failsafeMode));
-    internalField.Append(new UnsignedField<3>(this, modelData.moduleData[module].subType));
-    internalField.Append(new BoolField<1>(this, modelData.moduleData[module].invertedSerial));
-    if (version <= 218) {
-      for (int i=0; i<32; i++) {
-        internalField.Append(new SignedField<16>(this, modelData.moduleData[module].failsafeChannels[i]));
-      }
-    }
-    internalField.Append(new ConversionField< SignedField<6> >(this, modelData.moduleData[module].ppm.delay, exportPpmDelay, importPpmDelay));
-    internalField.Append(new BoolField<1>(this, modelData.moduleData[module].ppm.pulsePol));
-    internalField.Append(new BoolField<1>(this, modelData.moduleData[module].ppm.outputType));
-    internalField.Append(new SignedField<8>(this, modelData.moduleData[module].ppm.frameLength));
-    if (version >= 219) {
-      // TODO ACCESS
-      internalField.Append(new SpareBitsField<(1 + 3 * 8 - 2) * 8>(this));
-    }
+  for (int module = 0; module < modulesCount; module++) {
+    internalField.Append(new ModuleField(this, modelData.moduleData[module], board, version));
   }
 
   if (version >= 219) {
@@ -2252,14 +2435,18 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   for (int i=0; i<8; i++) {
-    if (i < Boards::getCapability(board, Board::Pots) + MAX_SLIDERS(board))
-      internalField.Append(new BoolField<1>(this, modelData.potsWarningEnabled[i]));
+    if (i < Boards::getCapability(board, Board::Pots) + Boards::getCapability(board, Board::Sliders))
+      internalField.Append(new BoolField<1>(this, modelData.potsWarnEnabled[i]));
     else
       internalField.Append(new SpareBitsField<1>(this));
   }
 
-  for (int i=0; i < Boards::getCapability(board, Board::Pots) + MAX_SLIDERS(board); i++) {
-    internalField.Append(new SignedField<8>(this, modelData.potPosition[i]));
+  for (int i=0; i < MAX_POTS_STORAGE(board, version) + MAX_SLIDERS_STORAGE(board, version); i++) {
+    internalField.Append(new SignedField<8>(this, modelData.potsWarnPosition[i]));
+  }
+
+  if (version <= 218 && IS_HORUS_X10(board)) {
+    internalField.Append(new SpareBitsField<16>(this));
   }
 
   if (IS_SKY9X(board)) {
@@ -2268,7 +2455,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   for (int i=0; i<MAX_TELEMETRY_SENSORS(board, version); ++i) {
-    internalField.Append(new SensorField(this, modelData.sensorData[i], board, version));
+    internalField.Append(new SensorField(this, modelData, modelData.sensorData[i], board, version));
   }
 
   if (IS_TARANIS_X9E(board)) {
@@ -2282,43 +2469,24 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new CharField<216>(this, modelData.topbarData, false, "Top bar blob"));
     internalField.Append(new SpareBitsField<8>(this)); // current view
   }
+  else if (version >= 219) {
+    for (int i = 0; i < 4; i++) {
+      internalField.Append(new UnsignedField<2>(this, modelData.frsky.screens[i].type));
+    }
+    for (int i = 0; i < 4; i++) {
+      internalField.Append(new FrskyScreenField(this, modelData.frsky.screens[i], board, version, variant));
+    }
+    internalField.Append(new SpareBitsField<8>(this)); // current view
+  }
+
+  if (version >= 219) {
+    internalField.Append(new ZCharField<8>(this, modelData.registrationId, "ACCESS Registration ID"));
+  }
 }
 
 void OpenTxModelData::beforeExport()
 {
   // qDebug() << QString("before export model") << modelData.name;
-
-  for (int module=0; module<3; module++) {
-    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
-      modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
-      if (! (modelData.moduleData[module].protocol == PULSES_PXX_R9M)) {
-        subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
-      }
-      int pxxByte = (modelData.moduleData[module].pxx.power & 0x03)
-                    | modelData.moduleData[module].pxx.receiver_telem_off << 4
-                    | modelData.moduleData[module].pxx.receiver_channel_9_16 << 5;
-      modelData.moduleData[module].ppm.delay = 300 + 50 * pxxByte;
-      modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].pxx.external_antenna;
-      modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].pxx.sport_out;
-
-    }
-    else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX) {
-      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
-    }
-    else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
-      // copy multi settings to ppm settings to get them written to the eeprom
-      // (reverse the int => ms logic of the ppm delay) since only ppm is written
-      subprotocols[module] = modelData.moduleData[module].multi.rfProtocol & (0x1f);
-      int multiByte = ((modelData.moduleData[module].multi.rfProtocol >> 4) & 0x03) | (modelData.moduleData[module].multi.customProto << 7);
-      modelData.moduleData[module].ppm.delay = 300 + 50 * multiByte;
-      modelData.moduleData[module].ppm.frameLength = modelData.moduleData[module].multi.optionValue;
-      modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].multi.lowPowerMode;
-      modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].multi.autoBindMode;
-    }
-    else {
-      subprotocols[module] = (module == 0 ? -1 : 0);
-    }
-  }
 
   if (IS_HORUS(board)) {
     uint32_t newSwitchWarningStates = 0;
@@ -2337,39 +2505,6 @@ void OpenTxModelData::afterImport()
   qCDebug(eepromImport) << QString("OpenTxModelData::afterImport()") << modelData.name;
 
   if (IS_HORUS(board)) {
-    modelData.moduleData[0].protocol = PULSES_PXX_XJT_X16;
-  }
-
-  for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16 || modelData.moduleData[module].protocol == PULSES_LP45) {
-      if (subprotocols[module] >= 0)
-        modelData.moduleData[module].protocol += subprotocols[module];
-      else
-        modelData.moduleData[module].protocol = PULSES_OFF;
-    }
-    else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
-      // Copy data from ppm struct to multi struct
-      unsigned int multiByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
-      modelData.moduleData[module].multi.rfProtocol = (subprotocols[module] & 0x0f) | ((multiByte & 0x3) << 4);
-      modelData.moduleData[module].multi.customProto = (multiByte & 0x80) == 0x80;
-      modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
-      modelData.moduleData[module].multi.lowPowerMode = modelData.moduleData[module].ppm.outputType;
-      modelData.moduleData[module].multi.autoBindMode = modelData.moduleData[module].ppm.pulsePol;
-    }
-
-    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
-        modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
-      // Do the same for pxx
-      unsigned int pxxByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
-      modelData.moduleData[module].pxx.power = pxxByte & 0x03;
-      modelData.moduleData[module].pxx.receiver_telem_off = static_cast<bool>(pxxByte & (1 << 4));
-      modelData.moduleData[module].pxx.receiver_channel_9_16 = static_cast<bool>(pxxByte & (1 << 5));
-      modelData.moduleData[module].pxx.sport_out = modelData.moduleData[module].ppm.outputType;
-      modelData.moduleData[module].pxx.external_antenna = modelData.moduleData[module].ppm.pulsePol;
-    }
-  }
-
-  if (IS_HORUS(board)) {
     uint32_t newSwitchWarningStates = 0;
     for (int i = 0; i < MAX_SWITCHES(board, version); i++) {
       uint8_t value = (modelData.switchWarningStates >> (3*i)) & 0x07;
@@ -2380,15 +2515,19 @@ void OpenTxModelData::afterImport()
     }
     modelData.switchWarningStates = newSwitchWarningStates;
   }
+
+  if (version <= 218 && IS_HORUS_X10(board) && modelData.thrTraceSrc > 3) {
+    modelData.thrTraceSrc += 2;
+  }
 }
 
 OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant):
-  TransformedField(NULL, internalField),
+  TransformedField(nullptr, internalField),
   internalField(this, "General Settings"),
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(CPN_MAX_STICKS + Boards::getCapability(board, Board::Pots) + MAX_SLIDERS(board) + MAX_MOUSE_ANALOGS(board))
+  inputsCount(CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version) + MAX_SLIDERS_STORAGE(board, version) + Boards::getCapability(board, Board::MouseAnalogs))
 {
   qCDebug(eepromImport) << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
 
@@ -2398,25 +2537,40 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   internalField.Append(new UnsignedField<8>(this, generalData.version));
   internalField.Append(new UnsignedField<16>(this, generalData.variant));
 
-  for (int i=0; i<inputsCount; i++) {
-    internalField.Append(new SignedField<16>(this, generalData.calibMid[i]));
-    internalField.Append(new SignedField<16>(this, generalData.calibSpanNeg[i]));
-    internalField.Append(new SignedField<16>(this, generalData.calibSpanPos[i]));
+  for (int i=0, input=0; i<inputsCount; i++, input++) {
+    if (version <= 218 && IS_HORUS_X10(board) && (i == CPN_MAX_STICKS + 3)) {
+      input += 2;
+    }
+    internalField.Append(new SignedField<16>(this, generalData.calibMid[input]));
+    internalField.Append(new SignedField<16>(this, generalData.calibSpanNeg[input]));
+    internalField.Append(new SignedField<16>(this, generalData.calibSpanPos[input]));
+  }
+
+  if (version <= 218 && IS_HORUS_X10(board)) {
+    internalField.Append(new SpareBitsField<16*6>(this));
   }
 
   internalField.Append(new UnsignedField<16>(this, chkSum));
+
   if (!IS_HORUS(board)) {
     internalField.Append(new UnsignedField<8>(this, generalData.currModelIndex));
     internalField.Append(new UnsignedField<8>(this, generalData.contrast));
   }
   internalField.Append(new UnsignedField<8>(this, generalData.vBatWarn));
   internalField.Append(new SignedField<8>(this, generalData.txVoltageCalibration));
-  internalField.Append(new SignedField<8>(this, generalData.backlightMode));
 
-  for (int i=0; i<CPN_MAX_STICKS; i++) {
+  internalField.Append(new SignedField<3>(this, generalData.backlightMode));
+  if (version >= 219)
+    internalField.Append(new SignedField<2>(this, generalData.antennaMode));
+  else
+    internalField.Append(new SpareBitsField<2>(this));
+  internalField.Append(new SpareBitsField<3>(this));
+
+  for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));
   }
-  for (int i=0; i<CPN_MAX_STICKS; i++) {
+
+  for (int i=0; i<4; i++) {
     internalField.Append(new UnsignedField<6>(this, generalData.trainer.mix[i].src));
     internalField.Append(new UnsignedField<2>(this, generalData.trainer.mix[i].mode));
     internalField.Append(new SignedField<8>(this, generalData.trainer.mix[i].weight));
@@ -2441,7 +2595,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   internalField.Append(new UnsignedField<8>(this, generalData.inactivityTimer));
-  internalField.Append(new SpareBitsField<3>(this));
+  internalField.Append(new SpareBitsField<3>(this)); // telemetryBaudrate
   if (IS_HORUS(board))
     internalField.Append(new SpareBitsField<3>(this));
   else if (IS_TARANIS(board))
@@ -2480,11 +2634,11 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   internalField.Append(new UnsignedField<8>(this, generalData.backlightBright));
   if (version < 218) internalField.Append(new SignedField<8>(this, generalData.txCurrentCalibration));
 
-  if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureWarn));
+  if (version < 218) internalField.Append(new SpareBitsField<8>(this));
   if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.mAhWarn));
   if (version < 218) internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
   internalField.Append(new UnsignedField<32>(this, generalData.globalTimer));
-  if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureCalib));
+  if (version < 218) internalField.Append(new SpareBitsField<8>(this));
   internalField.Append(new UnsignedField<4>(this, generalData.bluetoothBaudrate));
   internalField.Append(new UnsignedField<4>(this, generalData.bluetoothMode));
   if (version < 218) internalField.Append(new BoolField<8>(this, generalData.optrexDisplay));
@@ -2492,7 +2646,16 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
 
 
   if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps));
-  internalField.Append(new UnsignedField<8>(this, generalData.countryCode));
+  internalField.Append(new UnsignedField<2>(this, generalData.countryCode));
+
+  if (version >= 219 && IS_HORUS_OR_TARANIS(board)) {
+    internalField.Append(new SignedField<3>(this, generalData.pwrOnSpeed, "Power On Speed"));
+    internalField.Append(new SignedField<3>(this, generalData.pwrOffSpeed, "Power Off Speed"));
+  }
+  else {
+    internalField.Append(new SpareBitsField<6>(this));
+  }
+
   internalField.Append(new UnsignedField<1>(this, generalData.imperial));
   if (version >= 218) {
     internalField.Append(new BoolField<1>(this, generalData.jitterFilter));
@@ -2527,16 +2690,21 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new ArmCustomFunctionField(this, generalData.customFn[i], board, version, variant));
     }
   }
-
+  
   if (IS_STM32(board)) {
     if (version >= 218) {
-      internalField.Append(new UnsignedField<4>(this, generalData.hw_uartMode));
-      for (uint8_t i=0; i<4; i++) {
-        internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
+      internalField.Append(new UnsignedField<4>(this, generalData.auxSerialMode));
+      if (IS_HORUS(board) && version >= 219) {
+        internalField.Append(new SpareBitsField<4>(this));
+      }
+      else {
+        for (uint8_t i=0; i<SLIDERS_CONFIG_SIZE(board,version); i++) {
+          internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
+        }
       }
     }
     else {
-      internalField.Append(new UnsignedField<6>(this, generalData.hw_uartMode));
+      internalField.Append(new UnsignedField<6>(this, generalData.auxSerialMode));
       if (IS_TARANIS_X9E(board)) {
         internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[2]));
         internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[3]));
@@ -2547,29 +2715,45 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
 
     if (IS_HORUS(board)) {
-      for (int i=0; i<16; i++) {
+      for (int i=0; i<SWITCHES_CONFIG_SIZE(board, version) / 2; i++) {
         if (i < MAX_SWITCHES(board, version))
           internalField.Append(new UnsignedField<2>(this, generalData.switchConfig[i]));
         else
           internalField.Append(new SpareBitsField<2>(this));
       }
     }
-    for (int i=0; i<4; i++) {
-      if (i < Boards::getCapability(board, Board::Pots))
-        internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i]));
+
+    for (int i=0; i<POTS_CONFIG_SIZE(board, version) / 2; i++) {
+      int offset = 0;
+      // 2 new pots for Horus from 219 on
+      if (version <= 218 && IS_HORUS(board) && (i >= 3))
+        offset += 2;
+      
+      if (i < MAX_POTS_STORAGE(board, version))
+        internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i+offset]));
       else
         internalField.Append(new SpareBitsField<2>(this));
     }
+    
+    if (IS_HORUS(board) && version >= 219) {
+      for (int i=0; i<SLIDERS_CONFIG_SIZE(board,version); i++) {
+        if (i < MAX_SLIDERS_STORAGE(board, version))
+          internalField.Append(new UnsignedField<1>(this, generalData.sliderConfig[i]));
+        else
+          internalField.Append(new SpareBitsField<1>(this));
+      }
+    }    
+    
     if (!IS_HORUS(board)) {
       internalField.Append(new UnsignedField<8>(this, generalData.backlightColor));
     }
   }
   else if (IS_SKY9X(board) && version >= 218) {
     internalField.Append(new SignedField<8>(this, generalData.txCurrentCalibration));
-    internalField.Append(new SignedField<8>(this, generalData.temperatureWarn));
+    internalField.Append(new SpareBitsField<8>(this));
     internalField.Append(new UnsignedField<8>(this, generalData.mAhWarn));
     internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
-    internalField.Append(new SignedField<8>(this, generalData.temperatureCalib));
+    internalField.Append(new SpareBitsField<8>(this));
     internalField.Append(new BoolField<8>(this, generalData.optrexDisplay));
     internalField.Append(new UnsignedField<8>(this, generalData.sticksGain));
     internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps));
@@ -2577,6 +2761,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
 
   if (IS_TARANIS_X9E(board))
     internalField.Append(new SpareBitsField<64>(this)); // switchUnlockStates
+  else if (version >= 219 && IS_TARANIS_X9D(board))
+    internalField.Append(new SpareBitsField<32>(this)); // switchUnlockStates
   else if (IS_TARANIS(board))
     internalField.Append(new SpareBitsField<16>(this)); // switchUnlockStates
 
@@ -2593,16 +2779,19 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     for (int i=0; i<CPN_MAX_STICKS; ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.stickName[i], "Stick name"));
     }
-    for (int i=0; i<Boards::getCapability(board, Board::Pots); ++i) {
+    for (int i=0; i<MAX_POTS_STORAGE(board, version); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.potName[i], "Pot name"));
     }
-    for (int i=0; i<MAX_SLIDERS(board); ++i) {
+    for (int i=0; i<MAX_SLIDERS_STORAGE(board, version); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.sliderName[i], "Slider name"));
+    }
+    if (version <= 218 && IS_HORUS_X10(board)) {
+      internalField.Append(new SpareBitsField<48>(this)); // DUMMY_ANAS
     }
     internalField.Append(new CharField<17>(this, generalData.currModelFilename, true, "Current model filename"));
   }
   else if (IS_TARANIS(board)) {
-    for (int i=0; i<MAX_SWITCH_SLOTS(board, version); i++) {
+    for (int i=0; i<SWITCHES_CONFIG_SIZE(board, version) / 2; i++) {
       if (i < MAX_SWITCHES(board, version))
         internalField.Append(new UnsignedField<2>(this, generalData.switchConfig[i]));
       else
@@ -2617,7 +2806,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     for (int i=0; i<Boards::getCapability(board, Board::Pots); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.potName[i], "Pot name"));
     }
-    for (int i=0; i<MAX_SLIDERS(board); ++i) {
+    for (int i=0; i<Boards::getCapability(board, Board::Sliders); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.sliderName[i], "Slider name"));
     }
   }
@@ -2627,8 +2816,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new UnsignedField<7>(this, generalData.backlightOffBright));
     internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
   }
-  else if (IS_TARANIS_X9E(board)) {
-    internalField.Append(new UnsignedField<8>(this, generalData.bluetoothMode));
+  else if (IS_TARANIS_X9E(board) || (version >= 219 && (IS_TARANIS_X7(board) || IS_TARANIS_X9D(board) || IS_TARANIS_XLITE(board)))) {
+    internalField.Append(new SpareBitsField<8>(this));
     internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
   }
 
@@ -2639,6 +2828,14 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
   }
 
+  if (version >= 219) {
+    internalField.Append(new ZCharField<8>(this, generalData.registrationId, "ACCESS Registration ID"));
+  }
+
+  if (version >= 219 && IS_TARANIS_XLITES(board)) {
+    internalField.Append(new SignedField<8>(this, generalData.gyroMax, "Gyro full scale"));
+    internalField.Append(new SignedField<8>(this, generalData.gyroOffset, "Gyro Offset"));
+  }
 }
 
 void OpenTxGeneralData::beforeExport()

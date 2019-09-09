@@ -26,7 +26,7 @@
 int expoFn(int x)
 {
   ExpoData *ed = expoAddress(s_currIdx);
-  int16_t anas[NUM_INPUTS] = {0};
+  int16_t anas[MAX_INPUTS] = {0};
   anas[ed->chn] = x;
   applyExpos(anas, e_perout_mode_inactive_flight_mode);
   return anas[ed->chn];
@@ -114,7 +114,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
     memclear(mix, sizeof(MixData));
     mix->destCh = s_currCh-1;
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
     mix->weight = 100;
   }
   resumeMixerCalculations();
@@ -153,7 +153,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
     }
 
     if (tgt_idx == MAX_EXPOS) {
-      if (((ExpoData *)x)->chn == NUM_INPUTS-1)
+      if (((ExpoData *)x)->chn == MAX_INPUTS-1)
         return false;
       ((ExpoData *)x)->chn++;
       return true;
@@ -166,7 +166,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
         else return false;
       }
       else {
-        if (((ExpoData *)x)->chn<NUM_INPUTS-1) ((ExpoData *)x)->chn++;
+        if (((ExpoData *)x)->chn<MAX_INPUTS-1) ((ExpoData *)x)->chn++;
         else return false;
       }
       return true;
@@ -378,7 +378,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
-  TITLE(STR_MIXER);
+  title(STR_MIXER);
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(lcdLastRightPos+1*FW, 0, md2->destCh+1,0);
 
@@ -397,7 +397,7 @@ void menuModelMixOne(event_t event)
         editSingleName(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
         break;
       case MIX_FIELD_SOURCE:
-        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_SOURCE));
+        drawFieldLabel(COLUMN_X, y, STR_SOURCE);
         drawSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
@@ -407,7 +407,7 @@ void menuModelMixOne(event_t event)
         break;
       case MIX_FIELD_OFFSET:
       {
-        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_OFFSET));
+        drawFieldLabel(COLUMN_X, y, STR_OFFSET);
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
@@ -741,7 +741,7 @@ void menuModelExpoMix(uint8_t expo, event_t event)
   uint8_t cur = 1;
   uint8_t i = 0;
 
-  for (uint8_t ch=1; ch<=(expo ? NUM_INPUTS : MAX_OUTPUT_CHANNELS); ch++) {
+  for (uint8_t ch=1; ch<=(expo ? MAX_INPUTS : MAX_OUTPUT_CHANNELS); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
     coord_t y = MENU_HEADER_HEIGHT-FH+1+(cur-menuVerticalOffset)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {

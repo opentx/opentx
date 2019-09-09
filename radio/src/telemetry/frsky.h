@@ -39,11 +39,6 @@ enum FrSkyDataState {
 
 #define FRSKY_SPORT_PACKET_SIZE   9
 
-#define WSHH_TIMEOUT10ms          60  // 600ms
-
-#define FRSKY_SPORT_AVERAGING     4
-#define FRSKY_D_AVERAGING         8
-
 // Enumerate FrSky packet codes
 #define LINKPKT                   0xfe
 #define USRPKT                    0xfd
@@ -55,7 +50,6 @@ enum FrSkyDataState {
 #define RSSI1PKT                  0xf7
 #define RSSI2PKT                  0xf6
 #define RSSI_REQUEST              0xf1
-
 
 // FrSky PRIM IDs (1 byte)
 #define DATA_FRAME                0x10
@@ -98,7 +92,6 @@ enum FrSkyDataState {
 #define D_A2_ID                   0xF2
 
 #define VFAS_D_HIPREC_OFFSET      2000
-
 
 // FrSky new DATA IDs (2 bytes)
 #define ALT_FIRST_ID              0x0100
@@ -205,52 +198,41 @@ enum FrSkyDataState {
 #define DATA_ID_SP2UH             0x45 // 5
 #define DATA_ID_SP2UR             0xC6 // 6
 
-#define IS_HIDDEN_TELEMETRY_VALUE(id)     ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == RAS_ID) || (id == FACT_TEST_ID))
+inline bool IS_HIDDEN_TELEMETRY_VALUE(uint16_t id)
+{
+  return (id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == RAS_ID) || (id == FACT_TEST_ID);
+}
 
-#define ALARM_GREATER(channel, alarm)     ((g_model.frsky.channels[channel].alarms_greater >> alarm) & 1)
-#define ALARM_LEVEL(channel, alarm)       ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
+class TelemetryData {
+  public:
+    TelemetryExpiringDecorator<TelemetryValue> swrInternal;
+    TelemetryExpiringDecorator<TelemetryValue> swrExternal;
+    TelemetryFilterDecorator<TelemetryValue> rssi;
+    uint16_t xjtVersion;
+    uint8_t varioHighPrecision:1;
+    uint8_t telemetryValid:3;
+    uint8_t spare:4;
 
-#define TELEMETRY_STREAMING()           (telemetryData.rssi.value > 0)
-#define TELEMETRY_RSSI()                (telemetryData.rssi.value)
-#define TELEMETRY_RSSI_MIN()            (telemetryData.rssi.min)
+    void setSwr(uint8_t module, uint8_t value)
+    {
+      if (module == 0)
+        swrInternal.set(value);
+      else
+        swrExternal.set(value);
+    }
 
-#define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  1
+    void clear()
+    {
+      memset(this, 0, sizeof(*this));
+    }
+};
 
-#define TELEMETRY_GPS_SPEED_BP          telemetryData.hub.gpsSpeed_bp
-#define TELEMETRY_GPS_SPEED_AP          telemetryData.hub.gpsSpeed_ap
+extern TelemetryData telemetryData;
 
-#define TELEMETRY_ABSOLUTE_GPS_ALT      (telemetryData.hub.gpsAltitude)
-#define TELEMETRY_RELATIVE_GPS_ALT      (telemetryData.hub.gpsAltitude + telemetryData.hub.gpsAltitudeOffset)
-#define TELEMETRY_RELATIVE_GPS_ALT_BP   (TELEMETRY_RELATIVE_GPS_ALT / 100)
-
-#define TELEMETRY_RELATIVE_BARO_ALT_BP  (telemetryData.hub.baroAltitude / 100)
-#define TELEMETRY_RELATIVE_BARO_ALT_AP  (telemetryData.hub.baroAltitude % 100)
-
-#define TELEMETRY_BARO_ALT_PREPARE()    div_t baroAltitudeDivision = div(getConvertedTelemetryValue(telemetryData.hub.baroAltitude, UNIT_DIST), 100)
-#define TELEMETRY_BARO_ALT_FORMAT       "%c%d.%02d,"
-#define TELEMETRY_BARO_ALT_ARGS         telemetryData.hub.baroAltitude < 0 ? '-' : ' ', abs(baroAltitudeDivision.quot), abs(baroAltitudeDivision.rem),
-#define TELEMETRY_GPS_ALT_FORMAT        "%c%d.%02d,"
-#define TELEMETRY_GPS_ALT_ARGS          telemetryData.hub.gpsAltitude < 0 ? '-' : ' ', abs(telemetryData.hub.gpsAltitude / 100), abs(telemetryData.hub.gpsAltitude % 100),
-#define TELEMETRY_SPEED_UNIT            (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
-#define TELEMETRY_GPS_SPEED_FORMAT      "%d,"
-#define TELEMETRY_GPS_SPEED_ARGS        telemetryData.hub.gpsSpeed_bp,
-
-#define TELEMETRY_CELLS_ARGS          telemetryData.hub.cellsSum / 10, telemetryData.hub.cellsSum % 10, TELEMETRY_CELL_VOLTAGE(0)/100, TELEMETRY_CELL_VOLTAGE(0)%100, TELEMETRY_CELL_VOLTAGE(1)/100, TELEMETRY_CELL_VOLTAGE(1)%100, TELEMETRY_CELL_VOLTAGE(2)/100, TELEMETRY_CELL_VOLTAGE(2)%100, TELEMETRY_CELL_VOLTAGE(3)/100, TELEMETRY_CELL_VOLTAGE(3)%100, TELEMETRY_CELL_VOLTAGE(4)/100, TELEMETRY_CELL_VOLTAGE(4)%100, TELEMETRY_CELL_VOLTAGE(5)/100, TELEMETRY_CELL_VOLTAGE(5)%100, TELEMETRY_CELL_VOLTAGE(6)/100, TELEMETRY_CELL_VOLTAGE(6)%100, TELEMETRY_CELL_VOLTAGE(7)/100, TELEMETRY_CELL_VOLTAGE(7)%100, TELEMETRY_CELL_VOLTAGE(8)/100, TELEMETRY_CELL_VOLTAGE(8)%100, TELEMETRY_CELL_VOLTAGE(9)/100, TELEMETRY_CELL_VOLTAGE(9)%100, TELEMETRY_CELL_VOLTAGE(10)/100, TELEMETRY_CELL_VOLTAGE(10)%100, TELEMETRY_CELL_VOLTAGE(11)/100, TELEMETRY_CELL_VOLTAGE(11)%100,
-#define TELEMETRY_CELLS_FORMAT        "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
-#define TELEMETRY_CELLS_LABEL         "Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Cell 7,Cell 8,Cell 9,Cell 10,Cell 11,Cell 12,"
-
-#define TELEMETRY_CURRENT_FORMAT        "%d.%d,"
-#define TELEMETRY_CURRENT_ARGS          telemetryData.hub.current / 10, telemetryData.hub.current % 10,
-#define TELEMETRY_VFAS_FORMAT           "%d.%d,"
-#define TELEMETRY_VFAS_ARGS             telemetryData.hub.vfas / 10, telemetryData.hub.vfas % 10,
-#define TELEMETRY_VSPEED_FORMAT         "%c%d.%02d,"
-#define TELEMETRY_VSPEED_ARGS           telemetryData.hub.varioSpeed < 0 ? '-' : ' ', abs(telemetryData.hub.varioSpeed / 100), abs(telemetryData.hub.varioSpeed % 100),
-#define TELEMETRY_ASPEED_FORMAT         "%d.%d,"
-#define TELEMETRY_ASPEED_ARGS           telemetryData.hub.airSpeed / 10, telemetryData.hub.airSpeed % 10,
-#define TELEMETRY_OPENXSENSOR()         (0)
-
-#define TELEMETRY_CELL_VOLTAGE(k)         (telemetryData.hub.cellVolts[k] * TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
-#define TELEMETRY_MIN_CELL_VOLTAGE        (telemetryData.hub.minCellVolts * TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
+inline uint8_t TELEMETRY_RSSI()
+{
+  return telemetryData.rssi.value();
+}
 
 #define START_STOP                        0x7E
 #define BYTESTUFF                         0x7D
@@ -279,25 +261,6 @@ extern uint8_t telemetryProtocol;
 void telemetryInit(uint8_t protocol);
 
 void telemetryInterrupt10ms();
-
-class TelemetryData {
-  public:
-    TelemetryExpiringDecorator<TelemetryValue> swrInternal;
-    TelemetryExpiringDecorator<TelemetryValue> swrExternal;
-    TelemetryFilterDecorator<TelemetryValue> rssi;
-    uint16_t xjtVersion;
-    bool varioHighPrecision;
-
-    void setSwr(uint8_t module, uint8_t value)
-    {
-      if (module == 0)
-        swrInternal.set(value);
-      else
-        swrExternal.set(value);
-    }
-};
-
-extern TelemetryData telemetryData;
 
 bool pushFrskyTelemetryData(uint8_t data); // returns true when end of frame detected
 void processFrskyTelemetryData(uint8_t data);

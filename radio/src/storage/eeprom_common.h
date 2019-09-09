@@ -28,10 +28,11 @@ void eeLoadModel(uint8_t id);
 uint8_t eeFindEmptyModel(uint8_t id, bool down);
 void selectModel(uint8_t sub);
 
-  extern ModelHeader modelHeaders[MAX_MODELS];
-  void eeLoadModelHeader(uint8_t id, ModelHeader *header);
-  void eeLoadModelHeaders();
+extern ModelHeader modelHeaders[MAX_MODELS];
+void eeLoadModelHeader(uint8_t id, ModelHeader *header);
+void eeLoadModelHeaders();
 
-void storageReadRadioSettings();
+void storageClearRadioSettings();
+bool storageReadRadioSettings(bool allowFixes = true);
 void storageReadCurrentModel();
 

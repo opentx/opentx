@@ -37,44 +37,7 @@ INIT_STOPS(stops100, 3, -100, 0, 100)
 INIT_STOPS(stops1000, 3, -1000, 0, 1000)
 INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1), SWSRC_LAST)
 
-int checkIncDecSelection = 0;
-
-void onSourceLongEnterPress(const char * result)
-{
-  if (result == STR_MENU_INPUTS)
-    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
-#if defined(LUA_MODEL_SCRIPTS)
-  else if (result == STR_MENU_LUA)
-    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
-#endif
-  else if (result == STR_MENU_STICKS)
-    checkIncDecSelection = MIXSRC_FIRST_STICK;
-  else if (result == STR_MENU_POTS)
-    checkIncDecSelection = MIXSRC_FIRST_POT;
-  else if (result == STR_MENU_MAX)
-    checkIncDecSelection = MIXSRC_MAX;
-  else if (result == STR_MENU_HELI)
-    checkIncDecSelection = MIXSRC_FIRST_HELI;
-  else if (result == STR_MENU_TRIMS)
-    checkIncDecSelection = MIXSRC_FIRST_TRIM;
-  else if (result == STR_MENU_SWITCHES)
-    checkIncDecSelection = MIXSRC_FIRST_SWITCH;
-  else if (result == STR_MENU_TRAINER)
-    checkIncDecSelection = MIXSRC_FIRST_TRAINER;
-  else if (result == STR_MENU_CHANNELS)
-    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
-  else if (result == STR_MENU_GVARS)
-    checkIncDecSelection = MIXSRC_FIRST_GVAR;
-  else if (result == STR_MENU_TELEMETRY) {
-    for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
-      TelemetrySensor * sensor = & g_model.telemetrySensors[i];
-      if (sensor->isAvailable()) {
-        checkIncDecSelection = MIXSRC_FIRST_TELEM + 3*i;
-        break;
-      }
-    }
-  }
-}
+extern int checkIncDecSelection;
 
 void onSwitchLongEnterPress(const char * result)
 {
@@ -258,7 +221,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       case EVT_KEY_LONG(KEY_PAGE):
         if (s_editMode>0)
           break;
-          
+
         if (curr > 0)
           cc = curr - 1;
         else
@@ -269,7 +232,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       case EVT_KEY_BREAK(KEY_PAGE):
         if (s_editMode>0)
           break;
-          
+
         if (curr < (menuTabSize-1))
           cc = curr + 1;
         else
@@ -299,7 +262,8 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       break;
 
     case EVT_ROTARY_BREAK:
-      if (s_editMode > 1) break;
+      if (s_editMode > 1)
+        break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
         AUDIO_KEY_PRESS();
@@ -464,24 +428,4 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
 
   menuVerticalPosition = l_posVert;
   menuHorizontalPosition = l_posHorz;
-}
-
-void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, vertpos_t maxrow)
-{
-  check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
-}
-
-void check_submenu_simple(event_t event, uint8_t maxrow)
-{
-  check_simple(event, 0, 0, 0, maxrow);
-}
-
-void repeatLastCursorMove(event_t event)
-{
-  if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
-    putEvent(event);
-  }
-  else {
-    menuHorizontalPosition = 0;
-  }
 }

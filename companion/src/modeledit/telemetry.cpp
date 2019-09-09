@@ -653,6 +653,9 @@ void TelemetrySensorPanel::update()
     ui->id->hide();
     ui->instanceLabel->hide();
     ui->instance->hide();
+    ui->rxLabel->hide();
+    ui->moduleLabel->hide();
+    ui->rxOrMod->hide();
     ui->formula->show();
     ui->formula->setCurrentIndex(sensor.formula);
     isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
@@ -676,6 +679,14 @@ void TelemetrySensorPanel::update()
     ui->id->show();
     ui->instanceLabel->show();
     ui->instance->show();
+
+    bool is_pxx2 = model->moduleData[sensor.moduleIdx].isPxx2Module();
+    ui->rxLabel->setVisible(is_pxx2);
+    ui->moduleLabel->setVisible(!is_pxx2);
+
+    ui->rxOrMod->setText(sensor.getRxOrModName(model));
+    ui->rxOrMod->show();
+
     ui->formula->hide();
     isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
     ratioFieldsDisplayed = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
@@ -741,14 +752,24 @@ void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model
   cb->clear();
   if (negative) {
     for (int i=-CPN_MAX_SENSORS; i<0; ++i) {
-      if (model->sensorData[-i-1].isAvailable())
-        cb->addItem(QString("-%1").arg(model->sensorData[-i-1].label), i);
+      const SensorData& sensor = model->sensorData[-i-1];
+      if (sensor.isAvailable()) {
+        if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
+          cb->addItem(QString("-%1 (%2)").arg(sensor.label, sensor.getRxOrModName(model)), i);
+        else
+          cb->addItem(QString("-%1").arg(sensor.label), i);
+      }
     }
   }
   cb->addItem("---", 0);
   for (unsigned i=1; i<=CPN_MAX_SENSORS; ++i) {
-    if (model->sensorData[i-1].isAvailable())
-      cb->addItem(model->sensorData[i-1].label, i);
+    const SensorData& sensor = model->sensorData[i-1];
+    if (sensor.isAvailable()) {
+      if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
+        cb->addItem(QString("%1 (%2)").arg(sensor.label, sensor.getRxOrModName(model)), i);
+      else
+        cb->addItem(QString("%1").arg(sensor.label), i);
+    }
   }
 }
 
@@ -830,7 +851,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   if (IS_ARM(firmware->getBoard())) {
-	ui->varioSource->setField(model.frsky.varioSource, this);
+    ui->varioSource->setField(model.frsky.varioSource, this);
     ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
     ui->A1GB->hide();
     ui->A2GB->hide();
@@ -844,7 +865,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
   else {
     ui->sensorsGB->hide();
-	ui->altimetryGB->hide();
+    ui->altimetryGB->hide();
     analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
     ui->A1Layout->addWidget(analogs[0]);
     connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
@@ -893,6 +914,7 @@ void TelemetryPanel::update()
       ui->telemetryProtocol->setCurrentIndex(0);
     }
 
+    populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
     populateTelemetrySourcesComboBox(ui->voltsSource, model, false);
     populateTelemetrySourcesComboBox(ui->altitudeSource, model, false);
     populateTelemetrySourcesComboBox(ui->varioSource, model, false);
@@ -917,7 +939,7 @@ void TelemetryPanel::setup()
       ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
       ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
       if (IS_9XRPRO(firmware->getBoard()) ||
-         (IS_TARANIS(firmware->getBoard()) && generalSettings.hw_uartMode == 2)) {
+         (IS_TARANIS(firmware->getBoard()) && generalSettings.auxSerialMode == 2)) {
         ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
       }
       ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
@@ -934,10 +956,18 @@ void TelemetryPanel::setup()
     ui->rssiAlarmWarningSB->setValue(model->rssiAlarms.warning);
     ui->rssiAlarmCriticalSB->setValue(model->rssiAlarms.critical);
     if (!IS_ARM(firmware->getBoard())) {
+      ui->rssiSourceLabel->hide();
+      ui->rssiSourceCB->hide();
       ui->rssiAlarmWarningCB->setCurrentIndex(model->rssiAlarms.level[0]);
       ui->rssiAlarmCriticalCB->setCurrentIndex(model->rssiAlarms.level[1]);
     }
     else {
+      ui->rssiSourceLabel->show();
+      ui->rssiSourceLabel->setText(tr("Source"));
+      ui->rssiSourceCB->setField(model->rssiSource, this);
+      ui->rssiSourceCB->show();
+      populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
+      
       ui->rssiAlarmWarningCB->hide();
       ui->rssiAlarmCriticalCB->hide();
       ui->rssiAlarmWarningLabel->setText(tr("Low Alarm"));

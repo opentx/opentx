@@ -21,30 +21,31 @@
 #include "opentx.h"
 
 const CrossfireSensor crossfireSensors[] = {
-  {LINK_ID,        0, ZSTR_RX_RSSI1,    UNIT_DB,            0},
-  {LINK_ID,        1, ZSTR_RX_RSSI2,    UNIT_DB,            0},
-  {LINK_ID,        2, ZSTR_RX_QUALITY,  UNIT_PERCENT,       0},
-  {LINK_ID,        3, ZSTR_RX_SNR,      UNIT_DB,            0},
-  {LINK_ID,        4, ZSTR_ANTENNA,     UNIT_RAW,           0},
-  {LINK_ID,        5, ZSTR_RF_MODE,     UNIT_RAW,           0},
-  {LINK_ID,        6, ZSTR_TX_POWER,    UNIT_MILLIWATTS,    0},
-  {LINK_ID,        7, ZSTR_TX_RSSI,     UNIT_DB,            0},
-  {LINK_ID,        8, ZSTR_TX_QUALITY,  UNIT_PERCENT,       0},
-  {LINK_ID,        9, ZSTR_TX_SNR,      UNIT_DB,            0},
-  {BATTERY_ID,     0, ZSTR_BATT,        UNIT_VOLTS,         1},
-  {BATTERY_ID,     1, ZSTR_CURR,        UNIT_AMPS,          1},
-  {BATTERY_ID,     2, ZSTR_CAPACITY,    UNIT_MAH,           0},
-  {GPS_ID,         0, ZSTR_GPS,         UNIT_GPS_LATITUDE,  0},
-  {GPS_ID,         0, ZSTR_GPS,         UNIT_GPS_LONGITUDE, 0},
-  {GPS_ID,         2, ZSTR_GSPD,        UNIT_KMH,           1},
-  {GPS_ID,         3, ZSTR_HDG,         UNIT_DEGREE,        3},
-  {GPS_ID,         4, ZSTR_ALT,         UNIT_METERS,        0},
-  {GPS_ID,         5, ZSTR_SATELLITES,  UNIT_RAW,           0},
-  {ATTITUDE_ID,    0, ZSTR_PITCH,       UNIT_RADIANS,       3},
-  {ATTITUDE_ID,    1, ZSTR_ROLL,        UNIT_RADIANS,       3},
-  {ATTITUDE_ID,    2, ZSTR_YAW,         UNIT_RADIANS,       3},
-  {FLIGHT_MODE_ID, 0, ZSTR_FLIGHT_MODE, UNIT_TEXT,          0},
-  {0,              0, "UNKNOWN",        UNIT_RAW,           0},
+  {LINK_ID,        0, ZSTR_RX_RSSI1,    UNIT_DB,                0},
+  {LINK_ID,        1, ZSTR_RX_RSSI2,    UNIT_DB,                0},
+  {LINK_ID,        2, ZSTR_RX_QUALITY,  UNIT_PERCENT,           0},
+  {LINK_ID,        3, ZSTR_RX_SNR,      UNIT_DB,                0},
+  {LINK_ID,        4, ZSTR_ANTENNA,     UNIT_RAW,               0},
+  {LINK_ID,        5, ZSTR_RF_MODE,     UNIT_RAW,               0},
+  {LINK_ID,        6, ZSTR_TX_POWER,    UNIT_MILLIWATTS,        0},
+  {LINK_ID,        7, ZSTR_TX_RSSI,     UNIT_DB,                0},
+  {LINK_ID,        8, ZSTR_TX_QUALITY,  UNIT_PERCENT,           0},
+  {LINK_ID,        9, ZSTR_TX_SNR,      UNIT_DB,                0},
+  {BATTERY_ID,     0, ZSTR_BATT,        UNIT_VOLTS,             1},
+  {BATTERY_ID,     1, ZSTR_CURR,        UNIT_AMPS,              1},
+  {BATTERY_ID,     2, ZSTR_CAPACITY,    UNIT_MAH,               0},
+  {GPS_ID,         0, ZSTR_GPS,         UNIT_GPS_LATITUDE,      0},
+  {GPS_ID,         0, ZSTR_GPS,         UNIT_GPS_LONGITUDE,     0},
+  {GPS_ID,         2, ZSTR_GSPD,        UNIT_KMH,               1},
+  {GPS_ID,         3, ZSTR_HDG,         UNIT_DEGREE,            3},
+  {GPS_ID,         4, ZSTR_ALT,         UNIT_METERS,            0},
+  {GPS_ID,         5, ZSTR_SATELLITES,  UNIT_RAW,               0},
+  {ATTITUDE_ID,    0, ZSTR_PITCH,       UNIT_RADIANS,           3},
+  {ATTITUDE_ID,    1, ZSTR_ROLL,        UNIT_RADIANS,           3},
+  {ATTITUDE_ID,    2, ZSTR_YAW,         UNIT_RADIANS,           3},
+  {FLIGHT_MODE_ID, 0, ZSTR_FLIGHT_MODE, UNIT_TEXT,              0},
+  {CF_VARIO_ID,    0, ZSTR_VSPD,        UNIT_METERS_PER_SECOND, 2},
+  {0,              0, "UNKNOWN",        UNIT_RAW,               0},
 };
 
 const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
@@ -55,6 +56,8 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
     return crossfireSensors[BATT_VOLTAGE_INDEX+subId];
   else if (id == GPS_ID)
     return crossfireSensors[GPS_LATITUDE_INDEX+subId];
+  else if (id == CF_VARIO_ID)
+    return crossfireSensors[VERTICAL_SPEED_INDEX];
   else if (id == ATTITUDE_ID)
     return crossfireSensors[ATTITUDE_PITCH_INDEX+subId];
   else if (id == FLIGHT_MODE_ID)
@@ -66,7 +69,7 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 {
   const CrossfireSensor & sensor = crossfireSensors[index];
-  setTelemetryValue(TELEM_PROTO_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, sensor.precision);
+  setTelemetryValue(PROTOCOL_TELEMETRY_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, sensor.precision);
 }
 
 bool checkCrossfireTelemetryFrameCRC()
@@ -102,6 +105,11 @@ void processCrossfireTelemetryFrame()
   uint8_t id = telemetryRxBuffer[2];
   int32_t value;
   switch(id) {
+    case CF_VARIO_ID:
+      if (getCrossfireTelemetryValue<2>(3, value))
+        processCrossfireTelemetryValue(VERTICAL_SPEED_INDEX, value);
+      break;
+
     case GPS_ID:
       if (getCrossfireTelemetryValue<4>(3, value))
         processCrossfireTelemetryValue(GPS_LATITUDE_INDEX, value/10);
@@ -121,7 +129,7 @@ void processCrossfireTelemetryFrame()
       for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value)) {
           if (i == TX_POWER_INDEX) {
-            static const int32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000 };
+            static const int32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000, 250 };
             value = ((unsigned)value < DIM(power_values) ? power_values[value] : 0);
           }
           processCrossfireTelemetryValue(i, value);
@@ -156,7 +164,7 @@ void processCrossfireTelemetryFrame()
       const CrossfireSensor & sensor = crossfireSensors[FLIGHT_MODE_INDEX];
       for (int i=0; i<min<int>(16, telemetryRxBuffer[1]-2); i+=4) {
         uint32_t value = *((uint32_t *)&telemetryRxBuffer[3+i]);
-        setTelemetryValue(TELEM_PROTO_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, i);
+        setTelemetryValue(PROTOCOL_TELEMETRY_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, i);
       }
       break;
     }
@@ -176,9 +184,9 @@ void processCrossfireTelemetryFrame()
 
 void processCrossfireTelemetryData(uint8_t data)
 {
-#if defined(SERIAL2)
-  if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
-    serial2Putc(data);
+#if defined(AUX_SERIAL)
+  if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    auxSerialPutc(data);
   }
 #endif
 
@@ -204,6 +212,11 @@ void processCrossfireTelemetryData(uint8_t data)
   if (telemetryRxBufferCount > 4) {
     uint8_t length = telemetryRxBuffer[1];
     if (length + 2 == telemetryRxBufferCount) {
+#if defined(BLUETOOTH)
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
+#endif
       processCrossfireTelemetryFrame();
       telemetryRxBufferCount = 0;
     }

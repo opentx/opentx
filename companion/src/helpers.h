@@ -67,6 +67,14 @@ class GVarGroup: public QObject {
 
     void setWeight(int val);
 
+    void setMinimum(int min) {
+      mini = min;
+    }
+
+    void setMaximum(int max) {
+      maxi = max;
+    }
+
   signals:
     void valueChanged();
 
@@ -127,6 +135,11 @@ namespace Helpers
   void getFileComboBoxValue(QComboBox * b, char * dest, int length);
 
   void exportAppSettings(QWidget * dlgParent = nullptr);
+
+  QString getChecklistsPath();
+  QString getChecklistFilename(const ModelData * model);
+  QString getChecklistFilePath(const ModelData * model);
+  QString removeAccents(const QString & str);
 
 }  // namespace Helpers
 

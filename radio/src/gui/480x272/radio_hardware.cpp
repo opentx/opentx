@@ -50,17 +50,24 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SG,
   ITEM_RADIO_HARDWARE_SH,
-  ITEM_RADIO_HARDWARE_GMBL,
-  ITEM_RADIO_HARDWARE_GMBR,
+  ITEM_RADIO_HARDWARE_SI, // Gimbal switch left
+  ITEM_RADIO_HARDWARE_SJ, // Gimbal switch right
+  ITEM_RADIO_HARDWARE_BATTERY_CALIB,
+  ITEM_RADIO_HARDWARE_RTC_BATTERY,
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
-#if defined(SERIAL2)
-  ITEM_RADIO_HARDWARE_UART3_MODE,
+
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA,
 #endif
+
+#if defined(AUX_SERIAL)
+  ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
+#endif
+
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
-  ITEM_RADIO_HARDWARE_BAT_CAL,
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -73,11 +80,64 @@ enum MenuRadioHardwareItems {
 #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0)
 
 // TODO should be moved to the HAL
-#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_GMBL-MIXSRC_FIRST_SWITCH == sw || MIXSRC_GMBR-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+#define EXTERNAL_ANTENNA_ROW         0,
+void onHardwareAntennaSwitchConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    // Switch to external antenna confirmation
+    g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
+    storageDirty(EE_GENERAL);
+  }
+  else {
+    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+  }
+}
+#else
+#define EXTERNAL_ANTENNA_ROW
+#endif
 
 bool menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0, BLUETOOTH_ROWS, 0, 0, 0 });
+  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, {
+    0 /* calibration button */,
+
+    LABEL(Sticks),
+      0 /* stick 1 */,
+      0 /* stick 2 */,
+      0 /* stick 3 */,
+      0 /* stick 4 */,
+
+    LABEL(Pots),
+      POTS_ROWS,
+
+    LABEL(Switches),
+      SWITCHES_ROWS,
+
+    0, /* battery */
+    READONLY_ROW, /* RTC */
+
+    0, /* max baudrate */
+
+    BLUETOOTH_ROWS,
+
+    EXTERNAL_ANTENNA_ROW
+
+    0, /* aux serial mode */
+    0, /* ADC filter */
+  });
+
+  if (menuEvent) {
+    disableVBatBridge();
+  }
+  else if (event == EVT_ENTRY) {
+    enableVBatBridge();
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+#endif
+  }
 
   uint8_t sub = menuVerticalPosition;
 
@@ -165,8 +225,8 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_SF:
       case ITEM_RADIO_HARDWARE_SG:
       case ITEM_RADIO_HARDWARE_SH:
-      case ITEM_RADIO_HARDWARE_GMBL:
-      case ITEM_RADIO_HARDWARE_GMBR:
+      case ITEM_RADIO_HARDWARE_SI:
+      case ITEM_RADIO_HARDWARE_SJ:
       {
         int index = k - ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);
@@ -177,17 +237,28 @@ bool menuRadioHardware(event_t event)
           lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
         config = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
-          g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
+          g_eeGeneral.switchConfig = bfSet<swconfig_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
         }
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_BATTERY_CALIB:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);
+        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getBatteryVoltage(), attr|PREC2, 0, NULL, "V");
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
+        break;
+
+      case ITEM_RADIO_HARDWARE_RTC_BATTERY:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RTC_BATT);
+        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getRTCBatteryVoltage(), attr|PREC2, 0, NULL, "V");
+        break;
 
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAXBAUDRATE);
         lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
         if (attr) {
           g_eeGeneral.telemetryBaudrate = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.telemetryBaudrate, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
-          if (checkIncDec_Ret) {
+          if (checkIncDec_Ret && IS_EXTERNAL_MODULE_ON()) {
             pauseMixerCalculations();
             pausePulses();
             EXTERNAL_MODULE_OFF();
@@ -206,21 +277,38 @@ bool menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
-        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_PIN_CODE);
-        lcdDrawText(HW_SETTINGS_COLUMN+50, y, "0000", 0);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH_PIN_CODE);
+        lcdDrawText(HW_SETTINGS_COLUMN+50, y, "000000", 0);
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
-        lcdDrawText(INDENT_WIDTH, y, STR_NAME);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_NAME);
         editName(HW_SETTINGS_COLUMN+50, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
         break;
 
-#if defined(SERIAL2)
-      case ITEM_RADIO_HARDWARE_UART3_MODE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UART3MODE);
-        g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+      case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNA);
+        reusableBuffer.radioHardware.antennaMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_ANTENNA_MODES, reusableBuffer.radioHardware.antennaMode, ANTENNA_MODE_INTERNAL, ANTENNA_MODE_EXTERNAL, attr, event);
+        if (!s_editMode && reusableBuffer.radioHardware.antennaMode != g_eeGeneral.antennaMode) {
+          if (!isExternalAntennaEnabled() && (reusableBuffer.radioHardware.antennaMode == ANTENNA_MODE_EXTERNAL || (reusableBuffer.radioHardware.antennaMode == ANTENNA_MODE_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode == ANTENNA_MODE_EXTERNAL))) {
+            POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onHardwareAntennaSwitchConfirm);
+            SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
+          }
+          else {
+            g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
+            checkExternalAntenna();
+          }
+        }
+        break;
+#endif
+
+#if defined(AUX_SERIAL)
+      case ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUX_SERIAL_MODE);
+        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
-          serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
+          auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
         }
         break;
 #endif
@@ -228,16 +316,10 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_JITTER_FILTER);
-        uint8_t b = 1-g_eeGeneral.jitterFilter;
+        uint8_t b = 1 - g_eeGeneral.jitterFilter;
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
-
-      case ITEM_RADIO_HARDWARE_BAT_CAL:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);
-        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
-        break;
     }
   }
 

@@ -41,7 +41,8 @@ class RadioSwitchWidget : public RadioWidget
     {
       init();
     }
-    explicit RadioSwitchWidget(Board::SwitchType type, const QString & labelText, int value = 0, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+
+    explicit RadioSwitchWidget(Board::SwitchType type, const QString & labelText, int value = -1, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(labelText, value, parent, f),
       swType(type)
     {
@@ -96,15 +97,24 @@ class RadioSwitchWidget : public RadioWidget
         setWidget(m_slider);
       }
 
-      connect(m_slider, &QSlider::valueChanged, this, &RadioWidget::setValue);
+      connect(m_slider, &QSlider::valueChanged, this, &RadioSwitchWidget::setValueFromSlider);
       connect(this, &RadioWidget::valueChanged, m_slider, &QSlider::setValue);
-
     }
 
-    int getValue() const
+    int getValue() const override
     {
-      int val = m_slider->value() - (swType == Board::SWITCH_3POS || m_slider->value() == 1 ? 0 : 1);
-      return val;
+      if (swType == Board::SWITCH_3POS)
+        return m_slider->value();
+      else
+        return m_slider->value() > 0 ? 1 : 0;
+    }
+
+    void setValueFromSlider(const int & value)
+    {
+      if (swType == Board::SWITCH_3POS)
+        RadioWidget::setValue(value);
+      else
+        RadioWidget::setValue(value ? 1 : -1);
     }
 
     void setToggleLocked(bool lock)
@@ -117,7 +127,7 @@ class RadioSwitchWidget : public RadioWidget
 
     void resetToggle()
     {
-      setValue(0);
+      setValue(-1);
     }
 
   private slots:
@@ -138,8 +148,5 @@ class RadioSwitchWidget : public RadioWidget
     Board::SwitchType swType;
     QSlider * m_slider;
 };
-
-
-
 
 #endif // _RADIOSWITCHWIDGET_H_

@@ -72,24 +72,33 @@ const BitmapBuffer * ModelCell::getBuffer()
 
 void ModelCell::loadBitmap()
 {
+  uint8_t version;
+
   PACK(struct {
     ModelHeader header;
     TimerData timers[MAX_TIMERS];
   }) partialmodel;
   const char * error = NULL;
 
-  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-  if (buffer == NULL) {
-    return;
-  }
-
   if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
   }
   else {
-    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel));
+    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
+    // LEN_BITMAP_NAME has now 4 bytes more
+    if (version <= 218) {
+      memmove(partialmodel.timers, &(partialmodel.header.bitmap[10]), sizeof(TimerData)*MAX_TIMERS);
+      memclear(&(partialmodel.header.bitmap[10]), 4);
+    }
   }
 
+  if ((modelName[0] == 0) && ! error)
+    setModelName(partialmodel.header.name); // resets buffer!!!
+
+  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
+  if (buffer == NULL) {
+    return;
+  }
   buffer->clear(TEXT_BGCOLOR);
 
   if (error) {
@@ -97,9 +106,6 @@ void ModelCell::loadBitmap()
     buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
   }
   else {
-    if (modelName[0] == 0)
-      setModelName(partialmodel.header.name);
-
     char timer[LEN_TIMER_STRING];
     buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
     getTimerString(timer, 0);
@@ -542,7 +548,7 @@ uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
 
   uint8_t new_id = 1;
   uint8_t tst_mask = 1;
-  for (;new_id < MAX_RX_NUM(moduleIdx); new_id++) {
+  for (;new_id < getMaxRxNum(moduleIdx); new_id++) {
     if (!(usedModelIds[new_id >> 3] & tst_mask)) {
       // found free ID
       return new_id;

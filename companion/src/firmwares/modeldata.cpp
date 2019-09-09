@@ -24,37 +24,7 @@
 #include "generalsettings.h"
 #include "macros.h"
 #include "radiodataconversionstate.h"
-
-
-QString removeAccents(const QString & str)
-{
-  // UTF-8 ASCII Table
-  static const QHash<QString, QVariant> map = {
-    {"a", QRegularExpression("[áâãàä]")},
-    {"A", QRegularExpression("[ÁÂÃÀÄ]")},
-    {"e", QRegularExpression("[éèêě]")},
-    {"E", QRegularExpression("[ÉÈÊĚ]")},
-    {"o", QRegularExpression("[óôõö]")},
-    {"O", QRegularExpression("[ÓÔÕÖ]")},
-    {"u", QRegularExpression("[úü]")},
-    {"U", QRegularExpression("[ÚÜ]")},
-    {"i", "í"}, {"I", "Í"},
-    {"c", "ç"}, {"C", "Ç"},
-    {"y", "ý"}, {"Y", "Ý"},
-    {"s", "š"}, {"S", "Š"},
-    {"r", "ř"}, {"R", "Ř"}
-  };
-
-  QString result(str);
-  for (QHash<QString, QVariant>::const_iterator it = map.cbegin(), en = map.cend(); it != en; ++it) {
-    if (it.value().canConvert<QRegularExpression>())
-      result.replace(it.value().toRegularExpression(), it.key());
-    else
-      result.replace(it.value().toString(), it.key());
-  }
-  return result;
-}
-
+#include "helpers.h"
 
 /*
  * TimerData
@@ -187,25 +157,14 @@ void ModelData::clear()
 {
   memset(reinterpret_cast<void *>(this), 0, sizeof(ModelData));
   modelIndex = -1;  // an invalid index, this is managed by the TreeView data model
+  moduleData[0].protocol = PULSES_OFF;
+  moduleData[1].protocol = PULSES_OFF;
   moduleData[0].channelsCount = 8;
   moduleData[1].channelsStart = 0;
   moduleData[1].channelsCount = 8;
   moduleData[0].ppm.delay = 300;
   moduleData[1].ppm.delay = 300;
-  moduleData[2].ppm.delay = 300;
-  int board = getCurrentBoard();
-  if (IS_HORUS_OR_TARANIS(board)) {
-    moduleData[0].protocol = PULSES_PXX_XJT_X16;
-    moduleData[1].protocol = PULSES_OFF;
-  }
-  else if (IS_SKY9X(board)) {
-    moduleData[0].protocol = PULSES_PPM;
-    moduleData[1].protocol = PULSES_PPM;
-  }
-  else {
-    moduleData[0].protocol = PULSES_PPM;
-    moduleData[1].protocol = PULSES_OFF;
-  }
+  moduleData[2].ppm.delay = 300;  //Trainer PPM
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear(i);
   }
@@ -251,7 +210,7 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
       expo->mode = INPUT_MODE_BOTH;
       expo->srcRaw = settings.getDefaultSource(i);
       expo->weight = 100;
-      strncpy(inputNames[i], removeAccents(expo->srcRaw.toString(this)).toLatin1().constData(), sizeof(inputNames[i])-1);
+      strncpy(inputNames[i], Helpers::removeAccents(expo->srcRaw.toString(this)).toLatin1().constData(), sizeof(inputNames[i])-1);
     }
   }
 }
@@ -337,7 +296,7 @@ void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
       return;
     if (p == phaseIdx || phaseIdx == 0) {
       trim = value;
-      break;;
+      break;
     }
     else if (mode == 0) {
       phaseIdx = p;

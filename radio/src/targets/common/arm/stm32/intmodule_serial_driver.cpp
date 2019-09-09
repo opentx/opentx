@@ -41,9 +41,9 @@ void intmoduleStop()
   GPIO_ResetBits(INTMODULE_GPIO, INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN);
 }
 
-void intmodulePxxStart()
+void intmodulePxx1SerialStart()
 {
-  intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, false);
+  intmoduleSerialStart(INTMODULE_PXX1_SERIAL_BAUDRATE, false);
 }
 
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
@@ -105,6 +105,12 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
   }
 }
 
+void intmoduleSendByte(uint8_t byte)
+{
+  while (!(INTMODULE_USART->SR & USART_SR_TXE));
+  USART_SendData(INTMODULE_USART, byte);
+}
+
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
   if (size == 0)
@@ -136,7 +142,7 @@ void intmoduleSendNextFrame()
 {
   switch(moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2:
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
       intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
       break;
 #endif

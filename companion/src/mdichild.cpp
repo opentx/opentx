@@ -534,7 +534,6 @@ void MdiChild::initModelsList()
   connect(modelsListModel, &QAbstractItemModel::dataChanged, this, &MdiChild::onDataChanged);
 
   ui->modelsList->setModel(modelsListModel);
-  ui->modelsList->header()->setVisible(!firmware->getCapability(Capability::HasModelCategories));
   if (IS_HORUS(board)) {
     ui->modelsList->setIndentation(20);
     // ui->modelsList->resetIndentation(); // introduced in next Qt versions ...
@@ -543,6 +542,14 @@ void MdiChild::initModelsList()
     ui->modelsList->setIndentation(0);
   }
   refresh();
+
+  if (firmware->getCapability(Capability::HasModelCategories)) {
+    ui->modelsList->header()->resizeSection(0, ui->modelsList->header()->sectionSize(0) * 2);   // pad out categories and model names
+  }
+  else {
+    ui->modelsList->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);           // minimise Index
+    ui->modelsList->header()->resizeSection(1, ui->modelsList->header()->sectionSize(1) * 1.5); // pad out model names
+  }
 }
 
 void MdiChild::refresh()
@@ -1327,7 +1334,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
   QString warning = storage.warning();
   if (!warning.isEmpty()) {
-    // TODO EEPROMInterface::showEepromWarnings(this, CPN_STR_TTL_WARNING, warning);
+    QMessageBox::warning(this, CPN_STR_TTL_WARNING, warning);
   }
 
   if (resetCurrentFile) {

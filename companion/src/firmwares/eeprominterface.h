@@ -107,6 +107,7 @@ enum Capability {
   HasFailsafe,
   HasSoundMixer,
   NumModules,
+  NumFirstUsableModule,
   HasModuleR9MFlex,
   HasModuleR9MMini,
   PPMCenter,
@@ -147,7 +148,8 @@ enum Capability {
   HasBatMeterRange,
   DangerousFunctions,
   HasModelCategories,
-  HasSwitchableJack
+  HasSwitchableJack,
+  PwrButtonPress
 };
 
 class EEPROMInterface
@@ -176,7 +178,7 @@ class EEPROMInterface
     virtual int getSize(const GeneralSettings &) = 0;
 
     //static void showEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
-    static void showEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
+    static QString getEepromWarnings(unsigned long errorsFound);
 
   protected:
 
@@ -343,7 +345,7 @@ class Firmware
 
     virtual QTime getMaxTimerStart() = 0;
 
-    virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
+    virtual bool isAvailable(PulsesProtocol proto, int port=0) = 0;
 
     const int getFlashSize();
 

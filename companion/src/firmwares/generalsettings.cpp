@@ -53,19 +53,21 @@ bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 
 bool GeneralSettings::isPotAvailable(int index) const
 {
-  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Pots)) return false;
+  if (index < 0 || index > getBoardCapability(getCurrentBoard(), Board::Pots))
+    return false;
   return potConfig[index] != Board::POT_NONE;
 }
 
 bool GeneralSettings::isSliderAvailable(int index) const
 {
-  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Sliders)) return false;
+  if (index < 0 || index > getBoardCapability(getCurrentBoard(), Board::Sliders))
+    return false;
   return sliderConfig[index] != Board::SLIDER_NONE;
 }
 
 GeneralSettings::GeneralSettings()
 {
-  memset(this, 0, sizeof(GeneralSettings));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(GeneralSettings));
 
   contrast  = 25;
 
@@ -90,7 +92,7 @@ GeneralSettings::GeneralSettings()
     // Lipo 2S
     vBatWarn = 66;
     vBatMin = -23;  // 6.7V
-    vBatMax = -37;  // 8.3V 
+    vBatMax = -37;  // 8.3V
   }
   else if (IS_TARANIS(board)) {
     // NI-MH 7.2V, X9D, X9D+ and X7
@@ -249,6 +251,10 @@ void GeneralSettings::setDefaultControlTypes(Board::Type board)
     potConfig[0] = Board::POT_WITH_DETENT;
     potConfig[1] = Board::POT_WITH_DETENT;
   }
+  else if (IS_JUMPER_T12(board)) {
+    potConfig[0] = Board::POT_WITH_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
+  }
   else {
     potConfig[0] = Board::POT_WITHOUT_DETENT;
     potConfig[1] = Board::POT_WITHOUT_DETENT;
@@ -314,6 +320,20 @@ void GeneralSettings::convert(RadioDataConversionState & cstate)
     if (IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) {
       strncpy(switchName[5], switchName[4], sizeof(switchName[5]));
       strncpy(switchName[7], switchName[5], sizeof(switchName[7]));
+    }
+  }
+
+  if (IS_JUMPER_T12(cstate.toType)) {
+    if (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType)) {
+      strncpy(switchName[4], switchName[5], sizeof(switchName[0]));
+      strncpy(switchName[5], switchName[7], sizeof(switchName[0]));
+    }
+  }
+
+  else if (IS_JUMPER_T12(cstate.fromType)) {
+    if (IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) {
+      strncpy(switchName[5], switchName[4], sizeof(switchName[0]));
+      strncpy(switchName[7], switchName[5], sizeof(switchName[0]));
     }
   }
 

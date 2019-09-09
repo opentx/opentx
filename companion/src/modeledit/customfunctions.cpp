@@ -119,6 +119,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     // The label
     QLabel * label = new QLabel(this);
     label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
     label->setProperty("index", i);
     if (model)
@@ -383,7 +384,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       cfn.swtch = RawSwitch(fswtchSwtch[i]->currentData().toInt());
       cfn.func = func;
       cfn.enabled = fswtchEnable[i]->isChecked();
-      cfn.adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
 
     if (!cfn.isEmpty()) {
@@ -417,6 +417,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         int gvidx = func - FuncAdjustGV1;
         if (modified)
           cfn.adjustMode = fswtchGVmode[i]->currentIndex();
+        fswtchGVmode[i]->setCurrentIndex(cfn.adjustMode);
         widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
         if (cfn.adjustMode==FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
           if (modified)
@@ -425,8 +426,16 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             fswtchParam[i]->setDecimals(model->gvarData[gvidx].prec);
             fswtchParam[i]->setSingleStep(model->gvarData[gvidx].multiplierGet());
             fswtchParam[i]->setSuffix(model->gvarData[gvidx].unitToString());
-            fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
-            fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            if (cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
+              double rng = abs(model->gvarData[gvidx].getMax() - model->gvarData[gvidx].getMin());
+              rng *= model->gvarData[gvidx].multiplierGet();
+              fswtchParam[i]->setMinimum(-rng);
+              fswtchParam[i]->setMaximum(rng);
+            }
+            else {
+              fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
+              fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            }
             fswtchParam[i]->setValue(cfn.param * model->gvarData[gvidx].multiplierGet());
           }
           else {

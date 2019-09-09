@@ -323,13 +323,13 @@ QString MainWindow::seekCodeString(const QByteArray & qba, const QString & label
 {
   int posLabel = qba.indexOf(label);
   if (posLabel < 0)
-    return QString::null;
+    return QString();
   int start = qba.indexOf("\"", posLabel + label.length());
   if (start < 0)
-    return QString::null;
+    return QString();
   int end = qba.indexOf("\"", start + 1);
   if (end < 0)
-    return QString::null;
+    return QString();
   return qba.mid(start + 1, end - start - 1);
 }
 
@@ -340,6 +340,15 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
   closeUpdatesWaitDialog();
 
   QString version = seekCodeString(qba, "VERSION");
+  const QString errorString = seekCodeString(qba, "ERROR");
+
+  if (errorString == "NO_RC")
+    return onUpdatesError(tr("No Companion release candidates are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_NIGHTLY")
+    return onUpdatesError(tr("No nightly Companion builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_RELEASE")
+    return onUpdatesError(tr("No Companion release builds are currently being served for this version, please switch release channel"));
+
   if (version.isNull())
     return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
@@ -456,7 +465,45 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
   const QString versionString = seekCodeString(qba, "VERSION");
   const QString dateString = seekCodeString(qba, "DATE");
+  const QString errorString = seekCodeString(qba, "ERROR");
+  const QString blockedRadios = seekCodeString(qba, "BLOCK");
   long version;
+  
+  if (errorString == "NO_RC")
+    return onUpdatesError(tr("No firmware release candidates are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_NIGHTLY")
+    return onUpdatesError(tr("No firmware nightly builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_RELEASE")
+    return onUpdatesError(tr("No firmware release builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "MOVE_TO_RC") {
+    QMessageBox msgbox;
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Release candidate builds are now available for this version, would you like to switch to using them?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgbox.setDefaultButton(QMessageBox::Yes);
+      
+    if(msgbox.exec() == QMessageBox::Yes) {
+      g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RC_TESTING));
+      return onUpdatesError(tr("Channel changed to RC, please restart the download process"));
+    }
+  }
+  else if (errorString == "MOVE_TO_RELEASE") {
+    QMessageBox msgbox;
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Official release builds are now available for this version, would you like to switch to using them?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgbox.setDefaultButton(QMessageBox::Yes);
+      
+    if(msgbox.exec() == QMessageBox::Yes) {
+      g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RELEASE_STABLE));
+      return onUpdatesError(tr("Channel changed to Release, please restart the download process"));
+    }
+  }
+
+  QString variant = Firmware::getCurrentVariant()->getId();
+  QStringList splitId = variant.split("-");
+  if (blockedRadios.contains(splitId.value(1)))
+    return onUpdatesError(tr("This radio (%1) is not currently available in this firmware release channel").arg(getCurrentFirmware()->getName()));
 
   if (versionString.isNull() || dateString.isNull() || (version = version2index(versionString)) <= 0)
     return onUpdatesError(tr("Firmware update check failed, new version information not found or invalid."));
@@ -482,10 +529,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(fullVersionString));
-      QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-      msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+      QAbstractButton *YesButton = msgBox.addButton(tr("Yes"), QMessageBox::YesRole);
+      msgBox.addButton(tr("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
-        rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        rnButton = msgBox.addButton(tr("Release Notes"), QMessageBox::ActionRole);
       }
       msgBox.setIcon(QMessageBox::Question);
       msgBox.resize(0, 0);
@@ -511,10 +558,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(currentVersionString).arg(fullVersionString));
-      QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-      msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+      QAbstractButton *YesButton = msgBox.addButton(tr("Yes"), QMessageBox::YesRole);
+      msgBox.addButton(tr("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
-        rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        rnButton = msgBox.addButton(tr("Release Notes"), QMessageBox::ActionRole);
       }
       msgBox.setIcon(QMessageBox::Question);
       msgBox.resize(0,0);

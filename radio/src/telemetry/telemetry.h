@@ -21,11 +21,7 @@
 #ifndef _TELEMETRY_H_
 #define _TELEMETRY_H_
 
-#if defined(TELEMETRY_FRSKY)
-  // FrSky Telemetry
-  #include "frsky.h"
-#endif
-
+#include "frsky.h"
 #include "crossfire.h"
 #if defined(MULTIMODULE)
   #include "spektrum.h"
@@ -34,11 +30,11 @@
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
-extern uint8_t R9ModuleStreaming; // >0 (true) == R9 module is connected and sending data 0 = no data detected for some time
 
-#if defined(WS_HOW_HIGH)
-extern uint8_t wshhStreaming;
-#endif
+inline bool TELEMETRY_STREAMING()
+{
+  return telemetryStreaming > 0;
+}
 
 enum TelemetryStates {
   TELEMETRY_INIT,
@@ -47,7 +43,7 @@ enum TelemetryStates {
 };
 extern uint8_t telemetryState;
 
-#define TELEMETRY_TIMEOUT10ms          100 // 1 second
+constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
 
 #define TELEMETRY_SERIAL_DEFAULT       0
 #define TELEMETRY_SERIAL_8E2           1
@@ -107,7 +103,7 @@ void frskyDSetDefault(int index, uint16_t id);
 extern uint8_t telemetryProtocol;
 
 #if defined (MULTIMODULE)
-#define IS_D16_MULTI()                 ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
+#define IS_D16_MULTI()                 ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && IS_D16_MULTI()))
 #else
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT)
@@ -147,9 +143,6 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_START()
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
-
-#define TELEMETRY_ENDPOINT_NONE    0xFF
-#define TELEMETRY_ENDPOINT_SPORT   0x07
 
 class OutputTelemetryBuffer {
   public:
@@ -217,7 +210,7 @@ class OutputTelemetryBuffer {
         crc += crc >> 8; // 0-100
         crc &= 0x00ff;
       }
-      pushByte(0xFF - crc);
+      pushByteWithBytestuffing(0xFF - crc);
     }
 
   public:
@@ -237,10 +230,16 @@ extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
-#if defined(STM32)
-#define IS_TELEMETRY_INTERNAL_MODULE() (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX_XJT)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+inline bool isSportLineUsedByInternalModule()
+{
+  return g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1;
+}
 #else
-#define IS_TELEMETRY_INTERNAL_MODULE() (false)
+inline bool isSportLineUsedByInternalModule()
+{
+  return false;
+}
 #endif
 
 void processPXX2Frame(uint8_t module, uint8_t *frame);

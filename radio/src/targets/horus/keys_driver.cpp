@@ -79,9 +79,9 @@ uint32_t readTrims()
   return result;
 }
 
-uint16_t trimDown(uint16_t idx)
+bool trimDown(uint8_t idx)
 {
-  return readTrims() & (1 << idx);
+  return readTrims() & ((uint32_t)1 << idx);
 }
 
 bool keyDown()
@@ -158,11 +158,6 @@ void readKeysAndTrims()
     } \
     break
 
-uint8_t keyState(uint8_t index)
-{
-  return keys[index].state();
-}
-
 #if !defined(BOOT)
 uint32_t switchState(uint8_t index)
 {
@@ -178,6 +173,8 @@ uint32_t switchState(uint8_t index)
     ADD_INV_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
+    ADD_2POS_CASE(I);
+    ADD_2POS_CASE(J);
 #else
     ADD_3POS_CASE(A, 0);
     ADD_INV_3POS_CASE(B, 1);
@@ -187,8 +184,8 @@ uint32_t switchState(uint8_t index)
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
-    ADD_2POS_CASE(GMBL);
-    ADD_2POS_CASE(GMBR);
+    ADD_2POS_CASE(I);
+    ADD_2POS_CASE(J);
 #endif
     default:
       break;

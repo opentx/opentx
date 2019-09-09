@@ -75,7 +75,7 @@ enum
   inline void POPUP_INPUT(const char * s, PopupFunc func) { }
   inline void SET_WARNING_INFO(const char * info, uint8_t length, uint8_t flags) { }
 #else
-  #define DISPLAY_WARNING              (*popupFunc)
+  #define DISPLAY_WARNING(evt)              (*popupFunc)(evt)
   inline void CLEAR_POPUP()
   {
     warningText = nullptr;
@@ -107,11 +107,14 @@ enum
 
   inline void POPUP_CONFIRMATION(const char * s, PopupMenuHandler handler)
   {
-    warningText = s;
-    warningInfoText = nullptr;
-    warningType = WARNING_TYPE_CONFIRM;
-    popupFunc = runPopupWarning;
-    popupMenuHandler = handler;
+    if (s != warningText) {
+      killAllEvents();
+      warningText = s;
+      warningInfoText = nullptr;
+      warningType = WARNING_TYPE_CONFIRM;
+      popupFunc = runPopupWarning;
+      popupMenuHandler = handler;
+    }
   }
 
   inline void POPUP_INPUT(const char * s, PopupFunc func)
@@ -144,8 +147,9 @@ enum
 inline void POPUP_MENU_ADD_ITEM(const char * s)
 {
   popupMenuOffsetType = MENU_OFFSET_INTERNAL;
-  if (popupMenuItemsCount < POPUP_MENU_MAX_LINES)
+  if (popupMenuItemsCount < POPUP_MENU_MAX_LINES) {
     popupMenuItems[popupMenuItemsCount++] = s;
+  }
 }
 
 #if defined(SDCARD)
@@ -161,8 +165,11 @@ inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
 
 inline void POPUP_MENU_START(PopupMenuHandler handler)
 {
-  popupMenuHandler = handler;
-  AUDIO_KEY_PRESS();
+  if (handler != popupMenuHandler) {
+    killAllEvents();
+    AUDIO_KEY_PRESS();
+    popupMenuHandler = handler;
+  }
 }
 
 #endif // _STDLCD_POPUPS_H_

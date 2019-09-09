@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
+#include "../opentx_constants.h"
 
 extern uint16_t ResetReason;
 
@@ -34,9 +35,8 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS               0x00400000
 
 // Board driver
-void boardPreInit(void);
-void boardInit(void);
-#define boardOff()  pwrOff()
+void boardInit();
+void boardOff();
 
 // Rotary Encoder driver
 void rotaryEncoderInit();
@@ -51,6 +51,9 @@ void rotaryEncoderEnd();
 
 // Keys driver
 #define NUM_SWITCHES                   7
+#define STORAGE_NUM_SWITCHES           NUM_SWITCHES
+#define NUM_SWITCHES_POSITIONS         9
+
 enum EnumKeys
 {
   KEY_MENU,
@@ -62,6 +65,9 @@ enum EnumKeys
   KEY_PLUS = KEY_UP,
   KEY_RIGHT,
   KEY_LEFT,
+
+  KEY_COUNT,
+  KEY_MAX = KEY_COUNT - 1,
 
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
@@ -95,33 +101,18 @@ enum EnumSwitches
 #define IS_3POS(sw)                    ((sw) == 0)
 #define IS_TOGGLE(sw)                  ((sw) == SWSRC_TRN)
 
-#if defined(REVA)
-  #define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
-  #define KEYS_GPIO_REG_EXIT           PIOA->PIO_PDSR
-  #define KEYS_GPIO_REG_UP             PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_DOWN           PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_RIGHT          PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_LEFT           PIOC->PIO_PDSR
-  #define KEYS_GPIO_PIN_MENU           0x00000040
-  #define KEYS_GPIO_PIN_EXIT           0x80000000
-  #define KEYS_GPIO_PIN_UP             0x00000004
-  #define KEYS_GPIO_PIN_DOWN           0x00000008
-  #define KEYS_GPIO_PIN_RIGHT          0x00000010
-  #define KEYS_GPIO_PIN_LEFT           0x00000020
-#else
-  #define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
-  #define KEYS_GPIO_REG_EXIT           PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_UP             PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_DOWN           PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_RIGHT          PIOC->PIO_PDSR
-  #define KEYS_GPIO_REG_LEFT           PIOC->PIO_PDSR
-  #define KEYS_GPIO_PIN_MENU           0x00000020
-  #define KEYS_GPIO_PIN_EXIT           0x01000000
-  #define KEYS_GPIO_PIN_UP             0x00000002
-  #define KEYS_GPIO_PIN_DOWN           0x00000020
-  #define KEYS_GPIO_PIN_RIGHT          0x00000010
-  #define KEYS_GPIO_PIN_LEFT           0x00000008
-#endif
+#define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
+#define KEYS_GPIO_REG_EXIT           PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_UP             PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_DOWN           PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_RIGHT          PIOC->PIO_PDSR
+#define KEYS_GPIO_REG_LEFT           PIOC->PIO_PDSR
+#define KEYS_GPIO_PIN_MENU           0x00000020
+#define KEYS_GPIO_PIN_EXIT           0x01000000
+#define KEYS_GPIO_PIN_UP             0x00000002
+#define KEYS_GPIO_PIN_DOWN           0x00000020
+#define KEYS_GPIO_PIN_RIGHT          0x00000010
+#define KEYS_GPIO_PIN_LEFT           0x00000008
 
 #if defined(REVX)
   #define TRIMS_GPIO_REG_LHL           PIOB->PIO_PDSR
@@ -152,15 +143,6 @@ enum EnumSwitches
   #define TRIMS_GPIO_PIN_LVU           0x10000000
   #define TRIMS_GPIO_PIN_RVD           0x00000002
   #define TRIMS_GPIO_PIN_RHR           0x00000200
-#elif defined(REVA)
-  #define TRIMS_GPIO_PIN_LHL           0x00000080
-  #define TRIMS_GPIO_PIN_LVD           0x08000000
-  #define TRIMS_GPIO_PIN_RVU           0x40000000
-  #define TRIMS_GPIO_PIN_RHL           0x20000000
-  #define TRIMS_GPIO_PIN_LHR           0x00000010
-  #define TRIMS_GPIO_PIN_LVU           0x10000000
-  #define TRIMS_GPIO_PIN_RVD           0x00000400
-  #define TRIMS_GPIO_PIN_RHR           0x00000200
 #else
   #define TRIMS_GPIO_PIN_LHL           0x00800000
   #define TRIMS_GPIO_PIN_LVD           0x01000000
@@ -179,14 +161,18 @@ enum EnumSwitches
 #define LCD_CONTRAST_MIN               10
 #define LCD_CONTRAST_MAX               45
 #define LCD_CONTRAST_DEFAULT           25
-void lcdInit(void);
-void lcdRefresh(void);
+void lcdInit();
+void lcdRefresh();
 #define lcdRefreshWait()
 void lcdSetRefVolt(uint8_t val);
-void lcdSetContrast(void);
+void lcdSetContrast();
 
 // USB driver
 void usbMassStorage();
+
+#if !defined(SIMU)
+void usbJoystickUpdate();
+#endif
 
 #define PIN_ENABLE                     0x001
 #define PIN_PERIPHERAL                 0x000
@@ -217,50 +203,40 @@ void usbMassStorage();
 void configure_pins( uint32_t pins, uint16_t config );
 uint16_t getCurrent();
 
-extern uint8_t temperature ;              // Raw temp reading
-extern uint8_t maxTemperature ;           // Raw temp reading
-uint8_t getTemperature();
-
-#if !defined(REVA)
 extern uint16_t Current_analogue;
 extern uint16_t Current_max;
 extern uint32_t Current_accumulator;
 extern uint32_t Current_used;
 extern uint16_t sessionTimer;
 void calcConsumption();
-#endif
 
 // Trainer driver
 #define SLAVE_MODE()                   (pwrCheck() == e_power_trainer)
 #define TRAINER_CONNECTED()            (PIOA->PIO_PDSR & PIO_PA8)
-void checkTrainerSettings();
 void init_trainer_capture();
+void stop_trainer_capture();
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256
 void flashWrite(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
-uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
-uint32_t readKeys(void);
-uint32_t readTrims(void);
+uint32_t readKeys();
+uint32_t readTrims();
 #define NUM_TRIMS                      4
 #define NUM_TRIMS_KEYS                 (NUM_TRIMS * 2)
 #define TRIMS_PRESSED()                readTrims()
 #define KEYS_PRESSED()                 readKeys()
 
 // Pulses driver
-void init_no_pulses(uint32_t port);
-void init_ppm(uint32_t port);
-void disable_ppm(uint32_t port);
-void init_pxx1_pulses(uint32_t port);
-void disable_pxx1_pulses(uint32_t port);
-void disable_serial(uint32_t port);
-void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
-void disable_module_timer( uint32_t module_index);
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
+void module_output_active();
+inline void EXTERNAL_MODULE_ON()
+{
+  module_output_active();
+}
 
 // SD driver
 #if defined(SIMU)
@@ -282,14 +258,14 @@ extern "C" {
 #endif
 
 // WDT driver
-#if defined(WATCHDOG_DISABLED) || defined(SIMU)
-  #define wdt_disable()
+#if !defined(WATCHDOG) || defined(SIMU)
   #define wdt_enable(x)
   #define wdt_reset()
+  #define IS_RESET_REASON_WATCHDOG()   false
 #else
-  #define wdt_disable()
   #define wdt_enable(x)                WDT->WDT_MR = 0x3FFF207F
   #define wdt_reset()                  WDT->WDT_CR = 0xA5000001
+  #define IS_RESET_REASON_WATCHDOG()   ((ResetReason & RSTC_SR_RSTTYP) == (2 << 8))
 #endif
 
 // Backlight driver
@@ -305,6 +281,7 @@ extern "C" {
 #define NUM_SLIDERS                    0
 #define STORAGE_NUM_SLIDERS            0
 #define NUM_XPOTS                      0
+#define NUM_MOUSE_ANALOGS              0
 #define STORAGE_NUM_MOUSE_ANALOGS      0
 enum Analogs {
   STICK1,
@@ -317,9 +294,7 @@ enum Analogs {
   POT3,
   POT_LAST = POT3,
   TX_VOLTAGE,
-#if !defined(REVA)
   TX_CURRENT,
-#endif
   NUM_ANALOGS
 };
 enum CalibratedAnalogs {
@@ -338,10 +313,15 @@ enum CalibratedAnalogs {
 #define IS_SLIDER(x)                   false
 #define STICKS_PWM_ENABLED()           false
 void adcInit();
-void adcRead(void);
+void adcRead();
 uint16_t getAnalogValue(uint8_t index);
 void setSticksGain(uint8_t gains);
-#define NUM_MOUSE_ANALOGS              0
+inline void enableVBatBridge()
+{
+}
+inline void disableVBatBridge()
+{
+}
 
 // Battery driver
 uint16_t getBatteryVoltage();          // returns current battery voltage in 10mV steps
@@ -364,14 +344,21 @@ void coprocWriteData(uint8_t *data, uint32_t size);
 void coprocReadData(bool onlytemp=false);
 #endif
 extern int8_t volumeRequired;
-extern uint8_t Coproc_read;
-extern int8_t Coproc_valid;
-extern int8_t Coproc_temp;
-extern int8_t Coproc_maxtemp;
+
+#if defined(COPROCESSOR)
+struct CoprocData {
+  uint8_t read;
+  int8_t valid;
+  int8_t temp;
+  int8_t maxtemp;
+};
+
+extern CoprocData coprocData;
+#endif
 
 // Haptic driver
 #define HAPTIC_PWM
-void hapticOff(void);
+void hapticOff();
 void hapticOn(uint32_t pwmPercent);
 
 // BlueTooth driver
@@ -383,13 +370,12 @@ void btPushByte(uint8_t data);
 
 // Power driver
 #define TRAINER_PWR
-#if !defined(REVA)
 #define SOFT_PWR_CTRL
-#endif
 void pwrInit();
 void pwrOff();
+void pwrOn();
 uint32_t pwrCheck();
-uint32_t pwrPressed();
+bool pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
 
 // EEPROM driver
@@ -397,7 +383,7 @@ uint32_t pwrPressed();
 #define EEPROM_BLOCK_SIZE     (4*1024)
 void eepromInit();
 uint8_t eepromReadStatus();
-uint8_t eepromIsTransferComplete(void);
+uint8_t eepromIsTransferComplete();
 void eepromBlockErase(uint32_t address);
 void eepromStartRead(uint8_t * buffer, size_t address, size_t size);
 void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
@@ -407,14 +393,17 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
+inline void telemetryPortSetDirectionOutput()
+{
+}
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 void sportSendBuffer(const uint8_t * buffer, uint32_t size);
 
 // Second UART driver
-void serial2TelemetryInit(unsigned int protocol);
-void serial2Putc(const unsigned char c);
+void auxSerialTelemetryInit(unsigned int protocol);
+void auxSerialPutc(const unsigned char c);
 #if defined(__cplusplus)
 bool telemetrySecondPortReceive(uint8_t & data);
 #endif

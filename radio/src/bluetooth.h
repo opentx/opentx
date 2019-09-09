@@ -19,7 +19,7 @@
  */
 
 enum BluetoothStates {
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
   BLUETOOTH_INIT,
   BLUETOOTH_WAIT_TTM,
   BLUETOOTH_WAIT_BAUDRATE_CHANGE,
@@ -54,10 +54,11 @@ class Bluetooth
   public:
     void writeString(const char * str);
     char * readline(bool error_reset = true);
+    void write(const uint8_t * data, uint8_t length);
 
     void forwardTelemetry(const uint8_t * packet);
     void wakeup();
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename);
 
     volatile uint8_t state;
     char localAddr[LEN_BLUETOOTH_ADDR+1];
@@ -65,8 +66,7 @@ class Bluetooth
 
   protected:
     void pushByte(uint8_t byte);
-    uint8_t read(uint8_t * data, uint8_t size, uint8_t timeout=100/*ms*/);
-    void write(const uint8_t * data, uint8_t length);
+    uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
     void appendTrainerByte(uint8_t data);
     void processTrainerFrame(const uint8_t * buffer);
     void processTrainerByte(uint8_t data);
@@ -76,7 +76,7 @@ class Bluetooth
     uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
     void bootloaderSendCommand(uint8_t command, const void *data = nullptr, uint8_t size = 0);
     void bootloaderSendCommandResponse(uint8_t response);
-    const char * bootloaderWaitCommandResponse(uint8_t timeout=100/*ms*/);
+    const char * bootloaderWaitCommandResponse(uint32_t timeout=1000/*ms*/);
     const char * bootloaderWaitResponseData(uint8_t *data, uint8_t size);
     const char * bootloaderSetAutoBaud();
     const char * bootloaderReadStatus(uint8_t &status);

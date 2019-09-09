@@ -25,8 +25,8 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char *str)
 
   if (st == ST_START) {
     lcdDrawTextAlignedLeft(2*FH, "\010Write Firmware");
-    lcdDrawTextAlignedLeft(3 * FH, "\010Restore EEPROM");
-    lcdDrawTextAlignedLeft(4 * FH, "\010Exit");
+    lcdDrawTextAlignedLeft(3*FH, "\010Restore EEPROM");
+    lcdDrawTextAlignedLeft(4*FH, "\010Exit");
 
 #if LCD_W >= 212
     lcdDrawTextAlignedLeft(6*FH, "\001Curr FW:");
@@ -58,20 +58,21 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char *str)
   }
   else if (st == ST_FLASH_CHECK) {
     if (opt == FC_ERROR) {
-
       if (memoryType == MEM_FLASH)
         bootloaderDrawMsg(0, STR_INVALID_FIRMWARE, 2, false);
       else
         bootloaderDrawMsg(0, STR_INVALID_EEPROM, 2, false);
     }
     else if (opt == FC_OK) {
-      const char *vers = getOtherVersion((char *) Block_buffer);
+      if (memoryType == MEM_FLASH) {
+        const char * vers = getOtherVersion((char *) Block_buffer);
 #if LCD_W < 212
-      // Remove opentx- from string
-      if (strstr(vers, "opentx-"))
-        vers = vers + 7;
+        // Remove opentx- from string
+        if (strstr(vers, "opentx-"))
+          vers = vers + 7;
 #endif
-      bootloaderDrawMsg(INDENT_WIDTH, vers, 0, false);
+        bootloaderDrawMsg(INDENT_WIDTH, vers, 0, false);
+      }
       bootloaderDrawMsg(0, STR_HOLD_ENTER_TO_START, 2, false);
     }
   }

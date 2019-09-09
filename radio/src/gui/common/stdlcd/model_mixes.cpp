@@ -65,7 +65,7 @@ void insertMix(uint8_t idx)
   mix->destCh = s_currCh-1;
   mix->srcRaw = s_currCh;
   if (!isSourceAvailable(mix->srcRaw)) {
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
     while (!isSourceAvailable(mix->srcRaw)) {
       mix->srcRaw += 1;
     }
@@ -385,8 +385,8 @@ void menuModelMixAll(event_t event)
       break;
   }
 
-  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW+FW/2, 0, getMixesCount(), RIGHT);
-  lcdDrawText(FW*sizeof(TR_MIXER)+FW+FW/2, 0, STR_MAX(MAX_MIXERS));
+  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW/2, 0, getMixesCount(), 0);
+  lcdDrawText(lcdNextPos, 0, STR_MAX(MAX_MIXERS));
 
   // Value
   uint8_t index = mixAddress(s_currIdx)->destCh;

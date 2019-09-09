@@ -39,7 +39,7 @@
 
 
 event_t s_evt;
-struct t_inactivity inactivity = {0};
+struct InactivityData inactivity = {0};
 Key keys[NUM_KEYS];
 
 event_t getEvent(bool trim)
@@ -85,6 +85,7 @@ void Key::input(bool val)
         m_cnt = 0;
       }
       break;
+
     case KSTATE_START:
       // TRACE("key %d FIRST", key());
       putEvent(EVT_KEY_FIRST(key()));

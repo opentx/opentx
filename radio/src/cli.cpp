@@ -70,7 +70,7 @@ int toLongLongInt(const char ** argv, int index, long long int * val)
       base = 16;
       s = &argv[index][2];
     }
-    char * endptr = NULL;
+    char * endptr = nullptr;
     *val = strtoll(s, &endptr, base);
     if (*endptr == '\0')
       return 1;
@@ -699,7 +699,7 @@ int cliTrace(const char ** argv)
 
 int cliStackInfo(const char ** argv)
 {
-  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize() * 4);  // stackSize() returns size in 32bit chunks
+  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize());
   serialPrint("[MENUS] %d available / %d", menusStack.available(), menusStack.size());
   serialPrint("[MIXER] %d available / %d", mixerStack.available(), mixerStack.size());
   serialPrint("[AUDIO] %d available / %d", audioStack.available(), audioStack.size());
@@ -782,7 +782,7 @@ const MemArea memAreas[] = {
   { "USART1", USART1, sizeof(USART_TypeDef) },
   { "USART2", USART2, sizeof(USART_TypeDef) },
   { "USART3", USART3, sizeof(USART_TypeDef) },
-  { NULL, NULL, 0 },
+  { nullptr, nullptr, 0 },
 };
 
 int cliSet(const char ** argv)
@@ -947,7 +947,7 @@ int cliDisplay(const char ** argv)
 {
   long long int address = 0;
 
-  for (const MemArea * area = memAreas; area->name != NULL; area++) {
+  for (const MemArea * area = memAreas; area->name != nullptr; area++) {
     if (!strcmp(area->name, argv[1])) {
       dump((uint8_t *)area->start, area->size);
       return 0;
@@ -960,13 +960,13 @@ int cliDisplay(const char ** argv)
       uint8_t len = STR_VKEYS[0];
       strncpy(name, STR_VKEYS+1+len*i, len);
       name[len] = '\0';
-      serialPrint("[%s] = %s", name, keyState(i) ? "on" : "off");
+      serialPrint("[%s] = %s", name, keys[i].state() ? "on" : "off");
     }
 #if defined(ROTARY_ENCODER_NAVIGATION)
     serialPrint("[Enc.] = %d", rotencValue / ROTARY_ENCODER_GRANULARITY);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
-      serialPrint("[Trim%d] = %s", i-TRM_BASE, keyState(i) ? "on" : "off");
+      serialPrint("[Trim%d] = %s", i-TRM_BASE, keys[i].state() ? "on" : "off");
     }
     for (int i=MIXSRC_FIRST_SWITCH; i<=MIXSRC_LAST_SWITCH; i++) {
       mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
@@ -1015,6 +1015,9 @@ int cliDisplay(const char ** argv)
           break;
         case 2:
           tim = TIM2;
+          break;
+        case 8:
+          tim = TIM8;
           break;
         case 13:
           tim = TIM13;
@@ -1215,12 +1218,12 @@ const CliCommand cliCommands[] = {
 #if defined(BLUETOOTH)
   { "bt", cliBlueTooth, "<baudrate>|<command>" },
 #endif
-  { NULL, NULL, NULL }  /* sentinel */
+  { nullptr, nullptr, nullptr }  /* sentinel */
 };
 
 int cliHelp(const char ** argv)
 {
-  for (const CliCommand * command = cliCommands; command->name != NULL; command++) {
+  for (const CliCommand * command = cliCommands; command->name != nullptr; command++) {
     if (argv[1][0] == '\0' || !strcmp(command->name, argv[0])) {
       serialPrint("%s %s", command->name, command->args);
       if (argv[1][0] != '\0') {
@@ -1239,7 +1242,7 @@ int cliExecCommand(const char ** argv)
   if (argv[0][0] == '\0')
     return 0;
 
-  for (const CliCommand * command = cliCommands; command->name != NULL; command++) {
+  for (const CliCommand * command = cliCommands; command->name != nullptr; command++) {
     if (!strcmp(command->name, argv[0])) {
       return command->func(argv);
     }

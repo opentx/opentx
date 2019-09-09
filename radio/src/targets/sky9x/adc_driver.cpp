@@ -52,11 +52,7 @@ void adcInit()
   padc = ADC ;
   padc->ADC_MR = 0x3FB60000 | timer ;  // 0011 1111 1011 0110 xxxx xxxx 0000 0000
   padc->ADC_ACR = ADC_ACR_TSON ;                        // Turn on temp sensor
-#if defined(REVA)
-  padc->ADC_CHER = 0x0000E23E ;  // channels 1,2,3,4,5,9,13,14,15
-#else
   padc->ADC_CHER = 0x0000E33E ;  // channels 1,2,3,4,5,8,9,13,14,15
-#endif
   padc->ADC_CGR = 0 ;  // Gain = 1, all channels
   padc->ADC_COR = 0 ;  // Single ended, 0 offset, all channels
 }
@@ -92,15 +88,7 @@ void adcSingleRead()
   adcValues[5] = ADC->ADC_CDR9;
   adcValues[6] = ADC->ADC_CDR13;
   adcValues[7] = ADC->ADC_CDR14;
-
-#if !defined(REVA)
   adcValues[8] = ADC->ADC_CDR8 ;
-#endif
-
-  temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
-  if (get_tmr10ms() >= 100 && temperature > maxTemperature) {
-    maxTemperature = temperature;
-  }
 
   // adc direction correct
 #if defined(FRSKY_STICKS)
@@ -139,7 +127,7 @@ void adcRead()
 #if !defined(SIMU)
 uint16_t getAnalogValue(uint8_t index)
 {
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X)
   static const uint8_t mapping[] = {1,5,7,0,4,6,2,3};
   index = mapping[index];
 #endif

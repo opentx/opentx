@@ -155,11 +155,9 @@ extern uint16_t maxLuaInterval;
 extern uint16_t maxLuaDuration;
 extern uint8_t instructionsPercent;
 
-#if defined(PCBXLITE)
-  #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
-#elif defined(PCBTARANIS)
+#if defined(KEYS_GPIO_REG_PAGE)
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER && ((luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) || (key) != KEY_PAGE))
-#elif defined(PCBHORUS)
+#else
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
 #endif
 struct LuaField {
@@ -172,6 +170,10 @@ void luaRegisterLibraries(lua_State * L);
 void registerBitmapClass(lua_State * L);
 void luaSetInstructionsLimit(lua_State* L, int count);
 int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode);
+
+#define TOOL_NAME_MAXLEN  16
+bool readToolName(char * toolName, const char * filename);
+bool isRadioScriptTool(const char * filename);
 
 struct LuaMemTracer {
   const char * script;

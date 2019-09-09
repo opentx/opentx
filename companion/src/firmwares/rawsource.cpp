@@ -48,7 +48,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   RawSourceRange result;
 
   Firmware * firmware = Firmware::getCurrentVariant();
-  int board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
@@ -128,13 +128,13 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_T2_MAX:
             result.min = -30;
             result.max = 225;
-            result.unit = trUtf8("°C");
+            result.unit = tr("°C");
             break;
           case TELEMETRY_SOURCE_HDG:
             result.step = 2;
             result.max = 360;
             result.offset = 256;
-            result.unit = trUtf8("°");
+            result.unit = tr("°");
             break;
           case TELEMETRY_SOURCE_RPM:
           case TELEMETRY_SOURCE_RPM_MAX:
@@ -615,8 +615,37 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
         index = 5;  // SH to SH
       }
     }
+    else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+      // No SE and SG on T12 board
+      if (index == 4 || index == 6) {
+        index = 3;  // SG and SE to SD
+        evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (index == 5) {
+        index = 4;  // SF to SF
+      }
+      else if (index == 7) {
+        index = 5;  // SH to SH
+      }
+    }
     // Compensate for SE and SG on X9/Horus board if converting from X7
     else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+      if (index == 4) {
+        index = 5;  // SF to SF
+      }
+      else if (index == 5) {
+        index = 7;  // SH to SH
+      }
+    }
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
+      if (index == 4) {
+        index = 5;  // SF to SF
+      }
+      else if (index == 5) {
+        index = 7;  // SH to SH
+      }
+    }
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
       if (index == 4) {
         index = 5;  // SF to SF
       }

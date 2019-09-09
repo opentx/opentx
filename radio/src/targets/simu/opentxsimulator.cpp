@@ -25,7 +25,7 @@
   #define MAX_LOGICAL_SWITCHES    NUM_CSW
 #endif
 
-  #define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
+#define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
 
 #define OTXS_DBG    qDebug() << "(" << simuTimerMicros() << "us)"
 
@@ -52,7 +52,7 @@ void firmwareTraceCb(const char * text)
 
 OpenTxSimulator::OpenTxSimulator() :
   SimulatorInterface(),
-  m_timer10ms(NULL),
+  m_timer10ms(nullptr),
   m_resetOutputsData(true),
   m_stopRequested(false)
 {
@@ -62,7 +62,7 @@ OpenTxSimulator::OpenTxSimulator() :
 
 OpenTxSimulator::~OpenTxSimulator()
 {
-  traceCallback = NULL;
+  traceCallback = nullptr;
   tracebackDevices.clear();
 
   if (m_timer10ms)
@@ -93,6 +93,7 @@ void OpenTxSimulator::init()
 {
   if (isRunning())
     return;
+
   OTXS_DBG;
 
   if (!m_timer10ms) {
@@ -109,6 +110,11 @@ void OpenTxSimulator::init()
 
   QMutexLocker lckr(&m_mtxSimuMain);
   memset(g_anas, 0, sizeof(g_anas));
+
+#if defined(PCBTARANIS)
+  g_anas[TX_RTC_VOLTAGE] = 800;  // 2,34V
+#endif
+
   simuInit();
 }
 
@@ -161,6 +167,7 @@ void OpenTxSimulator::setRadioData(const QByteArray & data)
 {
 #if defined(EEPROM_SIZE)
   QMutexLocker lckr(&m_mtxRadioData);
+  eeprom = (uint8_t *)malloc(qMin<int>(EEPROM_SIZE, data.size()));
   memcpy(eeprom, data.data(), qMin<int>(EEPROM_SIZE, data.size()));
 #endif
 }
@@ -309,17 +316,12 @@ void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
 
 void OpenTxSimulator::sendTelemetry(const QByteArray data)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   //OTXS_DBG << data;
   sportProcessTelemetryPacket((uint8_t *)data.constData());
-#else
-  Q_UNUSED(data)
-#endif
 }
 
 uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
@@ -328,15 +330,11 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
       }
     }
   }
-#else
-  Q_UNUSED(id)
-#endif
   return defaultValue;
 }
 
 uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
 {
-#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
@@ -345,9 +343,6 @@ uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
       }
     }
   }
-#else
-  Q_UNUSED(id)
-#endif
   return 0;
 }
 
@@ -371,9 +366,7 @@ const int OpenTxSimulator::getCapability(Capability cap)
       break;
 
     case CAP_TELEM_FRSKY_SPORT :
-      #ifdef TELEMETRY_FRSKY_SPORT
         ret = 1;
-      #endif
       break;
   }
   return ret;
@@ -609,7 +602,7 @@ class OpenTxSimulatorFactory: public SimulatorFactory
     virtual Board::Type type()
     {
 #if defined(PCBX12S)
-      return Board::BOARD_X12S;
+      return Board::BOARD_HORUS_X12S;
 #elif defined(PCBX10)
       return Board::BOARD_X10;
 #elif defined(PCBX7)
@@ -619,7 +612,7 @@ class OpenTxSimulatorFactory: public SimulatorFactory
 #elif defined(PCBTARANIS)
       return Board::BOARD_TARANIS_X9D;
 #else
-      return Board::BOARD_STOCK;
+      return Board::BOARD_9X_M64;
 #endif
     }
 };

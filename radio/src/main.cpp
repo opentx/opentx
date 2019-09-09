@@ -184,14 +184,11 @@ void checkEeprom()
 void checkBatteryAlarms()
 {
   // TRACE("checkBatteryAlarms()");
-  if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
+  if (IS_TXBATT_WARNING()) {
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
   }
 #if defined(PCBSKY9X)
-  else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    AUDIO_TX_TEMP_HIGH();
-  }
   else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) { // TODO move calculation into board file
     AUDIO_TX_MAH_HIGH();
   }
@@ -315,8 +312,11 @@ void guiMain(event_t evt)
           }
           if (menu) {
             const char * result = runPopupMenu(evt);
-            if (popupMenuItemsCount == 0) {
-              popupMenuHandler(result);
+            if (result) {
+              TRACE("popupMenuHandler(%s)", result);
+              auto handler = popupMenuHandler;
+              popupMenuHandler = nullptr;
+              handler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
                 continue;
@@ -455,7 +455,9 @@ void guiMain(event_t evt)
     const char * result = runPopupMenu(evt);
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
-      popupMenuHandler(result);
+      auto handler = popupMenuHandler;
+      popupMenuHandler = nullptr;
+      handler(result);
     }
   }
 
@@ -467,7 +469,7 @@ void perMain()
 {
   DEBUG_TIMER_START(debugTimerPerMain1);
 
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X)
   calcConsumption();
 #endif
   checkSpeakerVolume();
@@ -492,24 +494,23 @@ void perMain()
   event_t evt = getEvent(false);
 
 #if defined(RAMBACKUP)
-  if (unexpectedShutdown) {
+  if (globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
   }
 #endif
 
 #if defined(STM32)
-  static bool sdcard_present_before = SD_CARD_PRESENT();
-  bool sdcard_present_now = SD_CARD_PRESENT();
-  if (sdcard_present_now && !sdcard_present_before) {
+  bool sdcardPresent = SD_CARD_PRESENT();
+  if (sdcardPresent && !globalData.sdcardPresent) {
     sdMount();
   }
-  sdcard_present_before = sdcard_present_now;
+  globalData.sdcardPresent = sdcardPresent;
 #endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
+  if (!SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }
@@ -531,12 +532,10 @@ void perMain()
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
 
-#if defined(PCBTARANIS)
   if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
     writeScreenshot();
     mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
   }
-#endif
 
 #if defined(PCBX9E) && !defined(SIMU)
   toplcdRefreshStart();
@@ -544,7 +543,7 @@ void perMain()
   setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
   setTopRssi(TELEMETRY_RSSI());
   setTopBatteryValue(g_vbat100mV);
-  setTopBatteryState(GET_TXBATT_BARS(), IS_TXBATT_WARNING());
+  setTopBatteryState(GET_TXBATT_BARS(10), IS_TXBATT_WARNING());
   toplcdRefreshEnd();
 #endif
 

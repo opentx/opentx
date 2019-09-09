@@ -483,7 +483,7 @@ void InputsPanel::expolistWidget_doubleClicked(QModelIndex index)
 
 void InputsPanel::exposDeleteList(QList<int> list, bool clearName)
 {
-    qSort(list.begin(), list.end());
+    std::sort(list.begin(), list.end());
 
     int iDec = 0;
     foreach(int idx, list) {

@@ -38,20 +38,6 @@ uint32_t readKeys()
   x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
   x = ~x;
 
-#if defined(REVA)
-  if (x & KEYS_GPIO_PIN_RIGHT)
-    result |= 0x02 << KEY_RIGHT;
-  if (x & KEYS_GPIO_PIN_LEFT)
-    result |= 0x02 << KEY_LEFT;
-  if (x & KEYS_GPIO_PIN_UP)
-    result |= 0x02 << KEY_UP;
-  if (x & KEYS_GPIO_PIN_DOWN)
-    result |= 0x02 << KEY_DOWN;
-  if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
-    result |= 0x02 << KEY_EXIT;
-  if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
-    result |= 0x02 << KEY_MENU;
-#else
   if (x & KEYS_GPIO_PIN_RIGHT)
     result |= 0x02 << KEY_RIGHT;
   if (x & KEYS_GPIO_PIN_UP)
@@ -64,7 +50,6 @@ uint32_t readKeys()
     result |= 0x02 << KEY_EXIT;
   if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 0x02 << KEY_MENU;
-#endif
 
   // TRACE("readKeys(): %x => %x", x, result);
 
@@ -95,7 +80,7 @@ uint32_t readTrims()
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+bool trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }
@@ -128,11 +113,6 @@ void readKeysAndTrims()
   }
 }
 
-uint8_t keyState(uint8_t index)
-{
-  return keys[index].state();
-}
-
 uint32_t switchState(uint8_t index)
 {
   uint32_t a = PIOA->PIO_PDSR;
@@ -141,13 +121,8 @@ uint32_t switchState(uint8_t index)
   uint32_t xxx = 0;
 
   switch (index) {
-#if defined(REVA)
-    case SW_ELE:
-      xxx = a & 0x00000100; // ELE_DR   PA8
-#else
     case SW_ELE:
       xxx = c & 0x80000000; // ELE_DR   PC31
-#endif
       break;
 
     case SW_AIL:
@@ -176,13 +151,8 @@ uint32_t switchState(uint8_t index)
       xxx = c & 0x00010000; // SW_GEAR     PC16
       break;
 
-#if defined(REVA)
-    case SW_THR:
-      xxx = a & 0x10000000; // SW_TCUT     PA28
-#else
     case SW_THR:
       xxx = c & 0x00100000; // SW_TCUT     PC20
-#endif
       break;
 
     case SW_TRN:

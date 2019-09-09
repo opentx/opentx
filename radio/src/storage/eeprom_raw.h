@@ -24,8 +24,8 @@
 #include <inttypes.h>
 #include <stdint.h>
 
-bool eeLoadGeneral( void ) ;
-void eeDeleteModel( uint8_t id ) ;
+bool eeLoadGeneral(bool allowFixes);
+void eeDeleteModel( uint8_t id );
 bool eeCopyModel(uint8_t dst, uint8_t src);
 void eeSwapModels(uint8_t id1, uint8_t id2);
 

@@ -80,7 +80,6 @@ class ModulePanel : public ModelPanel
     void on_ppmPolarity_currentIndexChanged(int index);
     void on_ppmOutputType_currentIndexChanged(int index);
     void on_ppmFrameLength_editingFinished();
-    void on_antennaMode_currentIndexChanged(int index);
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);
     void onMultiProtocolChanged(int index);
@@ -95,6 +94,7 @@ class ModulePanel : public ModelPanel
     void onFailsafesDisplayValueTypeChanged(int type);
     void updateFailsafe(int channel);
     void on_optionValue_editingFinished();
+    void onClearAccessRxClicked();
 
   private:
     enum FailsafeValueDisplayTypes { FAILSAFE_DISPLAY_PERCENT = 1, FAILSAFE_DISPLAY_USEC = 2 };

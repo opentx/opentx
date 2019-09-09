@@ -524,14 +524,14 @@ PACK(typedef struct {
   ScriptData_v216 scriptsData[MAX_SCRIPTS]; \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t spare[2];
 #elif defined(PCBSKY9X)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
   ModuleData_v216 moduleData[NUM_MODULES+1]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t rxBattAlarms[2];
 #endif
 
@@ -776,7 +776,7 @@ PACK(typedef struct {
 
   uint8_t  backlightBright;
   int8_t   txCurrentCalibration;
-  int8_t   temperatureWarn;
+  int8_t   spare;
   uint8_t  mAhWarn;
   uint16_t mAhUsed;
   uint32_t globalTimer;
@@ -796,7 +796,7 @@ PACK(typedef struct {
   int8_t   varioRepeat;
   int8_t   backgroundVolume;
 
-  TARANIS_FIELD(uint8_t serial2Mode:6)
+  TARANIS_FIELD(uint8_t auxSerialMode:6)
   TARANIS_FIELD(uint8_t slidersConfig:2)
   TARANIS_FIELD(uint8_t potsConfig)
   TARANIS_FIELD(uint8_t backlightColor)
@@ -867,7 +867,7 @@ void convertRadioData_217_to_218(RadioData &settings)
   ConvertSpecialFunctions_217_to_218((CustomFunctionData_v218 *)settings.customFn, settings_v217.customFn);
 
 #if defined(PCBTARANIS)
-  settings.serial2Mode = settings_v217.serial2Mode;
+  settings.auxSerialMode = settings_v217.auxSerialMode;
   settings.slidersConfig = settings_v217.slidersConfig;
   settings.potsConfig = settings_v217.potsConfig;
   settings.backlightColor = settings_v217.backlightColor;
@@ -883,7 +883,6 @@ void convertRadioData_217_to_218(RadioData &settings)
 
 #if defined(PCBSKY9X)
   settings.txCurrentCalibration = settings_v217.txCurrentCalibration;
-  settings.temperatureWarn = settings_v217.temperatureWarn;
   settings.mAhWarn = settings_v217.mAhWarn;
   settings.mAhUsed = settings_v217.mAhUsed;
   settings.temperatureCalib = settings_v217.temperatureCalib;
@@ -1059,7 +1058,7 @@ void convertModelData_216_to_217(ModelData &model)
   }
 
 #if defined(PCBTARANIS)
-  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_PXX_XJT;
+  newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT_PXX1;
 #endif
   newModel.moduleData[EXTERNAL_MODULE].type = oldModel.externalModule;
 
@@ -1071,7 +1070,7 @@ void convertModelData_216_to_217(ModelData &model)
 #endif
   newModel.potsWarnMode = oldModel.nPotsToWarn >> 6;
   newModel.potsWarnEnabled = oldModel.nPotsToWarn & 0x1f;
-  memcpy(newModel.potsWarnPosition, oldModel.potPosition, sizeof(newModel.potsWarnPosition));
+  memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
 }
 
 void convertModelData_217_to_218(ModelData &model)
@@ -1140,7 +1139,7 @@ void convertModelData_217_to_218(ModelData &model)
   for (int i=0; i<MAX_OUTPUT_CHANNELS; i++) {
     newModel.limitData[i] = oldModel.limitData[i];
 #if defined(PCBTARANIS)
-    if (newModel.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX_XJT || newModel.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_XJT) {
+    if (newModel.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1 || newModel.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1) {
       newModel.limitData[i].ppmCenter = (oldModel.limitData[i].ppmCenter * 612) / 1024;
     }
 #endif

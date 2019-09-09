@@ -391,20 +391,23 @@ void drawSleepBitmap()
 }
 
 #define SHUTDOWN_CIRCLE_DIAMETER       150
-void drawShutdownAnimation(uint32_t index, const char * message)
+void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message)
 {
-  static uint32_t last_index = 0xffffffff;
+  if (totalDuration == 0)
+    return;
+  
+  static uint32_t lastDuration = 0xffffffff;
   static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));
 
   if (shutdown) {
-    if (index < last_index) {
+    if (duration < lastDuration) {
       theme->drawBackground();
       lcd->drawBitmap((LCD_W-shutdown->getWidth())/2, (LCD_H-shutdown->getHeight())/2, shutdown);
       lcdStoreBackupBuffer();
     }
     else {
       lcdRestoreBackupBuffer();
-      int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
+      int quarter = duration / (totalDuration / 5);
       if (quarter >= 1) lcdDrawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 2) lcdDrawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 3) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
@@ -413,7 +416,7 @@ void drawShutdownAnimation(uint32_t index, const char * message)
   }
   else {
     lcd->clear();
-    int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
+    int quarter = duration / (totalDuration / 5);
     for (int i=1; i<=4; i++) {
       if (quarter >= i) {
         lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, TEXT_BGCOLOR);
@@ -422,5 +425,23 @@ void drawShutdownAnimation(uint32_t index, const char * message)
   }
 
   lcdRefresh();
-  last_index = index;
+  lastDuration = duration;
+}
+
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags)
+{
+  if (isModulePXX2(moduleIdx)) {
+    if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] != '\0')
+      lcdDrawSizedText(x, y, g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], effectiveLen(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME), flags);
+    else
+      lcdDrawText(x, y, "---", flags);
+  }
+#if defined(HARDWARE_INTERNAL_MODULE)
+  else if (moduleIdx == INTERNAL_MODULE) {
+    lcdDrawText(x, y, "Internal", flags);
+  }
+#endif
+  else {
+    lcdDrawText(x, y, "External", flags);
+  }
 }

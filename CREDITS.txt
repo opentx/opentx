@@ -40,8 +40,7 @@ Michael Byrne
 <a href="http://www.craftandtheoryllc.com">Craft & Theory (monthly)</a>
 <a href="https://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
 <a href="https://www.team-blacksheep.com">Team BlackSheep</a>
-<a href="https://www.3dxr.co.uk">Team BlackSheep</a>
-www.3dxr.co.uk
+<a href="https://www.3dxr.co.uk">3DXR</a>
 
 [People who have donated to OpenTX]
 Mario Sette
@@ -167,7 +166,7 @@ Eric Burdis
 Nigel Chippindale
 Michael Deasy
 Stephen Stough
-Kenneth Lilja (monthly)
+Kenneth Lilja
 Robert Jero
 Gary Bancroft
 Robert Cotsford
@@ -352,7 +351,6 @@ Roberto Orsello
 David Finger
 Jean-Marie Oddo
 Mike Matheny
-Glen Roe (Showmaster)
 Arron Bates
 Tim Spurr
 Daniel Morgan
@@ -833,7 +831,7 @@ Carsten Wache
 Brock White
 Steven Poretz
 David Huelster
-Gordon Stahl (monthly)
+Gordon Stahl
 John Mathison
 Richard Duczmal
 Gregory Barron
@@ -911,7 +909,7 @@ George Carnie
 Philippe Stofleth
 Tim Dzugan
 Illia Izotov
-Richard Miles (monthly)
+Richard Miles
 Attila Kapolnai
 Gilles Dando
 Denis Roussille
@@ -1010,7 +1008,7 @@ Julien Kieffer
 Gregor Walter
 Carlos Viegas
 Roberto Orsello
-Steve Murray (monthly)
+Steve Murray
 Marcel Schäfer
 Sean Cull
 Holger Bothmer
@@ -1444,7 +1442,7 @@ Marko Domagoj Zic
 Fabrice Debonnet 
 Ms Place
 Jörg Hammer
-Rapid Informatics LLC
+Rapid Informatics LLC (monthly)
 Renaud Perriguey
 Edmond Dufresne
 Jaroslav Gazik
@@ -1515,3 +1513,27 @@ Sam Day
 Roman Rychtarik
 Pierre Malriq
 Jean Gaillard
+Michel Garbarino
+For Our Better World
+Lothar Herrl
+James Rhodes
+Edward Glover
+James Snodgrass
+Dwayne Carden
+Gerald Migely
+Mark Schmidt
+Hendrik Goessaert
+Arturas Giedraitis
+Paul Vernon
+Rick Smith
+Marcin Galczynski
+Tom Knudtson
+Sascha Heinrich
+James Snodgrass
+Alain Labonne
+Darko Perković
+Pierre Malriq
+Donald Manson
+Johannes Ferschl
+Piotr Wysocki
+Thomas Halenbeck (monthly)

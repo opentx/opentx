@@ -27,9 +27,9 @@ void processFrskyTelemetryData(uint8_t data)
   btPushByte(data);
 #endif
 
-#if defined(SERIAL2)
-  if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
-    serial2Putc(data);
+#if defined(AUX_SERIAL)
+  if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    auxSerialPutc(data);
   }
 #endif
 
@@ -100,13 +100,11 @@ bool pushFrskyTelemetryData(uint8_t data)
 
   } // switch
 
-#if defined(TELEMETRY_FRSKY_SPORT)
   if (IS_FRSKY_SPORT_PROTOCOL() && telemetryRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
     // end of frame detected
     dataState = STATE_DATA_IDLE;
     return true;
   }
-#endif
 
   return false;
 }

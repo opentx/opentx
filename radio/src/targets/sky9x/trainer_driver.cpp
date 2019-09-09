@@ -82,14 +82,14 @@ extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
 
 void init_trainer_capture()
 {
+  PIOC->PIO_PER = PIO_PC22;
   start_timer4() ;
   start_timer3() ;
 }
 
-#if 0
 void stop_trainer_capture()
 {
+  PIOC->PIO_PDR = PIO_PC22;
   TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
   NVIC_DisableIRQ(TC3_IRQn) ;
 }
-#endif

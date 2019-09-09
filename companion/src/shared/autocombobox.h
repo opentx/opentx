@@ -29,12 +29,8 @@ class AutoComboBox: public QComboBox
   Q_OBJECT
 
   public:
-    explicit AutoComboBox(QWidget *parent = 0):
-      QComboBox(parent),
-      field(NULL),
-      panel(NULL),
-      next(0),
-      lock(false)
+    explicit AutoComboBox(QWidget *parent = nullptr):
+      QComboBox(parent)
     {
       connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
     }
@@ -67,14 +63,14 @@ class AutoComboBox: public QComboBox
       updateValue();
     }
 
-    void setField(unsigned int & field, GenericPanel * panel=NULL)
+    void setField(unsigned int & field, GenericPanel * panel=nullptr)
     {
       this->field = (int *)&field;
       this->panel = panel;
       updateValue();
     }
 
-    void setField(int & field, GenericPanel * panel=NULL)
+    void setField(int & field, GenericPanel * panel=nullptr)
     {
       this->field = &field;
       this->panel = panel;
@@ -113,10 +109,10 @@ class AutoComboBox: public QComboBox
     }
 
   protected:
-    int * field;
-    GenericPanel * panel;
-    int next;
-    bool lock;
+    int * field = nullptr;
+    GenericPanel * panel = nullptr;
+    int next = 0;
+    bool lock = false;
 };
 
 #endif // _AUTOCOMBOBOX_H_

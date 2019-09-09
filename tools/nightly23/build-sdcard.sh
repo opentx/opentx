@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -x
 
 branch=2.3
 workdir=/home/opentx/nightly23
@@ -26,10 +27,6 @@ else
   mkdir -p ${workdir}/sdcard/horus/IMAGES
   cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
-  # Get FrSky utilities
-  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/horus/
-  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/taranis-x7/
-  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/taranis-x9/
 
   # Request sound pack generation
   if [[ ! -d /tmp/SOUNDS/fr ]];then
@@ -64,6 +61,11 @@ else
   cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-${sdcard_version}.zip *
   cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/sdcard/sdcard-taranis-x9-${sdcard_version}.zip *
   cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip *
+
+  # Create symlinks for other radios
+  ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-taranis-xlite-${sdcard_version}.zip
+  ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-taranis-x9lite-${sdcard_version}.zip
+  ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-jumper-t12-${sdcard_version}.zip
 
   # remove LUA stuff for 9x platform
   rm -Rf ${workdir}/sdcard/taranis-x7/SCRIPTS

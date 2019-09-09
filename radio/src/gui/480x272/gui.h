@@ -24,9 +24,11 @@
 #include "gui_common.h"
 #include "lcd.h"
 #include "menus.h"
-#include "widgets.h"
+#include "draw_functions.h"
 #include "bitmaps.h"
 #include "theme.h"
+
+#define HEADER_LINE                    0
 
 #define MENU_TOOLTIPS
 #define MENU_HEADER_HEIGHT             45

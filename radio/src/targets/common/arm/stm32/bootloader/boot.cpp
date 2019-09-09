@@ -17,32 +17,34 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 #include "opentx.h"
 #include "boot.h"
 #include "bin_files.h"
 
 #if defined(PCBXLITE)
-#define BOOTLOADER_KEYS                 0x0F
+  #define BOOTLOADER_KEYS                 0x0F
 #else
-#define BOOTLOADER_KEYS                 0x42
+  #define BOOTLOADER_KEYS                 0x42
 #endif
+
 #define APP_START_ADDRESS               (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
 
 #if defined(EEPROM)
-#define MAIN_MENU_LEN 3
+  #define MAIN_MENU_LEN 3
 #else
-#define MAIN_MENU_LEN 2
+  #define MAIN_MENU_LEN 2
 #endif
 
 typedef void (*voidFunction)(void);
 
-#define jumpTo(addr) {                                          \
+#define jumpTo(addr) do {                                       \
         SCB->VTOR = addr;                                       \
         __set_MSP(*(__IO uint32_t*)addr);                       \
         uint32_t     jumpAddress = *(uint32_t*)(addr + 4);      \
         voidFunction jumpFn = (voidFunction)jumpAddress;        \
         jumpFn();                                               \
-    }
+    } while(0)
 
 // Bootloader marker:
 // -> used to detect valid bootloader files
@@ -63,9 +65,7 @@ uint32_t eepromWritten = 0;
 #endif
 
 volatile uint8_t tenms = 1;
-
 FlashCheckRes valid;
-
 MemoryType memoryType;
 uint32_t unlocked = 0;
 
@@ -83,6 +83,7 @@ void interrupt10ms(void)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   static rotenc_t rePreviousValue;
+
   rotenc_t reNewValue = (rotencValue / ROTARY_ENCODER_GRANULARITY);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
@@ -198,28 +199,25 @@ int main()
 
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph, ENABLE);
 
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph | LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
                          INTERRUPT_xMS_RCC_APB1Periph | I2C_RCC_APB1Periph |
-                         SERIAL_RCC_APB1Periph |
+                         AUX_SERIAL_RCC_APB1Periph |
                          SD_RCC_APB1Periph, ENABLE);
 
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG, ENABLE);
 
+  pwrInit();
   keysInit();
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  rotaryEncoderInit();
-#endif
-
-  boardPreInit();
-
-  // wait for inputs to stabilize
-  for (uint32_t i = 0; i < 50000; i += 1) {
+#if defined(PCBHORUS)
+  // wait a bit for the inputs to stabilize...
+  for (uint32_t i = 0; i < 50000; i++) {
     wdt_reset();
   }
+#endif
 
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
@@ -227,18 +225,25 @@ int main()
     jumpTo(APP_START_ADDRESS);
   }
 
-  pwrInit();
+  pwrOn();
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotaryEncoderInit();
+#endif
+
   delaysInit(); // needed for lcdInit()
 
 #if defined(DEBUG)
-  serial2Init(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+  auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
   __enable_irq();
+
   TRACE("\nBootloader started :)");
 
   lcdInit();
   backlightInit();
+  backlightEnable();
 
 #if defined(PCBTARANIS)
   i2cInit();
@@ -487,12 +492,7 @@ int main()
 
     if (state != ST_FLASHING && state != ST_USB) {
       if (pwrOffPressed()) {
-        lcdClear();
-        lcdOff(); // this drains LCD caps
-        pwrOff();
-        for (;;) {
-          // Wait for power to go off
-        }
+        boardOff();
       }
     }
 

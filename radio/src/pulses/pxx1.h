@@ -22,6 +22,15 @@
 #define _PULSES_PXX1_H_
 
 #include "pxx.h"
+#include "crc.h"
+
+struct HeartbeatCapture {
+  uint32_t timestamp;
+  uint32_t count;
+  uint8_t valid;
+};
+
+extern volatile HeartbeatCapture heartbeatCapture;
 
 class Pxx1CrcMixin {
   protected:
@@ -32,7 +41,7 @@ class Pxx1CrcMixin {
 
     void addToCrc(uint8_t byte)
     {
-      crc = (crc << 8) ^ (CRCTable[((crc >> 8) ^ byte) & 0xFF]);
+      crc = (crc << 8) ^ (crc16tab_1189[((crc >> 8) ^ byte) & 0xFF]);
     }
 
     uint16_t crc;

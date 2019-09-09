@@ -100,7 +100,7 @@ void SimulatorLoader::registerSimulators()
   path.truncate(path.lastIndexOf('\\'));
   dir.setPath(path);
 #else
-  dir = SIMULATOR_LIB_SEARCH_PATH;
+  dir.setPath(SIMULATOR_LIB_SEARCH_PATH);
 #endif
   registerSimulators(dir);
 }

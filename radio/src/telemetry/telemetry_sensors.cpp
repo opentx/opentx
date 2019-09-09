@@ -34,7 +34,6 @@ bool isFaiForbidden(source_t idx)
   TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
 
   switch (telemetryProtocol) {
-
     case PROTOCOL_TELEMETRY_FRSKY_SPORT:
       if (sensor->id == RSSI_ID) {
         return false;
@@ -121,7 +120,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     }
   }
   else if (unit == UNIT_DATETIME) {
-    uint32_t data = uint32_t(newVal);
+    auto data = uint32_t(newVal);
     if (data & 0x000000ff) {
       datetime.year = (uint16_t) ((data & 0xff000000) >> 24) + 2000;  // SPORT GPS year is only two digits
       datetime.month = (uint8_t) ((data & 0x00ff0000) >> 16);
@@ -141,7 +140,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_GPS_LATITUDE) {
 #if defined(INTERNAL_GPS)
-    if (gpsData.fix) {
+    if (gpsData.fix  && gpsData.hdop < PILOTPOS_MIN_HDOP) {
       pilotLatitude = gpsData.latitude;
       distFromEarthAxis = getDistFromEarthAxis(pilotLatitude);
     }
@@ -151,12 +150,12 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       distFromEarthAxis = getDistFromEarthAxis(newVal);
     }
     gps.latitude = newVal;
-    lastReceived = now();
+    setFresh();
     return;
   }
   else if (unit == UNIT_GPS_LONGITUDE) {
 #if defined(INTERNAL_GPS)
-    if (gpsData.fix) {
+    if (gpsData.fix && gpsData.hdop < PILOTPOS_MIN_HDOP) {
       pilotLongitude = gpsData.longitude;
     }
 #endif
@@ -164,7 +163,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       pilotLongitude = newVal;
     }
     gps.longitude = newVal;
-    lastReceived = now();
+    setFresh();
     return;
   }
   else if (unit == UNIT_DATETIME_YEAR) {
@@ -172,13 +171,13 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     return;
   }
   else if (unit == UNIT_DATETIME_DAY_MONTH) {
-    uint32_t data = uint32_t(newVal);
+    auto data = uint32_t(newVal);
     datetime.month = data >> 8;
     datetime.day = data & 0xFF;
     return;
   }
   else if (unit == UNIT_DATETIME_HOUR_MIN) {
-    uint32_t data = uint32_t(newVal);
+    auto data = uint32_t(newVal);
     datetime.hour = (data & 0xFF);
     datetime.min = data >> 8;
     return;
@@ -194,7 +193,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_TEXT) {
     *((uint32_t*)&text[prec]) = newVal;
-    lastReceived = now();
+    setFresh();
     return;
   }
   else {
@@ -253,7 +252,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
 
   value = newVal;
-  lastReceived = now();
+  setFresh();
 }
 
 void TelemetryItem::per10ms(const TelemetrySensor & sensor)
@@ -267,7 +266,7 @@ void TelemetryItem::per10ms(const TelemetrySensor & sensor)
           return;
         }
         else if (currentItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
+          setOld();
           return;
         }
         int32_t current = convertTelemetryValue(currentItem.value, currentSensor.unit, currentSensor.prec, UNIT_AMPS, 1);
@@ -276,7 +275,7 @@ void TelemetryItem::per10ms(const TelemetrySensor & sensor)
           currentItem.consumption.prescale -= 3600;
           setValue(sensor, value+1, sensor.unit, sensor.prec);
         }
-        lastReceived = now();
+        setFresh();
       }
       break;
 
@@ -292,7 +291,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
       if (sensor.cell.source) {
         TelemetryItem & cellsItem = telemetryItems[sensor.cell.source-1];
         if (cellsItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
+          setOld();
         }
         else {
           unsigned int index = sensor.cell.index;
@@ -341,7 +340,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           return;
         }
         else if (gpsItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
+          setOld();
           return;
         }
         if (sensor.dist.alt) {
@@ -350,16 +349,25 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
             return;
           }
           else if (altItem->isOld()) {
-            lastReceived = TELEMETRY_VALUE_OLD;
+            setOld();
             return;
           }
         }
         uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
-        uint32_t dist = (EARTH_RADIUS * M_PI / 180) * angle / 1000000;
+#if defined(STM32)
+        uint32_t dist = uint64_t(EARTH_RADIUS * M_PI / 180) * angle / 1000000;
+#else
+        // TODO search later why it breaks Sky9x
+        uint32_t dist = EARTH_RADIUS * angle / 1000000;
+#endif
         uint32_t result = dist * dist;
 
         angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
+#if defined(STM32)
+        dist = uint64_t(gpsItem.distFromEarthAxis) * angle / 1000000;
+#else
         dist = gpsItem.distFromEarthAxis * angle / 1000000;
+#endif
         result += dist * dist;
 
         // Length on ground (ignoring curvature of the earth)
@@ -405,7 +413,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
               return;
             }
             else if (telemetryItem.isOld()) {
-              lastReceived = TELEMETRY_VALUE_OLD;
+              setOld();
               return;
             }
           }
@@ -431,7 +439,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
       if (sensor.formula == TELEM_FORMULA_AVERAGE) {
         if (count == 0) {
           if (available)
-            lastReceived = TELEMETRY_VALUE_OLD;
+            setOld();
           return;
         }
         else {
@@ -483,49 +491,45 @@ int lastUsedTelemetryIndex()
 
 int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
-  bool available = false;
+  bool sensorFound = false;
 
   for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.isSameInstance(protocol, instance) || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
-      available = true;
+      sensorFound = true;
       // we continue search here, because sensors can share the same id and instance
     }
   }
 
-  if (available || !allowNewSensors) {
+  if (sensorFound || !allowNewSensors) {
     return -1;
   }
 
   int index = availableTelemetryIndex();
   if (index >= 0) {
     switch (protocol) {
-#if defined(TELEMETRY_FRSKY_SPORT)
-      case TELEM_PROTO_FRSKY_SPORT:
+      case PROTOCOL_TELEMETRY_FRSKY_SPORT:
         frskySportSetDefault(index, id, subId, instance);
         break;
-#endif
-#if defined(TELEMETRY_FRSKY)
-      case TELEM_PROTO_FRSKY_D:
+      case PROTOCOL_TELEMETRY_FRSKY_D:
         frskyDSetDefault(index, id);
         break;
-#endif
 #if defined(CROSSFIRE)
-      case TELEM_PROTO_CROSSFIRE:
+      case PROTOCOL_TELEMETRY_CROSSFIRE:
         crossfireSetDefault(index, id, instance);
         break;
 #endif
 #if defined(MULTIMODULE)
-      case TELEM_PROTO_SPEKTRUM:
+      case PROTOCOL_TELEMETRY_SPEKTRUM:
         spektrumSetDefault(index, id, subId, instance);
         break;
-      case TELEM_PROTO_FLYSKY_IBUS:
+      case PROTOCOL_TELEMETRY_FLYSKY_IBUS:
         flySkySetDefault(index,id, subId, instance);
         break;
 #endif
 #if defined(LUA)
-     case TELEM_PROTO_LUA:
+     case PROTOCOL_TELEMETRY_LUA:
         // Sensor will be initialized by calling function
         // This drops the first value
         return index;
