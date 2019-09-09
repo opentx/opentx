@@ -587,7 +587,7 @@ void gpsSendByte(uint8_t byte);
 #endif
 
 // Second serial port driver
-#if defined(PCBX12S)
+#if 0
 #define AUX_SERIAL
 #define DEBUG_BAUDRATE                 115200
 extern uint8_t auxSerialMode;
@@ -597,6 +597,7 @@ void auxSerialPutc(char c);
 void auxSerialSbusInit();
 void auxSerialStop();
 #endif
+
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver

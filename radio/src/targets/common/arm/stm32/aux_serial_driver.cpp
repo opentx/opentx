@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+#if defined(AUX_SERIAL)
+
 uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> auxSerialTxFifo;
 AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
@@ -183,4 +185,6 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
   }
 #endif
 }
+#endif
+
 #endif

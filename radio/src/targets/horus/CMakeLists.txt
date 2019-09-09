@@ -70,7 +70,6 @@ elseif (PCB STREQUAL X12S)
     x12s_adc_driver.cpp
     gps_driver.cpp
     )
-  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
   set(BITMAPS_TARGET x12s_bitmaps)
   set(FONTS_TARGET x12s_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
