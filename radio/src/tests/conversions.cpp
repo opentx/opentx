@@ -117,7 +117,7 @@ TEST(Conversions, ConversionX9DPFrom23)
 }
 #endif
 
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) && !defined(PCBXLITES)
 TEST(Conversions, ConversionXLiteFrom22)
 {
   loadEEPROMFile(TESTS_PATH "/eeprom_22_xlite.bin");
