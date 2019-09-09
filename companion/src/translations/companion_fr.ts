@@ -4657,7 +4657,7 @@ Réinitialisation en agissant sur n&apos;importe lequel des manches / touches de
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1572"/>
         <source>Power On Delay</source>
-        <translation>Délai mise en tension</translation>
+        <translation>Délai mise sous tension</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1830"/>
