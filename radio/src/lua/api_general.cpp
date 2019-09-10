@@ -120,7 +120,7 @@ Return the time since the radio was started in multiple of 10ms
 @retval number Number of 10ms ticks since the radio was started Example:
 run time: 12.54 seconds, return value: 1254
 
-The timer internally uses a 32-bit counter which is enough for 30 years so
+The timer internally uses a 32-bit counter which is enough for 497 days so
 overflows will not happen.
 
 @status current Introduced in 2.0.0
@@ -203,11 +203,16 @@ static int luaGetRtcTime(lua_State * L)
 static void luaPushLatLon(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
-  lua_createtable(L, 0, 4);
+  lua_createtable(L, 0, 5);
   lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude * 0.000001); // floating point multiplication is faster than division
   lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude * 0.000001);
   lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude * 0.000001);
   lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude * 0.000001);
+
+  if (telemetryItem.hasReceiveTime())
+    lua_pushtableinteger(L, "delay", telemetryItem.getDelaySinceLastValue());
+  else
+    lua_pushtablenil(L, "delay");
 }
 
 static void luaPushTelemetryDateTime(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
