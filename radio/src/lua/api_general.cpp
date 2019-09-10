@@ -1358,6 +1358,24 @@ static int luaGetRSSI(lua_State * L)
 }
 
 /*luadoc
+@function chdir(directory)
+
+ Change the working directory
+
+@param directory (string) New working directory
+
+@status current Introduced in 2.3.0
+
+*/
+
+static int luaChdir(lua_State * L)
+{
+  const char * directory = luaL_optstring(L, 1, nullptr);
+  f_chdir(directory);
+  return 0;
+}
+
+/*luadoc
 @function loadScript(file [, mode], [,env])
 
 Load a Lua script file. This is similar to Lua's own [loadfile()](https://www.lua.org/manual/5.2/manual.html#pdf-loadfile)
@@ -1554,6 +1572,7 @@ const luaL_Reg opentxLib[] = {
   { "defaultChannel", luaDefaultChannel },
   { "getRSSI", luaGetRSSI },
   { "killEvents", luaKillEvents },
+  { "chdir", luaChdir },
   { "loadScript", luaLoadScript },
   { "getUsage", luaGetUsage },
   { "resetGlobalTimer", luaResetGlobalTimer },
