@@ -3,7 +3,6 @@
 set -e
 set -x
 
-branch=2.3
 workdir=/home/opentx/nightly23
 output=/var/www/html/2.3/nightlies
 
