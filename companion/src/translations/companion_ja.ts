@@ -515,22 +515,22 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1129"/>
         <source>Release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>リリース状態 選択</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1143"/>
         <source>Releases (stable)</source>
-        <translation type="unfinished"></translation>
+        <translation>リリース版 (Stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1148"/>
         <source>Release candidates (testing)</source>
-        <translation type="unfinished"></translation>
+        <translation>Release candidates RC版 (Testing)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1153"/>
         <source>Nightly builds (unstable)</source>
-        <translation type="unfinished"></translation>
+        <translation>ナイトリービルド版 (Unstable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1177"/>
@@ -905,7 +905,7 @@ Mode 4:
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="71"/>
         <source>Line nn, Col nn</source>
-        <translation type="unfinished"></translation>
+        <translation>行 nn, カラー nn</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="100"/>
@@ -989,7 +989,7 @@ Mode 4:
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="123"/>
         <source>Line %1, Col %2</source>
-        <translation type="unfinished"></translation>
+        <translation>行 %1, カラー %2</translation>
     </message>
 </context>
 <context>
@@ -1457,7 +1457,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">利用可能なポップアップメニュー</translation>
+        <translation>利用可能なポップアップメニュー</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="209"/>
@@ -1785,7 +1785,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="122"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">利用可能なポップアップメニュー</translation>
+        <translation>利用可能なポップアップメニュー</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="126"/>
@@ -1842,7 +1842,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="711"/>
         <source>Source</source>
-        <translation>ソース</translation>
+        <translation>選択元</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="712"/>
@@ -2035,12 +2035,12 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="450"/>
         <source>Source</source>
-        <translation>ソース</translation>
+        <translation>選択元</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="450"/>
         <source>Source %1 cannot be exported on this board!</source>
-        <translation>このボードではソース %1 をエクスポートできません！</translation>
+        <translation>このボードでは選択元 %1 をエクスポートできません！</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1158"/>
@@ -2316,7 +2316,7 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../modeledit/expodialog.ui" line="91"/>
         <source>Source for the mixer.</source>
-        <translation>ミキサーのソース。</translation>
+        <translation>ミキサー選択元.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="98"/>
@@ -2383,12 +2383,12 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
         <source>Curve applied to the source.</source>
-        <translation>ソースに適用されたカーブ。</translation>
+        <translation>選択元に適用されたカーブ.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="414"/>
         <source>Source</source>
-        <translation>ソース</translation>
+        <translation>選択元</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="421"/>
@@ -2403,7 +2403,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
         <source>The source for the mixer</source>
-        <translation>ミキサーのソース</translation>
+        <translation>ミキサー選択元</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="46"/>
@@ -2413,7 +2413,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.cpp" line="78"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">利用可能なポップアップメニュー</translation>
+        <translation>利用可能なポップアップメニュー</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="216"/>
@@ -2870,7 +2870,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
         <source>FrSky Taranis X9D+ 2019</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
@@ -2906,7 +2906,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
         <source>Support for auto update on boot</source>
-        <translation type="unfinished"></translation>
+        <translation>起動時の自動更新サポート</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
@@ -2956,12 +2956,12 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
         <source>In model setup menus automatically set source by moving the control</source>
-        <translation>モデル設定メニューでは、コントローラを動かし自動的にソースを設定します</translation>
+        <translation>モデル設定メニューでは、コントローラーを動かし自動的に選択元を設定します</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
         <source>In model setup menus automatically set switch by moving the control</source>
-        <translation>モデル設定メニューでは、コントローラを動かし自動的にスイッチを設定します</translation>
+        <translation>モデル設定メニューでは、コントローラーを動かし自動的にスイッチを設定します</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
@@ -2982,22 +2982,22 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
         <source>Support for ACCESS internal module replacement</source>
-        <translation type="unfinished"></translation>
+        <translation>ACCESS内部モジュール変更のサポート</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
         <source>FrSky Horus X10 Express</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
         <source>Jumper T12</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
         <source>Enable non certified R9M firmwares</source>
-        <translation type="unfinished"></translation>
+        <translation>非認定 R9Mファームウェアを有効</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1305"/>
@@ -3529,7 +3529,7 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="39"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">利用可能なポップアップメニュー</translation>
+        <translation>利用可能なポップアップメニュー</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="102"/>
@@ -3564,7 +3564,7 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="171"/>
         <source>Value source</source>
-        <translation>ソース値</translation>
+        <translation>元値</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="176"/>
@@ -3924,7 +3924,7 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="60"/>
         <source>Global Functions</source>
-        <translation>グローバル機能</translation>
+        <translation>グローバルファンクション</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="62"/>
@@ -4442,7 +4442,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1572"/>
         <source>Power On Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>起動時間</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1850"/>
@@ -4623,12 +4623,12 @@ Acceptable values are 5v..10v</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1120"/>
         <source>Owner Registration ID</source>
-        <translation type="unfinished"></translation>
+        <translation>オーナー登録ID</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1127"/>
         <source>aaaaaaAA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1359"/>
@@ -4753,7 +4753,7 @@ Acceptable values are 5v..10v</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2437"/>
         <source>Power Off Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>終了時間</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1279"/>
@@ -4819,7 +4819,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2025"/>
         <source>DMS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2399"/>
@@ -5053,12 +5053,12 @@ Are you sure ?</source>
     <message>
         <location filename="../generaledit/hardware.ui" line="909"/>
         <source>Antenna</source>
-        <translation type="unfinished">アンテナ</translation>
+        <translation>アンテナ</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="932"/>
         <source>S5</source>
-        <translation type="unfinished">S5</translation>
+        <translation>S5</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="1036"/>
@@ -5318,27 +5318,27 @@ Are you sure ?</source>
     <message>
         <location filename="../generaledit/hardware.cpp" line="187"/>
         <source>Internal</source>
-        <translation type="unfinished">内部</translation>
+        <translation>内部</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="188"/>
         <source>Ask</source>
-        <translation type="unfinished"></translation>
+        <translation>確認</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="189"/>
         <source>Per model</source>
-        <translation type="unfinished"></translation>
+        <translation>Per モデル</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="190"/>
         <source>Internal + External</source>
-        <translation type="unfinished"></translation>
+        <translation>内部 + 外部</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="190"/>
         <source>External</source>
-        <translation type="unfinished">外部</translation>
+        <translation>外部</translation>
     </message>
 </context>
 <context>
@@ -5765,7 +5765,7 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="56"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">利用可能なポップアップメニュー</translation>
+        <translation>利用可能なポップアップメニュー</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="109"/>
@@ -6189,17 +6189,17 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="346"/>
         <source>No Companion release candidates are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>現在このバージョンのCompanion RC版は提供されていません。リリース状態を切り替えてください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="348"/>
         <source>No nightly Companion builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>現在、このバージョンのCompanion ナイトリービルド版は提供されていません。リリース状態を切り替えてください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
         <source>No Companion release builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>このバージョンのCompanion リリース版は現在提供されていません。リリース状態を切り替えてください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="353"/>
@@ -6209,42 +6209,42 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="473"/>
         <source>No firmware release candidates are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>現在、このバージョンのファームウェア RC版は提供されていません。リリース状態を切り替えてください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="475"/>
         <source>No firmware nightly builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>現在、このバージョンのファームウェア ナイトリービルド版は提供されていません。リリース状態を切り替えてください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="477"/>
         <source>No firmware release builds are currently being served for this version, please switch release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>現在、このバージョンのファームウェア リリース版は提供されていません。リリース状態を切り替えてください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="481"/>
         <source>Release candidate builds are now available for this version, would you like to switch to using them?</source>
-        <translation type="unfinished"></translation>
+        <translation>RC版はこのバージョンで利用可能になりました。それらに切り替えますか？</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="487"/>
         <source>Channel changed to RC, please restart the download process</source>
-        <translation type="unfinished"></translation>
+        <translation>リリース状態をRC版に変更しました。ダウンロードプロセスを再起動してください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="493"/>
         <source>Official release builds are now available for this version, would you like to switch to using them?</source>
-        <translation type="unfinished"></translation>
+        <translation>このバージョンの公式リリース版が利用可能になりました。それらに切り替えますか？</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="499"/>
         <source>Channel changed to Release, please restart the download process</source>
-        <translation type="unfinished"></translation>
+        <translation>リリース状態をリリース版に変更しました。ダウンロードプロセスを再起動してください</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="506"/>
         <source>This radio (%1) is not currently available in this firmware release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>この送信機 (%1) は、現在このファームウェアリリース状態では利用できません</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="889"/>
@@ -6881,7 +6881,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1695"/>
         <source>Companion :: Open files warning</source>
-        <translation>Companion :: ファイルオープン時の警告</translation>
+        <translation>Companion :: ファイルを開くときの警告</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1695"/>
@@ -7414,7 +7414,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="369"/>
         <source>Source</source>
-        <translation>ソース</translation>
+        <translation>選択元</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="376"/>
@@ -7496,7 +7496,7 @@ Setting this value will cause a beep to be emmitted when this value is active.</
         <location filename="../modeledit/mixerdialog.ui" line="552"/>
         <location filename="../modeledit/mixerdialog.ui" line="601"/>
         <source>The source for the mixer</source>
-        <translation>ミキサーのソース</translation>
+        <translation>ミキサー選択元</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="501"/>
@@ -7733,7 +7733,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="383"/>
         <source>Throttle Source</source>
-        <translation>スロットル ソース</translation>
+        <translation>スロットル値</translation>
     </message>
 </context>
 <context>
@@ -7791,7 +7791,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="66"/>
         <source>Special Functions</source>
-        <translation>特殊機能</translation>
+        <translation>スペシャルファンクション</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="69"/>
@@ -8182,7 +8182,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modelprinter.cpp" line="831"/>
         <source>Global Functions</source>
-        <translation>グローバル機能</translation>
+        <translation>グローバルファンクション</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="886"/>
@@ -8285,7 +8285,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../modelprinter.cpp" line="1422"/>
         <location filename="../modelprinter.cpp" line="1432"/>
         <source>Source</source>
-        <translation>ソース</translation>
+        <translation>選択元</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1021"/>
@@ -8474,7 +8474,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../modelprinter.cpp" line="1262"/>
         <location filename="../modelprinter.cpp" line="1361"/>
         <source>Sources</source>
-        <translation>ソース</translation>
+        <translation>選択元</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1267"/>
@@ -8581,7 +8581,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modelprinter.cpp" line="1463"/>
         <source>Error: Unable to open or read file!</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: ファイルを開けないか、読み取れません！</translation>
     </message>
 </context>
 <context>
@@ -8652,24 +8652,24 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/setup_module.ui" line="245"/>
         <source>Receiver 1</source>
-        <translation type="unfinished"></translation>
+        <translation>受信機 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="290"/>
         <location filename="../modeledit/setup_module.ui" line="326"/>
         <location filename="../modeledit/setup_module.ui" line="362"/>
         <source>X</source>
-        <translation type="unfinished">X軸</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="302"/>
         <source>Receiver 2</source>
-        <translation type="unfinished"></translation>
+        <translation>受信機 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="338"/>
         <source>Receiver 3</source>
-        <translation type="unfinished"></translation>
+        <translation>受信機 3</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="420"/>
@@ -8724,12 +8724,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/setup_module.ui" line="646"/>
         <source>Open Drain</source>
-        <translation>オープンドレイン</translation>
+        <translation>オープン ドレン</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="651"/>
         <source>Push Pull</source>
-        <translation>プッシュプル</translation>
+        <translation>プッシュ プル</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="659"/>
@@ -8744,7 +8744,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/setup_module.ui" line="728"/>
         <source>Registration ID</source>
-        <translation type="unfinished"></translation>
+        <translation>登録ID</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="748"/>
@@ -8950,17 +8950,17 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/setup.cpp" line="492"/>
         <source>Ask</source>
-        <translation type="unfinished"></translation>
+        <translation>確認</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="493"/>
         <source>Internal</source>
-        <translation type="unfinished">内部</translation>
+        <translation>内部</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
         <source>Internal + External</source>
-        <translation type="unfinished"></translation>
+        <translation>内部 + 外部</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
@@ -9247,7 +9247,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../multimodelprinter.cpp" line="742"/>
         <source>Special Functions</source>
-        <translation>特殊機能</translation>
+        <translation>スペシャルファンクション</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="750"/>
@@ -9303,7 +9303,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../multimodelprinter.cpp" line="791"/>
         <location filename="../multimodelprinter.cpp" line="794"/>
         <source>Vario source</source>
-        <translation>バリオ ソース値</translation>
+        <translation>バリオ 元値</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="799"/>
@@ -9344,12 +9344,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../multimodelprinter.cpp" line="815"/>
         <location filename="../multimodelprinter.cpp" line="846"/>
         <source>Volts source</source>
-        <translation>ボルトソース</translation>
+        <translation>ボルト 元値</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="816"/>
         <source>Altitude source</source>
-        <translation>高度ソース</translation>
+        <translation>高度 元値</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="827"/>
@@ -9379,7 +9379,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../multimodelprinter.cpp" line="847"/>
         <source>Current source</source>
-        <translation>現在のソース</translation>
+        <translation>現在の元値</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="851"/>
@@ -9404,17 +9404,17 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../multimodelprinter.cpp" line="949"/>
         <source>GF%1</source>
-        <translation type="unfinished">GF%1</translation>
+        <translation>GF%1</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="954"/>
         <source>Global Functions</source>
-        <translation type="unfinished">グローバル機能</translation>
+        <translation>グローバルファンクション</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="974"/>
         <source>Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>チェックリスト</translation>
     </message>
 </context>
 <context>
@@ -9457,7 +9457,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="33"/>
         <source>Fixed ID value</source>
-        <translation type="unfinished"></translation>
+        <translation>固定ID値</translation>
     </message>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="34"/>
@@ -10701,12 +10701,12 @@ X
     <message>
         <location filename="../firmwares/sensordata.cpp" line="112"/>
         <source>Internal</source>
-        <translation type="unfinished">内部</translation>
+        <translation>内部</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="114"/>
         <source>External</source>
-        <translation type="unfinished">外部</translation>
+        <translation>外部</translation>
     </message>
 </context>
 <context>
@@ -10794,7 +10794,7 @@ X
     <message>
         <location filename="../modeledit/setup.ui" line="394"/>
         <source>Global Functions</source>
-        <translation>グローバル機能</translation>
+        <translation>グローバルファンクション</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="404"/>
@@ -10858,7 +10858,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     <message>
         <location filename="../modeledit/setup.ui" line="528"/>
         <source>Throttle Source</source>
-        <translation>スロットル</translation>
+        <translation>スロットル値</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="544"/>
@@ -10896,12 +10896,12 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     <message>
         <location filename="../modeledit/setup.cpp" line="1445"/>
         <source>Profile Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>プロファイル設定</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1445"/>
         <source>SD structure path not specified or invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>SDカード保存先パスが指定されていないか無効です</translation>
     </message>
 </context>
 <context>
@@ -11177,7 +11177,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     <message>
         <location filename="../simulator.cpp" line="126"/>
         <source>Data source type to use (applicable to Horus only). One of:</source>
-        <translation>使用するデータソースタイプ(Horusのみに適用)の一つ:</translation>
+        <translation>使用するデータ元タイプ(Horusのみに適用)の一つ:</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="127"/>
@@ -11187,7 +11187,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     <message>
         <location filename="../simulator.cpp" line="129"/>
         <source>data-source</source>
-        <translation>データソース</translation>
+        <translation>データ元</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="130"/>
@@ -11199,7 +11199,7 @@ NOTE: any existing EEPROM data incompatible with the selected radio type may be 
     <message>
         <location filename="../simulator.cpp" line="132"/>
         <source>[data-source]</source>
-        <translation>[データソース]</translation>
+        <translation>[データ元]</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="170"/>
@@ -11209,7 +11209,7 @@ NOTE: any existing EEPROM data incompatible with the selected radio type may be 
     <message>
         <location filename="../simulator.cpp" line="218"/>
         <source>Unrecognized startup data source type: %1</source>
-        <translation>認識されないスタートアップデータソースタイプ: %1</translation>
+        <translation>認識されないスタートアップデータ元タイプ: %1</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="274"/>
@@ -11511,7 +11511,7 @@ The radio type specified in the selected profile is used by default.</source>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
         <source>Data Source:</source>
-        <translation>データ種別:</translation>
+        <translation>データ元:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
@@ -11574,7 +11574,7 @@ The default is configured in the chosen Radio Profile.</source>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
-        <translation>シミュレータを起動するデータソース (ファイル/フォルダ/ SDカード) を選択します。</translation>
+        <translation>シミュレータを起動するデータ元 (ファイル/フォルダ/ SDカード) を選択します。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
@@ -11627,7 +11627,7 @@ The default is configured in the chosen Radio Profile.</source>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="244"/>
         <source>Could not determine startup data source.</source>
-        <translation>起動データソースを特定できませんでした。</translation>
+        <translation>起動データ元を特定できませんでした。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="249"/>
@@ -11905,7 +11905,7 @@ Error: %2</source>
         <source>
 Too many errors, giving up.</source>
         <translation>
-多大なエラーです、ギブアップします。</translation>
+エラーが多すぎるため、ギブアップします。</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="276"/>
@@ -11950,7 +11950,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../process_sync.cpp" line="363"/>
         <source>Could not open source file &apos;%1&apos;: %2</source>
-        <translation>ソースファイルを開けませんでした 「%1」: %2</translation>
+        <translation>選択元のファイルを開けませんでした 「%1」: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="368"/>
@@ -12078,7 +12078,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="270"/>
         <source>Source</source>
-        <translation type="unfinished">ソース</translation>
+        <translation>信号元</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="319"/>
@@ -12123,7 +12123,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="588"/>
         <source>Vario source</source>
-        <translation>バリオ ソース値</translation>
+        <translation>バリオ 元値</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="611"/>
@@ -12133,12 +12133,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="645"/>
         <source>Altitude source</source>
-        <translation>高度 ソース値</translation>
+        <translation>高度 元値</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="658"/>
         <source>Volts source</source>
-        <translation>ボルト ソース値</translation>
+        <translation>ボルト 元値</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="681"/>
@@ -12148,12 +12148,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="749"/>
         <source>Volt source</source>
-        <translation>ボルト ソース値</translation>
+        <translation>ボルト 元値</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="791"/>
         <source>Current source</source>
-        <translation>現在のソース値</translation>
+        <translation>現在の元値</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="826"/>
@@ -12345,7 +12345,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="92"/>
         <source>Source</source>
-        <translation>ソース</translation>
+        <translation>選択元</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="102"/>
@@ -12403,7 +12403,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="966"/>
         <source>Source</source>
-        <translation type="unfinished">ソース</translation>
+        <translation>信号元</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="973"/>
@@ -12513,12 +12513,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="126"/>
         <source>Rx</source>
-        <translation type="unfinished"></translation>
+        <translation>受信</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="133"/>
         <source>Mod.</source>
-        <translation type="unfinished"></translation>
+        <translation>モジュール.</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="175"/>
@@ -13111,7 +13111,7 @@ hh:mm:ss</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3003"/>
         <source>Stop sending telemetry data when the Telemetry Simulator window is hidden.</source>
-        <translation>テレメトリーシミュレーターウィンドウが非表示になったらテレメトリーデータの送信を停止します。</translation>
+        <translation>テレメトリーシミュレータ ウィンドウが非表示になったらテレメトリーデータの送信を停止します。</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3006"/>
@@ -13392,7 +13392,7 @@ CTRL＋スクロールまたはPAGE UP/DOWNキーを押すと、大きなステ�
     <message>
         <location filename="../modelslist.cpp" line="151"/>
         <source>RX #</source>
-        <translation type="unfinished"></translation>
+        <translation>受信 #</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="691"/>
