@@ -148,9 +148,8 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 #if defined(PCBTARANIS)
 #if defined(PCBXLITE)
-  if (menuHorizontalPosition==0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
-    killEvents(KEY_ENTER);
-    if (IS_SHIFT_PRESSED()) { // ENT LONG on xlite brings up switch type menu, so this menu is activated with SHIT + ENT LONG
+  // ENT LONG on xlite brings up switch type menu, so this menu is activated with SHIT + ENT LONG
+  if (menuHorizontalPosition==0 && event==EVT_KEY_LONG(KEY_ENTER) && IS_SHIFT_PRESSED() && !READ_ONLY()) {
 #else
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
 #endif
@@ -172,9 +171,6 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     }
     POPUP_MENU_START(onCustomFunctionsMenu);
   }
-#if defined(PCBXLITE)
-  }
-#endif
 #endif // PCBTARANIS
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
