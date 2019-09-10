@@ -88,7 +88,7 @@ void menuRadioSpectrumAnalyser(event_t event)
   }
 
   for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX; i++) {
-    uint8_t sub = menuVerticalPosition - HEADER_LINE;
+    uint8_t sub = menuVerticalPosition;
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     switch (i) {
