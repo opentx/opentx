@@ -281,10 +281,24 @@ void menuChannelsView(event_t event);
 
 #define REPEAT_LAST_CURSOR_MOVE()      { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else menuHorizontalPosition = 0; }
 #define MOVE_CURSOR_FROM_HERE()        if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE()
-
-#define MENU_FIRST_LINE_EDIT           (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
+#define MAXCOL(row)                    (horTab ? *(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
+
+inline vertpos_t MENU_FIRST_LINE_EDIT(const uint8_t * horTab, uint8_t horTabMax)
+{
+  if (horTab) {
+    if (MAXCOL((uint16_t)0) < HIDDEN_ROW)
+      return 0;
+    else if (MAXCOL((uint16_t)1) < HIDDEN_ROW)
+      return 1;
+    else
+      return 2;
+  }
+  else {
+    return 0;
+  }
+}
 
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);

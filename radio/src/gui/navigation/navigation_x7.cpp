@@ -205,8 +205,22 @@ tmr10ms_t menuEntryTime;
 #define MAXCOL_RAW(row)                (horTab ? *(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-#define MENU_FIRST_LINE_EDIT           (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
+
+inline vertpos_t MENU_FIRST_LINE_EDIT(const uint8_t * horTab, uint8_t horTabMax)
+{
+if (horTab) {
+if (MAXCOL((uint16_t)0) < HIDDEN_ROW)
+return 0;
+else if (MAXCOL((uint16_t)1) < HIDDEN_ROW)
+return 1;
+else
+return 2;
+}
+else {
+return 0;
+}
+}
 
 void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount)
 {
@@ -251,7 +265,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
       s_editMode = EDIT_MODE_INIT;
-      l_posVert = MENU_FIRST_LINE_EDIT;
+      l_posVert = MENU_FIRST_LINE_EDIT(horTab, horTabMax);
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
@@ -291,7 +305,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         AUDIO_KEY_PRESS();
       }
       else {
-        uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
+        uint8_t posVertInit = MENU_FIRST_LINE_EDIT(horTab, horTabMax);
         if (menuVerticalOffset != 0 || l_posVert != posVertInit) {
           menuVerticalOffset = 0;
           l_posVert = posVertInit;
@@ -327,7 +341,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       }
 
       do {
-        INC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+        INC(l_posVert, MENU_FIRST_LINE_EDIT(horTab, horTabMax);, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go down, we must be in this mode
@@ -356,7 +370,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       }
 
       do {
-        DEC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+        DEC(l_posVert, MENU_FIRST_LINE_EDIT(horTab, horTabMax), rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go up, we must be in this mode
