@@ -70,7 +70,6 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
 #endif // SDCARD
 
 #if defined(PCBTARANIS)
-
 void onAdjustGvarSourceLongEnterPress(const char * result)
 {
   CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
