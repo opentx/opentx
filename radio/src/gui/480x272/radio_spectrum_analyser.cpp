@@ -32,7 +32,7 @@ enum SpectrumFields {
 coord_t getAverage(uint8_t number, uint8_t * value)
 {
   uint16_t sum = 0;
-  for(uint8_t i=0; i < number; i++) {
+  for (uint8_t i=0; i < number; i++) {
     sum += value[i];
   }
   return sum/number;
@@ -45,7 +45,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
   SUBMENU(STR_MENU_SPECTRUM_ANALYSER, ICON_RADIO_SPECTRUM_ANALYSER, SPECTRUM_FIELDS_MAX, {
     SPECTRUM_ROW,  //Freq
     SPECTRUM_ROW,  //Span
-    0
+    0              //Track
   });
 
   if (menuEvent) {
@@ -168,8 +168,6 @@ bool menuRadioSpectrumAnalyser(event_t event)
   int x = offset / reusableBuffer.spectrumAnalyser.step;
   lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, SOLID, TEXT_COLOR);
 
-  //lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, SOLID, CURVE_AXIS_COLOR);
-
   // Draw spectrum data
   constexpr uint8_t step = 4;
 
@@ -185,7 +183,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
     lcdDrawLine(xv, max_yv, xv + step, max_yv);
 
     // Decay max values
-    if(max_yv < yv) { // Those value are INVERTED (MENU_FOOTER_TOP - value)
+    if (max_yv < yv) { // Those value are INVERTED (MENU_FOOTER_TOP - value)
       for (uint8_t i=0; i < step;i++) {
         reusableBuffer.spectrumAnalyser.max[xv+i]-=1;
       }

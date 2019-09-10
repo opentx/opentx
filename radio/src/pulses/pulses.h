@@ -31,29 +31,29 @@
 #include "ff.h"
 
 #if defined(PCBSKY9X) && defined(DSM2)
-#define DSM2_BIND_TIMEOUT      255         // 255*11ms
+  #define DSM2_BIND_TIMEOUT      255         // 255*11ms
   extern uint8_t dsm2BindTimer;
 #endif
 
 #if defined(DSM2)
-#define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTOCOL_CHANNELS_DSM2_LP45 && protocol<=PROTOCOL_CHANNELS_DSM2_DSMX)
+  #define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTOCOL_CHANNELS_DSM2_LP45 && protocol<=PROTOCOL_CHANNELS_DSM2_DSMX)
 #else
-#define IS_DSM2_PROTOCOL(protocol)         (0)
+  #define IS_DSM2_PROTOCOL(protocol)         (0)
 #endif
 
 #if defined(DSM2_SERIAL)
-#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
 #else
-#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
 #endif
 
 #if defined(MULTI)
-#define IS_MULTI_PROTOCOL(protocol)  (protocol==PROTOCOL_CHANNELS_MULTI)
+  #define IS_MULTI_PROTOCOL(protocol)  (protocol==PROTOCOL_CHANNELS_MULTI)
   #if !defined(DSM2)
      #error You need to enable DSM2 = PPM for MULTI support
   #endif
 #else
-#define IS_MULTI_PROTOCOL(protocol)  (0)
+  #define IS_MULTI_PROTOCOL(protocol)  (0)
 #endif
 
 #define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_SBUS)
@@ -79,30 +79,30 @@ enum ModuleSettingsMode
 
 
 PACK(struct PXX2Version {
-       uint8_t major;
-       uint8_t revision:4;
-       uint8_t minor:4;
-     });
+  uint8_t major;
+  uint8_t revision:4;
+  uint8_t minor:4;
+});
 
 PACK(struct PXX2HardwareInformation {
-       uint8_t modelID;
-       PXX2Version hwVersion;
-       PXX2Version swVersion;
-       uint8_t variant;
-       uint32_t capabilities; // variable length
-       uint8_t capabilityNotSupported;
-     });
+  uint8_t modelID;
+  PXX2Version hwVersion;
+  PXX2Version swVersion;
+  uint8_t variant;
+  uint32_t capabilities; // variable length
+  uint8_t capabilityNotSupported;
+});
 
 PACK(struct ModuleInformation {
-       int8_t current;
-       int8_t maximum;
-       uint8_t timeout;
-       PXX2HardwareInformation information;
-       struct {
-         PXX2HardwareInformation information;
-         tmr10ms_t timestamp;
-       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
-     });
+  int8_t current;
+  int8_t maximum;
+  uint8_t timeout;
+  PXX2HardwareInformation information;
+  struct {
+    PXX2HardwareInformation information;
+    tmr10ms_t timestamp;
+  } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
+});
 
 class ModuleSettings {
   public:
@@ -148,56 +148,56 @@ class OtaUpdateInformation: public BindInformation {
 typedef void (* ModuleCallback)();
 
 PACK(struct ModuleState {
-       uint8_t protocol:4;
-       uint8_t mode:4;
-       uint8_t paused:1;
-       uint8_t spare:7;
-       uint16_t counter;
-       union {
-         ModuleInformation * moduleInformation;
-         ModuleSettings * moduleSettings;
-         ReceiverSettings * receiverSettings;
-         BindInformation * bindInformation;
-         OtaUpdateInformation * otaUpdateInformation;
-       };
-       ModuleCallback callback;
+  uint8_t protocol:4;
+  uint8_t mode:4;
+  uint8_t paused:1;
+  uint8_t spare:7;
+  uint16_t counter;
+  union {
+    ModuleInformation * moduleInformation;
+    ModuleSettings * moduleSettings;
+    ReceiverSettings * receiverSettings;
+    BindInformation * bindInformation;
+    OtaUpdateInformation * otaUpdateInformation;
+  };
+  ModuleCallback callback;
 
-       void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
+  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
 
-       void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
-       {
-         moduleInformation = destination;
-         moduleInformation->current = first;
-         moduleInformation->maximum = last;
-         mode = MODULE_MODE_GET_HARDWARE_INFO;
-       }
-       void readModuleSettings(ModuleSettings * destination)
-       {
-         moduleSettings = destination;
-         moduleSettings->state = PXX2_SETTINGS_READ;
-         mode = MODULE_MODE_MODULE_SETTINGS;
-       }
-       void writeModuleSettings(ModuleSettings * source)
-       {
-         moduleSettings = source;
-         moduleSettings->state = PXX2_SETTINGS_WRITE;
-         moduleSettings->timeout = 0;
-         mode = MODULE_MODE_MODULE_SETTINGS;
-       }
-       void readReceiverSettings(ReceiverSettings * destination)
-       {
-         receiverSettings = destination;
-         receiverSettings->state = PXX2_SETTINGS_READ;
-         mode = MODULE_MODE_RECEIVER_SETTINGS;
-       }
-       void writeReceiverSettings(ReceiverSettings * source)
-       {
-         receiverSettings = source;
-         receiverSettings->state = PXX2_SETTINGS_WRITE;
-         receiverSettings->timeout = 0;
-         mode = MODULE_MODE_RECEIVER_SETTINGS;
-       }
-     });
+  void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
+  {
+    moduleInformation = destination;
+    moduleInformation->current = first;
+    moduleInformation->maximum = last;
+    mode = MODULE_MODE_GET_HARDWARE_INFO;
+  }
+  void readModuleSettings(ModuleSettings * destination)
+  {
+    moduleSettings = destination;
+    moduleSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+  void writeModuleSettings(ModuleSettings * source)
+  {
+    moduleSettings = source;
+    moduleSettings->state = PXX2_SETTINGS_WRITE;
+    moduleSettings->timeout = 0;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+  void readReceiverSettings(ReceiverSettings * destination)
+  {
+    receiverSettings = destination;
+    receiverSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+  void writeReceiverSettings(ReceiverSettings * source)
+  {
+    receiverSettings = source;
+    receiverSettings->state = PXX2_SETTINGS_WRITE;
+    receiverSettings->timeout = 0;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+});
 
 extern ModuleState moduleState[NUM_MODULES];
 
@@ -218,11 +218,11 @@ typedef Dsm2SerialPulsesData Dsm2PulsesData;
 #else
 #define MAX_PULSES_TRANSITIONS 300
 PACK(struct Dsm2TimerPulsesData {
-       pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
-       pulse_duration_t * ptr;
-       uint16_t rest;
-       uint8_t index;
-     });
+  pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
+  pulse_duration_t * ptr;
+  uint16_t rest;
+  uint8_t index;
+});
 typedef Dsm2TimerPulsesData Dsm2PulsesData;
 #endif
 
@@ -238,9 +238,9 @@ typedef Dsm2TimerPulsesData Dsm2PulsesData;
 
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
-       uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
-       uint8_t length;
-     });
+  uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
+  uint8_t length;
+});
 
 union InternalModulePulsesData {
 #if defined(PXX1)

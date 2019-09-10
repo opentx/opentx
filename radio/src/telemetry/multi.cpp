@@ -109,7 +109,7 @@ static void processMultiSyncPacket(const uint8_t *data)
 static void processMultiScannerPacket(const uint8_t *data)
 {
   uint8_t cur_channel = data[0];
-  if(moduleState[g_moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+  if (moduleState[g_moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
     for (uint8_t channel = 0; channel <5; channel++) {
       uint8_t power = max<int>(0,(data[channel+1] - 34) >> 1); // remove everything below -120dB
       coord_t x = cur_channel*2;
@@ -121,7 +121,7 @@ static void processMultiScannerPacket(const uint8_t *data)
           reusableBuffer.spectrumAnalyser.max[x+1] = power;
         }
       }
-      if(++cur_channel > MULTI_SCANNER_MAX_CHANNEL)
+      if (++cur_channel > MULTI_SCANNER_MAX_CHANNEL)
         cur_channel = 0;
     }
   }

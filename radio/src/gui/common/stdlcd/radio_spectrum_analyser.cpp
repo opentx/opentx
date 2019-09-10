@@ -36,7 +36,7 @@ void menuRadioSpectrumAnalyser(event_t event)
   SUBMENU(STR_MENU_SPECTRUM_ANALYSER, SPECTRUM_FIELDS_MAX, {
     SPECTRUM_ROW,  //Freq
     SPECTRUM_ROW,  //Span
-    0
+    0              //Tracker
   });
 
   if (menuEvent) {
@@ -90,7 +90,6 @@ void menuRadioSpectrumAnalyser(event_t event)
   for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX; i++) {
     uint8_t sub = menuVerticalPosition - HEADER_LINE;
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    TRACE("menuVerticalPosition : %d", menuVerticalPosition);
 
     switch (i) {
       case SPECTRUM_FREQUENCY: {
