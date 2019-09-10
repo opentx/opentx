@@ -557,6 +557,9 @@ inline void POPUP_MENU_START(PopupMenuHandler handler)
 inline void CLEAR_POPUP()
 {
   warningText = nullptr;
+  warningInfoText = nullptr;
+  popupMenuHandler = nullptr;
+  popupMenuItemsCount = 0;
 }
 
 inline void POPUP_WAIT(const char * s)
