@@ -1137,7 +1137,7 @@
 #define TR_ADDMAINVIEW                 "Ansicht hinzufügen"
 #define TR_BACKGROUND_COLOR            "Hintergrundfarbe"
 #define TR_MAIN_COLOR                  "Hauptfarbe"
-#define TR_TEXT_VIEWER                 "Text Viever"
+#define TR_TEXT_VIEWER                 "Text Viewer"
 // ----------------------------- Symbole für Auswahlliste----------
 #define TR_MENU_INPUTS                 "\314Inputs"
 #define TR_MENU_LUA                    "\322Lua Skripte"
