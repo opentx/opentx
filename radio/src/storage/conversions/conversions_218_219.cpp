@@ -126,7 +126,7 @@ void convertModelData_218_to_219(ModelData &model)
 
   // trainer battery compartment removed
   if (newModel.trainerData.mode >= TRAINER_MODE_MASTER_BLUETOOTH)
-    newModel.trainerData.mode -=1;
+    newModel.trainerData.mode -= 1;
 #endif
 
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));

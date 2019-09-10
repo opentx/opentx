@@ -586,18 +586,6 @@ void gpsSendByte(uint8_t byte);
 #define PILOTPOS_MIN_HDOP             500
 #endif
 
-// Second serial port driver
-#if 0
-#define AUX_SERIAL
-#define DEBUG_BAUDRATE                 115200
-extern uint8_t auxSerialMode;
-void auxSerialInit(unsigned int mode, unsigned int protocol);
-void auxSerialPutc(char c);
-#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
-void auxSerialSbusInit();
-void auxSerialStop();
-#endif
-
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
