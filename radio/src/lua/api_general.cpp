@@ -209,8 +209,9 @@ static void luaPushLatLon(lua_State* L, TelemetrySensor & telemetrySensor, Telem
   lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude * 0.000001);
   lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude * 0.000001);
 
-  if (telemetryItem.hasReceiveTime())
-    lua_pushtableinteger(L, "delay", telemetryItem.getDelaySinceLastValue());
+  int8_t delay = telemetryItem.getDelaySinceLastValue();
+  if (delay >= 0)
+    lua_pushtableinteger(L, "delay", delay);
   else
     lua_pushtablenil(L, "delay");
 }

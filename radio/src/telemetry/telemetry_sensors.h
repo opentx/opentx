@@ -103,6 +103,16 @@ class TelemetryItem
       return (timeout == TELEMETRY_SENSOR_TIMEOUT_OLD);
     }
 
+    inline bool hasReceiveTime()
+    {
+      return timeout >= 0;
+    }
+
+    inline int8_t getDelaySinceLastValue()
+    {
+      return hasReceiveTime() ? TELEMETRY_SENSOR_TIMEOUT_START - timeout : TELEMETRY_SENSOR_TIMEOUT_OLD;
+    }
+
     inline bool isFresh()
     {
       return TELEMETRY_SENSOR_TIMEOUT_START - timeout <= 1; // 2 * 160ms
