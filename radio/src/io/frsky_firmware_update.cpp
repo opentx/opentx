@@ -288,6 +288,11 @@ const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
   return "Version request failed";
 }
 
+// X12S / X10 IXJT = use TX + RX @ 38400 bauds with BOOTCMD pin inverted
+// X10 / X10 ISRM = use TX + RX @ 57600 bauds (no BOOTCMD)
+// X9D / X9D+ / X9E / XLite IXJT = use S.PORT @ 57600 bauds
+// XLite PRO / X9Lite / X9D+ 2019 ISRM = use TX + RX @ 57600 bauds
+
 const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 {
   FIL file;
@@ -305,7 +310,8 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
       f_close(&file);
       return "Format error";
     }
-  } else {
+  }
+  else {
 #if defined(PCBHORUS)
     information.productId = FIRMWARE_ID_XJT;
 #endif
@@ -324,7 +330,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 #endif
 
   switch (module) {
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && !defined(PCBXLITE)
     case INTERNAL_MODULE:
       intmoduleSerialStart(57600, true);
       break;
