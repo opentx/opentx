@@ -11223,7 +11223,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1491"/>
         <source>Set Menu Language</source>
-        <translation>Nastavení jazyka</translation>
+        <translation>Jazyka</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1249"/>
