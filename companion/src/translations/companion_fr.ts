@@ -5065,7 +5065,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.ui" line="909"/>
         <source>Antenna</source>
-        <translation type="unfinished">Antenne</translation>
+        <translation>Antenne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="1036"/>
@@ -5330,27 +5330,27 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.cpp" line="187"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="188"/>
         <source>Ask</source>
-        <translation type="unfinished"></translation>
+        <translation>Demander</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="189"/>
         <source>Per model</source>
-        <translation type="unfinished"></translation>
+        <translation>Par modèle</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="190"/>
         <source>Internal + External</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne + Externe</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="190"/>
         <source>External</source>
-        <translation type="unfinished">Externe</translation>
+        <translation>Externe</translation>
     </message>
 </context>
 <context>
@@ -8969,17 +8969,17 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup.cpp" line="492"/>
         <source>Ask</source>
-        <translation type="unfinished"></translation>
+        <translation>Demander</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="493"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
         <source>Internal + External</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne + Externe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
