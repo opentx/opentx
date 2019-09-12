@@ -116,6 +116,7 @@ void menuRadioTools(event_t event)
       if (isRadioScriptTool(fno.fname))
         addRadioScriptTool(index++, path);
     }
+    f_closedir(&dir);
   }
 #endif
 
