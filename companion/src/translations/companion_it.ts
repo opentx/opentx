@@ -6900,7 +6900,7 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1252"/>
         <source>Set Icon Size</source>
-        <translation>Impostazione dimensione icone</translation>
+        <translation>Scegliere il dimensione di icone</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1249"/>
