@@ -52,7 +52,7 @@ uint8_t getMappedChar(uint8_t c)
   else if (c >= 0x80 && c <= 0x81) {
     result = 157 + c - 0x80;
   }
-#elif defined(TRANSLATIONS_FI)
+#elif defined(TRANSLATIONS_FI) || defined(TRANSLATIONS_SE)
   else if (c >= 0x80 && c <= 0x85) {
     result = 159 + c - 0x80;
   }
@@ -68,16 +68,12 @@ uint8_t getMappedChar(uint8_t c)
   else if (c >= 0x80 && c <= 0x80+21) {
     result = 185 + c - 0x80;
   }
-#elif defined(TRANSLATIONS_SE)
-  else if (c >= 0x80 && c <= 0x85) {
-    result = 207 + c - 0x80;
-  }
 #endif
   else if (c < 0xC0)
     result = c - 0x20;
   else
     result = c - 0xC0 + 96;
-  // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
+   // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
   return result;
 }
 
