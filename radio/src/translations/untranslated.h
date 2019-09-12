@@ -100,7 +100,7 @@
 #define LEN_XJT_ACCST_RF_PROTOCOLS         "\004"
 #define TR_XJT_ACCST_RF_PROTOCOLS          "OFF\0""D16\0""D8\0 ""LR12"
 
-#if defined(INTERNAL_MODULE_PXX1)
+#if defined(INTERNAL_MODULE_PXX1) || defined(PCBHORUS)
 #define LEN_ISRM_RF_PROTOCOLS     "\006"
 #define TR_ISRM_RF_PROTOCOLS      "ACCESS""D16\0  ""LR12"
 #else
