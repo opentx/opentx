@@ -223,7 +223,7 @@ void telemetryInterrupt10ms()
 #if !defined(SIMU)
     telemetryData.rssi.reset();
 #endif
-    for (auto telemetryItem: telemetryItems) {
+    for (auto & telemetryItem: telemetryItems) {
       if (telemetryItem.isAvailable()) {
         telemetryItem.setOld();
       }
