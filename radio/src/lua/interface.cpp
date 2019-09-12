@@ -1131,10 +1131,11 @@ bool readToolName(char * toolName, const char * filename)
     return "Error opening file";
   }
 
-  if (f_read(&file, &buffer, sizeof(buffer), &count) != FR_OK) {
-    f_close(&file);
+  FRESULT res = f_read(&file, &buffer, sizeof(buffer), &count);
+  f_close(&file);
+
+  if (res != FR_OK)
     return false;
-  }
 
   const char * tns = "TNS|";
   auto * start = std::search(buffer, buffer + sizeof(buffer), tns, tns + 4);
