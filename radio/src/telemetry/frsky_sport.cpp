@@ -176,7 +176,8 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
       if (data > 0) {
         telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
         telemetryData.telemetryValid |= originMask;
-      } else {
+      }
+      else {
         telemetryData.telemetryValid &= ~originMask;
       }
       if (g_model.rssiSource) {
