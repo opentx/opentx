@@ -223,7 +223,7 @@ void RadioOutputsWidget::setupGVarsDisplay()
   QPalette::ColorRole bgrole = QPalette::AlternateBase;
   for (int fm=0; fm < fmodes; fm++) {
     QLabel * label = new QLabel(gvarsWidget);
-    label->setText(QString("FM%1").arg(fm));
+    label->setText(QString(tr("FM%1")).arg(fm));
     label->setAlignment(Qt::AlignCenter);
     label->setBackgroundRole(bgrole);
     gvarsLayout->addWidget(label, 0, fm+1);
@@ -232,7 +232,7 @@ void RadioOutputsWidget::setupGVarsDisplay()
   for (int gv=0; gv < gvars; gv++) {
     bgrole = ((gv % 2) ? QPalette::Background : QPalette::AlternateBase);
     QLabel * label = new QLabel(gvarsWidget);
-    label->setText(QString("GV%1").arg(gv+1));
+    label->setText(QString(tr("GV%1")).arg(gv+1));
     label->setAutoFillBackground(true);
     label->setBackgroundRole(bgrole);
     gvarsLayout->addWidget(label, gv+1, 0);
