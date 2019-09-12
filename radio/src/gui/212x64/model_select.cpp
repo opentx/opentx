@@ -48,6 +48,7 @@ void onModelSelectMenu(const char * result)
     if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
     }
+    POPUP_MENU_START(onModelSelectMenu);
   }
   else if (result == STR_DELETE_MODEL) {
     char * nametmp =  reusableBuffer.modelsel.mainname;
