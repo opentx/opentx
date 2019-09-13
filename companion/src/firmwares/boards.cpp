@@ -323,7 +323,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
       else if (IS_TARANIS_X7(board))
         return 8;
       else if (IS_JUMPER_T12(board))
-        return 6;
+        return 8;
       else if (IS_TARANIS_XLITE(board))
         return 6;
       else if (board == Board::BOARD_TARANIS_X9DP_2019)
