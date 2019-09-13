@@ -149,7 +149,7 @@ class TreeModel : public QAbstractItemModel
 
   private:
     TreeItem * getItem(const QModelIndex & index) const;
-    bool isModelIdUnique(unsigned modelId);
+    bool isModelIdUnique(unsigned modelId, unsigned module);
 
     TreeItem * rootItem;
     RadioData * radioData;
