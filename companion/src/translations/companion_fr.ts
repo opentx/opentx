@@ -2549,27 +2549,27 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
         <source>%1%2 Both directions, to destination folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Destination</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Radio</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
         <source>%1%2 Both directions, to source folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Source</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Local</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
         <source> %1  Only from source folder to destination folder</source>
-        <translation> %1 Uniquement du dossier Source vers le dossier Destination</translation>
+        <translation> %1 Uniquement du dossier Local vers le dossier Radio</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
         <source> %1  Only from destination folder to source folder</source>
-        <translation> %1 Uniquement du dossier Destination vers le dossier Source</translation>
+        <translation> %1 Uniquement du dossier Radio vers le dossier Local</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="151"/>
         <source>How to handle overwriting files which already exist in the destination folder.</source>
-        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier Destination.</translation>
+        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier de destination.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="152"/>
@@ -6522,17 +6522,17 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="346"/>
         <source>No Companion release candidates are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;candidate&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;candidate&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officielle&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="348"/>
         <source>No nightly Companion builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;nightly&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;nightly&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officielle&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
         <source>No Companion release builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;officielle&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;officielle&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;candidate&quot; ou &quot;nightly&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="378"/>
@@ -6542,17 +6542,17 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="473"/>
         <source>No firmware release candidates are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;candidate&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;candidate&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="475"/>
         <source>No firmware nightly builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;nightly&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;nightly&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="477"/>
         <source>No firmware release builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;officiel&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;officiel&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;candidate&quot; ou &quot;nightly&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="481"/>
@@ -9910,12 +9910,12 @@ E</translation>
     <message>
         <location filename="../simulation/radiooutputswidget.cpp" line="226"/>
         <source>FM%1</source>
-        <translation type="unfinished">PV%1</translation>
+        <translation>PV%1</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.cpp" line="235"/>
         <source>GV%1</source>
-        <translation type="unfinished">VG%1</translation>
+        <translation>VG%1</translation>
     </message>
 </context>
 <context>
