@@ -44,7 +44,7 @@ const MenuHandlerFunc menuTabModel[] = {
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay)
 {
   lcdDrawTextAlignedLeft(y, str);
-  lcdDrawNumber(MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
+  lcdDrawNumber(MIXES_2ND_COLUMN, y, delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }

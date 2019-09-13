@@ -147,10 +147,8 @@ enum CurveRefType {
 #define GV1_LARGE       1024
 #define GV_RANGE_WEIGHT 500
 #define GV_RANGE_OFFSET 500
-#define DELAY_STEP      10
-#define SLOW_STEP       10
-#define DELAY_MAX       (25*DELAY_STEP) /* 25 seconds */
-#define SLOW_MAX        (25*SLOW_STEP)  /* 25 seconds */
+#define DELAY_MAX       250 /* 25 seconds */
+#define SLOW_MAX        250 /* 25 seconds */
 
 #define MD_WEIGHT(md) (md->weight)
 #define MD_WEIGHT_TO_UNION(md, var) var.word = md->weight
