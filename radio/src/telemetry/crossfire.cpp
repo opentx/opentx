@@ -68,6 +68,9 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 
 void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 {
+  if(!TELEMETRY_STREAMING())
+    return;
+
   const CrossfireSensor & sensor = crossfireSensors[index];
   setTelemetryValue(PROTOCOL_TELEMETRY_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, sensor.precision);
 }
