@@ -33,15 +33,32 @@ using namespace Board;
 
 inline int MAX_SWITCHES(Board::Type board, int version)
 {
-  if (version <= 218 && IS_TARANIS_X7(board))
-    return 6;
-  if (version <= 218 && (IS_TARANIS_X9D(board) || IS_HORUS(board)))
-    return 8;
-  if (version <= 218 && (IS_TARANIS_XLITE(board)))
-    return 4;
+  if (version <= 218) {
+    if (IS_TARANIS_X7(board))
+      return 6;
+    if (IS_TARANIS_X9D(board) || IS_HORUS(board))
+      return 8;
+    if (IS_TARANIS_XLITE(board))
+      return 4;
+  }
+
   if (IS_TARANIS_X9D(board))
     return 9;
+
+  if (IS_JUMPER_T12(board))
+    return 8;
+
   return Boards::getCapability(board, Board::Switches);
+}
+
+inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
+{
+  if (IS_HORUS_OR_TARANIS(board)) {
+    return MAX_SWITCHES(board, version) * 3;
+  }
+  else {
+    return Boards::getCapability(board, Board::SwitchPositions);
+  }
 }
 
 inline int POTS_CONFIG_SIZE(Board::Type board, int version)
@@ -104,29 +121,11 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
 
   if (IS_HORUS(board))
     return 32;
-  
+
   if (version >= 219 && IS_TARANIS_X9D(board))
     return 32;
 
   return 16;
-}
-
-inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
-{
-  if (version < 219) {
-    if (IS_TARANIS_X7(board) || IS_HORUS(board))
-      return Boards::getCapability(board, Board::SwitchPositions) - 2 * 3;
-    if (IS_TARANIS_X9D(board))
-      return 8 * 3;
-    if (IS_TARANIS_XLITE(board))
-      return 4 * 3;
-  }
-
-  if (IS_TARANIS_X9D(board)) {
-    return 9 * 3; // all X9D have storage for 9 switches (X9D+ 2019)
-  }
-
-  return Boards::getCapability(board, Board::SwitchPositions);
 }
 
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
@@ -301,7 +300,7 @@ class SourcesConversionTable: public ConversionTable {
         int offset = 0;
         if (version <= 218 && IS_HORUS_X10(board) && i >= CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version))
           offset += 2;
-          
+
         addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
       }
 
@@ -2212,7 +2211,7 @@ class ModuleField: public TransformedField {
         module.protocol += module.rfProtocol;
       }
     }
-  
+
   private:
     StructField              internalField;
     ModuleData&              module;
@@ -2690,7 +2689,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new ArmCustomFunctionField(this, generalData.customFn[i], board, version, variant));
     }
   }
-  
+
   if (IS_STM32(board)) {
     if (version >= 218) {
       internalField.Append(new UnsignedField<4>(this, generalData.auxSerialMode));
@@ -2728,13 +2727,13 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       // 2 new pots for Horus from 219 on
       if (version <= 218 && IS_HORUS(board) && (i >= 3))
         offset += 2;
-      
+
       if (i < MAX_POTS_STORAGE(board, version))
         internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i+offset]));
       else
         internalField.Append(new SpareBitsField<2>(this));
     }
-    
+
     if (IS_HORUS(board) && version >= 219) {
       for (int i=0; i<SLIDERS_CONFIG_SIZE(board,version); i++) {
         if (i < MAX_SLIDERS_STORAGE(board, version))
@@ -2742,8 +2741,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         else
           internalField.Append(new SpareBitsField<1>(this));
       }
-    }    
-    
+    }
+
     if (!IS_HORUS(board)) {
       internalField.Append(new UnsignedField<8>(this, generalData.backlightColor));
     }
