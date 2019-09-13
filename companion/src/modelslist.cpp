@@ -732,7 +732,7 @@ void TreeModel::refresh()
           }
           unsigned mdlidx = model.moduleData[j].modelId;
           rxs.append(QString("%1").arg(uint(mdlidx), 2, 10, QChar('0')));
-          if (!isModelIdUnique(mdlidx)) {
+          if (!isModelIdUnique(mdlidx, j)) {
             current->setHighlightRX(true);
           }
         }
@@ -746,17 +746,15 @@ void TreeModel::refresh()
   }
 }
 
-bool TreeModel::isModelIdUnique(unsigned modelIdx)
+bool TreeModel::isModelIdUnique(unsigned modelIdx, unsigned module)
 {
   int cnt = 0;
   for (unsigned i=0; i<radioData->models.size(); i++) {
     ModelData & model = radioData->models[i];
     if (!model.isEmpty()) {
-      for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
-        if (model.moduleData[j].protocol != PULSES_OFF && model.moduleData[j].modelId == modelIdx) {
-          if (++cnt > 1) {
-            return false;
-          }
+      if (model.moduleData[module].protocol != PULSES_OFF && model.moduleData[module].modelId == modelIdx) {
+        if (++cnt > 1) {
+          return false;
         }
       }
     }
