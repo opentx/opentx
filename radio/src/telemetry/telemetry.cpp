@@ -223,21 +223,23 @@ void telemetryInterrupt10ms()
 #if !defined(SIMU)
     telemetryData.rssi.reset();
 #endif
-    for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-      telemetryItems[i].setOld();
+    for (auto & telemetryItem: telemetryItems) {
+      if (telemetryItem.isAvailable()) {
+        telemetryItem.setOld();
+      }
     }
   }
 }
 
 void telemetryReset()
 {
-  memclear(&telemetryData, sizeof(telemetryData));
+  telemetryData.clear();
 
   for (auto & telemetryItem : telemetryItems) {
     telemetryItem.clear();
   }
 
-  telemetryStreaming = 0; // reset counter only if valid frsky packets are being detected
+  telemetryStreaming = 0; // reset counter only if valid telemetry packets are being detected
 
   telemetryState = TELEMETRY_INIT;
 }
