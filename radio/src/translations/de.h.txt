@@ -311,7 +311,7 @@
 #define LEN_VSWITCHES                  "\003"
 #define LEN_VSRCRAW                    "\004"
 
-#define TR_STICKS_VSRCRAW              TR("Sei\0""Höh\0""Gas\0""Que\0", "\307Sei""\307Höh""\307Gas""\307Que")
+#define TR_STICKS_VSRCRAW              "\307Sei""\307Höh""\307Gas""\307Que"
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW             "\313Sei""\313Höh""\313Gas""\313Que""\313T5\0""\313T6\0"
