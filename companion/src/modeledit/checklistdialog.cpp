@@ -20,16 +20,12 @@
 
 #include "checklistdialog.h"
 #include "ui_checklistdialog.h"
-
-#include "appdata.h"
 #include "helpers.h"
 
 #include <QFile>
 #include <QTextStream>
 
-extern AppData g;
-
-ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
+ChecklistDialog::ChecklistDialog(QWidget *parent, const ModelData * model):
   QDialog(parent),
   ui(new Ui::ChecklistDialog),
   mDirty(false)
@@ -37,17 +33,21 @@ ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("edit.png"));
 
-  mChecklistFolder = g.profile[g.id()].sdPath() + "/MODELS/";
-  QString name = modelName;
-  name.replace(" ", "_");
-  mModelChecklist = QDir::toNativeSeparators(mChecklistFolder + name + ".txt");
+  mChecklistFolder = Helpers::getChecklistsPath();
+  mModelChecklist = Helpers::getChecklistFilePath(model);
   ui->file->setText("File: " + mModelChecklist);
-  ui->pteCheck->setPlainText(readFile(mModelChecklist,QFile::exists(mModelChecklist)));
+  ui->pteCheck->setPlainText(readFile(mModelChecklist, QFile::exists(mModelChecklist)));
+
+  QFont f("Courier", 12, QFont::Normal);    // fixed width font
+  ui->pteCheck->setFont(f);
 
   connect(ui->pteCheck, SIGNAL(textChanged()), this, SLOT(changed()));
+  connect(ui->pteCheck, SIGNAL(cursorPositionChanged()), this, SLOT(cursorChanged()));
   connect(ui->pbImport, SIGNAL(clicked()), this, SLOT(import()));
   connect(ui->pbCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(ui->pbOK, SIGNAL(clicked()), this, SLOT(update()));
+
+  cursorChanged();  // force label to update
 }
 
 ChecklistDialog::~ChecklistDialog()
@@ -78,7 +78,7 @@ void ChecklistDialog::update()
     else {
       QTextStream out(&file);
       if (out.status()==QTextStream::Ok) {
-        out << ui->pteCheck->toPlainText();
+        out << Helpers::removeAccents(ui->pteCheck->toPlainText());
         if (!(out.status()==QTextStream::Ok)) {
           QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write to file %1:\n%2.").arg(mModelChecklist, file.errorString()));
           if (!file.flush()) {
@@ -105,7 +105,7 @@ QString ChecklistDialog::readFile(const QString & filepath, const bool exists)
     else {
       QTextStream in(&file);
       if (in.status()==QTextStream::Ok) {
-        data = in.readAll();
+        data = Helpers::removeAccents(in.readAll());
         if (!(in.status()==QTextStream::Ok)) {
           QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot read file %1:\n%2.").arg(QDir::toNativeSeparators(filepath), file.errorString()));
           data = "";
@@ -115,4 +115,10 @@ QString ChecklistDialog::readFile(const QString & filepath, const bool exists)
     file.close();
   }
   return data;
+}
+
+void ChecklistDialog::cursorChanged()
+{
+  QTextCursor tc = ui->pteCheck->textCursor();
+  ui->lblCursorPos->setText(tr("Line %1, Col %2").arg(tc.blockNumber() + 1).arg(tc.positionInBlock() + 1));
 }

@@ -26,8 +26,6 @@
 #define SWAP_DEFINED
 #include "opentx.h"
 
-extern const char * zchar2string(const char * zstring, int size);
-#define EXPECT_ZSTREQ(c_string, z_string)   EXPECT_STREQ(c_string, zchar2string(z_string, sizeof(z_string)))
 
 ::testing::AssertionResult __luaExecStr(const char * str)
 {

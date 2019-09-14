@@ -746,7 +746,7 @@ void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model
     }
   }
   cb->addItem("---", 0);
-  for (int i=1; i<=CPN_MAX_SENSORS; ++i) {
+  for (unsigned i=1; i<=CPN_MAX_SENSORS; ++i) {
     if (model->sensorData[i-1].isAvailable())
       cb->addItem(model->sensorData[i-1].label, i);
   }
@@ -834,7 +834,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
     ui->A1GB->hide();
     ui->A2GB->hide();
-    for (int i=0; i<CPN_MAX_SENSORS; ++i) {
+    for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
       TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], model, generalSettings, firmware);
       ui->sensorsLayout->addWidget(panel);
       sensorPanels[i] = panel;
@@ -899,7 +899,7 @@ void TelemetryPanel::update()
   }
 
   if (IS_ARM(firmware->getBoard())) {
-    for (int i=0; i<CPN_MAX_SENSORS; ++i) {
+    for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
       sensorPanels[i]->update();
     }
   }

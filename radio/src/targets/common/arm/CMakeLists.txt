@@ -7,11 +7,17 @@ option(TRACE_SD_CARD "Traces SD enabled" OFF)
 option(TRACE_FATFS "Traces FatFS enabled" OFF)
 option(TRACE_AUDIO "Traces audio enabled" OFF)
 option(DEBUG_TRACE_BUFFER "Debug Trace Screen" OFF)
+option(XJT "XJT TX Module" ON)
+option(R9M_SIZE_STD "R9M standard size TX Module" ON)
+option(PPM "PPM TX Module" ON)
+option(DSM2 "DSM2 TX Module" ON)
+option(SBUS "SBUS TX Module" ON)
+option(CROSSFIRE "Crossfire TX Module" OFF)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" OFF)
 option(MULTI_SPORT "SPORT telemetry support" OFF)
-option(CROSSFIRE "Crossfire TX Module" OFF)
 option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
+option(DEBUG_LATENCY "Debug latency" OFF)
 option(DEBUG_USB_INTERRUPTS "Count individual USB interrupts" OFF)
 option(DEBUG_TASKS "Task switching statistics" OFF)
 option(DEBUG_TIMERS "Time critical parts of the code" OFF)
@@ -66,6 +72,17 @@ if(DEBUG_TIMERS)
   set(DEBUG ON)
 endif()
 
+if(DEBUG_LATENCY STREQUAL MIXER_RF)
+  add_definitions(-DDEBUG_LATENCY)
+  add_definitions(-DDEBUG_LATENCY_MIXER_RF)
+endif()
+
+if(DEBUG_LATENCY STREQUAL RF_ONLY)
+  add_definitions(-DDEBUG_LATENCY)
+  add_definitions(-DDEBUG_LATENCY_RF_ONLY)
+endif()
+
+
 if(CLI)
   add_definitions(-DCLI)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} cli.cpp)
@@ -90,7 +107,17 @@ endif()
 
 # Protocols supported
 
-add_definitions(-DDSM2 -DSBUS)
+if(PPM)
+  add_definitions(-DPPM)
+endif()
+
+if(DSM2)
+  add_definitions(-DDSM2)
+endif()
+
+if(SBUS)
+  add_definitions(-DSBUS)
+endif()
 
 if(PXX1)
   add_definitions(-DPXX -DPXX1)
@@ -106,6 +133,14 @@ if(PXX2)
     ${PULSES_SRC}
     pxx2.cpp
     )
+endif()
+
+if(XJT)
+  add_definitions(-DXJT)
+endif()
+
+if(R9M_SIZE_STD)
+  add_definitions(-DR9M_SIZE_STD)
 endif()
 
 if(MULTIMODULE)
@@ -186,6 +221,18 @@ set(PULSES_SRC
   ${PULSES_SRC}
   pulses.cpp
   ppm.cpp
-  dsm2.cpp
-  sbus.cpp
   )
+
+if(DSM2)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    dsm2.cpp
+    )
+endif()
+
+if(SBUS)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    sbus.cpp
+    )
+endif()

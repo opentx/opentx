@@ -5,13 +5,11 @@ set(GUI_SRC
   fonts.cpp
   popups.cpp
   widgets.cpp
-  menus.cpp
   menu_model.cpp
   model_select.cpp
   model_setup.cpp
+  model_outputs.cpp
   model_failsafe.cpp
-  model_module_options.cpp
-  model_receiver_options.cpp
   model_logical_switches.cpp
   model_special_functions.cpp
   model_telemetry.cpp
@@ -25,24 +23,16 @@ set(GUI_SRC
   view_statistics.cpp
   )
 
-if(GUI_DIR STREQUAL 128x64)
-   set(GUI_SRC
-      ${GUI_SRC}
-      model_outputs_arm.cpp
-      )
-else()
-  set(GUI_SRC
-    ${GUI_SRC}
-    model_outputs.cpp
-    )
-endif()
-
 set(SRC
   ${SRC}
   gui/common/widgets.cpp
   gui/navigation/navigation_${NAVIGATION_TYPE}.cpp
   gui/navigation/common.cpp
   )
+
+
+string(TOUPPER ${NAVIGATION_TYPE} NAVIGATION_TYPE)
+add_definitions(-DNAVIGATION_${NAVIGATION_TYPE})
 
 include_directories(gui gui/${GUI_DIR})
 

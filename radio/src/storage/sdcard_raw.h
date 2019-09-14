@@ -27,7 +27,7 @@
 #define DEFAULT_MODEL_FILENAME   "model1.bin"
 
 // opens radio.bin or model file
-const char * openFile(const char * fullpath, FIL* file, uint16_t* size);
+const char * openFile(const char * fullpath, FIL * file, uint16_t * size, uint8_t * version);
 
 void getModelPath(char * path, const char * filename);
 

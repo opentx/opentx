@@ -272,6 +272,8 @@ QString MultiModelPrinter::print(QTextDocument * document)
     document->setDefaultStyleSheet(css.text());
   QString str = "<table cellspacing='0' cellpadding='3' width='100%'>";   // attributes not settable via QT stylesheet
   str.append(printSetup());
+  if (firmware->getCapability(HasDisplayText))
+    str.append(printChecklist());
   if (firmware->getCapability(Timers)) {
     str.append(printTimers());
   }
@@ -283,10 +285,12 @@ QString MultiModelPrinter::print(QTextDocument * document)
   str.append(printInputs());
   str.append(printMixers());
   str.append(printOutputs());
-  str += printCurves(document);
+  str.append(printCurves(document));
   if (firmware->getCapability(Gvars) && !firmware->getCapability(GvarsFlightModes))
     str.append(printGvars());
   str.append(printLogicalSwitches());
+  if (firmware->getCapability(GlobalFunctions))
+    str.append(printGlobalFunctions());
   str.append(printSpecialFunctions());
   if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY) {
     str.append(printTelemetry());
@@ -859,7 +863,7 @@ QString MultiModelPrinter::printSensors()
   int count = 0;
   columns.appendSectionTableStart();
   columns.appendRowHeader(QStringList() << tr("Name") << tr("Type") << tr("Parameters"));
-  for (int i=0; i<CPN_MAX_SENSORS; ++i) {
+  for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
     bool tsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
       if (modelPrinterMap.value(k).first->sensorData[i].isAvailable()) {
@@ -913,6 +917,62 @@ QString MultiModelPrinter::printTelemetryScreens()
   columns.appendTableEnd();
   if (count > 0) {
     str.append(printTitle(tr("Telemetry Screens")));
+    str.append(columns.print());
+  }
+  return str;
+}
+
+QString MultiModelPrinter::printGlobalFunctions()
+{
+  QString str;
+  QString txt;
+  int count = 0;
+  int idx = -1;
+  MultiColumns columns(modelPrinterMap.size());
+  columns.appendSectionTableStart();
+
+  for (int k=0; k < modelPrinterMap.size(); k++) {
+    if (!modelPrinterMap.value(k).first->noGlobalFunctions) {
+      idx = k;
+      break;
+    }
+  }
+
+  if (idx > -1) {
+    ModelPrinter * modelPrinter = modelPrinterMap.value(idx).second;
+    (void)(modelPrinter);
+
+    for (int i=0; i < firmware->getCapability(GlobalFunctions); i++) {
+      txt = modelPrinter->printCustomFunctionLine(i, true);
+      if (!txt.isEmpty()) {
+        count++;
+        ROWLABELCOMPARECELL(tr("GF%1").arg(i+1), 20, modelPrinter->printCustomFunctionLine(i, true), 80);
+      }
+    }
+    columns.appendTableEnd();
+    if (count > 0) {
+      str.append(printTitle(tr("Global Functions")));
+      str.append(columns.print());
+    }
+  }
+  return str;
+}
+
+QString MultiModelPrinter::printChecklist()
+{
+  QString str;
+  MultiColumns columns(modelPrinterMap.size());
+  bool isChecklist = false;
+  for (int k=0; k < modelPrinterMap.size(); k++) {
+    if (modelPrinterMap.value(k).first->displayChecklist) {
+      isChecklist = true;
+      break;
+    }
+  }
+  if (isChecklist) {
+    columns.appendSectionTableStart();
+    ROWLABELCOMPARECELL(tr("Checklist"), 20, modelPrinter->printChecklist(), 80);
+    columns.appendTableEnd();
     str.append(columns.print());
   }
   return str;

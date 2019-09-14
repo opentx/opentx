@@ -138,6 +138,12 @@ void telemetryPortSetDirectionInput()
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
 
+void sportSendByte(uint8_t byte)
+{
+  while (!(TELEMETRY_USART->SR & USART_SR_TXE));
+  USART_SendData(TELEMETRY_USART, byte);
+}
+
 void sportSendBuffer(const uint8_t * buffer, uint32_t count)
 {
   telemetryPortSetDirectionOutput();
@@ -207,7 +213,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
       if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
         static uint8_t prevdata;
         if (prevdata == 0x7E && outputTelemetryBuffer.size > 0 && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data == outputTelemetryBuffer.sport.physicalId) {
-          sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
+          sportSendBuffer(outputTelemetryBuffer.data + 1, outputTelemetryBuffer.size - 1);
         }
         prevdata = data;
       }
@@ -229,3 +235,13 @@ uint8_t telemetryGetByte(uint8_t * byte)
   return telemetryNoDMAFifo.pop(*byte);
 #endif
 }
+
+void telemetryClearFifo()
+{
+#if defined(PCBX12S)
+  telemetryDMAFifo.clear();
+#endif
+
+  telemetryNoDMAFifo.clear();
+}
+

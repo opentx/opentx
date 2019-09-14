@@ -26,7 +26,7 @@
 int expoFn(int x)
 {
   ExpoData * ed = expoAddress(s_currIdx);
-  int16_t anas[NUM_INPUTS] = {0};
+  int16_t anas[MAX_INPUTS] = {0};
   applyExpos(anas, e_perout_mode_inactive_flight_mode, ed->srcRaw, x);
   return anas[ed->chn];
 }
@@ -144,7 +144,7 @@ void menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, RIGHT | attr, event);
+        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN, y, STR_SIDE, STR_VCURVEFUNC, 4-ed->mode, 1, 3, RIGHT | attr, event);
         break;
 
       case EXPO_FIELD_TRIM:

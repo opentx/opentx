@@ -36,6 +36,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   ui->setupUi(this);
 
   ui->labelName->setContextMenuPolicy(Qt::CustomContextMenu);
+  ui->labelName->setToolTip(tr("Popup menu available"));
   connect(ui->labelName, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(name_customContextMenuRequested(const QPoint &)));
 
   int modesCount = firmware->getCapability(FlightModes);

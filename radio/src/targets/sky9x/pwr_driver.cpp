@@ -22,7 +22,7 @@
 
 uint32_t pwrPressed()
 {
-#if defined(SIMU) || defined(REVA)
+#if defined(SIMU)
   return true;
 #else
   return PIOC->PIO_PDSR & PIO_PC17;
@@ -32,16 +32,12 @@ uint32_t pwrPressed()
 // turn off soft power
 void pwrOff()
 {
-#if !defined(REVA)
   configure_pins(PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP);
-#endif
 }
 
-#if !defined(REVA)
 void pwrInit()
 {
   // Configure RF_power (PC17)
   configure_pins(PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN);
   configure_pins(PIO_PA8, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP); // Enable bit A8 (Soft Power)
 }
-#endif

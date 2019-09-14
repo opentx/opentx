@@ -88,7 +88,7 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, Lcd
 #endif
 }
 
-int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t event)
+swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event)
 {
   drawFieldLabel(x, y, STR_SWITCH);
   drawSwitch(x,  y, value, attr);
@@ -230,7 +230,7 @@ void drawStatusLine()
     }
 
     lcdDrawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
-    lcdDrawText(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
+    lcdDrawText(5, LCD_H+1-statusLineHeight, statusLineMsg);
     lcdDrawFilledRect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }

@@ -637,7 +637,7 @@ bool luaLoadFunctionScript(uint8_t index, uint8_t ref)
 {
   if ((ref >= SCRIPT_GFUNC_FIRST) && g_model.noGlobalFunctions)
     return false;
-  
+
   CustomFunctionData & fn = (ref < SCRIPT_GFUNC_FIRST ? g_model.customFn[index] : g_eeGeneral.customFn[index]);
 
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
@@ -754,7 +754,7 @@ void displayAcknowledgeLuaError(event_t event)
   warningResult = false;
   displayLuaError(warningText);
   if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-    warningText = NULL;
+    warningText = nullptr;
   }
 }
 
@@ -792,6 +792,7 @@ void luaError(lua_State * L, uint8_t error, bool acknowledge)
 
   if (acknowledge) {
     warningText = errorTitle;
+    warningType = WARNING_TYPE_INFO;
     popupFunc = displayAcknowledgeLuaError;
   }
   else {
@@ -883,7 +884,7 @@ void luaDoOneRunStandalone(event_t evt)
       standaloneScript.state = SCRIPT_NOFILE;
       luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
     }
-#if !defined(PCBHORUS) && !defined(PCBXLITE)
+#if defined(KEYS_GPIO_REG_MENU)
   // TODO find another key and add a #define
     else if (evt == EVT_KEY_LONG(KEY_MENU)) {
       killEvents(evt);

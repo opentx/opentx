@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "io/frsky_firmware_update.h"
 
 #if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE) || defined(USEHORUSBT)
 #define BLUETOOTH_COMMAND_NAME         "AT+NAME"
@@ -602,9 +603,14 @@ enum {
   CMD_RET_SUCCESS = 0x40,
 };
 
-#define CC26XX_FLASH_BASE               0x00001000
-#define CC26XX_PAGE_ERASE_SIZE          4096
-#define CC26XX_MAX_BYTES_PER_TRANSFER   252
+constexpr uint32_t CC26XX_FLASH_SIZE = 0x00020000;
+constexpr uint32_t CC26XX_BOOTLOADER_SIZE = 0x00001000;
+constexpr uint32_t CC26XX_DATA_SIZE = 0x00001000;
+constexpr uint32_t CC26XX_FIRMWARE_BASE = CC26XX_BOOTLOADER_SIZE;
+constexpr uint32_t CC26XX_FIRMWARE_SIZE = CC26XX_FLASH_SIZE - CC26XX_DATA_SIZE - CC26XX_BOOTLOADER_SIZE;
+
+constexpr uint32_t CC26XX_PAGE_ERASE_SIZE = 0x1000;
+constexpr uint32_t CC26XX_MAX_BYTES_PER_TRANSFER = 252;
 
 const char * Bluetooth::bootloaderSendData(const uint8_t * data, uint8_t size)
 {
@@ -712,31 +718,39 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
     return "Error opening file";
   }
 
-  drawProgressScreen(getBasename(filename), "Flash erase...", 0, 0);
+  FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *)buffer;
+  if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
+    f_close(&file);
+    return "Format error";
+  }
 
-  result = bootloaderEraseFlash(CC26XX_FLASH_BASE, f_size(&file));
-  if (result)
+  drawProgressScreen(getBasename(filename), STR_FLASH_ERASE, 0, 0);
+
+  result = bootloaderEraseFlash(CC26XX_FIRMWARE_BASE, information->size);
+  if (result) {
+    f_close(&file);
     return result;
+  }
 
-  uint32_t size = f_size(&file);
-  drawProgressScreen(getBasename(filename), "Flash write...", 0, size);
+  uint32_t size = information->size;
+  drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, 0, size);
 
-  result = bootloaderStartWriteFlash(CC26XX_FLASH_BASE, size);
+  result = bootloaderStartWriteFlash(CC26XX_FIRMWARE_BASE, size);
   if (result)
     return result;
 
   uint32_t done = 0;
   while (1) {
-    done += count;
-    drawProgressScreen(getBasename(filename), "Flash write...", done, size);
-    if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
+    drawProgressScreen(getBasename(filename), STR_FLASH_WRITE, done, size);
+    if (f_read(&file, buffer, min<uint32_t>(sizeof(buffer), size - done), &count) != FR_OK) {
       f_close(&file);
       return "Error reading file";
     }
     result = bootloaderWriteFlash(buffer, count);
     if (result)
       return result;
-    if (count < sizeof(buffer)) {
+    done += count;
+    if (done >= size) {
       f_close(&file);
       return nullptr;
     }
@@ -745,7 +759,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
 
 void Bluetooth::flashFirmware(const char * filename)
 {
-  drawProgressScreen(getBasename(filename), "Module reset...", 0, 0);
+  drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
   state = BLUETOOTH_STATE_FLASH_FIRMWARE;
 
@@ -772,7 +786,7 @@ void Bluetooth::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
-  drawProgressScreen(getBasename(filename), "Module reset...", 0, 0);
+  drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
   /* wait 1s off */
   watchdogSuspend(1000);

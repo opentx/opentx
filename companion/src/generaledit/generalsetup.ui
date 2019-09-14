@@ -1844,7 +1844,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QComboBox" name="gpsFormatCB">
        <item>
         <property name="text">
-         <string>hh° (N/S) mm' ss''.dd</string>
+         <string>DMS</string>
         </property>
        </item>
        <item>

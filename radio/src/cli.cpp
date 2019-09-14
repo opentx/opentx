@@ -699,7 +699,7 @@ int cliTrace(const char ** argv)
 
 int cliStackInfo(const char ** argv)
 {
-  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize() * 4);  // stackSize() returns size in 32bit chunks
+  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize());
   serialPrint("[MENUS] %d available / %d", menusStack.available(), menusStack.size());
   serialPrint("[MIXER] %d available / %d", mixerStack.available(), mixerStack.size());
   serialPrint("[AUDIO] %d available / %d", audioStack.available(), audioStack.size());

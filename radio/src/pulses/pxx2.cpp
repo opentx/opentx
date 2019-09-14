@@ -36,9 +36,9 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
   return flag0;
 }
 
-void Pxx2Pulses::addFlag1()
+void Pxx2Pulses::addFlag1(uint8_t module)
 {
-  uint8_t flag1 = 0;
+  uint8_t flag1 = g_model.moduleData[module].subType << 4;
   Pxx2Transport::addByte(flag1);
 }
 
@@ -60,6 +60,12 @@ void Pxx2Pulses::addChannels(uint8_t module)
   for (int8_t i = 0; i < count; i++, channel++) {
     int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
     pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+#if defined(DEBUG_LATENCY_RF_ONLY)
+    if (latencyToggleSwitch)
+      pulseValue = 1;
+    else
+      pulseValue = 2046;
+#endif
     if (i & 1)
       addPulsesValues(pulseValueLow, pulseValue);
     else
@@ -110,7 +116,7 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   uint8_t flag0 = addFlag0(module);
 
   // Flag1
-  addFlag1();
+  addFlag1(module);
 
   // Failsafe / Channels
   if (flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE)
@@ -180,7 +186,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
       flag0 |= PXX2_TX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
     if (destination->state == PXX2_SETTINGS_WRITE) {
-      uint8_t flag1 = destination->rfProtocol << 4;
+      uint8_t flag1 = 0;
       if (destination->externalAntenna)
         flag1 |= PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA;
       Pxx2Transport::addByte(flag1);
@@ -220,7 +226,18 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
   }
 }
 
-void Pxx2Pulses::setupBindFrame(uint8_t module)
+void Pxx2Pulses::setupAccstBindFrame(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
+  Pxx2Transport::addByte(0x01); // DATA0
+  for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+    Pxx2Transport::addByte(0x00);
+  }
+  Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiver_channel_9_16 << 7) + (g_model.moduleData[module].pxx.receiver_telem_off << 6));
+  Pxx2Transport::addByte(g_model.header.modelId[module]);
+}
+
+void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
 {
   BindInformation * destination = moduleState[module].bindInformation;
 
@@ -236,13 +253,13 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
   if (destination->step == BIND_INFO_REQUEST) {
-    Pxx2Transport::addByte(0x02);
+    Pxx2Transport::addByte(0x02); // DATA0
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
   }
   else if (destination->step == BIND_START) {
-    Pxx2Transport::addByte(0x01);
+    Pxx2Transport::addByte(0x01); // DATA0
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
@@ -250,7 +267,7 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
-    Pxx2Transport::addByte(0x00);
+    Pxx2Transport::addByte(0x00); // DATA0
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
       Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
@@ -267,18 +284,24 @@ void Pxx2Pulses::setupResetFrame(uint8_t module)
 
 void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
-  Pxx2Transport::addByte(0x00);
-  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
-  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.span);
-  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.step);
+  if (reusableBuffer.spectrumAnalyser.dirty) {
+    reusableBuffer.spectrumAnalyser.dirty = false;
+    addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
+    Pxx2Transport::addByte(0x00);
+    Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
+    Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.span);
+    Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.step);
+  }
 }
 
 void Pxx2Pulses::setupPowerMeter(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_POWER_METER);
-  Pxx2Transport::addByte(0x00);
-  Pxx2Transport::addWord(reusableBuffer.powerMeter.freq);
+  if (reusableBuffer.powerMeter.dirty) {
+    reusableBuffer.powerMeter.dirty = false;
+    addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_POWER_METER);
+    Pxx2Transport::addByte(0x00);
+    Pxx2Transport::addWord(reusableBuffer.powerMeter.freq);
+  }
 }
 
 void Pxx2Pulses::setupShareMode(uint8_t module)
@@ -287,8 +310,40 @@ void Pxx2Pulses::setupShareMode(uint8_t module)
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
 }
 
+void Pxx2Pulses::sendOtaUpdate(uint8_t module, const char * rxName, uint32_t address, const char * data)
+{
+  initFrame();
+
+  addFrameType(PXX2_TYPE_C_OTA, PXX2_TYPE_ID_OTA);
+
+  if (rxName) {
+    Pxx2Transport::addByte(0x00);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(rxName[i]);
+    }
+  }
+  else if (data) {
+    Pxx2Transport::addByte(0x01);
+    Pxx2Transport::addWord(address);
+    for (uint8_t i=0; i<32; i++) {
+      Pxx2Transport::addByte(data[i]);
+    }
+  }
+  else {
+    Pxx2Transport::addByte(0x02);
+  }
+
+  endFrame();
+
+  if (module == EXTERNAL_MODULE)
+    extmoduleSendNextFrame();
+}
+
 void Pxx2Pulses::setupFrame(uint8_t module)
 {
+  if (moduleState[module].mode == MODULE_MODE_OTA_UPDATE)
+    return;
+
   initFrame();
 
   switch (moduleState[module].mode) {
@@ -305,7 +360,10 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupRegisterFrame(module);
       break;
     case MODULE_MODE_BIND:
-      setupBindFrame(module);
+      if (g_model.moduleData[module].type == MODULE_TYPE_ISRM_PXX2 && g_model.moduleData[module].subType != MODULE_SUBTYPE_ISRM_PXX2_ACCESS)
+        setupAccstBindFrame(module);
+      else
+        setupAccessBindFrame(module);
       break;
     case MODULE_MODE_RESET:
       setupResetFrame(module);
@@ -335,4 +393,109 @@ void Pxx2Pulses::setupFrame(uint8_t module)
   }
 
   endFrame();
+}
+
+bool Pxx2OtaUpdate::waitStep(uint8_t step, uint8_t timeout)
+{
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+  uint8_t elapsed = 0;
+
+  watchdogSuspend(100);
+
+  while (step != destination->step) {
+    if (elapsed++ > timeout) {
+      return false;
+    }
+    RTOS_WAIT_MS(1);
+    telemetryWakeup();
+  }
+
+  return true;
+}
+
+const char * Pxx2OtaUpdate::nextStep(uint8_t step, const char * rxName, uint32_t address, const uint8_t * buffer)
+{
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+
+  destination->step = step;
+  destination->address = address;
+
+  for (uint8_t retry = 0;; retry++) {
+    extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
+    if (waitStep(step + 1, 20)) {
+      return nullptr;
+    }
+    else if (retry == 100) {
+      return "Transfer failed";
+    }
+  }
+}
+
+const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
+{
+  FIL file;
+  uint8_t buffer[32];
+  UINT count;
+  const char * result;
+
+  result = nextStep(OTA_UPDATE_START, rxName, 0, nullptr);
+  if (result) {
+    return result;
+  }
+
+  if (f_open(&file, filename, FA_READ) != FR_OK) {
+    return "Open file failed";
+  }
+
+  uint32_t size = f_size(&file);
+  uint32_t done = 0;
+  while (1) {
+    drawProgressScreen(getBasename(filename), STR_OTA_UPDATE, done, size);
+    if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
+      f_close(&file);
+      return "Read file failed";
+    }
+
+    result = nextStep(OTA_UPDATE_TRANSFER, nullptr, done, buffer);
+    if (result) {
+      return result;
+    }
+
+    if (count < sizeof(buffer)) {
+      f_close(&file);
+      break;
+    }
+
+    done += count;
+  }
+
+  return nextStep(OTA_UPDATE_EOF, nullptr, done, nullptr);
+}
+
+void Pxx2OtaUpdate::flashFirmware(const char * filename)
+{
+  pausePulses();
+
+  watchdogSuspend(100);
+  RTOS_WAIT_MS(100);
+
+  moduleState[module].mode = MODULE_MODE_OTA_UPDATE;
+  const char * result = doFlashFirmware(filename);
+  moduleState[module].mode = MODULE_MODE_NORMAL;
+
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  BACKLIGHT_ENABLE();
+
+  if (result) {
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
+    SET_WARNING_INFO(result, strlen(result), 0);
+  }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
+
+  watchdogSuspend(100);
+  RTOS_WAIT_MS(100);
+
+  resumePulses();
 }
