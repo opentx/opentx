@@ -298,13 +298,15 @@ void modelSetupModulePxx2ReceiverLine(uint8_t moduleIdx, uint8_t receiverIdx, co
   if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
     if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT) {
       if (reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
-        popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
-        for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
-          popupMenuItems[rx] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[rx];
+        if (reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount != popupMenuItemsCount) {
+          CLEAR_POPUP();
+          popupMenuItemsCount = reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount;
+          for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
+            popupMenuItems[rx] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[rx];
+          }
+          popupMenuTitle = STR_PXX2_SELECT_RX;
+          POPUP_MENU_START(onPXX2BindMenu);
         }
-        popupMenuTitle = STR_PXX2_SELECT_RX;
-        CLEAR_POPUP();
-        POPUP_MENU_START(onPXX2BindMenu);
       }
       else {
         POPUP_WAIT(STR_WAITING_FOR_RX);
