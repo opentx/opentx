@@ -384,7 +384,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
           if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
             if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -431,7 +431,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           break;
       }
     }
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
     if (sub==k && menuHorizontalPosition<0 && CFN_SWITCH(cfn)) {
       lcdInvertLine(i+1);
     }
