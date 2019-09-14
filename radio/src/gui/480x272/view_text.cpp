@@ -50,6 +50,7 @@ bool menuTextView(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      menuVerticalOffset = 0;
       popMenu();
       break;
   }
