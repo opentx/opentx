@@ -137,7 +137,7 @@ local function calculateBatteryData(wgt)
   --- calc lowest of all cels
   local cellMin = 5
   for k, v in pairs(newCellData) do
-    if v < cellMin then
+    if v < cellMin and v > 1 then -- >1 to ignore invalid values
       cellMin = v
     end
   end
