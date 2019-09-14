@@ -94,7 +94,7 @@ enum MenuRadioSetupItems {
   CASE_GPS(ITEM_SETUP_TIMEZONE)
   ITEM_SETUP_ADJUST_RTC,
   CASE_GPS(ITEM_SETUP_GPSFORMAT)
-  CASE_PXX(ITEM_SETUP_COUNTRYCODE)
+  CASE_PXX1(ITEM_SETUP_COUNTRYCODE)
   ITEM_SETUP_LANGUAGE,
   ITEM_SETUP_IMPERIAL,
   IF_FAI_CHOICE(ITEM_SETUP_FAI)
@@ -164,7 +164,7 @@ void menuRadioSetup(event_t event)
 
     CASE_GPS(0)
     0, CASE_GPS(0)
-    CASE_PXX(0)
+    CASE_PXX1(0)
     0, 0, IF_FAI_CHOICE(0)
     0,
     CASE_STM32(0) // USB mode
@@ -365,7 +365,7 @@ void menuRadioSetup(event_t event)
         SLIDER_5POS(y, g_eeGeneral.hapticStrength, STR_HAPTICSTRENGTH, event, attr);
         break;
 #endif
-        
+
 #if defined(GYRO)
       case ITEM_SETUP_GYRO_LABEL:
         lcdDrawTextAlignedLeft(y, STR_GYRO_LABEL);
@@ -395,7 +395,7 @@ void menuRadioSetup(event_t event)
         }
         break;
 #endif
-        
+
       case ITEM_SETUP_CONTRAST:
         lcdDrawTextAlignedLeft(y, STR_CONTRAST);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);
@@ -634,7 +634,7 @@ void menuRadioSetup(event_t event)
           g_eeGeneral.stickMode = reusableBuffer.generalSettings.stickMode;
           checkTHR();
           resumePulses();
-          clearKeyEvents();
+          waitKeysReleased();
         }
         MOVE_CURSOR_FROM_HERE();
         break;

@@ -27,18 +27,6 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
-//class DragDropHeader {
-//  public:
-//    DragDropHeader():
-//      general_settings(false),
-//      models_count(0)
-//    {
-//    }
-//    bool general_settings;
-//    uint8_t models_count;
-//    uint8_t models[CPN_MAX_MODELS];
-//};
-
 CompareDialog::CompareDialog(QWidget * parent, Firmware * firmware):
   QDialog(parent, Qt::Window),
   multimodelprinter(new MultiModelPrinter(firmware)),

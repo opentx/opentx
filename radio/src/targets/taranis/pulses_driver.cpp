@@ -86,7 +86,7 @@ void init_ppm(uint8_t module)
   if (module == EXTERNAL_MODULE) {
     extmodulePpmStart();
   }
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
   else {
     intmodulePpmStart();
   }
@@ -98,7 +98,7 @@ void disable_ppm(uint8_t module)
   if (module == EXTERNAL_MODULE) {
     extmoduleStop();
   }
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
   else {
     intmoduleStop();
   }

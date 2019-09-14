@@ -167,6 +167,10 @@ class GeneralSettings {
     char themeName[8+1];
     typedef uint8_t ThemeOptionData[8+1];
     ThemeOptionData themeOptionValue[5];
+    
+    char registrationId[8+1];
+    int gyroMax;
+    int gyroOffset;
 
     bool switchPositionAllowedTaranis(int index) const;
     bool switchSourceAllowedTaranis(int index) const;

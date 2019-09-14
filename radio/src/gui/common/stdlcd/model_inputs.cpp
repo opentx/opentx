@@ -87,7 +87,7 @@ bool swapExpos(uint8_t & idx, uint8_t up)
   }
   
   if (tgt_idx == MAX_EXPOS) {
-    if (x->chn == NUM_INPUTS-1)
+    if (x->chn == MAX_INPUTS-1)
       return false;
     x->chn++;
     return true;
@@ -100,7 +100,7 @@ bool swapExpos(uint8_t & idx, uint8_t up)
       else return false;
     }
     else {
-      if (x->chn<NUM_INPUTS-1) x->chn++;
+      if (x->chn<MAX_INPUTS-1) x->chn++;
       else return false;
     }
     return true;
@@ -387,7 +387,7 @@ void menuModelExposAll(event_t event)
   int cur = 0;
   int i = 0;
   
-  for (int ch=1; ch<=NUM_INPUTS; ch++) {
+  for (int ch=1; ch<=MAX_INPUTS; ch++) {
     ExpoData * ed;
     coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
     if (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) {

@@ -36,18 +36,18 @@
 #include <unistd.h>
 #endif
 
-FlashProcess::FlashProcess(const QString &cmd, const QStringList &args, ProgressWidget *progress):
-progress(progress),
-cmd(cmd),
-args(args),
-process(new QProcess(this)),
-hasErrors(false),
-lfuse(0),
-hfuse(0),
-efuse(0),
-flashPhase(READING)
+FlashProcess::FlashProcess(const QString & cmd, const QStringList & args, ProgressWidget * progress):
+  progress(progress),
+  cmd(cmd),
+  args(args),
+  process(new QProcess(this)),
+  hasErrors(false),
+  lfuse(0),
+  hfuse(0),
+  efuse(0),
+  flashPhase(READING)
 #if !__GNUC__
-, killTimer(NULL)
+  , killTimer(nullptr)
 #endif
 {
   connect(process, SIGNAL(started()),this, SLOT(onStarted()));
@@ -66,7 +66,7 @@ FlashProcess::~FlashProcess()
 bool FlashProcess::run()
 {
   if (!QFile::exists(cmd)) {
-    QMessageBox::critical(NULL, CPN_STR_APP_NAME, tr("Executable %1 not found").arg(cmd));
+    QMessageBox::critical(nullptr, CPN_STR_APP_NAME, tr("Executable %1 not found").arg(cmd));
     return false;
   }
 
@@ -162,7 +162,7 @@ void FlashProcess::analyseStandardOutput(const QString &text)
   if (text.contains("Complete ")) {
 #if !__GNUC__
     delete killTimer;
-    killTimer = NULL;
+    killTimer = nullptr;
 #endif
     int start = text.indexOf("Complete ");
     int end = text.indexOf("%");
@@ -185,6 +185,10 @@ void FlashProcess::analyseStandardOutput(const QString &text)
   }
 
   if (text.contains("-E-")) {
+    hasErrors = true;
+  }
+
+  if (text.contains("Cannot open device")) {
     hasErrors = true;
   }
 }
@@ -274,15 +278,15 @@ void FlashProcess::errorWizard()
       }
     }
     if (fwexist==false) {
-      QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
+      QMessageBox::warning(nullptr, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
     }
     else {
       Firmware *firmware = getCurrentFirmware();
-      QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->getName()));
+      QMessageBox::warning(nullptr, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->getName()));
     }
   }
   else if (output.contains("No DFU capable USB device found")){
-    QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not initialized!!!."));
+    QMessageBox::warning(nullptr, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not initialized!!!."));
   }
 }
 

@@ -49,3 +49,74 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val)
   return val;
 }
 #endif
+
+int checkIncDecSelection = 0;
+
+void repeatLastCursorMove(event_t event)
+{
+  if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
+    putEvent(event);
+  }
+  else {
+    menuHorizontalPosition = 0;
+  }
+}
+
+void onSourceLongEnterPress(const char * result)
+{
+  if (result == STR_MENU_INPUTS)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
+#if defined(LUA_MODEL_SCRIPTS)
+  else if (result == STR_MENU_LUA)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
+#endif
+  else if (result == STR_MENU_STICKS)
+    checkIncDecSelection = MIXSRC_FIRST_STICK;
+  else if (result == STR_MENU_POTS)
+    checkIncDecSelection = MIXSRC_FIRST_POT;
+  else if (result == STR_MENU_MAX)
+    checkIncDecSelection = MIXSRC_MAX;
+  else if (result == STR_MENU_HELI)
+    checkIncDecSelection = MIXSRC_FIRST_HELI;
+  else if (result == STR_MENU_TRIMS)
+    checkIncDecSelection = MIXSRC_FIRST_TRIM;
+  else if (result == STR_MENU_SWITCHES)
+    checkIncDecSelection = MIXSRC_FIRST_SWITCH;
+  else if (result == STR_MENU_TRAINER)
+    checkIncDecSelection = MIXSRC_FIRST_TRAINER;
+  else if (result == STR_MENU_CHANNELS)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
+  else if (result == STR_MENU_GVARS)
+    checkIncDecSelection = MIXSRC_FIRST_GVAR;
+  else if (result == STR_MENU_TELEMETRY) {
+    for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
+      TelemetrySensor * sensor = & g_model.telemetrySensors[i];
+      if (sensor->isAvailable()) {
+        checkIncDecSelection = MIXSRC_FIRST_TELEM + 3*i;
+        break;
+      }
+    }
+  }
+}
+
+#if defined(NAVIGATION_HORUS)
+bool check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, int rowcount)
+{
+  return check(event, curr, menuTab, menuTabSize, NULL, 0, rowcount);
+}
+
+bool check_submenu_simple(event_t event, uint8_t rowcount)
+{
+  return check_simple(event, 0, NULL, 0, rowcount);
+}
+#else
+void check_submenu_simple(event_t event, uint8_t rowcount)
+{
+  check_simple(event, 0, nullptr, 0, rowcount);
+}
+
+void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+{
+  check(event, curr, menuTab, menuTabSize, 0, 0, rowcount);
+}
+#endif

@@ -61,7 +61,6 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
 #ifdef JOYSTICKS
   , joystick(NULL)
 #endif
-
 {
   ui->setupUi(this);
 
@@ -69,6 +68,9 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   setWindowTitle(windowName);
 
   switch(m_board) {
+    case Board::BOARD_TARANIS_X9LITE:
+      radioUiWidget = new SimulatedUIWidgetX9LITE(simulator, this);
+      break;
     case Board::BOARD_TARANIS_X7:
       radioUiWidget = new SimulatedUIWidgetX7(simulator, this);
       break;
@@ -80,9 +82,6 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
     case Board::BOARD_TARANIS_XLITES:
       radioUiWidget = new SimulatedUIWidgetXLITE(simulator, this);
       break;
-    case Board::BOARD_TARANIS_X3:
-      radioUiWidget = new SimulatedUIWidgetX7(simulator, this);
-      break;
     case Board::BOARD_TARANIS_X9E:
       radioUiWidget = new SimulatedUIWidgetX9E(simulator, this);
       break;
@@ -92,6 +91,9 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
     case Board::BOARD_X10:
       radioUiWidget = new SimulatedUIWidgetX10(simulator, this);
       break;
+    case Board::BOARD_JUMPER_T12:
+      radioUiWidget = new SimulatedUIWidgetJumperT12(simulator, this);
+      break;  
     default:
       radioUiWidget = new SimulatedUIWidget9X(simulator, this);
       break;
@@ -522,6 +524,7 @@ void SimulatorWidget::shutdown()
 
 void SimulatorWidget::setRadioProfileId(int value)
 {
+  Q_ASSERT(value >= 0);
   radioProfileId = value;
   emit simulatorVolumeGainChange(g.profile[radioProfileId].volumeGain());
 }

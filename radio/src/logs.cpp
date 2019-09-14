@@ -172,7 +172,7 @@ void writeHeader()
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD"
 #elif defined(PCBXLITES)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF"
-#elif defined(PCBX3)
+#elif defined(PCBX9LITE)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SE,SF"
 #else
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
@@ -274,7 +274,7 @@ void logsWrite()
       }
 
 // TODO: use hardware config to populate
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
 f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),

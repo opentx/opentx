@@ -128,6 +128,11 @@ namespace Helpers
 
   void exportAppSettings(QWidget * dlgParent = nullptr);
 
+  QString getChecklistsPath();
+  QString getChecklistFilename(const ModelData * model);
+  QString getChecklistFilePath(const ModelData * model);
+  QString removeAccents(const QString & str);
+
 }  // namespace Helpers
 
 // TODO : move globals to Helpers namespace

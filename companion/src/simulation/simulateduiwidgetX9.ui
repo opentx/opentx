@@ -62,7 +62,7 @@
       <bool>true</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/Taranis/x9l0.png);</string>
+      <string notr="true">background:url(:/images/simulator/X9D/x9l0.png);</string>
      </property>
     </widget>
    </item>
@@ -81,7 +81,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/Taranis/x9t0.png)</string>
+      <string notr="true">background:url(:/images/simulator/X9D/x9t0.png)</string>
      </property>
     </widget>
    </item>
@@ -100,7 +100,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/Taranis/x9r0.png)</string>
+      <string notr="true">background:url(:/images/simulator/X9D/x9r0.png)</string>
      </property>
     </widget>
    </item>
@@ -141,7 +141,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/Taranis/x9b0.png)</string>
+      <string notr="true">background:url(:/images/simulator/X9D/x9b0.png)</string>
      </property>
     </widget>
    </item>

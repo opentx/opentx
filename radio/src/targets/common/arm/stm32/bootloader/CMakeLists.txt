@@ -70,6 +70,7 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/backlight_driver.cpp
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
   ../../../../../targets/${TARGET_DIR}/diskio.cpp
+  ../../../../../targets/${TARGET_DIR}/board_preinit.cpp
   ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
@@ -84,7 +85,7 @@ set(BOOTLOADER_SRC
   bin_files.cpp
   )
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X3)
+if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../targets/common/arm/stm32/rotary_encoder_driver.cpp
@@ -115,7 +116,7 @@ else()
       ${BOOTLOADER_SRC}
       ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
       ../../../../../serial.cpp
-      ../serial2_driver.cpp
+      ../aux_serial_driver.cpp
       )
   endif()
 endif()

@@ -175,7 +175,7 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 #endif
 
 // For conversions
-void loadRadioSettingsSettings();
+void loadRadioSettings();
 void loadModel(int index, bool alarms=true);
 
 bool eepromOpen();

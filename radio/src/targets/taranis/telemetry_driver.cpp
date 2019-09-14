@@ -83,10 +83,22 @@ void telemetryPortSetDirectionOutput()
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE; // turn off receiver
 }
 
+void sportWaitTransmissionComplete()
+{
+  while (!(TELEMETRY_USART->SR & USART_SR_TC));
+}
+
 void telemetryPortSetDirectionInput()
 {
+  sportWaitTransmissionComplete();
   TELEMETRY_DIR_INPUT();
   TELEMETRY_USART->CR1 |= USART_CR1_RE; // turn on receiver
+}
+
+void sportSendByte(uint8_t byte)
+{
+  while (!(TELEMETRY_USART->SR & USART_SR_TXE));
+  USART_SendData(TELEMETRY_USART, byte);
 }
 
 void sportSendBuffer(const uint8_t * buffer, uint32_t count)
@@ -159,7 +171,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
       if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
         static uint8_t prevdata;
         if (prevdata == 0x7E && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data == outputTelemetryBuffer.sport.physicalId) {
-          sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
+          sportSendBuffer(outputTelemetryBuffer.data + 1, outputTelemetryBuffer.size - 1);
         }
         prevdata = data;
       }
@@ -172,10 +184,10 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 uint8_t telemetryGetByte(uint8_t * byte)
 {
-#if defined(SERIAL2)
+#if defined(AUX_SERIAL)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
-    if (serial2Mode == UART_MODE_TELEMETRY)
-      return serial2RxFifo.pop(*byte);
+    if (auxSerialMode == UART_MODE_TELEMETRY)
+      return auxSerialRxFifo.pop(*byte);
     else
       return false;
   }
@@ -185,4 +197,9 @@ uint8_t telemetryGetByte(uint8_t * byte)
 #else
   return telemetryFifo.pop(*byte);
 #endif
+}
+
+void telemetryClearFifo()
+{
+  telemetryFifo.clear();
 }

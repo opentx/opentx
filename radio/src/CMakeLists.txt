@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB_TYPES X3 X7 XLITE XLITES X9D X9D+ X9E X10 X12S SKY9X 9XRPRO AR9X)
+set(PCB_TYPES X9LITE X7 XLITE XLITES X9D X9D+ X9E X10 X12S SKY9X 9XRPRO AR9X)
 set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL)
 set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL RU)
 
@@ -46,7 +46,7 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
-option(MODULE_R9M_FLEX_FW "Add R9M options for non certified firmwwares" OFF)
+option(R9M_PROTO_FLEX "Add R9M options for non certified firmwwares" OFF)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -82,7 +82,7 @@ set(FATFS_SRC
 
 if(PCB STREQUAL X12S OR PCB STREQUAL X10)
   include(targets/horus/CMakeLists.txt)
-elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL X7 OR PCB STREQUAL X3 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
+elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL X7 OR PCB STREQUAL X9LITE OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   include(targets/taranis/CMakeLists.txt)
 elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   include(targets/sky9x/CMakeLists.txt)
@@ -308,8 +308,8 @@ if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
 endif()
 
-if(MODULE_R9M_FLEX_FW)
-  add_definitions(-DMODULE_R9M_FLEX_FW)
+if(R9M_PROTO_FLEX)
+  add_definitions(-DR9M_PROTO_FLEX)
 endif()
 
 if(FRSKY_RELEASE)
@@ -451,7 +451,7 @@ if(NOT MSVC)
       set(SRC ${SRC} bin_allocator.cpp)
     endif()
 
-    if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X3 OR PCB STREQUAL X10 OR PCB STREQUAL X12S)
+    if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X9LITE OR PCB STREQUAL X10 OR PCB STREQUAL X12S)
       add_subdirectory(targets/common/arm/stm32/bootloader)
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/common/arm/stm32/bootloader)
       set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)

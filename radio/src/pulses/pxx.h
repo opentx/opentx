@@ -27,7 +27,7 @@
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
 
-#define PXX2_ON_SPORT_BAUDRATE             230400
+#define PXX2_EXTERNAL_MODULE_BAUDRATE      230400
 #define PXX2_PERIOD                        4 // 4ms
 #define PXX2_TOOLS_PERIOD                  1 // 1ms
 #define PXX2_FRAME_MAXLENGTH               64

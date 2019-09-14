@@ -94,6 +94,12 @@ extern "C" {
 }
 #endif
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+// Rotary Encoder driver
+void rotaryEncoderInit(void);
+void rotaryEncoderCheck(void);
+#endif
+
 #define FLASHSIZE                       0x80000
 #define BOOTLOADER_SIZE                 0x8000
 #define FIRMWARE_ADDRESS                0x08000000
@@ -114,6 +120,7 @@ extern "C" {
 extern uint16_t sessionTimer;
 
 // Board driver
+void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
 
@@ -183,7 +190,11 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #define EXTERNAL_MODULE_OFF()         EXTERNAL_MODULE_PWR_OFF()
 #endif
 
+#if defined(RADIO_T12)
+#define IS_INTERNAL_MODULE_ON()         false
+#else
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
+#endif
 
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
@@ -197,7 +208,7 @@ void disable_serial(uint8_t module);
 void intmoduleStop();
 void intmodulePxxStart();
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
 void intmodulePpmStart(void);
 #endif
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
@@ -217,7 +228,7 @@ void extmoduleSendNextFrame();
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #if defined(PCBX9E)
   #define TRAINER_CONNECTED()           (true)
-#elif defined(PCBX7) || defined(PCBX3)
+#elif defined(PCBX7) || defined(PCBX9LITE)
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #elif defined(PCBXLITES)
   enum JackState
@@ -244,16 +255,29 @@ void extmoduleSendNextFrame();
   #define init_trainer_capture()
   #define stop_trainer_capture()
 #endif
-#if defined(TRAINER_MODULE_HEARTBEAT)
-  void init_cppm_on_heartbeat_capture(void);
-  void stop_cppm_on_heartbeat_capture(void);
-  void init_sbus_on_heartbeat_capture(void);
-  void stop_sbus_on_heartbeat_capture(void);
+#if defined(TRAINER_MODULE_CPPM)
+  void init_trainer_module_cppm(void);
+  void stop_trainer_module_cppm(void);
 #else
-  #define init_cppm_on_heartbeat_capture()
-  #define stop_cppm_on_heartbeat_capture()
-  #define init_sbus_on_heartbeat_capture()
-  #define stop_sbus_on_heartbeat_capture()
+  #define init_trainer_module_cppm()
+  #define stop_trainer_module_cppm()
+#endif
+#if defined(TRAINER_MODULE_SBUS)
+  void init_trainer_module_sbus(void);
+  void stop_trainer_module_sbus(void);
+#else
+  #define init_trainer_module_sbus()
+  #define stop_trainer_module_sbus()
+#endif
+
+#if defined(INTMODULE_HEARTBEAT_GPIO)
+void init_intmodule_heartbeat();
+void stop_intmodule_heartbeat();
+void check_xjt_heartbeat();
+#else
+#define init_intmodule_heartbeat()
+#define stop_intmodule_heartbeat()
+#define check_xjt_heartbeat()
 #endif
 
 // SBUS
@@ -262,23 +286,44 @@ int sbusGetByte(uint8_t * byte);
 // Keys driver
 enum EnumKeys
 {
-#if defined(PCBXLITE)
+#if defined(KEYS_GPIO_REG_SHIFT)
   KEY_SHIFT,
-#else
+#endif
+
+#if defined(KEYS_GPIO_REG_MENU)
   KEY_MENU,
 #endif
+
   KEY_EXIT,
   KEY_ENTER,
-#if defined(PCBXLITE)
+
+#if defined(KEYS_GPIO_REG_DOWN)
   KEY_DOWN,
   KEY_UP,
+#endif
+
+#if defined(KEYS_GPIO_REG_RIGHT)
   KEY_RIGHT,
   KEY_LEFT,
-#else
+#endif
+
+#if defined(KEYS_GPIO_REG_PAGE)
   KEY_PAGE,
+#endif
+
+#if defined(KEYS_GPIO_REG_PLUS)
   KEY_PLUS,
   KEY_MINUS,
 #endif
+
+  KEY_COUNT,
+  KEY_MAX = KEY_COUNT - 1,
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  KEY_PLUS,
+  KEY_MINUS,
+#endif
+
 
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
@@ -299,9 +344,13 @@ enum EnumKeys
   #define KEY_DOWN                      KEY_PLUS
   #define KEY_RIGHT                     KEY_PLUS
   #define KEY_LEFT                      KEY_MINUS
-#elif defined(PCBXLITE)
+#elif defined(NAVIGATION_XLITE)
   #define KEY_PLUS                      KEY_RIGHT
   #define KEY_MINUS                     KEY_LEFT
+#elif defined(NAVIGATION_9X)
+  #define KEY_MENU                      KEY_ENTER
+  #define KEY_MINUS                     KEY_DOWN
+  #define KEY_PLUS                      KEY_UP
 #else
   #define KEY_UP                        KEY_PLUS
   #define KEY_DOWN                      KEY_MINUS
@@ -341,30 +390,38 @@ enum EnumSwitchesPositions
   SW_SC0,
   SW_SC1,
   SW_SC2,
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
   SW_SD0,
   SW_SD1,
   SW_SD2,
 #endif
-#if defined(PCBX9) || defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBX9) || defined(PCBXLITES)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
   SW_SF0,
   SW_SF1,
   SW_SF2,
 #endif
-#if defined(PCBX9)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   SW_SG0,
   SW_SG1,
   SW_SG2,
 #endif
-#if defined(PCBX9) || defined(PCBX7)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   SW_SH0,
   SW_SH1,
   SW_SH2,
+#endif
+#if defined(PCBX7)
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+  SW_SJ0,
+  SW_SJ1,
+  SW_SJ2,
 #endif
 #if defined(PCBX9E)
   SW_SI0,
@@ -400,19 +457,33 @@ enum EnumSwitchesPositions
 #endif
   NUM_SWITCHES_POSITIONS
 };
+
 #if defined(PCBXLITES)
   #define NUM_SWITCHES                  6
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #elif defined(PCBXLITE)
   #define NUM_SWITCHES                  4
-#elif defined(PCBX7)
+  #define STORAGE_NUM_SWITCHES          6
+#elif defined(PCBT12)
   #define NUM_SWITCHES                  6
-#elif defined(PCBX3)
+  #define STORAGE_NUM_SWITCHES          8
+#elif defined(PCBX7)
+  #define NUM_SWITCHES                  8
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+#elif defined(PCBX9LITE)
   #define NUM_SWITCHES                  5
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #elif defined(PCBX9E)
-  #define NUM_SWITCHES                  18 // yes, it's a lot!
+  #define NUM_SWITCHES                  18 // yes, it's perfect like that !
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #else
   #define NUM_SWITCHES                  8
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
 #endif
+
+#define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
+#define NUM_SWITCHES_POSITIONS          (NUM_SWITCHES * 3)
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
@@ -420,13 +491,6 @@ uint32_t readKeys(void);
 uint32_t readTrims(void);
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
-
-#if defined(PCBX9E) || defined(PCBX7) || defined(PCBX3)
-// Rotary Encoder driver
-#define ROTARY_ENCODER_NAVIGATION
-void rotaryEncoderInit(void);
-void rotaryEncoderCheck(void);
-#endif
 
 // WDT driver
 #define WDTO_500MS                      500
@@ -451,7 +515,7 @@ enum Analogs {
   STICK4,
   POT_FIRST,
   POT1 = POT_FIRST,
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
   POT_LAST = POT1,
 #elif defined(PCBXLITE) || defined(PCBX7)
   POT2,
@@ -479,10 +543,12 @@ enum Analogs {
 
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
 #define NUM_XPOTS                       NUM_POTS
+#define STORAGE_NUM_POTS                NUM_POTS
 #define NUM_SLIDERS                     (TX_VOLTAGE-POT_LAST-1)
+#define STORAGE_NUM_SLIDERS             NUM_SLIDERS
 #define NUM_TRIMS                       4
 #define NUM_MOUSE_ANALOGS               0
-#define NUM_DUMMY_ANAS                  0
+#define STORAGE_NUM_MOUSE_ANALOGS       0
 
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
@@ -512,7 +578,7 @@ extern HardwareOptions hardwareOptions;
 #if !defined(PXX2)
   #define IS_PXX2_INTERNAL_ENABLED()            (false)
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
-#elif !defined(PXX1) || defined(PCBXLITES) || defined(PCBX3)
+#elif !defined(PXX1) || defined(PCBXLITES) || defined(PCBX9LITE)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
   #define IS_PXX1_INTERNAL_ENABLED()            (false)
 #else
@@ -570,7 +636,7 @@ uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
   #define BATT_SCALE                    131
 #elif defined(PCBX7)
   #define BATT_SCALE                    123
-#elif defined(PCBX3)
+#elif defined(PCBX9LITE)
   #define BATT_SCALE                    117
 #else
   #define BATT_SCALE                    150
@@ -623,11 +689,7 @@ uint8_t isBacklightEnabled(void);
 #endif
 
 // I2C driver: EEPROM + Audio Volume
-#if defined(REV4a)
-  #define EEPROM_SIZE                   (64*1024)
-#else
-  #define EEPROM_SIZE                   (32*1024)
-#endif
+#define EEPROM_SIZE                   (32*1024)
 
 void i2cInit(void);
 void eepromReadBlock(uint8_t * buffer, size_t address, size_t size);
@@ -639,13 +701,16 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
+void telemetryPortSetDirectionInput(void);
 void telemetryPortSetDirectionOutput(void);
+void sportSendByte(uint8_t byte);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
+void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
-#if defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBXLITE) || defined(PCBX9LITE)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
@@ -716,15 +781,15 @@ void hapticOff(void);
 #endif
 
 // Second serial port driver
-#if defined(SERIAL_GPIO)
+#if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
-#define SERIAL2
-extern uint8_t serial2Mode;
-void serial2Init(unsigned int mode, unsigned int protocol);
-void serial2Putc(char c);
-#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
-void serial2SbusInit(void);
-void serial2Stop(void);
+#define AUX_SERIAL
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit(void);
+void auxSerialStop(void);
 #endif
 
 // BT driver
@@ -741,7 +806,7 @@ void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
 void bluetoothDisable(void);
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
 #elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
   extern volatile uint8_t btChipPresent;
@@ -758,15 +823,7 @@ void ledGreen(void);
 void ledBlue(void);
 
 // LCD driver
-#if defined(STATUS_LEDS)
-#define LCD_W                           128
-#define LCD_H                           64
-#define LCD_DEPTH                       1
-#define IS_LCD_RESET_NEEDED()           true
-#define LCD_CONTRAST_MIN                10
-#define LCD_CONTRAST_MAX                30
-#define LCD_CONTRAST_DEFAULT            20
-#else
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
 #define LCD_W                           212
 #define LCD_H                           64
 #define LCD_DEPTH                       4
@@ -774,6 +831,14 @@ void ledBlue(void);
 #define LCD_CONTRAST_MIN                0
 #define LCD_CONTRAST_MAX                45
 #define LCD_CONTRAST_DEFAULT            25
+#else
+#define LCD_W                           128
+#define LCD_H                           64
+#define LCD_DEPTH                       1
+#define IS_LCD_RESET_NEEDED()           true
+#define LCD_CONTRAST_MIN                10
+#define LCD_CONTRAST_MAX                30
+#define LCD_CONTRAST_DEFAULT            20
 #endif
 void lcdInit(void);
 void lcdInitFinish(void);
@@ -822,7 +887,7 @@ void checkTrainerSettings(void);
 #endif
 
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
-extern DMAFifo<32> serial2RxFifo;
+extern DMAFifo<32> auxSerialRxFifo;
 #endif
 
 // Gyro driver
