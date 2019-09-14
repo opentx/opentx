@@ -112,14 +112,31 @@ static void processMultiScannerPacket(const uint8_t *data)
   if (moduleState[g_moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
     for (uint8_t channel = 0; channel <5; channel++) {
       uint8_t power = max<int>(0,(data[channel+1] - 34) >> 1); // remove everything below -120dB
+
+#if LCD_W == 480
       coord_t x = cur_channel*2;
-      if (x+1 < LCD_W) {
+      if (x < LCD_W) {
         reusableBuffer.spectrumAnalyser.bars[x] = power;
         reusableBuffer.spectrumAnalyser.bars[x+1] = power;
         if (power > reusableBuffer.spectrumAnalyser.max[x]) {
           reusableBuffer.spectrumAnalyser.max[x] = power;
           reusableBuffer.spectrumAnalyser.max[x+1] = power;
         }
+#elif LCD_W == 212
+      coord_t x = cur_channel;
+      if (x <= LCD_W) {
+        reusableBuffer.spectrumAnalyser.bars[x] = power;
+        if (power > reusableBuffer.spectrumAnalyser.max[x]) {
+          reusableBuffer.spectrumAnalyser.max[x] = power;
+        }
+#else
+      coord_t x = cur_channel/2 + 1;
+      if (x <= LCD_W) {
+        reusableBuffer.spectrumAnalyser.bars[x] = power;
+        if (power > reusableBuffer.spectrumAnalyser.max[x]) {
+          reusableBuffer.spectrumAnalyser.max[x] = power;
+        }
+#endif
       }
       if (++cur_channel > MULTI_SCANNER_MAX_CHANNEL)
         cur_channel = 0;
