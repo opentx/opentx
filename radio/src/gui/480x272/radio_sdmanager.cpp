@@ -194,7 +194,6 @@ bool menuRadioSdManager(event_t _event)
       // no break;
 
     case EVT_ENTRY_UP:
-    case EVT_REFRESH:
       REFRESH_FILES();
       break;
 
