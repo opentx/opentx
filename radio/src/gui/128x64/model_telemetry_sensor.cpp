@@ -105,7 +105,7 @@ void menuModelSensor(event_t event)
           lcdDrawTextAlignedLeft(y, STR_ID);
           lcdDrawHexNumber(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(menuHorizontalPosition==0 ? attr : 0));
           lcdDrawHexChar(SENSOR_3RD_COLUMN, y, sensor->instance & 0x1f, LEFT|(menuHorizontalPosition==1 ? attr : 0));
-          if (attr) {
+          if (attr && s_editMode > 0) {
             switch (menuHorizontalPosition) {
               case 0:
                 CHECK_INCDEC_MODELVAR_ZERO(event, sensor->id, 0xffff);
