@@ -722,17 +722,17 @@ void TreeModel::refresh()
       }
       int protocol;
       QString rxs;
-      for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
-        protocol = model.moduleData[j].protocol;
+      for (auto const& moduleData: model.moduleData) {
+        protocol = moduleData.protocol;
         // These are the only RXs that allow nominating RX # but changing RX or copying models can leave residual configuration which can cause issues
         // if (protocol == PULSES_PXX_XJT_X16 || protocol == PULSES_PXX_XJT_LR12 || protocol == PULSES_PXX_R9M || protocol == PULSES_DSMX || protocol == PULSES_MULTIMODULE) {
-        if (protocol != PULSES_OFF && model.moduleData[j].modelId > 0) {
+        if (protocol != PULSES_OFF && moduleData.modelId > 0) {
           if (!rxs.isEmpty()) {
             rxs.append(", ");
           }
-          unsigned mdlidx = model.moduleData[j].modelId;
+          unsigned mdlidx = moduleData.modelId;
           rxs.append(QString("%1").arg(uint(mdlidx), 2, 10, QChar('0')));
-          if (!isModelIdUnique(mdlidx)) {
+          if (!isModelIdUnique(mdlidx, protocol)) {
             current->setHighlightRX(true);
           }
         }
@@ -746,14 +746,13 @@ void TreeModel::refresh()
   }
 }
 
-bool TreeModel::isModelIdUnique(unsigned modelIdx)
+bool TreeModel::isModelIdUnique(unsigned modelIdx, unsigned protocol)
 {
   int cnt = 0;
-  for (unsigned i=0; i<radioData->models.size(); i++) {
-    ModelData & model = radioData->models[i];
+  for (auto const& model: radioData->models) {
     if (!model.isEmpty()) {
-      for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
-        if (model.moduleData[j].protocol != PULSES_OFF && model.moduleData[j].modelId == modelIdx) {
+      for (auto const& moduleData: model.moduleData) {
+        if (moduleData.protocol == protocol && moduleData.modelId == modelIdx) {
           if (++cnt > 1) {
             return false;
           }
