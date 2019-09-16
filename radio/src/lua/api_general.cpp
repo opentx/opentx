@@ -35,6 +35,8 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(RADIO_T12)
   #include "lua/lua_exports_t12.inc"
+#elif defined(PCBX9LITES)
+  #include "lua/lua_exports_x9lites.inc"
 #elif defined(PCBX9LITE)
   #include "lua/lua_exports_x9lite.inc"
 #elif defined(PCBXLITES)
