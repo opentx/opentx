@@ -722,6 +722,7 @@ void TreeModel::refresh()
       }
       int protocol;
       QString rxs;
+      unsigned moduleIdx = 0;
       for (auto const& moduleData: model.moduleData) {
         protocol = moduleData.protocol;
         // These are the only RXs that allow nominating RX # but changing RX or copying models can leave residual configuration which can cause issues
@@ -732,10 +733,11 @@ void TreeModel::refresh()
           }
           unsigned mdlidx = moduleData.modelId;
           rxs.append(QString("%1").arg(uint(mdlidx), 2, 10, QChar('0')));
-          if (!isModelIdUnique(mdlidx, protocol)) {
+          if (!isModelIdUnique(mdlidx, moduleIdx, protocol)) {
             current->setHighlightRX(true);
           }
         }
+        moduleIdx++;
       }
       current->setData(currentColumn++, rxs);
     }
@@ -746,16 +748,16 @@ void TreeModel::refresh()
   }
 }
 
-bool TreeModel::isModelIdUnique(unsigned modelIdx, unsigned protocol)
+bool TreeModel::isModelIdUnique(unsigned modelIdx, unsigned module, unsigned protocol)
 {
   int cnt = 0;
   for (auto const& model: radioData->models) {
     if (!model.isEmpty()) {
-      for (auto const& moduleData: model.moduleData) {
-        if (moduleData.protocol == protocol && moduleData.modelId == modelIdx) {
-          if (++cnt > 1) {
-            return false;
-          }
+      unsigned moduleIdx = 0;
+      const ModuleData& moduleData = model.moduleData[module];
+      if (moduleData.protocol == protocol && moduleData.modelId == modelIdx) {
+        if (++cnt > 1) {
+          return false;
         }
       }
     }
