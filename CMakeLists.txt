@@ -6,7 +6,7 @@ set(VERSION_REVISION "0")
 set(VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
-set(SDCARD_REVISION "0020")
+set(SDCARD_REVISION "0021")
 set(SDCARD_VERSION  ${VERSION_MAJOR}.${VERSION_MINOR}V${SDCARD_REVISION})
 
 cmake_minimum_required(VERSION 2.8)
@@ -204,12 +204,12 @@ find_path(GTEST_SRCDIR src/gtest-all.cc HINTS "${GTEST_ROOT}" "${GTEST_ROOT}/src
 
 if(NOT GTEST_INCDIR OR NOT GTEST_SRCDIR)
   message(STATUS "Googletest will be downloaded")
-  
+
   set(GTEST_VERSION 1.8.1)
 
   set(GTEST_SRCDIR "${RADIO_SRC_DIRECTORY}/tests/googletest-release-${GTEST_VERSION}/googletest")
   set(GTEST_INCDIR "${GTEST_SRCDIR}/include")
-  
+
   set(GTEST_URL     "https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz")
   set(GTEST_ARCHIVE "${RADIO_SRC_DIRECTORY}/tests/gtest-${GTEST_VERSION}.tar.gz")
 

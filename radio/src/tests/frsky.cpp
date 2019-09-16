@@ -56,7 +56,8 @@ TEST(FrSky, Vfas_0x39_HiPrecision)
   MODEL_RESET();
   TELEMETRY_RESET();
   EXPECT_EQ(telemetryItems[0].value, 0);
-
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   // normal precision, resolution 0.1V
@@ -77,7 +78,8 @@ TEST(FrSky, HubAltNegative)
   MODEL_RESET();
   TELEMETRY_RESET();
   EXPECT_EQ(telemetryItems[0].value, 0);
-
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   // altimeter auto offset
@@ -122,6 +124,8 @@ TEST(FrSky, Gps)
 {
   MODEL_RESET();
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   EXPECT_EQ(telemetryItems[0].value, 0);
@@ -181,6 +185,8 @@ TEST(FrSkySPORT, FrSkyDCells)
 {
   MODEL_RESET();
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   uint8_t pkt1[] = { 0x7E, 0x98, 0x10, 0x06, 0x00, 0x07, 0xD0, 0x00, 0x00, 0x12 };
@@ -209,6 +215,8 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   // test that simulates 3 cell battery
@@ -300,6 +308,8 @@ TEST(FrSkySPORT, StrangeCellsBug)
 {
   MODEL_RESET();
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   uint8_t pkt[] = { 0x7E, 0x48, 0x10, 0x00, 0x03, 0x30, 0x15, 0x50, 0x81, 0xD5 };
@@ -316,6 +326,8 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   //sensor 1: 3 cell battery
@@ -387,6 +399,8 @@ TEST(FrSkySPORT, frskyVfas)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   // tests for Vfas
@@ -426,10 +440,13 @@ TEST(FrSkySPORT, frskyCurrent)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
   // tests for Curr
-  generateSportFasCurrentPacket(packet, 0); sportProcessTelemetryPacket(packet);
+  generateSportFasCurrentPacket(packet, 0);
+  sportProcessTelemetryPacket(packet);
   g_model.telemetrySensors[0].custom.offset = -5;  /* unit: 1/10 amps */
   generateSportFasCurrentPacket(packet, 0); sportProcessTelemetryPacket(packet);
   EXPECT_EQ(telemetryItems[0].value, 0);
@@ -459,6 +476,8 @@ TEST(FrSkySPORT, frskyCurrent)
 
   // test with positive offset
   TELEMETRY_RESET();
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  telemetryData.telemetryValid = 0x07;
   g_model.telemetrySensors[0].custom.offset = +5;  /* unit: 1/10 amps */
 
   generateSportFasCurrentPacket(packet, 0); sportProcessTelemetryPacket(packet);

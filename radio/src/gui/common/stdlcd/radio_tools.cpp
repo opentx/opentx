@@ -106,11 +106,6 @@ void menuRadioTools(event_t event)
   FILINFO fno;
   DIR dir;
 
-#if defined(CROSSFIRE)
-  if(isFileAvailable(SCRIPTS_TOOLS_PATH "/CROSSFIRE/crossfire.lua"))
-    addRadioScriptTool(index++, SCRIPTS_TOOLS_PATH "/CROSSFIRE/crossfire.lua");
-#endif
-
   FRESULT res = f_opendir(&dir, SCRIPTS_TOOLS_PATH);
   if (res == FR_OK) {
     for (;;) {
@@ -125,6 +120,7 @@ void menuRadioTools(event_t event)
       if (isRadioScriptTool(fno.fname))
         addRadioScriptTool(index++, path);
     }
+    f_closedir(&dir);
   }
 #endif
 

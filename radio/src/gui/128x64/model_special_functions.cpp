@@ -70,7 +70,6 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
 #endif // SDCARD
 
 #if defined(PCBTARANIS)
-
 void onAdjustGvarSourceLongEnterPress(const char * result)
 {
   CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
@@ -148,9 +147,8 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 #if defined(PCBTARANIS)
 #if defined(PCBXLITE)
-  if (menuHorizontalPosition==0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
-    killEvents(KEY_ENTER);
-    if (IS_SHIFT_PRESSED()) { // ENT LONG on xlite brings up switch type menu, so this menu is activated with SHIT + ENT LONG
+  // ENT LONG on xlite brings up switch type menu, so this menu is activated with SHIT + ENT LONG
+  if (menuHorizontalPosition==0 && event==EVT_KEY_LONG(KEY_ENTER) && IS_SHIFT_PRESSED() && !READ_ONLY()) {
 #else
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
 #endif
@@ -172,9 +170,6 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     }
     POPUP_MENU_START(onCustomFunctionsMenu);
   }
-#if defined(PCBXLITE)
-  }
-#endif
 #endif // PCBTARANIS
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
@@ -389,7 +384,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
           if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
             if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -436,7 +431,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           break;
       }
     }
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(NAVIGATION_X7)
     if (sub==k && menuHorizontalPosition<0 && CFN_SWITCH(cfn)) {
       lcdInvertLine(i+1);
     }

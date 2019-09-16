@@ -291,7 +291,7 @@ void guiMain(event_t evt)
 
   if (!refreshNeeded) {
     DEBUG_TIMER_START(debugTimerMenus);
-    while (1) {
+    while (true) {
       // normal GUI from menus
       const char * warn = warningText;
       uint8_t menu = popupMenuItemsCount;
@@ -315,7 +315,8 @@ void guiMain(event_t evt)
             if (result) {
               TRACE("popupMenuHandler(%s)", result);
               auto handler = popupMenuHandler;
-              popupMenuHandler = nullptr;
+              if (result != STR_UPDATE_LIST)
+                CLEAR_POPUP();
               handler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
@@ -391,7 +392,6 @@ void handleGui(event_t event) {
       }
     }
     menuHandlers[menuLevel](event);
-    // todo     drawStatusLine(); here???
   }
   else
 #endif
@@ -456,7 +456,8 @@ void guiMain(event_t evt)
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
       auto handler = popupMenuHandler;
-      popupMenuHandler = nullptr;
+      if (result != STR_UPDATE_LIST)
+        CLEAR_POPUP();
       handler(result);
     }
   }

@@ -84,7 +84,7 @@
 <context>
     <name>AppMessages</name>
     <message>
-        <location filename="../warnings.h" line="94"/>
+        <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2052,21 +2052,25 @@ If you have a settings backup file, you may import that instead.</source>
     <name>DebugOutput</name>
     <message>
         <location filename="../simulation/debugoutput.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="209"/>
         <source>Debug Output</source>
         <translation>Wyjście debugera</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="68"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="227"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the filter. If the button won&apos;t stay enabled, it is likely there is a syntax error in the Regular Expression entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;hrad/&gt;&lt;body&gt;&lt;p&gt;Włącz lub wyłącz filtr. Jeśli przycisk nie będzie aktywny to znaczy że jest błąd składni we wprowadzonym wyrażeniu regularnym.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="74"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="229"/>
         <source>Filter:</source>
         <translation>Filtr:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="105"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="231"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter filter text here. Click the help/info button for details about using the filter. &lt;/p&gt;&lt;p&gt;
 To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first choose it, and then press &lt;code&gt;Shift-Delete&lt;/code&gt; (or &lt;code&gt;Shift-Backspace&lt;/code&gt;) key combination.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wpisz teks filtru tutaj. Kliknij przycisk. pomoc/info w celu uzyskania szczegółów użycia filtra.&lt;/p&gt;&lt;p&gt;
@@ -2074,51 +2078,61 @@ W celu &lt;b&gt;usunięcia filtru&lt;/b&gt; z listy, najpierw wybierz go, a nast
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="164"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="235"/>
         <source>Buffer:</source>
         <translation>Bufor:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="177"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="237"/>
         <source>Number of lines to keep in display.</source>
         <translation>Ilość linii trzymanej na wyświetlaczu.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="274"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="210"/>
         <source>Filter &amp;Help</source>
         <translation>&amp;Pomoc Filtra</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="212"/>
         <source>Show information about using the filter.</source>
         <translation>Pokaż informacje jak uzywać filtra.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="214"/>
         <source>Word &amp;Wrap</source>
         <translation>Podział &amp;Słowa</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="216"/>
         <source>Toggle word wrapping on/off.</source>
         <translation>Przełącz dzielenie słowa on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="218"/>
         <source>&amp;Clear</source>
         <translation>&amp;Wyczyść</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="220"/>
         <source>Clear the output window of all text.</source>
         <translation>Wyczyść tekst z okna.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="222"/>
         <source>Enable &amp;Filter</source>
         <translation>Włącz &amp;Filtr</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="224"/>
         <source>Turn the filter on/off.</source>
         <translation>Przełącz filtr on/off.</translation>
     </message>
@@ -9792,36 +9806,43 @@ p, li { white-space: pre-wrap; }
     <name>RadioOutputsWidget</name>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="14"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="292"/>
         <source>Form</source>
         <translation>Formularz</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="68"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="293"/>
         <source>View:</source>
         <translation>Widok:</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="75"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="294"/>
         <source>Logical Switches</source>
         <translation>Przełączniki logiczne</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="94"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="295"/>
         <source>Global Variables</source>
         <translation>Zmienne globalne</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="113"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="296"/>
         <source>Channel Outputs</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="132"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="297"/>
         <source>Mix Outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="210"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="298"/>
         <source>L
 o
 g
@@ -9836,6 +9857,7 @@ a</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="287"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="304"/>
         <source>G
 l
 o
@@ -9851,6 +9873,7 @@ l</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="362"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="310"/>
         <source>C
 h
 a
@@ -9868,12 +9891,23 @@ y</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="439"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="318"/>
         <source>M
 i
 x
 e
 s</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="226"/>
+        <source>FM%1</source>
+        <translation type="unfinished">FM%1</translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="235"/>
+        <source>GV%1</source>
+        <translation type="unfinished">ZG%1</translation>
     </message>
 </context>
 <context>
@@ -11232,151 +11266,181 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <name>SimulatorMainWindow</name>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="14"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="143"/>
         <source>OpenTx Simulator</source>
         <translation>Symulator OpenTX</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="48"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="198"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="52"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="199"/>
         <source>Radio Window</source>
         <translation>Okno Radia</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="63"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="200"/>
         <source>Reload...</source>
         <translation>Przeładuj...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="70"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="201"/>
         <source>Tools</source>
         <translation>Narzędzia</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="82"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="202"/>
         <source>Toolbar</source>
         <translation>Pasek narzędzi</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="103"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="144"/>
         <source>Reload Lua Scripts</source>
         <translation>Przeładuj skrypty LUA</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="106"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="146"/>
         <source>Reload the Lua environment on the simulated radio.</source>
         <translation>Przeładuj środowisko LUA na symulowanym radiu.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="109"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="149"/>
         <source>F7</source>
         <translation>F7</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="118"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="151"/>
         <source>Reload Radio Data</source>
         <translation>Przeładuj Dane Radia</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="121"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="153"/>
         <source>Reload all radio data without restarting the simulator.</source>
         <translation>Przeładuj dane radia bez restartowania symulatora.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="124"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="156"/>
         <source>F9</source>
         <translation>F9</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="133"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="158"/>
         <source>Key Mapping</source>
         <translation>Mapowanie Klawiszy</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="136"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
         <source>Show keyboard maping reference.</source>
         <translation>Pokaż mapowanie klawiatury.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="139"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="163"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="148"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="165"/>
         <source>Joystick Settings</source>
         <translation>Ustawienia Joystika</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="151"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="167"/>
         <source>Open joystick configuration settings dialog.</source>
         <translation>Otwórz dialog ustawień joystika.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="154"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="170"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="163"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="172"/>
         <source>LCD Screenshot</source>
         <translation>Zrzut ekrany LCD</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="166"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="174"/>
         <source>Save a screenshot of the current simulated LCD screen.</source>
         <translation>Zapisz zrzut ekranu aktualnnie symulowanego monitora LCD.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="169"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="177"/>
         <source>F8</source>
         <translation>F8</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="177"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="179"/>
         <source>Dock In Main Window</source>
         <translation>Zadokuj w głównym oknie</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="180"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="181"/>
         <source>Show the radio in the main window or as a separate &quot;floating&quot; window.</source>
         <translation>Pokaż radio w głównym oknie lub w pływającym oddzielnym oknie.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="188"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="183"/>
         <source>Menu Bar</source>
         <translation>Pasek Menu</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="191"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="185"/>
         <source>Show or hide the top menu bar.</source>
         <translation>Pokaż lub ukryj górny pasek menu.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="194"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="188"/>
         <source>Alt+M</source>
         <translation>Alt+M</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="202"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="190"/>
         <source>Constrain Width</source>
         <translation>Wymuś szerokość</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="205"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="192"/>
         <source>Set radio widget width to be a fixed size.</source>
         <translation>Ustaw stałą wielkość widgetu radia.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="213"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="194"/>
         <source>Constrain Height</source>
         <translation>Wymuś wysokość</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="216"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="196"/>
         <source>Set radio widget height to be a fixed size.</source>
         <translation>Ustaw stałą wysokość widgetu radia.</translation>
     </message>
@@ -11457,21 +11521,25 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <name>SimulatorStartupDialog</name>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="263"/>
         <source>OpenTX Simulator - Startup Options</source>
         <translation>Symulator OpenTX - Opcje Startowe</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="38"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="264"/>
         <source>Simulator Startup Options:</source>
         <translation>Opcje Startowe Symulatora:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="74"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="265"/>
         <source>Radio Profile:</source>
         <translation>Profil radia:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="87"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="267"/>
         <source>Existing radio profiles are shown here.&lt;br /&gt;
 Create or edit profiles using the Companion application.</source>
         <translation>Tu są pokazane istniejące profile radia.&lt;br /&gt;
@@ -11479,11 +11547,13 @@ Stwórz lub edytuj profile używając aplikacji Companion.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="95"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="270"/>
         <source>Radio Type:</source>
         <translation>Typ Radia:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="108"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="272"/>
         <source>Existing radio simulators are shown here.&lt;br /&gt;
 The radio type specified in the selected profile is used by default.</source>
         <translation>Tu są pokazane istniejące profile radia.&lt;br /&gt;
@@ -11491,26 +11561,31 @@ Typ radia określony w wybranym profilu zostanie użyty jako domyślny.</transla
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="275"/>
         <source>Data Source:</source>
         <translation>Źródło Danych:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="276"/>
         <source>Data File:</source>
         <translation>Źródło Pliku:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="277"/>
         <source>Data Folder:</source>
         <translation>Folder Danych:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="278"/>
         <source>SD Image Path:</source>
         <translation>Ścieżka Obrazu SD:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="280"/>
         <source>Radio data (.bin/.eeprom/.otx) image file to use. A new file with a default image will be created if necessary.&lt;br /&gt;
 &lt;b&gt;NOTE&lt;/b&gt;: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
         <translation>Plik obrazu danych radia (.bin/.eeprom/.otx) do użytku. W razie potrzeby zostanie stworzony nowy plik z domyślnym obrazem.&lt;br /&gt;
@@ -11518,6 +11593,7 @@ Typ radia określony w wybranym profilu zostanie użyty jako domyślny.</transla
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="176"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="284"/>
         <source>Select data file...</source>
         <translation>Wybierz plik danych...</translation>
     </message>
@@ -11525,22 +11601,28 @@ Typ radia określony w wybranym profilu zostanie użyty jako domyślny.</transla
         <location filename="../simulation/simulatorstartupdialog.ui" line="179"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="231"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="283"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="286"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="294"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="302"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="288"/>
         <source>Directory containing RADIO and MODELS folders to use.&lt;br /&gt;
 New folder(s) with default radio/model will be created here if necessary.</source>
         <translation>Katalog zawierajacy foldery RADIA i MODELI do użycia.&lt;br /&gt;W razie potrzeby zostanią stworzone nowe foldery z domyślnym Radiem/Modelami.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="292"/>
         <source>Select data folder...</source>
         <translation>Wybierz folder danych...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="296"/>
         <source>Directory containing the SD card image to use.&lt;br/&gt;
 The default is configured in the chosen Radio Profile.</source>
         <translation>Katalog zawierajacy obraz karty SD do użycia.&lt;br/&gt;
@@ -11548,26 +11630,31 @@ Domyślny jest skonfigurowany w wybranym Profilu Radia.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="280"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="300"/>
         <source>Select SD card image folder...</source>
         <translation>Wybierz folder obrazu karty SD...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="304"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
         <translation>Wybierz jakie źródło danych (Plik/Folder/Karta SD) chcesz użyć do uruchomienia symulatora.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="306"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="307"/>
         <source>Folder</source>
         <translation>Katalog</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="308"/>
         <source>SD Path</source>
         <translation>Scieżka SD</translation>
     </message>
@@ -11596,6 +11683,7 @@ Domyślny jest skonfigurowany w wybranym Profilu Radia.</translation>
     <name>SimulatorWidget</name>
     <message>
         <location filename="../simulation/simulatorwidget.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorwidget.h" line="196"/>
         <source>Companion Simulator</source>
         <translation>Symulator Companion</translation>
     </message>
@@ -12769,76 +12857,91 @@ Too many errors, giving up.</source>
     <name>TelemetrySimulator</name>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="19"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1556"/>
         <source>Telemetry Simulator</source>
         <translation>Symulator telemetrii</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1490"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1602"/>
         <source>VFAS</source>
         <translation>Napięcie</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="789"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1575"/>
         <source>RSSI</source>
         <translation>RSSI</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="563"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1567"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="222"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1562"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="57"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1560"/>
         <source>Simulate</source>
         <translation>Symulacja</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2665"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1651"/>
         <source>Replay SD Log File</source>
         <translation>Odtwórz plig logów z SD</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2688"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1652"/>
         <source>Replay rate</source>
         <translation>Współczynnik odtwarzania</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2704"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1653"/>
         <source>Load</source>
         <translation>Załaduj</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2761"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1654"/>
         <source>|&gt;</source>
         <translation>|&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2789"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1655"/>
         <source>&lt;|</source>
         <translation>&lt;|</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2823"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1656"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2857"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1657"/>
         <source>&lt;-</source>
         <translation>&lt;-</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2888"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1658"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2924"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1659"/>
         <source>Row # 
 Timestamp</source>
         <translation>Czysty # 
@@ -12846,21 +12949,25 @@ Timestamp</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2943"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1661"/>
         <source>1/5x</source>
         <translation>1/5x</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2959"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1662"/>
         <source>5x</source>
         <translation>5x</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2971"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1663"/>
         <source>No Log File Currently Loaded</source>
         <translation>Nie jest załadowany żaden plik logu</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="204"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1561"/>
         <source>RAS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12868,16 +12975,21 @@ Timestamp</translation>
         <location filename="../simulation/telemetrysimu.ui" line="267"/>
         <location filename="../simulation/telemetrysimu.ui" line="420"/>
         <location filename="../simulation/telemetrysimu.ui" line="660"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1563"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1565"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1568"/>
         <source>V / ratio</source>
         <translation>V / współczynnik</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="375"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1564"/>
         <source>Db</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="545"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1566"/>
         <source>RxBt</source>
         <translation>RxBt</translation>
     </message>
@@ -12895,89 +13007,121 @@ Timestamp</translation>
         <location filename="../simulation/telemetrysimu.ui" line="2257"/>
         <location filename="../simulation/telemetrysimu.ui" line="2405"/>
         <location filename="../simulation/telemetrysimu.ui" line="2561"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1570"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1577"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1589"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1593"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1600"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1604"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1608"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1614"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1623"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1630"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1635"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1639"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1646"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="681"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1572"/>
         <source>Tmp1</source>
         <translation>Tmp1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="699"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1573"/>
         <source>A3</source>
         <translation>A3</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="771"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1574"/>
         <source>A4</source>
         <translation>A4</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="810"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1579"/>
         <source>Tmp2</source>
         <translation>Tmp2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="918"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1581"/>
         <source>Fuel</source>
         <translation>Paliwo</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="963"/>
         <location filename="../simulation/telemetrysimu.ui" line="1017"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1582"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1584"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="999"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1583"/>
         <source>ml</source>
         <translation>ml</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1071"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1586"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1089"/>
         <location filename="../simulation/telemetrysimu.ui" line="2489"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1644"/>
         <source>Meters</source>
         <translation>Metry</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1164"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1591"/>
         <source>Alt</source>
         <translation>Wysokość</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1287"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1595"/>
         <source>VSpd</source>
         <translation>Pr.Wznoszenia</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1305"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1596"/>
         <source>m/s</source>
         <translation>m/s</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1323"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1597"/>
         <source>Fuel Qty</source>
         <translation>Ilość Paliwa</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1454"/>
         <location filename="../simulation/telemetrysimu.ui" line="1676"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1598"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1612"/>
         <source>km/h</source>
         <translation>km/h</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1538"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1606"/>
         <source>Hdg</source>
         <translation>Kurs</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1586"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1610"/>
         <source>ASpd</source>
         <translation>Prędk. Pow</translation>
     </message>
@@ -12985,16 +13129,21 @@ Timestamp</translation>
         <location filename="../simulation/telemetrysimu.ui" line="1604"/>
         <location filename="../simulation/telemetrysimu.ui" line="2074"/>
         <location filename="../simulation/telemetrysimu.ui" line="2627"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1611"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1627"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1650"/>
         <source>G</source>
         <translation>G</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1697"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1616"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1823"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1617"/>
         <source>Lat,Lon
 (dec.deg.)</source>
         <translation>Szer. Dł.
@@ -13002,11 +13151,13 @@ Timestamp</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1899"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1619"/>
         <source>AccX</source>
         <translation>AccX</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1944"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1620"/>
         <source>dd-MM-yyyy
 hh:mm:ss</source>
         <translation>dd-MM-yyyy
@@ -13014,83 +13165,101 @@ hh:mm:ss</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2038"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1625"/>
         <source>Date</source>
         <translation>Data</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2056"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
         <source>Amps</source>
         <translation>Ampery</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2092"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1628"/>
         <source>AccZ</source>
         <translation>AccZ</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2140"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1632"/>
         <source>GAlt</source>
         <translation>Wys</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2239"/>
         <location filename="../simulation/telemetrysimu.ui" line="2453"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1642"/>
         <source>Volts</source>
         <translation>Wolty</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2260"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1637"/>
         <source>Cels</source>
         <translation>Cele</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2408"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1641"/>
         <source>Curr</source>
         <translation>Natężenie</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2471"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1643"/>
         <source>AccY</source>
         <translation>AccY</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2564"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1648"/>
         <source>GSpd</source>
         <translation>Pr.w.Ziemi</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2582"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1649"/>
         <source>Degrees</source>
         <translation>Stopnie</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2987"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1665"/>
         <source>Setting RSSI to zero simulates telemetry and radio link loss.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2990"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1667"/>
         <source>Set RSSI to zero when paused.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3003"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1669"/>
         <source>Stop sending telemetry data when the Telemetry Simulator window is hidden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3006"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1671"/>
         <source>Pause simulation when hidden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="855"/>
         <location filename="../simulation/telemetrysimu.ui" line="1053"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1580"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1585"/>
         <source>RPM</source>
         <translation>RPM</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="54"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1558"/>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
         <translation>Kiedy aktywne, wysyła jakiekolwiek dane jako symulację danych telemetrii.</translation>
     </message>
@@ -13343,6 +13512,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <name>TrainerSimulator</name>
     <message>
         <location filename="../simulation/trainersimu.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_trainersimu.h" line="74"/>
         <source>Trainer simulator</source>
         <translation>Symulator trenera</translation>
     </message>
@@ -13975,71 +14145,85 @@ m2560 dla platformy V4</translation>
     <name>joystickDialog</name>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="464"/>
         <source>Configure Joystick</source>
         <translation>Ustaw joystick</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="50"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="465"/>
         <source>Ch2</source>
         <translation>Kanał 02</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="98"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="466"/>
         <source>Ch1</source>
         <translation>Kanał 01</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="159"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="467"/>
         <source>Ch4</source>
         <translation>Kanał 04</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="194"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="468"/>
         <source>Ch6</source>
         <translation>Kanał 06</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="201"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="469"/>
         <source>Ch3</source>
         <translation>Kanał 03</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="303"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="470"/>
         <source>Ch5</source>
         <translation>Kanał 05</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="310"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="471"/>
         <source>Ch7</source>
         <translation>Kanał 07</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="358"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="472"/>
         <source>Ch8</source>
         <translation>Kanał 08</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="537"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="473"/>
         <source>Instructions</source>
         <translation>Instrukcje</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="562"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="474"/>
         <source>Enable</source>
         <translation>Aktywuj</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="579"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="475"/>
         <source>Cancel</source>
         <translation>Przerwij</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="608"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="476"/>
         <source>Back</source>
         <translation>Cofnij</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="624"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="477"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
@@ -14050,6 +14234,7 @@ m2560 dla platformy V4</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="637"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="478"/>
         <source>Ok</source>
         <translation>OK</translation>
     </message>

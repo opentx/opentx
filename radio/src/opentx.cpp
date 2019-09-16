@@ -1903,10 +1903,6 @@ void opentxInit()
   auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
 #endif
 
-#if defined(PCBTARANIS)
-  BACKLIGHT_ENABLE();
-#endif
-
 #if MENUS_LOCK == 1
   getMovedSwitch();
   if (TRIMS_PRESSED() && g_eeGeneral.switchUnlockStates==switches_states) {

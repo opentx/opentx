@@ -15,12 +15,11 @@ chars_fi = u"""åäöÅÄÖ"""
 chars_it = u"""àù"""
 chars_pl = u"""ąćęłńóśżźĄĆĘŁŃÓŚŻŹ"""
 chars_pt = u"""ÁáÂâÃãÀàÇçÉéÊêÍíÓóÔôÕõÚú"""
-chars_se = u"""åäöÅÄÖ"""
 
 COUNT_EXTRA_CHARS = 21
 
 chars_extra = u"".join([chr(1+i) for i in range(COUNT_EXTRA_CHARS)])
-chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz + chars_es + chars_fi + chars_it + chars_pl + chars_se
+chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz + chars_es + chars_fi + chars_it + chars_pl
 
 
 def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, background, coordsfile=True):

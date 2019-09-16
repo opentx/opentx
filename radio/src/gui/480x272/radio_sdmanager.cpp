@@ -23,13 +23,18 @@
 #include "opentx.h"
 #include "storage/modelslist.h"
 
-#define REFRESH_FILES()        do { reusableBuffer.sdManager.offset = 65535; currentBitmapIndex = -1; } while (0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
 
 int currentBitmapIndex = 0;
-BitmapBuffer * currentBitmap = NULL;
+BitmapBuffer * currentBitmap = nullptr;
+
+inline void REFRESH_FILES()
+{
+  reusableBuffer.sdManager.offset = 65535;
+  currentBitmapIndex = -1;
+}
 
 bool menuRadioSdManagerInfo(event_t event)
 {
@@ -181,11 +186,14 @@ bool menuRadioSdManager(event_t _event)
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SD_MANAGER, reusableBuffer.sdManager.count);
 
-  int index = menuVerticalPosition-menuVerticalOffset;
+  int index = menuVerticalPosition - menuVerticalOffset;
 
   switch(_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
+      // no break;
+
+    case EVT_ENTRY_UP:
       REFRESH_FILES();
       break;
 
@@ -298,22 +306,18 @@ bool menuRadioSdManager(event_t _event)
     FILINFO fno;
     DIR dir;
 
-    if (menuVerticalOffset == 0) {
-      reusableBuffer.sdManager.offset = 0;
-      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
-    }
-    else if (menuVerticalOffset == reusableBuffer.sdManager.count-NUM_BODY_LINES) {
-      reusableBuffer.sdManager.offset = menuVerticalOffset;
-      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
-    }
-    else if (menuVerticalOffset > reusableBuffer.sdManager.offset) {
+    if (menuVerticalOffset == reusableBuffer.sdManager.offset + 1) {
       memmove(reusableBuffer.sdManager.lines[0], reusableBuffer.sdManager.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
       memset(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
       NODE_TYPE(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1]) = 1;
     }
-    else {
+    else if (menuVerticalOffset == reusableBuffer.sdManager.offset - 1) {
       memmove(reusableBuffer.sdManager.lines[1], reusableBuffer.sdManager.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
       memset(reusableBuffer.sdManager.lines[0], 0, sizeof(reusableBuffer.sdManager.lines[0]));
+    }
+    else {
+      reusableBuffer.sdManager.offset = menuVerticalOffset;
+      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
     }
 
     reusableBuffer.sdManager.count = 0;

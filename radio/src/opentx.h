@@ -865,16 +865,15 @@ void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
 
 typedef uint16_t ACTIVE_PHASES_TYPE;
-#define DELAY_POS_SHIFT    0
 #define DELAY_POS_MARGIN   3
 typedef int16_t delayval_t;
-PACK(typedef struct {
-  uint16_t delay;
+PACK(struct SwOn {
+  uint16_t delay:14; // max = 2550
+  uint8_t  activeMix:1;
+  uint8_t  activeExpo:1;
   int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   int16_t  prev;
-  uint8_t  activeMix;
-  uint8_t  activeExpo;
-}) SwOn;
+});
 
 extern SwOn   swOn[MAX_MIXERS];
 extern int32_t act[MAX_MIXERS];

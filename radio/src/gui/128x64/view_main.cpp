@@ -281,6 +281,7 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_START(onMainViewMenu);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();

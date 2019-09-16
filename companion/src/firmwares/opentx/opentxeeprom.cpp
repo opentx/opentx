@@ -33,15 +33,32 @@ using namespace Board;
 
 inline int MAX_SWITCHES(Board::Type board, int version)
 {
-  if (version <= 218 && IS_TARANIS_X7(board))
-    return 6;
-  if (version <= 218 && (IS_TARANIS_X9D(board) || IS_HORUS(board)))
-    return 8;
-  if (version <= 218 && (IS_TARANIS_XLITE(board)))
-    return 4;
+  if (version <= 218) {
+    if (IS_TARANIS_X7(board))
+      return 6;
+    if (IS_TARANIS_X9D(board) || IS_HORUS(board))
+      return 8;
+    if (IS_TARANIS_XLITE(board))
+      return 4;
+  }
+
   if (IS_TARANIS_X9D(board))
     return 9;
+
+  if (IS_JUMPER_T12(board))
+    return 8;
+
   return Boards::getCapability(board, Board::Switches);
+}
+
+inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
+{
+  if (IS_HORUS_OR_TARANIS(board)) {
+    return MAX_SWITCHES(board, version) * 3;
+  }
+  else {
+    return Boards::getCapability(board, Board::SwitchPositions);
+  }
 }
 
 inline int POTS_CONFIG_SIZE(Board::Type board, int version)
@@ -109,24 +126,6 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
     return 32;
 
   return 16;
-}
-
-inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
-{
-  if (version < 219) {
-    if (IS_TARANIS_X7(board) || IS_HORUS(board))
-      return Boards::getCapability(board, Board::SwitchPositions) - 2 * 3;
-    if (IS_TARANIS_X9D(board))
-      return 8 * 3;
-    if (IS_TARANIS_XLITE(board))
-      return 4 * 3;
-  }
-
-  if (IS_TARANIS_X9D(board)) {
-    return 9 * 3; // all X9D have storage for 9 switches (X9D+ 2019)
-  }
-
-  return Boards::getCapability(board, Board::SwitchPositions);
 }
 
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)

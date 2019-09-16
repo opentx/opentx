@@ -33,7 +33,7 @@ void loadEEPROMFile(const char * filename)
 #if defined(PCBX9DP)
 TEST(Conversions, ConversionX9DPFrom22)
 {
-  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_22_x9d+.bin");
+  loadEEPROMFile(TESTS_PATH "/eeprom_22_x9d+.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();
@@ -58,6 +58,10 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_EQ(80, g_model.mixData[0].weight);
   EXPECT_EQ(-100, g_model.limitData[0].max); // 90.0
   EXPECT_EQ(80, g_model.expoData[0].weight);
+  EXPECT_EQ(CURVE_REF_CUSTOM, g_model.expoData[0].curve.type);
+  EXPECT_EQ(1, g_model.expoData[0].curve.value);
+  EXPECT_EQ(CURVE_REF_EXPO, g_model.expoData[1].curve.type);
+  EXPECT_EQ(20, g_model.expoData[1].curve.value);
   EXPECT_EQ(SWASH_TYPE_120X, g_model.swashR.type);
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
@@ -72,7 +76,7 @@ TEST(Conversions, ConversionX9DPFrom22)
 
 TEST(Conversions, ConversionX9DPFrom23)
 {
-  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_23_x9d+.bin");
+  loadEEPROMFile(TESTS_PATH "/eeprom_23_x9d+.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();
@@ -99,8 +103,12 @@ TEST(Conversions, ConversionX9DPFrom23)
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
   EXPECT_ZSTREQ("Test", g_model.flightModeData[0].name);
 
+#if defined(INTERNAL_MODULE_PXX2)
   EXPECT_EQ(MODULE_TYPE_ISRM_PXX2, g_model.moduleData[INTERNAL_MODULE].type);
   EXPECT_EQ(MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, g_model.moduleData[INTERNAL_MODULE].subType);
+#else
+  EXPECT_EQ(MODULE_TYPE_NONE, g_model.moduleData[INTERNAL_MODULE].type);
+#endif
 
   EXPECT_EQ(MODULE_TYPE_R9M_PXX1, g_model.moduleData[EXTERNAL_MODULE].type);
   EXPECT_EQ(MODULE_SUBTYPE_R9M_FCC, g_model.moduleData[EXTERNAL_MODULE].subType);
@@ -113,10 +121,10 @@ TEST(Conversions, ConversionX9DPFrom23)
 }
 #endif
 
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) && !defined(PCBXLITES)
 TEST(Conversions, ConversionXLiteFrom22)
 {
-  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_22_xlite.bin");
+  loadEEPROMFile(TESTS_PATH "/eeprom_22_xlite.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();
@@ -164,7 +172,7 @@ TEST(Conversions, ConversionXLiteFrom22)
 #if defined(PCBX7)
 TEST(Conversions, ConversionX7From22)
 {
-  loadEEPROMFile(TESTS_BUILD_PATH "/eeprom_22_x7.bin");
+  loadEEPROMFile(TESTS_PATH "/eeprom_22_x7.bin");
 
   eepromOpen();
   eeLoadGeneralSettingsData();

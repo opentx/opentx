@@ -85,7 +85,7 @@
 <context>
     <name>AppMessages</name>
     <message>
-        <location filename="../warnings.h" line="94"/>
+        <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
         <translation>Afficher ce message lors du prochain démarrage ?</translation>
     </message>
@@ -2549,27 +2549,27 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
         <source>%1%2 Both directions, to destination folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Destination</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Radio</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
         <source>%1%2 Both directions, to source folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Source</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par le dossier Local</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
         <source> %1  Only from source folder to destination folder</source>
-        <translation> %1 Uniquement du dossier Source vers le dossier Destination</translation>
+        <translation> %1 Uniquement du dossier Local vers le dossier Radio</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
         <source> %1  Only from destination folder to source folder</source>
-        <translation> %1 Uniquement du dossier Destination vers le dossier Source</translation>
+        <translation> %1 Uniquement du dossier Radio vers le dossier Local</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="151"/>
         <source>How to handle overwriting files which already exist in the destination folder.</source>
-        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier Destination.</translation>
+        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier de destination.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="152"/>
@@ -2939,12 +2939,12 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
         <source>Support for ACCESS internal module replacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du module de remplacement interne ACCESS</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
         <source>FrSky Horus X10 Express</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
@@ -2964,7 +2964,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
         <source>Enable non certified R9M firmwares</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer les firmwares R9M non certifiés</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
@@ -4325,12 +4325,12 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1120"/>
         <source>Owner Registration ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrement ID du propriétaire</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1127"/>
         <source>aaaaaaAA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1359"/>
@@ -4455,7 +4455,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2437"/>
         <source>Power Off Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Délai mise hors tension</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2399"/>
@@ -4657,7 +4657,7 @@ Réinitialisation en agissant sur n&apos;importe lequel des manches / touches de
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1572"/>
         <source>Power On Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Délai mise sous tension</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1830"/>
@@ -5065,7 +5065,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.ui" line="909"/>
         <source>Antenna</source>
-        <translation type="unfinished">Antenne</translation>
+        <translation>Antenne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="1036"/>
@@ -5330,27 +5330,27 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.cpp" line="187"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="188"/>
         <source>Ask</source>
-        <translation type="unfinished"></translation>
+        <translation>Demander</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="189"/>
         <source>Per model</source>
-        <translation type="unfinished"></translation>
+        <translation>Par modèle</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="190"/>
         <source>Internal + External</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne + Externe</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="190"/>
         <source>External</source>
-        <translation type="unfinished">Externe</translation>
+        <translation>Externe</translation>
     </message>
 </context>
 <context>
@@ -6522,17 +6522,17 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="346"/>
         <source>No Companion release candidates are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;candidate&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;candidate&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="348"/>
         <source>No nightly Companion builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;nightly&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;nightly&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
         <source>No Companion release builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;officielle&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;officielle&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;candidate&quot; ou &quot;nightly&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="378"/>
@@ -6542,17 +6542,17 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="473"/>
         <source>No firmware release candidates are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;candidate&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;candidate&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="475"/>
         <source>No firmware nightly builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;nightly&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;nightly&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="477"/>
         <source>No firmware release builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;officiel&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;officiel&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;candidate&quot; ou &quot;nightly&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="481"/>
@@ -8753,24 +8753,24 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="245"/>
         <source>Receiver 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Récepteur 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="290"/>
         <location filename="../modeledit/setup_module.ui" line="326"/>
         <location filename="../modeledit/setup_module.ui" line="362"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="302"/>
         <source>Receiver 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Récepteur 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="338"/>
         <source>Receiver 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Récepteur 3</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="411"/>
@@ -8781,11 +8781,6 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modeledit/setup_module.ui" line="474"/>
         <source>Channels</source>
         <translation>Nb de voies</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/setup_module.ui" line="728"/>
-        <source>Registration ID</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="861"/>
@@ -8816,6 +8811,11 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modeledit/setup_module.ui" line="828"/>
         <source>WARNING: Requires non-certified firmware!</source>
         <translation>ATTENTION: Nécessite un firmware non certifié!</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/setup_module.ui" line="728"/>
+        <source>Registration ID</source>
+        <translation>ID d&apos;enregistrement</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="975"/>
@@ -8969,17 +8969,17 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup.cpp" line="492"/>
         <source>Ask</source>
-        <translation type="unfinished"></translation>
+        <translation>Demander</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="493"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
         <source>Internal + External</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne + Externe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
@@ -9476,7 +9476,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="33"/>
         <source>Fixed ID value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur ID fixe</translation>
     </message>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="34"/>
@@ -9906,6 +9906,16 @@ X
 A
 G
 E</translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="226"/>
+        <source>FM%1</source>
+        <translation>PV%1</translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="235"/>
+        <source>GV%1</source>
+        <translation>VG%1</translation>
     </message>
 </context>
 <context>
@@ -10717,12 +10727,12 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="112"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="114"/>
         <source>External</source>
-        <translation type="unfinished">Externe</translation>
+        <translation>Externe</translation>
     </message>
 </context>
 <context>
@@ -12531,12 +12541,12 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="126"/>
         <source>Rx</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="133"/>
         <source>Mod.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="175"/>

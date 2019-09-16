@@ -1146,7 +1146,7 @@ TR_GYR_VSRCRAW
 #define TR_ADDMAINVIEW         "Add main view"
 #define TR_BACKGROUND_COLOR    "Background color"
 #define TR_MAIN_COLOR          "Main color"
-#define TR_TEXT_VIEWER                 "Text Viever"
+#define TR_TEXT_VIEWER                 "Text Viewer"
 
 
 #define TR_MENU_INPUTS         "\314Inputs"

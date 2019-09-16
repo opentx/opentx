@@ -128,10 +128,6 @@ void boardInit()
   pwrOn();
   delaysInit();
 
-#if defined(DEBUG)
-  auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
-#endif
-
   __enable_irq();
 
   TRACE("\nHorus board started :)");

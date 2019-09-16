@@ -618,7 +618,6 @@
 #endif
 #define TR_CHANNELS2FAILSAFE    "Channels=>Failsafe"
 #define TR_CHANNEL2FAILSAFE     "Channel=>Failsafe"
-#endif
 #define TR_MENUMODELSEL        TR("MODELSEL", "SELECCION MODELO")
 #define TR_MENUSETUP           TR("CONF.", "CONF.MODELO")
 #define TR_MENUFLIGHTMODE     "MODO VUELO"
@@ -1158,7 +1157,7 @@
 #define TR_ADDMAINVIEW         "Add main view"
 #define TR_BACKGROUND_COLOR    "Background color"
 #define TR_MAIN_COLOR          "Main color"
-#define TR_TEXT_VIEWER                 "Text Viever"
+#define TR_TEXT_VIEWER                 "Text Viewer"
 
 #define TR_MENU_INPUTS         "\314Inputs"
 #define TR_MENU_LUA            "\322Lua scripts"

@@ -530,7 +530,7 @@ void menuRadioSetup(event_t event)
 
 #if defined(FAI_CHOICE)
       case ITEM_RADIO_SETUP_FAI:
-        editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, "FAI Mode"), attr, event;
+        editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, "FAI Mode", attr, event);
         if (attr && checkIncDec_Ret) {
           if (g_eeGeneral.fai)
             POPUP_WARNING("FAI\001mode blocked!");
