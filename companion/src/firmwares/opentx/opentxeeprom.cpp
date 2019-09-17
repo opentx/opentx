@@ -1914,8 +1914,7 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _subid = sensor.subid;
-        // keep highest 3 bits from instance (rxIdx & moduleIdx are read-only)
-        _instance = (sensor.instance & 0x1F) | (_instance & 0xE0);
+        _instance = (sensor.instance & 0x1F) | (sensor.rxIdx << 5) | (sensor.moduleIdx << 7);
         _ratio = sensor.ratio;
         _offset = sensor.offset;
       }
@@ -1941,7 +1940,7 @@ class SensorField: public TransformedField {
         if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module())
           sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
         else
-          sensor.instance = _instance;
+          sensor.instance = _instance & 0x1F;
         sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
         sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
         sensor.ratio = _ratio;
@@ -2027,9 +2026,9 @@ class ModuleUnionField: public UnionField<unsigned int> {
         ModuleData::Multi& multi = module.multi;
         internalField.Append(new UnsignedField<2>(this, rfProtExtra));
         internalField.Append(new SpareBitsField<3>(this));
+        internalField.Append(new BoolField<1>(this, multi.customProto));
         internalField.Append(new BoolField<1>(this, multi.autoBindMode));
         internalField.Append(new BoolField<1>(this, multi.lowPowerMode));
-        internalField.Append(new BoolField<1>(this, multi.customProto));
         internalField.Append(new SignedField<8>(this, multi.optionValue));
       }
 
