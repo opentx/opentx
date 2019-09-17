@@ -256,14 +256,14 @@ ui(new Ui::GeneralSetup)
   }
 
   if (!firmware->getCapability(PwrButtonPress)) {
-    ui->pwrOnSpeedLabel->hide();
-    ui->pwrOnSpeed->hide();
-    ui->pwrOffSpeedLabel->hide();
-    ui->pwrOffSpeed->hide();
+    ui->pwrOnDelayLabel->hide();
+    ui->pwrOnDelay->hide();
+    ui->pwrOffDelayLabel->hide();
+    ui->pwrOffDelay->hide();
   }
   else if (!IS_TARANIS(firmware->getBoard())) {
-    ui->pwrOnSpeedLabel->hide();
-    ui->pwrOnSpeed->hide();
+    ui->pwrOnDelayLabel->hide();
+    ui->pwrOnDelay->hide();
   }
   
   setValues();
@@ -453,8 +453,8 @@ void GeneralSetupPanel::setValues()
     ui->vBatMaxDSB->setValue((double)(generalSettings.vBatMax + 120) / 10);
   }
 
-  ui->pwrOnSpeed->setValue(generalSettings.pwrOnSpeed);
-  ui->pwrOffSpeed->setValue(generalSettings.pwrOffSpeed);
+  ui->pwrOnDelay->setValue(2 - generalSettings.pwrOnSpeed);
+  ui->pwrOffDelay->setValue(2 - generalSettings.pwrOffSpeed);
 
     // TODO: only if ACCESS available??
   ui->registrationId->setText(generalSettings.registrationId);
@@ -510,15 +510,15 @@ void GeneralSetupPanel::on_splashScreenDuration_currentIndexChanged(int index)
   emit modified();
 }
 
-void GeneralSetupPanel::on_pwrOnSpeed_valueChanged()
+void GeneralSetupPanel::on_pwrOnDelay_valueChanged()
 {
-  generalSettings.pwrOnSpeed = ui->pwrOnSpeed->value();
+  generalSettings.pwrOnSpeed = 2 - ui->pwrOnDelay->value();
   emit modified();
 }
 
-void GeneralSetupPanel::on_pwrOffSpeed_valueChanged()
+void GeneralSetupPanel::on_pwrOffDelay_valueChanged()
 {
-  generalSettings.pwrOffSpeed = ui->pwrOffSpeed->value();
+  generalSettings.pwrOffSpeed = 2 - ui->pwrOffDelay->value();
   emit modified();
 }
 

@@ -82,12 +82,14 @@ void LimitsGroup::updateMinMax(int max)
 {
   if (spinbox->maximum() == 0) {
     spinbox->setMinimum(-max * displayStep);
+    gvarGroup->setMinimum(-max);
     if (value < -max) {
       value = -max;
     }
   }
   if (spinbox->minimum() == 0) {
     spinbox->setMaximum(max * displayStep);
+    gvarGroup->setMaximum(max);
     if (value > max) {
       value = max;
     }

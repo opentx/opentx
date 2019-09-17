@@ -115,7 +115,7 @@ void lcdInit()
 
 #if defined(REVX)
   // 200mS delay (only if not wdt reset)
-  if ( ( ( ResetReason & RSTC_SR_RSTTYP ) != (2 << 8) ) && !unexpectedShutdown ) {
+  if ( ( ( ResetReason & RSTC_SR_RSTTYP ) != (2 << 8) ) && !globalData.unexpectedShutdown ) {
     for (uint32_t j = 0; j < 100; j += 1 ) {
       TC0->TC_CHANNEL[0].TC_CCR = 5; // Enable clock and trigger it (may only need trigger)
       while ( TC0->TC_CHANNEL[0].TC_CV < 36000 ) {

@@ -420,13 +420,13 @@ void watchdogSuspend(uint32_t timeout);
 
 #define MAX_ALERT_TIME   60
 
-struct t_inactivity
+struct InactivityData
 {
   uint16_t counter;
   uint8_t  sum;
 };
 
-extern struct t_inactivity inactivity;
+extern InactivityData inactivity;
 
 #define LEN_STD_CHARS 40
 
@@ -583,9 +583,14 @@ extern uint8_t trimsDisplayMask;
 
 void flightReset(uint8_t check=true);
 
-extern uint8_t unexpectedShutdown;
+PACK(struct GlobalData {
+  uint8_t unexpectedShutdown:1;
+  uint8_t sdcardPresent:1;
+  uint8_t externalAntennaEnabled: 1;
+  uint8_t spare:5;
+});
 
-extern uint16_t vbattRTC;
+extern GlobalData globalData;
 
 extern uint16_t maxMixerDuration;
 
@@ -875,16 +880,15 @@ void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
 
 typedef uint16_t ACTIVE_PHASES_TYPE;
-#define DELAY_POS_SHIFT    0
 #define DELAY_POS_MARGIN   3
 typedef int16_t delayval_t;
-PACK(typedef struct {
-  uint16_t delay;
+PACK(struct SwOn {
+  uint16_t delay:14; // max = 2550
+  uint8_t  activeMix:1;
+  uint8_t  activeExpo:1;
   int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   int16_t  prev;
-  uint8_t  activeMix;
-  uint8_t  activeExpo;
-}) SwOn;
+});
 
 extern SwOn   swOn[MAX_MIXERS];
 extern int32_t act[MAX_MIXERS];
@@ -1089,14 +1093,16 @@ constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
 
 // Re-useable byte array to save having multiple buffers
 #if LCD_W <= 212
-#define SD_SCREEN_FILE_LENGTH          32
+constexpr uint8_t SD_SCREEN_FILE_LENGTH = 32;
 #else
-#define SD_SCREEN_FILE_LENGTH          64
+constexpr uint8_t SD_SCREEN_FILE_LENGTH = 64;
 #endif
 
 #if defined(BLUETOOTH)
 #include "bluetooth.h"
 #endif
+
+constexpr uint8_t TEXT_FILENAME_MAXLEN = 40;
 
 union ReusableBuffer
 {
@@ -1115,6 +1121,7 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
+    int8_t antennaMode;
     BindInformation bindInformation;
     struct {
       union {
@@ -1181,13 +1188,17 @@ union ReusableBuffer
     uint32_t updateTime;
     ModuleSettings moduleSettings;
     ReceiverSettings receiverSettings; // when dealing with receiver settings, we also need module settings
-  } hardwareAndSettings;
+  } hardwareAndSettings; // moduleOptions, receiverOptions, radioVersion
 
   struct {
     ModuleInformation modules[NUM_MODULES];
     uint8_t linesCount;
     char msg[64];
   } radioTools;
+
+  struct {
+    int8_t antennaMode;
+  } radioHardware;
 
   struct {
     uint8_t stickMode;
@@ -1221,13 +1232,29 @@ union ReusableBuffer
     int8_t preset;
   } curveEdit;
 
+  struct {
+    char filename[TEXT_FILENAME_MAXLEN];
+    char lines[NUM_BODY_LINES][LCD_COLS + 1];
+    int linesCount;
+  } viewText;
+
+  struct {
+    bool longNames;
+    bool secondPage;
+    bool mixersView;
+  } viewChannels;
+
+  struct {
+    uint8_t maxNameLen;
+  } modelFailsafe;
+
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
   uint8_t MSC_BOT_Data[MSC_MEDIA_PACKET];
 #endif
 };
 
-extern union ReusableBuffer reusableBuffer;
+extern ReusableBuffer reusableBuffer;
 
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
@@ -1246,13 +1273,15 @@ char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defa
 // Stick tolerance varies between transmitters, Higher is better
 #define STICK_TOLERANCE 64
 
-  ls_telemetry_value_t minTelemValue(source_t channel);
-  ls_telemetry_value_t maxTelemValue(source_t channel);
+ls_telemetry_value_t maxTelemValue(source_t channel);
 
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 
-#define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
+inline getvalue_t convertTelemValue(source_t channel, ls_telemetry_value_t value)
+{
+  return convert16bitsTelemValue(channel, value);
+}
 
 inline int div_and_round(int num, int den)
 {
@@ -1292,8 +1321,6 @@ extern uint8_t s_frsky_view;
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
 
-void getGpsPilotPosition();
-void getGpsDistance();
 void varioWakeup();
 
 #if defined(AUDIO) && defined(BUZZER)
@@ -1378,26 +1405,17 @@ enum JackMode {
 #include "gyro.h"
 #endif
 
-inline bool isSimu()
-{
-#if defined(SIMU)
-  return true;
-#else
-  return false;
-#endif
-}
-
 #if defined(DEBUG_LATENCY)
 extern uint8_t latencyToggleSwitch;
 #endif
 
 inline bool isAsteriskDisplayed()
 {
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
+#if defined(LOG_TELEMETRY) || !defined(WATCHDOG) || defined(DEBUG_LATENCY)
   return true;
 #endif
 
-  return unexpectedShutdown;
+  return globalData.unexpectedShutdown;
 }
 
 #include "module.h"

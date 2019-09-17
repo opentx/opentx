@@ -30,6 +30,7 @@
 #define STR_MULTI_RFPOWER                    QT_TRANSLATE_NOOP("Multiprotocols", "Radio output power")
 #define STR_MULTI_SERVOFREQ                  QT_TRANSLATE_NOOP("Multiprotocols", "Servo output frequency")
 #define STR_MULTI_OPTION                     QT_TRANSLATE_NOOP("Multiprotocols", "Option value")
+#define STR_MULTI_FIXEDID                    QT_TRANSLATE_NOOP("Multiprotocols", "Fixed ID value")
 #define STR_MULTI_DEFAULT                    QT_TRANSLATE_NOOP("Multiprotocols", "DEFAULT")
 
 static const QStringList STR_SUBTYPE_CUSTOM    ({
@@ -42,6 +43,7 @@ static const QStringList STR_SUBTYPE_FRSKY     {"D16", "D8", "D16 8ch", "V8", "D
 static const QStringList STR_SUBTYPE_HISKY     {"Standard", "HK310"};
 static const QStringList STR_SUBTYPE_V2X2      {"Standard", "JXD506"};
 static const QStringList STR_SUBTYPE_DSM       {"DSM2 22ms", "DSM2 11ms", "DSMX 22ms", "DSMX 11ms"};
+static const QStringList STR_SUBTYPE_DEVO      {"8 Channel", "10 Channel", "12 Channel", "6 Channel", "7 Channel"};
 static const QStringList STR_SUBTYPE_YD717     {"Standard", "Skywalker", "Syma X4", "XINXUN", "NIHUI"};
 static const QStringList STR_SUBTYPE_KN        {"WLtoys", "FeiLun"};
 static const QStringList STR_SUBTYPE_SYMAX     {"Standard", "Syma X5C"};
@@ -61,11 +63,14 @@ static const QStringList STR_SUBTYPE_CABELL    {"Cabell V3", "Cab V3 Telem", "-"
 static const QStringList STR_SUBTYPE_H83D      {"H8 Mini 3D", "H20H", "H20 Mini", "H30 Mini"};
 static const QStringList STR_SUBTYPE_CORONA    {"Corona V1", "Corona V2", "Flydream V3"};
 static const QStringList STR_SUBTYPE_HITEC     {"Optima", "Optima Hub Telem", "Minima"};
+static const QStringList STR_SUBTYPE_TRAXXAS   {"6519 RX"};
 static const QStringList STR_SUBTYPE_BUGS_MINI {"Standard", "Bugs 3H"};
 static const QStringList STR_SUBTYPE_E01X      {"E012", "E015", "E016H"};
 static const QStringList STR_SUBTYPE_GD00X     {"GD V1", "GD V2"};
 static const QStringList STR_SUBTYPE_REDPINE   {"Fast", "Slow"};
-static const QStringList STR_SUBTYPE_POTENSIC  {"A20 Firefly", " - "};
+static const QStringList STR_SUBTYPE_POTENSIC  {"A20 Firefly"};
+static const QStringList STR_SUBTYPE_ZSX       {"JJRC ZSX-280"};
+static const QStringList STR_SUBTYPE_FLYZONE   {"FZ-410 TX"};
 
 static const QStringList NO_SUBTYPE            {STR_MULTI_DEFAULT};
 
@@ -79,6 +84,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_HISKY,      1, false,      STR_SUBTYPE_HISKY,     nullptr},
   {MODULE_SUBTYPE_MULTI_V2X2,       1, false,      STR_SUBTYPE_V2X2,      nullptr},
   {MODULE_SUBTYPE_MULTI_DSM2,       3, false,      STR_SUBTYPE_DSM,       nullptr},
+  {MODULE_SUBTYPE_MULTI_DEVO,       4, false,      STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
   {MODULE_SUBTYPE_MULTI_YD717,      4, false,      STR_SUBTYPE_YD717,     nullptr},
   {MODULE_SUBTYPE_MULTI_KN,         1, false,      STR_SUBTYPE_KN,        nullptr},
   {MODULE_SUBTYPE_MULTI_SYMAX,      1, false,      STR_SUBTYPE_SYMAX,     nullptr},
@@ -101,14 +107,15 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_CORONA,     2, false,      STR_SUBTYPE_CORONA,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
+  {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false,      STR_SUBTYPE_TRAXXAS,   nullptr},
   {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
   {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     nullptr},
   {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false,      STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_POTENSIC,   1, false,      STR_SUBTYPE_POTENSIC,  nullptr},
-  {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      NO_SUBTYPE,            nullptr},
-  {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false,      NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false,      STR_SUBTYPE_POTENSIC,  nullptr},
+  {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      STR_SUBTYPE_ZSX,       nullptr},
+  {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false,      STR_SUBTYPE_FLYZONE,   nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -151,7 +158,7 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","Open LRS",
     "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002", "Cabell", "ESky 150", "H8 3D", "Corona", "CFlie",
     "Hitec", "Wfly", "Bugs", "Bugs Mini", "Traxxas", "NCC-1701-A", "E01X", "WL Heli V911S", "GD00X", "Volantex V761",
-    "KFPlan KF606", "Redpine", "Potensic", "ZXS", "Flyzone"
+    "KFPlan KF606", "Redpine", "Potensic", "ZXS", "FlyZone"
   });
 
   if (protocol == MM_RF_CUSTOM_SELECTED || custom)

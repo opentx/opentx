@@ -96,10 +96,6 @@ QString ModuleData::subTypeToString(int type) const
 QString ModuleData::powerValueToString(Firmware * fw) const
 {
   const QStringList & strRef = powerValueStrings(subType, fw);
-  // EU module with telemetry can only be < 100/200mW.
-  if (pxx.sport_out && subType == MODULE_SUBTYPE_R9M_EU && pxx.power > 1)
-    return CPN_STR_UNKNOWN_ITEM;
-
   return strRef.value(pxx.power, CPN_STR_UNKNOWN_ITEM);
 }
 

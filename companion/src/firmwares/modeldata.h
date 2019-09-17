@@ -171,16 +171,16 @@ class ModelData {
     ExpoData  expoData[CPN_MAX_EXPOS];
 
     CurveData curves[CPN_MAX_CURVES];
-    LogicalSwitchData  logicalSw[CPN_MAX_LOGICAL_SWITCHES];
+    LogicalSwitchData logicalSw[CPN_MAX_LOGICAL_SWITCHES];
     CustomFunctionData customFn[CPN_MAX_SPECIAL_FUNCTIONS];
     SwashRingData swashRingData;
     unsigned int thrTraceSrc;
     uint64_t switchWarningStates;
     unsigned int switchWarningEnable;
     unsigned int potsWarningMode;
-    bool potsWarningEnabled[CPN_MAX_POTS];
-    int          potPosition[CPN_MAX_POTS];
-    bool         displayChecklist;
+    bool potsWarnEnabled[CPN_MAX_POTS];
+    int potsWarnPosition[CPN_MAX_POTS];
+    bool displayChecklist;
     GVarData gvarData[CPN_MAX_GVARS];
     MavlinkData mavlink;
     unsigned int telemetryProtocol;

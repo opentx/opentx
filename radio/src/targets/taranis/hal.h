@@ -907,6 +907,9 @@
 #if !defined(RADIO_T12)
   #define HARDWARE_INTERNAL_MODULE
 #endif
+#if defined(PCBXLITE)
+#define EXTERNAL_ANTENNA
+#endif
 #if defined(PCBXLITES) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define INTERNAL_MODULE_PXX2
 #else

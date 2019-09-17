@@ -37,6 +37,7 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("apppreferences.png"));
+  ui->tabWidget->setCurrentIndex(0);
 
   initSettings();
   connect(ui->boardCB, SIGNAL(currentIndexChanged(int)), this, SLOT(onBaseFirmwareChanged()));

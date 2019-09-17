@@ -133,15 +133,13 @@ void ModelFlightModesPage::build(FormWindow * window)
     // Flight mode fade in / out
     new StaticText(group, grid.getLabelSlot(true), "Fade in/out");
     auto edit = new NumberEdit(group, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
-                          GET_DEFAULT(g_model.flightModeData[i].fadeIn * (10 / DELAY_STEP)),
-                          SET_VALUE(g_model.flightModeData[i].fadeIn, newValue / (10 / DELAY_STEP)),
+                          GET_DEFAULT(g_model.flightModeData[i].fadeIn),
+                          SET_VALUE(g_model.flightModeData[i].fadeIn, newValue),
                           PREC1);
-    edit->setStep(10 / DELAY_STEP);
     edit = new NumberEdit(group, grid.getFieldSlot(2, 1), 0, DELAY_MAX,
-                          GET_DEFAULT(g_model.flightModeData[i].fadeOut * (10 / DELAY_STEP)),
-                          SET_VALUE(g_model.flightModeData[i].fadeOut, newValue / (10 / DELAY_STEP)),
+                          GET_DEFAULT(g_model.flightModeData[i].fadeOut),
+                          SET_VALUE(g_model.flightModeData[i].fadeOut, newValue),
                           PREC1);
-    edit->setStep(10 / DELAY_STEP);
     grid.nextLine();
 
     group->setLastField(FormField::getCurrentField());

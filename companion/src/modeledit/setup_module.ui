@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1042</width>
-    <height>375</height>
+    <width>1075</width>
+    <height>434</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -252,7 +252,7 @@
         <item row="4" column="1">
          <layout class="QHBoxLayout" name="rx1Layout">
           <property name="spacing">
-           <number>-1</number>
+           <number>6</number>
           </property>
           <property name="topMargin">
            <number>0</number>
@@ -595,7 +595,7 @@
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="label_antenna">
+         <widget class="QLabel" name="antennaLabel">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -611,7 +611,7 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QComboBox" name="antennaMode">
+         <widget class="AutoComboBox" name="antennaMode">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -621,16 +621,6 @@
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContents</enum>
           </property>
-          <item>
-           <property name="text">
-            <string>Internal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Ext. + Int.</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="5" column="0">
@@ -732,6 +722,26 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="registrationIdLabel">
+          <property name="text">
+           <string>Registration ID</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="registrationId">
+          <property name="inputMask">
+           <string notr="true"/>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_multiProtocol">
           <property name="text">
@@ -772,6 +782,50 @@
           </property>
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContents</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="2">
+         <widget class="QLabel" name="warning_r9mFlex">
+          <property name="palette">
+           <palette>
+            <active>
+             <colorrole role="WindowText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>198</red>
+                <green>17</green>
+                <blue>36</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </active>
+            <inactive>
+             <colorrole role="WindowText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>198</red>
+                <green>17</green>
+                <blue>36</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </inactive>
+            <disabled>
+             <colorrole role="WindowText">
+              <brush brushstyle="SolidPattern">
+               <color alpha="255">
+                <red>106</red>
+                <green>104</green>
+                <blue>100</blue>
+               </color>
+              </brush>
+             </colorrole>
+            </disabled>
+           </palette>
+          </property>
+          <property name="text">
+           <string>WARNING: Requires non-certified firmware!</string>
           </property>
          </widget>
         </item>
@@ -881,70 +935,6 @@
             <string>Master/SBUS in battery compartment</string>
            </property>
           </item>
-         </widget>
-        </item>
-        <item row="4" column="0" colspan="2">
-         <widget class="QLabel" name="warning_r9mFlex">
-          <property name="palette">
-           <palette>
-            <active>
-             <colorrole role="WindowText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>198</red>
-                <green>17</green>
-                <blue>36</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </active>
-            <inactive>
-             <colorrole role="WindowText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>198</red>
-                <green>17</green>
-                <blue>36</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </inactive>
-            <disabled>
-             <colorrole role="WindowText">
-              <brush brushstyle="SolidPattern">
-               <color alpha="255">
-                <red>106</red>
-                <green>104</green>
-                <blue>100</blue>
-               </color>
-              </brush>
-             </colorrole>
-            </disabled>
-           </palette>
-          </property>
-          <property name="text">
-           <string>WARNING: Requires non-certified firmware!</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="registrationIdLabel">
-          <property name="text">
-           <string>Registration ID</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="registrationId">
-          <property name="inputMask">
-           <string notr="true"/>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
          </widget>
         </item>
         <item row="7" column="0" colspan="2">
@@ -1069,6 +1059,13 @@ QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; pad
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>autocombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>protocol</tabstop>
   <tabstop>channelsStart</tabstop>

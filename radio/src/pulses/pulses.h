@@ -46,12 +46,6 @@
   #define IS_DSM2_PROTOCOL(protocol)         (0)
 #endif
 
-#if defined(DSM2_SERIAL)
-  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
-#else
-  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
-#endif
-
 #if defined(MULTIMODULE)
   #define IS_MULTIMODULE_PROTOCOL(protocol)  (protocol==PROTOCOL_CHANNELS_MULTIMODULE)
   #if !defined(DSM2)
@@ -146,7 +140,7 @@ class BindInformation {
 
 class OtaUpdateInformation: public BindInformation {
   public:
-    char filename[_MAX_LFN+1];
+    char filename[32+1];
     uint32_t address;
 };
 

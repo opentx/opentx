@@ -97,7 +97,6 @@ class SimulatedUIWidget : public QWidget
     unsigned int m_backLight;
     int m_beepShow;
     int m_beepVal;
-
 };
 
 

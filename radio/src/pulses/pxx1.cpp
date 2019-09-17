@@ -52,27 +52,27 @@ template <class PxxTransport>
 void Pxx1Pulses<PxxTransport>::addExtraFlags(uint8_t module)
 {
   // Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise)
-  uint8_t extra_flags = 0;
+  uint8_t extraFlags = 0;
 
-#if defined(PCBHORUS) || defined(PCBXLITE)
-  if (module == INTERNAL_MODULE) {
-    extra_flags |= (g_model.moduleData[module].pxx.external_antenna << 0);
+#if defined(EXTERNAL_ANTENNA)
+  if (module == INTERNAL_MODULE && isExternalAntennaEnabled()) {
+    extraFlags |= (1 << 0);
   }
 #endif
 
-  extra_flags |= (g_model.moduleData[module].pxx.receiver_telem_off << 1);
-  extra_flags |= (g_model.moduleData[module].pxx.receiver_channel_9_16 << 2);
+  extraFlags |= (g_model.moduleData[module].pxx.receiverTelemetryOff << 1);
+  extraFlags |= (g_model.moduleData[module].pxx.receiverHigherChannels << 2);
   if (isModuleR9MNonAccess(module)) {
-    extra_flags |= (min<uint8_t>(g_model.moduleData[module].pxx.power, isModuleR9M_FCC_VARIANT(module) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
+    extraFlags |= (min<uint8_t>(g_model.moduleData[module].pxx.power, isModuleR9M_FCC_VARIANT(module) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
     if (isModuleR9M_EUPLUS(module))
-      extra_flags |= (1 << 6);
+      extraFlags |= (1 << 6);
   }
 
   // Disable S.PORT if internal module is active
   if (module == EXTERNAL_MODULE && isSportLineUsedByInternalModule()) {
-    extra_flags |= (1 << 5);
+    extraFlags |= (1 << 5);
   }
-  PxxTransport::addByte(extra_flags);
+  PxxTransport::addByte(extraFlags);
 }
 
 template <class PxxTransport>

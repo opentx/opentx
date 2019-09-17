@@ -1,7 +1,4 @@
-set(GTEST_ROOT /usr CACHE STRING "Base path to Google Test headers and source.")
 
-find_path(GTEST_INCDIR gtest/gtest.h HINTS "${GTEST_ROOT}/include" DOC "Path to Google Test header files folder ('gtest/gtest.h').")
-find_path(GTEST_SRCDIR src/gtest-all.cc HINTS "${GTEST_ROOT}" "${GTEST_ROOT}/src/gtest" DOC "Path of Google Test 'src' folder.")
 
 if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   add_library(gtests-companion-lib STATIC EXCLUDE_FROM_ALL ${GTEST_SRCDIR}/src/gtest-all.cc )

@@ -1567,9 +1567,9 @@ Acceptable values are 5v..10v</string>
       </widget>
      </item>
      <item row="11" column="0">
-      <widget class="QLabel" name="pwrOnSpeedLabel">
+      <widget class="QLabel" name="pwrOnDelayLabel">
        <property name="text">
-        <string>Power On Speed</string>
+        <string>Power On Delay</string>
        </property>
       </widget>
      </item>
@@ -2432,35 +2432,29 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="12" column="0">
-      <widget class="QLabel" name="pwrOffSpeedLabel">
+      <widget class="QLabel" name="pwrOffDelayLabel">
        <property name="text">
-        <string>Power Off Speed</string>
+        <string>Power Off Delay</string>
        </property>
       </widget>
      </item>
      <item row="11" column="1">
-      <widget class="QSlider" name="pwrOnSpeed">
-       <property name="minimum">
-        <number>-1</number>
+      <widget class="QSpinBox" name="pwrOnDelay">
+       <property name="suffix">
+        <string> sec</string>
        </property>
        <property name="maximum">
-        <number>2</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <number>3</number>
        </property>
       </widget>
      </item>
      <item row="12" column="1">
-      <widget class="QSlider" name="pwrOffSpeed">
-       <property name="minimum">
-        <number>-1</number>
+      <widget class="QSpinBox" name="pwrOffDelay">
+       <property name="suffix">
+        <string> sec</string>
        </property>
        <property name="maximum">
-        <number>2</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <number>3</number>
        </property>
       </widget>
      </item>

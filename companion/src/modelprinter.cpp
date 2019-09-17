@@ -223,7 +223,6 @@ QString ModelPrinter::printModule(int idx)
         if (module.protocol == PULSES_PXX_R9M) {
           str << printLabelValue(tr("Sub Type"), module.subTypeToString());
           str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
-          str << printLabelValue(tr("Telemetry"), printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
         }
       }
     }
@@ -869,7 +868,7 @@ QString ModelPrinter::printPotWarnings()
     for (int i=0; i<board.getCapability(Board::Pots)+board.getCapability(Board::Sliders); i++) {
       RawSource src(SOURCE_TYPE_STICK, CPN_MAX_STICKS + i);
       if ((src.isPot(&genAryIdx) && generalSettings.isPotAvailable(genAryIdx)) || (src.isSlider(&genAryIdx) && generalSettings.isSliderAvailable(genAryIdx))) {
-        if (!model.potsWarningEnabled[i])
+        if (!model.potsWarnEnabled[i])
           str += src.toString(&model, &generalSettings);
       }
     }

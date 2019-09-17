@@ -539,7 +539,7 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 
 bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
 {
-  switch(moduleType) {
+  switch (moduleType) {
     case MODULE_TYPE_NONE:
     case MODULE_TYPE_SBUS:
     case MODULE_TYPE_PPM:
@@ -717,7 +717,7 @@ bool isTrainerModeAvailable(int mode)
     return false;
 #endif
 
-#if !defined(PCBSKY9X) && !defined(TRAINER_BATTERY_COMPARTMENT)
+#if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
 #endif
@@ -787,6 +787,7 @@ const char STR_SUBTYPE_FRSKY[] =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0  
 const char STR_SUBTYPE_HISKY[] =      "\005""Std\0 ""HK310";
 const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506";
 const char STR_SUBTYPE_DSM[] =        "\006""2 22ms""2 11ms""X 22ms""X 11ms";
+const char STR_SUBTYPE_DEVO[] =       "\004""8ch\0""10ch""12ch""6ch\0""7ch\0";
 const char STR_SUBTYPE_YD717[] =      "\007""Std\0   ""SkyWlkr""Syma X4""XINXUN\0""NIHUI\0 ";
 const char STR_SUBTYPE_KN[] =         "\006""WLtoys""FeiLun";
 const char STR_SUBTYPE_SYMAX[] =      "\003""Std""X5C";
@@ -807,10 +808,13 @@ const char STR_SUBTYPE_H83D[] =       "\007""Std\0   ""H20H\0  ""H20Mini""H30Min
 const char STR_SUBTYPE_CORONA[] =     "\005""V1\0  ""V2\0  ""FD V3";
 const char STR_SUBTYPE_HITEC[] =      "\007""Optima\0""Opt Hub""Minima\0";
 const char STR_SUBTYPE_BUGS_MINI[] =  "\006""Std\0  ""Bugs3H";
+const char STR_SUBTYPE_TRAXXAS[] =    "\004""6519";
 const char STR_SUBTYPE_E01X[] =       "\005""E012\0""E015\0""E016H";
 const char STR_SUBTYPE_GD00X[] =      "\005""GD_V1""GD_V2";
 const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
-const char STR_SUBTYPE_POTENSIC[] =   "\003""A20""---";
+const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
+const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
+const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
 
 const mm_protocol_definition multi_protocols[] = {
 
@@ -820,6 +824,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_HISKY,      1, false,      STR_SUBTYPE_HISKY,     nullptr},
   {MODULE_SUBTYPE_MULTI_V2X2,       1, false,      STR_SUBTYPE_V2X2,      nullptr},
   {MODULE_SUBTYPE_MULTI_DSM2,       3, false,      STR_SUBTYPE_DSM,       nullptr},
+  {MODULE_SUBTYPE_MULTI_DEVO,       4, false,      STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
   {MODULE_SUBTYPE_MULTI_YD717,      4, false,      STR_SUBTYPE_YD717,     nullptr},
   {MODULE_SUBTYPE_MULTI_KN,         1, false,      STR_SUBTYPE_KN,        nullptr},
   {MODULE_SUBTYPE_MULTI_SYMAX,      1, false,      STR_SUBTYPE_SYMAX,     nullptr},
@@ -842,12 +847,15 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_CORONA,     2, false,      STR_SUBTYPE_CORONA,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
+  {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false,      STR_SUBTYPE_TRAXXAS,   nullptr},
   {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
   {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false,      STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_POTENSIC,   1, false,      STR_SUBTYPE_POTENSIC,  nullptr},
+  {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false,      STR_SUBTYPE_POTENSIC,  nullptr},
+  {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      STR_SUBTYPE_ZSX,       nullptr},
+  {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false,      STR_SUBTYPE_FLYZONE,   nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)

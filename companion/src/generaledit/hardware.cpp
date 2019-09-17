@@ -153,7 +153,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupSwitchType(17, ui->srLabel, ui->srName, ui->srType);
 
   if (IS_TARANIS(board) && !IS_TARANIS_SMALL(board)) {
-    ui->serialPortMode->setCurrentIndex(generalSettings.hw_uartMode);
+    ui->serialPortMode->setCurrentIndex(generalSettings.auxSerialMode);
   }
   else {
     ui->serialPortMode->setCurrentIndex(0);
@@ -181,6 +181,18 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   else {
     ui->bluetoothLabel->hide();
     ui->bluetoothWidget->hide();
+  }
+
+  if ((IS_HORUS(board) && board != Board::BOARD_X10_EXPRESS) || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board))) {
+    ui->antennaMode->addItem(tr("Internal"), -2);
+    ui->antennaMode->addItem(tr("Ask"), -1);
+    ui->antennaMode->addItem(tr("Per model"), 0);
+    ui->antennaMode->addItem(IS_HORUS_X12S(board) ? tr("Internal + External") : tr("External"), 1);
+    ui->antennaMode->setField(generalSettings.antennaMode, this);
+  }
+  else {
+    ui->antennaLabel->hide();
+    ui->antennaMode->hide();
   }
 
   if (IS_HORUS_OR_TARANIS(board)) {
@@ -277,6 +289,6 @@ void HardwarePanel::on_txVoltageCalibration_editingFinished()
 
 void HardwarePanel::on_serialPortMode_currentIndexChanged(int index)
 {
-  generalSettings.hw_uartMode = index;
+  generalSettings.auxSerialMode = index;
   emit modified();
 }

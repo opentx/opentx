@@ -36,8 +36,8 @@ void RadioTrainerPage::build(FormWindow * window)
 #define TRAINER_LABEL_WIDTH  100
 #endif
   FormGridLayout grid;
+  grid.spacer(PAGE_PADDING);
   grid.setLabelWidth(TRAINER_LABEL_WIDTH);
-  grid.nextLine();
 
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     uint8_t chan = channelOrder(i+1);

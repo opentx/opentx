@@ -157,30 +157,14 @@ void ModelData::clear()
 {
   memset(reinterpret_cast<void *>(this), 0, sizeof(ModelData));
   modelIndex = -1;  // an invalid index, this is managed by the TreeView data model
+  moduleData[0].protocol = PULSES_OFF;
+  moduleData[1].protocol = PULSES_OFF;
   moduleData[0].channelsCount = 8;
   moduleData[1].channelsStart = 0;
   moduleData[1].channelsCount = 8;
   moduleData[0].ppm.delay = 300;
   moduleData[1].ppm.delay = 300;
-  moduleData[2].ppm.delay = 300;
-  Firmware * firmware = Firmware::getCurrentVariant();
-  int board = firmware->getBoard();
-  if (firmware->isAvailable(PULSES_ACCESS_ISRM, 0)) {
-    moduleData[0].protocol = PULSES_ACCESS_ISRM;
-    moduleData[1].protocol = PULSES_OFF;
-  }
-  else if (IS_HORUS_OR_TARANIS(board)) {
-    moduleData[0].protocol = PULSES_PXX_XJT_X16;
-    moduleData[1].protocol = PULSES_OFF;
-  }
-  else if (IS_SKY9X(board)) {
-    moduleData[0].protocol = PULSES_PPM;
-    moduleData[1].protocol = PULSES_PPM;
-  }
-  else {
-    moduleData[0].protocol = PULSES_PPM;
-    moduleData[1].protocol = PULSES_OFF;
-  }
+  moduleData[2].ppm.delay = 300;  //Trainer PPM
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear(i);
   }

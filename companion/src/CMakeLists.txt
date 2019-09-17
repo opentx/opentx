@@ -588,7 +588,7 @@ elseif(APPLE)
   set(CPACK_GENERATOR "DragNDrop")
 # set(CPACK_GENERATOR "TGZ")  # for quick testing
   set(CPACK_BINARY_DRAGNDROP ON)
-  set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/splash22_3_dmg.png)
+  set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/splash_dmg.png)
   set(CPACK_DMG_VOLUME_NAME "OpenTX Companion")
   set(CPACK_DMG_DS_STORE ${PROJECT_SOURCE_DIR}/companion/targets/mac/DS_Store)
   set(CPACK_PACKAGE_FILE_NAME "opentx-${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}")

@@ -209,9 +209,8 @@ int main()
 
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG, ENABLE);
 
-  keysInit();
   pwrInit();
-  pwrOff();
+  keysInit();
 
 #if defined(PCBHORUS)
   // wait a bit for the inputs to stabilize...
@@ -234,7 +233,7 @@ int main()
 
   delaysInit(); // needed for lcdInit()
 
-#if defined(DEBUG)
+#if defined(DEBUG) && defined(AUX_SERIAL)
   auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
 

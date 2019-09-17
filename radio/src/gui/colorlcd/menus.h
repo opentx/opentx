@@ -342,9 +342,6 @@ extern uint8_t popupMenuOffsetType;
 extern uint8_t popupMenuSelectedItem;
 const char * runPopupMenu(event_t event);
 extern void (*popupMenuHandler)(const char * result);
-
-#define TEXT_FILENAME_MAXLEN           40
-extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void pushMenuTextView(const char * filename);
 void pushModelNotes();
 void readModelNotes();

@@ -21,10 +21,14 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
-#define REFRESH_FILES()        do { reusableBuffer.sdManager.offset = 65535; menuVerticalPosition = 0; } while(0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
+
+inline void REFRESH_FILES()
+{
+  reusableBuffer.sdManager.offset = 65535;
+}
 
 void menuRadioSdManagerInfo(event_t event)
 {
@@ -288,7 +292,7 @@ void menuRadioSdManager(event_t _event)
       break;
 
     case EVT_ENTRY_UP:
-      menuVerticalOffset = reusableBuffer.sdManager.offset;
+      REFRESH_FILES();
       break;
 
 #if defined(PCBX9) || defined(RADIO_X7) // TODO NO_MENU_KEY
@@ -421,22 +425,18 @@ void menuRadioSdManager(event_t _event)
       FILINFO fno;
       DIR dir;
 
-      if (menuVerticalOffset == 0) {
-        reusableBuffer.sdManager.offset = 0;
-        memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
-      }
-      else if (menuVerticalOffset == reusableBuffer.sdManager.count-NUM_BODY_LINES) {
-        reusableBuffer.sdManager.offset = menuVerticalOffset;
-        memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
-      }
-      else if (menuVerticalOffset > reusableBuffer.sdManager.offset) {
+      if (menuVerticalOffset == reusableBuffer.sdManager.offset + 1) {
         memmove(reusableBuffer.sdManager.lines[0], reusableBuffer.sdManager.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
         memset(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
         NODE_TYPE(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1]) = 1;
       }
-      else {
+      else if (menuVerticalOffset == reusableBuffer.sdManager.offset - 1) {
         memmove(reusableBuffer.sdManager.lines[1], reusableBuffer.sdManager.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
         memset(reusableBuffer.sdManager.lines[0], 0, sizeof(reusableBuffer.sdManager.lines[0]));
+      }
+      else {
+        reusableBuffer.sdManager.offset = menuVerticalOffset;
+        memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
       }
 
       reusableBuffer.sdManager.count = 0;

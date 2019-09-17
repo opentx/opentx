@@ -132,24 +132,6 @@
   #define TR_RETA123                   "DPGA123"
 #endif
 
-#define LEN_VPROTOS                    "\006"
-
-#if defined(PXX)
-  #define TR_PXX                       "PXX\0  "
-#elif defined(DSM2)
-  #define TR_PXX                       "[PXX]\0"
-#else
-  #define TR_PXX
-#endif
-
-#if defined(DSM2)
-  #define TR_DSM2                      "LP45\0 ""DSM2\0 ""DSMX\0 "
-#else
-  #define TR_DSM2
-#endif
-
-#define TR_VPROTOS                     "PPM\0  " TR_PXX TR_DSM2
-
 #if defined(PCBSKY9X) && defined(REVX)
   #define LEN_VOUTPUT_TYPE             "\011"
   #define TR_VOUTPUT_TYPE              "OpenDrain""PushPull\0"
@@ -415,14 +397,6 @@
 #define LEN_VCELLINDEX                 "\007"
 #define TR_VCELLINDEX                  "Mini.\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Maxi.\0 ""Diff.\0 "
 
-#if defined(PCBX10) || defined(PCBXLITE)
-#define LEN_VANTENNATYPES              "\007"
-#define TR_VANTENNATYPES               "Interne""Externe"
-#else
-#define LEN_VANTENNATYPES              "\007"
-#define TR_VANTENNATYPES               "Interne""Ext+Int\0"
-#endif
-
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
@@ -524,6 +498,7 @@
 #define TR_FLMODE                      TR("Phase", "Phases")
 #define TR_MIXWARNING                  "Alerte"
 #define TR_OFF                         "OFF"
+#define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No information")
 #define TR_MULTPX                      "Opération"
 #define TR_DELAYDOWN                   "Retard bas"
@@ -575,8 +550,8 @@
 #define TR_BLOFFBRIGHTNESS             INDENT "Luminosité OFF"
 #define TR_BLCOLOR                     INDENT "Couleur"
 #define TR_SPLASHSCREEN                "Logo d'accueil"
-#define TR_PWR_ON_SPEED                "Pwr On speed"
-#define TR_PWR_OFF_SPEED               "Pwr Off speed"
+#define TR_PWR_ON_DELAY                "Pwr On delay"
+#define TR_PWR_OFF_DELAY               "Pwr Off delay"
 #define TR_THROTTLEWARNING             TR(INDENT "Alerte gaz", INDENT "Alerte gaz")
 #define TR_SWITCHWARNING               TR(INDENT "Alerte int", INDENT "Pos. interrupteurs")
 #define TR_POTWARNINGSTATE             TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
@@ -688,6 +663,7 @@
 #define TR_MULTI_TELEMETRY             "Télémétrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
 #define TR_RFPOWER               TR(INDENT "Puiss. RF", INDENT "Puissance RF")
+#define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION                TR(INDENT "Option", INDENT "Option perso")
 #define TR_MULTI_AUTOBIND              TR(INDENT "Bind auto", INDENT "Bind automatique")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodét.", INDENT "Autodétection")
@@ -880,8 +856,8 @@
 #define TR_WRITING                     TR("\14Ecriture...", "\032Ecriture...")
 #define TR_CONFIRM_FORMAT              "Confirmer Formatage?"
 #define TR_INTERNALRF                  "HF interne"
-#define TR_INTERNAL_MODULE             "Internal module"
-#define TR_EXTERNAL_MODULE             "External module"
+#define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
+#define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
 #define TR_TELEMETRY_DISABLED          "Telem. disabled"
 #define TR_MORE_OPTIONS_AVAILABLE      "More options available"
@@ -976,14 +952,21 @@
 #define TR_UNIT                        "Unité"
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE                TR(INDENT "Canaux", INDENT "Plage de canaux")
-#define TR_RXFREQUENCY                 TR("Rx Freqency", "Rx Servo Frequency")
-#define TR_ANTENNASELECTION            TR(INDENT "Antenne", INDENT "Choix antenne")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
+#if defined(PCBX12S)
+#define LEN_ANTENNA_MODES      "\021"
+#define TR_ANTENNA_MODES       "Interne\0         ""Ask\0             ""Par modèle\0      ""Interne + Externe"
+#else
+#define LEN_ANTENNA_MODES      "\011"
+#define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#endif
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
 #define TR_ANTENNACONFIRM2             TR("Vérif antenne", "Installer l'antenne d'abord!")
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Nécessite firm."
-#define TR_R9M_PROTO_FCC_WARN_LINE1         "Requires FCC"
-#define TR_R9M_PROTO_EU_WARN_LINE1          "Requires EU"
-#define TR_R9M_PROTO_WARN_LINE2                "R9M non certifié"
+#define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Requires FCC"
+#define TR_MODULE_PROTOCOL_EU_WARN_LINE1          "Requires EU"
+#define TR_MODULE_PROTOCOL_WARN_LINE2                "R9M non certifié"
 #define TR_LOWALARM                    INDENT "Alarme basse"
 #define TR_CRITICALALARM               INDENT "Alarme critique"
 #define TR_RSSIALARM_WARN              TR("RSSI", "TELEMETRIE")

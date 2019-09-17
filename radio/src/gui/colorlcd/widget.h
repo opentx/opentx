@@ -22,6 +22,7 @@
 #define _WIDGET_H_
 
 #include <list>
+#include <string.h>
 #include "zone.h"
 
 #define MAX_WIDGET_OPTIONS             5
@@ -58,7 +59,7 @@ class Widget
 
     virtual const char * getErrorMessage() const
     {
-      return NULL;
+      return nullptr;
     }
 
     inline ZoneOptionValue * getOptionValue(unsigned int index) const
@@ -83,7 +84,7 @@ void registerWidget(const WidgetFactory * factory);
 class WidgetFactory
 {
   public:
-    WidgetFactory(const char * name, const ZoneOption * options=NULL):
+    WidgetFactory(const char * name, const ZoneOption * options=nullptr):
       name(name),
       options(options)
     {

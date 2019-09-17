@@ -301,7 +301,7 @@ void guiMain(event_t evt)
 #else
   if (!refreshNeeded) {
     DEBUG_TIMER_START(debugTimerMenus);
-    while (1) {
+    while (true) {
       // normal GUI from menus
       const char * warn = warningText;
       uint8_t menu = popupMenuItemsCount;
@@ -324,7 +324,10 @@ void guiMain(event_t evt)
             const char * result = runPopupMenu(evt);
             if (result) {
               TRACE("popupMenuHandler(%s)", result);
-              popupMenuHandler(result);
+              auto handler = popupMenuHandler;
+              if (result != STR_UPDATE_LIST)
+                CLEAR_POPUP();
+              handler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
                 continue;
@@ -400,7 +403,6 @@ void handleGui(event_t event) {
       }
     }
     menuHandlers[menuLevel](event);
-    // todo     drawStatusLine(); here???
   }
   else
 #endif
@@ -464,7 +466,10 @@ void guiMain(event_t evt)
     const char * result = runPopupMenu(evt);
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
-      popupMenuHandler(result);
+      auto handler = popupMenuHandler;
+      if (result != STR_UPDATE_LIST)
+        CLEAR_POPUP();
+      handler(result);
     }
   }
 
@@ -503,24 +508,23 @@ void perMain()
 #endif
 
 #if defined(RAMBACKUP)
-  if (unexpectedShutdown) {
+  if (globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
   }
 #endif
 
 #if defined(STM32)
-  static bool sdcard_present_before = SD_CARD_PRESENT();
-  bool sdcard_present_now = SD_CARD_PRESENT();
-  if (sdcard_present_now && !sdcard_present_before) {
+  bool sdcardPresent = SD_CARD_PRESENT();
+  if (sdcardPresent && !globalData.sdcardPresent) {
     sdMount();
   }
-  sdcard_present_before = sdcard_present_now;
+  globalData.sdcardPresent = sdcardPresent;
 #endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
+  if (!SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }

@@ -68,6 +68,9 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 
 void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 {
+  if(!TELEMETRY_STREAMING())
+    return;
+
   const CrossfireSensor & sensor = crossfireSensors[index];
   setTelemetryValue(PROTOCOL_TELEMETRY_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, sensor.precision);
 }
@@ -134,8 +137,14 @@ void processCrossfireTelemetryFrame()
           }
           processCrossfireTelemetryValue(i, value);
           if (i == RX_QUALITY_INDEX) {
-            telemetryData.rssi.set(value);
-            telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+            if (value) {
+              telemetryData.rssi.set(value);
+              telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+            }
+            else {
+              telemetryData.rssi.reset();
+              telemetryStreaming = 0;
+            }
           }
         }
       }
@@ -212,6 +221,11 @@ void processCrossfireTelemetryData(uint8_t data)
   if (telemetryRxBufferCount > 4) {
     uint8_t length = telemetryRxBuffer[1];
     if (length + 2 == telemetryRxBufferCount) {
+#if defined(BLUETOOTH)
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
+#endif
       processCrossfireTelemetryFrame();
       telemetryRxBufferCount = 0;
     }

@@ -34,13 +34,9 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-uint8_t unexpectedShutdown = 0;
+GlobalData globalData;
 
-uint16_t vbattRTC;
-
-/* ARM: mixer duration in 0.5us */
-uint16_t maxMixerDuration;
-
+uint16_t maxMixerDuration; // step = 0.01ms
 uint8_t heartbeat;
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
@@ -206,9 +202,7 @@ void per10ms()
   }
 #endif
 
-  if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
-    telemetryInterrupt10ms();
-  }
+  telemetryInterrupt10ms();
 
   // These moved here from evalFlightModeMixes() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)
@@ -505,14 +499,9 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(HARDWARE_INTERNAL_MODULE)
+#if defined(FRSKY_RELEASE)
   g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-#elif defined(PCBSKY9X)
-  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
-#elif defined(RADIO_T12)
-  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
-  g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
 #endif
 
 #if defined(PCBXLITE)
@@ -681,11 +670,6 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
 {
   return value;
-}
-
-ls_telemetry_value_t minTelemValue(source_t channel)
-{
-  return 0;
 }
 
 ls_telemetry_value_t maxTelemValue(source_t channel)
@@ -941,6 +925,10 @@ void checkAll()
       wdt_reset();
     }
   }
+
+#if defined(EXTERNAL_ANTENNA) && defined(INTERNAL_MODULE_PXX1)
+  checkExternalAntenna();
+#endif
 
   START_SILENCE_PERIOD();
 }
@@ -1866,8 +1854,7 @@ void opentxInit()
 #endif
 
 #if defined(EEPROM)
-  storageClearRadioSetting();
-  storageReadRadioSettings(false);
+  bool radioSettingsValid = storageReadRadioSettings(false);
 #endif
 
   BACKLIGHT_ENABLE(); // we start the backlight during the startup animation
@@ -1891,12 +1878,14 @@ void opentxInit()
   //  * radios without CPU controlled power can only use Reset status register (if available)
   if (UNEXPECTED_SHUTDOWN()) {
     TRACE("Unexpected Shutdown detected");
-    unexpectedShutdown = 1;
+    globalData.unexpectedShutdown = 1;
   }
 
 #if defined(SDCARD)
+  globalData.sdcardPresent = SD_CARD_PRESENT();
+
   // SDCARD related stuff, only done if not unexpectedShutdown
-  if (!unexpectedShutdown) {
+  if (!globalData.unexpectedShutdown) {
     sdInit();
 
 #if defined(AUTOUPDATE)
@@ -1926,12 +1915,13 @@ void opentxInit()
 #endif
 
 #if defined(EEPROM)
-  storageReadRadioSettings(true);
+  if (!radioSettingsValid)
+    storageReadRadioSettings();
   storageReadCurrentModel();
 #endif
 
 #if defined(COLORLCD)
-  if (!unexpectedShutdown) {
+  if (!globalData.unexpectedShutdown) {
     // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
     // but we only remember the pointer to in in constructor.
     // The storageReadAll() needs topbar object, so it must be created here
@@ -1947,7 +1937,7 @@ void opentxInit()
   // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
 #if defined(RAMBACKUP)
-  if (unexpectedShutdown) {
+  if (globalData.unexpectedShutdown) {
     // SDCARD not available, try to restore last model from RAM
     TRACE("rambackupRestore");
     rambackupRestore();
@@ -1962,10 +1952,6 @@ void opentxInit()
 
 #if defined(AUX_SERIAL)
   auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
-#endif
-
-#if defined(PCBTARANIS)
-  BACKLIGHT_ENABLE();
 #endif
 
 #if MENUS_LOCK == 1
@@ -2002,7 +1988,7 @@ void opentxInit()
     backlightOn();
   }
 
-  if (!unexpectedShutdown) {
+  if (!globalData.unexpectedShutdown) {
     opentxStart();
   }
 

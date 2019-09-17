@@ -243,7 +243,7 @@ void Pxx2Pulses::setupAccstBindFrame(uint8_t module)
   for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
     Pxx2Transport::addByte(0x00);
   }
-  Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiver_channel_9_16 << 7) + (g_model.moduleData[module].pxx.receiver_telem_off << 6));
+  Pxx2Transport::addByte((g_model.moduleData[module].pxx.receiverHigherChannels << 7) + (g_model.moduleData[module].pxx.receiverTelemetryOff << 6));
   Pxx2Transport::addByte(g_model.header.modelId[module]);
 }
 

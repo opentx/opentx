@@ -173,6 +173,8 @@ const char * loadRadioSettings(const char * path)
   }
 #endif
 
+  postRadioSettingsLoad();
+
   return nullptr;
 }
 

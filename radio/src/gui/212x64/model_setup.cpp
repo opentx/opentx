@@ -252,7 +252,7 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
     return 1;
 #if defined(MULTIMODULE)
   else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-    return 2 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
+    return 1 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
   }
 #endif
   else
@@ -384,7 +384,8 @@ void menuModelSetup(event_t event)
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_LINES_COUNT);
   title(STR_MENUSETUP);
 
-  if (event == EVT_ENTRY) {
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
+    memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
@@ -397,10 +398,10 @@ void menuModelSetup(event_t event)
 
   int sub = menuVerticalPosition;
 
-  for (int i=0; i<NUM_BODY_LINES; ++i) {
+  for (int i = 0; i < NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+menuVerticalOffset;
-    for (int j=0; j<=k; j++) {
+    uint8_t k = i + menuVerticalOffset;
+    for (int j = 0; j <= k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;
     }
@@ -408,7 +409,7 @@ void menuModelSetup(event_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
-    switch(k) {
+    switch (k) {
       case ITEM_MODEL_SETUP_NAME:
         editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.header.name, sizeof(g_model.header.name), event, attr);
         memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
@@ -756,7 +757,7 @@ void menuModelSetup(event_t event)
 #if defined(INTERNAL_MODULE_PXX1)
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_INTERNAL_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(INTERNAL_MODULE))
-          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_XJT_ACCST_RF_PROTOCOLS, 1 + g_model.moduleData[INTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
+          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_XJT_ACCST_RF_PROTOCOLS, 1 + g_model.moduleData[INTERNAL_MODULE].subType, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleISRM(INTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_ISRM_RF_PROTOCOLS, 1 + g_model.moduleData[INTERNAL_MODULE].subType, menuHorizontalPosition==1 ? attr : 0);
         if (attr) {
@@ -807,7 +808,7 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, INDENT TR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_EXTERNAL_MODULE_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_XJT_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
+          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_XJT_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleDSM2(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleR9MNonAccess(EXTERNAL_MODULE))
@@ -844,27 +845,28 @@ void menuModelSetup(event_t event)
               }
 
               case 1:
-                if (isModuleDSM2(EXTERNAL_MODULE))
+                if (isModuleDSM2(EXTERNAL_MODULE)) {
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
+                }
 #if defined(MULTIMODULE)
-                  else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-                    int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
-                    CHECK_INCDEC_MODELVAR(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST);
-                    if (checkIncDec_Ret) {
-                      g_model.moduleData[EXTERNAL_MODULE].multi.customProto = (multiRfProto == MODULE_SUBTYPE_MULTI_CUSTOM);
-                      if (!g_model.moduleData[EXTERNAL_MODULE].multi.customProto)
-                        g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
-                      g_model.moduleData[EXTERNAL_MODULE].subType = 0;
-                      // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                      if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
-                        g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 1;
-                      }
-                      else {
-                        g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 0;
-                      }
-                      g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
+                else if (isModuleMultimodule(EXTERNAL_MODULE)) {
+                  int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
+                  CHECK_INCDEC_MODELVAR(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST);
+                  if (checkIncDec_Ret) {
+                    g_model.moduleData[EXTERNAL_MODULE].multi.customProto = (multiRfProto == MODULE_SUBTYPE_MULTI_CUSTOM);
+                    if (!g_model.moduleData[EXTERNAL_MODULE].multi.customProto)
+                      g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
+                    g_model.moduleData[EXTERNAL_MODULE].subType = 0;
+                    // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
+                    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
+                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 1;
                     }
+                    else {
+                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 0;
+                    }
+                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
                   }
+                }
 #endif
                 else if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
                   g_model.moduleData[EXTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType,
@@ -872,7 +874,7 @@ void menuModelSetup(event_t event)
                                                                             isR9MModeAvailable);
                 }
                 else {
-                  g_model.moduleData[EXTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol,
+                  g_model.moduleData[EXTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType,
                                                                                MODULE_SUBTYPE_PXX1_ACCST_D16, MODULE_SUBTYPE_PXX1_LAST, EE_MODEL,
                                                                                isRfProtocolAvailable);
                 }
@@ -907,16 +909,16 @@ void menuModelSetup(event_t event)
             if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
               if (g_model.moduleData[EXTERNAL_MODULE].subType > MODULE_SUBTYPE_R9M_EU) {
                 POPUP_WARNING(STR_MODULE_PROTOCOL_FLEX_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #if POPUP_LEVEL >= 3
               else if (g_model.moduleData[EXTERNAL_MODULE].subType == MODULE_SUBTYPE_R9M_EU) {
-                POPUP_WARNING(STR_R9M_PROTO_EU_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_EU_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
               else {
-                POPUP_WARNING(STR_R9M_PROTO_FCC_WARN_LINE1);
-                SET_WARNING_INFO(STR_R9M_PROTO_WARN_LINE2, sizeof(TR_R9M_PROTO_WARN_LINE2) - 1, 0);
+                POPUP_WARNING(STR_MODULE_PROTOCOL_FCC_WARN_LINE1);
+                SET_WARNING_INFO(STR_MODULE_PROTOCOL_WARN_LINE2, sizeof(TR_MODULE_PROTOCOL_WARN_LINE2) - 1, 0);
               }
 #endif
             }

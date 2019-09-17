@@ -118,7 +118,7 @@ void RadioToolsPage::checkEvents()
 void RadioToolsPage::rebuild(FormWindow * window)
 {
   FormGridLayout grid;
-  grid.spacer(8);
+  grid.spacer(PAGE_PADDING);
   grid.setLabelWidth(100);
 
   window->clear();

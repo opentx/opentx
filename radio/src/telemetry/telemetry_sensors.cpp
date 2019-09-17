@@ -120,7 +120,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     }
   }
   else if (unit == UNIT_DATETIME) {
-    uint32_t data = uint32_t(newVal);
+    auto data = uint32_t(newVal);
     if (data & 0x000000ff) {
       datetime.year = (uint16_t) ((data & 0xff000000) >> 24) + 2000;  // SPORT GPS year is only two digits
       datetime.month = (uint8_t) ((data & 0x00ff0000) >> 16);
@@ -150,7 +150,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       distFromEarthAxis = getDistFromEarthAxis(newVal);
     }
     gps.latitude = newVal;
-    lastReceived = now();
+    setFresh();
     return;
   }
   else if (unit == UNIT_GPS_LONGITUDE) {
@@ -163,7 +163,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       pilotLongitude = newVal;
     }
     gps.longitude = newVal;
-    lastReceived = now();
+    setFresh();
     return;
   }
   else if (unit == UNIT_DATETIME_YEAR) {
@@ -171,13 +171,13 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     return;
   }
   else if (unit == UNIT_DATETIME_DAY_MONTH) {
-    uint32_t data = uint32_t(newVal);
+    auto data = uint32_t(newVal);
     datetime.month = data >> 8;
     datetime.day = data & 0xFF;
     return;
   }
   else if (unit == UNIT_DATETIME_HOUR_MIN) {
-    uint32_t data = uint32_t(newVal);
+    auto data = uint32_t(newVal);
     datetime.hour = (data & 0xFF);
     datetime.min = data >> 8;
     return;
@@ -193,7 +193,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_TEXT) {
     *((uint32_t*)&text[prec]) = newVal;
-    lastReceived = now();
+    setFresh();
     return;
   }
   else {
@@ -252,7 +252,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
 
   value = newVal;
-  lastReceived = now();
+  setFresh();
 }
 
 void TelemetryItem::per10ms(const TelemetrySensor & sensor)
@@ -266,7 +266,7 @@ void TelemetryItem::per10ms(const TelemetrySensor & sensor)
           return;
         }
         else if (currentItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
+          setOld();
           return;
         }
         int32_t current = convertTelemetryValue(currentItem.value, currentSensor.unit, currentSensor.prec, UNIT_AMPS, 1);
@@ -275,7 +275,7 @@ void TelemetryItem::per10ms(const TelemetrySensor & sensor)
           currentItem.consumption.prescale -= 3600;
           setValue(sensor, value+1, sensor.unit, sensor.prec);
         }
-        lastReceived = now();
+        setFresh();
       }
       break;
 
@@ -291,7 +291,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
       if (sensor.cell.source) {
         TelemetryItem & cellsItem = telemetryItems[sensor.cell.source-1];
         if (cellsItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
+          setOld();
         }
         else {
           unsigned int index = sensor.cell.index;
@@ -340,7 +340,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           return;
         }
         else if (gpsItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
+          setOld();
           return;
         }
         if (sensor.dist.alt) {
@@ -349,7 +349,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
             return;
           }
           else if (altItem->isOld()) {
-            lastReceived = TELEMETRY_VALUE_OLD;
+            setOld();
             return;
           }
         }
@@ -413,7 +413,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
               return;
             }
             else if (telemetryItem.isOld()) {
-              lastReceived = TELEMETRY_VALUE_OLD;
+              setOld();
               return;
             }
           }
@@ -439,7 +439,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
       if (sensor.formula == TELEM_FORMULA_AVERAGE) {
         if (count == 0) {
           if (available)
-            lastReceived = TELEMETRY_VALUE_OLD;
+            setOld();
           return;
         }
         else {
@@ -491,18 +491,18 @@ int lastUsedTelemetryIndex()
 
 int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
-  bool available = false;
+  bool sensorFound = false;
 
   for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.isSameInstance(protocol, instance) || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
-      available = true;
+      sensorFound = true;
       // we continue search here, because sensors can share the same id and instance
     }
   }
 
-  if (available || !allowNewSensors) {
+  if (sensorFound || !allowNewSensors) {
     return -1;
   }
 
@@ -585,20 +585,24 @@ PACK(typedef struct {
 
 const UnitConversionRule unitConversionTable[] = {
   /* unitFrom     unitTo                    multiplier   divisor */
-  { UNIT_METERS,            UNIT_FEET,             105,   32},
-  { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,   32},
+  { UNIT_METERS,            UNIT_FEET,             105,    32},
+  { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,    32},
 
-  { UNIT_KTS, UNIT_KMH,                           1852, 1000}, // 1 knot = 1.85200 kilometers per hour
-  { UNIT_KTS, UNIT_MPH,                           1151, 1000}, // 1 knot = 1.15077945 miles per hour
-  { UNIT_KTS, UNIT_METERS_PER_SECOND,             1000, 1944}, // 1 knot = 0.514444444 meters / second (divide with 1.94384449)
-  { UNIT_KTS, UNIT_FEET_PER_SECOND,               1688, 1000}, // 1 knot = 1.68780986 feet per second
+  { UNIT_KTS, UNIT_KMH,                           1852,  1000}, // 1 knot = 1.85200 kilometers per hour
+  { UNIT_KTS, UNIT_MPH,                           1151,  1000}, // 1 knot = 1.15077945 miles per hour
+  { UNIT_KTS, UNIT_METERS_PER_SECOND,             1000,  1944}, // 1 knot = 0.514444444 meters / second (divide with 1.94384449)
+  { UNIT_KTS, UNIT_FEET_PER_SECOND,               1688,  1000}, // 1 knot = 1.68780986 feet per second
 
-  { UNIT_KMH, UNIT_KTS,                           1000, 1852}, // 1 km/h = 0.539956803 knots (divide with 1.85200)
-  { UNIT_KMH, UNIT_MPH,                           1000, 1609}, // 1 km/h = 0.621371192 miles per hour (divide with 1.60934400)
-  { UNIT_KMH, UNIT_METERS_PER_SECOND,               10,   36}, // 1 km/h = 0.277777778 meters / second (divide with 3.6)
-  { UNIT_KMH, UNIT_FEET_PER_SECOND,                911, 1000}, // 1 km/h = 0.911344415 feet per second
+  { UNIT_KMH, UNIT_KTS,                           1000,  1852}, // 1 km/h = 0.539956803 knots (divide with 1.85200)
+  { UNIT_KMH, UNIT_MPH,                           1000,  1609}, // 1 km/h = 0.621371192 miles per hour (divide with 1.60934400)
+  { UNIT_KMH, UNIT_METERS_PER_SECOND,               10,    36}, // 1 km/h = 0.277777778 meters / second (divide with 3.6)
+  { UNIT_KMH, UNIT_FEET_PER_SECOND,                911,  1000}, // 1 km/h = 0.911344415 feet per second
 
-  { UNIT_MILLILITERS, UNIT_FLOZ, 100, 2957},
+  { UNIT_MILLILITERS, UNIT_FLOZ,                   100,  2957},
+  
+  { UNIT_RADIANS, UNIT_DEGREE,                   10000,   175}, // 1 rad = 57.29578 deg
+  { UNIT_DEGREE, UNIT_RADIANS,                     175, 10000}, // 1 deg = ‪0,0174533‬ rad
+  
   { 0, 0, 0, 0}   // termination
 };
 

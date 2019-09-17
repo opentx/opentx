@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
+#include <opentx.h>
 
 #if defined(PCBSKY9X)
 #define HW_SETTINGS_COLUMN (2+(15*FW))
@@ -169,6 +169,10 @@ enum {
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #endif
 
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA,
+#endif
+
 #if defined(AUX_SERIAL)
   ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
 #endif
@@ -219,6 +223,23 @@ enum {
   #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #else
   #define BLUETOOTH_ROWS                 uint8_t(IS_BLUETOOTH_CHIP_PRESENT() ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? -1 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
+#endif
+
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+#define EXTERNAL_ANTENNA_ROW           0,
+void onHardwareAntennaSwitchConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    // Switch to external antenna confirmation
+    g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
+    storageDirty(EE_GENERAL);
+  }
+  else {
+    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+  }
+}
+#else
+#define EXTERNAL_ANTENNA_ROW
 #endif
 
 #if defined(PCBX9LITE)
@@ -298,6 +319,8 @@ void menuRadioHardware(event_t event)
 
     BLUETOOTH_ROWS
 
+    EXTERNAL_ANTENNA_ROW
+
     AUX_SERIAL_ROWS
 
     0 /* ADC filter */,
@@ -324,6 +347,9 @@ void menuRadioHardware(event_t event)
   }
   else if (event == EVT_ENTRY) {
     enableVBatBridge();
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+#endif
   }
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
@@ -543,6 +569,22 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
         lcdDrawText(INDENT_WIDTH, y, STR_NAME);
         editName(HW_SETTINGS_COLUMN2, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
+        break;
+#endif
+
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+      case ITEM_RADIO_HARDWARE_EXTERNAL_ANTENNA:
+        reusableBuffer.radioHardware.antennaMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_ANTENNA, STR_ANTENNA_MODES, reusableBuffer.radioHardware.antennaMode, ANTENNA_MODE_INTERNAL, ANTENNA_MODE_EXTERNAL, attr, event);
+        if (!s_editMode && reusableBuffer.radioHardware.antennaMode != g_eeGeneral.antennaMode) {
+          if (!isExternalAntennaEnabled() && (reusableBuffer.radioHardware.antennaMode == ANTENNA_MODE_EXTERNAL || (reusableBuffer.radioHardware.antennaMode == ANTENNA_MODE_PER_MODEL && g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode == ANTENNA_MODE_EXTERNAL))) {
+            POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, onHardwareAntennaSwitchConfirm);
+            SET_WARNING_INFO(STR_ANTENNACONFIRM2, sizeof(TR_ANTENNACONFIRM2), 0);
+          }
+          else {
+            g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
+            checkExternalAntenna();
+          }
+        }
         break;
 #endif
 

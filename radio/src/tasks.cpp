@@ -136,7 +136,7 @@ TASK_FUNCTION(mixerTask)
     uint32_t now = RTOS_GET_MS();
     bool run = false;
 
-    if ((now - lastRunTime) >= 10) {
+    if (now - lastRunTime >= 10) {
       // run at least every 10ms
       run = true;
     }
@@ -194,7 +194,8 @@ TASK_FUNCTION(mixerTask)
       }
 
       t0 = getTmr2MHz() - t0;
-      if (t0 > maxMixerDuration) maxMixerDuration = t0;
+      if (t0 > maxMixerDuration)
+        maxMixerDuration = t0;
 
       sendSynchronousPulses();
     }
@@ -231,7 +232,7 @@ TASK_FUNCTION(menusTask)
   opentxInit();
 
 #if defined(PWR_BUTTON_PRESS)
-  while (1) {
+  while (true) {
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       break;

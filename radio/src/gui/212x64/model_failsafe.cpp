@@ -24,46 +24,45 @@ extern uint8_t g_moduleIdx;
 
 void menuModelFailsafe(event_t event)
 {
-  static uint8_t maxNameLen = 4;
-  static int8_t lastModel = g_eeGeneral.currModel;
   const coord_t barH = (LCD_H - FH) / 8 - 1;
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   const uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
   uint8_t cols = 1;
   uint8_t colW = LCD_W;
 
-  if (lastModel != g_eeGeneral.currModel) {
-    lastModel = g_eeGeneral.currModel;
-    maxNameLen = 4;
-  }
+  switch(event) {
+    case EVT_ENTRY:
+      reusableBuffer.modelFailsafe.maxNameLen = 4;
+      break;
 
-  if (event == EVT_KEY_LONG(KEY_ENTER)) {
-    killEvents(event);
-    event = 0;
+    case EVT_KEY_LONG(KEY_ENTER):
+      killEvents(event);
+      event = 0;
 
-    if (menuVerticalPosition < sentModuleChannels(g_moduleIdx)) {
-      if (s_editMode) {
-        g_model.failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
-        s_editMode = 0;
+      if (menuVerticalPosition < sentModuleChannels(g_moduleIdx)) {
+        if (s_editMode) {
+          g_model.failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
+          s_editMode = 0;
+        }
+        else {
+          int16_t * failsafe = &g_model.failsafeChannels[menuVerticalPosition];
+          if (*failsafe < FAILSAFE_CHANNEL_HOLD)
+            *failsafe = FAILSAFE_CHANNEL_HOLD;
+          else if (*failsafe == FAILSAFE_CHANNEL_HOLD)
+            *failsafe = FAILSAFE_CHANNEL_NOPULSE;
+          else
+            *failsafe = 0;
+        }
       }
       else {
-        int16_t * failsafe = &g_model.failsafeChannels[menuVerticalPosition];
-        if (*failsafe < FAILSAFE_CHANNEL_HOLD)
-          *failsafe = FAILSAFE_CHANNEL_HOLD;
-        else if (*failsafe == FAILSAFE_CHANNEL_HOLD)
-          *failsafe = FAILSAFE_CHANNEL_NOPULSE;
-        else
-          *failsafe = 0;
+        // "Outputs => Failsafe" menu item
+        setCustomFailsafe(g_moduleIdx);
       }
-    }
-    else {
-      // "Outputs => Failsafe" menu item
-      setCustomFailsafe(g_moduleIdx);
-    }
 
-    storageDirty(EE_MODEL);
-    AUDIO_WARNING1();
-    SEND_FAILSAFE_NOW(g_moduleIdx);
+      storageDirty(EE_MODEL);
+      AUDIO_WARNING1();
+      SEND_FAILSAFE_NOW(g_moduleIdx);
+      break;
   }
 
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx) + 1);
@@ -95,7 +94,7 @@ void menuModelFailsafe(event_t event)
       const int32_t channelValue = channelOutputs[ch+channelStart];
       int32_t failsafeValue = g_model.failsafeChannels[8*col+line];
       uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
-      uint8_t barW = colW - FW * maxNameLen - FWNUM * 3;  // default bar width
+      uint8_t barW = colW - FW * reusableBuffer.modelFailsafe.maxNameLen - FWNUM * 3;  // default bar width
 
 #if defined(PPM_UNIT_PERCENT_PREC1)
       barW -= FWNUM + 1;
@@ -104,8 +103,8 @@ void menuModelFailsafe(event_t event)
 
       // Channel name if present, number if not
       if (lenLabel > 0) {
-        if (lenLabel > maxNameLen)
-          maxNameLen = lenLabel;
+        if (lenLabel > reusableBuffer.modelFailsafe.maxNameLen)
+          reusableBuffer.modelFailsafe.maxNameLen = lenLabel;
         lcdDrawSizedText(x - colW, y, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR | SMLSIZE);
       }
       else {

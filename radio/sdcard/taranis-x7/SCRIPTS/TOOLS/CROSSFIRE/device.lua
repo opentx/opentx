@@ -315,7 +315,7 @@ local function fieldCommandLoad(field, data, offset)
   field.status = data[offset]
   field.timeout = data[offset+1]
   field.info, offset = fieldGetString(data, offset+2)
-  if field.status < 2 or field.status > 3 then
+  if field.status == 0 then
     fieldPopup = nil
   end
 end
@@ -401,8 +401,7 @@ local function refreshNext()
     local time = getTime()
     if fieldPopup then
       if time > fieldTimeout then
-        local frame = { deviceId, 0xEA, fieldPopup.id }
-        crossfireTelemetryPush(0x2D, frame)
+        crossfireTelemetryPush(0x2D, { deviceId, 0xEA, fieldPopup.id, 6 })
         fieldTimeout = time + fieldPopup.timeout
       end
     elseif time > fieldTimeout and not edit then

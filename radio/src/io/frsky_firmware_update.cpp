@@ -96,12 +96,12 @@ void FrskyDeviceFirmwareUpdate::processFrame(const uint8_t * frame)
   }
 }
 
+#if defined(PCBHORUS)
 bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout)
 {
   watchdogSuspend(timeout);
 
   switch(module) {
-#if defined(INTMODULE_USART)
     case INTERNAL_MODULE:
     {
       uint32_t elapsed = 0;
@@ -118,7 +118,6 @@ bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint
       }
       break;
     }
-#endif
 
     default:
       break;
@@ -126,6 +125,7 @@ bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint
 
   return true;
 }
+#endif
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
 {
@@ -177,7 +177,7 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
   RTOS_WAIT_MS(1);
 
   switch(module) {
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
     case INTERNAL_MODULE:
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
@@ -236,7 +236,7 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
   }
 
   switch(module) {
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
     case INTERNAL_MODULE:
       return intmoduleSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
 #endif
@@ -288,6 +288,11 @@ const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
   return "Version request failed";
 }
 
+// X12S / X10 IXJT = use TX + RX @ 38400 bauds with BOOTCMD pin inverted
+// X10 / X10 ISRM = use TX + RX @ 57600 bauds (no BOOTCMD)
+// X9D / X9D+ / X9E / XLite IXJT = use S.PORT @ 57600 bauds
+// XLite PRO / X9Lite / X9D+ 2019 ISRM = use TX + RX @ 57600 bauds
+
 const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
@@ -305,7 +310,8 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename, P
       f_close(&file);
       return "Format error";
     }
-  } else {
+  }
+  else {
 #if defined(PCBHORUS)
     information.productId = FIRMWARE_ID_XJT;
 #endif
@@ -314,6 +320,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename, P
 #if defined(PCBHORUS)
   if (module == INTERNAL_MODULE && information.productId == FIRMWARE_ID_XJT) {
     INTERNAL_MODULE_ON();
+    RTOS_WAIT_MS(1);
     intmoduleSerialStart(38400, true);
     GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
     result = uploadFileToHorusXJT(filename, &file, progressHandler);
@@ -324,7 +331,10 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename, P
 #endif
 
   switch (module) {
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+    // on XLite we don't use TX + RX but the S.PORT line
+    // this ifdef can be removed if we use .frsk instead of .frk
+    // theorically it should be possible to use an ISRM module in an XLite
     case INTERNAL_MODULE:
       intmoduleSerialStart(57600, true);
       break;

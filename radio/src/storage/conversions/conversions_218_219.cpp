@@ -59,7 +59,7 @@ int convertSource_218_to_219(int source)
 #endif
 
 #if defined(PCBX10)
-  if ((source == MIXSRC_EXT1) || (source == MIXSRC_EXT2))
+  if (source == MIXSRC_EXT1 || source == MIXSRC_EXT2)
     source += 2;
 #endif
 
@@ -70,8 +70,8 @@ int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
   // on X9D / X9D+: 1 additional switch
-  // on xlite : 2 more storage switches
-
+  // on XLite: 2 additional storage switches
+  // on X10: 2 additional pots => 12 multipos switches
 #if defined(PCBX7) || defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBXLITE)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
@@ -95,6 +95,9 @@ int convertSwitch_218_to_219(int swtch)
 #if defined(PCBHORUS)
   if (swtch >= SWSRC_SI0)
     swtch += 2 * 3;
+#endif
+
+#if defined(PCBX10)
   if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH + 3 * XPOTS_MULTIPOS_COUNT)
     swtch += 2 * XPOTS_MULTIPOS_COUNT;
 #endif
@@ -120,6 +123,10 @@ void convertModelData_218_to_219(ModelData &model)
   // 4 bytes more for the ModelHeader::bitmap
   memclear(&newModel.header.bitmap[10], 4);
   memcpy(newModel.timers, oldModel.timers, offsetof(ModelData_v218, mixData) - offsetof(ModelData_v218, timers));
+
+  // trainer battery compartment removed
+  if (newModel.trainerData.mode >= TRAINER_MODE_MASTER_BLUETOOTH)
+    newModel.trainerData.mode -= 1;
 #endif
 
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));
@@ -127,6 +134,14 @@ void convertModelData_218_to_219(ModelData &model)
   char name[LEN_MODEL_NAME+1];
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
   TRACE("Model %s conversion from v218 to v219", name);
+
+  for (uint8_t i=0; i<MAX_TIMERS_218; i++) {
+    TimerData & timer = newModel.timers[i];
+    if (timer.mode >= TMRMODE_COUNT)
+      timer.mode = TMRMODE_COUNT + convertSwitch_218_to_219(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
+    else if (timer.mode < 0)
+      timer.mode = convertSwitch_218_to_219(oldModel.timers[i].mode);
+  }
 
   for (uint8_t i=0; i<MAX_MIXERS_218; i++) {
     memmove(&newModel.mixData[i], &oldModel.mixData[i], sizeof(MixData_v218));
@@ -142,6 +157,10 @@ void convertModelData_218_to_219(ModelData &model)
     memmove(&newModel.expoData[i], &oldModel.expoData[i], sizeof(ExpoData_v218));
     newModel.expoData[i].srcRaw = convertSource_218_to_219(newModel.expoData[i].srcRaw); // from newModel to avoid overwrite
     newModel.expoData[i].swtch = convertSwitch_218_to_219(newModel.expoData[i].swtch); // from newModel to avoid overwrite
+#if LCD_W == 212
+    newModel.expoData[i].offset = oldModel.expoData[i].offset; // 212x64: expo name has been reduced to 6 chars instead of 8
+    newModel.expoData[i].curve = oldModel.expoData[i].curve; // 212x64: expo name has been reduced to 6 chars instead of 8
+#endif
   }
 
   for (uint8_t i=0; i<MAX_CURVES_218; i++) {
