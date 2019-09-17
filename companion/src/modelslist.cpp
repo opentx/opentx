@@ -753,7 +753,6 @@ bool TreeModel::isModelIdUnique(unsigned modelIdx, unsigned module, unsigned pro
   int cnt = 0;
   for (auto const& model: radioData->models) {
     if (!model.isEmpty()) {
-      unsigned moduleIdx = 0;
       const ModuleData& moduleData = model.moduleData[module];
       if (moduleData.protocol == protocol && moduleData.modelId == modelIdx) {
         if (++cnt > 1) {
