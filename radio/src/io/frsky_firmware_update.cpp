@@ -320,6 +320,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 #if defined(PCBHORUS)
   if (module == INTERNAL_MODULE && information.productId == FIRMWARE_ID_XJT) {
     INTERNAL_MODULE_ON();
+    RTOS_WAIT_MS(1);
     intmoduleSerialStart(38400, true);
     GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
     result = uploadFileToHorusXJT(filename, &file);
