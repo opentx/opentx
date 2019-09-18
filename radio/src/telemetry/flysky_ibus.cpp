@@ -48,7 +48,7 @@ struct FlySkySensor {
 #define FS_ID_SNR               0xFA
 #define FS_ID_NOISE             0xFB
 #define FS_ID_RSSI              0xFC
-#define FS_ID_SNR               0xFE
+#define FS_ID_ERR               0xFE
 
 const FlySkySensor flySkySensors[] = {
 
@@ -67,7 +67,7 @@ const FlySkySensor flySkySensors[] = {
   // RX RSSI (0xfc)
   {FS_ID_RSSI,      ZSTR_RSSI,              UNIT_DB,                     0},
   // RX error rate
-  {FS_ID_SNR,            ZSTR_RX_QUALITY,        UNIT_RAW,                    0},
+  {FS_ID_ERR,            ZSTR_RX_QUALITY,        UNIT_RAW,                    0},
   // 0xff is an unused sensor slot
   // Pseudo sensor for TRSSI
   {TX_RSSI_ID,      ZSTR_TX_RSSI,           UNIT_RAW,                    0},
@@ -105,7 +105,7 @@ static void processFlySkySensor(const uint8_t *packet)
       // The Noise and Signal sensors that are specified in dB send the absolute value
       if (id == FS_ID_NOISE || id == FS_ID_RSSI)
         value = 135 - value;
-      else if (id == 0xfe) // ERR RATE
+      else if (id == FS_ID_ERR) // ERR RATE
         value = 100 - value;
       else if (id == FS_ID_TEMP)
         // Temperature sensors have 40 degree offset
