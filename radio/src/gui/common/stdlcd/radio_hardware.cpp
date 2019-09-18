@@ -604,7 +604,7 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_RAS:
-#if defined(PCBX9LITE)
+#if !defined(PCBX9LITES) && defined(PCBX9LITE)
         lcdDrawTextAlignedLeft(y, "Ext. RAS");
         lcdNextPos = HW_SETTINGS_COLUMN2;
 #else

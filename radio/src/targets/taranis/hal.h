@@ -452,7 +452,7 @@
   #define STORAGE_SWITCH_F
   #define HARDWARE_SWITCH_F
   #define SWITCHES_GPIO_REG_F           GPIOC->IDR
-  #define SWITCHES_GPIO_PIN_F           GPIO_Pin_2 // PC.02
+  #define SWITCHES_GPIO_PIN_F           GPIO_Pin_3 // PC.03
 #elif defined(PCBX9LITE)
   // no SWF
 #elif defined(PCBX7)
@@ -478,7 +478,7 @@
   #define STORAGE_SWITCH_G
   #define HARDWARE_SWITCH_G
   #define SWITCHES_GPIO_REG_G           GPIOC->IDR
-  #define SWITCHES_GPIO_PIN_G           GPIO_Pin_3 // PC.03
+  #define SWITCHES_GPIO_PIN_G           GPIO_Pin_2 // PC.02
 #elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // no SWG
 #else
