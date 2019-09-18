@@ -91,6 +91,7 @@ static void processFlySkySensor(const uint8_t *packet)
   }
 
   if (id == FS_ID_SNR) {
+    if(value>0) value+=20;
     telemetryData.rssi.set(value);
   }
 
@@ -99,7 +100,11 @@ static void processFlySkySensor(const uint8_t *packet)
     if (sensor->id == id) {
       // The Noise and Signal sensors that are specified in dB send the absolute value
       if (id == FS_ID_NOISE || id == FS_ID_RSSI)
-        value = -value;
+        value = 135 - value;
+      else if (id == FS_ID_TEMP)
+        value = 100 - value;
+      else if (id == 0xfe) // ERR RATE
+        value = 100 - value;
       else if (id == FS_ID_TEMP)
         // Temperature sensors have 40 degree offset
         value -= 400;
