@@ -727,7 +727,7 @@ void TreeModel::refresh()
         protocol = moduleData.protocol;
         // These are the only RXs that allow nominating RX # but changing RX or copying models can leave residual configuration which can cause issues
         // if (protocol == PULSES_PXX_XJT_X16 || protocol == PULSES_PXX_XJT_LR12 || protocol == PULSES_PXX_R9M || protocol == PULSES_DSMX || protocol == PULSES_MULTIMODULE) {
-        if (protocol != PULSES_OFF && moduleData.modelId > 0) {
+        if ((protocol != PULSES_OFF && protocol != PULSES_PXX_XJT_D8 ) && moduleData.modelId > 0) {
           if (!rxs.isEmpty()) {
             rxs.append(", ");
           }
@@ -751,6 +751,9 @@ void TreeModel::refresh()
 bool TreeModel::isModelIdUnique(unsigned modelIdx, unsigned module, unsigned protocol)
 {
   int cnt = 0;
+  if (protocol== PULSES_PXX_XJT_D8)
+    return true;
+  
   for (auto const& model: radioData->models) {
     if (!model.isEmpty()) {
       const ModuleData& moduleData = model.moduleData[module];
