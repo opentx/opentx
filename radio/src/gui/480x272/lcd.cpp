@@ -73,7 +73,7 @@ uint8_t getMappedChar(uint8_t c)
     result = c - 0x20;
   else
     result = c - 0xC0 + 96;
-   // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
+    // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
   return result;
 }
 

@@ -126,12 +126,12 @@ void menuModelFlightModesAll(event_t event)
         }
 
         case ITEM_FLIGHT_MODES_FADE_IN:
-          lcdDrawNumber(32*FW-2, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1|RIGHT);
+          lcdDrawNumber(32*FW-2, y, p->fadeIn, attr|PREC1|RIGHT);
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
         case ITEM_FLIGHT_MODES_FADE_OUT:
-          lcdDrawNumber(35*FW, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1|RIGHT);
+          lcdDrawNumber(35*FW, y, p->fadeOut, attr|PREC1|RIGHT);
           if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
