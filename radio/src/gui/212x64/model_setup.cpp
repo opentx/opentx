@@ -1253,6 +1253,9 @@ void menuModelSetup(event_t event)
            }
            else {
              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
+             lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);
+             lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+             lcdDrawText(lcdLastRightPos, y, ")", LEFT);
            }
          }
        }
