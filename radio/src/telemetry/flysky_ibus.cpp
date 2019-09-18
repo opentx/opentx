@@ -101,8 +101,6 @@ static void processFlySkySensor(const uint8_t *packet)
       // The Noise and Signal sensors that are specified in dB send the absolute value
       if (id == FS_ID_NOISE || id == FS_ID_RSSI)
         value = 135 - value;
-      else if (id == FS_ID_TEMP)
-        value = 100 - value;
       else if (id == 0xfe) // ERR RATE
         value = 100 - value;
       else if (id == FS_ID_TEMP)
