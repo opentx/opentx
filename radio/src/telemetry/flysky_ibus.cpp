@@ -91,7 +91,10 @@ static void processFlySkySensor(const uint8_t *packet)
   }
 
   if (id == FS_ID_SNR) {
-    if(value>0) value+=20;
+    if(value>0) {
+      value+=20;
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+    }
     telemetryData.rssi.set(value);
   }
 
@@ -125,7 +128,6 @@ void processFlySkyPacket(const uint8_t *packet)
     int index = 1 + (4 * sensor);
     processFlySkySensor(packet+index);
   }
-  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
 }
 
 void processFlySkyTelemetryData(uint8_t data)
