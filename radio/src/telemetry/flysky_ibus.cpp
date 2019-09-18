@@ -45,9 +45,10 @@ struct FlySkySensor {
 
 #define TX_RSSI_ID              300      // Pseudo id outside 1 byte range of FlySky sensors
 #define FS_ID_TEMP              0x01
-#define FS_ID_SNR               0xfa
-#define FS_ID_NOISE             0xfb
-#define FS_ID_RSSI              0xfc
+#define FS_ID_SNR               0xFA
+#define FS_ID_NOISE             0xFB
+#define FS_ID_RSSI              0xFC
+#define FS_ID_SNR               0xFE
 
 const FlySkySensor flySkySensors[] = {
 
@@ -66,7 +67,7 @@ const FlySkySensor flySkySensors[] = {
   // RX RSSI (0xfc)
   {FS_ID_RSSI,      ZSTR_RSSI,              UNIT_DB,                     0},
   // RX error rate
-  {0xfe,            ZSTR_RX_QUALITY,        UNIT_RAW,                    0},
+  {FS_ID_SNR,            ZSTR_RX_QUALITY,        UNIT_RAW,                    0},
   // 0xff is an unused sensor slot
   // Pseudo sensor for TRSSI
   {TX_RSSI_ID,      ZSTR_TX_RSSI,           UNIT_RAW,                    0},
