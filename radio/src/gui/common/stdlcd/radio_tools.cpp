@@ -46,15 +46,13 @@ void addRadioModuleTool(uint8_t index, const char * label, void (* tool)(event_t
   }
 }
 
-#define TOOL_NAME_MAXLEN  16
-
 #if defined(LUA)
 void addRadioScriptTool(uint8_t index, const char * path)
 {
-  char toolName[TOOL_NAME_MAXLEN + 1];
+  char toolName[RADIO_TOOL_NAME_MAXLEN + 1];
 
   if (!readToolName(toolName, path)) {
-    strAppendFilename(toolName, getBasename(path), TOOL_NAME_MAXLEN);
+    strAppendFilename(toolName, getBasename(path), RADIO_TOOL_NAME_MAXLEN);
   }
 
   if (addRadioTool(index, toolName)) {

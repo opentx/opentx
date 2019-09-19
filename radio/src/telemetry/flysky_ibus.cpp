@@ -45,9 +45,10 @@ struct FlySkySensor {
 
 #define TX_RSSI_ID              300      // Pseudo id outside 1 byte range of FlySky sensors
 #define FS_ID_TEMP              0x01
-#define FS_ID_SNR               0xfa
-#define FS_ID_NOISE             0xfb
-#define FS_ID_RSSI              0xfc
+#define FS_ID_SNR               0xFA
+#define FS_ID_NOISE             0xFB
+#define FS_ID_RSSI              0xFC
+#define FS_ID_ERR               0xFE
 
 const FlySkySensor flySkySensors[] = {
 
@@ -66,7 +67,7 @@ const FlySkySensor flySkySensors[] = {
   // RX RSSI (0xfc)
   {FS_ID_RSSI,      ZSTR_RSSI,              UNIT_DB,                     0},
   // RX error rate
-  {0xfe,            ZSTR_RX_QUALITY,        UNIT_RAW,                    0},
+  {FS_ID_ERR,            ZSTR_RX_QUALITY,        UNIT_RAW,                    0},
   // 0xff is an unused sensor slot
   // Pseudo sensor for TRSSI
   {TX_RSSI_ID,      ZSTR_TX_RSSI,           UNIT_RAW,                    0},
@@ -91,6 +92,10 @@ static void processFlySkySensor(const uint8_t *packet)
   }
 
   if (id == FS_ID_SNR) {
+    if(value>0) {
+      value+=20;
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+    }
     telemetryData.rssi.set(value);
   }
 
@@ -99,7 +104,9 @@ static void processFlySkySensor(const uint8_t *packet)
     if (sensor->id == id) {
       // The Noise and Signal sensors that are specified in dB send the absolute value
       if (id == FS_ID_NOISE || id == FS_ID_RSSI)
-        value = -value;
+        value = 135 - value;
+      else if (id == FS_ID_ERR) // ERR RATE
+        value = 100 - value;
       else if (id == FS_ID_TEMP)
         // Temperature sensors have 40 degree offset
         value -= 400;
@@ -122,7 +129,6 @@ void processFlySkyPacket(const uint8_t *packet)
     int index = 1 + (4 * sensor);
     processFlySkySensor(packet+index);
   }
-  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
 }
 
 void processFlySkyTelemetryData(uint8_t data)
