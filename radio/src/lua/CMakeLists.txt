@@ -17,6 +17,7 @@ set(LUA_INCLUDES
 
 if(PYTHONINTERP_FOUND)
   add_lua_export_target(x9lite  ${LUA_INCLUDES} -DPCBTARANIS -DPCBX9LITE -DPCBX9)
+  add_lua_export_target(x9lites ${LUA_INCLUDES} -DPCBTARANIS -DPCBX9LITES -DPCBX9LITE -DPCBX9)
   add_lua_export_target(x7      ${LUA_INCLUDES} -DPCBTARANIS -DPCBX7  -DRADIO_X7)
   add_lua_export_target(xlite   ${LUA_INCLUDES} -DPCBTARANIS -DPCBXLITE)
   add_lua_export_target(xlites  ${LUA_INCLUDES} -DPCBTARANIS -DPCBXLITES -DPCBXLITE -DGYRO)

@@ -78,6 +78,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
+    case BOARD_TARANIS_X9LITES:
+      return "OpenTX for FrSky Taranis X9-Lite S";
     case BOARD_TARANIS_X9LITE:
       return "OpenTX for FrSky Taranis X9-Lite";
     case BOARD_TARANIS_XLITE:
@@ -1234,6 +1236,12 @@ void registerOpenTxFirmwares()
 
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
+  addOpenTxTaranisOptions(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky X9-LiteS board */
+  firmware = new OpenTxFirmware("opentx-x9lites", Firmware::tr("FrSky Taranis X9-Lite S"), BOARD_TARANIS_X9LITES);
   addOpenTxTaranisOptions(firmware);
   firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);

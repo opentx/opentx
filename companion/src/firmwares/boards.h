@@ -50,6 +50,7 @@ namespace Board {
     BOARD_TARANIS_XLITE,
     BOARD_TARANIS_XLITES,
     BOARD_TARANIS_X9LITE,
+    BOARD_TARANIS_X9LITES,
     BOARD_JUMPER_T12,
   };
 
@@ -239,7 +240,7 @@ inline bool IS_TARANIS_X7(Board::Type board)
 
 inline bool IS_TARANIS_X9LITE(Board::Type board)
 {
-  return board == Board::BOARD_TARANIS_X9LITE;
+  return board == Board::BOARD_TARANIS_X9LITE || board == Board::BOARD_TARANIS_X9LITES;
 }
 
 inline bool IS_TARANIS_X9(Board::Type board)

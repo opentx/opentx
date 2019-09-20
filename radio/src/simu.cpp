@@ -331,7 +331,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
   SWITCH_KEY(C, 2, 3);
   SWITCH_KEY(D, 3, 3);
 
-  #if defined(HARDWARE_SWITCH_G)
+  #if defined(HARDWARE_SWITCH_G) && defined(HARDWARE_SWITCH_H)
     SWITCH_KEY(E, 4, 3);
     SWITCH_KEY(F, 5, 2);
     SWITCH_KEY(G, 6, 3);
