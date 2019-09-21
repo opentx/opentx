@@ -90,13 +90,12 @@ static void processFlySkySensor(const uint8_t *packet)
     // Some part of OpenTX does not like sensor with id and instance 0, remap to 0x100
     id = 0x100;
   }
-
-  if (id == FS_ID_SNR) {
-    if(value>0) {
-      value+=20;
-      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-    }
+  
+  if (id == FS_ID_ERR) { // ERR RATE, displayed RQLy and used as RSSI
+    value = 100 - value;
     telemetryData.rssi.set(value);
+    if (value > 0)
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
   }
 
   for (const FlySkySensor * sensor = flySkySensors; sensor->id; sensor++) {
@@ -105,8 +104,11 @@ static void processFlySkySensor(const uint8_t *packet)
       // The Noise and Signal sensors that are specified in dB send the absolute value
       if (id == FS_ID_NOISE || id == FS_ID_RSSI)
         value = 135 - value;
-      else if (id == FS_ID_ERR) // ERR RATE
-        value = 100 - value;
+      else   if (id == FS_ID_SNR) {
+        if(value>0) {
+          value+=20;
+        }
+      } 
       else if (id == FS_ID_TEMP)
         // Temperature sensors have 40 degree offset
         value -= 400;
