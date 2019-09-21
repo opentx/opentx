@@ -838,6 +838,21 @@ void checkSDVersion()
 }
 #endif
 
+#if defined(MULTIMODULE)
+void checkMultiLowPower()
+{
+  if(isModuleMultimodule(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode) {
+    ALERT("MULTI", STR_WARN_MULTI_LOWPOWER, AU_ERROR);
+    return;
+  }
+#if defined(INTERNAL_MODULE_MULTI)
+  if(isModuleMultimodule(INTERNAL_MODULE) && g_model.moduleData[INTERNAL_MODULE].multi.lowPowerMode) {
+    ALERT("MULTI", STR_WARN_MULTI_LOWPOWER, AU_ERROR);
+  }
+#endif
+}
+#endif
+
 #if defined(STM32)
 static void checkRTCBattery()
 {
@@ -900,6 +915,10 @@ void checkAll()
   if (g_model.displayChecklist && modelHasNotes()) {
     readModelNotes();
   }
+
+#if defined(MULTIMODULE)
+  checkMultiLowPower();
+#endif
 
   if (!waitKeysReleased()) {
     showMessageBox(STR_KEYSTUCK);
