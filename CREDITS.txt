@@ -1539,3 +1539,4 @@ Piotr Wysocki
 Thomas Halenbeck (monthly)
 Sjoerd Dost
 Ralph Gustafson
+Herbert Feix
