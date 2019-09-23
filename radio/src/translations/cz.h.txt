@@ -734,7 +734,7 @@
 #define TR_NIGHTLY_NOTSAFE             "Verze není bezpečná k létání"
 #define TR_WRONG_SDCARDVERSION         "Očekávaná ver.: "
 #define TR_WARN_RTC_BATTERY_LOW        "Slabá RTC baterie"
-#define TR_WARN_MULTI_LOWPOWER         "Low Power mode"
+#define TR_WARN_MULTI_LOWPOWER         "Low power mode"
 #define TR_BATTERY                     "BATERIE"
 #define TR_WRONG_PCBREV                "Jiná verze PCB/firmware"
 #define TR_EMERGENCY_MODE              "NOUZOVÝ REŽIM"
