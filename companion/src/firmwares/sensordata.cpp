@@ -98,7 +98,6 @@ QString SensorData::getOrigin(const ModelData * model) const
     return QString();
   
   const ModuleData & module = model->moduleData[moduleIdx];
-
   if (module.isPxx2Module() && rxIdx <= 2 && module.access.receivers & (1 << rxIdx)) {
     return QString(module.access.receiverName[rxIdx]);
   }
