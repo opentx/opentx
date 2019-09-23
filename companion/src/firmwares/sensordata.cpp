@@ -92,24 +92,16 @@ QString SensorData::nameToString(int index) const
   return RadioData::getElementName(tr("TELE"), index + 1, label);
 }
 
-QString SensorData::getRxOrModName(const ModelData* model) const
+QString SensorData::getOrigin(const ModelData * model) const
 {
-  if ((type != TELEM_TYPE_CUSTOM) || (!id && !instance))
+  if (type != TELEM_TYPE_CUSTOM || !id)
     return QString();
   
-  const ModuleData& module = model->moduleData[moduleIdx];
-
-  if (module.isPxx2Module()) {
-    if (module.access.receivers & (1 << rxIdx)) {
-      return QString(module.access.receiverName[rxIdx]);
-    }
-
-    // receiver does not seem to be active
+  const ModuleData & module = model->moduleData[moduleIdx];
+  if (module.isPxx2Module() && rxIdx <= 2 && module.access.receivers & (1 << rxIdx)) {
+    return QString(module.access.receiverName[rxIdx]);
+  }
+  else {
     return QString();
   }
-
-  if (moduleIdx)
-    return tr("Internal");
-
-  return tr("External");
 }
