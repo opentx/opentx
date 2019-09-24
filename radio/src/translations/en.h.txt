@@ -406,7 +406,6 @@
 
 #if defined(PCBTARANIS)
   #define TR_POPUPS_ENTER_EXIT         TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
-
 #else
   #define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
 #endif
@@ -563,9 +562,9 @@
 #define OFS_RX                         4
 #define TR_ACCEL                       "Acc:"
 #define TR_NODATA                      CENTER "NO DATA"
-#define TR_US                         "us"
-#define TR_TMIXMAXMS                 "Tmix max"
-#define TR_FREE_STACK             "Free stack"
+#define TR_US                          "us"
+#define TR_TMIXMAXMS                   "Tmix max"
+#define TR_FREE_STACK                  "Free stack"
 #define TR_MENUTORESET                 TR_ENTER " to reset"
 #define TR_PPM_TRAINER                 "TR"
 #define TR_CH                          "CH"
@@ -628,7 +627,7 @@
 #define TR_MULTI_RFTUNE                TR("Freq tune", "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ               TR("Vid. freq.", "Video frequency")
-#define TR_RFPOWER               "RF Power"
+#define TR_RFPOWER                     "RF Power"
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION                TR("Option", "Option value")
 #define TR_MULTI_AUTOBIND              TR(INDENT "Autobind",INDENT "Bind on channel")
@@ -778,7 +777,6 @@
 #define TR_TEMP_CALIB                  "Temp. Calib"
 #define TR_TIME                        "Time"
 #define TR_MAXBAUDRATE                 "Max bauds"
-
 #define TR_BLUETOOTH                   "Bluetooth"
 #define TR_BLUETOOTH_DISC              "Discover"
 #define TR_BLUETOOTH_INIT              "Init"
