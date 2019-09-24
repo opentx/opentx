@@ -566,7 +566,6 @@ TR_GYR_VSRCRAW
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER"Geen Data"
 #define TR_US                         "us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "Tmix max"
 #define TR_FREE_STACK     "Free stack"
 #define TR_MENUTORESET         TR_ENTER" voor Reset"

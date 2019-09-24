@@ -581,7 +581,6 @@
 #define TR_NODATA                      CENTER "NO DATA"
 #define TR_US                         "us"
 #define TR_TMR1LATMINUS                "Tmr1Lat min\037\124us"
-#define TR_TMR1JITTERUS                "Tmr1 Jitter\037\124us"
 
   #define TR_TMIXMAXMS                 "Tmix max"
   #define TR_FREE_STACK             "Free stack"
