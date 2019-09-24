@@ -245,6 +245,10 @@ int main()
   backlightInit();
   backlightEnable();
 
+#if defined(PCBX7) || defined(PCBXLITE)
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, false);
+#endif
+
 #if defined(PCBTARANIS)
   i2cInit();
 #endif

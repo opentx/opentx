@@ -92,6 +92,13 @@ if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR (PCB STREQUAL X9
     )
 endif()
 
+if(PCB STREQUAL X7 OR PCB STREQUAL XLITE)
+  set(BOOTLOADER_SRC
+    ${BOOTLOADER_SRC}
+    ../../../../../targets/common/arm/stm32/bluetooth_driver.cpp
+    )
+endif()
+
 if(NOT (PCB STREQUAL X10 OR PCB STREQUAL X12S))
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
