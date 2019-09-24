@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE                  "\005"
 #define TR_VBEEPMODE                   "Stumm""Alarm""NoKey""Alle\0"
 
-#define LEN_VRENAVIG                   "\003"
-#define TR_VRENAVIG                    "AUSDGaDGb"
-
 #define LEN_VBLMODE                    "\005"
 #define TR_VBLMODE                     "AUS\0 ""Taste""Stks\0""Beide""EIN\0 " // Anpassung
 
@@ -514,7 +511,6 @@
 #define TR_MODEL_STILL_POWERED         "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG                     TR ("Rol", "Drehgeb. Navig.")
 #define TR_THROTTLE_LABEL              "Gas-Kontrolle"
 #define TR_THROTTLEREVERSE             TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
 #define TR_MINUTEBEEP                  TR("Min-Alarm", "Minuten-Alarm")

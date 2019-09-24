@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Mudo ""Alarm""NoKey""Todo "
 
-#define LEN_VRENAVIG     "\003"
-#define TR_VRENAVIG      "No REaREb"
-
 #define LEN_VBLMODE      "\004"
 #define TR_VBLMODE       "OFF ""Chav""Stks""Tudo""ON\0"
 
@@ -519,7 +516,6 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Inverte Acel.", INDENT "Inverte Acel.")
 #define TR_MINUTEBEEP          "Beep Minuto"

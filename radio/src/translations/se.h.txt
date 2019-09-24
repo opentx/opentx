@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Tyst\0""Alarm""EjKnp""Alla\0"
 
-#define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "IngREaREb"
-
 #define LEN_VBLMODE            TR("\005", "\010")
 #define TR_VBLMODE             TR("Av\0  ""Knapp""Spak\0""Allt\0""På\0  ", "Av\0     ""Knappar\0""Spakar\0 ""Allt\0   ""På\0     ")
 
@@ -532,7 +529,6 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "RotEnk Navig"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Inv.Gas", INDENT "Inverterad Gas")
 #define TR_MINUTEBEEP          "Minutpip"

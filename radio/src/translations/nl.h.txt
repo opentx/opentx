@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Stil\0""Alarm""NoKey""Alles"
 
-#define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "UITREaREb"
-
 #define LEN_VBLMODE            TR("\005", "\010")
 #define TR_VBLMODE             TR("UIT\0 ""Keys\0""Stick""Beide""AAN\0 ", "UIT\0    ""Toetsen\0""Sticks\0 ""Beide\0  ""AAN\0    ")
 
@@ -516,7 +513,6 @@ TR_GYR_VSRCRAW
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "Stappenschakelaar"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")
 #define TR_MINUTEBEEP          TR("Min-Alarm", "Minuten-Alarm")
