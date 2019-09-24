@@ -563,7 +563,6 @@
 #define OFS_RX                         4
 #define TR_ACCEL                       "Acc:"
 #define TR_NODATA                      CENTER "NO DATA"
-#define TR_TOTTM1TM2THRTHP             "\037\146SES\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_US                         "us"
 #define TR_TMR1JITTERUS                "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS                 "Tmix max"
