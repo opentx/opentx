@@ -50,6 +50,9 @@ make -j${JOBS} libsimulator
 cmake ${COMMON_OPTIONS} -DPCB=X9LITE ${SRCDIR}
 make -j${JOBS} libsimulator
 
+cmake ${COMMON_OPTIONS} -DPCB=X9LITES ${SRCDIR}
+make -j${JOBS} libsimulator
+
 cmake ${COMMON_OPTIONS} -DPCB=X7 ${SRCDIR}
 make -j${JOBS} libsimulator
 

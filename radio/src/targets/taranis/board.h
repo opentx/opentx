@@ -307,17 +307,17 @@ enum EnumSwitchesPositions
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if defined(PCBX9) || defined(PCBXLITES)
+#if defined(PCBX9) || defined(PCBXLITES) || defined(PCBX9LITES)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES)
   SW_SF0,
   SW_SF1,
   SW_SF2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX9LITES)
   SW_SG0,
   SW_SG1,
   SW_SG2,
@@ -395,6 +395,11 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+#elif defined(PCBX9LITES)
+  #define NUM_SWITCHES                  7
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 12) + (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0); // S1 = pot with detent
 #elif defined(PCBX9LITE)
   #define NUM_SWITCHES                  5
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
@@ -766,7 +771,9 @@ void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
 void bluetoothDisable();
-#if defined(PCBX9LITE)
+#if defined(PCBX9LITES)
+  #define IS_BLUETOOTH_CHIP_PRESENT()     (true)
+#elif defined(PCBX9LITE)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
 #elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
   extern volatile uint8_t btChipPresent;
