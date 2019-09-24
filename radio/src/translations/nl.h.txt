@@ -671,7 +671,6 @@ TR_GYR_VSRCRAW
 #define TR_PITCH_AT_ZERO       INDENT "Laagste Toon"
 #define TR_PITCH_AT_MAX        INDENT "Hoogste Toon"
 #define TR_REPEAT_AT_ZERO      INDENT "Herhalen bij 0"
-#define TR_POWEROFF            "\027Uitschakelen..."
 #define TR_SHUTDOWN            "Afsluiten"
 #define TR_SAVEMODEL           "Bewaar Model-instellingen"
 #define TR_BATT_CALIB          "Accu Calib"

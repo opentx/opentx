@@ -665,7 +665,6 @@
 #define TR_PITCH_AT_ZERO                INDENT "Töne sinken"
 #define TR_PITCH_AT_MAX                 INDENT "Töne steigen"
 #define TR_REPEAT_AT_ZERO               INDENT "Wiederholrate"
-#define TR_POWEROFF                     "\027Power OFF..."
 #define TR_SHUTDOWN                     "Herunterfahren"
 #define TR_SAVEMODEL                    "Modelleinstellungen speichern"
 #define TR_BATT_CALIB                   TR("AkkuSpgwert", "Akku Kalibrierung")
