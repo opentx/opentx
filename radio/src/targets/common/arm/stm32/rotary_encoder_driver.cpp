@@ -84,6 +84,7 @@ void rotaryEncoderCheck()
     if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
       backlightOn();
     }
+    inactivity.counter = 0;
 #endif
   }
 }
