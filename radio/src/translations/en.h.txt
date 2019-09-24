@@ -510,9 +510,9 @@
 #define TR_INACTIVITYALARM             INDENT "Inactivity"
 #define TR_MEMORYWARNING               INDENT "Memory low"
 #define TR_ALARMWARNING                INDENT "Sound off"
-#define TR_RSSISHUTDOWNALARM           TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
+#define TR_RSSISHUTDOWNALARM           TR(INDENT "Rssi Shutdown", INDENT "Check RSSI on shutdown")
 #define TR_MODEL_STILL_POWERED         "Model still powered"
-#define TR_MODEL_SHUTDOWN              "Shutdown ?"
+#define TR_MODEL_SHUTDOWN              "Shutdown?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG                     "RotEnc Navig"
 #define TR_THROTTLE_LABEL              "Throttle"
@@ -1083,7 +1083,7 @@
 
 #define TR_BEEP_VOLUME                 "Beep volume"
 #define TR_WAV_VOLUME                  "Wav volume"
-#define TR_BG_VOLUME                   TR("Bg volume", "Background Volume")
+#define TR_BG_VOLUME                   TR("Bg volume", "Background volume")
 
 #define TR_TOP_BAR                     "Top bar"
 #define TR_FLASH_ERASE                 "Flash erase..."
