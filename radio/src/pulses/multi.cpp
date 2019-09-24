@@ -59,17 +59,12 @@ static void sendFailsafeChannels(uint8_t port)
   for (int i = 0; i < MULTI_CHANS; i++) {
     int16_t failsafeValue = g_model.failsafeChannels[i];
     int pulseValue;
-    if (g_model.moduleData[port].failsafeMode == FAILSAFE_HOLD)
-      failsafeValue = FAILSAFE_CHANNEL_HOLD;
 
-    if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES)
-      failsafeValue = FAILSAFE_CHANNEL_NOPULSE;
-
-    if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-      pulseValue = 0;
-    }
-    else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+    if (g_model.moduleData[port].failsafeMode == FAILSAFE_HOLD) {
       pulseValue = 2047;
+    }
+    else if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES) {
+      pulseValue = 0;
     }
     else {
       failsafeValue += 2 * PPM_CH_CENTER(g_model.moduleData[port].channelsStart + i) - 2 * PPM_CENTER;

@@ -49,7 +49,7 @@ void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t
 #if defined(LUA)
 void addRadioScriptTool(uint8_t index, const char * path)
 {
-  char toolName[TOOL_NAME_MAXLEN + 1];
+  char toolName[RADIO_TOOL_NAME_MAXLEN + 1];
   const char * label;
   char * ext = (char *)getFileExtension(path);
   if (readToolName(toolName, path)) {
