@@ -469,7 +469,7 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
 
   uint32_t size;
   const char * ext = getFileExtension(filename);
-  if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+  if (ext && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
     FrSkyFirmwareInformation * information = (FrSkyFirmwareInformation *) buffer;
     if (f_read(&file, buffer, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
       f_close(&file);

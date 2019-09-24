@@ -1512,7 +1512,7 @@ void doMixerCalculations()
     static uint8_t countRangecheck = 0;
     for (uint8_t i=0; i<NUM_MODULES; ++i) {
 #if defined(MULTIMODULE)
-      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || multiModuleStatus.isBinding()) {
+      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || getMultiModuleStatus(i).isBinding()) {
 #else
       if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST) {
 #endif
@@ -1862,7 +1862,7 @@ void opentxInit()
     sportStopSendByteLoop();
     if (f_stat(AUTOUPDATE_FILENAME, nullptr) == FR_OK) {
       FrSkyFirmwareInformation information;
-      if (readFirmwareInformation(AUTOUPDATE_FILENAME, information) == nullptr) {
+      if (readFrSkyFirmwareInformation(AUTOUPDATE_FILENAME, information) == nullptr) {
 #if defined(BLUETOOTH)
         if (information.productFamily == FIRMWARE_FAMILY_BLUETOOTH_CHIP) {
           if (bluetooth.flashFirmware(AUTOUPDATE_FILENAME) == nullptr)

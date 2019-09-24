@@ -70,7 +70,8 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
-#define UPDATE_FIRMWARE_EXT ".frsk"
+#define FRSKY_FIRMWARE_EXT  ".frsk"
+#define MULTI_FIRMWARE_EXT  ".bin"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
@@ -125,6 +126,8 @@ const char * getBasename(const char * path);
 
 #if defined(PCBX12S)
   #define OTX_FOURCC 0x3478746F // otx for X12S
+#elif defined(RADIO_T16)
+  #define OTX_FOURCC 0x3F78746F // otx for Jumper T16
 #elif defined(PCBX10)
   #define OTX_FOURCC 0x3778746F // otx for X10
 #elif defined(PCBX9E)

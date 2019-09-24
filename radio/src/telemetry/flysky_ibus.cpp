@@ -133,35 +133,35 @@ void processFlySkyPacket(const uint8_t *packet)
   }
 }
 
-void processFlySkyTelemetryData(uint8_t data)
+void processFlySkyTelemetryData(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount)
 {
-  if (telemetryRxBufferCount == 0 && data != 0xAA) {
+  if (rxBufferCount == 0 && data != 0xAA) {
     TRACE("[IBUS] invalid start byte 0x%02X", data);
     return;
   }
 
-  if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
-    telemetryRxBuffer[telemetryRxBufferCount++] = data;
+  if (rxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+    rxBuffer[rxBufferCount++] = data;
   }
   else {
-    TRACE("[IBUS] array size %d error", telemetryRxBufferCount);
-    telemetryRxBufferCount = 0;
+    TRACE("[IBUS] array size %d error", rxBufferCount);
+    rxBufferCount = 0;
   }
 
 
-  if (telemetryRxBufferCount >= FLYSKY_TELEMETRY_LENGTH) {
+  if (rxBufferCount >= FLYSKY_TELEMETRY_LENGTH) {
     // debug print the content of the packets
 #if 0
     debugPrintf("[IBUS] Packet 0x%02X rssi 0x%02X: ",
-                telemetryRxBuffer[0], telemetryRxBuffer[1]);
+                rxBuffer[0], rxBuffer[1]);
     for (int i=0; i<7; i++) {
-      debugPrintf("[%02X %02X %02X%02X] ", telemetryRxBuffer[i*4+2], telemetryRxBuffer[i*4 + 3],
-                  telemetryRxBuffer[i*4 + 4], telemetryRxBuffer[i*4 + 5]);
+      debugPrintf("[%02X %02X %02X%02X] ", rxBuffer[i*4+2], rxBuffer[i*4 + 3],
+                  rxBuffer[i*4 + 4], rxBuffer[i*4 + 5]);
     }
     debugPrintf("\r\n");
 #endif
-    processFlySkyPacket(telemetryRxBuffer+1);
-    telemetryRxBufferCount = 0;
+    processFlySkyPacket(rxBuffer+1);
+    rxBufferCount = 0;
   }
 }
 

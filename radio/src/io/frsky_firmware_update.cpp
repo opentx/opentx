@@ -33,7 +33,7 @@
 #define PRIM_END_DOWNLOAD   0x83
 #define PRIM_DATA_CRC_ERR   0x84
 
-const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data)
+const char * readFrSkyFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data)
 {
   FIL file;
   UINT count;
@@ -305,7 +305,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
   }
 
   const char * ext = getFileExtension(filename);
-  if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+  if (ext && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
     if (f_read(&file, &information, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
       f_close(&file);
       return "Format error";
@@ -321,7 +321,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
   if (module == INTERNAL_MODULE && information.productId == FIRMWARE_ID_XJT) {
     INTERNAL_MODULE_ON();
     RTOS_WAIT_MS(1);
-    intmoduleSerialStart(38400, true);
+    intmoduleSerialStart(38400, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
     GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
     result = uploadFileToHorusXJT(filename, &file);
     GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
@@ -336,7 +336,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
     // this ifdef can be removed if we use .frsk instead of .frk
     // theorically it should be possible to use an ISRM module in an XLite
     case INTERNAL_MODULE:
-      intmoduleSerialStart(57600, true);
+      intmoduleSerialStart(57600, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
       break;
 #endif
 

@@ -176,9 +176,6 @@ enum MenuModelSetupItems {
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > MAX_SWITCH_PER_LINE ? TITLE_ROW : HIDDEN_ROW)
 #endif
 
-#define IF_INTERNAL_MODULE_ON(x)       (IS_INTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW)
-#define IF_EXTERNAL_MODULE_ON(x)       (IS_EXTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW)
-
 #if defined(INTERNAL_MODULE_PXX1)
 #define INTERNAL_MODULE_TYPE_ROWS      ((isModuleXJT(INTERNAL_MODULE) || isModulePXX2(INTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0) // Module type + RF protocols
 #else
@@ -190,8 +187,6 @@ enum MenuModelSetupItems {
 #elif defined(PCBSKY9X)
   #define OUTPUT_TYPE_ROW
 #endif
-
-#define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
 
 inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 {
@@ -283,7 +278,7 @@ void onBluetoothConnectMenu(const char * result)
   #define INTERNAL_MODULE_ROWS \
     LABEL(InternalModule), \
       INTERNAL_MODULE_TYPE_ROWS, \
-      INTERNAL_MODULE_CHANNELS_ROWS, \
+      MODULE_CHANNELS_ROWS(INTERNAL_MODULE),  \
       IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleRxNumAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1)), \
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), /* RxNum */ \
       EXTERNAL_ANTENNA_ROW \
@@ -334,13 +329,13 @@ void menuModelSetup(event_t event)
     LABEL(ExternalModule),
       EXTERNAL_MODULE_TYPE_ROW(),
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-      EXTERNAL_MODULE_POWER_ROW,
-      MULTIMODULE_STATUS_ROWS
-      EXTERNAL_MODULE_CHANNELS_ROWS,
-      IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, EXTERNAL_MODULE_BIND_ROWS),      // line reused for PPM: PPM settings
+      MODULE_POWER_ROW(EXTERNAL_MODULE),
+      MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
+      MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
+      IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),      // line reused for PPM: PPM settings
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                    // RxNum
-      IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, EXTERNAL_MODULE_OPTION_ROW),
-      MULTIMODULE_MODULE_ROWS
+      IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
+      MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
       FAILSAFE_ROWS(EXTERNAL_MODULE),
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),                          // Range check and Register buttons
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                          // Module options
@@ -355,13 +350,13 @@ void menuModelSetup(event_t event)
     LABEL(ExternalModule),
     EXTERNAL_MODULE_TYPE_ROW(),
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-    MULTIMODULE_STATUS_ROWS
-    EXTERNAL_MODULE_CHANNELS_ROWS,
-    EXTERNAL_MODULE_BIND_ROWS,
+    MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
+    MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
+    MODULE_BIND_ROWS(EXTERNAL_MODULE),
     OUTPUT_TYPE_ROW
-    EXTERNAL_MODULE_OPTION_ROW,
-    MULTIMODULE_MODULE_ROWS
-    EXTERNAL_MODULE_POWER_ROW,
+    MODULE_OPTION_ROW(EXTERNAL_MODULE),
+    MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
+    MODULE_POWER_ROW(EXTERNAL_MODULE),
     FAILSAFE_ROWS(EXTERNAL_MODULE),
     EXTRA_MODULE_ROWS
     TRAINER_ROWS
@@ -1066,26 +1061,24 @@ void menuModelSetup(event_t event)
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
-        if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
-          lcdDrawNumber(lcdLastRightPos, y, moduleData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
-          lcdDrawChar(lcdLastRightPos, y, '-');
-          lcdDrawNumber(lcdLastRightPos + FW+1, y, moduleData.channelsStart+sentModuleChannels(moduleIdx), LEFT | (menuHorizontalPosition==1 ? attr : 0));
-          const char * delay = getModuleDelay(moduleIdx);
-          if (delay)
-            lcdDrawText(lcdLastRightPos+4, y, delay, SMLSIZE);
-          if (attr && s_editMode > 0) {
-            switch (menuHorizontalPosition) {
-              case 0:
-                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
-                break;
-              case 1:
-                CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), moduleData.type == MODULE_TYPE_ISRM_PXX2 ? isPxx2IsrmChannelsCountAllowed : nullptr);
-                if (checkIncDec_Ret && moduleData.type == MODULE_TYPE_PPM) {
-                  setDefaultPpmFrameLength(moduleIdx);
-                }
-                break;
-            }
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
+        lcdDrawNumber(lcdLastRightPos, y, moduleData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
+        lcdDrawChar(lcdLastRightPos, y, '-');
+        lcdDrawNumber(lcdLastRightPos + FW+1, y, moduleData.channelsStart+sentModuleChannels(moduleIdx), LEFT | (menuHorizontalPosition==1 ? attr : 0));
+        const char * delay = getModuleDelay(moduleIdx);
+        if (delay)
+          lcdDrawText(lcdLastRightPos+4, y, delay, SMLSIZE);
+        if (attr && s_editMode > 0) {
+          switch (menuHorizontalPosition) {
+            case 0:
+              CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
+              break;
+            case 1:
+              CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), moduleData.type == MODULE_TYPE_ISRM_PXX2 ? isPxx2IsrmChannelsCountAllowed : nullptr);
+              if (checkIncDec_Ret && moduleData.type == MODULE_TYPE_PPM) {
+                setDefaultPpmFrameLength(moduleIdx);
+              }
+              break;
           }
         }
         break;
@@ -1270,8 +1263,8 @@ void menuModelSetup(event_t event)
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
-            if (multiBindStatus == MULTI_BIND_FINISHED) {
-              multiBindStatus = MULTI_NORMAL_OPERATION;
+            if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
+              setMultiBindStatus(moduleIdx, MULTI_NORMAL_OPERATION);
               s_editMode = 0;
             }
 #endif
@@ -1321,7 +1314,7 @@ void menuModelSetup(event_t event)
 
 #if defined(MULTIMODULE)
             if (newFlag == MODULE_MODE_BIND) {
-              multiBindStatus = MULTI_BIND_INITIATED;
+              setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
             }
 #endif
 
@@ -1532,7 +1525,7 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
 
         char statusText[64];
-        multiModuleStatus.getStatusString(statusText);
+        getMultiModuleStatus(EXTERNAL_MODULE).getStatusString(statusText);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
         break;
       }
@@ -1541,7 +1534,7 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_MODULE_SYNC);
 
         char statusText[64];
-        multiSyncStatus.getRefreshString(statusText);
+        getMultiSyncStatus(EXTERNAL_MODULE).getRefreshString(statusText);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
         break;
       }

@@ -208,19 +208,27 @@ enum TrainerMode {
 
 #if defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
+#elif defined(RADIO_T16)
+    #define TRAINER_MODE_MAX()           TRAINER_MODE_SLAVE
 #elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #else
   #define TRAINER_MODE_MAX()             HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(HARDWARE_INTERNAL_MODULE)
   #define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE)
-#elif defined(PCBSKY9X)
+#else
   #define IS_INTERNAL_MODULE_ENABLED() (false)
 #endif
 
 #define IS_EXTERNAL_MODULE_ENABLED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+
+#if defined(HARDWARE_INTERNAL_MODULE)
+  #define IS_MODULE_ENABLED(moduleIdx)         (moduleIdx==INTERNAL_MODULE ? IS_INTERNAL_MODULE_ENABLED() : moduleIdx==EXTERNAL_MODULE ? IS_EXTERNAL_MODULE_ENABLED() : false)
+#else
+  #define IS_MODULE_ENABLED(moduleIdx)         (moduleIdx==EXTERNAL_MODULE ? IS_EXTERNAL_MODULE_ENABLED() : false)
+#endif
 
 enum UartModes {
 #if defined(CLI) || defined(DEBUG)

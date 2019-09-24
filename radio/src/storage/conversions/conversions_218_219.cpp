@@ -124,9 +124,11 @@ void convertModelData_218_to_219(ModelData &model)
   memclear(&newModel.header.bitmap[10], 4);
   memcpy(newModel.timers, oldModel.timers, offsetof(ModelData_v218, mixData) - offsetof(ModelData_v218, timers));
 
+#if defined(BLUETOOTH)
   // trainer battery compartment removed
   if (newModel.trainerData.mode >= TRAINER_MODE_MASTER_BLUETOOTH)
     newModel.trainerData.mode -= 1;
+#endif
 #endif
 
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));

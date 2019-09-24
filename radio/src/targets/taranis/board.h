@@ -121,7 +121,7 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #endif
 
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 void intmoduleSendByte(uint8_t byte);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
@@ -130,6 +130,7 @@ void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inver
 void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
+void extmoduleSendInvertedByte(uint8_t byte);
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
@@ -670,7 +671,7 @@ void sportSendByte(uint8_t byte);
 void sportSendByteLoop(uint8_t byte);
 void sportStopSendByteLoop();
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
-uint8_t telemetryGetByte(uint8_t * byte);
+bool telemetryGetByte(uint8_t * byte);
 void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 

@@ -34,7 +34,7 @@
 #if defined(MULTIMODULE)
 inline bool isModuleMultimodule(uint8_t idx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE;
+  return g_model.moduleData[idx].type == MODULE_TYPE_MULTIMODULE;
 }
 
 inline bool isModuleMultimoduleDSM2(uint8_t idx)
@@ -350,8 +350,10 @@ inline bool isModuleFailsafeAvailable(uint8_t idx)
     return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(idx))
-    return multiModuleStatus.isValid() && multiModuleStatus.supportsFailsafe();
+  if (isModuleMultimodule(idx)){
+    MultiModuleStatus& status = getMultiModuleStatus(idx);
+    return status.isValid() && status.supportsFailsafe();
+  }
 #endif
 
   if (isModuleR9M(idx))

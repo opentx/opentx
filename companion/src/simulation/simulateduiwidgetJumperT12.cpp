@@ -8,7 +8,6 @@ SimulatedUIWidgetJumperT12::SimulatedUIWidgetJumperT12(SimulatorInterface *simul
   ui(new Ui::SimulatedUIWidgetJumperT12)
 {
   RadioUiAction * act;
-  QPolygon polygon;
 
   ui->setupUi(this);
 
