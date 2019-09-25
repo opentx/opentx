@@ -137,7 +137,6 @@
     <file>images/simulator/X9E/right_enter.png</file>
     <file>images/simulator/X9E/top.png</file>
     <file>images/simulator/X9LITE/bottom.png</file>
-    <file>images/simulator/X9LITE/center_LCD.png</file>
     <file>images/simulator/X9LITE/left.png</file>
     <file>images/simulator/X9LITE/left_exit.png</file>
     <file>images/simulator/X9LITE/left_menu.png</file>
@@ -145,7 +144,6 @@
     <file>images/simulator/X9LITE/left_scrnshot.png</file>
     <file>images/simulator/X9LITE/right.png</file>
     <file>images/simulator/X9LITE/right_ent.png</file>
-    <file>images/simulator/X9LITE/right_rotary_encoder.png</file>
     <file>images/simulator/X9LITE/top.png</file>
     <file>images/simulator/XLITE/bottom.png</file>
     <file>images/simulator/XLITE/left.png</file>
