@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>570</width>
+    <width>650</width>
     <height>208</height>
    </rect>
   </property>
@@ -18,14 +18,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>570</width>
+    <width>580</width>
     <height>208</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>570</width>
-    <height>208</height>
+    <width>605</width>
+    <height>245</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -60,14 +60,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>157</width>
-       <height>186</height>
+       <width>173</width>
+       <height>210</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>157</width>
-       <height>186</height>
+       <width>173</width>
+       <height>210</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -91,7 +91,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>424</width>
+       <width>603</width>
        <height>128</height>
       </size>
      </property>
@@ -110,14 +110,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>157</width>
-       <height>186</height>
+       <width>174</width>
+       <height>210</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>157</width>
-       <height>186</height>
+       <width>174</width>
+       <height>210</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -136,13 +136,13 @@
      <property name="minimumSize">
       <size>
        <width>256</width>
-       <height>48</height>
+       <height>35</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>256</width>
-       <height>48</height>
+       <height>35</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -161,13 +161,13 @@
      <property name="minimumSize">
       <size>
        <width>256</width>
-       <height>10</height>
+       <height>46</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>256</width>
-       <height>10</height>
+       <height>46</height>
       </size>
      </property>
      <property name="styleSheet">
