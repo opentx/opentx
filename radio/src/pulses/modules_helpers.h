@@ -339,24 +339,24 @@ inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
   return false;
 }
 
-inline bool isModuleFailsafeAvailable(uint8_t idx)
+inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 {
 #if defined(PXX2)
-  if (isModuleISRM(idx))
+  if (isModuleISRM(moduleIdx))
     return true;
 #endif
 
-  if (isModuleXJT(idx))
-    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
+  if (isModuleXJT(moduleIdx))
+    return g_model.moduleData[moduleIdx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(idx)){
-    MultiModuleStatus& status = getMultiModuleStatus(idx);
+  if (isModuleMultimodule(moduleIdx)){
+    MultiModuleStatus& status = getMultiModuleStatus(moduleIdx);
     return status.isValid() && status.supportsFailsafe();
   }
 #endif
 
-  if (isModuleR9M(idx))
+  if (isModuleR9M(moduleIdx))
     return true;
 
   return false;

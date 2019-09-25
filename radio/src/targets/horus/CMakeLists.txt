@@ -110,8 +110,8 @@ if(INTERNAL_MODULE_PXX2)
 endif()
 
 if(INTERNAL_MODULE_MULTI)
-    add_definitions(-DHARDWARE_INTERNAL_MODULE)
-    add_definitions(-DINTERNAL_MODULE_MULTI)
+  add_definitions(-DHARDWARE_INTERNAL_MODULE)
+  add_definitions(-DINTERNAL_MODULE_MULTI)
 endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
