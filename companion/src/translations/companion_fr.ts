@@ -95,7 +95,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="20"/>
         <source>Edit Settings</source>
-        <translation>Éditer les réglages</translation>
+        <translation>Éditer les paramètres</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
@@ -197,7 +197,7 @@ Manche Droit:  Profondeur, Direction
         <location filename="../apppreferencesdialog.ui" line="417"/>
         <location filename="../apppreferencesdialog.ui" line="600"/>
         <source>The profile specific folder,  if set, will override general Backup folder</source>
-        <translation>Dossier de sauvegarde spécifique au profil courant, si défini remplace le réglage de l&apos;application</translation>
+        <translation>Dossier de sauvegarde spécifique au profil courant, si défini remplace le paramètre de l&apos;application</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="420"/>
@@ -207,12 +207,12 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="574"/>
         <source>If set it will override the application general setting</source>
-        <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
+        <translation>Si défini, remplace le paramètre de l&apos;application pour ce profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="551"/>
         <source>if set, will override general backup enable</source>
-        <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
+        <translation>Si défini, remplace le paramètre de l&apos;application pour ce profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="216"/>
@@ -362,7 +362,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="1143"/>
         <source>Releases (stable)</source>
-        <translation>Officielle (stable)</translation>
+        <translation>Officiel (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1148"/>
@@ -407,7 +407,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="455"/>
         <source>Other Settings</source>
-        <translation>Autres réglages</translation>
+        <translation>Autres paramètres</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="616"/>
@@ -422,7 +422,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="699"/>
         <source>Application Settings</source>
-        <translation>Réglages de l&apos;application</translation>
+        <translation>Paramètres de l&apos;application</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="803"/>
@@ -438,7 +438,7 @@ Manche Droit:  Profondeur, Direction
         <location filename="../apppreferencesdialog.ui" line="554"/>
         <location filename="../apppreferencesdialog.ui" line="973"/>
         <source>Enable automatic backup before writing firmware</source>
-        <translation>Sauvegarder les réglages et modèles automatiquement lors des transferts</translation>
+        <translation>Sauvegarder les paramètres et modèles automatiquement lors des transferts</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="712"/>
@@ -649,12 +649,12 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.cpp" line="278"/>
         <source>AVAILABLE: Radio settings of unknown age</source>
-        <translation>DISPONIBLE: Réglages enregistrés à une date inconnue</translation>
+        <translation>DISPONIBLE: Paramètres enregistrés à une date inconnue</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="280"/>
         <source>AVAILABLE: Radio settings stored %1</source>
-        <translation>DISPONIBLE: Réglages enregistrés le %1</translation>
+        <translation>DISPONIBLE: Paramètres enregistrés le %1</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="297"/>
@@ -665,7 +665,7 @@ Manche Droit:  Profondeur, Direction
         <location filename="../apppreferencesdialog.cpp" line="321"/>
         <location filename="../apppreferencesdialog.cpp" line="331"/>
         <source>Select your Models and Settings backup folder</source>
-        <translation>Sélectionner le dossier dans lequel une sauvegarde des réglages et modèles sera placée automatiquement lors de chaque opération</translation>
+        <translation>Sélectionner le dossier dans lequel une sauvegarde des paramètres et modèles sera placée automatiquement lors de chaque opération</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="341"/>
@@ -1030,7 +1030,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../constants.h" line="69"/>
         <source>Application Settings</source>
-        <translation>Réglages de l&apos;application</translation>
+        <translation>Paramètres de l&apos;application</translation>
     </message>
     <message>
         <location filename="../constants.h" line="55"/>
@@ -1040,7 +1040,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../constants.h" line="56"/>
         <source>Radio and Models settings</source>
-        <translation>Réglages Radio et Modèles</translation>
+        <translation>Paramètres Radio et Modèles</translation>
     </message>
     <message>
         <location filename="../warnings.h" line="30"/>
@@ -2539,37 +2539,37 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="131"/>
         <source>Source Folder:</source>
-        <translation>Dosssier Source:</translation>
+        <translation>Dosssier &quot;Local&quot;:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="137"/>
         <source>Destination Folder:</source>
-        <translation>Dossier Destination:</translation>
+        <translation>Dossier &quot;Radio&quot;:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
         <source>%1%2 Both directions, to destination folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Destination</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par &quot;Radio&quot;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
         <source>%1%2 Both directions, to source folder first</source>
-        <translation>%1%2 Bidirectionnel, en commençant par le dossier Source</translation>
+        <translation>%1%2 Bidirectionnel, en commençant par &quot;Local&quot;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
         <source> %1  Only from source folder to destination folder</source>
-        <translation> %1 Uniquement du dossier Source vers le dossier Destination</translation>
+        <translation> %1 Uniquement de &quot;Local&quot; vers &quot;Radio&quot;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
         <source> %1  Only from destination folder to source folder</source>
-        <translation> %1 Uniquement du dossier Destination vers le dossier Source</translation>
+        <translation> %1 Uniquement de &quot;Radio&quot; vers &quot;Local&quot;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="151"/>
         <source>How to handle overwriting files which already exist in the destination folder.</source>
-        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier Destination.</translation>
+        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier de destination.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="152"/>
@@ -2791,17 +2791,17 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="488"/>
         <source>Source folder not found.</source>
-        <translation>Dossier Source non trouvé.</translation>
+        <translation>Dosssier &quot;Local&quot; non trouvé.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="490"/>
         <source>Destination folder not found.</source>
-        <translation>Dossier Destination non trouvé.</translation>
+        <translation>Dosssier &quot;Radio&quot; non trouvé.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="492"/>
         <source>Source and destination folders are the same.</source>
-        <translation>Les dossiers Source et Destination sont les mêmes.</translation>
+        <translation>Les dossiers &quot;Local&quot; et &quot;Radio&quot; sont les mêmes.</translation>
     </message>
 </context>
 <context>
@@ -3129,7 +3129,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <location filename="../flasheepromdialog.ui" line="26"/>
         <location filename="../flasheepromdialog.cpp" line="253"/>
         <source>Write Models and Settings to Radio</source>
-        <translation>Transférer les réglages et modèles vers la radio</translation>
+        <translation>Transférer les paramètres et modèles vers la radio</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="66"/>
@@ -3144,7 +3144,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flasheepromdialog.ui" line="97"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation>Permet à Companion de transférer des réglages à une ancienne version de firmware</translation>
+        <translation>Permet à Companion de transférer des paramètres à une ancienne version de firmware</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="100"/>
@@ -3159,7 +3159,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flasheepromdialog.ui" line="116"/>
         <source>Backup before Write</source>
-        <translation>Sauvegarder les réglages actuels avant d&apos;écrire</translation>
+        <translation>Sauvegarder les paramètres actuels avant d&apos;écrire</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="123"/>
@@ -3204,12 +3204,12 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flasheepromdialog.cpp" line="165"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation>Données de calibration incorrectes dans le profil, les réglages ne seront pas transférés</translation>
+        <translation>Données de calibration incorrectes dans le profil, les paramètres ne seront pas transférés</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="210"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation>Données de configuration incorrectes dans le profil, les réglages ne seront pas transférés</translation>
+        <translation>Données de configuration incorrectes dans le profil, les paramètres ne seront pas transférés</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="239"/>
@@ -3238,7 +3238,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flasheepromdialog.cpp" line="293"/>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation>Impossible de vérifier la compatibilité des réglages et modèles ! Continuer quand même ?</translation>
+        <translation>Impossible de vérifier la compatibilité des paramètres et modèles ! Continuer quand même ?</translation>
     </message>
 </context>
 <context>
@@ -3291,7 +3291,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flashfirmwaredialog.ui" line="228"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation>Permet à Companion de transférer des réglages à une ancienne version de firmware</translation>
+        <translation>Permet à Companion de transférer des paramètres à une ancienne version de firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="231"/>
@@ -3301,7 +3301,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flashfirmwaredialog.ui" line="241"/>
         <source>Backup and restore Models and Settings</source>
-        <translation>Sauvegarder et restaurer les réglages et modèles</translation>
+        <translation>Sauvegarder et restaurer les paramètres et modèles</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="285"/>
@@ -3397,7 +3397,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="321"/>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation>Impossible de convertir les réglages et modèles pour ce firmware, les données originales vont être utilisées</translation>
+        <translation>Impossible de convertir les paramètres et modèles pour ce firmware, les données originales vont être utilisées</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="325"/>
@@ -3407,7 +3407,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="325"/>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation>Impossible de restaurer les réglages et modèles sur la radio. Le fichier peut être récupéré ici: %1</translation>
+        <translation>Impossible de restaurer les paramètres et modèles sur la radio. Le fichier peut être récupéré ici: %1</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="329"/>
@@ -3914,7 +3914,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generaledit.ui" line="20"/>
         <source>Radio settings</source>
-        <translation>Réglages Radio</translation>
+        <translation>Paramètres Radio</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="105"/>
@@ -3931,12 +3931,12 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <message>
         <location filename="../generaledit/generaledit.ui" line="84"/>
         <source>Store calib. and hw settings in selected profile</source>
-        <translation>Sauver étalonnage et réglages hw dans profil</translation>
+        <translation>Sauver étalonnage et paramètres hw dans profil</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="55"/>
         <source>Retrieve calib. and hw settings from profile</source>
-        <translation>Lire étalonnage et réglages hw du profil</translation>
+        <translation>Lire étalonnage et paramètres hw du profil</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="60"/>
@@ -4835,7 +4835,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2069"/>
         <source>Beeper Mode</source>
-        <translation>Réglage des bips</translation>
+        <translation>Paramètre des bips</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2307"/>
@@ -6051,7 +6051,7 @@ Les colonnes contenant l&apos;altitude &quot;GAlt&quot; et la vitesse &quot;GSpd
     <message>
         <location filename="../mainwindow.cpp" line="1223"/>
         <source>Show fuses dialog</source>
-        <translation>Afficher les réglages des fusibles</translation>
+        <translation>Afficher les paramètres des fusibles</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1354"/>
@@ -6190,18 +6190,18 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1229"/>
         <source>Write Models and Settings To Radio</source>
-        <translation>Transférer les réglages et modèles vers la radio</translation>
+        <translation>Transférer les paramètres et modèles vers la radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1229"/>
         <source>Write Models and Settings to Radio</source>
-        <translation>Transférer les réglages et modèles vers la radio</translation>
+        <translation>Transférer les paramètres et modèles vers la radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="963"/>
         <location filename="../mainwindow.cpp" line="1230"/>
         <source>Read Models and Settings from Radio</source>
-        <translation>Lire les réglages et modèles depuis la radio</translation>
+        <translation>Lire les paramètres et modèles depuis la radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1136"/>
@@ -6251,7 +6251,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1233"/>
         <source>Save a complete backup file of all settings and model data in the Radio</source>
-        <translation>Créer une copie de sauvegarde de tous les réglages et modèles de la radio</translation>
+        <translation>Créer une copie de sauvegarde de tous les paramètres et modèles de la radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1234"/>
@@ -6323,7 +6323,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
         <location filename="../mainwindow.cpp" line="767"/>
         <location filename="../mainwindow.cpp" line="1206"/>
         <source>Open Models and Settings file</source>
-        <translation>Ouvrir un fichier de réglages et modèles</translation>
+        <translation>Ouvrir un fichier de paramètres et modèles</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="774"/>
@@ -6334,7 +6334,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1230"/>
         <source>Read Models and Settings From Radio</source>
-        <translation>Lire les réglages et modèles depuis la radio</translation>
+        <translation>Lire les paramètres et modèles depuis la radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="417"/>
@@ -6374,7 +6374,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="971"/>
         <source>Models and Settings read</source>
-        <translation>Lecture des modèles et réglages</translation>
+        <translation>Lecture des modèles et paramètres</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="353"/>
@@ -6389,12 +6389,12 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="896"/>
         <source>Local Folder</source>
-        <translation>Dossier local</translation>
+        <translation>Dossier &quot;Local&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="897"/>
         <source>Radio Folder</source>
-        <translation>Dossier Radio</translation>
+        <translation>Dossier &quot;Radio&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="979"/>
@@ -6425,13 +6425,13 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1205"/>
         <source>Create a new Models and Settings file</source>
-        <translation>Créer un nouveau fichier de réglages et modèles</translation>
+        <translation>Créer un nouveau fichier de paramètres et modèles</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
         <location filename="../mainwindow.cpp" line="1208"/>
         <source>Save Models and Settings file</source>
-        <translation>Enregistrer le fichier de réglages et modèles</translation>
+        <translation>Enregistrer le fichier de paramètres et modèles</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
@@ -6451,7 +6451,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1209"/>
         <source>Close Models and Settings file</source>
-        <translation>Fermer le fichier de réglages et modèles</translation>
+        <translation>Fermer le fichier de paramètres et modèles</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1210"/>
@@ -6466,7 +6466,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1236"/>
         <source>Create a new Radio Settings Profile</source>
-        <translation>Créer un nouveau profil de réglages et modèles</translation>
+        <translation>Créer un nouveau profil de paramètres et modèles</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1237"/>
@@ -6476,12 +6476,12 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1237"/>
         <source>Duplicate current Radio Settings Profile</source>
-        <translation>Dupliquer les réglages radio du profil actuel</translation>
+        <translation>Dupliquer les paramètres radio du profil actuel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1238"/>
         <source>Delete the current Radio Settings Profile</source>
-        <translation>Supprimer les réglages radio du profil actuel</translation>
+        <translation>Supprimer les paramètres radio du profil actuel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1495"/>
@@ -6522,17 +6522,17 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="346"/>
         <source>No Companion release candidates are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;candidate&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;candidate&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="348"/>
         <source>No nightly Companion builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;nightly&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;nightly&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
         <source>No Companion release builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucune version &quot;officielle&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucune version &quot;officielle&quot; de Companion n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;candidate&quot; ou &quot;nightly&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="378"/>
@@ -6542,17 +6542,17 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="473"/>
         <source>No firmware release candidates are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;candidate&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;candidate&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="475"/>
         <source>No firmware nightly builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;nightly&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;nightly&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;officiel&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="477"/>
         <source>No firmware release builds are currently being served for this version, please switch release channel</source>
-        <translation>Aucun firmware &quot;officiel&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal officiel</translation>
+        <translation>Aucun firmware &quot;officiel&quot; n&apos;est actuellement disponible sur ce serveur, veuillez commuter sur le canal &quot;candidate&quot; ou &quot;nightly&quot;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="481"/>
@@ -6640,22 +6640,22 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1240"/>
         <source>Export Application Settings..</source>
-        <translation>Exporter les réglages de l&apos;application...</translation>
+        <translation>Exporter Préférences Application...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1240"/>
         <source>Save all the current %1 and Simulator settings (including radio profiles) to a file.</source>
-        <translation>Enregistrez tous les réglages actuels %1 et du simulateur (y compris les profils radio) dans un fichier.</translation>
+        <translation>Enregistrez tous les paramètres actuels %1 et du simulateur (y compris les profils radio) dans un fichier.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1241"/>
         <source>Import Application Settings..</source>
-        <translation>Importer les réglages de l&apos;application...</translation>
+        <translation>Importer les paramètres de l&apos;application...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1241"/>
         <source>Load %1 and Simulator settings from a prevously exported settings file.</source>
-        <translation>Charger les réglages %1 et les réglages de Simulation depuis un fichier précédemment exporté.</translation>
+        <translation>Charger les paramètres %1 et les paramètres de Simulation depuis un fichier précédemment exporté.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1243"/>
@@ -6790,17 +6790,17 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1725"/>
         <source>Please save or close all modified files before importing settings</source>
-        <translation>Veuillez sauvegarder ou fermer tous les fichiers modifiés avant d&apos;importer les réglages</translation>
+        <translation>Veuillez sauvegarder ou fermer tous les fichiers modifiés avant d&apos;importer les paramètres</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1728"/>
         <source>&lt;html&gt;&lt;p&gt;%1 and Simulator settings can be imported (restored) from a previosly saved export (backup) file. This will replace current settings with any settings found in the file.&lt;/p&gt;&lt;p&gt;An automatic backup of the current settings will be attempted. But if the current settings are useful then it is recommended that you make a manual backup first.&lt;/p&gt;&lt;p&gt;For best results when importing settings, &lt;b&gt;close any other %1 windows you may have open, and make sure the standalone Simulator application is not running.&lt;/p&gt;&lt;p&gt;Do you wish to continue?&lt;/p&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;p&gt;%1 et les réglages du simulateur peuvent être importés (restaurés) à partir d’un fichier d’exportation (sauvegarde) préalablement sauvegardé. Ceci remplacera les réglages actuels par tous les réglages trouvés dans le fichier.&lt;/p&gt;&lt;p&gt;Une sauvegarde automatique des réglages actuels sera tentée. Mais si les réglages actuels sont utiles, il est recommandé de commencer par une sauvegarde manuelle.&lt;/p&gt;&lt;p&gt;Pour obtenir de meilleurs résultats lors de l&apos;importation des réglages,&lt;b&gt; fermez les autres fenêtres %1 que vous avez éventuellement ouvertes et assurez-vous que l&apos;application autonome Simulator n&apos;est pas en cours d&apos;exécution. &lt;/p&gt;&lt;p&gt;Souhaitez-vous continuer? &lt;/p&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;p&gt;%1 et les paramètres du simulateur peuvent être importés (restaurés) à partir d’un fichier d’exportation (sauvegarde) préalablement sauvegardé. Ceci remplacera les paramètres actuels par tous les paramètres trouvés dans le fichier.&lt;/p&gt;&lt;p&gt;Une sauvegarde automatique des paramètres actuels sera tentée. Mais si les paramètres actuels sont utiles, il est recommandé de commencer par une sauvegarde manuelle.&lt;/p&gt;&lt;p&gt;Pour obtenir de meilleurs résultats lors de l&apos;importation des paramètres,&lt;b&gt; fermez les autres fenêtres %1 que vous avez éventuellement ouvertes et assurez-vous que l&apos;application autonome Simulator n&apos;est pas en cours d&apos;exécution. &lt;/p&gt;&lt;p&gt;Souhaitez-vous continuer? &lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1736"/>
         <source>Confirm Settings Import</source>
-        <translation>Confirmer les réglages d&apos;importation</translation>
+        <translation>Confirmer les paramètres d&apos;importation</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1741"/>
@@ -6820,17 +6820,17 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1758"/>
         <source>The settings could not be imported.</source>
-        <translation>Les réglages n&apos;ont pas pu être importés.</translation>
+        <translation>Les paramètres n&apos;ont pas pu être importés.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1761"/>
         <source>&lt;html&gt;&lt;p&gt;New settings have been imported from:&lt;br&gt; %1.&lt;/p&gt;&lt;p&gt;%2 will now re-initialize.&lt;/p&gt;&lt;p&gt;Note that you may need to close and restart %2 before some settings like language and icon theme take effect.&lt;/p&gt;</source>
-        <translation>&lt;html&gt;&lt;p&gt;Les nouveaux réglages ont été importés depuis:&lt;br&gt; %1. &lt;/p&gt;&lt;p&gt;%2 sera maintenant réinitialisé.&lt;/p&gt;&lt;p&gt;Notez que vous devrez peut-être fermer et redémarrer %2 avant que certains réglages tels que la langue et le thème d’icône prennent effet.&lt;/p&gt;</translation>
+        <translation>&lt;html&gt;&lt;p&gt;Les nouveaux paramètres ont été importés depuis:&lt;br&gt; %1. &lt;/p&gt;&lt;p&gt;%2 sera maintenant réinitialisé.&lt;/p&gt;&lt;p&gt;Notez que vous devrez peut-être fermer et redémarrer %2 avant que certains paramètres tels que la langue et le thème d’icône prennent effet.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1768"/>
         <source>&lt;p&gt;The previous settings were backed up to:&lt;br&gt; %1&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Les réglages précédents ont été sauvegardés sous:&lt;br&gt; %1 &lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Les paramètres précédents ont été sauvegardés sous:&lt;br&gt; %1 &lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1355"/>
@@ -6865,7 +6865,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1216"/>
         <source>Edit Settings</source>
-        <translation>Éditer les réglages</translation>
+        <translation>Éditer les préférences</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1217"/>
@@ -6948,7 +6948,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1250"/>
         <source>Settings</source>
-        <translation>Réglages</translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1253"/>
@@ -7088,17 +7088,17 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="377"/>
         <source>Edit Radio Settings</source>
-        <translation>Éditer réglages radio</translation>
+        <translation>Éditer paramètres radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="378"/>
         <source>Copy Radio Settings</source>
-        <translation>Copier les réglages radio</translation>
+        <translation>Copier les paramètres radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="379"/>
         <source>Paste Radio Settings</source>
-        <translation>Coller les réglages radio</translation>
+        <translation>Coller les paramètres radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="380"/>
@@ -7261,7 +7261,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1532"/>
         <source>Models and Settings written</source>
-        <translation>Modèle et réglages écrit</translation>
+        <translation>Modèle et paramètres écrit</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1542"/>
@@ -7327,7 +7327,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1552"/>
         <source>Open backup Models and Settings file</source>
-        <translation>Ouvrir la sauvegarde de réglages et modèles</translation>
+        <translation>Ouvrir la sauvegarde de paramètres et modèles</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1588"/>
@@ -7765,7 +7765,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="54"/>
         <source>Heli</source>
-        <translation>Réglages hélico</translation>
+        <translation>Paramètres hélico</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="56"/>
@@ -9817,7 +9817,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aucune radio détectée !&lt;/p&gt;&lt;p&gt;Veuillez vous assurer de maintenir les 2 trims horizontaux vers l&apos;intérieur lors de la mise sous tension de la radio.&lt;/p&gt;&lt;p&gt;Ensuite connecter le câble USB.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: Cette version de Companion ne doit être utilisée pour éditer des réglages que si la version du firmware de la radio est au moins 2.0.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aucune radio détectée !&lt;/p&gt;&lt;p&gt;Veuillez vous assurer de maintenir les 2 trims horizontaux vers l&apos;intérieur lors de la mise sous tension de la radio.&lt;/p&gt;&lt;p&gt;Ensuite connecter le câble USB.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: Cette version de Companion ne doit être utilisée pour éditer des paramètres que si la version du firmware de la radio est au moins 2.0.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
@@ -9910,12 +9910,12 @@ E</translation>
     <message>
         <location filename="../simulation/radiooutputswidget.cpp" line="226"/>
         <source>FM%1</source>
-        <translation type="unfinished">PV%1</translation>
+        <translation>PV%1</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.cpp" line="235"/>
         <source>GV%1</source>
-        <translation type="unfinished">VG%1</translation>
+        <translation>VG%1</translation>
     </message>
 </context>
 <context>
@@ -10914,7 +10914,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/setup.cpp" line="1445"/>
         <source>Profile Settings</source>
-        <translation>Réglages du profil</translation>
+        <translation>Paramètres du profil</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1445"/>
@@ -11767,7 +11767,7 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../styleeditdialog.ui" line="88"/>
         <source>&amp;Reset to default</source>
-        <translation>&amp;Réglages par défaut</translation>
+        <translation>&amp;Paramètres par défaut</translation>
     </message>
     <message>
         <location filename="../styleeditdialog.ui" line="101"/>
@@ -13679,7 +13679,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation>Vérifiez manuellement le sens de chaque commande, et inversez les voies de celles qui répondent dans le mauvais sens. Attention à bien enlever les hélices du modèle avant de l&apos;alimenter la première fois !&lt;br&gt;Veuillez noter que tous les réglages existants du modèle courant seront écrasés !</translation>
+        <translation>Vérifiez manuellement le sens de chaque commande, et inversez les voies de celles qui répondent dans le mauvais sens. Attention à bien enlever les hélices du modèle avant de l&apos;alimenter la première fois !&lt;br&gt;Veuillez noter que tous les paramètres existants du modèle courant seront écrasés !</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="75"/>
