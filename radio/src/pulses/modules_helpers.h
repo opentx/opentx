@@ -346,13 +346,13 @@ inline bool isModuleFailsafeAvailable(uint8_t idx)
     return true;
 #endif
 
+  if (isModuleXJT(idx))
+    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
+  
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(idx))
     return multiModuleStatus.isValid() && multiModuleStatus.supportsFailsafe();
 #endif
-  
-  if (isModuleXJT(idx))
-    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 
   if (isModuleR9M(idx))
     return true;
