@@ -529,9 +529,6 @@ extern const char STR_WAITING_FOR_TX[];
   extern const char STR_SDCARD_ERROR[];
   extern const char STR_NO_SDCARD[];
   extern const char STR_SDCARD_FULL[];
-extern const char STR_NEEDS_FILE[];
-extern const char STR_EXT_MULTI_SPEC[];
-extern const char STR_INT_MULTI_SPEC[];
   extern const char STR_INCOMPATIBLE[];
   extern const char STR_LOGS_PATH[];
   extern const char STR_LOGS_EXT[];
@@ -540,6 +537,9 @@ extern const char STR_INT_MULTI_SPEC[];
   #define STR_UPDATE_LIST STR_DELAYDOWN
 #endif
 
+extern const char STR_NEEDS_FILE[];
+extern const char STR_EXT_MULTI_SPEC[];
+extern const char STR_INT_MULTI_SPEC[];
 extern const char STR_CAT_NOT_EMPTY[];
 extern const char STR_WARNING[];
 extern const char STR_STORAGE_WARNING[];
