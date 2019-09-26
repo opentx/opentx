@@ -282,8 +282,8 @@ bool menuRadioSdManager(event_t _event)
 #endif
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MULTI);
             }
-#endif
           }
+#endif
           else if (!READ_ONLY() && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
             FrSkyFirmwareInformation information;
             if (readFrSkyFirmwareInformation(line, information) == nullptr) {
