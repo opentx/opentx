@@ -220,6 +220,7 @@ void onSdManagerMenu(const char * result)
     FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
     device.flashFirmware(lfn);
   }
+#if defined(MULTIMODULE)
 #if defined(INTERNAL_MODULE_MULTI)
   else if (result == STR_FLASH_INTERNAL_MULTI) {
     getSelectionFullPath(lfn);
@@ -230,6 +231,7 @@ void onSdManagerMenu(const char * result)
     getSelectionFullPath(lfn);
     multiFlashFirmware(EXTERNAL_MODULE, lfn);
   }
+#endif
 #if defined(BLUETOOTH)
   else if (result == STR_FLASH_BLUETOOTH_MODULE) {
     getSelectionFullPath(lfn);

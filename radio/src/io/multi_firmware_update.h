@@ -45,8 +45,8 @@ class MultiFirmwareInformation {
 
     enum MultiFirmwareTelemetryType {
       FIRMWARE_MULTI_TELEM_NONE = 0,
-      FIRMWARE_MULTI_TELEM_STATUS, // erSkyTX
-      FIRMWARE_MULTI_TELEM_MULTI,  // OpenTX
+      FIRMWARE_MULTI_TELEM_MULTI_STATUS,    // erSkyTX
+      FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY, // OpenTX
     };
 
     bool isMultiStmFirmware() const
@@ -71,12 +71,12 @@ class MultiFirmwareInformation {
 
     bool isMultiInternalFirmware() const
     {
-      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_STATUS);
+      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     bool isMultiExternalFirmware() const
     {
-      return (telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_STATUS);
+      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == true && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     const char * readMultiFirmwareInformation(const char * filename);
@@ -97,6 +97,6 @@ class MultiFirmwareInformation {
     const char * readV2Signature(const char * buffer);
 };
 
-const char* multiFlashFirmware(uint8_t module, const char * filename);
+bool multiFlashFirmware(uint8_t module, const char * filename);
 
 #endif //OPENTX_MULTI_FIRMWARE_H

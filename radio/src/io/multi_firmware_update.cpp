@@ -373,9 +373,9 @@ const char * MultiFirmwareInformation::readV1Signature(const char * buffer)
     bootloaderCheck = false;
 
   if(buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 't')
-    telemetryType = FIRMWARE_MULTI_TELEM_MULTI;
+    telemetryType = FIRMWARE_MULTI_TELEM_MULTI_STATUS;
   else if (buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 's')
-    telemetryType = FIRMWARE_MULTI_TELEM_STATUS;
+    telemetryType = FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY;
   else
     telemetryType = FIRMWARE_MULTI_TELEM_NONE;
 
@@ -415,9 +415,9 @@ const char * MultiFirmwareInformation::readV2Signature(const char * buffer)
 
   telemetryType = FIRMWARE_MULTI_TELEM_NONE;
   if (options & 0x400)
-    telemetryType = FIRMWARE_MULTI_TELEM_STATUS;
+    telemetryType = FIRMWARE_MULTI_TELEM_MULTI_STATUS;
   if (options & 0x800)
-    telemetryType = FIRMWARE_MULTI_TELEM_MULTI;
+    telemetryType = FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY;
 
   return nullptr;
 }
@@ -454,22 +454,39 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(FIL * file)
   return readV1Signature(buffer);
 }
 
-const char * multiFlashFirmware(uint8_t moduleIdx, const char * filename)
+bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
 {
   FIL file;
-  const char * result = nullptr;
 
   if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return "Error opening file";
+    POPUP_WARNING("Not a valid file");
+    return false;
   }
 
-  MultiFirmwareInformation information;
-  result = information.readMultiFirmwareInformation(&file);
-  if (result) {
+  MultiFirmwareInformation firmwareFile;
+  if (firmwareFile.readMultiFirmwareInformation(&file)) {
     f_close(&file);
-    return result;
+    POPUP_WARNING("Not a valid file");
+    return false;
   }
   f_lseek(&file, 0);
+
+  if (moduleIdx == EXTERNAL_MODULE) {
+    if (!firmwareFile.isMultiExternalFirmware()) {
+      f_close(&file);
+      POPUP_WARNING(STR_NEEDS_FILE);
+      SET_WARNING_INFO(STR_EXT_MULTI_SPEC, strlen(STR_EXT_MULTI_SPEC), 0);
+      return false;
+    }
+  }
+  else {
+    if (!firmwareFile.isMultiInternalFirmware()) {
+      f_close(&file);
+      POPUP_WARNING(STR_NEEDS_FILE);
+      SET_WARNING_INFO(STR_INT_MULTI_SPEC, strlen(STR_INT_MULTI_SPEC), 0);
+      return false;
+    }
+  }
 
   const MultiFirmwareUpdateDriver* driver = &multiExternalSoftSerialUpdateDriver;
 #if defined(INTERNAL_MODULE_MULTI)
@@ -495,7 +512,7 @@ const char * multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
 
-  result = driver->flashFirmware(&file, getBasename(filename));
+  const char * result = driver->flashFirmware(&file, getBasename(filename));
   f_close(&file);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
@@ -535,6 +552,6 @@ const char * multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   //state = SPORT_IDLE;
   resumePulses();
 
-  return result;
+  return !result;
 }
 #endif
