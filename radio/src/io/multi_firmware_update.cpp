@@ -348,9 +348,9 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(const char *
     bootloaderCheck = false;
 
   if(buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 't')
-    telemetryType = FIRMWARE_MULTI_TELEM_MULTI;
+    telemetryType = FIRMWARE_MULTI_TELEM_MULTI_STATUS;
   else if (buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 's')
-    telemetryType = FIRMWARE_MULTI_TELEM_STATUS;
+    telemetryType = FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY;
   else
     telemetryType = FIRMWARE_MULTI_TELEM_NONE;
 
@@ -362,21 +362,34 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(const char *
   return nullptr;
 }
 
-
-
-
-const char * multiFlashFirmware(uint8_t moduleIdx, const char * filename)
+bool MultiFlashFirmware(uint8_t moduleIdx, const char * filename)
 {
   FIL file;
   const char * result = nullptr;
 
-  const char * ext = getFileExtension(filename);
-  if (ext && strcasecmp(ext, UPDATE_MULTI_EXT_BIN)) {
-    return "Wrong file extension";
+  MultiFirmwareInformation firmwareFile;
+  if (firmwareFile.readMultiFirmwareInformation(filename) != nullptr) {
+    POPUP_WARNING("Not a valid file");
+    return false;
+  }
+
+  if (moduleIdx == EXTERNAL_MODULE) {
+    if (!firmwareFile.isMultiExternalFirmware()) {
+      POPUP_WARNING(STR_NEEDS_FILE);
+      SET_WARNING_INFO(STR_EXT_MULTI_SPEC, strlen(STR_EXT_MULTI_SPEC), 0);
+      return false;
+    }
+  }
+  else {
+    if (!firmwareFile.isMultiInternalFirmware()) {
+      POPUP_WARNING(STR_NEEDS_FILE);
+      SET_WARNING_INFO(STR_INT_MULTI_SPEC, strlen(STR_INT_MULTI_SPEC), 0);
+      return false;
+    }
   }
 
   if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return "Error opening file";
+    return false;
   }
 
   pausePulses();

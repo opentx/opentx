@@ -42,8 +42,8 @@ class MultiFirmwareInformation {
     };
 
     enum MultiFirmwareTelemetryType {
-      FIRMWARE_MULTI_TELEM_MULTI,
-      FIRMWARE_MULTI_TELEM_STATUS,
+      FIRMWARE_MULTI_TELEM_MULTI_STATUS,
+      FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY,
       FIRMWARE_MULTI_TELEM_NONE,
     };
 
@@ -69,12 +69,12 @@ class MultiFirmwareInformation {
 
     bool isMultiInternalFirmware() const
     {
-      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_STATUS);
+      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     bool isMultiExternalFirmware() const
     {
-      return (telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_STATUS);
+      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == true && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     const char * readMultiFirmwareInformation(const char * filename);
