@@ -362,7 +362,7 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(const char *
   return nullptr;
 }
 
-bool MultiFlashFirmware(uint8_t moduleIdx, const char * filename)
+bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
 {
   FIL file;
   const char * result = nullptr;

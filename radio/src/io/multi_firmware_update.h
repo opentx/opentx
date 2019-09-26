@@ -91,6 +91,6 @@ class MultiFirmwareInformation {
     uint8_t firmwareVersionSubRevision;
 };
 
-const char* multiFlashFirmware(uint8_t module, const char * filename);
+bool multiFlashFirmware(uint8_t module, const char * filename);
 
 #endif //OPENTX_MULTI_FIRMWARE_H
