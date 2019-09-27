@@ -1562,7 +1562,9 @@ bool menuModelSetup(event_t event)
             }
             else {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-              lcdDrawNumber(LCD_W-10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
+              if (pdef->optionsstr == STR_MULTI_RFTUNE)  {
+                lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
+              }
             }
           }
         }
