@@ -910,7 +910,11 @@
 #if defined(PCBXLITE)
 #define EXTERNAL_ANTENNA
 #endif
-
+#if defined(PCBXLITES) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+  #define INTERNAL_MODULE_PXX2
+#else
+  #define INTERNAL_MODULE_PXX1
+#endif
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
