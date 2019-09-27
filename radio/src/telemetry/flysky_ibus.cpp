@@ -140,8 +140,7 @@ int32_t getALT(uint32_t value);
 
 static void processFlySkySensor(const uint8_t *packet, uint8_t type)
 {
-  //cheating but efficient
-  uint8_t * buffer = new uint8_t[8];
+  uint8_t buffer[8];
   uint16_t id = packet[0];
   const uint8_t instance = packet[1];
   int32_t value;
