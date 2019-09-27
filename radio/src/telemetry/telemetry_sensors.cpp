@@ -527,6 +527,9 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
       case PROTOCOL_TELEMETRY_FLYSKY_IBUS:
         flySkySetDefault(index,id, subId, instance);
         break;
+      case PROTOCOL_TELEMETRY_HITEC:
+        hitecSetDefault(index, id, subId, instance);
+        break;
 #endif
 #if defined(LUA)
      case PROTOCOL_TELEMETRY_LUA:
@@ -599,10 +602,10 @@ const UnitConversionRule unitConversionTable[] = {
   { UNIT_KMH, UNIT_FEET_PER_SECOND,                911,  1000}, // 1 km/h = 0.911344415 feet per second
 
   { UNIT_MILLILITERS, UNIT_FLOZ,                   100,  2957},
-  
+
   { UNIT_RADIANS, UNIT_DEGREE,                   10000,   175}, // 1 rad = 57.29578 deg
   { UNIT_DEGREE, UNIT_RADIANS,                     175, 10000}, // 1 deg = ‪0,0174533‬ rad
-  
+
   { 0, 0, 0, 0}   // termination
 };
 

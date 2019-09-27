@@ -143,7 +143,7 @@ endif()
 
 if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
-  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
+  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/hitec.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
 endif()
 
 if(CROSSFIRE)

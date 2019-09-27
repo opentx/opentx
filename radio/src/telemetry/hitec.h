@@ -18,15 +18,13 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _FLYSKY_IBUS_H
-#define _FLYSKY_IBUS_H
+#ifndef _HITEC_H
+#define _HITEC_H
 
-void processFlySkyTelemetryData(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount);
-void flySkySetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
+void processHitecTelemetryData(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount);
+void hitecSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 
 // Used by multi protocol
-void processFlySkyPacket(const uint8_t *packet);
-void processFlySkyPacketAC(const uint8_t *packet);
-
+void processHitecPacket(const uint8_t *packet);
 
 #endif
