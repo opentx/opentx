@@ -160,6 +160,12 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module)
   status.patch = data[4];
   status.lastUpdate = get_tmr10ms();
 
+  if (getMultiModuleStatus(module).requiresFailsafeCheck) {
+    getMultiModuleStatus(module).requiresFailsafeCheck = false;
+    if (getMultiModuleStatus(module).supportsFailsafe() &&  g_model.moduleData[EXTERNAL_MODULE].failsafeMode == FAILSAFE_NOT_SET)
+      POPUP_WARNING(STR_NO_FAILSAFE);
+  }
+
   if (wasBinding && !status.isBinding() && getMultiBindStatus(module) == MULTI_BIND_INITIATED)
     setMultiBindStatus(module, MULTI_BIND_FINISHED);
 }

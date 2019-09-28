@@ -870,7 +870,7 @@ void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
     if (isModuleMultimodule(i)) {
-      multiModuleStatus.requiresFailsafeCheck = true;
+      getMultiModuleStatus(i).requiresFailsafeCheck = true;
     }
     else if (isModuleFailsafeAvailable(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
