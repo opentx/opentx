@@ -95,107 +95,110 @@ data byte 3 -> Alti2L			Altitude filtered
 
 #define HITEC_TELEMETRY_LENGTH 8
 
-struct HitecSensor {
+struct HitecSensor
+{
   const uint16_t id;
-  const char *name;
+  const char * name;
   const TelemetryUnit unit;
   const uint8_t precision;
 };
 
 // telemetry frames
-enum{
-    HITEC_FRAME_00     = 0x00,
-    HITEC_FRAME_11     = 0x11,
-    HITEC_FRAME_12     = 0x12,
-    HITEC_FRAME_13     = 0x13,
-    HITEC_FRAME_14     = 0x14,
-    HITEC_FRAME_15     = 0x15,
-    HITEC_FRAME_16     = 0x16,
-    HITEC_FRAME_17     = 0x17,
-    HITEC_FRAME_18     = 0x18,
-    HITEC_FRAME_19     = 0x19,
-    HITEC_FRAME_1A     = 0x1A,
-    HITEC_FRAME_1B     = 0x1B,
-    HITEC_FRAME_1C     = 0x1C,
-    HITEC_FRAME_22     = 0x22,
+enum
+{
+  HITEC_FRAME_00 = 0x00,
+  HITEC_FRAME_11 = 0x11,
+  HITEC_FRAME_12 = 0x12,
+  HITEC_FRAME_13 = 0x13,
+  HITEC_FRAME_14 = 0x14,
+  HITEC_FRAME_15 = 0x15,
+  HITEC_FRAME_16 = 0x16,
+  HITEC_FRAME_17 = 0x17,
+  HITEC_FRAME_18 = 0x18,
+  HITEC_FRAME_19 = 0x19,
+  HITEC_FRAME_1A = 0x1A,
+  HITEC_FRAME_1B = 0x1B,
+  HITEC_FRAME_1C = 0x1C,
+  HITEC_FRAME_22 = 0x22,
 };
 
 // telemetry sensors ID
-enum{
-    HITEC_ID_RX_VOLTAGE     = 0x0003,    // RX_Batt Voltage
-    HITEC_ID_GPS_LAT_LONG   = 0x1200,    // GPS latitude longitude
-    HITEC_ID_TEMP2          = 0x1304,    // Temperature sensor 2
-    HITEC_ID_GPS_SPEED      = 0x1400,    // GPS speed
-    HITEC_ID_GPS_ALTITUDE   = 0x1402,    // GPS altitude sea level
-    HITEC_ID_TEMP1          = 0x1404,    // Temperature sensor 1
-    HITEC_ID_FUEL           = 0x1500,    // Fuel
-    HITEC_ID_RPM1           = 0x1501,    // RPM1
-    HITEC_ID_RPM2           = 0x1503,    // RPM2
-    HITEC_ID_GPS_DATETIME   = 0x1600,    // GPS date time
-    HITEC_ID_GPS_HEADING    = 0x1700,    // GPS heading
-    HITEC_ID_GPS_COUNT      = 0x1702,    // GPS count
-    HITEC_ID_TEMP3          = 0x1703,    // Temperature sensor 3
-    HITEC_ID_TEMP4          = 0x1704,    // Temperature sensor 4
-    HITEC_ID_VOLTAGE        = 0x1800,    // Voltage sensor
-    HITEC_ID_AMP            = 0x1802,    // Amp sensor
-    HITEC_ID_C50            = 0x1803,    // Amp sensor C50
-    HITEC_ID_C200           = 0x1804,    // Amp sensor C200
-    HITEC_ID_AMP_S1         = 0x1900,    // Amp servo 1 sensor
-    HITEC_ID_AMP_S2         = 0x1901,    // Amp servo 2 sensor
-    HITEC_ID_AMP_S3         = 0x1902,    // Amp servo 3 sensor
-    HITEC_ID_AMP_S4         = 0x1903,    // Amp servo 4 sensor
-    HITEC_ID_AIR_SPEED      = 0x1A02,    // Air speed
-    HITEC_ID_VARIO          = 0x1B00,    // Vario
-    HITEC_ID_ALT            = 0x1B02,    // Vario
-    TX_RSSI_ID              = 0xFF00,    // Pseudo id outside 1 byte range of Hitec sensors
-    TX_LQI_ID               = 0xFF01,    // Pseudo id outside 1 byte range of Hitec sensors
+enum
+{
+  HITEC_ID_RX_VOLTAGE = 0x0003,    // RX_Batt Voltage
+  HITEC_ID_GPS_LAT_LONG = 0x1200,    // GPS latitude longitude
+  HITEC_ID_TEMP2 = 0x1304,    // Temperature sensor 2
+  HITEC_ID_GPS_SPEED = 0x1400,    // GPS speed
+  HITEC_ID_GPS_ALTITUDE = 0x1402,    // GPS altitude sea level
+  HITEC_ID_TEMP1 = 0x1404,    // Temperature sensor 1
+  HITEC_ID_FUEL = 0x1500,    // Fuel
+  HITEC_ID_RPM1 = 0x1501,    // RPM1
+  HITEC_ID_RPM2 = 0x1503,    // RPM2
+  HITEC_ID_GPS_DATETIME = 0x1600,    // GPS date time
+  HITEC_ID_GPS_HEADING = 0x1700,    // GPS heading
+  HITEC_ID_GPS_COUNT = 0x1702,    // GPS count
+  HITEC_ID_TEMP3 = 0x1703,    // Temperature sensor 3
+  HITEC_ID_TEMP4 = 0x1704,    // Temperature sensor 4
+  HITEC_ID_VOLTAGE = 0x1800,    // Voltage sensor
+  HITEC_ID_AMP = 0x1802,    // Amp sensor
+  HITEC_ID_C50 = 0x1803,    // Amp sensor C50
+  HITEC_ID_C200 = 0x1804,    // Amp sensor C200
+  HITEC_ID_AMP_S1 = 0x1900,    // Amp servo 1 sensor
+  HITEC_ID_AMP_S2 = 0x1901,    // Amp servo 2 sensor
+  HITEC_ID_AMP_S3 = 0x1902,    // Amp servo 3 sensor
+  HITEC_ID_AMP_S4 = 0x1903,    // Amp servo 4 sensor
+  HITEC_ID_AIR_SPEED = 0x1A02,    // Air speed
+  HITEC_ID_VARIO = 0x1B00,    // Vario
+  HITEC_ID_ALT = 0x1B02,    // Vario
+  TX_RSSI_ID = 0xFF00,    // Pseudo id outside 1 byte range of Hitec sensors
+  TX_LQI_ID = 0xFF01,    // Pseudo id outside 1 byte range of Hitec sensors
 };
 
 const HitecSensor hitecSensors[] = {
   //frame 00
-  {HITEC_ID_RX_VOLTAGE,       ZSTR_BATT,              UNIT_VOLTS,                  2},  // RX_Batt Voltage
+  {HITEC_ID_RX_VOLTAGE,   ZSTR_BATT,       UNIT_VOLTS,             2},  // RX_Batt Voltage
   //frame 11
   //frame 12
-  {HITEC_ID_GPS_LAT_LONG,     ZSTR_GPS,               UNIT_GPS,                    0},  // GPS position
+  {HITEC_ID_GPS_LAT_LONG, ZSTR_GPS,        UNIT_GPS,               0},  // GPS position
   //frame 13
-  {HITEC_ID_TEMP2,            ZSTR_TEMP2,             UNIT_CELSIUS,                0},  // Temperature sensor 2
+  {HITEC_ID_TEMP2,        ZSTR_TEMP2,      UNIT_CELSIUS,           0},  // Temperature sensor 2
   //frame 14
-  {HITEC_ID_GPS_SPEED,        ZSTR_GSPD,              UNIT_KMH,                    0},  // GPS speed
-  {HITEC_ID_GPS_ALTITUDE,     ZSTR_GPSALT,            UNIT_METERS,                 0},  // GPS altitude sea level
-  {HITEC_ID_TEMP1,            ZSTR_TEMP1,             UNIT_CELSIUS,                0},  // Temperature sensor 1
+  {HITEC_ID_GPS_SPEED,    ZSTR_GSPD,       UNIT_KMH,               0},  // GPS speed
+  {HITEC_ID_GPS_ALTITUDE, ZSTR_GPSALT,     UNIT_METERS,            0},  // GPS altitude sea level
+  {HITEC_ID_TEMP1,        ZSTR_TEMP1,      UNIT_CELSIUS,           0},  // Temperature sensor 1
   //frame 15
-  {HITEC_ID_FUEL,             ZSTR_FUEL,              UNIT_PERCENT,                0},  // Fuel
-  {HITEC_ID_RPM1,             ZSTR_RPM,               UNIT_RPMS,                   0},  // RPM1
-  {HITEC_ID_RPM2,             ZSTR_RPM2,              UNIT_RPMS,                   0},  // RPM2
+  {HITEC_ID_FUEL,         ZSTR_FUEL,       UNIT_PERCENT,           0},  // Fuel
+  {HITEC_ID_RPM1,         ZSTR_RPM,        UNIT_RPMS,              0},  // RPM1
+  {HITEC_ID_RPM2,   ZSTR_RPM2,             UNIT_RPMS,              0},  // RPM2
   //frame 16
-  {HITEC_ID_GPS_DATETIME,     ZSTR_GPS,               UNIT_DATETIME,               0},  // GPS date time
+  {HITEC_ID_GPS_DATETIME, ZSTR_GPS,        UNIT_DATETIME,          0},  // GPS date time
   //frame 17
-  {HITEC_ID_GPS_HEADING,      ZSTR_HDG,               UNIT_DEGREE,                 0},  // GPS Heading
-  {HITEC_ID_GPS_COUNT,        ZSTR_SATELLITES,        UNIT_RAW,                    0},  // GPS count
-  {HITEC_ID_TEMP3,            ZSTR_TEMP3,             UNIT_CELSIUS,                0},  // Temperature sensor 3
-  {HITEC_ID_TEMP4,            ZSTR_TEMP4,             UNIT_CELSIUS,                0},  // Temperature sensor 4
+  {HITEC_ID_GPS_HEADING,  ZSTR_HDG,        UNIT_DEGREE,            0},  // GPS Heading
+  {HITEC_ID_GPS_COUNT,    ZSTR_SATELLITES, UNIT_RAW,               0},  // GPS count
+  {HITEC_ID_TEMP3,  ZSTR_TEMP3,            UNIT_CELSIUS,           0},  // Temperature sensor 3
+  {HITEC_ID_TEMP4,  ZSTR_TEMP4,            UNIT_CELSIUS,           0},  // Temperature sensor 4
   //frame 18
-  {HITEC_ID_VOLTAGE,          ZSTR_A1,                UNIT_VOLTS,                  1},  // Voltage sensor
-  {HITEC_ID_AMP,              ZSTR_CURR,              UNIT_AMPS,                   0},  // Amp sensor
-  {HITEC_ID_C50,              ZSTR_C50,               UNIT_AMPS,                   1},  // Amp sensor C50
-  {HITEC_ID_C200,             ZSTR_C200,              UNIT_AMPS,                   0},  // Amp sensor C200
+  {HITEC_ID_VOLTAGE,      ZSTR_A1,         UNIT_VOLTS,             1},  // Voltage sensor
+  {HITEC_ID_AMP,          ZSTR_CURR,       UNIT_AMPS,              0},  // Amp sensor
+  {HITEC_ID_C50,    ZSTR_C50,              UNIT_AMPS,              1},  // Amp sensor C50
+  {HITEC_ID_C200,   ZSTR_C200,             UNIT_AMPS,              0},  // Amp sensor C200
   //frame 19
-  {HITEC_ID_AMP_S1,           ZSTR_CURR_SERVO1,       UNIT_AMPS,                   1},  // Amp sensor
-  {HITEC_ID_AMP_S2,           ZSTR_CURR_SERVO2,       UNIT_AMPS,                   1},  // Amp sensor
-  {HITEC_ID_AMP_S3,           ZSTR_CURR_SERVO3,       UNIT_AMPS,                   1},  // Amp sensor
-  {HITEC_ID_AMP_S4,           ZSTR_CURR_SERVO4,       UNIT_AMPS,                   1},  // Amp sensor
+  {HITEC_ID_AMP_S1, ZSTR_CURR_SERVO1,      UNIT_AMPS,              1},  // Amp sensor
+  {HITEC_ID_AMP_S2, ZSTR_CURR_SERVO2,      UNIT_AMPS,              1},  // Amp sensor
+  {HITEC_ID_AMP_S3, ZSTR_CURR_SERVO3,      UNIT_AMPS,              1},  // Amp sensor
+  {HITEC_ID_AMP_S4, ZSTR_CURR_SERVO4,      UNIT_AMPS,              1},  // Amp sensor
   //frame 1A
-  {HITEC_ID_AIR_SPEED,        ZSTR_ASPD,              UNIT_KMH,                    0},  // Air speed
+  {HITEC_ID_AIR_SPEED,    ZSTR_ASPD,       UNIT_KMH,               0},  // Air speed
   //frame 1B
-  {HITEC_ID_VARIO,            ZSTR_VSPD,              UNIT_METERS_PER_SECOND,      1},  // Vario
-  {HITEC_ID_ALT,              ZSTR_ALT,               UNIT_METERS,                 1},  // Altitude
+  {HITEC_ID_VARIO,        ZSTR_VSPD,       UNIT_METERS_PER_SECOND, 1},  // Vario
+  {HITEC_ID_ALT,          ZSTR_ALT,        UNIT_METERS,            1},  // Altitude
 
-  {TX_RSSI_ID,                ZSTR_TX_RSSI,           UNIT_RAW,                    0},  // Pseudo id outside 1 byte range of Hitec sensors
-  {TX_LQI_ID,                 ZSTR_TX_QUALITY,        UNIT_RAW,                    0},  // Pseudo id outside 1 byte range of Hitec sensors// Pseudo sensor for TLQI
-  {0x00,                      NULL,                   UNIT_RAW,                    0},  // sentinel
+  {TX_RSSI_ID,            ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors
+  {TX_LQI_ID,             ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors// Pseudo sensor for TLQI
+  {0x00,                  NULL,            UNIT_RAW,               0},  // sentinel
 };
 
-const HitecSensor *getHitecSensor(uint16_t id)
+const HitecSensor * getHitecSensor(uint16_t id)
 {
   for (const HitecSensor * sensor = hitecSensors; sensor->id; sensor++) {
     if (id == sensor->id)
@@ -204,154 +207,153 @@ const HitecSensor *getHitecSensor(uint16_t id)
   return nullptr;
 }
 
-void processHitecPacket(const uint8_t *packet)
+void processHitecPacket(const uint8_t * packet)
 {
-  static uint16_t rssi=0,lqi=0;
+  static uint16_t rssi = 0, lqi = 0;
   // Set TX RSSI Value, reverse MULTIs scaling
-  rssi=((packet[0]*10)+(rssi*90))/100; // quick filtering
-  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, TX_RSSI_ID, 0, 0, rssi>>1, UNIT_RAW, 0);
-  telemetryData.rssi.set(rssi>>1);
-  if(packet[0]>0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  rssi = ((packet[0] * 10) + (rssi * 90)) / 100; // quick filtering
+  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, TX_RSSI_ID, 0, 0, rssi >> 1, UNIT_RAW, 0);
+  telemetryData.rssi.set(rssi >> 1);
+  if (packet[0] > 0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
   // Set TX LQI  Value, reverse MULTIs scaling
-  lqi=((packet[1]*10)+(lqi*90))/100; // quick filtering
-  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, TX_LQI_ID , 0, 0, lqi, UNIT_RAW, 0);
+  lqi = ((packet[1] * 10) + (lqi * 90)) / 100; // quick filtering
+  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, TX_LQI_ID, 0, 0, lqi, UNIT_RAW, 0);
 
-  const HitecSensor *sensor;
-  int32_t value,deg,min,sec,alt,amp;
-  static uint8_t second=0;
-  static int32_t last_alt=0;
-  static uint16_t last_ms=0;
+  const HitecSensor * sensor;
+  int32_t value, deg, min, sec, alt, amp;
+  static uint8_t second = 0;
+  static int32_t last_alt = 0;
+  static uint16_t last_ms = 0;
   uint16_t current_ms;
 
-  switch(packet[2])
-  {
+  switch (packet[2]) {
     case HITEC_FRAME_00:
-      value=(((packet[6]<<8)|packet[7])*100)/28;
+      value = (((packet[6] << 8) | packet[7]) * 100) / 28;
       sensor = getHitecSensor(HITEC_ID_RX_VOLTAGE);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_RX_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_11:
-      value=(((packet[6]<<8)|packet[7])*100)/28;
+      value = (((packet[6] << 8) | packet[7]) * 100) / 28;
       sensor = getHitecSensor(HITEC_ID_RX_VOLTAGE);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_RX_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_12:
       //value=(packet[5]<<24)|(packet[6]<<16)|(packet[3]<<8)|packet[4];
-      min=(int16_t)((packet[5]<<8)|packet[6]);
-      deg=min/100;
-      min=min-deg*100;
-      sec=(int16_t)((packet[3]<<8)|packet[4]);
-      value=deg*1000000+(min*150000+sec*25)/9;
+      min = (int16_t) ((packet[5] << 8) | packet[6]);
+      deg = min / 100;
+      min = min - deg * 100;
+      sec = (int16_t) ((packet[3] << 8) | packet[4]);
+      value = deg * 1000000 + (min * 150000 + sec * 25) / 9;
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_LAT_LONG, 0, 0, value, UNIT_GPS_LATITUDE, 0);
-	  second=packet[7];
+      second = packet[7];
       return;
     case HITEC_FRAME_13:
       //value=(packet[5]<<24)|(packet[6]<<16)|(packet[3]<<8)|packet[4];
-      min=(int16_t)((packet[5]<<8)|packet[6]);
-      deg=min/100;
-      min=min-deg*100;
-      sec=(int16_t)((packet[3]<<8)|packet[4]);
-      value=deg*1000000+(min*150000+sec*25)/9;
+      min = (int16_t) ((packet[5] << 8) | packet[6]);
+      deg = min / 100;
+      min = min - deg * 100;
+      sec = (int16_t) ((packet[3] << 8) | packet[4]);
+      value = deg * 1000000 + (min * 150000 + sec * 25) / 9;
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_LAT_LONG, 0, 0, value, UNIT_GPS_LONGITUDE, 0);
-      value=packet[7]-40;
+      value = packet[7] - 40;
       sensor = getHitecSensor(HITEC_ID_TEMP2);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_TEMP2, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_14:
-      value=(packet[3]<<8)|packet[4];
+      value = (packet[3] << 8) | packet[4];
       sensor = getHitecSensor(HITEC_ID_GPS_SPEED);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_SPEED, 0, 0, value, sensor->unit, sensor->precision);
-      value=(packet[5]<<8)|packet[6];
+      value = (packet[5] << 8) | packet[6];
       sensor = getHitecSensor(HITEC_ID_GPS_ALTITUDE);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_ALTITUDE, 0, 0, value, sensor->unit, sensor->precision);
-      value=packet[7]-40;
+      value = packet[7] - 40;
       sensor = getHitecSensor(HITEC_ID_TEMP1);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_15:
-      value=packet[3]*25;
-	  if(value>100) value=100;
+      value = packet[3] * 25;
+      if (value > 100) value = 100;
       sensor = getHitecSensor(HITEC_ID_FUEL);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_FUEL, 0, 0, value, sensor->unit, sensor->precision);
-      value=(packet[5]<<8)|packet[4];
+      value = (packet[5] << 8) | packet[4];
       sensor = getHitecSensor(HITEC_ID_RPM1);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_RPM1, 0, 0, value, sensor->unit, sensor->precision);
-      value=(packet[7]<<8)|packet[6];
+      value = (packet[7] << 8) | packet[6];
       sensor = getHitecSensor(HITEC_ID_RPM2);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_RPM2, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_16:
       sensor = getHitecSensor(HITEC_ID_GPS_DATETIME);
-      value=(packet[3]<<24)|(packet[4]<<16)|(packet[5]<<8)|0x01;
+      value = (packet[3] << 24) | (packet[4] << 16) | (packet[5] << 8) | 0x01;
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_DATETIME, 0, 0, value, sensor->unit, sensor->precision);
-      value=(packet[6]<<24)|(packet[7]<<16)|(second<<8);
+      value = (packet[6] << 24) | (packet[7] << 16) | (second << 8);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_DATETIME, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_17:
-      value=(packet[3]<<8)|packet[4];
-      if(value<=359) { // Filter strange values received time to time
+      value = (packet[3] << 8) | packet[4];
+      if (value <= 359) { // Filter strange values received time to time
         sensor = getHitecSensor(HITEC_ID_GPS_HEADING);
         setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_HEADING, 0, 0, value, sensor->unit, sensor->precision);
-	  }
-      value=packet[5];
+      }
+      value = packet[5];
       sensor = getHitecSensor(HITEC_ID_GPS_COUNT);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_GPS_COUNT, 0, 0, value, sensor->unit, sensor->precision);
-      value=packet[6]-40;
+      value = packet[6] - 40;
       sensor = getHitecSensor(HITEC_ID_TEMP3);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_TEMP3, 0, 0, value, sensor->unit, sensor->precision);
-      value=packet[7]-40;
+      value = packet[7] - 40;
       sensor = getHitecSensor(HITEC_ID_TEMP4);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_TEMP4, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_18:
-      value=(packet[4]<<8)|packet[3];
-	  if(value) value+=2; // Measured voltage seems to be 0.2V lower than real
+      value = (packet[4] << 8) | packet[3];
+      if (value) value += 2; // Measured voltage seems to be 0.2V lower than real
       sensor = getHitecSensor(HITEC_ID_VOLTAGE);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
       //I'm adding below 3 amp sensors but there is only one really since I don't know how to really calculate them
-	  value=(int16_t)((packet[6]<<8)|packet[5]);
+      value = (int16_t) ((packet[6] << 8) | packet[5]);
       sensor = getHitecSensor(HITEC_ID_AMP);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_AMP, 0, 0, value, sensor->unit, sensor->precision);
-      amp=((value + 114.875) * 1.441)+0.5;
+      amp = ((value + 114.875) * 1.441) + 0.5;
       sensor = getHitecSensor(HITEC_ID_C50);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_C50, 0, 0, amp, sensor->unit, sensor->precision);
-      amp=value*3+165;
+      amp = value * 3 + 165;
       sensor = getHitecSensor(HITEC_ID_C200);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_C200, 0, 0, amp, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_19:
-      value=packet[3];
+      value = packet[3];
       sensor = getHitecSensor(HITEC_ID_AMP_S1);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_AMP_S1, 0, 0, value, sensor->unit, sensor->precision);
-      value=packet[4];
+      value = packet[4];
       sensor = getHitecSensor(HITEC_ID_AMP_S2);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_AMP_S2, 0, 0, value, sensor->unit, sensor->precision);
-      value=packet[5];
+      value = packet[5];
       sensor = getHitecSensor(HITEC_ID_AMP_S3);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_AMP_S3, 0, 0, value, sensor->unit, sensor->precision);
-      value=packet[6];
+      value = packet[6];
       sensor = getHitecSensor(HITEC_ID_AMP_S4);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_AMP_S4, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_1A:
-      value=(packet[5]<<8)|packet[6];
+      value = (packet[5] << 8) | packet[6];
       sensor = getHitecSensor(HITEC_ID_AIR_SPEED);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_AIR_SPEED, 0, 0, value, sensor->unit, sensor->precision);
       return;
     case HITEC_FRAME_1B:
-      alt=(int16_t)((packet[3]<<8)|packet[4]);
+      alt = (int16_t) ((packet[3] << 8) | packet[4]);
       sensor = getHitecSensor(HITEC_ID_ALT);
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_ALT, 0, 0, alt, sensor->unit, sensor->precision);
       current_ms = RTOS_GET_MS();
       sensor = getHitecSensor(HITEC_ID_VARIO);
-	  value=(alt-last_alt)*100;
-      if((current_ms-last_ms)<1000)
-        value/=(int32_t)(current_ms-last_ms);
-	  else
-        value=0;
+      value = (alt - last_alt) * 100;
+      if ((current_ms - last_ms) < 1000)
+        value /= (int32_t) (current_ms - last_ms);
+      else
+        value = 0;
       setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_VARIO, 0, 0, value, sensor->unit, sensor->precision);
-      last_alt=alt;
-	  last_ms=current_ms;
+      last_alt = alt;
+      last_ms = current_ms;
       return;
     case HITEC_FRAME_1C:
     case HITEC_FRAME_22:
@@ -362,7 +364,7 @@ void processHitecPacket(const uint8_t *packet)
   setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, packet[2], 0, 0, value, UNIT_RAW, 0);
 }
 
-void processHitecTelemetryData(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount)
+void processHitecTelemetryData(uint8_t data, uint8_t * rxBuffer, uint8_t &rxBufferCount)
 {
   if (rxBufferCount == 0)
     return;
@@ -401,7 +403,7 @@ void processHitecTelemetryData(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBuffe
     }
     debugPrintf("\r\n");
 #endif
-	processHitecPacket(rxBuffer+1);
+    processHitecPacket(rxBuffer + 1);
     rxBufferCount = 0;
   }
 }
@@ -413,7 +415,7 @@ void hitecSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
   telemetrySensor.subId = subId;
   telemetrySensor.instance = instance;
 
-  const HitecSensor *sensor = getHitecSensor(id);
+  const HitecSensor * sensor = getHitecSensor(id);
   if (sensor) {
     TelemetryUnit unit = sensor->unit;
     uint8_t prec = min<uint8_t>(2, sensor->precision);

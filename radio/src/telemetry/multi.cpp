@@ -21,7 +21,8 @@
 #include "telemetry.h"
 #include "multi.h"
 
-enum MultiPacketTypes : uint8_t {
+enum MultiPacketTypes : uint8_t
+{
   MultiStatus = 1,
   FrSkySportTelemtry,
   FrSkyHubTelemetry,
@@ -36,7 +37,8 @@ enum MultiPacketTypes : uint8_t {
   FlyskyIBusTelemetryAC
 };
 
-enum MultiBufferState : uint8_t {
+enum MultiBufferState : uint8_t
+{
   NoProtocolDetected,
   MultiFirstByteReceived,
   ReceivingMultiProtocol,
@@ -53,18 +55,18 @@ enum MultiBufferState : uint8_t {
 
 #if defined(INTERNAL_MODULE_MULTI)
 
-static MultiModuleStatus multiModuleStatus[NUM_MODULES] = { MultiModuleStatus(), MultiModuleStatus() };
-static MultiModuleSyncStatus multiSyncStatus[NUM_MODULES] = { MultiModuleSyncStatus(), MultiModuleSyncStatus() };
-static uint8_t multiBindStatus[NUM_MODULES] = { MULTI_NORMAL_OPERATION, MULTI_NORMAL_OPERATION };
+static MultiModuleStatus multiModuleStatus[NUM_MODULES] = {MultiModuleStatus(), MultiModuleStatus()};
+static MultiModuleSyncStatus multiSyncStatus[NUM_MODULES] = {MultiModuleSyncStatus(), MultiModuleSyncStatus()};
+static uint8_t multiBindStatus[NUM_MODULES] = {MULTI_NORMAL_OPERATION, MULTI_NORMAL_OPERATION};
 
 static MultiBufferState multiTelemetryBufferState[NUM_MODULES];
 
-MultiModuleStatus& getMultiModuleStatus(uint8_t module)
+MultiModuleStatus &getMultiModuleStatus(uint8_t module)
 {
   return multiModuleStatus[module];
 }
 
-MultiModuleSyncStatus& getMultiSyncStatus(uint8_t module)
+MultiModuleSyncStatus &getMultiSyncStatus(uint8_t module)
 {
   return multiSyncStatus[module];
 }
@@ -144,9 +146,9 @@ static MultiBufferState guessProtocol(uint8_t module)
     return FrskyTelemetryFallback;
 }
 
-static void processMultiStatusPacket(const uint8_t *data, uint8_t module)
+static void processMultiStatusPacket(const uint8_t * data, uint8_t module)
 {
-  MultiModuleStatus& status = getMultiModuleStatus(module);
+  MultiModuleStatus &status = getMultiModuleStatus(module);
 
   // At least two status packets without bind flag
   bool wasBinding = status.isBinding();
@@ -162,9 +164,9 @@ static void processMultiStatusPacket(const uint8_t *data, uint8_t module)
     setMultiBindStatus(module, MULTI_BIND_FINISHED);
 }
 
-static void processMultiSyncPacket(const uint8_t *data, uint8_t module)
+static void processMultiSyncPacket(const uint8_t * data, uint8_t module)
 {
-  MultiModuleSyncStatus& status = getMultiSyncStatus(module);
+  MultiModuleSyncStatus &status = getMultiSyncStatus(module);
 
   status.lastUpdate = get_tmr10ms();
   status.interval = data[4];
@@ -179,17 +181,17 @@ static void processMultiSyncPacket(const uint8_t *data, uint8_t module)
 #if !defined(PPM_PIN_SERIAL)
   TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n",
         module == EXTERNAL_MODULE ? extmodulePulsesData.dsm2.rest : 0,
-        status.inputLag, oldlag-status.inputLag, status.target, status.interval, status.refreshRate, status.adjustedRefreshRate/50,
+        status.inputLag, oldlag - status.inputLag, status.target, status.interval, status.refreshRate, status.adjustedRefreshRate / 50,
         status.getAdjustedRefreshRate());
 #endif
 }
 
 
-static void processMultiTelemetryPaket(const uint8_t *packet, uint8_t module)
+static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 {
   uint8_t type = packet[0];
   uint8_t len = packet[1];
-  const uint8_t *data = packet + 2;
+  const uint8_t * data = packet + 2;
 
   // Switch type
   switch (type) {
@@ -275,7 +277,7 @@ static void processMultiTelemetryPaket(const uint8_t *packet, uint8_t module)
 
 // sprintf does not work AVR ARM
 // use a small helper function
-static void appendInt(char *buf, uint32_t val)
+static void appendInt(char * buf, uint32_t val)
 {
   while (*buf)
     buf++;
@@ -295,8 +297,8 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
   uint16_t targetRefreshRate = (uint16_t) (newRefreshRate * ((MIN_REFRESH_RATE / (newRefreshRate - 1)) + 1));
 
   // Overflow, reverse sample
-  if (lagDifference < -targetRefreshRate/2)
-    lagDifference= -lagDifference;
+  if (lagDifference < -targetRefreshRate / 2)
+    lagDifference = -lagDifference;
 
 
   // Reset adjusted refresh if rate has changed
@@ -307,7 +309,7 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
       adjustedRefreshRate /= 2;
 
     // Our refresh rate in ps
-    adjustedRefreshRate*=1000;
+    adjustedRefreshRate *= 1000;
     return;
   }
 
@@ -315,16 +317,16 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
   int numsamples = interval * 10000 / targetRefreshRate;
 
   // Convert lagDifference to ps
-  lagDifference=lagDifference*1000;
+  lagDifference = lagDifference * 1000;
 
   // Calculate the time we intentionally were late/early
-  if (inputLag > target*10 +30)
-   lagDifference += numsamples*500;
-  else if (inputLag < target*10 - 30)
-    lagDifference -= numsamples*500;
+  if (inputLag > target * 10 + 30)
+    lagDifference += numsamples * 500;
+  else if (inputLag < target * 10 - 30)
+    lagDifference -= numsamples * 500;
 
   // Caculate the time in ps each frame is to slow (positive), fast(negative)
-  int perframeps = lagDifference*10/ numsamples;
+  int perframeps = lagDifference * 10 / numsamples;
 
   if (perframeps > 20000)
     perframeps = 20000;
@@ -332,20 +334,21 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
   if (perframeps < -20000)
     perframeps = -20000;
 
-  adjustedRefreshRate =(adjustedRefreshRate + perframeps);
+  adjustedRefreshRate = (adjustedRefreshRate + perframeps);
 
   // Safeguards
-  if (adjustedRefreshRate < 6*1000*1000)
-    adjustedRefreshRate = 6*1000*1000;
-  if (adjustedRefreshRate > 30*1000*1000)
-    adjustedRefreshRate = 30*1000*1000;
+  if (adjustedRefreshRate < 6 * 1000 * 1000)
+    adjustedRefreshRate = 6 * 1000 * 1000;
+  if (adjustedRefreshRate > 30 * 1000 * 1000)
+    adjustedRefreshRate = 30 * 1000 * 1000;
 
   inputLag = newInputLag;
 }
 
 static uint8_t counter;
 
-uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate() {
+uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate()
+{
   if (!isValid() || refreshRate == 0)
     return 18000;
 
@@ -353,9 +356,9 @@ uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate() {
   counter = (uint8_t) (counter + 1 % 10);
   uint16_t rate = (uint16_t) ((adjustedRefreshRate + counter * 50) / 500);
   // Check how far off we are from our target, positive means we are too slow, negative we are too fast
- if (inputLag > target*10 +30)
-     return (uint16_t) (rate - 1);
-  else if (inputLag < target*10 - 30)
+  if (inputLag > target * 10 + 30)
+    return (uint16_t) (rate - 1);
+  else if (inputLag < target * 10 - 30)
     return (uint16_t) (rate + 1);
   else
     return rate;
@@ -367,17 +370,16 @@ static void prependSpaces(char * buf, int val)
   while (*buf)
     buf++;
 
-  int k=10000;
-  while(val/k==0 && k > 0)
-  {
-    *buf=' ';
+  int k = 10000;
+  while (val / k == 0 && k > 0) {
+    *buf = ' ';
     buf++;
-    k/= 10;
+    k /= 10;
   }
-  *buf='\0';
+  *buf = '\0';
 }
 
-void MultiModuleSyncStatus::getRefreshString(char *statusText)
+void MultiModuleSyncStatus::getRefreshString(char * statusText)
 {
   if (!isValid()) {
     return;
@@ -387,12 +389,12 @@ void MultiModuleSyncStatus::getRefreshString(char *statusText)
   prependSpaces(statusText, inputLag);
   appendInt(statusText, inputLag);
   strcat(statusText, "ns R ");
-  prependSpaces(statusText, adjustedRefreshRate/1000);
+  prependSpaces(statusText, adjustedRefreshRate / 1000);
   appendInt(statusText, (uint32_t) (adjustedRefreshRate / 1000));
   strcat(statusText, "ns");
 }
 
-void MultiModuleStatus::getStatusString(char *statusText)
+void MultiModuleStatus::getStatusString(char * statusText)
 {
   if (!isValid()) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
@@ -402,7 +404,7 @@ void MultiModuleStatus::getStatusString(char *statusText)
     else
 #endif
 #endif
-      strcpy(statusText, STR_MODULE_NO_TELEMETRY);
+    strcpy(statusText, STR_MODULE_NO_TELEMETRY);
     return;
   }
   if (!protocolValid()) {
@@ -417,7 +419,7 @@ void MultiModuleStatus::getStatusString(char *statusText)
     strcpy(statusText, STR_MODULE_NO_INPUT);
     return;
   }
-  else if(isWaitingforBind()) {
+  else if (isWaitingforBind()) {
     strcpy(statusText, STR_MODULE_WAITFORBIND);
     return;
   }
@@ -437,7 +439,7 @@ void MultiModuleStatus::getStatusString(char *statusText)
     strcat(statusText, STR_MODULE_BINDING);
 }
 
-static uint8_t* getRxBuffer(uint8_t moduleIdx)
+static uint8_t * getRxBuffer(uint8_t moduleIdx)
 {
 #if defined(INTERNAL_MODULE_MULTI)
   if (moduleIdx == INTERNAL_MODULE)
@@ -446,7 +448,7 @@ static uint8_t* getRxBuffer(uint8_t moduleIdx)
   return telemetryRxBuffer;
 }
 
-static uint8_t& getRxBufferCount(uint8_t moduleIdx)
+static uint8_t &getRxBufferCount(uint8_t moduleIdx)
 {
 #if defined(INTERNAL_MODULE_MULTI)
   if (moduleIdx == INTERNAL_MODULE)
@@ -457,8 +459,8 @@ static uint8_t& getRxBufferCount(uint8_t moduleIdx)
 
 static void processMultiTelemetryByte(const uint8_t data, uint8_t module)
 {
-  uint8_t* rxBuffer = getRxBuffer(module);
-  uint8_t& rxBufferCount = getRxBufferCount(module);
+  uint8_t * rxBuffer = getRxBuffer(module);
+  uint8_t &rxBufferCount = getRxBufferCount(module);
 
   if (rxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
     rxBuffer[rxBufferCount++] = data;
@@ -488,8 +490,8 @@ static void processMultiTelemetryByte(const uint8_t data, uint8_t module)
 
 void processMultiTelemetryData(uint8_t data, uint8_t module)
 {
-  uint8_t* rxBuffer = getRxBuffer(module);
-  uint8_t& rxBufferCount = getRxBufferCount(module);
+  uint8_t * rxBuffer = getRxBuffer(module);
+  uint8_t &rxBufferCount = getRxBufferCount(module);
 
   debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", multiTelemetryBufferState, data, rxBufferCount);
   switch (getMultiTelemetryBufferState(module)) {
@@ -541,7 +543,7 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
       break;
 
     case SpektrumTelemetryFallback:
-      processSpektrumTelemetryData(module, data,rxBuffer, rxBufferCount);
+      processSpektrumTelemetryData(module, data, rxBuffer, rxBufferCount);
       if (rxBufferCount == 0) {
         setMultiTelemetryBufferState(module, NoProtocolDetected);
       }
@@ -583,15 +585,15 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
 
     case ReceivingMultiStatus:
       rxBuffer[rxBufferCount++] = data;
-      if (rxBufferCount > 5 && rxBuffer[0] == rxBufferCount-1) {
-        processMultiStatusPacket(rxBuffer+1, module);
+      if (rxBufferCount > 5 && rxBuffer[0] == rxBufferCount - 1) {
+        processMultiStatusPacket(rxBuffer + 1, module);
         rxBufferCount = 0;
         setMultiTelemetryBufferState(module, NoProtocolDetected);
       }
       if (rxBufferCount > 10) {
         // too long ignore
         TRACE("Overlong multi status packet detected ignoring, wanted %d", rxBuffer[0]);
-        rxBufferCount =0;
+        rxBufferCount = 0;
         setMultiTelemetryBufferState(module, NoProtocolDetected);
       }
       break;
