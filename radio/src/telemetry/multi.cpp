@@ -308,7 +308,7 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
       break;
 
 #if defined(LUA)
-    case FrskySmoduleIdxPolling:
+    case FrskySportPolling:
       if (len >= 1 && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data[0] == outputTelemetryBuffer.sport.physicalId) {
         TRACE("MP Sending smoduleIdx data out.");
         sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
