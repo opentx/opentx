@@ -26,6 +26,7 @@
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"
+  #include "hitec.h"
   #include "multi.h"
 #endif
 
