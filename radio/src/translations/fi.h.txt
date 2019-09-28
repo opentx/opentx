@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Äänet""Hälyt""EiNap""Kaikk"
 
-#define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "No REaREb"
-
 #define LEN_VBLMODE            TR("\004", "\010")
 #define TR_VBLMODE             TR("OFF\0""Keys""Ctrl""Both""ON\0 ", "OFF\0    ""Keys\0   ""Controls""Both\0   ""ON\0     ")
 
@@ -526,7 +523,6 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("T-Reverse", INDENT "Throttle reverse")
 #define TR_MINUTEBEEP          TR("Minute", "Minute call")
@@ -573,9 +569,7 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TOTTM1TM2THRTHP     "\037\146SES\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_US                         "us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
   #define TR_TMIXMAXMS         "Tmix max"
   #define TR_FREE_STACK     "Free stack"
@@ -686,7 +680,6 @@
 #define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
 #define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
-#define TR_POWEROFF            "\027Power OFF..."
 #define TR_SHUTDOWN            "SHUTTING DOWN"
 #define TR_SAVEMODEL           "Saving model settings"
 #define TR_BATT_CALIB          "Battery Calib"

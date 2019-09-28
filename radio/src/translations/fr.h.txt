@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE                  "\005"
 #define TR_VBEEPMODE                   "Aucun""Alarm""NoKey""Tout\0"
 
-#define LEN_VRENAVIG                   "\003"
-#define TR_VRENAVIG                    "NonREaREb"
-
 #define LEN_VBLMODE                    TR("\004", "\011")
 #define TR_VBLMODE                     TR("OFF\0""Btns""Ctrl""Tous""ON\0","OFF\0     ""Touches\0 ""Controles""Tous\0    ""ON\0      ")
 
@@ -532,7 +529,6 @@
 #define TR_MODEL_STILL_POWERED         TR("Modèle allumé", "Modèle encore allumé")
 #define TR_MODEL_SHUTDOWN              "Eteindre ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Presser [Enter] pour confirmer"
-#define TR_RENAVIG                     "Navig EncRot"
 #define TR_THROTTLE_LABEL              "Gaz"
 #define TR_THROTTLEREVERSE             TR("Inv. gaz", INDENT "Inversion gaz")
 #define TR_MINUTEBEEP                  TR("Bip min.", "Annonces minutes")
@@ -583,10 +579,8 @@
 #define OFS_RX                         4
 #define TR_ACCEL                       "Acc:"
 #define TR_NODATA                      CENTER "NO DATA"
-#define TR_TOTTM1TM2THRTHP             "\037\146SES\036TM1\037\146TM2\036GAZ\037\146GZ%"
 #define TR_US                         "us"
 #define TR_TMR1LATMINUS                "Tmr1Lat min\037\124us"
-#define TR_TMR1JITTERUS                "Tmr1 Jitter\037\124us"
 
   #define TR_TMIXMAXMS                 "Tmix max"
   #define TR_FREE_STACK             "Free stack"
@@ -689,7 +683,6 @@
 #define TR_PITCH_AT_ZERO               INDENT "Tonalité zéro"
 #define TR_PITCH_AT_MAX                INDENT "Tonalité max"
 #define TR_REPEAT_AT_ZERO              TR(INDENT "Interv. zéro", INDENT "Intervalle au zéro")
-#define TR_POWEROFF                    "\037\120ARRET..."
 #define TR_SHUTDOWN                    "ARRET EN COURS"
 #define TR_SAVEMODEL                   "Sauvegarde modèle..."
 #define TR_BATT_CALIB                  "Calib. batt"

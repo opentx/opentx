@@ -998,7 +998,7 @@ bool menuModelSetup(event_t event)
             }
           }
           else if (isModulePXX2(INTERNAL_MODULE)) {
-            g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_LR12, EE_MODEL);
+            g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, EE_MODEL);
           }
         }
         break;
@@ -1608,7 +1608,9 @@ bool menuModelSetup(event_t event)
             }
             else {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-              lcdDrawNumber(LCD_W-10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
+              if (pdef->optionsstr == STR_MULTI_RFTUNE)  {
+                lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
+              }
             }
           }
         }

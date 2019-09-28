@@ -634,7 +634,10 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_BACKUP_EEPROM:
-        lcdDrawText(LCD_W / 2, y, BUTTON(STR_EEBACKUP), attr | CENTERED);
+        if (LCD_W < 212)
+          lcdDrawText(LCD_W / 2, y, BUTTON(STR_EEBACKUP), attr | CENTERED);
+        else
+          lcdDrawText(HW_SETTINGS_COLUMN2, y, BUTTON(STR_EEBACKUP), attr);
         if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = EDIT_SELECT_FIELD;
           eepromBackup();
@@ -642,7 +645,10 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_FACTORY_RESET:
-        lcdDrawText(LCD_W / 2, y, BUTTON(STR_FACTORYRESET), attr | CENTERED);
+        if (LCD_W < 212)
+          lcdDrawText(LCD_W / 2, y, BUTTON(STR_FACTORYRESET), attr | CENTERED);
+        else
+          lcdDrawText(HW_SETTINGS_COLUMN2, y, BUTTON(STR_FACTORYRESET), attr);
         if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = EDIT_SELECT_FIELD;
           POPUP_CONFIRMATION(STR_CONFIRMRESET, onFactoryResetConfirm);

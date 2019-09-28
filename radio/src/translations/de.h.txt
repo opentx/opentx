@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE                  "\005"
 #define TR_VBEEPMODE                   "Stumm""Alarm""NoKey""Alle\0"
 
-#define LEN_VRENAVIG                   "\003"
-#define TR_VRENAVIG                    "AUSDGaDGb"
-
 #define LEN_VBLMODE                    "\005"
 #define TR_VBLMODE                     "AUS\0 ""Taste""Stks\0""Beide""EIN\0 " // Anpassung
 
@@ -514,7 +511,6 @@
 #define TR_MODEL_STILL_POWERED         "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG                     TR ("Rol", "Drehgeb. Navig.")
 #define TR_THROTTLE_LABEL              "Gas-Kontrolle"
 #define TR_THROTTLEREVERSE             TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
 #define TR_MINUTEBEEP                  TR("Min-Alarm", "Minuten-Alarm")
@@ -567,9 +563,7 @@
 #define OFS_RX                         4
 #define TR_ACCEL                       "Acc:"
 #define TR_NODATA                      CENTER"Keine Daten"
-#define TR_TOTTM1TM2THRTHP             "\037\146SES\036TM1\037\146TM2\036GAS\037\146GS%"
 #define TR_US                                 "us"
-#define TR_TMR1JITTERUS                "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         	       "Tmix max"
 #define TR_FREE_STACK     		       "Freier Stack"
 #define TR_MENUTORESET                 TR_ENTER " für Reset"
@@ -669,7 +663,6 @@
 #define TR_PITCH_AT_ZERO                INDENT "Töne sinken"
 #define TR_PITCH_AT_MAX                 INDENT "Töne steigen"
 #define TR_REPEAT_AT_ZERO               INDENT "Wiederholrate"
-#define TR_POWEROFF                     "\027Power OFF..."
 #define TR_SHUTDOWN                     "Herunterfahren"
 #define TR_SAVEMODEL                    "Modelleinstellungen speichern"
 #define TR_BATT_CALIB                   TR("AkkuSpgwert", "Akku Kalibrierung")

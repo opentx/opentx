@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Cichy""Alarm""BezPr""Wsz.\0"
 
-#define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "No REaREb"
-
 #define LEN_VBLMODE            TR("\004", "\010")
 #define TR_VBLMODE             TR("Wył\0""Przy""Drąż""Oba\0""Zał\0", "Wyłącz  ""Przycisk""Drązki\0 ""Oba\0    ""Włącz   ")
 
@@ -533,7 +530,6 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Gaz    "
 #define TR_THROTTLEREVERSE     TR("OdwrGaz", INDENT "OdwrGaz")
 #define TR_MINUTEBEEP          TR("Minuta", "PikCoMinutę")
@@ -584,9 +580,7 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "BrakDAN"
-#define TR_TOTTM1TM2THRTHP     "\037\146SES\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_US                         "us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "TmixMaks"
 #define TR_FREE_STACK     "Wolny stos"
 #define TR_MENUTORESET         TR_ENTER " >> Reset"
@@ -687,7 +681,6 @@
 #define TR_PITCH_AT_ZERO       INDENT "Ton przy Zerze"
 #define TR_PITCH_AT_MAX        INDENT "Ton przy Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Powtórz przy Zerze"
-#define TR_POWEROFF            "\027Wyłączanie.."
 #define TR_SHUTDOWN            "Wyłączanie.."
 #define TR_SAVEMODEL           "Zapisz ustwienia modelu"
 #define TR_BATT_CALIB          "Kalib:Baterii"

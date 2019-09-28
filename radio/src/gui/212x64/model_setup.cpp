@@ -774,7 +774,7 @@ void menuModelSetup(event_t event)
             }
           }
           else if (isModulePXX2(INTERNAL_MODULE)) {
-            g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_LR12, EE_MODEL, isRfProtocolAvailable);
+            g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, EE_MODEL, isRfProtocolAvailable);
           }
         }
 #else
@@ -784,7 +784,7 @@ void menuModelSetup(event_t event)
         }
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ISRM_RF_PROTOCOLS, index, attr);
         if (attr) {
-          index = checkIncDec(event, index, 0, 3, EE_MODEL);
+          index = checkIncDec(event, index, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16 + 1 /* because of --- */, EE_MODEL);
           if (checkIncDec_Ret) {
             memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
             if (index > 0) {
@@ -1251,9 +1251,11 @@ void menuModelSetup(event_t event)
            }
            else {
              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-             lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);
-             lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
-             lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+             if (pdef->optionsstr == STR_MULTI_RFTUNE) {
+               lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);
+               lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+               lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+             }
            }
          }
        }
