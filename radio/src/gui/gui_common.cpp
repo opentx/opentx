@@ -647,7 +647,7 @@ bool isExternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (isModuleUsingSport(EXTERNAL_MODULE, moduleType) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
+  if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) ||  g_model.trainerData.mode > TRAINER_MODE_SLAVE) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
     return false;
 #endif
 
