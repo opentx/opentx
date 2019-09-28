@@ -1569,3 +1569,4 @@ Marco Lange
 Aaron Tygart
 Frantisek Vajbar
 Mike Perkins
+Knut Einar Kristensen
