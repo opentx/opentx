@@ -217,6 +217,10 @@ class SwitchesConversionTable: public ConversionTable {
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
       }
+      if (version >= 219) {
+        addConversion(RawSwitch(SWITCH_TYPE_ACT, -1), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_ACT, 1), val++);
+      }
     }
 
 

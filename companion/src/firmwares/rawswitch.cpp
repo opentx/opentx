@@ -115,6 +115,9 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
       case SWITCH_TYPE_ONE:
         return tr("One");
 
+      case SWITCH_TYPE_ACT:
+        return tr("Act");
+
       case SWITCH_TYPE_FLIGHT_MODE:
         if (modelData)
           return modelData->flightModeData[index-1].nameToString(index - 1);
