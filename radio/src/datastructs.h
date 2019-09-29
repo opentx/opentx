@@ -690,7 +690,7 @@ PACK(struct TrainerData {
     swarnstate_t switchUnlockStates; \
     swconfig_t switchConfig; \
     char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]; \
+    char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME]; \
     BLUETOOTH_FIELDS
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
@@ -703,7 +703,7 @@ PACK(struct TrainerData {
     uint8_t  sticksGain; \
     uint8_t  rotarySteps; \
     char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
+    char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME];
 #else
   #define EXTRA_GENERAL_FIELDS
 #endif

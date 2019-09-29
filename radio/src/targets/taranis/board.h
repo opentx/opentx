@@ -413,7 +413,7 @@ enum EnumSwitchesPositions
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
   #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 #elif defined(PCBX9D) || defined(PCBX9DP)
-  #define NUM_SWITCHES                  9
+  #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          9
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
@@ -492,14 +492,19 @@ enum Analogs {
   #define NUM_SLIDERS                   4
   #define STORAGE_NUM_POTS              4
   #define STORAGE_NUM_SLIDERS           4
-#else
+#elif defined(PCBX9DP)
   #define NUM_POTS                      3
+  #define NUM_SLIDERS                   2
+  #define STORAGE_NUM_POTS              3
+  #define STORAGE_NUM_SLIDERS           2
+#else
+  #define NUM_POTS                      2
   #define NUM_SLIDERS                   2
   #define STORAGE_NUM_POTS              3
   #define STORAGE_NUM_SLIDERS           2
 #endif
 
-#define NUM_XPOTS                       NUM_POTS
+#define NUM_XPOTS                       STORAGE_NUM_POTS
 #define NUM_TRIMS                       4
 #define NUM_MOUSE_ANALOGS               0
 #define STORAGE_NUM_MOUSE_ANALOGS       0
