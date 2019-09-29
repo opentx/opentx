@@ -2361,8 +2361,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<8>(this, modelData.rssiSource));
 
     if (IS_TARANIS_X9(board)) {
-      // TODO TOPBAR
-      internalField.Append(new SpareBitsField<16>(this));
+      internalField.Append(new UnsignedField<8>(this, modelData.frsky.voltsSource));
+      internalField.Append(new UnsignedField<8>(this, modelData.frsky.altitudeSource));
     }
 
     internalField.Append(new BoolField<1>(this, modelData.rssiAlarms.disabled));
