@@ -646,7 +646,10 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if defined(HARDWARE_INTERNAL_MODULE)
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(BLUETOOTH)
+  if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) ||  (TRAINER_MODE_SLAVE < g_model.trainerData.mode && g_model.trainerData.mode < TRAINER_MODE_MASTER_BLUETOOTH)) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
+    return false;
+#elif defined(HARDWARE_INTERNAL_MODULE)
   if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) ||  g_model.trainerData.mode > TRAINER_MODE_SLAVE) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
     return false;
 #endif
