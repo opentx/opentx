@@ -197,6 +197,7 @@ enum TrainerMode {
   TRAINER_MODE_MASTER_BLUETOOTH,
   TRAINER_MODE_SLAVE_BLUETOOTH,
 #endif
+  TRAINER_MODE_MULTI,
 };
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
@@ -206,7 +207,9 @@ enum TrainerMode {
   };
 #endif
 
-#if defined(BLUETOOTH)
+#if defined(MULTIMODULE)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
+#elif defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
 #elif defined(RADIO_T16)
     #define TRAINER_MODE_MAX()           TRAINER_MODE_SLAVE

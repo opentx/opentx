@@ -374,6 +374,7 @@
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Maître/CPPM Module"
 #define TR_VTRAINER_MASTER_BATTERY     "Maître/Série\0     "
 #define TR_VTRAINER_BLUETOOTH          TR("Maître/BT\0        ""Elève/BT\0", "Maître/Bluetooth\0 ""Elève/Bluetooth\0  ")
+#define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE                  "\011"
 #define TR_VFAILSAFE                   TR("Pas déf.\0""Maintien\0""Prédéf.\0 ""Pas d'imp""Récepteur", "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur")
