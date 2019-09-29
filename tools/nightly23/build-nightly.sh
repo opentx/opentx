@@ -2,11 +2,11 @@
 
 set -e
 
-branch=2.3.0
+branch=2.3.1
 docker=nightly23
 workdir=/home/opentx/nightly23
 output=/var/www/html/2.3/nightlies
-version=2.3.0
+version=2.3.1
 
 echo "Increment nightly index"
 index=`cat index.txt`
