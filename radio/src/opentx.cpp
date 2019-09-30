@@ -912,7 +912,8 @@ void checkAll()
 #endif
 
 #if defined(STM32)
-  checkRTCBattery();
+  if(!g_eeGeneral.disableRtcWarning)
+    checkRTCBattery();
 #endif
 
   if (g_model.displayChecklist && modelHasNotes()) {

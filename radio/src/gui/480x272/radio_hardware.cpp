@@ -54,6 +54,7 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SJ, // Gimbal switch right
   ITEM_RADIO_HARDWARE_BATTERY_CALIB,
   ITEM_RADIO_HARDWARE_RTC_BATTERY,
+  ITEM_RADIO_HARDWARE_RTC_CHECK,
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
@@ -118,6 +119,7 @@ bool menuRadioHardware(event_t event)
 
     0, /* battery */
     READONLY_ROW, /* RTC */
+    0, /* RTC check */
 
     0, /* max baudrate */
 
@@ -270,6 +272,14 @@ bool menuRadioHardware(event_t event)
           }
         }
         break;
+
+      case ITEM_RADIO_HARDWARE_RTC_CHECK:
+      {
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RTC_CHECK);
+        uint8_t b = 1 - g_eeGeneral.disableRtcWarning;
+        g_eeGeneral.disableRtcWarning = 1 - editCheckBox(b, HW_SETTINGS_COLUMN + 50, y, attr, event);
+        break;
+      }
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH);
