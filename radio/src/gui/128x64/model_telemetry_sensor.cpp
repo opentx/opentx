@@ -104,7 +104,7 @@ void menuModelSensor(event_t event)
         if (sensor->type == TELEM_TYPE_CUSTOM) {
           lcdDrawTextAlignedLeft(y, STR_ID);
           lcdDrawHexNumber(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(menuHorizontalPosition==0 ? attr : 0));
-          lcdDrawHexChar(SENSOR_3RD_COLUMN, y, sensor->instance & 0x1f, LEFT|(menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawHexChar(SENSOR_3RD_COLUMN, y, (sensor->instance & 0x1f) + 1, LEFT|(menuHorizontalPosition==1 ? attr : 0));
           if (attr && s_editMode > 0) {
             switch (menuHorizontalPosition) {
               case 0:
