@@ -31,7 +31,13 @@
 #define MULTI_CHANS                         16
 #define MULTI_CHAN_BITS                     11
 
-static void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe);
+#define MULTI_NORMAL   0x00
+#define MULTI_FAILSAFE 0x01
+#define MULTI_DATA     0x02
+
+static void sendFrameProtocolHeader(uint8_t moduleIdx, uint8_t multiType);
+
+static void sendSport(uint8_t moduleIdx);
 
 void sendChannels(uint8_t moduleIdx);
 
@@ -95,21 +101,31 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
 void setupPulsesMulti(uint8_t moduleIdx)
 {
   static int counter[2] = {0,0}; //TODO
+  uint8_t type=MULTI_NORMAL;
 
   // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
   counter[moduleIdx]++;
   if (counter[moduleIdx] % 1000 == 500) {
     sendSetupFrame(moduleIdx);
+	return;
   }
   else if (counter[moduleIdx] % 1000 == 0 && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_RECEIVER) {
-    sendFrameProtocolHeader(moduleIdx, true);
+    type|=MULTI_FAILSAFE;
+  }
+  #if defined(LUA)
+  else if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
+     type|=MULTI_DATA;
+  }
+  #endif
+  sendFrameProtocolHeader(moduleIdx, type);
+  if(type&MULTI_FAILSAFE)
     sendFailsafeChannels(moduleIdx);
-  }
-  else {
-    // Normal Frame
-    sendFrameProtocolHeader(moduleIdx, false);
+  else
     sendChannels(moduleIdx);
-  }
+  #if defined(LUA)
+    if(type&MULTI_DATA)
+      sendSport(moduleIdx);	//8 bytes of additional data
+  #endif
 }
 
 void setupPulsesMultiExternalModule()
@@ -162,7 +178,7 @@ void sendChannels(uint8_t moduleIdx)
   }
 }
 
-void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
+void sendFrameProtocolHeader(uint8_t moduleIdx, uint8_t multiType)
 {// byte 1+2, protocol information
 
   // Our enumeration starts at 0
@@ -239,10 +255,13 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 
 
   uint8_t headerByte = 0x54;
-  if (failsafe)
+  if (multiType&MULTI_FAILSAFE)
     headerByte = 0x56;
 
-    // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
+  if (multiType&MULTI_DATA)
+    headerByte |= 0x20;
+
+  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
   if (type <= 31)
     sendMulti(moduleIdx, headerByte+1);
   else
@@ -264,4 +283,27 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 
   // byte 3
   sendMulti(moduleIdx, (uint8_t) optionValue);
+}
+
+#define BYTE_STUFF	0x7D
+#define STUFF_MASK	0x20
+void sendSport(uint8_t moduleIdx)
+{
+  //example: B7 30 30 0C 80 00 00 00 13
+  uint8_t j=0, buffer[16];
+  //unstuff and remove crc
+  for (uint8_t i = 0 ; i < outputTelemetryBuffer.size-1 ; i++ )
+  {
+    if ( outputTelemetryBuffer.data[i] == BYTE_STUFF )
+    {
+      i++;
+      buffer[j] = outputTelemetryBuffer.data[i] ^ STUFF_MASK ; ;
+    }
+    else
+      buffer[j] = outputTelemetryBuffer.data[i] ;
+    j++;
+  }
+  for(uint8_t i=0;i<8;i++)       //send to multi
+    sendMulti(moduleIdx, buffer[i]);
+  outputTelemetryBuffer.reset(); //empty buffer
 }

@@ -442,7 +442,7 @@ When called without parameters, it will only return the status of the output buf
 
 static int luaSportTelemetryPush(lua_State * L)
 {
-  if (telemetryProtocol != PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+  if (!IS_FRSKY_SPORT_PROTOCOL()) {
     lua_pushboolean(L, false);
     return 1;
   }
