@@ -1121,7 +1121,7 @@
     </widget>
    </item>
    <item row="39" column="0">
-    <widget class="QLabel" name="rctCheckLabel">
+    <widget class="QLabel" name="rtcCheckLabel">
      <property name="text">
       <string>RTC Batt Check</string>
      </property>

@@ -208,7 +208,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   }
   else {
     ui->rtcCheckDisable->hide();
-    ui->rctCheckLabel->hide();
+    ui->rtcCheckLabel->hide();
   }
 
   disableMouseScrolling();
