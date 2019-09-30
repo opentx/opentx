@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>470</width>
-    <height>1585</height>
+    <height>1618</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -57,7 +57,7 @@
      </property>
     </widget>
    </item>
-   <item row="43" column="1">
+   <item row="44" column="1">
     <widget class="QSpinBox" name="PPM2">
      <property name="toolTip">
       <string/>
@@ -169,7 +169,7 @@
      </property>
     </widget>
    </item>
-   <item row="39" column="1">
+   <item row="40" column="1">
     <widget class="QSpinBox" name="txCurrentCalibration">
      <property name="minimum">
       <number>-49</number>
@@ -192,27 +192,7 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="0">
-    <widget class="QLabel" name="rs2Label">
-     <property name="text">
-      <string>RS2</string>
-     </property>
-    </widget>
-   </item>
-   <item row="40" column="0" colspan="3">
-    <widget class="Line" name="ppmSeparator">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>10</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="44" column="1">
+   <item row="45" column="1">
     <widget class="QSpinBox" name="PPM3">
      <property name="toolTip">
       <string/>
@@ -228,6 +208,26 @@
      </property>
      <property name="maximum">
       <number>9999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="41" column="0" colspan="3">
+    <widget class="Line" name="ppmSeparator">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="rs2Label">
+     <property name="text">
+      <string>RS2</string>
      </property>
     </widget>
    </item>
@@ -267,7 +267,7 @@
      </property>
     </widget>
    </item>
-   <item row="39" column="0">
+   <item row="40" column="0">
     <widget class="QLabel" name="txCurrentCalibrationLabel">
      <property name="text">
       <string>Current Offset</string>
@@ -284,7 +284,7 @@
      </property>
     </widget>
    </item>
-   <item row="43" column="0">
+   <item row="44" column="0">
     <widget class="QLabel" name="label_33">
      <property name="text">
       <string>PPM 2</string>
@@ -312,6 +312,9 @@
      </property>
     </widget>
    </item>
+   <item row="34" column="1">
+    <widget class="AutoComboBox" name="antennaMode"/>
+   </item>
    <item row="19" column="1">
     <widget class="AutoLineEdit" name="sfName">
      <property name="maxLength">
@@ -321,6 +324,19 @@
    </item>
    <item row="8" column="2">
     <widget class="AutoComboBox" name="pot5Type"/>
+   </item>
+   <item row="20" column="2">
+    <widget class="AutoComboBox" name="sgType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item row="21" column="2">
     <widget class="AutoComboBox" name="shType">
@@ -342,15 +358,12 @@
      </property>
     </widget>
    </item>
-   <item row="20" column="2">
-    <widget class="AutoComboBox" name="sgType">
+   <item row="14" column="2">
+    <widget class="AutoComboBox" name="saType">
      <property name="toolTip">
       <string/>
      </property>
      <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
       <string/>
      </property>
     </widget>
@@ -372,16 +385,6 @@
     <widget class="QLabel" name="sjLabel">
      <property name="text">
       <string>SJ</string>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="2">
-    <widget class="AutoComboBox" name="saType">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
      </property>
     </widget>
    </item>
@@ -434,6 +437,16 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="2">
+    <widget class="AutoComboBox" name="pot2Type">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+    </widget>
+   </item>
    <item row="29" column="2">
     <widget class="AutoComboBox" name="spType">
      <property name="toolTip">
@@ -447,27 +460,17 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
-    <widget class="AutoLineEdit" name="rsName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2">
-    <widget class="AutoComboBox" name="pot2Type">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-    </widget>
-   </item>
    <item row="35" column="1">
     <widget class="QCheckBox" name="filterEnable">
      <property name="text">
       <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="AutoLineEdit" name="rsName">
+     <property name="maxLength">
+      <number>3</number>
      </property>
     </widget>
    </item>
@@ -512,7 +515,7 @@
      </property>
     </widget>
    </item>
-   <item row="46" column="1">
+   <item row="47" column="1">
     <widget class="QDoubleSpinBox" name="PPM_MultiplierDSB">
      <property name="decimals">
       <number>1</number>
@@ -545,6 +548,19 @@
      </property>
     </widget>
    </item>
+   <item row="31" column="2">
+    <widget class="AutoComboBox" name="srType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
    <item row="38" column="0">
     <widget class="QLabel" name="txVoltageCalibrationLabel">
      <property name="text">
@@ -562,19 +578,6 @@
      </property>
     </widget>
    </item>
-   <item row="31" column="2">
-    <widget class="AutoComboBox" name="srType">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string/>
-     </property>
-    </widget>
-   </item>
    <item row="20" column="0">
     <widget class="QLabel" name="sgLabel">
      <property name="text">
@@ -589,13 +592,17 @@
      </property>
     </widget>
    </item>
-   <item row="34" column="1">
-    <widget class="AutoComboBox" name="antennaMode"/>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="eleLabel">
      <property name="text">
       <string>Ele</string>
+     </property>
+    </widget>
+   </item>
+   <item row="22" column="0">
+    <widget class="QLabel" name="siLabel">
+     <property name="text">
+      <string>SI</string>
      </property>
     </widget>
    </item>
@@ -613,10 +620,10 @@
      </property>
     </widget>
    </item>
-   <item row="22" column="0">
-    <widget class="QLabel" name="siLabel">
+   <item row="25" column="0">
+    <widget class="QLabel" name="slLabel">
      <property name="text">
-      <string>SI</string>
+      <string>SL</string>
      </property>
     </widget>
    </item>
@@ -624,13 +631,6 @@
     <widget class="QLabel" name="sqLabel">
      <property name="text">
       <string>SQ</string>
-     </property>
-    </widget>
-   </item>
-   <item row="25" column="0">
-    <widget class="QLabel" name="slLabel">
-     <property name="text">
-      <string>SL</string>
      </property>
     </widget>
    </item>
@@ -688,7 +688,7 @@
      </property>
     </widget>
    </item>
-   <item row="45" column="1">
+   <item row="46" column="1">
     <widget class="QSpinBox" name="PPM4">
      <property name="toolTip">
       <string/>
@@ -707,7 +707,7 @@
      </property>
     </widget>
    </item>
-   <item row="41" column="0">
+   <item row="42" column="0">
     <widget class="QLabel" name="label_23">
      <property name="text">
       <string>PPM 1</string>
@@ -727,14 +727,14 @@
      </property>
     </widget>
    </item>
-   <item row="45" column="0">
+   <item row="46" column="0">
     <widget class="QLabel" name="label_35">
      <property name="text">
       <string>PPM 4</string>
      </property>
     </widget>
    </item>
-   <item row="41" column="1">
+   <item row="42" column="1">
     <widget class="QSpinBox" name="PPM1">
      <property name="toolTip">
       <string/>
@@ -766,6 +766,20 @@
      </property>
     </widget>
    </item>
+   <item row="15" column="0">
+    <widget class="QLabel" name="sbLabel">
+     <property name="text">
+      <string>SB</string>
+     </property>
+    </widget>
+   </item>
+   <item row="31" column="1">
+    <widget class="AutoLineEdit" name="srName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
    <item row="38" column="1">
     <widget class="QDoubleSpinBox" name="txVoltageCalibration">
      <property name="statusTip">
@@ -788,21 +802,7 @@
      </property>
     </widget>
    </item>
-   <item row="15" column="0">
-    <widget class="QLabel" name="sbLabel">
-     <property name="text">
-      <string>SB</string>
-     </property>
-    </widget>
-   </item>
-   <item row="31" column="1">
-    <widget class="AutoLineEdit" name="srName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="46" column="0">
+   <item row="47" column="0">
     <widget class="QLabel" name="label_30">
      <property name="text">
       <string>PPM Multiplier</string>
@@ -903,16 +903,6 @@
      </property>
     </widget>
    </item>
-   <item row="34" column="0">
-    <widget class="QLabel" name="antennaLabel">
-     <property name="text">
-      <string>Antenna</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="27" column="2">
     <widget class="AutoComboBox" name="snType">
      <property name="toolTip">
@@ -933,7 +923,17 @@
      </property>
     </widget>
    </item>
-   <item row="44" column="0">
+   <item row="34" column="0">
+    <widget class="QLabel" name="antennaLabel">
+     <property name="text">
+      <string>Antenna</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="45" column="0">
     <widget class="QLabel" name="label_34">
      <property name="text">
       <string>PPM 3</string>
@@ -1029,6 +1029,26 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="AutoLineEdit" name="eleName">
+     <property name="maxLength">
+      <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="26" column="2">
+    <widget class="AutoComboBox" name="smType">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="statusTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+    </widget>
+   </item>
    <item row="36" column="1">
     <widget class="QComboBox" name="serialPortMode">
      <item>
@@ -1056,26 +1076,6 @@
        <string>Debug</string>
       </property>
      </item>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="AutoLineEdit" name="eleName">
-     <property name="maxLength">
-      <number>3</number>
-     </property>
-    </widget>
-   </item>
-   <item row="26" column="2">
-    <widget class="AutoComboBox" name="smType">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string/>
-     </property>
     </widget>
    </item>
    <item row="10" column="0">
@@ -1110,6 +1110,20 @@
     <widget class="AutoLineEdit" name="sbName">
      <property name="maxLength">
       <number>3</number>
+     </property>
+    </widget>
+   </item>
+   <item row="39" column="1">
+    <widget class="QCheckBox" name="rtcCheckDisable">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="39" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>RTC Batt Check</string>
      </property>
     </widget>
    </item>
