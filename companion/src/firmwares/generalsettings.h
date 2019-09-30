@@ -140,6 +140,7 @@ class GeneralSettings {
     unsigned int rotarySteps;
     unsigned int countryCode;
     bool jitterFilter;
+    bool rtcCheckDisable;
     unsigned int imperial;
     char ttsLanguage[2+1];
     int beepVolume;

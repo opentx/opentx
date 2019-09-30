@@ -2571,7 +2571,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new SignedField<2>(this, generalData.antennaMode));
   else
     internalField.Append(new SpareBitsField<2>(this));
-  internalField.Append(new SpareBitsField<3>(this));
+  internalField.Append(new BoolField<1>(this, generalData.rtcCheckDisable));
+  internalField.Append(new SpareBitsField<2>(this));
 
   for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));

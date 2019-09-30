@@ -151,6 +151,7 @@ enum {
 
 #if defined(STM32)
   ITEM_RADIO_HARDWARE_RTC_BATTERY,
+  ITEM_RADIO_HARDWARE_RTC_CHECK,
 #endif
 
 #if defined(TX_CAPACITY_MEASUREMENT)
@@ -255,7 +256,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 #endif
 
 #if defined(STM32)
-  #define RTC_ROW                        READONLY_ROW,
+  #define RTC_ROW                        READONLY_ROW, 0,
 #else
   #define RTC_ROW
 #endif
@@ -509,6 +510,10 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_RTC_BATTERY:
         lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
         putsVolts(HW_SETTINGS_COLUMN2, y, getRTCBatteryVoltage(), PREC2|LEFT);
+        break;
+
+      case ITEM_RADIO_HARDWARE_RTC_CHECK:
+        g_eeGeneral.disableRtcWarning = 1 - editCheckBox(1 - g_eeGeneral.disableRtcWarning, HW_SETTINGS_COLUMN2, y, STR_RTC_CHECK, attr, event);
         break;
 #endif
 

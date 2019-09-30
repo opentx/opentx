@@ -735,7 +735,8 @@ PACK(struct RadioData {
   NOBACKUP(int8_t txVoltageCalibration);
   uint8_t backlightMode:3;
   int8_t antennaMode:2;
-  int8_t spare1:3;
+  uint8_t disableRtcWarning:1;
+  int8_t spare1:2;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */
