@@ -582,7 +582,7 @@ uint8_t gpsGetByte(uint8_t * byte);
 extern uint8_t gpsTraceEnabled;
 #endif
 void gpsSendByte(uint8_t byte);
-#if defined(PCBX12S)
+#if defined(INTERNAL_GPS)
 #define PILOTPOS_MIN_HDOP             500
 #endif
 
