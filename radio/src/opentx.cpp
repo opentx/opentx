@@ -912,7 +912,7 @@ void checkAll()
 #endif
 
 #if defined(STM32)
-  if(!g_eeGeneral.disableRtcWarning)
+  if (!g_eeGeneral.disableRtcWarning)
     checkRTCBattery();
 #endif
 
