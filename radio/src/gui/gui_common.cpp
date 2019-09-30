@@ -536,6 +536,15 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 }
 #endif
 
+bool isTrainerUsingModuleBay()
+{
+#if defined(PCBTARANIS)
+  if(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return true;
+#endif
+  return false;
+}
+
 bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
 {
   switch (moduleType) {
@@ -646,11 +655,8 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
-#if defined(HARDWARE_INTERNAL_MODULE) && defined(BLUETOOTH)
-  if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) ||  (TRAINER_MODE_SLAVE < g_model.trainerData.mode && g_model.trainerData.mode < TRAINER_MODE_MASTER_BLUETOOTH)) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
-    return false;
-#elif defined(HARDWARE_INTERNAL_MODULE)
-  if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) ||  g_model.trainerData.mode > TRAINER_MODE_SLAVE) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
+#if defined(HARDWARE_INTERNAL_MODULE)
+  if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) || isTrainerUsingModuleBay()) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
     return false;
 #endif
 
