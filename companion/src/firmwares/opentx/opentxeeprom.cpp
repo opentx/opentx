@@ -1942,7 +1942,7 @@ class SensorField: public TransformedField {
           sensor.id = _id;
           sensor.subid = _subid;
           if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module()) {
-            sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
+            sensor.instance = (_instance & 0x1F) + 1 + (version <= 218 ? -1 : 0); // 5 bits instance
             sensor.rxIdx = 0x03;    // 2 bits Rx idx
             sensor.moduleIdx = 0x01; // 1 bit module idx
           }
