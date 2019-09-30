@@ -200,6 +200,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   }
   else {
     ui->filterEnable->hide();
+    ui->filterLabel->hide();
   }
 
   if (IS_STM32(board)) {
@@ -207,6 +208,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   }
   else {
     ui->rtcCheckDisable->hide();
+    ui->rctCheckLabel->hide();
   }
 
   disableMouseScrolling();
