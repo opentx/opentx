@@ -1109,6 +1109,8 @@ union ReusableBuffer
     char msg[64];
     uint8_t r9mPower;
     int8_t antennaMode;
+    uint8_t previousType;
+    uint8_t newType;
     BindInformation bindInformation;
     struct {
       union {
