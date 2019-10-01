@@ -1676,7 +1676,10 @@ const luaR_value_entry opentxConstants[] = {
 #endif
 
 // Virtual Page Next/Previous
-#if defined(KEYS_GPIO_REG_PGUP) && defined(KEYS_GPIO_REG_PGDN)
+#if defined(RADIO_T12)
+  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_UP) },
+  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_UP) },
+#elif defined(KEYS_GPIO_REG_PGUP) && defined(KEYS_GPIO_REG_PGDN)
   { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_FIRST(KEY_PGUP) },
   { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_FIRST(KEY_PGDN) },
 #elif defined(KEYS_GPIO_REG_PGDN)
@@ -1700,7 +1703,10 @@ const luaR_value_entry opentxConstants[] = {
 #endif
 
 // Virtual menu
-#if defined(KEYS_GPIO_REG_MENU)
+#if defined(RADIO_T12)
+  { "EVT_VIRTUAL_MENU", EVT_KEY_FIRST(KEY_DOWN) },
+  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_DOWN) },
+#elif defined(KEYS_GPIO_REG_MENU)
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
 #elif defined(KEYS_GPIO_REG_SHIFT)
