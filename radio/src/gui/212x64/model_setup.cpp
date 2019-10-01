@@ -830,7 +830,7 @@ void menuModelSetup(event_t event)
           }
         }
 #endif
-        if (attr && menuHorizontalPosition == 0 && moduleIdx == EXTERNAL_MODULE) {
+        if (attr && menuHorizontalPosition == 0) {
           if (s_editMode > 0)
             EXTERNAL_MODULE_OFF();
           else

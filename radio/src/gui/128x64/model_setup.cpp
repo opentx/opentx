@@ -844,7 +844,7 @@ void menuModelSetup(event_t event)
             lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
         }
 #endif
-        if (attr && menuHorizontalPosition == 0 && moduleIdx == EXTERNAL_MODULE) {
+        if (attr && menuHorizontalPosition == 0) {
           if (s_editMode > 0)
             EXTERNAL_MODULE_OFF();
           else
