@@ -268,10 +268,9 @@ local function refreshZoneMedium(wgt)
 
   -- more info if 1/4 is high enough (without trim & slider)
   if wgt.zone.h > 80 then
-    lcd.drawText(wgt.zone.x     , wgt.zone.y + 70, string.format("Min %2.1fV", wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
-    lcd.drawText(wgt.zone.x     , wgt.zone.y + 80, string.format("Max %2.1fV", wgt.cellMax), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
-    lcd.drawText(wgt.zone.x + 70, wgt.zone.y + 70, string.format("dV %2.1fV", wgt.cellMax - wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
-    lcd.drawText(wgt.zone.x + 70, wgt.zone.y + 80, string.format("%2.1fV"   , wgt.secondaryValue), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x     , wgt.zone.y + 70, string.format("%2.1fV"   , wgt.secondaryValue), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x + 50, wgt.zone.y + 70, string.format("dV %2.1fV", wgt.cellMax - wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x     , wgt.zone.y + 84, string.format("Min %2.1fV", wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
   end
 
   -- fill batt
