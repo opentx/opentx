@@ -225,6 +225,11 @@ endif()
 
 add_subdirectory(${RADIO_SRC_DIRECTORY})
 
+add_custom_target(tests-radio
+  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-radio
+  DEPENDS gtests-radio
+  )
+
 if(Qt5Core_FOUND AND NOT DISABLE_COMPANION)
   add_subdirectory(${COMPANION_SRC_DIRECTORY})
   add_custom_target(gtests DEPENDS gtests-radio gtests-companion)

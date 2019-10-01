@@ -42,7 +42,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   EXPECT_STREQ("Thr", model.inputNames[0]);
   EXPECT_STREQ("Tes", model.sensorData[0].label);
   EXPECT_EQ(10, model.sensorData[0].id);
-  EXPECT_EQ(9, model.sensorData[0].instance);
+  EXPECT_EQ(10, model.sensorData[0].instance);
   EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,0).toValue(), model.logicalSw[0].val1);
 }
 
@@ -77,7 +77,7 @@ TEST(Conversions, ConversionX9DPFrom23)
   EXPECT_STREQ("Rud", model1.inputNames[0]);
   EXPECT_STREQ("Tes", model1.sensorData[0].label);
   EXPECT_EQ(10, model1.sensorData[0].id);
-  EXPECT_EQ(10, model1.sensorData[0].instance);
+  EXPECT_EQ(11, model1.sensorData[0].instance);
   EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,0).toValue(), model1.logicalSw[0].val1);
 
   const ModelData & model2 = radioData.models[1];
@@ -96,7 +96,7 @@ TEST(Conversions, ConversionX9DPFrom23)
   EXPECT_STREQ("Rud", model2.inputNames[0]);
   EXPECT_STREQ("Tes", model2.sensorData[0].label);
   EXPECT_EQ(10, model2.sensorData[0].id);
-  EXPECT_EQ(10, model2.sensorData[0].instance);
+  EXPECT_EQ(11, model2.sensorData[0].instance);
   EXPECT_EQ(RawSource(SOURCE_TYPE_TELEMETRY,0).toValue(), model2.logicalSw[0].val1);
 }
 
@@ -130,7 +130,7 @@ TEST(Conversions, ConversionX7From22)
 
   EXPECT_STREQ("Tes", model.sensorData[0].label);
   EXPECT_EQ(10, model.sensorData[0].id);
-  EXPECT_EQ(9, model.sensorData[0].instance);
+  EXPECT_EQ(10, model.sensorData[0].instance);
   EXPECT_EQ(900, model.limitData[0].max); // -100
 
   EXPECT_EQ(10, model.flightModeData[0].gvars[0]);
@@ -178,7 +178,7 @@ TEST(Conversions, ConversionXLiteFrom22)
 
   EXPECT_STREQ("Tes", model.sensorData[0].label);
   EXPECT_EQ(10, model.sensorData[0].id);
-  EXPECT_EQ(8, model.sensorData[0].instance);
+  EXPECT_EQ(9, model.sensorData[0].instance);
   EXPECT_EQ(900, model.limitData[0].max); // -100
 
   EXPECT_EQ(LS_FN_VPOS, model.logicalSw[0].func);
@@ -284,7 +284,7 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_STREQ("Rud", model.inputNames[0]);
   EXPECT_STREQ("Tes", model.sensorData[0].label);
   EXPECT_EQ(10, model.sensorData[0].id);
-  EXPECT_EQ(9, model.sensorData[0].instance);
+  EXPECT_EQ(10, model.sensorData[0].instance);
   EXPECT_EQ(5 + 2 + 3, model.thrTraceSrc); // CH3
 }
 
@@ -360,6 +360,6 @@ TEST(Conversions, ConversionX12SFrom22)
   EXPECT_STREQ("Rud", model.inputNames[0]);
   EXPECT_STREQ("Tes", model.sensorData[0].label);
   EXPECT_EQ(10, model.sensorData[0].id);
-  EXPECT_EQ(9, model.sensorData[0].instance);
+  EXPECT_EQ(10, model.sensorData[0].instance);
   EXPECT_EQ(5 + 2 + 3, model.thrTraceSrc); // CH3
 }
