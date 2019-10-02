@@ -21,6 +21,10 @@
 #ifndef _DEFINITIONS_H_
 #define _DEFINITIONS_H_
 
+#include <inttypes.h>
+#include <stdbool.h>
+#include <stddef.h>
+
 #if !defined(M_PI)
 #define M_PI         3.14159265358979323846   // pi
 #define M_PI_2       1.57079632679489661923   // pi/2
@@ -36,10 +40,6 @@
 #define M_LN2        0.693147180559945309417  // ln(2)
 #define M_LN10       2.30258509299404568402   // ln(10)
 #endif
-
-#include <inttypes.h>
-#include <stdbool.h>
-#include <stddef.h>
 
 #if !defined(UNUSED)
   #define UNUSED(x)           ((void)(x)) /* to avoid warnings */
