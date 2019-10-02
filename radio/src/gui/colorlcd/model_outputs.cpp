@@ -121,15 +121,15 @@ class OutputLineButton : public Button {
     void paint(BitmapBuffer * dc) override
     {
       // first line
-      drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, output->min - 1000, PREC1);
-      drawNumber(dc, 68, FIELD_PADDING_TOP, output->max + 1000, PREC1);
-      drawNumber(dc, 132, FIELD_PADDING_TOP, output->offset, PREC1);
-      drawNumber(dc, 226, FIELD_PADDING_TOP, PPM_CENTER + output->ppmCenter, RIGHT);
+      dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, output->min - 1000, PREC1);
+      dc->drawNumber(68, FIELD_PADDING_TOP, output->max + 1000, PREC1);
+      dc->drawNumber(132, FIELD_PADDING_TOP, output->offset, PREC1);
+      dc->drawNumber(226, FIELD_PADDING_TOP, PPM_CENTER + output->ppmCenter, RIGHT);
       dc->drawText(228, FIELD_PADDING_TOP - 3, output->symetrical ? "=" : "\306");
 
       // second line
       if (output->revert) {
-        drawTextAtIndex(dc, 4, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, STR_MMMINV, output->revert);
+        dc->drawTextAtIndex(4, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, STR_MMMINV, output->revert);
       }
       if (output->curve) {
         dc->drawBitmap(68, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupCurveBitmap);
@@ -137,11 +137,11 @@ class OutputLineButton : public Button {
       }
       if (output->name[0]) {
         dc->drawBitmap(146, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupLabelBitmap);
-        dc->drawSizedText(166, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, output->name, sizeof(output->name), ZCHAR);
+        dc->drawSizedText(166, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, output->name, sizeof(output->name));
       }
 
       // bounding rect
-      drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
     }
 
   protected:

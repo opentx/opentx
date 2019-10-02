@@ -21,6 +21,7 @@
 #include "opentx.h"
 #include "pulses/pxx2.h"
 #include "io/frsky_firmware_update.h"
+#include "libopenui/src/libopenui_file.h"
 
 uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {

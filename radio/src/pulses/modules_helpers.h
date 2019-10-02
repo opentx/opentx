@@ -21,7 +21,7 @@
 #ifndef _MODULES_HELPERS_H_
 #define _MODULES_HELPERS_H_
 
-#include "bitfield.h"
+#include "libopenui/src/bitfield.h"
 #include "definitions.h"
 #include "opentx_helpers.h"
 #include "telemetry/telemetry.h"

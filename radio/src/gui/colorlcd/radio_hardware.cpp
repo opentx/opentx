@@ -152,7 +152,7 @@ void RadioHardwarePage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_BATT_CALIB);
   auto batCal = new NumberEdit(window, grid.getFieldSlot(), -127, 127, GET_SET_DEFAULT(g_eeGeneral.txVoltageCalibration));
   batCal->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-    drawNumber(dc, 2, 0, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
+    dc->drawNumber(2, 0, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
   });
   batCal->setWindowFlags(REFRESH_ALWAYS);
   grid.nextLine();
@@ -160,7 +160,7 @@ void RadioHardwarePage::build(FormWindow * window)
   // Factory reset
   new TextButton(window, grid.getFieldSlot(), STR_FACTORYRESET,
                  [=]() -> int8_t {
-                     new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS_ENTER_EXIT, [=]() {
+                     new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS_ENTER_EXIT, "", [=]() {
                          storageEraseAll(false);
                          NVIC_SystemReset();
                          return 0;

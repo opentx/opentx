@@ -14,12 +14,14 @@ macro(add_bitmaps_target targetname filter width format)
   add_custom_target(${targetname} DEPENDS ${bitmaps_files})
 endmacro()
 
-macro(add_truetype_font_target name font size offset)
+macro(add_truetype_font_target name size subset font offset cn_font cn_offset)
   set(target ${RADIO_SRC_DIRECTORY}/fonts/truetype/font_${name})
-  add_custom_target(truetype_font_${name}
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/font2png.py ${font} ${size} ${offset} ${target}
+  add_custom_command(
+    OUTPUT ${target}.png ${target}.specs
+    COMMAND ${PYTHON_EXECUTABLE} ${TOOLS_DIRECTORY}/build-font-bitmap.py --subset ${subset} --size ${size} --font ${font}:${offset} --cn-font ${cn_font}:${cn_offset} --output ${target}
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-    DEPENDS ${RADIO_DIRECTORY}/util/font2png.py
+    DEPENDS ${TOOLS_DIRECTORY}/build-font-bitmap.py ${TOOLS_DIRECTORY}/charset.py ${RADIO_SRC_DIRECTORY}/translations/cn.h.txt
   )
+  add_custom_target(truetype_font_${name} DEPENDS ${target}.png ${target}.specs)
   set(truetype_fonts_targets ${truetype_fonts_targets} truetype_font_${name})
 endmacro()

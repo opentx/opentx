@@ -109,10 +109,10 @@ class WidgetsContainer: public WidgetsContainerInterface
             char name[WIDGET_NAME_LEN + 1];
             memset(name, 0, sizeof(name));
             strncpy(name, persistentData->zones[i].widgetName, WIDGET_NAME_LEN);
-            widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
+            // widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
           }
           else {
-            widgets[i] = NULL;
+            widgets[i] = nullptr;
           }
         }
       }

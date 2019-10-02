@@ -77,9 +77,9 @@ class SensorButton : public Button {
         dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
       }
 
-      drawNumber(dc, 2, 1, number, LEFT, 0, NULL, ":");
+      dc->drawNumber(2, 1, number, LEFT, 0, NULL, ":");
 
-      lcdDrawSizedText(SENSOR_COL1, line1, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
+      dc->drawSizedText(SENSOR_COL1, line1, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN);
 
       if (telemetryItem.isAvailable()) {
         LcdFlags color = telemetryItem.isOld() ? ALARM_COLOR : TEXT_COLOR;
@@ -94,9 +94,9 @@ class SensorButton : public Button {
         drawHexNumber(dc, SENSOR_COL3, line1, sensor->id, LEFT);
       }
       else if (sensor->type == TELEM_TYPE_CUSTOM && !g_model.ignoreSensorIds) {
-        drawNumber(dc, SENSOR_COL3, line1, sensor->instance, LEFT);
+        dc->drawNumber(SENSOR_COL3, line1, sensor->instance, LEFT);
       }
-      drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
     }
 
   protected:
@@ -409,7 +409,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   new StaticText(window, grid.getLabelSlot(true), STR_LOWALARM);
   auto edit = new NumberEdit(window, grid.getFieldSlot(), -30, 30, GET_SET_DEFAULT(g_model.rssiAlarms.warning));
   edit->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-    drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, g_model.rssiAlarms.getWarningRssi(), flags);
+    dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, g_model.rssiAlarms.getWarningRssi(), flags);
   });
   window->setFirstField(edit);
   grid.nextLine();
@@ -417,7 +417,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   new StaticText(window, grid.getLabelSlot(true), STR_CRITICALALARM);
   edit = new NumberEdit(window, grid.getFieldSlot(), -30, 30, GET_SET_DEFAULT(g_model.rssiAlarms.critical));
   edit->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-    drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, g_model.rssiAlarms.getCriticalRssi(), flags);
+    dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, g_model.rssiAlarms.getCriticalRssi(), flags);
   });
   grid.nextLine();
 
@@ -514,7 +514,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
     // Delete all sensors button
     new TextButton(window, grid.getFieldSlot(), STR_DELETE_ALL_SENSORS,
                    []() -> uint8_t {
-                       new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMDELETE, "", [=]() {
+                       new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMDELETE, "", "", [=]() {
                            for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
                              delTelemetryIndex(i);
                            }

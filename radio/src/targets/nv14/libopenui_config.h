@@ -21,7 +21,13 @@
 #ifndef _LIBOPENUI_CONFIG_H_
 #define _LIBOPENUI_CONFIG_H_
 
-#include "lcd.h"
+#include "debug.h"
+#include "libopenui_types.h"
+#include "colors.h"
+#include "board.h"
+#include "keys.h"
+
+typedef uint16_t pixel_t;
 
 constexpr uint32_t MENU_HEADER_BUTTON_WIDTH =      60;
 constexpr uint32_t MENU_HEADER_BUTTONS_LEFT =      MENU_HEADER_BUTTON_WIDTH;
@@ -67,6 +73,59 @@ constexpr uint32_t MENUS_TOOLBAR_BUTTON_WIDTH =    50;
 constexpr uint32_t MENUS_TOOLBAR_BUTTON_PADDING =  11;
 constexpr rect_t MENUS_TOOLBAR_RECT =              { 35, 95, 50, 370 };
 
-constexpr uint32_t SUBMENU_LINE_WIDTH =            230;
+//constexpr uint32_t SUBMENU_LINE_WIDTH =            230;
+
+constexpr uint32_t ALERT_FRAME_TOP =               70;
+constexpr uint32_t ALERT_FRAME_HEIGHT =            (LCD_H - 2 * ALERT_FRAME_TOP);
+constexpr uint32_t ALERT_BITMAP_TOP =              ALERT_FRAME_TOP + 15;
+constexpr uint32_t ALERT_BITMAP_LEFT =             40;
+constexpr uint32_t ALERT_TITLE_TOP =               ALERT_FRAME_TOP + 10;
+constexpr uint32_t ALERT_TITLE_LEFT =              186;
+constexpr uint32_t ALERT_TITLE_LINE_HEIGHT =       30;
+constexpr uint32_t ALERT_MESSAGE_TOP =             ALERT_TITLE_TOP + 90;
+constexpr uint32_t ALERT_MESSAGE_LEFT =            ALERT_TITLE_LEFT;
+constexpr uint32_t ALERT_ACTION_TOP =              240;
+constexpr uint32_t ALERT_BUTTON_TOP =              300;
+
+enum LcdColorIndex
+{
+  TEXT_COLOR_INDEX,
+  TEXT_BGCOLOR_INDEX,
+  TEXT_INVERTED_COLOR_INDEX,
+  TEXT_INVERTED_BGCOLOR_INDEX,
+  TEXT_STATUSBAR_COLOR_INDEX,
+  LINE_COLOR_INDEX,
+  SCROLLBOX_COLOR_INDEX,
+  MENU_TITLE_BGCOLOR_INDEX,
+  MENU_TITLE_COLOR_INDEX,
+  MENU_TITLE_DISABLE_COLOR_INDEX,
+  HEADER_COLOR_INDEX,
+  ALARM_COLOR_INDEX,
+  WARNING_COLOR_INDEX,
+  TEXT_DISABLE_COLOR_INDEX,
+  CURVE_AXIS_COLOR_INDEX,
+  CURVE_COLOR_INDEX,
+  CURVE_CURSOR_COLOR_INDEX,
+  HEADER_BGCOLOR_INDEX,
+  HEADER_ICON_BGCOLOR_INDEX,
+  HEADER_CURRENT_BGCOLOR_INDEX,
+  TITLE_BGCOLOR_INDEX,
+  TRIM_BGCOLOR_INDEX,
+  TRIM_SHADOW_COLOR_INDEX,
+  MAINVIEW_PANES_COLOR_INDEX,
+  MAINVIEW_GRAPHICS_COLOR_INDEX,
+  OVERLAY_COLOR_INDEX,
+  CUSTOM_COLOR_INDEX,
+  BARGRAPH1_COLOR_INDEX,
+  BARGRAPH2_COLOR_INDEX,
+  BARGRAPH_BGCOLOR_INDEX,
+  LCD_COLOR_COUNT
+};
+
+#if !defined(BOOT)
+#define FONT_TABLE_SIZE 16
+#else
+#define FONT_TABLE_SIZE 1
+#endif
 
 #endif // _LIBOPENUI_CONFIG_H_

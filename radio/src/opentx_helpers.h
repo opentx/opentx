@@ -21,7 +21,7 @@
 #ifndef _OPENTX_HELPERS_H_
 #define _OPENTX_HELPERS_H_
 
-#include "libopenui/libopenui_helpers.h"
+#include "thirdparty/libopenui/src/libopenui_helpers.h"
 
 template<class T>
 inline T sgn(T a)

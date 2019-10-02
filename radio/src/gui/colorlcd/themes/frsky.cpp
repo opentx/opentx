@@ -27,11 +27,11 @@ const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { nullptr, ZoneOption::Bool }
 };
 
-class FrskyTheme: public Theme
+class FrskyTheme: public ThemeBase
 {
   public:
     FrskyTheme():
-      Theme("FrSky", OPTIONS_THEME_DEFAULT)
+      ThemeBase("FrSky", OPTIONS_THEME_DEFAULT)
     {
       loadColors();
     }
@@ -72,8 +72,8 @@ class FrskyTheme: public Theme
 
     void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_TITLE_COLOR) const
     {
-      TRACE("loadMenuIcon %s", getThemePath(filename));
-      BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
+      TRACE("loadMenuIcon %s", getFilePath(filename));
+      BitmapBuffer * mask = BitmapBuffer::loadMask(getFilePath(filename));
       if (mask) {
         delete iconMask[index];
         iconMask[index] = mask;
@@ -148,13 +148,14 @@ class FrskyTheme: public Theme
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
       loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "mask_monitor_logsw.png");
 
-      BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
-      BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
-      BitmapBuffer * dot = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_dot.png"));
+      BitmapBuffer * background = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_bg.png"));
+      BitmapBuffer * shadow = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_shadow.png"));
+      BitmapBuffer * dot = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_dot.png"));
 
       if (!currentMenuBackground) {
         currentMenuBackground = new BitmapBuffer(BMP_RGB565, 36, 53);
       }
+
       if (currentMenuBackground) {
         currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
         currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
@@ -165,7 +166,7 @@ class FrskyTheme: public Theme
       }
 
       delete topleftBitmap;
-      topleftBitmap = BitmapBuffer::loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);
+      topleftBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("topleft.png"), TITLE_BGCOLOR, HEADER_BGCOLOR);
 
       delete background;
       delete shadow;
@@ -176,31 +177,31 @@ class FrskyTheme: public Theme
     {
       // Calibration screen
       delete calibStick;
-      calibStick = BitmapBuffer::load(getThemePath("stick_pointer.png"));
+      calibStick = BitmapBuffer::load(getFilePath("stick_pointer.png"));
 
       delete calibStickBackground;
-      calibStickBackground = BitmapBuffer::load(getThemePath("stick_background.png"));
+      calibStickBackground = BitmapBuffer::load(getFilePath("stick_background.png"));
 
       delete calibTrackpBackground;
-      calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
+      calibTrackpBackground = BitmapBuffer::load(getFilePath("trackp_background.png"));
 
       delete calibRadioPict;
 #if defined(PCBX10)
       if(STICKS_PWM_ENABLED()) {
-        calibRadioPict = BitmapBuffer::load(getThemePath("X10S.bmp"));
+        calibRadioPict = BitmapBuffer::load(getFilePath("X10S.bmp"));
       }
       else {
-        calibRadioPict = BitmapBuffer::load(getThemePath("X10.bmp"));
+        calibRadioPict = BitmapBuffer::load(getFilePath("X10.bmp"));
       }
 #else
-      calibRadioPict = BitmapBuffer::load(getThemePath("horus.bmp"));
+      calibRadioPict = BitmapBuffer::load(getFilePath("horus.bmp"));
 #endif
 
       // Model Selection screen
       delete modelselIconBitmap;
       modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
       if (modelselIconBitmap) {
-        BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
+        BitmapBuffer * bitmap = BitmapBuffer::load(getFilePath("modelsel/icon_default.png"));
         modelselIconBitmap->drawBitmap(20, 8, bitmap);
         delete bitmap;
       }
@@ -215,13 +216,13 @@ class FrskyTheme: public Theme
       modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", TEXT_COLOR, TEXT_BGCOLOR);
 
       delete modelselModelMoveBackground;
-      modelselModelMoveBackground = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveback.png"));
+      modelselModelMoveBackground = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveback.png"));
 
       delete modelselModelMoveIcon;
-      modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
+      modelselModelMoveIcon = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveico.png"));
 
       delete modelselWizardBackground;
-      modelselWizardBackground = BitmapBuffer::load(getThemePath("wizard/background.png"));
+      modelselWizardBackground = BitmapBuffer::load(getFilePath("wizard/background.png"));
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
@@ -256,10 +257,10 @@ class FrskyTheme: public Theme
       mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupSwitchIcon;
-      mixerSetupSwitchIcon = BitmapBuffer::loadMask(getThemePath("mask_textline_switch.png"));
+      mixerSetupSwitchIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_switch.png"));
 
       delete mixerSetupFlightmodeIcon;
-      mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getThemePath("mask_textline_fm.png"));
+      mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_fm.png"));
 
       delete mixerSetupSlowBitmap;
       mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", TEXT_COLOR, TEXT_BGCOLOR);
@@ -271,17 +272,17 @@ class FrskyTheme: public Theme
       mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_COLOR, TEXT_BGCOLOR);
     }
 
-    virtual void load() const override
+    void load() const override
     {
       loadColors();
-      Theme::load();
+      ThemeBase::load();
       if (!backgroundBitmap) {
-        backgroundBitmap = BitmapBuffer::load(getThemePath("background.png"));
+        backgroundBitmap = BitmapBuffer::load(getFilePath("background.png"));
       }
       update();
     }
 
-    virtual void update() const override
+    void update() const override
     {
       TRACE("TODO THEME::UPDATE()");
 #if 0
@@ -320,12 +321,10 @@ class FrskyTheme: public Theme
 
     void drawMenuBackground(BitmapBuffer * dc, uint8_t icon, const char * title) const override
     {
-      dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-
       if (topleftBitmap) {
         dc->drawBitmap(0, 0, topleftBitmap);
         uint16_t width = topleftBitmap->getWidth();
-        dc->drawSolidFilledRect(width, 0, LCD_W-width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        dc->drawSolidFilledRect(width, 0, LCD_W - width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
       }
       else {
         dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
@@ -339,7 +338,7 @@ class FrskyTheme: public Theme
       dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR); // the white separation line
       dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
       if (title) {
-        lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 1, title, MENU_TITLE_COLOR);
+        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 1, title, MENU_TITLE_COLOR);
       }
 
       drawMenuDatetime(dc);
@@ -350,9 +349,9 @@ class FrskyTheme: public Theme
       return iconMask[index];
     }
 
-    const BitmapBuffer * getIconButtonBitmap(uint8_t index, bool selected) const override
+    const BitmapBuffer * getIcon(uint8_t index, IconState state) const override
     {
-      return selected ? menuIconSelected[index] : menuIconNormal[index];
+      return state == STATE_DEFAULT ? menuIconNormal[index] : menuIconSelected[index];
     }
 
     void drawMenuHeader(BitmapBuffer * dc, std::vector<PageTab *> & tabs, uint8_t currentIndex) const override
@@ -373,17 +372,20 @@ class FrskyTheme: public Theme
       struct gtm t;
       gettime(&t);
       char str[10];
+#if defined(TRANSLATIONS_CN)
+      sprintf(str, "%d" TR_MONTH "%d", t.tm_mon + 1, t.tm_mday);
+#else
       const char * const STR_MONTHS[] = TR_MONTHS;
       sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
-      lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
-
+#endif
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
       getTimerString(str, getValue(MIXSRC_TX_TIME));
-      lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
     }
 
     void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const override
     {
-      drawSolidRect(dc, x, y, w, h, 1, TEXT_COLOR);
+      dc->drawSolidRect(x, y, w, h, 1, TEXT_COLOR);
       if (value > 0) {
         int width = (w * value) / 100;
         dc->drawSolidFilledRect(x + 2, y + 2, width - 4, h - 4, SCROLLBOX_COLOR);
@@ -409,5 +411,6 @@ BitmapBuffer * FrskyTheme::currentMenuBackground = nullptr;
 FrskyTheme frskyTheme;
 
 #if defined(PCBFRSKY)
+ThemeBase * defaultTheme = &frskyTheme;
 Theme * theme = &frskyTheme;
 #endif

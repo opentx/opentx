@@ -64,7 +64,7 @@ class MultiPosCalibrationWindow: public Window {
 
     virtual void paint(BitmapBuffer * dc)
     {
-      drawHorizontalSlider(5, 8, rect.w - 18, 1 + (potsPos[potIndex] & 0x0f), 1, XPOTS_MULTIPOS_COUNT+1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
+      drawHorizontalSlider(dc, 5, 8, rect.w - 18, 1 + (potsPos[potIndex] & 0x0f), 1, XPOTS_MULTIPOS_COUNT+1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
     }
 
   protected:
@@ -89,9 +89,9 @@ class PotCalibrationWindow: public Window {
     virtual void paint(BitmapBuffer * dc)
     {
       if(rect.h > rect.w)
-        drawVerticalSlider(5, 8, rect.h - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+        drawVerticalSlider(dc, 5, 8, rect.h - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
       else
-        drawHorizontalSlider(5, 8, rect.w - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+        drawHorizontalSlider(dc, 5, 8, rect.w - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
     }
 
   protected:

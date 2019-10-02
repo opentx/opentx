@@ -1261,3 +1261,13 @@ void pushPrompt(uint16_t prompt, uint8_t id)
   audioQueue.playFile(filename, 0, id);
 #endif
 }
+
+void onKeyPress()
+{
+  audioKeyPress();
+}
+
+void onKeyError()
+{
+  audioKeyError();
+}

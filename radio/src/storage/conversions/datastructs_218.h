@@ -527,7 +527,7 @@ PACK(struct ModelData_v218 {
   #define THEME_NAME_LEN 8
   #define THEME_DATA \
     char themeName[THEME_NAME_LEN]; \
-    Theme::PersistentData themeData;
+    ThemeBase::PersistentData themeData;
 #else
   #define THEME_DATA
 #endif

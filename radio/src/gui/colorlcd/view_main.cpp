@@ -21,6 +21,7 @@
 #include "view_main.h"
 #include "menu_model.h"
 #include "menu_radio.h"
+#include "menu_screen.h"
 // #include "menu_screens.h"
 // #include "model_select.h"
 // #include "view_channels.h"
@@ -177,12 +178,18 @@ void ViewMain::onKeyEvent(event_t event)
       new RadioMenu();
       break;
 
+    case EVT_KEY_LONG(KEY_TELEM):
+      killEvents(event);
+      new ScreenMenu();
+      break;
+
     case EVT_KEY_LONG(KEY_ENTER):
+      killEvents(event);
       Menu * menu = new Menu();
       menu->addLine(STR_MODEL_SELECT, [=]() {
           // new ModelselectMenu();
       });
-      if (1/*modelHasNotes()*/) {
+      if (modelHasNotes()) {
         menu->addLine(STR_VIEW_NOTES, [=]() {
             // TODO
         });
@@ -221,14 +228,11 @@ void ViewMain::onKeyEvent(event_t event)
 void ViewMain::checkEvents()
 {
   Window::checkEvents();
-
-  // TODO temporary for refreshing the trims
-  invalidate();
 }
 
 void ViewMain::paint(BitmapBuffer * dc)
 {
-  theme->drawBackground(dc);
+  static_cast<ThemeBase *>(theme)->drawBackground(dc);
 
 //  drawMainPots();
 

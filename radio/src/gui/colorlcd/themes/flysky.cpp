@@ -27,11 +27,11 @@ const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { nullptr, ZoneOption::Bool }
 };
 
-class FlyskyTheme: public Theme
+class FlyskyTheme: public ThemeBase
 {
   public:
     FlyskyTheme():
-      Theme("FlySky", OPTIONS_THEME_DEFAULT)
+      ThemeBase("FlySky", OPTIONS_THEME_DEFAULT)
     {
       loadColors();
     }
@@ -78,9 +78,9 @@ class FlyskyTheme: public Theme
 
     void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_TITLE_COLOR) const
     {
-      TRACE("loadMenuIcon %s", getThemePath(filename));
+      TRACE("loadMenuIcon %s", getFilePath(filename));
 
-      BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
+      BitmapBuffer * mask = BitmapBuffer::loadMask(getFilePath(filename));
       if (mask) {
         delete iconMask[index];
         iconMask[index] = mask;
@@ -177,9 +177,9 @@ class FlyskyTheme: public Theme
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
       loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "mask_monitor_logsw.png");
 
-      BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
-      BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
-      BitmapBuffer * dot = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_dot.png"));
+      BitmapBuffer * background = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_bg.png"));
+      BitmapBuffer * shadow = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_shadow.png"));
+      BitmapBuffer * dot = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_dot.png"));
 
       if (!currentMenuBackground) {
         currentMenuBackground = new BitmapBuffer(BMP_RGB565, 36, 53);
@@ -205,22 +205,22 @@ class FlyskyTheme: public Theme
     {
       // Calibration screen
       delete calibStick;
-      calibStick = BitmapBuffer::load(getThemePath("stick_pointer.png"));
+      calibStick = BitmapBuffer::load(getFilePath("stick_pointer.png"));
 
       delete calibStickBackground;
-      calibStickBackground = BitmapBuffer::load(getThemePath("stick_background.png"));
+      calibStickBackground = BitmapBuffer::load(getFilePath("stick_background.png"));
 
       delete calibTrackpBackground;
-      calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
+      calibTrackpBackground = BitmapBuffer::load(getFilePath("trackp_background.png"));
 
       delete calibRadioPict;
-      calibRadioPict = BitmapBuffer::load(getThemePath("NV14.bmp"));
+      calibRadioPict = BitmapBuffer::load(getFilePath("NV14.bmp"));
 
       // Model Selection screen
       delete modelselIconBitmap;
       modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
       if (modelselIconBitmap) {
-        BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
+        BitmapBuffer * bitmap = BitmapBuffer::load(getFilePath("modelsel/icon_default.png"));
         modelselIconBitmap->drawBitmap(20, 8, bitmap);
         delete bitmap;
       }
@@ -235,13 +235,13 @@ class FlyskyTheme: public Theme
       modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", TEXT_COLOR, TEXT_BGCOLOR);
 
       delete modelselModelMoveBackground;
-      modelselModelMoveBackground = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveback.png"));
+      modelselModelMoveBackground = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveback.png"));
 
       delete modelselModelMoveIcon;
-      modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
+      modelselModelMoveIcon = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveico.png"));
 
       delete modelselWizardBackground;
-      modelselWizardBackground = BitmapBuffer::load(getThemePath("wizard/background.png"));
+      modelselWizardBackground = BitmapBuffer::load(getFilePath("wizard/background.png"));
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
@@ -276,10 +276,10 @@ class FlyskyTheme: public Theme
       mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupSwitchIcon;
-      mixerSetupSwitchIcon = BitmapBuffer::loadMask(getThemePath("mask_textline_switch.png"));
+      mixerSetupSwitchIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_switch.png"));
 
       delete mixerSetupFlightmodeIcon;
-      mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getThemePath("mask_textline_fm.png"));
+      mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_fm.png"));
 
       delete mixerSetupSlowBitmap;
       mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", TEXT_COLOR, TEXT_BGCOLOR);
@@ -291,12 +291,12 @@ class FlyskyTheme: public Theme
       mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_COLOR, TEXT_BGCOLOR);
     }
 
-    virtual void load() const override
+    void load() const override
     {
       loadColors();
-      Theme::load();
+      ThemeBase::load();
       if (!backgroundBitmap) {
-        backgroundBitmap = BitmapBuffer::load(getThemePath("background.png"));
+        backgroundBitmap = BitmapBuffer::load(getFilePath("background.png"));
       }
       update();
     }
@@ -341,26 +341,25 @@ class FlyskyTheme: public Theme
 
     void drawMenuBackground(BitmapBuffer * dc, uint8_t icon, const char * title) const override
     {
-      dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-
-      if (topleftBitmap) {
-        dc->drawBitmap(0, 0, topleftBitmap);
-        uint16_t width = topleftBitmap->getWidth();
-        dc->drawSolidFilledRect(width, 0, LCD_W-width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-      }
-      else {
+//      if (topleftBitmap) {
+//        dc->drawBitmap(0, 0, topleftBitmap);
+//        uint16_t width = topleftBitmap->getWidth();
+//        dc->drawSolidFilledRect(width, 0, LCD_W-width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+//      }
+//      else {
         dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-      }
-
-      if (icon == ICON_OPENTX)
-        dc->drawBitmap(4, 10, menuIconSelected[ICON_OPENTX]);
-      else
-        dc->drawBitmap(5, 7, menuIconSelected[icon]);
-
+//      }
+//
+//      if (icon == ICON_OPENTX)
+//        dc->drawBitmap(4, 10, menuIconSelected[ICON_OPENTX]);
+//      else
+//        dc->drawBitmap(5, 7, menuIconSelected[icon]);
+//
       dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR); // the white separation line
       dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
+//
       if (title) {
-        lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP, title, MENU_TITLE_COLOR);
+        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP, title, MENU_TITLE_COLOR);
       }
     }
 
@@ -369,20 +368,20 @@ class FlyskyTheme: public Theme
       return iconMask[index];
     }
 
-    const BitmapBuffer * getIconButtonBitmap(uint8_t index, bool selected) const override
+    const BitmapBuffer * getIcon(uint8_t index, IconState state) const override
     {
-      return selected ? menuIconSelected[index] : menuIconNormal[index];
+      return state == STATE_DEFAULT ? menuIconNormal[index] : menuIconSelected[index];
     }
 
     void drawMenuHeader(BitmapBuffer * dc, std::vector<PageTab *> & tabs, uint8_t currentIndex) const override
     {
-      uint8_t padding_left = 0;
+      uint8_t padding_left = 4;
 
-      dc->drawSolidFilledRect(0, 0, padding_left, MENU_HEADER_BUTTON_WIDTH, HEADER_BGCOLOR);
-      for (unsigned i=0; i<tabs.size(); i++) {
-        dc->drawBitmap(padding_left + i*MENU_HEADER_BUTTON_WIDTH, 0, theme->getIconButtonBitmap(tabs[i]->getIcon(), currentIndex == i));
+      dc->drawSolidFilledRect(0, 0, 4, MENU_HEADER_BUTTON_WIDTH, HEADER_BGCOLOR);
+      for (unsigned i = 0; i < tabs.size(); i++) {
+        dc->drawBitmap(padding_left + i*MENU_HEADER_BUTTON_WIDTH, 0, theme->getIcon(tabs[i]->getIcon(), currentIndex == i ? STATE_PRESSED : STATE_DEFAULT));
       }
-      coord_t x = padding_left + MENU_HEADER_BUTTON_WIDTH * tabs.size();
+//      coord_t x = padding_left + MENU_HEADER_BUTTON_WIDTH * tabs.size();
 //      coord_t w = width() - x;
 //      if (w > 0) {
 //        dc->drawSolidFilledRect(x, 0, w, MENU_HEADER_BUTTON_WIDTH, HEADER_BGCOLOR);
@@ -396,17 +395,22 @@ class FlyskyTheme: public Theme
       struct gtm t;
       gettime(&t);
       char str[10];
+
+#if defined(TRANSLATIONS_CN)
+      sprintf(str, "%d" TR_MONTH "%d", t.tm_mon + 1, t.tm_mday);
+#else
       const char * const STR_MONTHS[] = TR_MONTHS;
       sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
-      lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+#endif
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
 
       getTimerString(str, getValue(MIXSRC_TX_TIME));
-      lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
     }
 
     void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const override
     {
-      drawSolidRect(dc, x, y, w, h, 1, TEXT_COLOR);
+      dc->drawSolidRect(x, y, w, h, 1, TEXT_COLOR);
       if (value > 0) {
         int width = (w * value) / 100;
         dc->drawSolidFilledRect(x + 2, y + 2, width - 4, h - 4, SCROLLBOX_COLOR);
@@ -432,5 +436,6 @@ BitmapBuffer * FlyskyTheme::currentMenuBackground = nullptr;
 FlyskyTheme flyskyTheme;
 
 #if defined(PCBFLYSKY)
+ThemeBase * defaultTheme = &flyskyTheme;
 Theme * theme = &flyskyTheme;
 #endif

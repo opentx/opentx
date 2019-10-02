@@ -88,7 +88,7 @@ class DateTimeWindow : public Window {
                                     SET_LOAD_DATETIME(&t);
                                   });
       month->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-        drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
+        dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
       });
 
       /* TODO dynamic max instead of 31 ...
@@ -110,7 +110,7 @@ class DateTimeWindow : public Window {
                                   SET_LOAD_DATETIME(&t);
                                 });
       day->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-        drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
+        dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
       });
       grid.nextLine();
 
@@ -130,7 +130,7 @@ class DateTimeWindow : public Window {
                                    SET_LOAD_DATETIME(&t);
                                  });
       hour->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-        drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
+        dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
       });
 
       auto minutes = new NumberEdit(this, grid.getFieldSlot(3, 1), 0, 59,
@@ -146,7 +146,7 @@ class DateTimeWindow : public Window {
                                       SET_LOAD_DATETIME(&t);
                                     });
       minutes->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-        drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
+        dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
       });
 
       auto seconds = new NumberEdit(this, grid.getFieldSlot(3, 2), 0, 59,
@@ -162,7 +162,7 @@ class DateTimeWindow : public Window {
                                       SET_LOAD_DATETIME(&t);
                                     });
       seconds->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-        drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
+        dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
       });
       grid.nextLine();
       getParent()->moveWindowsTop(top(), adjustHeight());
@@ -170,7 +170,7 @@ class DateTimeWindow : public Window {
 };
 
 RadioSetupPage::RadioSetupPage():
-  PageTab(STR_MENURADIOSETUP, ICON_RADIO_SETUP)
+  PageTab(STR_RADIO_SETUP, ICON_RADIO_SETUP)
 {
 }
 
@@ -213,7 +213,7 @@ void RadioSetupPage::build(FormWindow * window)
   grid.nextLine();
 
   // Main volume
-  new StaticText(window, grid.getLabelSlot(true), STR_SPEAKER_VOLUME);
+  new StaticText(window, grid.getLabelSlot(true), STR_VOLUME);
   new Slider(window, grid.getFieldSlot(), -VOLUME_LEVEL_DEF, VOLUME_LEVEL_MAX-VOLUME_LEVEL_DEF, GET_SET_DEFAULT(g_eeGeneral.speakerVolume));
   grid.nextLine();
 
@@ -238,7 +238,7 @@ void RadioSetupPage::build(FormWindow * window)
   grid.nextLine();
 
   // Beeps pitch
-  new StaticText(window, grid.getLabelSlot(true), STR_SPKRPITCH);
+  new StaticText(window, grid.getLabelSlot(true), STR_BEEP_PITCH);
   auto edit = new NumberEdit(window, grid.getFieldSlot(), 0, 300,
                              GET_DEFAULT(15 * g_eeGeneral.speakerPitch),
                              [=](int32_t newValue) {
@@ -255,7 +255,7 @@ void RadioSetupPage::build(FormWindow * window)
   grid.nextLine();
 
   // Vario volume
-  new StaticText(window, grid.getLabelSlot(true), TR_SPEAKER_VOLUME);
+  new StaticText(window, grid.getLabelSlot(true), TR_VOLUME);
   new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.varioVolume));
   grid.nextLine();
 
@@ -285,7 +285,7 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
 
     // Haptic strength
-    new StaticText(window, grid.getLabelSlot(true), STR_HAPTICSTRENGTH);
+    new StaticText(window, grid.getLabelSlot(true), STR_STRENGTH);
     new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.hapticStrength));
     grid.nextLine();
   }
@@ -308,7 +308,7 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
 
     // RSSI shutdown alarm
-    new StaticText(window, grid.getLabelSlot(true), STR_RSSISHUTDOWNALARM);
+    new StaticText(window, grid.getLabelSlot(true), STR_RSSI_SHUTDOWN_ALARM);
     new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_eeGeneral.disableRssiPoweroffAlarm));
     grid.nextLine();
 
@@ -375,7 +375,7 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
 
     // GPS format
-    new StaticText(window, grid.getLabelSlot(true), STR_GPSCOORD);
+    new StaticText(window, grid.getLabelSlot(true), STR_GPS_COORDS_FORMAT);
     new Choice(window, grid.getFieldSlot(), STR_GPSFORMAT, 0, 1, GET_SET_DEFAULT(g_eeGeneral.gpsFormat));
     grid.nextLine();
   }
@@ -388,12 +388,12 @@ void RadioSetupPage::build(FormWindow * window)
 #endif
 
   // Country code
-  new StaticText(window, grid.getLabelSlot(), STR_COUNTRYCODE);
-  new Choice(window, grid.getFieldSlot(), STR_COUNTRYCODES, 0, 2, GET_SET_DEFAULT(g_eeGeneral.countryCode));
+  new StaticText(window, grid.getLabelSlot(), STR_COUNTRY_CODE);
+  new Choice(window, grid.getFieldSlot(), STR_COUNTRY_CODES, 0, 2, GET_SET_DEFAULT(g_eeGeneral.countryCode));
   grid.nextLine();
 
   // Audio language
-  new StaticText(window, grid.getLabelSlot(), STR_VOICELANG);
+  new StaticText(window, grid.getLabelSlot(), STR_VOICE_LANGUAGE);
   auto choice = new Choice(window, grid.getFieldSlot(), nullptr, 0, DIM(languagePacks) - 2, GET_VALUE(currentLanguagePackIdx),
                            [](uint8_t newValue) {
                              currentLanguagePackIdx = newValue;
@@ -406,7 +406,7 @@ void RadioSetupPage::build(FormWindow * window)
   grid.nextLine();
 
   // Imperial units
-  new StaticText(window, grid.getLabelSlot(), STR_UNITSSYSTEM);
+  new StaticText(window, grid.getLabelSlot(), STR_UNITS_SYSTEM);
   new Choice(window, grid.getFieldSlot(), STR_VUNITSSYSTEM, 0, 1, GET_SET_DEFAULT(g_eeGeneral.imperial));
   grid.nextLine();
 

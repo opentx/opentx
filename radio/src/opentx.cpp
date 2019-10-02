@@ -332,8 +332,8 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
-  strcpy(g_eeGeneral.themeName, theme->getName());
-  theme->init();
+  strcpy(g_eeGeneral.themeName, static_cast<ThemeBase *>(theme)->getName());
+  static_cast<ThemeBase *>(theme)->init();
 #endif
 
 #if defined(PXX2)
@@ -524,23 +524,22 @@ void modelDefault(uint8_t id)
 #endif
 
 #if !defined(EEPROM)
-  strcpy(g_model.header.name, "\015\361\374\373\364");
-  g_model.header.name[5] = '\033' + id/10;
-  g_model.header.name[6] = '\033' + id%10;
+  strcpy(g_model.header.name, "Model");
+  g_model.header.name[5] = '0' + id / 10;
+  g_model.header.name[6] = '0' + id % 10;
 #endif
 
 #if defined(COLORLCD)
-  #warning "Initialization missing"
   extern const LayoutFactory * defaultLayout;
-//  delete customScreens[0];
-//  customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
-//  strcpy(g_model.screenData[0].layoutName, "Layout2P1");
+  delete customScreens[0];
+  customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
+  strcpy(g_model.screenData[0].layoutName, "Layout2P1");
 //  extern const WidgetFactory * defaultWidget;
 //  customScreens[0]->createWidget(0, defaultWidget);
-//  // enable switch warnings
-//  for (int i=0; i<NUM_SWITCHES; i++) {
-//    g_model.switchWarningState |= (1 << (3*i));
-//  }
+  // enable switch warnings
+  for (int i = 0; i < NUM_SWITCHES; i++) {
+    g_model.switchWarningState |= (1 << (3*i));
+  }
 #endif
 }
 
@@ -972,7 +971,7 @@ void checkThrottleStick()
 {
   if (isThrottleWarningAlertNeeded()) {
     AUDIO_ERROR_MESSAGE(AU_THROTTLE_ALERT);
-    auto dialog = new FullScreenDialog(WARNING_TYPE_ALERT, STR_THROTTLEWARN, STR_THROTTLENOTIDLE);
+    auto dialog = new FullScreenDialog(WARNING_TYPE_ALERT, STR_THROTTLE_WARNING, STR_THROTTLE_NOT_IDLE, STR_PRESS_ANY_KEY_TO_SKIP);
     dialog->setCloseCondition([]() {
         return !isThrottleWarningAlertNeeded();
     });
@@ -988,7 +987,7 @@ void checkThrottleStick()
 
   // first - display warning; also deletes inputs if any have been before
   LED_ERROR_BEGIN();
-  RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+  RAISE_ALERT(TR_THROTTLE_UPPERCASE, STR_THROTTLE_NOT_IDLE, STR_PRESS_ANY_KEY_TO_SKIP, AU_THROTTLE_ALERT);
 
 #if defined(PWR_BUTTON_PRESS)
   bool refresh = false;
@@ -1008,7 +1007,7 @@ void checkThrottleStick()
       refresh = true;
     }
     else if (power == e_power_on && refresh) {
-      RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_NONE);
+      RAISE_ALERT(TR_THROTTLE_UPPERCASE, STR_THROTTLE_NOT_IDLE, STR_PRESS_ANY_KEY_TO_SKIP, AU_NONE);
       refresh = false;
     }
 #else
@@ -2036,6 +2035,7 @@ int main()
   boardInit();
 
 #if defined(COLORLCD)
+  extern void loadFonts();
   loadFonts();
 #endif
 

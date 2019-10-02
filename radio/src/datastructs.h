@@ -25,7 +25,6 @@
 #include "board.h"
 #include "dataconstants.h"
 #include "definitions.h"
-#include "bitfield.h"
 
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
@@ -53,12 +52,6 @@
   #define NOBACKUP(...)
 #else
   #define NOBACKUP(...)                __VA_ARGS__
-#endif
-
-#if defined(PCBFRSKY)
-typedef uint16_t source_t;
-#else
-typedef uint8_t source_t;
 #endif
 
 /*
@@ -182,8 +175,6 @@ PACK(struct trim_t {
   int16_t  value:11;
   uint16_t mode:5;
 });
-
-typedef int16_t gvar_t;
 
 PACK(struct FlightModeData {
   trim_t trim[NUM_TRIMS];
@@ -725,7 +716,7 @@ PACK(struct TrainerData {
   #define THEME_NAME_LEN 8
   #define THEME_DATA \
     NOBACKUP(char themeName[THEME_NAME_LEN]); \
-    NOBACKUP(Theme::PersistentData themeData);
+    NOBACKUP(ThemeBase::PersistentData themeData);
 #else
   #define THEME_DATA
 #endif

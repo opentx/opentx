@@ -2,7 +2,7 @@ include(CMakeForceCompiler)
 include(Bitmaps)
 
 set(PCB_TYPES X9LITE X7 XLITE XLITES X9D X9D+ X9E X10 X12S SKY9X 9XRPRO AR9X NV14)
-set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL)
+set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL CN)
 set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL RU)
 
 set(PCB "X9D+" CACHE STRING "Radio type, one of: ${PCB_TYPES}")
@@ -247,7 +247,7 @@ endif()
 if(SDCARD)
   add_definitions(-DSDCARD)
   include_directories(${FATFS_DIR} ${FATFS_DIR}/option)
-  set(SRC ${SRC} sdcard.cpp rtc.cpp logs.cpp)
+  set(SRC ${SRC} sdcard.cpp rtc.cpp logs.cpp thirdparty/libopenui/src/libopenui_file.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} ${FATFS_SRC})
 endif()
 

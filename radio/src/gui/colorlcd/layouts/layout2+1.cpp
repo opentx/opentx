@@ -29,7 +29,7 @@ const ZoneOption OPTIONS_LAYOUT_2P1[] = {
   { "Flight mode", ZoneOption::Bool },
   { "Sliders", ZoneOption::Bool },
   { "Trims", ZoneOption::Bool },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 const Zone ZONES_LAYOUT_2P1[3] = {
@@ -46,7 +46,7 @@ class Layout2P1: public Layout
     {
     }
 
-    virtual void create()
+    void create() override
     {
       Layout::create();
       persistentData->options[0].boolValue = true;
@@ -55,49 +55,49 @@ class Layout2P1: public Layout
       persistentData->options[3].boolValue = true;
     }
 
-    virtual unsigned int getZonesCount() const
+    unsigned int getZonesCount() const override
     {
       return DIM(ZONES_LAYOUT_2P1);
     }
 
-    virtual Zone getZone(unsigned int index) const
+    Zone getZone(unsigned int index) const override
     {
       return ZONES_LAYOUT_2P1[index];
     }
 
-    virtual void refresh();
+//    virtual void refresh();
 };
 
-void Layout2P1::refresh()
-{
-  theme->drawBackground();
+//void Layout2P1::refresh()
+//{
+//  theme->drawBackground();
+//
+//  if (persistentData->options[0].boolValue) {
+//    drawTopBar();
+//  }
+//
+//  if (persistentData->options[1].boolValue) {
+//    // Flight mode
+//    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
+//                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
+//                                              ZCHAR | SMLSIZE) / 2,
+//                     232,
+//                     g_model.flightModeData[mixerCurrentFlightMode].name,
+//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
+//  }
+//
+//  if (persistentData->options[2].boolValue) {
+//    // Pots and rear sliders positions
+//    drawMainPots();
+//  }
+//
+//  if (persistentData->options[3].boolValue) {
+//    // Trims
+//    drawTrims(mixerCurrentFlightMode);
+//  }
+//
+//  Layout::refresh();
+//}
 
-  if (persistentData->options[0].boolValue) {
-    drawTopBar();
-  }
-
-  if (persistentData->options[1].boolValue) {
-    // Flight mode
-    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
-                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
-                                              ZCHAR | SMLSIZE) / 2,
-                     232,
-                     g_model.flightModeData[mixerCurrentFlightMode].name,
-                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
-  }
-
-  if (persistentData->options[2].boolValue) {
-    // Pots and rear sliders positions
-    drawMainPots();
-  }
-
-  if (persistentData->options[3].boolValue) {
-    // Trims
-    drawTrims(mixerCurrentFlightMode);
-  }
-
-  Layout::refresh();
-}
-
-BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);
+BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", "2 + 1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);
 const LayoutFactory * defaultLayout = &layout2P1;

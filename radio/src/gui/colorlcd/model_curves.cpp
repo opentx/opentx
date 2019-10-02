@@ -153,13 +153,13 @@ class CurveButton : public Button {
     void paint(BitmapBuffer * dc) override
     {
       // bounding rect
-      drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
 
       // curve characteristics
       if (isCurveFilled(index)) {
         CurveInfo &curve = g_model.curves[index];
-        drawNumber(dc, 130, 5, 5 + curve.points, LEFT, 0, nullptr, STR_PTS);
-        drawTextAtIndex(dc, 130, 25, STR_CURVE_TYPES, curve.type);
+        dc->drawNumber(130, 5, 5 + curve.points, LEFT, 0, nullptr, STR_PTS);
+        dc->drawTextAtIndex(130, 25, STR_CURVE_TYPES, curve.type);
         if (curve.smooth)
           dc->drawText(130, 45, "Smooth");
       }

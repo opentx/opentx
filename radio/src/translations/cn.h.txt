@@ -180,15 +180,15 @@
 #endif
 
 #if defined(AUDIO)
-  #define TR_SOUND                     "Play Sound"
+  #define TR_SOUND                     "播放声音\0 "
 #else
   #define TR_SOUND                     "Beep\0     "
 #endif
 
 #if defined(HAPTIC)
-  #define TR_HAPTIC                    "Haptic\0   "
+  #define TR_HAPTIC                    "振动\0     "
 #else
-  #define TR_HAPTIC                    "[Haptic]\0 "
+  #define TR_HAPTIC                    "[振动]\0   "
 #endif
 
 #if defined(VOICE)
@@ -220,13 +220,13 @@
 #endif
 
 #if defined(LUA)
-  #define TR_SF_PLAY_SCRIPT            "Lua Script"
+  #define TR_SF_PLAY_SCRIPT            "Lua 脚本\0 "
 #else
   #define TR_SF_PLAY_SCRIPT            "[Lua]\0    "
 #endif
 
 #if defined(DEBUG)
-  #define TR_SF_TEST                   "Test\0"
+  #define TR_SF_TEST                   "测试\0     "
 #else
   #define TR_SF_TEST
 #endif
@@ -239,8 +239,8 @@
   #define TR_SF_SAFETY                 "---\0      "
 #endif
 
-#define TR_SF_SCREENSHOT             "Screenshot"
-#define TR_SF_RESERVE                "[reserve]\0"
+#define TR_SF_SCREENSHOT               "截屏\0     "
+#define TR_SF_RESERVE                  "[reserve]\0"
 
 #define TR_VFSWFUNC                    TR_SF_SAFETY "Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " "SetFailsfe" "RangeCheck" "ModuleBind" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_SF_SCREENSHOT TR_SF_TEST
 
@@ -295,8 +295,8 @@
 #define TR_VSWASHTYPE                  "---\0""120\0""120X""140\0""90\0"
 
 #if defined(PCBHORUS)
-  #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Up\0  ""Down\0""Right""Left\0"
+  #define LEN_VKEYS                    "\004"
+  #define TR_VKEYS                     "菜单""退出""确认""向上""向下""向右""向左"
 #elif defined(PCBXLITE)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Shift""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
@@ -503,10 +503,10 @@
 #define TR_BEEP_PITCH                  "报警声音高"
 #define TR_HAPTIC_LABEL                "振动"
 #define TR_STRENGTH                    "强度"
-#define TR_GYRO_LABEL                  "Gyro"
-#define TR_GYRO_OFFSET                 "Offset"
-#define TR_GYRO_MAX                    "Max"
-#define TR_CONTRAST                    "Contrast"
+#define TR_GYRO_LABEL                  "陀螺仪"
+#define TR_GYRO_OFFSET                 "补偿"
+#define TR_GYRO_MAX                    "最大值"
+#define TR_CONTRAST                    "对比度"
 #define TR_ALARMS_LABEL                "警告"
 #define TR_BATTERY_RANGE               TR("Batt. range", "电压测量范围")
 #define TR_BATTERYWARNING              "低电压报警值"
@@ -514,46 +514,46 @@
 #define TR_MEMORYWARNING               "内存不足"
 #define TR_ALARMWARNING                "静音"
 #define TR_RSSI_SHUTDOWN_ALARM         TR("Rssi Shutdown", "关机时检查RSSI")
-#define TR_MODEL_STILL_POWERED         "Model still powered"
-#define TR_MODEL_SHUTDOWN              "Shutdown ?"
-#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
+#define TR_MODEL_STILL_POWERED         "模型未断电"
+#define TR_MODEL_SHUTDOWN              "关机 ?"
+#define TR_PRESS_ENTER_TO_CONFIRM      "按ENTER键确认"
 #define TR_RENAVIG                     "RotEnc Navig"
-#define TR_THROTTLE_LABEL              "Throttle"
+#define TR_THROTTLE_LABEL              "油门"
 #define TR_THROTTLEREVERSE             TR("T-Reverse", INDENT "Reverse")
-#define TR_MINUTEBEEP                  TR("Minute", "Minute call")
-#define TR_BEEPCOUNTDOWN               INDENT "Countdown"
-#define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistent")
+#define TR_MINUTEBEEP                  TR("分", "分钟播报")
+#define TR_BEEPCOUNTDOWN               INDENT "倒数"
+#define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "持续")
 #define TR_BACKLIGHT_LABEL             "背光"
 #define TR_BLONBRIGHTNESS              "背光开"
 #define TR_BLOFFBRIGHTNESS             "背光关"
-#define TR_BLCOLOR                     "Color"
-#define TR_SPLASHSCREEN                "Splash screen"
-#define TR_PWR_ON_DELAY                "Pwr On delay"
-#define TR_PWR_OFF_DELAY               "Pwr Off delay"
-#define TR_THROTTLE_WARNING            TR(INDENT "T-Warning", INDENT "Throttle state")
-#define TR_SWITCHWARNING               TR(INDENT "S-Warning", INDENT "Switch positions")
-#define TR_POTWARNINGSTATE             TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
-#define TR_SLIDERWARNING               TR(INDENT "Slid. pos.", INDENT "Slider positions")
-#define TR_POTWARNING                  TR(INDENT "Pot warn.", INDENT "Pot positions")
+#define TR_BLCOLOR                     "颜色"
+#define TR_SPLASHSCREEN                "开机图片"
+#define TR_PWR_ON_DELAY                "开机延迟"
+#define TR_PWR_OFF_DELAY               "关机延迟"
+#define TR_THROTTLE_WARNING            TR(INDENT "T-Warning", INDENT "油门状态")
+#define TR_SWITCHWARNING               TR(INDENT "S-Warning", INDENT "开关位置")
+#define TR_POTWARNINGSTATE             TR(INDENT "Pot&Slid.", INDENT "电位器和侧滑块")
+#define TR_SLIDERWARNING               TR(INDENT "Slid. pos.", INDENT "测滑块位置")
+#define TR_POTWARNING                  TR(INDENT "Pot warn.", INDENT "电位器位置")
 #define TR_TIMEZONE                    "时区"
 #define TR_ADJUST_RTC                  "时钟设置"
 #define TR_GPS                         "GPS"
-#define TR_RXCHANNELORD                TR("Rx channel ord", "Default channel order")
-#define TR_STICKS                      "Sticks"
-#define TR_POTS                        "Pots"
-#define TR_SWITCHES                    "Switches"
+#define TR_RXCHANNELORD                TR("Rx channel ord", "默认通道顺序")
+#define TR_STICKS                      "摇杆"
+#define TR_POTS                        "电位器"
+#define TR_SWITCHES                    "开关"
 #define TR_SWITCHES_DELAY              TR("Play delay", "Play delay (sw. mid pos)")
-#define TR_SLAVE                       CENTER "Slave"
+#define TR_SLAVE                       CENTER "从机"
 #define TR_MODESRC                     "Mode\006% Source"
-#define TR_MULTIPLIER                  "Multiplier"
+#define TR_MULTIPLIER                  "乘数"
 #define TR_CAL                         "Cal"
-#define TR_CALIBRATION                 "Calibration"
+#define TR_CALIBRATION                 "校准"
 #define TR_VTRIM                       "Trim- +"
 #define TR_BG                          "BG:"
-#define TR_CALIB_DONE                  "Calibration completed"
+#define TR_CALIB_DONE                  "校准完成"
 #if defined(PCBHORUS)
-  #define TR_MENUTOSTART               "Press [Enter] to start"
-  #define TR_SETMIDPOINT               "Center sticks/pots/sliders and press [Enter]"
+  #define TR_MENUTOSTART               "按 [Enter] 键开始"
+  #define TR_SETMIDPOINT               "将摇杆、电位器和侧滑块居中后按[Enter]开始"
   #define TR_MOVESTICKSPOTS            "Move sticks/pots/sliders and press [Enter]"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART               TR_ENTER " TO START"
@@ -729,7 +729,7 @@
 #define TR_EEPROMWARN                  "EEPROM"
 #define TR_STORAGE_WARNING             "STORAGE"
 #define TR_EEPROM_CONVERTING           "Converting EEPROM"
-#define TR_THROTTLE_WARNING            "油门"
+#define TR_THROTTLE_UPPERCASE          "油门"
 #define TR_ALARMSWARN                  "ALARMS"
 #define TR_SWITCHWARN                  TR("SWITCH", "CONTROL")
 #define TR_FAILSAFEWARN                "FAILSAFE"
@@ -912,7 +912,6 @@
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                    BUTTON(TR("Keys", "Switches"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
-#define TR_CALIBRATION                 "Calibration"
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"
@@ -934,30 +933,28 @@
 #define TR_CHANNELRANGE                TR(INDENT "Ch. Range", INDENT "Channel Range")
 #define TR_RXFREQUENCY                 TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNACONFIRM1             "EXT. ANTENNA"
-
 #if defined(PCBX12S)
-#define LEN_ANTENNA_MODES              "\012"
-#define TR_ANTENNA_MODES               "内置\0     ""询问\0     ""视模型而定""内置+外置"
+#define LEN_ANTENNA_MODES              "\010"
+#define TR_ANTENNA_MODES               "内置天线""询问\0   ""基于模型""外置天线"
 #else
 #define LEN_ANTENNA_MODES              "\011"
 #define TR_ANTENNA_MODES               "Internal\0""Ask\0     ""Per model""External"
 #endif
-
-#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
-#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
-#define TR_ANTENNACONFIRM2             TR("Check antenna", "Make sure antenna is installed!")
-#define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1   "Requires FLEX non"
-#define TR_MODULE_PROTOCOL_FCC_WARN_LINE1    "Requires FCC"
-#define TR_MODULE_PROTOCOL_EU_WARN_LINE1     "Requires EU"
+#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "请使用内置天线")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "请使用外置天线")
+#define TR_ANTENNACONFIRM2             TR("Check antenna", "请确认天线安装完好!")
+#define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1   "请使用FLEX版本"
+#define TR_MODULE_PROTOCOL_FCC_WARN_LINE1    "请使用FCC版本"
+#define TR_MODULE_PROTOCOL_EU_WARN_LINE1     "请使用EU版本"
 #define TR_MODULE_PROTOCOL_WARN_LINE2        "certified firmware"
 #define TR_LOWALARM                    INDENT "Low alarm"
 #define TR_CRITICALALARM               INDENT "Critical alarm"
 #define TR_RSSIALARM_WARN              "RSSI"
-#define TR_NO_RSSIALARM                TR(INDENT "Alarms disabled", "Telemetry alarms disabled")
-#define TR_DISABLE_ALARM               TR(INDENT "Disable alarms", INDENT "Disable telemetry alarms")
-#define TR_ENABLE_POPUP                "Enable popup"
-#define TR_DISABLE_POPUP               "Disable popup"
-#define TR_POPUP                       "Popup"
+#define TR_NO_RSSIALARM                TR(INDENT "Alarms disabled", "遥测报警已禁止")
+#define TR_DISABLE_ALARM               TR(INDENT "Disable alarms", INDENT "请禁止遥测报警")
+#define TR_ENABLE_POPUP                "允许弹窗"
+#define TR_DISABLE_POPUP               "禁止弹窗"
+#define TR_POPUP                       "弹窗提示"
 #define TR_MIN                         "Min"
 #define TR_MAX                         "Max"
 #define TR_CURVE_PRESET                "Preset..."
@@ -980,18 +977,18 @@
 #define TR_PREFLIGHT                   "Preflight Checks"
 #define TR_CHECKLIST                   TR(INDENT "Checklist", INDENT "Display checklist")
 #define TR_FAS_OFFSET                  TR(INDENT "FAS Ofs", INDENT "FAS offset")
-#define TR_AUX_SERIAL_MODE                   "Serial port"
-#define TR_SCRIPT                      "Script"
-#define TR_INPUTS                      "Inputs"
-#define TR_OUTPUTS                     "Outputs"
-#define STR_EEBACKUP                   "EEPROM backup"
-#define STR_FACTORYRESET               "Factory reset"
-#define TR_CONFIRMRESET                TR("Erase ALL", "Erase ALL models and settings?")
-#define TR_TOO_MANY_LUA_SCRIPTS         "Too many Lua scripts!"
+#define TR_AUX_SERIAL_MODE             "串口"
+#define TR_SCRIPT                      "脚本"
+#define TR_INPUTS                      "输入"
+#define TR_OUTPUTS                     "输出"
+#define STR_EEBACKUP                   "EEPROM 数据备份"
+#define STR_FACTORYRESET               "恢复出厂设置"
+#define TR_CONFIRMRESET                TR("Erase ALL", "擦除所有模型和设置数据?")
+#define TR_TOO_MANY_LUA_SCRIPTS        "Lua脚本数量超出!"
 
 // Horus and Taranis column headers
-#define TR_PHASES_HEADERS_NAME         "Name"
-#define TR_PHASES_HEADERS_SW           "Switch"
+#define TR_PHASES_HEADERS_NAME         "名称"
+#define TR_PHASES_HEADERS_SW           "开关"
 #define TR_PHASES_HEADERS_RUD_TRIM     "Rudder Trim"
 #define TR_PHASES_HEADERS_ELE_TRIM     "Elevator Trim"
 #define TR_PHASES_HEADERS_THT_TRIM     "Throttle Trim"
@@ -1144,7 +1141,7 @@
 #define TR_SETUP                       "Setup"
 #define TR_MAINVIEWX                   "Main view X"
 #define TR_LAYOUT                      "Layout"
-#define TR_ADDMAINVIEW                 "Add main view"
+#define TR_ADD_MAIN_VIEW                 "Add main view"
 #define TR_BACKGROUND_COLOR            "Background color"
 #define TR_MAIN_COLOR                  "Main color"
 #define TR_TEXT_VIEWER                 "Text Viewer"

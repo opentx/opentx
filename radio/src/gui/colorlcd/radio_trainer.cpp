@@ -59,7 +59,7 @@ void RadioTrainerPage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_MULTIPLIER);
   auto multiplier = new NumberEdit(window, grid.getFieldSlot(3, 0), -10, 40, GET_SET_DEFAULT(g_eeGeneral.PPM_Multiplier));
   multiplier->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-    drawNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value+10, flags | PREC1, 0);
+    dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value+10, flags | PREC1, 0);
   });
   grid.nextLine();
   grid.nextLine();

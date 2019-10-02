@@ -23,14 +23,8 @@
 
 #include <inttypes.h>
 
-typedef int coord_t;
-struct point_t
-{
-  coord_t x;
-  coord_t y;
-};
 typedef uint32_t LcdFlags;
-typedef uint8_t display_t;
+typedef uint8_t pixel_t;
 
 #define BOX_WIDTH                      23
 #define CENTER
@@ -48,11 +42,7 @@ typedef uint8_t display_t;
 /* lcdDrawText flags */
 #define BLINK                          0x01
 #define INVERS                         0x02
-#if defined(BOLD_FONT)
-  #define BOLD                         0x40
-#else
-  #define BOLD                         0x00
-#endif
+#define BOLD                           0x40
 #define LEFT                           0x00 /* fake */
 #define RIGHT                          0x04 /* align right */
 #define CENTERED                       0x20
@@ -95,7 +85,7 @@ typedef uint8_t display_t;
 
 #define DISPLAY_BUFFER_SIZE            (LCD_W*((LCD_H+7)/8))
 
-extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
+extern pixel_t displayBuf[DISPLAY_BUFFER_SIZE];
 extern coord_t lcdLastRightPos;
 extern coord_t lcdLastLeftPos;
 extern coord_t lcdNextPos;
@@ -127,7 +117,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode, uint8_t len);
 void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode=0);
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
-void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
+void drawModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
 #if !defined(BOOT) // TODO not here ...
 void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
@@ -190,14 +180,14 @@ uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint8_t width, ui
   #define BLINK_ON_PHASE               (g_blinkTmr10ms & (1<<6))
 #endif
 
-inline display_t getPixel(uint8_t x, uint8_t y)
+inline pixel_t getPixel(uint8_t x, uint8_t y)
 {
   if (x>=LCD_W || y>=LCD_H) {
     return 0;
   }
 
-  display_t pixel = displayBuf[(y / 8) * LCD_W + x];
-  display_t mask = 1 << (y & 7);
+  pixel_t pixel = displayBuf[(y / 8) * LCD_W + x];
+  pixel_t mask = 1 << (y & 7);
   return ((pixel & mask) ? 0xf : 0);
 }
 

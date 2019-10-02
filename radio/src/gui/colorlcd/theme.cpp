@@ -20,25 +20,26 @@
 
 #include "opentx.h"
 
-const BitmapBuffer * Theme::asterisk = NULL;
-const BitmapBuffer * Theme::question = NULL;
-const BitmapBuffer * Theme::busy = NULL;
+extern ThemeBase * defaultTheme;
+const BitmapBuffer * ThemeBase::asterisk = NULL;
+const BitmapBuffer * ThemeBase::question = NULL;
+const BitmapBuffer * ThemeBase::busy = NULL;
 
-std::list<Theme *> & getRegisteredThemes()
+std::list<ThemeBase *> & getRegisteredThemes()
 {
-  static std::list<Theme *> themes;
+  static std::list<ThemeBase *> themes;
   return themes;
 }
 
-void registerTheme(Theme * theme)
+void registerTheme(ThemeBase * theme)
 {
   TRACE("register theme %s", theme->getName());
   getRegisteredThemes().push_back(theme);
 }
 
-void Theme::init() const
+void ThemeBase::init() const
 {
-  memset(&g_eeGeneral.themeData, 0, sizeof(Theme::PersistentData));
+  memset(&g_eeGeneral.themeData, 0, sizeof(ThemeBase::PersistentData));
   if (options) {
     int i = 0;
     for (const ZoneOption * option = options; option->name; option++, i++) {
@@ -48,19 +49,22 @@ void Theme::init() const
   }
 }
 
-void Theme::load() const
+void ThemeBase::load() const
 {
-  if (!asterisk) asterisk = BitmapBuffer::load(getThemePath("asterisk.bmp"));
-  if (!question) question = BitmapBuffer::load(getThemePath("question.bmp"));
-  if (!busy) busy = BitmapBuffer::load(getThemePath("busy.bmp"));
+  if (!asterisk)
+    asterisk = BitmapBuffer::load(getFilePath("asterisk.bmp"));
+  if (!question)
+    question = BitmapBuffer::load(getFilePath("question.bmp"));
+  if (!busy)
+    busy = BitmapBuffer::load(getFilePath("busy.bmp"));
 }
 
-ZoneOptionValue * Theme::getOptionValue(unsigned int index) const
+ZoneOptionValue * ThemeBase::getOptionValue(unsigned int index) const
 {
   return &g_eeGeneral.themeData.options[index];
 }
 
-const char * Theme::getFilePath(const char * filename) const
+const char * ThemeBase::getFilePath(const char * filename) const
 {
   static char path[_MAX_LFN+1] = THEMES_PATH "/";
   strcpy(path + sizeof(THEMES_PATH), getName());
@@ -70,7 +74,7 @@ const char * Theme::getFilePath(const char * filename) const
   return path;
 }
 
-void Theme::drawThumb(coord_t x, coord_t y, uint32_t flags)
+void ThemeBase::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flags)
 {
   #define THUMB_WIDTH   51
   #define THUMB_HEIGHT  31
@@ -79,16 +83,16 @@ void Theme::drawThumb(coord_t x, coord_t y, uint32_t flags)
   }
   lcd->drawBitmap(x, y, thumb);
   if (flags == LINE_COLOR) {
-    lcdDrawFilledRect(x, y, THUMB_WIDTH, THUMB_HEIGHT, SOLID, OVERLAY_COLOR | OPACITY(10));
+    dc->drawFilledRect(x, y, THUMB_WIDTH, THUMB_HEIGHT, SOLID, OVERLAY_COLOR | OPACITY(10));
   }
 }
 
-void Theme::drawBackground(BitmapBuffer * dc) const
+void ThemeBase::drawBackground(BitmapBuffer * dc) const
 {
   dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
 }
 
-void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
+void ThemeBase::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
 {
 
 }
@@ -127,9 +131,62 @@ void Theme::drawMessageBox(const char * title, const char * text, const char * a
 //  }
 //}
 
-Theme * getTheme(const char * name)
+void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool value, bool focus) const
 {
-  std::list<Theme *>::const_iterator it = getRegisteredThemes().cbegin();
+  if (focus) {
+    dc->drawSolidFilledRect(0, 2, 16, 16, TEXT_INVERTED_BGCOLOR);
+    if (value) {
+      dc->drawSolidFilledRect(2, 4, 12, 12, TEXT_BGCOLOR);
+      dc->drawSolidFilledRect(3, 5, 10, 10, SCROLLBOX_COLOR);
+    }
+    else {
+      dc->drawSolidFilledRect(2, 4, 12, 12, TEXT_BGCOLOR);
+    }
+  }
+  else {
+    if (value) {
+      dc->drawSolidFilledRect(2, 4, 12, 12, SCROLLBOX_COLOR);
+      dc->drawSolidRect(0, 2, 16, 16, 1, CURVE_AXIS_COLOR);
+    }
+    else {
+      dc->drawSolidRect(0, 2, 16, 16, 1, CURVE_AXIS_COLOR);
+    }
+  }
+}
+
+void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const
+{
+  int val = limit(vmin, value, vmax);
+  int w = divRoundClosest((rect.w - 16) * (val - vmin), vmax - vmin);
+
+  if (edit) {
+    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, TEXT_INVERTED_BGCOLOR);
+    dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, TEXT_INVERTED_BGCOLOR);
+    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, TEXT_INVERTED_BGCOLOR);
+  }
+  else {
+    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
+    dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, LINE_COLOR);
+    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
+  }
+
+  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+  // if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
+  if (focus) {
+    dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+  }
+}
+
+void ThemeBase::drawPageHeader(BitmapBuffer * dc, const PageHeader * header) const
+{
+  drawMenuBackground(dc, header->getIcon(), "");
+  dc->drawSolidFilledRect(MENU_HEADER_HEIGHT, 0, LCD_W - MENU_HEADER_HEIGHT, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+}
+
+ThemeBase * getTheme(const char * name)
+{
+  std::list<ThemeBase *>::const_iterator it = getRegisteredThemes().cbegin();
   for (; it != getRegisteredThemes().cend(); ++it) {
     if (!strcmp(name, (*it)->getName())) {
       return (*it);
@@ -138,11 +195,11 @@ Theme * getTheme(const char * name)
   return nullptr;
 }
 
-void loadTheme(Theme * newTheme)
+void loadTheme(ThemeBase * newTheme)
 {
   TRACE("load theme %s", newTheme->getName());
   theme = newTheme;
-  theme->load();
+  newTheme->load();
 }
 
 void loadTheme()
@@ -150,11 +207,12 @@ void loadTheme()
   char name[THEME_NAME_LEN + 1];
   memset(name, 0, sizeof(name));
   strncpy(name, g_eeGeneral.themeName, THEME_NAME_LEN);
-  Theme * newTheme = getTheme(name);
-  if (newTheme) {
+  ThemeBase * newTheme = getTheme(name);
+  if (newTheme)
     loadTheme(newTheme);
-  }
-  else {
-    theme->load();
-  }
+  else
+    loadTheme(defaultTheme);
+//  else {
+//    loadTheme(theme);
+//  }
 }

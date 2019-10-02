@@ -21,14 +21,8 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
-typedef int coord_t;
-struct point_t
-{
-  coord_t x;
-  coord_t y;
-};
 typedef uint32_t LcdFlags;
-typedef uint8_t display_t;
+typedef uint8_t pixel_t;
 
 #define BOX_WIDTH                      31
 #define CENTER                         "\015"
@@ -92,11 +86,11 @@ typedef uint8_t display_t;
 #define DISPLAY_BUFFER_SIZE            (LCD_W*LCD_H*4/8)
 
 #if (defined(PCBX9E) || defined(PCBX9DP)) && defined(LCD_DUAL_BUFFER)
-  extern display_t displayBuf1[DISPLAY_BUFFER_SIZE];
-  extern display_t displayBuf2[DISPLAY_BUFFER_SIZE];
-  extern display_t * displayBuf;
+  extern pixel_t displayBuf1[DISPLAY_BUFFER_SIZE];
+  extern pixel_t displayBuf2[DISPLAY_BUFFER_SIZE];
+  extern pixel_t * displayBuf;
 #else
-  extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
+  extern pixel_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
 extern coord_t lcdLastRightPos;
@@ -122,9 +116,9 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode, uint8_t len);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
 
-void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
+void drawModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void drawSwitch(coord_t x, coord_t y, int32_t swtch, LcdFlags att=0);
-void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
+void drawStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att=0);
@@ -181,13 +175,13 @@ uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint16_t width, u
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
 
-inline display_t getPixel(unsigned int x, unsigned int y)
+inline pixel_t getPixel(unsigned int x, unsigned int y)
 {
   if (x>=LCD_W || y>=LCD_H) {
     return 0;
   }
 
-  display_t * p = &displayBuf[y / 2 * LCD_W + x];
+  pixel_t * p = &displayBuf[y / 2 * LCD_W + x];
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
 }
 

@@ -20,99 +20,99 @@
 
 #include "opentx.h"
 
-void drawStatusText(const char * text)
+void drawStatusText(BitmapBuffer * dc, const char * text)
 {
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, text, TEXT_STATUSBAR_COLOR);
+  dc->drawText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, text, TEXT_STATUSBAR_COLOR);
 }
 
-void drawColumnHeader(const char * const * headers, const char * const * descriptions, uint8_t index)
+void drawColumnHeader(BitmapBuffer * dc, const char * const * headers, const char * const * descriptions, uint8_t index)
 {
-  lcdDrawText(LCD_W-MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_TITLE_COLOR);
+  dc->drawText(LCD_W-MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_TITLE_COLOR);
   if (descriptions) {
-    drawStatusText(descriptions[index]);
+    drawStatusText(dc, descriptions[index]);
   }
 }
 
-void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
+void drawCheckBox(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
   if (attr) {
-    lcdDrawSolidFilledRect(x-1, y+3, 14, 14, TEXT_INVERTED_BGCOLOR);
-    lcdDrawSolidFilledRect(x+1, y+5, 10, 10, TEXT_BGCOLOR);
+    dc->drawSolidFilledRect(x-1, y+3, 14, 14, TEXT_INVERTED_BGCOLOR);
+    dc->drawSolidFilledRect(x+1, y+5, 10, 10, TEXT_BGCOLOR);
     if (value) {
-      lcdDrawSolidFilledRect(x+2, y+6, 8, 8, TEXT_INVERTED_BGCOLOR);
+      dc->drawSolidFilledRect(x+2, y+6, 8, 8, TEXT_INVERTED_BGCOLOR);
     }
   }
   else {
     if (value) {
-      lcdDrawSolidFilledRect(x+2, y+6, 8, 8, SCROLLBOX_COLOR);
-      lcdDrawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
+      dc->drawSolidFilledRect(x+2, y+6, 8, 8, SCROLLBOX_COLOR);
+      dc->drawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
     }
     else {
-      lcdDrawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
+      dc->drawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
     }
   }
 }
 
-void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
+void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   if (visible < count) {
-    lcdDrawSolidVerticalLine(x, y, h, LINE_COLOR);
+    dc->drawSolidVerticalLine(x, y, h, LINE_COLOR);
     coord_t yofs = (h*offset + count/2) / count;
     coord_t yhgt = (h*visible + count/2) / count;
     if (yhgt + yofs > h)
       yhgt = h - yofs;
-    lcdDrawSolidFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
+    dc->drawSolidFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
   }
 }
 
-void drawTrimSquare(coord_t x, coord_t y)
+void drawTrimSquare(BitmapBuffer * dc, coord_t x, coord_t y)
 {
-  lcdDrawSolidFilledRect(x-2, y, 15, 15, TRIM_BGCOLOR);
-  lcdDrawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TRIM_SHADOW_COLOR);
+  dc->drawSolidFilledRect(x-2, y, 15, 15, TRIM_BGCOLOR);
+  dc->drawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TRIM_SHADOW_COLOR);
 }
 
-void drawHorizontalTrimPosition(coord_t x, coord_t y, int16_t dir)
+void drawHorizontalTrimPosition(BitmapBuffer * dc, coord_t x, coord_t y, int16_t dir)
 {
-  drawTrimSquare(x, y);
+  drawTrimSquare(dc, x, y);
   if (dir >= 0) {
-    lcdDrawSolidVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
   }
   if (dir <= 0) {
-    lcdDrawSolidVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
   }
   // if (exttrim) {
   //  lcdDrawSolidVerticalLine(xm, ym, 9, TEXT_INVERTED_COLOR);
   // }
 }
 
-void drawVerticalTrimPosition(coord_t x, coord_t y, int16_t dir)
+void drawVerticalTrimPosition(BitmapBuffer * dc, coord_t x, coord_t y, int16_t dir)
 {
-  drawTrimSquare(x, y);
+  drawTrimSquare(dc, x, y);
   if (dir >= 0) {
-    lcdDrawSolidHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
   }
   if (dir <= 0) {
-    lcdDrawSolidHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
   }
   // if (exttrim) {
   //   lcdDrawSolidHorizontalLine(xm-1, ym,  3, TEXT_INVERTED_COLOR);
   // }
 }
 
-void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
+void drawVerticalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
   val = limit(min, val, max);
   if (steps) {
     int delta = len / steps;
     for (int i = 0; i <= len; i += delta) {
       if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-        lcdDrawSolidHorizontalLine(x, y + i, 13, TEXT_COLOR);
+        dc->drawSolidHorizontalLine(x, y + i, 13, TEXT_COLOR);
       else
-        lcdDrawSolidHorizontalLine(x + 2, y + i, 9, TEXT_COLOR);
+        dc->drawSolidHorizontalLine(x + 2, y + i, 9, TEXT_COLOR);
     }
   }
   else {
-    lcdDrawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, TEXT_COLOR);
+    dc->drawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, TEXT_COLOR);
     /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
       if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
         lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
@@ -121,18 +121,18 @@ void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max
   }
   y += len - divRoundClosest(len * (val - min), max - min) - 5;
   if (options & OPTION_SLIDER_TRIM_BUTTON) {
-    drawVerticalTrimPosition(x, y - 2, val);
+    drawVerticalTrimPosition(dc, x, y - 2, val);
   }
   else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
-    drawTrimSquare(x, y - 2);
-    lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
+    drawTrimSquare(dc, x, y - 2);
+    // TODO lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
   }
   else {
-    drawTrimSquare(x, y - 2);
+    drawTrimSquare(dc, x, y - 2);
   }
 }
 
-void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
+void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
   val = limit(min, val, max);
   int w = divRoundClosest(len * (val - min), max - min);
@@ -141,27 +141,27 @@ void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int m
       int delta = len / steps;
       for (int i = 0; i <= len; i += delta) {
         if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-          lcdDrawSolidVerticalLine(x + i, y, 13, TEXT_COLOR);
+          dc->drawSolidVerticalLine(x + i, y, 13, TEXT_COLOR);
         else
-          lcdDrawSolidVerticalLine(x + i, y + 2, 9, TEXT_COLOR);
+          dc->drawSolidVerticalLine(x + i, y + 2, 9, TEXT_COLOR);
       }
     }
   }
   else if (options & OPTION_SLIDER_EMPTY_BAR) {
-    lcdDrawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, TEXT_COLOR);
+    dc->drawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, TEXT_COLOR);
   }
   else if (options & OPTION_SLIDER_DBL_COLOR) {
-    lcdDrawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, w <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
+    dc->drawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, w <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
     if (w > 4)
-      lcdDrawSolidFilledRect(x + 4, y + 8, w - 4, 4, TEXT_INVERTED_BGCOLOR);
+      dc->drawSolidFilledRect(x + 4, y + 8, w - 4, 4, TEXT_INVERTED_BGCOLOR);
     if (w < len - 4)
-      lcdDrawSolidFilledRect(x + w, y + 8, len - w - 4, 4, LINE_COLOR);
-    lcdDrawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, w >= len ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+      dc->drawSolidFilledRect(x + w, y + 8, len - w - 4, 4, LINE_COLOR);
+    dc->drawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, w >= len ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
   }
   else {
-    lcdDrawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
-    lcdDrawSolidFilledRect(x + 4, y + 8, len - 8, 4, LINE_COLOR);
-    lcdDrawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
+    dc->drawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
+    dc->drawSolidFilledRect(x + 4, y + 8, len - 8, 4, LINE_COLOR);
+    dc->drawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
     //
     /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
       if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
@@ -171,21 +171,21 @@ void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int m
   }
   x += w - 5;
   if (options & OPTION_SLIDER_TRIM_BUTTON) {
-    drawHorizontalTrimPosition(x, y - 1, val);
+    drawHorizontalTrimPosition(dc, x, y - 1, val);
   }
   else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
-    drawTrimSquare(x+2, y - 1);
+    drawTrimSquare(dc, x+2, y - 1);
     char text[] = { (char)('0' + val), '\0' };
-    lcdDrawText(x + 7, y - 1, text, SMLSIZE | CENTERED | TEXT_INVERTED_COLOR);
+    dc->drawText(x + 7, y - 1, text, SMLSIZE | CENTERED | TEXT_INVERTED_COLOR);
   }
   else if (options & OPTION_SLIDER_SQUARE_BUTTON) {
-    drawTrimSquare(x, y - 1);
+    drawTrimSquare(dc, x, y - 1);
   }
   else {
-    lcdDrawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
-    lcdDrawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
     if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
-      lcdDrawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+      dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
   }
 }
 
@@ -248,7 +248,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 #else
 void drawValueOrGVar(BitmapBuffer * dc, coord_t x, coord_t y, gvar_t value, LcdFlags flags)
 {
-  drawNumber(dc, x, y, value, flags, 0, nullptr, "%");
+  dc->drawNumber(x, y, value, flags, 0, nullptr, "%");
 }
 #endif
 
@@ -258,7 +258,7 @@ void drawSleepBitmap()
   lcd->clearClippingRect();
   lcd->clear();
 
-  const BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("sleep.bmp"));
+  const BitmapBuffer * bitmap = BitmapBuffer::load(static_cast<ThemeBase *>(theme)->getFilePath("sleep.bmp"));
   if (bitmap) {
     lcd->drawBitmap((LCD_W-bitmap->getWidth())/2, (LCD_H-bitmap->getHeight())/2, bitmap);
     delete bitmap;
@@ -274,21 +274,21 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
     return;
 
   static uint32_t lastDuration = 0xffffffff;
-  static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));
+  static const BitmapBuffer * shutdown = BitmapBuffer::load(static_cast<ThemeBase *>(theme)->getFilePath("shutdown.bmp"));
 
   if (shutdown) {
     if (duration < lastDuration) {
-      theme->drawBackground(lcd);
+      static_cast<ThemeBase *>(theme)->drawBackground(lcd);
       lcd->drawBitmap((LCD_W-shutdown->getWidth())/2, (LCD_H-shutdown->getHeight())/2, shutdown);
       lcdStoreBackupBuffer();
     }
     else {
       lcdRestoreBackupBuffer();
       int quarter = duration / (totalDuration / 5);
-      if (quarter >= 1) lcdDrawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 2) lcdDrawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 3) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 4) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 1) lcd->drawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 2) lcd->drawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 3) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 4) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
     }
   }
   else {
@@ -320,7 +320,7 @@ void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curv
         break;
 
       case CURVE_REF_FUNC:
-        drawTextAtIndex(dc, x, y, STR_VCURVEFUNC, curve.value, flags);
+        dc->drawTextAtIndex(x, y, STR_VCURVEFUNC, curve.value, flags);
         break;
 
       case CURVE_REF_CUSTOM:
@@ -330,13 +330,13 @@ void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curv
   }
 }
 
-void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
+void drawStickName(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   uint8_t length = STR_VSRCRAW[0];
-  lcdDrawSizedText(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
+  dc->drawSizedText(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
 }
 
-void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att)
+void drawModelName(BitmapBuffer * dc, coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att)
 {
   uint8_t len = sizeof(g_model.header.name);
   while (len>0 && !name[len-1]) --len;
@@ -344,15 +344,15 @@ void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att)
     drawStringWithIndex(x, y, STR_MODEL, id+1, att|LEADING0);
   }
   else {
-    lcdDrawSizedText(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
+    dc->drawSizedText(x, y, name, sizeof(g_model.header.name), att);
   }
 }
 
-void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
+void drawCurveName(BitmapBuffer * dc, coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
   char s[8];
   getCurveString(s, idx);
-  lcdDrawText(x, y, s, flags);
+  dc->drawText(x, y, s, flags);
 }
 
 void drawSource(BitmapBuffer * dc, coord_t x, coord_t y, mixsrc_t idx, LcdFlags flags)
@@ -390,33 +390,33 @@ void drawDate(BitmapBuffer * dc, coord_t x, coord_t y, TelemetryItem & telemetry
   if (att & DBLSIZE) {
     x -= 42;
     att &= ~FONTSIZE_MASK;
-    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
+    dc->drawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    dc->drawText(lcdNextPos-1, y, "-", att);
+    dc->drawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
+    dc->drawText(lcdNextPos-1, y, "-", att);
+    dc->drawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
     y += FH;
-    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdNextPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdNextPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+    dc->drawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    dc->drawText(lcdNextPos, y, ":", att);
+    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
+    dc->drawText(lcdNextPos, y, ":", att);
+    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
   else {
-    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.year-2000, att|LEFT);
-    lcdDrawNumber(lcdNextPos+11, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdNextPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdNextPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+    dc->drawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    dc->drawText(lcdNextPos-1, y, "-", att);
+    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
+    dc->drawText(lcdNextPos-1, y, "-", att);
+    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.year-2000, att|LEFT);
+    dc->drawNumber(lcdNextPos+11, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    dc->drawText(lcdNextPos, y, ":", att);
+    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
+    dc->drawText(lcdNextPos, y, ":", att);
+    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
 }
 
-void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags flags, bool seconds=true)
+void drawGPSCoord(BitmapBuffer * dc, coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags flags, bool seconds=true)
 {
   char s[32];
   uint32_t absvalue = abs(value);
@@ -445,26 +445,25 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   }
   *tmp++ = direction[value>=0 ? 0 : 1];
   *tmp = '\0';
-  lcdDrawText(x, y, s, flags);
+  dc->drawText(x, y, s, flags);
 }
 
-void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)
+void drawGPSPosition(BitmapBuffer * dc, coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)
 {
   if (flags & EXPANDED) {
-    drawGPSCoord(x, y, latitude, "NS", flags, true);
-    drawGPSCoord(x, y + FH, longitude, "EW", flags, true);
+    drawGPSCoord(dc, x, y, latitude, "NS", flags, true);
+    drawGPSCoord(dc, x, y + FH, longitude, "EW", flags, true);
   }
   else {
-    drawGPSCoord(x, y, latitude, "NS", flags, false);
-    drawGPSCoord(lcdNextPos+5, y, longitude, "EW", flags, false);
+    drawGPSCoord(dc, x, y, latitude, "NS", flags, false);
+    drawGPSCoord(dc, lcdNextPos+5, y, longitude, "EW", flags, false);
   }
 }
 
-void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags)
+void drawGPSSensorValue(BitmapBuffer * dc, coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags)
 {
-  drawGPSPosition(x, y, telemetryItem.gps.longitude, telemetryItem.gps.latitude, flags);
+  drawGPSPosition(dc, x, y, telemetryItem.gps.longitude, telemetryItem.gps.latitude, flags);
 }
-
 
 void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sensor, int32_t value, LcdFlags flags)
 {
@@ -480,14 +479,14 @@ void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sens
     drawDate(dc, x, y, telemetryItem, flags);
   }
   else if (telemetrySensor.unit == UNIT_GPS) {
-    drawGPSSensorValue(x, y, telemetryItem, flags);
+    drawGPSSensorValue(dc, x, y, telemetryItem, flags);
   }
   else if (telemetrySensor.unit == UNIT_BITFIELD) {
     if (IS_FRSKY_SPORT_PROTOCOL()) {
       if (telemetrySensor.id >= RBOX_STATE_FIRST_ID && telemetrySensor.id <= RBOX_STATE_LAST_ID) {
         if (telemetrySensor.subId == 0) {
           if (value == 0) {
-            lcdDrawText(x, y, "OK", flags);
+            dc->drawText(x, y, "OK", flags);
           }
           else {
             for (uint8_t i=0; i<16; i++) {
@@ -551,7 +550,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
     // TODO drawTimer(dc, x, y, value, flags);
   }
   else if (source == MIXSRC_TX_VOLTAGE) {
-    lcdDrawNumber(x, y, value, flags|PREC1);
+    dc->drawNumber(x, y, value, flags|PREC1);
   }
 #if defined(INTERNAL_GPS)
     else if (source == MIXSRC_TX_GPS) {
@@ -560,7 +559,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
     }
     else {
       lcdDrawText(x, y, "sats: ", flags);
-      lcdDrawNumber(lcdNextPos, y, gpsData.numSat, flags);
+      dc->drawNumber(lcdNextPos, y, gpsData.numSat, flags);
     }
   }
 #endif
@@ -570,26 +569,26 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
   }
 #endif
   else if (source < MIXSRC_FIRST_CH) {
-    lcdDrawNumber(x, y, calcRESXto100(value), flags);
+    dc->drawNumber(x, y, calcRESXto100(value), flags);
   }
   else if (source <= MIXSRC_LAST_CH) {
 #if defined(PPM_UNIT_PERCENT_PREC1)
-    lcdDrawNumber(x, y, calcRESXto1000(value), flags|PREC1);
+    dc->drawNumber(x, y, calcRESXto1000(value), flags|PREC1);
 #else
-    lcdDrawNumber(x, y, calcRESXto100(value), flags);
+    dc->drawNumber(x, y, calcRESXto100(value), flags);
 #endif
   }
   else {
-    lcdDrawNumber(x, y, value, flags);
+    dc->drawNumber(x, y, value, flags);
   }
 }
 
 void drawValueWithUnit(BitmapBuffer * dc, coord_t x, coord_t y, int val, uint8_t unit, LcdFlags flags)
 {
   // convertUnit(val, unit);
-  drawNumber(dc, x, y, val, flags & (~NO_UNIT));
+  dc->drawNumber(x, y, val, flags & (~NO_UNIT));
   if (!(flags & NO_UNIT) && unit != UNIT_RAW) {
-    drawTextAtIndex(dc, lcdNextPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+    dc->drawTextAtIndex(lcdNextPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
 }
 

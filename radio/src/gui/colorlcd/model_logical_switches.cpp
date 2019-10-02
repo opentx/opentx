@@ -24,19 +24,19 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
-void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData * ls)
-{
-  lcdDrawChar(x, y, '[');
-  lcdDrawNumber(lcdNextPos+2, y, lswTimerValue(ls->v2), LEFT|PREC1);
-  lcdDrawChar(lcdNextPos, y, ':');
-  if (ls->v3 < 0)
-    lcdDrawText(lcdNextPos+3, y, "<<");
-  else if (ls->v3 == 0)
-    lcdDrawText(lcdNextPos+3, y, "--");
-  else
-    lcdDrawNumber(lcdNextPos+3, y, lswTimerValue(ls->v2+ls->v3), LEFT|PREC1);
-  lcdDrawChar(lcdNextPos, y, ']');
-}
+//void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData * ls)
+//{
+//  lcdDrawChar(x, y, '[');
+//  lcdDrawNumber(lcdNextPos+2, y, lswTimerValue(ls->v2), LEFT|PREC1);
+//  lcdDrawChar(lcdNextPos, y, ':');
+//  if (ls->v3 < 0)
+//    lcdDrawText(lcdNextPos+3, y, "<<");
+//  else if (ls->v3 == 0)
+//    lcdDrawText(lcdNextPos+3, y, "--");
+//  else
+//    lcdDrawNumber(lcdNextPos+3, y, lswTimerValue(ls->v2+ls->v3), LEFT|PREC1);
+//  lcdDrawChar(lcdNextPos, y, ']');
+//}
 
 class LogicalSwitchEditWindow: public Page {
   public:
@@ -102,7 +102,7 @@ class LogicalSwitchEditWindow: public Page {
           edit2->invalidate();
         });
         edit1->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-          drawNumber(dc, 2, 2, lswTimerValue(value), flags | PREC1);
+          dc->drawNumber(2, 2, lswTimerValue(value), flags | PREC1);
         });
         edit2->setDisplayHandler([=](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
           if (value < 0)
@@ -110,7 +110,7 @@ class LogicalSwitchEditWindow: public Page {
           else if (value == 0)
             dc->drawText(2, 2, "--", flags);
           else
-            drawNumber(dc, 2, 2, lswTimerValue(cs->v2 + value), flags | PREC1);
+            dc->drawNumber(2, 2, lswTimerValue(cs->v2 + value), flags | PREC1);
         });
         grid.nextLine();
       }
@@ -127,14 +127,14 @@ class LogicalSwitchEditWindow: public Page {
         new StaticText(logicalSwitchOneWindow, grid.getLabelSlot(), STR_V1);
         auto timer = new NumberEdit(logicalSwitchOneWindow, grid.getFieldSlot(), -128, 122, GET_SET_DEFAULT(cs->v1));
         timer->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-          drawNumber(dc, 2, 2, lswTimerValue(value), flags | PREC1);
+          dc->drawNumber(2, 2, lswTimerValue(value), flags | PREC1);
         });
         grid.nextLine();
 
         new StaticText(logicalSwitchOneWindow, grid.getLabelSlot(), STR_V2);
         timer = new NumberEdit(logicalSwitchOneWindow, grid.getFieldSlot(), -128, 122, GET_SET_DEFAULT(cs->v2));
         timer->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-          drawNumber(dc, 2, 2, lswTimerValue(value), flags | PREC1);
+          dc->drawNumber(2, 2, lswTimerValue(value), flags | PREC1);
         });
         grid.nextLine();
       }
@@ -265,10 +265,10 @@ class LogicalSwitchButton : public Button {
         dc->drawSolidFilledRect(2, 2, rect.w-4, rect.h-4, WARNING_COLOR);
 
       // The bounding rect
-      drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
 
       // CSW func
-      lcdDrawTextAtIndex(col1, line1, STR_VCSWFUNC, ls->func);
+      dc->drawTextAtIndex(col1, line1, STR_VCSWFUNC, ls->func);
 
       // CSW params
       if (lsFamily == LS_FAMILY_BOOL || lsFamily == LS_FAMILY_STICKY) {
@@ -277,15 +277,15 @@ class LogicalSwitchButton : public Button {
       }
       else if (lsFamily == LS_FAMILY_EDGE) {
         drawSwitch(dc, col1, line2, ls->v1);
-        putsEdgeDelayParam(col2, line2, ls);
+        // TODO putsEdgeDelayParam(col2, line2, ls);
       }
       else if (lsFamily == LS_FAMILY_COMP) {
         drawSource(dc, col2, line1, ls->v1, 0);
         drawSource(dc, col3, line1, ls->v2, 0);
       }
       else if (lsFamily == LS_FAMILY_TIMER) {
-        lcdDrawNumber(col2, line1, lswTimerValue(ls->v1), LEFT|PREC1);
-        lcdDrawNumber(col3, line1, lswTimerValue(ls->v2), LEFT|PREC1);
+        dc->drawNumber(col2, line1, lswTimerValue(ls->v1), LEFT|PREC1);
+        dc->drawNumber(col3, line1, lswTimerValue(ls->v2), LEFT|PREC1);
       }
       else {
         drawSource(dc, col2, line1, ls->v1, 0);
@@ -297,12 +297,12 @@ class LogicalSwitchButton : public Button {
 
       // CSW duration
       if (ls->duration > 0) {
-        drawNumber(dc, col2, (lsFamily == LS_FAMILY_EDGE) ? line3 : line2, ls->duration, PREC1 | LEFT);
+        dc->drawNumber(col2, (lsFamily == LS_FAMILY_EDGE) ? line3 : line2, ls->duration, PREC1 | LEFT);
       }
 
       // CSW delay
       if (lsFamily != LS_FAMILY_EDGE && ls->delay > 0) {
-        drawNumber(dc, col3, (lsFamily == LS_FAMILY_EDGE) ? line3 : line2, ls->delay, PREC1 | LEFT);
+        dc->drawNumber(col3, (lsFamily == LS_FAMILY_EDGE) ? line3 : line2, ls->delay, PREC1 | LEFT);
       }
     }
 

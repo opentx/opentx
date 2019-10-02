@@ -103,7 +103,7 @@ void menuModelGVarOne(event_t event)
         break;
 
       case GVAR_FIELD_POPUP:
-        ON_OFF_MENU_ITEM(gvar->popup, GVAR_2ND_COLUMN, y, STR_POPUP, attr, event);
+        gvar->popup = editCheckBox(gvar->popup, GVAR_2ND_COLUMN, y, STR_POPUP, attr, event);
         break;
 
       default:

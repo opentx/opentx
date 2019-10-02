@@ -310,7 +310,7 @@ void CommonInputOrMixButton::paint(BitmapBuffer * dc)
   if (active)
     dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
   paintBody(dc);
-  drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+  dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
 }
 
 class InputLineButton : public CommonInputOrMixButton {
@@ -339,7 +339,7 @@ class InputLineButton : public CommonInputOrMixButton {
 
       if (line.name[0]) {
         dc->drawBitmap(146, 2 + FIELD_PADDING_TOP, mixerSetupLabelBitmap);
-        dc->drawSizedText(166, FIELD_PADDING_TOP, line.name, sizeof(line.name), ZCHAR);
+        dc->drawSizedText(166, FIELD_PADDING_TOP, line.name, sizeof(line.name));
       }
 
       // second line ...

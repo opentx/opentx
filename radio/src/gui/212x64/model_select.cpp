@@ -264,7 +264,7 @@ void menuModelSelect(event_t event)
     k %= MAX_MODELS;
 
     if (eeModelExists(k)) {
-      putsModelName(4*FW, y, modelHeaders[k].name, k, 0);
+      drawModelName(4*FW, y, modelHeaders[k].name, k, 0);
       lcdDrawNumber(20*FW, y, eeModelSize(k), RIGHT);
       if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub))
         lcdDrawChar(1, y, '*');

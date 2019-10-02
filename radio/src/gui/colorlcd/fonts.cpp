@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-#include "rle.h"
 
 const uint16_t font_tinsize_specs[] = {
 #include "font_9.specs"
@@ -30,6 +29,14 @@ const unsigned char font_tinsize[] = {
 };
 
 #if defined(HARDWARE_TOUCH)
+const uint16_t font_stdsize_en_specs[] = {
+#include "font_17en.specs"
+};
+
+const unsigned char font_stdsize_en[] = {
+#include "font_17en.lbm"
+};
+
 const uint16_t font_smlsize_specs[] = {
 #include "font_15.specs"
 };
@@ -54,6 +61,14 @@ const unsigned char font_stdsizebold[] = {
 #include "font_bold17.lbm"
 };
 #else
+const uint16_t font_stdsize_en_specs[] = {
+#include "font_16en.specs"
+};
+
+const unsigned char font_stdsize_en[] = {
+#include "font_16en.lbm"
+};
+
 const uint16_t font_smlsize_specs[] = {
 #include "font_13.specs"
 };
@@ -103,7 +118,10 @@ const unsigned char font_xxlsize[] = {
 #include "font_64.lbm"
 };
 
-#if !defined(BOOT)
+#if defined(BOOT)
+const uint16_t * const fontspecsTable[1] = { font_stdsize_en_specs };
+const uint8_t * fontsTable[1] = { font_stdsize_en };
+#else
 const uint16_t * const fontspecsTable[16] = {
   font_stdsize_specs,     font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs,
   font_stdsizebold_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs
@@ -113,9 +131,6 @@ const uint8_t * fontsTable[16] = {
   font_stdsize,     font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize,
   font_stdsizebold, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize
 };
-#else
-const uint16_t * const fontspecsTable[1] = { font_stdsize_specs };
-const uint8_t * fontsTable[1] = { font_stdsize };
 #endif
 
 uint8_t * decompressFont(const uint8_t * font)
@@ -127,9 +142,9 @@ uint8_t * decompressFont(const uint8_t * font)
   uint8_t* dec_buf = (uint8_t*)malloc(font_size + 4);
 
   // copy width / height
-  memcpy(dec_buf,font,4);
+  memcpy(dec_buf, font,4);
 
-  rle_decode_8bit(dec_buf+4, font_size, font+4);
+  RLEBitmap::decode(dec_buf+4, font_size, font+4);
   return dec_buf;
 }
 
@@ -139,12 +154,14 @@ void loadFonts()
   if (fonts_loaded) return;
 
 #if !defined(BOOT)
-  int i=0;
-  for (; i<9; i++)
+  int i = 0;
+  for (; i < 9; i++) {
     fontsTable[i] = decompressFont(fontsTable[i]);
-
-  for (; i<16; i++)
-    fontsTable[i] = fontsTable[i-9];
+  }
+  for (; i < 16; i++) {
+    // the next fonts don't exist in BOLD today
+    fontsTable[i] = fontsTable[i - 9];
+  }
 #else
   fontsTable[0] = decompressFont(fontsTable[0]);
 #endif

@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
+#include "libopenui/src/libopenui_file.h"
 
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))

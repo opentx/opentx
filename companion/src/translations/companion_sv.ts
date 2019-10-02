@@ -556,6 +556,22 @@ Mode 4:
         <source>Note: Nightly builds are not available in this version, Release/RC update channel will be used.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Use releases (stable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use release candidates (testing)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use nightly builds (unstable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use releases and release candidates (testing)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BinEepromFormat</name>
@@ -3909,6 +3925,14 @@ brytare</translation>
         <source>Power Off Delay</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Power On Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Power Off Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GeneralSetupPanel</name>
@@ -6085,6 +6109,10 @@ p, li { white-space: pre-wrap; }
         <source>DEST -&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>FullScreenDialog</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MixersListWidget</name>
@@ -6268,6 +6296,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Outputs</source>
         <translation>Utgångar</translation>
+    </message>
+    <message>
+        <source>FullScreenDialog</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7070,6 +7102,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>WARNING: Requires non-certified firmware!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ext. + Int.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

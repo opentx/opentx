@@ -22,7 +22,7 @@
 #define _MYEEPROM_H_
 
 #include "datastructs.h"
-#include "bitfield.h"
+#include "libopenui/src/bitfield.h"
 
 #define EEPROM_VER             219
 #define FIRST_CONV_EEPROM_VER  216

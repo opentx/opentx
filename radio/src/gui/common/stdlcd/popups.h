@@ -24,6 +24,7 @@
 #include <inttypes.h>
 #include "audio.h"
 #include "lcd.h"
+#include "keys.h"
 
 extern const char * warningText;
 extern const char * warningInfoText;

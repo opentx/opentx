@@ -32,7 +32,7 @@ void drawPotsBars()
     if (IS_POT_SLIDER_AVAILABLE(i)) {
       uint8_t len = ((calibratedAnalogs[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
-      putsStickName(x-2, LCD_H-6, i, TINSIZE);
+      drawStickName(x-2, LCD_H-6, i, TINSIZE);
     }
   }
 }

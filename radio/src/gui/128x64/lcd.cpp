@@ -19,8 +19,9 @@
  */
 
 #include "opentx.h"
+#include "gui/common/stdlcd/fonts.h"
 
-display_t displayBuf[DISPLAY_BUFFER_SIZE];
+pixel_t displayBuf[DISPLAY_BUFFER_SIZE];
 
 void lcdClear()
 {
@@ -264,12 +265,10 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
     q = &font_3x5[((uint16_t)c-0x20)*3];
     lcdPutPattern(x, y, q, 3, 5, flags);
   }
-#if defined(BOLD_FONT)
   else if (flags & BOLD) {
     q = &font_5x7_B[c_remapped*5];
     lcdPutPattern(x, y, q, 5, 7, flags);
   }
-#endif
   else
 #endif
   {
@@ -604,7 +603,7 @@ void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, 
 
 void drawTelemetryTopBar()
 {
-  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
+  drawModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
   uint8_t att = (IS_TXBATT_WARNING() ? BLINK : 0);
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
@@ -776,7 +775,7 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   lcdDrawTextAtIndex(x, y, STR_RETA123, idx-1, att);
 }
 
-void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
+void drawModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
 {
   uint8_t len = sizeof(g_model.header.name);
   while (len>0 && !name[len-1]) --len;

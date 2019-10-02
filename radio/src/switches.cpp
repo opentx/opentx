@@ -636,7 +636,7 @@ void checkSwitches()
     // first - display warning
 #if defined(PCBFRSKY) || defined(PCBFLYSKY)
     if (last_bad_switches != switches_states || last_bad_pots != bad_pots) {
-      drawAlertBox(STR_SWITCHWARN, nullptr, STR_PRESSANYKEYTOSKIP);
+      drawAlertBox(STR_SWITCHWARN, nullptr, STR_PRESS_ANY_KEY_TO_SKIP);
       if (last_bad_switches == 0xff || last_bad_pots == 0xff) {
         AUDIO_ERROR_MESSAGE(AU_SWITCH_ALERT);
       }
@@ -685,7 +685,7 @@ void checkSwitches()
                 // TODO add an helper
                 strncpy(s, &STR_VSRCRAW[1+(NUM_STICKS+1+i)*STR_VSRCRAW[0]], STR_VSRCRAW[0]);
                 s[int(STR_VSRCRAW[0])] = '\0';
-                lcdDrawText(x, y, s, ALARM_COLOR);
+                lcd->drawText(x, y, s, ALARM_COLOR);
                 x += 40;
 #else
                 lcdDrawTextAtIndex(x, y, STR_VSRCRAW, NUM_STICKS + 1 + i, INVERS);
@@ -703,7 +703,7 @@ void checkSwitches()
 
       if (numWarnings >= 6) {
 #if defined(COLORLCD)
-        lcdDrawText(x, y, "...", ALARM_COLOR);
+        lcd->drawText(x, y, "...", ALARM_COLOR);
 #else
         lcdDrawText(x, y, "...", 0);
 #endif
@@ -712,7 +712,7 @@ void checkSwitches()
       last_bad_pots = bad_pots;
 #else
     if (last_bad_switches != switches_states) {
-      RAISE_ALERT(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
+      RAISE_ALERT(STR_SWITCHWARN, NULL, STR_PRESS_ANY_KEY_TO_SKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
       uint8_t x = 2;
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         uint8_t attr;

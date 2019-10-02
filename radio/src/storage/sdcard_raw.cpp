@@ -283,7 +283,7 @@ void storageEraseAll(bool warn)
 
 #if defined(LIBOPENUI)
   // the theme has not been loaded before
-  theme->load();
+  static_cast<ThemeBase*>(theme)->load();
 #endif
 
   generalDefault();

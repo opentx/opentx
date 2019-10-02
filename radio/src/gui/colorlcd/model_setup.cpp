@@ -46,7 +46,7 @@ class ChannelFailsafeBargraph: public Window {
       const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
 
       coord_t x = 0;
-      lcdDrawRect(x, 0, width(), height());
+      dc->drawRect(x, 0, width(), height());
       const coord_t lenChannel = limit((uint8_t) 1, uint8_t((abs(channelValue) * width() / 2 + lim / 2) / lim),
                                        uint8_t(width() / 2));
       const coord_t lenFailsafe = limit((uint8_t) 1, uint8_t((abs(failsafeValue) * width() / 2 + lim / 2) / lim),
@@ -54,8 +54,8 @@ class ChannelFailsafeBargraph: public Window {
       x += width() / 2;
       const coord_t xChannel = (channelValue > 0) ? x : x + 1 - lenChannel;
       const coord_t xFailsafe = (failsafeValue > 0) ? x : x + 1 - lenFailsafe;
-      lcdDrawSolidFilledRect(xChannel, + 2, lenChannel, (height() / 2) - 3, TEXT_COLOR);
-      lcdDrawSolidFilledRect(xFailsafe, (height() / 2) + 1, lenFailsafe, (height() / 2) - 3, ALARM_COLOR);
+      dc->drawSolidFilledRect(xChannel, + 2, lenChannel, (height() / 2) - 3, TEXT_COLOR);
+      dc->drawSolidFilledRect(xFailsafe, (height() / 2) + 1, lenFailsafe, (height() / 2) - 3, ALARM_COLOR);
     }
 
   protected:
@@ -130,7 +130,7 @@ class FailSafeFooter : public Window {
 
 class FailSafePage : public PageTab {
   public:
-    FailSafePage(uint8_t moduleIdx) :
+    explicit FailSafePage(uint8_t moduleIdx) :
       PageTab("FAILSAFE", ICON_STATS_ANALOGS),
       moduleIdx(moduleIdx)
     {
@@ -155,7 +155,7 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIdx) :
 
 class RegisterDialog: public Dialog {
   public:
-    RegisterDialog(uint8_t moduleIdx):
+    explicit RegisterDialog(uint8_t moduleIdx):
       Dialog(STR_REGISTER, {50, 73, LCD_W - 100, LCD_H - 146}),
       moduleIdx(moduleIdx)
     {
@@ -272,7 +272,7 @@ class BindRxChoiceMenu: public Menu {
       moduleIdx(moduleIdx),
       receiverIdx(receiverIdx)
     {
-      uint8_t receiversCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+      auto receiversCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
       for (uint8_t i = 0; i < receiversCount; i++) {
         const char * receiverName = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[i];
         addLine(receiverName, [=]() {
@@ -437,7 +437,7 @@ class ModuleWindow : public Window {
       update();
     }
 
-    ~ModuleWindow()
+    ~ModuleWindow() override
     {
       deleteChildren();
     }
@@ -452,7 +452,7 @@ class ModuleWindow : public Window {
     TextButton * registerButton = nullptr;
     Choice * failSafeChoice = nullptr;
 
-    void addChannelRange(FormGridLayout &grid, uint8_t moduleIdx)
+    void addChannelRange(FormGridLayout &grid)
     {
       new StaticText(this, grid.getLabelSlot(true), STR_CHANNELRANGE);
       auto channelStart = new NumberEdit(this, grid.getFieldSlot(2, 0), 1,
@@ -658,7 +658,7 @@ class ModuleWindow : public Window {
 
       // Channel Range
       if (g_model.moduleData[moduleIdx].type != MODULE_TYPE_NONE) {
-        addChannelRange(grid, moduleIdx); //TODO XJT2 should only set channel count of 8/16/24
+        addChannelRange(grid); //TODO XJT2 should only set channel count of 8/16/24
         grid.nextLine();
       }
 
@@ -787,13 +787,13 @@ class ModuleWindow : public Window {
 
       // R9M Power
       if (isModuleR9M_FCC(moduleIdx)) {
-        new StaticText(this, grid.getLabelSlot(true), STR_RFPOWER);
+        new StaticText(this, grid.getLabelSlot(true), STR_RF_POWER);
         new Choice(this, grid.getFieldSlot(), STR_R9M_FCC_POWER_VALUES, 0, R9M_FCC_POWER_MAX,
                    GET_SET_DEFAULT(g_model.moduleData[moduleIdx].pxx.power));
       }
 
       if (isModuleR9M_LBT(moduleIdx)) {
-        new StaticText(this, grid.getLabelSlot(true), STR_RFPOWER);
+        new StaticText(this, grid.getLabelSlot(true), STR_RF_POWER);
         new Choice(this, grid.getFieldSlot(), STR_R9M_LBT_POWER_VALUES, 0, R9M_LBT_POWER_MAX,
                    GET_DEFAULT(min<uint8_t>(g_model.moduleData[moduleIdx].pxx.power, R9M_LBT_POWER_MAX)),
                    SET_DEFAULT(g_model.moduleData[moduleIdx].pxx.power));
@@ -820,7 +820,7 @@ class ModuleWindow : public Window {
 };
 
 ModelSetupPage::ModelSetupPage() :
-  PageTab(STR_MENUSETUP, ICON_MODEL_SETUP)
+  PageTab(STR_MENU_MODEL_SETUP, ICON_MODEL_SETUP)
 {
 }
 
@@ -994,7 +994,7 @@ void ModelSetupPage::build(FormWindow * window)
     grid.nextLine();
 
     // Throttle warning
-    new StaticText(window, grid.getLabelSlot(true), STR_THROTTLEWARNING);
+    new StaticText(window, grid.getLabelSlot(true), STR_THROTTLE_WARNING);
     new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_model.disableThrottleWarning));
     grid.nextLine();
 

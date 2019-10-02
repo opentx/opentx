@@ -31,7 +31,6 @@
 #include "debounce.h"
 #include "opentx_helpers.h"
 #include "touch.h"
-#include "bitfield.h"
 
 #if defined(LIBOPENUI)
 #include "libopenui.h"
@@ -394,7 +393,6 @@ inline bool SPLASH_NEEDED()
   #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
   extern volatile rotenc_t rotencValue;
   #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue
-  extern uint8_t rotencSpeed;
   #define ROTENC_LOWSPEED              1
   #define ROTENC_MIDSPEED              5
   #define ROTENC_HIGHSPEED             50
@@ -470,7 +468,7 @@ void alert(const char * title, const char * msg, uint8_t sound);
   }
   inline void ALERT(const char * title, const char * msg, uint8_t sound)
   {
-    raiseAlert(title, msg, nullptr, sound);
+    raiseAlert(title, msg, "", sound);
   }
 #else
   inline void RAISE_ALERT(const char * title, const char * msg, const char * info, uint8_t sound)
@@ -687,13 +685,6 @@ uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
 #endif
 
 uint32_t hash(const void * ptr, uint32_t size);
-inline int divRoundClosest(const int n, const int d)
-{
-  if (d == 0)
-    return 0;
-  else
-    return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
-}
 
 #define calc100to256_16Bits(x) calc100to256(x)
 #define calc100toRESX_16Bits(x) calc100toRESX(x)
@@ -893,20 +884,15 @@ PACK(struct SwOn {
 extern SwOn   swOn[MAX_MIXERS];
 extern int32_t act[MAX_MIXERS];
 
-#if defined(BOLD_FONT)
-  inline bool isExpoActive(uint8_t expo)
-  {
-    return swOn[expo].activeExpo;
-  }
+inline bool isExpoActive(uint8_t expo)
+{
+  return swOn[expo].activeExpo;
+}
 
-  inline bool isMixActive(uint8_t mix)
-  {
-    return swOn[mix].activeMix;
-  }
-#else
-  #define isExpoActive(x) false
-  #define isMixActive(x) false
-#endif
+inline bool isMixActive(uint8_t mix)
+{
+  return swOn[mix].activeMix;
+}
 
 enum LogicalSwitchFamilies {
   LS_FAMILY_OFS,
@@ -1046,7 +1032,6 @@ enum AUDIO_SOUNDS {
 
 #include "buzzer.h"
 #include "translations.h"
-#include "fonts.h"
 
 #if defined(HAPTIC)
 #include "haptic.h"

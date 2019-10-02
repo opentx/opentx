@@ -53,6 +53,9 @@
 #elif defined(TRANSLATIONS_NL)
 #include "translations/nl.h"
 #define LEN_SPECIAL_CHARS 0
+#elif defined(TRANSLATIONS_CN)
+#include "translations/cn.h"
+#define LEN_SPECIAL_CHARS 0
 #else
 #include "translations/en.h"
 #define LEN_SPECIAL_CHARS 0
@@ -145,9 +148,9 @@ extern const char STR_VBEEPCOUNTDOWN[];
 extern const char STR_COUNTDOWNVALUES[];
 extern const char STR_VVARIOCENTER[];
 
-extern const char STR_COUNTRYCODES[];
+extern const char STR_COUNTRY_CODES[];
 extern const char STR_USBMODES[];
-extern const char STR_JACKMODES[];
+extern const char STR_JACK_MODES[];
 extern const char STR_VFAILSAFE[];
 
 extern const char STR_VTRAINERMODES[];
@@ -272,9 +275,9 @@ extern const char STR_SCREEN[];
 extern const char STR_SOUND_LABEL[];
 extern const char STR_LENGTH[];
 extern const char STR_BEEP_LENGTH[];
-extern const char STR_SPKRPITCH[];
+extern const char STR_BEEP_PITCH[];
 extern const char STR_HAPTIC_LABEL[];
-extern const char STR_HAPTICSTRENGTH[];
+extern const char STR_STRENGTH[];
 extern const char STR_GYRO_LABEL[];
 extern const char STR_GYRO_OFFSET[];
 extern const char STR_GYRO_MAX[];
@@ -285,7 +288,7 @@ extern const char STR_BATTERYWARNING[];
 extern const char STR_INACTIVITYALARM[];
 extern const char STR_MEMORYWARNING[];
 extern const char STR_ALARMWARNING[];
-extern const char STR_RSSISHUTDOWNALARM[];
+extern const char STR_RSSI_SHUTDOWN_ALARM[];
 extern const char STR_MODEL_STILL_POWERED[];
 extern const char STR_MODEL_SHUTDOWN[];
 extern const char STR_PRESS_ENTER_TO_CONFIRM[];
@@ -294,7 +297,6 @@ extern const char STR_MINUTEBEEP[];
 extern const char STR_BEEPCOUNTDOWN[];
 extern const char STR_PERSISTENT[];
 extern const char STR_BACKLIGHT_LABEL[];
-extern const char STR_BLDELAY[];
 
 #if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 extern const char STR_BLONBRIGHTNESS[];
@@ -306,7 +308,7 @@ extern const char STR_SPLASHSCREEN[];
 extern const char STR_PWR_ON_DELAY[];
 extern const char STR_PWR_OFF_DELAY[];
 #endif
-extern const char STR_THROTTLEWARNING[];
+extern const char STR_THROTTLE_WARNING[];
 extern const char STR_SWITCHWARNING[];
 extern const char STR_POTWARNINGSTATE[];
 extern const char STR_POTWARNING[];
@@ -314,7 +316,7 @@ extern const char STR_SLIDERWARNING[];
 extern const char STR_TIMEZONE[];
 extern const char STR_ADJUST_RTC[];
 extern const char STR_GPS[];
-extern const char STR_GPSCOORD[];
+extern const char STR_GPS_COORDS_FORMAT[];
 extern const char STR_VARIO[];
 extern const char STR_FLYSKY_TELEMETRY[];
 extern const char STR_PITCH_AT_ZERO[];
@@ -348,8 +350,8 @@ extern const char STR_CH[];
 extern const char STR_MODEL[];
 extern const char STR_FM[];
 extern const char STR_EEPROMLOWMEM[];
-extern const char STR_PRESSANYKEYTOSKIP[];
-extern const char STR_THROTTLENOTIDLE[];
+extern const char STR_PRESS_ANY_KEY_TO_SKIP[];
+extern const char STR_THROTTLE_NOT_IDLE[];
 extern const char STR_ALARMSDISABLED[];
 extern const char STR_PRESSANYKEY[];
 extern const char STR_BAD_RADIO_DATA[];
@@ -358,7 +360,7 @@ extern const char STR_EEPROMOVERFLOW[];
 extern const char STR_TRIMS2OFFSETS[];
 extern const char STR_CHANNELS2FAILSAFE[];
 extern const char STR_CHANNEL2FAILSAFE[];
-extern const char STR_MENURADIOSETUP[];
+extern const char STR_RADIO_SETUP[];
 extern const char STR_MENUTRAINER[];
 extern const char STR_MENUSPECIALFUNCS[];
 extern const char STR_MENUVERSION[];
@@ -366,7 +368,7 @@ extern const char STR_MENU_RADIO_SWITCHES[];
 extern const char STR_MENU_RADIO_ANALOGS[];
 extern const char STR_MENUCALIBRATION[];
 extern const char STR_MENUMODELSEL[];
-extern const char STR_MENUSETUP[];
+extern const char STR_MENU_MODEL_SETUP[];
 extern const char STR_MENUFLIGHTMODE[];
 extern const char STR_MENUFLIGHTMODES[];
 extern const char STR_MENUHELISETUP[];
@@ -453,15 +455,15 @@ extern const char STR_STOPPING              [];
 extern const char STR_MENU_SPECTRUM_ANALYSER[];
 extern const char STR_MENU_POWER_METER[];
 extern const char STR_SENSOR[];
-extern const char STR_COUNTRYCODE[];
+extern const char STR_COUNTRY_CODE[];
 extern const char STR_USBMODE[];
-extern const char STR_JACKMODE[];
+extern const char STR_JACK_MODE[];
 extern const char STR_DISABLE_INTERNAL[];
 extern const char STR_BATT_CALIB[];
 extern const char STR_VOLTAGE[];
 extern const char STR_CURRENT_CALIB[];
-extern const char STR_UNITSSYSTEM[];
-extern const char STR_VOICELANG[];
+extern const char STR_UNITS_SYSTEM[];
+extern const char STR_VOICE_LANGUAGE[];
 extern const char STR_MODELIDUSED[];
 extern const char STR_BEEP_VOLUME[];
 extern const char STR_WAV_VOLUME[];
@@ -552,7 +554,7 @@ extern const char STR_CAT_NOT_EMPTY[];
 extern const char STR_WARNING[];
 extern const char STR_STORAGE_WARNING[];
 extern const char STR_EEPROM_CONVERTING[];
-extern const char STR_THROTTLEWARN[];
+extern const char STR_THROTTLE_UPPERCASE[];
 extern const char STR_ALARMSWARN[];
 extern const char STR_SWITCHWARN[];
 extern const char STR_FAILSAFEWARN[];
@@ -566,7 +568,7 @@ extern const char STR_EMERGENCY_MODE[];
 extern const char STR_NO_FAILSAFE[];
 extern const char STR_KEYSTUCK[];
 
-extern const char STR_SPEAKER_VOLUME[];
+extern const char STR_VOLUME[];
 extern const char STR_LCD[];
 extern const char STR_BRIGHTNESS[];
 extern const char STR_CPU_TEMP[];
@@ -801,11 +803,11 @@ extern const char STR_USER_INTERFACE[];
 extern const char STR_THEME[];
 extern const char STR_SETUP[];
 extern const char STR_LAYOUT[];
-extern const char STR_ADDMAINVIEW[];
+extern const char STR_ADD_MAIN_VIEW[];
 extern const char STR_BACKGROUND_COLOR[];
 extern const char STR_MAIN_COLOR[];
 extern const char STR_TEXT_VIEWER[];
-extern const char STR_RFPOWER[];
+extern const char STR_RF_POWER[];
 
 extern const char STR_BYTES[];
 extern const char STR_ANTENNAPROBLEM[];

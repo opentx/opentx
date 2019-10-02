@@ -28,7 +28,7 @@ std::list<const LayoutFactory *> & getRegisteredLayouts()
 
 void registerLayout(const LayoutFactory * factory)
 {
-  TRACE("register layout %s", factory->getName());
+  TRACE("register layout %s", factory->getId());
   getRegisteredLayouts().push_back(factory);
 }
 
@@ -36,7 +36,7 @@ const LayoutFactory * getLayoutFactory(const char * name)
 {
   std::list<const LayoutFactory *>::const_iterator it = getRegisteredLayouts().cbegin();
   for (; it != getRegisteredLayouts().cend(); ++it) {
-    if (!strcmp(name, (*it)->getName())) {
+    if (!strcmp(name, (*it)->getId())) {
       return (*it);
     }
   }
@@ -54,7 +54,7 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
 
 void loadCustomScreens()
 {
-  for (unsigned int i=0; i<MAX_CUSTOM_SCREENS; i++) {
+  for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
     delete customScreens[i];
     char name[LAYOUT_NAME_LEN + 1];
     memset(name, 0, sizeof(name));
@@ -66,7 +66,7 @@ void loadCustomScreens()
     customScreens[0] = getRegisteredLayouts().front()->create(&g_model.screenData[0].layoutData);
   }
 
-  if (topbar) {
-    topbar->load();
-  }
+//  if (topbar) {
+//    topbar->load();
+//  }
 }

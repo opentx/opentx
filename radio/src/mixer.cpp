@@ -148,9 +148,7 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
   int8_t cur_chn = -1;
 
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
-#if defined(BOLD_FONT)
-    if (mode==e_perout_mode_normal) swOn[i].activeExpo = false;
-#endif
+    if (mode == e_perout_mode_normal) swOn[i].activeExpo = false;
     ExpoData * ed = expoAddress(i);
     if (!EXPO_VALID(ed)) break; // end of list
     if (ed->chn == cur_chn)
@@ -170,9 +168,7 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
         v = limit<int32_t>(-1024, v, 1024);
       }
       if (EXPO_MODE_ENABLE(ed, v)) {
-#if defined(BOLD_FONT)
-        if (mode==e_perout_mode_normal) swOn[i].activeExpo = true;
-#endif
+        if (mode == e_perout_mode_normal) swOn[i].activeExpo = true;
         cur_chn = ed->chn;
 
         //========== CURVE=================
@@ -627,10 +623,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
     bitfield_channels_t passDirtyChannels = 0;
 
     for (uint8_t i=0; i<MAX_MIXERS; i++) {
-#if defined(BOLD_FONT)
       if (mode == e_perout_mode_normal && pass == 0)
         swOn[i].activeMix = 0;
-#endif
 
       MixData * md = mixAddress(i);
 
@@ -727,10 +721,9 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       if (mode==e_perout_mode_normal && (!mixCondition || mixEnabled || swOn[i].delay)) {
-        if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1);
-#if defined(BOLD_FONT)
+        if (md->mixWarn) 
+          lv_mixWarning |= 1 << (md->mixWarn - 1);
         swOn[i].activeMix = true;
-#endif
       }
 
       if (applyOffsetAndCurve) {
@@ -811,12 +804,10 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       switch (md->mltpx) {
         case MLTPX_REP:
           *ptr = dv;
-#if defined(BOLD_FONT)
-          if (mode==e_perout_mode_normal) {
+          if (mode == e_perout_mode_normal) {
             for (uint8_t m=i-1; m<MAX_MIXERS && mixAddress(m)->destCh==md->destCh; m--)
               swOn[m].activeMix = false;
           }
-#endif
           break;
         case MLTPX_MUL:
           // @@@2 we have to remove the weight factor of 256 in case of 100%; now we use the new base of 256

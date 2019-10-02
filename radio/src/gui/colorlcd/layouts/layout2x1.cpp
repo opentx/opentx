@@ -37,18 +37,18 @@ class Layout2x1: public Layout
     {
     }
 
-    virtual void create()
+    void create() override
     {
       Layout::create();
       persistentData->options[0].boolValue = true;
     }
 
-    virtual unsigned int getZonesCount() const
+    unsigned int getZonesCount() const override
     {
       return 4;
     }
 
-    virtual Zone getZone(unsigned int index) const
+    Zone getZone(unsigned int index) const override
     {
       Zone zone;
       zone.w = (LCD_W-3*10) / 2;
@@ -64,18 +64,18 @@ class Layout2x1: public Layout
       return zone;
     }
 
-    virtual void refresh();
+//    virtual void refresh();
 };
 
-void Layout2x1::refresh()
-{
-  theme->drawBackground();
+//void Layout2x1::refresh()
+//{
+//  theme->drawBackground();
+//
+//  if (persistentData->options[0].boolValue) {
+//    drawTopBar();
+//  }
+//
+//  Layout::refresh();
+//}
 
-  if (persistentData->options[0].boolValue) {
-    drawTopBar();
-  }
-
-  Layout::refresh();
-}
-
-BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", LBM_LAYOUT_2x1, OPTIONS_LAYOUT_2x1);
+BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", "2 x 1", LBM_LAYOUT_2x1, OPTIONS_LAYOUT_2x1);

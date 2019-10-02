@@ -24,32 +24,36 @@
 #include <inttypes.h>
 #include "board.h"
 #include "opentx_types.h"
+#include "libopenui/src/libopenui_types.h"
 
 #define EVT_KEY_MASK(e)                ((e) & 0x1f)
 
 #if defined(PCBHORUS)
-#define _MSK_KEY_BREAK                 0x0200
-#define _MSK_KEY_REPT                  0x0400
-#define _MSK_KEY_FIRST                 0x0600
-#define _MSK_KEY_LONG                  0x0800
-#define _MSK_KEY_FLAGS                 0x0e00
-#define EVT_ENTRY                      0x1000
-#define EVT_ENTRY_UP                   0x2000
+constexpr event_t _MSK_KEY_BREAK =                 0x0200;
+constexpr event_t _MSK_KEY_REPT =                  0x0400;
+constexpr event_t _MSK_KEY_FIRST =                 0x0600;
+constexpr event_t _MSK_KEY_LONG =                  0x0800;
+constexpr event_t _MSK_KEY_FLAGS =                 0x0E00;
+constexpr event_t EVT_ENTRY =                      0x1000;
+constexpr event_t EVT_ENTRY_UP =                   0x2000;
 #else
-#define _MSK_KEY_BREAK                 0x20
-#define _MSK_KEY_REPT                  0x40
-#define _MSK_KEY_FIRST                 0x60
-#define _MSK_KEY_LONG                  0x80
-#define _MSK_KEY_FLAGS                 0xe0
-#define EVT_ENTRY                      0xbf
-#define EVT_ENTRY_UP                   0xbe
+constexpr event_t _MSK_KEY_BREAK =                 0x20;
+constexpr event_t _MSK_KEY_REPT =                  0x40;
+constexpr event_t _MSK_KEY_FIRST =                 0x60;
+constexpr event_t _MSK_KEY_LONG =                  0x80;
+constexpr event_t _MSK_KEY_FLAGS =                 0xE0;
+constexpr event_t EVT_ENTRY =                      0xBF;
+constexpr event_t EVT_ENTRY_UP =                   0xBE;
 #endif
 
 // normal order of events is: FIRST, LONG, REPEAT, REPEAT, ..., BREAK
 #define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)  // fired when key is pressed
 #define EVT_KEY_LONG(key)              ((key)|_MSK_KEY_LONG)   // fired when key is held pressed for a while
 #define EVT_KEY_REPT(key)              ((key)|_MSK_KEY_REPT)   // fired when key is held pressed long enough, fires multiple times with increasing speed
-#define EVT_KEY_BREAK(key)             ((key)|_MSK_KEY_BREAK)  // fired when key is released (short or long), but only if the event was not killed
+constexpr event_t EVT_KEY_BREAK(event_t key)
+{
+  return (key | _MSK_KEY_BREAK);  // fired when key is released (short or long), but only if the event was not killed
+}
 
 #define IS_KEY_FIRST(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_FIRST)
 #define IS_KEY_LONG(evt)               (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_LONG)
@@ -114,5 +118,9 @@ void killAllEvents();
 bool waitKeysReleased();
 event_t getEvent(bool trim=false);
 bool keyDown();
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+extern uint8_t rotencSpeed;
+#endif
 
 #endif // _KEYS_H_

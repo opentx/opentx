@@ -72,8 +72,6 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define SPORT_FIRMWARE_EXT  ".frk"
 #define UPDATE_FIRMWARE_EXT ".frsk"
 
-#define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
-
 #if defined(COLORLCD)
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
 #define LEN_BITMAPS_EXT     4
@@ -120,7 +118,6 @@ inline const char * SDCARD_ERROR(FRESULT result)
 #endif
 
 // NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
-const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t * fnlen=nullptr, uint8_t * extlen=nullptr);
 const char * getBasename(const char * path);
 
 #if defined(PCBX12S)
@@ -149,7 +146,6 @@ const char * getBasename(const char * path);
 
 bool isFileAvailable(const char * filename, bool exclDir = false);
 int findNextFileIndex(char * filename, uint8_t size, const char * directory);
-bool isExtensionMatching(const char * extension, const char * pattern, char * match = nullptr);
 
 const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);
@@ -159,8 +155,5 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
 
 void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS + 1], int & lines_count);
-
-bool isCwdAtRoot();
-FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime);
 
 #endif // _SDCARD_H_

@@ -38,19 +38,19 @@ class Layout1x1: public Layout
     {
     }
 
-    virtual void create()
+    void create() override
     {
       Layout::create();
       persistentData->options[0].boolValue = true;
       persistentData->options[1].boolValue = true;
     }
 
-    virtual unsigned int getZonesCount() const
+    unsigned int getZonesCount() const override
     {
       return 1;
     }
 
-    virtual Zone getZone(unsigned int index) const
+    Zone getZone(unsigned int index) const override
     {
       Zone zone = { 10, 10, LCD_W - 2*10, LCD_H - 2*10 };
       if (persistentData->options[0].boolValue) {
@@ -65,28 +65,28 @@ class Layout1x1: public Layout
       return zone;
     }
 
-    virtual void refresh();
+//    virtual void refresh();
 };
 
-void Layout1x1::refresh()
-{
-  theme->drawBackground();
+//void Layout1x1::refresh()
+//{
+//  theme->drawBackground();
+//
+//  if (persistentData->options[0].boolValue) {
+//    drawTopBar();
+//  }
+//
+//  if (persistentData->options[1].boolValue) {
+//    // Sliders + Trims + Flight mode
+//    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,  sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE) / 2,
+//                     232,
+//                     g_model.flightModeData[mixerCurrentFlightMode].name,
+//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
+//    drawMainPots();
+//    drawTrims(mixerCurrentFlightMode);
+//  }
+//
+//  Layout::refresh();
+//}
 
-  if (persistentData->options[0].boolValue) {
-    drawTopBar();
-  }
-
-  if (persistentData->options[1].boolValue) {
-    // Sliders + Trims + Flight mode
-    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,  sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE) / 2,
-                     232,
-                     g_model.flightModeData[mixerCurrentFlightMode].name,
-                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
-    drawMainPots();
-    drawTrims(mixerCurrentFlightMode);
-  }
-
-  Layout::refresh();
-}
-
-BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", LBM_LAYOUT_1x1, OPTIONS_LAYOUT_1x1);
+BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", "Fullscreen", LBM_LAYOUT_1x1, OPTIONS_LAYOUT_1x1);

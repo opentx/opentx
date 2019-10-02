@@ -405,7 +405,7 @@ void StopAudioThread()
 #endif // #if defined(SIMU_AUDIO)
 
 bool simuLcdRefresh = true;
-display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
+pixel_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
 
 #if !defined(COLORLCD)
 void lcdSetRefVolt(uint8_t val)
@@ -423,8 +423,8 @@ void lcdRefresh()
 {
   static bool lightEnabled = (bool)isBacklightEnabled();
 
-  if (bool(isBacklightEnabled()) != lightEnabled || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE * sizeof(display_t))) {
-    memcpy(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE * sizeof(display_t));
+  if (bool(isBacklightEnabled()) != lightEnabled || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE * sizeof(pixel_t))) {
+    memcpy(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE * sizeof(pixel_t));
     lightEnabled = (bool)isBacklightEnabled();
     simuLcdRefresh = true;
   }
@@ -450,7 +450,7 @@ void boardInit()
 {
 }
 
-display_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
+pixel_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
 void lcdStoreBackupBuffer()
 {
   memcpy(simuLcdBackupBuf, displayBuf, sizeof(simuLcdBackupBuf));

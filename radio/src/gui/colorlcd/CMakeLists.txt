@@ -2,6 +2,7 @@ include_directories(
   ${RADIO_SRC_DIRECTORY}/gui/colorlcd
   ${RADIO_SRC_DIRECTORY}/gui/colorlcd/layouts
   ${RADIO_SRC_DIRECTORY}/fonts/truetype
+  ${RADIO_SRC_DIRECTORY}/thirdparty/libopenui/src
 )
 
 file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/themes/*.cpp)
@@ -18,12 +19,11 @@ set(GUI_SRC
 
   theme.cpp
   #  topbar.cpp
-  #  layout.cpp
+  layout.cpp
   #  widget.cpp
   ${THEMES_SRC}
-  #  ${LAYOUTS_SRC}
+  ${LAYOUTS_SRC}
   #  ${WIDGETS_SRC}
-  rle.cpp
   #  popups.cpp
   draw_functions.cpp
   #  menus.cpp
@@ -48,6 +48,9 @@ set(GUI_SRC
   radio_hardware.cpp
   radio_calibration.cpp
   view_main.cpp
+  menu_screen.cpp
+  screen_setup.cpp
+
   #  view_statistics.cpp
   )
 
@@ -75,17 +78,30 @@ if(LUA STREQUAL YES)
   # TODO set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
 endif()
 
-# gui/${GUI_DIR}/modelslist.cpp
-
 set(SRC
   ${SRC}
   stubs.cpp
   )
 
 # includes libopenui
-include(gui/libopenui/CMakeLists.txt)
+include(${RADIO_SRC_DIRECTORY}/thirdparty/libopenui/src/CMakeLists.txt)
 include_directories(gui/libopenui)
 add_definitions(-DLIBOPENUI)
 foreach(LIBOPENUI_FILE ${LIBOPENUI_SRC})
-  set(SRC ${SRC} gui/libopenui/${LIBOPENUI_FILE})
+  set(SRC ${SRC} thirdparty/libopenui/src/${LIBOPENUI_FILE})
 endforeach()
+
+add_gui_src(fullscreen_dialog.cpp)
+add_gui_src(confirm_dialog.cpp)
+add_gui_src(message_dialog.cpp)
+add_gui_src(timeedit.cpp)
+add_gui_src(curve.cpp)
+add_gui_src(sourcechoice.cpp)
+add_gui_src(switchchoice.cpp)
+add_gui_src(curveedit.cpp)
+
+if(HARDWARE_TOUCH)
+  add_gui_src(keyboard_curve.cpp)
+endif()
+
+# gui/${GUI_DIR}/modelslist.cpp

@@ -166,7 +166,7 @@ add_definitions(-g)
 
 add_definitions(-DCPUARM)
 add_definitions(-DGPS)
-add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE)
+add_definitions(-DBATTGRAPH -DTHRTRACE)
 add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
 
 include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)

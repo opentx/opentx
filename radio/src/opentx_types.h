@@ -21,7 +21,7 @@
 #ifndef _OPENTX_TYPES_H_
 #define _OPENTX_TYPES_H_
 
-#include <inttypes.h>
+#include "libopenui/src/libopenui_types.h"
 
 typedef uint32_t tmr10ms_t;
 typedef int32_t rotenc_t;
@@ -29,8 +29,13 @@ typedef int32_t getvalue_t;
 typedef uint32_t mixsrc_t;
 typedef int32_t swsrc_t;
 typedef int16_t safetych_t;
+typedef int16_t gvar_t;
 typedef uint32_t bitfield_channels_t;
-typedef uint16_t event_t;
 typedef uint16_t FlightModesType;
+#if defined(PCBFRSKY)
+typedef uint16_t source_t;
+#else
+typedef uint8_t source_t;
+#endif
 
 #endif // _OPENTX_TYPES_H_

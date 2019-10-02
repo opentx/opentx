@@ -18,29 +18,30 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _THEME_H_
-#define _THEME_H_
+#ifndef _COLORLCD_THEME_H_
+#define _COLORLCD_THEME_H_
 
 #include <list>
 #include <vector>
 #include "zone.h"
+#include "thirdparty/libopenui/src/theme.h"
 
 class BitmapBuffer;
 class PageTab;
 
 #define MAX_THEME_OPTIONS              5
 
-class Theme;
-void registerTheme(Theme * theme);
+class ThemeBase;
+void registerTheme(ThemeBase * theme);
 
-class Theme
+class ThemeBase: public Theme
 {
   public:
     struct PersistentData {
       ZoneOptionValue options[MAX_THEME_OPTIONS];
     };
 
-    Theme(const char * name, const ZoneOption * options = nullptr):
+    ThemeBase(const char * name, const ZoneOption * options = nullptr):
       name(name),
       options(options),
       thumb(nullptr)
@@ -55,7 +56,7 @@ class Theme
 
     const char * getFilePath(const char * filename) const;
 
-    void drawThumb(coord_t x, coord_t y, uint32_t flags);
+    void drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flags);
 
     inline const ZoneOption * getOptions() const
     {
@@ -74,25 +75,18 @@ class Theme
 
     virtual void drawBackground(BitmapBuffer * dc) const;
 
-    virtual const BitmapBuffer * getIconButtonBitmap(uint8_t index, bool selected) const
-    {
-      TRACE("No bitmap for icon %d in this theme", index);
-      return nullptr;
-    }
-
-    virtual const BitmapBuffer * getIconMask(uint8_t index) const
-    {
-      TRACE("No mask for icon %d in this theme", index);
-      return nullptr;
-    }
-
     virtual void drawMenuBackground(BitmapBuffer * dc, uint8_t icon, const char *title) const = 0;
 
     virtual void drawMenuHeader(BitmapBuffer * dc, std::vector<PageTab *> & tabs, uint8_t currentIndex) const = 0;
 
     virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const;
+    // virtual void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const = 0;
 
-    virtual void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const = 0;
+    void drawCheckBox(BitmapBuffer * dc, bool value, bool focus) const override;
+
+    void drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const override;
+
+    void drawPageHeader(BitmapBuffer * dc, const PageHeader * page) const override;
 
   protected:
     const char * name;
@@ -105,17 +99,10 @@ class Theme
     static const BitmapBuffer * busy;
 };
 
-extern Theme * theme;
-
-inline const char * getThemePath(const char * filename)
-{
-  return theme->getFilePath(filename);
-}
-
-Theme * getTheme(const char * name);
-void loadTheme(Theme * theme);
+ThemeBase * getTheme(const char * name);
+void loadTheme(ThemeBase * theme);
 void loadTheme();
 
-std::list<Theme *> & getRegisteredThemes();
+std::list<ThemeBase *> & getRegisteredThemes();
 
-#endif // _THEME_H_
+#endif // _COLORLCD_THEME_H_

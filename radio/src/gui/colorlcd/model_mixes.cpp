@@ -252,7 +252,7 @@ class MixLineButton : public CommonInputOrMixButton {
 
       if (line.name[0]) {
         dc->drawBitmap(146, FIELD_PADDING_TOP, mixerSetupLabelBitmap);
-        dc->drawSizedText(166, FIELD_PADDING_TOP, line.name, sizeof(line.name), ZCHAR);
+        dc->drawSizedText(166, FIELD_PADDING_TOP, line.name, sizeof(line.name));
       }
 
       // second line ...

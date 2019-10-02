@@ -23,8 +23,6 @@
 
 #include <inttypes.h>
 
-#define TEXT_AT_INDEX(val, idx)    std::string(val+1+val[0]*(idx), min<uint8_t>(val[0], strlen(val+1+val[0]*(idx))))
-
 char * strAppend(char * dest, const char * source, int len=0);
 char * strAppendUnsigned(char * dest, uint32_t value, uint8_t digits=0, uint8_t radix=10);
 char * strAppendSigned(char * dest, int32_t value, uint8_t digits=0, uint8_t radix=10);

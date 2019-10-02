@@ -22,12 +22,14 @@
 #define _TELEMETRY_H_
 
 #include "frsky.h"
+#include "io/frsky_sport.h"
 #include "crossfire.h"
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"
   #include "multi.h"
 #endif
+#include "myeeprom.h"
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
 
@@ -78,11 +80,11 @@ PACK(struct CellValue
   uint16_t value:15;
   uint16_t state:1;
 
-  void set(uint16_t value)
+  void set(uint16_t newValue)
   {
-    if (value > 50) {
-      this->value = value;
-      this->state = 1;
+    if (newValue > 50) {
+      value = value;
+      state = 1;
     }
   }
 });

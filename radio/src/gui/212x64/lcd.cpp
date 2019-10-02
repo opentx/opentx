@@ -19,14 +19,14 @@
  */
 
 #include "opentx.h"
-#include "timers.h"
+#include "common/stdlcd/fonts.h"
 
 #if (defined(PCBX9E) || defined(PCBX9DP)) && defined(LCD_DUAL_BUFFER)
-  display_t displayBuf1[DISPLAY_BUFFER_SIZE] __DMA;
-  display_t displayBuf2[DISPLAY_BUFFER_SIZE] __DMA;
-  display_t * displayBuf = displayBuf1;
+  pixel_t displayBuf1[DISPLAY_BUFFER_SIZE] __DMA;
+  pixel_t displayBuf2[DISPLAY_BUFFER_SIZE] __DMA;
+  pixel_t * displayBuf = displayBuf1;
 #else
-  display_t displayBuf[DISPLAY_BUFFER_SIZE] __DMA;
+  pixel_t displayBuf[DISPLAY_BUFFER_SIZE] __DMA;
 #endif
 
 inline bool lcdIsPointOutside(coord_t x, coord_t y)
@@ -36,7 +36,7 @@ inline bool lcdIsPointOutside(coord_t x, coord_t y)
 
 void lcdClear()
 {
-  memset(displayBuf, 0, DISPLAY_BUFFER_SIZE * sizeof(display_t));
+  memset(displayBuf, 0, DISPLAY_BUFFER_SIZE * sizeof(pixel_t));
 }
 
 coord_t lcdLastRightPos;
@@ -505,7 +505,7 @@ void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, 
 
 void drawTelemetryTopBar()
 {
-  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
+  drawModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
   uint8_t att = (IS_TXBATT_WARNING() ? BLINK : 0);
   putsVBat(12*FW, 0, att);
   if (g_model.timers[0].mode) {
@@ -581,7 +581,7 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att)
   putsVolts(x, y, g_vbat100mV, att);
 }
 
-void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
+void drawStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   uint8_t length = STR_VSRCRAW[0];
   lcdDrawSizedText(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
@@ -681,7 +681,7 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   lcdDrawTextAtIndex(x, y, STR_RETA123, idx-1, att);
 }
 
-void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
+void drawModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
 {
   uint8_t len = sizeof(g_model.header.name);
   while (len>0 && !name[len-1]) --len;

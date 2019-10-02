@@ -26,14 +26,6 @@ void drawFatalErrorScreen(const char * message)
 {
 }
 
-void loadCustomScreens()
-{
-}
-
-void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound)
-{
-}
-
 void showMessageBox(const char * title)
 {
 

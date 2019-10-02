@@ -109,7 +109,7 @@ class SpecialFunctionEditPage : public Page {
           break;
 
         case FUNC_VOLUME:
-          new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_SPEAKER_VOLUME);
+          new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_VOLUME);
           new SourceChoice(specialFunctionOneWindow, grid.getFieldSlot(), 0, MIXSRC_LAST_CH, GET_SET_DEFAULT(CFN_PARAM(cfn)));
           grid.nextLine();
           break;
@@ -176,7 +176,7 @@ class SpecialFunctionEditPage : public Page {
           new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_VALUE);
           auto edit = new NumberEdit(specialFunctionOneWindow, grid.getFieldSlot(), 0, 255, GET_SET_DEFAULT(CFN_PARAM(cfn)));
           edit->setDisplayHandler([=](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-            lcdDrawNumber(2, 2, CFN_PARAM(cfn), PREC1, sizeof(CFN_PARAM(cfn)), nullptr, "s");
+            dc->drawNumber(2, 2, CFN_PARAM(cfn), PREC1, sizeof(CFN_PARAM(cfn)), nullptr, "s");
           });
           break;
         }
@@ -192,11 +192,11 @@ class SpecialFunctionEditPage : public Page {
         auto repeat = new NumberEdit(specialFunctionOneWindow, grid.getFieldSlot(2, 1), -1, 60/CFN_PLAY_REPEAT_MUL, GET_SET_DEFAULT(CFN_PLAY_REPEAT(cfn)));
         repeat->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
           if (value == 0)
-            lcdDrawText(3, 0, "1x", flags);
+            dc->drawText(3, 0, "1x", flags);
           else if (value == CFN_PLAY_REPEAT_NOSTART)
-            lcdDrawText(3, 0, "!1x", flags);
+            dc->drawText(3, 0, "!1x", flags);
           else
-            drawNumber(dc, 3, 0, value * CFN_PLAY_REPEAT_MUL, flags, 0, nullptr, "s");
+            dc->drawNumber(3, 0, value * CFN_PLAY_REPEAT_MUL, flags, 0, nullptr, "s");
         });
       }
 
@@ -297,7 +297,7 @@ class SpecialFunctionButton : public Button {
       if (CFN_EMPTY(cfn))
         return;
 
-      lcdDrawTextAtIndex(col2, line1, STR_VFSWFUNC, func, 0);
+      dc->drawTextAtIndex(col2, line1, STR_VFSWFUNC, func, 0);
       int16_t val_min = 0;
       int16_t val_max = 255;
 
@@ -305,7 +305,7 @@ class SpecialFunctionButton : public Button {
         case FUNC_OVERRIDE_CHANNEL:
           drawChn(dc, col1, line2, CFN_CH_INDEX(cfn) + 1, 0);
           getMixSrcRange(MIXSRC_FIRST_CH, val_min, val_max);
-          lcdDrawNumber(col2, line2, CFN_PARAM(cfn));
+          dc->drawNumber(col2, line2, CFN_PARAM(cfn));
           break;
 
         case FUNC_TRAINER:
@@ -314,11 +314,11 @@ class SpecialFunctionButton : public Button {
 
         case FUNC_RESET:
           if (CFN_PARAM(cfn) < FUNC_RESET_PARAM_FIRST_TELEM) {
-            lcdDrawTextAtIndex(col1, line2, STR_VFSWRESET, CFN_PARAM(cfn));
+            dc->drawTextAtIndex(col1, line2, STR_VFSWRESET, CFN_PARAM(cfn));
           }
           else {
             TelemetrySensor * sensor = &g_model.telemetrySensors[CFN_PARAM(cfn) - FUNC_RESET_PARAM_FIRST_TELEM];
-            lcdDrawSizedText(col1, line2, sensor->label, TELEM_LABEL_LEN, ZCHAR);
+            dc->drawSizedText(col1, line2, sensor->label, TELEM_LABEL_LEN);
           }
           break;
 
@@ -327,16 +327,16 @@ class SpecialFunctionButton : public Button {
           break;
 
         case FUNC_PLAY_SOUND:
-          lcdDrawTextAtIndex(col1, line2, STR_FUNCSOUNDS, CFN_PARAM(cfn));
+          dc->drawTextAtIndex(col1, line2, STR_FUNCSOUNDS, CFN_PARAM(cfn));
           break;
 
         case FUNC_PLAY_TRACK:
         case FUNC_BACKGND_MUSIC:
         case FUNC_PLAY_SCRIPT:
           if (ZEXIST(cfn->play.name))
-            lcdDrawSizedText(col1, line2, cfn->play.name, sizeof(cfn->play.name), 0);
+            dc->drawSizedText(col1, line2, cfn->play.name, sizeof(cfn->play.name), 0);
           else
-            lcdDrawTextAtIndex(col1, line2, STR_VCSWFUNC, 0, 0);
+            dc->drawTextAtIndex(col1, line2, STR_VCSWFUNC, 0, 0);
           break;
 
         case FUNC_SET_TIMER:
@@ -344,7 +344,7 @@ class SpecialFunctionButton : public Button {
           break;
 
         case FUNC_SET_FAILSAFE:
-          lcdDrawTextAtIndex(col1, line2, "\004Int.Ext.", CFN_PARAM(cfn), 0);
+          dc->drawTextAtIndex(col1, line2, "\004Int.Ext.", CFN_PARAM(cfn), 0);
           break;
 
         case FUNC_PLAY_VALUE:
@@ -352,35 +352,35 @@ class SpecialFunctionButton : public Button {
           break;
 
         case FUNC_HAPTIC:
-          lcdDrawNumber(col1, line2, CFN_PARAM(cfn), 0);
+          dc->drawNumber(col1, line2, CFN_PARAM(cfn), 0);
           break;
 
         case FUNC_LOGS:
-          lcdDrawNumber(col3, line1, CFN_PARAM(cfn), PREC1, sizeof(CFN_PARAM(cfn)), nullptr, "s");
+          dc->drawNumber(col3, line1, CFN_PARAM(cfn), PREC1, sizeof(CFN_PARAM(cfn)), nullptr, "s");
           break;
       }
       if (HAS_ENABLE_PARAM(func)) {
-        drawCheckBox(col3, line2, CFN_ACTIVE(cfn), 0);
+        drawCheckBox(dc, col3, line2, CFN_ACTIVE(cfn), 0);
       }
       else if (HAS_REPEAT_PARAM(func)) {
         if (CFN_PLAY_REPEAT(cfn) == 0) {
-          lcdDrawText(col3, line2, "1x", 0);
+          dc->drawText(col3, line2, "1x", 0);
         }
         else if (CFN_PLAY_REPEAT(cfn) == CFN_PLAY_REPEAT_NOSTART) {
-          lcdDrawText(col3, line2, "!1x", 0);
+          dc->drawText(col3, line2, "!1x", 0);
         }
         else {
-          lcdDrawNumber(col3 + 12, line2, CFN_PLAY_REPEAT(cfn) * CFN_PLAY_REPEAT_MUL, 0 | RIGHT, 0, nullptr, "s");
+          dc->drawNumber(col3 + 12, line2, CFN_PLAY_REPEAT(cfn) * CFN_PLAY_REPEAT_MUL, 0 | RIGHT, 0, nullptr, "s");
         }
       }
     }
 
-    virtual void paint(BitmapBuffer * dc) override
+    void paint(BitmapBuffer * dc) override
     {
       if (active)
         dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
       paintSpecialFunctionLine(dc);
-      drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
     }
 
   protected:

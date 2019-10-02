@@ -88,7 +88,7 @@ FXIMPLEMENT(OpenTxSim, FXMainWindow, OpenTxSimMap, ARRAYNUMBER(OpenTxSimMap))
 OpenTxSim::OpenTxSim(FXApp* a):
   FXMainWindow(a, "OpenTX Simu", nullptr, nullptr, DECOR_ALL, 20, 90, 0, 0)
 {
-  memset(displayBuf, 0, DISPLAY_BUFFER_SIZE * sizeof(display_t));
+  memset(displayBuf, 0, DISPLAY_BUFFER_SIZE * sizeof(pixel_t));
   bmp = new FXPPMImage(getApp(), nullptr, IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
 #if defined(SIMU_AUDIO)
@@ -179,7 +179,7 @@ void OpenTxSim::createBitmap(int index, uint16_t *data, int x, int y, int w, int
 
   for (int i=0; i<w; i++) {
     for (int j=0; j<h; j++) {
-      display_t z = data[(y+j) * LCD_W + (x+i)];
+      pixel_t z = data[(y+j) * LCD_W + (x+i)];
       FXColor color = FXRGB(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
       snapshot.setPixel(i, j, color);
     }
@@ -487,7 +487,7 @@ void OpenTxSim::refreshDisplay()
     for (int x=0; x<LCD_W; x++) {
       for (int y=0; y<LCD_H; y++) {
 #if defined(COLORLCD)
-    	display_t z = simuLcdBuf[y * LCD_W + x];
+    	pixel_t z = simuLcdBuf[y * LCD_W + x];
     	if (1) {
           if (z == 0) {
             setPixel(x, y, FXRGB(0, 0, 0));
@@ -501,7 +501,7 @@ void OpenTxSim::refreshDisplay()
           }
     	}
 #elif LCD_DEPTH == 4
-        display_t * p = &simuLcdBuf[y / 2 * LCD_W + x];
+        pixel_t * p = &simuLcdBuf[y / 2 * LCD_W + x];
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
           FXColor color;

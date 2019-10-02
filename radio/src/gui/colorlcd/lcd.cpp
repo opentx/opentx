@@ -18,16 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include <math.h>
-#include <stdio.h>
 #include "opentx.h"
 #include "strhelpers.h"
 
 #if defined(SIMU)
-display_t displayBuf[DISPLAY_BUFFER_SIZE];
+pixel_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
-
-uint16_t lcdColorTable[LCD_COLOR_COUNT];
 
 coord_t lcdNextPos;
 
@@ -73,15 +69,19 @@ uint8_t getMappedChar(uint8_t c)
     result = 207 + c - 0x80;
   }
 #endif
+  else if (c == 0x21) // !
+    result = 0;
   else if (c < 0xC0)
-    result = c - 0x20;
+    result = c - 0x20 - 2;
   else
-    result = c - 0xC0 + 96;
-  // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
+    result = c - 0xC0 + 96 - 2;
+
+//  TRACE("getMappedChar '%c' (%x) = %d", c, c, result);
+
   return result;
 }
 
-int getFontPatternWidth(const uint16_t * spec, uint8_t index)
+int getFontPatternWidth(const uint16_t * spec, int index)
 {
   return spec[index + 2] - spec[index + 1];
 }
@@ -89,23 +89,6 @@ int getFontPatternWidth(const uint16_t * spec, uint8_t index)
 int getCharWidth(uint8_t c, const uint16_t * spec)
 {
   return getFontPatternWidth(spec, getMappedChar(c));
-}
-
-void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags)
-{
-  coord_t offset = spec[index + 1];
-  coord_t width = spec[index + 2] - offset;
-  if (width > 0)
-    lcdDrawBitmapPattern(x, y, font, flags, offset, width);
-  lcdNextPos = x + width;
-}
-
-void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags)
-{
-  uint32_t fontindex = FONTINDEX(flags);
-  const unsigned char * font = fontsTable[fontindex];
-  const uint16_t * fontspecs = fontspecsTable[fontindex];
-  lcdPutFontPattern(x, y, font, fontspecs, getMappedChar(c), flags);
 }
 
 uint8_t getFontHeight(LcdFlags flags)
@@ -119,66 +102,30 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   const uint16_t * specs = fontspecsTable[FONTINDEX(flags)];
 
   int result = 0;
-  for (int i=0; len==0 || i<len; ++i) {
-
-#if !defined(BOOT)
-    char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
-#else
-    char c = *s;
-#endif
-    if (c == '\0')
+  for (int i=0; len == 0 || i < len; ++i) {
+    unsigned int c = uint8_t(*s);
+    if (!c) {
       break;
-    result += getCharWidth(c, specs);
+    }
+    else if (c == 0x20) {
+      result += 4;
+    }
+    else if (c >= 0xFE) {
+      s++;
+      c = uint8_t(*s) + ((c & 0x01) << 8) - 1;
+      if (c >= 0x101)
+        c -= 1;
+      c += 187;
+      result += getFontPatternWidth(specs, c);
+    }
+    else if (c >= 0x20) {
+      result += getCharWidth(c, specs);
+    }
+
     ++s;
   }
+
   return result;
-}
-
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags)
-{
-  uint8_t length;
-  length = *(s++);
-  lcdDrawSizedText(x, y, s+length*idx, length, flags & ~ZCHAR);
-}
-
-void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len, const char * prefix, const char * suffix)
-{
-  char str[48+1]; // max=16 for the prefix, 16 chars for the number, 16 chars for the suffix
-  char *s = str+32;
-  *s = '\0';
-  int idx = 0;
-  int mode = MODE(flags);
-  bool neg = false;
-  if (val < 0) {
-    val = -val;
-    neg = true;
-  }
-  do {
-    *--s = '0' + (val % 10);
-    ++idx;
-    val /= 10;
-    if (mode!=0 && idx==mode) {
-      mode = 0;
-      *--s = '.';
-      if (val==0)
-        *--s = '0';
-    }
-  } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
-  if (neg) *--s = '-';
-
-  // TODO needs check on all string lengths ...
-  if (prefix) {
-    int len = strlen(prefix);
-    if (len <= 16) {
-      s -= len;
-      strncpy(s, prefix, len);
-    }
-  }
-  if (suffix) {
-    strncpy(&str[32], suffix, 16);
-  }
-  flags &= ~LEADING0;
-  lcdDrawText(x, y, s, flags);
 }
 
 void lcdSetContrast()

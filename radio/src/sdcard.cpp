@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include "opentx.h"
 #include "diskio.h"
+#include "libopenui/src/libopenui_file.h"
 
 bool sdCardFormat()
 {
@@ -202,32 +203,6 @@ const char * getBasename(const char * path)
     }
   }
   return path;
-}
-
-const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMaxLen, uint8_t *fnlen, uint8_t *extlen)
-{
-  int len = size;
-  if (!size) {
-    len = strlen(filename);
-  }
-  if (!extMaxLen) {
-    extMaxLen = LEN_FILE_EXTENSION_MAX;
-  }
-  if (fnlen != nullptr) {
-    *fnlen = (uint8_t)len;
-  }
-  for (int i=len-1; i >= 0 && len-i <= extMaxLen; --i) {
-    if (filename[i] == '.') {
-      if (extlen) {
-        *extlen = len-i;
-      }
-      return &filename[i];
-    }
-  }
-  if (extlen != nullptr) {
-    *extlen = 0;
-  }
-  return nullptr;
 }
 
 /**
@@ -476,37 +451,6 @@ void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS +
   if (lines_count == 0) {
     lines_count = current_line;
   }
-}
-
-// returns true if current working dir is at the root level
-bool isCwdAtRoot()
-{
-  char path[10];
-  if (f_getcwd(path, sizeof(path)-1) == FR_OK) {
-    return (strcasecmp("/", path) == 0);
-  }
-  return false;
-}
-
-/*
-  Wrapper around the f_readdir() function which
-  also returns ".." entry for sub-dirs. (FatFS 0.12 does
-  not return ".", ".." dirs anymore)
-*/
-FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime)
-{
-  FRESULT res;
-  if (firstTime && !isCwdAtRoot()) {
-    // fake parent directory entry
-    strcpy(fno->fname, "..");
-    fno->fattrib = AM_DIR;
-    res = FR_OK;
-  }
-  else {
-    res = f_readdir(dir, fno);                   /* Read a directory item */
-  }
-  firstTime = false;
-  return res;
 }
 
 #if defined(SDCARD)
