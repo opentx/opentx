@@ -87,7 +87,7 @@ unsigned int fetchBinFiles(unsigned int index)
 
 FRESULT openBinFile(MemoryType mt, unsigned int index)
 {
-  TCHAR full_path[_MAX_LFN+1];
+  TCHAR full_path[FF_MAX_LFN+1];
   FRESULT fr;
 
   // build full_path: [bin path]/[filename]

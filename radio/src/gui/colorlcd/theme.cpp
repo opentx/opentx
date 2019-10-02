@@ -66,7 +66,7 @@ ZoneOptionValue * ThemeBase::getOptionValue(unsigned int index) const
 
 const char * ThemeBase::getFilePath(const char * filename) const
 {
-  static char path[_MAX_LFN+1] = THEMES_PATH "/";
+  static char path[FF_MAX_LFN+1] = THEMES_PATH "/";
   strcpy(path + sizeof(THEMES_PATH), getName());
   int len = sizeof(THEMES_PATH) + strlen(path + sizeof(THEMES_PATH));
   path[len] = '/';

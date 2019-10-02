@@ -69,7 +69,7 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
 
 void getSelectionFullPath(char * lfn)
 {
-  f_getcwd(lfn, _MAX_LFN);
+  f_getcwd(lfn, FF_MAX_LFN);
   strcat(lfn, "/");
   strcat(lfn, reusableBuffer.sdManager.lines[menuVerticalPosition - HEADER_LINE - menuVerticalOffset]);
 }
@@ -135,7 +135,7 @@ void onUpdateStateChanged()
 
 void onSdManagerMenu(const char * result)
 {
-  TCHAR lfn[_MAX_LFN+1];
+  TCHAR lfn[FF_MAX_LFN+1];
 
   // TODO possible buffer overflows here!
 
@@ -154,7 +154,7 @@ void onSdManagerMenu(const char * result)
     strncpy(clipboard.data.sd.filename, line, CLIPBOARD_PATH_LEN-1);
   }
   else if (result == STR_PASTE) {
-    f_getcwd(lfn, _MAX_LFN);
+    f_getcwd(lfn, FF_MAX_LFN);
     // if destination is dir, copy into that dir
     if (IS_DIRECTORY(line)) {
       strcat(lfn, "/");
@@ -367,7 +367,7 @@ void menuRadioSdManager(event_t _event)
 #endif
 #if defined(PCBTARANIS)
           else if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
-            TCHAR lfn[_MAX_LFN + 1];
+            TCHAR lfn[FF_MAX_LFN + 1];
             getSelectionFullPath(lfn);
             if (isBootloader(lfn)) {
               POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);

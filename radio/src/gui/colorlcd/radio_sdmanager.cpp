@@ -42,8 +42,8 @@ extern bool compare_nocase(const std::string &first, const std::string &second);
 
 char *getFullPath(const std::string &filename)
 {
-  static char full_path[_MAX_LFN + 1]; // TODO optimize that!
-  f_getcwd(full_path, _MAX_LFN);
+  static char full_path[FF_MAX_LFN + 1]; // TODO optimize that!
+  f_getcwd(full_path, FF_MAX_LFN);
   strcat(full_path, "/");
   strcat(full_path, filename.c_str());
   return full_path;
@@ -270,7 +270,7 @@ bool menuRadioSdManagerInfo(event_t event)
 #if 0
 void onSdManagerMenu(const char * result)
 {
-  TCHAR lfn[_MAX_LFN+1];
+  TCHAR lfn[FF_MAX_LFN+1];
 
   // TODO possible buffer overflows here!
 
@@ -284,7 +284,7 @@ void onSdManagerMenu(const char * result)
     POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
   }
   else if (result == STR_PASTE) {
-    f_getcwd(lfn, _MAX_LFN);
+    f_getcwd(lfn, FF_MAX_LFN);
     // if destination is dir, copy into that dir
     if (IS_DIRECTORY(line)) {
       strcat(lfn, PSTR("/"));
@@ -310,7 +310,7 @@ void onSdManagerMenu(const char * result)
     storageDirty(EE_MODEL);
   }
   else if (result == STR_ASSIGN_SPLASH) {
-    f_getcwd(lfn, _MAX_LFN);
+    f_getcwd(lfn, FF_MAX_LFN);
     sdCopyFile(line, lfn, SPLASH_FILE, BITMAPS_PATH);
   }
   else if (result == STR_VIEW_TEXT) {

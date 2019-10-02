@@ -42,7 +42,7 @@ enum MemoryType {
 
 // File info struct while browsing files on SD card
 struct BinFileInfo {
-    TCHAR        name[_MAX_LFN + 1];
+    TCHAR        name[FF_MAX_LFN + 1];
     unsigned int size;
 };
 

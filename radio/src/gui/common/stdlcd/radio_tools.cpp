@@ -58,7 +58,7 @@ void addRadioScriptTool(uint8_t index, const char * path)
   }
 
   if (addRadioTool(index, toolName)) {
-    char toolPath[_MAX_LFN];
+    char toolPath[FF_MAX_LFN];
     strcpy(toolPath, path);
     *((char *)getBasename(toolPath)-1) = '\0';
     f_chdir(toolPath);
@@ -105,7 +105,7 @@ void menuRadioTools(event_t event)
   FRESULT res = f_opendir(&dir, SCRIPTS_TOOLS_PATH);
   if (res == FR_OK) {
     for (;;) {
-      TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
+      TCHAR path[FF_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       if (fno.fattrib & AM_DIR) continue;            /* Skip subfolders */

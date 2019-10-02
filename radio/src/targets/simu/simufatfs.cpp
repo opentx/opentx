@@ -458,7 +458,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   }
 #endif
 
-  memset(fil->fname, 0, _MAX_LFN);
+  memset(fil->fname, 0, FF_MAX_LFN);
   strcpy(fil->fname, ent->d_name);
   // TRACE_SIMPGMSPACE("f_readdir(): %s", fil->fname);
   return FR_OK;

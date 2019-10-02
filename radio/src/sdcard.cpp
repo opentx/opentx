@@ -25,7 +25,7 @@
 
 bool sdCardFormat()
 {
-  BYTE work[_MAX_SS];
+  BYTE work[FF_MAX_SS];
   FRESULT res = f_mkfs("", FM_FAT32, 0, work, sizeof(work));
   switch(res) {
     case FR_OK :
@@ -99,7 +99,7 @@ bool isFileAvailable(const char * path, bool exclDir)
 bool isFilePatternAvailable(const char * path, const char * file, const char * pattern = nullptr, bool exclDir = true, char * match = nullptr)
 {
   uint8_t fplen;
-  char fqfp[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
+  char fqfp[LEN_FILE_PATH_MAX + FF_MAX_LFN + 1] = "\0";
 
   fplen = strlen(path);
   if (fplen > LEN_FILE_PATH_MAX) {
@@ -109,7 +109,7 @@ bool isFilePatternAvailable(const char * path, const char * file, const char * p
 
   strcpy(fqfp, path);
   strcpy(fqfp + fplen, "/");
-  strncat(fqfp + (++fplen), file, _MAX_LFN);
+  strncat(fqfp + (++fplen), file, FF_MAX_LFN);
 
   if (pattern == nullptr) {
     // no extensions list, just check the filename as-is

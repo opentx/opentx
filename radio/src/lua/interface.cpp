@@ -421,7 +421,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 #if defined(LUA_COMPILER)
   uint16_t fnamelen;
   uint8_t extlen;
-  char filenameFull[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
+  char filenameFull[LEN_FILE_PATH_MAX + FF_MAX_LFN + 1] = "\0";
   FILINFO fnoLuaS, fnoLuaC;
   FRESULT frLuaS, frLuaC;
 
@@ -840,9 +840,9 @@ void luaDoOneRunStandalone(event_t evt)
           luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
         }
         else if (lua_isstring(lsScripts, -1)) {
-          char nextScript[_MAX_LFN+1];
-          strncpy(nextScript, lua_tostring(lsScripts, -1), _MAX_LFN);
-          nextScript[_MAX_LFN] = '\0';
+          char nextScript[FF_MAX_LFN+1];
+          strncpy(nextScript, lua_tostring(lsScripts, -1), FF_MAX_LFN);
+          nextScript[FF_MAX_LFN] = '\0';
           luaExec(nextScript);
         }
         else {
