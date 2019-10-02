@@ -54,10 +54,10 @@
 #define FIND_FIELD_DESC  0x01
 
 #define KEY_EVENTS(xxx, yyy)  \
-  { "EVT_"#xxx"_FIRST",  EVT_KEY_FIRST(yyy) }, \
-  { "EVT_"#xxx"_BREAK",  EVT_KEY_BREAK(yyy) }, \
-  { "EVT_"#xxx"_LONG",  EVT_KEY_LONG(yyy) }, \
-  { "EVT_"#xxx"_REPT",  EVT_KEY_REPT(yyy) }
+  { "EVT_"#xxx"_FIRST", EVT_KEY_FIRST(yyy) }, \
+  { "EVT_"#xxx"_BREAK", EVT_KEY_BREAK(yyy) }, \
+  { "EVT_"#xxx"_LONG", EVT_KEY_LONG(yyy) }, \
+  { "EVT_"#xxx"_REPT", EVT_KEY_REPT(yyy) }
 
 /*luadoc
 @function getVersion()
@@ -1379,7 +1379,7 @@ static int luaChdir(lua_State * L)
 @function loadScript(file [, mode], [,env])
 
 Load a Lua script file. This is similar to Lua's own [loadfile()](https://www.lua.org/manual/5.2/manual.html#pdf-loadfile)
-API method,  but it uses OpenTx's optional pre-compilation feature to save memory and time during load.
+API method, but it uses OpenTx's optional pre-compilation feature to save memory and time during load.
 
 Return values are same as from Lua API loadfile() method: If the script was loaded w/out errors
 then the loaded script (or "chunk") is returned as a function. Otherwise, returns nil plus the error message.
@@ -1675,63 +1675,49 @@ const luaR_value_entry opentxConstants[] = {
   { "FIXEDWIDTH", FIXEDWIDTH },
 #endif
 
-// VIRTUAL EVENTS
-  // Virtual generic plus-next-right minus-previous-left
+// Virtual events
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  { "EVT_VIRTUAL_PREVIOUS",  EVT_ROTARY_LEFT  },
-  { "EVT_VIRTUAL_PREVIOUS_REPT",  EVT_ROTARY_LEFT },
-  { "EVT_VIRTUAL_NEXT",  EVT_ROTARY_RIGHT },
-  { "EVT_VIRTUAL_NEXT_REPT",  EVT_ROTARY_RIGHT },
+  { "EVT_VIRTUAL_PREVIOUS", EVT_ROTARY_LEFT },
+  { "EVT_VIRTUAL_PREVIOUS_REPT", EVT_ROTARY_LEFT },
+  { "EVT_VIRTUAL_NEXT", EVT_ROTARY_RIGHT },
+  { "EVT_VIRTUAL_NEXT_REPT", EVT_ROTARY_RIGHT },
 #else
-  { "EVT_VIRTUAL_PREVIOUS",  EVT_KEY_FIRST(KEY_LEFT) },
-  { "EVT_VIRTUAL_PREVIOUS_REPT",  EVT_KEY_REPT(KEY_LEFT) },
-  { "EVT_VIRTUAL_NEXT",  EVT_KEY_FIRST(KEY_RIGHT) },
-  { "EVT_VIRTUAL_NEXT_REPT",  EVT_KEY_REPT(KEY_RIGHT) },
+  { "EVT_VIRTUAL_PREVIOUS", EVT_KEY_FIRST(KEY_LEFT) },
+  { "EVT_VIRTUAL_PREVIOUS_REPT", EVT_KEY_REPT(KEY_LEFT) },
+  { "EVT_VIRTUAL_NEXT", EVT_KEY_FIRST(KEY_RIGHT) },
+  { "EVT_VIRTUAL_NEXT_REPT", EVT_KEY_REPT(KEY_RIGHT) },
 #endif
 
 #if defined(NAVIGATION_9X) || defined(NAVIGATION_XLITE)
-  // Virtual Page Next/Previous
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_UP) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_UP) },
-  // Virtual menu
+  { "EVT_VIRTUAL_PREVIOUS_PAGE", EVT_KEY_LONG(KEY_UP) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_UP) },
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_DOWN) },
   { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_DOWN) },
-  // Virtual enter
   { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
-  // Virtual exit
-  { "EVT_VIRTUAL_EXIT",  EVT_KEY_BREAK(KEY_EXIT) },
+  { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #elif defined(NAVIGATION_X7) || defined(NAVIGATION_X9D)
-  // Virtual Page Next/Previous
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_PAGE) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PAGE) },
-  // Virtual menu
+  { "EVT_VIRTUAL_PREVIOUS_PAGE", EVT_KEY_LONG(KEY_PAGE) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
-  // Virtual enter
   { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
-  // Virtual exit
-  { "EVT_VIRTUAL_EXIT",  EVT_KEY_BREAK(KEY_EXIT) },
+  { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #elif defined(NAVIGATION_HORUS)
-  // Virtual Page Next/Previous
 #if defined(KEYS_GPIO_REG_PGUP)
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_BREAK(KEY_PGUP) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PGDN) },
+  { "EVT_VIRTUAL_PREVIOUS_PAGE", EVT_KEY_BREAK(KEY_PGUP) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PGDN) },
 #else
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_PGDN) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PGDN) },
+  { "EVT_VIRTUAL_PREVIOUS_PAGE", EVT_KEY_LONG(KEY_PGDN) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PGDN) },
 #endif
-  // Virtual menu
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MODEL) },
   { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MODEL) },
-  // Virtual enter
   { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
-  // Virtual exit
-  { "EVT_VIRTUAL_EXIT",  EVT_KEY_BREAK(KEY_EXIT) },
+  { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #endif
-// VIRTUAL EVENTS END
 
 #if defined(KEYS_GPIO_REG_EXIT)
   { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
