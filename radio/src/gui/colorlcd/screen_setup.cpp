@@ -87,7 +87,7 @@ class LayoutChoice: public FormField {
       auto menu = new Menu();
 
       for (auto layout: getRegisteredLayouts()) {
-        menu->addLine([=](BitmapBuffer *dc, coord_t x, coord_t y, LcdFlags flags) {
+        menu->addCustomLine([=](BitmapBuffer * dc, coord_t x, coord_t y, LcdFlags flags) {
             layout->drawThumb(dc, x + 2, y + 2, flags);
             dc->drawText(65, y + 5, layout->getName(), flags);
         }, [=]() {

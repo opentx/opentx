@@ -88,11 +88,6 @@ inline void lcdClear()
   #define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
 #endif
 
-inline void lcdSetColor(uint16_t color)
-{
-  lcdColorTable[CUSTOM_COLOR_INDEX] = color;
-}
-
 void lcdDrawBlackOverlay();
 
 #if defined(BOOT)

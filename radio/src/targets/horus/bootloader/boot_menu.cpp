@@ -49,6 +49,7 @@ void bootloaderInitScreen()
   backlightEnable(BACKLIGHT_LEVEL_MAX);
 
   //TODO: load/decompress bitmaps
+  extern void loadFonts();
   loadFonts();
 }
 

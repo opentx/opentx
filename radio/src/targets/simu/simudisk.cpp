@@ -31,24 +31,24 @@ FATFS g_FATFS_Obj = {0};
 
 RTOS_MUTEX_HANDLE ioMutex;
 
-int ff_cre_syncobj (BYTE vol, _SYNC_t* sobj) /* Create a sync object */
+int ff_cre_syncobj (BYTE vol, FF_SYNC_t* sobj) /* Create a sync object */
 {
   pthread_mutex_init(&ioMutex, 0);
   return 1;
 }
 
-int ff_req_grant (_SYNC_t sobj)        /* Lock sync object */
+int ff_req_grant (FF_SYNC_t sobj)        /* Lock sync object */
 {
   pthread_mutex_lock(&ioMutex);
   return 1;
 }
 
-void ff_rel_grant (_SYNC_t sobj)        /* Unlock sync object */
+void ff_rel_grant (FF_SYNC_t sobj)        /* Unlock sync object */
 {
   pthread_mutex_unlock(&ioMutex);
 }
 
-int ff_del_syncobj (_SYNC_t sobj)        /* Delete a sync object */
+int ff_del_syncobj (FF_SYNC_t sobj)        /* Delete a sync object */
 {
   pthread_mutex_destroy(&ioMutex);
   return 1;

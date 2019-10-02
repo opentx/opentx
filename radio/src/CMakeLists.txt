@@ -78,8 +78,8 @@ set(FIRMWARE_DEPENDENCIES firmware_translations)
 
 set(FATFS_SRC
   ${FATFS_DIR}/ff.c
+  ${FATFS_DIR}/ffunicode.c
   ${FATFS_DIR}/fattime.c
-  ${FATFS_DIR}/option/ccsbcs.c
 )
 
 if(PCB STREQUAL X12S OR PCB STREQUAL X10)
