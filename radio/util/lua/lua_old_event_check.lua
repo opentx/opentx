@@ -51,6 +51,7 @@ local function run(event)
     virtual_page_next = virtual_page_next +1
   elseif event == EVT_PAGE_LONG then
     virtual_page_previous = virtual_page_previous + 1
+    killEvents(event);
   elseif event == EVT_ENTER_BREAK  then
     virtual_enter = virtual_enter + 1
   elseif event == EVT_MENU_BREAK  then

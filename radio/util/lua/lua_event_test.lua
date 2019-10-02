@@ -56,6 +56,7 @@ local function run(event)
   elseif event == EVT_VIRTUAL_MENU then
     virtual_menu = virtual_menu + 1
   end
+  killEvents(event);
 
   lcd.clear()
   lcd.drawScreenTitle("LUA EVENT TEST", 0, 0)
