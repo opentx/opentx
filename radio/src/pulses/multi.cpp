@@ -114,7 +114,11 @@ void setupPulsesMulti(uint8_t moduleIdx)
   }
   #if defined(LUA)
   else if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
-     type|=MULTI_DATA;
+    if(getMultiModuleStatus(moduleIdx).isValid()) {
+      MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+      if(status.minor>=3)
+        type|=MULTI_DATA;
+    }
   }
   #endif
   sendFrameProtocolHeader(moduleIdx, type);
@@ -254,19 +258,21 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, uint8_t multiType)
     type = g_model.moduleData[moduleIdx].getMultiProtocol(false);
 
 
-  uint8_t headerByte = 0x54;
+  uint8_t headerByte = 0x55;
+  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63 0x51 for 64-95 0x50 for 96-127
+  if (type & 0x20)
+    headerByte &= 0xFE;
+
+  if (type & 0x40)
+    headerByte &= 0xFB;
+
   if (multiType&MULTI_FAILSAFE)
-    headerByte = 0x56;
+    headerByte |= 0x02;
 
   if (multiType&MULTI_DATA)
     headerByte |= 0x20;
 
-  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
-  if (type <= 31)
-    sendMulti(moduleIdx, headerByte+1);
-  else
-    sendMulti(moduleIdx, headerByte);
-
+  sendMulti(moduleIdx, headerByte);
 
   // protocol byte
   protoByte |= (type & 0x1f);
