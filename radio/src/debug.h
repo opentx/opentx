@@ -21,7 +21,7 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
-#include <inttypes.h>
+#include "definitions.h"
 #include "rtc.h"
 #include "dump.h"
 #if defined(CLI)
@@ -33,7 +33,7 @@
 uint8_t auxSerialTracesEnabled();
 
 #if defined(SIMU)
-  EXTERN_C(typedef void (*traceCallbackFunc)(const char * text));
+  typedef void (*traceCallbackFunc)(const char * text);
   extern traceCallbackFunc traceCallback;
   EXTERN_C(void debugPrintf(const char * format, ...));
 #elif defined(SEMIHOSTING)

@@ -28,6 +28,7 @@
 #include "mainwindow.h"
 #include "static.h"
 #include "button.h"
+#include "fab_icon_button.h"
 #include "checkbox.h"
 #include "numberedit.h"
 #include "timeedit.h"
