@@ -844,6 +844,15 @@ void menuModelSetup(event_t event)
             lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
         }
 #endif
+#if defined(PCBTARANIS)
+        if (attr && menuHorizontalPosition == 0) {
+          if (s_editMode > 0)
+            EXTERNAL_MODULE_OFF();
+          else
+          if(g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+            EXTERNAL_MODULE_ON();
+        }
+#endif
         if (attr) {
           if (s_editMode > 0) {
             switch (menuHorizontalPosition) {

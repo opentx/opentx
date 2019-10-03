@@ -1057,7 +1057,8 @@ bool menuModelSetup(event_t event)
           if (s_editMode > 0)
               EXTERNAL_MODULE_OFF();
           else
-              EXTERNAL_MODULE_ON();
+              if(g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+                EXTERNAL_MODULE_ON();
         }
         if (attr) {
           if (s_editMode > 0) {

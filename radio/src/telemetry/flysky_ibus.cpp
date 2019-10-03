@@ -23,8 +23,8 @@
 
 #define FLYSKY_TELEMETRY_LENGTH (2+7*4)        // Should it be 2+7*6???
 #define ALT_PRECISION 15
-#define R_DIV_G_MUL_10_Q15 UINT64_C(9591506)
-#define INV_LOG2_E_Q1DOT31 UINT64_C(0x58b90bfc) // Inverse log base 2 of e
+#define R_DIV_G_MUL_10_Q15 (uint64_t)9591506
+#define INV_LOG2_E_Q1DOT31 (uint64_t)0x58b90bfc // Inverse log base 2 of e
 #define PRESSURE_MASK 0x7FFFF
 
 struct FlySkySensor

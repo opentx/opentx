@@ -830,6 +830,13 @@ void menuModelSetup(event_t event)
           }
         }
 #endif
+        if (attr && menuHorizontalPosition == 0) {
+          if (s_editMode > 0)
+            EXTERNAL_MODULE_OFF();
+          else
+          if(g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+            EXTERNAL_MODULE_ON();
+        }
         if (attr) {
           if (s_editMode > 0) {
             switch (menuHorizontalPosition) {

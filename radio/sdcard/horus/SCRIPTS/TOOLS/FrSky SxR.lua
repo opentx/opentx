@@ -44,8 +44,8 @@ local configFields = {
     { "Mounting type", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
 }
 
-local wingBitmapsFile = { "bmp/plane.bmp", "bmp/delta.bmp", "bmp/vtail.bmp" }
-local mountBitmapsFile = { "bmp/horz.bmp", "bmp/horz-r.bmp", "bmp/vert.bmp", "bmp/vert-r.bmp" }
+local wingBitmapsFile = { "/SCRIPTS/TOOLS/bmp/plane.bmp", "/SCRIPTS/TOOLS/bmp/delta.bmp", "/SCRIPTS/TOOLS/bmp/vtail.bmp" }
+local mountBitmapsFile = { "/SCRIPTS/TOOLS/bmp/horz.bmp", "/SCRIPTS/TOOLS/bmp/horz-r.bmp", "/SCRIPTS/TOOLS/bmp/vert.bmp", "/SCRIPTS/TOOLS/bmp/vert-r.bmp" }
 
 local settingsFields = {
     {"SxR functions", COMBO, 0x9C, nil, { "Disable", "Enable" } },
@@ -332,8 +332,8 @@ local function init()
     if LCD_W == 480 then
         margin = 10
         spacing = 20
-        wingBitmapsFile = { "img/plane_b.png", "img/delta_b.png", "img/planev_b.png" }
-        mountBitmapsFile = { "img/up.png", "img/down.png", "img/vert.png", "img/vert-r.png" }
+        wingBitmapsFile = { "/SCRIPTS/TOOLS/img/plane_b.png", "/SCRIPTS/TOOLS/img/delta_b.png", "/SCRIPTS/TOOLS/img/planev_b.png" }
+        mountBitmapsFile = { "/SCRIPTS/TOOLS/img/up.png", "/SCRIPTS/TOOLS/img/down.png", "/SCRIPTS/TOOLS/img/vert.png", "/SCRIPTS/TOOLS/img/vert-r.png" }
     end
     pages = {
         runConfigPage,
