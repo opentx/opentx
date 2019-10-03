@@ -70,9 +70,9 @@
 #endif
 
 #if __GNUC__
-  #define PACK( __Declaration__ )      __Declaration__ __attribute__((__packed__))
+  #define PACK(__Declaration__) __Declaration__ __attribute__((__packed__))
 #else
-  #define PACK( __Declaration__ )      __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+  #define PACK(__Declaration__) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
 #endif
 
 #if defined(SIMU)
@@ -85,6 +85,16 @@
 
 #if !defined(DIM)
   #define DIM(__arr) (sizeof((__arr)) / sizeof((__arr)[0]))
+#endif
+
+#if defined(__cplusplus)
+  #define EXTERN_C(__Declaration__) extern "C" { __Declaration__ ; }
+  #define EXTERN_C_START extern "C" {
+  #define EXTERN_C_END }
+#else
+  #define EXTERN_C(__Declaration__) __Declaration__
+  #define EXTERN_C_START
+  #define EXTERN_C_END
 #endif
 
 #endif // _DEFINITIONS_H_

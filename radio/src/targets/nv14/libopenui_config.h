@@ -128,4 +128,6 @@ enum LcdColorIndex
 #define FONT_TABLE_SIZE 1
 #endif
 
+constexpr uint32_t INPUT_EDIT_LABELS_WIDTH = 80;
+
 #endif // _LIBOPENUI_CONFIG_H_

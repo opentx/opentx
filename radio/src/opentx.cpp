@@ -346,7 +346,7 @@ void generalDefault()
 uint16_t evalChkSum()
 {
   uint16_t sum = 0;
-  const int16_t *calibValues = (const int16_t *) &g_eeGeneral.calib[0];
+  const int16_t * calibValues = (const int16_t *) &g_eeGeneral.calib[0];
   for (int i=0; i<12; i++)
     sum += calibValues[i];
   return sum;
@@ -370,12 +370,12 @@ void defaultInputs()
     expo->weight = 100;
     expo->mode = 3; // TODO constant
 #if defined(TRANSLATIONS_CZ)
-    for (int c=0; c<4; c++) {
-      g_model.inputNames[i][c] = char2zchar(STR_INPUTNAMES[1+4*(stick_index-1)+c]);
+    for (int c = 0; c < 4; c++) {
+      g_model.inputNames[i][c] = STR_INPUTNAMES[1+4*(stick_index-1)+c];
     }
 #else
-    for (int c=0; c<3; c++) {
-      g_model.inputNames[i][c] = char2zchar(STR_VSRCRAW[2 + 4 * stick_index + c]);
+    for (int c = 0; c < 3; c++) {
+      g_model.inputNames[i][c] = STR_VSRCRAW[2 + 4 * stick_index + c];
     }
 #if LEN_INPUT_NAME > 3
     g_model.inputNames[i][3] = '\0';

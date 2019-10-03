@@ -125,7 +125,7 @@ class InputEditWindow: public Page {
 
     void updateCurves() {
       FormGridLayout grid;
-      grid.setLabelWidth(120);
+      grid.setLabelWidth(INPUT_EDIT_LABELS_WIDTH);
 
       updateCurvesWindow->clear();
 
@@ -166,7 +166,7 @@ class InputEditWindow: public Page {
       NumberEdit * edit;
 
       FormGridLayout grid;
-      grid.setLabelWidth(120);
+      grid.setLabelWidth(INPUT_EDIT_LABELS_WIDTH);
       grid.spacer(PAGE_PADDING);
 
       ExpoData * line = expoAddress(index) ;
@@ -195,6 +195,10 @@ class InputEditWindow: public Page {
                    SET_DIRTY();
                  });
       grid.nextLine();
+
+#if LCD_H > LCD_W
+      grid.setMarginRight(10);
+#endif
 
       // Name
       new StaticText(window, grid.getLabelSlot(), STR_EXPONAME);

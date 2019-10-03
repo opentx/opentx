@@ -30,16 +30,12 @@
 #include "serial.h"
 #endif
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 uint8_t auxSerialTracesEnabled();
 
 #if defined(SIMU)
-  typedef void (*traceCallbackFunc)(const char * text);
+  EXTERN_C(typedef void (*traceCallbackFunc)(const char * text));
   extern traceCallbackFunc traceCallback;
-  void debugPrintf(const char * format, ...);
+  EXTERN_C(void debugPrintf(const char * format, ...));
 #elif defined(SEMIHOSTING)
   #include <stdio.h>
   #define debugPrintf(...) printf(__VA_ARGS__)
@@ -49,10 +45,6 @@ uint8_t auxSerialTracesEnabled();
   #define debugPrintf(...) do { serialPrintf(__VA_ARGS__); } while(0)
 #else
   #define debugPrintf(...)
-#endif
-
-#if defined(__cplusplus)
-}
 #endif
 
 #define TRACE_NOCRLF(...)     debugPrintf(__VA_ARGS__)
