@@ -1284,6 +1284,23 @@
 #define TELEMETRY_DMA_TX_FLAG_TC        DMA_IT_TCIF6
 #define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
 #define TELEMETRY_USART_IRQn            USART2_IRQn
+#define TELEMETRY_EXTI_PortSource       EXTI_PortSourceGPIOD
+#define TELEMETRY_EXTI_PinSource        EXTI_PinSource6
+#define TELEMETRY_EXTI_LINE             EXTI_Line6
+#define TELEMETRY_EXTI_IRQn             EXTI9_5_IRQn
+#define TELEMETRY_EXTI_TRIGGER          EXTI_Trigger_Rising
+
+#if defined(RADIO_X7)
+  #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
+#elif defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+  #define TELEMETRY_EXTI_IRQHandler       EXTI9_5_IRQHandler
+#else
+  #define TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT
+#endif
+
+#define TELEMETRY_TIMER                 TIM11
+#define TELEMETRY_TIMER_IRQn            TIM1_TRG_COM_TIM11_IRQn
+#define TELEMETRY_TIMER_IRQHandler      TIM1_TRG_COM_TIM11_IRQHandler
 
 // PCBREV
 #if defined(PCBX7)

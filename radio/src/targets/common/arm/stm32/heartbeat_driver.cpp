@@ -83,5 +83,8 @@ void check_intmodule_heartbeat()
 extern "C" void INTMODULE_HEARTBEAT_EXTI_IRQHandler()
 {
   check_intmodule_heartbeat();
+  #if defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
+    check_telemetry_exti();
+  #endif
 }
 #endif

@@ -568,6 +568,9 @@ bool telemetryGetByte(uint8_t * byte);
 void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
+// soft-serial
+void telemetryPortInvertedInit(uint32_t baudrate);
+
 // Sport update driver
 #if defined(PCBX10) && !defined(RADIO_T16)
 void sportUpdatePowerOn();
