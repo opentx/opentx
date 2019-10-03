@@ -1558,3 +1558,27 @@ Daniel Dubovski
 Hans-Georg Böhm
 Tiberiu Atudorei
 Alessandro Apostoli (Yaapu!)
+Kenneth Bonerigo
+Frits van Voorst
+Steven Dodge
+Christian Buchinger
+Patrick Blanc
+Darrell Carew
+Philippe Faure
+Marco Lange
+Aaron Tygart
+Frantisek Vajbar
+Mike Perkins
+Knut Einar Kristensen
+Georgios Papadopoulos
+He Liu
+Andrias Thomsen
+Alain Azais
+Alan Stuart
+Fernando Rimoldi
+James Snodgrass
+Diego Mendoza Gonzalez
+Dale Wheeler
+Nico Wagner
+James A Davey
+Peter Glassey
