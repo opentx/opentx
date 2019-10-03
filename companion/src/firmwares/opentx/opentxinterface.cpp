@@ -797,13 +797,15 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_MULTIMODULE:
           case PULSES_CROSSFIRE:
             return true;
+          case PULSES_ACCESS_R9M:
+            return IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_HORUS(board) && id.contains("internalaccess"));
+          case PULSES_PXX_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
           case PULSES_XJT_LITE_X16:
           case PULSES_XJT_LITE_D8:
           case PULSES_XJT_LITE_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
+            return (IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board));
           default:
             return false;
         }
