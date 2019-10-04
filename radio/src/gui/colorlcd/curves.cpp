@@ -84,7 +84,7 @@ void drawCurveHorizontalScale(BitmapBuffer * dc)
 void drawCurveCoord(BitmapBuffer * dc, int x, int y, const char * text, bool active)
 {
   dc->drawSolidFilledRect(x, y, CURVE_COORD_WIDTH, CURVE_COORD_HEIGHT, CURVE_CURSOR_COLOR);
-  dc->drawText(x+3+(CURVE_COORD_WIDTH-1-getTextWidth(text, SMLSIZE))/2, y+1, text, LEFT|SMLSIZE|TEXT_BGCOLOR);
+  dc->drawText(x+3+(CURVE_COORD_WIDTH-1-getTextWidth(text, SMLSIZE))/2, y+1, text, LEFT|SMLSIZE|DEFAULT_BGCOLOR);
   if (active) {
     dc->drawBitmapPattern(x, y, LBM_CURVE_COORD_SHADOW, DEFAULT_COLOR);
   }
@@ -93,5 +93,5 @@ void drawCurveCoord(BitmapBuffer * dc, int x, int y, const char * text, bool act
 void drawCurvePoint(BitmapBuffer * dc, int x, int y, LcdFlags color)
 {
   dc->drawBitmapPattern(x, y, LBM_CURVE_POINT, color);
-  dc->drawBitmapPattern(x, y, LBM_CURVE_POINT_CENTER, TEXT_BGCOLOR);
+  dc->drawBitmapPattern(x, y, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
 }

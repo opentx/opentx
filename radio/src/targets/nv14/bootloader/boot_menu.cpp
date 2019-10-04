@@ -34,7 +34,7 @@ const uint8_t LBM_OK[] = {
 void bootloaderInitScreen()
 {
   lcdColorTable[DEFAULT_COLOR_INDEX]      = BLACK;
-  lcdColorTable[TEXT_BGCOLOR_INDEX]    = WHITE;
+  lcdColorTable[DEFAULT_BGCOLOR_INDEX]    = WHITE;
   lcdColorTable[LINE_COLOR_INDEX]      = RED;
   lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
   lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(73, 219, 62); // green
@@ -56,7 +56,7 @@ static void bootloaderDrawFooter()
 void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
 {
     // clear screen
-    lcdDrawSolidFilledRect(0, 0, LCD_W-1, LCD_H-1, TEXT_BGCOLOR);
+    lcdDrawSolidFilledRect(0, 0, LCD_W-1, LCD_H-1, DEFAULT_BGCOLOR);
     
     if (st == ST_START) {
 

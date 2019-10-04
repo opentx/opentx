@@ -1637,7 +1637,7 @@ const luaR_value_entry opentxConstants[] = {
   { "STRING", ZoneOption::String },
   { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "DEFAULT_COLOR", DEFAULT_COLOR },
-  { "TEXT_BGCOLOR", TEXT_BGCOLOR },
+  { "DEFAULT_BGCOLOR", DEFAULT_BGCOLOR },
   { "FOCUS_COLOR", FOCUS_COLOR },
   { "FOCUS_BGCOLOR", FOCUS_BGCOLOR },
   { "LINE_COLOR", LINE_COLOR },

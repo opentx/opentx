@@ -94,12 +94,12 @@ void Curve::drawPosition(BitmapBuffer * dc)
 
   // the point (white inside)
   dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT, CURVE_CURSOR_COLOR);
-  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT_CENTER, TEXT_BGCOLOR);
+  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
 
   char coords[16];
   strAppendSigned(strAppend(strAppendSigned(coords, calcRESXto100(valueX)), ","), calcRESXto100(valueY));
   dc->drawSolidFilledRect(10, 11, 1 + getTextWidth(coords, 0, SMLSIZE), 17, CURVE_CURSOR_COLOR);
-  dc->drawText(11, 10, coords, SMLSIZE|TEXT_BGCOLOR);
+  dc->drawText(11, 10, coords, SMLSIZE|DEFAULT_BGCOLOR);
 }
 
 void Curve::drawPoint(BitmapBuffer * dc, const CurvePoint & point)
@@ -108,7 +108,7 @@ void Curve::drawPoint(BitmapBuffer * dc, const CurvePoint & point)
   coord_t y = getPointY(point.coords.y);
 
   dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT, point.flags);
-  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT_CENTER, TEXT_BGCOLOR);
+  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
 }
 
 void Curve::paint(BitmapBuffer * dc)

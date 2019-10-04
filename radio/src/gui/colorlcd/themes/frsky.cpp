@@ -40,7 +40,7 @@ class FrskyTheme: public ThemeBase
     {
       TRACE("Load FrSky theme colors");
       lcdColorTable[DEFAULT_COLOR_INDEX] = BLACK;
-      lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
+      lcdColorTable[DEFAULT_BGCOLOR_INDEX] = WHITE;
       lcdColorTable[FOCUS_COLOR_INDEX] = WHITE;
       lcdColorTable[FOCUS_BGCOLOR_INDEX] = RED;
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
@@ -158,7 +158,7 @@ class FrskyTheme: public ThemeBase
 
       if (currentMenuBackground) {
         currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-        currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, DEFAULT_BGCOLOR);
         currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
@@ -199,7 +199,7 @@ class FrskyTheme: public ThemeBase
 
       // Model Selection screen
       delete modelselIconBitmap;
-      modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
+      modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, DEFAULT_BGCOLOR);
       if (modelselIconBitmap) {
         BitmapBuffer * bitmap = BitmapBuffer::load(getFilePath("modelsel/icon_default.png"));
         modelselIconBitmap->drawBitmap(20, 8, bitmap);
@@ -207,13 +207,13 @@ class FrskyTheme: public ThemeBase
       }
 
       delete modelselSdFreeBitmap;
-      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete modelselModelQtyBitmap;
-      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete modelselModelNameBitmap;
-      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete modelselModelMoveBackground;
       modelselModelMoveBackground = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveback.png"));
@@ -226,10 +226,10 @@ class FrskyTheme: public ThemeBase
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
-      chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete chanMonInvertedBitmap;
-      chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       // Mixer setup screen
       delete mixerSetupMixerBitmap;
@@ -242,19 +242,19 @@ class FrskyTheme: public ThemeBase
       mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupAddBitmap;
-      mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupMultiBitmap;
-      mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupReplaceBitmap;
-      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupLabelBitmap;
-      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupCurveBitmap;
-      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupSwitchIcon;
       mixerSetupSwitchIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_switch.png"));
@@ -263,13 +263,13 @@ class FrskyTheme: public ThemeBase
       mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_fm.png"));
 
       delete mixerSetupSlowBitmap;
-      mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupDelayBitmap;
-      mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupDelaySlowBitmap;
-      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", DEFAULT_COLOR, TEXT_BGCOLOR);
+      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
     }
 
     void load() const override
@@ -289,7 +289,7 @@ class FrskyTheme: public ThemeBase
       uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
       uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
 
-      lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
+      lcdColorTable[DEFAULT_BGCOLOR_INDEX] = bg_color;
       lcdColorTable[FOCUS_BGCOLOR_INDEX] = color;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
       lcdColorTable[CURVE_COLOR_INDEX] = color;
@@ -335,7 +335,7 @@ class FrskyTheme: public ThemeBase
       else
         dc->drawBitmap(5, 7, menuIconSelected[icon]);
 
-      dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR); // the white separation line
+      dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, DEFAULT_BGCOLOR); // the white separation line
       dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
       if (title) {
         dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 1, title, MENU_TITLE_COLOR);

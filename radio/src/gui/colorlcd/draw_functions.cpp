@@ -163,7 +163,7 @@ void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int 
   }
   else {
     dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
-    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, DEFAULT_BGCOLOR);
     if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
       dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
   }
@@ -276,7 +276,7 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
     int quarter = duration / (totalDuration / 5);
     for (int i=1; i<=4; i++) {
       if (quarter >= i) {
-        lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, TEXT_BGCOLOR);
+        lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, DEFAULT_BGCOLOR);
       }
     }
   }

@@ -99,7 +99,7 @@ void ModelCell::loadBitmap()
   if (buffer == NULL) {
     return;
   }
-  buffer->clear(TEXT_BGCOLOR);
+  buffer->clear(DEFAULT_BGCOLOR);
 
   if (error) {
     buffer->drawText(5, 2, "(Invalid Model)", DEFAULT_COLOR);

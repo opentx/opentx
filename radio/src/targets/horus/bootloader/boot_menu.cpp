@@ -41,7 +41,7 @@ const uint8_t LBM_OK[] = {
 void bootloaderInitScreen()
 {
   lcdColorTable[DEFAULT_COLOR_INDEX]      = BLACK;
-  lcdColorTable[TEXT_BGCOLOR_INDEX]    = WHITE;
+  lcdColorTable[DEFAULT_BGCOLOR_INDEX]    = WHITE;
   lcdColorTable[LINE_COLOR_INDEX]      = RED;
   lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
   lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(73, 219, 62); // green
@@ -70,7 +70,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
   lcdNextLayer();
 #endif
 
-    lcd->clear(TEXT_BGCOLOR);
+    lcd->clear(DEFAULT_BGCOLOR);
     
     if (st == ST_START) {
         bootloaderDrawTitle(88, "HORUS BOOTLOADER");

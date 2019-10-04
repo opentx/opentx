@@ -64,7 +64,7 @@ void drawModel(coord_t x, coord_t y, ModelCell * model, bool current, bool selec
     drawShadow(x, y, MODELCELL_WIDTH+2, MODELCELL_HEIGHT+2);
     if (selectMode == MODE_MOVE_MODEL) {
       lcd->drawMask(x+MODELCELL_WIDTH+2-modelselModelMoveBackground->getWidth(), y, modelselModelMoveBackground, TITLE_BGCOLOR);
-      lcd->drawMask(x+MODELCELL_WIDTH+2-modelselModelMoveBackground->getWidth()+12, y+5, modelselModelMoveIcon, TEXT_BGCOLOR);
+      lcd->drawMask(x+MODELCELL_WIDTH+2-modelselModelMoveBackground->getWidth()+12, y+5, modelselModelMoveIcon, DEFAULT_BGCOLOR);
     }
   }
 }
@@ -178,7 +178,7 @@ bool menuModelWizard(event_t event)
   }
   strcpy(wizpath, WIZARD_PATH);
   strcpy(&wizpath[sizeof(WIZARD_PATH)-1], "/");
-  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, DEFAULT_BGCOLOR);
   lcd->drawBitmap(0, 0, modelselWizardBackground);
   FRESULT res = f_opendir(&dir, WIZARD_PATH);
   if (res == FR_OK) {
@@ -440,7 +440,7 @@ bool menuModelSelect(event_t event)
 
   }
 
-  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, DEFAULT_BGCOLOR);
   lcd->drawBitmap(0, 0, modelselIconBitmap);
 
   // Categories
@@ -453,7 +453,7 @@ bool menuModelSelect(event_t event)
         lcdDrawSolidHorizontalLine(1, y-4, CATEGORIES_WIDTH-10, LINE_COLOR);
       }
       if (selectMode == MODE_RENAME_CATEGORY && currentCategory == *it) {
-        lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN+1, CATEGORIES_WIDTH-2, INVERT_LINE_HEIGHT, TEXT_BGCOLOR);
+        lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN+1, CATEGORIES_WIDTH-2, INVERT_LINE_HEIGHT, DEFAULT_BGCOLOR);
         editName(MENUS_MARGIN_LEFT, y, currentCategory->name, LEN_MODEL_FILENAME, event, 1, 0);
         if (s_editMode == 0 || event == EVT_KEY_BREAK(KEY_EXIT)) {
           modelslist.save();

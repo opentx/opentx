@@ -109,7 +109,7 @@ bool CheckBox(W * window, rect_t & rect, const char * label, uint8_t & value, Lc
   coord_t x = rect.x + rect.w - 20;
   if (hasFocus) {
     window->drawSolidFilledRect(x-1, rect.y+8, 14, 14, FOCUS_BGCOLOR);
-    window->drawSolidFilledRect(x+1, rect.y+10, 10, 10, TEXT_BGCOLOR);
+    window->drawSolidFilledRect(x+1, rect.y+10, 10, 10, DEFAULT_BGCOLOR);
     if (value) {
       window->drawSolidFilledRect(x+2, rect.y+11, 8, 8, FOCUS_BGCOLOR);
     }

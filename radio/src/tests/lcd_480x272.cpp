@@ -83,7 +83,7 @@ bool checkScreenshot_colorlcd(const QString & test)
 TEST(Lcd_colorlcd, vline)
 {
   loadFonts();
-  lcd->clear(TEXT_BGCOLOR);
+  lcd->clear(DEFAULT_BGCOLOR);
   for (int x=0; x<100; x+=2) {
     lcdDrawSolidVerticalLine(x, x/2, 12, DEFAULT_COLOR);
   }
@@ -93,7 +93,7 @@ TEST(Lcd_colorlcd, vline)
 TEST(Lcd_colorlcd, primitives)
 {
   loadFonts();
-  lcd->clear(TEXT_BGCOLOR);
+  lcd->clear(DEFAULT_BGCOLOR);
   lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", DISABLE_COLOR);
   lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR);
 
@@ -121,7 +121,7 @@ TEST(Lcd_colorlcd, primitives)
 TEST(Lcd_colorlcd, transparency)
 {
   loadFonts();
-  lcd->clear(TEXT_BGCOLOR);
+  lcd->clear(DEFAULT_BGCOLOR);
   lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(4));
   lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(12));
 
@@ -158,7 +158,7 @@ TEST(Lcd_colorlcd, transparency)
 TEST(Lcd_colorlcd, fonts)
 {
   loadFonts();
-  lcd->clear(TEXT_BGCOLOR);
+  lcd->clear(DEFAULT_BGCOLOR);
 
   lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(4));
   lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(12));

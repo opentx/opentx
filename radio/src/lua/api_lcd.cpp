@@ -53,7 +53,7 @@ static int luaLcdClear(lua_State *L)
 {
   if (luaLcdAllowed) {
 #if defined(COLORLCD)
-    LcdFlags color = luaL_optunsigned(L, 1, TEXT_BGCOLOR);
+    LcdFlags color = luaL_optunsigned(L, 1, DEFAULT_BGCOLOR);
     lcd->clear(color);
 #else
     lcdClear();
@@ -778,7 +778,7 @@ Set a color for specific area
 @param area (unsigned number) specific screen area in the list bellow
  * `CUSTOM_COLOR`
  * `DEFAULT_COLOR`
- * `TEXT_BGCOLOR`
+ * `DEFAULT_BGCOLOR`
  * `FOCUS_COLOR`
  * `FOCUS_BGCOLOR`
  * `LINE_COLOR`

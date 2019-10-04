@@ -98,7 +98,7 @@ void ThemeBase::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flag
 
 void ThemeBase::drawBackground(BitmapBuffer * dc) const
 {
-  dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+  dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, DEFAULT_BGCOLOR);
 }
 
 void ThemeBase::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
@@ -145,11 +145,11 @@ void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t
   if (focus) {
     dc->drawSolidFilledRect(x + 0, y + 2, 16, 16, FOCUS_BGCOLOR);
     if (checked) {
-      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, TEXT_BGCOLOR);
+      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, DEFAULT_BGCOLOR);
       dc->drawSolidFilledRect(x + 3, y + 5, 10, 10, SCROLLBOX_COLOR);
     }
     else {
-      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, TEXT_BGCOLOR);
+      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, DEFAULT_BGCOLOR);
     }
   }
   else {
@@ -193,7 +193,7 @@ void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, con
   }
 
   dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
-  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_MID, DEFAULT_BGCOLOR);
   // if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
   if (focus) {
     dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);

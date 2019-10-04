@@ -354,17 +354,17 @@ typedef void (*timedTestFunc_t)(void);
 
 void testDrawSolidFilledRectangle()
 {
-  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, TEXT_BGCOLOR);
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, DEFAULT_BGCOLOR);
 }
 
 void testDrawFilledRectangle()
 {
-  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, DOTTED, TEXT_BGCOLOR);
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, DOTTED, DEFAULT_BGCOLOR);
 }
 
 void testDrawSolidFilledRoundedRectangle()
 {
-  lcdDrawFilledRect(0, 0, LCD_W/2, LCD_H/2, SOLID, ROUND|TEXT_BGCOLOR);
+  lcdDrawFilledRect(0, 0, LCD_W/2, LCD_H/2, SOLID, ROUND|DEFAULT_BGCOLOR);
 }
 
 void testDrawBlackOverlay()
