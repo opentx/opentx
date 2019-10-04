@@ -84,6 +84,8 @@ class ThemeBase: public Theme
 
     void drawCheckBox(BitmapBuffer * dc, bool value, bool focus) const override;
 
+    void drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char * str) const override;
+
     void drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const override;
 
     void drawPageHeader(BitmapBuffer * dc, const PageHeader * page) const override;

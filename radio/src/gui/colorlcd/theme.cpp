@@ -25,6 +25,14 @@ const BitmapBuffer * ThemeBase::asterisk = NULL;
 const BitmapBuffer * ThemeBase::question = NULL;
 const BitmapBuffer * ThemeBase::busy = NULL;
 
+const uint8_t LBM_FOLDER[] = {
+#include "mask_folder.lbm"
+};
+
+const uint8_t LBM_DROPDOWN[] = {
+#include "mask_dropdown.lbm"
+};
+
 std::list<ThemeBase *> & getRegisteredThemes()
 {
   static std::list<ThemeBase *> themes;
@@ -152,6 +160,22 @@ void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool value, bool focus) const
       dc->drawSolidRect(0, 2, 16, 16, 1, CURVE_AXIS_COLOR);
     }
   }
+}
+
+void ThemeBase::drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char * str) const
+{
+  LcdFlags textColor;
+  if (choice->isEditMode())
+    textColor = TEXT_INVERTED_COLOR;
+  else if (choice->hasFocus())
+    textColor = TEXT_INVERTED_BGCOLOR;
+  else if (!str || str[0] == '\0')
+    textColor = CURVE_AXIS_COLOR;
+  else
+    textColor = TEXT_COLOR;
+
+  dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, str[0] == '\0' ? "---" : str, textColor);
+  dc->drawBitmapPattern(choice->getRect().w - 20, (choice->getRect().h - 11) / 2, choice->getType() == CHOICE_TYPE_FOLDER ? LBM_FOLDER : LBM_DROPDOWN, textColor);
 }
 
 void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const

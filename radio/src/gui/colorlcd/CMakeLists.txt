@@ -93,7 +93,6 @@ endforeach()
 
 add_gui_src(fullscreen_dialog.cpp)
 add_gui_src(confirm_dialog.cpp)
-add_gui_src(message_dialog.cpp)
 add_gui_src(timeedit.cpp)
 add_gui_src(curve.cpp)
 add_gui_src(sourcechoice.cpp)

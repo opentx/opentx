@@ -56,4 +56,9 @@
 #include "coloredit.h"
 #include "draw_functions.h"
 
+inline void POPUP_INFORMATION(const char * str)
+{
+  new MessageDialog("Message", str);
+}
+
 #endif // _LIBOPENUI_H_
