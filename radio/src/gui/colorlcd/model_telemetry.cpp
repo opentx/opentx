@@ -82,7 +82,7 @@ class SensorButton : public Button {
       dc->drawSizedText(SENSOR_COL1, line1, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN);
 
       if (telemetryItem.isAvailable()) {
-        LcdFlags color = telemetryItem.isOld() ? ALARM_COLOR : TEXT_COLOR;
+        LcdFlags color = telemetryItem.isOld() ? ALARM_COLOR : DEFAULT_COLOR;
         drawSensorCustomValue(dc, SENSOR_COL2, line1, index, getValue(MIXSRC_FIRST_TELEM + 3 * index), LEFT | color);
       }
       else {
@@ -96,7 +96,7 @@ class SensorButton : public Button {
       else if (sensor->type == TELEM_TYPE_CUSTOM && !g_model.ignoreSensorIds) {
         dc->drawNumber(SENSOR_COL3, line1, sensor->instance, LEFT);
       }
-      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
     }
 
   protected:

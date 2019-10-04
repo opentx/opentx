@@ -45,11 +45,11 @@ ModelCell * currentModel;
 void drawCategory(coord_t y, const char * name, bool selected)
 {
   if (selected) {
-    lcdDrawSolidFilledRect(1, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-10, INVERT_LINE_HEIGHT+2, TEXT_INVERTED_BGCOLOR);
-    lcdDrawText(6, y, name, TEXT_COLOR | INVERS);
+    lcdDrawSolidFilledRect(1, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-10, INVERT_LINE_HEIGHT+2, FOCUS_BGCOLOR);
+    lcdDrawText(6, y, name, DEFAULT_COLOR | INVERS);
   }
   else {
-    lcdDrawText(6, y, name, TEXT_COLOR);
+    lcdDrawText(6, y, name, DEFAULT_COLOR);
   }
 }
 
@@ -484,7 +484,7 @@ bool menuModelSelect(event_t event)
       }
       if (selected) {
         lcd->drawBitmap(5, LCD_H-FH, modelselModelNameBitmap);
-        lcdDrawText(22, LCD_H-FH-1, (*it)->modelFilename, SMLSIZE|TEXT_COLOR);
+        lcdDrawText(22, LCD_H-FH-1, (*it)->modelFilename, SMLSIZE|DEFAULT_COLOR);
       }
     }
   }

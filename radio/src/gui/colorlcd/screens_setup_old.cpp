@@ -73,8 +73,8 @@ uint8_t editColorPart(coord_t x, coord_t y, event_t event, uint8_t part, uint8_t
 {
   const char * STR_COLOR_PARTS = "\002" "R:" "G:" "B:";
   uint8_t PART_BITS[] = { 5, 6, 5 };
-  lcdDrawTextAtIndex(x, y, STR_COLOR_PARTS, part, (attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_COLOR);
-  lcdDrawNumber(x + 20, y, value << (8-PART_BITS[part]), LEFT|TEXT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == part)) ? attr : TEXT_COLOR));
+  lcdDrawTextAtIndex(x, y, STR_COLOR_PARTS, part, (attr && menuHorizontalPosition < 0) ? FOCUS_COLOR : DEFAULT_COLOR);
+  lcdDrawNumber(x + 20, y, value << (8-PART_BITS[part]), LEFT|DEFAULT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == part)) ? attr : DEFAULT_COLOR));
   if (attr && menuHorizontalPosition == part) {
     value = checkIncDec(event, value, 0, (1 << PART_BITS[part])-1, i_flags);
   }
@@ -142,11 +142,11 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     RGB_SPLIT(value->unsignedValue, r, g, b);
 
     if (attr && menuHorizontalPosition < 0) {
-      lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-3, y-1, 230, FH+1, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-3, y-1, 230, FH+1, FOCUS_BGCOLOR);
     }
 
     lcdSetColor(value->unsignedValue);
-    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y+1, 42, 17, TEXT_COLOR);
+    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y+1, 42, 17, DEFAULT_COLOR);
     lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN, y+2, 40, 15, CUSTOM_COLOR);
 
     r = editColorPart(SCREENS_SETUP_2ND_COLUMN + 50, y, event, 0, r, attr, i_flags);
@@ -305,15 +305,15 @@ bool menuWidgetChoice(event_t event)
     currentWidget->refresh();
 
   if (iterator != getRegisteredWidgets().cbegin()) {
-    lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
-    lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_LEFT, TEXT_INVERTED_COLOR);
+    lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, FOCUS_BGCOLOR);
+    lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_LEFT, FOCUS_COLOR);
   }
   if (iterator != --getRegisteredWidgets().cend()) {
-    lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
-    lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, TEXT_INVERTED_COLOR);
+    lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, FOCUS_BGCOLOR);
+    lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, FOCUS_COLOR);
   }
   if (currentWidget)
-    lcdDrawText(zone.x + zone.w, zone.y-1, currentWidget->getFactory()->getName(), RIGHT | TEXT_COLOR | SMLSIZE | INVERS);
+    lcdDrawText(zone.x + zone.w, zone.y-1, currentWidget->getFactory()->getName(), RIGHT | DEFAULT_COLOR | SMLSIZE | INVERS);
 
   return true;
 }
@@ -356,7 +356,7 @@ bool menuWidgetsSetup(event_t event)
       thickness = 1;
     }
     else {
-      color = TEXT_INVERTED_BGCOLOR;
+      color = FOCUS_BGCOLOR;
       padding = 4;
       thickness = 2;
     }
@@ -425,7 +425,7 @@ T * editThemeChoice(coord_t x, coord_t y, std::list<T *> & elList, T * current, 
   }
   if (attr) {
     if (menuHorizontalPosition < 0) {
-      lcdDrawSolidFilledRect(x-3, y-1, min<uint8_t>(4, elCount)*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x-3, y-1, min<uint8_t>(4, elCount)*56+1, 2*FH-5, FOCUS_BGCOLOR);
     }
     else {
       if (needsOffsetCheck) {
@@ -445,14 +445,14 @@ T * editThemeChoice(coord_t x, coord_t y, std::list<T *> & elList, T * current, 
   elItr = elList.cbegin();
   std::advance(elItr, min<uint8_t>(menuHorizontalOffset, elCount - 1));
   for (; idx < last && elItr != elList.cend(); ++idx, ++elItr, pos += 56) {
-    (*elItr)->drawThumb(pos, y+1, current == (*elItr) ? ((attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
+    (*elItr)->drawThumb(pos, y+1, current == (*elItr) ? ((attr && menuHorizontalPosition < 0) ? FOCUS_COLOR : FOCUS_BGCOLOR) : LINE_COLOR);
   }
   if (elCount > 4) {
-    lcdDrawBitmapPattern(x - 12, y+1, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
-    lcdDrawBitmapPattern(x + 4 * 56, y+1, LBM_CARROUSSEL_RIGHT, last < getRegisteredLayouts().size() ? LINE_COLOR : CURVE_AXIS_COLOR);
+    lcdDrawBitmapPattern(x - 12, y+1, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : DISABLE_COLOR);
+    lcdDrawBitmapPattern(x + 4 * 56, y+1, LBM_CARROUSSEL_RIGHT, last < getRegisteredLayouts().size() ? LINE_COLOR : DISABLE_COLOR);
   }
   if (attr && menuHorizontalPosition >= 0) {
-    lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 1, 57, 35, 1, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 1, 57, 35, 1, FOCUS_BGCOLOR);
     if (event == EVT_KEY_FIRST(KEY_ENTER)) {
       s_editMode = 0;
       elItr = elList.cbegin();

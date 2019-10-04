@@ -394,7 +394,7 @@ void testDrawSolidVerticalLine2()
 
 void testDrawDiagonalLine()
 {
-  lcdDrawLine(0,0, LCD_W, LCD_H, SOLID, TEXT_COLOR);
+  lcdDrawLine(0,0, LCD_W, LCD_H, SOLID, DEFAULT_COLOR);
 }
 
 void testEmpty()
@@ -403,17 +403,17 @@ void testEmpty()
 
 void testDrawRect()
 {
-  lcdDrawRect(0, 0, LCD_W, LCD_H, 2, SOLID, TEXT_COLOR);
+  lcdDrawRect(0, 0, LCD_W, LCD_H, 2, SOLID, DEFAULT_COLOR);
 }
 
 void testDrawText()
 {
-  lcdDrawText(0, LCD_H/2, "The quick brown fox jumps over the lazy dog", TEXT_COLOR);
+  lcdDrawText(0, LCD_H/2, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR);
 }
 
 void testDrawTextVertical()
 {
-  lcdDrawText(30, LCD_H, "The quick brown fox ", TEXT_COLOR|VERTICAL);
+  lcdDrawText(30, LCD_H, "The quick brown fox ", DEFAULT_COLOR|VERTICAL);
 }
 
 void testClear()

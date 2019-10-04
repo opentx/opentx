@@ -82,7 +82,7 @@ class ThemeBase: public Theme
     virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const;
     // virtual void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const = 0;
 
-    void drawCheckBox(BitmapBuffer * dc, bool value, bool focus) const override;
+    void drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t y, bool focus) const override;
 
     void drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char * str) const override;
 

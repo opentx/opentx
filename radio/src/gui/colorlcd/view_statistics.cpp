@@ -60,10 +60,10 @@ bool menuStatsGraph(event_t event)
 
   const coord_t x = 10;
   const coord_t y = 240;
-  lcdDrawHorizontalLine(x-3, y, MAXTRACE+3+3, SOLID, TEXT_COLOR);
-  lcdDrawVerticalLine(x, y-96, 96+3, SOLID, TEXT_COLOR);
+  lcdDrawHorizontalLine(x-3, y, MAXTRACE+3+3, SOLID, DEFAULT_COLOR);
+  lcdDrawVerticalLine(x, y-96, 96+3, SOLID, DEFAULT_COLOR);
   for (coord_t i=0; i<MAXTRACE; i+=6) {
-    lcdDrawVerticalLine(x+i, y-1, 3, SOLID, TEXT_COLOR);
+    lcdDrawVerticalLine(x+i, y-1, 3, SOLID, DEFAULT_COLOR);
   }
 
   uint16_t traceRd = s_traceWr > MAXTRACE ? s_traceWr - MAXTRACE : 0;
@@ -74,17 +74,17 @@ bool menuStatsGraph(event_t event)
     if (prev_yv != (coord_t)-1) {
       if (prev_yv < yv) {
         for (int y=prev_yv; y<=yv; y++) {
-          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, TEXT_COLOR);
+          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, DEFAULT_COLOR);
         }
       }
       else {
         for (int y=yv; y<=prev_yv; y++) {
-          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, TEXT_COLOR);
+          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, DEFAULT_COLOR);
         }
       }
     }
     else {
-      lcdDrawBitmapPattern(x + i - 3, yv, LBM_POINT, TEXT_COLOR);
+      lcdDrawBitmapPattern(x + i - 3, yv, LBM_POINT, DEFAULT_COLOR);
     }
     prev_yv = yv;
   }

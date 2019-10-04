@@ -153,7 +153,7 @@ class CurveButton : public Button {
     void paint(BitmapBuffer * dc) override
     {
       // bounding rect
-      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
 
       // curve characteristics
       if (isCurveFilled(index)) {

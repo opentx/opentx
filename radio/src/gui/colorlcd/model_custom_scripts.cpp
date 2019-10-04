@@ -108,7 +108,7 @@ bool menuModelCustomScriptOne(event_t event)
   }
 
   if (scriptInputsOutputs[s_currIdx].outputsCount > 0) {
-    lcdDrawSolidVerticalLine(SCRIPT_ONE_3RD_COLUMN_POS-4, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+5, TEXT_COLOR);
+    lcdDrawSolidVerticalLine(SCRIPT_ONE_3RD_COLUMN_POS-4, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+5, DEFAULT_COLOR);
     // lcdDrawText(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
 
     for (int i=0; i<scriptInputsOutputs[s_currIdx].outputsCount; i++) {
@@ -157,7 +157,7 @@ bool menuModelCustomScripts(event_t event)
           lcdDrawText(SCRIPTS_COLUMN_STATE, y, "(killed)");
           break;
         default:
-          lcdDrawNumber(SCRIPTS_COLUMN_STATE, y, luaGetCpuUsed(scriptIndex), LEFT|TEXT_COLOR, 0, NULL, "%");
+          lcdDrawNumber(SCRIPTS_COLUMN_STATE, y, luaGetCpuUsed(scriptIndex), LEFT|DEFAULT_COLOR, 0, NULL, "%");
           break;
       }
       scriptIndex++;

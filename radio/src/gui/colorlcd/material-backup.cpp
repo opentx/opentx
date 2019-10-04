@@ -108,10 +108,10 @@ bool CheckBox(W * window, rect_t & rect, const char * label, uint8_t & value, Lc
   drawText(window, rect.x, rect.y+4, label);
   coord_t x = rect.x + rect.w - 20;
   if (hasFocus) {
-    window->drawSolidFilledRect(x-1, rect.y+8, 14, 14, TEXT_INVERTED_BGCOLOR);
+    window->drawSolidFilledRect(x-1, rect.y+8, 14, 14, FOCUS_BGCOLOR);
     window->drawSolidFilledRect(x+1, rect.y+10, 10, 10, TEXT_BGCOLOR);
     if (value) {
-      window->drawSolidFilledRect(x+2, rect.y+11, 8, 8, TEXT_INVERTED_BGCOLOR);
+      window->drawSolidFilledRect(x+2, rect.y+11, 8, 8, FOCUS_BGCOLOR);
     }
   }
   else {
@@ -150,10 +150,10 @@ bool Choice(W * window, rect_t & rect, const char * label, const char * values, 
   rect.h = 30;
   bool hasFocus = (flags & HAS_FOCUS) || window->hasFocus(rect.x, rect.y);
   LcdFlags textColor = 0;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
+  LcdFlags lineColor = DISABLE_COLOR;
   if (hasFocus) {
-    textColor = TEXT_INVERTED_BGCOLOR;
-    lineColor = TEXT_INVERTED_BGCOLOR;
+    textColor = FOCUS_BGCOLOR;
+    lineColor = FOCUS_BGCOLOR;
   }
   drawTextAtIndex(window, rect.x, rect.y + 9, values, value, textColor);
   drawWidgetLine(window, rect, lineColor);
@@ -175,10 +175,10 @@ bool TextEdit(W * window, rect_t & rect, const char * label, char * value, uint8
   rect.h = 30;
   bool hasFocus = (flags & HAS_FOCUS) || window->hasFocus(rect.x, rect.y);
   LcdFlags textColor = 0;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
+  LcdFlags lineColor = DISABLE_COLOR;
   if (hasFocus) {
-    textColor = TEXT_INVERTED_BGCOLOR;
-    lineColor = TEXT_INVERTED_BGCOLOR;
+    textColor = FOCUS_BGCOLOR;
+    lineColor = FOCUS_BGCOLOR;
   }
   if (!hasFocus && zlen(value, length) == 0)
     menuBodyWindow.drawSizedText(rect.x, rect.y + 9, "---", length, textColor);

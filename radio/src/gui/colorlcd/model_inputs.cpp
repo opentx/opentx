@@ -314,7 +314,7 @@ void CommonInputOrMixButton::paint(BitmapBuffer * dc)
   if (active)
     dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
   paintBody(dc);
-  dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+  dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
 }
 
 class InputLineButton : public CommonInputOrMixButton {
@@ -348,7 +348,7 @@ class InputLineButton : public CommonInputOrMixButton {
 
       // second line ...
       if (line.swtch) {
-        dc->drawMask(3, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupSwitchIcon, TEXT_COLOR);
+        dc->drawMask(3, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupSwitchIcon, DEFAULT_COLOR);
         drawSwitch(dc, 21, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, line.swtch);
       }
 

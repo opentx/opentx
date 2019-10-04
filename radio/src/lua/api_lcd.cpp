@@ -777,10 +777,10 @@ Set a color for specific area
 
 @param area (unsigned number) specific screen area in the list bellow
  * `CUSTOM_COLOR`
- * `TEXT_COLOR`
+ * `DEFAULT_COLOR`
  * `TEXT_BGCOLOR`
- * `TEXT_INVERTED_COLOR`
- * `TEXT_INVERTED_BGCOLOR`
+ * `FOCUS_COLOR`
+ * `FOCUS_BGCOLOR`
  * `LINE_COLOR`
  * `SCROLLBOX_COLOR`
  * `MENU_TITLE_BGCOLOR`
@@ -791,7 +791,7 @@ Set a color for specific area
  * `WARNING_COLOR`
  * `TEXT_DISABLE_COLOR`
  * `HEADER_COLOR`
- * `CURVE_AXIS_COLOR`
+ * `DISABLE_COLOR`
  * `CURVE_CURSOR_COLOR`
  * `TITLE_BGCOLOR`
  * `TRIM_BGCOLOR`

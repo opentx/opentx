@@ -32,20 +32,20 @@ void drawFunction(BitmapBuffer * dc, FnFuncP fn, int x, int y, int width)
   int right = x + width;
 
   // Axis
-  dc->drawSolidHorizontalLine(left, y, width*2+1, CURVE_AXIS_COLOR);
-  dc->drawSolidVerticalLine(x, y-width, width*2, CURVE_AXIS_COLOR);
+  dc->drawSolidHorizontalLine(left, y, width*2+1, DISABLE_COLOR);
+  dc->drawSolidVerticalLine(x, y-width, width*2, DISABLE_COLOR);
 
   // Extra lines
-  dc->drawVerticalLine(left+width/2, y-width, width*2, STASHED, CURVE_AXIS_COLOR);
-  dc->drawVerticalLine(right-width/2, y-width, width*2, STASHED, CURVE_AXIS_COLOR);
-  dc->drawHorizontalLine(left, y-width/2, width*2+1, STASHED, CURVE_AXIS_COLOR);
-  dc->drawHorizontalLine(left, y+width/2, width*2+1, STASHED, CURVE_AXIS_COLOR);
+  dc->drawVerticalLine(left+width/2, y-width, width*2, STASHED, DISABLE_COLOR);
+  dc->drawVerticalLine(right-width/2, y-width, width*2, STASHED, DISABLE_COLOR);
+  dc->drawHorizontalLine(left, y-width/2, width*2+1, STASHED, DISABLE_COLOR);
+  dc->drawHorizontalLine(left, y+width/2, width*2+1, STASHED, DISABLE_COLOR);
 
   // Outside border
-  dc->drawSolidVerticalLine(left, y-width, width*2, TEXT_COLOR);
-  dc->drawSolidVerticalLine(right, y-width, width*2, TEXT_COLOR);
-  dc->drawSolidHorizontalLine(left, y-width, width*2+1, TEXT_COLOR);
-  dc->drawSolidHorizontalLine(left, y+width, width*2+1, TEXT_COLOR);
+  dc->drawSolidVerticalLine(left, y-width, width*2, DEFAULT_COLOR);
+  dc->drawSolidVerticalLine(right, y-width, width*2, DEFAULT_COLOR);
+  dc->drawSolidHorizontalLine(left, y-width, width*2+1, DEFAULT_COLOR);
+  dc->drawSolidHorizontalLine(left, y+width, width*2+1, DEFAULT_COLOR);
 
   coord_t prev_yv = (coord_t)-1;
 
@@ -54,12 +54,12 @@ void drawFunction(BitmapBuffer * dc, FnFuncP fn, int x, int y, int width)
     if (prev_yv != (coord_t)-1) {
       if (prev_yv < yv) {
         for (int y=prev_yv; y<=yv; y+=1) {
-          dc->drawBitmapPattern(x+xv-2, y-2, LBM_POINT, TEXT_COLOR);
+          dc->drawBitmapPattern(x+xv-2, y-2, LBM_POINT, DEFAULT_COLOR);
         }
       }
       else {
         for (int y=yv; y<=prev_yv; y+=1) {
-          dc->drawBitmapPattern(x+xv-2, y-2, LBM_POINT, TEXT_COLOR);
+          dc->drawBitmapPattern(x+xv-2, y-2, LBM_POINT, DEFAULT_COLOR);
         }
       }
     }
@@ -70,14 +70,14 @@ void drawFunction(BitmapBuffer * dc, FnFuncP fn, int x, int y, int width)
 void drawCurveVerticalScale(BitmapBuffer * dc, int x)
 {
   for (int i=0; i<=20; i++) {
-    dc->drawSolidHorizontalLine(x, CURVE_CENTER_Y-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH/10, 10, TEXT_COLOR);
+    dc->drawSolidHorizontalLine(x, CURVE_CENTER_Y-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH/10, 10, DEFAULT_COLOR);
   }
 }
 
 void drawCurveHorizontalScale(BitmapBuffer * dc)
 {
   for (int i=0; i<=20; i++) {
-    dc->drawSolidVerticalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH/10, CURVE_CENTER_Y+CURVE_SIDE_WIDTH+5, 10, TEXT_COLOR);
+    dc->drawSolidVerticalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH/10, CURVE_CENTER_Y+CURVE_SIDE_WIDTH+5, 10, DEFAULT_COLOR);
   }
 }
 
@@ -86,7 +86,7 @@ void drawCurveCoord(BitmapBuffer * dc, int x, int y, const char * text, bool act
   dc->drawSolidFilledRect(x, y, CURVE_COORD_WIDTH, CURVE_COORD_HEIGHT, CURVE_CURSOR_COLOR);
   dc->drawText(x+3+(CURVE_COORD_WIDTH-1-getTextWidth(text, SMLSIZE))/2, y+1, text, LEFT|SMLSIZE|TEXT_BGCOLOR);
   if (active) {
-    dc->drawBitmapPattern(x, y, LBM_CURVE_COORD_SHADOW, TEXT_COLOR);
+    dc->drawBitmapPattern(x, y, LBM_CURVE_COORD_SHADOW, DEFAULT_COLOR);
   }
 }
 

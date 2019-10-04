@@ -63,7 +63,7 @@ class LayoutChoice: public FormField {
     {
       FormField::paint(dc);
       auto layout = getValue();
-      layout->drawThumb(dc, 4, 4, editMode ? TEXT_INVERTED_COLOR : LINE_COLOR);
+      layout->drawThumb(dc, 4, 4, editMode ? FOCUS_COLOR : LINE_COLOR);
     }
 
 #if defined(HARDWARE_KEYS)

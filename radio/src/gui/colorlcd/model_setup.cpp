@@ -54,7 +54,7 @@ class ChannelFailsafeBargraph: public Window {
       x += width() / 2;
       const coord_t xChannel = (channelValue > 0) ? x : x + 1 - lenChannel;
       const coord_t xFailsafe = (failsafeValue > 0) ? x : x + 1 - lenFailsafe;
-      dc->drawSolidFilledRect(xChannel, + 2, lenChannel, (height() / 2) - 3, TEXT_COLOR);
+      dc->drawSolidFilledRect(xChannel, + 2, lenChannel, (height() / 2) - 3, DEFAULT_COLOR);
       dc->drawSolidFilledRect(xFailsafe, (height() / 2) + 1, lenFailsafe, (height() / 2) - 3, ALARM_COLOR);
     }
 

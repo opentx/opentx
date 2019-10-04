@@ -2,7 +2,7 @@
 #include "../../common/arm/stm32/bootloader/boot.h"
 #include "../../common/arm/stm32/bootloader/bin_files.h"
 
-#define SELECTED_COLOR (INVERS | TEXT_COLOR)
+#define SELECTED_COLOR (INVERS | DEFAULT_COLOR)
 
 const uint8_t __bmp_plug_usb_rle[] {
 #include "bmp_plug_usb.lbm"
@@ -40,7 +40,7 @@ const uint8_t LBM_OK[] = {
 
 void bootloaderInitScreen()
 {
-  lcdColorTable[TEXT_COLOR_INDEX]      = BLACK;
+  lcdColorTable[DEFAULT_COLOR_INDEX]      = BLACK;
   lcdColorTable[TEXT_BGCOLOR_INDEX]    = WHITE;
   lcdColorTable[LINE_COLOR_INDEX]      = RED;
   lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
@@ -56,12 +56,12 @@ void bootloaderInitScreen()
 static void bootloaderDrawTitle(unsigned int x, const char* text)
 {
   lcd->drawText(x, 28, text);
-  lcd->drawSolidFilledRect(28, 56, 422, 2, TEXT_COLOR);
+  lcd->drawSolidFilledRect(28, 56, 422, 2, DEFAULT_COLOR);
 }
 
 static void bootloaderDrawFooter()
 {
-  lcd->drawSolidFilledRect(28, 234, 422, 2, TEXT_COLOR);
+  lcd->drawSolidFilledRect(28, 234, 422, 2, DEFAULT_COLOR);
 }
 
 void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
@@ -75,10 +75,10 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
     if (st == ST_START) {
         bootloaderDrawTitle(88, "HORUS BOOTLOADER");
         
-        lcd->drawBitmapPattern(90, 72, LBM_FLASH, TEXT_COLOR);
+        lcd->drawBitmapPattern(90, 72, LBM_FLASH, DEFAULT_COLOR);
         lcd->drawText(124,  75, "Write Firmware");
 
-        lcd->drawBitmapPattern(90, 107, LBM_EXIT, TEXT_COLOR);
+        lcd->drawBitmapPattern(90, 107, LBM_EXIT, DEFAULT_COLOR);
         lcd->drawText(124, 110, "Exit");
 
         lcd->drawSolidRect(119, (opt == 0) ? 72 : 107, 270, 26, 2, LINE_COLOR);
@@ -100,7 +100,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
              st == ST_FLASHING || st == ST_FLASH_DONE) {
 
         bootloaderDrawTitle(126, "SD>FIRMWARE");
-        lcd->drawBitmapPattern(87, 16, LBM_SD, TEXT_COLOR);
+        lcd->drawBitmapPattern(87, 16, LBM_SD, DEFAULT_COLOR);
 
         if (st == ST_FLASHING || st == ST_FLASH_DONE) {
 
@@ -151,7 +151,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
 
         if ( st != ST_DIR_CHECK && (st != ST_FLASH_CHECK || opt == FC_OK)) {
 
-            lcd->drawBitmapPattern(28, 242, LBM_FLASH, TEXT_COLOR);
+            lcd->drawBitmapPattern(28, 242, LBM_FLASH, DEFAULT_COLOR);
 
             if (st == ST_FILE_LIST) {
                 lcd->drawText(56, 244, "[ENT] to select file");
@@ -168,7 +168,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
         }
 
         if (st != ST_FLASHING) {
-            lcd->drawBitmapPattern(305, 242, LBM_EXIT, TEXT_COLOR);
+            lcd->drawBitmapPattern(305, 242, LBM_EXIT, DEFAULT_COLOR);
             lcd->drawText(335, 244, "[RTN] to exit");
         }        
     }
@@ -176,7 +176,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
 
 void bootloaderDrawFilename(const char* str, uint8_t line, bool selected)
 {
-    lcd->drawBitmapPattern(94, 76 + (line * 25), LBM_FILE, TEXT_COLOR);
+    lcd->drawBitmapPattern(94, 76 + (line * 25), LBM_FILE, DEFAULT_COLOR);
     lcd->drawText(124, 75 + (line * 25), str);
 
     if (selected) {

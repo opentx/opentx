@@ -25,7 +25,7 @@
 
 class ViewMain: public Window {
   public:
-    ViewMain(bool icons=true);
+    explicit ViewMain(bool icons = true);
 
     ~ViewMain() override;
 

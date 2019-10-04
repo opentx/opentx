@@ -265,7 +265,7 @@ class LogicalSwitchButton : public Button {
         dc->drawSolidFilledRect(2, 2, rect.w-4, rect.h-4, WARNING_COLOR);
 
       // The bounding rect
-      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
 
       // CSW func
       dc->drawTextAtIndex(col1, line1, STR_VCSWFUNC, ls->func);

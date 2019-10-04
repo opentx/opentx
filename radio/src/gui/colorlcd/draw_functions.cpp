@@ -33,26 +33,6 @@ void drawColumnHeader(BitmapBuffer * dc, const char * const * headers, const cha
   }
 }
 
-void drawCheckBox(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t value, LcdFlags attr)
-{
-  if (attr) {
-    dc->drawSolidFilledRect(x-1, y+3, 14, 14, TEXT_INVERTED_BGCOLOR);
-    dc->drawSolidFilledRect(x+1, y+5, 10, 10, TEXT_BGCOLOR);
-    if (value) {
-      dc->drawSolidFilledRect(x+2, y+6, 8, 8, TEXT_INVERTED_BGCOLOR);
-    }
-  }
-  else {
-    if (value) {
-      dc->drawSolidFilledRect(x+2, y+6, 8, 8, SCROLLBOX_COLOR);
-      dc->drawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
-    }
-    else {
-      dc->drawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
-    }
-  }
-}
-
 void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   if (visible < count) {
@@ -75,13 +55,13 @@ void drawHorizontalTrimPosition(BitmapBuffer * dc, coord_t x, coord_t y, int16_t
 {
   drawTrimSquare(dc, x, y);
   if (dir >= 0) {
-    dc->drawSolidVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidVerticalLine(x+8, y+3, 9, FOCUS_COLOR);
   }
   if (dir <= 0) {
-    dc->drawSolidVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidVerticalLine(x+2, y+3, 9, FOCUS_COLOR);
   }
   // if (exttrim) {
-  //  lcdDrawSolidVerticalLine(xm, ym, 9, TEXT_INVERTED_COLOR);
+  //  lcdDrawSolidVerticalLine(xm, ym, 9, FOCUS_COLOR);
   // }
 }
 
@@ -89,13 +69,13 @@ void drawVerticalTrimPosition(BitmapBuffer * dc, coord_t x, coord_t y, int16_t d
 {
   drawTrimSquare(dc, x, y);
   if (dir >= 0) {
-    dc->drawSolidHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidHorizontalLine(x+1, y+4, 9, FOCUS_COLOR);
   }
   if (dir <= 0) {
-    dc->drawSolidHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
+    dc->drawSolidHorizontalLine(x+1, y+10, 9, FOCUS_COLOR);
   }
   // if (exttrim) {
-  //   lcdDrawSolidHorizontalLine(xm-1, ym,  3, TEXT_INVERTED_COLOR);
+  //   lcdDrawSolidHorizontalLine(xm-1, ym,  3, FOCUS_COLOR);
   // }
 }
 
@@ -106,13 +86,13 @@ void drawVerticalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int va
     int delta = len / steps;
     for (int i = 0; i <= len; i += delta) {
       if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-        dc->drawSolidHorizontalLine(x, y + i, 13, TEXT_COLOR);
+        dc->drawSolidHorizontalLine(x, y + i, 13, DEFAULT_COLOR);
       else
-        dc->drawSolidHorizontalLine(x + 2, y + i, 9, TEXT_COLOR);
+        dc->drawSolidHorizontalLine(x + 2, y + i, 9, DEFAULT_COLOR);
     }
   }
   else {
-    dc->drawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, TEXT_COLOR);
+    dc->drawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, DEFAULT_COLOR);
     /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
       if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
         lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
@@ -125,7 +105,7 @@ void drawVerticalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int va
   }
   else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
     drawTrimSquare(dc, x, y - 2);
-    // TODO lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
+    // TODO lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | FOCUS_COLOR);
   }
   else {
     drawTrimSquare(dc, x, y - 2);
@@ -141,22 +121,22 @@ void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int 
       int delta = len / steps;
       for (int i = 0; i <= len; i += delta) {
         if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-          dc->drawSolidVerticalLine(x + i, y, 13, TEXT_COLOR);
+          dc->drawSolidVerticalLine(x + i, y, 13, DEFAULT_COLOR);
         else
-          dc->drawSolidVerticalLine(x + i, y + 2, 9, TEXT_COLOR);
+          dc->drawSolidVerticalLine(x + i, y + 2, 9, DEFAULT_COLOR);
       }
     }
   }
   else if (options & OPTION_SLIDER_EMPTY_BAR) {
-    dc->drawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, TEXT_COLOR);
+    dc->drawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, DEFAULT_COLOR);
   }
   else if (options & OPTION_SLIDER_DBL_COLOR) {
-    dc->drawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, w <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
+    dc->drawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, w <= 0 ? LINE_COLOR : FOCUS_BGCOLOR);
     if (w > 4)
-      dc->drawSolidFilledRect(x + 4, y + 8, w - 4, 4, TEXT_INVERTED_BGCOLOR);
+      dc->drawSolidFilledRect(x + 4, y + 8, w - 4, 4, FOCUS_BGCOLOR);
     if (w < len - 4)
       dc->drawSolidFilledRect(x + w, y + 8, len - w - 4, 4, LINE_COLOR);
-    dc->drawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, w >= len ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+    dc->drawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, w >= len ? FOCUS_BGCOLOR : LINE_COLOR);
   }
   else {
     dc->drawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
@@ -176,16 +156,16 @@ void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int 
   else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
     drawTrimSquare(dc, x+2, y - 1);
     char text[] = { (char)('0' + val), '\0' };
-    dc->drawText(x + 7, y - 1, text, SMLSIZE | CENTERED | TEXT_INVERTED_COLOR);
+    dc->drawText(x + 7, y - 1, text, SMLSIZE | CENTERED | FOCUS_COLOR);
   }
   else if (options & OPTION_SLIDER_SQUARE_BUTTON) {
     drawTrimSquare(dc, x, y - 1);
   }
   else {
-    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
     dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
     if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
-      dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+      dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
   }
 }
 
@@ -285,10 +265,10 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
     else {
       lcdRestoreBackupBuffer();
       int quarter = duration / (totalDuration / 5);
-      if (quarter >= 1) lcd->drawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 2) lcd->drawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 3) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 4) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 1) lcd->drawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 2) lcd->drawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 3) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
+      if (quarter >= 4) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
     }
   }
   else {

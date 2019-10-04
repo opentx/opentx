@@ -102,12 +102,12 @@ void ModelCell::loadBitmap()
   buffer->clear(TEXT_BGCOLOR);
 
   if (error) {
-    buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
-    buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
+    buffer->drawText(5, 2, "(Invalid Model)", DEFAULT_COLOR);
+    buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
   }
   else {
     char timer[LEN_TIMER_STRING];
-    buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
+    buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|DEFAULT_COLOR);
     getTimerString(timer, 0);
     for (uint8_t i = 0; i < MAX_TIMERS; i++) {
       if (partialmodel.timers[i].mode > 0 && partialmodel.timers[i].persistent) {
@@ -115,7 +115,7 @@ void ModelCell::loadBitmap()
         break;
       }
     }
-    buffer->drawText(101, 40, timer, TEXT_COLOR);
+    buffer->drawText(101, 40, timer, DEFAULT_COLOR);
     for (int i=0; i<4; i++) {
       buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
     }
@@ -126,7 +126,7 @@ void ModelCell::loadBitmap()
       delete bitmap;
     }
     else {
-      buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
+      buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
     }
   }
   buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);

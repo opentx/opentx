@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "checkbox.h"
 
 extern ThemeBase * defaultTheme;
 const BitmapBuffer * ThemeBase::asterisk = NULL;
@@ -107,7 +108,7 @@ void ThemeBase::drawMessageBox(const char * title, const char * text, const char
 //{
 //  //if (flags & MESSAGEBOX_TYPE_ALERT) {
 //    drawBackground();
-//    lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, TEXT_INVERTED_COLOR | OPACITY(8));
+//    lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, FOCUS_COLOR | OPACITY(8));
 //  //}
 //
 //  if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
@@ -139,25 +140,22 @@ void ThemeBase::drawMessageBox(const char * title, const char * text, const char
 //  }
 //}
 
-void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool value, bool focus) const
+void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t y, bool focus) const
 {
   if (focus) {
-    dc->drawSolidFilledRect(0, 2, 16, 16, TEXT_INVERTED_BGCOLOR);
-    if (value) {
-      dc->drawSolidFilledRect(2, 4, 12, 12, TEXT_BGCOLOR);
-      dc->drawSolidFilledRect(3, 5, 10, 10, SCROLLBOX_COLOR);
+    dc->drawSolidFilledRect(x + 0, y + 2, 16, 16, FOCUS_BGCOLOR);
+    if (checked) {
+      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, TEXT_BGCOLOR);
+      dc->drawSolidFilledRect(x + 3, y + 5, 10, 10, SCROLLBOX_COLOR);
     }
     else {
-      dc->drawSolidFilledRect(2, 4, 12, 12, TEXT_BGCOLOR);
+      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, TEXT_BGCOLOR);
     }
   }
   else {
-    if (value) {
-      dc->drawSolidFilledRect(2, 4, 12, 12, SCROLLBOX_COLOR);
-      dc->drawSolidRect(0, 2, 16, 16, 1, CURVE_AXIS_COLOR);
-    }
-    else {
-      dc->drawSolidRect(0, 2, 16, 16, 1, CURVE_AXIS_COLOR);
+    dc->drawSolidRect(x + 0, y + 2, 16, 16, 1, DISABLE_COLOR);
+    if (checked) {
+      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, SCROLLBOX_COLOR);
     }
   }
 }
@@ -166,13 +164,13 @@ void ThemeBase::drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char * 
 {
   LcdFlags textColor;
   if (choice->isEditMode())
-    textColor = TEXT_INVERTED_COLOR;
+    textColor = FOCUS_COLOR;
   else if (choice->hasFocus())
-    textColor = TEXT_INVERTED_BGCOLOR;
+    textColor = FOCUS_BGCOLOR;
   else if (!str || str[0] == '\0')
-    textColor = CURVE_AXIS_COLOR;
+    textColor = DISABLE_COLOR;
   else
-    textColor = TEXT_COLOR;
+    textColor = DEFAULT_COLOR;
 
   dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, str[0] == '\0' ? "---" : str, textColor);
   dc->drawBitmapPattern(choice->getRect().w - 20, (choice->getRect().h - 11) / 2, choice->getType() == CHOICE_TYPE_FOLDER ? LBM_FOLDER : LBM_DROPDOWN, textColor);
@@ -184,9 +182,9 @@ void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, con
   int w = divRoundClosest((rect.w - 16) * (val - vmin), vmax - vmin);
 
   if (edit) {
-    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, TEXT_INVERTED_BGCOLOR);
-    dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, TEXT_INVERTED_BGCOLOR);
-    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, TEXT_INVERTED_BGCOLOR);
+    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, FOCUS_BGCOLOR);
+    dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, FOCUS_BGCOLOR);
+    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, FOCUS_BGCOLOR);
   }
   else {
     dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
@@ -194,11 +192,11 @@ void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, con
     dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
   }
 
-  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
   dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
   // if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
   if (focus) {
-    dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+    dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
   }
 }
 

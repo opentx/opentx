@@ -135,9 +135,9 @@ local function redrawFieldsPage(event)
     end
 
     local attr = current == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
-    attr = attr + TEXT_COLOR
+    attr = attr + DEFAULT_COLOR
 
-    lcd.drawText(1, 30+20*index, field[1], TEXT_COLOR)
+    lcd.drawText(1, 30+20*index, field[1], DEFAULT_COLOR)
 
     if field[4] == nil then
       lcd.drawText(COLUMN_2, 30+20*index, "---", attr)

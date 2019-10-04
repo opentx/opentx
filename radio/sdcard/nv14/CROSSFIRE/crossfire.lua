@@ -80,7 +80,7 @@ local function init()
   pageOffset = 0
 end
 
-NoCross = { 110, LCD_H - 28, "Waiting for Crossfire devices...", TEXT_COLOR + INVERS + BLINK }
+NoCross = { 110, LCD_H - 28, "Waiting for Crossfire devices...", DEFAULT_COLOR + INVERS + BLINK }
 
 -- Main
 local function run(event)

@@ -71,7 +71,7 @@ local function redrawFieldsPage(event)
     end
 
     local attr = current == (index) and ((edit == true and BLINK or 0) + INVERS) or 0
-    attr = attr + TEXT_COLOR
+    attr = attr + DEFAULT_COLOR
 
     if field[4] == 1 then
       if field[3] == VALUE then
@@ -130,7 +130,7 @@ end
 -- draws one letter mark
 local function drawMark(x, y, name)
   lcd.drawBitmap(ImgMarkBg, x, y)
-  lcd.drawText(x+8, y+3, name, TEXT_COLOR)
+  lcd.drawText(x+8, y+3, name, DEFAULT_COLOR)
 end
 
 
@@ -151,11 +151,11 @@ local function runMotorConfig(event)
   lcd.drawBitmap(ImgEngine, 310, 50)
   lcd.setColor(CUSTOM_COLOR, lcd.RGB(255, 255, 255))
   fields = MotorFields
-  lcd.drawText(40, 20, "Does your model have a motor ?", TEXT_COLOR)
+  lcd.drawText(40, 20, "Does your model have a motor ?", DEFAULT_COLOR)
   lcd.drawFilledRectangle(40, 45, 200, 30, CUSTOM_COLOR)
   fields[2][4]=0
   if fields[1][5] == 1 then
-    lcd.drawText(40, 100, "What channel is it on ?", TEXT_COLOR)
+    lcd.drawText(40, 100, "What channel is it on ?", DEFAULT_COLOR)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     fields[2][4]=1
   end
@@ -206,7 +206,7 @@ local function runAilConfig(event)
   else
     setFieldsVisible(0, 0)
   end
-  lcd.drawText(40, 20, "Number of ailerons on your model ?", TEXT_COLOR)
+  lcd.drawText(40, 20, "Number of ailerons on your model ?", DEFAULT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
   local result = runFieldsPage(event)
   return result
@@ -251,7 +251,7 @@ local function runFlapsConfig(event)
   else
     setFieldsVisible(0, 0)
   end
-  lcd.drawText(40, 20, "Does your model have flaps ?", TEXT_COLOR)
+  lcd.drawText(40, 20, "Does your model have flaps ?", DEFAULT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
   local result = runFieldsPage(event)
   return result
@@ -323,7 +323,7 @@ local function runTailConfig(event)
     drawMark(152, 164, "B")
     setFieldsVisible(1, 1, 0)
   end
-  lcd.drawText(40, 20, "Pick the tail config of your model", TEXT_COLOR)
+  lcd.drawText(40, 20, "Pick the tail config of your model", DEFAULT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
   local result = runFieldsPage(event)
   return result
@@ -331,8 +331,8 @@ end
 
 local lineIndex
 local function drawNextLine(text, text2)
-  lcd.drawText(40, lineIndex, text, TEXT_COLOR)
-  lcd.drawText(242, lineIndex, ": CH" .. text2 + 1, TEXT_COLOR)
+  lcd.drawText(40, lineIndex, text, DEFAULT_COLOR)
+  lcd.drawText(242, lineIndex, ": CH" .. text2 + 1, DEFAULT_COLOR)
   lineIndex = lineIndex + 20
 end
 
@@ -442,8 +442,8 @@ local function createModel(event)
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleL", 50)
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", -50, 1)
   end
-  lcd.drawText(70, 90, "Model successfully created !", TEXT_COLOR)
-  lcd.drawText(100, 130, "Press RTN to exit", TEXT_COLOR)
+  lcd.drawText(70, 90, "Model successfully created !", DEFAULT_COLOR)
+  lcd.drawText(100, 130, "Press RTN to exit", DEFAULT_COLOR)
   return 2
 end
 

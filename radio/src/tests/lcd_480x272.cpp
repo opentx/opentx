@@ -85,7 +85,7 @@ TEST(Lcd_colorlcd, vline)
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
   for (int x=0; x<100; x+=2) {
-    lcdDrawSolidVerticalLine(x, x/2, 12, TEXT_COLOR);
+    lcdDrawSolidVerticalLine(x, x/2, 12, DEFAULT_COLOR);
   }
   EXPECT_TRUE(checkScreenshot_colorlcd("vline"));
 }
@@ -94,11 +94,11 @@ TEST(Lcd_colorlcd, primitives)
 {
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
-  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", CURVE_AXIS_COLOR);
-  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR);
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", DISABLE_COLOR);
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR);
 
   lcdDrawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR);
-  lcdDrawFilledRect(50, 30, 30, 30, DOTTED, TEXT_COLOR);
+  lcdDrawFilledRect(50, 30, 30, 30, DOTTED, DEFAULT_COLOR);
   lcdDrawFilledRect(90, 30, 30, 30, SOLID, ROUND|TITLE_BGCOLOR);
   lcdDrawRect(130, 30, 30, 30, 1, SOLID, TITLE_BGCOLOR);
   lcdDrawRect(170, 30, 30, 30, 2, SOLID, TITLE_BGCOLOR);
@@ -109,10 +109,10 @@ TEST(Lcd_colorlcd, primitives)
   lcdDrawVerticalLine(20, 70,  80, SOLID, TITLE_BGCOLOR);
   lcdDrawVerticalLine(25, 70,  70, SOLID, TITLE_BGCOLOR);
 
-  lcdDrawHorizontalLine(30, 70, 100, SOLID, TEXT_COLOR);
-  lcdDrawHorizontalLine(30, 75,  90, SOLID, TEXT_COLOR);
-  lcdDrawHorizontalLine(30, 80,  80, SOLID, TEXT_COLOR);
-  lcdDrawHorizontalLine(30, 85,  70, SOLID, TEXT_COLOR);
+  lcdDrawHorizontalLine(30, 70, 100, SOLID, DEFAULT_COLOR);
+  lcdDrawHorizontalLine(30, 75,  90, SOLID, DEFAULT_COLOR);
+  lcdDrawHorizontalLine(30, 80,  80, SOLID, DEFAULT_COLOR);
+  lcdDrawHorizontalLine(30, 85,  70, SOLID, DEFAULT_COLOR);
 
 
   EXPECT_TRUE(checkScreenshot_colorlcd("primitives"));
@@ -122,11 +122,11 @@ TEST(Lcd_colorlcd, transparency)
 {
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
-  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(4));
-  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(12));
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(4));
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(12));
 
   lcdDrawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR|OPACITY(8));
-  lcdDrawFilledRect(50, 30, 30, 30, DOTTED, TEXT_COLOR|OPACITY(10));
+  lcdDrawFilledRect(50, 30, 30, 30, DOTTED, DEFAULT_COLOR|OPACITY(10));
   lcdDrawFilledRect(90, 30, 30, 30, SOLID, ROUND|TITLE_BGCOLOR|OPACITY(12));
   lcdDrawRect(130, 30, 30, 30, 1, SOLID, TITLE_BGCOLOR|OPACITY(8));
   lcdDrawRect(170, 30, 30, 30, 2, SOLID, TITLE_BGCOLOR|OPACITY(8));
@@ -137,10 +137,10 @@ TEST(Lcd_colorlcd, transparency)
   lcdDrawVerticalLine(20, 70,  80, SOLID, TITLE_BGCOLOR|OPACITY(10));
   lcdDrawVerticalLine(25, 70,  70, SOLID, TITLE_BGCOLOR|OPACITY(OPACITY_MAX));
 
-  lcdDrawHorizontalLine(30, 70, 100, SOLID, TEXT_COLOR|OPACITY(2));
-  lcdDrawHorizontalLine(30, 75,  90, SOLID, TEXT_COLOR|OPACITY(6));
-  lcdDrawHorizontalLine(30, 80,  80, SOLID, TEXT_COLOR|OPACITY(10));
-  lcdDrawHorizontalLine(30, 85,  70, SOLID, TEXT_COLOR|OPACITY(OPACITY_MAX));
+  lcdDrawHorizontalLine(30, 70, 100, SOLID, DEFAULT_COLOR|OPACITY(2));
+  lcdDrawHorizontalLine(30, 75,  90, SOLID, DEFAULT_COLOR|OPACITY(6));
+  lcdDrawHorizontalLine(30, 80,  80, SOLID, DEFAULT_COLOR|OPACITY(10));
+  lcdDrawHorizontalLine(30, 85,  70, SOLID, DEFAULT_COLOR|OPACITY(OPACITY_MAX));
 
 
   for(int n=0; n<10; n++) {
@@ -160,12 +160,12 @@ TEST(Lcd_colorlcd, fonts)
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
 
-  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(4));
-  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(12));
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(4));
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|OPACITY(12));
 
-  lcdDrawText(10, 200, "The quick", TEXT_COLOR|VERTICAL);
-  lcdDrawText(30, 200, "The quick brown fox", TEXT_COLOR|VERTICAL);
-  // lcdDrawText(50, 200, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|VERTICAL);
+  lcdDrawText(10, 200, "The quick", DEFAULT_COLOR|VERTICAL);
+  lcdDrawText(30, 200, "The quick brown fox", DEFAULT_COLOR|VERTICAL);
+  // lcdDrawText(50, 200, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|VERTICAL);
 
   lcdDrawText(8, 208, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(4));
   lcdDrawText(5, 205, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(12));

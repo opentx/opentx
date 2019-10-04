@@ -43,10 +43,10 @@ void CustomCurveChoice::paint(BitmapBuffer * dc)
   char s[8];
   int16_t value = getValue();
   LcdFlags textColor = 0;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
+  LcdFlags lineColor = DISABLE_COLOR;
   if (hasFocus) {
-    textColor = TEXT_INVERTED_BGCOLOR;
-    lineColor = TEXT_INVERTED_BGCOLOR;
+    textColor = FOCUS_BGCOLOR;
+    lineColor = FOCUS_BGCOLOR;
   }
   dc->drawText(3, 2, getCurveString(s, value), flags | textColor);
   dc->drawSolidRect(0, 0, rect.w, rect.h, 1, lineColor);

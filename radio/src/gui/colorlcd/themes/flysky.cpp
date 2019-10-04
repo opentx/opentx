@@ -40,10 +40,10 @@ class FlyskyTheme: public ThemeBase
     {
       TRACE("Load FlySky theme colors");
 
-      lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
+      lcdColorTable[DEFAULT_COLOR_INDEX] = BLACK;
       lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
-      lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
-      lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RED;
+      lcdColorTable[FOCUS_COLOR_INDEX] = WHITE;
+      lcdColorTable[FOCUS_BGCOLOR_INDEX] = RED;
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
@@ -54,7 +54,7 @@ class FlyskyTheme: public ThemeBase
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
       lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
       lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
-      lcdColorTable[CURVE_AXIS_COLOR_INDEX] = LIGHTGREY;
+      lcdColorTable[DISABLE_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[CURVE_COLOR_INDEX] = RED;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = RED;
       lcdColorTable[TRIM_BGCOLOR_INDEX] = RED;
@@ -127,7 +127,7 @@ class FlyskyTheme: public ThemeBase
     void loadIcons() const
     {
 #if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
-      loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
+      loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", DEFAULT_COLOR);
 #else
       loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
 #endif
@@ -226,13 +226,13 @@ class FlyskyTheme: public ThemeBase
       }
 
       delete modelselSdFreeBitmap;
-      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", TEXT_COLOR, TEXT_BGCOLOR);
+      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete modelselModelQtyBitmap;
-      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", TEXT_COLOR, TEXT_BGCOLOR);
+      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete modelselModelNameBitmap;
-      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", TEXT_COLOR, TEXT_BGCOLOR);
+      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete modelselModelMoveBackground;
       modelselModelMoveBackground = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveback.png"));
@@ -245,10 +245,10 @@ class FlyskyTheme: public ThemeBase
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
-      chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
+      chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete chanMonInvertedBitmap;
-      chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", TEXT_COLOR, TEXT_BGCOLOR);
+      chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       // Mixer setup screen
       delete mixerSetupMixerBitmap;
@@ -261,19 +261,19 @@ class FlyskyTheme: public ThemeBase
       mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupAddBitmap;
-      mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupMultiBitmap;
-      mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupReplaceBitmap;
-      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupLabelBitmap;
-      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupCurveBitmap;
-      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupSwitchIcon;
       mixerSetupSwitchIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_switch.png"));
@@ -282,13 +282,13 @@ class FlyskyTheme: public ThemeBase
       mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_fm.png"));
 
       delete mixerSetupSlowBitmap;
-      mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupDelayBitmap;
-      mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", DEFAULT_COLOR, TEXT_BGCOLOR);
 
       delete mixerSetupDelaySlowBitmap;
-      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_COLOR, TEXT_BGCOLOR);
+      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", DEFAULT_COLOR, TEXT_BGCOLOR);
     }
 
     void load() const override
@@ -310,7 +310,7 @@ class FlyskyTheme: public ThemeBase
       uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
 
       lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
-      lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
+      lcdColorTable[FOCUS_BGCOLOR_INDEX] = color;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
       lcdColorTable[CURVE_COLOR_INDEX] = color;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
@@ -390,7 +390,7 @@ class FlyskyTheme: public ThemeBase
 
     void drawMenuDatetime(BitmapBuffer * dc) const
     {
-      dc->drawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
+      dc->drawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, FOCUS_COLOR);
 
       struct gtm t;
       gettime(&t);
@@ -402,15 +402,15 @@ class FlyskyTheme: public ThemeBase
       const char * const STR_MONTHS[] = TR_MONTHS;
       sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
 #endif
-      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|FOCUS_COLOR|CENTERED);
 
       getTimerString(str, getValue(MIXSRC_TX_TIME));
-      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|FOCUS_COLOR|CENTERED);
     }
 
     void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const override
     {
-      dc->drawSolidRect(x, y, w, h, 1, TEXT_COLOR);
+      dc->drawSolidRect(x, y, w, h, 1, DEFAULT_COLOR);
       if (value > 0) {
         int width = (w * value) / 100;
         dc->drawSolidFilledRect(x + 2, y + 2, width - 4, h - 4, SCROLLBOX_COLOR);

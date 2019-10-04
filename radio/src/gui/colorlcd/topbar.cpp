@@ -104,7 +104,7 @@ void drawTopBar()
       else if (sensor.prec == 1) {
         att |= PREC1;
       }
-      att |= (item.isOld() ? ALARM_COLOR : TEXT_COLOR);
+      att |= (item.isOld() ? ALARM_COLOR : DEFAULT_COLOR);
       lcdDrawSolidFilledRect(ALTITUDE_X, VOLTS_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
       lcdDrawText(ALTITUDE_X+PADDING, VOLTS_Y+2, "Voltage", att);
       drawValueWithUnit(ALTITUDE_X+PADDING, VOLTS_Y+12, value, UNIT_VOLTS, DBLSIZE|LEFT|att);
@@ -118,7 +118,7 @@ void drawTopBar()
       int32_t value = item.value;
       TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];
       if (sensor.prec) value /= sensor.prec == 2 ? 100 : 10;
-      LcdFlags att = (item.isOld() ? ALARM_COLOR : TEXT_COLOR);
+      LcdFlags att = (item.isOld() ? ALARM_COLOR : DEFAULT_COLOR);
       lcdDrawSolidFilledRect(ALTITUDE_X, ALTITUDE_Y, ALTITUDE_W, ALTITUDE_H, TEXT_BGCOLOR);
       lcdDrawText(ALTITUDE_X+PADDING, ALTITUDE_Y+2, "Alt", att);
       drawValueWithUnit(ALTITUDE_X+PADDING, ALTITUDE_Y+12, value, UNIT_METERS, DBLSIZE|LEFT|att);

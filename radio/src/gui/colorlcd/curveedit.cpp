@@ -43,7 +43,7 @@ void CurveEdit::update()
       };
     }
     else {
-      addPoint(getPoint(index, i), TEXT_COLOR);
+      addPoint(getPoint(index, i), DEFAULT_COLOR);
     }
   }
   invalidate();

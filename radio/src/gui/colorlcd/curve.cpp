@@ -31,17 +31,17 @@ void Curve::drawBackground(BitmapBuffer * dc)
   dc->clear(CUSTOM_COLOR);
 
   // Axis
-  dc->drawSolidHorizontalLine(0, height()/2, width(), CURVE_AXIS_COLOR);
-  dc->drawSolidVerticalLine(width()/2, 0, height(), CURVE_AXIS_COLOR);
+  dc->drawSolidHorizontalLine(0, height()/2, width(), DISABLE_COLOR);
+  dc->drawSolidVerticalLine(width()/2, 0, height(), DISABLE_COLOR);
 
   // Extra lines
-  dc->drawVerticalLine(width()/4, 0, height(), STASHED, CURVE_AXIS_COLOR);
-  dc->drawVerticalLine(width()*3/4, 0, height(), STASHED, CURVE_AXIS_COLOR);
-  dc->drawHorizontalLine(0, height()/4, width(), STASHED, CURVE_AXIS_COLOR);
-  dc->drawHorizontalLine(0, height()*3/4, width(), STASHED, CURVE_AXIS_COLOR);
+  dc->drawVerticalLine(width()/4, 0, height(), STASHED, DISABLE_COLOR);
+  dc->drawVerticalLine(width()*3/4, 0, height(), STASHED, DISABLE_COLOR);
+  dc->drawHorizontalLine(0, height()/4, width(), STASHED, DISABLE_COLOR);
+  dc->drawHorizontalLine(0, height()*3/4, width(), STASHED, DISABLE_COLOR);
 
   // Outside border
-  // dc->drawSolidRect(0, 0, width(), height(), 1, TEXT_COLOR);
+  // dc->drawSolidRect(0, 0, width(), height(), 1, DEFAULT_COLOR);
 }
 
 coord_t Curve::getPointX(int x)
@@ -67,12 +67,12 @@ void Curve::drawCurve(BitmapBuffer * dc)
     if (prev >= 0) {
       if (prev < y) {
         for (int tmp = prev; tmp <= y; tmp++) {
-          dc->drawBitmapPattern(x - 2, tmp - 2, LBM_POINT, TEXT_COLOR);
+          dc->drawBitmapPattern(x - 2, tmp - 2, LBM_POINT, DEFAULT_COLOR);
         }
       }
       else {
         for (int tmp = y; tmp <= prev; tmp++) {
-          dc->drawBitmapPattern(x - 2, tmp - 2, LBM_POINT, TEXT_COLOR);
+          dc->drawBitmapPattern(x - 2, tmp - 2, LBM_POINT, DEFAULT_COLOR);
         }
       }
     }

@@ -59,13 +59,13 @@ uint16_t posOnBar(int16_t value_to100)
 
 void drawOutputBarLimits(coord_t left, coord_t right, coord_t y)
 {
-  lcd->drawSolidVerticalLine(left, y, BAR_HEIGHT, TEXT_COLOR);
-  lcd->drawSolidHorizontalLine(left, y, 3, TEXT_COLOR);
-  lcd->drawSolidHorizontalLine(left, y + BAR_HEIGHT - 1, 3, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(left, y, BAR_HEIGHT, DEFAULT_COLOR);
+  lcd->drawSolidHorizontalLine(left, y, 3, DEFAULT_COLOR);
+  lcd->drawSolidHorizontalLine(left, y + BAR_HEIGHT - 1, 3, DEFAULT_COLOR);
 
-  lcd->drawSolidVerticalLine(--right, y, BAR_HEIGHT, TEXT_COLOR);
-  lcd->drawSolidHorizontalLine(right - 3, y, 3, TEXT_COLOR);
-  lcd->drawSolidHorizontalLine(right - 3, y + BAR_HEIGHT - 1, 3, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(--right, y, BAR_HEIGHT, DEFAULT_COLOR);
+  lcd->drawSolidHorizontalLine(right - 3, y, 3, DEFAULT_COLOR);
+  lcd->drawSolidHorizontalLine(right - 3, y + BAR_HEIGHT - 1, 3, DEFAULT_COLOR);
 }
 
 void drawSingleMixerBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
@@ -79,16 +79,16 @@ void drawSingleMixerBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
     lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2), h, BARGRAPH2_COLOR);
-    lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+    lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | DEFAULT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
     const uint16_t endpoint = x + w / 2;
     const uint16_t size = divRoundClosest(-chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2);
     lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH2_COLOR);
-    lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+    lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | DEFAULT_COLOR, 0, NULL, "%");
   }
 
-  lcd->drawSolidVerticalLine(x + w / 2, y, h, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(x + w / 2, y, h, DEFAULT_COLOR);
 }
 
 void drawSingleOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
@@ -101,16 +101,16 @@ void drawSingleOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t cha
   lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
     lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2), h, BARGRAPH1_COLOR);
-    lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+    lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | DEFAULT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
     uint16_t endpoint = x + w / 2;
     uint16_t size = divRoundClosest(-chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2);
     lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH1_COLOR);
-    lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+    lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | DEFAULT_COLOR, 0, NULL, "%");
   }
 
-  lcd->drawSolidVerticalLine(x + w / 2, y, h, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(x + w / 2, y, h, DEFAULT_COLOR);
 }
 
 void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
@@ -123,10 +123,10 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   uint16_t valPos;
 
   strAppendSigned(&chanString[2], channel + 1, 2);
-  lcdDrawText(x, y, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+  lcdDrawText(x, y, chanString, SMLSIZE | DEFAULT_COLOR | LEFT);
 
-  lcdDrawSizedText(x + 45, y, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
-  lcdDrawNumber(x + w, y, usValue, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, STR_US);
+  lcdDrawSizedText(x + 45, y, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), SMLSIZE | DEFAULT_COLOR | LEFT | ZCHAR);
+  lcdDrawNumber(x + w, y, usValue, SMLSIZE | DEFAULT_COLOR | RIGHT, 0, NULL, STR_US);
 
   lcdDrawSolidFilledRect(x, y + Y_OUTBAR, w, h, BARGRAPH_BGCOLOR);
   lcd->drawSolidVerticalLine(x + limPos, y + Y_OUTBAR, h, MAINVIEW_GRAPHICS_COLOR);
@@ -154,11 +154,11 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED)
     lcd->drawBitmap(x - X_OFFSET + 7, y + 7, chanMonLockedBitmap);
 #endif
-  lcd->drawSolidVerticalLine(x + w / 2, y + Y_OUTBAR, h, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(x + w / 2, y + Y_OUTBAR, h, DEFAULT_COLOR);
   if (chanVal > calcRESXto100((ld && ld->revert) ? -ld->offset : ld->offset))
-    lcdDrawNumber(x + limPos, y + h, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+    lcdDrawNumber(x + limPos, y + h, chanVal, SMLSIZE | DEFAULT_COLOR | RIGHT, 0, NULL, "%");
   else
-    lcdDrawNumber(x + limPos, y + h, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+    lcdDrawNumber(x + limPos, y + h, chanVal, SMLSIZE | DEFAULT_COLOR, 0, NULL, "%");
 }
 
 coord_t drawChannelsMonitorLegend(coord_t x, const char * s, int color)

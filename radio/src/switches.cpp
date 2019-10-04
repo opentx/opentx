@@ -649,7 +649,7 @@ void checkSwitches()
           unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
           if (state && state-1 != ((switches_states >> (i*2)) & 0x03)) {
             if (++numWarnings < 6) {
-              // LcdFlags attr = ((states & mask) == (switches_states & mask)) ? TEXT_COLOR : ALARM_COLOR;
+              // LcdFlags attr = ((states & mask) == (switches_states & mask)) ? DEFAULT_COLOR : ALARM_COLOR;
               // LcdFlags attr = ALARM_COLOR;
               // drawSwitch(x, y, SWSRC_FIRST_SWITCH+i*3+state-1, attr);
               x += 35;

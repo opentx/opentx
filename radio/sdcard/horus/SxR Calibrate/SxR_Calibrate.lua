@@ -137,9 +137,9 @@ local function redrawFieldsPage(event)
     end
 
     local attr = current == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
-    attr = attr + TEXT_COLOR
+    attr = attr + DEFAULT_COLOR
 
-    lcd.drawText(1, 30+20*index, field[1], TEXT_COLOR)
+    lcd.drawText(1, 30+20*index, field[1], DEFAULT_COLOR)
 
     if field[4] == nil then
       lcd.drawText(COLUMN_2, 30+20*index, "---", attr)
@@ -295,14 +295,14 @@ local function runCalibrationPage(event)
   drawScreenTitle("SxR", page, #pages)
   if(calibrationStep < 6) then
     local position = calibrationPositions[1 + calibrationStep]
-    lcd.drawText(100, 50, "Place the SxR in the following position", TEXT_COLOR)
+    lcd.drawText(100, 50, "Place the SxR in the following position", DEFAULT_COLOR)
     if calibBitmaps[calibrationStep + 1] == nil then
       calibBitmaps[calibrationStep + 1] = Bitmap.open(calibBitmapsFile[calibrationStep + 1])
     end
     lcd.drawBitmap(calibBitmaps[calibrationStep + 1], 200, 70)
     for index = 1, 3, 1 do
       local field = fields[index]
-      lcd.drawText(70, 80+20*index, field[1]..":", TEXT_COLOR)
+      lcd.drawText(70, 80+20*index, field[1]..":", DEFAULT_COLOR)
       lcd.drawNumber(90, 80+20*index, field[4]/10, LEFT+PREC2)
     end
 

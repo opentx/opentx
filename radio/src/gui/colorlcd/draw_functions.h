@@ -59,7 +59,6 @@ void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att);
 
 void drawStatusText(BitmapBuffer * dc, const char * text);
 void drawColumnHeader(BitmapBuffer * dc, const char * const * headers, const char * const * descriptions, uint8_t index);
-void drawCheckBox(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void drawProgressScreen(BitmapBuffer * dc, const char * title, const char * message, int num, int den);
 void drawTrimSquare(BitmapBuffer * dc, coord_t x, coord_t y);
