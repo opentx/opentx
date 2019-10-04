@@ -380,7 +380,7 @@ class SpecialFunctionButton : public Button {
       if (active)
         dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
       paintSpecialFunctionLine(dc);
-      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? CHECKBOX_COLOR : DISABLE_COLOR);
     }
 
   protected:

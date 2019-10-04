@@ -96,7 +96,7 @@ class SensorButton : public Button {
       else if (sensor->type == TELEM_TYPE_CUSTOM && !g_model.ignoreSensorIds) {
         dc->drawNumber(SENSOR_COL3, line1, sensor->instance, LEFT);
       }
-      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? CHECKBOX_COLOR : DISABLE_COLOR);
     }
 
   protected:

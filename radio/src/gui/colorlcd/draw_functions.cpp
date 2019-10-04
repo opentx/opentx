@@ -41,7 +41,7 @@ void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, u
     coord_t yhgt = (h*visible + count/2) / count;
     if (yhgt + yofs > h)
       yhgt = h - yofs;
-    dc->drawSolidFilledRect(x-1, y + yofs, 3, yhgt, SCROLLBOX_COLOR);
+    dc->drawSolidFilledRect(x-1, y + yofs, 3, yhgt, CHECKBOX_COLOR);
   }
 }
 

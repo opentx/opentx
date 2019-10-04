@@ -45,7 +45,7 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[FOCUS_BGCOLOR_INDEX] = RED;
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
-      lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
+      lcdColorTable[CHECKBOX_COLOR_INDEX] = RED;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
@@ -291,7 +291,7 @@ class FrskyTheme: public ThemeBase
 
       lcdColorTable[DEFAULT_BGCOLOR_INDEX] = bg_color;
       lcdColorTable[FOCUS_BGCOLOR_INDEX] = color;
-      lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
+      lcdColorTable[CHECKBOX_COLOR_INDEX] = color;
       lcdColorTable[CURVE_COLOR_INDEX] = color;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
@@ -388,7 +388,7 @@ class FrskyTheme: public ThemeBase
       dc->drawSolidRect(x, y, w, h, 1, DEFAULT_COLOR);
       if (value > 0) {
         int width = (w * value) / 100;
-        dc->drawSolidFilledRect(x + 2, y + 2, width - 4, h - 4, SCROLLBOX_COLOR);
+        dc->drawSolidFilledRect(x + 2, y + 2, width - 4, h - 4, CHECKBOX_COLOR);
       }
     }
 

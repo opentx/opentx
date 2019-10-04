@@ -116,7 +116,7 @@ bool CheckBox(W * window, rect_t & rect, const char * label, uint8_t & value, Lc
   }
   else {
     if (value) {
-      window->drawSolidFilledRect(x+2, rect.y+11, 8, 8, SCROLLBOX_COLOR);
+      window->drawSolidFilledRect(x+2, rect.y+11, 8, 8, CHECKBOX_COLOR);
       drawSolidRect(window, x, rect.y+9, 12, 12, 1, LINE_COLOR);
     }
     else {

@@ -302,7 +302,7 @@ void CommonInputOrMixButton::drawFlightModes(BitmapBuffer *dc, FlightModesType v
       dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, s, SMLSIZE | TEXT_DISABLE_COLOR);
     }
     else {
-      dc->drawSolidFilledRect(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, 8, 3, SCROLLBOX_COLOR);
+      dc->drawSolidFilledRect(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, 8, 3, CHECKBOX_COLOR);
       dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, s, SMLSIZE);
     }
     x += 8;
@@ -314,7 +314,7 @@ void CommonInputOrMixButton::paint(BitmapBuffer * dc)
   if (active)
     dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
   paintBody(dc);
-  dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
+  dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? CHECKBOX_COLOR : DISABLE_COLOR);
 }
 
 class InputLineButton : public CommonInputOrMixButton {

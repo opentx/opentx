@@ -141,7 +141,7 @@ class OutputLineButton : public Button {
       }
 
       // bounding rect
-      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : DISABLE_COLOR);
+      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? CHECKBOX_COLOR : DISABLE_COLOR);
     }
 
   protected:

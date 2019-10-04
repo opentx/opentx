@@ -205,36 +205,6 @@ const char * getBasename(const char * path)
   return path;
 }
 
-/**
-  Check if given extension exists in a list of extensions.
-  @param extension The extension to search for, including leading period.
-  @param pattern One or more file extensions concatenated together, including the periods.
-    The list is searched backwards and the first match, if any, is returned.
-    eg: ".gif.jpg.jpeg.png"
-  @param match Optional container to hold the matched file extension (wide enough to hold LEN_FILE_EXTENSION_MAX + 1).
-  @retval true if a extension was found in the lost, false otherwise.
-*/
-bool isExtensionMatching(const char * extension, const char * pattern, char * match)
-{
-  const char *ext;
-  uint8_t extlen, fnlen;
-  int plen;
-
-  ext = getFileExtension(pattern, 0, 0, &fnlen, &extlen);
-  plen = (int)fnlen;
-  while (plen > 0 && ext) {
-    if (!strncasecmp(extension, ext, extlen)) {
-      if (match != nullptr) strncat(&(match[0]='\0'), ext, extlen);
-      return true;
-    }
-    plen -= extlen;
-    if (plen > 0) {
-      ext = getFileExtension(pattern, plen, 0, nullptr, &extlen);
-    }
-  }
-  return false;
-}
-
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags)
 {
   static uint16_t lastpopupMenuOffset = 0;
@@ -402,13 +372,13 @@ void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS +
 
   result = f_open(&file, filename, FA_OPEN_EXISTING | FA_READ);
   if (result == FR_OK) {
-    for (unsigned i = 0; i < TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz) == FR_OK && sz == 1 && (lines_count == 0 || current_line - menuVerticalOffset < NUM_BODY_LINES); i++) {
+    for (uint32_t i = 0; i < TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz) == FR_OK && sz == 1 && (lines_count == 0 || current_line - menuVerticalOffset < int(NUM_BODY_LINES)); i++) {
       if (c == '\n') {
         ++current_line;
         line_length = 0;
         escape = 0;
       }
-      else if (c!='\r' && current_line>=menuVerticalOffset && current_line-menuVerticalOffset<NUM_BODY_LINES && line_length<LCD_COLS) {
+      else if (c != '\r' && current_line >= menuVerticalOffset && current_line - menuVerticalOffset < int(NUM_BODY_LINES) && line_length < LCD_COLS) {
         if (c == '\\' && escape == 0) {
           escape = 1;
           continue;

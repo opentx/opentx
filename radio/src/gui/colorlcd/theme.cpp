@@ -146,7 +146,7 @@ void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t
     dc->drawSolidFilledRect(x + 0, y + 2, 16, 16, FOCUS_BGCOLOR);
     if (checked) {
       dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, DEFAULT_BGCOLOR);
-      dc->drawSolidFilledRect(x + 3, y + 5, 10, 10, SCROLLBOX_COLOR);
+      dc->drawSolidFilledRect(x + 3, y + 5, 10, 10, CHECKBOX_COLOR);
     }
     else {
       dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, DEFAULT_BGCOLOR);
@@ -155,7 +155,7 @@ void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t
   else {
     dc->drawSolidRect(x + 0, y + 2, 16, 16, 1, DISABLE_COLOR);
     if (checked) {
-      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, SCROLLBOX_COLOR);
+      dc->drawSolidFilledRect(x + 2, y + 4, 12, 12, CHECKBOX_COLOR);
     }
   }
 }
