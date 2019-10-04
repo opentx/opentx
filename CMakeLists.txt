@@ -65,7 +65,7 @@ if(WIN32)
 endif()
 
 # Python check
-find_package(PythonInterp 3)
+find_package(PythonInterp 3 REQUIRED)
 if(PYTHONINTERP_FOUND)
   message(STATUS "Python found, version: ${PYTHON_VERSION_STRING}")
   get_filename_component(PYTHON_DIRECTORY ${PYTHON_EXECUTABLE} DIRECTORY)
