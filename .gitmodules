@@ -1,4 +1,4 @@
 [submodule "libopenui"]
 	path = radio/src/thirdparty/libopenui
-	url = git@github.com:opentx/libopenui.git
+	url = ../libopenui.git
 	branch = master
