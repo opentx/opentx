@@ -340,7 +340,7 @@ local function runFieldsPage(event)
   else
     if event == EVT_VIRTUAL_NEXT then
       selectField(1)
-    elseif event == EVT_VIRTUAL_PREVIOUS then
+    elseif event == EVT_VIRTUAL_PREV then
       selectField(-1)
     end
   end
@@ -500,7 +500,7 @@ local function run(event)
     return 2
   elseif event == EVT_VIRTUAL_NEXT_PAGE then
     selectPage(1)
-  elseif event == EVT_VIRTUAL_PREVIOUS_PAGE then
+  elseif event == EVT_VIRTUAL_PREV_PAGE then
     killEvents(event);
     selectPage(-1)
   end
