@@ -617,7 +617,7 @@ void menuModelSetup(event_t event)
           }
 
           int current = 0;
-          for (int i = 0; i < switchWarningsCount; i++) {
+          for (int i = 0; i < NUM_SWITCHES; i++) {
             if (SWITCH_WARNING_ALLOWED(i)) {
               div_t qr = div(current, MAX_SWITCH_PER_LINE);
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && attr && l_posHorz == current && old_posHorz >= 0) {
