@@ -242,6 +242,7 @@ static void processMultiSyncPacket(const uint8_t * data, uint8_t module)
 #endif
 }
 
+#if !defined(PCBSKY9X)
 static void processMultiRxChannels(const uint8_t * data, uint8_t len)
 {
   if (g_model.trainerData.mode != TRAINER_MODE_MULTI)
@@ -277,6 +278,7 @@ static void processMultiRxChannels(const uint8_t * data, uint8_t len)
   if (ch == maxCh)
     ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
 }
+#endif
 
 static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 {
@@ -366,12 +368,14 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
         TRACE("[MP] Received spectrum scanner len %d != 6", len);
       break;
 
+#if !defined(PCBSKY9X)
     case MultiRxChannels:
       if (len >= 4)
         processMultiRxChannels(data, len);
       else
         TRACE("[MP] Received RX channels len %d < 4", len);
       break;
+#endif
       
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);
