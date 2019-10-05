@@ -26,37 +26,72 @@
 #include "opentx_types.h"
 #include "libopenui/src/libopenui_types.h"
 
-#define EVT_KEY_MASK(e)                ((e) & 0x1f)
+constexpr event_t EVT_REFRESH =        0x1000;
+constexpr event_t EVT_ENTRY =          0x1001;
+constexpr event_t EVT_ENTRY_UP =       0x1002;
+constexpr event_t EVT_ROTARY_LEFT =    0x1003;
+constexpr event_t EVT_ROTARY_RIGHT =   0x1004;
 
 #if defined(PCBHORUS)
-constexpr event_t _MSK_KEY_BREAK =                 0x0200;
-constexpr event_t _MSK_KEY_REPT =                  0x0400;
-constexpr event_t _MSK_KEY_FIRST =                 0x0600;
-constexpr event_t _MSK_KEY_LONG =                  0x0800;
-constexpr event_t _MSK_KEY_FLAGS =                 0x0E00;
+constexpr event_t _MSK_KEY_BREAK =     0x0200;
+constexpr event_t _MSK_KEY_REPT =      0x0400;
+constexpr event_t _MSK_KEY_FIRST =     0x0600;
+constexpr event_t _MSK_KEY_LONG =      0x0800;
+constexpr event_t _MSK_KEY_FLAGS =     0x0E00;
 #else
-constexpr event_t _MSK_KEY_BREAK =                 0x20;
-constexpr event_t _MSK_KEY_REPT =                  0x40;
-constexpr event_t _MSK_KEY_FIRST =                 0x60;
-constexpr event_t _MSK_KEY_LONG =                  0x80;
-constexpr event_t _MSK_KEY_FLAGS =                 0xE0;
-constexpr event_t EVT_ENTRY =                      0xBF;
-constexpr event_t EVT_ENTRY_UP =                   0xBE;
+constexpr event_t _MSK_KEY_BREAK =     0x0020;
+constexpr event_t _MSK_KEY_REPT =      0x0040;
+constexpr event_t _MSK_KEY_FIRST =     0x0060;
+constexpr event_t _MSK_KEY_LONG =      0x0080;
+constexpr event_t _MSK_KEY_FLAGS =     0x00E0;
 #endif
 
 #if defined(HARDWARE_TOUCH)
-constexpr event_t _MSK_VIRTUAL_KEY =               0x1000;
+constexpr event_t _MSK_VIRTUAL_KEY =   0x2000;
+
+constexpr event_t EVT_VIRTUAL_KEY(uint8_t key)
+{
+  return (key | _MSK_VIRTUAL_KEY);
+}
+
+constexpr event_t EVT_VIRTUAL_KEY_MIN = EVT_VIRTUAL_KEY('m');
+constexpr event_t EVT_VIRTUAL_KEY_MAX = EVT_VIRTUAL_KEY('M');
+constexpr event_t EVT_VIRTUAL_KEY_PLUS = EVT_VIRTUAL_KEY('+');
+constexpr event_t EVT_VIRTUAL_KEY_MINUS = EVT_VIRTUAL_KEY('-');
+constexpr event_t EVT_VIRTUAL_KEY_FORWARD = EVT_VIRTUAL_KEY('F');
+constexpr event_t EVT_VIRTUAL_KEY_BACKWARD = EVT_VIRTUAL_KEY('B');
+constexpr event_t EVT_VIRTUAL_KEY_DEFAULT = EVT_VIRTUAL_KEY('0');
+constexpr event_t EVT_VIRTUAL_KEY_UP = EVT_VIRTUAL_KEY('U');
+constexpr event_t EVT_VIRTUAL_KEY_DOWN = EVT_VIRTUAL_KEY('D');
+constexpr event_t EVT_VIRTUAL_KEY_LEFT = EVT_VIRTUAL_KEY('L');
+constexpr event_t EVT_VIRTUAL_KEY_RIGHT = EVT_VIRTUAL_KEY('R');
+constexpr event_t EVT_VIRTUAL_KEY_NEXT = EVT_VIRTUAL_KEY('N');
+constexpr event_t EVT_VIRTUAL_KEY_PREVIOUS = EVT_VIRTUAL_KEY('P');
+
+constexpr bool IS_VIRTUAL_KEY_EVENT(event_t event)
+{
+  return (event & 0xF000) == _MSK_VIRTUAL_KEY;
+}
 #endif
 
-#define EVT_VIRTUAL_KEY(key)                       ((key) | _MSK_VIRTUAL_KEY)
-
 // normal order of events is: FIRST, LONG, REPEAT, REPEAT, ..., BREAK
+#define EVT_KEY_MASK(e)                ((e) & 0x1F)
 #define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)  // fired when key is pressed
 #define EVT_KEY_LONG(key)              ((key)|_MSK_KEY_LONG)   // fired when key is held pressed for a while
 #define EVT_KEY_REPT(key)              ((key)|_MSK_KEY_REPT)   // fired when key is held pressed long enough, fires multiple times with increasing speed
-constexpr event_t EVT_KEY_BREAK(event_t key)
+constexpr event_t EVT_KEY_BREAK(uint8_t key)
 {
   return (key | _MSK_KEY_BREAK);  // fired when key is released (short or long), but only if the event was not killed
+}
+
+constexpr bool IS_KEY_EVENT(event_t event)
+{
+  return (event & 0xF000) == 0;  // fired when key is released (short or long), but only if the event was not killed
+}
+
+constexpr bool IS_TRIM_EVENT(event_t event)
+{
+  return (IS_KEY_EVENT(event) && EVT_KEY_MASK(event) >= TRM_BASE);
 }
 
 #define IS_KEY_FIRST(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_FIRST)
@@ -67,31 +102,21 @@ constexpr event_t EVT_KEY_BREAK(event_t key)
 #if defined(PCBXLITE)
   #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)
-  #define EVT_ROTARY_LEFT              0xDF00
-  #define EVT_ROTARY_RIGHT             0xDE00
   #define IS_NEXT_EVENT(event)         (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))
 #elif defined(PCBFRSKY) && defined(ROTARY_ENCODER_NAVIGATION)
   #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)
-  #define EVT_ROTARY_LEFT              0xDF00
-  #define EVT_ROTARY_RIGHT             0xDE00
   #define IS_NEXT_EVENT(event)         (event==EVT_ROTARY_RIGHT)
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_ROTARY_LEFT)
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   #define EVT_ROTARY_BREAK             0xcf
   #define EVT_ROTARY_LONG              0xce
-  #define EVT_ROTARY_LEFT              0xdf
-  #define EVT_ROTARY_RIGHT             0xde
   #define IS_NEXT_EVENT(event)         (event==EVT_ROTARY_RIGHT || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_ROTARY_LEFT || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))
 #else
   #define IS_NEXT_EVENT(event)         (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))
-#endif
-
-#if defined(COLORLCD)
-  #define EVT_REFRESH                  0xDD00
 #endif
 
 class Key

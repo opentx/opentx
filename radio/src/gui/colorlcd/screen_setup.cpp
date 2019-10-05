@@ -67,7 +67,7 @@ class LayoutChoice: public FormField {
     }
 
 #if defined(HARDWARE_KEYS)
-    void onKeyEvent(event_t event) override
+    void onEvent(event_t event) override
     {
       TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
@@ -77,7 +77,7 @@ class LayoutChoice: public FormField {
         openMenu();
       }
       else {
-        FormField::onKeyEvent(event);
+        FormField::onEvent(event);
       }
     }
 #endif

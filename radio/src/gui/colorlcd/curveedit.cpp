@@ -22,7 +22,7 @@
 #include "keyboard_curve.h"
 #include "opentx.h" // TODO for applyCustomCurve
 
-CurveEdit::CurveEdit(Window * parent, const rect_t &rect, uint8_t index) :
+CurveEdit::CurveEdit(Window * parent, const rect_t & rect, uint8_t index) :
   Curve(parent, rect, [=](int x) -> int {
     return applyCustomCurve(x, index);
   }),
@@ -54,13 +54,9 @@ bool CurveEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
     setFocus();
-    update();
   }
 
-  CurveKeyboard * keyboard = CurveKeyboard::instance();
-  if (keyboard->getField() != this) {
-    keyboard->setField(this);
-  }
+  CurveKeyboard::show(this, isCustomCurve());
 
   CurveInfo & curve = g_model.curves[index];
   for (int i=0; i<5 + curve.points; i++) {
@@ -79,13 +75,13 @@ bool CurveEdit::onTouchEnd(coord_t x, coord_t y)
 
 void CurveEdit::onFocusLost()
 {
-  CurveKeyboard::instance()->disable(true);
+  CurveKeyboard::hide();
 }
 #endif
 
 void CurveEdit::next()
 {
-  if (++current == points.size()) {
+  if (current++ == points.size()) {
     current = 0;
   }
   update();
@@ -94,7 +90,7 @@ void CurveEdit::next()
 void CurveEdit::previous()
 {
   if (current-- == 0) {
-    current = points.size() - 1;
+    current = points.size();
   }
   update();
 }
@@ -118,7 +114,7 @@ void CurveEdit::down()
 void CurveEdit::right()
 {
   CurveInfo & curve = g_model.curves[index];
-  if (curve.type == CURVE_TYPE_CUSTOM && current != 0 && current != curve.points - 1) {
+  if (curve.type == CURVE_TYPE_CUSTOM && current != 0 && current != curve.points + 5 - 1) {
     int8_t * points = curveAddress(index);
     int8_t * point = &points[5 + curve.points + current - 1];
     int8_t xmax = (current == (curve.points - 2) ? +100 : *(point + 1));
@@ -131,7 +127,7 @@ void CurveEdit::right()
 void CurveEdit::left()
 {
   CurveInfo & curve = g_model.curves[index];
-  if (curve.type == CURVE_TYPE_CUSTOM && current != 0 && current != curve.points - 1) {
+  if (curve.type == CURVE_TYPE_CUSTOM && current != 0 && current != curve.points + 5 - 1) {
     int8_t * points = curveAddress(index);
     int8_t * point = &points[5 + curve.points + current - 1];
     int8_t xmin = (current == 1 ? -100 : *(point - 1));
@@ -144,4 +140,41 @@ void CurveEdit::left()
 bool CurveEdit::isCustomCurve()
 {
   return g_model.curves[index].type == CURVE_TYPE_CUSTOM;
+}
+
+void CurveEdit::onEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  switch (event) {
+#if defined(HARDWARE_TOUCH)
+    case EVT_VIRTUAL_KEY_LEFT:
+      left();
+      break;
+
+    case EVT_VIRTUAL_KEY_RIGHT:
+      right();
+      break;
+
+    case EVT_VIRTUAL_KEY_UP:
+      up();
+      break;
+
+    case EVT_VIRTUAL_KEY_DOWN:
+      down();
+      break;
+
+    case EVT_VIRTUAL_KEY_PREVIOUS:
+      previous();
+      break;
+
+    case EVT_VIRTUAL_KEY_NEXT:
+      next();
+      break;
+#endif
+
+    default:
+      FormField::onEvent(event);
+      break;
+  }
 }

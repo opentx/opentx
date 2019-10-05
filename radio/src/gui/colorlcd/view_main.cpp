@@ -165,7 +165,7 @@ ViewMain::~ViewMain()
 }
 
 #if defined(HARDWARE_KEYS)
-void ViewMain::onKeyEvent(event_t event)
+void ViewMain::onEvent(event_t event)
 {
   switch (event) {
     case EVT_KEY_LONG(KEY_MODEL):

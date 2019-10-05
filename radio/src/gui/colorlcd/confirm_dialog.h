@@ -28,7 +28,7 @@ class ConfirmDialog: public Dialog {
     ConfirmDialog(const char * title, const char * message, std::function<void(void)> confirmHandler);
 
 #if defined(HARDWARE_KEYS)
-    void onKeyEvent(event_t event) override;
+    void onEvent(event_t event) override;
 #endif
 
   protected:

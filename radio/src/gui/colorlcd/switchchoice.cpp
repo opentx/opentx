@@ -97,7 +97,7 @@ void SwitchChoice::openMenu()
 }
 
 #if defined(HARDWARE_KEYS)
-void SwitchChoice::onKeyEvent(event_t event)
+void SwitchChoice::onEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
@@ -107,7 +107,7 @@ void SwitchChoice::onKeyEvent(event_t event)
     openMenu();
   }
   else {
-    FormField::onKeyEvent(event);
+    FormField::onEvent(event);
   }
 }
 #endif
@@ -117,6 +117,7 @@ bool SwitchChoice::onTouchEnd(coord_t, coord_t)
 {
   openMenu();
   setFocus();
+  setEditMode(true);
   return true;
 }
 #endif

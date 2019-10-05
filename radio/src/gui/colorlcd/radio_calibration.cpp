@@ -243,7 +243,7 @@ void RadioCalibrationPage::checkEvents()
 }
 
 #if defined(HARDWARE_KEYS)
-void RadioCalibrationPage::onKeyEvent(event_t event)
+void RadioCalibrationPage::onEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
@@ -257,7 +257,7 @@ void RadioCalibrationPage::onKeyEvent(event_t event)
 
   }
   else {
-    Page::onKeyEvent(event);
+    Page::onEvent(event);
   }
 }
 #endif

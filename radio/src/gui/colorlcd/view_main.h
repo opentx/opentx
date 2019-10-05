@@ -40,7 +40,7 @@ class ViewMain: public Window {
 
   protected:
 #if defined(HARDWARE_KEYS)
-    void onKeyEvent(event_t event) override;
+    void onEvent(event_t event) override;
 #endif
     void paint(BitmapBuffer * dc) override;
     void checkEvents() override;

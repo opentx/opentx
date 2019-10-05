@@ -45,7 +45,7 @@ void TimeEdit::paint(BitmapBuffer * dc)
 
 #if defined(HARDWARE_KEYS)
 // TODO could be moved to BaseNumberEdit
-void TimeEdit::onKeyEvent(event_t event)
+void TimeEdit::onEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
@@ -70,7 +70,7 @@ void TimeEdit::onKeyEvent(event_t event)
     }
   }
 
-  FormField::onKeyEvent(event);
+  FormField::onEvent(event);
 }
 #endif
 
@@ -81,16 +81,16 @@ bool TimeEdit::onTouchEnd(coord_t x, coord_t y)
     setFocus();
   }
 
-  NumberKeyboard * keyboard = NumberKeyboard::instance();
-  if (keyboard->getField() != this) {
-    keyboard->setField(this);
-  }
+//  NumberKeyboard * keyboard = NumberKeyboard::instance();
+//  if (keyboard->getField() != this) {
+//    keyboard->setField(this);
+//  }
 
   return true;
 }
 
 void TimeEdit::onFocusLost()
 {
-  NumberKeyboard::instance()->disable(true);
+//  NumberKeyboard::instance()->disable(true);
 }
 #endif

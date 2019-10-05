@@ -22,17 +22,14 @@
 #define _KEYBOARD_CURVE_H_
 
 #include "keyboard_base.h"
-#include "curveedit.h"
 
 class Button;
 
-class CurveKeyboard : public Keyboard<CurveEdit> {
-  friend class CurveEdit;
-
+class CurveKeyboard : public Keyboard {
   public:
     CurveKeyboard();
 
-    ~CurveKeyboard();
+    ~CurveKeyboard() override;
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() override
@@ -41,14 +38,15 @@ class CurveKeyboard : public Keyboard<CurveEdit> {
     }
 #endif
 
-    static CurveKeyboard * instance()
+    void enableRightLeft(bool enable);
+
+    static void show(FormField * field, bool enableRightLeft)
     {
       if (!_instance)
         _instance = new CurveKeyboard();
-      return _instance;
+      _instance->setField(field);
+      _instance->enableRightLeft(enableRightLeft);
     }
-
-    void setField(CurveEdit * field);
 
     void paint(BitmapBuffer * dc) override;
 

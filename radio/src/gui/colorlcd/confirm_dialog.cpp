@@ -29,7 +29,7 @@ ConfirmDialog::ConfirmDialog(const char *title, const char *message, std::functi
 }
 
 #if defined(HARDWARE_KEYS)
-void ConfirmDialog::onKeyEvent(event_t event)
+void ConfirmDialog::onEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 

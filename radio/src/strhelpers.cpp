@@ -218,8 +218,8 @@ char * getCurveString(char * dest, int idx)
     idx = -idx;
   }
 
-  if (ZEXIST(g_model.curves[idx - 1].name))
-    zchar2str(s, g_model.curves[idx - 1].name, LEN_CURVE_NAME);
+  if (g_model.curves[idx - 1].name[0])
+    strAppend(s, g_model.curves[idx - 1].name, LEN_CURVE_NAME);
   else
     strAppendStringWithIndex(s, STR_CV, idx);
 
@@ -234,8 +234,8 @@ char * getGVarString(char * dest, int idx)
     idx = -idx-1;
   }
 
-  if (ZEXIST(g_model.gvars[idx].name))
-    zchar2str(s, g_model.gvars[idx].name, LEN_GVAR_NAME);
+  if (g_model.gvars[idx].name[0])
+    strAppend(s, g_model.gvars[idx].name, LEN_GVAR_NAME);
   else
     strAppendStringWithIndex(s, STR_GV, idx+1);
 

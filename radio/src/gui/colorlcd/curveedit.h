@@ -24,17 +24,17 @@
 #include "curve.h"
 
 class CurveEdit: public Curve {
-  friend class CurveKeyboard;
-
   public:
     CurveEdit(Window * parent, const rect_t & rect, uint8_t index);
 
     void checkEvents() override
     {
-      // no permanent refresh
+      Curve::checkEvents();
     }
 
     void update();
+
+    void onEvent(event_t event) override;
 
 #if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override;

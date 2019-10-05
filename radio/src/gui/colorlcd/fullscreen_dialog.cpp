@@ -79,7 +79,7 @@ void FullScreenDialog::paint(BitmapBuffer * dc)
 }
 
 #if defined(HARDWARE_KEYS)
-void FullScreenDialog::onKeyEvent(event_t event)
+void FullScreenDialog::onEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 

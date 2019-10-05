@@ -19,7 +19,6 @@
  */
 
 #include "keyboard_curve.h"
-#include "curveedit.h"
 #include "button.h"
 #include "lcd.h"
 
@@ -27,74 +26,63 @@ constexpr coord_t KEYBOARD_HEIGHT = 110;
 
 CurveKeyboard * CurveKeyboard::_instance = nullptr;
 
-CurveKeyboard::CurveKeyboard():
-  Keyboard<CurveEdit>(KEYBOARD_HEIGHT)
+CurveKeyboard::CurveKeyboard() :
+  Keyboard(KEYBOARD_HEIGHT)
 {
   // up
-  new TextButton(this, {LCD_W/2 - 20, 5, 40, 40}, "\200",
+  new TextButton(this, {LCD_W / 2 - 20, 5, 40, 40}, "\200",
                  [=]() -> uint8_t {
-                   if (field) {
-                     field->up();
-                   }
-                   return 0;
+                     putEvent(EVT_VIRTUAL_KEY_UP);
+                     return 0;
                  }, BUTTON_BACKGROUND | BUTTON_NOFOCUS);
 
   // down
-  new TextButton(this, {LCD_W/2 - 20, 65, 40, 40}, "\201",
+  new TextButton(this, {LCD_W / 2 - 20, 65, 40, 40}, "\201",
                  [=]() -> uint8_t {
-                   field->down();
-                   return 0;
+                     putEvent(EVT_VIRTUAL_KEY_DOWN);
+                     return 0;
                  }, BUTTON_BACKGROUND | BUTTON_NOFOCUS);
 
   // left
   left = new TextButton(this, {LCD_W / 2 - 70, 35, 40, 40}, "\177",
                         [=]() -> uint8_t {
-                          if (field) {
-                            field->left();
-                          }
-                          return 0;
+                            putEvent(EVT_VIRTUAL_KEY_LEFT);
+                            return 0;
                         }, BUTTON_BACKGROUND | BUTTON_NOFOCUS);
 
   // right
   right = new TextButton(this, {LCD_W / 2 + 30, 35, 40, 40}, "\176",
                          [=]() -> uint8_t {
-                           if (field) {
-                             field->right();
-                           }
-                           return 0;
+                             putEvent(EVT_VIRTUAL_KEY_RIGHT);
+                             return 0;
                          }, BUTTON_BACKGROUND | BUTTON_NOFOCUS);
 
   // next
-  new TextButton(this, {LCD_W/2 + 80, 35, 60, 40}, "Next",
+  new TextButton(this, {LCD_W / 2 + 80, 35, 60, 40}, "Next",
                  [=]() -> uint8_t {
-                   if (field) {
-                     field->next();
-                   }
-                   return 0;
+                     putEvent(EVT_VIRTUAL_KEY_NEXT);
+                     return 0;
                  }, BUTTON_BACKGROUND | BUTTON_NOFOCUS);
 
   // previous
   new TextButton(this, {LCD_W / 2 - 140, 35, 60, 40}, "Prev",
                  [=]() -> uint8_t {
-                   if (field) {
-                     field->previous();
-                   }
-                   return 0;
+                     putEvent(EVT_VIRTUAL_KEY_PREVIOUS);
+                     return 0;
                  }, BUTTON_BACKGROUND | BUTTON_NOFOCUS);
 
+}
+
+void CurveKeyboard::enableRightLeft(bool enable)
+{
+  TRACE("STOP %d", enable);
+  left->enable(enable);
+  right->enable(enable);
 }
 
 CurveKeyboard::~CurveKeyboard()
 {
   _instance = nullptr;
-}
-
-void CurveKeyboard::setField(CurveEdit * field)
-{
-  Keyboard<CurveEdit>::setField(field);
-  bool custom = field->isCustomCurve();
-  left->enable(custom);
-  right->enable(custom);
 }
 
 void CurveKeyboard::paint(BitmapBuffer * dc)
