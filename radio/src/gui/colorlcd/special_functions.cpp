@@ -64,7 +64,6 @@ class SpecialFunctionEditPage : public Page {
 
     void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
     {
-      // SF.one variable part
       FormGridLayout grid;
       specialFunctionOneWindow->clear();
 
@@ -207,7 +206,7 @@ class SpecialFunctionEditPage : public Page {
     {
       // SF.one
       FormGridLayout grid;
-      grid.spacer(8);
+      grid.spacer(PAGE_PADDING);
 
       CustomFunctionData * cfn = &functions[index];
 
@@ -219,7 +218,7 @@ class SpecialFunctionEditPage : public Page {
                                                 : isSwitchAvailable(value,
                                                                     GeneralCustomFunctionsContext));
       });
-      window->setFirstField(switchChoice);
+//      window->setFirstField(switchChoice);
       grid.nextLine();
 
       // Function
@@ -242,8 +241,8 @@ class SpecialFunctionEditPage : public Page {
     }
 };
 
-static constexpr coord_t line1 = 0;
-static constexpr coord_t line2 = 20;
+static constexpr coord_t line1 = FIELD_PADDING_TOP;
+static constexpr coord_t line2 = line1 + PAGE_LINE_HEIGHT;
 static constexpr coord_t col1 = 20;
 static constexpr coord_t col2 = (LCD_W - 100) / 3 + col1;
 static constexpr coord_t col3 = ((LCD_W - 100) / 3) * 2 + col1 + 20;
@@ -286,7 +285,6 @@ class SpecialFunctionButton : public Button {
 
     void paintSpecialFunctionLine(BitmapBuffer * dc)
     {
-      // SF.all
       const CustomFunctionData * cfn = &functions[index];
       if (functions[index].func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
         functions[index].func = FUNC_OVERRIDE_CHANNEL + 1;
@@ -360,7 +358,7 @@ class SpecialFunctionButton : public Button {
           break;
       }
       if (HAS_ENABLE_PARAM(func)) {
-        theme->drawCheckBox(dc, col3, line2, CFN_ACTIVE(cfn));
+        theme->drawCheckBox(dc, CFN_ACTIVE(cfn), col3, line2);
       }
       else if (HAS_REPEAT_PARAM(func)) {
         if (CFN_PLAY_REPEAT(cfn) == 0) {
@@ -379,7 +377,10 @@ class SpecialFunctionButton : public Button {
     {
       if (active)
         dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
+
       paintSpecialFunctionLine(dc);
+
+      // The bounding rect
       dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? CHECKBOX_COLOR : DISABLE_COLOR);
     }
 
