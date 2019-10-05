@@ -1068,14 +1068,19 @@ bool menuModelSetup(event_t event)
         if (attr) {
           if (s_editMode > 0) {
             switch (menuHorizontalPosition) {
-              case 0:
-              {
+              case 0: {
 #if defined(HARDWARE_INTERNAL_MODULE)
-                IsValueAvailable checkFun = moduleIdx == 0 ? isInternalModuleAvailable : isExternalModuleAvailable;
-#else
-                IsValueAvailable checkFun = isExternalModuleAvailable;
+                if (moduleIdx == INTERNAL_MODULE) {
+                  uint8_t moduleType = checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,
+                                                   isInternalModuleAvailable);
+                  if (checkIncDec_Ret) {
+                    setModuleType(moduleIdx, moduleType);
+                  }
+                }
+                else
 #endif
-                reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isExternalModuleAvailable);;
+                  reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,
+                                                                   isExternalModuleAvailable);
               }
               break;
               case 1:
