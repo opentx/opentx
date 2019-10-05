@@ -34,8 +34,6 @@ constexpr event_t _MSK_KEY_REPT =                  0x0400;
 constexpr event_t _MSK_KEY_FIRST =                 0x0600;
 constexpr event_t _MSK_KEY_LONG =                  0x0800;
 constexpr event_t _MSK_KEY_FLAGS =                 0x0E00;
-constexpr event_t EVT_ENTRY =                      0x1000;
-constexpr event_t EVT_ENTRY_UP =                   0x2000;
 #else
 constexpr event_t _MSK_KEY_BREAK =                 0x20;
 constexpr event_t _MSK_KEY_REPT =                  0x40;
@@ -45,6 +43,12 @@ constexpr event_t _MSK_KEY_FLAGS =                 0xE0;
 constexpr event_t EVT_ENTRY =                      0xBF;
 constexpr event_t EVT_ENTRY_UP =                   0xBE;
 #endif
+
+#if defined(HARDWARE_TOUCH)
+constexpr event_t _MSK_VIRTUAL_KEY =               0x1000;
+#endif
+
+#define EVT_VIRTUAL_KEY(key)                       ((key) | _MSK_VIRTUAL_KEY)
 
 // normal order of events is: FIRST, LONG, REPEAT, REPEAT, ..., BREAK
 #define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)  // fired when key is pressed
