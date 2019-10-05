@@ -503,7 +503,7 @@ void MultiModuleStatus::getStatusString(char * statusText)
   if (!isValid()) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 #if !defined(INTERNAL_MODULE_MULTI)
-    if (IS_INTERNAL_MODULE_ENABLED())
+    if (isSportLineUsedByInternalModule())
       strcpy(statusText, STR_DISABLE_INTERNAL);
     else
 #endif
