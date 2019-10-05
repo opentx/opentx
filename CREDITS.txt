@@ -1589,3 +1589,4 @@ Fabien Leroy
 Tyler Nelson
 Stuart Olson
 Reinhard Plietsch
+Manuel Spoerri
