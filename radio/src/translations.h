@@ -853,6 +853,7 @@ extern const char STR_MENU_DISPLAY[];
 extern const char STR_MENU_OTHER[];
 extern const char STR_MENU_INVERT[];
 extern const char STR_JITTER_FILTER[];
+extern const char STR_RTC_CHECK[];
 
 #if MENUS_LOCK == 1
   extern const char STR_UNLOCKED[];

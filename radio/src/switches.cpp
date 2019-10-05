@@ -33,7 +33,6 @@
   #define SWITCH_WARNING_LIST_Y        4*FH+4
 #endif
 
-
 enum LogicalSwitchContextState {
   SWITCH_START,
   SWITCH_DELAY,
