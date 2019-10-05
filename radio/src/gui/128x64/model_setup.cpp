@@ -862,10 +862,8 @@ void menuModelSetup(event_t event)
           if (s_editMode > 0) {
             switch (menuHorizontalPosition) {
               case 0:
-              {
                 reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isExternalModuleAvailable);
-              }
-              break;
+                break;
 
               case 1:
                 if (isModuleDSM2(EXTERNAL_MODULE)) {

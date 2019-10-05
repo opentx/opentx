@@ -1077,6 +1077,7 @@ bool menuModelSetup(event_t event)
 #endif
                 reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isExternalModuleAvailable);;
               }
+              break;
               case 1:
                 if (isModuleDSM2(moduleIdx))
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
