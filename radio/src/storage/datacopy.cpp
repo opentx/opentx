@@ -102,7 +102,7 @@ void copyFlightModeData(A * dest, B * src)
 }
 
 template <class A, class B>
-void copyCurveData(A * dest, B * src)
+void copyCurveHeader(A * dest, B * src)
 {
   dest->type = src->type;
   dest->smooth = src->smooth;
@@ -259,7 +259,7 @@ void copyModelData(A * dest, B * src)
     copyExpoData(&dest->expoData[i], &src->expoData[i]);
   }
   for (int i=0; i<32; i++) {
-    copyCurveData(&dest->curves[i], &src->curves[i]);
+    copyCurveHeader(&dest->curves[i], &src->curves[i]);
   }
   memcpy(dest->points, src->points, sizeof(dest->points));
   for (int i=0; i<64; i++) {

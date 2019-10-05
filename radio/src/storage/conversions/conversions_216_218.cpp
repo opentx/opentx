@@ -200,7 +200,7 @@ PACK(typedef struct {
   uint8_t smooth:1;
   uint8_t spare:4;
   int8_t  points;
-}) CurveData_v216;
+}) CurveHeader_v216;
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {
@@ -586,7 +586,7 @@ PACK(typedef struct {
   LimitData_v216 limitData[MAX_OUTPUT_CHANNELS_218];
   ExpoData_v216  expoData[MAX_EXPOS_218];
 
-  CurveData_v216 curves[MAX_CURVES_218];
+  CurveHeader_v216 curves[MAX_CURVES_218];
   int8_t    points[MAX_CURVE_POINTS_218];
 
   LogicalSwitchData_v216 logicalSw[32];
@@ -632,7 +632,7 @@ PACK(typedef struct {
   LimitData limitData[MAX_OUTPUT_CHANNELS_218];
   ExpoData_v217  expoData[MAX_EXPOS_218];
 
-  CurveData_v216 curves[MAX_CURVES_218];
+  CurveHeader_v216 curves[MAX_CURVES_218];
   int8_t    points[MAX_CURVE_POINTS_218];
 
   LogicalSwitchData_v217 logicalSw[MAX_LOGICAL_SWITCHES_218];

@@ -83,7 +83,7 @@ void menuModelCurvesAll(event_t event)
 #endif
     {
       drawStringWithIndex(0, y, STR_CV, k+1, attr);
-      CurveData & crv = g_model.curves[k];
+      CurveHeader & crv = g_model.curves[k];
       editName(4*FW, y, crv.name, sizeof(crv.name), 0, 0);
 #if LCD_W >= 212
       lcdDrawNumber(11*FW, y, 5+crv.points, LEFT);

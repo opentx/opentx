@@ -119,8 +119,8 @@ class InputEditWindow: public Page {
     Choice * curveTypeChoice = nullptr;
 
     void buildHeader(Window * window) {
-      new StaticText(window, { 50, 0, 100, 20 }, STR_MENUINPUTS, MENU_TITLE_COLOR);
-      new StaticText(window, { 50, FH+2, 100, 20 }, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_TITLE_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUINPUTS, MENU_TITLE_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_TITLE_COLOR);
     }
 
     void updateCurves() {

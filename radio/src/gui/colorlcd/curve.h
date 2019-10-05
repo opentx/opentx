@@ -22,17 +22,19 @@
 #ifndef _CURVE_H_
 #define _CURVE_H_
 
-#include "form.h"
+#include "window.h"
 
 struct CurvePoint {
   point_t coords;
   LcdFlags flags;
 };
 
-class Curve: public FormField {
+class Curve: public Window {
+  friend class CurveEdit;
+
   public:
     Curve(Window * parent, const rect_t & rect, std::function<int(int)> function, std::function<int()> position=nullptr):
-      FormField(parent, rect, OPAQUE),
+      Window(parent, rect, OPAQUE),
       function(std::move(function)),
       position(std::move(position))
     {
@@ -52,7 +54,7 @@ class Curve: public FormField {
         invalidate();
       }
 
-      FormField::checkEvents();
+      Window::checkEvents();
     }
 
     void addPoint(const point_t & point, LcdFlags flags);

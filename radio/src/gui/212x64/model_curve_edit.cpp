@@ -52,7 +52,7 @@ void runPopupCurvePreset(event_t event)
 
   if (warningResult) {
     warningResult = 0;
-    CurveInfo & crv = g_model.curves[s_curveChan];
+    CurveHeader & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
     int k = 25 * reusableBuffer.curveEdit.preset;
     int dx = 2000 / (5+crv.points-1);
@@ -73,13 +73,13 @@ void onCurveOneMenu(const char * result)
     POPUP_INPUT(STR_PRESET, runPopupCurvePreset);
   }
   else if (result == STR_MIRROR) {
-    CurveInfo & crv = g_model.curves[s_curveChan];
+    CurveHeader & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
     for (int i=0; i<5+crv.points; i++)
       points[i] = -points[i];
   }
   else if (result == STR_CLEAR) {
-    CurveInfo & crv = g_model.curves[s_curveChan];
+    CurveHeader & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
     for (int i=0; i<5+crv.points; i++)
       points[i] = 0;
@@ -92,7 +92,7 @@ void onCurveOneMenu(const char * result)
 void menuModelCurveOne(event_t event)
 {
   static uint8_t pointsOfs = 0;
-  CurveData & crv = g_model.curves[s_curveChan];
+  CurveHeader & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
   drawStringWithIndex(PSIZE(TR_MENUCURVES)*FW+FW, 0, "CV", s_curveChan+1);

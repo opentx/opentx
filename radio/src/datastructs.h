@@ -190,7 +190,7 @@ PACK(struct FlightModeData {
  * Curve structure
  */
 
-PACK(struct CurveData {
+PACK(struct CurveHeader {
   uint8_t type:1;
   uint8_t smooth:1;
   int8_t  points:6;   // describes number of points - 5
@@ -580,7 +580,7 @@ PACK(struct ModelData {
   LimitData limitData[MAX_OUTPUT_CHANNELS];
   ExpoData  expoData[MAX_EXPOS];
 
-  CurveData curves[MAX_CURVES];
+  CurveHeader curves[MAX_CURVES];
   int8_t    points[MAX_CURVE_POINTS];
 
   LogicalSwitchData logicalSw[MAX_LOGICAL_SWITCHES];
@@ -849,7 +849,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyLineData, 4);
   CHKTYPE(union TelemetryScreenData, 24);
   CHKSIZE(ModelHeader, 12);
-  CHKSIZE(CurveData, 4);
+  CHKSIZE(CurveHeader, 4);
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
@@ -863,7 +863,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyLineData, 6);
   CHKTYPE(union TelemetryScreenData, 24);
   CHKSIZE(ModelHeader, 24);
-  CHKSIZE(CurveData, 4);
+  CHKSIZE(CurveHeader, 4);
 #elif defined(PCBHORUS)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
@@ -873,7 +873,7 @@ static inline void check_struct()
   CHKSIZE(TimerData, 16);
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(ModelHeader, 31);
-  CHKSIZE(CurveData, 4);
+  CHKSIZE(CurveHeader, 4);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
 #elif defined(PCBNV14)
@@ -889,7 +889,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyBarData, 5);
   CHKSIZE(FrSkyLineData, 2);
   CHKSIZE(ModelHeader, 12);
-  CHKTYPE(CurveData, 4);
+  CHKTYPE(CurveHeader, 4);
 #else
   // Common for all variants
   CHKSIZE(LimitData, 5);
@@ -897,7 +897,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyBarData, 3);
   CHKSIZE(FrSkyLineData, 2);
   CHKSIZE(ModelHeader, 11);
-  CHKTYPE(CurveData, 1);
+  CHKTYPE(CurveHeader, 1);
 
   CHKSIZE(MixData, 9);
   CHKSIZE(ExpoData, 4);

@@ -125,7 +125,7 @@ class SensorEditWindow : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {70, 4, 200, 20}, STR_SENSOR + std::to_string(index + 1), MENU_TITLE_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_SENSOR + std::to_string(index + 1), MENU_TITLE_COLOR);
       // dynamic display of sensor value ?
       //new StaticText(window, {70, 28, 100, 20}, "SF" + std::to_string(index), MENU_TITLE_COLOR);
     }

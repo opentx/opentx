@@ -249,7 +249,7 @@ PACK(typedef struct {
   uint8_t smooth:1;
   int8_t  points:6;   // describes number of points - 5
   char name[LEN_CURVE_NAME_218];
-}) CurveData_v218;
+}) CurveHeader_v218;
 
 PACK(typedef struct {
   int16_t        calib[4];
@@ -447,7 +447,7 @@ PACK(struct ModelData_v218 {
   LimitData limitData[MAX_OUTPUT_CHANNELS_218];
   ExpoData_v218  expoData[MAX_EXPOS_218];
 
-  CurveData_v218 curves[MAX_CURVES_218];
+  CurveHeader_v218 curves[MAX_CURVES_218];
   int8_t    points[MAX_CURVE_POINTS_218];
 
   LogicalSwitchData_v218 logicalSw[MAX_LOGICAL_SWITCHES_218];

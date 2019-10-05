@@ -87,6 +87,9 @@ constexpr uint32_t ALERT_MESSAGE_LEFT =            ALERT_TITLE_LEFT;
 constexpr uint32_t ALERT_ACTION_TOP =              240;
 constexpr uint32_t ALERT_BUTTON_TOP =              300;
 
+constexpr uint32_t PAGE_TITLE_TOP =                4;
+constexpr uint32_t PAGE_TITLE_LEFT =               70;
+
 enum LcdColorIndex
 {
   DEFAULT_COLOR_INDEX,

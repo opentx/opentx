@@ -164,7 +164,7 @@ void convertModelData_218_to_219(ModelData &model)
   }
 
   for (uint8_t i=0; i<MAX_CURVES_218; i++) {
-    memmove(&newModel.curves[i], &oldModel.curves[i], sizeof(CurveData_v218));
+    memmove(&newModel.curves[i], &oldModel.curves[i], sizeof(CurveHeader_v218));
   }
 
   for (uint32_t i=0; i<MAX_CURVE_POINTS_218; i++) {

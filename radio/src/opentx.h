@@ -256,6 +256,7 @@
 #endif
 
 #include "myeeprom.h"
+#include "curves.h"
 
 inline void memclear(void * p, size_t size)
 {
@@ -802,31 +803,8 @@ inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
 }
 #endif
 
-// Curves
-enum BaseCurves {
-  CURVE_NONE,
-  CURVE_X_GT0,
-  CURVE_X_LT0,
-  CURVE_ABS_X,
-  CURVE_F_GT0,
-  CURVE_F_LT0,
-  CURVE_ABS_F,
-  CURVE_BASE
-};
-int8_t * curveAddress(uint8_t idx);
 
-point_t getPoint(uint8_t i);
-point_t getPoint(uint8_t curveIndex, uint8_t index);
-typedef CurveData CurveInfo;
-void loadCurves();
-#define LOAD_MODEL_CURVES() loadCurves()
-int intpol(int x, uint8_t idx);
-int applyCurve(int x, CurveRef & curve);
-int applyCustomCurve(int x, uint8_t idx);
-int applyCurrentCurve(int x);
-int8_t getCurveX(int noPoints, int point);
-void resetCustomCurveX(int8_t * points, int noPoints);
-bool moveCurve(uint8_t index, int8_t shift); // TODO bool?
+
 
 void clearInputs();
 void defaultInputs();

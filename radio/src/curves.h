@@ -18,37 +18,32 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _CURVEEDIT_H_
-#define _CURVEEDIT_H_
+#ifndef _CURVES_H_
+#define _CURVES_H_
 
-#include "form.h"
-#include "curve.h"
-
-class CurveEdit: public FormField {
-  public:
-    CurveEdit(Window * parent, const rect_t & rect, uint8_t index);
-
-    void update();
-
-    void onEvent(event_t event) override;
-
-#if defined(HARDWARE_TOUCH)
-    bool onTouchEnd(coord_t x, coord_t y) override;
-
-    void onFocusLost() override;
-#endif
-
-  protected:
-    Curve preview;
-    uint8_t index;
-    uint8_t current;
-    void next();
-    void previous();
-    void up();
-    void down();
-    void right();
-    void left();
-    bool isCustomCurve();
+enum BaseCurves {
+  CURVE_NONE,
+  CURVE_X_GT0,
+  CURVE_X_LT0,
+  CURVE_ABS_X,
+  CURVE_F_GT0,
+  CURVE_F_LT0,
+  CURVE_ABS_F,
+  CURVE_BASE
 };
 
-#endif // _CURVEEDIT_H_
+void curveReset(uint8_t index);
+void curveMirror(uint8_t index);
+bool isCurveUsed(uint8_t index);
+void loadCurves();
+int8_t * curveAddress(uint8_t idx);
+bool moveCurve(uint8_t index, int8_t shift);
+int8_t getCurveX(int noPoints, int point);
+void resetCustomCurveX(int8_t * points, int noPoints);
+point_t getPoint(uint8_t i);
+point_t getPoint(uint8_t curveIndex, uint8_t index);
+int applyCustomCurve(int x, uint8_t idx);
+int applyCurve(int x, CurveRef & curve);
+int applyCurrentCurve(int x);
+
+#endif

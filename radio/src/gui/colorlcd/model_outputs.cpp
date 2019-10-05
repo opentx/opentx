@@ -39,8 +39,8 @@ class OutputEditWindow : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {70, 4, 100, 20}, STR_MENULIMITS, MENU_TITLE_COLOR);
-      new StaticText(window, {70, 28, 100, 20}, getSourceString(MIXSRC_CH1 + channel), MENU_TITLE_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENULIMITS, MENU_TITLE_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_CH1 + channel), MENU_TITLE_COLOR);
     }
 
     void buildBody(Window * window)

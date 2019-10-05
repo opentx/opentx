@@ -58,6 +58,8 @@ class LogicalSwitchEditWindow: public Page {
         headerSwitchName->setFlags(isActive() ? BOLD|WARNING_COLOR : MENU_TITLE_COLOR);
         active = !active;
       }
+
+      Page::checkEvents();
     }
 
   protected:
@@ -183,8 +185,8 @@ class LogicalSwitchEditWindow: public Page {
     }
 
     void buildHeader(Window * window) {
-      new StaticText(window, { 70, 4, LCD_W - 100, 20 }, STR_MENULOGICALSWITCHES, MENU_TITLE_COLOR);
-      headerSwitchName = new StaticText(window, { 70, 28, LCD_W - 100, 20 }, getSwitchPositionName(SWSRC_SW1+ls), MENU_TITLE_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENULOGICALSWITCHES, MENU_TITLE_COLOR);
+      headerSwitchName = new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSwitchPositionName(SWSRC_SW1+ls), MENU_TITLE_COLOR);
     }
 
     void buildBody(Window * window) {
@@ -256,7 +258,7 @@ class LogicalSwitchButton : public Button {
       Button::checkEvents();
     }
 
-    virtual void paint(BitmapBuffer * dc) override
+    void paint(BitmapBuffer * dc) override
     {
       LogicalSwitchData * ls = lswAddress(lsIndex);
       uint8_t lsFamily = lswFamily(ls->func);
@@ -341,15 +343,19 @@ void ModelLogicalSwitchesPage::build(FormWindow * window, int8_t focusIndex)
   for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
     LogicalSwitchData * ls = lswAddress(i);
     if (ls->func == LS_FUNC_NONE) {
-      auto label = new TextButton(window, grid.getLabelSlot(), getSwitchPositionName(SWSRC_SW1+i));
-      grid.spacer(label->height() + 5);
+      auto button = new TextButton(window, grid.getLabelSlot(), getSwitchPositionName(SWSRC_SW1+i));
+      button->setPressHandler([=]() {
+        editLogicalSwitch(window, i);
+        return 0;
+      });
+      grid.spacer(button->height() + 5);
     }
     else {
       new StaticText(window, grid.getLabelSlot(), getSwitchPositionName(SWSRC_SW1 + i), BUTTON_BACKGROUND | CENTERED);
       Button * button = new LogicalSwitchButton(window, grid.getFieldSlot(), i,
-                                                [=]() -> uint8_t {
-                                                    Menu *menu = new Menu();
-                                                    LogicalSwitchData *ls = lswAddress(i);
+                                                [=]() {
+                                                    Menu * menu = new Menu();
+                                                    LogicalSwitchData * ls = lswAddress(i);
                                                     menu->addLine(STR_EDIT, [=]() {
                                                         editLogicalSwitch(window, i);
                                                     });

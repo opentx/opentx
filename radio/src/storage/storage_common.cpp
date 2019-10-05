@@ -157,7 +157,7 @@ void postModelLoad(bool alarms)
     }
   }
 
-  LOAD_MODEL_CURVES();
+  loadCurves();
 
   resumeMixerCalculations();
   if (pulsesStarted()) {

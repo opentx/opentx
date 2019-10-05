@@ -88,6 +88,9 @@ constexpr uint32_t ALERT_MESSAGE_TOP =             ALERT_TITLE_TOP + 90;
 constexpr uint32_t ALERT_MESSAGE_LEFT =            ALERT_TITLE_LEFT;
 constexpr uint32_t ALERT_ACTION_TOP =              240;
 
+constexpr uint32_t PAGE_TITLE_TOP =                2;
+constexpr uint32_t PAGE_TITLE_LEFT =               50;
+
 // TODO common code, not in target
 enum LcdColorIndex
 {

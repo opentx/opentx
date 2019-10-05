@@ -23,7 +23,8 @@
 #include "opentx.h" // TODO for applyCustomCurve
 
 CurveEdit::CurveEdit(Window * parent, const rect_t & rect, uint8_t index) :
-  Curve(parent, rect, [=](int x) -> int {
+  FormField(parent, rect),
+  preview(this, {0, 0, width(), height()}, [=](int x) -> int {
     return applyCustomCurve(x, index);
   }),
   index(index),
@@ -34,16 +35,16 @@ CurveEdit::CurveEdit(Window * parent, const rect_t & rect, uint8_t index) :
 
 void CurveEdit::update()
 {
-  clearPoints();
-  CurveInfo & curve = g_model.curves[index];
+  preview.clearPoints();
+  CurveHeader & curve = g_model.curves[index];
   for (uint8_t i = 0; i < 5 + curve.points; i++) {
     if (hasFocus() && current == i) {
-      position = [=] () -> int {
+      preview.position = [=] () -> int {
         return getPoint(index, i).x;
       };
     }
     else {
-      addPoint(getPoint(index, i), DEFAULT_COLOR);
+      preview.addPoint(getPoint(index, i), DEFAULT_COLOR);
     }
   }
   invalidate();
@@ -58,11 +59,11 @@ bool CurveEdit::onTouchEnd(coord_t x, coord_t y)
 
   CurveKeyboard::show(this, isCustomCurve());
 
-  CurveInfo & curve = g_model.curves[index];
+  CurveHeader & curve = g_model.curves[index];
   for (int i=0; i<5 + curve.points; i++) {
     if (i != current) {
       point_t point = getPoint(index, i);
-      if (abs(getPointX(point.x) - x) <= 10 && abs(getPointY(point.y) - y) <= 10) {
+      if (abs(preview.getPointX(point.x) - x) <= 10 && abs(preview.getPointY(point.y) - y) <= 10) {
         current = i;
         update();
         break;
@@ -81,7 +82,7 @@ void CurveEdit::onFocusLost()
 
 void CurveEdit::next()
 {
-  if (current++ == points.size()) {
+  if (current++ == preview.points.size()) {
     current = 0;
   }
   update();
@@ -90,7 +91,7 @@ void CurveEdit::next()
 void CurveEdit::previous()
 {
   if (current-- == 0) {
-    current = points.size();
+    current = preview.points.size();
   }
   update();
 }
@@ -113,7 +114,7 @@ void CurveEdit::down()
 
 void CurveEdit::right()
 {
-  CurveInfo & curve = g_model.curves[index];
+  CurveHeader & curve = g_model.curves[index];
   if (curve.type == CURVE_TYPE_CUSTOM && current != 0 && current != curve.points + 5 - 1) {
     int8_t * points = curveAddress(index);
     int8_t * point = &points[5 + curve.points + current - 1];
@@ -126,7 +127,7 @@ void CurveEdit::right()
 
 void CurveEdit::left()
 {
-  CurveInfo & curve = g_model.curves[index];
+  CurveHeader & curve = g_model.curves[index];
   if (curve.type == CURVE_TYPE_CUSTOM && current != 0 && current != curve.points + 5 - 1) {
     int8_t * points = curveAddress(index);
     int8_t * point = &points[5 + curve.points + current - 1];

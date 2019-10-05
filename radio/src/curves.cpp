@@ -21,8 +21,8 @@
 #include "opentx.h"
 
 uint8_t s_curveChan;
-
 int8_t * curveEnd[MAX_CURVES];
+
 void loadCurves()
 {
   bool showWarning= false;
@@ -94,8 +94,35 @@ void resetCustomCurveX(int8_t * points, int noPoints)
   }
 }
 
+void curveReset(uint8_t index)
+{
+  CurveHeader * curve = &g_model.curves[index];
+  int8_t * points = curveAddress(index);
+
+  memclear(points, 5 + curve->points);
+
+  if (curve->type == CURVE_TYPE_CUSTOM)
+    resetCustomCurveX(points, 5 + curve->points);
+
+  memclear(curve, sizeof(CurveHeader));
+}
+
+void curveMirror(uint8_t index)
+{
+  CurveHeader & curve = g_model.curves[index];
+  int8_t * points = curveAddress(index);
+
+  for (int i = 0; i < 5 + curve.points; i++)
+    points[i] = -points[i];
+}
+
+bool isCurveUsed(uint8_t index)
+{
+  return !is_memclear(&g_model.curves[index], sizeof(CurveHeader)) || !is_memclear(curveAddress(index), 5);
+}
+
 #define CUSTOM_POINT_X(points, count, idx) ((idx)==0 ? -100 : (((idx)==(count)-1) ? 100 : points[(count)+(idx)-1]))
-int32_t compute_tangent(CurveInfo * crv, int8_t * points, int i)
+int32_t compute_tangent(CurveHeader * crv, int8_t * points, int i)
 {
   int32_t m=0;
     uint8_t num_points = crv->points + 5;
@@ -166,7 +193,7 @@ int32_t compute_tangent(CurveInfo * crv, int8_t * points, int i)
 */
 int16_t hermite_spline(int16_t x, uint8_t idx)
 {
-  CurveInfo &crv = g_model.curves[idx];
+  CurveHeader &crv = g_model.curves[idx];
   int8_t *points = curveAddress(idx);
   uint8_t count = crv.points+5;
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
@@ -211,7 +238,7 @@ int16_t hermite_spline(int16_t x, uint8_t idx)
 
 int intpol(int x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
-  CurveInfo & crv = g_model.curves[idx];
+  CurveHeader & crv = g_model.curves[idx];
   int8_t * points = curveAddress(idx);
   uint8_t count = crv.points+5;
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
@@ -307,7 +334,7 @@ int applyCustomCurve(int x, uint8_t idx)
   if (idx >= MAX_CURVES)
     return 0;
 
-  CurveInfo & crv = g_model.curves[idx];
+  CurveHeader & crv = g_model.curves[idx];
   if (crv.smooth)
     return hermite_spline(x, idx);
   else
@@ -322,7 +349,7 @@ point_t getPoint(uint8_t index)
 point_t getPoint(uint8_t curveIndex, uint8_t index)
 {
   point_t result = {0, 0};
-  CurveInfo & crv = g_model.curves[curveIndex];
+  CurveHeader & crv = g_model.curves[curveIndex];
   int8_t * points = curveAddress(curveIndex);
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
   uint8_t count = 5 + crv.points;
