@@ -361,12 +361,13 @@ void convertModelData_218_to_219(ModelData &model)
       }
     }
   }
-
+#if defined(LUA)
   for (uint8_t i=0; i<MAX_SCRIPTS; i++) {
     for (uint8_t j=0; j<MAX_SCRIPT_INPUTS; j++) {
       newModel.scriptsData[i].inputs[j].source = convertSource_218_to_219(oldModel.scriptsData[i].inputs[j].source);
     }
   }
+#endif
 #endif
 
 #if defined(STM32)
