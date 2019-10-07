@@ -1593,3 +1593,4 @@ Manuel Spoerri
 Paul Pearson
 Thierry Laligand
 Bruno Mexique
+Uwe Jordt
