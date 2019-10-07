@@ -156,7 +156,7 @@ void RadioSdManagerPage::build(FormWindow *window)
     files.sort(compare_nocase);
 
     for (auto name: directories) {
-      auto button = new TextButton(window, grid.getLabelSlot(), name, [=]() -> uint8_t {
+      new TextButton(window, grid.getLabelSlot(), name, [=]() -> uint8_t {
           f_chdir(name.data());
           window->clear();
           build(window);

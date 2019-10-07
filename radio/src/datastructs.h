@@ -165,6 +165,11 @@ PACK(struct CustomFunctionData {
     }) clear);
   });
   uint8_t active;
+
+  bool isEmpty() const
+  {
+    return swtch == 0;
+  }
 });
 
 /*

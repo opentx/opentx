@@ -237,8 +237,8 @@ static constexpr coord_t col3 = ((LCD_W - 100) / 3) * 2 + col1;
 
 class LogicalSwitchButton : public Button {
   public:
-    LogicalSwitchButton(Window * parent, const rect_t & rect, int lsIndex, std::function<uint8_t(void)> onPress):
-      Button(parent, rect, onPress),
+    LogicalSwitchButton(Window * parent, const rect_t & rect, int lsIndex):
+      Button(parent, rect),
       lsIndex(lsIndex),
       active(isActive())
     {
@@ -351,7 +351,7 @@ void ModelLogicalSwitchesPage::build(FormWindow * window, int8_t focusIndex)
   grid.spacer(PAGE_PADDING);
   grid.setLabelWidth(66);
 
-  for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
+  for (uint8_t i = 0; i < MAX_LOGICAL_SWITCHES; i++) {
     LogicalSwitchData * ls = lswAddress(i);
     if (ls->func == LS_FUNC_NONE) {
       auto button = new TextButton(window, grid.getLabelSlot(), getSwitchPositionName(SWSRC_SW1+i));
@@ -363,32 +363,34 @@ void ModelLogicalSwitchesPage::build(FormWindow * window, int8_t focusIndex)
     }
     else {
       new StaticText(window, grid.getLabelSlot(), getSwitchPositionName(SWSRC_SW1 + i), BUTTON_BACKGROUND | CENTERED);
-      Button * button = new LogicalSwitchButton(window, grid.getFieldSlot(), i,
-                                                [=]() {
-                                                    Menu * menu = new Menu();
-                                                    LogicalSwitchData * ls = lswAddress(i);
-                                                    menu->addLine(STR_EDIT, [=]() {
-                                                        editLogicalSwitch(window, i);
-                                                    });
-                                                    if (ls->func)
-                                                      menu->addLine(STR_COPY, [=]() {
-                                                          clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
-                                                          clipboard.data.csw = *ls;
-                                                      });
-                                                    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
-                                                      menu->addLine(STR_PASTE, [=]() {
-                                                          *ls = clipboard.data.csw;
-                                                          storageDirty(EE_MODEL);
-                                                          rebuild(window, i);
-                                                      });
-                                                    if (ls->func || ls->v1 || ls->v2 || ls->delay || ls->duration || ls->andsw)
-                                                      menu->addLine(STR_CLEAR, [=]() {
-                                                          memset(ls, 0, sizeof(LogicalSwitchData));
-                                                          storageDirty(EE_MODEL);
-                                                          rebuild(window, i);
-                                                      });
-                                                    return 0;
-                                                });
+
+      auto button = new LogicalSwitchButton(window, grid.getFieldSlot(), i);
+      button->setPressHandler([=]() {
+          Menu * menu = new Menu();
+          LogicalSwitchData * ls = lswAddress(i);
+          menu->addLine(STR_EDIT, [=]() {
+              editLogicalSwitch(window, i);
+          });
+          if (ls->func)
+            menu->addLine(STR_COPY, [=]() {
+                clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
+                clipboard.data.csw = *ls;
+            });
+          if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
+            menu->addLine(STR_PASTE, [=]() {
+                *ls = clipboard.data.csw;
+                storageDirty(EE_MODEL);
+                rebuild(window, i);
+            });
+          if (ls->func || ls->v1 || ls->v2 || ls->delay || ls->duration || ls->andsw)
+            menu->addLine(STR_CLEAR, [=]() {
+                memset(ls, 0, sizeof(LogicalSwitchData));
+                storageDirty(EE_MODEL);
+                rebuild(window, i);
+            });
+          return 0;
+      });
+
       if (focusIndex == i) {
         button->setFocus();
       }

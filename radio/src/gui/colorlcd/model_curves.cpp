@@ -55,7 +55,7 @@ class CurveEditWindow : public Page {
       int8_t * points = curveAddress(index);
 
       // Curve editor
-      curveEdit = new CurveEdit(window, { LCD_W - curveWidth - PAGE_PADDING, PAGE_PADDING, curveWidth, curveWidth}, index);
+      curveEdit = new CurveEdit(window, { coord_t(LCD_W - curveWidth - PAGE_PADDING), PAGE_PADDING, curveWidth, curveWidth}, index);
 
       FormGridLayout grid;
       grid.setLabelWidth(PAGE_PADDING);

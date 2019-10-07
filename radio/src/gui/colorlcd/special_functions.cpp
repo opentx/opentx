@@ -256,7 +256,7 @@ class SpecialFunctionButton : public Button {
     {
       const CustomFunctionData * cfn = &functions[index];
       uint8_t func = CFN_FUNC(cfn);
-      if (!CFN_EMPTY(cfn) &&
+      if (!cfn->isEmpty() &&
           (HAS_ENABLE_PARAM(func) || HAS_REPEAT_PARAM(func) || (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT))) {
         setHeight(getHeight() + 20);
       }
@@ -292,7 +292,7 @@ class SpecialFunctionButton : public Button {
       uint8_t func = CFN_FUNC(cfn);
 
       drawSwitch(dc, col1, line1, CFN_SWITCH(cfn), 0);
-      if (CFN_EMPTY(cfn))
+      if (cfn->isEmpty())
         return;
 
       dc->drawTextAtIndex(col2, line1, STR_VFSWFUNC, func, 0);
@@ -421,7 +421,7 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
 
   Window::clearFocus();
 
-  char s[5] = "SF";
+  char s[] = "SFxx";
   if (functions == g_eeGeneral.customFn)
     s[0] = 'G';
 
@@ -429,71 +429,73 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
 
   for (uint8_t i = 0; i < MAX_SPECIAL_FUNCTIONS; i++) {
     CustomFunctionData * cfn = &functions[i];
-
     strAppendUnsigned(&s[2], i);
-    new StaticText(window, grid.getLabelSlot(), s, BUTTON_BACKGROUND | CENTERED);
 
-    Button * button = new SpecialFunctionButton(window, grid.getFieldSlot(), functions, i);
-    if (i == 0)
-      first = button;
-
-    if (focusIndex == i)
-      button->setFocus();
-
-    button->setPressHandler([=]() -> uint8_t {
-      button->bringToTop();
-      Menu * menu = new Menu();
-      #warning "TODO When only EDIT available => directy open the edit window without the menu"
-      menu->addLine(STR_EDIT, [=]() {
-        editSpecialFunction(window, i);
+    if (cfn->swtch == 0) {
+      auto button = new TextButton(window, grid.getLabelSlot(), s);
+      button->setPressHandler([=]() {
+          editSpecialFunction(window, i);
+          return 0;
       });
-      if (!CFN_EMPTY(cfn)) {
-        menu->addLine(STR_COPY, [=]() {
-          clipboard.type = CLIPBOARD_TYPE_CUSTOM_FUNCTION;
-          clipboard.data.cfn = *cfn;
-        });
-      }
-      if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION) {
-        menu->addLine(STR_PASTE, [=]() {
-          *cfn = clipboard.data.cfn;
-          SET_DIRTY();
-          rebuild(window, i);
-        });
-      }
-      if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[MAX_SPECIAL_FUNCTIONS - 1])) {
-        menu->addLine(STR_INSERT, [=]() {
-          memmove(cfn + 1, cfn, (MAX_SPECIAL_FUNCTIONS - i - 1) * sizeof(CustomFunctionData));
-          memset(cfn, 0, sizeof(CustomFunctionData));
-          SET_DIRTY();
-          rebuild(window, i);
-        });
-      }
-      if (!CFN_EMPTY(cfn)) {
-        menu->addLine(STR_CLEAR, [=]() {
-          memset(cfn, 0, sizeof(CustomFunctionData));
-          SET_DIRTY();
-        });
-      }
-      for (int j = i; j < MAX_SPECIAL_FUNCTIONS; j++) {
-        if (!CFN_EMPTY(&functions[j])) {
-          menu->addLine(STR_DELETE, [=]() {
-            memmove(cfn, cfn + 1, (MAX_SPECIAL_FUNCTIONS - i - 1) * sizeof(CustomFunctionData));
-            memset(&functions[MAX_SPECIAL_FUNCTIONS - 1], 0, sizeof(CustomFunctionData));
-            SET_DIRTY();
-            rebuild(window, i);
+      grid.spacer(button->height() + 5);
+    }
+    else {
+      new StaticText(window, grid.getLabelSlot(), s, BUTTON_BACKGROUND | CENTERED);
+
+      auto button = new SpecialFunctionButton(window, grid.getFieldSlot(), functions, i);
+      button->setPressHandler([=]() {
+          button->bringToTop();
+          Menu * menu = new Menu();
+          menu->addLine(STR_EDIT, [=]() {
+              editSpecialFunction(window, i);
           });
-          break;
-        }
+          menu->addLine(STR_COPY, [=]() {
+              clipboard.type = CLIPBOARD_TYPE_CUSTOM_FUNCTION;
+              clipboard.data.cfn = *cfn;
+          });
+          if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION) {
+            menu->addLine(STR_PASTE, [=]() {
+                *cfn = clipboard.data.cfn;
+                SET_DIRTY();
+                rebuild(window, i);
+            });
+          }
+          if (functions[MAX_SPECIAL_FUNCTIONS - 1].isEmpty()) {
+            menu->addLine(STR_INSERT, [=]() {
+                memmove(cfn + 1, cfn, (MAX_SPECIAL_FUNCTIONS - i - 1) * sizeof(CustomFunctionData));
+                memset(cfn, 0, sizeof(CustomFunctionData));
+                SET_DIRTY();
+                rebuild(window, i);
+            });
+          }
+          menu->addLine(STR_CLEAR, [=]() {
+              memset(cfn, 0, sizeof(CustomFunctionData));
+              SET_DIRTY();
+          });
+          for (int j = i; j < MAX_SPECIAL_FUNCTIONS; j++) {
+            if (!functions[j].isEmpty()) {
+              menu->addLine(STR_DELETE, [=]() {
+                  memmove(cfn, cfn + 1, (MAX_SPECIAL_FUNCTIONS - i - 1) * sizeof(CustomFunctionData));
+                  memset(&functions[MAX_SPECIAL_FUNCTIONS - 1], 0, sizeof(CustomFunctionData));
+                  SET_DIRTY();
+                  rebuild(window, i);
+              });
+              break;
+            }
+          }
+          return 0;
+      });
+
+      if (focusIndex == i) {
+        button->setFocus();
       }
-      return 0;
-    });
 
-    grid.spacer(button->height() + 5);
+      grid.spacer(button->height() + 5);
+    }
   }
-
-  FormField::link(FormField::getCurrentField(), first);
 
   grid.nextLine();
 
+  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }
