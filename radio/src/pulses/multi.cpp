@@ -35,7 +35,7 @@
 #define MULTI_FAILSAFE 0x01
 #define MULTI_DATA     0x02
 
-static void sendFrameProtocolHeader(uint8_t moduleIdx, uint8_t multiType);
+static void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe);
 
 static void sendSport(uint8_t moduleIdx);
 
@@ -121,11 +121,21 @@ void setupPulsesMulti(uint8_t moduleIdx)
     }
   }
   #endif
-  sendFrameProtocolHeader(moduleIdx, type);
+  
+  sendFrameProtocolHeader(moduleIdx, type&MULTI_FAILSAFE);
+
   if(type&MULTI_FAILSAFE)
     sendFailsafeChannels(moduleIdx);
   else
     sendChannels(moduleIdx);
+
+  // byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), disable mapping, disable telemetry
+  sendMulti(moduleIdx, (uint8_t) ((g_model.moduleData[moduleIdx].getMultiProtocol(false)&0xC0)
+                           | (g_model.header.modelId[moduleIdx] & 0x30)
+                           | (g_model.moduleData[moduleIdx].multi.disableMapping << 3)
+                           | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 2)));
+  
+  // protocol additional sata: max 9 bytes, only SPort fort now
   #if defined(LUA)
     if(type&MULTI_DATA)
       sendSport(moduleIdx);	//8 bytes of additional data
@@ -182,7 +192,7 @@ void sendChannels(uint8_t moduleIdx)
   }
 }
 
-void sendFrameProtocolHeader(uint8_t moduleIdx, uint8_t multiType)
+void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 {// byte 1+2, protocol information
 
   // Our enumeration starts at 0
@@ -259,18 +269,12 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, uint8_t multiType)
 
 
   uint8_t headerByte = 0x55;
-  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63 0x51 for 64-95 0x50 for 96-127
+  // header, byte 0,  0x55 for proto 0-31, 0x54 for proto 32-63
   if (type & 0x20)
     headerByte &= 0xFE;
 
-  if (type & 0x40)
-    headerByte &= 0xFB;
-
-  if (multiType&MULTI_FAILSAFE)
+  if (failsafe)
     headerByte |= 0x02;
-
-  if (multiType&MULTI_DATA)
-    headerByte |= 0x20;
 
   sendMulti(moduleIdx, headerByte);
 
