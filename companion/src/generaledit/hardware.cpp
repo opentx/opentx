@@ -200,6 +200,15 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   }
   else {
     ui->filterEnable->hide();
+    ui->filterLabel->hide();
+  }
+
+  if (IS_STM32(board)) {
+    ui->rtcCheckDisable->setChecked(!generalSettings.rtcCheckDisable);
+  }
+  else {
+    ui->rtcCheckDisable->hide();
+    ui->rtcCheckLabel->hide();
   }
 
   disableMouseScrolling();
@@ -215,6 +224,11 @@ HardwarePanel::~HardwarePanel()
 void HardwarePanel::on_filterEnable_stateChanged()
 {
   generalSettings.jitterFilter = !ui->filterEnable->isChecked();
+}
+
+void HardwarePanel::on_rtcCheckDisable_stateChanged()
+{
+  generalSettings.rtcCheckDisable = !ui->rtcCheckDisable->isChecked();
 }
 
 void HardwarePanel::on_PPM_MultiplierDSB_editingFinished()

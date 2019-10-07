@@ -612,7 +612,7 @@ void menuModelSetup(event_t event)
           }
 
           int current = 0;
-          for (int i = 0; i < switchWarningsCount; i++) {
+          for (int i = 0; i < NUM_SWITCHES; i++) {
             if (SWITCH_WARNING_ALLOWED(i)) {
               div_t qr = div(current, MAX_SWITCH_PER_LINE);
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && attr && l_posHorz == current && old_posHorz >= 0) {
@@ -1284,7 +1284,7 @@ void menuModelSetup(event_t event)
                   if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx)) {
 #if defined(PCBXLITE)
                     if (EVT_KEY_MASK(event) == KEY_ENTER) {
-#elif defined(PCBSKY9X) || defined(PCBAR9X)
+#elif defined(NAVIGATION_9X)
                     if (event ==  EVT_KEY_FIRST(KEY_ENTER)) {
 #else
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {

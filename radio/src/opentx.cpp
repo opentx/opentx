@@ -869,10 +869,13 @@ static void checkRTCBattery()
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
+#if defined(MULTIMODULE)
     if (isModuleMultimodule(i)) {
       getMultiModuleStatus(i).requiresFailsafeCheck = true;
     }
-    else if (isModuleFailsafeAvailable(i)) {
+    else
+#endif
+    if (isModuleFailsafeAvailable(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
       if (moduleData.failsafeMode == FAILSAFE_NOT_SET) {
         ALERT(STR_FAILSAFEWARN, STR_NO_FAILSAFE, AU_ERROR);
@@ -912,7 +915,8 @@ void checkAll()
 #endif
 
 #if defined(STM32)
-  checkRTCBattery();
+  if (!g_eeGeneral.disableRtcWarning)
+    checkRTCBattery();
 #endif
 
   if (g_model.displayChecklist && modelHasNotes()) {
