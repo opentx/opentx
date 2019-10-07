@@ -436,8 +436,9 @@ PACK(struct ModuleData {
       int8_t  frameLength;
     } ppm;
     NOBACKUP(struct {
-      uint8_t rfProtocolExtra:2;
-      uint8_t spare1:3;
+      uint8_t rfProtocolExtra:3;
+      uint8_t disableTelemetry:1;
+      uint8_t disableMapping:1;
       uint8_t customProto:1;
       uint8_t autoBindMode:1;
       uint8_t lowPowerMode:1;
@@ -472,7 +473,7 @@ PACK(struct ModuleData {
 
   NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
     rfProtocol = (uint8_t) (proto & 0x0f);
-    multi.rfProtocolExtra = (proto & 0x30) >> 4;
+    multi.rfProtocolExtra = (proto & 0x70) >> 4;
   })
 });
 
