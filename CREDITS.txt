@@ -1595,3 +1595,4 @@ Thierry Laligand
 Bruno Mexique
 Uwe Jordt
 Markus Goelzner
+Jean-Claude Etiemble
