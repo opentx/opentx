@@ -632,13 +632,8 @@ enum MixSources {
 #elif defined(PCBTARANIS)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
-#if defined(PCBX9D)
-  MIXSRC_POT3 = MIXSRC_NONE,
-  MIXSRC_FIRST_SLIDER = MIXSRC_POT2 + 1,
-#else
   MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
   MIXSRC_FIRST_SLIDER,
-#endif
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   MIXSRC_LAST_POT = MIXSRC_SLIDER2,
