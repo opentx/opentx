@@ -958,7 +958,7 @@ void menuModelSetup(event_t event)
           switch (menuHorizontalPosition) {
             case 0:
               if (multi_rfProto == MM_RF_CUSTOM_SELECTED)
-                g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), 0, 63, EE_MODEL));
+                g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), 0, 127, EE_MODEL));
               else if (pdef->maxSubtype > 0)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, pdef->maxSubtype);
               break;

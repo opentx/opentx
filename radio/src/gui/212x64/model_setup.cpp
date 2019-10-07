@@ -895,7 +895,7 @@ void menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
               case 2:
                 if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto) {
-                  g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), 0, 63, EE_MODEL));
+                  g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), 0, 127, EE_MODEL));
                   break;
                 }
                 else {
