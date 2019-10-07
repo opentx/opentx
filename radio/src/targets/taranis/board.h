@@ -498,7 +498,7 @@ enum Analogs {
   #define STORAGE_NUM_POTS              3
   #define STORAGE_NUM_SLIDERS           2
 #else
-  #define NUM_POTS                      2
+  #define NUM_POTS                      3 // TODO X9D has only 2 pots
   #define NUM_SLIDERS                   2
   #define STORAGE_NUM_POTS              3
   #define STORAGE_NUM_SLIDERS           2
