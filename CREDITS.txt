@@ -1591,3 +1591,4 @@ Stuart Olson
 Reinhard Plietsch
 Manuel Spoerri
 Paul Pearson
+Thierry Laligand
