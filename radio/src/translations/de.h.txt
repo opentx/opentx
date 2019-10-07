@@ -490,7 +490,7 @@
 #define TR_ALARM                       TR(INDENT "Alarme ", INDENT "Aufleuchten bei Alarm")  //9XR-Pro
 #define TR_USRDATA                     "Daten berechnen aus"
 #define TR_BLADES                      TR(INDENT "Prop", INDENT "Prop-Blätter") //9XR-Pro
-#define TR_SCREEN                      "TelmBild "
+#define TR_SCREEN                      "Seite: "
 #define TR_SOUND_LABEL                 "Töne"
 #define TR_LENGTH                      INDENT "Dauer"
 #define TR_BEEP_LENGTH                 INDENT "Beep-Länge"
@@ -1148,7 +1148,7 @@
 #define TR_MENU_CHANNELS               "\320Kanäle"
 #define TR_MENU_GVARS                  "\311Glob. Vars"
 #define TR_MENU_TELEMETRY              "\321Telemetrie"
-#define TR_MENU_DISPLAY                "DISPLAY"
+#define TR_MENU_DISPLAY                "TELM-SEITEN"
 #define TR_MENU_OTHER                  "Weitere"
 #define TR_MENU_INVERT                 "Invertieren<!>"
 #define TR_JITTER_FILTER               "ADC Filter"
