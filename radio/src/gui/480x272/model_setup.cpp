@@ -1091,10 +1091,8 @@ bool menuModelSetup(event_t event)
                   CHECK_INCDEC_MODELVAR(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST);
                   if (checkIncDec_Ret) {
                     g_model.moduleData[moduleIdx].multi.customProto = (multiRfProto == MODULE_SUBTYPE_MULTI_CUSTOM);
-                    if (!g_model.moduleData[moduleIdx].multi.customProto) {
-                      if(multiRfProto==MODULE_SUBTYPE_MULTI_SCANNER) multiRfProto+=checkIncDec_Ret; //skip this protocol
+                    if (!g_model.moduleData[moduleIdx].multi.customProto)
                       g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
-                    }
                     g_model.moduleData[moduleIdx].subType = 0;
                     // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
                     if (g_model.moduleData[moduleIdx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
