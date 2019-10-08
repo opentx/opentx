@@ -167,6 +167,7 @@ struct mm_protocol_definition {
     uint8_t protocol;
     uint8_t maxSubtype;
     bool failsafe;
+    bool disable_ch_mapping;
     const char *subTypeString;
     const char *optionsstr;
 };
