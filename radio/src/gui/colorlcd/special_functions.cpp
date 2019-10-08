@@ -425,8 +425,6 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
   if (functions == g_eeGeneral.customFn)
     s[0] = 'G';
 
-  FormField * first = nullptr;
-
   for (uint8_t i = 0; i < MAX_SPECIAL_FUNCTIONS; i++) {
     CustomFunctionData * cfn = &functions[i];
     strAppendUnsigned(&s[2], i);
