@@ -181,51 +181,9 @@ void drawGVarValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t gvar, gvar_t
   if (prec > 0) {
     flags |= (prec == 1 ? PREC1 : PREC2);
   }
-  drawValueWithUnit(x, y, value, g_model.gvars[gvar].unit ? UNIT_PERCENT : UNIT_RAW, flags);
+  drawValueWithUnit(dc, x, y, value, g_model.gvars[gvar].unit ? UNIT_PERCENT : UNIT_RAW, flags);
 }
 
-int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event)
-{
-  uint16_t delta = GV_GET_GV1_VALUE(max);
-  bool invers = (attr & INVERS);
-
-  // TRACE("editGVarFieldValue(val=%d min=%d max=%d)", value, min, max);
-
-  if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
-    s_editMode = !s_editMode;
-    if (attr & PREC1)
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode)*10 : delta);
-    else
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode) : delta);
-    storageDirty(EE_MODEL);
-  }
-
-  if (GV_IS_GV_VALUE(value, min, max)) {
-    attr &= ~PREC1;
-
-    int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
-    if (idx >= 0) ++idx;    // transform form idx=0=GV1 to idx=1=GV1 in order to handle double keys invert
-    if (invers) {
-      CHECK_INCDEC_MODELVAR_CHECK(event, idx, -MAX_GVARS, MAX_GVARS, noZero);
-      if (idx == 0) idx = 1;    // handle reset to zero, map to GV1
-    }
-    if (idx < 0) {
-      value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
-      idx = -idx;
-      drawStringWithIndex(x, y, STR_GV, idx, attr, "-");
-    }
-    else {
-      drawStringWithIndex(x, y, STR_GV, idx, attr);
-      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
-    }
-  }
-  else {
-    lcdDrawNumber(x, y, value, attr, 0, NULL, "%");
-    if (invers) value = checkIncDec(event, value, min, max, EE_MODEL | editflags);
-  }
-  return value;
-}
-#else
 void drawValueOrGVar(BitmapBuffer * dc, coord_t x, coord_t y, gvar_t value, LcdFlags flags)
 {
   dc->drawNumber(x, y, value, flags, 0, nullptr, "%");
@@ -545,7 +503,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
 #endif
 #if defined(GVARS)
     else if (source >= MIXSRC_FIRST_GVAR && source <= MIXSRC_LAST_GVAR) {
-    drawGVarValue(x, y, source - MIXSRC_FIRST_GVAR, value, flags);
+    drawGVarValue(dc, x, y, source - MIXSRC_FIRST_GVAR, value, flags);
   }
 #endif
   else if (source < MIXSRC_FIRST_CH) {

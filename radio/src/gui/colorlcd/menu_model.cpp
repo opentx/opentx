@@ -26,6 +26,7 @@
 #include "model_mixes.h"
 #include "model_inputs.h"
 #include "model_outputs.h"
+#include "model_gvars.h"
 #include "model_curves.h"
 #include "model_logical_switches.h"
 #include "special_functions.h"
@@ -43,6 +44,7 @@ ModelMenu::ModelMenu():
   addTab(new ModelMixesPage());
   addTab(new ModelOutputsPage());
   addTab(new ModelCurvesPage());
+  addTab(new ModelGVarsPage());
   addTab(new ModelLogicalSwitchesPage());
   addTab(new SpecialFunctionsPage(g_model.customFn));
   addTab(new ModelTelemetryPage());

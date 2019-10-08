@@ -56,11 +56,13 @@ class FlyskyTheme: public ThemeBase
       lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
       lcdColorTable[DISABLE_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[CURVE_COLOR_INDEX] = RED;
+      lcdColorTable[CURVE_AXIS_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = RED;
       lcdColorTable[TRIM_BGCOLOR_INDEX] = RED;
       lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = BLACK;
       lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = WHITE;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = RED;
+
 
       // The menu header (top bar)
       lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKBLUE;
