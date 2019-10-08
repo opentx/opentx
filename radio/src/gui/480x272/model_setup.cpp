@@ -1102,6 +1102,8 @@ bool menuModelSetup(event_t event)
                       g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
                     }
                     g_model.moduleData[moduleIdx].multi.optionValue = 0;
+                    g_model.moduleData[moduleIdx].multi.disableTelemetry = 0;
+                    g_model.moduleData[moduleIdx].multi.disableMapping = 0;
                   }
                 }
 #endif
@@ -1693,8 +1695,14 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_MAPPING:
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_MAPPING:
-        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Disable mapping");
-        g_model.moduleData[moduleIdx].multi.disableMapping = editCheckBox(g_model.moduleData[moduleIdx].multi.disableMapping, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        {
+          const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
+          if (pdef->disable_ch_mapping)
+          {
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Disable mapping");
+            g_model.moduleData[moduleIdx].multi.disableMapping = editCheckBox(g_model.moduleData[moduleIdx].multi.disableMapping, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+          }
+        }
         break;
 
 #if defined(HARDWARE_INTERNAL_MODULE)

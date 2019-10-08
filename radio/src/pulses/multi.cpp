@@ -52,7 +52,7 @@ static void sendMulti(uint8_t moduleIdx, uint8_t b)
     sendByteSbus(b);
 }
 
-static void sendSetupFrame(uint8_t moduleIdx)
+/*static void sendSetupFrame(uint8_t moduleIdx)
 {
   // Old multi firmware will mark config messsages as invalid frame and throw them away
   sendMulti(moduleIdx, 'M');
@@ -67,7 +67,7 @@ static void sendSetupFrame(uint8_t moduleIdx)
 
   sendMulti(moduleIdx, config);
 }
-
+*/
 static void sendFailsafeChannels(uint8_t moduleIdx)
 {
   uint32_t bits = 0;
@@ -100,33 +100,30 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
 
 void setupPulsesMulti(uint8_t moduleIdx)
 {
-  // TODO : for Pascal
-#if defined(PCBTARANIS) || (defined(PCBHORUS) && !defined(RADIO_T16))
-  bool needInversion = (moduleIdx == EXTERNAL_MODULE);
-#else
-  bool needInversion = false;
-#endif
-  // TODO END
+  #if defined(PCBTARANIS) || (defined(PCBHORUS) && !defined(RADIO_T16))
+    static bool needInversion = (moduleIdx == EXTERNAL_MODULE);
+  #else
+    static bool needInversion = false;
+  #endif
+
   static int counter[2] = {0,0}; //TODO
   uint8_t type=MULTI_NORMAL;
 
-  // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
-  counter[moduleIdx]++;
-  if (counter[moduleIdx] % 1000 == 500) {
-    sendSetupFrame(moduleIdx);
-	return;
-  }
-  else if (counter[moduleIdx] % 1000 == 0 && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_RECEIVER) {
+  if (counter[moduleIdx] % 1000 == 0 && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_RECEIVER) {
     type|=MULTI_FAILSAFE;
   }
+  if (counter[moduleIdx] % 100 == 0 && !getMultiModuleStatus(moduleIdx).isValid() && !g_model.moduleData[moduleIdx].multi.disableTelemetry)
+    needInversion=!needInversion;
+  counter[moduleIdx]++;
+
   #if defined(LUA)
-  else if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
-    if(getMultiModuleStatus(moduleIdx).isValid()) {
-      MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-      if(status.minor>=3 && !(status.flags&0x80) ) //Version 1.3.x.x or more and Buffer not full
-        type|=MULTI_DATA;
+    if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
+      if(getMultiModuleStatus(moduleIdx).isValid()) {
+        MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+        if(status.minor>=3 && !(status.flags&0x80) ) //Version 1.3.x.x or more and Buffer not full
+          type|=MULTI_DATA;
+      }
     }
-  }
   #endif
   
   sendFrameProtocolHeader(moduleIdx, type&MULTI_FAILSAFE);
@@ -139,10 +136,12 @@ void setupPulsesMulti(uint8_t moduleIdx)
   // byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), disable mapping, disable telemetry
   sendMulti(moduleIdx, (uint8_t) ((g_model.moduleData[moduleIdx].getMultiProtocol(false)&0xC0)
                            | (g_model.header.modelId[moduleIdx] & 0x30)
-                           | (g_model.moduleData[moduleIdx].multi.disableMapping << 3)
-                           | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 2)));
+                           | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 3)
+                           | (g_model.moduleData[moduleIdx].multi.disableMapping << 2)
+						 //| 0x02 // Future use
+						   | (needInversion?0x01:0x00) ));
   
-  // protocol additional sata: max 9 bytes, only SPort fort now
+  // protocol additional data: max 9 bytes, only SPort fort now
   #if defined(LUA)
     if(type&MULTI_DATA)
       sendSport(moduleIdx);	//8 bytes of additional data
@@ -293,10 +292,9 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
   sendMulti(moduleIdx, (uint8_t) optionValue);
 }
 
+#if defined(LUA)
 #define BYTE_STUFF	0x7D
 #define STUFF_MASK	0x20
-
-#if defined(LUA)
 void sendSport(uint8_t moduleIdx)
 {
   //example: B7 30 30 0C 80 00 00 00 13
