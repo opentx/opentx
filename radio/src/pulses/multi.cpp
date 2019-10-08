@@ -36,10 +36,10 @@
 #define MULTI_DATA     0x02
 
 static void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe);
-
-static void sendSport(uint8_t moduleIdx);
-
 void sendChannels(uint8_t moduleIdx);
+#if defined(LUA)
+static void sendSport(uint8_t moduleIdx);
+#endif
 
 static void sendMulti(uint8_t moduleIdx, uint8_t b)
 {
@@ -100,6 +100,13 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
 
 void setupPulsesMulti(uint8_t moduleIdx)
 {
+  // TODO : for Pascal
+#if defined(PCBTARANIS) || (defined(PCBHORUS) && !defined(RADIO_T16))
+  bool needInversion = (moduleIdx == EXTERNAL_MODULE);
+#else
+  bool needInversion = false;
+#endif
+  // TODO END
   static int counter[2] = {0,0}; //TODO
   uint8_t type=MULTI_NORMAL;
 
@@ -297,6 +304,8 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 
 #define BYTE_STUFF	0x7D
 #define STUFF_MASK	0x20
+
+#if defined(LUA)
 void sendSport(uint8_t moduleIdx)
 {
   //example: B7 30 30 0C 80 00 00 00 13
@@ -317,3 +326,4 @@ void sendSport(uint8_t moduleIdx)
     sendMulti(moduleIdx, buffer[i]);
   outputTelemetryBuffer.reset(); //empty buffer
 }
+#endif
