@@ -101,7 +101,7 @@ void menuModelLogicalSwitchOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_V1);
         int v1_min=0, v1_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY || cstate == LS_FAMILY_EDGE) {
-          drawSwitch(CSWONE_2ND_COLUMN, y, v1_val, attr);
+          drawSwitch(CSWONE_2ND_COLUMN, y, v1_val, attr | ((getSwitch(v1_val) && v1_val) ? BOLD : 0));
           v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
           INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
           INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
@@ -129,7 +129,7 @@ void menuModelLogicalSwitchOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_V2);
         int16_t v2_min = 0, v2_max = MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
-          drawSwitch(CSWONE_2ND_COLUMN, y, cs->v2, attr);
+          drawSwitch(CSWONE_2ND_COLUMN, y, cs->v2, attr | ((getSwitch(cs->v2) && cs->v2) ? BOLD : 0));
           v2_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v2_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
           INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
           INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
@@ -185,7 +185,7 @@ void menuModelLogicalSwitchOne(event_t event)
 
       case LS_FIELD_ANDSW:
         lcdDrawTextAlignedLeft(y, STR_AND_SWITCH);
-        drawSwitch(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
+        drawSwitch(CSWONE_2ND_COLUMN, y, cs->andsw, attr | ((getSwitch(cs->andsw) && cs->andsw) ? BOLD : 0));
         if (attr) {
           CHECK_INCDEC_MODELSWITCH(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW, isSwitchAvailableInLogicalSwitches);
         }
@@ -294,15 +294,15 @@ void menuModelLogicalSwitches(event_t event)
       uint8_t cstate = lswFamily(cs->func);
 
       if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
-        drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
-        drawSwitch(CSW_3RD_COLUMN, y, cs->v2, 0);
+        drawSwitch(CSW_2ND_COLUMN, y, cs->v1, (getSwitch(cs->v1) && cs->v1) ? BOLD : 0);
+        drawSwitch(CSW_3RD_COLUMN, y, cs->v2, (getSwitch(cs->v2) && cs->v2) ? BOLD : 0);
       }
       else if (cstate == LS_FAMILY_COMP) {
         drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
         drawSource(CSW_3RD_COLUMN, y, cs->v2, 0);
       }
       else if (cstate == LS_FAMILY_EDGE) {
-        drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
+        drawSwitch(CSW_2ND_COLUMN, y, cs->v1, (getSwitch(cs->v1) && cs->v1) ? BOLD : 0);
         putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
       }
       else if (cstate == LS_FAMILY_TIMER) {
@@ -324,7 +324,7 @@ void menuModelLogicalSwitches(event_t event)
       }
 
       // CSW and switch
-      drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, 0);
+      drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, (getSwitch(cs->andsw) && cs->andsw) ? BOLD : 0);
     }
   }
 }
