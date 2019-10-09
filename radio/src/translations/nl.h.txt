@@ -489,7 +489,11 @@ TR_GYR_VSRCRAW
 #define TR_SLOWUP              "Langz.Up"
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "CV"
+#if defined(PCBNV14)
+#define TR_GV                  "GV"
+#else
 #define TR_GV                  TR("G", "GV")
+#endif
 #define TR_ACHANNEL            "A\004kanaal"
 #define TR_RANGE               INDENT "Bereik"
 #define TR_CENTER              INDENT "Centreer"

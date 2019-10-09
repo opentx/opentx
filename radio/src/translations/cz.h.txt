@@ -484,7 +484,11 @@
 #define TR_SLOWUP                      TR3("Zpomalení(+)", "Zpomal(\176)", "Zpomalení(\176)")
 #define TR_MIXER                       "MIXER"
 #define TR_CV                          "K"
+#if defined(PCBNV14)
+#define TR_GV                          "GP"
+#else
 #define TR_GV                          TR("G", "GP")
+#endif
 #define TR_ACHANNEL                    "A\004Kanál"
 #define TR_RANGE                       INDENT"Rozsah"
 #define TR_CENTER                      INDENT "Střed"

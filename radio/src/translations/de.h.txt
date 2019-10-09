@@ -489,7 +489,11 @@
 #define TR_SLOWUP                      "Langs.Up"
 #define TR_MIXER                       "MISCHER"
 #define TR_CV                          "KV"
+#if defined(PCBNV14)
+#define TR_GV                          "GV"
+#else
 #define TR_GV                          TR("G", "GV")
+#endif
 #define TR_ACHANNEL                    TR("A\004gemessen", "A\004Kanal gemessen =>") // 9XR-Pro
 #define TR_RANGE                       TR(INDENT "Bereich", INDENT "Variobereich m/s") // 9XR-Pro
 #define TR_CENTER                      TR(INDENT "Mitte", INDENT "Variomitte     m/s")

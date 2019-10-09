@@ -511,7 +511,11 @@
 #define TR_SLOWUP              "Rall.Sù"
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "CV"
+#if defined(PCBNV14)
+#define TR_GV                  "GV"
+#else
 #define TR_GV                  TR("G", "GV")
+#endif
 #define TR_ACHANNEL            "A\002ingresso"
 #define TR_RANGE               TR(INDENT"Inter.", INDENT"Intervallo")
 #define TR_CENTER              INDENT "Centro"
