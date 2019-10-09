@@ -2215,6 +2215,9 @@ class ModuleField: public TransformedField {
       if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
         module.rfProtocol = module.protocol - PULSES_LP45;
       }
+      if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
+        module.subType = module.protocol - PULSES_PXX_XJT_X16;
+      }
     }
 
     void afterImport() override
