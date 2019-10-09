@@ -1719,7 +1719,7 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_TELEM:
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_TELEM:
-        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Disable telemetry");
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_DISABLE_TELEM);
         g_model.moduleData[moduleIdx].multi.disableTelemetry = editCheckBox(g_model.moduleData[moduleIdx].multi.disableTelemetry, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
@@ -1727,7 +1727,7 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_MAPPING:
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_MAPPING:
-        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Disable mapping");
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_DISABLE_CH_MAP);
         g_model.moduleData[moduleIdx].multi.disableMapping = editCheckBox(g_model.moduleData[moduleIdx].multi.disableMapping, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
