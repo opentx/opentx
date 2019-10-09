@@ -114,6 +114,7 @@ struct MultiModuleStatus {
   uint8_t minor;
   uint8_t revision;
   uint8_t patch;
+  uint8_t ch_order;
 
   uint8_t flags;
   uint8_t requiresFailsafeCheck;
@@ -122,6 +123,8 @@ struct MultiModuleStatus {
   void getStatusString(char* statusText);
 
   inline bool isValid() const { return (bool)(get_tmr10ms() - lastUpdate < 200); }
+  inline bool isBufferFull() const { return (bool) (flags & 0x80); }
+  inline bool supportsDisableMapping() const { return (bool) (flags & 0x40); }
   inline bool supportsFailsafe() const { return (bool) (flags & 0x20); }
   inline bool isWaitingforBind() const { return (bool) (flags & 0x10); }
   inline bool isBinding() const { return (bool) (flags & 0x08); }
