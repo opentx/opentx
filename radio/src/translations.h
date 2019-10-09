@@ -390,6 +390,8 @@ extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
+extern const char STR_DISABLE_CH_MAP[];
+extern const char STR_DISABLE_TELEM[];
 extern const char STR_MULTI_DSM_AUTODTECT[];
 extern const char STR_MULTI_LOWPOWER[];
 extern const char STR_MODULE_NO_SERIAL_MODE[];
