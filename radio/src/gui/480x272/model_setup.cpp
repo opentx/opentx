@@ -1200,8 +1200,8 @@ bool menuModelSetup(event_t event)
             }
           }
 
-          if (bluetooth.state == BLUETOOTH_STATE_DISCOVER_START && reusableBuffer.moduleSetup.bt.devicesCount > 0) {
-            popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bt.devicesCount, 6);
+          if (bluetooth.state == BLUETOOTH_STATE_DISCOVER_END && reusableBuffer.moduleSetup.bt.devicesCount > 0) {
+            popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bt.devicesCount, MAX_BLUETOOTH_DISTANT_ADDR);
             for (uint8_t i = 0; i < popupMenuItemsCount; i++) {
               popupMenuItems[i] = reusableBuffer.moduleSetup.bt.devices[i];
             }
@@ -1210,9 +1210,9 @@ bool menuModelSetup(event_t event)
         }
         else {
           if (bluetooth.distantAddr[0])
-            lcdDrawText(INDENT_WIDTH, y+1, bluetooth.distantAddr, TINSIZE);
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y+1, bluetooth.distantAddr);
           else
-            lcdDrawText(INDENT_WIDTH, y, "---");
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "---");
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, bluetooth.state == BLUETOOTH_STATE_CONNECTED ? STR_CONNECTED : STR_NOT_CONNECTED);
         }
         break;
