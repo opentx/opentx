@@ -193,7 +193,7 @@ static void processMultiScannerPacket(const uint8_t *data)
   }
 }
 
-static void processMultiStatusPacket(const uint8_t * data, uint8_t module)
+static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8_t len)
 {
   MultiModuleStatus &status = getMultiModuleStatus(module);
 
@@ -205,6 +205,8 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module)
   status.minor = data[2];
   status.revision = data[3];
   status.patch = data[4];
+  if(len>=6)
+    status.ch_order=data[5];
   status.lastUpdate = get_tmr10ms();
 
   if (getMultiModuleStatus(module).requiresFailsafeCheck) {
@@ -250,7 +252,7 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
   switch (type) {
     case MultiStatus:
       if (len >= 5)
-        processMultiStatusPacket(data, module);
+        processMultiStatusPacket(data, module, len);
       break;
 
     case DSMBindPacket:
@@ -496,6 +498,26 @@ void MultiModuleStatus::getStatusString(char * statusText)
 
   if (isBinding())
     strcat(statusText, STR_MODULE_BINDING);
+  else {
+    uint8_t temp=ch_order;
+	for(uint8_t i=0;i<4;i++) {
+      switch(temp&0x03) {
+        case 0:
+          strcat(statusText, "A");
+          break;
+        case 1:
+          strcat(statusText, "E");
+          break;
+        case 2:
+          strcat(statusText, "T");
+          break;
+        case 3:
+          strcat(statusText, "R");
+          break;
+      }
+      temp>>=2;
+    }
+  }
 }
 
 static uint8_t * getRxBuffer(uint8_t moduleIdx)
@@ -645,7 +667,7 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
     case ReceivingMultiStatus:
       rxBuffer[rxBufferCount++] = data;
       if (rxBufferCount > 5 && rxBuffer[0] == rxBufferCount - 1) {
-        processMultiStatusPacket(rxBuffer + 1, module);
+        processMultiStatusPacket(rxBuffer + 1, module, rxBuffer[0]);
         rxBufferCount = 0;
         setMultiTelemetryBufferState(module, NoProtocolDetected);
       }

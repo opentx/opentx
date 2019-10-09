@@ -100,22 +100,32 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
 
 void setupPulsesMulti(uint8_t moduleIdx)
 {
-  #if defined(PCBTARANIS) || (defined(PCBHORUS) && !defined(RADIO_T16))
-    static bool needInversion = (moduleIdx == EXTERNAL_MODULE);
-  #else
-    static bool needInversion = false;
-  #endif
-
   static int counter[2] = {0,0}; //TODO
+  static uint8_t invert[2] = {0x80,
+  #if defined(PCBTARANIS) || (defined(PCBHORUS) && !defined(RADIO_T16))
+   0x88};
+  #else
+   0x80};
+  #endif
   uint8_t type=MULTI_NORMAL;
 
+  // Failsafe packets
   if (counter[moduleIdx] % 1000 == 0 && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_RECEIVER) {
     type|=MULTI_FAILSAFE;
   }
-  if (counter[moduleIdx] % 100 == 0 && !getMultiModuleStatus(moduleIdx).isValid() && !g_model.moduleData[moduleIdx].multi.disableTelemetry)
-    needInversion=!needInversion;
+
+  // Invert telemetry if needed
+  if (invert[moduleIdx]&0x80 && !g_model.moduleData[moduleIdx].multi.disableTelemetry) {
+    if (getMultiModuleStatus(moduleIdx).isValid())
+      invert[moduleIdx]&=0x08;    // Telemetry received, stop searching
+    else
+      if ( counter[moduleIdx] % 100 == 0)
+        invert[moduleIdx]^=0x08;  // Try inverting telemetry
+  }
+
   counter[moduleIdx]++;
 
+  // SPort send
   #if defined(LUA)
     if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
       if(getMultiModuleStatus(moduleIdx).isValid()) {
@@ -126,22 +136,24 @@ void setupPulsesMulti(uint8_t moduleIdx)
     }
   #endif
   
+  // Send header
   sendFrameProtocolHeader(moduleIdx, type&MULTI_FAILSAFE);
 
+  // Send channels
   if(type&MULTI_FAILSAFE)
     sendFailsafeChannels(moduleIdx);
   else
     sendChannels(moduleIdx);
 
-  // byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), disable mapping, disable telemetry
+  // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
   sendMulti(moduleIdx, (uint8_t) ((g_model.moduleData[moduleIdx].getMultiProtocol(false)&0xC0)
                            | (g_model.header.modelId[moduleIdx] & 0x30)
-                           | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 3)
-                           | (g_model.moduleData[moduleIdx].multi.disableMapping << 2)
-						 //| 0x02 // Future use
-						   | (needInversion?0x01:0x00) ));
+						   | (invert[moduleIdx]&0x08)
+						 //| 0x04 // Future use
+                           | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
+                           |  g_model.moduleData[moduleIdx].multi.disableMapping ));
   
-  // protocol additional data: max 9 bytes, only SPort fort now
+  // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes, only SPort fort now
   #if defined(LUA)
     if(type&MULTI_DATA)
       sendSport(moduleIdx);	//8 bytes of additional data
