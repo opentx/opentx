@@ -58,6 +58,8 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
+  ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR,
+  ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
@@ -78,7 +80,7 @@ enum MenuRadioHardwareItems {
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 
-#define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0)
+#define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? READONLY_ROW : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0)
 
 // TODO should be moved to the HAL
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
@@ -287,12 +289,22 @@ bool menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH_PIN_CODE);
+        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_PIN_CODE);
         lcdDrawText(HW_SETTINGS_COLUMN+50, y, "000000", 0);
         break;
 
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR:
+        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_LOCAL_ADDR);
+        lcdDrawText(HW_SETTINGS_COLUMN+50, y, bluetooth.localAddr[0] == '\0' ? "---" : bluetooth.localAddr);
+        break;
+
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR:
+        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_DIST_ADDR);
+        lcdDrawText(HW_SETTINGS_COLUMN+50, y, bluetooth.distantAddr[0] == '\0' ? "---" : bluetooth.distantAddr);
+        break;
+
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_NAME);
+        lcdDrawText(INDENT_WIDTH, y, STR_NAME);
         editName(HW_SETTINGS_COLUMN+50, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
         break;
 
