@@ -610,4 +610,9 @@ char * getSwitchPositionName(swsrc_t idx)
 {
   return getSwitchPositionName(tmpHelpersString, idx);
 }
+
+char * getGVarString(int idx)
+{
+  return getGVarString(tmpHelpersString, idx);
+}
 #endif

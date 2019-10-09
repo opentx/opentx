@@ -30,20 +30,21 @@
 #define TEXT_LEFT_MARGIN 2
 #define GVAR_NAME_SIZE 50
 
-int zchar2str(char * dest, const char * src, int size);
+GVarButton::GVarButton(Window * parent, const rect_t & rect, uint8_t gvar):
+  Button(parent, rect),
+  gvar(gvar)
+{
 
-GVarButton::GVarButton(Window * parent, const rect_t & rect, uint8_t gvar) : Button(parent, rect), gvar(gvar) {
-
-  int perRow = (width() - GVAR_NAME_SIZE + TEXT_LEFT_MARGIN*2) / GVAR_NAME_SIZE;
+  int perRow = (width() - GVAR_NAME_SIZE + TEXT_LEFT_MARGIN * 2) / GVAR_NAME_SIZE;
   lines = MAX_FLIGHT_MODES / perRow;
-  if(MAX_FLIGHT_MODES % perRow != 0) lines++;
-  setHeight(LINE_HEIGHT*(lines << 1) + TEXT_OFFSET_TOP * 2);
+  if (MAX_FLIGHT_MODES % perRow != 0) lines++;
+  setHeight(LINE_HEIGHT * (lines << 1) + TEXT_OFFSET_TOP * 2);
 }
 
 
 void GVarButton::checkEvents() {
   Button::checkEvents();
-  if(currentFlightMode != getFlightMode()) {
+  if (currentFlightMode != getFlightMode()) {
     invalidate();
   }
   else {
@@ -52,7 +53,7 @@ void GVarButton::checkEvents() {
       FlightModeData * fmData = &g_model.flightModeData[flightMode];
       sum += fmData->gvars[gvar];
     }
-    if(sum!=gvarSum) invalidate();
+    if (sum != gvarSum) invalidate();
   }
 }
 
@@ -66,9 +67,8 @@ void GVarButton::paint(BitmapBuffer * dc) {
   currentFlightMode = getFlightMode();
   gvarSum = 0;
 
-  dc->drawSolidFilledRect(0,0, nameRectW, rect.h, CURVE_AXIS_COLOR);
-  dc->drawText(2, TEXT_OFFSET_TOP, "GV", 0);
-  dc->drawNumber(28, TEXT_OFFSET_TOP, gvar + 1, 0); //TODO need TextwithIndex
+  dc->drawSolidFilledRect(0, 0, nameRectW, rect.h, CURVE_AXIS_COLOR);
+  dc->drawText(2, TEXT_OFFSET_TOP, getGVarString(gvar), 0);
   dc->drawSizedText(x, y, gvariable->name, LEN_GVAR_NAME, 0);
   //values are right aligned
   x += GVAR_NAME_SIZE;
@@ -76,7 +76,7 @@ void GVarButton::paint(BitmapBuffer * dc) {
 
   coord_t startX = x;
   int line = 0;
-  for (int flightMode=0; flightMode<MAX_FLIGHT_MODES; flightMode++) {
+  for (int flightMode = 0; flightMode < MAX_FLIGHT_MODES; flightMode++) {
     FlightModeData * fmData = &g_model.flightModeData[flightMode];
     gvar_t v = fmData->gvars[gvar];
     gvarSum += v;
@@ -85,16 +85,16 @@ void GVarButton::paint(BitmapBuffer * dc) {
     if (flightMode == currentFlightMode) attr |= BOLD;
 
     x += GVAR_NAME_SIZE;
-    if(x > width()) {
+    if (x > width()) {
       bgFilled = false;
       x = nameRectW + GVAR_NAME_SIZE;
-      y+= LINE_HEIGHT * 2;
+      y += LINE_HEIGHT * 2;
       startX = nameRectW;
       line += 2;
     }
 
     y = TEXT_OFFSET_TOP + line * LINE_HEIGHT;
-    if(!bgFilled) {
+    if (!bgFilled) {
       dc->drawSolidFilledRect(startX, y, width() - startX, LINE_HEIGHT, CURVE_AXIS_COLOR);
       bgFilled = true;
     }
@@ -102,9 +102,9 @@ void GVarButton::paint(BitmapBuffer * dc) {
     //Flight mode
     drawFlightMode(dc, x, y, flightMode, attr);
 
-    coord_t yval = TEXT_OFFSET_TOP + (line+1) * LINE_HEIGHT;
+    coord_t yval = TEXT_OFFSET_TOP + (line + 1) * LINE_HEIGHT;
 
-    if (v <= GVAR_MAX && (gvariable->prec > 0 || abs(v) >= 1000 || ( abs(v) >= 100 && gvariable->unit > 0))) {
+    if (v <= GVAR_MAX && (gvariable->prec > 0 || abs(v) >= 1000 || (abs(v) >= 100 && gvariable->unit > 0))) {
       attr |= SMLSIZE;
       yval += 3;
     }
@@ -113,17 +113,18 @@ void GVarButton::paint(BitmapBuffer * dc) {
       uint8_t fm = v - GVAR_MAX - 1;
       if (fm >= flightMode) fm++;
       drawFlightMode(dc, x, yval, fm, attr);
-    } else {
+    }
+    else {
       drawGVarValue(dc, x, yval, gvar, v, attr);
     }
   }
 
-  dc->drawSolidRect( 0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR  : CURVE_AXIS_COLOR);
+  dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
 }
 
 void GVarButton::drawFlightMode(BitmapBuffer * dc, coord_t x, coord_t y, int fm, LcdFlags attr) {
   char label[16];
-  getFlightModeString(label, fm+1);
+  getFlightModeString(label, fm + 1);
   dc->drawSizedText(x, y, label, strlen(label), attr);
 }
 
@@ -131,30 +132,31 @@ void GVarRenderer::paint(BitmapBuffer * dc) {
   lastFlightMode = getFlightMode();
   FlightModeData * fmData = &g_model.flightModeData[lastFlightMode];
   lastGVar = fmData->gvars[index];
-  drawStringWithIndex(0, TEXT_OFFSET_TOP, TR_GV, index+1, MENU_TITLE_COLOR);
+  drawStringWithIndex(0, TEXT_OFFSET_TOP, TR_GV, index + 1, MENU_TITLE_COLOR);
   if (lastGVar > GVAR_MAX) {
     uint8_t fm = lastGVar - GVAR_MAX - 1;
     if (fm >= lastFlightMode) fm++;
     char label[16];
-    getFlightModeString(label, fm+1);
+    getFlightModeString(label, fm + 1);
     dc->drawSizedText(GVAR_NAME_SIZE, TEXT_OFFSET_TOP, label, strlen(label), MENU_TITLE_COLOR);
-  } else {
+  }
+  else {
     drawGVarValue(dc, GVAR_NAME_SIZE, TEXT_OFFSET_TOP, index, lastGVar, MENU_TITLE_COLOR);
   }
 }
 
 void GVarRenderer::checkEvents() {
-  if(lastFlightMode != getFlightMode()) {
+  if (lastFlightMode != getFlightMode()) {
     invalidate();
     updated = true;
   }
-  if(lastGVar != g_model.flightModeData[getFlightMode()].gvars[index]) {
+  if (lastGVar != g_model.flightModeData[getFlightMode()].gvars[index]) {
     invalidate();
     updated = true;
   }
 }
 bool GVarRenderer::isUpdated() {
-  if(!updated) return false;
+  if (!updated) return false;
   updated = false;
   return true;
 }
@@ -168,7 +170,7 @@ void GVarEditWindow::buildHeader(Window * window)
 }
 void GVarEditWindow::checkEvents() {
   Page::checkEvents();
-  if(gVarInHeader && gVarInHeader->isUpdated()) {
+  if (gVarInHeader && gVarInHeader->isUpdated()) {
     for (int fm = 0; fm < MAX_FLIGHT_MODES; fm++) {
       if (!values[fm]) continue;
       values[fm]->invalidate();
@@ -178,12 +180,12 @@ void GVarEditWindow::checkEvents() {
 
 void GVarEditWindow::setProperties(int onlyForFlightMode) {
   GVarData * gvar = &g_model.gvars[index];
-  int32_t minValue = GVAR_MIN+gvar->min;
-  int32_t maxValue = GVAR_MAX-gvar->max;
+  int32_t minValue = GVAR_MIN + gvar->min;
+  int32_t maxValue = GVAR_MAX - gvar->max;
   std::string suffix;
   LcdFlags prec = gvar->prec ? PREC1 : 0;
-  if(gvar->unit) suffix = GVarEditWindow::unitPercent;
-  if(min && max) {
+  if (gvar->unit) suffix = GVarEditWindow::unitPercent;
+  if (min && max) {
     min->setMax(maxValue);
     max->setMin(minValue);
 
@@ -215,7 +217,7 @@ void GVarEditWindow::setProperties(int onlyForFlightMode) {
           uint8_t targetFlightMode = value - GVAR_MAX - 1;
           if (targetFlightMode >= fm) targetFlightMode++;
           char label[16];
-          getFlightModeString(label, targetFlightMode+1);
+          getFlightModeString(label, targetFlightMode + 1);
           dc->drawSizedText(2, 2, label, strlen(label), flags);
       });
     }
@@ -224,7 +226,7 @@ void GVarEditWindow::setProperties(int onlyForFlightMode) {
     //TODO values[fm]->setLcdFlags(prec);
     values[fm]->invalidate();
   }
-  if(gVarInHeader) gVarInHeader->invalidate();
+  if (gVarInHeader) gVarInHeader->invalidate();
 }
 
 void GVarEditWindow::buildBody(Window * window) {
@@ -239,7 +241,7 @@ void GVarEditWindow::buildBody(Window * window) {
   grid.nextLine();
 
   new StaticText(window, grid.getLabelSlot(), STR_UNIT);
-  new Choice(window, grid.getFieldSlot(), "\001-%", 0,1, GET_DEFAULT(gvar->unit),
+  new Choice(window, grid.getFieldSlot(), "\001-%", 0, 1, GET_DEFAULT(gvar->unit),
              [=](int16_t newValue) {
                  gvar->unit = newValue;
                  SET_DIRTY();
@@ -250,7 +252,7 @@ void GVarEditWindow::buildBody(Window * window) {
   grid.nextLine();
 
   new StaticText(window, grid.getLabelSlot(), STR_PRECISION);
-  new Choice(window, grid.getFieldSlot(), STR_VPREC, 0,1, GET_DEFAULT(gvar->prec),
+  new Choice(window, grid.getFieldSlot(), STR_VPREC, 0, 1, GET_DEFAULT(gvar->prec),
              [=](int16_t newValue) {
                  gvar->prec = newValue;
                  SET_DIRTY();
@@ -261,41 +263,50 @@ void GVarEditWindow::buildBody(Window * window) {
   grid.nextLine();
 
   new StaticText(window, grid.getLabelSlot(), STR_MIN);
-  min = new NumberEdit(window, grid.getFieldSlot(), GVAR_MIN, GVAR_MAX-gvar->max,
+  min = new NumberEdit(window, grid.getFieldSlot(), GVAR_MIN, GVAR_MAX - gvar->max,
                        [=] { return gvar->min + GVAR_MIN; },
-                       [=](int32_t newValue) { gvar->min = newValue - GVAR_MIN; SET_DIRTY(); setProperties(); }
+                       [=](int32_t newValue) {
+                           gvar->min = newValue - GVAR_MIN;
+                           SET_DIRTY();
+                           setProperties();
+                       }
   );
   grid.nextLine();
 
   new StaticText(window, grid.getLabelSlot(), STR_MAX);
-  max = new NumberEdit(window, grid.getFieldSlot(), GVAR_MIN+gvar->min, GVAR_MAX,
-                       [=] { return GVAR_MAX-gvar->max; },
-                       [=](int32_t newValue) { gvar->max = GVAR_MAX - newValue; SET_DIRTY(); setProperties();}
+  max = new NumberEdit(window, grid.getFieldSlot(), GVAR_MIN + gvar->min, GVAR_MAX,
+                       [=] { return GVAR_MAX - gvar->max; },
+                       [=](int32_t newValue) {
+                           gvar->max = GVAR_MAX - newValue;
+                           SET_DIRTY();
+                           setProperties();
+                       }
   );
   grid.nextLine();
   char flightModeName[16];
   FlightModeData * fmData;
 
-  for (int flightMode=0; flightMode<MAX_FLIGHT_MODES; flightMode++) {
+  for (int flightMode = 0; flightMode < MAX_FLIGHT_MODES; flightMode++) {
     fmData = &g_model.flightModeData[flightMode];
-    getFlightModeString(flightModeName, flightMode+1);
+    getFlightModeString(flightModeName, flightMode + 1);
 
     int userNameLen = zlen(fmData->name, LEN_FLIGHT_MODE_NAME);
 
-    if( userNameLen > 0) {
-      zchar2str(flightModeName, fmData->name, userNameLen);
+    if (userNameLen > 0) {
+      strcpy(flightModeName, fmData->name);
     }
     new StaticText(window, grid.getLabelSlot(), flightModeName);
     if (flightMode > 0) {
-      CheckBox* cb = new CheckBox(window, grid.getFieldSlot(2,0),
-                                  [=] {return fmData->gvars[index] <= GVAR_MAX;}, [=](uint8_t checked) {
-            if(!values[flightMode]) return;
+      CheckBox * cb = new CheckBox(window, grid.getFieldSlot(2, 0),
+                                   [=] { return fmData->gvars[index] <= GVAR_MAX; }, [=](uint8_t checked) {
+            if (!values[flightMode]) return;
             fmData->gvars[index] = checked ? 0 : GVAR_MAX + 1;
             setProperties(flightMode);
         });
       //TODO cb->setLabel(STR_OWN);
     }
-    values[flightMode] = new NumberEdit(window, grid.getFieldSlot(2,1), GVAR_MIN+gvar->min, GVAR_MAX + MAX_FLIGHT_MODES - 1, GET_SET_DEFAULT(fmData->gvars[index]));
+    values[flightMode] = new NumberEdit(window, grid.getFieldSlot(2, 1), GVAR_MIN + gvar->min, GVAR_MAX + MAX_FLIGHT_MODES - 1,
+                                        GET_SET_DEFAULT(fmData->gvars[index]));
     grid.nextLine();
   }
 
@@ -314,7 +325,7 @@ void ModelGVarsPage::build(FormWindow * window) {
   FormGridLayout grid;
   grid.spacer(8);
   grid.setLabelWidth(70);
-  for (uint8_t index=0; index<MAX_GVARS; index++) {
+  for (uint8_t index = 0; index < MAX_GVARS; index++) {
     Button * button = new GVarButton(window, grid.getLineSlot(), index);
     button->setPressHandler([=]() -> uint8_t {
         Menu * menu = new Menu();
@@ -325,7 +336,7 @@ void ModelGVarsPage::build(FormWindow * window) {
             });
         });
         menu->addLine(STR_CLEAR, [=]() {
-            for (int i=0; i<MAX_FLIGHT_MODES; i++) {
+            for (int i = 0; i < MAX_FLIGHT_MODES; i++) {
               g_model.flightModeData[i].gvars[index] = 0;
             }
             storageDirty(EE_MODEL);
