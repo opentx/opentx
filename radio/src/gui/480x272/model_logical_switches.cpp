@@ -179,7 +179,7 @@ bool menuModelLogicalSwitches(event_t event)
     }
 
     // CSW AND switch
-    drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, (menuHorizontalPosition==LS_FIELD_ANDSW ? attr : 0) | ((getSwitch(cs->andsw)) && cs->andsw) ? BOLD : 0));
+    drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, (menuHorizontalPosition==LS_FIELD_ANDSW ? attr : 0) | ((getSwitch(cs->andsw)) && cs->andsw) ? BOLD : 0);
 
     // CSW duration
     if (cs->duration > 0)
