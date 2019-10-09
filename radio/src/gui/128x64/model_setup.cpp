@@ -117,6 +117,8 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS,
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AUTOBIND,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_TELEM,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_MAPPING,
 #endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_REGISTER_RANGE,
@@ -1530,6 +1532,14 @@ void menuModelSetup(event_t event)
           g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSM_AUTODTECT, attr, event);
         else
           g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_AUTOBIND, attr, event);
+        break;
+
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_TELEM:
+        g_model.moduleData[EXTERNAL_MODULE].multi.disableTelemetry = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.disableTelemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT "Disable telemetry", attr, event);
+        break;
+
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_MAPPING:
+        g_model.moduleData[EXTERNAL_MODULE].multi.disableMapping = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.disableMapping, MODEL_SETUP_2ND_COLUMN, y, INDENT "Disable mapping", attr, event);
         break;
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS: {

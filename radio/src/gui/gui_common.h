@@ -156,9 +156,18 @@ struct mm_protocol_definition {
     const char *subTypeString;
     const char *optionsstr;
 };
+
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
+inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
+{
+  const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
+  if (pdef->disable_ch_mapping)
+    return HIDDEN_ROW;
+  else
+    return 0;
+}
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
-#define MULTIMODULE_MODULE_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW,isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW,isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW,
+#define MULTIMODULE_MODULE_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx),
 #define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 :MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol(true)) ? (uint8_t)2 : (uint8_t)1
 
 inline bool isMultiProtocolSelectable(int protocol)
