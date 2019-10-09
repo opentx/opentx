@@ -173,6 +173,10 @@ void onSdManagerMenu(const char * result)
     FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
     device.flashFirmware(lfn);
   }
+  else if (result == STR_FLASH_BLUETOOTH_MODULE) {
+    getSelectionFullPath(lfn);
+    bluetooth.flashFirmware(lfn);
+  }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     getSelectionFullPath(lfn);
