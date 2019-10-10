@@ -26,7 +26,7 @@ extern uint8_t g_moduleIdx;
 enum MultiPacketTypes : uint8_t
 {
   MultiStatus = 1,
-  FrSkySmoduleIdxTelemtry,
+  FrSkySportTelemtry,
   FrSkyHubTelemetry,
   SpektrumTelemetry,
   DSMBindPacket,
@@ -193,7 +193,7 @@ static void processMultiScannerPacket(const uint8_t *data)
   }
 }
 
-static void processMultiStatusPacket(const uint8_t * data, uint8_t module)
+static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8_t len)
 {
   MultiModuleStatus &status = getMultiModuleStatus(module);
 
@@ -299,11 +299,11 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
         TRACE("[MP] Received Frsky HUB telemetry len %d < 4", len);
       break;
 
-    case FrSkySmoduleIdxTelemtry:
+    case FrSkySportTelemtry:
       if (len >= 4)
         sportProcessTelemetryPacket(data);
       else
-        TRACE("[MP] Received smoduleIdx telemetry len %d < 4", len);
+        TRACE("[MP] Received sport telemetry len %d < 4", len);
       break;
 
     case InputSync:
@@ -320,7 +320,7 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 #if defined(LUA)
     case FrskySportPolling:
       if (len >= 1 && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data[0] == outputTelemetryBuffer.sport.physicalId) {
-        TRACE("MP Sending smoduleIdx data out.");
+        TRACE("MP Sending sport data out.");
         sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
       }
       break;
@@ -376,7 +376,7 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
     return;
   }
 
-  // Caluclate how many samples went into the remoduleIdxed input Lag (*10)
+  // Caluclate how many samples went into the reported input Lag (*10)
   int numsamples = interval * 10000 / targetRefreshRate;
 
   // Convert lagDifference to ps
