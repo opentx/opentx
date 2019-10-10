@@ -2052,7 +2052,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        module.rfProtocol = module.multi.rfProtocol & 0xf;
         rfProtExtra = (module.multi.rfProtocol >> 4) & 0x03;
       }
 
@@ -2089,13 +2088,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
           attr==PULSES_PXX_DJT ||
           attr==PULSES_PXX_R9M ||
           attr==PULSES_PXX_R9M_LITE;
-      }
-
-      void beforeExport() override
-      {
-        if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
-          module.subType = module.protocol - PULSES_PXX_XJT_X16;
-        }
       }
 
       void afterImport() override
@@ -2136,9 +2128,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        if (module.protocol == PULSES_ACCST_ISRM_D16 || module.protocol == PULSES_ACCESS_ISRM) {
-          module.subType = module.protocol - PULSES_ACCESS_ISRM;
-        }
         for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
           for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
 
@@ -2214,6 +2203,15 @@ class ModuleField: public TransformedField {
     {
       if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
         module.rfProtocol = module.protocol - PULSES_LP45;
+      }
+      else if (module.protocol == PULSES_ACCST_ISRM_D16 || module.protocol == PULSES_ACCESS_ISRM) {
+        module.subType = module.protocol - PULSES_ACCESS_ISRM;
+      }
+      else if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
+        module.subType = module.protocol - PULSES_PXX_XJT_X16;
+      }
+      else if (module.protocol == PULSES_MULTIMODULE) {
+        module.rfProtocol = module.multi.rfProtocol & 0xf;
       }
     }
 
