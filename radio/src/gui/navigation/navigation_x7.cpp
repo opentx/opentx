@@ -207,21 +207,6 @@ tmr10ms_t menuEntryTime;
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 
-inline vertpos_t MENU_FIRST_LINE_EDIT(const uint8_t * horTab, uint8_t horTabMax)
-{
-  if (horTab) {
-    if (MAXCOL((uint16_t)0) < HIDDEN_ROW)
-      return 0;
-    else if (MAXCOL((uint16_t)1) < HIDDEN_ROW)
-      return 1;
-    else
-      return 2;
-  }
-  else {
-    return 0;
-  }
-}
-
 void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount)
 {
   vertpos_t l_posVert = menuVerticalPosition;

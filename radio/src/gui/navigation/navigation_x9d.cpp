@@ -280,6 +280,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 
 #define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
 #define MAXCOL_RAW(row)                (horTab ? *(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
 #define INC(val, min, max)             if (val<max) {val++;} else if (max>min) {val=min;}
 #define DEC(val, min, max)             if (val>min) {val--;} else {val=max;}
@@ -414,7 +415,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       }
       break;
 
-    CASE_EVT_ROTARY_RIGHT
+      CASE_EVT_ROTARY_RIGHT
     case EVT_KEY_FIRST(KEY_RIGHT):
       AUDIO_KEY_PRESS();
       // no break
@@ -445,7 +446,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
-    CASE_EVT_ROTARY_LEFT
+      CASE_EVT_ROTARY_LEFT
     case EVT_KEY_FIRST(KEY_LEFT):
       AUDIO_KEY_PRESS();
       // no break
@@ -543,5 +544,4 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
   menuVerticalPosition = l_posVert;
   menuHorizontalPosition = l_posHorz;
 }
-
 

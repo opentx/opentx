@@ -283,21 +283,6 @@ void menuChannelsView(event_t event);
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
 
-inline vertpos_t MENU_FIRST_LINE_EDIT(const uint8_t * horTab, uint8_t horTabMax)
-{
-  if (horTab) {
-    if (MAXCOL((uint16_t)0) < HIDDEN_ROW)
-      return 0;
-    else if (MAXCOL((uint16_t)1) < HIDDEN_ROW)
-      return 1;
-    else
-      return 2;
-  }
-  else {
-    return 0;
-  }
-}
-
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
 
