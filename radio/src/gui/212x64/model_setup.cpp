@@ -856,7 +856,7 @@ void menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
                 else if (isModuleMultimodule(EXTERNAL_MODULE)) {
                   int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
-                  CHECK_INCDEC_MODELVAR(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST);
+                  CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST, isMultiProtocolSelectable);
                   if (checkIncDec_Ret) {
                     g_model.moduleData[EXTERNAL_MODULE].multi.customProto = (multiRfProto == MODULE_SUBTYPE_MULTI_CUSTOM);
                     if (!g_model.moduleData[EXTERNAL_MODULE].multi.customProto)
