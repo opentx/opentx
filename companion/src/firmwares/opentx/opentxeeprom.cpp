@@ -2090,6 +2090,10 @@ class ModuleUnionField: public UnionField<unsigned int> {
           attr==PULSES_PXX_R9M_LITE;
       }
 
+      void beforeExport() override
+      {
+      }
+
       void afterImport() override
       {
         if (module.protocol == PULSES_PXX_XJT_X16) {
