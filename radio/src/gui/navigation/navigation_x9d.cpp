@@ -415,7 +415,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       }
       break;
 
-      CASE_EVT_ROTARY_RIGHT
+    CASE_EVT_ROTARY_RIGHT
     case EVT_KEY_FIRST(KEY_RIGHT):
       AUDIO_KEY_PRESS();
       // no break
@@ -446,7 +446,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
-      CASE_EVT_ROTARY_LEFT
+    CASE_EVT_ROTARY_LEFT
     case EVT_KEY_FIRST(KEY_LEFT):
       AUDIO_KEY_PRESS();
       // no break
