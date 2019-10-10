@@ -851,10 +851,13 @@ void menuModelSetup(event_t event)
           if (s_editMode > 0) {
             g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
-          else {
+          else if (reusableBuffer.moduleSetup.newType != reusableBuffer.moduleSetup.previousType) {
             g_model.moduleData[EXTERNAL_MODULE].type = reusableBuffer.moduleSetup.newType;
             reusableBuffer.moduleSetup.previousType = reusableBuffer.moduleSetup.newType;
             setModuleType(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
+          }
+          else if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE) {
+            g_model.moduleData[EXTERNAL_MODULE].type = reusableBuffer.moduleSetup.newType;
           }
         }
 #endif
