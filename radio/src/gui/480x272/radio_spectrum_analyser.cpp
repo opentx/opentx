@@ -40,6 +40,7 @@ coord_t getAverage(uint8_t number, uint8_t * value)
 }
 
 #define SPECTRUM_ROW  (isModuleMultimodule(g_moduleIdx) ? READONLY_ROW : (uint8_t)0)
+constexpr uint8_t GREYBAR_HEIGHT = 12;
 
 bool menuRadioSpectrumAnalyser(event_t event)
 {
@@ -151,12 +152,17 @@ bool menuRadioSpectrumAnalyser(event_t event)
     }
   }
   // Draw fixed part (scale,..)
+  lcdDrawFilledRect(0, MENU_FOOTER_TOP - GREYBAR_HEIGHT, LCD_W, GREYBAR_HEIGHT, SOLID, CURVE_AXIS_COLOR);
   for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000; ; frequency += 10000000) {
     int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
     int x = offset / reusableBuffer.spectrumAnalyser.step;
     if (x >= LCD_W - 1)
       break;
     lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, STASHED, CURVE_AXIS_COLOR);
+
+    if ((frequency / 1000000) % 2 == 0) {
+      lcdDrawNumber(x, MENU_FOOTER_TOP - GREYBAR_HEIGHT - 1, frequency / 1000000, TINSIZE | TEXT_COLOR | CENTERED);
+    }
   }
 
   for (uint8_t power = 20;; power += 20) {
@@ -169,7 +175,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
   // Draw Tracker
   int offset = reusableBuffer.spectrumAnalyser.track - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
   int x = offset / reusableBuffer.spectrumAnalyser.step;
-  lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, SOLID, TEXT_COLOR);
+  lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT - GREYBAR_HEIGHT, SOLID, TEXT_COLOR);
 
   // Draw spectrum data
   constexpr uint8_t step = 4;
@@ -179,8 +185,8 @@ bool menuRadioSpectrumAnalyser(event_t event)
     coord_t max_yv = MENU_FOOTER_TOP - 1 - limit<int>(0, getAverage(step, &reusableBuffer.spectrumAnalyser.max[xv]) << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
 
     // Signal bar
-    lcdDrawSolidFilledRect(xv, yv, step - 1, LCD_H - yv - MENU_FOOTER_HEIGHT, TEXT_INVERTED_BGCOLOR);
-    lcdDrawRect(xv, yv, step - 1, LCD_H - yv - MENU_FOOTER_HEIGHT);
+    lcdDrawSolidFilledRect(xv, yv, step - 1, LCD_H - yv - MENU_FOOTER_HEIGHT - GREYBAR_HEIGHT, TEXT_INVERTED_BGCOLOR);
+    lcdDrawRect(xv, yv, step - 1, LCD_H - yv - MENU_FOOTER_HEIGHT - GREYBAR_HEIGHT);
 
     // Signal max
     lcdDrawLine(xv, max_yv, xv + step, max_yv);
