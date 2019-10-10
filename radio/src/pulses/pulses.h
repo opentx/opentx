@@ -41,6 +41,12 @@
   #define IS_DSM2_PROTOCOL(protocol)         (0)
 #endif
 
+#if defined(DSM2_SERIAL)
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
+#else
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
+#endif
+
 #if defined(MULTIMODULE)
   #define IS_MULTIMODULE_PROTOCOL(protocol)  (protocol==PROTOCOL_CHANNELS_MULTIMODULE)
   #if !defined(DSM2)
@@ -147,7 +153,8 @@ PACK(struct ModuleState {
   uint8_t paused:1;
   uint8_t spare:7;
   uint16_t counter;
-  union {
+  union
+  {
     ModuleInformation * moduleInformation;
     ModuleSettings * moduleSettings;
     ReceiverSettings * receiverSettings;
@@ -165,12 +172,14 @@ PACK(struct ModuleState {
     moduleInformation->maximum = last;
     mode = MODULE_MODE_GET_HARDWARE_INFO;
   }
+
   void readModuleSettings(ModuleSettings * destination)
   {
     moduleSettings = destination;
     moduleSettings->state = PXX2_SETTINGS_READ;
     mode = MODULE_MODE_MODULE_SETTINGS;
   }
+
   void writeModuleSettings(ModuleSettings * source)
   {
     moduleSettings = source;
@@ -178,12 +187,14 @@ PACK(struct ModuleState {
     moduleSettings->timeout = 0;
     mode = MODULE_MODE_MODULE_SETTINGS;
   }
+
   void readReceiverSettings(ReceiverSettings * destination)
   {
     receiverSettings = destination;
     receiverSettings->state = PXX2_SETTINGS_READ;
     mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
+
   void writeReceiverSettings(ReceiverSettings * source)
   {
     receiverSettings = source;
@@ -238,21 +249,21 @@ PACK(struct CrossfirePulsesData {
 
 union InternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(INTMODULE_USART)
-    UartPxx1Pulses pxx_uart;
-  #else
-    PwmPxx1Pulses pxx;
-  #endif
+#if defined(INTMODULE_USART)
+  UartPxx1Pulses pxx_uart;
+#else
+  PwmPxx1Pulses pxx;
+#endif
 #endif
 
 #if defined(PXX2)
   Pxx2Pulses pxx2;
 #endif
 
-#if defined(INTERNAL_MODULE_MULTI) //&& defined(INTMODULE_USART)
-  UartMultiPulses multi;  
+#if defined(MULTIMODULE) //&& defined(INTMODULE_USART)
+  UartMultiPulses multi;
 #endif
-  
+
 #if defined(INTERNAL_MODULE_PPM)
   PpmPulsesData<pulse_duration_t> ppm;
 #endif
@@ -260,14 +271,14 @@ union InternalModulePulsesData {
 
 union ExternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-    UartPxx1Pulses pxx_uart;
-  #endif
-  #if defined(PPM_PIN_SERIAL)
-    SerialPxx1Pulses pxx;
-  #else
-    PwmPxx1Pulses pxx;
-  #endif
+#if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+  UartPxx1Pulses pxx_uart;
+#endif
+#if defined(PPM_PIN_SERIAL)
+  SerialPxx1Pulses pxx;
+#else
+  PwmPxx1Pulses pxx;
+#endif
 #endif
 
 #if defined(PXX2)

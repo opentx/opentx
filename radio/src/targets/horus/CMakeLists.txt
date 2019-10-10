@@ -2,6 +2,7 @@ option(DISK_CACHE "Enable SD card disk cache" ON)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
+option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
@@ -146,16 +147,16 @@ set(GUI_SRC
   rle.cpp
   )
 
-if(PXX2 OR LUA)
+if(PXX2 OR LUA OR MULTIMODULE)
   set(GUI_SRC ${GUI_SRC} radio_tools.cpp)
 endif()
 
+if(PXX2 OR MULTIMODULE)
+  set(GUI_SRC ${GUI_SRC} radio_spectrum_analyser.cpp)
+endif()
+
 if(PXX2)
-  set(GUI_SRC
-    ${GUI_SRC}
-    radio_spectrum_analyser.cpp
-    radio_power_meter.cpp
-    )
+  set(GUI_SRC ${GUI_SRC} radio_power_meter.cpp)
 endif()
 
 if(DISK_CACHE)

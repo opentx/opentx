@@ -287,7 +287,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 }
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-void enablePulsesInternalModule(uint8_t protocol)
+static void enablePulsesInternalModule(uint8_t protocol)
 {
   // start new protocol hardware here
 

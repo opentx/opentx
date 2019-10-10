@@ -49,7 +49,7 @@ void watchdogInit(unsigned int duration)
 extern "C" void initialise_monitor_handles();
 #endif
 
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(RADIO_T16)
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -171,7 +171,7 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM4_STOP|DBGMCU_TIM5_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM7_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM9_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM11_STOP|DBGMCU_TIM12_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(RADIO_T16)
   ledInit();
   sportUpdateInit();
 #endif
