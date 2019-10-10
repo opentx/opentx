@@ -55,7 +55,7 @@ class FlightModeGroup: public FormGroup
     void paint(BitmapBuffer * dc) override
     {
       if (index == getFlightMode()) {
-        dc->drawSolidFilledRect(0, 0, width(), height(), WARNING_COLOR);
+        dc->drawSolidFilledRect(0, 0, width(), height(), HIGHLIGHT_COLOR);
       }
       FormGroup::paint(dc);
     }

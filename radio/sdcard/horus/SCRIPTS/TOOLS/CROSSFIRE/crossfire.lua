@@ -97,7 +97,7 @@ local function run(event)
 
   lcd.clear()
   lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
-  lcd.drawText(1, 5,"CROSSFIRE SETUP", MENU_TITLE_COLOR)
+  lcd.drawText(1, 5,"CROSSFIRE SETUP", MENU_COLOR)
 
 
   if #devices == 0 then

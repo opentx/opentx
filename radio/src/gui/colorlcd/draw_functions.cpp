@@ -27,7 +27,7 @@ void drawStatusText(BitmapBuffer * dc, const char * text)
 
 void drawColumnHeader(BitmapBuffer * dc, const char * const * headers, const char * const * descriptions, uint8_t index)
 {
-  dc->drawText(LCD_W-MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_TITLE_COLOR);
+  dc->drawText(LCD_W-MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_COLOR);
   if (descriptions) {
     drawStatusText(dc, descriptions[index]);
   }
@@ -169,7 +169,6 @@ void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int 
   }
 }
 
-#if defined(GVARS)
 bool noZero(int val)
 {
   return val != 0;
@@ -188,7 +187,6 @@ void drawValueOrGVar(BitmapBuffer * dc, coord_t x, coord_t y, gvar_t value, LcdF
 {
   dc->drawNumber(x, y, value, flags, 0, nullptr, "%");
 }
-#endif
 
 void drawSleepBitmap()
 {

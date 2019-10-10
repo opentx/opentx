@@ -351,7 +351,7 @@ bool menuWidgetsSetup(event_t event)
     LcdFlags color;
     int padding, thickness;
     if (currentContainer == topbar) {
-      color = MENU_TITLE_COLOR;
+      color = MENU_COLOR;
       padding = 2;
       thickness = 1;
     }

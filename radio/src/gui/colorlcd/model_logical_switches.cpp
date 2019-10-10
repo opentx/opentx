@@ -64,14 +64,14 @@ class LogicalSwitchEditPage: public Page {
     {
       Page::checkEvents();
       if (active != isActive()) {
-        headerSwitchName->setFlags(isActive() ? BOLD|WARNING_COLOR : MENU_TITLE_COLOR);
+        headerSwitchName->setFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
         active = !active;
       }
     }
 
     void buildHeader(Window * window) {
-      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, STR_MENULOGICALSWITCHES, MENU_TITLE_COLOR);
-      headerSwitchName = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, getSwitchPositionName(SWSRC_SW1 + index), MENU_TITLE_COLOR);
+      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, STR_MENULOGICALSWITCHES, MENU_COLOR);
+      headerSwitchName = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, getSwitchPositionName(SWSRC_SW1 + index), MENU_COLOR);
     }
 
     void updateLogicalSwitchOneWindow(FormField * functionChoice)
@@ -311,7 +311,7 @@ class LogicalSwitchButton : public Button {
     void paint(BitmapBuffer * dc) override
     {
       if (active)
-        dc->drawSolidFilledRect(2, 2, rect.w-4, rect.h-4, WARNING_COLOR);
+        dc->drawSolidFilledRect(2, 2, rect.w-4, rect.h-4, HIGHLIGHT_COLOR);
 
       paintLogicalSwitchLine(dc);
 

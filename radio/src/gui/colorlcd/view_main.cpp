@@ -138,19 +138,19 @@ ViewMain::ViewMain(bool icons):
 
 #if defined(HARDWARE_TOUCH)
   if (icons) {
-    new FabIconButton(this, 50, 100, ICON_MODEL,
+    new FabButton(this, 50, 100, ICON_MODEL,
                       [=]() -> uint8_t {
                           new ModelMenu();
                           return 0;
                       });
 
-    new FabIconButton(this, LCD_W / 2, 100, ICON_RADIO,
+    new FabButton(this, LCD_W / 2, 100, ICON_RADIO,
                       [=]() -> uint8_t {
                           new RadioMenu();
                           return 0;
                       });
 
-//    new FabIconButton(this, LCD_W - 50, 100, ICON_THEME,
+//    new FabButton(this, LCD_W - 50, 100, ICON_THEME,
 //                      [=]() -> uint8_t {
 //                          new ScreensMenu();
 //                          return 0;

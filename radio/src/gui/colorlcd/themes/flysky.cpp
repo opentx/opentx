@@ -47,12 +47,12 @@ class FlyskyTheme: public ThemeBase
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
       lcdColorTable[CHECKBOX_COLOR_INDEX] = RED;
-      lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
-      lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
+      lcdColorTable[MENU_BGCOLOR_INDEX] = DARKGREY;
+      lcdColorTable[MENU_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
       lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
-      lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
+      lcdColorTable[HIGHLIGHT_COLOR_INDEX] = YELLOW;
       lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
       lcdColorTable[DISABLE_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[CURVE_COLOR_INDEX] = RED;
@@ -78,7 +78,7 @@ class FlyskyTheme: public ThemeBase
       lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(222, 222, 222);
     }
 
-    void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_TITLE_COLOR) const
+    void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_COLOR) const
     {
       TRACE("loadMenuIcon %s", getFilePath(filename));
 
@@ -192,7 +192,7 @@ class FlyskyTheme: public ThemeBase
         currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
-        currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
+        currentMenuBackground->drawMask(10, 39, dot, MENU_COLOR);
       }
 
       delete topleftBitmap;
@@ -254,13 +254,13 @@ class FlyskyTheme: public ThemeBase
 
       // Mixer setup screen
       delete mixerSetupMixerBitmap;
-      mixerSetupMixerBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
+      mixerSetupMixerBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupToBitmap;
-      mixerSetupToBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
+      mixerSetupToBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupOutputBitmap;
-      mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
+      mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupAddBitmap;
       mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
@@ -361,7 +361,7 @@ class FlyskyTheme: public ThemeBase
       dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
 //
       if (title) {
-        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP, title, MENU_TITLE_COLOR);
+        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP, title, MENU_COLOR);
       }
     }
 

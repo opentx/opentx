@@ -119,8 +119,8 @@ class InputEditWindow: public Page {
     Choice * curveTypeChoice = nullptr;
 
     void buildHeader(Window * window) {
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUINPUTS, MENU_TITLE_COLOR);
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_TITLE_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUINPUTS, MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_COLOR);
     }
 
     void updateCurves() {
@@ -312,7 +312,7 @@ void CommonInputOrMixButton::drawFlightModes(BitmapBuffer *dc, FlightModesType v
 void CommonInputOrMixButton::paint(BitmapBuffer * dc)
 {
   if (active)
-    dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
+    dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, HIGHLIGHT_COLOR);
   paintBody(dc);
   dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? CHECKBOX_COLOR : DISABLE_COLOR);
 }

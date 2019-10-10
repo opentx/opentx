@@ -200,12 +200,6 @@ void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, con
   }
 }
 
-void ThemeBase::drawPageHeader(BitmapBuffer * dc, const PageHeader * header) const
-{
-  drawMenuBackground(dc, header->getIcon(), "");
-  dc->drawSolidFilledRect(MENU_HEADER_HEIGHT, 0, LCD_W - MENU_HEADER_HEIGHT, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-}
-
 ThemeBase * getTheme(const char * name)
 {
   std::list<ThemeBase *>::const_iterator it = getRegisteredThemes().cbegin();

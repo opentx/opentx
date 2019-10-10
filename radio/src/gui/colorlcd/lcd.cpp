@@ -210,3 +210,8 @@ void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t
   }
 }
 #endif
+
+event_t getWindowEvent()
+{
+  return getEvent(false);
+}

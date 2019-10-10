@@ -471,7 +471,7 @@ local function runDevicePage(event)
 
   lcd.clear()
   lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
-  lcd.drawText(1, 5,deviceName, MENU_TITLE_COLOR)
+  lcd.drawText(1, 5,deviceName, MENU_COLOR)
 
   for y = 1, 11 do
     local field = getField(pageOffset+y)

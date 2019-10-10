@@ -46,12 +46,12 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
       lcdColorTable[CHECKBOX_COLOR_INDEX] = RED;
-      lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
-      lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
+      lcdColorTable[MENU_BGCOLOR_INDEX] = DARKGREY;
+      lcdColorTable[MENU_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
       lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
-      lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
+      lcdColorTable[HIGHLIGHT_COLOR_INDEX] = YELLOW;
       lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
       lcdColorTable[DISABLE_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[CURVE_COLOR_INDEX] = RED;
@@ -61,7 +61,7 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = BLACK;
       lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = WHITE;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = RED;
-      lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKRED;
+      lcdColorTable[MENU_BGCOLOR_INDEX] = DARKRED;
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = RED;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RED;
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
@@ -70,7 +70,7 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(222, 222, 222);
     }
 
-    void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_TITLE_COLOR) const
+    void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_COLOR) const
     {
       TRACE("loadMenuIcon %s", getFilePath(filename));
       BitmapBuffer * mask = BitmapBuffer::loadMask(getFilePath(filename));
@@ -81,7 +81,7 @@ class FrskyTheme: public ThemeBase
         delete menuIconNormal[index];
         menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
         if (menuIconNormal[index]) {
-          menuIconNormal[index]->clear(HEADER_BGCOLOR);
+          menuIconNormal[index]->clear(MENU_BGCOLOR);
           menuIconNormal[index]->drawMask(0, 0, mask, color);
         }
 
@@ -157,16 +157,16 @@ class FrskyTheme: public ThemeBase
       }
 
       if (currentMenuBackground) {
-        currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, MENU_BGCOLOR);
         currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, DEFAULT_BGCOLOR);
         currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
-        currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
+        currentMenuBackground->drawMask(10, 39, dot, MENU_COLOR);
       }
 
       delete topleftBitmap;
-      topleftBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("topleft.png"), TITLE_BGCOLOR, HEADER_BGCOLOR);
+      topleftBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("topleft.png"), TITLE_BGCOLOR, MENU_BGCOLOR);
 
       delete background;
       delete shadow;
@@ -233,13 +233,13 @@ class FrskyTheme: public ThemeBase
 
       // Mixer setup screen
       delete mixerSetupMixerBitmap;
-      mixerSetupMixerBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
+      mixerSetupMixerBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_COLOR, MENU_BGCOLOR);
 
       delete mixerSetupToBitmap;
-      mixerSetupToBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
+      mixerSetupToBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_COLOR, MENU_BGCOLOR);
 
       delete mixerSetupOutputBitmap;
-      mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
+      mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_COLOR, MENU_BGCOLOR);
 
       delete mixerSetupAddBitmap;
       mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
@@ -300,7 +300,7 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = color;
       #define DARKER(x)     ((x * 70) / 100)
-      lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
+      lcdColorTable[MENU_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
 #endif
@@ -324,10 +324,10 @@ class FrskyTheme: public ThemeBase
       if (topleftBitmap) {
         dc->drawBitmap(0, 0, topleftBitmap);
         uint16_t width = topleftBitmap->getWidth();
-        dc->drawSolidFilledRect(width, 0, LCD_W - width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        dc->drawSolidFilledRect(width, 0, LCD_W - width, MENU_HEADER_HEIGHT, MENU_BGCOLOR);
       }
       else {
-        dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, MENU_BGCOLOR);
       }
 
       if (icon == ICON_OPENTX)
@@ -338,7 +338,7 @@ class FrskyTheme: public ThemeBase
       dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, DEFAULT_BGCOLOR); // the white separation line
       dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
       if (title) {
-        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 1, title, MENU_TITLE_COLOR);
+        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 1, title, MENU_COLOR);
       }
 
       drawMenuDatetime(dc);

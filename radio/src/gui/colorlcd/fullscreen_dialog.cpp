@@ -30,7 +30,7 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
   confirmHandler(confirmHandler)
 {
 #if defined(HARDWARE_TOUCH)
-  new FabIconButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
+  new FabButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
                     [=]() -> uint8_t {
                       if (confirmHandler)
                         confirmHandler();

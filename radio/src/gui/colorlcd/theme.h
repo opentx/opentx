@@ -88,8 +88,6 @@ class ThemeBase: public Theme
 
     void drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const override;
 
-    void drawPageHeader(BitmapBuffer * dc, const PageHeader * page) const override;
-
   protected:
     const char * name;
     const ZoneOption * options;

@@ -49,7 +49,7 @@ void TimerWidget::refresh()
       lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
     }
     else {
-      lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, HEADER_BGCOLOR);
+      lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, MENU_BGCOLOR);
     }
     if (timerData.start && timerState.val >= 0) {
       lcdDrawBitmapPatternPie(

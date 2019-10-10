@@ -132,16 +132,16 @@ void GVarRenderer::paint(BitmapBuffer * dc) {
   lastFlightMode = getFlightMode();
   FlightModeData * fmData = &g_model.flightModeData[lastFlightMode];
   lastGVar = fmData->gvars[index];
-  drawStringWithIndex(0, TEXT_OFFSET_TOP, TR_GV, index + 1, MENU_TITLE_COLOR);
+  drawStringWithIndex(0, TEXT_OFFSET_TOP, TR_GV, index + 1, MENU_COLOR);
   if (lastGVar > GVAR_MAX) {
     uint8_t fm = lastGVar - GVAR_MAX - 1;
     if (fm >= lastFlightMode) fm++;
     char label[16];
     getFlightModeString(label, fm + 1);
-    dc->drawSizedText(GVAR_NAME_SIZE, TEXT_OFFSET_TOP, label, strlen(label), MENU_TITLE_COLOR);
+    dc->drawSizedText(GVAR_NAME_SIZE, TEXT_OFFSET_TOP, label, strlen(label), MENU_COLOR);
   }
   else {
-    drawGVarValue(dc, GVAR_NAME_SIZE, TEXT_OFFSET_TOP, index, lastGVar, MENU_TITLE_COLOR);
+    drawGVarValue(dc, GVAR_NAME_SIZE, TEXT_OFFSET_TOP, index, lastGVar, MENU_COLOR);
   }
 }
 
@@ -165,7 +165,7 @@ const std::string GVarEditWindow::unitPercent = "%";
 
 void GVarEditWindow::buildHeader(Window * window)
 {
-  new StaticText(window, {70, 4, window->width() - 70, 20}, STR_GLOBAL_VAR, MENU_TITLE_COLOR);
+  new StaticText(window, {70, 4, window->width() - 70, 20}, STR_GLOBAL_VAR, MENU_COLOR);
   gVarInHeader = new GVarRenderer(window, {70, 28, window->width() - 70, 20}, index);
 }
 void GVarEditWindow::checkEvents() {

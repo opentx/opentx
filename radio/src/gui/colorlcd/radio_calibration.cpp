@@ -109,8 +109,8 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
 
 void RadioCalibrationPage::buildHeader(Window * window)
 {
-  new StaticText(window, { 55, 0, 300, 20 }, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
-  text = new StaticText(window, { 55, FH+2, LCD_W-55, 20 }, STR_MENUTOSTART, MENU_TITLE_COLOR);
+  new StaticText(window, { 55, 0, 300, 20 }, STR_MENUCALIBRATION, MENU_COLOR);
+  text = new StaticText(window, { 55, FH+2, LCD_W-55, 20 }, STR_MENUTOSTART, MENU_COLOR);
 }
 
 void RadioCalibrationPage::buildBody(FormWindow * window)

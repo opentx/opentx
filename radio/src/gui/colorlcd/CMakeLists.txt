@@ -16,8 +16,10 @@ set(GUI_SRC
   fonts.cpp
   curves.cpp
   bitmaps.cpp
-
   theme.cpp
+  tabsgroup.cpp
+  page.cpp
+  fab_button.cpp
   #  topbar.cpp
   layout.cpp
   #  widget.cpp

@@ -51,15 +51,15 @@ class SpecialFunctionEditPage : public Page {
       Page::checkEvents();
       if (active != isActive()) {
         invalidate();
-        headerSF->setFlags(isActive() ? BOLD|WARNING_COLOR : MENU_TITLE_COLOR);
+        headerSF->setFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
         active = !active;
       }
     }
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, 20 }, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, MENU_TITLE_COLOR);
-      headerSF = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, 20 }, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), MENU_TITLE_COLOR);
+      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, 20 }, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, MENU_COLOR);
+      headerSF = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, 20 }, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), MENU_COLOR);
     }
 
     void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
@@ -376,7 +376,7 @@ class SpecialFunctionButton : public Button {
     void paint(BitmapBuffer * dc) override
     {
       if (active)
-        dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
+        dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, HIGHLIGHT_COLOR);
 
       paintSpecialFunctionLine(dc);
 

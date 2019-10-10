@@ -47,8 +47,8 @@ local function drawScreenTitle(title,page, pages)
   end
   if LCD_W == 480 then
     lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
-    lcd.drawText(1, 5, title, MENU_TITLE_COLOR)
-    lcd.drawText(LCD_W-40, 5, page.."/"..pages, MENU_TITLE_COLOR)
+    lcd.drawText(1, 5, title, MENU_COLOR)
+    lcd.drawText(LCD_W-40, 5, page.."/"..pages, MENU_COLOR)
   else
     lcd.drawScreenTitle(title, page, pages)
   end

@@ -497,7 +497,7 @@ class ModuleWindow : public Window {
 
       // Module Type
       new StaticText(this, grid.getLabelSlot(true), STR_MODE);
-      moduleChoice = new Choice(this, grid.getFieldSlot(), STR_INTERNAL_MODULE_PROTOCOLS,
+      moduleChoice = new Choice(this, grid.getFieldSlot(2, 0), STR_INTERNAL_MODULE_PROTOCOLS,
                                 MODULE_TYPE_NONE, MODULE_TYPE_COUNT - 1,
                                 GET_DEFAULT(g_model.moduleData[moduleIdx].type),
                                 [=](int32_t newValue) {
