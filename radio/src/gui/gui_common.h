@@ -175,6 +175,9 @@ struct mm_protocol_definition {
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
+  if(!isModuleMultimodule(moduleIdx))
+    return HIDDEN_ROW;
+
   const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
   if (pdef->disable_ch_mapping)
     return 0;
