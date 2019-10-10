@@ -629,8 +629,8 @@
 #define TR_RFPOWER                     INDENT "Výkon RF"
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION                TR(INDENT "Možnosti", INDENT "Hodnota")
-#define TR_MULTI_AUTOBIND              TR(INDENT "Autobind",INDENT "Bind při zapnutí")
-#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable ch. map")
+#define TR_MULTI_AUTOBIND              TR(INDENT "Bind Ch.",INDENT "Bind při zapnutí")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable Ch. map")
 #define TR_DISABLE_TELEM               TR("No Telem", "Disable Telemetry")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodetekce", INDENT "Formát autodetekce")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Nízký výkon", INDENT "Režim nízkého výkonu")

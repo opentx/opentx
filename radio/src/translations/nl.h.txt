@@ -636,8 +636,8 @@
 #define TR_RFPOWER       "RF Power"
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION        TR("Option", "Option value")
-#define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on channel")
-#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable ch. map")
+#define TR_MULTI_AUTOBIND      TR(INDENT "Bind Ch.",INDENT "Bind on channel")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable Ch. map")
 #define TR_DISABLE_TELEM               TR("No Telem", "Disable Telemetry")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
