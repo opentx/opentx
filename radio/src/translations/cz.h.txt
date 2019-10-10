@@ -651,7 +651,7 @@
 #define TR_BINDING_CH9_16_TELEM_OFF    "k9-16 telem vyp"
 #define TR_PROTOCOL_INVALID            TR("Špat. protokol", "Špatný protokol")
 #define TR_MODULE_STATUS               TR(INDENT "Stav", INDENT "Stav modulu")
-#define TR_MODULE_SYNC                 TR(INDENT "Synchro", INDENT "Synchro modulu")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Frekv. serva", INDENT "Obnovovací frequence serva")
 #define TR_SYNCMENU                    "[Sync]"
 #define TR_LIMIT                       INDENT"Limit"

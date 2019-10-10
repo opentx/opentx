@@ -671,7 +671,7 @@
 #define TR_BINDING_CH9_16_TELEM_OFF               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
-#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ     TR("Servo rate", "Servo update rate")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limiti"
