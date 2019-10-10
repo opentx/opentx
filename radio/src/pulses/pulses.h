@@ -31,29 +31,29 @@
 #include "ff.h"
 
 #if defined(PCBSKY9X) && defined(DSM2)
-#define DSM2_BIND_TIMEOUT      255         // 255*11ms
+  #define DSM2_BIND_TIMEOUT      255         // 255*11ms
   extern uint8_t dsm2BindTimer;
 #endif
 
 #if defined(DSM2)
-#define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTOCOL_CHANNELS_DSM2_LP45 && protocol<=PROTOCOL_CHANNELS_DSM2_DSMX)
+  #define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTOCOL_CHANNELS_DSM2_LP45 && protocol<=PROTOCOL_CHANNELS_DSM2_DSMX)
 #else
-#define IS_DSM2_PROTOCOL(protocol)         (0)
+  #define IS_DSM2_PROTOCOL(protocol)         (0)
 #endif
 
 #if defined(DSM2_SERIAL)
-#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
 #else
-#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
 #endif
 
 #if defined(MULTIMODULE)
-#define IS_MULTIMODULE_PROTOCOL(protocol)  (protocol==PROTOCOL_CHANNELS_MULTIMODULE)
+  #define IS_MULTIMODULE_PROTOCOL(protocol)  (protocol==PROTOCOL_CHANNELS_MULTIMODULE)
   #if !defined(DSM2)
      #error You need to enable DSM2 = PPM for MULTIMODULE support
   #endif
 #else
-#define IS_MULTIMODULE_PROTOCOL(protocol)  (0)
+  #define IS_MULTIMODULE_PROTOCOL(protocol)  (0)
 #endif
 
 #define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_SBUS)
@@ -79,30 +79,30 @@ enum ModuleSettingsMode
 
 
 PACK(struct PXX2Version {
-       uint8_t major;
-       uint8_t revision:4;
-       uint8_t minor:4;
-     });
+  uint8_t major;
+  uint8_t revision:4;
+  uint8_t minor:4;
+);
 
 PACK(struct PXX2HardwareInformation {
-       uint8_t modelID;
-       PXX2Version hwVersion;
-       PXX2Version swVersion;
-       uint8_t variant;
-       uint32_t capabilities; // variable length
-       uint8_t capabilityNotSupported;
-     });
+  uint8_t modelID;
+  PXX2Version hwVersion;
+  PXX2Version swVersion;
+  uint8_t variant;
+  uint32_t capabilities; // variable length
+  uint8_t capabilityNotSupported;
+});
 
 PACK(struct ModuleInformation {
-       int8_t current;
-       int8_t maximum;
-       uint8_t timeout;
-       PXX2HardwareInformation information;
-       struct {
-         PXX2HardwareInformation information;
-         tmr10ms_t timestamp;
-       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
-     });
+  int8_t current;
+  int8_t maximum;
+  uint8_t timeout;
+  PXX2HardwareInformation information;
+  struct {
+    PXX2HardwareInformation information;
+    tmr10ms_t timestamp;
+  } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
+});
 
 class ModuleSettings {
   public:
