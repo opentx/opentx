@@ -348,7 +348,7 @@ static void appendInt(char * buf, uint32_t val)
   strAppendUnsigned(buf, val);
 }
 
-#define MIN_REFRESH_RATE      7000
+#define MIN_REFRESH_RATE      4000
 
 void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag)
 {
@@ -451,10 +451,10 @@ void MultiModuleSyncStatus::getRefreshString(char * statusText)
   strcpy(statusText, "L ");
   prependSpaces(statusText, inputLag);
   appendInt(statusText, inputLag);
-  strcat(statusText, "ns R ");
+  strcat(statusText, "us R ");
   prependSpaces(statusText, adjustedRefreshRate / 1000);
   appendInt(statusText, (uint32_t) (adjustedRefreshRate / 1000));
-  strcat(statusText, "ns");
+  strcat(statusText, "us");
 }
 
 void MultiModuleStatus::getStatusString(char * statusText)
