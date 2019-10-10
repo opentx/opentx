@@ -217,6 +217,10 @@ class SwitchesConversionTable: public ConversionTable {
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
       }
+      if (version >= 219) {
+        addConversion(RawSwitch(SWITCH_TYPE_ACT, -1), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_ACT, 1), val++);
+      }
     }
 
 
@@ -1914,7 +1918,7 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _subid = sensor.subid;
-        _instance = (sensor.instance & 0x1F) | (sensor.rxIdx << 5) | (sensor.moduleIdx << 7);
+        _instance = sensor.instance == 0 ? 0 : ((sensor.instance - 1) & 0x1F) | (sensor.rxIdx << 5) | (sensor.moduleIdx << 7);
         _ratio = sensor.ratio;
         _offset = sensor.offset;
       }
@@ -1942,12 +1946,12 @@ class SensorField: public TransformedField {
           sensor.id = _id;
           sensor.subid = _subid;
           if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module()) {
-            sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
+            sensor.instance = (_instance & 0x1F) + (version <= 218 ? 0 : 1); // 5 bits instance
             sensor.rxIdx = 0x03;    // 2 bits Rx idx
             sensor.moduleIdx = 0x01; // 1 bit module idx
           }
           else {
-            sensor.instance = _instance & 0x1F;
+            sensor.instance = (_instance & 0x1F) + 1;
             sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
             sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
           }
@@ -2361,8 +2365,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<8>(this, modelData.rssiSource));
 
     if (IS_TARANIS_X9(board)) {
-      // TODO TOPBAR
-      internalField.Append(new SpareBitsField<16>(this));
+      internalField.Append(new UnsignedField<8>(this, modelData.frsky.voltsSource));
+      internalField.Append(new UnsignedField<8>(this, modelData.frsky.altitudeSource));
     }
 
     internalField.Append(new BoolField<1>(this, modelData.rssiAlarms.disabled));
@@ -2571,7 +2575,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new SignedField<2>(this, generalData.antennaMode));
   else
     internalField.Append(new SpareBitsField<2>(this));
-  internalField.Append(new SpareBitsField<3>(this));
+  internalField.Append(new BoolField<1>(this, generalData.rtcCheckDisable));
+  internalField.Append(new SpareBitsField<2>(this));
 
   for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));
@@ -2602,7 +2607,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   internalField.Append(new UnsignedField<8>(this, generalData.inactivityTimer));
-  internalField.Append(new SpareBitsField<3>(this)); // telemetryBaudrate
+  internalField.Append(new UnsignedField<3>(this, generalData.telemetryBaudrate));
   if (IS_HORUS(board))
     internalField.Append(new SpareBitsField<3>(this));
   else if (IS_TARANIS(board))

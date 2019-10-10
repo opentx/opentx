@@ -157,6 +157,8 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
       continue;
     if (ed->flightModes & (1<<mixerCurrentFlightMode))
       continue;
+    if (ed->srcRaw >= MIXSRC_FIRST_TRAINER && ed->srcRaw <= MIXSRC_LAST_TRAINER && !IS_TRAINER_INPUT_VALID())
+      continue;
     if (getSwitch(ed->swtch)) {
       int32_t v;
       if (ed->srcRaw == ovwrIdx) {
@@ -311,7 +313,7 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
-  else if (i <= MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
+  else if (i <= MIXSRC_LAST_POT + NUM_MOUSE_ANALOGS) {
     return calibratedAnalogs[i - MIXSRC_Rud];
   }
 
@@ -420,7 +422,7 @@ void evalInputs(uint8_t mode)
 {
   BeepANACenter anaCenter = 0;
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+  for (uint8_t i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i) : i);
     int16_t v = anaIn(i);

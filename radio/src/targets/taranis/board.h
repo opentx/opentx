@@ -498,14 +498,19 @@ enum Analogs {
   #define NUM_SLIDERS                   4
   #define STORAGE_NUM_POTS              4
   #define STORAGE_NUM_SLIDERS           4
-#else
+#elif defined(PCBX9DP)
   #define NUM_POTS                      3
+  #define NUM_SLIDERS                   2
+  #define STORAGE_NUM_POTS              3
+  #define STORAGE_NUM_SLIDERS           2
+#else
+  #define NUM_POTS                      3 // TODO X9D has only 2 pots
   #define NUM_SLIDERS                   2
   #define STORAGE_NUM_POTS              3
   #define STORAGE_NUM_SLIDERS           2
 #endif
 
-#define NUM_XPOTS                       NUM_POTS
+#define NUM_XPOTS                       STORAGE_NUM_POTS
 #define NUM_TRIMS                       4
 #define NUM_MOUSE_ANALOGS               0
 #define STORAGE_NUM_MOUSE_ANALOGS       0

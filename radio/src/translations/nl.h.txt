@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Stil\0""Alarm""NoKey""Alles"
 
-#define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "UITREaREb"
-
 #define LEN_VBLMODE            TR("\005", "\010")
 #define TR_VBLMODE             TR("UIT\0 ""Keys\0""Stick""Beide""AAN\0 ", "UIT\0    ""Toetsen\0""Sticks\0 ""Beide\0  ""AAN\0    ")
 
@@ -516,7 +513,6 @@ TR_GYR_VSRCRAW
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "Stappenschakelaar"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")
 #define TR_MINUTEBEEP          TR("Min-Alarm", "Minuten-Alarm")
@@ -569,9 +565,7 @@ TR_GYR_VSRCRAW
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER"Geen Data"
-#define TR_TOTTM1TM2THRTHP     "\037\146SES\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_US                         "us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "Tmix max"
 #define TR_FREE_STACK     "Free stack"
 #define TR_MENUTORESET         TR_ENTER" voor Reset"
@@ -675,7 +669,6 @@ TR_GYR_VSRCRAW
 #define TR_PITCH_AT_ZERO       INDENT "Laagste Toon"
 #define TR_PITCH_AT_MAX        INDENT "Hoogste Toon"
 #define TR_REPEAT_AT_ZERO      INDENT "Herhalen bij 0"
-#define TR_POWEROFF            "\027Uitschakelen..."
 #define TR_SHUTDOWN            "Afsluiten"
 #define TR_SAVEMODEL           "Bewaar Model-instellingen"
 #define TR_BATT_CALIB          "Accu Calib"
@@ -1169,6 +1162,7 @@ TR_GYR_VSRCRAW
 #define TR_MENU_OTHER          "Verdere"
 #define TR_MENU_INVERT         "Inverteer"
 #define TR_JITTER_FILTER       "ADC Filter"
+#define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"

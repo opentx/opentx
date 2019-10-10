@@ -1550,7 +1550,7 @@ NXGRAPHICS
 AIR-RC
 Nicolas Deshaies
 Jean-Francois Delhove
-Hugo Daniel Farneti  
+Hugo Daniel Farneti
 RC electronic products
 Adrian Andrei
 Henk van de Kerkhof
@@ -1567,3 +1567,34 @@ Darrell Carew
 Philippe Faure
 Marco Lange
 Aaron Tygart
+Frantisek Vajbar
+Mike Perkins
+Knut Einar Kristensen
+Georgios Papadopoulos
+He Liu
+Andrias Thomsen
+Alain Azais
+Alan Stuart
+Fernando Rimoldi
+James Snodgrass
+Diego Mendoza Gonzalez
+Dale Wheeler
+Nico Wagner
+James A Davey
+Peter Glassey
+Jeff Dillingham
+Don Crowe
+Nicola Claudio Rossi
+Fabien Leroy
+Tyler Nelson
+Stuart Olson
+Reinhard Plietsch
+Manuel Spoerri
+Paul Pearson
+Thierry Laligand
+Bruno Mexique
+Uwe Jordt
+Markus Goelzner
+Jean-Claude Etiemble
+Wojciech Winiarski
+Michael Fleming

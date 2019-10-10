@@ -612,7 +612,7 @@ void menuModelSetup(event_t event)
           }
 
           int current = 0;
-          for (int i = 0; i < switchWarningsCount; i++) {
+          for (int i = 0; i < NUM_SWITCHES; i++) {
             if (SWITCH_WARNING_ALLOWED(i)) {
               div_t qr = div(current, MAX_SWITCH_PER_LINE);
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && attr && l_posHorz == current && old_posHorz >= 0) {
@@ -842,6 +842,15 @@ void menuModelSetup(event_t event)
             lcdDrawText(lcdNextPos + 3, y, STR_MULTI_CUSTOM, menuHorizontalPosition==1 ? attr : 0);
           else
             lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
+        }
+#endif
+#if defined(PCBTARANIS)
+        if (attr && menuHorizontalPosition == 0) {
+          if (s_editMode > 0)
+            EXTERNAL_MODULE_OFF();
+          else
+          if(g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+            EXTERNAL_MODULE_ON();
         }
 #endif
         if (attr) {
@@ -1275,7 +1284,7 @@ void menuModelSetup(event_t event)
                   if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx)) {
 #if defined(PCBXLITE)
                     if (EVT_KEY_MASK(event) == KEY_ENTER) {
-#elif defined(PCBSKY9X) || defined(PCBAR9X)
+#elif defined(NAVIGATION_9X)
                     if (event ==  EVT_KEY_FIRST(KEY_ENTER)) {
 #else
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
@@ -1420,9 +1429,11 @@ void menuModelSetup(event_t event)
             }
             else {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-              lcdDrawText(MODEL_SETUP_2ND_COLUMN+23, y, "RSSI(", LEFT);
-              lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
-              lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+              if (pdef->optionsstr == STR_MULTI_RFTUNE) {
+                lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
+                lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+                lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+              }
             }
           }
         }

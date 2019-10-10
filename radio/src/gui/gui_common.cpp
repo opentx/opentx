@@ -536,6 +536,15 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 }
 #endif
 
+bool isTrainerUsingModuleBay()
+{
+#if defined(PCBTARANIS)
+  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return true;
+#endif
+  return false;
+}
+
 bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
 {
   switch (moduleType) {
@@ -597,6 +606,9 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
+  if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
+    return false;
+
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
@@ -647,7 +659,7 @@ bool isExternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (isModuleUsingSport(EXTERNAL_MODULE, moduleType) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
+  if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) || isTrainerUsingModuleBay()) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
     return false;
 #endif
 
@@ -848,7 +860,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false,      STR_SUBTYPE_TRAXXAS,   nullptr},
-  {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
+  {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},

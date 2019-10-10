@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Mudo ""Alarm""NoKey""Todo "
 
-#define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "No REaREb"
-
 #define LEN_VBLMODE            "\004"
 #define TR_VBLMODE             "OFF ""Keys""Stks""Both""ON\0"
 
@@ -534,7 +531,6 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Invert_Acel", INDENT "Invertir Acel.")
 #define TR_MINUTEBEEP          TR("Minuto", "Cada Minuto")
@@ -581,9 +577,7 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "SIN DATOS"
-#define TR_TOTTM1TM2THRTHP     "\037\146SES\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_US                         "us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "Tmix max"
 #define TR_FREE_STACK     "Free stack"
 #define TR_MENUTORESET         TR_ENTER "Resetear"
@@ -692,7 +686,6 @@
 #define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
 #define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
-#define TR_POWEROFF            "\027Power OFF..."
 #define TR_SHUTDOWN            "APAGANDO"
 #define TR_SAVEMODEL           "Saving model settings"
 #define TR_BATT_CALIB          "Calib.bateria"
@@ -1179,6 +1172,7 @@
 #define TR_MENU_OTHER          "Other"
 #define TR_MENU_INVERT         "Invert"
 #define TR_JITTER_FILTER       "ADC Filter"
+#define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"

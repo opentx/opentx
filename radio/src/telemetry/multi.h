@@ -123,17 +123,18 @@ struct MultiModuleStatus {
   uint8_t patch;
 
   uint8_t flags;
+  uint8_t requiresFailsafeCheck;
   tmr10ms_t lastUpdate;
 
   void getStatusString(char* statusText);
 
-  inline bool isValid() { return (bool)(get_tmr10ms() - lastUpdate < 200); }
-  inline bool supportsFailsafe() { return (bool) (flags & 0x20); }
-  inline bool isWaitingforBind() { return (bool) (flags & 0x10); }
-  inline bool isBinding() { return (bool) (flags & 0x08); }
-  inline bool protocolValid() { return (bool) (flags & 0x04); }
-  inline bool serialMode() { return (bool) (flags & 0x02); }
-  inline bool inputDetected() { return (bool) (flags & 0x01); }
+  inline bool isValid() const { return (bool)(get_tmr10ms() - lastUpdate < 200); }
+  inline bool supportsFailsafe() const { return (bool) (flags & 0x20); }
+  inline bool isWaitingforBind() const { return (bool) (flags & 0x10); }
+  inline bool isBinding() const { return (bool) (flags & 0x08); }
+  inline bool protocolValid() const { return (bool) (flags & 0x04); }
+  inline bool serialMode() const { return (bool) (flags & 0x02); }
+  inline bool inputDetected() const { return (bool) (flags & 0x01); }
 };
 
 MultiModuleStatus& getMultiModuleStatus(uint8_t module);

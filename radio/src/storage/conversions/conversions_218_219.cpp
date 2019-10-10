@@ -355,7 +355,7 @@ void convertModelData_218_to_219(ModelData &model)
         }
       }
     }
-    else if (screenType == TELEMETRY_SCREEN_TYPE_GAUGES) {
+    else if (screenType == TELEMETRY_SCREEN_TYPE_BARS) {
       for (int j = 0; j < 4; j++) {
         newModel.screens[i].bars[j].source = convertSource_218_to_219(oldModel.frsky.screens[i].bars[j].source);
       }

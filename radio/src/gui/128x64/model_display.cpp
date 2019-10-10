@@ -52,21 +52,44 @@ enum MenuModelDisplayItems {
 #endif
 #define DISPLAY_COL3                  (17*FW+2)
 
-#if defined(LUA)
-  #define SCREEN_TYPE_ROWS            1
-  #define DISPLAY_LINE_ROWS(x)        ((TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE || TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_SCRIPT) ? HIDDEN_ROW : (TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_GAUGES ? (uint8_t)2 : (uint8_t)1))
-#else
-  #define SCREEN_TYPE_ROWS            0
-  #define DISPLAY_LINE_ROWS(x)        (TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE ? HIDDEN_ROW : (TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_GAUGES ? (uint8_t)2 : (uint8_t)1))
-#endif
-
-#define TELEMETRY_SCREEN_ROWS(x)      SCREEN_TYPE_ROWS, DISPLAY_LINE_ROWS(x), DISPLAY_LINE_ROWS(x), DISPLAY_LINE_ROWS(x), DISPLAY_LINE_ROWS(x)
-#define TELEMETRY_CURRENT_SCREEN(k)   (k < ITEM_DISPLAY_SCREEN_LABEL2 ? 0 : (k < ITEM_DISPLAY_SCREEN_LABEL3 ? 1 : (k < ITEM_DISPLAY_SCREEN_LABEL4 ? 2 : 3)))
-
-#if defined(LUA)
-void onTelemetryScriptFileSelectionMenu(const char *result)
+inline uint8_t SCREEN_TYPE_COLUMNS(uint8_t screenIndex)
 {
-  int screenIndex = TELEMETRY_CURRENT_SCREEN(menuVerticalPosition - HEADER_LINE);
+  if (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_SCRIPT)
+    return 1;
+  else
+    return 0;
+}
+
+inline uint8_t SCREEN_LINE_COLUMNS(uint8_t screenIndex, uint8_t lineIndex)
+{
+  switch (TELEMETRY_SCREEN_TYPE(screenIndex)) {
+    case TELEMETRY_SCREEN_TYPE_VALUES:
+      return 1;
+    case TELEMETRY_SCREEN_TYPE_BARS:
+      return g_model.screens[screenIndex].bars[lineIndex].source ? 2 : 0;
+    default:
+      return HIDDEN_ROW;
+  }
+}
+
+#define TELEMETRY_SCREEN_ROWS(x)      SCREEN_TYPE_COLUMNS(x), SCREEN_LINE_COLUMNS(x, 0), SCREEN_LINE_COLUMNS(x, 1), SCREEN_LINE_COLUMNS(x, 2), SCREEN_LINE_COLUMNS(x, 3)
+
+inline uint8_t DISPLAY_CURRENT_SCREEN(uint8_t line)
+{
+  if (line < ITEM_DISPLAY_SCREEN_LABEL2)
+    return 0;
+  else if (line < ITEM_DISPLAY_SCREEN_LABEL3)
+    return 1;
+  else if (line < ITEM_DISPLAY_SCREEN_LABEL4)
+    return 2;
+  else
+    return 3;
+}
+
+#if defined(LUA)
+void onTelemetryScriptFileSelectionMenu(const char * result)
+{
+  int screenIndex = DISPLAY_CURRENT_SCREEN(menuVerticalPosition - HEADER_LINE);
 
   if (result == STR_UPDATE_LIST) {
     if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.screens[screenIndex].script.file), NULL)) {
@@ -81,7 +104,6 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   }
 }
 #endif
-
 
 int skipHiddenLines(int noRows, const uint8_t * mstate_tab, int row)
 {
@@ -120,7 +142,7 @@ void menuModelDisplay(event_t event)
       case ITEM_DISPLAY_SCREEN_LABEL3:
       case ITEM_DISPLAY_SCREEN_LABEL4:
       {
-        uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
+        uint8_t screenIndex = DISPLAY_CURRENT_SCREEN(k);
         drawStringWithIndex(0*FW, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
         TelemetryScreenType newScreenType = (TelemetryScreenType)editChoice(DISPLAY_COL2, y, "", STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
@@ -148,9 +170,6 @@ void menuModelDisplay(event_t event)
               POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
             }
           }
-        }
-        else if (attr) {
-          MOVE_CURSOR_FROM_HERE();
         }
 #endif
         break;
@@ -206,9 +225,6 @@ void menuModelDisplay(event_t event)
               drawSourceCustomValue(DISPLAY_COL2, y, bar.source, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | lf);
               drawSourceCustomValue(DISPLAY_COL3, y, bar.source, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | lf);
             }
-          }
-          else if (attr) {
-            MOVE_CURSOR_FROM_HERE();
           }
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {

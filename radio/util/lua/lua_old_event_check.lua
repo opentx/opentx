@@ -17,13 +17,11 @@ local toolName = "TNS|LUA event tests|TNE"
 ---- #########################################################################
 
 local virtual_next = 0
-local virtual_prev = 0
-local virtual_inc = 0
-local virtual_dec = 0
+local virtual_previous = 0
 local virtual_next_rept = 0
-local virtual_prev_rept = 0
+local virtual_previous_rept = 0
 local virtual_page_next = 0
-local virtual_page_prev = 0
+local virtual_page_previous = 0
 local virtual_enter = 0
 local virtual_enter_long = 0
 local virtual_menu = 0
@@ -39,54 +37,38 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  end
-  if event == EVT_VIRTUAL_EXIT then
+  elseif event == EVT_VIRTUAL_EXIT then
     return 2
-  end
-  if event == EVT_VIRTUAL_NEXT then
+  elseif event == EVT_PLUS_FIRST then
     virtual_next = virtual_next + 1
-  end
-  if event == EVT_VIRTUAL_PREV then
-    virtual_prev = virtual_prev + 1
-  end
-  if event == EVT_VIRTUAL_INC then
-    virtual_inc = virtual_inc + 1
-  end
-  if event == EVT_VIRTUAL_DEC then
-    virtual_dec = virtual_dec + 1
-  end
-  if event == EVT_VIRTUAL_NEXT_REPT then
+  elseif event == EVT_MINUS_FIRST then
+    virtual_previous = virtual_previous + 1
+  elseif event == EVT_PLUS_REPT then
     virtual_next_rept = virtual_next_rept + 1
-  end
-  if event == EVT_VIRTUAL_PREV_REPT then
-    virtual_prev_rept = virtual_prev_rept + 1
-  end
-  if event == EVT_VIRTUAL_NEXT_PAGE then
+  elseif event == EVT_MINUS_REPT then
+    virtual_previous_rept = virtual_previous_rept + 1
+  elseif event == EVT_PAGE_BREAK then
     virtual_page_next = virtual_page_next +1
-  end
-  if event == EVT_VIRTUAL_PREV_PAGE then
-    virtual_page_prev = virtual_page_prev + 1
+  elseif event == EVT_PAGE_LONG then
+    virtual_page_previous = virtual_page_previous + 1
     killEvents(event);
-  end
-  if event == EVT_VIRTUAL_ENTER then
+  elseif event == EVT_ENTER_BREAK  then
     virtual_enter = virtual_enter + 1
-  end
-  if event == EVT_VIRTUAL_MENU then
+  elseif event == EVT_MENU_BREAK  then
     virtual_menu = virtual_menu + 1
   end
 
   lcd.clear()
   lcd.drawScreenTitle("LUA EVENT TEST", 0, 0)
-  lcd.drawText(1, 10, "PREV:"..virtual_prev)
-  lcd.drawText(LCD_W/2, 10, "NEXT: "..virtual_next)
-  lcd.drawText(1, 20, "DEC:"..virtual_dec)
-  lcd.drawText(LCD_W/2, 20, "INC:"..virtual_inc)
-  lcd.drawText(1, 30, "NXT PAGE: "..virtual_page_next)
-  lcd.drawText(LCD_W/2, 30, "PRV PAGE: "..virtual_page_prev)
-  lcd.drawText(1, 50, "ENTER: "..virtual_enter)
-  lcd.drawText(LCD_W/2, 50, "MENU: "..virtual_menu)
+  lcd.drawText(1, 10, "PLUS: "..virtual_next)
+  lcd.drawText(1, 20, "MINUS: "..virtual_previous)
+  lcd.drawText(1, 40, "PLUS_REPT: "..virtual_next_rept)
+  lcd.drawText(1, 50, "MINUS_REPT: "..virtual_previous_rept)
+  lcd.drawText(LCD_W/2, 10, "ENTER: "..virtual_enter)
+  lcd.drawText(LCD_W/2, 20, "MENU: "..virtual_menu)
+  lcd.drawText(LCD_W/2, 40, "NEXT_PAGE: "..virtual_page_next)
+  lcd.drawText(LCD_W/2, 50, "PREVIOUS_PAGE: "..virtual_page_previous)
   return 0
 end
 
 return { init=init, run=run }
-

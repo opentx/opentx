@@ -245,6 +245,11 @@ int main()
   backlightInit();
   backlightEnable();
 
+#if defined(PCBX7) || defined(PCBXLITE)
+  // we shutdown the bluetooth module now to be sure it will be detected on firmware start
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, false);
+#endif
+
 #if defined(PCBTARANIS)
   i2cInit();
 #endif
