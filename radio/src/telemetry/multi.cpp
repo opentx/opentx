@@ -348,7 +348,7 @@ static void appendInt(char * buf, uint32_t val)
   strAppendUnsigned(buf, val);
 }
 
-#define MIN_REFRESH_RATE      4000
+#define MIN_REFRESH_RATE      5500
 
 void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag)
 {
@@ -400,8 +400,8 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
   adjustedRefreshRate = (adjustedRefreshRate + perframeps);
 
   // Safeguards
-  if (adjustedRefreshRate < 6 * 1000 * 1000)
-    adjustedRefreshRate = 6 * 1000 * 1000;
+  if (adjustedRefreshRate < MIN_REFRESH_RATE * 1000)
+    adjustedRefreshRate = MIN_REFRESH_RATE * 1000;
   if (adjustedRefreshRate > 30 * 1000 * 1000)
     adjustedRefreshRate = 30 * 1000 * 1000;
 
