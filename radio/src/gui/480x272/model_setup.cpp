@@ -624,6 +624,8 @@ bool menuModelSetup(event_t event)
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
     memclear(&reusableBuffer.moduleSetup, sizeof(reusableBuffer.moduleSetup));
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    reusableBuffer.moduleSetup.previousType = g_model.moduleData[EXTERNAL_MODULE].type;
+    reusableBuffer.moduleSetup.newType = g_model.moduleData[EXTERNAL_MODULE].type;
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
     reusableBuffer.moduleSetup.antennaMode = g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode;
 #endif
@@ -1036,7 +1038,7 @@ bool menuModelSetup(event_t event)
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MODE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_EXTERNAL_MODULE_PROTOCOLS, g_model.moduleData[moduleIdx].type, menuHorizontalPosition==0 ? attr : 0);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_EXTERNAL_MODULE_PROTOCOLS, moduleIdx == EXTERNAL_MODULE ? reusableBuffer.moduleSetup.newType : g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(moduleIdx))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[moduleIdx].subType, (menuHorizontalPosition==1 ? attr : 0));
         else if (isModuleDSM2(moduleIdx))
@@ -1060,28 +1062,36 @@ bool menuModelSetup(event_t event)
         }
 #endif
         if (attr && menuHorizontalPosition == 0 && moduleIdx == EXTERNAL_MODULE) {
-          if (s_editMode > 0)
-              EXTERNAL_MODULE_OFF();
-          else
-              if(g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
-                EXTERNAL_MODULE_ON();
+          if (s_editMode > 0) {
+            g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
+          }
+          else if (reusableBuffer.moduleSetup.newType != reusableBuffer.moduleSetup.previousType) {
+            g_model.moduleData[EXTERNAL_MODULE].type = reusableBuffer.moduleSetup.newType;
+            reusableBuffer.moduleSetup.previousType = reusableBuffer.moduleSetup.newType;
+            setModuleType(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
+          }
+          else if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE) {
+            g_model.moduleData[EXTERNAL_MODULE].type = reusableBuffer.moduleSetup.newType;
+          }
         }
         if (attr) {
           if (s_editMode > 0) {
             switch (menuHorizontalPosition) {
-              case 0:
-              {
+              case 0: {
 #if defined(HARDWARE_INTERNAL_MODULE)
-                IsValueAvailable checkFun = moduleIdx == 0 ? isInternalModuleAvailable : isExternalModuleAvailable;
-#else
-                IsValueAvailable checkFun = isExternalModuleAvailable;
-#endif
-                uint8_t moduleType = checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, checkFun);
-                if (checkIncDec_Ret) {
-                  setModuleType(moduleIdx, moduleType);
+                if (moduleIdx == INTERNAL_MODULE) {
+                  uint8_t moduleType = checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,
+                                                   isInternalModuleAvailable);
+                  if (checkIncDec_Ret) {
+                    setModuleType(moduleIdx, moduleType);
+                  }
                 }
-                break;
+                else
+#endif
+                  reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,
+                                                                   isExternalModuleAvailable);
               }
+              break;
               case 1:
                 if (isModuleDSM2(moduleIdx))
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);

@@ -1109,6 +1109,8 @@ union ReusableBuffer
     char msg[64];
     uint8_t r9mPower;
     int8_t antennaMode;
+    uint8_t previousType;
+    uint8_t newType;
     BindInformation bindInformation;
     struct {
       union {
@@ -1185,12 +1187,11 @@ union ReusableBuffer
 
   struct {
     uint8_t bars[LCD_W];
-#if defined(COLORLCD)
     uint8_t max[LCD_W];
-#endif
     uint32_t freq;
     uint32_t span;
     uint32_t step;
+    uint32_t track;
     uint8_t spanDefault;
     uint8_t spanMax;
     uint16_t freqDefault;

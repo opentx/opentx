@@ -223,6 +223,8 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
     }
   }
   for (int i=0; i<=MODULE_SUBTYPE_MULTI_LAST; i++) {
+    if (i == MODULE_SUBTYPE_MULTI_SCANNER)
+      continue;
     ui->multiProtocol->addItem(Multiprotocols::protocolToString(i), i);
   }
 
@@ -543,7 +545,7 @@ void ModulePanel::update()
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
 
   if (mask & MASK_MULTIMODULE) {
-    ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
+    ui->multiProtocol->setCurrentIndex(ui->multiProtocol->findData(module.multi.rfProtocol));
     ui->autoBind->setChecked(module.multi.autoBindMode);
     ui->lowPower->setChecked(module.multi.lowPowerMode);
   }
@@ -714,9 +716,10 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
 
 void ModulePanel::onMultiProtocolChanged(int index)
 {
-  if (!lock && module.multi.rfProtocol != (unsigned)index) {
+  int rfProtocol = ui->multiProtocol->itemData(index).toInt();
+  if (!lock && module.multi.rfProtocol != (unsigned)rfProtocol) {
     lock=true;
-    module.multi.rfProtocol = (unsigned int) index;
+    module.multi.rfProtocol = (unsigned int)rfProtocol;
     unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubTypes();
     if (module.multi.customProto)
       maxSubTypes=8;

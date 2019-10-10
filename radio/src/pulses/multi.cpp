@@ -43,7 +43,7 @@ static void sendSport(uint8_t moduleIdx);
 
 static void sendMulti(uint8_t moduleIdx, uint8_t b)
 {
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (moduleIdx == INTERNAL_MODULE) {
     intmodulePulsesData.multi.sendByte(b);
   }
@@ -219,6 +219,15 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
   int8_t optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
   uint8_t protoByte = 0;
+
+  if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+    sendMulti(moduleIdx, (uint8_t) 0x54);  // Header byte
+    sendMulti(moduleIdx, (uint8_t) 54);    // Spectrum custom protocol
+    sendMulti(moduleIdx, (uint8_t) 0);
+    sendMulti(moduleIdx, (uint8_t) 0);
+    return;
+  }
+
   if (moduleState[moduleIdx].mode == MODULE_MODE_BIND)
     protoByte |= MULTI_SEND_BIND;
   else if (moduleState[moduleIdx].mode ==  MODULE_MODE_RANGECHECK)

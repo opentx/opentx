@@ -121,7 +121,6 @@ else()
       ${BOOTLOADER_SRC}
       ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
       ../../../../../serial.cpp
-      ../aux_serial_driver.cpp
       )
   endif()
 endif()

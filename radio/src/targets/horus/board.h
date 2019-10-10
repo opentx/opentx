@@ -569,7 +569,7 @@ void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // Sport update driver
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(RADIO_T16)
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
