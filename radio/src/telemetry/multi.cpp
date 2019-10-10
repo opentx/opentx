@@ -160,6 +160,8 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8
   status.patch = data[4];
   if(len>=6)
     status.ch_order=data[5];
+  else
+    status.ch_order=0xFF;
   status.lastUpdate = get_tmr10ms();
 
   if (getMultiModuleStatus(module).requiresFailsafeCheck) {
@@ -445,7 +447,7 @@ void MultiModuleStatus::getStatusString(char * statusText)
 
   if (isBinding())
     strcat(statusText, STR_MODULE_BINDING);
-  else {
+  else if(ch_order!=0xFF) {
     uint8_t temp=ch_order;
 	for(uint8_t i=0;i<4;i++) {
       switch(temp&0x03) {
