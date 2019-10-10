@@ -1594,3 +1594,7 @@ Paul Pearson
 Thierry Laligand
 Bruno Mexique
 Uwe Jordt
+Markus Goelzner
+Jean-Claude Etiemble
+Wojciech Winiarski
+Michael Fleming
