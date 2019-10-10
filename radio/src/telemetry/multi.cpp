@@ -26,7 +26,7 @@ extern uint8_t g_moduleIdx;
 enum MultiPacketTypes : uint8_t
 {
   MultiStatus = 1,
-  FrSkySportTelemtry,
+  FrSkySportTelemetry,
   FrSkyHubTelemetry,
   SpektrumTelemetry,
   DSMBindPacket,
@@ -299,7 +299,7 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
         TRACE("[MP] Received Frsky HUB telemetry len %d < 4", len);
       break;
 
-    case FrSkySportTelemtry:
+    case FrSkySportTelemetry:
       if (len >= 4)
         sportProcessTelemetryPacket(data);
       else

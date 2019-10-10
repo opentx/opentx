@@ -1598,3 +1598,4 @@ Markus Goelzner
 Jean-Claude Etiemble
 Wojciech Winiarski
 Michael Fleming
+Russell G Shanks
