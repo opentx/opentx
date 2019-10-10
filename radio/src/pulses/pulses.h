@@ -82,7 +82,7 @@ PACK(struct PXX2Version {
   uint8_t major;
   uint8_t revision:4;
   uint8_t minor:4;
-);
+});
 
 PACK(struct PXX2HardwareInformation {
   uint8_t modelID;
@@ -223,11 +223,11 @@ typedef Dsm2SerialPulsesData Dsm2PulsesData;
 #else
 #define MAX_PULSES_TRANSITIONS 300
 PACK(struct Dsm2TimerPulsesData {
-       pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
-       pulse_duration_t * ptr;
-       uint16_t rest;
-       uint8_t index;
-     });
+  pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
+  pulse_duration_t * ptr;
+  uint16_t rest;
+  uint8_t index;
+});
 typedef Dsm2TimerPulsesData Dsm2PulsesData;
 #endif
 
@@ -243,9 +243,9 @@ typedef Dsm2TimerPulsesData Dsm2PulsesData;
 
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
-       uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
-       uint8_t length;
-     });
+  uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
+  uint8_t length;
+});
 
 union InternalModulePulsesData {
 #if defined(PXX1)
