@@ -2005,7 +2005,7 @@ int exportPpmDelay(int delay) { return (delay - 300) / 50; }
 int importPpmDelay(int delay) { return 300 + 50 * delay; }
 
 class ModuleUnionField: public UnionField<unsigned int> {
-  
+
   class PPMField: public UnionField::UnionMember, public StructField {
     public:
       PPMField(DataField * parent, ModuleData::PPM& ppm):
@@ -2088,10 +2088,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
           attr==PULSES_PXX_DJT ||
           attr==PULSES_PXX_R9M ||
           attr==PULSES_PXX_R9M_LITE;
-      }
-
-      void beforeExport() override
-      {
       }
 
       void afterImport() override
