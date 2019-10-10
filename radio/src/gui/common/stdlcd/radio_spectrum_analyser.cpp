@@ -121,18 +121,21 @@ void menuRadioSpectrumAnalyser(event_t event)
         break;
       }
 
-      case SPECTRUM_TRACK:
+      case SPECTRUM_TRACK: {
         uint16_t track = reusableBuffer.spectrumAnalyser.track / 1000000;
         lcdDrawText(lcdNextPos + 2, 10, "T:", SMLSIZE);
         lcdDrawNumber(lcdNextPos + 1, 10, reusableBuffer.spectrumAnalyser.track / 1000000, attr | SMLSIZE);
         lcdDrawText(lcdNextPos + 1, 10, "MHz", SMLSIZE);
         if (attr) {
-          reusableBuffer.spectrumAnalyser.track = uint32_t(checkIncDec(event, track, (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span/2)/1000000, (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span/2)/1000000, 0)) * 1000000;
+          reusableBuffer.spectrumAnalyser.track = uint32_t(
+            checkIncDec(event, track, (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                        (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000, 0)) * 1000000;
           if (checkIncDec_Ret) {
             reusableBuffer.spectrumAnalyser.dirty = true;
           }
         }
         break;
+      }
     }
   }
 

@@ -133,18 +133,21 @@ bool menuRadioSpectrumAnalyser(event_t event)
         break;
       }
 
-      case SPECTRUM_TRACK:
+      case SPECTRUM_TRACK: {
         uint16_t track = reusableBuffer.spectrumAnalyser.track / 1000000;
         lcdDrawText(lcdNextPos + 10, MENU_FOOTER_TOP, "T:", TEXT_INVERTED_COLOR);
         lcdDrawNumber(lcdNextPos + 2, MENU_FOOTER_TOP, reusableBuffer.spectrumAnalyser.track / 1000000, attr | TEXT_INVERTED_COLOR);
         lcdDrawText(lcdNextPos + 2, MENU_FOOTER_TOP, "MHz", TEXT_INVERTED_COLOR);
         if (attr) {
-          reusableBuffer.spectrumAnalyser.track = uint32_t(checkIncDec(event, track, (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span/2)/1000000, (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span/2)/1000000, 0)) * 1000000;
+          reusableBuffer.spectrumAnalyser.track = uint32_t(
+            checkIncDec(event, track, (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                        (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000, 0)) * 1000000;
           if (checkIncDec_Ret) {
             reusableBuffer.spectrumAnalyser.dirty = true;
           }
         }
         break;
+      }
     }
   }
   // Draw fixed part (scale,..)
