@@ -148,56 +148,61 @@ class OtaUpdateInformation: public BindInformation {
 typedef void (* ModuleCallback)();
 
 PACK(struct ModuleState {
-       uint8_t protocol:4;
-       uint8_t mode:4;
-       uint8_t paused:1;
-       uint8_t spare:7;
-       uint16_t counter;
-       union {
-         ModuleInformation * moduleInformation;
-         ModuleSettings * moduleSettings;
-         ReceiverSettings * receiverSettings;
-         BindInformation * bindInformation;
-         OtaUpdateInformation * otaUpdateInformation;
-       };
-       ModuleCallback callback;
+  uint8_t protocol:4;
+  uint8_t mode:4;
+  uint8_t paused:1;
+  uint8_t spare:7;
+  uint16_t counter;
+  union
+  {
+    ModuleInformation * moduleInformation;
+    ModuleSettings * moduleSettings;
+    ReceiverSettings * receiverSettings;
+    BindInformation * bindInformation;
+    OtaUpdateInformation * otaUpdateInformation;
+  };
+  ModuleCallback callback;
 
-       void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
+  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
 
-       void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
-       {
-         moduleInformation = destination;
-         moduleInformation->current = first;
-         moduleInformation->maximum = last;
-         mode = MODULE_MODE_GET_HARDWARE_INFO;
-       }
-       void readModuleSettings(ModuleSettings * destination)
-       {
-         moduleSettings = destination;
-         moduleSettings->state = PXX2_SETTINGS_READ;
-         mode = MODULE_MODE_MODULE_SETTINGS;
-       }
-       void writeModuleSettings(ModuleSettings * source)
-       {
-         moduleSettings = source;
-         moduleSettings->state = PXX2_SETTINGS_WRITE;
-         moduleSettings->timeout = 0;
-         mode = MODULE_MODE_MODULE_SETTINGS;
-       }
-       void readReceiverSettings(ReceiverSettings * destination)
-       {
-         receiverSettings = destination;
-         receiverSettings->state = PXX2_SETTINGS_READ;
-         mode = MODULE_MODE_RECEIVER_SETTINGS;
-       }
-       void writeReceiverSettings(ReceiverSettings * source)
-       {
-         receiverSettings = source;
-         receiverSettings->state = PXX2_SETTINGS_WRITE;
-         receiverSettings->timeout = 0;
-         mode = MODULE_MODE_RECEIVER_SETTINGS;
-       }
-     });
+  void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
+  {
+    moduleInformation = destination;
+    moduleInformation->current = first;
+    moduleInformation->maximum = last;
+    mode = MODULE_MODE_GET_HARDWARE_INFO;
+  }
+
+  void readModuleSettings(ModuleSettings * destination)
+  {
+    moduleSettings = destination;
+    moduleSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+
+  void writeModuleSettings(ModuleSettings * source)
+  {
+    moduleSettings = source;
+    moduleSettings->state = PXX2_SETTINGS_WRITE;
+    moduleSettings->timeout = 0;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+
+  void readReceiverSettings(ReceiverSettings * destination)
+  {
+    receiverSettings = destination;
+    receiverSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+
+  void writeReceiverSettings(ReceiverSettings * source)
+  {
+    receiverSettings = source;
+    receiverSettings->state = PXX2_SETTINGS_WRITE;
+    receiverSettings->timeout = 0;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+});
 
 extern ModuleState moduleState[NUM_MODULES];
 
