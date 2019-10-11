@@ -488,7 +488,7 @@ void MultiModuleStatus::getStatusString(char * statusText)
   }
 
   static uint8_t counter=0;
-  if(major==1 && minor<3 && (counter&0x20))
+  if(major==1 && minor<3 && (counter&0x30))
     strcpy(statusText, STR_MODULE_UPGRADE);
   else
   {
