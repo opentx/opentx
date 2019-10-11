@@ -39,7 +39,7 @@ class OptionsText : public StaticText {
       }
     };
 
-    virtual void paint(BitmapBuffer * dc) override
+    void paint(BitmapBuffer * dc) override
     {
       coord_t y = 0;
       lcdNextPos = 0;
@@ -47,7 +47,7 @@ class OptionsText : public StaticText {
         const char * option = options[i];
         coord_t optionWidth = getTextWidth(option);
 
-        if((lcdNextPos + 5 + optionWidth) > width()) {
+        if (lcdNextPos + 5 + optionWidth > width()) {
           dc->drawText(lcdNextPos, y, ",");
           lcdNextPos = 0;
           y += FH;

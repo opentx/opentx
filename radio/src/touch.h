@@ -18,10 +18,10 @@
  * GNU General Public License for more details.
  */
 
-#ifndef TOUCH_H
-#define TOUCH_H
+#ifndef _TOUCH_H_
+#define _TOUCH_H_
 
-enum ENUM_TOUCH_EVENT
+enum TouchEvent
 {
     TE_NONE,
     TE_DOWN,
@@ -30,18 +30,20 @@ enum ENUM_TOUCH_EVENT
     TE_END
 };
 
-typedef struct
+struct TouchState
 {
-   unsigned char  Event;
-   short X;
-   short Y;
+   unsigned char event;
+   short x;
+   short y;
    short startX;
    short startY;
    short lastX;
    short lastY;
-   uint32_t Time;
-} STRUCT_TOUCH;
+   uint32_t time;
+};
 
-#define SLIDE_RANGE                     ( 6 )
+constexpr uint8_t SLIDE_RANGE = 6;
 
-#endif // TOUCH_H
+extern TouchState touchState;
+
+#endif // _TOUCH_H_

@@ -48,7 +48,7 @@ class ModelGVarsPage : public PageTab {
 
 class GVarRenderer : public Window {
   public:
-    GVarRenderer(Window* window, rect_t rect, uint8_t gvarIndex) :
+    GVarRenderer(Window * window, rect_t rect, uint8_t gvarIndex) :
       Window(window, rect),
       index(gvarIndex)
     {

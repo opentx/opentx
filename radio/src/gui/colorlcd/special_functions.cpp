@@ -338,7 +338,7 @@ class SpecialFunctionButton : public Button {
           break;
 
         case FUNC_SET_TIMER:
-          drawStringWithIndex(col1, line2, STR_TIMER, CFN_TIMER_INDEX(cfn) + 1, 0);
+          drawStringWithIndex(dc, col1, line2, STR_TIMER, CFN_TIMER_INDEX(cfn) + 1, 0);
           break;
 
         case FUNC_SET_FAILSAFE:

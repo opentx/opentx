@@ -20,17 +20,20 @@
 
 #include "opentx.h"
 
+coord_t drawStringWithIndex(BitmapBuffer * dc, coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix, const char * suffix)
+{
+  char s[64];
+  char * tmp = (prefix ? strAppend(s, prefix) : s);
+  tmp = strAppend(tmp, str);
+  tmp = strAppendUnsigned(tmp, abs(idx));
+  if (suffix)
+    strAppend(tmp, suffix);
+  return dc->drawText(x, y, s, flags);
+}
+
 void drawStatusText(BitmapBuffer * dc, const char * text)
 {
   dc->drawText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, text, TEXT_STATUSBAR_COLOR);
-}
-
-void drawColumnHeader(BitmapBuffer * dc, const char * const * headers, const char * const * descriptions, uint8_t index)
-{
-  dc->drawText(LCD_W-MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_COLOR);
-  if (descriptions) {
-    drawStatusText(dc, descriptions[index]);
-  }
 }
 
 void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
@@ -277,7 +280,7 @@ void drawModelName(BitmapBuffer * dc, coord_t x, coord_t y, char * name, uint8_t
   uint8_t len = sizeof(g_model.header.name);
   while (len>0 && !name[len-1]) --len;
   if (len==0) {
-    drawStringWithIndex(x, y, STR_MODEL, id+1, att|LEADING0);
+    drawStringWithIndex(dc, x, y, STR_MODEL, id+1, att|LEADING0);
   }
   else {
     dc->drawSizedText(x, y, name, sizeof(g_model.header.name), att);

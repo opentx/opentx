@@ -44,11 +44,6 @@ void drawAlertBox(const char * title, const char * text, const char * action)
 uint8_t menuLevel;
 int menuVerticalOffset;
 
-void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix, const char * suffix)
-{
-
-}
-
 void runFatalErrorScreen(char const*)
 {
 

@@ -40,25 +40,20 @@
 #define OPTION_SLIDER_NUMBER_BUTTON    0x100
 #define OPTION_SLIDER_SQUARE_BUTTON    0x200
 
-//void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix, const char * suffix);
-//void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att);
-//int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags attr, event_t event, IsValueAvailable isValueAvailable=nullptr);
-//uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, event_t event);
-//swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event);
+coord_t drawStringWithIndex(BitmapBuffer * dc, coord_t x, coord_t y, const char * str, int idx, LcdFlags flags = 0, const char * prefix = nullptr, const char * suffix = nullptr);
 void drawFatalErrorScreen(const char * message);
 void runFatalErrorScreen(const char * message);
 void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att);
-//void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags);
 void drawSource(BitmapBuffer * dc, coord_t x, coord_t y, mixsrc_t idx, LcdFlags flags=0);
 void drawSwitch(BitmapBuffer * dc, coord_t x, coord_t y, int32_t idx, LcdFlags flags=0);
 void drawTrimMode(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags flags = 0);
+void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curve, LcdFlags flags = 0);
 
 #if defined(FLIGHT_MODES)
 void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att);
 #endif
 
 void drawStatusText(BitmapBuffer * dc, const char * text);
-void drawColumnHeader(BitmapBuffer * dc, const char * const * headers, const char * const * descriptions, uint8_t index);
 void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void drawProgressScreen(BitmapBuffer * dc, const char * title, const char * message, int num, int den);
 void drawTrimSquare(BitmapBuffer * dc, coord_t x, coord_t y);

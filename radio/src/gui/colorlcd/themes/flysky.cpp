@@ -46,8 +46,8 @@ class FlyskyTheme: public ThemeBase
       lcdColorTable[FOCUS_BGCOLOR_INDEX] = RED;
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
-      lcdColorTable[CHECKBOX_COLOR_INDEX] = RED;
-      lcdColorTable[MENU_BGCOLOR_INDEX] = DARKGREY;
+      lcdColorTable[CHECKBOX_COLOR_INDEX] = RGB(0, 71, 157);
+      lcdColorTable[MENU_BGCOLOR_INDEX] = DARKBLUE;
       lcdColorTable[MENU_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
       lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
@@ -62,7 +62,6 @@ class FlyskyTheme: public ThemeBase
       lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = BLACK;
       lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = WHITE;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = RED;
-
 
       // The menu header (top bar)
       lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKBLUE;

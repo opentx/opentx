@@ -131,16 +131,17 @@ void GVarRenderer::paint(BitmapBuffer * dc)
   lastFlightMode = getFlightMode();
   FlightModeData * fmData = &g_model.flightModeData[lastFlightMode];
   lastGVar = fmData->gvars[index];
-  drawStringWithIndex(0, FIELD_PADDING_TOP, TR_GV, index + 1, MENU_COLOR);
+  coord_t x = drawStringWithIndex(dc, 0, FIELD_PADDING_TOP, STR_GV, index + 1, MENU_COLOR, nullptr, "=");
   if (lastGVar > GVAR_MAX) {
     uint8_t fm = lastGVar - GVAR_MAX - 1;
-    if (fm >= lastFlightMode) fm++;
+    if (fm >= lastFlightMode)
+      fm++;
     char label[16];
     getFlightModeString(label, fm + 1);
-    dc->drawSizedText(GVAR_NAME_SIZE, FIELD_PADDING_TOP, label, strlen(label), MENU_COLOR);
+    dc->drawSizedText(x, FIELD_PADDING_TOP, label, strlen(label), MENU_COLOR);
   }
   else {
-    drawGVarValue(dc, GVAR_NAME_SIZE, FIELD_PADDING_TOP, index, lastGVar, MENU_COLOR);
+    drawGVarValue(dc, x, FIELD_PADDING_TOP, index, lastGVar, MENU_COLOR);
   }
 }
 
@@ -206,8 +207,10 @@ void GVarEditWindow::setProperties(int onlyForFlightMode)
   }
   FlightModeData * fmData;
   for (int fm = 0; fm < MAX_FLIGHT_MODES; fm++) {
-    if (onlyForFlightMode >= 0 && fm != onlyForFlightMode) continue;
-    if (!values[fm]) continue;
+    if (onlyForFlightMode >= 0 && fm != onlyForFlightMode)
+      continue;
+    if (!values[fm])
+      continue;
     fmData = &g_model.flightModeData[fm];
 
     // custom value
@@ -221,10 +224,11 @@ void GVarEditWindow::setProperties(int onlyForFlightMode)
       values[fm]->setMax(GVAR_MAX + MAX_FLIGHT_MODES - 1);
       values[fm]->setDisplayHandler([=](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
           uint8_t targetFlightMode = value - GVAR_MAX - 1;
-          if (targetFlightMode >= fm) targetFlightMode++;
+          if (targetFlightMode >= fm)
+            targetFlightMode++;
           char label[16];
           getFlightModeString(label, targetFlightMode + 1);
-          dc->drawSizedText(2, 2, label, strlen(label), flags);
+          dc->drawSizedText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, label, strlen(label), flags);
       });
     }
 
@@ -304,13 +308,14 @@ void GVarEditWindow::buildBody(FormWindow * window)
     }
     new StaticText(window, grid.getLabelSlot(), flightModeName);
     if (flightMode > 0) {
-      CheckBox * cb = new CheckBox(window, grid.getFieldSlot(2, 0),
-                                   [=] { return fmData->gvars[index] <= GVAR_MAX; }, [=](uint8_t checked) {
-            if (!values[flightMode]) return;
+      auto cb = new CheckBox(window, grid.getFieldSlot(2, 0),
+                             [=] { return fmData->gvars[index] <= GVAR_MAX; }, [=](uint8_t checked) {
+            if (!values[flightMode])
+              return;
             fmData->gvars[index] = checked ? 0 : GVAR_MAX + 1;
             setProperties(flightMode);
         });
-      //TODO cb->setLabel(STR_OWN);
+      cb->setLabel(STR_OWN);
     }
     values[flightMode] = new NumberEdit(window, grid.getFieldSlot(2, 1), GVAR_MIN + gvar->min, GVAR_MAX + MAX_FLIGHT_MODES - 1,
                                         GET_SET_DEFAULT(fmData->gvars[index]));

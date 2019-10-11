@@ -42,8 +42,6 @@
 #define W2 LCD_W*LCD_ZOOM
 #define H2 LCD_H*LCD_ZOOM
 
-extern STRUCT_TOUCH touchState;
-
 class OpenTxSim: public FXMainWindow
 {
   FXDECLARE(OpenTxSim)
@@ -261,9 +259,9 @@ long OpenTxSim::onMouseDown(FXObject*,FXSelector,void*v)
   // TRACE("onMouseDown %d %d", evt->win_x, evt->win_y);
 
 #if defined(HARDWARE_TOUCH)
-  touchState.Event = TE_DOWN;
-  touchState.startX = touchState.lastX = touchState.X = evt->win_x;
-  touchState.startY = touchState.lastY = touchState.Y = evt->win_y;
+  touchState.event = TE_DOWN;
+  touchState.startX = touchState.lastX = touchState.x = evt->win_x;
+  touchState.startY = touchState.lastY = touchState.y = evt->win_y;
 #endif
 
   return 0;
@@ -277,13 +275,13 @@ long OpenTxSim::onMouseUp(FXObject*,FXSelector,void*v)
   // TRACE("onMouseUp %d %d", evt->win_x, evt->win_y);
 
 #if defined(HARDWARE_TOUCH)
-  if (touchState.Event == TE_DOWN) {
-    touchState.Event = TE_UP;
-    touchState.X = evt->win_x;
-    touchState.Y = evt->win_y;
+  if (touchState.event == TE_DOWN) {
+    touchState.event = TE_UP;
+    touchState.x = evt->win_x;
+    touchState.y = evt->win_y;
   }
   else {
-    touchState.Event = TE_NONE;
+    touchState.event = TE_NONE;
   }
 #endif
 
@@ -296,10 +294,10 @@ long OpenTxSim::onMouseMove(FXObject*,FXSelector,void*v)
   UNUSED(evt);
 
 #if defined(HARDWARE_TOUCH)
-  if (evt->state & LEFTBUTTONMASK && (touchState.Event == TE_SLIDE || abs(evt->win_x - touchState.X) > 5 || abs(evt->win_y - touchState.Y) > 5)) {
-    touchState.Event = TE_SLIDE;
-    touchState.X = evt->win_x;
-    touchState.Y = evt->win_y;
+  if (evt->state & LEFTBUTTONMASK && (touchState.event == TE_SLIDE || abs(evt->win_x - touchState.x) > 5 || abs(evt->win_y - touchState.y) > 5)) {
+    touchState.event = TE_SLIDE;
+    touchState.x = evt->win_x;
+    touchState.y = evt->win_y;
   }
 #endif
 
