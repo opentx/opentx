@@ -279,7 +279,7 @@ bool menuRadioHardware(event_t event)
           }
         }
         break;
-#if defined(BLUETOOTH)
+
       case ITEM_RADIO_HARDWARE_RTC_CHECK:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RTC_CHECK);
@@ -287,7 +287,7 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.disableRtcWarning = 1 - editCheckBox(b, HW_SETTINGS_COLUMN + 50, y, attr, event);
         break;
       }
-
+#if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH);
         g_eeGeneral.bluetoothMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER, attr, event);
