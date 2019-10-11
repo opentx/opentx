@@ -782,9 +782,9 @@
 #define TR_BLUETOOTH                   "Bluetooth"
 #define TR_BLUETOOTH_DISC              "Hledat"
 #define TR_BLUETOOTH_INIT              "Init"
-#define TR_BLUETOOTH_DIST_ADDR         INDENT "Vzdál. addr"
-#define TR_BLUETOOTH_LOCAL_ADDR        INDENT "Lokál. addr"
-#define TR_BLUETOOTH_PIN_CODE          TR(INDENT "PIN kód", "PIN kód")
+#define TR_BLUETOOTH_DIST_ADDR         "Vzdál. addr"
+#define TR_BLUETOOTH_LOCAL_ADDR        "Lokál. addr"
+#define TR_BLUETOOTH_PIN_CODE          TR("PIN kód", "PIN kód")
 #define TR_BAUDRATE                    "Baudrate BT"
 #define LEN_BLUETOOTH_MODES            "\012"
 #if defined(PCBX9E)

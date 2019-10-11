@@ -137,6 +137,21 @@ enum MenuModelSetupItems {
 #define CURRENT_RECEIVER_EDITED(k)      (EXTERNAL_MODULE)
 #endif
 
+#if defined(BLUETOOTH)
+void onBluetoothConnectMenu(const char * result)
+{
+  if (result != STR_EXIT) {
+    uint8_t index = (result - reusableBuffer.moduleSetup.bt.devices[0]) / sizeof(reusableBuffer.moduleSetup.bt.devices[0]);
+    strncpy(bluetooth.distantAddr, reusableBuffer.moduleSetup.bt.devices[index], LEN_BLUETOOTH_ADDR);
+    bluetooth.state = BLUETOOTH_STATE_BIND_REQUESTED;
+  }
+  else {
+    reusableBuffer.moduleSetup.bt.devicesCount = 0;
+    bluetooth.state = BLUETOOTH_STATE_DISCOVER_END;
+  }
+}
+#endif
+
 #include "common/stdlcd/model_setup_pxx1.cpp"
 
 void onPXX2R9MBindModeMenu(const char * result)
@@ -1223,21 +1238,10 @@ bool menuModelSetup(event_t event)
           }
           if (bluetooth.distantAddr[0]) {
             lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, bluetooth.distantAddr);
-            if (bluetooth.state != BLUETOOTH_STATE_CONNECTED) {
-              drawButton(MODEL_SETUP_2ND_COLUMN, y, "Bind", menuHorizontalPosition == 0 ? attr : 0);
-              drawButton(MODEL_SETUP_2ND_COLUMN+60, y, "Clear", menuHorizontalPosition == 1 ? attr : 0);
-            }
-            else {
-              drawButton(MODEL_SETUP_2ND_COLUMN, y, "Clear", attr);
-            }
+            drawButton(MODEL_SETUP_2ND_COLUMN, y, STR_CLEAR, attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
-              if (bluetooth.state == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
-                bluetooth.state = BLUETOOTH_STATE_OFF;
-                bluetooth.distantAddr[0] = 0;
-              }
-              else {
-                bluetooth.state = BLUETOOTH_STATE_BIND_REQUESTED;
-              }
+              bluetooth.state = BLUETOOTH_STATE_CLEAR_REQUESTED;
+              memclear(bluetooth.distantAddr, sizeof(bluetooth.distantAddr));
             }
           }
           else {
@@ -1247,12 +1251,30 @@ bool menuModelSetup(event_t event)
             else
               drawButton(MODEL_SETUP_2ND_COLUMN, y, STR_BLUETOOTH_DISC, attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
-              if (bluetooth.state < BLUETOOTH_STATE_IDLE)
+              if (bluetooth.state < BLUETOOTH_STATE_IDLE) {
                 bluetooth.state = BLUETOOTH_STATE_OFF;
-              else
+              }
+              else {
+                reusableBuffer.moduleSetup.bt.devicesCount = 0;
                 bluetooth.state = BLUETOOTH_STATE_DISCOVER_REQUESTED;
+              }
             }
           }
+
+          if (bluetooth.state == BLUETOOTH_STATE_DISCOVER_END && reusableBuffer.moduleSetup.bt.devicesCount > 0) {
+            popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bt.devicesCount, MAX_BLUETOOTH_DISTANT_ADDR);
+            for (uint8_t i = 0; i < popupMenuItemsCount; i++) {
+              popupMenuItems[i] = reusableBuffer.moduleSetup.bt.devices[i];
+            }
+            POPUP_MENU_START(onBluetoothConnectMenu);
+          }
+        }
+        else {
+          if (bluetooth.distantAddr[0])
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y+1, bluetooth.distantAddr);
+          else
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "---");
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, bluetooth.state == BLUETOOTH_STATE_CONNECTED ? STR_CONNECTED : STR_NOT_CONNECTED);
         }
         break;
 #endif

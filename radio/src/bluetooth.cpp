@@ -73,7 +73,7 @@ char * Bluetooth::readline(bool error_reset)
 {
   uint8_t byte;
 
-  while (1) {
+  while (true) {
     if (!btRxFifo.pop(byte)) {
 #if defined(PCBX9E)
       // X9E BT module can get unresponsive
@@ -280,7 +280,7 @@ void Bluetooth::receiveTrainer()
 {
   uint8_t byte;
 
-  while (1) {
+  while (true) {
     if (!btRxFifo.pop(byte)) {
       return;
     }
@@ -451,9 +451,11 @@ void Bluetooth::wakeup()
         ++reusableBuffer.moduleSetup.bt.devicesCount;
       }
     }
-    /* else if (state == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
+#if defined(PCBHORUS)
+    else if (state == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
       state = BLUETOOTH_STATE_DISCOVER_END;
-    } */
+    }
+#endif
     else if (state == BLUETOOTH_STATE_CLEAR_REQUESTED) {
       char command[] = "AT+CLEAR";
       writeString(command);
