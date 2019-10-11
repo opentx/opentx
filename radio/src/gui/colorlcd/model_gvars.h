@@ -30,6 +30,7 @@ class GVarButton : public Button {
     GVarButton(Window * parent, const rect_t & rect, uint8_t gvar);
     void checkEvents() override;
     void paint(BitmapBuffer * dc) override;
+
   protected:
     void drawFlightMode(BitmapBuffer * dc, coord_t x, coord_t y, int fm, LcdFlags attr);
     uint8_t gvar;
@@ -37,7 +38,6 @@ class GVarButton : public Button {
     int32_t gvarSum; //used for invalidation
     uint8_t currentFlightMode; //used for invalidation
 };
-
 
 class ModelGVarsPage : public PageTab {
   public:
@@ -52,11 +52,12 @@ class GVarRenderer : public Window {
       Window(window, rect),
       index(gvarIndex)
     {
-
     }
+
     void paint(BitmapBuffer * dc) override;
     void checkEvents() override;
     bool isUpdated();
+
   protected:
     uint8_t index;
     gvar_t lastGVar;
@@ -75,14 +76,18 @@ class GVarEditWindow : public Page {
       buildHeader(&header);
       buildBody(&body);
     }
-    ~GVarEditWindow() {
+
+    ~GVarEditWindow()
+    {
       delete[] values;
     }
+
     void checkEvents() override;
+
   protected:
     uint8_t index;
     void buildHeader(Window * window);
-    void buildBody(Window * window);
+    void buildBody(FormWindow * window);
     void setProperties(int onlyForFlightMode = -1);
     NumberEdit* min;
     NumberEdit* max;
