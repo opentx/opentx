@@ -59,6 +59,8 @@ enum MenuRadioHardwareItems {
 #if defined(BLUETOOTH)
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
+  ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR,
+  ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #endif
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
@@ -80,7 +82,7 @@ enum MenuRadioHardwareItems {
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 
 #if defined(BLUETOOTH)
-  #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0),
+  #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? READONLY_ROW : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #else
   #define BLUETOOTH_ROWS
 #endif
@@ -292,12 +294,22 @@ bool menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH_PIN_CODE);
+        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_PIN_CODE);
         lcdDrawText(HW_SETTINGS_COLUMN+50, y, "000000", 0);
         break;
 
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR:
+        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_LOCAL_ADDR);
+        lcdDrawText(HW_SETTINGS_COLUMN+50, y, bluetooth.localAddr[0] == '\0' ? "---" : bluetooth.localAddr);
+        break;
+
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR:
+        lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_DIST_ADDR);
+        lcdDrawText(HW_SETTINGS_COLUMN+50, y, bluetooth.distantAddr[0] == '\0' ? "---" : bluetooth.distantAddr);
+        break;
+
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_NAME);
+        lcdDrawText(INDENT_WIDTH, y, STR_NAME);
         editName(HW_SETTINGS_COLUMN+50, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
         break;
 #endif
