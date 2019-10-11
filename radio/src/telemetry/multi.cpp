@@ -487,7 +487,6 @@ void MultiModuleStatus::getStatusString(char * statusText)
     return;
   }
 
-  static uint8_t counter=0;
   if(major==1 && minor<3 && SLOW_BLINK_ON_PHASE)
     strcpy(statusText, STR_MODULE_UPGRADE);
   else
@@ -525,7 +524,6 @@ void MultiModuleStatus::getStatusString(char * statusText)
       }
     }
   }
-  counter++;
 }
 
 static uint8_t * getRxBuffer(uint8_t moduleIdx)
