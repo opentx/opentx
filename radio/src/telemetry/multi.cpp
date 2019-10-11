@@ -487,39 +487,45 @@ void MultiModuleStatus::getStatusString(char * statusText)
     return;
   }
 
+  static uint8_t counter=0;
+  if(major==1 && minor<3 && (counter&0x20))
+    strcpy(statusText, STR_MODULE_UPGRADE);
+  else
+  {
+    strcpy(statusText, "V");
+    appendInt(statusText, major);
+    strcat(statusText, ".");
+    appendInt(statusText, minor);
+    strcat(statusText, ".");
+    appendInt(statusText, revision);
+    strcat(statusText, ".");
+    appendInt(statusText, patch);
+    strcat(statusText, " ");
 
-  strcpy(statusText, "V");
-  appendInt(statusText, major);
-  strcat(statusText, ".");
-  appendInt(statusText, minor);
-  strcat(statusText, ".");
-  appendInt(statusText, revision);
-  strcat(statusText, ".");
-  appendInt(statusText, patch);
-  strcat(statusText, " ");
-
-  if (isBinding())
-    strcat(statusText, STR_MODULE_BINDING);
-  else if(ch_order!=0xFF) {
-    uint8_t temp=ch_order;
-	for(uint8_t i=0;i<4;i++) {
-      switch(temp&0x03) {
-        case 0:
-          strcat(statusText, "A");
-          break;
-        case 1:
-          strcat(statusText, "E");
-          break;
-        case 2:
-          strcat(statusText, "T");
-          break;
-        case 3:
-          strcat(statusText, "R");
-          break;
+    if (isBinding())
+      strcat(statusText, STR_MODULE_BINDING);
+    else if(ch_order!=0xFF) {
+      uint8_t temp=ch_order;
+      for(uint8_t i=0;i<4;i++) {
+        switch(temp&0x03) {
+          case 0:
+            strcat(statusText, "A");
+            break;
+          case 1:
+            strcat(statusText, "E");
+            break;
+          case 2:
+            strcat(statusText, "T");
+            break;
+          case 3:
+            strcat(statusText, "R");
+            break;
+        }
+        temp>>=2;
       }
-      temp>>=2;
     }
   }
+  counter++;
 }
 
 static uint8_t * getRxBuffer(uint8_t moduleIdx)
