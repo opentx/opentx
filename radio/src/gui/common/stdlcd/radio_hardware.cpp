@@ -35,7 +35,7 @@ enum {
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, CASE_BLUETOOTH(0)});
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX+1, {0, 0, 0, 0, 0, 0, CASE_BLUETOOTH(0)});
 
   uint8_t sub = menuVerticalPosition - 1;
 
@@ -52,6 +52,10 @@ void menuRadioHardware(event_t event)
 
       case ITEM_RADIO_HARDWARE_STICKS_GAINS_LABELS:
         lcdDrawTextAlignedLeft(y, "Sticks");
+        lcdDrawText(LCD_W, y, BUTTON(TR_CALIBRATION), attr| RIGHT);
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+          pushMenu(menuRadioCalibration);
+        }
         break;
 
       case ITEM_RADIO_HARDWARE_STICK_LV_GAIN:
