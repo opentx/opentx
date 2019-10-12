@@ -335,7 +335,6 @@
 #else
   #define TR_GYR_VSRCRAW
 #endif
-TR_GYR_VSRCRAW
 #if defined(HELI)
   #define TR_CYC_VSRCRAW       "CYC1""CYC2""CYC3"
 #else
