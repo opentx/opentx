@@ -329,7 +329,12 @@ getvalue_t getValue(mixsrc_t i)
   else if (i == MIXSRC_MAX) {
     return 1024;
   }
-
+#if defined(DEBUG_LATENCY_MIXER_RF)
+  else if (i == MIXSRC_DEBUG_SINUS) {
+    // generate a sinus wave at 1 Hz
+    return sinf((float)RTOS_GET_MS() * 2 * 3.14159 / 1000.0) * 1024.0;
+  }
+#endif
   else if (i <= MIXSRC_CYC3) {
 #if defined(HELI)
     return cyc_anas[i - MIXSRC_CYC1];
@@ -383,7 +388,6 @@ getvalue_t getValue(mixsrc_t i)
     return 0;
 #endif
   }
-
   else if (i == MIXSRC_TX_VOLTAGE) {
     return g_vbat100mV;
   }

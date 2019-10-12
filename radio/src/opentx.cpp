@@ -94,7 +94,7 @@ void toggleLatencySwitch()
     GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
   else
     GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
-#else
+#elif defined(SPORT_UPDATE_PWR_GPIO)
   if (latencyToggleSwitch)
     sportUpdatePowerOn();
   else

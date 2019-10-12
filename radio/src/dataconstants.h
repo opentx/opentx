@@ -670,6 +670,10 @@ enum MixSources {
   MIXSRC_CYC2,                         LUA_EXPORT("cyc2", "Cyclic 2")
   MIXSRC_CYC3,                         LUA_EXPORT("cyc3", "Cyclic 3")
 
+#if defined(DEBUG_LATENCY_MIXER_RF)
+  MIXSRC_DEBUG_SINUS,
+#endif
+
   MIXSRC_FIRST_TRIM,
   MIXSRC_TrimRud = MIXSRC_FIRST_TRIM,  LUA_EXPORT("trim-rud", "Rudder trim")
   MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
