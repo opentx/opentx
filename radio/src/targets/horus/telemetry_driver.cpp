@@ -39,7 +39,6 @@ static void telemetryInitDirPin()
   GPIO_ResetBits(TELEMETRY_DIR_GPIO, TELEMETRY_DIR_GPIO_PIN);
 }
 
-
 void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 {
   if (baudrate == 0) {

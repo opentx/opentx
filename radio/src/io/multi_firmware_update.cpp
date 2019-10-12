@@ -326,7 +326,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
       break;
     }
 
-    writeOffset += pageSize/2;
+    writeOffset += pageSize / 2;
   }
 
   if (f_eof(file)) {
@@ -545,6 +545,6 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
 
   resumePulses();
 
-  return !result;
+  return result == nullptr;
 }
 #endif
