@@ -26,8 +26,6 @@
 
 #define UPDATE_MULTI_EXT_BIN ".bin"
 
-//#define DEBUG_EXT_MODULE_FLASH
-
 class MultiFirmwareUpdateDriver
 {
   public:
@@ -234,10 +232,6 @@ const char * MultiFirmwareUpdateDriver::progPage(uint8_t* buffer, uint16_t size)
 
   // flash/eeprom flag
   sendByte(0);
-
-  // #if defined(DEBUG_EXT_MODULE_FLASH)
-  //   TRACE("writing at 0x%X", writeOffset << 1);
-  // #endif
 
   for (uint16_t i=0; i < size; i++) {
     sendByte(buffer[i]);
@@ -549,7 +543,6 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
     setupPulsesExternalModule();
   }
 
-  //state = SPORT_IDLE;
   resumePulses();
 
   return !result;
