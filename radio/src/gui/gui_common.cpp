@@ -827,10 +827,9 @@ const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
 const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
-const char STR_SUBTYPE_FRSKYX_RX[] =  "\003""FCC""LBT";
 
 const mm_protocol_definition multi_protocols[] = {
-
+// Protocol as defined in pulses\modules_constants.h, number of sub_protocols - 1, Failsafe supported, Disable channel mapping supported, Subtype string, Option type
   {MODULE_SUBTYPE_MULTI_FLYSKY,     4, false, true,   STR_SUBTYPE_FLYSKY,    nullptr},
   {MODULE_SUBTYPE_MULTI_HUBSAN,     2, false, false,  STR_SUBTYPE_HUBSAN,    STR_MULTI_VIDFREQ},
   {MODULE_SUBTYPE_MULTI_FRSKY,      5, false, false,  STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
@@ -869,7 +868,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false, false,  STR_SUBTYPE_POTENSIC,  nullptr},
   {MODULE_SUBTYPE_MULTI_ZSX,        0, false, false,  STR_SUBTYPE_ZSX,       nullptr},
   {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false, false,  STR_SUBTYPE_FLYZONE,   nullptr},
-  {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false, false,  STR_SUBTYPE_FRSKYX_RX, STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ESky,       0, false, true,   NO_SUBTYPE,            nullptr},
   {MODULE_SUBTYPE_MULTI_J6PRO,      0, false, true,   NO_SUBTYPE,            nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
