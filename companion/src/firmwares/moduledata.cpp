@@ -71,6 +71,8 @@ bool ModuleData::supportRxNum() const
     case PULSES_ACCESS_R9M_LITE:
     case PULSES_ACCESS_R9M_LITE_PRO:
     case PULSES_XJT_LITE_X16:
+    case PULSES_XJT_LITE_LR12:
+    case PULSES_PXX_XJT_LR12:
       return true;
     default:
       return false;
