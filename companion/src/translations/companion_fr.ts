@@ -2919,7 +2919,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
         <source>FrSky Taranis X9-Lite S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
@@ -2975,12 +2975,12 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
         <source>Jumper T16 / T16+</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
         <source>Support for MULTI internal module</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du module MULTI interne</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1307"/>
@@ -5111,7 +5111,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.ui" line="1126"/>
         <source>RTC Batt Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérif Batterie RTC</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="922"/>
@@ -7257,12 +7257,12 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1463"/>
         <source>WARNING</source>
-        <translation type="unfinished"></translation>
+        <translation>ATTENTION</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1464"/>
         <source>&lt;p&gt;Due to the way Jumper have handled their JumperTX fork and firmware releases data integrity for settings from JumperTX cannot be trusted when migrating to OpenTX.&lt;/p&gt;                       &lt;p&gt;Importing JumperTX data into OpenTX 2.3 is &lt;b&gt;not supported and dangerous.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but &lt;b&gt;You should only continue here if the file you opened comes from a real FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Do you really want to continue?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;En raison de la manière dont Jumper a traité ses versions de firmwares, l&apos;intégrité des données pour les paramètres des radios Jumper n&apos;est pas fiable lors de la migration vers OpenTX.&lt;/p&gt;                       &lt;p&gt;L&apos;importation des données des radios Jumper dans OpenTX 2.3 &lt;b&gt;n&apos;est pas prise en charge et constitue un danger.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Il ne nous est malheureusement pas possible de différencier les données des radios Jumper par rapport aux données légitimes des radios FrSky X10, mais &lt;b&gt; Vous ne devez continuer ici que si le fichier que vous avez ouvert provient d&apos;une véritable radio FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Voulez-vous vraiment continuer?&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1479"/>
