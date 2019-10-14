@@ -868,7 +868,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false, false,  STR_SUBTYPE_POTENSIC,  nullptr},
   {MODULE_SUBTYPE_MULTI_ZSX,        0, false, false,  STR_SUBTYPE_ZSX,       nullptr},
   {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false, false,  STR_SUBTYPE_FLYZONE,   nullptr},
-  {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ESky,       0, false, true,   NO_SUBTYPE,            nullptr},
   {MODULE_SUBTYPE_MULTI_J6PRO,      0, false, true,   NO_SUBTYPE,            nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
