@@ -57,6 +57,25 @@ bool ModuleData::isPxx1Module() const
   }
 }
 
+bool ModuleData::supportRxNum() const
+{
+  switch(protocol){
+    case PULSES_PXX_XJT_X16:
+    case PULSES_PXX_R9M:
+    case PULSES_PXX_R9M_LITE:
+    case PULSES_PXX_R9M_LITE_PRO:
+    case PULSES_MULTIMODULE:
+    case PULSES_ACCESS_ISRM:
+    case PULSES_ACCST_ISRM_D16:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_XJT_LITE_X16:
+      return true;
+    default:
+      return false;
+  }
+}
 
 QString ModuleData::rfProtocolToString() const
 {
