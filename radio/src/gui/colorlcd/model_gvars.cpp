@@ -29,7 +29,7 @@
 
 GVarButton::GVarButton(Window * parent, const rect_t &rect, uint8_t gvar) :
   Button(parent, rect),
-  gvar(gvar)
+  gvarIdx(gvar)
 {
   int perRow = (width() - GVAR_NAME_SIZE + TEXT_LEFT_MARGIN * 2) / GVAR_NAME_SIZE;
   lines = MAX_FLIGHT_MODES / perRow;
@@ -47,7 +47,7 @@ void GVarButton::checkEvents()
     int32_t sum = 0;
     for (int flightMode = 0; flightMode < MAX_FLIGHT_MODES; flightMode++) {
       FlightModeData * fmData = &g_model.flightModeData[flightMode];
-      sum += fmData->gvars[gvar];
+      sum += fmData->gvars[gvarIdx];
     }
     if (sum != gvarSum) invalidate();
   }
@@ -55,31 +55,31 @@ void GVarButton::checkEvents()
 
 void GVarButton::paint(BitmapBuffer * dc)
 {
-  GVarData * gvariable = &g_model.gvars[gvar];
+  GVarData * gvar = &g_model.gvars[gvarIdx];
   // The bounding rect
   int nameRectW = TEXT_LEFT_MARGIN + GVAR_NAME_SIZE;
   coord_t x = TEXT_LEFT_MARGIN;
   coord_t y = FIELD_PADDING_TOP;
-  y += PAGE_LINE_HEIGHT;
   currentFlightMode = getFlightMode();
   gvarSum = 0;
 
   dc->drawSolidFilledRect(0, 0, nameRectW, rect.h, CURVE_AXIS_COLOR);
-  dc->drawText(2, FIELD_PADDING_TOP, getGVarString(gvar), 0);
-  dc->drawSizedText(x, y, gvariable->name, LEN_GVAR_NAME, 0);
-  //values are right aligned
+  dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, getGVarString(gvarIdx), 0);
+  dc->drawSizedText(x, y, gvar->name, LEN_GVAR_NAME, 0);
+
+  // values are right aligned
   x += GVAR_NAME_SIZE;
   bool bgFilled = false;
 
   coord_t startX = x;
-  int line = 0;
   for (int flightMode = 0; flightMode < MAX_FLIGHT_MODES; flightMode++) {
     FlightModeData * fmData = &g_model.flightModeData[flightMode];
-    gvar_t v = fmData->gvars[gvar];
+    gvar_t v = fmData->gvars[gvarIdx];
     gvarSum += v;
 
     LcdFlags attr = RIGHT;
-    if (flightMode == currentFlightMode) attr |= BOLD;
+    if (flightMode == currentFlightMode)
+      attr |= BOLD;
 
     x += GVAR_NAME_SIZE;
     if (x > width()) {
@@ -87,10 +87,8 @@ void GVarButton::paint(BitmapBuffer * dc)
       x = nameRectW + GVAR_NAME_SIZE;
       y += PAGE_LINE_HEIGHT * 2;
       startX = nameRectW;
-      line += 2;
     }
 
-    y = FIELD_PADDING_TOP + line * PAGE_LINE_HEIGHT;
     if (!bgFilled) {
       dc->drawSolidFilledRect(startX, y, width() - startX, PAGE_LINE_HEIGHT, CURVE_AXIS_COLOR);
       bgFilled = true;
@@ -99,20 +97,21 @@ void GVarButton::paint(BitmapBuffer * dc)
     // Flight mode
     drawFlightMode(dc, x, y, flightMode, attr);
 
-    coord_t yval = FIELD_PADDING_TOP + (line + 1) * PAGE_LINE_HEIGHT;
-
-    if (v <= GVAR_MAX && (gvariable->prec > 0 || abs(v) >= 1000 || (abs(v) >= 100 && gvariable->unit > 0))) {
+    coord_t yval = y + PAGE_LINE_HEIGHT;
+    if (v <= GVAR_MAX && (gvar->prec > 0 || abs(v) >= 1000 || (abs(v) >= 100 && gvar->unit > 0))) {
       attr |= SMLSIZE;
+      attr &= ~BOLD;
       yval += 3;
     }
 
     if (v > GVAR_MAX) {
       uint8_t fm = v - GVAR_MAX - 1;
-      if (fm >= flightMode) fm++;
+      if (fm >= flightMode)
+        fm++;
       drawFlightMode(dc, x, yval, fm, attr);
     }
     else {
-      drawGVarValue(dc, x, yval, gvar, v, attr);
+      drawGVarValue(dc, x, yval, gvarIdx, v, attr);
     }
   }
 

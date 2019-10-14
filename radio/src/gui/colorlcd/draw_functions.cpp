@@ -492,7 +492,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
     dc->drawNumber(x, y, value, flags|PREC1);
   }
 #if defined(INTERNAL_GPS)
-    else if (source == MIXSRC_TX_GPS) {
+  else if (source == MIXSRC_TX_GPS) {
     if (gpsData.fix) {
       drawGPSPosition(x, y, gpsData.longitude, gpsData.latitude, flags);
     }
@@ -503,7 +503,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
   }
 #endif
 #if defined(GVARS)
-    else if (source >= MIXSRC_FIRST_GVAR && source <= MIXSRC_LAST_GVAR) {
+  else if (source >= MIXSRC_FIRST_GVAR && source <= MIXSRC_LAST_GVAR) {
     drawGVarValue(dc, x, y, source - MIXSRC_FIRST_GVAR, value, flags);
   }
 #endif
@@ -524,10 +524,11 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
 
 void drawValueWithUnit(BitmapBuffer * dc, coord_t x, coord_t y, int val, uint8_t unit, LcdFlags flags)
 {
-  // convertUnit(val, unit);
-  dc->drawNumber(x, y, val, flags & (~NO_UNIT));
-  if (!(flags & NO_UNIT) && unit != UNIT_RAW) {
-    dc->drawTextAtIndex(lcdNextPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+  if ((flags & NO_UNIT) || unit == UNIT_RAW) {
+    dc->drawNumber(x, y, val, flags & (~NO_UNIT));
+  }
+  else {
+    dc->drawNumber(x, y, val, flags & (~NO_UNIT), 0, nullptr, TEXT_AT_INDEX(STR_VTELEMUNIT, unit).c_str());
   }
 }
 

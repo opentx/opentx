@@ -79,7 +79,7 @@ class SimulatorInterface : public QObject
       CAP_ENUM_COUNT
     };
 
-    // This allows automatic en/decoding of flight mode + gvar value to/from any int32
+    // This allows automatic en/decoding of flight mode + gvarIdx value to/from any int32
     struct gVarMode_t {
       int16_t value;
       uint8_t mode;
