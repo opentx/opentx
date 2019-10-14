@@ -366,6 +366,48 @@ void ModulePanel::setupFailsafes()
   lock = false;
 }
 
+ int ModulePanel::getMaxChannelCount()
+{
+  const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
+  switch (protocol) {
+    case PULSES_PXX_R9M:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_ACCESS_ISRM:
+      return 24;
+    case PULSES_ACCST_ISRM_D16:
+    case PULSES_XJT_LITE_X16:
+    case PULSES_XJT_LITE_D8:
+    case PULSES_PXX_XJT_X16:
+    case PULSES_PXX_XJT_D8:
+    case PULSES_CROSSFIRE:
+    case PULSES_SBUS:
+      return 16;
+    case PULSES_XJT_LITE_LR12:
+    case PULSES_PXX_XJT_LR12:
+      return 12;
+    case PULSES_PXX_DJT:
+    case PULSES_PPM:
+      return 8;
+    case PULSES_LP45:
+    case PULSES_DSM2:
+    case PULSES_DSMX:
+      return 6;
+    case PULSES_MULTIMODULE:
+      if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
+        return 6;
+      else
+        return 16;
+      break;
+    case PULSES_OFF:
+      break;
+    default:
+      break;
+  }
+  return 8;
+}
+
 void ModulePanel::update()
 {
   const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
@@ -615,7 +657,7 @@ void ModulePanel::update()
 
   if (mask & MASK_CHANNELS_RANGE) {
     ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
-    ui->channelsCount->setMaximum(qMin(24, 33-ui->channelsStart->value()));
+    ui->channelsCount->setMaximum(getMaxChannelCount());
   }
 }
 
@@ -632,6 +674,7 @@ void ModulePanel::onProtocolChanged(int index)
 {
   if (!lock && module.protocol != ui->protocol->itemData(index).toUInt()) {
     module.protocol = ui->protocol->itemData(index).toInt();
+    module.channelsCount = getMaxChannelCount();
     update();
     emit modified();
   }
