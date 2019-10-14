@@ -298,8 +298,10 @@ void ModulePanel::setupFailsafes()
     }
   }
 
-  if (!hasFailsafe)
+  if (!hasFailsafe) {
+    lock = false;
     return;
+  }
 
   int row = 0;
   int col = 0;
