@@ -200,17 +200,27 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8
   // At least two status packets without bind flag
   bool wasBinding = status.isBinding();
 
+  status.lastUpdate = get_tmr10ms();
   status.flags = data[0];
   status.major = data[1];
   status.minor = data[2];
   status.revision = data[3];
   status.patch = data[4];
-  if(len>=6)
-    status.ch_order=data[5];
-  else
+  if(len<6)
     status.ch_order=0xFF;
-  status.lastUpdate = get_tmr10ms();
-
+  else {
+    status.ch_order=data[5];
+    if(len>=25) {
+      status.protocolNext=data[6];
+      status.protocolPrev=data[7];
+      memcpy(status.protocolName,&data[8],7);
+      status.protocolName[7]=0;
+      status.protocolSubNbr=data[15];
+      memcpy(status.protocolSubName,&data[16],8);
+      status.protocolSubName[8]=0;
+      status.optionDisp=data[24];
+    }
+  }
   if (getMultiModuleStatus(module).requiresFailsafeCheck) {
     getMultiModuleStatus(module).requiresFailsafeCheck = false;
     if (getMultiModuleStatus(module).supportsFailsafe() &&  g_model.moduleData[EXTERNAL_MODULE].failsafeMode == FAILSAFE_NOT_SET)

@@ -127,6 +127,13 @@ struct MultiModuleStatus {
   uint8_t requiresFailsafeCheck;
   tmr10ms_t lastUpdate;
 
+  uint8_t protocolPrev=0;
+  uint8_t protocolNext=0;
+  char protocolName[8]={ 0 };
+  uint8_t protocolSubNbr=0;
+  char protocolSubName[9]={ 0 };
+  uint8_t optionDisp=0;
+
   void getStatusString(char* statusText);
 
   inline bool isValid() const { return (bool)(get_tmr10ms() - lastUpdate < 200); }
