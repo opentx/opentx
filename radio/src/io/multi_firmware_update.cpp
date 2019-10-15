@@ -405,7 +405,9 @@ const char * MultiFirmwareInformation::readV2Signature(const char * buffer)
     return "Invalid signature";
 
   boardType = options & 0x3;
-  optibootSupport = options & 0x80;
+  optibootSupport = options & 0x80 ? true : false;
+  telemetryInversion = options & 0x200 ? true : false;
+  bootloaderCheck = options & 0x100 ? true : false;
 
   telemetryType = FIRMWARE_MULTI_TELEM_NONE;
   if (options & 0x400)
