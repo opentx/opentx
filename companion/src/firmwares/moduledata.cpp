@@ -59,7 +59,7 @@ bool ModuleData::isPxx1Module() const
 
 bool ModuleData::supportRxNum() const
 {
-  switch(protocol){
+  switch (protocol) {
     case PULSES_PXX_XJT_X16:
     case PULSES_PXX_R9M:
     case PULSES_PXX_R9M_LITE:
