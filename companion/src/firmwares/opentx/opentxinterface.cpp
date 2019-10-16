@@ -1222,7 +1222,7 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9D+ 2019 board */
   firmware = new OpenTxFirmware("opentx-x9d+2019", Firmware::tr("FrSky Taranis X9D+ 2019"), BOARD_TARANIS_X9DP_2019);
   addOpenTxTaranisOptions(firmware);
-  addPPMInternalModuleHack(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky Taranis X9D board */
@@ -1278,6 +1278,7 @@ void registerOpenTxFirmwares()
   /* FrSky X10 Express board */
   firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 Express"), BOARD_X10_EXPRESS);
   addOpenTxFrskyOptions(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky X12 (Horus) board */

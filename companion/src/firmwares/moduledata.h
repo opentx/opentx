@@ -186,6 +186,7 @@ class ModuleData {
     void convert(RadioDataConversionState & cstate);
     bool isPxx2Module() const;
     bool isPxx1Module() const;
+    bool supportRxNum() const;
     QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); }
     QString rfProtocolToString() const;
     QString subTypeToString(int type = -1) const;
