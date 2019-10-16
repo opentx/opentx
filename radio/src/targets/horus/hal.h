@@ -365,6 +365,7 @@
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
+#define TELEMETRY_RCC_APB2Periph        RCC_APB2Periph_TIM10
 #define TELEMETRY_DIR_GPIO              GPIOD
 #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
 #define TELEMETRY_GPIO                  GPIOD
@@ -374,6 +375,15 @@
 #define TELEMETRY_GPIO_PinSource_RX     GPIO_PinSource6
 #define TELEMETRY_GPIO_AF               GPIO_AF_USART2
 #define TELEMETRY_USART                 USART2
+#define TELEMETRY_EXTI_PortSource       EXTI_PortSourceGPIOD
+#define TELEMETRY_EXTI_PinSource        EXTI_PinSource6
+#define TELEMETRY_EXTI_LINE             EXTI_Line6
+#define TELEMETRY_EXTI_IRQn             EXTI9_5_IRQn
+#define TELEMETRY_EXTI_IRQHandler       EXTI9_5_IRQHandler
+#define TELEMETRY_EXTI_TRIGGER          EXTI_Trigger_Rising
+#define TELEMETRY_TIMER                 TIM11
+#define TELEMETRY_TIMER_IRQn            TIM1_TRG_COM_TIM11_IRQn
+#define TELEMETRY_TIMER_IRQHandler      TIM1_TRG_COM_TIM11_IRQHandler
 #if defined(PCBX12S)
 #define TELEMETRY_DMA_Stream_RX         DMA1_Stream5
 #define TELEMETRY_DMA_Channel_RX        DMA_Channel_4

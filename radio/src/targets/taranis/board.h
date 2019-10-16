@@ -192,6 +192,8 @@ void check_intmodule_heartbeat();
 #define check_intmodule_heartbeat()
 #endif
 
+void check_telemetry_exti();
+
 // SBUS
 int sbusGetByte(uint8_t * byte);
 
@@ -679,6 +681,9 @@ void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 bool telemetryGetByte(uint8_t * byte);
 void telemetryClearFifo();
 extern uint32_t telemetryErrors;
+
+// soft-serial
+void telemetryPortInvertedInit(uint32_t baudrate);
 
 // PCBREV driver
 #if defined(PCBX7)

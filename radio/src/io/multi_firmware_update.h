@@ -21,6 +21,8 @@
 #ifndef OPENTX_MULTI_FIRMWARE_H
 #define OPENTX_MULTI_FIRMWARE_H
 
+#include "ff.h"
+
 /* Signature format is multi-[board type]-[bootloader support][check for bootloader][multi telemetry type][telemetry inversion][debug]-[firmware version]
    Where:
    [board type] is avr, stm, or orx
@@ -36,15 +38,15 @@
 class MultiFirmwareInformation {
   public:
     enum MultiFirmwareBoardType {
+      FIRMWARE_MULTI_AVR = 0,
       FIRMWARE_MULTI_STM,
-      FIRMWARE_MULTI_AVR,
       FIRMWARE_MULTI_ORX,
     };
 
     enum MultiFirmwareTelemetryType {
-      FIRMWARE_MULTI_TELEM_MULTI,
-      FIRMWARE_MULTI_TELEM_STATUS,
-      FIRMWARE_MULTI_TELEM_NONE,
+      FIRMWARE_MULTI_TELEM_NONE = 0,
+      FIRMWARE_MULTI_TELEM_MULTI_STATUS,    // erSkyTX
+      FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY, // OpenTX
     };
 
     bool isMultiStmFirmware() const
@@ -69,15 +71,16 @@ class MultiFirmwareInformation {
 
     bool isMultiInternalFirmware() const
     {
-      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_STATUS);
+      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     bool isMultiExternalFirmware() const
     {
-      return (telemetryInversion == false && optibootSupport == true && telemetryType == FIRMWARE_MULTI_TELEM_STATUS);
+      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == true && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     const char * readMultiFirmwareInformation(const char * filename);
+    const char * readMultiFirmwareInformation(FIL * file);
 
   private:
     uint8_t boardType;
@@ -89,8 +92,11 @@ class MultiFirmwareInformation {
     uint8_t firmwareVersionMinor;
     uint8_t firmwareVersionRevision;
     uint8_t firmwareVersionSubRevision;
+
+    const char * readV1Signature(const char * buffer);
+    const char * readV2Signature(const char * buffer);
 };
 
-const char* multiFlashFirmware(uint8_t module, const char * filename);
+bool multiFlashFirmware(uint8_t module, const char * filename);
 
 #endif //OPENTX_MULTI_FIRMWARE_H
