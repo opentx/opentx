@@ -295,7 +295,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
     return "Wrong signature";
   }
 
-  if ((signature[1] == 0x55) && (signature[2] == 0xAA)) {
+  if (signature[1] == 0x55 && signature[2] == 0xAA) {
     pageSize = 256;
     writeOffset = 0x1000; // start offset (word address)
   }
