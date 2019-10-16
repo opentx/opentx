@@ -370,12 +370,12 @@ int ModulePanel::getMaxChannelCount()
 {
   const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
   switch (protocol) {
+    case PULSES_ACCESS_ISRM:
+      return 24;
     case PULSES_PXX_R9M:
     case PULSES_ACCESS_R9M:
     case PULSES_ACCESS_R9M_LITE:
     case PULSES_ACCESS_R9M_LITE_PRO:
-    case PULSES_ACCESS_ISRM:
-      return 24;
     case PULSES_ACCST_ISRM_D16:
     case PULSES_XJT_LITE_X16:
     case PULSES_PXX_XJT_X16:
