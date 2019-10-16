@@ -366,6 +366,48 @@ void ModulePanel::setupFailsafes()
   lock = false;
 }
 
+int ModulePanel::getMaxChannelCount()
+{
+  const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
+  switch (protocol) {
+    case PULSES_ACCESS_ISRM:
+      return 24;
+    case PULSES_PXX_R9M:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_ACCST_ISRM_D16:
+    case PULSES_XJT_LITE_X16:
+    case PULSES_PXX_XJT_X16:
+    case PULSES_CROSSFIRE:
+    case PULSES_SBUS:
+      return 16;
+    case PULSES_XJT_LITE_LR12:
+    case PULSES_PXX_XJT_LR12:
+      return 12;
+    case PULSES_PXX_DJT:
+    case PULSES_XJT_LITE_D8:
+    case PULSES_PXX_XJT_D8:
+    case PULSES_PPM:
+      return 8;
+    case PULSES_LP45:
+    case PULSES_DSM2:
+    case PULSES_DSMX:
+      return 6;
+    case PULSES_MULTIMODULE:
+      if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
+        return 6;
+      else
+        return 16;
+      break;
+    case PULSES_OFF:
+      break;
+    default:
+      break;
+  }
+  return 8;
+}
+
 void ModulePanel::update()
 {
   const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
@@ -464,10 +506,12 @@ void ModulePanel::update()
   ui->rxNumber->setValue(module.modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
+  ui->channelsStart->setMaximum(33 - module.channelsCount);
   ui->channelsStart->setValue(module.channelsStart+1);
   ui->label_channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setEnabled(mask & MASK_CHANNELS_COUNT);
+  ui->channelsCount->setMaximum(getMaxChannelCount());
   ui->channelsCount->setValue(module.channelsCount);
   ui->channelsCount->setSingleStep(firmware->getCapability(HasPPMStart) ? 1 : 2);
 
@@ -483,7 +527,7 @@ void ModulePanel::update()
   ui->ppmDelay->setValue(module.ppm.delay);
   ui->label_ppmFrameLength->setVisible(mask & MASK_SBUSPPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_SBUSPPM_FIELDS);
-  ui->ppmFrameLength->setMinimum(module.channelsCount*(model->extendedLimits ? 2.250 : 2)+3.5);
+  ui->ppmFrameLength->setMinimum(module.channelsCount * (model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
 
@@ -612,11 +656,6 @@ void ModulePanel::update()
       }
     }
   }
-
-  if (mask & MASK_CHANNELS_RANGE) {
-    ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
-    ui->channelsCount->setMaximum(qMin(24, 33-ui->channelsStart->value()));
-  }
 }
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
@@ -632,6 +671,7 @@ void ModulePanel::onProtocolChanged(int index)
 {
   if (!lock && module.protocol != ui->protocol->itemData(index).toUInt()) {
     module.protocol = ui->protocol->itemData(index).toInt();
+    module.channelsCount = getMaxChannelCount();
     update();
     emit modified();
   }
