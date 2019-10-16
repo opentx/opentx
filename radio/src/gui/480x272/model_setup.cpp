@@ -1063,17 +1063,8 @@ bool menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(moduleIdx)) {
           int multi_rfProto = g_model.moduleData[moduleIdx].getMultiProtocol(false);
-          if (g_model.moduleData[moduleIdx].multi.customProto) {
-            lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_CUSTOM, menuHorizontalPosition == 1 ? attr : 0);
-            lcdDrawNumber(MODEL_SETUP_4TH_COLUMN, y, multi_rfProto, menuHorizontalPosition==2 ? attr : 0, 2);
-            lcdDrawNumber(MODEL_SETUP_4TH_COLUMN + MODEL_SETUP_BIND_OFS, y, g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==3 ? attr : 0, 2);
-          }
-          else {
-            const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_rfProto);
-            lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
-            if (pdef->subTypeString != nullptr)
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, pdef->subTypeString, g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==2 ? attr : 0);
-          }
+          lcdDrawMultiProtocolString(MODEL_SETUP_3RD_COLUMN, y, moduleIdx, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
+          lcdDrawMultiSubProtocolString(MODEL_SETUP_4TH_COLUMN, y, moduleIdx, g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==2 ? attr : 0);
         }
 #endif
         if (attr && menuHorizontalPosition == 0 && moduleIdx == EXTERNAL_MODULE) {
@@ -1113,11 +1104,9 @@ bool menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
                   else if (isModuleMultimodule(moduleIdx)) {
                   int multiRfProto = g_model.moduleData[moduleIdx].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[moduleIdx].getMultiProtocol(false);
-                  CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST, isMultiProtocolSelectable);
+                  CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_MAX, isMultiProtocolSelectable);
                   if (checkIncDec_Ret) {
-                    g_model.moduleData[moduleIdx].multi.customProto = (multiRfProto == MODULE_SUBTYPE_MULTI_CUSTOM);
-                    if (!g_model.moduleData[moduleIdx].multi.customProto)
-                      g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
+                    g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
                     g_model.moduleData[moduleIdx].subType = 0;
                     // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
                     if (g_model.moduleData[moduleIdx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
@@ -1146,20 +1135,12 @@ bool menuModelSetup(event_t event)
                 break;
 
 #if defined(MULTIMODULE)
-              case 2:
-                if (g_model.moduleData[moduleIdx].multi.customProto) {
-                  g_model.moduleData[moduleIdx].setMultiProtocol(checkIncDec(event, g_model.moduleData[moduleIdx].getMultiProtocol(false), 0, 127, EE_MODEL));
-                  break;
-                } else {
-                  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
-                  if (pdef->maxSubtype > 0)
-                    CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, pdef->maxSubtype);
-                }
-                break;
-              case 3:
-                // Custom protocol, third column is subtype
+              case 2: {
+                const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
+                MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, 7);
                 break;
+              }
 #endif
             }
           }
