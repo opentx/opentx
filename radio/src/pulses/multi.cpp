@@ -146,7 +146,7 @@ void setupPulsesMulti(uint8_t moduleIdx)
     sendChannels(moduleIdx);
 
   // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
-  sendMulti(moduleIdx, (uint8_t) ((g_model.moduleData[moduleIdx].getMultiProtocol(false)&0xC0)
+  sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol(false)+3)&0xC0)
                            | (g_model.header.modelId[moduleIdx] & 0x30)
 						   | (invert[moduleIdx]&0x08)
 						 //| 0x04 // Future use
