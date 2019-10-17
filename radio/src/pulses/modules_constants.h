@@ -156,7 +156,7 @@ enum ModuleSubtypeMulti {
   MODULE_SUBTYPE_MULTI_FRSKYX_RX,
   MODULE_SUBTYPE_MULTI_AFHDS2A_RX,
   MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_AFHDS2A_RX,
-  MODULE_SUBTYPE_MULTI_MAX = 0x7f // 7 bits rfProtocol + rfProtocolExtra
+  MODULE_SUBTYPE_MULTI_MAX = 124 // 7 bits rfProtocol + rfProtocolExtra
 };
 
 enum MMDSM2Subtypes {
