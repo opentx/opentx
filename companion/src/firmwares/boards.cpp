@@ -526,7 +526,7 @@ QString Boards::getBoardName(Board::Type board)
     case BOARD_X10:
       return "Horus X10/X10S";
     case BOARD_X10_EXPRESS:
-      return "Horus X10 Express";
+      return "Horus X10/X10S Express";
     case BOARD_JUMPER_T16:
       return "Jumper T16";
     default:
