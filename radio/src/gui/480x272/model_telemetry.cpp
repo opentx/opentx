@@ -219,7 +219,7 @@ bool menuModelTelemetry(event_t event)
 #if defined(MULTIMODULE)
         if (!IS_INTERNAL_MODULE_ON() &&
           g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE  &&
-          g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
+          g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
           lcdDrawText(MENUS_MARGIN_LEFT, y, "RSNR");
         else
 #endif

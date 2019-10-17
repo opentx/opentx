@@ -39,7 +39,7 @@ inline bool isModuleMultimodule(uint8_t idx)
 
 inline bool isModuleMultimoduleDSM2(uint8_t idx)
 {
-  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2;
+  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2;
 }
 #else
 inline bool isModuleMultimodule(uint8_t)
@@ -375,7 +375,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(idx))
   {
-    switch(g_model.moduleData[idx].getMultiProtocol(true))
+    switch(g_model.moduleData[idx].getMultiProtocol())
     {
       case MODULE_SUBTYPE_MULTI_OLRS:
         return 4;

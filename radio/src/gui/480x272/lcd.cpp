@@ -442,13 +442,13 @@ void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_
     if (status.protocolName[0])
       lcdDrawText(x, y, status.protocolName, flags);
     else
-      lcdDrawNumber(x, y, protocol, flags);
+      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of of OpenTX FtSky fidling
   }
 }
 
 void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t subType, LcdFlags flags)
 {
-  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
+  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
   if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
     lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
     return;
