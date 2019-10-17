@@ -73,6 +73,9 @@ bool ModuleData::supportRxNum() const
     case PULSES_XJT_LITE_X16:
     case PULSES_XJT_LITE_LR12:
     case PULSES_PXX_XJT_LR12:
+    case PULSES_LP45:
+    case PULSES_DSM2:
+    case PULSES_DSMX:
       return true;
     default:
       return false;
