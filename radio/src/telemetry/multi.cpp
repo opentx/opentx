@@ -62,6 +62,7 @@ static MultiModuleSyncStatus multiSyncStatus[NUM_MODULES] = {MultiModuleSyncStat
 static uint8_t multiBindStatus[NUM_MODULES] = {MULTI_NORMAL_OPERATION, MULTI_NORMAL_OPERATION};
 
 static MultiBufferState multiTelemetryBufferState[NUM_MODULES];
+static uint16_t multiTelemetryLastRxTS[NUM_MODULES];
 
 MultiModuleStatus &getMultiModuleStatus(uint8_t module)
 {
@@ -93,6 +94,11 @@ void setMultiTelemetryBufferState(uint8_t module, MultiBufferState state)
   multiTelemetryBufferState[module] = state;
 }
 
+static uint16_t& getMultiTelemetryLastRxTS(uint8_t module)
+{
+  return multiTelemetryLastRxTS[module];
+}
+
 // Use additional telemetry buffer
 uint8_t intTelemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 uint8_t intTelemetryRxBufferCount;
@@ -104,6 +110,7 @@ static MultiModuleSyncStatus multiSyncStatus;
 static uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
 
 static MultiBufferState multiTelemetryBufferState;
+static uint16_t multiTelemetryLastRxTS;
 
 MultiModuleStatus& getMultiModuleStatus(uint8_t)
 {
@@ -133,6 +140,11 @@ MultiBufferState getMultiTelemetryBufferState(uint8_t)
 void setMultiTelemetryBufferState(uint8_t, MultiBufferState state)
 {
   multiTelemetryBufferState = state;
+}
+
+uint16_t& getMultiTelemetryLastRxTS(uint8_t module)
+{
+  return multiTelemetryLastRxTS;
 }
 
 #endif // INTERNAL_MODULE_MULTI
@@ -592,6 +604,12 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
   uint8_t * rxBuffer = getRxBuffer(module);
   uint8_t &rxBufferCount = getRxBufferCount(module);
 
+  uint16_t &lastRxTS = getMultiTelemetryLastRxTS(module);
+  uint16_t nowMs = (uint16_t)RTOS_GET_MS();
+  if (nowMs - lastRxTS > 10)
+    setMultiTelemetryBufferState(module, NoProtocolDetected);
+  lastRxTS = nowMs;
+  
   debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", multiTelemetryBufferState, data, rxBufferCount);
   switch (getMultiTelemetryBufferState(module)) {
     case NoProtocolDetected:
