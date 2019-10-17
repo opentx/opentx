@@ -221,6 +221,7 @@ void processTelemetryFrame(uint8_t module, uint8_t * frame)
   }
 }
 
+#if defined(ACCESS_LIB)
 void processAuthenticationFrame(uint8_t module, uint8_t * frame)
 {
   uint8_t cryptoType = frame[3];
@@ -234,6 +235,10 @@ void processAuthenticationFrame(uint8_t module, uint8_t * frame)
     // we remain in AUTHENTICATION mode to avoid a CHANNELS frame is sent at the end of the mixing process
   }
 }
+#else
+#define processAuthenticationFrame(module, frame)
+#endif
+
 void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
