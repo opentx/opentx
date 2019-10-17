@@ -1062,7 +1062,7 @@ bool menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_R9M_REGION, g_model.moduleData[moduleIdx].subType, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(moduleIdx)) {
-          int multi_rfProto = g_model.moduleData[moduleIdx].getMultiProtocol(false);
+          int multi_rfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
           lcdDrawMultiProtocolString(MODEL_SETUP_3RD_COLUMN, y, moduleIdx, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
           lcdDrawMultiSubProtocolString(MODEL_SETUP_4TH_COLUMN, y, moduleIdx, g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==2 ? attr : 0);
         }
@@ -1103,13 +1103,13 @@ bool menuModelSetup(event_t event)
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
 #if defined(MULTIMODULE)
                   else if (isModuleMultimodule(moduleIdx)) {
-                  int multiRfProto = g_model.moduleData[moduleIdx].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[moduleIdx].getMultiProtocol(false);
+                  int multiRfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
                   CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_MAX, isMultiProtocolSelectable);
                   if (checkIncDec_Ret) {
                     g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
                     g_model.moduleData[moduleIdx].subType = 0;
                     // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                    if (g_model.moduleData[moduleIdx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
+                    if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
                       g_model.moduleData[moduleIdx].multi.autoBindMode = 1;
                     }
                     else {
@@ -1136,8 +1136,6 @@ bool menuModelSetup(event_t event)
 
 #if defined(MULTIMODULE)
               case 2: {
-                const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
-                MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, 7);
                 break;
               }
@@ -1612,7 +1610,7 @@ bool menuModelSetup(event_t event)
         if (isModuleMultimodule(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
-          const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol(true);
+          const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
           const mm_protocol_definition *pdef = getMultiProtocolDefinition(multi_proto);
           if (pdef->optionsstr)
             lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, pdef->optionsstr);
@@ -1689,7 +1687,7 @@ bool menuModelSetup(event_t event)
     case ITEM_MODEL_SETUP_INTERNAL_MODULE_AUTOBIND:
 #endif
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AUTOBIND:
-      if (g_model.moduleData[moduleIdx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2)
+      if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_DSM_AUTODTECT);
       else
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_AUTOBIND);

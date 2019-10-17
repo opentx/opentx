@@ -465,9 +465,7 @@ PACK(struct ModuleData {
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
-  NOBACKUP(inline uint8_t getMultiProtocol(bool returnCustom) {
-    if (returnCustom && multi.customProto)
-      return MM_RF_CUSTOM_SELECTED;
+  NOBACKUP(inline uint8_t getMultiProtocol() {
     return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
   })
 

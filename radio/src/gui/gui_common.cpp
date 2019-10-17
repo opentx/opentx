@@ -782,6 +782,35 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   return retval;
 }
 #if defined(MULTIMODULE)
+
+// This transforms OpenTX multi type to Multi type
+uint8_t convertMultiProtocole(uint8_t  moduleIdx, uint8_t type)
+{
+
+  // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
+  // all protos > frskyx are therefore also off by one
+  if (type >= 15)
+    type = type + 1;
+
+  // 25 is again a FrSky protocol (FrskyV) so shift again
+  if (type >= 25)
+    type = type + 1;
+
+    if (type == MODULE_SUBTYPE_MULTI_FRSKY) {
+      int subtype = g_model.moduleData[moduleIdx].subType;
+      if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
+        //D8
+        type = 3;
+      } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
+        //V8
+        type = 25;
+      } else {
+        type = 15;
+      }
+    }
+  return type;
+}
+
 // Third row is number of subtypes -1 (max valid subtype)
 #define NO_SUBTYPE  nullptr
 
@@ -827,6 +856,16 @@ const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
 const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
+
+const char* mm_options_strings::options[] = {
+  nullptr,
+  STR_MULTI_OPTION,
+  STR_MULTI_RFTUNE,
+  STR_MULTI_VIDFREQ,
+  STR_MULTI_FIXEDID,
+  STR_MULTI_TELEMETRY,
+  STR_MULTI_SERVOFREQ
+};
 
 const mm_protocol_definition multi_protocols[] = {
 // Protocol as defined in pulses\modules_constants.h, number of sub_protocols - 1, Failsafe supported, Disable channel mapping supported, Subtype string, Option type
