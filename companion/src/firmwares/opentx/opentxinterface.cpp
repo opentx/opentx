@@ -1276,7 +1276,7 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* FrSky X10 Express board */
-  firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 Express"), BOARD_X10_EXPRESS);
+  firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 / X10S Express"), BOARD_X10_EXPRESS);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
