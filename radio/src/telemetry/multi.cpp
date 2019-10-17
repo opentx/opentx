@@ -210,16 +210,18 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8
     status.ch_order=0xFF;
   else {
     status.ch_order=data[5];
-    if(len>=25) {
+    if(len>=24) {
       status.protocolNext=data[6];
       status.protocolPrev=data[7];
       memcpy(status.protocolName,&data[8],7);
       status.protocolName[7]=0;
-      status.protocolSubNbr=data[15];
+      status.protocolSubNbr=data[15]&0x0F;
       memcpy(status.protocolSubName,&data[16],8);
       status.protocolSubName[8]=0;
-      status.optionDisp=data[24];
+      status.optionDisp=data[15]>>4;
     }
+    else
+      status.protocolName[0]=0;
   }
   if (getMultiModuleStatus(module).requiresFailsafeCheck) {
     getMultiModuleStatus(module).requiresFailsafeCheck = false;
