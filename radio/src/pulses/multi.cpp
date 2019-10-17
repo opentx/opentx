@@ -101,11 +101,11 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
 void setupPulsesMulti(uint8_t moduleIdx)
 {
   static int counter[2] = {0,0}; //TODO
-  static uint8_t invert[2] = {0x80,
-  #if defined(PCBTARANIS) || (defined(PCBHORUS) && !defined(RADIO_T16))
-   0x88};
+  static uint8_t invert[2] = {0x00,	//internal
+  #if defined(PCBTARANIS) || defined(PCBHORUS)
+   0x08};	//external
   #else
-   0x80};
+   0x00};	//external
   #endif
   uint8_t type=MULTI_NORMAL;
 
