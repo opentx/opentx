@@ -818,20 +818,9 @@ void menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(EXTERNAL_MODULE)) {
           uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-
           // Do not use MODEL_SETUP_3RD_COLUMN here since some the protocol string are so long that we cannot afford the 2 spaces (+6) here
-          if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto) {
-            lcdDrawText(lcdNextPos + 3, y, STR_MULTI_CUSTOM, menuHorizontalPosition == 1 ? attr : 0);
-            lcdDrawNumber(lcdNextPos + 3, y, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(), menuHorizontalPosition == 2 ? attr : 0, 2);
-            lcdDrawNumber(lcdNextPos + 3, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 3 ? attr : 0, 2);
-          }
-          else {
-            lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
-            const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_rfProto);
-            if (pdef->subTypeString) {
-              lcdDrawTextAtIndex(lcdNextPos + 3, y, pdef->subTypeString, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-            }
-          }
+          lcdDrawMultiProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
+          lcdDrawMultiSubProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
         }
 #endif
         if (attr && menuHorizontalPosition == 0) {
@@ -860,12 +849,10 @@ void menuModelSetup(event_t event)
                 }
 #if defined(MULTIMODULE)
                 else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-                  int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
+                  int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
                   CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST, isMultiProtocolSelectable);
                   if (checkIncDec_Ret) {
-                    g_model.moduleData[EXTERNAL_MODULE].multi.customProto = (multiRfProto == MODULE_SUBTYPE_MULTI_CUSTOM);
-                    if (!g_model.moduleData[EXTERNAL_MODULE].multi.customProto)
-                      g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
+                    g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
                     g_model.moduleData[EXTERNAL_MODULE].subType = 0;
                     // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
                     if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
