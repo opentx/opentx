@@ -610,7 +610,7 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
     setMultiTelemetryBufferState(module, NoProtocolDetected);
   lastRxTS = nowMs;
   
-  debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", multiTelemetryBufferState, data, rxBufferCount);
+  debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", getMultiTelemetryBufferState(module), data, rxBufferCount);
   switch (getMultiTelemetryBufferState(module)) {
     case NoProtocolDetected:
       if (data == 'M') {
