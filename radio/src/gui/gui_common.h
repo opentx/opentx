@@ -204,7 +204,7 @@ inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
 inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
 {
 #if LCD_W < 212
-  return (g_model.moduleData[moduleIdx].multi.customProto ? (uint8_t) 1 : MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol()) ? (uint8_t) 0 : HIDDEN_ROW);
+  return (MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol()) ? (uint8_t) 0 : HIDDEN_ROW);
 #else
   return (MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol()) ? (uint8_t) 1 : 0);
 #endif
