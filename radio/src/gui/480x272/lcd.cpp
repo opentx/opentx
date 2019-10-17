@@ -439,10 +439,10 @@ void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_
   }
   else {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-    if (status.protocolName[0])
+    if (status.protocolName[0] && status.isValid())
       lcdDrawText(x, y, status.protocolName, flags);
     else
-      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of of OpenTX FtSky fidling
+      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
   }
 }
 
@@ -455,7 +455,7 @@ void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uin
   }
   else {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-    if (status.protocolName[0])
+    if (status.protocolName[0] && status.isValid())
       lcdDrawText(x, y, status.protocolSubName, flags);
     else
       lcdDrawNumber(x, y, subType, flags);
