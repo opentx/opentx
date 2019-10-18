@@ -8,20 +8,20 @@ from charset import get_chars, special_chars, extra_chars
 
 
 class FontBitmap:
-    def __init__(self, chars, font_size, font_name, cn_font_name, foreground, background):
+    def __init__(self, chars, font_size, font_name, cjk_font_name, foreground, background):
         self.chars = chars
         self.font_size = font_size
         self.foreground = foreground
         self.background = background
-
         self.font, self.font_offset = self.load_font(font_name)
-        self.cn_font, self.cn_font_offset = self.load_font(cn_font_name)
+        self.cjk_font, self.cjk_font_offset = self.load_font(cjk_font_name)
         self.extra_bitmap = self.load_extra_bitmap()
 
     def load_extra_bitmap(self):
         try:
-            extra_filename = 'fonts/extra_%dpx.png' % self.font_size
-            extra_image = Image.open(extra_filename)
+            tools_path = os.path.dirname(os.path.realpath(__file__))
+            path = os.path.join(tools_path, "../radio/src/fonts", "extra_%dpx.png" % self.font_size)
+            extra_image = Image.open(path)
             return extra_image.convert('RGB')
         except IOError:
             return None
@@ -30,9 +30,11 @@ class FontBitmap:
         # print(font_name)
         font_name, font_offset = font_name.split(":")
         for ext in (".ttf", ".otf"):
-            path = 'fonts/' + font_name + ext
+            tools_path = os.path.dirname(os.path.realpath(__file__))
+            path = os.path.join(tools_path, "../radio/src/fonts", font_name + ext)
             if os.path.exists(path):
                 return ImageFont.truetype(path, self.font_size), int(font_offset)
+        print("Font file %s not found" % font_name)
 
     def get_char_width(self, c):
         if c in extra_chars:
@@ -48,7 +50,7 @@ class FontBitmap:
         elif c == " ":
             return 4
         elif c in special_chars["cn"]:
-            w, h = self.cn_font.getsize(c)
+            w, h = self.cjk_font.getsize(c)
             return w + 1
         else:
             w, h = self.font.getsize(c)
@@ -80,9 +82,11 @@ class FontBitmap:
             elif c == " ":
                 pass
             elif c in special_chars["cn"]:
-                draw.text((width + 1, self.cn_font_offset), c, fill=self.foreground, font=self.cn_font)
+                offset = self.cjk_font.getoffset(c)[0]
+                draw.text((width - offset, self.cjk_font_offset), c, fill=self.foreground, font=self.cjk_font)
             else:
-                draw.text((width + 1, self.font_offset), c, fill=self.foreground, font=self.font)
+                offset = self.font.getoffset(c)[0]
+                draw.text((width - offset, self.font_offset), c, fill=self.foreground, font=self.font)
 
             width += self.get_char_width(c)
 
@@ -100,10 +104,10 @@ def main():
     parser.add_argument('--subset', help="Subset", default="all")
     parser.add_argument('--size', type=int, help="Font size")
     parser.add_argument('--font', help="Font name")
-    parser.add_argument('--cn-font', help="Chinese font name")
+    parser.add_argument('--cjk-font', help="CJK font name")
     args = parser.parse_args()
 
-    font = FontBitmap(get_chars(args.subset), args.size, args.font, args.cn_font, (0, 0, 0), (255, 255, 255))
+    font = FontBitmap(get_chars(args.subset), args.size, args.font, args.cjk_font, (0, 0, 0), (255, 255, 255))
     font.generate(args.output)
 
 

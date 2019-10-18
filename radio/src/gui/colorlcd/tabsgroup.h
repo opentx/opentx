@@ -109,11 +109,13 @@ class TabsCarousel: public Window {
     uint8_t currentIndex = 0;
 };
 
-class TabsGroupHeader: public Window {
+class TabsGroupHeader: public FormGroup {
     friend class TabsGroup;
 
   public:
     TabsGroupHeader(TabsGroup * menu, uint8_t icon);
+
+    ~TabsGroupHeader();
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() override

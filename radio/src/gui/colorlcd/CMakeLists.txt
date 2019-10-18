@@ -1,13 +1,13 @@
 include_directories(
-  ${RADIO_SRC_DIRECTORY}/gui/colorlcd
-  ${RADIO_SRC_DIRECTORY}/gui/colorlcd/layouts
-  ${RADIO_SRC_DIRECTORY}/fonts/truetype
-  ${RADIO_SRC_DIRECTORY}/thirdparty/libopenui/src
+  ${RADIO_SRC_DIR}/gui/colorlcd
+  ${RADIO_SRC_DIR}/gui/colorlcd/layouts
+  ${CMAKE_CURRENT_BINARY_DIR}/fonts
+  ${RADIO_SRC_DIR}/thirdparty/libopenui/src
 )
 
-file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/themes/*.cpp)
-file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/layouts/*.cpp)
-file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/widgets/*.cpp)
+file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIR}/gui/colorlcd ${RADIO_SRC_DIR}/gui/colorlcd/themes/*.cpp)
+file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIR}/gui/colorlcd ${RADIO_SRC_DIR}/gui/colorlcd/layouts/*.cpp)
+file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIR}/gui/colorlcd ${RADIO_SRC_DIR}/gui/colorlcd/widgets/*.cpp)
 
 set(GUI_SRC
   ${GUI_SRC}
@@ -86,7 +86,7 @@ set(SRC
   )
 
 # includes libopenui
-include(${RADIO_SRC_DIRECTORY}/thirdparty/libopenui/src/CMakeLists.txt)
+include(${RADIO_SRC_DIR}/thirdparty/libopenui/src/CMakeLists.txt)
 include_directories(gui/libopenui)
 add_definitions(-DLIBOPENUI)
 foreach(LIBOPENUI_FILE ${LIBOPENUI_SRC})

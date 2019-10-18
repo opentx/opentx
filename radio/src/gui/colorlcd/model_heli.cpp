@@ -36,7 +36,7 @@ void ModelHeliPage::build(FormWindow * window)
 
   // Swash type
   new StaticText(window, grid.getLabelSlot(), STR_SWASHTYPE);
-  auto first = new Choice(window, grid.getFieldSlot(), STR_VSWASHTYPE, 0, SWASH_TYPE_MAX, GET_SET_DEFAULT(g_model.swashR.type));
+  new Choice(window, grid.getFieldSlot(), STR_VSWASHTYPE, 0, SWASH_TYPE_MAX, GET_SET_DEFAULT(g_model.swashR.type));
   grid.nextLine();
 
   // Swash ring
@@ -71,8 +71,7 @@ void ModelHeliPage::build(FormWindow * window)
 
   // Collective weight
   new StaticText(window, grid.getLabelSlot(), STR_WEIGHT);
-  auto last = new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(g_model.swashR.collectiveWeight));
-  FormField::link(last, first);
+  new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(g_model.swashR.collectiveWeight));
 
   grid.nextLine();
 

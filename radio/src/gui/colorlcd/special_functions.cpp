@@ -37,7 +37,7 @@ class SpecialFunctionEditPage : public Page {
   protected:
     CustomFunctionData * functions;
     uint8_t index;
-    Window * specialFunctionOneWindow = nullptr;
+    FormWindow * specialFunctionOneWindow = nullptr;
     StaticText * headerSF = nullptr;
     bool active = false;
 
@@ -51,7 +51,7 @@ class SpecialFunctionEditPage : public Page {
       Page::checkEvents();
       if (active != isActive()) {
         invalidate();
-        headerSF->setFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
+        headerSF->setTextFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
         active = !active;
       }
     }
@@ -70,7 +70,7 @@ class SpecialFunctionEditPage : public Page {
       CustomFunctionData * cfn = &functions[index];
       uint8_t func = CFN_FUNC(cfn);
 
-      FormField::setCurrentField(previousField);
+//      FormField::setCurrentField(previousField);
 
       // Func param
       switch (func) {
@@ -199,7 +199,7 @@ class SpecialFunctionEditPage : public Page {
         });
       }
 
-      FormField::link(FormField::getCurrentField(), nextField);
+//      FormField::link(FormField::getCurrentField(), nextField);
     }
 
     void buildBody(FormWindow * window)
@@ -235,7 +235,7 @@ class SpecialFunctionEditPage : public Page {
       });
       grid.nextLine();
 
-      specialFunctionOneWindow = new Window(window, {0, grid.getWindowHeight(), LCD_W, 0});
+      specialFunctionOneWindow = new FormWindow(window, {0, grid.getWindowHeight(), LCD_W, 0});
       updateSpecialFunctionOneWindow(functionChoice, switchChoice);
       grid.addWindow(specialFunctionOneWindow);
     }
@@ -438,7 +438,7 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
       grid.spacer(button->height() + 5);
     }
     else {
-      new StaticText(window, grid.getLabelSlot(), s, BUTTON_BACKGROUND | CENTERED);
+      new StaticText(window, grid.getLabelSlot(), s, BUTTON_BACKGROUND, CENTERED);
 
       auto button = new SpecialFunctionButton(window, grid.getFieldSlot(), functions, i);
       button->setPressHandler([=]() {
@@ -494,6 +494,6 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
 
   grid.nextLine();
 
-  window->setLastField();
+//  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }

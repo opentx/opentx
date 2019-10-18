@@ -28,19 +28,11 @@ RadioSdManagerPage::RadioSdManagerPage() :
 {
 }
 
-void RadioSdManagerPage::rebuild(FormWindow *window)
-{
-  coord_t scrollPosition = window->getScrollPositionY();
-  window->clear();
-  build(window);
-  window->setScrollPositionY(scrollPosition);
-}
-
 // TODO elsewhere
 extern bool compare_nocase(const std::string &first, const std::string &second);
 
 
-char *getFullPath(const std::string &filename)
+char * getFullPath(const std::string &filename)
 {
   static char full_path[FF_MAX_LFN + 1]; // TODO optimize that!
   f_getcwd(full_path, FF_MAX_LFN);
@@ -118,7 +110,7 @@ class FlashModuleDialog: public FullScreenDialog
     Progress progress;
 };
 
-void RadioSdManagerPage::build(FormWindow *window)
+void RadioSdManagerPage::build(FormWindow * window)
 {
   FormGridLayout grid;
   grid.spacer(PAGE_PADDING);
@@ -224,7 +216,10 @@ void RadioSdManagerPage::build(FormWindow *window)
             });
             menu->addLine(STR_DELETE_FILE, [=]() {
                 f_unlink(getFullPath(name));
-                rebuild(window);
+                // coord_t scrollPosition = window->getScrollPositionY();
+                window->clear();
+                build(window);
+                // window->setScrollPositionY(scrollPosition);
             });
           }
           return 0;
@@ -236,7 +231,6 @@ void RadioSdManagerPage::build(FormWindow *window)
     }
   }
 
-  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
   preview->setHeight(max(window->height(), grid.getWindowHeight()));
 }

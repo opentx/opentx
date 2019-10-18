@@ -40,7 +40,7 @@ class ScreenSetupPage: public PageTab {
   protected:
     ScreenMenu * menu;
     uint8_t pageIndex;
-    Window * optionsWindow = nullptr;
+    FormGroup * optionsWindow = nullptr;
     TextButton * setupWidgetsButton = nullptr;
     FormField * layoutChoice = nullptr;
 

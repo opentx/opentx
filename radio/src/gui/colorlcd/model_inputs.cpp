@@ -20,6 +20,7 @@
 
 #include "model_inputs.h"
 #include "opentx.h"
+#include "gvar_numberedit.h"
 
 #define SET_DIRTY() storageDirty(EE_MODEL)
 
@@ -95,7 +96,7 @@ class InputEditWindow: public Page {
       Page(ICON_MODEL_INPUTS),
       input(input),
       index(index),
-      preview(this, {LCD_W - 158, 0, 158, 158},
+      preview(this, {INPUT_EDIT_CURVE_LEFT, INPUT_EDIT_CURVE_TOP, INPUT_EDIT_CURVE_WIDTH, INPUT_EDIT_CURVE_HEIGHT},
               [=](int x) -> int {
                 ExpoData * line = expoAddress(index);
                 int16_t anas[MAX_INPUTS] = {0};
@@ -106,6 +107,11 @@ class InputEditWindow: public Page {
                 return getValue(expoAddress(index)->srcRaw);
               })
     {
+#if LCD_W > LCD_H
+      body.setWidth(LCD_W - 170);
+#else
+      body.setRect({0, INPUT_EDIT_CURVE_TOP + INPUT_EDIT_CURVE_HEIGHT, LCD_W, LCD_H - INPUT_EDIT_CURVE_TOP - INPUT_EDIT_CURVE_HEIGHT});
+#endif
       buildBody(&body);
       buildHeader(&header);
     }
@@ -115,68 +121,60 @@ class InputEditWindow: public Page {
     uint8_t index;
     Curve preview;
     Choice * trimChoice = nullptr;
-    Window * updateCurvesWindow = nullptr;
-    Choice * curveTypeChoice = nullptr;
+    FormGroup * curveParamField = nullptr;
 
-    void buildHeader(Window * window) {
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUINPUTS, MENU_COLOR);
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_COLOR);
+    void buildHeader(Window * window)
+    {
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUINPUTS, 0, MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_FIRST_INPUT + input), 0, MENU_COLOR);
     }
 
-    void updateCurves() {
-      FormGridLayout grid;
-      grid.setLabelWidth(INPUT_EDIT_LABELS_WIDTH);
+    // TODO share this code with MIXER
+    void updateCurveParamField(ExpoData * line)
+    {
+      curveParamField->clear();
 
-      updateCurvesWindow->clear();
-
-      ExpoData * line = expoAddress(index) ;
-
-      new StaticText(updateCurvesWindow, grid.getLabelSlot(), STR_CURVE);
-      curveTypeChoice = new Choice(updateCurvesWindow, grid.getFieldSlot(2, 0), "\004DiffExpoFuncCstm", 0, CURVE_REF_CUSTOM,
-                                   GET_DEFAULT(line->curve.type),
-                                   [=](int32_t newValue) {
-                                     line->curve.type = newValue;
-                                     line->curve.value = 0;
-                                     SET_DIRTY();
-                                     updateCurves();
-                                     curveTypeChoice->setFocus();
-                                   });
+      const rect_t rect = {0, 0, curveParamField->width(), curveParamField->height()};
 
       switch (line->curve.type) {
         case CURVE_REF_DIFF:
-        case CURVE_REF_EXPO: {
-          // TODO GVAR
-          NumberEdit * edit = new NumberEdit(updateCurvesWindow, grid.getFieldSlot(2, 1), -100, 100,
-                                             GET_SET_DEFAULT(line->curve.value));
+        case CURVE_REF_EXPO:
+        {
+          GVarNumberEdit * edit = new GVarNumberEdit(curveParamField, rect, -100, 100, GET_SET_DEFAULT(line->curve.value));
           edit->setSuffix("%");
           break;
         }
+
         case CURVE_REF_FUNC:
-          new Choice(updateCurvesWindow, grid.getFieldSlot(2, 1), STR_VCURVEFUNC, 0, CURVE_BASE-1, GET_SET_DEFAULT(line->curve.value));
+          new Choice(curveParamField, rect, STR_VCURVEFUNC, 0, CURVE_BASE - 1, GET_SET_DEFAULT(line->curve.value));
           break;
+
         case CURVE_REF_CUSTOM:
-          #warning "TODO Custom Curve Choice"
-          // new CustomCurveChoice(updateCurvesWindow, grid.getFieldSlot(2, 1), -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
+        {
+          auto choice = new Choice(curveParamField, rect, nullptr, -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
+          choice->setTextHandler([](int value) {
+              return getCurveString(value);
+          });
           break;
+        }
       }
     }
 
     void buildBody(FormWindow * window)
     {
-      NumberEdit * edit;
-
       FormGridLayout grid;
       grid.setLabelWidth(INPUT_EDIT_LABELS_WIDTH);
       grid.spacer(PAGE_PADDING);
 
       ExpoData * line = expoAddress(index) ;
 
-      grid.setMarginRight(163);
+#if LCD_W > LCD_H
+      grid.setMarginRight(180);
+#endif
 
       // Input Name
       new StaticText(window, grid.getLabelSlot(), STR_INPUTNAME);
-      auto name = new TextEdit(window, grid.getFieldSlot(), g_model.inputNames[line->chn], sizeof(g_model.inputNames[line->chn]));
-      window->setFirstField(name);
+      new TextEdit(window, grid.getFieldSlot(), g_model.inputNames[line->chn], sizeof(g_model.inputNames[line->chn]));
       grid.nextLine();
 
       // Switch
@@ -195,10 +193,6 @@ class InputEditWindow: public Page {
                    SET_DIRTY();
                  });
       grid.nextLine();
-
-#if LCD_H > LCD_W
-      grid.setMarginRight(10);
-#endif
 
       // Name
       new StaticText(window, grid.getLabelSlot(), STR_EXPONAME);
@@ -232,15 +226,14 @@ class InputEditWindow: public Page {
 
       // Weight
       new StaticText(window, grid.getLabelSlot(), STR_WEIGHT);
-      // TODO GVAR ?
-      edit = new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(line->weight));
-      edit->setSuffix("%");
+      auto gvar = new GVarNumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(line->weight));
+      gvar->setSuffix("%");
       grid.nextLine();
 
       // Offset
       new StaticText(window, grid.getLabelSlot(), STR_OFFSET);
-      edit = new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(line->offset));
-      edit->setSuffix("%");
+      gvar = new GVarNumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(line->offset));
+      gvar->setSuffix("%");
       grid.nextLine();
 
       // Trim
@@ -253,21 +246,27 @@ class InputEditWindow: public Page {
       });
       grid.nextLine();
 
-      // grid.setMarginRight(10);
-
       // Curve
-      updateCurvesWindow = new Window(window, { 0, grid.getWindowHeight(), LCD_W - 162, 0 });
-      updateCurves();
-      grid.addWindow(updateCurvesWindow);
+      new StaticText(&body, grid.getLabelSlot(), STR_CURVE);
+      new Choice(&body, grid.getFieldSlot(2, 0), "\004DiffExpoFuncCstm", 0, CURVE_REF_CUSTOM,
+                 GET_DEFAULT(line->curve.type),
+                 [=](int32_t newValue) {
+                     line->curve.type = newValue;
+                     line->curve.value = 0;
+                     SET_DIRTY();
+                     updateCurveParamField(line);
+                 });
+      curveParamField = new FormGroup(&body, grid.getFieldSlot(2, 1), FORM_FORWARD_FOCUS);
+      updateCurveParamField(line);
+      grid.nextLine();
 
       // Flight modes
       new StaticText(window, grid.getLabelSlot(), STR_FLMODE);
-      TextButton * flightmode = nullptr;
       for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
         char fm[2] = { char('0' + i), '\0'};
         if (i > 0 && (i % 4) == 0)
           grid.nextLine();
-        flightmode = new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
+        new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
                                     [=]() -> uint8_t {
                                         BFBIT_FLIP(line->flightModes, bfBit<uint32_t>(i));
                                         SET_DIRTY();
@@ -276,7 +275,7 @@ class InputEditWindow: public Page {
                                     bfSingleBitGet(line->flightModes, i) ? 0 : BUTTON_CHECKED);
       }
       grid.nextLine();
-      window->setLastField(flightmode);
+
       window->setInnerHeight(grid.getWindowHeight());
     }
 };
@@ -319,12 +318,12 @@ void CommonInputOrMixButton::paint(BitmapBuffer * dc)
 
 class InputLineButton : public CommonInputOrMixButton {
   public:
-    InputLineButton(Window * parent, const rect_t & rect, uint8_t index):
+    InputLineButton(FormGroup * parent, const rect_t & rect, uint8_t index):
       CommonInputOrMixButton(parent, rect, index)
     {
       const ExpoData & line = g_model.expoData[index];
       if (line.swtch || line.curve.value != 0 || line.flightModes) {
-        setHeight(getHeight() + 20);
+        setHeight(getHeight() + PAGE_LINE_HEIGHT);
       }
     }
 
@@ -338,7 +337,7 @@ class InputLineButton : public CommonInputOrMixButton {
       const ExpoData & line = g_model.expoData[index];
 
       // first line ...
-      drawValueOrGVar(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, line.weight);
+      drawValueOrGVar(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, line.weight, -100, 100);
       drawSource(dc, 60, FIELD_PADDING_TOP, line.srcRaw);
 
       if (line.name[0]) {
@@ -348,7 +347,7 @@ class InputLineButton : public CommonInputOrMixButton {
 
       // second line ...
       if (line.swtch) {
-        dc->drawMask(3, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupSwitchIcon, DEFAULT_COLOR);
+        dc->drawMask(3, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, mixerSetupSwitchIcon, DEFAULT_COLOR);
         drawSwitch(dc, 21, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, line.swtch);
       }
 
@@ -394,9 +393,9 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
 
   int inputIndex = 0;
   ExpoData * line = g_model.expoData;
-  for (uint8_t input=0; input<MAX_INPUTS; input++) {
+  for (uint8_t input = 0; input < MAX_INPUTS; input++) {
     if (inputIndex < MAX_EXPOS && line->chn == input && EXPO_VALID(line)) {
-      new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input), BUTTON_BACKGROUND | CENTERED);
+      new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input), BUTTON_BACKGROUND, CENTERED);
       while (inputIndex < MAX_EXPOS && line->chn == input && EXPO_VALID(line)) {
         Button * button = new InputLineButton(window, grid.getFieldSlot(), inputIndex);
         if (focusIndex == inputIndex)
@@ -497,7 +496,7 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
 
   grid.nextLine();
 
-  window->setLastField();
+//  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }
 

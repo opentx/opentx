@@ -25,9 +25,11 @@
 
 class Page;
 
-class PageHeader: public Window {
+class PageHeader: public FormGroup {
   public:
     PageHeader(Page * parent, uint8_t icon);
+
+    ~PageHeader();
 
     void paint(BitmapBuffer * dc) override;
 

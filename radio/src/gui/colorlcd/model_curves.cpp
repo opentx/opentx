@@ -40,14 +40,14 @@ class CurveEditWindow : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUCURVE, MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUCURVE, 0, MENU_COLOR);
       char s[16];
       strAppendStringWithIndex(s, STR_CV, index + 1);
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, s, MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, s, 0, MENU_COLOR);
     }
 
 #if LCD_W > LCD_H
-    void buildBody(Window * window)
+    void buildBody(FormWindow * window)
     {
       coord_t curveWidth = window->height() - 2 * PAGE_PADDING;
 
@@ -125,7 +125,7 @@ class CurveEditWindow : public Page {
       grid.nextLine();
     }
 #else
-    void buildBody(Window * window)
+    void buildBody(FormWindow * window)
     {
       FormGridLayout grid;
       grid.setMarginLeft(20);
@@ -204,7 +204,7 @@ class CurveEditWindow : public Page {
 
 class CurveButton : public Button {
   public:
-    CurveButton(Window * parent, const rect_t &rect, uint8_t index) :
+    CurveButton(FormGroup * parent, const rect_t &rect, uint8_t index) :
       Button(parent, rect),
       index(index)
     {
@@ -269,7 +269,7 @@ void ModelCurvesPage::build(FormWindow * window, int8_t focusIndex)
 
     if (isCurveUsed(index)) {
       // Curve label
-      new StaticText(window, grid.getLabelSlot(), getCurveString(1 + index), BUTTON_BACKGROUND | CENTERED);
+      new StaticText(window, grid.getLabelSlot(), getCurveString(1 + index), BUTTON_BACKGROUND, CENTERED);
 
       // Curve drawing
       Button * button = new CurveButton(window, grid.getFieldSlot(), index);
@@ -326,6 +326,5 @@ void ModelCurvesPage::build(FormWindow * window, int8_t focusIndex)
     }
   }
 
-  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }

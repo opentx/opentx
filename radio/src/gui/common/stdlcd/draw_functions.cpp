@@ -206,7 +206,7 @@ void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t e
 {
   u_int8int16_t weight;
   MD_WEIGHT_TO_UNION(md, weight);
-  weight.word = GVAR_MENU_ITEM(x, y, weight.word, GV_RANGELARGE_WEIGHT_NEG, GV_RANGELARGE_WEIGHT, attr, 0, event);
+  weight.word = GVAR_MENU_ITEM(x, y, weight.word, MIX_WEIGHT_MIN, MIX_WEIGHT_MAX, attr, 0, event);
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
@@ -220,7 +220,7 @@ void drawGVarName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
 {
   lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
-  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
+  if (g_eeGeneral.anaNames[idx][0] || (flags && s_editMode > 0))
     editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
   else
     lcdDrawMMM(x, y, flags);

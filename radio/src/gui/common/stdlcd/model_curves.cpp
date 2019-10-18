@@ -36,9 +36,10 @@ void drawCurve(coord_t offset)
   do {
     point_t point = getPoint(i);
     i++;
-    if (point.x == 0) break;
-    lcdDrawFilledRect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
-  } while (1);
+    if (point.x == 0)
+      break;
+    lcdDrawFilledRect(point.x - offset, point.y - 1, 3, 3, SOLID, FORCE); // do markup square
+  } while (true);
 }
 
 void menuModelCurvesAll(event_t event)

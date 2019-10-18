@@ -124,7 +124,7 @@ void menuModelMixOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_OFFSET);
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
-        offset.word = GVAR_MENU_ITEM(MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
+        offset.word = GVAR_MENU_ITEM(MIXES_2ND_COLUMN, y, offset.word, MIX_OFFSET_MIN, MIX_OFFSET_MAX, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
         drawOffsetBar(MIXES_2ND_COLUMN+35, y, md2);
         break;

@@ -36,6 +36,7 @@ class ChannelFailsafeBargraph: public Window {
     void checkEvents() override
     {
       invalidate();
+      Window::checkEvents();
     }
 
     void paint(BitmapBuffer * dc) override
@@ -63,10 +64,10 @@ class ChannelFailsafeBargraph: public Window {
     uint8_t channel;
 };
 
-class FailSafeBody : public Window {
+class FailSafeBody : public FormGroup {
   public:
-    FailSafeBody(Window * parent, const rect_t &rect, uint8_t moduleIdx) :
-      Window(parent, rect),
+    FailSafeBody(FormGroup * parent, const rect_t & rect, uint8_t moduleIdx) :
+      FormGroup(parent, rect),
       moduleIdx(moduleIdx)
     {
       build();
@@ -75,6 +76,7 @@ class FailSafeBody : public Window {
     void checkEvents() override
     {
       invalidate();
+      FormGroup::checkEvents();
     }
 
     void build()
@@ -118,7 +120,7 @@ class FailSafeBody : public Window {
 
 class FailSafeFooter : public Window {
   public:
-    FailSafeFooter(Window * parent, const rect_t &rect) :
+    FailSafeFooter(Window * parent, const rect_t & rect) :
       Window(parent, rect)
     {
     }
@@ -128,30 +130,20 @@ class FailSafeFooter : public Window {
     }
 };
 
-class FailSafePage : public PageTab {
+class FailSafePage : public Page {
   public:
     explicit FailSafePage(uint8_t moduleIdx) :
-      PageTab("FAILSAFE", ICON_STATS_ANALOGS),
+      Page(ICON_STATS_ANALOGS),
       moduleIdx(moduleIdx)
     {
-    }
-
-    void build(FormWindow * window) override
-    {
-      new FailSafeBody(window, {0, 0, LCD_W, window->height() - footerHeight}, moduleIdx );
-      new FailSafeFooter(window, {0, window->height() - footerHeight, LCD_W, footerHeight});
+      new FailSafeBody(&body, {0, 0, LCD_W, height() - footerHeight}, moduleIdx);
+      new FailSafeFooter(&body, {0, height() - footerHeight, LCD_W, footerHeight});
     }
 
   protected:
     static constexpr coord_t footerHeight = 30;
     uint8_t moduleIdx;
 };
-
-FailSafeMenu::FailSafeMenu(uint8_t moduleIdx) :
-  TabsGroup(ICON_MODEL)
-{
-  addTab(new FailSafePage(moduleIdx));
-}
 
 class RegisterDialog: public Dialog {
   public:
@@ -206,7 +198,7 @@ class RegisterDialog: public Dialog {
       if (!rxName && reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED) {
         rect_t rect = waiting->getRect();
         waiting->deleteLater();
-        FormField::clearCurrentField();
+
         rxName = new TextEdit(this, rect, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME);
         rect = exitButton->getRect();
         auto okButton = new TextButton(this, rect, "OK",
@@ -334,7 +326,7 @@ void BindWaitDialog::checkEvents()
 
 class ReceiverButton: public TextButton {
   public:
-    ReceiverButton(Window * parent, rect_t rect, uint8_t moduleIdx, uint8_t receiverIdx):
+    ReceiverButton(FormGroup * parent, rect_t rect, uint8_t moduleIdx, uint8_t receiverIdx):
       TextButton(parent, rect, STR_BIND, [=]() {
           if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] == '\0') {
             startBind();
@@ -428,10 +420,10 @@ class ReceiverButton: public TextButton {
     uint8_t receiverIdx;
 };
 
-class ModuleWindow : public Window {
+class ModuleWindow : public FormGroup {
   public:
-    ModuleWindow(Window * parent, const rect_t &rect, uint8_t moduleIdx) :
-      Window(parent, rect, FORWARD_SCROLL),
+    ModuleWindow(FormWindow * parent, const rect_t &rect, uint8_t moduleIdx) :
+      FormGroup(parent, rect, FORWARD_SCROLL | FORM_FORWARD_FOCUS),
       moduleIdx(moduleIdx)
     {
       update();
@@ -446,7 +438,6 @@ class ModuleWindow : public Window {
     uint8_t moduleIdx;
     Choice * moduleChoice = nullptr;
     Choice * rfChoice = nullptr;
-    FormField * lastField = nullptr; // moduleChoice is always the firstField
     TextButton * bindButton = nullptr;
     TextButton * rangeButton = nullptr;
     TextButton * registerButton = nullptr;
@@ -488,12 +479,7 @@ class ModuleWindow : public Window {
     {
       FormGridLayout grid;
       grid.setLabelWidth(175);
-
-      FormField * previousField = moduleChoice ? moduleChoice->getPreviousField() : moduleChoice->getCurrentField();
-      FormField * nextField = lastField ? lastField->getNextField() : nullptr;
-
       clear();
-      FormField::clearCurrentField();
 
       // Module Type
       new StaticText(this, grid.getLabelSlot(true), STR_MODE);
@@ -510,7 +496,6 @@ class ModuleWindow : public Window {
       moduleChoice->setAvailableHandler([=](int8_t moduleType) {
           return moduleIdx == INTERNAL_MODULE ? isInternalModuleAvailable(moduleType) : isExternalModuleAvailable(moduleType);
       });
-      FormField::link(previousField, moduleChoice);
 
       // Module parameters
       if (isModuleXJT(moduleIdx)) {
@@ -754,7 +739,7 @@ class ModuleWindow : public Window {
         if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_CUSTOM) {
           new TextButton(this, grid.getFieldSlot(2, 1), STR_SET,
                          [=]() -> uint8_t {
-                           new FailSafeMenu(moduleIdx);
+                           new FailSafePage(moduleIdx);
                            return 1;
                          });
         }
@@ -812,10 +797,6 @@ class ModuleWindow : public Window {
 
       getParent()->moveWindowsTop(top(), adjustHeight());
       getParent()->invalidate(); // TODO should be automatically done
-
-      lastField = FormField::getCurrentField();
-      if (nextField)
-        FormField::link(lastField, nextField);
     }
 };
 
@@ -860,8 +841,7 @@ void ModelSetupPage::build(FormWindow * window)
 
   // Model name
   new StaticText(window, grid.getLabelSlot(), STR_MODELNAME);
-  auto first = new TextEdit(window, grid.getFieldSlot(), g_model.header.name, sizeof(g_model.header.name));
-  window->setFirstField(first);
+  new TextEdit(window, grid.getFieldSlot(), g_model.header.name, sizeof(g_model.header.name));
   grid.nextLine();
 
   // Bitmap
@@ -891,8 +871,7 @@ void ModelSetupPage::build(FormWindow * window)
     // Timer name
     new StaticText(window, grid.getLabelSlot(true), STR_NAME);
     grid.nextLine();
-    auto nameEdit = new TextEdit(group, timerGrid.getSlot(), timer->name, LEN_TIMER_NAME);
-    group->setFirstField(nameEdit);
+    new TextEdit(group, timerGrid.getSlot(), timer->name, LEN_TIMER_NAME);
     timerGrid.nextLine();
 
     // Timer mode
@@ -924,8 +903,7 @@ void ModelSetupPage::build(FormWindow * window)
     // Timer persistent
     new StaticText(window, grid.getLabelSlot(true), STR_PERSISTENT);
     grid.nextLine();
-    auto persistentChoice = new Choice(group, timerGrid.getSlot(), STR_VPERSISTENT, 0, 2, GET_SET_DEFAULT(timer->persistent));
-    group->setLastField(persistentChoice);
+    new Choice(group, timerGrid.getSlot(), STR_VPERSISTENT, 0, 2, GET_SET_DEFAULT(timer->persistent));
     timerGrid.nextLine();
 
     coord_t height = timerGrid.getWindowHeight() - 1;
@@ -1019,10 +997,6 @@ void ModelSetupPage::build(FormWindow * window)
           button->setText(getSwitchWarningString(i));
           return newstate > 0;
       });
-      if (i == 0)
-        group->setFirstField(button);
-      else if (i == NUM_SWITCHES - 1)
-        group->setLastField(button);
     }
     grid.addWindow(group);
   }
@@ -1037,17 +1011,13 @@ void ModelSetupPage::build(FormWindow * window)
       if (i > 0 && (i % 6) == 0)
         centerGrid.nextLine();
 
-      auto button = new TextButton(group, centerGrid.getSlot(6, i % 6), getStringAtIndex(s, STR_RETA123, i),
-                                   [=]() -> uint8_t {
-                                       BFBIT_FLIP(g_model.beepANACenter, bfBit<BeepANACenter>(i));
-                                       SET_DIRTY();
-                                       return bfSingleBitGet<BeepANACenter>(g_model.beepANACenter, i);
-                                   },
-                                   bfSingleBitGet(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
-      if (i == 0)
-        group->setFirstField(button);
-      else if (i == NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1)
-        group->setLastField(button);
+      new TextButton(group, centerGrid.getSlot(6, i % 6), getStringAtIndex(s, STR_RETA123, i),
+                     [=]() -> uint8_t {
+                         BFBIT_FLIP(g_model.beepANACenter, bfBit<BeepANACenter>(i));
+                         SET_DIRTY();
+                         return bfSingleBitGet<BeepANACenter>(g_model.beepANACenter, i);
+                     },
+                     bfSingleBitGet(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
     }
     grid.addWindow(group);
   }
@@ -1070,8 +1040,6 @@ void ModelSetupPage::build(FormWindow * window)
     grid.nextLine();
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, EXTERNAL_MODULE));
   }
-
-  FormField::link(FormField::getCurrentField(), first);
 
   grid.nextLine();
 

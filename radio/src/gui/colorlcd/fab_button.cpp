@@ -33,8 +33,8 @@ const uint8_t __alpha_button_off[] {
 Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
 
 
-FabButton::FabButton(Window * parent, coord_t x, coord_t y, uint8_t icon, std::function<uint8_t(void)> pressHandler, uint8_t flags):
-  Button(parent, { x - 34, y - 34, 68, 68 }, pressHandler, flags),
+FabButton::FabButton(FormGroup * parent, coord_t x, coord_t y, uint8_t icon, std::function<uint8_t(void)> pressHandler, WindowFlags windowFlags):
+  Button(parent, { x - 34, y - 34, 68, 68 }, pressHandler, windowFlags),
   icon(icon)
 {
 }

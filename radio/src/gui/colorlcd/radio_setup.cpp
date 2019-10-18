@@ -25,22 +25,22 @@
 
 #define SET_DIRTY()     storageDirty(EE_GENERAL)
 
-class DateTimeWindow : public Window {
+class DateTimeWindow : public FormGroup {
   public:
-    DateTimeWindow(Window * parent, const rect_t &rect) :
-      Window(parent, rect, FORWARD_SCROLL)
+    DateTimeWindow(FormGroup * parent, const rect_t & rect) :
+      FormGroup(parent, rect, FORWARD_SCROLL | FORM_FORWARD_FOCUS)
     {
       build();
     }
 
-    ~DateTimeWindow()
+    ~DateTimeWindow() override
     {
       deleteChildren();
     }
 
     void checkEvents() override
     {
-      Window::checkEvents();
+      FormGroup::checkEvents();
 
       if (get_tmr10ms() - lastRefresh > 100) {
         invalidate();
@@ -48,14 +48,8 @@ class DateTimeWindow : public Window {
       }
     }
 
-    FormField * getFirstField()
-    {
-      return firstField;
-    }
-
   protected:
     tmr10ms_t lastRefresh = 0;
-    FormField * firstField = nullptr;
 
     void build()
     {
@@ -63,7 +57,7 @@ class DateTimeWindow : public Window {
 
       // Date
       new StaticText(this, grid.getLabelSlot(), STR_DATE);
-      firstField = new NumberEdit(this, grid.getFieldSlot(3, 0), 2018, 2100,
+      new NumberEdit(this, grid.getFieldSlot(3, 0), 2018, 2100,
                      [=]() -> int32_t {
                        struct gtm t;
                        gettime(&t);
@@ -114,8 +108,7 @@ class DateTimeWindow : public Window {
       });
       grid.nextLine();
 
-
-      //Time
+      // Time
       new StaticText(this, grid.getLabelSlot(), STR_TIME);
       auto hour = new NumberEdit(this, grid.getFieldSlot(3, 0), 0, 24,
                                  [=]() -> int32_t {
@@ -164,6 +157,7 @@ class DateTimeWindow : public Window {
       seconds->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
         dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
       });
+
       grid.nextLine();
       getParent()->moveWindowsTop(top(), adjustHeight());
     }
@@ -182,7 +176,6 @@ void RadioSetupPage::build(FormWindow * window)
   // Date and Time
   auto timeWindow = new DateTimeWindow(window, {0, grid.getWindowHeight(), LCD_W, 0});
   grid.addWindow(timeWindow);
-  window->setFirstField(timeWindow->getFirstField());
 
   // Batt meter range - Range 3.0v to 16v
   new StaticText(window, grid.getLabelSlot(), STR_BATTERY_RANGE);
@@ -251,22 +244,23 @@ void RadioSetupPage::build(FormWindow * window)
   grid.nextLine();
 
 #if defined(VARIO)
-  new Subtitle(window, grid.getLabelSlot(), STR_VARIO);
-  grid.nextLine();
+  {
+    new Subtitle(window, grid.getLabelSlot(), STR_VARIO);
+    grid.nextLine();
 
-  // Vario volume
-  new StaticText(window, grid.getLabelSlot(true), TR_VOLUME);
-  new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.varioVolume));
-  grid.nextLine();
+    // Vario volume
+    new StaticText(window, grid.getLabelSlot(true), TR_VOLUME);
+    new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.varioVolume));
+    grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(true), STR_PITCH_AT_ZERO);
-  edit = new NumberEdit(window, grid.getFieldSlot(), VARIO_FREQUENCY_ZERO-400, VARIO_FREQUENCY_ZERO+400,
-                        GET_DEFAULT(VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)),
-                        SET_VALUE(g_eeGeneral.varioPitch, (newValue - VARIO_FREQUENCY_ZERO) / 10));
-  edit->setStep(10);
-  edit->setSuffix("Hz");
-  grid.nextLine();
-
+    new StaticText(window, grid.getLabelSlot(true), STR_PITCH_AT_ZERO);
+    edit = new NumberEdit(window, grid.getFieldSlot(), VARIO_FREQUENCY_ZERO - 400, VARIO_FREQUENCY_ZERO + 400,
+                          GET_DEFAULT(VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch * 10)),
+                          SET_VALUE(g_eeGeneral.varioPitch, (newValue - VARIO_FREQUENCY_ZERO) / 10));
+    edit->setStep(10);
+    edit->setSuffix("Hz");
+    grid.nextLine();
+  }
 #endif
 
 #if defined(HAPTIC)
@@ -465,6 +459,5 @@ void RadioSetupPage::build(FormWindow * window)
   });
   grid.nextLine();
 
-  FormField::link(FormField::getCurrentField(), timeWindow->getFirstField());
   window->setInnerHeight(grid.getWindowHeight());
 }

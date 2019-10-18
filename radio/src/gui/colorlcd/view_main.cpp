@@ -131,7 +131,7 @@ int getMainViewsCount()
 ViewMain * ViewMain::instance = nullptr;
 
 ViewMain::ViewMain(bool icons):
-  Window(&mainWindow, { 0, 0, LCD_W, LCD_H })
+  FormWindow(&mainWindow, { 0, 0, LCD_W, LCD_H })
 {
   instance = this;
   focusWindow = this;

@@ -110,7 +110,6 @@ enum CurveRefType {
   CURVE_REF_CUSTOM
 };
 
-#define MIN_EXPO_WEIGHT         -100
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 
@@ -145,7 +144,6 @@ enum CurveRefType {
 
 #define GV1_SMALL       128
 #define GV1_LARGE       1024
-#define GV_RANGE_WEIGHT 500
 #define GV_RANGE_OFFSET 500
 #define DELAY_MAX       250 /* 25 seconds */
 #define SLOW_MAX        250 /* 25 seconds */

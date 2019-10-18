@@ -134,5 +134,11 @@ enum LcdColorIndex
 #endif
 
 constexpr uint32_t INPUT_EDIT_LABELS_WIDTH = 80;
+constexpr coord_t INPUT_EDIT_CURVE_WIDTH = LCD_W;
+constexpr coord_t INPUT_EDIT_CURVE_HEIGHT = 158;
+constexpr coord_t INPUT_EDIT_CURVE_LEFT = 0;
+constexpr coord_t INPUT_EDIT_CURVE_TOP = MENU_HEADER_HEIGHT;
+
+constexpr int CJK_FIRST_LETTER_INDEX = 187;
 
 #endif // _LIBOPENUI_CONFIG_H_

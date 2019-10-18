@@ -39,11 +39,11 @@ class OutputEditWindow : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENULIMITS, MENU_COLOR);
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_CH1 + channel), MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENULIMITS, 0, MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_CH1 + channel), 0, MENU_COLOR);
     }
 
-    void buildBody(Window * window)
+    void buildBody(FormWindow * window)
     {
       FormGridLayout grid;
       grid.spacer(8);
@@ -109,7 +109,7 @@ class OutputEditWindow : public Page {
 
 class OutputLineButton : public Button {
   public:
-    OutputLineButton(Window * parent, const rect_t &rect, LimitData * output) :
+    OutputLineButton(FormGroup * parent, const rect_t &rect, LimitData * output) :
       Button(parent, rect),
       output(output)
     {
@@ -171,7 +171,7 @@ void ModelOutputsPage::build(FormWindow * window, int8_t focusChannel)
     LimitData * output = limitAddress(ch);
 
     // Channel label
-    new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_CH1 + ch), BUTTON_BACKGROUND | CENTERED);
+    new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_CH1 + ch), BUTTON_BACKGROUND, CENTERED);
 
     // Channel settings
     Button * button = new OutputLineButton(window, grid.getFieldSlot(), output);
@@ -213,7 +213,6 @@ void ModelOutputsPage::build(FormWindow * window, int8_t focusChannel)
 
   grid.nextLine();
 
-  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }
 

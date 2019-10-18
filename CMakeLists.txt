@@ -31,10 +31,11 @@ set(CMAKE_CXX_STANDARD 11)
 add_definitions(-D_GLIBCXX_USE_C99=1) # proper to_string definition
 
 set(RADIO_DIRECTORY ${PROJECT_SOURCE_DIR}/radio)
-set(RADIO_SRC_DIRECTORY ${RADIO_DIRECTORY}/src)
+set(RADIO_SRC_DIR ${RADIO_DIRECTORY}/src)
 set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/companion/src)
 set(SIMU_SRC_DIRECTORY ${COMPANION_SRC_DIRECTORY}/simulation)
-set(TOOLS_DIRECTORY ${PROJECT_SOURCE_DIR}/tools)
+set(TOOLS_DIR ${PROJECT_SOURCE_DIR}/tools)
+set(LIBOPENUI_TOOLS_DIR ${RADIO_SRC_DIR}/thirdparty/libopenui/tools)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
@@ -173,15 +174,15 @@ endif()
 endif(NOT DISABLE_COMPANION)
 
 # Check for a file that is typically left from a OpenTX 2.1 build and abort if found
-if (EXISTS ${RADIO_SRC_DIRECTORY}/stamp.h OR EXISTS ${RADIO_SRC_DIRECTORY}/translations/en.h)
+if (EXISTS ${RADIO_SRC_DIR}/stamp.h OR EXISTS ${RADIO_SRC_DIR}/translations/en.h)
    message(FATAL_ERROR "Source directory contains files leftover from a OpenTX 2.1 build. Please run `git clean -f` in source directory (Careful: Will remove any extra files) or do a new clean git checkout")
 endif()
 
 # Windows-specific includes and libs shared by sub-projects
 if(WIN32)
-  list(APPEND WIN_INCLUDE_DIRS "${RADIO_SRC_DIRECTORY}/thirdparty/windows/dirent")
+  list(APPEND WIN_INCLUDE_DIRS "${RADIO_SRC_DIR}/thirdparty/windows/dirent")
   if(MSVC)
-    list(APPEND WIN_INCLUDE_DIRS "${RADIO_SRC_DIRECTORY}/thirdparty/windows/msinttypes")
+    list(APPEND WIN_INCLUDE_DIRS "${RADIO_SRC_DIR}/thirdparty/windows/msinttypes")
     set(WIN_PTHREAD_BASE_PATH "${WIN_EXTRA_LIBS_PATH}/pthreads/Pre-built.2" CACHE PATH "Where to find pthreads include and lib folders.")
     list(APPEND WIN_INCLUDE_DIRS "${WIN_PTHREAD_BASE_PATH}/include")
     find_file(WIN_PTHREAD_LIB pthreadVC2.lib PATHS "${WIN_PTHREAD_BASE_PATH}" PATH_SUFFIXES lib/x86 lib NO_DEFAULT_PATH)
@@ -209,23 +210,23 @@ if(NOT GTEST_INCDIR OR NOT GTEST_SRCDIR)
 
   set(GTEST_VERSION 1.8.1)
 
-  set(GTEST_SRCDIR "${RADIO_SRC_DIRECTORY}/tests/googletest-release-${GTEST_VERSION}/googletest")
+  set(GTEST_SRCDIR "${RADIO_SRC_DIR}/tests/googletest-release-${GTEST_VERSION}/googletest")
   set(GTEST_INCDIR "${GTEST_SRCDIR}/include")
 
   set(GTEST_URL     "https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz")
-  set(GTEST_ARCHIVE "${RADIO_SRC_DIRECTORY}/tests/gtest-${GTEST_VERSION}.tar.gz")
+  set(GTEST_ARCHIVE "${RADIO_SRC_DIR}/tests/gtest-${GTEST_VERSION}.tar.gz")
 
   if (NOT EXISTS "${GTEST_SRCDIR}")
     file(DOWNLOAD "${GTEST_URL}" ${GTEST_ARCHIVE} SHOW_PROGRESS)
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E tar -xf ${GTEST_ARCHIVE}
-      WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}/tests)
+      WORKING_DIRECTORY ${RADIO_SRC_DIR}/tests)
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E remove -f ${GTEST_ARCHIVE})
   endif()
 endif()
 
-add_subdirectory(${RADIO_SRC_DIRECTORY})
+add_subdirectory(${RADIO_SRC_DIR})
 
 if(Qt5Core_FOUND AND NOT DISABLE_COMPANION)
   add_subdirectory(${COMPANION_SRC_DIRECTORY})

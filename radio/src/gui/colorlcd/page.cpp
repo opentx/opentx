@@ -23,7 +23,7 @@
 #include "opentx.h"
 
 PageHeader::PageHeader(Page * parent, uint8_t icon):
-  Window(parent, { 0, 0, LCD_W, MENU_HEADER_HEIGHT }, OPAQUE),
+  FormGroup(parent, { 0, 0, LCD_W, MENU_HEADER_HEIGHT }, OPAQUE),
   icon(icon)
 #if defined(HARDWARE_TOUCH)
   , back(this, { 0, 0, MENU_HEADER_BUTTON_WIDTH, MENU_HEADER_BUTTON_WIDTH }, ICON_BACK,
@@ -33,6 +33,13 @@ PageHeader::PageHeader(Page * parent, uint8_t icon):
        }, BUTTON_NOFOCUS)
 #endif
 {
+}
+
+PageHeader::~PageHeader()
+{
+#if defined(HARDWARE_TOUCH)
+  back.detach();
+#endif
 }
 
 void PageHeader::paint(BitmapBuffer * dc)
@@ -47,7 +54,7 @@ Page::Page(unsigned icon):
   body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT }),
   previousFocus(focusWindow)
 {
-  setFocus();
+  clearFocus();
 }
 
 Page::~Page()

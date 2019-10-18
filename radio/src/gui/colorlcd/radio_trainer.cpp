@@ -42,14 +42,10 @@ void RadioTrainerPage::build(FormWindow * window)
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     uint8_t chan = channelOrder(i+1);
     TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
-
     new StaticText(window, grid.getLabelSlot(), TEXT_AT_INDEX(STR_VSRCRAW, (i + 1)));
-    auto mode = new Choice(window, grid.getFieldSlot(3,0), STR_TRNMODE, 0, 2, GET_SET_DEFAULT(td->mode));
-    if(i == 0) {
-      window->setFirstField(mode);
-    }
-    auto perc = new NumberEdit(window, grid.getFieldSlot(3, 1), -125, 125, GET_SET_DEFAULT(td->studWeight));
-    perc->setSuffix("%");
+    new Choice(window, grid.getFieldSlot(3,0), STR_TRNMODE, 0, 2, GET_SET_DEFAULT(td->mode));
+    auto weight = new NumberEdit(window, grid.getFieldSlot(3, 1), -125, 125, GET_SET_DEFAULT(td->studWeight));
+    weight->setSuffix("%");
     new Choice(window, grid.getFieldSlot(3,2), STR_TRNCHN, 0, 3, GET_SET_DEFAULT(td->srcChn));
     grid.nextLine();
   }
@@ -66,11 +62,11 @@ void RadioTrainerPage::build(FormWindow * window)
 
   // Trainer calibration
   new StaticText(window, grid.getLabelSlot(), STR_CAL);
-  for (int i=0; i<4; i++) {
-    #if defined (PPM_UNIT_PERCENT_PREC1)
-    auto calib = new NumberEdit(window, grid.getFieldSlot(4,i), 0 , 0, [=]() {  return (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2; }, nullptr, LEFT|PREC1);
+  for (int i = 0; i < NUM_STICKS; i++) {
+#if defined (PPM_UNIT_PERCENT_PREC1)
+    auto calib = new NumberEdit(window, grid.getFieldSlot(4, i), 0 , 0, [=]() { return (ppmInput[i]-g_eeGeneral.trainer.calib[i]) * 2; }, nullptr, LEFT|PREC1);
 #else
-    auto calib = new NumberEdit(window, grid.getFieldSlot(4,i), 0 , 0, [=]() {  return (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5; }, nullptr, LEFT);
+    auto calib = new NumberEdit(window, grid.getFieldSlot(4, i), 0 , 0, [=]() { return (ppmInput[i]-g_eeGeneral.trainer.calib[i]) / 5; }, nullptr, LEFT);
 #endif
     calib->setWindowFlags(REFRESH_ALWAYS);
 

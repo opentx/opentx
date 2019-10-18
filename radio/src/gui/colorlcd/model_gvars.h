@@ -27,7 +27,7 @@
 
 class GVarButton : public Button {
   public:
-    GVarButton(Window * parent, const rect_t & rect, uint8_t gvar);
+    GVarButton(FormGroup * parent, const rect_t & rect, uint8_t gvar);
     void checkEvents() override;
     void paint(BitmapBuffer * dc) override;
 
@@ -72,27 +72,24 @@ class GVarEditWindow : public Page {
       Page(ICON_MODEL_GVARS),
       index(gvarIndex)
     {
-      values = new NumberEdit*[MAX_FLIGHT_MODES];
       buildHeader(&header);
       buildBody(&body);
     }
 
-    ~GVarEditWindow()
+    ~GVarEditWindow() override
     {
-      delete[] values;
     }
 
     void checkEvents() override;
 
   protected:
     uint8_t index;
+    NumberEdit * min = nullptr;
+    NumberEdit * max = nullptr;
+    NumberEdit * values[MAX_FLIGHT_MODES] = {};
+    GVarRenderer * gVarInHeader;
     void buildHeader(Window * window);
     void buildBody(FormWindow * window);
     void setProperties(int onlyForFlightMode = -1);
-    NumberEdit* min;
-    NumberEdit* max;
-    NumberEdit** values;
-    GVarRenderer * gVarInHeader;
-    static const std::string unitPercent;
 };
 #endif

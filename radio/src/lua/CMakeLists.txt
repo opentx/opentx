@@ -2,7 +2,7 @@
 macro(add_lua_export_target target)
   add_custom_command(
     OUTPUT lua_exports_${target}.inc
-    COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${RADIO_SRC_DIRECTORY}/dataconstants.h > lua_exports_${target}.txt
+    COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${RADIO_SRC_DIR}/dataconstants.h > lua_exports_${target}.txt
     COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/luaexport.py ${VERSION} lua_exports_${target}.txt lua_exports_${target}.inc lua_fields_${target}.txt
     )
   add_custom_target(lua_export_${target} DEPENDS lua_exports_${target}.inc)
@@ -10,9 +10,9 @@ endmacro(add_lua_export_target)
 
 set(LUA_INCLUDES
   -DCPUARM -DLUA -DLUA_INPUTS -DLUA_EXPORT_GENERATION -DSIMU
-  -I${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}
-  -I${RADIO_SRC_DIRECTORY}/thirdparty
-  -I${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32
+  -I${RADIO_SRC_DIR}/targets/${TARGET_DIR}
+  -I${RADIO_SRC_DIR}/thirdparty
+  -I${RADIO_SRC_DIR}/targets/common/arm/stm32
   )
 
 if(PYTHONINTERP_FOUND)

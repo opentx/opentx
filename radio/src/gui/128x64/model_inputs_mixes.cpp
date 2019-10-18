@@ -249,7 +249,7 @@ void menuModelExpoOne(event_t event)
 
       case EXPO_FIELD_WEIGHT:
         lcdDrawTextAlignedLeft(y, STR_WEIGHT);
-        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr, 0, event);
+        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, -100, 100, attr, 0, event);
         break;
 
       case EXPO_FIELD_EXPO:
@@ -410,7 +410,7 @@ void menuModelMixOne(event_t event)
         drawFieldLabel(COLUMN_X, y, STR_OFFSET);
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
-        offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
+        offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, MIX_OFFSET_MIN, MIX_OFFSET_MAX, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
         drawOffsetBar(COLUMN_X+MIXES_2ND_COLUMN+22, y, md2);
         break;
@@ -771,7 +771,7 @@ void menuModelExpoMix(uint8_t expo, event_t event)
         if (menuVerticalOffset < cur && cur-menuVerticalOffset < 8) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
           if (expo) {
-            ed->weight = GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, event);
+            ed->weight = GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, -100, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, event);
             displayExpoLine(y, ed);
             if (ed->mode!=3) {
               lcdDrawChar(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);

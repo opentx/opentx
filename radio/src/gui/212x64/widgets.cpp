@@ -124,7 +124,7 @@ void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags fl
 
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event)
 {
-  uint16_t delta = GV_GET_GV1_VALUE(max);
+  uint16_t delta = GV_GET_GV1_VALUE(min, max);
   bool invers = (attr & INVERS);
 
   // TRACE("editGVarFieldValue(val=%d min=%d max=%d)", value, min, max);

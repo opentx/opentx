@@ -23,6 +23,7 @@
 #include "libopenui.h"
 #include "bitfield.h"
 #include "model_inputs.h"
+#include "gvar_numberedit.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
@@ -67,52 +68,15 @@ class MixEditWindow : public Page {
   protected:
     uint8_t channel;
     uint8_t mixIndex;
-    Window * updateCurvesWindow = nullptr;
-    Choice * curveTypeChoice = nullptr;
+    FormGroup * curveParamField = nullptr;
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MIXER, MENU_COLOR);
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_CH1 + channel), MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MIXER, 0, MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_CH1 + channel), 0, MENU_COLOR);
     }
 
-    void updateCurves()
-    {
-      FormGridLayout grid;
-      updateCurvesWindow->clear();
-
-      MixData * line = mixAddress(mixIndex);
-
-      new StaticText(updateCurvesWindow, grid.getLabelSlot(), STR_CURVE);
-      curveTypeChoice = new Choice(updateCurvesWindow, grid.getFieldSlot(2, 0), "\004DiffExpoFuncCstm", 0, CURVE_REF_CUSTOM,
-                                   GET_DEFAULT(line->curve.type),
-                                   [=](int32_t newValue) {
-                                     line->curve.type = newValue;
-                                     line->curve.value = 0;
-                                     SET_DIRTY();
-                                     updateCurves();
-                                     curveTypeChoice->setFocus();
-                                   });
-
-      switch (line->curve.type) {
-        case CURVE_REF_DIFF:
-        case CURVE_REF_EXPO: {
-          // TODO GVAR
-          NumberEdit * edit = new NumberEdit(updateCurvesWindow, grid.getFieldSlot(2, 1), -100, 100,
-                                             GET_SET_DEFAULT(line->curve.value));
-          edit->setSuffix("%");
-          break;
-        }
-        case CURVE_REF_FUNC:
-          new Choice(updateCurvesWindow, grid.getFieldSlot(2, 1), STR_VCURVEFUNC, 0, CURVE_BASE - 1, GET_SET_DEFAULT(line->curve.value));
-          break;
-        case CURVE_REF_CUSTOM:
-          //new CustomCurveChoice(updateCurvesWindow, grid.getFieldSlot(2, 1), -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
-          break;
-      }
-    }
-
-    void buildBody(Window * window)
+    void buildBody(FormWindow * window)
     {
       FormGridLayout grid;
       grid.spacer(8);
@@ -131,15 +95,14 @@ class MixEditWindow : public Page {
 
       // Weight
       new StaticText(window, grid.getLabelSlot(), STR_WEIGHT);
-      // TODO GVAR ?
-      NumberEdit * edit = new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(mix->weight));
-      edit->setSuffix("%");
+      auto gvar = new GVarNumberEdit(window, grid.getFieldSlot(), MIX_WEIGHT_MIN, MIX_WEIGHT_MAX, GET_SET_DEFAULT(mix->weight));
+      gvar->setSuffix("%");
       grid.nextLine();
 
       // Offset
       new StaticText(window, grid.getLabelSlot(), STR_OFFSET);
-      edit = new NumberEdit(window, grid.getFieldSlot(), GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, GET_SET_DEFAULT(mix->offset));
-      edit->setSuffix("%");
+      gvar = new GVarNumberEdit(window, grid.getFieldSlot(), MIX_OFFSET_MIN, MIX_OFFSET_MAX, GET_SET_DEFAULT(mix->offset));
+      gvar->setSuffix("%");
       grid.nextLine();
 
       // Trim
@@ -148,9 +111,18 @@ class MixEditWindow : public Page {
       grid.nextLine();
 
       // Curve
-      updateCurvesWindow = new Window(window, {0, grid.getWindowHeight(), LCD_W, 0});
-      updateCurves();
-      grid.addWindow(updateCurvesWindow);
+      new StaticText(&body, grid.getLabelSlot(), STR_CURVE);
+      new Choice(&body, grid.getFieldSlot(2, 0), "\004DiffExpoFuncCstm", 0, CURVE_REF_CUSTOM,
+                 GET_DEFAULT(mix->curve.type),
+                 [=](int32_t newValue) {
+                     mix->curve.type = newValue;
+                     mix->curve.value = 0;
+                     SET_DIRTY();
+                     updateCurveParamField(mix);
+                 });
+      curveParamField = new FormGroup(&body, grid.getFieldSlot(2, 1), FORM_FORWARD_FOCUS);
+      updateCurveParamField(mix);
+      grid.nextLine();
 
       // Flight modes
       new StaticText(window, grid.getLabelSlot(), STR_FLMODE);
@@ -175,7 +147,7 @@ class MixEditWindow : public Page {
 
       // Warning
       new StaticText(window, grid.getLabelSlot(), STR_MIXWARNING);
-      edit = new NumberEdit(window, grid.getFieldSlot(2, 0), 0, 3, GET_SET_DEFAULT(mix->mixWarn));
+      auto edit = new NumberEdit(window, grid.getFieldSlot(2, 0), 0, 3, GET_SET_DEFAULT(mix->mixWarn));
       edit->setZeroText(STR_OFF);
       grid.nextLine();
 
@@ -224,11 +196,42 @@ class MixEditWindow : public Page {
 
       window->setInnerHeight(grid.getWindowHeight());
     }
+
+    // TODO share this code with INPUT
+    void updateCurveParamField(MixData * line)
+    {
+      curveParamField->clear();
+
+      const rect_t rect = {0, 0, curveParamField->width(), curveParamField->height()};
+
+      switch (line->curve.type) {
+        case CURVE_REF_DIFF:
+        case CURVE_REF_EXPO:
+        {
+          GVarNumberEdit * edit = new GVarNumberEdit(curveParamField, rect, -100, 100, GET_SET_DEFAULT(line->curve.value));
+          edit->setSuffix("%");
+          break;
+        }
+
+        case CURVE_REF_FUNC:
+          new Choice(curveParamField, rect, STR_VCURVEFUNC, 0, CURVE_BASE - 1, GET_SET_DEFAULT(line->curve.value));
+          break;
+
+        case CURVE_REF_CUSTOM:
+        {
+          auto choice = new Choice(curveParamField, rect, nullptr, -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
+          choice->setTextHandler([](int value) {
+              return getCurveString(value);
+          });
+          break;
+        }
+      }
+    }
 };
 
 class MixLineButton : public CommonInputOrMixButton {
   public:
-    MixLineButton(Window * parent, const rect_t &rect, uint8_t index) :
+    MixLineButton(FormGroup * parent, const rect_t &rect, uint8_t index) :
       CommonInputOrMixButton(parent, rect, index)
     {
       const MixData & mix = g_model.mixData[index];
@@ -247,11 +250,11 @@ class MixLineButton : public CommonInputOrMixButton {
       const MixData & line = g_model.mixData[index];
 
       // first line ...
-      drawValueOrGVar(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, line.weight);
+      drawValueOrGVar(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, line.weight, MIX_WEIGHT_MIN, MIX_WEIGHT_MAX);
       drawSource(dc, 60, FIELD_PADDING_TOP, line.srcRaw);
 
       if (line.name[0]) {
-        dc->drawBitmap(146, FIELD_PADDING_TOP, mixerSetupLabelBitmap);
+        dc->drawBitmap(146, 2 + FIELD_PADDING_TOP, mixerSetupLabelBitmap);
         dc->drawSizedText(166, FIELD_PADDING_TOP, line.name, sizeof(line.name));
       }
 
@@ -330,7 +333,7 @@ void ModelMixesPage::build(FormWindow * window, int8_t focusMixIndex)
   MixData * mix = g_model.mixData;
   for (uint8_t ch = 0; ch < MAX_OUTPUT_CHANNELS; ch++) {
     if (mixIndex < MAX_MIXERS && mix->srcRaw > 0 && mix->destCh == ch) {
-      new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_CH1 + ch), BUTTON_BACKGROUND | CENTERED);
+      new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_CH1 + ch), BUTTON_BACKGROUND, CENTERED);
       uint8_t count = 0;
       while (mixIndex < MAX_MIXERS && mix->srcRaw > 0 && mix->destCh == ch) {
         Button * button = new MixLineButton(window, grid.getFieldSlot(), mixIndex);
@@ -436,7 +439,6 @@ void ModelMixesPage::build(FormWindow * window, int8_t focusMixIndex)
 
   grid.nextLine();
 
-  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }
 

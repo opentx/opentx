@@ -50,7 +50,7 @@ class SensorSourceChoice : public SourceChoice {
 
 class SensorButton : public Button {
   public:
-    SensorButton(Window * parent, const rect_t &rect, uint8_t index, uint8_t number) :
+    SensorButton(FormGroup * parent, const rect_t &rect, uint8_t index, uint8_t number) :
       Button(parent, rect),
       index(index),
       number(number)
@@ -121,13 +121,13 @@ class SensorEditWindow : public Page {
 
   protected:
     uint8_t index;
-    Window * sensorParametersWindow = nullptr;
+    FormWindow * sensorParametersWindow = nullptr;
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_SENSOR + std::to_string(index + 1), MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_SENSOR + std::to_string(index + 1), 0, MENU_COLOR);
       // dynamic display of sensor value ?
-      //new StaticText(window, {70, 28, 100, 20}, "SF" + std::to_string(index), MENU_COLOR);
+      //new StaticText(window, {70, 28, 100, 20}, "SF" + std::to_string(index), 0, MENU_COLOR);
     }
 
     void updateSensorParametersWindow()
@@ -164,9 +164,9 @@ class SensorEditWindow : public Page {
       }
       else {
         new StaticText(sensorParametersWindow, grid.getLabelSlot(), STR_ID);
-        auto hex = new NumberEdit(sensorParametersWindow, grid.getFieldSlot(2, 0), 0, 0xffff, GET_SET_DEFAULT(sensor->id));
+        auto hex = new NumberEdit(sensorParametersWindow, grid.getFieldSlot(2, 0), 0, 0xFFFF, GET_SET_DEFAULT(sensor->id));
         hex->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-          drawHexNumber(dc, 2, 2, value, 0);
+          drawHexNumber(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, 0);
         });
         new NumberEdit(sensorParametersWindow, grid.getFieldSlot(2, 1), 0, 0xff, GET_SET_DEFAULT(sensor->instance));
         grid.nextLine();
@@ -329,8 +329,7 @@ class SensorEditWindow : public Page {
 
       // Sensor name
       new StaticText(window, grid.getLabelSlot(), STR_NAME);
-      auto edit = new TextEdit(window, grid.getFieldSlot(), sensor->label, sizeof(sensor->label));
-      window->setFirstField(edit);
+      new TextEdit(window, grid.getFieldSlot(), sensor->label, sizeof(sensor->label));
       grid.nextLine();
 
       // Type
@@ -349,7 +348,7 @@ class SensorEditWindow : public Page {
                  });
       grid.nextLine();
 
-      sensorParametersWindow = new Window(window, {0, grid.getWindowHeight(), LCD_W, 0});
+      sensorParametersWindow = new FormWindow(window, {0, grid.getWindowHeight(), LCD_W, 0});
       updateSensorParametersWindow();
       grid.addWindow(sensorParametersWindow);
 
@@ -394,7 +393,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
 {
   FormGridLayout grid;
   grid.spacer(8);
-  grid.setLabelWidth(250);
+  grid.setLabelWidth(170);
 
   this->window = window;
 
@@ -411,7 +410,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   edit->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
     dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, g_model.rssiAlarms.getWarningRssi(), flags);
   });
-  window->setFirstField(edit);
+//  window->setFirstField(edit);
   grid.nextLine();
 
   new StaticText(window, grid.getLabelSlot(true), STR_CRITICALALARM);
@@ -432,9 +431,9 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   // Sensors columns titles
   uint8_t sensorsCount = getTelemetrySensorsCount();
   if (sensorsCount > 0) {
-    new StaticText(window, {SENSOR_COL2, grid.getWindowHeight() + 3, SENSOR_COL3 - SENSOR_COL2, PAGE_LINE_HEIGHT}, STR_VALUE, SMLSIZE | TEXT_DISABLE_COLOR);
+    new StaticText(window, {SENSOR_COL2, grid.getWindowHeight() + 3, SENSOR_COL3 - SENSOR_COL2, PAGE_LINE_HEIGHT}, STR_VALUE, 0, SMLSIZE | TEXT_DISABLE_COLOR);
     if (!g_model.ignoreSensorIds && !IS_SPEKTRUM_PROTOCOL()) {
-      new StaticText(window, {SENSOR_COL3, grid.getWindowHeight() + 3, LCD_W - SENSOR_COL3, PAGE_LINE_HEIGHT}, STR_ID, SMLSIZE | TEXT_DISABLE_COLOR);
+      new StaticText(window, {SENSOR_COL3, grid.getWindowHeight() + 3, LCD_W - SENSOR_COL3, PAGE_LINE_HEIGHT}, STR_ID, 0, SMLSIZE | TEXT_DISABLE_COLOR);
     }
   }
 
@@ -479,12 +478,8 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
     }
   }
 
-  grid.setLabelWidth(250);
-
   // Autodiscover button
-  auto rect = grid.getLabelSlot(true);
-  rect.w -= MENUS_MARGIN_LEFT;
-  auto discover = new TextButton(window, rect, STR_DISCOVER_SENSORS);
+  auto discover = new TextButton(window, grid.getFieldSlot(2, 0), STR_DISCOVER_SENSORS);
   discover->setPressHandler([=]() {
     allowNewSensors = !allowNewSensors;
     if (allowNewSensors) {
@@ -498,7 +493,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   });
 
   // New sensor button
-  new TextButton(window, grid.getFieldSlot(), STR_TELEMETRY_NEWSENSOR,
+  new TextButton(window, grid.getFieldSlot(2, 1), STR_TELEMETRY_NEWSENSOR,
                  [=]() -> uint8_t {
                    int idx = availableTelemetryIndex();
                    if (idx >= 0)
@@ -509,7 +504,6 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
                  });
   grid.nextLine();
 
-  grid.setLabelWidth(PAGE_PADDING + PAGE_INDENT_WIDTH);
   if (sensorsCount > 0) {
     // Delete all sensors button
     new TextButton(window, grid.getFieldSlot(), STR_DELETE_ALL_SENSORS,
@@ -525,7 +519,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   }
 
   // Ignore instance button
-  grid.setLabelWidth(250);
+  grid.setLabelWidth(170);
   new StaticText(window, grid.getLabelSlot(true), STR_IGNORE_INSTANCE);
   new CheckBox(window, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.ignoreSensorIds));
   grid.nextLine();
@@ -557,8 +551,5 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   new Choice(window, grid.getFieldSlot(3, 2), STR_VVARIOCENTER, 0, 1, GET_SET_DEFAULT(g_model.varioData.centerSilent));
   grid.nextLine();
 
-  grid.nextLine();
-
-  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }

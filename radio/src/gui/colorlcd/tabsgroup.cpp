@@ -28,7 +28,7 @@
 #include "opentx.h" // TODO for constants...
 
 TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
-  Window(parent, { 0, 0, LCD_W, MENU_BODY_TOP }, OPAQUE),
+  FormGroup(parent, { 0, 0, LCD_W, MENU_BODY_TOP }, OPAQUE),
 #if defined(HARDWARE_TOUCH)
   back(this, { 0, 0, MENU_HEADER_BUTTON_WIDTH, MENU_HEADER_BUTTON_WIDTH }, ICON_BACK,
        [=]() -> uint8_t {
@@ -39,6 +39,14 @@ TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
   icon(icon),
   carousel(this, parent)
 {
+}
+
+TabsGroupHeader::~TabsGroupHeader()
+{
+#if defined(HARDWARE_TOUCH)
+  back.detach();
+#endif
+  carousel.detach();
 }
 
 void TabsGroupHeader::paint(BitmapBuffer * dc)
@@ -123,14 +131,15 @@ void TabsGroup::removeAllTabs()
 void TabsGroup::setVisibleTab(PageTab * tab)
 {
   if (tab != currentTab) {
-    setFocus();
-    FormField::clearCurrentField();
+    clearFocus();
     body.clear();
 #if defined(HARDWARE_TOUCH)
     Keyboard::hide();
 #endif
     currentTab = tab;
     tab->build(&body);
+    if (!focusWindow)
+      setFocus();
     header.setTitle(tab->title.c_str());
     invalidate();
   }

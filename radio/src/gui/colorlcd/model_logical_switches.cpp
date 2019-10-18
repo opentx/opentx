@@ -64,14 +64,14 @@ class LogicalSwitchEditPage: public Page {
     {
       Page::checkEvents();
       if (active != isActive()) {
-        headerSwitchName->setFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
+        headerSwitchName->setTextFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
         active = !active;
       }
     }
 
     void buildHeader(Window * window) {
-      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, STR_MENULOGICALSWITCHES, MENU_COLOR);
-      headerSwitchName = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, getSwitchPositionName(SWSRC_SW1 + index), MENU_COLOR);
+      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, STR_MENULOGICALSWITCHES, 0, MENU_COLOR);
+      headerSwitchName = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, getSwitchPositionName(SWSRC_SW1 + index), 0, MENU_COLOR);
     }
 
     void updateLogicalSwitchOneWindow(FormField * functionChoice)
@@ -81,8 +81,6 @@ class LogicalSwitchEditPage: public Page {
 
       LogicalSwitchData * cs = lswAddress(index);
       uint8_t cstate = lswFamily(cs->func);
-
-      FormField::setCurrentField(functionChoice);
 
       if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
         new StaticText(logicalSwitchOneWindow, grid.getLabelSlot(), STR_V1);
@@ -190,7 +188,7 @@ class LogicalSwitchEditPage: public Page {
       }
       grid.nextLine();
 
-      FormField::link(FormField::getCurrentField(), functionChoice);
+//      FormField::link(FormField::getCurrentField(), functionChoice);
     }
 
     void buildBody(FormWindow * window)
@@ -237,7 +235,7 @@ static constexpr coord_t col3 = ((LCD_W - 100) / 3) * 2 + col1;
 
 class LogicalSwitchButton : public Button {
   public:
-    LogicalSwitchButton(Window * parent, const rect_t & rect, int lsIndex):
+    LogicalSwitchButton(FormGroup * parent, const rect_t & rect, int lsIndex):
       Button(parent, rect),
       lsIndex(lsIndex),
       active(isActive())
@@ -362,7 +360,7 @@ void ModelLogicalSwitchesPage::build(FormWindow * window, int8_t focusIndex)
       grid.spacer(button->height() + 5);
     }
     else {
-      new StaticText(window, grid.getLabelSlot(), getSwitchPositionName(SWSRC_SW1 + i), BUTTON_BACKGROUND | CENTERED);
+      new StaticText(window, grid.getLabelSlot(), getSwitchPositionName(SWSRC_SW1 + i), BUTTON_BACKGROUND, CENTERED);
 
       auto button = new LogicalSwitchButton(window, grid.getFieldSlot(), i);
       button->setPressHandler([=]() {
@@ -401,6 +399,6 @@ void ModelLogicalSwitchesPage::build(FormWindow * window, int8_t focusIndex)
 
   grid.nextLine();
 
-  window->setLastField();
+//  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }

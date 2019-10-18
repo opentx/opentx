@@ -41,7 +41,7 @@ class ModelInputsPage: public PageTab {
 
 class CommonInputOrMixButton : public Button {
   public:
-    CommonInputOrMixButton(Window * parent, const rect_t & rect, uint8_t index):
+    CommonInputOrMixButton(FormGroup * parent, const rect_t & rect, uint8_t index):
       Button(parent, rect),
       index(index)
     {

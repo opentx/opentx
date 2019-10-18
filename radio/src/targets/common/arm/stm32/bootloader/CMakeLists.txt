@@ -128,12 +128,12 @@ remove_definitions(-DCLI)
 remove_definitions(-DUSB_SERIAL)
 add_definitions(-DBOOT)
 
-set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
+set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIR}/targets/${TARGET_DIR}/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 # use smaller nano libc
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs")
 
 add_executable(bootloader ${BOOTLOADER_SRC})
-add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)
+add_dependencies(bootloader ${BITMAPS_TARGET} translations)
 
 add_custom_command(
   TARGET bootloader POST_BUILD

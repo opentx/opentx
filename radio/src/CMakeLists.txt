@@ -2,13 +2,13 @@ include(CMakeForceCompiler)
 include(Bitmaps)
 
 set(PCB_TYPES X9LITE X7 XLITE XLITES X9D X9D+ X9E X10 X12S SKY9X 9XRPRO AR9X NV14)
-set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL CN)
+set(RADIO_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL CN)
 set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL RU)
 
 set(PCB "X9D+" CACHE STRING "Radio type, one of: ${PCB_TYPES}")
 set_property(CACHE PCB PROPERTY STRINGS ${PCB_TYPES})
-set(TRANSLATIONS "EN" CACHE STRING "Radio language, one of: ${GUI_LANGUAGES}")
-set_property(CACHE TRANSLATIONS PROPERTY STRINGS ${GUI_LANGUAGES})
+set(TRANSLATIONS "EN" CACHE STRING "Radio language, one of: ${RADIO_LANGUAGES}")
+set_property(CACHE TRANSLATIONS PROPERTY STRINGS ${RADIO_LANGUAGES})
 set(SPLASH "DEFAULT" CACHE STRING "Splash (DEFAULT/OFF/FRSKY)")
 set_property(CACHE SPLASH PROPERTY STRINGS DEFAULT OFF FRSKY)
 set(PPM_UNIT "PERCENT_PREC1" CACHE STRING "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)")
@@ -74,7 +74,7 @@ set(GVARS_VARIANT   1)
 set(FRSKY_VARIANT   2)
 set(3POS_VARIANT    4)
 
-set(FIRMWARE_DEPENDENCIES firmware_translations)
+set(RADIO_DEPENDENCIES radio_translations)
 
 set(FATFS_SRC
   ${FATFS_DIR}/ff.c
@@ -123,7 +123,7 @@ endif()
 
 include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
 
-foreach(LANGUAGE ${GUI_LANGUAGES})
+foreach(LANGUAGE ${RADIO_LANGUAGES})
   if(TRANSLATIONS STREQUAL ${LANGUAGE})
     add_definitions(-DTRANSLATIONS_${LANGUAGE} -DTRANSLATIONS="${LANGUAGE}")
   endif()
@@ -169,7 +169,7 @@ if(NOT LUA STREQUAL NO)
     add_definitions(-DLUA_SCRIPT_LOAD_MODE="${LUA_SCRIPT_LOAD_MODE}")
   endif()
   include_directories(${LUA_DIR})
-  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${LUA_EXPORT})
+  set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} ${LUA_EXPORT})
   if(LUA STREQUAL YES)
     add_definitions(-DLUA_MODEL_SCRIPTS)
   endif()
@@ -465,7 +465,7 @@ if(NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
 
     # these are in addition to CMAKE_CXX_FLAGS
-    set(CMAKE_EXE_LINKER_FLAGS "-lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
+    set(CMAKE_EXE_LINKER_FLAGS "-lm -T${RADIO_SRC_DIR}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
     if(SEMIHOSTING)
       add_definitions(-DSEMIHOSTING)
@@ -487,7 +487,7 @@ if(NOT MSVC)
     if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X9LITE OR PCB STREQUAL X7 OR PCB STREQUAL X3 OR PCB STREQUAL X10 OR PCB STREQUAL X12S)
       add_subdirectory(targets/common/arm/stm32/bootloader)
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/common/arm/stm32/bootloader)
-      set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+      set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} bootloader)
     elseif(OPENRC_BOOTLOADER)
       # We fetch Mike's bootloader as it is not included inside OpenTX
       message(STATUS "Downloading Mike's bootloader: https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${OPENRC_BOOTLOADER}")
@@ -503,7 +503,7 @@ if(NOT MSVC)
 
     add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
     link_libraries(firmware -lstdc++)
-    add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
+    add_dependencies(firmware ${RADIO_DEPENDENCIES})
 
     add_custom_command(
       TARGET firmware POST_BUILD

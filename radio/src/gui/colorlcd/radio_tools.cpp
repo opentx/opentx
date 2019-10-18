@@ -155,7 +155,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
           *ext = '\0';
           label = getBasename(path);
         }
-        new StaticText(window, grid.getLabelSlot(), "lua", BUTTON_BACKGROUND | CENTERED);
+        new StaticText(window, grid.getLabelSlot(), "lua", BUTTON_BACKGROUND, CENTERED);
         new TextButton(window, grid.getFieldSlot(1), label, [=]() -> uint8_t {
           f_chdir("/SCRIPTS/TOOLS/");
           //luaExec(path);
@@ -170,7 +170,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
 #if defined(PXX2)
   // PXX2 modules tools
   if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
-    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
+    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND, CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_SPECTRUM_ANALYSER_INT, [=]() -> uint8_t {
         new RadioSpectrumAnalyser(INTERNAL_MODULE);
         return 0;
@@ -179,7 +179,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
   }
 
   if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER)) {
-    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
+    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND, CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_POWER_METER_INT, [=]() -> uint8_t {
 //        new RadioPowerMeter(INTERNAL_MODULE);
         return 0;
@@ -188,7 +188,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
   }
 
   if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
-    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
+    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND, CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_SPECTRUM_ANALYSER_EXT, [=]() -> uint8_t {
         new RadioSpectrumAnalyser(EXTERNAL_MODULE);
         return 0;
@@ -197,7 +197,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
   }
 
   if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER)) {
-    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND | CENTERED);
+    new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND, CENTERED);
     new TextButton(window, grid.getFieldSlot(1), STR_POWER_METER_EXT, [=]() -> uint8_t {
 //        new RadioPowerMeter(EXTERNAL_MODULE);
       return 0;

@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 MenuHandlerFunc menuHandlers[5];
-uint8_t menuEvent = 0;
+event_t menuEvent = 0;
 uint8_t menuVerticalPositions[4];
 uint8_t menuLevel = 0;
 

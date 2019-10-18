@@ -1,5 +1,6 @@
 string(TOLOWER "${FONT}" FONT_DIR)
-add_bitmaps_target(taranis_xbm ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.xbm 128 1bit 4)
-add_bitmaps_target(taranis_fonts ${RADIO_SRC_DIRECTORY}/fonts/${FONT_DIR}/*.png 128 "")
-add_bitmaps_target(taranis_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/212x64/*.png 212 4bits)
+set(STICKS_ARGS --rows 4)
+add_bitmaps_target(taranis_xbm ${RADIO_SRC_DIR}/bitmaps/sticks.xbm 1bit "${STICKS_ARGS}")  # 1bit format, 1byte size, split into 4 rows
+add_fonts_target(taranis_fonts ${RADIO_SRC_DIR}/fonts/${FONT_DIR}/*.png)
+add_bitmaps_target(taranis_bitmaps ${RADIO_SRC_DIR}/bitmaps/212x64/*.png 4bits "")
 add_dependencies(taranis_bitmaps taranis_fonts taranis_xbm)

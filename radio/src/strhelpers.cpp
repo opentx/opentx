@@ -332,13 +332,13 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     s = getSwitchName(s, idx);
-    *s++ = "\300-\301"[swinfo.rem];
+    *s++ = "\200-\201"[swinfo.rem];
     *s = '\0';
   }
 #endif // PCBSKY9X
 
 #if NUM_XPOTS > 0
-    else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     div_t swinfo = div(int(idx - SWSRC_FIRST_MULTIPOS_SWITCH), XPOTS_MULTIPOS_COUNT);
     char temp[LEN_ANA_NAME+1];
     getSourceString(temp, MIXSRC_FIRST_POT+swinfo.quot);
@@ -348,7 +348,7 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
 #endif
 
 #if defined(PCBSKY9X)
-    else if (idx <= SWSRC_REa) {
+  else if (idx <= SWSRC_REa) {
     getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
   }
 #else
@@ -393,12 +393,12 @@ char * getSourceString(char * dest, mixsrc_t idx)
   else if (idx <= MIXSRC_LAST_INPUT) {
     idx -= MIXSRC_FIRST_INPUT;
     *dest = '\314';
-    if (ZEXIST(g_model.inputNames[idx])) {
-      zchar2str(dest+1, g_model.inputNames[idx], LEN_INPUT_NAME);
-      dest[LEN_INPUT_NAME+1] = '\0';
+    if (strlen(g_model.inputNames[idx])) {
+      memset(dest + 1, 0, LEN_INPUT_NAME);
+      strncpy(dest + 1, g_model.inputNames[idx], LEN_INPUT_NAME);
     }
     else {
-      strAppendUnsigned(dest+1, idx+1, 2);
+      strAppendUnsigned(dest + 1, idx + 1, 2);
     }
   }
 #if defined(LUA_INPUTS)
@@ -417,7 +417,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
 #endif
   else if (idx <= MIXSRC_LAST_POT) {
     idx -= MIXSRC_Rud;
-    if (ZEXIST(g_eeGeneral.anaNames[idx])) {
+    if (g_eeGeneral.anaNames[idx][0]) {
       zchar2str(dest, g_eeGeneral.anaNames[idx], LEN_ANA_NAME);
       dest[LEN_ANA_NAME] = '\0';
     }

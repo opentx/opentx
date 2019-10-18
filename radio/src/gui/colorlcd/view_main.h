@@ -21,9 +21,9 @@
 #ifndef _VIEW_MAIN_H_
 #define _VIEW_MAIN_H_
 
-#include "window.h"
+#include "form.h"
 
-class ViewMain: public Window {
+class ViewMain: public FormWindow {
   public:
     explicit ViewMain(bool icons = true);
 

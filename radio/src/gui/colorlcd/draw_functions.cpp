@@ -186,9 +186,15 @@ void drawGVarValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t gvar, gvar_t
   drawValueWithUnit(dc, x, y, value, g_model.gvars[gvar].unit ? UNIT_PERCENT : UNIT_RAW, flags);
 }
 
-void drawValueOrGVar(BitmapBuffer * dc, coord_t x, coord_t y, gvar_t value, LcdFlags flags)
+void drawValueOrGVar(BitmapBuffer * dc, coord_t x, coord_t y, gvar_t value, gvar_t vmin, gvar_t vmax, LcdFlags flags)
 {
-  dc->drawNumber(x, y, value, flags, 0, nullptr, "%");
+  if (GV_IS_GV_VALUE(value, vmin, vmax)) {
+    int index = GV_INDEX_CALC_DELTA(value, GV_GET_GV1_VALUE(vmin, vmax));
+    dc->drawText(x, y, getGVarString(index), flags);
+  }
+  else {
+    dc->drawNumber(x, y, value, flags, 0, nullptr, "%");
+  }
 }
 
 void drawSleepBitmap()
@@ -249,13 +255,13 @@ void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curv
   if (curve.value != 0) {
     switch (curve.type) {
       case CURVE_REF_DIFF:
-        dc->drawText(x, y, "D", flags);
-        drawValueOrGVar(dc, lcdNextPos + 1, y + 2, curve.value, LEFT|SMLSIZE|flags);
+        x = dc->drawText(x, y, "D", flags);
+        drawValueOrGVar(dc, x + 1, y + 2, curve.value, -100, 100, LEFT | SMLSIZE | flags);
         break;
 
       case CURVE_REF_EXPO:
-        dc->drawText(x, y, "E", flags);
-        drawValueOrGVar(dc, lcdNextPos + 1, y + 2, curve.value, LEFT|SMLSIZE|flags);
+        x = dc->drawText(x, y, "E", flags);
+        drawValueOrGVar(dc, x + 1, y + 2, curve.value, -100, 100, LEFT | SMLSIZE | flags);
         break;
 
       case CURVE_REF_FUNC:
@@ -494,11 +500,11 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
 #if defined(INTERNAL_GPS)
   else if (source == MIXSRC_TX_GPS) {
     if (gpsData.fix) {
-      drawGPSPosition(x, y, gpsData.longitude, gpsData.latitude, flags);
+      drawGPSPosition(dc, x, y, gpsData.longitude, gpsData.latitude, flags);
     }
     else {
-      lcdDrawText(x, y, "sats: ", flags);
-      dc->drawNumber(lcdNextPos, y, gpsData.numSat, flags);
+      x = dc->drawText(x, y, "sats: ", flags);
+      dc->drawNumber(x, y, gpsData.numSat, flags);
     }
   }
 #endif
@@ -534,10 +540,9 @@ void drawValueWithUnit(BitmapBuffer * dc, coord_t x, coord_t y, int val, uint8_t
 
 void drawHexNumber(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t val, LcdFlags flags)
 {
-  for (int i=12; i>=0; i-=4) {
-    char c = (val >> i) & 0xf;
-    c = c>9 ? c+'A'-10 : c+'0';
-    dc->drawSizedText(x, y, &c, 1, flags);
-    x = lcdNextPos;
+  for (int i = 12; i >= 0; i -= 4) {
+    char c = (val >> i) & 0x0F;
+    c += (c >= 10 ? 'A' - 10 : '0');
+    x = dc->drawSizedText(x, y, &c, 1, flags);
   }
 }

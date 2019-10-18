@@ -169,6 +169,5 @@ void RadioHardwarePage::build(FormWindow * window)
                  });
   grid.nextLine();
 
-  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }

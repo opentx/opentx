@@ -71,9 +71,6 @@ void ModelFlightModesPage::build(FormWindow * window)
 
   for (int i = 0; i < MAX_FLIGHT_MODES; i++) {
     auto group = new FlightModeGroup(window, i, { 2, y, LCD_W - 10, 0 });
-    if (i == 0) {
-      window->setFirstField(group);
-    }
 
     FormGridLayout grid;
     grid.setMarginRight(15);
@@ -87,8 +84,7 @@ void ModelFlightModesPage::build(FormWindow * window)
 
     // Flight mode name
     new StaticText(group, grid.getLabelSlot(true), STR_NAME);
-    auto nameEdit = new TextEdit(group, grid.getFieldSlot(), g_model.flightModeData[i].name, LEN_FLIGHT_MODE_NAME);
-    group->setFirstField(nameEdit);
+    new TextEdit(group, grid.getFieldSlot(), g_model.flightModeData[i].name, LEN_FLIGHT_MODE_NAME);
     grid.nextLine();
 
     // Flight mode switch
@@ -121,28 +117,25 @@ void ModelFlightModesPage::build(FormWindow * window)
                                     "+7"
                                     "=8"
                                     "+8";
-    for (int t=0; t<NUM_TRIMS; t++) {
+    for (int t = 0; t < NUM_TRIMS; t++) {
       // TODO isTrimModeAvailable to avoid +{{CURRENT}}
       new Choice(group, grid.getFieldSlot(NUM_TRIMS, t), STR_VTRIMS_MODES, -1, 2*MAX_FLIGHT_MODES-1,
                  GET_DEFAULT(g_model.flightModeData[i].trim[t].mode==TRIM_MODE_NONE ? -1 : g_model.flightModeData[i].trim[t].mode),
-                 SET_DEFAULT(g_model.flightModeData[i].trim[t].mode),
-                 STDSIZE);
+                 SET_DEFAULT(g_model.flightModeData[i].trim[t].mode));
     }
     grid.nextLine();
 
     // Flight mode fade in / out
     new StaticText(group, grid.getLabelSlot(true), "Fade in/out");
-    auto edit = new NumberEdit(group, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
+    new NumberEdit(group, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
                           GET_DEFAULT(g_model.flightModeData[i].fadeIn),
                           SET_VALUE(g_model.flightModeData[i].fadeIn, newValue),
                           PREC1);
-    edit = new NumberEdit(group, grid.getFieldSlot(2, 1), 0, DELAY_MAX,
+    new NumberEdit(group, grid.getFieldSlot(2, 1), 0, DELAY_MAX,
                           GET_DEFAULT(g_model.flightModeData[i].fadeOut),
                           SET_VALUE(g_model.flightModeData[i].fadeOut, newValue),
                           PREC1);
     grid.nextLine();
-
-    group->setLastField(FormField::getCurrentField());
 
     grid.spacer();
     coord_t height = grid.getWindowHeight();
@@ -154,7 +147,7 @@ void ModelFlightModesPage::build(FormWindow * window)
   sprintf(label, "Check FM Trims");
   // TODO rather use a centered slot?
   // TODO dynamic text with FM index for the button text
-  auto button = new TextButton(window, { 60, y + 5, LCD_W - 120, PAGE_LINE_HEIGHT }, label,
+  new TextButton(window, { 60, y + 5, LCD_W - 120, PAGE_LINE_HEIGHT }, label,
                  [&]() -> uint8_t {
                    if (trimsCheckTimer)
                      trimsCheckTimer = 0;
@@ -164,5 +157,4 @@ void ModelFlightModesPage::build(FormWindow * window)
                  });
 
   window->setInnerHeight(y + 40);
-  window->setLastField(button);
 }
