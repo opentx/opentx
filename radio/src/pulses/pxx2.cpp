@@ -372,6 +372,7 @@ void Pxx2Pulses::setupAuthenticationFrame(uint8_t module, uint8_t mode, const ui
 
   endFrame();
 }
+
 bool Pxx2Pulses::setupFrame(uint8_t module)
 {
   if (moduleState[module].mode == MODULE_MODE_OTA_UPDATE)

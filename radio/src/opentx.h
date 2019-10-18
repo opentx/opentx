@@ -1399,7 +1399,7 @@ inline bool isAsteriskDisplayed()
 }
 
 #if defined(ACCESS_LIB)
-#include "libAccess.h"
+#include "thirdparty/FrSky/libAccess.h"
 #endif
 
 #endif // _OPENTX_H_
