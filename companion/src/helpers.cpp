@@ -451,6 +451,7 @@ bool displayT16ImportWarning()
     return false;
   return true;
 }
+
 void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)
 {
   b->clear();

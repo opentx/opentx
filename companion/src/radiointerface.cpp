@@ -338,7 +338,6 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
       if (displayT16ImportWarning() == false)
         return false;
     }
-
   }
   else {
     if (IS_ARM(board)) {
