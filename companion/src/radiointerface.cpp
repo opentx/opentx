@@ -333,6 +333,23 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
       QMessageBox::critical(progress, CPN_STR_TTL_ERROR, outputStorage.error());
       return false;
     }
+
+    if (getCurrentBoard() == Board::BOARD_JUMPER_T16 && inputStorage.getBoard() == Board::BOARD_X10) {
+      QMessageBox msgBox;
+      msgBox.setWindowTitle(QObject::tr("WARNING"));
+      msgBox.setText(QObject::tr("<p>Due to the way Jumper have handled their JumperTX fork and firmware releases data integrity for settings from JumperTX cannot be trusted when migrating to OpenTX.</p> \
+                      <p>Importing JumperTX data into OpenTX 2.3 is <b>not supported and dangerous.</b></p> \
+                      <p>It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but <b>You should only continue here if the file you opened comes from a real FrSky X10.</b></p> \
+                      <p>Do you really want to continue?</p>"));
+      msgBox.setIcon(QMessageBox::Warning);
+      msgBox.addButton(QMessageBox::No);
+      msgBox.addButton(QMessageBox::Yes);
+      msgBox.setDefaultButton(QMessageBox::No);
+
+      if (msgBox.exec() == QMessageBox::No)
+        return false;
+    }
+
   }
   else {
     if (IS_ARM(board)) {
