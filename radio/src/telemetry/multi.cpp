@@ -701,16 +701,22 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
       break;
 
     case ReceivingMultiStatus:
-      rxBuffer[rxBufferCount++] = data;
-      if (rxBufferCount > 5 && rxBuffer[0] == rxBufferCount - 1) {
-        processMultiStatusPacket(rxBuffer + 1, module, rxBuffer[0]);
-        rxBufferCount = 0;
-        setMultiTelemetryBufferState(module, NoProtocolDetected);
+      if (rxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+        rxBuffer[rxBufferCount++] = data;
+        if (rxBufferCount > 5 && rxBuffer[0] == rxBufferCount - 1) {
+          processMultiStatusPacket(rxBuffer + 1, module, rxBuffer[0]);
+          rxBufferCount = 0;
+          setMultiTelemetryBufferState(module, NoProtocolDetected);
+        }
+        if (rxBufferCount > 10) {
+          // too long ignore
+          TRACE("Overlong multi status packet detected ignoring, wanted %d", rxBuffer[0]);
+          rxBufferCount = 0;
+          setMultiTelemetryBufferState(module, NoProtocolDetected);
+        }
       }
-      if (rxBufferCount > 10) {
-        // too long ignore
-        TRACE("Overlong multi status packet detected ignoring, wanted %d", rxBuffer[0]);
-        rxBufferCount = 0;
+      else {
+        TRACE("[MP] array size %d error", rxBufferCount);
         setMultiTelemetryBufferState(module, NoProtocolDetected);
       }
       break;
