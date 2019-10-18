@@ -27,6 +27,8 @@ Michael Byrne
 
 [Companies and projects who have donated to OpenTX]
 <a href="https://www.frsky-rc.com">FrSky (monthly)</a>
+<a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
+<a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
