@@ -104,7 +104,6 @@ rm CMakeCache.txt
 
 cmake ${COMMON_OPTIONS} -DPCB=X12S ${SRCDIR}
 make -j${JOBS} libsimulator
-rm CMakeCache.txt
 
 make -j${JOBS} package
 
