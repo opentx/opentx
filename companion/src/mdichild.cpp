@@ -1459,7 +1459,7 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
   QMessageBox::StandardButton dfltBtn;
 
   if (from == Board::BOARD_X10 && to == Board::BOARD_JUMPER_T16) {
-    if(displayT16ImportWarning() == false)
+    if (displayT16ImportWarning() == false)
       return false;
   }
 

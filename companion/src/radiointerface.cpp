@@ -335,7 +335,7 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     }
 
     if (getCurrentBoard() == Board::BOARD_JUMPER_T16 && inputStorage.getBoard() == Board::BOARD_X10) {
-      if(displayT16ImportWarning() == false)
+      if (displayT16ImportWarning() == false)
         return false;
     }
 
