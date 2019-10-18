@@ -606,7 +606,7 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
 
   uint16_t &lastRxTS = getMultiTelemetryLastRxTS(module);
   uint16_t nowMs = (uint16_t)RTOS_GET_MS();
-  if (nowMs - lastRxTS > 10)
+  if (nowMs - lastRxTS > 15)
     setMultiTelemetryBufferState(module, NoProtocolDetected);
   lastRxTS = nowMs;
   
