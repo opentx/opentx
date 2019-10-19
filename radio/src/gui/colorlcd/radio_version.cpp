@@ -29,10 +29,10 @@ class OptionsText : public StaticText {
       StaticText(parent, rect)
     {
       coord_t optionWidth = 0;
-      for (uint8_t i=0; options[i]; i++) {
+      for (uint8_t i = 0; options[i]; i++) {
         const char * option = options[i];
-        optionWidth+= getTextWidth(option);
-        if(optionWidth + 5 > width()) {
+        optionWidth += getTextWidth(option);
+        if (optionWidth + 5 > width()) {
           setHeight(getHeight() + 20);
           optionWidth = 0;
         }
@@ -42,23 +42,20 @@ class OptionsText : public StaticText {
     void paint(BitmapBuffer * dc) override
     {
       coord_t y = 0;
-      lcdNextPos = 0;
-      for (uint8_t i=0; options[i]; i++) {
+      coord_t x = 0;
+      for (uint8_t i = 0; options[i]; i++) {
         const char * option = options[i];
         coord_t optionWidth = getTextWidth(option);
-
-        if (lcdNextPos + 5 + optionWidth > width()) {
-          dc->drawText(lcdNextPos, y, ",");
-          lcdNextPos = 0;
+        if (x + 5 + optionWidth > width()) {
+          dc->drawText(x, y, ",");
+          x = 0;
           y += FH;
-         }
-        if (i > 0 && lcdNextPos != 0)
-          dc->drawText(lcdNextPos, y, ", ");
-        dc->drawText(lcdNextPos, y, option);
+        }
+        if (i > 0 && x != 0)
+          x = dc->drawText(x, y, ", ");
+        x = dc->drawText(x, y, option);
       }
     }
-
-  protected:
 };
 
 RadioVersionPage::RadioVersionPage():
