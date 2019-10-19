@@ -174,9 +174,6 @@ void init_intmodule_heartbeat();
 void check_intmodule_heartbeat();
 
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
-#if defined(INTERNAL_MODULE_MULTI)
-void intmoduleTimerStart(uint32_t periodMs);
-#endif
 void intmoduleSendByte(uint8_t byte);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
@@ -193,6 +190,14 @@ void stop_trainer_ppm();
 void init_trainer_capture();
 void stop_trainer_capture();
 
+// Mixer scheduler driver
+void mixerSchedulerInit();
+void mixerSchedulerStart(uint16_t periodUs);
+void mixerSchedulerStop();
+void mixerSchedulerWaitForTrigger(uint8_t timeoutMs);
+void mixerSchedulerEnableTrigger();
+void mixerSchedulerDisableTrigger();
+  
 // Keys driver
 enum EnumKeys
 {

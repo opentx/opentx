@@ -75,13 +75,21 @@ bool isForcePowerOffRequested()
 
 bool isModuleSynchronous(uint8_t module)
 {
-  uint8_t protocol = moduleState[module].protocol;
-  if (protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || protocol == PROTOCOL_CHANNELS_PXX2_LOWSPEED || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
-    return true;
-#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
-  if (protocol == PROTOCOL_CHANNELS_PXX1_SERIAL)
-    return true;
+  switch(moduleState[module].protocol) {
+
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
+    case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
+    case PROTOCOL_CHANNELS_CROSSFIRE:
+    case PROTOCOL_CHANNELS_NONE:
+
+#if defined(MULTIMODULE)
+    case PROTOCOL_CHANNELS_MULTIMODULE:
 #endif
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
+#endif
+      return true;
+  }
   return false;
 }
 
@@ -100,12 +108,16 @@ void sendSynchronousPulses()
   }
 }
 
+#define DEBUG_MIXER_SCHEDULER
+
 uint32_t nextMixerTime[NUM_MODULES];
 
 TASK_FUNCTION(mixerTask)
 {
-  static uint32_t lastRunTime;
   s_pulses_paused = true;
+
+  mixerSchedulerInit();
+  mixerSchedulerStart(6666); // 150 Hz
 
   while (true) {
 #if defined(PCBTARANIS) && defined(SBUS)
@@ -121,7 +133,22 @@ TASK_FUNCTION(mixerTask)
     bluetooth.wakeup();
 #endif
 
-    RTOS_WAIT_TICKS(1);
+    // TODO:
+    // - add trigger based on heartbeat driver
+    
+    // run mixer at least every 10ms
+    mixerSchedulerWaitForTrigger(10);
+
+#if defined(DEBUG_MIXER_SCHEDULER)
+    GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+    GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+#endif
+
+    // TODO:
+    //  - compute next trigger
+
+    // re-enable trigger
+    mixerSchedulerEnableTrigger();
 
 #if defined(SIMU)
     if (pwrCheck() == e_power_off) {
@@ -132,36 +159,6 @@ TASK_FUNCTION(mixerTask)
       boardOff();
     }
 #endif
-
-    uint32_t now = RTOS_GET_MS();
-    bool run = false;
-
-    if (now - lastRunTime >= 10) {
-      // run at least every 10ms
-      run = true;
-    }
-
-#if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
-    if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
-      run = true;
-    }
-#endif
-
-    if (now == nextMixerTime[0]) {
-      run = true;
-    }
-
-#if NUM_MODULES >= 2
-    if (now == nextMixerTime[1]) {
-      run = true;
-    }
-#endif
-
-    if (!run) {
-      continue;  // go back to sleep
-    }
-
-    lastRunTime = now;
 
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();

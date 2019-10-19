@@ -39,12 +39,6 @@ void intmoduleStop()
   USART_DeInit(INTMODULE_USART);
 
   GPIO_ResetBits(INTMODULE_GPIO, INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN);
-
-#if defined(INTERNAL_MODULE_MULTI)
-  // stop pulses timer
-  INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;
-  INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-#endif
 }
 
 void intmodulePxx1SerialStart()
@@ -92,28 +86,6 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
     NVIC_EnableIRQ(INTMODULE_USART_IRQn);
   }
 }
-
-#if defined(INTERNAL_MODULE_MULTI)
-void intmoduleTimerStart(uint32_t periodMs)
-{
-  // Timer
-  INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  INTMODULE_TIMER->ARR = periodMs * 2000;
-  INTMODULE_TIMER->CCR2 = (periodMs - 1) * 2000;
-  INTMODULE_TIMER->CCER = TIM_CCER_CC3E;
-  INTMODULE_TIMER->CCMR2 = 0;
-  INTMODULE_TIMER->EGR = 1; // Restart
-
-  INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_0; // Toggle CC1 o/p
-  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;  // Enable this interrupt
-  INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  NVIC_EnableIRQ(INTMODULE_TIMER_IRQn);
-  NVIC_SetPriority(INTMODULE_TIMER_IRQn, 7);
-}
-#endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void INTMODULE_USART_IRQHandler(void)
@@ -187,12 +159,3 @@ void intmoduleSendNextFrame()
 #endif
   }
 }
-
-#if defined(INTERNAL_MODULE_MULTI)
-extern "C" void INTMODULE_TIMER_IRQHandler()
-{
-  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag
-  setupPulsesInternalModule();
-  intmoduleSendNextFrame();
-}
-#endif

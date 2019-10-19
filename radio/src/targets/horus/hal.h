@@ -365,7 +365,7 @@
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
-#define TELEMETRY_RCC_APB2Periph        RCC_APB2Periph_TIM10
+#define TELEMETRY_RCC_APB2Periph        RCC_APB2Periph_TIM11
 #define TELEMETRY_DIR_GPIO              GPIOD
 #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
 #define TELEMETRY_GPIO                  GPIOD
@@ -750,6 +750,13 @@
 // 2MHz Timer
 #define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
+
+// Mixer scheduler timer
+#define MIXER_SCHEDULER_TIMER_RCC_APB1Periph RCC_APB1Periph_TIM13
+#define MIXER_SCHEDULER_TIMER                TIM13
+#define MIXER_SCHEDULER_TIMER_FREQ           (PERI1_FREQUENCY * TIMER_MULT_APB1)
+#define MIXER_SCHEDULER_TIMER_IRQn           TIM8_UP_TIM13_IRQn
+#define MIXER_SCHEDULER_TIMER_IRQHandler     TIM8_UP_TIM13_IRQHandler
 
 // Bluetooth
 #define STORAGE_BLUETOOTH
