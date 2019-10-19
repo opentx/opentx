@@ -70,8 +70,6 @@ class SpecialFunctionEditPage : public Page {
       CustomFunctionData * cfn = &functions[index];
       uint8_t func = CFN_FUNC(cfn);
 
-//      FormField::setCurrentField(previousField);
-
       // Func param
       switch (func) {
         case FUNC_OVERRIDE_CHANNEL:
@@ -198,8 +196,6 @@ class SpecialFunctionEditPage : public Page {
             dc->drawNumber(3, 0, value * CFN_PLAY_REPEAT_MUL, flags, 0, nullptr, "s");
         });
       }
-
-//      FormField::link(FormField::getCurrentField(), nextField);
     }
 
     void buildBody(FormWindow * window)
@@ -218,7 +214,6 @@ class SpecialFunctionEditPage : public Page {
                                                 : isSwitchAvailable(value,
                                                                     GeneralCustomFunctionsContext));
       });
-//      window->setFirstField(switchChoice);
       grid.nextLine();
 
       // Function

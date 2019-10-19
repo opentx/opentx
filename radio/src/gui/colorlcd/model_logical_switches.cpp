@@ -187,8 +187,6 @@ class LogicalSwitchEditPage: public Page {
         edit->setZeroText("---");
       }
       grid.nextLine();
-
-//      FormField::link(FormField::getCurrentField(), functionChoice);
     }
 
     void buildBody(FormWindow * window)
