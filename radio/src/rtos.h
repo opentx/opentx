@@ -230,6 +230,8 @@ template<int SIZE>
 
   #define RTOS_CREATE_FLAG(flag)        flag = CoCreateFlag(false, false)
   #define RTOS_SET_FLAG(flag)           (void)CoSetFlag(flag)
+  #define RTOS_CLEAR_FLAG(flag)         (void)CoClearFlag(flag)
+  #define RTOS_WAIT_FLAG(flag,timeout)  (void)CoWaitForSingleFlag(flag,timeout)
 
 #ifdef __cplusplus
   template<int SIZE>

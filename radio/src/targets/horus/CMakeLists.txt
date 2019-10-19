@@ -190,6 +190,7 @@ set(TARGET_SRC
   led_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
+  mixer_scheduler_driver.cpp
   ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
