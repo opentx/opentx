@@ -149,7 +149,7 @@ void ScreenSetupPage::build(FormWindow * window)
   grid.nextLine();
 
   // Dynamic options window...
-  optionsWindow = new FormGroup(window, {0, grid.getWindowHeight(), LCD_W, 0}, FORWARD_SCROLL);
+  optionsWindow = new FormGroup(window, {0, grid.getWindowHeight(), LCD_W, 0}, FORWARD_SCROLL | FORM_FORWARD_FOCUS);
   grid.addWindow(optionsWindow);
   updateLayoutOptions();
 }
@@ -158,7 +158,6 @@ void ScreenSetupPage::updateLayoutOptions()
 {
   FormGridLayout grid;
   optionsWindow->clear();
-//  FormField::setCurrentField(setupWidgetsButton); // next field will be linked to this button
 
   auto screen = customScreens[pageIndex];
 
@@ -202,6 +201,4 @@ void ScreenSetupPage::updateLayoutOptions()
 
   optionsWindow->adjustHeight();
   optionsWindow->getParent()->adjustInnerHeight();
-
-//  FormField::link(FormField::getCurrentField(), layoutChoice);
 }
