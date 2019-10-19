@@ -36,7 +36,9 @@ extern "C++" {
 
   typedef pthread_t RTOS_TASK_HANDLE;
   typedef pthread_mutex_t RTOS_MUTEX_HANDLE;
+
   typedef uint32_t RTOS_FLAG_HANDLE;
+
   typedef sem_t * RTOS_EVENT_HANDLE;
 
   extern uint64_t simuTimerMicros(void);
@@ -76,15 +78,25 @@ extern "C++" {
       pthread_mutex_unlock(&mutex);
   }
 
-  static inline void RTOS_CREATE_FLAG(uint32_t &flag)
+  static inline void RTOS_CREATE_FLAG(RTOS_FLAG_HANDLE flag)
   {
-    flag = 0; // TODO: real flags (use semaphores?)
   }
 
-  static inline void RTOS_SET_FLAG(uint32_t &flag)
+  static inline void RTOS_SET_FLAG(RTOS_FLAG_HANDLE flag)
   {
-    flag = 1;
   }
+
+  static inline void RTOS_CLEAR_FLAG(RTOS_FLAG_HANDLE flag)
+  {
+  }
+
+  static inline bool RTOS_WAIT_FLAG(RTOS_FLAG_HANDLE flag, uint32_t timeout)
+  {
+    simuSleep(timeout);
+    return false;
+  }
+
+  #define RTOS_ISR_SET_FLAG RTOS_SET_FLAG
 
   template<int SIZE>
   class FakeTaskStack
@@ -146,6 +158,7 @@ template<int SIZE>
   {
     return (uint32_t)(simuTimerMicros() / 1000);
   }
+  
 #elif defined(RTOS_COOS)
 #ifdef __cplusplus
   extern "C" {
@@ -230,7 +243,18 @@ template<int SIZE>
 
   #define RTOS_CREATE_FLAG(flag)        flag = CoCreateFlag(false, false)
   #define RTOS_SET_FLAG(flag)           (void)CoSetFlag(flag)
+  #define RTOS_CLEAR_FLAG(flag)         (void)CoClearFlag(flag)
+  #define RTOS_WAIT_FLAG(flag,timeout)  (CoWaitForSingleFlag(flag,timeout) == E_TIMEOUT)
 
+  static inline void RTOS_ISR_SET_FLAG(RTOS_FLAG_HANDLE flag)
+  {
+    CoEnterISR();
+    CoSchedLock();
+    isr_SetFlag(flag);
+    CoSchedUnlock();
+    CoExitISR();
+  }
+  
 #ifdef __cplusplus
   template<int SIZE>
   class TaskStack
