@@ -772,9 +772,9 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !IS_ACCESS_RADIO(board, id);
+            return !IS_ACCESS_RADIO(board, id) && board != BOARD_JUMPER_T16;
           case PULSES_PXX_XJT_D8:
-            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu"));
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && board != BOARD_JUMPER_T16;
           case PULSES_PPM:
             return id.contains("internalppm");
           case PULSES_ACCESS_ISRM:
