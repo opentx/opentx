@@ -127,9 +127,13 @@ inline bool isModuleTypePPM(uint8_t type)
   return type == MODULE_TYPE_PPM;
 }
 
-inline bool isModulePPM(uint8_t idx)
+inline bool isModulePPM(uint8_t moduleIdx)
 {
-  return isModuleTypePPM(g_model.moduleData[idx].type);
+#if defined(PCBSKY9X)
+  if(moduleIdx == EXTRA_MODULE)
+    return true;
+#endif
+  return isModuleTypePPM(g_model.moduleData[moduleIdx].type);
 }
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
