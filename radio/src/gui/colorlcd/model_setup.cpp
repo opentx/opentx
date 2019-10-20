@@ -429,11 +429,6 @@ class ModuleWindow : public FormGroup {
       update();
     }
 
-    ~ModuleWindow() override
-    {
-      deleteChildren();
-    }
-
   protected:
     uint8_t moduleIdx;
     Choice * moduleChoice = nullptr;

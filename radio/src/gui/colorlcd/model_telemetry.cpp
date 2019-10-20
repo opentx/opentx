@@ -114,11 +114,6 @@ class SensorEditWindow : public Page {
       buildHeader(&header);
     }
 
-    ~SensorEditWindow() override
-    {
-      body.deleteChildren();
-    }
-
   protected:
     uint8_t index;
     FormWindow * sensorParametersWindow = nullptr;

@@ -33,11 +33,6 @@ class DateTimeWindow : public FormGroup {
       build();
     }
 
-    ~DateTimeWindow() override
-    {
-      deleteChildren();
-    }
-
     void checkEvents() override
     {
       FormGroup::checkEvents();

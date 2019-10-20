@@ -53,7 +53,6 @@ bool reachMixesLimit()
   return false;
 }
 
-
 class MixEditWindow : public Page {
   public:
     MixEditWindow(int8_t channel, uint8_t mixIndex) :
@@ -192,8 +191,6 @@ class MixEditWindow : public Page {
       edit->setSuffix("s");
       grid.nextLine();
 
-      grid.nextLine();
-
       window->setInnerHeight(grid.getWindowHeight());
     }
 
@@ -231,12 +228,12 @@ class MixEditWindow : public Page {
 
 class MixLineButton : public CommonInputOrMixButton {
   public:
-    MixLineButton(FormGroup * parent, const rect_t &rect, uint8_t index) :
+    MixLineButton(FormGroup * parent, const rect_t & rect, uint8_t index) :
       CommonInputOrMixButton(parent, rect, index)
     {
       const MixData & mix = g_model.mixData[index];
       if (mix.swtch || mix.curve.value != 0 || mix.flightModes) {
-        setHeight(getHeight() + 20);
+        setHeight(getHeight() + PAGE_LINE_HEIGHT);
       }
     }
 
@@ -254,18 +251,18 @@ class MixLineButton : public CommonInputOrMixButton {
       drawSource(dc, 60, FIELD_PADDING_TOP, line.srcRaw);
 
       if (line.name[0]) {
-        dc->drawBitmap(146, 2 + FIELD_PADDING_TOP, mixerSetupLabelBitmap);
+        dc->drawMask(146, 2 + FIELD_PADDING_TOP, mixerSetupLabelIcon, DEFAULT_COLOR);
         dc->drawSizedText(166, FIELD_PADDING_TOP, line.name, sizeof(line.name));
       }
 
       // second line ...
       if (line.swtch) {
-        dc->drawBitmap(3, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupSwitchBitmap);
+        dc->drawMask(3, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, mixerSetupSwitchIcon, DEFAULT_COLOR);
         drawSwitch(dc, 21, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, line.swtch);
       }
 
       if (line.curve.value) {
-        dc->drawBitmap(60, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupCurveBitmap);
+        dc->drawMask(60, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupCurveIcon, DEFAULT_COLOR);
         drawCurveRef(dc, 80, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, line.curve, 0);
       }
 

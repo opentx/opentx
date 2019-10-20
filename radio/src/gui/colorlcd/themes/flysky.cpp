@@ -262,19 +262,19 @@ class FlyskyTheme: public ThemeBase
       mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupAddBitmap;
-      mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("mask_mplex_add.png"), DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupMultiBitmap;
-      mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("mask_mplex_multi.png"), DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupReplaceBitmap;
-      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("mask_mplex_replace.png"), DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
-      delete mixerSetupLabelBitmap;
-      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      delete mixerSetupLabelIcon;
+      mixerSetupLabelIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_label.png"));
 
-      delete mixerSetupCurveBitmap;
-      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      delete mixerSetupCurveIcon;
+      mixerSetupCurveIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_curve.png"));
 
       delete mixerSetupSwitchIcon;
       mixerSetupSwitchIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_switch.png"));
@@ -282,14 +282,14 @@ class FlyskyTheme: public ThemeBase
       delete mixerSetupFlightmodeIcon;
       mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_fm.png"));
 
-      delete mixerSetupSlowBitmap;
-      mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
-
-      delete mixerSetupDelayBitmap;
-      mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
-
-      delete mixerSetupDelaySlowBitmap;
-      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+//      delete mixerSetupSlowIcon;
+//      mixerSetupSlowIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_slow.png"));
+//
+//      delete mixerSetupDelayIcon;
+//      mixerSetupDelayIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_delay.png"));
+//
+//      delete mixerSetupDelaySlowIcon;
+//      mixerSetupDelaySlowIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_delayslow.png"));
     }
 
     void load() const override

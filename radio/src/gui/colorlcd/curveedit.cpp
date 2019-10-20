@@ -33,6 +33,11 @@ CurveEdit::CurveEdit(Window * parent, const rect_t & rect, uint8_t index) :
   update();
 }
 
+CurveEdit::~CurveEdit()
+{
+  preview.detach();
+}
+
 void CurveEdit::update()
 {
   preview.clearPoints();

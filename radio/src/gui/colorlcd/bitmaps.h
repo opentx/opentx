@@ -97,14 +97,12 @@ extern BitmapBuffer * mixerSetupOutputBitmap;
 extern BitmapBuffer * mixerSetupAddBitmap;
 extern BitmapBuffer * mixerSetupMultiBitmap;
 extern BitmapBuffer * mixerSetupReplaceBitmap;
-extern BitmapBuffer * mixerSetupLabelBitmap;
+extern BitmapBuffer * mixerSetupLabelIcon;
 extern BitmapBuffer * mixerSetupFlightmodeIcon;
-extern BitmapBuffer * mixerSetupCurveBitmap;
+extern BitmapBuffer * mixerSetupCurveIcon;
 extern BitmapBuffer * mixerSetupSwitchIcon;
-extern BitmapBuffer * mixerSetupDelayBitmap;
-extern BitmapBuffer * mixerSetupSlowBitmap;
-extern BitmapBuffer * mixerSetupDelaySlowBitmap;
-extern BitmapBuffer * mixerSetupFlightmodeBitmap;
-extern BitmapBuffer * mixerSetupSwitchBitmap;
+//extern BitmapBuffer * mixerSetupDelayIcon;
+//extern BitmapBuffer * mixerSetupSlowIcon;
+//extern BitmapBuffer * mixerSetupDelaySlowIcon;
 
 #endif // _BITMAPS_H_

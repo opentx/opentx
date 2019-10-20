@@ -161,7 +161,6 @@ ViewMain::ViewMain(bool icons):
 
 ViewMain::~ViewMain()
 {
-  deleteChildren();
 }
 
 #if defined(HARDWARE_KEYS)

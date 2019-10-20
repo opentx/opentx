@@ -24,7 +24,7 @@ class StaticText;
 
 class RadioCalibrationPage: public Page {
   public:
-    RadioCalibrationPage(bool initial=false);
+    explicit RadioCalibrationPage(bool initial = false);
 
     void checkEvents() override;
 

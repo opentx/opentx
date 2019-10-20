@@ -132,11 +132,11 @@ class OutputLineButton : public Button {
         dc->drawTextAtIndex(4, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, STR_MMMINV, output->revert);
       }
       if (output->curve) {
-        dc->drawBitmap(68, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupCurveBitmap);
+        dc->drawMask(68, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupCurveIcon, DEFAULT_COLOR);
         dc->drawText(88, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, getCurveString(output->curve));
       }
       if (output->name[0]) {
-        dc->drawBitmap(146, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupLabelBitmap);
+        dc->drawMask(146, 2 + PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupLabelIcon, DEFAULT_COLOR);
         dc->drawSizedText(166, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, output->name, sizeof(output->name));
       }
 

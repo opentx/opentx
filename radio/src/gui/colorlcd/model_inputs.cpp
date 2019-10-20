@@ -116,6 +116,11 @@ class InputEditWindow: public Page {
       buildHeader(&header);
     }
 
+    ~InputEditWindow() override
+    {
+      preview.detach();
+    }
+
   protected:
     uint8_t input;
     uint8_t index;
@@ -292,17 +297,17 @@ void CommonInputOrMixButton::checkEvents()
 
 void CommonInputOrMixButton::drawFlightModes(BitmapBuffer *dc, FlightModesType value)
 {
-  dc->drawBitmap(146, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupFlightmodeBitmap);
+  dc->drawMask(146, 2 + PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupFlightmodeIcon, DEFAULT_COLOR);
   coord_t x = 166;
   for (int i = 0; i < MAX_FLIGHT_MODES; i++) {
     char s[] = " ";
     s[0] = '0' + i;
     if (value & (1 << i)) {
-      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, s, SMLSIZE | TEXT_DISABLE_COLOR);
+      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, s, SMLSIZE | TEXT_DISABLE_COLOR);
     }
     else {
-      dc->drawSolidFilledRect(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, 8, 3, CHECKBOX_COLOR);
-      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, s, SMLSIZE);
+      dc->drawSolidFilledRect(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, 8, 3, CHECKBOX_COLOR);
+      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, s, SMLSIZE);
     }
     x += 8;
   }
@@ -341,7 +346,7 @@ class InputLineButton : public CommonInputOrMixButton {
       drawSource(dc, 60, FIELD_PADDING_TOP, line.srcRaw);
 
       if (line.name[0]) {
-        dc->drawBitmap(146, 2 + FIELD_PADDING_TOP, mixerSetupLabelBitmap);
+        dc->drawMask(146, 2 + FIELD_PADDING_TOP, mixerSetupLabelIcon, DEFAULT_COLOR);
         dc->drawSizedText(166, FIELD_PADDING_TOP, line.name, sizeof(line.name));
       }
 
@@ -352,7 +357,7 @@ class InputLineButton : public CommonInputOrMixButton {
       }
 
       if (line.curve.value != 0 ) {
-        dc->drawBitmap(60, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupCurveBitmap);
+        dc->drawMask(60, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, mixerSetupCurveIcon, DEFAULT_COLOR);
         drawCurveRef(dc, 80, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP, line.curve);
       }
 
@@ -496,7 +501,6 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
 
   grid.nextLine();
 
-//  window->setLastField();
   window->setInnerHeight(grid.getWindowHeight());
 }
 

@@ -28,6 +28,8 @@ class CurveEdit: public FormField {
   public:
     CurveEdit(Window * parent, const rect_t & rect, uint8_t index);
 
+    ~CurveEdit() override;
+
     void update();
 
     void onEvent(event_t event) override;

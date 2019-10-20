@@ -59,6 +59,9 @@ Page::Page(unsigned icon):
 
 Page::~Page()
 {
+  header.detach();
+  body.detach();
+
 #if defined(HARDWARE_TOUCH)
   Keyboard::hide();
 #endif

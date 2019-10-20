@@ -86,16 +86,15 @@ class PotCalibrationWindow: public Window {
       invalidate();
     }
 
-    virtual void paint(BitmapBuffer * dc)
+    void paint(BitmapBuffer * dc) override
     {
-      if(rect.h > rect.w)
+      if (rect.h > rect.w)
         drawVerticalSlider(dc, 5, 8, rect.h - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
       else
         drawHorizontalSlider(dc, 5, 8, rect.w - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
     }
 
   protected:
-    static constexpr coord_t bitmapSize = 68;
     uint8_t potIndex;
 };
 
@@ -109,23 +108,26 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
 
 void RadioCalibrationPage::buildHeader(Window * window)
 {
-  new StaticText(window, { 55, 0, 300, 20 }, STR_MENUCALIBRATION, MENU_COLOR);
-  text = new StaticText(window, { 55, FH+2, LCD_W-55, 20 }, STR_MENUTOSTART, MENU_COLOR);
+  new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUCALIBRATION, 0, MENU_COLOR);
+  text = new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUTOSTART, 0, MENU_COLOR);
 }
 
 void RadioCalibrationPage::buildBody(FormWindow * window)
 {
   menuCalibrationState = CALIB_START;
 
-  // Background radio image
+  if (calibRadioPict) {
+    // Background radio image
 #if LCD_W > LCD_H
-  new StaticBitmap(window, {LCD_W/2 -calibRadioPict->getWidth()/2, 5, calibRadioPict->getHeight(), calibRadioPict->getWidth()}, calibRadioPict);
+    new StaticBitmap(window, {LCD_W / 2 - calibRadioPict->getWidth() / 2, 5, calibRadioPict->getHeight(), calibRadioPict->getWidth()}, calibRadioPict);
 #else
-  new StaticBitmap(window, {LCD_W/2 -calibRadioPict->getWidth()/2, LCD_H/2 -calibRadioPict->getHeight()/2, calibRadioPict->getHeight(), calibRadioPict->getWidth()}, calibRadioPict);
+    new StaticBitmap(window, {LCD_W / 2 - calibRadioPict->getWidth() / 2, LCD_H / 2 - calibRadioPict->getHeight() / 2, calibRadioPict->getHeight(), calibRadioPict->getWidth()}, calibRadioPict);
 #endif
+  }
+
   // The two sticks
   new StickCalibrationWindow(window, {40, 20, 90, 90}, STICK1, STICK2);
-  new StickCalibrationWindow(window, {LCD_W-130, 20, 90, 90}, STICK4, STICK3);
+  new StickCalibrationWindow(window, {LCD_W - 130, 20, 90, 90}, STICK4, STICK3);
 
 #if defined(PCBHORUS)
   // The 2 main sliders
@@ -139,7 +141,7 @@ void RadioCalibrationPage::buildBody(FormWindow * window)
 #elif defined(PCBNV14)
   new PotCalibrationWindow(window, {0, window->height()-25, 150, 20}, POT1);
   new PotCalibrationWindow(window, {LCD_W-150, window->height()-25, 150, 20}, POT2);
- #endif
+#endif
 }
 
 void RadioCalibrationPage::checkEvents()

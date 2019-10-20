@@ -28,9 +28,6 @@ class RadioHardwarePage: public PageTab {
     RadioHardwarePage();
 
     void build(FormWindow * window) override;
-
-  protected:
-
 };
 
 #endif //_RADIO_HARDWARE_H_

@@ -97,7 +97,8 @@ TabsGroup::~TabsGroup()
     delete tab;
   }
 
-  body.deleteChildren();
+  header.detach();
+  body.detach();
 }
 
 void TabsGroup::addTab(PageTab * page)
