@@ -130,7 +130,7 @@ inline bool isModuleTypePPM(uint8_t type)
 inline bool isModulePPM(uint8_t moduleIdx)
 {
 #if defined(PCBSKY9X)
-  if(moduleIdx == EXTRA_MODULE)
+  if (moduleIdx == EXTRA_MODULE)
     return true;
 #endif
   return isModuleTypePPM(g_model.moduleData[moduleIdx].type);
