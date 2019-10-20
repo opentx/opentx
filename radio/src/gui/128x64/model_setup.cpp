@@ -376,17 +376,18 @@ void menuModelSetup(event_t event)
       MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),      // line reused for PPM: PPM settings
       OUTPUT_TYPE_ROW
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                    // RxNum
+      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // RxNum
       IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
       MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
       FAILSAFE_ROWS(EXTERNAL_MODULE),
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),                          // Range check and Register buttons
+      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),                     // Range check and Register buttons
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                          // Module options
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 1
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 2
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 3
 
     EXTRA_MODULE_ROWS
+    TRAINER_ROWS
   });
 #endif
 
