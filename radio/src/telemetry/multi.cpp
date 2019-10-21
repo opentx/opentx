@@ -225,7 +225,7 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8
   }
   if (getMultiModuleStatus(module).requiresFailsafeCheck) {
     getMultiModuleStatus(module).requiresFailsafeCheck = false;
-    if (getMultiModuleStatus(module).supportsFailsafe() &&  g_model.moduleData[EXTERNAL_MODULE].failsafeMode == FAILSAFE_NOT_SET)
+    if (getMultiModuleStatus(module).supportsFailsafe() &&  g_model.moduleData[module].failsafeMode == FAILSAFE_NOT_SET)
       POPUP_WARNING(STR_NO_FAILSAFE);
   }
 

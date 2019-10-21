@@ -29,7 +29,7 @@
 class MultiFirmwareUpdateDriver
 {
   public:
-    MultiFirmwareUpdateDriver() = default;
+    MultiFirmwareUpdateDriver() {}
     const char* flashFirmware(FIL* file, const char* label) const;
 
   protected:
@@ -54,7 +54,7 @@ class MultiFirmwareUpdateDriver
 class MultiInternalUpdateDriver: public MultiFirmwareUpdateDriver
 {
   public:
-    MultiInternalUpdateDriver() = default;
+    MultiInternalUpdateDriver() {}
 
   protected:
     void init() const override
@@ -91,7 +91,7 @@ static const MultiInternalUpdateDriver multiInternalUpdateDriver;
 class MultiExternalSoftSerialUpdateDriver: public MultiFirmwareUpdateDriver
 {
   public:
-    MultiExternalSoftSerialUpdateDriver() = default;
+    MultiExternalSoftSerialUpdateDriver() {}
 
   protected:
     void init() const override
