@@ -177,13 +177,13 @@ class FrskyTheme: public ThemeBase
     {
       // Calibration screen
       delete calibStick;
-      calibStick = BitmapBuffer::load(getFilePath("stick_pointer.png"));
+      calibStick = BitmapBuffer::loadBitmap(getFilePath("stick_pointer.png"));
 
       delete calibStickBackground;
-      calibStickBackground = BitmapBuffer::load(getFilePath("stick_background.png"));
+      calibStickBackground = BitmapBuffer::loadBitmap(getFilePath("stick_background.png"));
 
       delete calibTrackpBackground;
-      calibTrackpBackground = BitmapBuffer::load(getFilePath("trackp_background.png"));
+      calibTrackpBackground = BitmapBuffer::loadBitmap(getFilePath("trackp_background.png"));
 
       delete calibRadioPict;
 #if defined(PCBX10)
@@ -194,14 +194,14 @@ class FrskyTheme: public ThemeBase
         calibRadioPict = BitmapBuffer::load(getFilePath("X10.bmp"));
       }
 #else
-      calibRadioPict = BitmapBuffer::load(getFilePath("horus.bmp"));
+      calibRadioPict = BitmapBuffer::loadBitmap(getFilePath("horus.bmp"));
 #endif
 
       // Model Selection screen
       delete modelselIconBitmap;
       modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, DEFAULT_BGCOLOR);
       if (modelselIconBitmap) {
-        BitmapBuffer * bitmap = BitmapBuffer::load(getFilePath("modelsel/icon_default.png"));
+        BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(getFilePath("modelsel/icon_default.png"));
         modelselIconBitmap->drawBitmap(20, 8, bitmap);
         delete bitmap;
       }
@@ -222,7 +222,7 @@ class FrskyTheme: public ThemeBase
       modelselModelMoveIcon = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveico.png"));
 
       delete modelselWizardBackground;
-      modelselWizardBackground = BitmapBuffer::load(getFilePath("wizard/background.png"));
+      modelselWizardBackground = BitmapBuffer::loadBitmap(getFilePath("wizard/background.png"));
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
@@ -277,7 +277,7 @@ class FrskyTheme: public ThemeBase
       loadColors();
       ThemeBase::load();
       if (!backgroundBitmap) {
-        backgroundBitmap = BitmapBuffer::load(getFilePath("background.png"));
+        backgroundBitmap = BitmapBuffer::loadBitmap(getFilePath("background.png"));
       }
       update();
     }

@@ -61,11 +61,11 @@ void ThemeBase::init() const
 void ThemeBase::load() const
 {
   if (!asterisk)
-    asterisk = BitmapBuffer::load(getFilePath("asterisk.bmp"));
+    asterisk = BitmapBuffer::loadBitmap(getFilePath("asterisk.bmp"));
   if (!question)
-    question = BitmapBuffer::load(getFilePath("question.bmp"));
+    question = BitmapBuffer::loadBitmap(getFilePath("question.bmp"));
   if (!busy)
-    busy = BitmapBuffer::load(getFilePath("busy.bmp"));
+    busy = BitmapBuffer::loadBitmap(getFilePath("busy.bmp"));
 }
 
 ZoneOptionValue * ThemeBase::getOptionValue(unsigned int index) const
@@ -88,7 +88,7 @@ void ThemeBase::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flag
   #define THUMB_WIDTH   51
   #define THUMB_HEIGHT  31
   if (!thumb) {
-    thumb = BitmapBuffer::load(getFilePath("thumb.bmp"));
+    thumb = BitmapBuffer::loadBitmap(getFilePath("thumb.bmp"));
   }
   lcd->drawBitmap(x, y, thumb);
   if (flags == LINE_COLOR) {

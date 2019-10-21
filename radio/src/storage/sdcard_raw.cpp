@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "gui/colorlcd/modelslist.h"
+#include "modelslist.h"
 #include "conversions/conversions.h"
 
 void getModelPath(char * path, const char * filename)
@@ -231,11 +231,10 @@ void storageReadAll()
 
   // Wipe models list in case
   // it's being reloaded after USB connection
-  #warning "TODO modelslist.clear() + load()"
-  // modelslist.clear();
+  modelslist.clear();
 
   // and reload the list
-  // modelslist.load();
+  modelslist.load();
 }
 
 void storageCreateModelsList()

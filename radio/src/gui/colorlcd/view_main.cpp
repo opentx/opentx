@@ -23,7 +23,7 @@
 #include "menu_radio.h"
 #include "menu_screen.h"
 // #include "menu_screens.h"
-// #include "model_select.h"
+ #include "model_select.h"
 // #include "view_channels.h"
 // #include "view_statistics.h"
 #include "opentx.h"
@@ -150,12 +150,18 @@ ViewMain::ViewMain(bool icons):
                           return 0;
                       });
 
-//    new FabButton(this, LCD_W - 50, 100, ICON_THEME,
-//                      [=]() -> uint8_t {
-//                          new ScreensMenu();
-//                          return 0;
-//                      });
+    new FabButton(this, LCD_W - 50, 100, ICON_THEME,
+                      [=]() -> uint8_t {
+                          new ScreenMenu();
+                          return 0;
+                      });
   }
+
+  new IconButton(this, {0, 0, MENU_HEADER_BUTTON_WIDTH, MENU_HEADER_BUTTON_WIDTH}, ICON_BACK,
+                 [=]() -> uint8_t {
+                     openMenu();
+                     return 0;
+                 }, BUTTON_NOFOCUS);
 #endif
 }
 
@@ -184,45 +190,51 @@ void ViewMain::onEvent(event_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
-      Menu * menu = new Menu();
-      menu->addLine(STR_MODEL_SELECT, [=]() {
-          // new ModelselectMenu();
-      });
-      if (modelHasNotes()) {
-        menu->addLine(STR_VIEW_NOTES, [=]() {
-            // TODO
-        });
-      }
-      menu->addLine(STR_MONITOR_SCREENS, [=]() {
-          // new ChannelsMonitorMenu();
-      });
-      menu->addLine(STR_RESET_SUBMENU, [=]() {
-          Menu * menu = new Menu();
-          menu->addLine(STR_RESET_FLIGHT, [=]() {
-              flightReset();
-          });
-          menu->addLine(STR_RESET_TIMER1, [=]() {
-              timerReset(0);
-          });
-          menu->addLine(STR_RESET_TIMER2, [=]() {
-              timerReset(1);
-          });
-          menu->addLine(STR_RESET_TIMER3, [=]() {
-              timerReset(2);
-          });
-          menu->addLine(STR_RESET_TELEMETRY, [=]() {
-              telemetryReset();
-          });
-      });
-      menu->addLine(STR_STATISTICS, [=]() {
-          // new StatisticsMenu();
-      });
-      menu->addLine(STR_ABOUT_US, [=]() {
-          // TODO
-      });
+      openMenu();
+      break;
   }
 }
 #endif
+
+void ViewMain::openMenu()
+{
+  Menu * menu = new Menu();
+  menu->addLine(STR_MODEL_SELECT, [=]() {
+      new ModelselectMenu();
+  });
+  if (modelHasNotes()) {
+    menu->addLine(STR_VIEW_NOTES, [=]() {
+        // TODO
+    });
+  }
+  menu->addLine(STR_MONITOR_SCREENS, [=]() {
+      // new ChannelsMonitorMenu();
+  });
+  menu->addLine(STR_RESET_SUBMENU, [=]() {
+      Menu * menu = new Menu();
+      menu->addLine(STR_RESET_FLIGHT, [=]() {
+          flightReset();
+      });
+      menu->addLine(STR_RESET_TIMER1, [=]() {
+          timerReset(0);
+      });
+      menu->addLine(STR_RESET_TIMER2, [=]() {
+          timerReset(1);
+      });
+      menu->addLine(STR_RESET_TIMER3, [=]() {
+          timerReset(2);
+      });
+      menu->addLine(STR_RESET_TELEMETRY, [=]() {
+          telemetryReset();
+      });
+  });
+  menu->addLine(STR_STATISTICS, [=]() {
+      // new StatisticsMenu();
+  });
+  menu->addLine(STR_ABOUT_US, [=]() {
+      // TODO
+  });
+}
 
 void ViewMain::checkEvents()
 {

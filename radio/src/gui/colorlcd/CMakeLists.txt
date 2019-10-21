@@ -30,7 +30,7 @@ set(GUI_SRC
   draw_functions.cpp
   #  menus.cpp
   menu_model.cpp
-  #  model_select.cpp
+  model_select.cpp
   model_setup.cpp
   model_flightmodes.cpp
   model_inputs.cpp
@@ -83,6 +83,7 @@ endif()
 set(SRC
   ${SRC}
   stubs.cpp
+  storage/modelslist.cpp
   )
 
 # includes libopenui
@@ -104,5 +105,3 @@ add_gui_src(curveedit.cpp)
 if(HARDWARE_TOUCH)
   add_gui_src(keyboard_curve.cpp)
 endif()
-
-# gui/${GUI_DIR}/modelslist.cpp

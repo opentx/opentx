@@ -18,34 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _VIEW_MAIN_H_
-#define _VIEW_MAIN_H_
+#ifndef _MODEL_SELECT_H_
+#define _MODEL_SELECT_H_
 
-#include "form.h"
+#include "tabsgroup.h"
 
-class ViewMain: public FormWindow {
+class ModelselectMenu: public TabsGroup {
   public:
-    explicit ViewMain(bool icons = true);
-
-    ~ViewMain() override;
-
-#if defined(DEBUG_WINDOWS)
-    virtual std::string getName()
-    {
-      return "ViewMain";
-    }
-#endif
-
-    static ViewMain * instance;
-
-  protected:
-#if defined(HARDWARE_KEYS)
-    void onEvent(event_t event) override;
-#endif
-    void paint(BitmapBuffer * dc) override;
-    void checkEvents() override;
-    void openMenu();
+    ModelselectMenu();
 };
 
-#endif // _VIEW_MAIN_H_
-
+#endif // _MODEL_SELECT_H_

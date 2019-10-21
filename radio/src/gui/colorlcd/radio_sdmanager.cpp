@@ -61,7 +61,7 @@ class FilePreview : public Window
       delete bitmap;
       const char *ext = getFileExtension(filename);
       if (ext && isExtensionMatching(ext, BITMAPS_EXT)) {
-        bitmap = BitmapBuffer::load(filename);
+        bitmap = BitmapBuffer::loadBitmap(filename);
       } else {
         bitmap = nullptr;
       }

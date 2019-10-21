@@ -203,7 +203,7 @@ void drawSleepBitmap()
   lcd->clearClippingRect();
   lcd->clear();
 
-  const BitmapBuffer * bitmap = BitmapBuffer::load(static_cast<ThemeBase *>(theme)->getFilePath("sleep.bmp"));
+  const BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(static_cast<ThemeBase *>(theme)->getFilePath("sleep.bmp"));
   if (bitmap) {
     lcd->drawBitmap((LCD_W-bitmap->getWidth())/2, (LCD_H-bitmap->getHeight())/2, bitmap);
     delete bitmap;
@@ -219,7 +219,7 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
     return;
 
   static uint32_t lastDuration = 0xffffffff;
-  static const BitmapBuffer * shutdown = BitmapBuffer::load(static_cast<ThemeBase *>(theme)->getFilePath("shutdown.bmp"));
+  static const BitmapBuffer * shutdown = BitmapBuffer::loadBitmap(static_cast<ThemeBase *>(theme)->getFilePath("shutdown.bmp"));
 
   if (shutdown) {
     if (duration < lastDuration) {
