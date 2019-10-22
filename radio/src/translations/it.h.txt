@@ -930,7 +930,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
 #define TR_MODELIDUSED         TR("ID già usato","ID Modello già usato")
 #define TR_MODULE              "Modulo"
-#define TR_RX_NAME                     "None RX"
+#define TR_RX_NAME                     "Nome RX"
 #define TR_TELEMETRY_TYPE      "Tipo Telemetria"
 #define TR_TELEMETRY_SENSORS   "Sensori"
 #define TR_VALUE               "Valore"
@@ -941,10 +941,10 @@
 #define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
-#define TR_ANTENNA_MODES       "Internal\0          ""Ask\0               ""Per model\0         ""Internal + External"
+#define TR_ANTENNA_MODES       "Interna\0          ""Chiedi\0               ""Per modello\0         ""Interna + esterna"
 #else
 #define LEN_ANTENNA_MODES      "\011"
-#define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
+#define TR_ANTENNA_MODES       "Interna\0""Chiedi\0     ""Per modello""Esterna"
 #endif
 #define TR_USE_INTERNAL_ANTENNA        TR("Usa antenna int.", "Usa antenna interna")
 #define TR_USE_EXTERNAL_ANTENNA        TR("Usa antenna est.", "Usa antenna esterna")
