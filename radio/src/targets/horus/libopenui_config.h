@@ -143,8 +143,6 @@ enum FontIndex
   FONTS_COUNT
 };
 
-#define FONT(xx) (FONT_ ## xx ## _INDEX << 8)
-
 constexpr uint32_t INPUT_EDIT_LABELS_WIDTH = 120;
 constexpr coord_t INPUT_EDIT_CURVE_WIDTH = 158;
 constexpr coord_t INPUT_EDIT_CURVE_HEIGHT = LCD_H - MENU_HEADER_HEIGHT;

@@ -55,7 +55,6 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-#define TIMEBLINK                      0x1000
 #define TIMEHOUR                       0x2000
 #define EXPANDED                       0x2000
 #define VERTICAL                       0x4000
