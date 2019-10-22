@@ -195,12 +195,17 @@ uint32_t switchState(uint8_t index)
 #elif defined(PCBXLITE)
     ADD_3POS_CASE(D, 3);
     // no SWE, SWF, SWG and SWH on XLITE
+#elif defined(PCBX7ACCESS)    
+    ADD_3POS_CASE(D, 3);
+    ADD_2POS_CASE(F);
+    ADD_2POS_CASE(H);
+    ADD_2POS_CASE(I);
+    // no SWJ on XLITE
 #elif defined(PCBX7)
     ADD_3POS_CASE(D, 3);
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
     ADD_2POS_CASE(I);
-    ADD_2POS_CASE(J);
 #else
     ADD_3POS_CASE(D, 3);
     ADD_3POS_CASE(E, 4);

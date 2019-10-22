@@ -116,6 +116,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -154,6 +155,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -197,6 +199,19 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
       {SWITCH_3POS,   "SB"},
       {SWITCH_2POS,   "SC"},
       {SWITCH_2POS,   "SD"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
+  else if (IS_TARANIS_X7_ACCESS(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS,   "SA"},
+      {SWITCH_3POS,   "SB"},
+      {SWITCH_3POS,   "SC"},
+      {SWITCH_3POS,   "SD"},
+      {SWITCH_2POS,   "SF"},
+      {SWITCH_TOGGLE, "SH"},
+      {SWITCH_2POS,   "SI"}
     };
     if (index < DIM(switches))
       return switches[index];
@@ -328,6 +343,8 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 18;
       else if (IS_TARANIS_X9LITE(board))
         return 5;
+      else if (IS_TARANIS_X7_ACCESS(board))
+        return 7;
       else if (IS_TARANIS_X7(board))
         return 8;
       else if (IS_JUMPER_T12(board))
@@ -497,6 +514,8 @@ QString Boards::getBoardName(Board::Type board)
       return "MEGA2560";
     case BOARD_TARANIS_X7:
       return "Taranis X7/X7S";
+    case BOARD_TARANIS_X7_ACCESS:
+      return "Taranis X7/X7S Access";
     case BOARD_JUMPER_T12:
       return "Jumper T12";
     case BOARD_TARANIS_XLITE:

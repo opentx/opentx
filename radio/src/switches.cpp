@@ -162,7 +162,9 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SI);
 #endif
 
-#if defined(PCBHORUS) || defined(PCBX7)
+#if defined(PCBX7ACCESS)
+  CHECK_2POS(SW_SI);
+#elif defined(PCBHORUS) || defined(PCBX7)
   CHECK_2POS(SW_SI);
   CHECK_2POS(SW_SJ);
 #endif

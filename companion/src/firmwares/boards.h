@@ -40,6 +40,7 @@ namespace Board {
     BOARD_9XRPRO,
     BOARD_AR9X,
     BOARD_TARANIS_X7,
+    BOARD_TARANIS_X7_ACCESS,
     BOARD_TARANIS_X9D,
     BOARD_TARANIS_X9DP,
     BOARD_TARANIS_X9DP_2019,
@@ -241,12 +242,22 @@ inline bool IS_TARANIS_XLITES(Board::Type board)
 
 inline bool IS_TARANIS_X7(Board::Type board)
 {
-  return board == Board::BOARD_TARANIS_X7;
+  return board == Board::BOARD_TARANIS_X7 || board == Board::BOARD_TARANIS_X7_ACCESS;
+}
+
+inline bool IS_TARANIS_X7_ACCESS(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X7_ACCESS;
 }
 
 inline bool IS_TARANIS_X9LITE(Board::Type board)
 {
   return board == Board::BOARD_TARANIS_X9LITE || board == Board::BOARD_TARANIS_X9LITES;
+}
+
+inline bool IS_TARANIS_X9LITES(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X9LITES;
 }
 
 inline bool IS_TARANIS_X9(Board::Type board)

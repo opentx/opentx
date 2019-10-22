@@ -80,6 +80,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
+    case BOARD_TARANIS_X7_ACCESS:
+      return "OpenTX for FrSky Taranis X7 Access";
     case BOARD_TARANIS_X9LITES:
       return "OpenTX for FrSky Taranis X9-Lite S";
     case BOARD_TARANIS_X9LITE:
@@ -1254,6 +1256,11 @@ void registerOpenTxFirmwares()
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
+  addOpenTxTaranisOptions(firmware);
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky X7 board */
+  firmware = new OpenTxFirmware("opentx-x7access", Firmware::tr("FrSky Taranis X7 / X7S Access"), BOARD_TARANIS_X7_ACCESS);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 

@@ -69,6 +69,7 @@ int convertSource_218_to_219(int source)
 int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
+  // on X7Access: 1 additional switches
   // on X9D / X9D+: 1 additional switch
   // on XLite: 2 additional storage switches
   // on X10: 2 additional pots => 12 multipos switches
@@ -82,7 +83,10 @@ int convertSwitch_218_to_219(int swtch)
     swtch += 2 * 3;
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBX7ACCESS)
+  if (swtch >= SWSRC_SI0)
+    swtch += 3;
+#elif defined(PCBX7)
   if (swtch >= SWSRC_SI0)
     swtch += 2 * 3;
 #endif
