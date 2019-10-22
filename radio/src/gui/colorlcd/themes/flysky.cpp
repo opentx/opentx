@@ -403,10 +403,10 @@ class FlyskyTheme: public ThemeBase
       const char * const STR_MONTHS[] = TR_MONTHS;
       sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
 #endif
-      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|FOCUS_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, FONT(XS)|FOCUS_COLOR|CENTERED);
 
       getTimerString(str, getValue(MIXSRC_TX_TIME));
-      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|FOCUS_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, FONT(XS)|FOCUS_COLOR|CENTERED);
     }
 
     void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const override

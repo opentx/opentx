@@ -62,14 +62,14 @@ void ValueWidget::refresh()
     xLabel = x;
     yLabel = y;
     attrValue = LEFT | NO_UNIT | MIDSIZE;
-    attrLabel = SMLSIZE;
+    attrLabel = FONT(XS);
   }
   else if (zone.h < 50) {
     xValue = x+zone.w-NUMBERS_PADDING;
     yValue = y-2;
     xLabel = x+NUMBERS_PADDING;
     yLabel = y+2;
-    attrValue = RIGHT | NO_UNIT | DBLSIZE;
+    attrValue = RIGHT | NO_UNIT | FONT(XL);
   }
   else {
     xValue = x+NUMBERS_PADDING;
@@ -81,7 +81,7 @@ void ValueWidget::refresh()
         attrValue = LEFT | MIDSIZE | EXPANDED;
       }
       else {
-        attrValue = LEFT | DBLSIZE;
+        attrValue = LEFT | FONT(XL);
       }
     }
 #if defined(INTERNAL_GPS)
@@ -90,7 +90,7 @@ void ValueWidget::refresh()
     }
 #endif
     else {
-      attrValue = LEFT | DBLSIZE;
+      attrValue = LEFT | FONT(XL);
     }
   }
 
@@ -101,7 +101,7 @@ void ValueWidget::refresh()
     }
     drawSource(x+NUMBERS_PADDING, y+2, field, CUSTOM_COLOR);
     drawSource(x+NUMBERS_PADDING + 1, y + 3, field, BLACK);
-    drawTimer(xValue, yValue, abs(timerState.val), attrValue|DBLSIZE|CUSTOM_COLOR);
+    drawTimer(xValue, yValue, abs(timerState.val), attrValue|FONT(XL)|CUSTOM_COLOR);
     return;
   }
 

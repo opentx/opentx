@@ -98,8 +98,8 @@ void Curve::drawPosition(BitmapBuffer * dc)
 
   char coords[16];
   strAppendSigned(strAppend(strAppendSigned(coords, calcRESXto100(valueX)), ","), calcRESXto100(valueY));
-  dc->drawSolidFilledRect(10, 11, 1 + getTextWidth(coords, 0, SMLSIZE), 17, CURVE_CURSOR_COLOR);
-  dc->drawText(11, 10, coords, SMLSIZE|DEFAULT_BGCOLOR);
+  dc->drawSolidFilledRect(10, 11, 1 + getTextWidth(coords, 0, FONT(XS)), 17, CURVE_CURSOR_COLOR);
+  dc->drawText(11, 10, coords, FONT(XS)|DEFAULT_BGCOLOR);
 }
 
 void Curve::drawPoint(BitmapBuffer * dc, const CurvePoint & point)

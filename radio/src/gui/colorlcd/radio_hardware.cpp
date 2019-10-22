@@ -90,7 +90,7 @@ void RadioHardwarePage::build(FormWindow * window)
   grid.spacer(6);
 
   // Calibration
-  new StaticText(window, grid.getLabelSlot(), STR_INPUTS, BOLD);
+  new StaticText(window, grid.getLabelSlot(), STR_INPUTS, 0, FONT(BOLD));
   auto calib = new TextButton(window, grid.getFieldSlot(), STR_CALIBRATION);
   calib->setPressHandler([=]() -> uint8_t {
       auto calibrationPage = new RadioCalibrationPage();
@@ -104,7 +104,7 @@ void RadioHardwarePage::build(FormWindow * window)
   // Sticks
   new Subtitle(window, grid.getLineSlot(), STR_STICKS);
   grid.nextLine();
-  for(int i=0; i < NUM_STICKS; i++){
+  for (int i = 0; i < NUM_STICKS; i++) {
     new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + 1)));
     new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i], LEN_ANA_NAME);
     grid.nextLine();
@@ -113,7 +113,7 @@ void RadioHardwarePage::build(FormWindow * window)
   // Pots
   new Subtitle(window, grid.getLineSlot(), STR_POTS);
   grid.nextLine();
-  for(int i=0; i < NUM_POTS; i++){
+  for (int i = 0; i < NUM_POTS; i++) {
     new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + NUM_STICKS + 1)));
     new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i + NUM_STICKS], LEN_ANA_NAME);
     new Choice(window, grid.getFieldSlot(2,1), STR_POTTYPES, POT_NONE, POT_WITHOUT_DETENT, GET_SET_BF(g_eeGeneral.potsConfig, 2 * i, 2));
@@ -123,17 +123,17 @@ void RadioHardwarePage::build(FormWindow * window)
   // Switches
   new Subtitle(window, grid.getLineSlot(), STR_SWITCHES);
   grid.nextLine();
-  for(int i=0; i < NUM_SWITCHES; i++) {
+  for (int i = 0; i < NUM_SWITCHES; i++) {
     new SwitchDynamicLabel(window, grid.getLabelSlot(true), i);
     new TextEdit(window, grid.getFieldSlot(2, 0), g_eeGeneral.switchNames[i], LEN_SWITCH_NAME);
     new Choice(window, grid.getFieldSlot(2, 1), STR_SWTYPES, SWITCH_NONE, SWITCH_TYPE_MAX(i),
                [=]() -> int {
-                 return SWITCH_CONFIG(i);
+                   return SWITCH_CONFIG(i);
                },
                [=](int newValue) {
-                 swconfig_t mask = (swconfig_t)0x03 << (2*i);
-                 g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((swconfig_t(newValue) & 0x03) << (2*i));
-                 SET_DIRTY();
+                   swconfig_t mask = (swconfig_t) 0x03 << (2 * i);
+                   g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((swconfig_t(newValue) & 0x03) << (2 * i));
+                   SET_DIRTY();
                });
     grid.nextLine();
   }

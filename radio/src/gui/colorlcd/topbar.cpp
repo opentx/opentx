@@ -85,7 +85,7 @@ void drawTopBar()
 
 #if 0
   // Radio battery - TODO
-  // drawValueWithUnit(370, 8, g_vbat100mV, UNIT_VOLTS, PREC1|SMLSIZE|MENU_COLOR);
+  // drawValueWithUnit(370, 8, g_vbat100mV, UNIT_VOLTS, PREC1|FONT(XS)|MENU_COLOR);
   // lcdDrawSolidRect(300, 3, 20, 50, MENU_COLOR);
   // lcdDrawRect(batt_icon_x+FW, BAR_Y+1, 13, 7);
   // lcdDrawSolidVerticalLine(batt_icon_x+FW+13, BAR_Y+2, 5);
@@ -107,7 +107,7 @@ void drawTopBar()
       att |= (item.isOld() ? ALARM_COLOR : DEFAULT_COLOR);
       lcdDrawSolidFilledRect(ALTITUDE_X, VOLTS_Y, ALTITUDE_W, ALTITUDE_H, DEFAULT_BGCOLOR);
       lcdDrawText(ALTITUDE_X+PADDING, VOLTS_Y+2, "Voltage", att);
-      drawValueWithUnit(ALTITUDE_X+PADDING, VOLTS_Y+12, value, UNIT_VOLTS, DBLSIZE|LEFT|att);
+      drawValueWithUnit(ALTITUDE_X+PADDING, VOLTS_Y+12, value, UNIT_VOLTS, FONT(XL)|LEFT|att);
     }
   }
 
@@ -121,7 +121,7 @@ void drawTopBar()
       LcdFlags att = (item.isOld() ? ALARM_COLOR : DEFAULT_COLOR);
       lcdDrawSolidFilledRect(ALTITUDE_X, ALTITUDE_Y, ALTITUDE_W, ALTITUDE_H, DEFAULT_BGCOLOR);
       lcdDrawText(ALTITUDE_X+PADDING, ALTITUDE_Y+2, "Alt", att);
-      drawValueWithUnit(ALTITUDE_X+PADDING, ALTITUDE_Y+12, value, UNIT_METERS, DBLSIZE|LEFT|att);
+      drawValueWithUnit(ALTITUDE_X+PADDING, ALTITUDE_Y+12, value, UNIT_METERS, FONT(XL)|LEFT|att);
     }
   }
 #endif

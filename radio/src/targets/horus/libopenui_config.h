@@ -129,11 +129,21 @@ enum LcdColorIndex
   LCD_COLOR_COUNT
 };
 
-#if !defined(BOOT)
-#define FONT_TABLE_SIZE 16
-#else
-#define FONT_TABLE_SIZE 1
+enum FontIndex
+{
+  FONT_STD_INDEX,
+#if !defined(BOLD)
+  FONT_BOLD_INDEX,
+  FONT_XXS_INDEX,
+  FONT_XS_INDEX,
+  FONT_L_INDEX,
+  FONT_XL_INDEX,
+  FONT_XXL_INDEX,
 #endif
+  FONTS_COUNT
+};
+
+#define FONT(xx) (FONT_ ## xx ## _INDEX << 8)
 
 constexpr uint32_t INPUT_EDIT_LABELS_WIDTH = 120;
 constexpr coord_t INPUT_EDIT_CURVE_WIDTH = 158;

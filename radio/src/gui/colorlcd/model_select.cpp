@@ -169,13 +169,13 @@ class ModelselectFooter: public Window {
       dc->drawSolidFilledRect(0, 5, rect.w, 2, CURVE_AXIS_COLOR);
       dc->drawBitmap(7, 12, modelselSdFreeBitmap);
       uint32_t size = sdGetSize() / 100;
-      dc->drawNumber(24, 11, size, PREC1|SMLSIZE, 0, NULL, "GB");
+      dc->drawNumber(24, 11, size, PREC1|FONT(XS), 0, NULL, "GB");
       dc->drawBitmap(77, 12, modelselModelQtyBitmap);
-      dc->drawNumber(99, 11, modelslist.getModelsCount(), SMLSIZE);
+      dc->drawNumber(99, 11, modelslist.getModelsCount(), FONT(XS));
       ModelselectButton * selectedModel = dynamic_cast<ModelselectButton *>(focusWindow);
       if (selectedModel) {
         dc->drawBitmap(7, 37, modelselModelNameBitmap);
-        dc->drawText(24, 32, selectedModel->modelFilename(), SMLSIZE | DEFAULT_COLOR);
+        dc->drawText(24, 32, selectedModel->modelFilename(), FONT(XS) | DEFAULT_COLOR);
       }
     }
 };

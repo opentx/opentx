@@ -64,20 +64,20 @@ void TimerWidget::refresh()
       drawTimer(zone.x + 70, zone.y + 31, abs(timerState.val), DEFAULT_COLOR | MIDSIZE | LEFT | TIMEHOUR);
     }
     else {
-      drawTimer(zone.x + 76, zone.y + 31, abs(timerState.val), DEFAULT_COLOR | DBLSIZE | LEFT);
+      drawTimer(zone.x + 76, zone.y + 31, abs(timerState.val), DEFAULT_COLOR | FONT(XL) | LEFT);
     }
     if (ZLEN(timerData.name) > 0) {
-      lcdDrawSizedText(zone.x + 78, zone.y + 20, timerData.name, LEN_TIMER_NAME, ZCHAR | SMLSIZE | DEFAULT_COLOR);
+      lcdDrawSizedText(zone.x + 78, zone.y + 20, timerData.name, LEN_TIMER_NAME, ZCHAR | FONT(XS) | DEFAULT_COLOR);
     }
     else {
-      drawStringWithIndex(zone.x + 137, zone.y + 17, "TMR", index + 1, SMLSIZE | DEFAULT_COLOR);
+      drawStringWithIndex(zone.x + 137, zone.y + 17, "TMR", index + 1, FONT(XS) | DEFAULT_COLOR);
     }
   }
   else {
     if (timerState.val < 0 && timerState.val % 2) {
       lcdDrawSolidFilledRect(zone.x, zone.y, zone.w, zone.h, HEADER_ICON_BGCOLOR);
     }
-    drawStringWithIndex(zone.x + 2, zone.y, "TMR", index + 1, SMLSIZE | FOCUS_COLOR);
+    drawStringWithIndex(zone.x + 2, zone.y, "TMR", index + 1, FONT(XS) | FOCUS_COLOR);
     if (zone.w > 100 && zone.h > 40) {
       if (abs(timerState.val) >= 3600) {
         drawTimer(zone.x + 3, zone.y + 16, abs(timerState.val), FOCUS_COLOR | LEFT | TIMEHOUR);
@@ -88,7 +88,7 @@ void TimerWidget::refresh()
     }
     else {
       if (abs(timerState.val) >= 3600) {
-        drawTimer(zone.x + 3, zone.y + 14, abs(timerState.val), FOCUS_COLOR | LEFT | SMLSIZE | TIMEHOUR);
+        drawTimer(zone.x + 3, zone.y + 14, abs(timerState.val), FOCUS_COLOR | LEFT | FONT(XS) | TIMEHOUR);
       }
       else {
         drawTimer(zone.x + 3, zone.y + 14, abs(timerState.val), FOCUS_COLOR | LEFT);

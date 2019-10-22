@@ -97,7 +97,7 @@ template <class W>
 bool Subtitle(W * window, rect_t & rect, const char * label)
 {
   rect.h = 14;
-  drawText(window, rect.x, rect.y, label, BOLD);
+  drawText(window, rect.x, rect.y, label, FONT(BOLD));
 }
 
 template <class W>

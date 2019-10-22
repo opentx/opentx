@@ -426,9 +426,9 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   // Sensors columns titles
   uint8_t sensorsCount = getTelemetrySensorsCount();
   if (sensorsCount > 0) {
-    new StaticText(window, {SENSOR_COL2, grid.getWindowHeight() + 3, SENSOR_COL3 - SENSOR_COL2, PAGE_LINE_HEIGHT}, STR_VALUE, 0, SMLSIZE | TEXT_DISABLE_COLOR);
+    new StaticText(window, {SENSOR_COL2, grid.getWindowHeight() + 3, SENSOR_COL3 - SENSOR_COL2, PAGE_LINE_HEIGHT}, STR_VALUE, 0, FONT(XS) | TEXT_DISABLE_COLOR);
     if (!g_model.ignoreSensorIds && !IS_SPEKTRUM_PROTOCOL()) {
-      new StaticText(window, {SENSOR_COL3, grid.getWindowHeight() + 3, LCD_W - SENSOR_COL3, PAGE_LINE_HEIGHT}, STR_ID, 0, SMLSIZE | TEXT_DISABLE_COLOR);
+      new StaticText(window, {SENSOR_COL3, grid.getWindowHeight() + 3, LCD_W - SENSOR_COL3, PAGE_LINE_HEIGHT}, STR_ID, 0, FONT(XS) | TEXT_DISABLE_COLOR);
     }
   }
 

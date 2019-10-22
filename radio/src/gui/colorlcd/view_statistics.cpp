@@ -124,18 +124,18 @@ bool menuStatsDebug(event_t event)
 
 #if defined(LUA)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Lua scripts");
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Duration]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Duration]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
-  lcdDrawText(lcdNextPos+20, y+1, "[Interval]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+20, y+1, "[Interval]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
   y += FH;
 
   // lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[S]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[S]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, luaGetMemUsed(lsScripts), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[W]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+20, y+1, "[W]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, luaGetMemUsed(lsWidgets), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[B]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+20, y+1, "[B]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, luaExtraMemoryUsage, LEFT);
   y += FH;
 #endif
@@ -145,11 +145,11 @@ bool menuStatsDebug(event_t event)
   y += FH;
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FREE_STACK);
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Menus]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Menus]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, menusStack.available(), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Mix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+20, y+1, "[Mix]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, mixerStack.available(), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Audio]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+20, y+1, "[Audio]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, audioStack.available(), LEFT);
   y += FH;
 
@@ -176,11 +176,11 @@ bool menuStatsDebug(event_t event)
 
 #if defined(INTERNAL_GPS)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Internal GPS");
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Fix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Fix]", HEADER_COLOR|FONT(XS));
   lcdDrawText(lcdNextPos+2, y, (gpsData.fix ? "Yes" : "No"), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Sats]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+20, y+1, "[Sats]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, gpsData.numSat, LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Hdop]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+20, y+1, "[Hdop]", HEADER_COLOR|FONT(XS));
   lcdDrawNumber(lcdNextPos+5, y, gpsData.hdop, PREC2|LEFT);
 #endif
 

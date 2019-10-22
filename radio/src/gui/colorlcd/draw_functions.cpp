@@ -108,7 +108,7 @@ void drawVerticalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int va
   }
   else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
     drawTrimSquare(dc, x, y - 2);
-    // TODO lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | FOCUS_COLOR);
+    // TODO lcdDrawChar(x + 2, y - 1, '0' + val, FONT(XS) | FOCUS_COLOR);
   }
   else {
     drawTrimSquare(dc, x, y - 2);
@@ -159,7 +159,7 @@ void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int 
   else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
     drawTrimSquare(dc, x+2, y - 1);
     char text[] = { (char)('0' + val), '\0' };
-    dc->drawText(x + 7, y - 1, text, SMLSIZE | CENTERED | FOCUS_COLOR);
+    dc->drawText(x + 7, y - 1, text, FONT(XS) | CENTERED | FOCUS_COLOR);
   }
   else if (options & OPTION_SLIDER_SQUARE_BUTTON) {
     drawTrimSquare(dc, x, y - 1);
@@ -256,12 +256,12 @@ void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curv
     switch (curve.type) {
       case CURVE_REF_DIFF:
         x = dc->drawText(x, y, "D", flags);
-        drawValueOrGVar(dc, x, y + 2, curve.value, -100, 100, LEFT | SMLSIZE | flags);
+        drawValueOrGVar(dc, x, y + 2, curve.value, -100, 100, LEFT | FONT(XS) | flags);
         break;
 
       case CURVE_REF_EXPO:
         x = dc->drawText(x, y, "E", flags);
-        drawValueOrGVar(dc, x, y + 2, curve.value, -100, 100, LEFT | SMLSIZE | flags);
+        drawValueOrGVar(dc, x, y + 2, curve.value, -100, 100, LEFT | FONT(XS) | flags);
         break;
 
       case CURVE_REF_FUNC:
@@ -332,9 +332,9 @@ void drawTrimMode(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t phase, uint8_
 void drawDate(BitmapBuffer * dc, coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   // TODO
-  if (att & DBLSIZE) {
+  if (att & FONT(XL)) {
     x -= 42;
-    att &= ~FONTSIZE_MASK;
+    att &= ~FONT_MASK;
     dc->drawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
     dc->drawText(lcdNextPos-1, y, "-", att);
     dc->drawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
@@ -438,7 +438,7 @@ void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sens
               if (value & (1 << i)) {
                 char s[] = "CH__ KO";
                 strAppendUnsigned(&s[2], i+1, 2);
-                dc->drawText(x, flags & DBLSIZE ? y+1 : y, s, flags & ~DBLSIZE);
+                dc->drawText(x, flags & FONT(XL) ? y+1 : y, s, flags & ~FONT(XL));
                 break;
               }
             }
@@ -446,7 +446,7 @@ void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sens
         }
         else {
           if (value == 0) {
-            dc->drawText(x, flags & DBLSIZE ? y+1 : y, "Rx OK", flags & ~DBLSIZE);
+            dc->drawText(x, flags & FONT(XL) ? y+1 : y, "Rx OK", flags & ~FONT(XL));
           }
           else {
             static const char * const RXS_STATUS[] = {
@@ -464,7 +464,7 @@ void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sens
             };
             for (uint8_t i=0; i<DIM(RXS_STATUS); i++) {
               if (value & (1<<i)) {
-                dc->drawText(x, flags & DBLSIZE ? y+1 : y, RXS_STATUS[i], flags & ~DBLSIZE);
+                dc->drawText(x, flags & FONT(XL) ? y+1 : y, RXS_STATUS[i], flags & ~FONT(XL));
                 break;
               }
             }
@@ -474,7 +474,7 @@ void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sens
     }
   }
   else if (telemetrySensor.unit == UNIT_TEXT) {
-    dc->drawSizedText(x, flags & DBLSIZE ? y+1 : y, telemetryItem.text, sizeof(telemetryItem.text), flags & ~DBLSIZE);
+    dc->drawSizedText(x, flags & FONT(XL) ? y+1 : y, telemetryItem.text, sizeof(telemetryItem.text), flags & ~FONT(XL));
   }
   else {
     if (telemetrySensor.prec > 0) {

@@ -303,11 +303,11 @@ void CommonInputOrMixButton::drawFlightModes(BitmapBuffer *dc, FlightModesType v
     char s[] = " ";
     s[0] = '0' + i;
     if (value & (1 << i)) {
-      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, s, SMLSIZE | TEXT_DISABLE_COLOR);
+      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, s, FONT(XS) | TEXT_DISABLE_COLOR);
     }
     else {
       dc->drawSolidFilledRect(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, 8, 3, CHECKBOX_COLOR);
-      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, s, SMLSIZE);
+      dc->drawText(x, PAGE_LINE_HEIGHT + FIELD_PADDING_TOP + 2, s, FONT(XS));
     }
     x += 8;
   }

@@ -188,10 +188,10 @@ class FrskyTheme: public ThemeBase
       delete calibRadioPict;
 #if defined(PCBX10)
       if(STICKS_PWM_ENABLED()) {
-        calibRadioPict = BitmapBuffer::load(getFilePath("X10S.bmp"));
+        calibRadioPict = BitmapBuffer::loadBitmap(getFilePath("X10S.bmp"));
       }
       else {
-        calibRadioPict = BitmapBuffer::load(getFilePath("X10.bmp"));
+        calibRadioPict = BitmapBuffer::loadBitmap(getFilePath("X10.bmp"));
       }
 #else
       calibRadioPict = BitmapBuffer::loadBitmap(getFilePath("horus.bmp"));
@@ -378,9 +378,9 @@ class FrskyTheme: public ThemeBase
       const char * const STR_MONTHS[] = TR_MONTHS;
       sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
 #endif
-      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|FOCUS_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, FONT(XS)|FOCUS_COLOR|CENTERED);
       getTimerString(str, getValue(MIXSRC_TX_TIME));
-      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|FOCUS_COLOR|CENTERED);
+      dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, FONT(XS)|FOCUS_COLOR|CENTERED);
     }
 
     void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const override

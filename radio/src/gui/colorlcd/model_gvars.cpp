@@ -80,7 +80,7 @@ void GVarButton::paint(BitmapBuffer * dc)
 
     LcdFlags attr = RIGHT;
     if (flightMode == currentFlightMode)
-      attr |= BOLD;
+      attr |= FONT(BOLD);
 
     x += GVAR_NAME_SIZE;
     if (x > width()) {
@@ -100,8 +100,8 @@ void GVarButton::paint(BitmapBuffer * dc)
 
     coord_t yval = y + PAGE_LINE_HEIGHT;
     if (v <= GVAR_MAX && (gvar->prec > 0 || abs(v) >= 1000 || (abs(v) >= 100 && gvar->unit > 0))) {
-      attr |= SMLSIZE;
-      attr &= ~BOLD;
+      attr |= FONT(XS);
+      attr &= ~FONT(BOLD);
       yval += 3;
     }
 

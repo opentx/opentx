@@ -58,23 +58,23 @@ void FullScreenDialog::paint(BitmapBuffer * dc)
 
   if (type == WARNING_TYPE_ALERT) {
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, STR_WARNING, ALARM_COLOR|DBLSIZE);
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, title, ALARM_COLOR|DBLSIZE);
+    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, STR_WARNING, ALARM_COLOR|FONT(XL));
+    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, title, ALARM_COLOR|FONT(XL));
 #else
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|DBLSIZE);
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, STR_WARNING, ALARM_COLOR|DBLSIZE);
+    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|FONT(XL));
+    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, STR_WARNING, ALARM_COLOR|FONT(XL));
 #endif
   }
   else if (!title.empty()) {
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|DBLSIZE);
+    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|FONT(XL));
   }
 
   if (!message.empty()) {
-    dc->drawText(ALERT_MESSAGE_LEFT, ALERT_MESSAGE_TOP, message.c_str(), BOLD);
+    dc->drawText(ALERT_MESSAGE_LEFT, ALERT_MESSAGE_TOP, message.c_str(), FONT(BOLD));
   }
 
   if (!action.empty()) {
-   dc->drawText(LCD_W / 2, ALERT_ACTION_TOP, action.c_str(), CENTERED | BOLD);
+   dc->drawText(LCD_W / 2, ALERT_ACTION_TOP, action.c_str(), CENTERED | FONT(BOLD));
   }
 }
 

@@ -93,13 +93,13 @@ int getCharWidth(uint8_t c, const uint16_t * spec)
 
 uint8_t getFontHeight(LcdFlags flags)
 {
-  uint32_t fontindex = FONTINDEX(flags);
+  uint32_t fontindex = FONT_INDEX(flags);
   return fontspecsTable[fontindex][0];
 }
 
 int getTextWidth(const char * s, int len, LcdFlags flags)
 {
-  const uint16_t * specs = fontspecsTable[FONTINDEX(flags)];
+  const uint16_t * specs = fontspecsTable[FONT_INDEX(flags)];
 
   int result = 0;
   for (int i=0; len == 0 || i < len; ++i) {
@@ -115,7 +115,7 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
       c = uint8_t(*s) + ((c & 0x01) << 8) - 1;
       if (c >= 0x101)
         c -= 1;
-      c += 187;
+      c += CJK_FIRST_LETTER_INDEX;
       result += getFontPatternWidth(specs, c);
     }
     else if (c >= 0x20) {

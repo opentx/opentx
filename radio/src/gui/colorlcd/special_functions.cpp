@@ -51,7 +51,7 @@ class SpecialFunctionEditPage : public Page {
       Page::checkEvents();
       if (active != isActive()) {
         invalidate();
-        headerSF->setTextFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
+        headerSF->setTextFlags(isActive() ? FONT(BOLD) |HIGHLIGHT_COLOR : MENU_COLOR);
         active = !active;
       }
     }

@@ -484,7 +484,7 @@ bool menuModelSelect(event_t event)
       }
       if (selected) {
         lcd->drawBitmap(5, LCD_H-FH, modelselModelNameBitmap);
-        lcdDrawText(22, LCD_H-FH-1, (*it)->modelFilename, SMLSIZE|DEFAULT_COLOR);
+        lcdDrawText(22, LCD_H-FH-1, (*it)->modelFilename, FONT(XS)|DEFAULT_COLOR);
       }
     }
   }
@@ -511,9 +511,9 @@ bool menuModelSelect(event_t event)
   // Footer
   lcd->drawBitmap(5, LCD_H-FH-20, modelselSdFreeBitmap);
   uint32_t size = sdGetSize() / 100;
-  lcdDrawNumber(22, LCD_H-FH-21, size, PREC1|SMLSIZE, 0, NULL, "GB");
+  lcdDrawNumber(22, LCD_H-FH-21, size, PREC1|FONT(XS), 0, NULL, "GB");
   lcd->drawBitmap(70, LCD_H-FH-20, modelselModelQtyBitmap);
-  lcdDrawNumber(92, LCD_H-FH-21, modelslist.getModelsCount(),SMLSIZE);
+  lcdDrawNumber(92, LCD_H-FH-21, modelslist.getModelsCount(),FONT(XS));
 
   return true;
 }

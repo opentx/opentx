@@ -64,7 +64,7 @@ class LogicalSwitchEditPage: public Page {
     {
       Page::checkEvents();
       if (active != isActive()) {
-        headerSwitchName->setTextFlags(isActive() ? BOLD|HIGHLIGHT_COLOR : MENU_COLOR);
+        headerSwitchName->setTextFlags(isActive() ? FONT(BOLD) | HIGHLIGHT_COLOR : MENU_COLOR);
         active = !active;
       }
     }

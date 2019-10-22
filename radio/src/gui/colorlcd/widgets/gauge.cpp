@@ -59,12 +59,12 @@ void GaugeWidget::refresh()
   int percent = divRoundClosest(100 * (value_in_range - min), (max - min));
 
   // Gauge label
-  drawSource(zone.x, zone.y, index, SMLSIZE | FOCUS_COLOR);
+  drawSource(zone.x, zone.y, index, FONT(XS) | FOCUS_COLOR);
 
   // Gauge
   lcdSetColor(color);
   lcdDrawSolidFilledRect(zone.x, zone.y + 16, zone.w, 16, FOCUS_COLOR);
-  lcdDrawNumber(zone.x+zone.w/2, zone.y + 17, percent, SMLSIZE | CUSTOM_COLOR | CENTERED, 0, NULL, "%");
+  lcdDrawNumber(zone.x+zone.w/2, zone.y + 17, percent, FONT(XS) | CUSTOM_COLOR | CENTERED, 0, NULL, "%");
   lcd->invertRect(zone.x + w, zone.y + 16, zone.w - w, 16, CUSTOM_COLOR);
 }
 

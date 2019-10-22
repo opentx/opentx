@@ -59,13 +59,13 @@ class OutputsWidget: public Widget
           lcdDrawSolidFilledRect((chanVal > 0 ? barMid : barMid - fillW), barTop, fillW, barH, MAINVIEW_GRAPHICS_COLOR);
         lcd->drawSolidVerticalLine(barMid, barTop, barH, MAINVIEW_GRAPHICS_COLOR);
         lcdDrawRect(x, rowTop, w, rowH + 1);
-        lcdDrawNumber(x + barW - 10, barTop, chanVal, SMLSIZE | DEFAULT_COLOR | RIGHT, 0, NULL, "%");
+        lcdDrawNumber(x + barW - 10, barTop, chanVal, FONT(XS) | DEFAULT_COLOR | RIGHT, 0, NULL, "%");
         if (g_model.limitData[curChan - 1].name[0] != 0) {
-          lcdDrawNumber(barLft + 1, barTop, curChan, SMLSIZE | DEFAULT_COLOR | LEFT | LEADING0, 2);
-          lcdDrawSizedText(barLft + 23, barTop, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), SMLSIZE | DEFAULT_COLOR | LEFT | ZCHAR);
+          lcdDrawNumber(barLft + 1, barTop, curChan, FONT(XS) | DEFAULT_COLOR | LEFT | LEADING0, 2);
+          lcdDrawSizedText(barLft + 23, barTop, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), FONT(XS) | DEFAULT_COLOR | LEFT | ZCHAR);
         }
         else {
-          putsChn(barLft + 1, barTop, curChan, SMLSIZE | DEFAULT_COLOR | LEFT);
+          putsChn(barLft + 1, barTop, curChan, FONT(XS) | DEFAULT_COLOR | LEFT);
         }
       }
       return lastChan - 1;

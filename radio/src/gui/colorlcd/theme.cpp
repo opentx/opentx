@@ -120,15 +120,15 @@ void ThemeBase::drawMessageBox(const char * title, const char * text, const char
 //
 //  if (type == WARNING_TYPE_ALERT) {
 //#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
-//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, title, ALARM_COLOR|DBLSIZE);
+//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|FONT(XL));
+//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, title, ALARM_COLOR|FONT(XL));
 //#else
-//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
-//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, STR_WARNING, ALARM_COLOR|DBLSIZE);
+//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|FONT(XL));
+//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, STR_WARNING, ALARM_COLOR|FONT(XL));
 //#endif
 //  }
 //  else if (title) {
-//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
+//    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|FONT(XL));
 //  }
 //
 //  if (text) {

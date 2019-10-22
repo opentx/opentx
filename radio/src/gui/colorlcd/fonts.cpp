@@ -20,117 +20,110 @@
 
 #include "opentx.h"
 
-const uint16_t font_tinsize_specs[] = {
+const uint16_t font_xxs_specs[] = {
 #include "font_9.specs"
 };
 
-const unsigned char font_tinsize[] = {
+const unsigned char font_xxs[] = {
 #include "font_9.lbm"
 };
 
 #if defined(HARDWARE_TOUCH)
-const uint16_t font_stdsize_en_specs[] = {
+const uint16_t font_std_en_specs[] = {
 #include "font_17en.specs"
 };
 
-const unsigned char font_stdsize_en[] = {
+const unsigned char font_std_en[] = {
 #include "font_17en.lbm"
 };
 
-const uint16_t font_smlsize_specs[] = {
+const uint16_t font_xs_specs[] = {
 #include "font_15.specs"
 };
 
-const unsigned char font_smlsize[] = {
+const unsigned char font_xs[] = {
 #include "font_15.lbm"
 };
 
-const uint16_t font_stdsize_specs[] = {
+const uint16_t font_std_specs[] = {
 #include "font_17.specs"
 };
 
-const unsigned char font_stdsize[] = {
+const unsigned char font_std[] = {
 #include "font_17.lbm"
 };
 
-const uint16_t font_stdsizebold_specs[] = {
+const uint16_t font_bold_specs[] = {
 #include "font_bold17.specs"
 };
 
-const unsigned char font_stdsizebold[] = {
+const unsigned char font_bold[] = {
 #include "font_bold17.lbm"
 };
 #else
-const uint16_t font_stdsize_en_specs[] = {
+const uint16_t font_std_en_specs[] = {
 #include "font_16en.specs"
 };
 
-const unsigned char font_stdsize_en[] = {
+const unsigned char font_std_en[] = {
 #include "font_16en.lbm"
 };
 
-const uint16_t font_smlsize_specs[] = {
+const uint16_t font_xs_specs[] = {
 #include "font_13.specs"
 };
 
-const unsigned char font_smlsize[] = {
+const unsigned char font_xs[] = {
 #include "font_13.lbm"
 };
 
-const uint16_t font_stdsize_specs[] = {
+const uint16_t font_std_specs[] = {
 #include "font_16.specs"
 };
 
-const unsigned char font_stdsize[] = {
+const unsigned char font_std[] = {
 #include "font_16.lbm"
 };
 
-const uint16_t font_stdsizebold_specs[] = {
+const uint16_t font_bold_specs[] = {
 #include "font_bold16.specs"
 };
 
-const unsigned char font_stdsizebold[] = {
+const unsigned char font_bold[] = {
 #include "font_bold16.lbm"
 };
 #endif
 
-const uint16_t font_midsize_specs[] = {
+const uint16_t font_l_specs[] = {
 #include "font_24.specs"
 };
 
-const unsigned char font_midsize[] = {
+const unsigned char font_l[] = {
 #include "font_24.lbm"
 };
 
-const uint16_t font_dblsize_specs[] = {
+const uint16_t font_xl_specs[] = {
 #include "font_32.specs"
 };
 
-const unsigned char font_dblsize[] = {
+const unsigned char font_xl[] = {
 #include "font_32.lbm"
 };
 
-const uint16_t font_xxlsize_specs[] = {
+const uint16_t font_xxl_specs[] = {
 #include "font_64.specs"
 };
 
-const unsigned char font_xxlsize[] = {
+const unsigned char font_xxl[] = {
 #include "font_64.lbm"
 };
 
 #if defined(BOOT)
-const uint16_t * const fontspecsTable[1] = { font_stdsize_en_specs };
-const uint8_t * fontsTable[1] = { font_stdsize_en };
+const uint16_t * const fontspecsTable[FONTS_COUNT] = { font_std_en_specs };
+const uint8_t * fontsTable[FONTS_COUNT] = { font_std_en };
 #else
-const uint16_t * const fontspecsTable[16] = {
-  font_stdsize_specs,     font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs,
-  font_stdsizebold_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs
-};
-
-const uint8_t * fontsTable[16] = {
-  font_stdsize,     font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize,
-  font_stdsizebold, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize
-};
+const uint16_t * const fontspecsTable[FONTS_COUNT] = { font_std_specs, font_bold_specs, font_xxs_specs, font_xs_specs, font_l_specs, font_xl_specs, font_xxl_specs };
+const uint8_t * fontsTable[FONTS_COUNT] = { font_std, font_bold, font_xxs, font_xs, font_l, font_xl, font_xxl };
 #endif
 
 uint8_t * decompressFont(const uint8_t * font)
@@ -139,7 +132,7 @@ uint8_t * decompressFont(const uint8_t * font)
   uint16_t height = *(((uint16_t *)font)+1);
 
   size_t font_size = width * height;
-  uint8_t* dec_buf = (uint8_t*)malloc(font_size + 4);
+  uint8_t * dec_buf = (uint8_t *)malloc(font_size + 4);
 
   // copy width / height
   memcpy(dec_buf, font,4);
@@ -150,21 +143,17 @@ uint8_t * decompressFont(const uint8_t * font)
 
 void loadFonts()
 {
-  static bool fonts_loaded = false;
-  if (fonts_loaded) return;
+  static bool fontsLoaded = false;
+  if (fontsLoaded)
+    return;
 
-#if !defined(BOOT)
-  int i = 0;
-  for (; i < 9; i++) {
+#if defined(BOOT)
+  fontsTable[0] = decompressFont(fontsTable[0]);
+#else
+  for (int i = 0; i < FONTS_COUNT; i++) {
     fontsTable[i] = decompressFont(fontsTable[i]);
   }
-  for (; i < 16; i++) {
-    // the next fonts don't exist in BOLD today
-    fontsTable[i] = fontsTable[i - 9];
-  }
-#else
-  fontsTable[0] = decompressFont(fontsTable[0]);
 #endif
 
-  fonts_loaded = true;
+  fontsLoaded = true;
 }

@@ -313,7 +313,7 @@ bool menuWidgetChoice(event_t event)
     lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, FOCUS_COLOR);
   }
   if (currentWidget)
-    lcdDrawText(zone.x + zone.w, zone.y-1, currentWidget->getFactory()->getName(), RIGHT | DEFAULT_COLOR | SMLSIZE | INVERS);
+    lcdDrawText(zone.x + zone.w, zone.y-1, currentWidget->getFactory()->getName(), RIGHT | DEFAULT_COLOR | FONT(XS) | INVERS);
 
   return true;
 }

@@ -80,10 +80,10 @@ class Layout2P1: public Layout
 //    // Flight mode
 //    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
 //                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
-//                                              ZCHAR | SMLSIZE) / 2,
+//                                              ZCHAR | FONT(XS)) / 2,
 //                     232,
 //                     g_model.flightModeData[mixerCurrentFlightMode].name,
-//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
+//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS));
 //  }
 //
 //  if (persistentData->options[2].boolValue) {

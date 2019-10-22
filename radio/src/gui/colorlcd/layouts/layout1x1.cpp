@@ -78,10 +78,10 @@ class Layout1x1: public Layout
 //
 //  if (persistentData->options[1].boolValue) {
 //    // Sliders + Trims + Flight mode
-//    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,  sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE) / 2,
+//    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,  sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS)) / 2,
 //                     232,
 //                     g_model.flightModeData[mixerCurrentFlightMode].name,
-//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
+//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS));
 //    drawMainPots();
 //    drawTrims(mixerCurrentFlightMode);
 //  }

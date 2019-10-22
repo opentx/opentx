@@ -311,9 +311,9 @@ if(FLYSKY_HALL_STICKS_REVERSE)
   add_definitions(-DFLYSKY_HALL_STICKS_REVERSE)
 endif()
 
-if(NOT FONT STREQUAL "")
-  add_definitions(-DFONT=${DEFAULT_MODE})
-endif()
+#if(NOT FONT STREQUAL "")
+#  add_definitions(-DFONT=${DEFAULT_MODE})
+#endif()
 
 if(EEPROM_VARIANT_NEEDED)
   add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})

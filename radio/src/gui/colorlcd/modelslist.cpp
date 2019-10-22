@@ -107,7 +107,7 @@ void ModelCell::loadBitmap()
   }
   else {
     char timer[LEN_TIMER_STRING];
-    buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|DEFAULT_COLOR);
+    buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, FONT(XS)|DEFAULT_COLOR);
     getTimerString(timer, 0);
     for (uint8_t i = 0; i < MAX_TIMERS; i++) {
       if (partialmodel.timers[i].mode > 0 && partialmodel.timers[i].persistent) {
