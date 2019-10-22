@@ -596,9 +596,9 @@
 #define TR_ALARMSDISABLED      "Avvisi Disattivati!"
 #define TR_PRESSANYKEY         "\010Premi un tasto"
 #define TR_BADEEPROMDATA       "Dati corrotti!"
-#define TR_BAD_RADIO_DATA      "Bad Radio Data"
+#define TR_BAD_RADIO_DATA      "Dati radio errati"
 #define TR_EEPROMFORMATTING    "Formatto EEPROM..."
-#define TR_STORAGE_FORMAT      "Storage Preparation"
+#define TR_STORAGE_FORMAT      "Preparazione storage"
 #define TR_EEPROMOVERFLOW      "EEPROM Piena"
 #define TR_MENURADIOSETUP      "CONFIGURATX"
 #define TR_MENUDATEANDTIME     "DATA E ORA"
@@ -613,8 +613,8 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006Trim  => Offset "
 #endif
-#define TR_CHANNELS2FAILSAFE  "Channels=>Failsafe"
-#define TR_CHANNEL2FAILSAFE   "Channel=>Failsafe"
+#define TR_CHANNELS2FAILSAFE  "Canali=>Failsafe"
+#define TR_CHANNEL2FAILSAFE   "Canale=>Failsafe"
 #define TR_MENUMODELSEL        "MODELLI"
 #define TR_MENUSETUP           "CONFIGURA"
 #define TR_MENUFLIGHTMODE     "FASE DI VOLO"
@@ -634,46 +634,46 @@
 #define TR_MENUTEMPLATES       "ESEMPI GUIDA"
 #define TR_MENUSTAT            "STATO"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_MONITOR_CHANNELS1   "CHANNELS MONITOR 1/8"
-#define TR_MONITOR_CHANNELS2   "CHANNELS MONITOR 9/16"
-#define TR_MONITOR_SWITCHES    "LOGICAL SWITCHES MONITOR"
-#define TR_MONITOR_CHANNELS3   "CHANNELS MONITOR 17/24"
-#define TR_MONITOR_CHANNELS4   "CHANNELS MONITOR 25/32"
-#define TR_MONITOR_OUTPUT_DESC "Outputs"
+#define TR_MONITOR_CHANNELS1   "MONITOR CANALI 1/8"
+#define TR_MONITOR_CHANNELS2   "MONITOR CANALI 9/16"
+#define TR_MONITOR_SWITCHES    "MONITOR INTERRUTTORI LOGICI"
+#define TR_MONITOR_CHANNELS3   "MONITOR CANALI 17/24"
+#define TR_MONITOR_CHANNELS4   "MONITOR CANALI 25/32"
+#define TR_MONITOR_OUTPUT_DESC "Uscite"
 #define TR_MONITOR_MIXER_DESC  "Mixers"
 #define TR_RECEIVER_NUM        TR("RxNum", "Ricevente No.")
-#define TR_RECEIVER            "Receiver"
-#define TR_MULTI_RFTUNE        TR("Freq tune", "RF Freq. fine tune")
-#define TR_MULTI_TELEMETRY     "Telemetry"
-#define TR_MULTI_VIDFREQ       TR("Vid. freq.", "Video frequency")
-#define TR_RFPOWER             "RF Power"
+#define TR_RECEIVER            "Ricevente"
+#define TR_MULTI_RFTUNE        TR("Tune RF", "Tune fine Freq. RF")
+#define TR_MULTI_TELEMETRY     "Telemetria"
+#define TR_MULTI_VIDFREQ       TR("Freq. video", "Frequenza video")
+#define TR_RFPOWER             "Potenza RF"
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
-#define TR_MULTI_OPTION        TR("Option", "Option value")
-#define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on channel")
-#define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
-#define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
-#define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
-#define TR_MODULE_TELEM_ON             TR("ON", "Enabled")
-#define TR_DISABLE_INTERNAL         TR("Disable int. RF", "Disable internal RF")
-#define TR_MODULE_NO_SERIAL_MODE       TR("!serial mode", "Not in serial mode")
-#define TR_MODULE_NO_INPUT             TR("No input", "No serial input")
-#define TR_MODULE_NO_TELEMETRY         TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
-#define TR_MODULE_WAITFORBIND          "Bind to load protocol"
-#define TR_MODULE_BINDING              "Binding"
-#define TR_REBIND                      "Rebinding required"
-#define TR_REG_OK                      "Registration ok"
-#define TR_BIND_OK                     "Bind successful"
+#define TR_MULTI_OPTION        TR("Opzione", "Opzione valore")
+#define TR_MULTI_AUTOBIND      TR(INDENT "Autoassocia",INDENT "Associa al canale")
+#define TR_MULTI_DSM_AUTODTECT TR(INDENT "Trova autom.", INDENT "Autorileva il formato")
+#define TR_MULTI_LOWPOWER      TR(INDENT "Bassa pot.", INDENT "Modalità bassa potenza")
+#define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "Link S.Port")
+#define TR_MODULE_TELEM_ON             TR("ON", "Abilitato")
+#define TR_DISABLE_INTERNAL         TR("Disatt. RF int.", "Disattiva RF interna")
+#define TR_MODULE_NO_SERIAL_MODE       TR("!modo seriale", "Non in modo seriale")
+#define TR_MODULE_NO_INPUT             TR("Nessun input", "Nessun input seriale")
+#define TR_MODULE_NO_TELEMETRY         TR3( "No telemetria", "MULTI_TELEMETRY disattivato", "Nessuna telemetria (abilita MULTI_TELEMETRY)")
+#define TR_MODULE_WAITFORBIND          "Associa per caricare il protocollo"
+#define TR_MODULE_BINDING              "Associa"
+#define TR_REBIND                      "Richiede associazione"
+#define TR_REG_OK                      "Registrazione ok"
+#define TR_BIND_OK                     "Associazione riuscita"
 #define TR_BINDING_CH1_8_TELEM_ON               "Ch1-8 Telem ON"
 #define TR_BINDING_CH1_8_TELEM_OFF               "Ch1-8 Telem OFF"
 #define TR_BINDING_CH9_16_TELEM_ON               "Ch9-16 Telem ON"
 #define TR_BINDING_CH9_16_TELEM_OFF               "Ch9-16 Telem OFF"
-#define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
-#define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
-#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
-#define TR_MULTI_SERVOFREQ     TR("Servo rate", "Servo update rate")
+#define TR_PROTOCOL_INVALID            TR("Prot. invalido", "Protocollo invalido")
+#define TR_MODULE_STATUS                TR(INDENT "Stato", INDENT "Stato del modulo")
+#define TR_MODULE_SYNC                 TR(INDENT "Sinc.", INDENT "Sinc. del modulo")
+#define TR_MULTI_SERVOFREQ     TR("Servo rate", "Aggiorna servo rate")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limiti"
-#define TR_MINRSSI             "Min Rssi"
+#define TR_MINRSSI             "Min. Rssi"
 #define TR_LATITUDE            "Latitud."
 #define TR_LONGITUDE           "Longitud."
 #define TR_GPSCOORD            TR("GPS Coords", INDENT "Formato Coordinate")
@@ -688,53 +688,53 @@
 #define TR_VOLTAGE             TR(INDENT "Voltagg.",INDENT "Voltaggio")
 #define TR_CURRENT             TR(INDENT "Corrente",INDENT "Corrente")
 #define TR_SELECT_MODEL        "Scegli Memo."
-#define TR_CREATE_CATEGORY     "Create Category"
-#define TR_RENAME_CATEGORY     "Rename Category"
-#define TR_DELETE_CATEGORY     "Delete Category"
+#define TR_CREATE_CATEGORY     "Crea Categoria"
+#define TR_RENAME_CATEGORY     "Rinomina Categoria"
+#define TR_DELETE_CATEGORY     "Cancella Categoria"
 #define TR_CREATE_MODEL        "Crea Modello"
-#define TR_DUPLICATE_MODEL     "Duplicate Model"
+#define TR_DUPLICATE_MODEL     "Duplica Modello"
 #define TR_COPY_MODEL          "Copia Modello"
 #define TR_MOVE_MODEL          "Sposta Modello"
 #define TR_BACKUP_MODEL        "Salva Modello"
 #define TR_DELETE_MODEL        TR("Elim. Modello","Elimina Modello") // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       TR("Ripr. Modello","Ripristina Modello")
-#define TR_DELETE_ERROR        "Delete error"
-#define TR_CAT_NOT_EMPTY       "Category is not empty"
+#define TR_DELETE_ERROR        "Errore cancell."
+#define TR_CAT_NOT_EMPTY       "Categoria non vuota"
 #define TR_SDCARD_ERROR        "Errore SD"
 #define TR_NO_SDCARD           "No SDCARD"
-#define TR_WAITING_FOR_RX              "Waiting for RX..."
-#define TR_WAITING_FOR_TX              "Waiting for TX..."
-#define TR_NO_TOOLS                    "No tools available"
-#define TR_NORMAL                      "Normal"
-#define TR_NOT_INVERTED                "Not inv"
-#define TR_NOT_CONNECTED               "!Connected"
-#define TR_CONNECTED                   "Connected"
+#define TR_WAITING_FOR_RX              "Attendo la RX..."
+#define TR_WAITING_FOR_TX              "Attendo la TX..."
+#define TR_NO_TOOLS                    "Tools non disp."
+#define TR_NORMAL                      "Normale"
+#define TR_NOT_INVERTED                "No inv."
+#define TR_NOT_CONNECTED               "!Connesso"
+#define TR_CONNECTED                   "Connesso"
 #define TR_FLEX_915                    "Flex 915MHz"
 #define TR_FLEX_868                    "Flex 868MHz"
-#define TR_16CH_WITHOUT_TELEMETRY      TR("16CH without telem.", "16CH without telemetry")
-#define TR_16CH_WITH_TELEMETRY         TR("16CH with telem.", "16CH with telemetry")
-#define TR_8CH_WITH_TELEMETRY          TR("8CH with telem.", "8CH with telemetry")
-#define TR_EXT_ANTENNA                 "Ext. antenna"
+#define TR_16CH_WITHOUT_TELEMETRY      TR("16CH senza telem.", "16CH senza telemetria")
+#define TR_16CH_WITH_TELEMETRY         TR("16CH con telem.", "16CH con telemetria")
+#define TR_8CH_WITH_TELEMETRY          TR("8CH con telem.", "8CH con telemetria")
+#define TR_EXT_ANTENNA                 "Antenna Ext."
 #define TR_PIN                         "Pin"
-#define TR_UPDATE_RX_OPTIONS           "Update RX options?"
-#define TR_UPDATE_TX_OPTIONS           "Update TX options?"
-#define TR_MODULES_RX_VERSION          "Modules / RX version"
-#define TR_MENU_MODULES_RX_VERSION     "MODULES / RX VERSION"
-#define TR_MENU_FIRM_OPTIONS           "FIRMWARE OPTIONS"
+#define TR_UPDATE_RX_OPTIONS           "Agg. opzioni RX?"
+#define TR_UPDATE_TX_OPTIONS           "Agg. opzioni TX?"
+#define TR_MODULES_RX_VERSION          "Versioni Moduli / RX"
+#define TR_MENU_MODULES_RX_VERSION     "VERSIONI MODULI / RX"
+#define TR_MENU_FIRM_OPTIONS           "OPZIONI FIRMWARE"
 #define TR_GYRO                        "Gyro"
-#define TR_STICKS_POTS_SLIDERS         "Sticks/Pots/Sliders"
-#define TR_PWM_STICKS_POTS_SLIDERS     "PWM Sticks/Pots/Sliders"
-#define TR_RF_PROTOCOL                 "RF Protocol"
-#define TR_MODULE_OPTIONS              "Module options"
-#define TR_POWER                       "Power"
-#define TR_NO_TX_OPTIONS               "No TX options"
+#define TR_STICKS_POTS_SLIDERS         "Interruttori/Pots/Sliders"
+#define TR_PWM_STICKS_POTS_SLIDERS     "PWM Interruttori/Pots/Sliders"
+#define TR_RF_PROTOCOL                 "Protocollo RF"
+#define TR_MODULE_OPTIONS              "Optioni modulo"
+#define TR_POWER                       "Potenza"
+#define TR_NO_TX_OPTIONS               "No Opzioni TX"
 #define TR_RTC_BATT                    "RTC Batt"
 #define TR_POWER_METER_EXT             "Power Meter (EXT)"
 #define TR_POWER_METER_INT             "Power Meter (INT)"
 #define TR_SPECTRUM_ANALYSER_EXT       "Spectrum (EXT)"
 #define TR_SPECTRUM_ANALYSER_INT       "Spectrum (INT)"
 #define TR_SDCARD_FULL                 "SD Card Piena"
-#define TR_NEEDS_FILE                  "NEEDS FILE"
+#define TR_NEEDS_FILE                  "RICHIEDE FILE"
 #define TR_EXT_MULTI_SPEC              "opentx-inv"
 #define TR_INT_MULTI_SPEC              "stm-opentx-noinv"
 #define TR_INCOMPATIBLE        "Incompatibile"
@@ -747,14 +747,14 @@
 #define TR_SWITCHWARN          "CONTROLLI"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
-#define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
-#define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
-#define TR_WARN_MULTI_LOWPOWER         "Low power mode"
-#define TR_BATTERY                     "BATTERY"
-#define TR_WRONG_PCBREV        "Wrong PCB detected"
-#define TR_EMERGENCY_MODE      "EMERGENCY MODE"
-#define TR_PCBREV_ERROR        "PCB error"
+#define TR_NIGHTLY_NOTSAFE             "Versione non sicura per volare"
+#define TR_WRONG_SDCARDVERSION TR("Richiede ver: ","Richiede versione: ")
+#define TR_WARN_RTC_BATTERY_LOW        "Batteria RTC scarica"
+#define TR_WARN_MULTI_LOWPOWER         "Modalità bassa pot."
+#define TR_BATTERY                     "BATTERIA"
+#define TR_WRONG_PCBREV        "PCB sbagliato"
+#define TR_EMERGENCY_MODE      "MODALITA' EMERGENZA"
+#define TR_PCBREV_ERROR        "Errore PCB"
 #define TR_NO_FAILSAFE         "Failsafe non settato"
 #define TR_KEYSTUCK            "Tasto bloccato"
 #define TR_INVERT_THR          "Inverti Mot?"
@@ -809,11 +809,11 @@
 #define TR_BAUDRATE             "BT Baudrate"
 #define LEN_BLUETOOTH_MODES     "\011"
 #if defined(PCBX9E)
-#define TR_BLUETOOTH_MODES      "---\0     ""Enabled\0 "
+#define TR_BLUETOOTH_MODES      "---\0     ""Attivo\0 "
 #else
-#define TR_BLUETOOTH_MODES      "---\0     ""Telemetry""Trainer\0"
+#define TR_BLUETOOTH_MODES      "---\0     ""Telemetria""Trainer\0"
 #endif
-#define TR_SD_INFO_TITLE       "SD INFO"
+#define TR_SD_INFO_TITLE       "INFO SD"
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Veloc.:"
 #define TR_SD_SECTORS          "Settori:"
@@ -825,33 +825,33 @@
 #define TR_MENUGLOBALVARS      "VARIABILI GLOBALI"
 #define TR_OWN                 "Fase"
 #define TR_DATE                "Data"
-#define TR_MONTHS              { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
+#define TR_MONTHS              { "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Auo", "Set", "Ott", "Nov", "Dic" }
 #define TR_ROTARY_ENCODER      "R.E."
 #define TR_CHANNELS_MONITOR    "MONITOR CANALI"
 #define TR_MIXERS_MONITOR      "MONITOR MIXER"
 #define TR_PATH_TOO_LONG       "Path troppo lungo"
 #define TR_VIEW_TEXT           "Vedi testo"
-#define TR_FLASH_BOOTLOADER    "Flash bootloader"
-#define TR_FLASH_EXTERNAL_DEVICE "Progr. Dispositivo Esterno"
-#define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
-#define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetooth module")
-#define TR_FLASH_POWER_MANAGEMENT_UNIT          "Flash pwr mngt unit"
-#define TR_CURRENT_VERSION             TR("Current vers. ", "Current version: ")
+#define TR_FLASH_BOOTLOADER    "Prog. bootloader"
+#define TR_FLASH_EXTERNAL_DEVICE "Progr. dispositivo Esterno"
+#define TR_FLASH_RECEIVER_OTA          "Prog. ricevente OTA"
+#define TR_FLASH_BLUETOOTH_MODULE      TR("Prog modulo BT", "Prog. modulo Bluetooth")
+#define TR_FLASH_POWER_MANAGEMENT_UNIT          "Programmazione PMU"
+#define TR_CURRENT_VERSION             TR("Vers. currente ", "Versione corrente: ")
 #define TR_FLASH_INTERNAL_MODULE "Progr. Modulo Interno"
-#define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
-#define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
-#define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
-#define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
-#define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
+#define TR_FLASH_INTERNAL_MULTI        TR("Prog. Multi int.", "Prog. Multi interno")
+#define TR_FLASH_EXTERNAL_MODULE       "Prog. modulo esterno"
+#define TR_FLASH_EXTERNAL_MULTI        TR("Prog. Multi est.", "Prog. Multi esterno")
+#define TR_FIRMWARE_UPDATE_ERROR TR("Errore agg. FW","Errore aggiornamento firmware")
+#define TR_FIRMWARE_UPDATE_SUCCESS     "Agg. riuscito"
 #define TR_WRITING             "\032Scrivendo..."
-#define TR_CONFIRM_FORMAT      "Confermi Format?"
+#define TR_CONFIRM_FORMAT      "Confermi Formattazione?"
 #define TR_INTERNALRF          "Modulo Interno"
-#define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
-#define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
-#define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
-#define TR_TELEMETRY_DISABLED          "Telem. disabled"
-#define TR_MORE_OPTIONS_AVAILABLE      "More options available"
-#define TR_NO_MODULE_INFORMATION       "No module information"
+#define TR_INTERNAL_MODULE             TR("Modulo int.","Modulo interno")
+#define TR_EXTERNAL_MODULE             TR("Modulo est.","Modulo esterno")
+#define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX richiede aggiornamento"
+#define TR_TELEMETRY_DISABLED          "Telem. disabilitata"
+#define TR_MORE_OPTIONS_AVAILABLE      "Altre opzioni assenti"
+#define TR_NO_MODULE_INFORMATION       "Nessuna info del modulo"
 #define TR_EXTERNALRF          "Modulo esterno"
 #define TR_FAILSAFE            "Modo failsafe"
 #define TR_FAILSAFESET         TR("FAILSAFE","IMPOSTAZIONI FAILSAFE")
@@ -868,14 +868,14 @@
 #define TR_POWERMETER_ATTN             "Attn"
 #define TR_POWERMETER_FREQ             "Freq."
 #define TR_MENUTOOLS                   "TOOLS"
-#define TR_TURN_OFF_RECEIVER           "Turn off receiver"
-#define TR_STOPPING                    "Stopping..."
+#define TR_TURN_OFF_RECEIVER           "Spegni la rx"
+#define TR_STOPPING                    "Fermando..."
 #define TR_MENU_SPECTRUM_ANALYSER      "SPECTRUM ANALYSER"
 #define TR_MENU_POWER_METER            "POWER METER"
-#define TR_SENSOR              "SENSOR"
+#define TR_SENSOR              "SENSORE"
 #define TR_COUNTRYCODE         TR("Codice Paese","Standard 2.4Ghz")
-#define TR_USBMODE             "USB Mode"
-#define TR_JACKMODE                    "Jack Mode"
+#define TR_USBMODE             "Modo USB"
+#define TR_JACKMODE                    "Modo JACK"
 #define TR_VOICELANG           "Lingua Voce"
 #define TR_UNITSSYSTEM         "Unità"
 #define TR_EDIT                "Modifica"
@@ -893,10 +893,10 @@
 #define TR_RESET_TELEMETRY     "Azzera Telemetria"
 #define TR_STATISTICS          "Statistiche"
 #define TR_ABOUT_US            "Info su"
-#define TR_USB_JOYSTICK        "USB Joystick (HID)"
-#define TR_USB_MASS_STORAGE    "USB Storage (SD)"
-#define TR_USB_SERIAL          "USB Serial (Debug)"
-#define TR_SETUP_SCREENS       "Setup screens"
+#define TR_USB_JOYSTICK        "Joystick USB (HID)"
+#define TR_USB_MASS_STORAGE    "Storage USB (SD)"
+#define TR_USB_SERIAL          "Seriale USB (Debug)"
+#define TR_SETUP_SCREENS       "Schermate conf."
 #define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "Inter. AND"
 #define TR_SF                  "CF"
@@ -905,32 +905,32 @@
 #define TR_BUZZER              INDENT"Buzzer"
 #define TR_BYTES               "Bytes"
 #define TR_MODULE_BIND         "[Bind]"
-#define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_POWERMETER_ATTN_NEEDED      "Attenuatore necessario"
+#define TR_PXX2_SELECT_RX              "Seleziona RX..."
 #define TR_PXX2_DEFAULT                "<default>"
-#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BT_SELECT_DEVICE            "Seleziona device..."
 #define TR_DISCOVER             "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
-#define TR_WAITING                     "Waiting..."
-#define TR_RECEIVER_DELETE             "Delete receiver?"
-#define TR_RECEIVER_RESET              "Reset receiver?"
-#define TR_SHARE                       "Share"
+#define TR_WAITING                     "In attesa..."
+#define TR_RECEIVER_DELETE             "Cancello RX?"
+#define TR_RECEIVER_RESET              "Resetto RX?"
+#define TR_SHARE                       "Condividere"
 #define TR_BIND                        "Bind"
-#define TR_REGISTER             TR("Reg", "Register")
+#define TR_REGISTER             TR("Reg", "Registrare")
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
-#define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
+#define TR_RECEIVER_OPTIONS            TR("OPZIONI RX", "OPZIONI RICEVENTE")
+#define TR_DEL_BUTTON                  BUTTON(TR("Canc.", "Cancella"))
 #define TR_RESET_BTN           "[Reset]"
 #define TR_DEBUG                       "Debug"
-#define TR_KEYS_BTN                BUTTON(TR("SW","Switches"))
-#define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
-#define TR_CALIBRATION                   "Calibration"
+#define TR_KEYS_BTN                BUTTON(TR("SW","Interruttori"))
+#define TR_ANALOGS_BTN                 BUTTON(TR("Analogico","Analogici"))
+#define TR_CALIBRATION                   "Calibrazione"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer","Maestro/Allievo")
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
 #define TR_MODELIDUSED         TR("ID già usato","ID Modello già usato")
 #define TR_MODULE              "Modulo"
-#define TR_RX_NAME                     "Rx Name"
+#define TR_RX_NAME                     "None RX"
 #define TR_TELEMETRY_TYPE      "Tipo Telemetria"
 #define TR_TELEMETRY_SENSORS   "Sensori"
 #define TR_VALUE               "Valore"
@@ -946,18 +946,18 @@
 #define LEN_ANTENNA_MODES      "\011"
 #define TR_ANTENNA_MODES       "Internal\0""Ask\0     ""Per model""External"
 #endif
-#define TR_USE_INTERNAL_ANTENNA        TR("Use int. antenna", "Use internal antenna")
-#define TR_USE_EXTERNAL_ANTENNA        TR("Use ext. antenna", "Use external antenna")
-#define TR_ANTENNACONFIRM2     TR("Check antenna", "Make sure antenna is installed!")
-#define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Requires non"
-#define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Requires FCC"
-#define TR_MODULE_PROTOCOL_EU_WARN_LINE1          "Requires EU"
-#define TR_MODULE_PROTOCOL_WARN_LINE2                "certified firmware"
+#define TR_USE_INTERNAL_ANTENNA        TR("Usa antenna int.", "Usa antenna interna")
+#define TR_USE_EXTERNAL_ANTENNA        TR("Usa antenna est.", "Usa antenna esterna")
+#define TR_ANTENNACONFIRM2     TR("Controlla antenna", "Controlla se l'antenna è installata!")
+#define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Non richiede"
+#define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Richiede FCC"
+#define TR_MODULE_PROTOCOL_EU_WARN_LINE1          "Richiede EU"
+#define TR_MODULE_PROTOCOL_WARN_LINE2                "firmware certificato"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
 #define TR_RSSIALARM_WARN      TR("RSSI","TELEMETRY RSSI")
-#define TR_NO_RSSIALARM        TR(INDENT "Alarms disabled", INDENT "Telemetry alarms disabled")
-#define TR_DISABLE_ALARM       TR(INDENT "Disable alarms", INDENT "Disable telemetry alarms")
+#define TR_NO_RSSIALARM        TR(INDENT "Allarmi disabilitati", INDENT "Allarmi telemetrici disabilitati")
+#define TR_DISABLE_ALARM       TR(INDENT "Allarmi disabilitati", INDENT "Allarmi telemetrici disabilitati")
 #define TR_ENABLE_POPUP        "Abilita Popup"
 #define TR_DISABLE_POPUP       "Disabilita Popup"
 #define TR_POPUP               "Popup"
@@ -1033,7 +1033,7 @@
 #define TR_GVAR_HEADERS_FM8           "Value on FM8"
 
 // Horus footer descriptions
-#define TR_LSW_DESCRIPTIONS    { "Comparison type or function", "First variable", "Second variable or constant", "Second variable or constant", "Additional condition for line to be enabled", "Minimum ON duration of the logical switch", "Minimum TRUE duration for the switch to become ON" }
+#define TR_LSW_DESCRIPTIONS    { "Tipo o funzione di confronto", "Prima variabile", "Seconda variabile o costante", "Seconda variabile o costante", "Condizione aggiuntiva da abilitare linea", "Durata minima ON dell'interruttore logico", "Durata minima TRUE affinché l'interruttore si accenda" }
 
 // About screen
 #define TR_ABOUTUS             TR(" INFO ", "INFO SU")
@@ -1098,14 +1098,14 @@
 #define TR_BG_VOLUME           "Volume Sf"
 
 #define TR_TOP_BAR             "Barra sup."
-#define TR_FLASH_ERASE                 "Flash erase..."
-#define TR_FLASH_WRITE                 "Flash write..."
-#define TR_OTA_UPDATE                  "OTA update..."
-#define TR_MODULE_RESET                "Module reset..."
-#define TR_UNKNOWN_RX                  "Unknown RX"
-#define TR_UNSUPPORTED_RX              "Unsupported RX"
-#define TR_OTA_UPDATE_ERROR            "OTA update error"
-#define TR_DEVICE_RESET                "Device reset..."
+#define TR_FLASH_ERASE                 "Cancello flash..."
+#define TR_FLASH_WRITE                 "Scrivo flash..."
+#define TR_OTA_UPDATE                  "Aggiorn. OTA..."
+#define TR_MODULE_RESET                "Reset modulo..."
+#define TR_UNKNOWN_RX                  "RX sconociuta"
+#define TR_UNSUPPORTED_RX              "RX non compatibile"
+#define TR_OTA_UPDATE_ERROR            "Errore agg. OTA"
+#define TR_DEVICE_RESET                "Resetto devise..."
 #define TR_ALTITUDE            INDENT "Altitudine"
 #define TR_SCALE               "Scala"
 #define TR_VIEW_CHANNELS       "Vedi Canali"
@@ -1120,7 +1120,7 @@
 #define TR_CELLINDEX           "Indice cella"
 #define TR_LOGS                "Logs"
 #define TR_OPTIONS             "Opzioni"
-#define TR_FIRMWARE_OPTIONS    "Firmware options"
+#define TR_FIRMWARE_OPTIONS    "Opzioni firmware"
 
 #define TR_ALTSENSOR           "Sensore Alt"
 #define TR_CELLSENSOR          "Sensore Cell"
@@ -1139,20 +1139,20 @@
 #define TR_STOP_DISCOVER_SENSORS "Ferma ricerca.."
 #define TR_DELETE_ALL_SENSORS  "Elimina tutti i sensori"
 #define TR_CONFIRMDELETE       "Confermi " LCDW_128_480_LINEBREAK "eliminazione ?"
-#define TR_SELECT_WIDGET       "Select widget"
-#define TR_REMOVE_WIDGET       "Remove widget"
-#define TR_WIDGET_SETTINGS     "Widget settings"
-#define TR_REMOVE_SCREEN       "Remove screen"
-#define TR_SETUP_WIDGETS       "Setup widgets"
-#define TR_USER_INTERFACE      "User interface"
-#define TR_THEME               "Theme"
-#define TR_SETUP               "Setup"
-#define TR_MAINVIEWX           "Main view X"
+#define TR_SELECT_WIDGET       "Seleziona widget"
+#define TR_REMOVE_WIDGET       "Rimuovi widget"
+#define TR_WIDGET_SETTINGS     "Settiaggio widget"
+#define TR_REMOVE_SCREEN       "Rimuovi schermo"
+#define TR_SETUP_WIDGETS       "Setta widgets"
+#define TR_USER_INTERFACE      "Interfaccia utente"
+#define TR_THEME               "Tema"
+#define TR_SETUP               "Imposta"
+#define TR_MAINVIEWX           "Vista princ. X"
 #define TR_LAYOUT              "Layout"
-#define TR_ADDMAINVIEW         "Add main view"
-#define TR_BACKGROUND_COLOR    "Background color"
-#define TR_MAIN_COLOR          "Main color"
-#define TR_TEXT_VIEWER                 "Text Viewer"
+#define TR_ADDMAINVIEW         "Aggiungi vista princ."
+#define TR_BACKGROUND_COLOR    "Colore background"
+#define TR_MAIN_COLOR          "Colore principale"
+#define TR_TEXT_VIEWER         "Visualizzatore testi"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
 #define TR_MENU_LUA            "\322Lua scripts"
@@ -1170,8 +1170,8 @@
 #define TR_MENU_DISPLAY        "DISPLAY"
 #define TR_MENU_OTHER          "Altro"
 #define TR_MENU_INVERT         "Inverti"
-#define TR_JITTER_FILTER       "ADC Filter"
-#define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
+#define TR_JITTER_FILTER       "Filtro ADC"
+#define TR_RTC_CHECK           TR("Controllo RTC", "Controllo voltaggio RTC")
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
