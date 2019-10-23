@@ -20,6 +20,7 @@
  */
 
 // IT translations author: Romolo Manfredini <romolo.manfredini@gmail.com>
+// IT updates OpenTX 2.3.x author: Marco Robustini <robustinimarco@gmail.com>
 
 /*
  * !!!!! DO NOT EDIT it.h - EDIT it.h.txt INSTEAD !!!!!!!
@@ -87,7 +88,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europa\0")
 
 #define LEN_USBMODES           TR("\006", "\010")
-#define TR_USBMODES            TR("Chiedi\0  ""Joyst\0""SDCard""Seriale", "Ask\0    ""Joystick""Storage\0""Seriale\0 ")
+#define TR_USBMODES            TR("Chiedi\0  ""Joyst\0""SDCard""Seriale", "Chiedi\0    ""Joystick""Storage\0""Seriale\0 ")
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Chiedi\0   ""Audio\0 ""Trainer"
@@ -107,7 +108,7 @@
 #define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 Vibra\0"
 
 #define LEN_VVARIOCENTER       "\006"
-#define TR_VVARIOCENTER        "Tono\0 ""Silent"
+#define TR_VVARIOCENTER        "Tono\0 ""Silenz."
 
 #define LEN_CURVE_TYPES        "\010"
 #define TR_CURVE_TYPES         "Fisso\0  ""Modific."
@@ -469,14 +470,14 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Tipo Ciclico"
 #define TR_COLLECTIVE          TR("Collettivo","Origine Collettivo")
-#define TR_AILERON             TR("Lateral cyc.", "Lateral cyc. source")
-#define TR_ELEVATOR            TR("Long. cyc.", "Long. cyc. source")
+#define TR_AILERON             TR("Cic. laterale", "Sorgente cic. laterale")
+#define TR_ELEVATOR            TR("Cic. long.", "Sorgente cic. long.")
 #define TR_SWASHRING           "Anello Ciclico"
-#define TR_ELEDIRECTION        TR("Direzione ELE","Direzione Long. cyc.")
-#define TR_AILDIRECTION        TR("Direzione AIL","Direzione Lateral cyc.")
-#define TR_COLDIRECTION        TR("Direzione PIT","Direzione Coll. Passo")
+#define TR_ELEDIRECTION        TR("Direzione ELE","Direzione cic. long.")
+#define TR_AILDIRECTION        TR("Direzione AIL","Direzione cic. lat.")
+#define TR_COLDIRECTION        TR("Direzione PIT","Direzione passo coll.")
 #define TR_MODE                "Modo"
-#define TR_SUBTYPE             INDENT "Subtype"
+#define TR_SUBTYPE             INDENT "Sottotipo"
 #define TR_NOFREEEXPO          "Expo pieni!"
 #define TR_NOFREEMIXER         "Mixer pieni!"
 #define TR_SOURCE              "Sorg."
@@ -495,10 +496,10 @@
 #define TR_ANTENNA                     "Antenna"
 #define TR_NO_INFORMATION              TR("No info", "No informazioni")
 #define TR_MULTPX              "MultPx"
-#define TR_DELAYDOWN           "Post.Giù "
-#define TR_DELAYUP             "Post.Sù"
+#define TR_DELAYDOWN           "Rit.Giù"
+#define TR_DELAYUP             "Rit.Su"
 #define TR_SLOWDOWN            "Rall.Giù "
-#define TR_SLOWUP              "Rall.Sù"
+#define TR_SLOWUP              "Rall.Su"
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "CV"
 #define TR_GV                  TR("G", "GV")
@@ -545,11 +546,11 @@
 #define TR_PWR_OFF_DELAY               "Ritardo Pwr OFF"
 #define TR_THROTTLEWARNING     TR("All. Mot.", INDENT "Allarme Motore")
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
-#define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
+#define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots e sliders")
 #define TR_SLIDERWARNING       TR(INDENT "Slid. pos.", INDENT "Posizione Slider")
 #define TR_POTWARNING          TR("Avv. Pot.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
-#define TR_ADJUST_RTC          TR("Aggiusta RTC", INDENT "Aggiusta RTC")
+#define TR_ADJUST_RTC          TR("Agg. RTC", INDENT "Aggiusta RTC")
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Ordine CH RX"
 #define TR_STICKS              "Sticks"
@@ -611,7 +612,7 @@
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trims => Subtrims"
 #else
-  #define TR_TRIMS2OFFSETS     "\006Trim  => Offset "
+  #define TR_TRIMS2OFFSETS     "\006Trims => Offset "
 #endif
 #define TR_CHANNELS2FAILSAFE  "Canali=>Failsafe"
 #define TR_CHANNEL2FAILSAFE   "Canale=>Failsafe"
@@ -641,7 +642,7 @@
 #define TR_MONITOR_CHANNELS4   "MONITOR CANALI 25/32"
 #define TR_MONITOR_OUTPUT_DESC "Uscite"
 #define TR_MONITOR_MIXER_DESC  "Mixers"
-#define TR_RECEIVER_NUM        TR("RxNum", "Ricevente No.")
+#define TR_RECEIVER_NUM        TR("RxNum", "Ricevente N.")
 #define TR_RECEIVER            "Ricevente"
 #define TR_MULTI_RFTUNE        TR("Tune RF", "Tune fine Freq. RF")
 #define TR_MULTI_TELEMETRY     "Telemetria"
@@ -937,7 +938,7 @@
 #define TR_TOPLCDTIMER         "Timer LCD Sup."
 #define TR_UNIT                "Unita"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Aggiungi nuovo sensore..."
-#define TR_CHANNELRANGE        INDENT "Numero Canali"
+#define TR_CHANNELRANGE        INDENT "Numero canali"
 #define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
