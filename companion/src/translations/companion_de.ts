@@ -11,22 +11,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="438"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja, mit einem Kanal</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="439"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Kanälen</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="451"/>
         <source>&lt;br&gt;First Aileron Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Querruder Kanal:</translation>
+        <translation>&lt;br&gt; Erster Querruderkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="453"/>
         <source>Second Aileron Channel:</source>
-        <translation>Zweiter, linker Querruder Kanal:</translation>
+        <translation>Zweiter Querruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -39,22 +39,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="567"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja, mit 1 Servo</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="568"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Servos</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="580"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Airbrake Kanal:</translation>
+        <translation>&lt;br&gt; Erster Störklappenkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="582"/>
         <source>Second Airbrake Channel:</source>
-        <translation>Zweiter, linker Airbrake Kanal:</translation>
+        <translation>Zweiter Störklappenkanal:</translation>
     </message>
 </context>
 <context>
@@ -1242,7 +1242,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="984"/>
         <source>OK, I understand.</source>
-        <translation>OK verstanden.</translation>
+        <translation>OK, verstanden.</translation>
     </message>
 </context>
 <context>
@@ -2288,12 +2288,12 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../wizarddialog.cpp" line="635"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation>&lt;br&gt;Erster Rechter Höhenruder Kanal:</translation>
+        <translation>&lt;br&gt;Erster Elevon-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="637"/>
         <source>Second Elevon Channel:</source>
-        <translation>Zweiter Linker Höhenruder Kanal:</translation>
+        <translation>Zweiter Elevon-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -3102,22 +3102,22 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="503"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja mit einem Kanal</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="504"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Kanälen</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="516"/>
         <source>&lt;br&gt;First Flap Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Flap Kanal:</translation>
+        <translation>&lt;br&gt; Erster Wölbklappenkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="518"/>
         <source>Second Flap Channel:</source>
-        <translation>Zweiter, linker Flap Kanal:</translation>
+        <translation>Zweiter Wölbklappenkanal:</translation>
     </message>
 </context>
 <context>
@@ -3660,7 +3660,7 @@ You are currently using:
     <message>
         <location filename="../wizarddialog.cpp" line="379"/>
         <source>Has Flybar</source>
-        <translation>Has Flybar</translation>
+        <translation>Mit Flybar</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="381"/>
@@ -5372,22 +5372,22 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="891"/>
         <source>Throttle Channel:</source>
-        <translation>Gas Kanal:</translation>
+        <translation>Gas-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="893"/>
         <source>Yaw Channel:</source>
-        <translation>Yaw (Heck) Kanal:</translation>
+        <translation>Yaw-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="895"/>
         <source>Pitch Channel:</source>
-        <translation>Pitch Kanal:</translation>
+        <translation>Pitch-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="897"/>
         <source>Roll Channel:</source>
-        <translation>Roll Kanal:</translation>
+        <translation>Roll-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -8523,7 +8523,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="280"/>
         <source>Plane</source>
-        <translation>Flugmodell</translation>
+        <translation>Flächenmodell</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="282"/>
@@ -8538,12 +8538,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="289"/>
         <source>Model Name:</source>
-        <translation>Model Name:</translation>
+        <translation>Modellname:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="292"/>
         <source>Model Type:</source>
-        <translation>Model Typ:</translation>
+        <translation>Modelltyp:</translation>
     </message>
 </context>
 <context>
@@ -9411,22 +9411,22 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="928"/>
         <source>Throttle Channel:</source>
-        <translation>Gas Kanal:</translation>
+        <translation>Gas-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="930"/>
         <source>Yaw Channel:</source>
-        <translation>Yaw (Heck) Kanal:</translation>
+        <translation>Yaw-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="932"/>
         <source>Pitch Channel:</source>
-        <translation>Pitch Kanal:</translation>
+        <translation>Pitch-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="934"/>
         <source>Roll Channel:</source>
-        <translation>Roll Kanal:</translation>
+        <translation>Roll-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -9457,17 +9457,17 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="959"/>
         <source>Throttle Cut</source>
-        <translation>Gas Freigabe Schalter</translation>
+        <translation>Gas-Freigabeschalter</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="960"/>
         <source>Throttle Timer</source>
-        <translation>Gas Timer starten</translation>
+        <translation>Gas-Timer starten</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="961"/>
         <source>Flight Timer</source>
-        <translation>Flug Timer starten</translation>
+        <translation>Flug-Timer starten</translation>
     </message>
 </context>
 <context>
@@ -10307,22 +10307,22 @@ r</translation>
     <message>
         <location filename="../constants.h" line="75"/>
         <source>↑</source>
-        <translation type="unfinished"></translation>
+        <translation>↑</translation>
     </message>
     <message>
         <location filename="../constants.h" line="76"/>
         <source>↓</source>
-        <translation type="unfinished"></translation>
+        <translation>↓</translation>
     </message>
     <message>
         <location filename="../constants.h" line="77"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../constants.h" line="78"/>
         <source>!</source>
-        <translation type="unfinished"></translation>
+        <translation>!</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="40"/>
@@ -10517,7 +10517,7 @@ r</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="668"/>
         <source>&lt;br&gt;Rudder Channel:</source>
-        <translation>&lt;br&gt; Seite Kanal:</translation>
+        <translation>&lt;br&gt; Seitenruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -10872,7 +10872,7 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../wizarddialog.cpp" line="778"/>
         <source>Elevator Channel:</source>
-        <translation>Höhe Kanal:</translation>
+        <translation>Höheruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -12005,22 +12005,22 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="354"/>
         <source>Elevator and Rudder</source>
-        <translation>Höhe und Seite</translation>
+        <translation>Höhen- und Seiteruder</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="356"/>
         <source>Only Elevator</source>
-        <translation>Nur Höhe</translation>
+        <translation>Nur Höheruder</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="357"/>
         <source>V-tail</source>
-        <translation>V Leitwerk</translation>
+        <translation>V-Leitwerk</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="360"/>
         <source>Tail Type:</source>
-        <translation>Leitwerk Typ:</translation>
+        <translation>Leitwerkstyp:</translation>
     </message>
 </context>
 <context>
@@ -13228,7 +13228,7 @@ hh:mm:ss</source>
     <message>
         <location filename="../wizarddialog.cpp" line="408"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation>&lt;br&gt;Gas Kanal:</translation>
+        <translation>&lt;br&gt;Gaskanal:</translation>
     </message>
 </context>
 <context>
@@ -13471,19 +13471,19 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../modelslist.cpp" line="151"/>
         <source>RX #</source>
-        <translation type="unfinished"></translation>
+        <translation>RX #</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="691"/>
         <source>Models</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
-        <translation type="unfinished">Modelle</translation>
+        <translation>Modelle</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="710"/>
         <source>Model %1</source>
         <extracomment>Translators: do NOT use accents here, this is a default model name.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Modell %1</translation>
     </message>
 </context>
 <context>
@@ -13491,12 +13491,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="705"/>
         <source>First Tail Channel:</source>
-        <translation>Erster rechter Leitwerk Kanal:</translation>
+        <translation>Erster Leitwerkskanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="707"/>
         <source>Second Tail Channel:</source>
-        <translation>Zweiter, linker Leitwerk Kanal:</translation>
+        <translation>Zweiter Leitwerkskanal:</translation>
     </message>
 </context>
 <context>
@@ -13560,12 +13560,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Model Wizard</source>
-        <translation>Modell Wizard</translation>
+        <translation>Modell-Wizard</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Model Type</source>
-        <translation>Model Type</translation>
+        <translation>Modelltyp</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
@@ -13575,7 +13575,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Throttle</source>
-        <translation>Gas</translation>
+        <translation>Antrieb</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
@@ -13585,7 +13585,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Wing Type</source>
-        <translation>Flächen Typ</translation>
+        <translation>Flächentyp</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
@@ -13605,12 +13605,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Flaps</source>
-        <translation>Landeklappen</translation>
+        <translation>Wölbklappen</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Has your model got flaps?</source>
-        <translation>Hat das Modell Landeklappen?</translation>
+        <translation>Hat das Modell Wölbklappen?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
@@ -13682,12 +13682,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Which type of swash control is installed in your helicopter?</source>
-        <translation>Welchen Typ an Taumelscheibe hat der Heli?</translation>
+        <translation>Welche Art von Taumelscheibe ist verbaut?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Tail Gyro</source>
-        <translation>Heck Kreisel</translation>
+        <translation>Heckkreisel</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
@@ -13702,7 +13702,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Has your helicopter got a flybar?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hat der Hubschrauber eine Flybar?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
@@ -13719,7 +13719,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
         <source>Multirotor</source>
-        <translation>MultiCopter</translation>
+        <translation>Multikopter</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
@@ -13739,12 +13739,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Save Changes</source>
-        <translation>Speichere die Kanäle</translation>
+        <translation>Änderungen speichern</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished"></translation>
+        <translation>Überprüfe, ob alle Steuerflächen sich in die richtige Richtung bewegen und invertiere diese gegebenenfalls. Entferne den oder die Propeller bevor du das Modell zum ersten mal steuerst.&lt;br&gt;Bitte beachte, dass das Fortfahren alle alten Einstellungen überschreibt!</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="75"/>
@@ -13754,7 +13754,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="78"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den der ESC oder der Gasservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Gas - Spektrum: CH1, Futaba: CH3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
@@ -13769,12 +13769,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="93"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Wizard geht davon aus, dass die Wölbklappen durch einen Schalter gesteuert werden. Sollen die Wölbklappen durch ein Poti gesteuert werden, kann dies später noch geändert werden.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="97"/>
         <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Störklappen werden eingesetzt um den Widerstand zu erhöhen und damit den Gleitwinkel  bei Seglern zu verschlechtern.&lt;br&gt;Für ander Arten von Flugzeugen sind sie eher ungewöhnlich.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="101"/>
@@ -13784,23 +13784,23 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="105"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den das Seitenruderservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Seitenruder - Spektrum: CH4, Futaba: CH4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="109"/>
         <source>Select the tail type of your plane.</source>
-        <translation>Wählen Sie den Leitwerkstyp Ihres Flugzeugs.</translation>
+        <translation>Wähle den Leitwerkstyp des Flugzeugs.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="112"/>
         <location filename="../wizarddialog.cpp" line="117"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den Seiten- und das Höhenruderservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Seitenruder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Höhenruder - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="122"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Wählen Sie den Kanal für das Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
+        <translation>Wähle den Kanal für das Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
@@ -13816,12 +13816,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="141"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle die Steuerkanäle für deinen Multikopter.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="154"/>
         <source>There is no help available for the current page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Für diese Seite steht keine Hilfe zur Verfügung.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="157"/>
@@ -13849,12 +13849,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="1056"/>
         <source>Model Name: </source>
-        <translation>Model Name: </translation>
+        <translation>Modelname: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1057"/>
         <source>Model Type: </source>
-        <translation>Model Typ: </translation>
+        <translation>Modelltyp: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1059"/>
