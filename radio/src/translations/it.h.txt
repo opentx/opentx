@@ -69,13 +69,13 @@
 #endif
 
 #define LEN_SWTYPES            "\006"
-#define TR_SWTYPES             "Niente\0 ""Toggle""2POS\0 ""3POS\0"
+#define TR_SWTYPES             "Dis.\0 ""Toggle""2POS\0 ""3POS\0"
 
 #define LEN_POTTYPES           TR("\013","\017")
-#define TR_POTTYPES            TR("Niente\0      ""Pot w. det\0""Multip.\0  ""Pot\0       ", "Niente\0          ""Pot. con cen.""Int. Multip.""Potenziom.\0 ")
+#define TR_POTTYPES            TR("Dis.\0      ""Pot c. fer\0""Multipos\0  ""Pot\0       ", "Dis.\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 ")
 
 #define LEN_SLIDERTYPES        "\006"
-#define TR_SLIDERTYPES         "Niente""Slider"
+#define TR_SLIDERTYPES         "Disat.""Slider"
 
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
