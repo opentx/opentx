@@ -161,7 +161,7 @@ ViewMain::ViewMain(bool icons):
                  [=]() -> uint8_t {
                      openMenu();
                      return 0;
-                 }, BUTTON_NOFOCUS);
+                 }, NO_FOCUS);
 #endif
 }
 

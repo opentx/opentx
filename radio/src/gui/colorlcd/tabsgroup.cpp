@@ -34,7 +34,7 @@ TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
        [=]() -> uint8_t {
          parent->deleteLater();
          return 1;
-       }, BUTTON_NOFOCUS),
+       }, NO_FOCUS),
 #endif
   icon(icon),
   carousel(this, parent)

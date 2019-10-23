@@ -30,7 +30,7 @@ PageHeader::PageHeader(Page * parent, uint8_t icon):
        [=]() -> uint8_t {
          parent->deleteLater();
          return 0;
-       }, BUTTON_NOFOCUS)
+       }, NO_FOCUS)
 #endif
 {
 }
