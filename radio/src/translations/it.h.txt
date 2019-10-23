@@ -974,8 +974,8 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smussa"
-#define TR_COPY_STICKS_TO_OFS  TR(INDENT "Cpy stick->subtrim", INDENT "Copia Stick su Offset")
-#define TR_COPY_TRIMS_TO_OFS   TR(INDENT "Cpy trim->subtrim", INDENT "Copia Trim in Subtrim")
+#define TR_COPY_STICKS_TO_OFS  TR(INDENT "Cp. stick->subtrim", INDENT "Copia Sticks su Subtrim")
+#define TR_COPY_TRIMS_TO_OFS   TR(INDENT "Cp. trim->subtrim", INDENT "Copia Trims su Subtrim")
 #define TR_INCDEC              "Inc/Decrementa"
 #define TR_GLOBALVAR           "Var Globale"
 #define TR_MIXSOURCE           "Sorgente Mixer"
