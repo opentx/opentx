@@ -522,7 +522,7 @@
 #define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST            "Contrasto"
 #define TR_ALARMS_LABEL        "Allarmi"
-#define TR_BATTERY_RANGE       TR("Int. Batt.", "Intervallo batteria")
+#define TR_BATTERY_RANGE       TR(INDENT "Int. Batt.", INDENT "Intervallo batteria")
 #define TR_BATTERYWARNING      TR(INDENT "Avv. Batt.", INDENT "Avviso Batteria")
 #define TR_INACTIVITYALARM     INDENT"Inattività"
 #define TR_MEMORYWARNING       TR(INDENT "Avv. Mem.", INDENT "Avviso Memoria")
@@ -532,25 +532,25 @@
 #define TR_MODEL_SHUTDOWN              "Shutdown?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Premi [ENT] per confermare"
 #define TR_THROTTLE_LABEL      "Motore"
-#define TR_THROTTLEREVERSE     TR("Mot inv.", INDENT "Motore Inverso")
+#define TR_THROTTLEREVERSE     TR(INDENT "Mot inv.", INDENT "Motore Inverso")
 #define TR_MINUTEBEEP          "Minuto"
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Conto rov", INDENT"Conto rovescia")
 #define TR_PERSISTENT          TR(INDENT"Persist.", INDENT"Persistente")
-#define TR_BACKLIGHT_LABEL     TR("Retroillu.", "Retroilluminazione")
+#define TR_BACKLIGHT_LABEL     TR(INDENT "Retroillu.", INDENT "Retroilluminazione")
 #define TR_BLDELAY             INDENT"Durata"
 #define TR_BLONBRIGHTNESS      TR(INDENT"Lumin. ON",INDENT"Luminosità ON")
 #define TR_BLOFFBRIGHTNESS     TR(INDENT"Lumin. OFF",INDENT"Luminosità OFF")
 #define TR_BLCOLOR             INDENT "Colore"
-#define TR_SPLASHSCREEN        TR("Sch. avvio", "Schermata d'avvio")
+#define TR_SPLASHSCREEN        TR(INDENT "Sch. avvio", INDENT "Schermata d'avvio")
 #define TR_PWR_ON_DELAY                "Rit. PWR ON"
 #define TR_PWR_OFF_DELAY               "Rit. PWR OFF"
-#define TR_THROTTLEWARNING     TR("All. Mot.", INDENT "Allarme Motore")
-#define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
+#define TR_THROTTLEWARNING     TR(INDENT "All. Mot.", INDENT "Allarme Motore")
+#define TR_SWITCHWARNING       TR(INDENT "Avv. Int.", INDENT "Avviso Interr.")
 #define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
 #define TR_SLIDERWARNING       TR(INDENT "Pos. slid.", INDENT "Posizione slider")
-#define TR_POTWARNING          TR("Avv. Pot.", INDENT "Avviso Pot.")
+#define TR_POTWARNING          TR(INDENT "Avv. Pot.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
-#define TR_ADJUST_RTC          TR("Agg. RTC", INDENT "Aggiusta RTC")
+#define TR_ADJUST_RTC          TR(INDENT "Agg. RTC", INDENT "Aggiusta RTC")
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Ordine CH RX"
 #define TR_STICKS              "Sticks"
@@ -947,9 +947,9 @@
 #define LEN_ANTENNA_MODES      "\011"
 #define TR_ANTENNA_MODES       "Interna\0""Chiedi\0     ""Per modello""Esterna"
 #endif
-#define TR_USE_INTERNAL_ANTENNA        TR("Usa ant. int.", "Usa antenna interna")
-#define TR_USE_EXTERNAL_ANTENNA        TR("Usa ant. est.", "Usa antenna esterna")
-#define TR_ANTENNACONFIRM2     TR("Controlla antenna", "Controlla se l'antenna è installata!")
+#define TR_USE_INTERNAL_ANTENNA        TR(INDENT "Usa ant. int.", INDENT "Usa antenna interna")
+#define TR_USE_EXTERNAL_ANTENNA        TR(INDENT "Usa ant. est.", INDENT "Usa antenna esterna")
+#define TR_ANTENNACONFIRM2     TR(INDENT "Controlla antenna", INDENT "Controlla se l'antenna è installata!")
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Non richiede"
 #define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Richiede FCC"
 #define TR_MODULE_PROTOCOL_EU_WARN_LINE1          "Richiede EU"
@@ -974,8 +974,8 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smussa"
-#define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Copia Stick su Offset")
-#define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Copia Trim in Subtrim")
+#define TR_COPY_STICKS_TO_OFS  TR(INDENT "Cpy stick->subtrim", INDENT "Copia Stick su Offset")
+#define TR_COPY_TRIMS_TO_OFS   TR(INDENT "Cpy trim->subtrim", INDENT "Copia Trim in Subtrim")
 #define TR_INCDEC              "Inc/Decrementa"
 #define TR_GLOBALVAR           "Var Globale"
 #define TR_MIXSOURCE           "Sorgente Mixer"
