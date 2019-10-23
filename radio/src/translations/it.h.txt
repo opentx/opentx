@@ -69,10 +69,10 @@
 #endif
 
 #define LEN_SWTYPES            "\006"
-#define TR_SWTYPES             "None\0 ""Toggle""2POS\0 ""3POS\0"
+#define TR_SWTYPES             "Niente\0 ""Toggle""2POS\0 ""3POS\0"
 
 #define LEN_POTTYPES           TR("\013","\017")
-#define TR_POTTYPES            TR("Niente\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ", "Niente\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 ")
+#define TR_POTTYPES            TR("Niente\0      ""Pot w. det\0""Multip.\0  ""Pot\0       ", "Niente\0          ""Pot. con cen.""Int. Multip.""Potenziom.\0 ")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Niente""Slider"
@@ -515,7 +515,7 @@
 #define TR_LENGTH              INDENT"Durata"
 #define TR_BEEP_LENGTH         INDENT "Lung. Beep"
 #define TR_SPKRPITCH           INDENT"Tono"
-#define TR_HAPTIC_LABEL        "Vibraz"
+#define TR_HAPTIC_LABEL        "Vibrazione"
 #define TR_HAPTICSTRENGTH      INDENT"Forza"
 #define TR_GYRO_LABEL                  "Gyro"
 #define TR_GYRO_OFFSET                 "Offset"
