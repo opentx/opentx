@@ -13015,7 +13015,7 @@ Timestamp</source>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1644"/>
         <source>Meters</source>
-        <translation>Meter</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1164"/>
@@ -13107,7 +13107,7 @@ hh:mm:ss</source>
         <location filename="../simulation/telemetrysimu.ui" line="2056"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
         <source>Amps</source>
-        <translation>Ampere</translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2092"/>
@@ -13127,7 +13127,7 @@ hh:mm:ss</source>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1642"/>
         <source>Volts</source>
-        <translation>Volt</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2260"/>
@@ -13157,7 +13157,7 @@ hh:mm:ss</source>
         <location filename="../simulation/telemetrysimu.ui" line="2582"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1649"/>
         <source>Degrees</source>
-        <translation>Grad</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2987"/>
