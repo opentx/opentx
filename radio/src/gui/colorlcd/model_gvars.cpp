@@ -354,7 +354,7 @@ void ModelGVarsPage::build(FormWindow * window)
         return 0;
     });
 
-    grid.nextLine(button->getHeight());
+    grid.nextLine(button->height());
   }
   window->setInnerHeight(grid.getWindowHeight());
 }

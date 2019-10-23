@@ -328,7 +328,7 @@ class InputLineButton : public CommonInputOrMixButton {
     {
       const ExpoData & line = g_model.expoData[index];
       if (line.swtch || line.curve.value != 0 || line.flightModes) {
-        setHeight(getHeight() + PAGE_LINE_HEIGHT);
+        setHeight(height() + PAGE_LINE_HEIGHT);
       }
     }
 

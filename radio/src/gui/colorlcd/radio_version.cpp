@@ -33,7 +33,7 @@ class OptionsText : public StaticText {
         const char * option = options[i];
         optionWidth += getTextWidth(option);
         if (optionWidth + 5 > width()) {
-          setHeight(getHeight() + 20);
+          setHeight(height() + 20);
           optionWidth = 0;
         }
       }

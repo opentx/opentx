@@ -233,7 +233,7 @@ class MixLineButton : public CommonInputOrMixButton {
     {
       const MixData & mix = g_model.mixData[index];
       if (mix.swtch || mix.curve.value != 0 || mix.flightModes) {
-        setHeight(getHeight() + PAGE_LINE_HEIGHT);
+        setHeight(height() + PAGE_LINE_HEIGHT);
       }
     }
 

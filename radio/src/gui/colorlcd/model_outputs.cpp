@@ -114,7 +114,7 @@ class OutputLineButton : public Button {
       output(output)
     {
       if (output->revert || output->curve || output->name[0]) {
-        setHeight(getHeight() + PAGE_LINE_HEIGHT);
+        setHeight(height() + PAGE_LINE_HEIGHT);
       }
     }
 

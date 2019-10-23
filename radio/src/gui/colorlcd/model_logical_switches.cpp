@@ -241,9 +241,9 @@ class LogicalSwitchButton : public Button {
     {
       LogicalSwitchData * ls = lswAddress(lsIndex);
       if (ls->andsw != SWSRC_NONE || ls->duration != 0 || ls->delay != 0)
-        setHeight(getHeight() + 20);
+        setHeight(height() + 20);
       if (lswFamily(ls->func) == LS_FAMILY_EDGE)
-        setHeight(getHeight() + 20);
+        setHeight(height() + 20);
     }
 
     bool isActive()
