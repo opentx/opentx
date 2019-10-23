@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 #include "timers.h"
+#if defined(USB_CONTROL)
+#include "serial_input.h"
+#endif
+
 
 int8_t  virtualInputsTrims[MAX_INPUTS];
 int16_t anas [MAX_INPUTS] = {0};
@@ -372,6 +376,13 @@ getvalue_t getValue(mixsrc_t i)
     }
     return x*2;
   }
+#if defined(USB_CONTROL)
+  else if (i <= MIXSRC_LAST_SERIAL) { 
+    int16_t x = serialInput[i-MIXSRC_FIRST_SERIAL]; 
+    return x - 1024; 
+  }
+#endif
+
   else if (i <= MIXSRC_LAST_CH) {
     return ex_chans[i-MIXSRC_CH1];
   }

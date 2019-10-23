@@ -567,6 +567,7 @@
 #define TR_TMIXMAXMS                   "Tmix max"
 #define TR_FREE_STACK                  "Free stack"
 #define TR_MENUTORESET                 TR_ENTER " to reset"
+#define TR_SERIAL_INPUT                "SRL"
 #define TR_PPM_TRAINER                 "TR"
 #define TR_CH                          "CH"
 #define TR_MODEL                       "MODEL"
@@ -586,6 +587,7 @@
 #define TR_MENURADIOSETUP              "RADIO SETUP"
 #define TR_MENUDATEANDTIME             "DATE AND TIME"
 #define TR_MENUTRAINER                 "TRAINER"
+#define TR_MENUSERIAL                  "SERIAL"
 #define TR_MENUSPECIALFUNCS            "GLOBAL FUNCTIONS"
 #define TR_MENUVERSION                 "VERSION"
 #define TR_MENU_RADIO_SWITCHES         TR("SWITCHES", "SWITCHES TEST")
@@ -909,6 +911,7 @@
 #define TR_CALIBRATION                 "Calibration"
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer"
+#define TR_SERIAL                      "Serial Port"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"
 #if defined(COLORLCD)
   #define TR_MODELIDUSED               "ID used in:"
@@ -1148,6 +1151,7 @@
 #define TR_MENU_SWITCHES               "\312Switches"
 #define TR_MENU_LOGICAL_SWITCHES       "\312Logical switches"
 #define TR_MENU_TRAINER                "\317Trainer"
+#define TR_MENU_SERIAL                 "\317Serial"
 #define TR_MENU_CHANNELS               "\320Channels"
 #define TR_MENU_GVARS                  "\311GVars"
 #define TR_MENU_TELEMETRY              "\321Telemetry"

@@ -99,7 +99,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       auxSerialSetup(FRSKY_SPORT_BAUDRATE, false);
       break;
 
-#if defined(DEBUG) || defined(CLI)
+#if defined(DEBUG) || defined(CLI) || defined(USB_CONTROL)
     case UART_MODE_DEBUG:
       auxSerialSetup(DEBUG_BAUDRATE, false);
       break;

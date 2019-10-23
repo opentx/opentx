@@ -410,6 +410,9 @@ char * getSourceString(char * dest, mixsrc_t idx)
   else if (idx <= MIXSRC_LAST_TRAINER) {
     strAppendStringWithIndex(dest, STR_PPM_TRAINER, idx - MIXSRC_FIRST_TRAINER + 1);
   }
+  else if (idx < MIXSRC_FIRST_SERIAL) {
+    strAppendStringWithIndex(dest, STR_SERIAL_INPUT, idx - MIXSRC_FIRST_SERIAL + 1);
+  }
   else if (idx <= MIXSRC_LAST_CH) {
     strAppendStringWithIndex(dest, STR_CH, idx - MIXSRC_CH1 + 1);
   }

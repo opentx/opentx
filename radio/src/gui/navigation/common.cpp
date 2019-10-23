@@ -84,6 +84,8 @@ void onSourceLongEnterPress(const char * result)
     checkIncDecSelection = MIXSRC_FIRST_SWITCH;
   else if (result == STR_MENU_TRAINER)
     checkIncDecSelection = MIXSRC_FIRST_TRAINER;
+  else if (result == STR_MENU_SERIAL)
+    checkIncDecSelection = MIXSRC_FIRST_SERIAL;
   else if (result == STR_MENU_CHANNELS)
     checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
   else if (result == STR_MENU_GVARS)
