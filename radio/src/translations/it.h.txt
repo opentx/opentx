@@ -524,7 +524,7 @@
 #define TR_ALARMS_LABEL        "Allarmi"
 #define TR_BATTERY_RANGE       TR("Interv. Batt", "Intervallo batteria")
 #define TR_BATTERYWARNING      INDENT"Avviso batteria"
-#define TR_INACTIVITYALARM     INDENT"Inattivita'"
+#define TR_INACTIVITYALARM     INDENT"Inattività"
 #define TR_MEMORYWARNING       INDENT"Avviso memoria"
 #define TR_ALARMWARNING        INDENT"Spegni suono"
 #define TR_RSSISHUTDOWNALARM   TR(INDENT "RSSI Shutdown", INDENT "Control. RSSI al Shutdown")
@@ -812,7 +812,7 @@
 #if defined(PCBX9E)
 #define TR_BLUETOOTH_MODES      "---\0     ""Attivo\0 "
 #else
-#define TR_BLUETOOTH_MODES      "---\0     ""Telemetria""Trainer\0"
+#define TR_BLUETOOTH_MODES      "---\0     ""Telemetr.""Trainer\0"
 #endif
 #define TR_SD_INFO_TITLE       "INFO SD"
 #define TR_SD_TYPE             "Tipo:"
