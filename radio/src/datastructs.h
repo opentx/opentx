@@ -812,7 +812,8 @@ PACK(struct RadioData {
 
 
 #if !defined(BACKUP)
-/* Compile time check to test structure size has not changed *
+/* Compile time check to test structure s
+ze has not changed *
    Changing the size of one of the eeprom structs may cause wrong data to
    be loaded. Error out if the struct size changes.
    This function tries not avoid checking or using the defines
@@ -918,6 +919,9 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 858);
+  CHKSIZE(ModelData, 6157);
+#elif defined(PCBX7ACCESS)
+  CHKSIZE(RadioData, 861);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 864);

@@ -926,12 +926,12 @@
   #define STATUS_LEDS
   #define GPIO_LED_GPIO_ON              GPIO_SetBits
   #define GPIO_LED_GPIO_OFF             GPIO_ResetBits
-  #define LED_BLUE_GPIO                 GPIOB
-  #define LED_BLUE_GPIO_PIN             GPIO_Pin_1  // PB.01 
   #define LED_GREEN_GPIO                GPIOC
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_4  // PC.04
   #define LED_RED_GPIO                  GPIOC
   #define LED_RED_GPIO_PIN              GPIO_Pin_5  // PC.05
+  #define LED_BLUE_GPIO                 GPIOB
+  #define LED_BLUE_GPIO_PIN             GPIO_Pin_1  // PB.01
 #elif defined(PCBX9LITES)
   #define STATUS_LEDS
   #define GPIO_LED_GPIO_ON              GPIO_SetBits
@@ -1160,7 +1160,7 @@
   #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1NE
   #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1NP
   #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
-#elif (defined(PCBX9DP) && PCBREV >= 2019)
+#elif defined(PCBX9DP) && PCBREV >= 2019
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
   #define EXTMODULE_PWR_GPIO            GPIOD
@@ -1335,7 +1335,7 @@
 #define TELEMETRY_EXTI_TRIGGER          EXTI_Trigger_Rising
 
 #if defined(PCBX7ACCESS)
-  #define TELEMETRY_EXTI_IRQHandler       EXTI9_5_IRQHandler
+  #define TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT
 #elif defined(PCBX7)
   #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
 #elif defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
@@ -1428,8 +1428,8 @@
   #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOA
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
-  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI7_IRQn
-  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI7_IRQHandler  
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
+  #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler   
 #elif defined(RADIO_X7) 
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER

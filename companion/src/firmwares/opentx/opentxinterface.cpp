@@ -332,6 +332,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_TARANIS_X9LITE(board)) {
     variant |= TARANIS_X9LITE_VARIANT;
   }
+  else if (IS_TARANIS_X7_ACCESS(board)) {
+    variant |= TARANIS_X7_VARIANT;
+  }
   else if (IS_TARANIS_X7(board)) {
     variant |= TARANIS_X7_VARIANT;
   }
@@ -1259,7 +1262,7 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
-  /* FrSky X7 board */
+  /* FrSky X7 Access board */
   firmware = new OpenTxFirmware("opentx-x7access", Firmware::tr("FrSky Taranis X7 / X7S Access"), BOARD_TARANIS_X7_ACCESS);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);

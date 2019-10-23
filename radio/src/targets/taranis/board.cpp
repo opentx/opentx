@@ -135,7 +135,7 @@ void boardInit()
   keysInit();
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  rotaryEncoderInit();
+//  rotaryEncoderInit();
 #endif
 
   delaysInit();

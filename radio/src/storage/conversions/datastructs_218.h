@@ -28,8 +28,6 @@
   #define NUM_SWITCHES_218                  8
 #elif defined(PCBXLITE)
   #define NUM_SWITCHES_218                  4
-#elif defined(PCBX7ACCESS)
-  #define NUM_SWITCHES_218                  3
 #elif defined(PCBX7)
   #define NUM_SWITCHES_218                  6
 #elif defined(PCBX9E)
