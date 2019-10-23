@@ -52,6 +52,7 @@ option(MODULE_PROTOCOL_FLEX "Add support for non certified FLEX modules" OFF)
 option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(BOOTLOADER "Include Bootloader" ON)
+option(USB_CONTROL "Enable USB Control protocol support" ON)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -337,6 +338,12 @@ if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
   set(POPUP_LEVEL 3)
 endif()
+
+if(USB_CONTROL)
+  add_definitions(-DUSB_CONTROL)
+  set(SRC ${SRC} serial_input.cpp)
+endif()
+
 
 add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})
 

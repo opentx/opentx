@@ -286,6 +286,11 @@ bool isInputSourceAvailable(int source)
   if (source >= MIXSRC_FIRST_TRAINER && source <= MIXSRC_LAST_TRAINER)
     return true;
 
+#if defined(USB_CONTROL)
+  if (source>=MIXSRC_FIRST_SERIAL && source<=MIXSRC_LAST_SERIAL)
+    return true;
+#endif
+
   if (source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
     div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     return isTelemetryFieldAvailable(qr.quot) && isTelemetryFieldComparisonAvailable(qr.quot);

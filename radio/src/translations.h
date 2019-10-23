@@ -346,6 +346,7 @@ extern const char STR_TMIXMAXMS[];
 extern const char STR_FREE_STACK[];
 extern const char STR_MENUTORESET[];
 extern const char STR_PPM_TRAINER[];
+extern const char STR_SERIAL_INPUT[];
 extern const char STR_CH[];
 extern const char STR_MODEL[];
 extern const char STR_FM[];
@@ -724,6 +725,7 @@ extern const char STR_EXPONAME[];
 #endif
 
   extern const char STR_TRAINER[];
+extern const char STR_SERIAL[];
 extern const char STR_MODULE_BIND[];
 extern const char STR_POWERMETER_ATTN_NEEDED[];
 extern const char STR_PXX2_SELECT_RX[];
@@ -859,6 +861,7 @@ extern const char STR_MENU_TRIMS[];
 extern const char STR_MENU_SWITCHES[];
 extern const char STR_MENU_LOGICAL_SWITCHES[];
 extern const char STR_MENU_TRAINER[];
+extern const char STR_MENU_SERIAL[];
 extern const char STR_MENU_CHANNELS[];
 extern const char STR_MENU_GVARS[];
 extern const char STR_MENU_TELEMETRY[];

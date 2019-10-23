@@ -331,6 +331,10 @@ enum TelemetryUnit {
   #define MAX_TELEM_SCRIPT_INPUTS  8
 #endif
 
+#if defined(USB_CONTROL)
+  #define MAX_NUM_SERIAL           16
+#endif
+
 enum TelemetryScreenType {
   TELEMETRY_SCREEN_TYPE_NONE,
   TELEMETRY_SCREEN_TYPE_VALUES,
@@ -743,6 +747,10 @@ enum MixSources {
 
   MIXSRC_FIRST_TRAINER,                     LUA_EXPORT_MULTIPLE("trn", "Trainer input %d", MAX_TRAINER_CHANNELS)
   MIXSRC_LAST_TRAINER = MIXSRC_FIRST_TRAINER+MAX_TRAINER_CHANNELS-1,
+#if defined(USB_CONTROL)
+  MIXSRC_FIRST_SERIAL,                     LUA_EXPORT_MULTIPLE("srl", "Serial input %d", MAX_NUM_SERIAL)
+  MIXSRC_LAST_SERIAL = MIXSRC_FIRST_SERIAL+MAX_NUM_SERIAL-1,
+#endif
 
   MIXSRC_FIRST_CH,
   MIXSRC_CH1 = MIXSRC_FIRST_CH,             LUA_EXPORT_MULTIPLE("ch", "Channel CH%d", MAX_OUTPUT_CHANNELS)
