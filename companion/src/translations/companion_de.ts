@@ -10533,7 +10533,8 @@ r</translation>
         <location filename="../storage/sdcard.cpp" line="51"/>
         <source>Error opening file %1 in write mode:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Öffnen der Datei %1 im Schreibmodus:
+%2.</translation>
     </message>
 </context>
 <context>
