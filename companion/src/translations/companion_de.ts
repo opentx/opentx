@@ -7662,12 +7662,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="379"/>
         <source>Model: </source>
-        <translation>Model:</translation>
+        <translation type="unfinished">Modell: </translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="383"/>
         <source>Throttle Source</source>
-        <translation>GasTimer Quelle</translation>
+        <translation type="unfinished">Gas-Timer Quelle</translation>
     </message>
 </context>
 <context>
