@@ -227,6 +227,9 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
       continue;
     ui->multiProtocol->addItem(Multiprotocols::protocolToString(i), i);
   }
+  for (int i=MODULE_SUBTYPE_MULTI_LAST + 1; i <= 124; i++) {
+    ui->multiProtocol->addItem(QString::number(i + 3), i);
+  }
 
   ui->btnGrpValueType->setId(ui->optPercent, FAILSAFE_DISPLAY_PERCENT);
   ui->btnGrpValueType->setId(ui->optUs, FAILSAFE_DISPLAY_USEC);
@@ -469,7 +472,7 @@ void ModulePanel::update()
         break;
       case PULSES_MULTIMODULE:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE | MASK_SUBTYPES;
-        max_rx_num = 15;
+        max_rx_num = 63;
         if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
           mask |= MASK_CHANNELS_COUNT;
         else
