@@ -1876,19 +1876,19 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../customizesplashdialog.ui" line="272"/>
         <location filename="../customizesplashdialog.ui" line="583"/>
         <source>Load FW</source>
-        <translation>Lade FW</translation>
+        <translation>Bild aus Firmware-File</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="282"/>
         <location filename="../customizesplashdialog.ui" line="593"/>
         <source>Load Pict</source>
-        <translation>Lade Bild</translation>
+        <translation>Bild direkt</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="262"/>
         <location filename="../customizesplashdialog.ui" line="570"/>
         <source>Load Profile</source>
-        <translation>Lade Profil</translation>
+        <translation>Bild aus Profil</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="308"/>
@@ -1933,7 +1933,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="206"/>
         <source>Can not load embedded image from firmware file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei konnte nicht aus dem Firmware-File %1 geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="222"/>
@@ -1948,17 +1948,17 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="226"/>
         <source>Cannot load the image file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="241"/>
         <source>Cannot load profile image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht aus dem Profil geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="255"/>
         <source>Cannot load the library image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht aus der Bibliothek geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="264"/>
@@ -1968,27 +1968,27 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="264"/>
         <source>The image was saved to the file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Bild wurde als %1 gespeichert</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="266"/>
         <source>Image Refresh Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Aktualisieren des Bildes</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="266"/>
         <source>Failed to refresh image from file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Aktualisieren des Bildes durch die Datei %1 ist fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="270"/>
         <source>File Save Error</source>
-        <translation>Datei speichern fehlerhaft</translation>
+        <translation>Fehler beim Speichern der Datei</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="270"/>
         <source>Failed to write image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Speichern des Bildes in die Datei %1 ist fehlgeschlagen</translation>
     </message>
 </context>
 <context>
