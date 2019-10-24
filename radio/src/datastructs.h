@@ -812,8 +812,7 @@ PACK(struct RadioData {
 
 
 #if !defined(BACKUP)
-/* Compile time check to test structure s
-ze has not changed *
+/* Compile time check to test structure size has not changed *
    Changing the size of one of the eeprom structs may cause wrong data to
    be loaded. Error out if the struct size changes.
    This function tries not avoid checking or using the defines
