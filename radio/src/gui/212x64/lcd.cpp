@@ -697,7 +697,7 @@ void drawSwitch(coord_t x, coord_t y, int32_t idx, LcdFlags flags, bool autoBold
 {
   char s[8];
   getSwitchPositionName(s, idx);
-  if(autoBold && idx != SWSRC_NONE && getSwitch(idx))
+  if (autoBold && idx != SWSRC_NONE && getSwitch(idx))
     flags |= BOLD;
   lcdDrawText(x, y, s, flags);
 }
