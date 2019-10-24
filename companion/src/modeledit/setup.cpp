@@ -396,7 +396,7 @@ int ModulePanel::getMaxChannelCount()
       return 6;
     case PULSES_MULTIMODULE:
       if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
-        return 6;
+        return 12;
       else
         return 16;
       break;
@@ -766,6 +766,7 @@ void ModulePanel::onMultiProtocolChanged(int index)
     if (module.multi.customProto)
       maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
+    module.channelsCount = getMaxChannelCount();
     update();
     emit modified();
     lock = false;
