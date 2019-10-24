@@ -322,14 +322,14 @@ static void enablePulsesInternalModule(uint8_t protocol)
   }
 }
 
-void setupPulsesInternalModule(uint8_t protocol)
+bool setupPulsesInternalModule(uint8_t protocol)
 {
   switch (protocol) {
 #if defined(HARDWARE_INTERNAL_MODULE) && defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       intmodulePulsesData.pxx.setupFrame(INTERNAL_MODULE);
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(PXX1) && defined(INTMODULE_USART)
@@ -338,12 +338,13 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if !defined(INTMODULE_HEARTBEAT)
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
 #endif
-      break;
+      return true;
 #endif
 
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-      intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
+    {
+      bool result = intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
       if (moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER) {
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);
       }
@@ -352,25 +353,26 @@ void setupPulsesInternalModule(uint8_t protocol)
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD);
       }
 #endif
-      break;
+      return result;
+    }
 #endif
 
 #if defined(PCBTARANIS) && defined(INTERNAL_MODULE_PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMInternalModule();
       scheduleNextMixerCalculation(INTERNAL_MODULE, PPM_PERIOD(INTERNAL_MODULE));
-      break;
+      return true;
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
     case PROTOCOL_CHANNELS_MULTIMODULE:
       setupPulsesMultiInternalModule();
       scheduleNextMixerCalculation(INTERNAL_MODULE, MULTIMODULE_PERIOD);
-      break;
+      return true;
 #endif
 
     default:
-      break;
+      return true;
   }
 }
 
@@ -387,8 +389,7 @@ bool setupPulsesInternalModule()
     return false;
   }
   else {
-    setupPulsesInternalModule(protocol);
-    return true;
+    return setupPulsesInternalModule(protocol);
   }
 }
 #endif

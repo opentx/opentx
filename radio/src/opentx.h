@@ -1397,4 +1397,8 @@ inline bool isAsteriskDisplayed()
   return globalData.unexpectedShutdown;
 }
 
+#if defined(ACCESS_LIB)
+#include "thirdparty/libACCESS/libAccess.h"
+#endif
+
 #endif // _OPENTX_H_
