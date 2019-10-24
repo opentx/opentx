@@ -4821,7 +4821,7 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Keys + Sticks</source>
-        <translation>Taste+Knüppel</translation>
+        <translation>Tasten+ Knüppel</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
@@ -4876,12 +4876,12 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Portuguese</source>
-        <translation>Portogiesisch</translation>
+        <translation>Portugiesisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Russisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
@@ -4906,7 +4906,7 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>Rot Enc B</source>
-        <translation>Drehgebeer B</translation>
+        <translation>Drehgeber B</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
@@ -4928,8 +4928,8 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
         <source>If you enable FAI, only RSSI and RxBt sensors will keep working.
 This function cannot be disabled by the radio.
 Are you sure ?</source>
-        <translation>Wenn man FAI auswählt gibt es nur noch RSSI und RxBat als Sensorwerte
-Diese Funktion kann dann im Sender nicht mehr abgewählt werden
+        <translation>Wenn Sie FAI auswählen, stehen nur noch RSSI und RxBat als Sensorwerte zur Verfügung.
+Diese Funktion kann im Sender nicht mehr abgewählt werden.
 Sind Sie sicher?</translation>
     </message>
 </context>
