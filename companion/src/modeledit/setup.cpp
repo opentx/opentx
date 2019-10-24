@@ -568,7 +568,7 @@ void ModulePanel::update()
     unsigned i = 0;
     switch(protocol){
     case PULSES_MULTIMODULE:
-      numEntries = (module.multi.customProto ? 8 : pdef.numSubTypes());
+      numEntries = (protocol > MODULE_SUBTYPE_MULTI_LAST ? 8 : pdef.numSubTypes());
       break;
     case PULSES_PXX_R9M:
       if (firmware->getCapability(HasModuleR9MFlex))
@@ -766,7 +766,7 @@ void ModulePanel::onMultiProtocolChanged(int index)
     lock=true;
     module.multi.rfProtocol = (unsigned int)rfProtocol;
     unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubTypes();
-    if (module.multi.customProto)
+    if (rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
       maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
     module.channelsCount = getMaxChannelCount();

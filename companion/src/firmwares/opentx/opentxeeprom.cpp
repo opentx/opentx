@@ -2039,7 +2039,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
         ModuleData::Multi& multi = module.multi;
         internalField.Append(new UnsignedField<3>(this, rfProtExtra));
         internalField.Append(new SpareBitsField<3>(this));
-        internalField.Append(new BoolField<1>(this, multi.customProto));
         internalField.Append(new BoolField<1>(this, multi.autoBindMode));
         internalField.Append(new BoolField<1>(this, multi.lowPowerMode));
         internalField.Append(new SignedField<8>(this, multi.optionValue));

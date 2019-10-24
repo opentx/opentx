@@ -166,7 +166,6 @@ class ModuleData {
       unsigned int rfProtocol;
       bool autoBindMode;
       bool lowPowerMode;
-      bool customProto;
       int optionValue;
     } multi;
 
