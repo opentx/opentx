@@ -452,6 +452,10 @@ if(NOT MSVC)
     # these are in addition to CMAKE_CXX_FLAGS
     set(CMAKE_EXE_LINKER_FLAGS "-lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
+    if(ACCESS_LIB)
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive ${RADIO_SRC_DIRECTORY}/${THIRDPARTY_DIR}/libACCESS/libAccess.a -Wl,--no-whole-archive")
+    endif()
+    
     if(SEMIHOSTING)
       add_definitions(-DSEMIHOSTING)
       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=rdimon.specs")

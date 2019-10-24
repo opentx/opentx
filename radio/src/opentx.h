@@ -569,9 +569,8 @@ void flightReset(uint8_t check=true);
 
 PACK(struct GlobalData {
   uint8_t unexpectedShutdown:1;
-  uint8_t sdcardPresent:1;
   uint8_t externalAntennaEnabled: 1;
-  uint8_t spare:5;
+  uint8_t spare:6;
 });
 
 extern GlobalData globalData;
@@ -1397,5 +1396,9 @@ inline bool isAsteriskDisplayed()
 
   return globalData.unexpectedShutdown;
 }
+
+#if defined(ACCESS_LIB)
+#include "thirdparty/libACCESS/libAccess.h"
+#endif
 
 #endif // _OPENTX_H_

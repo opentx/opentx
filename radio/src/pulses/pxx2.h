@@ -25,16 +25,17 @@
 #include "io/frsky_pxx2.h"
 #include "./pxx.h"
 
-#define PXX2_TYPE_C_MODULE          0x01
-  #define PXX2_TYPE_ID_REGISTER     0x01
-  #define PXX2_TYPE_ID_BIND         0x02
-  #define PXX2_TYPE_ID_CHANNELS     0x03
-  #define PXX2_TYPE_ID_TX_SETTINGS  0x04
-  #define PXX2_TYPE_ID_RX_SETTINGS  0x05
-  #define PXX2_TYPE_ID_HW_INFO      0x06
-  #define PXX2_TYPE_ID_SHARE        0x07
-  #define PXX2_TYPE_ID_RESET        0x08
-  #define PXX2_TYPE_ID_TELEMETRY    0xFE
+#define PXX2_TYPE_C_MODULE                  0x01
+  #define PXX2_TYPE_ID_REGISTER             0x01
+  #define PXX2_TYPE_ID_BIND                 0x02
+  #define PXX2_TYPE_ID_CHANNELS             0x03
+  #define PXX2_TYPE_ID_TX_SETTINGS          0x04
+  #define PXX2_TYPE_ID_RX_SETTINGS          0x05
+  #define PXX2_TYPE_ID_HW_INFO              0x06
+  #define PXX2_TYPE_ID_SHARE                0x07
+  #define PXX2_TYPE_ID_RESET                0x08
+  #define PXX2_TYPE_ID_AUTHENTICATION       0x09
+  #define PXX2_TYPE_ID_TELEMETRY            0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
   #define PXX2_TYPE_ID_POWER_METER  0x01
@@ -75,7 +76,10 @@ enum PXX2ModuleModelID {
   PXX2_MODULE_R9M_LITE_PRO,
   PXX2_MODULE_ISRM_N,
   PXX2_MODULE_ISRM_S_X9,
-  PXX2_MODULE_ISRM_S_X10
+  PXX2_MODULE_ISRM_S_X10E,
+  PXX2_MODULE_XJT_LITE,
+  PXX2_MODULE_ISRM_S_X10S,
+  PXX2_MODULE_ISRM_S_X9LITE,
 };
 
 static const char * const PXX2ModulesNames[] = {
@@ -89,7 +93,10 @@ static const char * const PXX2ModulesNames[] = {
   "R9MLite-PRO",
   "ISRM-N",
   "ISRM-S-X9",
-  "ISRM-S-X10",
+  "ISRM-S-X10E",
+  "XJT Lite",
+  "ISRM-S-X10S",
+  "ISRM-S-X9Lite"
 };
 
 inline const char * getPXX2ModuleName(uint8_t modelId)
@@ -128,7 +135,10 @@ static const uint8_t PXX2ModuleOptions[] = {
   0b00000110, // R9MLite-PRO
   0b00000100, // ISRM-N
   0b00000100, // ISRM-S-X9
-  0b00000101, // ISRM-S-X10
+  0b00000101, // ISRM-S-X10E
+  0b00000001, // XJT_LITE
+  0b00000101, // ISRM-S-X10S
+  0b00000101, // ISRM-S-X9LITE
 };
 
 inline uint8_t getPXX2ModuleOptions(uint8_t modelId)
@@ -332,7 +342,8 @@ class Pxx2Pulses: public Pxx2Transport {
   friend class Pxx2OtaUpdate;
 
   public:
-    void setupFrame(uint8_t module);
+    bool setupFrame(uint8_t module);
+    void setupAuthenticationFrame(uint8_t module, uint8_t mode, const uint8_t * outputMessage);
 
   protected:
     void setupHardwareInfoFrame(uint8_t module);

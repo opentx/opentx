@@ -21,6 +21,8 @@
 #include "telemetry.h"
 #include "multi.h"
 
+#define MULTI_CHAN_BITS 11
+
 extern uint8_t g_moduleIdx;
 
 enum MultiPacketTypes : uint8_t
@@ -36,7 +38,8 @@ enum MultiPacketTypes : uint8_t
   FrskySportPolling,
   HitecTelemetry,
   SpectrumScannerPacket,
-  FlyskyIBusTelemetryAC
+  FlyskyIBusTelemetryAC,
+  MultiRxChannels
 };
 
 enum MultiBufferState : uint8_t
@@ -267,6 +270,43 @@ static void processMultiSyncPacket(const uint8_t * data, uint8_t module)
 #endif
 }
 
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+static void processMultiRxChannels(const uint8_t * data, uint8_t len)
+{
+  if (g_model.trainerData.mode != TRAINER_MODE_MULTI)
+    return;
+  
+  //uint8_t pps  = data[0];
+  //uint8_t rssi = data[1];
+  int ch    = max(data[2], (uint8_t)0);
+  int maxCh = min(ch + data[3], MAX_TRAINER_CHANNELS);
+
+  uint32_t bits = 0;
+  uint8_t  bitsavailable = 0;
+  uint8_t  byteIdx = 4;
+
+  while(ch < maxCh) {
+
+    while((bitsavailable < MULTI_CHAN_BITS) && byteIdx < len) {
+      bits |= (uint32_t)(data[byteIdx++]) << (uint32_t)bitsavailable;
+      bitsavailable += 8;
+    }
+
+    int value = bits & ((1 << MULTI_CHAN_BITS) - 1);
+    bitsavailable -= MULTI_CHAN_BITS;
+    bits >>= MULTI_CHAN_BITS;
+
+    ppmInput[ch] = (value - 1024) * 500 / 800;
+    ch++;
+
+    if (byteIdx >= len)
+      break;
+  }
+
+  if (ch == maxCh)
+    ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
+}
+#endif
 
 static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 {
@@ -356,6 +396,15 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
         TRACE("[MP] Received spectrum scanner len %d != 6", len);
       break;
 
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+    case MultiRxChannels:
+      if (len >= 4)
+        processMultiRxChannels(data, len);
+      else
+        TRACE("[MP] Received RX channels len %d < 4", len);
+      break;
+#endif
+      
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);
       break;
@@ -486,7 +535,7 @@ void MultiModuleStatus::getStatusString(char * statusText)
   if (!isValid()) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 #if !defined(INTERNAL_MODULE_MULTI)
-    if (IS_INTERNAL_MODULE_ENABLED())
+    if (isSportLineUsedByInternalModule())
       strcpy(statusText, STR_DISABLE_INTERNAL);
     else
 #endif

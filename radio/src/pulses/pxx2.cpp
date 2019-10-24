@@ -357,10 +357,31 @@ void Pxx2Pulses::sendOtaUpdate(uint8_t module, const char * rxName, uint32_t add
     extmoduleSendNextFrame();
 }
 
-void Pxx2Pulses::setupFrame(uint8_t module)
+void Pxx2Pulses::setupAuthenticationFrame(uint8_t module, uint8_t mode, const uint8_t * outputMessage)
+{
+  initFrame();
+
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_AUTHENTICATION);
+
+  Pxx2Transport::addByte(mode);
+  if (outputMessage) {
+    for (uint8_t i = 0; i < 16; i++) {
+      Pxx2Transport::addByte(outputMessage[i]);
+    }
+  }
+
+  endFrame();
+}
+
+bool Pxx2Pulses::setupFrame(uint8_t module)
 {
   if (moduleState[module].mode == MODULE_MODE_OTA_UPDATE)
-    return;
+    return false;
+
+  if (moduleState[module].mode == MODULE_MODE_AUTHENTICATION) {
+    moduleState[module].mode = MODULE_MODE_NORMAL;
+    return false;
+  }
 
   initFrame();
 
@@ -413,6 +434,8 @@ void Pxx2Pulses::setupFrame(uint8_t module)
   }
 
   endFrame();
+
+  return true;
 }
 
 bool Pxx2OtaUpdate::waitStep(uint8_t step, uint8_t timeout)
