@@ -6066,12 +6066,12 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="1055"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das OpenTX Companion Project ist ein Fork von &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1061"/>
         <source>Copyright OpenTX Team</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright OpenTX Team</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1205"/>
@@ -6111,7 +6111,7 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="74"/>
         <source>Diskimage (*.dmg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskimage (*.dmg)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="75"/>
