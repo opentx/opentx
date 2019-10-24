@@ -86,7 +86,7 @@
     <message>
         <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished">Diese Nachricht beim nächsten Starten wieder anzeigen?</translation>
+        <translation>Diese Nachricht beim nächsten Starten erneut anzeigen?</translation>
     </message>
 </context>
 <context>
