@@ -20,6 +20,7 @@
  */
 
 // IT translations author: Romolo Manfredini <romolo.manfredini@gmail.com>
+// IT integrations for OpenTX V2.3.x author: Marco Robustini <robustinimarco@gmail.com>
 
 /*
  * !!!!! DO NOT EDIT it.h - EDIT it.h.txt INSTEAD !!!!!!!
