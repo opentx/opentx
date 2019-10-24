@@ -12152,7 +12152,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="270"/>
         <source>Source</source>
-        <translation type="unfinished">Quelle</translation>
+        <translation>Quelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="611"/>
@@ -12162,12 +12162,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="645"/>
         <source>Altitude source</source>
-        <translation>Höhe Quelle</translation>
+        <translation>Höhenquelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="658"/>
         <source>Volts source</source>
-        <translation>Spannung Quelle</translation>
+        <translation>Spannungsquelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="681"/>
@@ -12177,12 +12177,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="846"/>
         <source> mAh</source>
-        <translation>mAh</translation>
+        <translation> mAh</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="862"/>
         <source> A</source>
-        <translation>A</translation>
+        <translation> A</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="913"/>
