@@ -2171,17 +2171,17 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../downloaddialog.ui" line="14"/>
         <source>Downloading: </source>
-        <translation type="unfinished">Herunterladen:</translation>
+        <translation>Herunterladen:</translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="49"/>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Kann Datei %1:%2 nicht abspeichern.</translation>
+        <translation>Die Datei %1 konnte nicht abgespeichert werden:%2.</translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="87"/>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Herunterladen fehlgeschlagen: %1.</translation>
+        <translation>Herunterladen fehlgeschlagen: %1.</translation>
     </message>
 </context>
 <context>
