@@ -693,13 +693,11 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-void drawSwitch(coord_t x, coord_t y, int32_t idx, LcdFlags flags)
+void drawSwitch(coord_t x, coord_t y, int32_t idx, LcdFlags flags, bool autoBold)
 {
   char s[8];
   getSwitchPositionName(s, idx);
-  if(idx < SWSRC_FIRST_LOGICAL_SWITCH)
-    flags |= (idx && getSwitch(idx)) ? BOLD : 0;
-  else if(idx <= SWSRC_LAST_LOGICAL_SWITCH && getSwitch(idx))
+  if(autoBold && idx != SWSRC_NONE && getSwitch(idx))
     flags |= BOLD;
   lcdDrawText(x, y, s, flags);
 }

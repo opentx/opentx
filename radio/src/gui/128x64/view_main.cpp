@@ -509,7 +509,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0);
+          drawSwitch(x[i], y[i], sw, 0, false);
         }
       }
       drawSmallSwitch(29, 5*FH+1, 4, SW_SF);
@@ -521,7 +521,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0);
+          drawSwitch(x[i], y[i], sw, 0, false);
         }
       }
 #elif defined(PCBXLITES)
@@ -531,7 +531,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0);
+          drawSwitch(x[i], y[i], sw, 0, false);
         }
       }
 #elif defined(PCBTARANIS)
@@ -545,7 +545,7 @@ void menuMainView(event_t event)
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
           getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-          drawSwitch(x, y, sw, 0);
+          drawSwitch(x, y, sw, 0, false);
         }
       }
 #else
@@ -557,7 +557,7 @@ void menuMainView(event_t event)
           x = 17*FW-1;
           y -= 3*FH;
         }
-        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0);
+        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0, false);
       }
 #endif
     }
