@@ -11,22 +11,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="438"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja, mit einem Kanal</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="439"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Kanälen</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="451"/>
         <source>&lt;br&gt;First Aileron Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Querruder Kanal:</translation>
+        <translation>&lt;br&gt; Erster Querruderkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="453"/>
         <source>Second Aileron Channel:</source>
-        <translation>Zweiter, linker Querruder Kanal:</translation>
+        <translation>Zweiter Querruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -39,22 +39,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="567"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja, mit 1 Servo</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="568"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Servos</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="580"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Airbrake Kanal:</translation>
+        <translation>&lt;br&gt; Erster Störklappenkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="582"/>
         <source>Second Airbrake Channel:</source>
-        <translation>Zweiter, linker Airbrake Kanal:</translation>
+        <translation>Zweiter Störklappenkanal:</translation>
     </message>
 </context>
 <context>
@@ -86,7 +86,7 @@
     <message>
         <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished">Diese Nachricht beim nächsten Starten wieder anzeigen?</translation>
+        <translation>Diese Nachricht beim nächsten Starten erneut anzeigen?</translation>
     </message>
 </context>
 <context>
@@ -1242,7 +1242,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="984"/>
         <source>OK, I understand.</source>
-        <translation>OK verstanden.</translation>
+        <translation>OK, verstanden.</translation>
     </message>
 </context>
 <context>
@@ -1742,7 +1742,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="204"/>
         <source>Value </source>
-        <translation>Wert</translation>
+        <translation>Wert </translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="228"/>
@@ -1752,7 +1752,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="235"/>
         <source>repeat(%1s)</source>
-        <translation type="unfinished"></translation>
+        <translation>wiederholen(%1s)</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="248"/>
@@ -1876,19 +1876,19 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../customizesplashdialog.ui" line="272"/>
         <location filename="../customizesplashdialog.ui" line="583"/>
         <source>Load FW</source>
-        <translation>Lade FW</translation>
+        <translation>Bild aus Firmware-File</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="282"/>
         <location filename="../customizesplashdialog.ui" line="593"/>
         <source>Load Pict</source>
-        <translation>Lade Bild</translation>
+        <translation>Bild direkt</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="262"/>
         <location filename="../customizesplashdialog.ui" line="570"/>
         <source>Load Profile</source>
-        <translation>Lade Profil</translation>
+        <translation>Bild aus Profil</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="308"/>
@@ -1933,7 +1933,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="206"/>
         <source>Can not load embedded image from firmware file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei konnte nicht aus dem Firmware-File %1 geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="222"/>
@@ -1948,17 +1948,17 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="226"/>
         <source>Cannot load the image file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="241"/>
         <source>Cannot load profile image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht aus dem Profil geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="255"/>
         <source>Cannot load the library image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht aus der Bibliothek geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="264"/>
@@ -1968,27 +1968,27 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="264"/>
         <source>The image was saved to the file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Bild wurde als %1 gespeichert</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="266"/>
         <source>Image Refresh Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Aktualisieren des Bildes</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="266"/>
         <source>Failed to refresh image from file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Aktualisieren des Bildes durch die Datei %1 ist fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="270"/>
         <source>File Save Error</source>
-        <translation>Datei speichern fehlerhaft</translation>
+        <translation>Fehler beim Speichern der Datei</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="270"/>
         <source>Failed to write image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Speichern des Bildes in die Datei %1 ist fehlgeschlagen</translation>
     </message>
 </context>
 <context>
@@ -2171,17 +2171,17 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../downloaddialog.ui" line="14"/>
         <source>Downloading: </source>
-        <translation type="unfinished">Herunterladen:</translation>
+        <translation>Herunterladen: </translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="49"/>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Kann Datei %1:%2 nicht abspeichern.</translation>
+        <translation>Die Datei %1 konnte nicht abgespeichert werden:%2.</translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="87"/>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Herunterladen fehlgeschlagen: %1.</translation>
+        <translation>Herunterladen fehlgeschlagen: %1.</translation>
     </message>
 </context>
 <context>
@@ -2288,12 +2288,12 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../wizarddialog.cpp" line="635"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation>&lt;br&gt;Erster Rechter Höhenruder Kanal:</translation>
+        <translation>&lt;br&gt;Erster Elevon-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="637"/>
         <source>Second Elevon Channel:</source>
-        <translation>Zweiter Linker Höhenruder Kanal:</translation>
+        <translation>Zweiter Elevon-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -2371,7 +2371,7 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../modeledit/expodialog.ui" line="355"/>
         <source>Include Trim</source>
-        <translation>Trimmung einschliessen</translation>
+        <translation>Trimmung einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="363"/>
@@ -2427,7 +2427,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.cpp" line="78"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="216"/>
@@ -3102,22 +3102,22 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="503"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja mit einem Kanal</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="504"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Kanälen</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="516"/>
         <source>&lt;br&gt;First Flap Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Flap Kanal:</translation>
+        <translation>&lt;br&gt; Erster Wölbklappenkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="518"/>
         <source>Second Flap Channel:</source>
-        <translation>Zweiter, linker Flap Kanal:</translation>
+        <translation>Zweiter Wölbklappenkanal:</translation>
     </message>
 </context>
 <context>
@@ -3562,32 +3562,32 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="197"/>
         <source>Popup enabled</source>
-        <translation>Anzeige im Popupfenster freigeben</translation>
+        <translation>Anzeige im Popup-Fenster freigeben</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="39"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="102"/>
         <source>Trim disabled</source>
-        <translation>Trim ausgeschaltet</translation>
+        <translation>Trimmung deaktivieren</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Own Trim</source>
-        <translation>Eigene Trim</translation>
+        <translation>Eigene Trimmung</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="109"/>
         <source>Use Trim from Flight mode %1</source>
-        <translation>Trim von Flugphase %1</translation>
+        <translation>Trimmung von Flugphase %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="111"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation>Trim von Flugphase %1 + Eigene Trim als Offset</translation>
+        <translation>Trimmung von Flugphase %1 + Eigenen Trimmung als Offset</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="181"/>
@@ -3647,12 +3647,12 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="749"/>
         <source> (%1)</source>
-        <translation>(%1)</translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="752"/>
         <source> (default)</source>
-        <translation>(normal)</translation>
+        <translation> (normal)</translation>
     </message>
 </context>
 <context>
@@ -3660,7 +3660,7 @@ You are currently using:
     <message>
         <location filename="../wizarddialog.cpp" line="379"/>
         <source>Has Flybar</source>
-        <translation>Has Flybar</translation>
+        <translation>Mit Flybar</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="381"/>
@@ -4821,7 +4821,7 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Keys + Sticks</source>
-        <translation>Taste+Knüppel</translation>
+        <translation>Tasten+ Knüppel</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
@@ -4876,12 +4876,12 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Portuguese</source>
-        <translation>Portogiesisch</translation>
+        <translation>Portugiesisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Russisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
@@ -4906,7 +4906,7 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>Rot Enc B</source>
-        <translation>Drehgebeer B</translation>
+        <translation>Drehgeber B</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
@@ -4928,8 +4928,8 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
         <source>If you enable FAI, only RSSI and RxBt sensors will keep working.
 This function cannot be disabled by the radio.
 Are you sure ?</source>
-        <translation>Wenn man FAI auswählt gibt es nur noch RSSI und RxBat als Sensorwerte
-Diese Funktion kann dann im Sender nicht mehr abgewählt werden
+        <translation>Wenn Sie FAI auswählen, stehen nur noch RSSI und RxBat als Sensorwerte zur Verfügung.
+Diese Funktion kann im Sender nicht mehr abgewählt werden.
 Sind Sie sicher?</translation>
     </message>
 </context>
@@ -5372,22 +5372,22 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="891"/>
         <source>Throttle Channel:</source>
-        <translation>Gas Kanal:</translation>
+        <translation>Gas-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="893"/>
         <source>Yaw Channel:</source>
-        <translation>Yaw (Heck) Kanal:</translation>
+        <translation>Yaw-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="895"/>
         <source>Pitch Channel:</source>
-        <translation>Pitch Kanal:</translation>
+        <translation>Pitch-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="897"/>
         <source>Roll Channel:</source>
-        <translation>Roll Kanal:</translation>
+        <translation>Roll-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -6066,12 +6066,12 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="1055"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das OpenTX Companion Project ist ein Fork von &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1061"/>
         <source>Copyright OpenTX Team</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright OpenTX Team</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1205"/>
@@ -6111,7 +6111,7 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="74"/>
         <source>Diskimage (*.dmg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskimage (*.dmg)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="75"/>
@@ -7315,7 +7315,7 @@ Sollen die Änderungen gespeichert werden?</translation>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
         <source>Include Trim</source>
-        <translation>Trimmung einschliessen</translation>
+        <translation>Trimmung einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="536"/>
@@ -7406,7 +7406,9 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixerdialog.ui" line="425"/>
         <source>Mixer warning.
 Setting this value will cause a beep to be emmitted when this value is active.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Ich bin mir nicht sicher ob der </translatorcomment>
+        <translation>Mixerwarnung.
+Diese Einstellung sorgt dafür, dass ein Piepton abgespielt wird, sobald dieser Mixer aktiviert wird.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="501"/>
@@ -7454,7 +7456,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="397"/>
         <source>Include DR/Expo</source>
-        <translation>DR/Expo einschliessen</translation>
+        <translation>DR/Expo einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="32"/>
@@ -7464,7 +7466,8 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="39"/>
         <source>Slow</source>
-        <translation>Langsam</translation>
+        <translatorcomment>Man könnte auch Hemmung sagen</translatorcomment>
+        <translation>Verlangsamung</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="46"/>
@@ -7662,12 +7665,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="379"/>
         <source>Model: </source>
-        <translation>Model:</translation>
+        <translation type="unfinished">Modell: </translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="383"/>
         <source>Throttle Source</source>
-        <translation>GasTimer Quelle</translation>
+        <translation type="unfinished">Gas-Timer Quelle</translation>
     </message>
 </context>
 <context>
@@ -8122,7 +8125,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modelprinter.cpp" line="1021"/>
         <source>Trim idle only</source>
-        <translation>Nur Leerlauftrimm</translation>
+        <translation>Nur Leerlauftrimmung</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1022"/>
@@ -8523,7 +8526,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="280"/>
         <source>Plane</source>
-        <translation>Flugmodell</translation>
+        <translation>Flächenmodell</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="282"/>
@@ -8538,12 +8541,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="289"/>
         <source>Model Name:</source>
-        <translation>Model Name:</translation>
+        <translation>Modellname:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="292"/>
         <source>Model Type:</source>
-        <translation>Model Typ:</translation>
+        <translation>Modelltyp:</translation>
     </message>
 </context>
 <context>
@@ -9411,22 +9414,22 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="928"/>
         <source>Throttle Channel:</source>
-        <translation>Gas Kanal:</translation>
+        <translation>Gas-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="930"/>
         <source>Yaw Channel:</source>
-        <translation>Yaw (Heck) Kanal:</translation>
+        <translation>Yaw-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="932"/>
         <source>Pitch Channel:</source>
-        <translation>Pitch Kanal:</translation>
+        <translation>Pitch-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="934"/>
         <source>Roll Channel:</source>
-        <translation>Roll Kanal:</translation>
+        <translation>Roll-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -9439,7 +9442,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="299"/>
         <source> ... plus %1 errors</source>
-        <translation>...plus %1 Fehler</translation>
+        <translation> ... plus %1 Fehler</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="348"/>
@@ -9457,17 +9460,17 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="959"/>
         <source>Throttle Cut</source>
-        <translation>Gas Freigabe Schalter</translation>
+        <translation>Gas-Freigabeschalter</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="960"/>
         <source>Throttle Timer</source>
-        <translation>Gas Timer starten</translation>
+        <translation>Gas-Timer starten</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="961"/>
         <source>Flight Timer</source>
-        <translation>Flug Timer starten</translation>
+        <translation>Flug-Timer starten</translation>
     </message>
 </context>
 <context>
@@ -9733,7 +9736,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Es wurde kein Sender gefunden!&lt;/p&gt;&lt;p&gt;Stellen Sie sicher, dass Sie während des Einschaltens, die unteren Trimmer zur Mitte hin gedrückt halten&lt;/p&gt;&lt;p&gt;Stecken Sie danach das USB-Kabel ein.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Hinweis: Sollten Sie eine Taranis besitzen, die noch nicht auf die Version 2.0 upgegraded wurde, wird sie mit dieser Version von Companion nicht funktionieren.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
@@ -10307,102 +10310,102 @@ r</translation>
     <message>
         <location filename="../constants.h" line="75"/>
         <source>↑</source>
-        <translation type="unfinished"></translation>
+        <translation>↑</translation>
     </message>
     <message>
         <location filename="../constants.h" line="76"/>
         <source>↓</source>
-        <translation type="unfinished"></translation>
+        <translation>↓</translation>
     </message>
     <message>
         <location filename="../constants.h" line="77"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../constants.h" line="78"/>
         <source>!</source>
-        <translation type="unfinished"></translation>
+        <translation>!</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="40"/>
         <source>RudTrim Left</source>
-        <translation>SeiteTrim links</translation>
+        <translation>Seitenruder-Trimmer links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="40"/>
         <source>RudTrim Right</source>
-        <translation>SeiteTrim rechts</translation>
+        <translation>Seiteruder-Trimmer rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="41"/>
         <source>EleTrim Down</source>
-        <translation>HöheTrim ab</translation>
+        <translation>Höheruder-Trimmer runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="41"/>
         <source>EleTrim Up</source>
-        <translation>HöheTrim auf</translation>
+        <translation>Höheruder-Trimmer hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="42"/>
         <source>ThrTrim Down</source>
-        <translation>GasTrim ab</translation>
+        <translation>Gas-Trimmer runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="42"/>
         <source>ThrTrim Up</source>
-        <translation>GasTrim auf</translation>
+        <translation>Gas-Trimmer hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="43"/>
         <source>AilTrim Left</source>
-        <translation>QuerTrim links</translation>
+        <translation>Querruder-Trimmer links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="43"/>
         <source>AilTrim Right</source>
-        <translation>QuerTrim rechts</translation>
+        <translation>Querruder-Trimmer rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="44"/>
         <source>Trim 5 Down</source>
-        <translation>Trim5 ab</translation>
+        <translation>Trimmer 5 runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="44"/>
         <source>Trim 5 Up</source>
-        <translation>Trim5 auf</translation>
+        <translation>Trimmer 5 hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="45"/>
         <source>Trim 6 Down</source>
-        <translation>Trim6 ab</translation>
+        <translation>Trimmer 6 runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="45"/>
         <source>Trim 6 Up</source>
-        <translation>Trim6 auf</translation>
+        <translation>Trimmer 6 hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Left</source>
-        <translation>TrimH links</translation>
+        <translation>Trimmer H links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Right</source>
-        <translation>TrimH rechts</translation>
+        <translation>Trimmer H rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Down</source>
-        <translation>TrimV ab</translation>
+        <translation>Trimmer V runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Up</source>
-        <translation>TrimV auf</translation>
+        <translation>Trimmer V hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="54"/>
@@ -10517,7 +10520,7 @@ r</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="668"/>
         <source>&lt;br&gt;Rudder Channel:</source>
-        <translation>&lt;br&gt; Seite Kanal:</translation>
+        <translation>&lt;br&gt; Seitenruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -10533,7 +10536,8 @@ r</translation>
         <location filename="../storage/sdcard.cpp" line="51"/>
         <source>Error opening file %1 in write mode:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Öffnen der Datei %1 im Schreibmodus:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -10695,7 +10699,8 @@ r</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="387"/>
         <source>Throttle Trim Idle Only</source>
-        <translation>Gas Leerlauftrim</translation>
+        <translatorcomment>Hier bin ich mir nicht sicher</translatorcomment>
+        <translation>Gas-Leerlaufstrimmung</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="601"/>
@@ -10708,9 +10713,10 @@ r</translation>
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
 </source>
-        <translation>Vollgas hinten?
-Wenn das angewählt wird, dann ist Leerlauf vorne. Auch die Gas-Leerlauftrimmung und die Gasstellungs-Warung wird
-umgedreht und ist dann vorne.
+        <translation>Umgekehrte Gas-Funktion
+Wenn angewählt, befindet sich der Leerlauf vorne. Die Gas-Leerlaufstrimmung sowie die Gasstellungs-Warnung werden dadurch
+ebenfalls umgekehrt.
+
 </translation>
     </message>
     <message>
@@ -10781,12 +10787,12 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../modeledit/setup.ui" line="544"/>
         <source>Trim Step</source>
-        <translation>Trim Auflösung</translation>
+        <translation>Trimmschritte</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="560"/>
         <source>Trims Display</source>
-        <translation>Trimmwerte anzeigen</translation>
+        <translation>Trimmungswerte anzeigen</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="167"/>
@@ -10831,7 +10837,7 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../modeledit/setup.ui" line="488"/>
         <source>Extended Trims</source>
-        <translation>Erw. Trim 25%--&gt; 100%</translation>
+        <translation>Erw. Trimmung 25% --&gt; 100%</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="404"/>
@@ -10872,7 +10878,7 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../wizarddialog.cpp" line="778"/>
         <source>Elevator Channel:</source>
-        <translation>Höhe Kanal:</translation>
+        <translation>Höheruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -11797,47 +11803,47 @@ Error: %2</source>
     <message>
         <location filename="../helpers_html.cpp" line="154"/>
         <source>Style sheet data read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten wurden aus der Datei %1 eingelesen</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="156"/>
         <source>Style sheet data unable to be read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten konnten nicht aus der Datei %1 eingelesen werden</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="169"/>
         <source>Cannot create folder &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner %1 konnte nicht erstellt werden</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="174"/>
         <source>Cannot open file for writing &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 konnte nicht zum schreiben geöffnet werden. Fehler: %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="181"/>
         <source>Cannot write to file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>In die Datei %1 konnte nicht geschrieben werden. Fehler: %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="183"/>
         <source>Cannot flush buffer for file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Pufferinhalt konnte nicht in die Datei %1 übernommen werden: Fehler %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="188"/>
         <source>Style sheet written to &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten wurde in der Datei %1 geschrieben</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="203"/>
         <source>Custom style sheet deleted: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das benutzerdefinierte Stylesheet %1 wurde gelöscht</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="205"/>
         <source>Unable to delete custom style sheet: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das benutzerdefinierte Stylesheet %1 konnte nicht gelöscht werden</translation>
     </message>
 </context>
 <context>
@@ -12005,22 +12011,22 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="354"/>
         <source>Elevator and Rudder</source>
-        <translation>Höhe und Seite</translation>
+        <translation>Höhen- und Seiteruder</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="356"/>
         <source>Only Elevator</source>
-        <translation>Nur Höhe</translation>
+        <translation>Nur Höheruder</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="357"/>
         <source>V-tail</source>
-        <translation>V Leitwerk</translation>
+        <translation>V-Leitwerk</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="360"/>
         <source>Tail Type:</source>
-        <translation>Leitwerk Typ:</translation>
+        <translation>Leitwerkstyp:</translation>
     </message>
 </context>
 <context>
@@ -12152,7 +12158,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="270"/>
         <source>Source</source>
-        <translation type="unfinished">Quelle</translation>
+        <translation>Quelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="611"/>
@@ -12162,12 +12168,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="645"/>
         <source>Altitude source</source>
-        <translation>Höhe Quelle</translation>
+        <translation>Höhenquelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="658"/>
         <source>Volts source</source>
-        <translation>Spannung Quelle</translation>
+        <translation>Spannungsquelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="681"/>
@@ -12177,12 +12183,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="846"/>
         <source> mAh</source>
-        <translation>mAh</translation>
+        <translation> mAh</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="862"/>
         <source> A</source>
-        <translation>A</translation>
+        <translation> A</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="913"/>
@@ -13015,7 +13021,7 @@ Timestamp</source>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1644"/>
         <source>Meters</source>
-        <translation>Meter</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1164"/>
@@ -13107,7 +13113,7 @@ hh:mm:ss</source>
         <location filename="../simulation/telemetrysimu.ui" line="2056"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
         <source>Amps</source>
-        <translation>Ampere</translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2092"/>
@@ -13127,7 +13133,7 @@ hh:mm:ss</source>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1642"/>
         <source>Volts</source>
-        <translation>Volt</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2260"/>
@@ -13157,7 +13163,7 @@ hh:mm:ss</source>
         <location filename="../simulation/telemetrysimu.ui" line="2582"/>
         <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1649"/>
         <source>Degrees</source>
-        <translation>Grad</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2987"/>
@@ -13228,7 +13234,7 @@ hh:mm:ss</source>
     <message>
         <location filename="../wizarddialog.cpp" line="408"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation>&lt;br&gt;Gas Kanal:</translation>
+        <translation>&lt;br&gt;Gaskanal:</translation>
     </message>
 </context>
 <context>
@@ -13471,19 +13477,19 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../modelslist.cpp" line="151"/>
         <source>RX #</source>
-        <translation type="unfinished"></translation>
+        <translation>RX #</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="691"/>
         <source>Models</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
-        <translation type="unfinished">Modelle</translation>
+        <translation>Modelle</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="710"/>
         <source>Model %1</source>
         <extracomment>Translators: do NOT use accents here, this is a default model name.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Modell %1</translation>
     </message>
 </context>
 <context>
@@ -13491,12 +13497,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="705"/>
         <source>First Tail Channel:</source>
-        <translation>Erster rechter Leitwerk Kanal:</translation>
+        <translation>Erster Leitwerkskanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="707"/>
         <source>Second Tail Channel:</source>
-        <translation>Zweiter, linker Leitwerk Kanal:</translation>
+        <translation>Zweiter Leitwerkskanal:</translation>
     </message>
 </context>
 <context>
@@ -13560,12 +13566,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Model Wizard</source>
-        <translation>Modell Wizard</translation>
+        <translation>Modell-Wizard</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Model Type</source>
-        <translation>Model Type</translation>
+        <translation>Modelltyp</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
@@ -13575,7 +13581,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Throttle</source>
-        <translation>Gas</translation>
+        <translation>Antrieb</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
@@ -13585,7 +13591,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Wing Type</source>
-        <translation>Flächen Typ</translation>
+        <translation>Flächentyp</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
@@ -13605,12 +13611,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Flaps</source>
-        <translation>Landeklappen</translation>
+        <translation>Wölbklappen</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Has your model got flaps?</source>
-        <translation>Hat das Modell Landeklappen?</translation>
+        <translation>Hat das Modell Wölbklappen?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
@@ -13682,12 +13688,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Which type of swash control is installed in your helicopter?</source>
-        <translation>Welchen Typ an Taumelscheibe hat der Heli?</translation>
+        <translation>Welche Art von Taumelscheibe ist verbaut?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Tail Gyro</source>
-        <translation>Heck Kreisel</translation>
+        <translation>Heckkreisel</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
@@ -13702,7 +13708,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Has your helicopter got a flybar?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hat der Hubschrauber eine Flybar?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
@@ -13719,7 +13725,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
         <source>Multirotor</source>
-        <translation>MultiCopter</translation>
+        <translation>Multikopter</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
@@ -13739,12 +13745,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Save Changes</source>
-        <translation>Speichere die Kanäle</translation>
+        <translation>Änderungen speichern</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished"></translation>
+        <translation>Überprüfe, ob alle Steuerflächen sich in die richtige Richtung bewegen und invertiere diese gegebenenfalls. Entferne den oder die Propeller bevor du das Modell zum ersten mal steuerst.&lt;br&gt;Bitte beachte, dass das Fortfahren alle alten Einstellungen überschreibt!</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="75"/>
@@ -13754,7 +13760,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="78"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den der ESC oder der Gasservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Gas - Spektrum: CH1, Futaba: CH3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
@@ -13769,12 +13775,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="93"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Wizard geht davon aus, dass die Wölbklappen durch einen Schalter gesteuert werden. Sollen die Wölbklappen durch ein Poti gesteuert werden, kann dies später noch geändert werden.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="97"/>
         <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Störklappen werden eingesetzt um den Widerstand zu erhöhen und damit den Gleitwinkel  bei Seglern zu verschlechtern.&lt;br&gt;Für ander Arten von Flugzeugen sind sie eher ungewöhnlich.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="101"/>
@@ -13784,23 +13790,23 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="105"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den das Seitenruderservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Seitenruder - Spektrum: CH4, Futaba: CH4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="109"/>
         <source>Select the tail type of your plane.</source>
-        <translation>Wählen Sie den Leitwerkstyp Ihres Flugzeugs.</translation>
+        <translation>Wähle den Leitwerkstyp des Flugzeugs.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="112"/>
         <location filename="../wizarddialog.cpp" line="117"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den Seiten- und das Höhenruderservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Seitenruder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Höhenruder - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="122"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Wählen Sie den Kanal für das Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
+        <translation>Wähle den Kanal für das Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
@@ -13816,12 +13822,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="141"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle die Steuerkanäle für deinen Multikopter.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="154"/>
         <source>There is no help available for the current page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Für diese Seite steht keine Hilfe zur Verfügung.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="157"/>
@@ -13849,17 +13855,17 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="1056"/>
         <source>Model Name: </source>
-        <translation>Model Name: </translation>
+        <translation>Modelname: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1057"/>
         <source>Model Type: </source>
-        <translation>Model Typ: </translation>
+        <translation>Modelltyp: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1059"/>
         <source>Options: </source>
-        <translation>Optionen:</translation>
+        <translation>Optionen: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1071"/>
