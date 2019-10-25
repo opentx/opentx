@@ -2371,7 +2371,7 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../modeledit/expodialog.ui" line="355"/>
         <source>Include Trim</source>
-        <translation>Trimmung einschliessen</translation>
+        <translation>Trimmung einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="363"/>
@@ -3562,32 +3562,32 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="197"/>
         <source>Popup enabled</source>
-        <translation>Anzeige im Popupfenster freigeben</translation>
+        <translation>Anzeige im Popup-Fenster freigeben</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="39"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="102"/>
         <source>Trim disabled</source>
-        <translation>Trim ausgeschaltet</translation>
+        <translation>Trimmung deaktivieren</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Own Trim</source>
-        <translation>Eigene Trim</translation>
+        <translation>Eigene Trimmung</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="109"/>
         <source>Use Trim from Flight mode %1</source>
-        <translation>Trim von Flugphase %1</translation>
+        <translation>Trimmung von Flugphase %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="111"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation>Trim von Flugphase %1 + Eigene Trim als Offset</translation>
+        <translation>Trimmung von Flugphase %1 + Eigenen Trimmung als Offset</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="181"/>
@@ -7315,7 +7315,7 @@ Sollen die Änderungen gespeichert werden?</translation>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
         <source>Include Trim</source>
-        <translation>Trimmung einschliessen</translation>
+        <translation>Trimmung einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="536"/>
@@ -8122,7 +8122,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modelprinter.cpp" line="1021"/>
         <source>Trim idle only</source>
-        <translation>Nur Leerlauftrimm</translation>
+        <translation>Nur Leerlauftrimmung</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1022"/>
@@ -10327,82 +10327,82 @@ r</translation>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="40"/>
         <source>RudTrim Left</source>
-        <translation>SeiteTrim links</translation>
+        <translation>Seitenruder-Trimmer links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="40"/>
         <source>RudTrim Right</source>
-        <translation>SeiteTrim rechts</translation>
+        <translation>Seiteruder-Trimmer rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="41"/>
         <source>EleTrim Down</source>
-        <translation>HöheTrim ab</translation>
+        <translation>Höheruder-Trimmer runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="41"/>
         <source>EleTrim Up</source>
-        <translation>HöheTrim auf</translation>
+        <translation>Höheruder-Trimmer hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="42"/>
         <source>ThrTrim Down</source>
-        <translation>GasTrim ab</translation>
+        <translation>Gas-Trimmer runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="42"/>
         <source>ThrTrim Up</source>
-        <translation>GasTrim auf</translation>
+        <translation>Gas-Trimmer hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="43"/>
         <source>AilTrim Left</source>
-        <translation>QuerTrim links</translation>
+        <translation>Querruder-Trimmer links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="43"/>
         <source>AilTrim Right</source>
-        <translation>QuerTrim rechts</translation>
+        <translation>Querruder-Trimmer rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="44"/>
         <source>Trim 5 Down</source>
-        <translation>Trim5 ab</translation>
+        <translation>Trimmer 5 runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="44"/>
         <source>Trim 5 Up</source>
-        <translation>Trim5 auf</translation>
+        <translation>Trimmer 5 hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="45"/>
         <source>Trim 6 Down</source>
-        <translation>Trim6 ab</translation>
+        <translation>Trimmer 6 runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="45"/>
         <source>Trim 6 Up</source>
-        <translation>Trim6 auf</translation>
+        <translation>Trimmer 6 hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Left</source>
-        <translation>TrimH links</translation>
+        <translation>Trimmer H links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Right</source>
-        <translation>TrimH rechts</translation>
+        <translation>Trimmer H rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Down</source>
-        <translation>TrimV ab</translation>
+        <translation>Trimmer V runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Up</source>
-        <translation>TrimV auf</translation>
+        <translation>Trimmer V hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="54"/>
@@ -10696,7 +10696,8 @@ r</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="387"/>
         <source>Throttle Trim Idle Only</source>
-        <translation>Gas Leerlauftrim</translation>
+        <translatorcomment>Hier bin ich mir nicht sicher</translatorcomment>
+        <translation>Gas-Leerlaufstrimmung</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="601"/>
@@ -10709,9 +10710,10 @@ r</translation>
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
 </source>
-        <translation>Vollgas hinten?
-Wenn das angewählt wird, dann ist Leerlauf vorne. Auch die Gas-Leerlauftrimmung und die Gasstellungs-Warung wird
-umgedreht und ist dann vorne.
+        <translation>Umgekehrte Gas-Funktion
+Wenn angewählt, befindet sich der Leerlauf vorne. Die Gas-Leerlaufstrimmung sowie die Gasstellungs-Warnung werden dadurch
+ebenfalls umgekehrt.
+
 </translation>
     </message>
     <message>
@@ -10782,12 +10784,12 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../modeledit/setup.ui" line="544"/>
         <source>Trim Step</source>
-        <translation>Trim Auflösung</translation>
+        <translation>Trimmschritte</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="560"/>
         <source>Trims Display</source>
-        <translation>Trimmwerte anzeigen</translation>
+        <translation>Trimmungswerte anzeigen</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="167"/>
@@ -10832,7 +10834,7 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../modeledit/setup.ui" line="488"/>
         <source>Extended Trims</source>
-        <translation>Erw. Trim 25%--&gt; 100%</translation>
+        <translation>Erw. Trimmung 25% --&gt; 100%</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="404"/>
