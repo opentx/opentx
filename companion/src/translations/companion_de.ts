@@ -11798,47 +11798,47 @@ Error: %2</source>
     <message>
         <location filename="../helpers_html.cpp" line="154"/>
         <source>Style sheet data read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten wurden aus der Datei %1 eingelesen</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="156"/>
         <source>Style sheet data unable to be read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten konnten nicht aus der Datei %1 eingelesen werden</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="169"/>
         <source>Cannot create folder &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner %1 konnte nicht erstellt werden</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="174"/>
         <source>Cannot open file for writing &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 konnte nicht zum schreiben geöffnet werden. Fehler: %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="181"/>
         <source>Cannot write to file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>In die Datei %1 konnte nicht geschrieben werden. Fehler: %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="183"/>
         <source>Cannot flush buffer for file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Pufferinhalt konnte nicht in die Datei %1 übernommen werden: Fehler %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="188"/>
         <source>Style sheet written to &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten wurde in der Datei %1 geschrieben</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="203"/>
         <source>Custom style sheet deleted: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das benutzerdefinierte Stylesheet %1 wurde gelöscht</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="205"/>
         <source>Unable to delete custom style sheet: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das benutzerdefinierte Stylesheet %1 konnte nicht gelöscht werden</translation>
     </message>
 </context>
 <context>
