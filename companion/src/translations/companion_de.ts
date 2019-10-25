@@ -1742,7 +1742,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="204"/>
         <source>Value </source>
-        <translation>Wert</translation>
+        <translation>Wert </translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="228"/>
@@ -1752,7 +1752,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="235"/>
         <source>repeat(%1s)</source>
-        <translation type="unfinished"></translation>
+        <translation>wiederholen(%1s)</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="248"/>
@@ -2171,7 +2171,7 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../downloaddialog.ui" line="14"/>
         <source>Downloading: </source>
-        <translation>Herunterladen:</translation>
+        <translation>Herunterladen: </translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="49"/>
@@ -3647,12 +3647,12 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="749"/>
         <source> (%1)</source>
-        <translation>(%1)</translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="752"/>
         <source> (default)</source>
-        <translation>(normal)</translation>
+        <translation> (normal)</translation>
     </message>
 </context>
 <context>
@@ -7406,7 +7406,9 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixerdialog.ui" line="425"/>
         <source>Mixer warning.
 Setting this value will cause a beep to be emmitted when this value is active.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Ich bin mir nicht sicher ob der </translatorcomment>
+        <translation>Mixerwarnung.
+Diese Einstellung sorgt dafür, dass ein Piepton abgespielt wird, sobald dieser Mixer aktiviert wird.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="501"/>
@@ -7454,7 +7456,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="397"/>
         <source>Include DR/Expo</source>
-        <translation>DR/Expo einschliessen</translation>
+        <translation>DR/Expo einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="32"/>
@@ -7464,7 +7466,8 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="39"/>
         <source>Slow</source>
-        <translation>Langsam</translation>
+        <translatorcomment>Man könnte auch Hemmung sagen</translatorcomment>
+        <translation>Verlangsamung</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="46"/>
@@ -9439,7 +9442,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="299"/>
         <source> ... plus %1 errors</source>
-        <translation>...plus %1 Fehler</translation>
+        <translation> ... plus %1 Fehler</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="348"/>
@@ -13862,7 +13865,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="1059"/>
         <source>Options: </source>
-        <translation>Optionen:</translation>
+        <translation>Optionen: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1071"/>
