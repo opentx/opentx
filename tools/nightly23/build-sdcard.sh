@@ -65,6 +65,7 @@ else
   ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-taranis-xlite-${sdcard_version}.zip
   ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-taranis-x9lite-${sdcard_version}.zip
   ln -s ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip ${output}/sdcard/sdcard-jumper-t12-${sdcard_version}.zip
+  ln -s ${output}/sdcard/sdcard-horus-${sdcard_version}.zip ${output}/sdcard/sdcard-jumper-t16-${sdcard_version}.zip
 
   # remove LUA stuff for 9x platform
   rm -Rf ${workdir}/sdcard/taranis-x7/SCRIPTS
