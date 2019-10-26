@@ -568,7 +568,7 @@ void ModulePanel::update()
     unsigned i = 0;
     switch(protocol){
     case PULSES_MULTIMODULE:
-      numEntries = (protocol > MODULE_SUBTYPE_MULTI_LAST ? 8 : pdef.numSubTypes());
+      numEntries = (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST ? 8 : pdef.numSubTypes());
       break;
     case PULSES_PXX_R9M:
       if (firmware->getCapability(HasModuleR9MFlex))
@@ -590,11 +590,15 @@ void ModulePanel::update()
   ui->multiProtocol->setVisible(mask & MASK_MULTIMODULE);
   ui->label_option->setVisible(mask & MASK_MULTIOPTION);
   ui->optionValue->setVisible(mask & MASK_MULTIOPTION);
+  ui->disableTelem->setVisible(mask & MASK_MULTIMODULE);
+  ui->disableChMap->setVisible(mask & MASK_MULTIMODULE);
   ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
 
   if (mask & MASK_MULTIMODULE) {
     ui->multiProtocol->setCurrentIndex(ui->multiProtocol->findData(module.multi.rfProtocol));
+    ui->disableTelem->setChecked(module.multi.disableTelemetry);
+    ui->disableChMap->setChecked(module.multi.disableMapping);
     ui->autoBind->setChecked(module.multi.autoBindMode);
     ui->lowPower->setChecked(module.multi.lowPowerMode);
   }
@@ -796,10 +800,21 @@ void ModulePanel::onSubTypeChanged()
   }
 }
 
+void ModulePanel::on_disableTelem_stateChanged(int state)
+{
+  module.multi.disableTelemetry = (state == Qt::Checked);
+}
+
+void ModulePanel::on_disableChMap_stateChanged(int state)
+{
+  module.multi.disableMapping = (state == Qt::Checked);
+}
+
 void ModulePanel::on_autoBind_stateChanged(int state)
 {
   module.multi.autoBindMode = (state == Qt::Checked);
 }
+
 void ModulePanel::on_lowPower_stateChanged(int state)
 {
   module.multi.lowPowerMode = (state == Qt::Checked);
