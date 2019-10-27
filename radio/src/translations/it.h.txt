@@ -844,8 +844,8 @@
 #define TR_FLASH_INTERNAL_MULTI        "Prog. Multi int."
 #define TR_FLASH_EXTERNAL_MULTI        "Prog. Multi est."
 #define TR_FIRMWARE_UPDATE_ERROR TR(INDENT "Errore agg. FW",INDENT "Errore aggiornamento firmware")
-#define TR_FIRMWARE_UPDATE_SUCCESS     "Agg. riuscito"
-#define TR_WRITING             "\032Scrivendo..."
+#define TR_FIRMWARE_UPDATE_SUCCESS     "Aggiornamento" BREAKSPACE "riuscito"
+#define TR_WRITING             "Scrittura..."
 #define TR_CONFIRM_FORMAT      "Confermi Formattazione?"
 #define TR_INTERNALRF          "Modulo Interno"
 #define TR_INTERNAL_MODULE             TR("Modulo int.", "Modulo interno")
