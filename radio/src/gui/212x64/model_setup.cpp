@@ -820,7 +820,8 @@ void menuModelSetup(event_t event)
           uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
           // Do not use MODEL_SETUP_3RD_COLUMN here since some the protocol string are so long that we cannot afford the 2 spaces (+6) here
           lcdDrawMultiProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
-          lcdDrawMultiSubProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+          if(MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
+            lcdDrawMultiSubProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
         }
 #endif
         if (attr && menuHorizontalPosition == 0) {

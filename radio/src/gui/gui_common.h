@@ -195,7 +195,7 @@ inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
-#define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 :MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol()) ? (uint8_t)2 : (uint8_t)1
+#define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t)2 : (uint8_t)1
 
 inline bool isMultiProtocolSelectable(int protocol)
 {
@@ -204,19 +204,23 @@ inline bool isMultiProtocolSelectable(int protocol)
 
 inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
 {
-  return getMultiProtocolDefinition(moduleIdx)->maxSubtype > 0;
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST)
+    return true;
+  else
+    return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->maxSubtype > 0;
 }
+
 inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
 {
 #if LCD_W < 212
-  return (MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol()) ? (uint8_t) 0 : HIDDEN_ROW);
+  return (MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW);
 #else
-  return (MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[moduleIdx].getMultiProtocol()) ? (uint8_t) 1 : 0);
+  return (MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t) 1 : 0);
 #endif
 }
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)     isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
 #define MULTIMODULE_HASOPTIONS(moduleIdx)       (getMultiProtocolDefinition(moduleIdx)->optionsstr != nullptr)
-#define MULTIMODULE_OPTIONS_ROW(moduleIdx)      (isModuleMultimodule(moduleIdx) && MULTIMODULE_HASOPTIONS(g_model.moduleData[moduleIdx].getMultiProtocol())) ? (uint8_t) 0: HIDDEN_ROW
+#define MULTIMODULE_OPTIONS_ROW(moduleIdx)      (isModuleMultimodule(moduleIdx) && MULTIMODULE_HASOPTIONS(moduleIdx)) ? (uint8_t) 0: HIDDEN_ROW
 
 #else
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)
