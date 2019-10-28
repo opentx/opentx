@@ -3421,7 +3421,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../process_flash.cpp" line="69"/>
         <source>Executable %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Die ausführbare Datei %1 wurde nicht gefunden</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="203"/>
