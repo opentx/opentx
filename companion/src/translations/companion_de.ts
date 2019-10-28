@@ -9984,12 +9984,12 @@ r</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="320"/>
         <source>Trm5</source>
-        <translation type="unfinished"></translation>
+        <translation>Trm5</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="320"/>
         <source>Trm6</source>
-        <translation type="unfinished"></translation>
+        <translation>Trm6</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
@@ -9999,7 +9999,7 @@ r</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
         <source>TrmV</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TrmV</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="328"/>
