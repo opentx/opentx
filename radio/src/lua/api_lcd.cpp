@@ -454,8 +454,8 @@ static int luaGetBitmapSize(lua_State * L)
 {
   const BitmapBuffer * b = checkBitmap(L, 1);
   if (b) {
-    lua_pushinteger(L, b->getWidth());
-    lua_pushinteger(L, b->getHeight());
+    lua_pushinteger(L, b->width());
+    lua_pushinteger(L, b->height());
   }
   else {
     lua_pushinteger(L, 0);

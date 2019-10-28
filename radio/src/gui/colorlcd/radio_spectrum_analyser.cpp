@@ -50,8 +50,8 @@ class SpectrumWindow : public Window
       }
 
       coord_t y = max<coord_t>(FH, SPECTRUM_HEIGHT - peak_y - FH);
-      dc->drawNumber(min<coord_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / 128)) / 1000000, TINSIZE);
-      dc->drawText(lcdNextPos, y, "M", TINSIZE);
+      dc->drawNumber(min<coord_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / 128)) / 1000000, FONT(XXS));
+      dc->drawText(lcdNextPos, y, "M", FONT(XXS));
     }
 
   protected:

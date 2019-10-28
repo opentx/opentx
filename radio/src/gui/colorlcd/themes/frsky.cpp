@@ -46,6 +46,7 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
       lcdColorTable[CHECKBOX_COLOR_INDEX] = RED;
+      lcdColorTable[SCROLLBAR_COLOR_INDEX] = RED;
       lcdColorTable[MENU_BGCOLOR_INDEX] = DARKGREY;
       lcdColorTable[MENU_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
@@ -79,14 +80,14 @@ class FrskyTheme: public ThemeBase
         iconMask[index] = mask;
 
         delete menuIconNormal[index];
-        menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
+        menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->width(), mask->height());
         if (menuIconNormal[index]) {
           menuIconNormal[index]->clear(MENU_BGCOLOR);
           menuIconNormal[index]->drawMask(0, 0, mask, color);
         }
 
         delete menuIconSelected[index];
-        menuIconSelected[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
+        menuIconSelected[index] = new BitmapBuffer(BMP_RGB565, mask->width(), mask->height());
         if (menuIconSelected[index]) {
           menuIconSelected[index]->clear(HEADER_CURRENT_BGCOLOR);
           menuIconSelected[index]->drawMask(0, 0, mask, color);
@@ -157,9 +158,9 @@ class FrskyTheme: public ThemeBase
       }
 
       if (currentMenuBackground) {
-        currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, MENU_BGCOLOR);
-        currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, DEFAULT_BGCOLOR);
-        currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->width(), MENU_HEADER_HEIGHT, MENU_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->width(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, DEFAULT_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->width(), currentMenuBackground->height() - MENU_TITLE_TOP, TITLE_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
         currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
         currentMenuBackground->drawMask(10, 39, dot, MENU_COLOR);
@@ -292,6 +293,7 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[DEFAULT_BGCOLOR_INDEX] = bg_color;
       lcdColorTable[FOCUS_BGCOLOR_INDEX] = color;
       lcdColorTable[CHECKBOX_COLOR_INDEX] = color;
+      lcdColorTable[SCROLLBAR_COLOR_INDEX] = color;
       lcdColorTable[CURVE_COLOR_INDEX] = color;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
@@ -323,7 +325,7 @@ class FrskyTheme: public ThemeBase
     {
       if (topleftBitmap) {
         dc->drawBitmap(0, 0, topleftBitmap);
-        uint16_t width = topleftBitmap->getWidth();
+        uint16_t width = topleftBitmap->width();
         dc->drawSolidFilledRect(width, 0, LCD_W - width, MENU_HEADER_HEIGHT, MENU_BGCOLOR);
       }
       else {

@@ -74,8 +74,8 @@ class FilePreview : public Window
       coord_t h = MENU_BODY_HEIGHT - 4;
       lcd->drawSolidFilledRect(0, y, width(), h, DISABLE_COLOR);
       if (bitmap) {
-        coord_t bitmapHeight = min<coord_t>(h, bitmap->getHeight());
-        coord_t bitmapWidth = min<coord_t>(width(), bitmap->getWidth());
+        coord_t bitmapHeight = min<coord_t>(h, bitmap->height());
+        coord_t bitmapWidth = min<coord_t>(width(), bitmap->width());
         dc->drawScaledBitmap(bitmap, (width() - bitmapWidth) / 2, y + (h - bitmapHeight) / 2, bitmapWidth,
                              bitmapHeight);
       }
