@@ -3481,13 +3481,14 @@ Bitte dazu eine passende Firmware zum Programmieren auswählen.</translation>
         <source>
 You are currently using:
  %1</source>
-        <translation>Sie verwenden gerade:
+        <translation>
+Sie verwenden gerade:
  %1</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="289"/>
         <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Sender scheint entweder nicht per USB angeschlossen zu sein, oder der entsprechende Treiber wurde nicht installiert.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="300"/>
