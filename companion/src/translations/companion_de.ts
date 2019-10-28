@@ -10797,7 +10797,7 @@ ebenfalls umgekehrt.
     <message>
         <location filename="../modeledit/setup.ui" line="528"/>
         <source>Throttle Source</source>
-        <translation>GasTimer Quelle</translation>
+        <translation>Gas-Timer-Quelle</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="544"/>
@@ -10857,7 +10857,7 @@ ebenfalls umgekehrt.
     <message>
         <location filename="../modeledit/setup.ui" line="404"/>
         <source>Throttle Warning</source>
-        <translation>Gas Warnung</translation>
+        <translation>Gas-Warnung</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="465"/>
