@@ -1659,37 +1659,37 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="91"/>
         <source>Adjust %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstelle %1</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="93"/>
         <source>SetFailsafe Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>SetFailsafe Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="95"/>
         <source>SetFailsafe Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>SetFailsafe Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="97"/>
         <source>RangeCheck Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>RangeCheck Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="99"/>
         <source>RangeCheck Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>RangeCheck Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="101"/>
         <source>Bind Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Binden Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="103"/>
         <source>Bind Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Binden Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="115"/>
@@ -1741,7 +1741,7 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../firmwares/customfunctiondata.cpp" line="178"/>
         <location filename="../firmwares/customfunctiondata.cpp" line="187"/>
         <source>&lt;font color=red&gt;&lt;b&gt;Inconsistent parameter&lt;/b&gt;&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font color=red&gt;&lt;b&gt;Widersprüchliche Parameter&lt;/b&gt;&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="204"/>
@@ -1766,7 +1766,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="256"/>
         <source>CFN</source>
-        <translation type="unfinished"></translation>
+        <translation>CFN</translation>
     </message>
 </context>
 <context>
