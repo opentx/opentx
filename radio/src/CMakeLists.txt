@@ -328,6 +328,10 @@ if(MODULE_PROTOCOL_D8)
   add_definitions(-DMODULE_PROTOCOL_D8)
 endif()
 
+if(JUMPER_RELEASE)
+  add_definitions(-DJUMPER_RELEASE)
+endif()
+
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
   set(POPUP_LEVEL 3)
