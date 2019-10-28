@@ -10611,7 +10611,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="58"/>
         <source>°F</source>
-        <translation type="unfinished"></translation>
+        <translation>°F</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="60"/>
@@ -10631,7 +10631,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="66"/>
         <source>mW</source>
-        <translation type="unfinished"></translation>
+        <translation>mW</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="68"/>
@@ -10656,7 +10656,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="76"/>
         <source>Rad</source>
-        <translation type="unfinished"></translation>
+        <translation>rad</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="78"/>
@@ -10681,12 +10681,12 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="112"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="114"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe</translation>
     </message>
 </context>
 <context>
