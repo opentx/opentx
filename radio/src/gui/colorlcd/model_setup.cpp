@@ -21,6 +21,7 @@
 #include "model_setup.h"
 #include "opentx.h"
 #include "libopenui.h"
+#include "storage/modelslist.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
@@ -835,14 +836,22 @@ void ModelSetupPage::build(FormWindow * window)
 
   // Model name
   new StaticText(window, grid.getLabelSlot(), STR_MODELNAME);
-  new TextEdit(window, grid.getFieldSlot(), g_model.header.name, sizeof(g_model.header.name));
+  auto text = new TextEdit(window, grid.getFieldSlot(), g_model.header.name, sizeof(g_model.header.name));
+  text->setChangeHandler([=] {
+      modelslist.load();
+      auto model = modelslist.getCurrentModel();
+      if (model) {
+        model->setModelName(g_model.header.name);
+      }
+      SET_DIRTY();
+  });
   grid.nextLine();
 
   // Bitmap
   new StaticText(window, grid.getLabelSlot(), STR_BITMAP);
-  new FileChoice(window, grid.getFieldSlot(), BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap) - LEN_BITMAPS_EXT,
+  new FileChoice(window, grid.getFieldSlot(), BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap),
                  [=]() {
-                   return std::string(g_model.header.bitmap, ZLEN(g_model.header.bitmap));
+                   return std::string(g_model.header.bitmap, sizeof(g_model.header.bitmap));
                  },
                  [=](std::string newValue) {
                    strncpy(g_model.header.bitmap, newValue.c_str(), sizeof(g_model.header.bitmap));

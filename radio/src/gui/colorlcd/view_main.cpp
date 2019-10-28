@@ -200,7 +200,7 @@ void ViewMain::openMenu()
 {
   Menu * menu = new Menu();
   menu->addLine(STR_MODEL_SELECT, [=]() {
-      new ModelselectMenu();
+      new ModelSelectMenu();
   });
   if (modelHasNotes()) {
     menu->addLine(STR_VIEW_NOTES, [=]() {

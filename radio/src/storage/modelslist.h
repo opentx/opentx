@@ -39,30 +39,28 @@ struct SimpleModuleData
 
 class ModelCell
 {
-public:
-  char modelFilename[LEN_MODEL_FILENAME+1];
-  char modelName[LEN_MODEL_NAME+1];
-  BitmapBuffer * buffer;
+  public:
+    char modelFilename[LEN_MODEL_FILENAME+1];
+    char modelName[LEN_MODEL_NAME+1] = {};
 
-  bool             valid_rfData;
-  uint8_t          modelId[NUM_MODULES];
-  SimpleModuleData moduleData[NUM_MODULES];
+    bool             valid_rfData;
+    uint8_t          modelId[NUM_MODULES];
+    SimpleModuleData moduleData[NUM_MODULES];
 
-  ModelCell(const char * name);
-  ~ModelCell();
+    explicit ModelCell(const char * name);
+    ~ModelCell();
 
-  void save(FIL* file);
+    void save(FIL* file);
 
-  void setModelName(char* name);
-  void setRfData(ModelData* model);
+    void setModelName(char* name);
+    void setRfData(ModelData* model);
 
-  void setModelId(uint8_t moduleIdx, uint8_t id);
-  void setRfModuleData(uint8_t moduleIdx, ModuleData* modData);
+    void setModelId(uint8_t moduleIdx, uint8_t id);
+    void setRfModuleData(uint8_t moduleIdx, ModuleData* modData);
 
-  bool  fetchRfData();
-  void  loadBitmap();
-  const BitmapBuffer * getBuffer();
-  void  resetBuffer();
+    bool  fetchRfData();
+  //  void  loadBitmap();
+  //  void  resetBuffer();
 };
 
 class ModelsCategory: public std::list<ModelCell *>
@@ -70,7 +68,7 @@ class ModelsCategory: public std::list<ModelCell *>
 public:
   char name[LEN_MODEL_FILENAME+1];
 
-  ModelsCategory(const char * name);
+  explicit ModelsCategory(const char * name);
   ~ModelsCategory();
 
   ModelCell * addModel(const char * name);

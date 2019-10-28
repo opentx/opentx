@@ -41,9 +41,9 @@ enum ModelDeleteMode {
 uint8_t selectMode, deleteMode;
 //ModelsList modelslist;
 
-ModelsCategory * currentCategory;
-int currentCategoryIndex;
-ModelCell * currentModel;
+//ModelsCategory * currentCategory;
+//int currentCategoryIndex;
+//ModelCell * currentModel;
 
 /*
 void drawCategory(BitmapBuffer * dc, coord_t y, const char * name, bool selected)
@@ -74,8 +74,8 @@ void drawModel(coord_t x, coord_t y, ModelCell * model, bool current, bool selec
 }
 */
 
-uint16_t categoriesVerticalOffset = 0;
-uint16_t categoriesVerticalPosition = 0;
+//uint16_t categoriesVerticalOffset = 0;
+//uint16_t categoriesVerticalPosition = 0;
 #define MODEL_INDEX()       (menuVerticalPosition*2+menuHorizontalPosition)
 
 #if 0
@@ -87,7 +87,7 @@ void setCurrentModel(unsigned int index)
 }
 #endif
 
-
+#if 0
 void setCurrentCategory(unsigned int index)
 {
   currentCategoryIndex = index;
@@ -101,182 +101,245 @@ void setCurrentCategory(unsigned int index)
   else
     currentModel = NULL;*/
 }
+#endif
 
-void initModelsList()
-{
-  modelslist.load();
-
-  categoriesVerticalOffset = 0;
-  bool found = false;
-  int index = 0;
-  for (auto & category : modelslist.getCategories()) {
-    if (category == modelslist.getCurrentCategory()) {
-      setCurrentCategory(index);
-      found = true;
-      break;
-    }
-    index++;
-  }
-  if (!found) {
-    setCurrentCategory(0);
-  }
-
-  menuVerticalOffset = 0;
-  found = false;
-  index = 0;
-  for (auto & cell : *currentCategory) {
-    if (cell == modelslist.getCurrentModel()) {
-      // setCurrentModel(index);
-      found = true;
-      break;
-    }
-  }
-  if (!found) {
-    // setCurrentModel(0);
-  }
-}
-
-class ModelselectButton: public Button {
+class ModelButton: public Button {
   public:
-    ModelselectButton(FormGroup * parent, const rect_t & rect, ModelCell * modelCell, Window * footer);
+    ModelButton(FormGroup * parent, const rect_t & rect, ModelCell * modelCell, Window * footer) :
+      Button(parent, rect),
+      modelCell(modelCell)
+    {
+      load();
+    }
+
+    void load()
+    {
+      uint8_t version;
+
+      PACK(struct {
+        ModelHeader header;
+        TimerData timers[MAX_TIMERS];
+      }) partialModel;
+      const char * error = nullptr;
+
+      if (strncmp(modelCell->modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
+        memcpy(&partialModel.header, &g_model.header, sizeof(partialModel));
+      }
+      else {
+        error = readModel(modelCell->modelFilename, (uint8_t *)&partialModel.header, sizeof(partialModel), &version);
+        // LEN_BITMAP_NAME has now 4 bytes more
+        if (version <= 218) {
+          memmove(partialModel.timers, &(partialModel.header.bitmap[10]), sizeof(TimerData)*MAX_TIMERS);
+          memclear(&(partialModel.header.bitmap[10]), 4);
+        }
+      }
+
+//      if (modelCell->modelName[0] == '\0' && !error)
+//        setModelName(partialModel.header.name); // resets buffer!!!
+
+      buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
+      if (buffer == nullptr) {
+        return;
+      }
+      buffer->clear(DEFAULT_BGCOLOR);
+
+      if (error) {
+        buffer->drawText(5, 2, "(Invalid Model)", DEFAULT_COLOR);
+        buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
+      }
+      else {
+        char timerName[LEN_TIMER_STRING];
+        buffer->drawSizedText(5, 2, modelCell->modelName, LEN_MODEL_NAME, FONT(XS) | DEFAULT_COLOR);
+        getTimerString(timerName, 0);
+        for (auto & timer : partialModel.timers) {
+          if (timer.mode > 0 && timer.persistent) {
+            getTimerString(timerName, timer.value);
+            break;
+          }
+        }
+        buffer->drawText(101, 40, timerName, DEFAULT_COLOR);
+        for (int i = 0; i < 4; i++) {
+          buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
+        }
+        GET_FILENAME(filename, BITMAPS_PATH, partialModel.header.bitmap, "");
+        const BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(filename);
+        if (bitmap) {
+          buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
+          delete bitmap;
+        }
+        else {
+          buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
+        }
+      }
+      buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
+    }
 
     void paint(BitmapBuffer * dc) override
     {
-      dc->drawSolidRect(0, 0, rect.w, rect.h, 2, hasFocus() ? SCROLLBOX_COLOR : CURVE_AXIS_COLOR);
-      dc->drawBitmap(10, 2, modelCell->getBuffer());
+      FormField::paint(dc);
+      dc->drawBitmap(10, 2, buffer);
       if (modelCell == modelslist.getCurrentModel()) {
         dc->drawBitmapPattern(112, 71, LBM_ACTIVE_MODEL, TITLE_BGCOLOR);
       }
     }
 
-    const char * modelFilename() {
+    const char * modelFilename()
+    {
       return modelCell->modelFilename;
     }
 
   protected:
     ModelCell * modelCell;
+    BitmapBuffer * buffer = nullptr;
 };
 
-class ModelselectFooter: public Window {
+class ModelSelectFooter: public Window {
   public:
-    ModelselectFooter(Window * parent, const rect_t & rect):
+    ModelSelectFooter(Window * parent, const rect_t & rect):
       Window(parent, rect)
     {
     }
 
+    void setCurrentModel(ModelCell * model)
+    {
+      currentModel = model;
+      invalidate();
+    }
+
     void paint(BitmapBuffer * dc) override
     {
-      dc->drawSolidFilledRect(0, 5, rect.w, 2, CURVE_AXIS_COLOR);
+      dc->drawSolidFilledRect(0, 0, width(), height(), DISABLE_COLOR);
       dc->drawBitmap(7, 12, modelselSdFreeBitmap);
       uint32_t size = sdGetSize() / 100;
       dc->drawNumber(24, 11, size, PREC1|FONT(XS), 0, NULL, "GB");
       dc->drawBitmap(77, 12, modelselModelQtyBitmap);
       dc->drawNumber(99, 11, modelslist.getModelsCount(), FONT(XS));
-      ModelselectButton * selectedModel = dynamic_cast<ModelselectButton *>(focusWindow);
-      if (selectedModel) {
+      if (currentModel) {
         dc->drawBitmap(7, 37, modelselModelNameBitmap);
-        dc->drawText(24, 32, selectedModel->modelFilename(), FONT(XS) | DEFAULT_COLOR);
+        dc->drawText(24, 32, currentModel->modelFilename, FONT(XS) | DEFAULT_COLOR);
       }
     }
+
+  protected:
+    ModelCell * currentModel = nullptr;
 };
 
-class ModelselectPage: public PageTab {
+class ModelCategoryPageBody: public FormWindow {
   public:
-    ModelselectPage() :
-      PageTab(STR_MODEL_SELECT, ICON_MODEL_CURVES /*ICON_MODEL_SELECT*/)
+    ModelCategoryPageBody(FormWindow * parent, const rect_t & rect, ModelsCategory * category, ModelSelectFooter * footer):
+      FormWindow(parent, rect, FORM_FORWARD_FOCUS),
+      category(category),
+      footer(footer)
     {
+      update();
     }
 
-    static void updateModels(FormGroup * window, Window * footer, int selected = -1)
+    void update(int selected = 0)
     {
-      window->clear();
+      clear();
+
       int index = 0;
-      for (auto it = currentCategory->begin(); it != currentCategory->end(); ++it, ++index) {
-        Button * button = new ModelselectButton(window, {10, 10 + index * 104, LCD_W - 20, 94}, *it, footer);
+      for (auto & model: * category) {
+        auto button = new ModelButton(this, {10, 10 + index * 104, LCD_W - 20, 94}, model, nullptr);
+
+        button->setFocusHandler([=] {
+            footer->setCurrentModel(model);
+        });
+
+        button->setPressHandler([=]() -> uint8_t {
+            if (button->hasFocus()) {
+              Menu * menu = new Menu();
+              if (model != modelslist.getCurrentModel()) {
+                menu->addLine(STR_SELECT_MODEL, [=]() {
+                    // we store the latest changes if any
+                    storageFlushCurrentModel();
+                    storageCheck(true);
+                    memcpy(g_eeGeneral.currModelFilename, model->modelFilename, LEN_MODEL_FILENAME);
+                    loadModel(g_eeGeneral.currModelFilename, false);
+                    storageDirty(EE_GENERAL);
+                    storageCheck(true);
+                    // chainMenu(menuMainView);
+                    postModelLoad(true);
+                    modelslist.setCurrentModel(model);
+                    update(); // modelslist.getModelIndex(modelCell));
+                });
+              }
+              menu->addLine(STR_CREATE_MODEL, [=]() {
+                  storageCheck(true);
+                  modelslist.setCurrentModel(modelslist.addModel(category, createModel()));
+#if defined(LUA)
+                  // chainMenu(menuModelWizard);
+#endif
+                  update(category->size() - 1);
+              });
+              menu->addLine(STR_DUPLICATE_MODEL, [=]() {
+                  char duplicatedFilename[LEN_MODEL_FILENAME + 1];
+                  memcpy(duplicatedFilename, model->modelFilename, sizeof(duplicatedFilename));
+                  if (findNextFileIndex(duplicatedFilename, LEN_MODEL_FILENAME, MODELS_PATH)) {
+                    sdCopyFile(model->modelFilename, MODELS_PATH, duplicatedFilename, MODELS_PATH);
+                    modelslist.addModel(category, duplicatedFilename);
+                    update(index);
+                  }
+                  else {
+                    POPUP_WARNING("Invalid File");
+                  }
+              });
+              // menu->addLine(STR_MOVE_MODEL);
+              if (model != modelslist.getCurrentModel()) {
+                menu->addLine(STR_DELETE_MODEL, [=]() {
+                  new ConfirmDialog(STR_DELETE_MODEL, std::string(model->modelName, sizeof(model->modelName)).c_str(), [=] {
+                      modelslist.removeModel(category, model);
+                      update(index > 0 ? index - 1 : 0);
+                  });
+                });
+              }
+            }
+            else {
+              button->setFocus();
+//              footer->invalidate();
+            }
+            return 1;
+        });
+
         if (selected == index) {
           button->setFocus();
         }
+        index++;
       }
-      window->adjustInnerHeight();
+
+      adjustInnerHeight();
     }
+
+  protected:
+    ModelsCategory * category;
+    ModelSelectFooter * footer;
+};
+
+class ModelCategoryPage: public PageTab {
+  public:
+    explicit ModelCategoryPage(ModelsCategory * category) :
+      PageTab(category->name, ICON_MODEL),
+      category(category)
+    {
+    }
+
+  protected:
+    ModelsCategory * category;
 
     void build(FormWindow * window) override
     {
-      initModelsList();
-      FormWindow * body = new FormWindow(window, {0, 0, LCD_W, window->height() - 55});
-      Window * footer = new ModelselectFooter(window, {0, window->height() - 55, LCD_W, 55});
-      updateModels(body, footer);
+      auto footer = new ModelSelectFooter(window, {0, window->height() - 55, LCD_W, 55});
+      new ModelCategoryPageBody(window, {0, 0, LCD_W, window->height() - 55}, category, footer);
     }
 };
 
 
-ModelselectMenu::ModelselectMenu():
-  TabsGroup(ICON_MODEL_CURVES)
+ModelSelectMenu::ModelSelectMenu():
+  TabsGroup(ICON_MODEL)
 {
-  addTab(new ModelselectPage());
-}
+  modelslist.load();
 
-ModelselectButton::ModelselectButton(FormGroup * parent, const rect_t & rect, ModelCell * modelCell, Window * footer):
-  Button(parent, rect,
-         [=]() -> uint8_t {
-           if (hasFocus()) {
-             Menu * menu = new Menu();
-             if (modelCell && modelCell != modelslist.getCurrentModel()) {
-               menu->addLine(STR_SELECT_MODEL, [=]() {
-                 // we store the latest changes if any
-                 storageFlushCurrentModel();
-                 storageCheck(true);
-                 memcpy(g_eeGeneral.currModelFilename, modelCell->modelFilename, LEN_MODEL_FILENAME);
-                 loadModel(g_eeGeneral.currModelFilename, false);
-                 storageDirty(EE_GENERAL);
-                 storageCheck(true);
-                 // chainMenu(menuMainView);
-                 postModelLoad(true);
-                 modelslist.setCurrentModel(modelCell);
-                 // TODO ModelselectPage::updateModels(parent, footer, modelslist.getModelIndex(modelCell));
-               });
-             }
-             menu->addLine(STR_CREATE_MODEL, [=]() {
-               storageCheck(true);
-               modelslist.setCurrentModel(modelslist.addModel(currentCategory, createModel()));
-#if defined(LUA)
-               // chainMenu(menuModelWizard);
-#endif
-               ModelselectPage::updateModels(parent, footer, currentCategory->size() - 1);
-             });
-             if (modelCell) {
-               menu->addLine(STR_DUPLICATE_MODEL, [=]() {
-                 char duplicatedFilename[LEN_MODEL_FILENAME + 1];
-                 memcpy(duplicatedFilename, modelCell->modelFilename, sizeof(duplicatedFilename));
-                 if (findNextFileIndex(duplicatedFilename, LEN_MODEL_FILENAME, MODELS_PATH)) {
-                   sdCopyFile(modelCell->modelFilename, MODELS_PATH, duplicatedFilename, MODELS_PATH);
-                   modelslist.addModel(currentCategory, duplicatedFilename);
-                   ModelselectPage::updateModels(parent, footer, currentCategory->size() - 1);
-                 }
-                 else {
-                   POPUP_WARNING("Invalid File");
-                 }
-               });
-             }
-             // menu->addLine(STR_MOVE_MODEL);
-             if (modelCell && modelCell != modelslist.getCurrentModel()) {
-               menu->addLine(STR_DELETE_MODEL, [=]() {
-                 // POPUP_CONFIRMATION(STR_DELETEMODEL);
-                 // SET_WARNING_INFO(modelCell->modelName, LEN_MODEL_NAME, 0);
-                 unsigned int index = 0; // TODOmodelslist.getModelIndex(modelCell);
-                 if (index > 0)
-                   --index;
-                 modelslist.removeModel(currentCategory, modelCell);
-                 ModelselectPage::updateModels(parent, footer, index);
-               });
-             }
-           }
-           else {
-             setFocus();
-             footer->invalidate();
-           }
-           return 1;
-         }, BUTTON_CHECKED_ON_FOCUS),
-  modelCell(modelCell)
-{
+  for (auto category: modelslist.getCategories()) {
+    addTab(new ModelCategoryPage(category));
+  }
 }

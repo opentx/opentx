@@ -174,7 +174,7 @@ uint8_t getDigitsCount(unsigned int value)
   return count;
 }
 
-int findNextFileIndex(char * filename, uint8_t size, const char * directory)
+unsigned int findNextFileIndex(char * filename, uint8_t size, const char * directory)
 {
   unsigned int index;
   uint8_t extlen;
@@ -182,7 +182,7 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
   char extension[LEN_FILE_EXTENSION_MAX+1] = "\0";
   char * p = (char *)getFileExtension(filename, 0, 0, nullptr, &extlen);
   if (p) strncat(extension, p, sizeof(extension)-1);
-  while (1) {
+  while (true) {
     index++;
     if ((indexPos - filename) + getDigitsCount(index) + extlen > size) {
       return 0;

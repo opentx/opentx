@@ -23,9 +23,9 @@
 
 #include "tabsgroup.h"
 
-class ModelselectMenu: public TabsGroup {
+class ModelSelectMenu: public TabsGroup {
   public:
-    ModelselectMenu();
+    ModelSelectMenu();
 };
 
 #endif // _MODEL_SELECT_H_

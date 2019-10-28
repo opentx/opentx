@@ -23,113 +23,31 @@ using std::list;
 
 ModelsList modelslist;
 
-ModelCell::ModelCell(const char * name)
-  : buffer(NULL), valid_rfData(false)
+ModelCell::ModelCell(const char * name):
+  valid_rfData(false)
 {
   strncpy(modelFilename, name, sizeof(modelFilename));
-  memset(modelName, 0, sizeof(modelName));
 }
 
 ModelCell::~ModelCell()
 {
-  resetBuffer();
 }
 
-void ModelCell::setModelName(char* name)
+void ModelCell::setModelName(char * name)
 {
-  zchar2str(modelName, name, LEN_MODEL_NAME);
+  strncpy(modelName, name, LEN_MODEL_NAME);
   if (modelName[0] == 0) {
     char * tmp;
     strncpy(modelName, modelFilename, LEN_MODEL_NAME);
     tmp = (char *) memchr(modelName, '.',  LEN_MODEL_NAME);
-    if (tmp != NULL)
+    if (tmp)
       *tmp = 0;
   }
-
-  resetBuffer();
 }
 
 void ModelCell::setModelId(uint8_t moduleIdx, uint8_t id)
 {
   modelId[moduleIdx] = id;
-}
-
-void ModelCell::resetBuffer()
-{
-  if (buffer) {
-    delete buffer;
-    buffer = NULL;
-  }
-}
-
-const BitmapBuffer * ModelCell::getBuffer()
-{
-  if (!buffer) {
-    loadBitmap();
-  }
-  return buffer;
-}
-
-void ModelCell::loadBitmap()
-{
-/*  uint8_t version;
-
-  PACK(struct {
-    ModelHeader header;
-    TimerData timers[MAX_TIMERS];
-  }) partialmodel;
-  const char * error = NULL;
-
-  if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
-    memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
-  }
-  else {
-    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
-    // LEN_BITMAP_NAME has now 4 bytes more
-    if (version <= 218) {
-      memmove(partialmodel.timers, &(partialmodel.header.bitmap[10]), sizeof(TimerData)*MAX_TIMERS);
-      memclear(&(partialmodel.header.bitmap[10]), 4);
-    }
-  }
-
-  if ((modelName[0] == 0) && ! error)
-    setModelName(partialmodel.header.name); // resets buffer!!!
-
-  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-  if (buffer == NULL) {
-    return;
-  }
-  buffer->clear(TEXT_BGCOLOR);
-
-  if (error) {
-    buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
-    buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
-  }
-  else {
-    char timer[LEN_TIMER_STRING];
-    buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
-    getTimerString(timer, 0);
-    for (uint8_t i = 0; i < MAX_TIMERS; i++) {
-      if (partialmodel.timers[i].mode > 0 && partialmodel.timers[i].persistent) {
-        getTimerString(timer, partialmodel.timers[i].value);
-        break;
-      }
-    }
-    buffer->drawText(101, 40, timer, TEXT_COLOR);
-    for (int i=0; i<4; i++) {
-      buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
-    }
-    GET_FILENAME(filename, BITMAPS_PATH, partialmodel.header.bitmap, "");
-    const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
-    if (bitmap) {
-      buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
-      delete bitmap;
-    }
-    else {
-      buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
-    }
-  }
-  buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);*/
 }
 
 void ModelCell::save(FIL* file)
@@ -218,11 +136,10 @@ ModelsCategory::ModelsCategory(const char * name)
 
 ModelsCategory::~ModelsCategory()
 {
-  for (list<ModelCell *>::iterator it = begin(); it != end(); ++it) {
-    delete *it;
+  for (auto * model: *this) {
+    delete model;
   }
 }
-
 
 ModelCell * ModelsCategory::addModel(const char * name)
 {
@@ -288,8 +205,8 @@ ModelsList::~ModelsList()
 void ModelsList::init()
 {
   loaded = false;
-  currentCategory = NULL;
-  currentModel = NULL;
+  currentCategory = nullptr;
+  currentModel = nullptr;
   modelsCount = 0;
 }
 
@@ -305,7 +222,8 @@ void ModelsList::clear()
 bool ModelsList::load()
 {
   char line[LEN_MODELS_IDX_LINE+1];
-  ModelsCategory * category = NULL;
+  ModelsCategory * category = nullptr;
+  ModelCell * model = nullptr;
 
   if (loaded)
     return true;
@@ -320,9 +238,7 @@ bool ModelsList::load()
         categories.push_back(category);
       }
       else if (len > 0) {
-
-        //char* rf_data_str = cutModelFilename(line);
-        ModelCell * model = new ModelCell(line);
+        model = new ModelCell(line);
         if (!category) {
           category = new ModelsCategory("Models");
           categories.push_back(category);
@@ -339,15 +255,19 @@ bool ModelsList::load()
       }
     }
     f_close(&file);
-
-    if (!getCurrentModel()) {
-      TRACE("currentModel is NULL");
-    }
   }
 
-  if (categories.size() == 0) {
-    category = new ModelsCategory("Models");
-    categories.push_back(category);
+  if (!currentModel) {
+    if (model) {
+      currentModel = model;
+      currentCategory = category;
+    }
+    else {
+      model = new ModelCell(line);
+      category = new ModelsCategory("Models");
+      categories.push_back(category);
+      category->push_back(model);
+    }
   }
 
   loaded = true;
@@ -475,8 +395,8 @@ bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_
         // Hit found!
         hit_found = true;
 
-        const char* modelName = (*it)->modelName;
-        const char* modelFilename = (*it)->modelFilename;
+        const char * modelName = (*it)->modelName;
+        const char * modelFilename = (*it)->modelFilename;
 
         // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
         if ((warn_buf_len - 2 - (curr - warn_buf)) > LEN_MODEL_NAME) {
