@@ -5100,12 +5100,12 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="909"/>
         <source>Antenna</source>
-        <translation type="unfinished">Antenne</translation>
+        <translation>Antenne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="932"/>
         <source>S5</source>
-        <translation type="unfinished">S5</translation>
+        <translation>S5</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="946"/>
