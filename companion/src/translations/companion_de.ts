@@ -1283,7 +1283,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../creditsdialog.cpp" line="58"/>
         <source>OpenTX Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Blacklist</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="95"/>
