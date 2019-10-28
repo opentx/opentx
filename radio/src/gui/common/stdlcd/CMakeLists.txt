@@ -1,3 +1,6 @@
+set(FONT "STD" CACHE STRING "Choose font : STD or SQT5")
+set_property(CACHE FONT PROPERTY STRINGS SQT5)
+
 add_definitions(-DGRAPHICS)
 
 set(GUI_SRC
