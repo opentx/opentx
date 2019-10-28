@@ -1392,7 +1392,7 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../modeledit/curves.ui" line="104"/>
         <location filename="../modeledit/curves.ui" line="189"/>
         <source>Curve type</source>
-        <translation>Kurven Typ</translation>
+        <translation>Kurventyp</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="176"/>
@@ -1407,7 +1407,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="314"/>
         <source>Point size</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktgröße</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="274"/>
@@ -1437,7 +1437,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="196"/>
         <source>Side</source>
-        <translation>Seite</translation>
+        <translation>Bereich</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="248"/>
@@ -1452,7 +1452,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="49"/>
         <source>Curve name</source>
-        <translation>Kurven Name</translation>
+        <translation>Kurvenname</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="154"/>
@@ -1462,7 +1462,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popoup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="209"/>
@@ -1502,22 +1502,22 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="612"/>
         <source>Clear</source>
-        <translation>Löschen</translation>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="614"/>
         <source>Clear all curves</source>
-        <translation>Lösche alle Kurven</translation>
+        <translation>Alle Kurven zurücksetzen</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="635"/>
         <source>Are you sure you want to reset curve %1?</source>
-        <translation>Die Kurve %1 wirklich löschen?</translation>
+        <translation>Die Kurve %1 wirklich zurücksetzen?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="643"/>
         <source>Are you sure you want to reset all curves?</source>
-        <translation>Wirklich alle Kurven löschen?</translation>
+        <translation>Wirklich alle Kurven zurücksetzen?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="311"/>
@@ -1527,7 +1527,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="458"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
-        <translation>Nicht genug freie Stützstellen im EEPROM um die Kurve zu speichern.</translation>
+        <translation>Es sind nicht genügend freie Stützstellen im EEPROM vorhanden, um diese Kurve zu abzuspeichern.</translation>
     </message>
 </context>
 <context>
