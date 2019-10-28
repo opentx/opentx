@@ -39,6 +39,8 @@ class Pxx2Telemetry
 
     static void processPowerMeterFrame(uint8_t module, uint8_t * frame);
 
+    static void processAuthenticationFrame(uint8_t module, uint8_t * frame);
+
   public:
 };
 
@@ -219,6 +221,24 @@ void processTelemetryFrame(uint8_t module, uint8_t * frame)
   }
 }
 
+#if defined(ACCESS_LIB)
+void processAuthenticationFrame(uint8_t module, uint8_t * frame)
+{
+  uint8_t cryptoType = frame[3];
+  uint8_t messageDigest[16] = {0};
+
+  if (INTERNAL_MODULE == module && accessCRL(cryptoType, frame+4, messageDigest)) {
+    moduleState[module].mode = MODULE_MODE_AUTHENTICATION;
+    Pxx2Pulses & pxx2 = intmodulePulsesData.pxx2;
+    pxx2.setupAuthenticationFrame(module, cryptoType, (const uint8_t *)messageDigest);
+    intmoduleSendBuffer(pxx2.getData(), pxx2.getSize());
+    // we remain in AUTHENTICATION mode to avoid a CHANNELS frame is sent at the end of the mixing process
+  }
+}
+#else
+#define processAuthenticationFrame(module, frame)
+#endif
+
 void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
@@ -309,6 +329,10 @@ void processModuleFrame(uint8_t module, uint8_t *frame)
 
     case PXX2_TYPE_ID_TELEMETRY:
       processTelemetryFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_ID_AUTHENTICATION:
+      processAuthenticationFrame(module, frame);
       break;
 
     case PXX2_TYPE_ID_RESET:
