@@ -13855,7 +13855,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="1030"/>
         <source>Plane</source>
-        <translation>Flugmodell</translation>
+        <translation>Flächenmodell</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1032"/>
