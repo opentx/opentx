@@ -3093,7 +3093,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../fwpreferencesdialog.cpp" line="51"/>
         <source>Unknown</source>
-        <translation type="unfinished">Unbekannt</translation>
+        <translation>Unbekannt</translation>
     </message>
 </context>
 <context>
