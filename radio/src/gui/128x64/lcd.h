@@ -124,7 +124,7 @@ void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
 #if !defined(BOOT) // TODO not here ...
-void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
+void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0, bool autoBold = true);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
 #endif
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
