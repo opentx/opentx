@@ -473,7 +473,6 @@ class ModuleWindow : public FormGroup {
     void update()
     {
       FormGridLayout grid;
-      grid.setLabelWidth(175);
       clear();
 
       // Module Type
