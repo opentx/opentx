@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "pulses/multi.h"
 
 uint8_t   storageDirtyMsk;
 tmr10ms_t storageDirtyTime10ms;
@@ -125,11 +126,19 @@ void postModelLoad(bool alarms)
   if (!isInternalModuleAvailable(g_model.moduleData[INTERNAL_MODULE].type)) {
     memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
   }
+#if defined(MULTIMODULE)
+  else if(isModuleMultimodule(INTERNAL_MODULE))
+    multiPatchCustom(INTERNAL_MODULE);
+#endif
 #endif
 
   if (!isExternalModuleAvailable(g_model.moduleData[EXTERNAL_MODULE].type)) {
     memclear(&g_model.moduleData[EXTERNAL_MODULE], sizeof(ModuleData));
   }
+#if defined(MULTIMODULE)
+  else if(isModuleMultimodule(EXTERNAL_MODULE))
+    multiPatchCustom(EXTERNAL_MODULE);
+#endif
 
   AUDIO_FLUSH();
   flightReset(false);

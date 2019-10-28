@@ -105,7 +105,11 @@ extern uint8_t telemetryProtocol;
 
 #if defined (MULTIMODULE)
 #define IS_D16_MULTI(module)           ((g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) && (g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH))
+#if defined(HARDWARE_INTERNAL_MODULE)
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (IS_D16_MULTI(INTERNAL_MODULE)||IS_D16_MULTI(EXTERNAL_MODULE))))
+#else
+#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && IS_D16_MULTI(EXTERNAL_MODULE)))
+#endif
 #else
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT)
 #endif

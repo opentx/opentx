@@ -41,6 +41,49 @@ void sendChannels(uint8_t moduleIdx);
 static void sendSport(uint8_t moduleIdx);
 #endif
 
+void multiPatchCustom(uint8_t moduleIdx)
+{
+  if (g_model.moduleData[moduleIdx].multi.customProto) {
+    uint8_t type = g_model.moduleData[moduleIdx].getMultiProtocol() - 1;  // custom where starting at 1, otx list at 0
+    int subtype = g_model.moduleData[moduleIdx].subType;
+
+    g_model.moduleData[moduleIdx].multi.customProto = 0;
+
+    if (type == 2) {  // multi PROTO_FRSKYD
+      g_model.moduleData[moduleIdx].subType = 1;    // D8
+      return;
+    }
+    else if (type == 14) { // multi PROTO_FRSKYX
+      g_model.moduleData[moduleIdx].setMultiProtocol(2);
+      switch (subtype) {
+        case 0:       //D16-16
+          g_model.moduleData[moduleIdx].subType = 0;
+          break;
+        case 1:       //D16-8
+          g_model.moduleData[moduleIdx].subType = 2;
+          break;
+        case 2:       //EU-16
+          g_model.moduleData[moduleIdx].subType = 4;
+          break;
+        case 3:       //EU-8
+          g_model.moduleData[moduleIdx].subType = 5;
+          break;
+      }
+      return;
+    }
+    else if (type == 24) {  // multi PROTO_FRSKYV
+      g_model.moduleData[moduleIdx].setMultiProtocol(2);
+      g_model.moduleData[moduleIdx].subType = 3;
+      return;
+    }
+    if (type > 14)
+      type -= 1;
+    if (type > 24)
+      type -= 1;
+    g_model.moduleData[moduleIdx].setMultiProtocol(type);
+  }
+}
+
 static void sendMulti(uint8_t moduleIdx, uint8_t b)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)

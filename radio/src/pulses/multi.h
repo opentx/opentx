@@ -23,6 +23,8 @@
 
 #include "pulses_common.h"
 
+void multiPatchCustom(uint8_t moduleIdx);
+
 class UartMultiPulses: public DataBuffer<uint8_t, 64>
 {
   public:

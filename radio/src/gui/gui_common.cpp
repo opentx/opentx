@@ -796,18 +796,18 @@ uint8_t convertMultiProtocole(uint8_t  moduleIdx, uint8_t type)
   if (type >= 25)
     type = type + 1;
 
-    if (type == MODULE_SUBTYPE_MULTI_FRSKY) {
-      int subtype = g_model.moduleData[moduleIdx].subType;
-      if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
-        //D8
-        type = 3;
-      } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
-        //V8
-        type = 25;
-      } else {
-        type = 15;
-      }
+  if (type == MODULE_SUBTYPE_MULTI_FRSKY) {
+    int subtype = g_model.moduleData[moduleIdx].subType;
+    if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
+      //D8
+      type = 3;
+    } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
+      //V8
+      type = 25;
+    } else {
+      type = 15;
     }
+  }
   return type;
 }
 

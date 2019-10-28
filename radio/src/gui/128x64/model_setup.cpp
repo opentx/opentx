@@ -966,7 +966,6 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SUBTYPE:
       {
         lcdDrawTextAlignedLeft(y, STR_SUBTYPE);
-        uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
         lcdDrawMultiSubProtocolString(MODEL_SETUP_2ND_COLUMN, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
         if (attr && s_editMode > 0) {
           switch (menuHorizontalPosition) {
