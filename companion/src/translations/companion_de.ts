@@ -1790,7 +1790,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="122"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="126"/>
@@ -1810,13 +1810,13 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="275"/>
         <source>Error occurred while trying to play sound, possibly the file is already opened. (Err: %1 [%2])</source>
-        <translation type="unfinished"></translation>
+        <translation>Beim Abspielen der Audio-Datei kam es zu einem Fehler, möglicherweise ist sie bereits geöffnet. (Err: %1 [%2])</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="297"/>
         <source>Unable to find or open sound file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Audio-Datei %1 konnte nicht gefunden bzw. geöffnet werden:</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="710"/>
