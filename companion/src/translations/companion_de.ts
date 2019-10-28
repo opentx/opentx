@@ -63,22 +63,26 @@
         <location filename="../storage/appdata.cpp" line="591"/>
         <source>Application Settings have been saved to
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anwendungseinstellungen wurden unter
+%1
+gespeichert</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="594"/>
         <source>Could not save Application Settings to file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anwendungseinstellungen konnten nicht unter
+%1
+gespeichert werden</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="596"/>
         <source>because the file could not be saved (check access permissions).</source>
-        <translation type="unfinished"></translation>
+        <translation>, da auf die Datei nicht zugegriffen werden konnte (Überprüfen Sie die Zugriffsrechte).</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="598"/>
         <source>for unknown reasons.</source>
-        <translation type="unfinished"></translation>
+        <translation>. Der Grund hierfür ist unbekannt.</translation>
     </message>
 </context>
 <context>
