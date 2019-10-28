@@ -21,7 +21,7 @@
 #include "confirm_dialog.h"
 #include "static.h"
 
-ConfirmDialog::ConfirmDialog(const char *title, const char *message, std::function<void(void)> confirmHandler) :
+ConfirmDialog::ConfirmDialog(const char * title, const char * message, std::function<void(void)> confirmHandler) :
   Dialog(title, {50, 73, LCD_W - 100, LCD_H - 146}),
   confirmHandler(std::move(confirmHandler))
 {
@@ -34,8 +34,8 @@ void ConfirmDialog::onEvent(event_t event)
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    deleteLater(); // this restore the focus (it can be changed then in confirmHandler)
     confirmHandler();
-    deleteLater();
   }
   else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
     deleteLater();
