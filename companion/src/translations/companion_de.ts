@@ -3587,7 +3587,7 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="111"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation>Trimmung von Flugphase %1 + Eigenen Trimmung als Offset</translation>
+        <translation>Trimmung von Flugphase %1 + Eigene Trimmung als Offset</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="181"/>
