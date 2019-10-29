@@ -107,6 +107,7 @@ elseif(PCB STREQUAL X7)
     set(NAVIGATION_TYPE 9x)
     add_definitions(-DRADIO_T12)
     add_definitions(-DEEPROM_VARIANT=0x4001)
+    option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" OFF)
   else()
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
@@ -349,6 +350,15 @@ if(INTERNAL_MODULE_PXX2)
   set(PXX2 ON)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_PXX2)
+endif()
+
+if(INTERNAL_MODULE_MULTI)
+  add_definitions(-DHARDWARE_INTERNAL_MODULE)
+  add_definitions(-DINTERNAL_MODULE_MULTI)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/intmodule_serial_driver.cpp
+    )
 endif()
 
 if(INTERNAL_MODULE_PPM)
