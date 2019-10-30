@@ -30,7 +30,7 @@ local function run(event)
     return 2
   end
 
-  chdir("CROSSFIRE")
+  chdir("/SCRIPTS/TOOLS/CROSSFIRE")
   return "crossfire.lua"
 end
 
