@@ -128,6 +128,21 @@
   #define ROTARY_ENCODER_EXTI_PortSource   EXTI_PortSourceGPIOE
   #define ROTARY_ENCODER_EXTI_PinSource1   EXTI_PinSource10
   #define ROTARY_ENCODER_EXTI_PinSource2   EXTI_PinSource11
+#elif defined(RADIO_X7ACCESS)
+  #define ROTARY_ENCODER_NAVIGATION
+  #define ROTARY_ENCODER_GPIO           GPIOE
+  #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_9  // PE.09
+  #define ROTARY_ENCODER_GPIO_PIN_B     GPIO_Pin_11 // PE.11
+  #define ROTARY_ENCODER_POSITION()     (((ROTARY_ENCODER_GPIO->IDR >> 10) & 0x02) + ((ROTARY_ENCODER_GPIO->IDR >> 9) & 0x01))
+  #define ROTARY_ENCODER_EXTI_LINE1     EXTI_Line9
+  #define ROTARY_ENCODER_EXTI_LINE2     EXTI_Line11
+  #define ROTARY_ENCODER_EXTI_IRQn1        EXTI9_5_IRQn
+  #define ROTARY_ENCODER_EXTI_IRQHandler1  EXTI9_5_IRQHandler
+  #define ROTARY_ENCODER_EXTI_IRQn2        EXTI15_10_IRQn
+  #define ROTARY_ENCODER_EXTI_IRQHandler2  EXTI15_10_IRQHandler
+  #define ROTARY_ENCODER_EXTI_PortSource  EXTI_PortSourceGPIOE
+  #define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource9
+  #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource11
 #elif defined(RADIO_X7)
   #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO           GPIOE
@@ -193,6 +208,23 @@
   #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_0  // PB.00
   #define TRIMS_GPIO_REG_LVD            GPIOB->IDR
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_1  // PB.01
+#elif defined(PCBX7ACCESS)
+  #define TRIMS_GPIO_REG_LHR            GPIOD->IDR
+  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_15 // PD.15
+  #define TRIMS_GPIO_REG_LHL            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_1  // PC.01
+  #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_6  // PE.06
+  #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_5  // PE.05
+  #define TRIMS_GPIO_REG_RVD            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_3  // PC.03
+  #define TRIMS_GPIO_REG_RHR            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_3  // PE.03
+  #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
+  #define TRIMS_GPIO_REG_RHL            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_4  // PE.04
 #elif defined(PCBX7)
   #define TRIMS_GPIO_REG_LHL            GPIOD->IDR
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_15 // PD.15
@@ -351,7 +383,7 @@
   #define HARDWARE_SWITCH_C
   #define SWITCHES_GPIO_REG_C_L         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_11 // PD.11
-  #if defined(PCBREVACCESS)    
+  #if defined(PCBX7ACCESS)    
     #define SWITCHES_GPIO_REG_C_H       GPIOD->IDR
     #define SWITCHES_GPIO_PIN_C_H       GPIO_Pin_10 // PD.10
   #else
@@ -1367,7 +1399,7 @@
   #define SPORT_MAX_BAUDRATE            400000
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOB
   #define SPORT_UPDATE_PWR_GPIO         GPIOB
-  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_2  // PB.02
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_3  // PB.03
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #elif defined(PCBX7)
@@ -1709,8 +1741,8 @@
   #define I2C_SCL_GPIO_PIN              GPIO_Pin_8  // PB.08
   #define I2C_WP_GPIO                   GPIOB
   #define I2C_WP_GPIO_PIN               GPIO_Pin_5  // PB.05
-  #define I2C_SCL_GPIO_PinSource        GPIO_PinSource8
   #define I2C_SDA_GPIO_PinSource        GPIO_PinSource9
+  #define I2C_SCL_GPIO_PinSource        GPIO_PinSource8
 #elif defined(PCBX9DP) && PCBREV >= 2019
   #define I2C_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOF)
   #define I2C_SPI_GPIO                  GPIOB

@@ -791,7 +791,7 @@ void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
 void bluetoothDisable();
-#if defined(PCBX9LITES)
+#if defined(PCBX9LITES) || defined(PCBX7ACCESS)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (true)
 #elif defined(PCBX9LITE)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
