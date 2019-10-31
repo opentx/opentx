@@ -1,6 +1,12 @@
 #define DATE    "@DATE@"
 #define TIME    "@TIME@"
+#if defined(FRSKY_RELEASE)
+#define VERSION "FrSky"
+#elif defined(JUMPER_RELEASE)
+#define VERSION "JumperRC"
+#else
 #define VERSION "@VERSION@"
+#endif
 
 #define VERSION_MAJOR     @VERSION_MAJOR@
 #define VERSION_MINOR     @VERSION_MINOR@
