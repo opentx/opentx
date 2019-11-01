@@ -1,5 +1,6 @@
-#include "serial_input.h"
 
+#include "serial_input.h"
+#include "rtos.h"
 int16_t serialInput[MAX_NUM_SERIAL];
 int8_t serialBytesAvailable = 0;
 Fifo<uint8_t,256> serialInputFifo;
@@ -11,6 +12,6 @@ void processSerialInput()
 
     while (!serialInputFifo.pop(c))
     {
-        CoTickDelay(10); // 20ms
+        RTOS_WAIT_MS(10); // 20ms
     }
 }

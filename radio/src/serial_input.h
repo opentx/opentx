@@ -1,6 +1,6 @@
 #ifndef serial_input_h
 #define serial_input_h
-#include "rtos.h"
+#include "opentx.h"
 #include "myeeprom.h"
 
 extern Fifo<uint8_t,256> serialInputFifo;
