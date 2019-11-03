@@ -156,7 +156,7 @@ static void processFlySkySensor(const uint8_t * packet, uint8_t type)
   if (id == 0) id = 0x100;   // Some part of OpenTX does not like sensor with id and instance 0, remap to 0x100
 
   if (id == AFHDS2A_ID_RX_NOISE || id == AFHDS2A_ID_RX_RSSI) {
-    value = 135 - value;
+    value = - value;
   }
   else if (id == AFHDS2A_ID_RX_ERR_RATE) {
     value = 100 - value;
@@ -170,7 +170,7 @@ static void processFlySkySensor(const uint8_t * packet, uint8_t type)
     setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, AFHDS2A_ID_ALT, 0, instance, getALT(value), UNIT_METERS, 2);
     value &= PRESSURE_MASK;
   }
-  else if ((id >= AFHDS2A_ID_ACC_X && id <= AFHDS2A_ID_VERTICAL_SPEED) || id == AFHDS2A_ID_CLIMB_RATE) {
+  else if ((id >= AFHDS2A_ID_ACC_X && id <= AFHDS2A_ID_VERTICAL_SPEED) || id == AFHDS2A_ID_CLIMB_RATE || id == AFHDS2A_ID_ALT_FLYSKY) {
     value = (int16_t) value; // Signed value
   }
   else if (id == AFHDS2A_ID_GPS_STATUS) {
