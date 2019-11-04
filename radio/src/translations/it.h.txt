@@ -943,10 +943,10 @@
 #define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
-#define TR_ANTENNA_MODES       "Interna\0          ""Chiedi\0               ""Per modello\0         ""Interna + esterna"
+#define TR_ANTENNA_MODES       "Interna\0           ""Chiedi\0            ""Per modello\0       ""Interna + esterna"
 #else
 #define LEN_ANTENNA_MODES      "\011"
-#define TR_ANTENNA_MODES       "Interna\0""Chiedi\0     ""Per modello""Esterna"
+#define TR_ANTENNA_MODES       "Interna\0 ""Chiedi\0  ""Per model""Esterna"
 #endif
 #define TR_USE_INTERNAL_ANTENNA        TR("Usa ant. int.", "Usa antenna interna")
 #define TR_USE_EXTERNAL_ANTENNA        TR("Usa ant. est.", "Usa antenna esterna")
