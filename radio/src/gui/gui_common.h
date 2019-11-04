@@ -227,7 +227,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 
   uint8_t protocol = g_model.moduleData[moduleIdx].getMultiProtocol();
   if (protocol < MODULE_SUBTYPE_MULTI_LAST) {
-    return getMultiProtocolDefinition(moduleIdx)->optionsstr != nullptr;
+    return getMultiProtocolDefinition(protocol)->optionsstr != nullptr;
   }
 
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
