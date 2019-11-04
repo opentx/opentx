@@ -199,8 +199,8 @@ void drawValueOrGVar(BitmapBuffer * dc, coord_t x, coord_t y, gvar_t value, gvar
 
 void drawSleepBitmap()
 {
-  lcd->setOffset(0, 0);
-  lcd->clearClippingRect();
+  lcdNextLayer();
+  lcd->reset();
   lcd->clear();
 
   const BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(static_cast<ThemeBase *>(theme)->getFilePath("sleep.bmp"));
@@ -218,28 +218,24 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
   if (totalDuration == 0)
     return;
 
-  static uint32_t lastDuration = 0xffffffff;
   static const BitmapBuffer * shutdown = BitmapBuffer::loadBitmap(static_cast<ThemeBase *>(theme)->getFilePath("shutdown.bmp"));
 
+  lcdNextLayer();
+  lcd->reset();
+
   if (shutdown) {
-    if (duration < lastDuration) {
-      static_cast<ThemeBase *>(theme)->drawBackground(lcd);
-      lcd->drawBitmap((LCD_W-shutdown->width())/2, (LCD_H-shutdown->height())/2, shutdown);
-      lcdStoreBackupBuffer();
-    }
-    else {
-      lcdRestoreBackupBuffer();
-      int quarter = duration / (totalDuration / 5);
-      if (quarter >= 1) lcd->drawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 2) lcd->drawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 3) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
-      if (quarter >= 4) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
-    }
+    static_cast<ThemeBase *>(theme)->drawBackground(lcd);
+    lcd->drawBitmap((LCD_W - shutdown->width()) / 2, (LCD_H - shutdown->height()) / 2, shutdown);
+    int quarter = duration / (totalDuration / 5);
+    if (quarter >= 1) lcd->drawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (quarter >= 2) lcd->drawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (quarter >= 3) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (quarter >= 4) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
   }
   else {
     lcd->clear();
     int quarter = duration / (totalDuration / 5);
-    for (int i=1; i<=4; i++) {
+    for (int i = 1; i <= 4; i++) {
       if (quarter >= i) {
         lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, DEFAULT_BGCOLOR);
       }
@@ -247,7 +243,6 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
   }
 
   lcdRefresh();
-  lastDuration = duration;
 }
 
 void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curve, LcdFlags flags)
@@ -335,33 +330,33 @@ void drawDate(BitmapBuffer * dc, coord_t x, coord_t y, TelemetryItem & telemetry
   if (att & FONT(XL)) {
     x -= 42;
     att &= ~FONT_MASK;
-    dc->drawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    dc->drawText(lcdNextPos-1, y, "-", att);
-    dc->drawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
-    dc->drawText(lcdNextPos-1, y, "-", att);
-    dc->drawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
+    x = dc->drawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    x = dc->drawText(x - 1, y, "-", att);
+    x = dc->drawNumber(x - 1, y, telemetryItem.datetime.month, att|LEFT, 2);
+    x = dc->drawText(x - 1, y, "-", att);
+    x = dc->drawNumber(x - 1, y, telemetryItem.datetime.year-2000, att|LEFT);
     y += FH;
-    dc->drawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    /* TODO dc->drawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
     dc->drawText(lcdNextPos, y, ":", att);
     dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
     dc->drawText(lcdNextPos, y, ":", att);
-    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2); */
   }
   else {
-    dc->drawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    dc->drawText(lcdNextPos-1, y, "-", att);
-    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
-    dc->drawText(lcdNextPos-1, y, "-", att);
-    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.year-2000, att|LEFT);
-    dc->drawNumber(lcdNextPos+11, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    dc->drawText(lcdNextPos, y, ":", att);
-    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    dc->drawText(lcdNextPos, y, ":", att);
-    dc->drawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+    x = dc->drawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    x = dc->drawText(x - 1, y, "-", att);
+    x = dc->drawNumber(x, y, telemetryItem.datetime.month, att|LEFT, 2);
+    x = dc->drawText(x - 1, y, "-", att);
+    x = dc->drawNumber(x, y, telemetryItem.datetime.year-2000, att|LEFT);
+    x = dc->drawNumber(x + 11, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    x = dc->drawText(x, y, ":", att);
+    x = dc->drawNumber(x, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
+    x = dc->drawText(x, y, ":", att);
+    dc->drawNumber(x, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
 }
 
-void drawGPSCoord(BitmapBuffer * dc, coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags flags, bool seconds=true)
+coord_t drawGPSCoord(BitmapBuffer * dc, coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags flags, bool seconds=true)
 {
   char s[32];
   uint32_t absvalue = abs(value);
@@ -391,6 +386,7 @@ void drawGPSCoord(BitmapBuffer * dc, coord_t x, coord_t y, int32_t value, const 
   *tmp++ = direction[value>=0 ? 0 : 1];
   *tmp = '\0';
   dc->drawText(x, y, s, flags);
+  return x;
 }
 
 void drawGPSPosition(BitmapBuffer * dc, coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)
@@ -400,8 +396,8 @@ void drawGPSPosition(BitmapBuffer * dc, coord_t x, coord_t y, int32_t longitude,
     drawGPSCoord(dc, x, y + FH, longitude, "EW", flags, true);
   }
   else {
-    drawGPSCoord(dc, x, y, latitude, "NS", flags, false);
-    drawGPSCoord(dc, lcdNextPos+5, y, longitude, "EW", flags, false);
+    x = drawGPSCoord(dc, x, y, latitude, "NS", flags, false);
+    drawGPSCoord(dc, x + 5, y, longitude, "EW", flags, false);
   }
 }
 

@@ -41,7 +41,7 @@ class SpectrumWindow : public Window
       coord_t peak_y = 1;
       coord_t peak_x = 0;
       for (coord_t i = 0; i < LCD_W; i++) {
-        coord_t h = min<coord_t >(reusableBuffer.spectrumAnalyser.bars[i], SPECTRUM_HEIGHT);
+        auto h = min<coord_t >(reusableBuffer.spectrumAnalyser.bars[i], SPECTRUM_HEIGHT);
         if (h > peak_y) {
           peak_x = i;
           peak_y = h;
@@ -49,9 +49,9 @@ class SpectrumWindow : public Window
         dc->drawVerticalLine(i, SPECTRUM_HEIGHT - h, h, SOLID, 0);
       }
 
-      coord_t y = max<coord_t>(FH, SPECTRUM_HEIGHT - peak_y - FH);
-      dc->drawNumber(min<coord_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / 128)) / 1000000, FONT(XXS));
-      dc->drawText(lcdNextPos, y, "M", FONT(XXS));
+      auto y = max<coord_t>(FH, SPECTRUM_HEIGHT - peak_y - FH);
+      auto x = dc->drawNumber(min<coord_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / 128)) / 1000000, FONT(XXS));
+      dc->drawText(x, y, "M", FONT(XXS));
     }
 
   protected:
@@ -63,7 +63,7 @@ RadioSpectrumAnalyser::RadioSpectrumAnalyser(uint8_t moduleIdx) :
   moduleIdx(moduleIdx)
 {
   buildBody(&body);
-
+  setFocus();
   start();
 }
 

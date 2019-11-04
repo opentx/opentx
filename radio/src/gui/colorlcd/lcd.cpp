@@ -18,14 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
-#include "strhelpers.h"
+#include "lcd.h"
 
 #if defined(SIMU)
 pixel_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
-
-coord_t lcdNextPos;
 
 uint8_t getMappedChar(uint8_t c)
 {

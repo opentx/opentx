@@ -29,7 +29,7 @@ class PageHeader: public FormGroup {
   public:
     PageHeader(Page * parent, uint8_t icon);
 
-    ~PageHeader();
+    ~PageHeader() override;
 
     void paint(BitmapBuffer * dc) override;
 

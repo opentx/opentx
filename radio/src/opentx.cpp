@@ -971,7 +971,7 @@ void checkThrottleStick()
 {
   if (isThrottleWarningAlertNeeded()) {
     AUDIO_ERROR_MESSAGE(AU_THROTTLE_ALERT);
-    auto dialog = new FullScreenDialog(WARNING_TYPE_ALERT, STR_THROTTLE_WARNING, STR_THROTTLE_NOT_IDLE, STR_PRESS_ANY_KEY_TO_SKIP);
+    auto dialog = new FullScreenDialog(WARNING_TYPE_ALERT, TR_THROTTLE_UPPERCASE, STR_THROTTLE_NOT_IDLE, STR_PRESS_ANY_KEY_TO_SKIP);
     dialog->setCloseCondition([]() {
         return !isThrottleWarningAlertNeeded();
     });
@@ -1050,7 +1050,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
   bool refresh = false;
 #endif
 
-  while (1) {
+  while (true) {
     RTOS_WAIT_MS(10);
 
     if (getEvent())  // wait for key release
@@ -2117,10 +2117,11 @@ uint32_t pwrCheck()
       }
       if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN_DELAY()) {
 #if defined(SHUTDOWN_CONFIRMATION)
-        while (1) {
+        while (1)
 #else
-        while ((TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm)) {
+        while ((TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm))
 #endif
+        {
 
 #if !defined(COLORLCD)
           lcdRefreshWait();

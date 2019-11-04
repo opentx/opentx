@@ -62,7 +62,7 @@ class MultiPosCalibrationWindow: public Window {
       invalidate();
     }
 
-    virtual void paint(BitmapBuffer * dc)
+    void paint(BitmapBuffer * dc) override
     {
       drawHorizontalSlider(dc, 5, 8, rect.w - 18, 1 + (potsPos[potIndex] & 0x0f), 1, XPOTS_MULTIPOS_COUNT+1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
     }
@@ -104,6 +104,7 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
 {
   buildHeader(&header);
   buildBody(&body);
+  setFocus();
 }
 
 void RadioCalibrationPage::buildHeader(Window * window)

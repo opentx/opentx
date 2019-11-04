@@ -73,7 +73,7 @@ bool isRadioScriptTool(const char * filename)
 }
 #endif
 
-RadioToolsPage::RadioToolsPage() :
+RadioToolsPage::RadioToolsPage():
   PageTab(STR_MENUTOOLS, ICON_RADIO_TOOLS)
 {
 }
@@ -122,6 +122,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
   grid.setLabelWidth(100);
 
   window->clear();
+  Window::clearFocus();
 
 // LUA scripts in TOOLS
 #if defined(LUA) || defined(DEBUG)
