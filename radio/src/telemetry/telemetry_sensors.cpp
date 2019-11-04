@@ -530,6 +530,9 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
       case PROTOCOL_TELEMETRY_HITEC:
         hitecSetDefault(index, id, subId, instance);
         break;
+      case PROTOCOL_TELEMETRY_HOTT:
+        hottSetDefault(index, id, subId, instance);
+        break;
 #endif
 #if defined(LUA)
      case PROTOCOL_TELEMETRY_LUA:

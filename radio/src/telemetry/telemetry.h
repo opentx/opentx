@@ -27,6 +27,7 @@
   #include "spektrum.h"
   #include "flysky_ibus.h"
   #include "hitec.h"
+  #include "hott.h"
   #include "multi.h"
 #endif
 

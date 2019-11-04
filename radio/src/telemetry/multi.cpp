@@ -39,7 +39,8 @@ enum MultiPacketTypes : uint8_t
   HitecTelemetry,
   SpectrumScannerPacket,
   FlyskyIBusTelemetryAC,
-  MultiRxChannels
+  MultiRxChannels,
+  HottTelemetry,
 };
 
 enum MultiBufferState : uint8_t
@@ -354,6 +355,13 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
         processHitecPacket(data);
       else
         TRACE("[MP] Received Hitec telemetry len %d < 8", len);
+      break;
+
+    case HottTelemetry:
+      if (len >= 13)
+        processHottPacket(data);
+      else
+        TRACE("[MP] Received HoTT telemetry len %d < 13", len);
       break;
 
     case FrSkyHubTelemetry:
