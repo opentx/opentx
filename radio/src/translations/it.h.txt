@@ -116,7 +116,7 @@
 #define LEN_RETA123            "\001"
 
 #if defined(PCBHORUS)
-  #define TR_RETA123           "DEMA12345LR"
+  #define TR_RETA123           "DEMA13245LR"
 #elif defined(PCBX9E)
   #define TR_RETA123           "DEMA123SDSD"
 #elif defined(PCBTARANIS) || defined(REVX)

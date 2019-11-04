@@ -964,6 +964,10 @@ bool menuModelSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCTR);
         lcdNextPos = MODEL_SETUP_2ND_COLUMN - 3;
         for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+          if (i>=POT1 && i<POT1+NUM_XPOTS && (!IS_POT_SLIDER_AVAILABLE(i) || IS_POT_MULTIPOS(i))) {
+            if (attr && menuHorizontalPosition == i) REPEAT_LAST_CURSOR_MOVE(NUM_STICKS+NUM_POTS+NUM_SLIDERS, true);
+            continue;
+          }
           LcdFlags flags = ((menuHorizontalPosition==i && attr) ? INVERS : 0);
           flags |= (g_model.beepANACenter & ((BeepANACenter)1<<i)) ? TEXT_COLOR : (TEXT_DISABLE_COLOR | NO_FONTCACHE);
           if (attr && menuHorizontalPosition < 0) flags |= INVERS;
