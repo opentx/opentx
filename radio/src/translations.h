@@ -404,6 +404,7 @@ extern const char STR_PROTOCOL_INVALID[];
 extern const char STR_MODULE_STATUS[];
 extern const char STR_MODULE_SYNC[];
 extern const char STR_MULTI_SERVOFREQ[];
+extern const char STR_MULTI_MAX_THROW[];
 #if LCD_W < 212
 extern const char STR_SUBTYPE[];
 #endif

@@ -675,6 +675,7 @@
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
 #define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ     TR("Servo rate", "Servo update rate")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
 #define TR_SYNCMENU            "[Synch]"
 #define TR_LIMIT               INDENT "Limit"
 #define TR_MINRSSI             "Min Rssi"

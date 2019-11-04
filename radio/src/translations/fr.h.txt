@@ -677,6 +677,7 @@
 #define TR_MODULE_STATUS               TR(INDENT "Etat", INDENT "Etat module")
 #define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Fréq.servo", INDENT "Fréquence servos")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
 #define TR_SYNCMENU                    "Sync [MENU]"
 #define TR_LIMIT                       INDENT "Limite"
 #define TR_MINRSSI                     "RSSI Min."

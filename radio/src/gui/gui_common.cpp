@@ -864,7 +864,8 @@ const char* mm_options_strings::options[] = {
   STR_MULTI_VIDFREQ,
   STR_MULTI_FIXEDID,
   STR_MULTI_TELEMETRY,
-  STR_MULTI_SERVOFREQ
+  STR_MULTI_SERVOFREQ,
+  STR_MULTI_MAX_THROW
 };
 
 const mm_protocol_definition multi_protocols[] = {
@@ -874,7 +875,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FRSKY,      5, false, false,  STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HISKY,      1, false, true,   STR_SUBTYPE_HISKY,     nullptr},
   {MODULE_SUBTYPE_MULTI_V2X2,       1, false, false,  STR_SUBTYPE_V2X2,      nullptr},
-  {MODULE_SUBTYPE_MULTI_DSM2,       3, false, true,   STR_SUBTYPE_DSM,       nullptr},
+  {MODULE_SUBTYPE_MULTI_DSM2,       3, false, true,   STR_SUBTYPE_DSM,       STR_MULTI_MAX_THROW},
   {MODULE_SUBTYPE_MULTI_DEVO,       4, false, true,   STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
   {MODULE_SUBTYPE_MULTI_YD717,      4, false, false,  STR_SUBTYPE_YD717,     nullptr},
   {MODULE_SUBTYPE_MULTI_KN,         1, false, false,  STR_SUBTYPE_KN,        nullptr},
