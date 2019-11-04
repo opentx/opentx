@@ -190,7 +190,7 @@ void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
       lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0 | negative, 2);
       lcdDrawText(lcdLastLeftPos, y, ":", att|BLINK | negative);
       lcdDrawNumber(lcdLastLeftPos, y, qr.quot, att | negative);
-      if(negative)
+      if (negative)
         lcdDrawText(lcdLastLeftPos, y, "-", att | negative);
     }
     else if (timerState.val < (99 * 60 * 60) + (59 * 60) { // display HHhMM
