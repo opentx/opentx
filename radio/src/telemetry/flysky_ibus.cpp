@@ -156,7 +156,7 @@ static void processFlySkySensor(const uint8_t * packet, uint8_t type)
   if (id == 0) id = 0x100;   // Some part of OpenTX does not like sensor with id and instance 0, remap to 0x100
 
   if (id == AFHDS2A_ID_RX_NOISE || id == AFHDS2A_ID_RX_RSSI) {
-    value = - value;
+    value = -value;
   }
   else if (id == AFHDS2A_ID_RX_ERR_RATE) {
     value = 100 - value;
