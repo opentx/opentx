@@ -177,25 +177,26 @@ struct mm_protocol_definition {
 };
 
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
+
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
   if(!isModuleMultimodule(moduleIdx))
     return HIDDEN_ROW;
 
-  const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-  if (pdef->disable_ch_mapping)
-    return 0;
+  uint8_t protocol = g_model.moduleData[moduleIdx].getMultiProtocol();
+  if (protocol < MODULE_SUBTYPE_MULTI_LAST) {
+    const mm_protocol_definition * pdef = getMultiProtocolDefinition(protocol);
+    if (pdef->disable_ch_mapping)
+      return 0;
+  }
 
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  if (status.supportsDisableMapping() && status.isValid())
+  if (status.supportsDisableMapping() && status.isValid()) {
     return 0;
+  }
 
   return HIDDEN_ROW;
 }
-
-#define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
-#define MULTIMODULE_MODULE_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
-#define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t)2 : (uint8_t)1
 
 inline bool isMultiProtocolSelectable(int protocol)
 {
@@ -218,6 +219,10 @@ inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
   return (MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t) 1 : 0);
 #endif
 }
+
+#define MULTIMODULE_MODULE_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
+#define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
+#define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)     isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
 #define MULTIMODULE_HASOPTIONS(moduleIdx)       (getMultiProtocolDefinition(moduleIdx)->optionsstr != nullptr)
 #define MULTIMODULE_OPTIONS_ROW(moduleIdx)      (isModuleMultimodule(moduleIdx) && MULTIMODULE_HASOPTIONS(moduleIdx)) ? (uint8_t) 0: HIDDEN_ROW
