@@ -232,3 +232,8 @@ void loadTheme()
 //    loadTheme(theme);
 //  }
 }
+
+MenuWindow * createMenuWindow(Menu * menu)
+{
+  return new MenuWindow(menu);
+}
