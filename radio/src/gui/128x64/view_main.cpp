@@ -185,7 +185,7 @@ void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
     const TimerState & timerState = timersStates[index];
     const uint8_t negative = (timerState.val<0 ? BLINK | INVERS : 0);
     LcdFlags att = RIGHT | DBLSIZE;
-    if (timerState.val < 3600) { // display MM:SS
+    if (timerState.val < 60 * 60) { // display MM:SS
       div_t qr = div(abs(timerState.val), 60);
       lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0 | negative, 2);
       lcdDrawText(lcdLastLeftPos, y, ":", att|BLINK | negative);
@@ -193,12 +193,12 @@ void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
       if(negative)
         lcdDrawText(lcdLastLeftPos, y, "-", att | negative);
     }
-    else if (timerState.val < 99 * 60 * 60 + 59 * 60) { // display HHhMM
+    else if (timerState.val < (99 * 60 * 60) + (59 * 60) { // display HHhMM
       div_t qr = div(abs(timerState.val) / 60, 60);
       lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0, 2);
       lcdDrawText(lcdLastLeftPos, y, "h", att);
       lcdDrawNumber(lcdLastLeftPos, y, qr.quot, att);
-      if(negative)
+      if (negative)
         lcdDrawText(lcdLastLeftPos, y, "-", att);
     }
     else {  //display HHHH for crazy large persistent timers
