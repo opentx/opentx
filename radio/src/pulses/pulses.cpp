@@ -178,7 +178,7 @@ void enablePulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2, false);
+      extmoduleSerialStart();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, DSM2_PERIOD);
       break;
 #endif
@@ -204,14 +204,14 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2, true);
+      extmoduleSerialStart();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
       break;
 #endif
 
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
-      extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
+      extmoduleSerialStart();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
       break;
 #endif
@@ -328,7 +328,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
 #if defined(INTMODULE_HEARTBEAT)
       mixerSchedulerStop();
 #else
-      mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX2_PERIOD);
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
       mixerSchedulerStart();
 #endif
       break;
