@@ -227,6 +227,13 @@ void processAuthenticationFrame(uint8_t module, uint8_t * frame)
   uint8_t cryptoType = frame[3];
   uint8_t messageDigest[16] = {0};
 
+  TRACE("0=%d ,1= %d, 5=%d", frame[0], frame[1], frame[5]);
+  if(0x04 == frame[0] && 0xA5 == frame[4])
+  {
+    POPUP_INFORMATION("Auth-failure");
+    return ;
+  }
+
   if (INTERNAL_MODULE == module && accessCRL(cryptoType, frame+4, messageDigest)) {
     moduleState[module].mode = MODULE_MODE_AUTHENTICATION;
     Pxx2Pulses & pxx2 = intmodulePulsesData.pxx2;
