@@ -102,6 +102,7 @@ void boardInit()
                          AUX_SERIAL_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          TRAINER_MODULE_RCC_APB1Periph |
+                         MIXER_SCHEDULER_TIMER_RCC_APB1Periph |
                          BT_RCC_APB1Periph |
                          GYRO_RCC_APB1Periph,
                          ENABLE);

@@ -190,14 +190,6 @@ void stop_trainer_ppm();
 void init_trainer_capture();
 void stop_trainer_capture();
 
-// Mixer scheduler driver
-void mixerSchedulerInit();
-void mixerSchedulerStart(uint16_t periodUs);
-void mixerSchedulerStop();
-void mixerSchedulerWaitForTrigger(uint8_t timeoutMs);
-void mixerSchedulerEnableTrigger();
-void mixerSchedulerDisableTrigger();
-  
 // Keys driver
 enum EnumKeys
 {

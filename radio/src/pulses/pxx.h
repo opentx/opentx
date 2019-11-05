@@ -29,20 +29,20 @@
 
 #define PXX2_LOWSPEED_BAUDRATE             230400
 #define PXX2_HIGHSPEED_BAUDRATE            450000
-#define PXX2_PERIOD                        4 // 4ms
-#define PXX2_TOOLS_PERIOD                  1 // 1ms
+#define PXX2_PERIOD                        4000/*us*/
+#define PXX2_TOOLS_PERIOD                  1000/*us*/
 #define PXX2_FRAME_MAXLENGTH               64
 
-#define PXX_PULSES_PERIOD                  9/*ms*/
-#define EXTMODULE_PXX1_SERIAL_PERIOD       4/*ms*/
+#define PXX_PULSES_PERIOD                  9000/*us*/
+#define EXTMODULE_PXX1_SERIAL_PERIOD       4000/*us*/
 #define EXTMODULE_PXX1_SERIAL_BAUDRATE     420000
 
 #if defined(PXX_FREQUENCY_HIGH)
   #define INTMODULE_PXX1_SERIAL_BAUDRATE   450000
-  #define INTMODULE_PXX1_SERIAL_PERIOD     4/*ms*/
+  #define INTMODULE_PXX1_SERIAL_PERIOD     4000/*us*/
 #else
   #define INTMODULE_PXX1_SERIAL_BAUDRATE   115200
-  #define INTMODULE_PXX1_SERIAL_PERIOD     9/*ms*/
+  #define INTMODULE_PXX1_SERIAL_PERIOD     9000/*us*/
 #endif
 
 // Used by the Sky9x family boards
