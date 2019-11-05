@@ -88,7 +88,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europa\0")
 
 #define LEN_USBMODES           TR("\006", "\010")
-#define TR_USBMODES            TR("Chiedi\0  ""Joyst\0""Storage""Seriale", "Chiedi\0    ""Joystick""Storage\0""Seriale\0 ")
+#define TR_USBMODES            TR("Chied\0""Joyst\0""SDCard""Serial", "Chiedi\0 ""Joystick""Storage\0""Seriale\0 ")
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Chiedi\0   ""Audio\0 ""Trainer"
@@ -116,7 +116,7 @@
 #define LEN_RETA123            "\001"
 
 #if defined(PCBHORUS)
-  #define TR_RETA123           "DEMA13245LR"
+  #define TR_RETA123           "DEMA12345LR"
 #elif defined(PCBX9E)
   #define TR_RETA123           "DEMA123SDSD"
 #elif defined(PCBTARANIS) || defined(REVX)
@@ -459,7 +459,7 @@
 #define TR_PROTO               TR(INDENT "Protoc.", INDENT "Protocollo")
   #define TR_PPMFRAME          INDENT "Frame PPM"
 #define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
-#define STR_WARN_BATTVOLTAGE           TR(INDENT "Uscita è VBAT: ", INDENT "Att.: livel. uscita è VBAT: ")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Uscita VBAT: ", INDENT "Att.: livel. uscita VBAT: ")
 #define TR_MS                  "ms"
 #define TR_FREQUENCY                   INDENT "Frequenza"
 #define TR_SWITCH              "Inter."
@@ -529,7 +529,7 @@
 #define TR_MEMORYWARNING       TR(INDENT "Avv. Mem.", INDENT "Avviso Memoria")
 #define TR_ALARMWARNING        INDENT "Spegni suono"
 #define TR_RSSISHUTDOWNALARM   TR(INDENT "RSSI Shut.", INDENT "Control. RSSI al Shutdown")
-#define TR_MODEL_STILL_POWERED "Modello ancora acceso"
+#define TR_MODEL_STILL_POWERED "Ricevente ancora connessa"
 #define TR_MODEL_SHUTDOWN              "Shutdown?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Premi [ENT] per confermare"
 #define TR_THROTTLE_LABEL      "Motore"
@@ -689,7 +689,7 @@
 #define TR_CURRENT_CALIB       "Calibra corr."
 #define TR_VOLTAGE             TR(INDENT "Voltagg.",INDENT "Voltaggio")
 #define TR_CURRENT             TR(INDENT "Corrente",INDENT "Corrente")
-#define TR_SELECT_MODEL        "Scegli Memo."
+#define TR_SELECT_MODEL        TR("Scegli mod.", "Scegli Modello")
 #define TR_CREATE_CATEGORY     "Crea Categoria"
 #define TR_RENAME_CATEGORY     "Rinomina Categoria"
 #define TR_DELETE_CATEGORY     "Cancella Categoria"
@@ -940,17 +940,17 @@
 #define TR_UNIT                "Unita"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Aggiungi nuovo sensore"
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
-#define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
+#define TR_ANTENNACONFIRM1     "ANTENNA EST."
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
-#define TR_ANTENNA_MODES       "Interna\0          ""Chiedi\0               ""Per modello\0         ""Interna + esterna"
+#define TR_ANTENNA_MODES       "Interna\0           ""Chiedi\0            ""Per modello\0       ""Interna + esterna"
 #else
 #define LEN_ANTENNA_MODES      "\011"
-#define TR_ANTENNA_MODES       "Interna\0""Chiedi\0     ""Per modello""Esterna"
+#define TR_ANTENNA_MODES       "Interna\0 ""Chiedi\0  ""Per model""Esterna"
 #endif
 #define TR_USE_INTERNAL_ANTENNA        TR("Usa ant. int.", "Usa antenna interna")
 #define TR_USE_EXTERNAL_ANTENNA        TR("Usa ant. est.", "Usa antenna esterna")
-#define TR_ANTENNACONFIRM2     TR("Controlla antenna", "Controlla se l'antenna è installata!")
+#define TR_ANTENNACONFIRM2     TR("Controlla instal.", "Controlla prima se installata!")
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1                "Non richiede"
 #define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Richiede FCC"
 #define TR_MODULE_PROTOCOL_EU_WARN_LINE1          "Richiede EU"
