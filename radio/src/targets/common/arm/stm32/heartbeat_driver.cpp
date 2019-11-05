@@ -65,6 +65,9 @@ void stop_intmodule_heartbeat()
   EXTI_Init(&EXTI_InitStructure);
 }
 
+// from mixer_scheduler_driver
+void mixerScheduleISRTrigger();
+
 void check_intmodule_heartbeat()
 {
   if (EXTI_GetITStatus(INTMODULE_HEARTBEAT_EXTI_LINE) != RESET) {
@@ -75,6 +78,8 @@ void check_intmodule_heartbeat()
 #endif
     heartbeatCapture.count++;
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
+
+    mixerScheduleISRTrigger();
   }
 }
 #endif

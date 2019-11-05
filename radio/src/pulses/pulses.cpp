@@ -163,12 +163,14 @@ void enablePulsesExternalModule(uint8_t protocol)
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       extmodulePxx1PulsesStart();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, PXX_PULSES_PERIOD);
       break;
 #endif
 
 #if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePxx1SerialStart();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, EXTMODULE_PXX1_SERIAL_PERIOD);
       break;
 #endif
 
@@ -176,41 +178,48 @@ void enablePulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2000, false);
+      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2, false);
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, DSM2_PERIOD);
       break;
 #endif
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       EXTERNAL_MODULE_ON();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
       break;
 #endif
 
 #if defined(PXX2) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
       extmoduleInvertedSerialStart(PXX2_HIGHSPEED_BAUDRATE);
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, PXX2_PERIOD);
       break;
 
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
       extmoduleInvertedSerialStart(PXX2_LOWSPEED_BAUDRATE);
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, PXX2_PERIOD);
       break;
 #endif
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true);
+      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2, true);
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, 6666/*MULTIMODULE_PERIOD*/);
       break;
 #endif
 
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
       break;
 #endif
 
 #if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       extmodulePpmStart();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
       break;
 #endif
 
@@ -295,12 +304,24 @@ static void enablePulsesInternalModule(uint8_t protocol)
 #if defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       intmodulePxx1PulsesStart();
+#if defined(INTMODULE_HEARTBEAT)
+      mixerSchedulerStop();
+#else
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
+      mixerSchedulerStart();
+#endif
       break;
 #endif
 
 #if defined(PXX1) && defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmodulePxx1SerialStart();
+#if defined(INTMODULE_HEARTBEAT)
+      mixerSchedulerStop();
+#else
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
+      mixerSchedulerStart();
+#endif
       break;
 #endif
 
@@ -310,6 +331,13 @@ static void enablePulsesInternalModule(uint8_t protocol)
 #if defined(HARDWARE_INTERNAL_MODULE) && defined(INTERNAL_MODULE_PXX2) && defined(ACCESS_LIB)
       globalData.authenticationCount = 0;
 #endif
+
+#if defined(INTMODULE_HEARTBEAT)
+      mixerSchedulerStop();
+#else
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX2_PERIOD);
+      mixerSchedulerStart();
+#endif
       break;
 #endif
 
@@ -317,6 +345,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_MULTIMODULE:
       intmodulePulsesData.multi.initFrame();
       intmoduleSerialStart(MULTIMODULE_BAUDRATE, true, USART_Parity_Even, USART_StopBits_2, USART_WordLength_9b);
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, MULTIMODULE_PERIOD);
       break;
 #endif
     default:

@@ -123,7 +123,7 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   mixerSchedulerInit();
-  mixerSchedulerStart(6666); // 150 Hz
+  mixerSchedulerStart();
 
   while (true) {
 #if defined(PCBTARANIS) && defined(SBUS)
@@ -206,6 +206,8 @@ TASK_FUNCTION(mixerTask)
   }
 }
 
+
+//TODO: remove that one
 void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
 {
   // Schedule next mixer calculation time,

@@ -78,13 +78,22 @@ extern "C++" {
 
   static inline void RTOS_CREATE_FLAG(uint32_t &flag)
   {
-    flag = 0; // TODO: real flags (use semaphores?)
+    //TODO: use pthread condition
+    flag = 0;
   }
 
   static inline void RTOS_SET_FLAG(uint32_t &flag)
   {
     flag = 1;
   }
+
+  static inline void RTOS_CLEAR_FLAG(uint32_t &flag)
+  {
+    flag = 0;
+  }
+
+  //TODO: #define RTOS_WAIT_FLAG(flag, timeout)
+  #define RTOS_ISR_SET_FLAG RTOS_SET_FLAG
 
   template<int SIZE>
   class FakeTaskStack
@@ -146,6 +155,7 @@ template<int SIZE>
   {
     return (uint32_t)(simuTimerMicros() / 1000);
   }
+  
 #elif defined(RTOS_COOS)
 #ifdef __cplusplus
   extern "C" {
@@ -233,6 +243,15 @@ template<int SIZE>
   #define RTOS_CLEAR_FLAG(flag)         (void)CoClearFlag(flag)
   #define RTOS_WAIT_FLAG(flag,timeout)  (void)CoWaitForSingleFlag(flag,timeout)
 
+  static inline void RTOS_ISR_SET_FLAG(RTOS_FLAG_HANDLE flag)
+  {
+    CoEnterISR();
+    CoSchedLock();
+    isr_SetFlag(flag);
+    CoSchedUnlock();
+    CoExitISR();
+  }
+  
 #ifdef __cplusplus
   template<int SIZE>
   class TaskStack

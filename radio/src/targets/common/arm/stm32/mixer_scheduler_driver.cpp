@@ -20,20 +20,51 @@
 
 #include "opentx.h"
 
+#define MIXER_SCHEDULER_DEFAULT_PERIOD_US 4000u // 4ms
+
+// Global trigger flag
 RTOS_FLAG_HANDLE mixerFlag;
+
+// Mixer schedule
+struct MixerSchedule {
+
+    // period in us
+    volatile uint16_t period;
+};
+
+static MixerSchedule mixerSchedules[NUM_MODULES];
+
+static inline uint32_t getSchedulePeriod()
+{
+    if (mixerSchedules[INTERNAL_MODULE].period) {
+        return mixerSchedules[INTERNAL_MODULE].period;
+    }
+    else if (mixerSchedules[EXTERNAL_MODULE].period) {
+        return mixerSchedules[EXTERNAL_MODULE].period;
+    }
+    
+    return MIXER_SCHEDULER_DEFAULT_PERIOD_US;
+}
 
 void mixerSchedulerInit()
 {
     RTOS_CREATE_FLAG(mixerFlag);
+    memset(mixerSchedules, 0, sizeof(mixerSchedules));
 }
 
-void mixerSchedulerStart(uint16_t periodUs)
+void mixerSchedulerSetPeriod(uint8_t moduleIdx, uint16_t periodUs)
+{
+    mixerSchedules[moduleIdx].period = periodUs;
+}
+
+// Start scheduler with default period
+void mixerSchedulerStart()
 {
     MIXER_SCHEDULER_TIMER->CR1   = TIM_CR1_URS; // do not generate interrupt on soft update
-    MIXER_SCHEDULER_TIMER->PSC   = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
+    MIXER_SCHEDULER_TIMER->PSC   = MIXER_SCHEDULER_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
     MIXER_SCHEDULER_TIMER->CCER  = 0;
     MIXER_SCHEDULER_TIMER->CCMR1 = 0;
-    MIXER_SCHEDULER_TIMER->ARR   = 2 * periodUs - 1;
+    MIXER_SCHEDULER_TIMER->ARR   = 2 * getSchedulePeriod() - 1;
     MIXER_SCHEDULER_TIMER->EGR   = TIM_EGR_UG;   // reset timer
 
     NVIC_EnableIRQ(MIXER_SCHEDULER_TIMER_IRQn);
@@ -66,15 +97,19 @@ void mixerSchedulerWaitForTrigger(uint8_t timeoutMs)
     RTOS_WAIT_FLAG(mixerFlag, timeoutMs);
 }
 
+void mixerScheduleISRTrigger()
+{
+    RTOS_ISR_SET_FLAG(mixerFlag);
+}
+
 extern "C" void MIXER_SCHEDULER_TIMER_IRQHandler(void)
 {
     MIXER_SCHEDULER_TIMER->SR &= ~TIM_SR_UIF; // clear flag
     mixerSchedulerDisableTrigger();
 
+    // set next period
+    MIXER_SCHEDULER_TIMER->ARR = 2 * getSchedulePeriod() - 1;
+
     // trigger mixer start
-    CoEnterISR();
-    CoSchedLock();
-    isr_SetFlag(mixerFlag);
-    CoSchedUnlock();
-    CoExitISR();
+    mixerScheduleISRTrigger();
 }
