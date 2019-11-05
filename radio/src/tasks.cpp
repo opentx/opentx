@@ -88,6 +88,12 @@ bool isModuleSynchronous(uint8_t module)
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
 #endif
+#if defined(DSM2)
+    case PROTOCOL_CHANNELS_SBUS:
+    case PROTOCOL_CHANNELS_DSM2_LP45:
+    case PROTOCOL_CHANNELS_DSM2_DSM2:
+    case PROTOCOL_CHANNELS_DSM2_DSMX:
+#endif
       return true;
   }
   return false;
@@ -108,7 +114,7 @@ void sendSynchronousPulses()
   }
 }
 
-#define DEBUG_MIXER_SCHEDULER
+//#define DEBUG_MIXER_SCHEDULER
 
 uint32_t nextMixerTime[NUM_MODULES];
 
@@ -194,6 +200,7 @@ TASK_FUNCTION(mixerTask)
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
 
+      serialPrint("cnt = %d", EXTMODULE_TIMER->CNT);
       sendSynchronousPulses();
     }
   }

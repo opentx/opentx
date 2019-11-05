@@ -226,7 +226,6 @@ typedef Dsm2SerialPulsesData Dsm2PulsesData;
 PACK(struct Dsm2TimerPulsesData {
   pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
   pulse_duration_t * ptr;
-  uint16_t rest;
   uint8_t index;
 });
 typedef Dsm2TimerPulsesData Dsm2PulsesData;
