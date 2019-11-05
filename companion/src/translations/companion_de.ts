@@ -63,22 +63,26 @@
         <location filename="../storage/appdata.cpp" line="591"/>
         <source>Application Settings have been saved to
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anwendungseinstellungen wurden unter
+%1
+gespeichert</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="594"/>
         <source>Could not save Application Settings to file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anwendungseinstellungen konnten nicht unter
+%1
+gespeichert werden</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="596"/>
         <source>because the file could not be saved (check access permissions).</source>
-        <translation type="unfinished"></translation>
+        <translation>, da auf die Datei nicht zugegriffen werden konnte (Überprüfen Sie die Zugriffsrechte).</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="598"/>
         <source>for unknown reasons.</source>
-        <translation type="unfinished"></translation>
+        <translation>. Der Grund hierfür ist unbekannt.</translation>
     </message>
 </context>
 <context>
@@ -1279,7 +1283,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../creditsdialog.cpp" line="58"/>
         <source>OpenTX Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Blacklist</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="95"/>
@@ -1392,7 +1396,7 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../modeledit/curves.ui" line="104"/>
         <location filename="../modeledit/curves.ui" line="189"/>
         <source>Curve type</source>
-        <translation>Kurven Typ</translation>
+        <translation>Kurventyp</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="176"/>
@@ -1407,7 +1411,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="314"/>
         <source>Point size</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktgröße</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="274"/>
@@ -1437,7 +1441,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="196"/>
         <source>Side</source>
-        <translation>Seite</translation>
+        <translation>Bereich</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="248"/>
@@ -1452,7 +1456,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="49"/>
         <source>Curve name</source>
-        <translation>Kurven Name</translation>
+        <translation>Kurvenname</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="154"/>
@@ -1462,7 +1466,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popoup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="209"/>
@@ -1502,22 +1506,22 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="612"/>
         <source>Clear</source>
-        <translation>Löschen</translation>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="614"/>
         <source>Clear all curves</source>
-        <translation>Lösche alle Kurven</translation>
+        <translation>Alle Kurven zurücksetzen</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="635"/>
         <source>Are you sure you want to reset curve %1?</source>
-        <translation>Die Kurve %1 wirklich löschen?</translation>
+        <translation>Die Kurve %1 wirklich zurücksetzen?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="643"/>
         <source>Are you sure you want to reset all curves?</source>
-        <translation>Wirklich alle Kurven löschen?</translation>
+        <translation>Wirklich alle Kurven zurücksetzen?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="311"/>
@@ -1527,7 +1531,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="458"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
-        <translation>Nicht genug freie Stützstellen im EEPROM um die Kurve zu speichern.</translation>
+        <translation>Es sind nicht genügend freie Stützstellen im EEPROM vorhanden, um diese Kurve zu abzuspeichern.</translation>
     </message>
 </context>
 <context>
@@ -1655,37 +1659,37 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="91"/>
         <source>Adjust %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstelle %1</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="93"/>
         <source>SetFailsafe Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>SetFailsafe Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="95"/>
         <source>SetFailsafe Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>SetFailsafe Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="97"/>
         <source>RangeCheck Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>RangeCheck Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="99"/>
         <source>RangeCheck Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>RangeCheck Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="101"/>
         <source>Bind Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Binden Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="103"/>
         <source>Bind Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Binden Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="115"/>
@@ -1737,7 +1741,7 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../firmwares/customfunctiondata.cpp" line="178"/>
         <location filename="../firmwares/customfunctiondata.cpp" line="187"/>
         <source>&lt;font color=red&gt;&lt;b&gt;Inconsistent parameter&lt;/b&gt;&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font color=red&gt;&lt;b&gt;Widersprüchliche Parameter&lt;/b&gt;&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="204"/>
@@ -1762,7 +1766,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="256"/>
         <source>CFN</source>
-        <translation type="unfinished"></translation>
+        <translation>CFN</translation>
     </message>
 </context>
 <context>
@@ -1790,7 +1794,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="122"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="126"/>
@@ -1810,13 +1814,13 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="275"/>
         <source>Error occurred while trying to play sound, possibly the file is already opened. (Err: %1 [%2])</source>
-        <translation type="unfinished"></translation>
+        <translation>Beim Abspielen der Audio-Datei kam es zu einem Fehler, möglicherweise ist sie bereits geöffnet. (Err: %1 [%2])</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="297"/>
         <source>Unable to find or open sound file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Audio-Datei %1 konnte nicht gefunden bzw. geöffnet werden:</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="710"/>
@@ -3089,7 +3093,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../fwpreferencesdialog.cpp" line="51"/>
         <source>Unknown</source>
-        <translation type="unfinished">Unbekannt</translation>
+        <translation>Unbekannt</translation>
     </message>
 </context>
 <context>
@@ -3417,7 +3421,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../process_flash.cpp" line="69"/>
         <source>Executable %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Die ausführbare Datei %1 wurde nicht gefunden</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="203"/>
@@ -3477,13 +3481,14 @@ Bitte dazu eine passende Firmware zum Programmieren auswählen.</translation>
         <source>
 You are currently using:
  %1</source>
-        <translation>Sie verwenden gerade:
+        <translation>
+Sie verwenden gerade:
  %1</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="289"/>
         <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Sender scheint entweder nicht per USB angeschlossen zu sein, oder der entsprechende Treiber wurde nicht installiert.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="300"/>
@@ -3587,7 +3592,7 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="111"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation>Trimmung von Flugphase %1 + Eigenen Trimmung als Offset</translation>
+        <translation>Trimmung von Flugphase %1 + Eigene Trimmung als Offset</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="181"/>
@@ -5096,12 +5101,12 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="909"/>
         <source>Antenna</source>
-        <translation type="unfinished">Antenne</translation>
+        <translation>Antenne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="932"/>
         <source>S5</source>
-        <translation type="unfinished">S5</translation>
+        <translation>S5</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="946"/>
@@ -7400,7 +7405,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Verzögerung und Verlangsamung&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Diese Werte beeinflussen die Verzögerung und die Geschwindigkeit des Ausgangs des Mixers&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Wenn die Verzögerung nicht 0 ist, wird die Ausführung um diesen Wert in Sekunden verzögert.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Wenn die Verlangsamung nicht 0 ist, wird der Ausgang des Mixers um den gegebenen Wert verlangsamt -&amp;gt; Der Wert stellt die Zeit in Sekunden dar, die der Ausgangswert des Mischers benötigt, um sich von -100 auf 100 zu ändern.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="425"/>
@@ -7665,12 +7680,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="379"/>
         <source>Model: </source>
-        <translation type="unfinished">Modell: </translation>
+        <translation>Modell: </translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="383"/>
         <source>Throttle Source</source>
-        <translation type="unfinished">Gas-Timer Quelle</translation>
+        <translation>Gas-Quelle</translation>
     </message>
 </context>
 <context>
@@ -9526,7 +9541,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../printdialog.ui" line="61"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="68"/>
@@ -9969,12 +9984,12 @@ r</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="320"/>
         <source>Trm5</source>
-        <translation type="unfinished"></translation>
+        <translation>Trm5</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="320"/>
         <source>Trm6</source>
-        <translation type="unfinished"></translation>
+        <translation>Trm6</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
@@ -9984,7 +9999,7 @@ r</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
         <source>TrmV</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TrmV</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="328"/>
@@ -10596,7 +10611,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="58"/>
         <source>°F</source>
-        <translation type="unfinished"></translation>
+        <translation>°F</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="60"/>
@@ -10616,7 +10631,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="66"/>
         <source>mW</source>
-        <translation type="unfinished"></translation>
+        <translation>mW</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="68"/>
@@ -10641,7 +10656,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="76"/>
         <source>Rad</source>
-        <translation type="unfinished"></translation>
+        <translation>rad</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="78"/>
@@ -10666,12 +10681,12 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="112"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="114"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe</translation>
     </message>
 </context>
 <context>
@@ -10782,7 +10797,7 @@ ebenfalls umgekehrt.
     <message>
         <location filename="../modeledit/setup.ui" line="528"/>
         <source>Throttle Source</source>
-        <translation>GasTimer Quelle</translation>
+        <translation>Gas-Timer-Quelle</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="544"/>
@@ -10842,7 +10857,7 @@ ebenfalls umgekehrt.
     <message>
         <location filename="../modeledit/setup.ui" line="404"/>
         <source>Throttle Warning</source>
-        <translation>Gas Warnung</translation>
+        <translation>Gas-Warnung</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="465"/>
@@ -13840,7 +13855,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="1030"/>
         <source>Plane</source>
-        <translation>Flugmodell</translation>
+        <translation>Flächenmodell</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1032"/>

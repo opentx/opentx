@@ -1302,6 +1302,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+"), BOARD_JUMPER_T16);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
+  firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
   registerOpenTxFirmware(firmware);
 
   /* 9XR-Pro */

@@ -210,4 +210,5 @@ options_jumper_t16 = {
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
+    "bluetooth": ("BLUETOOTH", "YES", "NO"),
 }

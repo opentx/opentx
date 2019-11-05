@@ -80,7 +80,7 @@ enum
   AFHDS2A_ID_S89 = 0x89,
   AFHDS2A_ID_S8a = 0x8A,
 
-  AFHDS2A_ID_ALT_FLYSKY = 0xF9,    // Altitude 2 bytes signed in m - used in FlySky native TX
+  AFHDS2A_ID_ALT_FLYSKY = 0xF9,    // Altitude 2 bytes signed in m - used in FlySky native TX - SIGNED value
   AFHDS2A_ID_RX_SNR = 0xFA,    // SNR
   AFHDS2A_ID_RX_NOISE = 0xFB,    // Noise
   AFHDS2A_ID_RX_RSSI = 0xFC,    // RSSI
@@ -156,7 +156,7 @@ static void processFlySkySensor(const uint8_t * packet, uint8_t type)
   if (id == 0) id = 0x100;   // Some part of OpenTX does not like sensor with id and instance 0, remap to 0x100
 
   if (id == AFHDS2A_ID_RX_NOISE || id == AFHDS2A_ID_RX_RSSI) {
-    value = - value;
+    value = -value;
   }
   else if (id == AFHDS2A_ID_RX_ERR_RATE) {
     value = 100 - value;

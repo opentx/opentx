@@ -1479,7 +1479,7 @@ void menuModelSetup(event_t event)
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, module.pxx.power, LEFT | attr);
               if (attr) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_FCC_POWER_MAX);
-                if (s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power) {
+                if (s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power && module.channelsCount > maxModuleChannels_M8(moduleIdx)) {
                   module.channelsStart = 0;
                   module.channelsCount = maxModuleChannels_M8(moduleIdx);
                 }
@@ -1496,7 +1496,8 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LITE_LBT_POWER_MAX);
                 if (s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power) {
                   module.channelsStart = 0;
-                  module.channelsCount = maxModuleChannels_M8(moduleIdx);
+                  if (module.channelsCount > maxModuleChannels_M8(moduleIdx))
+                    module.channelsCount = maxModuleChannels_M8(moduleIdx);
                   if (reusableBuffer.moduleSetup.r9mPower + module.pxx.power < 5) { // switching between mode 2 and 3 does not require rebind
                     POPUP_WARNING(STR_REBIND);
                   }
@@ -1512,7 +1513,8 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, module.pxx.power, R9M_LBT_POWER_MAX);
                 if (s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != module.pxx.power) {
                   module.channelsStart = 0;
-                  module.channelsCount = maxModuleChannels_M8(moduleIdx);
+                  if (module.channelsCount > maxModuleChannels_M8(moduleIdx))
+                    module.channelsCount = maxModuleChannels_M8(moduleIdx);
                   if (reusableBuffer.moduleSetup.r9mPower + module.pxx.power < 5) { //switching between mode 2 and 3 does not require rebind
                     POPUP_WARNING(STR_REBIND);
                   }
