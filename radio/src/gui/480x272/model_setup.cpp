@@ -1618,11 +1618,12 @@ bool menuModelSetup(event_t event)
           const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
           if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
             const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
-            if (pdef->optionsstr)
+            if (pdef->optionsstr) {
               lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, pdef->optionsstr);
               if (attr && pdef->optionsstr == STR_MULTI_RFTUNE)  {
                 lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
               }
+            }
           }
           else {
             MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
