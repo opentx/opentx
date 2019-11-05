@@ -284,9 +284,11 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
       subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
     // Multi module in DSM mode wants the number of channels to be used as option value
-    optionValue = sentModuleChannels(moduleIdx);
-
-  }
+    if(optionValue)
+      optionValue = 0x80 | sentModuleChannels(moduleIdx); // Max throw
+    else
+      optionValue = sentModuleChannels(moduleIdx);
+}
 
   // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
   // all protos > frskyx are therefore also off by one

@@ -108,7 +108,7 @@ void processHottPacket(const uint8_t * packet)
       sensor = getHottSensor(HOTT_ID_RX_VOLTAGE);
       setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
       //RX_TEMP
-      value = packet[4];//packet[5]-20;
+      value = packet[5]-20;
       sensor = getHottSensor(HOTT_ID_TEMP1);
       setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
       // RX_RSSI
@@ -121,7 +121,7 @@ void processHottPacket(const uint8_t * packet)
   }
   //unknown
   value = (packet[6] << 24) | (packet[5] << 16) | (packet[4] << 8) | packet[3];
-  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, packet[2], 0, 0, value, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, 0xFE00 | packet[2], 0, 0, value, UNIT_RAW, 0);
 }
 
 void hottSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
