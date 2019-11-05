@@ -402,14 +402,20 @@ extern "C" void EXTMODULE_TIMER_DMA_IRQHandler()
 
   DMA_ClearITPendingBit(EXTMODULE_TIMER_DMA_STREAM, EXTMODULE_TIMER_DMA_FLAG_TC);
 
-  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-  //EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+  switch (moduleState[EXTERNAL_MODULE].protocol) {
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
+    case PROTOCOL_CHANNELS_PPM:
+      EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+      EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+      break;
+  }
 }
 
 extern "C" void EXTMODULE_TIMER_IRQHandler()
 {
   EXTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  // if (setupPulsesExternalModule())
-  //   extmoduleSendNextFrame();
+
+  if (setupPulsesExternalModule())
+    extmoduleSendNextFrame();
 }
