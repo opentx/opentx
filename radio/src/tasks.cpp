@@ -200,32 +200,11 @@ TASK_FUNCTION(mixerTask)
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
 
-      serialPrint("cnt = %d", EXTMODULE_TIMER->CNT);
       sendSynchronousPulses();
     }
   }
 }
 
-
-//TODO: remove that one
-void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
-{
-  // Schedule next mixer calculation time,
-
-  if (isModuleSynchronous(module)) {
-    nextMixerTime[module] += period_ms / RTOS_MS_PER_TICK;
-    if (nextMixerTime[module] < RTOS_GET_TIME()) {
-      // we are late ... let's add some small delay
-      nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
-    }
-  }
-  else {
-    // for now assume mixer calculation takes 2 ms.
-    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
-  }
-
-  DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
-}
 
 #define MENU_TASK_PERIOD_TICKS         (50 / RTOS_MS_PER_TICK)    // 50ms
 
