@@ -143,7 +143,7 @@ void extmodulePxx1PulsesStart()
 }
 #endif
 
-void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
+void extmoduleSerialStart()
 {
   EXTERNAL_MODULE_ON();
 
@@ -176,8 +176,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool i
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
 #endif
 
-  EXTMODULE_TIMER->ARR = period_half_us;
-  EXTMODULE_TIMER->CCR2 = period_half_us - 4000;
+  EXTMODULE_TIMER->ARR = 40000; // dummy value until the DMA request kicks in
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
