@@ -1003,26 +1003,31 @@
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF5
   #define INTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #elif defined(RADIO_T12)
-  //left here is somebody will mod the radio for internal module
-  #define INTMODULE_PULSES
-  #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
-  #define INTMODULE_RCC_APB1Periph      0
-  #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM1
-  #define INTMODULE_PWR_GPIO            GPIOC
-  #define INTMODULE_PWR_GPIO_PIN        GPIO_Pin_6  // JUMPER INT PC.06 //X7 INT is PC.06
-  #define INTMODULE_TX_GPIO             GPIOA
-  #define INTMODULE_TX_GPIO_PIN         GPIO_Pin_7  // JUMPER INT PA.07 //X7 INT is PA.10
-  #define INTMODULE_TX_GPIO_PinSource   GPIO_PinSource10
-  #define INTMODULE_TIMER               TIM1
-  #define INTMODULE_TIMER_CC_IRQn       TIM1_CC_IRQn
-  #define INTMODULE_TIMER_CC_IRQHandler TIM1_CC_IRQHandler
-  #define INTMODULE_TX_GPIO_AF          GPIO_AF_TIM1
-  #define INTMODULE_DMA_CHANNEL         DMA_Channel_6
-  #define INTMODULE_DMA_STREAM          DMA2_Stream5
-  #define INTMODULE_DMA_STREAM_IRQn     DMA2_Stream5_IRQn
-  #define INTMODULE_DMA_STREAM_IRQHandler DMA2_Stream5_IRQHandler
-  #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF5
-  #define INTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
+  #define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
+  #define INTMODULE_PWR_GPIO              GPIOC
+  #define INTMODULE_PWR_GPIO_PIN          GPIO_Pin_6  // PC.06
+  #define INTMODULE_GPIO                  GPIOB
+  #define INTMODULE_TX_GPIO_PIN           GPIO_Pin_10  // PB.10
+  #define INTMODULE_RX_GPIO_PIN           GPIO_Pin_11  // PB.11
+  #define INTMODULE_GPIO_PinSource_TX     GPIO_PinSource10
+  #define INTMODULE_GPIO_PinSource_RX     GPIO_PinSource11
+  #define INTMODULE_USART                 USART3
+  #define INTMODULE_GPIO_AF               GPIO_AF_USART3
+  #define INTMODULE_USART_IRQn            USART3_IRQn
+  #define INTMODULE_USART_IRQHandler      USART3_IRQHandler
+  #define INTMODULE_DMA_STREAM            DMA1_Stream3
+  #define INTMODULE_DMA_STREAM_IRQ        DMA1_Stream3_IRQn
+  #define INTMODULE_DMA_STREAM_IRQHandler DMA1_Stream3_IRQHandler
+  #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF3
+  #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
+#define INTMODULE_RCC_APB1Periph      0
+#define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM1
+#define INTMODULE_TIMER               TIM2
+#define INTMODULE_TIMER_IRQn          TIM2_IRQn
+#define INTMODULE_TIMER_IRQHandler    TIM2_IRQHandler
+#define INTMODULE_TIMER_CC_IRQn       TIM2_CC_IRQn
+#define INTMODULE_TIMER_CC_IRQHandler TIM2_CC_IRQHandler
+#define INTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #else
   #define INTMODULE_PULSES
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
