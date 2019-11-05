@@ -79,11 +79,6 @@ bool isModuleSynchronous(uint8_t module)
   if (protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || protocol == PROTOCOL_CHANNELS_PXX2_LOWSPEED || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
     return true;
 
-#if defined(MULTIMODULE)
-  if (protocol == PROTOCOL_CHANNELS_MULTIMODULE)
-    return true;
-#endif
-
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   if (protocol == PROTOCOL_CHANNELS_PXX1_SERIAL)
     return true;

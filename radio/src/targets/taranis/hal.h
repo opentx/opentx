@@ -1020,8 +1020,8 @@
   #define INTMODULE_DMA_STREAM_IRQHandler DMA1_Stream3_IRQHandler
   #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF3
   #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
-#define INTMODULE_RCC_APB1Periph      0
-#define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM1
+#define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
+#define INTMODULE_RCC_APB2Periph      RCC_APB1Periph_USART3
 #define INTMODULE_TIMER               TIM2
 #define INTMODULE_TIMER_IRQn          TIM2_IRQn
 #define INTMODULE_TIMER_IRQHandler    TIM2_IRQHandler

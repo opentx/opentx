@@ -314,6 +314,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_MULTIMODULE:
       intmodulePulsesData.multi.initFrame();
       intmoduleSerialStart(MULTIMODULE_BAUDRATE, true, USART_Parity_Even, USART_StopBits_2, USART_WordLength_9b);
+      intmoduleTimerStart(MULTIMODULE_PERIOD);
       break;
 #endif
     default:
