@@ -139,19 +139,13 @@ TASK_FUNCTION(mixerTask)
     bluetooth.wakeup();
 #endif
 
-    // TODO:
-    // - add trigger based on heartbeat driver
-    
-    // run mixer at least every 10ms
-    bool timeout = mixerSchedulerWaitForTrigger(10);
+    // run mixer at least every 30ms
+    bool timeout = mixerSchedulerWaitForTrigger(30);
 
 #if defined(DEBUG_MIXER_SCHEDULER)
     GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
     GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
 #endif
-
-    // TODO:
-    //  - compute next trigger
 
     // re-enable trigger
     mixerSchedulerEnableTrigger();
@@ -200,7 +194,12 @@ TASK_FUNCTION(mixerTask)
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
 
-      //if (!timeout)
+      // TODO:
+      // - check the cause of timeouts when switching
+      //    between protocols with multi-proto RF
+      if (timeout)
+        serialPrint("mix sched timeout!");
+
       sendSynchronousPulses();
     }
   }

@@ -1737,7 +1737,7 @@ bool menuModelSetup(event_t event)
       lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_SYNC);
 
       char statusText[64];
-      getMultiSyncStatus(moduleIdx).getRefreshString(statusText);
+      getModuleSyncStatus(moduleIdx).getRefreshString(statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
