@@ -1,5 +1,5 @@
 
-# "Taranis X9D+ 2019" skin for the Companion simulator  
+# "Taranis X9D+ 2019" dark blue skin for the Companion simulator  
 ![X9D+ 2019 Image for Companion](X9DP2019_Companion_image.png "Taranis X9D+ 2019")
 
 ## The different parts of the image
