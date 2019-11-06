@@ -910,6 +910,10 @@ extern const char STR_ABOUT_PARENTS_2[];
 extern const char STR_ABOUT_PARENTS_3[];
 extern const char STR_ABOUT_PARENTS_4[];
 
+#if defined(ACCESS_LIB)
+  extern const char STR_AUTH_FAILURE[];
+#endif
+
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT
 

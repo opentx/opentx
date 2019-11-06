@@ -1178,6 +1178,10 @@
 #define TR_JITTER_FILTER       "ADC Filter"
 #define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
 
+#if defined(ACCESS_LIB)
+  #define TR_AUTH_FAILURE                "Auth-failure"
+#endif
+
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"

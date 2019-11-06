@@ -65,6 +65,11 @@
   #define SPECTRUM_ANALYSER_POWER_FLOOR   -120 /*dBm*/
 #endif
 
+#if defined(ACCESS_LIB)
+  #define PXX2_AUTH_REFUSED_DATA_LENGTH   4
+  #define PXX2_AUTH_REFUSED_FLAG          0xA5
+#endif
+
 enum PXX2ModuleModelID {
   PXX2_MODULE_NONE,
   PXX2_MODULE_XJT,
