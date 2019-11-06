@@ -40,6 +40,7 @@
 #define PING_DEVICES_ID                0x28
 #define DEVICE_INFO_ID                 0x29
 #define REQUEST_SETTINGS_ID            0x2A
+#define RADIO_ID                       0x3A
 
 
 struct CrossfireSensor {
@@ -87,14 +88,14 @@ const uint32_t CROSSFIRE_BAUDRATES[] = {
   115200,
 };
 const uint8_t CROSSFIRE_PERIODS[] = {
-  4,
+   4,
   16,
 };
 #define CROSSFIRE_BAUDRATE    CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
-#define CROSSFIRE_PERIOD      CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate]
+#define CROSSFIRE_PERIOD      (CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate]*1000)
 #else
 #define CROSSFIRE_BAUDRATE       400000
-#define CROSSFIRE_PERIOD         4 // 4ms
+#define CROSSFIRE_PERIOD         4000 /*us*/
 #endif
 
 #define CROSSFIRE_TELEM_MIRROR_BAUDRATE   115200

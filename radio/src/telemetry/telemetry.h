@@ -268,7 +268,8 @@ struct ModuleSyncStatus
   int16_t   currentLag;  // in us
   
   inline bool isValid() {
-    return (get_tmr10ms() - lastUpdate < 100);
+    // 2 seconds
+    return (get_tmr10ms() - lastUpdate < 200);
   }
 
   // Set feedback from RF module

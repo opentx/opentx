@@ -267,8 +267,13 @@ void setupPulsesExternalModule(uint8_t protocol)
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
+    {
+      ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
+      if (status.isValid())
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
       setupPulsesCrossfire();
       break;
+    }
 #endif
 
 #if defined(MULTIMODULE)
@@ -394,6 +399,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #if defined(INTERNAL_MODULE_MULTI)
     case PROTOCOL_CHANNELS_MULTIMODULE:
       setupPulsesMultiInternalModule();
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, MULTIMODULE_PERIOD);
       return true;
 #endif
 
