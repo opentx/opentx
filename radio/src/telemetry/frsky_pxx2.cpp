@@ -227,7 +227,7 @@ void processAuthenticationFrame(uint8_t module, uint8_t * frame)
   uint8_t cryptoType = frame[3];
   uint8_t messageDigest[16] = {0};
 
-  if (PXX2_AUTH_REFUSED_DATA_LENGTH == frame[0] && PXX2_AUTH_REFUSED_FLAG == frame[4]) {
+  if (frame[0] >= 4 && PXX2_AUTH_REFUSED_FLAG == frame[4]) {
     POPUP_INFORMATION(STR_AUTH_FAILURE);
     return;
   }
