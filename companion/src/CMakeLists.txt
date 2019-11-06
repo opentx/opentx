@@ -383,7 +383,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install(FILES ../targets/linux/45-usbasp.rules DESTINATION ${INSTALL_TEMP_LIB_PFX}lib/udev/rules.d RENAME 45-companion${C9X_NAME_SUFFIX}-usbasp.rules)
   # Linux specific code
   set(OperatingSystem "Linux")
-
 elseif(WIN32)
   if(NOT WIN_DO_FULL_INSTALL)
     # Just copy supporting DLLs to build folder
@@ -482,7 +481,6 @@ if(WIN32)
       COMMENT "Building Windows NSIS installer..."
     )
   endif()
-
 endif()
 
 set(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")

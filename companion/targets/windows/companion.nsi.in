@@ -120,7 +120,7 @@ Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "Publisher" "OpenTX"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "URLInfoAbout" "http://www.open-tx.org"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "URLInfoAbout" "https://www.open-tx.org"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
