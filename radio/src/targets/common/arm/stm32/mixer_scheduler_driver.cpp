@@ -91,10 +91,10 @@ void mixerSchedulerDisableTrigger()
     MIXER_SCHEDULER_TIMER->DIER &= ~TIM_DIER_UIE; // disable interrupt
 }
 
-void mixerSchedulerWaitForTrigger(uint8_t timeoutMs)
+bool mixerSchedulerWaitForTrigger(uint8_t timeoutMs)
 {
     RTOS_CLEAR_FLAG(mixerFlag);
-    RTOS_WAIT_FLAG(mixerFlag, timeoutMs);
+    return RTOS_WAIT_FLAG(mixerFlag, timeoutMs) == E_TIMEOUT;
 }
 
 void mixerScheduleISRTrigger()

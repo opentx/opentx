@@ -241,7 +241,7 @@ template<int SIZE>
   #define RTOS_CREATE_FLAG(flag)        flag = CoCreateFlag(false, false)
   #define RTOS_SET_FLAG(flag)           (void)CoSetFlag(flag)
   #define RTOS_CLEAR_FLAG(flag)         (void)CoClearFlag(flag)
-  #define RTOS_WAIT_FLAG(flag,timeout)  (void)CoWaitForSingleFlag(flag,timeout)
+  #define RTOS_WAIT_FLAG(flag,timeout)  CoWaitForSingleFlag(flag,timeout)
 
   static inline void RTOS_ISR_SET_FLAG(RTOS_FLAG_HANDLE flag)
   {

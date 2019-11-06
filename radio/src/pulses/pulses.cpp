@@ -273,8 +273,13 @@ void setupPulsesExternalModule(uint8_t protocol)
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
+    {
+      ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
+      if (status.isValid())
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
       setupPulsesMultiExternalModule();
       break;
+    }
 #endif
 
 #if defined(PPM)

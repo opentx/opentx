@@ -178,6 +178,17 @@ void processCrossfireTelemetryFrame()
       break;
     }
 
+    // case RADIO_ID:
+    // {
+    //   uint32_t update_interval, offset;
+    //   if (getCrossfireTelemetryValue<4>(2, update_interval) && getCrossfireTelemetryValue<4>(2, offset)) {
+    //     // values are in 10th of micro-seconds
+    //     update_interval /= 10;
+    //     offset /= 10;
+    //     getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset);
+    //   }
+    // }
+
 #if defined(LUA)
     default:
       if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(telemetryRxBufferCount-2) ) {

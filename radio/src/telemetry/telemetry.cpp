@@ -337,3 +337,110 @@ OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 #if defined(LUA)
 Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo = NULL;
 #endif
+
+#define MIN_REFRESH_RATE      4000 /* us */
+#define MAX_REFRESH_RATE     25000 /* us */
+#define SAFE_SYNC_LAG          800 /* us */
+
+#if defined(HARDWARE_INTERNAL_MODULE)
+
+static ModuleSyncStatus moduleSyncStatus[NUM_MODULES];
+
+ModuleSyncStatus &getModuleSyncStatus(uint8_t moduleIdx)
+{
+  return moduleSyncStatus[moduleIdx];
+}
+
+#else
+
+static ModuleSyncStatus moduleSyncStatus;
+
+ModuleSyncStatus &getModuleSyncStatus(uint8_t moduleIdx)
+{
+  return moduleSyncStatus;
+}
+
+#endif
+
+ModuleSyncStatus::ModuleSyncStatus()
+{
+  memset(this, 0, sizeof(ModuleSyncStatus));
+}
+
+void ModuleSyncStatus::update(uint16_t newRefreshRate, uint16_t newInputLag)
+{
+  if (!newRefreshRate)
+    return;
+  
+  if (newRefreshRate < MIN_REFRESH_RATE)
+    newRefreshRate = newRefreshRate * (MIN_REFRESH_RATE / (newRefreshRate + 1));
+  else if (newRefreshRate > MAX_REFRESH_RATE)
+    newRefreshRate = MAX_REFRESH_RATE;
+
+  refreshRate = newRefreshRate;
+  inputLag    = newInputLag;
+  currentLag  = newInputLag;
+  lastUpdate  = get_tmr10ms();
+}
+
+uint16_t ModuleSyncStatus::getAdjustedRefreshRate()
+{
+  int16_t lag = currentLag - SAFE_SYNC_LAG;
+  int32_t newRefreshRate = refreshRate;
+
+  newRefreshRate += lag/2;
+  
+  if (newRefreshRate < MIN_REFRESH_RATE) {
+      newRefreshRate = MIN_REFRESH_RATE;
+  }
+  else if (newRefreshRate > MAX_REFRESH_RATE) {
+    newRefreshRate = MAX_REFRESH_RATE;
+  }
+  
+  currentLag -= newRefreshRate - refreshRate;
+  return (uint16_t)newRefreshRate;
+}
+
+// sprintf does not work AVR ARM
+// use a small helper function
+static void appendInt(char * buf, uint32_t val)
+{
+  while (*buf)
+    buf++;
+
+  strAppendUnsigned(buf, val);
+}
+
+static void prependSpaces(char * buf, int val)
+{
+  while (*buf)
+    buf++;
+
+  int k = 10000;
+  while (val / k == 0 && k > 0) {
+    *buf = ' ';
+    buf++;
+    k /= 10;
+  }
+  *buf = '\0';
+}
+
+void ModuleSyncStatus::getRefreshString(char * statusText)
+{
+  if (!isValid()) {
+    return;
+  }
+
+  char * tmp = statusText;
+#if defined(DEBUG)
+  *tmp++ = 'L';
+  tmp = strAppendUnsigned(tmp, inputLag, 5);
+  tmp = strAppend(tmp, "us R ");
+  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000), 5);
+  tmp = strAppend(tmp, "us");
+#else
+  tmp = strAppend(tmp, "Sync at ");
+  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000000));
+  tmp = strAppend(tmp, " ms");
+#endif
+}
