@@ -143,7 +143,7 @@ TASK_FUNCTION(mixerTask)
     // - add trigger based on heartbeat driver
     
     // run mixer at least every 10ms
-    mixerSchedulerWaitForTrigger(10);
+    bool timeout = mixerSchedulerWaitForTrigger(10);
 
 #if defined(DEBUG_MIXER_SCHEDULER)
     GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
@@ -200,6 +200,7 @@ TASK_FUNCTION(mixerTask)
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
 
+      //if (!timeout)
       sendSynchronousPulses();
     }
   }

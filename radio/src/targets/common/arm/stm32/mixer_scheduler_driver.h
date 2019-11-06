@@ -34,7 +34,8 @@ void mixerSchedulerStop();
 void mixerSchedulerSetPeriod(uint8_t moduleIdx, uint16_t periodUs);
 
 // Wait for the scheduler timer to trigger
-void mixerSchedulerWaitForTrigger(uint8_t timeoutMs);
+// returns true if timeout, false otherwise
+bool mixerSchedulerWaitForTrigger(uint8_t timeoutMs);
 
 // Enable the timer trigger
 void mixerSchedulerEnableTrigger();

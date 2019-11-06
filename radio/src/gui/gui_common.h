@@ -161,6 +161,7 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
 
 
 #if defined(MULTIMODULE)
+
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
   if (!isModuleMultimodule(moduleIdx))
