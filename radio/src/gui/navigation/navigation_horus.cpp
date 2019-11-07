@@ -353,7 +353,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   switch (event) {
     case EVT_ENTRY:
       s_editMode = EDIT_MODE_INIT;
-      menuVerticalPosition = MENU_FIRST_LINE_EDIT;
+      menuVerticalPosition = MENU_FIRST_LINE_EDIT(horTab, horTabMax);
       menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
 
@@ -390,7 +390,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         AUDIO_KEY_PRESS();
       }
       else {
-        uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
+        uint8_t posVertInit = MENU_FIRST_LINE_EDIT(horTab, horTabMax);
         if (menuVerticalOffset != 0 || menuVerticalPosition != posVertInit) {
           menuVerticalOffset = 0;
           menuVerticalPosition = posVertInit;
@@ -435,7 +435,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         break;
       }
       do {
-        INC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
+        INC(menuVerticalPosition, MENU_FIRST_LINE_EDIT(horTab, horTabMax), rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
       menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
@@ -454,7 +454,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         break;
       }
       do {
-        DEC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
+        DEC(menuVerticalPosition, MENU_FIRST_LINE_EDIT(horTab, horTabMax), rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
       if (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)
         menuHorizontalPosition = -1;
@@ -465,7 +465,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
 
   linesCount = rowcount;
 
-  if (menuVerticalPosition <= MENU_FIRST_LINE_EDIT) {
+  if (menuVerticalPosition <= MENU_FIRST_LINE_EDIT(horTab, horTabMax)) {
     menuVerticalOffset = 0;
     if (horTab) {
       linesCount = 0;

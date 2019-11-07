@@ -27,6 +27,7 @@
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"
+  #include "hitec.h"
   #include "multi.h"
 #endif
 #include "myeeprom.h"
@@ -112,24 +113,37 @@ extern uint8_t telemetryProtocol;
 #endif
 #define IS_SPEKTRUM_PROTOCOL()         (telemetryProtocol == PROTOCOL_TELEMETRY_SPEKTRUM)
 
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+inline bool isSportLineUsedByInternalModule()
+{
+  return g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1;
+}
+#else
+inline bool isSportLineUsedByInternalModule()
+{
+  return false;
+}
+#endif
+
 inline uint8_t modelTelemetryProtocol()
 {
+  bool sportUsed = isSportLineUsedByInternalModule();
+
 #if defined(CROSSFIRE)
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
     return PROTOCOL_TELEMETRY_CROSSFIRE;
   }
 #endif
 
-  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
+  if (!sportUsed && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
   }
 
 #if defined(MULTIMODULE)
-  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (!sportUsed && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #endif
-
   // default choice
   return PROTOCOL_TELEMETRY_FRSKY_SPORT;
 }
@@ -230,18 +244,6 @@ extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 #if defined(LUA)
 #define LUA_TELEMETRY_INPUT_FIFO_SIZE  256
 extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
-#endif
-
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-inline bool isSportLineUsedByInternalModule()
-{
-  return g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT_PXX1;
-}
-#else
-inline bool isSportLineUsedByInternalModule()
-{
-  return false;
-}
 #endif
 
 void processPXX2Frame(uint8_t module, uint8_t *frame);

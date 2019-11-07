@@ -259,7 +259,7 @@ TEST(Lcd, Dblsize)
 TEST(Lcd, DrawSwitch)
 {
   lcdClear();
-  drawSwitch(0,  10, SWSRC_SA0, 0);
+  drawSwitch(0,  10, SWSRC_SA0, 0, false);
   drawSwitch(30, 10, SWSRC_SA0, SMLSIZE);
   // drawSwitch(60, 10, SWSRC_SA0, MIDSIZE); missing arrows in this font
   drawSwitch(90, 10, SWSRC_SA0, DBLSIZE);

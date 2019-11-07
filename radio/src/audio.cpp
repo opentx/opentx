@@ -755,7 +755,7 @@ void AudioQueue::wakeup()
   DEBUG_TIMER_STOP(debugTimerAudioConsume);
 
   AudioBuffer * buffer;
-  while ((buffer = buffersFifo.getEmptyBuffer()) != 0) {
+  while ((buffer = buffersFifo.getEmptyBuffer()) != nullptr) {
     int result;
     unsigned int fade = 0;
     int size = 0;

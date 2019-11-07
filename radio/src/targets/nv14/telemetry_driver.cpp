@@ -89,6 +89,16 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
 }
 
+void telemetryPortInvertedInit(uint32_t baudrate)
+{
+#warning "TODO telemetryPortInvertedInit";
+}
+
+void extmoduleSendInvertedByte(uint8_t byte)
+{
+#warning "TODO extmoduleSendInvertedByte";
+}
+
 void telemetryPortSetDirectionOutput()
 {
   TELEMETRY_DIR_OUTPUT();

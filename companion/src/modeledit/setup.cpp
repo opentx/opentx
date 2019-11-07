@@ -217,15 +217,14 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   // The protocols available on this board
   for (unsigned int i=0; i<PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol) i, moduleIdx)) {
-      if (IS_TARANIS_XLITE(firmware->getBoard()) && i == PULSES_PXX_R9M)  //TODO remove when mini are handled as a different module type
-        ui->protocol->addItem("FrSky R9M Mini", (QVariant) i);
-      else
-        ui->protocol->addItem(ModuleData::protocolToString(i), i);
+      ui->protocol->addItem(ModuleData::protocolToString(i), i);
       if (i == module.protocol)
         ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
   }
   for (int i=0; i<=MODULE_SUBTYPE_MULTI_LAST; i++) {
+    if (i == MODULE_SUBTYPE_MULTI_SCANNER)
+      continue;
     ui->multiProtocol->addItem(Multiprotocols::protocolToString(i), i);
   }
 
@@ -299,8 +298,10 @@ void ModulePanel::setupFailsafes()
     }
   }
 
-  if (!hasFailsafe)
+  if (!hasFailsafe) {
+    lock = false;
     return;
+  }
 
   int row = 0;
   int col = 0;
@@ -363,6 +364,48 @@ void ModulePanel::setupFailsafes()
   }
 
   lock = false;
+}
+
+int ModulePanel::getMaxChannelCount()
+{
+  const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
+  switch (protocol) {
+    case PULSES_ACCESS_ISRM:
+      return 24;
+    case PULSES_PXX_R9M:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_ACCST_ISRM_D16:
+    case PULSES_XJT_LITE_X16:
+    case PULSES_PXX_XJT_X16:
+    case PULSES_CROSSFIRE:
+    case PULSES_SBUS:
+      return 16;
+    case PULSES_XJT_LITE_LR12:
+    case PULSES_PXX_XJT_LR12:
+      return 12;
+    case PULSES_PXX_DJT:
+    case PULSES_XJT_LITE_D8:
+    case PULSES_PXX_XJT_D8:
+    case PULSES_PPM:
+      return 8;
+    case PULSES_LP45:
+    case PULSES_DSM2:
+    case PULSES_DSMX:
+      return 6;
+    case PULSES_MULTIMODULE:
+      if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
+        return 12;
+      else
+        return 16;
+      break;
+    case PULSES_OFF:
+      break;
+    default:
+      break;
+  }
+  return 8;
 }
 
 void ModulePanel::update()
@@ -463,10 +506,12 @@ void ModulePanel::update()
   ui->rxNumber->setValue(module.modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
+  ui->channelsStart->setMaximum(33 - module.channelsCount);
   ui->channelsStart->setValue(module.channelsStart+1);
   ui->label_channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setEnabled(mask & MASK_CHANNELS_COUNT);
+  ui->channelsCount->setMaximum(getMaxChannelCount());
   ui->channelsCount->setValue(module.channelsCount);
   ui->channelsCount->setSingleStep(firmware->getCapability(HasPPMStart) ? 1 : 2);
 
@@ -482,7 +527,7 @@ void ModulePanel::update()
   ui->ppmDelay->setValue(module.ppm.delay);
   ui->label_ppmFrameLength->setVisible(mask & MASK_SBUSPPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_SBUSPPM_FIELDS);
-  ui->ppmFrameLength->setMinimum(module.channelsCount*(model->extendedLimits ? 2.250 : 2)+3.5);
+  ui->ppmFrameLength->setMinimum(module.channelsCount * (model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
 
@@ -546,7 +591,7 @@ void ModulePanel::update()
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
 
   if (mask & MASK_MULTIMODULE) {
-    ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
+    ui->multiProtocol->setCurrentIndex(ui->multiProtocol->findData(module.multi.rfProtocol));
     ui->autoBind->setChecked(module.multi.autoBindMode);
     ui->lowPower->setChecked(module.multi.lowPowerMode);
   }
@@ -611,11 +656,6 @@ void ModulePanel::update()
       }
     }
   }
-
-  if (mask & MASK_CHANNELS_RANGE) {
-    ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
-    ui->channelsCount->setMaximum(qMin(24, 33-ui->channelsStart->value()));
-  }
 }
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
@@ -631,6 +671,7 @@ void ModulePanel::onProtocolChanged(int index)
 {
   if (!lock && module.protocol != ui->protocol->itemData(index).toUInt()) {
     module.protocol = ui->protocol->itemData(index).toInt();
+    module.channelsCount = getMaxChannelCount();
     update();
     emit modified();
   }
@@ -717,13 +758,15 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
 
 void ModulePanel::onMultiProtocolChanged(int index)
 {
-  if (!lock && module.multi.rfProtocol != (unsigned)index) {
+  int rfProtocol = ui->multiProtocol->itemData(index).toInt();
+  if (!lock && module.multi.rfProtocol != (unsigned)rfProtocol) {
     lock=true;
-    module.multi.rfProtocol = (unsigned int) index;
+    module.multi.rfProtocol = (unsigned int)rfProtocol;
     unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubTypes();
     if (module.multi.customProto)
       maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
+    module.channelsCount = getMaxChannelCount();
     update();
     emit modified();
     lock = false;

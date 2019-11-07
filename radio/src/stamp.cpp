@@ -28,15 +28,23 @@
 
 #define TAB "\037\033"
 
+#if defined(FRSKY_RELEASE)
+#define DISPLAY_VERSION "FrSky"
+#elif defined(JUMPER_RELEASE)
+#define DISPLAY_VERSION "JumperRC"
+#else
+#define DISPLAY_VERSION VERSION
+#endif
+
 #if defined(COLORLCD)
-  const char vers_stamp[]  =   "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+  const char vers_stamp[]  =   "opentx-" FLAVOUR "-" DISPLAY_VERSION " (" GIT_STR ")";
   const char date_stamp[]  =   DATE;
   const char time_stamp[]  =   TIME;
   const char eeprom_stamp[]  = EEPROM_STR;
 #elif defined(BOARD_NAME)
-  const char vers_stamp[]  = "FW" TAB ": opentx-" BOARD_NAME "\036VERS" TAB ": " VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
+  const char vers_stamp[]  = "FW" TAB ": opentx-" BOARD_NAME "\036VERS" TAB ": " DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #else
-  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": " VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
+  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": " DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #endif
 
 /**
@@ -45,8 +53,8 @@
  */
 #if defined(STM32) && !defined(SIMU)
 
-__SECTION_USED(".fwversiondata")   const char firmware_version[] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
-__SECTION_USED(".bootversiondata") const char boot_version[] =     "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+__SECTION_USED(".fwversiondata")   const char firmware_version[] = "opentx-" FLAVOUR "-" DISPLAY_VERSION " (" GIT_STR ")";
+__SECTION_USED(".bootversiondata") const char boot_version[] =     "opentx-" FLAVOUR "-" DISPLAY_VERSION " (" GIT_STR ")";
 
 /**
  * Tries to find opentx version in the first 1024 byte of either firmware/bootloader (the one not running) or the buffer

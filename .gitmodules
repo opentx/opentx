@@ -1,4 +1,8 @@
 [submodule "libopenui"]
 	path = radio/src/thirdparty/libopenui
-	url = ../libopenui.git
+	url = https://github.com/opentx/libopenui.git
+	branch = master
+[submodule "libACCESS"]
+	path = radio/src/thirdparty/libACCESS
+	url = https://github.com/FrSky-OS/libACCESS.git
 	branch = master

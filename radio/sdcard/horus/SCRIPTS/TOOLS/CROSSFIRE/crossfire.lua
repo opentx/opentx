@@ -91,7 +91,7 @@ local function run(event)
     return 2
   elseif event == EVT_VIRTUAL_NEXT then
     selectDevice(1)
-  elseif event == EVT_VIRTUAL_PREVIOUS then
+  elseif event == EVT_VIRTUAL_PREV then
     selectDevice(-1)
   end
 

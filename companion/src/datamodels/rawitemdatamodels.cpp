@@ -85,6 +85,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   Firmware * fw = getCurrentFirmware();
 
   // Descending switch direction: NOT (!) switches
+  addItems(SWITCH_TYPE_ACT,            -1);
   addItems(SWITCH_TYPE_SENSOR,         -CPN_MAX_SENSORS);
   addItems(SWITCH_TYPE_TELEMETRY,      -1);
   addItems(SWITCH_TYPE_FLIGHT_MODE,    -fw->getCapability(FlightModes));
@@ -107,6 +108,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_SENSOR,         CPN_MAX_SENSORS);
   addItems(SWITCH_TYPE_ON,             1);
   addItems(SWITCH_TYPE_ONE,            1);
+  addItems(SWITCH_TYPE_ACT,            1);
 }
 
 void RawSwitchItemModel::setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const

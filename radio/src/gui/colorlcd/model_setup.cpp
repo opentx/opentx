@@ -573,17 +573,18 @@ class ModuleWindow : public FormGroup {
 
         // Multimodule status
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        char statusText[64];
-        multiModuleStatus.getStatusString(statusText);
+        char statusText[64] = {};
+        #warning "multimodule adaptations needed"
+        // multiModuleStatus.getStatusString(statusText);
         new StaticText(this, grid.getFieldSlot(), statusText);
 
         // Multimodule sync
-        if(multiSyncStatus.isValid()) {
+        /*if (multiSyncStatus.isValid()) {
           grid.nextLine();
           new StaticText(this, grid.getLabelSlot(true), STR_MODULE_SYNC);
           multiSyncStatus.getRefreshString(statusText);
           new StaticText(this, grid.getFieldSlot(), statusText);
-        }
+        }*/
 
         // Multi optional feature row
         const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol(true);

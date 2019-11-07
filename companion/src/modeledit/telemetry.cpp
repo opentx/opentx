@@ -653,9 +653,8 @@ void TelemetrySensorPanel::update()
     ui->id->hide();
     ui->instanceLabel->hide();
     ui->instance->hide();
-    ui->rxLabel->hide();
-    ui->moduleLabel->hide();
-    ui->rxOrMod->hide();
+    ui->originLabel->hide();
+    ui->origin->hide();
     ui->formula->show();
     ui->formula->setCurrentIndex(sensor.formula);
     isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
@@ -679,13 +678,10 @@ void TelemetrySensorPanel::update()
     ui->id->show();
     ui->instanceLabel->show();
     ui->instance->show();
-
-    bool is_pxx2 = model->moduleData[sensor.moduleIdx].isPxx2Module();
-    ui->rxLabel->setVisible(is_pxx2);
-    ui->moduleLabel->setVisible(!is_pxx2);
-
-    ui->rxOrMod->setText(sensor.getRxOrModName(model));
-    ui->rxOrMod->show();
+    QString origin = sensor.getOrigin(model);
+    ui->originLabel->setVisible(!origin.isEmpty());
+    ui->origin->setVisible(!origin.isEmpty());
+    ui->origin->setText(origin);
 
     ui->formula->hide();
     isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
@@ -755,7 +751,7 @@ void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model
       const SensorData& sensor = model->sensorData[-i-1];
       if (sensor.isAvailable()) {
         if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
-          cb->addItem(QString("-%1 (%2)").arg(sensor.label, sensor.getRxOrModName(model)), i);
+          cb->addItem(QString("-%1 (%2)").arg(sensor.label, sensor.getOrigin(model)), i);
         else
           cb->addItem(QString("-%1").arg(sensor.label), i);
       }
@@ -766,7 +762,7 @@ void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model
     const SensorData& sensor = model->sensorData[i-1];
     if (sensor.isAvailable()) {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
-        cb->addItem(QString("%1 (%2)").arg(sensor.label, sensor.getRxOrModName(model)), i);
+        cb->addItem(QString("%1 (%2)").arg(sensor.label, sensor.getOrigin(model)), i);
       else
         cb->addItem(QString("%1").arg(sensor.label), i);
     }

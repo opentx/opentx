@@ -448,6 +448,11 @@
 #elif defined(PCBXLITE)
   // no SWF but we want to remain compatible with XLiteS
   #define STORAGE_SWITCH_F
+#elif defined(PCBX9LITES)
+  #define STORAGE_SWITCH_F
+  #define HARDWARE_SWITCH_F
+  #define SWITCHES_GPIO_REG_F           GPIOC->IDR
+  #define SWITCHES_GPIO_PIN_F           GPIO_Pin_3 // PC.03
 #elif defined(PCBX9LITE)
   // no SWF
 #elif defined(PCBX7)
@@ -469,6 +474,11 @@
   #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_3  // PF.03
   #define SWITCHES_GPIO_REG_G_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_G_L         GPIO_Pin_4  // PF.04
+#elif defined(PCBX9LITES)
+  #define STORAGE_SWITCH_G
+  #define HARDWARE_SWITCH_G
+  #define SWITCHES_GPIO_REG_G           GPIOC->IDR
+  #define SWITCHES_GPIO_PIN_G           GPIO_Pin_2 // PC.02
 #elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // no SWG
 #else
@@ -521,8 +531,8 @@
   #define HARDWARE_SWITCH_J
   #define SWITCHES_GPIO_REG_I           GPIOC->IDR
   #define SWITCHES_GPIO_PIN_I           GPIO_Pin_13  // PC.13
-  #define SWITCHES_GPIO_REG_J           GPIOC->IDR
-  #define SWITCHES_GPIO_PIN_J           GPIO_Pin_10  // PC.10
+  #define SWITCHES_GPIO_REG_J           GPIOD->IDR
+  #define SWITCHES_GPIO_PIN_J           GPIO_Pin_10  // PD.10
 #endif
 
 #if defined(PCBX9E)
@@ -632,9 +642,16 @@
 #elif defined(RADIO_X7)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE)
   #define KEYS_GPIOA_PINS               GPIO_Pin_5
-  #define KEYS_GPIOC_PINS               (GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_10 | GPIO_Pin_13)
-  #define KEYS_GPIOD_PINS               (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_11 | GPIO_Pin_14 | GPIO_Pin_15)
+  #define KEYS_GPIOC_PINS               (GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_13)
+  #define KEYS_GPIOD_PINS               (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_14 | GPIO_Pin_15)
   #define KEYS_GPIOE_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15)
+#elif defined(PCBX9LITES)
+  #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE)
+  #define KEYS_GPIOA_PINS               (GPIO_Pin_5)
+  #define KEYS_GPIOB_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_5)
+  #define KEYS_GPIOC_PINS               (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_13)
+  #define KEYS_GPIOD_PINS               (GPIO_Pin_8 | GPIO_Pin_9)
+  #define KEYS_GPIOE_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14)
 #elif defined(PCBX9LITE)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE)
   #define KEYS_GPIOA_PINS               (GPIO_Pin_5)
@@ -891,6 +908,14 @@
   #define LED_RED_GPIO_PIN              GPIO_Pin_5  // PC.05
   #define LED_BLUE_GPIO                 GPIOB
   #define LED_BLUE_GPIO_PIN             GPIO_Pin_1  // PB.01
+#elif defined(PCBX9LITES)
+  #define STATUS_LEDS
+  #define GPIO_LED_GPIO_ON              GPIO_SetBits
+  #define GPIO_LED_GPIO_OFF             GPIO_ResetBits
+  #define LED_RED_GPIO                  GPIOE
+  #define LED_RED_GPIO_PIN              GPIO_Pin_5  // PE.05
+  #define LED_BLUE_GPIO                 GPIOE
+  #define LED_BLUE_GPIO_PIN             GPIO_Pin_6  // PE.06
 #elif defined(PCBX9LITE)
   #define STATUS_LEDS
   #define GPIO_LED_GPIO_ON              GPIO_SetBits
@@ -904,16 +929,8 @@
 #endif
 
 // Internal Module
-#if !defined(RADIO_T12)
-  #define HARDWARE_INTERNAL_MODULE
-#endif
 #if defined(PCBXLITE)
 #define EXTERNAL_ANTENNA
-#endif
-#if defined(PCBXLITES) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
-  #define INTERNAL_MODULE_PXX2
-#else
-  #define INTERNAL_MODULE_PXX1
 #endif
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define INTMODULE_RCC_APB1Periph      0
@@ -1267,6 +1284,23 @@
 #define TELEMETRY_DMA_TX_FLAG_TC        DMA_IT_TCIF6
 #define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
 #define TELEMETRY_USART_IRQn            USART2_IRQn
+#define TELEMETRY_EXTI_PortSource       EXTI_PortSourceGPIOD
+#define TELEMETRY_EXTI_PinSource        EXTI_PinSource6
+#define TELEMETRY_EXTI_LINE             EXTI_Line6
+#define TELEMETRY_EXTI_IRQn             EXTI9_5_IRQn
+#define TELEMETRY_EXTI_TRIGGER          EXTI_Trigger_Rising
+
+#if defined(RADIO_X7)
+  #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
+#elif defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+  #define TELEMETRY_EXTI_IRQHandler       EXTI9_5_IRQHandler
+#else
+  #define TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT
+#endif
+
+#define TELEMETRY_TIMER                 TIM11
+#define TELEMETRY_TIMER_IRQn            TIM1_TRG_COM_TIM11_IRQn
+#define TELEMETRY_TIMER_IRQHandler      TIM1_TRG_COM_TIM11_IRQHandler
 
 // PCBREV
 #if defined(PCBX7)
@@ -1788,7 +1822,7 @@
   #define BT_TX_GPIO_PinSource         GPIO_PinSource14
   #define BT_RX_GPIO_PinSource         GPIO_PinSource9
   #define BT_USART_IRQHandler          USART6_IRQHandler
-#elif defined(PCBX7) || defined(PCBXLITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITES) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define STORAGE_BLUETOOTH
   #define BT_RCC_APB1Periph             RCC_APB1Periph_USART3
   #define BT_RCC_APB2Periph             0
@@ -1800,6 +1834,10 @@
     #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE) // RCC_AHB1Periph_DMA1
     #define BT_EN_GPIO                  GPIOE
     #define BT_EN_GPIO_PIN              GPIO_Pin_15 // PE.15
+  #elif defined(PCBX9LITES)
+    #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOD) // RCC_AHB1Periph_DMA1
+    #define BT_EN_GPIO                  GPIOD
+    #define BT_EN_GPIO_PIN              GPIO_Pin_14 // PD.14
   #else
     #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE) // RCC_AHB1Periph_DMA1
     #define BT_EN_GPIO                  GPIOE

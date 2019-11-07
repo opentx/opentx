@@ -80,11 +80,16 @@ Type 0x06 Flysky AFHDS2 telemetry data
    data[0] = RSSI value
    data[1-28] telemetry data
 
+Type 0x0B Spectrum Scanner telemetry data
+   length: 6
+   data[0] = start channel (2400 + x*0.333 Mhz)
+   data[1-5] power levels
+
 */
 
+void processMultiTelemetryData(uint8_t data, uint8_t module);
 
-
-void processMultiTelemetryData(uint8_t data);
+#define MULTI_SCANNER_MAX_CHANNEL 249
 
 // This should be put into the Module definition if other modules gain this functionality
 struct MultiModuleSyncStatus {
@@ -107,7 +112,7 @@ struct MultiModuleSyncStatus {
 
 };
 
-extern MultiModuleSyncStatus multiSyncStatus;
+MultiModuleSyncStatus& getMultiSyncStatus(uint8_t module);
 
 
 struct MultiModuleStatus {
@@ -118,26 +123,29 @@ struct MultiModuleStatus {
   uint8_t patch;
 
   uint8_t flags;
+  uint8_t requiresFailsafeCheck;
   tmr10ms_t lastUpdate;
 
   void getStatusString(char* statusText);
 
-  inline bool isValid() { return (bool)(get_tmr10ms() - lastUpdate < 200); }
-  inline bool supportsFailsafe() { return (bool) (flags & 0x20); }
-  inline bool isWaitingforBind() { return (bool) (flags & 0x10); }
-  inline bool isBinding() { return (bool) (flags & 0x08); }
-  inline bool protocolValid() { return (bool) (flags & 0x04); }
-  inline bool serialMode() { return (bool) (flags & 0x02); }
-  inline bool inputDetected() { return (bool) (flags & 0x01); }
+  inline bool isValid() const { return (bool)(get_tmr10ms() - lastUpdate < 200); }
+  inline bool supportsFailsafe() const { return (bool) (flags & 0x20); }
+  inline bool isWaitingforBind() const { return (bool) (flags & 0x10); }
+  inline bool isBinding() const { return (bool) (flags & 0x08); }
+  inline bool protocolValid() const { return (bool) (flags & 0x04); }
+  inline bool serialMode() const { return (bool) (flags & 0x02); }
+  inline bool inputDetected() const { return (bool) (flags & 0x01); }
 };
 
-extern MultiModuleStatus multiModuleStatus;
+MultiModuleStatus& getMultiModuleStatus(uint8_t module);
+
 enum MultiBindStatus : uint8_t {
   MULTI_NORMAL_OPERATION,
   MULTI_BIND_INITIATED,
   MULTI_BIND_FINISHED,
 };
 
-extern uint8_t multiBindStatus;
+uint8_t getMultiBindStatus(uint8_t module);
+void setMultiBindStatus(uint8_t module, uint8_t bindStatus);
 
 #endif //OPENTX_MULTI_H

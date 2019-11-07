@@ -54,7 +54,7 @@ PACK(struct FrSkyFirmwareInformation {
   uint16_t crc;
 });
 
-const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data);
+const char * readFrSkyFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data);
 
 class FrskyDeviceFirmwareUpdate {
     enum State {

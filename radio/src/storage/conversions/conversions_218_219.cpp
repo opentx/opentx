@@ -124,9 +124,11 @@ void convertModelData_218_to_219(ModelData &model)
   memclear(&newModel.header.bitmap[10], 4);
   memcpy(newModel.timers, oldModel.timers, offsetof(ModelData_v218, mixData) - offsetof(ModelData_v218, timers));
 
+#if defined(BLUETOOTH)
   // trainer battery compartment removed
   if (newModel.trainerData.mode >= TRAINER_MODE_MASTER_BLUETOOTH)
     newModel.trainerData.mode -= 1;
+#endif
 #endif
 
   memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));
@@ -290,7 +292,7 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
     newModel.telemetrySensors[i].id = oldModel.telemetrySensors[i].id;
-    if (oldModel.telemetrySensors[i].type == 0 && (oldModel.moduleData[0].type ==  MODULE_TYPE_XJT_PXX1 || oldModel.moduleData[1].type == MODULE_TYPE_XJT_PXX1))
+    if (oldModel.telemetrySensors[i].type == 0 && ZLEN(oldModel.telemetrySensors[i].label) > 0 && (isModuleTypePXX1(oldModel.moduleData[0].type) || isModuleTypePXX1(oldModel.moduleData[1].type)))
       newModel.telemetrySensors[i].instance = 0xE0 + (oldModel.telemetrySensors[i].instance & 0x1F) - 1;
     else
       newModel.telemetrySensors[i].instance = oldModel.telemetrySensors[i].instance;
@@ -353,7 +355,7 @@ void convertModelData_218_to_219(ModelData &model)
         }
       }
     }
-    else if (screenType == TELEMETRY_SCREEN_TYPE_GAUGES) {
+    else if (screenType == TELEMETRY_SCREEN_TYPE_BARS) {
       for (int j = 0; j < 4; j++) {
         newModel.screens[i].bars[j].source = convertSource_218_to_219(oldModel.frsky.screens[i].bars[j].source);
       }

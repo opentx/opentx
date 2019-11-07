@@ -85,10 +85,17 @@ set(BOOTLOADER_SRC
   bin_files.cpp
   )
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019) OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
+if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019) OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE OR PCB STREQUAL X9LITES)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../targets/common/arm/stm32/rotary_encoder_driver.cpp
+    )
+endif()
+
+if(PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
+  set(BOOTLOADER_SRC
+    ${BOOTLOADER_SRC}
+    ../../../../../targets/common/arm/stm32/bluetooth_driver.cpp
     )
 endif()
 
@@ -116,7 +123,6 @@ if(PCB STREQUAL X10 OR PCB STREQUAL X12S OR PCB STREQUAL NV14)
       ${BOOTLOADER_SRC}
       ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
       ../../../../../serial.cpp
-      ../aux_serial_driver.cpp
       )
   endif()
 endif()
@@ -133,7 +139,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs")
 
 add_executable(bootloader ${BOOTLOADER_SRC})
-add_dependencies(bootloader ${BITMAPS_TARGET} translations)
+add_dependencies(bootloader ${BITMAPS_TARGET})
 
 add_custom_command(
   TARGET bootloader POST_BUILD

@@ -504,7 +504,7 @@ PACK(struct ModelData_v218 {
     swarnstate218_t switchUnlockStates; \
     swconfig218_t switchConfig; \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218]; \
+    char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME_218]; \
     BLUETOOTH_FIELDS_218
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS_218 \
@@ -517,7 +517,7 @@ PACK(struct ModelData_v218 {
     uint8_t  sticksGain; \
     uint8_t  rotarySteps; \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218];
+    char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME_218];
   #else
     #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
 #endif

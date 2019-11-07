@@ -68,6 +68,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Gruvin9x board / 9X";
     case BOARD_JUMPER_T12:
       return "OpenTX for Jumper T12";
+    case BOARD_JUMPER_T16:
+      return "OpenTX for Jumper T16";
     case BOARD_TARANIS_X9D:
       return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_X9DP:
@@ -78,6 +80,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
+    case BOARD_TARANIS_X9LITES:
+      return "OpenTX for FrSky Taranis X9-Lite S";
     case BOARD_TARANIS_X9LITE:
       return "OpenTX for FrSky Taranis X9-Lite";
     case BOARD_TARANIS_XLITE:
@@ -445,7 +449,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      return (board == BOARD_TARANIS_X9D || IS_TARANIS_PLUS(board) || IS_HORUS(board));
+      return (board == BOARD_TARANIS_X9D || IS_TARANIS_PLUS(board) || board == BOARD_TARANIS_X9DP_2019 || IS_HORUS(board));
     case HasBeeper:
       return (!IS_ARM(board));
     case HasPxxCountry:
@@ -768,18 +772,20 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !(IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
+            return !IS_ACCESS_RADIO(board, id) && board != BOARD_JUMPER_T16;
           case PULSES_PXX_XJT_D8:
-            return !(IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || id.contains("eu"));
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && board != BOARD_JUMPER_T16;
           case PULSES_PPM:
             return id.contains("internalppm");
           case PULSES_ACCESS_ISRM:
           case PULSES_ACCST_ISRM_D16:
-            return IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_HORUS(board) && id.contains("internalaccess"));
+            return IS_ACCESS_RADIO(board, id);
+          case PULSES_MULTIMODULE:
+            return id.contains("internalmulti");
           default:
             return false;
         }
-        
+
       case 1:
         switch (proto) {
           case PULSES_OFF:
@@ -797,13 +803,15 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_MULTIMODULE:
           case PULSES_CROSSFIRE:
             return true;
+          case PULSES_ACCESS_R9M:
+            return IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_HORUS(board) && id.contains("internalaccess"));
+          case PULSES_PXX_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
           case PULSES_XJT_LITE_X16:
           case PULSES_XJT_LITE_D8:
           case PULSES_XJT_LITE_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board));
+            return (IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board));
           default:
             return false;
         }
@@ -1214,7 +1222,7 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9D+ 2019 board */
   firmware = new OpenTxFirmware("opentx-x9d+2019", Firmware::tr("FrSky Taranis X9D+ 2019"), BOARD_TARANIS_X9DP_2019);
   addOpenTxTaranisOptions(firmware);
-  addPPMInternalModuleHack(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky Taranis X9D board */
@@ -1234,6 +1242,12 @@ void registerOpenTxFirmwares()
 
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
+  addOpenTxTaranisOptions(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky X9-LiteS board */
+  firmware = new OpenTxFirmware("opentx-x9lites", Firmware::tr("FrSky Taranis X9-Lite S"), BOARD_TARANIS_X9LITES);
   addOpenTxTaranisOptions(firmware);
   firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
@@ -1262,8 +1276,9 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* FrSky X10 Express board */
-  firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 Express"), BOARD_X10_EXPRESS);
+  firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 / X10S Express"), BOARD_X10_EXPRESS);
   addOpenTxFrskyOptions(firmware);
+  firmware->addOption("autoupdate", Firmware::tr("Support for auto update on boot"));
   registerOpenTxFirmware(firmware);
 
   /* FrSky X12 (Horus) board */
@@ -1281,6 +1296,13 @@ void registerOpenTxFirmwares()
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
   firmware->addOption("flexr9m", Firmware::tr("Enable non certified R9M firmwares"));
   addOpenTxFontOptions(firmware);
+  registerOpenTxFirmware(firmware);
+
+  /* Jumper T16 board */
+  firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+"), BOARD_JUMPER_T16);
+  addOpenTxFrskyOptions(firmware);
+  firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
+  firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
   registerOpenTxFirmware(firmware);
 
   /* 9XR-Pro */

@@ -27,6 +27,8 @@
 
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
+#elif defined(RADIO_T16)
+  #include "lua/lua_exports_t16.inc"
 #elif defined(PCBX10)
   #include "lua/lua_exports_x10.inc"
 #elif defined(PCBX9E)
@@ -35,6 +37,8 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(RADIO_T12)
   #include "lua/lua_exports_t12.inc"
+#elif defined(PCBX9LITES)
+  #include "lua/lua_exports_x9lites.inc"
 #elif defined(PCBX9LITE)
   #include "lua/lua_exports_x9lite.inc"
 #elif defined(PCBXLITES)
@@ -54,10 +58,10 @@
 #define FIND_FIELD_DESC  0x01
 
 #define KEY_EVENTS(xxx, yyy)  \
-  { "EVT_"#xxx"_FIRST",  EVT_KEY_FIRST(yyy) }, \
-  { "EVT_"#xxx"_BREAK",  EVT_KEY_BREAK(yyy) }, \
-  { "EVT_"#xxx"_LONG",  EVT_KEY_LONG(yyy) }, \
-  { "EVT_"#xxx"_REPT",  EVT_KEY_REPT(yyy) }
+  { "EVT_"#xxx"_FIRST", EVT_KEY_FIRST(yyy) }, \
+  { "EVT_"#xxx"_BREAK", EVT_KEY_BREAK(yyy) }, \
+  { "EVT_"#xxx"_LONG", EVT_KEY_LONG(yyy) }, \
+  { "EVT_"#xxx"_REPT", EVT_KEY_REPT(yyy) }
 
 /*luadoc
 @function getVersion()
@@ -484,13 +488,7 @@ static int luaSportTelemetryPush(lua_State * L)
       outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
 #if defined(PXX2)
       uint8_t destination = (IS_INTERNAL_MODULE_ON() ? INTERNAL_MODULE : EXTERNAL_MODULE);
-
-      if (isModulePXX2(destination)) {
-        outputTelemetryBuffer.setDestination(destination << 2);
-      }
-      else {
-        outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
-      }
+      outputTelemetryBuffer.setDestination(isModulePXX2(destination) ? (destination << 2) : TELEMETRY_ENDPOINT_SPORT);
 #else
       outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
 #endif
@@ -1379,7 +1377,7 @@ static int luaChdir(lua_State * L)
 @function loadScript(file [, mode], [,env])
 
 Load a Lua script file. This is similar to Lua's own [loadfile()](https://www.lua.org/manual/5.2/manual.html#pdf-loadfile)
-API method,  but it uses OpenTx's optional pre-compilation feature to save memory and time during load.
+API method, but it uses OpenTx's optional pre-compilation feature to save memory and time during load.
 
 Return values are same as from Lua API loadfile() method: If the script was loaded w/out errors
 then the loaded script (or "chunk") is returned as a function. Otherwise, returns nil plus the error message.
@@ -1675,53 +1673,61 @@ const luaR_value_entry opentxConstants[] = {
   { "FIXEDWIDTH", FIXEDWIDTH },
 #endif
 
-// Virtual Page Next/Previous
-#if defined(KEYS_GPIO_REG_PGUP) && defined(KEYS_GPIO_REG_PGDN)
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_FIRST(KEY_PGUP) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_FIRST(KEY_PGDN) },
-#elif defined(KEYS_GPIO_REG_PGDN)
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_PGDN) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PGDN) },
-#elif defined(KEYS_GPIO_REG_UP) && defined(KEYS_GPIO_REG_DOWN)
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_UP) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_LONG(KEY_DOWN) },
-#elif defined(KEYS_GPIO_REG_PAGE)
-  { "EVT_VIRTUAL_PREVIOUS_PAGE",  EVT_KEY_LONG(KEY_PAGE) },
-  { "EVT_VIRTUAL_NEXT_PAGE",  EVT_KEY_BREAK(KEY_PAGE) },
+// Virtual events
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  { "EVT_VIRTUAL_PREV", EVT_ROTARY_LEFT },
+  { "EVT_VIRTUAL_NEXT", EVT_ROTARY_RIGHT },
+  { "EVT_VIRTUAL_DEC", EVT_ROTARY_LEFT },
+  { "EVT_VIRTUAL_INC", EVT_ROTARY_RIGHT },
+#elif defined(PCBX9D) || defined(PCBX9DP)  // key reverted between field nav and value change
+  { "EVT_VIRTUAL_PREV", EVT_KEY_FIRST(KEY_PLUS) },
+  { "EVT_VIRTUAL_PREV_REPT", EVT_KEY_REPT(KEY_PLUS) },
+  { "EVT_VIRTUAL_NEXT", EVT_KEY_FIRST(KEY_MINUS) },
+  { "EVT_VIRTUAL_NEXT_REPT", EVT_KEY_REPT(KEY_MINUS) },
+  { "EVT_VIRTUAL_DEC", EVT_KEY_FIRST(KEY_MINUS) },
+  { "EVT_VIRTUAL_DEC_REPT", EVT_KEY_REPT(KEY_MINUS) },
+  { "EVT_VIRTUAL_INC", EVT_KEY_FIRST(KEY_PLUS) },
+  { "EVT_VIRTUAL_INC_REPT", EVT_KEY_REPT(KEY_PLUS) },
+#else
+  { "EVT_VIRTUAL_PREV", EVT_KEY_FIRST(KEY_UP) },
+  { "EVT_VIRTUAL_PREV_REPT", EVT_KEY_REPT(KEY_UP) },
+  { "EVT_VIRTUAL_NEXT", EVT_KEY_FIRST(KEY_DOWN) },
+  { "EVT_VIRTUAL_NEXT_REPT", EVT_KEY_REPT(KEY_DOWN) },
+  { "EVT_VIRTUAL_DEC", EVT_KEY_FIRST(KEY_DOWN) },
+  { "EVT_VIRTUAL_DEC_REPT", EVT_KEY_REPT(KEY_DOWN) },
+  { "EVT_VIRTUAL_INC", EVT_KEY_FIRST(KEY_UP) },
+  { "EVT_VIRTUAL_INC_REPT", EVT_KEY_REPT(KEY_UP) },
 #endif
 
-// Virtual exit
-  { "EVT_VIRTUAL_EXIT",  EVT_KEY_BREAK(KEY_EXIT) },
-
-// Virtual enter
-#if defined(KEYS_GPIO_REG_ENTER)
+#if defined(NAVIGATION_9X) || defined(NAVIGATION_XLITE)
+  { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_LONG(KEY_LEFT) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_LEFT) },
+  { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_RIGHT) },
+  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_RIGHT) },
   { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
-#endif
-
-// Virtual menu
-#if defined(KEYS_GPIO_REG_MENU)
+  { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
+#elif defined(NAVIGATION_X7) || defined(NAVIGATION_X9D)
+  { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_LONG(KEY_PAGE) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
-#elif defined(KEYS_GPIO_REG_SHIFT)
-  { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_SHIFT) },
-  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_SHIFT) },
+  { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
+  { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
+  { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
+#elif defined(NAVIGATION_HORUS)
+#if defined(KEYS_GPIO_REG_PGUP)
+  { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_BREAK(KEY_PGUP) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PGDN) },
+#else
+  { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_LONG(KEY_PGDN) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PGDN) },
 #endif
-
-// Virtual generic plus-next-right minus-previous-left
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  { "EVT_VIRTUAL_NEXT", EVT_ROTARY_RIGHT},
-  { "EVT_VIRTUAL_PREVIOUS", EVT_ROTARY_LEFT },
-#elif defined(KEYS_GPIO_REG_RIGHT) && defined(KEYS_GPIO_REG_LEFT)
-  { "EVT_VIRTUAL_NEXT",  EVT_KEY_FIRST(KEY_RIGHT) },
-  { "EVT_VIRTUAL_NEXT_REPT",  EVT_KEY_REPT(KEY_RIGHT) },
-  { "EVT_VIRTUAL_PREVIOUS",  EVT_KEY_FIRST(KEY_LEFT) },
-  { "EVT_VIRTUAL_PREVIOUS_REPT",  EVT_KEY_REPT(KEY_LEFT) },
-#elif defined(KEYS_GPIO_REG_PLUS) && defined(KEYS_GPIO_REG_MINUS)
-  { "EVT_VIRTUAL_NEXT", EVT_KEY_FIRST(KEY_PLUS) },
-  { "EVT_VIRTUAL_NEXT_REPT", EVT_KEY_REPT(KEY_PLUS) },
-  { "EVT_VIRTUAL_PREVIOUS", EVT_KEY_FIRST(KEY_MINUS) },
-  { "EVT_VIRTUAL_PREVIOUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
+  { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MODEL) },
+  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MODEL) },
+  { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
+  { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
+  { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #endif
 
 #if defined(KEYS_GPIO_REG_EXIT)

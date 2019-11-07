@@ -1151,11 +1151,11 @@ bool readToolName(char * toolName, const char * filename)
     return false;
 
   uint8_t len = end - start;
-  if (len > TOOL_NAME_MAXLEN)
+  if (len > RADIO_TOOL_NAME_MAXLEN)
     return false;
 
   strncpy(toolName, start, len);
-  memclear(toolName + len, TOOL_NAME_MAXLEN + 1 - len);
+  memclear(toolName + len, RADIO_TOOL_NAME_MAXLEN + 1 - len);
 
   return true;
 }

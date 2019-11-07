@@ -155,6 +155,8 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
       continue;
     if (ed->flightModes & (1<<mixerCurrentFlightMode))
       continue;
+    if (ed->srcRaw >= MIXSRC_FIRST_TRAINER && ed->srcRaw <= MIXSRC_LAST_TRAINER && !IS_TRAINER_INPUT_VALID())
+      continue;
     if (getSwitch(ed->swtch)) {
       int32_t v;
       if (ed->srcRaw == ovwrIdx) {
@@ -218,6 +220,17 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
 // rescaled from -262144 to 262144
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
+    // safety channel available for channel check
+    return calc100toRESX(safetyCh[channel]);
+  }
+#endif
+
+  if (isFunctionActive(FUNCTION_TRAINER_CHANNELS) && IS_TRAINER_INPUT_VALID()) {
+    return ppmInput[channel];
+  }
+
   LimitData * lim = limitAddress(channel);
 
   if (lim->curve) {
@@ -271,17 +284,12 @@ int16_t applyLimits(uint8_t channel, int32_t value)
     ofs += tmp;  // ofs can to added directly because already recalculated,
   }
 
-  if (ofs > lim_p) ofs = lim_p;
-  if (ofs < lim_n) ofs = lim_n;
-
-  if (lim->revert) ofs = -ofs; // finally do the reverse.
-
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
-    // safety channel available for channel check
-    ofs = calc100toRESX(safetyCh[channel]);
-  }
-#endif
+  if (ofs > lim_p)
+    ofs = lim_p;
+  if (ofs < lim_n)
+    ofs = lim_n;
+  if (lim->revert)
+    ofs = -ofs; // finally do the reverse.
 
   return ofs;
 }
@@ -307,7 +315,7 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
-  else if (i <= MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
+  else if (i <= MIXSRC_LAST_POT + NUM_MOUSE_ANALOGS) {
     return calibratedAnalogs[i - MIXSRC_Rud];
   }
 
@@ -338,8 +346,8 @@ getvalue_t getValue(mixsrc_t i)
 
   // TODO : find a better define
 #if defined(PCBFRSKY) || defined(PCBFLYSKY)
-  else if ((i >= MIXSRC_FIRST_SWITCH) && (i <= MIXSRC_LAST_SWITCH)) {
-    mixsrc_t sw = i-MIXSRC_FIRST_SWITCH;
+  else if (i >= MIXSRC_FIRST_SWITCH && i <= MIXSRC_LAST_SWITCH) {
+    mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
     if (SWITCH_EXISTS(sw)) {
       return (switchState(3*sw) ? -1024 : (IS_CONFIG_3POS(sw) && switchState(3*sw+1) ? 0 : 1024));
     }
@@ -417,7 +425,7 @@ void evalInputs(uint8_t mode)
 {
   BeepANACenter anaCenter = 0;
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+  for (uint8_t i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i) : i);
     int16_t v = anaIn(i);
@@ -462,12 +470,12 @@ void evalInputs(uint8_t mode)
         v = 0;
       }
 
-      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && IS_TRAINER_INPUT_VALID()) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER_STICK1+ch) && IS_TRAINER_INPUT_VALID()) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
           uint8_t chStud = td->srcChn;
-          int32_t vStud  = (ppmInput[chStud]- g_eeGeneral.trainer.calib[chStud]);
+          int32_t vStud  = (ppmInput[chStud] - g_eeGeneral.trainer.calib[chStud]);
           vStud *= td->studWeight;
           vStud /= 50;
           switch (td->mode) {
@@ -721,7 +729,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       if (mode==e_perout_mode_normal && (!mixCondition || mixEnabled || swOn[i].delay)) {
-        if (md->mixWarn) 
+        if (md->mixWarn)
           lv_mixWarning |= 1 << (md->mixWarn - 1);
         swOn[i].activeMix = true;
       }

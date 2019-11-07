@@ -52,9 +52,6 @@
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Mudo ""Alarm""NoKey""Todo "
 
-#define LEN_VRENAVIG     "\003"
-#define TR_VRENAVIG      "No REaREb"
-
 #define LEN_VBLMODE      "\004"
 #define TR_VBLMODE       "OFF ""Chav""Stks""Tudo""ON\0"
 
@@ -363,6 +360,7 @@
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Master/CPPM Module"
 #define TR_VTRAINER_MASTER_BATTERY     "Master/Serial\0    "
 #define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
+#define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Not set\0 ""Hold\0    ""Custom\0  ""No pulses""Receiver\0"
@@ -527,7 +525,6 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
-#define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Inverte Acel.", INDENT "Inverte Acel.")
 #define TR_MINUTEBEEP          "Beep Minuto"
@@ -576,7 +573,6 @@
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER"SEM DADOS"
 #define TR_US                         "us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 #define TR_TMIXMAXMS         "Tmix max"
 #define TR_FREE_STACK     "Free stack"
 #define TR_MENUTORESET         TR_ENTER" Reinicia"
@@ -737,7 +733,10 @@
 #define TR_POWER_METER_INT             "Power Meter (INT)"
 #define TR_SPECTRUM_ANALYSER_EXT       "Spectrum (EXT)"
 #define TR_SPECTRUM_ANALYSER_INT       "Spectrum (INT)"
-#define TR_SDCARD_FULL         "SD Card Full"
+#define TR_SDCARD_FULL                 "SD Card Full"
+#define TR_NEEDS_FILE                  "NEEDS FILE"
+#define TR_EXT_MULTI_SPEC              "opentx-inv"
+#define TR_INT_MULTI_SPEC              "stm-opentx-noinv"
 #define TR_INCOMPATIBLE        "Incompativel"
 #define TR_WARNING             "AVISO"
 #define TR_EEPROMWARN          "EEPROM"
@@ -751,6 +750,7 @@
 #define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
 #define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
+#define TR_WARN_MULTI_LOWPOWER         "Low power mode"
 #define TR_BATTERY                     "BATTERY"
 #define TR_WRONG_PCBREV        "Wrong PCB detected"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
@@ -803,8 +803,8 @@
 #define TR_BLUETOOTH            "Bluetooth"
 #define TR_BLUETOOTH_DISC       "Discover"
 #define TR_BLUETOOTH_INIT       "Init"
-#define TR_BLUETOOTH_DIST_ADDR  INDENT "Dist addr"
-#define TR_BLUETOOTH_LOCAL_ADDR INDENT "Local addr"
+#define TR_BLUETOOTH_DIST_ADDR  "Dist addr"
+#define TR_BLUETOOTH_LOCAL_ADDR "Local addr"
 #define TR_BLUETOOTH_PIN_CODE   "PIN code"
 #define TR_BAUDRATE             "BT Baudrate"
 #define LEN_BLUETOOTH_MODES     "\011"
@@ -838,7 +838,9 @@
 #define TR_FLASH_POWER_MANAGEMENT_UNIT          "Flash pwr mngt unit"
 #define TR_CURRENT_VERSION             TR("Current vers. ", "Current version: ")
 #define TR_FLASH_INTERNAL_MODULE "Flash Internal Module"
+#define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
+#define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
 #define TR_WRITING             "Writing..."
@@ -1173,6 +1175,8 @@
 #define TR_MENU_OTHER          "Other"
 #define TR_MENU_INVERT         "Invert"
 #define TR_JITTER_FILTER       "ADC Filter"
+#define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
+#define TR_AUTH_FAILURE                "Auth-failure"
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
@@ -1185,6 +1189,21 @@
 #define ZSTR_ALT               "Alt"
 #define ZSTR_TEMP1             "Tmp1"
 #define ZSTR_TEMP2             "Tmp2"
+#define ZSTR_TEMP3                     "Tmp3"
+#define ZSTR_TEMP4                     "Tmp4"
+#define ZSTR_RPM2                      "RPM2"
+#define ZSTR_PRES                      "Pres"
+#define ZSTR_ODO1                      "Odo1"
+#define ZSTR_ODO2                      "Odo2"
+#define ZSTR_TXV                       "TX_V"
+#define ZSTR_CURR_SERVO1               "CSv1"
+#define ZSTR_CURR_SERVO2               "CSv2"
+#define ZSTR_CURR_SERVO3               "CSv3"
+#define ZSTR_CURR_SERVO4               "CSv4"
+#define ZSTR_DIST                      "Dist"
+#define ZSTR_ARM                       "Arm"
+#define ZSTR_C50                       "C50"
+#define ZSTR_C200                      "C200"
 #define ZSTR_RPM               "RPM"
 #define ZSTR_FUEL              "Fuel"
 #define ZSTR_VSPD              "VSpd"

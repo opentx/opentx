@@ -251,22 +251,17 @@ bool isSourceAvailableInCustomSwitches(int source)
   return result;
 }
 
-bool isInputSourceAvailable(int source)
+bool isSourceAvailableInInputs(int source)
 {
   if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT)
     return IS_POT_SLIDER_AVAILABLE(POT1+source - MIXSRC_FIRST_POT);
-
-#if defined(GYRO)
-  if (source >= MIXSRC_GYRO1 && source <= MIXSRC_GYRO2)
-    return true;
-#endif
 
 #if defined(PCBX10)
   if (source >= MIXSRC_MOUSE1 && source <= MIXSRC_MOUSE2)
     return false;
 #endif
 
-  if (source >= MIXSRC_Rud && source < MIXSRC_MAX)
+  if (source >= MIXSRC_Rud && source <= MIXSRC_MAX)
     return true;
 
   if (source >= MIXSRC_FIRST_TRIM && source <= MIXSRC_LAST_TRIM)
@@ -537,6 +532,15 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 }
 #endif
 
+bool isTrainerUsingModuleBay()
+{
+#if defined(PCBTARANIS)
+  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return true;
+#endif
+  return false;
+}
+
 bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
 {
   switch (moduleType) {
@@ -573,6 +577,13 @@ bool isInternalModuleAvailable(int moduleType)
     return true;
 #endif
 
+#if defined(INTERNAL_MODULE_MULTI)
+  if (moduleType == MODULE_TYPE_MULTIMODULE)
+    return true;
+  else
+    return false;
+#endif
+
   if (moduleType == MODULE_TYPE_XJT_PXX1) {
 #if defined(PXX1) && defined(INTERNAL_MODULE_PXX1)
     return !isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
@@ -590,13 +601,20 @@ bool isInternalModuleAvailable(int moduleType)
     return true;
 #endif
   }
-
+  return false;
+}
+#else
+bool isInternalModuleAvailable(int moduleType)
+{
   return false;
 }
 #endif
 
 bool isExternalModuleAvailable(int moduleType)
 {
+  if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
+    return false;
+
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
@@ -647,7 +665,7 @@ bool isExternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (isModuleUsingSport(EXTERNAL_MODULE, moduleType) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
+  if ((isModuleUsingSport(EXTERNAL_MODULE, moduleType) || isTrainerUsingModuleBay()) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
     return false;
 #endif
 
@@ -720,6 +738,9 @@ bool isTrainerModeAvailable(int mode)
 #if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
+#elif defined(PCBTARANIS)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER;
 #endif
 
 #if defined(PCBX9E)
@@ -815,6 +836,7 @@ const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
 const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
+const char STR_SUBTYPE_FRSKYX_RX[] =  "\003""FCC""LBT";
 
 const mm_protocol_definition multi_protocols[] = {
 
@@ -848,7 +870,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false,      STR_SUBTYPE_TRAXXAS,   nullptr},
-  {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      nullptr},
+  {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
@@ -856,6 +878,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false,      STR_SUBTYPE_POTENSIC,  nullptr},
   {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      STR_SUBTYPE_ZSX,       nullptr},
   {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false,      STR_SUBTYPE_FLYZONE,   nullptr},
+  {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false,      STR_SUBTYPE_FRSKYX_RX, STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)

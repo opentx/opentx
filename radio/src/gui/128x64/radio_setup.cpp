@@ -663,7 +663,6 @@ void menuRadioSetup(event_t event)
           resumePulses();
           waitKeysReleased();
         }
-        MOVE_CURSOR_FROM_HERE();
         break;
     }
   }

@@ -145,12 +145,13 @@ void SDRAM_Init();
 void init_intmodule_heartbeat();
 void check_intmodule_heartbeat();
 
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
+void extmoduleSendInvertedByte(uint8_t byte);
 
 // Trainer driver
 void init_trainer_ppm();
@@ -451,6 +452,9 @@ uint8_t telemetryGetByte(uint8_t * byte);
 void telemetryClearFifo();
 void sportSendByte(uint8_t byte);
 extern uint32_t telemetryErrors;
+
+// soft-serial
+void telemetryPortInvertedInit(uint32_t baudrate);
 
 // Sport update driver
 #define SPORT_UPDATE_POWER_ON()

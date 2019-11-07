@@ -139,9 +139,13 @@ inline bool isModuleTypePPM(uint8_t type)
   return type == MODULE_TYPE_PPM;
 }
 
-inline bool isModulePPM(uint8_t idx)
+inline bool isModulePPM(uint8_t moduleIdx)
 {
-  return isModuleTypePPM(g_model.moduleData[idx].type);
+#if defined(PCBSKY9X)
+  if (moduleIdx == EXTRA_MODULE)
+    return true;
+#endif
+  return isModuleTypePPM(g_model.moduleData[moduleIdx].type);
 }
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
@@ -389,22 +393,24 @@ inline bool isModuleModelIndexAvailable(uint8_t idx)
   return false;
 }
 
-inline bool isModuleFailsafeAvailable(uint8_t idx)
+inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 {
 #if defined(PXX2)
-  if (isModuleISRM(idx))
+  if (isModuleISRM(moduleIdx))
     return true;
 #endif
 
-  if (isModuleXJT(idx))
-    return g_model.moduleData[idx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
+  if (isModuleXJT(moduleIdx))
+    return g_model.moduleData[moduleIdx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(idx))
-    return multiModuleStatus.isValid() && multiModuleStatus.supportsFailsafe();
+  if (isModuleMultimodule(moduleIdx)){
+    MultiModuleStatus& status = getMultiModuleStatus(moduleIdx);
+    return status.isValid() && status.supportsFailsafe();
+  }
 #endif
 
-  if (isModuleR9M(idx))
+  if (isModuleR9M(moduleIdx))
     return true;
 
   return false;

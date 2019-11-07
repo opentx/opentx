@@ -309,6 +309,38 @@ void extmoduleSendNextFrame()
   }
 }
 
+void extmoduleSendInvertedByte(uint8_t byte)
+{
+  uint16_t time;
+  uint32_t i;
+
+  __disable_irq();
+  time = getTmr2MHz();
+  GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+  while ((uint16_t) (getTmr2MHz() - time) < 34)	{
+    // wait
+  }
+  time += 34;
+  for (i = 0 ; i < 8 ; i += 1) {
+    if (byte & 1) {
+      GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+    }
+    else {
+      GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+    }
+    byte >>= 1 ;
+    while ((uint16_t) (getTmr2MHz() - time) < 35) {
+      // wait
+    }
+    time += 35 ;
+  }
+  GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
+  __enable_irq() ;	// No need to wait for the stop bit to complete
+  while ((uint16_t) (getTmr2MHz() - time) < 34) {
+    // wait
+  }
+}
+
 extern "C" void EXTMODULE_TIMER_DMA_STREAM_IRQHandler()
 {
   if (!DMA_GetITStatus(EXTMODULE_TIMER_DMA_STREAM, EXTMODULE_TIMER_DMA_FLAG_TC))

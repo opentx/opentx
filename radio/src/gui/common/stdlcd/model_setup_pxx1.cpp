@@ -26,16 +26,10 @@ void onBindMenu(const char * result)
   if (result == STR_BINDING_1_8_TELEM_ON) {
     g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;
     g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
-    if (isModuleR9MLiteNonPro(moduleIdx) && isModuleR9M_LBT(moduleIdx)) {
-      g_model.moduleData[moduleIdx].pxx.power = R9M_LITE_LBT_POWER_25_8CH;
-    }
   }
   else if (result == STR_BINDING_1_8_TELEM_OFF) {
     g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = true;
     g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
-    if (isModuleR9MLiteNonPro(moduleIdx) && isModuleR9M_LBT(moduleIdx)) {
-      g_model.moduleData[moduleIdx].pxx.power = R9M_LITE_LBT_POWER_100_16CH_NOTELEM;
-    }
   }
   else if (result == STR_BINDING_9_16_TELEM_ON) {
     g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;

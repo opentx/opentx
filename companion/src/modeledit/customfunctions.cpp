@@ -688,7 +688,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
         ((i==FuncSetTimer1 || i==FuncSetTimer2) && !IS_ARM(firmware->getBoard())) ||
         ((i==FuncSetTimer3) && firmware->getCapability(Timers) < 3) ||
-        ((i==FuncScreenshot) && !IS_TARANIS(firmware->getBoard())) ||
+        ((i==FuncScreenshot) && !IS_HORUS_OR_TARANIS(firmware->getBoard())) ||
         ((i>=FuncRangeCheckInternalModule && i<=FuncBindExternalModule) && (!model || !firmware->getCapability(DangerousFunctions))) ||
         ((i>=FuncAdjustGV1 && i<=FuncAdjustGVLast) && (!model || !firmware->getCapability(Gvars)))
         ) {

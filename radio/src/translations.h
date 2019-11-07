@@ -550,6 +550,9 @@ extern const char STR_WAITING_FOR_TX[];
   #define STR_UPDATE_LIST STR_DELAYDOWN
 #endif
 
+extern const char STR_NEEDS_FILE[];
+extern const char STR_EXT_MULTI_SPEC[];
+extern const char STR_INT_MULTI_SPEC[];
 extern const char STR_CAT_NOT_EMPTY[];
 extern const char STR_WARNING[];
 extern const char STR_STORAGE_WARNING[];
@@ -562,6 +565,7 @@ extern const char STR_NIGHTLY_WARNING[];
 extern const char STR_NIGHTLY_NOTSAFE[];
 extern const char STR_WRONG_SDCARDVERSION[];
 extern const char STR_WARN_RTC_BATTERY_LOW[];
+extern const char STR_WARN_MULTI_LOWPOWER[];
 extern const char STR_BATTERY[];
 extern const char STR_WRONG_PCBREV[];
 extern const char STR_EMERGENCY_MODE[];
@@ -635,7 +639,9 @@ extern const char STR_FLASH_BLUETOOTH_MODULE[];
 extern const char STR_FLASH_POWER_MANAGEMENT_UNIT[];
 extern const char STR_CURRENT_VERSION[];
 extern const char STR_FLASH_INTERNAL_MODULE[];
+extern const char STR_FLASH_INTERNAL_MULTI[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];
+extern const char STR_FLASH_EXTERNAL_MULTI[];
 extern const char STR_FIRMWARE_UPDATE_ERROR[];
 extern const char STR_FIRMWARE_UPDATE_SUCCESS[];
 extern const char STR_WRITING[];
@@ -866,6 +872,7 @@ extern const char STR_MENU_DISPLAY[];
 extern const char STR_MENU_OTHER[];
 extern const char STR_MENU_INVERT[];
 extern const char STR_JITTER_FILTER[];
+extern const char STR_RTC_CHECK[];
 
 #if MENUS_LOCK == 1
   extern const char STR_UNLOCKED[];
@@ -918,6 +925,8 @@ extern const char STR_ABOUT_PARENTS_1[];
 extern const char STR_ABOUT_PARENTS_2[];
 extern const char STR_ABOUT_PARENTS_3[];
 extern const char STR_ABOUT_PARENTS_4[];
+
+extern const char STR_AUTH_FAILURE[];
 
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT

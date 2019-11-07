@@ -109,6 +109,7 @@ class GeneralSettings {
     bool      adjustRTC;
     bool      optrexDisplay;
     unsigned int    inactivityTimer;
+    unsigned int    telemetryBaudrate;
     bool      minuteBeep;
     bool      preBeep;
     bool      flashBeep;
@@ -140,6 +141,7 @@ class GeneralSettings {
     unsigned int rotarySteps;
     unsigned int countryCode;
     bool jitterFilter;
+    bool rtcCheckDisable;
     unsigned int imperial;
     char ttsLanguage[2+1];
     int beepVolume;

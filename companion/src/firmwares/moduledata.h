@@ -114,7 +114,10 @@ enum MultiModuleRFProtocols {
   MODULE_SUBTYPE_MULTI_POTENSIC,
   MODULE_SUBTYPE_MULTI_ZSX,
   MODULE_SUBTYPE_MULTI_FLYZONE,
-  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_FLYZONE
+  MODULE_SUBTYPE_MULTI_SCANNER,
+  MODULE_SUBTYPE_MULTI_FRSKYX_RX,
+  MODULE_SUBTYPE_MULTI_AFHDS2A_RX,
+  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_AFHDS2A_RX
 };
 
 enum TrainerProtocol {
@@ -183,6 +186,7 @@ class ModuleData {
     void convert(RadioDataConversionState & cstate);
     bool isPxx2Module() const;
     bool isPxx1Module() const;
+    bool supportRxNum() const;
     QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); }
     QString rfProtocolToString() const;
     QString subTypeToString(int type = -1) const;
