@@ -1322,7 +1322,7 @@ void menuModelSetup(event_t event)
     {
       lcdDrawTextAlignedLeft(y, STR_MODULE_SYNC);
       char statusText[64];
-      getMultiSyncStatus(EXTERNAL_MODULE).getRefreshString(statusText);
+      getModuleSyncStatus(EXTERNAL_MODULE).getRefreshString(statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
