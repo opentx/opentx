@@ -358,10 +358,10 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
       break;
 
     case HottTelemetry:
-      if (len >= 13)
+      if (len >= 14)
         processHottPacket(data);
       else
-        TRACE("[MP] Received HoTT telemetry len %d < 13", len);
+        TRACE("[MP] Received HoTT telemetry len %d < 14", len);
       break;
 
     case FrSkyHubTelemetry:

@@ -56,6 +56,10 @@ enum
   HOTT_FRAME_04 = 0x04,
 };
 
+#define HOTT_TELEM_NORMAL 0x00
+#define HOTT_TELEM_BIND 0x40
+#define HOTT_TELEM_MENU 0x80
+
 // telemetry sensors ID
 enum
 {
@@ -101,27 +105,30 @@ void processHottPacket(const uint8_t * packet)
   const HottSensor * sensor;
   int32_t value;
 
-  switch (packet[2]) {
-    case HOTT_FRAME_00:
-      //RX_VOLT
-      value = packet[4];
-      sensor = getHottSensor(HOTT_ID_RX_VOLTAGE);
-      setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
-      //RX_TEMP
-      value = packet[5]-20;
-      sensor = getHottSensor(HOTT_ID_TEMP1);
-      setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
-      // RX_RSSI
-      setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_RSSI_ID, 0, 0, packet[6], UNIT_DB, 0);
-      // RX_LQI
-      telemetryData.rssi.set(packet[7]);
-      if (packet[7] > 0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-      setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_LQI_ID, 0, 0, packet[7], UNIT_RAW, 0);
-      return;
+  if(packet[2]==HOTT_TELEM_NORMAL)
+  {
+      switch (packet[3]) {
+        case HOTT_FRAME_00:
+        //RX_VOLT
+        value = packet[5];
+        sensor = getHottSensor(HOTT_ID_RX_VOLTAGE);
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
+        //RX_TEMP
+        value = packet[6]-20;
+        sensor = getHottSensor(HOTT_ID_TEMP1);
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
+        // RX_RSSI
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_RSSI_ID, 0, 0, packet[7], UNIT_DB, 0);
+        // RX_LQI
+        telemetryData.rssi.set(packet[8]);
+        if (packet[8] > 0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
+        return;
+    }
+    //unknown
+    value = (packet[7] << 24) | (packet[6] << 16) | (packet[5] << 8) | packet[4];
+    setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, 0xFE00 | packet[3], 0, 0, value, UNIT_RAW, 0);
   }
-  //unknown
-  value = (packet[6] << 24) | (packet[5] << 16) | (packet[4] << 8) | packet[3];
-  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, 0xFE00 | packet[2], 0, 0, value, UNIT_RAW, 0);
 }
 
 void hottSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
