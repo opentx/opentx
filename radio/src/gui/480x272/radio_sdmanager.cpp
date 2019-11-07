@@ -180,6 +180,13 @@ void onSdManagerMenu(const char * result)
     bluetooth.flashFirmware(lfn);
   }
 #endif
+#if defined(HARDWARE_POWER_MANAGEMENT_UNIT)
+  else if (result == STR_FLASH_POWER_MANAGEMENT_UNIT) {
+    getSelectionFullPath(lfn);
+    FrskyChipFirmwareUpdate device;
+    device.flashFirmware(lfn);
+  }
+#endif
 #if defined(MULTIMODULE)
 #if defined(INTERNAL_MODULE_MULTI)
   else if (result == STR_FLASH_INTERNAL_MULTI) {
