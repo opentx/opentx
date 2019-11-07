@@ -66,7 +66,11 @@ void stop_intmodule_heartbeat()
 }
 
 // from mixer_scheduler_driver
+#if !defined(SIMU)
 void mixerScheduleISRTrigger();
+#else
+#define mixerScheduleISRTrigger()
+#endif
 
 void check_intmodule_heartbeat()
 {

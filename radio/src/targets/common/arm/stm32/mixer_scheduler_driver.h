@@ -21,6 +21,7 @@
 #ifndef _MIXER_SCHEDULER_DRIVER_H_
 #define _MIXER_SCHEDULER_DRIVER_H_
 
+#if !defined(SIMU)
 // Call once to initialize the mixer scheduler
 void mixerSchedulerInit();
 
@@ -42,5 +43,23 @@ void mixerSchedulerEnableTrigger();
 
 // Disable the timer trigger
 void mixerSchedulerDisableTrigger();
+
+#else
+
+#define mixerSchedulerInit()
+#define mixerSchedulerStart()
+#define mixerSchedulerStop()
+#define mixerSchedulerSetPeriod(m,p)
+
+static inline bool mixerSchedulerWaitForTrigger(uint8_t timeout)
+{
+  simuSleep(timeout);
+  return false;
+}
+
+#define mixerSchedulerEnableTrigger()
+#define mixerSchedulerDisableTrigger()
+
+#endif
 
 #endif

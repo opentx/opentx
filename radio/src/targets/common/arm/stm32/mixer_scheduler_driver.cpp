@@ -22,6 +22,8 @@
 
 #define MIXER_SCHEDULER_DEFAULT_PERIOD_US 4000u // 4ms
 
+#if !defined(SIMU)
+
 // Global trigger flag
 RTOS_FLAG_HANDLE mixerFlag;
 
@@ -94,7 +96,7 @@ void mixerSchedulerDisableTrigger()
 bool mixerSchedulerWaitForTrigger(uint8_t timeoutMs)
 {
     RTOS_CLEAR_FLAG(mixerFlag);
-    return RTOS_WAIT_FLAG(mixerFlag, timeoutMs) == E_TIMEOUT;
+    return RTOS_WAIT_FLAG(mixerFlag, timeoutMs);
 }
 
 void mixerScheduleISRTrigger()
@@ -113,3 +115,5 @@ extern "C" void MIXER_SCHEDULER_TIMER_IRQHandler(void)
     // trigger mixer start
     mixerScheduleISRTrigger();
 }
+
+#endif
