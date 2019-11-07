@@ -727,6 +727,9 @@ bool isTrainerModeAvailable(int mode)
 #if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
+#elif defined(PCBTARANIS)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER;
 #endif
 
 #if defined(PCBX9E)
