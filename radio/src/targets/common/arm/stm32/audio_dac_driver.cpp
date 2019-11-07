@@ -90,8 +90,7 @@ void dacInit()
 
 void audioConsumeCurrentBuffer()
 {
-  if (nextBuffer == 0) {
-
+  if (!nextBuffer) {
     nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
 #if defined(AUDIO_MUTE_GPIO_PIN)
