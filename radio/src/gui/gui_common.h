@@ -60,7 +60,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable);
 
 bool isTrimModeAvailable(int mode);
 bool isInputAvailable(int input);
-bool isInputSourceAvailable(int source);
+bool isSourceAvailableInInputs(int source);
 bool isThrottleSourceAvailable(int source);
 bool isLogicalSwitchFunctionAvailable(int function);
 bool isLogicalSwitchAvailable(int index);
