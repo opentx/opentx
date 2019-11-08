@@ -13,7 +13,13 @@ set(HAPTIC YES)
 set(GUI_DIR colorlcd)
 set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
-set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
+
+if(BOOTLOADER)
+  set(LINKER_SCRIPT targets/horus/stm32f4_flash_bootloader.ld)
+else()
+  set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
+endif()
+
 set(RAMBACKUP YES)
 set(PPM_LIMITS_SYMETRICAL YES)
 set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
@@ -162,8 +168,14 @@ set(FIRMWARE_TARGET_SRC
   startup_stm32f42_43xxx.s
   ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/stm32/sdio_sd.c
-  ../common/arm/loadboot.cpp
   )
+
+if(BOOTLOADER)
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    ../common/arm/loadboot.cpp
+    )
+endif()
 
 set(SRC
   ${SRC}

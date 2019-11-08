@@ -21,7 +21,7 @@ ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
 _estack = 0x10010000;    /* end of 64K CCM */
-_heap_end = 0xC0800000;  /* end of 8192K SDRAM */
+_heap_end = 0xD0800000;  /* end of 8192K SDRAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
@@ -37,7 +37,7 @@ MEMORY
   RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 192K
   CCM (xrw)       : ORIGIN = 0x10000000, LENGTH = 64K
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
-  SDRAM(xrw)      : ORIGIN = 0xC0000000, LENGTH = 8192K
+  SDRAM(xrw)      : ORIGIN = 0xD0000000, LENGTH = 8192K
 }
 
 /* Define output sections */
@@ -52,6 +52,9 @@ SECTIONS
       
     CREATE_OBJECT_SYMBOLS
   
+    KEEP(*(.bootloader)) /* Bootloader code */
+
+    . = 0x20000;         /* Set the start of the main program */
     _stext = .;          /* Provide the name for the start of this section */
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */

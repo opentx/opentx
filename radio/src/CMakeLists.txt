@@ -486,7 +486,7 @@ if(NOT MSVC)
       set(SRC ${SRC} bin_allocator.cpp)
     endif()
 
-    if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X9LITE OR PCB STREQUAL X7 OR PCB STREQUAL X3 OR PCB STREQUAL X9LITES OR PCB STREQUAL X10 OR PCB STREQUAL X12S)
+    if(BOOTLOADER)
       add_subdirectory(targets/common/arm/stm32/bootloader)
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/common/arm/stm32/bootloader)
       set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} bootloader)

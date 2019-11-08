@@ -52,9 +52,6 @@ SECTIONS
       
     CREATE_OBJECT_SYMBOLS
   
-    KEEP(*(.bootloader)) /* Bootloader code */
-
-    . = 0x20000;         /* Set the start of the main program */
     _stext = .;          /* Provide the name for the start of this section */
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
