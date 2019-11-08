@@ -205,6 +205,7 @@ void menuModelTelemetry(event_t event)
             pushMenu(menuModelSensor);
           }
           else {
+            allowNewSensors = 0;
             POPUP_WARNING(STR_TELEMETRYFULL);
           }
         }

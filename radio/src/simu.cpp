@@ -366,20 +366,20 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
 
 #define SWITCH_KEY(key, swtch, states) \
   static bool state##key = 0; \
-  static int8_t state_##swtch = 2; \
-  static int8_t inc_##swtch = 1; \
+  static int8_t state_##swtch = -1; \
+  static int8_t inc_##swtch = 4-states; \
   if (getApp()->getKeyState(KEY_##key)) { \
     if (!state##key) { \
       state_##swtch = (state_##swtch+inc_##swtch); \
-      if (state_##swtch == 1+states) inc_##swtch = -1; \
-      else if (state_##swtch == 2) inc_##swtch = 1; \
+      if (state_##swtch == -1+((states-1)*inc_##swtch)) inc_##swtch = -4+states; \
+      else if (state_##swtch == -1) inc_##swtch = 4-states; \
       state##key = true; \
     } \
   } \
   else { \
     state##key = false; \
   } \
-  simuSetSwitch(swtch, state_##swtch-states)
+  simuSetSwitch(swtch, state_##swtch) \
 
 #if defined(PCBSKY9X)
   SWITCH_KEY(1, 0, 3);
