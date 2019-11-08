@@ -80,12 +80,8 @@ void SwitchWarnDialog::paint(BitmapBuffer * dc)
       unsigned int state = ((g_model.switchWarningState >> (3 * i)) & 0x07);
       if (state && state - 1 != ((switches_states >> (i * 2)) & 0x03)) {
         if (y < LCD_H) {
-#if LCD_W > LCD_H
           x = drawSwitch(dc, x, y, SWSRC_FIRST_SWITCH + i * 3 + state - 1, FONT(BOLD));
           x += 5;
-#else
-          y += 35;
-#endif
         }
         else {
           dc->drawText(x, y, "...", FONT(BOLD));
