@@ -381,6 +381,7 @@ int ModulePanel::getMaxChannelCount()
     case PULSES_PXX_XJT_X16:
     case PULSES_CROSSFIRE:
     case PULSES_SBUS:
+    case PULSES_PPM:
       return 16;
     case PULSES_XJT_LITE_LR12:
     case PULSES_PXX_XJT_LR12:
@@ -388,7 +389,6 @@ int ModulePanel::getMaxChannelCount()
     case PULSES_PXX_DJT:
     case PULSES_XJT_LITE_D8:
     case PULSES_PXX_XJT_D8:
-    case PULSES_PPM:
       return 8;
     case PULSES_LP45:
     case PULSES_DSM2:
