@@ -195,8 +195,8 @@ class ModelButton: public Button {
 
 class ModelSelectFooter: public Window {
   public:
-    ModelSelectFooter(Window * parent, const rect_t & rect):
-      Window(parent, rect)
+    explicit ModelSelectFooter(Window * parent):
+      Window(parent,  {0, parent->height() - MODEL_SELECT_FOOTER_HEIGHT, LCD_W, MODEL_SELECT_FOOTER_HEIGHT}, OPAQUE)
     {
     }
 
@@ -209,20 +209,33 @@ class ModelSelectFooter: public Window {
     void paint(BitmapBuffer * dc) override
     {
       dc->drawSolidFilledRect(0, 0, width(), height(), DISABLE_COLOR);
-      dc->drawBitmap(7, 12, modelselSdFreeBitmap);
       uint32_t size = sdGetSize() / 100;
-      dc->drawNumber(24, 11, size, PREC1|FONT(XS), 0, NULL, "GB");
-      dc->drawBitmap(77, 12, modelselModelQtyBitmap);
-      dc->drawNumber(99, 11, modelslist.getModelsCount(), FONT(XS));
+      coord_t x = 7;
+      dc->drawMask(7, 4, modelselSdFreeBitmap, DEFAULT_COLOR);
+      x += modelselSdFreeBitmap->width() + 3;
+      x = dc->drawNumber(x, 3, size, PREC1|FONT(XS), 0, nullptr, "GB");
+      x += 20;
+      dc->drawMask(x, 4, modelselModelQtyBitmap, DEFAULT_COLOR);
+      x += modelselModelQtyBitmap->width() + 3;
+      x = dc->drawNumber(x, 3, modelslist.getModelsCount(), FONT(XS));
       if (currentModel) {
-        dc->drawBitmap(7, 37, modelselModelNameBitmap);
-        dc->drawText(24, 32, currentModel->modelFilename, FONT(XS) | DEFAULT_COLOR);
+        x += 20;
+        dc->drawMask(x, 4, modelselModelNameBitmap, DEFAULT_COLOR);
+        x += modelselModelNameBitmap->width() + 3;
+        dc->drawText(x, 3, currentModel->modelFilename, FONT(XS) | DEFAULT_COLOR);
       }
     }
 
   protected:
     ModelCell * currentModel = nullptr;
 };
+
+#if defined(PCBX10)
+constexpr coord_t MODEL_SELECT_CELL_WIDTH = (LCD_W - 3 * PAGE_PADDING) / 2;
+#else
+constexpr coord_t MODEL_SELECT_CELL_WIDTH = LCD_W - 2 * PAGE_PADDING;
+#endif
+constexpr coord_t MODEL_SELECT_CELL_HEIGHT = 94;
 
 class ModelCategoryPageBody: public FormWindow {
   public:
@@ -239,8 +252,10 @@ class ModelCategoryPageBody: public FormWindow {
       clear();
 
       int index = 0;
+      coord_t y = PAGE_PADDING;
+      coord_t x = PAGE_PADDING;
       for (auto & model: * category) {
-        auto button = new ModelButton(this, {10, 10 + index * 104, LCD_W - 20, 94}, model, nullptr);
+        auto button = new ModelButton(this, {x, y, MODEL_SELECT_CELL_WIDTH, MODEL_SELECT_CELL_HEIGHT}, model, nullptr);
 
         button->setFocusHandler([=] {
             footer->setCurrentModel(model);
@@ -296,18 +311,30 @@ class ModelCategoryPageBody: public FormWindow {
             }
             else {
               button->setFocus();
-//              footer->invalidate();
             }
             return 1;
         });
 
         if (selected == index) {
           button->setFocus();
+          footer->setCurrentModel(model);
         }
+
         index++;
+#if LCD_W >= 480
+        if (x == PAGE_PADDING) {
+          x = PAGE_PADDING + MODEL_SELECT_CELL_WIDTH + PAGE_PADDING;
+        }
+        else {
+          x = PAGE_PADDING;
+          y += MODEL_SELECT_CELL_HEIGHT + PAGE_PADDING;
+        }
+#else
+        y += MODEL_SELECT_CELL_HEIGHT + PAGE_PADDING;
+#endif
       }
 
-      adjustInnerHeight();
+      setInnerHeight(y);
     }
 
   protected:
@@ -328,8 +355,8 @@ class ModelCategoryPage: public PageTab {
 
     void build(FormWindow * window) override
     {
-      auto footer = new ModelSelectFooter(window, {0, window->height() - 55, LCD_W, 55});
-      new ModelCategoryPageBody(window, {0, 0, LCD_W, window->height() - 55}, category, footer);
+      auto footer = new ModelSelectFooter(window);
+      new ModelCategoryPageBody(window, {0, 0, LCD_W, window->height() - MODEL_SELECT_FOOTER_HEIGHT}, category, footer);
     }
 };
 

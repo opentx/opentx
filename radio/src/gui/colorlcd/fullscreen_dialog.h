@@ -35,8 +35,6 @@ class FullScreenDialog : public Dialog {
   public:
     FullScreenDialog(uint8_t type, std::string title, std::string message = "", std::string action = "", std::function<void(void)> confirmHandler = nullptr);
 
-    ~FullScreenDialog() override;
-
 #if defined(DEBUG_WINDOWS)
     std::string getName() override
     {

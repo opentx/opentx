@@ -39,10 +39,6 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
 #endif
 }
 
-FullScreenDialog::~FullScreenDialog()
-{
-}
-
 void FullScreenDialog::paint(BitmapBuffer * dc)
 {
   static_cast<ThemeBase *>(theme)->drawBackground(dc);

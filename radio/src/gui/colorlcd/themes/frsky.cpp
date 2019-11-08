@@ -208,13 +208,13 @@ class FrskyTheme: public ThemeBase
       }
 
       delete modelselSdFreeBitmap;
-      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      modelselSdFreeBitmap = BitmapBuffer::loadMask(getFilePath("modelsel/mask_sdfree.png"));
 
       delete modelselModelQtyBitmap;
-      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      modelselModelQtyBitmap = BitmapBuffer::loadMask(getFilePath("modelsel/mask_modelqty.png"));
 
       delete modelselModelNameBitmap;
-      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      modelselModelNameBitmap = BitmapBuffer::loadMask(getFilePath("modelsel/mask_modelname.png"));
 
       delete modelselModelMoveBackground;
       modelselModelMoveBackground = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveback.png"));

@@ -47,7 +47,7 @@ constexpr uint32_t DEFAULT_SCROLLBAR_X =           LCD_W - 10;
 constexpr uint32_t DEFAULT_SCROLLBAR_Y =           MENU_CONTENT_TOP;
 constexpr uint32_t DEFAULT_SCROLLBAR_H =           MENU_FOOTER_TOP - DEFAULT_SCROLLBAR_Y - 6;
 
-constexpr uint32_t PAGE_PADDING =                  6;
+constexpr coord_t PAGE_PADDING =                  6;
 constexpr uint32_t PAGE_LINE_HEIGHT =              20;
 constexpr uint32_t PAGE_LINE_SPACING =             2;
 constexpr uint32_t PAGE_INDENT_WIDTH =             10;
@@ -159,6 +159,7 @@ constexpr coord_t MENUS_HEADER_HEIGHT = 30;
 constexpr coord_t MENUS_FOOTER_HEIGHT = 0;
 constexpr coord_t MENUS_MIN_HEIGHT = 2 * MENUS_LINE_HEIGHT - 1;
 constexpr coord_t MENUS_MAX_HEIGHT = 7 * MENUS_LINE_HEIGHT - 1;
+constexpr coord_t MODEL_SELECT_FOOTER_HEIGHT = 24;
 
 constexpr int CJK_FIRST_LETTER_INDEX = 187;
 

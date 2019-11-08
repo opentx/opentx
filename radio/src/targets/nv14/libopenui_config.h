@@ -158,6 +158,8 @@ constexpr coord_t MENUS_FOOTER_HEIGHT = 0;
 constexpr coord_t MENUS_MIN_HEIGHT = 2 * MENUS_LINE_HEIGHT - 1;
 constexpr coord_t MENUS_MAX_HEIGHT = 7 * MENUS_LINE_HEIGHT - 1;
 
+constexpr coord_t MODEL_SELECT_FOOTER_HEIGHT = 24;
+
 constexpr int CJK_FIRST_LETTER_INDEX = 187;
 
 #endif // _LIBOPENUI_CONFIG_H_
