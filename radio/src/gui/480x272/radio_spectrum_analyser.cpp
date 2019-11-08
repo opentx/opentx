@@ -30,7 +30,7 @@ enum SpectrumFields
   SPECTRUM_FIELDS_MAX
 };
 
-coord_t getAverage(uint8_t number, uint8_t * value)
+coord_t getAverage(uint8_t number, const uint8_t * value)
 {
   uint16_t sum = 0;
   for (uint8_t i = 0; i < number; i++) {
@@ -40,7 +40,6 @@ coord_t getAverage(uint8_t number, uint8_t * value)
 }
 
 #define SPECTRUM_ROW  (isModuleMultimodule(g_moduleIdx) ? READONLY_ROW : (uint8_t)0)
-constexpr uint8_t GREYBAR_HEIGHT = 12;
 
 bool menuRadioSpectrumAnalyser(event_t event)
 {
@@ -151,8 +150,13 @@ bool menuRadioSpectrumAnalyser(event_t event)
       }
     }
   }
+
+  constexpr coord_t SCALE_HEIGHT = 12;
+  constexpr coord_t SCALE_TOP = MENU_FOOTER_TOP - SCALE_HEIGHT;
+  constexpr coord_t BARGRAPH_HEIGHT = SCALE_TOP - MENU_HEADER_HEIGHT;
+
   // Draw fixed part (scale,..)
-  lcdDrawFilledRect(0, MENU_FOOTER_TOP - GREYBAR_HEIGHT, LCD_W, GREYBAR_HEIGHT, SOLID, CURVE_AXIS_COLOR);
+  lcdDrawSolidFilledRect(0, SCALE_TOP, LCD_W, SCALE_HEIGHT, CURVE_AXIS_COLOR);
   for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000; ; frequency += 10000000) {
     int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
     int x = offset / reusableBuffer.spectrumAnalyser.step;
@@ -161,7 +165,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
     lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT, STASHED, CURVE_AXIS_COLOR);
 
     if ((frequency / 1000000) % 2 == 0) {
-      lcdDrawNumber(x, MENU_FOOTER_TOP - GREYBAR_HEIGHT - 1, frequency / 1000000, TINSIZE | TEXT_COLOR | CENTERED);
+      lcdDrawNumber(x, SCALE_TOP - 1, frequency / 1000000, TINSIZE | TEXT_COLOR | CENTERED);
     }
   }
 
@@ -172,29 +176,29 @@ bool menuRadioSpectrumAnalyser(event_t event)
     lcdDrawHorizontalLine(0, y, LCD_W, STASHED, CURVE_AXIS_COLOR);
   }
 
-  // Draw Tracker
+  // Draw tracker
   int offset = reusableBuffer.spectrumAnalyser.track - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
-  int x = offset / reusableBuffer.spectrumAnalyser.step;
-  lcdDrawVerticalLine(x, MENU_HEADER_HEIGHT, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT - GREYBAR_HEIGHT, SOLID, TEXT_COLOR);
+  int x = limit<int>(0, offset / reusableBuffer.spectrumAnalyser.step, LCD_W - 1);
+  lcdDrawSolidVerticalLine(x, MENU_HEADER_HEIGHT, BARGRAPH_HEIGHT, TEXT_COLOR);
 
   // Draw spectrum data
   constexpr uint8_t step = 4;
 
-  for (coord_t xv = 0; xv <= LCD_W - step; xv += 4) {
-    coord_t yv = MENU_FOOTER_TOP - 1 - limit<int>(0, getAverage(step, &reusableBuffer.spectrumAnalyser.bars[xv]) << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
-    coord_t max_yv = MENU_FOOTER_TOP - 1 - limit<int>(0, getAverage(step, &reusableBuffer.spectrumAnalyser.max[xv]) << 1, LCD_H - MENU_HEADER_HEIGHT - MENU_FOOTER_HEIGHT);
+  for (coord_t xv = 0; xv < LCD_W; xv += step) {
+    coord_t yv = SCALE_TOP - 1 - limit<int>(0, getAverage(step, &reusableBuffer.spectrumAnalyser.bars[xv]) << 1, BARGRAPH_HEIGHT);
+    coord_t max_yv = SCALE_TOP - 1 - limit<int>(0, getAverage(step, &reusableBuffer.spectrumAnalyser.max[xv]) << 1, BARGRAPH_HEIGHT);
 
     // Signal bar
-    lcdDrawSolidFilledRect(xv, yv, step - 1, LCD_H - yv - MENU_FOOTER_HEIGHT - GREYBAR_HEIGHT, TEXT_INVERTED_BGCOLOR);
-    lcdDrawRect(xv, yv, step - 1, LCD_H - yv - MENU_FOOTER_HEIGHT - GREYBAR_HEIGHT);
+    lcdDrawSolidFilledRect(xv, yv, step - 1, SCALE_TOP - yv, TEXT_INVERTED_BGCOLOR);
+    // lcdDrawSolidRect(xv, yv, step - 1, SCALE_TOP - yv, 1, TEXT_COLOR);
 
     // Signal max
-    lcdDrawLine(xv, max_yv, xv + step, max_yv);
+    lcdDrawSolidHorizontalLine(xv, max_yv, step - 1, TEXT_COLOR);
 
     // Decay max values
     if (max_yv < yv) { // Those value are INVERTED (MENU_FOOTER_TOP - value)
       for (uint8_t i = 0; i < step; i++) {
-        reusableBuffer.spectrumAnalyser.max[xv + i] -= 1;
+        reusableBuffer.spectrumAnalyser.max[xv + i] = max<int>(0, reusableBuffer.spectrumAnalyser.max[xv + i] - 1);
       }
     }
   }
