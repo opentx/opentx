@@ -78,12 +78,12 @@ constexpr rect_t MENUS_TOOLBAR_RECT =              { 35, 95, 50, 370 };
 constexpr uint32_t ALERT_FRAME_TOP =               70;
 constexpr uint32_t ALERT_FRAME_HEIGHT =            (LCD_H - 2 * ALERT_FRAME_TOP);
 constexpr uint32_t ALERT_BITMAP_TOP =              ALERT_FRAME_TOP + 15;
-constexpr uint32_t ALERT_BITMAP_LEFT =             40;
+constexpr uint32_t ALERT_BITMAP_LEFT =             15;
 constexpr uint32_t ALERT_TITLE_TOP =               ALERT_FRAME_TOP + 10;
-constexpr uint32_t ALERT_TITLE_LEFT =              186;
+constexpr uint32_t ALERT_TITLE_LEFT =              140;
 constexpr uint32_t ALERT_TITLE_LINE_HEIGHT =       30;
-constexpr uint32_t ALERT_MESSAGE_TOP =             ALERT_TITLE_TOP + 90;
-constexpr uint32_t ALERT_MESSAGE_LEFT =            ALERT_TITLE_LEFT;
+constexpr uint32_t ALERT_MESSAGE_TOP =             ALERT_TITLE_TOP + 130;
+constexpr uint32_t ALERT_MESSAGE_LEFT =            15;
 constexpr uint32_t ALERT_ACTION_TOP =              240;
 constexpr uint32_t ALERT_BUTTON_TOP =              300;
 
