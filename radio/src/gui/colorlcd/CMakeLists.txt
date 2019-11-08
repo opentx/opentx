@@ -52,6 +52,7 @@ set(GUI_SRC
   view_main.cpp
   menu_screen.cpp
   screen_setup.cpp
+  switch_warn_dialog.cpp
 
   #  view_statistics.cpp
   )

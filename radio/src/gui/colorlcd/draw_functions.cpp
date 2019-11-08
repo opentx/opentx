@@ -302,9 +302,9 @@ void drawSource(BitmapBuffer * dc, coord_t x, coord_t y, mixsrc_t idx, LcdFlags 
   dc->drawText(x, y, s, flags);
 }
 
-void drawSwitch(BitmapBuffer * dc, coord_t x, coord_t y, int32_t idx, LcdFlags flags)
+coord_t drawSwitch(BitmapBuffer * dc, coord_t x, coord_t y, int32_t idx, LcdFlags flags)
 {
-  dc->drawText(x, y, getSwitchPositionName(idx), flags);
+  return dc->drawText(x, y, getSwitchPositionName(idx), flags);
 }
 
 void drawTrimMode(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
