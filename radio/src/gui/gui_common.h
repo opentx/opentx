@@ -205,10 +205,17 @@ inline bool isMultiProtocolSelectable(int protocol)
 
 inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
 {
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST)
-    return true;
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+  if(status.isValid()) {
+    return status.protocolSubNbr > 0;
+  }
   else
-    return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->maxSubtype > 0;
+  {
+    if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST)
+      return true;
+    else
+      return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->maxSubtype > 0;
+  }
 }
 
 inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
