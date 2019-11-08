@@ -128,6 +128,9 @@ void FullScreenDialog::runForever()
     auto check = pwrCheck();
     if (check == e_power_off) {
       boardOff();
+#if defined(SIMU)
+      return;
+#endif
     }
     else if (check == e_power_press) {
       RTOS_WAIT_MS(20);
