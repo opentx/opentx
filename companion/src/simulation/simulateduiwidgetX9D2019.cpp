@@ -51,7 +51,7 @@ SimulatedUIWidgetX9D2019::SimulatedUIWidgetX9D2019(SimulatorInterface *simulator
   m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
   addRadioWidget(ui->rightbuttons->addArea(QRect(40, 30, 80, 130), "X9D2019/right_enter.png", m_mouseMidClickAction));
 
-  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 170, 30, 30), "X9D2019/left_scrnshot.png", m_screenshotAction));
+  addRadioWidget(ui->bottom->addArea(QRect(10, 5, 30, 30), "X9D2019/bottom_scrnshot.png", m_screenshotAction));
 
   m_backlightColors << QColor(47, 123, 227);  // Taranis Blue
   m_backlightColors << QColor(166,247,159);
