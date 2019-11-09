@@ -19,45 +19,9 @@
  */
 
 #include "opentx.h"
-
-#define MIXER_SCHEDULER_DEFAULT_PERIOD_US 4000u // 4ms
+#include "mixer_scheduler.h"
 
 #if !defined(SIMU)
-
-// Global trigger flag
-RTOS_FLAG_HANDLE mixerFlag;
-
-// Mixer schedule
-struct MixerSchedule {
-
-    // period in us
-    volatile uint16_t period;
-};
-
-static MixerSchedule mixerSchedules[NUM_MODULES];
-
-static inline uint32_t getSchedulePeriod()
-{
-    if (mixerSchedules[INTERNAL_MODULE].period) {
-        return mixerSchedules[INTERNAL_MODULE].period;
-    }
-    else if (mixerSchedules[EXTERNAL_MODULE].period) {
-        return mixerSchedules[EXTERNAL_MODULE].period;
-    }
-    
-    return MIXER_SCHEDULER_DEFAULT_PERIOD_US;
-}
-
-void mixerSchedulerInit()
-{
-    RTOS_CREATE_FLAG(mixerFlag);
-    memset(mixerSchedules, 0, sizeof(mixerSchedules));
-}
-
-void mixerSchedulerSetPeriod(uint8_t moduleIdx, uint16_t periodUs)
-{
-    mixerSchedules[moduleIdx].period = periodUs;
-}
 
 // Start scheduler with default period
 void mixerSchedulerStart()
@@ -68,7 +32,7 @@ void mixerSchedulerStart()
     MIXER_SCHEDULER_TIMER->PSC   = MIXER_SCHEDULER_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
     MIXER_SCHEDULER_TIMER->CCER  = 0;
     MIXER_SCHEDULER_TIMER->CCMR1 = 0;
-    MIXER_SCHEDULER_TIMER->ARR   = 2 * getSchedulePeriod() - 1;
+    MIXER_SCHEDULER_TIMER->ARR   = 2 * getMixerSchedulerPeriod() - 1;
     MIXER_SCHEDULER_TIMER->EGR   = TIM_EGR_UG;   // reset timer
 
     NVIC_EnableIRQ(MIXER_SCHEDULER_TIMER_IRQn);
@@ -95,27 +59,16 @@ void mixerSchedulerDisableTrigger()
     MIXER_SCHEDULER_TIMER->DIER &= ~TIM_DIER_UIE; // disable interrupt
 }
 
-bool mixerSchedulerWaitForTrigger(uint8_t timeoutMs)
-{
-    RTOS_CLEAR_FLAG(mixerFlag);
-    return RTOS_WAIT_FLAG(mixerFlag, timeoutMs);
-}
-
-void mixerScheduleISRTrigger()
-{
-    RTOS_ISR_SET_FLAG(mixerFlag);
-}
-
 extern "C" void MIXER_SCHEDULER_TIMER_IRQHandler(void)
 {
     MIXER_SCHEDULER_TIMER->SR &= ~TIM_SR_UIF; // clear flag
     mixerSchedulerDisableTrigger();
 
     // set next period
-    MIXER_SCHEDULER_TIMER->ARR = 2 * getSchedulePeriod() - 1;
+    MIXER_SCHEDULER_TIMER->ARR = 2 * getMixerSchedulerPeriod() - 1;
 
     // trigger mixer start
-    mixerScheduleISRTrigger();
+    mixerSchedulerISRTrigger();
 }
 
 #endif

@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "mixer_scheduler.h"
 
 RTOS_TASK_HANDLE menusTaskId;
 RTOS_DEFINE_STACK(menusStack, MENUS_STACK_SIZE);

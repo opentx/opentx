@@ -18,10 +18,16 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MIXER_SCHEDULER_DRIVER_H_
-#define _MIXER_SCHEDULER_DRIVER_H_
+#ifndef _MIXER_SCHEDULER_H_
+#define _MIXER_SCHEDULER_H_
+
+#define MIXER_SCHEDULER_DEFAULT_PERIOD_US 4000u // 4ms
+
+#define MIN_REFRESH_RATE      4000 /* us */
+#define MAX_REFRESH_RATE     25000 /* us */
 
 #if !defined(SIMU)
+
 // Call once to initialize the mixer scheduler
 void mixerSchedulerInit();
 
@@ -44,6 +50,12 @@ void mixerSchedulerEnableTrigger();
 // Disable the timer trigger
 void mixerSchedulerDisableTrigger();
 
+// Fetch the current scheduling period
+uint16_t getMixerSchedulerPeriod();
+
+// Trigger mixer from an ISR
+void mixerSchedulerISRTrigger();
+
 #else
 
 #define mixerSchedulerInit()
@@ -59,6 +71,9 @@ static inline bool mixerSchedulerWaitForTrigger(uint8_t timeout)
 
 #define mixerSchedulerEnableTrigger()
 #define mixerSchedulerDisableTrigger()
+
+#define getMixerSchedulerPeriod() (MIXER_SCHEDULER_DEFAULT_PERIOD_US)
+#define mixerSchedulerISRTrigger()
 
 #endif
 

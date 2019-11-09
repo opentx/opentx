@@ -258,9 +258,6 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 void processPXX2Frame(uint8_t module, const uint8_t *frame);
 
 // Module pulse synchronization
-
-#define MIN_REFRESH_RATE      4000 /* us */
-#define MAX_REFRESH_RATE     25000 /* us */
 #define SAFE_SYNC_LAG          800 /* us */
 
 struct ModuleSyncStatus
