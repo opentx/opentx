@@ -62,6 +62,8 @@ void mixerSchedulerSetPeriod(uint8_t moduleIdx, uint16_t periodUs)
 // Start scheduler with default period
 void mixerSchedulerStart()
 {
+    MIXER_SCHEDULER_TIMER->CR1 &= ~TIM_CR1_CEN;
+
     MIXER_SCHEDULER_TIMER->CR1   = TIM_CR1_URS; // do not generate interrupt on soft update
     MIXER_SCHEDULER_TIMER->PSC   = MIXER_SCHEDULER_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
     MIXER_SCHEDULER_TIMER->CCER  = 0;
