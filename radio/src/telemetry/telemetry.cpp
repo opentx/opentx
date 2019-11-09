@@ -338,10 +338,6 @@ OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo = NULL;
 #endif
 
-#define MIN_REFRESH_RATE      4000 /* us */
-#define MAX_REFRESH_RATE     25000 /* us */
-#define SAFE_SYNC_LAG          800 /* us */
-
 #if defined(HARDWARE_INTERNAL_MODULE)
 
 static ModuleSyncStatus moduleSyncStatus[NUM_MODULES];
