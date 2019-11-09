@@ -283,6 +283,9 @@ void setupPulsesExternalModule(uint8_t protocol)
       ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
       if (status.isValid())
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
+      else
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
+
       setupPulsesMultiExternalModule();
       break;
     }
