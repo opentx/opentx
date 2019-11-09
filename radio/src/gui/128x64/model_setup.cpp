@@ -1471,7 +1471,9 @@ void menuModelSetup(event_t event)
         }
         break;
 #endif
-
+#if defined(HARDWARE_INTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_OPTIONS:
+#endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
@@ -1479,7 +1481,7 @@ void menuModelSetup(event_t event)
         if (isModuleMultimodule(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
-          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
+          const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
           if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
             const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
             if (pdef->optionsstr) {
