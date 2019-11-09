@@ -35,7 +35,7 @@ ModelCell::ModelCell(const char * name):
 }
 
 ModelCell::ModelCell(const char * name, uint8_t len)
-  : buffer(NULL), valid_rfData(false)
+  : valid_rfData(false)
 {
   if (len > sizeof(modelFilename)-1)
     len = sizeof(modelFilename)-1;
@@ -76,7 +76,7 @@ void ModelCell::setModelName(char* name, uint8_t len)
       *tmp = 0;
   }
 
-  resetBuffer();
+  //resetBuffer();
 }
 
 void ModelCell::setModelId(uint8_t moduleIdx, uint8_t id)

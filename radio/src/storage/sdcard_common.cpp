@@ -38,9 +38,9 @@ void storageEraseAll(bool warn)
 {
   TRACE("storageEraseAll");
 
-#if defined(COLORLCD)
+#if defined(LIBOPENUI)
   // the theme has not been loaded before
-  theme->load();
+  static_cast<ThemeBase*>(theme)->load();
 #endif
 
   generalDefault();
@@ -135,18 +135,18 @@ void storageReadAll()
 {
   TRACE("storageReadAll");
 
-  if (loadRadioSettings() != NULL) {
+  if (loadRadioSettings() != nullptr) {
     storageEraseAll(true);
   }
 
-  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
+  for (uint8_t i = 0; languagePacks[i] != nullptr; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
       currentLanguagePack = languagePacks[i];
     }
   }
 
-  if (loadModel(g_eeGeneral.currModelFilename, false) != NULL) {
+  if (loadModel(g_eeGeneral.currModelFilename, false) != nullptr) {
     sdCheckAndCreateDirectory(MODELS_PATH);
     createModel();
   }

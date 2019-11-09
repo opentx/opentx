@@ -157,55 +157,6 @@ const char * writeGeneralSettings()
   return writeFile(RADIO_SETTINGS_PATH, (uint8_t *)&g_eeGeneral, sizeof(g_eeGeneral));
 }
 
-void storageCheck(bool immediately)
-{
-  if (storageDirtyMsk & EE_GENERAL) {
-    TRACE("Storage write general");
-    storageDirtyMsk -= EE_GENERAL;
-    const char * error = writeGeneralSettings();
-    if (error) {
-      TRACE("writeGeneralSettings error=%s", error);
-    }
-  }
-
-  if (storageDirtyMsk & EE_MODEL) {
-    TRACE("Storage write current model");
-    storageDirtyMsk -= EE_MODEL;
-    const char * error = writeModel();
-    if (error) {
-      TRACE("writeModel error=%s", error);
-    }
-  }
-}
-
-void storageReadAll()
-{
-  TRACE("storageReadAll");
-
-  if (loadRadioSettings() != nullptr) {
-    storageEraseAll(true);
-  }
-
-  for (uint8_t i = 0; languagePacks[i] != nullptr; i++) {
-    if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
-      currentLanguagePackIdx = i;
-      currentLanguagePack = languagePacks[i];
-    }
-  }
-
-  if (loadModel(g_eeGeneral.currModelFilename, false) != nullptr) {
-    sdCheckAndCreateDirectory(MODELS_PATH);
-    createModel();
-  }
-
-  // Wipe models list in case
-  // it's being reloaded after USB connection
-  modelslist.clear();
-
-  // and reload the list
-  modelslist.load();
-}
-
 void storageCreateModelsList()
 {
   FIL file;
@@ -215,55 +166,4 @@ void storageCreateModelsList()
     f_puts("[" DEFAULT_CATEGORY "]\n" DEFAULT_MODEL_FILENAME "\n", &file);
     f_close(&file);
   }
-}
-
-void storageFormat()
-{
-  sdCheckAndCreateDirectory(RADIO_PATH);
-  sdCheckAndCreateDirectory(MODELS_PATH);
-  storageCreateModelsList();
-}
-
-const char * createModel()
-{
-  preModelLoad();
-
-  char filename[LEN_MODEL_FILENAME+1];
-  memset(filename, 0, sizeof(filename));
-  strcpy(filename, "model.bin");
-
-  unsigned int index = findNextFileIndex(filename, LEN_MODEL_FILENAME, MODELS_PATH);
-  if (index > 0) {
-    modelDefault(index);
-    memcpy(g_eeGeneral.currModelFilename, filename, sizeof(g_eeGeneral.currModelFilename));
-    storageDirty(EE_GENERAL);
-    storageDirty(EE_MODEL);
-    storageCheck(true);
-  }
-  postModelLoad(false);
-
-  return g_eeGeneral.currModelFilename;
-}
-
-void storageEraseAll(bool warn)
-{
-  TRACE("storageEraseAll");
-
-#if defined(LIBOPENUI)
-  // the theme has not been loaded before
-  static_cast<ThemeBase*>(theme)->load();
-#endif
-
-  generalDefault();
-  modelDefault(1);
-
-  if (warn) {
-    ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
-  }
-
-  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
-
-  storageFormat();
-  storageDirty(EE_GENERAL|EE_MODEL);
-  storageCheck(true);
 }

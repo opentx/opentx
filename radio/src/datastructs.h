@@ -882,8 +882,8 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(ModelHeader, 31);
   CHKSIZE(CurveHeader, 4);
-  CHKSIZE(CustomScreenData, 610);
-  CHKSIZE(Topbar::PersistentData, 216);
+  CHKSIZE(CustomScreenData, 850);
+  CHKSIZE(Topbar::PersistentData, 300);
 #elif defined(PCBNV14)
   // TODO
 #elif defined(PCBSKY9X)
@@ -944,8 +944,8 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 881);
-  CHKSIZE(ModelData, 9736);
+  CHKSIZE(RadioData, 901);
+  CHKSIZE(ModelData, 11020);
 #endif
 
 #undef CHKSIZE
