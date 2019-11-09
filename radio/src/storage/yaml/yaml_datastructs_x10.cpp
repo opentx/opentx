@@ -239,7 +239,7 @@ static const struct YamlNode struct_anonymous_2[] = {
 };
 static const struct YamlNode struct_anonymous_3[] = {
   YAML_SIGNED( "val1", 32 ),
-  YAML_SIGNED( "val2", 16 ),
+  YAML_PADDING( 16 ),
   YAML_END
 };
 static const struct YamlNode union_anonymous_0_elmts[] = {
@@ -264,7 +264,7 @@ static const struct YamlNode struct_string_24[] = {
 static const struct YamlNode union_ZoneOptionValue_elmts[] = {
   YAML_UNSIGNED( "unsignedValue", 32 ),
   YAML_SIGNED( "signedValue", 32 ),
-  YAML_SIGNED( "boolValue", 8 ),
+  YAML_UNSIGNED( "boolValue", 32 ),
   YAML_STRING("stringValue", 8),
   YAML_END
 };
@@ -274,7 +274,7 @@ static const struct YamlNode struct_ZoneOptionValueTyped[] = {
   YAML_UNION("value", 64, union_ZoneOptionValue_elmts, select_zov),
   YAML_END
 };
-static const struct YamlNode struct_Theme__PersistentData[] = {
+static const struct YamlNode struct_ThemeBase__PersistentData[] = {
   YAML_ARRAY("options", 96, 5, struct_ZoneOptionValueTyped, NULL),
   YAML_END
 };
@@ -285,10 +285,13 @@ static const struct YamlNode struct_RadioData[] = {
   YAML_UNSIGNED( "chkSum", 16 ),
   YAML_UNSIGNED( "vBatWarn", 8 ),
   YAML_SIGNED( "txVoltageCalibration", 8 ),
-  YAML_SIGNED( "backlightMode", 8 ),
+  YAML_UNSIGNED( "backlightMode", 3 ),
+  YAML_SIGNED( "antennaMode", 2 ),
+  YAML_UNSIGNED( "disableRtcWarning", 1 ),
+  YAML_PADDING( 2 ),
   YAML_STRUCT("trainer", 128, struct_TrainerData, NULL),
   YAML_UNSIGNED( "view", 8 ),
-  YAML_SIGNED( "spare3", 2 ),
+  YAML_PADDING( 2 ),
   YAML_UNSIGNED( "fai", 1 ),
   YAML_SIGNED( "beepMode", 2 ),
   YAML_UNSIGNED( "alarmsFlash", 1 ),
@@ -326,7 +329,7 @@ static const struct YamlNode struct_RadioData[] = {
   YAML_UNSIGNED( "disableRssiPoweroffAlarm", 1 ),
   YAML_UNSIGNED( "USBMode", 2 ),
   YAML_UNSIGNED( "jackMode", 2 ),
-  YAML_UNSIGNED( "spare2", 1 ),
+  YAML_PADDING( 1 ),
   YAML_STRING("ttsLanguage", 2),
   YAML_SIGNED( "beepVolume", 4 ),
   YAML_SIGNED( "wavVolume", 4 ),
@@ -347,10 +350,8 @@ static const struct YamlNode struct_RadioData[] = {
   YAML_UNSIGNED( "blOffBright", 7 ),
   YAML_STRING("bluetoothName", 10),
   YAML_STRING("themeName", 8),
-  YAML_STRUCT("themeData", 480, struct_Theme__PersistentData, NULL),
+  YAML_STRUCT("themeData", 480, struct_ThemeBase__PersistentData, NULL),
   YAML_STRING("ownerRegistrationID", 8),
-  YAML_SIGNED( "gyroMax", 8 ),
-  YAML_SIGNED( "gyroOffset", 8 ),
   YAML_END
 };
 static const struct YamlNode struct_unsigned_8[] = {
@@ -431,7 +432,7 @@ static const struct YamlNode struct_ExpoData[] = {
   YAML_STRUCT("curve", 16, struct_CurveRef, NULL),
   YAML_END
 };
-static const struct YamlNode struct_CurveData[] = {
+static const struct YamlNode struct_CurveHeader[] = {
   YAML_IDX,
   YAML_UNSIGNED( "type", 1 ),
   YAML_UNSIGNED( "smooth", 1 ),
@@ -532,10 +533,9 @@ static const struct YamlNode struct_anonymous_6[] = {
 static const struct YamlNode struct_anonymous_7[] = {
   YAML_UNSIGNED( "power", 2 ),
   YAML_PADDING( 2 ),
-  YAML_UNSIGNED( "receiver_telem_off", 1 ),
-  YAML_UNSIGNED( "receiver_channel_9_16", 1 ),
-  YAML_UNSIGNED( "external_antenna", 1 ),
-  YAML_UNSIGNED( "fast", 1 ),
+  YAML_UNSIGNED( "receiverTelemetryOff", 1 ),
+  YAML_UNSIGNED( "receiverHigherChannels", 1 ),
+  YAML_SIGNED( "antennaMode", 2 ),
   YAML_PADDING( 8 ),
   YAML_END
 };
@@ -724,7 +724,7 @@ static const struct YamlNode struct_ModelData[] = {
   YAML_ARRAY("mixData", 160, 64, struct_MixData, NULL),
   YAML_ARRAY("limitData", 104, 32, struct_LimitData, NULL),
   YAML_ARRAY("expoData", 136, 64, struct_ExpoData, NULL),
-  YAML_ARRAY("curves", 32, 32, struct_CurveData, NULL),
+  YAML_ARRAY("curves", 32, 32, struct_CurveHeader, NULL),
   YAML_ARRAY("points", 8, 512, struct_signed_8, NULL),
   YAML_ARRAY("logicalSw", 72, 64, struct_LogicalSwitchData, NULL),
   YAML_ARRAY("customFn", 72, 64, struct_CustomFunctionData, cfn_is_active),

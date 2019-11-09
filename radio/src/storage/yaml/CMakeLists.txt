@@ -32,6 +32,8 @@ foreach(dir ${dirs})
   set(YAML_GEN_ARGS ${YAML_GEN_ARGS} -I${dir})
 endforeach()
 
+set(YAML_GEN_ARGS ${YAML_GEN_ARGS} -DRTOS_COOS -Wno-inconsistent-missing-override)
+
 #message(STATUS "YAML_GEN_ARGS=${YAML_GEN_ARGS}")
 
 add_custom_target(yaml_data
