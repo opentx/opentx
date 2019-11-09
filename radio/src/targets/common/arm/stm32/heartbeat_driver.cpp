@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "mixer_scheduler.h"
 
 volatile HeartbeatCapture heartbeatCapture;
 
@@ -65,13 +66,6 @@ void stop_intmodule_heartbeat()
   EXTI_Init(&EXTI_InitStructure);
 }
 
-// from mixer_scheduler_driver
-#if !defined(SIMU)
-void mixerScheduleISRTrigger();
-#else
-#define mixerScheduleISRTrigger()
-#endif
-
 void check_intmodule_heartbeat()
 {
   if (EXTI_GetITStatus(INTMODULE_HEARTBEAT_EXTI_LINE) != RESET) {
@@ -83,7 +77,7 @@ void check_intmodule_heartbeat()
     heartbeatCapture.count++;
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
 
-    mixerScheduleISRTrigger();
+    mixerSchedulerISRTrigger();
   }
 }
 #endif

@@ -21,6 +21,7 @@
 #include "opentx.h"
 #include "io/frsky_pxx2.h"
 #include "pulses/pxx2.h"
+#include "mixer_scheduler.h"
 
 uint8_t s_pulses_paused = 0;
 ModuleState moduleState[NUM_MODULES];
@@ -294,6 +295,8 @@ void setupPulsesExternalModule(uint8_t protocol)
 #endif
 
     default:
+      // external module stopped, set period to 0
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, 0);
       break;
   }
 }
@@ -352,6 +355,8 @@ static void enablePulsesInternalModule(uint8_t protocol)
       break;
 #endif
     default:
+      // internal module stopped, set internal period to 0 and start the scheduler
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, 0);
       mixerSchedulerStart();
       break;
   }
