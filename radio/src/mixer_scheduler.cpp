@@ -29,51 +29,51 @@ RTOS_FLAG_HANDLE mixerFlag;
 // Mixer schedule
 struct MixerSchedule {
 
-    // period in us
-    volatile uint16_t period;
+  // period in us
+  volatile uint16_t period;
 };
 
 static MixerSchedule mixerSchedules[NUM_MODULES];
 
 uint16_t getMixerSchedulerPeriod()
 {
-    if (mixerSchedules[INTERNAL_MODULE].period) {
-        return mixerSchedules[INTERNAL_MODULE].period;
-    }
-    else if (mixerSchedules[EXTERNAL_MODULE].period) {
-        return mixerSchedules[EXTERNAL_MODULE].period;
-    }
+  if (mixerSchedules[INTERNAL_MODULE].period) {
+    return mixerSchedules[INTERNAL_MODULE].period;
+  }
+  else if (mixerSchedules[EXTERNAL_MODULE].period) {
+    return mixerSchedules[EXTERNAL_MODULE].period;
+  }
     
-    return MIXER_SCHEDULER_DEFAULT_PERIOD_US;
+  return MIXER_SCHEDULER_DEFAULT_PERIOD_US;
 }
 
 void mixerSchedulerInit()
 {
-    RTOS_CREATE_FLAG(mixerFlag);
-    memset(mixerSchedules, 0, sizeof(mixerSchedules));
+  RTOS_CREATE_FLAG(mixerFlag);
+  memset(mixerSchedules, 0, sizeof(mixerSchedules));
 }
 
 void mixerSchedulerSetPeriod(uint8_t moduleIdx, uint16_t periodUs)
 {
-    if ((periodUs > 0) && (periodUs < MIN_REFRESH_RATE)) {
-        periodUs = MIN_REFRESH_RATE;
-    }
-    else if ((periodUs > 0) && (periodUs > MAX_REFRESH_RATE)) {
-        periodUs = MAX_REFRESH_RATE;
-    }
+  if ((periodUs > 0) && (periodUs < MIN_REFRESH_RATE)) {
+    periodUs = MIN_REFRESH_RATE;
+  }
+  else if ((periodUs > 0) && (periodUs > MAX_REFRESH_RATE)) {
+    periodUs = MAX_REFRESH_RATE;
+  }
 
-    mixerSchedules[moduleIdx].period = periodUs;
+  mixerSchedules[moduleIdx].period = periodUs;
 }
 
 bool mixerSchedulerWaitForTrigger(uint8_t timeoutMs)
 {
-    RTOS_CLEAR_FLAG(mixerFlag);
-    return RTOS_WAIT_FLAG(mixerFlag, timeoutMs);
+  RTOS_CLEAR_FLAG(mixerFlag);
+  return RTOS_WAIT_FLAG(mixerFlag, timeoutMs);
 }
 
 void mixerSchedulerISRTrigger()
 {
-    RTOS_ISR_SET_FLAG(mixerFlag);
+  RTOS_ISR_SET_FLAG(mixerFlag);
 }
 
 #endif
