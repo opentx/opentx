@@ -865,7 +865,8 @@ const char* mm_options_strings::options[] = {
   STR_MULTI_FIXEDID,
   STR_MULTI_TELEMETRY,
   STR_MULTI_SERVOFREQ,
-  STR_MULTI_MAX_THROW
+  STR_MULTI_MAX_THROW,
+  STR_MULTI_RFCHAN
 };
 
 const mm_protocol_definition multi_protocols[] = {

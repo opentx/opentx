@@ -677,6 +677,7 @@
 #define TR_MODULE_SYNC                 TR(INDENT "Sinc.", INDENT "Sinc. del modulo")
 #define TR_MULTI_SERVOFREQ     TR("Servo rate", "Aggiorna servo rate")
 #define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
+#define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limiti"
 #define TR_MINRSSI             "Min. RSSI"
