@@ -178,6 +178,22 @@ struct mm_protocol_definition {
 
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 
+inline uint8_t  getMaxMultiSubtype(uint8_t moduleIdx)
+{
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+
+  if(g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
+    if (status.isValid())
+      return status.protocolSubNbr;
+    else
+      return 7;
+  }
+  else {
+    return max((uint8_t )(status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1), pdef->maxSubtype);
+  }
+}
+
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
   if(!isModuleMultimodule(moduleIdx))

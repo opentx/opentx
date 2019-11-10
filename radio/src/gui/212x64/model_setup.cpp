@@ -891,7 +891,7 @@ void menuModelSetup(event_t event)
                 else {
                   MultiModuleStatus &status = getMultiModuleStatus(EXTERNAL_MODULE);
                   const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol());
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, status.isValid() ? status.protocolSubNbr : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() <= MODULE_SUBTYPE_MULTI_LAST ? pdef->maxSubtype : 7);
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
                 }
                 break;
 

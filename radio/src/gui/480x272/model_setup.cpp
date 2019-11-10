@@ -1141,9 +1141,7 @@ bool menuModelSetup(event_t event)
 
 #if defined(MULTIMODULE)
               case 2: {
-                MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-                const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, status.isValid() ? status.protocolSubNbr : g_model.moduleData[moduleIdx].getMultiProtocol() <= MODULE_SUBTYPE_MULTI_LAST ? pdef->maxSubtype : 7);
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, getMaxMultiSubtype(moduleIdx));
                 break;
               }
 #endif

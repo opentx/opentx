@@ -449,7 +449,6 @@ void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_
 
 void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t subType, LcdFlags flags)
 {
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
   const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
   if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
     lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
