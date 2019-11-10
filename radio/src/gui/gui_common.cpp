@@ -240,22 +240,17 @@ bool isSourceAvailableInCustomSwitches(int source)
   return result;
 }
 
-bool isInputSourceAvailable(int source)
+bool isSourceAvailableInInputs(int source)
 {
   if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT)
     return IS_POT_SLIDER_AVAILABLE(POT1+source - MIXSRC_FIRST_POT);
-
-#if defined(GYRO)
-  if (source >= MIXSRC_GYRO1 && source <= MIXSRC_GYRO2)
-    return true;
-#endif
 
 #if defined(PCBX10)
   if (source >= MIXSRC_MOUSE1 && source <= MIXSRC_MOUSE2)
     return false;
 #endif
 
-  if (source >= MIXSRC_Rud && source < MIXSRC_MAX)
+  if (source >= MIXSRC_Rud && source <= MIXSRC_MAX)
     return true;
 
   if (source >= MIXSRC_FIRST_TRIM && source <= MIXSRC_LAST_TRIM)
@@ -732,6 +727,9 @@ bool isTrainerModeAvailable(int mode)
 #if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
+#elif defined(PCBTARANIS)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER;
 #endif
 
 #if defined(PCBX9E)

@@ -228,8 +228,14 @@ void telemetryPortSetDirectionOutput()
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
 }
 
+void sportWaitTransmissionComplete()
+{
+  while (!(TELEMETRY_USART->SR & USART_SR_TC));
+}
+
 void telemetryPortSetDirectionInput()
 {
+  sportWaitTransmissionComplete();
   TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }

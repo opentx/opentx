@@ -549,7 +549,7 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
   uint8_t buffer[12];
   for (uint8_t i = 0; i < sizeof(buffer); i++) {
     uint32_t retry = 0;
-    while(1) {
+    while (true) {
       if (telemetryGetByte(&buffer[i])) {
         if ((i == 0 && buffer[0] != 0x7F) ||
             (i == 1 && buffer[1] != 0xFE) ||
@@ -572,6 +572,10 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 
 const char * FrskyChipFirmwareUpdate::startBootloader()
 {
+  sportSendByte(0x03);
+  RTOS_WAIT_MS(20);
+  sportSendByte(0x02);
+  RTOS_WAIT_MS(20);
   sportSendByte(0x01);
 
   for (uint8_t i = 0; i < 30; i++)
@@ -582,6 +586,7 @@ const char * FrskyChipFirmwareUpdate::startBootloader()
     sportSendByte(0x7F);
   }
 
+  RTOS_WAIT_MS(20);
   sportSendByte(0xFA);
 
   /*for (uint8_t i=0; i < 30; i++)
