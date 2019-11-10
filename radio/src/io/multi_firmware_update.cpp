@@ -522,7 +522,9 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();
+#endif
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
