@@ -355,7 +355,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
   // gruvin: Can't use Function keys on the Mac -- too many other app conflicts.
   //         The ordering of these keys, Q/W,E/R,T/Y,U/I matches the on screen
   //         order of trim sliders
-  static FXuint trimKeys[] = { KEY_E, KEY_R, KEY_U, KEY_I, KEY_R, KEY_E, KEY_Y, KEY_T, KEY_Q, KEY_W };
+  static FXuint trimKeys[] = { KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9, KEY_0 };
 #else
   static FXuint trimKeys[] = { KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12 };
 #endif
@@ -432,11 +432,11 @@ long OpenTxSim::onTimeout(FXObject*, FXSelector, void*)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     static bool rotencAction = false;
-    if (getApp()->getKeyState(KEY_X)) {
+    if (getApp()->getKeyState(KEY_X) || getApp()->getKeyState(KEY_plus)) {
       if (!rotencAction) ROTARY_ENCODER_NAVIGATION_VALUE += ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
-    else if (getApp()->getKeyState(KEY_W)) {
+    else if (getApp()->getKeyState(KEY_W) || getApp()->getKeyState(KEY_minus)) {
       if (!rotencAction) ROTARY_ENCODER_NAVIGATION_VALUE -= ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
