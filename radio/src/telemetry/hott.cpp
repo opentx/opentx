@@ -95,12 +95,47 @@ const HottSensor * getHottSensor(uint16_t id)
   return nullptr;
 }
 
+#if defined(LUA)
+  #define HOTT_BUFFER_SIZE 200
+  uint8_t HoTT_Buffer[HOTT_BUFFER_SIZE];
+#endif
+
 void processHottPacket(const uint8_t * packet)
 {
   // Set TX RSSI Value
   setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, TX_RSSI_ID, 0, 0, packet[0]>>1, UNIT_RAW, 0);
   // Set TX LQI  Value
   setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, TX_LQI_ID, 0, 0, packet[1], UNIT_RAW, 0);
+
+#if defined(LUA)
+  #define HOTT_MENU_PAGE_MAX 0x12
+  // Config menu consists of the different telem pages put all together
+  //   [3] = config mennu page 0x00 to 0x12.
+  //   Page X [4] = seems like all the telem pages with the same value are going together to make the full config menu text. Seen so far 'a', 'b', 'c', 'd'
+  //   Page X [5..13] = 9 ascii chars to be displayed, char is highlighted when ascii|0x80
+  //   Screen display is 21 characters large which means that once the first 21 chars are filled go to the begining of the next line
+  //   Menu commands are sent through TX packets:
+  //     packet[28]= 0xXF=>no key press, 0xXD=>down, 0xXB=>up, 0xX9=>enter, 0xXE=>right, 0xX7=>left with X=0 or D
+  //     packet[29]= 0xX1/0xX9 with X=0 or X counting 0,1,1,2,2,..,9,9
+  if(memcmp(HoTT_Buffer,"HoTT",4)==0)
+  {// HoTT Lua script is running
+    if(HoTT_Buffer[4]==0xFF)
+    {// Init
+      for(uint8_t i=0; i<=HOTT_MENU_PAGE_MAX; i++)
+        HoTT_Buffer[i+5]=0;                             // Reset menu pages type
+      HoTT_Buffer[23]=0;                                // Menu not ready to be displayed
+      memset(&HoTT_Buffer[24],' ',HOTT_MENU_PAGE_MAX*9);// Clear text buffer
+    }
+    if(packet[3]<=HOTT_MENU_PAGE_MAX && HoTT_Buffer[199]>=0xD7 && HoTT_Buffer[199]<=0xDF)
+    {
+      HoTT_Buffer[4]=packet[4];                         // Store current menu being received
+      HoTT_Buffer[5+packet[3]]=packet[4];
+      HoTT_Buffer[23]=1;                                // Menu ready to be displayed
+      memcpy(&HoTT_Buffer[24+packet[3]*9],&packet[5],9);// Store the received page in the buffer
+    }
+    return;
+  }
+#endif
 
   const HottSensor * sensor;
   int32_t value;

@@ -39,6 +39,7 @@ static void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe);
 void sendChannels(uint8_t moduleIdx);
 #if defined(LUA)
 static void sendSport(uint8_t moduleIdx);
+static void sendHott(uint8_t moduleIdx);
 #endif
 
 void multiPatchCustom(uint8_t moduleIdx)
@@ -168,17 +169,6 @@ void setupPulsesMulti(uint8_t moduleIdx)
 
   counter[moduleIdx]++;
 
-  // SPort send
-  #if defined(LUA)
-    if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
-      if(getMultiModuleStatus(moduleIdx).isValid()) {
-        MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-        if(status.minor>=3 && !(status.flags&0x80) ) //Version 1.3.x.x or more and Buffer not full
-          type|=MULTI_DATA;
-      }
-    }
-  #endif
-  
   // Send header
   sendFrameProtocolHeader(moduleIdx, type&MULTI_FAILSAFE);
 
@@ -196,10 +186,20 @@ void setupPulsesMulti(uint8_t moduleIdx)
                            | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
                            |  g_model.moduleData[moduleIdx].multi.disableMapping ));
   
-  // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes, only SPort fort now
+  // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
   #if defined(LUA)
-    if(type&MULTI_DATA)
-      sendSport(moduleIdx);	//8 bytes of additional data
+    if(getMultiModuleStatus(moduleIdx).isValid()) {
+      MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+      if(status.minor>=3 && !(status.flags&0x80) )
+      { //Version 1.3.x.x or more and Buffer not full
+        // SPort send
+        if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
+          sendSport(moduleIdx);	//8 bytes of additional data
+        } else if(IS_HOTT_MULTI(moduleIdx)) {
+          sendHott(moduleIdx);	//1 byte of additional data
+        }
+      }
+    }
   #endif
 }
 
@@ -380,5 +380,16 @@ void sendSport(uint8_t moduleIdx)
   for(uint8_t i=0;i<8;i++)       //send to multi
     sendMulti(moduleIdx, buffer[i]);
   outputTelemetryBuffer.reset(); //empty buffer
+}
+
+extern uint8_t HoTT_Buffer[];
+
+void sendHott(uint8_t moduleIdx)
+{
+  if(memcmp(HoTT_Buffer,"HoTT",4)==0 && HoTT_Buffer[199]>=0xD7 && HoTT_Buffer[199]<=0xDF)
+  {// HoTT Lua script is running
+      sendMulti(moduleIdx, HoTT_Buffer[199]);
+      HoTT_Buffer[199]=0xDF;    // Send once only
+  }
 }
 #endif
