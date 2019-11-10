@@ -1121,7 +1121,6 @@ void menuModelSetup(event_t event)
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_CHANNELS:
       {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
@@ -1183,7 +1182,6 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM:
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM:
       {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], attr | LEADING0 | LEFT, 2);
         if (attr) {
@@ -1198,7 +1196,6 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_REGISTER_RANGE:
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_REGISTER_RANGE:
       {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         lcdDrawTextAlignedLeft(y, INDENT TR_MODULE);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON(TR_REGISTER), (menuHorizontalPosition == 0 ? attr : 0));
         lcdDrawText(lcdLastRightPos + 3, y, STR_MODULE_RANGE, (menuHorizontalPosition == 1 ? attr : 0));
@@ -1250,7 +1247,6 @@ void menuModelSetup(event_t event)
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
       {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (isModulePPM(moduleIdx)) {
           lcdDrawTextAlignedLeft(y, STR_PPMFRAME);
@@ -1387,7 +1383,6 @@ void menuModelSetup(event_t event)
 #if defined(PCBSKY9X) && defined(REVX)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_OUTPUT_TYPE:
       {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         moduleData.ppm.outputType = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_OUTPUT_TYPE, STR_VOUTPUT_TYPE, moduleData.ppm.outputType, 0, 1, attr, event);
         break;
@@ -1398,7 +1393,6 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_FAILSAFE:
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE: {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData &moduleData = g_model.moduleData[moduleIdx];
         lcdDrawTextAlignedLeft(y, STR_FAILSAFE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition == 0 ? attr : 0);
@@ -1460,7 +1454,6 @@ void menuModelSetup(event_t event)
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS:
       {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 #if defined(MULTIMODULE)
         if (isModuleMultimodule(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
@@ -1525,7 +1518,6 @@ void menuModelSetup(event_t event)
 #endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER:
       {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         auto & module = g_model.moduleData[moduleIdx];
         // Lite FCC / Lite FLEX / Lite Pro Flex
         if (isModuleTypeR9MNonAccess(module.type)) {
