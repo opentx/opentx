@@ -159,7 +159,7 @@ enum ModuleSubtypeMulti {
   MODULE_SUBTYPE_MULTI_MAX = 124 // 7 bits rfProtocol + rfProtocolExtra
 };
 #define MODULE_SUBTYPE_MULTI_HOTT 57-3
-#define MODULE_SUBTYPE_MULTI_XN297DP 65-3
+#define MODULE_SUBTYPE_MULTI_XN297DP 63-3
 
 enum MMDSM2Subtypes {
   MM_RF_DSM2_SUBTYPE_DSM2_22,
