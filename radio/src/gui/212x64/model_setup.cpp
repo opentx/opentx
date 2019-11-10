@@ -889,9 +889,9 @@ void menuModelSetup(event_t event)
                   break;
                 }
                 else {
-                  const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol());
-                  if (pdef->maxSubtype > 0)
-                    CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, pdef->maxSubtype);
+                  MultiModuleStatus &status = getMultiModuleStatus(EXTERNAL_MODULE);
+                  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol());
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, status.isValid() ? status.protocolSubNbr : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() <= MODULE_SUBTYPE_MULTI_LAST ? pdef->maxSubtype : 7);
                 }
                 break;
 

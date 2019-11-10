@@ -969,9 +969,12 @@ void menuModelSetup(event_t event)
         lcdDrawMultiSubProtocolString(MODEL_SETUP_2ND_COLUMN, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
         if (attr && s_editMode > 0) {
           switch (menuHorizontalPosition) {
-            case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
+            case 0:{
+              MultiModuleStatus &status = getMultiModuleStatus(EXTERNAL_MODULE);
+              const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol());
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, status.isValid() ? status.protocolSubNbr : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() <= MODULE_SUBTYPE_MULTI_LAST ? pdef->maxSubtype : 7);
               break;
+            }
           }
         }
       }

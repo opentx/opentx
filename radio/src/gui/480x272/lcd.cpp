@@ -434,34 +434,33 @@ void lcdDrawBlackOverlay()
 
 void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t protocol, LcdFlags flags)
 {
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  if (status.protocolName[0] && status.isValid())
-    lcdDrawText(x, y, status.protocolName, flags);
+  if(protocol <= MODULE_SUBTYPE_MULTI_LAST) {
+    lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
+    return;
+  }
   else {
-    if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
-      lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
-      return;
-    }
-    else {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.protocolName[0] && status.isValid())
+      lcdDrawText(x, y, status.protocolName, flags);
+    else
       lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
-    }
   }
 }
 
 void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t subType, LcdFlags flags)
 {
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  if (status.protocolName[0] && status.isValid())
-    lcdDrawText(x, y, status.protocolSubName, flags);
+  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+  if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
+    lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
+    return;
+  }
   else {
-    const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-    if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
-      lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
-      return;
-    }
-    else {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.protocolName[0] && status.isValid())
+      lcdDrawText(x, y, status.protocolSubName, flags);
+    else
       lcdDrawNumber(x, y, subType, flags);
-    }
   }
 }
 
