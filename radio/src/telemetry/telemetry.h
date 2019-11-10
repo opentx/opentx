@@ -84,7 +84,7 @@ PACK(struct CellValue
   void set(uint16_t newValue)
   {
     if (newValue > 50) {
-      value = value;
+      value = newValue;
       state = 1;
     }
   }
