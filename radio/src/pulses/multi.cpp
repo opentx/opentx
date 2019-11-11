@@ -389,7 +389,6 @@ void sendHott(uint8_t moduleIdx)
   if(memcmp(Multi_Buffer,"HoTT",4)==0 && Multi_Buffer[199]>=0xD7 && Multi_Buffer[199]<=0xDF)
   {// HoTT Lua script is running
       sendMulti(moduleIdx, Multi_Buffer[199]);
-      Multi_Buffer[199]=0xDF;    // Send once only
   }
 }
 #endif

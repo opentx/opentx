@@ -98,6 +98,8 @@ local function HoTT_Run(event)
       multiBuffer( 199, 0xDD )
     elseif event == EVT_VIRTUAL_PREV then
       multiBuffer( 199, 0xDB )
+    else
+      multiBuffer( 199, 0xDF )
     end
     HoTT_Draw_LCD()
 	return 0
