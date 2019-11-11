@@ -220,22 +220,22 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="506"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation>モード1&#x3000;(左:エレベーター・ラダー&#x3000;右:スロットル・エルロン)</translation>
+        <translation>モード1　(左:エレベーター・ラダー　右:スロットル・エルロン)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="511"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation>モード2&#x3000;(左:スロットル・ラダー&#x3000;右:エレベーター・エルロン)</translation>
+        <translation>モード2　(左:スロットル・ラダー　右:エレベーター・エルロン)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="516"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation>モード3&#x3000;(左:エレベーター・エルロン&#x3000;右:スロットル・ラダー)</translation>
+        <translation>モード3　(左:エレベーター・エルロン　右:スロットル・ラダー)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="521"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation>モード4&#x3000;(左:スロットル・エルロン&#x3000;右:エレベーター・ラダー)</translation>
+        <translation>モード4　(左:スロットル・エルロン　右:エレベーター・ラダー)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="535"/>
@@ -250,122 +250,122 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="223"/>
         <source>R E T A</source>
-        <translation>↔RUD ↕ELE ↕THR ↔AIL&#x3000;[R E T A]</translation>
+        <translation>↔RUD ↕ELE ↕THR ↔AIL　[R E T A]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="228"/>
         <source>R E A T</source>
-        <translation>↔RUD ↕ELE ↔AIL ↕THR&#x3000;[R E A T]</translation>
+        <translation>↔RUD ↕ELE ↔AIL ↕THR　[R E A T]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="233"/>
         <source>R T E A</source>
-        <translation>↔RUD ↕THR ↕ELE ↔AIL&#x3000;[R T E A]</translation>
+        <translation>↔RUD ↕THR ↕ELE ↔AIL　[R T E A]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="238"/>
         <source>R T A E</source>
-        <translation>↔RUD ↕THR ↔AIL ↕ELE&#x3000;[R T A E]</translation>
+        <translation>↔RUD ↕THR ↔AIL ↕ELE　[R T A E]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="243"/>
         <source>R A E T</source>
-        <translation>↔RUD ↔AIL ↕ELE ↕THR&#x3000;[R A E T]</translation>
+        <translation>↔RUD ↔AIL ↕ELE ↕THR　[R A E T]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="248"/>
         <source>R A T E</source>
-        <translation>↔RUD ↔AIL ↕THR ↕ELE&#x3000;[R A T E]</translation>
+        <translation>↔RUD ↔AIL ↕THR ↕ELE　[R A T E]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="253"/>
         <source>E R T A</source>
-        <translation>↕ELE ↔RUD ↕THR ↔AIL&#x3000;[E R T A]</translation>
+        <translation>↕ELE ↔RUD ↕THR ↔AIL　[E R T A]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="258"/>
         <source>E R A T</source>
-        <translation>↕ELE ↔RUD ↔AIL ↕THR&#x3000;[E R A T]</translation>
+        <translation>↕ELE ↔RUD ↔AIL ↕THR　[E R A T]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="263"/>
         <source>E T R A</source>
-        <translation>↕ELE ↕THR ↔RUD ↔AIL&#x3000;[E T R A]</translation>
+        <translation>↕ELE ↕THR ↔RUD ↔AIL　[E T R A]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="268"/>
         <source>E T A R</source>
-        <translation>↕ELE ↕THR ↔AIL ↔RUD&#x3000;[E T A R]</translation>
+        <translation>↕ELE ↕THR ↔AIL ↔RUD　[E T A R]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="273"/>
         <source>E A R T</source>
-        <translation>↕ELE ↔AIL ↔RUD ↕THR&#x3000;[E A R T]</translation>
+        <translation>↕ELE ↔AIL ↔RUD ↕THR　[E A R T]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="278"/>
         <source>E A T R</source>
-        <translation>↕ELE ↔AIL ↕THR ↔RUD&#x3000;[E A T R]</translation>
+        <translation>↕ELE ↔AIL ↕THR ↔RUD　[E A T R]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="283"/>
         <source>T R E A</source>
-        <translation>↕THR ↔RUD ↕ELE ↔AIL&#x3000;[T R E A]</translation>
+        <translation>↕THR ↔RUD ↕ELE ↔AIL　[T R E A]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="288"/>
         <source>T R A E</source>
-        <translation>↕THR ↔RUD ↔AIL ↕ELE&#x3000;[T R A E]</translation>
+        <translation>↕THR ↔RUD ↔AIL ↕ELE　[T R A E]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="293"/>
         <source>T E R A</source>
-        <translation>↕THR ↕ELE ↔RUD ↔AIL&#x3000;[T E R A]</translation>
+        <translation>↕THR ↕ELE ↔RUD ↔AIL　[T E R A]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="298"/>
         <source>T E A R</source>
-        <translation>↕THR ↕ELE ↔AIL ↔RUD&#x3000;[T E A R]</translation>
+        <translation>↕THR ↕ELE ↔AIL ↔RUD　[T E A R]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="303"/>
         <source>T A R E</source>
-        <translation>↕THR ↔AIL ↔RUD ↕ELE&#x3000;[T A R E]</translation>
+        <translation>↕THR ↔AIL ↔RUD ↕ELE　[T A R E]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="308"/>
         <source>T A E R</source>
-        <translation>↕THR ↔AIL ↕ELE ↔RUD&#x3000;[T A E R]</translation>
+        <translation>↕THR ↔AIL ↕ELE ↔RUD　[T A E R]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="313"/>
         <source>A R E T</source>
-        <translation>↔AIL ↔RUD ↕ELE ↕THR&#x3000;[A R E T]</translation>
+        <translation>↔AIL ↔RUD ↕ELE ↕THR　[A R E T]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="318"/>
         <source>A R T E</source>
-        <translation>↔AIL ↔RUD ↕THR ↕ELE&#x3000;[A R T E]</translation>
+        <translation>↔AIL ↔RUD ↕THR ↕ELE　[A R T E]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="323"/>
         <source>A E R T</source>
-        <translation>↔AIL ↕ELE ↔RUD ↕THR&#x3000;[A E R T]</translation>
+        <translation>↔AIL ↕ELE ↔RUD ↕THR　[A E R T]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="328"/>
         <source>A E T R</source>
-        <translation>↔AIL ↕ELE ↕THR ↔RUD&#x3000;[A E T R]</translation>
+        <translation>↔AIL ↕ELE ↕THR ↔RUD　[A E T R]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="333"/>
         <source>A T R E</source>
-        <translation>↔AIL ↕THR ↔RUD ↕ELE&#x3000;[A T R E]</translation>
+        <translation>↔AIL ↕THR ↔RUD ↕ELE　[A T R E]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="338"/>
         <source>A T E R</source>
-        <translation>↔AIL ↕THR ↕ELE ↔RUD&#x3000;[A T E R]</translation>
+        <translation>↔AIL ↕THR ↕ELE ↔RUD　[A T E R]</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="375"/>
@@ -610,7 +610,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="120"/>
         <source>&lt;p&gt;&lt;b&gt;You cannot switch Radio Type or change Build Options while there are unsaved file changes. What do you wish to do?&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;Save All&lt;/i&gt; - Save any open file(s) before saving Settings.&lt;li&gt;&lt;li&gt;&lt;i&gt;Reset&lt;/i&gt; - Revert to the previous Radio Type and Build Options before saving Settings.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Cancel&lt;/i&gt; - Return to the Settings editor dialog.&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;ファイル変更後で保存されていない間は、送信機タイプの切り替えやビルドオプションの変更はできません。保存しますか？&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;すべて保存&lt;/i&gt; - 設定を保存する前に、開いているファイルをすべて保存します &#x3000;&lt;li&gt;&lt;li&gt;&lt;i&gt;リセット&lt;/i&gt; - 設定を保存する前に、以前の送信機タイプとビルドオプションに戻します &lt;/li&gt;&lt;li&gt;&lt;i&gt;キャンセル&lt;/i&gt; - 設定エディタダイアログに戻ります &lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>&lt;p&gt;&lt;b&gt;ファイル変更後で保存されていない間は、送信機タイプの切り替えやビルドオプションの変更はできません。保存しますか？&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;すべて保存&lt;/i&gt; - 設定を保存する前に、開いているファイルをすべて保存します 　&lt;li&gt;&lt;li&gt;&lt;i&gt;リセット&lt;/i&gt; - 設定を保存する前に、以前の送信機タイプとビルドオプションに戻します &lt;/li&gt;&lt;li&gt;&lt;i&gt;キャンセル&lt;/i&gt; - 設定エディタダイアログに戻ります &lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="154"/>
@@ -715,58 +715,58 @@ Mode 4:
 <context>
     <name>Boards</name>
     <message>
-        <location filename="../firmwares/boards.cpp" line="368"/>
+        <location filename="../firmwares/boards.cpp" line="376"/>
         <source>Left Horizontal</source>
         <translation>左・横</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="369"/>
+        <location filename="../firmwares/boards.cpp" line="377"/>
         <source>Left Vertical</source>
         <translation>左・縦</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="370"/>
+        <location filename="../firmwares/boards.cpp" line="378"/>
         <source>Right Vertical</source>
         <translation>右・縦</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="371"/>
+        <location filename="../firmwares/boards.cpp" line="379"/>
         <source>Right Horizontal</source>
         <translation>右・横</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="372"/>
+        <location filename="../firmwares/boards.cpp" line="380"/>
         <source>Aux. 1</source>
         <translation>AUX. 1</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="373"/>
+        <location filename="../firmwares/boards.cpp" line="381"/>
         <source>Aux. 2</source>
         <translation>AUX. 2</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="378"/>
-        <location filename="../firmwares/boards.cpp" line="521"/>
+        <location filename="../firmwares/boards.cpp" line="386"/>
+        <location filename="../firmwares/boards.cpp" line="533"/>
         <source>Unknown</source>
         <translation>不明</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="388"/>
+        <location filename="../firmwares/boards.cpp" line="396"/>
         <source>Rud</source>
         <translation>ラダー</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="389"/>
+        <location filename="../firmwares/boards.cpp" line="397"/>
         <source>Ele</source>
         <translation>エレベーター</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="390"/>
+        <location filename="../firmwares/boards.cpp" line="398"/>
         <source>Thr</source>
         <translation>スロットル</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="391"/>
+        <location filename="../firmwares/boards.cpp" line="399"/>
         <source>Ail</source>
         <translation>エルロン</translation>
     </message>
@@ -1030,37 +1030,37 @@ Mode 4:
         <translation>送信機と機体モデルの設定</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="472"/>
+        <location filename="../helpers.cpp" line="489"/>
         <source>Select or create a file for exported Settings:</source>
         <translation>エクスポートした設定ファイルを選択または作成します:</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="482"/>
+        <location filename="../helpers.cpp" line="499"/>
         <source>Press the &apos;Retry&apos; button to choose another file.</source>
         <translation>別のファイルを選択するには『再試行』ボタンを押してください。</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="493"/>
+        <location filename="../helpers.cpp" line="510"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>このファームウェアのシミュレータはまだ利用できません</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="517"/>
+        <location filename="../helpers.cpp" line="534"/>
         <source>Uknown error during Simulator startup.</source>
         <translation>シミュレータ起動中に不明なエラーが発生しました。</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="518"/>
+        <location filename="../helpers.cpp" line="535"/>
         <source>Simulator Error</source>
         <translation>シミュレータ エラー</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="525"/>
+        <location filename="../helpers.cpp" line="542"/>
         <source>Data Load Error</source>
         <translation>データロード エラー</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="525"/>
+        <location filename="../helpers.cpp" line="542"/>
         <source>Error occurred while starting simulator.</source>
         <translation>シミュレータ起動中にエラーが発生しました。</translation>
     </message>
@@ -2018,48 +2018,48 @@ If you have a settings backup file, you may import that instead.</source>
         <translation>フィールド %1 変換エラー</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="414"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="417"/>
         <source>Switch</source>
         <translation>スイッチ</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="415"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="418"/>
         <source>Switch </source>
         <translation>スイッチ </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="415"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="418"/>
         <source> cannot be exported on this board!</source>
         <translation> このボードにエクスポートできません！</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="450"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="453"/>
         <source>Source</source>
         <translation>選択元</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="450"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="453"/>
         <source>Source %1 cannot be exported on this board!</source>
         <translation>このボードでは選択元 %1 をエクスポートできません！</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1158"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1161"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTXはすべてのカーブで %1 点のみを許容します</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1165"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1168"/>
         <source>OpenTx only accepts %1 points in all curves</source>
         <translation>OpenTxはすべてのカーブで %1 点のみを許容します</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1478"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1482"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1481"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1485"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>このボード上のOpenTXはこの機能を受け付けません</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2186"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2190"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTXはこの送信機プロトコルを受け付けません</translation>
     </message>
@@ -2068,25 +2068,21 @@ If you have a settings backup file, you may import that instead.</source>
     <name>DebugOutput</name>
     <message>
         <location filename="../simulation/debugoutput.ui" line="20"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="209"/>
         <source>Debug Output</source>
         <translation>デバッグ出力</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="68"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="227"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the filter. If the button won&apos;t stay enabled, it is likely there is a syntax error in the Regular Expression entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;フィルタを有効または無効にします。ボタンが有効にならない場合は、入力した正規表現に構文エラーがある可能性があります。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="74"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="229"/>
         <source>Filter:</source>
         <translation>フィルタ:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="105"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="231"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter filter text here. Click the help/info button for details about using the filter. &lt;/p&gt;&lt;p&gt;
 To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first choose it, and then press &lt;code&gt;Shift-Delete&lt;/code&gt; (or &lt;code&gt;Shift-Backspace&lt;/code&gt;) key combination.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ここにフィルタテキストを入力してください。フィルタの使用方法の詳細は、help / info ボタンをクリックしてください。&lt;/p&gt;&lt;p&gt;
@@ -2094,61 +2090,51 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="164"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="235"/>
         <source>Buffer:</source>
         <translation>バッファ:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="177"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="237"/>
         <source>Number of lines to keep in display.</source>
         <translation>画面へ表示し続ける行数を示します。</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="274"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="210"/>
         <source>Filter &amp;Help</source>
         <translation>フィルタ &amp;ヘルプ</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="212"/>
         <source>Show information about using the filter.</source>
         <translation>フィルタの使用に関する情報を表示します。</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="214"/>
         <source>Word &amp;Wrap</source>
         <translation>単語 &amp;重複</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="216"/>
         <source>Toggle word wrapping on/off.</source>
         <translation>単語の重複チェックのON / OFFを切り替えます。</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="218"/>
         <source>&amp;Clear</source>
         <translation>&amp;消去</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="220"/>
         <source>Clear the output window of all text.</source>
         <translation>すべてのテキストの出力ウィンドウを消去します。</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="222"/>
         <source>Enable &amp;Filter</source>
         <translation>有効 &amp;フィルタ</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="224"/>
         <source>Turn the filter on/off.</source>
         <translation>フィルタをON / OFFします。</translation>
     </message>
@@ -2809,252 +2795,275 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
 <context>
     <name>Firmware</name>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1145"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1153"/>
         <source>Channel values displayed in us</source>
         <translation>表示されるチャンネル値</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1147"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
         <source>No OverrideCH functions available</source>
         <translation>使用可能な上書きチャンネル機能はありません</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1142"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1150"/>
         <source>Possibility to enable FAI MODE (no telemetry) at field</source>
         <translation>フィールドでFAIモード (テレメトリーなし) を有効にする可能性</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1151"/>
         <source>FAI MODE (no telemetry) always enabled</source>
         <translation>FAIモード (テレメトリーなし) を常に有効</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1160"/>
         <source>Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015</source>
         <translation>2015/01/01以降に販売された送信機に対し、EUでの使用に適さないD8 FrSkyプロトコルサポートを削除</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1153"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1161"/>
         <source>Enable non certified firmwares</source>
         <translation>認定されていないファームウェアを有効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1168"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1294"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>HELIメニューとサイクリックミックスサポートを無効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1169"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1177"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1295"/>
         <source>Disable Global variables</source>
         <translation>グローバル変数を無効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1178"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1296"/>
         <source>Enable Lua custom scripts screen</source>
         <translation>Luaカスタムスクリプト画面を有効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
         <source>Use alternative SQT5 font</source>
         <translation>SQT5 代替フォントを使用する</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
         <source>Pots use in menus navigation</source>
         <translation>メニューナビゲーションでダイヤルを使用</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1208"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1216"/>
         <source>FrSky Taranis X9D+</source>
         <translation>FrSky Taranis X9D+</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1182"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
         <source>Support for PPM internal module hack</source>
         <translation>PPM内部モジュールハックのサポート</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1209"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
         <source>Disable RAS (SWR)</source>
         <translation>RAS (SWR)を無効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
         <source>FrSky Taranis X9D+ 2019</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
         <source>FrSky Taranis X9D</source>
         <translation>FrSky Taranis X9D</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
         <source>Haptic module installed</source>
         <translation>タッチパネル対応モジュールをインストール</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1228"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
         <source>FrSky Taranis X9E</source>
         <translation>FrSky Taranis X9E</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
         <source>Confirmation before radio shutdown</source>
         <translation>送信機シャットダウン前の確認</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
         <source>Horus gimbals installed (Hall sensors)</source>
         <translation>Horusジンバル (ホールセンサー) をインストール</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1244"/>
         <source>FrSky Taranis X9-Lite</source>
         <translation>FrSky Taranis X9-Lite</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1249"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1246"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1252"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
         <source>Support for auto update on boot</source>
         <translation>起動時の自動更新サポート</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
+        <source>FrSky Taranis X9-Lite S</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
         <source>FrSky Taranis X7 / X7S</source>
         <translation>FrSky Taranis X7 / X7S</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1247"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
         <source>FrSky Taranis X-Lite S/PRO</source>
         <translation>FrSky Taranis X-Lite S/PRO</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1253"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1267"/>
         <source>FrSky Taranis X-Lite</source>
         <translation>FrSky Taranis X-Lite</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1259"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
         <source>FrSky Horus X10 / X10S</source>
         <translation>FrSky Horus X10 / X10S</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
+        <source>FrSky Horus X10 / X10S Express</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1285"/>
         <source>FrSky Horus X12S</source>
         <translation>FrSky Horus X12S</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1288"/>
         <source>Use ONLY with first DEV pcb version</source>
         <translation>初期DEV pcbバージョンでのみ使用</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
+        <source>Jumper T16 / T16+</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
+        <source>Support for MULTI internal module</source>
+        <translation>MULTI内部モジュールのサポート</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1305"/>
+        <source>Support for bluetooth module</source>
+        <translation>Bluetoothモジュールのサポート</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
         <source>Turnigy 9XR-PRO</source>
         <translation>Turnigy 9XR-PRO</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1188"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
         <source>Enable HELI menu and cyclic mix support</source>
         <translation>HELIメニューとサイクリックミックスのサポートを有効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1189"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
         <source>Global variables</source>
         <translation>グローバル変数</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1199"/>
         <source>In model setup menus automatically set source by moving the control</source>
         <translation>モデル設定メニューでは、コントローラーを動かし自動的に選択元を設定します</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1200"/>
         <source>In model setup menus automatically set switch by moving the control</source>
         <translation>モデル設定メニューでは、コントローラーを動かし自動的にスイッチを設定します</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
         <source>No graphical check boxes and sliders</source>
         <translation>グラフィカルなチェックボックスとスライダーはありません</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1194"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1202"/>
         <source>Battery graph</source>
         <translation>バッテリーグラフ</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1203"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>有効なアイテムを強調表示するために太字フォントを使用しない</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
         <source>Support for ACCESS internal module replacement</source>
         <translation>ACCESS内部モジュール変更のサポート</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
-        <source>FrSky Horus X10 Express</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
         <source>Jumper T12</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1297"/>
         <source>Enable non certified R9M firmwares</source>
         <translation>非認定 R9Mファームウェアを有効</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1305"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1327"/>
         <source>Turnigy 9XR with m128 chip</source>
         <translation>Turnigy 9XR m128チップ搭載</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1326"/>
         <source>Turnigy 9XR</source>
         <translation>Turnigy 9XR</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1306"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1328"/>
         <source>9X with stock board</source>
         <translation>9Ｘ ストックボード</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1206"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
         <translation>上下に同時に押し、値のリセットを有効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1307"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1329"/>
         <source>9X with stock board and m128 chip</source>
         <translation>9X ストックボード＋m128 chip</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1314"/>
         <source>9X with AR9X board</source>
         <translation>9X AR9Xボード</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1299"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
         <source>9X with Sky9x board</source>
         <translation>9X Sky9Xボード</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1308"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1330"/>
         <source>9X with Gruvin9x board</source>
         <translation>9X Gruvin9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
         <source>DIY MEGA2560 radio</source>
         <translation>DIY MEGA2560 送信機</translation>
     </message>
@@ -4647,122 +4656,122 @@ Acceptable values are 5v..10v</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1359"/>
         <source>R E T A</source>
-        <translation>↔RUD ↕ELE ↕THR ↔AIL&#x3000;[R E T A]</translation>
+        <translation>↔RUD ↕ELE ↕THR ↔AIL　[R E T A]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1364"/>
         <source>R E A T</source>
-        <translation>↔RUD ↕ELE ↔AIL ↕THR&#x3000;[R E A T]</translation>
+        <translation>↔RUD ↕ELE ↔AIL ↕THR　[R E A T]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1369"/>
         <source>R T E A</source>
-        <translation>↔RUD ↕THR ↕ELE ↔AIL&#x3000;[R T E A]</translation>
+        <translation>↔RUD ↕THR ↕ELE ↔AIL　[R T E A]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1374"/>
         <source>R T A E</source>
-        <translation>↔RUD ↕THR ↔AIL ↕ELE&#x3000;[R T A E]</translation>
+        <translation>↔RUD ↕THR ↔AIL ↕ELE　[R T A E]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1379"/>
         <source>R A E T</source>
-        <translation>↔RUD ↔AIL ↕ELE ↕THR&#x3000;[R A E T]</translation>
+        <translation>↔RUD ↔AIL ↕ELE ↕THR　[R A E T]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1384"/>
         <source>R A T E</source>
-        <translation>↔RUD ↔AIL ↕THR ↕ELE&#x3000;[R A T E]</translation>
+        <translation>↔RUD ↔AIL ↕THR ↕ELE　[R A T E]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1389"/>
         <source>E R T A</source>
-        <translation>↕ELE ↔RUD ↕THR ↔AIL&#x3000;[E R T A]</translation>
+        <translation>↕ELE ↔RUD ↕THR ↔AIL　[E R T A]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1394"/>
         <source>E R A T</source>
-        <translation>↕ELE ↔RUD ↔AIL ↕THR&#x3000;[E R A T]</translation>
+        <translation>↕ELE ↔RUD ↔AIL ↕THR　[E R A T]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1399"/>
         <source>E T R A</source>
-        <translation>↕ELE ↕THR ↔RUD ↔AIL&#x3000;[E T R A]</translation>
+        <translation>↕ELE ↕THR ↔RUD ↔AIL　[E T R A]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1404"/>
         <source>E T A R</source>
-        <translation>↕ELE ↕THR ↔AIL ↔RUD&#x3000;[E T A R]</translation>
+        <translation>↕ELE ↕THR ↔AIL ↔RUD　[E T A R]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1409"/>
         <source>E A R T</source>
-        <translation>↕ELE ↔AIL ↔RUD ↕THR&#x3000;[E A R T]</translation>
+        <translation>↕ELE ↔AIL ↔RUD ↕THR　[E A R T]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1414"/>
         <source>E A T R</source>
-        <translation>↕ELE ↔AIL ↕THR ↔RUD&#x3000;[E A T R]</translation>
+        <translation>↕ELE ↔AIL ↕THR ↔RUD　[E A T R]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1419"/>
         <source>T R E A</source>
-        <translation>↕THR ↔RUD ↕ELE ↔AIL&#x3000;[T R E A]</translation>
+        <translation>↕THR ↔RUD ↕ELE ↔AIL　[T R E A]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1424"/>
         <source>T R A E</source>
-        <translation>↕THR ↔RUD ↔AIL ↕ELE&#x3000;[T R A E]</translation>
+        <translation>↕THR ↔RUD ↔AIL ↕ELE　[T R A E]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1429"/>
         <source>T E R A</source>
-        <translation>↕THR ↕ELE ↔RUD ↔AIL&#x3000;[T E R A]</translation>
+        <translation>↕THR ↕ELE ↔RUD ↔AIL　[T E R A]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1434"/>
         <source>T E A R</source>
-        <translation>↕THR ↕ELE ↔AIL ↔RUD&#x3000;[T E A R]</translation>
+        <translation>↕THR ↕ELE ↔AIL ↔RUD　[T E A R]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1439"/>
         <source>T A R E</source>
-        <translation>↕THR ↔AIL ↔RUD ↕ELE&#x3000;[T A R E]</translation>
+        <translation>↕THR ↔AIL ↔RUD ↕ELE　[T A R E]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1444"/>
         <source>T A E R</source>
-        <translation>↕THR ↔AIL ↕ELE ↔RUD&#x3000;[T A E R]</translation>
+        <translation>↕THR ↔AIL ↕ELE ↔RUD　[T A E R]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1449"/>
         <source>A R E T</source>
-        <translation>↔AIL ↔RUD ↕ELE ↕THR&#x3000;[A R E T]</translation>
+        <translation>↔AIL ↔RUD ↕ELE ↕THR　[A R E T]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1454"/>
         <source>A R T E</source>
-        <translation>↔AIL ↔RUD ↕THR ↕ELE&#x3000;[A R T E]</translation>
+        <translation>↔AIL ↔RUD ↕THR ↕ELE　[A R T E]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1459"/>
         <source>A E R T</source>
-        <translation>↔AIL ↕ELE ↔RUD ↕THR&#x3000;[A E R T]</translation>
+        <translation>↔AIL ↕ELE ↔RUD ↕THR　[A E R T]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1464"/>
         <source>A E T R</source>
-        <translation>↔AIL ↕ELE ↕THR ↔RUD&#x3000;[A E T R]</translation>
+        <translation>↔AIL ↕ELE ↕THR ↔RUD　[A E T R]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1469"/>
         <source>A T R E</source>
-        <translation>↔AIL ↕THR ↔RUD ↕ELE&#x3000;[A T R E]</translation>
+        <translation>↔AIL ↕THR ↔RUD ↕ELE　[A T R E]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1474"/>
         <source>A T E R</source>
-        <translation>↔AIL ↕THR ↕ELE ↔RUD&#x3000;[A T E R]</translation>
+        <translation>↔AIL ↕THR ↕ELE ↔RUD　[A T E R]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2437"/>
@@ -4813,22 +4822,22 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1304"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation>モード1&#x3000;(左:エレベーター・ラダー&#x3000;右:スロットル・エルロン)</translation>
+        <translation>モード1　(左:エレベーター・ラダー　右:スロットル・エルロン)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1309"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation>モード2&#x3000;(左:スロットル・ラダー&#x3000;右:エレベーター・エルロン)</translation>
+        <translation>モード2　(左:スロットル・ラダー　右:エレベーター・エルロン)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1314"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation>モード3&#x3000;(左:エレベーター・エルロン&#x3000;右:スロットル・ラダー)</translation>
+        <translation>モード3　(左:エレベーター・エルロン　右:スロットル・ラダー)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1319"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation>モード4&#x3000;(左:スロットル・エルロン&#x3000;右:エレベーター・ラダー)</translation>
+        <translation>モード4　(左:スロットル・エルロン　右:エレベーター・ラダー)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2025"/>
@@ -5020,7 +5029,7 @@ Are you sure ?</source>
         <translation>フォーム</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="626"/>
+        <location filename="../generaledit/hardware.ui" line="633"/>
         <source>SQ</source>
         <translation>SQ</translation>
     </message>
@@ -5035,7 +5044,7 @@ Are you sure ?</source>
         <translation>LS2</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="412"/>
+        <location filename="../generaledit/hardware.ui" line="415"/>
         <source>SP</source>
         <translation>SP</translation>
     </message>
@@ -5055,7 +5064,7 @@ Are you sure ?</source>
         <translation>RS</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="794"/>
+        <location filename="../generaledit/hardware.ui" line="772"/>
         <source>SB</source>
         <translation>SB</translation>
     </message>
@@ -5065,39 +5074,44 @@ Are you sure ?</source>
         <translation>PPM 2</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="909"/>
+        <location filename="../generaledit/hardware.ui" line="929"/>
         <source>Antenna</source>
         <translation>アンテナ</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="932"/>
+        <location filename="../generaledit/hardware.ui" line="922"/>
         <source>S5</source>
         <translation>S5</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="1036"/>
+        <location filename="../generaledit/hardware.ui" line="1056"/>
         <source>OFF</source>
         <translation>OFF</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="1041"/>
+        <location filename="../generaledit/hardware.ui" line="1061"/>
         <source>S-Port Mirror</source>
         <translation>S-Port ミラー</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="1046"/>
+        <location filename="../generaledit/hardware.ui" line="1066"/>
         <source>Telemetry</source>
         <translation>テレメトリー</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="1051"/>
+        <location filename="../generaledit/hardware.ui" line="1071"/>
         <source>SBUS Trainer</source>
         <translation>SBUS トレーナー</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="1056"/>
+        <location filename="../generaledit/hardware.ui" line="1076"/>
         <source>Debug</source>
         <translation>デバッグ</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="1126"/>
+        <source>RTC Batt Check</source>
+        <translation>RTC Battチェック</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="861"/>
@@ -5110,17 +5124,17 @@ Are you sure ?</source>
         <translation>PPM 3</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="398"/>
+        <location filename="../generaledit/hardware.ui" line="401"/>
         <source>S1</source>
         <translation>S1</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="588"/>
+        <location filename="../generaledit/hardware.ui" line="591"/>
         <source>S2</source>
         <translation>S2</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="405"/>
+        <location filename="../generaledit/hardware.ui" line="408"/>
         <source>S3</source>
         <translation>S3</translation>
     </message>
@@ -5130,12 +5144,12 @@ Are you sure ?</source>
         <translation>PPM 1</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="558"/>
+        <location filename="../generaledit/hardware.ui" line="574"/>
         <source>Serial Port</source>
         <translation>シリアルポート</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="775"/>
+        <location filename="../generaledit/hardware.ui" line="789"/>
         <source>v</source>
         <translation>v</translation>
     </message>
@@ -5155,7 +5169,7 @@ Are you sure ?</source>
         <translation>PPM 4</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="391"/>
+        <location filename="../generaledit/hardware.ui" line="394"/>
         <source>SA</source>
         <translation>SA</translation>
     </message>
@@ -5180,7 +5194,7 @@ Are you sure ?</source>
         <translation>SC</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="426"/>
+        <location filename="../generaledit/hardware.ui" line="429"/>
         <source>LS</source>
         <translation>LS</translation>
     </message>
@@ -5190,7 +5204,7 @@ Are you sure ?</source>
         <translation>SD</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="551"/>
+        <location filename="../generaledit/hardware.ui" line="567"/>
         <source>Battery Offset</source>
         <translation>バッテリーオフセット</translation>
     </message>
@@ -5200,12 +5214,12 @@ Are you sure ?</source>
         <translation>SE</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="419"/>
+        <location filename="../generaledit/hardware.ui" line="422"/>
         <source>SF</source>
         <translation>SF</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="581"/>
+        <location filename="../generaledit/hardware.ui" line="584"/>
         <source>SG</source>
         <translation>SG</translation>
     </message>
@@ -5215,12 +5229,12 @@ Are you sure ?</source>
         <translation>SH</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="619"/>
+        <location filename="../generaledit/hardware.ui" line="605"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="374"/>
+        <location filename="../generaledit/hardware.ui" line="387"/>
         <source>SJ</source>
         <translation>SJ</translation>
     </message>
@@ -5230,7 +5244,7 @@ Are you sure ?</source>
         <translation>SK</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="633"/>
+        <location filename="../generaledit/hardware.ui" line="626"/>
         <source>SL</source>
         <translation>SL</translation>
     </message>
@@ -5245,7 +5259,7 @@ Are you sure ?</source>
         <translation>SN</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.ui" line="198"/>
+        <location filename="../generaledit/hardware.ui" line="230"/>
         <source>RS2</source>
         <translation>RS2</translation>
     </message>
@@ -7268,71 +7282,71 @@ Do you want to save your changes?</source>
 変更を保存しますか？</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1460"/>
+        <location filename="../mdichild.cpp" line="1466"/>
         <source>&lt;p&gt;&lt;b&gt;Currently selected radio type (%1) is not compatible with file %3 (from %2), models and settings need to be converted.&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;現在選択されている送信機タイプ (%1) はファイル %3 (from %2) と互換性がありません。機体モデルと設定を変換する必要があります。&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1462"/>
+        <location filename="../mdichild.cpp" line="1468"/>
         <source>Do you wish to continue with the conversion?</source>
         <translation>変換を続けますか？</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1467"/>
+        <location filename="../mdichild.cpp" line="1473"/>
         <source>Choose &lt;i&gt;Apply&lt;/i&gt; to convert the file, or &lt;i&gt;Close&lt;/i&gt; to close it without conversion.</source>
         <translation>ファイルを変換するには&lt;i&gt;適用&lt;/i&gt;を、変換せずに閉じるには&lt;i&gt;閉じる&lt;/i&gt;を選択します。</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1494"/>
+        <location filename="../mdichild.cpp" line="1500"/>
         <source>&lt;b&gt;The conversion generated some important messages, please review them below.&lt;/b&gt;</source>
         <translation>&lt;b&gt;変換によっていくつかの重要なメッセージが出力されました。下記の内容を確認してください。&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1501"/>
+        <location filename="../mdichild.cpp" line="1507"/>
         <source>Companion :: Conversion Result for %1</source>
         <translation>Companion :: %1 の変換結果</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1528"/>
+        <location filename="../mdichild.cpp" line="1534"/>
         <source>Unable to find Horus radio SD card!</source>
         <translation>Horus送信機のSDカードが見つかりません！</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1532"/>
+        <location filename="../mdichild.cpp" line="1538"/>
         <source>Models and Settings written</source>
         <translation>機体モデルと設定が書かれました</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1542"/>
+        <location filename="../mdichild.cpp" line="1548"/>
         <source>Cannot write temporary file!</source>
         <translation>一時ファイルを書き込めません！</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1552"/>
+        <location filename="../mdichild.cpp" line="1558"/>
         <source>Open backup Models and Settings file</source>
         <translation>バックアップ機体モデルと設定ファイルを開く</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1558"/>
+        <location filename="../mdichild.cpp" line="1564"/>
         <source>Unable to find file %1!</source>
         <translation>ファイル %1 が見つかりません！</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1567"/>
+        <location filename="../mdichild.cpp" line="1573"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>ファイル %1 を開くときにエラーが発生しました:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1578"/>
+        <location filename="../mdichild.cpp" line="1584"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>ファイル %1 の読み取りエラーです:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1588"/>
+        <location filename="../mdichild.cpp" line="1594"/>
         <source>Invalid binary backup File %1</source>
         <translation>無効なバイナリバックアップファイルです %1</translation>
     </message>
@@ -8861,85 +8875,85 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
 <context>
     <name>ModuleData</name>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="106"/>
+        <location filename="../firmwares/moduledata.cpp" line="130"/>
         <source>Trainer Port</source>
         <translation>トレーナーポート</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="110"/>
+        <location filename="../firmwares/moduledata.cpp" line="134"/>
         <source>Internal Radio System</source>
         <translation>内部送信システム</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="110"/>
+        <location filename="../firmwares/moduledata.cpp" line="134"/>
         <source>External Radio Module</source>
         <translation>外部送信モジュール</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="112"/>
+        <location filename="../firmwares/moduledata.cpp" line="136"/>
         <source>Extra Radio System</source>
         <translation>追加送信システム</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="114"/>
+        <location filename="../firmwares/moduledata.cpp" line="138"/>
         <source>Radio System</source>
         <translation>送信システム</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>10mW - 16CH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
-        <location filename="../firmwares/moduledata.cpp" line="150"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
+        <location filename="../firmwares/moduledata.cpp" line="174"/>
         <source>100mW - 16CH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>500mW - 16CH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>Auto &lt;= 1W - 16CH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
-        <location filename="../firmwares/moduledata.cpp" line="151"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
+        <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>25mW - 8CH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
-        <location filename="../firmwares/moduledata.cpp" line="151"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
+        <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>25mW - 16CH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
         <source>200mW - 16CH (no telemetry)</source>
         <translation>200mW - 16CH (テレメトリーなし)</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
         <source>500mW - 16CH (no telemetry)</source>
         <translation>500mW - 16CH (テレメトリーなし)</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="151"/>
+        <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>100mW - 16CH (no telemetry)</source>
         <translation>100mW - 16CH (テレメトリーなし)</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.h" line="186"/>
+        <location filename="../firmwares/moduledata.h" line="190"/>
         <source>Positive</source>
         <translation>ノーマル</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.h" line="186"/>
+        <location filename="../firmwares/moduledata.h" line="190"/>
         <source>Negative</source>
         <translation>リバース</translation>
     </message>
@@ -8947,37 +8961,37 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
 <context>
     <name>ModulePanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="321"/>
+        <location filename="../modeledit/setup.cpp" line="322"/>
         <source>Value</source>
         <translation>値</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="322"/>
+        <location filename="../modeledit/setup.cpp" line="323"/>
         <source>Hold</source>
         <translation>ホールド</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="323"/>
+        <location filename="../modeledit/setup.cpp" line="324"/>
         <source>No Pulse</source>
         <translation>パルスなし</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="492"/>
+        <location filename="../modeledit/setup.cpp" line="537"/>
         <source>Ask</source>
         <translation>確認</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="493"/>
+        <location filename="../modeledit/setup.cpp" line="538"/>
         <source>Internal</source>
         <translation>内部</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="494"/>
+        <location filename="../modeledit/setup.cpp" line="539"/>
         <source>Internal + External</source>
         <translation>内部 + 外部</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="494"/>
+        <location filename="../modeledit/setup.cpp" line="539"/>
         <source>External</source>
         <translation>外部</translation>
     </message>
@@ -9479,7 +9493,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>初期値</translation>
     </message>
     <message>
-        <location filename="../firmwares/multiprotocols.cpp" line="165"/>
+        <location filename="../firmwares/multiprotocols.cpp" line="167"/>
         <source>Custom - proto %1)</source>
         <translation>カスタム - プロトコル%1)</translation>
     </message>
@@ -9510,22 +9524,22 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
 <context>
     <name>OpenTxEepromInterface</name>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="291"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="295"/>
         <source>Unknown error</source>
         <translation>不明のエラー</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="299"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="303"/>
         <source> ... plus %1 errors</source>
         <translation>...追加 %1 エラー</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="348"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="352"/>
         <source>Cannot write radio settings</source>
         <translation>送信機設定を書き込めません</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="360"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="364"/>
         <source>Cannot write model %1</source>
         <translation>機体モデル %1 を書き込めません</translation>
     </message>
@@ -9655,6 +9669,19 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../progresswidget.ui" line="97"/>
         <source>Show Details</source>
         <translation>詳細を表示</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../helpers.cpp" line="441"/>
+        <source>WARNING</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../helpers.cpp" line="442"/>
+        <source>&lt;p&gt;Importing JumperTX data into OpenTX 2.3 is &lt;b&gt;not supported and dangerous.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but &lt;b&gt;You should only continue here if the file you opened comes from a real FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Do you really want to continue?&lt;/p&gt;</source>
+        <translation>&lt;p&gt;JumperTXデータをOpenTX 2.3にインポートすることは&lt;b&gt;サポート対象外となり危険な行為です。&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;残念ながら、JumperTXデータを正当なFrSky X10データと区別することができませんが、&lt;b&gt;開いたファイルが実際のFrSky X10で生成されたものである場合にのみ、続行する事ができます。&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;本当に続行しますか？&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -9825,43 +9852,36 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <name>RadioOutputsWidget</name>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="14"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="292"/>
         <source>Form</source>
         <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="68"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="293"/>
         <source>View:</source>
         <translation>ビュー:</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="75"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="294"/>
         <source>Logical Switches</source>
         <translation>論理スイッチ</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="94"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="295"/>
         <source>Global Variables</source>
         <translation>グローバル変数</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="113"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="296"/>
         <source>Channel Outputs</source>
         <translation>チャンネルオプション</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="132"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="297"/>
         <source>Mix Outputs</source>
         <translation>ミキサー出力</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="210"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="298"/>
         <source>L
 o
 g
@@ -9874,7 +9894,6 @@ W</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="287"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="304"/>
         <source>G
 l
 o
@@ -9887,7 +9906,6 @@ l</source>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="362"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="310"/>
         <source>C
 h
 a
@@ -9903,7 +9921,6 @@ H
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="439"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="318"/>
         <source>M
 i
 x
@@ -9918,12 +9935,12 @@ X
     <message>
         <location filename="../simulation/radiooutputswidget.cpp" line="226"/>
         <source>FM%1</source>
-        <translation type="unfinished"></translation>
+        <translation>FM%1</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.cpp" line="235"/>
         <source>GV%1</source>
-        <translation type="unfinished">GV%1</translation>
+        <translation>GV%1</translation>
     </message>
 </context>
 <context>
@@ -10515,7 +10532,7 @@ X
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="95"/>
-        <location filename="../firmwares/rawswitch.cpp" line="140"/>
+        <location filename="../firmwares/rawswitch.cpp" line="143"/>
         <source>???</source>
         <translation></translation>
     </message>
@@ -10525,17 +10542,22 @@ X
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/rawswitch.cpp" line="125"/>
+        <location filename="../firmwares/rawswitch.cpp" line="119"/>
+        <source>Act</source>
+        <translation>Act</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/rawswitch.cpp" line="128"/>
         <source>----</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/rawswitch.cpp" line="137"/>
+        <location filename="../firmwares/rawswitch.cpp" line="140"/>
         <source>Telemetry</source>
         <translation>テレメトリー</translation>
     </message>
     <message>
-        <location filename="../firmwares/rawswitch.cpp" line="180"/>
+        <location filename="../firmwares/rawswitch.cpp" line="183"/>
         <source>SW</source>
         <translation></translation>
     </message>
@@ -10732,16 +10754,6 @@ X
         <source>TELE</source>
         <translation></translation>
     </message>
-    <message>
-        <location filename="../firmwares/sensordata.cpp" line="112"/>
-        <source>Internal</source>
-        <translation>内部</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/sensordata.cpp" line="114"/>
-        <source>External</source>
-        <translation>外部</translation>
-    </message>
 </context>
 <context>
     <name>Setup</name>
@@ -10918,22 +10930,22 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
 <context>
     <name>SetupPanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1008"/>
+        <location filename="../modeledit/setup.cpp" line="1051"/>
         <source>Timer %1</source>
         <translation>タイマー %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1241"/>
+        <location filename="../modeledit/setup.cpp" line="1284"/>
         <source>THR</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1445"/>
+        <location filename="../modeledit/setup.cpp" line="1488"/>
         <source>Profile Settings</source>
         <translation>プロファイル設定</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1445"/>
+        <location filename="../modeledit/setup.cpp" line="1488"/>
         <source>SD structure path not specified or invalid</source>
         <translation>SDカード保存先パスが指定されていないか無効です</translation>
     </message>
@@ -11283,181 +11295,151 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <name>SimulatorMainWindow</name>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="14"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="143"/>
         <source>OpenTx Simulator</source>
         <translation>OpenTX シミュレータ</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="48"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="198"/>
         <source>View</source>
         <translation>ビュー</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="52"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="199"/>
         <source>Radio Window</source>
         <translation>送信機ウィンドウ</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="63"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="200"/>
         <source>Reload...</source>
         <translation>再読み込み...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="70"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="201"/>
         <source>Tools</source>
         <translation>ツール</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="82"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="202"/>
         <source>Toolbar</source>
         <translation>ツールバー</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="103"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="144"/>
         <source>Reload Lua Scripts</source>
         <translation>Luaスクリプトを再読み込み</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="106"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="146"/>
         <source>Reload the Lua environment on the simulated radio.</source>
         <translation>送信機シミュレータでLua環境を再読み込みします。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="109"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="149"/>
         <source>F7</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="118"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="151"/>
         <source>Reload Radio Data</source>
         <translation>送信機データを再読み込み</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="121"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="153"/>
         <source>Reload all radio data without restarting the simulator.</source>
         <translation>シミュレータを再起動せずにすべての送信機データを再読み込みします。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="124"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="156"/>
         <source>F9</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="133"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="158"/>
         <source>Key Mapping</source>
         <translation>キーマッピング</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="136"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
         <source>Show keyboard maping reference.</source>
         <translation>参照するキーマッピングを表示します。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="139"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="163"/>
         <source>F1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="148"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="165"/>
         <source>Joystick Settings</source>
         <translation>スティック設定</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="151"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="167"/>
         <source>Open joystick configuration settings dialog.</source>
         <translation>スティック設定ダイアログを開きます。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="154"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="170"/>
         <source>F3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="163"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="172"/>
         <source>LCD Screenshot</source>
         <translation>液晶 画面キャプチャ</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="166"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="174"/>
         <source>Save a screenshot of the current simulated LCD screen.</source>
         <translation>現在シミュレートされている液晶画面のキャプチャを保存します。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="169"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="177"/>
         <source>F8</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="177"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="179"/>
         <source>Dock In Main Window</source>
         <translation>メインウィンドウに結合</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="180"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="181"/>
         <source>Show the radio in the main window or as a separate &quot;floating&quot; window.</source>
         <translation>メインウィンドウまたは別の『フローティング』ウィンドウとして送信機を表示します。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="188"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="183"/>
         <source>Menu Bar</source>
         <translation>メニューバー</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="191"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="185"/>
         <source>Show or hide the top menu bar.</source>
         <translation>トップメニューバーを表示または非表示にします。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="194"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="188"/>
         <source>Alt+M</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="202"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="190"/>
         <source>Constrain Width</source>
         <translation>幅の制限</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="205"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="192"/>
         <source>Set radio widget width to be a fixed size.</source>
         <translation>送信機ウィジェットの幅を固定サイズに設定します。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="213"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="194"/>
         <source>Constrain Height</source>
         <translation>高さ制限</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="216"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="196"/>
         <source>Set radio widget height to be a fixed size.</source>
         <translation>送信機ウィジェットの高さを固定サイズに設定します。</translation>
     </message>
@@ -11540,25 +11522,21 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <name>SimulatorStartupDialog</name>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="20"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="263"/>
         <source>OpenTX Simulator - Startup Options</source>
         <translation>OpenTX シミュレータ - スタートアップオプション</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="38"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="264"/>
         <source>Simulator Startup Options:</source>
         <translation>シミュレータ スタートアップオプション:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="74"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="265"/>
         <source>Radio Profile:</source>
         <translation>送信機プロファイル:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="87"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="267"/>
         <source>Existing radio profiles are shown here.&lt;br /&gt;
 Create or edit profiles using the Companion application.</source>
         <translation>既存の送信機プロファイルはこちらに表示されます。&lt;br /&gt;
@@ -11566,13 +11544,11 @@ Companionアプリケーションを使用してプロファイルを作成ま�
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="95"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="270"/>
         <source>Radio Type:</source>
         <translation>送信機タイプ:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="108"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="272"/>
         <source>Existing radio simulators are shown here.&lt;br /&gt;
 The radio type specified in the selected profile is used by default.</source>
         <translation>既存の送信機シミュレータをここに示します。&lt;br /&gt;
@@ -11580,31 +11556,26 @@ The radio type specified in the selected profile is used by default.</source>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="275"/>
         <source>Data Source:</source>
         <translation>データ元:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="276"/>
         <source>Data File:</source>
         <translation>データファイル:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="277"/>
         <source>Data Folder:</source>
         <translation>データフォルダ:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="278"/>
         <source>SD Image Path:</source>
         <translation>SDイメージパス:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="280"/>
         <source>Radio data (.bin/.eeprom/.otx) image file to use. A new file with a default image will be created if necessary.&lt;br /&gt;
 &lt;b&gt;NOTE&lt;/b&gt;: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
         <translation>使用する送信機データ(.bin / .eeprom / .otx)画像ファイルです。必要に応じて、デフォルト画像を含む新しいファイルが作成されます。&lt;br /&gt;
@@ -11612,7 +11583,6 @@ The radio type specified in the selected profile is used by default.</source>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="176"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="284"/>
         <source>Select data file...</source>
         <translation>データファイル選択...</translation>
     </message>
@@ -11620,15 +11590,11 @@ The radio type specified in the selected profile is used by default.</source>
         <location filename="../simulation/simulatorstartupdialog.ui" line="179"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="231"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="283"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="286"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="294"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="302"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="288"/>
         <source>Directory containing RADIO and MODELS folders to use.&lt;br /&gt;
 New folder(s) with default radio/model will be created here if necessary.</source>
         <translation>使用する送信機および機体モデルフォルダを含むディレクトリです。&lt;br /&gt;
@@ -11636,13 +11602,11 @@ New folder(s) with default radio/model will be created here if necessary.</sourc
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="292"/>
         <source>Select data folder...</source>
         <translation>データフォルダ選択...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="296"/>
         <source>Directory containing the SD card image to use.&lt;br/&gt;
 The default is configured in the chosen Radio Profile.</source>
         <translation>使用するSDカードイメージを含むディレクトリです。&lt;br/&gt;
@@ -11650,31 +11614,26 @@ The default is configured in the chosen Radio Profile.</source>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="280"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="300"/>
         <source>Select SD card image folder...</source>
         <translation>SDカードイメージフォルダ選択...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="304"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
         <translation>シミュレータを起動するデータ元 (ファイル/フォルダ/ SDカード) を選択します。</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="306"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="307"/>
         <source>Folder</source>
         <translation>フォルダ</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="308"/>
         <source>SD Path</source>
         <translation>SDパス</translation>
     </message>
@@ -11703,7 +11662,6 @@ The default is configured in the chosen Radio Profile.</source>
     <name>SimulatorWidget</name>
     <message>
         <location filename="../simulation/simulatorwidget.ui" line="20"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorwidget.h" line="196"/>
         <source>Companion Simulator</source>
         <translation>Companion シミュレータ</translation>
     </message>
@@ -11713,62 +11671,62 @@ The default is configured in the chosen Radio Profile.</source>
         <translation>送信機シミュレータ (%1)</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="244"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="250"/>
         <source>Could not determine startup data source.</source>
         <translation>起動データ元を特定できませんでした。</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="249"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="255"/>
         <source>Could not load data, possibly wrong format.</source>
         <translation>データをロードできません、フォーマットが間違っている可能性があります。</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="250"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="256"/>
         <source>Data Load Error</source>
         <translation>データロード エラー</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="305"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="311"/>
         <source>Invalid startup data provided. Plese specify a proper file/path.</source>
         <translation>無効なスタートアップデータが提供されました。正しいファイル/パスを指定してください。</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="306"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="312"/>
         <source>Simulator Startup Error</source>
         <translation>シミュレータ スタートアップ エラー</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="366"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="372"/>
         <source>Error saving data: could open file for writing: &apos;%1&apos;</source>
         <translation>データ保存エラー: 書き込み用にファイルを開くことができました: 「%1」</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="372"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="378"/>
         <source>Error saving data: could not get data from simulator interface.</source>
         <translation>データ保存エラー: シミュレータのインターフェイスからデータを取得できませんでした。</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="397"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="403"/>
         <source>An unexpected error occurred while attempting to save radio data to file &apos;%1&apos;.</source>
         <translation>送信機データをファイル「%1」に保存しようとしたときに予期せぬエラーが発生しました。</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="398"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="404"/>
         <source>Data Save Error</source>
         <translation>データ保存 エラー</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="650"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="656"/>
         <source>Cannot open joystick, joystick disabled</source>
         <translation>スティックが接続不可、もしくはスティックが無効です</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="746"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="752"/>
         <source>Radio firmware error: %1</source>
         <translation>送信機 ファームウェア エラー: %1</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="751"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="757"/>
         <source> - Flight Mode %1 (#%2)</source>
         <translation> - フライトモード %1 (#%2)</translation>
     </message>
@@ -12469,104 +12427,104 @@ Too many errors, giving up.</source>
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="890"/>
+        <location filename="../modeledit/telemetry.cpp" line="886"/>
         <source>Telemetry screen %1</source>
         <translation>テレメトリースクリーン %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="939"/>
+        <location filename="../modeledit/telemetry.cpp" line="935"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="940"/>
+        <location filename="../modeledit/telemetry.cpp" line="936"/>
         <source>FrSky D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="943"/>
+        <location filename="../modeledit/telemetry.cpp" line="939"/>
         <source>FrSky D (cable)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="966"/>
+        <location filename="../modeledit/telemetry.cpp" line="962"/>
         <source>Source</source>
         <translation>信号元</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="973"/>
+        <location filename="../modeledit/telemetry.cpp" line="969"/>
         <source>Low Alarm</source>
         <translation>低アラーム</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="974"/>
+        <location filename="../modeledit/telemetry.cpp" line="970"/>
         <source>Critical Alarm</source>
         <translation>クリティカルアラーム</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1016"/>
+        <location filename="../modeledit/telemetry.cpp" line="1012"/>
         <source>Winged Shadow How High</source>
         <translation>Winged Shadow How High</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1019"/>
+        <location filename="../modeledit/telemetry.cpp" line="1015"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (サポートなし)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1063"/>
+        <location filename="../modeledit/telemetry.cpp" line="1059"/>
         <source>Alti</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1064"/>
+        <location filename="../modeledit/telemetry.cpp" line="1060"/>
         <source>Alti+</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1065"/>
+        <location filename="../modeledit/telemetry.cpp" line="1061"/>
         <source>VSpeed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1066"/>
-        <location filename="../modeledit/telemetry.cpp" line="1074"/>
-        <location filename="../modeledit/telemetry.cpp" line="1089"/>
+        <location filename="../modeledit/telemetry.cpp" line="1062"/>
+        <location filename="../modeledit/telemetry.cpp" line="1070"/>
+        <location filename="../modeledit/telemetry.cpp" line="1085"/>
         <source>A1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1067"/>
-        <location filename="../modeledit/telemetry.cpp" line="1075"/>
-        <location filename="../modeledit/telemetry.cpp" line="1090"/>
+        <location filename="../modeledit/telemetry.cpp" line="1063"/>
+        <location filename="../modeledit/telemetry.cpp" line="1071"/>
+        <location filename="../modeledit/telemetry.cpp" line="1086"/>
         <source>A2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1077"/>
-        <location filename="../modeledit/telemetry.cpp" line="1092"/>
+        <location filename="../modeledit/telemetry.cpp" line="1073"/>
+        <location filename="../modeledit/telemetry.cpp" line="1088"/>
         <source>A3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1078"/>
-        <location filename="../modeledit/telemetry.cpp" line="1093"/>
+        <location filename="../modeledit/telemetry.cpp" line="1074"/>
+        <location filename="../modeledit/telemetry.cpp" line="1089"/>
         <source>A4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1080"/>
-        <location filename="../modeledit/telemetry.cpp" line="1095"/>
+        <location filename="../modeledit/telemetry.cpp" line="1076"/>
+        <location filename="../modeledit/telemetry.cpp" line="1091"/>
         <source>FAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1081"/>
+        <location filename="../modeledit/telemetry.cpp" line="1077"/>
         <source>Cells</source>
         <translation>セル</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1088"/>
+        <location filename="../modeledit/telemetry.cpp" line="1084"/>
         <source>---</source>
         <translation>---</translation>
     </message>
@@ -12604,254 +12562,249 @@ Too many errors, giving up.</source>
         <translation>受信</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="133"/>
-        <source>Mod.</source>
-        <translation>モジュール.</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="175"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="168"/>
         <source>Add</source>
         <translation>追加</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="180"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="173"/>
         <source>Average</source>
         <translation>平均</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="185"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="178"/>
         <source>Min</source>
         <translation>最小</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="190"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="183"/>
         <source>Max</source>
         <translation>最大</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="195"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="188"/>
         <source>Multiply</source>
         <translation>乗算</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="200"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="193"/>
         <source>Totalize</source>
         <translation>合計</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="205"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="198"/>
         <source>Cell</source>
         <translation>セル</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="210"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="203"/>
         <source>Consumption</source>
         <translation>消費</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="215"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="208"/>
         <source>Dist</source>
         <translation>距離</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="229"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="222"/>
         <source>Cells Sensor :</source>
         <translation>セル センサー :</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="243"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="281"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="309"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="337"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="352"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="367"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="382"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="397"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="236"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="274"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="302"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="330"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="345"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="360"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="375"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="390"/>
         <source>---</source>
         <translation>---</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="267"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="260"/>
         <source>GPS Sensor :</source>
         <translation>GPS センサー :</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="295"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="288"/>
         <source>Alt. Sensor :</source>
         <translation>高度 センサー :</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="323"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="316"/>
         <source>Sensor :</source>
         <translation>センサー :</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="412"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="405"/>
         <source>Raw (-)</source>
         <translation>Raw (-)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="417"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="410"/>
         <source>V</source>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="422"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="415"/>
         <source>A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="427"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="420"/>
         <source>mA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="432"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="425"/>
         <source>kt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="437"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="430"/>
         <source>m/s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="442"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="435"/>
         <source>ft/s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="447"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="440"/>
         <source>km/h</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="452"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="445"/>
         <source>mph</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="457"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="450"/>
         <source>m</source>
         <translation>分</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="462"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="455"/>
         <source>ft</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="467"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="460"/>
         <source>°C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="472"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="465"/>
         <source>°F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="477"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="470"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="482"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="475"/>
         <source>mAh</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="487"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="480"/>
         <source>W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="492"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="485"/>
         <source>mW</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="497"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="490"/>
         <source>dBm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="502"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="495"/>
         <source>RPM</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="507"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="500"/>
         <source>g</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="512"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="505"/>
         <source>°</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="517"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="510"/>
         <source>Rad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="522"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>mL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="527"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="520"/>
         <source>US fl.Oz.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="541"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="534"/>
         <source>Precision</source>
         <translation>精度</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="573"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="566"/>
         <source>Ratio</source>
         <translation>レシオ</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="580"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="573"/>
         <source>Blades</source>
         <translation>ブレード</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="615"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="608"/>
         <source>Offset</source>
         <translation>オフセット</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="622"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="615"/>
         <source>Multiplier</source>
         <translation>乗算</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="654"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="647"/>
         <source>Auto Offset</source>
         <translation>自動オフセット</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="664"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="657"/>
         <source>Filter</source>
         <translation>フィルタ</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="674"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="667"/>
         <source>Persistent</source>
         <translation>持続</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="684"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="677"/>
         <source>Positive</source>
         <translation>ノーマル</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="694"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="687"/>
         <source>Logs</source>
         <translation>ログ</translation>
     </message>
@@ -12883,73 +12836,61 @@ Too many errors, giving up.</source>
     <name>TelemetrySimulator</name>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="19"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1556"/>
         <source>Telemetry Simulator</source>
         <translation>テレメトリー シミュレータ</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="54"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1558"/>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
         <translation>有効にすると、空白以外の値をテレメトリーデータとしてシミュレートします。</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="57"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1560"/>
         <source>Simulate</source>
         <translation>シミュレート</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2665"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1651"/>
         <source>Replay SD Log File</source>
         <translation>SDログファイルを再生</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2688"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1652"/>
         <source>Replay rate</source>
         <translation>再生レート</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2704"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1653"/>
         <source>Load</source>
         <translation>ロード</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2761"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1654"/>
         <source>|&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2789"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1655"/>
         <source>&lt;|</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2823"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1656"/>
         <source>&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2857"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1657"/>
         <source>&lt;-</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2888"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1658"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2924"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1659"/>
         <source>Row # 
 Timestamp</source>
         <translation>Row # 
@@ -12957,31 +12898,26 @@ Timestamp</source>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2943"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1661"/>
         <source>1/5x</source>
         <translation>1/5x</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2959"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1662"/>
         <source>5x</source>
         <translation>5x</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2971"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1663"/>
         <source>No Log File Currently Loaded</source>
         <translation>現在ロードされているログファイルなし</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="204"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1561"/>
         <source>RAS</source>
         <translation>相対アンテナ</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="222"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1562"/>
         <source>A2</source>
         <translation></translation>
     </message>
@@ -12989,27 +12925,21 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="267"/>
         <location filename="../simulation/telemetrysimu.ui" line="420"/>
         <location filename="../simulation/telemetrysimu.ui" line="660"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1563"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1565"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1568"/>
         <source>V / ratio</source>
         <translation>V/レシオ</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="375"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1564"/>
         <source>Db</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="545"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1566"/>
         <source>RxBt</source>
         <translation>受信機Batt</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="563"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1567"/>
         <source>A1</source>
         <translation></translation>
     </message>
@@ -13027,141 +12957,105 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="2257"/>
         <location filename="../simulation/telemetrysimu.ui" line="2405"/>
         <location filename="../simulation/telemetrysimu.ui" line="2561"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1570"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1577"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1589"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1593"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1600"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1604"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1608"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1614"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1623"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1630"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1635"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1639"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1646"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="681"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1572"/>
         <source>Tmp1</source>
         <translation>温度1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="699"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1573"/>
         <source>A3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="771"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1574"/>
         <source>A4</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="789"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1575"/>
         <source>RSSI</source>
         <translation>RSSI</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="810"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1579"/>
         <source>Tmp2</source>
         <translation>温度2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="855"/>
         <location filename="../simulation/telemetrysimu.ui" line="1053"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1580"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1585"/>
         <source>RPM</source>
         <translation>RPM</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="918"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1581"/>
         <source>Fuel</source>
         <translation>燃料</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="963"/>
         <location filename="../simulation/telemetrysimu.ui" line="1017"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1582"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1584"/>
         <source>°C</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="999"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1583"/>
         <source>ml</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1071"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1586"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1089"/>
         <location filename="../simulation/telemetrysimu.ui" line="2489"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1644"/>
         <source>Meters</source>
         <translation>メートル</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1164"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1591"/>
         <source>Alt</source>
         <translation>高度</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1287"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1595"/>
         <source>VSpd</source>
         <translation>昇降計</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1305"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1596"/>
         <source>m/s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1323"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1597"/>
         <source>Fuel Qty</source>
         <translation>燃料油量</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1454"/>
         <location filename="../simulation/telemetrysimu.ui" line="1676"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1598"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1612"/>
         <source>km/h</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1490"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1602"/>
         <source>VFAS</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1538"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1606"/>
         <source>Hdg</source>
         <translation>ヘッディング</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1586"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1610"/>
         <source>ASpd</source>
         <translation>対気速度</translation>
     </message>
@@ -13169,121 +13063,99 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="1604"/>
         <location filename="../simulation/telemetrysimu.ui" line="2074"/>
         <location filename="../simulation/telemetrysimu.ui" line="2627"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1611"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1627"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1650"/>
         <source>G</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1697"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1616"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1823"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1617"/>
         <source>Lat,Lon
 (dec.deg.)</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1899"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1619"/>
         <source>AccX</source>
         <translation>加速度X</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1944"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1620"/>
         <source>dd-MM-yyyy
 hh:mm:ss</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2038"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1625"/>
         <source>Date</source>
         <translation>日時</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2056"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
         <source>Amps</source>
         <translation>アンペア</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2092"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1628"/>
         <source>AccZ</source>
         <translation>加速度Z</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2140"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1632"/>
         <source>GAlt</source>
         <translation>GPS高度</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2239"/>
         <location filename="../simulation/telemetrysimu.ui" line="2453"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1642"/>
         <source>Volts</source>
         <translation>ボルト</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2260"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1637"/>
         <source>Cels</source>
         <translation>セル</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2408"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1641"/>
         <source>Curr</source>
         <translation>電流計</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2471"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1643"/>
         <source>AccY</source>
         <translation>加速度Y</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2564"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1648"/>
         <source>GSpd</source>
         <translation>GPS速度</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2582"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1649"/>
         <source>Degrees</source>
         <translation>角度(°)</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2987"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1665"/>
         <source>Setting RSSI to zero simulates telemetry and radio link loss.</source>
         <translation>RSSIをゼロに設定すると、テレメトリーと送信機リンク損失がシミュレートされます。</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2990"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1667"/>
         <source>Set RSSI to zero when paused.</source>
         <translation>一時停止したらRSSIをゼロに設定します。</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3003"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1669"/>
         <source>Stop sending telemetry data when the Telemetry Simulator window is hidden.</source>
         <translation>テレメトリーシミュレータ ウィンドウが非表示になったらテレメトリーデータの送信を停止します。</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3006"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1671"/>
         <source>Pause simulation when hidden.</source>
         <translation>非表示になったらシミュレーションを一時停止します。</translation>
     </message>
@@ -13537,7 +13409,6 @@ CTRL＋スクロールまたはPAGE UP/DOWNキーを押すと、大きなステ�
     <name>TrainerSimulator</name>
     <message>
         <location filename="../simulation/trainersimu.ui" line="20"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_trainersimu.h" line="74"/>
         <source>Trainer simulator</source>
         <translation>トレーナー シミュレータ</translation>
     </message>
@@ -14170,91 +14041,76 @@ v4.1ボード用m2560</translation>
     <name>joystickDialog</name>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="20"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="464"/>
         <source>Configure Joystick</source>
         <translation>スティックの設定</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="50"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="465"/>
         <source>Ch2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="98"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="466"/>
         <source>Ch1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="159"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="467"/>
         <source>Ch4</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="194"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="468"/>
         <source>Ch6</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="201"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="469"/>
         <source>Ch3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="303"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="470"/>
         <source>Ch5</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="310"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="471"/>
         <source>Ch7</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="358"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="472"/>
         <source>Ch8</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="537"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="473"/>
         <source>Instructions</source>
         <translation>インストラクション</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="562"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="474"/>
         <source>Enable</source>
         <translation>有効</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="579"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="475"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="608"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="476"/>
         <source>Back</source>
         <translation>戻る</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="624"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="477"/>
         <source>Start</source>
         <translation>スタート</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="637"/>
-        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="478"/>
         <source>Ok</source>
         <translation>OK</translation>
     </message>
