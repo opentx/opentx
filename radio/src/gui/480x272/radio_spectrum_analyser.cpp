@@ -39,7 +39,11 @@ coord_t getAverage(uint8_t number, const uint8_t * value)
   return sum / number;
 }
 
-#define SPECTRUM_ROW  (isModuleMultimodule(g_moduleIdx) ? READONLY_ROW : (uint8_t)0)
+#if defined(INTERNAL_MODULE_MULTI)
+  #define SPECTRUM_ROW  (g_moduleIdx == INTERNAL_MODULE ? READONLY_ROW : isModuleMultimodule(g_moduleIdx) ? READONLY_ROW : (uint8_t)0)
+#else
+  #define SPECTRUM_ROW  (isModuleMultimodule(g_moduleIdx) ? READONLY_ROW : (uint8_t)0)
+#endif
 
 bool menuRadioSpectrumAnalyser(event_t event)
 {
