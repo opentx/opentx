@@ -183,7 +183,11 @@ inline uint8_t  getMaxMultiSubtype(uint8_t moduleIdx)
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
   const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
 
-  if(g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
+    return 5;
+  }
+
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
     if (status.isValid())
       return (status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1);
     else
