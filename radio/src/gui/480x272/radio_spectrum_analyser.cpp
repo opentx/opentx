@@ -71,7 +71,10 @@ bool menuRadioSpectrumAnalyser(event_t event)
       }
       return false;
     }
-
+#if defined(INTERNAL_MODULE_MULTI)
+    if (g_moduleIdx == INTERNAL_MODULE && !IS_INTERNAL_MODULE_ON())
+      setModuleType(INTERNAL_MODULE, MODULE_TYPE_MULTIMODULE);
+#endif
     memclear(&reusableBuffer.spectrumAnalyser, sizeof(reusableBuffer.spectrumAnalyser));
 
     if (isModuleR9MAccess(g_moduleIdx)) {
