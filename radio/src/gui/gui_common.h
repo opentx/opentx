@@ -226,6 +226,11 @@ inline bool isMultiProtocolSelectable(int protocol)
 inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
 {
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
+    return true;
+  }
+  
   if(status.isValid()) {
     return status.protocolSubNbr > 0;
   }
