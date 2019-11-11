@@ -185,7 +185,7 @@ inline uint8_t  getMaxMultiSubtype(uint8_t moduleIdx)
 
   if(g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
     if (status.isValid())
-      return status.protocolSubNbr;
+      return status.protocolSubNbr - 1;
     else
       return 7;
   }
