@@ -246,7 +246,6 @@ void readModelNotes();
   #define IS_ROTARY_EVENT(evt)         (EVT_KEY_MASK(evt) >= 0x0e)
   void repeatLastCursorMove(event_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
-  #define MOVE_CURSOR_FROM_HERE()      if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
   #define IS_ROTARY_LEFT(evt)          (0)
   #define IS_ROTARY_RIGHT(evt)         (0)
@@ -255,7 +254,6 @@ void readModelNotes();
   #define IS_ROTARY_EVENT(evt)         (0)
   void repeatLastCursorMove(event_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    repeatLastCursorMove(event)
-  #define MOVE_CURSOR_FROM_HERE()      if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE()
 #endif
 
 // TODO enum

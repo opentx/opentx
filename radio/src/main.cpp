@@ -315,7 +315,8 @@ void guiMain(event_t evt)
             if (result) {
               TRACE("popupMenuHandler(%s)", result);
               auto handler = popupMenuHandler;
-              CLEAR_POPUP();
+              if (result != STR_UPDATE_LIST)
+                CLEAR_POPUP();
               handler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
@@ -455,7 +456,8 @@ void guiMain(event_t evt)
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
       auto handler = popupMenuHandler;
-      CLEAR_POPUP();
+      if (result != STR_UPDATE_LIST)
+        CLEAR_POPUP();
       handler(result);
     }
   }
@@ -500,11 +502,9 @@ void perMain()
 #endif
 
 #if defined(STM32)
-  bool sdcardPresent = SD_CARD_PRESENT();
-  if (sdcardPresent && !globalData.sdcardPresent) {
+  if (SD_CARD_PRESENT() && !sdMounted()) {
     sdMount();
   }
-  globalData.sdcardPresent = sdcardPresent;
 #endif
 
 #if !defined(EEPROM)

@@ -59,7 +59,7 @@ extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()                   (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(RADIO_T16)
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
@@ -173,7 +173,10 @@ void SDRAM_Init();
 void init_intmodule_heartbeat();
 void check_intmodule_heartbeat();
 
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
+#if defined(INTERNAL_MODULE_MULTI)
+void intmoduleTimerStart(uint32_t periodMs);
+#endif
 void intmoduleSendByte(uint8_t byte);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
@@ -182,6 +185,7 @@ void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inver
 void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
+void extmoduleSendInvertedByte(uint8_t byte);
 
 // Trainer driver
 void init_trainer_ppm();
@@ -507,6 +511,8 @@ void backlightEnable(uint8_t dutyCycle = 0);
 #define BACKLIGHT_LEVEL_MAX   100
 #if defined(PCBX12S)
 #define BACKLIGHT_LEVEL_MIN   5
+#elif defined(RADIO_T16)
+#define BACKLIGHT_LEVEL_MIN   1
 #else
 #define BACKLIGHT_LEVEL_MIN   46
 #endif
@@ -521,6 +527,10 @@ void usbJoystickUpdate();
   #define USB_NAME                     "FrSky Horus"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(RADIO_T16)
+  #define USB_NAME                     "Jumper T16"
+  #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'T', '1', '6', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */  
 #elif defined(PCBX10)
   #define USB_NAME                     "FrSky X10"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
@@ -554,12 +564,15 @@ void telemetryPortSetDirectionInput();
 void telemetryPortSetDirectionOutput();
 void sportSendByte(uint8_t byte);
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
-uint8_t telemetryGetByte(uint8_t * byte);
+bool telemetryGetByte(uint8_t * byte);
 void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
+// soft-serial
+void telemetryPortInvertedInit(uint32_t baudrate);
+
 // Sport update driver
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(RADIO_T16)
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
@@ -582,21 +595,10 @@ uint8_t gpsGetByte(uint8_t * byte);
 extern uint8_t gpsTraceEnabled;
 #endif
 void gpsSendByte(uint8_t byte);
-#if defined(PCBX12S)
+#if defined(INTERNAL_GPS)
 #define PILOTPOS_MIN_HDOP             500
 #endif
 
-// Second serial port driver
-#if defined(PCBX12S)
-#define AUX_SERIAL
-#define DEBUG_BAUDRATE                 115200
-extern uint8_t auxSerialMode;
-void auxSerialInit(unsigned int mode, unsigned int protocol);
-void auxSerialPutc(char c);
-#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
-void auxSerialSbusInit();
-void auxSerialStop();
-#endif
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
@@ -616,6 +618,7 @@ void bluetoothDisable();
 extern DMAFifo<512> telemetryFifo;
 typedef DMAFifo<32> AuxSerialRxFifo;
 extern AuxSerialRxFifo auxSerialRxFifo;
+extern volatile uint32_t externalModulePort;
 #endif
 
 #endif // _BOARD_H_

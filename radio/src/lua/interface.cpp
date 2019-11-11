@@ -636,18 +636,22 @@ bool luaLoadMixScript(uint8_t index)
 
 bool luaLoadFunctionScript(uint8_t index, uint8_t ref)
 {
-  if ((ref >= SCRIPT_GFUNC_FIRST) && g_model.noGlobalFunctions)
-    return false;
+  CustomFunctionData * fn;
 
-  CustomFunctionData & fn = (ref < SCRIPT_GFUNC_FIRST ? g_model.customFn[index] : g_eeGeneral.customFn[index]);
+  if (ref < SCRIPT_GFUNC_FIRST)
+    fn = &g_model.customFn[index];
+  else if (!g_model.noGlobalFunctions)
+    fn = &g_eeGeneral.customFn[index];
+  else
+    return true;
 
-  if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
+  if (fn->func == FUNC_PLAY_SCRIPT && ZEXIST(fn->play.name)) {
     if (luaScriptsCount < MAX_SCRIPTS) {
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
       sid.reference = ref + index;
       sid.state = SCRIPT_NOFILE;
       char filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME + sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
-      strncpy(filename + sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, LEN_FUNCTION_NAME);
+      strncpy(filename + sizeof(SCRIPTS_FUNCS_PATH), fn->play.name, LEN_FUNCTION_NAME);
       filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME] = '\0';
       strcat(filename + sizeof(SCRIPTS_FUNCS_PATH), SCRIPT_EXT);
       if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
@@ -1127,10 +1131,11 @@ bool readToolName(char * toolName, const char * filename)
     return "Error opening file";
   }
 
-  if (f_read(&file, &buffer, sizeof(buffer), &count) != FR_OK) {
-    f_close(&file);
+  FRESULT res = f_read(&file, &buffer, sizeof(buffer), &count);
+  f_close(&file);
+
+  if (res != FR_OK)
     return false;
-  }
 
   const char * tns = "TNS|";
   auto * start = std::search(buffer, buffer + sizeof(buffer), tns, tns + 4);
@@ -1145,11 +1150,11 @@ bool readToolName(char * toolName, const char * filename)
     return false;
 
   uint8_t len = end - start;
-  if (len > TOOL_NAME_MAXLEN)
+  if (len > RADIO_TOOL_NAME_MAXLEN)
     return false;
 
   strncpy(toolName, start, len);
-  memclear(toolName + len, TOOL_NAME_MAXLEN + 1 - len);
+  memclear(toolName + len, RADIO_TOOL_NAME_MAXLEN + 1 - len);
 
   return true;
 }

@@ -57,6 +57,30 @@ bool ModuleData::isPxx1Module() const
   }
 }
 
+bool ModuleData::supportRxNum() const
+{
+  switch (protocol) {
+    case PULSES_PXX_XJT_X16:
+    case PULSES_PXX_R9M:
+    case PULSES_PXX_R9M_LITE:
+    case PULSES_PXX_R9M_LITE_PRO:
+    case PULSES_MULTIMODULE:
+    case PULSES_ACCESS_ISRM:
+    case PULSES_ACCST_ISRM_D16:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_XJT_LITE_X16:
+    case PULSES_XJT_LITE_LR12:
+    case PULSES_PXX_XJT_LR12:
+    case PULSES_LP45:
+    case PULSES_DSM2:
+    case PULSES_DSMX:
+      return true;
+    default:
+      return false;
+  }
+}
 
 QString ModuleData::rfProtocolToString() const
 {
@@ -127,12 +151,12 @@ QString ModuleData::protocolToString(unsigned protocol)
     "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
     "TBS Crossfire",
     "DIY Multiprotocol Module",
-    "FrSky PXX R9M",
-    "FrSky PXX R9M Lite",
-    "FrSky PXX R9M Lite Pro",
+    "FrSky R9M",
+    "FrSky R9M Lite",
+    "FrSky R9M Lite Pro",
     "SBUS output at VBat",
     "FrSky ACCESS ISRM", "FrSky ACCST ISRM D16",
-    "FrSky ACCESS R9M",
+    "FrSky ACCESS R9M 2019",
     "FrSky ACCESS R9M Lite",
     "FrSky ACCESS R9M Lite Pro",
     "FrSky XJT lite (D16)", "FrSky XJT lite (D8)", "FrSky XJT lite (LR12)"

@@ -90,13 +90,18 @@ void dacInit()
 
 void audioConsumeCurrentBuffer()
 {
-  if (nextBuffer == 0) {
-
+  if (!nextBuffer) {
     nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
 #if defined(AUDIO_MUTE_GPIO_PIN)
-      // un-mute
-      GPIO_ResetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+      // if muted
+      if (GPIO_ReadOutputDataBit(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN)) {
+        // ..un-mute
+        GPIO_ResetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+#if defined(AUDIO_UNMUTE_DELAY)
+        RTOS_WAIT_MS(AUDIO_UNMUTE_DELAY);
+#endif
+      }
 #endif
       AUDIO_DMA_Stream->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
       AUDIO_DMA->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits

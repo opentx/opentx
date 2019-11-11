@@ -24,6 +24,7 @@ env:
     # - FLAVOR=SKY9X
     # - FLAVOR=9XRPRO
     - FLAVOR=X9LITE
+    - FLAVOR=X9LITES
     - FLAVOR=X7
     - FLAVOR=T12
     - FLAVOR=XLITE
@@ -32,6 +33,7 @@ env:
     # - FLAVOR=X9D
     # - FLAVOR=X9D+
     # - FLAVOR=X9E
+    - FLAVOR=T16
     - FLAVOR=HORUS
     # - FLAVOR=X10
     # - FLAVOR=X12Sr10

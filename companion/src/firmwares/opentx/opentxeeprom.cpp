@@ -33,15 +33,32 @@ using namespace Board;
 
 inline int MAX_SWITCHES(Board::Type board, int version)
 {
-  if (version <= 218 && IS_TARANIS_X7(board))
-    return 6;
-  if (version <= 218 && (IS_TARANIS_X9D(board) || IS_HORUS(board)))
-    return 8;
-  if (version <= 218 && (IS_TARANIS_XLITE(board)))
-    return 4;
+  if (version <= 218) {
+    if (IS_TARANIS_X7(board))
+      return 6;
+    if (IS_TARANIS_X9D(board) || IS_HORUS(board))
+      return 8;
+    if (IS_TARANIS_XLITE(board))
+      return 4;
+  }
+
   if (IS_TARANIS_X9D(board))
     return 9;
+
+  if (IS_JUMPER_T12(board))
+    return 8;
+
   return Boards::getCapability(board, Board::Switches);
+}
+
+inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
+{
+  if (IS_HORUS_OR_TARANIS(board)) {
+    return MAX_SWITCHES(board, version) * 3;
+  }
+  else {
+    return Boards::getCapability(board, Board::SwitchPositions);
+  }
 }
 
 inline int POTS_CONFIG_SIZE(Board::Type board, int version)
@@ -104,29 +121,11 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
 
   if (IS_HORUS(board))
     return 32;
-  
+
   if (version >= 219 && IS_TARANIS_X9D(board))
     return 32;
 
   return 16;
-}
-
-inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
-{
-  if (version < 219) {
-    if (IS_TARANIS_X7(board) || IS_HORUS(board))
-      return Boards::getCapability(board, Board::SwitchPositions) - 2 * 3;
-    if (IS_TARANIS_X9D(board))
-      return 8 * 3;
-    if (IS_TARANIS_XLITE(board))
-      return 4 * 3;
-  }
-
-  if (IS_TARANIS_X9D(board)) {
-    return 9 * 3; // all X9D have storage for 9 switches (X9D+ 2019)
-  }
-
-  return Boards::getCapability(board, Board::SwitchPositions);
 }
 
 #define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
@@ -218,6 +217,10 @@ class SwitchesConversionTable: public ConversionTable {
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
       }
+      if (version >= 219) {
+        addConversion(RawSwitch(SWITCH_TYPE_ACT, -1), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_ACT, 1), val++);
+      }
     }
 
 
@@ -301,7 +304,7 @@ class SourcesConversionTable: public ConversionTable {
         int offset = 0;
         if (version <= 218 && IS_HORUS_X10(board) && i >= CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version))
           offset += 2;
-          
+
         addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
       }
 
@@ -1915,8 +1918,7 @@ class SensorField: public TransformedField {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
         _subid = sensor.subid;
-        // keep highest 3 bits from instance (rxIdx & moduleIdx are read-only)
-        _instance = (sensor.instance & 0x1F) | (_instance & 0xE0);
+        _instance = sensor.instance == 0 ? 0 : ((sensor.instance - 1) & 0x1F) | (sensor.rxIdx << 5) | (sensor.moduleIdx << 7);
         _ratio = sensor.ratio;
         _offset = sensor.offset;
       }
@@ -1937,16 +1939,25 @@ class SensorField: public TransformedField {
     void afterImport() override
     {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
-        sensor.id = _id;
-        sensor.subid = _subid;
-        if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module())
-          sensor.instance = (_instance & 0x1F) + (version <= 218 ? -1 : 0); // 5 bits instance
-        else
-          sensor.instance = _instance;
-        sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
-        sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
-        sensor.ratio = _ratio;
-        sensor.offset = _offset;
+        if (strlen(sensor.label) == 0) {
+          sensor.clear();
+        }
+        else {
+          sensor.id = _id;
+          sensor.subid = _subid;
+          if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module()) {
+            sensor.instance = (_instance & 0x1F) + (version <= 218 ? 0 : 1); // 5 bits instance
+            sensor.rxIdx = 0x03;    // 2 bits Rx idx
+            sensor.moduleIdx = 0x01; // 1 bit module idx
+          }
+          else {
+            sensor.instance = (_instance & 0x1F) + 1;
+            sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
+            sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
+          }
+          sensor.ratio = _ratio;
+          sensor.offset = _offset;
+        }
       }
       else {
         sensor.persistentValue = _id;
@@ -2028,9 +2039,9 @@ class ModuleUnionField: public UnionField<unsigned int> {
         ModuleData::Multi& multi = module.multi;
         internalField.Append(new UnsignedField<2>(this, rfProtExtra));
         internalField.Append(new SpareBitsField<3>(this));
+        internalField.Append(new BoolField<1>(this, multi.customProto));
         internalField.Append(new BoolField<1>(this, multi.autoBindMode));
         internalField.Append(new BoolField<1>(this, multi.lowPowerMode));
-        internalField.Append(new BoolField<1>(this, multi.customProto));
         internalField.Append(new SignedField<8>(this, multi.optionValue));
       }
 
@@ -2041,7 +2052,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        module.rfProtocol = module.multi.rfProtocol & 0xf;
         rfProtExtra = (module.multi.rfProtocol >> 4) & 0x03;
       }
 
@@ -2082,9 +2092,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
-          module.subType = module.protocol - PULSES_PXX_XJT_X16;
-        }
       }
 
       void afterImport() override
@@ -2125,9 +2132,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        if (module.protocol == PULSES_ACCST_ISRM_D16 || module.protocol == PULSES_ACCESS_ISRM) {
-          module.subType = module.protocol - PULSES_ACCESS_ISRM;
-        }
         for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
           for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
 
@@ -2204,6 +2208,15 @@ class ModuleField: public TransformedField {
       if (module.protocol >= PULSES_LP45 && module.protocol <= PULSES_DSMX) {
         module.rfProtocol = module.protocol - PULSES_LP45;
       }
+      else if (module.protocol == PULSES_ACCST_ISRM_D16 || module.protocol == PULSES_ACCESS_ISRM) {
+        module.subType = module.protocol - PULSES_ACCESS_ISRM;
+      }
+      else if (module.protocol >= PULSES_PXX_XJT_X16 && module.protocol <= PULSES_PXX_XJT_LR12) {
+        module.subType = module.protocol - PULSES_PXX_XJT_X16;
+      }
+      else if (module.protocol == PULSES_MULTIMODULE) {
+        module.rfProtocol = module.multi.rfProtocol & 0xf;
+      }
     }
 
     void afterImport() override
@@ -2212,7 +2225,7 @@ class ModuleField: public TransformedField {
         module.protocol += module.rfProtocol;
       }
     }
-  
+
   private:
     StructField              internalField;
     ModuleData&              module;
@@ -2354,8 +2367,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<8>(this, modelData.rssiSource));
 
     if (IS_TARANIS_X9(board)) {
-      // TODO TOPBAR
-      internalField.Append(new SpareBitsField<16>(this));
+      internalField.Append(new UnsignedField<8>(this, modelData.frsky.voltsSource));
+      internalField.Append(new UnsignedField<8>(this, modelData.frsky.altitudeSource));
     }
 
     internalField.Append(new BoolField<1>(this, modelData.rssiAlarms.disabled));
@@ -2388,7 +2401,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   if (version >= 219) {
     // Trainer PPM settings
-    internalField.Append(new SpareBitsField<3>(this)); // TODO mode
+    internalField.Append(new UnsignedField<3>(this,  modelData.trainerMode));
     internalField.Append(new SpareBitsField<5>(this));
     internalField.Append(new UnsignedField<8>(this, modelData.moduleData[2].channelsStart));
     internalField.Append(new ConversionField<SignedField<8> >(this, modelData.moduleData[2].channelsCount, -8));
@@ -2564,7 +2577,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new SignedField<2>(this, generalData.antennaMode));
   else
     internalField.Append(new SpareBitsField<2>(this));
-  internalField.Append(new SpareBitsField<3>(this));
+  internalField.Append(new BoolField<1>(this, generalData.rtcCheckDisable));
+  internalField.Append(new SpareBitsField<2>(this));
 
   for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));
@@ -2595,7 +2609,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   internalField.Append(new UnsignedField<8>(this, generalData.inactivityTimer));
-  internalField.Append(new SpareBitsField<3>(this)); // telemetryBaudrate
+  internalField.Append(new UnsignedField<3>(this, generalData.telemetryBaudrate));
   if (IS_HORUS(board))
     internalField.Append(new SpareBitsField<3>(this));
   else if (IS_TARANIS(board))
@@ -2690,7 +2704,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new ArmCustomFunctionField(this, generalData.customFn[i], board, version, variant));
     }
   }
-  
+
   if (IS_STM32(board)) {
     if (version >= 218) {
       internalField.Append(new UnsignedField<4>(this, generalData.auxSerialMode));
@@ -2728,13 +2742,13 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       // 2 new pots for Horus from 219 on
       if (version <= 218 && IS_HORUS(board) && (i >= 3))
         offset += 2;
-      
+
       if (i < MAX_POTS_STORAGE(board, version))
         internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i+offset]));
       else
         internalField.Append(new SpareBitsField<2>(this));
     }
-    
+
     if (IS_HORUS(board) && version >= 219) {
       for (int i=0; i<SLIDERS_CONFIG_SIZE(board,version); i++) {
         if (i < MAX_SLIDERS_STORAGE(board, version))
@@ -2742,8 +2756,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         else
           internalField.Append(new SpareBitsField<1>(this));
       }
-    }    
-    
+    }
+
     if (!IS_HORUS(board)) {
       internalField.Append(new UnsignedField<8>(this, generalData.backlightColor));
     }

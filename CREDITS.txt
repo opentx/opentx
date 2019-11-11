@@ -27,6 +27,8 @@ Michael Byrne
 
 [Companies and projects who have donated to OpenTX]
 <a href="https://www.frsky-rc.com">FrSky (monthly)</a>
+<a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
+<a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
@@ -1538,3 +1540,100 @@ Johannes Ferschl
 Piotr Wysocki
 Thomas Halenbeck (monthly)
 Sjoerd Dost
+Ralph Gustafson
+Herbert Feix
+Robert Costford
+Taavi Tuisk
+Carlos Quian
+Noah Reinhart
+Timothy Fry
+Marc Stelzner
+NXGRAPHICS
+AIR-RC
+Nicolas Deshaies
+Jean-Francois Delhove
+Hugo Daniel Farneti
+RC electronic products
+Adrian Andrei
+Henk van de Kerkhof
+Daniel Dubovski
+Hans-Georg Böhm
+Tiberiu Atudorei
+Alessandro Apostoli (Yaapu!)
+Kenneth Bonerigo
+Frits van Voorst
+Steven Dodge
+Christian Buchinger
+Patrick Blanc
+Darrell Carew
+Philippe Faure
+Marco Lange
+Aaron Tygart
+Frantisek Vajbar
+Mike Perkins
+Knut Einar Kristensen
+Georgios Papadopoulos
+He Liu
+Andrias Thomsen
+Alain Azais
+Alan Stuart
+Fernando Rimoldi
+James Snodgrass
+Diego Mendoza Gonzalez
+Dale Wheeler
+Nico Wagner
+James A Davey
+Peter Glassey
+Jeff Dillingham
+Don Crowe
+Nicola Claudio Rossi
+Fabien Leroy
+Tyler Nelson
+Stuart Olson
+Reinhard Plietsch
+Manuel Spoerri
+Paul Pearson
+Thierry Laligand
+Bruno Mexique
+Uwe Jordt
+Markus Goelzner
+Jean-Claude Etiemble
+Wojciech Winiarski
+Michael Fleming
+Russell G Shanks
+Mike Sedgwick
+William Goodrich
+Marcel Schäfer
+Joseph Santa Cruz
+Gerald Roedel
+James D McKeown
+鄭 淳中
+Matthias Wuethrich
+Michael Tessler
+John Beech
+Stefan Möst
+Thomas McGraw
+Bruno N Russo Jr
+Daniel Eikenkötter
+Guy Poignonec
+Gérard Falaise
+Jacques Loubier
+Kelly Warner
+James Cox
+Sidney B Harden
+CG Tech Inc.
+Richard Gopstein
+Francesco Ziche
+Jean Paul Duroch
+Romane Oughlissi
+Alexander Maciol
+Udo Kastenholz
+Jacek Wielogórski
+Siegfried Preißler
+Bernard Mohamedaly
+John North
+Thomas Wormsley
+Michael Schreiber
+DTg Privat
+Frédéric Devillard
+Lauland Bourg

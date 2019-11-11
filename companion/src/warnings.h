@@ -48,6 +48,7 @@
 class AppMessages
 {
   Q_DECLARE_TR_FUNCTIONS("AppMessages")
+
   public:
     // These are used for saving "[don't] show this message again" user preferences.
     enum MessageCodes {

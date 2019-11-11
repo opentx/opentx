@@ -544,6 +544,8 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
+#elif defined(RADIO_T16)
+  #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
 #endif
@@ -567,9 +569,8 @@ void flightReset(uint8_t check=true);
 
 PACK(struct GlobalData {
   uint8_t unexpectedShutdown:1;
-  uint8_t sdcardPresent:1;
   uint8_t externalAntennaEnabled: 1;
-  uint8_t spare:5;
+  uint8_t spare:6;
 });
 
 extern GlobalData globalData;
@@ -865,16 +866,15 @@ void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
 
 typedef uint16_t ACTIVE_PHASES_TYPE;
-#define DELAY_POS_SHIFT    0
 #define DELAY_POS_MARGIN   3
 typedef int16_t delayval_t;
-PACK(typedef struct {
-  uint16_t delay;
+PACK(struct SwOn {
+  uint16_t delay:14; // max = 2550
+  uint8_t  activeMix:1;
+  uint8_t  activeExpo:1;
   int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   int16_t  prev;
-  uint8_t  activeMix;
-  uint8_t  activeExpo;
-}) SwOn;
+});
 
 extern SwOn   swOn[MAX_MIXERS];
 extern int32_t act[MAX_MIXERS];
@@ -909,8 +909,9 @@ uint8_t lswFamily(uint8_t func);
 int16_t lswTimerValue(delayval_t val);
 
 enum FunctionsActive {
-  FUNCTION_TRAINER,
-  FUNCTION_INSTANT_TRIM = FUNCTION_TRAINER+4,
+  FUNCTION_TRAINER_STICK1,
+  FUNCTION_TRAINER_CHANNELS = FUNCTION_TRAINER_STICK1 + NUM_STICKS,
+  FUNCTION_INSTANT_TRIM,
   FUNCTION_VARIO,
   FUNCTION_BACKLIGHT,
 #if defined(SDCARD)
@@ -1108,6 +1109,8 @@ union ReusableBuffer
     char msg[64];
     uint8_t r9mPower;
     int8_t antennaMode;
+    uint8_t previousType;
+    uint8_t newType;
     BindInformation bindInformation;
     struct {
       union {
@@ -1184,12 +1187,11 @@ union ReusableBuffer
 
   struct {
     uint8_t bars[LCD_W];
-#if defined(COLORLCD)
     uint8_t max[LCD_W];
-#endif
     uint32_t freq;
     uint32_t span;
     uint32_t step;
+    uint32_t track;
     uint8_t spanDefault;
     uint8_t spanMax;
     uint16_t freqDefault;
@@ -1395,5 +1397,9 @@ inline bool isAsteriskDisplayed()
 
   return globalData.unexpectedShutdown;
 }
+
+#if defined(ACCESS_LIB)
+#include "thirdparty/libACCESS/libAccess.h"
+#endif
 
 #endif // _OPENTX_H_

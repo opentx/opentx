@@ -509,8 +509,8 @@ local function applySettings()
   if aileronsMode == 1 then
     addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "Ail")
   elseif aileronsMode == 2 then
-    addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL")
-    addMix(ailCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR", -100)
+    addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL", -100)
+    addMix(ailCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR")
   end
   if flapsMode == 1 then
     addMix(flapsCH1, MIXSRC_SA, "Flaps")
@@ -526,9 +526,9 @@ local function applySettings()
   end
   if tailMode == 3 then
     addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleL", 50)
-    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", 50, 1)
+    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", -50, 1)
     addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleR", 50)
-    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", -50, 1)
+    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", 50, 1)
   else
     if tailMode > 0 then
       addMix(rudCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")

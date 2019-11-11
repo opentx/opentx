@@ -408,7 +408,7 @@ bool menuRadioSetup(event_t event)
 #if defined(PWR_BUTTON_PRESS)
       case ITEM_SETUP_PWR_OFF_SPEED:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PWR_OFF_DELAY);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 2 - g_eeGeneral.pwrOffSpeed, attr|LEFT, 0, NULL, "m");
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 2 - g_eeGeneral.pwrOffSpeed, attr|LEFT, 0, NULL, "s");
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOffSpeed, -1, 2);
         break;
 #endif
@@ -467,7 +467,7 @@ bool menuRadioSetup(event_t event)
           g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
           if (attr && checkIncDec_Ret) {
             g_eeGeneral.fai = false;
-            POPUP_CONFIRMATION("FAI mode?");
+            POPUP_CONFIRMATION("FAI mode?", nullptr);
           }
         }
         break;

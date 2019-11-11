@@ -54,9 +54,10 @@ void onModelSelectMenu(const char * result)
     POPUP_WARNING(eeBackupModel(sub));
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
+    if (sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, nullptr))
+      POPUP_MENU_START(onModelSelectMenu);
+    else
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-    }
   }
 #endif
   else if (result == STR_DELETE_MODEL) {

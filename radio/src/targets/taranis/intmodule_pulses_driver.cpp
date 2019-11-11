@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "pulses/pulses.h"
 
 void intmoduleStop()
 {

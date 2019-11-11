@@ -233,7 +233,7 @@ int main()
 
   delaysInit(); // needed for lcdInit()
 
-#if defined(DEBUG)
+#if defined(DEBUG) && defined(AUX_SERIAL)
   auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
@@ -244,6 +244,11 @@ int main()
   lcdInit();
   backlightInit();
   backlightEnable();
+
+#if defined(PCBX7) || defined(PCBXLITE)
+  // we shutdown the bluetooth module now to be sure it will be detected on firmware start
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, false);
+#endif
 
 #if defined(PCBTARANIS)
   i2cInit();

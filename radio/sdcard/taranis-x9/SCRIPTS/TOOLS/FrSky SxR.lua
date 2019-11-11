@@ -44,8 +44,8 @@ local configFields = {
     { "Mounting type", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
 }
 
-local wingBitmapsFile = { "bmp/plane.bmp", "bmp/delta.bmp", "bmp/vtail.bmp" }
-local mountBitmapsFile = { "bmp/horz.bmp", "bmp/horz-r.bmp", "bmp/vert.bmp", "bmp/vert-r.bmp" }
+local wingBitmapsFile = { "/SCRIPTS/TOOLS/bmp/plane.bmp", "/SCRIPTS/TOOLS/bmp/delta.bmp", "/SCRIPTS/TOOLS/bmp/vtail.bmp" }
+local mountBitmapsFile = { "/SCRIPTS/TOOLS/bmp/horz.bmp", "/SCRIPTS/TOOLS/bmp/horz-r.bmp", "/SCRIPTS/TOOLS/bmp/vert.bmp", "/SCRIPTS/TOOLS/bmp/vert-r.bmp" }
 
 local settingsFields = {
     {"SxR functions", COMBO, 0x9C, nil, { "Disable", "Enable" } },
@@ -268,15 +268,15 @@ local function runFieldsPage(event)
             end
         end
     elseif edit then
-        if event == EVT_VIRTUAL_NEXT or event == EVT_VIRTUAL_NEXT_REPT then
+        if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
             addField(1)
-        elseif event == EVT_VIRTUAL_PREVIOUS or event == EVT_VIRTUAL_PREVIOUS_REPT then
+        elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
             addField(-1)
         end
     else
         if event == EVT_VIRTUAL_NEXT then
             selectField(1)
-        elseif event == EVT_VIRTUAL_PREVIOUS then
+        elseif event == EVT_VIRTUAL_PREV then
             selectField(-1)
         end
     end
@@ -332,8 +332,8 @@ local function init()
     if LCD_W == 480 then
         margin = 10
         spacing = 20
-        wingBitmapsFile = { "img/plane_b.png", "img/delta_b.png", "img/planev_b.png" }
-        mountBitmapsFile = { "img/up.png", "img/down.png", "img/vert.png", "img/vert-r.png" }
+        wingBitmapsFile = { "/SCRIPTS/TOOLS/img/plane_b.png", "/SCRIPTS/TOOLS/img/delta_b.png", "/SCRIPTS/TOOLS/img/planev_b.png" }
+        mountBitmapsFile = { "/SCRIPTS/TOOLS/img/up.png", "/SCRIPTS/TOOLS/img/down.png", "/SCRIPTS/TOOLS/img/vert.png", "/SCRIPTS/TOOLS/img/vert-r.png" }
     end
     pages = {
         runConfigPage,
@@ -348,7 +348,7 @@ local function run(event)
         return 2
     elseif event == EVT_VIRTUAL_NEXT_PAGE then
         selectPage(1)
-    elseif event == EVT_VIRTUAL_PREVIOUS_PAGE then
+    elseif event == EVT_VIRTUAL_PREV_PAGE then
         killEvents(event);
         selectPage(-1)
     end

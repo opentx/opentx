@@ -77,11 +77,6 @@ class Fifo
       return (next == ridx);
     }
 
-    void flush()
-    {
-      while (!isEmpty());
-    }
-
     uint32_t size() const
     {
       return (N + widx - ridx) & (N - 1);

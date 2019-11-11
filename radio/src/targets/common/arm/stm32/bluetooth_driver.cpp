@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 
+#if !defined(BOOT)
 Fifo<uint8_t, BT_TX_FIFO_SIZE> btTxFifo;
 Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
@@ -42,6 +43,7 @@ enum BluetoothWriteState
 };
 
 volatile uint8_t bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
+#endif
 
 void bluetoothInit(uint32_t baudrate, bool enable)
 {
@@ -65,6 +67,7 @@ void bluetoothInit(uint32_t baudrate, bool enable)
   GPIO_Init(BT_BCTS_GPIO, &GPIO_InitStructure);
 #endif
 
+#if !defined(BOOT)
   GPIO_PinAFConfig(BT_USART_GPIO, BT_TX_GPIO_PinSource, BT_GPIO_AF);
   GPIO_PinAFConfig(BT_USART_GPIO, BT_RX_GPIO_PinSource, BT_GPIO_AF);
 
@@ -90,17 +93,17 @@ void bluetoothInit(uint32_t baudrate, bool enable)
 
   bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 
-  if (enable) {
-    GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN);
-  }
-  else {
-    GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN);
-  }
-
   btRxFifo.clear();
   btTxFifo.clear();
+#endif
+
+  if (enable)
+    GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN);
+  else
+    GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN);
 }
 
+#if !defined(BOOT)
 void bluetoothDisable()
 {
   GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth (recent modules will go to bootloader mode)
@@ -165,3 +168,4 @@ uint8_t bluetoothIsWriting(void)
 {
   return bluetoothWriteState != BLUETOOTH_WRITE_IDLE;
 }
+#endif // !BOOT

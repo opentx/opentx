@@ -88,7 +88,7 @@ GeneralSettings::GeneralSettings()
     vBatMin = -5;   //8,5V
     vBatMax = -5;   //11,5V
   }
-  else if (IS_TARANIS_XLITE(board) || IS_HORUS_X10(board)) {
+  else if (IS_TARANIS_XLITE(board) || IS_HORUS_X10(board) || IS_JUMPER_T16(board)) {
     // Lipo 2S
     vBatWarn = 66;
     vBatMin = -23;  // 6.7V
@@ -267,7 +267,7 @@ void GeneralSettings::setDefaultControlTypes(Board::Type board)
     sliderConfig[2] = Board::SLIDER_WITH_DETENT;
     sliderConfig[3] = Board::SLIDER_WITH_DETENT;
   }
-  else if (IS_TARANIS_X9(board) || IS_HORUS_X10(board)) {
+  else if (IS_TARANIS_X9(board) || IS_HORUS_X10(board) || IS_JUMPER_T16(board)) {
     sliderConfig[0] = Board::SLIDER_WITH_DETENT;
     sliderConfig[1] = Board::SLIDER_WITH_DETENT;
   }
