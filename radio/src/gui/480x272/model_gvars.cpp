@@ -157,13 +157,14 @@ bool menuModelGVars(event_t event)
       gvar_t v = fm->gvars[i];
 
       LcdFlags attr = RIGHT | ((sub == i && menuHorizontalPosition == j) ? (s_editMode > 0 ? BLINK | INVERS : INVERS) : 0);
-      if (j == curfm)
-        attr |= BOLD;
       coord_t x = GVARS_FM_COLUMN(j);
       coord_t yval = y;
       if (v <= GVAR_MAX && (g_model.gvars[i].prec > 0 || abs(v) >= 1000 || ( abs(v) >= 100 && g_model.gvars[i].unit > 0))) {
         attr |= SMLSIZE;
         yval += 3;
+      }
+      else if (j == curfm) {
+        attr |= BOLD;
       }
       if (v <= GVAR_MAX && g_model.gvars[i].unit > 0) {
         x -= 9;

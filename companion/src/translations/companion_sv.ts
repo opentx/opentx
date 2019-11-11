@@ -7902,6 +7902,14 @@ e
 s</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>FM%1</source>
+        <translation type="unfinished">FM%1</translation>
+    </message>
+    <message>
+        <source>GV%1</source>
+        <translation type="unfinished">GV%1</translation>
+    </message>
 </context>
 <context>
     <name>RadioSwitchWidget</name>

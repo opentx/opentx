@@ -360,7 +360,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
       s_editMode = EDIT_MODE_INIT;
-      l_posVert = MENU_FIRST_LINE_EDIT;
+      l_posVert = MENU_FIRST_LINE_EDIT(horTab, horTabMax);
       l_posHorz = POS_HORZ_INIT(l_posVert);
       SET_SCROLLBAR_X(LCD_W-1);
       break;
@@ -373,7 +373,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_editMode > 1) 
+      if (s_editMode > 1)
         break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
@@ -402,7 +402,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
         AUDIO_KEY_PRESS();
       }
       else {
-        uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
+        uint8_t posVertInit = MENU_FIRST_LINE_EDIT(horTab, horTabMax);
         if (menuVerticalOffset != 0 || l_posVert != posVertInit) {
           menuVerticalOffset = 0;
           l_posVert = posVertInit;
@@ -438,7 +438,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       }
 
       do {
-        INC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+        INC(l_posVert, MENU_FIRST_LINE_EDIT(horTab, horTabMax), rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go down, we must be in this mode
@@ -467,7 +467,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       }
 
       do {
-        DEC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
+        DEC(l_posVert, MENU_FIRST_LINE_EDIT(horTab, horTabMax), rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
       s_editMode = 0; // if we go up, we must be in this mode
@@ -544,5 +544,4 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
   menuVerticalPosition = l_posVert;
   menuHorizontalPosition = l_posHorz;
 }
-
 

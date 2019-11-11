@@ -22,8 +22,10 @@
 
 #if defined(SIMU)
   // not needed
+#elif defined(RADIO_T16)
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,1,  -1,1,  -1,1};
 #elif defined(PCBX10)
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,1, 1, -1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,   1,1,    1, -1};
 #elif defined(PCBX9E)
 #if defined(HORUS_STICKS)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,-1,  -1,-1,-1};
@@ -36,14 +38,14 @@
                                             9 /*TX_VOLTAGE*/, 10 /*TX_VBAT*/ };
 #elif defined(PCBX9DP)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,-1,  1,1,  1,  1};
+#elif defined(PCBX9D)
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1,  1};
 #elif defined(PCBX7)
   const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,  1};
 #elif defined(PCBX9LITE)
   const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
 #elif defined(PCBXLITE)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,-1,1,  -1,1,  1,  1};
-#else
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1,  1};
 #endif
 
 #if NUM_PWMSTICKS > 0

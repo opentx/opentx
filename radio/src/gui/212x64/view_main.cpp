@@ -165,19 +165,21 @@ void displayTrims(uint8_t phase)
 
 void drawSliders()
 {
-  for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+  for (uint8_t i = NUM_STICKS; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
 #if defined(PCBX9E)
-    if (i < SLIDER1) continue;  // TODO change and display more values
+    if (i < SLIDER1)
+      continue;  // TODO change and display more values
     coord_t x = ((i==SLIDER1 || i==SLIDER3) ? 3 : LCD_W-5);
     int8_t y = (i<SLIDER3 ? LCD_H/2+1 : 1);
 #else
-    if (i == POT3) continue;
+    if (i == POT3)
+      continue;
     coord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
     int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
 #endif
     lcdDrawSolidVerticalLine(x, y, LCD_H/2-2);
     lcdDrawSolidVerticalLine(x+1, y, LCD_H/2-2);
-    y += LCD_H/2-4;
+    y += LCD_H / 2 - 4;
     y -= ((calibratedAnalogs[i]+RESX)*(LCD_H/2-4)/(RESX*2));  // calculate once per loop
     lcdDrawSolidVerticalLine(x-1, y, 2);
     lcdDrawSolidVerticalLine(x+2, y, 2);
@@ -342,7 +344,7 @@ void menuMainViewChannelsMonitor(event_t event)
   return menuChannelsView(event);
 }
 
-void onMainViewMenu(const char *result)
+void onMainViewMenu(const char * result)
 {
   if (result == STR_RESET_TIMER1) {
     timerReset(0);
@@ -364,6 +366,7 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_START(onMainViewMenu);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -409,16 +412,6 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
-bool isMenuAvailable(int index)
-{
-  if (index == 4) {
-    return modelHasNotes();
-  }
-  else {
-    return true;
-  }
-}
-
 int getSwitchCount()
 {
   int count = 0;
@@ -435,7 +428,6 @@ void menuMainView(event_t event)
   static bool secondPage = false;
 
   switch(event) {
-
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
@@ -540,7 +532,7 @@ void menuMainView(event_t event)
       if (SWITCH_EXISTS(i)) {
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        drawSwitch((g_model.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
+        drawSwitch((g_model.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0, false);
         index++;
       }
     }

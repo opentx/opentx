@@ -21,10 +21,10 @@
 #ifndef _SPEKTRUM_H
 #define _SPEKTRUM_H
 
-void processSpektrumTelemetryData(uint8_t data);
+void processSpektrumTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount);
 void spektrumSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 
 // Used directly by multi telemetry protocol
 void processSpektrumPacket(const uint8_t *packet);
-void processDSMBindPacket(const uint8_t *packet);
+void processDSMBindPacket(uint8_t module, const uint8_t *packet);
 #endif

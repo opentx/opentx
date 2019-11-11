@@ -207,8 +207,10 @@ void keysInit()
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOB_PINS;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
+#if defined(KEYS_GPIOC_PINS)
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOC_PINS;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
+#endif
 
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOD_PINS;
   GPIO_Init(GPIOD, &GPIO_InitStructure);

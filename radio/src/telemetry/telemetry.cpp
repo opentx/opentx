@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "multi.h"
 
 uint8_t telemetryStreaming = 0;
 uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
@@ -45,15 +46,15 @@ void processTelemetryData(uint8_t data)
 
 #if defined(MULTIMODULE)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
-    processSpektrumTelemetryData(data);
+    processSpektrumTelemetryData(EXTERNAL_MODULE, data, telemetryRxBuffer, telemetryRxBufferCount);
     return;
   }
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS) {
-    processFlySkyTelemetryData(data);
+    processFlySkyTelemetryData(data, telemetryRxBuffer, telemetryRxBufferCount);
     return;
   }
   if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
-    processMultiTelemetryData(data);
+    processMultiTelemetryData(data, EXTERNAL_MODULE);
     return;
   }
 #endif
@@ -91,20 +92,27 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+#if defined(INTERNAL_MODULE_PXX2) || defined(EXTMODULE_USART)
   uint8_t frame[PXX2_FRAME_MAXLENGTH];
 
-  #if defined(INTMODULE_USART)
-    while (intmoduleFifo.getFrame(frame)) {
-      processPXX2Frame(INTERNAL_MODULE, frame);
-    }
+  #if defined(INTERNAL_MODULE_PXX2)
+  while (intmoduleFifo.getFrame(frame)) {
+    processPXX2Frame(INTERNAL_MODULE, frame);
+  }
   #endif
-
   #if defined(EXTMODULE_USART)
-    while (extmoduleFifo.getFrame(frame)) {
-      processPXX2Frame(EXTERNAL_MODULE, frame);
-    }
+  while (extmoduleFifo.getFrame(frame)) {
+    processPXX2Frame(EXTERNAL_MODULE, frame);
+  }
   #endif
+#endif
+
+#if defined(INTERNAL_MODULE_MULTI)
+  while(!intmoduleFifo.isEmpty()) {
+    uint8_t b=0;
+    intmoduleFifo.pop(b);
+    processMultiTelemetryData(b, INTERNAL_MODULE);
+  }
 #endif
 
 #if defined(STM32)
@@ -223,21 +231,23 @@ void telemetryInterrupt10ms()
 #if !defined(SIMU)
     telemetryData.rssi.reset();
 #endif
-    for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-      telemetryItems[i].setOld();
+    for (auto & telemetryItem: telemetryItems) {
+      if (telemetryItem.isAvailable()) {
+        telemetryItem.setOld();
+      }
     }
   }
 }
 
 void telemetryReset()
 {
-  memclear(&telemetryData, sizeof(telemetryData));
+  telemetryData.clear();
 
   for (auto & telemetryItem : telemetryItems) {
     telemetryItem.clear();
   }
 
-  telemetryStreaming = 0; // reset counter only if valid frsky packets are being detected
+  telemetryStreaming = 0; // reset counter only if valid telemetry packets are being detected
 
   telemetryState = TELEMETRY_INIT;
 }

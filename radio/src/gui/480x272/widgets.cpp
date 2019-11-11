@@ -177,7 +177,7 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
   lcdDrawSolidFilledRect(0, bodyTop, LCD_W, bodyBottom-bodyTop, TEXT_BGCOLOR);
 
   // Scrollbar
-  if (!(options & OPTION_MENU_NO_SCROLLBAR) && linesCount>linesDisplayed) {
+  if (!(options & OPTION_MENU_NO_SCROLLBAR) && linesCount > linesDisplayed) {
     drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, bodyTop+3, bodyBottom-bodyTop-6, menuVerticalOffset, linesCount, linesDisplayed);
   }
 }

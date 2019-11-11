@@ -27,7 +27,7 @@ union ZoneOptionValue
 {
   uint32_t unsignedValue;
   int32_t signedValue;
-  bool boolValue;
+  uint32_t boolValue;
   char stringValue[LEN_ZONE_OPTION_STRING];
 };
 

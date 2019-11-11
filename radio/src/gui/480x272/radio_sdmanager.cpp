@@ -19,17 +19,23 @@
  */
 
 #include <stdio.h>
-#include <io/frsky_firmware_update.h>
+#include "io/frsky_firmware_update.h"
+#include "io/multi_firmware_update.h"
 #include "opentx.h"
 #include "storage/modelslist.h"
 
-#define REFRESH_FILES()        do { reusableBuffer.sdManager.offset = 65535; currentBitmapIndex = -1; } while (0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
 
 int currentBitmapIndex = 0;
-BitmapBuffer * currentBitmap = NULL;
+BitmapBuffer * currentBitmap = nullptr;
+
+inline void REFRESH_FILES()
+{
+  reusableBuffer.sdManager.offset = 65535;
+  currentBitmapIndex = -1;
+}
 
 bool menuRadioSdManagerInfo(event_t event)
 {
@@ -168,6 +174,31 @@ void onSdManagerMenu(const char * result)
     FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
     device.flashFirmware(lfn);
   }
+#if defined(BLUETOOTH)
+  else if (result == STR_FLASH_BLUETOOTH_MODULE) {
+    getSelectionFullPath(lfn);
+    bluetooth.flashFirmware(lfn);
+  }
+#endif
+#if defined(HARDWARE_POWER_MANAGEMENT_UNIT)
+  else if (result == STR_FLASH_POWER_MANAGEMENT_UNIT) {
+    getSelectionFullPath(lfn);
+    FrskyChipFirmwareUpdate device;
+    device.flashFirmware(lfn);
+  }
+#endif
+#if defined(MULTIMODULE)
+#if defined(INTERNAL_MODULE_MULTI)
+  else if (result == STR_FLASH_INTERNAL_MULTI) {
+    getSelectionFullPath(lfn);
+    multiFlashFirmware(INTERNAL_MODULE, lfn);
+  }
+#endif
+  else if (result == STR_FLASH_EXTERNAL_MULTI) {
+    getSelectionFullPath(lfn);
+    multiFlashFirmware(EXTERNAL_MODULE, lfn);
+  }
+#endif
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     getSelectionFullPath(lfn);
@@ -181,11 +212,14 @@ bool menuRadioSdManager(event_t _event)
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SD_MANAGER, reusableBuffer.sdManager.count);
 
-  int index = menuVerticalPosition-menuVerticalOffset;
+  int index = menuVerticalPosition - menuVerticalOffset;
 
   switch(_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
+      // no break;
+
+    case EVT_ENTRY_UP:
       REFRESH_FILES();
       break;
 
@@ -250,9 +284,22 @@ bool menuRadioSdManager(event_t _event)
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
           }
-          else if (!READ_ONLY() && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+#if defined(MULTIMODULE)
+          else if (!READ_ONLY() && !strcasecmp(ext, MULTI_FIRMWARE_EXT)) {
+            TCHAR lfn[_MAX_LFN + 1];
+            getSelectionFullPath(lfn);
+            MultiFirmwareInformation information;
+            if (information.readMultiFirmwareInformation(line) == nullptr) {
+#if defined(INTERNAL_MODULE_MULTI)
+              POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MULTI);
+#endif
+              POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MULTI);
+            }
+          }
+#endif
+          else if (!READ_ONLY() && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
             FrSkyFirmwareInformation information;
-            if (readFirmwareInformation(line, information) == nullptr) {
+            if (readFrSkyFirmwareInformation(line, information) == nullptr) {
               if (information.productFamily == FIRMWARE_FAMILY_INTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
               if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)
@@ -298,22 +345,18 @@ bool menuRadioSdManager(event_t _event)
     FILINFO fno;
     DIR dir;
 
-    if (menuVerticalOffset == 0) {
-      reusableBuffer.sdManager.offset = 0;
-      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
-    }
-    else if (menuVerticalOffset == reusableBuffer.sdManager.count-NUM_BODY_LINES) {
-      reusableBuffer.sdManager.offset = menuVerticalOffset;
-      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
-    }
-    else if (menuVerticalOffset > reusableBuffer.sdManager.offset) {
+    if (menuVerticalOffset == reusableBuffer.sdManager.offset + 1) {
       memmove(reusableBuffer.sdManager.lines[0], reusableBuffer.sdManager.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
       memset(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
       NODE_TYPE(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1]) = 1;
     }
-    else {
+    else if (menuVerticalOffset == reusableBuffer.sdManager.offset - 1) {
       memmove(reusableBuffer.sdManager.lines[1], reusableBuffer.sdManager.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
       memset(reusableBuffer.sdManager.lines[0], 0, sizeof(reusableBuffer.sdManager.lines[0]));
+    }
+    else {
+      reusableBuffer.sdManager.offset = menuVerticalOffset;
+      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
     }
 
     reusableBuffer.sdManager.count = 0;

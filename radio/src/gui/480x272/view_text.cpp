@@ -24,7 +24,7 @@ bool menuTextView(event_t event)
 {
   static int lines_count;
 
-  drawMenuTemplate(STR_TEXT_VIEWER, ICON_OPENTX);
+  drawMenuTemplate(STR_TEXT_VIEWER, ICON_OPENTX, nullptr, OPTION_MENU_NO_SCROLLBAR);
 
   switch (event) {
     case EVT_ENTRY:
@@ -42,7 +42,7 @@ bool menuTextView(event_t event)
       break;
 
     case EVT_ROTARY_RIGHT:
-      if (menuVerticalOffset+NUM_BODY_LINES >= lines_count)
+      if (menuVerticalOffset + NUM_BODY_LINES >= lines_count)
         break;
       else
         ++menuVerticalOffset;
@@ -50,6 +50,7 @@ bool menuTextView(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      menuVerticalOffset = 0;
       popMenu();
       break;
   }

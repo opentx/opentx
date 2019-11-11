@@ -113,7 +113,7 @@ OpenTxSim::OpenTxSim(FXApp* a):
     sliders[i]->setValue(0);
   }
 
-  for(int i=0; i<NUM_POTS+NUM_SLIDERS; i++){
+  for (int i = 0; i < NUM_POTS + NUM_SLIDERS; i++) {
     knobs[i]= new FXKnob(hf11, nullptr, 0, KNOB_TICKS|LAYOUT_LEFT);
     knobs[i]->setValue(0);
 
@@ -125,6 +125,7 @@ OpenTxSim::OpenTxSim(FXApp* a):
       continue;
     }
 #endif
+
     knobs[i]->setRange(-1024, 1024);
   }
 
@@ -152,7 +153,7 @@ OpenTxSim::~OpenTxSim()
   delete sliders[2];
   delete sliders[3];
 
-  for(int i=0; i<NUM_POTS+NUM_SLIDERS; i++){
+  for (int i = 0; i < NUM_POTS + NUM_SLIDERS; i++) {
     delete knobs[i];
   }
 
@@ -302,20 +303,20 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
 
 #define SWITCH_KEY(key, swtch, states) \
   static bool state##key = 0; \
-  static int8_t state_##swtch = 2; \
-  static int8_t inc_##swtch = 1; \
+  static int8_t state_##swtch = -1; \
+  static int8_t inc_##swtch = 4-states; \
   if (getApp()->getKeyState(KEY_##key)) { \
     if (!state##key) { \
       state_##swtch = (state_##swtch+inc_##swtch); \
-      if (state_##swtch == 1+states) inc_##swtch = -1; \
-      else if (state_##swtch == 2) inc_##swtch = 1; \
+      if (state_##swtch == -1+((states-1)*inc_##swtch)) inc_##swtch = -4+states; \
+      else if (state_##swtch == -1) inc_##swtch = 4-states; \
       state##key = true; \
     } \
   } \
   else { \
     state##key = false; \
   } \
-  simuSetSwitch(swtch, state_##swtch-states)
+  simuSetSwitch(swtch, state_##swtch) \
 
 #if defined(PCBSKY9X)
   SWITCH_KEY(1, 0, 3);
@@ -331,7 +332,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
   SWITCH_KEY(C, 2, 3);
   SWITCH_KEY(D, 3, 3);
 
-  #if defined(HARDWARE_SWITCH_G)
+  #if defined(HARDWARE_SWITCH_G) && defined(HARDWARE_SWITCH_H)
     SWITCH_KEY(E, 4, 3);
     SWITCH_KEY(F, 5, 2);
     SWITCH_KEY(G, 6, 3);
@@ -521,10 +522,10 @@ int main(int argc, char ** argv)
 
 uint16_t anaIn(uint8_t chan)
 {
-  if (chan<NUM_STICKS)
+  if (chan < NUM_STICKS)
     return opentxSim->sliders[chan]->getValue();
-  else if (chan<NUM_STICKS+NUM_POTS+NUM_SLIDERS)
-    return opentxSim->knobs[chan-NUM_STICKS]->getValue();
+  else if (chan < NUM_STICKS + NUM_POTS + NUM_SLIDERS)
+    return opentxSim->knobs[chan - NUM_STICKS]->getValue();
 #if defined(PCBTARANIS)
   else if (chan == TX_RTC_VOLTAGE)
     return 800; // 2.34V

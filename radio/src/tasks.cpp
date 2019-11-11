@@ -232,7 +232,7 @@ TASK_FUNCTION(menusTask)
   opentxInit();
 
 #if defined(PWR_BUTTON_PRESS)
-  while (1) {
+  while (true) {
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       break;

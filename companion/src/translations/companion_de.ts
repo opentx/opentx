@@ -11,22 +11,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="438"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja, mit einem Kanal</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="439"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Kanälen</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="451"/>
         <source>&lt;br&gt;First Aileron Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Querruder Kanal:</translation>
+        <translation>&lt;br&gt; Erster Querruderkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="453"/>
         <source>Second Aileron Channel:</source>
-        <translation>Zweiter, linker Querruder Kanal:</translation>
+        <translation>Zweiter Querruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -39,22 +39,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="567"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja, mit 1 Servo</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="568"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Servos</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="580"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Airbrake Kanal:</translation>
+        <translation>&lt;br&gt; Erster Störklappenkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="582"/>
         <source>Second Airbrake Channel:</source>
-        <translation>Zweiter, linker Airbrake Kanal:</translation>
+        <translation>Zweiter Störklappenkanal:</translation>
     </message>
 </context>
 <context>
@@ -63,30 +63,34 @@
         <location filename="../storage/appdata.cpp" line="591"/>
         <source>Application Settings have been saved to
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anwendungseinstellungen wurden unter
+%1
+gespeichert</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="594"/>
         <source>Could not save Application Settings to file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Anwendungseinstellungen konnten nicht unter
+%1
+gespeichert werden</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="596"/>
         <source>because the file could not be saved (check access permissions).</source>
-        <translation type="unfinished"></translation>
+        <translation>, da auf die Datei nicht zugegriffen werden konnte (Überprüfen Sie die Zugriffsrechte).</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="598"/>
         <source>for unknown reasons.</source>
-        <translation type="unfinished"></translation>
+        <translation>. Der Grund hierfür ist unbekannt.</translation>
     </message>
 </context>
 <context>
     <name>AppMessages</name>
     <message>
-        <location filename="../warnings.h" line="94"/>
+        <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished">Diese Nachricht beim nächsten Starten wieder anzeigen?</translation>
+        <translation>Diese Nachricht beim nächsten Starten erneut anzeigen?</translation>
     </message>
 </context>
 <context>
@@ -1242,7 +1246,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="984"/>
         <source>OK, I understand.</source>
-        <translation>OK verstanden.</translation>
+        <translation>OK, verstanden.</translation>
     </message>
 </context>
 <context>
@@ -1279,7 +1283,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../creditsdialog.cpp" line="58"/>
         <source>OpenTX Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Blacklist</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="95"/>
@@ -1392,7 +1396,7 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../modeledit/curves.ui" line="104"/>
         <location filename="../modeledit/curves.ui" line="189"/>
         <source>Curve type</source>
-        <translation>Kurven Typ</translation>
+        <translation>Kurventyp</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="176"/>
@@ -1407,7 +1411,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="314"/>
         <source>Point size</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktgröße</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="274"/>
@@ -1437,7 +1441,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="196"/>
         <source>Side</source>
-        <translation>Seite</translation>
+        <translation>Bereich</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="248"/>
@@ -1452,7 +1456,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="49"/>
         <source>Curve name</source>
-        <translation>Kurven Name</translation>
+        <translation>Kurvenname</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="154"/>
@@ -1462,7 +1466,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popoup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="209"/>
@@ -1502,22 +1506,22 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="612"/>
         <source>Clear</source>
-        <translation>Löschen</translation>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="614"/>
         <source>Clear all curves</source>
-        <translation>Lösche alle Kurven</translation>
+        <translation>Alle Kurven zurücksetzen</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="635"/>
         <source>Are you sure you want to reset curve %1?</source>
-        <translation>Die Kurve %1 wirklich löschen?</translation>
+        <translation>Die Kurve %1 wirklich zurücksetzen?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="643"/>
         <source>Are you sure you want to reset all curves?</source>
-        <translation>Wirklich alle Kurven löschen?</translation>
+        <translation>Wirklich alle Kurven zurücksetzen?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="311"/>
@@ -1527,7 +1531,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="458"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
-        <translation>Nicht genug freie Stützstellen im EEPROM um die Kurve zu speichern.</translation>
+        <translation>Es sind nicht genügend freie Stützstellen im EEPROM vorhanden, um diese Kurve zu abzuspeichern.</translation>
     </message>
 </context>
 <context>
@@ -1655,37 +1659,37 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="91"/>
         <source>Adjust %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Verstelle %1</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="93"/>
         <source>SetFailsafe Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>SetFailsafe Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="95"/>
         <source>SetFailsafe Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>SetFailsafe Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="97"/>
         <source>RangeCheck Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>RangeCheck Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="99"/>
         <source>RangeCheck Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>RangeCheck Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="101"/>
         <source>Bind Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Binden Int. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="103"/>
         <source>Bind Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Binden Ext. Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="115"/>
@@ -1737,12 +1741,12 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../firmwares/customfunctiondata.cpp" line="178"/>
         <location filename="../firmwares/customfunctiondata.cpp" line="187"/>
         <source>&lt;font color=red&gt;&lt;b&gt;Inconsistent parameter&lt;/b&gt;&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font color=red&gt;&lt;b&gt;Widersprüchliche Parameter&lt;/b&gt;&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="204"/>
         <source>Value </source>
-        <translation>Wert</translation>
+        <translation>Wert </translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="228"/>
@@ -1752,7 +1756,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="235"/>
         <source>repeat(%1s)</source>
-        <translation type="unfinished"></translation>
+        <translation>wiederholen(%1s)</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="248"/>
@@ -1762,7 +1766,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="256"/>
         <source>CFN</source>
-        <translation type="unfinished"></translation>
+        <translation>CFN</translation>
     </message>
 </context>
 <context>
@@ -1790,7 +1794,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="122"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="126"/>
@@ -1810,13 +1814,13 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="275"/>
         <source>Error occurred while trying to play sound, possibly the file is already opened. (Err: %1 [%2])</source>
-        <translation type="unfinished"></translation>
+        <translation>Beim Abspielen der Audio-Datei kam es zu einem Fehler, möglicherweise ist sie bereits geöffnet. (Err: %1 [%2])</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="297"/>
         <source>Unable to find or open sound file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Audio-Datei %1 konnte nicht gefunden bzw. geöffnet werden:</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="710"/>
@@ -1876,19 +1880,19 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../customizesplashdialog.ui" line="272"/>
         <location filename="../customizesplashdialog.ui" line="583"/>
         <source>Load FW</source>
-        <translation>Lade FW</translation>
+        <translation>Bild aus Firmware-File</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="282"/>
         <location filename="../customizesplashdialog.ui" line="593"/>
         <source>Load Pict</source>
-        <translation>Lade Bild</translation>
+        <translation>Bild direkt</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="262"/>
         <location filename="../customizesplashdialog.ui" line="570"/>
         <source>Load Profile</source>
-        <translation>Lade Profil</translation>
+        <translation>Bild aus Profil</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="308"/>
@@ -1933,7 +1937,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="206"/>
         <source>Can not load embedded image from firmware file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei konnte nicht aus dem Firmware-File %1 geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="222"/>
@@ -1948,17 +1952,17 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="226"/>
         <source>Cannot load the image file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="241"/>
         <source>Cannot load profile image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht aus dem Profil geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="255"/>
         <source>Cannot load the library image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bilddatei %1 konnte nicht aus der Bibliothek geladen werden.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="264"/>
@@ -1968,27 +1972,27 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="264"/>
         <source>The image was saved to the file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Bild wurde als %1 gespeichert</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="266"/>
         <source>Image Refresh Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Aktualisieren des Bildes</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="266"/>
         <source>Failed to refresh image from file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Aktualisieren des Bildes durch die Datei %1 ist fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="270"/>
         <source>File Save Error</source>
-        <translation>Datei speichern fehlerhaft</translation>
+        <translation>Fehler beim Speichern der Datei</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="270"/>
         <source>Failed to write image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Speichern des Bildes in die Datei %1 ist fehlgeschlagen</translation>
     </message>
 </context>
 <context>
@@ -2072,72 +2076,86 @@ If you have a settings backup file, you may import that instead.</source>
     <name>DebugOutput</name>
     <message>
         <location filename="../simulation/debugoutput.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="209"/>
         <source>Debug Output</source>
         <translation>Debug Ausgabe</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="68"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="227"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the filter. If the button won&apos;t stay enabled, it is likely there is a syntax error in the Regular Expression entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="74"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="229"/>
         <source>Filter:</source>
         <translation>Filter:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="105"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="231"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter filter text here. Click the help/info button for details about using the filter. &lt;/p&gt;&lt;p&gt;
 To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first choose it, and then press &lt;code&gt;Shift-Delete&lt;/code&gt; (or &lt;code&gt;Shift-Backspace&lt;/code&gt;) key combination.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="164"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="235"/>
         <source>Buffer:</source>
         <translation>Buffer:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="177"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="237"/>
         <source>Number of lines to keep in display.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="274"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="210"/>
         <source>Filter &amp;Help</source>
         <translation>Filter &amp;Hilfe</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="212"/>
         <source>Show information about using the filter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="214"/>
         <source>Word &amp;Wrap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="216"/>
         <source>Toggle word wrapping on/off.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="218"/>
         <source>&amp;Clear</source>
         <translation>&amp;Löschen</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="220"/>
         <source>Clear the output window of all text.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="222"/>
         <source>Enable &amp;Filter</source>
         <translation>Freigabe &amp;Filter</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="224"/>
         <source>Turn the filter on/off.</source>
         <translation>Filter Ein/Aus.</translation>
     </message>
@@ -2157,17 +2175,17 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../downloaddialog.ui" line="14"/>
         <source>Downloading: </source>
-        <translation type="unfinished">Herunterladen:</translation>
+        <translation>Herunterladen: </translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="49"/>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Kann Datei %1:%2 nicht abspeichern.</translation>
+        <translation>Die Datei %1 konnte nicht abgespeichert werden:%2.</translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="87"/>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Herunterladen fehlgeschlagen: %1.</translation>
+        <translation>Herunterladen fehlgeschlagen: %1.</translation>
     </message>
 </context>
 <context>
@@ -2274,12 +2292,12 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../wizarddialog.cpp" line="635"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation>&lt;br&gt;Erster Rechter Höhenruder Kanal:</translation>
+        <translation>&lt;br&gt;Erster Elevon-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="637"/>
         <source>Second Elevon Channel:</source>
-        <translation>Zweiter Linker Höhenruder Kanal:</translation>
+        <translation>Zweiter Elevon-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -2357,7 +2375,7 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../modeledit/expodialog.ui" line="355"/>
         <source>Include Trim</source>
-        <translation>Trimmung einschliessen</translation>
+        <translation>Trimmung einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="363"/>
@@ -2413,7 +2431,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.cpp" line="78"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="216"/>
@@ -3075,7 +3093,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../fwpreferencesdialog.cpp" line="51"/>
         <source>Unknown</source>
-        <translation type="unfinished">Unbekannt</translation>
+        <translation>Unbekannt</translation>
     </message>
 </context>
 <context>
@@ -3088,22 +3106,22 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="503"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Ja mit einem Kanal</translation>
+        <translation>Ja, über einen Kanal gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="504"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Ja, mit 2 Kanälen</translation>
+        <translation>Ja, über zwei Kanäle gesteuert</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="516"/>
         <source>&lt;br&gt;First Flap Channel:</source>
-        <translation>&lt;br&gt; Erster, rechter Flap Kanal:</translation>
+        <translation>&lt;br&gt; Erster Wölbklappenkanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="518"/>
         <source>Second Flap Channel:</source>
-        <translation>Zweiter, linker Flap Kanal:</translation>
+        <translation>Zweiter Wölbklappenkanal:</translation>
     </message>
 </context>
 <context>
@@ -3403,7 +3421,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../process_flash.cpp" line="69"/>
         <source>Executable %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Die ausführbare Datei %1 wurde nicht gefunden</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="203"/>
@@ -3463,13 +3481,14 @@ Bitte dazu eine passende Firmware zum Programmieren auswählen.</translation>
         <source>
 You are currently using:
  %1</source>
-        <translation>Sie verwenden gerade:
+        <translation>
+Sie verwenden gerade:
  %1</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="289"/>
         <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Sender scheint entweder nicht per USB angeschlossen zu sein, oder der entsprechende Treiber wurde nicht installiert.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="300"/>
@@ -3548,32 +3567,32 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="197"/>
         <source>Popup enabled</source>
-        <translation>Anzeige im Popupfenster freigeben</translation>
+        <translation>Anzeige im Popup-Fenster freigeben</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="39"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="102"/>
         <source>Trim disabled</source>
-        <translation>Trim ausgeschaltet</translation>
+        <translation>Trimmung deaktivieren</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Own Trim</source>
-        <translation>Eigene Trim</translation>
+        <translation>Eigene Trimmung</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="109"/>
         <source>Use Trim from Flight mode %1</source>
-        <translation>Trim von Flugphase %1</translation>
+        <translation>Trimmung von Flugphase %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="111"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation>Trim von Flugphase %1 + Eigene Trim als Offset</translation>
+        <translation>Trimmung von Flugphase %1 + Eigene Trimmung als Offset</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="181"/>
@@ -3633,12 +3652,12 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="749"/>
         <source> (%1)</source>
-        <translation>(%1)</translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="752"/>
         <source> (default)</source>
-        <translation>(normal)</translation>
+        <translation> (normal)</translation>
     </message>
 </context>
 <context>
@@ -3646,7 +3665,7 @@ You are currently using:
     <message>
         <location filename="../wizarddialog.cpp" line="379"/>
         <source>Has Flybar</source>
-        <translation>Has Flybar</translation>
+        <translation>Mit Flybar</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="381"/>
@@ -4807,7 +4826,7 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Keys + Sticks</source>
-        <translation>Taste+Knüppel</translation>
+        <translation>Tasten+ Knüppel</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
@@ -4862,12 +4881,12 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Portuguese</source>
-        <translation>Portogiesisch</translation>
+        <translation>Portugiesisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Russisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
@@ -4892,7 +4911,7 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>Rot Enc B</source>
-        <translation>Drehgebeer B</translation>
+        <translation>Drehgeber B</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
@@ -4914,8 +4933,8 @@ Warnung stummer Betrieb - Wird angezeigt, wenn der Piepser komplett ausgeschalte
         <source>If you enable FAI, only RSSI and RxBt sensors will keep working.
 This function cannot be disabled by the radio.
 Are you sure ?</source>
-        <translation>Wenn man FAI auswählt gibt es nur noch RSSI und RxBat als Sensorwerte
-Diese Funktion kann dann im Sender nicht mehr abgewählt werden
+        <translation>Wenn Sie FAI auswählen, stehen nur noch RSSI und RxBat als Sensorwerte zur Verfügung.
+Diese Funktion kann im Sender nicht mehr abgewählt werden.
 Sind Sie sicher?</translation>
     </message>
 </context>
@@ -5082,12 +5101,12 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="909"/>
         <source>Antenna</source>
-        <translation type="unfinished">Antenne</translation>
+        <translation>Antenne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="932"/>
         <source>S5</source>
-        <translation type="unfinished">S5</translation>
+        <translation>S5</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="946"/>
@@ -5358,22 +5377,22 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="891"/>
         <source>Throttle Channel:</source>
-        <translation>Gas Kanal:</translation>
+        <translation>Gas-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="893"/>
         <source>Yaw Channel:</source>
-        <translation>Yaw (Heck) Kanal:</translation>
+        <translation>Yaw-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="895"/>
         <source>Pitch Channel:</source>
-        <translation>Pitch Kanal:</translation>
+        <translation>Pitch-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="897"/>
         <source>Roll Channel:</source>
-        <translation>Roll Kanal:</translation>
+        <translation>Roll-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -6052,12 +6071,12 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="1055"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das OpenTX Companion Project ist ein Fork von &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1061"/>
         <source>Copyright OpenTX Team</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright OpenTX Team</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1205"/>
@@ -6097,7 +6116,7 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="74"/>
         <source>Diskimage (*.dmg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskimage (*.dmg)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="75"/>
@@ -7301,7 +7320,7 @@ Sollen die Änderungen gespeichert werden?</translation>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
         <source>Include Trim</source>
-        <translation>Trimmung einschliessen</translation>
+        <translation>Trimmung einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="536"/>
@@ -7386,13 +7405,25 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Verzögerung und Verlangsamung&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Diese Werte beeinflussen die Verzögerung und die Geschwindigkeit des Ausgangs des Mixers&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Wenn die Verzögerung nicht 0 ist, wird die Ausführung um diesen Wert in Sekunden verzögert.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Wenn die Verlangsamung nicht 0 ist, wird der Ausgang des Mixers um den gegebenen Wert verlangsamt -&amp;gt; Der Wert stellt die Zeit in Sekunden dar, die der Ausgangswert des Mischers benötigt, um sich von -100 auf 100 zu ändern.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="425"/>
         <source>Mixer warning.
 Setting this value will cause a beep to be emmitted when this value is active.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Ich bin mir nicht sicher ob der </translatorcomment>
+        <translation>Mixerwarnung.
+Diese Einstellung sorgt dafür, dass ein Piepton abgespielt wird, sobald dieser Mixer aktiviert wird.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="501"/>
@@ -7440,7 +7471,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="397"/>
         <source>Include DR/Expo</source>
-        <translation>DR/Expo einschliessen</translation>
+        <translation>DR/Expo einschließen</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="32"/>
@@ -7450,7 +7481,8 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="39"/>
         <source>Slow</source>
-        <translation>Langsam</translation>
+        <translatorcomment>Man könnte auch Hemmung sagen</translatorcomment>
+        <translation>Verlangsamung</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="46"/>
@@ -7648,12 +7680,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="379"/>
         <source>Model: </source>
-        <translation>Model:</translation>
+        <translation>Modell: </translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="383"/>
         <source>Throttle Source</source>
-        <translation>GasTimer Quelle</translation>
+        <translation>Gas-Quelle</translation>
     </message>
 </context>
 <context>
@@ -8108,7 +8140,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modelprinter.cpp" line="1021"/>
         <source>Trim idle only</source>
-        <translation>Nur Leerlauftrimm</translation>
+        <translation>Nur Leerlauftrimmung</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1022"/>
@@ -8509,7 +8541,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="280"/>
         <source>Plane</source>
-        <translation>Flugmodell</translation>
+        <translation>Flächenmodell</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="282"/>
@@ -8524,12 +8556,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="289"/>
         <source>Model Name:</source>
-        <translation>Model Name:</translation>
+        <translation>Modellname:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="292"/>
         <source>Model Type:</source>
-        <translation>Model Typ:</translation>
+        <translation>Modelltyp:</translation>
     </message>
 </context>
 <context>
@@ -9397,22 +9429,22 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="928"/>
         <source>Throttle Channel:</source>
-        <translation>Gas Kanal:</translation>
+        <translation>Gas-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="930"/>
         <source>Yaw Channel:</source>
-        <translation>Yaw (Heck) Kanal:</translation>
+        <translation>Yaw-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="932"/>
         <source>Pitch Channel:</source>
-        <translation>Pitch Kanal:</translation>
+        <translation>Pitch-Kanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="934"/>
         <source>Roll Channel:</source>
-        <translation>Roll Kanal:</translation>
+        <translation>Roll-Kanal:</translation>
     </message>
 </context>
 <context>
@@ -9425,7 +9457,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="299"/>
         <source> ... plus %1 errors</source>
-        <translation>...plus %1 Fehler</translation>
+        <translation> ... plus %1 Fehler</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="348"/>
@@ -9443,17 +9475,17 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="959"/>
         <source>Throttle Cut</source>
-        <translation>Gas Freigabe Schalter</translation>
+        <translation>Gas-Freigabeschalter</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="960"/>
         <source>Throttle Timer</source>
-        <translation>Gas Timer starten</translation>
+        <translation>Gas-Timer starten</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="961"/>
         <source>Flight Timer</source>
-        <translation>Flug Timer starten</translation>
+        <translation>Flug-Timer starten</translation>
     </message>
 </context>
 <context>
@@ -9509,7 +9541,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../printdialog.ui" line="61"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="68"/>
@@ -9719,7 +9751,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Es wurde kein Sender gefunden!&lt;/p&gt;&lt;p&gt;Stellen Sie sicher, dass Sie während des Einschaltens, die unteren Trimmer zur Mitte hin gedrückt halten&lt;/p&gt;&lt;p&gt;Stecken Sie danach das USB-Kabel ein.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Hinweis: Sollten Sie eine Taranis besitzen, die noch nicht auf die Version 2.0 upgegraded wurde, wird sie mit dieser Version von Companion nicht funktionieren.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
@@ -9731,36 +9763,43 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <name>RadioOutputsWidget</name>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="14"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="292"/>
         <source>Form</source>
         <translation>Werte</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="68"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="293"/>
         <source>View:</source>
         <translation>Anzeige:</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="75"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="294"/>
         <source>Logical Switches</source>
         <translation>Logische Schalter</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="94"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="295"/>
         <source>Global Variables</source>
         <translation>Globale Variablen</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="113"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="296"/>
         <source>Channel Outputs</source>
         <translation>Kanalwerte</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="132"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="297"/>
         <source>Mix Outputs</source>
         <translation>Mischerwerte</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="210"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="298"/>
         <source>L
 o
 g
@@ -9774,6 +9813,7 @@ k</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="287"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="304"/>
         <source>G
 l
 o
@@ -9789,6 +9829,7 @@ l</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="362"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="310"/>
         <source>C
 h
 a
@@ -9806,6 +9847,7 @@ e</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="439"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="318"/>
         <source>M
 i
 x
@@ -9818,6 +9860,16 @@ c
 h
 e
 r</translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="226"/>
+        <source>FM%1</source>
+        <translation type="unfinished">FM%1</translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="235"/>
+        <source>GV%1</source>
+        <translation type="unfinished">GV%1</translation>
     </message>
 </context>
 <context>
@@ -9932,12 +9984,12 @@ r</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="320"/>
         <source>Trm5</source>
-        <translation type="unfinished"></translation>
+        <translation>Trm5</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="320"/>
         <source>Trm6</source>
-        <translation type="unfinished"></translation>
+        <translation>Trm6</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
@@ -9947,7 +9999,7 @@ r</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
         <source>TrmV</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TrmV</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="328"/>
@@ -10273,102 +10325,102 @@ r</translation>
     <message>
         <location filename="../constants.h" line="75"/>
         <source>↑</source>
-        <translation type="unfinished"></translation>
+        <translation>↑</translation>
     </message>
     <message>
         <location filename="../constants.h" line="76"/>
         <source>↓</source>
-        <translation type="unfinished"></translation>
+        <translation>↓</translation>
     </message>
     <message>
         <location filename="../constants.h" line="77"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../constants.h" line="78"/>
         <source>!</source>
-        <translation type="unfinished"></translation>
+        <translation>!</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="40"/>
         <source>RudTrim Left</source>
-        <translation>SeiteTrim links</translation>
+        <translation>Seitenruder-Trimmer links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="40"/>
         <source>RudTrim Right</source>
-        <translation>SeiteTrim rechts</translation>
+        <translation>Seiteruder-Trimmer rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="41"/>
         <source>EleTrim Down</source>
-        <translation>HöheTrim ab</translation>
+        <translation>Höheruder-Trimmer runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="41"/>
         <source>EleTrim Up</source>
-        <translation>HöheTrim auf</translation>
+        <translation>Höheruder-Trimmer hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="42"/>
         <source>ThrTrim Down</source>
-        <translation>GasTrim ab</translation>
+        <translation>Gas-Trimmer runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="42"/>
         <source>ThrTrim Up</source>
-        <translation>GasTrim auf</translation>
+        <translation>Gas-Trimmer hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="43"/>
         <source>AilTrim Left</source>
-        <translation>QuerTrim links</translation>
+        <translation>Querruder-Trimmer links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="43"/>
         <source>AilTrim Right</source>
-        <translation>QuerTrim rechts</translation>
+        <translation>Querruder-Trimmer rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="44"/>
         <source>Trim 5 Down</source>
-        <translation>Trim5 ab</translation>
+        <translation>Trimmer 5 runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="44"/>
         <source>Trim 5 Up</source>
-        <translation>Trim5 auf</translation>
+        <translation>Trimmer 5 hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="45"/>
         <source>Trim 6 Down</source>
-        <translation>Trim6 ab</translation>
+        <translation>Trimmer 6 runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="45"/>
         <source>Trim 6 Up</source>
-        <translation>Trim6 auf</translation>
+        <translation>Trimmer 6 hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Left</source>
-        <translation>TrimH links</translation>
+        <translation>Trimmer H links</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Right</source>
-        <translation>TrimH rechts</translation>
+        <translation>Trimmer H rechts</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Down</source>
-        <translation>TrimV ab</translation>
+        <translation>Trimmer V runter</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Up</source>
-        <translation>TrimV auf</translation>
+        <translation>Trimmer V hoch</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="54"/>
@@ -10483,7 +10535,7 @@ r</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="668"/>
         <source>&lt;br&gt;Rudder Channel:</source>
-        <translation>&lt;br&gt; Seite Kanal:</translation>
+        <translation>&lt;br&gt; Seitenruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -10499,7 +10551,8 @@ r</translation>
         <location filename="../storage/sdcard.cpp" line="51"/>
         <source>Error opening file %1 in write mode:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Öffnen der Datei %1 im Schreibmodus:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -10558,7 +10611,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="58"/>
         <source>°F</source>
-        <translation type="unfinished"></translation>
+        <translation>°F</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="60"/>
@@ -10578,7 +10631,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="66"/>
         <source>mW</source>
-        <translation type="unfinished"></translation>
+        <translation>mW</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="68"/>
@@ -10603,7 +10656,7 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="76"/>
         <source>Rad</source>
-        <translation type="unfinished"></translation>
+        <translation>rad</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="78"/>
@@ -10628,12 +10681,12 @@ r</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="112"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="114"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe</translation>
     </message>
 </context>
 <context>
@@ -10661,7 +10714,8 @@ r</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="387"/>
         <source>Throttle Trim Idle Only</source>
-        <translation>Gas Leerlauftrim</translation>
+        <translatorcomment>Hier bin ich mir nicht sicher</translatorcomment>
+        <translation>Gas-Leerlaufstrimmung</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="601"/>
@@ -10674,9 +10728,10 @@ r</translation>
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
 </source>
-        <translation>Vollgas hinten?
-Wenn das angewählt wird, dann ist Leerlauf vorne. Auch die Gas-Leerlauftrimmung und die Gasstellungs-Warung wird
-umgedreht und ist dann vorne.
+        <translation>Umgekehrte Gas-Funktion
+Wenn angewählt, befindet sich der Leerlauf vorne. Die Gas-Leerlaufstrimmung sowie die Gasstellungs-Warnung werden dadurch
+ebenfalls umgekehrt.
+
 </translation>
     </message>
     <message>
@@ -10742,17 +10797,17 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../modeledit/setup.ui" line="528"/>
         <source>Throttle Source</source>
-        <translation>GasTimer Quelle</translation>
+        <translation>Gas-Timer-Quelle</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="544"/>
         <source>Trim Step</source>
-        <translation>Trim Auflösung</translation>
+        <translation>Trimmschritte</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="560"/>
         <source>Trims Display</source>
-        <translation>Trimmwerte anzeigen</translation>
+        <translation>Trimmungswerte anzeigen</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="167"/>
@@ -10797,12 +10852,12 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../modeledit/setup.ui" line="488"/>
         <source>Extended Trims</source>
-        <translation>Erw. Trim 25%--&gt; 100%</translation>
+        <translation>Erw. Trimmung 25% --&gt; 100%</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="404"/>
         <source>Throttle Warning</source>
-        <translation>Gas Warnung</translation>
+        <translation>Gas-Warnung</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="465"/>
@@ -10838,7 +10893,7 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../wizarddialog.cpp" line="778"/>
         <source>Elevator Channel:</source>
-        <translation>Höhe Kanal:</translation>
+        <translation>Höheruderkanal:</translation>
     </message>
 </context>
 <context>
@@ -11173,151 +11228,181 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <name>SimulatorMainWindow</name>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="14"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="143"/>
         <source>OpenTx Simulator</source>
         <translation type="unfinished">OpenTX Simulator</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="48"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="198"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="52"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="199"/>
         <source>Radio Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="63"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="200"/>
         <source>Reload...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="70"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="201"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="82"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="202"/>
         <source>Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="103"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="144"/>
         <source>Reload Lua Scripts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="106"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="146"/>
         <source>Reload the Lua environment on the simulated radio.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="109"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="149"/>
         <source>F7</source>
         <translation>F7</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="118"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="151"/>
         <source>Reload Radio Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="121"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="153"/>
         <source>Reload all radio data without restarting the simulator.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="124"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="156"/>
         <source>F9</source>
         <translation>F9</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="133"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="158"/>
         <source>Key Mapping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="136"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
         <source>Show keyboard maping reference.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="139"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="163"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="148"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="165"/>
         <source>Joystick Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="151"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="167"/>
         <source>Open joystick configuration settings dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="154"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="170"/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="163"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="172"/>
         <source>LCD Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="166"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="174"/>
         <source>Save a screenshot of the current simulated LCD screen.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="169"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="177"/>
         <source>F8</source>
         <translation>F8</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="177"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="179"/>
         <source>Dock In Main Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="180"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="181"/>
         <source>Show the radio in the main window or as a separate &quot;floating&quot; window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="188"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="183"/>
         <source>Menu Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="191"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="185"/>
         <source>Show or hide the top menu bar.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="194"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="188"/>
         <source>Alt+M</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="202"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="190"/>
         <source>Constrain Width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="205"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="192"/>
         <source>Set radio widget width to be a fixed size.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="213"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="194"/>
         <source>Constrain Height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="216"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="196"/>
         <source>Set radio widget height to be a fixed size.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11398,64 +11483,76 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <name>SimulatorStartupDialog</name>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="263"/>
         <source>OpenTX Simulator - Startup Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="38"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="264"/>
         <source>Simulator Startup Options:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="74"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="265"/>
         <source>Radio Profile:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="87"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="267"/>
         <source>Existing radio profiles are shown here.&lt;br /&gt;
 Create or edit profiles using the Companion application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="95"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="270"/>
         <source>Radio Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="108"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="272"/>
         <source>Existing radio simulators are shown here.&lt;br /&gt;
 The radio type specified in the selected profile is used by default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="275"/>
         <source>Data Source:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="276"/>
         <source>Data File:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="277"/>
         <source>Data Folder:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="278"/>
         <source>SD Image Path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="280"/>
         <source>Radio data (.bin/.eeprom/.otx) image file to use. A new file with a default image will be created if necessary.&lt;br /&gt;
 &lt;b&gt;NOTE&lt;/b&gt;: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="176"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="284"/>
         <source>Select data file...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11463,48 +11560,59 @@ The radio type specified in the selected profile is used by default.</source>
         <location filename="../simulation/simulatorstartupdialog.ui" line="179"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="231"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="283"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="286"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="294"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="302"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="288"/>
         <source>Directory containing RADIO and MODELS folders to use.&lt;br /&gt;
 New folder(s) with default radio/model will be created here if necessary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="292"/>
         <source>Select data folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="296"/>
         <source>Directory containing the SD card image to use.&lt;br/&gt;
 The default is configured in the chosen Radio Profile.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="280"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="300"/>
         <source>Select SD card image folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="304"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="306"/>
         <source>File</source>
         <translation type="unfinished">Datei</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="307"/>
         <source>Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="308"/>
         <source>SD Path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11533,6 +11641,7 @@ The default is configured in the chosen Radio Profile.</source>
     <name>SimulatorWidget</name>
     <message>
         <location filename="../simulation/simulatorwidget.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorwidget.h" line="196"/>
         <source>Companion Simulator</source>
         <translation type="unfinished">Companion Simulator</translation>
     </message>
@@ -11709,47 +11818,47 @@ Error: %2</source>
     <message>
         <location filename="../helpers_html.cpp" line="154"/>
         <source>Style sheet data read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten wurden aus der Datei %1 eingelesen</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="156"/>
         <source>Style sheet data unable to be read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten konnten nicht aus der Datei %1 eingelesen werden</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="169"/>
         <source>Cannot create folder &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner %1 konnte nicht erstellt werden</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="174"/>
         <source>Cannot open file for writing &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 konnte nicht zum schreiben geöffnet werden. Fehler: %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="181"/>
         <source>Cannot write to file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>In die Datei %1 konnte nicht geschrieben werden. Fehler: %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="183"/>
         <source>Cannot flush buffer for file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Pufferinhalt konnte nicht in die Datei %1 übernommen werden: Fehler %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="188"/>
         <source>Style sheet written to &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stylesheet-Daten wurde in der Datei %1 geschrieben</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="203"/>
         <source>Custom style sheet deleted: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das benutzerdefinierte Stylesheet %1 wurde gelöscht</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="205"/>
         <source>Unable to delete custom style sheet: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Das benutzerdefinierte Stylesheet %1 konnte nicht gelöscht werden</translation>
     </message>
 </context>
 <context>
@@ -11917,22 +12026,22 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="354"/>
         <source>Elevator and Rudder</source>
-        <translation>Höhe und Seite</translation>
+        <translation>Höhen- und Seiteruder</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="356"/>
         <source>Only Elevator</source>
-        <translation>Nur Höhe</translation>
+        <translation>Nur Höheruder</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="357"/>
         <source>V-tail</source>
-        <translation>V Leitwerk</translation>
+        <translation>V-Leitwerk</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="360"/>
         <source>Tail Type:</source>
-        <translation>Leitwerk Typ:</translation>
+        <translation>Leitwerkstyp:</translation>
     </message>
 </context>
 <context>
@@ -12064,7 +12173,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="270"/>
         <source>Source</source>
-        <translation type="unfinished">Quelle</translation>
+        <translation>Quelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="611"/>
@@ -12074,12 +12183,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="645"/>
         <source>Altitude source</source>
-        <translation>Höhe Quelle</translation>
+        <translation>Höhenquelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="658"/>
         <source>Volts source</source>
-        <translation>Spannung Quelle</translation>
+        <translation>Spannungsquelle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="681"/>
@@ -12089,12 +12198,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="846"/>
         <source> mAh</source>
-        <translation>mAh</translation>
+        <translation> mAh</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="862"/>
         <source> A</source>
-        <translation>A</translation>
+        <translation> A</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="913"/>
@@ -12706,97 +12815,116 @@ Too many errors, giving up.</source>
     <name>TelemetrySimulator</name>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="19"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1556"/>
         <source>Telemetry Simulator</source>
         <translation>Telemetrie Simulator</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1490"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1602"/>
         <source>VFAS</source>
         <translation>VFAS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="789"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1575"/>
         <source>RSSI</source>
         <translation>RSSI</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="563"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1567"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="222"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1562"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="57"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1560"/>
         <source>Simulate</source>
         <translation>Simulation</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2665"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1651"/>
         <source>Replay SD Log File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2688"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1652"/>
         <source>Replay rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2704"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1653"/>
         <source>Load</source>
         <translation>Lade</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2761"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1654"/>
         <source>|&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2789"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1655"/>
         <source>&lt;|</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2823"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1656"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2857"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1657"/>
         <source>&lt;-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2888"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1658"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2924"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1659"/>
         <source>Row # 
 Timestamp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2943"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1661"/>
         <source>1/5x</source>
         <translation>1/5x</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2959"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1662"/>
         <source>5x</source>
         <translation>5x</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2971"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1663"/>
         <source>No Log File Currently Loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="204"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1561"/>
         <source>RAS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12804,16 +12932,21 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="267"/>
         <location filename="../simulation/telemetrysimu.ui" line="420"/>
         <location filename="../simulation/telemetrysimu.ui" line="660"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1563"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1565"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1568"/>
         <source>V / ratio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="375"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1564"/>
         <source>Db</source>
         <translation>dB</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="545"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1566"/>
         <source>RxBt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12831,89 +12964,121 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="2257"/>
         <location filename="../simulation/telemetrysimu.ui" line="2405"/>
         <location filename="../simulation/telemetrysimu.ui" line="2561"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1570"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1577"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1589"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1593"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1600"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1604"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1608"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1614"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1623"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1630"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1635"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1639"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1646"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="681"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1572"/>
         <source>Tmp1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="699"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1573"/>
         <source>A3</source>
         <translation>A3</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="771"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1574"/>
         <source>A4</source>
         <translation>A4</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="810"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1579"/>
         <source>Tmp2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="918"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1581"/>
         <source>Fuel</source>
         <translation>Fuel</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="963"/>
         <location filename="../simulation/telemetrysimu.ui" line="1017"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1582"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1584"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="999"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1583"/>
         <source>ml</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1071"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1586"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1089"/>
         <location filename="../simulation/telemetrysimu.ui" line="2489"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1644"/>
         <source>Meters</source>
-        <translation>Meter</translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1164"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1591"/>
         <source>Alt</source>
         <translation>Alt</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1287"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1595"/>
         <source>VSpd</source>
         <translation>V-Speed</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1305"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1596"/>
         <source>m/s</source>
         <translation>m/s</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1323"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1597"/>
         <source>Fuel Qty</source>
         <translation>Füllstand</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1454"/>
         <location filename="../simulation/telemetrysimu.ui" line="1676"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1598"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1612"/>
         <source>km/h</source>
         <translation>km/h</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1538"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1606"/>
         <source>Hdg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1586"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1610"/>
         <source>ASpd</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12921,110 +13086,135 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="1604"/>
         <location filename="../simulation/telemetrysimu.ui" line="2074"/>
         <location filename="../simulation/telemetrysimu.ui" line="2627"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1611"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1627"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1650"/>
         <source>G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1697"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1616"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1823"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1617"/>
         <source>Lat,Lon
 (dec.deg.)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1899"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1619"/>
         <source>AccX</source>
         <translation>AccX</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1944"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1620"/>
         <source>dd-MM-yyyy
 hh:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2038"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1625"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2056"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
         <source>Amps</source>
-        <translation>Ampere</translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2092"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1628"/>
         <source>AccZ</source>
         <translation>AccZ</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2140"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1632"/>
         <source>GAlt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2239"/>
         <location filename="../simulation/telemetrysimu.ui" line="2453"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1642"/>
         <source>Volts</source>
-        <translation>Volt</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2260"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1637"/>
         <source>Cels</source>
         <translation>Zellen</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2408"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1641"/>
         <source>Curr</source>
         <translation>Strom</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2471"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1643"/>
         <source>AccY</source>
         <translation>AccY</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2564"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1648"/>
         <source>GSpd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2582"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1649"/>
         <source>Degrees</source>
-        <translation>Grad</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2987"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1665"/>
         <source>Setting RSSI to zero simulates telemetry and radio link loss.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2990"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1667"/>
         <source>Set RSSI to zero when paused.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3003"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1669"/>
         <source>Stop sending telemetry data when the Telemetry Simulator window is hidden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3006"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1671"/>
         <source>Pause simulation when hidden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="855"/>
         <location filename="../simulation/telemetrysimu.ui" line="1053"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1580"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1585"/>
         <source>RPM</source>
         <translation>RPM</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="54"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1558"/>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13059,7 +13249,7 @@ hh:mm:ss</source>
     <message>
         <location filename="../wizarddialog.cpp" line="408"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation>&lt;br&gt;Gas Kanal:</translation>
+        <translation>&lt;br&gt;Gaskanal:</translation>
     </message>
 </context>
 <context>
@@ -13277,6 +13467,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <name>TrainerSimulator</name>
     <message>
         <location filename="../simulation/trainersimu.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_trainersimu.h" line="74"/>
         <source>Trainer simulator</source>
         <translation>Trainer Simulator</translation>
     </message>
@@ -13301,19 +13492,19 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../modelslist.cpp" line="151"/>
         <source>RX #</source>
-        <translation type="unfinished"></translation>
+        <translation>RX #</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="691"/>
         <source>Models</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
-        <translation type="unfinished">Modelle</translation>
+        <translation>Modelle</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="710"/>
         <source>Model %1</source>
         <extracomment>Translators: do NOT use accents here, this is a default model name.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Modell %1</translation>
     </message>
 </context>
 <context>
@@ -13321,12 +13512,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="705"/>
         <source>First Tail Channel:</source>
-        <translation>Erster rechter Leitwerk Kanal:</translation>
+        <translation>Erster Leitwerkskanal:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="707"/>
         <source>Second Tail Channel:</source>
-        <translation>Zweiter, linker Leitwerk Kanal:</translation>
+        <translation>Zweiter Leitwerkskanal:</translation>
     </message>
 </context>
 <context>
@@ -13390,12 +13581,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Model Wizard</source>
-        <translation>Modell Wizard</translation>
+        <translation>Modell-Wizard</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Model Type</source>
-        <translation>Model Type</translation>
+        <translation>Modelltyp</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
@@ -13405,7 +13596,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Throttle</source>
-        <translation>Gas</translation>
+        <translation>Antrieb</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
@@ -13415,7 +13606,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Wing Type</source>
-        <translation>Flächen Typ</translation>
+        <translation>Flächentyp</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
@@ -13435,12 +13626,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Flaps</source>
-        <translation>Landeklappen</translation>
+        <translation>Wölbklappen</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Has your model got flaps?</source>
-        <translation>Hat das Modell Landeklappen?</translation>
+        <translation>Hat das Modell Wölbklappen?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
@@ -13512,12 +13703,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Which type of swash control is installed in your helicopter?</source>
-        <translation>Welchen Typ an Taumelscheibe hat der Heli?</translation>
+        <translation>Welche Art von Taumelscheibe ist verbaut?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Tail Gyro</source>
-        <translation>Heck Kreisel</translation>
+        <translation>Heckkreisel</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
@@ -13532,7 +13723,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Has your helicopter got a flybar?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hat der Hubschrauber eine Flybar?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
@@ -13549,7 +13740,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
         <source>Multirotor</source>
-        <translation>MultiCopter</translation>
+        <translation>Multikopter</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
@@ -13569,12 +13760,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Save Changes</source>
-        <translation>Speichere die Kanäle</translation>
+        <translation>Änderungen speichern</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished"></translation>
+        <translation>Überprüfe, ob alle Steuerflächen sich in die richtige Richtung bewegen und invertiere diese gegebenenfalls. Entferne den oder die Propeller bevor du das Modell zum ersten mal steuerst.&lt;br&gt;Bitte beachte, dass das Fortfahren alle alten Einstellungen überschreibt!</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="75"/>
@@ -13584,7 +13775,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="78"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den der ESC oder der Gasservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Gas - Spektrum: CH1, Futaba: CH3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
@@ -13599,12 +13790,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="93"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Wizard geht davon aus, dass die Wölbklappen durch einen Schalter gesteuert werden. Sollen die Wölbklappen durch ein Poti gesteuert werden, kann dies später noch geändert werden.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="97"/>
         <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Störklappen werden eingesetzt um den Widerstand zu erhöhen und damit den Gleitwinkel  bei Seglern zu verschlechtern.&lt;br&gt;Für ander Arten von Flugzeugen sind sie eher ungewöhnlich.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="101"/>
@@ -13614,23 +13805,23 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="105"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den das Seitenruderservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Seitenruder - Spektrum: CH4, Futaba: CH4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="109"/>
         <source>Select the tail type of your plane.</source>
-        <translation>Wählen Sie den Leitwerkstyp Ihres Flugzeugs.</translation>
+        <translation>Wähle den Leitwerkstyp des Flugzeugs.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="112"/>
         <location filename="../wizarddialog.cpp" line="117"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle den Empfängerkanal, an den Seiten- und das Höhenruderservo angeschlossen ist.&lt;br&gt;&lt;br&gt;Seitenruder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Höhenruder - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="122"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Wählen Sie den Kanal für das Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
+        <translation>Wähle den Kanal für das Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
@@ -13646,12 +13837,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="141"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle die Steuerkanäle für deinen Multikopter.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="154"/>
         <source>There is no help available for the current page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Für diese Seite steht keine Hilfe zur Verfügung.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="157"/>
@@ -13664,7 +13855,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="1030"/>
         <source>Plane</source>
-        <translation>Flugmodell</translation>
+        <translation>Flächenmodell</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1032"/>
@@ -13679,17 +13870,17 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="1056"/>
         <source>Model Name: </source>
-        <translation>Model Name: </translation>
+        <translation>Modelname: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1057"/>
         <source>Model Type: </source>
-        <translation>Model Typ: </translation>
+        <translation>Modelltyp: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1059"/>
         <source>Options: </source>
-        <translation>Optionen:</translation>
+        <translation>Optionen: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1071"/>
@@ -13904,11 +14095,13 @@ Please only use this if you know what you are doing.  There are no error checks 
     <name>joystickDialog</name>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="464"/>
         <source>Configure Joystick</source>
         <translation>Joystick konfigurieren</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="50"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="465"/>
         <source>Ch2</source>
         <translation>Ch2</translation>
     </message>
@@ -13978,61 +14171,73 @@ Cancel zum abbrechen der Joystickkalibrierung ohne speichern.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="98"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="466"/>
         <source>Ch1</source>
         <translation>Ch1</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="159"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="467"/>
         <source>Ch4</source>
         <translation>Ch4</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="194"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="468"/>
         <source>Ch6</source>
         <translation>Ch6</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="201"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="469"/>
         <source>Ch3</source>
         <translation>Ch3</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="303"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="470"/>
         <source>Ch5</source>
         <translation>Ch5</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="310"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="471"/>
         <source>Ch7</source>
         <translation>Ch7</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="358"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="472"/>
         <source>Ch8</source>
         <translation>Ch8</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="537"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="473"/>
         <source>Instructions</source>
         <translation>Anweisungen</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="562"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="474"/>
         <source>Enable</source>
         <translation>Freigabe</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="579"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="475"/>
         <source>Cancel</source>
         <translation>abbrechen</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="608"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="476"/>
         <source>Back</source>
         <translation>Zurück</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="624"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="477"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
@@ -14043,6 +14248,7 @@ Cancel zum abbrechen der Joystickkalibrierung ohne speichern.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="637"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="478"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>

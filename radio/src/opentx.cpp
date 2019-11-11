@@ -838,6 +838,21 @@ void checkSDVersion()
 }
 #endif
 
+#if defined(MULTIMODULE)
+void checkMultiLowPower()
+{
+  if (isModuleMultimodule(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode) {
+    ALERT("MULTI", STR_WARN_MULTI_LOWPOWER, AU_ERROR);
+    return;
+  }
+#if defined(INTERNAL_MODULE_MULTI)
+  if (isModuleMultimodule(INTERNAL_MODULE) && g_model.moduleData[INTERNAL_MODULE].multi.lowPowerMode) {
+    ALERT("MULTI", STR_WARN_MULTI_LOWPOWER, AU_ERROR);
+  }
+#endif
+}
+#endif
+
 #if defined(STM32)
 static void checkRTCBattery()
 {
@@ -854,6 +869,12 @@ static void checkRTCBattery()
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
+#if defined(MULTIMODULE)
+    if (isModuleMultimodule(i)) {
+      getMultiModuleStatus(i).requiresFailsafeCheck = true;
+    }
+    else
+#endif
     if (isModuleFailsafeAvailable(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
       if (moduleData.failsafeMode == FAILSAFE_NOT_SET) {
@@ -894,12 +915,17 @@ void checkAll()
 #endif
 
 #if defined(STM32)
-  checkRTCBattery();
+  if (!g_eeGeneral.disableRtcWarning)
+    checkRTCBattery();
 #endif
 
   if (g_model.displayChecklist && modelHasNotes()) {
     readModelNotes();
   }
+
+#if defined(MULTIMODULE)
+  checkMultiLowPower();
+#endif
 
   if (!waitKeysReleased()) {
     showMessageBox(STR_KEYSTUCK);
@@ -1493,7 +1519,7 @@ void doMixerCalculations()
     static uint8_t countRangecheck = 0;
     for (uint8_t i=0; i<NUM_MODULES; ++i) {
 #if defined(MULTIMODULE)
-      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || multiModuleStatus.isBinding()) {
+      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || getMultiModuleStatus(i).isBinding()) {
 #else
       if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST) {
 #endif
@@ -1833,8 +1859,6 @@ void opentxInit()
   }
 
 #if defined(SDCARD)
-  globalData.sdcardPresent = SD_CARD_PRESENT();
-
   // SDCARD related stuff, only done if not unexpectedShutdown
   if (!globalData.unexpectedShutdown) {
     sdInit();
@@ -1843,7 +1867,7 @@ void opentxInit()
     sportStopSendByteLoop();
     if (f_stat(AUTOUPDATE_FILENAME, nullptr) == FR_OK) {
       FrSkyFirmwareInformation information;
-      if (readFirmwareInformation(AUTOUPDATE_FILENAME, information) == nullptr) {
+      if (readFrSkyFirmwareInformation(AUTOUPDATE_FILENAME, information) == nullptr) {
 #if defined(BLUETOOTH)
         if (information.productFamily == FIRMWARE_FAMILY_BLUETOOTH_CHIP) {
           if (bluetooth.flashFirmware(AUTOUPDATE_FILENAME) == nullptr)
@@ -1901,10 +1925,6 @@ void opentxInit()
 
 #if defined(AUX_SERIAL)
   auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
-#endif
-
-#if defined(PCBTARANIS)
-  BACKLIGHT_ENABLE();
 #endif
 
 #if MENUS_LOCK == 1

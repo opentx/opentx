@@ -33,7 +33,7 @@
 #define PRIM_END_DOWNLOAD   0x83
 #define PRIM_DATA_CRC_ERR   0x84
 
-const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data)
+const char * readFrSkyFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data)
 {
   FIL file;
   UINT count;
@@ -96,12 +96,12 @@ void FrskyDeviceFirmwareUpdate::processFrame(const uint8_t * frame)
   }
 }
 
+#if defined(PCBHORUS)
 bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout)
 {
   watchdogSuspend(timeout);
 
   switch(module) {
-#if defined(INTMODULE_USART)
     case INTERNAL_MODULE:
     {
       uint32_t elapsed = 0;
@@ -118,7 +118,6 @@ bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint
       }
       break;
     }
-#endif
 
     default:
       break;
@@ -126,6 +125,7 @@ bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint
 
   return true;
 }
+#endif
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
 {
@@ -177,7 +177,7 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
   RTOS_WAIT_MS(1);
 
   switch(module) {
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
     case INTERNAL_MODULE:
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
@@ -236,7 +236,7 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
   }
 
   switch(module) {
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
     case INTERNAL_MODULE:
       return intmoduleSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
 #endif
@@ -288,6 +288,11 @@ const char * FrskyDeviceFirmwareUpdate::sendReqVersion()
   return "Version request failed";
 }
 
+// X12S / X10 IXJT = use TX + RX @ 38400 bauds with BOOTCMD pin inverted
+// X10 / X10 ISRM = use TX + RX @ 57600 bauds (no BOOTCMD)
+// X9D / X9D+ / X9E / XLite IXJT = use S.PORT @ 57600 bauds
+// XLite PRO / X9Lite / X9D+ 2019 ISRM = use TX + RX @ 57600 bauds
+
 const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 {
   FIL file;
@@ -300,12 +305,13 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
   }
 
   const char * ext = getFileExtension(filename);
-  if (ext && !strcasecmp(ext, UPDATE_FIRMWARE_EXT)) {
+  if (ext && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
     if (f_read(&file, &information, sizeof(FrSkyFirmwareInformation), &count) != FR_OK || count != sizeof(FrSkyFirmwareInformation)) {
       f_close(&file);
       return "Format error";
     }
-  } else {
+  }
+  else {
 #if defined(PCBHORUS)
     information.productId = FIRMWARE_ID_XJT;
 #endif
@@ -314,7 +320,8 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 #if defined(PCBHORUS)
   if (module == INTERNAL_MODULE && information.productId == FIRMWARE_ID_XJT) {
     INTERNAL_MODULE_ON();
-    intmoduleSerialStart(38400, true);
+    RTOS_WAIT_MS(1);
+    intmoduleSerialStart(38400, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
     GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
     result = uploadFileToHorusXJT(filename, &file);
     GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
@@ -324,9 +331,12 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 #endif
 
   switch (module) {
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+    // on XLite we don't use TX + RX but the S.PORT line
+    // this ifdef can be removed if we use .frsk instead of .frk
+    // theorically it should be possible to use an ISRM module in an XLite
     case INTERNAL_MODULE:
-      intmoduleSerialStart(57600, true);
+      intmoduleSerialStart(57600, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
       break;
 #endif
 
@@ -539,7 +549,7 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
   uint8_t buffer[12];
   for (uint8_t i = 0; i < sizeof(buffer); i++) {
     uint32_t retry = 0;
-    while(1) {
+    while (true) {
       if (telemetryGetByte(&buffer[i])) {
         if ((i == 0 && buffer[0] != 0x7F) ||
             (i == 1 && buffer[1] != 0xFE) ||
@@ -562,6 +572,10 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 
 const char * FrskyChipFirmwareUpdate::startBootloader()
 {
+  sportSendByte(0x03);
+  RTOS_WAIT_MS(20);
+  sportSendByte(0x02);
+  RTOS_WAIT_MS(20);
   sportSendByte(0x01);
 
   for (uint8_t i = 0; i < 30; i++)
@@ -572,6 +586,7 @@ const char * FrskyChipFirmwareUpdate::startBootloader()
     sportSendByte(0x7F);
   }
 
+  RTOS_WAIT_MS(20);
   sportSendByte(0xFA);
 
   /*for (uint8_t i=0; i < 30; i++)

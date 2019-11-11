@@ -64,7 +64,7 @@ void menuRadioDiagKeys(event_t event)
 #else
     if (i < NUM_SWITCHES) {
       if (SWITCH_EXISTS(i)) {
-        y = MENU_HEADER_HEIGHT + 1 + FH*i;
+        y = (NUM_SWITCHES > 6 ? 0 : MENU_HEADER_HEIGHT) + FH*i;
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
         drawSwitch(8*FW+4, y, sw, 0);

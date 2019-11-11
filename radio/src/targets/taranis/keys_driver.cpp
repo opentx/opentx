@@ -179,7 +179,12 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
 
-#if defined(PCBX9LITE)
+#if defined(PCBX9LITES)
+    ADD_2POS_CASE(D);
+    ADD_2POS_CASE(E);
+    ADD_2POS_CASE(F);
+    ADD_2POS_CASE(G);
+#elif defined(PCBX9LITE)
     ADD_2POS_CASE(D);
     ADD_2POS_CASE(E);
 #elif defined(PCBXLITES)
@@ -194,6 +199,8 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(D, 3);
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
+    ADD_2POS_CASE(I);
+    ADD_2POS_CASE(J);
 #else
     ADD_3POS_CASE(D, 3);
     ADD_3POS_CASE(E, 4);

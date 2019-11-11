@@ -56,6 +56,9 @@ static const char * options[] = {
 #if defined(INTERNAL_MODULE_PPM)
   "internalppm",
 #endif
+#if defined(INTERNAL_MODULE_MULTI)
+  "internalmulti",
+#endif
 #if defined(MULTIMODULE)
   "multimodule",
 #endif

@@ -68,25 +68,25 @@
     <message>
         <location filename="../storage/appdata.cpp" line="594"/>
         <source>Could not save Application Settings to file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze uložit nastavení aplikace do souboru &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="596"/>
         <source>because the file could not be saved (check access permissions).</source>
-        <translation type="unfinished"></translation>
+        <translation>protože soubor nemůže být uložen (zkontrolujte přístupová práva)</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="598"/>
         <source>for unknown reasons.</source>
-        <translation type="unfinished"></translation>
+        <translation>z neznámého důvodu.</translation>
     </message>
 </context>
 <context>
     <name>AppMessages</name>
     <message>
-        <location filename="../warnings.h" line="94"/>
+        <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished">Chcete zobrazit toto upozornění i příště ?</translation>
+        <translation>Zobrazit toto upozornění i při příštím spuštění?</translation>
     </message>
 </context>
 <context>
@@ -356,7 +356,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1129"/>
         <source>Release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál vydání</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1143"/>
@@ -391,12 +391,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="375"/>
         <source>Append version number to FW file name</source>
-        <translation>Přidat číslo verze do názvu souboru staženého firmwaru </translation>
+        <translation>Přidat číslo verze do názvu souboru staženého firmwaru</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="190"/>
         <source>Offer to write FW to Tx after download</source>
-        <translation>Po stažení firmwaru nabídnout okamžité zapsání do rádia </translation>
+        <translation>Po stažení firmwaru nabídnout okamžité zapsání do rádia</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="636"/>
@@ -502,22 +502,22 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="761"/>
         <source>most recently used files</source>
-        <translation type="unfinished"></translation>
+        <translation>naposledny použité soubory</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="776"/>
         <source>Startup Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení zapnutí</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="832"/>
         <source>Remember</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapamatovat</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="913"/>
         <source>Output Logs Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Výstupní složka pro záznamy</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="900"/>
@@ -537,12 +537,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="955"/>
         <source>Just create the model</source>
-        <translation>Jen vytvořit model</translation>
+        <translation>Pouze vytvořit model</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="926"/>
         <source>Debug Output Logging</source>
-        <translation type="unfinished"></translation>
+        <translation>Záznam pro režim ladění</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1107"/>
@@ -552,7 +552,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1110"/>
         <source>Application (Companion/Simulator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Použití (Companion/Simulátor)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1117"/>
@@ -562,7 +562,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1120"/>
         <source>Radio Firmware (in Simulator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware vysílače (v simulátoru)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1213"/>
@@ -592,12 +592,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1247"/>
         <source>Screenshot capture folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Složka pro snímky obrazovky</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1309"/>
         <source>Joystick</source>
-        <translation></translation>
+        <translation>Joystick</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1199"/>
@@ -627,7 +627,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="154"/>
         <source>Select your snapshot folder</source>
-        <translation>Vyberat složku pro snímky obrazovky simulátoru</translation>
+        <translation>Vybrat složku pro snímky obrazovky simulátoru</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="181"/>
@@ -669,7 +669,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="341"/>
         <source>Select a folder for application logs</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat složku pro záznamy aplikace</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="349"/>
@@ -679,7 +679,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="392"/>
         <source>Select the folder replicating your SD structure</source>
-        <translation>Vyberat složku která představuje obsah SD karty rádia</translation>
+        <translation>Vybrat složku, která představuje obsah SD karty rádia</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="423"/>
@@ -697,30 +697,31 @@ Mode 4:
     <message>
         <location filename="../storage/bineeprom.cpp" line="42"/>
         <source>Error reading %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba čtení %1: %2</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="65"/>
         <source>Cannot save EEPROM</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze uložit do EEPROM</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="76"/>
         <source>Cannot open file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze otevřít soubor %1:
+%2</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="83"/>
         <source>Error writing file %1:
 %2.</source>
-        <translation type="unfinished">Chyba při zápisu souboru %1:
+        <translation>Chyba při zápisu souboru %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="108"/>
         <source>Invalid binary EEPROM file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný binární EEPROM soubor %1</translation>
     </message>
 </context>
 <context>
@@ -728,22 +729,22 @@ Mode 4:
     <message>
         <location filename="../firmwares/boards.cpp" line="368"/>
         <source>Left Horizontal</source>
-        <translation type="unfinished">Levá horizontální</translation>
+        <translation>Levá horizontální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="369"/>
         <source>Left Vertical</source>
-        <translation type="unfinished">Levá vertikální</translation>
+        <translation>Levá vertikální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="370"/>
         <source>Right Vertical</source>
-        <translation type="unfinished">Pravá vertikální</translation>
+        <translation>Pravá vertikální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="371"/>
         <source>Right Horizontal</source>
-        <translation type="unfinished">Pravá horizontální</translation>
+        <translation>Pravá horizontální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="372"/>
@@ -759,27 +760,27 @@ Mode 4:
         <location filename="../firmwares/boards.cpp" line="378"/>
         <location filename="../firmwares/boards.cpp" line="521"/>
         <source>Unknown</source>
-        <translation type="unfinished">Neznámý</translation>
+        <translation>Neznámý</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="388"/>
         <source>Rud</source>
-        <translation type="unfinished">Směrovka</translation>
+        <translation>Směrovka</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="389"/>
         <source>Ele</source>
-        <translation type="unfinished">Výškovka</translation>
+        <translation>Výškovka</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="390"/>
         <source>Thr</source>
-        <translation type="unfinished">Plyn</translation>
+        <translation>Plyn</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="391"/>
         <source>Ail</source>
-        <translation type="unfinished">Křidélka</translation>
+        <translation>Křidélka</translation>
     </message>
 </context>
 <context>
@@ -787,17 +788,17 @@ Mode 4:
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Negative span</source>
-        <translation type="unfinished">Negativní</translation>
+        <translation>Záporný rozsah</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Mid value</source>
-        <translation type="unfinished">Střed</translation>
+        <translation>Střední hodnota</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Positive span</source>
-        <translation type="unfinished">Pozitivní</translation>
+        <translation>Kladný rozsah</translation>
     </message>
 </context>
 <context>
@@ -805,22 +806,22 @@ Mode 4:
     <message>
         <location filename="../storage/categorized.cpp" line="28"/>
         <source>Can&apos;t extract RADIO/radio.bin</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze rozbalit RADIO/radio.bin</translation>
     </message>
     <message>
         <location filename="../storage/categorized.cpp" line="41"/>
         <source>Can&apos;t extract RADIO/models.txt</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze rozbalit RADIO/models.txt</translation>
     </message>
     <message>
         <location filename="../storage/categorized.cpp" line="85"/>
         <source>Can&apos;t extract %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze rozbalit %1</translation>
     </message>
     <message>
         <location filename="../storage/categorized.cpp" line="92"/>
         <source>Error loading models</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání modelů</translation>
     </message>
 </context>
 <context>
@@ -833,17 +834,17 @@ Mode 4:
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
         <source>Min</source>
-        <translation></translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
         <source>Max</source>
-        <translation></translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
         <source>Subtrim</source>
-        <translation></translation>
+        <translation>Subtrim</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
@@ -1602,27 +1603,27 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="71"/>
         <source>Play Track</source>
-        <translation type="unfinished">Hrát stopu</translation>
+        <translation>Přehrát stopu</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="73"/>
         <source>Play Both</source>
-        <translation type="unfinished">Přehrát pár</translation>
+        <translation>Přehrát oboje</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="75"/>
         <source>Play Value</source>
-        <translation type="unfinished">Přehrát hodnotu</translation>
+        <translation>Přehrát hodnotu</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="77"/>
         <source>Play Script</source>
-        <translation type="unfinished">Spustit skript</translation>
+        <translation>Spustit skript</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="79"/>
         <source>SD Logs</source>
-        <translation type="unfinished">SD logy</translation>
+        <translation>SD záznamy</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="81"/>
@@ -1632,27 +1633,27 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="83"/>
         <source>Backlight</source>
-        <translation type="unfinished">Podsvětlení</translation>
+        <translation>Podsvětlení</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="85"/>
         <source>Screenshot</source>
-        <translation type="unfinished">Snímek LCD</translation>
+        <translation>Snímek obrazovky</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="87"/>
         <source>Background Music</source>
-        <translation type="unfinished">Hudba na pozadí</translation>
+        <translation>Hudba na pozadí</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="89"/>
         <source>Background Music Pause</source>
-        <translation type="unfinished">Hudba na pozadí -pozastavit</translation>
+        <translation>Hudba na pozadí -pozastavit</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="91"/>
         <source>Adjust %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit %1</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="93"/>
@@ -2070,21 +2071,25 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
     <name>DebugOutput</name>
     <message>
         <location filename="../simulation/debugoutput.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="209"/>
         <source>Debug Output</source>
         <translation>Výstup ladění</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="68"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="227"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the filter. If the button won&apos;t stay enabled, it is likely there is a syntax error in the Regular Expression entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Povolí nebo zakaže filtr. Pokud tlačítko nezůstane zapnuto, je pravděpodobné, že byla zadána chyba syntaxe v zadaném regulárním výrazu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="74"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="229"/>
         <source>Filter:</source>
         <translation>Filtr:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="105"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="231"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter filter text here. Click the help/info button for details about using the filter. &lt;/p&gt;&lt;p&gt;
 To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first choose it, and then press &lt;code&gt;Shift-Delete&lt;/code&gt; (or &lt;code&gt;Shift-Backspace&lt;/code&gt;) key combination.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Zde vložte text filtru. Klikněte na tlačítko nápovědy / info pro podrobnosti o použití filtru.&lt;/p&gt;&lt;p&gt;
@@ -2092,51 +2097,61 @@ Pro &lt;b&gt;odstranění uloženého záznamu&lt;/b&gt; ze seznamu filtrů, zá
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="164"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="235"/>
         <source>Buffer:</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="177"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="237"/>
         <source>Number of lines to keep in display.</source>
         <translation>Počet řádků, které mají být zobrazeny.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="274"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="210"/>
         <source>Filter &amp;Help</source>
         <translation>&amp;Nápověda Filtru</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="212"/>
         <source>Show information about using the filter.</source>
         <translation>Zobrazí informace o použití filtru.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="214"/>
         <source>Word &amp;Wrap</source>
         <translation>&amp;Zalamování textu</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="216"/>
         <source>Toggle word wrapping on/off.</source>
         <translation>Zapne / vypne zalamování textu.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="218"/>
         <source>&amp;Clear</source>
         <translation>&amp;Vymazat</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="220"/>
         <source>Clear the output window of all text.</source>
         <translation>Vymaže veškerý text ve výstupním okně.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="222"/>
         <source>Enable &amp;Filter</source>
         <translation>Povolit &amp;Filtr</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_debugoutput.h" line="224"/>
         <source>Turn the filter on/off.</source>
         <translation>Zapne / vypne filtr.</translation>
     </message>
@@ -6865,7 +6880,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1491"/>
         <source>Set Menu Language</source>
-        <translation>Nastavení jazyka</translation>
+        <translation>Jazyka</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1249"/>
@@ -9772,36 +9787,43 @@ p, li { white-space: pre-wrap; }
     <name>RadioOutputsWidget</name>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="14"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="292"/>
         <source>Form</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="68"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="293"/>
         <source>View:</source>
         <translation>Zobrazení:</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="75"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="294"/>
         <source>Logical Switches</source>
         <translation>Logické spínače</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="94"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="295"/>
         <source>Global Variables</source>
         <translation>Globální proměnné</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="113"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="296"/>
         <source>Channel Outputs</source>
         <translation>Výstupy kanálů</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="132"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="297"/>
         <source>Mix Outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="210"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="298"/>
         <source>L
 o
 g
@@ -9811,6 +9833,7 @@ c</source>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="287"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="304"/>
         <source>G
 l
 o
@@ -9821,6 +9844,7 @@ l</source>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="362"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="310"/>
         <source>C
 h
 a
@@ -9833,12 +9857,23 @@ s</source>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="439"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_radiooutputswidget.h" line="318"/>
         <source>M
 i
 x
 e
 s</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="226"/>
+        <source>FM%1</source>
+        <translation type="unfinished">LR%1</translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.cpp" line="235"/>
+        <source>GV%1</source>
+        <translation type="unfinished">GP%1</translation>
     </message>
 </context>
 <context>
@@ -11199,151 +11234,181 @@ Profil ID: [%1]; Rádio ID: [%2]</translation>
     <name>SimulatorMainWindow</name>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="14"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="143"/>
         <source>OpenTx Simulator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="48"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="198"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="52"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="199"/>
         <source>Radio Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="63"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="200"/>
         <source>Reload...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="70"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="201"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="82"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="202"/>
         <source>Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="103"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="144"/>
         <source>Reload Lua Scripts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="106"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="146"/>
         <source>Reload the Lua environment on the simulated radio.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="109"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="149"/>
         <source>F7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="118"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="151"/>
         <source>Reload Radio Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="121"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="153"/>
         <source>Reload all radio data without restarting the simulator.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="124"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="156"/>
         <source>F9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="133"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="158"/>
         <source>Key Mapping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="136"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
         <source>Show keyboard maping reference.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="139"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="163"/>
         <source>F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="148"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="165"/>
         <source>Joystick Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="151"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="167"/>
         <source>Open joystick configuration settings dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="154"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="170"/>
         <source>F3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="163"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="172"/>
         <source>LCD Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="166"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="174"/>
         <source>Save a screenshot of the current simulated LCD screen.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="169"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="177"/>
         <source>F8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="177"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="179"/>
         <source>Dock In Main Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="180"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="181"/>
         <source>Show the radio in the main window or as a separate &quot;floating&quot; window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="188"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="183"/>
         <source>Menu Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="191"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="185"/>
         <source>Show or hide the top menu bar.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="194"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="188"/>
         <source>Alt+M</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="202"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="190"/>
         <source>Constrain Width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="205"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="192"/>
         <source>Set radio widget width to be a fixed size.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="213"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="194"/>
         <source>Constrain Height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="216"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatormainwindow.h" line="196"/>
         <source>Set radio widget height to be a fixed size.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11424,64 +11489,76 @@ Profil ID: [%1]; Rádio ID: [%2]</translation>
     <name>SimulatorStartupDialog</name>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="263"/>
         <source>OpenTX Simulator - Startup Options</source>
         <translation>OpenTX Simulator - Možnosti spuštění</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="38"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="264"/>
         <source>Simulator Startup Options:</source>
         <translation>Možnosti spuštění simulátoru:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="74"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="265"/>
         <source>Radio Profile:</source>
         <translation>Profil rádia:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="87"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="267"/>
         <source>Existing radio profiles are shown here.&lt;br /&gt;
 Create or edit profiles using the Companion application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="95"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="270"/>
         <source>Radio Type:</source>
         <translation>Typ rádia:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="108"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="272"/>
         <source>Existing radio simulators are shown here.&lt;br /&gt;
 The radio type specified in the selected profile is used by default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="275"/>
         <source>Data Source:</source>
         <translation>Zdroj dat:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="276"/>
         <source>Data File:</source>
         <translation>Datový soubor:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="277"/>
         <source>Data Folder:</source>
         <translation>Složka dat:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="278"/>
         <source>SD Image Path:</source>
         <translation>Cesta k obsahu SD:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="280"/>
         <source>Radio data (.bin/.eeprom/.otx) image file to use. A new file with a default image will be created if necessary.&lt;br /&gt;
 &lt;b&gt;NOTE&lt;/b&gt;: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="176"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="284"/>
         <source>Select data file...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11489,48 +11566,59 @@ The radio type specified in the selected profile is used by default.</source>
         <location filename="../simulation/simulatorstartupdialog.ui" line="179"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="231"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="283"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="286"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="294"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="302"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="288"/>
         <source>Directory containing RADIO and MODELS folders to use.&lt;br /&gt;
 New folder(s) with default radio/model will be created here if necessary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="292"/>
         <source>Select data folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="296"/>
         <source>Directory containing the SD card image to use.&lt;br/&gt;
 The default is configured in the chosen Radio Profile.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="280"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="300"/>
         <source>Select SD card image folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="304"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="306"/>
         <source>File</source>
         <translation type="unfinished">Soubor</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="307"/>
         <source>Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorstartupdialog.h" line="308"/>
         <source>SD Path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11559,6 +11647,7 @@ The default is configured in the chosen Radio Profile.</source>
     <name>SimulatorWidget</name>
     <message>
         <location filename="../simulation/simulatorwidget.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_simulatorwidget.h" line="196"/>
         <source>Companion Simulator</source>
         <translation type="unfinished">Companion Simulátor</translation>
     </message>
@@ -12732,97 +12821,116 @@ Too many errors, giving up.</source>
     <name>TelemetrySimulator</name>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="19"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1556"/>
         <source>Telemetry Simulator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1490"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1602"/>
         <source>VFAS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="789"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1575"/>
         <source>RSSI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="563"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1567"/>
         <source>A1</source>
         <translation type="unfinished">Telem. vstup A1</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="222"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1562"/>
         <source>A2</source>
         <translation type="unfinished">Telem. vstup A2</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="57"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1560"/>
         <source>Simulate</source>
         <translation>Simulace </translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2665"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1651"/>
         <source>Replay SD Log File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2688"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1652"/>
         <source>Replay rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2704"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1653"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2761"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1654"/>
         <source>|&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2789"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1655"/>
         <source>&lt;|</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2823"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1656"/>
         <source>&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2857"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1657"/>
         <source>&lt;-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2888"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1658"/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2924"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1659"/>
         <source>Row # 
 Timestamp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2943"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1661"/>
         <source>1/5x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2959"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1662"/>
         <source>5x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2971"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1663"/>
         <source>No Log File Currently Loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="204"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1561"/>
         <source>RAS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12830,16 +12938,21 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="267"/>
         <location filename="../simulation/telemetrysimu.ui" line="420"/>
         <location filename="../simulation/telemetrysimu.ui" line="660"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1563"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1565"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1568"/>
         <source>V / ratio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="375"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1564"/>
         <source>Db</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="545"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1566"/>
         <source>RxBt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12857,89 +12970,121 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="2257"/>
         <location filename="../simulation/telemetrysimu.ui" line="2405"/>
         <location filename="../simulation/telemetrysimu.ui" line="2561"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1570"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1577"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1589"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1593"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1600"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1604"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1608"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1614"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1623"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1630"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1635"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1639"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1646"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="681"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1572"/>
         <source>Tmp1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="699"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1573"/>
         <source>A3</source>
         <translation type="unfinished">Telem. vstup A3</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="771"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1574"/>
         <source>A4</source>
         <translation type="unfinished">Telem. vstup A4</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="810"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1579"/>
         <source>Tmp2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="918"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1581"/>
         <source>Fuel</source>
         <translation>Palivo</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="963"/>
         <location filename="../simulation/telemetrysimu.ui" line="1017"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1582"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1584"/>
         <source>°C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="999"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1583"/>
         <source>ml</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1071"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1586"/>
         <source>%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1089"/>
         <location filename="../simulation/telemetrysimu.ui" line="2489"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1644"/>
         <source>Meters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1164"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1591"/>
         <source>Alt</source>
         <translation type="unfinished">Výška</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1287"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1595"/>
         <source>VSpd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1305"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1596"/>
         <source>m/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1323"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1597"/>
         <source>Fuel Qty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1454"/>
         <location filename="../simulation/telemetrysimu.ui" line="1676"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1598"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1612"/>
         <source>km/h</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1538"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1606"/>
         <source>Hdg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1586"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1610"/>
         <source>ASpd</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12947,110 +13092,135 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="1604"/>
         <location filename="../simulation/telemetrysimu.ui" line="2074"/>
         <location filename="../simulation/telemetrysimu.ui" line="2627"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1611"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1627"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1650"/>
         <source>G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1697"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1616"/>
         <source>GPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1823"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1617"/>
         <source>Lat,Lon
 (dec.deg.)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1899"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1619"/>
         <source>AccX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1944"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1620"/>
         <source>dd-MM-yyyy
 hh:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2038"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1625"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2056"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
         <source>Amps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2092"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1628"/>
         <source>AccZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2140"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1632"/>
         <source>GAlt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2239"/>
         <location filename="../simulation/telemetrysimu.ui" line="2453"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1642"/>
         <source>Volts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2260"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1637"/>
         <source>Cels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2408"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1641"/>
         <source>Curr</source>
         <translation type="unfinished">Proud</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2471"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1643"/>
         <source>AccY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2564"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1648"/>
         <source>GSpd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2582"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1649"/>
         <source>Degrees</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2987"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1665"/>
         <source>Setting RSSI to zero simulates telemetry and radio link loss.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2990"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1667"/>
         <source>Set RSSI to zero when paused.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3003"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1669"/>
         <source>Stop sending telemetry data when the Telemetry Simulator window is hidden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="3006"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1671"/>
         <source>Pause simulation when hidden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="855"/>
         <location filename="../simulation/telemetrysimu.ui" line="1053"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1580"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1585"/>
         <source>RPM</source>
         <translation type="unfinished">Otáčky (ot/min)</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="54"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_telemetrysimu.h" line="1558"/>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13303,6 +13473,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <name>TrainerSimulator</name>
     <message>
         <location filename="../simulation/trainersimu.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_trainersimu.h" line="74"/>
         <source>Trainer simulator</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13935,71 +14106,85 @@ m2560 pro V4 desky</translation>
     <name>joystickDialog</name>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="20"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="464"/>
         <source>Configure Joystick</source>
         <translation>Nastavte joystick</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="50"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="465"/>
         <source>Ch2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="98"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="466"/>
         <source>Ch1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="159"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="467"/>
         <source>Ch4</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="194"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="468"/>
         <source>Ch6</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="201"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="469"/>
         <source>Ch3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="303"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="470"/>
         <source>Ch5</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="310"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="471"/>
         <source>Ch7</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="358"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="472"/>
         <source>Ch8</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="537"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="473"/>
         <source>Instructions</source>
         <translation>Instrukce</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="562"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="474"/>
         <source>Enable</source>
         <translation>Povolit</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="579"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="475"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="608"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="476"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="624"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="477"/>
         <source>Start</source>
         <translation type="unfinished">První kanál</translation>
     </message>
@@ -14010,6 +14195,7 @@ m2560 pro V4 desky</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="637"/>
+        <location filename="../../../build_osx/companion/src/simulation/ui_joystickdialog.h" line="478"/>
         <source>Ok</source>
         <translation>OK</translation>
     </message>

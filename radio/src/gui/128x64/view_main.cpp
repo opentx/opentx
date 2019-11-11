@@ -180,11 +180,31 @@ void displayTrims(uint8_t phase)
 void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
 {
   const TimerData & timer = g_model.timers[index];
+
   if (timer.mode) {
     const TimerState & timerState = timersStates[index];
     const uint8_t negative = (timerState.val<0 ? BLINK | INVERS : 0);
-    LcdFlags att = RIGHT | DBLSIZE | negative;
-    drawTimer(x, y, timerState.val, att, att);
+    LcdFlags att = RIGHT | DBLSIZE;
+    if (timerState.val < 60 * 60) { // display MM:SS
+      div_t qr = div(abs(timerState.val), 60);
+      lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0 | negative, 2);
+      lcdDrawText(lcdLastLeftPos, y, ":", att|BLINK | negative);
+      lcdDrawNumber(lcdLastLeftPos, y, qr.quot, att | negative);
+      if (negative)
+        lcdDrawText(lcdLastLeftPos, y, "-", att | negative);
+    }
+    else if (timerState.val < (99 * 60 * 60) + (59 * 60)) { // display HHhMM
+      div_t qr = div(abs(timerState.val) / 60, 60);
+      lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0, 2);
+      lcdDrawText(lcdLastLeftPos, y, "h", att);
+      lcdDrawNumber(lcdLastLeftPos, y, qr.quot, att);
+      if (negative)
+        lcdDrawText(lcdLastLeftPos, y, "-", att);
+    }
+    else {  //display HHHH for crazy large persistent timers
+      lcdDrawText(x - 5, y, "h", att);
+      lcdDrawNumber(lcdLastLeftPos, y, timerState.val / 3600, att);
+    }
     uint8_t xLabel = (negative ? x-56 : x-49);
     uint8_t len = zlen(timer.name, LEN_TIMER_NAME);
     if (len > 0) {
@@ -281,6 +301,7 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_START(onMainViewMenu);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -293,6 +314,36 @@ void onMainViewMenu(const char *result)
   }
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
+  }
+}
+
+void drawSmallSwitch(coord_t x, coord_t y, int width, unsigned int index)
+{
+  if (SWITCH_EXISTS(index)) {
+    int val = getValue(MIXSRC_FIRST_SWITCH+index);
+
+    if (val >= 0) {
+      lcdDrawSolidHorizontalLine(x, y, width);
+      lcdDrawSolidHorizontalLine(x, y+2, width);
+      y += 4;
+      if (val > 0) {
+        lcdDrawSolidHorizontalLine(x, y, width);
+        lcdDrawSolidHorizontalLine(x, y+2, width);
+        y += 4;
+      }
+    }
+
+    lcdDrawChar(width==5 ? x+1 : x, y, 'A'+index, SMLSIZE);
+    y += 7;
+
+    if (val <= 0) {
+      lcdDrawSolidHorizontalLine(x, y, width);
+      lcdDrawSolidHorizontalLine(x, y+2, width);
+      if (val < 0) {
+        lcdDrawSolidHorizontalLine(x, y+4, width);
+        lcdDrawSolidHorizontalLine(x, y+6, width);
+      }
+    }
   }
 }
 
@@ -471,14 +522,26 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-#if defined(PCBX9LITE)
+#if defined(PCBX9LITES)
+      static const uint8_t x[NUM_SWITCHES-2] = {2*FW-2, 2*FW-2, 17*FW+1, 2*FW-2, 17*FW+1};
+      static const uint8_t y[NUM_SWITCHES-2] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
+      for (int i=0; i<NUM_SWITCHES - 2; ++i) {
+        if (SWITCH_EXISTS(i)) {
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+          drawSwitch(x[i], y[i], sw, 0, false);
+        }
+      }
+      drawSmallSwitch(29, 5*FH+1, 4, SW_SF);
+      drawSmallSwitch(16*FW+1, 5*FH+1, 4, SW_SG);
+#elif defined(PCBX9LITE)
       static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
       static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_EXISTS(i)) {
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0);
+          drawSwitch(x[i], y[i], sw, 0, false);
         }
       }
 #elif defined(PCBXLITES)
@@ -488,7 +551,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0);
+          drawSwitch(x[i], y[i], sw, 0, false);
         }
       }
 #elif defined(PCBTARANIS)
@@ -502,7 +565,7 @@ void menuMainView(event_t event)
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
           getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-          drawSwitch(x, y, sw, 0);
+          drawSwitch(x, y, sw, 0, false);
         }
       }
 #else
@@ -514,7 +577,7 @@ void menuMainView(event_t event)
           x = 17*FW-1;
           y -= 3*FH;
         }
-        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0);
+        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0, false);
       }
 #endif
     }
