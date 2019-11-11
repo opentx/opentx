@@ -96,8 +96,8 @@ const HottSensor * getHottSensor(uint16_t id)
 }
 
 #if defined(LUA)
-  #define HOTT_BUFFER_SIZE 200
-  uint8_t HoTT_Buffer[HOTT_BUFFER_SIZE];
+  #define MULTI_BUFFER_SIZE 200
+  extern uint8_t Multi_Buffer[MULTI_BUFFER_SIZE];
 #endif
 
 void processHottPacket(const uint8_t * packet)
@@ -117,21 +117,21 @@ void processHottPacket(const uint8_t * packet)
   //   Menu commands are sent through TX packets:
   //     packet[28]= 0xXF=>no key press, 0xXD=>down, 0xXB=>up, 0xX9=>enter, 0xXE=>right, 0xX7=>left with X=0 or D
   //     packet[29]= 0xX1/0xX9 with X=0 or X counting 0,1,1,2,2,..,9,9
-  if(memcmp(HoTT_Buffer,"HoTT",4)==0)
+  if(memcmp(Multi_Buffer,"HoTT",4)==0)
   {// HoTT Lua script is running
-    if(HoTT_Buffer[4]==0xFF)
+    if(Multi_Buffer[4]==0xFF)
     {// Init
       for(uint8_t i=0; i<=HOTT_MENU_PAGE_MAX; i++)
-        HoTT_Buffer[i+5]=0;                             // Reset menu pages type
-      HoTT_Buffer[23]=0;                                // Menu not ready to be displayed
-      memset(&HoTT_Buffer[24],' ',HOTT_MENU_PAGE_MAX*9);// Clear text buffer
+        Multi_Buffer[i+5]=0;                             // Reset menu pages type
+      Multi_Buffer[23]=0;                                // Menu not ready to be displayed
+      memset(&Multi_Buffer[24],' ',HOTT_MENU_PAGE_MAX*9);// Clear text buffer
     }
-    if(packet[3]<=HOTT_MENU_PAGE_MAX && HoTT_Buffer[199]>=0xD7 && HoTT_Buffer[199]<=0xDF)
+    if(packet[3]<=HOTT_MENU_PAGE_MAX && Multi_Buffer[199]>=0xD7 && Multi_Buffer[199]<=0xDF)
     {
-      HoTT_Buffer[4]=packet[4];                         // Store current menu being received
-      HoTT_Buffer[5+packet[3]]=packet[4];
-      HoTT_Buffer[23]=1;                                // Menu ready to be displayed
-      memcpy(&HoTT_Buffer[24+packet[3]*9],&packet[5],9);// Store the received page in the buffer
+      Multi_Buffer[4]=packet[4];                         // Store current menu being received
+      Multi_Buffer[5+packet[3]]=packet[4];
+      Multi_Buffer[23]=1;                                // Menu ready to be displayed
+      memcpy(&Multi_Buffer[24+packet[3]*9],&packet[5],9);// Store the received page in the buffer
     }
     return;
   }

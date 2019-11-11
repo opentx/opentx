@@ -14,8 +14,25 @@
 ---- # GNU General Public License for more details.                          #
 ---- #                                                                       #
 ---- #########################################################################
+
+
+--###############################################################################
+-- Multi buffer for HoTT description
+-- To start operation:
+--   Write "HoTT" at address 0..3
+--   Write 0xFF at address 4 will request the buffers to be cleared
+--   Write 0xDF at address 199
+-- Read buffer at address [0123] will return the string "HoTT"
+-- Read buffer from address 24 access the RX text for 162 bytes, 21 caracters
+--    by 7 lines
+-- Write at address 199 sends an order to the RX: 0xDF=start, 0xD7=prev page,
+--    0xDE=next page, 0xD9=enter, 0xDD=next or 0xDB=prev
+-- Write at address 4 the value 0xFF will request the buffer to be cleared
+-- !! Before exiting the script must write 0 at address 0 for normal operation !!
+--###############################################################################
+
 local function HoTT_Release()
-  hottBuffer( 0, 1 )
+  multiBuffer( 0, 0 )
 end
 
 local function HoTT_Draw_LCD()
@@ -37,7 +54,7 @@ local function HoTT_Draw_LCD()
   --Draw RX Menu
   for line = 0, 6, 1 do
     for i = 0, 21-1, 1 do
-      value=hottBuffer( line*21+24+i )
+      value=multiBuffer( line*21+24+i )
       if value > 0x80 then
         value = value - 0x80
         lcd.drawText(10+i*16,offset+16*line,string.char(value).."   ",INVERS)
@@ -50,21 +67,15 @@ end
 
 -- Init
 local function HoTT_Init()
-  --Init RX buffer
-  hottBuffer( 4, 0xFF )
-
-  --Check if the HoTT protocol is running
-  local result = ''
-  for i = 0, 3, 1 do
-    result = result .. string.char(hottBuffer( i ))
-  end
-  if result ~= "HoTT" then
-    error("Protocol HoTT not running!")
-    return 2
-  end
-  
-  --Request RX to send the menu
-  hottBuffer( 199, 0xDF )
+  --Set protocol to talk to
+  multiBuffer( 0, string.byte('H') )
+  multiBuffer( 1, string.byte('o') )
+  multiBuffer( 2, string.byte('T') )
+  multiBuffer( 3, string.byte('T') )
+  --Request init of the RX buffer
+  multiBuffer( 4, 0xFF )
+  --Request RX to send the config menu
+  multiBuffer( 199, 0xDF )
 end
 
 -- Main
@@ -78,15 +89,15 @@ local function HoTT_Run(event)
   else
     if event == EVT_VIRTUAL_PREV_PAGE then
       killEvents(event);
-      hottBuffer( 199, 0xD7 )
+      multiBuffer( 199, 0xD7 )
     elseif event == EVT_VIRTUAL_NEXT_PAGE then
-      hottBuffer( 199, 0xDE )
+      multiBuffer( 199, 0xDE )
     elseif event == EVT_VIRTUAL_ENTER then
-      hottBuffer( 199, 0xD9 )
+      multiBuffer( 199, 0xD9 )
     elseif event == EVT_VIRTUAL_NEXT then
-      hottBuffer( 199, 0xDD )
+      multiBuffer( 199, 0xDD )
     elseif event == EVT_VIRTUAL_PREV then
-      hottBuffer( 199, 0xDB )
+      multiBuffer( 199, 0xDB )
     end
     HoTT_Draw_LCD()
 	return 0
