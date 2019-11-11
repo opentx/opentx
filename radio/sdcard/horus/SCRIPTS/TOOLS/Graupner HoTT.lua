@@ -20,12 +20,12 @@
 -- Multi buffer for HoTT description
 -- To start operation:
 --   Write "HoTT" at address 0..3
---   Write 0xFF at address 4 will request the buffers to be cleared
---   Write 0xDF at address 199
+--   Write 0xFF at address 4 will request the buffer to be cleared
+--   Write 0xDF at address 5
 -- Read buffer at address [0123] will return the string "HoTT"
--- Read buffer from address 24 access the RX text for 162 bytes, 21 caracters
---    by 7 lines
--- Write at address 199 sends an order to the RX: 0xDF=start, 0xD7=prev page,
+-- Read buffer from address 6 access the RX text for 168 bytes, 21 caracters
+--    by 8 lines
+-- Write at address 5 sends an order to the RX: 0xDF=start, 0xD7=prev page,
 --    0xDE=next page, 0xD9=enter, 0xDD=next or 0xDB=prev
 -- Write at address 4 the value 0xFF will request the buffer to be cleared
 -- !! Before exiting the script must write 0 at address 0 for normal operation !!
@@ -52,9 +52,9 @@ local function HoTT_Draw_LCD()
   end
   
   --Draw RX Menu
-  for line = 0, 6, 1 do
+  for line = 0, 7, 1 do
     for i = 0, 21-1, 1 do
-      value=multiBuffer( line*21+24+i )
+      value=multiBuffer( line*21+6+i )
       if value > 0x80 then
         value = value - 0x80
         lcd.drawText(10+i*16,offset+16*line,string.char(value).."   ",INVERS)
@@ -75,7 +75,7 @@ local function HoTT_Init()
   --Request init of the RX buffer
   multiBuffer( 4, 0xFF )
   --Request RX to send the config menu
-  multiBuffer( 199, 0xDF )
+  multiBuffer( 5, 0xDF )
 end
 
 -- Main
@@ -89,17 +89,17 @@ local function HoTT_Run(event)
   else
     if event == EVT_VIRTUAL_PREV_PAGE then
       killEvents(event);
-      multiBuffer( 199, 0xD7 )
+      multiBuffer( 5, 0xD7 )
     elseif event == EVT_VIRTUAL_NEXT_PAGE then
-      multiBuffer( 199, 0xDE )
+      multiBuffer( 5, 0xDE )
     elseif event == EVT_VIRTUAL_ENTER then
-      multiBuffer( 199, 0xD9 )
+      multiBuffer( 5, 0xD9 )
     elseif event == EVT_VIRTUAL_NEXT then
-      multiBuffer( 199, 0xDD )
+      multiBuffer( 5, 0xDD )
     elseif event == EVT_VIRTUAL_PREV then
-      multiBuffer( 199, 0xDB )
+      multiBuffer( 5, 0xDB )
     else
-      multiBuffer( 199, 0xDF )
+      multiBuffer( 5, 0xDF )
     end
     HoTT_Draw_LCD()
 	return 0

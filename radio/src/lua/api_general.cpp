@@ -1520,7 +1520,7 @@ This function reads/writes the Multi protocol buffer to interact with a protocol
 */
 #if defined(MULTIMODULE)
 extern uint8_t Multi_Buffer[];
-#define MULTI_BUFFER_SIZE 200
+#define MULTI_BUFFER_SIZE 177
 
 static int luaMultiBuffer(lua_State * L)
 {

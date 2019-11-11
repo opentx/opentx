@@ -386,9 +386,9 @@ extern uint8_t Multi_Buffer[];
 
 void sendHott(uint8_t moduleIdx)
 {
-  if(memcmp(Multi_Buffer,"HoTT",4)==0 && Multi_Buffer[199]>=0xD7 && Multi_Buffer[199]<=0xDF)
+  if(memcmp(Multi_Buffer,"HoTT",4)==0 && Multi_Buffer[5]>=0xD7 && Multi_Buffer[5]<=0xDF)
   {// HoTT Lua script is running
-      sendMulti(moduleIdx, Multi_Buffer[199]);
+      sendMulti(moduleIdx, Multi_Buffer[5]);
   }
 }
 #endif

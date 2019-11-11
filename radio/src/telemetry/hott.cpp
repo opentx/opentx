@@ -96,7 +96,7 @@ const HottSensor * getHottSensor(uint16_t id)
 }
 
 #if defined(LUA)
-  #define MULTI_BUFFER_SIZE 200
+  #define MULTI_BUFFER_SIZE 177
   extern uint8_t Multi_Buffer[MULTI_BUFFER_SIZE];
 #endif
 
@@ -108,7 +108,7 @@ void processHottPacket(const uint8_t * packet)
   setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, TX_LQI_ID, 0, 0, packet[1], UNIT_RAW, 0);
 
 #if defined(LUA)
-  #define HOTT_MENU_PAGE_MAX 0x12
+  #define HOTT_MENU_NBR_PAGE 0x13
   // Config menu consists of the different telem pages put all together
   //   [3] = config mennu page 0x00 to 0x12.
   //   Page X [4] = seems like all the telem pages with the same value are going together to make the full config menu text. Seen so far 'a', 'b', 'c', 'd'
@@ -119,19 +119,13 @@ void processHottPacket(const uint8_t * packet)
   //     packet[29]= 0xX1/0xX9 with X=0 or X counting 0,1,1,2,2,..,9,9
   if(memcmp(Multi_Buffer,"HoTT",4)==0)
   {// HoTT Lua script is running
-    if(Multi_Buffer[4]==0xFF)
-    {// Init
-      for(uint8_t i=0; i<=HOTT_MENU_PAGE_MAX; i++)
-        Multi_Buffer[i+5]=0;                             // Reset menu pages type
-      Multi_Buffer[23]=0;                                // Menu not ready to be displayed
-      memset(&Multi_Buffer[24],' ',HOTT_MENU_PAGE_MAX*9);// Clear text buffer
+    if(Multi_Buffer[4]==0xFF) {// Init
+      memset(&Multi_Buffer[6],' ',HOTT_MENU_NBR_PAGE*9); // Clear text buffer
     }
-    if(packet[3]<=HOTT_MENU_PAGE_MAX && Multi_Buffer[199]>=0xD7 && Multi_Buffer[199]<=0xDF)
+    if(packet[3]<HOTT_MENU_NBR_PAGE && Multi_Buffer[5]>=0xD7 && Multi_Buffer[5]<=0xDF)
     {
       Multi_Buffer[4]=packet[4];                         // Store current menu being received
-      Multi_Buffer[5+packet[3]]=packet[4];
-      Multi_Buffer[23]=1;                                // Menu ready to be displayed
-      memcpy(&Multi_Buffer[24+packet[3]*9],&packet[5],9);// Store the received page in the buffer
+      memcpy(&Multi_Buffer[6+packet[3]*9],&packet[5],9); // Store the received page in the buffer
     }
     return;
   }
