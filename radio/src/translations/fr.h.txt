@@ -836,6 +836,8 @@
 #define TR_FLASH_BOOTLOADER            "Flasher BootLoader"
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flasher S.Port", "Flasher S.Port externe")
 #define TR_FLASH_RECEIVER_OTA          "Flasher RX OTA"
+#define TR_FLASH_RECEIVER_OTA_WITH_EXTERNAL "Flash RX with ext. OTA"
+#define TR_FLASH_RECEIVER_OTA_WITH_INTERNAL "Flash RX with int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash module BT", "Flash module Bluetooth")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flasher pwr mngt unit"
 #define TR_CURRENT_VERSION             "Version courante :"

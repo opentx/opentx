@@ -144,6 +144,7 @@ class OtaUpdateInformation: public BindInformation {
   public:
     char filename[32+1];
     uint32_t address;
+    uint32_t module;
 };
 
 typedef void (* ModuleCallback)();
