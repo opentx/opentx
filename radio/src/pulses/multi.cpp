@@ -382,14 +382,14 @@ void sendSport(uint8_t moduleIdx)
   outputTelemetryBuffer.reset(); //empty buffer
 }
 
-extern uint8_t HoTT_Buffer[];
+extern uint8_t Multi_Buffer[];
 
 void sendHott(uint8_t moduleIdx)
 {
-  if(memcmp(HoTT_Buffer,"HoTT",4)==0 && HoTT_Buffer[199]>=0xD7 && HoTT_Buffer[199]<=0xDF)
+  if(memcmp(Multi_Buffer,"HoTT",4)==0 && Multi_Buffer[199]>=0xD7 && Multi_Buffer[199]<=0xDF)
   {// HoTT Lua script is running
-      sendMulti(moduleIdx, HoTT_Buffer[199]);
-      HoTT_Buffer[199]=0xDF;    // Send once only
+      sendMulti(moduleIdx, Multi_Buffer[199]);
+      Multi_Buffer[199]=0xDF;    // Send once only
   }
 }
 #endif

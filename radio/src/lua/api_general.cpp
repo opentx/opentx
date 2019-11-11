@@ -1507,14 +1507,9 @@ static int luaResetGlobalTimer(lua_State * L)
 }
 
 /*luadoc
-@function hottBuffer(address[,value])
+@function multiBuffer(address[,value])
 
-This function reads/writes the HoTT buffer exchanged with the receiver.
-Reading buffer at address [0123] will give the string "HoTT"
-Reading the buffer from address 24 access the RX text (162 bytes)
-Writing 0xFF at address 4 clears the buffer
-Writing at address 199 sends an order to the RX: 0xDF=start, 0xD7=prev page, 0xDE=next page, 0xD9=enter, 0xDD=next or 0xDB=prev
-Before exiting the script you must write 1 at address 0 to resume normal operation
+This function reads/writes the Multi protocol buffer to interact with a protocol².
 
 @param address to read/write in the buffer
 @param (optional): value to write in the buffer
@@ -1524,26 +1519,21 @@ Before exiting the script you must write 1 at address 0 to resume normal operati
 @status current Introduced in 2.2.0
 */
 #if defined(MULTIMODULE)
-extern uint8_t HoTT_Buffer[];
+extern uint8_t Multi_Buffer[];
+#define MULTI_BUFFER_SIZE 200
 
-static int luaHottBuffer(lua_State * L)
+static int luaMultiBuffer(lua_State * L)
 {
-  if (!IS_HOTT_PROTOCOL()) {
-    lua_pushinteger(L, 0);
-    return 0;
-  }
-  memcpy(HoTT_Buffer,"HoTT",4);  // HoTT Lua script is running
-
   uint8_t address = luaL_checkunsigned(L, 1);
-  if(address>=200) {
+  if(address>=MULTI_BUFFER_SIZE) {
     lua_pushinteger(L, 0);
     return 0;
   }
-  uint8_t value = luaL_optunsigned(L, 2, 0);
-  if(value) {
-    HoTT_Buffer[address]=value;
+  uint16_t value = luaL_optunsigned(L, 2, 0x100);
+  if(value<0x100) {
+    Multi_Buffer[address]=value;
   }
-  lua_pushinteger(L,HoTT_Buffer[address]);
+  lua_pushinteger(L,Multi_Buffer[address]);
   return 1;
 }
 #endif
@@ -1630,7 +1620,7 @@ const luaL_Reg opentxLib[] = {
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
 #endif
 #if defined(MULTIMODULE)
-  { "hottBuffer", luaHottBuffer },
+  { "multiBuffer", luaMultiBuffer },
 #endif
   { "serialWrite", luaSerialWrite },
   { nullptr, nullptr }  /* sentinel */
