@@ -970,8 +970,6 @@ void menuModelSetup(event_t event)
         if (attr && s_editMode > 0) {
           switch (menuHorizontalPosition) {
             case 0:{
-              MultiModuleStatus &status = getMultiModuleStatus(EXTERNAL_MODULE);
-              const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol());
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
               break;
             }

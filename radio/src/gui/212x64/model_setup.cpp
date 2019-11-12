@@ -889,8 +889,6 @@ void menuModelSetup(event_t event)
                   break;
                 }
                 else {
-                  MultiModuleStatus &status = getMultiModuleStatus(EXTERNAL_MODULE);
-                  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol());
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
                 }
                 break;
