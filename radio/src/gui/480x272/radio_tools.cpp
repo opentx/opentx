@@ -25,16 +25,22 @@ extern uint8_t g_moduleIdx;
 
 bool addRadioTool(uint8_t index, const char * label)
 {
-  int8_t sub = menuVerticalPosition - HEADER_LINE;
-  LcdFlags attr = (sub == index ? INVERS : 0);
-  coord_t y = MENU_CONTENT_TOP + index * FH;
-  lcdDrawNumber(MENUS_MARGIN_LEFT, y, index + 1, LEADING0|LEFT, 2);
-  lcdDrawText(30, y, label, (sub == index ? INVERS  : 0));
-  if (attr && s_editMode > 0) {
-    s_editMode = 0;
-    killAllEvents();
-    return true;
+  if (index >= menuVerticalOffset) {
+    uint8_t lineIndex = index - menuVerticalOffset;
+    if (lineIndex < NUM_BODY_LINES) {
+      int8_t sub = menuVerticalPosition - HEADER_LINE;
+      LcdFlags attr = (sub == index ? INVERS : 0);
+      coord_t y = MENU_CONTENT_TOP + lineIndex * FH;
+      lcdDrawNumber(MENUS_MARGIN_LEFT, y, index + 1, LEADING0 | LEFT, 2);
+      lcdDrawText(30, y, label, (sub == index ? INVERS : 0));
+      if (attr && s_editMode > 0) {
+        s_editMode = 0;
+        killAllEvents();
+        return true;
+      }
+    }
   }
+
   return false;
 }
 
