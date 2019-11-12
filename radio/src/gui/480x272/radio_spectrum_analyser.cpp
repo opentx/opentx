@@ -58,8 +58,12 @@ bool menuRadioSpectrumAnalyser(event_t event)
     lcdRefresh();
     if (isModulePXX2(g_moduleIdx))
       moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
-    else if (isModuleMultimodule((g_moduleIdx)))
-      moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    else if (isModuleMultimodule(g_moduleIdx)) {
+      if (reusableBuffer.spectrumAnalyser.moduleOFF)
+        setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
+      else
+        moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    }
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(1000);
     RTOS_WAIT_MS(1000);
@@ -75,11 +79,14 @@ bool menuRadioSpectrumAnalyser(event_t event)
       }
       return false;
     }
-#if defined(INTERNAL_MODULE_MULTI)
-    if (g_moduleIdx == INTERNAL_MODULE && !IS_INTERNAL_MODULE_ON())
-      setModuleType(INTERNAL_MODULE, MODULE_TYPE_MULTIMODULE);
-#endif
     memclear(&reusableBuffer.spectrumAnalyser, sizeof(reusableBuffer.spectrumAnalyser));
+
+#if defined(INTERNAL_MODULE_MULTI)
+    if (g_moduleIdx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE) {
+      reusableBuffer.spectrumAnalyser.moduleOFF = true;
+      setModuleType(INTERNAL_MODULE, MODULE_TYPE_MULTIMODULE);
+    }
+#endif
 
     if (isModuleR9MAccess(g_moduleIdx)) {
       reusableBuffer.spectrumAnalyser.spanDefault = 20;
