@@ -223,7 +223,7 @@ void processTelemetryFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-#if defined(ACCESS_LIB)
+#if defined(ACCESS_LIB) && !defined(SIMU)
 void processAuthenticationFrame(uint8_t module, uint8_t * frame)
 {
   uint8_t cryptoType = frame[3];

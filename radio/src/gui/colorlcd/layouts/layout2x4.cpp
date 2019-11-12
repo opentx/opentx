@@ -47,14 +47,14 @@ class Layout2x4: public Layout
     void create() override
     {
       Layout::create();
-      persistentData->options[0].boolValue = true;
-      persistentData->options[1].boolValue = true;
-      persistentData->options[2].boolValue = true;
-      persistentData->options[3].boolValue = true;
-      persistentData->options[4].boolValue = true;
-      persistentData->options[5].unsignedValue = RGB(77, 112, 203);
-      persistentData->options[6].boolValue = false;
-      persistentData->options[7].unsignedValue = RGB(77, 112, 203);
+      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[2] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[3] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[4] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[5] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
+      persistentData->options[6] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[7] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
     }
 
     unsigned int getZonesCount() const override
@@ -79,11 +79,11 @@ class Layout2x4: public Layout
 //{
 //  theme->drawBackground();
 //
-//  if (persistentData->options[0].boolValue) {
+//  if (persistentData->options[0].value.boolValue) {
 //    drawTopBar();
 //  }
 //
-//  if (persistentData->options[1].boolValue) {
+//  if (persistentData->options[1].value.boolValue) {
 //    // Flight mode
 //    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
 //                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
@@ -93,23 +93,23 @@ class Layout2x4: public Layout
 //                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS));
 //  }
 //
-//  if (persistentData->options[2].boolValue) {
+//  if (persistentData->options[2].value.boolValue) {
 //    // Pots and rear sliders positions
 //    drawMainPots();
 //  }
 //
-//  if (persistentData->options[3].boolValue) {
+//  if (persistentData->options[3].value.boolValue) {
 //    // Trims
 //    drawTrims(mixerCurrentFlightMode);
 //  }
 //
-//  if (persistentData->options[4].boolValue) {
-//    lcdSetColor(persistentData->options[5].unsignedValue);
+//  if (persistentData->options[4].value.boolValue) {
+//    lcdSetColor(persistentData->options[5].value.unsignedValue);
 //    lcdDrawSolidFilledRect(50, 50, 180, 170, CUSTOM_COLOR);
 //  }
 //
-//  if (persistentData->options[6].boolValue) {
-//    lcdSetColor(persistentData->options[7].unsignedValue);
+//  if (persistentData->options[6].value.boolValue) {
+//    lcdSetColor(persistentData->options[7].value.unsignedValue);
 //    lcdDrawSolidFilledRect(250, 50, 180, 170, CUSTOM_COLOR);
 //  }
 //

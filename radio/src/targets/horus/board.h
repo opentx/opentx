@@ -124,7 +124,7 @@ uint32_t sdMounted();
 #endif
 
 #if defined(DISK_CACHE)
-#include "diskio.h"
+#include "FatFs/diskio.h"
 DRESULT __disk_read(BYTE drv, BYTE * buff, DWORD sector, UINT count);
 DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
 #else

@@ -53,7 +53,8 @@ void ThemeBase::init() const
     int i = 0;
     for (const ZoneOption * option = options; option->name; option++, i++) {
       // TODO compiler bug? The CPU freezes ... g_eeGeneral.themeData.options[i] = &option->deflt;
-      memcpy(&g_eeGeneral.themeData.options[i], &option->deflt, sizeof(ZoneOptionValue));
+      memcpy(&g_eeGeneral.themeData.options[i].value, &option->deflt, sizeof(ZoneOptionValue));
+      g_eeGeneral.themeData.options[i].type = zoneValueEnumFromType(option->type);
     }
   }
 }
@@ -70,7 +71,7 @@ void ThemeBase::load() const
 
 ZoneOptionValue * ThemeBase::getOptionValue(unsigned int index) const
 {
-  return &g_eeGeneral.themeData.options[index];
+  return &g_eeGeneral.themeData.options[index].value;
 }
 
 const char * ThemeBase::getFilePath(const char * filename) const

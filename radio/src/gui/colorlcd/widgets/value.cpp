@@ -44,8 +44,8 @@ void ValueWidget::refresh()
 {
   const int NUMBERS_PADDING = 4;
 
-  mixsrc_t field = persistentData->options[0].unsignedValue;
-  lcdSetColor(persistentData->options[1].unsignedValue);
+  mixsrc_t field = persistentData->options[0].value.unsignedValue;
+  lcdSetColor(persistentData->options[1].value.unsignedValue);
 
   int x = zone.x;
   int y = zone.y;
@@ -112,7 +112,7 @@ void ValueWidget::refresh()
     }
   }
 
-  if(persistentData->options[2].boolValue) {
+  if(persistentData->options[2].value.boolValue) {
     drawSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
     drawSourceValue(xValue + 1, yValue + 1, field, attrValue|BLACK);
   }

@@ -18,6 +18,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _EEPROM_COMMON_H_
+#define _EEPROM_COMMON_H_
+
 #define EEPROM_MIN_MODEL_SIZE          256
 
 uint16_t eeLoadModelData(uint8_t id);
@@ -36,3 +39,10 @@ void storageClearRadioSettings();
 bool storageReadRadioSettings(bool allowFixes = true);
 void storageReadCurrentModel();
 
+#if defined(EEPROM_RLC)
+#include "eeprom_rlc.h"
+#else
+#include "eeprom_raw.h"
+#endif
+
+#endif

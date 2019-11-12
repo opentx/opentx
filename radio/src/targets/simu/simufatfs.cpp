@@ -124,11 +124,20 @@ bool redirectToSettingsDirectory(const std::string & path)
   */
   if (!simuSettingsDirectory.empty()) {
 #if defined(COLORLCD)
-    if (path == RADIO_MODELSLIST_PATH || path == RADIO_SETTINGS_PATH) {
+    if (path == RADIO_MODELSLIST_PATH || path == RADIO_SETTINGS_PATH
+#if defined(SDCARD_YAML)
+        || path == RADIO_MODELSLIST_YAML_PATH || path == RADIO_SETTINGS_YAML_PATH
+#endif
+        ) {
       return true;
     }
 #endif
-    if (startsWith(path, "/MODELS") && endsWith(path, MODELS_EXT)) {
+    if (startsWith(path, "/MODELS")
+        && (endsWith(path, MODELS_EXT)
+#if defined(SDCARD_YAML)
+            || endsWith(path, YAML_EXT)
+#endif
+            )) {
       return true;
     }
   }

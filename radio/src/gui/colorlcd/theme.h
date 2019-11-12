@@ -34,11 +34,16 @@ class PageTab;
 class ThemeBase;
 void registerTheme(ThemeBase * theme);
 
+// YAML_GENERATOR defs
+#if !defined(USE_IDX)
+#define USE_IDX
+#endif
+
 class ThemeBase: public Theme
 {
   public:
     struct PersistentData {
-      ZoneOptionValue options[MAX_THEME_OPTIONS];
+      ZoneOptionValueTyped options[MAX_THEME_OPTIONS] USE_IDX;
     };
 
     ThemeBase(const char * name, const ZoneOption * options = nullptr):
@@ -79,7 +84,7 @@ class ThemeBase: public Theme
 
     virtual void drawMenuHeader(BitmapBuffer * dc, std::vector<PageTab *> & tabs, uint8_t currentIndex) const = 0;
 
-    virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const;
+    virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const override;
     // virtual void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const = 0;
 
     void drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t y, bool focus) const override;

@@ -43,10 +43,10 @@ const ZoneOption GaugeWidget::options[] = {
 
 void GaugeWidget::refresh()
 {
-  mixsrc_t index = persistentData->options[0].unsignedValue;
-  int32_t min = persistentData->options[1].signedValue;
-  int32_t max = persistentData->options[2].signedValue;
-  uint16_t color = persistentData->options[3].unsignedValue;
+  mixsrc_t index = persistentData->options[0].value.unsignedValue;
+  int32_t min = persistentData->options[1].value.signedValue;
+  int32_t max = persistentData->options[2].value.signedValue;
+  uint16_t color = persistentData->options[3].value.unsignedValue;
 
   int32_t value = getValue(index);
   int32_t value_in_range = value;

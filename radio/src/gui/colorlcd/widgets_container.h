@@ -59,8 +59,8 @@ class WidgetsContainer: public WidgetsContainerInterface
     };
 
     struct PersistentData {
-      ZonePersistentData zones[N];
-      ZoneOptionValue options[O];
+      ZonePersistentData   zones[N];
+      ZoneOptionValueTyped options[O];
     };
 
   public:
@@ -120,7 +120,7 @@ class WidgetsContainer: public WidgetsContainerInterface
 
     inline ZoneOptionValue * getOptionValue(unsigned int index) const
     {
-      return &persistentData->options[index];
+      return &persistentData->options[index].value;
     }
 
     virtual unsigned int getZonesCount() const = 0;

@@ -41,8 +41,8 @@ class Layout1x1: public Layout
     void create() override
     {
       Layout::create();
-      persistentData->options[0].boolValue = true;
-      persistentData->options[1].boolValue = true;
+      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
     }
 
     unsigned int getZonesCount() const override
@@ -53,11 +53,11 @@ class Layout1x1: public Layout
     Zone getZone(unsigned int index) const override
     {
       Zone zone = { 10, 10, LCD_W - 2*10, LCD_H - 2*10 };
-      if (persistentData->options[0].boolValue) {
+      if (persistentData->options[0].value.boolValue) {
         zone.y += MENU_HEADER_HEIGHT;
         zone.h -= MENU_HEADER_HEIGHT;
       }
-      if (persistentData->options[1].boolValue) {
+      if (persistentData->options[1].value.boolValue) {
         zone.x += 35;
         zone.w -= 2*35;
         zone.h -= 35;
@@ -72,11 +72,11 @@ class Layout1x1: public Layout
 //{
 //  theme->drawBackground();
 //
-//  if (persistentData->options[0].boolValue) {
+//  if (persistentData->options[0].value.boolValue) {
 //    drawTopBar();
 //  }
 //
-//  if (persistentData->options[1].boolValue) {
+//  if (persistentData->options[1].value.boolValue) {
 //    // Sliders + Trims + Flight mode
 //    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,  sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS)) / 2,
 //                     232,

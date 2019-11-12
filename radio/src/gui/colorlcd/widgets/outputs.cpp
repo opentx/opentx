@@ -73,13 +73,22 @@ class OutputsWidget: public Widget
 
     void twoColumns()
     {
-      uint8_t endColumn = drawChannels(zone.x, zone.y, zone.w / 2, zone.h, persistentData->options[0].unsignedValue, persistentData->options[1].boolValue, persistentData->options[2].unsignedValue);
-      drawChannels(zone.x + zone.w / 2 + 2, zone.y, zone.w / 2, zone.h, endColumn + 1, persistentData->options[1].boolValue, persistentData->options[2].unsignedValue);
+      uint8_t endColumn = drawChannels(zone.x, zone.y, zone.w / 2, zone.h,
+                                       persistentData->options[0].value.unsignedValue,
+                                       persistentData->options[1].value.boolValue,
+                                       persistentData->options[2].value.unsignedValue);
+
+      drawChannels(zone.x + zone.w / 2 + 2, zone.y, zone.w / 2, zone.h, endColumn + 1,
+                   persistentData->options[1].value.boolValue,
+                   persistentData->options[2].value.unsignedValue);
     }
 
     void oneColumn()
     {
-      drawChannels(zone.x, zone.y, zone.w, zone.h, persistentData->options[0].unsignedValue, persistentData->options[1].boolValue, persistentData->options[2].unsignedValue);
+      drawChannels(zone.x, zone.y, zone.w, zone.h,
+                   persistentData->options[0].value.unsignedValue,
+                   persistentData->options[1].value.boolValue,
+                   persistentData->options[2].value.unsignedValue);
     }
 
     static const ZoneOption options[];

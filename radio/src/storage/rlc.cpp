@@ -22,6 +22,8 @@
 #include <assert.h>
 #include "debug.h"
 
+#include "rlc.h"
+
 #define CHECK_DST_SIZE() \
   if (cur-dst >= (int)dstsize) { \
     TRACE("RLC encoding size too big"); \
