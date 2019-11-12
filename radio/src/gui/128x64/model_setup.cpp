@@ -1420,7 +1420,6 @@ void menuModelSetup(event_t event)
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
           const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-          const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
           if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
             const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
             if (pdef->optionsstr)
