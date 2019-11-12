@@ -309,8 +309,8 @@ bool menuRadioSdManager(event_t _event)
 #if defined(PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_RECEIVER)
               {
-                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_WITH_INTMODULE);
-                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_WITH_EXTMODULE)
+                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTMODULE);
+                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTMODULE)
               }
 #endif
 #if defined(BLUETOOTH)

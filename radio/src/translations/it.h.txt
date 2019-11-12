@@ -836,8 +836,8 @@
 #define TR_FLASH_BOOTLOADER    "Prog. bootloader"
 #define TR_FLASH_EXTERNAL_DEVICE "Progr. dispositivo Esterno"
 #define TR_FLASH_RECEIVER_OTA          TR("Prog. RX OTA", INDENT "Prog. ricevente OTA")
-#define TR_FLASH_RECEIVER_OTA_WITH_EXTERNAL "Flash RX with ext. OTA"
-#define TR_FLASH_RECEIVER_OTA_WITH_INTERNAL "Flash RX with int. OTA"
+#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX by ext. OTA"
+#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Prog. mod. BT", INDENT "Prog. modulo Bluetooth")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Prog. PMU", "Program. PMU")
 #define TR_CURRENT_VERSION             TR("Vers. currente ", "Versione corrente: ")
