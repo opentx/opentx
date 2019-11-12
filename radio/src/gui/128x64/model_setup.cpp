@@ -103,7 +103,6 @@ enum MenuModelSetupItems {
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SUBTYPE,
 #endif
-  ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER,
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
@@ -114,6 +113,7 @@ enum MenuModelSetupItems {
 #if defined(PCBSKY9X) && defined(REVX)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_OUTPUT_TYPE,
 #endif
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS,
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AUTOBIND,
@@ -331,11 +331,11 @@ void menuModelSetup(event_t event)
     LABEL(ExternalModule),
       EXTERNAL_MODULE_TYPE_ROW(),
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-      MODULE_POWER_ROW(EXTERNAL_MODULE),
       MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
       MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),      // line reused for PPM: PPM settings
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                    // RxNum
+      MODULE_POWER_ROW(EXTERNAL_MODULE),
       IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
       MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
       FAILSAFE_ROWS(EXTERNAL_MODULE),
@@ -1421,8 +1421,25 @@ void menuModelSetup(event_t event)
 
           const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
           const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
-          if (pdef->optionsstr)
-            lcdDrawText(INDENT_WIDTH, y, pdef->optionsstr);
+          if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
+            const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
+            if (pdef->optionsstr)
+              lcdDrawText(INDENT_WIDTH, y, pdef->optionsstr);
+              if (attr && pdef->optionsstr == STR_MULTI_RFTUNE) {
+                lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
+                lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+                lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+              }
+          }
+          else {
+            MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+            lcdDrawText(INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
+            if (attr && status.optionDisp == 2) {
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
+              lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+              lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+            }
+          }
 
           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
             optionValue = 50 + 5 * optionValue;
@@ -1437,12 +1454,7 @@ void menuModelSetup(event_t event)
             }
             else {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-              if (pdef->optionsstr == STR_MULTI_RFTUNE) {
-                lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
-                lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
-                lcdDrawText(lcdLastRightPos, y, ")", LEFT);
-              }
-            }
+                          }
           }
         }
 #endif
