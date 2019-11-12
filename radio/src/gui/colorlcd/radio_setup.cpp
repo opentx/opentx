@@ -349,18 +349,17 @@ void RadioSetupPage::build(FormWindow * window)
   }
 
 #if defined(PWR_BUTTON_PRESS)
-  {
     new StaticText(window, grid.getLabelSlot(), STR_PWR_OFF_DELAY);
-    auto edit = new NumberEdit(window, grid.getFieldSlot(), 0, 3,
+    edit = new NumberEdit(window, grid.getFieldSlot(), 0, 3,
                                [=]() -> int32_t {
                                  return 2 - g_eeGeneral.pwrOffSpeed;
                                },
                                [=](int32_t newValue) {
                                  g_eeGeneral.pwrOffSpeed = 2 - newValue;
+                                 SET_DIRTY();
                                });
     edit->setSuffix("s");
     grid.nextLine();
-  }
 #endif
   
   // GPS
