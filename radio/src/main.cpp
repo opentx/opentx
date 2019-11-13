@@ -358,6 +358,11 @@ void guiMain(event_t evt)
     DEBUG_TIMER_STOP(debugTimerMenus);
   }
 
+  if (mainRequestFlags & (1u << REQUEST_SCREENSHOT)) {
+    writeScreenshot();
+    mainRequestFlags &= ~(1u << REQUEST_SCREENSHOT);
+  }
+
   if (refreshNeeded) {
     DEBUG_TIMER_START(debugTimerLcdRefresh);
     lcdRefresh();
@@ -365,7 +370,6 @@ void guiMain(event_t evt)
   }
 }
 #elif defined(GUI)
-
 void handleGui(event_t event) {
   // if Lua standalone, run it and don't clear the screen (Lua will do it)
   // else if Lua telemetry view, run it and don't clear the screen
@@ -463,6 +467,11 @@ void guiMain(event_t evt)
   }
 
   lcdRefresh();
+
+  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
+    writeScreenshot();
+    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
+  }
 }
 #endif
 
@@ -530,11 +539,6 @@ void perMain()
   guiMain(evt);
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
-
-  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
-    writeScreenshot();
-    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
-  }
 
 #if defined(PCBX9E) && !defined(SIMU)
   toplcdRefreshStart();
