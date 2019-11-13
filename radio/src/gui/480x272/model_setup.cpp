@@ -324,7 +324,7 @@ void runPopupRegister(event_t event)
       s_editMode = 0;
       // no break;
 
-    case EVT_KEY_BREAK(KEY_EXIT):
+    case EVT_KEY_FIRST(KEY_EXIT):
       if (s_editMode <= 0) {
         warningText = nullptr;
       }
