@@ -314,6 +314,8 @@ inline int8_t sentModuleChannels(uint8_t idx)
     return CROSSFIRE_CHANNELS_COUNT;
   else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
     return 16;
+  else if (isModuleSBUS(idx))
+    return 16;
   else
     return 8 + g_model.moduleData[idx].channelsCount;
 }
