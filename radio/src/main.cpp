@@ -289,13 +289,14 @@ void guiMain(event_t evt)
   lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
 #endif
 
+  bool screenshotRequested = (mainRequestFlags & (1u << REQUEST_SCREENSHOT));
+
   if (!refreshNeeded) {
     DEBUG_TIMER_START(debugTimerMenus);
     while (true) {
       // normal GUI from menus
       const char * warn = warningText;
       uint8_t menu = popupMenuItemsCount;
-
       static bool popupDisplayed = false;
       if (warn || menu) {
         if (popupDisplayed == false) {
@@ -305,7 +306,7 @@ void guiMain(event_t evt)
           lcdStoreBackupBuffer();
           TIME_MEASURE_STOP(storebackup);
         }
-        if (popupDisplayed == false || evt) {
+        if (popupDisplayed == false || evt || screenshotRequested) {
           popupDisplayed = lcdRestoreBackupBuffer();
           if (warn) {
             DISPLAY_WARNING(evt);
@@ -358,7 +359,7 @@ void guiMain(event_t evt)
     DEBUG_TIMER_STOP(debugTimerMenus);
   }
 
-  if (mainRequestFlags & (1u << REQUEST_SCREENSHOT)) {
+  if (screenshotRequested) {
     writeScreenshot();
     mainRequestFlags &= ~(1u << REQUEST_SCREENSHOT);
   }
