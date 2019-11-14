@@ -96,22 +96,6 @@ static void sendMulti(uint8_t moduleIdx, uint8_t b)
     sendByteSbus(b);
 }
 
-/*static void sendSetupFrame(uint8_t moduleIdx)
-{
-  // Old multi firmware will mark config messsages as invalid frame and throw them away
-  sendMulti(moduleIdx, 'M');
-  sendMulti(moduleIdx, 'P');
-  sendMulti(moduleIdx, 0x80);           // Module Configuration
-  sendMulti(moduleIdx, 1);              // 1 byte data
-  uint8_t config = 0x01 | 0x02; // inversion + multi_telemetry
-#if !defined(PPM_PIN_SERIAL)
-  // TODO why PPM_PIN_SERIAL would change MULTI protocol?
-  config |= 0x04;               // input synchronsisation
-#endif
-
-  sendMulti(moduleIdx, config);
-}
-*/
 static void sendFailsafeChannels(uint8_t moduleIdx)
 {
   uint32_t bits = 0;
@@ -145,12 +129,13 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
 void setupPulsesMulti(uint8_t moduleIdx)
 {
   static int counter[2] = {0,0}; //TODO
-  static uint8_t invert[2] = {0x00,	//internal
-  #if defined(PCBTARANIS) || defined(PCBHORUS)
-   0x08};	//external
-  #else
-   0x00};	//external
-  #endif
+  static uint8_t invert[2] = {0x00,        //internal
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+    0x08        //external
+#else
+    0x00	//external
+#endif
+  };
   uint8_t type=MULTI_NORMAL;
 
   // Failsafe packets

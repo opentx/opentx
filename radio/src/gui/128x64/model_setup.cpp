@@ -1422,13 +1422,14 @@ void menuModelSetup(event_t event)
           const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
           if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
             const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
-            if (pdef->optionsstr)
+            if (pdef->optionsstr) {
               lcdDrawText(INDENT_WIDTH, y, pdef->optionsstr);
               if (attr && pdef->optionsstr == STR_MULTI_RFTUNE) {
                 lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
                 lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
                 lcdDrawText(lcdLastRightPos, y, ")", LEFT);
               }
+            }
           }
           else {
             MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
