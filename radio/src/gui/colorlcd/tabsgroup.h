@@ -115,7 +115,7 @@ class TabsGroupHeader: public FormGroup {
   public:
     TabsGroupHeader(TabsGroup * menu, uint8_t icon);
 
-    ~TabsGroupHeader();
+    ~TabsGroupHeader() override;
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() override
