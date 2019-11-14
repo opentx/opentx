@@ -48,27 +48,35 @@ local function HoTT_Draw_LCD()
     lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
     lcd.drawText(1, 5, "Graupner HoTT RX configuration", MENU_TITLE_COLOR)
     --Draw RX Menu
-    for line = 0, 7, 1 do
-      for i = 0, 21-1, 1 do
-        value=multiBuffer( line*21+6+i )
-        if value > 0x80 then
-          value = value - 0x80
-          lcd.drawText(10+i*16,32+16*line,string.char(value).."   ",INVERS)
-        else
-          lcd.drawText(10+i*16,32+16*line,string.char(value))
+    if multiBuffer( 4 ) == 0xFF then
+      lcd.drawText(10,50,"No HoTT telemetry...", BLINK)
+    else
+      for line = 0, 7, 1 do
+        for i = 0, 21-1, 1 do
+          value=multiBuffer( line*21+6+i )
+          if value > 0x80 then
+            value = value - 0x80
+            lcd.drawText(10+i*16,32+16*line,string.char(value).."   ",INVERS)
+          else
+            lcd.drawText(10+i*16,32+16*line,string.char(value))
+          end
         end
       end
     end
   else
     --Draw RX Menu on LCD_W=128
-    for line = 0, 7, 1 do
-      for i = 0, 21-1, 1 do
-        value=multiBuffer( line*21+6+i )
-        if value > 0x80 then
-          value = value - 0x80
-          lcd.drawText(2+i*6,1+8*line,string.char(value).." ",SMLSIZE+INVERS)
-        else
-          lcd.drawText(2+i*6,1+8*line,string.char(value),SMLSIZE)
+    if multiBuffer( 4 ) == 0xFF then
+      lcd.drawText(2,17,"No HoTT telemetry...",SMLSIZE)
+    else
+      for line = 0, 7, 1 do
+        for i = 0, 21-1, 1 do
+          value=multiBuffer( line*21+6+i )
+          if value > 0x80 then
+            value = value - 0x80
+            lcd.drawText(2+i*6,1+8*line,string.char(value).." ",SMLSIZE+INVERS)
+          else
+            lcd.drawText(2+i*6,1+8*line,string.char(value),SMLSIZE)
+          end
         end
       end
     end
@@ -79,6 +87,11 @@ end
 local function HoTT_Init()
   --Set protocol to talk to
   multiBuffer( 0, string.byte('H') )
+  --test if value has been written
+  if multiBuffer( 0 ) ~=  string.byte('H') then
+    error("Not enough memory!")
+    return 2
+  end
   multiBuffer( 1, string.byte('o') )
   multiBuffer( 2, string.byte('T') )
   multiBuffer( 3, string.byte('T') )

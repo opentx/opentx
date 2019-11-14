@@ -96,8 +96,7 @@ const HottSensor * getHottSensor(uint16_t id)
 }
 
 #if defined(LUA)
-  #define MULTI_BUFFER_SIZE 177
-  extern uint8_t Multi_Buffer[MULTI_BUFFER_SIZE];
+  extern uint8_t *Multi_Buffer;
 #endif
 
 void processHottPacket(const uint8_t * packet)
@@ -117,7 +116,7 @@ void processHottPacket(const uint8_t * packet)
   //   Menu commands are sent through TX packets:
   //     packet[28]= 0xXF=>no key press, 0xXD=>down, 0xXB=>up, 0xX9=>enter, 0xXE=>right, 0xX7=>left with X=0 or D
   //     packet[29]= 0xX1/0xX9 with X=0 or X counting 0,1,1,2,2,..,9,9
-  if(memcmp(Multi_Buffer,"HoTT",4)==0)
+  if( Multi_Buffer!=NULL && memcmp(Multi_Buffer,"HoTT",4)==0 )
   {// HoTT Lua script is running
     if(Multi_Buffer[4]==0xFF) {// Init
       memset(&Multi_Buffer[6],' ',HOTT_MENU_NBR_PAGE*9); // Clear text buffer

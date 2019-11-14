@@ -1516,22 +1516,30 @@ This function reads/writes the Multi protocol buffer to interact with a protocol
 
 @retval buffer value (number)
 
-@status current Introduced in 2.2.0
+@status current Introduced in 2.3.2
 */
 #if defined(MULTIMODULE)
-extern uint8_t Multi_Buffer[];
 #define MULTI_BUFFER_SIZE 177
+uint8_t *Multi_Buffer=NULL;
 
 static int luaMultiBuffer(lua_State * L)
 {
   uint8_t address = luaL_checkunsigned(L, 1);
-  if(address>=MULTI_BUFFER_SIZE) {
+  if(Multi_Buffer==NULL)
+    Multi_Buffer=(uint8_t *)malloc(MULTI_BUFFER_SIZE);
+  
+  if(Multi_Buffer==NULL || address>=MULTI_BUFFER_SIZE) {
     lua_pushinteger(L, 0);
     return 0;
   }
   uint16_t value = luaL_optunsigned(L, 2, 0x100);
   if(value<0x100) {
-    Multi_Buffer[address]=value;
+    if(address==0x00 && value==0x00) {
+      free(Multi_Buffer);
+      Multi_Buffer=NULL;
+    }
+    else
+      Multi_Buffer[address]=value;
   }
   lua_pushinteger(L,Multi_Buffer[address]);
   return 1;

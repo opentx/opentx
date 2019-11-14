@@ -23,11 +23,6 @@
 
 #define MULTI_CHAN_BITS 11
 
-#if defined(LUA)
-  #define MULTI_BUFFER_SIZE 177
-  uint8_t Multi_Buffer[MULTI_BUFFER_SIZE];
-#endif
-
 extern uint8_t g_moduleIdx;
 
 enum MultiPacketTypes : uint8_t
