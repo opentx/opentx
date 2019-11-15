@@ -32,7 +32,7 @@ void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t
     if (status.protocolName[0] && status.isValid())
       lcdDrawText(x, y, status.protocolName, flags);
     else
-      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
+      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
   }
 }
 
