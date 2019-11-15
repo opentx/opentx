@@ -241,13 +241,6 @@ void keysInit()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-
-#if defined(PCBX9DP) && PCBREV == 2019
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  SET_KEYS_PINS_HIGH(GPIOC);
-  SET_KEYS_PINS_HIGH(GPIOE);
-#endif
-
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 
 #if defined(KEYS_GPIOA_PINS)

@@ -202,15 +202,6 @@ void keysInit()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-
-#if defined(PCBX10) && defined(PCBREV_EXPRESS)
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  SET_KEYS_PINS_HIGH(GPIOB);
-  SET_KEYS_PINS_HIGH(GPIOD);
-  SET_KEYS_PINS_HIGH(GPIOG);
-  SET_KEYS_PINS_HIGH(GPIOJ);
-#endif
-
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 
   INIT_KEYS_PINS(GPIOB);
