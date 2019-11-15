@@ -500,7 +500,7 @@
 #define TR_DELAYUP             "Opózn.(+)"
 #define TR_SLOWDOWN            "Spowoln.(-)"
 #define TR_SLOWUP              "Spowoln.(+)"
-#define TR_MIXER               "MIKSERY"
+#define TR_MIXES               "MIKSERY"
 #define TR_CV                  "Kr"
 #define TR_GV                  TR("G", "ZG")
 #define TR_ACHANNEL            "A\004Kanał"

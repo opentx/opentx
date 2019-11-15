@@ -501,7 +501,7 @@
 #define TR_DELAYUP             "Delay Up"
 #define TR_SLOWDOWN            "Slow  Dn"
 #define TR_SLOWUP              "Slow  Up"
-#define TR_MIXER               "Mezclas"
+#define TR_MIXES               "Mezclas"
 #define TR_CV                  "CV"
 #define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\004canal"

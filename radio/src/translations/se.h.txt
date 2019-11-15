@@ -499,7 +499,7 @@
 #define TR_DELAYUP             "Dröj Upp"
 #define TR_SLOWDOWN            "Trög Ned"
 #define TR_SLOWUP              "Trög Upp"
-#define TR_MIXER               "MIXAR"
+#define TR_MIXES               "MIXAR"
 #define TR_CV                  "KU"
 #define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\004kanal  "

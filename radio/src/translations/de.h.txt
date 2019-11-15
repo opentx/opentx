@@ -481,7 +481,7 @@
 #define TR_DELAYUP                     "Verz. Up"
 #define TR_SLOWDOWN                    "Langs.Dn"
 #define TR_SLOWUP                      "Langs.Up"
-#define TR_MIXER                       "MISCHER"
+#define TR_MIXES                       "MISCHER"
 #define TR_CV                          "KV"
 #define TR_GV                          TR("G", "GV")
 #define TR_ACHANNEL                    TR("A\004gemessen", "A\004Kanal gemessen =>") //9XR-Pro

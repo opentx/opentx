@@ -499,7 +499,7 @@
 #define TR_DELAYUP                     "Retard haut"
 #define TR_SLOWDOWN                    "Ralenti bas"
 #define TR_SLOWUP                      "Ralenti haut"
-#define TR_MIXER                       "MIXEUR"
+#define TR_MIXES                       "MIXEUR"
 #define TR_CV                          "CB"
 #define TR_GV                          TR("G", "VG")
 #define TR_ACHANNEL                    "A"
