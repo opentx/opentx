@@ -178,7 +178,7 @@ struct mm_protocol_definition {
 
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 
-inline uint8_t  getMaxMultiSubtype(uint8_t moduleIdx)
+inline uint8_t getMaxMultiSubtype(uint8_t moduleIdx)
 {
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
   const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());

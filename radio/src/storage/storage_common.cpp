@@ -127,7 +127,7 @@ void postModelLoad(bool alarms)
     memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
   }
 #if defined(MULTIMODULE)
-  else if(isModuleMultimodule(INTERNAL_MODULE))
+  else if (isModuleMultimodule(INTERNAL_MODULE))
     multiPatchCustom(INTERNAL_MODULE);
 #endif
 #endif
@@ -136,7 +136,7 @@ void postModelLoad(bool alarms)
     memclear(&g_model.moduleData[EXTERNAL_MODULE], sizeof(ModuleData));
   }
 #if defined(MULTIMODULE)
-  else if(isModuleMultimodule(EXTERNAL_MODULE))
+  else if (isModuleMultimodule(EXTERNAL_MODULE))
     multiPatchCustom(EXTERNAL_MODULE);
 #endif
 

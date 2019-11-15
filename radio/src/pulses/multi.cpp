@@ -146,10 +146,10 @@ void setupPulsesMulti(uint8_t moduleIdx)
   // Invert telemetry if needed
   if (invert[moduleIdx]&0x80 && !g_model.moduleData[moduleIdx].multi.disableTelemetry) {
     if (getMultiModuleStatus(moduleIdx).isValid())
-      invert[moduleIdx]&=0x08;    // Telemetry received, stop searching
+      invert[moduleIdx] &= 0x08;    // Telemetry received, stop searching
     else
-      if ( counter[moduleIdx] % 100 == 0)
-        invert[moduleIdx]^=0x08;  // Try inverting telemetry
+      if (counter[moduleIdx] % 100 == 0)
+        invert[moduleIdx] ^= 0x08;  // Try inverting telemetry
   }
 
   counter[moduleIdx]++;
@@ -165,11 +165,11 @@ void setupPulsesMulti(uint8_t moduleIdx)
 
   // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
   sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol()+3)&0xC0)
-                           | (g_model.header.modelId[moduleIdx] & 0x30)
-						   | (invert[moduleIdx]&0x08)
-						 //| 0x04 // Future use
-                           | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
-                           |  g_model.moduleData[moduleIdx].multi.disableMapping ));
+                                  | (g_model.header.modelId[moduleIdx] & 0x30)
+                                  | (invert[moduleIdx] & 0x08)
+                                  //| 0x04 // Future use
+                                  | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
+                                  | g_model.moduleData[moduleIdx].multi.disableMapping));
   
   // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
 #if defined(LUA)
@@ -351,15 +351,13 @@ void sendSport(uint8_t moduleIdx)
   //example: B7 30 30 0C 80 00 00 00 13
   uint8_t j=0, buffer[16];
   //unstuff and remove crc
-  for (uint8_t i = 0 ; i < outputTelemetryBuffer.size-1 ; i++ )
-  {
-    if ( outputTelemetryBuffer.data[i] == BYTE_STUFF )
-    {
+  for (uint8_t i = 0; i < outputTelemetryBuffer.size - 1; i++) {
+    if (outputTelemetryBuffer.data[i] == BYTE_STUFF) {
       i++;
-      buffer[j] = outputTelemetryBuffer.data[i] ^ STUFF_MASK ; ;
+      buffer[j] = outputTelemetryBuffer.data[i] ^ STUFF_MASK;;
     }
     else
-      buffer[j] = outputTelemetryBuffer.data[i] ;
+      buffer[j] = outputTelemetryBuffer.data[i];
     j++;
   }
   for (uint8_t i = 0; i < 8; i++) {      //send to multi
@@ -370,7 +368,7 @@ void sendSport(uint8_t moduleIdx)
 
 void sendHott(uint8_t moduleIdx)
 {
-  if (Multi_Buffer != NULL && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF)
+  if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF)
   {// HoTT Lua script is running
       sendMulti(moduleIdx, Multi_Buffer[5]);
   }

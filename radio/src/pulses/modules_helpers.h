@@ -379,8 +379,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(idx))
   {
-    switch(g_model.moduleData[idx].getMultiProtocol())
-    {
+    switch (g_model.moduleData[idx].getMultiProtocol()) {
       case MODULE_SUBTYPE_MULTI_OLRS:
         return 4;
       case MODULE_SUBTYPE_MULTI_BUGS:

@@ -781,7 +781,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 }
 #if defined(MULTIMODULE)
 
-// This transforms OpenTX multi type to Multi type
+// This maps OpenTX multi type with Pascal's Multi type
 uint8_t convertMultiProtocole(uint8_t moduleIdx, uint8_t type)
 {
 
