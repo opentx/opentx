@@ -782,7 +782,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 #if defined(MULTIMODULE)
 
 // This maps OpenTX multi type with Pascal's Multi type
-uint8_t convertMultiProtocole(uint8_t moduleIdx, uint8_t type)
+uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
 {
 
   // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)

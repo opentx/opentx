@@ -1528,7 +1528,7 @@ static int luaMultiBuffer(lua_State * L)
   if (!Multi_Buffer)
     Multi_Buffer = (uint8_t *) malloc(MULTI_BUFFER_SIZE);
 
-  if (Multi_Buffer == nullptr || address >= MULTI_BUFFER_SIZE) {
+  if (!Multi_Buffer || address >= MULTI_BUFFER_SIZE) {
     lua_pushinteger(L, 0);
     return 0;
   }

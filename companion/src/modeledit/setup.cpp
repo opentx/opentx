@@ -479,7 +479,7 @@ void ModulePanel::update()
           module.channelsCount = 16;
         if (pdef.optionsstr != nullptr)
           mask |= MASK_MULTIOPTION;
-        if (pdef.hasFailsafe || (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_FRSKY && (module.subType == 0 || module.subType == 2 || module.subType > 3 )) )
+        if (pdef.hasFailsafe || (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_FRSKY && (module.subType == 0 || module.subType == 2 || module.subType > 3 )))
           mask |= MASK_FAILSAFES;
         break;
       case PULSES_OFF:

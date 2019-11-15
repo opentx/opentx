@@ -144,12 +144,13 @@ void setupPulsesMulti(uint8_t moduleIdx)
   }
 
   // Invert telemetry if needed
-  if (invert[moduleIdx]&0x80 && !g_model.moduleData[moduleIdx].multi.disableTelemetry) {
-    if (getMultiModuleStatus(moduleIdx).isValid())
+  if (invert[moduleIdx] & 0x80 && !g_model.moduleData[moduleIdx].multi.disableTelemetry) {
+    if (getMultiModuleStatus(moduleIdx).isValid()) {
       invert[moduleIdx] &= 0x08;    // Telemetry received, stop searching
-    else
-      if (counter[moduleIdx] % 100 == 0)
-        invert[moduleIdx] ^= 0x08;  // Try inverting telemetry
+    }
+    else if (counter[moduleIdx] % 100 == 0) {
+      invert[moduleIdx] ^= 0x08;  // Try inverting telemetry
+    }
   }
 
   counter[moduleIdx]++;
