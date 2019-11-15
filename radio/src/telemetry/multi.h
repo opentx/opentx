@@ -21,6 +21,9 @@
 #ifndef OPENTX_MULTI_H
 #define OPENTX_MULTI_H
 
+#define MULTI_BUFFER_SIZE 177
+extern uint8_t *Multi_Buffer;
+
 /*
   Multiprotocol telemetry definition
 

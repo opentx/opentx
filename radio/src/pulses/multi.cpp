@@ -368,8 +368,6 @@ void sendSport(uint8_t moduleIdx)
   outputTelemetryBuffer.reset(); //empty buffer
 }
 
-extern uint8_t *Multi_Buffer;
-
 void sendHott(uint8_t moduleIdx)
 {
   if (Multi_Buffer != NULL && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF)

@@ -2053,7 +2053,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        if(module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
+        if (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
           module.multi.rfProtocol += 3;
         rfProtExtra = (module.multi.rfProtocol & 0x70) >> 4;
         module.multi.rfProtocol &= 0x0f;
@@ -2062,7 +2062,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
       void afterImport() override
       {
         module.multi.rfProtocol = (rfProtExtra << 4) + (module.rfProtocol & 0xf);
-        if(module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
+        if (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
           module.multi.rfProtocol -= 3;
       }
 

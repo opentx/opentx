@@ -497,16 +497,6 @@ uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate()
     return rate;
 }
 
-char * prependSpaces(char * buf, int val)
-{
-  int k = 10000;
-  while (val / k == 0 && k > 0) {
-    *buf++ = ' ';
-    k /= 10;
-  }
-  return buf;
-}
-
 void MultiModuleSyncStatus::getRefreshString(char * statusText)
 {
   if (!isValid()) {

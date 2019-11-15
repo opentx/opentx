@@ -23,7 +23,7 @@
 
 void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
 {
-  if(protocol <= MODULE_SUBTYPE_MULTI_LAST) {
+  if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
     lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
     return;
   }

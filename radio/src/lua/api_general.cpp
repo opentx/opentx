@@ -24,6 +24,7 @@
 #include "stamp.h"
 #include "lua_api.h"
 #include "telemetry/frsky.h"
+#include "telemetry/multi.h"
 
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
@@ -1519,29 +1520,29 @@ This function reads/writes the Multi protocol buffer to interact with a protocol
 @status current Introduced in 2.3.2
 */
 #if defined(MULTIMODULE)
-#define MULTI_BUFFER_SIZE 177
-uint8_t *Multi_Buffer=NULL;
+uint8_t * Multi_Buffer = nullptr;
 
 static int luaMultiBuffer(lua_State * L)
 {
   uint8_t address = luaL_checkunsigned(L, 1);
-  if(Multi_Buffer==NULL)
-    Multi_Buffer=(uint8_t *)malloc(MULTI_BUFFER_SIZE);
-  
-  if(Multi_Buffer==NULL || address>=MULTI_BUFFER_SIZE) {
+  if (!Multi_Buffer)
+    Multi_Buffer = (uint8_t *) malloc(MULTI_BUFFER_SIZE);
+
+  if (Multi_Buffer == nullptr || address >= MULTI_BUFFER_SIZE) {
     lua_pushinteger(L, 0);
     return 0;
   }
   uint16_t value = luaL_optunsigned(L, 2, 0x100);
-  if(value<0x100) {
-    if(address==0x00 && value==0x00) {
+  if (value < 0x100) {
+    if (address == 0x00 && value == 0x00) {
       free(Multi_Buffer);
-      Multi_Buffer=NULL;
+      Multi_Buffer = nullptr;
     }
-    else
-      Multi_Buffer[address]=value;
+    else {
+      Multi_Buffer[address] = value;
+    }
   }
-  lua_pushinteger(L,Multi_Buffer[address]);
+  lua_pushinteger(L, Multi_Buffer[address]);
   return 1;
 }
 #endif

@@ -200,7 +200,7 @@ inline uint8_t  getMaxMultiSubtype(uint8_t moduleIdx)
 
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
-  if(!isModuleMultimodule(moduleIdx))
+  if (!isModuleMultimodule(moduleIdx))
     return HIDDEN_ROW;
 
   uint8_t protocol = g_model.moduleData[moduleIdx].getMultiProtocol();
@@ -230,8 +230,8 @@ inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
   if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
     return true;
   }
-  
-  if(status.isValid()) {
+
+  if (status.isValid()) {
     return status.protocolSubNbr > 0;
   }
   else

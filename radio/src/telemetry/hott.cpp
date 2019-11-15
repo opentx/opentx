@@ -95,10 +95,6 @@ const HottSensor * getHottSensor(uint16_t id)
   return nullptr;
 }
 
-#if defined(LUA)
-  extern uint8_t *Multi_Buffer;
-#endif
-
 void processHottPacket(const uint8_t * packet)
 {
   // Set TX RSSI Value

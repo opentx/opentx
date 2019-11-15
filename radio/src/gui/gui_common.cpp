@@ -799,10 +799,12 @@ uint8_t convertMultiProtocole(uint8_t moduleIdx, uint8_t type)
     if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       type = 3;
-    } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
+    }
+    else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
       //V8
       type = 25;
-    } else {
+    }
+    else {
       type = 15;
     }
   }

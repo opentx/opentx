@@ -27,6 +27,7 @@ char * strAppendSigned(char * dest, int32_t value, uint8_t digits=0, uint8_t rad
 char * strSetCursor(char * dest, int position);
 char * strAppendDate(char * str, bool time=false);
 char * strAppendFilename(char * dest, const char * filename, const int size);
+char * prependSpaces(char * buf, int val);
 
 #if !defined(BOOT)
 char * getStringAtIndex(char * dest, const char * s, int idx);
