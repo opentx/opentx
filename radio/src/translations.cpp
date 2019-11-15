@@ -658,7 +658,6 @@ const char STR_REG_OK[] = TR_REG_OK;
 const char STR_BIND_OK[] = TR_BIND_OK;
 #endif
 
-#if defined(MULTIMODULE)
 const char STR_MULTI_CUSTOM[] = TR_MULTI_CUSTOM;
 const char STR_MULTI_RFTUNE[] = TR_MULTI_RFTUNE;
 const char STR_MULTI_TELEMETRY[] = TR_MULTI_TELEMETRY;
@@ -680,7 +679,6 @@ const char STR_MULTI_SERVOFREQ[] = TR_MULTI_SERVOFREQ;
 const char STR_NEEDS_FILE[]  = TR_NEEDS_FILE;
 const char STR_EXT_MULTI_SPEC[]  = TR_EXT_MULTI_SPEC;
 const char STR_INT_MULTI_SPEC[]  = TR_INT_MULTI_SPEC;
-#endif
 
 #if LCD_W < 212
 const char STR_SUBTYPE[] = TR_SUBTYPE;
