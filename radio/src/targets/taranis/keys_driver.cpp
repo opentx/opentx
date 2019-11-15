@@ -235,46 +235,55 @@ uint32_t switchState(uint8_t index)
 }
 #endif
 
+#define INIT_KEYS_PINS(GPIO) \
+  GPIO_InitStructure.GPIO_Pin = KEYS_ ## GPIO ## _PINS; \
+  GPIO_Init(GPIO, &GPIO_InitStructure)
+
+#define SET_PINS_HIGH(GPIO) \
+  GPIO_InitStructure.GPIO_Pin = KEYS_ ## GPIO ## _PINS; \
+  GPIO_Init(GPIO, &GPIO_InitStructure); \
+  GPIO_SetBits(GPIO, KEYS_ ## GPIO ## _PINS)
+
 void keysInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 
+#if defined(PCBX9DP) && PCBREV == 2019
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  SET_PINS_HIGH(GPIOC);
+  SET_PINS_HIGH(GPIOE);
+#endif
+
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+
 #if defined(KEYS_GPIOA_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOA_PINS;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOA);
 #endif
 
 #if defined(KEYS_GPIOB_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOB_PINS;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOB);
 #endif
 
 #if defined(KEYS_GPIOC_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOC_PINS;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOC);
 #endif
 
 #if defined(KEYS_GPIOD_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOD_PINS;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOD);
 #endif
 
 #if defined(KEYS_GPIOE_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOE_PINS;
-  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOE);
 #endif
 
 #if defined(KEYS_GPIOF_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOF_PINS;
-  GPIO_Init(GPIOF, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOF);
 #endif
 
 #if defined(KEYS_GPIOG_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
-  GPIO_Init(GPIOG, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOG);
 #endif
 }
