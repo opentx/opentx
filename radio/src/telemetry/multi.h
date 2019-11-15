@@ -22,7 +22,7 @@
 #define OPENTX_MULTI_H
 
 #define MULTI_BUFFER_SIZE 177
-extern uint8_t *Multi_Buffer;
+extern uint8_t * Multi_Buffer;
 
 /*
   Multiprotocol telemetry definition
@@ -96,23 +96,21 @@ void processMultiTelemetryData(uint8_t data, uint8_t module);
 
 // This should be put into the Module definition if other modules gain this functionality
 struct MultiModuleSyncStatus {
-  uint32_t adjustedRefreshRate;    // in ps
+  uint32_t adjustedRefreshRate = 9000 * 1000;    // in ps
   tmr10ms_t lastUpdate;
   uint16_t refreshRate;
   uint16_t inputLag;
   uint8_t interval;
   uint8_t target;
 
-  inline bool isValid() {return (get_tmr10ms()  - lastUpdate < 100);}
-  void getRefreshString(char* refreshText);
-  uint16_t getAdjustedRefreshRate();
-  void calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag);
-
-  MultiModuleSyncStatus() {
-    // Initialise to a valid value
-    adjustedRefreshRate=9000 * 1000;
+  inline bool isValid() const
+  {
+    return (get_tmr10ms()  - lastUpdate < 100);
   }
-
+  
+  void getRefreshString(char * refreshText);
+  const uint16_t getAdjustedRefreshRate();
+  void calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag);
 };
 
 MultiModuleSyncStatus& getMultiSyncStatus(uint8_t module);
@@ -130,14 +128,14 @@ struct MultiModuleStatus {
   uint8_t requiresFailsafeCheck;
   tmr10ms_t lastUpdate;
 
-  uint8_t protocolPrev=0;
-  uint8_t protocolNext=0;
-  char protocolName[8]={ 0 };
-  uint8_t protocolSubNbr=0;
-  char protocolSubName[9]={ 0 };
-  uint8_t optionDisp=0;
+  uint8_t protocolPrev = 0;
+  uint8_t protocolNext = 0;
+  char protocolName[8] = {0};
+  uint8_t protocolSubNbr = 0;
+  char protocolSubName[9] = {0};
+  uint8_t optionDisp = 0;
 
-  void getStatusString(char* statusText);
+  void getStatusString(char * statusText) const;
 
   inline bool isValid() const { return (bool)(get_tmr10ms() - lastUpdate < 200); }
   inline bool isBufferFull() const { return (bool) (flags & 0x80); }

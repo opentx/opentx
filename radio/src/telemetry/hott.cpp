@@ -112,15 +112,16 @@ void processHottPacket(const uint8_t * packet)
   //   Menu commands are sent through TX packets:
   //     packet[28]= 0xXF=>no key press, 0xXD=>down, 0xXB=>up, 0xX9=>enter, 0xXE=>right, 0xX7=>left with X=0 or D
   //     packet[29]= 0xX1/0xX9 with X=0 or X counting 0,1,1,2,2,..,9,9
-  if( Multi_Buffer!=NULL && memcmp(Multi_Buffer,"HoTT",4)==0 )
-  {// HoTT Lua script is running
-    if(Multi_Buffer[4]==0xFF) {// Init
-      memset(&Multi_Buffer[6],' ',HOTT_MENU_NBR_PAGE*9); // Clear text buffer
+  if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0) {
+    // HoTT Lua script is running
+    if (Multi_Buffer[4] == 0xFF) {
+      // Init
+      memset(&Multi_Buffer[6], ' ', HOTT_MENU_NBR_PAGE * 9); // Clear text buffer
     }
-    if(packet[3]<HOTT_MENU_NBR_PAGE && Multi_Buffer[5]>=0xD7 && Multi_Buffer[5]<=0xDF)
-    {
-      Multi_Buffer[4]=packet[4];                         // Store current menu being received
-      memcpy(&Multi_Buffer[6+packet[3]*9],&packet[5],9); // Store the received page in the buffer
+    
+    if (packet[3] < HOTT_MENU_NBR_PAGE && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF) {
+      Multi_Buffer[4] = packet[4];                             // Store current menu being received
+      memcpy(&Multi_Buffer[6 + packet[3] * 9], &packet[5], 9); // Store the received page in the buffer
     }
     return;
   }
@@ -129,29 +130,32 @@ void processHottPacket(const uint8_t * packet)
   const HottSensor * sensor;
   int32_t value;
 
-  if(packet[2]==HOTT_TELEM_NORMAL)
-  {
-      switch (packet[3]) {
-        case HOTT_FRAME_00:
-        //RX_VOLT
+  if (packet[2] == HOTT_TELEM_NORMAL) {
+    switch (packet[3]) {
+      case HOTT_FRAME_00:
+        // RX_VOLT
         value = packet[5];
         sensor = getHottSensor(HOTT_ID_RX_VOLTAGE);
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
-        //RX_TEMP
-        value = packet[6]-20;
+        // RX_TEMP
+        value = packet[6] - 20;
         sensor = getHottSensor(HOTT_ID_TEMP1);
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
         // RX_RSSI
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_RSSI_ID, 0, 0, packet[7], UNIT_DB, 0);
         // RX_LQI
         telemetryData.rssi.set(packet[8]);
-        if (packet[8] > 0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+        if (packet[8] > 0)
+          telemetryStreaming = TELEMETRY_TIMEOUT10ms;
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
-        return;
+        break;
+
+      default:
+        // unknown
+        value = (packet[7] << 24) | (packet[6] << 16) | (packet[5] << 8) | packet[4];
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, 0xFE00 | packet[3], 0, 0, value, UNIT_RAW, 0);
+        break;
     }
-    //unknown
-    value = (packet[7] << 24) | (packet[6] << 16) | (packet[5] << 8) | packet[4];
-    setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, 0xFE00 | packet[3], 0, 0, value, UNIT_RAW, 0);
   }
 }
 

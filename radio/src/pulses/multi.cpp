@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "multi.h"
 
 // for the  MULTI protocol definition
 // see https://github.com/pascallanger/DIY-Multiprotocol-TX-Module
@@ -345,33 +346,30 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 }
 
 #if defined(LUA)
-#define BYTE_STUFF	0x7D
-#define STUFF_MASK	0x20
 void sendSport(uint8_t moduleIdx)
 {
-  //example: B7 30 30 0C 80 00 00 00 13
-  uint8_t j=0, buffer[16];
-  //unstuff and remove crc
-  for (uint8_t i = 0; i < outputTelemetryBuffer.size - 1; i++) {
-    if (outputTelemetryBuffer.data[i] == BYTE_STUFF) {
+  // example: B7 30 30 0C 80 00 00 00 13
+  uint8_t j=0;
+
+  // unstuff and remove crc
+  for (uint8_t i = 0; i < outputTelemetryBuffer.size - 1 && j < 8; i++, j++) {
+    if (outputTelemetryBuffer.data[i] == BYTESTUFF) {
       i++;
-      buffer[j] = outputTelemetryBuffer.data[i] ^ STUFF_MASK;;
+      sendMulti(moduleIdx, outputTelemetryBuffer.data[i] ^ STUFF_MASK);
     }
-    else
-      buffer[j] = outputTelemetryBuffer.data[i];
-    j++;
+    else {
+      sendMulti(moduleIdx, outputTelemetryBuffer.data[i]);
+    }
   }
-  for (uint8_t i = 0; i < 8; i++) {      //send to multi
-    sendMulti(moduleIdx, buffer[i]);
-  }
-  outputTelemetryBuffer.reset(); //empty buffer
+
+  outputTelemetryBuffer.reset(); // empty buffer
 }
 
 void sendHott(uint8_t moduleIdx)
 {
-  if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF)
-  {// HoTT Lua script is running
-      sendMulti(moduleIdx, Multi_Buffer[5]);
+  if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF) {}
+    // HoTT Lua script is running
+    sendMulti(moduleIdx, Multi_Buffer[5]);
   }
 }
 #endif

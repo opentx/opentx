@@ -222,8 +222,9 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8
   status.minor = data[2];
   status.revision = data[3];
   status.patch = data[4];
-  if (len < 6)
+  if (len < 6) {
     status.ch_order = 0xFF;
+  }
   else {
     status.ch_order = data[5];
     if (len >= 24) {
@@ -236,8 +237,9 @@ static void processMultiStatusPacket(const uint8_t * data, uint8_t module, uint8
       status.protocolSubName[8] = 0;
       status.optionDisp = data[15] >> 4;
     }
-    else
+    else {
       status.protocolName[0] = 0;
+    }
   }
   if (getMultiModuleStatus(module).requiresFailsafeCheck) {
     getMultiModuleStatus(module).requiresFailsafeCheck = false;
@@ -480,11 +482,10 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
 
 static uint8_t counter;
 
-uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate()
+const uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate()
 {
   if (!isValid() || refreshRate == 0)
     return 18000;
-
 
   counter = (uint8_t) (counter + 1 % 10);
   uint16_t rate = (uint16_t) ((adjustedRefreshRate + counter * 50) / 500);
@@ -517,7 +518,7 @@ void MultiModuleSyncStatus::getRefreshString(char * statusText)
 #endif
 }
 
-void MultiModuleStatus::getStatusString(char * statusText)
+void MultiModuleStatus::getStatusString(char * statusText) const
 {
   if (!isValid()) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
@@ -547,8 +548,9 @@ void MultiModuleStatus::getStatusString(char * statusText)
     return;
   }
 
-  if (major == 1 && minor < 3 && SLOW_BLINK_ON_PHASE)
+  if (major == 1 && minor < 3 && SLOW_BLINK_ON_PHASE) {
     strcpy(statusText, STR_MODULE_UPGRADE);
+  }
   else {
     char * tmp = statusText;
     *tmp++ = 'V';
@@ -563,11 +565,11 @@ void MultiModuleStatus::getStatusString(char * statusText)
     if (isBinding()) {
       strcpy(tmp, " " TR_MODULE_BINDING);
     }
-    else if(ch_order!=0xFF) {
-      uint8_t temp=ch_order;
+    else if (ch_order != 0xFF) {
+      uint8_t temp = ch_order;
       *tmp++ = ' ';
-      for(uint8_t i=0;i<4;i++) {
-        switch(temp&0x03) {
+      for (uint8_t i = 0; i < 4; i++) {
+        switch (temp & 0x03) {
           case 0:
             *tmp++ = 'A';
             break;
@@ -581,7 +583,7 @@ void MultiModuleStatus::getStatusString(char * statusText)
             *tmp++ = 'R';
             break;
         }
-        temp>>=2;
+        temp >>= 2;
       }
       *tmp = '\0';
     }
@@ -648,7 +650,8 @@ void processMultiTelemetryData(uint8_t data, uint8_t module)
     setMultiTelemetryBufferState(module, NoProtocolDetected);
   lastRxTS = nowMs;
   
-  debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", getMultiTelemetryBufferState(module), data, rxBufferCount);
+  // debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", getMultiTelemetryBufferState(module), data, rxBufferCount);
+  
   switch (getMultiTelemetryBufferState(module)) {
     case NoProtocolDetected:
       if (data == 'M') {
