@@ -353,7 +353,7 @@ void sendSport(uint8_t moduleIdx)
 
   // unstuff and remove crc
   for (uint8_t i = 0; i < outputTelemetryBuffer.size - 1 && j < 8; i++, j++) {
-    if (outputTelemetryBuffer.data[i] == BYTESTUFF) {
+    if (outputTelemetryBuffer.data[i] == BYTE_STUFF) {
       i++;
       sendMulti(moduleIdx, outputTelemetryBuffer.data[i] ^ STUFF_MASK);
     }

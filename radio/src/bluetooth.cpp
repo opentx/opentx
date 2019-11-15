@@ -180,7 +180,7 @@ void Bluetooth::processTrainerByte(uint8_t data)
       break;
 
     case STATE_DATA_IN_FRAME:
-      if (data == BYTESTUFF) {
+      if (data == BYTE_STUFF) {
         dataState = STATE_DATA_XOR; // XOR next byte
       }
       else if (data == START_STOP) {
@@ -225,8 +225,8 @@ void Bluetooth::processTrainerByte(uint8_t data)
 void Bluetooth::pushByte(uint8_t byte)
 {
   crc ^= byte;
-  if (byte == START_STOP || byte == BYTESTUFF) {
-    buffer[bufferIndex++] = 0x7d;
+  if (byte == START_STOP || byte == BYTE_STUFF) {
+    buffer[bufferIndex++] = BYTE_STUFF;
     byte ^= STUFF_MASK;
   }
   buffer[bufferIndex++] = byte;
