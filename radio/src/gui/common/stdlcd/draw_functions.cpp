@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include <math.h>
 
-void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t protocol, LcdFlags flags)
+void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
 {
   if(protocol <= MODULE_SUBTYPE_MULTI_LAST) {
     lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
@@ -36,7 +36,7 @@ void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_
   }
 }
 
-void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t subType, LcdFlags flags)
+void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags)
 {
   const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
   if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
