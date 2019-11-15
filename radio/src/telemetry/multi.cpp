@@ -580,8 +580,9 @@ void MultiModuleStatus::getStatusString(char * statusText)
     *tmp++ = '.';
     tmp = strAppendUnsigned(tmp, patch);
 
-    if (isBinding())
+    if (isBinding()) {
       strcpy(tmp, " " TR_MODULE_BINDING);
+    }
     else if(ch_order!=0xFF) {
       uint8_t temp=ch_order;
       *tmp++ = ' ';
