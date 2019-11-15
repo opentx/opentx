@@ -96,9 +96,7 @@ bool checkScreenshot(const QString & test)
   }
 }
 
-#if defined(COLORLCD)
-// TODO
-#else
+#if !defined(COLORLCD)
 TEST(outdezNAtt, test_unsigned)
 {
   lcdClear();
@@ -236,6 +234,19 @@ TEST(Lcd, Midsize)
   }
 
   EXPECT_TRUE(checkScreenshot("midsize"));
+}
+
+TEST(Lcd, MidsizeNextPosPrec1)
+{
+  lcdClear();
+
+  lcdDrawText(10, 1, "80", MIDSIZE);
+  lcdDrawText(lcdNextPos, 1, "V", MIDSIZE);
+
+  lcdDrawNumber(10, 15, 80, MIDSIZE | PREC1);
+  lcdDrawText(lcdNextPos, 15, "V", MIDSIZE);
+
+  EXPECT_TRUE(checkScreenshot("MidsizeNextPosPrec1"));
 }
 
 TEST(Lcd, Dblsize)
