@@ -1454,7 +1454,7 @@ void menuModelSetup(event_t event)
             }
             else {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-                          }
+            }
           }
         }
 #endif

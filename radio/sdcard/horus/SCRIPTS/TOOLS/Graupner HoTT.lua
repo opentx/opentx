@@ -125,7 +125,7 @@ local function HoTT_Run(event)
       multiBuffer( 5, 0xDF )
     end
     HoTT_Draw_LCD()
-	return 0
+    return 0
   end
 end
 
