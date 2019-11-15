@@ -603,8 +603,8 @@ void MultiModuleStatus::getStatusString(char * statusText)
         }
         temp>>=2;
       }
+      *tmp = '\0';
     }
-    *tmp = '\0';
   }
 }
 
