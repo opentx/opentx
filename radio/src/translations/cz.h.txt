@@ -479,7 +479,7 @@
 #define TR_DELAYUP                     TR3("Zpoždění Zap", "Zdržet(\43)", "Zpoždění Zap")
 #define TR_SLOWDOWN                    TR3("Zpomalení(-)", "Zpomal(\177)", "Zpomalení(\177)")
 #define TR_SLOWUP                      TR3("Zpomalení(+)", "Zpomal(\176)", "Zpomalení(\176)")
-#define TR_MIXER                       "MIXER"
+#define TR_MIXES                       "MIXER"
 #define TR_CV                          "K"
 #define TR_GV                          TR("G", "GP")
 #define TR_ACHANNEL                    "A\004Kanál"

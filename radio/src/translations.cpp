@@ -146,7 +146,7 @@ const char STR_DELAYDOWN[] = TR_DELAYDOWN;
 const char STR_DELAYUP[] = TR_DELAYUP;
 const char STR_SLOWDOWN[] = TR_SLOWDOWN;
 const char STR_SLOWUP[] = TR_SLOWUP;
-const char STR_MIXER[] = TR_MIXER;
+const char STR_MIXES[] = TR_MIXES;
 const char STR_CV[] = TR_CV;
 const char STR_GV[] = TR_GV;
 const char STR_RANGE[] = TR_RANGE;
@@ -684,7 +684,6 @@ const char STR_MULTI_RFCHAN[] = TR_MULTI_RFCHAN;
 const char STR_NEEDS_FILE[]  = TR_NEEDS_FILE;
 const char STR_EXT_MULTI_SPEC[]  = TR_EXT_MULTI_SPEC;
 const char STR_INT_MULTI_SPEC[]  = TR_INT_MULTI_SPEC;
-
 
 #if LCD_W < 212
 const char STR_SUBTYPE[] = TR_SUBTYPE;

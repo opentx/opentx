@@ -289,13 +289,14 @@ void guiMain(event_t evt)
   lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
 #endif
 
+  bool screenshotRequested = (mainRequestFlags & (1u << REQUEST_SCREENSHOT));
+
   if (!refreshNeeded) {
     DEBUG_TIMER_START(debugTimerMenus);
     while (true) {
       // normal GUI from menus
       const char * warn = warningText;
       uint8_t menu = popupMenuItemsCount;
-
       static bool popupDisplayed = false;
       if (warn || menu) {
         if (popupDisplayed == false) {
@@ -305,7 +306,7 @@ void guiMain(event_t evt)
           lcdStoreBackupBuffer();
           TIME_MEASURE_STOP(storebackup);
         }
-        if (popupDisplayed == false || evt) {
+        if (popupDisplayed == false || evt || screenshotRequested) {
           popupDisplayed = lcdRestoreBackupBuffer();
           if (warn) {
             DISPLAY_WARNING(evt);
@@ -358,6 +359,11 @@ void guiMain(event_t evt)
     DEBUG_TIMER_STOP(debugTimerMenus);
   }
 
+  if (screenshotRequested) {
+    writeScreenshot();
+    mainRequestFlags &= ~(1u << REQUEST_SCREENSHOT);
+  }
+
   if (refreshNeeded) {
     DEBUG_TIMER_START(debugTimerLcdRefresh);
     lcdRefresh();
@@ -365,7 +371,6 @@ void guiMain(event_t evt)
   }
 }
 #elif defined(GUI)
-
 void handleGui(event_t event) {
   // if Lua standalone, run it and don't clear the screen (Lua will do it)
   // else if Lua telemetry view, run it and don't clear the screen
@@ -463,6 +468,11 @@ void guiMain(event_t evt)
   }
 
   lcdRefresh();
+
+  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
+    writeScreenshot();
+    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
+  }
 }
 #endif
 
@@ -530,11 +540,6 @@ void perMain()
   guiMain(evt);
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
-
-  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
-    writeScreenshot();
-    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
-  }
 
 #if defined(PCBX9E) && !defined(SIMU)
   toplcdRefreshStart();

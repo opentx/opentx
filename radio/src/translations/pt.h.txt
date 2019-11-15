@@ -486,7 +486,7 @@
 #define TR_DELAYUP             "Atraso Up"
 #define TR_SLOWDOWN            "Lento  Dn"
 #define TR_SLOWUP              "Lento  Up"
-#define TR_MIXER               "MIXAGENS"
+#define TR_MIXES               "MIXAGENS"
 #define TR_CV                  "CV"
 #define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\004Canal"

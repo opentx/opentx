@@ -501,7 +501,7 @@
 #define TR_DELAYUP             "Post.Su"
 #define TR_SLOWDOWN            "Rall.Giù "
 #define TR_SLOWUP              "Rall.Su"
-#define TR_MIXER               "MIXER"
+#define TR_MIXES               "MIXER"
 #define TR_CV                  "CV"
 #define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\002ingresso"

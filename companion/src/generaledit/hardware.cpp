@@ -40,6 +40,12 @@ void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * na
       else if (index == 5) {
         label->setText("SH");
       }
+      if (index == 6) {
+        label->setText("SI");
+      }
+      else if (index == 7) {
+        label->setText("SJ");
+      }
     }
     if (IS_JUMPER_T12(board)) {
       if (index == 4) {
