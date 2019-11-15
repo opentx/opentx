@@ -418,16 +418,6 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
   }
 }
 
-// sprintf does not work AVR ARM
-// use a small helper function
-static void appendInt(char * buf, uint32_t val)
-{
-  while (*buf)
-    buf++;
-
-  strAppendUnsigned(buf, val);
-}
-
 #define MIN_REFRESH_RATE      5500
 
 void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag)
@@ -507,19 +497,14 @@ uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate()
     return rate;
 }
 
-
-static void prependSpaces(char * buf, int val)
+char * prependSpaces(char * buf, int val)
 {
-  while (*buf)
-    buf++;
-
   int k = 10000;
   while (val / k == 0 && k > 0) {
-    *buf = ' ';
-    buf++;
+    *buf++ = ' ';
     k /= 10;
   }
-  *buf = '\0';
+  return buf;
 }
 
 void MultiModuleSyncStatus::getRefreshString(char * statusText)
@@ -528,13 +513,14 @@ void MultiModuleSyncStatus::getRefreshString(char * statusText)
     return;
   }
 
-  strcpy(statusText, "L ");
-  prependSpaces(statusText, inputLag);
-  appendInt(statusText, inputLag);
-  strcat(statusText, "us R ");
-  prependSpaces(statusText, adjustedRefreshRate / 1000);
-  appendInt(statusText, (uint32_t) (adjustedRefreshRate / 1000));
-  strcat(statusText, "us");
+  char * tmp = statusText;
+  *tmp++ = 'L';
+  tmp = prependSpaces(tmp, inputLag);
+  tmp = strAppendUnsigned(tmp, inputLag);
+  tmp = strAppend(tmp, "us R ");
+  tmp = prependSpaces(tmp, adjustedRefreshRate / 1000);
+  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000));
+  tmp = strAppend(tmp, "us");
 }
 
 void MultiModuleStatus::getStatusString(char * statusText)
