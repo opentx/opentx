@@ -1534,15 +1534,12 @@ static int luaMultiBuffer(lua_State * L)
   }
   uint16_t value = luaL_optunsigned(L, 2, 0x100);
   if (value < 0x100) {
+    Multi_Buffer[address] = value;
     if (address == 0x00 && value == 0x00) {
-      Multi_Buffer[address] = value;
       free(Multi_Buffer);
       Multi_Buffer = nullptr;
       lua_pushinteger(L, 0);
       return 1;
-    }
-    else {
-      Multi_Buffer[address] = value;
     }
   }
   lua_pushinteger(L, Multi_Buffer[address]);
