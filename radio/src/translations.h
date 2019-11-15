@@ -255,7 +255,7 @@ extern const char STR_DELAYDOWN[];
 extern const char STR_DELAYUP[];
 extern const char STR_SLOWDOWN[];
 extern const char STR_SLOWUP[];
-extern const char STR_MIXER[];
+extern const char STR_MIXES[];
 extern const char STR_CV[];
 extern const char STR_GV[];
 extern const char STR_RANGE[];
