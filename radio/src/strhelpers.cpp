@@ -503,16 +503,6 @@ char * strAppendFilename(char * dest, const char * filename, const int size)
   return dest;
 }
 
-char * prependSpaces(char * buf, int val)
-{
-  int k = 10000;
-  while (val / k == 0 && k > 0) {
-    *buf++ = ' ';
-    k /= 10;
-  }
-  return buf;
-}
-
 #if defined(RTCLOCK)
 #include "rtc.h"
 

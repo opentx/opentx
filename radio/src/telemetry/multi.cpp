@@ -504,13 +504,17 @@ void MultiModuleSyncStatus::getRefreshString(char * statusText)
   }
 
   char * tmp = statusText;
+#if defined(DEBUG)
   *tmp++ = 'L';
-  tmp = prependSpaces(tmp, inputLag);
-  tmp = strAppendUnsigned(tmp, inputLag);
+  tmp = strAppendUnsigned(tmp, inputLag, 5);
   tmp = strAppend(tmp, "us R ");
-  tmp = prependSpaces(tmp, adjustedRefreshRate / 1000);
-  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000));
+  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000), 5);
   tmp = strAppend(tmp, "us");
+#else
+  tmp = strAppend(tmp, "Sync at ");
+  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000000));
+  tmp = strAppend(tmp, " ms");
+#endif
 }
 
 void MultiModuleStatus::getStatusString(char * statusText)
