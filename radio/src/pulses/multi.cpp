@@ -158,7 +158,7 @@ void setupPulsesMulti(uint8_t moduleIdx)
   sendFrameProtocolHeader(moduleIdx, type&MULTI_FAILSAFE);
 
   // Send channels
-  if(type&MULTI_FAILSAFE)
+  if (type & MULTI_FAILSAFE)
     sendFailsafeChannels(moduleIdx);
   else
     sendChannels(moduleIdx);
@@ -172,19 +172,19 @@ void setupPulsesMulti(uint8_t moduleIdx)
                            |  g_model.moduleData[moduleIdx].multi.disableMapping ));
   
   // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
-  #if defined(LUA)
-    if(getMultiModuleStatus(moduleIdx).isValid()) {
-      MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-      if(status.minor>=3 && !(status.flags&0x80) )
-      { //Version 1.3.x.x or more and Buffer not full
-        // SPort send
-        if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
-          sendSport(moduleIdx);	//8 bytes of additional data
-        } else if(IS_HOTT_MULTI(moduleIdx)) {
-          sendHott(moduleIdx);	//1 byte of additional data
-        }
+#if defined(LUA)
+  if (getMultiModuleStatus(moduleIdx).isValid()) {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.minor >= 3 && !(status.flags & 0x80)) { //Version 1.3.x.x or more and Buffer not full
+      // SPort send
+      if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
+        sendSport(moduleIdx);        //8 bytes of additional data
+      }
+      else if (IS_HOTT_MULTI(moduleIdx)) {
+        sendHott(moduleIdx);        //1 byte of additional data
       }
     }
+  }
   #endif
 }
 
@@ -269,7 +269,7 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
       subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
     // Multi module in DSM mode wants the number of channels to be used as option value
-    if(optionValue)
+    if (optionValue)
       optionValue = 0x80 | sentModuleChannels(moduleIdx); // Max throw
     else
       optionValue = sentModuleChannels(moduleIdx);
@@ -362,8 +362,9 @@ void sendSport(uint8_t moduleIdx)
       buffer[j] = outputTelemetryBuffer.data[i] ;
     j++;
   }
-  for(uint8_t i=0;i<8;i++)       //send to multi
+  for (uint8_t i = 0; i < 8; i++) {      //send to multi
     sendMulti(moduleIdx, buffer[i]);
+  }
   outputTelemetryBuffer.reset(); //empty buffer
 }
 
@@ -371,7 +372,7 @@ extern uint8_t *Multi_Buffer;
 
 void sendHott(uint8_t moduleIdx)
 {
-  if(Multi_Buffer!=NULL && memcmp(Multi_Buffer,"HoTT",4)==0 && Multi_Buffer[5]>=0xD7 && Multi_Buffer[5]<=0xDF)
+  if (Multi_Buffer != NULL && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF)
   {// HoTT Lua script is running
       sendMulti(moduleIdx, Multi_Buffer[5]);
   }
