@@ -432,6 +432,37 @@ void lcdDrawBlackOverlay()
   lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, OVERLAY_COLOR | OPACITY(8));
 }
 
+#if defined(MULTIMODULE)
+void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
+{
+  if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
+    lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
+  }
+  else {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.protocolName[0] && status.isValid())
+      lcdDrawText(x, y, status.protocolName, flags);
+    else
+      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
+  }
+}
+
+void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags)
+{
+  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+  if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
+    lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
+  }
+  else {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.protocolName[0] && status.isValid())
+      lcdDrawText(x, y, status.protocolSubName, flags);
+    else
+      lcdDrawNumber(x, y, subType, flags);
+  }
+}
+#endif
+
 #if defined(SIMU)
 BitmapBuffer _lcd(BMP_RGB565, LCD_W, LCD_H, displayBuf);
 BitmapBuffer * lcd = &_lcd;

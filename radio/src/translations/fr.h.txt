@@ -652,7 +652,9 @@
 #define TR_RFPOWER                     TR(INDENT "Puiss. RF", INDENT "Puissance RF")
 #define TR_MULTI_FIXEDID               "ID fixe"
 #define TR_MULTI_OPTION                TR(INDENT "Option", INDENT "Option perso")
-#define TR_MULTI_AUTOBIND              TR(INDENT "Bind auto", INDENT "Bind automatique")
+#define TR_MULTI_AUTOBIND              TR(INDENT "Bind voie", INDENT "Bind sur voie")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Désact réorg voies")
+#define TR_DISABLE_TELEM               TR("No Telem", "Désact Télémétrie")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodét.", INDENT "Autodétection")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "Lien S.Port")
@@ -663,6 +665,7 @@
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Binder d'abord"
 #define TR_MODULE_BINDING              "Bind..."
+#define TR_MODULE_UPGRADE              "Mise à jour requise"
 #define TR_REBIND                      "Rebind requis"
 #define TR_REG_OK                      "Enregistr. ok"
 #define TR_BIND_OK                     "Bind ok"
@@ -672,8 +675,10 @@
 #define TR_BINDING_CH9_16_TELEM_OFF    "Ch9-16 Télem OFF"
 #define TR_PROTOCOL_INVALID            TR("Sél. invalide", "Protocole invalide")
 #define TR_MODULE_STATUS               TR(INDENT "Etat", INDENT "Etat module")
-#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Fréq.servo", INDENT "Fréquence servos")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
+#define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
 #define TR_SYNCMENU                    "Sync [MENU]"
 #define TR_LIMIT                       INDENT "Limite"
 #define TR_MINRSSI                     "RSSI Min."

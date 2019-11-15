@@ -390,6 +390,8 @@ extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
+extern const char STR_DISABLE_CH_MAP[];
+extern const char STR_DISABLE_TELEM[];
 extern const char STR_MULTI_DSM_AUTODTECT[];
 extern const char STR_MULTI_LOWPOWER[];
 extern const char STR_MODULE_NO_SERIAL_MODE[];
@@ -397,10 +399,13 @@ extern const char STR_MODULE_NO_INPUT[];
 extern const char STR_MODULE_WAITFORBIND[];
 extern const char STR_MODULE_NO_TELEMETRY[];
 extern const char STR_MODULE_BINDING[];
+extern const char STR_MODULE_UPGRADE[];
 extern const char STR_PROTOCOL_INVALID[];
 extern const char STR_MODULE_STATUS[];
 extern const char STR_MODULE_SYNC[];
 extern const char STR_MULTI_SERVOFREQ[];
+extern const char STR_MULTI_MAX_THROW[];
+extern const char STR_MULTI_RFCHAN[];
 #if LCD_W < 212
 extern const char STR_SUBTYPE[];
 #endif

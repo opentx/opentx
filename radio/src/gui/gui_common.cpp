@@ -780,6 +780,37 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   return retval;
 }
 #if defined(MULTIMODULE)
+
+// This maps OpenTX multi type with Pascal's Multi type
+uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
+{
+
+  // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
+  // all protos > frskyx are therefore also off by one
+  if (type >= 15)
+    type = type + 1;
+
+  // 25 is again a FrSky protocol (FrskyV) so shift again
+  if (type >= 25)
+    type = type + 1;
+
+  if (type == MODULE_SUBTYPE_MULTI_FRSKY) {
+    int subtype = g_model.moduleData[moduleIdx].subType;
+    if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
+      //D8
+      type = 3;
+    }
+    else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
+      //V8
+      type = 25;
+    }
+    else {
+      type = 15;
+    }
+  }
+  return type;
+}
+
 // Third row is number of subtypes -1 (max valid subtype)
 #define NO_SUBTYPE  nullptr
 
@@ -804,7 +835,7 @@ const char STR_SUBTYPE_SYMAX[] =      "\003""Std""X5C";
 const char STR_SUBTYPE_SLT[] =        "\006""V1_6ch""V2_8ch""Q100\0 ""Q200\0 ""MR100\0";
 const char STR_SUBTYPE_CX10[] =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041";
 const char STR_SUBTYPE_CG023[] =      "\005""Std\0 ""YD829";
-const char STR_SUBTYPE_BAYANG[] =     "\007""Std\0   ""H8S3D\0 ""X16 AH\0 ""IRDrone""DHD D4";
+const char STR_SUBTYPE_BAYANG[] =     "\007""Std\0   ""H8S3D\0 ""X16 AH\0""IRDrone""DHD D4";
 const char STR_SUBTYPE_MT99[] =       "\006""MT99\0 ""H7\0   ""YZ\0   ""LS\0   ""FY805";
 const char STR_SUBTYPE_MJXQ[] =       "\007""WLH08\0 ""X600\0  ""X800\0  ""H26D\0  ""E010\0  ""H26WH\0 ""Phoenix";
 const char STR_SUBTYPE_FY326[] =      "\005""Std\0 ""FY319";
@@ -825,53 +856,66 @@ const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
 const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
-const char STR_SUBTYPE_FRSKYX_RX[] =  "\003""FCC""LBT";
+
+const char* mm_options_strings::options[] = {
+  nullptr,
+  STR_MULTI_OPTION,
+  STR_MULTI_RFTUNE,
+  STR_MULTI_VIDFREQ,
+  STR_MULTI_FIXEDID,
+  STR_MULTI_TELEMETRY,
+  STR_MULTI_SERVOFREQ,
+  STR_MULTI_MAX_THROW,
+  STR_MULTI_RFCHAN
+};
 
 const mm_protocol_definition multi_protocols[] = {
-
-  {MODULE_SUBTYPE_MULTI_FLYSKY,     4, false,      STR_SUBTYPE_FLYSKY,    nullptr},
-  {MODULE_SUBTYPE_MULTI_HUBSAN,     2, false,      STR_SUBTYPE_HUBSAN,    STR_MULTI_VIDFREQ},
-  {MODULE_SUBTYPE_MULTI_FRSKY,      5, false,      STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_HISKY,      1, false,      STR_SUBTYPE_HISKY,     nullptr},
-  {MODULE_SUBTYPE_MULTI_V2X2,       1, false,      STR_SUBTYPE_V2X2,      nullptr},
-  {MODULE_SUBTYPE_MULTI_DSM2,       3, false,      STR_SUBTYPE_DSM,       nullptr},
-  {MODULE_SUBTYPE_MULTI_DEVO,       4, false,      STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
-  {MODULE_SUBTYPE_MULTI_YD717,      4, false,      STR_SUBTYPE_YD717,     nullptr},
-  {MODULE_SUBTYPE_MULTI_KN,         1, false,      STR_SUBTYPE_KN,        nullptr},
-  {MODULE_SUBTYPE_MULTI_SYMAX,      1, false,      STR_SUBTYPE_SYMAX,     nullptr},
-  {MODULE_SUBTYPE_MULTI_SLT,        4, false,      STR_SUBTYPE_SLT,       nullptr},
-  {MODULE_SUBTYPE_MULTI_CX10,       6, false,      STR_SUBTYPE_CX10,      nullptr},
-  {MODULE_SUBTYPE_MULTI_CG023,      1, false,      STR_SUBTYPE_CG023,     nullptr},
-  {MODULE_SUBTYPE_MULTI_BAYANG,     4, false,      STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
-  {MODULE_SUBTYPE_MULTI_MT99XX,     4, false,      STR_SUBTYPE_MT99,      nullptr},
-  {MODULE_SUBTYPE_MULTI_MJXQ,       6, false,      STR_SUBTYPE_MJXQ,      STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_FY326,      1, false,      STR_SUBTYPE_FY326,     nullptr},
-  {MODULE_SUBTYPE_MULTI_SFHSS,      0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_HONTAI,     3, false,      STR_SUBTYPE_HONTAI,    nullptr},
-  {MODULE_SUBTYPE_MULTI_OLRS,       0, false,      NO_SUBTYPE,            STR_RFPOWER},
-  {MODULE_SUBTYPE_MULTI_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
-  {MODULE_SUBTYPE_MULTI_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,      nullptr},
-  {MODULE_SUBTYPE_MULTI_WK_2X01,    5, false,      STR_SUBTYPE_WK2x01,    nullptr},
-  {MODULE_SUBTYPE_MULTI_Q303,       3, false,      STR_SUBTYPE_Q303,      nullptr},
-  {MODULE_SUBTYPE_MULTI_CABELL,     7, false,      STR_SUBTYPE_CABELL,    STR_MULTI_OPTION},
-  {MODULE_SUBTYPE_MULTI_H83D,       3, false,      STR_SUBTYPE_H83D,      nullptr},
-  {MODULE_SUBTYPE_MULTI_CORONA,     2, false,      STR_SUBTYPE_CORONA,    STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_HITEC,      2, false,      STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
-  {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false,      STR_SUBTYPE_TRAXXAS,   nullptr},
-  {MODULE_SUBTYPE_MULTI_E01X,       2, false,      STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
-  {MODULE_SUBTYPE_MULTI_V911S,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_REDPINE,    1, false,      STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false,      STR_SUBTYPE_POTENSIC,  nullptr},
-  {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      STR_SUBTYPE_ZSX,       nullptr},
-  {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false,      STR_SUBTYPE_FLYZONE,   nullptr},
-  {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false,      STR_SUBTYPE_FRSKYX_RX, STR_MULTI_RFTUNE},
-  {MM_RF_CUSTOM_SELECTED,           7, true,       NO_SUBTYPE,            STR_MULTI_OPTION},
+// Protocol as defined in pulses\modules_constants.h, number of sub_protocols - 1, Failsafe supported, Disable channel mapping supported, Subtype string, Option type
+  {MODULE_SUBTYPE_MULTI_FLYSKY,     4, false, true,   STR_SUBTYPE_FLYSKY,    nullptr},
+  {MODULE_SUBTYPE_MULTI_HUBSAN,     2, false, false,  STR_SUBTYPE_HUBSAN,    STR_MULTI_VIDFREQ},
+  {MODULE_SUBTYPE_MULTI_FRSKY,      5, false, false,  STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_HISKY,      1, false, true,   STR_SUBTYPE_HISKY,     nullptr},
+  {MODULE_SUBTYPE_MULTI_V2X2,       1, false, false,  STR_SUBTYPE_V2X2,      nullptr},
+  {MODULE_SUBTYPE_MULTI_DSM2,       3, false, true,   STR_SUBTYPE_DSM,       STR_MULTI_MAX_THROW},
+  {MODULE_SUBTYPE_MULTI_DEVO,       4, false, true,   STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
+  {MODULE_SUBTYPE_MULTI_YD717,      4, false, false,  STR_SUBTYPE_YD717,     nullptr},
+  {MODULE_SUBTYPE_MULTI_KN,         1, false, false,  STR_SUBTYPE_KN,        nullptr},
+  {MODULE_SUBTYPE_MULTI_SYMAX,      1, false, false,  STR_SUBTYPE_SYMAX,     nullptr},
+  {MODULE_SUBTYPE_MULTI_SLT,        4, false, true,   STR_SUBTYPE_SLT,       nullptr},
+  {MODULE_SUBTYPE_MULTI_CX10,       6, false, false,  STR_SUBTYPE_CX10,      nullptr},
+  {MODULE_SUBTYPE_MULTI_CG023,      1, false, false,  STR_SUBTYPE_CG023,     nullptr},
+  {MODULE_SUBTYPE_MULTI_BAYANG,     4, false, false,  STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
+  {MODULE_SUBTYPE_MULTI_MT99XX,     4, false, false,  STR_SUBTYPE_MT99,      nullptr},
+  {MODULE_SUBTYPE_MULTI_MJXQ,       6, false, false,  STR_SUBTYPE_MJXQ,      STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FY326,      1, false, false,  STR_SUBTYPE_FY326,     nullptr},
+  {MODULE_SUBTYPE_MULTI_SFHSS,      0, true,  true,   NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_HONTAI,     3, false, false,  STR_SUBTYPE_HONTAI,    nullptr},
+  {MODULE_SUBTYPE_MULTI_OLRS,       0, false, false,  NO_SUBTYPE,            STR_RFPOWER},
+  {MODULE_SUBTYPE_MULTI_FS_AFHDS2A, 3, true,  true,   STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
+  {MODULE_SUBTYPE_MULTI_Q2X2,       2, false, false,  STR_SUBTYPE_Q2X2,      nullptr},
+  {MODULE_SUBTYPE_MULTI_WK_2X01,    5, false, true,   STR_SUBTYPE_WK2x01,    nullptr},
+  {MODULE_SUBTYPE_MULTI_Q303,       3, false, false,  STR_SUBTYPE_Q303,      nullptr},
+  {MODULE_SUBTYPE_MULTI_CABELL,     7, false, false,  STR_SUBTYPE_CABELL,    STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_H83D,       3, false, false,  STR_SUBTYPE_H83D,      nullptr},
+  {MODULE_SUBTYPE_MULTI_CORONA,     2, false, false,  STR_SUBTYPE_CORONA,    STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_HITEC,      2, false, false,  STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false, false,  STR_SUBTYPE_BUGS_MINI, nullptr},
+  {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false, false,  STR_SUBTYPE_TRAXXAS,   nullptr},
+  {MODULE_SUBTYPE_MULTI_E01X,       2, false, false,  STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_V911S,      0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_GD00X,      1, false, false,  STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_KF606,      0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_REDPINE,    1, false, false,  STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false, false,  STR_SUBTYPE_POTENSIC,  nullptr},
+  {MODULE_SUBTYPE_MULTI_ZSX,        0, false, false,  STR_SUBTYPE_ZSX,       nullptr},
+  {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false, false,  STR_SUBTYPE_FLYZONE,   nullptr},
+  {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_ESky,       0, false, true,   NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_J6PRO,      0, false, true,   NO_SUBTYPE,            nullptr},
+  {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
-  {0xfe,                            0, false,      NO_SUBTYPE,            nullptr}
+  {0xfe,                            0, false, true,   NO_SUBTYPE,            nullptr}
 };
 
 #undef NO_SUBTYPE

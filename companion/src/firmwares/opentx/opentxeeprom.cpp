@@ -2037,9 +2037,10 @@ class ModuleUnionField: public UnionField<unsigned int> {
         rfProtExtra(0)
       {
         ModuleData::Multi& multi = module.multi;
-        internalField.Append(new UnsignedField<2>(this, rfProtExtra));
-        internalField.Append(new SpareBitsField<3>(this));
-        internalField.Append(new BoolField<1>(this, multi.customProto));
+        internalField.Append(new UnsignedField<3>(this, rfProtExtra));
+        internalField.Append(new BoolField<1>(this, multi.disableTelemetry));
+        internalField.Append(new BoolField<1>(this, multi.disableMapping));
+        internalField.Append(new SpareBitsField<1>(this));
         internalField.Append(new BoolField<1>(this, multi.autoBindMode));
         internalField.Append(new BoolField<1>(this, multi.lowPowerMode));
         internalField.Append(new SignedField<8>(this, multi.optionValue));
@@ -2052,12 +2053,17 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        rfProtExtra = (module.multi.rfProtocol >> 4) & 0x03;
+        if (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
+          module.multi.rfProtocol += 3;
+        rfProtExtra = (module.multi.rfProtocol & 0x70) >> 4;
+        module.multi.rfProtocol &= 0x0f;
       }
 
       void afterImport() override
       {
-        module.multi.rfProtocol = (rfProtExtra & 0x3) << 4 | (module.rfProtocol & 0xf);
+        module.multi.rfProtocol = (rfProtExtra << 4) + (module.rfProtocol & 0xf);
+        if (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
+          module.multi.rfProtocol -= 3;
       }
 
     private:

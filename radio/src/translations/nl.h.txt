@@ -637,7 +637,9 @@
 #define TR_RFPOWER       "RF Power"
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION        TR("Option", "Option value")
-#define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on channel")
+#define TR_MULTI_AUTOBIND      TR(INDENT "Bind Ch.",INDENT "Bind on channel")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable Ch. map")
+#define TR_DISABLE_TELEM               TR("No Telem", "Disable Telemetry")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
@@ -648,6 +650,7 @@
 #define TR_MODULE_NO_TELEMETRY         TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Binding"
+#define TR_MODULE_UPGRADE              "Module upgrade required"
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"
@@ -657,8 +660,10 @@
 #define TR_BINDING_CH9_16_TELEM_OFF               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
-#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ     TR("Servo rate", "Servo update rate")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
+#define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Grenzen"
 #define TR_MINRSSI             "Min. RSSI"
