@@ -91,7 +91,11 @@ endif()
 add_definitions(-DPCBREV=${PCBREV})
 add_definitions(-DPCBREV_${PCBREV})
 
-set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
+set(FIRMWARE_DEPENDENCIES
+  ${FIRMWARE_DEPENDENCIES}
+  ${BITMAPS_TARGET}
+  datacopy
+  )
 
 add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
@@ -222,9 +226,13 @@ set(STM32LIB_SRC
   )
 
 if(PYTHONINTERP_FOUND)
-  add_custom_target(datacopy
+  add_custom_command(
+    OUTPUT ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > storage/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
-  )
+    )
+  add_custom_target(datacopy
+    DEPENDS ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
+    )
 endif()
