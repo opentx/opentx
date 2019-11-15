@@ -567,42 +567,43 @@ void MultiModuleStatus::getStatusString(char * statusText)
     return;
   }
 
-  if(major==1 && minor<3 && SLOW_BLINK_ON_PHASE)
+  if (major == 1 && minor < 3 && SLOW_BLINK_ON_PHASE)
     strcpy(statusText, STR_MODULE_UPGRADE);
-  else
-  {
-    strcpy(statusText, "V");
-    appendInt(statusText, major);
-    strcat(statusText, ".");
-    appendInt(statusText, minor);
-    strcat(statusText, ".");
-    appendInt(statusText, revision);
-    strcat(statusText, ".");
-    appendInt(statusText, patch);
-    strcat(statusText, " ");
+  else {
+    char * tmp = statusText;
+    *tmp++ = 'V';
+    tmp = strAppendUnsigned(tmp, major);
+    *tmp++ = '.';
+    tmp = strAppendUnsigned(tmp, minor);
+    *tmp++ = '.';
+    tmp = strAppendUnsigned(tmp, revision);
+    *tmp++ = '.';
+    tmp = strAppendUnsigned(tmp, patch);
 
     if (isBinding())
-      strcat(statusText, STR_MODULE_BINDING);
+      strcpy(tmp, " " TR_MODULE_BINDING);
     else if(ch_order!=0xFF) {
       uint8_t temp=ch_order;
+      *tmp++ = ' ';
       for(uint8_t i=0;i<4;i++) {
         switch(temp&0x03) {
           case 0:
-            strcat(statusText, "A");
+            *tmp++ = 'A';
             break;
           case 1:
-            strcat(statusText, "E");
+            *tmp++ = 'E';
             break;
           case 2:
-            strcat(statusText, "T");
+            *tmp++ = 'T';
             break;
           case 3:
-            strcat(statusText, "R");
+            *tmp++ = 'R';
             break;
         }
         temp>>=2;
       }
     }
+    *tmp = '\0';
   }
 }
 
