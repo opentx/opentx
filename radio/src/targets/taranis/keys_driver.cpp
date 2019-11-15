@@ -235,15 +235,6 @@ uint32_t switchState(uint8_t index)
 }
 #endif
 
-#define INIT_KEYS_PINS(GPIO) \
-  GPIO_InitStructure.GPIO_Pin = KEYS_ ## GPIO ## _PINS; \
-  GPIO_Init(GPIO, &GPIO_InitStructure)
-
-#define SET_PINS_HIGH(GPIO) \
-  GPIO_InitStructure.GPIO_Pin = KEYS_ ## GPIO ## _PINS; \
-  GPIO_Init(GPIO, &GPIO_InitStructure); \
-  GPIO_SetBits(GPIO, KEYS_ ## GPIO ## _PINS)
-
 void keysInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -253,8 +244,8 @@ void keysInit()
 
 #if defined(PCBX9DP) && PCBREV == 2019
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  SET_PINS_HIGH(GPIOC);
-  SET_PINS_HIGH(GPIOE);
+  SET_KEYS_PINS_HIGH(GPIOC);
+  SET_KEYS_PINS_HIGH(GPIOE);
 #endif
 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
