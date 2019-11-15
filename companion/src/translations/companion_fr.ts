@@ -2973,7 +2973,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
         <source>Support for bluetooth module</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du module Bluetooth</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
@@ -8750,12 +8750,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="956"/>
         <source>Disable Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver la télémétrie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="963"/>
         <source>Disable Ch. Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver &quot;Mapping&quot; des VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="1031"/>
