@@ -1072,7 +1072,7 @@ bool menuModelSetup(event_t event)
         else if (isModuleMultimodule(moduleIdx)) {
           int multi_rfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
           lcdDrawMultiProtocolString(MODEL_SETUP_3RD_COLUMN, y, moduleIdx, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
-          if(MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
+          if (MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
             lcdDrawMultiSubProtocolString(MODEL_SETUP_4TH_COLUMN, y, moduleIdx, g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==2 ? attr : 0);
         }
 #endif

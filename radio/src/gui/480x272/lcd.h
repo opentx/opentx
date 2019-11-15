@@ -116,8 +116,8 @@ extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags=0);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
-void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t protocol, LcdFlags flags=0);
-void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t  moduleIdx, uint8_t subType, LcdFlags flags);
+void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags=0);
+void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags);
 
 inline void lcdClear()
 {
