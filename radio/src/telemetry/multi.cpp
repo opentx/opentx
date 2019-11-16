@@ -568,24 +568,14 @@ void MultiModuleStatus::getStatusString(char * statusText) const
     else if (ch_order != 0xFF) {
       uint8_t temp = ch_order;
       *tmp++ = ' ';
-      for (uint8_t i = 0; i < 4; i++) {
-        switch (temp & 0x03) {
-          case 0:
-            *tmp++ = 'A';
-            break;
-          case 1:
-            *tmp++ = 'E';
-            break;
-          case 2:
-            *tmp++ = 'T';
-            break;
-          case 3:
-            *tmp++ = 'R';
-            break;
-        }
-        temp >>= 2;
-      }
-      *tmp = '\0';
+      *(tmp + (temp & 0x03)) = 'A';
+      temp >>= 2;
+      *(tmp + (temp & 0x03)) = 'E';
+      temp >>= 2;
+      *(tmp + (temp & 0x03)) = 'T';
+      temp >>= 2;
+      *(tmp + (temp & 0x03)) = 'R';
+      *(tmp + 4) = '\0';
     }
   }
 }
