@@ -93,7 +93,11 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_OPTIONS,
+#if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_AUTOBIND,
+  ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_TELEM,
+  ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_MAPPING,
+#endif
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_ANTENNA,
 #endif
@@ -1597,15 +1601,22 @@ void menuModelSetup(event_t event)
         else
           g_model.moduleData[moduleIdx].multi.autoBindMode = editCheckBox(g_model.moduleData[moduleIdx].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_AUTOBIND, attr, event);
         break;
-
+#if defined(HARDWARE_INTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_TELEM:
+#endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_TELEM:
         g_model.moduleData[moduleIdx].multi.disableTelemetry = editCheckBox(g_model.moduleData[moduleIdx].multi.disableTelemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT TR_DISABLE_TELEM, attr, event);
         break;
-
+#if defined(HARDWARE_INTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_MAPPING:
+#endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_MAPPING:
         g_model.moduleData[moduleIdx].multi.disableMapping = editCheckBox(g_model.moduleData[moduleIdx].multi.disableMapping, MODEL_SETUP_2ND_COLUMN, y, INDENT TR_DISABLE_CH_MAP, attr, event);
         break;
 
+#if defined(HARDWARE_INTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS:
+#endif
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS: {
         lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
 
