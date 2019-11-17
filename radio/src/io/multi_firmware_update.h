@@ -76,7 +76,7 @@ class MultiFirmwareInformation {
 
     bool isMultiExternalFirmware() const
     {
-      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == true && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
+      return (telemetryInversion == true && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     const char * readMultiFirmwareInformation(const char * filename);
