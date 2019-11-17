@@ -105,6 +105,11 @@ void init10msTimer()
   NVIC_EnableIRQ(INTERRUPT_xMS_IRQn);
 }
 
+void deinit10msTimer()
+{
+  NVIC_DisableIRQ(INTERRUPT_xMS_IRQn);
+}
+
 extern "C" void INTERRUPT_xMS_IRQHandler()
 {
   INTERRUPT_xMS_TIMER->SR &= ~TIM_SR_UIF;
@@ -509,6 +514,11 @@ int main()
 #if !defined(EEPROM)
       // Use jump on radios with emergency mode
       // to avoid triggering it with a soft reset
+
+      // disable interrupts before jump to application
+      usbStop();
+      rotaryEncoderStop();
+      deinit10msTimer();
 
       // Jump to proper application address
       jumpTo(APP_START_ADDRESS);

@@ -69,6 +69,15 @@ void rotaryEncoderInit()
   NVIC_SetPriority(ROTARY_ENCODER_TIMER_IRQn, 7);
 }
 
+void rotaryEncoderStop()
+{
+  NVIC_DisableIRQ(ROTARY_ENCODER_TIMER_IRQn);
+  NVIC_DisableIRQ(ROTARY_ENCODER_EXTI_IRQn1);
+#if defined(ROTARY_ENCODER_EXTI_IRQn2)
+  NVIC_DisableIRQ(ROTARY_ENCODER_EXTI_IRQn2);
+#endif
+}
+
 void rotaryEncoderCheck()
 {
 #if defined(RADIO_T16)

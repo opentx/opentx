@@ -303,6 +303,7 @@ uint32_t readTrims();
 #define ROTARY_ENCODER_NAVIGATION
 void rotaryEncoderInit();
 void rotaryEncoderCheck();
+void rotaryEncoderStop();
 
 // WDT driver
 #define WDTO_500MS                              500
