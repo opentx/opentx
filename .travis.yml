@@ -51,10 +51,9 @@ before_install:
   - sudo apt-get update -qq
   - pyenv uninstall -f 2.7.6 && pyenv install 3.5.4 && pyenv global 3.5.4
   - pip install pillow
-  - pip install clang
 
 install:
-  - sudo apt-get --yes --force-yes install curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
+  - sudo apt-get --yes --force-yes install curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev python-clang
   - sudo apt-get --yes --force-yes install gcc-arm-none-eabi
       # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
       # - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
