@@ -29,10 +29,6 @@ extern "C" {
 }
 #endif
 
-uint32_t shutdownRequest;          // Stores intentional shutdown to avoid reboot loop
-uint32_t shutdownReason;           // Used for detecting unexpected reboots regardless of reason
-uint32_t powerupReason __NOINIT;   // Stores power up reason beyond initialization for emergency mode activation
-
 HardwareOptions hardwareOptions;
 
 void watchdogInit(unsigned int duration)
@@ -173,6 +169,7 @@ void boardInit()
 #endif
 
   ledInit();
+
 #if defined(PCBX10) && !defined(RADIO_T16)
   sportUpdateInit();
 #endif
@@ -209,8 +206,7 @@ void boardOff()
   // Shutdown the Haptic
   hapticDone();
 
-  shutdownRequest = SHUTDOWN_REQUEST;
-  shutdownReason = NORMAL_POWER_OFF;
+  ramBackup->shutdownRequest = SHUTDOWN_REQUEST;
 
   pwrOff();
 }

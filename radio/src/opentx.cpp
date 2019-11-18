@@ -1966,15 +1966,17 @@ void opentxInit()
     opentxStart();
   }
 
-  // TODO Horus does not need this
+#if !defined(RAMBACKUP)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
   }
+#endif
 
 #if defined(GUI)
   lcdSetContrast();
 #endif
+
   backlightOn();
 
   startPulses();
@@ -2018,7 +2020,8 @@ int main()
 #endif
 
 #if defined(SPLASH) && !defined(STARTUP_ANIMATION)
-  drawSplash();
+  if (!UNEXPECTED_SHUTDOWN())
+    drawSplash();
 #endif
 
 #if defined(PCBHORUS)

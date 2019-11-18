@@ -82,10 +82,12 @@ void rtcInit()
   RTC_InitStruct.RTC_AsynchPrediv = 127;
   RTC_InitStruct.RTC_SynchPrediv = 255;
   RTC_Init(&RTC_InitStruct);
-  
+
+#if !defined(BOOT)
   struct gtm utm;
   rtcGetTime(&utm);
   g_rtcTime = gmktime(&utm);
+#endif
 
 #if defined(RAMBACKUP)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, ENABLE);

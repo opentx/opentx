@@ -28,6 +28,10 @@
   #define BOOTLOADER_KEYS                 0x42
 #endif
 
+#if defined(RAMBACKUP)
+RamBackup * ramBackup = (RamBackup *)BKPSRAM_BASE;
+#endif
+
 #define APP_START_ADDRESS               (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
 
 #if defined(EEPROM)
@@ -506,16 +510,12 @@ int main()
       lcdRefresh();
       lcdRefreshWait();
 
-#if !defined(EEPROM)
-      // Use jump on radios with emergency mode
-      // to avoid triggering it with a soft reset
-
-      // Jump to proper application address
-      jumpTo(APP_START_ADDRESS);
-#else
-      // Use software reset everywhere else
-      NVIC_SystemReset();
+#if defined(RAMBACKUP)
+      rtcInit();
+      ramBackup->shutdownRequest = SOFTRESET_REQUEST;
 #endif
+
+      NVIC_SystemReset();
     }
   }
 
@@ -523,5 +523,5 @@ int main()
 }
 
 #if defined(PCBHORUS)
-void *__dso_handle = 0;
+void *__dso_handle = nullptr;
 #endif

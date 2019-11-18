@@ -306,12 +306,6 @@ void rotaryEncoderCheck();
 
 // WDT driver
 #define WDTO_500MS                              500
-extern uint32_t powerupReason;
-
-#define SHUTDOWN_REQUEST                        0xDEADBEEF
-#define NO_SHUTDOWN_REQUEST                     ~SHUTDOWN_REQUEST
-#define DIRTY_SHUTDOWN                          0xCAFEDEAD
-#define NORMAL_POWER_OFF                        ~DIRTY_SHUTDOWN
 
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)
@@ -459,8 +453,6 @@ extern "C" {
 
 // Power driver
 #define SOFT_PWR_CTRL
-extern uint32_t shutdownRequest; // Stores intentional shutdown to avoid reboot loop
-extern uint32_t shutdownReason; // Used for detecting unexpected reboots regardless of reason
 void pwrInit();
 uint32_t pwrCheck();
 void pwrOn();
@@ -471,7 +463,7 @@ uint32_t pwrPressedDuration();
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else
-  #define UNEXPECTED_SHUTDOWN()                 ((powerupReason == DIRTY_SHUTDOWN) || WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
+  #define UNEXPECTED_SHUTDOWN()                 ((WAS_RESET_BY_SOFTWARE() && ramBackup->shutdownRequest != SOFTRESET_REQUEST) || WAS_RESET_BY_WATCHDOG())
 #endif
 
 // Led driver
