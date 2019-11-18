@@ -18,24 +18,17 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _SDCARD_RAW_H_
-#define _SDCARD_RAW_H_
+#ifndef _RAM_BACKUP_H_
+#define _RAM_BACKUP_H_
 
-#include "ff.h"
+#include "definitions.h"
 
-#define DEFAULT_CATEGORY         "Models"
-#define DEFAULT_MODEL_FILENAME   "model1.bin"
+PACK(struct RamBackup {
+  uint32_t powerReason;
+  uint16_t size;
+  uint8_t data[4090];
+});
 
-// opens radio.bin or model file
-const char * openFile(const char * fullpath, FIL * file, uint16_t * size, uint8_t * version);
+extern RamBackup * ramBackup;
 
-void getModelPath(char * path, const char * filename);
-
-const char * readModel(const char * filename, uint8_t * buffer, uint32_t size, uint8_t * version);
-const char * loadModel(const char * filename, bool alarms=true);
-const char * createModel();
-
-const char * loadRadioSettings(const char * path);
-const char * loadRadioSettings();
-
-#endif // _SDCARD_RAW_H_
+#endif // _RAM_BACKUP_H_

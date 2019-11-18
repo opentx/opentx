@@ -38,6 +38,7 @@ extern tmr10ms_t storageDirtyTime10ms;
 #define TIME_TO_WRITE()                (storageDirtyMsk && (tmr10ms_t)(get_tmr10ms() - storageDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
 #if defined(RAMBACKUP)
+#include "storage/ram_backup.h"
 extern uint8_t   rambackupDirtyMsk;
 extern tmr10ms_t rambackupDirtyTime10ms;
 #define TIME_TO_RAMBACKUP()            (rambackupDirtyMsk && (tmr10ms_t)(get_tmr10ms() - rambackupDirtyTime10ms) >= (tmr10ms_t)100)
