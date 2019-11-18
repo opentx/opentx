@@ -86,7 +86,7 @@ QString ModuleData::rfProtocolToString() const
 {
   switch (protocol) {
     case PULSES_MULTIMODULE:
-      return Multiprotocols::protocolToString((int)multi.rfProtocol, multi.customProto);
+      return Multiprotocols::protocolToString((int)multi.rfProtocol);
 
     default:
       return CPN_STR_UNKNOWN_ITEM;
@@ -107,7 +107,7 @@ QString ModuleData::subTypeToString(int type) const
 
   switch (protocol) {
     case PULSES_MULTIMODULE:
-      return Multiprotocols::subTypeToString(multi.customProto ? MM_RF_CUSTOM_SELECTED : (int)multi.rfProtocol, (unsigned)type);
+      return Multiprotocols::subTypeToString((int)multi.rfProtocol, (unsigned)type);
 
     case PULSES_PXX_R9M:
       return CHECK_IN_ARRAY(strings, type);

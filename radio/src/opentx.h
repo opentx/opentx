@@ -1198,6 +1198,7 @@ union ReusableBuffer
     uint16_t freqMax;
     uint16_t freqMin;
     uint8_t dirty;
+    uint8_t moduleOFF;
   } spectrumAnalyser;
 
   struct {

@@ -18,26 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MULTI_PULSES_H_
-#define _MULTI_PULSES_H_
+#ifndef _HOTT_H
+#define _HOTT_H
 
-#include "pulses_common.h"
+void hottSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 
-void multiPatchCustom(uint8_t moduleIdx);
-
-class UartMultiPulses: public DataBuffer<uint8_t, 64>
-{
-  public:
-    void initFrame()
-    {
-      initBuffer();
-    }
-
-    void sendByte(uint8_t b)
-    {
-      if (getSize() < 64)
-         *ptr++ = b;
-    }
-};
+// Used by multi protocol
+void processHottPacket(const uint8_t * packet);
 
 #endif

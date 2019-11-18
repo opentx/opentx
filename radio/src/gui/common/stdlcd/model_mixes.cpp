@@ -231,7 +231,7 @@ void displayMixInfos(coord_t y, MixData * md)
 void displayMixLine(coord_t y, MixData * md, bool active)
 {
   if(active && md->name[0]) {
-    lcdDrawSizedText(FW*sizeof(TR_MIXER)+FW/2, 0, md->name, sizeof(md->name), ZCHAR);
+    lcdDrawSizedText(FW*sizeof(TR_MIXES)+FW/2, 0, md->name, sizeof(md->name), ZCHAR);
     if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
       displayMixInfos(y, md);
     else
@@ -385,7 +385,7 @@ void menuModelMixAll(event_t event)
       break;
   }
 
-  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW/2, 0, getMixesCount(), 0);
+  lcdDrawNumber(FW*sizeof(TR_MIXES)+FW/2, 0, getMixesCount(), 0);
   lcdDrawText(lcdNextPos, 0, STR_MAX(MAX_MIXERS));
 
   // Value
@@ -397,7 +397,7 @@ void menuModelMixAll(event_t event)
 #endif
   }
 
-  SIMPLE_MENU(STR_MIXER, menuTabModel, MENU_MODEL_MIXES, HEADER_LINE + s_maxLines);
+  SIMPLE_MENU(STR_MIXES, menuTabModel, MENU_MODEL_MIXES, HEADER_LINE + s_maxLines);
 
 #if LCD_W >= 212
   // Gauge
