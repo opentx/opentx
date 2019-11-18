@@ -221,9 +221,9 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
   if (isModuleMultimodule(moduleIdx)) {
     return MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? 1 : HIDDEN_ROW;
   }
-  else
 #endif
-    return HIDDEN_ROW;
+
+  return HIDDEN_ROW;
 }
 
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)

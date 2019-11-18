@@ -177,7 +177,7 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
   RTOS_WAIT_MS(1);
 
   switch(module) {
-#if defined(HARDWARE_INTERNAL_MODULE) && defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+#if defined(INTERNAL_MODULE_PXX2) && defined(INTMODULE_USART)
     case INTERNAL_MODULE:
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
@@ -236,7 +236,7 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
   }
 
   switch(module) {
-#if defined(HARDWARE_INTERNAL_MODULE) && defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+#if defined(INTERNAL_MODULE_PXX2) && defined(INTMODULE_USART)
     case INTERNAL_MODULE:
       return intmoduleSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
 #endif
@@ -331,7 +331,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 #endif
 
   switch (module) {
-#if defined(HARDWARE_INTERNAL_MODULE) && defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+#if defined(INTERNAL_MODULE_PXX2) && defined(INTMODULE_USART)
     // on XLite we don't use TX + RX but the S.PORT line
     // this ifdef can be removed if we use .frsk instead of .frk
     // theorically it should be possible to use an ISRM module in an XLite
