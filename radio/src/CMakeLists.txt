@@ -150,7 +150,7 @@ include(gui/CMakeLists.txt)
 
 if(RAMBACKUP)
   add_definitions(-DRAMBACKUP)
-  set(SRC ${SRC} storage/rambackup.cpp storage/rlc.cpp)
+  set(SRC ${SRC} storage/ram_backup.cpp storage/rlc.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)
