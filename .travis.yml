@@ -53,7 +53,7 @@ before_install:
   - pip install pillow
 
 install:
-  - sudo apt-get --yes --force-yes install curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev clang clang-3.8 python-clang-3.8
+  - sudo apt-get --yes --force-yes install curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev clang-3.4 python-clang-3.4
   - sudo apt-get --yes --force-yes install gcc-arm-none-eabi
       # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
       # - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
