@@ -51,6 +51,7 @@ before_install:
   - sudo apt-get update -qq
   - pyenv uninstall -f 2.7.6 && pyenv install 3.5.4 && pyenv global 3.5.4
   - pip install pillow
+  - pip install clang
 
 install:
   - sudo apt-get --yes --force-yes install curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
