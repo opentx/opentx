@@ -39,8 +39,9 @@ const char * loadRadioSettings(const char * path);
 const char * loadRadioSettings();
 
 PACK(struct RamBackup {
+  uint32_t powerReason;
   uint16_t size;
-  uint8_t data[4094];
+  uint8_t data[4090];
 });
 
 extern RamBackup * ramBackup;
