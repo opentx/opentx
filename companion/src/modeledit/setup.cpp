@@ -592,8 +592,11 @@ void ModulePanel::update()
   ui->optionValue->setVisible(mask & MASK_MULTIOPTION);
   ui->disableTelem->setVisible(mask & MASK_MULTIMODULE);
   ui->disableChMap->setVisible(mask & MASK_MULTIMODULE);
-  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
+  if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
+    ui->autoBind->setText(tr("Autodetect Format"));
+  else
+    ui->autoBind->setText(tr("Bind on channel"));
 
   if (mask & MASK_MULTIMODULE) {
     ui->multiProtocol->setCurrentIndex(ui->multiProtocol->findData(module.multi.rfProtocol));

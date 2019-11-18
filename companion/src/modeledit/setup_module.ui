@@ -417,7 +417,6 @@
           <item>
            <widget class="QCheckBox" name="autoBind">
             <property name="text">
-             <string>Bind on startup</string>
             </property>
            </widget>
           </item>
