@@ -61,12 +61,12 @@ before_install:
   - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-${GCC_ARM_VERSION}-20130916-linux.tar.bz2
   - tar xjf gcc-arm-none-eabi-${GCC_ARM_VERSION}-20130916-linux.tar.bz2
   - sudo mv gcc-arm-none-eabi-${GCC_ARM_VERSION} /opt/gcc-arm-none-eabi
-  - sudo ln -s /opt/gcc-arm-none-eabi/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc
-  - sudo ln -s /opt/gcc-arm-none-eabi/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++
-  - sudo ln -s /opt/gcc-arm-none-eabi/arm-none-eabi-as /usr/bin/arm-none-eabi-as
-  - sudo ln -s /opt/gcc-arm-none-eabi/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy
-  - sudo ln -s /opt/gcc-arm-none-eabi/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump
-  - sudo ln -s /opt/gcc-arm-none-eabi/arm-none-eabi-size /usr/bin/arm-none-eabi-size
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-as /usr/bin/arm-none-eabi-as
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-size /usr/bin/arm-none-eabi-size
   - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
   - pyenv uninstall -f 2.7.6 && pyenv install 3.5.4 && pyenv global 3.5.4
   - pip install pillow clang
