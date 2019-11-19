@@ -1909,7 +1909,7 @@ void opentxInit()
 
   // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
   if (globalData.unexpectedShutdown) {
     // SDCARD not available, try to restore last model from RAM
     TRACE("rambackupRestore");
@@ -1966,7 +1966,7 @@ void opentxInit()
     opentxStart();
   }
 
-#if !defined(RAMBACKUP)
+#if !defined(RTC_BACKUP_RAM)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
@@ -2020,8 +2020,9 @@ int main()
 #endif
 
 #if defined(SPLASH) && !defined(STARTUP_ANIMATION)
-  if (!UNEXPECTED_SHUTDOWN())
+  if (!UNEXPECTED_SHUTDOWN()) {
     drawSplash();
+  }
 #endif
 
 #if defined(PCBHORUS)

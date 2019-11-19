@@ -19,7 +19,7 @@
  */
 
 #include "board.h"
-#include "storage/ram_backup.h"
+#include "storage/rtc_backup.h"
 
 void pwrInit()
 {
@@ -103,7 +103,7 @@ void pwrResetHandler()
   __ASM volatile ("nop");
   __ASM volatile ("nop");
 
-  if (ramBackup->shutdownRequest != SHUTDOWN_REQUEST || WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     pwrOn();
   }
 }

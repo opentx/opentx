@@ -23,15 +23,9 @@
 
 #include "definitions.h"
 
-enum PowerReason {
-  SHUTDOWN_REQUEST = 0xDEADBEEF,
-  SOFTRESET_REQUEST = 0xCAFEDEAD,
-};
-
 PACK(struct RamBackup {
-  uint32_t shutdownRequest;
   uint16_t size;
-  uint8_t data[4090];
+  uint8_t data[4096];
 });
 
 extern RamBackup * ramBackup;

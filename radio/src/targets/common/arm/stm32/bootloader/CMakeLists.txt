@@ -111,7 +111,6 @@ if(PCB STREQUAL X10 OR PCB STREQUAL X12S)
     ../../../../../targets/common/arm/stm32/rtc_driver.cpp
     ../../../../../targets/${TARGET_DIR}/haptic_driver.cpp
     ../../../../../gui/${GUI_DIR}/bitmapbuffer.cpp
-    # ../../../../../storage/ram_backup.cpp
     ../../../../../gui/${GUI_DIR}/rle.cpp
 
     ../../../../../syscalls.c

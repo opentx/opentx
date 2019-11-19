@@ -447,6 +447,22 @@ extern volatile uint32_t pwm_interrupt_count;
   #define BATTERY_MAX       115 // 11.5V
 #endif
 
+#if defined(__cplusplus)
+enum PowerReason {
+  // SHUTDOWN_REQUEST = 0xDEADBEEF,
+    SOFTRESET_REQUEST = 0xCAFEDEAD,
+};
+
+inline bool UNEXPECTED_SHUTDOWN()
+{
+#if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
+  return false;
+#else
+  return WAS_RESET_BY_WATCHDOG() || (WAS_RESET_BY_SOFTWARE() && RTC->BKP0R != SOFTRESET_REQUEST);
+#endif
+}
+#endif
+
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
@@ -460,11 +476,6 @@ void pwrOff();
 void pwrResetHandler();
 bool pwrPressed();
 uint32_t pwrPressedDuration();
-#if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
-  #define UNEXPECTED_SHUTDOWN()                 (false)
-#else
-  #define UNEXPECTED_SHUTDOWN()                 ((WAS_RESET_BY_SOFTWARE() && ramBackup->shutdownRequest != SOFTRESET_REQUEST) || WAS_RESET_BY_WATCHDOG())
-#endif
 
 // Led driver
 void ledInit();

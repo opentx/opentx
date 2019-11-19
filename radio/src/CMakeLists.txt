@@ -148,9 +148,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
 add_subdirectory(lua)
 include(gui/CMakeLists.txt)
 
-if(RAMBACKUP)
-  add_definitions(-DRAMBACKUP)
-  set(SRC ${SRC} storage/ram_backup.cpp storage/rlc.cpp)
+if(RTC_BACKUP_RAM)
+  add_definitions(-DRTC_BACKUP_RAM)
+  set(SRC ${SRC} storage/rtc_backup.cpp storage/rlc.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)

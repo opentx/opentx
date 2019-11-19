@@ -206,7 +206,10 @@ void boardOff()
   // Shutdown the Haptic
   hapticDone();
 
-  ramBackup->shutdownRequest = SHUTDOWN_REQUEST;
+#if defined(RTC_BACKUP_RAM)
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, DISABLE);
+  PWR_BackupRegulatorCmd(DISABLE);
+#endif
 
   pwrOff();
 }

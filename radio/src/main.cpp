@@ -167,8 +167,8 @@ void checkEeprom()
 #else
 void checkEeprom()
 {
-#if defined(RAMBACKUP)
-  if (TIME_TO_RAMBACKUP()) {
+#if defined(RTC_BACKUP_RAM)
+  if (TIME_TO_RTC_BACKUP_RAM()) {
     rambackupWrite();
     rambackupDirtyMsk = 0;
   }
@@ -504,7 +504,7 @@ void perMain()
 
   event_t evt = getEvent(false);
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
   if (globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;

@@ -67,9 +67,8 @@ void rtcInit()
   
   // Prevent lockup in case of 32kHz oscillator failure
   uint32_t i = 0;
-  while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)
-  {
-    if ( ++i > 1000000 )
+  while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET) {
+    if (++i > 1000000)
       return;
   }
   
@@ -89,7 +88,7 @@ void rtcInit()
   g_rtcTime = gmktime(&utm);
 #endif
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, ENABLE);
   PWR_BackupRegulatorCmd(ENABLE);
 #endif

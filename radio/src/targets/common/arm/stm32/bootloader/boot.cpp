@@ -28,10 +28,6 @@
   #define BOOTLOADER_KEYS                 0x42
 #endif
 
-#if defined(RAMBACKUP)
-RamBackup * ramBackup = (RamBackup *)BKPSRAM_BASE;
-#endif
-
 #define APP_START_ADDRESS               (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
 
 #if defined(EEPROM)
@@ -510,9 +506,9 @@ int main()
       lcdRefresh();
       lcdRefreshWait();
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
       rtcInit();
-      ramBackup->shutdownRequest = SOFTRESET_REQUEST;
+      RTC->BKP0R = SOFTRESET_REQUEST;
 #endif
 
       NVIC_SystemReset();
