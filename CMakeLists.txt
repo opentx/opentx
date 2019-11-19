@@ -232,15 +232,21 @@ add_custom_target(tests-radio
 
 if(Qt5Core_FOUND AND NOT DISABLE_COMPANION)
   add_subdirectory(${COMPANION_SRC_DIRECTORY})
-  add_custom_target(gtests DEPENDS gtests-radio gtests-companion)
+  add_custom_target(tests-companion
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-companion
+    DEPENDS gtests-companion
+    )
+  add_custom_target(gtests
+    DEPENDS gtests-radio gtests-companion
+    )
   add_custom_target(tests
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-radio && ${CMAKE_CURRENT_BINARY_DIR}/gtests-companion
-    DEPENDS gtests
+    DEPENDS tests-radio tests-companion
   )
 else()
-  add_custom_target(gtests DEPENDS gtests-radio)
+  add_custom_target(gtests
+    DEPENDS gtests-radio
+    )
   add_custom_target(tests
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-radio
-    DEPENDS gtests
+    DEPENDS tests-radio
   )
 endif()

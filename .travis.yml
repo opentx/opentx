@@ -1,65 +1,50 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: cpp
 compiler: gcc
 
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ubuntu-sdk-team/ppa'
+      - sourceline: 'ppa:ubuntu-toolchain-r/test'
+      - sourceline: 'ppa:beineri/opt-qt571-xenial'
+    update: true
+    packages:
+      - curl
+      - libmpfr4
+      - libmpc3
+      - libfox-1.6-dev
+      - libgtest-dev
+      - clang-6.0
+      - python3-pip
+
 env:
   global:
-    # - QT_BASE=53
-    # - QT_BASE=54
-    # - QT_BASE=55
-    # - QT_BASE=56
     - QT_BASE=57
-    # - GCC_ARM=/opt/gcc-arm-none-eabi/bin
-    - PYTHONPATH=${PYTHONPATH}:/usr/lib/python3/dist-packages
+    - GCC_ARM_VERSION=4_7-2013q3
   matrix:
-    #
-    # ALL will build every individual board & DEFAULT, sequentially.
-    # DEFAULT is "make all" (including Companion & Simulator), with default settings
-    #
-    # - FLAVOR=ALL
-    - FLAVOR=DEFAULT
+    - FLAVOR=COMPANION
     - FLAVOR=ARM9X
-    # - FLAVOR=AR9X
-    # - FLAVOR=SKY9X
-    # - FLAVOR=9XRPRO
     - FLAVOR=X9LITE
-    - FLAVOR=X9LITES
     - FLAVOR=X7
-    - FLAVOR=T12
     - FLAVOR=XLITE
-    - FLAVOR=XLITES
     - FLAVOR=X9
-    # - FLAVOR=X9D
-    # - FLAVOR=X9D+
-    # - FLAVOR=X9E
-    - FLAVOR=T16
-    - FLAVOR=HORUS
-    # - FLAVOR=X10
-    # - FLAVOR=X12Sr10
-    # - FLAVOR=X12S
+    - FLAVOR=COLORLCD
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-sdk-team/ppa --yes
-  - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes
-  - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y; fi
-  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository ppa:beineri/opt-qt542-trusty -y; fi
-  - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551-trusty -y; fi
-  - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-trusty -y; fi
-  - if [ "$QT_BASE" = "57" ]; then sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y; fi
-  - sudo apt-get update -qq
-  - pyenv uninstall -f 2.7.6 && pyenv install 3.5.4 && pyenv global 3.5.4
-  - pip install pillow
-
-install:
-  - sudo apt-get --yes --force-yes install curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
-  - sudo apt-get --yes --force-yes install gcc-arm-none-eabi
-      # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
-      # - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
-      # - tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
-      # - mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
+  - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-${GCC_ARM_VERSION}-20130916-linux.tar.bz2
+  - tar xjf gcc-arm-none-eabi-${GCC_ARM_VERSION}-20130916-linux.tar.bz2
+  - sudo mv gcc-arm-none-eabi-${GCC_ARM_VERSION} /opt/gcc-arm-none-eabi
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-as /usr/bin/arm-none-eabi-as
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump
+  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-size /usr/bin/arm-none-eabi-size
   - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
+  - sudo ln -sf /usr/bin/python3 /usr/bin/python
+  - python3 -m pip install pillow clang
 
 script:
   - ./tools/commit-tests.sh
