@@ -7,7 +7,7 @@ addons:
   apt:
     sources:
       - sourceline: 'ppa:ubuntu-sdk-team/ppa'
-      - sourceline: 'ppa:terry.guo/gcc-arm-embedded'
+      - sourceline: 'ppa:team-gcc-arm-embedded/ppa'
       - sourceline: 'ppa:ubuntu-toolchain-r/test'
       - sourceline: 'ppa:beineri/opt-qt571-xenial'
     update: true
@@ -18,7 +18,7 @@ addons:
       - libfox-1.6-dev
       - libgtest-dev
       - clang-6.0
-      - gcc-arm-none-eabi
+      - gcc-arm-embedded
 env:
   global:
     # - QT_BASE=53
