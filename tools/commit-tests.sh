@@ -6,11 +6,11 @@ set -x
 
 # Allow variable core usage, default uses all cpu cores, to set 8 cores for example : commit-tests.sh -j8
 num_cpus=$(grep 'physical id' /proc/cpuinfo | sort -u | wc -l)
-: ${CORES:=$num_cpus}
+: "${CORES:=$num_cpus}"
 # Default build treats warnings as errors, set -Wno-error to override, e.g.: commit-tests.sh -Wno-error
-: ${WERROR:=1}
+: "${WERROR:=1}"
 # A board name to build for, or ALL
-: ${FLAVOR:=ALL}
+: "${FLAVOR:=ALL}"
 
 for i in "$@"
 do
@@ -40,7 +40,7 @@ else
     SCRIPT=$(readlink -f "$0")
 fi
 
-if [[ ! -z ${GCC_ARM} ]] ; then
+if [[ -n ${GCC_ARM} ]] ; then
   export PATH=${GCC_ARM}:$PATH
 fi
 
