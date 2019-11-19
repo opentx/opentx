@@ -5,7 +5,7 @@ set -e
 set -x
 
 # Allow variable core usage, default uses all cpu cores, to set 8 cores for example : commit-tests.sh -j8
-num_cpus=`grep 'physical id' /proc/cpuinfo | sort -u | wc -l`
+num_cpus=$(grep 'physical id' /proc/cpuinfo | sort -u | wc -l)
 : ${CORES:=$num_cpus}
 # Default build treats warnings as errors, set -Wno-error to override, e.g.: commit-tests.sh -Wno-error
 : ${WERROR:=1}
@@ -58,34 +58,34 @@ COMMON_OPTIONS+=${EXTRA_OPTIONS}
 mkdir build || true
 cd build
 
-if [[ " SKY9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " SKY9X ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on Sky9x
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES DLUA=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=SKY9X -DHELI=YES DLUA=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " AR9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " AR9X ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on AR9X
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=AR9X -DHELI=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=AR9X -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " 9XRPRO ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on Sky9x
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=9XRPRO -DHELI=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=9XRPRO -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X9LITE ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X9LITE
   rm -rf ./*
   cmake "${COMMON_OPTIONS}" -DPCB=X9LITE -DHELI=YES -DGVARS=YES "${SRCDIR}"
@@ -94,7 +94,7 @@ if [[ " X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " X9LITES X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X9LITES X9LITE ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X9LITES
   rm -rf ./*
   cmake "${COMMON_OPTIONS}" -DPCB=X9LITES -DHELI=YES -DGVARS=YES "${SRCDIR}"
@@ -103,100 +103,100 @@ if [[ " X9LITES X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X7
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  cmake "${COMMON_OPTIONS}" -DPCB=X7 -DHELI=YES -DGVARS=YES "${SRCDIR}"
   make -j"${CORES}" ${FIRMARE_TARGET}
   make -j"${CORES}" libsimulator
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " T12 X7 ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " T12 X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on T12
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X7 -DPCBREV=T12 -DHELI=YES -DGVARS=YES "${SRCDIR}"
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=X7 -DPCBREV=T12 -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " XLITE ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " XLITE ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X-Lite
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=XLITE -DHELI=YES -DGVARS=YES "${SRCDIR}"
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=XLITE -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " XLITES XLITE ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " XLITES XLITE ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X-Lites
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=XLITES -DHELI=YES -DGVARS=YES "${SRCDIR}"
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=XLITES -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " X9D X9 ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X9D X9 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X9D
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " X9D+ X9 ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X9D+ X9 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X9D+
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " X9D+2019 X9 ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X9D+2019 X9 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X9D+ 2019
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DPCBREV=2019 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=X9D+ -DPCBREV=2019 -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X9E X9 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on Taranis X9E
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DPPM_UNIT=PERCENT_PREC1 "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " X10 X10 COLORLCD ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X10 X10 COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X10 boards
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=X10 -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " X12S X12S COLORLCD ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " X12S X12S COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X12S
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} libsimulator
-  make -j${CORES} tests-radio
+  cmake "${COMMON_OPTIONS}" -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
 fi
 
-if [[ " COMPANION ALL " =~ " ${FLAVOR} " ]] ; then
+if [[ " COMPANION ALL " =~ \ ${FLAVOR}\  ]] ; then
   # Companion
   rm -rf ./*
-  cmake ${COMMON_OPTIONS} ${SRCDIR}
-  make -j${CORES} companion23 simulator23
-  make -j${CORES} tests-companion
+  cmake "${COMMON_OPTIONS}" "${SRCDIR}"
+  make -j"${CORES}" companion23 simulator23
+  make -j"${CORES}" tests-companion
 fi
