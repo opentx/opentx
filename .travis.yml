@@ -1,8 +1,24 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: cpp
 compiler: gcc
 
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ubuntu-sdk-team/ppa'
+      - sourceline: 'ppa:terry.guo/gcc-arm-embedded'
+      - sourceline: 'ppa:ubuntu-toolchain-r/test'
+      - sourceline: 'ppa:beineri/opt-qt571-xenial'
+    update: true
+    packages:
+      - curl
+      - libmpfr4
+      - libmpc3
+      - libfox-1.6-dev
+      - libgtest-dev
+      - clang-6.0
+      - gcc-arm-none-eabi
 env:
   global:
     # - QT_BASE=53
@@ -40,26 +56,13 @@ env:
     # - FLAVOR=X12S
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-sdk-team/ppa --yes
-  - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes
-  - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y; fi
-  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository ppa:beineri/opt-qt542-trusty -y; fi
-  - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551-trusty -y; fi
-  - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-trusty -y; fi
-  - if [ "$QT_BASE" = "57" ]; then sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y; fi
-  - sudo apt-get update -qq
+  # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
+  # - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
+  # - tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
+  # - mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
+  - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
   - pyenv uninstall -f 2.7.6 && pyenv install 3.5.4 && pyenv global 3.5.4
   - pip install pillow clang
-
-install:
-  - sudo apt-get --yes --force-yes install curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev clang-6.0
-  - sudo apt-get --yes --force-yes install gcc-arm-none-eabi
-      # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
-      # - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
-      # - tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
-      # - mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
-  - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
 
 script:
   - ./tools/commit-tests.sh
