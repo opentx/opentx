@@ -37,24 +37,11 @@ env:
     # - FLAVOR=ALL
     - FLAVOR=DEFAULT
     - FLAVOR=ARM9X
-    # - FLAVOR=AR9X
-    # - FLAVOR=SKY9X
-    # - FLAVOR=9XRPRO
     - FLAVOR=X9LITE
-    - FLAVOR=X9LITES
     - FLAVOR=X7
-    - FLAVOR=T12
     - FLAVOR=XLITE
-    - FLAVOR=XLITES
     - FLAVOR=X9
-    # - FLAVOR=X9D
-    # - FLAVOR=X9D+
-    # - FLAVOR=X9E
-    - FLAVOR=T16
-    - FLAVOR=HORUS
-    # - FLAVOR=X10
-    # - FLAVOR=X12Sr10
-    # - FLAVOR=X12S
+    - FLAVOR=COLORLCD
 
 before_install:
   # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
