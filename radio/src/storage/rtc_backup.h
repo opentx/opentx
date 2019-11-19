@@ -25,7 +25,7 @@
 
 PACK(struct RamBackup {
   uint16_t size;
-  uint8_t data[4096];
+  uint8_t data[4094];
 });
 
 extern RamBackup * ramBackup;
