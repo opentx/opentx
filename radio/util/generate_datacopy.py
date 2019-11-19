@@ -14,10 +14,12 @@ if sys.platform == "darwin":
         clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
     elif os.path.exists('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'):
         clang.cindex.Config.set_library_file('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
-
-if sys.platform == "linux2":
-    if os.path.exists('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1'):
-        clang.cindex.Config.set_library_file('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1')
+elif sys.platform.startswith("linux"):
+    for version in ("6.0", "3.8"):
+        libclang = "/usr/lib/x86_64-linux-gnu/libclang-%s.so.1" % version
+        if os.path.exists(libclang):
+            clang.cindex.Config.set_library_file(libclang)
+            break
 
 structs = []
 extrastructs = []
@@ -31,7 +33,7 @@ def build_struct(cursor, anonymousUnion=False):
     for c in cursor.get_children():
         if c.kind == clang.cindex.CursorKind.UNION_DECL:
             if c.spelling:
-                raise "Cannot handle non anonymous unions"
+                raise Exception("Cannot handle non anonymous unions")
 
             copied_union_member = False
             for uc in c.get_children():
