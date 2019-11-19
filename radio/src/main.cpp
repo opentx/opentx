@@ -168,7 +168,7 @@ void checkEeprom()
 void checkEeprom()
 {
 #if defined(RTC_BACKUP_RAM)
-  if (TIME_TO_RTC_BACKUP_RAM()) {
+  if (TIME_TO_BACKUP_RAM()) {
     rambackupWrite();
     rambackupDirtyMsk = 0;
   }

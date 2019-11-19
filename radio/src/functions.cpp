@@ -35,7 +35,7 @@ void testFunc()
 #endif
 
   // for testing the WD reset uncomment the following line
-  while (1);
+  // while (1);
 }
 #endif
 

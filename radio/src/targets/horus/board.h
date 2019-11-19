@@ -450,7 +450,7 @@ extern volatile uint32_t pwm_interrupt_count;
 #if defined(__cplusplus)
 enum PowerReason {
   // SHUTDOWN_REQUEST = 0xDEADBEEF,
-    SOFTRESET_REQUEST = 0xCAFEDEAD,
+  SOFTRESET_REQUEST = 0xCAFEDEAD,
 };
 
 inline bool UNEXPECTED_SHUTDOWN()
@@ -460,6 +460,11 @@ inline bool UNEXPECTED_SHUTDOWN()
 #else
   return WAS_RESET_BY_WATCHDOG() || (WAS_RESET_BY_SOFTWARE() && RTC->BKP0R != SOFTRESET_REQUEST);
 #endif
+}
+
+inline void CLEAR_LAST_SOFT_RESET()
+{
+  RTC->BKP0R = 0;
 }
 #endif
 

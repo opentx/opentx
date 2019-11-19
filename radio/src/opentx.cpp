@@ -1858,6 +1858,10 @@ void opentxInit()
     globalData.unexpectedShutdown = 1;
   }
 
+#if defined(RTC_BACKUP_RAM)
+  CLEAR_LAST_SOFT_RESET();
+#endif
+
 #if defined(SDCARD)
   // SDCARD related stuff, only done if not unexpectedShutdown
   if (!globalData.unexpectedShutdown) {

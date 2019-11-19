@@ -41,7 +41,7 @@ extern tmr10ms_t storageDirtyTime10ms;
 #include "storage/rtc_backup.h"
 extern uint8_t   rambackupDirtyMsk;
 extern tmr10ms_t rambackupDirtyTime10ms;
-#define TIME_TO_RTC_BACKUP_RAM()            (rambackupDirtyMsk && (tmr10ms_t)(get_tmr10ms() - rambackupDirtyTime10ms) >= (tmr10ms_t)100)
+#define TIME_TO_BACKUP_RAM()            (rambackupDirtyMsk && (tmr10ms_t)(get_tmr10ms() - rambackupDirtyTime10ms) >= (tmr10ms_t)100)
 #endif
 
 void storageEraseAll(bool warn);
