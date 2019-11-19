@@ -76,19 +76,19 @@ void rtcInit()
   RCC_RTCCLKCmd(ENABLE);
   RTC_WaitForSynchro();
 
+#if !defined(BOOT)
   // RTC time base = LSE / ((AsynchPrediv+1) * (SynchPrediv+1)) = 1 Hz*/
   RTC_InitStruct.RTC_HourFormat = RTC_HourFormat_24;
   RTC_InitStruct.RTC_AsynchPrediv = 127;
   RTC_InitStruct.RTC_SynchPrediv = 255;
   RTC_Init(&RTC_InitStruct);
 
-#if !defined(BOOT)
   struct gtm utm;
   rtcGetTime(&utm);
   g_rtcTime = gmktime(&utm);
 #endif
 
-#if defined(RTC_BACKUP_RAM)
+#if defined(RTC_BACKUP_RAM) && !defined(BOOT)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, ENABLE);
   PWR_BackupRegulatorCmd(ENABLE);
 #endif
