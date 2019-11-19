@@ -7,7 +7,6 @@ addons:
   apt:
     sources:
       - sourceline: 'ppa:ubuntu-sdk-team/ppa'
-#      - sourceline: 'ppa:team-gcc-arm-embedded/ppa'
       - sourceline: 'ppa:ubuntu-toolchain-r/test'
       - sourceline: 'ppa:beineri/opt-qt571-xenial'
     update: true
@@ -18,24 +17,14 @@ addons:
       - libfox-1.6-dev
       - libgtest-dev
       - clang-6.0
-#      - gcc-arm-embedded
+      - python3-pip
 env:
   global:
-    # - QT_BASE=53
-    # - QT_BASE=54
-    # - QT_BASE=55
-    # - QT_BASE=56
     - QT_BASE=57
-    # - GCC_ARM=/opt/gcc-arm-none-eabi/bin
     - PYTHONPATH=${PYTHONPATH}:/usr/lib/python3/dist-packages
     - GCC_ARM_VERSION=4_7-2013q3
   matrix:
-    #
-    # ALL will build every individual board & DEFAULT, sequentially.
-    # DEFAULT is "make all" (including Companion & Simulator), with default settings
-    #
-    # - FLAVOR=ALL
-    - FLAVOR=DEFAULT
+    - FLAVOR=COMPANION
     - FLAVOR=ARM9X
     - FLAVOR=X9LITE
     - FLAVOR=X7

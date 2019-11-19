@@ -197,6 +197,6 @@ if [[ " COMPANION ALL " =~ " ${FLAVOR} " ]] ; then
   # Companion
   rm -rf *
   cmake ${COMMON_OPTIONS} ${SRCDIR}
-  make -j${CORES} companion
+  make -j${CORES} companion simulator
   make -j${CORES} tests-companion
 fi
