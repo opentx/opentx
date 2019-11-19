@@ -85,7 +85,7 @@ if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} tests-radio
 fi
 
-if [[ " X9LITE ALL " = " ${FLAVOR} " ]] ; then
+if [[ " X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9LITE
   rm -rf ./*
   cmake "${COMMON_OPTIONS}" -DPCB=X9LITE -DHELI=YES -DGVARS=YES "${SRCDIR}"
@@ -94,7 +94,7 @@ if [[ " X9LITE ALL " = " ${FLAVOR} " ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " X9LITES X9LITE ALL " = " ${FLAVOR} " ]] ; then
+if [[ " X9LITES X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9LITES
   rm -rf ./*
   cmake "${COMMON_OPTIONS}" -DPCB=X9LITES -DHELI=YES -DGVARS=YES "${SRCDIR}"
@@ -103,7 +103,7 @@ if [[ " X9LITES X9LITE ALL " = " ${FLAVOR} " ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " X7 ALL " = " ${FLAVOR} " ]] ; then
+if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X7
   rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DGVARS=YES "${SRCDIR}"
@@ -112,7 +112,7 @@ if [[ " X7 ALL " = " ${FLAVOR} " ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " T12 X7 ALL " = " ${FLAVOR} " ]] ; then
+if [[ " T12 X7 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on T12
   rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X7 -DPCBREV=T12 -DHELI=YES -DGVARS=YES "${SRCDIR}"
