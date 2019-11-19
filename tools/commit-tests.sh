@@ -175,7 +175,7 @@ if [[ " X9E X9 ALL " =~ \ ${FLAVOR}\  ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " X10 X10 COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
+if [[ " X10 COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X10 boards
   rm -rf ./*
   cmake "${COMMON_OPTIONS}" -DPCB=X10 -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
@@ -184,7 +184,7 @@ if [[ " X10 X10 COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
-if [[ " X12S X12S COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
+if [[ " X12S COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X12S
   rm -rf ./*
   cmake "${COMMON_OPTIONS}" -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
