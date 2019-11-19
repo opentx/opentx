@@ -18,10 +18,15 @@ addons:
       - libgtest-dev
       - clang-6.0
       - python3-pip
+    alternatives:
+      - alternative:
+          name: python
+          link: /usr/bin/python
+          path: /usr/bin/python3
+          priority: 1
 env:
   global:
     - QT_BASE=57
-    - PYTHONPATH=${PYTHONPATH}:/usr/lib/python3/dist-packages
     - GCC_ARM_VERSION=4_7-2013q3
   matrix:
     - FLAVOR=COMPANION
@@ -33,7 +38,6 @@ env:
     - FLAVOR=COLORLCD
 
 before_install:
-  # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
   - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-${GCC_ARM_VERSION}-20130916-linux.tar.bz2
   - tar xjf gcc-arm-none-eabi-${GCC_ARM_VERSION}-20130916-linux.tar.bz2
   - sudo mv gcc-arm-none-eabi-${GCC_ARM_VERSION} /opt/gcc-arm-none-eabi

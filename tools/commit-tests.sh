@@ -60,7 +60,7 @@ cd build
 
 if [[ " SKY9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Sky9x
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES DLUA=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -123,7 +123,7 @@ fi
 
 if [[ " XLITE ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X-Lite
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=XLITE -DHELI=YES -DGVARS=YES "${SRCDIR}"
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -132,7 +132,7 @@ fi
 
 if [[ " XLITES XLITE ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X-Lites
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=XLITES -DHELI=YES -DGVARS=YES "${SRCDIR}"
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -141,7 +141,7 @@ fi
 
 if [[ " X9D X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9D
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -150,7 +150,7 @@ fi
 
 if [[ " X9D+ X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9D+
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -159,7 +159,7 @@ fi
 
 if [[ " X9D+2019 X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9D+ 2019
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DPCBREV=2019 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -168,7 +168,7 @@ fi
 
 if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Taranis X9E
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -177,7 +177,7 @@ fi
 
 if [[ " X10 X10 COLORLCD ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X10 boards
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -186,7 +186,7 @@ fi
 
 if [[ " X12S X12S COLORLCD ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X12S
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
@@ -195,8 +195,8 @@ fi
 
 if [[ " COMPANION ALL " =~ " ${FLAVOR} " ]] ; then
   # Companion
-  rm -rf *
+  rm -rf ./*
   cmake ${COMMON_OPTIONS} ${SRCDIR}
-  make -j${CORES} companion simulator
+  make -j${CORES} companion23 simulator23
   make -j${CORES} tests-companion
 fi
