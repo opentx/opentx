@@ -15,7 +15,7 @@ if sys.platform == "darwin":
     elif os.path.exists('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'):
         clang.cindex.Config.set_library_file('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
 elif sys.platform.startswith("linux"):
-    for version in ("6.0", "3.8"):
+    for version in ("7", "6.0", "3.8"):
         libclang = "/usr/lib/x86_64-linux-gnu/libclang-%s.so.1" % version
         if os.path.exists(libclang):
             clang.cindex.Config.set_library_file(libclang)
