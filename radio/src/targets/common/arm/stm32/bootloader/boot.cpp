@@ -507,6 +507,7 @@ int main()
       lcdRefreshWait();
 
 #if defined(RTC_BACKUP_RAM)
+      rtcInit();
       RTC->BKP0R = SOFTRESET_REQUEST;
 #endif
 
