@@ -76,7 +76,7 @@ set(GVARS_VARIANT   1)
 set(FRSKY_VARIANT   2)
 set(3POS_VARIANT    4)
 
-set(FIRMWARE_DEPENDENCIES firmware_translations)
+set(RADIO_DEPENDENCIES firmware_translations)
 
 set(FATFS_SRC
   ${FATFS_DIR}/ff.c
@@ -150,7 +150,8 @@ include(gui/CMakeLists.txt)
 
 if(RAMBACKUP)
   add_definitions(-DRAMBACKUP)
-  set(SRC ${SRC} storage/rambackup.cpp storage/rlc.cpp)
+  set(SRC ${SRC} storage/rlc.cpp)
+  set(FIRMWARE_SRC ${FIRMWARE_SRC} storage/rambackup.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)
@@ -165,7 +166,7 @@ if(NOT LUA STREQUAL NO)
     add_definitions(-DLUA_SCRIPT_LOAD_MODE="${LUA_SCRIPT_LOAD_MODE}")
   endif()
   include_directories(${LUA_DIR})
-  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${LUA_EXPORT})
+  set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} ${LUA_EXPORT})
   if(LUA STREQUAL YES)
     add_definitions(-DLUA_MODEL_SCRIPTS)
     set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
@@ -496,7 +497,7 @@ if(NOT MSVC)
 
     add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
     link_libraries(firmware -lstdc++)
-    add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
+    add_dependencies(firmware ${RADIO_DEPENDENCIES} ${FIRMWARE_DEPENDENCIES})
 
     add_custom_command(
       TARGET firmware POST_BUILD
