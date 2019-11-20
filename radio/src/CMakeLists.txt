@@ -152,6 +152,7 @@ if(RAMBACKUP)
   add_definitions(-DRAMBACKUP)
   set(SRC ${SRC} storage/rlc.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} storage/rambackup.cpp)
+  set(GTEST_SRC ${GTEST_SRC} ${RADIO_SRC_DIRECTORY}/storage/rambackup.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)
