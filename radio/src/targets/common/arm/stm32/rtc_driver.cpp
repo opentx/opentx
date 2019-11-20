@@ -59,8 +59,6 @@ void rtcGetTime(struct gtm * t)
 
 void rtcInit()
 {
-  RTC_InitTypeDef RTC_InitStruct;
-
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
   PWR_BackupAccessCmd(ENABLE);
   RCC_LSEConfig(RCC_LSE_ON);
@@ -77,6 +75,8 @@ void rtcInit()
   RTC_WaitForSynchro();
 
 #if !defined(BOOT)
+  RTC_InitTypeDef RTC_InitStruct;
+
   // RTC time base = LSE / ((AsynchPrediv+1) * (SynchPrediv+1)) = 1 Hz*/
   RTC_InitStruct.RTC_HourFormat = RTC_HourFormat_24;
   RTC_InitStruct.RTC_AsynchPrediv = 127;
