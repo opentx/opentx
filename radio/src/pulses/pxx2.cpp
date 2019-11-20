@@ -443,7 +443,7 @@ bool Pxx2OtaUpdate::waitStep(uint8_t step, uint8_t timeout)
   OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
   uint8_t elapsed = 0;
 
-  watchdogSuspend(100);
+  watchdogSuspend(100 /*1s*/);
 
   while (step != destination->step) {
     if (elapsed++ > timeout) {
@@ -532,7 +532,7 @@ void Pxx2OtaUpdate::flashFirmware(const char * filename)
 {
   pausePulses();
 
-  watchdogSuspend(100);
+  watchdogSuspend(100 /*1s*/);
   RTOS_WAIT_MS(100);
 
   moduleState[module].mode = MODULE_MODE_OTA_UPDATE;

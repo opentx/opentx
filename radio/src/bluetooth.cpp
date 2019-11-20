@@ -762,11 +762,11 @@ const char * Bluetooth::flashFirmware(const char * filename)
   pausePulses();
 
   bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, true); // normal mode
-  watchdogSuspend(1000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(1000);
 
   bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, false); // bootloader mode
-  watchdogSuspend(1000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(1000);
 
   const char * result = doFlashFirmware(filename);
@@ -785,7 +785,7 @@ const char * Bluetooth::flashFirmware(const char * filename)
   drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
   /* wait 1s off */
-  watchdogSuspend(1000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(1000);
 
   state = BLUETOOTH_STATE_OFF;

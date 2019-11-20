@@ -65,7 +65,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
         moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     }
     /* wait 1s to resume normal operation before leaving */
-    watchdogSuspend(1000);
+    watchdogSuspend(500 /*5s*/);
     RTOS_WAIT_MS(1000);
     return false;
   }

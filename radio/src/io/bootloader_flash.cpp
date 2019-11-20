@@ -68,6 +68,8 @@ void bootloaderFlash(const char * filename)
 #endif
   }
 
+  watchdogSuspend(0);
+
   if (unlocked) {
     lockFlash();
     unlocked = 0;

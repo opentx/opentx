@@ -495,7 +495,7 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(1000 /*10s*/);
   RTOS_WAIT_MS(2000);
 
   const char * result = doFlashFirmware(filename);
@@ -516,7 +516,7 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(2000);
   telemetryClearFifo();
 
@@ -757,7 +757,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, bool 
 
   if (wait) {
     /* wait 2s off */
-    watchdogSuspend(2000);
+    watchdogSuspend(1000 /*10s*/);
     RTOS_WAIT_MS(2000);
   }
 
@@ -777,7 +777,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, bool 
   }
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(1000 /*10s*/);
   RTOS_WAIT_MS(2000);
 
 #if defined(HARDWARE_INTERNAL_MODULE)
