@@ -167,7 +167,7 @@ void checkEeprom()
 #else
 void checkEeprom()
 {
-#if defined(RAMBACKUP)
+#if defined(RAMBACKUP) && !defined(SIMU)
   if (TIME_TO_RAMBACKUP()) {
     rambackupWrite();
     rambackupDirtyMsk = 0;
