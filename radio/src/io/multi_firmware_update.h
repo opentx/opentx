@@ -71,7 +71,7 @@ class MultiFirmwareInformation {
 
     bool isMultiInternalFirmware() const
     {
-      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
+      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion ==  false && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     bool isMultiExternalFirmware() const
@@ -83,15 +83,19 @@ class MultiFirmwareInformation {
     const char * readMultiFirmwareInformation(FIL * file);
 
   private:
-    uint8_t boardType;
-    uint8_t optibootSupport;
-    uint8_t bootloaderCheck;
-    uint8_t telemetryType;
-    uint8_t telemetryInversion;
+    bool optibootSupport:1;
+    bool telemetryInversion:1;
+    bool bootloaderCheck:1;
+    uint8_t boardType:2;
+    uint8_t telemetryType:2;
+    bool spare:1;
+
+/*  For future use
     uint8_t firmwareVersionMajor;
     uint8_t firmwareVersionMinor;
     uint8_t firmwareVersionRevision;
     uint8_t firmwareVersionSubRevision;
+*/
 
     const char * readV1Signature(const char * buffer);
     const char * readV2Signature(const char * buffer);
