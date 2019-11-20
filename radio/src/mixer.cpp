@@ -232,7 +232,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 #endif
 
   if (isFunctionActive(FUNCTION_TRAINER_CHANNELS) && IS_TRAINER_INPUT_VALID()) {
-    return ppmInput[channel];
+    return ppmInput[channel] * 2;
   }
 
   LimitData * lim = limitAddress(channel);
@@ -369,22 +369,22 @@ getvalue_t getValue(mixsrc_t i)
 #endif
 
   else if (i <= MIXSRC_LAST_LOGICAL_SWITCH) {
-    return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
+    return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH + i - MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
   }
   else if (i <= MIXSRC_LAST_TRAINER) {
-    int16_t x = ppmInput[i-MIXSRC_FIRST_TRAINER];
-    if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) {
-      x -= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER];
+    int16_t x = ppmInput[i - MIXSRC_FIRST_TRAINER];
+    if (i < MIXSRC_FIRST_TRAINER + NUM_CAL_PPM) {
+      x -= g_eeGeneral.trainer.calib[i - MIXSRC_FIRST_TRAINER];
     }
-    return x*2;
+    return x * 2;
   }
   else if (i <= MIXSRC_LAST_CH) {
-    return ex_chans[i-MIXSRC_CH1];
+    return ex_chans[i - MIXSRC_CH1];
   }
 
   else if (i <= MIXSRC_LAST_GVAR) {
 #if defined(GVARS)
-    return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
+    return GVAR_VALUE(i - MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
 #else
     return 0;
 #endif
@@ -402,11 +402,11 @@ getvalue_t getValue(mixsrc_t i)
 #endif
   }
   else if (i <= MIXSRC_LAST_TIMER) {
-    return timersStates[i-MIXSRC_FIRST_TIMER].val;
+    return timersStates[i - MIXSRC_FIRST_TIMER].val;
   }
 
   else if (i <= MIXSRC_LAST_TELEM) {
-    if(IS_FAI_FORBIDDEN(i)) {
+    if (IS_FAI_FORBIDDEN(i)) {
       return 0;
     }
     i -= MIXSRC_FIRST_TELEM;
