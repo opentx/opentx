@@ -722,6 +722,7 @@ extern const char STR_EXPONAME[];
 #endif
 
   extern const char STR_TRAINER[];
+extern const char STR_CHANS[];
 extern const char STR_MODULE_BIND[];
 extern const char STR_POWERMETER_ATTN_NEEDED[];
 extern const char STR_PXX2_SELECT_RX[];
