@@ -449,22 +449,30 @@ extern volatile uint32_t pwm_interrupt_count;
 
 #if defined(__cplusplus)
 enum PowerReason {
-  // SHUTDOWN_REQUEST = 0xDEADBEEF,
+  SHUTDOWN_REQUEST = 0xDEADBEEF,
   SOFTRESET_REQUEST = 0xCAFEDEAD,
 };
+
+constexpr uint32_t POWER_REASON_SIGNATURE = 0x0178746F;
 
 inline bool UNEXPECTED_SHUTDOWN()
 {
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   return false;
 #else
-  return WAS_RESET_BY_WATCHDOG() || (WAS_RESET_BY_SOFTWARE() && RTC->BKP0R != SOFTRESET_REQUEST);
+  if (WAS_RESET_BY_WATCHDOG())
+    return true;
+  else if (WAS_RESET_BY_SOFTWARE())
+    return RTC->BKP0R != SOFTRESET_REQUEST;
+  else
+    return RTC->BKP1R == POWER_REASON_SIGNATURE && RTC->BKP0R != SHUTDOWN_REQUEST;
 #endif
 }
 
-inline void CLEAR_LAST_SOFT_RESET()
+inline void SET_POWER_REASON(uint32_t value)
 {
-  RTC->BKP0R = 0;
+  RTC->BKP0R = value;
+  RTC->BKP1R = POWER_REASON_SIGNATURE;
 }
 #endif
 

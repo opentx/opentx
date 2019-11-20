@@ -211,6 +211,8 @@ void boardOff()
   PWR_BackupRegulatorCmd(DISABLE);
 #endif
 
+  RTC->BKP0R = SHUTDOWN_REQUEST;
+
   pwrOff();
 }
 

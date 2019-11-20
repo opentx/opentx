@@ -1859,7 +1859,7 @@ void opentxInit()
   }
 
 #if defined(RTC_BACKUP_RAM)
-  CLEAR_LAST_SOFT_RESET();
+  SET_POWER_REASON(0);
 #endif
 
 #if defined(SDCARD)
