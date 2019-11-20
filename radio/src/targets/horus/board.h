@@ -136,7 +136,7 @@ DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
 #define FLASH_PAGESIZE                 256
 void unlockFlash();
 void lockFlash();
-void flashWrite(uint32_t * address, uint32_t * buffer);
+void flashWrite(uint32_t * address, const uint32_t * buffer);
 uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
 
@@ -305,7 +305,7 @@ void rotaryEncoderInit();
 void rotaryEncoderCheck();
 
 // WDT driver
-#define WDTO_500MS                              500
+#define WDT_DURATION                              500 /*ms*/
 
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)

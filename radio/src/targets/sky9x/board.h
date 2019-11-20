@@ -218,7 +218,7 @@ void stop_trainer_capture();
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256
-void flashWrite(uint32_t * address, uint32_t * buffer);
+void flashWrite(uint32_t * address, const uint32_t * buffer);
 
 // Keys driver
 uint32_t switchState(uint8_t index);

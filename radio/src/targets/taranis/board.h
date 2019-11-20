@@ -95,7 +95,7 @@ uint32_t sdMounted();
 #define FLASH_PAGESIZE 256
 void unlockFlash();
 void lockFlash();
-void flashWrite(uint32_t * address, uint32_t * buffer);
+void flashWrite(uint32_t * address, const uint32_t * buffer);
 uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
 
@@ -438,7 +438,7 @@ uint32_t readTrims();
 #define KEYS_PRESSED()                  (readKeys())
 
 // WDT driver
-#define WDTO_500MS                      500
+#define WDT_DURATION                      500 /*ms*/
 #if !defined(WATCHDOG) || defined(SIMU)
   #define wdt_enable(x)
   #define wdt_reset()

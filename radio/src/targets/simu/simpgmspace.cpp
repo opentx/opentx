@@ -672,7 +672,7 @@ void lockFlash()
 {
 }
 
-void flashWrite(uint32_t *address, uint32_t *buffer)
+void flashWrite(uint32_t *address, const uint32_t *buffer)
 {
   simuSleep(100);
 }

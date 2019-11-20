@@ -36,7 +36,7 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0x5555;      // Unlock registers
   IWDG->PR = 3;           // Divide by 32 => 1kHz clock
   IWDG->KR = 0x5555;      // Unlock registers
-  IWDG->RLR = duration;       // 1.5 seconds nominal
+  IWDG->RLR = duration;
   IWDG->KR = 0xAAAA;      // reload
   IWDG->KR = 0xCCCC;      // start
 }

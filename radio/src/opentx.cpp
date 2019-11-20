@@ -1987,7 +1987,7 @@ void opentxInit()
 
   startPulses();
 
-  wdt_enable(WDTO_500MS);
+  wdt_enable(WDT_DURATION);
 }
 
 #if defined(SIMU)
