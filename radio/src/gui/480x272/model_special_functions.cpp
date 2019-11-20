@@ -217,10 +217,12 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           if (func == FUNC_TRAINER) {
             maxParam = NUM_STICKS + 1;
             uint8_t param = CFN_CH_INDEX(cfn);
-            if (param == NUM_STICKS + 1)
-              lcdDrawText(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, "Chans", attr);
+            if (param == 0)
+              lcdDrawText(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, STR_STICKS, attr);
+            else if (param == NUM_STICKS + 1)
+              lcdDrawText(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, STR_CHANS, attr);
             else
-              drawSource(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+              drawSource(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, MIXSRC_Rud + param - 1, attr);
           }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {

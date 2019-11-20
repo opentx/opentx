@@ -207,9 +207,9 @@
 #endif
 
 #ifdef GVARS
-  #define TR_ADJUST_GVAR  "Ajuste\0      "
+  #define TR_ADJUST_GVAR    "Ajuste\0      "
 #else
-  #define TR_ADJUST_GVAR  "[AdjustGV]\0  "
+  #define TR_ADJUST_GVAR    "[AdjustGV]\0  "
 #endif
 
 #if defined(LUA)
@@ -923,6 +923,7 @@
 #define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Trainer"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
 #define TR_MODELIDUSED         TR("ID used in:", "Receiver ID used in:")
 #define TR_MODULE              "Module"

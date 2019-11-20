@@ -209,7 +209,7 @@
 #endif
 
 #if defined(GVARS)
-  #define TR_ADJUST_GVAR       "Wijzig \0  "
+  #define TR_ADJUST_GVAR       "Wijzig\0   "
 #else
   #define TR_ADJUST_GVAR       "[WijzigGV]"
 #endif
@@ -920,6 +920,7 @@
 #define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Trainer Poort"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM      CENTER "TX-Antenneprobleem!"
 #define TR_MODELIDUSED         TR("ID al gebruikt", "Model-ID al gebruikt")
 #define TR_MODULE              "Module-Type"
