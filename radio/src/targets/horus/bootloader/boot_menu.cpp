@@ -2,8 +2,6 @@
 #include "../../common/arm/stm32/bootloader/boot.h"
 #include "../../common/arm/stm32/bootloader/bin_files.h"
 
-#define SELECTED_COLOR (INVERS | TEXT_COLOR)
-
 const uint8_t __bmp_plug_usb_rle[] {
 #include "bmp_plug_usb.lbm"
 };
@@ -48,7 +46,7 @@ void bootloaderInitScreen()
  
   backlightEnable(BACKLIGHT_LEVEL_MAX);
 
-  //TODO: load/decompress bitmaps
+  // TODO: load/decompress bitmaps
   loadFonts();
 }
 
