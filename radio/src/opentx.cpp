@@ -999,6 +999,8 @@ void checkThrottleStick()
 #if defined(PWR_BUTTON_PRESS)
     uint32_t power = pwrCheck();
     if (power == e_power_off) {
+      drawSleepBitmap();
+      boardOff();
       break;
     }
     else if (power == e_power_press) {
@@ -1047,7 +1049,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
   bool refresh = false;
 #endif
 
-  while (1) {
+  while (true) {
     RTOS_WAIT_MS(10);
 
     if (keyDown())  // wait for key release
