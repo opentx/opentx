@@ -593,6 +593,7 @@ void ModulePanel::update()
   ui->disableTelem->setVisible(mask & MASK_MULTIMODULE);
   ui->disableChMap->setVisible(mask & MASK_MULTIMODULE);
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
+  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
   if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
     ui->autoBind->setText(tr("Autodetect Format"));
   else
