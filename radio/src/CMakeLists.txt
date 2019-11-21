@@ -33,6 +33,7 @@ option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(SEMIHOSTING "Enable debugger semihosting" OFF)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(WATCHDOG "Enable hardware Watchdog" ON)
+option(ASTERISK "Enable asterisk icon (test only firmware)" OFF)
 if(SDL_FOUND)
   option(SIMU_AUDIO "Enable simulator audio." ON)
 endif()
@@ -233,6 +234,10 @@ endif()
 
 if(JITTER_MEASURE)
   add_definitions(-DJITTER_MEASURE)
+endif()
+
+if(ASTERISK)
+  add_definitions(-DASTERISK)
 endif()
 
 if(WATCHDOG)
