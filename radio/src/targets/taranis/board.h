@@ -438,13 +438,13 @@ uint32_t readTrims();
 #define KEYS_PRESSED()                  (readKeys())
 
 // WDT driver
-#define WDT_DURATION                      500 /*ms*/
+#define WDG_DURATION                      500 /*ms*/
 #if !defined(WATCHDOG) || defined(SIMU)
-  #define wdt_enable(x)
-  #define wdt_reset()
+  #define WDG_ENABLE(x)
+  #define WDG_RESET()
 #else
-  #define wdt_enable(x)                 watchdogInit(x)
-  #define wdt_reset()                   IWDG->KR = 0xAAAA
+  #define WDG_ENABLE(x)                 watchdogInit(x)
+  #define WDG_RESET()                   IWDG->KR = 0xAAAA
 #endif
 void watchdogInit(unsigned int duration);
 #define WAS_RESET_BY_SOFTWARE()             (RCC->CSR & RCC_CSR_SFTRSTF)

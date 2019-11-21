@@ -768,7 +768,7 @@ void checkSwitches()
 
     doLoopCommonActions();
 
-    wdt_reset();
+    WDG_RESET();
 
     RTOS_WAIT_MS(10);
   }

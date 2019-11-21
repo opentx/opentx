@@ -109,7 +109,7 @@ void per10ms()
 
   if (watchdogTimeout) {
     watchdogTimeout -= 1;
-    wdt_reset();  // Retrigger hardware watchdog
+    WDG_RESET();  // Retrigger hardware watchdog
   }
 
 #if defined(GUI)
@@ -932,7 +932,7 @@ void checkAll()
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
       RTOS_WAIT_MS(1);
-      wdt_reset();
+      WDG_RESET();
     }
   }
 
@@ -1018,7 +1018,7 @@ void checkThrottleStick()
 
     doLoopCommonActions();
 
-    wdt_reset();
+    WDG_RESET();
 
     RTOS_WAIT_MS(10);
   }
@@ -1057,7 +1057,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
 
     doLoopCommonActions();
 
-    wdt_reset();
+    WDG_RESET();
 
     const uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
@@ -1987,7 +1987,7 @@ void opentxInit()
 
   startPulses();
 
-  wdt_enable(WDT_DURATION);
+  WDG_ENABLE(WDG_DURATION);
 }
 
 #if defined(SIMU)
@@ -2009,7 +2009,7 @@ int main()
 
   // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
   // important to disable it before commencing with system initialisation (or
-  // we could put a bunch more wdt_reset()s in. But I don't like that approach
+  // we could put a bunch more WDG_RESET()s in. But I don't like that approach
   // during boot up.)
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;

@@ -195,7 +195,7 @@ const char * MultiFirmwareUpdateDriver::waitForInitialSync(bool& inverted) const
     sendByte(CRC_EOP);
 
     getRxByte(byte);
-    wdt_reset();
+    WDG_RESET();
 
   } while((byte != STK_INSYNC) && --retries);
 
@@ -270,7 +270,7 @@ const char * MultiFirmwareUpdateDriver::progPage(uint8_t* buffer, uint16_t size)
   uint8_t retries = 4;
   do {
     getRxByte(byte);
-    wdt_reset();
+    WDG_RESET();
   } while(!byte && --retries);
 
   if (!retries || (byte != STK_OK))

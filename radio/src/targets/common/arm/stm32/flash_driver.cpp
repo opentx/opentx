@@ -23,7 +23,7 @@
 void waitFlashIdle()
 {
   do {
-    wdt_reset();
+    WDG_RESET();
   } while (FLASH->SR & FLASH_FLAG_BSY);
 }
 
@@ -52,7 +52,7 @@ void lockFlash()
 
 void eraseSector(uint32_t sector)
 {
-  wdt_enable(3000); // some sectors may take > 1s to erase
+  WDG_ENABLE(3000); // some sectors may take > 1s to erase
 
   waitFlashIdle();
 
@@ -69,7 +69,7 @@ void eraseSector(uint32_t sector)
   FLASH->CR &= (~FLASH_CR_SER);
   FLASH->CR &= SECTOR_MASK;
 
-  wdt_enable(WDT_DURATION);
+  WDG_ENABLE(WDG_DURATION);
 }
 
 void flashWrite(uint32_t * address, const uint32_t * buffer) // page size is 256 bytes

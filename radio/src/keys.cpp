@@ -189,7 +189,7 @@ bool waitKeysReleased()
 #endif
 
   while (keyDown()) {
-    wdt_reset();
+    WDG_RESET();
 
 #if !defined(BOOT)
     if ((get_tmr10ms() - start) >= 300) {  // wait no more than 3 seconds

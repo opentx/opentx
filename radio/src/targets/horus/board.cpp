@@ -186,7 +186,7 @@ void boardOff()
   backlightEnable(0);
 
   while (pwrPressed()) {
-    wdt_reset();
+    WDG_RESET();
   }
 
   SysTick->CTRL = 0; // turn off systick

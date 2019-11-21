@@ -222,7 +222,7 @@ void boardOff()
 
 #if defined(PWR_BUTTON_PRESS)
   while (pwrPressed()) {
-    wdt_reset();
+    WDG_RESET();
   }
 #endif
 
@@ -234,7 +234,7 @@ void boardOff()
   __disable_irq();
 
   while (1) {
-    wdt_reset();
+    WDG_RESET();
 #if defined(PWR_BUTTON_PRESS)
     // X9E/X7 needs watchdog reset because CPU is still running while
     // the power key is held pressed by the user.
