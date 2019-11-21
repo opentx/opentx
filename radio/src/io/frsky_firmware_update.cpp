@@ -101,7 +101,7 @@ bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint
 {
   watchdogSuspend(timeout);
 
-  switch(module) {
+  switch (module) {
     case INTERNAL_MODULE:
     {
       uint32_t elapsed = 0;
@@ -176,8 +176,8 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
   RTOS_WAIT_MS(1);
 
-  switch(module) {
-#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+  switch (module) {
+#if defined(INTERNAL_MODULE_PXX2)
     case INTERNAL_MODULE:
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
@@ -235,8 +235,8 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
     }
   }
 
-  switch(module) {
-#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+  switch (module) {
+#if defined(INTERNAL_MODULE_PXX2)
     case INTERNAL_MODULE:
       return intmoduleSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
 #endif
@@ -331,10 +331,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 #endif
 
   switch (module) {
-#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
-    // on XLite we don't use TX + RX but the S.PORT line
-    // this ifdef can be removed if we use .frsk instead of .frk
-    // theorically it should be possible to use an ISRM module in an XLite
+#if defined(INTERNAL_MODULE_PXX2)
     case INTERNAL_MODULE:
       intmoduleSerialStart(57600, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
       break;
@@ -511,7 +508,9 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();
+#endif
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 

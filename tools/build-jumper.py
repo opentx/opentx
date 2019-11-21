@@ -14,6 +14,12 @@ boards = {
         "PCBREV": "T12",
         "DEFAULT_MODE": "2",
     },
+    "T12PRO": {
+        "PCB": "X7",
+        "PCBREV": "T12",
+        "INTERNAL_MODULE_MULTI": "YES",
+        "DEFAULT_MODE": "2",
+    },
     "T16": {
         "PCB": "X10",
         "PCBREV": "T16",

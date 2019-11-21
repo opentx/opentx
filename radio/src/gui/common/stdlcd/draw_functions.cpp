@@ -21,6 +21,7 @@
 #include "opentx.h"
 #include <math.h>
 
+#if defined(MULTIMODULE)
 void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
 {
   if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
@@ -51,6 +52,7 @@ void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint
       lcdDrawNumber(x, y, subType, flags);
   }
 }
+#endif
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags flags)
 {
