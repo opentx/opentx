@@ -51,6 +51,7 @@ DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 SysTick_Type systick;
 ADC_Common_TypeDef adc;
+RTC_TypeDef rtc;
 #else
 Pio Pioa, Piob, Pioc;
 Pmc pmc;
