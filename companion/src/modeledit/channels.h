@@ -26,6 +26,8 @@
 
 #include <QtCore>
 
+constexpr char MIMETYPE_CHN[] = "application/x-companion-chn";
+
 class GVarGroup;
 
 class LimitsGroup
@@ -70,9 +72,15 @@ class Channels : public ModelPanel
     void chnCopy();
     void chnPaste();
     void chnCut();
+    void chnMoveUp();
+    void chnMoveDown();
+    void chnInsert();
+    void chnClear();
+    void chnClearAll();
     void chn_customContextMenuRequested(QPoint pos);
 
   private:
+    void swapChnData(int idx1, int idx2);
     QLineEdit *name[CPN_MAX_CHNOUT];
     LimitsGroup *chnOffset[CPN_MAX_CHNOUT];
     LimitsGroup *chnMin[CPN_MAX_CHNOUT];
@@ -82,6 +90,7 @@ class Channels : public ModelPanel
     QSpinBox *centerSB[CPN_MAX_CHNOUT];
     QCheckBox *symlimitsChk[CPN_MAX_CHNOUT];
     int selectedChannel;
+    int chnCapability;
 };
 
 #endif // _CHANNELS_H_
