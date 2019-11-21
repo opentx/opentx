@@ -644,7 +644,7 @@
 #define TR_MODULE_NO_TELEMETRY         TR3("No telemetry", "No MULTI_TELEMETRY", "No MULTI_TELEMETRY detected")
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              TR("Bind...","Binding")
-#define TR_MODULE_UPGRADE              TR("Upg. needed","Module upgrade required")
+#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module upgrade required")
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"
