@@ -52,7 +52,7 @@ void lockFlash()
 
 void eraseSector(uint32_t sector)
 {
-  wdt_enable(2000);
+  wdt_enable(3000); // some sectors may take > 1s to erase
 
   waitFlashIdle();
 
