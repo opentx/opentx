@@ -208,7 +208,7 @@
 #endif
 
 #if defined(GVARS)
-  #define TR_ADJUST_GVAR               "Ändere \0  "
+  #define TR_ADJUST_GVAR               "Ändere\0   "
 #else
   #define TR_ADJUST_GVAR               "[ÄndereGV]"
 #endif
@@ -915,6 +915,7 @@
 #define TR_CALIBRATION                 "Kalibrieren"
 #define TR_SET                   	   BUTTON("Set")
 #define TR_TRAINER             		   "DSC Buchse PPM In/Out"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM     		   CENTER "TX-Antennenproblem!"
 #if defined(COLORLCD)
   #define TR_MODELIDUSED               "ID used in:"

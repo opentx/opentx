@@ -938,6 +938,7 @@
 #define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Aprendiz"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
 #define TR_MODULE              "Modulo"

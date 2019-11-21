@@ -209,7 +209,7 @@
 #endif
 
 #if defined(GVARS)
-  #define TR_ADJUST_GVAR       "Ustaw \0   "
+  #define TR_ADJUST_GVAR       "Ustaw\0    "
 #else
   #define TR_ADJUST_GVAR       "[UstawZG] "
 #endif
@@ -933,6 +933,7 @@
 #define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Port Trenera"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM      CENTER "Problem z anteną TX"
 #define TR_MODELIDUSED         TR("ID zajęte","ID modelu zajęte")
 #define TR_MODULE              "Moduł "

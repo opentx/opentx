@@ -207,7 +207,7 @@
 #endif
 
 #ifdef GVARS
-  #define TR_ADJUST_GVAR               "Nastav \0   "
+  #define TR_ADJUST_GVAR               "Nastav\0    "
 #else
   #define TR_ADJUST_GVAR               "[Nastav GP]"
 #endif
@@ -913,6 +913,7 @@
 #define TR_CALIBRATION                 "Kalibrace"
 #define TR_SET                         BUTTON("Nast")
 #define TR_TRAINER                     "Trenér"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM              CENTER "Problém s TX anténou!"
 #define TR_MODELIDUSED                 TR("ID již použito","ID modelu je již použito")
 #define TR_MODULE                      "Modul"

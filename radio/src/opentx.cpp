@@ -1915,7 +1915,7 @@ void opentxInit()
 
   // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
-#if defined(RTC_BACKUP_RAM)
+#if defined(RTC_BACKUP_RAM) && !defined(SIMU)
   if (globalData.unexpectedShutdown) {
     // SDCARD not available, try to restore last model from RAM
     TRACE("rambackupRestore");
