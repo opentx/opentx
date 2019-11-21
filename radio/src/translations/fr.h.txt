@@ -649,7 +649,7 @@
 #define TR_MULTI_RFTUNE                TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
 #define TR_MULTI_TELEMETRY             "Télémétrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
-#define TR_RFPOWER                     TR(INDENT "Puiss. RF", INDENT "Puissance RF")
+#define TR_RFPOWER                     TR("Puiss. RF", "Puissance RF")
 #define TR_MULTI_FIXEDID               "ID fixe"
 #define TR_MULTI_OPTION                TR(INDENT "Option", INDENT "Option perso")
 #define TR_MULTI_AUTOBIND              TR(INDENT "Bind voie", INDENT "Bind sur voie")

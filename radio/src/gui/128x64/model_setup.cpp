@@ -1522,7 +1522,7 @@ void menuModelSetup(event_t event)
         auto & module = g_model.moduleData[moduleIdx];
         // Lite FCC / Lite FLEX / Lite Pro Flex
         if (isModuleTypeR9MNonAccess(module.type)) {
-          lcdDrawTextAlignedLeft(y, STR_RFPOWER);
+          lcdDrawText(INDENT_WIDTH, y, STR_RFPOWER);
           if (isModuleR9M_FCC_VARIANT(moduleIdx)) {
             // FCC and FLEX modes ...
             if (isModuleTypeR9MLiteNonPro(module.type)) { // R9M lite FCC has only one power value, so displayed for info only
