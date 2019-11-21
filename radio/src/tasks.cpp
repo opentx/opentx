@@ -189,7 +189,7 @@ TASK_FUNCTION(mixerTask)
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
 
       if (heartbeat == HEART_WDT_CHECK) {
-        wdt_reset();
+        WDG_RESET();
         heartbeat = 0;
       }
 

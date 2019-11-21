@@ -59,17 +59,14 @@ void rtcGetTime(struct gtm * t)
 
 void rtcInit()
 {
-  RTC_InitTypeDef RTC_InitStruct;
-
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
   PWR_BackupAccessCmd(ENABLE);
   RCC_LSEConfig(RCC_LSE_ON);
   
   // Prevent lockup in case of 32kHz oscillator failure
   uint32_t i = 0;
-  while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)
-  {
-    if ( ++i > 1000000 )
+  while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET) {
+    if (++i > 1000000)
       return;
   }
   
@@ -77,17 +74,21 @@ void rtcInit()
   RCC_RTCCLKCmd(ENABLE);
   RTC_WaitForSynchro();
 
+#if !defined(BOOT)
+  RTC_InitTypeDef RTC_InitStruct;
+
   // RTC time base = LSE / ((AsynchPrediv+1) * (SynchPrediv+1)) = 1 Hz*/
   RTC_InitStruct.RTC_HourFormat = RTC_HourFormat_24;
   RTC_InitStruct.RTC_AsynchPrediv = 127;
   RTC_InitStruct.RTC_SynchPrediv = 255;
   RTC_Init(&RTC_InitStruct);
-  
+
   struct gtm utm;
   rtcGetTime(&utm);
   g_rtcTime = gmktime(&utm);
+#endif
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM) && !defined(BOOT)
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, ENABLE);
   PWR_BackupRegulatorCmd(ENABLE);
 #endif

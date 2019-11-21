@@ -195,7 +195,7 @@ int main()
   FRESULT fr;
   uint32_t nameCount = 0;
 
-  wdt_reset();
+  WDG_RESET();
 
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
@@ -215,7 +215,7 @@ int main()
 #if defined(PCBHORUS)
   // wait a bit for the inputs to stabilize...
   for (uint32_t i = 0; i < 50000; i++) {
-    wdt_reset();
+    WDG_RESET();
   }
 #endif
 
@@ -265,12 +265,12 @@ int main()
 #if defined(PWR_BUTTON_PRESS)
   // wait until power button is released
   while (pwrPressed()) {
-    wdt_reset();
+    WDG_RESET();
   }
 #endif
 
   for (;;) {
-    wdt_reset();
+    WDG_RESET();
 
     if (tenms) {
       tenms = 0;
@@ -506,16 +506,12 @@ int main()
       lcdRefresh();
       lcdRefreshWait();
 
-#if !defined(EEPROM)
-      // Use jump on radios with emergency mode
-      // to avoid triggering it with a soft reset
-
-      // Jump to proper application address
-      jumpTo(APP_START_ADDRESS);
-#else
-      // Use software reset everywhere else
-      NVIC_SystemReset();
+#if defined(RTC_BACKUP_RAM)
+      rtcInit();
+      RTC->BKP0R = SOFTRESET_REQUEST;
 #endif
+
+      NVIC_SystemReset();
     }
   }
 
@@ -523,5 +519,5 @@ int main()
 }
 
 #if defined(PCBHORUS)
-void *__dso_handle = 0;
+void *__dso_handle = nullptr;
 #endif

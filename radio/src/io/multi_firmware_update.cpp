@@ -195,7 +195,7 @@ const char * MultiFirmwareUpdateDriver::waitForInitialSync(bool& inverted) const
     sendByte(CRC_EOP);
 
     getRxByte(byte);
-    wdt_reset();
+    WDG_RESET();
 
   } while((byte != STK_INSYNC) && --retries);
 
@@ -270,7 +270,7 @@ const char * MultiFirmwareUpdateDriver::progPage(uint8_t* buffer, uint16_t size)
   uint8_t retries = 4;
   do {
     getRxByte(byte);
-    wdt_reset();
+    WDG_RESET();
   } while(!byte && --retries);
 
   if (!retries || (byte != STK_OK))
@@ -298,7 +298,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
   init(inverted);
 
   /* wait 500ms for power on */
-  watchdogSuspend(500);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(500);
 
   result = waitForInitialSync(inverted);
@@ -533,7 +533,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(2000);
 
   const char * result = driver->flashFirmware(&file, getBasename(filename));
@@ -557,7 +557,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(2000);
 
   // reset telemetry protocol

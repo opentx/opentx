@@ -159,6 +159,10 @@ void onSdManagerMenu(const char * result)
     getSelectionFullPath(lfn);
     pushMenuTextView(lfn);
   }
+  else if (result == STR_FLASH_BOOTLOADER) {
+    getSelectionFullPath(lfn);
+    bootloaderFlash(lfn);
+  }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
     FrskyDeviceFirmwareUpdate device(INTERNAL_MODULE);
@@ -276,6 +280,13 @@ bool menuRadioSdManager(event_t _event)
             }
             if (!strcmp(ext, PNG_EXT)) {
               POPUP_MENU_ADD_ITEM(STR_ASSIGN_SPLASH);
+            }
+          }
+          if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
+            TCHAR lfn[_MAX_LFN+1];
+            getSelectionFullPath(lfn);
+            if (isBootloader(lfn)) {
+              POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
             }
           }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
