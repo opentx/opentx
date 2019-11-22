@@ -124,14 +124,6 @@ bool menuRadioModulesVersion(event_t event)
         if (variant < DIM(variants)) {
           lcdDrawText(lcdNextPos + 1, y, variants[variant]);
         }
-        if (!globalData.upgradeModulePopup &&
-            reusableBuffer.hardwareAndSettings.modules[module].information.modelID == PXX2_MODULE_ISRM_S_X10S &&
-            reusableBuffer.hardwareAndSettings.modules[module].information.swVersion.major == 0 &&
-            reusableBuffer.hardwareAndSettings.modules[module].information.swVersion.minor == 1 &&
-            reusableBuffer.hardwareAndSettings.modules[module].information.swVersion.revision < 5) {
-          globalData.upgradeModulePopup = 1;
-          POPUP_WARNING(STR_MODULE_UPGRADE);
-        }
       }
     }
     y += FH;
