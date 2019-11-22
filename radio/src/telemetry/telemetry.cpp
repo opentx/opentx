@@ -79,6 +79,7 @@ inline bool isBadAntennaDetected()
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
+  uint8_t data;
 
 #if defined(REVX)
   uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
@@ -100,6 +101,7 @@ void telemetryWakeup()
     processPXX2Frame(INTERNAL_MODULE, frame);
   }
   #endif
+
   #if defined(EXTMODULE_USART)
   while (extmoduleFifo.getFrame(frame)) {
     processPXX2Frame(EXTERNAL_MODULE, frame);
@@ -108,15 +110,16 @@ void telemetryWakeup()
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
-  while(!intmoduleFifo.isEmpty()) {
-    uint8_t b=0;
-    intmoduleFifo.pop(b);
-    processMultiTelemetryData(b, INTERNAL_MODULE);
+  if (intmoduleFifo.pop(data)) {
+    LOG_TELEMETRY_WRITE_START();
+    do {
+      processMultiTelemetryData(data, INTERNAL_MODULE);
+      LOG_TELEMETRY_WRITE_BYTE(data);
+    } while (intmoduleFifo.pop(data));
   }
 #endif
 
 #if defined(STM32)
-  uint8_t data;
   if (telemetryGetByte(&data)) {
     LOG_TELEMETRY_WRITE_START();
     do {

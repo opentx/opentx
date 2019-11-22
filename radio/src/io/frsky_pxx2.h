@@ -28,7 +28,7 @@ class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
   public:
     bool getFrame(uint8_t * frame)
     {
-      while (1) {
+      while (true) {
         if (isEmpty()) {
           return false;
         }

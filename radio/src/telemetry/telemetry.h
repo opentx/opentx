@@ -250,6 +250,6 @@ extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
-void processPXX2Frame(uint8_t module, uint8_t *frame);
+void processPXX2Frame(uint8_t module, const uint8_t *frame);
 
 #endif // _TELEMETRY_H_
