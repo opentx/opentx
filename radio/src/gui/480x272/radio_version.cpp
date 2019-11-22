@@ -129,7 +129,7 @@ bool menuRadioModulesVersion(event_t event)
             reusableBuffer.hardwareAndSettings.modules[module].information.swVersion.major == 0 &&
             reusableBuffer.hardwareAndSettings.modules[module].information.swVersion.minor == 1 &&
             reusableBuffer.hardwareAndSettings.modules[module].information.swVersion.revision < 5) {
-          globalData.upgradeModulePopup = 0;
+          globalData.upgradeModulePopup = 1;
           POPUP_WARNING(STR_MODULE_UPGRADE);
         }
       }
