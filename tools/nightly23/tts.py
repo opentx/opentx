@@ -13,8 +13,6 @@
 # Portuguese : Romolo Manfredini
 # Spanish    : Romolo Manfredini (With the help of Jose Moreno)
 
-# from __future__ import print_function
-
 import os
 import sys
 import subprocess
@@ -25,12 +23,10 @@ from tts_common import *
 
 board = "taranis"
 
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 SOURCE_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.abspath(os.path.join(SOURCE_DIRECTORY, '..', '..', 'radio', 'util'))
 sys.path.append(lib_path)
+
 
 def generate(str, filename):
     if 0:
@@ -40,7 +36,7 @@ def generate(str, filename):
         command = "sox %s -r 32000 %s reverse silence 1 0.1 0.1%% reverse" % (output, filename)
         os.system(command.encode('utf-8'))
     else:
-        output = u"output.mp3"
+        output = "output.mp3"
         tts = gTTS(text=str, lang=voice[:2])
         tts.save(output)
         command = "sox --norm %s -r 32000 %s tempo 1.2" % (output, filename)
@@ -48,7 +44,6 @@ def generate(str, filename):
         command = "rm -f output.mp3"
         os.system(command.encode('utf-8'))
 
-################################################################
 
 if __name__ == "__main__":
     if "en" in sys.argv:
@@ -138,7 +133,6 @@ if __name__ == "__main__":
                 if s and f:
                     l = u"|" + f.replace(".wav", "") + u"|" + s + u"\r\n"
                     csvFile.write(l.encode("windows-1251"))
-
 
     if "files" in sys.argv:
               path = "/tmp/SOUNDS/" + directory + "/SYSTEM/"
