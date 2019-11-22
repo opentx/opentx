@@ -228,7 +228,10 @@ void processAuthenticationFrame(uint8_t module, uint8_t * frame)
   uint8_t messageDigest[16] = {0};
 
   if (frame[0] == 4 && PXX2_AUTH_REFUSED_FLAG == frame[4]) {
-    POPUP_INFORMATION(STR_AUTH_FAILURE);
+    if (!globalData.authenticationPopup) {
+      globalData.authenticationPopup = 1;
+      POPUP_INFORMATION(STR_AUTH_FAILURE);
+    }
     return;
   }
 
