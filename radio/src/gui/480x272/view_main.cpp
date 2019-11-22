@@ -223,6 +223,23 @@ bool menuMainView(event_t event)
     }
   }
 
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(INTERNAL_MODULE_PXX2) && defined(ACCESS_LIB)
+  if (globalData.authenticationCount > 0 && !globalData.upgradeModulePopup) {
+    if (!globalData.internalModuleVersionChecked) {
+      globalData.internalModuleVersionChecked = 1;
+      memclear(&reusableBuffer.viewMain.internalModule, sizeof(reusableBuffer.viewMain.internalModule));
+      moduleState[INTERNAL_MODULE].readModuleInformation(&reusableBuffer.viewMain.internalModule, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+    }
+    else if (reusableBuffer.viewMain.internalModule.information.modelID == PXX2_MODULE_ISRM_S_X10S &&
+             reusableBuffer.viewMain.internalModule.information.swVersion.major == 0 &&
+             reusableBuffer.viewMain.internalModule.information.swVersion.minor == 1 &&
+             reusableBuffer.viewMain.internalModule.information.swVersion.revision < 5) {
+      globalData.upgradeModulePopup = 1;
+      POPUP_WARNING(STR_MODULE_UPGRADE);
+    }
+  }
+#endif
+
   return true;
 }
 

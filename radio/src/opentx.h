@@ -572,7 +572,8 @@ PACK(struct GlobalData {
   uint8_t externalAntennaEnabled:1;
   uint8_t authenticationCount:2;
   uint8_t upgradeModulePopup:1;
-  uint8_t spare:3;
+  uint8_t internalModuleVersionChecked:1;
+  uint8_t spare:2;
 });
 
 extern GlobalData globalData;
@@ -1230,6 +1231,10 @@ union ReusableBuffer
   struct {
     uint8_t maxNameLen;
   } modelFailsafe;
+
+  struct {
+    ModuleInformation internalModule;
+  } viewMain;
 
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
