@@ -569,8 +569,10 @@ void flightReset(uint8_t check=true);
 
 PACK(struct GlobalData {
   uint8_t unexpectedShutdown:1;
-  uint8_t externalAntennaEnabled: 1;
-  uint8_t spare:6;
+  uint8_t externalAntennaEnabled:1;
+  uint8_t authenticationCount:2;
+  uint8_t authenticationPopup:1;
+  uint8_t spare:3;
 });
 
 extern GlobalData globalData;

@@ -239,6 +239,16 @@ void processAuthenticationFrame(uint8_t module, uint8_t * frame)
     intmoduleSendBuffer(pxx2.getData(), pxx2.getSize());
     // we remain in AUTHENTICATION mode to avoid a CHANNELS frame is sent at the end of the mixing process
   }
+
+  if (!globalData.authenticationPopup) {
+    if (globalData.authenticationCount >= 2) {
+      globalData.authenticationPopup = 1;
+      POPUP_WARNING(STR_MODULE_UPGRADE);
+    }
+    else {
+      globalData.authenticationCount += 1;
+    }
+  }
 }
 #else
 #define processAuthenticationFrame(module, frame)
