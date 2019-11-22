@@ -504,6 +504,7 @@ if(NOT MSVC)
     add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
     link_libraries(firmware -lstdc++)
     add_dependencies(firmware ${RADIO_DEPENDENCIES} ${FIRMWARE_DEPENDENCIES})
+    set_target_properties(firmware PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
     add_custom_command(
       TARGET firmware POST_BUILD
