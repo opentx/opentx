@@ -204,8 +204,8 @@ void processAuthenticationFrame(uint8_t module, const uint8_t * frame)
   uint8_t messageDigest[16] = {0};
 
   if (frame[0] == 4 && PXX2_AUTH_REFUSED_FLAG == frame[4]) {
-    if (!globalData.authenticationPopup) {
-      globalData.authenticationPopup = 1;
+    if (!globalData.upgradeModulePopup) {
+      globalData.upgradeModulePopup = 1;
       POPUP_INFORMATION(STR_AUTH_FAILURE);
     }
     return;
@@ -219,9 +219,9 @@ void processAuthenticationFrame(uint8_t module, const uint8_t * frame)
     // we remain in AUTHENTICATION mode to avoid a CHANNELS frame is sent at the end of the mixing process
   }
 
-  if (!globalData.authenticationPopup) {
+  if (!globalData.upgradeModulePopup) {
     if (globalData.authenticationCount >= 2) {
-      globalData.authenticationPopup = 1;
+      globalData.upgradeModulePopup = 1;
       POPUP_WARNING(STR_MODULE_UPGRADE);
     }
     else {
