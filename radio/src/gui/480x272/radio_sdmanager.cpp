@@ -282,32 +282,12 @@ bool menuRadioSdManager(event_t _event)
               POPUP_MENU_ADD_ITEM(STR_ASSIGN_SPLASH);
             }
           }
-          if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
-            TCHAR lfn[_MAX_LFN+1];
-            getSelectionFullPath(lfn);
-            if (isBootloader(lfn)) {
-              POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
-            }
-          }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
             if (HAS_SPORT_UPDATE_CONNECTOR())
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
           }
-#if defined(MULTIMODULE)
-          else if (!READ_ONLY() && !strcasecmp(ext, MULTI_FIRMWARE_EXT)) {
-            TCHAR lfn[_MAX_LFN + 1];
-            getSelectionFullPath(lfn);
-            MultiFirmwareInformation information;
-            if (information.readMultiFirmwareInformation(line) == nullptr) {
-#if defined(INTERNAL_MODULE_MULTI)
-              POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MULTI);
-#endif
-              POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MULTI);
-            }
-          }
-#endif
           else if (!READ_ONLY() && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
             FrSkyFirmwareInformation information;
             if (readFrSkyFirmwareInformation(line, information) == nullptr) {
@@ -331,13 +311,39 @@ bool menuRadioSdManager(event_t _event)
 #endif
             }
           }
-          else if (isExtensionMatching(ext, SCRIPTS_EXT)) {
+
+          // Warning FIRMWARE_EXT and MULTI_FIRMWARE_EXT are the same
+          if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
+            TCHAR lfn[_MAX_LFN+1];
+            getSelectionFullPath(lfn);
+            if (isBootloader(lfn)) {
+              POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
+            }
+          }
+
+#if defined(MULTIMODULE)
+          if (!READ_ONLY() && !strcasecmp(ext, MULTI_FIRMWARE_EXT)) {
+            TCHAR lfn[_MAX_LFN + 1];
+            getSelectionFullPath(lfn);
+            MultiFirmwareInformation information;
+            if (information.readMultiFirmwareInformation(line) == nullptr) {
+#if defined(INTERNAL_MODULE_MULTI)
+              POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MULTI);
+#endif
+              POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MULTI);
+            }
+          }
+#endif
+
+          if (isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
+
           if (isExtensionMatching(ext, TEXT_EXT) || isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
           }
         }
+
         if (!READ_ONLY()) {
           if (IS_FILE(line))
             POPUP_MENU_ADD_ITEM(STR_COPY_FILE);
