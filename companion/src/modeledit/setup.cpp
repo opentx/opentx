@@ -198,10 +198,21 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
     if (IS_HORUS(firmware->getBoard())) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
-    }
-    if (generalSettings.auxSerialMode != UART_MODE_SBUS_TRAINER) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
     }
+    else if (generalSettings.auxSerialMode != UART_MODE_SBUS_TRAINER) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
+    }
+
+    if (generalSettings.bluetoothMode != 2) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BLUETOOTH, 0, Qt::UserRole - 1);
+      ui->trainerMode->setItemData(TRAINER_MODE_SLAVE_BLUETOOTH, 0, Qt::UserRole - 1);
+    }
+
+    if (!IS_JUMPER_T16(firmware->getBoard())) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MULTI, 0, Qt::UserRole - 1);
+    }
+
     ui->trainerMode->setCurrentIndex(model.trainerMode);
     if (!IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       ui->label_trainerMode->hide();
