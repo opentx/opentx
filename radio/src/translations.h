@@ -382,7 +382,6 @@ extern const char STR_AND_SWITCH[];
 extern const char STR_SF[];
 extern const char STR_GF[];
 
-#if defined(MULTIMODULE)
 extern const char STR_MULTI_CUSTOM[];
 extern const char STR_MULTI_FIXEDID[];
 extern const char STR_MULTI_OPTION[];
@@ -408,7 +407,6 @@ extern const char STR_MULTI_MAX_THROW[];
 extern const char STR_MULTI_RFCHAN[];
 #if LCD_W < 212
 extern const char STR_SUBTYPE[];
-#endif
 #endif
 
 #if defined(DSM2) || defined(PXX)
