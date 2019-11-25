@@ -195,8 +195,6 @@ int main()
   FRESULT fr;
   uint32_t nameCount = 0;
 
-  WDG_RESET();
-
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
                          AUX_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
@@ -215,7 +213,7 @@ int main()
 #if defined(PCBHORUS)
   // wait a bit for the inputs to stabilize...
   for (uint32_t i = 0; i < 50000; i++) {
-    WDG_RESET();
+    __ASM volatile ("nop");
   }
 #endif
 
