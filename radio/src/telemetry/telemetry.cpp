@@ -129,7 +129,6 @@ void telemetryWakeup()
   }
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
-    uint8_t data;
     while (telemetrySecondPortReceive(data)) {
       processTelemetryData(data);
     }
