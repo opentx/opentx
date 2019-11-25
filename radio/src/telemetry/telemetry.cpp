@@ -76,6 +76,67 @@ inline bool isBadAntennaDetected()
   return false;
 }
 
+
+#define BIT(x, index) (((x) >> index) & 0x01)
+
+uint8_t getPhysicalIdWithCrc(uint8_t physicalId)
+{
+  uint8_t result = physicalId;
+  result += (BIT(physicalId, 0) ^ BIT(physicalId, 1) ^ BIT(physicalId, 2)) << 5;
+  result += (BIT(physicalId, 2) ^ BIT(physicalId, 3) ^ BIT(physicalId, 4)) << 6;
+  result += (BIT(physicalId, 0) ^ BIT(physicalId, 2) ^ BIT(physicalId, 4)) << 7;
+  return result;
+}
+
+#undef BIT
+
+bool sportPushTelemetry(uint8_t physicalId, uint8_t primId, uint16_t dataId, uint32_t value)
+{
+  if (outputTelemetryBuffer.isAvailable()) {
+    for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+      TelemetrySensor & sensor = g_model.telemetrySensors[i];
+      if (sensor.id == dataId) {
+        if (sensor.frskyInstance.rxIndex == TELEMETRY_ENDPOINT_SPORT) {
+          SportTelemetryPacket packet;
+          packet.physicalId = getPhysicalIdWithCrc(physicalId);
+          packet.primId = primId;
+          packet.dataId = dataId;
+          packet.value = value;
+          outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+        }
+        else {
+          outputTelemetryBuffer.sport.physicalId = getPhysicalIdWithCrc(physicalId);
+          outputTelemetryBuffer.sport.primId = primId;
+          outputTelemetryBuffer.sport.dataId = dataId;
+          outputTelemetryBuffer.sport.value = value;
+        }
+        outputTelemetryBuffer.setDestination(sensor.frskyInstance.rxIndex);
+        return true;
+      }
+    }
+
+    // sensor not found, we send the frame to the SPORT line
+    {
+      SportTelemetryPacket packet;
+      packet.physicalId = getPhysicalIdWithCrc(physicalId);
+      packet.primId = primId;
+      packet.dataId = dataId;
+      packet.value = value;
+      outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+#if defined(PXX2)
+      uint8_t destination = (IS_INTERNAL_MODULE_ON() ? INTERNAL_MODULE : EXTERNAL_MODULE);
+      outputTelemetryBuffer.setDestination(isModulePXX2(destination) ? (destination << 2) : TELEMETRY_ENDPOINT_SPORT);
+#else
+      outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+#endif
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();

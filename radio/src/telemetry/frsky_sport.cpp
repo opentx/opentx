@@ -157,7 +157,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 
 #if defined(BLUETOOTH)
   if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
-    bluetooth.forwardTelemetry(packet);
+    bluetooth.sendTelemetryFrame(packet);
   }
 #endif
 

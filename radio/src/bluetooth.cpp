@@ -134,19 +134,6 @@ char * Bluetooth::readline(bool error_reset)
     }
   }
 }
-//
-//void Bluetooth::processTrainerFrame(const uint8_t * buffer)
-//{
-//  TRACE("");
-//
-//  for (uint8_t channel=0, i=1; channel<8; channel+=2, i+=3) {
-//    // +-500 != 512, but close enough.
-//    ppmInput[channel] = buffer[i] + ((buffer[i+1] & 0xf0) << 4) - 1500;
-//    ppmInput[channel+1] = ((buffer[i+1] & 0x0f) << 4) + ((buffer[i+2] & 0xf0) >> 4) + ((buffer[i+2] & 0x0f) << 8) - 1500;
-//  }
-//
-//  ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
-//}
 
 void Bluetooth::appendFrameByte(uint8_t byte)
 {
@@ -213,6 +200,35 @@ bool Bluetooth::processFrameByte(uint8_t byte)
   }
 
   return false;
+}
+
+void Bluetooth::sendTelemetryFrame(const uint8_t * packet)
+{
+  initFrame(FRAME_TYPE_TELEMETRY);
+  for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
+    pushByte(packet[i]);
+  }
+  sendFrame();
+}
+
+void Bluetooth::processChannelsFrame()
+{
+  for (uint8_t channel = 0, i = 1; channel < 8; channel += 2, i += 3) {
+    // +-500 != 512, but close enough.
+    ppmInput[channel] = buffer[i] + ((buffer[i + 1] & 0xF0) << 4) - 1500;
+    ppmInput[channel+1] = ((buffer[i + 1] & 0x0F) << 4) + ((buffer[i + 2] & 0xF0) >> 4) + ((buffer[i + 2] & 0x0F) << 8) - 1500;
+  }
+
+  ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
+}
+
+void Bluetooth::processTelemetryFrame()
+{
+  uint8_t physicalId = buffer[1];
+  uint8_t primId = buffer[2];
+  uint16_t dataId = *((uint16_t *)(buffer + 3));
+  uint32_t value = *((uint32_t *)(buffer + 5));
+  sportPushTelemetry(physicalId, primId, dataId, value);
 }
 
 void Bluetooth::processUploadFrame()
@@ -283,6 +299,14 @@ void Bluetooth::processFrame()
     case FRAME_TYPE_UPLOAD:
       processUploadFrame();
       break;
+
+    case FRAME_TYPE_CHANNELS:
+      processChannelsFrame();
+      break;
+
+    case FRAME_TYPE_TELEMETRY:
+      processTelemetryFrame();
+      break;
   }
 }
 
@@ -325,35 +349,6 @@ bool Bluetooth::checkFrame()
 //
 //  write(buffer, bufferIndex);
 //  bufferIndex = 0;
-//}
-
-void Bluetooth::forwardTelemetry(const uint8_t * packet)
-{
-//  crc = 0x00;
-//
-//  buffer[bufferIndex++] = START_STOP; // start byte
-//  for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
-//    pushByte(packet[i]);
-//  }
-//  buffer[bufferIndex++] = crc;
-//  buffer[bufferIndex++] = START_STOP; // end byte
-//
-//  if (bufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
-//    write(buffer, bufferIndex);
-//    bufferIndex = 0;
-//  }
-}
-
-//void Bluetooth::receiveTrainer()
-//{
-//  uint8_t byte;
-//  while (true) {
-//    if (!btRxFifo.pop(byte)) {
-//      return;
-//    }
-//    TRACE_NOCRLF("%02X ", byte);
-//    processTrainerByte(byte);
-//  }
 //}
 
 #if defined(PCBX9E)

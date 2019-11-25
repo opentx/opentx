@@ -252,4 +252,7 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 
 void processPXX2Frame(uint8_t module, const uint8_t *frame);
 
+uint8_t getPhysicalIdWithCrc(uint8_t physicalId);
+bool sportPushTelemetry(uint8_t physicalId, uint8_t primId, uint16_t dataId, uint32_t value);
+
 #endif // _TELEMETRY_H_

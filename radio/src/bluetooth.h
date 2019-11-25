@@ -53,9 +53,11 @@ class Bluetooth
 {
   enum FrameType {
     FRAME_TYPE_UPLOAD = 0x05,
-    FRAME_TYPE_UPLOAD_ACK = 0x85,
+    FRAME_TYPE_UPLOAD_ACK = 0x80 + FRAME_TYPE_UPLOAD,
     FRAME_TYPE_DOWNLOAD = 0x06,
-    FRAME_TYPE_DOWNLOAD_ACK = 0x86,
+    FRAME_TYPE_DOWNLOAD_ACK = 0x80 + FRAME_TYPE_DOWNLOAD,
+    FRAME_TYPE_CHANNELS = 0x07,
+    FRAME_TYPE_TELEMETRY = 0x08,
   };
 
   public:
@@ -63,7 +65,7 @@ class Bluetooth
     char * readline(bool error_reset = true);
     void write(const uint8_t * data, uint8_t length);
 
-    void forwardTelemetry(const uint8_t * packet);
+    void sendTelemetryFrame(const uint8_t * packet);
     void wakeup();
     const char * flashFirmware(const char * filename);
 
@@ -86,6 +88,8 @@ class Bluetooth
     bool processFrameByte(uint8_t byte);
     bool checkFrame();
     void processFrame();
+    void processChannelsFrame();
+    void processTelemetryFrame();
     void processUploadFrame();
     void appendFrameByte(uint8_t byte);
 
