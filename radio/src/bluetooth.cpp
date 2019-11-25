@@ -130,30 +130,30 @@ char * Bluetooth::readline(bool error_reset)
     }
     else {
       buffer[bufferIndex++] = byte;
-      bufferIndex &= (BLUETOOTH_LINE_LENGTH-1);
+      bufferIndex &= (BLUETOOTH_BUFFER_SIZE - 1);
     }
   }
 }
+//
+//void Bluetooth::processTrainerFrame(const uint8_t * buffer)
+//{
+//  TRACE("");
+//
+//  for (uint8_t channel=0, i=1; channel<8; channel+=2, i+=3) {
+//    // +-500 != 512, but close enough.
+//    ppmInput[channel] = buffer[i] + ((buffer[i+1] & 0xf0) << 4) - 1500;
+//    ppmInput[channel+1] = ((buffer[i+1] & 0x0f) << 4) + ((buffer[i+2] & 0xf0) >> 4) + ((buffer[i+2] & 0x0f) << 8) - 1500;
+//  }
+//
+//  ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
+//}
 
-void Bluetooth::processTrainerFrame(const uint8_t * buffer)
+void Bluetooth::appendFrameByte(uint8_t byte)
 {
-  TRACE("");
-
-  for (uint8_t channel=0, i=1; channel<8; channel+=2, i+=3) {
-    // +-500 != 512, but close enough.
-    ppmInput[channel] = buffer[i] + ((buffer[i+1] & 0xf0) << 4) - 1500;
-    ppmInput[channel+1] = ((buffer[i+1] & 0x0f) << 4) + ((buffer[i+2] & 0xf0) >> 4) + ((buffer[i+2] & 0x0f) << 8) - 1500;
-  }
-
-  ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
-}
-
-void Bluetooth::appendTrainerByte(uint8_t data)
-{
-  if (bufferIndex < BLUETOOTH_LINE_LENGTH) {
-    buffer[bufferIndex++] = data;
+  if (bufferIndex < BLUETOOTH_BUFFER_SIZE) {
+    buffer[bufferIndex++] = byte;
     // we check for "DisConnected", but the first byte could be altered (if received in state STATE_DATA_XOR)
-    if (data == '\n') {
+    if (byte == '\n') {
       if (!strncmp((char *)&buffer[bufferIndex-13], "isConnected", 11)) {
         TRACE("BT< DisConnected");
         state = BLUETOOTH_STATE_DISCONNECTED;
@@ -164,62 +164,97 @@ void Bluetooth::appendTrainerByte(uint8_t data)
   }
 }
 
-void Bluetooth::processTrainerByte(uint8_t data)
+bool Bluetooth::readFrame()
 {
-  static uint8_t dataState = STATE_DATA_IDLE;
+  uint8_t byte;
+  while (true) {
+    if (!btRxFifo.pop(byte)) {
+      return false;
+    }
+    TRACE_NOCRLF("%02X ", byte);
+    if (processFrameByte(byte)) {
+      processFrame();
+      dataState = STATE_DATA_START;
+      bufferIndex = 0;
+    }
+  }
+}
 
+bool Bluetooth::processFrameByte(uint8_t byte)
+{
   switch (dataState) {
     case STATE_DATA_START:
-      if (data == START_STOP) {
+      if (byte == START_STOP) {
         dataState = STATE_DATA_IN_FRAME ;
         bufferIndex = 0;
       }
       else {
-        appendTrainerByte(data);
+        appendFrameByte(byte);
       }
       break;
 
     case STATE_DATA_IN_FRAME:
-      if (data == BYTE_STUFF) {
+      if (byte == BYTE_STUFF) {
         dataState = STATE_DATA_XOR; // XOR next byte
       }
-      else if (data == START_STOP) {
-        dataState = STATE_DATA_IN_FRAME ;
-        bufferIndex = 0;
+      else if (byte == START_STOP) {
+        // the frame is ready
+        return true;
       }
       else {
-        appendTrainerByte(data);
+        appendFrameByte(byte);
       }
       break;
 
     case STATE_DATA_XOR:
-      appendTrainerByte(data ^ STUFF_MASK);
+      appendFrameByte(byte ^ STUFF_MASK);
       dataState = STATE_DATA_IN_FRAME;
       break;
-
-    case STATE_DATA_IDLE:
-      if (data == START_STOP) {
-        bufferIndex = 0;
-        dataState = STATE_DATA_START;
-      }
-      else {
-        appendTrainerByte(data);
-      }
-      break;
   }
 
-  if (bufferIndex >= BLUETOOTH_PACKET_SIZE) {
-    uint8_t crc = 0x00;
-    for (int i=0; i<13; i++) {
-      crc ^= buffer[i];
-    }
-    if (crc == buffer[13]) {
-      if (buffer[0] == 0x80) {
-        processTrainerFrame(buffer);
+  return false;
+}
+
+void Bluetooth::processUploadFrame()
+{
+  uint32_t partIndex = *((uint32_t *)(buffer + 1));
+  uint8_t dataLength = bufferIndex - 6; /* FRAME TYPE + PART INDEX + CRC */
+
+  if (dataLength > 64)
+    return;
+
+  if (partIndex == 0xFFFFFFFF) {
+    // open the file
+    char filename[65] = {0};
+    strncpy(filename, (const char *)(buffer + 5), dataLength);
+    if (f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK)
+      return;
+    state = BLUETOOTH_STATE_UPLOAD;
+    lastPartIndex = 0xFFFFFF;
+  }
+  else if (state == BLUETOOTH_STATE_UPLOAD) {
+    if (partIndex == lastPartIndex + 1) {
+      UINT written;
+      if (dataLength == 0 || (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written)) {
+        lastPartIndex++;
       }
     }
-    dataState = STATE_DATA_IDLE;
   }
+
+  initFrame(FRAME_TYPE_UPLOAD_ACK);
+  pushByte(lastPartIndex);
+  pushByte(lastPartIndex >> 8);
+  pushByte(lastPartIndex >> 16);
+  pushByte(lastPartIndex >> 24);
+  sendFrame();
+}
+
+void Bluetooth::initFrame(uint8_t frameType)
+{
+  crc = 0;
+  bufferIndex = 0;
+  buffer[bufferIndex++] = START_STOP;
+  pushByte(frameType);
 }
 
 void Bluetooth::pushByte(uint8_t byte)
@@ -232,64 +267,94 @@ void Bluetooth::pushByte(uint8_t byte)
   buffer[bufferIndex++] = byte;
 }
 
-void Bluetooth::sendTrainer()
+void Bluetooth::sendFrame()
 {
-  int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;
-
-  int firstCh = g_model.trainerData.channelsStart;
-  int lastCh = firstCh + 8;
-
-  uint8_t * cur = buffer;
-  bufferIndex = 0;
-  crc = 0x00;
-
-  buffer[bufferIndex++] = START_STOP; // start byte
-  pushByte(0x80); // trainer frame type?
-  for (int channel=0; channel<lastCh; channel+=2, cur+=3) {
-    uint16_t channelValue1 = PPM_CH_CENTER(channel) + limit((int16_t)-PPM_range, channelOutputs[channel], (int16_t)PPM_range) / 2;
-    uint16_t channelValue2 = PPM_CH_CENTER(channel+1) + limit((int16_t)-PPM_range, channelOutputs[channel+1], (int16_t)PPM_range) / 2;
-    pushByte(channelValue1 & 0x00ff);
-    pushByte(((channelValue1 & 0x0f00) >> 4) + ((channelValue2 & 0x00f0) >> 4));
-    pushByte(((channelValue2 & 0x000f) << 4) + ((channelValue2 & 0x0f00) >> 8));
-  }
   buffer[bufferIndex++] = crc;
-  buffer[bufferIndex++] = START_STOP; // end byte
-
+  buffer[bufferIndex++] = START_STOP;
   write(buffer, bufferIndex);
-  bufferIndex = 0;
 }
+
+void Bluetooth::processFrame()
+{
+  if (!checkFrame())
+    return;
+
+  switch (buffer[0]) {
+    case FRAME_TYPE_UPLOAD:
+      processUploadFrame();
+      break;
+  }
+}
+
+bool Bluetooth::checkFrame()
+{
+  if (bufferIndex < 2)
+    return false; // at least FRAME_TYPE and CRC are needed
+
+  uint8_t crc = 0x00;
+  for (uint8_t i = 0; i < bufferIndex - 1; i++) {
+    crc ^= buffer[i];
+  }
+
+  return (crc == buffer[bufferIndex - 1]);
+}
+
+
+//void Bluetooth::sendTrainer()
+//{
+//  int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;
+//
+//  int firstCh = g_model.trainerData.channelsStart;
+//  int lastCh = firstCh + 8;
+//
+//  uint8_t * cur = buffer;
+//  bufferIndex = 0;
+//  crc = 0x00;
+//
+//  buffer[bufferIndex++] = START_STOP; // start byte
+//  pushByte(0x80); // trainer frame type?
+//  for (int channel=0; channel<lastCh; channel+=2, cur+=3) {
+//    uint16_t channelValue1 = PPM_CH_CENTER(channel) + limit((int16_t)-PPM_range, channelOutputs[channel], (int16_t)PPM_range) / 2;
+//    uint16_t channelValue2 = PPM_CH_CENTER(channel+1) + limit((int16_t)-PPM_range, channelOutputs[channel+1], (int16_t)PPM_range) / 2;
+//    pushByte(channelValue1 & 0x00ff);
+//    pushByte(((channelValue1 & 0x0f00) >> 4) + ((channelValue2 & 0x00f0) >> 4));
+//    pushByte(((channelValue2 & 0x000f) << 4) + ((channelValue2 & 0x0f00) >> 8));
+//  }
+//  buffer[bufferIndex++] = crc;
+//  buffer[bufferIndex++] = START_STOP; // end byte
+//
+//  write(buffer, bufferIndex);
+//  bufferIndex = 0;
+//}
 
 void Bluetooth::forwardTelemetry(const uint8_t * packet)
 {
-  crc = 0x00;
-
-  buffer[bufferIndex++] = START_STOP; // start byte
-  for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
-    pushByte(packet[i]);
-  }
-  buffer[bufferIndex++] = crc;
-  buffer[bufferIndex++] = START_STOP; // end byte
-
-  if (bufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
-    write(buffer, bufferIndex);
-    bufferIndex = 0;
-  }
+//  crc = 0x00;
+//
+//  buffer[bufferIndex++] = START_STOP; // start byte
+//  for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
+//    pushByte(packet[i]);
+//  }
+//  buffer[bufferIndex++] = crc;
+//  buffer[bufferIndex++] = START_STOP; // end byte
+//
+//  if (bufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
+//    write(buffer, bufferIndex);
+//    bufferIndex = 0;
+//  }
 }
 
-void Bluetooth::receiveTrainer()
-{
-  uint8_t byte;
-
-  while (true) {
-    if (!btRxFifo.pop(byte)) {
-      return;
-    }
-
-    TRACE_NOCRLF("%02X ", byte);
-
-    processTrainerByte(byte);
-  }
-}
+//void Bluetooth::receiveTrainer()
+//{
+//  uint8_t byte;
+//  while (true) {
+//    if (!btRxFifo.pop(byte)) {
+//      return;
+//    }
+//    TRACE_NOCRLF("%02X ", byte);
+//    processTrainerByte(byte);
+//  }
+//}
 
 #if defined(PCBX9E)
 void Bluetooth::wakeup(void)
@@ -394,17 +459,19 @@ void Bluetooth::wakeup()
     readline(false);
     wakeupTime = now + 10; /* 100ms */
   }
-  else if (state == BLUETOOTH_STATE_CONNECTED) {
-    if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
-      receiveTrainer();
-    }
-    else {
-      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH) {
-        sendTrainer();
-        wakeupTime = now + 2; /* 20ms */
-      }
-      readline(); // to deal with "ERROR"
-    }
+  else if (state >= BLUETOOTH_STATE_CONNECTED && state < BLUETOOTH_STATE_DISCONNECTED) {
+    readFrame();
+
+//    if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
+//      receiveTrainer();
+//    }
+//    else {
+//      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH) {
+//        sendTrainer();
+//        wakeupTime = now + 2; /* 20ms */
+//      }
+//      readline(); // to deal with "ERROR"
+//    }
   }
   else {
     char * line = readline();

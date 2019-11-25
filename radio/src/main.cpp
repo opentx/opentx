@@ -483,13 +483,20 @@ void perMain()
 #if defined(PCBSKY9X)
   calcConsumption();
 #endif
+
   checkSpeakerVolume();
   checkEeprom();
   logsWrite();
   handleUsbConnection();
+
 #if defined(PCBXLITES)
   handleJackConnection();
 #endif
+
+#if defined(BLUETOOTH)
+  bluetooth.wakeup();
+#endif
+
   checkTrainerSettings();
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);

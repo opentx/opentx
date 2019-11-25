@@ -117,10 +117,6 @@ TASK_FUNCTION(mixerTask)
     gyro.wakeup();
 #endif
 
-#if defined(BLUETOOTH)
-    bluetooth.wakeup();
-#endif
-
     RTOS_WAIT_TICKS(1);
 
 #if defined(SIMU)

@@ -39,18 +39,25 @@ enum BluetoothStates {
   BLUETOOTH_STATE_BIND_REQUESTED,
   BLUETOOTH_STATE_CONNECT_SENT,
   BLUETOOTH_STATE_CONNECTED,
+  BLUETOOTH_STATE_UPLOAD,
   BLUETOOTH_STATE_DISCONNECTED,
   BLUETOOTH_STATE_CLEAR_REQUESTED,
   BLUETOOTH_STATE_FLASH_FIRMWARE
 };
 
-#define LEN_BLUETOOTH_ADDR              16
-#define MAX_BLUETOOTH_DISTANT_ADDR      6
-#define BLUETOOTH_PACKET_SIZE          14
-#define BLUETOOTH_LINE_LENGTH          32
+constexpr uint8_t LEN_BLUETOOTH_ADDR =         16;
+constexpr uint8_t MAX_BLUETOOTH_DISTANT_ADDR = 6;
+constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      128;
 
 class Bluetooth
 {
+  enum FrameType {
+    FRAME_TYPE_UPLOAD = 0x05,
+    FRAME_TYPE_UPLOAD_ACK = 0x85,
+    FRAME_TYPE_DOWNLOAD = 0x06,
+    FRAME_TYPE_DOWNLOAD_ACK = 0x86,
+  };
+
   public:
     void writeString(const char * str);
     char * readline(bool error_reset = true);
@@ -65,13 +72,22 @@ class Bluetooth
     char distantAddr[LEN_BLUETOOTH_ADDR+1];
 
   protected:
+    void initFrame(uint8_t frameType);
     void pushByte(uint8_t byte);
+    void sendFrame();
+
     uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
-    void appendTrainerByte(uint8_t data);
-    void processTrainerFrame(const uint8_t * buffer);
-    void processTrainerByte(uint8_t data);
-    void sendTrainer();
-    void receiveTrainer();
+    // void appendTrainerByte(uint8_t data);
+    // void processTrainerFrame(const uint8_t * buffer);
+    // void processTrainerByte(uint8_t data);
+    // void sendTrainer();
+    // void receiveTrainer();
+    bool readFrame();
+    bool processFrameByte(uint8_t byte);
+    bool checkFrame();
+    void processFrame();
+    void processUploadFrame();
+    void appendFrameByte(uint8_t byte);
 
     uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
     void bootloaderSendCommand(uint8_t command, const void *data = nullptr, uint8_t size = 0);
@@ -87,10 +103,14 @@ class Bluetooth
     const char * bootloaderWriteFlash(const uint8_t * data, uint32_t size);
     const char * doFlashFirmware(const char * filename);
 
-    uint8_t buffer[BLUETOOTH_LINE_LENGTH+1];
+    uint8_t buffer[BLUETOOTH_BUFFER_SIZE];
     uint8_t bufferIndex = 0;
     tmr10ms_t wakeupTime = 0;
     uint8_t crc;
+    uint8_t dataState = STATE_DATA_START;
+
+    FIL file;
+    uint32_t lastPartIndex;
 };
 
 extern Bluetooth bluetooth;
