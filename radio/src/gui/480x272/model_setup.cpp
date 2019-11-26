@@ -1209,7 +1209,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_SETUP_TRAINER_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MODE);
-        g_model.trainerData.mode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerData.mode, 0, TRAINER_MODE_MAX(), attr, event);
+        g_model.trainerData.mode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerData.mode, 0, TRAINER_MODE_MAX(), attr, event, isTrainerModeAvailable);
 #if defined(BLUETOOTH)
         if (attr && checkIncDec_Ret) {
           bluetooth.state = BLUETOOTH_STATE_OFF;

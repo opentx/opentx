@@ -934,6 +934,21 @@
             <string>Master/SBUS in battery compartment</string>
            </property>
           </item>
+	  <item>
+           <property name="text">
+            <string>Master/Bluetooth</string>
+           </property>
+          </item>
+	  <item>
+           <property name="text">
+            <string>Slave/Bluetooth</string>
+           </property>
+          </item>
+	  <item>
+           <property name="text">
+            <string>Master/Multi</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item row="11" column="0" colspan="2">
