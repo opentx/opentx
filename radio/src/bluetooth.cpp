@@ -275,7 +275,9 @@ void Bluetooth::initFrame(uint8_t frameType)
 
 void Bluetooth::pushByte(uint8_t byte)
 {
-  crc ^= byte;
+  uint16_t newCrc = crc + byte;
+  crc = newCrc + (newCrc >> 8);
+
   if (byte == START_STOP || byte == BYTE_STUFF) {
     buffer[bufferIndex++] = BYTE_STUFF;
     byte ^= STUFF_MASK;
@@ -315,12 +317,15 @@ bool Bluetooth::checkFrame()
   if (bufferIndex < 2)
     return false; // at least FRAME_TYPE and CRC are needed
 
-  uint8_t crc = 0x00;
+  return true;
+
+
+  /*uint8_t crc = 0x00;
   for (uint8_t i = 0; i < bufferIndex - 1; i++) {
     crc ^= buffer[i];
   }
 
-  return (crc == buffer[bufferIndex - 1]);
+  return (crc == buffer[bufferIndex - 1]);*/
 }
 
 
