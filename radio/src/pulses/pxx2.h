@@ -81,7 +81,7 @@ enum PXX2ModuleModelID {
   PXX2_MODULE_ISRM_S_X10E,
   PXX2_MODULE_XJT_LITE,
   PXX2_MODULE_ISRM_S_X10S,
-  PXX2_MODULE_ISRM_S_X9LITE,
+  PXX2_MODULE_ISRM_X9LITES,
 };
 
 static const char * const PXX2ModulesNames[] = {
