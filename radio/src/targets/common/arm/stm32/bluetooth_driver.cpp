@@ -112,19 +112,24 @@ void bluetoothDisable()
 extern "C" void BT_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_BLUETOOTH);
-  if (USART_GetITStatus(BT_USART, USART_IT_RXNE) != RESET) {
-    USART_ClearITPendingBit(BT_USART, USART_IT_RXNE);
-    uint8_t byte = USART_ReceiveData(BT_USART);
-    btRxFifo.push(byte);
-    TRACE("BT %02X", byte);
+  uint32_t status = BT_USART->SR;
+
 #if defined(PCBX7) || defined(PCBXLITE)
-    if (!btChipPresent) {
-      // This is to differentiate X7 and X7S and X-Lite with/without BT
-      btChipPresent = 1;
-      bluetoothDisable();
-    }
-#endif
+  if (!btChipPresent) {
+    // This is to differentiate X7 and X7S and X-Lite with/without BT
+    btChipPresent = 1;
+    bluetoothDisable();
   }
+#endif
+
+  TRACE_NOCRLF("BT");
+  while (status & USART_FLAG_RXNE) {
+    uint8_t byte = BT_USART->DR;
+    btRxFifo.push(byte);
+    TRACE_NOCRLF(" %02X", byte);
+    status = BT_USART->SR;
+  }
+  TRACE_NOCRLF("\r\n");
 
   if (USART_GetITStatus(BT_USART, USART_IT_TXE) != RESET) {
     uint8_t byte;

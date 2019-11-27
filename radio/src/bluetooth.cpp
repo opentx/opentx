@@ -158,7 +158,6 @@ bool Bluetooth::readFrame()
     if (!btRxFifo.pop(byte)) {
       return false;
     }
-    TRACE_NOCRLF("%02X ", byte);
     if (processFrameByte(byte)) {
       processFrame();
       dataState = STATE_DATA_START;
@@ -294,6 +293,12 @@ void Bluetooth::sendFrame()
 
 void Bluetooth::processFrame()
 {
+  TRACE_NOCRLF("BT<");
+  for (uint8_t i = 0; i < bufferIndex; i++) {
+    TRACE_NOCRLF(" %02X", buffer[i]);
+  }
+  TRACE_NOCRLF("\r\n");
+
   if (!checkFrame())
     return;
 
