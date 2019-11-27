@@ -38,7 +38,7 @@ void processGetHardwareInfoFrame(uint8_t module, const uint8_t * frame)
     if (!globalData.upgradeModulePopup && destination->information.modelID == PXX2_MODULE_ISRM_S_X10S &&
         destination->information.swVersion.major == 0 && destination->information.swVersion.minor == 1 && destination->information.swVersion.revision < 5) {
       globalData.upgradeModulePopup = 1;
-      POPUP_WARNING(STR_MODULE_UPGRADE);
+      POPUP_WARNING(STR_MODULE_UPGRADE_ALERT);
     }
   }
   else if (index < PXX2_MAX_RECEIVERS_PER_MODULE && modelId < DIM(PXX2ReceiversNames)) {
@@ -227,7 +227,7 @@ void processAuthenticationFrame(uint8_t module, const uint8_t * frame)
   if (!globalData.upgradeModulePopup) {
     if (globalData.authenticationCount >= 2) {
       globalData.upgradeModulePopup = 1;
-      POPUP_WARNING(STR_MODULE_UPGRADE);
+      POPUP_WARNING(STR_MODULE_UPGRADE_ALERT);
     }
     else {
       globalData.authenticationCount += 1;

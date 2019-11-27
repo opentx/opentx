@@ -665,8 +665,8 @@
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Binder d'abord"
 #define TR_MODULE_BINDING              "Bind..."
-#define TR_MODULE_UPGRADE              "Mise à jour requise"
-#define TR_MODULE_UPDATE               TR("Upd. needed", "Module update required")
+#define TR_MODULE_UPGRADE_ALERT              "Mise à jour requise"
+#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module upgrade required")
 #define TR_REBIND                      "Rebind requis"
 #define TR_REG_OK                      "Enregistr. ok"
 #define TR_BIND_OK                     "Bind ok"
