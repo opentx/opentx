@@ -643,7 +643,8 @@
 #define TR_MODULE_NO_TELEMETRY         TR3("Bez telemetrie", "Bez MULTI_TELEMETIE", "Nedetekována MULTI_TELEMETRIE")
 #define TR_MODULE_WAITFORBIND          "Párovat při zavedení protokolu"
 #define TR_MODULE_BINDING              TR("Bind...","Párování")
-#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module upgrade required")
+#define TR_MODULE_UPGRADE              TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
+#define TR_MODULE_UPDATE               TR("Upd. needed", "Module update required")
 #define TR_REBIND                      "Nutno přepárovat"
 #define TR_REG_OK                      "Registrace ok"
 #define TR_BIND_OK                     "Úspěšné párovaní"

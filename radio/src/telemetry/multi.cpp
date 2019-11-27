@@ -549,7 +549,7 @@ void MultiModuleStatus::getStatusString(char * statusText) const
   }
 
   if (major == 1 && minor < 3 && SLOW_BLINK_ON_PHASE) {
-    strcpy(statusText, STR_MODULE_UPGRADE);
+    strcpy(statusText, STR_MODULE_UPDATE);
   }
   else {
     char * tmp = statusText;
