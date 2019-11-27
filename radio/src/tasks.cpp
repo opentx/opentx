@@ -117,6 +117,11 @@ TASK_FUNCTION(mixerTask)
     gyro.wakeup();
 #endif
 
+#if defined(BLUETOOTH)
+    #warning "Remove bluetooth wakeup here, as it writes on SD"
+    bluetooth.wakeup();
+#endif
+
     RTOS_WAIT_TICKS(1);
 
 #if defined(SIMU)

@@ -109,8 +109,13 @@ bool sportPushTelemetry(uint8_t physicalId, uint8_t primId, uint16_t dataId, uin
           outputTelemetryBuffer.sport.primId = primId;
           outputTelemetryBuffer.sport.dataId = dataId;
           outputTelemetryBuffer.sport.value = value;
+          outputTelemetryBuffer.size = sizeof(outputTelemetryBuffer.sport);
         }
         outputTelemetryBuffer.setDestination(sensor.frskyInstance.rxIndex);
+        LOG_TELEMETRY_WRITE_START();
+        for (uint8_t i = 0; i < sizeof(outputTelemetryBuffer.size); i++) {
+          LOG_TELEMETRY_WRITE_BYTE(outputTelemetryBuffer.data[i]);
+        }
         return true;
       }
     }
@@ -129,6 +134,10 @@ bool sportPushTelemetry(uint8_t physicalId, uint8_t primId, uint16_t dataId, uin
 #else
       outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
 #endif
+      LOG_TELEMETRY_WRITE_START();
+      for (uint8_t i = 0; i < sizeof(outputTelemetryBuffer.size); i++) {
+        LOG_TELEMETRY_WRITE_BYTE(outputTelemetryBuffer.data[i]);
+      }
       return true;
     }
   }

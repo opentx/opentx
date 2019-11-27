@@ -469,9 +469,9 @@ void guiMain(event_t evt)
 
   lcdRefresh();
 
-  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
+  if (mainRequestFlags & (1u << REQUEST_SCREENSHOT)) {
     writeScreenshot();
-    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
+    mainRequestFlags &= ~(1u << REQUEST_SCREENSHOT);
   }
 }
 #endif
@@ -494,7 +494,8 @@ void perMain()
 #endif
 
 #if defined(BLUETOOTH)
-  bluetooth.wakeup();
+  #warning "Move bluetooth wakeup here, as it writes on SD"
+  // bluetooth.wakeup();
 #endif
 
   checkTrainerSettings();
