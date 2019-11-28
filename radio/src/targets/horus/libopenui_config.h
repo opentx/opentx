@@ -154,7 +154,6 @@ constexpr coord_t MENUS_LINE_HEIGHT = 30;
 constexpr coord_t MENUS_WIDTH = 200;
 constexpr coord_t MENUS_OFFSET_TOP = 20;
 constexpr coord_t MENUS_HEADER_HEIGHT = 30;
-constexpr coord_t MENUS_FOOTER_HEIGHT = 0;
 constexpr coord_t MENUS_MIN_HEIGHT = 2 * MENUS_LINE_HEIGHT - 1;
 constexpr coord_t MENUS_MAX_HEIGHT = 7 * MENUS_LINE_HEIGHT - 1;
 constexpr coord_t MODEL_SELECT_FOOTER_HEIGHT = 24;
