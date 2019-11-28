@@ -584,7 +584,7 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   eeLoadModelHeader(i_fileDst, &modelHeaders[i_fileDst]);
 
-#if defined(EEPROM_CONVERSIONS)
+#if defined(STORAGE_CONVERSIONS)
   if (version < EEPROM_VER) {
     eeConvertModel(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);

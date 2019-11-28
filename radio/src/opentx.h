@@ -1249,25 +1249,11 @@ inline getvalue_t convertTelemValue(source_t channel, ls_telemetry_value_t value
   return convert16bitsTelemValue(channel, value);
 }
 
-inline int div_and_round(int num, int den)
-{
-  if (den == 0) {
-    return 0;
-  }
-  else if (num >= 0) {
-    num += den / 2;
-  }
-  else {
-    num -= den / 2;
-  }
-  return num / den;
-}
-
 extern uint8_t g_vbat100mV;
 
 inline uint8_t GET_TXBATT_BARS(uint8_t barsMax)
 {
-  return limit<int8_t>(0, div_and_round(barsMax * (g_vbat100mV - g_eeGeneral.vBatMin - 90), 30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), barsMax);
+  return limit<int8_t>(0, divRoundClosest(barsMax * (g_vbat100mV - g_eeGeneral.vBatMin - 90), 30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), barsMax);
 }
 
 inline bool IS_TXBATT_WARNING()

@@ -56,7 +56,7 @@ void runPopupCurvePreset(event_t event)
     int dx = 2000 / (5+crv.points-1);
     for (uint8_t i=0; i<5+crv.points; i++) {
       int x = -1000 + i * dx;
-      points[i] = div_and_round(div_and_round(k * x, 100), 10);
+      points[i] = divRoundClosest(divRoundClosest(k * x, 100), 10);
     }
     if (crv.type == CURVE_TYPE_CUSTOM) {
       resetCustomCurveX(points, 5+crv.points);

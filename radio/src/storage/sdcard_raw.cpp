@@ -136,7 +136,7 @@ const char * loadRadioSettings(const char * path)
     return error;
   }
 
-#if defined(EEPROM_CONVERSIONS)
+#if defined(STORAGE_CONVERSIONS)
   if (version < EEPROM_VER) {
     convertRadioData(version);
   }

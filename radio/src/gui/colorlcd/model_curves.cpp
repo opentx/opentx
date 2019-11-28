@@ -287,7 +287,7 @@ void ModelCurvesPage::build(FormWindow * window, int8_t focusIndex)
                     int dx = 2000 / (5 + curve.points - 1);
                     for (uint8_t i = 0; i < 5 + curve.points; i++) {
                       int x = -1000 + i * dx;
-                      points[i] = div_and_round(angle * x, 450);
+                      points[i] = divRoundClosest(angle * x, 450);
                     }
                     if (curve.type == CURVE_TYPE_CUSTOM) {
                       resetCustomCurveX(points, 5 + curve.points);

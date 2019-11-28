@@ -122,9 +122,12 @@ const char * loadModel(const char * filename, bool alarms)
     storageCheck(true);
     alarms = false;
   }
-  else if (version < EEPROM_VER) {
+
+#if defined(STORAGE_CONVERSIONS)
+  if (version < EEPROM_VER) {
     convertModelData(version);
   }
+#endif
 
   postModelLoad(alarms);
 

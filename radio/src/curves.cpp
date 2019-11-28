@@ -84,7 +84,7 @@ bool moveCurve(uint8_t index, int8_t shift)
 
 int8_t getCurveX(int noPoints, int point)
 {
-  return -100 + div_and_round((point*2000) / (noPoints-1), 10);
+  return -100 + divRoundClosest((point*2000) / (noPoints-1), 10);
 }
 
 void resetCustomCurveX(int8_t * points, int noPoints)

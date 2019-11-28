@@ -55,16 +55,16 @@ PLAY_FUNCTION(playValue, source_t idx)
     if (telemetrySensor.prec > 0) {
       if (telemetrySensor.prec == 2) {
         if (val >= 5000) {
-          val = div_and_round(val, 100);
+          val = divRoundClosest(val, 100);
         }
         else {
-          val = div_and_round(val, 10);
+          val = divRoundClosest(val, 10);
           attr = PREC1;
         }
       }
       else {
         if (val >= 500) {
-          val = div_and_round(val, 10);
+          val = divRoundClosest(val, 10);
         }
         else {
           attr = PREC1;

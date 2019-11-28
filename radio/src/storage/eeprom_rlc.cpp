@@ -596,7 +596,7 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   f_close(&g_oLogFile);
 
-#if defined(EEPROM_CONVERSIONS)
+#if defined(STORAGE_CONVERSIONS)
   if (version < EEPROM_VER) {
     storageCheck(true);
     eeConvertModel(i_fileDst, version);
@@ -795,7 +795,7 @@ bool eeLoadGeneral(bool allowFixes)
   }
 #endif
 
-#if defined(EEPROM_CONVERSIONS)
+#if defined(STORAGE_CONVERSIONS)
   if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
     if (!allowFixes)

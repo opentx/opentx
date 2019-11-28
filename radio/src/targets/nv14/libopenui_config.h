@@ -22,7 +22,7 @@
 #define _LIBOPENUI_CONFIG_H_
 
 #include "debug.h"
-#include "libopenui_types.h"
+#include "libopenui_defines.h"
 #include "colors.h"
 #include "board.h"
 #include "keys.h"
@@ -32,7 +32,6 @@ typedef uint16_t pixel_t;
 constexpr uint32_t MENU_HEADER_BUTTON_WIDTH =      60;
 constexpr uint32_t MENU_HEADER_BUTTONS_LEFT =      MENU_HEADER_BUTTON_WIDTH;
 
-#define MENU_TOOLTIPS
 constexpr uint32_t MENU_HEADER_HEIGHT =            60;
 constexpr uint32_t MENU_TITLE_TOP =                61;
 constexpr uint32_t MENU_TITLE_HEIGHT =             22;
@@ -72,8 +71,6 @@ constexpr uint32_t DATETIME_MIDDLE =               (LCD_W + DATETIME_SEPARATOR_X
 constexpr uint32_t MENUS_TOOLBAR_BUTTON_WIDTH =    50;
 constexpr uint32_t MENUS_TOOLBAR_BUTTON_PADDING =  11;
 constexpr rect_t MENUS_TOOLBAR_RECT =              { 35, 95, 50, 370 };
-
-//constexpr uint32_t SUBMENU_LINE_WIDTH =            230;
 
 constexpr uint32_t ALERT_FRAME_TOP =               70;
 constexpr uint32_t ALERT_FRAME_HEIGHT =            (LCD_H - 2 * ALERT_FRAME_TOP);
@@ -128,7 +125,10 @@ enum LcdColorIndex
   BARGRAPH2_COLOR_INDEX,
   BARGRAPH_BGCOLOR_INDEX,
   SCROLLBOX_COLOR_INDEX,
-  LCD_COLOR_COUNT
+  LCD_COLOR_COUNT,
+
+  TABLE_HEADER_BGCOLOR_INDEX,
+  TABLE_BGCOLOR_INDEX,
 };
 
 enum FontIndex
@@ -157,8 +157,11 @@ constexpr coord_t MENUS_HEADER_HEIGHT = 40;
 constexpr coord_t MENUS_FOOTER_HEIGHT = 0;
 constexpr coord_t MENUS_MIN_HEIGHT = 2 * MENUS_LINE_HEIGHT - 1;
 constexpr coord_t MENUS_MAX_HEIGHT = 7 * MENUS_LINE_HEIGHT - 1;
-
 constexpr coord_t MODEL_SELECT_FOOTER_HEIGHT = 24;
+constexpr coord_t SCROLLBAR_WIDTH = 3;
+
+constexpr LcdFlags TABLE_HEADER_FONT = FONT(STD);
+constexpr LcdFlags TABLE_BODY_FONT = FONT(STD);
 
 constexpr int CJK_FIRST_LETTER_INDEX = 187;
 
