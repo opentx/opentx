@@ -74,7 +74,7 @@ void frskyDProcessPacket(const uint8_t *packet)
 #if defined(MULTIMODULE)
       if(telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE)
       {
-        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_TX_RSSI_ID, 0, 0, packet[4], UNIT_DB,  0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_TX_RSSI_ID, 0, 0, packet[4]>>1, UNIT_DB,  0);
         setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_TX_LQI_ID , 0, 0, packet[6], UNIT_RAW, 0);
       }
 #endif

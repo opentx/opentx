@@ -199,7 +199,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 #if defined(MULTIMODULE)
       if(telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE)
       {
-        sportProcessTelemetryPacket(TX_RSSI_ID, 0, instance, packet[5], UNIT_DB );
+        sportProcessTelemetryPacket(TX_RSSI_ID, 0, instance, packet[5]>>1, UNIT_DB );
         sportProcessTelemetryPacket(TX_LQI_ID , 0, instance, packet[7], UNIT_RAW);
       }
 #endif
