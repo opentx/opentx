@@ -90,6 +90,10 @@ enum FrSkyDataState {
 #define D_RSSI_ID                 0xF0
 #define D_A1_ID                   0xF1
 #define D_A2_ID                   0xF2
+#if defined(MULTIMODULE)
+#define D_TX_RSSI_ID              0xF3
+#define D_TX_LQI_ID               0xF4
+#endif
 
 #define VFAS_D_HIPREC_OFFSET      2000
 
@@ -188,6 +192,10 @@ enum FrSkyDataState {
 #define SP2UART_B_ID              0xFD01
 #define FUEL_QTY_FIRST_ID         0x0A10
 #define FUEL_QTY_LAST_ID          0x0A1F
+#if defined(MULTIMODULE)
+#define TX_RSSI_ID                0xF108
+#define TX_LQI_ID                 0xF109
+#endif
 
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO             0x00 // 0

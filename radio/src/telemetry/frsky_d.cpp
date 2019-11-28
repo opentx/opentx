@@ -71,6 +71,13 @@ void frskyDProcessPacket(const uint8_t *packet)
       setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_A1_ID, 0, 0, packet[1], UNIT_VOLTS, 0);
       setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_A2_ID, 0, 0, packet[2], UNIT_VOLTS, 0);
       setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_RSSI_ID, 0, 0, packet[3], UNIT_RAW, 0);
+#if defined(MULTIMODULE)
+      if(telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE)
+      {
+        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_TX_RSSI_ID, 0, 0, packet[4], UNIT_DB,  0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_TX_LQI_ID , 0, 0, packet[6], UNIT_RAW, 0);
+      }
+#endif
       telemetryData.rssi.set(packet[3]);
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       break;
@@ -94,6 +101,10 @@ struct FrSkyDSensor {
 
 const FrSkyDSensor frskyDSensors[] = {
   { D_RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
+#if defined(MULTIMODULE)
+  { D_TX_RSSI_ID,ZSTR_TX_RSSI,    UNIT_DB , 0 },
+  { D_TX_LQI_ID, ZSTR_TX_QUALITY, UNIT_RAW, 0 },
+#endif
   { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
   { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
   { RPM_ID, ZSTR_RPM, UNIT_RPMS, 0 },
