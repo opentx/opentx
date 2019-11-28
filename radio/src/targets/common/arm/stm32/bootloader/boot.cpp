@@ -212,8 +212,10 @@ int main()
 
 #if defined(PCBHORUS)
   // wait a bit for the inputs to stabilize...
-  for (uint32_t i = 0; i < 50000; i++) {
-    __ASM volatile ("nop");
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    for (uint32_t i = 0; i < 150000; i++) {
+      __ASM volatile ("nop");
+    }
   }
 #endif
 
