@@ -116,7 +116,7 @@ void drawProgressScreen(const char * title, const char * message, int num, int d
     lcdDrawText(LCD_W / 2, (MENU_HEADER_HEIGHT - FH) / 2, title, MENU_TITLE_COLOR | CENTERED);
   }
   if (message) {
-    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, message, TEXT_COLOR);
+    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H - 42, message, TEXT_COLOR);
   }
   lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H - 22, LCD_W - 2 * MENUS_MARGIN_LEFT, 15, 1, SOLID, BARGRAPH_BGCOLOR);
   if (num > 0 && den > 0) {
