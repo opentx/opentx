@@ -37,6 +37,7 @@
   #define SWAP32(val)      (__builtin_bswap32(val))
 #endif
 
+// TODO elsewhere
 extern Fifo<uint8_t, BT_TX_FIFO_SIZE> btTxFifo;
 extern Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
@@ -45,7 +46,7 @@ Bluetooth bluetooth;
 void Bluetooth::write(const uint8_t * data, uint8_t length)
 {
   TRACE_NOCRLF("BT>");
-  for (int i=0; i<length; i++) {
+  for (int i = 0; i < length; i++) {
     TRACE_NOCRLF(" %02X", data[i]);
     while (btTxFifo.isFull()) {
       if (!bluetoothIsWriting())
@@ -203,11 +204,12 @@ bool Bluetooth::processFrameByte(uint8_t byte)
 
 void Bluetooth::sendTelemetryFrame(const uint8_t * packet)
 {
-  initFrame(FRAME_TYPE_TELEMETRY);
+  BluetoothOutputFrame<16> frame(FRAME_TYPE_TELEMETRY);
   for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
-    pushByte(packet[i]);
+    frame.pushByte(packet[i]);
   }
-  sendFrame();
+  frame.endFrame();
+  write(frame.data, frame.size);
 }
 
 void Bluetooth::processChannelsFrame()
@@ -256,39 +258,13 @@ void Bluetooth::processUploadFrame()
     }
   }
 
-  initFrame(FRAME_TYPE_UPLOAD_ACK);
-  pushByte(lastPartIndex);
-  pushByte(lastPartIndex >> 8);
-  pushByte(lastPartIndex >> 16);
-  pushByte(lastPartIndex >> 24);
-  sendFrame();
-}
-
-void Bluetooth::initFrame(uint8_t frameType)
-{
-  crc = 0;
-  bufferIndex = 0;
-  buffer[bufferIndex++] = START_STOP;
-  pushByte(frameType);
-}
-
-void Bluetooth::pushByte(uint8_t byte)
-{
-  uint16_t newCrc = crc + byte;
-  crc = newCrc + (newCrc >> 8);
-
-  if (byte == START_STOP || byte == BYTE_STUFF) {
-    buffer[bufferIndex++] = BYTE_STUFF;
-    byte ^= STUFF_MASK;
-  }
-  buffer[bufferIndex++] = byte;
-}
-
-void Bluetooth::sendFrame()
-{
-  buffer[bufferIndex++] = crc;
-  buffer[bufferIndex++] = START_STOP;
-  write(buffer, bufferIndex);
+  BluetoothOutputFrame<16> frame(FRAME_TYPE_UPLOAD_ACK);
+  frame.pushByte(lastPartIndex);
+  frame.pushByte(lastPartIndex >> 8);
+  frame.pushByte(lastPartIndex >> 16);
+  frame.pushByte(lastPartIndex >> 24);
+  frame.endFrame();
+  write(frame.data, frame.size);
 }
 
 void Bluetooth::processFrame()
