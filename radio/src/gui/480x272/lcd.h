@@ -115,8 +115,9 @@ extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags=0);
-
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
+void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags=0);
+void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags);
 
 inline void lcdClear()
 {
@@ -147,7 +148,7 @@ void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att=0);
 
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
-void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
+void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0, bool autoBold = true);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att=0);

@@ -569,9 +569,11 @@ void flightReset(uint8_t check=true);
 
 PACK(struct GlobalData {
   uint8_t unexpectedShutdown:1;
-  uint8_t sdcardPresent:1;
-  uint8_t externalAntennaEnabled: 1;
-  uint8_t spare:5;
+  uint8_t externalAntennaEnabled:1;
+  uint8_t authenticationCount:2;
+  uint8_t upgradeModulePopup:1;
+  uint8_t internalModuleVersionChecked:1;
+  uint8_t spare:2;
 });
 
 extern GlobalData globalData;
@@ -910,8 +912,9 @@ uint8_t lswFamily(uint8_t func);
 int16_t lswTimerValue(delayval_t val);
 
 enum FunctionsActive {
-  FUNCTION_TRAINER,
-  FUNCTION_INSTANT_TRIM = FUNCTION_TRAINER+4,
+  FUNCTION_TRAINER_STICK1,
+  FUNCTION_TRAINER_CHANNELS = FUNCTION_TRAINER_STICK1 + NUM_STICKS,
+  FUNCTION_INSTANT_TRIM,
   FUNCTION_VARIO,
   FUNCTION_BACKLIGHT,
 #if defined(SDCARD)
@@ -1198,6 +1201,7 @@ union ReusableBuffer
     uint16_t freqMax;
     uint16_t freqMin;
     uint8_t dirty;
+    uint8_t moduleOFF;
   } spectrumAnalyser;
 
   struct {
@@ -1227,6 +1231,10 @@ union ReusableBuffer
   struct {
     uint8_t maxNameLen;
   } modelFailsafe;
+
+  struct {
+    ModuleInformation internalModule;
+  } viewMain;
 
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
@@ -1391,11 +1399,15 @@ extern uint8_t latencyToggleSwitch;
 
 inline bool isAsteriskDisplayed()
 {
-#if defined(LOG_TELEMETRY) || !defined(WATCHDOG) || defined(DEBUG_LATENCY)
+#if defined(ASTERISK) || !defined(WATCHDOG) || defined(LOG_TELEMETRY) || defined(DEBUG_LATENCY)
   return true;
 #endif
 
   return globalData.unexpectedShutdown;
 }
+
+#if defined(ACCESS_LIB)
+#include "thirdparty/libACCESS/libAccess.h"
+#endif
 
 #endif // _OPENTX_H_

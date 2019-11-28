@@ -701,6 +701,10 @@ void MdiChild::updateTitle()
   if (availableEEpromSize >= 0) {
     title += QString(" - %1 ").arg(availableEEpromSize) + tr("free bytes");
   }
+  QFileInfo fi(curFile);
+  if (!isUntitled && !fi.isWritable()) {
+    title += QString(" (%1)").arg(tr("read only"));
+  }
   setWindowTitle(title);
 }
 
@@ -1355,7 +1359,8 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
 bool MdiChild::save()
 {
-  if (isUntitled) {
+  QFileInfo fi(curFile);
+  if (isUntitled || !fi.isWritable()) {
     return saveAs(true);
   }
   else {
@@ -1459,18 +1464,7 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
   QMessageBox::StandardButton dfltBtn;
 
   if (from == Board::BOARD_X10 && to == Board::BOARD_JUMPER_T16) {
-    QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("WARNING"));
-    msgBox.setText(tr("<p>Due to the way Jumper have handled their JumperTX fork and firmware releases data integrity for settings from JumperTX cannot be trusted when migrating to OpenTX.</p> \
-                      <p>Importing JumperTX data into OpenTX 2.3 is <b>not supported and dangerous.</b></p> \
-                      <p>It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but <b>You should only continue here if the file you opened comes from a real FrSky X10.</b></p> \
-                      <p>Do you really want to continue?</p>"));
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.addButton(QMessageBox::No);
-    msgBox.addButton(QMessageBox::Yes);
-    msgBox.setDefaultButton(QMessageBox::No);
-
-    if (msgBox.exec() == QMessageBox::No)
+    if (displayT16ImportWarning() == false)
       return false;
   }
 

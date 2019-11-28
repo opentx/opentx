@@ -74,6 +74,7 @@ enum ModuleSettingsMode
   MODULE_MODE_SHARE,
   MODULE_MODE_RANGECHECK,
   MODULE_MODE_RESET,
+  MODULE_MODE_AUTHENTICATION,
   MODULE_MODE_OTA_UPDATE,
 };
 
@@ -141,7 +142,7 @@ class BindInformation {
 
 class OtaUpdateInformation: public BindInformation {
   public:
-    char filename[32+1];
+    char filename[_MAX_LFN + 1];
     uint32_t address;
 };
 

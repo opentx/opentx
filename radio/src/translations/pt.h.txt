@@ -207,9 +207,9 @@
 #endif
 
 #ifdef GVARS
-  #define TR_ADJUST_GVAR  "Ajuste\0      "
+  #define TR_ADJUST_GVAR    "Ajuste\0      "
 #else
-  #define TR_ADJUST_GVAR  "[AdjustGV]\0  "
+  #define TR_ADJUST_GVAR    "[AdjustGV]\0  "
 #endif
 
 #if defined(LUA)
@@ -357,6 +357,7 @@
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Master/CPPM Module"
 #define TR_VTRAINER_MASTER_BATTERY     "Master/Serial\0    "
 #define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
+#define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Not set\0 ""Hold\0    ""Custom\0  ""No pulses""Receiver\0"
@@ -485,7 +486,7 @@
 #define TR_DELAYUP             "Atraso Up"
 #define TR_SLOWDOWN            "Lento  Dn"
 #define TR_SLOWUP              "Lento  Up"
-#define TR_MIXER               "MIXAGENS"
+#define TR_MIXES               "MIXAGENS"
 #define TR_CV                  "CV"
 #define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\004Canal"
@@ -640,7 +641,9 @@
 #define TR_RFPOWER       "RF Power"
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION        TR("Option", "Option value")
-#define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on channel")
+#define TR_MULTI_AUTOBIND      TR(INDENT "Bind Ch.",INDENT "Bind on channel")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable Ch. map")
+#define TR_DISABLE_TELEM               TR("No Telem", "Disable Telemetry")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
@@ -651,6 +654,8 @@
 #define TR_MODULE_NO_TELEMETRY         TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Binding"
+#define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
+#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module update recommended")
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"
@@ -660,8 +665,10 @@
 #define TR_BINDING_CH9_16_TELEM_OFF               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
-#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ     TR("Servo rate", "Servo update rate")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
+#define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
 #define TR_LIMIT               INDENT"Limite"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitude"
@@ -917,6 +924,7 @@
 #define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Trainer"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
 #define TR_MODELIDUSED         TR("ID used in:", "Receiver ID used in:")
 #define TR_MODULE              "Module"
@@ -1161,6 +1169,7 @@
 #define TR_MENU_INVERT         "Invert"
 #define TR_JITTER_FILTER       "ADC Filter"
 #define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
+#define TR_AUTH_FAILURE                "Auth-failure"
 
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"

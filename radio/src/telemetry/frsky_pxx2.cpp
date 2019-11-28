@@ -20,29 +20,7 @@
 
 #include "opentx.h"
 
-class Pxx2Telemetry
-{
-  protected:
-    static void processGetHardwareInfoFrame(uint8_t module, uint8_t *frame);
-
-    static void processReceiverSettingsFrame(uint8_t module, uint8_t *frame);
-
-    static void processRegisterFrame(uint8_t module, uint8_t * frame);
-
-    static void processBindFrame(uint8_t module, uint8_t * frame);
-
-    static void processTelemetryFrame(uint8_t module, uint8_t * frame);
-
-    static void processSpectrumFrame(uint8_t module, uint8_t * frame);
-
-    static void processRadioFrame(uint8_t module, uint8_t * frame);
-
-    static void processPowerMeterFrame(uint8_t module, uint8_t * frame);
-
-  public:
-};
-
-void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
+void processGetHardwareInfoFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_GET_HARDWARE_INFO) {
     return;
@@ -57,6 +35,11 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
     memcpy(&destination->information, &frame[4], length);
     if (destination->information.capabilities & ~((1 << MODULE_CAPABILITY_COUNT) - 1))
       destination->information.capabilityNotSupported = true;
+    if (!globalData.upgradeModulePopup && destination->information.modelID == PXX2_MODULE_ISRM_S_X10S &&
+        destination->information.swVersion.major == 0 && destination->information.swVersion.minor == 1 && destination->information.swVersion.revision < 5) {
+      globalData.upgradeModulePopup = 1;
+      POPUP_WARNING(STR_MODULE_UPGRADE_ALERT);
+    }
   }
   else if (index < PXX2_MAX_RECEIVERS_PER_MODULE && modelId < DIM(PXX2ReceiversNames)) {
     memcpy(&destination->receivers[index].information, &frame[4], length);
@@ -66,7 +49,7 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
+void processModuleSettingsFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_MODULE_SETTINGS) {
     return;
@@ -86,7 +69,7 @@ void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
-void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
+void processReceiverSettingsFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_RECEIVER_SETTINGS) {
     return;
@@ -114,7 +97,7 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
-void processRegisterFrame(uint8_t module, uint8_t * frame)
+void processRegisterFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_REGISTER) {
     return;
@@ -147,7 +130,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processBindFrame(uint8_t module, uint8_t * frame)
+void processBindFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_BIND) {
     return;
@@ -198,7 +181,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processResetFrame(uint8_t module, uint8_t * frame)
+void processResetFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_RESET) {
     return;
@@ -211,7 +194,7 @@ void processResetFrame(uint8_t module, uint8_t * frame)
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
-void processTelemetryFrame(uint8_t module, uint8_t * frame)
+void processTelemetryFrame(uint8_t module, const uint8_t * frame)
 {
   uint8_t origin = (module << 2) + (frame[3] & 0x03);
   if (origin != TELEMETRY_ENDPOINT_SPORT) {
@@ -219,7 +202,43 @@ void processTelemetryFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
+#if defined(ACCESS_LIB) && !defined(SIMU)
+void processAuthenticationFrame(uint8_t module, const uint8_t * frame)
+{
+  uint8_t cryptoType = frame[3];
+  uint8_t messageDigest[16] = {0};
+
+  if (frame[0] == 4 && PXX2_AUTH_REFUSED_FLAG == frame[4]) {
+    if (!globalData.upgradeModulePopup) {
+      globalData.upgradeModulePopup = 1;
+      POPUP_INFORMATION(STR_AUTH_FAILURE);
+    }
+    return;
+  }
+
+  if (INTERNAL_MODULE == module && accessCRL(cryptoType, frame+4, messageDigest)) {
+    moduleState[module].mode = MODULE_MODE_AUTHENTICATION;
+    Pxx2Pulses & pxx2 = intmodulePulsesData.pxx2;
+    pxx2.setupAuthenticationFrame(module, cryptoType, (const uint8_t *)messageDigest);
+    intmoduleSendBuffer(pxx2.getData(), pxx2.getSize());
+    // we remain in AUTHENTICATION mode to avoid a CHANNELS frame is sent at the end of the mixing process
+  }
+
+  if (!globalData.upgradeModulePopup) {
+    if (globalData.authenticationCount >= 2) {
+      globalData.upgradeModulePopup = 1;
+      POPUP_WARNING(STR_MODULE_UPGRADE_ALERT);
+    }
+    else {
+      globalData.authenticationCount += 1;
+    }
+  }
+}
+#else
+#define processAuthenticationFrame(module, frame)
+#endif
+
+void processSpectrumAnalyserFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     return;
@@ -246,7 +265,7 @@ void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processPowerMeterFrame(uint8_t module, uint8_t * frame)
+void processPowerMeterFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_POWER_METER) {
     return;
@@ -258,7 +277,7 @@ void processPowerMeterFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processOtaUpdateFrame(uint8_t module, uint8_t * frame)
+void processOtaUpdateFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_OTA_UPDATE) {
     return;
@@ -284,7 +303,7 @@ void processOtaUpdateFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processModuleFrame(uint8_t module, uint8_t *frame)
+void processModuleFrame(uint8_t module, const uint8_t *frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_HW_INFO:
@@ -311,13 +330,17 @@ void processModuleFrame(uint8_t module, uint8_t *frame)
       processTelemetryFrame(module, frame);
       break;
 
+    case PXX2_TYPE_ID_AUTHENTICATION:
+      processAuthenticationFrame(module, frame);
+      break;
+
     case PXX2_TYPE_ID_RESET:
       processResetFrame(module, frame);
       break;
   }
 }
 
-void processToolsFrame(uint8_t module, uint8_t * frame)
+void processToolsFrame(uint8_t module, const uint8_t * frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_POWER_METER:
@@ -330,8 +353,13 @@ void processToolsFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processPXX2Frame(uint8_t module, uint8_t *frame)
+void processPXX2Frame(uint8_t module, const uint8_t * frame)
 {
+  LOG_TELEMETRY_WRITE_START();
+  for (uint8_t i = 0; i < 1 + frame[0]; i++) {
+    LOG_TELEMETRY_WRITE_BYTE(frame[i]);
+  }
+
   switch (frame[1]) {
     case PXX2_TYPE_C_MODULE:
       processModuleFrame(module, frame);

@@ -223,6 +223,14 @@ bool menuMainView(event_t event)
     }
   }
 
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(INTERNAL_MODULE_PXX2) && defined(ACCESS_LIB)
+  if (globalData.authenticationCount > 0 && !globalData.upgradeModulePopup && !globalData.internalModuleVersionChecked) {
+    globalData.internalModuleVersionChecked = 1;
+    memclear(&reusableBuffer.viewMain.internalModule, sizeof(reusableBuffer.viewMain.internalModule));
+    moduleState[INTERNAL_MODULE].readModuleInformation(&reusableBuffer.viewMain.internalModule, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+  }
+#endif
+
   return true;
 }
 

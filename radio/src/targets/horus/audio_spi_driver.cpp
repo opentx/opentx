@@ -374,7 +374,7 @@ void audioInit()
   audioHardReset();
   audioSoftReset();
   audioSpiSetSpeed(SPI_SPEED_8);
-  delay_01us(10000); // 1ms
+  delay_ms(1); // 1ms
   audioSendRiffHeader();
 }
 

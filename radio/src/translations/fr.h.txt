@@ -115,7 +115,7 @@
 #define LEN_RETA123                    "\001"
 
 #if defined(PCBHORUS)
-  #define TR_RETA123                   "DPGA12345LR"
+  #define TR_RETA123                   "DPGA13245LR"
 #elif defined(PCBX9E)
   #define TR_RETA123                   "DPGA1234LRLR"
 #elif defined(PCBTARANIS) || defined(REVX)
@@ -373,7 +373,8 @@
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Maître/SBUS Module"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Maître/CPPM Module"
 #define TR_VTRAINER_MASTER_BATTERY     "Maître/Série\0     "
-#define TR_VTRAINER_BLUETOOTH          TR("Maître/BT\0        ""Elève/BT\0", "Maître/Bluetooth\0 ""Elève/Bluetooth\0  ")
+#define TR_VTRAINER_BLUETOOTH          TR("Maître/BT\0        ""Elève/BT\0         ", "Maître/Bluetooth\0 ""Elève/Bluetooth\0  ")
+#define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE                  "\011"
 #define TR_VFAILSAFE                   TR("Pas déf.\0""Maintien\0""Prédéf.\0 ""Pas d'imp""Récepteur", "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur")
@@ -498,7 +499,7 @@
 #define TR_DELAYUP                     "Retard haut"
 #define TR_SLOWDOWN                    "Ralenti bas"
 #define TR_SLOWUP                      "Ralenti haut"
-#define TR_MIXER                       "MIXEUR"
+#define TR_MIXES                       "MIXEUR"
 #define TR_CV                          "CB"
 #define TR_GV                          TR("G", "VG")
 #define TR_ACHANNEL                    "A"
@@ -648,10 +649,12 @@
 #define TR_MULTI_RFTUNE                TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
 #define TR_MULTI_TELEMETRY             "Télémétrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
-#define TR_RFPOWER                     TR(INDENT "Puiss. RF", INDENT "Puissance RF")
+#define TR_RFPOWER                     TR("Puiss. RF", "Puissance RF")
 #define TR_MULTI_FIXEDID               "ID fixe"
 #define TR_MULTI_OPTION                TR(INDENT "Option", INDENT "Option perso")
-#define TR_MULTI_AUTOBIND              TR(INDENT "Bind auto", INDENT "Bind automatique")
+#define TR_MULTI_AUTOBIND              TR(INDENT "Bind voie", INDENT "Bind sur voie")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Désact réorg voies")
+#define TR_DISABLE_TELEM               TR("No Telem", "Désact Télémétrie")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodét.", INDENT "Autodétection")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "Lien S.Port")
@@ -662,6 +665,8 @@
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Binder d'abord"
 #define TR_MODULE_BINDING              "Bind..."
+#define TR_MODULE_UPGRADE_ALERT              "Mise à jour requise"
+#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module update recommended")
 #define TR_REBIND                      "Rebind requis"
 #define TR_REG_OK                      "Enregistr. ok"
 #define TR_BIND_OK                     "Bind ok"
@@ -671,8 +676,10 @@
 #define TR_BINDING_CH9_16_TELEM_OFF    "Ch9-16 Télem OFF"
 #define TR_PROTOCOL_INVALID            TR("Sél. invalide", "Protocole invalide")
 #define TR_MODULE_STATUS               TR(INDENT "Etat", INDENT "Etat module")
-#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Fréq.servo", INDENT "Fréquence servos")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
+#define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
 #define TR_SYNCMENU                    "Sync [MENU]"
 #define TR_LIMIT                       INDENT "Limite"
 #define TR_MINRSSI                     "RSSI Min."
@@ -928,6 +935,7 @@
 #define TR_CALIBRATION                 "Calibration"
 #define TR_SET                         BUTTON("Déf")
 #define TR_TRAINER                     "Ecolage"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM              CENTER "Antenne radio défect.!"
 #define TR_MODELIDUSED                 TR("ID affecté à :", "No de récepteur utilisé par :")
 #define TR_MODULE                      "Module"
@@ -1179,6 +1187,7 @@
 #define TR_MENU_INVERT                 "Inverser"
 #define TR_JITTER_FILTER               "Filtre ADC"
 #define TR_RTC_CHECK                   TR("Vérif. RTC", "Vérif. pile RTC")
+#define TR_AUTH_FAILURE                "Auth-failure"
 
 #define ZSTR_RSSI                      "RSSI"
 #define ZSTR_R9PW                      "R9PW"

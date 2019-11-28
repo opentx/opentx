@@ -38,11 +38,4 @@ const char * createModel();
 const char * loadRadioSettings(const char * path);
 const char * loadRadioSettings();
 
-PACK(struct RamBackup {
-  uint16_t size;
-  uint8_t data[4094];
-});
-
-extern RamBackup * ramBackup;
-
 #endif // _SDCARD_RAW_H_

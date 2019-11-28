@@ -124,7 +124,7 @@ void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
 #if !defined(BOOT) // TODO not here ...
-void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
+void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0, bool autoBold = true);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
 #endif
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
@@ -183,6 +183,7 @@ uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint8_t width, ui
   #define BLINK_ON_PHASE               (0)
 #else
   #define BLINK_ON_PHASE               (g_blinkTmr10ms & (1<<6))
+  #define SLOW_BLINK_ON_PHASE          (g_blinkTmr10ms & (1<<7))
 #endif
 
 inline display_t getPixel(uint8_t x, uint8_t y)

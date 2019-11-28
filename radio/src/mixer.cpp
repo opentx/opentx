@@ -224,6 +224,17 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
 // rescaled from -262144 to 262144
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
+    // safety channel available for channel check
+    return calc100toRESX(safetyCh[channel]);
+  }
+#endif
+
+  if (isFunctionActive(FUNCTION_TRAINER_CHANNELS) && IS_TRAINER_INPUT_VALID()) {
+    return ppmInput[channel] * 2;
+  }
+
   LimitData * lim = limitAddress(channel);
 
   if (lim->curve) {
@@ -277,17 +288,12 @@ int16_t applyLimits(uint8_t channel, int32_t value)
     ofs += tmp;  // ofs can to added directly because already recalculated,
   }
 
-  if (ofs > lim_p) ofs = lim_p;
-  if (ofs < lim_n) ofs = lim_n;
-
-  if (lim->revert) ofs = -ofs; // finally do the reverse.
-
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
-    // safety channel available for channel check
-    ofs = calc100toRESX(safetyCh[channel]);
-  }
-#endif
+  if (ofs > lim_p)
+    ofs = lim_p;
+  if (ofs < lim_n)
+    ofs = lim_n;
+  if (lim->revert)
+    ofs = -ofs; // finally do the reverse.
 
   return ofs;
 }
@@ -363,22 +369,22 @@ getvalue_t getValue(mixsrc_t i)
 #endif
 
   else if (i <= MIXSRC_LAST_LOGICAL_SWITCH) {
-    return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
+    return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH + i - MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
   }
   else if (i <= MIXSRC_LAST_TRAINER) {
-    int16_t x = ppmInput[i-MIXSRC_FIRST_TRAINER];
-    if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) {
-      x -= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER];
+    int16_t x = ppmInput[i - MIXSRC_FIRST_TRAINER];
+    if (i < MIXSRC_FIRST_TRAINER + NUM_CAL_PPM) {
+      x -= g_eeGeneral.trainer.calib[i - MIXSRC_FIRST_TRAINER];
     }
-    return x*2;
+    return x * 2;
   }
   else if (i <= MIXSRC_LAST_CH) {
-    return ex_chans[i-MIXSRC_CH1];
+    return ex_chans[i - MIXSRC_CH1];
   }
 
   else if (i <= MIXSRC_LAST_GVAR) {
 #if defined(GVARS)
-    return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
+    return GVAR_VALUE(i - MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
 #else
     return 0;
 #endif
@@ -396,11 +402,11 @@ getvalue_t getValue(mixsrc_t i)
 #endif
   }
   else if (i <= MIXSRC_LAST_TIMER) {
-    return timersStates[i-MIXSRC_FIRST_TIMER].val;
+    return timersStates[i - MIXSRC_FIRST_TIMER].val;
   }
 
   else if (i <= MIXSRC_LAST_TELEM) {
-    if(IS_FAI_FORBIDDEN(i)) {
+    if (IS_FAI_FORBIDDEN(i)) {
       return 0;
     }
     i -= MIXSRC_FIRST_TELEM;
@@ -467,12 +473,12 @@ void evalInputs(uint8_t mode)
         v = 0;
       }
 
-      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && IS_TRAINER_INPUT_VALID()) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER_STICK1+ch) && IS_TRAINER_INPUT_VALID()) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
           uint8_t chStud = td->srcChn;
-          int32_t vStud  = (ppmInput[chStud]- g_eeGeneral.trainer.calib[chStud]);
+          int32_t vStud  = (ppmInput[chStud] - g_eeGeneral.trainer.calib[chStud]);
           vStud *= td->studWeight;
           vStud /= 50;
           switch (td->mode) {

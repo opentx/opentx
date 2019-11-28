@@ -14,7 +14,7 @@ set(GUI_DIR 480x272)
 set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
-set(RAMBACKUP YES)
+set(RTC_BACKUP_RAM YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
 set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
@@ -47,11 +47,13 @@ if (PCB STREQUAL X10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
     set(BLUETOOTH ON)
+    add_definitions(-DHARDWARE_POWER_MANAGEMENT_UNIT)
   elseif (PCBREV STREQUAL T16)
     set(FLAVOUR t16)
     set(LUA_EXPORT lua_export_t16)
     add_definitions(-DRADIO_T16)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" OFF)
+    option(BLUETOOTH "Support for bluetooth module" OFF)
   else()
     set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
@@ -89,7 +91,12 @@ endif()
 add_definitions(-DPCBREV=${PCBREV})
 add_definitions(-DPCBREV_${PCBREV})
 
-set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
+set(RADIO_DEPENDENCIES
+  ${RADIO_DEPENDENCIES}
+  ${BITMAPS_TARGET}
+  )
+
+set(FIRMWARE_DEPENDENCIES datacopy)
 
 add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
@@ -109,6 +116,10 @@ if(INTERNAL_MODULE_PXX2)
   set(PXX2 ON)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_PXX2)
+  if (NOT PCBREV STREQUAL EXPRESS)
+    set(ACCESS_LIB ON)
+    add_definitions(-DACCESS_LIB)
+  endif()
 endif()
 
 if(INTERNAL_MODULE_MULTI)
@@ -216,9 +227,13 @@ set(STM32LIB_SRC
   )
 
 if(PYTHONINTERP_FOUND)
-  add_custom_target(datacopy
+  add_custom_command(
+    OUTPUT ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > storage/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
-  )
+    )
+  add_custom_target(datacopy
+    DEPENDS ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
+    )
 endif()

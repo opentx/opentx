@@ -86,6 +86,8 @@ class ModulePanel : public ModelPanel
     void onMultiProtocolChanged(int index);
     void onSubTypeChanged();
     void on_autoBind_stateChanged(int state);
+    void on_disableChMap_stateChanged(int state);
+    void on_disableTelem_stateChanged(int state);
     void on_lowPower_stateChanged(int state);
     void on_r9mPower_currentIndexChanged(int index);
     void setChannelFailsafeValue(const int channel, const int value, quint8 updtSb = 0);

@@ -114,7 +114,7 @@
 #define LEN_RETA123                    "\001"
 
 #if defined(PCBHORUS)
-  #define TR_RETA123                   "SVPK12345LR"
+  #define TR_RETA123                   "SVPK13245LR"
 #elif defined(PCBX9E)
   #define TR_RETA123                   "SVPK1234LRLR"
 #elif defined(PCBTARANIS) || defined(REVX)
@@ -207,7 +207,7 @@
 #endif
 
 #ifdef GVARS
-  #define TR_ADJUST_GVAR               "Nastav \0   "
+  #define TR_ADJUST_GVAR               "Nastav\0    "
 #else
   #define TR_ADJUST_GVAR               "[Nastav GP]"
 #endif
@@ -353,7 +353,8 @@
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Učitel/SBUS Modul\0"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Učitel/CPPM Modul\0"
 #define TR_VTRAINER_MASTER_BATTERY     "Učitel/Serial\0    "
-#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
+#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0         ", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
+#define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE                  "\012"
 #define TR_VFAILSAFE                   "Nenastaven""Držet\0    ""Vlastní\0  ""Bez pulzů\0""Přijímač\0"
@@ -478,7 +479,7 @@
 #define TR_DELAYUP                     TR3("Zpoždění Zap", "Zdržet(\43)", "Zpoždění Zap")
 #define TR_SLOWDOWN                    TR3("Zpomalení(-)", "Zpomal(\177)", "Zpomalení(\177)")
 #define TR_SLOWUP                      TR3("Zpomalení(+)", "Zpomal(\176)", "Zpomalení(\176)")
-#define TR_MIXER                       "MIXER"
+#define TR_MIXES                       "MIXER"
 #define TR_CV                          "K"
 #define TR_GV                          TR("G", "GP")
 #define TR_ACHANNEL                    "A\004Kanál"
@@ -626,10 +627,12 @@
 #define TR_MULTI_RFTUNE                TR(INDENT "Ladění frek", INDENT "Jemné ladění frek. RF")
 #define TR_MULTI_TELEMETRY             "Telemetrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Freq. videa", INDENT "Frekvence videa")
-#define TR_RFPOWER                     INDENT "Výkon RF"
+#define TR_RFPOWER                     "Výkon RF"
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION                TR(INDENT "Možnosti", INDENT "Hodnota")
-#define TR_MULTI_AUTOBIND              TR(INDENT "Autobind",INDENT "Bind při zapnutí")
+#define TR_MULTI_AUTOBIND              TR(INDENT "Bind Ch.",INDENT "Bind při zapnutí")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable Ch. map")
+#define TR_DISABLE_TELEM               TR("No Telem", "Disable Telemetry")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodetekce", INDENT "Formát autodetekce")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Nízký výkon", INDENT "Režim nízkého výkonu")
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
@@ -640,6 +643,8 @@
 #define TR_MODULE_NO_TELEMETRY         TR3("Bez telemetrie", "Bez MULTI_TELEMETIE", "Nedetekována MULTI_TELEMETRIE")
 #define TR_MODULE_WAITFORBIND          "Párovat při zavedení protokolu"
 #define TR_MODULE_BINDING              TR("Bind...","Párování")
+#define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
+#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module update recommended")
 #define TR_REBIND                      "Nutno přepárovat"
 #define TR_REG_OK                      "Registrace ok"
 #define TR_BIND_OK                     "Úspěšné párovaní"
@@ -649,8 +654,10 @@
 #define TR_BINDING_CH9_16_TELEM_OFF    "k9-16 telem vyp"
 #define TR_PROTOCOL_INVALID            TR("Špat. protokol", "Špatný protokol")
 #define TR_MODULE_STATUS               TR(INDENT "Stav", INDENT "Stav modulu")
-#define TR_MODULE_SYNC                 TR(INDENT "Synchro", INDENT "Synchro modulu")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Frekv. serva", INDENT "Obnovovací frequence serva")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
+#define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
 #define TR_SYNCMENU                    "[Sync]"
 #define TR_LIMIT                       INDENT"Limit"
 #define TR_MINRSSI                     "Min Rssi"
@@ -907,6 +914,7 @@
 #define TR_CALIBRATION                 "Kalibrace"
 #define TR_SET                         BUTTON("Nast")
 #define TR_TRAINER                     "Trenér"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM              CENTER "Problém s TX anténou!"
 #define TR_MODELIDUSED                 TR("ID již použito","ID modelu je již použito")
 #define TR_MODULE                      "Modul"
@@ -1151,6 +1159,7 @@
 #define TR_MENU_INVERT                 "Invertovat"
 #define TR_JITTER_FILTER               "ADC Filtr"
 #define TR_RTC_CHECK                   TR("Check RTC", "Check RTC voltage")
+#define TR_AUTH_FAILURE                "Auth-failure"
 
 #define ZSTR_RSSI                      "RSSI"
 #define ZSTR_R9PW                      "R9PW"

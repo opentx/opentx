@@ -68,17 +68,17 @@
     <message>
         <location filename="../storage/appdata.cpp" line="594"/>
         <source>Could not save Application Settings to file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze uložit nastavení aplikace do souboru &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="596"/>
         <source>because the file could not be saved (check access permissions).</source>
-        <translation type="unfinished"></translation>
+        <translation>protože soubor nemůže být uložen (zkontrolujte přístupová práva)</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="598"/>
         <source>for unknown reasons.</source>
-        <translation type="unfinished"></translation>
+        <translation>z neznámého důvodu.</translation>
     </message>
 </context>
 <context>
@@ -86,7 +86,7 @@
     <message>
         <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished">Chcete zobrazit toto upozornění i příště ?</translation>
+        <translation>Zobrazit toto upozornění i při příštím spuštění?</translation>
     </message>
 </context>
 <context>
@@ -356,7 +356,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1129"/>
         <source>Release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál vydání</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1143"/>
@@ -391,12 +391,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="375"/>
         <source>Append version number to FW file name</source>
-        <translation>Přidat číslo verze do názvu souboru staženého firmwaru </translation>
+        <translation>Přidat číslo verze do názvu souboru staženého firmwaru</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="190"/>
         <source>Offer to write FW to Tx after download</source>
-        <translation>Po stažení firmwaru nabídnout okamžité zapsání do rádia </translation>
+        <translation>Po stažení firmwaru nabídnout okamžité zapsání do rádia</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="636"/>
@@ -502,22 +502,22 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="761"/>
         <source>most recently used files</source>
-        <translation type="unfinished"></translation>
+        <translation>naposledny použité soubory</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="776"/>
         <source>Startup Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení zapnutí</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="832"/>
         <source>Remember</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapamatovat</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="913"/>
         <source>Output Logs Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Výstupní složka pro záznamy</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="900"/>
@@ -537,12 +537,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="955"/>
         <source>Just create the model</source>
-        <translation>Jen vytvořit model</translation>
+        <translation>Pouze vytvořit model</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="926"/>
         <source>Debug Output Logging</source>
-        <translation type="unfinished"></translation>
+        <translation>Záznam pro režim ladění</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1107"/>
@@ -552,7 +552,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1110"/>
         <source>Application (Companion/Simulator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Použití (Companion/Simulátor)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1117"/>
@@ -562,7 +562,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1120"/>
         <source>Radio Firmware (in Simulator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware vysílače (v simulátoru)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1213"/>
@@ -592,12 +592,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1247"/>
         <source>Screenshot capture folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Složka pro snímky obrazovky</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1309"/>
         <source>Joystick</source>
-        <translation></translation>
+        <translation>Joystick</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1199"/>
@@ -627,7 +627,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="154"/>
         <source>Select your snapshot folder</source>
-        <translation>Vyberat složku pro snímky obrazovky simulátoru</translation>
+        <translation>Vybrat složku pro snímky obrazovky simulátoru</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="181"/>
@@ -669,7 +669,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="341"/>
         <source>Select a folder for application logs</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat složku pro záznamy aplikace</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="349"/>
@@ -679,7 +679,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="392"/>
         <source>Select the folder replicating your SD structure</source>
-        <translation>Vyberat složku která představuje obsah SD karty rádia</translation>
+        <translation>Vybrat složku, která představuje obsah SD karty rádia</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="423"/>
@@ -697,30 +697,31 @@ Mode 4:
     <message>
         <location filename="../storage/bineeprom.cpp" line="42"/>
         <source>Error reading %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba čtení %1: %2</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="65"/>
         <source>Cannot save EEPROM</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze uložit do EEPROM</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="76"/>
         <source>Cannot open file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze otevřít soubor %1:
+%2</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="83"/>
         <source>Error writing file %1:
 %2.</source>
-        <translation type="unfinished">Chyba při zápisu souboru %1:
+        <translation>Chyba při zápisu souboru %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="108"/>
         <source>Invalid binary EEPROM file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný binární EEPROM soubor %1</translation>
     </message>
 </context>
 <context>
@@ -728,22 +729,22 @@ Mode 4:
     <message>
         <location filename="../firmwares/boards.cpp" line="368"/>
         <source>Left Horizontal</source>
-        <translation type="unfinished">Levá horizontální</translation>
+        <translation>Levá horizontální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="369"/>
         <source>Left Vertical</source>
-        <translation type="unfinished">Levá vertikální</translation>
+        <translation>Levá vertikální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="370"/>
         <source>Right Vertical</source>
-        <translation type="unfinished">Pravá vertikální</translation>
+        <translation>Pravá vertikální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="371"/>
         <source>Right Horizontal</source>
-        <translation type="unfinished">Pravá horizontální</translation>
+        <translation>Pravá horizontální</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="372"/>
@@ -759,27 +760,27 @@ Mode 4:
         <location filename="../firmwares/boards.cpp" line="378"/>
         <location filename="../firmwares/boards.cpp" line="521"/>
         <source>Unknown</source>
-        <translation type="unfinished">Neznámý</translation>
+        <translation>Neznámý</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="388"/>
         <source>Rud</source>
-        <translation type="unfinished">Směrovka</translation>
+        <translation>Směrovka</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="389"/>
         <source>Ele</source>
-        <translation type="unfinished">Výškovka</translation>
+        <translation>Výškovka</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="390"/>
         <source>Thr</source>
-        <translation type="unfinished">Plyn</translation>
+        <translation>Plyn</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="391"/>
         <source>Ail</source>
-        <translation type="unfinished">Křidélka</translation>
+        <translation>Křidélka</translation>
     </message>
 </context>
 <context>
@@ -787,17 +788,17 @@ Mode 4:
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Negative span</source>
-        <translation type="unfinished">Negativní</translation>
+        <translation>Záporný rozsah</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Mid value</source>
-        <translation type="unfinished">Střed</translation>
+        <translation>Střední hodnota</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Positive span</source>
-        <translation type="unfinished">Pozitivní</translation>
+        <translation>Kladný rozsah</translation>
     </message>
 </context>
 <context>
@@ -805,22 +806,22 @@ Mode 4:
     <message>
         <location filename="../storage/categorized.cpp" line="28"/>
         <source>Can&apos;t extract RADIO/radio.bin</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze rozbalit RADIO/radio.bin</translation>
     </message>
     <message>
         <location filename="../storage/categorized.cpp" line="41"/>
         <source>Can&apos;t extract RADIO/models.txt</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze rozbalit RADIO/models.txt</translation>
     </message>
     <message>
         <location filename="../storage/categorized.cpp" line="85"/>
         <source>Can&apos;t extract %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze rozbalit %1</translation>
     </message>
     <message>
         <location filename="../storage/categorized.cpp" line="92"/>
         <source>Error loading models</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání modelů</translation>
     </message>
 </context>
 <context>
@@ -833,17 +834,17 @@ Mode 4:
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
         <source>Min</source>
-        <translation></translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
         <source>Max</source>
-        <translation></translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
         <source>Subtrim</source>
-        <translation></translation>
+        <translation>Subtrim</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
@@ -1602,27 +1603,27 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="71"/>
         <source>Play Track</source>
-        <translation type="unfinished">Hrát stopu</translation>
+        <translation>Přehrát stopu</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="73"/>
         <source>Play Both</source>
-        <translation type="unfinished">Přehrát pár</translation>
+        <translation>Přehrát oboje</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="75"/>
         <source>Play Value</source>
-        <translation type="unfinished">Přehrát hodnotu</translation>
+        <translation>Přehrát hodnotu</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="77"/>
         <source>Play Script</source>
-        <translation type="unfinished">Spustit skript</translation>
+        <translation>Spustit skript</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="79"/>
         <source>SD Logs</source>
-        <translation type="unfinished">SD logy</translation>
+        <translation>SD záznamy</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="81"/>
@@ -1632,27 +1633,27 @@ Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="83"/>
         <source>Backlight</source>
-        <translation type="unfinished">Podsvětlení</translation>
+        <translation>Podsvětlení</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="85"/>
         <source>Screenshot</source>
-        <translation type="unfinished">Snímek LCD</translation>
+        <translation>Snímek obrazovky</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="87"/>
         <source>Background Music</source>
-        <translation type="unfinished">Hudba na pozadí</translation>
+        <translation>Hudba na pozadí</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="89"/>
         <source>Background Music Pause</source>
-        <translation type="unfinished">Hudba na pozadí -pozastavit</translation>
+        <translation>Hudba na pozadí -pozastavit</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="91"/>
         <source>Adjust %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit %1</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="93"/>

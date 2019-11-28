@@ -563,8 +563,7 @@ void checkSwitches()
   bool refresh = false;
 #endif
 
-  while (1) {
-
+  while (true) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   #define GETADC_COUNT 1
 #endif
@@ -751,6 +750,8 @@ void checkSwitches()
 #if defined(PWR_BUTTON_PRESS)
     uint32_t power = pwrCheck();
     if (power == e_power_off) {
+      drawSleepBitmap();
+      boardOff();
       break;
     }
     else if (power == e_power_press) {
@@ -769,7 +770,7 @@ void checkSwitches()
 
     doLoopCommonActions();
 
-    wdt_reset();
+    WDG_RESET();
 
     RTOS_WAIT_MS(10);
   }

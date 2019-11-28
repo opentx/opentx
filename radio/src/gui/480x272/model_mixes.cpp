@@ -176,7 +176,7 @@ bool menuModelMixOne(event_t event)
 {
   MixData * md2 = mixAddress(s_currIdx) ;
 
-  SUBMENU_WITH_OPTIONS(STR_MIXER, ICON_MODEL_MIXER, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
+  SUBMENU_WITH_OPTIONS(STR_MIXES, ICON_MODEL_MIXER, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
   putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
   displayMixStatus(md2->destCh);
 
@@ -413,7 +413,7 @@ bool menuModelMixAll(event_t event)
   uint8_t chn = mixAddress(s_currIdx)->destCh + 1;
 
   int linesCount = getMixesLinesCount();
-  SIMPLE_MENU(STR_MIXER, MODEL_ICONS, menuTabModel, MENU_MODEL_MIXES, linesCount);
+  SIMPLE_MENU(STR_MIXES, MODEL_ICONS, menuTabModel, MENU_MODEL_MIXES, linesCount);
 
   switch (event) {
     case EVT_ENTRY:

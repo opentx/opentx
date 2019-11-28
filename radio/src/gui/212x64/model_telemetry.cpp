@@ -205,6 +205,7 @@ void menuModelTelemetry(event_t event)
             pushMenu(menuModelSensor);
           }
           else {
+            allowNewSensors = 0;
             POPUP_WARNING(STR_TELEMETRYFULL);
           }
         }
@@ -227,8 +228,8 @@ void menuModelTelemetry(event_t event)
 
       case ITEM_TELEMETRY_RSSI_LABEL:
 #if defined(MULTIMODULE)
-        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
-          lcdDrawTextAlignedLeft(y, "RSNR");
+        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT))
+          lcdDrawTextAlignedLeft(y, "RQly");
         else
           lcdDrawTextAlignedLeft(y, "RSSI");
 #else

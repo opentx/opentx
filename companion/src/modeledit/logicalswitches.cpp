@@ -527,8 +527,8 @@ void LogicalSwitchesPanel::cswPaste()
     QByteArray cswData = mimeData->data("application/x-companion-csw");
     LogicalSwitchData *csw = &model->logicalSw[selectedSwitch];
     memcpy(csw, cswData.constData(), sizeof(LogicalSwitchData));
+    update();
     emit modified();
-    updateLine(selectedSwitch);
   }
 }
 

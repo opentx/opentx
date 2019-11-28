@@ -255,7 +255,7 @@ extern const char STR_DELAYDOWN[];
 extern const char STR_DELAYUP[];
 extern const char STR_SLOWDOWN[];
 extern const char STR_SLOWUP[];
-extern const char STR_MIXER[];
+extern const char STR_MIXES[];
 extern const char STR_CV[];
 extern const char STR_GV[];
 extern const char STR_RANGE[];
@@ -382,7 +382,6 @@ extern const char STR_AND_SWITCH[];
 extern const char STR_SF[];
 extern const char STR_GF[];
 
-#if defined(MULTIMODULE)
 extern const char STR_MULTI_CUSTOM[];
 extern const char STR_MULTI_FIXEDID[];
 extern const char STR_MULTI_OPTION[];
@@ -390,6 +389,8 @@ extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
+extern const char STR_DISABLE_CH_MAP[];
+extern const char STR_DISABLE_TELEM[];
 extern const char STR_MULTI_DSM_AUTODTECT[];
 extern const char STR_MULTI_LOWPOWER[];
 extern const char STR_MODULE_NO_SERIAL_MODE[];
@@ -397,13 +398,16 @@ extern const char STR_MODULE_NO_INPUT[];
 extern const char STR_MODULE_WAITFORBIND[];
 extern const char STR_MODULE_NO_TELEMETRY[];
 extern const char STR_MODULE_BINDING[];
+extern const char STR_MODULE_UPGRADE_ALERT[];
+extern const char STR_MODULE_UPGRADE[];
 extern const char STR_PROTOCOL_INVALID[];
 extern const char STR_MODULE_STATUS[];
 extern const char STR_MODULE_SYNC[];
 extern const char STR_MULTI_SERVOFREQ[];
+extern const char STR_MULTI_MAX_THROW[];
+extern const char STR_MULTI_RFCHAN[];
 #if LCD_W < 212
 extern const char STR_SUBTYPE[];
-#endif
 #endif
 
 #if defined(DSM2) || defined(PXX)
@@ -717,6 +721,7 @@ extern const char STR_EXPONAME[];
 #endif
 
   extern const char STR_TRAINER[];
+extern const char STR_CHANS[];
 extern const char STR_MODULE_BIND[];
 extern const char STR_POWERMETER_ATTN_NEEDED[];
 extern const char STR_PXX2_SELECT_RX[];
@@ -909,6 +914,8 @@ extern const char STR_ABOUT_PARENTS_1[];
 extern const char STR_ABOUT_PARENTS_2[];
 extern const char STR_ABOUT_PARENTS_3[];
 extern const char STR_ABOUT_PARENTS_4[];
+
+extern const char STR_AUTH_FAILURE[];
 
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT

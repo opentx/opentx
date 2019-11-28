@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1075</width>
-    <height>434</height>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -417,7 +417,6 @@
           <item>
            <widget class="QCheckBox" name="autoBind">
             <property name="text">
-             <string>Bind on startup</string>
             </property>
            </widget>
           </item>
@@ -935,9 +934,24 @@
             <string>Master/SBUS in battery compartment</string>
            </property>
           </item>
+	  <item>
+           <property name="text">
+            <string>Master/Bluetooth</string>
+           </property>
+          </item>
+	  <item>
+           <property name="text">
+            <string>Slave/Bluetooth</string>
+           </property>
+          </item>
+	  <item>
+           <property name="text">
+            <string>Master/Multi</string>
+           </property>
+          </item>
          </widget>
         </item>
-        <item row="7" column="0" colspan="2">
+        <item row="11" column="0" colspan="2">
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -949,6 +963,20 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="7" column="1">
+         <widget class="QCheckBox" name="disableTelem">
+          <property name="text">
+           <string>Disable Telemetry</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="1">
+         <widget class="QCheckBox" name="disableChMap">
+          <property name="text">
+           <string>Disable Ch. Map</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

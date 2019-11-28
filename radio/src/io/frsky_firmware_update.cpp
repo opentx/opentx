@@ -101,7 +101,7 @@ bool FrskyDeviceFirmwareUpdate::readBuffer(uint8_t * buffer, uint8_t count, uint
 {
   watchdogSuspend(timeout);
 
-  switch(module) {
+  switch (module) {
     case INTERNAL_MODULE:
     {
       uint32_t elapsed = 0;
@@ -176,8 +176,8 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
   RTOS_WAIT_MS(1);
 
-  switch(module) {
-#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+  switch (module) {
+#if defined(INTERNAL_MODULE_PXX2)
     case INTERNAL_MODULE:
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
@@ -235,8 +235,8 @@ void FrskyDeviceFirmwareUpdate::sendFrame()
     }
   }
 
-  switch(module) {
-#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
+  switch (module) {
+#if defined(INTERNAL_MODULE_PXX2)
     case INTERNAL_MODULE:
       return intmoduleSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
 #endif
@@ -331,10 +331,7 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
 #endif
 
   switch (module) {
-#if defined(INTMODULE_USART) && !(defined(PCBXLITE) && !defined(PCBXLITES))
-    // on XLite we don't use TX + RX but the S.PORT line
-    // this ifdef can be removed if we use .frsk instead of .frk
-    // theorically it should be possible to use an ISRM module in an XLite
+#if defined(INTERNAL_MODULE_PXX2)
     case INTERNAL_MODULE:
       intmoduleSerialStart(57600, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
       break;
@@ -495,7 +492,7 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(1000 /*10s*/);
   RTOS_WAIT_MS(2000);
 
   const char * result = doFlashFirmware(filename);
@@ -511,12 +508,14 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
+#if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();
+#endif
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(2000);
   telemetryClearFifo();
 
@@ -549,7 +548,7 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
   uint8_t buffer[12];
   for (uint8_t i = 0; i < sizeof(buffer); i++) {
     uint32_t retry = 0;
-    while(1) {
+    while (true) {
       if (telemetryGetByte(&buffer[i])) {
         if ((i == 0 && buffer[0] != 0x7F) ||
             (i == 1 && buffer[1] != 0xFE) ||
@@ -572,6 +571,10 @@ const char * FrskyChipFirmwareUpdate::waitAnswer(uint8_t & status)
 
 const char * FrskyChipFirmwareUpdate::startBootloader()
 {
+  sportSendByte(0x03);
+  RTOS_WAIT_MS(20);
+  sportSendByte(0x02);
+  RTOS_WAIT_MS(20);
   sportSendByte(0x01);
 
   for (uint8_t i = 0; i < 30; i++)
@@ -582,6 +585,7 @@ const char * FrskyChipFirmwareUpdate::startBootloader()
     sportSendByte(0x7F);
   }
 
+  RTOS_WAIT_MS(20);
   sportSendByte(0xFA);
 
   /*for (uint8_t i=0; i < 30; i++)
@@ -752,7 +756,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, bool 
 
   if (wait) {
     /* wait 2s off */
-    watchdogSuspend(2000);
+    watchdogSuspend(1000 /*10s*/);
     RTOS_WAIT_MS(2000);
   }
 
@@ -772,7 +776,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, bool 
   }
 
   /* wait 2s off */
-  watchdogSuspend(2000);
+  watchdogSuspend(1000 /*10s*/);
   RTOS_WAIT_MS(2000);
 
 #if defined(HARDWARE_INTERNAL_MODULE)

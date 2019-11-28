@@ -19,11 +19,12 @@
  */
 
 #include "opentx.h"
+#include "pulses/multi.h"
 
 uint8_t   storageDirtyMsk;
 tmr10ms_t storageDirtyTime10ms;
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
 uint8_t   rambackupDirtyMsk;
 tmr10ms_t rambackupDirtyTime10ms;
 #endif
@@ -33,7 +34,7 @@ void storageDirty(uint8_t msk)
   storageDirtyMsk |= msk;
   storageDirtyTime10ms = get_tmr10ms();
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
   rambackupDirtyMsk = storageDirtyMsk;
   rambackupDirtyTime10ms = storageDirtyTime10ms;
 #endif
@@ -125,11 +126,19 @@ void postModelLoad(bool alarms)
   if (!isInternalModuleAvailable(g_model.moduleData[INTERNAL_MODULE].type)) {
     memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
   }
+#if defined(MULTIMODULE)
+  else if (isModuleMultimodule(INTERNAL_MODULE))
+    multiPatchCustom(INTERNAL_MODULE);
+#endif
 #endif
 
   if (!isExternalModuleAvailable(g_model.moduleData[EXTERNAL_MODULE].type)) {
     memclear(&g_model.moduleData[EXTERNAL_MODULE], sizeof(ModuleData));
   }
+#if defined(MULTIMODULE)
+  else if (isModuleMultimodule(EXTERNAL_MODULE))
+    multiPatchCustom(EXTERNAL_MODULE);
+#endif
 
   AUDIO_FLUSH();
   flightReset(false);

@@ -39,7 +39,7 @@ inline bool isModuleMultimodule(uint8_t idx)
 
 inline bool isModuleMultimoduleDSM2(uint8_t idx)
 {
-  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2;
+  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2;
 }
 #else
 inline bool isModuleMultimodule(uint8_t)
@@ -127,9 +127,13 @@ inline bool isModuleTypePPM(uint8_t type)
   return type == MODULE_TYPE_PPM;
 }
 
-inline bool isModulePPM(uint8_t idx)
+inline bool isModulePPM(uint8_t moduleIdx)
 {
-  return isModuleTypePPM(g_model.moduleData[idx].type);
+#if defined(PCBSKY9X)
+  if (moduleIdx == EXTRA_MODULE)
+    return true;
+#endif
+  return isModuleTypePPM(g_model.moduleData[moduleIdx].type);
 }
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
@@ -310,6 +314,8 @@ inline int8_t sentModuleChannels(uint8_t idx)
     return CROSSFIRE_CHANNELS_COUNT;
   else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
     return 16;
+  else if (isModuleSBUS(idx))
+    return 16;
   else
     return 8 + g_model.moduleData[idx].channelsCount;
 }
@@ -374,7 +380,15 @@ inline uint8_t getMaxRxNum(uint8_t idx)
 
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(idx))
-    return g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_OLRS ? 4 : 15;
+  {
+    switch (g_model.moduleData[idx].getMultiProtocol()) {
+      case MODULE_SUBTYPE_MULTI_OLRS:
+        return 4;
+      case MODULE_SUBTYPE_MULTI_BUGS:
+      case MODULE_SUBTYPE_MULTI_BUGS_MINI:
+        return 15;
+    }
+  }
 #endif
 
   return 63;

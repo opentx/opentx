@@ -115,15 +115,14 @@ void checkTrainerSettings()
 
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
           auxSerialSbusInit();
-          break;
-        }
-        // no break
+        else
+          init_trainer_capture();
+        break;
 #endif
 
-      default:
-        // master is default
+      case TRAINER_MODE_MASTER_TRAINER_JACK:
         init_trainer_capture();
         break;
     }

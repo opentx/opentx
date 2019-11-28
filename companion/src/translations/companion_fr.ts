@@ -1058,37 +1058,37 @@ Manche Droit:  Profondeur, Direction
         <translation>&lt;p&gt; Le type de radio sélectionnée dans le profil n&apos;existe pas. Utilisez plutôt le type par défaut. &lt;/p&gt; &lt;p&gt;&lt;b&gt;Veuillez mettre à jour les paramètres de votre profil!&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="472"/>
+        <location filename="../helpers.cpp" line="489"/>
         <source>Select or create a file for exported Settings:</source>
         <translation>Sélectionnez ou créez un fichier pour les paramètres exportés:</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="482"/>
+        <location filename="../helpers.cpp" line="499"/>
         <source>Press the &apos;Retry&apos; button to choose another file.</source>
         <translation>Appuyez sur le bouton &apos;Réessayer&apos; pour choisir un autre fichier.</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="493"/>
+        <location filename="../helpers.cpp" line="510"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Le simulateur n&apos;est pas encore disponible pour ce firmware</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="517"/>
+        <location filename="../helpers.cpp" line="534"/>
         <source>Uknown error during Simulator startup.</source>
         <translation>Erreur inconnue pendant le démarrage du simulateur.</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="518"/>
+        <location filename="../helpers.cpp" line="535"/>
         <source>Simulator Error</source>
         <translation>Erreur Simulateur</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="525"/>
+        <location filename="../helpers.cpp" line="542"/>
         <source>Data Load Error</source>
         <translation>Erreur de chargement des données</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="525"/>
+        <location filename="../helpers.cpp" line="542"/>
         <source>Error occurred while starting simulator.</source>
         <translation>Une erreur s&apos;est produite lors du démarrage du simulateur.</translation>
     </message>
@@ -2070,7 +2070,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
         <translation>OpenTX ne supporte pas cette fonction sur cette carte</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2190"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2196"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX ne supporte pas ce protocole radio</translation>
     </message>
@@ -2833,19 +2833,19 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1293"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1289"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>Supprimer le menu HELICO et les mixages cycliques</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1177"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1294"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1290"/>
         <source>Disable Global variables</source>
         <translation>Supprimer le support des variables globales</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1178"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1295"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1291"/>
         <source>Enable Lua custom scripts screen</source>
         <translation>Activer l&apos;écran des scripts Lua personnalisés</translation>
     </message>
@@ -2880,110 +2880,103 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1228"/>
         <source>FrSky Taranis X9D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1230"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1229"/>
         <source>Haptic module installed</source>
         <translation>Module vibreur installé</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1235"/>
         <source>FrSky Taranis X9E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
         <source>Confirmation before radio shutdown</source>
         <translation>Confirmation avant l&apos;arrêt de la radio</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
         <source>Horus gimbals installed (Hall sensors)</source>
         <translation>Manches Horus à effet HALL installés</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1244"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1243"/>
         <source>FrSky Taranis X9-Lite</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1246"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1252"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
-        <source>Support for auto update on boot</source>
-        <translation>Prise en charge de la mise à jour automatique au démarrage</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1248"/>
         <source>FrSky Taranis X9-Lite S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1253"/>
         <source>FrSky Taranis X7 / X7S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1261"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1258"/>
         <source>FrSky Taranis X-Lite S/PRO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1267"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
         <source>FrSky Taranis X-Lite</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1269"/>
         <source>FrSky Horus X10 / X10S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1286"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1271"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
         <source>Support for ACCESS internal module replacement</source>
         <translation>Prise en charge du module de remplacement interne ACCESS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1279"/>
-        <source>FrSky Horus X10 Express</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1284"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
         <source>FrSky Horus X12S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1283"/>
         <source>Use ONLY with first DEV pcb version</source>
         <translation>Exclusivement pour les Horus DEV</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1291"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
         <source>Jumper T12</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1296"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
         <source>Enable non certified R9M firmwares</source>
         <translation>Activer les firmwares R9M non certifiés</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1297"/>
         <source>Jumper T16 / T16+</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1299"/>
         <source>Support for MULTI internal module</source>
         <translation>Prise en charge du module MULTI interne</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1307"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
+        <source>Support for bluetooth module</source>
+        <translation>Prise en charge du module Bluetooth</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
         <source>Turnigy 9XR-PRO</source>
         <translation></translation>
     </message>
@@ -3028,17 +3021,22 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <translation>Ne pas mettre les lignes actives en gras</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1325"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
+        <source>FrSky Horus X10 / X10S Express</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1322"/>
         <source>Turnigy 9XR with m128 chip</source>
         <translation>Turnigy 9XR avec une puce m128</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
         <source>Turnigy 9XR</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1326"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1323"/>
         <source>9X with stock board</source>
         <translation>9X avec carte mère d&apos;origine</translation>
     </message>
@@ -3048,27 +3046,27 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <translation>Permet la remise à zéro des valeurs en pressant haut-bas en même temps, valeur min avec gauche/bas, valeur max avec haut/droite, inversion avec gauche/droite</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1327"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
         <source>9X with stock board and m128 chip</source>
         <translation>Carte 9x avec un chip m128</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1312"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
         <source>9X with AR9X board</source>
         <translation>9X avec carte AR9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1319"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1316"/>
         <source>9X with Sky9x board</source>
         <translation>9X avec carte Sky9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1328"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1325"/>
         <source>9X with Gruvin9x board</source>
         <translation>9X avec carte Gruvin9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1329"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1326"/>
         <source>DIY MEGA2560 radio</source>
         <translation>Radio DIY à base de MEGA2560</translation>
     </message>
@@ -5288,8 +5286,8 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <name>HardwarePanel</name>
     <message>
         <location filename="../generaledit/hardware.cpp" line="28"/>
-        <location filename="../generaledit/hardware.cpp" line="66"/>
-        <location filename="../generaledit/hardware.cpp" line="86"/>
+        <location filename="../generaledit/hardware.cpp" line="72"/>
+        <location filename="../generaledit/hardware.cpp" line="92"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
@@ -5309,67 +5307,67 @@ Cette fonction ne peut pas être désactivée sur la radio.
         <translation>3 Positions</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="67"/>
+        <location filename="../generaledit/hardware.cpp" line="73"/>
         <source>Pot with detent</source>
         <translation>Potentiomètre avec centre</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="68"/>
+        <location filename="../generaledit/hardware.cpp" line="74"/>
         <source>Multipos switch</source>
         <translation>Inter multiposition</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="69"/>
+        <location filename="../generaledit/hardware.cpp" line="75"/>
         <source>Pot without detent</source>
         <translation>Potentiomètre sans centre</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="87"/>
+        <location filename="../generaledit/hardware.cpp" line="93"/>
         <source>Slider with detent</source>
         <translation>Curseur avec centre</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="170"/>
+        <location filename="../generaledit/hardware.cpp" line="176"/>
         <source>OFF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="172"/>
+        <location filename="../generaledit/hardware.cpp" line="178"/>
         <source>Enabled</source>
         <translation>Activé</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="175"/>
+        <location filename="../generaledit/hardware.cpp" line="181"/>
         <source>Telemetry</source>
         <translation>Télémétrie</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="176"/>
+        <location filename="../generaledit/hardware.cpp" line="182"/>
         <source>Trainer</source>
         <translation>Écolage</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="187"/>
+        <location filename="../generaledit/hardware.cpp" line="193"/>
         <source>Internal</source>
         <translation>Interne</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="188"/>
+        <location filename="../generaledit/hardware.cpp" line="194"/>
         <source>Ask</source>
         <translation>Demander</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="189"/>
+        <location filename="../generaledit/hardware.cpp" line="195"/>
         <source>Per model</source>
         <translation>Par modèle</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="190"/>
+        <location filename="../generaledit/hardware.cpp" line="196"/>
         <source>Internal + External</source>
         <translation>Interne + Externe</translation>
     </message>
     <message>
-        <location filename="../generaledit/hardware.cpp" line="190"/>
+        <location filename="../generaledit/hardware.cpp" line="196"/>
         <source>External</source>
         <translation>Externe</translation>
     </message>
@@ -6990,7 +6988,7 @@ Do you wish to continue?</source>
 <context>
     <name>MdiChild</name>
     <message>
-        <location filename="../mdichild.cpp" line="1575"/>
+        <location filename="../mdichild.cpp" line="1564"/>
         <source>Unable to find file %1!</source>
         <translation>Fichier %1 introuvable !</translation>
     </message>
@@ -7255,47 +7253,37 @@ Do you wish to continue?</source>
         <translation>Impossible de dupliquer le modèle, aucun emplacement libre n’est disponible.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1463"/>
-        <source>WARNING</source>
-        <translation>ATTENTION</translation>
-    </message>
-    <message>
-        <location filename="../mdichild.cpp" line="1464"/>
-        <source>&lt;p&gt;Due to the way Jumper have handled their JumperTX fork and firmware releases data integrity for settings from JumperTX cannot be trusted when migrating to OpenTX.&lt;/p&gt;                       &lt;p&gt;Importing JumperTX data into OpenTX 2.3 is &lt;b&gt;not supported and dangerous.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but &lt;b&gt;You should only continue here if the file you opened comes from a real FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Do you really want to continue?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;En raison de la manière dont Jumper a traité ses versions de firmwares, l&apos;intégrité des données pour les paramètres des radios Jumper n&apos;est pas fiable lors de la migration vers OpenTX.&lt;/p&gt;                       &lt;p&gt;L&apos;importation des données des radios Jumper dans OpenTX 2.3 &lt;b&gt;n&apos;est pas prise en charge et constitue un danger.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Il ne nous est malheureusement pas possible de différencier les données des radios Jumper par rapport aux données légitimes des radios FrSky X10, mais &lt;b&gt; Vous ne devez continuer ici que si le fichier que vous avez ouvert provient d&apos;une véritable radio FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Voulez-vous vraiment continuer?&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../mdichild.cpp" line="1479"/>
+        <location filename="../mdichild.cpp" line="1468"/>
         <source>Do you wish to continue with the conversion?</source>
         <translation>Souhaitez-vous vraiment lancer la conversion ?</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1484"/>
+        <location filename="../mdichild.cpp" line="1473"/>
         <source>Choose &lt;i&gt;Apply&lt;/i&gt; to convert the file, or &lt;i&gt;Close&lt;/i&gt; to close it without conversion.</source>
         <translation>Choisissez &lt;i&gt;Appliquer&lt;/i&gt; pour convertir le fichier ou &lt;i&gt;Annuler&lt;/i&gt; pour le fermer sans conversion.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1511"/>
+        <location filename="../mdichild.cpp" line="1500"/>
         <source>&lt;b&gt;The conversion generated some important messages, please review them below.&lt;/b&gt;</source>
         <translation>&lt;b&gt;La conversion a généré des messages importants, veuillez les consulter ci-dessous.&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1518"/>
+        <location filename="../mdichild.cpp" line="1507"/>
         <source>Companion :: Conversion Result for %1</source>
         <translation>Companion :: Résultat de conversion de %1</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1545"/>
+        <location filename="../mdichild.cpp" line="1534"/>
         <source>Unable to find Horus radio SD card!</source>
         <translation>Impossible de trouver la carte SD de la Horus !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1549"/>
+        <location filename="../mdichild.cpp" line="1538"/>
         <source>Models and Settings written</source>
         <translation>Modèle et paramètres écrit</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1559"/>
+        <location filename="../mdichild.cpp" line="1548"/>
         <source>Cannot write temporary file!</source>
         <translation>Ecriture de fichier temporaire impossible !</translation>
     </message>
@@ -7305,14 +7293,14 @@ Do you wish to continue?</source>
         <translation>Édition du modèle %1 : </translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1595"/>
+        <location filename="../mdichild.cpp" line="1584"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Fichier %1 corrompu:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1584"/>
+        <location filename="../mdichild.cpp" line="1573"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Erreur à l&apos;ouverture du fichier %1:
@@ -7351,17 +7339,17 @@ Do you wish to continue?</source>
         <translation>Nlle categorie</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1477"/>
+        <location filename="../mdichild.cpp" line="1466"/>
         <source>&lt;p&gt;&lt;b&gt;Currently selected radio type (%1) is not compatible with file %3 (from %2), models and settings need to be converted.&lt;/b&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Le type de radio actuellement sélectionné (%1) n&apos;est pas compatible avec le fichier %3 (à partir de %2), les modèles et les paramètres doivent être convertis.&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1569"/>
+        <location filename="../mdichild.cpp" line="1558"/>
         <source>Open backup Models and Settings file</source>
         <translation>Ouvrir la sauvegarde de paramètres et modèles</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1605"/>
+        <location filename="../mdichild.cpp" line="1594"/>
         <source>Invalid binary backup File %1</source>
         <translation>Fichier de sauvegarde %1 invalide</translation>
     </message>
@@ -8760,18 +8748,28 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>Sous-Type</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup_module.ui" line="1017"/>
+        <location filename="../modeledit/setup_module.ui" line="956"/>
+        <source>Disable Telemetry</source>
+        <translation>Désactiver la télémétrie</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/setup_module.ui" line="963"/>
+        <source>Disable Ch. Map</source>
+        <translation>Désactiver &quot;Mapping&quot; des VOIES</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/setup_module.ui" line="1031"/>
         <source>Show values in:</source>
         <translation>Afficher les valeurs en:</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup_module.ui" line="1024"/>
+        <location filename="../modeledit/setup_module.ui" line="1038"/>
         <source>%</source>
         <extracomment>abbreviation for percent</extracomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup_module.ui" line="1037"/>
+        <location filename="../modeledit/setup_module.ui" line="1051"/>
         <source>μs</source>
         <extracomment>abbreviation for microseconds</extracomment>
         <translation></translation>
@@ -8849,7 +8847,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>ID d&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup_module.ui" line="975"/>
+        <location filename="../modeledit/setup_module.ui" line="989"/>
         <source>Failsafe Positions</source>
         <translation>Positions Failsafe</translation>
     </message>
@@ -8897,85 +8895,85 @@ Mixage actif par défaut si non-renseigné.</translation>
 <context>
     <name>ModuleData</name>
     <message>
-        <location filename="../firmwares/moduledata.h" line="189"/>
+        <location filename="../firmwares/moduledata.h" line="191"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.h" line="189"/>
+        <location filename="../firmwares/moduledata.h" line="191"/>
         <source>Negative</source>
         <translation>Négative</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="106"/>
+        <location filename="../firmwares/moduledata.cpp" line="130"/>
         <source>Trainer Port</source>
         <translation>Port écolage</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="110"/>
+        <location filename="../firmwares/moduledata.cpp" line="134"/>
         <source>Internal Radio System</source>
         <translation>Module HF interne</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="110"/>
+        <location filename="../firmwares/moduledata.cpp" line="134"/>
         <source>External Radio Module</source>
         <translation>Module HF externe</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="112"/>
+        <location filename="../firmwares/moduledata.cpp" line="136"/>
         <source>Extra Radio System</source>
         <translation>Module HF supplémentaire</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="114"/>
+        <location filename="../firmwares/moduledata.cpp" line="138"/>
         <source>Radio System</source>
         <translation>Module HF</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>10mW - 16CH</source>
         <translation>10mW - 16 VOIES</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
-        <location filename="../firmwares/moduledata.cpp" line="150"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
+        <location filename="../firmwares/moduledata.cpp" line="174"/>
         <source>100mW - 16CH</source>
         <translation>100mW - 16 VOIES</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>500mW - 16CH</source>
         <translation>500mW - 16 VOIES</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="148"/>
+        <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>Auto &lt;= 1W - 16CH</source>
         <translation>Auto &lt;= 1W - 16 VOIES</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
-        <location filename="../firmwares/moduledata.cpp" line="151"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
+        <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>25mW - 8CH</source>
         <translation>25mW - 8 VOIES</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
-        <location filename="../firmwares/moduledata.cpp" line="151"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
+        <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>25mW - 16CH</source>
         <translation>25mW - 16 VOIES</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
         <source>200mW - 16CH (no telemetry)</source>
         <translation>200mW - 16 VOIES (pas de télémétrie)</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="149"/>
+        <location filename="../firmwares/moduledata.cpp" line="173"/>
         <source>500mW - 16CH (no telemetry)</source>
         <translation>500mW - 16 VOIES (pas de télémétrie)</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.cpp" line="151"/>
+        <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>100mW - 16CH (no telemetry)</source>
         <translation>100mW - 16 VOIES (pas de télémétrie)</translation>
     </message>
@@ -8983,37 +8981,37 @@ Mixage actif par défaut si non-renseigné.</translation>
 <context>
     <name>ModulePanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="322"/>
+        <location filename="../modeledit/setup.cpp" line="325"/>
         <source>Value</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="323"/>
+        <location filename="../modeledit/setup.cpp" line="326"/>
         <source>Hold</source>
         <translation>Maintien</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="324"/>
+        <location filename="../modeledit/setup.cpp" line="327"/>
         <source>No Pulse</source>
         <translation>Pas d&apos;impulsion</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="493"/>
+        <location filename="../modeledit/setup.cpp" line="540"/>
         <source>Ask</source>
         <translation>Demander</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="494"/>
+        <location filename="../modeledit/setup.cpp" line="541"/>
         <source>Internal</source>
         <translation>Interne</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="495"/>
+        <location filename="../modeledit/setup.cpp" line="542"/>
         <source>Internal + External</source>
         <translation>Interne + Externe</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="495"/>
+        <location filename="../modeledit/setup.cpp" line="542"/>
         <source>External</source>
         <translation>Externe</translation>
     </message>
@@ -9691,6 +9689,19 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../progresswidget.ui" line="97"/>
         <source>Show Details</source>
         <translation>Voir les détails</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../helpers.cpp" line="441"/>
+        <source>WARNING</source>
+        <translation>ATTENTION</translation>
+    </message>
+    <message>
+        <location filename="../helpers.cpp" line="442"/>
+        <source>&lt;p&gt;Importing JumperTX data into OpenTX 2.3 is &lt;b&gt;not supported and dangerous.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but &lt;b&gt;You should only continue here if the file you opened comes from a real FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Do you really want to continue?&lt;/p&gt;</source>
+        <translation>&lt;p&gt;L&apos;importation de données JumperTX dans OpenTX 2.3 est &lt;b&gt; non prise en charge et dangereuse.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Il n&apos;est malheureusement pas possible pour nous de différencier les données JumperTX des données légitimes FrSky X10, donc &lt;b&gt;Vous devez continuer uniquement si le fichier que vous avez ouvert provient d’une véritable radio FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Voulez-vous vraiment continuer?&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -10550,7 +10561,7 @@ E</translation>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="119"/>
         <source>Act</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="128"/>
@@ -10938,22 +10949,22 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
 <context>
     <name>SetupPanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1010"/>
+        <location filename="../modeledit/setup.cpp" line="1069"/>
         <source>Timer %1</source>
         <translation>Chrono %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1243"/>
+        <location filename="../modeledit/setup.cpp" line="1302"/>
         <source>THR</source>
         <translation>GAZ</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1447"/>
+        <location filename="../modeledit/setup.cpp" line="1506"/>
         <source>Profile Settings</source>
         <translation>Paramètres du profil</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1447"/>
+        <location filename="../modeledit/setup.cpp" line="1506"/>
         <source>SD structure path not specified or invalid</source>
         <translation>Chemin de la structure SD non spécifié ou invalide</translation>
     </message>
@@ -11677,62 +11688,62 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
         <translation>Simulateur Radio (%1)</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="248"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="250"/>
         <source>Could not determine startup data source.</source>
         <translation>Impossible de déterminer les données source.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="253"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="255"/>
         <source>Could not load data, possibly wrong format.</source>
         <translation>Impossible de charger les données, mauvais format.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="254"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="256"/>
         <source>Data Load Error</source>
         <translation>Erreur de lecture des données</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="309"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="311"/>
         <source>Invalid startup data provided. Plese specify a proper file/path.</source>
         <translation>Données de démarrage fournies non valides. Veuillez spécifier un fichier/chemin approprié.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="310"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="312"/>
         <source>Simulator Startup Error</source>
         <translation>Erreur de démarrage du simulateur</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="370"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="372"/>
         <source>Error saving data: could open file for writing: &apos;%1&apos;</source>
         <translation>Erreur de sauvegarde des données: impossible d&apos;écrire le fichier &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="376"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="378"/>
         <source>Error saving data: could not get data from simulator interface.</source>
         <translation>Erreur de sauvegarde des données: impossible de récupérer les données depuis l&apos;interface de simulation.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="401"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="403"/>
         <source>An unexpected error occurred while attempting to save radio data to file &apos;%1&apos;.</source>
         <translation>Une erreur inattendue s&apos;est produite lors de l&apos;enregistrement des données radio dans le fichier &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="402"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="404"/>
         <source>Data Save Error</source>
         <translation>Erreur de sauvegarde des données</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="654"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="656"/>
         <source>Cannot open joystick, joystick disabled</source>
         <translation>Impossible d&apos;accéder au Joystick, Joystick désactivé</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="750"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="752"/>
         <source>Radio firmware error: %1</source>
         <translation>Erreur firmware radio: %1</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="755"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="757"/>
         <source> - Flight Mode %1 (#%2)</source>
         <translation> - Phase de Vol %1 (#%2)</translation>
     </message>

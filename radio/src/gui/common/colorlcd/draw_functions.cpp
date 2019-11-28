@@ -74,11 +74,11 @@ void drawFatalErrorScreen(const char * message)
 
 void runFatalErrorScreen(const char * message)
 {
-  while (1) {
+  while (true) {
     drawFatalErrorScreen(message);
     backlightEnable(100);
     uint8_t refresh = false;
-    while (1) {
+    while (true) {
       uint32_t pwr_check = pwrCheck();
       if (pwr_check == e_power_off) {
         boardOff();

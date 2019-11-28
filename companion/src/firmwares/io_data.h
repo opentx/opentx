@@ -111,6 +111,7 @@ class LimitData {
     QString revertToString() const;
     QString nameToString(int index) const;
     void clear();
+    bool isEmpty() const;
 };
 
 class CurvePoint {

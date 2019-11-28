@@ -27,6 +27,8 @@ Michael Byrne
 
 [Companies and projects who have donated to OpenTX]
 <a href="https://www.frsky-rc.com">FrSky (monthly)</a>
+<a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
+<a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
@@ -1608,3 +1610,50 @@ James D McKeown
 鄭 淳中
 Matthias Wuethrich
 Michael Tessler
+John Beech
+Stefan Möst
+Thomas McGraw
+Bruno N Russo Jr
+Daniel Eikenkötter
+Guy Poignonec
+Gérard Falaise
+Jacques Loubier
+Kelly Warner
+James Cox
+Sidney B Harden
+CG Tech Inc.
+Richard Gopstein
+Francesco Ziche
+Jean Paul Duroch
+Romane Oughlissi
+Alexander Maciol
+Udo Kastenholz
+Jacek Wielogórski
+Siegfried Preißler
+Bernard Mohamedaly
+John North
+Thomas Wormsley
+Michael Schreiber
+DTg Privat
+Frédéric Devillard
+Lauland Bourg
+Jurij Peternel
+Murray King
+Horia Adrian Bucovanu
+Freddy Prousteau
+Wojciech Winiarski
+James A Davey
+James Donelson
+David Jolly
+Domingos S. Fonseca M.
+Kenneth Frehafer
+Christian Epple
+David Williams
+Michael Bernard
+Michael Wagner
+Carl Pennington
+LTR Consulting
+Norman Brisson
+Darko Perković
+Andreas Fischer
+Pablo Peinado Abad

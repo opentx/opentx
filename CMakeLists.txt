@@ -2,11 +2,11 @@ project(OpenTX)
 
 set(VERSION_MAJOR "2")
 set(VERSION_MINOR "3")
-set(VERSION_REVISION "2")
+set(VERSION_REVISION "3")
 set(VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
-set(SDCARD_REVISION "0022")
+set(SDCARD_REVISION "0024")
 set(SDCARD_VERSION  ${VERSION_MAJOR}.${VERSION_MINOR}V${SDCARD_REVISION})
 
 cmake_minimum_required(VERSION 2.8)
@@ -232,15 +232,21 @@ add_custom_target(tests-radio
 
 if(Qt5Core_FOUND AND NOT DISABLE_COMPANION)
   add_subdirectory(${COMPANION_SRC_DIRECTORY})
-  add_custom_target(gtests DEPENDS gtests-radio gtests-companion)
+  add_custom_target(tests-companion
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-companion
+    DEPENDS gtests-companion
+    )
+  add_custom_target(gtests
+    DEPENDS gtests-radio gtests-companion
+    )
   add_custom_target(tests
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-radio && ${CMAKE_CURRENT_BINARY_DIR}/gtests-companion
-    DEPENDS gtests
+    DEPENDS tests-radio tests-companion
   )
 else()
-  add_custom_target(gtests DEPENDS gtests-radio)
+  add_custom_target(gtests
+    DEPENDS gtests-radio
+    )
   add_custom_target(tests
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gtests-radio
-    DEPENDS gtests
+    DEPENDS tests-radio
   )
 endif()
