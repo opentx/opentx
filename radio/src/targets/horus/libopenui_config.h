@@ -159,6 +159,8 @@ constexpr coord_t MENUS_MIN_HEIGHT = 2 * MENUS_LINE_HEIGHT - 1;
 constexpr coord_t MENUS_MAX_HEIGHT = 7 * MENUS_LINE_HEIGHT - 1;
 constexpr coord_t MODEL_SELECT_FOOTER_HEIGHT = 24;
 constexpr coord_t SCROLLBAR_WIDTH = 3;
+constexpr coord_t TABLE_LINE_HEIGHT = 50;
+constexpr coord_t TABLE_HEADER_HEIGHT = 48;
 
 constexpr LcdFlags TABLE_HEADER_FONT = FONT(STD);
 constexpr LcdFlags TABLE_BODY_FONT = FONT(STD);
