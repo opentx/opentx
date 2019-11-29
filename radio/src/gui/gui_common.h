@@ -161,42 +161,6 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
 
 
 #if defined(MULTIMODULE)
-// When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
-// Keep the order of the fields that the so that the size stays small
-struct mm_options_strings {
-  static const char* options[];
-};
-
-struct mm_protocol_definition {
-    uint8_t protocol;
-    uint8_t maxSubtype;
-    bool failsafe;
-    bool disable_ch_mapping;
-    const char *subTypeString;
-    const char *optionsstr;
-};
-
-const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
-
-inline uint8_t getMaxMultiSubtype(uint8_t moduleIdx)
-{
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
-    return 5;
-  }
-
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
-    if (status.isValid())
-      return (status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1);
-    else
-      return 7;
-  }
-  else {
-    return max((uint8_t )(status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1), pdef->maxSubtype);
-  }
-}
 
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
@@ -216,40 +180,6 @@ inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
   }
 
   return HIDDEN_ROW;
-}
-
-inline bool isMultiProtocolSelectable(int protocol)
-{
-  return protocol != MODULE_SUBTYPE_MULTI_SCANNER;
-}
-
-inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
-{
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
-    return true;
-  }
-
-  if (status.isValid()) {
-    return status.protocolSubNbr > 0;
-  }
-  else
-  {
-    if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST)
-      return true;
-    else
-      return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->maxSubtype > 0;
-  }
-}
-
-inline uint8_t MULTIMODULE_RFPROTO_COLUMNS(uint8_t moduleIdx)
-{
-#if LCD_W < 212
-  return (MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW);
-#else
-  return (MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t) 1 : 0);
-#endif
 }
 
 inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)

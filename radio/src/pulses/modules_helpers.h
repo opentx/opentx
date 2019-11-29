@@ -357,8 +357,14 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(moduleIdx)){
-    MultiModuleStatus& status = getMultiModuleStatus(moduleIdx);
-    return status.isValid() && status.supportsFailsafe();
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.isValid()) {
+      return status.supportsFailsafe();
+    }
+    else {
+      const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+      return pdef->failsafe;
+    }
   }
 #endif
 
