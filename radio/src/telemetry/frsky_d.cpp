@@ -74,8 +74,9 @@ void frskyDProcessPacket(const uint8_t *packet)
 #if defined(MULTIMODULE)
       if(telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE)
       {
-        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_TX_RSSI_ID, 0, 0, packet[4]>>1, UNIT_DB,  0);
-        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_TX_LQI_ID , 0, 0, packet[6], UNIT_RAW, 0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, TX_RSSI_ID, 0, 0, packet[4]>>1, UNIT_DB,  0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, RX_LQI_ID,  0, 0, packet[5]   , UNIT_RAW, 0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, TX_LQI_ID , 0, 0, packet[6]   , UNIT_RAW, 0);
       }
 #endif
       telemetryData.rssi.set(packet[3]);
@@ -101,10 +102,6 @@ struct FrSkyDSensor {
 
 const FrSkyDSensor frskyDSensors[] = {
   { D_RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
-#if defined(MULTIMODULE)
-  { D_TX_RSSI_ID,ZSTR_TX_RSSI,    UNIT_DB , 0 },
-  { D_TX_LQI_ID, ZSTR_TX_QUALITY, UNIT_RAW, 0 },
-#endif
   { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
   { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
   { RPM_ID, ZSTR_RPM, UNIT_RPMS, 0 },
@@ -279,37 +276,54 @@ void frskyDSetDefault(int index, uint16_t id)
   telemetrySensor.id = id;
   telemetrySensor.instance = 0;
 
-  const FrSkyDSensor * sensor = getFrSkyDSensor(id);
-  if (sensor) {
-    TelemetryUnit unit = sensor->unit;
-    uint8_t prec = min<uint8_t>(2, sensor->prec);
-    telemetrySensor.init(sensor->name, unit, prec);
-    if (id == D_RSSI_ID) {
-      telemetrySensor.filter = 1;
-      telemetrySensor.logs = true;
-    }
-    else if (id >= D_A1_ID && id <= D_A2_ID) {
-      telemetrySensor.custom.ratio = 132;
-      telemetrySensor.filter = 1;
-    }
-    else if (id == CURRENT_ID) {
-      telemetrySensor.onlyPositive = 1;
-    }
-    else if (id == BARO_ALT_AP_ID) {
-      telemetrySensor.autoOffset = 1;
-    }
-    if (unit == UNIT_RPMS) {
-      telemetrySensor.custom.ratio = 1;
-      telemetrySensor.custom.offset = 1;
-    }
-    else if (unit == UNIT_METERS) {
-      if (IS_IMPERIAL_ENABLE()) {
-        telemetrySensor.unit = UNIT_FEET;
+#if defined(MULTIMODULE)
+  if(id == TX_RSSI_ID) {
+    telemetrySensor.init(ZSTR_TX_RSSI, UNIT_DB, 0);
+    telemetrySensor.filter = 1;
+  }
+  else if(id == TX_LQI_ID) {
+    telemetrySensor.init(ZSTR_TX_QUALITY, UNIT_RAW, 0);
+    telemetrySensor.filter = 1;
+  }
+  else if(id == RX_LQI_ID) {
+    telemetrySensor.init(ZSTR_RX_QUALITY, UNIT_RAW, 0);
+    telemetrySensor.filter = 1;
+  }
+  else
+#endif
+  {
+    const FrSkyDSensor * sensor = getFrSkyDSensor(id);
+    if (sensor) {
+      TelemetryUnit unit = sensor->unit;
+      uint8_t prec = min<uint8_t>(2, sensor->prec);
+      telemetrySensor.init(sensor->name, unit, prec);
+      if (id == D_RSSI_ID) {
+        telemetrySensor.filter = 1;
+        telemetrySensor.logs = true;
+      }
+      else if (id >= D_A1_ID && id <= D_A2_ID) {
+        telemetrySensor.custom.ratio = 132;
+        telemetrySensor.filter = 1;
+      }
+      else if (id == CURRENT_ID) {
+        telemetrySensor.onlyPositive = 1;
+      }
+      else if (id == BARO_ALT_AP_ID) {
+        telemetrySensor.autoOffset = 1;
+      }
+      if (unit == UNIT_RPMS) {
+        telemetrySensor.custom.ratio = 1;
+        telemetrySensor.custom.offset = 1;
+      }
+      else if (unit == UNIT_METERS) {
+        if (IS_IMPERIAL_ENABLE()) {
+          telemetrySensor.unit = UNIT_FEET;
+        }
       }
     }
-  }
-  else {
-    telemetrySensor.init(id);
+    else {
+      telemetrySensor.init(id);
+    }
   }
 
   storageDirty(EE_MODEL);
