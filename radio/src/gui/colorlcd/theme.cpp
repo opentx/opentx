@@ -240,7 +240,7 @@ MenuWindowContent * createMenuWindow(Menu * menu)
   return new MenuWindowContent(menu);
 }
 
-ModalWindowContent * createDialogWindow(Dialog * dialog, const rect_t & rect)
+DialogWindowContent * createDialogWindow(Dialog * dialog, const rect_t & rect)
 {
-  return new ModalWindowContent(dialog, rect);
+  return new DialogWindowContent(dialog, rect);
 }

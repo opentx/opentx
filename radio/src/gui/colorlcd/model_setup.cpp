@@ -152,28 +152,29 @@ class RegisterDialog: public Dialog {
       Dialog(STR_REGISTER, {50, 73, LCD_W - 100, 0}),
       moduleIdx(moduleIdx)
     {
-      FormGridLayout grid(form.width());
+      FormGroup * form = &content->form;
+      FormGridLayout grid(content->form.width());
       grid.setLabelWidth(150);
       grid.spacer(PAGE_PADDING);
 
       // Register ID
-      new StaticText(&form, grid.getLabelSlot(), STR_REG_ID);
-      auto edit = new TextEdit(&form, grid.getFieldSlot(), g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID));
+      new StaticText(form, grid.getLabelSlot(), STR_REG_ID);
+      auto edit = new TextEdit(form, grid.getFieldSlot(), g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID));
       grid.nextLine();
 
       // UID
-      new StaticText(&form, grid.getLabelSlot(), "UID");
-      uid = new NumberEdit(&form, grid.getFieldSlot(), 0, 2, GET_SET_DEFAULT(reusableBuffer.moduleSetup.pxx2.registerLoopIndex));
+      new StaticText(form, grid.getLabelSlot(), "UID");
+      uid = new NumberEdit(form, grid.getFieldSlot(), 0, 2, GET_SET_DEFAULT(reusableBuffer.moduleSetup.pxx2.registerLoopIndex));
       grid.nextLine();
 
       // RX name
-      new StaticText(&form, grid.getLabelSlot(), STR_RX_NAME);
-      waiting = new StaticText(&form, grid.getFieldSlot(), STR_WAITING);
+      new StaticText(form, grid.getLabelSlot(), STR_RX_NAME);
+      waiting = new StaticText(form, grid.getFieldSlot(), STR_WAITING);
       grid.nextLine();
       grid.spacer(6);
 
       // Buttons
-      exitButton = new TextButton(&form, grid.getLabelSlot(), "EXIT",
+      exitButton = new TextButton(form, grid.getLabelSlot(), "EXIT",
                                    [=]() -> int8_t {
                                        this->deleteLater();
                                        return 0;
@@ -183,7 +184,7 @@ class RegisterDialog: public Dialog {
       grid.spacer(PAGE_PADDING);
 
       FormField::link(exitButton, edit);
-      form.setHeight(grid.getWindowHeight());
+      form->setHeight(grid.getWindowHeight());
       content->adjustHeight();
 
       start();
@@ -205,9 +206,9 @@ class RegisterDialog: public Dialog {
         rect_t rect = waiting->getRect();
         waiting->deleteLater();
 
-        rxName = new TextEdit(&form, rect, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME);
+        rxName = new TextEdit(&content->form, rect, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME);
         rect = exitButton->getRect();
-        auto okButton = new TextButton(&form, rect, "OK",
+        auto okButton = new TextButton(&content->form, rect, "OK",
                                     [=]() -> int8_t {
                                         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
                                         return 0;
@@ -241,7 +242,7 @@ class BindWaitDialog: public Dialog {
       moduleIdx(moduleIdx),
       receiverIdx(receiverIdx)
     {
-      new StaticText(&form, {0, height() / 2, width(), PAGE_LINE_HEIGHT}, STR_WAITING_FOR_RX, CENTERED);
+      new StaticText(&content->form, {0, height() / 2, width(), PAGE_LINE_HEIGHT}, STR_WAITING_FOR_RX, CENTERED);
     }
 
     void checkEvents() override;
