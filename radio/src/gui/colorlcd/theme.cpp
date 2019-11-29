@@ -19,7 +19,8 @@
  */
 
 #include "opentx.h"
-#include "checkbox.h"
+//#include "checkbox.h"
+//#include "modal_window.h"
 
 extern ThemeBase * defaultTheme;
 const BitmapBuffer * ThemeBase::asterisk = NULL;
@@ -237,4 +238,9 @@ void loadTheme()
 MenuWindowContent * createMenuWindow(Menu * menu)
 {
   return new MenuWindowContent(menu);
+}
+
+ModalWindowContent * createDialogWindow(Dialog * dialog, const rect_t & rect)
+{
+  return new ModalWindowContent(dialog, rect);
 }

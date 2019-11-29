@@ -149,12 +149,12 @@ class FailSafePage : public Page {
 class RegisterDialog: public Dialog {
   public:
     explicit RegisterDialog(uint8_t moduleIdx):
-      Dialog(STR_REGISTER, {50, 73, LCD_W - 100, LCD_H - 146}),
+      Dialog(STR_REGISTER, {50, 73, LCD_W - 100, 0}),
       moduleIdx(moduleIdx)
     {
       FormGridLayout grid(form.width());
       grid.setLabelWidth(150);
-      grid.spacer(PAGE_LINE_HEIGHT + 8);
+      grid.spacer(PAGE_PADDING);
 
       // Register ID
       new StaticText(&form, grid.getLabelSlot(), STR_REG_ID);
@@ -179,7 +179,12 @@ class RegisterDialog: public Dialog {
                                        return 0;
                                    });
       exitButton->setFocus();
+      grid.nextLine();
+      grid.spacer(PAGE_PADDING);
+
       FormField::link(exitButton, edit);
+      form.setHeight(grid.getWindowHeight());
+      content->adjustHeight();
 
       start();
 
