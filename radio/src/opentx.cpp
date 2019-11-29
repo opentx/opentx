@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include <io/frsky_firmware_update.h>
 #include "opentx.h"
+#include <io/frsky_firmware_update.h>
 
 #if defined(LIBOPENUI)
 // #include "shutdown_animation.h"

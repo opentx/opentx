@@ -78,8 +78,6 @@ const char RADIO_SETTINGS_YAML_PATH[] = RADIO_PATH "/radio.yml";
 #define MULTI_FIRMWARE_EXT  ".bin"
 #define YAML_EXT            ".yml"
 
-#define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
-
 #if defined(COLORLCD)
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
 #define LEN_BITMAPS_EXT     4

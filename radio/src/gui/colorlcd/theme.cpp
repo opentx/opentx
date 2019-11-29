@@ -93,7 +93,7 @@ void ThemeBase::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flag
   }
   lcd->drawBitmap(x, y, thumb);
   if (flags == LINE_COLOR) {
-    dc->drawFilledRect(x, y, THUMB_WIDTH, THUMB_HEIGHT, SOLID, OVERLAY_COLOR | OPACITY(10));
+    dc->drawFilledRect(x, y, THUMB_WIDTH, THUMB_HEIGHT, SOLID, OVERLAY_COLOR);
   }
 }
 

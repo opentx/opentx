@@ -296,10 +296,10 @@ bool menuWidgetChoice(event_t event)
   currentScreen->refresh();
 
   Zone zone = currentContainer->getZone(currentZone);
-  lcdDrawFilledRect(0, 0, zone.x-2, LCD_H, SOLID, OVERLAY_COLOR | (8<<24));
-  lcdDrawFilledRect(zone.x+zone.w+2, 0, LCD_W-zone.x-zone.w-2, LCD_H, SOLID, OVERLAY_COLOR | (8<<24));
-  lcdDrawFilledRect(zone.x-2, 0, zone.w+4, zone.y-2, SOLID, OVERLAY_COLOR | (8<<24));
-  lcdDrawFilledRect(zone.x-2, zone.y+zone.h+2, zone.w+4, LCD_H-zone.y-zone.h-2, SOLID, OVERLAY_COLOR | (8<<24));
+  lcdDrawFilledRect(0, 0, zone.x-2, LCD_H, SOLID, OVERLAY_COLOR | OPACITY(8));
+  lcdDrawFilledRect(zone.x+zone.w+2, 0, LCD_W-zone.x-zone.w-2, LCD_H, SOLID, OVERLAY_COLOR | OPACITY(8));
+  lcdDrawFilledRect(zone.x-2, 0, zone.w+4, zone.y-2, SOLID, OVERLAY_COLOR | OPACITY(8));
+  lcdDrawFilledRect(zone.x-2, zone.y+zone.h+2, zone.w+4, LCD_H-zone.y-zone.h-2, SOLID, OVERLAY_COLOR | OPACITY(8));
 
   if (currentWidget)
     currentWidget->refresh();

@@ -354,7 +354,7 @@ void menuRadioSdManager(event_t _event)
         break;
       }
 #endif
-      TCHAR lfn[_MAX_LFN + 1];
+      TCHAR lfn[FF_MAX_LFN + 1];
       getSelectionFullPath(lfn);
 
       if (SD_CARD_PRESENT() && s_editMode <= 0) {

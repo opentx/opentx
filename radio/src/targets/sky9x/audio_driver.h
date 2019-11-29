@@ -21,8 +21,8 @@
 #ifndef _AUDIO_DRIVER_H_
 #define _AUDIO_DRIVER_H_
 
-void audioInit( void ) ;
-void audioEnd( void ) ;
+void audioInit() ;
+void audioEnd() ;
 void audioConsumeCurrentBuffer();
 #define audioDisableIrq()       __disable_irq()
 #define audioEnableIrq()        __enable_irq()
