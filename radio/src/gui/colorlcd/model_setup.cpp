@@ -152,28 +152,28 @@ class RegisterDialog: public Dialog {
       Dialog(STR_REGISTER, {50, 73, LCD_W - 100, LCD_H - 146}),
       moduleIdx(moduleIdx)
     {
-      FormGridLayout grid(width());
+      FormGridLayout grid(form.width());
       grid.setLabelWidth(150);
       grid.spacer(PAGE_LINE_HEIGHT + 8);
 
       // Register ID
-      new StaticText(this, grid.getLabelSlot(), STR_REG_ID);
-      auto edit = new TextEdit(this, grid.getFieldSlot(), g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID));
+      new StaticText(&form, grid.getLabelSlot(), STR_REG_ID);
+      auto edit = new TextEdit(&form, grid.getFieldSlot(), g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID));
       grid.nextLine();
 
       // UID
-      new StaticText(this, grid.getLabelSlot(), "UID");
-      uid = new NumberEdit(this, grid.getFieldSlot(), 0, 2, GET_SET_DEFAULT(reusableBuffer.moduleSetup.pxx2.registerLoopIndex));
+      new StaticText(&form, grid.getLabelSlot(), "UID");
+      uid = new NumberEdit(&form, grid.getFieldSlot(), 0, 2, GET_SET_DEFAULT(reusableBuffer.moduleSetup.pxx2.registerLoopIndex));
       grid.nextLine();
 
       // RX name
-      new StaticText(this, grid.getLabelSlot(), STR_RX_NAME);
-      waiting = new StaticText(this, grid.getFieldSlot(), STR_WAITING);
+      new StaticText(&form, grid.getLabelSlot(), STR_RX_NAME);
+      waiting = new StaticText(&form, grid.getFieldSlot(), STR_WAITING);
       grid.nextLine();
       grid.spacer(6);
 
       // Buttons
-      exitButton = new TextButton(this, grid.getLabelSlot(), "EXIT",
+      exitButton = new TextButton(&form, grid.getLabelSlot(), "EXIT",
                                    [=]() -> int8_t {
                                        this->deleteLater();
                                        return 0;
@@ -200,9 +200,9 @@ class RegisterDialog: public Dialog {
         rect_t rect = waiting->getRect();
         waiting->deleteLater();
 
-        rxName = new TextEdit(this, rect, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME);
+        rxName = new TextEdit(&form, rect, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME);
         rect = exitButton->getRect();
-        auto okButton = new TextButton(this, rect, "OK",
+        auto okButton = new TextButton(&form, rect, "OK",
                                     [=]() -> int8_t {
                                         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
                                         return 0;
@@ -232,11 +232,11 @@ class RegisterDialog: public Dialog {
 class BindWaitDialog: public Dialog {
   public:
     BindWaitDialog(uint8_t moduleIdx, uint8_t receiverIdx):
-            Dialog(STR_BIND, {50, 73, LCD_W - 100, LCD_H - 146}),
-            moduleIdx(moduleIdx),
-            receiverIdx(receiverIdx)
+      Dialog(STR_BIND, {50, 73, LCD_W - 100, LCD_H - 146}),
+      moduleIdx(moduleIdx),
+      receiverIdx(receiverIdx)
     {
-      new StaticText(this, {0, height() / 2, width(), PAGE_LINE_HEIGHT}, STR_WAITING_FOR_RX, CENTERED);
+      new StaticText(&form, {0, height() / 2, width(), PAGE_LINE_HEIGHT}, STR_WAITING_FOR_RX, CENTERED);
     }
 
     void checkEvents() override;
@@ -869,7 +869,7 @@ void ModelSetupPage::build(FormWindow * window)
     new Subtitle(window, grid.getLineSlot(), timerLabel);
     grid.nextLine();
 
-    auto group = new FormGroup(window, grid.getFieldSlot(), BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
+    auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout timerGrid(group);
 
     // Timer name
@@ -982,7 +982,7 @@ void ModelSetupPage::build(FormWindow * window)
 
     // Switches warning
     new StaticText(window, grid.getLabelSlot(true), STR_SWITCHWARNING);
-    auto group = new FormGroup(window, grid.getFieldSlot(), BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
+    auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout switchesGrid(group);
     for (int i = 0; i < NUM_SWITCHES; i++) {
       char s[SWITCH_WARNING_STR_SIZE];
@@ -1008,7 +1008,7 @@ void ModelSetupPage::build(FormWindow * window)
   // Center beeps
   {
     new StaticText(window, grid.getLabelSlot(false), STR_BEEPCTR);
-    auto group = new FormGroup(window, grid.getFieldSlot(), BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
+    auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout centerGrid(group);
     for (int i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
       char s[2];

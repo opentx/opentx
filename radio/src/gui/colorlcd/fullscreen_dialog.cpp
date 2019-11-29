@@ -23,11 +23,15 @@
 #include "opentx.h"
 
 FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string message, std::string action, std::function<void(void)> confirmHandler):
-  Dialog(title, {0, 0, LCD_W, LCD_H}),
+  FormGroup(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   type(type),
+  title(std::move(title)),
   message(std::move(message)),
   action(std::move(action)),
   confirmHandler(confirmHandler)
+#if !defined(HARDWARE_TOUCH)
+  , previousFocus(focusWindow)
+#endif
 {
 #if defined(HARDWARE_TOUCH)
   new FabButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
@@ -37,6 +41,8 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
                       return 0;
                     });
 #endif
+  bringToTop();
+  setFocus();
 }
 
 void FullScreenDialog::paint(BitmapBuffer * dc)

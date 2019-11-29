@@ -234,7 +234,7 @@ void loadTheme()
 //  }
 }
 
-MenuWindow * createMenuWindow(Menu * menu)
+MenuWindowContent * createMenuWindow(Menu * menu)
 {
-  return new MenuWindow(menu);
+  return new MenuWindowContent(menu);
 }

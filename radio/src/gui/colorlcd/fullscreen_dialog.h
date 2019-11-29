@@ -31,7 +31,7 @@ enum DialogType {
   WARNING_TYPE_INFO
 };
 
-class FullScreenDialog : public Dialog {
+class FullScreenDialog : public FormGroup {
   public:
     FullScreenDialog(uint8_t type, std::string title, std::string message = "", std::string action = "", std::function<void(void)> confirmHandler = nullptr);
 
@@ -71,11 +71,15 @@ class FullScreenDialog : public Dialog {
 
   protected:
     uint8_t type;
+    std::string title;
     std::string message;
     std::string action;
     bool running = false;
     std::function<bool(void)> closeCondition;
     std::function<void(void)> confirmHandler;
+#if !defined(HARDWARE_TOUCH)
+    Window * previousFocus = nullptr;
+#endif
 };
 
 #endif // _FULLSCREEN_DIALOG_H_
