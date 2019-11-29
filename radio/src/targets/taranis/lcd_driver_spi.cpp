@@ -26,7 +26,7 @@
   #define LCD_CONTRAST_OFFSET            160
 #endif
 #define RESET_WAIT_DELAY_MS            300 // Wait time after LCD reset before first command
-#define WAIT_FOR_DMA_END()             do { } while (lcd_busy)//delay_ms(10)//;do { } while (lcd_busy)
+#define WAIT_FOR_DMA_END()             do { } while (lcd_busy)
 
 #define LCD_NCS_HIGH()                 LCD_NCS_GPIO->BSRRL = LCD_NCS_GPIO_PIN
 #define LCD_NCS_LOW()                  LCD_NCS_GPIO->BSRRH = LCD_NCS_GPIO_PIN
@@ -58,22 +58,20 @@ void lcdWriteCommand(uint8_t byte)
 
 void lcdWriteData(uint8_t* byte)
 {
-
   LCD_A0_HIGH();
   LCD_NCS_LOW();
-  for(int i=0;i<128;i++)
+  for(uint8_t i=0;i<LCD_W;i++)
   {
-     while ((SPI3->SR & SPI_SR_TXE) == 0) {
-    // Wait
-    	 }
-     (void)SPI3->DR; // Clear receive
-      LCD_SPI->DR = byte[i];
-  while ((SPI3->SR & SPI_SR_RXNE) == 0) {
-    // Wait
-  }
+    while ((SPI3->SR & SPI_SR_TXE) == 0) {
+      // Wait
+    }
+    (void)SPI3->DR; // Clear receive
+    LCD_SPI->DR = byte[i];
+    while ((SPI3->SR & SPI_SR_RXNE) == 0) {
+      // Wait
+    }
   }
   LCD_NCS_HIGH();
-
 }
 
 
@@ -227,7 +225,9 @@ void lcdRefresh(bool wait)
     lcdWriteCommand(0x04);
 #endif
 
-    /*
+#if defined(PCBX7ACCESS)
+    lcdWriteData(p);
+#else
     LCD_NCS_LOW();
     LCD_A0_HIGH();
 
@@ -242,8 +242,7 @@ void lcdRefresh(bool wait)
 
     LCD_NCS_HIGH();
     LCD_A0_HIGH();
-    */
-    lcdWriteData(p);
+#endif
   }
 #else
   // Wait if previous DMA transfer still active
@@ -336,7 +335,7 @@ void lcdInit()
   issued by the other parts of the code.
 */
 
-#if (defined(PCBX9DP) && PCBREV >= 2019) || defined(X7ACCESS)
+#if (defined(PCBX9DP) && PCBREV >= 2019) || defined(PCBX7ACCESS)
   #define LCD_DELAY_NEEDED() true
 #else
   #define LCD_DELAY_NEEDED() (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
