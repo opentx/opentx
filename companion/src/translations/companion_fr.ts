@@ -890,47 +890,47 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../modeledit/channels.cpp" line="374"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="375"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="376"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="377"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="379"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="380"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="381"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="382"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="384"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
 </context>
 <context>
@@ -1853,47 +1853,47 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="670"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="671"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="672"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="673"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="675"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="676"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="677"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="678"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="680"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="716"/>
@@ -2993,7 +2993,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1275"/>
         <source>FrSky Horus X10 Express / X10S Express</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
@@ -3099,12 +3099,12 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
         <source>Jumper T12 / T12 Pro</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1298"/>
         <source>Jumper T16 / T16+ / T16 Pro</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1317"/>
@@ -7243,7 +7243,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="706"/>
         <source>read only</source>
-        <translation type="unfinished"></translation>
+        <translation>lecture seule</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="757"/>
@@ -8806,17 +8806,17 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="939"/>
         <source>Master/Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Maître/Bluetooth</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="944"/>
         <source>Slave/Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Elève/Bluetooth</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="949"/>
         <source>Master/Multi</source>
-        <translation type="unfinished"></translation>
+        <translation>Maître/Multi</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="970"/>
@@ -9084,12 +9084,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup.cpp" line="609"/>
         <source>Autodetect Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format Détection auto</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="611"/>
         <source>Bind on channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Bind avec VOIE</translation>
     </message>
 </context>
 <context>
