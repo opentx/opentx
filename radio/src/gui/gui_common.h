@@ -194,7 +194,7 @@ inline uint8_t MULTIMODULE_IS_PROTOCOL_KNOWN(uint8_t moduleIdx)
 
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
   if (status.isValid()) {
-    return status.protocolName == nullptr;
+    return status.protocolValid();
   }
 
   return false;
