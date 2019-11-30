@@ -1224,7 +1224,7 @@ void menuModelSetup(event_t event)
        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 #if defined(MULTIMODULE)
 
-       if (isModuleMultimodule(moduleIdx)) {
+       if (MULTIMODULE_IS_PROTOCOL_KNOWN(moduleIdx)) {
          int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
