@@ -962,14 +962,7 @@ void menuModelSetup(event_t event)
                   if (checkIncDec_Ret) {
                     g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
                     g_model.moduleData[moduleIdx].subType = 0;
-                    // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                    if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-                      g_model.moduleData[moduleIdx].multi.autoBindMode = 1;
-                    }
-                    else {
-                      g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
-                    }
-                    g_model.moduleData[moduleIdx].multi.optionValue = 0;
+                    resetMultiProtocolsOptions(moduleIdx);
                   }
                 }
 #endif
@@ -1018,6 +1011,9 @@ void menuModelSetup(event_t event)
           switch (menuHorizontalPosition) {
             case 0:{
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, getMaxMultiSubtype(moduleIdx));
+              if (checkIncDec_Ret) {
+                resetMultiProtocolsOptions(moduleIdx);
+              }
               break;
             }
           }
@@ -1458,7 +1454,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS:
       {
 #if defined(MULTIMODULE)
-        if (isModuleMultimodule(moduleIdx)) {
+        if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
           const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();

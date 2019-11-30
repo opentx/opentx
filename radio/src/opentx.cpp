@@ -890,7 +890,12 @@ void checkFailsafe()
 void checkRSSIAlarmsDisabled()
 {
   if (g_model.rssiAlarms.disabled) {
-    ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
+#if defined(INTERNAL_MODULE)
+    if (!isModuleMultimoduleDSM2(EXTERNAL_MODULE))
+#else
+    if (!isModuleMultimoduleDSM2(INTERNAL_MODULE) && !isModuleMultimoduleDSM2(EXTERNAL_MODULE))
+#endif
+      ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
   }
 }
 
