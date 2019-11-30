@@ -855,14 +855,7 @@ void menuModelSetup(event_t event)
                   if (checkIncDec_Ret) {
                     g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
                     g_model.moduleData[EXTERNAL_MODULE].subType = 0;
-                    // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 1;
-                    }
-                    else {
-                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 0;
-                    }
-                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
+                    resetMultiProtocolsOptions(EXTERNAL_MODULE);
                   }
                 }
 #endif
@@ -890,6 +883,9 @@ void menuModelSetup(event_t event)
                 }
                 else {
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
+                  if (checkIncDec_Ret) {
+                    resetMultiProtocolsOptions(EXTERNAL_MODULE);
+                  }
                 }
                 break;
 

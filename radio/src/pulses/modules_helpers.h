@@ -503,4 +503,24 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
 
 extern bool isExternalAntennaEnabled();
 
+#if defined(MULTIMODULE)
+inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
+{
+  if (!isModuleMultimodule(moduleIdx))
+    return;
+
+  // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
+    g_model.moduleData[moduleIdx].multi.autoBindMode = 1;
+  }
+  else {
+    g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
+  }
+  g_model.moduleData[moduleIdx].multi.optionValue = 0;
+  g_model.moduleData[moduleIdx].multi.disableTelemetry = 0;
+  g_model.moduleData[moduleIdx].multi.disableMapping = 0;
+  g_model.moduleData[moduleIdx].multi.lowPowerMode = 0;
+}
+#endif
+
 #endif // _MODULES_HELPERS_H_
