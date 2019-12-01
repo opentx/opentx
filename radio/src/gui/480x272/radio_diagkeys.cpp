@@ -20,10 +20,10 @@
 
 #include "opentx.h"
 
-constexpr coord_t TRIM = LCD_W - 120;
-constexpr coord_t TRIM_MINUS = TRIM + 60;
-constexpr coord_t TRIM_PLUS = TRIM_MINUS + 20;
-constexpr coord_t SWITCHES = LCD_W / 2 - 20;
+constexpr coord_t TRIM_COLUMN = LCD_W - 120;
+constexpr coord_t TRIM_MINUS_COLUMN = TRIM_COLUMN + 60;
+constexpr coord_t TRIM_PLUS_COLUMN = TRIM_MINUS_COLUMN + 20;
+constexpr coord_t SWITCHES_COLUMN = LCD_W / 2 - 20;
 
 #if defined(KEYS_GPIO_PIN_PGUP)
   constexpr uint8_t KEY_START = 0;
@@ -41,17 +41,17 @@ bool menuRadioDiagKeys(event_t event)
 {
   SIMPLE_SUBMENU(STR_MENU_RADIO_SWITCHES, ICON_MODEL_SETUP, 1);
 
-  lcdDrawText(TRIM, MENU_HEADER_HEIGHT + 1, "Trims");
-  lcdDrawText(TRIM_MINUS, MENU_HEADER_HEIGHT + 1, "-");
-  lcdDrawText(TRIM_PLUS, MENU_HEADER_HEIGHT + 1, "+");
+  lcdDrawText(TRIM_COLUMN, MENU_HEADER_HEIGHT + 1, "Trims");
+  lcdDrawText(TRIM_MINUS_COLUMN, MENU_HEADER_HEIGHT + 1, "-");
+  lcdDrawText(TRIM_PLUS_COLUMN, MENU_HEADER_HEIGHT + 1, "+");
 
   for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + FH + FH * (i / 2);
     if (i & 1) {
-      lcdDrawText(TRIM, y, "T", 0);
-      lcdDrawNumber(lcdNextPos, y, i / 2 + 1, 0);
+      lcdDrawText(TRIM_COLUMN, y, "T", 0);
+      lcdDrawNumber(lcdNextPos, y, i > 7 ? i / 2 + 1 : 4 - i / 2, 0);
     }
-    displayKeyState(i & 1 ? TRIM_PLUS : TRIM_MINUS, y, TRM_BASE + i);
+    displayKeyState(i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + i);
   }
 
   for (uint8_t i = KEY_START; i <= 6; i++) {
@@ -65,7 +65,7 @@ bool menuRadioDiagKeys(event_t event)
       coord_t y = MENU_HEADER_HEIGHT + 1 + FH * i;
       getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
       getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-      drawSwitch(SWITCHES, y, sw, 0, false);
+      drawSwitch(SWITCHES_COLUMN, y, sw, 0, false);
     }
   }
 
