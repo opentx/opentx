@@ -72,6 +72,7 @@ enum MenuRadioHardwareItems {
 #endif
 
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
+  ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -136,6 +137,7 @@ bool menuRadioHardware(event_t event)
 
     0, /* aux serial mode */
     0, /* ADC filter */
+    0, /* Debug */
   });
 
   if (menuEvent) {
@@ -348,6 +350,14 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_DEBUG:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DEBUG);
+        lcdDrawText(HW_SETTINGS_COLUMN + 50, y, STR_KEYS_BTN, attr);
+        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+            pushMenu(menuRadioDiagKeys);
+        }
+        break;
     }
   }
 
