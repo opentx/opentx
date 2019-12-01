@@ -137,7 +137,7 @@ bool menuRadioHardware(event_t event)
 
     0, /* aux serial mode */
     0, /* ADC filter */
-    0, /* Debug */
+    1, /* Debug */
   });
 
   if (menuEvent) {
@@ -353,8 +353,12 @@ bool menuRadioHardware(event_t event)
 
       case ITEM_RADIO_HARDWARE_DEBUG:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DEBUG);
-        lcdDrawText(HW_SETTINGS_COLUMN + 50, y, STR_KEYS_BTN, attr);
+        lcdDrawText(HW_SETTINGS_COLUMN + 50, y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
+        lcdDrawText(lcdNextPos + 10, y, STR_KEYS_BTN, menuHorizontalPosition == 1 ? attr : 0);
         if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+          if (menuHorizontalPosition == 0)
+            pushMenu(menuRadioDiagAnalogs);
+          else
             pushMenu(menuRadioDiagKeys);
         }
         break;

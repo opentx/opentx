@@ -140,6 +140,7 @@ set(GUI_SRC
   radio_sdmanager.cpp
   radio_hardware.cpp
   radio_diagkeys.cpp
+  radio_diaganas.cpp
   model_inputs.cpp
   model_mixes.cpp
   model_curves.cpp
