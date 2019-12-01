@@ -46,12 +46,13 @@ bool menuRadioDiagKeys(event_t event)
   lcdDrawText(TRIM_PLUS_COLUMN, MENU_HEADER_HEIGHT + 1, "+");
 
   for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
+    const uint8_t trimMap[NUM_TRIMS_KEYS] = {6, 7, 4 , 5, 2, 3, 0, 1, 8, 9, 10, 11};
     coord_t y = MENU_HEADER_HEIGHT + 1 + FH + FH * (i / 2);
     if (i & 1) {
       lcdDrawText(TRIM_COLUMN, y, "T", 0);
-      lcdDrawNumber(lcdNextPos, y, i > 7 ? i / 2 + 1 : 4 - i / 2, 0);
+      lcdDrawNumber(lcdNextPos, y, i / 2 + 1, 0);
     }
-    displayKeyState(i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + i);
+    displayKeyState(i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + trimMap[i]);
   }
 
   for (uint8_t i = KEY_START; i <= 6; i++) {
