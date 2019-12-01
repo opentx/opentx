@@ -283,7 +283,9 @@ bool ModulePanel::moduleHasFailsafes()
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M ||
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE ||
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE_PRO ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_XJT_LITE_X16);
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_XJT_LITE_X16 ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_MULTIMODULE
+    );
 }
 
 void ModulePanel::setupFailsafes()

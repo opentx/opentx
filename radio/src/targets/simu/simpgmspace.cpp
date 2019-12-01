@@ -697,7 +697,7 @@ void serialPutc(char c) { }
 
 uint16_t getBatteryVoltage()
 {
-  return (BATTERY_MAX + BATTERY_WARN) * 5;
+  return (g_eeGeneral.vBatWarn * 10) + 50; // 0.5 volt above alerm (value is PREC1)
 }
 
 void boardOff()

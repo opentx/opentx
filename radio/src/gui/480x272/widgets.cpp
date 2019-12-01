@@ -110,16 +110,18 @@ void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, u
 
 void drawProgressScreen(const char * title, const char * message, int num, int den)
 {
-  lcdClear();
-  lcdSetColor(WHITE);
-  if (message) {
-    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, message, CUSTOM_COLOR);
+  lcd->clear(TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  if (title) {
+    lcdDrawText(LCD_W / 2, (MENU_HEADER_HEIGHT - FH) / 2, title, MENU_TITLE_COLOR | CENTERED);
   }
-  lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H-22, LCD_W-2*MENUS_MARGIN_LEFT, 15, 1, SOLID, CUSTOM_COLOR);
-  lcdSetColor(RED);
+  if (message) {
+    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H - 42, message, TEXT_COLOR);
+  }
+  lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H - 22, LCD_W - 2 * MENUS_MARGIN_LEFT, 15, 1, SOLID, BARGRAPH_BGCOLOR);
   if (num > 0 && den > 0) {
-    int width = ((LCD_W-2*MENUS_MARGIN_LEFT-4) * num) / den;
-    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT+2, LCD_H-20, width, 11, CUSTOM_COLOR);
+    int width = ((LCD_W - 2 * MENUS_MARGIN_LEFT - 4) * num) / den;
+    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 2, LCD_H - 20, width, 11, BARGRAPH1_COLOR);
   }
   lcdRefresh();
 }
