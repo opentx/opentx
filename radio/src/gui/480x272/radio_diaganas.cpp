@@ -23,6 +23,7 @@
 constexpr coord_t LEFT_NAME_COLUMN = MENUS_MARGIN_LEFT;
 constexpr coord_t RIGHT_NAME_COLUMN = LCD_W / 2;
 constexpr coord_t ANA_OFFSET = 150;
+constexpr coord_t RAS_TOP_POSITION = LCD_H - 45;
 
 bool menuRadioDiagAnalogs(event_t event)
 {
@@ -45,10 +46,10 @@ bool menuRadioDiagAnalogs(event_t event)
 
   // RAS
   if ((isModuleXJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (isModulePXX1(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
-    lcdDrawText(0, MENU_HEADER_HEIGHT + 6 * FH, "RAS");
-    lcdDrawNumber(10 * 10 - 1, MENU_HEADER_HEIGHT + 6 * FH, telemetryData.swrInternal.value(), RIGHT);
-    lcdDrawText(LCD_W / 2, MENU_HEADER_HEIGHT + 6 * FH, "XJTVER");
-    lcdDrawNumber(LCD_W / 2 + 10 * 10 - 1, MENU_HEADER_HEIGHT + 6 * FH, telemetryData.xjtVersion, RIGHT);
+    lcdDrawText(MENUS_MARGIN_LEFT, RAS_TOP_POSITION, "RAS : ");
+    lcdDrawNumber(lcdNextPos, RAS_TOP_POSITION, telemetryData.swrInternal.value(), 0);
+    lcdDrawText(LCD_W / 2, RAS_TOP_POSITION, "XJTVER : ");
+    lcdDrawNumber(lcdNextPos, RAS_TOP_POSITION, telemetryData.xjtVersion, 0);
   }
-  return 1;
+  return true;
 }
