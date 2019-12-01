@@ -107,9 +107,10 @@ boards = {
     "X7ACCESS": {
         "PCB": "X7",
         "PCBREV": "ACCESS",
-        "MODULE_PROTOCOL_D8": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
+        "AUTOUPDATE": "YES",
+        "PXX1": "YES",
         "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
