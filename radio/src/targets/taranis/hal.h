@@ -228,6 +228,7 @@
   #define TRIMS_GPIO_REG_RHL            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_9  // PD.09
 #elif defined(PCBX9DP) && PCBREV >= 2019
+  #define BOOTLOADER_WAIT_BEFORE_READ_TRIMS
   #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_3  // PE.03
   #define TRIMS_GPIO_REG_LHR            GPIOE->IDR

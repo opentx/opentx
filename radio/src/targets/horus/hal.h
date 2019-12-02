@@ -140,6 +140,8 @@
   #define SWITCHES_GPIO_PIN_J        GPIO_Pin_0 // PB.00
 #endif
 
+#define BOOTLOADER_WAIT_BEFORE_READ_TRIMS
+
 // Trims
 #if defined(PCBX12S)
   #define TRIMS_GPIO_REG_RHL            GPIOC->IDR
