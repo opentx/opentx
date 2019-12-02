@@ -145,7 +145,7 @@ local function calculateBatteryData(wgt)
 
   wgt.cellCount = #newCellData
 
-  --- sum of all cels
+  --- sum of all cells
   local cellSum = 0
   for k, v in pairs(newCellData) do
     cellSum = cellSum + v
@@ -281,8 +281,11 @@ local function refreshZoneMedium(wgt)
   local cellH = wgt.zone.h / wgt.cellCount
   if cellH > 20 then cellH =20 end
   local cellX = 118
+  local cellW = 58
   for i = 1, wgt.cellCount, 1 do
     local cellY = wgt.zone.y + (i-1)* (cellH -1)
+
+    -- fill current value
     lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataLive[i], wgt.cellMax, wgt.cellMax - 0.2))
     lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, 58, cellH, CUSTOM_COLOR)
     lcd.setColor(CUSTOM_COLOR, WHITE)
@@ -390,7 +393,7 @@ local function refreshZoneXLarge(wgt)
   return
 end
 
--- This function allow recording of lowest cells when widget is not active
+-- This function allow recording of lowest cells when widget is in background
 local function background(wgt)
   if (wgt == nil) then return end
 
@@ -400,22 +403,10 @@ end
 
 local function refresh(wgt)
 
-  if (wgt == nil) then return end
-
-  if (wgt.options == nil) then
-    print("refresh(wgt.options=nil)")
-    return
-  end
-
-  if (wgt.zone == nil) then
-    print("refresh(wgt.zone=nil)")
-    return
-  end
-
-  if (wgt.options.LowestCell == nil) then
-    print("refresh(wgt.options.LowestCell=nil)")
-    return
-  end
+  if (wgt         == nil) then return end
+  if (wgt.options == nil) then return end
+  if (wgt.zone    == nil) then return end
+  if (wgt.options.LowestCell == nil) then return end
 
   if wgt.options.Shadow == 1 then
     wgt.shadowed = SHADOWED
