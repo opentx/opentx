@@ -34,7 +34,8 @@ local function create(zone, options)
     no_telem_blink = 0,
     isDataAvailable = 0,
     cellDataLive = {0,0,0,0,0,0},
-    cellDataLowest = {0,0,0,0,0,0},
+    cellDataHistoryLowest = {0,0,0,0,0,0},
+    cellDataHistoryCellLowest = 5,
     cellMax = 0,
     cellMin = 0,
     cellAvg = 0,
@@ -111,17 +112,18 @@ local function calculateBatteryData(wgt)
     return
   end
 
+
   -- this is necessary for simu where cell-count can change
-  if #wgt.cellDataLowest ~= #newCellData then
-    wgt.cellDataLowest = {}
+  if #wgt.cellDataHistoryLowest ~= #newCellData then
+    wgt.cellDataHistoryLowest = {}
     for k, v in pairs(newCellData) do
-      wgt.cellDataLowest[k] = v
+      wgt.cellDataHistoryLowest[k] = v
     end
   end
   -- stores the lowest cell values in historical table
   for k, v in pairs(newCellData) do
-    if v < wgt.cellDataLowest[k] then
-      wgt.cellDataLowest[k] = v
+    if v < wgt.cellDataHistoryLowest[k] then
+      wgt.cellDataHistoryLowest[k] = v
     end
   end
 
@@ -142,6 +144,11 @@ local function calculateBatteryData(wgt)
     end
   end
   wgt.cellMin = cellMin
+
+  --- calc history lowest of all cells
+  if cellMin < wgt.cellDataHistoryCellLowest and cellMin > 1 then -- >1 to ignore invalid values
+    wgt.cellDataHistoryCellLowest = cellMin
+  end
 
   wgt.cellCount = #newCellData
 
@@ -203,13 +210,13 @@ local function getRangeColor(value, green_value, red_value)
 
   if green_value > red_value then
     if value > green_value then return lcd.RGB(0, 0xdf, 0) end
-    if value < red_value then return lcd.RGB(0xdf, 0, 0) end
+    if value < red_value   then return lcd.RGB(0xdf, 0, 0) end
     g = math.floor(0xdf * (value - red_value) / range)
     r = 0xdf - g
     return lcd.RGB(r, g, 0)
   else
     if value > green_value then return lcd.RGB(0, 0xdf, 0) end
-    if value < red_value then return lcd.RGB(0xdf, 0, 0) end
+    if value < red_value   then return lcd.RGB(0xdf, 0, 0) end
     r = math.floor(0xdf * (value - green_value) / range)
     g = 0xdf - r
     return lcd.RGB(r, g, 0)
@@ -268,9 +275,9 @@ local function refreshZoneMedium(wgt)
 
   -- more info if 1/4 is high enough (without trim & slider)
   if wgt.zone.h > 80 then
-    lcd.drawText(wgt.zone.x     , wgt.zone.y + 70, string.format("%2.1fV"   , wgt.secondaryValue), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
-    lcd.drawText(wgt.zone.x + 50, wgt.zone.y + 70, string.format("dV %2.1fV", wgt.cellMax - wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
-    lcd.drawText(wgt.zone.x     , wgt.zone.y + 84, string.format("Min %2.1fV", wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x     , wgt.zone.y + 70, string.format("%2.2fV"   , wgt.secondaryValue), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x + 50, wgt.zone.y + 70, string.format("dV %2.2fV", wgt.cellMax - wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x     , wgt.zone.y + 84, string.format("Min %2.2fV", wgt.cellDataHistoryCellLowest), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
   end
 
   -- fill batt
@@ -287,7 +294,15 @@ local function refreshZoneMedium(wgt)
 
     -- fill current value
     lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataLive[i], wgt.cellMax, wgt.cellMax - 0.2))
-    lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, 58, cellH, CUSTOM_COLOR)
+    --lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, 58, cellH, CUSTOM_COLOR)
+    local percentCurrent = getCellPercent(wgt.cellDataLive[i])
+    local percentMin = getCellPercent(wgt.cellDataHistoryLowest[i])
+
+    lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, cellW * percentCurrent / 100, cellH, CUSTOM_COLOR)
+    -- fill min
+    lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataHistoryLowest[i], wgt.cellMax, wgt.cellMax - 0.2))
+    lcd.drawFilledRectangle(wgt.zone.x + cellX + ((percentCurrent - percentMin) / 100)    , cellY, cellW - (cellW * (percentCurrent - percentMin) / 100), cellH, CUSTOM_COLOR)
+
     lcd.setColor(CUSTOM_COLOR, WHITE)
     lcd.drawText           (wgt.zone.x + cellX + 10, cellY, string.format("%.2f", wgt.cellDataLive[i]), SMLSIZE + CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
     lcd.drawRectangle      (wgt.zone.x + cellX     , cellY, 59, cellH, CUSTOM_COLOR , 1)
@@ -371,11 +386,11 @@ local function refreshZoneXLarge(wgt)
   -- draw cells for lowest cells
   local pos = { { x = 111, y = 110 }, { x = 164, y = 110 }, { x = 217, y = 110 }, { x = 111, y = 129 }, { x = 164, y = 129 }, { x = 217, y = 129 } }
   for i = 1, wgt.cellCount, 1 do
-    lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataLowest[i], wgt.cellDataLive[i], wgt.cellDataLive[i] - 0.3))
+    lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataHistoryLowest[i], wgt.cellDataLive[i], wgt.cellDataLive[i] - 0.3))
     lcd.drawFilledRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y, 53, 20, CUSTOM_COLOR)
     lcd.setColor(CUSTOM_COLOR, WHITE)
     lcd.drawRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y, 54, 20, CUSTOM_COLOR, 1)
-    lcd.drawText(wgt.zone.x + pos[i].x + 10, wgt.zone.y + pos[i].y, string.format("%.2f", wgt.cellDataLowest[i]), CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x + pos[i].x + 10, wgt.zone.y + pos[i].y, string.format("%.2f", wgt.cellDataHistoryLowest[i]), CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
   end
 
   -- draws bat
@@ -422,6 +437,7 @@ local function refresh(wgt)
   else
     wgt.no_telem_blink = INVERS + BLINK
   end
+
 
   if     wgt.zone.w  > 380 and wgt.zone.h > 165 then refreshZoneXLarge(wgt)
   elseif wgt.zone.w  > 180 and wgt.zone.h > 145 then refreshZoneLarge(wgt)
