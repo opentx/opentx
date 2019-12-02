@@ -341,7 +341,9 @@ endif()
 
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
-if(PCB STREQUAL X7 AND PCBREV STREQUAL T12)
+if(PCB STREQUAL X7 AND PCBREV STREQUAL ACCESS)
+  set(FLAVOUR x7access)
+elseif(PCB STREQUAL X7 AND PCBREV STREQUAL T12)
   set(FLAVOUR t12)
 elseif(PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019)
   set(FLAVOUR x9d+2019)

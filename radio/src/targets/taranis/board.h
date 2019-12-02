@@ -698,7 +698,9 @@ extern uint32_t telemetryErrors;
 void telemetryPortInvertedInit(uint32_t baudrate);
 
 // PCBREV driver
-#if defined(PCBX7)
+#if defined(PCBX7ACCESS)
+  #define HAS_SPORT_UPDATE_CONNECTOR()  true
+#elif defined(PCBX7)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
 #elif defined(SPORT_UPDATE_PWR_GPIO)

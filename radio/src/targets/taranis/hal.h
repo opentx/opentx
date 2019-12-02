@@ -1371,7 +1371,7 @@
 #define TELEMETRY_EXTI_IRQn             EXTI9_5_IRQn
 #define TELEMETRY_EXTI_TRIGGER          EXTI_Trigger_Rising
 
-#if defined(PCBX7)
+#if defined(RADIO_X7)
   #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
 #elif defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define TELEMETRY_EXTI_IRQHandler       EXTI9_5_IRQHandler
