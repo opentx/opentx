@@ -210,14 +210,12 @@ int main()
   pwrInit();
   keysInit();
 
-#if defined(BOOTLOADER_WAIT_BEFORE_READ_TRIMS)
   // wait a bit for the inputs to stabilize...
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     for (uint32_t i = 0; i < 150000; i++) {
       __ASM volatile ("nop");
     }
   }
-#endif
 
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
