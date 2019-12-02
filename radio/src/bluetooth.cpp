@@ -411,7 +411,7 @@ void Bluetooth::wakeup()
   if (now < wakeupTime)
     return;
 
-  wakeupTime = now + 1; /* 10ms default */
+  wakeupTime = now + 2; /* 20ms default as it seems the maximum allowed */
 
   if (state == BLUETOOTH_STATE_FLASH_FIRMWARE) {
     return;
