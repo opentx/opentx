@@ -142,6 +142,7 @@ extern "C" void BT_USART_IRQHandler(void)
 void bluetoothWriteWakeup()
 {
   if (bluetoothWriteState == BLUETOOTH_WRITE_IDLE) {
+    // TODO perhaps this test can be removed later if we change the order
     if (!btTxFifo.isEmpty()) {
 #if defined(BT_BRTS_GPIO_PIN)
       bluetoothWriteState = BLUETOOTH_WRITE_INIT;

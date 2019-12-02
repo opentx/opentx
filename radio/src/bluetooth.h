@@ -47,46 +47,14 @@ enum BluetoothStates {
 
 constexpr uint8_t LEN_BLUETOOTH_ADDR =         16;
 constexpr uint8_t MAX_BLUETOOTH_DISTANT_ADDR = 6;
-constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      128;
+constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      32;
 
-template <int N>
-class BluetoothOutputFrame {
-  public:
-    uint8_t data[N];
-    uint8_t crc = 0;
-    uint8_t size = 0;
-
-    BluetoothOutputFrame(uint8_t frameType)
-    {
-      data[size++] = START_STOP;
-      pushByte(frameType);
-    }
-
-    void initFrame(uint8_t frameType)
-    {
-      crc = 0;
-      size = 0;
-      data[size++] = START_STOP;
-      pushByte(frameType);
-    }
-
-    void pushByte(uint8_t byte)
-    {
-      uint16_t newCrc = crc + byte;
-      crc = newCrc + (newCrc >> 8);
-      if (byte == START_STOP || byte == BYTE_STUFF) {
-        data[size++] = BYTE_STUFF;
-        byte ^= STUFF_MASK;
-      }
-      data[size++] = byte;
-    }
-
-    void endFrame()
-    {
-      data[size++] = crc;
-      data[size++] = START_STOP;
-    }
-};
+//template <int N>
+//class BluetoothInputBuffer {
+//    uint8_t data[N];
+//    uint8_t size = 0;
+//    uint8_t crc = 0;
+//};
 
 class Bluetooth
 {
@@ -113,8 +81,10 @@ class Bluetooth
     char distantAddr[LEN_BLUETOOTH_ADDR+1];
 
   protected:
-    void initFrame(uint8_t frameType);
     void pushByte(uint8_t byte);
+    void startOutputFrame(uint8_t frameType);
+    void endOutputFrame();
+
     uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
     // void appendTrainerByte(uint8_t data);
     // void processTrainerFrame(const uint8_t * buffer);
@@ -146,10 +116,11 @@ class Bluetooth
 
     uint8_t buffer[BLUETOOTH_BUFFER_SIZE];
     uint8_t bufferIndex = 0;
-    tmr10ms_t wakeupTime = 0;
     uint8_t crc;
-    uint8_t dataState = STATE_DATA_START;
 
+    uint8_t outputCrc;
+    tmr10ms_t wakeupTime = 0;
+    uint8_t dataState = STATE_DATA_START;
     FIL file;
     uint32_t lastPartIndex;
 };

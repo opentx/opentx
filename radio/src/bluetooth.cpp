@@ -43,6 +43,30 @@ extern Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
 Bluetooth bluetooth;
 
+void Bluetooth::pushByte(uint8_t byte)
+{
+  uint16_t newCrc = outputCrc + byte;
+  outputCrc = newCrc + (newCrc >> 8);
+  if (byte == START_STOP || byte == BYTE_STUFF) {
+    btTxFifo.push(BYTE_STUFF);
+    byte ^= STUFF_MASK;
+  }
+  btTxFifo.push(byte);
+}
+
+void Bluetooth::startOutputFrame(uint8_t frameType)
+{
+  outputCrc = 0;
+  btTxFifo.push(START_STOP);
+  pushByte(frameType);
+}
+
+void Bluetooth::endOutputFrame()
+{
+  btTxFifo.push(outputCrc);
+  btTxFifo.push(START_STOP);
+}
+
 void Bluetooth::write(const uint8_t * data, uint8_t length)
 {
   TRACE_NOCRLF("BT>");
@@ -167,6 +191,7 @@ bool Bluetooth::readFrame()
   }
 }
 
+// TODO move to BluetoothInputBuffer
 bool Bluetooth::processFrameByte(uint8_t byte)
 {
   switch (dataState) {
@@ -204,12 +229,11 @@ bool Bluetooth::processFrameByte(uint8_t byte)
 
 void Bluetooth::sendTelemetryFrame(const uint8_t * packet)
 {
-  BluetoothOutputFrame<16> frame(FRAME_TYPE_TELEMETRY);
+  startOutputFrame(BLUETOOTH_TELEMETRY);
   for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
-    frame.pushByte(packet[i]);
+    pushByte(packet[i]);
   }
-  frame.endFrame();
-  write(frame.data, frame.size);
+  endOutputFrame();
 }
 
 void Bluetooth::processChannelsFrame()
@@ -257,14 +281,14 @@ void Bluetooth::processUploadFrame()
       }
     }
   }
-
-  BluetoothOutputFrame<16> frame(FRAME_TYPE_UPLOAD_ACK);
-  frame.pushByte(lastPartIndex);
-  frame.pushByte(lastPartIndex >> 8);
-  frame.pushByte(lastPartIndex >> 16);
-  frame.pushByte(lastPartIndex >> 24);
-  frame.endFrame();
-  write(frame.data, frame.size);
+//
+//  BluetoothOutputFrame<16> frame(FRAME_TYPE_UPLOAD_ACK);
+//  frame.pushByte(lastPartIndex);
+//  frame.pushByte(lastPartIndex >> 8);
+//  frame.pushByte(lastPartIndex >> 16);
+//  frame.pushByte(lastPartIndex >> 24);
+//  frame.endFrame();
+//  write(frame.data, frame.size);
 }
 
 void Bluetooth::processFrame()
@@ -399,15 +423,14 @@ void Bluetooth::wakeup(void)
 #else // PCBX9E
 void Bluetooth::wakeup()
 {
-  if (state != BLUETOOTH_STATE_OFF) {
-    bluetoothWriteWakeup();
-    if (bluetoothIsWriting()) {
-      return;
-    }
-  }
+//  if (state != BLUETOOTH_STATE_OFF) {
+//    bluetoothWriteWakeup();
+//    if (bluetoothIsWriting()) {
+//      return;
+//    }
+//  }
 
   tmr10ms_t now = get_tmr10ms();
-
   if (now < wakeupTime)
     return;
 
@@ -441,7 +464,12 @@ void Bluetooth::wakeup()
     wakeupTime = now + 10; /* 100ms */
   }
   else if (state >= BLUETOOTH_STATE_CONNECTED && state < BLUETOOTH_STATE_DISCONNECTED) {
-    readFrame();
+    if (btTxFifo.isEmpty()) {
+      readFrame();
+    }
+    else {
+      bluetoothWriteWakeup();
+    }
 
 //    if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
 //      receiveTrainer();
