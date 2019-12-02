@@ -186,10 +186,11 @@ inline bool isMultiProtocolSelectable(int protocol)
   return protocol != MODULE_SUBTYPE_MULTI_SCANNER;
 }
 
-inline uint8_t MULTIMODULE_PROTOCOL_KNOWN(uint8_t moduleIdx)
+inline bool MULTIMODULE_PROTOCOL_KNOWN(uint8_t moduleIdx)
 {
-  if (!isModuleMultimodule(moduleIdx))
+  if (!isModuleMultimodule(moduleIdx)) {
     return false;
+  }
 
   if (g_model.moduleData[moduleIdx].getMultiProtocol() < MODULE_SUBTYPE_MULTI_LAST) {
     return true;
