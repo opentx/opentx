@@ -715,6 +715,8 @@
 #define TR_DELETE_ERROR        "Errore cancell."
 #define TR_CAT_NOT_EMPTY       "Categoria non vuota"
 #define TR_SDCARD_ERROR        TR("Errore SD", "Errore SDCard")
+#define TR_SDCARD                      "SD Card"
+#define TR_NO_FILES_ON_SD              "No files on SD!"
 #define TR_NO_SDCARD           "No SDCard"
 #define TR_WAITING_FOR_RX              "Attendo la RX..."
 #define TR_WAITING_FOR_TX              "Attendo la TX..."

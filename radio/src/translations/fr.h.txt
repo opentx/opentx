@@ -713,6 +713,8 @@
 #define TR_DELETE_ERROR                "Effacement impossible"
 #define TR_CAT_NOT_EMPTY               "Categorie non vide"
 #define TR_SDCARD_ERROR                "Erreur carte SD"
+#define TR_SDCARD                      "SD Card"
+#define TR_NO_FILES_ON_SD              "No files on SD!"
 #define TR_NO_SDCARD                   "Carte SD indisponible"
 #define TR_WAITING_FOR_RX              "Attente du RX..."
 #define TR_WAITING_FOR_TX              "Attente du TX..."

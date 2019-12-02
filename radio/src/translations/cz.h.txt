@@ -686,6 +686,8 @@
 #define TR_DELETE_ERROR                "Nelze odstranit"
 #define TR_CAT_NOT_EMPTY               "Kategorie není prázdná"
 #define TR_SDCARD_ERROR                "Chyba SD karty"
+#define TR_SDCARD                      "SD Card"
+#define TR_NO_FILES_ON_SD              "No files on SD!"
 #define TR_NO_SDCARD                   "Není SD karta"
 #define TR_WAITING_FOR_RX              "Čekám na RX..."
 #define TR_WAITING_FOR_TX              "Čekám na TX..."

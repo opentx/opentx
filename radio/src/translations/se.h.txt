@@ -713,6 +713,8 @@
 #define TR_DELETE_ERROR        "Delete error"
 #define TR_CAT_NOT_EMPTY       "Category is not empty"
 #define TR_SDCARD_ERROR        "SDCARD-fel"
+#define TR_SDCARD                      "SD Card"
+#define TR_NO_FILES_ON_SD              "No files on SD!"
 #define TR_NO_SDCARD           "SDCARD saknas"
 #define TR_WAITING_FOR_RX              "Waiting for RX..."
 #define TR_WAITING_FOR_TX              "Waiting for TX..."
