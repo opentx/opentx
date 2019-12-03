@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef CHKSIZE_H
-#define CHKSIZE_H
+#ifndef _CHKSIZE_H_
+#define _CHKSIZE_H_
 
 #include <inttypes.h>
 
@@ -28,4 +28,4 @@ void check_size() {
   static_assert(expectedSize == realSize, "struct size changed");
 }
 
-#endif
+#endif // _CHKSIZE_H_

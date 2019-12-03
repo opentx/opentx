@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef __CRC_H__
-#define __CRC_H__
+#ifndef _CRC_H_
+#define _CRC_H_
 
 #include <inttypes.h>
 
@@ -102,4 +102,4 @@ static const unsigned short crc16tab_1189[256] = {
   0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
 
-#endif
+#endif // _CRC_H_

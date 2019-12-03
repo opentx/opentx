@@ -306,15 +306,6 @@ void Bluetooth::processUploadFrame()
   pushByte(lastPartIndex >> 24);
   endOutputFrame();
   bluetoothWriteWakeup();
-
-//
-//  BluetoothOutputFrame<16> frame(FRAME_TYPE_UPLOAD_ACK);
-//  frame.pushByte(lastPartIndex);
-//  frame.pushByte(lastPartIndex >> 8);
-//  frame.pushByte(lastPartIndex >> 16);
-//  frame.pushByte(lastPartIndex >> 24);
-//  frame.endFrame();
-//  write(frame.data, frame.size);
 }
 
 void Bluetooth::processFrame()
@@ -364,32 +355,24 @@ bool Bluetooth::checkFrame()
 }
 
 
-//void Bluetooth::sendTrainer()
-//{
-//  int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;
-//
-//  int firstCh = g_model.trainerData.channelsStart;
-//  int lastCh = firstCh + 8;
-//
-//  uint8_t * cur = buffer;
-//  bufferIndex = 0;
-//  crc = 0x00;
-//
-//  buffer[bufferIndex++] = START_STOP; // start byte
-//  pushByte(0x80); // trainer frame type?
-//  for (int channel=0; channel<lastCh; channel+=2, cur+=3) {
-//    uint16_t channelValue1 = PPM_CH_CENTER(channel) + limit((int16_t)-PPM_range, channelOutputs[channel], (int16_t)PPM_range) / 2;
-//    uint16_t channelValue2 = PPM_CH_CENTER(channel+1) + limit((int16_t)-PPM_range, channelOutputs[channel+1], (int16_t)PPM_range) / 2;
-//    pushByte(channelValue1 & 0x00ff);
-//    pushByte(((channelValue1 & 0x0f00) >> 4) + ((channelValue2 & 0x00f0) >> 4));
-//    pushByte(((channelValue2 & 0x000f) << 4) + ((channelValue2 & 0x0f00) >> 8));
-//  }
-//  buffer[bufferIndex++] = crc;
-//  buffer[bufferIndex++] = START_STOP; // end byte
-//
-//  write(buffer, bufferIndex);
-//  bufferIndex = 0;
-//}
+void Bluetooth::sendTrainerFrame()
+{
+  int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;
+
+  int firstCh = g_model.trainerData.channelsStart;
+  int lastCh = firstCh + 8;
+
+  startOutputFrame(FRAME_TYPE_CHANNELS);
+  for (uint8_t channel = 0; channel < lastCh; channel += 2) {
+    uint16_t channelValue1 = PPM_CH_CENTER(channel) + limit((int16_t)-PPM_range, channelOutputs[channel], (int16_t)PPM_range) / 2;
+    uint16_t channelValue2 = PPM_CH_CENTER(channel+1) + limit((int16_t)-PPM_range, channelOutputs[channel+1], (int16_t)PPM_range) / 2;
+    pushByte(channelValue1 & 0x00ff);
+    pushByte(((channelValue1 & 0x0f00) >> 4) + ((channelValue2 & 0x00f0) >> 4));
+    pushByte(((channelValue2 & 0x000f) << 4) + ((channelValue2 & 0x0f00) >> 8));
+  }
+  endOutputFrame();
+  bluetoothWriteWakeup();
+}
 
 #if defined(PCBX9E)
 void Bluetooth::wakeup(void)
@@ -494,11 +477,14 @@ void Bluetooth::wakeup()
     wakeupTime = now + 10; /* 100ms */
   }
   else if (state >= BLUETOOTH_STATE_CONNECTED && state < BLUETOOTH_STATE_DISCONNECTED) {
-    if (btTxFifo.isEmpty()) {
-      readFrame();
-    }
-    else {
+    if (!btTxFifo.isEmpty()) {
       bluetoothWriteWakeup();
+    }
+    else if (readFrame()) {
+      // pass
+    }
+    else if (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH && subscribtion.channels) {
+      sendTrainerFrame();
     }
 
 //    if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {

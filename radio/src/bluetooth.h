@@ -18,6 +18,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _BLUETOOTH_H_
+#define _BLUETOOTH_H_
+
 enum BluetoothStates {
 #if defined(PCBX9E)
   BLUETOOTH_INIT,
@@ -86,13 +89,9 @@ class Bluetooth
     void pushByte(uint8_t byte);
     void startOutputFrame(uint8_t frameType);
     void endOutputFrame();
+    void sendTrainerFrame();
 
     uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
-    // void appendTrainerByte(uint8_t data);
-    // void processTrainerFrame(const uint8_t * buffer);
-    // void processTrainerByte(uint8_t data);
-    // void sendTrainer();
-    // void receiveTrainer();
     bool readFrame();
     bool processFrameByte(uint8_t byte);
     bool checkFrame();
@@ -135,3 +134,5 @@ class Bluetooth
 };
 
 extern Bluetooth bluetooth;
+
+#endif // _BLUETOOTH_H_
