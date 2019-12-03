@@ -199,6 +199,18 @@ options_horus_x10express = {
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
 }
 
+options_jumper_t12 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
+}
+
 options_jumper_t16 = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
@@ -207,7 +219,6 @@ options_jumper_t16 = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),

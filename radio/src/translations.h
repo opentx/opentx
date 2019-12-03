@@ -398,6 +398,7 @@ extern const char STR_MODULE_NO_INPUT[];
 extern const char STR_MODULE_WAITFORBIND[];
 extern const char STR_MODULE_NO_TELEMETRY[];
 extern const char STR_MODULE_BINDING[];
+extern const char STR_MODULE_UPGRADE_ALERT[];
 extern const char STR_MODULE_UPGRADE[];
 extern const char STR_PROTOCOL_INVALID[];
 extern const char STR_MODULE_STATUS[];

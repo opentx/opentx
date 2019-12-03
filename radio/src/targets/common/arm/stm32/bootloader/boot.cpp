@@ -69,13 +69,13 @@ FlashCheckRes valid;
 MemoryType memoryType;
 uint32_t unlocked = 0;
 
-void interrupt10ms(void)
+void interrupt10ms()
 {
-  tenms |= 1;     // 10 mS has passed
+  tenms |= 1u; // 10 mS has passed
 
   uint8_t index = 0;
   uint8_t in = readKeys();
-  for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
+  for (uint8_t i = 1; i != uint8_t(1u << TRM_BASE); i <<= 1) {
     uint8_t value = (in & i);
     keys[index].input(value);
     ++index;
@@ -210,12 +210,12 @@ int main()
   pwrInit();
   keysInit();
 
-#if defined(PCBHORUS)
   // wait a bit for the inputs to stabilize...
-  for (uint32_t i = 0; i < 50000; i++) {
-    __ASM volatile ("nop");
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    for (uint32_t i = 0; i < 150000; i++) {
+      __ASM volatile ("nop");
+    }
   }
-#endif
 
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
