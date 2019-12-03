@@ -163,10 +163,10 @@ class Pxx1Pulses: public PxxTransport
       PxxTransport::addByteWithoutCrc(Pxx1CrcMixin::crc);
     }
 
-    uint8_t addFlag1(uint8_t port);
+    void addFlag1(uint8_t port, uint8_t sendFailsafe);
     void addExtraFlags(uint8_t port);
     void addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels);
-    void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
+    void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels, uint8_t sendFailsafe);
 };
 
 typedef Pxx1Pulses<UartPxx1Transport> UartPxx1Pulses;
