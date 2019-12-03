@@ -47,7 +47,7 @@ enum BluetoothStates {
 
 constexpr uint8_t LEN_BLUETOOTH_ADDR =         16;
 constexpr uint8_t MAX_BLUETOOTH_DISTANT_ADDR = 6;
-constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      32;
+constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      128;
 
 //template <int N>
 //class BluetoothInputBuffer {
@@ -60,6 +60,7 @@ class Bluetooth
 {
   enum FrameType {
     FRAME_TYPE_SUBSCRIBE = 0x01,
+    FRAME_TYPE_SUBSCRIBE_ACK = 0x80 + FRAME_TYPE_SUBSCRIBE,
     FRAME_TYPE_UPLOAD = 0x05,
     FRAME_TYPE_UPLOAD_ACK = 0x80 + FRAME_TYPE_UPLOAD,
     FRAME_TYPE_DOWNLOAD = 0x06,

@@ -126,8 +126,8 @@ char * Bluetooth::readline(bool error_reset)
 #endif
 
     if (byte == '\n') {
-      if (bufferIndex > 2 && buffer[bufferIndex-1] == '\r') {
-        buffer[bufferIndex-1] = '\0';
+      if (bufferIndex > 2 && buffer[bufferIndex - 1] == '\r') {
+        buffer[bufferIndex - 1] = '\0';
         bufferIndex = 0;
         TRACE("BT< %s", buffer);
         if (error_reset && !strcmp((char *)buffer, "ERROR")) {
@@ -244,6 +244,12 @@ void Bluetooth::processSubscribeFrame()
 {
   subscribtion.channels = buffer[1];
   subscribtion.telemetry = buffer[2];
+
+  startOutputFrame(FRAME_TYPE_SUBSCRIBE_ACK);
+  pushByte(subscribtion.channels);
+  pushByte(subscribtion.telemetry);
+  endOutputFrame();
+  bluetoothWriteWakeup();
 }
 
 void Bluetooth::processChannelsFrame()
@@ -282,16 +288,25 @@ void Bluetooth::processUploadFrame()
     if (f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK)
       return;
     state = BLUETOOTH_STATE_UPLOAD;
-    lastPartIndex = 0xFFFFFF;
+    lastPartIndex = partIndex;
   }
   else if (state == BLUETOOTH_STATE_UPLOAD) {
     if (partIndex == lastPartIndex + 1) {
       UINT written;
       if (dataLength == 0 || (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written)) {
-        lastPartIndex++;
+        lastPartIndex = partIndex;
       }
     }
   }
+
+  startOutputFrame(FRAME_TYPE_UPLOAD_ACK);
+  pushByte(lastPartIndex);
+  pushByte(lastPartIndex >> 8);
+  pushByte(lastPartIndex >> 16);
+  pushByte(lastPartIndex >> 24);
+  endOutputFrame();
+  bluetoothWriteWakeup();
+
 //
 //  BluetoothOutputFrame<16> frame(FRAME_TYPE_UPLOAD_ACK);
 //  frame.pushByte(lastPartIndex);
