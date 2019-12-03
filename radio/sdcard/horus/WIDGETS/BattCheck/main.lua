@@ -224,16 +224,16 @@ local function getRangeColor(value, green_value, red_value)
 end
 
 
--- Zone size: top bar widgets
+--- Zone size: 70x39 1/8th top bar
 local function refreshZoneTiny(wgt)
   local myString = string.format("%2.1fV", wgt.mainValue)
-  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y, wgt.cellPercent .. "%", RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
-  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + 15, myString, RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+  lcd.drawText(wgt.zone.x + wgt.zone.w -25, wgt.zone.y + 5, wgt.cellPercent .. "%", RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+  lcd.drawText(wgt.zone.x + wgt.zone.w -25, wgt.zone.y + 20, myString, RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
   -- draw batt
-  lcd.drawRectangle(wgt.zone.x, wgt.zone.y + 6, 16, 25, CUSTOM_COLOR, 2)
-  lcd.drawFilledRectangle(wgt.zone.x + 4, wgt.zone.y + 4, 6, 3, CUSTOM_COLOR)
+  lcd.drawRectangle(wgt.zone.x + 50, wgt.zone.y + 9, 16, 25, CUSTOM_COLOR, 2)
+  lcd.drawFilledRectangle(wgt.zone.x +50 + 4, wgt.zone.y + 7, 6, 3, CUSTOM_COLOR)
   local rect_h = math.floor(25 * wgt.cellPercent / 100)
-  lcd.drawFilledRectangle(wgt.zone.x, wgt.zone.y + 6 + 25 - rect_h, 16, rect_h, CUSTOM_COLOR + wgt.no_telem_blink)
+  lcd.drawFilledRectangle(wgt.zone.x +50, wgt.zone.y + 9 + 25 - rect_h, 16, rect_h, CUSTOM_COLOR + wgt.no_telem_blink)
 end
 
 --- Zone size: 160x32 1/8th
