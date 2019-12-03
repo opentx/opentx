@@ -137,7 +137,11 @@ bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
           drawSource(pos[j], 1+FH+2*FH*i, field, 0);
         }
 
-        if (field >= MIXSRC_FIRST_TELEM) {
+        if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
+          drawTimerWithMode(pos[j+1], 1+FH+2*FH*i, field - MIXSRC_FIRST_TIMER, att);
+          continue;
+        }
+        else if (field >= MIXSRC_FIRST_TELEM) {
           TelemetryItem & telemetryItem = telemetryItems[(field-MIXSRC_FIRST_TELEM)/3]; // TODO macro to convert a source to a telemetry index
           if (!telemetryItem.isAvailable()) {
             continue;
