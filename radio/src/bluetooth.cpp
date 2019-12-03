@@ -63,7 +63,7 @@ void Bluetooth::startOutputFrame(uint8_t frameType)
 
 void Bluetooth::endOutputFrame()
 {
-  btTxFifo.push(outputCrc);
+  pushByte(outputCrc);
   btTxFifo.push(START_STOP);
 }
 
@@ -229,7 +229,7 @@ bool Bluetooth::processFrameByte(uint8_t byte)
 
 void Bluetooth::sendTelemetryFrame(const uint8_t * packet)
 {
-  startOutputFrame(BLUETOOTH_TELEMETRY);
+  startOutputFrame(FRAME_TYPE_TELEMETRY);
   for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
     pushByte(packet[i]);
   }
