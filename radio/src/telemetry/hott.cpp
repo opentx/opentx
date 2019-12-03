@@ -63,12 +63,12 @@ enum
 // telemetry sensors ID
 enum
 {
-  HOTT_ID_RX_VOLTAGE = 0x0004,// RX_Batt Voltage
-  HOTT_ID_TEMP1 = 0x0005,     // RX Temperature sensor
-  TX_RSSI_ID = 0xFF00,        // Pseudo id outside 1 byte range of Hott sensors
-  TX_LQI_ID = 0xFF01,         // Pseudo id outside 1 byte range of Hott sensors
-  RX_RSSI_ID = 0xFF02,        // Pseudo id outside 1 byte range of Hott sensors
-  RX_LQI_ID = 0xFF03,         // Pseudo id outside 1 byte range of Hott sensors
+  HOTT_ID_RX_VOLTAGE = 0x0004,  // RX_Batt Voltage
+  HOTT_ID_TEMP1      = 0x0005,  // RX Temperature sensor
+  HOTT_TX_RSSI_ID    = 0xFF00,  // Pseudo id outside 1 byte range of Hott sensors
+  HOTT_TX_LQI_ID     = 0xFF01,  // Pseudo id outside 1 byte range of Hott sensors
+  HOTT_RX_RSSI_ID    = 0xFF02,  // Pseudo id outside 1 byte range of Hott sensors
+  HOTT_RX_LQI_ID     = 0xFF03,  // Pseudo id outside 1 byte range of Hott sensors
 };
 
 const HottSensor hottSensors[] = {
@@ -79,10 +79,10 @@ const HottSensor hottSensors[] = {
   //frame 02
   //frame 03
   //frame 04
-  {TX_RSSI_ID,           ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
-  {TX_LQI_ID,            ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
-  {RX_RSSI_ID,           ZSTR_RSSI,       UNIT_DB,                0},  // RX RSSI
-  {RX_LQI_ID,            ZSTR_RX_QUALITY, UNIT_RAW,               0},  // RX LQI
+  {HOTT_TX_RSSI_ID,      ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
+  {HOTT_TX_LQI_ID,       ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
+  {HOTT_RX_RSSI_ID,      ZSTR_RSSI,       UNIT_DB,                0},  // RX RSSI
+  {HOTT_RX_LQI_ID,       ZSTR_RX_QUALITY, UNIT_RAW,               0},  // RX LQI
   {0x00,                 NULL,            UNIT_RAW,               0},  // sentinel
 };
 
@@ -98,9 +98,9 @@ const HottSensor * getHottSensor(uint16_t id)
 void processHottPacket(const uint8_t * packet)
 {
   // Set TX RSSI Value
-  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, TX_RSSI_ID, 0, 0, packet[0]>>1, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_RSSI_ID, 0, 0, packet[0]>>1, UNIT_RAW, 0);
   // Set TX LQI  Value
-  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, TX_LQI_ID, 0, 0, packet[1], UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_LQI_ID, 0, 0, packet[1], UNIT_RAW, 0);
 
 #if defined(LUA)
   #define HOTT_MENU_NBR_PAGE 0x13
@@ -142,12 +142,12 @@ void processHottPacket(const uint8_t * packet)
         sensor = getHottSensor(HOTT_ID_TEMP1);
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
         // RX_RSSI
-        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_RSSI_ID, 0, 0, packet[7], UNIT_DB, 0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_RSSI_ID, 0, 0, packet[7], UNIT_DB, 0);
         // RX_LQI
         telemetryData.rssi.set(packet[8]);
         if (packet[8] > 0)
           telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
         break;
 
       default:

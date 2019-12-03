@@ -189,6 +189,13 @@ enum FrSkyDataState {
 #define FUEL_QTY_FIRST_ID         0x0A10
 #define FUEL_QTY_LAST_ID          0x0A1F
 
+#if defined(MULTIMODULE)
+// Virtual IDs, value can be changed to anything only used for display
+#define RX_LQI_ID                 0xFFFC
+#define TX_LQI_ID                 0xFFFD
+#define TX_RSSI_ID                0xFFFE
+#endif
+
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO             0x00 // 0
 #define DATA_ID_FLVSS             0xA1 // 1
