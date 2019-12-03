@@ -59,6 +59,7 @@ constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      32;
 class Bluetooth
 {
   enum FrameType {
+    FRAME_TYPE_SUBSCRIBE = 0x01,
     FRAME_TYPE_UPLOAD = 0x05,
     FRAME_TYPE_UPLOAD_ACK = 0x80 + FRAME_TYPE_UPLOAD,
     FRAME_TYPE_DOWNLOAD = 0x06,
@@ -72,7 +73,7 @@ class Bluetooth
     char * readline(bool error_reset = true);
     void write(const uint8_t * data, uint8_t length);
 
-    void sendTelemetryFrame(const uint8_t * packet);
+    void sendTelemetryFrame(uint8_t origin, const uint8_t * packet);
     void wakeup();
     const char * flashFirmware(const char * filename);
 
@@ -95,6 +96,7 @@ class Bluetooth
     bool processFrameByte(uint8_t byte);
     bool checkFrame();
     void processFrame();
+    void processSubscribeFrame();
     void processChannelsFrame();
     void processTelemetryFrame();
     void processUploadFrame();
@@ -113,6 +115,12 @@ class Bluetooth
     const char * bootloaderStartWriteFlash(uint32_t start, uint32_t size);
     const char * bootloaderWriteFlash(const uint8_t * data, uint32_t size);
     const char * doFlashFirmware(const char * filename);
+
+    PACK(struct {
+      uint8_t channels:1;
+      uint8_t telemetry:1;
+      uint8_t spare:6;
+    }) subscribtion;
 
     uint8_t buffer[BLUETOOTH_BUFFER_SIZE];
     uint8_t bufferIndex = 0;

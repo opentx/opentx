@@ -227,13 +227,23 @@ bool Bluetooth::processFrameByte(uint8_t byte)
   return false;
 }
 
-void Bluetooth::sendTelemetryFrame(const uint8_t * packet)
+void Bluetooth::sendTelemetryFrame(uint8_t origin, const uint8_t * packet)
 {
+  if (bluetooth.state != BLUETOOTH_STATE_CONNECTED || !subscribtion.telemetry)
+    return;
+
   startOutputFrame(FRAME_TYPE_TELEMETRY);
+  pushByte(origin);
   for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
     pushByte(packet[i]);
   }
   endOutputFrame();
+}
+
+void Bluetooth::processSubscribeFrame()
+{
+  subscribtion.channels = buffer[1];
+  subscribtion.telemetry = buffer[2];
 }
 
 void Bluetooth::processChannelsFrame()
@@ -249,10 +259,11 @@ void Bluetooth::processChannelsFrame()
 
 void Bluetooth::processTelemetryFrame()
 {
-  uint8_t physicalId = buffer[1];
-  uint8_t primId = buffer[2];
-  uint16_t dataId = *((uint16_t *)(buffer + 3));
-  uint32_t value = *((uint32_t *)(buffer + 5));
+  // uint8_t origin = buffer[1];
+  uint8_t physicalId = buffer[2];
+  uint8_t primId = buffer[4];
+  uint16_t dataId = *((uint16_t *)(buffer + 4));
+  uint32_t value = *((uint32_t *)(buffer + 6));
   sportPushTelemetry(physicalId, primId, dataId, value);
 }
 
@@ -303,8 +314,8 @@ void Bluetooth::processFrame()
     return;
 
   switch (buffer[0]) {
-    case FRAME_TYPE_UPLOAD:
-      processUploadFrame();
+    case FRAME_TYPE_SUBSCRIBE:
+      processSubscribeFrame();
       break;
 
     case FRAME_TYPE_CHANNELS:
@@ -313,6 +324,10 @@ void Bluetooth::processFrame()
 
     case FRAME_TYPE_TELEMETRY:
       processTelemetryFrame();
+      break;
+
+    case FRAME_TYPE_UPLOAD:
+      processUploadFrame();
       break;
   }
 }
