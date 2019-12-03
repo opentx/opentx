@@ -161,43 +161,6 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
 
 
 #if defined(MULTIMODULE)
-// When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
-// Keep the order of the fields that the so that the size stays small
-struct mm_options_strings {
-  static const char* options[];
-};
-
-struct mm_protocol_definition {
-    uint8_t protocol;
-    uint8_t maxSubtype;
-    bool failsafe;
-    bool disable_ch_mapping;
-    const char *subTypeString;
-    const char *optionsstr;
-};
-
-const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
-
-inline uint8_t getMaxMultiSubtype(uint8_t moduleIdx)
-{
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
-    return 5;
-  }
-
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
-    if (status.isValid())
-      return (status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1);
-    else
-      return 7;
-  }
-  else {
-    return max((uint8_t )(status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1), pdef->maxSubtype);
-  }
-}
-
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
   if (!isModuleMultimodule(moduleIdx))
@@ -221,6 +184,24 @@ inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 inline bool isMultiProtocolSelectable(int protocol)
 {
   return protocol != MODULE_SUBTYPE_MULTI_SCANNER;
+}
+
+inline bool MULTIMODULE_PROTOCOL_KNOWN(uint8_t moduleIdx)
+{
+  if (!isModuleMultimodule(moduleIdx)) {
+    return false;
+  }
+
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() < MODULE_SUBTYPE_MULTI_LAST) {
+    return true;
+  }
+
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+  if (status.isValid()) {
+    return status.protocolValid();
+  }
+
+  return false;
 }
 
 inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
@@ -266,7 +247,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
   return status.optionDisp;
 }
 
-#define MULTIMODULE_MODULE_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
+#define MULTIMODULE_MODULE_ROWS(moduleIdx)      MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
 #define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)     isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
@@ -282,7 +263,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 
 #define FAILSAFE_ROWS(moduleIdx)               isModuleFailsafeAvailable(moduleIdx) ? (g_model.moduleData[moduleIdx].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 #define MODULE_OPTION_ROW(moduleIdx)           (isModuleR9MNonAccess(moduleIdx) || isModuleSBUS(moduleIdx)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW(moduleIdx))
-#define MODULE_POWER_ROW(moduleIdx)            (isModuleMultimodule(moduleIdx) || isModuleR9MNonAccess(moduleIdx)) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
+#define MODULE_POWER_ROW(moduleIdx)            (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) || isModuleR9MNonAccess(moduleIdx)) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
 

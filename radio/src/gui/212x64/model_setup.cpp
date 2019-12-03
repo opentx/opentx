@@ -855,14 +855,7 @@ void menuModelSetup(event_t event)
                   if (checkIncDec_Ret) {
                     g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
                     g_model.moduleData[EXTERNAL_MODULE].subType = 0;
-                    // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 1;
-                    }
-                    else {
-                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 0;
-                    }
-                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
+                    resetMultiProtocolsOptions(EXTERNAL_MODULE);
                   }
                 }
 #endif
@@ -884,18 +877,10 @@ void menuModelSetup(event_t event)
 
 #if defined(MULTIMODULE)
               case 2:
-                if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto) {
-                  g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(), 0, MULTI_MAX_PROTOCOLS, EE_MODEL));
-                  break;
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
+                if (checkIncDec_Ret) {
+                  resetMultiProtocolsOptions(EXTERNAL_MODULE);
                 }
-                else {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
-                }
-                break;
-
-              case 3:
-                // Custom protocol, third column is subtype
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
                 break;
 #endif
             }
@@ -1228,7 +1213,7 @@ void menuModelSetup(event_t event)
        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 #if defined(MULTIMODULE)
 
-       if (isModuleMultimodule(moduleIdx)) {
+       if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
          int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
