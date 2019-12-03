@@ -138,7 +138,7 @@ bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
         }
 
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
-          drawTimerWithMode(pos[j+1], 1+FH+2*FH*i, field - MIXSRC_FIRST_TIMER, att);
+          drawTimerWithMode(pos[j+1] + 2, 1+FH+2*FH*i, field - MIXSRC_FIRST_TIMER, att);
           continue;
         }
         else if (field >= MIXSRC_FIRST_TELEM) {
