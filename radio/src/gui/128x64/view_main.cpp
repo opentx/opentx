@@ -422,7 +422,7 @@ void menuMainView(event_t event)
     displayVoltageOrAlarm();
 
     // Timer 1
-    drawTimerWithMode(125, 2*FH, 0, DBLSIZE);
+    drawTimerWithMode(125, 2*FH, 0, RIGHT | DBLSIZE);
 
     // Trims sliders
     displayTrims(mode);
@@ -560,7 +560,7 @@ void menuMainView(event_t event)
   }
   else {
     // Timer2
-    drawTimerWithMode(87, 5*FH, 1, DBLSIZE);
+    drawTimerWithMode(87, 5*FH, 1, RIGHT | DBLSIZE);
   }
 
   // And ! in case of unexpected shutdown

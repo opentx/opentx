@@ -125,7 +125,7 @@ bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i != 3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
           drawStringWithIndex(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
-          drawTimerWithMode(pos[j+1] + 2, 1+FH+2*FH*i, field - MIXSRC_FIRST_TIMER, att);
+          drawTimerWithMode(pos[j+1] + 2, 1+FH+2*FH*i, field - MIXSRC_FIRST_TIMER, RIGHT | DBLSIZE);
           continue;
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {

@@ -882,7 +882,6 @@ void drawTimerWithMode(coord_t x, coord_t y, uint8_t index, LcdFlags att)
   if (timer.mode) {
     const TimerState &timerState = timersStates[index];
     const uint8_t negative = (timerState.val < 0 ? BLINK | INVERS : 0);
-    LcdFlags att = RIGHT | DBLSIZE;
     if (timerState.val < 60 * 60) { // display MM:SS
       div_t qr = div((int) abs(timerState.val), 60);
       lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0 | negative, 2);
