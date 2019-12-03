@@ -72,8 +72,7 @@ void frskyDProcessPacket(const uint8_t *packet)
       setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_A2_ID, 0, 0, packet[2], UNIT_VOLTS, 0);
       setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, D_RSSI_ID, 0, 0, packet[3], UNIT_RAW, 0);
 #if defined(MULTIMODULE)
-      if(telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE)
-      {
+      if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
         setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, TX_RSSI_ID, 0, 0, packet[4]>>1, UNIT_DB,  0);
         setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, RX_LQI_ID,  0, 0, packet[5]   , UNIT_RAW, 0);
         setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, TX_LQI_ID , 0, 0, packet[6]   , UNIT_RAW, 0);
@@ -271,21 +270,21 @@ void processHubPacket(uint8_t id, int16_t value)
 
 void frskyDSetDefault(int index, uint16_t id)
 {
-  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+  TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
 
   telemetrySensor.id = id;
   telemetrySensor.instance = 0;
 
 #if defined(MULTIMODULE)
-  if(id == TX_RSSI_ID) {
+  if (id == TX_RSSI_ID) {
     telemetrySensor.init(ZSTR_TX_RSSI, UNIT_DB, 0);
     telemetrySensor.filter = 1;
   }
-  else if(id == TX_LQI_ID) {
+  else if (id == TX_LQI_ID) {
     telemetrySensor.init(ZSTR_TX_QUALITY, UNIT_RAW, 0);
     telemetrySensor.filter = 1;
   }
-  else if(id == RX_LQI_ID) {
+  else if (id == RX_LQI_ID) {
     telemetrySensor.init(ZSTR_RX_QUALITY, UNIT_RAW, 0);
     telemetrySensor.filter = 1;
   }
