@@ -147,6 +147,11 @@ inline uint8_t modelTelemetryProtocol()
   if (!sportUsed && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
+#if defined(INTERNAL_MODULE_MULTI)
+  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+    return PROTOCOL_TELEMETRY_MULTIMODULE;
+  }
+#endif
 #endif
   // default choice
   return PROTOCOL_TELEMETRY_FRSKY_SPORT;
