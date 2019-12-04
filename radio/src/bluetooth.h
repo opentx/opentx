@@ -50,7 +50,7 @@ enum BluetoothStates {
 
 constexpr uint8_t LEN_BLUETOOTH_ADDR =         16;
 constexpr uint8_t MAX_BLUETOOTH_DISTANT_ADDR = 6;
-constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      128;
+constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      64;
 
 //template <int N>
 //class BluetoothInputBuffer {
@@ -100,6 +100,7 @@ class Bluetooth
     void processChannelsFrame();
     void processTelemetryFrame();
     void processUploadFrame();
+    void sendUploadAck();
     void appendFrameByte(uint8_t byte);
 
     uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
@@ -130,7 +131,7 @@ class Bluetooth
     tmr10ms_t wakeupTime = 0;
     uint8_t dataState = STATE_DATA_START;
     FIL file;
-    uint32_t lastPartIndex;
+    uint32_t uploadPosition;
 };
 
 extern Bluetooth bluetooth;

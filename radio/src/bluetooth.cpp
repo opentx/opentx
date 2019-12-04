@@ -273,37 +273,53 @@ void Bluetooth::processTelemetryFrame()
   sportPushTelemetry(physicalId, primId, dataId, value);
 }
 
-void Bluetooth::processUploadFrame()
+void Bluetooth::sendUploadAck()
 {
-  uint32_t partIndex = *((uint32_t *)(buffer + 1));
-  uint8_t dataLength = bufferIndex - 6; /* FRAME TYPE + PART INDEX + CRC */
-
-  if (dataLength > 64)
-    return;
-
-  if (partIndex == 0xFFFFFFFF) {
-    // open the file
-    char filename[65] = {0};
-    strncpy(filename, (const char *)(buffer + 5), dataLength);
-    if (f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK)
-      return;
-    state = BLUETOOTH_STATE_UPLOAD;
-    lastPartIndex = 0xFFFFFFFF;
-  }
-  else if (state == BLUETOOTH_STATE_UPLOAD && partIndex == lastPartIndex + 1) {
-    UINT written;
-    if (dataLength == 0 || (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written)) {
-      lastPartIndex = partIndex;
-    }
-  }
-
   startOutputFrame(FRAME_TYPE_UPLOAD_ACK);
-  pushByte(lastPartIndex);
-  pushByte(lastPartIndex >> 8);
-  pushByte(lastPartIndex >> 16);
-  pushByte(lastPartIndex >> 24);
+  pushByte(uploadPosition);
+  pushByte(uploadPosition >> 8);
+  pushByte(uploadPosition >> 16);
+  pushByte(uploadPosition >> 24);
   endOutputFrame();
   bluetoothWriteWakeup();
+}
+
+void Bluetooth::processUploadFrame()
+{
+  uint32_t offset = *((uint32_t *)(buffer + 1));
+  uint8_t dataLength = bufferIndex - 6; /* FRAME TYPE + PART INDEX + CRC */
+
+  if (dataLength > 50) {
+    TRACE("BT invalid length %d", dataLength);
+    return;
+  }
+
+  if (offset == 0xFFFFFFFF) {
+    // open the file
+    char path[65] = {0};
+    strncpy(path, (const char *)(buffer + 5), dataLength);
+    if (f_open(&file, path, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
+      TRACE("BT open file %s failed", path);
+      return;
+    }
+    state = BLUETOOTH_STATE_UPLOAD;
+    uploadPosition = 0;
+  }
+  else if (state == BLUETOOTH_STATE_UPLOAD) {
+    if (offset == uploadPosition) {
+      UINT written;
+      if (dataLength == 0) {
+        f_close(&file);
+        sendUploadAck();
+      }
+      else if (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written) {
+        uploadPosition += dataLength;
+      }
+    }
+    else {
+      sendUploadAck();
+    }
+  }
 }
 
 void Bluetooth::processFrame()
