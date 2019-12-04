@@ -288,14 +288,12 @@ void Bluetooth::processUploadFrame()
     if (f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK)
       return;
     state = BLUETOOTH_STATE_UPLOAD;
-    lastPartIndex = partIndex;
+    lastPartIndex = 0xFFFFFFFF;
   }
-  else if (state == BLUETOOTH_STATE_UPLOAD) {
-    if (partIndex == lastPartIndex + 1) {
-      UINT written;
-      if (dataLength == 0 || (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written)) {
-        lastPartIndex = partIndex;
-      }
+  else if (state == BLUETOOTH_STATE_UPLOAD && partIndex == lastPartIndex + 1) {
+    UINT written;
+    if (dataLength == 0 || (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written)) {
+      lastPartIndex = partIndex;
     }
   }
 
