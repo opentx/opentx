@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import sys
 import glob
 
 
-def addLine(filename, newline, after):
+def add_line(filename, newline, after):
     print(filename, newline)
     with open(filename, 'r') as f:
         lines = f.readlines()
@@ -18,28 +16,33 @@ def addLine(filename, newline, after):
         f.writelines(lines)
 
 
-def modifyTranslations(constant, translation, after):
+def modify_translations(constant, translation, after):
     for filename in glob.glob('translations/*.h.txt'):
         newline = "#define " + constant + " " * max(1, 31 - len(constant)) + '"' + translation + '"'
-        addLine(filename, newline, after + " ")
+        add_line(filename, newline, after + " ")
 
 
-def modifyDeclaration(constant, after):
+def modify_declaration(constant, after):
     newline = "extern const char S" + constant + "[];"
     filename = "translations.h"
-    addLine(filename, newline, after + "[];")
+    add_line(filename, newline, after + "[];")
 
 
-def modifyDefinition(constant, after):
+def modify_definition(constant, after):
     newline = "const char S" + constant + "[]  = " + constant + ";"
     filename = "translations.cpp"
-    addLine(filename, newline, after + "[] ")
+    add_line(filename, newline, after + "[] ")
 
 
-after = sys.argv[-1]
-for arg in sys.argv[1:-1]:
-    constant, translation = arg.split("=")
-    modifyTranslations(constant, translation, after)
-    modifyDeclaration(constant, after)
-    modifyDefinition(constant, after)
-    after = constant
+def main():
+    after = sys.argv[-1]
+    for arg in sys.argv[1:-1]:
+        constant, translation = arg.split("=")
+        modify_translations(constant, translation, after)
+        modify_declaration(constant, after)
+        modify_definition(constant, after)
+        after = constant
+
+
+if __name__ == "__main__":
+    main()
