@@ -267,7 +267,7 @@ void Bluetooth::processTelemetryFrame()
 {
   // uint8_t origin = buffer[1];
   uint8_t physicalId = buffer[2];
-  uint8_t primId = buffer[4];
+  uint8_t primId = buffer[3];
   uint16_t dataId = *((uint16_t *)(buffer + 4));
   uint32_t value = *((uint32_t *)(buffer + 6));
   sportPushTelemetry(physicalId, primId, dataId, value);
