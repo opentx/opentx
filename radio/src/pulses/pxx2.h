@@ -53,6 +53,7 @@
 #define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
 #define PXX2_RX_SETTINGS_FLAG1_FPORT               (1 << 3)
+#define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_25MW      (1 << 2)
 
 #define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
 #define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)
@@ -258,6 +259,7 @@ inline bool isPXX2ReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 
 enum ReceiverCapabilities {
   RECEIVER_CAPABILITY_FPORT,
+  RECEIVER_CAPABILITY_TELEMETRY_25MW,
   RECEIVER_CAPABILITY_COUNT
 };
 
