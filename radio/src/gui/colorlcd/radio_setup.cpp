@@ -259,7 +259,7 @@ void RadioSetupPage::build(FormWindow * window)
     new StaticText(window, grid.getLabelSlot(true), STR_PITCH_AT_MAX);
     edit = new NumberEdit(window, grid.getFieldSlot(), -80, 80,
                           GET_DEFAULT(VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch * 10) + VARIO_FREQUENCY_RANGE + (g_eeGeneral.varioRange * 10)),
-                          SET_VALUE(g_eeGeneral.varioRange, (newValue - VARIO_FREQUENCY_ZERO - VARIO_FREQUENCY_RANGE) / 10 - g_eeGeneral.varioPitch );
+                          SET_VALUE(g_eeGeneral.varioRange, (newValue - VARIO_FREQUENCY_ZERO - VARIO_FREQUENCY_RANGE) / 10 - g_eeGeneral.varioPitch ));
     edit->setStep(10);
     edit->setSuffix("Hz");
     grid.nextLine();
