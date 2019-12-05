@@ -71,7 +71,7 @@ class MixEditWindow : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MIXER, 0, MENU_COLOR);
+      new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MIXES, 0, MENU_COLOR);
       new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, getSourceString(MIXSRC_CH1 + channel), 0, MENU_COLOR);
     }
 
@@ -292,7 +292,7 @@ void insertMix(uint8_t idx, uint8_t channel)
 }
 
 ModelMixesPage::ModelMixesPage() :
-  PageTab(STR_MIXER, ICON_MODEL_MIXER)
+  PageTab(STR_MIXES, ICON_MODEL_MIXER)
 {
 }
 
