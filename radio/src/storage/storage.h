@@ -71,7 +71,7 @@ void checkExternalAntenna();
 #endif
 
 #if defined(RTC_BACKUP_RAM)
-#include "rambackup.h"
+#include "rtc_backup.h"
 #endif
 
 #endif // _STORAGE_H_
