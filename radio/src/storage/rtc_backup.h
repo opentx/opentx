@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _RAM_BACKUP_H_
-#define _RAM_BACKUP_H_
+#ifndef _RTC_BACKUP_H_
+#define _RTC_BACKUP_H_
 
 #include "definitions.h"
 
@@ -30,4 +30,9 @@ PACK(struct RamBackup {
 
 extern RamBackup * ramBackup;
 
-#endif // _RAM_BACKUP_H_
+void rambackupWrite();
+bool rambackupRestore();
+unsigned int compress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, unsigned int len);
+unsigned int uncompress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, unsigned int len);
+
+#endif // _RTC_BACKUP_H_
