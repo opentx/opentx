@@ -319,6 +319,9 @@ void Bluetooth::processUploadFrame()
       }
       else if (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written) {
         uploadPosition += dataLength;
+        if (uploadPosition % 500 == 0) {
+          sendUploadAck();
+        }
       }
     }
     else {
