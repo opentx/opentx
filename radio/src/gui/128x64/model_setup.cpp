@@ -1490,6 +1490,15 @@ void menuModelSetup(event_t event)
             else if (multi_proto == MODULE_SUBTYPE_MULTI_OLRS) {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -1, 7);
             }
+            else if (multi_proto == MODULE_SUBTYPE_MULTI_DSM2) {
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 1);
+            }
+            else if (multi_proto == MODULE_SUBTYPE_MULTI_BAYANG) {
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 3);
+            }
+            else if (multi_proto == MODULE_SUBTYPE_MULTI_XN297DP) {
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -1, 84);
+            }
             else {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
             }
