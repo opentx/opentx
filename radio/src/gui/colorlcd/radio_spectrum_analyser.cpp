@@ -21,7 +21,19 @@
 #include "radio_spectrum_analyser.h"
 #include "opentx.h"
 
+extern uint8_t g_moduleIdx;
 #define SPECTRUM_HEIGHT  200
+
+
+coord_t getAverage(uint8_t number, const uint8_t * value)
+{
+  uint16_t sum = 0;
+  for (uint8_t i = 0; i < number; i++) {
+    sum += value[i];
+  }
+  return sum / number;
+}
+
 
 class SpectrumWindow : public Window
 {
@@ -38,20 +50,65 @@ class SpectrumWindow : public Window
         return;
       }
 
-      coord_t peak_y = 1;
-      coord_t peak_x = 0;
-      for (coord_t i = 0; i < LCD_W; i++) {
-        auto h = min<coord_t >(reusableBuffer.spectrumAnalyser.bars[i], SPECTRUM_HEIGHT);
-        if (h > peak_y) {
-          peak_x = i;
-          peak_y = h;
+#if defined(SIMU)
+      // Geneate random data for simu
+      for(coord_t x= 0; x < width(); x++) {
+        uint8_t power = rand() % 80;
+        reusableBuffer.spectrumAnalyser.bars[x] = power;
+        reusableBuffer.spectrumAnalyser.bars[x+1] = power;
+        if (power > reusableBuffer.spectrumAnalyser.max[x]) {
+          reusableBuffer.spectrumAnalyser.max[x] = power;
+          reusableBuffer.spectrumAnalyser.max[x+1] = power;
         }
-        dc->drawVerticalLine(i, SPECTRUM_HEIGHT - h, h, SOLID, 0);
+      }
+#endif
+
+      constexpr coord_t SCALE_HEIGHT = 12;
+      coord_t SCALE_TOP = height() - SCALE_HEIGHT - MENU_FOOTER_HEIGHT;
+      coord_t BARGRAPH_HEIGHT = height() - SCALE_HEIGHT;
+
+      // Draw fixed part (scale,..)
+      dc->drawSolidFilledRect(0, SCALE_TOP, width(), SCALE_HEIGHT, CURVE_AXIS_COLOR);
+      for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000; ; frequency += 10000000) {
+        int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+        int x = offset / reusableBuffer.spectrumAnalyser.step;
+        if (x >= LCD_W - 1)
+          break;
+        dc->drawVerticalLine(x, 0, height(), STASHED, CURVE_AXIS_COLOR);
+
+        if ((frequency / 1000000) % 2 == 0) {
+          dc->drawNumber(x, SCALE_TOP - 2, frequency / 1000000, FONT(XS) | CENTERED);
+        }
       }
 
-      auto y = max<coord_t>(FH, SPECTRUM_HEIGHT - peak_y - FH);
-      auto x = dc->drawNumber(min<coord_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / 128)) / 1000000, FONT(XXS));
-      dc->drawText(x, y, "M", FONT(XXS));
+      for (uint8_t power = 20;; power += 20) {
+        int y = SCALE_TOP - 1 - limit<int>(0, power << 1, SCALE_TOP);
+        if (y <= 0)
+          break;
+        dc->drawHorizontalLine(0, y, width(), STASHED, CURVE_AXIS_COLOR);
+      }
+
+      // Draw spectrum data
+      constexpr uint8_t step = 4;
+
+      for (coord_t xv = 0; xv < width(); xv += step) {
+        coord_t yv = SCALE_TOP - 1 - limit<int>(0, getAverage(step, &reusableBuffer.spectrumAnalyser.bars[xv]) << 1, SCALE_TOP);
+        coord_t max_yv = SCALE_TOP - 1 - limit<int>(0, getAverage(step, &reusableBuffer.spectrumAnalyser.max[xv]) << 1, SCALE_TOP);
+
+        // Signal bar
+        dc->drawSolidFilledRect(xv, yv, step - 1, SCALE_TOP - yv, YELLOW);
+        // lcdDrawSolidRect(xv, yv, step - 1, SCALE_TOP - yv, 1, TEXT_COLOR);
+
+        // Signal max
+        dc->drawSolidHorizontalLine(xv, max_yv, step - 1, BLACK);
+
+        // Decay max values
+        if (max_yv < yv) { // Those value are INVERTED (MENU_FOOTER_TOP - value)
+          for (uint8_t i = 0; i < step; i++) {
+            reusableBuffer.spectrumAnalyser.max[xv + i] = max<int>(0, reusableBuffer.spectrumAnalyser.max[xv + i] - 1);
+          }
+        }
+      }
     }
 
   protected:
@@ -74,7 +131,14 @@ void RadioSpectrumAnalyser::buildBody(FormWindow * window)
 
 void RadioSpectrumAnalyser::start()
 {
-  if (isModuleR9MAccess(moduleIdx)) {
+#if defined(INTERNAL_MODULE_MULTI)
+  if (g_moduleIdx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE) {
+      reusableBuffer.spectrumAnalyser.moduleOFF = true;
+      setModuleType(INTERNAL_MODULE, MODULE_TYPE_MULTIMODULE);
+    }
+#endif
+
+  if (isModuleR9MAccess(g_moduleIdx)) {
     reusableBuffer.spectrumAnalyser.spanDefault = 20;
     reusableBuffer.spectrumAnalyser.spanMax = 40;
     reusableBuffer.spectrumAnalyser.freqDefault = 890;
@@ -82,22 +146,24 @@ void RadioSpectrumAnalyser::start()
     reusableBuffer.spectrumAnalyser.freqMax = 930;
   }
   else {
-    reusableBuffer.spectrumAnalyser.spanDefault = 40;  // 40MHz
+    if (isModuleMultimodule(g_moduleIdx))
+      reusableBuffer.spectrumAnalyser.spanDefault = 80;  // 80MHz
+    else
+      reusableBuffer.spectrumAnalyser.spanDefault = 40;  // 40MHz
     reusableBuffer.spectrumAnalyser.spanMax = 80;
     reusableBuffer.spectrumAnalyser.freqDefault = 2440; // 2440MHz
     reusableBuffer.spectrumAnalyser.freqMin = 2400;
     reusableBuffer.spectrumAnalyser.freqMax = 2485;
   }
 
-  if (moduleState[moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
-    memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
-    reusableBuffer.spectrumAnalyser.span = reusableBuffer.spectrumAnalyser.spanDefault * 1000000;
-    reusableBuffer.spectrumAnalyser.freq = reusableBuffer.spectrumAnalyser.freqDefault * 1000000;
-    reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
-    reusableBuffer.spectrumAnalyser.dirty = true;
-    moduleState[moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
-  }
+  reusableBuffer.spectrumAnalyser.span = reusableBuffer.spectrumAnalyser.spanDefault * 1000000;
+  reusableBuffer.spectrumAnalyser.freq = reusableBuffer.spectrumAnalyser.freqDefault * 1000000;
+  reusableBuffer.spectrumAnalyser.track = reusableBuffer.spectrumAnalyser.freq;
+  reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
+  reusableBuffer.spectrumAnalyser.dirty = true;
+  moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
 }
+
 
 void RadioSpectrumAnalyser::stop()
 {
