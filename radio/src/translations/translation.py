@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+import os
+import glob
+import argparse
+
+
+TRANSLATIONS_PATH = os.path.dirname(os.path.realpath(__file__))
+
+
+def add_line(filename, newline, args):
+    print(filename, newline)
+    with open(filename, "r") as f:
+        lines = f.readlines()
+    newline += "\n"
+    if args.before:
+        for i, line in enumerate(lines):
+            if args.before in line:
+                lines.insert(i - 1, newline)
+                break
+    elif args.after:
+        for i, line in enumerate(lines):
+            if args.after in line:
+                lines.insert(i + 1, newline)
+                break
+    else:
+        lines.append(newline)
+    with open(filename, 'w') as f:
+        f.writelines(lines)
+
+
+def modify_translations(args):
+    for filename in glob.glob(TRANSLATIONS_PATH + "/*.h.txt"):
+        newline = '#define TR_%s%s"%s"' % (args.name, " " * max(1, 28 - len(args.name)), args.value)
+        add_line(filename, newline, args)
+
+
+def modify_declaration(args):
+    newline = 'extern const char STR_%s[];' % args.name
+    filename = TRANSLATIONS_PATH + "/../translations.h"
+    add_line(filename, newline, args)
+
+
+def modify_definition(args):
+    newline = 'const char STR_%s[] = TR_%s;' % (args.name, args.name)
+    filename = TRANSLATIONS_PATH + "/../translations.cpp"
+    add_line(filename, newline, args)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Helper to manage translations")
+    parser.add_argument("--after", required=False, help="String just before the new one")
+    parser.add_argument("--before", required=False, help="String just after the new one")
+    parser.add_argument("--name", help="String name")
+    parser.add_argument("value", help="String value")
+    args = parser.parse_args()
+
+    modify_translations(args)
+    modify_declaration(args)
+    modify_definition(args)
+
+
+if __name__ == "__main__":
+    main()
