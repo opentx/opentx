@@ -394,7 +394,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
 
   // RSSI
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE &&
-      g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
+      g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
     new Subtitle(window, grid.getLineSlot(), "RSNR");
   else
     new Subtitle(window, grid.getLineSlot(), "RSSI");

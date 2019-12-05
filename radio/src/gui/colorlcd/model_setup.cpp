@@ -536,22 +536,12 @@ class ModuleWindow : public FormGroup {
         new StaticText(this, grid.getLabelSlot(true), STR_RF_PROTOCOL);
 
         // Multi type (CUSTOM, brand A, brand B,...)
-        int multiRfProto = g_model.moduleData[moduleIdx].multi.customProto == 1 ? MODULE_SUBTYPE_MULTI_CUSTOM : g_model.moduleData[moduleIdx].getMultiProtocol(false);
+        int multiRfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
         rfChoice = new Choice(this, grid.getFieldSlot(g_model.moduleData[moduleIdx].multi.customProto ? 3 : 2, 0), STR_MULTI_PROTOCOLS, MODULE_SUBTYPE_MULTI_FIRST, MODULE_SUBTYPE_MULTI_LAST,
                               GET_DEFAULT(multiRfProto),
                               [=](int32_t newValue) {
-                                g_model.moduleData[moduleIdx].multi.customProto = (newValue == MODULE_SUBTYPE_MULTI_CUSTOM);
-                                if (!g_model.moduleData[moduleIdx].multi.customProto)
-                                  g_model.moduleData[moduleIdx].setMultiProtocol(newValue);
-                                g_model.moduleData[moduleIdx].subType = 0;
-                                // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                                if (g_model.moduleData[moduleIdx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
-                                  g_model.moduleData[moduleIdx].multi.autoBindMode = 1;
-                                }
-                                else {
-                                  g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
-                                }
-                                g_model.moduleData[moduleIdx].multi.optionValue = 0;
+                                g_model.moduleData[moduleIdx].setMultiProtocol(newValue);
+                                resetMultiProtocolsOptions(moduleIdx);
                                 SET_DIRTY();
                                 update();
                                 rfChoice->setFocus();
@@ -560,7 +550,7 @@ class ModuleWindow : public FormGroup {
         if (g_model.moduleData[moduleIdx].multi.customProto) {
           // Proto column 1
           new NumberEdit(this, grid.getFieldSlot(3, 1), 0, 63,
-                         GET_DEFAULT(g_model.moduleData[moduleIdx].getMultiProtocol(false)),
+                         GET_DEFAULT(g_model.moduleData[moduleIdx].getMultiProtocol()),
                          [=](int32_t newValue) {
                            g_model.moduleData[moduleIdx].setMultiProtocol(newValue);
                            SET_DIRTY();
@@ -571,7 +561,7 @@ class ModuleWindow : public FormGroup {
         }
         else {
           // Subtype (D16, DSMX,...)
-          const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol(false));
+          const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
           if (pdef->maxSubtype > 0)
             new Choice(this, grid.getFieldSlot(2, 1), pdef->subTypeString, 0, pdef->maxSubtype,GET_SET_DEFAULT(g_model.moduleData[moduleIdx].subType));
         }
@@ -593,7 +583,7 @@ class ModuleWindow : public FormGroup {
         }*/
 
         // Multi optional feature row
-        const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol(true);
+        const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
         const mm_protocol_definition *pdef = getMultiProtocolDefinition(multi_proto);
         if (pdef->optionsstr) {
           grid.nextLine();
@@ -614,7 +604,7 @@ class ModuleWindow : public FormGroup {
 
         // Bind on power up
         grid.nextLine();
-        new StaticText(this, grid.getLabelSlot(true),g_model.moduleData[moduleIdx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2 ? STR_MULTI_DSM_AUTODTECT : STR_MULTI_AUTOBIND);
+        new StaticText(this, grid.getLabelSlot(true),g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2 ? STR_MULTI_DSM_AUTODTECT : STR_MULTI_AUTOBIND);
         new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.autoBindMode));
 
         // Low power mode
