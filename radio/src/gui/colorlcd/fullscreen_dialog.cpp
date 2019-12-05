@@ -144,7 +144,7 @@ void FullScreenDialog::runForever()
     }
 
     checkBacklight();
-    wdt_reset();
+    //wdt_reset(); //TODO
 
     RTOS_WAIT_MS(20);
     mainWindow.run(false);
