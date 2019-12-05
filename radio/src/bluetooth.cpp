@@ -48,14 +48,17 @@ void Bluetooth::pushByte(uint8_t byte)
   uint16_t newCrc = outputCrc + byte;
   outputCrc = newCrc + (newCrc >> 8);
   if (byte == START_STOP || byte == BYTE_STUFF) {
+    TRACE_NOCRLF(" %02X", BYTE_STUFF);
     btTxFifo.push(BYTE_STUFF);
     byte ^= STUFF_MASK;
   }
+  TRACE_NOCRLF(" %02X", byte);
   btTxFifo.push(byte);
 }
 
 void Bluetooth::startOutputFrame(uint8_t frameType)
 {
+  TRACE_NOCRLF("BT> %02X", START_STOP);
   outputCrc = 0;
   btTxFifo.push(START_STOP);
   pushByte(frameType);
@@ -65,6 +68,7 @@ void Bluetooth::endOutputFrame()
 {
   pushByte(outputCrc);
   btTxFifo.push(START_STOP);
+  TRACE(" %02X", START_STOP);
 }
 
 void Bluetooth::write(const uint8_t * data, uint8_t length)
@@ -311,12 +315,14 @@ void Bluetooth::processUploadFrame()
       if (dataLength == 0) {
         f_close(&file);
         sendUploadAck();
+        state = BLUETOOTH_STATE_CONNECTED;
       }
       else if (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written) {
         uploadPosition += dataLength;
       }
     }
     else {
+      TRACE("BT offset %d instead of %d", offset, uploadPosition);
       sendUploadAck();
     }
   }

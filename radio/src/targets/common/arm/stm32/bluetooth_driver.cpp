@@ -142,16 +142,13 @@ extern "C" void BT_USART_IRQHandler(void)
 void bluetoothWriteWakeup()
 {
   if (bluetoothWriteState == BLUETOOTH_WRITE_IDLE) {
-    // TODO perhaps this test can be removed later if we change the order
-    if (!btTxFifo.isEmpty()) {
 #if defined(BT_BRTS_GPIO_PIN)
-      bluetoothWriteState = BLUETOOTH_WRITE_INIT;
-      GPIO_ResetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
+    bluetoothWriteState = BLUETOOTH_WRITE_INIT;
+    GPIO_ResetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
 #else
-      bluetoothWriteState = BLUETOOTH_WRITING;
-      USART_ITConfig(BT_USART, USART_IT_TXE, ENABLE);
+    bluetoothWriteState = BLUETOOTH_WRITING;
+    USART_ITConfig(BT_USART, USART_IT_TXE, ENABLE);
 #endif
-    }
   }
 #if defined(BT_BRTS_GPIO_PIN)
   else if (bluetoothWriteState == BLUETOOTH_WRITE_INIT) {
@@ -165,7 +162,7 @@ void bluetoothWriteWakeup()
 #endif
 }
 
-uint8_t bluetoothIsWriting(void)
+uint8_t bluetoothIsWriting()
 {
   return bluetoothWriteState != BLUETOOTH_WRITE_IDLE;
 }
