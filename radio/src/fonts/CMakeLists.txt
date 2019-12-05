@@ -1,17 +1,13 @@
 set(FONT "Roboto/Roboto-Regular")
 set(FONT_BOLD "Roboto/Roboto-Bold")
-set(FONT_OFFSET 1)
 set(CJK_FONT "Noto/NotoSansCJKsc-Regular")
 set(CJK_FONT_BOLD "Noto/NotoSansCJKsc-Bold")
-set(CJK_FONT_OFFSET -3)
 
 #set(FONT "Kanit/Kanit-Regular")
 #set(FONT_BOLD "Kanit/Kanit-Bold")
-#set(FONT_OFFSET -2)
 
 #set(FONT "Ubuntu/Ubuntu-Regular")
 #set(FONT_BOLD "Ubuntu/Ubuntu-Bold")
-#set(FONT_OFFSET 1)
 
 if(TRANSLATIONS STREQUAL CN)
   set(subset all)

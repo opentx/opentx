@@ -123,7 +123,7 @@ DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
 #define FLASH_PAGESIZE 256
 void unlockFlash();
 void lockFlash();
-void flashWrite(uint32_t * address, uint32_t * buffer);
+void flashWrite(uint32_t * address, const uint32_t * buffer);
 uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
 
@@ -252,21 +252,20 @@ extern uint32_t powerupReason;
 #define DIRTY_SHUTDOWN                  0xCAFEDEAD
 #define NORMAL_POWER_OFF                ~DIRTY_SHUTDOWN
 
-#define wdt_disable()
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)
   #define WAS_RESET_BY_WATCHDOG()               (false)
   #define WAS_RESET_BY_SOFTWARE()               (false)
   #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (false)
-  #define wdt_enable(x)
-  #define wdt_reset()
+  #define WDG_ENABLE(x)
+  #define WDG_RESET()
 #else
-  #if defined(WATCHDOG_DISABLED)
-    #define wdt_enable(x)
-    #define wdt_reset()
+  #if defined(WATCHDOG)
+    #define WDG_ENABLE(x)                       watchdogInit(x)
+    #define WDG_RESET()                         IWDG->KR = 0xAAAA
   #else
-    #define wdt_enable(x)                       watchdogInit(x)
-    #define wdt_reset()                         IWDG->KR = 0xAAAA
+    #define WDG_ENABLE(x)
+    #define WDG_RESET()
   #endif
   #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
   #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)

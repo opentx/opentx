@@ -115,9 +115,12 @@ void FullScreenDialog::checkEvents()
 
 void FullScreenDialog::deleteLater()
 {
+#if !defined(HARDWARE_TOUCH)
   if (previousFocus) {
     previousFocus->setFocus();
   }
+#endif
+
   if (running) {
     running = false;
   }

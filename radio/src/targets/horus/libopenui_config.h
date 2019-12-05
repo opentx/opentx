@@ -55,7 +55,7 @@ constexpr uint32_t FH =                            PAGE_LINE_HEIGHT;
 constexpr uint32_t NUM_BODY_LINES =                MENU_BODY_HEIGHT / PAGE_LINE_HEIGHT;
 
 constexpr uint32_t FIELD_PADDING_LEFT =            3;
-constexpr uint32_t FIELD_PADDING_TOP =             0;
+constexpr uint32_t FIELD_PADDING_TOP =             2;
 
 constexpr uint32_t CURVE_SIDE_WIDTH =              100;
 constexpr uint32_t CURVE_CENTER_X =                LCD_W - CURVE_SIDE_WIDTH - 7;

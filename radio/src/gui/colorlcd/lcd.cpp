@@ -113,10 +113,10 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
       if (c >= 0x101)
         c -= 1;
       c += CJK_FIRST_LETTER_INDEX;
-      result += getFontPatternWidth(specs, c);
+      result += getFontPatternWidth(specs, c) + 1;
     }
     else if (c >= 0x20) {
-      result += getCharWidth(c, specs);
+      result += getCharWidth(c, specs) + 1;
     }
 
     ++s;
