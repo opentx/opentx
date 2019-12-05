@@ -73,7 +73,7 @@ set(GVARS_VARIANT   1)
 set(FRSKY_VARIANT   2)
 set(3POS_VARIANT    4)
 
-set(RADIO_DEPENDENCIES firmware_translations)
+set(RADIO_DEPENDENCIES radio_translations)
 
 set(FATFS_SRC
   ${FATFS_DIR}/ff.c
