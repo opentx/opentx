@@ -24,6 +24,7 @@
 #include "stamp.h"
 #include "lua_api.h"
 #include "telemetry/frsky.h"
+#include "telemetry/multi.h"
 
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
@@ -442,7 +443,7 @@ When called without parameters, it will only return the status of the output buf
 
 static int luaSportTelemetryPush(lua_State * L)
 {
-  if (telemetryProtocol != PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+  if (!IS_FRSKY_SPORT_PROTOCOL()) {
     lua_pushboolean(L, false);
     return 1;
   }
@@ -1507,6 +1508,40 @@ static int luaResetGlobalTimer(lua_State * L)
 }
 
 /*luadoc
+@function multiBuffer(address[,value])
+
+This function reads/writes the Multi protocol buffer to interact with a protocol².
+
+@param address to read/write in the buffer
+@param (optional): value to write in the buffer
+
+@retval buffer value (number)
+
+@status current Introduced in 2.3.2
+*/
+#if defined(MULTIMODULE)
+uint8_t * Multi_Buffer = nullptr;
+
+static int luaMultiBuffer(lua_State * L)
+{
+  uint8_t address = luaL_checkunsigned(L, 1);
+  if (!Multi_Buffer)
+    Multi_Buffer = (uint8_t *) malloc(MULTI_BUFFER_SIZE);
+
+  if (!Multi_Buffer || address >= MULTI_BUFFER_SIZE) {
+    lua_pushinteger(L, 0);
+    return 0;
+  }
+  uint16_t value = luaL_optunsigned(L, 2, 0x100);
+  if (value < 0x100) {
+    Multi_Buffer[address] = value;
+  }
+  lua_pushinteger(L, Multi_Buffer[address]);
+  return 1;
+}
+#endif
+
+/*luadoc
 @function serialWrite(str)
 @param str (string) String to be written to the serial port.
 
@@ -1586,6 +1621,9 @@ const luaL_Reg opentxLib[] = {
 #if defined(CROSSFIRE)
   { "crossfireTelemetryPop", luaCrossfireTelemetryPop },
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
+#endif
+#if defined(MULTIMODULE)
+  { "multiBuffer", luaMultiBuffer },
 #endif
   { "serialWrite", luaSerialWrite },
   { nullptr, nullptr }  /* sentinel */

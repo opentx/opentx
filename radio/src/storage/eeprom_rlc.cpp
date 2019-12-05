@@ -729,7 +729,7 @@ void RlcFile::nextRlcWriteStep()
 void RlcFile::flush()
 {
   while (!eepromIsTransferComplete())
-    wdt_reset();
+    WDG_RESET();
 
   ENABLE_SYNC_WRITE(true);
 

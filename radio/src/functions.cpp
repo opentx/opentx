@@ -169,14 +169,14 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             if (param == 0)
               newActiveFunctions |= 0x0F;
             else if (param <= NUM_STICKS)
-              newActiveFunctions |= (1 << (param-1));
+              newActiveFunctions |= (1 << (param - 1));
             else if (param == NUM_STICKS + 1)
-              newActiveFunctions |= (1 << FUNCTION_TRAINER_CHANNELS);
+              newActiveFunctions |= (1u << FUNCTION_TRAINER_CHANNELS);
             break;
           }
 
           case FUNC_INSTANT_TRIM:
-            newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
+            newActiveFunctions |= (1u << FUNCTION_INSTANT_TRIM);
             if (!isFunctionActive(FUNCTION_INSTANT_TRIM)) {
 #if defined(COLORLCD)
   #warning IS_INSTANT_TRIM_ALLOWED() is always false

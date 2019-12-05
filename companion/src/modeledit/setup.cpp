@@ -195,13 +195,24 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
 
   ui->label_module->setText(ModuleData::indexToString(moduleIdx, firmware));
   if (moduleIdx < 0) {
-    if (IS_HORUS(firmware->getBoard())) {
+    if (!IS_TARANIS(firmware->getBoard())) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
-    }
-    if (generalSettings.auxSerialMode != UART_MODE_SBUS_TRAINER) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
     }
+    else if (generalSettings.auxSerialMode != UART_MODE_SBUS_TRAINER) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
+    }
+
+    if (generalSettings.bluetoothMode != 2) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BLUETOOTH, 0, Qt::UserRole - 1);
+      ui->trainerMode->setItemData(TRAINER_MODE_SLAVE_BLUETOOTH, 0, Qt::UserRole - 1);
+    }
+
+    if (!IS_JUMPER_T16(firmware->getBoard())) {
+      ui->trainerMode->setItemData(TRAINER_MODE_MULTI, 0, Qt::UserRole - 1);
+    }
+
     ui->trainerMode->setCurrentIndex(model.trainerMode);
     if (!IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       ui->label_trainerMode->hide();
@@ -226,6 +237,9 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
     if (i == MODULE_SUBTYPE_MULTI_SCANNER)
       continue;
     ui->multiProtocol->addItem(Multiprotocols::protocolToString(i), i);
+  }
+  for (int i=MODULE_SUBTYPE_MULTI_LAST + 1; i <= 124; i++) {
+    ui->multiProtocol->addItem(QString::number(i + 3), i);
   }
 
   ui->btnGrpValueType->setId(ui->optPercent, FAILSAFE_DISPLAY_PERCENT);
@@ -269,7 +283,9 @@ bool ModulePanel::moduleHasFailsafes()
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M ||
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE ||
     (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE_PRO ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_XJT_LITE_X16);
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_XJT_LITE_X16 ||
+    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_MULTIMODULE
+    );
 }
 
 void ModulePanel::setupFailsafes()
@@ -469,14 +485,14 @@ void ModulePanel::update()
         break;
       case PULSES_MULTIMODULE:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE | MASK_SUBTYPES;
-        max_rx_num = 15;
+        max_rx_num = 63;
         if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
           mask |= MASK_CHANNELS_COUNT;
         else
           module.channelsCount = 16;
         if (pdef.optionsstr != nullptr)
           mask |= MASK_MULTIOPTION;
-        if (pdef.hasFailsafe)
+        if (pdef.hasFailsafe || (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_FRSKY && (module.subType == 0 || module.subType == 2 || module.subType > 3 )))
           mask |= MASK_FAILSAFES;
         break;
       case PULSES_OFF:
@@ -565,7 +581,7 @@ void ModulePanel::update()
     unsigned i = 0;
     switch(protocol){
     case PULSES_MULTIMODULE:
-      numEntries = (module.multi.customProto ? 8 : pdef.numSubTypes());
+      numEntries = (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST ? 8 : pdef.numSubTypes());
       break;
     case PULSES_PXX_R9M:
       if (firmware->getCapability(HasModuleR9MFlex))
@@ -587,11 +603,19 @@ void ModulePanel::update()
   ui->multiProtocol->setVisible(mask & MASK_MULTIMODULE);
   ui->label_option->setVisible(mask & MASK_MULTIOPTION);
   ui->optionValue->setVisible(mask & MASK_MULTIOPTION);
-  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
+  ui->disableTelem->setVisible(mask & MASK_MULTIMODULE);
+  ui->disableChMap->setVisible(mask & MASK_MULTIMODULE);
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
+  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
+  if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
+    ui->autoBind->setText(tr("Autodetect Format"));
+  else
+    ui->autoBind->setText(tr("Bind on channel"));
 
   if (mask & MASK_MULTIMODULE) {
     ui->multiProtocol->setCurrentIndex(ui->multiProtocol->findData(module.multi.rfProtocol));
+    ui->disableTelem->setChecked(module.multi.disableTelemetry);
+    ui->disableChMap->setChecked(module.multi.disableMapping);
     ui->autoBind->setChecked(module.multi.autoBindMode);
     ui->lowPower->setChecked(module.multi.lowPowerMode);
   }
@@ -763,7 +787,7 @@ void ModulePanel::onMultiProtocolChanged(int index)
     lock=true;
     module.multi.rfProtocol = (unsigned int)rfProtocol;
     unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubTypes();
-    if (module.multi.customProto)
+    if (rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
       maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
     module.channelsCount = getMaxChannelCount();
@@ -793,10 +817,21 @@ void ModulePanel::onSubTypeChanged()
   }
 }
 
+void ModulePanel::on_disableTelem_stateChanged(int state)
+{
+  module.multi.disableTelemetry = (state == Qt::Checked);
+}
+
+void ModulePanel::on_disableChMap_stateChanged(int state)
+{
+  module.multi.disableMapping = (state == Qt::Checked);
+}
+
 void ModulePanel::on_autoBind_stateChanged(int state)
 {
   module.multi.autoBindMode = (state == Qt::Checked);
 }
+
 void ModulePanel::on_lowPower_stateChanged(int state)
 {
   module.multi.lowPowerMode = (state == Qt::Checked);

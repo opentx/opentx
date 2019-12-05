@@ -174,8 +174,8 @@ void checkEeprom()
 #else
 void checkEeprom()
 {
-#if defined(RAMBACKUP)
-  if (TIME_TO_RAMBACKUP()) {
+#if defined(RTC_BACKUP_RAM) && !defined(SIMU)
+  if (TIME_TO_BACKUP_RAM()) {
     rambackupWrite();
     rambackupDirtyMsk = 0;
   }
@@ -296,6 +296,8 @@ void guiMain(event_t evt)
   lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
 #endif
 
+  bool screenshotRequested = (mainRequestFlags & (1u << REQUEST_SCREENSHOT));
+
 #if defined(LIBOPENUI)
   mainWindow.run();
 #else
@@ -305,7 +307,6 @@ void guiMain(event_t evt)
       // normal GUI from menus
       const char * warn = warningText;
       uint8_t menu = popupMenuItemsCount;
-
       static bool popupDisplayed = false;
       if (warn || menu) {
         if (popupDisplayed == false) {
@@ -315,7 +316,7 @@ void guiMain(event_t evt)
           lcdStoreBackupBuffer();
           TIME_MEASURE_STOP(storebackup);
         }
-        if (popupDisplayed == false || evt) {
+        if (popupDisplayed == false || evt || screenshotRequested) {
           popupDisplayed = lcdRestoreBackupBuffer();
           if (warn) {
             DISPLAY_WARNING(evt);
@@ -368,6 +369,11 @@ void guiMain(event_t evt)
     DEBUG_TIMER_STOP(debugTimerMenus);
   }
 
+  if (screenshotRequested) {
+    writeScreenshot();
+    mainRequestFlags &= ~(1u << REQUEST_SCREENSHOT);
+  }
+
   if (refreshNeeded) {
     DEBUG_TIMER_START(debugTimerLcdRefresh);
     lcdRefresh();
@@ -376,7 +382,6 @@ void guiMain(event_t evt)
 #endif
 }
 #elif defined(GUI)
-
 void handleGui(event_t event) {
   // if Lua standalone, run it and don't clear the screen (Lua will do it)
   // else if Lua telemetry view, run it and don't clear the screen
@@ -474,6 +479,11 @@ void guiMain(event_t evt)
   }
 
   lcdRefresh();
+
+  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
+    writeScreenshot();
+    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
+  }
 }
 #endif
 
@@ -507,7 +517,7 @@ void perMain()
   event_t evt = getEvent(false);
 #endif
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
   if (globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
@@ -551,11 +561,6 @@ void perMain()
 #endif
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
-
-  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
-    writeScreenshot();
-    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
-  }
 
 #if defined(PCBX9E) && !defined(SIMU)
   toplcdRefreshStart();

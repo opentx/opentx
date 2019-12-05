@@ -864,6 +864,44 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
   }
 }
 
+void drawTimerWithMode(coord_t x, coord_t y, uint8_t index, LcdFlags att)
+{
+  const TimerData &timer = g_model.timers[index];
+
+  if (timer.mode) {
+    const TimerState &timerState = timersStates[index];
+    const uint8_t negative = (timerState.val < 0 ? BLINK | INVERS : 0);
+    if (timerState.val < 60 * 60) { // display MM:SS
+      div_t qr = div((int) abs(timerState.val), 60);
+      lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0 | negative, 2);
+      lcdDrawText(lcdLastLeftPos, y, ":", att | BLINK | negative);
+      lcdDrawNumber(lcdLastLeftPos, y, qr.quot, att | negative);
+      if (negative)
+        lcdDrawText(lcdLastLeftPos, y, "-", att | negative);
+    }
+    else if (timerState.val < (99 * 60 * 60) + (59 * 60)) { // display HHhMM
+      div_t qr = div((int) (abs(timerState.val) / 60), 60);
+      lcdDrawNumber(x - 5, y, qr.rem, att | LEADING0, 2);
+      lcdDrawText(lcdLastLeftPos, y, "h", att);
+      lcdDrawNumber(lcdLastLeftPos, y, qr.quot, att);
+      if (negative)
+        lcdDrawText(lcdLastLeftPos, y, "-", att);
+    }
+    else {  //display HHHH for crazy large persistent timers
+      lcdDrawText(x - 5, y, "h", att);
+      lcdDrawNumber(lcdLastLeftPos, y, timerState.val / 3600, att);
+    }
+    uint8_t xLabel = (negative ? x - 56 : x - 49);
+    uint8_t len = zlen(timer.name, LEN_TIMER_NAME);
+    if (len > 0) {
+      lcdDrawSizedText(xLabel, y + FH, timer.name, len, RIGHT | ZCHAR);
+    }
+    else {
+      drawTimerMode(xLabel, y + FH, timer.mode, RIGHT);
+    }
+  }
+}
+
 void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags att)
 {
   y+=3;

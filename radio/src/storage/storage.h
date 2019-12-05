@@ -23,7 +23,7 @@
 
 #if defined(SIMU)
   #define WRITE_DELAY_10MS 100
-#elif defined(RAMBACKUP)
+#elif defined(RTC_BACKUP_RAM)
   #define WRITE_DELAY_10MS 1500 /* 15s */
 #elif defined(PCBTARANIS)
   #define WRITE_DELAY_10MS 500
@@ -37,10 +37,11 @@ extern uint8_t   storageDirtyMsk;
 extern tmr10ms_t storageDirtyTime10ms;
 #define TIME_TO_WRITE()                (storageDirtyMsk && (tmr10ms_t)(get_tmr10ms() - storageDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
+#include "storage/rtc_backup.h"
 extern uint8_t   rambackupDirtyMsk;
 extern tmr10ms_t rambackupDirtyTime10ms;
-#define TIME_TO_RAMBACKUP()            (rambackupDirtyMsk && (tmr10ms_t)(get_tmr10ms() - rambackupDirtyTime10ms) >= (tmr10ms_t)100)
+#define TIME_TO_BACKUP_RAM()            (rambackupDirtyMsk && (tmr10ms_t)(get_tmr10ms() - rambackupDirtyTime10ms) >= (tmr10ms_t)100)
 #endif
 
 //
@@ -69,7 +70,7 @@ void checkExternalAntenna();
 #include "sdcard_common.h"
 #endif
 
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM)
 #include "rambackup.h"
 #endif
 

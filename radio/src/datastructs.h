@@ -421,6 +421,7 @@ PACK(struct TrainerModuleData {
 
 // Only used in case switch and if statements as "virtual" protocol
 #define MM_RF_CUSTOM_SELECTED 0xff
+#define MULTI_MAX_PROTOCOLS 127 //  rfProtocol:4 +  rfProtocolExtra:3
 PACK(struct ModuleData {
   uint8_t type:4 ENUM(ModuleType);
   // TODO some refactoring is needed, rfProtocol is only used by DSM2 and MULTI, it could be merged with subType
@@ -440,8 +441,9 @@ PACK(struct ModuleData {
       int8_t  frameLength;
     } ppm);
     NOBACKUP(struct {
-      uint8_t rfProtocolExtra:2;
-      uint8_t spare1:3 SKIP;
+      uint8_t rfProtocolExtra:3;
+      uint8_t disableTelemetry:1;
+      uint8_t disableMapping:1;
       uint8_t customProto:1;
       uint8_t autoBindMode:1;
       uint8_t lowPowerMode:1;
@@ -475,15 +477,13 @@ PACK(struct ModuleData {
   } NAME(mod) FUNC(select_mod_type);
 
   // Helper functions to set both of the rfProto protocol at the same time
-  NOBACKUP(inline uint8_t getMultiProtocol(bool returnCustom) {
-    if (returnCustom && multi.customProto)
-      return MM_RF_CUSTOM_SELECTED;
+  NOBACKUP(inline uint8_t getMultiProtocol() {
     return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
   })
 
   NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
     rfProtocol = (uint8_t) (proto & 0x0f);
-    multi.rfProtocolExtra = (proto & 0x30) >> 4;
+    multi.rfProtocolExtra = (proto & 0x70) >> 4;
   })
 });
 

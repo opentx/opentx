@@ -48,7 +48,7 @@ void bootloaderInitScreen()
  
   backlightEnable(BACKLIGHT_LEVEL_MAX);
 
-  //TODO: load/decompress bitmaps
+  // TODO: load/decompress bitmaps
   extern void loadFonts();
   loadFonts();
 }
@@ -73,7 +73,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
     lcd->clear(DEFAULT_BGCOLOR);
     
     if (st == ST_START) {
-        bootloaderDrawTitle(88, "HORUS BOOTLOADER");
+        bootloaderDrawTitle(88, "OpenTX Bootloader");
         
         lcd->drawBitmapPattern(90, 72, LBM_FLASH, DEFAULT_COLOR);
         lcd->drawText(124,  75, "Write Firmware");

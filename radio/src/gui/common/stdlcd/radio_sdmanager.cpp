@@ -568,13 +568,15 @@ void menuRadioSdManager(event_t _event)
     if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
       if (reusableBuffer.sdManager.otaUpdateInformation.step == BIND_INIT) {
         if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount > 0) {
-          popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
-          for (uint8_t i=0; i<popupMenuItemsCount; i++) {
-            popupMenuItems[i] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[i];
+          if(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount != popupMenuItemsCount) {
+            CLEAR_POPUP();
+            popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount,PXX2_MAX_RECEIVERS_PER_MODULE);
+            for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
+              popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
+            }
+            popupMenuTitle = STR_PXX2_SELECT_RX;
+            POPUP_MENU_START(onUpdateReceiverSelection);
           }
-          popupMenuTitle = STR_PXX2_SELECT_RX;
-          CLEAR_POPUP();
-          POPUP_MENU_START(onUpdateReceiverSelection);
         }
         else {
           POPUP_WAIT(STR_WAITING_FOR_RX);

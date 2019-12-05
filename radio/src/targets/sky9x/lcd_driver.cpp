@@ -120,7 +120,7 @@ void lcdInit()
       TC0->TC_CHANNEL[0].TC_CCR = 5; // Enable clock and trigger it (may only need trigger)
       while ( TC0->TC_CHANNEL[0].TC_CV < 36000 ) {
         // Value depends on MCK/2 (used 18MHz) give 2mS delay
-        wdt_reset(); // Wait
+        WDG_RESET(); // Wait
       }
     }
   }

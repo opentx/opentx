@@ -32,6 +32,43 @@
 #define CROSSFIRE_CHANNELS_COUNT        16
 
 #if defined(MULTIMODULE)
+// When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
+// Keep the order of the fields that the so that the size stays small
+struct mm_options_strings {
+  static const char* options[];
+};
+
+struct mm_protocol_definition {
+  uint8_t protocol;
+  uint8_t maxSubtype;
+  bool failsafe;
+  bool disable_ch_mapping;
+  const char *subTypeString;
+  const char *optionsstr;
+};
+
+const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
+
+inline uint8_t getMaxMultiSubtype(uint8_t moduleIdx)
+{
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
+    return 5;
+  }
+
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
+    if (status.isValid())
+      return (status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1);
+    else
+      return 7;
+  }
+  else {
+    return max((uint8_t )(status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1), pdef->maxSubtype);
+  }
+}
+
 inline bool isModuleMultimodule(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_MULTIMODULE;
@@ -39,7 +76,7 @@ inline bool isModuleMultimodule(uint8_t idx)
 
 inline bool isModuleMultimoduleDSM2(uint8_t idx)
 {
-  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2;
+  return isModuleMultimodule(idx) && g_model.moduleData[idx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2;
 }
 #else
 inline bool isModuleMultimodule(uint8_t)
@@ -341,6 +378,8 @@ inline int8_t sentModuleChannels(uint8_t idx)
     return CROSSFIRE_CHANNELS_COUNT;
   else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
     return 16;
+  else if (isModuleSBUS(idx))
+    return 16;
   else
     return 8 + g_model.moduleData[idx].channelsCount;
 }
@@ -405,8 +444,14 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(moduleIdx)){
-    MultiModuleStatus& status = getMultiModuleStatus(moduleIdx);
-    return status.isValid() && status.supportsFailsafe();
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.isValid()) {
+      return status.supportsFailsafe();
+    }
+    else {
+      const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+      return pdef->failsafe;
+    }
   }
 #endif
 
@@ -428,7 +473,15 @@ inline uint8_t getMaxRxNum(uint8_t idx)
 
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(idx))
-    return g_model.moduleData[idx].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_OLRS ? 4 : 15;
+  {
+    switch (g_model.moduleData[idx].getMultiProtocol()) {
+      case MODULE_SUBTYPE_MULTI_OLRS:
+        return 4;
+      case MODULE_SUBTYPE_MULTI_BUGS:
+      case MODULE_SUBTYPE_MULTI_BUGS_MINI:
+        return 15;
+    }
+  }
 #endif
 
   return 63;
@@ -536,5 +589,25 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
 }
 
 extern bool isExternalAntennaEnabled();
+
+#if defined(MULTIMODULE)
+inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
+{
+  if (!isModuleMultimodule(moduleIdx))
+    return;
+
+  // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
+    g_model.moduleData[moduleIdx].multi.autoBindMode = 1;
+  }
+  else {
+    g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
+  }
+  g_model.moduleData[moduleIdx].multi.optionValue = 0;
+  g_model.moduleData[moduleIdx].multi.disableTelemetry = 0;
+  g_model.moduleData[moduleIdx].multi.disableMapping = 0;
+  g_model.moduleData[moduleIdx].multi.lowPowerMode = 0;
+}
+#endif
 
 #endif // _MODULES_HELPERS_H_

@@ -208,7 +208,7 @@ void ModelCell::setRfModuleData(uint8_t moduleIdx, ModuleData* modData)
   }
   else {
     // do we care here about MM_RF_CUSTOM_SELECTED? probably not...
-    moduleData[moduleIdx].rfProtocol = modData->getMultiProtocol(false);
+    moduleData[moduleIdx].rfProtocol = modData->getMultiProtocol();
   }
 }
 

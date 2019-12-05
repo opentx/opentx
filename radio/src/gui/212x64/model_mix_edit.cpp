@@ -91,10 +91,10 @@ void menuModelMixOne(event_t event)
   }
 
   MixData * md2 = mixAddress(s_currIdx) ;
-  putsChn(PSIZE(TR_MIXER)*FW+FW, 0, md2->destCh+1,0);
+  putsChn(PSIZE(TR_MIXES)*FW+FW, 0, md2->destCh+1,0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
-  SUBMENU(STR_MIXER, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+  SUBMENU(STR_MIXES, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;

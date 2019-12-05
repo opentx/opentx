@@ -85,6 +85,11 @@ void LimitData::clear()
   max = +1000;
 }
 
+bool LimitData::isEmpty() const
+{
+  return (min == -1000 && max == 1000 && !revert && !offset && !ppmCenter && !symetrical && name[0] == '\0');
+}
+
 
 /*
  * CurveData

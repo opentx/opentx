@@ -86,6 +86,7 @@ extern DMA_Stream_TypeDef dma1_stream0, dma1_stream1, dma1_stream2, dma1_stream3
 extern DMA_TypeDef dma2;
 extern SysTick_Type systick;
 extern ADC_Common_TypeDef adc;
+extern RTC_TypeDef rtc;
 #undef SysTick
 #define SysTick (&systick)
 #undef GPIOA
@@ -166,6 +167,8 @@ extern ADC_Common_TypeDef adc;
 #define DMA2 (&dma2)
 #undef ADC
 #define ADC (&adc)
+#undef RTC
+#define RTC (&rtc)
 #elif defined(PCBSKY9X)
 extern Pmc pmc;
 #undef PMC

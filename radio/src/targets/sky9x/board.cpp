@@ -330,6 +330,7 @@ void i2cInit()
   TWI0->TWI_MMR = 0x002F0000 ;          // Device 5E (>>1) and master is writing
   NVIC_EnableIRQ(TWI0_IRQn) ;
 }
+#endif
 
 void boardInit()
 {
@@ -388,12 +389,11 @@ void boardInit()
   lcdInit();
 
   init_SDcard();
-}
-#else
-void boardInit()
-{
-}
+
+#if defined(PCBAR9X)
+  rtcInit();
 #endif
+}
 
 uint8_t temperature = 0;          // Raw temp reading
 uint8_t maxTemperature = 0 ;       // Raw temp reading

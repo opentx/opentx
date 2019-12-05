@@ -29,10 +29,6 @@ extern "C" {
 }
 #endif
 
-uint32_t shutdownRequest;          // Stores intentional shutdown to avoid reboot loop
-uint32_t shutdownReason;           // Used for detecting unexpected reboots regardless of reason
-uint32_t powerupReason __NOINIT;   // Stores power up reason beyond initialization for emergency mode activation
-
 HardwareOptions hardwareOptions;
 
 void watchdogInit(unsigned int duration)
@@ -40,7 +36,7 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0x5555;      // Unlock registers
   IWDG->PR = 3;           // Divide by 32 => 1kHz clock
   IWDG->KR = 0x5555;      // Unlock registers
-  IWDG->RLR = duration;       // 1.5 seconds nominal
+  IWDG->RLR = duration;
   IWDG->KR = 0xAAAA;      // reload
   IWDG->KR = 0xCCCC;      // start
 }
@@ -173,6 +169,7 @@ void boardInit()
 #endif
 
   ledInit();
+
 #if defined(PCBX10) && !defined(RADIO_T16)
   sportUpdateInit();
 #endif
@@ -189,7 +186,7 @@ void boardOff()
   backlightEnable(0);
 
   while (pwrPressed()) {
-    wdt_reset();
+    WDG_RESET();
   }
 
   SysTick->CTRL = 0; // turn off systick
@@ -209,8 +206,12 @@ void boardOff()
   // Shutdown the Haptic
   hapticDone();
 
-  shutdownRequest = SHUTDOWN_REQUEST;
-  shutdownReason = NORMAL_POWER_OFF;
+#if defined(RTC_BACKUP_RAM)
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, DISABLE);
+  PWR_BackupRegulatorCmd(DISABLE);
+#endif
+
+  RTC->BKP0R = SHUTDOWN_REQUEST;
 
   pwrOff();
 }

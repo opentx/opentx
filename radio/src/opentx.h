@@ -586,8 +586,11 @@ void flightReset(uint8_t check=true);
 
 PACK(struct GlobalData {
   uint8_t unexpectedShutdown:1;
-  uint8_t externalAntennaEnabled: 1;
-  uint8_t spare:6;
+  uint8_t externalAntennaEnabled:1;
+  uint8_t authenticationCount:2;
+  uint8_t upgradeModulePopup:1;
+  uint8_t internalModuleVersionChecked:1;
+  uint8_t spare:2;
 });
 
 extern GlobalData globalData;
@@ -1184,6 +1187,7 @@ union ReusableBuffer
     uint16_t freqMax;
     uint16_t freqMin;
     uint8_t dirty;
+    uint8_t moduleOFF;
   } spectrumAnalyser;
 
   struct {
@@ -1213,6 +1217,10 @@ union ReusableBuffer
   struct {
     uint8_t maxNameLen;
   } modelFailsafe;
+
+  struct {
+    ModuleInformation internalModule;
+  } viewMain;
 
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
@@ -1363,7 +1371,7 @@ extern uint8_t latencyToggleSwitch;
 
 inline bool isAsteriskDisplayed()
 {
-#if defined(LOG_TELEMETRY) || !defined(WATCHDOG) || defined(DEBUG_LATENCY)
+#if defined(ASTERISK) || !defined(WATCHDOG) || defined(LOG_TELEMETRY) || defined(DEBUG_LATENCY)
   return true;
 #endif
 

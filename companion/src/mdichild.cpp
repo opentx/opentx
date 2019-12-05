@@ -701,6 +701,10 @@ void MdiChild::updateTitle()
   if (availableEEpromSize >= 0) {
     title += QString(" - %1 ").arg(availableEEpromSize) + tr("free bytes");
   }
+  QFileInfo fi(curFile);
+  if (!isUntitled && !fi.isWritable()) {
+    title += QString(" (%1)").arg(tr("read only"));
+  }
   setWindowTitle(title);
 }
 
@@ -1355,7 +1359,8 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
 bool MdiChild::save()
 {
-  if (isUntitled) {
+  QFileInfo fi(curFile);
+  if (isUntitled || !fi.isWritable()) {
     return saveAs(true);
   }
   else {

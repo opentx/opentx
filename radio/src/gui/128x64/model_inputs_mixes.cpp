@@ -378,7 +378,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
-  title(STR_MIXER);
+  title(STR_MIXES);
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(lcdLastRightPos+1*FW, 0, md2->destCh+1,0);
 
@@ -731,10 +731,10 @@ void menuModelExpoMix(uint8_t expo, event_t event)
       break;
   }
 
-  lcdDrawNumber(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, getExpoMixCount(expo));
-  lcdDrawText(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
+  lcdDrawNumber(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXES))+FW+FW/2, 0, getExpoMixCount(expo));
+  lcdDrawText(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXES))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
 
-  SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXER, menuTabModel, expo ? MENU_MODEL_INPUTS : MENU_MODEL_MIXES, s_maxLines);
+  SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXES, menuTabModel, expo ? MENU_MODEL_INPUTS : MENU_MODEL_MIXES, s_maxLines);
 
   sub = menuVerticalPosition;
   s_currCh = 0;

@@ -115,7 +115,7 @@ void per10ms()
 
   if (watchdogTimeout) {
     watchdogTimeout -= 1;
-    wdt_reset();  // Retrigger hardware watchdog
+    WDG_RESET();  // Retrigger hardware watchdog
   }
 
 #if defined(GUI)
@@ -869,7 +869,7 @@ static void checkRTCBattery()
 {
   if (isVBatBridgeEnabled()) {
     if (getRTCBatteryVoltage() < 200) {
-      ALERT("BATTERY", STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
+      ALERT(STR_BATTERY, STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
     }
     disableVBatBridge();
   }
@@ -901,7 +901,12 @@ void checkFailsafe()
 void checkRSSIAlarmsDisabled()
 {
   if (g_model.rssiAlarms.disabled) {
-    ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
+#if !defined(INTERNAL_MODULE)
+    if (!isModuleMultimoduleDSM2(EXTERNAL_MODULE))
+#else
+    if (!isModuleMultimoduleDSM2(INTERNAL_MODULE) && !isModuleMultimoduleDSM2(EXTERNAL_MODULE))
+#endif
+      ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
   }
 }
 
@@ -947,7 +952,7 @@ void checkAll()
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
       RTOS_WAIT_MS(1);
-      wdt_reset();
+      WDG_RESET();
     }
   }
 
@@ -1027,6 +1032,8 @@ void checkThrottleStick()
 #if defined(PWR_BUTTON_PRESS)
     uint32_t power = pwrCheck();
     if (power == e_power_off) {
+      drawSleepBitmap();
+      boardOff();
       break;
     }
     else if (power == e_power_press) {
@@ -1044,7 +1051,7 @@ void checkThrottleStick()
 
     doLoopCommonActions();
 
-    wdt_reset();
+    WDG_RESET();
 
     RTOS_WAIT_MS(10);
   }
@@ -1084,7 +1091,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
 
     doLoopCommonActions();
 
-    wdt_reset();
+    WDG_RESET();
 
     const uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
@@ -1906,6 +1913,10 @@ void opentxInit()
     globalData.unexpectedShutdown = 1;
   }
 
+#if defined(RTC_BACKUP_RAM)
+  SET_POWER_REASON(0);
+#endif
+
 #if defined(SDCARD)
   // SDCARD related stuff, only done if not unexpectedShutdown
   if (!globalData.unexpectedShutdown) {
@@ -1971,7 +1982,7 @@ void opentxInit()
 
   // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
-#if defined(RAMBACKUP)
+#if defined(RTC_BACKUP_RAM) && !defined(SIMU)
   if (globalData.unexpectedShutdown) {
     // SDCARD not available, try to restore last model from RAM
     TRACE("rambackupRestore");
@@ -2027,20 +2038,22 @@ void opentxInit()
     opentxStart();
   }
 
-  // TODO Horus does not need this
+#if !defined(RTC_BACKUP_RAM)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
   }
+#endif
 
 #if defined(GUI)
   lcdSetContrast();
 #endif
+
   backlightOn();
 
   startPulses();
 
-  wdt_enable(WDTO_500MS);
+  WDG_ENABLE(WDG_DURATION);
 }
 
 #if defined(SIMU)
@@ -2062,7 +2075,7 @@ int main()
 
   // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
   // important to disable it before commencing with system initialisation (or
-  // we could put a bunch more wdt_reset()s in. But I don't like that approach
+  // we could put a bunch more WDG_RESET()s in. But I don't like that approach
   // during boot up.)
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
@@ -2080,7 +2093,9 @@ int main()
 #endif
 
 #if defined(SPLASH) && !defined(STARTUP_ANIMATION)
-  drawSplash();
+  if (!UNEXPECTED_SHUTDOWN()) {
+    drawSplash();
+  }
 #endif
 
 #if defined(PCBHORUS)

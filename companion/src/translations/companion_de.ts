@@ -2417,7 +2417,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
         <source>Popup menu available</source>
-        <translation>Popoup-Menü verfügbar</translation>
+        <translation>Popup-Menü verfügbar</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="209"/>
@@ -2482,7 +2482,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="458"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
-        <translation>Es sind nicht genügend freie Stützstellen im EEPROM vorhanden, um diese Kurve zu abzuspeichern.</translation>
+        <translation>Es sind nicht genügend freie Stützpunkte im EEPROM vorhanden, um diese Kurve zu abzuspeichern.</translation>
     </message>
 </context>
 <context>

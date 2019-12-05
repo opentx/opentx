@@ -31,6 +31,7 @@ option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(SEMIHOSTING "Enable debugger semihosting" OFF)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(WATCHDOG "Enable hardware Watchdog" ON)
+option(ASTERISK "Enable asterisk icon (test only firmware)" OFF)
 if(SDL_FOUND)
   option(SIMU_AUDIO "Enable simulator audio." ON)
 endif()
@@ -72,7 +73,7 @@ set(GVARS_VARIANT   1)
 set(FRSKY_VARIANT   2)
 set(3POS_VARIANT    4)
 
-set(RADIO_DEPENDENCIES radio_translations)
+set(RADIO_DEPENDENCIES firmware_translations)
 
 set(FATFS_SRC
   ${FATFS_DIR}/ff.c
@@ -168,9 +169,11 @@ include(storage/conversions/CMakeLists.txt)
 
 add_subdirectory(lua)
 
-if(RAMBACKUP)
-  add_definitions(-DRAMBACKUP)
-  set(SRC ${SRC} storage/rambackup.cpp storage/rlc.cpp)
+if(RTC_BACKUP_RAM)
+  add_definitions(-DRTC_BACKUP_RAM)
+  set(SRC ${SRC} storage/rlc.cpp)
+  set(FIRMWARE_SRC ${FIRMWARE_SRC} storage/rtc_backup.cpp)
+  set(GTEST_SRC ${GTEST_SRC} ${RADIO_SRC_DIRECTORY}/storage/rtc_backup.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)
@@ -246,6 +249,10 @@ endif()
 
 if(JITTER_MEASURE)
   add_definitions(-DJITTER_MEASURE)
+endif()
+
+if(ASTERISK)
+  add_definitions(-DASTERISK)
 endif()
 
 if(WATCHDOG)
@@ -523,7 +530,8 @@ if(NOT MSVC)
 
     add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
     link_libraries(firmware -lstdc++)
-    add_dependencies(firmware ${RADIO_DEPENDENCIES})
+    add_dependencies(firmware ${RADIO_DEPENDENCIES} ${FIRMWARE_DEPENDENCIES})
+    set_target_properties(firmware PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
     add_custom_command(
       TARGET firmware POST_BUILD

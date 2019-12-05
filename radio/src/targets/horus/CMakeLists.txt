@@ -14,16 +14,17 @@ set(HAPTIC YES)
 set(GUI_DIR colorlcd)
 set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
+set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
+set(RTC_BACKUP_RAM YES)
+set(LUA YES)
+set(PPM_LIMITS_SYMETRICAL YES)
+set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 
 if(BOOTLOADER)
   set(LINKER_SCRIPT targets/horus/stm32f4_flash_bootloader.ld)
 else()
   set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 endif()
-
-set(RAMBACKUP YES)
-set(PPM_LIMITS_SYMETRICAL YES)
-set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 
 option(YAML_STORAGE "Enable YAML storage" NO)
 if(YAML_STORAGE)
@@ -104,7 +105,13 @@ endif()
 add_definitions(-DPCBREV=${PCBREV})
 add_definitions(-DPCBREV_${PCBREV})
 
-set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} ${BITMAPS_TARGET} truetype_fonts)
+set(RADIO_DEPENDENCIES
+  ${RADIO_DEPENDENCIES}
+  ${BITMAPS_TARGET}
+  truetype_fonts
+  )
+
+set(FIRMWARE_DEPENDENCIES datacopy)
 
 add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DHARDWARE_KEYS)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
@@ -198,9 +205,13 @@ set(STM32LIB_SRC
   )
 
 if(PYTHONINTERP_FOUND)
-  add_custom_target(datacopy
+  add_custom_command(
+    OUTPUT ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > storage/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
-  )
+    )
+  add_custom_target(datacopy
+    DEPENDS ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
+    )
 endif()

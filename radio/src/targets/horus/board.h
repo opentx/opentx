@@ -136,7 +136,7 @@ DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
 #define FLASH_PAGESIZE                 256
 void unlockFlash();
 void lockFlash();
-void flashWrite(uint32_t * address, uint32_t * buffer);
+void flashWrite(uint32_t * address, const uint32_t * buffer);
 uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
 
@@ -305,28 +305,22 @@ void rotaryEncoderInit();
 void rotaryEncoderCheck();
 
 // WDT driver
-#define WDTO_500MS                              500
-extern uint32_t powerupReason;
-
-#define SHUTDOWN_REQUEST                        0xDEADBEEF
-#define NO_SHUTDOWN_REQUEST                     ~SHUTDOWN_REQUEST
-#define DIRTY_SHUTDOWN                          0xCAFEDEAD
-#define NORMAL_POWER_OFF                        ~DIRTY_SHUTDOWN
+#define WDG_DURATION                              500 /*ms*/
 
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)
   #define WAS_RESET_BY_WATCHDOG()               (false)
   #define WAS_RESET_BY_SOFTWARE()               (false)
   #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (false)
-  #define wdt_enable(x)
-  #define wdt_reset()
+  #define WDG_ENABLE(x)
+  #define WDG_RESET()
 #else
   #if defined(WATCHDOG)
-    #define wdt_enable(x)                       watchdogInit(x)
-    #define wdt_reset()                         IWDG->KR = 0xAAAA
+    #define WDG_ENABLE(x)                       watchdogInit(x)
+    #define WDG_RESET()                         IWDG->KR = 0xAAAA
   #else
-    #define wdt_enable(x)
-    #define wdt_reset()
+    #define WDG_ENABLE(x)
+    #define WDG_RESET()
   #endif
   #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
   #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
@@ -453,14 +447,41 @@ extern volatile uint32_t pwm_interrupt_count;
   #define BATTERY_MAX       115 // 11.5V
 #endif
 
+#if defined(__cplusplus)
+enum PowerReason {
+  SHUTDOWN_REQUEST = 0xDEADBEEF,
+  SOFTRESET_REQUEST = 0xCAFEDEAD,
+};
+
+constexpr uint32_t POWER_REASON_SIGNATURE = 0x0178746F;
+
+inline bool UNEXPECTED_SHUTDOWN()
+{
+#if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
+  return false;
+#else
+  if (WAS_RESET_BY_WATCHDOG())
+    return true;
+  else if (WAS_RESET_BY_SOFTWARE())
+    return RTC->BKP0R != SOFTRESET_REQUEST;
+  else
+    return RTC->BKP1R == POWER_REASON_SIGNATURE && RTC->BKP0R != SHUTDOWN_REQUEST;
+#endif
+}
+
+inline void SET_POWER_REASON(uint32_t value)
+{
+  RTC->BKP0R = value;
+  RTC->BKP1R = POWER_REASON_SIGNATURE;
+}
+#endif
+
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
 
 // Power driver
 #define SOFT_PWR_CTRL
-extern uint32_t shutdownRequest; // Stores intentional shutdown to avoid reboot loop
-extern uint32_t shutdownReason; // Used for detecting unexpected reboots regardless of reason
 void pwrInit();
 uint32_t pwrCheck();
 void pwrOn();
@@ -468,11 +489,6 @@ void pwrOff();
 void pwrResetHandler();
 bool pwrPressed();
 uint32_t pwrPressedDuration();
-#if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
-  #define UNEXPECTED_SHUTDOWN()                 (false)
-#else
-  #define UNEXPECTED_SHUTDOWN()                 ((powerupReason == DIRTY_SHUTDOWN) || WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
-#endif
 
 // Led driver
 void ledInit();

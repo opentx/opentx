@@ -172,5 +172,8 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
 // static
 QString Multiprotocols::subTypeToString(int protocol, unsigned subType)
 {
-  return tr(qPrintable(multiProtocols.getProtocol(protocol).subTypeStrings.value(subType, CPN_STR_UNKNOWN_ITEM)));
+  if (protocol > MODULE_SUBTYPE_MULTI_LAST)
+    return tr(qPrintable(QString::number(subType)));
+  else
+    return tr(qPrintable(multiProtocols.getProtocol(protocol).subTypeStrings.value(subType, CPN_STR_UNKNOWN_ITEM)));
 }

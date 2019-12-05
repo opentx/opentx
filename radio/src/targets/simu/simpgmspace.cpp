@@ -51,6 +51,7 @@ DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 SysTick_Type systick;
 ADC_Common_TypeDef adc;
+RTC_TypeDef rtc;
 #else
 Pio Pioa, Piob, Pioc;
 Pmc pmc;
@@ -682,7 +683,7 @@ void lockFlash()
 {
 }
 
-void flashWrite(uint32_t *address, uint32_t *buffer)
+void flashWrite(uint32_t *address, const uint32_t *buffer)
 {
   simuSleep(100);
 }
@@ -706,7 +707,7 @@ void serialPutc(char c) { }
 
 uint16_t getBatteryVoltage()
 {
-  return (BATTERY_MAX + BATTERY_WARN) * 5;
+  return (g_eeGeneral.vBatWarn * 10) + 50; // 0.5 volt above alerm (value is PREC1)
 }
 
 void boardOff()
