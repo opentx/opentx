@@ -180,12 +180,13 @@ void Bluetooth::appendFrameByte(uint8_t byte)
   }
 }
 
-bool Bluetooth::readFrame()
+void Bluetooth::readFrame()
 {
   uint8_t byte;
+
   while (true) {
     if (!btRxFifo.pop(byte)) {
-      return false;
+      return;
     }
     if (processFrameByte(byte)) {
       processFrame();
@@ -308,6 +309,8 @@ void Bluetooth::processUploadFrame()
     }
     state = BLUETOOTH_STATE_UPLOAD;
     uploadPosition = 0;
+    uploadTime = get_tmr10ms();
+    sendUploadAck();
   }
   else if (state == BLUETOOTH_STATE_UPLOAD) {
     if (offset == uploadPosition) {
@@ -319,6 +322,7 @@ void Bluetooth::processUploadFrame()
       }
       else if (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written) {
         uploadPosition += dataLength;
+        uploadTime = get_tmr10ms();
         if (uploadPosition % 500 == 0) {
           sendUploadAck();
         }
@@ -326,7 +330,7 @@ void Bluetooth::processUploadFrame()
     }
     else {
       TRACE("BT offset %d instead of %d", offset, uploadPosition);
-      sendUploadAck();
+      // sendUploadAck();
     }
   }
 }
@@ -503,23 +507,16 @@ void Bluetooth::wakeup()
     if (!btTxFifo.isEmpty()) {
       bluetoothWriteWakeup();
     }
-    else if (readFrame()) {
-      // pass
+    else {
+      readFrame();
+      if (state == BLUETOOTH_STATE_UPLOAD && get_tmr10ms() - uploadTime > 10 /*100ms*/) {
+        sendUploadAck();
+        uploadTime = get_tmr10ms();
+      }
+      else if (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH && subscribtion.channels) {
+        sendTrainerFrame();
+      }
     }
-    else if (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH && subscribtion.channels) {
-      sendTrainerFrame();
-    }
-
-//    if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
-//      receiveTrainer();
-//    }
-//    else {
-//      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH) {
-//        sendTrainer();
-//        wakeupTime = now + 2; /* 20ms */
-//      }
-//      readline(); // to deal with "ERROR"
-//    }
   }
   else {
     char * line = readline();

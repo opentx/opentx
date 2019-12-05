@@ -92,7 +92,7 @@ class Bluetooth
     void sendTrainerFrame();
 
     uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
-    bool readFrame();
+    void readFrame();
     bool processFrameByte(uint8_t byte);
     bool checkFrame();
     void processFrame();
@@ -132,6 +132,7 @@ class Bluetooth
     uint8_t dataState = STATE_DATA_START;
     FIL file;
     uint32_t uploadPosition;
+    tmr10ms_t uploadTime;
 };
 
 extern Bluetooth bluetooth;
