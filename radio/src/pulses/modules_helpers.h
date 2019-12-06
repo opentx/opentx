@@ -559,7 +559,7 @@ inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].multi.lowPowerMode = 0;
 }
 
-inline void getMultiOptionValues(uint8_t multi_proto, uint8_t &min, uint8_t &max)
+inline void getMultiOptionValues(uint8_t multi_proto, uint8_t & min, uint8_t & max)
 {
   switch (multi_proto) {
     case MODULE_SUBTYPE_MULTI_DSM2:
