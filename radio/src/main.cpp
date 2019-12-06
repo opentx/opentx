@@ -503,7 +503,7 @@ void perMain()
     mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
   }
 
-  doLoopCommonActions();
+  checkBacklight();
 
   event_t evt = getEvent(false);
 
