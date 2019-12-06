@@ -116,7 +116,7 @@ extern "C" void BT_USART_IRQHandler(void)
     USART_ClearITPendingBit(BT_USART, USART_IT_RXNE);
     uint8_t byte = USART_ReceiveData(BT_USART);
     btRxFifo.push(byte);
-    // TRACE("BT %02X", byte);
+    TRACE_NOCRLF(" %02X", byte);
 #if defined(PCBX7) || defined(PCBXLITE)
     if (!btChipPresent) {
       // This is to differentiate X7 and X7S and X-Lite with/without BT

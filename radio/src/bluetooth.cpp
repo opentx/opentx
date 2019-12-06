@@ -254,7 +254,6 @@ void Bluetooth::processSubscribeFrame()
   pushByte(subscribtion.channels);
   pushByte(subscribtion.telemetry);
   endOutputFrame();
-  bluetoothWriteWakeup();
 }
 
 void Bluetooth::processChannelsFrame()
@@ -286,7 +285,6 @@ void Bluetooth::sendUploadAck()
   pushByte(uploadPosition >> 16);
   pushByte(uploadPosition >> 24);
   endOutputFrame();
-  bluetoothWriteWakeup();
 }
 
 void Bluetooth::processUploadFrame()
@@ -398,7 +396,6 @@ void Bluetooth::sendTrainerFrame()
     pushByte(((channelValue2 & 0x000f) << 4) + ((channelValue2 & 0x0f00) >> 8));
   }
   endOutputFrame();
-  bluetoothWriteWakeup();
 }
 
 #if defined(PCBX9E)
@@ -474,8 +471,6 @@ void Bluetooth::wakeup()
   if (now < wakeupTime)
     return;
 
-  wakeupTime = now + 2; /* 20ms default as it seems the maximum allowed */
-
   if (state == BLUETOOTH_STATE_FLASH_FIRMWARE) {
     return;
   }
@@ -490,6 +485,7 @@ void Bluetooth::wakeup()
   else if (state == BLUETOOTH_STATE_OFF) {
     bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE, true);
     state = BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT;
+    wakeupTime = now + 10; /* 100ms */
   }
 
   if (state == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
@@ -504,18 +500,22 @@ void Bluetooth::wakeup()
     wakeupTime = now + 10; /* 100ms */
   }
   else if (state >= BLUETOOTH_STATE_CONNECTED && state < BLUETOOTH_STATE_DISCONNECTED) {
-    if (!btTxFifo.isEmpty()) {
-      bluetoothWriteWakeup();
+    readFrame();
+
+    if (state == BLUETOOTH_STATE_UPLOAD && now - uploadTime > 25 /*250ms*/) {
+      sendUploadAck();
+      uploadTime = now;
     }
-    else {
-      readFrame();
-      if (state == BLUETOOTH_STATE_UPLOAD && get_tmr10ms() - uploadTime > 10 /*100ms*/) {
-        sendUploadAck();
-        uploadTime = get_tmr10ms();
+
+    if (now - lastWriteTime >= 20) {
+      if (!btTxFifo.isEmpty()) {
+        bluetoothWriteWakeup();
       }
       else if (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH && subscribtion.channels) {
         sendTrainerFrame();
+        bluetoothWriteWakeup();
       }
+      lastWriteTime = now;
     }
   }
   else {
@@ -582,6 +582,7 @@ void Bluetooth::wakeup()
     else if ((state == BLUETOOTH_STATE_IDLE || state == BLUETOOTH_STATE_DISCONNECTED || state == BLUETOOTH_STATE_CONNECT_SENT) && !strncmp(line, "Connected:", 10)) {
       strcpy(distantAddr, &line[10]); // TODO quick & dirty
       state = BLUETOOTH_STATE_CONNECTED;
+      lastWriteTime = now + 10; /* 100ms */
       if (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH) {
         wakeupTime += 500; // it seems a 5s delay is needed before sending the 1st frame
       }

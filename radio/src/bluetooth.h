@@ -129,10 +129,11 @@ class Bluetooth
 
     uint8_t outputCrc;
     tmr10ms_t wakeupTime = 0;
+    tmr10ms_t lastWriteTime = 0;
     uint8_t dataState = STATE_DATA_START;
     FIL file;
     uint32_t uploadPosition;
-    tmr10ms_t uploadTime;
+    tmr10ms_t uploadTime = 0;
 };
 
 extern Bluetooth bluetooth;
