@@ -766,7 +766,7 @@ void checkSwitches()
     }
 #endif
 
-    doLoopCommonActions();
+    checkBacklight();
 
     WDG_RESET();
 

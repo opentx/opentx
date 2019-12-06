@@ -712,11 +712,6 @@ void checkBacklight()
   }
 }
 
-void doLoopCommonActions()
-{
-  checkBacklight();
-}
-
 void backlightOn()
 {
   lightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
@@ -802,7 +797,7 @@ void doSplash()
       }
 #endif
 
-      doLoopCommonActions();
+      checkBacklight();
     }
   }
 }
@@ -1021,7 +1016,7 @@ void checkThrottleStick()
     }
 #endif
 
-    doLoopCommonActions();
+    checkBacklight();
 
     WDG_RESET();
 
@@ -1060,7 +1055,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
     if (keyDown())  // wait for key release
       break;
 
-    doLoopCommonActions();
+    checkBacklight();
 
     WDG_RESET();
 
@@ -1591,8 +1586,9 @@ void opentxClose(uint8_t shutdown)
 {
   TRACE("opentxClose");
 
+  watchdogSuspend(2000/*20s*/);
+
   if (shutdown) {
-    watchdogSuspend(2000/*20s*/);
     pausePulses();   // stop mixer task to disable trims processing while in shutdown
     AUDIO_BYE();
     // TODO needed? telemetryEnd();
