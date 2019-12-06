@@ -158,12 +158,10 @@ void checkSpeakerVolume()
 #if defined(EEPROM)
 void checkEeprom()
 {
-  if (!usbPlugged()) {
-    if (eepromIsWriting())
-      eepromWriteProcess();
-    else if (TIME_TO_WRITE())
-      storageCheck(false);
-  }
+  if (eepromIsWriting())
+    eepromWriteProcess();
+  else if (TIME_TO_WRITE())
+    storageCheck(false);
 }
 #else
 void checkEeprom()
@@ -484,15 +482,20 @@ void perMain()
 #if defined(PCBSKY9X)
   calcConsumption();
 #endif
+
   checkSpeakerVolume();
+
   if (!usbPlugged()) {
     checkEeprom();
     logsWrite();
   }
+
   handleUsbConnection();
+
 #if defined(PCBXLITES)
   handleJackConnection();
 #endif
+
   checkTrainerSettings();
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
