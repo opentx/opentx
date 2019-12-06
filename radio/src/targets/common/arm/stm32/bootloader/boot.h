@@ -28,6 +28,7 @@
 #else
   #define BOOTLOADER_TITLE               " OpenTX Bootloader - " VERSION
 #endif
+
 #define DISPLAY_CHAR_WIDTH             (LCD_COLS+4)
 
 #if LCD_W >= 480
