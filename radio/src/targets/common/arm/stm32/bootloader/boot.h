@@ -24,10 +24,10 @@
 #include "stamp.h"
 
 #if LCD_W < 212
-#define BOOTLOADER_TITLE               " OTX Bootloader - " VERSION
+  #define BOOTLOADER_TITLE               " OTX Bootloader - " VERSION
 #else
+  #define BOOTLOADER_TITLE               " OpenTX Bootloader - " VERSION
 #endif
-#define BOOTLOADER_TITLE               " OpenTX Bootloader - " VERSION
 #define DISPLAY_CHAR_WIDTH             (LCD_COLS+4)
 
 #if LCD_W >= 480
