@@ -2110,7 +2110,13 @@ uint32_t pwrCheck()
           lcdClear();
 
           POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN, nullptr);
+#if defined(SHUTDOWN_CONFIRMATION)
+          if (TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm) {
+            SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
+          }
+#else
           SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
+#endif
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
