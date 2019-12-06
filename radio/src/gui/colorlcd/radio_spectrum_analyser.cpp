@@ -23,7 +23,9 @@
 
 extern uint8_t g_moduleIdx;
 #define SET_DIRTY()     storageDirty(EE_GENERAL)
-#define SPECTRUM_HEIGHT  200
+
+constexpr coord_t SPECTRUM_HEIGHT = 180;
+constexpr coord_t SCALE_HEIGHT = 20;
 
 coord_t getAverage(uint8_t number, const uint8_t * value)
 {
@@ -37,53 +39,54 @@ coord_t getAverage(uint8_t number, const uint8_t * value)
 class SpectrumFooterWindow : public FormWindow
 {
   public:
-    SpectrumFooterWindow(Window *parent, const rect_t &rect) :
+    SpectrumFooterWindow(FormWindow * parent, const rect_t & rect, int moduleIdx) :
       FormWindow(parent, rect, NO_SCROLLBAR)
     {
-    }
-
-    void paint(BitmapBuffer * dc) override
-    {
       FormGridLayout grid;
-      grid.spacer(PAGE_PADDING);
-      grid.setLabelWidth(0);
+      grid.spacer(4);
+      grid.setLabelWidth(5);
 
-      dc->drawSolidFilledRect(0, 0, width(), height(), CURVE_AXIS_COLOR);
-      if (isModuleMultimodule(g_moduleIdx)) {
+      if (1 || isModuleMultimodule(moduleIdx)) {
         // Frequency
         auto freq = new NumberEdit(this, grid.getFieldSlot(3, 0), reusableBuffer.spectrumAnalyser.freqMin,
                                    reusableBuffer.spectrumAnalyser.freqMax,
                                    GET_DEFAULT(reusableBuffer.spectrumAnalyser.freq / 1000000),
-                                   SET_VALUE(reusableBuffer.spectrumAnalyser.freq, newValue * 1000000),
-                                   MENU_COLOR);
+                                   SET_VALUE(reusableBuffer.spectrumAnalyser.freq, newValue * 1000000));
         freq->setSuffix("MHz");
-        freq->setPrefix("F:");
+        freq->setPrefix("F: ");
 
         // Span
         auto span = new NumberEdit(this, grid.getFieldSlot(3, 1), 1, reusableBuffer.spectrumAnalyser.spanMax,
                                    GET_DEFAULT(reusableBuffer.spectrumAnalyser.span / 1000000),
-                                   SET_VALUE(reusableBuffer.spectrumAnalyser.span, newValue * 1000000),
-                                   MENU_COLOR);
+                                   SET_VALUE(reusableBuffer.spectrumAnalyser.span, newValue * 1000000));
         span->setSuffix("MHz");
-        span->setPrefix("S:");
+        span->setPrefix("S: ");
 
         // Tracker
         auto tracker = new NumberEdit(this, grid.getFieldSlot(3,2), (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
-                       (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
-                       GET_DEFAULT(reusableBuffer.spectrumAnalyser.track / 1000000),
-                       SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000),
-                       MENU_COLOR);
+                                      (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                                      GET_DEFAULT(reusableBuffer.spectrumAnalyser.track / 1000000),
+                                      SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000));
         tracker->setSuffix("MHz");
-        tracker->setPrefix("T:");
+        tracker->setPrefix("T: ");
         tracker->setFocus();
       }
+    }
+};
+
+class ScaleWindow: public Window
+{
+  public:
+    ScaleWindow(Window * parent, const rect_t & rect) :
+      Window(parent, rect)
+    {
     }
 };
 
 class SpectrumWindow : public Window
 {
   public:
-    SpectrumWindow(Window *parent, const rect_t &rect) :
+    SpectrumWindow(Window * parent, const rect_t & rect) :
       Window(parent, rect, REFRESH_ALWAYS)
     {
     }
@@ -97,7 +100,7 @@ class SpectrumWindow : public Window
 
 #if defined(SIMU)
       // Geneate random data for simu
-      for(coord_t x= 0; x < width(); x++) {
+      for (coord_t x= 0; x < width(); x++) {
         uint8_t power = rand() % 80;
         reusableBuffer.spectrumAnalyser.bars[x] = power;
         reusableBuffer.spectrumAnalyser.bars[x+1] = power;
@@ -176,8 +179,8 @@ RadioSpectrumAnalyser::RadioSpectrumAnalyser(uint8_t moduleIdx) :
 void RadioSpectrumAnalyser::buildBody(FormWindow * window)
 {
   new SpectrumWindow(window, {0, 0, LCD_W, SPECTRUM_HEIGHT});
-  auto footer = new SpectrumFooterWindow(window, {0, SPECTRUM_HEIGHT, LCD_W, LCD_H - SPECTRUM_HEIGHT});
-  footer->setFocus();
+  new ScaleWindow(window, {0, SPECTRUM_HEIGHT, LCD_W, SCALE_HEIGHT});
+  new SpectrumFooterWindow(window, {0, SPECTRUM_HEIGHT + SCALE_HEIGHT, LCD_W, window->height() - SPECTRUM_HEIGHT - SCALE_HEIGHT}, moduleIdx);
 }
 
 void RadioSpectrumAnalyser::start()
@@ -219,8 +222,9 @@ void RadioSpectrumAnalyser::start()
 void RadioSpectrumAnalyser::stop()
 {
   new MessageDialog(STR_MODULE, STR_STOPPING);
-  if (isModulePXX2(g_moduleIdx))
+  if (isModulePXX2(g_moduleIdx)) {
     moduleState[moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+  }
   else if (isModuleMultimodule(g_moduleIdx)) {
     if (reusableBuffer.spectrumAnalyser.moduleOFF)
       setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
