@@ -485,8 +485,10 @@ void perMain()
   calcConsumption();
 #endif
   checkSpeakerVolume();
-  checkEeprom();
-  logsWrite();
+  if (!usbPlugged()) {
+    checkEeprom();
+    logsWrite();
+  }
   handleUsbConnection();
 #if defined(PCBXLITES)
   handleJackConnection();
@@ -513,14 +515,14 @@ void perMain()
 #endif
 
 #if defined(STM32)
-  if (SD_CARD_PRESENT() && !sdMounted()) {
+  if (!usbPlugged() && SD_CARD_PRESENT() && !sdMounted()) {
     sdMount();
   }
 #endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
+  if (!usbPlugged() && !SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }

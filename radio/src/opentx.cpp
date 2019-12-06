@@ -1592,10 +1592,9 @@ void opentxClose(uint8_t shutdown)
   TRACE("opentxClose");
 
   watchdogSuspend(2000/*20s*/);
+  pausePulses();   // stop mixer task to disable trims processing while in shutdown
 
   if (shutdown) {
-
-    pausePulses();   // stop mixer task to disable trims processing while in shutdown
     AUDIO_BYE();
     // TODO needed? telemetryEnd();
 #if defined(LUA)
