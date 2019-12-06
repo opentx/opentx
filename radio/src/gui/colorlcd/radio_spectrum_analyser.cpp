@@ -22,8 +22,8 @@
 #include "opentx.h"
 
 extern uint8_t g_moduleIdx;
+#define SET_DIRTY()     storageDirty(EE_GENERAL)
 #define SPECTRUM_HEIGHT  200
-
 
 coord_t getAverage(uint8_t number, const uint8_t * value)
 {
@@ -34,6 +34,51 @@ coord_t getAverage(uint8_t number, const uint8_t * value)
   return sum / number;
 }
 
+class SpectrumFooterWindow : public FormWindow
+{
+  public:
+    SpectrumFooterWindow(Window *parent, const rect_t &rect) :
+      FormWindow(parent, rect, NO_SCROLLBAR)
+    {
+    }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      FormGridLayout grid;
+      grid.spacer(PAGE_PADDING);
+      grid.setLabelWidth(0);
+
+      dc->drawSolidFilledRect(0, 0, width(), height(), CURVE_AXIS_COLOR);
+      if (isModuleMultimodule(g_moduleIdx)) {
+        // Frequency
+        auto freq = new NumberEdit(this, grid.getFieldSlot(3, 0), reusableBuffer.spectrumAnalyser.freqMin,
+                                   reusableBuffer.spectrumAnalyser.freqMax,
+                                   GET_DEFAULT(reusableBuffer.spectrumAnalyser.freq / 1000000),
+                                   SET_VALUE(reusableBuffer.spectrumAnalyser.freq, newValue * 1000000),
+                                   MENU_COLOR);
+        freq->setSuffix("MHz");
+        freq->setPrefix("F:");
+
+        // Span
+        auto span = new NumberEdit(this, grid.getFieldSlot(3, 1), 1, reusableBuffer.spectrumAnalyser.spanMax,
+                                   GET_DEFAULT(reusableBuffer.spectrumAnalyser.span / 1000000),
+                                   SET_VALUE(reusableBuffer.spectrumAnalyser.span, newValue * 1000000),
+                                   MENU_COLOR);
+        span->setSuffix("MHz");
+        span->setPrefix("S:");
+
+        // Tracker
+        auto tracker = new NumberEdit(this, grid.getFieldSlot(3,2), (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                       (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                       GET_DEFAULT(reusableBuffer.spectrumAnalyser.track / 1000000),
+                       SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000),
+                       MENU_COLOR);
+        tracker->setSuffix("MHz");
+        tracker->setPrefix("T:");
+        tracker->setFocus();
+      }
+    }
+};
 
 class SpectrumWindow : public Window
 {
@@ -109,6 +154,11 @@ class SpectrumWindow : public Window
           }
         }
       }
+
+      // Draw tracker
+      int offset = reusableBuffer.spectrumAnalyser.track - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+      int x = limit<int>(0, offset / reusableBuffer.spectrumAnalyser.step, width() - 1);
+      dc->drawSolidVerticalLine(x, 0, height(), BLACK);
     }
 
   protected:
@@ -120,13 +170,14 @@ RadioSpectrumAnalyser::RadioSpectrumAnalyser(uint8_t moduleIdx) :
   moduleIdx(moduleIdx)
 {
   buildBody(&body);
-  setFocus();
   start();
 }
 
 void RadioSpectrumAnalyser::buildBody(FormWindow * window)
 {
   new SpectrumWindow(window, {0, 0, LCD_W, SPECTRUM_HEIGHT});
+  auto footer = new SpectrumFooterWindow(window, {0, SPECTRUM_HEIGHT, LCD_W, LCD_H - SPECTRUM_HEIGHT});
+  footer->setFocus();
 }
 
 void RadioSpectrumAnalyser::start()
@@ -168,7 +219,14 @@ void RadioSpectrumAnalyser::start()
 void RadioSpectrumAnalyser::stop()
 {
   new MessageDialog(STR_MODULE, STR_STOPPING);
-  moduleState[moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+  if (isModulePXX2(g_moduleIdx))
+    moduleState[moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+  else if (isModuleMultimodule(g_moduleIdx)) {
+    if (reusableBuffer.spectrumAnalyser.moduleOFF)
+      setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
+    else
+      moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+  }
   /* wait 1s to resume normal operation before leaving */
   //  watchdogSuspend(1000);
   //  RTOS_WAIT_MS(1000);
