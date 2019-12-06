@@ -366,6 +366,7 @@ void sdDone()
     f_close(&g_telemetryFile);
 #endif
     f_mount(nullptr, "", 0); // unmount SD
+    g_FATFS_Obj.fs_type = 0;
   }
 }
 #endif
