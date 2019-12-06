@@ -68,7 +68,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
     
     if (st == ST_START) {
 
-        bootloaderDrawTitle(88, "OpenTX Bootloader");
+        bootloaderDrawTitle(88, BOOTLOADER_TITLE);
         
         lcdDrawBitmapPattern(90, 72, LBM_FLASH, TEXT_COLOR);
         lcdDrawText(124,  75, "Write Firmware");
