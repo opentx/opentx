@@ -93,8 +93,8 @@ class SpectrumScaleWindow: public Window
       // Draw text scale
       for (uint32_t frequency =
         ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000;; frequency += 10000000) {
-        int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
-        int x = offset / reusableBuffer.spectrumAnalyser.step;
+        offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+        x = offset / reusableBuffer.spectrumAnalyser.step;
         if (x >= LCD_W - 1)
           break;
         if ((frequency / 1000000) % 2 == 0) {
@@ -187,9 +187,10 @@ RadioSpectrumAnalyser::RadioSpectrumAnalyser(uint8_t moduleIdx) :
   Page(ICON_RADIO_TOOLS),
   moduleIdx(moduleIdx)
 {
-  start();
+  init();
   buildHeader(&header);
   buildBody(&body);
+  start();
 }
 
 void RadioSpectrumAnalyser::buildHeader(Window * window)
@@ -204,7 +205,7 @@ void RadioSpectrumAnalyser::buildBody(FormWindow * window)
   new SpectrumFooterWindow(window, {0, SPECTRUM_HEIGHT + SCALE_HEIGHT, LCD_W, window->height() - SPECTRUM_HEIGHT - SCALE_HEIGHT}, moduleIdx);
 }
 
-void RadioSpectrumAnalyser::start()
+void RadioSpectrumAnalyser::init()
 {
 #if defined(INTERNAL_MODULE_MULTI)
   if (moduleIdx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE) {
@@ -212,6 +213,7 @@ void RadioSpectrumAnalyser::start()
       setModuleType(INTERNAL_MODULE, MODULE_TYPE_MULTIMODULE);
     }
 #endif
+
   if (isModuleR9MAccess(moduleIdx)) {
     reusableBuffer.spectrumAnalyser.spanDefault = 20;
     reusableBuffer.spectrumAnalyser.spanMax = 40;
@@ -237,9 +239,12 @@ void RadioSpectrumAnalyser::start()
   reusableBuffer.spectrumAnalyser.track = reusableBuffer.spectrumAnalyser.freq;
   reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
   reusableBuffer.spectrumAnalyser.dirty = true;
-  moduleState[moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
 }
 
+void RadioSpectrumAnalyser::start()
+{
+  moduleState[moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+}
 
 void RadioSpectrumAnalyser::stop()
 {
