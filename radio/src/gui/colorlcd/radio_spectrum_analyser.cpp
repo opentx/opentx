@@ -84,14 +84,18 @@ class ScaleWindow: public Window
 
     void paint(BitmapBuffer * dc) override
     {
-      /*for (uint32_t frequency =
+      dc->drawSolidFilledRect(0, 0, width(), height(), CURVE_AXIS_COLOR);
+
+      for (uint32_t frequency =
         ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000;; frequency += 10000000) {
         int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
         int x = offset / reusableBuffer.spectrumAnalyser.step;
+        if (x >= LCD_W - 1)
+          break;
         if ((frequency / 1000000) % 2 == 0) {
-          //dc->drawNumber(x, 2, frequency / 1000000, FONT(XS) | CENTERED);
+          dc->drawNumber(x, 2, frequency / 1000000, FONT(XS) | CENTERED);
         }
-      }*/
+      }
     }
 };
 
@@ -123,22 +127,14 @@ class SpectrumWindow : public Window
       }
 #endif
 
-      constexpr coord_t SCALE_HEIGHT = 12;
-      coord_t SCALE_TOP = height() - SCALE_HEIGHT - MENU_FOOTER_HEIGHT;
-      coord_t BARGRAPH_HEIGHT = height() - SCALE_HEIGHT;
-
+      coord_t SCALE_TOP = height() - MENU_FOOTER_HEIGHT;
       // Draw fixed part (scale,..)
-      dc->drawSolidFilledRect(0, SCALE_TOP, width(), SCALE_HEIGHT, CURVE_AXIS_COLOR);
       for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000; ; frequency += 10000000) {
         int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
         int x = offset / reusableBuffer.spectrumAnalyser.step;
         if (x >= LCD_W - 1)
           break;
         dc->drawVerticalLine(x, 0, height(), STASHED, CURVE_AXIS_COLOR);
-
-        /*if ((frequency / 1000000) % 2 == 0) {
-          dc->drawNumber(x, SCALE_TOP - 2, frequency / 1000000, FONT(XS) | CENTERED);
-        }*/
       }
 
       for (uint8_t power = 20;; power += 20) {
