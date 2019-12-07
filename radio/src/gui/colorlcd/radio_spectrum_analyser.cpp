@@ -81,6 +81,18 @@ class ScaleWindow: public Window
       Window(parent, rect)
     {
     }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      /*for (uint32_t frequency =
+        ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000;; frequency += 10000000) {
+        int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+        int x = offset / reusableBuffer.spectrumAnalyser.step;
+        if ((frequency / 1000000) % 2 == 0) {
+          //dc->drawNumber(x, 2, frequency / 1000000, FONT(XS) | CENTERED);
+        }
+      }*/
+    }
 };
 
 class SpectrumWindow : public Window
@@ -124,9 +136,9 @@ class SpectrumWindow : public Window
           break;
         dc->drawVerticalLine(x, 0, height(), STASHED, CURVE_AXIS_COLOR);
 
-        if ((frequency / 1000000) % 2 == 0) {
+        /*if ((frequency / 1000000) % 2 == 0) {
           dc->drawNumber(x, SCALE_TOP - 2, frequency / 1000000, FONT(XS) | CENTERED);
-        }
+        }*/
       }
 
       for (uint8_t power = 20;; power += 20) {
@@ -172,8 +184,8 @@ RadioSpectrumAnalyser::RadioSpectrumAnalyser(uint8_t moduleIdx) :
   Page(ICON_RADIO_TOOLS),
   moduleIdx(moduleIdx)
 {
-  buildBody(&body);
   start();
+  buildBody(&body);
 }
 
 void RadioSpectrumAnalyser::buildBody(FormWindow * window)

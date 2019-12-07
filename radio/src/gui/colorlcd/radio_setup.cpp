@@ -280,6 +280,7 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
 
     // Haptic mode
+    // Haptic mode
     new StaticText(window, grid.getLabelSlot(true), STR_MODE);
     new Choice(window, grid.getFieldSlot(), STR_VBEEPMODE, -2, 1, GET_SET_DEFAULT(g_eeGeneral.hapticMode));
     grid.nextLine();
