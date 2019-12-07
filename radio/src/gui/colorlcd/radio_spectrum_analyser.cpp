@@ -79,6 +79,7 @@ class SpectrumScaleWindow: public Window
     SpectrumScaleWindow(Window * parent, const rect_t & rect) :
       Window(parent, rect)
     {
+      // This window will be automatically invalidated because it's between the frequency analyser (always invalidated) and the modified field
     }
 
     void paint(BitmapBuffer * dc) override
@@ -201,7 +202,7 @@ void RadioSpectrumAnalyser::buildHeader(Window * window)
 void RadioSpectrumAnalyser::buildBody(FormWindow * window)
 {
   new SpectrumWindow(window, {0, 0, LCD_W, SPECTRUM_HEIGHT});
-  new SpectrumScaleWindow(window, {0, SPECTRUM_HEIGHT, LCD_W, SCALE_HEIGHT});
+  scale = new SpectrumScaleWindow(window, {0, SPECTRUM_HEIGHT, LCD_W, SCALE_HEIGHT});
   new SpectrumFooterWindow(window, {0, SPECTRUM_HEIGHT + SCALE_HEIGHT, LCD_W, window->height() - SPECTRUM_HEIGHT - SCALE_HEIGHT}, moduleIdx);
 }
 
