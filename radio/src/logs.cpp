@@ -46,7 +46,7 @@ const char * logsOpen()
 {
   // Determine and set log file filename
   FRESULT result;
-  char filename[34]; // /LOGS/modelnamexxx-2013-01-01.log
+  char filename[6 + LEN_MODEL_NAME + 16]; // /LOGS/modelnamexxxxxx_2013-01-01.log
 
   if (!sdMounted())
     return STR_NO_SDCARD;
