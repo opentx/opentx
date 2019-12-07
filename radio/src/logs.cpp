@@ -46,7 +46,7 @@ const char * logsOpen()
 {
   // Determine and set log file filename
   FRESULT result;
-  char filename[6 + LEN_MODEL_NAME + 16]; // /LOGS/modelnamexxxxxx_2013-01-01.log
+  char filename[sizeof(LOGS_PATH) + LEN_MODEL_NAME + 16]; // /LOGS/modelnamexxxxxx_2013-01-01.log
 
   if (!sdMounted())
     return STR_NO_SDCARD;
@@ -61,13 +61,13 @@ const char * logsOpen()
     return error;
   }
 
-  filename[sizeof(LOGS_PATH)-1] = '/';
+  filename[sizeof(LOGS_PATH) - 1] = '/';
   memcpy(&filename[sizeof(LOGS_PATH)], g_model.header.name, sizeof(g_model.header.name));
-  filename[sizeof(LOGS_PATH)+sizeof(g_model.header.name)] = '\0';
+  filename[sizeof(LOGS_PATH) + LEN_MODEL_NAME] = '\0';
 
-  uint8_t i = sizeof(LOGS_PATH)+sizeof(g_model.header.name)-1;
+  uint8_t i = sizeof(LOGS_PATH) + LEN_MODEL_NAME - 1;
   uint8_t len = 0;
-  while (i>sizeof(LOGS_PATH)-1) {
+  while (i > sizeof(LOGS_PATH) - 1) {
     if (!len && filename[i])
       len = i+1;
     if (len) {
