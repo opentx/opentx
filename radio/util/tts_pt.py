@@ -2,7 +2,7 @@
 
 # Portuguese language sounds configuration
 
-from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename, PROMPT_SYSTEM_BASE
 
 
 systemSounds = []
@@ -50,34 +50,34 @@ for i, (s, f) in enumerate([("Volt", "volt0"),
                             ("minutos", "minute0"),
                             ("segundos", "second0"),
                        ]):
-    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 122 + i)))
-for s, f, a in [("atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 486),
-                ("bateria do rádio fraca", "lowbatt", 485),
-                ("atenção,acelerador não está no mínimo", "thralert", 481),
-                ("atenção, certifique-se que os interruptores estão na posição certa", "swalert", 482),
-                ("eeprom corrompida", "eebad", NO_ALTERNATE),
-                ("formatação da eeprom em curso", "eeformat", NO_ALTERNATE),
-                ("erro", "error", NO_ALTERNATE),
-                ("trim centrado", "midtrim", 495),
-                ("potenciómetro centrado", "midpot", 496),
-                ("trim no máximo", "maxtrim", NO_ALTERNATE),
-                ("trim no mínimo", "mintrim", NO_ALTERNATE),
-                ("20 segundos", "timer20", 500),
-                ("30 segundos", "timer30", 501),
-                ("assorbimento elevato", "highmah", NO_ALTERNATE),
-                ("temperatura elevata", "hightemp", NO_ALTERNATE),
-                ("Alarme A1", "a1_org", NO_ALTERNATE),
-                ("A1 critica", "a1_red", NO_ALTERNATE),
-                ("Alarme A2", "a2_org", NO_ALTERNATE),
-                ("A2 critica", "a2_red", NO_ALTERNATE),
-                ("recepção de sinal muito baixa", "rssi_org", NO_ALTERNATE),
-                ("recepção de sinal crítica", "rssi_red", NO_ALTERNATE),
-                ("Problema com a antena do transmissor", "swr_red", NO_ALTERNATE),
-                ("servo overload", "servoko", NO_ALTERNATE),
-                ("power overload", "rxko", NO_ALTERNATE),
-                ("receiver still connected", "modelpwr", NO_ALTERNATE),
-                ]:
-    systemSounds.append((s, filename(f, a)))
+    systemSounds.append((s, filename(f)))
+for s, f in [("atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv"),
+             ("bateria do rádio fraca", "lowbatt"),
+             ("atenção,acelerador não está no mínimo", "thralert"),
+             ("atenção, certifique-se que os interruptores estão na posição certa", "swalert"),
+             ("eeprom corrompida", "eebad"),
+             ("formatação da eeprom em curso", "eeformat"),
+             ("erro", "error"),
+             ("trim centrado", "midtrim"),
+             ("potenciómetro centrado", "midpot"),
+             ("trim no máximo", "maxtrim"),
+             ("trim no mínimo", "mintrim"),
+             ("20 segundos", "timer20"),
+             ("30 segundos", "timer30"),
+             ("assorbimento elevato", "highmah"),
+             ("temperatura elevata", "hightemp"),
+             ("Alarme A1", "a1_org"),
+             ("A1 critica", "a1_red"),
+             ("Alarme A2", "a2_org"),
+             ("A2 critica", "a2_red"),
+             ("recepção de sinal muito baixa", "rssi_org"),
+             ("recepção de sinal crítica", "rssi_red"),
+             ("Problema com a antena do transmissor", "swr_red"),
+             ("servo overload", "servoko"),
+             ("power overload", "rxko"),
+             ("receiver still connected", "modelpwr"),
+             ]:
+    systemSounds.append((s, filename(f)))
 for i, s in enumerate(["cronómetro", "cronómetro", "transmissão", "recepção", "A1", "A2", "altitude", "motor",
                        "combustível", "temperatura", "temperatura", "velocidade", "distância", "altitude", "célula lipo",
                        "Total lipo", "tensão", "corrente", "consumo", "potência", "aceleração X", "aceleração Y", "aceleração Z",
@@ -109,4 +109,4 @@ for i, (s, f) in enumerate([("trem, em cima.", "gearup"),
                             ("fase de voo 8", "fltmd8"),
                             ("fase de voo 9", "fltmd9"),
                             ]):
-    sounds.append((s, filename(f, PROMPT_CUSTOM_BASE + i)))
+    sounds.append((s, filename(f)))

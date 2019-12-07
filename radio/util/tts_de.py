@@ -2,7 +2,7 @@
 
 # German language sounds configuration
 
-from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename, PROMPT_SYSTEM_BASE
 
 
 systemSounds = []
@@ -16,7 +16,7 @@ systemSounds.append(("hundert", filename(PROMPT_SYSTEM_BASE + 102)))
 systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE + 103)))
 for i, s in enumerate(["komma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden", "stunde", "stunden"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 104 + i)))
-for i, (s, f) in enumerate([("Wolt","volt0"),
+for i, (s, f) in enumerate([("Wolt", "volt0"),
                             ("Ampär", "amp0"),
                             ("MilliAmpär", "mamp0"),
                             ("Knoten", "knot0"),
@@ -44,47 +44,47 @@ for i, (s, f) in enumerate([("Wolt","volt0"),
                             ("Minute", "minute0"), ("Minuten", "minute1"),
                             ("Sekunde", "second0"), ("Sekunden", "second1"),
                             ]):
-    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 114 + i)))
-for s, f, a in [("Inaktivitätsalarm", "inactiv", 486),
-                ("Senderspannung schwach", "lowbatt", 485),
-                ("Gaskanal nicht Null, bitte prüfen", "thralert", 481),
-                ("Schalter fehlpositioniert, bitte prüfen", "swalert", 482),
-                ("EEPROM fehlerhaft", "eebad", NO_ALTERNATE),
-                ("EEPROM formatiert", "eeformat", NO_ALTERNATE),
-                ("Fehler", "error", NO_ALTERNATE),
-                ("Trim zentriert", "midtrim", 495),
-                ("Poti zentriert", "midpot", 496),
-                ("Obere Trimmungsgrenze erreicht", "maxtrim", NO_ALTERNATE),
-                ("Untere Trimmungsgrenze erreicht", "mintrim", NO_ALTERNATE),
-                ("20 Sekunden", "timer20", 500),
-                ("30 Sekunden", "timer30", 501),
-                ("Senderstrom zu hoch!", "highmah", NO_ALTERNATE),
-                ("Sendertemperatur zu hoch!", "hightemp", NO_ALTERNATE),
-                ("A1 schwach!", "a1_org", NO_ALTERNATE),
-                ("A1 kritisch!", "a1_red", NO_ALTERNATE),
-                ("A2 schwach!", "a2_org", NO_ALTERNATE),
-                ("A2 kritisch!", "a2_red", NO_ALTERNATE),
-                ("A3 schwach!", "a3_org", NO_ALTERNATE),
-                ("A3 kritisch!", "a3_red", NO_ALTERNATE),
-                ("A4 schwach!", "a4_org", NO_ALTERNATE),
-                ("A4 kritisch!", "a4_red", NO_ALTERNATE),
-                ("Funksignal schwach!", "rssi_org", NO_ALTERNATE),
-                ("Funksignal kritisch!", "rssi_red", NO_ALTERNATE),
-                ("Problem mit der Sender Antenne", "swr_red", NO_ALTERNATE),
-                ("Telemetrie verloren", "telemko", NO_ALTERNATE),
-                ("Telemetrie wiederhergestellt", "telemok", NO_ALTERNATE),
-                ("Schülersignal verloren", "trainko", NO_ALTERNATE),
-                ("Schülersignal wiederhergestellt", "trainok", NO_ALTERNATE),
-                ("servo overload", "servoko", NO_ALTERNATE),
-                ("power overload", "rxko", NO_ALTERNATE),
-                ("Empfänger noch verbunden", "modelpwr", NO_ALTERNATE),
-                ("timer eins abgelaufen", "timovr1", NO_ALTERNATE),
-                ("timer zwei abgelaufen", "timovr2", NO_ALTERNATE),
-                ("timer drei abgelaufen", "timovr3", NO_ALTERNATE),
-                ("Sensor verloren", "sensorko", NO_ALTERNATE),
-                ("Willkommen bei open te ix", "hello", 480),
-                ]:
-    systemSounds.append((s, filename(f, a)))
+    systemSounds.append((s, filename(f)))
+for s, f in [("Inaktivitätsalarm", "inactiv"),
+             ("Senderspannung schwach", "lowbatt"),
+             ("Gaskanal nicht Null, bitte prüfen", "thralert"),
+             ("Schalter fehlpositioniert, bitte prüfen", "swalert"),
+             ("EEPROM fehlerhaft", "eebad"),
+             ("EEPROM formatiert", "eeformat"),
+             ("Fehler", "error"),
+             ("Trim zentriert", "midtrim"),
+             ("Poti zentriert", "midpot"),
+             ("Obere Trimmungsgrenze erreicht", "maxtrim"),
+             ("Untere Trimmungsgrenze erreicht", "mintrim"),
+             ("20 Sekunden", "timer20"),
+             ("30 Sekunden", "timer30"),
+             ("Senderstrom zu hoch!", "highmah"),
+             ("Sendertemperatur zu hoch!", "hightemp"),
+             ("A1 schwach!", "a1_org"),
+             ("A1 kritisch!", "a1_red"),
+             ("A2 schwach!", "a2_org"),
+             ("A2 kritisch!", "a2_red"),
+             ("A3 schwach!", "a3_org"),
+             ("A3 kritisch!", "a3_red"),
+             ("A4 schwach!", "a4_org"),
+             ("A4 kritisch!", "a4_red"),
+             ("Funksignal schwach!", "rssi_org"),
+             ("Funksignal kritisch!", "rssi_red"),
+             ("Problem mit der Sender Antenne", "swr_red"),
+             ("Telemetrie verloren", "telemko"),
+             ("Telemetrie wiederhergestellt", "telemok"),
+             ("Schülersignal verloren", "trainko"),
+             ("Schülersignal wiederhergestellt", "trainok"),
+             ("servo overload", "servoko"),
+             ("power overload", "rxko"),
+             ("Empfänger noch verbunden", "modelpwr"),
+             ("timer eins abgelaufen", "timovr1"),
+             ("timer zwei abgelaufen", "timovr2"),
+             ("timer drei abgelaufen", "timovr3"),
+             ("Sensor verloren", "sensorko"),
+             ("Willkommen bei open te ix", "hello"),
+             ]:
+    systemSounds.append((s, filename(f)))
 for i, s in enumerate(["Uhr", "Uhr", "Sender", "Empfang", "A1", "A2", "Hoehe", "Motor",
                        "Treibstoff", "Temperatur", "Temperatur", "Geschwindigkeit", "Entfernung", "Höhe", "Lipo-Zelle",
                        "Zellen gesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
@@ -117,4 +117,4 @@ for i, (s, f) in enumerate([("Fahrwerk eingezogen", "gearup"),
                             ("Flugmodus 8", "fm-8"),
                             ("Flugmodus 9", "fm-9"),
                             ]):
-    sounds.append((s, filename(f, PROMPT_CUSTOM_BASE + i)))
+    sounds.append((s, filename(f)))

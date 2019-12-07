@@ -2,7 +2,7 @@
 
 # English language sounds configuration
 
-from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename, PROMPT_SYSTEM_BASE
 
 
 systemSounds = []
@@ -42,36 +42,36 @@ for i, (s, f) in enumerate([("volt", "volt0"), ("volts", "volt1"),
                             ("minute", "minute0"), ("minutes", "minute1"),
                             ("second", "second0"), ("seconds", "second1"),
                             ]):
-    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 115 + i)))
+    systemSounds.append((s, filename(f)))
 for i, s in enumerate(["point zero", "point one", "point two", "point three",
                        "point four", "point five", "point six",
                        "point seven", "point eight", "point nine"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 167 + i)))
-for s, f, a in [("trim center", "midtrim", 495),
-                ("maximum trim reached", "maxtrim", NO_ALTERNATE),
-                ("minimum trim reached", "mintrim", NO_ALTERNATE),
-                ("timer 1 elapsed", "timovr1", NO_ALTERNATE),
-                ("timer 2 elapsed", "timovr2", NO_ALTERNATE),
-                ("timer 3 elapsed", "timovr3", NO_ALTERNATE),
-                ("transmitter battery low", "lowbatt", 485),
-                ("inactivity alarm", "inactiv", 486),
-                ("throttle warning", "thralert", 481),
-                ("switch warning", "swalert", 482),
-                ("bad eeprom", "eebad", 483),
-                ("Welcome to open tea ex!", "hello", 480),
-                ("RF signal, low", "rssi_org", NO_ALTERNATE),
-                ("RF signal, critical", "rssi_red", NO_ALTERNATE),
-                ("radio antenna defective", "swr_red", NO_ALTERNATE),
-                ("telemetry lost", "telemko", NO_ALTERNATE),
-                ("telemetry recovered", "telemok", NO_ALTERNATE),
-                ("trainer signal lost", "trainko", NO_ALTERNATE),
-                ("trainer signal recovered", "trainok", NO_ALTERNATE),
-                ("sensor lost", "sensorko", NO_ALTERNATE),
-                ("servo overload", "servoko", NO_ALTERNATE),
-                ("power overload", "rxko", NO_ALTERNATE),
-                ("receiver still connected", "modelpwr", NO_ALTERNATE),
-                ]:
-    systemSounds.append((s, filename(f, a)))
+for s, f in [("trim center", "midtrim"),
+             ("maximum trim reached", "maxtrim"),
+             ("minimum trim reached", "mintrim"),
+             ("timer 1 elapsed", "timovr1"),
+             ("timer 2 elapsed", "timovr2"),
+             ("timer 3 elapsed", "timovr3"),
+             ("transmitter battery low", "lowbatt"),
+             ("inactivity alarm", "inactiv"),
+             ("throttle warning", "thralert"),
+             ("switch warning", "swalert"),
+             ("bad eeprom", "eebad"),
+             ("Welcome to open tea ex!", "hello"),
+             ("RF signal, low", "rssi_org"),
+             ("RF signal, critical", "rssi_red"),
+             ("radio antenna defective", "swr_red"),
+             ("telemetry lost", "telemko"),
+             ("telemetry recovered", "telemok"),
+             ("trainer signal lost", "trainko"),
+             ("trainer signal recovered", "trainok"),
+             ("sensor lost", "sensorko"),
+             ("servo overload", "servoko"),
+             ("power overload", "rxko"),
+             ("receiver still connected", "modelpwr"),
+             ]:
+    systemSounds.append((s, filename(f)))
 for i, (s, f) in enumerate([("gear!, up!", "gearup"),
                             ("gear!, down!", "geardn"),
                             ("flaps!, up!", "flapup"),
@@ -118,4 +118,4 @@ for i, (s, f) in enumerate([("gear!, up!", "gearup"),
                             ("flight mode thermal left", "fm-thl"),
                             ("flight mode thermal right", "fm-thr"),
                             ]):
-    sounds.append((s, filename(f, PROMPT_CUSTOM_BASE + i)))
+    sounds.append((s, filename(f)))
