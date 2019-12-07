@@ -21,7 +21,6 @@
 #include "radio_spectrum_analyser.h"
 #include "opentx.h"
 
-extern uint8_t g_moduleIdx;
 #define SET_DIRTY()     storageDirty(EE_GENERAL)
 
 constexpr coord_t SPECTRUM_HEIGHT = 180;
@@ -74,10 +73,10 @@ class SpectrumFooterWindow : public FormWindow
     }
 };
 
-class ScaleWindow: public Window
+class SpectrumScaleWindow: public Window
 {
   public:
-    ScaleWindow(Window * parent, const rect_t & rect) :
+    SpectrumScaleWindow(Window * parent, const rect_t & rect) :
       Window(parent, rect)
     {
     }
@@ -201,20 +200,19 @@ void RadioSpectrumAnalyser::buildHeader(Window * window)
 void RadioSpectrumAnalyser::buildBody(FormWindow * window)
 {
   new SpectrumWindow(window, {0, 0, LCD_W, SPECTRUM_HEIGHT});
-  new ScaleWindow(window, {0, SPECTRUM_HEIGHT, LCD_W, SCALE_HEIGHT});
+  new SpectrumScaleWindow(window, {0, SPECTRUM_HEIGHT, LCD_W, SCALE_HEIGHT});
   new SpectrumFooterWindow(window, {0, SPECTRUM_HEIGHT + SCALE_HEIGHT, LCD_W, window->height() - SPECTRUM_HEIGHT - SCALE_HEIGHT}, moduleIdx);
 }
 
 void RadioSpectrumAnalyser::start()
 {
 #if defined(INTERNAL_MODULE_MULTI)
-  if (g_moduleIdx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE) {
+  if (moduleIdx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE) {
       reusableBuffer.spectrumAnalyser.moduleOFF = true;
       setModuleType(INTERNAL_MODULE, MODULE_TYPE_MULTIMODULE);
     }
 #endif
-
-  if (isModuleR9MAccess(g_moduleIdx)) {
+  if (isModuleR9MAccess(moduleIdx)) {
     reusableBuffer.spectrumAnalyser.spanDefault = 20;
     reusableBuffer.spectrumAnalyser.spanMax = 40;
     reusableBuffer.spectrumAnalyser.freqDefault = 890;
@@ -222,10 +220,12 @@ void RadioSpectrumAnalyser::start()
     reusableBuffer.spectrumAnalyser.freqMax = 930;
   }
   else {
-    if (isModuleMultimodule(g_moduleIdx))
+    if (isModuleMultimodule(moduleIdx)) {
       reusableBuffer.spectrumAnalyser.spanDefault = 80;  // 80MHz
-    else
+    }
+    else {
       reusableBuffer.spectrumAnalyser.spanDefault = 40;  // 40MHz
+    }
     reusableBuffer.spectrumAnalyser.spanMax = 80;
     reusableBuffer.spectrumAnalyser.freqDefault = 2440; // 2440MHz
     reusableBuffer.spectrumAnalyser.freqMin = 2400;
@@ -237,21 +237,21 @@ void RadioSpectrumAnalyser::start()
   reusableBuffer.spectrumAnalyser.track = reusableBuffer.spectrumAnalyser.freq;
   reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
   reusableBuffer.spectrumAnalyser.dirty = true;
-  moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+  moduleState[moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
 }
 
 
 void RadioSpectrumAnalyser::stop()
 {
   new MessageDialog(STR_MODULE, STR_STOPPING);
-  if (isModulePXX2(g_moduleIdx)) {
+  if (isModulePXX2(moduleIdx)) {
     moduleState[moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
   }
-  else if (isModuleMultimodule(g_moduleIdx)) {
+  else if (isModuleMultimodule(moduleIdx)) {
     if (reusableBuffer.spectrumAnalyser.moduleOFF)
       setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
     else
-      moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+      moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
   }
   /* wait 1s to resume normal operation before leaving */
   //  watchdogSuspend(1000);
