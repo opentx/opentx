@@ -29,6 +29,7 @@ class RadioSpectrumAnalyser: public Page
     RadioSpectrumAnalyser(uint8_t moduleIdx);
 
   protected:
+    void buildHeader(Window * window);
     void buildBody(FormWindow * window);
     void start();
     void stop();

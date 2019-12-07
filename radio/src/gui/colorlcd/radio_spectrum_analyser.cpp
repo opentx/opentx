@@ -86,6 +86,12 @@ class ScaleWindow: public Window
     {
       dc->drawSolidFilledRect(0, 0, width(), height(), CURVE_AXIS_COLOR);
 
+      // Draw tracker
+      int offset = reusableBuffer.spectrumAnalyser.track - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+      int x = limit<int>(0, offset / reusableBuffer.spectrumAnalyser.step, width() - 1);
+      dc->drawSolidVerticalLine(x, 0, height(), BLACK);
+
+      // Draw text scale
       for (uint32_t frequency =
         ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000;; frequency += 10000000) {
         int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
@@ -93,7 +99,7 @@ class ScaleWindow: public Window
         if (x >= LCD_W - 1)
           break;
         if ((frequency / 1000000) % 2 == 0) {
-          dc->drawNumber(x, 2, frequency / 1000000, FONT(XS) | CENTERED);
+          dc->drawNumber(x, 3, frequency / 1000000, FONT(XS) | CENTERED);
         }
       }
     }
@@ -128,6 +134,7 @@ class SpectrumWindow : public Window
 #endif
 
       coord_t SCALE_TOP = height() - MENU_FOOTER_HEIGHT;
+
       // Draw fixed part (scale,..)
       for (uint32_t frequency = ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 10000000) * 10000000 + 10000000; ; frequency += 10000000) {
         int offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
@@ -176,13 +183,20 @@ class SpectrumWindow : public Window
 
 };
 
+
 RadioSpectrumAnalyser::RadioSpectrumAnalyser(uint8_t moduleIdx) :
   Page(ICON_RADIO_TOOLS),
   moduleIdx(moduleIdx)
 {
   start();
+  buildHeader(&header);
   buildBody(&body);
 }
+
+void RadioSpectrumAnalyser::buildHeader(Window * window)
+{
+  new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + 10, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENU_SPECTRUM_ANALYSER, 0, MENU_COLOR);
+  }
 
 void RadioSpectrumAnalyser::buildBody(FormWindow * window)
 {
