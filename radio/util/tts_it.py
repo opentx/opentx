@@ -2,18 +2,18 @@
 
 # Italian language sounds configuration
 
-from tts_common import filename, PROMPT_SYSTEM_BASE
+from tts_common import filename
 
 
 systemSounds = []
 sounds = []
 
 for i in range(101):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
-systemSounds.append(("mila", filename(PROMPT_SYSTEM_BASE + 101)))
-systemSounds.append(("mille", filename(PROMPT_SYSTEM_BASE + 102)))
+    systemSounds.append((str(i), filename(i)))
+systemSounds.append(("mila", filename(101)))
+systemSounds.append(("mille", filename(102)))
 for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 103 + i)))
+    systemSounds.append((s, filename(103 + i)))
 for i, (s, f) in enumerate([("volt", "volt0"),
                             ("ampere", "amp0"),
                             ("milliampere", "mamp0"),
@@ -83,7 +83,7 @@ for i, s in enumerate(["timer", "", "tensione", "tensione", "trasmissione", "ric
                        "carburante", "temperatura", "temperatura", "velocità", "distanza", "altitudine", "cella lipo",
                        "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accelerazione Y", "accelerazione Z",
                        "direzione", "variometro", "minimo", "massimo"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 155 + i)))
+    systemSounds.append((s, filename(155 + i)))
 for i, (s, f) in enumerate([("carrello chiuso", "gearup"),
                             ("carrello aperto", "geardn"),
                             ("flap rientrati", "flapup"),

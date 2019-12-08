@@ -2,7 +2,7 @@
 
 # Russian language sounds configuration
 
-from tts_common import filename, PROMPT_SYSTEM_BASE
+from tts_common import filename
 
 
 systemSounds = []
@@ -10,30 +10,30 @@ sounds = []
 
 # 0 - 100
 for i in range(100):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
+    systemSounds.append((str(i), filename(i)))
 # 100, 200, ... 900
 for i in range(9):
-    systemSounds.append((str(100 * (i + 1)), filename(PROMPT_SYSTEM_BASE + 100 + i)))
+    systemSounds.append((str(100 * (i + 1)), filename(100 + i)))
 for i, s in enumerate([u"тысяча", u"и", u"минус"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 109 + i)))
+    systemSounds.append((s, filename(109 + i)))
 
 for i, s in enumerate([u"тысяча", u"тысячи", u"тысяч"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 200 + i)))
+    systemSounds.append((s, filename(200 + i)))
 
 # decimal point
 for i, s in enumerate([u"ровно", u"и одна десятая", u"и две десятых", u"и три десятых", u"и четыре десятых",
                        u"и пять десятых", u"и шесть десятых", u"и семь десятых", u"и восемь десятых", u"и девять десятых" ]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 165 + i)))
+    systemSounds.append((s, filename(165 + i)))
 
 # last digit = 1, female
 for i, s in enumerate([u"одна", u"одиннадцать", u"двадцать одна", u"тридцать одна", u"сорок одна",
                        u"пятьдесят одна", u"шестьдесят одна", u"семьдесят одна", u"восемьдесят одна", u"девяносто одна"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
+    systemSounds.append((s, filename(180 + i)))
 
 # last digit = 2, female
 for i, s in enumerate([u"две", u"двенадцать", u"двадцать две", u"тридцать две", u"сорок две",
                        u"пятьдесят две", u"шестьдесят две", u"семьдесят две", u"восемьдесят две", u"девяносто две"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 190 + i)))
+    systemSounds.append((s, filename(190 + i)))
 
 for i, (s, f) in enumerate([(u"вольт", "volt0"), (u"вольт", "volt1"),
                             (u"вольта", "volt2"), (u"вольт", "volt5"),

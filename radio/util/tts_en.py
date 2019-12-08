@@ -2,18 +2,18 @@
 
 # English language sounds configuration
 
-from tts_common import filename, PROMPT_SYSTEM_BASE
+from tts_common import filename
 
 
 systemSounds = []
 sounds = []
 
 for i in range(100):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
+    systemSounds.append((str(i), filename(i)))
 for i in range(9):
-    systemSounds.append((str(100 * (i + 1)), filename(PROMPT_SYSTEM_BASE + 100 + i)))
+    systemSounds.append((str(100 * (i + 1)), filename(100 + i)))
 for i, s in enumerate(["thousand", "and", "minus", "point"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 109 + i)))
+    systemSounds.append((s, filename(109 + i)))
 for i, (s, f) in enumerate([("volt", "volt0"), ("volts", "volt1"),
                             ("amp", "amp0"), ("amps", "amp1"),
                             ("milliamp", "mamp0"), ("milliamps", "mamp1"),
@@ -46,7 +46,7 @@ for i, (s, f) in enumerate([("volt", "volt0"), ("volts", "volt1"),
 for i, s in enumerate(["point zero", "point one", "point two", "point three",
                        "point four", "point five", "point six",
                        "point seven", "point eight", "point nine"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 167 + i)))
+    systemSounds.append((s, filename(167 + i)))
 for s, f in [("trim center", "midtrim"),
              ("maximum trim reached", "maxtrim"),
              ("minimum trim reached", "mintrim"),

@@ -2,26 +2,26 @@
 
 # Portuguese language sounds configuration
 
-from tts_common import filename, PROMPT_SYSTEM_BASE
+from tts_common import filename
 
 
 systemSounds = []
 sounds = []
 
 for i in range(101):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
-systemSounds.append(("cento", filename(PROMPT_SYSTEM_BASE + 101)))
-systemSounds.append(("duzentos", filename(PROMPT_SYSTEM_BASE + 102)))
-systemSounds.append(("trezentos", filename(PROMPT_SYSTEM_BASE + 103)))
-systemSounds.append(("quatrocentos", filename(PROMPT_SYSTEM_BASE + 104)))
-systemSounds.append(("quinhentos", filename(PROMPT_SYSTEM_BASE + 105)))
-systemSounds.append(("seiscentos", filename(PROMPT_SYSTEM_BASE + 106)))
-systemSounds.append(("setecentos", filename(PROMPT_SYSTEM_BASE + 107)))
-systemSounds.append(("oitocentos", filename(PROMPT_SYSTEM_BASE + 108)))
-systemSounds.append(("novecentos", filename(PROMPT_SYSTEM_BASE + 109)))
-systemSounds.append(("mil", filename(PROMPT_SYSTEM_BASE + 110)))
+    systemSounds.append((str(i), filename(i)))
+systemSounds.append(("cento", filename(101)))
+systemSounds.append(("duzentos", filename(102)))
+systemSounds.append(("trezentos", filename(103)))
+systemSounds.append(("quatrocentos", filename(104)))
+systemSounds.append(("quinhentos", filename(105)))
+systemSounds.append(("seiscentos", filename(106)))
+systemSounds.append(("setecentos", filename(107)))
+systemSounds.append(("oitocentos", filename(108)))
+systemSounds.append(("novecentos", filename(109)))
+systemSounds.append(("mil", filename(110)))
 for i, s in enumerate(["virgula", "uma", "duas", "e", "menos", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 111 + i)))
+    systemSounds.append((s, filename(111 + i)))
 for i, (s, f) in enumerate([("Volt", "volt0"),
                             ("ampére", "amp0"),
                             ("miliamperes", "mamp0"),
@@ -82,7 +82,7 @@ for i, s in enumerate(["cronómetro", "cronómetro", "transmissão", "recepção
                        "combustível", "temperatura", "temperatura", "velocidade", "distância", "altitude", "célula lipo",
                        "Total lipo", "tensão", "corrente", "consumo", "potência", "aceleração X", "aceleração Y", "aceleração Z",
                        "Direcção", "variómetro", "mínimo", "máximo"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 141 + i)))
+    systemSounds.append((s, filename(141 + i)))
 for i, (s, f) in enumerate([("trem, em cima.", "gearup"),
                             ("trem, em baixo.", "geardn"),
                             ("flaps recolhidos", "flapup"),

@@ -2,20 +2,20 @@
 
 # German language sounds configuration
 
-from tts_common import filename, PROMPT_SYSTEM_BASE
+from tts_common import filename
 
 
 systemSounds = []
 sounds = []
 
 for i in range(100):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
-systemSounds.append(("ein", filename(PROMPT_SYSTEM_BASE + 100)))
-systemSounds.append(("eine", filename(PROMPT_SYSTEM_BASE + 101)))
-systemSounds.append(("hundert", filename(PROMPT_SYSTEM_BASE + 102)))
-systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE + 103)))
+    systemSounds.append((str(i), filename(i)))
+systemSounds.append(("ein", filename(100)))
+systemSounds.append(("eine", filename(101)))
+systemSounds.append(("hundert", filename(102)))
+systemSounds.append(("tausend", filename(103)))
 for i, s in enumerate(["komma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden", "stunde", "stunden"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 104 + i)))
+    systemSounds.append((s, filename(104 + i)))
 for i, (s, f) in enumerate([("Wolt", "volt0"),
                             ("Ampär", "amp0"),
                             ("MilliAmpär", "mamp0"),
@@ -89,7 +89,7 @@ for i, s in enumerate(["Uhr", "Uhr", "Sender", "Empfang", "A1", "A2", "Hoehe", "
                        "Treibstoff", "Temperatur", "Temperatur", "Geschwindigkeit", "Entfernung", "Höhe", "Lipo-Zelle",
                        "Zellen gesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
                        "Richtung", "Variometer", "Minimum", "Maximum"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 134 + i)))
+    systemSounds.append((s, filename(134 + i)))
 for i, (s, f) in enumerate([("Fahrwerk eingezogen", "gearup"),
                             ("Fahrwerk ausgefahren", "geardn"),
                             ("Klappen eingefahren", "flapup"),

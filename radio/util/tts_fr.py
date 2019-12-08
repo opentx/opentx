@@ -2,19 +2,19 @@
 
 # French language sounds configuration
 
-from tts_common import filename, PROMPT_SYSTEM_BASE
+from tts_common import filename
 
 systemSounds = []
 sounds = []
 
 for i in range(100):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
+    systemSounds.append((str(i), filename(i)))
 for i in range(10):
-    systemSounds.append((str(100 * (i + 1)), filename(PROMPT_SYSTEM_BASE + 100 + i)))
+    systemSounds.append((str(100 * (i + 1)), filename(100 + i)))
 for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante et une", "cinquante et une", "soixante et une", "soixante et onze", "quatre vingt une"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
+    systemSounds.append((s, filename(110 + i)))
 for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 119 + i)))
+    systemSounds.append((s, filename(119 + i)))
 for i, (s, f) in enumerate([("volts", "volt0"),
                             ("ampères", "amp0"),
                             ("milli ampères", "mamp0"),
@@ -45,7 +45,7 @@ for i, (s, f) in enumerate([("volts", "volt0"),
                             ]):
     systemSounds.append((s, filename(f)))
 for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
+    systemSounds.append((s, filename(180 + i)))
 for s, f in [("Trim centré", "midtrim"),
              ("Trim maximum atteint", "maxtrim"),
              ("Trim minimum atteint", "mintrim"),

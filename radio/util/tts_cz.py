@@ -2,20 +2,20 @@
 
 # Czech language sounds configuration
 
-from tts_common import filename, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename
 
 
 systemSounds = []
 sounds = []
 
 for i, s in enumerate(["nula", "jedna", "dva"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + i)))
+    systemSounds.append((s, filename(i)))
 for i in range(97):
-    systemSounds.append((str(3 + i), filename(PROMPT_SYSTEM_BASE + 3 + i)))
+    systemSounds.append((str(3 + i), filename(3 + i)))
 for i, s in enumerate(["sto", "dvěsta", "třista", "čtyřista", "pětset", "šestset", "sedmset", "osmset", "devětset", "tisíc"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 100 + i)))
+    systemSounds.append((s, filename(100 + i)))
 for i, s in enumerate(["tisíce", "jeden", "jedno", "dvě", "celá", "celé", "celých", "mínus"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
+    systemSounds.append((s, filename(110 + i)))
 for i, (s, f) in enumerate([("volt", "volt0"), ("volty", "volt1"), ("voltů", "volt2"),("voltu", "volt3"),
                             ("ampér", "amp0"), ("ampéry", "amp1"), ("ampérů", "amp2"), ("ampéru", "amp3"),
                             ("miliampér", "mamp0"), ("miliampéry", "mamp1"), ("miliampérů", "mamp2"), ("miliampéru", "mamp3"),
