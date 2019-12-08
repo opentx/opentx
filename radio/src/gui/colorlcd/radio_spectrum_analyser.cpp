@@ -45,7 +45,18 @@ class SpectrumFooterWindow : public FormWindow
       grid.spacer(4);
       grid.setLabelWidth(5);
 
-      if (1 || isModuleMultimodule(moduleIdx)) {
+      if (isModuleMultimodule(moduleIdx)) {
+        char label[10];
+
+        // Frequency
+        sprintf(label,"T:%dMHz", reusableBuffer.spectrumAnalyser.freq / 1000000);
+        new StaticText(this, grid.getFieldSlot(3, 0), label);
+
+        // Span
+        sprintf(label,"S:%dMHz", reusableBuffer.spectrumAnalyser.span / 1000000);
+        new StaticText(this, grid.getFieldSlot(3, 1), label);
+      }
+      else {
         // Frequency
         auto freq = new NumberEdit(this, grid.getFieldSlot(3, 0), reusableBuffer.spectrumAnalyser.freqMin,
                                    reusableBuffer.spectrumAnalyser.freqMax,
@@ -60,16 +71,16 @@ class SpectrumFooterWindow : public FormWindow
                                    SET_VALUE(reusableBuffer.spectrumAnalyser.span, newValue * 1000000));
         span->setSuffix("MHz");
         span->setPrefix("S: ");
-
-        // Tracker
-        auto tracker = new NumberEdit(this, grid.getFieldSlot(3,2), (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
-                                      (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
-                                      GET_DEFAULT(reusableBuffer.spectrumAnalyser.track / 1000000),
-                                      SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000));
-        tracker->setSuffix("MHz");
-        tracker->setPrefix("T: ");
-        tracker->setFocus();
       }
+
+      // Tracker
+      auto tracker = new NumberEdit(this, grid.getFieldSlot(3,2), (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                                    (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                                    GET_DEFAULT(reusableBuffer.spectrumAnalyser.track / 1000000),
+                                    SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000));
+      tracker->setSuffix("MHz");
+      tracker->setPrefix("T: ");
+      tracker->setFocus();
     }
 };
 
