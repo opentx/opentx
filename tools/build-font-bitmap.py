@@ -88,28 +88,26 @@ class FontBitmap:
 
     def generate(self, filename, generate_coords_file=True):
         coords = []
-        image = Image.new("RGB", (len(self.chars) * self.font_size, self.font_size + 10), self.background)
+        image = Image.new("RGB", (len(self.chars) * self.font_size + 200, self.font_size + 20), self.background)
 
         width = 0
         for c in self.chars:
             coords.append(width)
 
-            if c in extra_chars:
-                if self.extra_bitmap and c == extra_chars[0]:
-                    if self.font_size == 16:
-                        offset = 1
-                    else:
-                        offset = self.font_size % 2
-                    image.paste(self.extra_bitmap.copy(), (width, offset))
-            elif c == " ":
+            if c == " ":
                 width += 4
             elif c in special_chars["cn"]:
                 width += self.draw_char(image, width, c, self.cjk_font)
-            else:
+            elif c not in extra_chars:
                 width += self.draw_char(image, width, c, self.font)
         coords.append(width)
 
         _, top, _, bottom = self.get_real_size(image)
+
+        if self.extra_bitmap:
+            image.paste(self.extra_bitmap.copy(), (width, top))
+            width += self.extra_bitmap.width
+
         image = image.crop((0, top, width, bottom))
         coords.insert(0, bottom - top)
 
