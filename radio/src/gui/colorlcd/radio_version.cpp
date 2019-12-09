@@ -23,7 +23,7 @@
 #include "options.h"
 #include "libopenui.h"
 
-class OptionsText : public StaticText {
+class OptionsText: public StaticText {
   public:
     OptionsText(Window * parent, const rect_t &rect) :
       StaticText(parent, rect)

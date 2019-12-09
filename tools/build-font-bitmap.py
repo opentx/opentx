@@ -102,7 +102,7 @@ class FontBitmap:
                         offset = self.font_size % 2
                     image.paste(self.extra_bitmap.copy(), (width, offset))
             elif c == " ":
-                pass
+                width += 4
             elif c in special_chars["cn"]:
                 width += self.draw_char(image, width, c, self.cjk_font)
             else:
