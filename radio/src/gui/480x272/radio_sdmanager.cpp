@@ -224,6 +224,8 @@ bool menuRadioSdManager(event_t _event)
       // no break;
 
     case EVT_ENTRY_UP:
+      memset(&reusableBuffer.sdManager, 0, sizeof(reusableBuffer.sdManager));
+      menuVerticalPosition = 0;
       REFRESH_FILES();
       break;
 

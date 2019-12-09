@@ -69,6 +69,7 @@ void handleUsbConnection()
     usbStop();
     if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
       opentxResume();
+      putEvent(EVT_ENTRY);
     }
     setSelectedUsbMode(USB_UNSELECTED_MODE);
   }
