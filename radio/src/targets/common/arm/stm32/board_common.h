@@ -148,6 +148,4 @@ void delay_ms(uint32_t ms);
   GPIO_Init(GPIO, &GPIO_InitStructure); \
   GPIO_SetBits(GPIO, KEYS_ ## GPIO ## _PINS)
 
-#include "mixer_scheduler_driver.h"
-
 #endif

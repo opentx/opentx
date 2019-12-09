@@ -404,30 +404,6 @@ uint16_t ModuleSyncStatus::getAdjustedRefreshRate()
   return (uint16_t)newRefreshRate;
 }
 
-// sprintf does not work AVR ARM
-// use a small helper function
-static void appendInt(char * buf, uint32_t val)
-{
-  while (*buf)
-    buf++;
-
-  strAppendUnsigned(buf, val);
-}
-
-static void prependSpaces(char * buf, int val)
-{
-  while (*buf)
-    buf++;
-
-  int k = 10000;
-  while (val / k == 0 && k > 0) {
-    *buf = ' ';
-    buf++;
-    k /= 10;
-  }
-  *buf = '\0';
-}
-
 void ModuleSyncStatus::getRefreshString(char * statusText)
 {
   if (!isValid()) {
@@ -439,11 +415,11 @@ void ModuleSyncStatus::getRefreshString(char * statusText)
   *tmp++ = 'L';
   tmp = strAppendUnsigned(tmp, inputLag, 5);
   tmp = strAppend(tmp, "us R ");
-  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000), 5);
+  tmp = strAppendUnsigned(tmp, (uint32_t) (refreshRate / 1000), 5);
   tmp = strAppend(tmp, "us");
 #else
   tmp = strAppend(tmp, "Sync at ");
-  tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000000));
+  tmp = strAppendUnsigned(tmp, (uint32_t) (refreshRate / 1000000));
   tmp = strAppend(tmp, " ms");
 #endif
 }
