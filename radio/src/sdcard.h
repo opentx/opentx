@@ -28,8 +28,8 @@
 #include "opentx.h"
 
 #define ROOT_PATH           "/"
-#define MODELS_PATH         ROOT_PATH "MODELS"      // no trailing slash = important
-#define RADIO_PATH          ROOT_PATH "RADIO"       // no trailing slash = important
+#define MODELS_PATH         ROOT_PATH "MODELS24"      // no trailing slash = important //TODO Temporary while working on both 2.3 and 2.4
+#define RADIO_PATH          ROOT_PATH "RADIO24"       // no trailing slash = important
 #define LOGS_PATH           ROOT_PATH "LOGS"
 #define SCREENSHOTS_PATH    ROOT_PATH "SCREENSHOTS"
 #define SOUNDS_PATH         ROOT_PATH "SOUNDS/en"
