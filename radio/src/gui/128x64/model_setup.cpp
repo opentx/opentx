@@ -1484,7 +1484,7 @@ void menuModelSetup(event_t event)
 
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
           if (attr) {
-            uint8_t min, max;
+            int8_t min, max;
             getMultiOptionValues(multi_proto, min, max);
             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, min, max);
           }
