@@ -35,15 +35,24 @@ coord_t getAverage(uint8_t number, const uint8_t * value)
   return sum / number;
 }
 
-class SpectrumFooterWindow : public FormWindow
+class SpectrumFooterWindow: public FormGroup
 {
   public:
-    SpectrumFooterWindow(FormWindow * parent, const rect_t & rect, int moduleIdx) :
-      FormWindow(parent, rect, NO_SCROLLBAR)
+    SpectrumFooterWindow(FormGroup * parent, const rect_t & rect, int moduleIdx) :
+      FormGroup(parent, rect, FORM_FORWARD_FOCUS)
     {
       FormGridLayout grid;
       grid.spacer(4);
       grid.setLabelWidth(5);
+
+      // Tracker
+      auto tracker = new NumberEdit(this, grid.getFieldSlot(3, 2), (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                                    (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
+                                    GET_DEFAULT(reusableBuffer.spectrumAnalyser.track / 1000000),
+                                    SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000));
+      tracker->setSuffix("MHz");
+      tracker->setPrefix("T: ");
+      tracker->setFocus();
 
       if (isModuleMultimodule(moduleIdx)) {
         char label[10];
@@ -72,15 +81,6 @@ class SpectrumFooterWindow : public FormWindow
         span->setSuffix("MHz");
         span->setPrefix("S: ");
       }
-
-      // Tracker
-      auto tracker = new NumberEdit(this, grid.getFieldSlot(3,2), (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
-                                    (reusableBuffer.spectrumAnalyser.freq + reusableBuffer.spectrumAnalyser.span / 2) / 1000000,
-                                    GET_DEFAULT(reusableBuffer.spectrumAnalyser.track / 1000000),
-                                    SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000));
-      tracker->setSuffix("MHz");
-      tracker->setPrefix("T: ");
-      tracker->setFocus();
     }
 };
 
@@ -116,7 +116,7 @@ class SpectrumScaleWindow: public Window
     }
 };
 
-class SpectrumWindow : public Window
+class SpectrumWindow: public Window
 {
   public:
     SpectrumWindow(Window * parent, const rect_t & rect) :
