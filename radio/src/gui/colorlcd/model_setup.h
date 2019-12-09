@@ -18,7 +18,30 @@
  * GNU General Public License for more details.
  */
 
-#include "tabsgroup.h"
+#include "opentx.h"
+
+class MultimoduleStatus: public StaticText
+{
+  public:
+    MultimoduleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
+      StaticText(parent, rect),
+      moduleIdx(moduleIdx)
+    {
+    }
+
+    void checkEvents() override
+    {
+      char statusText[MULTIMODULE_STATUS_LEN] = {};
+      getMultiModuleStatus(moduleIdx).getStatusString(statusText);
+      if (text != statusText) {
+        setText(statusText);
+        invalidate();
+      }
+    }
+
+  protected:
+    uint8_t moduleIdx;
+};
 
 class ModelSetupPage: public PageTab {
   public:

@@ -569,9 +569,7 @@ class ModuleWindow : public FormGroup {
 
         // Multimodule status
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        char statusText[64] = {};
-        getMultiModuleStatus(moduleIdx).getStatusString(statusText);
-        new StaticText(this, grid.getFieldSlot(), statusText);
+        new MultimoduleStatus(this, grid.getFieldSlot(), moduleIdx);
 
         // Multimodule sync
         /*if (multiSyncStatus.isValid()) {
