@@ -17,6 +17,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 #ifndef _MODEL_GVARS_H
 #define _MODEL_GVARS_H
 
@@ -25,9 +26,11 @@
 #include "window.h"
 #include "numberedit.h"
 
-class GVarButton : public Button {
+class GVarButton: public Button {
   public:
     GVarButton(FormGroup * parent, const rect_t & rect, uint8_t gvar);
+
+  protected:
     void checkEvents() override;
     void paint(BitmapBuffer * dc) override;
 
@@ -39,14 +42,19 @@ class GVarButton : public Button {
     uint8_t currentFlightMode; //used for invalidation
 };
 
-class ModelGVarsPage : public PageTab {
+class ModelGVarsPage: public PageTab {
   public:
-    ModelGVarsPage() : PageTab(STR_GLOBAL_VARS, ICON_MODEL_GVARS) {}
-    void build(FormWindow * window);
+    ModelGVarsPage():
+      PageTab(STR_MENU_GLOBAL_VARS, ICON_MODEL_GVARS)
+    {
+    }
+
+  protected:
+    void build(FormWindow * window) override;
     void rebuild(FormWindow * window);
 };
 
-class GVarRenderer : public Window {
+class GVarRenderer: public Window {
   public:
     GVarRenderer(Window * window, rect_t rect, uint8_t gvarIndex) :
       Window(window, rect),
@@ -54,21 +62,22 @@ class GVarRenderer : public Window {
     {
     }
 
+  protected:
     void paint(BitmapBuffer * dc) override;
     void checkEvents() override;
     bool isUpdated();
 
   protected:
     uint8_t index;
-    gvar_t lastGVar;
-    uint8_t lastFlightMode;
-    bool updated;
+    gvar_t lastGVar = 0;
+    uint8_t lastFlightMode = 0;
+    bool updated = false;
 };
 
 
-class GVarEditWindow : public Page {
+class GVarEditWindow: public Page {
   public:
-    GVarEditWindow(uint8_t gvarIndex) :
+    explicit GVarEditWindow(uint8_t gvarIndex) :
       Page(ICON_MODEL_GVARS),
       index(gvarIndex)
     {
@@ -76,20 +85,15 @@ class GVarEditWindow : public Page {
       buildBody(&body);
     }
 
-    ~GVarEditWindow() override
-    {
-    }
-
-    void checkEvents() override;
-
   protected:
     uint8_t index;
     NumberEdit * min = nullptr;
     NumberEdit * max = nullptr;
     NumberEdit * values[MAX_FLIGHT_MODES] = {};
-    GVarRenderer * gVarInHeader;
+    GVarRenderer * gVarInHeader = nullptr;
     void buildHeader(Window * window);
     void buildBody(FormWindow * window);
     void setProperties(int onlyForFlightMode = -1);
+    void checkEvents() override;
 };
 #endif

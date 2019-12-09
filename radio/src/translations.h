@@ -388,7 +388,7 @@ extern const char * const STR_MONITOR_CHANNELS[];
 extern const char STR_MONITOR_SWITCHES[];
 extern const char STR_MONITOR_OUTPUT_DESC[];
 extern const char STR_MONITOR_MIXER_DESC[];
-extern const char STR_MENUGLOBALVARS[];
+extern const char STR_MENU_GLOBAL_VARS[];
 extern const char STR_AND_SWITCH[];
 extern const char STR_SF[];
 extern const char STR_GF[];

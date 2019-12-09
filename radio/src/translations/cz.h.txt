@@ -815,7 +815,7 @@
 #define TR_GLOBAL_VARS                 "Globální proměnné"
 #define TR_GVARS                       "GLOB.PROM."
 #define TR_GLOBAL_VAR                  "Globální proměnná"
-#define TR_MENUGLOBALVARS              "GLOBÁLNÍ PROMĚNNÉ"
+#define TR_MENU_GLOBAL_VARS              "GLOBÁLNÍ PROMĚNNÉ"
 #define TR_OWN                         " \043 "
 #define TR_DATE                        "Datum"
 #define TR_MONTHS                      { "Led", "Úno", "Bře", "Dub", "Kvě", "Čer", "Čec", "Srp", "Zář", "Říj", "Lis", "Pro" }

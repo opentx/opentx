@@ -822,7 +822,7 @@
 #define TR_GLOBAL_VARS                 "Globale Variablen"
 #define TR_GVARS                       "GLOBALE V."
 #define TR_GLOBAL_VAR                  "Globale Variable"
-#define TR_MENUGLOBALVARS              "GLOBALE VARIABLEN"
+#define TR_MENU_GLOBAL_VARS              "GLOBALE VARIABLEN"
 #define TR_OWN                         "Eigen"
 #define TR_DATE                        "Datum:"
 #define TR_MONTHS                      { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" }
