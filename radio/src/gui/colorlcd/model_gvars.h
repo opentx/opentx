@@ -55,6 +55,8 @@ class ModelGVarsPage: public PageTab {
 };
 
 class GVarRenderer: public Window {
+  friend class GVarEditWindow;
+
   public:
     GVarRenderer(Window * window, rect_t rect, uint8_t gvarIndex) :
       Window(window, rect),
