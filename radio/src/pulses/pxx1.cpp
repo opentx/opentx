@@ -25,15 +25,18 @@ template <class PxxTransport>
 void Pxx1Pulses<PxxTransport>::addFlag1(uint8_t module, uint8_t sendFailsafe)
 {
   uint8_t flag1 = (g_model.moduleData[module].subType << 6);
+
   if (moduleState[module].mode == MODULE_MODE_BIND) {
     flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
   }
   else if (moduleState[module].mode == MODULE_MODE_RANGECHECK) {
     flag1 |= PXX_SEND_RANGECHECK;
   }
-  else if (sendFailsafe && g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
+
+  if (sendFailsafe && g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
     flag1 |= PXX_SEND_FAILSAFE;
   }
+
   PxxTransport::addByte(flag1);
 }
 
