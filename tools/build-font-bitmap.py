@@ -46,7 +46,7 @@ class FontBitmap:
     @staticmethod
     def is_column_needed(px, x, height):
         for y in range(height):
-            if px[x, y] != (255, 255, 255):
+            if sum(px[x, y]) <= 3 * 0xC6:
                 return True
         return False
 
@@ -89,7 +89,6 @@ class FontBitmap:
     def generate(self, filename, generate_coords_file=True):
         coords = []
         image = Image.new("RGB", (len(self.chars) * self.font_size, self.font_size + 10), self.background)
-        draw = ImageDraw.Draw(image)
 
         width = 0
         for c in self.chars:
