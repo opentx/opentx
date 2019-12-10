@@ -6,27 +6,27 @@
     <message>
         <location filename="../wizarddialog.cpp" line="437"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="438"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляются одним каналом</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="439"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляются двумя каналами</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="451"/>
         <source>&lt;br&gt;First Aileron Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Первый канал элеронов:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="453"/>
         <source>Second Aileron Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Второй канал элеронов:</translation>
     </message>
 </context>
 <context>
@@ -34,27 +34,27 @@
     <message>
         <location filename="../wizarddialog.cpp" line="566"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="567"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляются одним каналом</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="568"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляются двумя каналами</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="580"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Первый канал воздушного тормоза:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="582"/>
         <source>Second Airbrake Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Второй канал воздушного тормоза:</translation>
     </message>
 </context>
 <context>
@@ -63,22 +63,23 @@
         <location filename="../storage/appdata.cpp" line="591"/>
         <source>Application Settings have been saved to
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки приложения сохранены в
+ %1</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="594"/>
         <source>Could not save Application Settings to file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить настройки приложения в файл &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="596"/>
         <source>because the file could not be saved (check access permissions).</source>
-        <translation type="unfinished"></translation>
+        <translation>файл нельзя сохранить (проверьте права доступа).</translation>
     </message>
     <message>
         <location filename="../storage/appdata.cpp" line="598"/>
         <source>for unknown reasons.</source>
-        <translation type="unfinished"></translation>
+        <translation>причина неизвестна.</translation>
     </message>
 </context>
 <context>
@@ -86,7 +87,7 @@
     <message>
         <location filename="../warnings.h" line="95"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать это сообщение при следующем запуске?</translation>
     </message>
 </context>
 <context>
@@ -94,37 +95,37 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="20"/>
         <source>Edit Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
         <source>Radio Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Профиль аппаратуры</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="535"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Порядок следов. каналов</translation>
+        <translation>Порядок каналов</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="359"/>
         <source>Build Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры прошивки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="652"/>
         <source>Menu Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Язык меню</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="468"/>
         <source>Default Stick Mode</source>
-        <translation type="unfinished">Режим стиков</translation>
+        <translation>Режим стиков (мода)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="117"/>
         <source>Select Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать картинку</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="382"/>
@@ -134,7 +135,7 @@
         <location filename="../apppreferencesdialog.ui" line="1050"/>
         <location filename="../apppreferencesdialog.ui" line="1293"/>
         <source>Select Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать папку</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="481"/>
@@ -182,33 +183,33 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="100"/>
         <source>Splash Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Заставка при включении</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="417"/>
         <location filename="../apppreferencesdialog.ui" line="600"/>
         <source>The profile specific folder,  if set, will override general Backup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка с резервными копиями. Относится к выбранному профилю, переопределяет настройки приложения</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="420"/>
         <source>Backup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Резервное копирование</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="574"/>
         <source>If set it will override the application general setting</source>
-        <translation type="unfinished"></translation>
+        <translation>Переопределяет папку, заданную в настройках приложения</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="551"/>
         <source>if set, will override general backup enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Переопределяет настроки приложения</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="216"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Порядок каналов&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Задает порядок микшеров при создании новой модели.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="223"/>
@@ -333,268 +334,268 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="1373"/>
         <source>Simulator Volume Gain</source>
-        <translation type="unfinished"></translation>
+        <translation>Усиление звука в симуляторе</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="401"/>
         <source>Profile Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название профиля</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="161"/>
         <source>Clear Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Убрать картинку</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="375"/>
         <source>Append version number to FW file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить номер версии к названию файла прошивки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="190"/>
         <source>Offer to write FW to Tx after download</source>
-        <translation type="unfinished"></translation>
+        <translation>Предложить обновить прошивку после загрузки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="636"/>
         <source>Radio Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Тип передатчика</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="455"/>
         <source>Other Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Другие настройки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="616"/>
         <source>General Settings</source>
-        <translation type="unfinished">Основные настройки</translation>
+        <translation>Основные настройки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="590"/>
         <source>SD Structure path</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка с содержимым SD</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="699"/>
         <source>Application Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки приложения</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="803"/>
         <source>Show splash screen when Companion starts</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать заставку при загрузке Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="722"/>
         <source>Automatic check for Companion updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически проверять наличие обновлений Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="554"/>
         <location filename="../apppreferencesdialog.ui" line="973"/>
         <source>Enable automatic backup before writing firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически делать резервную копию перед обновлением прошивки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="712"/>
         <source>Automatic check for OpenTX firmware updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически проверять наличие обновлений прошивки (OpenTX)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1085"/>
         <source>Splash Screen Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Галерея изображений</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="789"/>
         <source>Google Earth Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Запуск Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="994"/>
         <source>Only show user splash images</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать только пользовательские изображения</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="999"/>
         <source>Show user and companion splash images</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать встроенные и пользовательские изображения</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1072"/>
         <source>User Splash Screens</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательские заставки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="819"/>
         <source>Automatic Backup Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка для резервн. копий</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1177"/>
         <source>Simulator Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки симулятора</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1322"/>
         <source>Simulator BackLight</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсветка в симуляторе</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1286"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="761"/>
         <source>most recently used files</source>
-        <translation type="unfinished"></translation>
+        <translation>часто используемых файлов</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="776"/>
         <source>Startup Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Запуск приложения</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="832"/>
         <source>Remember</source>
-        <translation type="unfinished"></translation>
+        <translation>Запомнить</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="897"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option  maintains the behaviour from older OpenTx versions where empty model slots are preserved when a model is deleted or moved. &lt;/p&gt;&lt;p&gt;When this option is de-selected, the other models may be re-arranged to fill the gap left by the removed  model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Это опция нужна, чтобы при удалении или перемещении модели сохранить поведение как старых версиях OpenTX. &lt;/p&gt;&lt;p&gt;Если отключить, то при удалении модели другие модели могут быть перемещены, чтобы убрать пустые слоты&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="900"/>
         <source>Remove empty model slots when deleting models (only applies for radios w/out categories)</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалять пустые слоты при удалении модели (только если нет категорий)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="913"/>
         <source>Output Logs Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка с журналами</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="926"/>
         <source>Debug Output Logging</source>
-        <translation type="unfinished"></translation>
+        <translation>Журнал событий</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="935"/>
         <source>Use model wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>использовать мастер</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="945"/>
         <source>Open model editor</source>
-        <translation type="unfinished"></translation>
+        <translation>открыть редактор</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="955"/>
         <source>Just create the model</source>
-        <translation type="unfinished"></translation>
+        <translation>просто создать модель</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1029"/>
         <source>Select Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Указать файл</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1098"/>
         <source>Action on New Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание новой модели</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1107"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all debugging messages generated by the desktop Companion/Simulator applications. An OpenTX developer may request this to help diagnose an issue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Сохранение отладочных сообщений из Companion и симулятора. При поиске проблем разработчики OpenTX могут попросить эти журналы.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1110"/>
         <source>Application (Companion/Simulator)</source>
-        <translation type="unfinished"></translation>
+        <translation>приложения (Companion/Симулятор)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1117"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all messages generated by the radio firmware when running in Simulator. This is the same information one would also see in the Simulator &lt;span style=&quot; font-style:italic;&quot;&gt;Debug Output&lt;/span&gt; window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Сохранение всех сообщений прошивки запущенной в симуляторе. Это те же сообщения, что вы можете увидеть в симуляторе, в окне &lt;span style=&quot; font-style:italic;&quot;&gt;Debug Output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1120"/>
         <source>Radio Firmware (in Simulator)</source>
-        <translation type="unfinished"></translation>
+        <translation>прошивки передатчика (в симуляторе)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1129"/>
         <source>Release channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Версии обновлений</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1143"/>
         <source>Releases (stable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Релизы (стабильные версии)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1148"/>
         <source>Release candidates (testing)</source>
-        <translation type="unfinished"></translation>
+        <translation>Предварительные версии (тестовые) / Release candidates</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1153"/>
         <source>Nightly builds (unstable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ночные сборки (нестабильные версии)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1213"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Синяя</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1218"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Зеленая</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1223"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Красная</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1228"/>
         <source>Orange</source>
-        <translation type="unfinished"></translation>
+        <translation>Оранжевая</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1233"/>
         <source>Yellow</source>
-        <translation type="unfinished"></translation>
+        <translation>Желтая</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1247"/>
         <source>Screenshot capture folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка для скриншотов</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1309"/>
         <source>Joystick</source>
-        <translation type="unfinished"></translation>
+        <translation>Джойстик</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1199"/>
         <source>Calibrate</source>
-        <translation type="unfinished"></translation>
+        <translation>Калибровка</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1273"/>
         <source>Only capture to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Не сохранять, только копировать в буфер обмена</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1360"/>
         <source>Remember simulator switch values</source>
-        <translation type="unfinished"></translation>
+        <translation>Запоминать положения тумблеров в симуляторе</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="110"/>
@@ -604,12 +605,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="120"/>
         <source>&lt;p&gt;&lt;b&gt;You cannot switch Radio Type or change Build Options while there are unsaved file changes. What do you wish to do?&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;Save All&lt;/i&gt; - Save any open file(s) before saving Settings.&lt;li&gt;&lt;li&gt;&lt;i&gt;Reset&lt;/i&gt; - Revert to the previous Radio Type and Build Options before saving Settings.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Cancel&lt;/i&gt; - Return to the Settings editor dialog.&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Если есть несохраненные изменения, то нельзя поменять тип передатчика и параметры прошивки. Что делать?&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;Сохранить все&lt;/i&gt; - Сохранить все открытые файлы, прежде чем менять настройки.&lt;li&gt;&lt;li&gt;&lt;i&gt;Сбросить&lt;/i&gt; - Перед сохранением вернуть все настройки назад.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Отмена&lt;/i&gt; - Ничего не делать, вернуться к настройкам..&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="154"/>
         <source>Select your snapshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="181"/>
@@ -620,12 +621,12 @@ Mode 4:
         <location filename="../apppreferencesdialog.cpp" line="228"/>
         <location filename="../apppreferencesdialog.cpp" line="359"/>
         <source>No joysticks found</source>
-        <translation type="unfinished"></translation>
+        <translation>Джойстик не найден</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="273"/>
         <source>EMPTY: No radio settings stored in profile</source>
-        <translation type="unfinished"></translation>
+        <translation>ПУСТО: в профиле нет настроек аппаратуры</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="278"/>
@@ -640,38 +641,38 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.cpp" line="297"/>
         <source>Select your library folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="321"/>
         <location filename="../apppreferencesdialog.cpp" line="331"/>
         <source>Select your Models and Settings backup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку для резервного копирования моделей и настроек</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="341"/>
         <source>Select a folder for application logs</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку для хранения журнала событий</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="349"/>
         <source>Select Google Earth executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать исполняемый файл Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="392"/>
         <source>Select the folder replicating your SD structure</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку, в которой хранится содержимое SD карточки</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="423"/>
         <source>Open Image to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите изображение</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="423"/>
         <source>Images (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображения (%1)</translation>
     </message>
 </context>
 <context>
@@ -679,30 +680,31 @@ Mode 4:
     <message>
         <location filename="../storage/bineeprom.cpp" line="42"/>
         <source>Error reading %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка чтения %1: %2</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="65"/>
         <source>Cannot save EEPROM</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить EEPROM</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="76"/>
         <source>Cannot open file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="83"/>
         <source>Error writing file %1:
 %2.</source>
-        <translation type="unfinished">Ошибка при записи файла %1:
+        <translation>Ошибка при записи файла %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="108"/>
         <source>Invalid binary EEPROM file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправильный бинарный EEPROM файл %1</translation>
     </message>
 </context>
 <context>
@@ -797,7 +799,7 @@ Mode 4:
     <message>
         <location filename="../storage/categorized.cpp" line="85"/>
         <source>Can&apos;t extract %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не удалось извлечь %1</translation>
     </message>
     <message>
         <location filename="../storage/categorized.cpp" line="92"/>
@@ -810,7 +812,7 @@ Mode 4:
     <message>
         <location filename="../modeledit/channels.cpp" line="110"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Название</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="112"/>
@@ -825,12 +827,12 @@ Mode 4:
     <message>
         <location filename="../modeledit/channels.cpp" line="112"/>
         <source>Subtrim</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Субтриммер</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="112"/>
         <source>Direction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Направление</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="114"/>
@@ -845,7 +847,7 @@ Mode 4:
     <message>
         <location filename="../modeledit/channels.cpp" line="118"/>
         <source>Linear Subtrim</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Линайный субтриммер</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="128"/>
@@ -860,27 +862,27 @@ Mode 4:
     <message>
         <location filename="../modeledit/channels.cpp" line="374"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Копировать</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="375"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вырезать</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="376"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вставить</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="377"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Очистить</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="379"/>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вставка</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="380"/>
@@ -890,17 +892,17 @@ Mode 4:
     <message>
         <location filename="../modeledit/channels.cpp" line="381"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сдвинуть вверх</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="382"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сдвинуть вниз</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="384"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Очистить всё</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="159"/>
@@ -1130,7 +1132,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../constants.h" line="69"/>
         <source>Application Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Настройки приложения</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="489"/>
@@ -1193,52 +1195,52 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../comparedialog.ui" line="29"/>
         <source>Compare Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Сравнение моделей</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="44"/>
         <source>To compare models, drag and drop them anywhere in this window.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Чтобы сравнить модели перетащите их в это окно.</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="67"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="74"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="81"/>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="88"/>
         <source>Print to file</source>
-        <translation type="unfinished"></translation>
+        <translation>В файл</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="118"/>
         <source>Unnamed Model %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Неизвестная модель %1</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="128"/>
         <source>Click to remove this model.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нажмите, чтобы убрать эту модель.</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="160"/>
         <source>Print Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Распечатать</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="169"/>
         <source>Select PDF output file</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF файл для сохранения</translation>
     </message>
 </context>
 <context>
@@ -1246,7 +1248,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="984"/>
         <source>OK, I understand.</source>
-        <translation type="unfinished"></translation>
+        <translation>Хорошо, я понял.</translation>
     </message>
 </context>
 <context>
@@ -1374,12 +1376,12 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
         <source>Fixed X</source>
-        <translation type="unfinished"></translation>
+        <translation>Фиксированный X</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="73"/>
         <source>Custom X</source>
-        <translation type="unfinished"></translation>
+        <translation>Произвольный X</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="82"/>
@@ -1395,12 +1397,12 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../modeledit/curves.ui" line="104"/>
         <location filename="../modeledit/curves.ui" line="189"/>
         <source>Curve type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип кривой</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="176"/>
         <source>Curve Creator</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры кривой</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="307"/>
@@ -1410,7 +1412,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="314"/>
         <source>Point size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер точки</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="274"/>
@@ -1420,7 +1422,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="256"/>
         <source>Both</source>
-        <translation type="unfinished"></translation>
+        <translation>Обе</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="261"/>
@@ -1435,12 +1437,12 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="297"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="196"/>
         <source>Side</source>
-        <translation type="unfinished"></translation>
+        <translation>Сторона</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="248"/>
@@ -1450,17 +1452,17 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.ui" line="182"/>
         <source>Coefficient</source>
-        <translation type="unfinished"></translation>
+        <translation>Коэффициент</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="49"/>
         <source>Curve name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название кривой</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="154"/>
         <source>Curve %1</source>
-        <translation type="unfinished">Кривая %1</translation>
+        <translation>Кривая %1</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="156"/>
@@ -1475,57 +1477,57 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/curves.cpp" line="213"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейная</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="214"/>
         <source>Single Expo</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспонента</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="215"/>
         <source>Symmetrical f(x)=-f(-x)</source>
-        <translation type="unfinished"></translation>
+        <translation>Симметричная f(x)=-f(-x)</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="216"/>
         <source>Symmetrical f(x)=f(-x)</source>
-        <translation type="unfinished"></translation>
+        <translation>Симметричная f(x)=f(-x)</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="603"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="606"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="612"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="614"/>
         <source>Clear all curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить все кривые</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="635"/>
         <source>Are you sure you want to reset curve %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите сбросить настройки Кривой %1?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="643"/>
         <source>Are you sure you want to reset all curves?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите удалить все кривые?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="311"/>
         <source>Editing curve %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактирование кривой %1</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="458"/>
@@ -1608,7 +1610,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="71"/>
         <source>Play Track</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="73"/>
@@ -1788,7 +1790,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="115"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Включить</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="122"/>
@@ -1936,7 +1938,7 @@ If you have a settings backup file, you may import that instead.</source>
         <location filename="../customizesplashdialog.ui" line="345"/>
         <location filename="../customizesplashdialog.ui" line="543"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="91"/>
@@ -1971,7 +1973,7 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="222"/>
         <source>Images (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Изображения (%1)</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="226"/>
@@ -2024,22 +2026,22 @@ If you have a settings backup file, you may import that instead.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="797"/>
         <source>90</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {90?}</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="799"/>
         <source>120</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {120?}</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="800"/>
         <source>120x</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {120x?}</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="801"/>
         <source>140</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {140?}</translation>
     </message>
 </context>
 <context>
@@ -2170,12 +2172,12 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../simulation/debugoutput.cpp" line="266"/>
+        <location filename="../simulation/debugoutput.cpp" line="267"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;The filter supports two syntax types: basic matching with common wildcards as well as full Perl-style (&lt;code&gt;pcre&lt;/code&gt;) Regular Expressions.&lt;/p&gt;&lt;p&gt;By default a filter will only show lines which match (&lt;b&gt;inclusive&lt;/b&gt;). To make an &lt;b&gt;exclusive&lt;/b&gt; filter which removes matching lines, prefix the filter expression with a &lt;kbd&gt;!&lt;/kbd&gt; (exclamation mark).&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;Regular Expressions&lt;/b&gt; (RegEx), prefix the filter text with a &lt;kbd&gt;/&lt;/kbd&gt; (slash) or &lt;kbd&gt;^&lt;/kbd&gt; (up caret). &lt;ul&gt;&lt;li&gt;Put the &lt;kbd&gt;/&lt;/kbd&gt; or &lt;kbd&gt;^&lt;/kbd&gt; after the exclusive &lt;kbd&gt;!&lt;/kbd&gt; indicator if you&apos;re using one.&lt;/li&gt;&lt;li&gt;By default the match is case-sensitive. To make it insensitive, add the typical &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) operator at the end of your RegEx.&lt;/li&gt;&lt;li&gt;If you use a caret (^) to denote a RegEx, it will become part of the Reg. Ex. (that is, matches from start of line).&lt;/li&gt;&lt;li&gt;If the RegEx is invalid, the filter edit field should show a red border and you will not be able to enable the filter.&lt;/li&gt;&lt;li&gt;A useful resource for testing REs (with a full reference) can be found at &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;basic matching&lt;/b&gt; just type any text.&lt;ul&gt;&lt;li&gt;Wildcards: &lt;kbd&gt;*&lt;/kbd&gt; (asterisk) matches zero or more of any character(s), and &lt;kbd&gt;?&lt;/kbd&gt; (question mark) matches any single character.&lt;/li&gt;&lt;li&gt;The match is always case-insensitive.&lt;/li&gt;&lt;li&gt;The match always starts from the beginning of a log line. To ignore characters at the start, use a leading &lt;kbd&gt;*&lt;/kbd&gt; wildcard.&lt;/li&gt;&lt;li&gt;A trailing &lt;kbd&gt;*&lt;/kbd&gt; is always implied (that is, matches anything to the end of the log line). To avoid this, use a RegEx.&lt;/li&gt;&lt;li&gt;You can match literal wildcard characters by prefixing them with a &lt;kbd&gt;\&lt;/kbd&gt; (backslash) character (eg. &quot;foo\*bar&quot; matches &quot;foo*bar&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;After &lt;b&gt;editing text&lt;/b&gt;, press ENTER or TAB key (or click anywhere outside the box) to update the filter.&lt;/p&gt;&lt;p&gt;To &lt;b&gt;remove an entry&lt;/b&gt; from the filter selector list, first choose it, and while in the line editor press &lt;kbd&gt;Shift-Delete&lt;/kbd&gt; (or &lt;kbd&gt;Shift-Backspace&lt;/kbd&gt;) key combination. The default filters cannot be removed. Up to 50 filters are stored.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../simulation/debugoutput.cpp" line="292"/>
+        <location filename="../simulation/debugoutput.cpp" line="293"/>
         <source>Debug Console Filter Help</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2302,12 +2304,12 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../wizarddialog.cpp" line="635"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Первый канал элевонов:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="637"/>
         <source>Second Elevon Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Второй канал элевонов:</translation>
     </message>
 </context>
 <context>
@@ -2328,7 +2330,7 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../modeledit/expodialog.ui" line="98"/>
         <source>Weight</source>
-        <translation type="unfinished">Вес</translation>
+        <translation>Вес</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="52"/>
@@ -2340,42 +2342,42 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../modeledit/expodialog.ui" line="435"/>
         <source>Offset</source>
-        <translation type="unfinished">Смещен.</translation>
+        <translation>Смещение</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
         <source>The source for the mixer</source>
-        <translation type="unfinished">Источник для микшера</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
         <source>Input name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название Входа</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="36"/>
         <source>Flight modes</source>
-        <translation type="unfinished"></translation>
+        <translation>Полётные режимы</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="262"/>
         <source>Switch</source>
-        <translation type="unfinished">Тумблер</translation>
+        <translation>Тумблер</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="414"/>
         <source>Source</source>
-        <translation type="unfinished">Источник</translation>
+        <translation>Источник</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="421"/>
         <source>Line name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название строки</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="277"/>
         <source>Stick Side</source>
-        <translation type="unfinished"></translation>
+        <translation>Сторона стика</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="348"/>
@@ -2385,32 +2387,32 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <message>
         <location filename="../modeledit/expodialog.ui" line="355"/>
         <source>Include Trim</source>
-        <translation type="unfinished">Исп. трим</translation>
+        <translation>Использовать триммер</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="363"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нет</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="368"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Да</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="376"/>
         <source>Curve</source>
-        <translation type="unfinished">Кривая</translation>
+        <translation>Кривая</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
         <source>Curve applied to the source.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Кривая применяется к источнику.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="285"/>
         <source>NEG</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">МИНУС</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="91"/>
@@ -2421,22 +2423,23 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
         <location filename="../modeledit/expodialog.ui" line="269"/>
         <source>Switch used to enable the line.
 If blank then the input is considered to be &quot;ON&quot; all the time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Тумблер используется для активации линии.
+Если не указан, тогда Вход всегда активен.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="290"/>
         <source>POS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ПЛЮС</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="295"/>
         <source>ALL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ОБЕ</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="46"/>
         <source>Edit %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редактирование %1</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="78"/>
@@ -2456,7 +2459,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.cpp" line="218"/>
         <source>Invert All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Инвертировать всё</translation>
     </message>
 </context>
 <context>
@@ -2752,7 +2755,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="262"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Закрыть</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="279"/>
@@ -3088,37 +3091,37 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="26"/>
         <source>Downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузки</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="63"/>
         <source>Check for updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить наличие обновлений</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="83"/>
         <source>Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Прошивка</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="93"/>
         <source>Download firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Скачать прошивку</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="107"/>
         <source>Download SD contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Скачать содержимое SD</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="121"/>
         <source>Latest Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Загруженная версия:</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.cpp" line="51"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>неизвестная</translation>
     </message>
 </context>
 <context>
@@ -3126,27 +3129,27 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="502"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="503"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляются одним каналом</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="504"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляются двумя каналами</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="516"/>
         <source>&lt;br&gt;First Flap Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Первый канал закрылков:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="518"/>
         <source>Second Flap Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Второй канал закрылков:</translation>
     </message>
 </context>
 <context>
@@ -3155,12 +3158,12 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <location filename="../flasheepromdialog.ui" line="26"/>
         <location filename="../flasheepromdialog.cpp" line="253"/>
         <source>Write Models and Settings to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать настройки и модели в передатчик</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="66"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать...</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="81"/>
@@ -3175,7 +3178,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flasheepromdialog.ui" line="100"/>
         <source>Check Firmware compatibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить совместимость с передатчиком</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="113"/>
@@ -3185,7 +3188,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flasheepromdialog.ui" line="116"/>
         <source>Backup before Write</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать резервную копию</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="123"/>
@@ -3210,12 +3213,12 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flasheepromdialog.ui" line="164"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="180"/>
         <source>Write to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="37"/>
@@ -3225,7 +3228,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flasheepromdialog.cpp" line="104"/>
         <source>Choose Radio Backup file</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите файл с резервной копией</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="165"/>
@@ -3241,14 +3244,14 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <location filename="../flasheepromdialog.cpp" line="239"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">Не удается записать файл %1:
+        <translation>Не удается записать файл %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="245"/>
         <source>Error writing file %1:
 %2.</source>
-        <translation type="unfinished">Ошибка при записи файла %1:
+        <translation>Ошибка при записи файла %1:
 %2.</translation>
     </message>
     <message>
@@ -3272,47 +3275,47 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="26"/>
         <source>Flash Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновление прошивки</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="66"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать...</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="90"/>
         <source>Date &amp; Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="104"/>
         <source>Variant</source>
-        <translation type="unfinished"></translation>
+        <translation>Сборка</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="118"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="152"/>
         <source>Use profile start screen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заставка из профиля</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="159"/>
         <source>Use firmware start screen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заставка из прошивки</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="166"/>
         <source>Use library start screen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заставка из библиотеки</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="173"/>
         <source>Use another start screen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Другая заставка</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="228"/>
@@ -3322,37 +3325,37 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="231"/>
         <source>Check Hardware compatibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить совместимость с передатчиком</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="241"/>
         <source>Backup and restore Models and Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сделать резервную копию настроек и моделей</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="285"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="301"/>
         <source>Write to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="141"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбрать файл с прошивкой</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="145"/>
         <source>%1 may not be a valid firmware file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 - не прошивка</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="155"/>
         <source>The firmware file is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Битый файл с прошивкой.</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="158"/>
@@ -3367,12 +3370,12 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="187"/>
         <source>Open image file to use as radio start screen</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбрать картинку для заставки</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="187"/>
         <source>Images (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Изображения (%1)</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="192"/>
@@ -3387,7 +3390,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="237"/>
         <source>Splash image not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файл с заставкой не найден</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="250"/>
@@ -3397,18 +3400,18 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="276"/>
         <source>Write Firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Записать прошивку в передатчик</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="282"/>
         <location filename="../flashfirmwaredialog.cpp" line="290"/>
         <source>Firmware check failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не удалось проверить прошивку</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="282"/>
         <source>Could not check firmware from radio</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не удалось проверить прошивку передатчика</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="290"/>
@@ -3423,7 +3426,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="321"/>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невозможно сконвертировать модели и настройки для этой прошивки, будут использованы оригинальные данные</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="325"/>
@@ -3438,7 +3441,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="329"/>
         <source>Flashing done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Обновление завершено</translation>
     </message>
 </context>
 <context>
@@ -3530,22 +3533,22 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmode.ui" line="22"/>
         <source>Fade In</source>
-        <translation type="unfinished"></translation>
+        <translation>Переход к режиму</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="43"/>
         <source>Fade Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Выход из режима</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="77"/>
         <source>Switch</source>
-        <translation type="unfinished">Тумблер</translation>
+        <translation>Тумблер</translation>
     </message>
 </context>
 <context>
@@ -3566,22 +3569,22 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="102"/>
         <source>Trim disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Триммер отключен</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="106"/>
         <source>Own Trim</source>
-        <translation type="unfinished"></translation>
+        <translation>Свой триммер</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="109"/>
         <source>Use Trim from Flight mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать триммер Полётного режима %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="111"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать триммер Полётного режима %1 + &apos;Свой триммер&apos; как смещение</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="130"/>
@@ -3591,37 +3594,37 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="165"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="171"/>
         <source>Value source</source>
-        <translation type="unfinished"></translation>
+        <translation>Источник значений</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="176"/>
         <source>Value</source>
-        <translation type="unfinished">Значение</translation>
+        <translation>Значение</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="181"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Ед.</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="185"/>
         <source>Prec</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Точность</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="189"/>
         <source>Min</source>
-        <translation type="unfinished">Мин</translation>
+        <translation>Мин</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="193"/>
         <source>Max</source>
-        <translation type="unfinished">Макс</translation>
+        <translation>Макс</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="205"/>
@@ -3666,17 +3669,17 @@ You are currently using:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="746"/>
         <source>Flight Mode %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Полётный режим %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="749"/>
         <source> (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> (%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="752"/>
         <source> (default)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> (по умолчанию)</translation>
     </message>
 </context>
 <context>
@@ -3702,17 +3705,17 @@ You are currently using:
     <message>
         <location filename="../firmwares/telem_data.h" line="43"/>
         <source>Yellow</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Желтая</translation>
     </message>
     <message>
         <location filename="../firmwares/telem_data.h" line="45"/>
         <source>Orange</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Оранжевая</translation>
     </message>
     <message>
         <location filename="../firmwares/telem_data.h" line="47"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Красная</translation>
     </message>
 </context>
 <context>
@@ -3852,7 +3855,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/gvardata.cpp" line="43"/>
         <source>0.0</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {0.0?}</translation>
     </message>
     <message>
         <location filename="../firmwares/gvardata.cpp" line="45"/>
@@ -3880,7 +3883,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generaledit.ui" line="20"/>
         <source>Radio settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры передатчика</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="105"/>
@@ -3897,7 +3900,7 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="62"/>
         <source>Trainer</source>
-        <translation type="unfinished"></translation>
+        <translation>Тренер</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="84"/>
@@ -3912,17 +3915,17 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="60"/>
         <source>Global Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Глобальные функции</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="63"/>
         <source>Hardware</source>
-        <translation type="unfinished"></translation>
+        <translation>Оборудование</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="64"/>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Калибровка</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="154"/>
@@ -3947,7 +3950,7 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="314"/>
         <source>Calibration and HW parameters saved.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Параметры оборудования и калибровки сохранены.</translation>
     </message>
 </context>
 <context>
@@ -3955,7 +3958,7 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="306"/>
         <source>Radio Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Параметры передатчика</translation>
     </message>
 </context>
 <context>
@@ -4013,100 +4016,100 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="825"/>
         <source>Timeshift from UTC</source>
-        <translation type="unfinished"></translation>
+        <translation>Смещение от UTC</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="658"/>
         <source>Voice Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Язык для голоса</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1050"/>
         <source>Country Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Регион</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="593"/>
         <source>Stick reverse</source>
-        <translation type="unfinished"></translation>
+        <translation>Реверс стиков</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="730"/>
         <source>FAI Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим FAI</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1095"/>
         <source>Adjust RTC</source>
-        <translation type="unfinished"></translation>
+        <translation>Коррекция часов</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1005"/>
         <source>Vario pitch at max</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. тон вариометра</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="665"/>
         <location filename="../generaledit/generalsetup.ui" line="806"/>
         <source> Hz</source>
-        <translation type="unfinished"></translation>
+        <translation> Гц</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1067"/>
         <source>Speaker Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость динамика</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="632"/>
         <source>Backlight Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Включение подсветки</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1060"/>
         <source>Sound Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим звука</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1021"/>
         <source>Color 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет 1</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1041"/>
         <source>Color 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет 2</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1012"/>
         <source>Speaker Pitch (spkr only)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Тон динамика</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="763"/>
         <source>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</source>
-        <translation type="unfinished">Если не равно нулю, то любое нажатие кнопок будет включать подсветку и выключать ее через указанное кол-во секунд.</translation>
+        <translation>Если не равно нулю, то любое нажатие кнопок будет включать подсветку и выключать её через указанное кол-во секунд.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="766"/>
         <location filename="../generaledit/generalsetup.ui" line="2444"/>
         <location filename="../generaledit/generalsetup.ui" line="2454"/>
         <source> sec</source>
-        <translation type="unfinished"> сек</translation>
+        <translation> сек</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="998"/>
         <source>Backlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет фона</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="872"/>
         <source>Beeper</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="877"/>
         <source>Speaker</source>
-        <translation type="unfinished"></translation>
+        <translation>Динамик</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="882"/>
@@ -4121,55 +4124,55 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="904"/>
         <source>Beep volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость писка</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="927"/>
         <source>Wav volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость Wav</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="950"/>
         <source>Vario volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость варио</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="973"/>
         <source>Background volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Громкость фон. музыки</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="639"/>
         <location filename="../generaledit/generalsetup.ui" line="2373"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> мс</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="625"/>
         <source>Backlight  Auto OFF after</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключать подсветку через</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="618"/>
         <source>Backlight flash on alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Мигать подсветкой при увед.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="723"/>
         <source>Vario pitch at zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Мин. тон вариометра</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="716"/>
         <source>Vario repeat at zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Повтор если вариометр 0</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="606"/>
         <source>This is the switch selectrion for turning on the backlight (if installed).
 
 </source>
-        <translation type="unfinished">Включение подсветки (при ее наличии).</translation>
+        <translation>Включение подсветки (при ее наличии).</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="785"/>
@@ -4180,43 +4183,42 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;LCD Screen Contrast&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Values can be 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">Контраст LCD дисплея
-Значения в пределах 20-45</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="895"/>
         <source>Backlight Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Яркость фона</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="573"/>
         <source>RotEnc Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Навигация крутилкой</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="737"/>
         <source>Backlight OFF Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Яркость отключенной подсветки</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="843"/>
         <source>America</source>
-        <translation type="unfinished"></translation>
+        <translation>Америка</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="848"/>
         <source>Japan</source>
-        <translation type="unfinished"></translation>
+        <translation>Япония</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="853"/>
         <source>Europe</source>
-        <translation type="unfinished"></translation>
+        <translation>Европа</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="861"/>
         <source>If you enable FAI, only RSSI and RxBt sensors will keep working. This function cannot be disabled by the radio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Если включить режим FAI, то будут работать только датчики RSSI и напряжения. Эту функцию нельзя отключить в передатчике.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1089"/>
@@ -4279,7 +4281,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1352"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Порядок каналов&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Задает порядок микшеров при создании новой модели.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1359"/>
@@ -4404,28 +4406,28 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1572"/>
         <source>Power On Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Пауза при включении</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1579"/>
         <source>Jack Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим разъема наушников</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1928"/>
         <location filename="../generaledit/generalsetup.ui" line="2407"/>
         <source>Ask on Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Спросить при подключении</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1933"/>
         <source>Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Звук</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1938"/>
         <source>Trainer</source>
-        <translation type="unfinished"></translation>
+        <translation>Тренер</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2025"/>
@@ -4435,131 +4437,131 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2177"/>
         <source>Low EEPROM Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждать, если мало памяти (EEPROM)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2196"/>
         <source>RSSI Poweroff Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждать, если есть сигнал RSSI</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2392"/>
         <source>Stick Mode</source>
-        <translation type="unfinished">Режим стиков</translation>
+        <translation>Режим стиков</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2437"/>
         <source>Power Off Delay</source>
-        <translation type="unfinished"></translation>
+        <translation>Пауза при выключении</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1210"/>
         <source>Metric</source>
-        <translation type="unfinished"></translation>
+        <translation>Метрическая (метры)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1215"/>
         <source>Imperial</source>
-        <translation type="unfinished"></translation>
+        <translation>Имперская (мили, футы)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1605"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Порядок следов. каналов</translation>
+        <translation>Порядок следов. каналов</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1202"/>
         <source>GPS Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS координаты</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1655"/>
         <source>Min</source>
-        <translation type="unfinished">Мин</translation>
+        <translation>Мин</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1662"/>
         <location filename="../generaledit/generalsetup.ui" line="1691"/>
         <source>v</source>
-        <translation type="unfinished">В</translation>
+        <translation>В</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1684"/>
         <source>Max</source>
-        <translation type="unfinished">Макс</translation>
+        <translation>Макс</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1907"/>
         <source>Inactivity Timer</source>
-        <translation type="unfinished">Таймер активности</translation>
+        <translation>Таймер активности</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2352"/>
         <source>Show Splash Screen on Startup</source>
-        <translation type="unfinished">Показывать заставку</translation>
+        <translation>Показывать заставку при включении</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1159"/>
         <source>Contrast</source>
-        <translation type="unfinished">Конраст</translation>
+        <translation>Конраст</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2123"/>
         <source>Battery Meter Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Напряжение аккумулятора</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1646"/>
         <source>Haptic Strength</source>
-        <translation type="unfinished"></translation>
+        <translation>Сила вибрации</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1339"/>
         <source>LCD Display Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип LCD экрана</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1235"/>
         <source>&quot;No Sound&quot; Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждать, если отключен звук</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1627"/>
         <source>Battery Warning</source>
-        <translation type="unfinished">Напряж. при разряде</translation>
+        <translation>Напряж. при разряде</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2050"/>
         <source>Haptic Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Продолжительность вибрации</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1592"/>
         <source>MAVLink Baud Rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорость MAVLink</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1179"/>
         <location filename="../generaledit/generalsetup.ui" line="2317"/>
         <source>Quiet</source>
-        <translation type="unfinished">тихо</translation>
+        <translation>Тихо</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1184"/>
         <source>Only Alarms</source>
-        <translation type="unfinished"></translation>
+        <translation>Только предупреждения</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1189"/>
         <location filename="../generaledit/generalsetup.ui" line="2327"/>
         <source>No Keys</source>
-        <translation type="unfinished">без кнопок</translation>
+        <translation>Все, кроме кнопок</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1194"/>
         <location filename="../generaledit/generalsetup.ui" line="2332"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Все</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1513"/>
@@ -4567,7 +4569,7 @@ Mode 4:
 This is the threashhold where the battery warning sounds.
 
 Acceptable values are 5v..10v</source>
-        <translation type="unfinished">Предупреждение о разряде.
+        <translation>Предупреждение о разряде аккумулятора.
 Значение при котором сработает сигнализация.
 
 Диапазон 5В..10В</translation>
@@ -4575,28 +4577,28 @@ Acceptable values are 5v..10v</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2235"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартный</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2240"/>
         <source>Optrex</source>
-        <translation type="unfinished"></translation>
+        <translation>Optrex</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1260"/>
         <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
-        <translation type="unfinished">Если не равно нулю, начнет бипать при отсутсвии активности через указанное кол-во минут.</translation>
+        <translation>Если не равно нулю, то передатчик начнет пищать при отсутсвии активности через указанное кол-во минут.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1263"/>
         <source> min</source>
-        <translation type="unfinished"> мин</translation>
+        <translation> мин</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1830"/>
         <location filename="../generaledit/generalsetup.ui" line="1833"/>
         <source>Show splash screen on startup</source>
-        <translation type="unfinished">Показывать заставку при включении</translation>
+        <translation>Показывать заставку при включении</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1850"/>
@@ -4606,77 +4608,77 @@ Acceptable values are 5v..10v</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1855"/>
         <source>2s</source>
-        <translation type="unfinished"></translation>
+        <translation>2 сек.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1860"/>
         <source>3s</source>
-        <translation type="unfinished"></translation>
+        <translation>3 сек.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1865"/>
         <source>4s</source>
-        <translation type="unfinished"></translation>
+        <translation>4 сек.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1870"/>
         <source>6s</source>
-        <translation type="unfinished"></translation>
+        <translation>6 сек.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1875"/>
         <source>8s</source>
-        <translation type="unfinished"></translation>
+        <translation>8 сек.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1880"/>
         <source>10s</source>
-        <translation type="unfinished"></translation>
+        <translation>10 сек.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1885"/>
         <source>15s</source>
-        <translation type="unfinished"></translation>
+        <translation>15 сек.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1947"/>
         <source>4800 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>4800</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1952"/>
         <source>9600 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>9600</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1957"/>
         <source>14400 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>14400</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1962"/>
         <source>19200 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>19200</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1967"/>
         <source>38400 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>38400</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1972"/>
         <source>57600 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>57600</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1977"/>
         <source>76800 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>76800</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1982"/>
         <source>115200 Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>115200</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1733"/>
@@ -4703,31 +4705,31 @@ p, li { white-space: pre-wrap; }
         <location filename="../generaledit/generalsetup.ui" line="1788"/>
         <location filename="../generaledit/generalsetup.ui" line="2261"/>
         <source>X-Short</source>
-        <translation type="unfinished"></translation>
+        <translation>Очень кратко</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1793"/>
         <location filename="../generaledit/generalsetup.ui" line="2266"/>
         <source>Short</source>
-        <translation type="unfinished"></translation>
+        <translation>Кратко</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1798"/>
         <location filename="../generaledit/generalsetup.ui" line="2271"/>
         <source>Normal</source>
-        <translation type="unfinished">нормально</translation>
+        <translation>Нормальная</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1803"/>
         <location filename="../generaledit/generalsetup.ui" line="2276"/>
         <source>Long</source>
-        <translation type="unfinished">долго</translation>
+        <translation>Долго</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1808"/>
         <location filename="../generaledit/generalsetup.ui" line="2281"/>
         <source>X-Long</source>
-        <translation type="unfinished"></translation>
+        <translation>Очень долго</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2030"/>
@@ -4737,47 +4739,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1488"/>
         <source>Play Delay (switch mid position)</source>
-        <translation type="unfinished"></translation>
+        <translation>Пауза воспр. (тумблер в сред. полож.)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2399"/>
         <source>USB Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим работы USB порта</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2412"/>
         <source>Joystick (HID)</source>
-        <translation type="unfinished"></translation>
+        <translation>Джойстик</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2417"/>
         <source>USB Mass Storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Съемный диск</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2422"/>
         <source>USB Serial (CDC)</source>
-        <translation type="unfinished"></translation>
+        <translation>Последовательный порт</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2430"/>
         <source>Measurement Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Система мер</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2215"/>
         <source>Haptic Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим вибрации</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1768"/>
         <source>Beeper Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Продолжительность писка</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2069"/>
         <source>Beeper Mode</source>
-        <translation type="unfinished">Режим бипов</translation>
+        <translation>Уведомления (писк)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2307"/>
@@ -4788,10 +4790,10 @@ p, li { white-space: pre-wrap; }
 2 - Normal.
 3 - Loud.
 4 - Extra loud.</source>
-        <translation type="unfinished">Громкость.
+        <translation>Громкость.
 
-0 - Тишина.
-1 - Без кнопок.
+0 - Тишина. Никаких звуков.
+1 - Без кнопок. Обычный писк на уведомления, но кнопки не пищат
 2 - Обычная.
 3 - Громкая.
 4 - Очень громкая.</translation>
@@ -4799,7 +4801,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2322"/>
         <source>Alarms Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Только предупреждения</translation>
     </message>
 </context>
 <context>
@@ -4807,27 +4809,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>OFF</source>
-        <translation type="unfinished">ВЫКЛ</translation>
+        <translation>Всегда выключена</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Keys</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопки</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Sticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Стики</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>Keys + Sticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Кнопки + Стики</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="333"/>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation>Всегда включена</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="347"/>
@@ -4897,7 +4899,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="420"/>
@@ -4937,17 +4939,17 @@ Are you sure ?</source>
     <message>
         <location filename="../wizarddialog.cpp" line="824"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="826"/>
         <source>Yes, controled by a switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляется тумблером</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="827"/>
         <source>Yes, controlled by a pot</source>
-        <translation type="unfinished"></translation>
+        <translation>Да, управляется крутилкой</translation>
     </message>
 </context>
 <context>
@@ -5105,12 +5107,12 @@ Are you sure ?</source>
     <message>
         <location filename="../generaledit/hardware.ui" line="789"/>
         <source>v</source>
-        <translation type="unfinished">В</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="808"/>
         <source>PPM Multiplier</source>
-        <translation type="unfinished">PPM множитель</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="861"/>
@@ -5170,7 +5172,7 @@ Are you sure ?</source>
     <message>
         <location filename="../generaledit/hardware.ui" line="1056"/>
         <source>OFF</source>
-        <translation type="unfinished">ВЫКЛ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="1061"/>
@@ -5328,22 +5330,22 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/heli.ui" line="29"/>
         <source>120</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {120?}</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="34"/>
         <source>120X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {120X?}</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="39"/>
         <source>140</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {140?}</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="44"/>
         <source>90</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">15 сек. {90?}</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="77"/>
@@ -5421,7 +5423,7 @@ Are you sure ?</source>
         <location filename="../modeledit/inputs.cpp" line="41"/>
         <location filename="../modeledit/inputs.cpp" line="391"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Сдвинуть вверх</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="43"/>
@@ -5433,7 +5435,7 @@ Are you sure ?</source>
         <location filename="../modeledit/inputs.cpp" line="44"/>
         <location filename="../modeledit/inputs.cpp" line="392"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Сдвинуть вниз</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="46"/>
@@ -5444,7 +5446,7 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/inputs.cpp" line="47"/>
         <source>Clear All Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить все Входы</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="154"/>
@@ -5454,12 +5456,12 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/inputs.cpp" line="238"/>
         <source>Delete Selected Inputs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выбранные Входы?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="382"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">Добавить</translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="382"/>
@@ -5469,27 +5471,27 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/inputs.cpp" line="383"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">Правка</translation>
+        <translation>Редактировать</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="383"/>
         <source>Enter</source>
-        <translation type="unfinished">Ввод</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="385"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="385"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="386"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">Копировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="386"/>
@@ -5499,7 +5501,7 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/inputs.cpp" line="387"/>
         <source>&amp;Cut</source>
-        <translation type="unfinished">Вырезать</translation>
+        <translation>Вырезать</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="387"/>
@@ -5509,7 +5511,7 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/inputs.cpp" line="388"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="388"/>
@@ -5519,7 +5521,7 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/inputs.cpp" line="389"/>
         <source>Du&amp;plicate</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать копию</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="389"/>
@@ -5529,12 +5531,12 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/inputs.cpp" line="497"/>
         <source>Clear Inputs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить Входы?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="497"/>
         <source>Really clear all the inputs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Точно удалить все Входы?</translation>
     </message>
 </context>
 <context>
@@ -5938,7 +5940,7 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <location filename="../mainwindow.cpp" line="367"/>
         <location filename="../mainwindow.cpp" line="620"/>
         <source>Save As</source>
-        <translation type="unfinished">Сохранить как...</translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="383"/>
@@ -5982,25 +5984,25 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
     <message>
         <location filename="../mainwindow.cpp" line="438"/>
         <source>Unknown server failure, try later</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Неизвестная ошибка, попробуйте позже</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="532"/>
         <location filename="../mainwindow.cpp" line="561"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Да</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="533"/>
         <location filename="../mainwindow.cpp" line="562"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="535"/>
         <location filename="../mainwindow.cpp" line="564"/>
         <source>Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="559"/>
@@ -6022,7 +6024,7 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mainwindow.cpp" line="894"/>
         <location filename="../mainwindow.cpp" line="1226"/>
         <source>Synchronize SD</source>
-        <translation type="unfinished"></translation>
+        <translation>Синхронизация содержимого SD</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1053"/>
@@ -6037,27 +6039,27 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1205"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1206"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1208"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1220"/>
         <source>Compare models</source>
-        <translation type="unfinished"></translation>
+        <translation>Сравнить модели</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1210"/>
@@ -6082,7 +6084,7 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1491"/>
         <source>Set Menu Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Язык меню</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1259"/>
@@ -6092,7 +6094,7 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1495"/>
         <source>Use default system language.</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать язык системы.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
@@ -6127,22 +6129,22 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1064"/>
         <source>About Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>О программе OpenTX Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1354"/>
         <source>A monochrome black icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Монохромная черная тема</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1356"/>
         <source>A monochrome white icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Монохромная белая тема</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1355"/>
         <source>A monochrome blue icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Монохромная синяя тема</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="74"/>
@@ -6261,18 +6263,22 @@ Version %2 is available.
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Прошивка %1 не была загружена.
+Доступна версия %2.
+Хотите её скачать?
+
+Мы рекомендуем вначале воспользоваться кнопкой &quot;Информация&quot;, чтобы прочесть обо всех новшествах.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="543"/>
         <location filename="../mainwindow.cpp" line="572"/>
         <source>Do you want to download version %1 now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы хотите скачать версию %1?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="596"/>
         <source>Ignore this version %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Игнорировать версию %1?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="827"/>
@@ -6315,132 +6321,132 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1209"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1209"/>
         <source>Close Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть окно с моделями с настройками</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1213"/>
         <source>List of recently used files</source>
-        <translation type="unfinished"></translation>
+        <translation>Список недавно открытых файлов</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1214"/>
         <source>Radio Profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Профили передатчиков</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1214"/>
         <source>Create or Select Radio Profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать профиль передатчика или создать новый</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1219"/>
         <source>Release notes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Описание версии ПО...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1219"/>
         <source>Show release notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать информацию о текущей версии ПО</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1236"/>
         <source>Create a new Radio Settings Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новый профиль передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1237"/>
         <source>Copy Current Radio Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать текущий профиль передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1237"/>
         <source>Duplicate current Radio Settings Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать текущий профиль передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1238"/>
         <source>Delete Current Radio Profile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить текущий профиль передатчика...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1238"/>
         <source>Delete the current Radio Settings Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить текущий профиль передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1240"/>
         <source>Export Application Settings..</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт настроек приложения...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1240"/>
         <source>Save all the current %1 and Simulator settings (including radio profiles) to a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить все текущие настройки %1 и симулятора (включая профиль передатчика) в файл.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1241"/>
         <source>Import Application Settings..</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт настроек приложения...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1241"/>
         <source>Load %1 and Simulator settings from a prevously exported settings file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтение ранее экспортированных настроек %1 и симулятора из файла.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1243"/>
         <source>Tabbed Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>В виде закладок</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1243"/>
         <source>Use tabs to arrange open windows.</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать закладки для переключения между окнами.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1244"/>
         <source>Tile Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>По горизонтали</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1244"/>
         <source>Arrange open windows across all the available space.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание открытых окон по горизонтали.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1245"/>
         <source>Cascade Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Каскадом</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1245"/>
         <source>Arrange all open windows in a stack.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выравнивание открытых окон каскадом.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1246"/>
         <source>Close All Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть все окна</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1246"/>
         <source>Closes all open files (prompts to save if necessary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть все окна (с запросом на сохранение изменений).</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1254"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Окно</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1265"/>
         <source>Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоторые сообщения не будут переведены, пока вы не перезапустите Companion. Учтите, что не все сообщения переведены на выбранный язык.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1273"/>
@@ -6465,42 +6471,42 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1362"/>
         <source>Small</source>
-        <translation type="unfinished"></translation>
+        <translation>Маленькие</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1362"/>
         <source>Use small toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать маленькие иконки</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1363"/>
         <source>Use normal size toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Использоват иконки стандартного размера</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1363"/>
         <source>Normal</source>
-        <translation type="unfinished">нормально</translation>
+        <translation>Стандартные</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1364"/>
         <source>Use big toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать большие иконки</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1364"/>
         <source>Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Большие</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1365"/>
         <source>Use huge toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать огромные иконки</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1365"/>
         <source>Huge</source>
-        <translation type="unfinished"></translation>
+        <translation>Огромные</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1686"/>
@@ -6520,12 +6526,12 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1699"/>
         <source>Not possible to remove profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно удалить профиль</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1699"/>
         <source>The default profile can not be removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нельзя удалить профиль по умолчанию.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1703"/>
@@ -6570,7 +6576,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1758"/>
         <source>The settings could not be imported.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невозможно импортировать настройки.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1761"/>
@@ -6591,12 +6597,12 @@ Do you wish to continue?</source>
         <location filename="../mainwindow.cpp" line="767"/>
         <location filename="../mainwindow.cpp" line="1206"/>
         <source>Open Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл с моделями и настройками</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1230"/>
         <source>Read Models and Settings From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Прочитать модели и настройки из передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1000"/>
@@ -6606,7 +6612,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1009"/>
         <source>Read Radio Firmware to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить прошивку из передатчика в файл</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1055"/>
@@ -6626,18 +6632,18 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1205"/>
         <source>Create a new Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новую модель и настройки передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
         <location filename="../mainwindow.cpp" line="1208"/>
         <source>Save Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить модели и настройки в файл</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1210"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Выход</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1352"/>
@@ -6647,7 +6653,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1352"/>
         <source>The classic companion9x icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Классическая тема companion9x</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1353"/>
@@ -6657,7 +6663,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1353"/>
         <source>Yellow round honey sweet icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Желтая тема</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1354"/>
@@ -6677,62 +6683,62 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1495"/>
         <source>System language</source>
-        <translation type="unfinished"></translation>
+        <translation>Язык ОС</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1211"/>
         <source>About...</source>
-        <translation type="unfinished"></translation>
+        <translation>О программе...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1215"/>
         <source>View Log File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть журнал...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1215"/>
         <source>Open and view log file</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть и просмотреть журнал (логи)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1216"/>
         <source>Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1216"/>
         <source>Edit Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1217"/>
         <source>Download...</source>
-        <translation type="unfinished"></translation>
+        <translation>Скачать...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1217"/>
         <source>Download firmware and voice files</source>
-        <translation type="unfinished"></translation>
+        <translation>Скачать прошивку и содержимое SD карточки</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1218"/>
         <source>Check for Updates...</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск обновлений...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1218"/>
         <source>Check OpenTX and Companion updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить наличие обновлений OpenTX и Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1220"/>
         <source>Compare Models...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сравнить модели...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1221"/>
         <source>Edit Radio Splash Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать заставку передатчика...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1221"/>
@@ -6753,113 +6759,113 @@ Do you wish to continue?</source>
         <location filename="../mainwindow.cpp" line="953"/>
         <location filename="../mainwindow.cpp" line="1224"/>
         <source>Read Firmware from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Скачать прошивку из передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1224"/>
         <source>Read firmware from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сохранить прошивку из передатчика в файл</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1225"/>
         <source>Write Firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить прошивку передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1225"/>
         <source>Write firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить прошивку передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1236"/>
         <source>Add Radio Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить профиль передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1228"/>
         <source>Manuals and other Documents</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструкции и руководства</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1228"/>
         <source>Open the OpenTX document page in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть инструкцию к OpenTX в браузере</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1229"/>
         <source>Write Models and Settings To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать модели и настройки в передатчик</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1229"/>
         <source>Write Models and Settings to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать модели и настройки в передатчик</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="963"/>
         <location filename="../mainwindow.cpp" line="1230"/>
         <source>Read Models and Settings from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Прочитать модели и настройки из передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1231"/>
         <source>Configure Communications...</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройка подключения...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1231"/>
         <source>Configure software for communicating with the Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройка подключения к передатчику</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1232"/>
         <source>Write Backup to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать резервную копию из файла в передатчик</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1232"/>
         <source>Write Backup from file to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Записать резервную копию из файла в передатчик</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1233"/>
         <source>Backup Radio to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать резервную копию передатчика</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1233"/>
         <source>Save a complete backup file of all settings and model data in the Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать полную копию всех моделей и настроек, хранящихся в передатчике</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1234"/>
         <source>Contributors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Разработчики...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1234"/>
         <source>A tribute to those who have contributed to OpenTX and Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать список тех, кто помогал в разработке OpenTX и Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1226"/>
         <source>SD card synchronization</source>
-        <translation type="unfinished"></translation>
+        <translation>Синхронизация содержимого SD карточки</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1213"/>
         <source>Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Последние</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1251"/>
         <source>Set Icon Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль иконок</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1252"/>
         <source>Set Icon Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер иконок</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1249"/>
@@ -6876,18 +6882,18 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1250"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1253"/>
         <source>Read/Write</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтение/Запись</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1255"/>
         <location filename="../mainwindow.cpp" line="1260"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Помощь</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1511"/>
@@ -7009,30 +7015,30 @@ Do you wish to continue?</source>
         <location filename="../mdichild.cpp" line="308"/>
         <source>%n Model(s)</source>
         <comment>As in &quot;Copy 3 Models&quot; or &quot;Cut 1 Model&quot; or &quot;Delete 3 Models&quot; action).</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>модель</numerusform>
+            <numerusform>%n модели(ей)</numerusform>
+            <numerusform>%n модели</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../mdichild.cpp" line="309"/>
         <source>%n Model(s)</source>
         <comment>As in &quot;Paste 3 Models&quot; or &quot;Insert 1 Model.&quot;</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>модель</numerusform>
+            <numerusform>%n модели(ей)</numerusform>
+            <numerusform>%n модели(ей)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../mdichild.cpp" line="310"/>
         <source>%n Category(ies)</source>
         <comment>As in &quot;Delete 3 Categories&quot; or &quot;Delete 1 Category.&quot;</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>категорию</numerusform>
+            <numerusform>%n категории(ий)</numerusform>
+            <numerusform>%n категории(ий)</numerusform>
         </translation>
     </message>
     <message>
@@ -7043,112 +7049,112 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="320"/>
         <source>Rename Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать категорию</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="320"/>
         <source>Edit Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать модель</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="322"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="333"/>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Вырезать</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="335"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="337"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="339"/>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="377"/>
         <source>Edit Radio Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры передатчика</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="378"/>
         <source>Copy Radio Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать настройки передатчика</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="379"/>
         <source>Paste Radio Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить настройки передатчика</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="380"/>
         <source>Simulate Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Симулятор передатчика</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="382"/>
         <source>Add Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить категорию</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="383"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Категория</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="386"/>
         <source>Add Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить модель</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="387"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Модель</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="388"/>
         <source>Restore from Backup</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить из резервной копии</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="389"/>
         <source>Model Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Мастер по настройке</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="390"/>
         <source>Set as Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Модель по умолчанию</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="391"/>
         <source>Print Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Распечатать модель</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="392"/>
         <source>Simulate Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Симулятор модели</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="393"/>
         <source>Duplicate Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать копию</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="395"/>
         <source>Move to Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить в категорию</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="397"/>
@@ -7168,7 +7174,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="702"/>
         <source>free bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>байт свободно</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="706"/>
@@ -7189,12 +7195,12 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="762"/>
         <source>Cannot delete the last category.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нельзя удалять последнюю категорию.</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="767"/>
         <source>This category is not empty!</source>
-        <translation type="unfinished"></translation>
+        <translation>В этой категории есть модели!</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="844"/>
@@ -7220,7 +7226,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1045"/>
         <source>You are replacing an existing model, are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите перезаписать модель?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1090"/>
@@ -7230,19 +7236,19 @@ Do you wish to continue?</source>
     <message numerus="yes">
         <location filename="../mdichild.cpp" line="1185"/>
         <source>Delete %n selected model(s)?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Удалить выбранную модель?</numerusform>
+            <numerusform>Удалить выбранные модели (%n)?</numerusform>
+            <numerusform>Удалить выбранные модели (%n)?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../mdichild.cpp" line="1190"/>
         <source>Delete %n selected category(ies)?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Удалить выбранную категорию?</numerusform>
+            <numerusform>Удалить выбранные категории?</numerusform>
+            <numerusform>Удалить выбранные категории (%n)?</numerusform>
         </translation>
     </message>
     <message>
@@ -7253,7 +7259,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1381"/>
         <source>Save As</source>
-        <translation>Сохранить как...</translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1563"/>
@@ -7269,7 +7275,8 @@ Do you wish to continue?</source>
         <location filename="../mdichild.cpp" line="1417"/>
         <source>%1 has been modified.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 изменен.
+Вы хотите сохранить изменения?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1553"/>
@@ -7296,7 +7303,7 @@ Do you want to save your changes?</source>
         <location filename="../modeledit/mixerdialog.ui" line="20"/>
         <source>Dialog</source>
         <translatorcomment>???</translatorcomment>
-        <translation>Диалог</translation>
+        <translation type="unfinished">Настройки микшера</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="369"/>
@@ -7309,7 +7316,7 @@ Do you want to save your changes?</source>
         <location filename="../modeledit/mixerdialog.ui" line="552"/>
         <location filename="../modeledit/mixerdialog.ui" line="601"/>
         <source>The source for the mixer</source>
-        <translation>Источник для микшера</translation>
+        <translation>Источник данных для микшера</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="198"/>
@@ -7328,17 +7335,18 @@ Do you want to save your changes?</source>
         <source>Switch used by the mix.
 If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <oldsource>The value of the mixer is multiplied by this value and divided by 100.</oldsource>
-        <translation type="unfinished">Значение микшера умножается на это значение и делится на 100</translation>
+        <translation>Микшер можно активировать тумблером.
+Если тумблер не указан, тогда микшер будет включен всё время.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="191"/>
         <source>Offset</source>
-        <translation>Смещен.</translation>
+        <translation>Смещение</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
         <source>Include Trim</source>
-        <translation>Исп. трим</translation>
+        <translation>Использовать триммер</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="536"/>
@@ -7348,7 +7356,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="390"/>
         <source>The curve used by the mix</source>
-        <translation>Кривая используемая микшером</translation>
+        <translation>Кривая, используемая микшером</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="411"/>
@@ -7358,12 +7366,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="459"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Да</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="454"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="383"/>
@@ -7373,7 +7381,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="362"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="66"/>
@@ -7391,14 +7399,23 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Задержка и замедление&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Эти значения управляют скоростью и задержкой применения микшера&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Если задержка больше 0, то микшер будет активирован не сразу, а через указанное время&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Если замедление не равно 0, то это скорость применения микшера. Т.е. значение в секундах для перехода от -100 к +100 (например, плавный выпуск закрылков/шасси)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="425"/>
         <source>Mixer warning.
 Setting this value will cause a beep to be emmitted when this value is active.</source>
-        <translation>Индикация включения.
-Когда микшер активируется звучит выбранный сигнал.</translation>
+        <translation>Передатчик будет издавать звуки пока микшер активен.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="430"/>
@@ -7408,18 +7425,18 @@ Setting this value will cause a beep to be emmitted when this value is active.</
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="435"/>
         <source>1 Beep</source>
-        <translation>1 бип</translation>
+        <translation>1 сигнал</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="440"/>
         <source>2 Beep</source>
         <oldsource>2 Beeo</oldsource>
-        <translation>2 бипа</translation>
+        <translation>2 сигнала</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="445"/>
         <source>3 Beep</source>
-        <translation>3 бипа</translation>
+        <translation>3 сигнала</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="376"/>
@@ -7437,31 +7454,31 @@ This determines how mixer values are added.
 &quot;R&quot; means the value replaces the previous values.  If the switch is off the value will be ignored.</source>
         <translation>Мультиплексор
 
-Определяет, каким образом добавляется значение микшера.
+Определяет, каким образом вычисляется значение микшера.
 
-&quot;+&quot; - значение текущего микшера добавляется к предыдущему значению на этом же канале.
-&quot;*&quot; - значение текущего микшера умножается на предыдущее значение на этом же канале
-&quot;R&quot; - значение текущего микшера заменяет предыдущее значение на этом же канале.</translation>
+&quot;+&quot; - значение текущего микшера добавляется к предыдущему микшеру на этом же канале.
+&quot;*&quot; - значение текущего микшера умножается на значение предыдущего микшера на этом же канале
+&quot;R&quot; - значение текущего микшера заменяет предыдущее значение. Если тумблер отключен, то значение игнорируется.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="511"/>
         <source>ADD</source>
-        <translation>ДОБАВИТЬ</translation>
+        <translation>СЛОЖЕНИЕ</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="516"/>
         <source>MULTIPLY</source>
-        <translation>УМНОЖИТЬ</translation>
+        <translation>УМНОЖЕНИЕ</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="521"/>
         <source>REPLACE</source>
-        <translation>ЗАМЕНИТЬ</translation>
+        <translation>ЗАМЕНА</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="404"/>
         <source>Flight modes</source>
-        <translation type="unfinished"></translation>
+        <translation>Полётные режимы</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="397"/>
@@ -7476,17 +7493,17 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="39"/>
         <source>Slow</source>
-        <translation>Замедлен.</translation>
+        <translation>Замедление</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="46"/>
         <source>Up</source>
-        <translation>Верх</translation>
+        <translation>Вверх</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="56"/>
         <source>Down</source>
-        <translation>Низ</translation>
+        <translation>Вниз</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="44"/>
@@ -7496,22 +7513,22 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="91"/>
         <source>Click to access popup menu</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нажмите, чтобы открыть меню</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="214"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Убрать всё</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="215"/>
         <source>Set All</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать всё</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="216"/>
         <source>Invert All</source>
-        <translation type="unfinished"></translation>
+        <translation>Инвертировать</translation>
     </message>
 </context>
 <context>
@@ -7543,7 +7560,7 @@ This determines how mixer values are added.
         <location filename="../modeledit/mixes.cpp" line="36"/>
         <location filename="../modeledit/mixes.cpp" line="423"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Сдвинуть вверх</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="38"/>
@@ -7555,7 +7572,7 @@ This determines how mixer values are added.
         <location filename="../modeledit/mixes.cpp" line="39"/>
         <location filename="../modeledit/mixes.cpp" line="424"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Сдвинуть вниз</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="41"/>
@@ -7566,22 +7583,22 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixes.cpp" line="42"/>
         <source>Clear Mixes</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить микшеры</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="151"/>
         <source>Not enough available mixers!</source>
-        <translation type="unfinished"></translation>
+        <translation>Недостаточно микшеров!</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="265"/>
         <source>Delete Selected Mixes?</source>
-        <translation type="unfinished">Удалить выбранные микшеры?</translation>
+        <translation>Удалить выбранные микшеры?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="413"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">Добавить</translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="413"/>
@@ -7591,12 +7608,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixes.cpp" line="414"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">Правка</translation>
+        <translation>Редактировать</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="414"/>
         <source>Enter</source>
-        <translation type="unfinished">Ввод</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="415"/>
@@ -7611,17 +7628,17 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixes.cpp" line="417"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="417"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="418"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">Копировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="418"/>
@@ -7641,7 +7658,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixes.cpp" line="420"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="420"/>
@@ -7651,7 +7668,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixes.cpp" line="421"/>
         <source>Du&amp;plicate</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать копию</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="421"/>
@@ -7661,12 +7678,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixes.cpp" line="527"/>
         <source>Clear Mixes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить все микшеры?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="527"/>
         <source>Really clear all the mixes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите удалить все микшеры?</translation>
     </message>
 </context>
 <context>
@@ -7692,22 +7709,22 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/modeledit.cpp" line="52"/>
         <source>Setup</source>
-        <translation>Настройка</translation>
+        <translation>Основные</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="54"/>
         <source>Heli</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертолёт</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="56"/>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Входы</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="64"/>
         <source>Logical Switches</source>
-        <translation type="unfinished"></translation>
+        <translation>Логические переключатели</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="58"/>
@@ -7717,7 +7734,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/modeledit.cpp" line="61"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходы</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="63"/>
@@ -7727,22 +7744,22 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/modeledit.cpp" line="66"/>
         <source>Special Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Специальные функции</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="69"/>
         <source>Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Телеметрия</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="55"/>
         <source>Flight Modes</source>
-        <translation type="unfinished"></translation>
+        <translation>Полетные режимы</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.ui" line="51"/>
         <source>Simulate</source>
-        <translation>Симуляция</translation>
+        <translation>Симулятор</translation>
     </message>
 </context>
 <context>
@@ -7775,7 +7792,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="144"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нет</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="146"/>
@@ -7808,27 +7825,27 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="173"/>
         <source>Exponential</source>
-        <translation type="unfinished">экспонента</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="175"/>
         <source>Extra Fine</source>
-        <translation type="unfinished">очень точно</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="177"/>
         <source>Fine</source>
-        <translation type="unfinished">точно</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="179"/>
         <source>Medium</source>
-        <translation type="unfinished">средне</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="181"/>
         <source>Coarse</source>
-        <translation type="unfinished">грубо</translation>
+        <translation type="unfinished">Грубо</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="183"/>
@@ -7845,7 +7862,7 @@ This determines how mixer values are added.
         <location filename="../modelprinter.cpp" line="196"/>
         <location filename="../modelprinter.cpp" line="207"/>
         <source>Channels</source>
-        <translation type="unfinished">Каналы</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="197"/>
@@ -7874,7 +7891,7 @@ This determines how mixer values are added.
         <location filename="../modelprinter.cpp" line="471"/>
         <location filename="../modelprinter.cpp" line="649"/>
         <source>Delay</source>
-        <translation type="unfinished">Задержка</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="216"/>
@@ -7941,7 +7958,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="473"/>
         <source>Slow</source>
-        <translation type="unfinished">Замедлен.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="475"/>
@@ -8217,13 +8234,13 @@ This determines how mixer values are added.
         <location filename="../modelprinter.cpp" line="1176"/>
         <location filename="../modelprinter.cpp" line="1432"/>
         <source>Min</source>
-        <translation type="unfinished">Мин</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1178"/>
         <location filename="../modelprinter.cpp" line="1432"/>
         <source>Max</source>
-        <translation type="unfinished">Макс</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1180"/>
@@ -8527,7 +8544,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="688"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Стандартный</translation>
     </message>
 </context>
 <context>
@@ -8535,27 +8552,27 @@ This determines how mixer values are added.
     <message>
         <location filename="../wizarddialog.cpp" line="280"/>
         <source>Plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Самолёт</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="282"/>
         <source>Multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультикоптер</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="283"/>
         <source>Helicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертолет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="289"/>
         <source>Model Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Название модели:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="292"/>
         <source>Model Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип модели:</translation>
     </message>
 </context>
 <context>
@@ -8563,12 +8580,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="840"/>
         <source>Failsafe Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим Failsafe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="114"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Начать с</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="517"/>
@@ -8588,32 +8605,32 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="202"/>
         <source>Polarity</source>
-        <translation type="unfinished"></translation>
+        <translation>Полярность</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="894"/>
         <source>Trainer Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Тренерский режим</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="561"/>
         <source>PPM Frame Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Длите. кадра PPM</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="136"/>
         <source>CH </source>
-        <translation type="unfinished"></translation>
+        <translation>Канал </translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="235"/>
         <source>RF Output Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходная мощность передатчика</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="245"/>
         <source>Receiver 1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Приёмник 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="290"/>
@@ -8625,12 +8642,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="302"/>
         <source>Receiver 2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Приёмник 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="338"/>
         <source>Receiver 3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Приёмник 3</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="411"/>
@@ -8650,7 +8667,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="605"/>
         <source>Antenna</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Антенна</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="658"/>
@@ -8665,12 +8682,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="747"/>
         <source>Multi Radio Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим мультипротокольного модуля</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="770"/>
         <source>Sub Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Подтип</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="827"/>
@@ -8680,27 +8697,27 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="914"/>
         <source>Master/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (джек)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="919"/>
         <source>Slave/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Ученик (джек)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="924"/>
         <source>Master/SBUS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (SBUS модуль)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="929"/>
         <source>Master/CPPM Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (модуль CPPM)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="934"/>
         <source>Master/SBUS in battery compartment</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (SBUS в батарейном отсеке)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="1045"/>
@@ -8722,57 +8739,57 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="577"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation> мс</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="473"/>
         <source>Channels</source>
-        <translation type="unfinished">Каналы</translation>
+        <translation>Кол-во каналов</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="860"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Не задан</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="865"/>
         <source>Hold</source>
-        <translation type="unfinished"></translation>
+        <translation>Удержание</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="870"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Другой</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="875"/>
         <source>No Pulses</source>
-        <translation type="unfinished"></translation>
+        <translation>Без сигнала</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="880"/>
         <source>Receiver</source>
-        <translation type="unfinished"></translation>
+        <translation>В приёмнике</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="939"/>
         <source>Master/Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (bluetooth)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="944"/>
         <source>Slave/Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Ученик (bluetooth)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="949"/>
         <source>Master/Multi</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (мультимодуль)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="970"/>
         <source>Disable Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключить телеметрию</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="977"/>
@@ -8782,17 +8799,17 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/setup_module.ui" line="1003"/>
         <source>Failsafe Positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры Failsafe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="704"/>
         <source>Protocol</source>
-        <translation type="unfinished">Протокол</translation>
+        <translation>Протокол</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="161"/>
         <source>Receiver No.</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер приёмника</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="628"/>
@@ -8820,12 +8837,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../firmwares/moduledata.cpp" line="134"/>
         <source>Internal Radio System</source>
-        <translation type="unfinished"></translation>
+        <translation>Встроенный радиомодуль</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="134"/>
         <source>External Radio Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Внешний радиомодуль</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="136"/>
@@ -9497,17 +9514,17 @@ This determines how mixer values are added.
     <message>
         <location filename="../wizarddialog.cpp" line="959"/>
         <source>Throttle Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсечка газа (throttle cut)</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="960"/>
         <source>Throttle Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Таймер газа</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="961"/>
         <source>Flight Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Таймер полетного времени</translation>
     </message>
 </context>
 <context>
@@ -9557,37 +9574,37 @@ This determines how mixer values are added.
     <message>
         <location filename="../printdialog.ui" line="54"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="61"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стили</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="68"/>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Печать</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="75"/>
         <source>Print to file</source>
-        <translation type="unfinished"></translation>
+        <translation>В файл</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="62"/>
         <source>Print Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Распечатать</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="70"/>
         <source>Select PDF output file</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF файл для сохранения</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="70"/>
         <source>ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>ODF файлы (*.odt);;PDF файлы (*.pdf);;HTML-файлы (*.htm *.html);;Все файлы (*)</translation>
     </message>
 </context>
 <context>
@@ -9601,12 +9618,12 @@ This determines how mixer values are added.
         <location filename="../progressdialog.ui" line="79"/>
         <location filename="../progressdialog.cpp" line="90"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Закрыть</translation>
     </message>
     <message>
         <location filename="../progressdialog.cpp" line="85"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отмена</translation>
     </message>
 </context>
 <context>
@@ -10534,17 +10551,17 @@ s</source>
     <message>
         <location filename="../wizarddialog.cpp" line="658"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="659"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Есть</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="668"/>
         <source>&lt;br&gt;Rudder Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Канал руля направления:</translation>
     </message>
 </context>
 <context>
@@ -10691,157 +10708,157 @@ s</source>
     <message>
         <location filename="../modeledit/setup.ui" line="330"/>
         <source>Center beep</source>
-        <translation type="unfinished">Бип в центре</translation>
+        <translation>Сигнал в центре</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="231"/>
         <source>OFF</source>
-        <translation type="unfinished">ВЫКЛ</translation>
+        <translation>ВЫКЛ</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="87"/>
         <source>Model Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение модели</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="428"/>
         <source>Exponential</source>
-        <translation type="unfinished">экспонента</translation>
+        <translation>По экспоненте</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="387"/>
         <source>Throttle Trim Idle Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Триммировать только холостой ход</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="433"/>
         <source>Extra Fine</source>
-        <translation type="unfinished">очень точно</translation>
+        <translation>Очень точно</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="438"/>
         <source>Fine</source>
-        <translation type="unfinished">точно</translation>
+        <translation>Точно</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="443"/>
         <source>Medium</source>
-        <translation type="unfinished">средне</translation>
+        <translation>Средне</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="448"/>
         <source>Coarse</source>
-        <translation type="unfinished">грубо</translation>
+        <translation>Грубо</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="352"/>
         <source>Display Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать контрольную карту</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="585"/>
         <source>Timer 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Таймер 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="28"/>
         <source>Timer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Таймер 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="601"/>
         <source>Timer 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Таймер 3</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="366"/>
         <source>Never</source>
-        <translation type="unfinished"></translation>
+        <translation>Никогда</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="44"/>
         <source>Top LCD Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Верхний таймер</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="371"/>
         <source>On change</source>
-        <translation type="unfinished"></translation>
+        <translation>При изменении</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="376"/>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Всегда</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="394"/>
         <source>Global Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Глобальные функции</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="478"/>
         <source>Edit Checklist...</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать...</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="528"/>
         <source>Throttle Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал газа</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="544"/>
         <source>Trim Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг триммирования</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="560"/>
         <source>Trims Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать триммеры</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="167"/>
         <source>Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждения</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="181"/>
         <source>Switch Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Тумблеры</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="221"/>
         <source>Pot Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Крутилки</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="236"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Вручную</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="241"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="287"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Модель</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="498"/>
         <source>Extended Limits</source>
-        <translation type="unfinished">Расш. лимиты</translation>
+        <translation>Расширенные лимиты</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="488"/>
         <source>Extended Trims</source>
-        <translation type="unfinished"></translation>
+        <translation>Расширенные триммеры</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="404"/>
         <source>Throttle Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждать если не убран</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="456"/>
@@ -10849,12 +10866,15 @@ s</source>
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
 </source>
-        <translation type="unfinished">Реверсировать канал газа (а также триммеры и предупреждения)</translation>
+        <translation>Реверс газа
+Если выбрана эта опция, то будет включен реверс газа, холостого хода и триммеров. Предупреждение о не нулевом положении стика газа также будет инвертировано.
+
+</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="465"/>
         <source>Reverse Throttle</source>
-        <translation type="unfinished"></translation>
+        <translation>Реверс газа</translation>
     </message>
 </context>
 <context>
@@ -10885,7 +10905,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     <message>
         <location filename="../wizarddialog.cpp" line="778"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал руля высоты:</translation>
     </message>
 </context>
 <context>
@@ -11511,7 +11531,7 @@ The radio type specified in the selected profile is used by default.</source>
         <location filename="../simulation/simulatorstartupdialog.ui" line="231"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="283"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
@@ -11668,7 +11688,7 @@ The default is configured in the chosen Radio Profile.</source>
         <location filename="../splashlibrarydialog.ui" line="47"/>
         <location filename="../splashlibrarydialog.ui" line="879"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../splashlibrarydialog.cpp" line="84"/>
@@ -11946,17 +11966,17 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="732"/>
         <source>Rudder Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Руль направления:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="734"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Руль высоты:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="747"/>
         <source>Only one channel still available!&lt;br&gt;You probably should configure your model without using the wizard.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Доступен только один канал!&lt;br&gt;Возможно стоит настроить модель без использования этого мастера.</translation>
     </message>
 </context>
 <context>
@@ -11964,22 +11984,22 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="354"/>
         <source>Elevator and Rudder</source>
-        <translation type="unfinished"></translation>
+        <translation>Руль высоты и руль направления</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="356"/>
         <source>Only Elevator</source>
-        <translation type="unfinished"></translation>
+        <translation>Только руль высоты</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="357"/>
         <source>V-tail</source>
-        <translation type="unfinished"></translation>
+        <translation>V-образное оперение</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="360"/>
         <source>Tail Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип хвостового оперения:</translation>
     </message>
 </context>
 <context>
@@ -12031,7 +12051,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="214"/>
         <source>Disable telemetry audio warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключить головые предупреждения</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="233"/>
@@ -12041,12 +12061,12 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="270"/>
         <source>Source</source>
-        <translation type="unfinished">Источник</translation>
+        <translation>Источник</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="553"/>
         <source>Center Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Тишина в центре</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="645"/>
@@ -12061,7 +12081,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="681"/>
         <source>Top Bar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Верхняя строка</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="926"/>
@@ -12081,17 +12101,17 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="749"/>
         <source>Volt source</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Напряжение</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="791"/>
         <source>Current source</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Датчик тока</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="37"/>
         <source>Protocol</source>
-        <translation type="unfinished">Протокол</translation>
+        <translation>Протокол</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="940"/>
@@ -12111,37 +12131,37 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.ui" line="395"/>
         <source>Sink Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Сниж. макс.</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="505"/>
         <source>Climb Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Набор макс.</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="521"/>
         <source>Sink Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Сниж. мин.</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="537"/>
         <source>Climb Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Набор мин.</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="588"/>
         <source>Vario source</source>
-        <translation type="unfinished"></translation>
+        <translation>Вариометр</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="575"/>
         <source>Vario limits</source>
-        <translation type="unfinished"></translation>
+        <translation>Пределы</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="611"/>
         <source>Altimetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Измерение высоты</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="846"/>
@@ -12201,19 +12221,19 @@ Too many errors, giving up.</source>
         <location filename="../modeledit/telemetry_analog.ui" line="79"/>
         <location filename="../modeledit/telemetry_analog.ui" line="142"/>
         <source>Yellow</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Желтая</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="84"/>
         <location filename="../modeledit/telemetry_analog.ui" line="147"/>
         <source>Orange</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Оранжевая</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="89"/>
         <location filename="../modeledit/telemetry_analog.ui" line="152"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Красная</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="104"/>
@@ -12361,17 +12381,17 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="962"/>
         <source>Source</source>
-        <translation type="unfinished">Источник</translation>
+        <translation>Источник</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="969"/>
         <source>Low Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Низкий уровень</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="970"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Критический уровень</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="1012"/>
@@ -12688,7 +12708,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="608"/>
         <source>Offset</source>
-        <translation type="unfinished">Смещен.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="615"/>
@@ -12774,7 +12794,7 @@ Too many errors, giving up.</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="57"/>
         <source>Simulate</source>
-        <translation type="unfinished">Симуляция</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="204"/>
@@ -13091,17 +13111,17 @@ Timestamp</source>
     <message>
         <location filename="../wizarddialog.cpp" line="400"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Да</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="401"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="408"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал газа:</translation>
     </message>
 </context>
 <context>
@@ -13109,12 +13129,12 @@ Timestamp</source>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="55"/>
         <source>Countdown</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсчет</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="65"/>
         <source>Minute Call</source>
-        <translation type="unfinished"></translation>
+        <translation>Ежеминутный сигнал</translation>
     </message>
 </context>
 <context>
@@ -13127,7 +13147,7 @@ Timestamp</source>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="36"/>
         <source>Timer %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Таймер %1</translation>
     </message>
 </context>
 <context>
@@ -13136,22 +13156,23 @@ Timestamp</source>
         <location filename="../thirdparty/maxlibqt/src/widgets/TimerEdit.cpp" line="42"/>
         <source>Use mouse scroll or UP/DOWN arrow keys to change time in small steps.
 CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Используйте колесо мыши или стрелки ВВЕРХ/ВНИЗ для изменений с небольшим шагом
+CTRL+колесо или PAGE UP/DOWN - для изменения с большим шагом.</translation>
     </message>
     <message>
         <location filename="../thirdparty/maxlibqt/src/widgets/TimerEdit.cpp" line="201"/>
         <source>m</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">м</translation>
     </message>
     <message>
         <location filename="../thirdparty/maxlibqt/src/widgets/TimerEdit.cpp" line="209"/>
         <source>h</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ч</translation>
     </message>
     <message>
         <location filename="../thirdparty/maxlibqt/src/widgets/TimerEdit.cpp" line="215"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">с</translation>
     </message>
 </context>
 <context>
@@ -13159,37 +13180,37 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../modeledit/setup.cpp" line="66"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Тихо</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="67"/>
         <source>Beeps</source>
-        <translation type="unfinished"></translation>
+        <translation>Писком</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="69"/>
         <source>Voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Голосом</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="70"/>
         <source>Haptic</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрацией</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="76"/>
         <source>Not persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбрасываемый</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="77"/>
         <source>Persistent (flight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Постоянный (только полет)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="78"/>
         <source>Persistent (manual reset)</source>
-        <translation type="unfinished"></translation>
+        <translation>Постоянный (только ручной сброс)</translation>
     </message>
 </context>
 <context>
@@ -13328,17 +13349,17 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../modelslist.cpp" line="146"/>
         <source>Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="147"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="149"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="151"/>
@@ -13349,13 +13370,13 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
         <location filename="../modelslist.cpp" line="691"/>
         <source>Models</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Модели</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="710"/>
         <source>Model %1</source>
         <extracomment>Translators: do NOT use accents here, this is a default model name.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Модель %1</translation>
     </message>
 </context>
 <context>
@@ -13363,12 +13384,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="705"/>
         <source>First Tail Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Первый канал управления:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="707"/>
         <source>Second Tail Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Второй канал управления:</translation>
     </message>
 </context>
 <context>
@@ -13419,12 +13440,12 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="334"/>
         <source>Standard Wing</source>
-        <translation type="unfinished"></translation>
+        <translation>Классическая схема</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="336"/>
         <source>Flying Wing / Deltawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Летающее крыло</translation>
     </message>
 </context>
 <context>
@@ -13432,119 +13453,119 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Model Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Мастер по настройке модели</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Model Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип модели</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Enter model name and model type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите название модели и выберите её тип.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Throttle</source>
-        <translation type="unfinished">Газ</translation>
+        <translation>Газ</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Has your model got a motor or an engine?</source>
-        <translation type="unfinished"></translation>
+        <translation>У вашей модели есть двигатель?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Wing Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип крыла</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Is your model a flying wing/deltawing or has it a standard wing configuration?</source>
-        <translation type="unfinished"></translation>
+        <translation>У вас классический самолет или летающее крыло?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
         <source>Ailerons</source>
-        <translation type="unfinished"></translation>
+        <translation>Элероны</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
         <source>Has your model got ailerons?</source>
-        <translation type="unfinished"></translation>
+        <translation>У вашей модели есть элероны?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Flaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрылки</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Has your model got flaps?</source>
-        <translation type="unfinished"></translation>
+        <translation>У вашей модели есть закрылки?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
         <source>Airbrakes</source>
-        <translation type="unfinished"></translation>
+        <translation>Воздушные тормоза</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
         <source>Has your model got airbrakes?</source>
-        <translation type="unfinished"></translation>
+        <translation>У вашей модели есть воздушные тормоза?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="39"/>
         <source>Flying-wing / Delta-wing</source>
-        <translation type="unfinished"></translation>
+        <translation>Летающее крыло</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="39"/>
         <source>Select the elevons channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите каналы элевонов</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="40"/>
         <source>Rudder</source>
-        <translation type="unfinished">Руддер</translation>
+        <translation>Руль направления</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="40"/>
         <source>Does your model have a rudder?</source>
-        <translation type="unfinished"></translation>
+        <translation>У вашей модели есть руль направления?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="41"/>
         <source>Tail Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип хвостового оперения</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="41"/>
         <source>Select which type of tail your model is equiped with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите тип хвостового оперения модели.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="42"/>
         <location filename="../wizarddialog.cpp" line="44"/>
         <source>Tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Хвостовое оперение</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="42"/>
         <location filename="../wizarddialog.cpp" line="43"/>
         <source>Select channels for tail control.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите каналы для хвостового оперения.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="43"/>
         <source>V-Tail</source>
-        <translation type="unfinished"></translation>
+        <translation>V-образное оперение</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="44"/>
         <source>Select elevator channel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите канал руля высоты.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
@@ -13580,7 +13601,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
         <location filename="../wizarddialog.cpp" line="48"/>
         <location filename="../wizarddialog.cpp" line="49"/>
         <source>Helicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертолет</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
@@ -13591,7 +13612,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
         <source>Multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультикоптер</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
@@ -13601,78 +13622,78 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="51"/>
         <source>Model Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Дополнительные опции</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="51"/>
         <source>Select additional options</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите необходимое</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Save Changes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Сохранить изменения</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="52"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished"></translation>
+        <translation>Вручную проверьте направление движения всех управляющих поверхностей, настройке реверсы там, где это необходимо. &lt;br&gt;Снимите пропеллер перед тестированием.&lt;br&gt;Учтите, что сохранение перезапишет старые настройки модели!</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="75"/>
         <source>Enter a name for your model and select model type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите название модели и выберите её тип.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="78"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите канал на приемнике, к которому подключен регулятор скорости или сервомашинка для газа.&lt;br&gt;&lt;br&gt;Spektrum: Канал1, Futaba: Канал3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. </source>
-        <translation type="unfinished"></translation>
+        <translation>Большинство самолетов имеют нормальную аэродинамическую схему (классическую). У летающих крыльев нет хвостового оперения. &lt;br&gt;В классической схеме за крен отвечают элероны.&lt;br&gt;У летающих крыльев элевоны отвечают и за крен и за тангаж. </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="87"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Для управления элеронами используется 1 или 2 канала.&lt;br&gt;Так называемый Y-кабель нужен для подключения одного канала к двум сервомашинкам.&lt;br&gt;Если сервомашнки подключены таким кабелем, то выберите вариант с одним каналом&lt;br&gt;&lt;br&gt;Элероны на Spektrum: Канал2. На Futaba: Канал1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="93"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>В этом мастере подразумевается, что закрылки управляются тумблером. Если вы используете крутилку, тогда придется настроить её вручную.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="97"/>
         <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Воздушные тормоза нужны для снижения скорости планеров.&lt;br&gt;Они редко используются на других типах самолетов.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="101"/>
         <source>Models use two channels to control the elevons.&lt;br&gt;Select these two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Для управления элевонами нужно 2 канала. Выберите их</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="105"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите канал, к которому подключен руль направления.&lt;br&gt;&lt;br&gt;Руль направления - Spektrum: Канал4, Futaba: Канал4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="109"/>
         <source>Select the tail type of your plane.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нужно выбрать тип хвостового оперения модели.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="112"/>
         <location filename="../wizarddialog.cpp" line="117"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите каналы для руля высоты и руля направления.&lt;br&gt;&lt;br&gt;Руль направления - Spektrum: Канал4, Futaba: Канал4&lt;br&gt;Руль высоты - Spektrum: Канал3, Futaba: Канал2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="122"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите канал руля высоты.&lt;br&gt;&lt;br&gt;Руль высоты - Spektrum: Канал3, Futaba: Канал2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
@@ -13698,7 +13719,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="157"/>
         <source>Model Wizard Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Помощь по использованию мастера</translation>
     </message>
 </context>
 <context>
@@ -13948,7 +13969,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="20"/>
         <source>Configure Joystick</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки джойстика</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="50"/>
@@ -13993,22 +14014,22 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="537"/>
         <source>Instructions</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструкции</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="562"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Включить</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="579"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="608"/>
         <source>Back</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Назад</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="624"/>
@@ -14033,7 +14054,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="117"/>
         <source>No joysticks found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Джойстик не найден</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="184"/>
@@ -14050,7 +14071,7 @@ Press Next when finished</source>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="191"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Дальше</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="195"/>
@@ -14084,12 +14105,12 @@ Press Cancel to abort joystick calibration without saving.</source>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="637"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Ок</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="150"/>
         <source>Cannot open joystick.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключить джойстик.</translation>
     </message>
 </context>
 <context>
@@ -14103,109 +14124,109 @@ Press Cancel to abort joystick calibration without saving.</source>
         <location filename="../imgpreferences.ui" line="349"/>
         <location filename="../imgpreferences.ui" line="356"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="287"/>
         <source>Splash library behaviour</source>
-        <translation type="unfinished"></translation>
+        <translation>Библиотека заставок</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="94"/>
         <source>Remember simulator switches</source>
-        <translation type="unfinished"></translation>
+        <translation>Запоминать положения тумблеров</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="253"/>
         <source>Include companion splashes</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить кортинки Companion</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="258"/>
         <source>Only user defined splashes</source>
-        <translation type="unfinished"></translation>
+        <translation>Только пользовательские заставки</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="311"/>
         <source>Custom TX splash screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательская заставка</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="216"/>
         <source>Personal splash library</source>
-        <translation type="unfinished"></translation>
+        <translation>Моя библиотека заставок</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="87"/>
         <source>Joystick</source>
-        <translation type="unfinished"></translation>
+        <translation>Джойстик</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="189"/>
         <location filename="../imgpreferences.ui" line="235"/>
         <source>Open Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать папку</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="74"/>
         <source>Simulator capture folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка для скриншотов</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="129"/>
         <source>Use clipboard only</source>
-        <translation type="unfinished"></translation>
+        <translation>Только копировать в буфер обмена</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="64"/>
         <source>Simu BackLight</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсветка в симуляторе</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="146"/>
         <source>Blue</source>
         <oldsource>Blu</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Синяя</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="151"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Зеленая</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="156"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Красная</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="161"/>
         <source>Orange</source>
-        <translation type="unfinished"></translation>
+        <translation>Оранжевая</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="166"/>
         <source>Yellow</source>
-        <translation type="unfinished"></translation>
+        <translation>Желтая</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="120"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="136"/>
         <source>Calibrate</source>
-        <translation type="unfinished"></translation>
+        <translation>Калибровать</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="336"/>
         <source>Open Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать картинку</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="366"/>
         <source>Invert Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Инверсия</translation>
     </message>
 </context>
 </TS>
