@@ -25,6 +25,29 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
+class MultimoduleStatus: public StaticText
+{
+  public:
+    MultimoduleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
+      StaticText(parent, rect),
+      moduleIdx(moduleIdx)
+    {
+    }
+
+    void checkEvents() override
+    {
+      char statusText[MULTIMODULE_STATUS_LEN] = {};
+      getMultiModuleStatus(moduleIdx).getStatusString(statusText);
+      if (text != statusText) {
+        setText(statusText);
+        invalidate();
+      }
+    }
+
+  protected:
+    uint8_t moduleIdx;
+};
+
 class ChannelFailsafeBargraph: public Window {
   public:
     ChannelFailsafeBargraph(Window * parent, const rect_t & rect, uint8_t moduleIdx, uint8_t channel):
