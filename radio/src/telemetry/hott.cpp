@@ -73,16 +73,16 @@ enum
 
 const HottSensor hottSensors[] = {
   //frame 00
-  {HOTT_ID_RX_VOLTAGE,   ZSTR_BATT,       UNIT_VOLTS,             1},  // RX_Batt Voltage
-  {HOTT_ID_TEMP1,        ZSTR_TEMP1,      UNIT_CELSIUS,           0},  // RX Temperature sensor
+  {HOTT_ID_RX_VOLTAGE,   STR_SENSOR_BATT,       UNIT_VOLTS,             1},  // RX_Batt Voltage
+  {HOTT_ID_TEMP1,        STR_SENSOR_TEMP1,      UNIT_CELSIUS,           0},  // RX Temperature sensor
   //frame 01
   //frame 02
   //frame 03
   //frame 04
-  {HOTT_TX_RSSI_ID,      ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
-  {HOTT_TX_LQI_ID,       ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
-  {HOTT_RX_RSSI_ID,      ZSTR_RSSI,       UNIT_DB,                0},  // RX RSSI
-  {HOTT_RX_LQI_ID,       ZSTR_RX_QUALITY, UNIT_RAW,               0},  // RX LQI
+  {HOTT_TX_RSSI_ID,      STR_SENSOR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
+  {HOTT_TX_LQI_ID,       STR_SENSOR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
+  {HOTT_RX_RSSI_ID,      STR_SENSOR_RSSI,       UNIT_DB,                0},  // RX RSSI
+  {HOTT_RX_LQI_ID,       STR_SENSOR_RX_QUALITY, UNIT_RAW,               0},  // RX LQI
   {0x00,                 NULL,            UNIT_RAW,               0},  // sentinel
 };
 
