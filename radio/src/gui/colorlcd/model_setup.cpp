@@ -36,10 +36,9 @@ class MultimoduleStatus: public StaticText
 
     void checkEvents() override
     {
-      char statusText[MULTIMODULE_STATUS_LEN] = {};
-      getMultiModuleStatus(moduleIdx).getStatusString(statusText);
-      if (text != statusText) {
-        setText(statusText);
+      getMultiModuleStatus(moduleIdx).getStatusString(reusableBuffer.moduleSetup.msg);
+      if (text != reusableBuffer.moduleSetup.msg) {
+        setText(reusableBuffer.moduleSetup.msg);
         invalidate();
       }
     }

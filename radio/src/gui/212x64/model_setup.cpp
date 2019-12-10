@@ -1317,9 +1317,8 @@ void menuModelSetup(event_t event)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS:
     {
       lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
-      char statusText[MULTIMODULE_STATUS_LEN];
-      getMultiModuleStatus(EXTERNAL_MODULE).getStatusString(statusText);
-      lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
+      getMultiModuleStatus(EXTERNAL_MODULE).getStatusString(reusableBuffer.moduleSetup.msg);
+      lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, reusableBuffer.moduleSetup.msg);
       break;
     }
 

@@ -23,7 +23,6 @@
 
 #define MULTI_BUFFER_SIZE 177
 extern uint8_t * Multi_Buffer;
-constexpr uint8_t MULTIMODULE_STATUS_LEN = 64;
 
 /*
   Multiprotocol telemetry definition
