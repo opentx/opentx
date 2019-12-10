@@ -100,27 +100,27 @@ struct FrSkyDSensor {
 };
 
 const FrSkyDSensor frskyDSensors[] = {
-  { D_RSSI_ID, ZSTR_RSSI, UNIT_RAW, 0 },
-  { D_A1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
-  { D_A2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
-  { RPM_ID, ZSTR_RPM, UNIT_RPMS, 0 },
-  { FUEL_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
-  { TEMP1_ID, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
-  { TEMP2_ID, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
-  { CURRENT_ID, ZSTR_CURR, UNIT_AMPS, 1 },
-  { ACCEL_X_ID, ZSTR_ACCX, UNIT_G, 3 },
-  { ACCEL_Y_ID, ZSTR_ACCY, UNIT_G, 3 },
-  { ACCEL_Z_ID, ZSTR_ACCZ, UNIT_G, 3 },
-  { VARIO_ID, ZSTR_VSPD, UNIT_METERS_PER_SECOND, 2 },
-  { VFAS_ID, ZSTR_VFAS, UNIT_VOLTS, 2 },
-  { BARO_ALT_AP_ID, ZSTR_ALT, UNIT_METERS, 1 },   // we map hi precision vario into PREC1!
-  { VOLTS_AP_ID, ZSTR_VFAS, UNIT_VOLTS, 2 },
-  { GPS_SPEED_BP_ID, ZSTR_GSPD, UNIT_KTS, 0 },
-  { GPS_COURS_BP_ID, ZSTR_HDG, UNIT_DEGREE, 0 },
-  { VOLTS_ID, ZSTR_CELLS, UNIT_CELLS, 2 },
-  { GPS_ALT_BP_ID, ZSTR_GPSALT, UNIT_METERS, 0 },
-  { GPS_HOUR_MIN_ID, ZSTR_GPSDATETIME, UNIT_DATETIME, 0 },
-  { GPS_LAT_AP_ID, ZSTR_GPS, UNIT_GPS, 0 },
+  { D_RSSI_ID, STR_SENSOR_RSSI, UNIT_RAW, 0 },
+  { D_A1_ID, STR_SENSOR_A1, UNIT_VOLTS, 1 },
+  { D_A2_ID, STR_SENSOR_A2, UNIT_VOLTS, 1 },
+  { RPM_ID, STR_SENSOR_RPM, UNIT_RPMS, 0 },
+  { FUEL_ID, STR_SENSOR_FUEL, UNIT_PERCENT, 0 },
+  { TEMP1_ID, STR_SENSOR_TEMP1, UNIT_CELSIUS, 0 },
+  { TEMP2_ID, STR_SENSOR_TEMP2, UNIT_CELSIUS, 0 },
+  { CURRENT_ID, STR_SENSOR_CURR, UNIT_AMPS, 1 },
+  { ACCEL_X_ID, STR_SENSOR_ACCX, UNIT_G, 3 },
+  { ACCEL_Y_ID, STR_SENSOR_ACCY, UNIT_G, 3 },
+  { ACCEL_Z_ID, STR_SENSOR_ACCZ, UNIT_G, 3 },
+  { VARIO_ID, STR_SENSOR_VSPD, UNIT_METERS_PER_SECOND, 2 },
+  { VFAS_ID, STR_SENSOR_VFAS, UNIT_VOLTS, 2 },
+  { BARO_ALT_AP_ID, STR_SENSOR_ALT, UNIT_METERS, 1 },   // we map hi precision vario into PREC1!
+  { VOLTS_AP_ID, STR_SENSOR_VFAS, UNIT_VOLTS, 2 },
+  { GPS_SPEED_BP_ID, STR_SENSOR_GSPD, UNIT_KTS, 0 },
+  { GPS_COURS_BP_ID, STR_SENSOR_HDG, UNIT_DEGREE, 0 },
+  { VOLTS_ID, STR_SENSOR_CELLS, UNIT_CELLS, 2 },
+  { GPS_ALT_BP_ID, STR_SENSOR_GPSALT, UNIT_METERS, 0 },
+  { GPS_HOUR_MIN_ID, STR_SENSOR_GPSDATETIME, UNIT_DATETIME, 0 },
+  { GPS_LAT_AP_ID, STR_SENSOR_GPS, UNIT_GPS, 0 },
   { 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
@@ -277,15 +277,15 @@ void frskyDSetDefault(int index, uint16_t id)
 
 #if defined(MULTIMODULE)
   if (id == TX_RSSI_ID) {
-    telemetrySensor.init(ZSTR_TX_RSSI, UNIT_DB, 0);
+    telemetrySensor.init(STR_SENSOR_TX_RSSI, UNIT_DB, 0);
     telemetrySensor.filter = 1;
   }
   else if (id == TX_LQI_ID) {
-    telemetrySensor.init(ZSTR_TX_QUALITY, UNIT_RAW, 0);
+    telemetrySensor.init(STR_SENSOR_TX_QUALITY, UNIT_RAW, 0);
     telemetrySensor.filter = 1;
   }
   else if (id == RX_LQI_ID) {
-    telemetrySensor.init(ZSTR_RX_QUALITY, UNIT_RAW, 0);
+    telemetrySensor.init(STR_SENSOR_RX_QUALITY, UNIT_RAW, 0);
     telemetrySensor.filter = 1;
   }
   else
