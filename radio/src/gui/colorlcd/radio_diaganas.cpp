@@ -21,6 +21,36 @@
 #include "opentx.h"
 #include "radio_diaganas.h"
 
+constexpr coord_t ANA_OFFSET = 150;
+
+class RadioAnaDiagsWindow: public Window {
+  public:
+    RadioAnaDiagsWindow(Window * parent, const rect_t & rect):
+      Window(parent, rect)
+    {
+    }
+
+    void checkEvents() override
+    {
+      // will always force a full monitor window refresh
+      invalidate();
+    }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      for (uint8_t i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
+        coord_t y = 1 + (i / 2) * FH;
+        uint8_t x = i & 1 ? LCD_W / 2 + 10 : 10;
+        dc->drawNumber(x, y, i + 1, LEADING0 | LEFT, 2);
+        dc->drawText(x + 2 * 15 - 2, y, ":");
+        drawHexNumber(dc, x + 3 * 15 - 1, y, anaIn(i));
+        dc->drawNumber(x + ANA_OFFSET, y, (int16_t) calibratedAnalogs[CONVERT_MODE(i)] * 25 / 256, RIGHT);
+      }
+    };
+
+  protected:
+};
+
 void RadioAnaDiagsPage::buildHeader(Window * window)
 {
   new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + 10, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENU_RADIO_ANALOGS, 0, MENU_COLOR);
@@ -28,7 +58,7 @@ void RadioAnaDiagsPage::buildHeader(Window * window)
 
 void RadioAnaDiagsPage::buildBody(Window * window)
 {
-
+  new RadioAnaDiagsWindow(window, {10, 10, window->width() - 10, window->height() - 10});
 }
 
 RadioAnaDiagsPage::RadioAnaDiagsPage():

@@ -21,6 +21,84 @@
 #include "opentx.h"
 #include "radio_diagkeys.h"
 
+#if defined(KEYS_GPIO_PIN_PGUP)
+constexpr uint8_t KEY_START = 0;
+#else
+constexpr uint8_t KEY_START = 1;
+#endif
+
+class RadioKeyDiagsWindow : public Window
+{
+  public:
+    RadioKeyDiagsWindow(Window * parent, const rect_t &rect) :
+      Window(parent, rect)
+    {
+    }
+
+    void checkEvents() override
+    {
+      // will always force a full monitor window refresh
+      invalidate();
+    }
+
+    void displayKeyState(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t key)
+    {
+      uint8_t t = keys[key].state();
+      // TODO use drawChar when done
+      char status[2];
+      status[0] = t + '0';
+      status[1] = '\0';
+
+      dc->drawText(x, y, status, t ? INVERS : 0);
+    }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      constexpr coord_t KEY_COLUMN = 6;
+      constexpr coord_t TRIM_COLUMN = LCD_W - 120;
+      constexpr coord_t TRIM_MINUS_COLUMN = TRIM_COLUMN + 60;
+      constexpr coord_t TRIM_PLUS_COLUMN = TRIM_MINUS_COLUMN + 20;
+      constexpr coord_t SWITCHES_COLUMN = LCD_W / 2 - 20;
+
+      dc->drawText(TRIM_COLUMN, 1, "Trims");
+      dc->drawText(TRIM_MINUS_COLUMN, 1, "-");
+      dc->drawText(TRIM_PLUS_COLUMN, 1, "+");
+
+      for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
+        const uint8_t trimMap[NUM_TRIMS_KEYS] = {6, 7, 4, 5, 2, 3, 0, 1, 8, 9, 10, 11};
+        coord_t y = 1 + FH + FH * (i / 2);
+        if (i & 1) {
+          dc->drawText(TRIM_COLUMN, y, "T", 0);
+          dc->drawNumber(TRIM_COLUMN + 10, y, i / 2 + 1, 0);
+        }
+        displayKeyState(dc, i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + trimMap[i]);
+      }
+
+      for (uint8_t i = KEY_START; i <= 6; i++) {
+        coord_t y = 1 + FH * (i - KEY_START);
+        dc->drawTextAtIndex(KEY_COLUMN, y, STR_VKEYS, (i), 0);
+        displayKeyState(dc, 70, y, i);
+      }
+
+      for (uint8_t i = 0; i <= NUM_SWITCHES; i++) {
+        if (SWITCH_EXISTS(i)) {
+          coord_t y = 1 + FH * i;
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+          drawSwitch(dc, SWITCHES_COLUMN, y, sw, 0);
+        }
+      }
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      coord_t y = FH * (8 - KEY_START);
+      dc->drawText(KEY_COLUMN, y, STR_ROTARY_ENCODER);
+      dc->drawNumber(70, y, rotencValue, 0);
+#endif
+    };
+
+  protected:
+};
+
 void RadioKeyDiagsPage::buildHeader(Window * window)
 {
   new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + 10, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENU_RADIO_SWITCHES, 0, MENU_COLOR);
@@ -28,10 +106,10 @@ void RadioKeyDiagsPage::buildHeader(Window * window)
 
 void RadioKeyDiagsPage::buildBody(Window * window)
 {
-
+  new RadioKeyDiagsWindow(window, {0, 5, window->width() - 10, window->height() - 10});
 }
 
-RadioKeyDiagsPage::RadioKeyDiagsPage():
+RadioKeyDiagsPage::RadioKeyDiagsPage() :
   Page(ICON_MODEL_SETUP)
 {
   buildHeader(&header);
