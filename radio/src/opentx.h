@@ -1158,6 +1158,7 @@ union ReusableBuffer
     uint32_t updateTime;
     ModuleSettings moduleSettings;
     ReceiverSettings receiverSettings; // when dealing with receiver settings, we also need module settings
+    char msg[64];
   } hardwareAndSettings; // moduleOptions, receiverOptions, radioVersion
 
   struct {
