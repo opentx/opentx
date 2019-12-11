@@ -30,6 +30,31 @@
 #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #endif
 
+class RTCBattValue: public StaticText
+{
+  public:
+    RTCBattValue(Window * parent, const rect_t & rect):
+      StaticText(parent, rect)
+    {
+    }
+
+    void checkEvents() override
+    {
+      div_t qr = div(getRTCBatteryVoltage(), 100);
+      char * tmp;
+      tmp = strAppendUnsigned(reusableBuffer.hardwareAndSettings.msg, qr.quot);
+      tmp = strAppend(tmp, ".", 1);
+      tmp = strAppendUnsigned(tmp, qr.rem, 2);
+      tmp = strAppend(tmp, " V", 2);
+      if (text != reusableBuffer.hardwareAndSettings.msg) {
+        setText(reusableBuffer.hardwareAndSettings.msg);
+        invalidate();
+      }
+    }
+
+  protected:
+};
+
 class SwitchDynamicLabel : public StaticText {
   public:
     SwitchDynamicLabel(Window * parent, const rect_t & rect, uint8_t index):
@@ -154,15 +179,8 @@ void RadioHardwarePage::build(FormWindow * window)
 
   // RTC Batt display
   new StaticText(window, grid.getLabelSlot(), STR_RTC_BATT);
-  div_t qr = div(getRTCBatteryVoltage(), 100);
-  //sprintf(reusableBuffer.hardwareAndSettings.msg, "%d.%02d V", qr.quot, qr.rem);
-  char * tmp;
-  tmp = strAppendUnsigned(reusableBuffer.hardwareAndSettings.msg, qr.quot);
-  tmp = strAppend(tmp,".",1);
-  tmp  = strAppendUnsigned(tmp, qr.rem, 2);
-  tmp = strAppend(tmp, " V", 2);
-  auto rtc = new StaticText(window, grid.getFieldSlot(), reusableBuffer.hardwareAndSettings.msg);
-  rtc->setWindowFlags(REFRESH_ALWAYS);
+
+  new RTCBattValue(window, grid.getFieldSlot());
   grid.nextLine();
 
   // RTC Batt check enable
