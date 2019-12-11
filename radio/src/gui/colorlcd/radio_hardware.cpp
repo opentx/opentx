@@ -30,29 +30,29 @@
 #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #endif
 
-class RTCBattValue: public StaticText
+class RTCBattValue: public Window
 {
   public:
     RTCBattValue(Window * parent, const rect_t & rect):
-      StaticText(parent, rect)
+      Window(parent, rect)
     {
+    }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      dc->drawNumber(0, 0, getRTCBatteryVoltage(), PREC2, 2, "", "V");
     }
 
     void checkEvents() override
     {
-      div_t qr = div(getRTCBatteryVoltage(), 100);
-      char * tmp;
-      tmp = strAppendUnsigned(reusableBuffer.hardwareAndSettings.msg, qr.quot);
-      tmp = strAppend(tmp, ".", 1);
-      tmp = strAppendUnsigned(tmp, qr.rem, 2);
-      tmp = strAppend(tmp, " V", 2);
-      if (text != reusableBuffer.hardwareAndSettings.msg) {
-        setText(reusableBuffer.hardwareAndSettings.msg);
+      if (lastValue != getRTCBatteryVoltage()) {
+        lastValue = getRTCBatteryVoltage();
         invalidate();
       }
     }
 
   protected:
+    uint16_t lastValue;
 };
 
 class SwitchDynamicLabel : public StaticText {
@@ -202,12 +202,12 @@ void RadioHardwarePage::build(FormWindow * window)
 
   // Debugs
   new StaticText(window, grid.getLabelSlot(), STR_DEBUG, 0, FONT(BOLD));
-  auto analogs = new TextButton(window, grid.getFieldSlot(2, 0), STR_ANALOGS_BTN);
-  analogs->setPressHandler([=]() -> uint8_t {
+  auto debugAnalogs = new TextButton(window, grid.getFieldSlot(2, 0), STR_ANALOGS_BTN);
+  debugAnalogs->setPressHandler([=]() -> uint8_t {
       //TODO
   });
-  auto keys = new TextButton(window, grid.getFieldSlot(2, 1), STR_KEYS_BTN);
-  keys->setPressHandler([=]() -> uint8_t {
+  auto debugKeys = new TextButton(window, grid.getFieldSlot(2, 1), STR_KEYS_BTN);
+  debugKeys->setPressHandler([=]() -> uint8_t {
       //TODO
   });
   grid.nextLine();
