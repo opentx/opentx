@@ -32,34 +32,7 @@
 #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #endif
 
-class RTCBattValue: public Window
-{
-  public:
-    RTCBattValue(Window * parent, const rect_t & rect):
-      Window(parent, rect)
-    {
-    }
-
-    void paint(BitmapBuffer * dc) override
-    {
-      dc->drawNumber(0, 0, getRTCBatteryVoltage(), PREC2, 2, "", "V");
-    }
-
-    void checkEvents() override
-    {
-      if (lastValue != getRTCBatteryVoltage()) {
-        lastValue = getRTCBatteryVoltage();
-        invalidate();
-      }
-
-      Window::checkEvents();
-    }
-
-  protected:
-    uint16_t lastValue;
-};
-
-class SwitchDynamicLabel : public StaticText {
+class SwitchDynamicLabel: public StaticText {
   public:
     SwitchDynamicLabel(Window * parent, const rect_t & rect, uint8_t index):
       StaticText(parent, rect),
@@ -176,15 +149,16 @@ void RadioHardwarePage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_BATT_CALIB);
   auto batCal = new NumberEdit(window, grid.getFieldSlot(), -127, 127, GET_SET_DEFAULT(g_eeGeneral.txVoltageCalibration));
   batCal->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-      dc->drawNumber(2, 0, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
+      dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
   });
   batCal->setWindowFlags(REFRESH_ALWAYS);
   grid.nextLine();
 
   // RTC Batt display
   new StaticText(window, grid.getLabelSlot(), STR_RTC_BATT);
-
-  new RTCBattValue(window, grid.getFieldSlot());
+  new DynamicNumber<uint16_t>(window, grid.getFieldSlot(), [] {
+      return getRTCBatteryVoltage();
+  }, PREC2, nullptr, "V");
   grid.nextLine();
 
   // RTC Batt check enable
