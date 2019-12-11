@@ -48,6 +48,8 @@ set(GUI_SRC
   radio_trainer.cpp
   radio_version.cpp
   radio_hardware.cpp
+  radio_diagkeys.cpp
+  radio_diaganas.cpp
   radio_calibration.cpp
   view_main.cpp
   menu_screen.cpp

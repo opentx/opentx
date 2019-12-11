@@ -20,6 +20,8 @@
 
 #include "radio_hardware.h"
 #include "radio_calibration.h"
+#include "radio_diagkeys.h"
+#include "radio_diaganas.h"
 #include "opentx.h"
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
@@ -49,6 +51,8 @@ class RTCBattValue: public Window
         lastValue = getRTCBatteryVoltage();
         invalidate();
       }
+
+      Window::checkEvents();
     }
 
   protected:
@@ -202,13 +206,22 @@ void RadioHardwarePage::build(FormWindow * window)
 
   // Debugs
   new StaticText(window, grid.getLabelSlot(), STR_DEBUG, 0, FONT(BOLD));
-  auto debugAnalogs = new TextButton(window, grid.getFieldSlot(2, 0), STR_ANALOGS_BTN);
-  debugAnalogs->setPressHandler([=]() -> uint8_t {
-      //TODO
+  auto debugAnas = new TextButton(window, grid.getFieldSlot(2, 0), STR_ANALOGS_BTN);
+  debugAnas->setPressHandler([=]() -> uint8_t {
+      auto debugAnasPage = new RadioAnaDiagsPage();
+      debugAnasPage->setCloseHandler([=]() {
+          calib->setFocus();
+      });
+      return 0;
   });
+
   auto debugKeys = new TextButton(window, grid.getFieldSlot(2, 1), STR_KEYS_BTN);
   debugKeys->setPressHandler([=]() -> uint8_t {
-      //TODO
+    auto debugKeysPage = new RadioKeyDiagsPage();
+    debugKeysPage->setCloseHandler([=]() {
+        calib->setFocus();
+    });
+    return 0;
   });
   grid.nextLine();
 
