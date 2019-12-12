@@ -24,9 +24,7 @@
 Fifo<uint8_t, BT_TX_FIFO_SIZE> btTxFifo;
 Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
-#if defined(PCBX7ACCESS)
-//nothing to do
-#elif defined(PCBX7) || defined(PCBXLITE)
+#if defined(BLUETOOTH_PROBE)
 volatile uint8_t btChipPresent = 0;
 #endif
 
@@ -119,9 +117,7 @@ extern "C" void BT_USART_IRQHandler(void)
     uint8_t byte = USART_ReceiveData(BT_USART);
     btRxFifo.push(byte);
     TRACE("BT %02X", byte);
-#if defined(PCBX7ACCESS)
-    //nothing to do
-#elif defined(PCBX7) || defined(PCBXLITE)
+#if defined(BLUETOOTH_PROBE)
     if (!btChipPresent) {
       // This is to differentiate X7 and X7S and X-Lite with/without BT
       btChipPresent = 1;
