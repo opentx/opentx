@@ -136,8 +136,10 @@ const char * getBasename(const char * path);
   #define OTX_FOURCC 0x3B78746F // otx for Taranis X-Lite S
 #elif defined(PCBXLITE)
   #define OTX_FOURCC 0x3978746F // otx for Taranis X-Lite
-#elif defined(RADIO_X7)
-  #define OTX_FOURCC 0x3678746F // otx for Taranis X7
+#elif defined(RADIO_T12)
+  #define OTX_FOURCC 0x3D78746F // otx for Jumper T12
+#elif defined(PCBX7)
+  #define OTX_FOURCC 0x3678746F // otx for Taranis X7 / X7S / X7 Express / X7S Express
 #elif defined(PCBX9LITES)
   #define OTX_FOURCC 0x3E78746F // otx for Taranis X9-Lite
 #elif defined(PCBX9LITE)
@@ -146,8 +148,6 @@ const char * getBasename(const char * path);
   #define OTX_FOURCC 0x3378746F // otx for Taranis X9D
 #elif defined(PCBSKY9X)
   #define OTX_FOURCC 0x3278746F // otx for sky9x
-#elif defined(RADIO_T12)
-  #define OTX_FOURCC 0x3D78746F // otx for Jumper T12
 #endif
 
 bool isFileAvailable(const char * filename, bool exclDir = false);

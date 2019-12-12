@@ -125,7 +125,7 @@ elseif(PCB STREQUAL X7)
     set(CPU_TYPE_FULL STM32F407xE)  # for size report
     set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
     set(LUA_EXPORT lua_export_x7access)
-    add_definitions(-DRADIO_X7)
+    add_definitions(-DRADIO_X7ACCESS)
     add_definitions(-DEEPROM_VARIANT=0x4000)
     add_definitions(-DPCBREV=${PCBREV})
     add_definitions(-DPCBX7ACCESS)

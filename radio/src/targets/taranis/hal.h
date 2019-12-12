@@ -59,7 +59,7 @@
   #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_7 // PD.07
   #define KEYS_GPIO_REG_RIGHT           GPIOD->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_3 // PD.03
-#elif defined(RADIO_X7)
+#elif defined(PCBX7)
   #define KEYS_GPIO_REG_PAGE            GPIOD->IDR
   #define KEYS_GPIO_PIN_PAGE            GPIO_Pin_3  // PD.03
   #define KEYS_GPIO_REG_MENU            GPIOD->IDR
@@ -128,7 +128,7 @@
   #define ROTARY_ENCODER_EXTI_PortSource   EXTI_PortSourceGPIOE
   #define ROTARY_ENCODER_EXTI_PinSource1   EXTI_PinSource10
   #define ROTARY_ENCODER_EXTI_PinSource2   EXTI_PinSource11
-#elif defined(RADIO_X7)
+#elif defined(RADIO_X7) || defined(RADIO_X7ACCESS)
   #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO           GPIOE
   #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_9  // PE.09
@@ -667,7 +667,7 @@
   #define KEYS_GPIOC_PINS               (GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
   #define KEYS_GPIOD_PINS               (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_11 | GPIO_Pin_14 | GPIO_Pin_15)
   #define KEYS_GPIOE_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_9  | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15)
-#elif defined(PCBX7ACCESS)
+#elif defined(RADIO_X7ACCESS)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE)
   #define KEYS_GPIOA_PINS               GPIO_Pin_5
   #define KEYS_GPIOC_PINS               (GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_13)
@@ -1024,7 +1024,7 @@
   #define INTMODULE_DMA_STREAM_IRQHandler  DMA2_Stream7_IRQHandler
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
   #define INTMODULE_DMA_CHANNEL         DMA_Channel_4
-#elif defined(PCBX7ACCESS)  
+#elif defined(RADIO_X7ACCESS)
   #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
@@ -1357,7 +1357,7 @@
 #define TELEMETRY_EXTI_IRQn             EXTI9_5_IRQn
 #define TELEMETRY_EXTI_TRIGGER          EXTI_Trigger_Rising
 
-#if defined(RADIO_X7)
+#if defined(RADIO_X7) || defined(RADIO_X7ACCESS)
   #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
 #elif defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define TELEMETRY_EXTI_IRQHandler       EXTI9_5_IRQHandler
@@ -1441,7 +1441,7 @@
   // #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line9
   // #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
   // #define INTMODULE_HEARTBEAT_EXTI_IRQHandler     EXTI9_5_IRQHandler
-#elif defined(PCBX7ACCESS)
+#elif defined(RADIO_X7ACCESS)
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOA
