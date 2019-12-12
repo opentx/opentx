@@ -249,7 +249,7 @@ void convertModelData_218_to_219(ModelData &model)
       newModel.moduleData[i].type += 4;
     if (newModel.moduleData[i].type == MODULE_TYPE_XJT_PXX1) {
       newModel.moduleData[i].subType = newModel.moduleData[i].rfProtocol;
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
       if (i == INTERNAL_MODULE) {
         newModel.moduleData[i].type = MODULE_TYPE_ISRM_PXX2;
         newModel.moduleData[i].subType = MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16;
@@ -389,7 +389,7 @@ void convertRadioData_218_to_219(RadioData & settings)
   settings.backlightColor = oldSettings.backlightColor;
   settings.switchUnlockStates = oldSettings.switchUnlockStates;
   settings.switchConfig = oldSettings.switchConfig;
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
   settings.switchConfig |= SWITCH_TOGGLE << 16;
 #endif
   memcpy(&settings.switchNames[0], &oldSettings.switchNames[0], 8 * LEN_SWITCH_NAME);
@@ -440,7 +440,7 @@ void convertRadioData_218_to_219(RadioData & settings)
   }
 #endif
 
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
   // force re-calibration
   settings.chkSum = 0xFFFF;
   setDefaultOwnerId();

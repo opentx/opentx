@@ -158,7 +158,7 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SH);
 #endif
 
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
   CHECK_2POS(SW_SI);
 #endif
 

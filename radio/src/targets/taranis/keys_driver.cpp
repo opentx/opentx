@@ -215,7 +215,7 @@ uint32_t switchState(uint8_t index)
     ADD_2POS_CASE(H);
 #endif
 
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
     ADD_2POS_CASE(I);
 #endif
 

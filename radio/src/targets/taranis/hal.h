@@ -77,7 +77,7 @@
   #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_9  // PE.09
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_11 // PE.11
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define KEYS_GPIO_REG_MENU            GPIOD->IDR
   #define KEYS_GPIO_PIN_MENU            GPIO_Pin_2  // PD.02
   #define KEYS_GPIO_REG_EXIT            GPIOD->IDR
@@ -115,7 +115,7 @@
   #define ROTARY_ENCODER_EXTI_PortSource   EXTI_PortSourceGPIOD
   #define ROTARY_ENCODER_EXTI_PinSource1   EXTI_PinSource12
   #define ROTARY_ENCODER_EXTI_PinSource2   EXTI_PinSource13
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO           GPIOE
   #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_10 // PE.10
@@ -244,7 +244,7 @@
   #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_14 // PE.14
   #define TRIMS_GPIO_REG_RHL            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_9  // PD.09
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_3  // PE.03
   #define TRIMS_GPIO_REG_LHR            GPIOE->IDR
@@ -536,7 +536,7 @@
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_13 // PE.13
 #endif
 
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
   #define STORAGE_SWITCH_I
   #define HARDWARE_SWITCH_I
   #define SWITCHES_GPIO_REG_I           GPIOD->IDR
@@ -635,7 +635,7 @@
   #define KEYS_GPIOE_PINS               (TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_LVD | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_D_L| SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_E_L | SWITCHES_GPIO_PIN_F | SWITCHES_GPIO_PIN_I_L | SWITCHES_GPIO_PIN_L_H | SWITCHES_GPIO_PIN_L_L | SWITCHES_GPIO_PIN_M_H | SWITCHES_GPIO_PIN_O_L | SWITCHES_GPIO_PIN_R_L)
   #define KEYS_GPIOF_PINS               (KEYS_GPIO_PIN_ENTER | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_C_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | SWITCHES_GPIO_PIN_I_H | SWITCHES_GPIO_PIN_O_H | SWITCHES_GPIO_PIN_P_H | SWITCHES_GPIO_PIN_P_L | SWITCHES_GPIO_PIN_Q_H | SWITCHES_GPIO_PIN_Q_L)
   #define KEYS_GPIOG_PINS               (TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LHR| SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_J_H | SWITCHES_GPIO_PIN_J_L | SWITCHES_GPIO_PIN_K_H | SWITCHES_GPIO_PIN_K_L)
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE)
   #define KEYS_GPIOA_PINS               (GPIO_Pin_5)
   #define KEYS_GPIOB_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5)
@@ -916,7 +916,7 @@
   #define PWR_ON_GPIO_PIN               GPIO_Pin_0  // PD.00
 #endif
 
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
   #define STATUS_LEDS
   #define GPIO_LED_GPIO_ON              GPIO_ResetBits
   #define GPIO_LED_GPIO_OFF             GPIO_SetBits
@@ -1004,7 +1004,7 @@
     #define INTMODULE_BOOTCMD_GPIO      GPIOC
     #define INTMODULE_BOOTCMD_GPIO_PIN  GPIO_Pin_8  // PC.08
   #endif
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
@@ -1113,9 +1113,9 @@
 #endif
 
 // External Module
-#if defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019) || defined(PCBX7ACCESS)
+#if defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019) || defined(PCBX7ACCESS)
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
-  #if (defined(PCBX9DP) && PCBREV >= 2019) || defined(PCBX7ACCESS)
+  #if defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
     #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
     #define EXTMODULE_PWR_GPIO          GPIOD
     #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_8  // PD.08
@@ -1183,7 +1183,7 @@
   #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1NE
   #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1NP
   #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
   #define EXTMODULE_PWR_GPIO            GPIOD
@@ -1305,7 +1305,7 @@
 #endif
 
 // Serial Port
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019)
   #define AUX_SERIAL_RCC_AHB1Periph         0
   #define AUX_SERIAL_RCC_APB1Periph         0
 #else
@@ -1330,7 +1330,7 @@
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_DIR_GPIO              GPIOD
 #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
-#if defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019) || defined(PCBX7ACCESS)
+#if defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
   #define TELEMETRY_DIR_OUTPUT()          TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN
   #define TELEMETRY_DIR_INPUT()           TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN
 #else
@@ -1359,7 +1359,7 @@
 
 #if defined(RADIO_X7) || defined(RADIO_X7ACCESS)
   #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
-#elif defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
+#elif defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019)
   #define TELEMETRY_EXTI_IRQHandler       EXTI9_5_IRQHandler
 #else
   #define TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT
@@ -1407,7 +1407,7 @@
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15 // PE.15
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define SPORT_MAX_BAUDRATE            400000
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOA
   #define SPORT_UPDATE_PWR_GPIO         GPIOA
@@ -1461,7 +1461,7 @@
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
   #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOB
   #define INTMODULE_HEARTBEAT_GPIO                GPIOB
@@ -1734,7 +1734,7 @@
   #define I2C_WP_GPIO_PIN               GPIO_Pin_5  // PB.05
   #define I2C_SDA_GPIO_PinSource        GPIO_PinSource9
   #define I2C_SCL_GPIO_PinSource        GPIO_PinSource8
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define I2C_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOF)
   #define I2C_SPI_GPIO                  GPIOB
   #define I2C_SDA_GPIO_PIN              GPIO_Pin_9  // PB.09
@@ -1847,7 +1847,7 @@
   #define HAPTIC_CCMR1                  TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2
   #define HAPTIC_CCER                   TIM_CCER_CC2E
   #define BACKLIGHT_BDTR                TIM_BDTR_MOE
-#elif (defined(PCBX9DP) && PCBREV >= 2019) || defined(PCBX7ACCESS)
+#elif defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
   #define HAPTIC_PWM
   #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
   #define HAPTIC_RCC_APB2Periph         RCC_APB2Periph_TIM1
@@ -1915,7 +1915,7 @@
   #define BT_TX_GPIO_PinSource         GPIO_PinSource14
   #define BT_RX_GPIO_PinSource         GPIO_PinSource9
   #define BT_USART_IRQHandler          USART6_IRQHandler
-#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITES) || (defined(PCBX9DP) && PCBREV >= 2019)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITES) || defined(RADIO_X9DP2019)
   #define STORAGE_BLUETOOTH
   #define BT_RCC_APB1Periph             RCC_APB1Periph_USART3
   #define BT_RCC_APB2Periph             0

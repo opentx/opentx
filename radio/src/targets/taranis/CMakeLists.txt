@@ -61,6 +61,7 @@ elseif(PCB STREQUAL X9D+)
       ${FIRMWARE_TARGET_SRC}
       startup_stm32f40_41xxx.s
       )
+    add_definitions(-DRADIO_X9DP2019)
     add_definitions(-DSTM32F40_41xxx)
     add_definitions(-DSOFTWARE_VOLUME -DPWR_BUTTON_${PWR_BUTTON} -DHARDWARE_POWER_MANAGEMENT_UNIT)
     set(STATUS_LEDS YES)
