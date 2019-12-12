@@ -66,9 +66,8 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_TARANIS_XLITES:
       return 0x3B78746F;
     case BOARD_TARANIS_X7:
-      return 0x3678746F;
     case BOARD_TARANIS_X7_ACCESS:
-      return 0x3A78746F;
+      return 0x3678746F;
     case BOARD_TARANIS_X9E:
       return 0x3578746F;
     case BOARD_TARANIS_X9D:

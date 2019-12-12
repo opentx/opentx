@@ -551,6 +551,7 @@
   #define HARDWARE_SWITCH_I
   #define SWITCHES_GPIO_REG_I           GPIOC->IDR
   #define SWITCHES_GPIO_PIN_I           GPIO_Pin_13  // PC.13
+  #define STORAGE_SWITCH_J
 #elif defined(PCBX7)  
   #define STORAGE_SWITCH_I
   #define HARDWARE_SWITCH_I
