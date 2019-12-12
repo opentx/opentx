@@ -560,7 +560,7 @@
   #define STORAGE_SWITCH_J
   #define HARDWARE_SWITCH_J
   #define SWITCHES_GPIO_REG_J           GPIOD->IDR
-  #define SWITCHES_GPIO_PIN_J           GPIO_Pin_10  // PD.10 
+  #define SWITCHES_GPIO_PIN_J           GPIO_Pin_10  // PD.10
 #endif
 
 #if defined(PCBX9E)
@@ -1456,11 +1456,11 @@
   #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
   #define INTMODULE_HEARTBEAT_GPIO                GPIOC
-  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7 //PC.07
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7  // PC.07
   #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
-  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn  
+  #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI9_5_IRQn
 #elif defined(PCBX9DP) && PCBREV >= 2019
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOB
