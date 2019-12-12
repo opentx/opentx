@@ -64,22 +64,19 @@ class RadioKeyDiagsWindow : public Window
       dc->drawText(TRIM_MINUS_COLUMN, 1, "-");
       dc->drawText(TRIM_PLUS_COLUMN, 1, "+");
 
-      for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
-        const uint8_t trimMap[NUM_TRIMS_KEYS] = {6, 7, 4, 5, 2, 3, 0, 1, 8, 9, 10, 11};
-        coord_t y = 1 + FH + FH * (i / 2);
-        if (i & 1) {
-          dc->drawText(TRIM_COLUMN, y, "T", 0);
-          dc->drawNumber(TRIM_COLUMN + 10, y, i / 2 + 1, 0);
-        }
-        displayKeyState(dc, i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + trimMap[i]);
-      }
-
+      //KEYS
       for (uint8_t i = KEY_START; i <= 6; i++) {
         coord_t y = 1 + FH * (i - KEY_START);
         dc->drawTextAtIndex(KEY_COLUMN, y, STR_VKEYS, (i), 0);
         displayKeyState(dc, 70, y, i);
       }
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      coord_t y = FH * (8 - KEY_START);
+      dc->drawText(KEY_COLUMN, y, STR_ROTARY_ENCODER);
+      dc->drawNumber(70, y, rotencValue, 0);
+#endif
 
+      // SWITCHES
       for (uint8_t i = 0; i <= NUM_SWITCHES; i++) {
         if (SWITCH_EXISTS(i)) {
           coord_t y = 1 + FH * i;
@@ -89,11 +86,16 @@ class RadioKeyDiagsWindow : public Window
         }
       }
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      coord_t y = FH * (8 - KEY_START);
-      dc->drawText(KEY_COLUMN, y, STR_ROTARY_ENCODER);
-      dc->drawNumber(70, y, rotencValue, 0);
-#endif
+      //TRIMS
+      for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
+        const uint8_t trimMap[NUM_TRIMS_KEYS] = {6, 7, 4, 5, 2, 3, 0, 1, 8, 9, 10, 11};
+        coord_t y = 1 + FH + FH * (i / 2);
+        if (i & 1) {
+          dc->drawText(TRIM_COLUMN, y, "T", 0);
+          dc->drawNumber(TRIM_COLUMN + 10, y, i / 2 + 1, 0);
+        }
+        displayKeyState(dc, i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + trimMap[i]);
+      }
     };
 
   protected:

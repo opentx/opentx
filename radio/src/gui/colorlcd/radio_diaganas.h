@@ -20,9 +20,9 @@
 
 #include "page.h"
 
-class RadioAnaDiagsPage: public Page {
+class RadioAnalogsDiagsPage: public Page {
   public:
-    explicit RadioAnaDiagsPage();
+    explicit RadioAnalogsDiagsPage();
 
   protected:
     void buildHeader(Window * window);

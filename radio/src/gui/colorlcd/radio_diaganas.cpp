@@ -23,9 +23,9 @@
 
 constexpr coord_t ANA_OFFSET = 150;
 
-class RadioAnaDiagsWindow: public Window {
+class RadioAnalogsDiagsWindow: public Window {
   public:
-    RadioAnaDiagsWindow(Window * parent, const rect_t & rect):
+    RadioAnalogsDiagsWindow(Window * parent, const rect_t & rect):
       Window(parent, rect)
     {
     }
@@ -51,17 +51,17 @@ class RadioAnaDiagsWindow: public Window {
   protected:
 };
 
-void RadioAnaDiagsPage::buildHeader(Window * window)
+void RadioAnalogsDiagsPage::buildHeader(Window * window)
 {
   new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + 10, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENU_RADIO_ANALOGS, 0, MENU_COLOR);
 }
 
-void RadioAnaDiagsPage::buildBody(Window * window)
+void RadioAnalogsDiagsPage::buildBody(Window * window)
 {
-  new RadioAnaDiagsWindow(window, {10, 10, window->width() - 10, window->height() - 10});
+  new RadioAnalogsDiagsWindow(window, {10, 10, window->width() - 10, window->height() - 10});
 }
 
-RadioAnaDiagsPage::RadioAnaDiagsPage():
+RadioAnalogsDiagsPage::RadioAnalogsDiagsPage():
   Page(ICON_MODEL_SETUP)
 {
   buildHeader(&header);
