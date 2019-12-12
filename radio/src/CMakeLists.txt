@@ -146,7 +146,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
 
-add_subdirectory(lua)
 include(gui/CMakeLists.txt)
 
 if(RTC_BACKUP_RAM)
@@ -551,3 +550,7 @@ if(NOT MSVC)
   PrintTargetReport("firmware")
 
 endif(NOT MSVC)
+# Include the lua subdirectory after CMAKE_C_COMPILER has been
+# set. Otherwise, the custom commands it includes will use the
+# default CMAKE_C_COMPILER instead of the one we set manually
+add_subdirectory(lua)
