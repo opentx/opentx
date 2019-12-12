@@ -92,21 +92,26 @@ class FontBitmap:
 
         width = 0
         for c in self.chars:
-            coords.append(width)
-
             if c == " ":
-                width += 4
+                w = 4
             elif c in special_chars["cn"]:
-                width += self.draw_char(image, width, c, self.cjk_font)
+                w = self.draw_char(image, width, c, self.cjk_font)
             elif c not in extra_chars:
-                width += self.draw_char(image, width, c, self.font)
+                w = self.draw_char(image, width, c, self.font)
+            else:
+                continue
+            coords.append(width)
+            width += w
+
         coords.append(width)
 
         _, top, _, bottom = self.get_real_size(image)
 
         if self.extra_bitmap:
             image.paste(self.extra_bitmap.copy(), (width, top))
-            width += self.extra_bitmap.width
+            for coord in [14, 14, 12, 12, 13, 13, 13, 13, 13] + [15] * 12:
+                width += coord
+                coords.append(width)
 
         image = image.crop((0, top, width, bottom))
         coords.insert(0, bottom - top)
