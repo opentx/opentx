@@ -193,7 +193,7 @@
   #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_0  // PB.00
   #define TRIMS_GPIO_REG_LVD            GPIOB->IDR
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_1  // PB.01
-#elif defined(PCBX7ACCESS)
+#elif defined(RADIO_X7ACCESS)
   #define TRIMS_GPIO_REG_LHR            GPIOD->IDR
   #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_15 // PD.15
   #define TRIMS_GPIO_REG_LHL            GPIOC->IDR
