@@ -40,6 +40,7 @@ namespace Board {
     BOARD_9XRPRO,
     BOARD_AR9X,
     BOARD_TARANIS_X7,
+    BOARD_TARANIS_X7_ACCESS,
     BOARD_TARANIS_X9D,
     BOARD_TARANIS_X9DP,
     BOARD_TARANIS_X9DP_2019,
@@ -241,7 +242,12 @@ inline bool IS_TARANIS_XLITES(Board::Type board)
 
 inline bool IS_TARANIS_X7(Board::Type board)
 {
-  return board == Board::BOARD_TARANIS_X7;
+  return board == Board::BOARD_TARANIS_X7 || board == Board::BOARD_TARANIS_X7_ACCESS;
+}
+
+inline bool IS_TARANIS_X7_ACCESS(Board::Type board)
+{
+  return board == Board::BOARD_TARANIS_X7_ACCESS;
 }
 
 inline bool IS_TARANIS_X9LITE(Board::Type board)
@@ -321,7 +327,7 @@ inline bool HAS_EXTERNAL_ANTENNA(Board::Type board)
 
 inline bool IS_ACCESS_RADIO(Board::Type board, QString &id)
 {
-  return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == Board::BOARD_TARANIS_X9DP_2019 || board == Board::BOARD_X10_EXPRESS ||
+  return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == Board::BOARD_TARANIS_X9DP_2019 || board == Board::BOARD_X10_EXPRESS || IS_TARANIS_X7_ACCESS(board) ||
           (IS_HORUS(board) && id.contains("internalaccess")));
 }
 

@@ -311,7 +311,7 @@ void lcdInit()
   issued by the other parts of the code.
 */
 
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if (defined(PCBX9DP) && PCBREV >= 2019) || defined(PCBX7ACCESS)
   #define LCD_DELAY_NEEDED() true
 #else
   #define LCD_DELAY_NEEDED() (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())

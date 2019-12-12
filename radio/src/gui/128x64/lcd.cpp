@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-display_t displayBuf[DISPLAY_BUFFER_SIZE];
+display_t displayBuf[DISPLAY_BUFFER_SIZE] __DMA;
 
 void lcdClear()
 {
