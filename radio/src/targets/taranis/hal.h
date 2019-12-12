@@ -128,21 +128,6 @@
   #define ROTARY_ENCODER_EXTI_PortSource   EXTI_PortSourceGPIOE
   #define ROTARY_ENCODER_EXTI_PinSource1   EXTI_PinSource10
   #define ROTARY_ENCODER_EXTI_PinSource2   EXTI_PinSource11
-#elif defined(RADIO_X7ACCESS)
-  #define ROTARY_ENCODER_NAVIGATION
-  #define ROTARY_ENCODER_GPIO           GPIOE
-  #define ROTARY_ENCODER_GPIO_PIN_A     GPIO_Pin_9  // PE.09
-  #define ROTARY_ENCODER_GPIO_PIN_B     GPIO_Pin_11 // PE.11
-  #define ROTARY_ENCODER_POSITION()     (((ROTARY_ENCODER_GPIO->IDR >> 10) & 0x02) + ((ROTARY_ENCODER_GPIO->IDR >> 9) & 0x01))
-  #define ROTARY_ENCODER_EXTI_LINE1     EXTI_Line9
-  #define ROTARY_ENCODER_EXTI_LINE2     EXTI_Line11
-  #define ROTARY_ENCODER_EXTI_IRQn1        EXTI9_5_IRQn
-  #define ROTARY_ENCODER_EXTI_IRQHandler1  EXTI9_5_IRQHandler
-  #define ROTARY_ENCODER_EXTI_IRQn2        EXTI15_10_IRQn
-  #define ROTARY_ENCODER_EXTI_IRQHandler2  EXTI15_10_IRQHandler
-  #define ROTARY_ENCODER_EXTI_PortSource  EXTI_PortSourceGPIOE
-  #define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource9
-  #define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource11
 #elif defined(RADIO_X7)
   #define ROTARY_ENCODER_NAVIGATION
   #define ROTARY_ENCODER_GPIO           GPIOE

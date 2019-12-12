@@ -55,26 +55,6 @@ void lcdWriteCommand(uint8_t byte)
   LCD_NCS_HIGH();
 }
 
-
-void lcdWriteData(uint8_t* byte)
-{
-  LCD_A0_HIGH();
-  LCD_NCS_LOW();
-  for(uint8_t i=0;i<LCD_W;i++)
-  {
-    while ((SPI3->SR & SPI_SR_TXE) == 0) {
-      // Wait
-    }
-    (void)SPI3->DR; // Clear receive
-    LCD_SPI->DR = byte[i];
-    while ((SPI3->SR & SPI_SR_RXNE) == 0) {
-      // Wait
-    }
-  }
-  LCD_NCS_HIGH();
-}
-
-
 void lcdHardwareInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -225,9 +205,6 @@ void lcdRefresh(bool wait)
     lcdWriteCommand(0x04);
 #endif
 
-#if defined(PCBX7ACCESS)
-    lcdWriteData(p);
-#else
     LCD_NCS_LOW();
     LCD_A0_HIGH();
 
@@ -242,7 +219,6 @@ void lcdRefresh(bool wait)
 
     LCD_NCS_HIGH();
     LCD_A0_HIGH();
-#endif
   }
 #else
   // Wait if previous DMA transfer still active
