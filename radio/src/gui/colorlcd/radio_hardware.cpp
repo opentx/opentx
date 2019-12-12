@@ -182,8 +182,8 @@ void RadioHardwarePage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_DEBUG, 0, FONT(BOLD));
   auto debugAnas = new TextButton(window, grid.getFieldSlot(2, 0), STR_ANALOGS_BTN);
   debugAnas->setPressHandler([=]() -> uint8_t {
-      auto debugAnasPage = new RadioAnaDiagsPage();
-      debugAnasPage->setCloseHandler([=]() {
+      auto debugAnalogsPage = new RadioAnalogsDiagsPage();
+      debugAnalogsPage->setCloseHandler([=]() {
           calib->setFocus();
       });
       return 0;
