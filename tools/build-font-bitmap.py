@@ -82,9 +82,12 @@ class FontBitmap:
         draw = ImageDraw.Draw(char_image)
         draw.text((-offset, 0), c, fill=self.foreground, font=font)
         left, _, right, _ = self.get_real_size(char_image)
+        if right + offset + 1 < width:
+            # print("char %c: space reduced" % c)
+            width = right + offset + 1
         if image:
-            image.paste(char_image.crop((left, 0, right + 1, image.height)), (x, 0))
-        return right - left + 1
+            image.paste(char_image.crop((-offset, 0, width, image.height)), (x, 0))
+        return width
 
     def generate(self, filename, generate_coords_file=True):
         coords = []
