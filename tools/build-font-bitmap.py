@@ -113,8 +113,8 @@ class FontBitmap:
                 width += coord
                 coords.append(width)
 
-        image = image.crop((0, top, width, bottom))
-        coords.insert(0, bottom - top)
+        image = image.crop((0, top, width, bottom + 1))
+        coords.insert(0, bottom - top + 1)
 
         image.save(filename + ".png")
         if generate_coords_file:
