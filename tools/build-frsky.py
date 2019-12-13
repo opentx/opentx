@@ -103,6 +103,17 @@ boards = {
         "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
+    },
+    "X7ACCESS": {
+        "PCB": "X7",
+        "PCBREV": "ACCESS",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "AUTOUPDATE": "YES",
+        "PXX1": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
     }
 }
 

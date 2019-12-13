@@ -659,7 +659,6 @@ static inline void GET_ADC_IF_MIXER_NOT_RUNNING()
 
 void backlightOn();
 void checkBacklight();
-void doLoopCommonActions();
 
 uint16_t isqrt32(uint32_t n);
 

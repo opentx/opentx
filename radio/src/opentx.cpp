@@ -722,11 +722,6 @@ void checkBacklight()
   }
 }
 
-void doLoopCommonActions()
-{
-  checkBacklight();
-}
-
 void backlightOn()
 {
   lightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
@@ -813,7 +808,7 @@ void doSplash()
       }
 #endif
 
-      doLoopCommonActions();
+      checkBacklight();
     }
   }
 }
@@ -1049,7 +1044,7 @@ void checkThrottleStick()
     }
 #endif
 
-    doLoopCommonActions();
+    checkBacklight();
 
     WDG_RESET();
 
@@ -1089,7 +1084,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
     if (getEvent())  // wait for key release
       break;
 
-    doLoopCommonActions();
+    checkBacklight();
 
     WDG_RESET();
 
@@ -1634,8 +1629,9 @@ void opentxClose(uint8_t shutdown)
 {
   TRACE("opentxClose");
 
+  watchdogSuspend(2000/*20s*/);
+
   if (shutdown) {
-    watchdogSuspend(2000/*20s*/);
     pausePulses();   // stop mixer task to disable trims processing while in shutdown
     AUDIO_BYE();
     // TODO needed? telemetryEnd();
@@ -2178,7 +2174,13 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcdClear();
           POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN, nullptr);
+#if defined(SHUTDOWN_CONFIRMATION)
+          if (TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm) {
+            SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
+          }
+#else
           SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
+#endif
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();

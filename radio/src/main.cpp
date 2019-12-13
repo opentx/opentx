@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+
 #if defined(LIBOPENUI)
   #include "mainwindow.h"
 #endif
@@ -27,7 +28,24 @@ uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t mainRequestFlags = 0;
 
-#if defined(STM32)
+#if defined(LIBOPENUI)
+void openUsbMenu()
+{
+  auto menu = new Menu();
+  menu->setTitle("USB");
+  menu->addLine(STR_USB_JOYSTICK, [] {
+    setSelectedUsbMode(USB_JOYSTICK_MODE);
+  });
+  menu->addLine(STR_USB_MASS_STORAGE, [] {
+    setSelectedUsbMode(USB_MASS_STORAGE_MODE);
+  });
+#if defined(DEBUG)
+  menu->addLine(STR_USB_SERIAL, [] {
+    setSelectedUsbMode(USB_SERIAL_MODE);
+  });
+#endif
+}
+#elif defined(STM32)
 void onUSBConnectMenu(const char *result)
 {
   if (result == STR_USB_MASS_STORAGE) {
@@ -40,43 +58,46 @@ void onUSBConnectMenu(const char *result)
     setSelectedUsbMode(USB_SERIAL_MODE);
   }
 }
+
+void openUsbMenu()
+{
+  POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
+  POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
+#if defined(DEBUG)
+  POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
+#endif
+  POPUP_MENU_START(onUSBConnectMenu);
+}
 #endif
 
 void handleUsbConnection()
 {
 #if defined(STM32) && !defined(SIMU)
-  if (!usbStarted() && usbPlugged() && !(getSelectedUsbMode() == USB_UNSELECTED_MODE)) {
-    usbStart();
-    if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
-      opentxClose(false);
-      usbPluggedIn();
+  if (!usbStarted() && usbPlugged()) {
+    if (getSelectedUsbMode() == USB_UNSELECTED_MODE) {
+      if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
+        openUsbMenu();
+      }
+      else {
+        setSelectedUsbMode(g_eeGeneral.USBMode);
+      }
+    }
+    else {
+      if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
+        opentxClose(false);
+        usbPluggedIn();
+      }
+      usbStart();
     }
   }
-#if defined(COLORLCD)
-#warning "USB popup"
-#else
-  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
-      POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
-      POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
-#if defined(USB_SERIAL)
-      POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
-#endif
-      POPUP_MENU_START(onUSBConnectMenu);
-    }
-    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE) {
-      setSelectedUsbMode(g_eeGeneral.USBMode);
-    }
-  }
-#endif
+
   if (usbStarted() && !usbPlugged()) {
     usbStop();
     if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
       opentxResume();
+      putEvent(EVT_ENTRY);
     }
-#if !defined(BOOT)
     setSelectedUsbMode(USB_UNSELECTED_MODE);
-#endif
   }
 #endif // defined(STM32) && !defined(SIMU)
 }
@@ -164,12 +185,10 @@ void checkSpeakerVolume()
 #if defined(EEPROM)
 void checkEeprom()
 {
-  if (!usbPlugged()) {
-    if (eepromIsWriting())
-      eepromWriteProcess();
-    else if (TIME_TO_WRITE())
-      storageCheck(false);
-  }
+  if (eepromIsWriting())
+    eepromWriteProcess();
+  else if (TIME_TO_WRITE())
+    storageCheck(false);
 }
 #else
 void checkEeprom()
@@ -494,13 +513,20 @@ void perMain()
 #if defined(PCBSKY9X)
   calcConsumption();
 #endif
+
   checkSpeakerVolume();
-  checkEeprom();
-  logsWrite();
+
+  if (!usbPlugged()) {
+    checkEeprom();
+    logsWrite();
+  }
+
   handleUsbConnection();
+
 #if defined(PCBXLITES)
   handleJackConnection();
 #endif
+
   checkTrainerSettings();
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
@@ -511,7 +537,7 @@ void perMain()
     mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
   }
 
-  doLoopCommonActions();
+  checkBacklight();
 
 #if !defined(LIBOPENUI)
   event_t evt = getEvent(false);
@@ -525,14 +551,14 @@ void perMain()
 #endif
 
 #if defined(STM32)
-  if (SD_CARD_PRESENT() && !sdMounted()) {
+  if (!usbPlugged() && SD_CARD_PRESENT() && !sdMounted()) {
     sdMount();
   }
 #endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
+  if (!usbPlugged() && !SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }

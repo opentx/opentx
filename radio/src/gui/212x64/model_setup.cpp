@@ -1241,15 +1241,9 @@ void menuModelSetup(event_t event)
 
          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
          if (attr) {
-           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
-             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 70);
-           }
-           else if (multi_proto == MODULE_SUBTYPE_MULTI_OLRS) {
-             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -1, 7);
-           }
-           else {
-             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-           }
+           int8_t min, max;
+           getMultiOptionValues(multi_proto, min, max);
+           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, min, max);
          }
        }
 #endif

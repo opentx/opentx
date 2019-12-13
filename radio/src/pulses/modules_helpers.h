@@ -608,6 +608,36 @@ inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].multi.disableMapping = 0;
   g_model.moduleData[moduleIdx].multi.lowPowerMode = 0;
 }
+
+inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
+{
+  switch (multi_proto) {
+    case MODULE_SUBTYPE_MULTI_DSM2:
+      min = 0;
+      max = 1;
+      break;
+    case MODULE_SUBTYPE_MULTI_BAYANG:
+      min = 0;
+      max = 3;
+      break;
+    case MODULE_SUBTYPE_MULTI_OLRS:
+      min = -1;
+      max = 7;
+      break;
+    case MODULE_SUBTYPE_MULTI_FS_AFHDS2A:
+      min = 0;
+      max = 70;
+      break;
+    case MODULE_SUBTYPE_MULTI_XN297DP:
+      min = -1;
+      max = 84;
+      break;
+    default:
+      min = -128;
+      max = 127;
+      break;
+  }
+}
 #endif
 
 #endif // _MODULES_HELPERS_H_
