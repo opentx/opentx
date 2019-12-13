@@ -407,7 +407,7 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
           button->setFocus();
         button->setPressHandler([=]() -> uint8_t {
           button->bringToTop();
-          Menu * menu = new Menu();
+          Menu * menu = new Menu(window);
           menu->addLine(STR_EDIT, [=]() {
             editInput(window, input, inputIndex);
           });
@@ -468,7 +468,7 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
         button->setFocus();
       button->setPressHandler([=]() -> uint8_t {
         button->bringToTop();
-        Menu * menu = new Menu();
+        Menu * menu = new Menu(window);
         menu->addLine(STR_EDIT, [=]() {
           insertExpo(inputIndex, input);
           editInput(window, input, inputIndex);

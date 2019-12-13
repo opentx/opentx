@@ -337,8 +337,8 @@ void ModelGVarsPage::build(FormWindow * window)
 
   for (uint8_t index = 0; index < MAX_GVARS; index++) {
     Button * button = new GVarButton(window, grid.getLineSlot(), index);
-    button->setPressHandler([=]() -> uint8_t {
-        Menu * menu = new Menu();
+    button->setPressHandler([=]() {
+        Menu * menu = new Menu(window);
         menu->addLine(STR_EDIT, [=]() {
             Window * editWindow = new GVarEditWindow(index);
             editWindow->setCloseHandler([=]() {

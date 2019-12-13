@@ -440,7 +440,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
       Button * button = new SensorButton(window, grid.getFieldSlot(), idx, ++count);
       button->setPressHandler([=]() -> uint8_t {
         button->bringToTop();
-        Menu * menu = new Menu();
+        Menu * menu = new Menu(window);
         menu->addLine(STR_EDIT, [=]() {
           editSensor(window, idx);
         });

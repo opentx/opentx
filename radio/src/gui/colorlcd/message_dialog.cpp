@@ -20,8 +20,8 @@
 #include "message_dialog.h"
 #include "static.h"
 
-MessageDialog::MessageDialog(const char * title, const char * message):
-  Dialog(title, {50, 73, LCD_W - 100, LCD_H - 146})
+MessageDialog::MessageDialog(Window * parent, const char * title, const char * message):
+  Dialog(parent, title, {50, 73, LCD_W - 100, LCD_H - 146})
 {
   new StaticText(this, {0, coord_t(height() - PAGE_LINE_HEIGHT) / 2, width(), PAGE_LINE_HEIGHT}, message, 0, CENTERED);
 }

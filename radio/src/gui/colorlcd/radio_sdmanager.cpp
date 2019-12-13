@@ -159,7 +159,7 @@ void RadioSdManagerPage::build(FormWindow * window)
 
     for (auto name: files) {
       auto button = new TextButton(window, grid.getLabelSlot(), name, [=]() -> uint8_t {
-          auto menu = new Menu();
+          auto menu = new Menu(window);
           const char *ext = getFileExtension(name.data());
           if (ext) {
             if (!strcasecmp(ext, SOUNDS_EXT)) {

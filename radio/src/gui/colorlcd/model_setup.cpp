@@ -170,8 +170,8 @@ class FailSafePage : public Page {
 
 class RegisterDialog: public Dialog {
   public:
-    explicit RegisterDialog(uint8_t moduleIdx):
-      Dialog(STR_REGISTER, {50, 73, LCD_W - 100, 0}),
+    RegisterDialog(Window * parent, uint8_t moduleIdx):
+      Dialog(parent, STR_REGISTER, {50, 73, LCD_W - 100, 0}),
       moduleIdx(moduleIdx)
     {
       FormGroup * form = &content->form;
@@ -259,8 +259,8 @@ class RegisterDialog: public Dialog {
 
 class BindWaitDialog: public Dialog {
   public:
-    BindWaitDialog(uint8_t moduleIdx, uint8_t receiverIdx):
-      Dialog(STR_BIND, {50, 73, LCD_W - 100, LCD_H - 146}),
+    BindWaitDialog(Window * parent, uint8_t moduleIdx, uint8_t receiverIdx):
+      Dialog(parent, STR_BIND, {50, 73, LCD_W - 100, LCD_H - 146}),
       moduleIdx(moduleIdx),
       receiverIdx(receiverIdx)
     {
@@ -288,8 +288,8 @@ class BindWaitDialog: public Dialog {
 
 class BindRxChoiceMenu: public Menu {
   public:
-    BindRxChoiceMenu(uint8_t moduleIdx, uint8_t receiverIdx):
-      Menu(),
+    BindRxChoiceMenu(Window * parent, uint8_t moduleIdx, uint8_t receiverIdx):
+      Menu(parent),
       moduleIdx(moduleIdx),
       receiverIdx(receiverIdx)
     {
@@ -315,10 +315,10 @@ class BindRxChoiceMenu: public Menu {
               memcpy(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], receiverName, PXX2_LEN_RX_NAME);
               storageDirty(EE_MODEL);
               reusableBuffer.moduleSetup.bindInformation.step = BIND_OK;
-              new MessageDialog(STR_BIND, STR_BIND_OK);
+              new MessageDialog(parent, STR_BIND, STR_BIND_OK);
 #else
               reusableBuffer.moduleSetup.bindInformation.step = BIND_START;
-              new BindWaitDialog(moduleIdx, receiverIdx);
+              new BindWaitDialog(parent, moduleIdx, receiverIdx);
 #endif
             }
         });
@@ -346,7 +346,7 @@ void BindWaitDialog::checkEvents()
 
   if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT && reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
     deleteLater();
-    new BindRxChoiceMenu(moduleIdx, receiverIdx);
+    new BindRxChoiceMenu(this, moduleIdx, receiverIdx);
     return;
   }
 
@@ -361,7 +361,7 @@ class ReceiverButton: public TextButton {
             startBind();
           }
           else {
-            auto menu = new Menu();
+            auto menu = new Menu(parent);
             menu->addLine(STR_BIND, [=]() {
                 startBind();
                 return 0;
@@ -382,7 +382,7 @@ class ReceiverButton: public TextButton {
                 memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
                 reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
                 reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = 0x01;
-                new ConfirmDialog(STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
+                new ConfirmDialog(parent, STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
                     moduleState[moduleIdx].mode = MODULE_MODE_RESET;
                     removePXX2Receiver(moduleIdx, receiverIdx);
                 });
@@ -392,7 +392,7 @@ class ReceiverButton: public TextButton {
                 memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
                 reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
                 reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = 0xFF;
-                new ConfirmDialog(STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
+                new ConfirmDialog(parent, STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
                     moduleState[moduleIdx].mode = MODULE_MODE_RESET;
                     removePXX2Receiver(moduleIdx, receiverIdx);
                 });
@@ -425,7 +425,7 @@ class ReceiverButton: public TextButton {
         moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
       }
 
-      new BindWaitDialog(moduleIdx, receiverIdx);
+      new BindWaitDialog(parent, moduleIdx, receiverIdx);
     }
 
     void checkEvents() override
@@ -762,7 +762,7 @@ class ModuleWindow : public FormGroup {
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE);
         registerButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_REGISTER);
         registerButton->setPressHandler([=]() -> uint8_t {
-            new RegisterDialog(moduleIdx);
+            new RegisterDialog(this, moduleIdx);
             return 0;
         });
 

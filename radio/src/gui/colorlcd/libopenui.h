@@ -58,7 +58,7 @@
 
 inline void POPUP_INFORMATION(const char * str)
 {
-  new MessageDialog("Message", str);
+  new MessageDialog(&mainWindow, "Message", str);
 }
 
 #endif // _LIBOPENUI_H_

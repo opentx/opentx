@@ -84,7 +84,7 @@ class LayoutChoice: public FormField {
 
     void openMenu()
     {
-      auto menu = new Menu();
+      auto menu = new Menu(parent);
 
       for (auto layout: getRegisteredLayouts()) {
         menu->addCustomLine([=](BitmapBuffer * dc, coord_t x, coord_t y, LcdFlags flags) {

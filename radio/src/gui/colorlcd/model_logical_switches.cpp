@@ -363,7 +363,7 @@ void ModelLogicalSwitchesPage::build(FormWindow * window, int8_t focusIndex)
 
       auto button = new LogicalSwitchButton(window, grid.getFieldSlot(), i);
       button->setPressHandler([=]() {
-          Menu * menu = new Menu();
+          Menu * menu = new Menu(window);
           LogicalSwitchData * ls = lswAddress(i);
           menu->addLine(STR_EDIT, [=]() {
               editLogicalSwitch(window, i);

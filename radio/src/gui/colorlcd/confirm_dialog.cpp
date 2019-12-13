@@ -21,8 +21,8 @@
 #include "confirm_dialog.h"
 #include "static.h"
 
-ConfirmDialog::ConfirmDialog(const char * title, const char * message, std::function<void(void)> confirmHandler) :
-  Dialog(title, {50, 73, LCD_W - 100, LCD_H - 146}),
+ConfirmDialog::ConfirmDialog(Window * parent, const char * title, const char * message, std::function<void(void)> confirmHandler) :
+  Dialog(parent, title, {50, 73, LCD_W - 100, LCD_H - 146}),
   confirmHandler(std::move(confirmHandler))
 {
   new StaticText(this, {0, height() / 2, width(), PAGE_LINE_HEIGHT}, message, CENTERED);

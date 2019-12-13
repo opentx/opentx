@@ -260,7 +260,7 @@ void RadioSpectrumAnalyser::start()
 
 void RadioSpectrumAnalyser::stop()
 {
-  new MessageDialog(STR_MODULE, STR_STOPPING);
+  new MessageDialog(this, STR_MODULE, STR_STOPPING);
   if (isModulePXX2(moduleIdx)) {
     moduleState[moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
   }

@@ -438,7 +438,7 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
       auto button = new SpecialFunctionButton(window, grid.getFieldSlot(), functions, i);
       button->setPressHandler([=]() {
           button->bringToTop();
-          Menu * menu = new Menu();
+          Menu * menu = new Menu(window);
           menu->addLine(STR_EDIT, [=]() {
               editSpecialFunction(window, i);
           });

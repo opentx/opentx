@@ -77,7 +77,7 @@ class RadioKeyDiagsWindow : public Window
 #endif
 
       // SWITCHES
-      for (uint8_t i = 0; i <= NUM_SWITCHES; i++) {
+      for (uint8_t i = 0; i < NUM_SWITCHES; i++) {
         if (SWITCH_EXISTS(i)) {
           coord_t y = 1 + FH * i;
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
@@ -86,16 +86,16 @@ class RadioKeyDiagsWindow : public Window
         }
       }
 
-      //TRIMS
-      for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
-        const uint8_t trimMap[NUM_TRIMS_KEYS] = {6, 7, 4, 5, 2, 3, 0, 1, 8, 9, 10, 11};
-        coord_t y = 1 + FH + FH * (i / 2);
-        if (i & 1) {
-          dc->drawText(TRIM_COLUMN, y, "T", 0);
-          dc->drawNumber(TRIM_COLUMN + 10, y, i / 2 + 1, 0);
-        }
-        displayKeyState(dc, i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + trimMap[i]);
-      }
+      // TRIMS
+//      for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
+//        const uint8_t trimMap[NUM_TRIMS_KEYS] = {6, 7, 4, 5, 2, 3, 0, 1, 8, 9, 10, 11};
+//        coord_t y = 1 + FH + FH * (i / 2);
+//        if (i & 1) {
+//          dc->drawText(TRIM_COLUMN, y, "T", 0);
+//          dc->drawNumber(TRIM_COLUMN + 10, y, i / 2 + 1, 0);
+//        }
+//        displayKeyState(dc, i & 1 ? TRIM_PLUS_COLUMN : TRIM_MINUS_COLUMN, y, TRM_BASE + trimMap[i]);
+//      }
     };
 
   protected:

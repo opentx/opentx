@@ -176,7 +176,7 @@ void ModelOutputsPage::build(FormWindow * window, int8_t focusChannel)
     // Channel settings
     Button * button = new OutputLineButton(window, grid.getFieldSlot(), output);
     button->setPressHandler([=]() -> uint8_t {
-      Menu * menu = new Menu();
+      Menu * menu = new Menu(window);
       menu->addLine(STR_EDIT, [=]() {
         editOutput(window, ch);
       });
