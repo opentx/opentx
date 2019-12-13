@@ -90,11 +90,6 @@ void adcSingleRead()
   adcValues[7] = ADC->ADC_CDR14;
   adcValues[8] = ADC->ADC_CDR8 ;
 
-  temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
-  if (get_tmr10ms() >= 100 && temperature > maxTemperature) {
-    maxTemperature = temperature;
-  }
-
   // adc direction correct
 #if defined(FRSKY_STICKS)
   uint32_t i ;

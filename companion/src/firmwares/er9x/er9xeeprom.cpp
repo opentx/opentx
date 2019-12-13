@@ -59,7 +59,7 @@ t_Er9xTrainerMix::operator TrainerMix()
 
 t_Er9xTrainerData::t_Er9xTrainerData()
 {
-  memset(this, 0, sizeof(t_Er9xTrainerData));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Er9xTrainerData));
 }
 
 t_Er9xTrainerData::operator TrainerData ()
@@ -74,7 +74,7 @@ t_Er9xTrainerData::operator TrainerData ()
 
 t_Er9xGeneral::t_Er9xGeneral()
 {
-  memset(this, 0, sizeof(t_Er9xGeneral));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Er9xGeneral));
 }
 
 Er9xGeneral::operator GeneralSettings ()
@@ -334,7 +334,7 @@ t_Er9xFrSkyChannelData::operator FrSkyChannelData ()
 
 t_Er9xFrSkyData::t_Er9xFrSkyData()
 {
-  memset(this, 0, sizeof(t_Er9xFrSkyData));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(t_Er9xFrSkyData));
 }
 
 t_Er9xFrSkyData::operator FrSkyData ()

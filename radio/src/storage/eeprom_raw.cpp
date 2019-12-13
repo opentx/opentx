@@ -256,16 +256,17 @@ void writeModel(int index)
   writeFile(index+1, (uint8_t *)&g_model, sizeof(g_model));
 }
 
-bool eeLoadGeneral()
+bool eeLoadGeneral(bool allowFixes)
 {
   eeLoadGeneralSettingsData();
 
   if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
 #if defined(PCBSKY9X)
-    if (!eeConvert()) {
+    if (!allowFixes)
+      return false; // prevent eeprom from being wiped
+    if (!eeConvert())
       return false;
-    }
 #else
     return false;
 #endif

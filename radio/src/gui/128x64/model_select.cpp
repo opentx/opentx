@@ -22,6 +22,15 @@
 
 #define MODELSEL_W                     LCD_W
 
+void onDeleteModelConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    storageCheck(true);
+    eeDeleteModel(menuVerticalPosition); // delete file
+    s_copyMode = 0;
+  }
+}
+
 void onModelSelectMenu(const char * result)
 {
   int8_t sub = menuVerticalPosition;
@@ -45,13 +54,14 @@ void onModelSelectMenu(const char * result)
     POPUP_WARNING(eeBackupModel(sub));
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
+    if (sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, nullptr))
+      POPUP_MENU_START(onModelSelectMenu);
+    else
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-    }
   }
 #endif
   else if (result == STR_DELETE_MODEL) {
-    POPUP_CONFIRMATION(STR_DELETEMODEL, nullptr);
+    POPUP_CONFIRMATION(STR_DELETEMODEL, onDeleteModelConfirm);
     SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
   }
 #if defined(SDCARD)
@@ -68,14 +78,6 @@ void onModelSelectMenu(const char * result)
 
 void menuModelSelect(event_t event)
 {
-  if (warningResult) {
-    warningResult = 0;
-    storageCheck(true);
-    eeDeleteModel(menuVerticalPosition); // delete file
-    s_copyMode = 0;
-    event = EVT_ENTRY_UP;
-  }
-
   event_t _event_ = event;
   if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event)) {
     _event_ = 0;

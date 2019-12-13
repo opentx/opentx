@@ -701,6 +701,10 @@ void MdiChild::updateTitle()
   if (availableEEpromSize >= 0) {
     title += QString(" - %1 ").arg(availableEEpromSize) + tr("free bytes");
   }
+  QFileInfo fi(curFile);
+  if (!isUntitled && !fi.isWritable()) {
+    title += QString(" (%1)").arg(tr("read only"));
+  }
   setWindowTitle(title);
 }
 
@@ -1334,7 +1338,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
   QString warning = storage.warning();
   if (!warning.isEmpty()) {
-    // TODO EEPROMInterface::showEepromWarnings(this, CPN_STR_TTL_WARNING, warning);
+    QMessageBox::warning(this, CPN_STR_TTL_WARNING, warning);
   }
 
   if (resetCurrentFile) {
@@ -1355,7 +1359,8 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
 bool MdiChild::save()
 {
-  if (isUntitled) {
+  QFileInfo fi(curFile);
+  if (isUntitled || !fi.isWritable()) {
     return saveAs(true);
   }
   else {
@@ -1457,6 +1462,12 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
 {
   QMessageBox::StandardButtons btns;
   QMessageBox::StandardButton dfltBtn;
+
+  if (from == Board::BOARD_X10 && to == Board::BOARD_JUMPER_T16) {
+    if (displayT16ImportWarning() == false)
+      return false;
+  }
+
   QString q = tr("<p><b>Currently selected radio type (%1) is not compatible with file %3 (from %2), models and settings need to be converted.</b></p>").arg(Boards::getBoardName(to)).arg(Boards::getBoardName(from)).arg(userFriendlyCurrentFile());
   if (newFile) {
     q.append(tr("Do you wish to continue with the conversion?"));

@@ -830,7 +830,7 @@ void LogsDialog::plotLogs()
     foreach (QModelIndex index, selection) {
       selectedRows.append(index.row());
     }
-    qSort(selectedRows.begin(), selectedRows.end());
+    std::sort(selectedRows.begin(), selectedRows.end());
   } else {
     hasLogSelection = false;
     rowCount = ui->logTable->rowCount();

@@ -18,15 +18,15 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TASKS_ARM_H_
-#define _TASKS_ARM_H_
+#ifndef _TASKS_H_
+#define _TASKS_H_
 
 #include "rtos.h"
 
 // stack sizes should be in multiples of 8 for better alignment
 #define MENUS_STACK_SIZE       2000
-#define MIXER_STACK_SIZE       512
-#define AUDIO_STACK_SIZE       512
+#define MIXER_STACK_SIZE       400
+#define AUDIO_STACK_SIZE       400
 #define CLI_STACK_SIZE         1000  // only consumed with CLI build option
 
 #define MIXER_TASK_PRIO        5
@@ -55,4 +55,4 @@ inline void resetForcePowerOffRequest()
   timeForcePowerOffPressed = 0;
 }
 
-#endif // _TASKS_ARM_H_
+#endif // _TASKS_H_

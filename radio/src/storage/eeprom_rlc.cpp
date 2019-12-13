@@ -729,7 +729,7 @@ void RlcFile::nextRlcWriteStep()
 void RlcFile::flush()
 {
   while (!eepromIsTransferComplete())
-    wdt_reset();
+    WDG_RESET();
 
   ENABLE_SYNC_WRITE(true);
 
@@ -757,7 +757,7 @@ uint16_t eeLoadModelData(uint8_t index)
   return theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 }
 
-bool eeLoadGeneral()
+bool eeLoadGeneral(bool allowFixes)
 {
   theFile.openRlc(FILE_GENERAL);
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 3) == 3 && g_eeGeneral.version == EEPROM_VER) {
@@ -794,12 +794,14 @@ bool eeLoadGeneral()
     return false;
   }
 #endif
+
 #if defined(EEPROM_CONVERSIONS)
   if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
-    if (!eeConvert()) {
+    if (!allowFixes)
+      return false; // prevent eeprom from being wiped
+    if (!eeConvert())
       return false;
-    }
   }
   return true;
 #else

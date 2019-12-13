@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "pulses/pulses.h"
 
 void intmoduleStop()
 {
@@ -32,11 +33,8 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
-#if defined(DEBUG_LATENCY)
-#define HEARBEAT_OFFSET unsigned(5500 + g_model.flightModeData[0].gvars[0] * 100)
-#else
-constexpr int HEARBEAT_OFFSET = 5500;
-#endif
+// #define HEARBEAT_OFFSET unsigned(6000 + g_model.flightModeData[0].gvars[0] * 100)
+constexpr unsigned HEARBEAT_OFFSET = 6000;
 
 void intmoduleSendNextFrame()
 {
@@ -46,7 +44,7 @@ void intmoduleSendNextFrame()
     {
       uint32_t last = intmodulePulsesData.pxx.getLast();
       if (heartbeatCapture.valid) {
-        if (TIMER_2MHz_TIMER->CNT - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
+        if (getTmr2MHz() - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
           last -= 21;
         else
           last += 19;
@@ -83,12 +81,7 @@ void intmoduleSendNextFrame()
   }
 }
 
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
-{
-  // nothing, the pulses will be sent through telemetry port
-}
-
-void intmodulePxxStart()
+void intmodulePxx1PulsesStart()
 {
   INTERNAL_MODULE_ON();
 
@@ -172,7 +165,7 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  if (setupPulses(INTERNAL_MODULE)) {
+  if (setupPulsesInternalModule()) {
     intmoduleSendNextFrame();
   }
 }

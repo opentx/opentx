@@ -52,7 +52,7 @@ uint8_t getMappedChar(uint8_t c)
   else if (c >= 0x80 && c <= 0x81) {
     result = 157 + c - 0x80;
   }
-#elif defined(TRANSLATIONS_FI)
+#elif defined(TRANSLATIONS_FI) || defined(TRANSLATIONS_SE)
   else if (c >= 0x80 && c <= 0x85) {
     result = 159 + c - 0x80;
   }
@@ -68,16 +68,12 @@ uint8_t getMappedChar(uint8_t c)
   else if (c >= 0x80 && c <= 0x80+21) {
     result = 185 + c - 0x80;
   }
-#elif defined(TRANSLATIONS_SE)
-  else if (c >= 0x80 && c <= 0x85) {
-    result = 207 + c - 0x80;
-  }
 #endif
   else if (c < 0xC0)
     result = c - 0x20;
   else
     result = c - 0xC0 + 96;
-  // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
+    // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
   return result;
 }
 
@@ -250,7 +246,7 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), flags);
 }
 
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags flags)
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags flags)
 {
   char str[LEN_TIMER_STRING];
   getTimerString(str, tme, (flags & TIMEHOUR) != 0);
@@ -287,10 +283,12 @@ void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att)
   }
 }
 
-void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
+void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags, bool autoBold)
 {
   char s[8];
-  getSwitchString(s, idx);
+  getSwitchPositionName(s, idx);
+  if (autoBold && idx != SWSRC_NONE && getSwitch(idx))
+    flags |= BOLD;
   lcdDrawText(x, y, s, flags);
 }
 
@@ -301,7 +299,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
-void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT) {
@@ -433,6 +431,37 @@ void lcdDrawBlackOverlay()
 {
   lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, OVERLAY_COLOR | OPACITY(8));
 }
+
+#if defined(MULTIMODULE)
+void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
+{
+  if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
+    lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
+  }
+  else {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.protocolName[0] && status.isValid())
+      lcdDrawText(x, y, status.protocolName, flags);
+    else
+      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
+  }
+}
+
+void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags)
+{
+  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+  if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
+    lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
+  }
+  else {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.protocolName[0] && status.isValid())
+      lcdDrawText(x, y, status.protocolSubName, flags);
+    else
+      lcdDrawNumber(x, y, subType, flags);
+  }
+}
+#endif
 
 #if defined(SIMU)
 BitmapBuffer _lcd(BMP_RGB565, LCD_W, LCD_H, displayBuf);

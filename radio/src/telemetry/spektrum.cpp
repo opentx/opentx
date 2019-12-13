@@ -271,7 +271,7 @@ bool isSpektrumValidValue(int32_t value, const SpektrumDataType type)
 
 void processSpektrumPacket(const uint8_t *packet)
 {
-  setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 0, 0, 0, packet[1], UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 0, 0, 0, packet[1], UNIT_RAW, 0);
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
   uint8_t instance = packet[3];
@@ -283,10 +283,10 @@ void processSpektrumPacket(const uint8_t *packet)
 
     for (int i=5; i<SPEKTRUM_TELEMETRY_LENGTH; i++)
     {
-      setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, packet[i], UNIT_TEXT, i-5);
+      setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, pseudoId, 0, instance, packet[i], UNIT_TEXT, i-5);
     }
     // Set a sential \0 just for safety since we have the space there
-    setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, '\0', UNIT_TEXT, 13);
+    setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, pseudoId, 0, instance, '\0', UNIT_TEXT, 13);
 
 
     return;
@@ -335,7 +335,7 @@ void processSpektrumPacket(const uint8_t *packet)
       }
 
       uint16_t pseudoId = (sensor->i2caddress << 8 | sensor->startByte);
-      setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, value, sensor->unit, sensor->precision);
+      setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, pseudoId, 0, instance, value, sensor->unit, sensor->precision);
     }
   }
   if (!handled) {
@@ -344,7 +344,7 @@ void processSpektrumPacket(const uint8_t *packet)
     for (int startByte=0; startByte<14; startByte+=2) {
       int32_t value = spektrumGetValue(packet + 4, startByte, uint16);
       uint16_t pseudoId = i2cAddress << 8 | startByte;
-      setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, value, UNIT_RAW, 0);
+      setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, pseudoId, 0, instance, value, UNIT_RAW, 0);
     }
   }
 }
@@ -370,75 +370,74 @@ void processSpektrumPacket(const uint8_t *packet)
  LemonRX+Sat+tele    0xb2   07     1
 
  */
-void processDSMBindPacket(const uint8_t *packet)
+void processDSMBindPacket(uint8_t module, const uint8_t *packet)
 {
   uint32_t debugval;
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2
-    && g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode) {
+  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2
+    && g_model.moduleData[module].multi.autoBindMode) {
 
     int channels = packet[5];
     // Only sets channel etc when in DSM multi mode
-    g_model.moduleData[EXTERNAL_MODULE].channelsCount = channels - 8;
+    g_model.moduleData[module].channelsCount = channels - 8;
 
     // bool use11ms = (packet[8] & 0x10) ;
     if (packet[6] >= 0xb2)
-      g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
+      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
     else if (packet[6] >= 0xa2)
-      g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
+      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
     else if (packet[6] >= 0x12)
-      g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
+      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
     else
-      g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
+      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
 
     storageDirty(EE_MODEL);
-
   }
 
   debugval = packet[7] << 24 | packet[6] << 16 | packet[5] << 8 | packet[4];
 
   /* log the bind packet as telemetry for quick debugging */
-  setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 4, 0, 0, debugval, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 4, 0, 0, debugval, UNIT_RAW, 0);
 
   /* Finally stop binding as the rx just told us that it is bound */
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2 && moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
-    multiBindStatus=MULTI_BIND_FINISHED;
+  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2 && moduleState[module].mode == MODULE_MODE_BIND) {
+    setMultiBindStatus(module, MULTI_BIND_FINISHED);
   }
 }
 
-void processSpektrumTelemetryData(uint8_t data)
+void processSpektrumTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount)
 {
-  if (telemetryRxBufferCount == 0 && data != 0xAA) {
+  if (rxBufferCount == 0 && data != 0xAA) {
     TRACE("[SPK] invalid start byte 0x%02X", data);
     return;
   }
 
-  if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
-    telemetryRxBuffer[telemetryRxBufferCount++] = data;
+  if (rxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+    rxBuffer[rxBufferCount++] = data;
   }
   else {
-    TRACE("[SPK] array size %d error", telemetryRxBufferCount);
-    telemetryRxBufferCount = 0;
+    TRACE("[SPK] array size %d error", rxBufferCount);
+    rxBufferCount = 0;
   }
 
-  if (telemetryRxBuffer[1] == 0x80 && telemetryRxBufferCount >= DSM_BIND_PACKET_LENGTH) {
-    processDSMBindPacket(telemetryRxBuffer+2);
-    telemetryRxBufferCount = 0;
+  if (rxBuffer[1] == 0x80 && rxBufferCount >= DSM_BIND_PACKET_LENGTH) {
+    processDSMBindPacket(module, rxBuffer+2);
+    rxBufferCount = 0;
     return;
   }
 
-  if (telemetryRxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
+  if (rxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
     // Debug print content of Telemetry to console
 #if 0
     debugPrintf("[SPK] Packet 0x%02X rssi 0x%02X: ic2 0x%02x, %02x: ",
-                telemetryRxBuffer[0], telemetryRxBuffer[1], telemetryRxBuffer[2], telemetryRxBuffer[3]);
+                rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3]);
     for (int i=4; i<SPEKTRUM_TELEMETRY_LENGTH; i+=4) {
-      debugPrintf("%02X%02X %02X%02X  ", telemetryRxBuffer[i], telemetryRxBuffer[i + 1],
-                  telemetryRxBuffer[i + 2], telemetryRxBuffer[i + 3]);
+      debugPrintf("%02X%02X %02X%02X  ", rxBuffer[i], rxBuffer[i + 1],
+                  rxBuffer[i + 2], rxBuffer[i + 3]);
     }
     debugPrintf("\r\n");
 #endif
-    processSpektrumPacket(telemetryRxBuffer);
-    telemetryRxBufferCount = 0;
+    processSpektrumPacket(rxBuffer);
+    rxBufferCount = 0;
   }
 }
 

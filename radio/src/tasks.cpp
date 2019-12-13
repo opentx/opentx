@@ -76,7 +76,7 @@ bool isForcePowerOffRequested()
 bool isModuleSynchronous(uint8_t module)
 {
   uint8_t protocol = moduleState[module].protocol;
-  if (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
+  if (protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || protocol == PROTOCOL_CHANNELS_PXX2_LOWSPEED || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
     return true;
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   if (protocol == PROTOCOL_CHANNELS_PXX1_SERIAL)
@@ -87,15 +87,16 @@ bool isModuleSynchronous(uint8_t module)
 
 void sendSynchronousPulses()
 {
-  for (uint8_t module = 0; module < NUM_MODULES; module++) {
-    if (isModuleSynchronous(module) && setupPulses(module)) {
 #if defined(HARDWARE_INTERNAL_MODULE)
-      if (module == INTERNAL_MODULE)
-        intmoduleSendNextFrame();
+  if (isModuleSynchronous(INTERNAL_MODULE)) {
+    if (setupPulsesInternalModule())
+      intmoduleSendNextFrame();
+  }
 #endif
-      if (module == EXTERNAL_MODULE)
-        extmoduleSendNextFrame();
-    }
+
+  if (isModuleSynchronous(EXTERNAL_MODULE)) {
+    if (setupPulsesExternalModule())
+      extmoduleSendNextFrame();
   }
 }
 
@@ -106,9 +107,9 @@ TASK_FUNCTION(mixerTask)
   static uint32_t lastRunTime;
   s_pulses_paused = true;
 
-  while (1) {
-#if defined(PCBX9D) || defined(PCBX7)
-    // SBUS on Hearbeat PIN (which is a serial RX)
+  while (true) {
+#if defined(PCBTARANIS) && defined(SBUS)
+    // SBUS trainer
     processSbusInput();
 #endif
 
@@ -128,20 +129,20 @@ TASK_FUNCTION(mixerTask)
     }
 #else
     if (isForcePowerOffRequested()) {
-      pwrOff();
+      boardOff();
     }
 #endif
 
     uint32_t now = RTOS_GET_MS();
     bool run = false;
 
-    if ((now - lastRunTime) >= 10) {
+    if (now - lastRunTime >= 10) {
       // run at least every 10ms
       run = true;
     }
 
-#if defined(PXX2) && defined(INTMODULE_HEARTBEAT)
-    if (moduleState[0].protocol == PROTOCOL_CHANNELS_PXX2 && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
+#if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
+    if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
       run = true;
     }
 #endif
@@ -179,19 +180,22 @@ TASK_FUNCTION(mixerTask)
       }
 #endif
 
-#if defined(TELEMETRY_FRSKY)
+#if defined(PCBSKY9X) && !defined(SIMU)
+      usbJoystickUpdate();
+#endif
+
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
-#endif
 
       if (heartbeat == HEART_WDT_CHECK) {
-        wdt_reset();
+        WDG_RESET();
         heartbeat = 0;
       }
 
       t0 = getTmr2MHz() - t0;
-      if (t0 > maxMixerDuration) maxMixerDuration = t0;
+      if (t0 > maxMixerDuration)
+        maxMixerDuration = t0;
 
       sendSynchronousPulses();
     }
@@ -228,7 +232,7 @@ TASK_FUNCTION(menusTask)
   opentxInit();
 
 #if defined(PWR_BUTTON_PRESS)
-  while (1) {
+  while (true) {
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       break;
@@ -284,11 +288,11 @@ void tasksStart()
   cliStart();
 #endif
 
-  RTOS_CREATE_TASK(mixerTaskId, mixerTask, "Mixer", mixerStack, MIXER_STACK_SIZE, MIXER_TASK_PRIO);
-  RTOS_CREATE_TASK(menusTaskId, menusTask, "Menus", menusStack, MENUS_STACK_SIZE, MENUS_TASK_PRIO);
+  RTOS_CREATE_TASK(mixerTaskId, mixerTask, "mixer", mixerStack, MIXER_STACK_SIZE, MIXER_TASK_PRIO);
+  RTOS_CREATE_TASK(menusTaskId, menusTask, "menus", menusStack, MENUS_STACK_SIZE, MENUS_TASK_PRIO);
 
 #if !defined(SIMU)
-  RTOS_CREATE_TASK(audioTaskId, audioTask, "Audio", audioStack, AUDIO_STACK_SIZE, AUDIO_TASK_PRIO);
+  RTOS_CREATE_TASK(audioTaskId, audioTask, "audio", audioStack, AUDIO_STACK_SIZE, AUDIO_TASK_PRIO);
 #endif
 
   RTOS_CREATE_MUTEX(audioMutex);

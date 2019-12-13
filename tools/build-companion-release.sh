@@ -50,6 +50,9 @@ make -j${JOBS} libsimulator
 cmake ${COMMON_OPTIONS} -DPCB=X9LITE ${SRCDIR}
 make -j${JOBS} libsimulator
 
+cmake ${COMMON_OPTIONS} -DPCB=X9LITES ${SRCDIR}
+make -j${JOBS} libsimulator
+
 cmake ${COMMON_OPTIONS} -DPCB=X7 ${SRCDIR}
 make -j${JOBS} libsimulator
 
@@ -57,6 +60,9 @@ cmake ${COMMON_OPTIONS} -DPCB=X9D ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=X9D+ ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DPCBREV=2019 ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=XLITE ${SRCDIR}
@@ -69,6 +75,9 @@ cmake ${COMMON_OPTIONS} -DPCB=X9E ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=X10 ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${COMMON_OPTIONS} -DPCB=X10 -DPCBREV=EXPRESS ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=X12S ${SRCDIR}

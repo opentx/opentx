@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+
+#ifndef OPENTX_OPTIONS_H
+#define OPENTX_OPTIONS_H
+
+static const char * options[] = {
+#if defined(AUTOUPDATE)
+  "autoupdate",
+#endif
+#if defined(CROSSFIRE)
+  "crossfire",
+#endif
+#if !defined(MODULE_PROTOCOL_D8)
+  "eu",
+#endif
+#if defined(FAI)
+  "faimode",
+#endif
+#if defined(FAI_CHOICE)
+  "faichoice",
+#endif
+#if defined(MODULE_PROTOCOL_FLEX)
+  "flexr9m",
+#endif
+#if !defined(GVARS)
+  "nogvars",
+#endif
+#if defined(HAPTIC) && defined(PCBX9D)
+  "haptic",
+#endif
+#if !defined(HELI)
+  "noheli",
+#endif
+#if defined(HORUS_STICKS)
+  "horussticks",
+#endif
+#if defined(INTERNAL_MODULE_PPM)
+  "internalppm",
+#endif
+#if defined(INTERNAL_MODULE_MULTI)
+  "internalmulti",
+#endif
+#if defined(MULTIMODULE)
+  "multimodule",
+#endif
+#if defined(LUA_MODEL_SCRIPTS)
+  "lua",
+#endif
+#if defined(LUA_COMPILER)
+  "luac",
+#endif
+#if !defined(OVERRIDE_CHANNEL_FUNCTION)
+  "nooverridech",
+#endif
+#if defined(PPM_UNIT_US)
+  "ppmus",
+#endif
+#if defined(NO_RAS)
+  "noras",
+#endif
+#if defined(SHUTDOWN_CONFIRMATION)
+  "shutdownconfirm",
+#endif
+  nullptr //sentinel
+};
+
+#endif //OPENTX_OPTIONS_H

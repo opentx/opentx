@@ -97,7 +97,7 @@ void *bin_l_alloc (void *ud, void *ptr, size_t osize, size_t nsize)
         free(ptr);
       }
     }
-    return NULL;
+    return nullptr;
   }
   else {
 #if defined(DEBUG)

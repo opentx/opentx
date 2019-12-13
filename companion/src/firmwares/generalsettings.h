@@ -109,6 +109,7 @@ class GeneralSettings {
     bool      adjustRTC;
     bool      optrexDisplay;
     unsigned int    inactivityTimer;
+    unsigned int    telemetryBaudrate;
     bool      minuteBeep;
     bool      preBeep;
     bool      flashBeep;
@@ -130,8 +131,6 @@ class GeneralSettings {
     unsigned int   backlightBright;
     unsigned int   backlightOffBright;
     int switchesDelay;
-    int    temperatureCalib;
-    int    temperatureWarn;
     unsigned int mAhWarn;
     unsigned int mAhUsed;
     unsigned int globalTimer;
@@ -142,6 +141,7 @@ class GeneralSettings {
     unsigned int rotarySteps;
     unsigned int countryCode;
     bool jitterFilter;
+    bool rtcCheckDisable;
     unsigned int imperial;
     char ttsLanguage[2+1];
     int beepVolume;
@@ -153,7 +153,8 @@ class GeneralSettings {
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
-    unsigned int hw_uartMode;  // UartModes
+    unsigned int auxSerialMode;
+    int antennaMode;
     unsigned int backlightColor;
     CustomFunctionData customFn[CPN_MAX_SPECIAL_FUNCTIONS];
     char switchName[CPN_MAX_SWITCHES][3+1];
@@ -172,6 +173,9 @@ class GeneralSettings {
     int gyroMax;
     int gyroOffset;
 
+    int pwrOnSpeed;
+    int pwrOffSpeed;
+    
     bool switchPositionAllowedTaranis(int index) const;
     bool switchSourceAllowedTaranis(int index) const;
     bool isPotAvailable(int index) const;

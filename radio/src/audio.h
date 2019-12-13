@@ -588,8 +588,6 @@ void audioTimerCountdown(uint8_t timer, int value);
 #define AUDIO_TRAINER_LOST()     audioEvent(AU_TRAINER_LOST)
 #define AUDIO_TRAINER_BACK()     audioEvent(AU_TRAINER_BACK)
 
-#define AUDIO_HEARTBEAT()
-
 enum AutomaticPromptsCategories {
   SYSTEM_AUDIO_CATEGORY,
   MODEL_AUDIO_CATEGORY,

@@ -22,7 +22,7 @@
 
 uint32_t (*IAP_Function)(uint32_t, uint32_t);
 
-void flashWrite(uint32_t *address, uint32_t *buffer)    // size is 256 bytes
+void flashWrite(uint32_t * address, const uint32_t * buffer)    // size is 256 bytes
 {
   uint32_t FlashSectorNum;
   uint32_t flash_cmd = 0;

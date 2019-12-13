@@ -22,7 +22,9 @@
 #define _FRSKY_FIRMWARE_UPDATE_H_
 
 #include "dataconstants.h"
+#include "definitions.h"
 #include "frsky_pxx2.h"
+#include "ff.h"
 
 enum FrskyFirmwareProductFamily {
   FIRMWARE_FAMILY_INTERNAL_MODULE,
@@ -31,6 +33,12 @@ enum FrskyFirmwareProductFamily {
   FIRMWARE_FAMILY_SENSOR,
   FIRMWARE_FAMILY_BLUETOOTH_CHIP,
   FIRMWARE_FAMILY_POWER_MANAGEMENT_UNIT,
+};
+
+enum FrskyFirmwareProductId {
+  FIRMWARE_ID_NONE,
+  FIRMWARE_ID_XJT = 0x01,
+  FIRMWARE_ID_ISRM = 0x02,
 };
 
 PACK(struct FrSkyFirmwareInformation {
@@ -45,7 +53,7 @@ PACK(struct FrSkyFirmwareInformation {
   uint16_t crc;
 });
 
-const char * readFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data);
+const char * readFrSkyFirmwareInformation(const char * filename, FrSkyFirmwareInformation & data);
 
 class FrskyDeviceFirmwareUpdate {
     enum State {
@@ -65,7 +73,7 @@ class FrskyDeviceFirmwareUpdate {
       module(module) {
     }
 
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename);
 
   protected:
     uint8_t state = SPORT_IDLE;
@@ -73,20 +81,21 @@ class FrskyDeviceFirmwareUpdate {
     ModuleIndex module;
     uint8_t frame[12];
 
-    void startup();
-
     void startFrame(uint8_t command);
     void sendFrame();
 
+    bool readBuffer(uint8_t * buffer, uint8_t count, uint32_t timeout);
     const uint8_t * readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout);
     const uint8_t * readHalfDuplexFrame(uint32_t timeout);
     const uint8_t * readFrame(uint32_t timeout);
     bool waitState(State state, uint32_t timeout);
     void processFrame(const uint8_t * frame);
 
+    const char * doFlashFirmware(const char * filename);
     const char * sendPowerOn();
     const char * sendReqVersion();
-    const char * uploadFile(const char * filename);
+    const char * uploadFileNormal(const char * filename, FIL * file);
+    const char * uploadFileToHorusXJT(const char * filename, FIL * file);
     const char * endTransfer();
 };
 
@@ -96,7 +105,7 @@ class FrskyChipFirmwareUpdate {
     {
     }
 
-    void flashFirmware(const char * filename);
+    const char * flashFirmware(const char * filename, bool wait = true);
 
   protected:
     uint8_t crc;

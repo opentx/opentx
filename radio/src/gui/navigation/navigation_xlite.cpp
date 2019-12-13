@@ -145,7 +145,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
     }
   }
 
-  if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER))) {
+  if (!READ_ONLY() && i_min == 0 && i_max == 1 && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = 0;
     newval = !val;
   }
@@ -318,8 +318,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
     drawScreenIndex(curr, menuTabSize, attr);
   }
 
-  switch (event)
-  {
+  switch (event) {
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
       l_posVert = 0;

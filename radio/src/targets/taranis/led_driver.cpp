@@ -59,24 +59,24 @@ void ledOff()
 
 void ledRed()
 {
-#if defined(LED_RED_GPIO)
   ledOff();
+#if defined(LED_RED_GPIO)
   GPIO_LED_GPIO_ON(LED_RED_GPIO, LED_RED_GPIO_PIN);
 #endif
 }
 
 void ledGreen()
 {
-#if defined(LED_GREEN_GPIO)
   ledOff();
+#if defined(LED_GREEN_GPIO)
   GPIO_LED_GPIO_ON(LED_GREEN_GPIO, LED_GREEN_GPIO_PIN);
 #endif
 }
 
 void ledBlue()
 {
-#if defined(LED_BLUE_GPIO)
   ledOff();
+#if defined(LED_BLUE_GPIO)
   GPIO_LED_GPIO_ON(LED_BLUE_GPIO, LED_BLUE_GPIO_PIN);
 #endif
 }

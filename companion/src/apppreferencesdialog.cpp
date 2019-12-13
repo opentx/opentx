@@ -37,6 +37,7 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("apppreferences.png"));
+  ui->tabWidget->setCurrentIndex(0);
 
   initSettings();
   connect(ui->boardCB, SIGNAL(currentIndexChanged(int)), this, SLOT(onBaseFirmwareChanged()));
@@ -188,7 +189,7 @@ void AppPreferencesDialog::initSettings()
   ui->backLightColor->setCurrentIndex(g.backLight());
   ui->volumeGain->setValue(profile.volumeGain() / 10.0);
 
-  if (IS_TARANIS(getCurrentBoard())) {
+  if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
     ui->backLightColor->setEnabled(false);
   }
 

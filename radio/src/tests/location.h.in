@@ -1,1 +1,2 @@
-#define TESTS_PATH    "@TESTS_PATH@"
+#define TESTS_PATH        "@TESTS_PATH@"
+#define TESTS_BUILD_PATH  "@TESTS_BUILD_PATH@"

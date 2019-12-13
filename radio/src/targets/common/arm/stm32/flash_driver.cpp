@@ -20,6 +20,13 @@
 
 #include "opentx.h"
 
+void waitFlashIdle()
+{
+  do {
+    WDG_RESET();
+  } while (FLASH->SR & FLASH_FLAG_BSY);
+}
+
 //After reset, write is not allowed in the Flash control register (FLASH_CR) to protect the
 //Flash memory against possible unwanted operations due, for example, to electric
 //disturbances. The following sequence is used to unlock this register:
@@ -37,21 +44,16 @@ void unlockFlash()
 
 void lockFlash()
 {
-  while (FLASH->SR & FLASH_SR_BSY);
+  waitFlashIdle();
   FLASH->CR |= FLASH_CR_LOCK;
-}
-
-void waitFlashIdle()
-{
-  while (FLASH->SR & FLASH_FLAG_BSY) {
-    wdt_reset();
-  }
 }
 
 #define SECTOR_MASK               ((uint32_t)0xFFFFFF07)
 
 void eraseSector(uint32_t sector)
 {
+  WDG_ENABLE(3000); // some sectors may take > 1s to erase
+
   waitFlashIdle();
 
   FLASH->CR &= CR_PSIZE_MASK;
@@ -66,9 +68,11 @@ void eraseSector(uint32_t sector)
   /* if the erase operation is completed, disable the SER Bit */
   FLASH->CR &= (~FLASH_CR_SER);
   FLASH->CR &= SECTOR_MASK;
+
+  WDG_ENABLE(WDG_DURATION);
 }
 
-void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
+void flashWrite(uint32_t * address, const uint32_t * buffer) // page size is 256 bytes
 {
 #define SECTOR_ADDRESS  (((uint32_t)address) &  0xFFFFF)
 
@@ -110,7 +114,6 @@ void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
         eraseSector(4 + FLASH_BANK);
     }
     else if ((((uint32_t)address) & 0x3FFF) == 0) {
-
         // test other 16KB sectors
         if (SECTOR_ADDRESS == 0x04000) {
             eraseSector(1 + FLASH_BANK);
@@ -141,7 +144,7 @@ void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
 
     /* Wait for operation to be completed */
     waitFlashIdle();
-    FLASH->CR &= (~FLASH_CR_PG);
+    FLASH->CR &= ~FLASH_CR_PG;
 
     /* Check the written value */
     if (*address != *buffer) {
@@ -192,7 +195,7 @@ uint32_t isBootloaderStart(const uint8_t * buffer)
 {
   const uint32_t * block = (const uint32_t *)buffer;
 
-  for (int i=0; i<256; i++) {
+  for (int i = 0; i < 256; i++) {
     if (block[i] == 0x544F4F42/*BOOT*/) {
       return 1;
     }

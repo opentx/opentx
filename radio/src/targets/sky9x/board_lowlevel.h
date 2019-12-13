@@ -43,7 +43,7 @@
 /// - BOARD_NAME
 
 /// Name of the board.
-#define BOARD_NAME "AT91SAM3S-EK"
+// #define BOARD_NAME "AT91SAM3S-EK"
 /// Board definition.
 #define at91sam3sek
 /// Family definition (already defined).

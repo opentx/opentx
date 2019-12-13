@@ -25,14 +25,6 @@
 #define BAR_SPACING   12
 #define BAR_HEIGHT    22
 
-enum CalibrationState {
-  CALIB_START = 0,
-  CALIB_SET_MIDPOINT,
-  CALIB_MOVE_STICKS,
-  CALIB_STORE,
-  CALIB_FINISHED
-};
-
 void drawPotsBars()
 {
   // Optimization by Mike Blandford

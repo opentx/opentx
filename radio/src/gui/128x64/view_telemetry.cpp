@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 #define STATUS_BAR_Y     (7*FH+1)
-#define TELEM_2ND_COLUMN (10*FW)
 
 uint8_t s_frsky_view = 0;
 
@@ -46,8 +45,6 @@ void displayRssiLine()
   }
 }
 
-
-
 uint8_t barCoord(int16_t value, int16_t min, int16_t max)
 {
   if (value <= min)
@@ -57,7 +54,6 @@ uint8_t barCoord(int16_t value, int16_t min, int16_t max)
   else
     return ((int32_t)(BAR_WIDTH-1) * (value - min)) / (max - min);
 }
-
 
 bool displayGaugesTelemetryScreen(TelemetryScreenData & screen)
 {
@@ -126,9 +122,11 @@ bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
       if (field) {
         LcdFlags att = (i==3 ? RIGHT|NO_UNIT : RIGHT|MIDSIZE|NO_UNIT);
         coord_t pos[] = {0, 65, 130};
-        if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
+        if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i != 3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
           drawStringWithIndex(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
+          drawTimerWithMode(pos[j+1] + 2, 1+FH+2*FH*i, field - MIXSRC_FIRST_TIMER, RIGHT | DBLSIZE);
+          continue;
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {
           // we don't display GPS name, no space for it
@@ -147,7 +145,8 @@ bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
             att |= INVERS|BLINK;
           }
         }
-        if(isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME) && field >= MIXSRC_FIRST_TELEM) {
+
+        if (isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME) && field >= MIXSRC_FIRST_TELEM) {
           drawTelemScreenDate(pos[j+1]-36, 6+FH+2*FH*i, field, SMLSIZE|NO_UNIT);
         }
         else {
@@ -219,7 +218,7 @@ enum NavigationDirection {
 #if defined(NAVIGATION_XLITE)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_LEFT)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_LONG(KEY_RIGHT)
-#elif defined(RADIO_X7)
+#elif defined(NAVIGATION_X7)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #else

@@ -114,6 +114,7 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_START(onMainViewMenu);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -221,6 +222,14 @@ bool menuMainView(event_t event)
         customScreens[i]->background();
     }
   }
+
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(INTERNAL_MODULE_PXX2) && defined(ACCESS_LIB)
+  if (globalData.authenticationCount > 0 && !globalData.upgradeModulePopup && !globalData.internalModuleVersionChecked) {
+    globalData.internalModuleVersionChecked = 1;
+    memclear(&reusableBuffer.viewMain.internalModule, sizeof(reusableBuffer.viewMain.internalModule));
+    moduleState[INTERNAL_MODULE].readModuleInformation(&reusableBuffer.viewMain.internalModule, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+  }
+#endif
 
   return true;
 }

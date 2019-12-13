@@ -45,10 +45,10 @@ bool menuRadioTrainer(event_t event)
   lcdDrawText(TRAINER_COLUMN_3, MENU_HEADER_HEIGHT+1, "Source", HEADER_COLOR);
   */
 
-  y = MENU_CONTENT_TOP + FH;
+  y = MENU_CONTENT_TOP;
 
   for (uint8_t i=0; i<NUM_STICKS; i++) {
-    uint8_t chan = channel_order(i+1);
+    uint8_t chan = channelOrder(i+1);
     TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
 
     drawSource(MENUS_MARGIN_LEFT, y, MIXSRC_Rud-1+chan, ((menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0));
@@ -86,10 +86,13 @@ bool menuRadioTrainer(event_t event)
   if (attr) s_editMode = 0;
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_CAL, attr);
   for (int i=0; i<4; i++) {
+    int32_t chVal = ppmInput[i] - g_eeGeneral.trainer.calib[i];
+    chVal *= g_eeGeneral.trainer.mix[i].studWeight * 10;
+    chVal /= 512;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-    lcdDrawNumber(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, LEFT|PREC1);
+    lcdDrawNumber(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, chVal, LEFT|PREC1);
 #else
-    lcdDrawNumber(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, LEFT);
+    lcdDrawNumber(TRAINER_COLUMN_1+i*TRAINER_COLUMN_WIDTH, MENU_CONTENT_TOP + 6*FH, chVal / 10, LEFT);
 #endif
   }
 

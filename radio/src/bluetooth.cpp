@@ -21,14 +21,14 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
-#if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE) || defined(USEHORUSBT)
-#define BLUETOOTH_COMMAND_NAME         "AT+NAME"
-#define BLUETOOTH_ANSWER_NAME          "OK+"
-#define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"
-#else
+#if defined(PCBX9E)
 #define BLUETOOTH_COMMAND_NAME         "TTM:REN-"
 #define BLUETOOTH_ANSWER_NAME          "TTM:REN"
 #define BLUETOOTH_COMMAND_BAUD_115200  "TTM:BPS-115200"
+#else
+#define BLUETOOTH_COMMAND_NAME         "AT+NAME"
+#define BLUETOOTH_ANSWER_NAME          "OK+"
+#define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"
 #endif
 
 #if defined(_MSC_VER)
@@ -47,7 +47,7 @@ void Bluetooth::write(const uint8_t * data, uint8_t length)
   TRACE_NOCRLF("BT>");
   for (int i=0; i<length; i++) {
     TRACE_NOCRLF(" %02X", data[i]);
-    if (btTxFifo.isFull()) {
+    while (btTxFifo.isFull()) {
       if (!bluetoothIsWriting())
         bluetoothWriteWakeup();
       RTOS_WAIT_MS(1);
@@ -73,9 +73,10 @@ char * Bluetooth::readline(bool error_reset)
 {
   uint8_t byte;
 
-  while (1) {
+  while (true) {
     if (!btRxFifo.pop(byte)) {
-#if defined(PCBX9E) && !defined(USEHORUSBT)     // X9E BT module can get unresponsive
+#if defined(PCBX9E)
+      // X9E BT module can get unresponsive
       TRACE("NO RESPONSE FROM BT MODULE");
 #endif
       return nullptr;
@@ -94,7 +95,7 @@ char * Bluetooth::readline(bool error_reset)
       state = BLUETOOTH_STATE_OFF;
       wakeupTime = get_tmr10ms() + 100; /* 1s */
 #endif
-      return NULL;
+      return nullptr;
     }
     else
 #endif
@@ -179,7 +180,7 @@ void Bluetooth::processTrainerByte(uint8_t data)
       break;
 
     case STATE_DATA_IN_FRAME:
-      if (data == BYTESTUFF) {
+      if (data == BYTE_STUFF) {
         dataState = STATE_DATA_XOR; // XOR next byte
       }
       else if (data == START_STOP) {
@@ -224,8 +225,8 @@ void Bluetooth::processTrainerByte(uint8_t data)
 void Bluetooth::pushByte(uint8_t byte)
 {
   crc ^= byte;
-  if (byte == START_STOP || byte == BYTESTUFF) {
-    buffer[bufferIndex++] = 0x7d;
+  if (byte == START_STOP || byte == BYTE_STUFF) {
+    buffer[bufferIndex++] = BYTE_STUFF;
     byte ^= STUFF_MASK;
   }
   buffer[bufferIndex++] = byte;
@@ -279,7 +280,7 @@ void Bluetooth::receiveTrainer()
 {
   uint8_t byte;
 
-  while (1) {
+  while (true) {
     if (!btRxFifo.pop(byte)) {
       return;
     }
@@ -290,7 +291,7 @@ void Bluetooth::receiveTrainer()
   }
 }
 
-#if defined(PCBX9E) && !defined(USEHORUSBT)
+#if defined(PCBX9E)
 void Bluetooth::wakeup(void)
 {
 #if !defined(SIMU)
@@ -310,12 +311,12 @@ void Bluetooth::wakeup(void)
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
         if (len > 0) {
           for (int i = 0; i < len; i++) {
-            *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+            *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
           }
           *cur = '\0';
         }
         else {
-          cur = strAppend(cur, "Taranis-X9E");
+          cur = strAppend(cur, FLAVOUR);
         }
         writeString(command);
         state = BLUETOOTH_WAIT_TTM;
@@ -413,16 +414,12 @@ void Bluetooth::wakeup()
       uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
       if (len > 0) {
         for (int i = 0; i < len; i++) {
-          *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
+          *cur++ = char2lower(zchar2char(g_eeGeneral.bluetoothName[i]));
         }
         *cur = '\0';
       }
       else {
-#if defined(PCBHORUS)
-        cur = strAppend(cur, "Horus");
-#else
-        cur = strAppend(cur, "Taranis");
-#endif
+        cur = strAppend(cur, FLAVOUR);
       }
       writeString(command);
       state = BLUETOOTH_STATE_NAME_SENT;
@@ -454,9 +451,11 @@ void Bluetooth::wakeup()
         ++reusableBuffer.moduleSetup.bt.devicesCount;
       }
     }
-    /* else if (state == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
+#if defined(PCBHORUS)
+    else if (state == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
       state = BLUETOOTH_STATE_DISCOVER_END;
-    } */
+    }
+#endif
     else if (state == BLUETOOTH_STATE_CLEAR_REQUESTED) {
       char command[] = "AT+CLEAR";
       writeString(command);
@@ -494,13 +493,13 @@ uint8_t Bluetooth::bootloaderChecksum(uint8_t command, const uint8_t * data, uin
   return sum;
 }
 
-uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint8_t timeout)
+uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint32_t timeout)
 {
   watchdogSuspend(timeout / 10);
 
   uint8_t len = 0;
   while (len < size) {
-    uint8_t elapsed = 0;
+    uint32_t elapsed = 0;
     uint8_t byte;
     while (!btRxFifo.pop(byte)) {
       if (elapsed++ >= timeout) {
@@ -516,7 +515,7 @@ uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint8_t timeout)
 #define BLUETOOTH_ACK   0xCC
 #define BLUETOOTH_NACK  0x33
 
-const char * Bluetooth::bootloaderWaitCommandResponse(uint8_t timeout)
+const char * Bluetooth::bootloaderWaitCommandResponse(uint32_t timeout)
 {
   uint8_t response[2];
   if (read(response, sizeof(response), timeout) != sizeof(response)) {
@@ -603,11 +602,8 @@ enum {
   CMD_RET_SUCCESS = 0x40,
 };
 
-constexpr uint32_t CC26XX_FLASH_SIZE = 0x00020000;
 constexpr uint32_t CC26XX_BOOTLOADER_SIZE = 0x00001000;
-constexpr uint32_t CC26XX_DATA_SIZE = 0x00001000;
 constexpr uint32_t CC26XX_FIRMWARE_BASE = CC26XX_BOOTLOADER_SIZE;
-constexpr uint32_t CC26XX_FIRMWARE_SIZE = CC26XX_FLASH_SIZE - CC26XX_DATA_SIZE - CC26XX_BOOTLOADER_SIZE;
 
 constexpr uint32_t CC26XX_PAGE_ERASE_SIZE = 0x1000;
 constexpr uint32_t CC26XX_MAX_BYTES_PER_TRANSFER = 252;
@@ -757,7 +753,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   }
 }
 
-void Bluetooth::flashFirmware(const char * filename)
+const char * Bluetooth::flashFirmware(const char * filename)
 {
   drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
@@ -766,11 +762,11 @@ void Bluetooth::flashFirmware(const char * filename)
   pausePulses();
 
   bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, true); // normal mode
-  watchdogSuspend(1000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(1000);
 
   bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, false); // bootloader mode
-  watchdogSuspend(1000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(1000);
 
   const char * result = doFlashFirmware(filename);
@@ -789,9 +785,11 @@ void Bluetooth::flashFirmware(const char * filename)
   drawProgressScreen(getBasename(filename), STR_MODULE_RESET, 0, 0);
 
   /* wait 1s off */
-  watchdogSuspend(1000);
+  watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(1000);
 
   state = BLUETOOTH_STATE_OFF;
   resumePulses();
+
+  return result;
 }

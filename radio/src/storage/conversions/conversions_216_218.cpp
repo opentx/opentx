@@ -524,14 +524,14 @@ PACK(typedef struct {
   ScriptData_v216 scriptsData[MAX_SCRIPTS]; \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t spare[2];
 #elif defined(PCBSKY9X)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
   ModuleData_v216 moduleData[NUM_MODULES+1]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t rxBattAlarms[2];
 #endif
 
@@ -776,7 +776,7 @@ PACK(typedef struct {
 
   uint8_t  backlightBright;
   int8_t   txCurrentCalibration;
-  int8_t   temperatureWarn;
+  int8_t   spare;
   uint8_t  mAhWarn;
   uint16_t mAhUsed;
   uint32_t globalTimer;
@@ -883,7 +883,6 @@ void convertRadioData_217_to_218(RadioData &settings)
 
 #if defined(PCBSKY9X)
   settings.txCurrentCalibration = settings_v217.txCurrentCalibration;
-  settings.temperatureWarn = settings_v217.temperatureWarn;
   settings.mAhWarn = settings_v217.mAhWarn;
   settings.mAhUsed = settings_v217.mAhUsed;
   settings.temperatureCalib = settings_v217.temperatureCalib;
@@ -1071,7 +1070,7 @@ void convertModelData_216_to_217(ModelData &model)
 #endif
   newModel.potsWarnMode = oldModel.nPotsToWarn >> 6;
   newModel.potsWarnEnabled = oldModel.nPotsToWarn & 0x1f;
-  memcpy(newModel.potsWarnPosition, oldModel.potPosition, sizeof(newModel.potsWarnPosition));
+  memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
 }
 
 void convertModelData_217_to_218(ModelData &model)
@@ -1227,7 +1226,7 @@ void convertModelData_217_to_218(ModelData &model)
         }
       }
     }
-    else if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_GAUGES) {
+    else if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_BARS) {
       for (int j = 0; j < 4; j++) {
         newModel.frsky.screens[i].bars[j].source = convertSource_217_to_218(oldModel.frsky.screens[i].bars[j].source);
       }

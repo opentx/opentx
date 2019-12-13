@@ -23,7 +23,6 @@
 
 #include "dataconstants.h"
 
-#if defined(TELEMETRY_FRSKY_SPORT)
 PACK(union SportTelemetryPacket
 {
   struct {
@@ -34,7 +33,6 @@ PACK(union SportTelemetryPacket
   };
   uint8_t raw[8];
 });
-#endif
 
 #if defined(STM32)
 bool isBootloader(const char * filename);

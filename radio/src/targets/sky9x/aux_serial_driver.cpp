@@ -99,8 +99,7 @@ void SECOND_UART_Stop()
 
 extern "C" void UART0_IRQHandler()
 {
-  if ( SECOND_SERIAL_UART->UART_SR & UART_SR_RXRDY )
-  {
+  if (SECOND_SERIAL_UART->UART_SR & UART_SR_RXRDY) {
     auxSerialRxFifo.push(SECOND_SERIAL_UART->UART_RHR);
   }
 }
@@ -109,7 +108,6 @@ extern "C" void UART0_IRQHandler()
 #define SECOND_UART_Configure(...)
 #endif
 
-#if defined(TELEMETRY_FRSKY)
 void auxSerialTelemetryInit(unsigned int /*protocol*/)
 {
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
@@ -119,7 +117,6 @@ bool telemetrySecondPortReceive(uint8_t & data)
 {
   return auxSerialRxFifo.pop(data);
 }
-#endif
 
 #if defined(DEBUG) && !defined(SIMU)
 void serialPrintf(const char*, ... ) {}

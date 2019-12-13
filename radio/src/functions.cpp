@@ -165,16 +165,18 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
 
           case FUNC_TRAINER:
           {
-            uint8_t mask = 0x0f;
-            if (CFN_CH_INDEX(cfn) > 0) {
-              mask = (1<<(CFN_CH_INDEX(cfn)-1));
-            }
-            newActiveFunctions |= mask;
+            uint8_t param = CFN_CH_INDEX(cfn);
+            if (param == 0)
+              newActiveFunctions |= 0x0F;
+            else if (param <= NUM_STICKS)
+              newActiveFunctions |= (1 << (param - 1));
+            else if (param == NUM_STICKS + 1)
+              newActiveFunctions |= (1u << FUNCTION_TRAINER_CHANNELS);
             break;
           }
 
           case FUNC_INSTANT_TRIM:
-            newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
+            newActiveFunctions |= (1u << FUNCTION_INSTANT_TRIM);
             if (!isFunctionActive(FUNCTION_INSTANT_TRIM)) {
               if (IS_INSTANT_TRIM_ALLOWED()) {
                 instantTrim();
@@ -194,11 +196,9 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
                   mainRequestFlags |= (1 << REQUEST_FLIGHT_RESET);     // on systems with threads flightReset() must not be called from the mixers thread!
                 }
                 break;
-#if defined(TELEMETRY_FRSKY)
               case FUNC_RESET_TELEMETRY:
                 telemetryReset();
                 break;
-#endif
             }
             if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
               uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
@@ -338,7 +338,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
           }
 #endif
 
-#if defined(TELEMETRY_FRSKY) && defined(VARIO)
+#if defined(VARIO)
           case FUNC_VARIO:
             newActiveFunctions |= (1 << FUNCTION_VARIO);
             break;
@@ -358,13 +358,11 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
             break;
 
-#if defined(PCBTARANIS)
           case FUNC_SCREENSHOT:
             if (!(functionsContext.activeSwitches & switch_mask)) {
               mainRequestFlags |= (1 << REQUEST_SCREENSHOT);
             }
             break;
-#endif
 
 #if defined(DEBUG)
           case FUNC_TEST:

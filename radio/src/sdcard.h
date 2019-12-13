@@ -37,6 +37,7 @@
 #define SYSTEM_SUBDIR       "SYSTEM"
 #define BITMAPS_PATH        ROOT_PATH "IMAGES"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARE"
+#define AUTOUPDATE_FILENAME FIRMWARES_PATH "/autoupdate.frsk"
 #define EEPROMS_PATH        ROOT_PATH "EEPROM"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
@@ -69,7 +70,8 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
-#define UPDATE_FIRMWARE_EXT ".frsk"
+#define FRSKY_FIRMWARE_EXT  ".frsk"
+#define MULTI_FIRMWARE_EXT  ".bin"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
@@ -119,11 +121,13 @@ inline const char * SDCARD_ERROR(FRESULT result)
 #endif
 
 // NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
-const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL);
+const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t * fnlen=nullptr, uint8_t * extlen=nullptr);
 const char * getBasename(const char * path);
 
 #if defined(PCBX12S)
   #define OTX_FOURCC 0x3478746F // otx for X12S
+#elif defined(RADIO_T16)
+  #define OTX_FOURCC 0x3F78746F // otx for Jumper T16
 #elif defined(PCBX10)
   #define OTX_FOURCC 0x3778746F // otx for X10
 #elif defined(PCBX9E)
@@ -132,24 +136,23 @@ const char * getBasename(const char * path);
   #define OTX_FOURCC 0x3B78746F // otx for Taranis X-Lite S
 #elif defined(PCBXLITE)
   #define OTX_FOURCC 0x3978746F // otx for Taranis X-Lite
-  #define O9X_FOURCC 0x3978396F // o9x for Taranis X-Lite
-#elif defined(RADIO_X7)
-  #define OTX_FOURCC 0x3678746F // otx for Taranis X7
+#elif defined(RADIO_T12)
+  #define OTX_FOURCC 0x3D78746F // otx for Jumper T12
+#elif defined(PCBX7)
+  #define OTX_FOURCC 0x3678746F // otx for Taranis X7 / X7S / X7 Express / X7S Express
+#elif defined(PCBX9LITES)
+  #define OTX_FOURCC 0x3E78746F // otx for Taranis X9-Lite
 #elif defined(PCBX9LITE)
   #define OTX_FOURCC 0x3C78746F // otx for Taranis X9-Lite
 #elif defined(PCBX9D) || defined(PCBX9DP)
   #define OTX_FOURCC 0x3378746F // otx for Taranis X9D
 #elif defined(PCBSKY9X)
   #define OTX_FOURCC 0x3278746F // otx for sky9x
-  #define O9X_FOURCC 0x3278396F // o9x for sky9x
-#elif defined(RADIO_T12)
-  #define OTX_FOURCC 0x3D78746F // otx for Jumper T12
-  #define O9X_FOURCC 0x3D78396F // o9x for Jumper T12
 #endif
 
 bool isFileAvailable(const char * filename, bool exclDir = false);
 int findNextFileIndex(char * filename, uint8_t size, const char * directory);
-bool isExtensionMatching(const char * extension, const char * pattern, char * match = NULL);
+bool isExtensionMatching(const char * extension, const char * pattern, char * match = nullptr);
 
 const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);
@@ -157,6 +160,8 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 #define LIST_NONE_SD_FILE   1
 #define LIST_SD_FILE_EXT    2
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
+
+void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS + 1], int & lines_count);
 
 bool isCwdAtRoot();
 FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime);

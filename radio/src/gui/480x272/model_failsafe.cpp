@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
+#include "opentx.h"
 
 extern uint8_t g_moduleIdx;
 
@@ -40,13 +40,13 @@ bool menuModelFailsafe(event_t event)
         s_editMode = 0;
       }
       else {
-        int16_t & failsafe = g_model.failsafeChannels[menuVerticalPosition];
-        if (failsafe < FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_HOLD;
-        else if (failsafe == FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_NOPULSE;
+        int16_t * failsafe = &g_model.failsafeChannels[menuVerticalPosition];
+        if (*failsafe < FAILSAFE_CHANNEL_HOLD)
+          *failsafe = FAILSAFE_CHANNEL_HOLD;
+        else if (*failsafe == FAILSAFE_CHANNEL_HOLD)
+          *failsafe = FAILSAFE_CHANNEL_NOPULSE;
         else
-          failsafe = 0;
+          *failsafe = 0;
       }
     }
     else {

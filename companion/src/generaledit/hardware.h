@@ -49,6 +49,7 @@ class HardwarePanel : public GeneralPanel
     void on_txCurrentCalibration_editingFinished();
     void on_txVoltageCalibration_editingFinished();
     void on_filterEnable_stateChanged();
+    void on_rtcCheckDisable_stateChanged();
 
     void on_serialPortMode_currentIndexChanged(int index);
 

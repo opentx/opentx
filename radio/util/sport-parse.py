@@ -10,7 +10,7 @@ import struct
 
 
 START_STOP = '\x7e'
-BYTESTUFF = '\x7d'
+BYTE_STUFF = '\x7d'
 STUFF_MASK = '\x20'
 
 DATA_FRAME = 0x10
@@ -110,7 +110,7 @@ def ParsePacket(packet):
     global lineNumber
     # unstuff packet
     while True:
-        pos = packet.find(BYTESTUFF)
+        pos = packet.find(BYTE_STUFF)
         if pos == -1:
             break
         # print "found stuff at %d in %s" % (pos, dump(packet, 20))

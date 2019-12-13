@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 
-#define RECT_OFFSET                    80
 #define ROW_HEIGHT                     42
 #define BAR_HEIGHT                     13
 #define COLUMN_SIZE                   200

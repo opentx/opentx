@@ -87,7 +87,10 @@ class GeneralSetupPanel : public GeneralPanel
     void on_vBatMinDSB_editingFinished();
     void on_vBatMaxDSB_editingFinished();
     void on_contrastSB_editingFinished();
+    void on_ownerID_editingFinished();
 
+    void on_pwrOnDelay_valueChanged();
+    void on_pwrOffDelay_valueChanged();
 
   private:
     Ui::GeneralSetup *ui;

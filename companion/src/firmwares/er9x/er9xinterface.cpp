@@ -32,7 +32,7 @@
 #define FILE_MODEL(n) (1+n)
 
 Er9xInterface::Er9xInterface():
-  EEPROMInterface(Board::BOARD_STOCK),
+  EEPROMInterface(Board::BOARD_9X_M64),
   efile(new RleFile())
 {
 }
@@ -120,13 +120,13 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != Boards::getEEpromSize(Board::BOARD_STOCK)) {
+  if (size != Boards::getEEpromSize(Board::BOARD_9X_M64)) {
     dbg << "wrong size";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
   }
 
-  if (!efile->EeFsOpen((uint8_t *)eeprom, size, Board::BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, Board::BOARD_9X_M64)) {
     dbg << "wrong file system";
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();
@@ -203,7 +203,7 @@ int Er9xInterface::getSize(const GeneralSettings &settings)
   return 0;
 }
 
-int Er9xInterface::isAvailable(PulsesProtocol prot, int port)
+bool Er9xInterface::isAvailable(PulsesProtocol prot, int port)
 {
   switch (prot) {
     case PULSES_PPM:

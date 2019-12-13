@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "multi.h"
 
 // for the  MULTI protocol definition
 // see https://github.com/pascallanger/DIY-Multiprotocol-TX-Module
@@ -31,27 +32,72 @@
 #define MULTI_CHANS                         16
 #define MULTI_CHAN_BITS                     11
 
-static void sendFrameProtocolHeader(uint8_t port, bool failsafe);
+#define MULTI_NORMAL   0x00
+#define MULTI_FAILSAFE 0x01
+#define MULTI_DATA     0x02
 
-void sendChannels(uint8_t port);
-
-static void sendSetupFrame()
-{
-  // Old multi firmware will mark config messsages as invalid frame and throw them away
-  sendByteSbus('M');
-  sendByteSbus('P');
-  sendByteSbus(0x80);           // Module Configuration
-  sendByteSbus(1);              // 1 byte data
-  uint8_t config = 0x01 | 0x02; // inversion + multi_telemetry
-#if !defined(PPM_PIN_SERIAL)
-  // TODO why PPM_PIN_SERIAL would change MULTI protocol?
-  config |= 0x04;               // input synchronsisation
+static void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe);
+void sendChannels(uint8_t moduleIdx);
+#if defined(LUA)
+static void sendSport(uint8_t moduleIdx);
+static void sendHott(uint8_t moduleIdx);
 #endif
 
-  sendByteSbus(config);
+void multiPatchCustom(uint8_t moduleIdx)
+{
+  if (g_model.moduleData[moduleIdx].multi.customProto) {
+    uint8_t type = g_model.moduleData[moduleIdx].getMultiProtocol() - 1;  // custom where starting at 1, otx list at 0
+    int subtype = g_model.moduleData[moduleIdx].subType;
+
+    g_model.moduleData[moduleIdx].multi.customProto = 0;
+
+    if (type == 2) {  // multi PROTO_FRSKYD
+      g_model.moduleData[moduleIdx].subType = 1;    // D8
+      return;
+    }
+    else if (type == 14) { // multi PROTO_FRSKYX
+      g_model.moduleData[moduleIdx].setMultiProtocol(2);
+      switch (subtype) {
+        case 0:       //D16-16
+          g_model.moduleData[moduleIdx].subType = 0;
+          break;
+        case 1:       //D16-8
+          g_model.moduleData[moduleIdx].subType = 2;
+          break;
+        case 2:       //EU-16
+          g_model.moduleData[moduleIdx].subType = 4;
+          break;
+        case 3:       //EU-8
+          g_model.moduleData[moduleIdx].subType = 5;
+          break;
+      }
+      return;
+    }
+    else if (type == 24) {  // multi PROTO_FRSKYV
+      g_model.moduleData[moduleIdx].setMultiProtocol(2);
+      g_model.moduleData[moduleIdx].subType = 3;
+      return;
+    }
+    if (type > 14)
+      type -= 1;
+    if (type > 24)
+      type -= 1;
+    g_model.moduleData[moduleIdx].setMultiProtocol(type);
+  }
 }
 
-static void sendFailsafeChannels(uint8_t port)
+static void sendMulti(uint8_t moduleIdx, uint8_t b)
+{
+#if defined(HARDWARE_INTERNAL_MODULE)
+  if (moduleIdx == INTERNAL_MODULE) {
+    intmodulePulsesData.multi.sendByte(b);
+  }
+  else
+#endif
+    sendByteSbus(b);
+}
+
+static void sendFailsafeChannels(uint8_t moduleIdx)
 {
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
@@ -59,67 +105,116 @@ static void sendFailsafeChannels(uint8_t port)
   for (int i = 0; i < MULTI_CHANS; i++) {
     int16_t failsafeValue = g_model.failsafeChannels[i];
     int pulseValue;
-    if (g_model.moduleData[port].failsafeMode == FAILSAFE_HOLD)
-      failsafeValue = FAILSAFE_CHANNEL_HOLD;
 
-    if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES)
-      failsafeValue = FAILSAFE_CHANNEL_NOPULSE;
-
-    if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-      pulseValue = 0;
-    }
-    else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+    if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_HOLD) {
       pulseValue = 2047;
     }
+    else if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_NOPULSES) {
+      pulseValue = 0;
+    }
     else {
-      failsafeValue += 2 * PPM_CH_CENTER(g_model.moduleData[port].channelsStart + i) - 2 * PPM_CENTER;
+      failsafeValue += 2 * PPM_CH_CENTER(g_model.moduleData[moduleIdx].channelsStart + i) - 2 * PPM_CENTER;
       pulseValue = limit(1, (failsafeValue * 800 / 1000) + 1024, 2047);
     }
 
     bits |= pulseValue << bitsavailable;
     bitsavailable += MULTI_CHAN_BITS;
     while (bitsavailable >= 8) {
-      sendByteSbus((uint8_t) (bits & 0xff));
+      sendMulti(moduleIdx, (uint8_t) (bits & 0xff));
       bits >>= 8;
       bitsavailable -= 8;
     }
   }
 }
 
-void setupPulsesMultimodule()
+void setupPulsesMulti(uint8_t moduleIdx)
 {
-  static int counter = 0;
+  static int counter[2] = {0,0}; //TODO
+  static uint8_t invert[2] = {0x00,        //internal
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+    0x08        //external
+#else
+    0x00	//external
+#endif
+  };
+  uint8_t type=MULTI_NORMAL;
 
+  // Failsafe packets
+  if (counter[moduleIdx] % 1000 == 0 && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[moduleIdx].failsafeMode != FAILSAFE_RECEIVER) {
+    type|=MULTI_FAILSAFE;
+  }
+
+  // Invert telemetry if needed
+  if (invert[moduleIdx] & 0x80 && !g_model.moduleData[moduleIdx].multi.disableTelemetry) {
+    if (getMultiModuleStatus(moduleIdx).isValid()) {
+      invert[moduleIdx] &= 0x08;    // Telemetry received, stop searching
+    }
+    else if (counter[moduleIdx] % 100 == 0) {
+      invert[moduleIdx] ^= 0x08;  // Try inverting telemetry
+    }
+  }
+
+  counter[moduleIdx]++;
+
+  // Send header
+  sendFrameProtocolHeader(moduleIdx, type&MULTI_FAILSAFE);
+
+  // Send channels
+  if (type & MULTI_FAILSAFE)
+    sendFailsafeChannels(moduleIdx);
+  else
+    sendChannels(moduleIdx);
+
+  // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
+  sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol()+3)&0xC0)
+                                  | (g_model.header.modelId[moduleIdx] & 0x30)
+                                  | (invert[moduleIdx] & 0x08)
+                                  //| 0x04 // Future use
+                                  | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
+                                  | g_model.moduleData[moduleIdx].multi.disableMapping));
+  
+  // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
+#if defined(LUA)
+  if (getMultiModuleStatus(moduleIdx).isValid()) {
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.minor >= 3 && !(status.flags & 0x80)) { //Version 1.3.x.x or more and Buffer not full
+      // SPort send
+      if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
+        sendSport(moduleIdx);        //8 bytes of additional data
+      }
+      else if (IS_HOTT_MULTI(moduleIdx)) {
+        sendHott(moduleIdx);        //1 byte of additional data
+      }
+    }
+  }
+  #endif
+}
+
+void setupPulsesMultiExternalModule()
+{
 #if defined(PPM_PIN_SERIAL)
   extmodulePulsesData.dsm2.serialByte = 0 ;
   extmodulePulsesData.dsm2.serialBitCount = 0 ;
 #else
-  extmodulePulsesData.dsm2.rest = multiSyncStatus.getAdjustedRefreshRate();
+  extmodulePulsesData.dsm2.rest = getMultiSyncStatus(EXTERNAL_MODULE).getAdjustedRefreshRate();
   extmodulePulsesData.dsm2.index = 0;
 #endif
 
   extmodulePulsesData.dsm2.ptr = extmodulePulsesData.dsm2.pulses;
 
-  // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
-  counter++;
-  if (counter % 1000== 500) {
-    sendSetupFrame();
-  }
-  else if (counter % 1000 == 0 && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_RECEIVER) {
-    sendFrameProtocolHeader(EXTERNAL_MODULE, true);
-    sendFailsafeChannels(EXTERNAL_MODULE);
-  }
-  else {
-    // Normal Frame
-    sendFrameProtocolHeader(EXTERNAL_MODULE, false);
-    sendChannels(EXTERNAL_MODULE);
-  }
-
+  setupPulsesMulti(EXTERNAL_MODULE);
   putDsm2Flush();
 }
 
+#if defined(INTERNAL_MODULE_MULTI)
+void setupPulsesMultiInternalModule()
+{
+  intmodulePulsesData.multi.initFrame();
+  setupPulsesMulti(INTERNAL_MODULE);
+}
+#endif
 
-void sendChannels(uint8_t port)
+void sendChannels(uint8_t moduleIdx)
 {
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
@@ -128,7 +223,7 @@ void sendChannels(uint8_t port)
   // Range for pulses (channelsOutputs) is [-1024:+1024] for [-100%;100%]
   // Multi uses [204;1843] as [-100%;100%]
   for (int i = 0; i < MULTI_CHANS; i++) {
-    int channel = g_model.moduleData[port].channelsStart + i;
+    int channel = g_model.moduleData[moduleIdx].channelsStart + i;
     int value = channelOutputs[channel] + 2 * PPM_CH_CENTER(channel) - 2 * PPM_CENTER;
 
     // Scale to 80%
@@ -138,38 +233,49 @@ void sendChannels(uint8_t port)
     bits |= value << bitsavailable;
     bitsavailable += MULTI_CHAN_BITS;
     while (bitsavailable >= 8) {
-      sendByteSbus((uint8_t) (bits & 0xff));
+      sendMulti(moduleIdx, (uint8_t) (bits & 0xff));
       bits >>= 8;
       bitsavailable -= 8;
     }
   }
 }
 
-void sendFrameProtocolHeader(uint8_t port, bool failsafe)
+void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 {// byte 1+2, protocol information
 
   // Our enumeration starts at 0
-  int type = g_model.moduleData[port].getMultiProtocol(false) + 1;
-  int subtype = g_model.moduleData[port].subType;
-  int8_t optionValue = g_model.moduleData[port].multi.optionValue;
+  int type = g_model.moduleData[moduleIdx].getMultiProtocol() + 1;
+  int subtype = g_model.moduleData[moduleIdx].subType;
+  int8_t optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
   uint8_t protoByte = 0;
-  if (moduleState[port].mode == MODULE_MODE_BIND)
+
+  if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+    sendMulti(moduleIdx, (uint8_t) 0x54);  // Header byte
+    sendMulti(moduleIdx, (uint8_t) 54);    // Spectrum custom protocol
+    sendMulti(moduleIdx, (uint8_t) 0);
+    sendMulti(moduleIdx, (uint8_t) 0);
+    return;
+  }
+
+  if (moduleState[moduleIdx].mode == MODULE_MODE_BIND)
     protoByte |= MULTI_SEND_BIND;
-  else if (moduleState[port].mode ==  MODULE_MODE_RANGECHECK)
+  else if (moduleState[moduleIdx].mode ==  MODULE_MODE_RANGECHECK)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  if (g_model.moduleData[port].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_DSM2) {
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
 
     // Autobinding should always be done in DSMX 11ms
-    if (g_model.moduleData[port].multi.autoBindMode && moduleState[port].mode == MODULE_MODE_BIND)
+    if (g_model.moduleData[moduleIdx].multi.autoBindMode && moduleState[moduleIdx].mode == MODULE_MODE_BIND)
       subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
     // Multi module in DSM mode wants the number of channels to be used as option value
-    optionValue = sentModuleChannels(EXTERNAL_MODULE);
-
-  }
+    if (optionValue)
+      optionValue = 0x80 | sentModuleChannels(moduleIdx); // Max throw
+    else
+      optionValue = sentModuleChannels(moduleIdx);
+}
 
   // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
   // all protos > frskyx are therefore also off by one
@@ -180,7 +286,7 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
   if (type >= 25)
     type = type + 1;
 
-  if (g_model.moduleData[port].getMultiProtocol(true) == MODULE_SUBTYPE_MULTI_FRSKY) {
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
     if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       type = 3;
@@ -204,38 +310,66 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
 
   // Set the highest bit of option byte in AFHDS2A protocol to instruct MULTI to passthrough telemetry bytes instead
   // of sending Frsky D telemetry
-  if (g_model.moduleData[port].getMultiProtocol(false) == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
     optionValue = optionValue | 0x80;
 
   // For custom protocol send unmodified type byte
-  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_CUSTOM_SELECTED)
-    type = g_model.moduleData[port].getMultiProtocol(false);
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MM_RF_CUSTOM_SELECTED)
+    type = g_model.moduleData[moduleIdx].getMultiProtocol();
 
 
-  uint8_t headerByte = 0x54;
+  uint8_t headerByte = 0x55;
+  // header, byte 0,  0x55 for proto 0-31, 0x54 for proto 32-63
+  if (type & 0x20)
+    headerByte &= 0xFE;
+
   if (failsafe)
-    headerByte = 0x56;
+    headerByte |= 0x02;
 
-    // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
-  if (type <= 31)
-    sendByteSbus(headerByte+1);
-  else
-    sendByteSbus(headerByte);
-
+  sendMulti(moduleIdx, headerByte);
 
   // protocol byte
   protoByte |= (type & 0x1f);
-  if (g_model.moduleData[port].getMultiProtocol(true) != MODULE_SUBTYPE_MULTI_DSM2)
-    protoByte |= (g_model.moduleData[port].multi.autoBindMode << 6);
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() != MODULE_SUBTYPE_MULTI_DSM2)
+    protoByte |= (g_model.moduleData[moduleIdx].multi.autoBindMode << 6);
 
-  sendByteSbus(protoByte);
+  sendMulti(moduleIdx, protoByte);
 
   // byte 2, subtype, powermode, model id
-  sendByteSbus((uint8_t) ((g_model.header.modelId[port] & 0x0f)
+  sendMulti(moduleIdx, (uint8_t) ((g_model.header.modelId[moduleIdx] & 0x0f)
                            | ((subtype & 0x7) << 4)
-                           | (g_model.moduleData[port].multi.lowPowerMode << 7))
+                           | (g_model.moduleData[moduleIdx].multi.lowPowerMode << 7))
   );
 
   // byte 3
-  sendByteSbus((uint8_t) optionValue);
+  sendMulti(moduleIdx, (uint8_t) optionValue);
 }
+
+#if defined(LUA)
+void sendSport(uint8_t moduleIdx)
+{
+  // example: B7 30 30 0C 80 00 00 00 13
+  uint8_t j=0;
+
+  // unstuff and remove crc
+  for (uint8_t i = 0; i < outputTelemetryBuffer.size - 1 && j < 8; i++, j++) {
+    if (outputTelemetryBuffer.data[i] == BYTE_STUFF) {
+      i++;
+      sendMulti(moduleIdx, outputTelemetryBuffer.data[i] ^ STUFF_MASK);
+    }
+    else {
+      sendMulti(moduleIdx, outputTelemetryBuffer.data[i]);
+    }
+  }
+
+  outputTelemetryBuffer.reset(); // empty buffer
+}
+
+void sendHott(uint8_t moduleIdx)
+{
+  if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF) {
+    // HoTT Lua script is running
+    sendMulti(moduleIdx, Multi_Buffer[5]);
+  }
+}
+#endif

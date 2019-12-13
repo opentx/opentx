@@ -47,26 +47,30 @@
 #define TRIM_LH_POS   (TRIM_LH_X-4*FW)
 #define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
 #define TRIM_RH_POS   (TRIM_RH_X-4*FW)
-#if defined(TELEMETRY_FRSKY)
 #define RSSSI_X       (30)
 #define RSSSI_Y       (31)
 #define RSSI_MAX      105
-#endif
-
 #define TRIM_LEN      23
 
-#if defined(TELEMETRY_FRSKY)
-void drawRSSIGauge()
+void drawExternalAntennaAndRSSI()
 {
-  uint8_t bar = (RSSI_MAX - g_model.rssiAlarms.getWarningRssi()) / 4;
+#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+  if (isModuleXJT(INTERNAL_MODULE) && isExternalAntennaEnabled()) {
+    lcdDrawText(VBATT_X-1, VBATT_Y+8, "E", TINSIZE);
+  }
+#endif
 
-  for(uint8_t i=1; i<5;  i++) {
-    if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar*(i-1)) {
-      lcdDrawFilledRect(RSSSI_X + i*4, RSSSI_Y - 2*i, 3, 2*i, SOLID, 0);
+  if (TELEMETRY_RSSI() > 0) {
+    auto warningRSSI = g_model.rssiAlarms.getWarningRssi();
+    int8_t value = TELEMETRY_RSSI() - warningRSSI;
+    uint8_t step = (RSSI_MAX - warningRSSI) / 4;
+    for (uint8_t i = 1; i < 5; i++) {
+      if (value > step * (i - 1)) {
+        lcdDrawFilledRect(RSSSI_X + i * 4, RSSSI_Y - 2 * i + 1, 3, 2 * i - 1, SOLID, 0);
+      }
     }
   }
 }
-#endif
 
 void drawPotsBars()
 {
@@ -173,32 +177,13 @@ void displayTrims(uint8_t phase)
   }
 }
 
-void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
-{
-  const TimerData & timer = g_model.timers[index];
-  if (timer.mode) {
-    const TimerState & timerState = timersStates[index];
-    const uint8_t negative = (timerState.val<0 ? BLINK | INVERS : 0);
-    LcdFlags att = RIGHT | DBLSIZE | negative;
-    drawTimer(x, y, timerState.val, att, att);
-    uint8_t xLabel = (negative ? x-56 : x-49);
-    uint8_t len = zlen(timer.name, LEN_TIMER_NAME);
-    if (len > 0) {
-      lcdDrawSizedText(xLabel, y+FH, timer.name, len, RIGHT | ZCHAR);
-    }
-    else {
-      drawTimerMode(xLabel, y+FH, timer.mode, RIGHT);
-    }
-  }
-}
-
 void displayBattVoltage()
 {
 #if defined(BATTGRAPH)
   putsVBat(VBATT_X-8, VBATT_Y+1, RIGHT);
   lcdDrawSolidFilledRect(VBATT_X-25, VBATT_Y+9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X-4, VBATT_Y+10, 3);
-  uint8_t count = GET_TXBATT_BARS();
+  uint8_t count = GET_TXBATT_BARS(20);
   for (uint8_t i=0; i<count; i+=2)
     lcdDrawSolidVerticalLine(VBATT_X-24+i, VBATT_Y+10, 3);
   if (!IS_TXBATT_WARNING() || BLINK_ON_PHASE)
@@ -213,10 +198,7 @@ void displayBattVoltage()
 #if defined(PCBSKY9X)
 void displayVoltageOrAlarm()
 {
-  if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    drawValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE|RIGHT);
-  }
-  else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+  if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
     drawValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE|RIGHT);
   }
   else {
@@ -279,15 +261,12 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
-#if defined(TELEMETRY_FRSKY)
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-#endif
+    POPUP_MENU_START(onMainViewMenu);
   }
-#if defined(TELEMETRY_FRSKY)
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
   }
-#endif
   else if (result == STR_RESET_FLIGHT) {
     flightReset();
   }
@@ -296,6 +275,36 @@ void onMainViewMenu(const char *result)
   }
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
+  }
+}
+
+void drawSmallSwitch(coord_t x, coord_t y, int width, unsigned int index)
+{
+  if (SWITCH_EXISTS(index)) {
+    int val = getValue(MIXSRC_FIRST_SWITCH+index);
+
+    if (val >= 0) {
+      lcdDrawSolidHorizontalLine(x, y, width);
+      lcdDrawSolidHorizontalLine(x, y+2, width);
+      y += 4;
+      if (val > 0) {
+        lcdDrawSolidHorizontalLine(x, y, width);
+        lcdDrawSolidHorizontalLine(x, y+2, width);
+        y += 4;
+      }
+    }
+
+    lcdDrawChar(width==5 ? x+1 : x, y, 'A'+index, SMLSIZE);
+    y += 7;
+
+    if (val <= 0) {
+      lcdDrawSolidHorizontalLine(x, y, width);
+      lcdDrawSolidHorizontalLine(x, y+2, width);
+      if (val < 0) {
+        lcdDrawSolidHorizontalLine(x, y+4, width);
+        lcdDrawSolidHorizontalLine(x, y+6, width);
+      }
+    }
   }
 }
 
@@ -388,11 +397,7 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_TELEMETRY:
-#if defined(TELEMETRY_FRSKY)
       chainMenu(menuViewTelemetryFrsky);
-#else
-      chainMenu(menuStatisticsDebug);
-#endif
       killEvents(event);
       break;
 
@@ -417,17 +422,13 @@ void menuMainView(event_t event)
     displayVoltageOrAlarm();
 
     // Timer 1
-    drawTimerWithMode(125, 2*FH, 0);
+    drawTimerWithMode(125, 2*FH, 0, RIGHT | DBLSIZE);
 
     // Trims sliders
     displayTrims(mode);
 
-#if defined(TELEMETRY_FRSKY)
-    // RSSI gauge
-    if (TELEMETRY_RSSI() > 0) {
-      drawRSSIGauge();
-    }
-#endif
+    // RSSI gauge / external antenna
+    drawExternalAntennaAndRSSI();
   }
 
   if (view_base < VIEW_INPUTS) {
@@ -482,14 +483,26 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-#if defined(PCBX9LITE)
+#if defined(PCBX9LITES)
+      static const uint8_t x[NUM_SWITCHES-2] = {2*FW-2, 2*FW-2, 17*FW+1, 2*FW-2, 17*FW+1};
+      static const uint8_t y[NUM_SWITCHES-2] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
+      for (int i=0; i<NUM_SWITCHES - 2; ++i) {
+        if (SWITCH_EXISTS(i)) {
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+          drawSwitch(x[i], y[i], sw, 0, false);
+        }
+      }
+      drawSmallSwitch(29, 5*FH+1, 4, SW_SF);
+      drawSmallSwitch(16*FW+1, 5*FH+1, 4, SW_SG);
+#elif defined(PCBX9LITE)
       static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
       static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_EXISTS(i)) {
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0);
+          drawSwitch(x[i], y[i], sw, 0, false);
         }
       }
 #elif defined(PCBXLITES)
@@ -499,7 +512,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0);
+          drawSwitch(x[i], y[i], sw, 0, false);
         }
       }
 #elif defined(PCBTARANIS)
@@ -513,7 +526,7 @@ void menuMainView(event_t event)
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
           getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-          drawSwitch(x, y, sw, 0);
+          drawSwitch(x, y, sw, 0, false);
         }
       }
 #else
@@ -525,7 +538,7 @@ void menuMainView(event_t event)
           x = 17*FW-1;
           y -= 3*FH;
         }
-        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0);
+        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0, false);
       }
 #endif
     }
@@ -547,17 +560,13 @@ void menuMainView(event_t event)
   }
   else {
     // Timer2
-    drawTimerWithMode(87, 5*FH, 1);
+    drawTimerWithMode(87, 5*FH, 1, RIGHT | DBLSIZE);
   }
 
   // And ! in case of unexpected shutdown
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED) || defined(DEBUG_LATENCY)
-  lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
-#else
-  if (unexpectedShutdown) {
-    lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
+  if (isAsteriskDisplayed()) {
+    lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
   }
-#endif
 
 #if defined(GVARS)
   if (gvarDisplayTimer > 0) {
@@ -571,7 +580,7 @@ void menuMainView(event_t event)
       lcdDrawText(lcdLastRightPos, 5*FH, "%", BOLD);
     }
     lcdDrawText(lcdLastRightPos, 5*FH, "]", BOLD);
-    warningText = NULL;
+    warningText = nullptr;
   }
 #endif
 

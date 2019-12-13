@@ -222,7 +222,7 @@ void MixesPanel::mixerlistWidget_doubleClicked(QModelIndex index)
 
 void MixesPanel::mixersDeleteList(QList<int> list)
 {
-  qSort(list.begin(), list.end());
+  std::sort(list.begin(), list.end());
 
   int iDec = 0;
   foreach(int idx, list) {

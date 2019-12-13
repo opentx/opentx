@@ -24,16 +24,11 @@
 #include "definitions.h"
 #include "dataconstants.h"
 #include "pulses_common.h"
-#include "pulses/pxx1.h"
-#include "pulses/pxx2.h"
+#include "pxx1.h"
+#include "pxx2.h"
+#include "multi.h"
 #include "modules_helpers.h"
 #include "ff.h"
-
-#if NUM_MODULES > 1
-  #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK || moduleState[1].mode == MODULE_MODE_RANGECHECK)
-#else
-  #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK)
-#endif
 
 #if defined(PCBSKY9X) && defined(DSM2)
   #define DSM2_BIND_TIMEOUT      255         // 255*11ms
@@ -79,6 +74,7 @@ enum ModuleSettingsMode
   MODULE_MODE_SHARE,
   MODULE_MODE_RANGECHECK,
   MODULE_MODE_RESET,
+  MODULE_MODE_AUTHENTICATION,
   MODULE_MODE_OTA_UPDATE,
 };
 
@@ -94,6 +90,8 @@ PACK(struct PXX2HardwareInformation {
   PXX2Version hwVersion;
   PXX2Version swVersion;
   uint8_t variant;
+  uint32_t capabilities; // variable length
+  uint8_t capabilityNotSupported;
 });
 
 PACK(struct ModuleInformation {
@@ -110,9 +108,10 @@ PACK(struct ModuleInformation {
 class ModuleSettings {
   public:
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
-    tmr10ms_t retryTime;
+    tmr10ms_t timeout;
     uint8_t externalAntenna;
     int8_t txPower;
+    uint8_t dirty;
 };
 
 class ReceiverSettings {
@@ -123,13 +122,14 @@ class ReceiverSettings {
     uint8_t dirty;
     uint8_t telemetryDisabled;
     uint8_t pwmRate;
+    uint8_t fport;
     uint8_t outputsCount;
     uint8_t outputsMapping[24];
 };
 
 class BindInformation {
   public:
-    uint8_t step;
+    int8_t step;
     uint32_t timeout;
     char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
     uint8_t candidateReceiversCount;
@@ -142,20 +142,11 @@ class BindInformation {
 
 class OtaUpdateInformation: public BindInformation {
   public:
-    char filename[_MAX_LFN+1];
+    char filename[_MAX_LFN + 1];
     uint32_t address;
 };
 
 typedef void (* ModuleCallback)();
-
-#if defined(SIMU)
-  #define BIND_INFO \
-    bindInformation->candidateReceiversCount = 2; \
-    strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1"); \
-    strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2"); 
-#else
-  #define BIND_INFO
-#endif
 
 PACK(struct ModuleState {
   uint8_t protocol:4;
@@ -163,21 +154,18 @@ PACK(struct ModuleState {
   uint8_t paused:1;
   uint8_t spare:7;
   uint16_t counter;
-  union {
+  union
+  {
     ModuleInformation * moduleInformation;
     ModuleSettings * moduleSettings;
+    ReceiverSettings * receiverSettings;
     BindInformation * bindInformation;
     OtaUpdateInformation * otaUpdateInformation;
   };
   ModuleCallback callback;
 
-  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr)
-  {
-    bindInformation = destination;
-    callback = bindCallback;
-    mode = MODULE_MODE_BIND;
-    BIND_INFO;
-  }
+  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
+
   void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
   {
     moduleInformation = destination;
@@ -185,18 +173,35 @@ PACK(struct ModuleState {
     moduleInformation->maximum = last;
     mode = MODULE_MODE_GET_HARDWARE_INFO;
   }
+
   void readModuleSettings(ModuleSettings * destination)
   {
     moduleSettings = destination;
     moduleSettings->state = PXX2_SETTINGS_READ;
     mode = MODULE_MODE_MODULE_SETTINGS;
   }
+
   void writeModuleSettings(ModuleSettings * source)
   {
     moduleSettings = source;
     moduleSettings->state = PXX2_SETTINGS_WRITE;
-    moduleSettings->retryTime = 0;
+    moduleSettings->timeout = 0;
     mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+
+  void readReceiverSettings(ReceiverSettings * destination)
+  {
+    receiverSettings = destination;
+    receiverSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+
+  void writeReceiverSettings(ReceiverSettings * source)
+  {
+    receiverSettings = source;
+    receiverSettings->state = PXX2_SETTINGS_WRITE;
+    receiverSettings->timeout = 0;
+    mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 });
 
@@ -245,15 +250,19 @@ PACK(struct CrossfirePulsesData {
 
 union InternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(INTMODULE_USART)
-    UartPxx1Pulses pxx_uart;
-  #else
-    PwmPxx1Pulses pxx;
-  #endif
+#if defined(INTMODULE_USART)
+  UartPxx1Pulses pxx_uart;
+#else
+  PwmPxx1Pulses pxx;
+#endif
 #endif
 
 #if defined(PXX2)
   Pxx2Pulses pxx2;
+#endif
+
+#if defined(MULTIMODULE) //&& defined(INTMODULE_USART)
+  UartMultiPulses multi;
 #endif
 
 #if defined(INTERNAL_MODULE_PPM)
@@ -263,14 +272,14 @@ union InternalModulePulsesData {
 
 union ExternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(EXTMODULE_USART)
-    UartPxx1Pulses pxx_uart;
-  #endif
-  #if defined(PPM_PIN_SERIAL)
-    SerialPxx1Pulses pxx;
-  #else
-    PwmPxx1Pulses pxx;
-  #endif
+#if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+  UartPxx1Pulses pxx_uart;
+#endif
+#if defined(PPM_PIN_SERIAL)
+  SerialPxx1Pulses pxx;
+#else
+  PwmPxx1Pulses pxx;
+#endif
 #endif
 
 #if defined(PXX2)
@@ -302,10 +311,14 @@ union TrainerPulsesData {
 
 extern TrainerPulsesData trainerPulsesData;
 
-bool setupPulses(uint8_t module);
+#if defined(HARDWARE_INTERNAL_MODULE)
+bool setupPulsesInternalModule();
+#endif
+bool setupPulsesExternalModule();
 void setupPulsesDSM2();
 void setupPulsesCrossfire();
-void setupPulsesMultimodule();
+void setupPulsesMultiExternalModule();
+void setupPulsesMultiInternalModule();
 void setupPulsesSbus();
 void setupPulsesPPMInternalModule();
 void setupPulsesPPMExternalModule();
@@ -314,28 +327,26 @@ void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
 void sendByteSbus(uint8_t b);
-
-#if defined(HUBSAN)
-void Hubsan_Init();
-#endif
+void intmodulePxx1PulsesStart();
+void intmodulePxx1SerialStart();
+void extmodulePxx1PulsesStart();
+void extmodulePxx1SerialStart();
+void extmodulePpmStart();
+void intmoduleStop();
+void extmoduleStop();
 
 inline void startPulses()
 {
   s_pulses_paused = false;
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  setupPulses(INTERNAL_MODULE);
-  setupPulses(EXTERNAL_MODULE);
-#else
-  setupPulses(EXTERNAL_MODULE);
+#if defined(HARDWARE_INTERNAL_MODULE)
+  setupPulsesInternalModule();
 #endif
 
-#if defined(PCBSKY9X)
-  init_ppm(EXTRA_MODULE);
-#endif
+  setupPulsesExternalModule();
 
-#if defined(HUBSAN)
-  Hubsan_Init();
+#if defined(HARDWARE_EXTRA_MODULE)
+  extramodulePpmStart();
 #endif
 }
 
@@ -351,18 +362,39 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_CROSSFIRE,
   PROTOCOL_CHANNELS_MULTIMODULE,
   PROTOCOL_CHANNELS_SBUS,
-  PROTOCOL_CHANNELS_PXX2
+  PROTOCOL_CHANNELS_PXX2_LOWSPEED,
+  PROTOCOL_CHANNELS_PXX2_HIGHSPEED,
 };
 
-inline bool pulsesStarted() { return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
-inline void pausePulses() { s_pulses_paused = true; }
-inline void resumePulses() { s_pulses_paused = false; }
+inline void stopPulses()
+{
+  s_pulses_paused = true;
+  moduleState[0].protocol = PROTOCOL_CHANNELS_UNINITIALIZED;
+}
 
-#define SEND_FAILSAFE_NOW(idx) moduleState[idx].counter = 1
+inline bool pulsesStarted()
+{
+  return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED;
+}
+
+inline void pausePulses()
+{
+  s_pulses_paused = true;
+}
+
+inline void resumePulses()
+{
+  s_pulses_paused = false;
+}
+
+inline void SEND_FAILSAFE_NOW(uint8_t idx)
+{
+  moduleState[idx].counter = 1;
+}
 
 inline void SEND_FAILSAFE_1S()
 {
-  for (int i=0; i<NUM_MODULES; i++) {
+  for (uint8_t i=0; i<NUM_MODULES; i++) {
     moduleState[i].counter = 100;
   }
 }
@@ -371,30 +403,30 @@ inline void SEND_FAILSAFE_1S()
 // for channels not set previously to HOLD or NOPULSE
 void setCustomFailsafe(uint8_t moduleIndex);
 
+inline bool isModuleInRangeCheckMode()
+{
+  if (moduleState[0].mode == MODULE_MODE_RANGECHECK)
+    return true;
 
-enum R9MLiteLBTPowerValues {
-  R9M_LITE_LBT_POWER_25 = 0,
-  R9M_LITE_LBT_POWER_25_16,
-  R9M_LITE_LBT_POWER_100,
-  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100
-};
+#if NUM_MODULES > 1
+  if (moduleState[1].mode == MODULE_MODE_RANGECHECK)
+    return true;
+#endif
 
-enum R9MFCCPowerValues {
-  R9M_FCC_POWER_10 = 0,
-  R9M_FCC_POWER_100,
-  R9M_FCC_POWER_500,
-  R9M_FCC_POWER_1000,
-  R9M_FCC_POWER_MAX = R9M_FCC_POWER_1000
-};
+  return false;
+}
 
-enum R9MLBTPowerValues {
-  R9M_LBT_POWER_25 = 0,
-  R9M_LBT_POWER_25_16,
-  R9M_LBT_POWER_200,
-  R9M_LBT_POWER_500,
-  R9M_LBT_POWER_MAX = R9M_LBT_POWER_500
-};
+inline bool isModuleInBeepMode()
+{
+  if (moduleState[0].mode >= MODULE_MODE_BEEP_FIRST)
+    return true;
 
-#define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
+#if NUM_MODULES > 1
+  if (moduleState[1].mode >= MODULE_MODE_BEEP_FIRST)
+    return true;
+#endif
+
+  return false;
+}
+
 #endif // _PULSES_H_

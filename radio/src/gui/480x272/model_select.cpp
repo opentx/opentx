@@ -219,6 +219,27 @@ bool menuModelWizard(event_t event)
 }
 #endif
 
+void onDeleteModelConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    if (deleteMode == MODE_DELETE_CATEGORY) {
+      modelslist.removeCategory(currentCategory);
+      modelslist.save();
+      setCurrentCategory(currentCategoryIndex > 0 ? currentCategoryIndex-1 : currentCategoryIndex);
+    }
+    else if (deleteMode == MODE_DELETE_MODEL){
+      int modelIndex = MODEL_INDEX();
+      modelslist.removeModel(currentCategory, currentModel);
+      s_copyMode = 0;
+      putEvent(EVT_REFRESH);
+      if (modelIndex > 0) {
+        modelIndex--;
+      }
+      setCurrentModel(modelIndex);
+    }
+  }
+}
+
 void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
@@ -233,7 +254,7 @@ void onModelSelectMenu(const char * result)
     chainMenu(menuMainView);
   }
   else if (result == STR_DELETE_MODEL) {
-    POPUP_CONFIRMATION(STR_DELETEMODEL);
+    POPUP_CONFIRMATION(STR_DELETEMODEL, onDeleteModelConfirm);
     SET_WARNING_INFO(currentModel->modelName, LEN_MODEL_NAME, 0);
     deleteMode = MODE_DELETE_MODEL;
   }
@@ -279,7 +300,7 @@ void onModelSelectMenu(const char * result)
       SET_WARNING_INFO(STR_CAT_NOT_EMPTY, sizeof(TR_CAT_NOT_EMPTY), 0);
     }
     else {
-      POPUP_CONFIRMATION(STR_DELETEMODEL);
+      POPUP_CONFIRMATION(STR_DELETEMODEL, onDeleteModelConfirm);
       SET_WARNING_INFO(currentCategory->name, LEN_MODEL_FILENAME, 0);
       deleteMode = MODE_DELETE_CATEGORY;
     }
@@ -322,26 +343,6 @@ void initModelsList()
 
 bool menuModelSelect(event_t event)
 {
-  if (warningResult) {
-    warningResult = 0;
-    if (deleteMode == MODE_DELETE_CATEGORY) {
-      TRACE("DELETE CATEGORY");
-      modelslist.removeCategory(currentCategory);
-      modelslist.save();
-      setCurrentCategory(currentCategoryIndex > 0 ? currentCategoryIndex-1 : currentCategoryIndex);
-    }
-    else if (deleteMode == MODE_DELETE_MODEL){
-      int modelIndex = MODEL_INDEX();
-      modelslist.removeModel(currentCategory, currentModel);
-      s_copyMode = 0;
-      event = EVT_REFRESH;
-      if (modelIndex > 0) {
-        modelIndex--;
-      }
-      setCurrentModel(modelIndex);
-    }
-  }
-
   const std::list<ModelsCategory*>& cats = modelslist.getCategories();
   switch(event) {
     case 0:

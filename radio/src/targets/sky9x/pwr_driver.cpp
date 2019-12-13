@@ -20,7 +20,14 @@
 
 #include "opentx.h"
 
-uint32_t pwrPressed()
+void pwrInit()
+{
+  // Configure RF_power (PC17)
+  configure_pins(PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN);
+  configure_pins(PIO_PA8, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP); // Enable bit A8 (Soft Power)
+}
+
+bool pwrPressed()
 {
 #if defined(SIMU)
   return true;
@@ -29,15 +36,12 @@ uint32_t pwrPressed()
 #endif
 }
 
+void pwrOn()
+{
+}
+
 // turn off soft power
 void pwrOff()
 {
   configure_pins(PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP);
-}
-
-void pwrInit()
-{
-  // Configure RF_power (PC17)
-  configure_pins(PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN);
-  configure_pins(PIO_PA8, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP); // Enable bit A8 (Soft Power)
 }

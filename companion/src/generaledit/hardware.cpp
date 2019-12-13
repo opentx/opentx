@@ -40,6 +40,12 @@ void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * na
       else if (index == 5) {
         label->setText("SH");
       }
+      if (index == 6) {
+        label->setText("SI");
+      }
+      else if (index == 7) {
+        label->setText("SJ");
+      }
     }
     if (IS_JUMPER_T12(board)) {
       if (index == 4) {
@@ -126,6 +132,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupPotType(1, ui->pot2Label, ui->pot2Name, ui->pot2Type);
   setupPotType(2, ui->pot3Label, ui->pot3Name, ui->pot3Type);
   setupPotType(3, ui->pot4Label, ui->pot4Name, ui->pot4Type);
+  setupPotType(4, ui->pot5Label, ui->pot5Name, ui->pot5Type);
 
   setupSliderType(0, ui->lsLabel, ui->lsName, ui->lsType);
   setupSliderType(1, ui->rsLabel, ui->rsName, ui->rsType);
@@ -152,7 +159,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupSwitchType(17, ui->srLabel, ui->srName, ui->srType);
 
   if (IS_TARANIS(board) && !IS_TARANIS_SMALL(board)) {
-    ui->serialPortMode->setCurrentIndex(generalSettings.hw_uartMode);
+    ui->serialPortMode->setCurrentIndex(generalSettings.auxSerialMode);
   }
   else {
     ui->serialPortMode->setCurrentIndex(0);
@@ -165,7 +172,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->txCurrentCalibrationLabel->hide();
   }
 
-  if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_HORUS(board) || IS_JUMPER_T12(board)) {
+  if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_HORUS(board)) {
     ui->bluetoothMode->addItem(tr("OFF"), 0);
     if (IS_TARANIS_X9E(board)) {
       ui->bluetoothMode->addItem(tr("Enabled"), 1);
@@ -182,11 +189,32 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->bluetoothWidget->hide();
   }
 
+  if ((IS_HORUS(board) && board != Board::BOARD_X10_EXPRESS) || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board))) {
+    ui->antennaMode->addItem(tr("Internal"), -2);
+    ui->antennaMode->addItem(tr("Ask"), -1);
+    ui->antennaMode->addItem(tr("Per model"), 0);
+    ui->antennaMode->addItem(IS_HORUS_X12S(board) ? tr("Internal + External") : tr("External"), 1);
+    ui->antennaMode->setField(generalSettings.antennaMode, this);
+  }
+  else {
+    ui->antennaLabel->hide();
+    ui->antennaMode->hide();
+  }
+
   if (IS_HORUS_OR_TARANIS(board)) {
     ui->filterEnable->setChecked(!generalSettings.jitterFilter);
   }
   else {
     ui->filterEnable->hide();
+    ui->filterLabel->hide();
+  }
+
+  if (IS_STM32(board)) {
+    ui->rtcCheckDisable->setChecked(!generalSettings.rtcCheckDisable);
+  }
+  else {
+    ui->rtcCheckDisable->hide();
+    ui->rtcCheckLabel->hide();
   }
 
   disableMouseScrolling();
@@ -202,6 +230,11 @@ HardwarePanel::~HardwarePanel()
 void HardwarePanel::on_filterEnable_stateChanged()
 {
   generalSettings.jitterFilter = !ui->filterEnable->isChecked();
+}
+
+void HardwarePanel::on_rtcCheckDisable_stateChanged()
+{
+  generalSettings.rtcCheckDisable = !ui->rtcCheckDisable->isChecked();
 }
 
 void HardwarePanel::on_PPM_MultiplierDSB_editingFinished()
@@ -276,6 +309,6 @@ void HardwarePanel::on_txVoltageCalibration_editingFinished()
 
 void HardwarePanel::on_serialPortMode_currentIndexChanged(int index)
 {
-  generalSettings.hw_uartMode = index;
+  generalSettings.auxSerialMode = index;
   emit modified();
 }

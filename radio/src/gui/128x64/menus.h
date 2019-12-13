@@ -52,7 +52,7 @@ enum MenuRadioIndexes
 {
   MENU_RADIO_SETUP,
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
-#if defined(PXX2)
+#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   MENU_RADIO_TOOLS,
 #endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
@@ -78,7 +78,7 @@ void menuRadioCalibration(event_t event);
 static const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT]  = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
-#if defined(PXX2)
+#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   menuRadioTools,
 #endif
   menuRadioSpecialFunctions,
@@ -101,7 +101,7 @@ enum MenuModelIndexes {
 #if defined(LUA_MODEL_SCRIPTS)
   MENU_MODEL_CUSTOM_SCRIPTS,
 #endif
-  CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
+  MENU_MODEL_TELEMETRY,
   MENU_MODEL_DISPLAY,
   MENU_MODEL_PAGES_COUNT
 };
@@ -124,7 +124,7 @@ void menuModelGVars(event_t event);
 void menuModelLogicalSwitches(event_t event);
 void menuModelSpecialFunctions(event_t event);
 void menuModelCustomScripts(event_t event);
-void menuModelTelemetryFrsky(event_t event);
+void menuModelTelemetry(event_t event);
 void menuModelSensor(event_t event);
 void menuModelDisplay(event_t event);
 void menuModelTemplates(event_t event);
@@ -144,7 +144,7 @@ static const MenuHandlerFunc menuTabModel[]  = {
 #if defined(LUA_MODEL_SCRIPTS)
   menuModelCustomScripts,
 #endif
-  CASE_FRSKY(menuModelTelemetryFrsky)
+  menuModelTelemetry,
   menuModelDisplay,
 };
 

@@ -18,32 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
 #include "opentx.h"
 
-class Pxx2Telemetry
-{
-  protected:
-    static void processGetHardwareInfoFrame(uint8_t module, uint8_t *frame);
-
-    static void processReceiverSettingsFrame(uint8_t module, uint8_t *frame);
-
-    static void processRegisterFrame(uint8_t module, uint8_t * frame);
-
-    static void processBindFrame(uint8_t module, uint8_t * frame);
-
-    static void processTelemetryFrame(uint8_t module, uint8_t * frame);
-
-    static void processSpectrumFrame(uint8_t module, uint8_t * frame);
-
-    static void processRadioFrame(uint8_t module, uint8_t * frame);
-
-    static void processPowerMeterFrame(uint8_t module, uint8_t * frame);
-
-  public:
-};
-
-void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
+void processGetHardwareInfoFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_GET_HARDWARE_INFO) {
     return;
@@ -53,16 +30,26 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 
   uint8_t index = frame[3];
   uint8_t modelId = frame[4];
-  if (index == PXX2_HW_INFO_TX_ID && modelId < DIM(PXX2modulesModels)) {
-    memcpy(&destination->information, &frame[4], sizeof(PXX2HardwareInformation));
+  uint8_t length = min<uint8_t>(frame[0] - 3, sizeof(PXX2HardwareInformation));
+  if (index == PXX2_HW_INFO_TX_ID && modelId < DIM(PXX2ModulesNames)) {
+    memcpy(&destination->information, &frame[4], length);
+    if (destination->information.capabilities & ~((1 << MODULE_CAPABILITY_COUNT) - 1))
+      destination->information.capabilityNotSupported = true;
+    if (!globalData.upgradeModulePopup && destination->information.modelID == PXX2_MODULE_ISRM_S_X10S &&
+        destination->information.swVersion.major == 0 && destination->information.swVersion.minor == 1 && destination->information.swVersion.revision < 5) {
+      globalData.upgradeModulePopup = 1;
+      POPUP_WARNING(STR_MODULE_UPGRADE_ALERT);
+    }
   }
-  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE && modelId < DIM(PXX2receiversModels)) {
-    memcpy(&destination->receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
+  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE && modelId < DIM(PXX2ReceiversNames)) {
+    memcpy(&destination->receivers[index].information, &frame[4], length);
     destination->receivers[index].timestamp = get_tmr10ms();
+    if (destination->receivers[index].information.capabilities & ~((1 << RECEIVER_CAPABILITY_COUNT) - 1))
+      destination->information.capabilityNotSupported = true;
   }
 }
 
-void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
+void processModuleSettingsFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_MODULE_SETTINGS) {
     return;
@@ -78,34 +65,39 @@ void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
   destination->txPower = frame[5];
 
   destination->state = PXX2_SETTINGS_OK;
-  destination->retryTime = 0;
+  destination->timeout = 0;
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
-void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
+void processReceiverSettingsFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_RECEIVER_SETTINGS) {
     return;
   }
 
+  ReceiverSettings * destination = moduleState[module].receiverSettings;
+
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FPORT)
+    destination->fport = 1;
+
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
-    reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = 1;
+    destination->pwmRate = 1;
 
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED)
-    reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = 1;
+    destination->telemetryDisabled = 1;
 
   uint8_t outputsCount = min<uint8_t>(16, frame[0] - 4);
-  reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = outputsCount;
+  destination->outputsCount = outputsCount;
   for (uint8_t pin = 0; pin < outputsCount; pin++) {
-    reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = frame[5 + pin];
+    destination->outputsMapping[pin] = frame[5 + pin];
   }
 
-  reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_OK;
-  reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
+  destination->state = PXX2_SETTINGS_OK;
+  destination->timeout = 0;
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
-void processRegisterFrame(uint8_t module, uint8_t * frame)
+void processRegisterFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_REGISTER) {
     return;
@@ -118,6 +110,9 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
         str2zchar(reusableBuffer.moduleSetup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
         reusableBuffer.moduleSetup.pxx2.registerLoopIndex = frame[12];
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
+#if defined(COLORLCD)
+        putEvent(EVT_REFRESH);
+#endif
       }
       break;
 
@@ -135,7 +130,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processBindFrame(uint8_t module, uint8_t * frame)
+void processBindFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_BIND) {
     return;
@@ -186,7 +181,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processResetFrame(uint8_t module, uint8_t * frame)
+void processResetFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_RESET) {
     return;
@@ -199,36 +194,78 @@ void processResetFrame(uint8_t module, uint8_t * frame)
   moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
-void processTelemetryFrame(uint8_t module, uint8_t * frame)
+void processTelemetryFrame(uint8_t module, const uint8_t * frame)
 {
   uint8_t origin = (module << 2) + (frame[3] & 0x03);
-  sportProcessTelemetryPacketWithoutCrc(origin, &frame[4]);
+  if (origin != TELEMETRY_ENDPOINT_SPORT) {
+    sportProcessTelemetryPacketWithoutCrc(origin, &frame[4]);
+  }
 }
 
-void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
+#if defined(ACCESS_LIB) && !defined(SIMU)
+void processAuthenticationFrame(uint8_t module, const uint8_t * frame)
+{
+  uint8_t cryptoType = frame[3];
+  uint8_t messageDigest[16] = {0};
+
+  if (frame[0] == 4 && PXX2_AUTH_REFUSED_FLAG == frame[4]) {
+    if (!globalData.upgradeModulePopup) {
+      globalData.upgradeModulePopup = 1;
+      POPUP_INFORMATION(STR_AUTH_FAILURE);
+    }
+    return;
+  }
+
+  if (INTERNAL_MODULE == module && accessCRL(cryptoType, frame+4, messageDigest)) {
+    moduleState[module].mode = MODULE_MODE_AUTHENTICATION;
+    Pxx2Pulses & pxx2 = intmodulePulsesData.pxx2;
+    pxx2.setupAuthenticationFrame(module, cryptoType, (const uint8_t *)messageDigest);
+    intmoduleSendBuffer(pxx2.getData(), pxx2.getSize());
+    // we remain in AUTHENTICATION mode to avoid a CHANNELS frame is sent at the end of the mixing process
+  }
+
+  if (!globalData.upgradeModulePopup) {
+    if (globalData.authenticationCount >= 2) {
+      globalData.upgradeModulePopup = 1;
+      POPUP_WARNING(STR_MODULE_UPGRADE_ALERT);
+    }
+    else {
+      globalData.authenticationCount += 1;
+    }
+  }
+}
+#else
+#define processAuthenticationFrame(module, frame)
+#endif
+
+void processSpectrumAnalyserFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     return;
   }
 
-  uint32_t * frequency = (uint32_t *)&frame[4];
-  int8_t * power = (int8_t *)&frame[8];
+  uint32_t frequency = *((uint32_t *)&frame[4]);
+  int8_t power = *((int8_t *)&frame[8]);
 
   // center = 2440000000;  // 2440MHz
   // span = 40000000;  // 40MHz
   // left = 2440000000 - 20000000
   // step = 10000
 
-  // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
+  int32_t offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+  TRACE("Fq=%u => %d, Pw=%d", frequency, offset, int32_t(power));
 
-  int32_t position = *frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
-  uint32_t x = (position * LCD_W / 8) / (reusableBuffer.spectrumAnalyser.span / 8);
+  uint32_t x = offset / reusableBuffer.spectrumAnalyser.step;
   if (x < LCD_W) {
-    reusableBuffer.spectrumAnalyser.bars[x] = 0x80 + *power;
+    reusableBuffer.spectrumAnalyser.bars[x] = max<int>(0, -SPECTRUM_ANALYSER_POWER_FLOOR + power); // we remove everything below -120dB
+#if defined(COLORLCD)
+    if (reusableBuffer.spectrumAnalyser.bars[x] > reusableBuffer.spectrumAnalyser.max[x])
+      reusableBuffer.spectrumAnalyser.max[x] = reusableBuffer.spectrumAnalyser.bars[x];
+#endif
   }
 }
 
-void processPowerMeterFrame(uint8_t module, uint8_t * frame)
+void processPowerMeterFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_POWER_METER) {
     return;
@@ -240,7 +277,7 @@ void processPowerMeterFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processOtaUpdateFrame(uint8_t module, uint8_t * frame)
+void processOtaUpdateFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_OTA_UPDATE) {
     return;
@@ -266,7 +303,7 @@ void processOtaUpdateFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processModuleFrame(uint8_t module, uint8_t *frame)
+void processModuleFrame(uint8_t module, const uint8_t *frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_HW_INFO:
@@ -293,13 +330,17 @@ void processModuleFrame(uint8_t module, uint8_t *frame)
       processTelemetryFrame(module, frame);
       break;
 
+    case PXX2_TYPE_ID_AUTHENTICATION:
+      processAuthenticationFrame(module, frame);
+      break;
+
     case PXX2_TYPE_ID_RESET:
       processResetFrame(module, frame);
       break;
   }
 }
 
-void processToolsFrame(uint8_t module, uint8_t * frame)
+void processToolsFrame(uint8_t module, const uint8_t * frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_POWER_METER:
@@ -312,8 +353,13 @@ void processToolsFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processPXX2Frame(uint8_t module, uint8_t *frame)
+void processPXX2Frame(uint8_t module, const uint8_t * frame)
 {
+  LOG_TELEMETRY_WRITE_START();
+  for (uint8_t i = 0; i < 1 + frame[0]; i++) {
+    LOG_TELEMETRY_WRITE_BYTE(frame[i]);
+  }
+
   switch (frame[1]) {
     case PXX2_TYPE_C_MODULE:
       processModuleFrame(module, frame);

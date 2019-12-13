@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 #define STATUS_BAR_Y     (7*FH+1)
-#define TELEM_2ND_COLUMN (11*FW)
 
 uint8_t s_frsky_view = 0;
 

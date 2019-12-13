@@ -23,14 +23,6 @@
 #define XPOT_DELTA 10
 #define XPOT_DELAY 10 /* cycles */
 
-enum CalibrationState {
-  CALIB_START = 0,
-  CALIB_SET_MIDPOINT,
-  CALIB_MOVE_STICKS,
-  CALIB_STORE,
-  CALIB_FINISHED
-};
-
 void menuCommonCalib(event_t event)
 {
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) { // get low and high vals for sticks and trims

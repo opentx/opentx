@@ -38,7 +38,7 @@
 #define CPN_MAX_MODULES                2
 #define CPN_MAX_STICKS                 Board::STICK_AXIS_COUNT
 #define CPN_MAX_TRIMS                  Board::TRIM_AXIS_COUNT
-#define CPN_MAX_KNOBS                  4
+#define CPN_MAX_KNOBS                  8
 #define CPN_MAX_SLIDERS                4
 #define CPN_MAX_POTS                   (CPN_MAX_KNOBS + CPN_MAX_SLIDERS)
 #define CPN_MAX_CYC                    3

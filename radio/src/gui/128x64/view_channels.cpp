@@ -22,33 +22,35 @@
 
 void menuChannelsView(event_t event)
 {
-  static bool longNames = false;
   bool newLongNames = false;
-  static bool secondPage = false;
-  static bool mixersView = false;
 
   uint8_t ch;
 
-  switch(event)
-  {
+  switch (event) {
+    case EVT_ENTRY:
+      memclear(&reusableBuffer.viewChannels, sizeof(reusableBuffer.viewChannels));
+      break;
+
     case EVT_KEY_BREAK(KEY_EXIT):
       popMenu();
       break;
+
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_LEFT):
-      secondPage = !secondPage;
+      reusableBuffer.viewChannels.secondPage = !reusableBuffer.viewChannels.secondPage;
       break;
+
     case EVT_KEY_FIRST(KEY_ENTER):
-      mixersView = !mixersView;
+      reusableBuffer.viewChannels.mixersView = !reusableBuffer.viewChannels.mixersView;
       break;
   }
 
-  if (secondPage)
+  if (reusableBuffer.viewChannels.secondPage)
     ch = 16;
   else
     ch = 0;
 
-  if (mixersView) {
+  if (reusableBuffer.viewChannels.mixersView) {
     lcdDrawTextAlignedCenter(0, TR_MIXERS_MONITOR);
   }
   else {
@@ -67,13 +69,13 @@ void menuChannelsView(event_t event)
     // Channels
     for (uint8_t line=0; line<8; line++) {
       uint8_t y = 9+line*7;
-      int32_t val = (mixersView) ? ex_chans[ch] : channelOutputs[ch];
+      int32_t val = (reusableBuffer.viewChannels.mixersView) ? ex_chans[ch] : channelOutputs[ch];
       uint8_t ofs = (col ? 0 : 1);
 
       // Channel name if present, number if not
       uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
       if (lenLabel > 4) {
-        newLongNames = longNames = true;
+        newLongNames = reusableBuffer.viewChannels.longNames = true;
       }
 
       if (lenLabel > 0)
@@ -83,13 +85,13 @@ void menuChannelsView(event_t event)
 
       // Value
 #if defined(PPM_UNIT_US)
-      uint8_t wbar = (longNames ? 54 : 64);
+      uint8_t wbar = (reusableBuffer.viewChannels.longNames ? 54 : 64);
       lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE|RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-      uint8_t wbar = (longNames ? 48 : 58);
+      uint8_t wbar = (reusableBuffer.viewChannels.longNames ? 48 : 58);
       lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE|RIGHT);
 #else
-      uint8_t wbar = (longNames ? 54 : 64);
+      uint8_t wbar = (reusableBuffer.viewChannels.longNames ? 54 : 64);
       lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE|RIGHT);
 #endif
 
@@ -105,5 +107,5 @@ void menuChannelsView(event_t event)
     }
   }
 
-  longNames = newLongNames;
+  reusableBuffer.viewChannels.longNames = newLongNames;
 }

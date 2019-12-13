@@ -68,8 +68,11 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 
 void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 {
+  if(!TELEMETRY_STREAMING())
+    return;
+
   const CrossfireSensor & sensor = crossfireSensors[index];
-  setTelemetryValue(TELEM_PROTO_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, sensor.precision);
+  setTelemetryValue(PROTOCOL_TELEMETRY_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, sensor.precision);
 }
 
 bool checkCrossfireTelemetryFrameCRC()
@@ -129,13 +132,19 @@ void processCrossfireTelemetryFrame()
       for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value)) {
           if (i == TX_POWER_INDEX) {
-            static const int32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000 };
+            static const int32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000, 250 };
             value = ((unsigned)value < DIM(power_values) ? power_values[value] : 0);
           }
           processCrossfireTelemetryValue(i, value);
           if (i == RX_QUALITY_INDEX) {
-            telemetryData.rssi.set(value);
-            telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+            if (value) {
+              telemetryData.rssi.set(value);
+              telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+            }
+            else {
+              telemetryData.rssi.reset();
+              telemetryStreaming = 0;
+            }
           }
         }
       }
@@ -164,7 +173,7 @@ void processCrossfireTelemetryFrame()
       const CrossfireSensor & sensor = crossfireSensors[FLIGHT_MODE_INDEX];
       for (int i=0; i<min<int>(16, telemetryRxBuffer[1]-2); i+=4) {
         uint32_t value = *((uint32_t *)&telemetryRxBuffer[3+i]);
-        setTelemetryValue(TELEM_PROTO_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, i);
+        setTelemetryValue(PROTOCOL_TELEMETRY_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, i);
       }
       break;
     }
@@ -212,6 +221,11 @@ void processCrossfireTelemetryData(uint8_t data)
   if (telemetryRxBufferCount > 4) {
     uint8_t length = telemetryRxBuffer[1];
     if (length + 2 == telemetryRxBufferCount) {
+#if defined(BLUETOOTH)
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
+#endif
       processCrossfireTelemetryFrame();
       telemetryRxBufferCount = 0;
     }

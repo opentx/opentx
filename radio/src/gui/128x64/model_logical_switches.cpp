@@ -154,7 +154,6 @@ void menuModelLogicalSwitchOne(event_t event)
           INCDEC_ENABLE_CHECK(isSourceAvailable);
         }
         else {
-#if defined(TELEMETRY_FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
             drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
@@ -171,7 +170,6 @@ void menuModelLogicalSwitchOne(event_t event)
             }
           }
           else
-#endif // TELEMETRY_FRSKY
           {
             LcdFlags lf = attr | LEFT;
             getMixSrcRange(v1_val, v2_min, v2_max, &lf);

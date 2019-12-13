@@ -363,7 +363,7 @@ dev_from_mount_options (char const *mount_options)
   /* GNU/Linux allows file system implementations to define their own
      meaning for "dev=" mount options, so don't trust the meaning
      here.  */
-# ifndef __linux__
+#ifndef __linux__
   static char const dev_pattern[] = ",dev=";
   char const *devopt = strstr (mount_options, dev_pattern);
 

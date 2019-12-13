@@ -9,9 +9,11 @@ set(simulation_SRCS
   simulateduiwidgetX9.cpp
   simulateduiwidgetXLITE.cpp
   simulateduiwidgetX9E.cpp
+  simulateduiwidgetX9D2019.cpp
   simulateduiwidgetX10.cpp
   simulateduiwidgetX12.cpp
   simulateduiwidgetJumperT12.cpp
+  simulateduiwidgetJumperT16.cpp
   simulatorinterface.cpp
   simulatormainwindow.cpp
   simulatorstartupdialog.cpp
@@ -31,9 +33,11 @@ set(simulation_UIS
   simulateduiwidgetX9.ui
   simulateduiwidgetXLITE.ui
   simulateduiwidgetX9E.ui
+  simulateduiwidgetX9D2019.ui
   simulateduiwidgetX10.ui
   simulateduiwidgetX12.ui
   simulateduiwidgetJumperT12.ui
+  simulateduiwidgetJumperT16.ui
   simulatormainwindow.ui
   simulatorstartupdialog.ui
   simulatorwidget.ui

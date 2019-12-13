@@ -23,6 +23,7 @@
 
 #include <vector>
 #include <QtCore>
+#include "moduledata.h"
 
 #define MM_RF_CUSTOM_SELECTED 0xff
 
@@ -48,7 +49,7 @@ class Multiprotocols
 
       unsigned int numSubTypes() const
       {
-        return (unsigned int) subTypeStrings.length();
+        return protocol > MODULE_SUBTYPE_MULTI_LAST ? 8 : (unsigned int) subTypeStrings.length();
       }
 
       int getOptionMin() const;

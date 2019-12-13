@@ -26,15 +26,6 @@
 #define STICKS_Y                       60
 #define STICK_LEFT_X                   25
 #define STICK_RIGHT_X                  (LCD_W-STICK_LEFT_X-STICKS_WIDTH)
-
-enum CalibrationState {
-  CALIB_START = 0,
-  CALIB_SET_MIDPOINT,
-  CALIB_MOVE_STICKS,
-  CALIB_STORE,
-  CALIB_FINISHED
-};
-
 #define STICK_PANEL_WIDTH              68
 
 void drawStick(coord_t x, coord_t y, const BitmapBuffer * background, int16_t xval, int16_t yval)

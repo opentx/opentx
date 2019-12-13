@@ -71,6 +71,7 @@ class ModulePanel : public ModelPanel
     void channelsRangeChanged();
 
   private slots:
+    int getMaxChannelCount();
     void setupFailsafes();
     void on_trainerMode_currentIndexChanged(int index);
     void onProtocolChanged(int index);
@@ -80,12 +81,13 @@ class ModulePanel : public ModelPanel
     void on_ppmPolarity_currentIndexChanged(int index);
     void on_ppmOutputType_currentIndexChanged(int index);
     void on_ppmFrameLength_editingFinished();
-    void on_antennaMode_currentIndexChanged(int index);
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);
     void onMultiProtocolChanged(int index);
     void onSubTypeChanged();
     void on_autoBind_stateChanged(int state);
+    void on_disableChMap_stateChanged(int state);
+    void on_disableTelem_stateChanged(int state);
     void on_lowPower_stateChanged(int state);
     void on_r9mPower_currentIndexChanged(int index);
     void setChannelFailsafeValue(const int channel, const int value, quint8 updtSb = 0);
@@ -95,6 +97,7 @@ class ModulePanel : public ModelPanel
     void onFailsafesDisplayValueTypeChanged(int type);
     void updateFailsafe(int channel);
     void on_optionValue_editingFinished();
+    void onClearAccessRxClicked();
 
   private:
     enum FailsafeValueDisplayTypes { FAILSAFE_DISPLAY_PERCENT = 1, FAILSAFE_DISPLAY_USEC = 2 };

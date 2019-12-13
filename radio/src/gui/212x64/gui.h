@@ -25,6 +25,7 @@
 #include "lcd.h"
 #include "menus.h"
 #include "popups.h"
+#include "common/stdlcd/draw_functions.h"
 
 #define HEADER_LINE                    0
 #define HEADER_LINE_COLUMNS
@@ -74,8 +75,6 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
 
 void doMainScreenGraphics();
 
-typedef uint16_t FlightModesType;
-
 extern int8_t checkIncDec_Ret;  // global helper vars
 
 #define EDIT_SELECT_FIELD              0
@@ -95,11 +94,6 @@ extern int8_t s_editMode; // global editmode
 #define INCDEC_SET_FLAG(f)             incdecFlag = (f)
 #define INCDEC_ENABLE_CHECK(fn)        isValueAvailable = fn
 #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-
-// mawrow special values
-#define READONLY_ROW                   ((uint8_t)-1)
-#define TITLE_ROW                      READONLY_ROW
-#define HIDDEN_ROW                     ((uint8_t)-2)
 
 struct CheckIncDecStops
 {
@@ -215,14 +209,13 @@ void title(const char * s);
 
 typedef int choice_t;
 
-choice_t editChoice(coord_t x, coord_t y, const char *label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
+choice_t editChoice(coord_t x, coord_t y, const char *label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event, IsValueAvailable isValueAvailable = nullptr);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, LcdFlags attr, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event);
 
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
 
 #if defined(GVARS)
-  void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
   void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags=0);
   int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
   #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, editflags, event)
@@ -232,9 +225,6 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
   int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
-
-void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att = 0);
-void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags=0);
 
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
@@ -274,16 +264,12 @@ extern char statusLineMsg[STATUS_LINE_LENGTH];
 void showStatusLine();
 void drawStatusLine();
 
-#define TEXT_FILENAME_MAXLEN           40
-extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void menuTextView(event_t event);
 void pushMenuTextView(const char *filename);
 void pushModelNotes();
 void readModelNotes();
 
 void menuChannelsView(event_t event);
-
-#define LABEL(...) (uint8_t)-1
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 #define CURSOR_MOVED_LEFT(event)       (event==EVT_ROTARY_LEFT)
@@ -294,9 +280,6 @@ void menuChannelsView(event_t event);
 #endif
 
 #define REPEAT_LAST_CURSOR_MOVE()      { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else menuHorizontalPosition = 0; }
-#define MOVE_CURSOR_FROM_HERE()        if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE()
-
-#define MENU_FIRST_LINE_EDIT           (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
 

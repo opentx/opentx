@@ -32,14 +32,13 @@
 #define GET_SBUS_POLARITY(idx)                   g_model.moduleData[idx].sbus.noninverted
 #define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
 #define GET_TRAINER_PPM_DELAY()                  (g_model.trainerData.delay * 50 + 300)
-#define SET_DEFAULT_PPM_FRAME_LENGTH(idx)        g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #if defined(PCBHORUS)
   #define IS_TRAINER_EXTERNAL_MODULE()    false
   #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
 #elif defined(PCBTARANIS)
   #define IS_TRAINER_EXTERNAL_MODULE()      (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerData.mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-  #define HAS_WIRELESS_TRAINER_HARDWARE()   (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
+  #define HAS_WIRELESS_TRAINER_HARDWARE()   (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
 #else
   #define IS_TRAINER_EXTERNAL_MODULE()    false
 #endif
@@ -80,23 +79,7 @@
 #define MODEL_GVAR_MAX(idx)            (CFN_GVAR_CST_MAX - g_model.gvars[idx].max)
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  enum SwitchConfig {
-    SWITCH_NONE,
-    SWITCH_TOGGLE,
-    SWITCH_2POS,
-    SWITCH_3POS,
-  };
-  enum PotConfig {
-    POT_NONE,
-    POT_WITH_DETENT,
-    POT_MULTIPOS_SWITCH,
-    POT_WITHOUT_DETENT
-  };
-  enum SliderConfig {
-    SLIDER_NONE,
-    SLIDER_WITH_DETENT,
-  };
-  #define SWITCH_CONFIG(x)            (bfGet<uint32_t>(g_eeGeneral.switchConfig, 2*(x), 2))
+  #define SWITCH_CONFIG(x)            (bfGet<swconfig_t>(g_eeGeneral.switchConfig, 2*(x), 2))
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_CONFIG_3POS(x)           (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_CONFIG_TOGGLE(x)         (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
@@ -164,10 +147,8 @@ enum CurveRefType {
 #define GV1_LARGE       1024
 #define GV_RANGE_WEIGHT 500
 #define GV_RANGE_OFFSET 500
-#define DELAY_STEP      10
-#define SLOW_STEP       10
-#define DELAY_MAX       (25*DELAY_STEP) /* 25 seconds */
-#define SLOW_MAX        (25*SLOW_STEP)  /* 25 seconds */
+#define DELAY_MAX       250 /* 25 seconds */
+#define SLOW_MAX        250 /* 25 seconds */
 
 #define MD_WEIGHT(md) (md->weight)
 #define MD_WEIGHT_TO_UNION(md, var) var.word = md->weight
@@ -276,19 +257,6 @@ enum ThrottleSources {
   THROTTLE_SOURCE_P3,
 #endif
   THROTTLE_SOURCE_CH1,
-};
-
-enum TelemetryProtocols
-{
-  PROTOCOL_TELEMETRY_FIRST,
-  PROTOCOL_TELEMETRY_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
-  PROTOCOL_TELEMETRY_FRSKY_D,
-  PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY,
-  PROTOCOL_TELEMETRY_CROSSFIRE,
-  PROTOCOL_TELEMETRY_SPEKTRUM,
-  PROTOCOL_TELEMETRY_FLYSKY_IBUS,
-  PROTOCOL_TELEMETRY_MULTIMODULE,
-  PROTOCOL_TELEMETRY_LAST=PROTOCOL_TELEMETRY_MULTIMODULE
 };
 
 enum DisplayTrims

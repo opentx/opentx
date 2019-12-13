@@ -114,7 +114,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
     memclear(mix, sizeof(MixData));
     mix->destCh = s_currCh-1;
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
     mix->weight = 100;
   }
   resumeMixerCalculations();
@@ -378,7 +378,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
-  title(STR_MIXER);
+  title(STR_MIXES);
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(lcdLastRightPos+1*FW, 0, md2->destCh+1,0);
 
@@ -397,7 +397,7 @@ void menuModelMixOne(event_t event)
         editSingleName(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
         break;
       case MIX_FIELD_SOURCE:
-        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_SOURCE));
+        drawFieldLabel(COLUMN_X, y, STR_SOURCE);
         drawSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
@@ -407,7 +407,7 @@ void menuModelMixOne(event_t event)
         break;
       case MIX_FIELD_OFFSET:
       {
-        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_OFFSET));
+        drawFieldLabel(COLUMN_X, y, STR_OFFSET);
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
@@ -731,10 +731,10 @@ void menuModelExpoMix(uint8_t expo, event_t event)
       break;
   }
 
-  lcdDrawNumber(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, getExpoMixCount(expo));
-  lcdDrawText(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
+  lcdDrawNumber(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXES))+FW+FW/2, 0, getExpoMixCount(expo));
+  lcdDrawText(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXES))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
 
-  SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXER, menuTabModel, expo ? MENU_MODEL_INPUTS : MENU_MODEL_MIXES, s_maxLines);
+  SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXES, menuTabModel, expo ? MENU_MODEL_INPUTS : MENU_MODEL_MIXES, s_maxLines);
 
   sub = menuVerticalPosition;
   s_currCh = 0;

@@ -17,21 +17,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 #include "opentx.h"
 #include "boot.h"
 #include "bin_files.h"
 
 #if defined(PCBXLITE)
-#define BOOTLOADER_KEYS                 0x0F
+  #define BOOTLOADER_KEYS                 0x0F
 #else
-#define BOOTLOADER_KEYS                 0x42
+  #define BOOTLOADER_KEYS                 0x42
 #endif
+
 #define APP_START_ADDRESS               (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
 
 #if defined(EEPROM)
-#define MAIN_MENU_LEN 3
+  #define MAIN_MENU_LEN 3
 #else
-#define MAIN_MENU_LEN 2
+  #define MAIN_MENU_LEN 2
 #endif
 
 typedef void (*voidFunction)(void);
@@ -63,19 +65,17 @@ uint32_t eepromWritten = 0;
 #endif
 
 volatile uint8_t tenms = 1;
-
 FlashCheckRes valid;
-
 MemoryType memoryType;
 uint32_t unlocked = 0;
 
-void interrupt10ms(void)
+void interrupt10ms()
 {
-  tenms |= 1;     // 10 mS has passed
+  tenms |= 1u; // 10 mS has passed
 
   uint8_t index = 0;
   uint8_t in = readKeys();
-  for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
+  for (uint8_t i = 1; i != uint8_t(1u << TRM_BASE); i <<= 1) {
     uint8_t value = (in & i);
     keys[index].input(value);
     ++index;
@@ -83,6 +83,7 @@ void interrupt10ms(void)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   static rotenc_t rePreviousValue;
+
   rotenc_t reNewValue = (rotencValue / ROTARY_ENCODER_GRANULARITY);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
@@ -194,27 +195,26 @@ int main()
   FRESULT fr;
   uint32_t nameCount = 0;
 
-  wdt_reset();
-
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
                          AUX_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph, ENABLE);
 
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph | LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
                          INTERRUPT_xMS_RCC_APB1Periph | I2C_RCC_APB1Periph |
                          AUX_SERIAL_RCC_APB1Periph |
                          SD_RCC_APB1Periph, ENABLE);
 
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG, ENABLE);
 
+  pwrInit();
   keysInit();
 
-  boardPreInit();
-
-  // wait for inputs to stabilize
-  for (uint32_t i = 0; i < 50000; i += 1) {
-    wdt_reset();
+  // wait a bit for the inputs to stabilize...
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    for (uint32_t i = 0; i < 150000; i++) {
+      __ASM volatile ("nop");
+    }
   }
 
   // LHR & RHL trims not pressed simultanously
@@ -223,14 +223,15 @@ int main()
     jumpTo(APP_START_ADDRESS);
   }
 
+  pwrOn();
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   rotaryEncoderInit();
 #endif
 
-  pwrInit();
   delaysInit(); // needed for lcdInit()
 
-#if defined(DEBUG)
+#if defined(DEBUG) && defined(AUX_SERIAL)
   auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
@@ -240,6 +241,12 @@ int main()
 
   lcdInit();
   backlightInit();
+  backlightEnable();
+
+#if defined(PCBX7) || defined(PCBXLITE)
+  // we shutdown the bluetooth module now to be sure it will be detected on firmware start
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, false);
+#endif
 
 #if defined(PCBTARANIS)
   i2cInit();
@@ -256,12 +263,12 @@ int main()
 #if defined(PWR_BUTTON_PRESS)
   // wait until power button is released
   while (pwrPressed()) {
-    wdt_reset();
+    WDG_RESET();
   }
 #endif
 
   for (;;) {
-    wdt_reset();
+    WDG_RESET();
 
     if (tenms) {
       tenms = 0;
@@ -488,12 +495,7 @@ int main()
 
     if (state != ST_FLASHING && state != ST_USB) {
       if (pwrOffPressed()) {
-        lcdClear();
-        lcdOff(); // this drains LCD caps
-        pwrOff();
-        for (;;) {
-          // Wait for power to go off
-        }
+        boardOff();
       }
     }
 
@@ -502,16 +504,12 @@ int main()
       lcdRefresh();
       lcdRefreshWait();
 
-#if !defined(EEPROM)
-      // Use jump on radios with emergency mode
-      // to avoid triggering it with a soft reset
-
-      // Jump to proper application address
-      jumpTo(APP_START_ADDRESS);
-#else
-      // Use software reset everywhere else
-      NVIC_SystemReset();
+#if defined(RTC_BACKUP_RAM)
+      rtcInit();
+      RTC->BKP0R = SOFTRESET_REQUEST;
 #endif
+
+      NVIC_SystemReset();
     }
   }
 
@@ -519,5 +517,5 @@ int main()
 }
 
 #if defined(PCBHORUS)
-void *__dso_handle = 0;
+void *__dso_handle = nullptr;
 #endif

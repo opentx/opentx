@@ -100,7 +100,7 @@ uint32_t readTrims()
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+bool trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }
@@ -141,7 +141,7 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 0: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
+      break
 #else
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
@@ -149,29 +149,25 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 2: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break;
-#endif
-  #define ADD_3POS_CASE(x, i) \
-    case SW_S ## x ## 0: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
-      break; \
-    case SW_S ## x ## 1: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 2: \
-      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_CONFIG_3POS(i)) { \
-        xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
       break
+#endif
 
-uint8_t keyState(uint8_t index)
-{
-  return keys[index].state();
-}
+#define ADD_3POS_CASE(x, i) \
+  case SW_S ## x ## 0: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break; \
+  case SW_S ## x ## 1: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    break; \
+  case SW_S ## x ## 2: \
+    xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_CONFIG_3POS(i)) { \
+      xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break
 
 #if !defined(BOOT)
 uint32_t switchState(uint8_t index)
@@ -182,24 +178,47 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
-#if !defined(PCBX9LITE)
-    ADD_3POS_CASE(D, 3);
-#endif
-#if defined(PCBXLITES) || defined(PCBX9LITE)
+
+#if defined(PCBX9LITES)
+    ADD_2POS_CASE(D);
     ADD_2POS_CASE(E);
     ADD_2POS_CASE(F);
-    // no SWG and SWH on XLITES and X9
-#elif defined(PCBXLITE) || defined(PCBX9LITE)
-    // no SWE, SWF, SWG and SWH on X9LITE and XLITE
-#elif defined(PCBX7)
+    ADD_2POS_CASE(G);
+#elif defined(PCBX9LITE)
+    ADD_2POS_CASE(D);
+    ADD_2POS_CASE(E);
+#elif defined(PCBXLITES)
+    ADD_3POS_CASE(D, 3);
+    ADD_2POS_CASE(E);
+    ADD_2POS_CASE(F);
+    // no SWG and SWH on XLITES
+#elif defined(PCBXLITE)
+    ADD_3POS_CASE(D, 3);
+    // no SWE, SWF, SWG and SWH on XLITE
+#elif defined(PCBX7ACCESS)    
+    ADD_3POS_CASE(D, 3);
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
+    ADD_2POS_CASE(I);
+    // no SWJ on XLITE
+#elif defined(PCBX7)
+    ADD_3POS_CASE(D, 3);
+    ADD_2POS_CASE(F);
+    ADD_2POS_CASE(H);
+    ADD_2POS_CASE(I);
+    ADD_2POS_CASE(J);
 #else
+    ADD_3POS_CASE(D, 3);
     ADD_3POS_CASE(E, 4);
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
 #endif
+
+#if defined(RADIO_X9DP2019)
+    ADD_2POS_CASE(I);
+#endif
+
 #if defined(PCBX9E)
     ADD_3POS_CASE(I, 8);
     ADD_3POS_CASE(J, 9);
@@ -225,43 +244,36 @@ uint32_t switchState(uint8_t index)
 void keysInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 
 #if defined(KEYS_GPIOA_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOA_PINS;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOA);
 #endif
 
 #if defined(KEYS_GPIOB_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOB_PINS;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOB);
 #endif
 
 #if defined(KEYS_GPIOC_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOC_PINS;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOC);
 #endif
 
 #if defined(KEYS_GPIOD_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOD_PINS;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOD);
 #endif
 
 #if defined(KEYS_GPIOE_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOE_PINS;
-  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOE);
 #endif
 
 #if defined(KEYS_GPIOF_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOF_PINS;
-  GPIO_Init(GPIOF, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOF);
 #endif
 
 #if defined(KEYS_GPIOG_PINS)
-  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
-  GPIO_Init(GPIOG, &GPIO_InitStructure);
+  INIT_KEYS_PINS(GPIOG);
 #endif
 }
