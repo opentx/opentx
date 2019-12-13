@@ -46,7 +46,7 @@ class FontBitmap:
     @staticmethod
     def is_column_needed(px, x, height):
         for y in range(height):
-            if sum(px[x, y]) <= 3 * 0xC6:
+            if px[x, y] != (255, 255, 255):
                 return True
         return False
 
