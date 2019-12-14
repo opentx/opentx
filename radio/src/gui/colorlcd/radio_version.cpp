@@ -69,10 +69,17 @@ void RadioVersionPage::build(FormWindow * window)
   grid.setLabelWidth(120);
   grid.spacer(PAGE_PADDING);
 
-  getCPUUniqueID(reusableBuffer.version.id);
-
   new StaticText(window, grid.getLabelSlot(), "FW Version");
+#if LCD_W > LCD_H
   new StaticText(window, grid.getFieldSlot(), vers_stamp);
+#else
+  memcpy(reusableBuffer.version.id, vers_stamp, strcspn(vers_stamp, " "));
+  new StaticText(window, grid.getFieldSlot(), reusableBuffer.version.id);
+  grid.nextLine();
+
+  strAppend(reusableBuffer.version.id, strpbrk(vers_stamp, " "));
+  new StaticText(window, grid.getFieldSlot(), reusableBuffer.version.id);
+#endif
   grid.nextLine();
 
   new StaticText(window, grid.getLabelSlot(), "FW Options");
@@ -91,7 +98,14 @@ void RadioVersionPage::build(FormWindow * window)
   new StaticText(window, grid.getFieldSlot(), eeprom_stamp);
   grid.nextLine();
 
+  getCPUUniqueID(reusableBuffer.version.id);
   new StaticText(window, grid.getLabelSlot(), "CPU UID");
+#if LCD_W > LCD_H
   new StaticText(window, grid.getFieldSlot(), reusableBuffer.version.id);
+#else
+  grid.nextLine();
+  new StaticText(window, {PAGE_PADDING, static_cast<coord_t>(grid.getWindowHeight() + PAGE_LINE_SPACING), static_cast<coord_t>(window->width() - PAGE_PADDING),
+                          PAGE_LINE_HEIGHT}, reusableBuffer.version.id);
+#endif
   grid.nextLine();
 }
