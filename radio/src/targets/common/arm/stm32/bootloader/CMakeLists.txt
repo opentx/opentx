@@ -77,13 +77,14 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/board.cpp
   ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
-  ../usbd_usr.cpp
-  ../usbd_storage_msd.cpp
+  ../cpu_id.cpp
   ../delays.cpp
-  ../usbd_desc.c
+  ../flash_driver.cpp
   ../usb_bsp.c
   ../usb_driver.cpp
-  ../flash_driver.cpp
+  ../usbd_desc.c
+  ../usbd_storage_msd.cpp
+  ../usbd_usr.cpp
   init.c
   boot.cpp
   bin_files.cpp

@@ -34,3 +34,26 @@ void getCPUUniqueID(char * s)
   *tmp = ' ';
   strAppendUnsigned(tmp+1, cpu_uid[2], 8, 16);
 }
+
+void getCPUDFUSerial(char * s)
+{
+	uint8_t *id = (uint8_t *)cpu_uid;
+
+	uint8_t serial[6];
+	serial[0] = id[11];
+	serial[1] = id[10] + id[2];
+	serial[2] = id[9];
+	serial[3] = id[8] + id[0];
+	serial[4] = id[7];
+	serial[5] = id[6];
+
+	uint8_t *ser = &serial[0];
+	uint8_t *end = &serial[6];
+	const char hex_digit[] = "0123456789ABCDEF";
+
+	for (; ser < end; ser++) {
+		*s++ = hex_digit[(*ser >> 4) & 0x0f];
+		*s++ = hex_digit[(*ser >> 0) & 0x0f];
+	}
+	*s = '\0';
+}

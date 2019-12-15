@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "opentx.h"
+#include "cpu_id.h"
 #include "FatFs/diskio.h"
 #include "stamp.h"
 
@@ -66,7 +67,10 @@ const unsigned char STORAGE_Inquirydata[] = { //36
   '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
 };
 
-#define RESERVED_SECTORS (1 /*Boot*/ + 2 /*Fat table */ + 1 /*Root dir*/ + 8 /* one cluster for firmware.txt */)
+#define HEADER_SECTORS (1 /*Boot*/ + 2 /*Fat table */ + 1 /*Root dir*/)
+#define FIRMWARE_TXT_END (HEADER_SECTORS + 8) // one cluster for firmware.txt
+#define RADIO_TXT_END (FIRMWARE_TXT_END + 8) // one cluster for radio.txt
+#define RESERVED_SECTORS RADIO_TXT_END
 
 int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count);
 int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count );
@@ -282,6 +286,11 @@ const char firmware_txt[] =
 #endif
   ;
 
+const char radio_txt_cpu_unique_id_prefix[] = "CPU UID: ";
+const char radio_txt_cpu_serial_prefix[] = "CPU Serial: ";
+#define RADIO_TXT_SIZE (sizeof(radio_txt_cpu_unique_id_prefix) + LEN_CPU_UID + 2 /* \r\n */ \
+                        + sizeof(radio_txt_cpu_serial_prefix) + LEN_CPU_DFU_SERIAL)
+
 //------------------------------------------------------------------------------
 /**
  * FAT12 boot sector partition.
@@ -411,6 +420,21 @@ const FATDirEntry_t g_DIRroot[] =
       sizeof(firmware_txt) + strlen(getOtherVersion(nullptr))
     },
     {
+      { 'R', 'A', 'D', 'I', 'O', ' ', ' ', ' '},
+      { 'T', 'X', 'T'},
+      0x21,
+      0x00,
+      0x3E,
+      0xA301,
+      0x3D55,
+      0x3D55,
+      0x0000,
+      0xA302,
+      0x3D55,
+      0x0003,
+      RADIO_TXT_SIZE,
+    },
+    {
       { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
       { 'B', 'I', 'N'},
 #if defined(BOOT)
@@ -426,7 +450,7 @@ const FATDirEntry_t g_DIRroot[] =
       0x0000,
       0xA302,
       0x3D55,
-      0x0003,
+      0x0004,
       FLASHSIZE
   },
 #if defined(EEPROM)
@@ -442,7 +466,7 @@ const FATDirEntry_t g_DIRroot[] =
         0x0000,
         0xA302,
         0x3D55,
-        0x0003 + (FLASHSIZE/BLOCK_SIZE)/8,
+        0x0004 + (FLASHSIZE/BLOCK_SIZE)/8,
         EEPROM_SIZE
     },
 #endif
@@ -492,6 +516,9 @@ int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
       // Entry for firmware.txt, exactly one cluster
       pushCluster (buffer, sector, cluster, rest, (uint16_t) 0xFFF);
 
+      // Entry for radio.txt, exactly one cluster
+      pushCluster (buffer, sector, cluster, rest, (uint16_t) 0xFFF);
+
       // Entry for firmware.bin
       for (int i=0;i<FLASHSIZE/BLOCK_SIZE/8 -1;i++)
         pushCluster (buffer, sector, cluster, rest, cluster+1);
@@ -517,9 +544,27 @@ int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
       memcpy(buffer, firmware_txt, sizeof(firmware_txt));
       memcpy(buffer + sizeof(firmware_txt), getOtherVersion(nullptr), strlen(getOtherVersion(nullptr)));
     }
-    else if (sector < RESERVED_SECTORS)
+    else if (sector < FIRMWARE_TXT_END)
     {
       // allocated to firmware.txt
+    } else if (sector == FIRMWARE_TXT_END) {
+      uint8_t *ptr = buffer;
+      char id_buf[(LEN_CPU_UID > LEN_CPU_DFU_SERIAL ? LEN_CPU_UID : LEN_CPU_DFU_SERIAL) + 1];
+
+      memcpy(ptr, radio_txt_cpu_unique_id_prefix, sizeof(radio_txt_cpu_unique_id_prefix));
+      ptr += sizeof(radio_txt_cpu_unique_id_prefix);
+      getCPUUniqueID(id_buf);
+      memcpy(ptr, id_buf, LEN_CPU_UID);
+      ptr += LEN_CPU_UID;
+      memcpy(ptr, "\r\n", 2);
+      ptr += 2;
+      memcpy(ptr, radio_txt_cpu_serial_prefix, sizeof(radio_txt_cpu_serial_prefix));
+      ptr += sizeof(radio_txt_cpu_serial_prefix);
+      getCPUDFUSerial(id_buf);
+      memcpy(ptr, id_buf, LEN_CPU_DFU_SERIAL);
+
+    } else if (sector < RADIO_TXT_END) {
+      // allocated to radio.txt
     }
     else if (sector < RESERVED_SECTORS + (FLASHSIZE/BLOCK_SIZE )) {
       uint32_t address;
