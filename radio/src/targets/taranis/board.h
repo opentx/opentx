@@ -541,16 +541,13 @@ enum Analogs {
   #define STICKS_PWM_ENABLED()          false
 #endif
 
+PACK(typedef struct {
+  uint8_t pcbrev:1;
 #if NUM_PWMSTICKS > 0
-PACK(typedef struct {
   uint8_t sticksPwmDisabled:1;
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-#else
-PACK(typedef struct {
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
 #endif
+  uint8_t pxx2Enabled:1;
+}) HardwareOptions;
 
 extern HardwareOptions hardwareOptions;
 
@@ -701,7 +698,7 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 #if defined(PCBX7ACCESS)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
-  #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
+  #define IS_PCBREV_40()                (hardwareOptions.pcbrev == 1)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
 #elif defined(SPORT_UPDATE_PWR_GPIO)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true

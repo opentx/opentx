@@ -65,11 +65,16 @@ void pwrInit()
   GPIO_Init(TRAINER_MODULE_CPPM_GPIO, &GPIO_InitStructure);
 #endif
 
+#if defined(PCBREV_HARDCODED)
+  hardwareOptions.pcbrev = PCBREV_HARDCODED;
+#else
 #if defined(PCBREV_GPIO_PIN)
   GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+  hardwareOptions.pcbrev = (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET) ? 1 : 0;
+#endif
 #endif
 }
 
