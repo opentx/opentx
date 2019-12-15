@@ -513,7 +513,7 @@ class AudioQueue {
     void wakeup();
     bool started() const { return _started; };
 #if defined(AUDIO_UNMUTE_DELAY)
-    uint32_t lastAudioPlayTime;
+    tmr10ms_t lastAudioPlayTime = 0;
 #endif
 
     AudioBufferFifo buffersFifo;

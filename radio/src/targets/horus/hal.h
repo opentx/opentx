@@ -547,8 +547,8 @@
 #endif
 
 #if defined(RADIO_T16)
-  #define AUDIO_UNMUTE_DELAY            120
-  #define AUDIO_MUTE_DELAY              500
+  #define AUDIO_UNMUTE_DELAY            120  // ms
+  #define AUDIO_MUTE_DELAY              500  // ms
 #endif
 
 // I2C Bus
