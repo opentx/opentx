@@ -1840,10 +1840,7 @@ void opentxInit()
   BACKLIGHT_ENABLE(); // we start the backlight during the startup animation
 
 #if defined(STARTUP_ANIMATION)
-  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-    pwrOn();
-  }
-  else {
+  if (!pwrOnIfImmediate()) {
     runStartupAnimation();
   }
 #else // defined(PWR_BUTTON_PRESS)

@@ -483,7 +483,6 @@ extern "C" {
 // Power driver
 #define SOFT_PWR_CTRL
 void pwrInit();
-uint32_t pwrCheck();
 void pwrOn();
 void pwrOff();
 void pwrResetHandler();

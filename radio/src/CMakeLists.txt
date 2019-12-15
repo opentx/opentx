@@ -356,6 +356,7 @@ set(SRC
   stamp.cpp
   timers.cpp
   trainer.cpp
+  pwr.cpp
   )
 
 if(GUI)

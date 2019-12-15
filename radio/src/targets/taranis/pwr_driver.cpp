@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+#include "pwr.h"
+
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -107,7 +109,5 @@ void pwrResetHandler()
   __ASM volatile ("nop");
   __ASM volatile ("nop");
 
-  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-    pwrOn();
-  }
+  pwrOnIfImmediate();
 }

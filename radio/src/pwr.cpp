@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,24 +18,25 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _PWR_H_
-#define _PWR_H_
+#include "board.h"
 
-enum PowerState {
-  e_power_on,
-  e_power_trainer,
-  e_power_usb,
-  e_power_off,
-  e_power_press,
-};
+bool pwrOnShouldBeImmediate()
+{
+#if defined(WAS_RESET_BY_WATCHDOG_OR_SOFTWARE)
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    return true;
+  }
+#endif
+  // We need to power on immediately when USB is plugged, so
+  // we can get out of ST's bootloader without user intervention.
+  return usbPlugged();
+}
 
-/// Check if power should be turned on immediately.
-/// @see pwrOnIfImmediate()
-bool pwrOnShouldBeImmediate();
-/// If power should be turned on immediately, call pwrOn()
-/// and return true. Return false otherwise.
-/// @see pwrOnShouldBeImmediate()
-/// @see pwrOn()
-bool pwrOnIfImmediate();
-
-#endif // _PWR_H_
+bool pwrOnIfImmediate()
+{
+  if (pwrOnShouldBeImmediate()) {
+    pwrOn();
+    return true;
+  }
+  return false;
+}

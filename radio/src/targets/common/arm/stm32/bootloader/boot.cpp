@@ -21,6 +21,7 @@
 #include "opentx.h"
 #include "boot.h"
 #include "bin_files.h"
+#include "pwr.h"
 
 #if defined(PCBXLITE)
   #define BOOTLOADER_KEYS                 0x0F
@@ -211,7 +212,7 @@ int main()
   keysInit();
 
   // wait a bit for the inputs to stabilize...
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+  if (!pwrOnShouldBeImmediate()) {
     for (uint32_t i = 0; i < 150000; i++) {
       __ASM volatile ("nop");
     }

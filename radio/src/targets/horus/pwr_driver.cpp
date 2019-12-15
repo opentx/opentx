@@ -19,6 +19,7 @@
  */
 
 #include "board.h"
+#include "pwr.h"
 #include "storage/rtc_backup.h"
 
 void pwrInit()
@@ -103,7 +104,5 @@ void pwrResetHandler()
   __ASM volatile ("nop");
   __ASM volatile ("nop");
 
-  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-    pwrOn();
-  }
+  pwrOnIfImmediate();
 }

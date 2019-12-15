@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "pwr.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -175,9 +176,7 @@ void boardInit()
 #endif
 
 #if defined(PWR_BUTTON_PRESS)
-  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-    pwrOn();
-  }
+  pwrOnIfImmediate();
 #endif
 
 #if defined(TOPLCD_GPIO)

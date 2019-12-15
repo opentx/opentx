@@ -439,6 +439,8 @@ bool cmpStrWithZchar(const char * charString, const char * zcharString, int size
 #include "keys.h"
 #include "pwr.h"
 
+uint32_t pwrCheck();
+
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];

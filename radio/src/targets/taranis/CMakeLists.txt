@@ -361,10 +361,10 @@ set(TARGET_SRC
   backlight_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
-  ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp
   ../common/arm/stm32/heartbeat_driver.cpp
+  ../common/arm/stm32/timers_driver.cpp
   )
 
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
