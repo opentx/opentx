@@ -115,7 +115,7 @@ void audioConsumeCurrentBuffer()
     else {
 #if defined(AUDIO_UNMUTE_DELAY)
       uint32_t now = RTOS_GET_MS();
-      if((RTOS_GET_MS() - audioQueue.lastAudioPlayTime > AUDIO_MUTE_DELAY) && !readTrims()) {
+      if ((RTOS_GET_MS() - audioQueue.lastAudioPlayTime > AUDIO_MUTE_DELAY) && !readTrims()) {
         // mute
         GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
         audioQueue.lastAudioPlayTime = now;
