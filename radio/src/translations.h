@@ -168,6 +168,7 @@ extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 extern const char STR_FLYSKY_PROTOCOLS[];
 extern const char STR_CRSF_BAUDRATE[];
+extern const char STR_PPM_POL[];
 
 #if defined(MULTIMODULE)
 extern const char STR_MULTI_PROTOCOLS[];

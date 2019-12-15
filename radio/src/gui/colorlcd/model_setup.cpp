@@ -664,7 +664,7 @@ class ModuleWindow : public FormGroup {
         new StaticText(this, grid.getLabelSlot(true), STR_PPMFRAME);
 
         // PPM frame length
-        auto edit = new NumberEdit(this, grid.getFieldSlot(2, 0), 125, 35 * 5 + 225,
+        auto edit = new NumberEdit(this, grid.getFieldSlot(3, 0), 125, 35 * 5 + 225,
                                    GET_DEFAULT(g_model.moduleData[moduleIdx].ppm.frameLength * 5 + 225),
                                    SET_VALUE(g_model.moduleData[moduleIdx].ppm.frameLength, (newValue - 225) / 5),
                                    PREC1);
@@ -672,11 +672,14 @@ class ModuleWindow : public FormGroup {
         edit->setSuffix(STR_MS);
 
         // PPM frame delay
-        edit = new NumberEdit(this, grid.getFieldSlot(2, 1), 100, 800,
+        edit = new NumberEdit(this, grid.getFieldSlot(3, 1), 100, 800,
                               GET_DEFAULT(g_model.moduleData[moduleIdx].ppm.delay * 50 + 300),
                               SET_VALUE(g_model.moduleData[moduleIdx].ppm.delay, (newValue - 300) / 50));
         edit->setStep(50);
         edit->setSuffix("us");
+
+        // PPM Polarity
+        new Choice(this, grid.getFieldSlot(3, 2), STR_PPM_POL, 0, 1, GET_SET_DEFAULT(g_model.moduleData[moduleIdx].ppm.pulsePol ));
         grid.nextLine();
       }
 
