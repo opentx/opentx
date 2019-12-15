@@ -113,8 +113,17 @@ void audioConsumeCurrentBuffer()
     }
 #if defined(AUDIO_MUTE_GPIO_PIN)
     else {
+#if defined(AUDIO_UNMUTE_DELAY)
+      uint32_t now = RTOS_GET_MS();
+      if((RTOS_GET_MS() - audioQueue.lastAudioPlayTime) > 1000 ) {
+        // mute
+        GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+        audioQueue.lastAudioPlayTime = now;
+      }
+#else
       // mute
       GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+#endif
     }
 #endif
   }

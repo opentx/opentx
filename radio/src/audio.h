@@ -512,6 +512,9 @@ class AudioQueue {
     bool isEmpty() const { return fragmentsFifo.empty(); };
     void wakeup();
     bool started() const { return _started; };
+#if defined(AUDIO_UNMUTE_DELAY)
+    uint32_t lastAudioPlayTime;
+#endif
 
     AudioBufferFifo buffersFifo;
 
