@@ -612,6 +612,9 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
+  if (moduleType == MODULE_TYPE_FLYSKY)
+    return false; // doesn't exist for now
+
   if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
     return false;
 
@@ -637,6 +640,7 @@ bool isExternalModuleAvailable(int moduleType)
 
   if (moduleType == MODULE_TYPE_ISRM_PXX2)
     return false; // doesn't exist for now
+
 
 #if !defined(PXX2) || !defined(EXTMODULE_USART)
   if (moduleType == MODULE_TYPE_XJT_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
