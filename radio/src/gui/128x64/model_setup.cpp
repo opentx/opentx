@@ -1328,7 +1328,7 @@ void menuModelSetup(event_t event)
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
-              setMultiBindStatus(moduleIdx, MULTI_NORMAL_OPERATION);
+              setMultiBindStatus(moduleIdx, MULTI_BIND_NONE);
               s_editMode = 0;
             }
 #endif

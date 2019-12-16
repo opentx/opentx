@@ -63,7 +63,7 @@ enum MultiBufferState : uint8_t
 
 static MultiModuleStatus multiModuleStatus[NUM_MODULES] = {MultiModuleStatus(), MultiModuleStatus()};
 static MultiModuleSyncStatus multiSyncStatus[NUM_MODULES] = {MultiModuleSyncStatus(), MultiModuleSyncStatus()};
-static uint8_t multiBindStatus[NUM_MODULES] = {MULTI_NORMAL_OPERATION, MULTI_NORMAL_OPERATION};
+static uint8_t multiBindStatus[NUM_MODULES] = {MULTI_BIND_NONE, MULTI_BIND_NONE};
 
 static MultiBufferState multiTelemetryBufferState[NUM_MODULES];
 static uint16_t multiTelemetryLastRxTS[NUM_MODULES];
@@ -111,7 +111,7 @@ uint8_t intTelemetryRxBufferCount;
 
 static MultiModuleStatus multiModuleStatus;
 static MultiModuleSyncStatus multiSyncStatus;
-static uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
+static uint8_t multiBindStatus = MULTI_BIND_NONE;
 
 static MultiBufferState multiTelemetryBufferState;
 static uint16_t multiTelemetryLastRxTS;
@@ -126,8 +126,12 @@ MultiModuleSyncStatus& getMultiSyncStatus(uint8_t)
   return multiSyncStatus;
 }
 
-uint8_t getMultiBindStatus(uint8_t)
+uint8_t getMultiBindStatus(uint8_t moduleIdx)
 {
+#if !defined(INTERNAL_MODULE_MULTI)
+  if (moduleIdx == INTERNAL_MODULE)
+    return MULTI_BIND_NONE;
+#endif
   return multiBindStatus;
 }
 

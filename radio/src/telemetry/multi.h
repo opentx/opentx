@@ -151,7 +151,7 @@ struct MultiModuleStatus {
 MultiModuleStatus& getMultiModuleStatus(uint8_t module);
 
 enum MultiBindStatus : uint8_t {
-  MULTI_NORMAL_OPERATION,
+  MULTI_BIND_NONE,
   MULTI_BIND_INITIATED,
   MULTI_BIND_FINISHED,
 };
