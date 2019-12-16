@@ -171,7 +171,7 @@ static MultiBufferState guessProtocol(uint8_t module)
     return FrskyTelemetryFallback;
 }
 
-static void processMultiScannerPacket(const uint8_t moduleIdx, const uint8_t *data)
+static void processMultiScannerPacket(const uint8_t *data, const uint8_t moduleIdx)
 {
   uint8_t cur_channel = data[0];
   if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
@@ -400,7 +400,7 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 #endif
     case SpectrumScannerPacket:
       if (len == 6)
-        processMultiScannerPacket(module, data);
+        processMultiScannerPacket(data, module);
       else
         TRACE("[MP] Received spectrum scanner len %d != 6", len);
       break;
