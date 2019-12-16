@@ -702,19 +702,22 @@ class ModuleWindow : public FormGroup {
             rangeButton->check(false);
           }
           if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-            bindButton->setText(STR_MODULE_BIND);
             moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
             return 0;
           }
           else {
-            bindButton->setText(STR_MODULE_BIND);
+            setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
             moduleState[moduleIdx].mode = MODULE_MODE_BIND;
             return 1;
           }
         });
         bindButton->setCheckHandler([=]() {
           if (moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
-            bindButton->setText(STR_MODULE_BIND);
+            bindButton->check(false);
+          }
+          if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
+            setMultiBindStatus(moduleIdx, MULTI_NORMAL_OPERATION);
+            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
             bindButton->check(false);
           }
         });
@@ -722,7 +725,6 @@ class ModuleWindow : public FormGroup {
         rangeButton = new TextButton(this, grid.getFieldSlot(2+thirdColumn, 1+thirdColumn), STR_MODULE_RANGE);
         rangeButton->setPressHandler([=]() -> uint8_t {
           if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-            bindButton->setText(STR_MODULE_BIND);
             bindButton->check(false);
             moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
           }
