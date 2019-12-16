@@ -1557,12 +1557,8 @@ void doMixerCalculations()
 
 #if defined(PXX) || defined(DSM2)
     static uint8_t countRangecheck = 0;
-    for (uint8_t i=0; i<NUM_MODULES; ++i) {
-#if defined(MULTIMODULE)
-      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || getMultiModuleStatus(i).isBinding()) {
-#else
-      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST) {
-#endif
+    for (uint8_t i = 0; i < NUM_MODULES; ++i) {
+      if (isModuleBeeping(i)) {
         if (++countRangecheck >= 250) {
           countRangecheck = 0;
           AUDIO_PLAY(AU_SPECIAL_SOUND_CHEEP);
@@ -1573,6 +1569,7 @@ void doMixerCalculations()
 
     checkTrims();
   }
+
   DEBUG_TIMER_STOP(debugTimerMixes10ms);
 
   s_mixer_first_run_done = true;

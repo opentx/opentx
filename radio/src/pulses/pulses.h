@@ -213,6 +213,16 @@ PACK(struct ModuleState {
 
 extern ModuleState moduleState[NUM_MODULES];
 
+inline bool isModuleBeeping(uint8_t moduleIndex)
+{
+#if defined(MULTIMODULE)
+  if (getMultiModuleStatus(moduleIndex).isBinding())
+    return true;
+#endif
+
+  return moduleState[moduleIndex].mode >= MODULE_MODE_BEEP_FIRST;
+}
+
 template<class T> struct PpmPulsesData {
   T pulses[20];
   T * ptr;
