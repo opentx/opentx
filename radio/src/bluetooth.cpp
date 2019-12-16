@@ -21,6 +21,10 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
+#if defined(LOG_BLUETOOTH)
+extern FIL g_bluetoothFile;
+#endif
+
 #if defined(PCBX9E)
 #define BLUETOOTH_COMMAND_NAME         "TTM:REN-"
 #define BLUETOOTH_ANSWER_NAME          "TTM:REN"
