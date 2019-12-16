@@ -401,7 +401,7 @@ void processHitecTelemetryData(uint8_t data, uint8_t * rxBuffer, uint8_t &rxBuff
     for (int i=0; i<5; i++) {
       debugPrintf("%02X ", rxBuffer[4+i]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     processHitecPacket(rxBuffer + 1);
     rxBufferCount = 0;
