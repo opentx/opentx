@@ -434,7 +434,7 @@ void processSpektrumTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffe
       debugPrintf("%02X%02X %02X%02X  ", rxBuffer[i], rxBuffer[i + 1],
                   rxBuffer[i + 2], rxBuffer[i + 3]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     processSpektrumPacket(rxBuffer);
     rxBufferCount = 0;

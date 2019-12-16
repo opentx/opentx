@@ -90,11 +90,10 @@ class DefaultTheme: public Theme
 
     void loadIcons() const
     {
-#if defined(LOG_TELEMETRY) || !defined(WATCHDOG)
-      loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
-#else
-      loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
-#endif
+      if (isAsteriskDisplayed())
+        loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
+      else
+        loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
       loadMenuIcon(ICON_RADIO_SETUP, "mask_radio_setup.png");
       loadMenuIcon(ICON_RADIO_SD_MANAGER, "mask_radio_sd_browser.png");
