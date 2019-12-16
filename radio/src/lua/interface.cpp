@@ -107,7 +107,7 @@ void luaHook(lua_State * L, lua_Debug *ar)
   if (instructionsPercent > 100) {
     if (max + 10 < instructionsPercent) {
       max = instructionsPercent;
-      TRACE("LUA instructionsPercent %u%%", (uint32_t)max);
+      TRACE("LUA instructionsPercent %" PRIu32 "%%", (uint32_t)max);
     }
   }
   else if (instructionsPercent < 10) {
@@ -286,7 +286,7 @@ void luaDoGc(lua_State * L, bool full)
         uint32_t gc = luaGetMemUsed(L);
         if (gc > (lastgcSctipts + GC_REPORT_TRESHOLD) || (gc + GC_REPORT_TRESHOLD) < lastgcSctipts) {
           lastgcSctipts = gc;
-          TRACE("GC Use Scripts: %u bytes", gc);
+          TRACE("GC Use Scripts: %" PRIu32 " bytes", gc);
         }
       }
 #if defined(COLORLCD)
@@ -295,7 +295,7 @@ void luaDoGc(lua_State * L, bool full)
         uint32_t gc = luaGetMemUsed(L);
         if (gc > (lastgcWidgets + GC_REPORT_TRESHOLD) || (gc + GC_REPORT_TRESHOLD) < lastgcWidgets) {
           lastgcWidgets = gc;
-          TRACE("GC Use Widgets: %u bytes + Extra %u", gc, luaExtraMemoryUsage);
+          TRACE("GC Use Widgets: %" PRIu32 " bytes + Extra %" PRIu32, gc, luaExtraMemoryUsage);
         }
       }
 #endif

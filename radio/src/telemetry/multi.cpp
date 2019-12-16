@@ -266,7 +266,7 @@ static void processMultiSyncPacket(const uint8_t * data, uint8_t module)
   status.calcAdjustedRefreshRate(data[0] << 8 | data[1], data[2] << 8 | data[3]);
 
 #if !defined(PPM_PIN_SERIAL)
-  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n",
+  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %" PRIu32 ", adjRefresh %" PRIu16 "\r\n",
         module == EXTERNAL_MODULE ? extmodulePulsesData.dsm2.rest : 0,
         status.inputLag, oldlag - status.inputLag, status.target, status.interval, status.refreshRate, status.adjustedRefreshRate / 50,
         status.getAdjustedRefreshRate());

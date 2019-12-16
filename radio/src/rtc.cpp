@@ -477,7 +477,7 @@ uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t
     struct gtm utm;
     rtcGetTime(&utm);
     gtime_t rtcTime = gmktime(&utm);
-    TRACE("rtc: %d, grtc: %d, gps: %d, diff: %d, ", rtcTime, g_rtcTime, newTime, diff);
+    TRACE("rtc: %ld, grtc: %ld, gps: %ld, diff: %ld, ", rtcTime, g_rtcTime, newTime, diff);
 #endif
 
     if (diff > RTC_ADJUST_TRESHOLD) {

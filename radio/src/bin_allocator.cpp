@@ -59,11 +59,11 @@ void * bin_realloc(void * ptr, size_t size)
     // if it fits in current slot, return it
     // TODO if new size is smaller, try to relocate in smaller slot
     if ( slots1.can_fit(ptr, size) ) {
-      // TRACE("OUR realloc %p[%lu] fits in slot1", ptr, size);
+      // TRACE("OUR realloc %p[%zu] fits in slot1", ptr, size);
       return ptr;
     }
     if ( slots2.can_fit(ptr, size) ) {
-      // TRACE("OUR realloc %p[%lu] fits in slot2", ptr, size);
+      // TRACE("OUR realloc %p[%zu] fits in slot2", ptr, size);
       return ptr;
     }
 
@@ -71,10 +71,10 @@ void * bin_realloc(void * ptr, size_t size)
     void * res = bin_malloc(size);
     if (res == 0) {
       // we don't have the space, use libc malloc
-      // TRACE("bin_malloc [%lu] FAILURE", size);
+      // TRACE("bin_malloc [%zu] FAILURE", size);
       res = malloc(size);
       if (res == 0) {
-        TRACE("libc malloc [%lu] FAILURE", size);  
+        TRACE("libc malloc [%zu] FAILURE", size);
         return 0;
       }
     }
@@ -109,20 +109,20 @@ void *bin_l_alloc (void *ud, void *ptr, size_t osize, size_t nsize)
     }
     if ( SimulateMallocFailure > 0) {
       // simulate one malloc failure
-      TRACE("bin_l_alloc(): simulating malloc failure at %p[%lu]", ptr, nsize);
+      TRACE("bin_l_alloc(): simulating malloc failure at %p[%zu]", ptr, nsize);
       return 0;
     }
 #endif // #if defined(DEBUG)
     // try our allocator, if it fails use libc allocator
     void * res = bin_realloc(ptr, nsize);
     if (res && ptr) {
-      // TRACE("OUR realloc %p[%lu] -> %p[%lu]", ptr, osize, res, nsize); 
+      // TRACE("OUR realloc %p[%zu] -> %p[%zu]", ptr, osize, res, nsize);
     }
     if (res == 0) {
       res = realloc(ptr, nsize);
-      // TRACE("libc realloc %p[%lu] -> %p[%lu]", ptr, osize, res, nsize);
+      // TRACE("libc realloc %p[%zu] -> %p[%zu]", ptr, osize, res, nsize);
       // if (res == 0 ){
-      //   TRACE("realloc FAILURE %lu", nsize);
+      //   TRACE("realloc FAILURE %zu", nsize);
       //   dumpFreeMemory();
       // }
     }

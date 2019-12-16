@@ -253,7 +253,7 @@ void processSpectrumAnalyserFrame(uint8_t module, const uint8_t * frame)
   // step = 10000
 
   int32_t offset = frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
-  TRACE("Fq=%u => %d, Pw=%d", frequency, offset, int32_t(power));
+  TRACE("Fq=%" PRIu32 " => %" PRIi32 ", Pw=%" PRIi32, frequency, offset, int32_t(power));
 
   uint32_t x = offset / reusableBuffer.spectrumAnalyser.step;
   if (x < LCD_W) {
