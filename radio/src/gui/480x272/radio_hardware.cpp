@@ -72,11 +72,17 @@ enum MenuRadioHardwareItems {
 #endif
 
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
+  ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
 
 #define HW_SETTINGS_COLUMN             150
 
+#if defined(AUX_SERIAL)
+  #define AUX_SERIAL_ROW                0,
+#else
+  #define AUX_SERIAL_ROW
+#endif
 
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
@@ -134,8 +140,9 @@ bool menuRadioHardware(event_t event)
 
     EXTERNAL_ANTENNA_ROW
 
-    0, /* aux serial mode */
+    AUX_SERIAL_ROW /* aux serial mode */
     0, /* ADC filter */
+    1, /* Debug */
   });
 
   if (menuEvent) {
@@ -348,6 +355,18 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_DEBUG:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DEBUG);
+        lcdDrawText(HW_SETTINGS_COLUMN + 50, y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
+        lcdDrawText(lcdNextPos + 10, y, STR_KEYS_BTN, menuHorizontalPosition == 1 ? attr : 0);
+        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+          if (menuHorizontalPosition == 0)
+            pushMenu(menuRadioDiagAnalogs);
+          else
+            pushMenu(menuRadioDiagKeys);
+        }
+        break;
     }
   }
 

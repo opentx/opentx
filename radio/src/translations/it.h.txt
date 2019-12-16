@@ -308,7 +308,7 @@
 
 #if defined(PCBHORUS)
   #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Up\0  ""Down\0""Right""Left\0"
+  #define TR_VKEYS                     "PGUP\0""PGDN\0""ENTER""MDL\0 ""RTN\0 ""TELE\0""SYS\0 "
 #elif defined(PCBXLITE)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Shift""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
@@ -665,7 +665,7 @@
 #define TR_MODULE_WAITFORBIND          "Associa per caricare il protocollo"
 #define TR_MODULE_BINDING              "Associa"
 #define TR_MODULE_UPGRADE_ALERT        TR3("Richiede agg.", "Richiede agg. modulo", "Modulo\nRichiede agg.")
-#define TR_MODULE_UPGRADE              TR("Richiede agg.", "Richiede agg. modulo")
+#define TR_MODULE_UPGRADE              TR("Cons. agg.", "Consiglio agg. modulo")
 #define TR_REBIND                      "Richiede associazione"
 #define TR_REG_OK                      "Registrazione ok"
 #define TR_BIND_OK                     "Associazione riuscita"
@@ -683,7 +683,7 @@
 #define TR_LIMIT               INDENT "Limiti"
 #define TR_MINRSSI             "Min. RSSI"
 #define TR_LATITUDE            "Latitud."
-#define TR_LONGITUDE           "Longitud."
+#define TR_LONGITUDE           "Longitu."
 #define TR_GPSCOORD            TR("GPS Coords", INDENT "Formato Coordinate")
 #define TR_VARIO               TR("Vario", "Variometro")
 #define TR_PITCH_AT_ZERO       INDENT "Tono a Zero"
@@ -755,7 +755,7 @@
 #define TR_SWITCHWARN          "CONTROLLI"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Versione non sicura per volare"
+#define TR_NIGHTLY_NOTSAFE             "Versione non sicura"
 #define TR_WRONG_SDCARDVERSION TR("Richiede ver: ", "Richiede versione: ")
 #define TR_WARN_RTC_BATTERY_LOW        "Batteria RTC scarica"
 #define TR_WARN_MULTI_LOWPOWER         "Modalità bassa pot."
@@ -774,7 +774,7 @@
 #define TR_CPU_MAH             "Consumo"
 #define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "Temp. MB \016>"
-#define TR_CAPAWARNING         INDENT "CapacitàLow"
+#define TR_CAPAWARNING         INDENT "Capacità Bassa"
 #define TR_TEMPWARNING         INDENT "Temp. Alta"
 #define TR_FUNC                "Funz"
 #define TR_V1                  "V1"
@@ -800,13 +800,13 @@
 #define TR_EXECUTE_FILE        "Esegui"
 #define TR_REMOVED             " rimosso"
 #define TR_SD_INFO             "Informazioni"
-#define TR_SD_FORMAT           "Format"
+#define TR_SD_FORMAT           "Formatta"
 #define TR_NA                  "N/A"
 #define TR_HARDWARE            "HARDWARE"
 #define TR_FORMATTING          "Formattazione"
 #define TR_TEMP_CALIB          "Temp. Calib."
 #define TR_TIME                "Ora"
-#define TR_MAXBAUDRATE         "Bauds Max"
+#define TR_MAXBAUDRATE         "Max Bauds"
 
 #define TR_BLUETOOTH            "Bluetooth"
 #define TR_BLUETOOTH_DISC       "Cerca"
@@ -935,7 +935,7 @@
 #define TR_CALIBRATION                    TR("Calibraz.", "Calibrazione")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer", "Maestro/Allievo")
-#define TR_CHANS                       "Chans"
+#define TR_CHANS                       "Canali"
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
 #define TR_MODELIDUSED         TR("ID già usato", "ID Modello già usato")
 #define TR_MODULE              "Modulo"

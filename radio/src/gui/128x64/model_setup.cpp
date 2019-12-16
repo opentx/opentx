@@ -259,7 +259,11 @@ void onModelAntennaSwitchConfirm(const char * result)
 #define EXTERNAL_ANTENNA_ROW
 #endif
 
-#if defined(PCBX7) || defined(PCBX9LITE)
+#if defined(PCBX7ACCESS)
+  #define TRAINER_BLUETOOTH_ROW          (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
+  #define TRAINER_PPM_PARAMS_ROW         (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_ROWS                   LABEL(Trainer), 0, IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), TRAINER_CHANNELS_ROW, TRAINER_PPM_PARAMS_ROW
+#elif defined(PCBX7) || defined(PCBX9LITE)
   #if defined(BLUETOOTH)
     #define TRAINER_BLUETOOTH_ROW        (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW)),
   #else
@@ -962,14 +966,7 @@ void menuModelSetup(event_t event)
                   if (checkIncDec_Ret) {
                     g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
                     g_model.moduleData[moduleIdx].subType = 0;
-                    // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                    if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-                      g_model.moduleData[moduleIdx].multi.autoBindMode = 1;
-                    }
-                    else {
-                      g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
-                    }
-                    g_model.moduleData[moduleIdx].multi.optionValue = 0;
+                    resetMultiProtocolsOptions(moduleIdx);
                   }
                 }
 #endif
@@ -1018,6 +1015,9 @@ void menuModelSetup(event_t event)
           switch (menuHorizontalPosition) {
             case 0:{
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, getMaxMultiSubtype(moduleIdx));
+              if (checkIncDec_Ret) {
+                resetMultiProtocolsOptions(moduleIdx);
+              }
               break;
             }
           }
@@ -1458,7 +1458,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS:
       {
 #if defined(MULTIMODULE)
-        if (isModuleMultimodule(moduleIdx)) {
+        if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
           const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
@@ -1488,15 +1488,9 @@ void menuModelSetup(event_t event)
 
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
           if (attr) {
-            if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 70);
-            }
-            else if (multi_proto == MODULE_SUBTYPE_MULTI_OLRS) {
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -1, 7);
-            }
-            else {
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-            }
+            int8_t min, max;
+            getMultiOptionValues(multi_proto, min, max);
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, min, max);
           }
         }
 #endif

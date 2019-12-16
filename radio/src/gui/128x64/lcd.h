@@ -112,6 +112,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len, L
 void lcdDrawText(coord_t x, coord_t y, const char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const char * s);
+void drawTimerWithMode(coord_t x, coord_t y, uint8_t index, LcdFlags att);
 
 #define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(s)*FW+FW+1)/2, y, s)
 

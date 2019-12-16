@@ -2,7 +2,7 @@
 
 # Russian language sounds configuration
 
-from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename
 
 
 systemSounds = []
@@ -10,30 +10,30 @@ sounds = []
 
 # 0 - 100
 for i in range(100):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
+    systemSounds.append((str(i), filename(i)))
 # 100, 200, ... 900
 for i in range(9):
-    systemSounds.append((str(100 * (i + 1)), filename(PROMPT_SYSTEM_BASE + 100 + i)))
+    systemSounds.append((str(100 * (i + 1)), filename(100 + i)))
 for i, s in enumerate([u"тысяча", u"и", u"минус"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 109 + i)))
+    systemSounds.append((s, filename(109 + i)))
 
 for i, s in enumerate([u"тысяча", u"тысячи", u"тысяч"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 200 + i)))
+    systemSounds.append((s, filename(200 + i)))
 
 # decimal point
 for i, s in enumerate([u"ровно", u"и одна десятая", u"и две десятых", u"и три десятых", u"и четыре десятых",
                        u"и пять десятых", u"и шесть десятых", u"и семь десятых", u"и восемь десятых", u"и девять десятых" ]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 165 + i)))
+    systemSounds.append((s, filename(165 + i)))
 
 # last digit = 1, female
 for i, s in enumerate([u"одна", u"одиннадцать", u"двадцать одна", u"тридцать одна", u"сорок одна",
                        u"пятьдесят одна", u"шестьдесят одна", u"семьдесят одна", u"восемьдесят одна", u"девяносто одна"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
+    systemSounds.append((s, filename(180 + i)))
 
 # last digit = 2, female
 for i, s in enumerate([u"две", u"двенадцать", u"двадцать две", u"тридцать две", u"сорок две",
                        u"пятьдесят две", u"шестьдесят две", u"семьдесят две", u"восемьдесят две", u"девяносто две"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 190 + i)))
+    systemSounds.append((s, filename(190 + i)))
 
 for i, (s, f) in enumerate([(u"вольт", "volt0"), (u"вольт", "volt1"),
                             (u"вольта", "volt2"), (u"вольт", "volt5"),
@@ -88,83 +88,84 @@ for i, (s, f) in enumerate([(u"вольт", "volt0"), (u"вольт", "volt1"),
                             (u"секунд", "second0"), (u"секунда", "second1"),
                             (u"секунды", "second2"), (u"секунд", "second5"),
                             ]):
-    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 115 + i)))
+    systemSounds.append((s, filename(f)))
 
-for s, f, a in [(u"Триммер по центру", "midtrim", 495),
-                (u"Триммер максимум", "maxtrim", NO_ALTERNATE),
-                (u"Триммер минимум", "mintrim", NO_ALTERNATE),
-                (u"Таймер 1. Время вышло", "timovr1", NO_ALTERNATE),
-                (u"Таймер 2. Время вышло", "timovr2", NO_ALTERNATE),
-                (u"Таймер 3. Время вышло", "timovr3", NO_ALTERNATE),
-                (u"Аккумулятор садится!", "lowbatt", 485),
-                (u"Внимание, пульт не выключен!", "inactiv", 486),
-                (u"Проверь газ!", "thralert", 481),
-                (u"Проверь, тумблеры!", "swalert", 482),
-                (u"Ошибка памяти", "eebad", 483),
-                (u"Опен тэ, икс приветствует вас!", "hello", 480),
-                (u"Слабый сигнал!", "rssi_org", NO_ALTERNATE),
-                (u"Очень слабый сигнал!", "rssi_red", NO_ALTERNATE),
-                (u"Проблема с антэнной!", "swr_red", NO_ALTERNATE),
-                (u"Телеметрия потеряна", "telemko", NO_ALTERNATE),
-                (u"Телеметрия восстановлена", "telemok", NO_ALTERNATE),
-                (u"Тренерский сигнал потерян", "trainko", NO_ALTERNATE),
-                (u"Тренерский сигнал восстановлен", "trainok", NO_ALTERNATE),
-                (u"Сенсор отключен", "sensorko", NO_ALTERNATE),
-                (u"Серва перегружена", "servoko", NO_ALTERNATE),
-                (u"Перегрузка", "rxko", NO_ALTERNATE),
-                (u"Приемник всё ещё подключен!", "modelpwr", NO_ALTERNATE),
-                ]:
-    systemSounds.append((s, filename(f, a)))
+for s, f in [
+    (u"Триммер по центру", "midtrim"),
+    (u"Триммер максимум", "maxtrim"),
+    (u"Триммер минимум", "mintrim"),
+    (u"Таймер 1. Время вышло", "timovr1"),
+    (u"Таймер 2. Время вышло", "timovr2"),
+    (u"Таймер 3. Время вышло", "timovr3"),
+    (u"Аккумулятор садится!", "lowbatt"),
+    (u"Внимание, пульт не выключен!", "inactiv"),
+    (u"Проверь газ!", "thralert"),
+    (u"Проверь, тумблеры!", "swalert"),
+    (u"Ошибка памяти", "eebad"),
+    (u"Опен тэ, икс приветствует вас!", "hello"),
+    (u"Слабый сигнал!", "rssi_org"),
+    (u"Очень слабый сигнал!", "rssi_red"),
+    (u"Проблема с антэнной!", "swr_red"),
+    (u"Телеметрия потеряна", "telemko"),
+    (u"Телеметрия восстановлена", "telemok"),
+    (u"Тренерский сигнал потерян", "trainko"),
+    (u"Тренерский сигнал восстановлен", "trainok"),
+    (u"Сенсор отключен", "sensorko"),
+    (u"Серва перегружена", "servoko"),
+    (u"Перегрузка", "rxko"),
+    (u"Приемник всё ещё подключен!", "modelpwr"),
+]:
+    systemSounds.append((s, filename(f)))
 
 for i, (s, f) in enumerate([
-                            (u"Аккумулятор садится!", "lowbat"),
-                            (u"Шасси, убраны'", "gearup"),
-                            (u"Шасси, выпущены", "geardn"),
-                            (u"Закрылки убраны'", "flapup"),
-                            (u"Закрылки выпущены", "flapdn"),
-                            (u"Спойлеры выпущены", "splrup"),
-                            (u"Спойлеры - убраны'", "splrdn"),
-                            (u"Тренер: подключен", "trnon"),
-                            (u"Тренер: отключен", "trnoff"),
-                            (u"Двигатели запущены!", "armed"),
-                            (u"Двигатели выключены", "disarm"),
-                            (u"Слишком высоко", "tohigh"),
-                            (u"Слишком низко", "tolow"),
-                            (u"Низкий уровень сигнала", "siglow"),
-                            (u"Критически низкий уровень сигнала", "sigcrt"),
-                            (u"Полетный режим один", "fm-1"),
-                            (u"Полетный режим два", "fm-2"),
-                            (u"Полетный режим три", "fm-3"),
-                            (u"Полетный режим четыре", "fm-4"),
-                            (u"Полетный режим пять", "fm-5"),
-                            (u"Полетный режим шесть", "fm-6"),
-                            (u"Полетный режим семь", "fm-7"),
-                            (u"Полетный режим восемь", "fm-8"),
-                            (u"Режим,акро", "fm-acr"),
-                            (u"Режим круиза", "fm-crs"),
-                            (u"Режим взлета", "fm-lch"),
-                            (u"Режим посадки", "fm-lnd"),
-                            (u"Нормальный режим", "fm-nrm"),
-                            (u"Ручной режим", "fm-man"),
-                            (u"Стабилизация", "fm-stb"),
-                            (u"Удержание позиции", "fm-hld"),
-                            (u"Возврат в точку старта", "fm-rth"),
-                            (u"Горизонт", "fm-hor"),
-                            (u"Стабилизация", "fm-ang"),
-                            (u"аирмод включен", "airmon"),
-                            (u"аирмод выключен", "airmof"),
-                            (u"Высота", "alt"),
-                            (u"Удержание высоты", "althld"),
-                            (u"Критический разряд!", "batcrt"),
-                            (u"Время полета", "flttm"),
-                            (u"Аварийный режим выключен", "fsoff"),
-                            (u"Аварийный режим включен", "fson"),
-                            (u"ДжиПи Эс", "gps"),
-                            (u"Высокие расходы", "hirate"),
-                            (u"Низкие расходы", "lorate"),
-                            (u"Спутники найдены!", "satfix"),
-                            (u"Спутники потеряны!", "satlst"),
-                            (u"Бортовые огни выключены", "ledoff"),
-                            (u"Бортовые огни включены", "ledon")
-                            ]):
-    sounds.append((s, filename(f, PROMPT_CUSTOM_BASE + i)))
+    (u"Аккумулятор садится!", "lowbat"),
+    (u"Шасси, убраны'", "gearup"),
+    (u"Шасси, выпущены", "geardn"),
+    (u"Закрылки убраны'", "flapup"),
+    (u"Закрылки выпущены", "flapdn"),
+    (u"Спойлеры выпущены", "splrup"),
+    (u"Спойлеры - убраны'", "splrdn"),
+    (u"Тренер: подключен", "trnon"),
+    (u"Тренер: отключен", "trnoff"),
+    (u"Двигатели запущены!", "armed"),
+    (u"Двигатели выключены", "disarm"),
+    (u"Слишком высоко", "tohigh"),
+    (u"Слишком низко", "tolow"),
+    (u"Низкий уровень сигнала", "siglow"),
+    (u"Критически низкий уровень сигнала", "sigcrt"),
+    (u"Полетный режим один", "fm-1"),
+    (u"Полетный режим два", "fm-2"),
+    (u"Полетный режим три", "fm-3"),
+    (u"Полетный режим четыре", "fm-4"),
+    (u"Полетный режим пять", "fm-5"),
+    (u"Полетный режим шесть", "fm-6"),
+    (u"Полетный режим семь", "fm-7"),
+    (u"Полетный режим восемь", "fm-8"),
+    (u"Режим,акро", "fm-acr"),
+    (u"Режим круиза", "fm-crs"),
+    (u"Режим взлета", "fm-lch"),
+    (u"Режим посадки", "fm-lnd"),
+    (u"Нормальный режим", "fm-nrm"),
+    (u"Ручной режим", "fm-man"),
+    (u"Стабилизация", "fm-stb"),
+    (u"Удержание позиции", "fm-hld"),
+    (u"Возврат в точку старта", "fm-rth"),
+    (u"Горизонт", "fm-hor"),
+    (u"Стабилизация", "fm-ang"),
+    (u"аирмод включен", "airmon"),
+    (u"аирмод выключен", "airmof"),
+    (u"Высота", "alt"),
+    (u"Удержание высоты", "althld"),
+    (u"Критический разряд!", "batcrt"),
+    (u"Время полета", "flttm"),
+    (u"Аварийный режим выключен", "fsoff"),
+    (u"Аварийный режим включен", "fson"),
+    (u"ДжиПи Эс", "gps"),
+    (u"Высокие расходы", "hirate"),
+    (u"Низкие расходы", "lorate"),
+    (u"Спутники найдены!", "satfix"),
+    (u"Спутники потеряны!", "satlst"),
+    (u"Бортовые огни выключены", "ledoff"),
+    (u"Бортовые огни включены", "ledon")
+]):
+    sounds.append((s, filename(f)))

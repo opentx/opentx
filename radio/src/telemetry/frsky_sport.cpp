@@ -31,6 +31,10 @@ struct FrSkySportSensor {
 
 const FrSkySportSensor sportSensors[] = {
   { RSSI_ID, RSSI_ID, 0, ZSTR_RSSI, UNIT_DB, 0 },
+#if defined(MULTIMODULE)
+  { TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
+  { TX_LQI_ID , TX_LQI_ID,  0, ZSTR_TX_QUALITY, UNIT_RAW, 0 },
+#endif
   { ADC1_ID, ADC1_ID, 0, ZSTR_A1, UNIT_VOLTS, 1 },
   { ADC2_ID, ADC2_ID, 0, ZSTR_A2, UNIT_VOLTS, 1 },
   { A3_FIRST_ID, A3_LAST_ID, 0, ZSTR_A3, UNIT_VOLTS, 2 },
@@ -190,6 +194,12 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
       else {
         telemetryData.rssi.set(data);
       }
+#if defined(MULTIMODULE)
+      if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
+        sportProcessTelemetryPacket(TX_RSSI_ID, 0, instance, packet[5] >> 1, UNIT_DB);
+        sportProcessTelemetryPacket(TX_LQI_ID, 0, instance, packet[7], UNIT_RAW);
+      }
+#endif
     }
     else if (dataId == R9_PWR_ID) {
       uint32_t r9pwr[] = {100, 200, 500, 1000};

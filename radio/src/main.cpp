@@ -42,34 +42,36 @@ void onUSBConnectMenu(const char *result)
 void handleUsbConnection()
 {
 #if defined(STM32) && !defined(SIMU)
-  if (!usbStarted() && usbPlugged() && !(getSelectedUsbMode() == USB_UNSELECTED_MODE)) {
-    usbStart();
-    if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
-      opentxClose(false);
-      usbPluggedIn();
-    }
-  }
-  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
-      POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
-      POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
+  if (!usbStarted() && usbPlugged()) {
+    if (getSelectedUsbMode() == USB_UNSELECTED_MODE) {
+      if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
+        POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
+        POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
 #if defined(DEBUG)
-      POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
+        POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
 #endif
-      POPUP_MENU_START(onUSBConnectMenu);
+        POPUP_MENU_START(onUSBConnectMenu);
+      }
+      else {
+        setSelectedUsbMode(g_eeGeneral.USBMode);
+      }
     }
-    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE) {
-      setSelectedUsbMode(g_eeGeneral.USBMode);
+    else {
+      if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
+        opentxClose(false);
+        usbPluggedIn();
+      }
+      usbStart();
     }
   }
+
   if (usbStarted() && !usbPlugged()) {
     usbStop();
     if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
       opentxResume();
+      putEvent(EVT_ENTRY);
     }
-#if !defined(BOOT)
     setSelectedUsbMode(USB_UNSELECTED_MODE);
-#endif
   }
 #endif // defined(STM32) && !defined(SIMU)
 }
@@ -157,12 +159,10 @@ void checkSpeakerVolume()
 #if defined(EEPROM)
 void checkEeprom()
 {
-  if (!usbPlugged()) {
-    if (eepromIsWriting())
-      eepromWriteProcess();
-    else if (TIME_TO_WRITE())
-      storageCheck(false);
-  }
+  if (eepromIsWriting())
+    eepromWriteProcess();
+  else if (TIME_TO_WRITE())
+    storageCheck(false);
 }
 #else
 void checkEeprom()
@@ -485,8 +485,12 @@ void perMain()
 #endif
 
   checkSpeakerVolume();
-  checkEeprom();
-  logsWrite();
+
+  if (!usbPlugged()) {
+    checkEeprom();
+    logsWrite();
+  }
+
   handleUsbConnection();
 
 #if defined(PCBXLITES)
@@ -508,7 +512,7 @@ void perMain()
     mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
   }
 
-  doLoopCommonActions();
+  checkBacklight();
 
   event_t evt = getEvent(false);
 
@@ -520,14 +524,14 @@ void perMain()
 #endif
 
 #if defined(STM32)
-  if (SD_CARD_PRESENT() && !sdMounted()) {
+  if (!usbPlugged() && SD_CARD_PRESENT() && !sdMounted()) {
     sdMount();
   }
 #endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
+  if (!usbPlugged() && !SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }

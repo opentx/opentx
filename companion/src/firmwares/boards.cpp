@@ -66,6 +66,7 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_TARANIS_XLITES:
       return 0x3B78746F;
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
       return 0x3678746F;
     case BOARD_TARANIS_X9E:
       return 0x3578746F;
@@ -116,6 +117,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -154,6 +156,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -497,6 +500,8 @@ QString Boards::getBoardName(Board::Type board)
       return "MEGA2560";
     case BOARD_TARANIS_X7:
       return "Taranis X7/X7S";
+    case BOARD_TARANIS_X7_ACCESS:
+      return "Taranis X7/X7S Access";
     case BOARD_JUMPER_T12:
       return "Jumper T12";
     case BOARD_TARANIS_XLITE:
