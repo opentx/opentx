@@ -43,22 +43,31 @@ extern Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
 Bluetooth bluetooth;
 
+#if defined(LOG_BLUETOOTH)
+  #define BLUETOOTH_TRACE(str, ...)  \
+    f_printf(&g_bluetoothFile, str, ##__VA_ARGS__); \
+    TRACE_NOCRLF(str, ##__VA_ARGS__);
+#else
+  #define BLUETOOTH_TRACE(str, ...)  \
+    TRACE_NOCRLF(str, ##__VA_ARGS__);
+#endif
+
 void Bluetooth::pushByte(uint8_t byte)
 {
   uint16_t newCrc = outputCrc + byte;
   outputCrc = newCrc + (newCrc >> 8);
   if (byte == START_STOP || byte == BYTE_STUFF) {
-    TRACE_NOCRLF(" %02X", BYTE_STUFF);
+    BLUETOOTH_TRACE(" %02X", BYTE_STUFF);
     btTxFifo.push(BYTE_STUFF);
     byte ^= STUFF_MASK;
   }
-  TRACE_NOCRLF(" %02X", byte);
+  BLUETOOTH_TRACE(" %02X", byte);
   btTxFifo.push(byte);
 }
 
 void Bluetooth::startOutputFrame(uint8_t frameType)
 {
-  TRACE_NOCRLF("BT> %02X", START_STOP);
+  BLUETOOTH_TRACE("BT> %02X", START_STOP);
   outputCrc = 0;
   btTxFifo.push(START_STOP);
   pushByte(frameType);
@@ -68,14 +77,14 @@ void Bluetooth::endOutputFrame()
 {
   pushByte(outputCrc);
   btTxFifo.push(START_STOP);
-  TRACE(" %02X", START_STOP);
+  BLUETOOTH_TRACE(" %02X\r\n", START_STOP);
 }
 
 void Bluetooth::write(const uint8_t * data, uint8_t length)
 {
-  TRACE_NOCRLF("BT>");
+  BLUETOOTH_TRACE("BT>");
   for (int i = 0; i < length; i++) {
-    TRACE_NOCRLF(" %02X", data[i]);
+    BLUETOOTH_TRACE(" %02X", data[i]);
     while (btTxFifo.isFull()) {
       if (!bluetoothIsWriting())
         bluetoothWriteWakeup();
@@ -83,13 +92,13 @@ void Bluetooth::write(const uint8_t * data, uint8_t length)
     }
     btTxFifo.push(data[i]);
   }
-  TRACE_NOCRLF("\r\n");
+  BLUETOOTH_TRACE(CRLF);
   bluetoothWriteWakeup();
 }
 
 void Bluetooth::writeString(const char * str)
 {
-  TRACE("BT> %s", str);
+  BLUETOOTH_TRACE("BT> %s" CRLF, str);
   while (*str != 0) {
     btTxFifo.push(*str++);
   }
@@ -106,19 +115,19 @@ char * Bluetooth::readline(bool error_reset)
     if (!btRxFifo.pop(byte)) {
 #if defined(PCBX9E)
       // X9E BT module can get unresponsive
-      TRACE("NO RESPONSE FROM BT MODULE");
+      BLUETOOTH_TRACE("NO RESPONSE FROM BT MODULE" CRLF);
 #endif
       return nullptr;
     }
 
-    TRACE_NOCRLF("%02X ", byte);
+    BLUETOOTH_TRACE("%02X ", byte);
 
 #if 0
     if (error_reset && byte == 'R' && bufferIndex == 4 && memcmp(buffer, "ERRO", 4)) {
 #if defined(PCBX9E)  // X9E enter BT reset loop if following code is implemented
-      TRACE("BT Error...");
+      BLUETOOTH_TRACE("BT Error..." CRLF);
 #else
-      TRACE("BT Reset...");
+      BLUETOOTH_TRACE("BT Reset..." CRLF);
       bufferIndex = 0;
       bluetoothDisable();
       state = BLUETOOTH_STATE_OFF;
@@ -133,12 +142,12 @@ char * Bluetooth::readline(bool error_reset)
       if (bufferIndex > 2 && buffer[bufferIndex - 1] == '\r') {
         buffer[bufferIndex - 1] = '\0';
         bufferIndex = 0;
-        TRACE("BT< %s", buffer);
+        BLUETOOTH_TRACE("BT< %s" CRLF, buffer);
         if (error_reset && !strcmp((char *)buffer, "ERROR")) {
 #if defined(PCBX9E) // X9E enter BT reset loop if following code is implemented
-          TRACE("BT Error...");
+          BLUETOOTH_TRACE("BT Error..." CRLF);
 #else
-          TRACE("BT Reset...");
+          BLUETOOTH_TRACE("BT Reset..." CRLF);
           bluetoothDisable();
           state = BLUETOOTH_STATE_OFF;
           wakeupTime = get_tmr10ms() + 100; /* 1s */
@@ -171,7 +180,7 @@ void Bluetooth::appendFrameByte(uint8_t byte)
     // we check for "DisConnected", but the first byte could be altered (if received in state STATE_DATA_XOR)
     if (byte == '\n') {
       if (!strncmp((char *)&buffer[bufferIndex-13], "isConnected", 11)) {
-        TRACE("BT< DisConnected");
+        BLUETOOTH_TRACE("BT< DisConnected" CRLF);
         state = BLUETOOTH_STATE_DISCONNECTED;
         bufferIndex = 0;
         wakeupTime += 200; // 1s
@@ -293,7 +302,7 @@ void Bluetooth::processUploadFrame()
   uint8_t dataLength = bufferIndex - 6; /* FRAME TYPE + PART INDEX + CRC */
 
   if (dataLength > 50) {
-    TRACE("BT invalid length %d", dataLength);
+    BLUETOOTH_TRACE("BT invalid length %d" CRLF, dataLength);
     return;
   }
 
@@ -302,7 +311,7 @@ void Bluetooth::processUploadFrame()
     char path[65] = {0};
     strncpy(path, (const char *)(buffer + 5), dataLength);
     if (f_open(&file, path, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
-      TRACE("BT open file %s failed", path);
+      BLUETOOTH_TRACE("BT open file %s failed" CRLF, path);
       return;
     }
     state = BLUETOOTH_STATE_UPLOAD;
@@ -320,7 +329,7 @@ void Bluetooth::processUploadFrame()
       }
     }
     else {
-      TRACE("BT offset %d instead of %d", offset, uploadPosition);
+      BLUETOOTH_TRACE("BT offset %d instead of %d" CRLF, offset, uploadPosition);
     }
   }
 
@@ -329,11 +338,11 @@ void Bluetooth::processUploadFrame()
 
 void Bluetooth::processFrame()
 {
-  TRACE_NOCRLF("BT<");
+  BLUETOOTH_TRACE("BT<");
   for (uint8_t i = 0; i < bufferIndex; i++) {
-    TRACE_NOCRLF(" %02X", buffer[i]);
+    BLUETOOTH_TRACE(" %02X", buffer[i]);
   }
-  TRACE_NOCRLF("\r\n");
+  BLUETOOTH_TRACE(CRLF);
 
   if (!checkFrame())
     return;
