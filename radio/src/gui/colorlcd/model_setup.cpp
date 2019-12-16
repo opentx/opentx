@@ -715,11 +715,13 @@ class ModuleWindow : public FormGroup {
           if (moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
             bindButton->check(false);
           }
+#if defined(MULTIMODULE)
           if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
             setMultiBindStatus(moduleIdx, MULTI_BIND_NONE);
             moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
             bindButton->check(false);
           }
+#endif
         });
 
         rangeButton = new TextButton(this, grid.getFieldSlot(2+thirdColumn, 1+thirdColumn), STR_MODULE_RANGE);
