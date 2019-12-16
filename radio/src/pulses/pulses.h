@@ -216,6 +216,10 @@ extern ModuleState moduleState[NUM_MODULES];
 inline bool isModuleBeeping(uint8_t moduleIndex)
 {
 #if defined(MULTIMODULE)
+#if !defined(INTERNAL_MODULE_MULTI)
+  if (moduleIndex == INTERNAL_MODULE)
+    return false;
+#endif
   if (getMultiModuleStatus(moduleIndex).isBinding())
     return true;
 #endif
