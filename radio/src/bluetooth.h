@@ -91,7 +91,7 @@ class Bluetooth
     void endOutputFrame();
     void sendTrainerFrame();
 
-    uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
+    static uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
     void readFrame();
     bool processFrameByte(uint8_t byte);
     bool checkFrame();
@@ -103,11 +103,11 @@ class Bluetooth
     void sendUploadAck();
     void appendFrameByte(uint8_t byte);
 
-    uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
+    static uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
     void bootloaderSendCommand(uint8_t command, const void *data = nullptr, uint8_t size = 0);
     void bootloaderSendCommandResponse(uint8_t response);
-    const char * bootloaderWaitCommandResponse(uint32_t timeout=1000/*ms*/);
-    const char * bootloaderWaitResponseData(uint8_t *data, uint8_t size);
+    static const char * bootloaderWaitCommandResponse(uint32_t timeout=1000/*ms*/);
+    static const char * bootloaderWaitResponseData(uint8_t *data, uint8_t size);
     const char * bootloaderSetAutoBaud();
     const char * bootloaderReadStatus(uint8_t &status);
     const char * bootloaderCheckStatus();
@@ -133,7 +133,6 @@ class Bluetooth
     uint8_t dataState = STATE_DATA_START;
     FIL file;
     uint32_t uploadPosition;
-    tmr10ms_t uploadTime = 0;
 };
 
 extern Bluetooth bluetooth;

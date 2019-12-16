@@ -307,30 +307,24 @@ void Bluetooth::processUploadFrame()
     }
     state = BLUETOOTH_STATE_UPLOAD;
     uploadPosition = 0;
-    uploadTime = get_tmr10ms();
-    sendUploadAck();
   }
   else if (state == BLUETOOTH_STATE_UPLOAD) {
     if (offset == uploadPosition) {
       UINT written;
       if (dataLength == 0) {
         f_close(&file);
-        sendUploadAck();
         state = BLUETOOTH_STATE_CONNECTED;
       }
       else if (f_write(&file, buffer + 5, dataLength, &written) == FR_OK && dataLength == written) {
         uploadPosition += dataLength;
-        uploadTime = get_tmr10ms();
-        if (uploadPosition % 500 == 0) {
-          sendUploadAck();
-        }
       }
     }
     else {
       TRACE("BT offset %d instead of %d", offset, uploadPosition);
-      // sendUploadAck();
     }
   }
+
+  sendUploadAck();
 }
 
 void Bluetooth::processFrame()
@@ -501,11 +495,6 @@ void Bluetooth::wakeup()
   }
   else if (state >= BLUETOOTH_STATE_CONNECTED && state < BLUETOOTH_STATE_DISCONNECTED) {
     readFrame();
-
-    if (state == BLUETOOTH_STATE_UPLOAD && now - uploadTime > 25 /*250ms*/) {
-      sendUploadAck();
-      uploadTime = now;
-    }
 
     if (now - lastWriteTime >= 20) {
       if (!btTxFifo.isEmpty()) {
