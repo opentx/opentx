@@ -58,8 +58,8 @@ class SpecialFunctionEditPage : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, 20 }, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, 0,MENU_COLOR);
-      headerSF = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, 20 }, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), 0,MENU_COLOR);
+      new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, 20 }, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, 0, MENU_COLOR);
+      headerSF = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, 20 }, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), 0, MENU_COLOR);
     }
 
     void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
