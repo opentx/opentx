@@ -103,7 +103,17 @@ boards = {
         "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
+    },
+    "X10": {
+        "PCB": "X10",
+	    "PCBREV": "EXPRESS",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
     }
+
 }
 
 translations = [
