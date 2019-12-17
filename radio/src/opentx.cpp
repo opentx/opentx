@@ -1991,12 +1991,19 @@ void opentxInit()
   WDG_ENABLE(WDG_DURATION);
 }
 
+#if defined(SEMIHOSTING)
+extern "C" void initialise_monitor_handles();
+#endif
+
 #if defined(SIMU)
 void simuMain()
 #else
 int main()
 #endif
 {
+#if defined(SEMIHOSTING)
+  initialise_monitor_handles();
+#endif
 #if defined(STM32)
   TRACE("reusableBuffer: modelSel=%d, moduleSetup=%d, calib=%d, sdManager=%d, hardwareAndSettings=%d, spectrumAnalyser=%d, usb=%d",
         sizeof(reusableBuffer.modelsel),

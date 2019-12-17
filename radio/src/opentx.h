@@ -481,7 +481,7 @@ extern uint8_t flightModeTransitionLast;
 
 #if defined(SIMU)
   inline int availableMemory() { return 1000; }
-#elif !defined(SIMU)
+#else
   extern unsigned char *heap;
   extern int _end;
   extern int _heap_end;
