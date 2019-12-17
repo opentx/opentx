@@ -100,7 +100,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
         <source>Radio Profile</source>
-        <translation>Профиль аппаратуры</translation>
+        <translation>Профиль передатчика</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="535"/>
@@ -158,27 +158,45 @@ Mode 4:
   Right stick:  Elevator, Rudder
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор моды передатчика:
+
+Mode 1:
+  Левый стик:  Руль высоты (Elevator), Руль направления (Rudder)
+  Правый стик:  Газ (Throttle), Элероны (Aileron)
+
+Mode 2:
+  Левый стик:  Газ (Throttle), Руль направления (Rudder)
+  Правый стик:  Руль высоты (Elevator), Элероны (Aileron)
+
+Mode 3:
+  Левый стик:  Руль высоты (Elevator), Элероны (Aileron)
+  Правый стик:  Газ (Throttle), Руль направления (Rudder)
+
+Mode 4:
+  Левый стик:  Газ (Throttle), Элероны (Aileron)
+  Правый стик:  Руль высоты (Elevator), Руль направления (Rudder)
+
+</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="506"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="511"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="516"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="521"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="100"/>
@@ -214,122 +232,122 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="223"/>
         <source>R E T A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="228"/>
         <source>R E A T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="233"/>
         <source>R T E A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="238"/>
         <source>R T A E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="243"/>
         <source>R A E T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="248"/>
         <source>R A T E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="253"/>
         <source>E R T A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="258"/>
         <source>E R A T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="263"/>
         <source>E T R A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="268"/>
         <source>E T A R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="273"/>
         <source>E A R T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="278"/>
         <source>E A T R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="283"/>
         <source>T R E A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="288"/>
         <source>T R A E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="293"/>
         <source>T E R A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="298"/>
         <source>T E A R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="303"/>
         <source>T A R E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="308"/>
         <source>T A E R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="313"/>
         <source>A R E T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="318"/>
         <source>A R T E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="323"/>
         <source>A E R T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="328"/>
         <source>A E T R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="333"/>
         <source>A T R E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="338"/>
         <source>A T E R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1373"/>
@@ -359,7 +377,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="636"/>
         <source>Radio Type</source>
-        <translation type="unfinished">Тип передатчика</translation>
+        <translation>Тип передатчика</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="455"/>
@@ -920,22 +938,22 @@ Mode 4:
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="14"/>
         <source>Edit Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактирование контрольной карты</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="71"/>
         <source>Line nn, Col nn</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка nn, столбец nn</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="100"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт...</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="113"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="126"/>
@@ -945,22 +963,22 @@ Mode 4:
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="141"/>
         <source>Please note, the maximum width displayable is radio model limited. Also, renaming the model will break the link to this checklist file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Учтите, что ширина отображаемого текста ограничена. Переименование модели удалит ссылку на эту контрольную карту.</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="151"/>
         <source>File: unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл: неизвестен</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="65"/>
         <source>Open Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть контрольную карту</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="65"/>
         <source>Checklist Files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Контрольные карты (*.txt)</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="76"/>
@@ -1005,7 +1023,7 @@ Mode 4:
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="123"/>
         <source>Line %1, Col %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Строка %1, столбец %2</translation>
     </message>
 </context>
 <context>
@@ -2568,47 +2586,47 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
         <source>%1%2 Both directions, to destination folder first</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2 Оба направления, вначале в папку передатчика</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
         <source>%1%2 Both directions, to source folder first</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2 Оба направления, вначале в локальную папку</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
         <source> %1  Only from source folder to destination folder</source>
-        <translation type="unfinished"></translation>
+        <translation> %1  Только из локальной папки в папку передатчика</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
         <source> %1  Only from destination folder to source folder</source>
-        <translation type="unfinished"></translation>
+        <translation> %1  Только из папки передатчика в локальную папку</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="151"/>
         <source>How to handle overwriting files which already exist in the destination folder.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Определяет, как обрабатывать файлы, которые уже существуют.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="152"/>
         <source>Copy only if newer and different (compare contents)</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать только если новее и отличается содержимое</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="153"/>
         <source>Copy only if newer (do not compare contents)</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать только если новее (не сравнивать содержимое)</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="154"/>
         <source>Copy only if different (ignore file time stamps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать только если разные (игнорировать дату файла)</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="155"/>
         <source>Always copy (force overwite existing files)</source>
-        <translation type="unfinished"></translation>
+        <translation>Всегда копировать (перезаписывать существующие файлы)</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="161"/>
@@ -2618,159 +2636,164 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="162"/>
         <source>Skip files larger than this size. Enter zero for unlimited.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пропускать, если файл больше указанного размера. Поставьте 0, если ограничение не нужно.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="167"/>
         <source>Minimum reporting level. Events of this type and of higher importance are shown.
 WARNING: High log rates may make the user interface temporarily unresponsive.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Уровень журналирования синхронизации. Будут показываться событие выбранного и более высоких уровней.
+ПРЕДУПРЕЖДЕНИЕ: высокий уровень журналирования может временно заблокировать интерфейс.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="169"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пропущенные</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="170"/>
         <source>Created</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Новые</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="171"/>
         <source>Updated</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Обновленные</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="173"/>
         <source>Errors Only</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Только ошибки</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="176"/>
         <source>Test-run only</source>
-        <translation type="unfinished"></translation>
+        <translation>Только тестирование</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="177"/>
         <source>Run as normal but do not actually copy anything. Useful for verifying results before real sync.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Запускает обычную синхронизацию, только ничего не копирует. Полезно для проверки результатов перед реальной синхронизацией.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="183"/>
         <source>Log Level:</source>
-        <translation type="unfinished"></translation>
+        <translation>Журнал:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="188"/>
         <source>Filters:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтры:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="189"/>
         <source>The &quot;Include&quot; filter will only copy files which match the pattern(s).
 The &quot;Exclude&quot; filter will skip files matching the filter pattern(s).
 The Include filter is evaluated first.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Фильтр &quot;Включить&quot; позволяет копировать файлы соответствующие шаблону(ам).
+Фильтр &quot;Исключить&quot; позволяет пропускать файлы соответствующие шаблону(ам).
+Вначале учитывается фильтр &quot;Включить&quot;.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="195"/>
         <source>One or more file pattern(s) to exclude, separated by commas.
 Blank means exclude none. ?, *, and [...] wildcards accepted.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Один или несколько шаблонов, разделенных запятыми
+Пустое поле означает обработку всех файлов, допускаются маски ?, * и [...].</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="199"/>
         <source>One or more file pattern(s) to include, separated by commas.
 Blank means include all. ?, *, and [...] wildcards accepted.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Один или несколько шаблонов, разделенных запятыми
+Пустое поле означает обработку всех файлов, допускаются маски ?, * и [...].</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="203"/>
         <source>Include:</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="205"/>
         <source>Exclude:</source>
-        <translation type="unfinished"></translation>
+        <translation>Исключить:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="210"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Чувствительный к регистру</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="211"/>
         <location filename="../dialogs/filesyncdialog.cpp" line="217"/>
         <source>Follow links</source>
-        <translation type="unfinished"></translation>
+        <translation>Учитывать ссылки</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="212"/>
         <source>Include hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Учитывать скрытые</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="216"/>
         <source>Recursive</source>
-        <translation type="unfinished"></translation>
+        <translation>Рекурсивно</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="218"/>
         <source>Skip empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропускать пустые</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="219"/>
         <source>Apply filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Применять фильтры</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="229"/>
         <source>Filter Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки фильтров:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="231"/>
         <source>Folder Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры папок:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="243"/>
         <location filename="../dialogs/filesyncdialog.cpp" line="272"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="244"/>
         <source>Show extra options</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать дополнительные настройки</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="247"/>
         <source>Reset to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать настройки по умолчанию</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="262"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="279"/>
         <source>Sync. Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Направление синхронизации:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="281"/>
         <source>Existing Files:</source>
-        <translation type="unfinished"></translation>
+        <translation>Существующие файлы:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="283"/>
         <source>Max. File Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. размер файла:</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="324"/>
@@ -2785,37 +2808,37 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="425"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Остановить</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="425"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Начать</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="436"/>
         <source>Total: &lt;b&gt;%1&lt;/b&gt;; Created: &lt;b&gt;%2&lt;/b&gt;; Updated: &lt;b&gt;%3&lt;/b&gt;; Skipped: &lt;b&gt;%4&lt;/b&gt;; Errors: &lt;font color=%6&gt;&lt;b&gt;%5&lt;/b&gt;&lt;/font&gt;;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Итого: &lt;b&gt;%1&lt;/b&gt;; Создано: &lt;b&gt;%2&lt;/b&gt;; Обновлено: &lt;b&gt;%3&lt;/b&gt;; Пропущено: &lt;b&gt;%4&lt;/b&gt;; Ошибки: &lt;font color=%6&gt;&lt;b&gt;%5&lt;/b&gt;&lt;/font&gt;;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="437"/>
         <source>Current: &lt;b&gt;%1&lt;/b&gt; of </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Обработано: &lt;b&gt;%1&lt;/b&gt; Всего. </translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="488"/>
         <source>Source folder not found.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Локальная папка (источник) не найдена.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="490"/>
         <source>Destination folder not found.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Папка назначения (в передатчике) не найдена.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="492"/>
         <source>Source and destination folders are the same.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выберите разные папки.</translation>
     </message>
 </context>
 <context>
@@ -5320,7 +5343,7 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
-        <translation type="unfinished">Инверт</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
@@ -5330,22 +5353,22 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/heli.ui" line="29"/>
         <source>120</source>
-        <translation type="unfinished">15 сек. {120?}</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="34"/>
         <source>120X</source>
-        <translation type="unfinished">15 сек. {120X?}</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="39"/>
         <source>140</source>
-        <translation type="unfinished">15 сек. {140?}</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="44"/>
         <source>90</source>
-        <translation type="unfinished">15 сек. {90?}</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="77"/>
@@ -6300,12 +6323,12 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="896"/>
         <source>Local Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Локальная папка</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="897"/>
         <source>Radio Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка в передатчике</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="971"/>
@@ -7767,7 +7790,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="140"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вкл.</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="140"/>
@@ -7787,17 +7810,17 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="144"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Да</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="144"/>
         <source>No</source>
-        <translation type="unfinished">Нет</translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="146"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Да</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="146"/>
@@ -7815,7 +7838,7 @@ This determines how mixer values are added.
         <location filename="../modelprinter.cpp" line="884"/>
         <location filename="../modelprinter.cpp" line="958"/>
         <source>OFF</source>
-        <translation type="unfinished">ВЫКЛ</translation>
+        <translation>ВЫКЛ</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="156"/>
@@ -7825,44 +7848,44 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="173"/>
         <source>Exponential</source>
-        <translation type="unfinished"></translation>
+        <translation>по экспоненте</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="175"/>
         <source>Extra Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>очень точно</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="177"/>
         <source>Fine</source>
-        <translation type="unfinished"></translation>
+        <translation>точно</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="179"/>
         <source>Medium</source>
-        <translation type="unfinished"></translation>
+        <translation>средне</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="181"/>
         <source>Coarse</source>
-        <translation type="unfinished">Грубо</translation>
+        <translation>грубо</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="183"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>неизвестно</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="193"/>
         <location filename="../modelprinter.cpp" line="876"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="196"/>
         <location filename="../modelprinter.cpp" line="207"/>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Каналы</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="197"/>
@@ -7879,35 +7902,35 @@ This determines how mixer values are added.
         <location filename="../modelprinter.cpp" line="199"/>
         <location filename="../modelprinter.cpp" line="210"/>
         <source>Polarity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Полярность</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="205"/>
         <source>Protocol</source>
-        <translation type="unfinished">Протокол</translation>
+        <translation>Протокол</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="212"/>
         <location filename="../modelprinter.cpp" line="471"/>
         <location filename="../modelprinter.cpp" line="649"/>
         <source>Delay</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Задержка</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="216"/>
         <location filename="../modelprinter.cpp" line="932"/>
         <source>Receiver</source>
-        <translation type="unfinished"></translation>
+        <translation>Приёмник</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="219"/>
         <source>Radio protocol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Протокол</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="220"/>
         <source>Subtype</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Подтип</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="221"/>
@@ -7917,12 +7940,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="224"/>
         <source>Sub Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Подтип</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="225"/>
         <source>RF Output Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходная мощность передатчика</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="266"/>
@@ -7958,7 +7981,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="473"/>
         <source>Slow</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Замедление</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="475"/>
@@ -7968,12 +7991,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="505"/>
         <source>Flight modes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Полетные режимы</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="505"/>
         <source>Flight mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Полетный режим</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="530"/>
@@ -8013,73 +8036,73 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="827"/>
         <source>Extended Limits</source>
-        <translation type="unfinished">Расш. лимиты</translation>
+        <translation>Расш. лимиты</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="829"/>
         <source>Display Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать контрольную карту</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="831"/>
         <source>Global Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Глобальные функции</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="886"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">вручную</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="888"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>автоматически</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="898"/>
         <source>Failsafe Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим Failsafe</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="912"/>
         <location filename="../modelprinter.cpp" line="926"/>
         <source>Hold</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">удержание</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="914"/>
         <source>No Pulse</source>
-        <translation type="unfinished"></translation>
+        <translation>без сигнала</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="924"/>
         <source>Not set</source>
-        <translation type="unfinished"></translation>
+        <translation>не задан</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="930"/>
         <source>No pulses</source>
-        <translation type="unfinished"></translation>
+        <translation>Без сигнала</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="942"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Тихо</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="944"/>
         <source>Beeps</source>
-        <translation type="unfinished"></translation>
+        <translation>Писком</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="946"/>
         <source>Voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Голосом</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="948"/>
         <source>Haptic</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрацией</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="960"/>
@@ -8094,54 +8117,54 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="971"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="973"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="974"/>
         <source>Extended</source>
-        <translation type="unfinished"></translation>
+        <translation>Расширенные</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="994"/>
         <source>Never</source>
-        <translation type="unfinished"></translation>
+        <translation>никогда</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="996"/>
         <source>On Change</source>
-        <translation type="unfinished"></translation>
+        <translation>при изменении</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="998"/>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>всегда</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1020"/>
         <location filename="../modelprinter.cpp" line="1422"/>
         <location filename="../modelprinter.cpp" line="1432"/>
         <source>Source</source>
-        <translation type="unfinished">Источник</translation>
+        <translation>Источник</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1021"/>
         <source>Trim idle only</source>
-        <translation type="unfinished"></translation>
+        <translation>Триммировать только холостой ход</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1022"/>
         <source>Warning</source>
-        <translation type="unfinished">Звук</translation>
+        <translation>Предупреждать</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1023"/>
         <source>Reversed</source>
-        <translation type="unfinished"></translation>
+        <translation>Реверс</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1036"/>
@@ -8357,17 +8380,17 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="1371"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ед. измерения</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1373"/>
         <source>Prec</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Точность</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1377"/>
         <source>Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Коэффициент</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1382"/>
@@ -8377,7 +8400,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="1386"/>
         <source>A/Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Авт. смещ.</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1388"/>
@@ -8392,12 +8415,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="1391"/>
         <source>Positive</source>
-        <translation type="unfinished"></translation>
+        <translation>Положительный</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1392"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Журнал</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1402"/>
@@ -8422,32 +8445,32 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="1463"/>
         <source>Error: Unable to open or read file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: невозможно открыть файл!</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="245"/>
         <source>Slave/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Ученик (джек)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="248"/>
         <source>Master/SBUS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (SBUS модуль)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="251"/>
         <source>Master/CPPM Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (модуль CPPM)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="254"/>
         <source>Master/SBUS in battery compartment</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (SBUS в батарейном отсеке)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="242"/>
         <source>Master/Jack</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный (джек)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="313"/>
@@ -8467,7 +8490,7 @@ This determines how mixer values are added.
         <location filename="../modelprinter.cpp" line="1130"/>
         <location filename="../modelprinter.cpp" line="1400"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="305"/>
@@ -8505,13 +8528,13 @@ This determines how mixer values are added.
         <location filename="../modelprinter.cpp" line="395"/>
         <location filename="../modelprinter.cpp" line="447"/>
         <source>Weight</source>
-        <translation type="unfinished">Вес</translation>
+        <translation>Вес</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="404"/>
         <location filename="../modelprinter.cpp" line="454"/>
         <source>Switch</source>
-        <translation type="unfinished">Тумблер</translation>
+        <translation>Тумблер</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="409"/>
@@ -8532,19 +8555,19 @@ This determines how mixer values are added.
     <message>
         <location filename="../modelprinter.cpp" line="496"/>
         <source>Disabled in all flight modes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Отключен во всех полетных режимах</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="688"/>
         <location filename="../modelprinter.cpp" line="928"/>
         <location filename="../modelprinter.cpp" line="1160"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Другой</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="688"/>
         <source>Standard</source>
-        <translation type="unfinished">Стандартный</translation>
+        <translation>Стандартный</translation>
     </message>
 </context>
 <context>
@@ -8857,50 +8880,50 @@ This determines how mixer values are added.
     <message>
         <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>10mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>10 мВт - 16 каналов</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="172"/>
         <location filename="../firmwares/moduledata.cpp" line="174"/>
         <source>100mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>100 мВт - 16 каналов</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>500mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>500 мВт - 16 каналов</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="172"/>
         <source>Auto &lt;= 1W - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически: &lt; 1 Вт - 16 каналов</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="173"/>
         <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>25mW - 8CH</source>
-        <translation type="unfinished"></translation>
+        <translation>25 мВт - 8 каналов</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="173"/>
         <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>25mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>25 мВт - 16 каналов</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="173"/>
         <source>200mW - 16CH (no telemetry)</source>
-        <translation type="unfinished"></translation>
+        <translation>200 мВт - 16 каналов (без телеметрии)</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="173"/>
         <source>500mW - 16CH (no telemetry)</source>
-        <translation type="unfinished"></translation>
+        <translation>500 мВт - 16 каналов (без телеметрии)</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="175"/>
         <source>100mW - 16CH (no telemetry)</source>
-        <translation type="unfinished"></translation>
+        <translation>100 мВт - 16 каналов (без телеметрии)</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.h" line="191"/>
@@ -8966,19 +8989,19 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="418"/>
         <source>Flight modes</source>
-        <translation type="unfinished"></translation>
+        <translation>Полетные режимы</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="423"/>
         <location filename="../multimodelprinter.cpp" line="496"/>
         <source>Flight mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="335"/>
         <location filename="../multimodelprinter.cpp" line="423"/>
         <source>Switch</source>
-        <translation type="unfinished">Тумблер</translation>
+        <translation>Тумблер</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="455"/>
@@ -8994,120 +9017,120 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="525"/>
         <source>Channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="312"/>
         <location filename="../multimodelprinter.cpp" line="464"/>
         <location filename="../multimodelprinter.cpp" line="865"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="308"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Основные параметры</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="313"/>
         <source>EEprom Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="315"/>
         <source>Model Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="317"/>
         <source>Throttle</source>
-        <translation type="unfinished">Газ</translation>
+        <translation>Газ</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="318"/>
         <source>Trims</source>
-        <translation type="unfinished"></translation>
+        <translation>Триммеры</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="319"/>
         <source>Center Beep</source>
-        <translation type="unfinished"></translation>
+        <translation>Сигнал в центре</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="320"/>
         <source>Switch Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверка тумблеров</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="322"/>
         <source>Pot Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверка крутилок</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="324"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Прочее</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="335"/>
         <source>Timers</source>
-        <translation type="unfinished"></translation>
+        <translation>Таймеры</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="335"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="335"/>
         <source>Countdown</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсчет</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="335"/>
         <source>Min.call</source>
-        <translation type="unfinished"></translation>
+        <translation>Ежеминутный сигнал</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="335"/>
         <source>Persist</source>
-        <translation type="unfinished"></translation>
+        <translation>Постоянный</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="356"/>
         <source>Modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Радиомодули</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="368"/>
         <source>Trainer port</source>
-        <translation type="unfinished"></translation>
+        <translation>Тренерский разъем</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="386"/>
         <source>Helicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертолет</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="389"/>
         <source>Swash</source>
-        <translation type="unfinished"></translation>
+        <translation>Автомат перекоса</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="390"/>
         <location filename="../multimodelprinter.cpp" line="865"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="391"/>
         <source>Ring</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Тарелка</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="395"/>
         <source>Input</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вход</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="395"/>
@@ -9142,7 +9165,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="452"/>
         <source>Global vars</source>
-        <translation type="unfinished"></translation>
+        <translation>Глобальные переменные</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="474"/>
@@ -9157,12 +9180,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="522"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Выходы</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="525"/>
         <source>Subtrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Субтриммер</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="525"/>
@@ -9172,7 +9195,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="527"/>
         <source>Curve</source>
-        <translation type="unfinished">Кривая</translation>
+        <translation>Кривая</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="529"/>
@@ -9182,12 +9205,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="531"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Линейный</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="750"/>
         <source>Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Телеметрия</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="756"/>
@@ -9197,79 +9220,79 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="767"/>
         <source>Protocol</source>
-        <translation type="unfinished">Протокол</translation>
+        <translation>Протокол</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="776"/>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Низкий</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="779"/>
         <source>Critical</source>
-        <translation type="unfinished"></translation>
+        <translation>Критический</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="782"/>
         <source>Telemetry audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Звук телеметрии</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="789"/>
         <source>Altimetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Измерение высоты</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="791"/>
         <location filename="../multimodelprinter.cpp" line="794"/>
         <source>Vario source</source>
-        <translation type="unfinished"></translation>
+        <translation>Вариометр</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="799"/>
         <source>Vario limits &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Пределы вариометра &gt;</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="801"/>
         <source>Sink max</source>
-        <translation type="unfinished"></translation>
+        <translation>Сниж. макс.</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="802"/>
         <source>Sink min</source>
-        <translation type="unfinished"></translation>
+        <translation>Сниж. мин.</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="804"/>
         <source>Climb min</source>
-        <translation type="unfinished"></translation>
+        <translation>Набор мин.</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="805"/>
         <source>Climb max</source>
-        <translation type="unfinished"></translation>
+        <translation>Набор макс.</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="806"/>
         <source>Center silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Тишина в 0</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="813"/>
         <source>Top Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Верхняя строка</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="815"/>
         <location filename="../multimodelprinter.cpp" line="846"/>
         <source>Volts source</source>
-        <translation type="unfinished"></translation>
+        <translation>Напряжение</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="816"/>
         <source>Altitude source</source>
-        <translation type="unfinished"></translation>
+        <translation>Высота</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="827"/>
@@ -9299,7 +9322,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="847"/>
         <source>Current source</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Датчик тока</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="851"/>
@@ -9309,12 +9332,12 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="865"/>
         <source>Parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="887"/>
         <source>Telemetry Sensors</source>
-        <translation type="unfinished"></translation>
+        <translation>Датчики телеметрии</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="919"/>
@@ -9329,44 +9352,44 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="954"/>
         <source>Global Functions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Глобальные функции</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="974"/>
         <source>Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Контрольная карта</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="479"/>
         <location filename="../multimodelprinter.cpp" line="525"/>
         <source>Min</source>
-        <translation type="unfinished">Мин</translation>
+        <translation>Мин</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="484"/>
         <location filename="../multimodelprinter.cpp" line="525"/>
         <source>Max</source>
-        <translation type="unfinished">Макс</translation>
+        <translation>Макс</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="573"/>
         <source>Global Variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Глобальные переменные</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="594"/>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Входы</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="624"/>
         <source>Mixers</source>
-        <translation type="unfinished"></translation>
+        <translation>Микшеры</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="684"/>
         <source>Curves</source>
-        <translation type="unfinished">Кривые</translation>
+        <translation>Кривые</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="706"/>
@@ -9376,7 +9399,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="713"/>
         <source>Logical Switches</source>
-        <translation type="unfinished"></translation>
+        <translation>Логические переключатели</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="735"/>
@@ -9386,7 +9409,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="742"/>
         <source>Special Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Специальные функции</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="756"/>
@@ -9397,7 +9420,7 @@ This determines how mixer values are added.
         <location filename="../multimodelprinter.cpp" line="469"/>
         <location filename="../multimodelprinter.cpp" line="756"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ед.</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="756"/>
@@ -9407,7 +9430,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../multimodelprinter.cpp" line="774"/>
         <source>RSSI Alarms</source>
-        <translation type="unfinished"></translation>
+        <translation>Уровень RSSI</translation>
     </message>
 </context>
 <context>
@@ -9468,22 +9491,22 @@ This determines how mixer values are added.
     <message>
         <location filename="../wizarddialog.cpp" line="928"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Газ:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="930"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Рысканье (yaw):</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="932"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тангаж (pitch):</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="934"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Крен (roll):</translation>
     </message>
 </context>
 <context>
@@ -9631,7 +9654,7 @@ This determines how mixer values are added.
     <message>
         <location filename="../progresswidget.ui" line="97"/>
         <source>Show Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Подробный отчет</translation>
     </message>
 </context>
 <context>
@@ -11466,7 +11489,7 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="20"/>
         <source>OpenTX Simulator - Startup Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Настройки симулятора OpenTX</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="38"/>
@@ -11476,7 +11499,7 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="74"/>
         <source>Radio Profile:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Профиль передатчика:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="87"/>
@@ -11487,7 +11510,7 @@ Create or edit profiles using the Companion application.</source>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="95"/>
         <source>Radio Type:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Тип передатчика:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="108"/>
@@ -11498,22 +11521,22 @@ The radio type specified in the selected profile is used by default.</source>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
         <source>Data Source:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Источник данных:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
         <source>Data File:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Файл с данными:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
         <source>Data Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Папка с данными:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
         <source>SD Image Path:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Папка с образом SD:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
@@ -11542,7 +11565,7 @@ New folder(s) with default radio/model will be created here if necessary.</sourc
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
         <source>Select data folder...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выберите папку с данными...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
@@ -11568,22 +11591,22 @@ The default is configured in the chosen Radio Profile.</source>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Папка</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
         <source>SD Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Путь к SD</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.cpp" line="230"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Все файлы (*.*)</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.cpp" line="231"/>
         <source>Select a data file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбор файла с данными моделей</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.cpp" line="241"/>
@@ -11824,141 +11847,145 @@ Error: %2</source>
     <message>
         <location filename="../process_sync.cpp" line="78"/>
         <source>[TEST RUN] </source>
-        <translation type="unfinished"></translation>
+        <translation>[ТЕСТОВЫЙ ЗАПУСК] </translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="110"/>
         <source>Gathering file information for %1...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Собираем информацию о %1...</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="111"/>
         <source>No files found in %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлы не найдены: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="163"/>
         <source>Synchronization failed, nothing found to copy.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ошибка синхронизации, файлы не найдены.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="177"/>
         <source>Synchronization aborted at %1 of %2 files.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Синхронизация остановлена. Обработано %1 из %2.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="179"/>
         <source>Synchronization finished with %1 files in %2m %3s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Синхронизация завершена %1 файлов за %2 мин %3 с.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="248"/>
         <source>Synchronizing: %1
     To: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Синхронизация: %1
+    в: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="249"/>
         <source>Starting synchronization:
   %1 -&gt; %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Начинаем синхронизацию:
+  %1 -&gt; %2
+</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="265"/>
         <source>
 Too many errors, giving up.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+Слишком много ошибок.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="273"/>
         <source>Skipping large file: %1 (%2KB)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пропускаем большой файл: %1 (%2КБ)</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="276"/>
         <source>Skipping filtered file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пропускаем файл из-за фильтра: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="279"/>
         <source>Skipping linked file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пропускаем ссылку на %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="293"/>
         <source>Aborted synchronization of:</source>
-        <translation type="unfinished"></translation>
+        <translation>Синхронизация прервана:</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="295"/>
         <source>Finished synchronizing:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Синхронизация завершена:</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="297"/>
         <source>Created: %1; Updated: %2; Skipped: %3; Errors: %4;</source>
-        <translation type="unfinished"></translation>
+        <translation>Создано: %1; Обновлено: %2; Пропущено: %3; Ошибок: %4;</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="323"/>
         <source>Creating directory: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Создаем папку: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="325"/>
         <source>Could not create directory: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невозможнос создать папку %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="332"/>
         <source>Directory exists: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Папка уже существует: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="349"/>
         <source>At least one of the file modification dates is in the future, error on: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Как минимум у одного файла дата модификации в будущем, ошибка: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="354"/>
         <source>Skipping older file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пропускаем старый файл: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="363"/>
         <source>Could not open source file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невозможно открыть файл &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="368"/>
         <source>Could not open destination file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невозможно открыть файл в папке передатчика: &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="377"/>
         <source>Skipping identical file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пропускаем одинаковые файлы: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="387"/>
         <source>Replacing file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Заменяем файл: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="389"/>
         <source>Could not delete destination file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Невозможнос удалить файл в папке передатчика e &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="395"/>
         <source>Creating file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Создаем файл: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="398"/>
         <source>Copy failed: &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ошибка копирования: &apos;%1&apos; в &apos;%2&apos;: %3</translation>
     </message>
 </context>
 <context>
@@ -13617,7 +13644,7 @@ CTRL+колесо или PAGE UP/DOWN - для изменения с больш�
     <message>
         <location filename="../wizarddialog.cpp" line="50"/>
         <source>Select the control channels for your multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите каналы управления коптером</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="51"/>
@@ -13709,7 +13736,7 @@ CTRL+колесо или PAGE UP/DOWN - для изменения с больш�
     <message>
         <location filename="../wizarddialog.cpp" line="141"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите каналы управления коптером.&lt;br&gt;&lt;br&gt;Газ: Spektrum: Канал1, Futaba: Канал3&lt;br&gt;Рысканье: Spektrum: Канал4, Futaba: Канал4&lt;br&gt;Тангаж: Spektrum: Канал3, Futaba: Канал2&lt;br&gt;Крен: Spektrum: Канал2, Futaba: Канал1&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="154"/>
