@@ -986,24 +986,24 @@
     #define INTMODULE_PWR_GPIO          GPIOD
     #define INTMODULE_PWR_GPIO_PIN      GPIO_Pin_9  // PD.09
   #endif
-  #define INTMODULE_GPIO                GPIOB
-  #define INTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PB.06
-  #define INTMODULE_RX_GPIO_PIN         GPIO_Pin_7  // PB.07
-  #define INTMODULE_GPIO_PinSource_TX   GPIO_PinSource6
-  #define INTMODULE_GPIO_PinSource_RX   GPIO_PinSource7
-  #define INTMODULE_USART               USART1
-  #define INTMODULE_GPIO_AF             GPIO_AF_USART1
-  #define INTMODULE_USART_IRQHandler    USART1_IRQHandler
-  #define INTMODULE_USART_IRQn          USART1_IRQn
-  #define INTMODULE_DMA_STREAM          DMA2_Stream7
+  #define INTMODULE_GPIO                   GPIOB
+  #define INTMODULE_TX_GPIO_PIN            GPIO_Pin_6  // PB.06
+  #define INTMODULE_RX_GPIO_PIN            GPIO_Pin_7  // PB.07
+  #define INTMODULE_GPIO_PinSource_TX      GPIO_PinSource6
+  #define INTMODULE_GPIO_PinSource_RX      GPIO_PinSource7
+  #define INTMODULE_USART                  USART1
+  #define INTMODULE_GPIO_AF                GPIO_AF_USART1
+  #define INTMODULE_USART_IRQHandler       USART1_IRQHandler
+  #define INTMODULE_USART_IRQn             USART1_IRQn
+  #define INTMODULE_DMA_STREAM             DMA2_Stream7
   #define INTMODULE_DMA_STREAM_IRQ         DMA2_Stream7_IRQn
   #define INTMODULE_DMA_STREAM_IRQHandler  DMA2_Stream7_IRQHandler
-  #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
-  #define INTMODULE_DMA_CHANNEL         DMA_Channel_4
+  #define INTMODULE_DMA_FLAG_TC            DMA_IT_TCIF7
+  #define INTMODULE_DMA_CHANNEL            DMA_Channel_4
   #if defined(PCBXLITES)
-    #define INTMODULE_BOOTCMD_GPIO      GPIOC
-    #define INTMODULE_BOOTCMD_GPIO_PIN  GPIO_Pin_8  // PC.08
-    #define INIT_INTMODULE_BOOTCMD_PIN() GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+    #define INTMODULE_BOOTCMD_GPIO         GPIOC
+    #define INTMODULE_BOOTCMD_GPIO_PIN     GPIO_Pin_8  // PC.08
+    #define INIT_INTMODULE_BOOTCMD_PIN()   GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
   #endif
 #elif defined(RADIO_X9DP2019)
   #define INTMODULE_RCC_APB1Periph      0
