@@ -1003,6 +1003,7 @@
   #if defined(PCBXLITES)
     #define INTMODULE_BOOTCMD_GPIO      GPIOC
     #define INTMODULE_BOOTCMD_GPIO_PIN  GPIO_Pin_8  // PC.08
+    #define INIT_INTMODULE_BOOTCMD_PIN() GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
   #endif
 #elif defined(RADIO_X9DP2019)
   #define INTMODULE_RCC_APB1Periph      0
@@ -1374,6 +1375,7 @@
   #define PCBREV_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
   #define PCBREV_GPIO                   GPIOA
   #define PCBREV_GPIO_PIN               GPIO_Pin_14  // PA.14
+  #define PCBREV_VALUE()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
 #else
   #define PCBREV_RCC_AHB1Periph         0
 #endif
