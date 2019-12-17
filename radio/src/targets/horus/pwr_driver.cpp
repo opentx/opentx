@@ -52,8 +52,8 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
-  // PCBREV
 #if defined(PCBREV_GPIO_PIN)
+  // PCBREV
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
   hardwareOptions.pcbrev = PCBREV_VALUE();
