@@ -161,6 +161,8 @@ elseif(PCB STREQUAL X7)
     add_definitions(-DBLUETOOTH_PROBE)
     set(ROTARY_ENCODER YES)
     if(DEFINED PCBREV_HARDCODED)
+      # This *can* be used to prevent messing with PA14 (SWCLK), so stlink can be used
+      # without interruptions.
       if(NOT ${PCBREV_HARDCODED} MATCHES "^[0-1]$")
         message(FATAL_ERROR "PCBREV_HARDCODED must be 0 or 1, not '${PCBREV_HARDCODED}'")
       endif()
