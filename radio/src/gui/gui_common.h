@@ -252,6 +252,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 #define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)     isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
 #define MULTIMODULE_OPTIONS_ROW(moduleIdx)      (isModuleMultimodule(moduleIdx) && MULTIMODULE_HASOPTIONS(moduleIdx)) ? (uint8_t) 0: HIDDEN_ROW
+#define MODULE_POWER_ROW(moduleIdx)            (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) || isModuleR9MNonAccess(moduleIdx)) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
 
 #else
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)
@@ -263,7 +264,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 
 #define FAILSAFE_ROWS(moduleIdx)               isModuleFailsafeAvailable(moduleIdx) ? (g_model.moduleData[moduleIdx].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 #define MODULE_OPTION_ROW(moduleIdx)           (isModuleR9MNonAccess(moduleIdx) || isModuleSBUS(moduleIdx)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW(moduleIdx))
-#define MODULE_POWER_ROW(moduleIdx)            (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) || isModuleR9MNonAccess(moduleIdx)) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
+#define MODULE_POWER_ROW(moduleIdx)            isModuleR9MNonAccess(moduleIdx) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
 
