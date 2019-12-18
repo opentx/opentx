@@ -219,9 +219,6 @@ inline bool isModuleBeeping(uint8_t moduleIndex)
   if (getMultiBindStatus(moduleIndex) != MULTI_BIND_NONE)
     return true;
 #endif
-  if (getMultiModuleStatus(moduleIndex).isBinding())
-    return true;
-#endif
 
   return moduleState[moduleIndex].mode >= MODULE_MODE_BEEP_FIRST;
 }
