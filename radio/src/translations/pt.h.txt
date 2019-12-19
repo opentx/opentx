@@ -655,7 +655,7 @@
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Binding"
 #define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
-#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module update recommended")
+#define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"

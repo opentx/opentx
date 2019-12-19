@@ -666,7 +666,7 @@
 #define TR_MODULE_WAITFORBIND          "Binder d'abord"
 #define TR_MODULE_BINDING              "Bind..."
 #define TR_MODULE_UPGRADE_ALERT              "Mise à jour requise"
-#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module update recommended")
+#define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
 #define TR_REBIND                      "Rebind requis"
 #define TR_REG_OK                      "Enregistr. ok"
 #define TR_BIND_OK                     "Bind ok"
