@@ -38,6 +38,7 @@
 
 static void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe);
 void sendChannels(uint8_t moduleIdx);
+static void sendD16BindOption(uint8_t moduleIdx);
 #if defined(LUA)
 static void sendSport(uint8_t moduleIdx);
 static void sendHott(uint8_t moduleIdx);
@@ -174,10 +175,14 @@ void setupPulsesMulti(uint8_t moduleIdx)
                                   | g_model.moduleData[moduleIdx].multi.disableMapping));
   
   // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
-#if defined(LUA)
   if (getMultiModuleStatus(moduleIdx).isValid()) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
     if (status.minor >= 3 && !(status.flags & 0x80)) { //Version 1.3.x.x or more and Buffer not full
+      if(IS_D16_MULTI(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_BIND)
+      {
+        sendD16BindOption(moduleIdx);//1 byte of additional data
+      }
+#if defined(LUA)
       // SPort send
       if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
         sendSport(moduleIdx);        //8 bytes of additional data
@@ -185,9 +190,8 @@ void setupPulsesMulti(uint8_t moduleIdx)
       else if (IS_HOTT_MULTI(moduleIdx)) {
         sendHott(moduleIdx);        //1 byte of additional data
       }
-    }
+#endif
   }
-  #endif
 }
 
 void setupPulsesMultiExternalModule()
@@ -343,6 +347,11 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 
   // byte 3
   sendMulti(moduleIdx, (uint8_t) optionValue);
+}
+
+void sendD16BindOption(uint8_t moduleIdx)
+{
+  sendMulti(moduleIdx, 0);
 }
 
 #if defined(LUA)
