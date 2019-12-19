@@ -351,7 +351,9 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 
 void sendD16BindOption(uint8_t moduleIdx)
 {
-  sendMulti(moduleIdx, 0);
+  uint8_t bind_opt=g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff?1:0;
+  bind_opt|=g_model.moduleData[moduleIdx].multi.receiverHigherChannels?2:0;
+  sendMulti(moduleIdx, bind_opt);
 }
 
 #if defined(LUA)
