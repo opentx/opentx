@@ -44,7 +44,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  if(isModuleMultimodule(moduleIdx)) {
+  if (isModuleMultimodule(moduleIdx)) {
     g_model.moduleData[moduleIdx].multi.receiverTelemetryOff = receiverTelemetryOff;
     g_model.moduleData[moduleIdx].multi.receiverHigherChannels = receiverHigherChannels;
   }
