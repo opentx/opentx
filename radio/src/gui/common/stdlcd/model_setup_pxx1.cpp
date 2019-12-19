@@ -24,20 +24,44 @@ void onBindMenu(const char * result)
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
 
   if (result == STR_BINDING_1_8_TELEM_ON) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
+    if(isModuleMultimodule(moduleIdx)) {
+      g_model.moduleData[moduleIdx].multi.receiverTelemetryOff = false;
+      g_model.moduleData[moduleIdx].multi.receiverHigherChannels = false;
+    }
+    else {
+      g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;
+      g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
+    }
   }
   else if (result == STR_BINDING_1_8_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = true;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
+    if(isModuleMultimodule(moduleIdx)) {
+      g_model.moduleData[moduleIdx].multi.receiverTelemetryOff = true;
+      g_model.moduleData[moduleIdx].multi.receiverHigherChannels = false;
+    }
+    else {
+      g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = true;
+      g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
+    }
   }
   else if (result == STR_BINDING_9_16_TELEM_ON) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = true;
+    if(isModuleMultimodule(moduleIdx)) {
+      g_model.moduleData[moduleIdx].multi.receiverTelemetryOff = false;
+      g_model.moduleData[moduleIdx].multi.receiverHigherChannels = true;
+    }
+    else {
+      g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;
+      g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = true;
+    }
   }
   else if (result == STR_BINDING_9_16_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = true;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = true;
+      if(isModuleMultimodule(moduleIdx)) {
+        g_model.moduleData[moduleIdx].multi.receiverTelemetryOff = true;
+        g_model.moduleData[moduleIdx].multi.receiverHigherChannels = true;
+      }
+      else {
+        g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = true;
+        g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = true;
+      }
   }
   else {
     return;

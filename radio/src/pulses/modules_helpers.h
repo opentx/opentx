@@ -127,7 +127,10 @@ inline bool isModuleISRMD16(uint8_t idx)
 
 inline bool isModuleD16(uint8_t idx)
 {
-  return isModuleXJTD16(idx) || isModuleISRMD16(idx);
+  return isModuleXJTD16(idx) || isModuleISRMD16(idx) || (isModuleMultimodule((idx) &&
+                                                                             (g_model.moduleData[idx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY &&
+                                                                              (g_model.moduleData[idx].subType == 0 || g_model.moduleData[idx].subType == 2 ||
+                                                                               g_model.moduleData[idx].subType > 3))));
 }
 
 inline bool isModuleISRMAccess(uint8_t idx)
@@ -469,7 +472,7 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)
   if (moduleIndex == INTERNAL_MODULE)
-    return isModuleISRM(moduleIndex) || isSportLineUsedByInternalModule();
+    return isModuleISRM(moduleIndex) || !isSportLineUsedByInternalModule();
 
   if (isSportLineUsedByInternalModule())
     return false;
