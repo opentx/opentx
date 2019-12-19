@@ -127,10 +127,7 @@ inline bool isModuleISRMD16(uint8_t idx)
 
 inline bool isModuleD16(uint8_t idx)
 {
-  return isModuleXJTD16(idx) || isModuleISRMD16(idx) || (isModuleMultimodule((idx) &&
-                                                                             (g_model.moduleData[idx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY &&
-                                                                              (g_model.moduleData[idx].subType == 0 || g_model.moduleData[idx].subType == 2 ||
-                                                                               g_model.moduleData[idx].subType > 3))));
+  return isModuleXJTD16(idx) || isModuleISRMD16(idx) || IS_D16_MULTI(idx);
 }
 
 inline bool isModuleISRMAccess(uint8_t idx)
