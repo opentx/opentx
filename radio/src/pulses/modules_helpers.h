@@ -557,6 +557,8 @@ inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].multi.disableTelemetry = 0;
   g_model.moduleData[moduleIdx].multi.disableMapping = 0;
   g_model.moduleData[moduleIdx].multi.lowPowerMode = 0;
+  g_model.moduleData[moduleIdx].failsafeMode = FAILSAFE_NOT_SET;
+  g_model.header.modelId[moduleIdx] = 0;
 }
 
 inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
