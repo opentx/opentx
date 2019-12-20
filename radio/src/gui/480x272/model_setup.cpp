@@ -1617,18 +1617,16 @@ bool menuModelSetup(event_t event)
           const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
           if (status.isValid()) {
             lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
-            if (attr && status.optionDisp == 2)  {
+            if (attr && status.optionDisp == 2) {
               lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
             }
           }
           else {
-            if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
-              const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
-              if (pdef->optionsstr) {
-                lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, pdef->optionsstr);
-                if (attr && pdef->optionsstr == STR_MULTI_RFTUNE) {
-                  lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
-                }
+            const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
+            if (pdef->optionsstr) {
+              lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, pdef->optionsstr);
+              if (attr && pdef->optionsstr == STR_MULTI_RFTUNE) {
+                lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
               }
             }
           }
