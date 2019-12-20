@@ -239,12 +239,15 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
     return false;
 
   uint8_t protocol = g_model.moduleData[moduleIdx].getMultiProtocol();
-  if (protocol < MODULE_SUBTYPE_MULTI_LAST) {
-    return getMultiProtocolDefinition(protocol)->optionsstr != nullptr;
-  }
-
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  return status.optionDisp;
+
+  if (status.isValid())
+    return status.optionDisp;
+
+  if (protocol < MODULE_SUBTYPE_MULTI_LAST)
+    return getMultiProtocolDefinition(protocol)->optionsstr != nullptr;
+
+  return false;
 }
 
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)      MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
