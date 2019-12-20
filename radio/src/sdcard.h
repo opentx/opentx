@@ -50,6 +50,8 @@
 #define SCRIPTS_TELEM_PATH  SCRIPTS_PATH "/TELEMETRY"
 #define SCRIPTS_TOOLS_PATH  SCRIPTS_PATH "/TOOLS"
 
+#define CROSSFIRE_CONFIG_SCRIPT SCRIPTS_TOOLS_PATH "/crossfire.lua"
+
 #define LEN_FILE_PATH_MAX   (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + "/"
 
 #if defined(COLORLCD)
