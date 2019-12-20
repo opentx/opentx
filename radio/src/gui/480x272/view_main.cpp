@@ -119,6 +119,9 @@ void onMainViewMenu(const char *result)
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
   }
+  else if (result == STR_CROSSFIRE_QUICKACCESS) {
+	  luaExec("/SCRIPTS/TOOLS/crossfire.lua");
+  }
   else if (result == STR_RESET_FLIGHT) {
     flightReset();
   }
@@ -157,6 +160,9 @@ bool menuMainView(event_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
+      if(isModuleCrossfire(EXTERNAL_MODULE)){
+        POPUP_MENU_ADD_ITEM(STR_CROSSFIRE_QUICKACCESS);
+      }
       POPUP_MENU_ADD_ITEM(STR_MODEL_SELECT);
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);

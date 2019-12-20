@@ -755,6 +755,7 @@ extern const char STR_PREFLIGHT[];
 extern const char STR_CHECKLIST[];
 extern const char STR_VIEW_NOTES[];
 extern const char STR_MODEL_SELECT[];
+extern const char STR_CROSSFIRE_QUICKACCESS[];
 extern const char STR_RESET_SUBMENU[];
 extern const char STR_LOWALARM[];
 extern const char STR_CRITICALALARM[];

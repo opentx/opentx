@@ -1103,6 +1103,7 @@
 #define TR_VIEW_CHANNELS               "View Channels"
 #define TR_VIEW_NOTES                  "View Notes"
 #define TR_MODEL_SELECT                "Model Select"
+#define TR_CROSSFIRE_QUICKACCESS       "Crossfire Config"
 #define TR_MODS_FORBIDDEN              "Modifications forbidden!"
 #define TR_UNLOCKED                    "Unlocked"
 #define TR_ID                          "ID"
