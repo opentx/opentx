@@ -107,6 +107,7 @@ void bluetoothInit(uint32_t baudrate, bool enable)
 void bluetoothDisable()
 {
   GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth (recent modules will go to bootloader mode)
+  USART_ITConfig(BT_USART, USART_IT_RXNE, DISABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = BT_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
