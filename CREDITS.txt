@@ -1669,4 +1669,5 @@ Norman Schenck
 Boris Hemmer
 Gilles Arbona
 Patrice Germain
-BalTrad
+Mart Rogers
+Stefan Möst
