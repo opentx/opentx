@@ -724,6 +724,13 @@ bool isTrainerModeAvailable(int mode)
     return false;
 #endif
 
+#if defined(PCBX9E)
+  if (g_eeGeneral.bluetoothMode && mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
+    // bluetooth uses the same USART than SBUS
+    return false;
+  }
+#endif
+
 #if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
