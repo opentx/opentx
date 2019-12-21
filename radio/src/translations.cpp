@@ -575,6 +575,7 @@ const char STR_MENU_DISPLAY[] = TR_MENU_DISPLAY;
 const char STR_MENU_OTHER[] = TR_MENU_OTHER;
 const char STR_MENU_INVERT[] = TR_MENU_INVERT;
 const char STR_JITTER_FILTER[] = TR_JITTER_FILTER;
+const char STR_BT_SBUS[]  = TR_BT_SBUS;
 const char STR_RTC_CHECK[]  = TR_RTC_CHECK;
 const char STR_EXIT[] = TR_EXIT;
 const char STR_MODULE_RANGE[] = TR_MODULE_RANGE;

@@ -1158,6 +1158,7 @@
 #define TR_MENU_OTHER                  "Ostatní"
 #define TR_MENU_INVERT                 "Invertovat"
 #define TR_JITTER_FILTER               "ADC Filtr"
+#define TR_BT_SBUS                     "Used by SBUS trn."
 #define TR_RTC_CHECK                   TR("Check RTC", "Check RTC voltage")
 #define TR_AUTH_FAILURE                "Auth-failure"
 
