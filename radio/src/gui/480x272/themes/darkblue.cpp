@@ -228,6 +228,7 @@ class DarkblueTheme: public Theme
 
     virtual void load() const
     {
+      Theme::load();
       loadColors();
       loadMenusIcons();
       loadThemeBitmaps();
