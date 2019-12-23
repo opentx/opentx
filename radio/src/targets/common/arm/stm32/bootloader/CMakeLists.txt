@@ -134,6 +134,7 @@ endif()
 remove_definitions(-DDISK_CACHE)
 remove_definitions(-DLUA)
 remove_definitions(-DCLI)
+remove_definitions(-DSEMIHOSTING)
 remove_definitions(-DUSB_SERIAL)
 remove_definitions(-DWATCHDOG)
 
