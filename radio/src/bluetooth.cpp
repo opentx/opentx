@@ -21,6 +21,10 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
+#if defined(LOG_BLUETOOTH)
+extern FIL g_bluetoothFile;
+#endif
+
 #if defined(PCBX9E)
 #define BLUETOOTH_COMMAND_NAME         "TTM:REN-"
 #define BLUETOOTH_ANSWER_NAME          "TTM:REN"
@@ -42,15 +46,6 @@ extern Fifo<uint8_t, BT_TX_FIFO_SIZE> btTxFifo;
 extern Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
 Bluetooth bluetooth;
-
-#if defined(LOG_BLUETOOTH)
-  #define BLUETOOTH_TRACE(str, ...)  \
-    f_printf(&g_bluetoothFile, str, ##__VA_ARGS__); \
-    TRACE_NOCRLF(str, ##__VA_ARGS__);
-#else
-  #define BLUETOOTH_TRACE(str, ...)  \
-    TRACE_NOCRLF(str, ##__VA_ARGS__);
-#endif
 
 void Bluetooth::pushByte(uint8_t byte)
 {
@@ -362,6 +357,10 @@ void Bluetooth::processFrame()
 
     case FRAME_TYPE_UPLOAD:
       processUploadFrame();
+      break;
+
+    default:
+      BLUETOOTH_TRACE("BT invalid opcode %02X" CRLF, buffer[0]);
       break;
   }
 }

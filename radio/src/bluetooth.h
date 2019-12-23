@@ -59,6 +59,15 @@ constexpr uint8_t BLUETOOTH_BUFFER_SIZE =      64;
 //    uint8_t crc = 0;
 //};
 
+#if defined(LOG_BLUETOOTH)
+  #define BLUETOOTH_TRACE(...)  \
+    f_printf(&g_bluetoothFile, __VA_ARGS__); \
+    TRACE_NOCRLF(__VA_ARGS__);
+#else
+  #define BLUETOOTH_TRACE(...)  \
+    TRACE_NOCRLF(__VA_ARGS__);
+#endif
+
 class Bluetooth
 {
   enum FrameType {
