@@ -33,7 +33,7 @@ void Pxx1Pulses<PxxTransport>::addFlag1(uint8_t module, uint8_t sendFailsafe)
     flag1 |= PXX_SEND_RANGECHECK;
   }
 
-  if (sendFailsafe && g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
+  if (sendFailsafe) {
     flag1 |= PXX_SEND_FAILSAFE;
   }
 
@@ -182,7 +182,7 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
 #if defined(PXX_FREQUENCY_HIGH)
   if (moduleState[module].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) {
     if (moduleState[module].counter-- == 0) {
-      sendFailsafe = 1;
+      sendFailsafe = (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER);
       moduleState[module].counter = 1000;
     }
     add8ChannelsFrame(module, 0, sendFailsafe);
@@ -196,12 +196,12 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
   if (moduleState[module].counter & 0x01) {
     sendUpperChannels = g_model.moduleData[module].channelsCount;
     if (sendUpperChannels && moduleState[module].counter == 1) {
-      sendFailsafe = 1;
+      sendFailsafe = (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER);
     }
   }
   else {
     if (moduleState[module].counter == 0) {
-      sendFailsafe = 1;
+      sendFailsafe = (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER);
     }
   }
 
