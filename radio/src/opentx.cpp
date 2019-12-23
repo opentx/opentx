@@ -885,7 +885,7 @@ void checkFailsafe()
 void checkRSSIAlarmsDisabled()
 {
   if (g_model.rssiAlarms.disabled) {
-#if !defined(INTERNAL_MODULE)
+#if !defined(HARDWARE_INTERNAL_MODULE)
     if (!isModuleMultimoduleDSM2(EXTERNAL_MODULE))
 #else
     if (!isModuleMultimoduleDSM2(INTERNAL_MODULE) && !isModuleMultimoduleDSM2(EXTERNAL_MODULE))
