@@ -167,7 +167,7 @@ inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
     return HIDDEN_ROW;
 
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  if ( status.isValid()) {
+  if (status.isValid()) {
     return status.supportsDisableMapping() == true ? 0 : HIDDEN_ROW;
   }
 
