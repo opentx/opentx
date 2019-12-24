@@ -62,6 +62,10 @@ cmake ${COMMON_OPTIONS} -DPCB=X7 ${SRCDIR}
 make -j${JOBS} libsimulator
 rm CMakeCache.txt
 
+cmake ${COMMON_OPTIONS} -DPCB=X7 -DPCBREV=T12 ${SRCDIR}
+make -j${JOBS} libsimulator
+rm CMakeCache.txt
+
 cmake ${COMMON_OPTIONS} -DPCB=X9D ${SRCDIR}
 make -j${JOBS} libsimulator
 rm CMakeCache.txt
@@ -87,6 +91,10 @@ make -j${JOBS} libsimulator
 rm CMakeCache.txt
 
 cmake ${COMMON_OPTIONS} -DPCB=X10 ${SRCDIR}
+make -j${JOBS} libsimulator
+rm CMakeCache.txt
+
+cmake ${COMMON_OPTIONS} -DPCB=X10 -DPCBREV=T16 ${SRCDIR}
 make -j${JOBS} libsimulator
 rm CMakeCache.txt
 
