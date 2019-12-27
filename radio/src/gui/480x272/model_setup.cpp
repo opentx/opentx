@@ -1613,23 +1613,24 @@ bool menuModelSetup(event_t event)
         if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
+          MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
           const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
-          if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
+          if (status.isValid()) {
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
+            if (attr && status.optionDisp == 2) {
+              lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
+            }
+          }
+          else {
             const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
             if (pdef->optionsstr) {
               lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, pdef->optionsstr);
-              if (attr && pdef->optionsstr == STR_MULTI_RFTUNE)  {
+              if (attr && pdef->optionsstr == STR_MULTI_RFTUNE) {
                 lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
               }
             }
           }
-          else {
-            MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
-            if (attr && status.optionDisp == 2)  {
-              lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
-            }
-          }
+
           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
             optionValue = 50 + 5 * optionValue;
 
