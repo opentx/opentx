@@ -85,7 +85,7 @@ class SyncProcess : public QObject
           maxFileSize = 2 * 1024 * 1024;
           logLevel = QtWarningMsg;
           flags = OPT_RECURSIVE;
-          dirFilterFlags = QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::Readable;
+          dirFilterFlags = QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot;
         }
 
         friend inline QDebug operator<<(QDebug debug, const SyncOptions &o) {
