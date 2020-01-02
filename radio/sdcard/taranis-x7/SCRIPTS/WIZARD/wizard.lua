@@ -14,8 +14,6 @@
 ---- # GNU General Public License for more details.                          #
 ---- #                                                                       #
 ---- #########################################################################
--- Navigation variables
-local dirty = true
 
 -- Model types
 local modelType = 0
@@ -27,10 +25,8 @@ local MODELTYPE_QUAD = 2
 local function fieldIncDec(event, value, max)
   if event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
     value = (value + max)
-    dirty = true
   elseif event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
     value = (value + max + 2)
-    dirty = true
   end
   value = (value % (max+1))
   return value
@@ -38,7 +34,7 @@ end
 
 -- Model Type Menu
 local function modelTypeSurround(index)
-  if(index<=1) then
+  if index <= 1 then
     lcd.drawFilledRectangle(59*(index%2)+12, 13, 43, 23)
   else
     lcd.drawFilledRectangle(59*(index%2)+12, 34, 40, 20)
@@ -56,10 +52,7 @@ local function drawModelChoiceMenu()
 end
 
 local function modelTypeMenu(event)
-  if dirty == true then
-    drawModelChoiceMenu()
-    dirty = false
-  end
+  drawModelChoiceMenu()
   if event == EVT_ENTER_BREAK then
     if modelType == MODELTYPE_PLANE then
       return "plane.lua"
@@ -68,7 +61,6 @@ local function modelTypeMenu(event)
     elseif modelType == MODELTYPE_QUAD then
       return "multi.lua"
     end
-    dirty = true
   else
     modelType = fieldIncDec(event, modelType, 2)
   end
