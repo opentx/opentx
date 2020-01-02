@@ -480,8 +480,6 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-  POPUP_WARNING(STR_MODELIDUSED);
-
 #if defined(FRSKY_RELEASE)
   g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
