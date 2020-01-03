@@ -486,17 +486,17 @@ void pwrOff()
 void readKeysAndTrims()
 {
   uint8_t index = 0;
-  auto keys_input = readKeys();
+  auto keysInput = readKeys();
   for (auto mask = (1 << 0); mask < (1 << TRM_BASE); mask <<= 1) {
-    keys[index++].input(keys_input & mask);
+    keys[index++].input(keysInput & mask);
   }
 
-  auto trims_input = readTrims();
+  auto trimsInput = readTrims();
   for (auto mask = (1 << 0); mask < (1 << NUM_TRIMS_KEYS); mask <<= 1) {
-    keys[index++].input(trims_input & mask);
+    keys[index++].input(trimsInput & mask);
   }
 
-  if (keys_input || trims_input) {
+  if (keysInput || trimsInput) {
     backlightOn();
   }
 }
@@ -515,7 +515,7 @@ uint32_t readKeys()
 {
   uint32_t result = 0;
 
-  for (int i=0; i<NUM_KEYS; i++) {
+  for (int i = 0; i < NUM_KEYS; i++) {
     if (keysStates[i]) {
       // TRACE("key pressed %d", i);
       result |= 1 << i;
