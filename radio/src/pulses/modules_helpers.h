@@ -435,7 +435,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
   }
 #endif
 
-  return 63;
+  return MAX_RXNUM;
 }
 
 inline const char * getModuleDelay(uint8_t idx)
