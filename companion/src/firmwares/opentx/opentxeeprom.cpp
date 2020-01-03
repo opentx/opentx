@@ -2080,7 +2080,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
     public:
       PxxField(DataField * parent, ModuleData& module, unsigned int version):
         UnionField::TransformedMember(parent, internalField),
-        internalField(this, "Pxx"),
+        internalField(this, "PXX"),
         module(module),
         version(version)
       {
@@ -2093,11 +2093,12 @@ class ModuleUnionField: public UnionField<unsigned int> {
         internalField.Append(new SpareBitsField<8>(this));
       }
 
-      bool select(const unsigned int& attr) const override {
+      bool select(const unsigned int& attr) const override
+      {
         return (attr >= PULSES_PXX_XJT_X16 && attr <= PULSES_PXX_XJT_LR12) ||
-          attr==PULSES_PXX_DJT ||
-          attr==PULSES_PXX_R9M ||
-          attr==PULSES_PXX_R9M_LITE;
+          attr == PULSES_PXX_DJT ||
+          attr == PULSES_PXX_R9M ||
+          attr == PULSES_PXX_R9M_LITE;
       }
 
       void beforeExport() override
@@ -2130,13 +2131,14 @@ class ModuleUnionField: public UnionField<unsigned int> {
         internalField.Append(new UnsignedField<3>(this, module.access.receivers));
         internalField.Append(new SpareBitsField<5>(this));
 
-        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++)
+        for (int i = 0; i < PXX2_MAX_RECEIVERS_PER_MODULE; i++)
           internalField.Append(new CharField<8>(this, receiverName[i]));
 
         memset(receiverName, 0, sizeof(receiverName));
       }
 
-      bool select(const unsigned int& attr) const override {
+      bool select(const unsigned int& attr) const override
+      {
         return attr >= PULSES_ACCESS_ISRM && attr <= PULSES_ACCESS_R9M_LITE_PRO;
       }
 
@@ -2159,8 +2161,8 @@ class ModuleUnionField: public UnionField<unsigned int> {
         if (module.protocol == PULSES_ACCESS_ISRM) {
           module.protocol += module.subType;
         }
-        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
-          for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
+        for (int i = 0; i < PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
+          for (int pos = 0; pos < PXX2_LEN_RX_NAME + 1; pos++) {
             if (pos == PXX2_LEN_RX_NAME || receiverName[i][pos] == ' ' || receiverName[i][pos] == '\0') {
               module.access.receiverName[i][pos] = '\0';
               break;
@@ -2205,7 +2207,7 @@ class ModuleField: public TransformedField {
       internalField.Append(new UnsignedField<3>(this, module.subType));
       internalField.Append(new BoolField<1>(this, module.invertedSerial));
       if (version <= 218) {
-        for (int i=0; i<32; i++) {
+        for (int i = 0; i < 32; i++) {
           internalField.Append(new SignedField<16>(this, module.failsafeChannels[i]));
         }
       }
@@ -2225,7 +2227,7 @@ class ModuleField: public TransformedField {
         module.subType = module.protocol - PULSES_PXX_XJT_X16;
       }
       else if (module.protocol == PULSES_MULTIMODULE) {
-        module.rfProtocol = module.multi.rfProtocol & 0xf;
+        module.rfProtocol = module.multi.rfProtocol & 0x0F;
       }
     }
 

@@ -240,33 +240,31 @@ void convertModelData_218_to_219(ModelData &model)
   newModel.rssiAlarms = oldModel.rssiAlarms;
   newModel.potsWarnMode = oldModel.potsWarnMode;
 
-  for (int i=0; i<NUM_MODULES; i++) {
-    memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], 4);
-    memcpy(((uint8_t *)&newModel.moduleData[i]) + 4, ((uint8_t *)&oldModel.moduleData[i]) + 64 + 4, 2);
-    if (newModel.moduleData[i].type >= MODULE_TYPE_ISRM_PXX2)
-      newModel.moduleData[i].type += 1;
-    if (newModel.moduleData[i].type >= MODULE_TYPE_R9M_PXX2)
-      newModel.moduleData[i].type += 4;
-    if (newModel.moduleData[i].type == MODULE_TYPE_XJT_PXX1) {
-      newModel.moduleData[i].subType = newModel.moduleData[i].rfProtocol;
+  for (int module = 0; module < NUM_MODULES; module++) {
+    auto & newModule = newModel.moduleData[module];
+    memcpy(&newModule, &oldModel.moduleData[module], 4);
+    memcpy(((uint8_t *)&newModule) + 4, ((uint8_t *)&oldModel.moduleData[module]) + 64 + 4, 2);
+    if (newModule.type >= MODULE_TYPE_ISRM_PXX2)
+      newModule.type += 1;
+    if (newModule.type >= MODULE_TYPE_R9M_PXX2)
+      newModule.type += 4;
+    if (newModule.type == MODULE_TYPE_XJT_PXX1) {
+      newModule.subType = newModule.rfProtocol;
 #if defined(RADIO_X9DP2019)
-      if (i == INTERNAL_MODULE) {
-        newModel.moduleData[i].type = MODULE_TYPE_ISRM_PXX2;
-        newModel.moduleData[i].subType = MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16;
+      if (module == INTERNAL_MODULE) {
+        newModule.type = MODULE_TYPE_ISRM_PXX2;
+        newModule.subType = MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16;
       }
 #endif
+    }
+    if (oldModel.moduleData[module].failsafeMode == FAILSAFE_CUSTOM) {
+      memcpy(newModel.failsafeChannels, oldModel.moduleData[module].failsafeChannels, sizeof(newModel.failsafeChannels));
     }
   }
 
 #if defined(RADIO_T12)
   newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE; // Early t12 firmware had unused INT settings that need to be cleared
 #endif
-
-  for (uint8_t module=0; module<2; module++) {
-    if (oldModel.moduleData[module].failsafeMode == FAILSAFE_CUSTOM) {
-      memcpy(newModel.failsafeChannels, oldModel.moduleData[module].failsafeChannels, sizeof(newModel.failsafeChannels));
-    }
-  }
 
 #if !defined(PCBSKY9X)
   newModel.trainerData.mode = oldModel.trainerMode;

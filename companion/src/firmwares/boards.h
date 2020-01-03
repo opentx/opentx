@@ -325,7 +325,7 @@ inline bool HAS_EXTERNAL_ANTENNA(Board::Type board)
   return (board == Board::BOARD_X10 || board == Board::BOARD_HORUS_X12S || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board)));
 }
 
-inline bool IS_ACCESS_RADIO(Board::Type board, QString &id)
+inline bool IS_ACCESS_RADIO(Board::Type board, const QString & id)
 {
   return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == Board::BOARD_TARANIS_X9DP_2019 || board == Board::BOARD_X10_EXPRESS || IS_TARANIS_X7_ACCESS(board) ||
           (IS_HORUS(board) && id.contains("internalaccess")));

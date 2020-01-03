@@ -486,7 +486,7 @@ QString Boards::getAnalogInputName(Board::Type board, int index)
 
 bool Boards::isBoardCompatible(Type board1, Type board2)
 {
-  return (getFourCC(board1) == getFourCC(board2));
+  return board1 == board2; // (getFourCC(board1) == getFourCC(board2));
 }
 
 QString Boards::getBoardName(Board::Type board)

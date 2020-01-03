@@ -25,14 +25,17 @@
 
 void ModuleData::convert(RadioDataConversionState & cstate)
 {
-  if (protocol == PULSES_PXX_R9M && (IS_TARANIS_XLITE(cstate.fromType) || IS_TARANIS_XLITE(cstate.toType))) {
+  if (protocol == PULSES_PXX_XJT_X16 && IS_ACCESS_RADIO(cstate.toType, "")) {
+    protocol = PULSES_ACCST_ISRM_D16;
+  }
+  else if (protocol == PULSES_PXX_R9M && (IS_TARANIS_XLITE(cstate.fromType) || IS_TARANIS_XLITE(cstate.toType))) {
     clear();
   }
 }
 
 bool ModuleData::isPxx2Module() const
 {
-  switch(protocol){
+  switch (protocol) {
     case PULSES_ACCESS_ISRM:
     case PULSES_ACCESS_R9M:
     case PULSES_ACCESS_R9M_LITE:
@@ -46,7 +49,7 @@ bool ModuleData::isPxx2Module() const
 
 bool ModuleData::isPxx1Module() const
 {
-  switch(protocol){
+  switch (protocol) {
     case PULSES_PXX_XJT_X16:
     case PULSES_PXX_R9M:
     case PULSES_PXX_R9M_LITE:

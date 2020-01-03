@@ -105,7 +105,7 @@ void RadioData::convert(RadioDataConversionState & cstate)
 {
   generalSettings.convert(cstate.withModelIndex(-1));
 
-  for (unsigned i=0; i<models.size(); i++) {
+  for (unsigned i = 0; i < models.size(); i++) {
     models[i].convert(cstate.withModelIndex(i));
   }
 

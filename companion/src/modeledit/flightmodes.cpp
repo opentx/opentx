@@ -324,6 +324,7 @@ void FlightModePanel::update()
     reValues[i]->setValue(phasere->rotaryEncoders[i]);
   }
 }
+
 void FlightModePanel::updateGVar(int index)
 {
   lock = true;
@@ -734,7 +735,6 @@ FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralS
     tabWidget->addTab(tab, getTabName(i));
   }
   gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
-  connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tabWidget_currentChanged(int)));
 }
 
 FlightModesPanel::~FlightModesPanel()
