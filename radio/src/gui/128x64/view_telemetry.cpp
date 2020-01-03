@@ -233,7 +233,7 @@ void menuViewTelemetryFrsky(event_t event)
 {
   enum NavigationDirection direction = none;
 
-  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+  if (event == EVT_KEY_FIRST(KEY_EXIT) && TELEMETRY_SCREEN_TYPE(s_frsky_view) != TELEMETRY_SCREEN_TYPE_SCRIPT) {
     killEvents(event);
     chainMenu(menuMainView);
   }
