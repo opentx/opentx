@@ -96,6 +96,11 @@ def main():
         cmake_options["PCB"] = "X7"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
+    elif options[optcount] == "x7access":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "ACCESS"
+        firmware_options = options_taranis_x9dp
+        maxsize = 65536 * 8
     elif board_name == "xlite":
         cmake_options["PCB"] = "XLITE"
         firmware_options = options_taranis_xlite
