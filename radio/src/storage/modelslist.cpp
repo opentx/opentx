@@ -515,8 +515,6 @@ uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
   uint8_t type = modelCell->moduleData[moduleIdx].type;
   uint8_t rfProtocol = modelCell->moduleData[moduleIdx].rfProtocol;
 
-  // assume 63 is the highest Model ID
-  // and use 64 bits
   uint8_t usedModelIds[(MAX_RXNUM + 7) / 8];
   memset(usedModelIds, 0, sizeof(usedModelIds));
   
