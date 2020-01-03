@@ -437,7 +437,7 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
 
 uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
 {
-  uint8_t usedModelIds[(MAX_MODELS + 7) / 8];
+  uint8_t usedModelIds[(MAX_RXNUM + 7) / 8];
   memset(usedModelIds, 0, sizeof(usedModelIds));
 
   for (uint8_t modelIndex = 0; modelIndex < MAX_MODELS; modelIndex++) {
@@ -452,7 +452,7 @@ uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
     usedModelIds[id >> 3u] |= mask;
   }
 
-  for (uint8_t id = 1; id < getMaxRxNum(module); id++) {
+  for (uint8_t id = 1; id <= getMaxRxNum(module); id++) {
     uint8_t mask = 1u << (id & 7u);
     if (!(usedModelIds[id >> 3u] & mask)) {
       // found free ID
