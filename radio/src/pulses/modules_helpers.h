@@ -416,14 +416,15 @@ inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
   return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
 }
 
+constexpr uint8_t MAX_RXNUM = 63;
+
 inline uint8_t getMaxRxNum(uint8_t idx)
 {
   if (isModuleDSM2(idx))
     return 20;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(idx))
-  {
+  if (isModuleMultimodule(idx)) {
     switch (g_model.moduleData[idx].getMultiProtocol()) {
       case MODULE_SUBTYPE_MULTI_OLRS:
         return 4;
@@ -434,7 +435,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
   }
 #endif
 
-  return 63;
+  return MAX_RXNUM;
 }
 
 inline const char * getModuleDelay(uint8_t idx)

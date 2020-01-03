@@ -1410,15 +1410,15 @@ void menuModelSetup(event_t event)
 
   if (old_editMode > 0 && s_editMode == 0) {
     switch(menuVerticalPosition) {
-    case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND:
-      if (menuHorizontalPosition == 0)
-        checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
-      break;
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND:
+        if (menuHorizontalPosition == 0)
+          checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
+        break;
 
-    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
-      if (menuHorizontalPosition == 0)
-        checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
-      break;
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
+        if (menuHorizontalPosition == 0)
+          checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
+        break;
     }
   }
 }

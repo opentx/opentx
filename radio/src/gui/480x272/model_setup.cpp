@@ -397,7 +397,7 @@ void checkModelIdUnique(uint8_t moduleIdx)
 
   // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
   size_t warn_buf_len = sizeof(reusableBuffer.moduleSetup.msg) - WARNING_LINE_LEN - 2;
-  if (!modelslist.isModelIdUnique(moduleIdx,warn_buf,warn_buf_len)) {
+  if (!modelslist.isModelIdUnique(moduleIdx, warn_buf, warn_buf_len)) {
     if (warn_buf[0] != 0) {
       POPUP_WARNING(STR_MODELIDUSED);
       SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.moduleSetup.msg), 0);
@@ -1754,7 +1754,7 @@ bool menuModelSetup(event_t event)
 
   // some field just finished being edited
   if (old_editMode > 0 && s_editMode == 0) {
-    ModelCell* mod_cell = modelslist.getCurrentModel();
+    ModelCell * mod_cell = modelslist.getCurrentModel();
     if (mod_cell) {
       switch(menuVerticalPosition) {
         case ITEM_MODEL_SETUP_NAME:
