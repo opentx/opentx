@@ -216,8 +216,8 @@ enum NavigationDirection {
 #define incrTelemetryScreen() direction = down
 
 #if defined(NAVIGATION_XLITE)
-#define EVT_KEY_PREVIOUS_VIEW          IS_SHIFT_PRESSED() && EVT_KEY_LONG(KEY_LEFT)
-#define EVT_KEY_NEXT_VIEW              IS_SHIFT_PRESSED() && EVT_KEY_LONG(KEY_RIGHT)
+#define EVT_KEY_PREVIOUS_VIEW          (IS_SHIFT_PRESSED() && EVT_KEY_LONG(KEY_LEFT))
+#define EVT_KEY_NEXT_VIEW              (IS_SHIFT_PRESSED() && EVT_KEY_LONG(KEY_RIGHT))
 #elif defined(NAVIGATION_X7)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
