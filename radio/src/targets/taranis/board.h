@@ -529,15 +529,19 @@ enum Analogs {
 #define NUM_MOUSE_ANALOGS               0
 #define STORAGE_NUM_MOUSE_ANALOGS       0
 
+#if defined(PCBXLITE)
+  #define NUM_TRIMS_KEYS                4
+#else
+  #define NUM_TRIMS_KEYS                (NUM_TRIMS * 2)
+#endif
+
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
   void sticksPwmInit();
   void sticksPwmRead(uint16_t * values);
   extern volatile uint32_t pwm_interrupt_count; // TODO => reusable buffer (boot section)
-  #define NUM_TRIMS_KEYS                4
 #else
-  #define NUM_TRIMS_KEYS                8
   #define STICKS_PWM_ENABLED()          false
 #endif
 
