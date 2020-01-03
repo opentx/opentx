@@ -486,14 +486,14 @@ void pwrOff()
 void readKeysAndTrims()
 {
   uint8_t index = 0;
-  uint32_t keys_input = readKeys();
-  for (uint8_t i = 0; i < TRM_BASE; i++) {
-    keys[index++].input(keys_input & (1 << i));
+  auto keys_input = readKeys();
+  for (auto mask = (1 << 0); mask < (1 << TRM_BASE); mask <<= 1) {
+    keys[index++].input(keys_input & mask);
   }
 
-  uint32_t trims_input = readTrims();
-  for (uint8_t i = 0; i < NUM_TRIMS_KEYS; i++) {
-    keys[index++].input(trims_input & (1 << i));
+  auto trims_input = readTrims();
+  for (auto mask = (1 << 0); mask < (1 << NUM_TRIMS_KEYS); mask <<= 1) {
+    keys[index++].input(trims_input & mask);
   }
 
   if (keys_input || trims_input) {
