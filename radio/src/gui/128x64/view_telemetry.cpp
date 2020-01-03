@@ -216,11 +216,14 @@ enum NavigationDirection {
 #define incrTelemetryScreen() direction = down
 
 #if defined(NAVIGATION_XLITE)
-#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_LEFT)
-#define EVT_KEY_NEXT_VIEW              EVT_KEY_LONG(KEY_RIGHT)
+#define EVT_KEY_PREVIOUS_VIEW          IS_SHIFT_PRESSED() && EVT_KEY_LONG(KEY_LEFT)
+#define EVT_KEY_NEXT_VIEW              IS_SHIFT_PRESSED() && EVT_KEY_LONG(KEY_RIGHT)
 #elif defined(NAVIGATION_X7)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
+#elif defined(NAVIGATION_9X)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_UP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_LONG(KEY_DOWN)
 #else
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_FIRST(KEY_UP)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_DOWN)
@@ -240,26 +243,13 @@ void menuViewTelemetryFrsky(event_t event)
       break;
 
     case EVT_KEY_PREVIOUS_VIEW:
-#if defined(PCBXLITE)
-      if (IS_SHIFT_PRESSED()) {
-        decrTelemetryScreen();
-      }
-#else
-      if (IS_KEY_LONG(EVT_KEY_PREVIOUS_VIEW)) {
-        killEvents(event);
-      }
+      killEvents(event);
       decrTelemetryScreen();
-#endif
       break;
 
     case EVT_KEY_NEXT_VIEW:
-#if defined(PCBXLITE)
-      if (IS_SHIFT_PRESSED()) {
-        incrTelemetryScreen();
-      }
-#else
+      killEvents(event);
       incrTelemetryScreen();
-#endif
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):
