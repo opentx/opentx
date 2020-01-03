@@ -581,7 +581,7 @@ enum SwitchSources {
   #define SWSRC_TRAINER SWSRC_LAST_SWITCH,
 #endif
 
-#define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
+#define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2 * NUM_TRIMS - 1)
 
 enum MixSources {
   MIXSRC_NONE,
