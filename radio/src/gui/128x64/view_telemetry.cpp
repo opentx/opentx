@@ -233,31 +233,29 @@ void menuViewTelemetryFrsky(event_t event)
 {
   enum NavigationDirection direction = none;
 
-  switch (event) {
-    case EVT_KEY_FIRST(KEY_EXIT):
+  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+    killEvents(event);
+    chainMenu(menuMainView);
+  }
 #if defined(LUA)
-    case EVT_KEY_LONG(KEY_EXIT):
+  else if (event == EVT_KEY_LONG(KEY_EXIT)) {
+    killEvents(event);
+    chainMenu(menuMainView);
+  }
 #endif
-      killEvents(event);
-      chainMenu(menuMainView);
-      break;
-
-    case EVT_KEY_PREVIOUS_VIEW:
-      killEvents(event);
-      decrTelemetryScreen();
-      break;
-
-    case EVT_KEY_NEXT_VIEW:
-      killEvents(event);
-      incrTelemetryScreen();
-      break;
-
-    case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
-      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      POPUP_MENU_START(onMainViewMenu);
-      break;
+  else if (event == EVT_KEY_PREVIOUS_VIEW) {
+    killEvents(event);
+    decrTelemetryScreen();
+  }
+  else if (event == EVT_KEY_NEXT_VIEW) {
+    killEvents(event);
+    incrTelemetryScreen();
+  }
+  else if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    killEvents(event);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    POPUP_MENU_START(onMainViewMenu);
   }
 
   for (int i=0; i<=TELEMETRY_SCREEN_TYPE_MAX; i++) {
