@@ -41,6 +41,7 @@ enum AssignFunc {
   FuncTrainerELE,
   FuncTrainerTHR,
   FuncTrainerAIL,
+  FuncTrainerChannels,
   FuncInstantTrim,
   FuncPlaySound,
   FuncPlayHaptic,
