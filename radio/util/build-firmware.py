@@ -30,7 +30,7 @@ def build_target(target, path, cmake_options):
         suffix = os.environ["OPENTX_VERSION_SUFFIX"]
         cmd.append('-DVERSION_SUFFIX="%s"' % suffix)
         if suffix.startswith("N"):
-            cmd.append('-DNIGHTLY_BUILD_WARNING=YES')
+            cmd.append('-DTEST_BUILD_WARNING=YES')
     cmd.append(srcdir)
 
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
