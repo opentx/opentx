@@ -31,7 +31,12 @@ uint8_t mainRequestFlags = 0;
 #if defined(LIBOPENUI)
 void openUsbMenu()
 {
-  auto menu = new Menu(&mainWindow);
+  static Menu* menu = nullptr;
+  if(menu) return;
+  menu = new Menu(&mainWindow);
+  menu->setCloseHandler([=]() {
+    menu = nullptr;
+  });
   menu->setTitle("USB");
   menu->addLine(STR_USB_JOYSTICK, [] {
     setSelectedUsbMode(USB_JOYSTICK_MODE);
