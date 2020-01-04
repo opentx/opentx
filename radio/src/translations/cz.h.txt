@@ -733,8 +733,8 @@
 #define TR_ALARMSWARN                  "ALARMU"
 #define TR_SWITCHWARN                  "POZICE"
 #define TR_FAILSAFEWARN                "FAILSAFE"
-#define TR_NIGHTLY_WARNING             TR("NOČNÍ", "NOČNÍ SESTAVENÍ")
-#define TR_NIGHTLY_NOTSAFE             "Verze není bezpečná k létání"
+#define TR_TEST_WARNING                 TR("NOČNÍ", "NOČNÍ SESTAVENÍ")
+#define TR_TEST_NOTSAFE                 "Use for tests only"
 #define TR_WRONG_SDCARDVERSION         "Očekávaná ver.: "
 #define TR_WARN_RTC_BATTERY_LOW        "Slabá RTC baterie"
 #define TR_WARN_MULTI_LOWPOWER         "Low power mode"

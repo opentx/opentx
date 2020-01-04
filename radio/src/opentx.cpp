@@ -1554,8 +1554,8 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
   }
 #endif
 
-#if defined(NIGHTLY_BUILD_WARNING)
-  ALERT(STR_NIGHTLY_WARNING, TR_NIGHTLY_NOTSAFE, AU_ERROR);
+#if defined(TEST_BUILD_WARNING)
+  ALERT(STR_TEST_WARNING, TR_TEST_NOTSAFE, AU_ERROR);
 #endif
 
 #if defined(GUI)
