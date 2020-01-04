@@ -31,10 +31,11 @@ uint8_t mainRequestFlags = 0;
 #if defined(LIBOPENUI)
 void openUsbMenu()
 {
-  static Menu* menu = nullptr;
-  if(menu) return;
+  static Menu * menu = nullptr;
+  if (menu)
+    return;
   menu = new Menu(&mainWindow);
-  menu->setCloseHandler([=]() {
+  menu->setCloseHandler([]() {
     menu = nullptr;
   });
   menu->setTitle("USB");
