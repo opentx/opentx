@@ -391,8 +391,6 @@ void extModuleInit();
 uint32_t pwrCheck();
 uint32_t lowPowerCheck();
 
-//TBD removed?!
-uint8_t UsbModeSelect( uint32_t index );
 void pwrOn();
 void pwrSoftReboot();
 void pwrOff();
