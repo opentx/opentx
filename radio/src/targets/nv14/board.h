@@ -455,7 +455,6 @@ void usbJoystickUpdate();
 // Audio driver
 void audioInit();
 void audioConsumeCurrentBuffer();
-void Audio_Sine_Test();
 void audioSpiWriteBuffer(const uint8_t * buffer, uint32_t size);
 void audioSpiSetSpeed(uint8_t speed);
 uint8_t audioHardReset();
@@ -463,6 +462,8 @@ uint8_t audioSoftReset();
 void audioSendRiffHeader();
 void audioOn();
 void audioOff();
+bool isAudioReady();
+bool audioChipReset();
 
 #define SPI_SPEED_2                    0
 #define SPI_SPEED_4                    1

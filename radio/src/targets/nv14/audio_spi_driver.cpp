@@ -78,8 +78,6 @@
 
 #define READ_DREQ()                    (GPIO_ReadInputDataBit(AUDIO_DREQ_GPIO, AUDIO_DREQ_GPIO_PIN))
 
-bool isAudioOn = false;
-
 void audioSpiInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -278,9 +276,9 @@ uint8_t audioHardReset(void)
   delay_ms(100); // 100ms
   RST_HIGH();
 
-  if (!audioWaitDreq(100))
+  if (!audioWaitDreq(100)) {
     return 0;
-
+  }
   delay_ms(20); // 20ms
   return 1;
 }
@@ -288,7 +286,7 @@ uint8_t audioHardReset(void)
 uint8_t audioSoftReset(void)
 {
   audioSpiSetSpeed(SPI_SPEED_64);
-  if (!audioWaitDreq(2000))
+  if (!audioWaitDreq(100))
   {
     return 0;
   }
@@ -300,14 +298,12 @@ uint8_t audioSoftReset(void)
     retry++;
     audioSpiWriteCmd(SPI_MODE, 0x0804);
   }
-
   // wait for set up successful
   retry = 0;
   while (audioSpiReadReg(SPI_CLOCKF) != 0x9800 && retry < 100) {
     retry++;
     audioSpiWriteCmd(SPI_CLOCKF, 0x9800);
   }
-
   audioResetDecodeTime(); // reset the decoding time
   audioSpiSetSpeed(SPI_SPEED_8);
   XDCS_LOW();
@@ -318,65 +314,6 @@ uint8_t audioSoftReset(void)
   delay_01us(100); // 10us
   XDCS_HIGH();
   return 1;
-}
-
-//正弦测试
-void Audio_Sine_Test(void)
-{
-    audioSpiWriteCmd(0x0b,0X2020);
-    audioSpiWriteCmd(SPI_MODE,0x0820);
-    while(!audioWaitDreq(100));
-    //printf("mode sin:%x\n",VS_RD_Reg(SPI_MODE));
-
-    audioSpiSetSpeed(SPI_SPEED_64);
-    XDCS_LOW();
-    audioSpiReadWriteByte(0x53);
-    audioSpiReadWriteByte(0xef);
-    audioSpiReadWriteByte(0x6e);
-    audioSpiReadWriteByte(0x24);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    delay_ms(100);
-    XDCS_HIGH();
-
-    XDCS_LOW();
-    audioSpiReadWriteByte(0x45);
-    audioSpiReadWriteByte(0x78);
-    audioSpiReadWriteByte(0x69);
-    audioSpiReadWriteByte(0x74);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    delay_ms(100);
-    XDCS_HIGH();
-
-
-    XDCS_LOW();
-    audioSpiReadWriteByte(0x53);
-    audioSpiReadWriteByte(0xef);
-    audioSpiReadWriteByte(0x6e);
-    audioSpiReadWriteByte(0x44);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    delay_ms(100);
-    XDCS_HIGH();
-
-    XDCS_LOW();
-    audioSpiReadWriteByte(0x45);
-    audioSpiReadWriteByte(0x78);
-    audioSpiReadWriteByte(0x69);
-    audioSpiReadWriteByte(0x74);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    audioSpiReadWriteByte(0x00);
-    delay_ms(100);
-    XDCS_HIGH();
 }
 
 uint32_t audioSpiWriteData(const uint8_t * buffer, uint32_t size)
@@ -416,19 +353,15 @@ void audioSendRiffHeader()
 
 void audioOn()
 {
-  if(isAudioOn) return;
   GPIO_SetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
-  isAudioOn = true;
 }
 
 void audioOff()
 {
-  if(!isAudioOn) return;
   GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
-  isAudioOn = false;
 }
 
-void audioShutdownInit()
+void audioAmpInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
@@ -437,23 +370,36 @@ void audioShutdownInit()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
-  audioOn();
+  GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
 }
 
+bool hardResetDone = false;
+bool softResetDone = false;
+
+bool isAudioReady() {
+  return hardResetDone && softResetDone;
+}
+
+bool audioChipReset(){
+  audioSpiSetSpeed(SPI_SPEED_64);
+  if(!hardResetDone) {
+    hardResetDone = audioHardReset() > 0;
+    softResetDone = false;
+  }
+  if(!softResetDone) {
+    softResetDone = audioSoftReset() > 0;
+  }
+  audioSpiSetSpeed(SPI_SPEED_8);
+  if(hardResetDone && softResetDone) {
+    audioSendRiffHeader();
+    audioOn();
+  }
+  return hardResetDone && softResetDone;
+}
 void audioInit()
 {
-  audioShutdownInit();
+  audioAmpInit();
   audioSpiInit();
-  /* Audio setting */
-  audioSpiSetSpeed(SPI_SPEED_64);
-  audioHardReset();
-  audioSoftReset();
-  audioSpiSetSpeed(SPI_SPEED_8);
-  delay_01us(10000);
-  audioSendRiffHeader();
-  audioOn();
-  delay_01us(10000);
-
 }
 
 uint8_t * currentBuffer = nullptr;
@@ -474,7 +420,9 @@ void audioSetCurrentBuffer(const AudioBuffer * buffer)
 
 void audioConsumeCurrentBuffer()
 {
-  //return;
+  if(!hardResetDone || !softResetDone) {
+     return;
+  }
   if (newVolume >= 0) {
     uint8_t value = newVolume;
     audioSpiWriteCmd(SPI_VOL, (value << 8) + value);
