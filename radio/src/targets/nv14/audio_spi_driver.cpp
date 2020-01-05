@@ -78,6 +78,8 @@
 
 #define READ_DREQ()                    (GPIO_ReadInputDataBit(AUDIO_DREQ_GPIO, AUDIO_DREQ_GPIO_PIN))
 
+bool isAudioOn = false;
+
 void audioSpiInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -164,13 +166,10 @@ void audioSpiSetSpeed(uint8_t speed)
       break;
   }
   AUDIO_SPI->CR1 |= 0x01 << 6;
-
-  //SPI_Cmd(AUDIO_SPI, ENABLE);
 }
 
 uint8_t audioSpiReadWriteByte(uint8_t value)
 {
-  uint8_t ret = 0;
   uint16_t time_out = 0x0FFF;
   while (SPI_I2S_GetFlagStatus(AUDIO_SPI, SPI_I2S_FLAG_TXE) == RESET) {
     if (--time_out == 0) {
@@ -199,10 +198,7 @@ uint8_t audioSpiReadWriteByte(uint8_t value)
       break;
     }
   }
-
-  ret = SPI_I2S_ReceiveData(AUDIO_SPI);
-
-  return ret;
+  return SPI_I2S_ReceiveData(AUDIO_SPI);
 }
 
 uint8_t audioWaitDreq(int32_t delay_us)
@@ -321,7 +317,6 @@ uint8_t audioSoftReset(void)
   audioSpiReadWriteByte(0X0);
   delay_01us(100); // 10us
   XDCS_HIGH();
-
   return 1;
 }
 
@@ -386,14 +381,7 @@ void Audio_Sine_Test(void)
 
 uint32_t audioSpiWriteData(const uint8_t * buffer, uint32_t size)
 {
-  int i = 55;
-
   XDCS_LOW();
-
-  if (58 == i)
-  {
-    TRACE("\nbuffer = %d \r\n)", buffer);
-  }
 
   uint32_t index = 0;
   while (index < size && READ_DREQ() != 0) {
@@ -426,7 +414,20 @@ void audioSendRiffHeader()
   audioSpiWriteBuffer(RiffHeader, sizeof(RiffHeader));
 }
 
-#if defined(PCBNV14)
+void audioOn()
+{
+  if(isAudioOn) return;
+  GPIO_SetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
+  isAudioOn = true;
+}
+
+void audioOff()
+{
+  if(!isAudioOn) return;
+  GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
+  isAudioOn = false;
+}
+
 void audioShutdownInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -436,21 +437,26 @@ void audioShutdownInit()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
-  GPIO_SetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN); // we never RESET it, there is a 2s delay on STARTUP
+  audioOn();
 }
-#endif
 
 void audioInit()
 {
-#if defined(PCBNV14)
   audioShutdownInit();
-  // TODO X10 code missing
-#endif
-
   audioSpiInit();
+  /* Audio setting */
+  audioSpiSetSpeed(SPI_SPEED_64);
+  audioHardReset();
+  audioSoftReset();
+  audioSpiSetSpeed(SPI_SPEED_8);
+  delay_01us(10000);
+  audioSendRiffHeader();
+  audioOn();
+  delay_01us(10000);
+
 }
 
-uint8_t * currentBuffer = NULL;
+uint8_t * currentBuffer = nullptr;
 uint32_t currentSize = 0;
 int16_t newVolume = -1;
 
@@ -461,13 +467,14 @@ void audioSetCurrentBuffer(const AudioBuffer * buffer)
     currentSize = buffer->size * 2;
   }
   else {
-    currentBuffer = NULL;
+    currentBuffer = nullptr;
     currentSize = 0;
   }
 }
 
 void audioConsumeCurrentBuffer()
 {
+  //return;
   if (newVolume >= 0) {
     uint8_t value = newVolume;
     audioSpiWriteCmd(SPI_VOL, (value << 8) + value);
@@ -485,7 +492,7 @@ void audioConsumeCurrentBuffer()
     currentSize -= written;
     if (currentSize == 0) {
       audioQueue.buffersFifo.freeNextFilledBuffer();
-      currentBuffer = NULL;
+      currentBuffer = nullptr;
       currentSize = 0;
     }
   }

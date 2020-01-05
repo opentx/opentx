@@ -513,6 +513,9 @@
 #define TR_CONTRAST                    "对比度"
 #define TR_ALARMS_LABEL                "警告"
 #define TR_BATTERY_RANGE               TR("Batt. range", "电压测量范围")
+#define TR_BATTERYCHARGING             "Charging..."
+#define TR_BATTERYFULL                 "Battery full"
+#define TR_BATTERYNONE                 "None!"
 #define TR_BATTERYWARNING              "低电压报警值"
 #define TR_INACTIVITYALARM             "长时间无操作"
 #define TR_MEMORYWARNING               "内存不足"

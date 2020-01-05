@@ -87,12 +87,9 @@ typedef unsigned int  LcdReadIDFucPtr( void );
 
 extern void GPIO_SetDirection( GPIO_TypeDef *GPIOx, unsigned char Pin, unsigned char IsInput );
 
-extern void LCD_HX8357D_On( void );
-extern void LCD_ILI9481_On( void );
-extern void LCD_ILI9486_On( void );
-extern void LCD_ILI9488_On( void );
-extern void LCD_ST7796S_On( void );
-
+extern lcdSpiInitFucPtr lcdInitFunction;
+extern lcdSpiInitFucPtr lcdOffFunction;
+extern lcdSpiInitFucPtr lcdOnFunction;
 
 #define SET_IO_INPUT( PORT, PIN )            GPIO_SetDirection( PORT, PIN, 1 )
 #define SET_IO_OUTPUT( PORT, PIN )           GPIO_SetDirection( PORT, PIN, 0 )

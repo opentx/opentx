@@ -13,6 +13,8 @@ option(PPM "PPM TX Module" ON)
 option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
 option(CROSSFIRE "Crossfire TX Module" ON)
+option(AFHDS2 "Support for AFHDS2" OFF)
+option(AFHDS3 "Support for AFHDS3" OFF)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
 option(DEBUG_LATENCY "Debug latency" OFF)
@@ -147,7 +149,18 @@ endif()
 
 if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
-  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/hitec.cpp telemetry/hott.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
+  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/hitec.cpp telemetry/hott.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
+endif()
+if(MULTIMODULE OR AFHDS3)
+  set(SRC ${SRC} telemetry/flysky_ibus.cpp)
+endif()
+if(AFHDS2)
+  add_definitions(-DAFHDS2)
+  set(SRC ${SRC} telemetry/flysky_nv14.cpp)
+endif()
+
+if(AFHDS3)
+  add_definitions(-DAFHDS3)
 endif()
 
 if(CROSSFIRE)
@@ -234,5 +247,19 @@ if(SBUS)
   set(PULSES_SRC
     ${PULSES_SRC}
     sbus.cpp
+    )
+endif()
+if(AFHDS2)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    afhds2.cpp
+    flysky.cpp
+    )
+endif()
+
+if(AFHDS3)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    afhds3.cpp
     )
 endif()

@@ -46,10 +46,6 @@
 #define MIN_ADC_CHANNLE_VALUE           ( 0 )
 #define MIDDLE_ADC_CHANNLE_VALUE        ( 2047 )
 
-
-
-extern unsigned short HallChVal[FLYSKY_HALL_CHANNEL_COUNT];
-
 typedef  struct
 {
     signed short min;
@@ -62,25 +58,20 @@ typedef  struct
     STRUCT_STICK_CALIBRATION sticksCalibration[4];
     unsigned char reststate;
     unsigned short CRC16;
-}STRUCT_STICK_CALIBRATION_PACK;
+} STRUCT_STICK_CALIBRATION_PACK;
 
 typedef  struct
 {
     signed short channel[4];
-}STRUCT_HALL_CHANNEL;
-
-typedef  struct
-{
-    STRUCT_HALL_CHANNEL channel;
     unsigned char  stickState;
     unsigned short CRC16;
-}STRUCT_CHANNEL_PACK;
+} STRUCT_CHANNEL_PACK;
 
 typedef  union
 {
     STRUCT_STICK_CALIBRATION_PACK channelPack;
     STRUCT_CHANNEL_PACK sticksCalibrationPack;
-}UNION_DATA;
+} UNION_DATA;
 
 typedef  struct
 {
@@ -103,14 +94,14 @@ typedef  union
 {
     STRUCT_HALLID hall_Id;
     unsigned char ID;
-}STRUCT_ID;
+} STRUCT_ID;
 
 
 typedef  union
 {
     STRUCT_HALLDATA halldat;
     unsigned char buffer[30];
-}UNION_HALLDATA;
+} UNION_HALLDATA;
 
 
 typedef  struct
@@ -159,7 +150,9 @@ enum TRANSFER_DIR_E {
     TRANSFER_DIR_RFMODULE,
 };
 
-#define HALL_PROTOLO_HEAD                ( 0x55 )
+#define HALL_PROTOLO_HEAD                 0x55
+#define HALL_RESP_TYPE_CALIB              0x0e
+#define HALL_RESP_TYPE_VALUES             0x0c
 
 #define HALL_SERIAL_USART                 UART4
 #define HALL_SERIAL_GPIO                  GPIOA
@@ -192,6 +185,11 @@ enum TRANSFER_DIR_E {
 /***************************************************************************************************
                                          interface function
 ***************************************************************************************************/
+extern unsigned short hall_adc_values[FLYSKY_HALL_CHANNEL_COUNT];
+extern signed short hall_raw_values[FLYSKY_HALL_CHANNEL_COUNT];
+extern STRUCT_STICK_CALIBRATION hall_calibration[FLYSKY_HALL_CHANNEL_COUNT];
+
+
 extern void reset_hall_stick( void );
 extern void get_hall_config( void );
 extern void hall_stick_init(uint32_t baudrate);

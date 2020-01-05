@@ -27,6 +27,7 @@
 #include "pxx1.h"
 #include "pxx2.h"
 #include "multi.h"
+#include "flysky.h"
 #include "modules_helpers.h"
 #include "ff.h"
 
@@ -272,7 +273,9 @@ union InternalModulePulsesData {
   PwmPxx1Pulses pxx;
 #endif
 #endif
-
+#if defined(AFHDS2)
+  FlySkySerialPulsesData flysky;
+#endif
 #if defined(PXX2)
   Pxx2Pulses pxx2;
 #endif
@@ -304,6 +307,9 @@ union ExternalModulePulsesData {
 
 #if defined(DSM2) || defined(MULTIMODULE) || defined(SBUS)
   Dsm2PulsesData dsm2;
+#endif
+#if defined(AFHDS3)
+  FlySkySerialPulsesData flysky;
 #endif
 
   PpmPulsesData<pulse_duration_t> ppm;

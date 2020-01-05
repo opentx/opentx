@@ -512,7 +512,9 @@
 #define TR_CONTRAST            "LCD-Kontrast"
 #define TR_ALARMS_LABEL        "Alarm"
 #define TR_BATTERY_RANGE       TR("Accu Bereik", "Accu Spngs-Bereik") // Symbol Akku Ladezustand
-
+#define TR_BATTERYCHARGING     "Charging..."
+#define TR_BATTERYFULL         "Battery full"
+#define TR_BATTERYNONE         "None!"
 #define TR_BATTERYWARNING      "Accu laag"
 #define TR_INACTIVITYALARM     TR("Inactiviteit", "Inactiviteit na")
 #define TR_MEMORYWARNING       "Geheugen laag"

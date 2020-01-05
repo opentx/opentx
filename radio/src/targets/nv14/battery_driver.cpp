@@ -21,8 +21,17 @@
 
 #define  __BATTERY_DRIVER_C__
 
+#define BATTERY_W 140
+#define BATTERY_H 320
+#define BATTERY_TOP ((LCD_H - BATTERY_H)/2)
+#define BATTERY_CONNECTOR_W 32
+#define BATTERY_CONNECTOR_H 10
+#define BATTERY_BORDER 4
+#define BATTERY_W_INNER (BATTERY_W - 2*BATTERY_BORDER)
+#define BATTERY_H_INNER (BATTERY_H - 2*BATTERY_BORDER)
+#define BATTERY_TOP_INNER (BATTERY_TOP + BATTERY_BORDER)
 
-void init_battery_charge()
+void battery_charge_init()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = PWR_CHARGE_FINISHED_GPIO_PIN | PWR_CHARGING_GPIO_PIN;
@@ -34,51 +43,155 @@ void init_battery_charge()
   GPIO_SetBits(PWR_CHARGING_GPIO, PWR_CHARGE_FINISHED_GPIO_PIN | PWR_CHARGING_GPIO_PIN);
 }
 
+#define CHARGE_SAMPLES 10
+
 uint16_t get_battery_charge_state()
 {
-  if (!READ_CHARGE_FINISHED_STATE())
-  {
-      return CHARGE_FINISHED;
-  }
-  else if (!READ_CHARGING_STATE())
-  {
-      return CHARGE_STARTED;
-  }
+  static uint16_t chargeSamples[CHARGE_SAMPLES] = {0};
+  static uint16_t chargeSampleIndex = 0;
+  uint16_t chargeState = CHARGE_UNKNOWN;
+  int maxSamples = CHARGE_SAMPLES;
+#if !defined(SIMU)
+  bool isFinished = !READ_CHARGE_FINISHED_STATE();
+  bool isCharging = !READ_CHARGING_STATE();
+  //maxSamples = boardState == BOARD_POWER_OFF ? CHARGE_SAMPLES/2 : CHARGE_SAMPLES;
+  if(chargeSampleIndex >= maxSamples) chargeSampleIndex = 0;
+  uint16_t currentChargeState = isFinished ? CHARGE_FINISHED : isCharging ? CHARGE_STARTED : CHARGE_NONE;
+  chargeSamples[chargeSampleIndex++] = currentChargeState;
+  //TRACE("CHARGE sample %d value %d", chargeSampleIndex -1, currentChargeState);
+#endif
+    uint8_t temp1 = 0, temp2 = 0, temp3 = 0;
+   for(int index = 0; index < maxSamples; index++) {
+    if(chargeSamples[index] == CHARGE_FINISHED)
+    {
+        temp1++;
+    }
+    else if(chargeSamples[index] == CHARGE_STARTED)
+    {
+        temp2++;
+    }
+    else
+    {
+        temp3++;
+    }
 
-  return CHARGE_NONE;
+    if(temp1>=temp2&& temp1>temp3)
+    {
+        chargeState = CHARGE_FINISHED;
+    }
+    else if(temp2>=temp1&& temp2>temp3)
+    {
+        chargeState = CHARGE_STARTED;
+    }
+    else
+    {
+        chargeState = CHARGE_NONE;
+    }
+  }
+  return chargeState;
 }
 
+void drawChargingInfo(uint16_t chargeState){
+	static int progress = 0;
+	const char* text = chargeState == CHARGE_STARTED ? STR_BATTERYCHARGING : STR_BATTERYFULL;
+    int h = 0;
+    LcdFlags color = 0;
+    if(CHARGE_STARTED == chargeState)
+    {
+        if(progress >= 100)
+        {
+            progress = 0;
+        }
+        else
+        {
+            progress+=25;
+        }
+        text = STR_BATTERYCHARGING;
+        h = ((BATTERY_H_INNER * progress) / 100);
+        color = ROUND|BATTERY_CHARGE_COLOR;
+    }
+    else if(CHARGE_FINISHED == chargeState)
+    {
+        text = STR_BATTERYFULL;
+        h = BATTERY_H_INNER;
+        color = ROUND|BATTERY_CHARGE_COLOR;
+    }
+    else
+    {
+        text = STR_BATTERYNONE;
+        h = BATTERY_H_INNER;
+        color = ROUND|TRIM_SHADOW_COLOR;
+    }
 
-uint16_t getBatteryVoltage()
+    BACKLIGHT_ENABLE();
+    lcd->drawSizedText(LCD_W/2, LCD_H-50, text, strlen(text), CENTERED|MAINVIEW_PANES_COLOR);
+
+    lcd->drawFilledRect((LCD_W - BATTERY_W)/2, BATTERY_TOP, BATTERY_W, BATTERY_H, SOLID, ROUND|MAINVIEW_PANES_COLOR);
+    lcd->drawFilledRect((LCD_W - BATTERY_W_INNER)/2, BATTERY_TOP_INNER, BATTERY_W_INNER, BATTERY_H_INNER, SOLID, ROUND|TRIM_SHADOW_COLOR);
+
+    lcd->drawFilledRect((LCD_W - BATTERY_W_INNER)/2, BATTERY_TOP_INNER + BATTERY_H_INNER - h , BATTERY_W_INNER, h, SOLID, color);
+    lcd->drawFilledRect((LCD_W - BATTERY_CONNECTOR_W)/2, BATTERY_TOP-BATTERY_CONNECTOR_H , BATTERY_CONNECTOR_W, BATTERY_CONNECTOR_H, SOLID, MAINVIEW_PANES_COLOR);
+}
+#define CHARGE_INFO_DURATION 500
+//this method should be called by timer interrupt or by GPIO interrupt
+void handle_battery_charge(uint32_t last_press_time)
 {
-#if defined (SIMU)
-  return 350 + g_eeGeneral.txVoltageCalibration;
-#else
-  int32_t t = getAnalogValue(TX_VOLTAGE) + g_eeGeneral.txVoltageCalibration;
+#if !defined(SIMU)
+  static uint32_t updateTime = 0;
+  static uint16_t lastState = CHARGE_UNKNOWN;
+  static uint32_t info_until = 0;
+  static bool lcdInited = false;
 
-  t *= ( 3300 * 20);
-  t /= ( 4095 * 10);
-  t = ( t * 100  + 500 ) / 1000;
+  if(boardState != BOARD_POWER_OFF) return;
+  uint32_t now = get_tmr10ms();
+  uint16_t chargeState = get_battery_charge_state();
+  if(chargeState != CHARGE_UNKNOWN) {
 
-  return t;
+    if(lastState != chargeState) {
+      //avoid positive check when none and unknown
+      if(lastState + chargeState > 1) {
+        //charge state changed - last state known
+        info_until = now + (CHARGE_INFO_DURATION);
+      }
+    }
+    //power buttons pressed
+    else if(now - last_press_time < POWER_ON_DELAY) {
+      info_until = now + CHARGE_INFO_DURATION;
+    }
+    lastState = chargeState;
+  }
+
+  if(now > info_until) {
+    info_until = 0;
+    lcd->clear();
+    BACKLIGHT_DISABLE();
+    if(lcdInited) {
+      lcdOff();
+    }
+    return;
+  }
+
+  if(updateTime == 0 || ((get_tmr10ms() - updateTime) >= 50))
+  {
+      if(!lcdInited) {
+        backlightInit();
+        lcdInit();
+        lcdInited = true;
+      }
+      else {
+        lcdOn();
+      }
+      updateTime = get_tmr10ms();     
+      lcdNextLayer();
+      lcd->clear();
+      drawChargingInfo(chargeState);
+      lcdRefresh();
+   }
 #endif
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+uint16_t getBatteryVoltage()
+{
+  int32_t instant_vbat = anaIn(TX_VOLTAGE);  // using filtered ADC value on purpose
+  return (uint16_t)((instant_vbat * (1000 + g_eeGeneral.txVoltageCalibration)) / 2942);
+}

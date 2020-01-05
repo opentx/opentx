@@ -512,6 +512,9 @@
 #define TR_CONTRAST                    "LCD-Kontrast"
 #define TR_ALARMS_LABEL                "Alarme"
 #define TR_BATTERY_RANGE               TR("Akku Bereich", "Akku Spannungsbereich") // Symbol Akku Ladezustand
+#define TR_BATTERYCHARGING             "Charging..."
+#define TR_BATTERYFULL                 "Battery full"
+#define TR_BATTERYNONE                 "None!"
 #define TR_BATTERYWARNING              TR("Akku Warnung", "Akkuspannungswarnung")
 #define TR_INACTIVITYALARM             TR("Inaktivität", "Inaktivität nach")
 #define TR_MEMORYWARNING               "Speicher voll"

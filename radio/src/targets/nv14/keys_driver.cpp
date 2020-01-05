@@ -22,31 +22,67 @@
 
 uint32_t readKeys()
 {
-  return 0;
+  uint32_t result = 0;
+  bool getKeys = true;
+#if defined(LUA)
+  getKeys = (luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT);
+#endif
+  if (getKeys) {
+    if (TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
+       result |= 1 << KEY_PGDN;
+     if (TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR)
+       result |= 1 << KEY_PGUP;
+     if (TRIMS_GPIO_REG_LVD & TRIMS_GPIO_PIN_LVD)
+       result |= 1 << KEY_TELEM;
+     if (TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
+       result |= 1 << KEY_MENU;
+     if (TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
+       result |= 1 << KEY_DOWN;
+     if (TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
+       result |= 1 << KEY_UP;
+     if (TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)
+       result |= 1 << KEY_LEFT;
+     if (TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
+       result |= 1 << KEY_RIGHT;
+     if (TRIMS_GPIO_REG_RPRESS & TRIMS_GPIO_PIN_RPRESS)
+       result |= 1 << KEY_ENTER;
+     if (TRIMS_GPIO_REG_LPRESS & TRIMS_GPIO_PIN_LPRESS)
+       result |= 1 << KEY_EXIT;
+  }
+
+  return result;
 }
 
 uint32_t readTrims()
 {
   uint32_t result = 0;
-
+  bool getTrim = true;
+#if defined(LUA)
+  if(luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) {
+    getTrim = false;
+  }
+#endif
+  if(!getTrim) return result;
   if (TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
-    result |= 0x01;
+    result |= 1 << (TRM_LH_DWN - TRM_BASE);
   if (TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR)
-    result |= 0x02;
+    result |= 1 << (TRM_LH_UP - TRM_BASE);
   if (TRIMS_GPIO_REG_LVD & TRIMS_GPIO_PIN_LVD)
-    result |= 0x04;
+    result |= 1 << (TRM_LV_DWN - TRM_BASE);
   if (TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
-    result |= 0x08;
+    result |= 1 << (TRM_LV_UP - TRM_BASE);
   if (TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
-    result |= 0x10;
+    result |= 1 << (TRM_RV_DWN - TRM_BASE);
   if (TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
-    result |= 0x20;
+    result |= 1 << (TRM_RV_UP - TRM_BASE);
   if (TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)
-    result |= 0x40;
+    result |= 1 << (TRM_RH_DWN - TRM_BASE);
   if (TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
-    result |= 0x80;
-
-  // TRACE("readTrims(): result=0x%02x", result);
+    result |= 1 << (TRM_RH_UP - TRM_BASE);
+  if (TRIMS_GPIO_REG_RPRESS & TRIMS_GPIO_PIN_RPRESS)
+    result |= 1 << (TRM_RIGHT_CLICK - TRM_BASE);
+  if (TRIMS_GPIO_REG_LPRESS & TRIMS_GPIO_PIN_LPRESS)
+    result |= 1 << (TRM_LEFT_CLICK - TRM_BASE);
 
   return result;
 }
@@ -68,13 +104,13 @@ void readKeysAndTrims()
 
   uint8_t index = 0;
   uint32_t in = readKeys();
+  uint32_t trims = readTrims();
   for (i = 0; i < TRM_BASE; i++) {
     keys[index++].input(in & (1 << i));
   }
 
-  in = readTrims();
   for (i = 1; i <= 1 << (TRM_LAST-TRM_BASE); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(trims & i);
   }
 }
 

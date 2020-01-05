@@ -510,6 +510,9 @@
 #define TR_CONTRAST                    "Contrast"
 #define TR_ALARMS_LABEL                "Alarms"
 #define TR_BATTERY_RANGE               TR("Batt. range", "Battery meter range")
+#define TR_BATTERYCHARGING             "Charging..."
+#define TR_BATTERYFULL                 "Battery full"
+#define TR_BATTERYNONE                 "None!"
 #define TR_BATTERYWARNING              "Battery low"
 #define TR_INACTIVITYALARM             "Inactivity"
 #define TR_MEMORYWARNING               "Memory low"

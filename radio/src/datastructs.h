@@ -463,16 +463,36 @@ PACK(struct ModuleData {
       uint8_t spare2:1 SKIP;
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
-    NOBACKUP(PACK(struct {
+    NOBACKUP(struct {
       uint8_t receivers; // 5 bits spare
       char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
-    }) pxx2);
-#if defined(PCBFLYSKY)
+    } pxx2);
+#if defined(AFHDS2)
     NOBACKUP(struct {
       uint8_t rx_id[4];
       uint8_t mode;
       uint8_t rx_freq[2];
     } flysky);
+#endif
+#if defined(AFHDS3)
+    NOBACKUP(PACK(struct {
+      uint8_t bindPower:3;
+      uint8_t runPower:3;
+      uint8_t emi:1;
+      uint8_t spare:1;
+      uint8_t telemetry:1;
+      uint8_t mode:4;
+      uint8_t spare2:3;
+      uint16_t failsafeTimeout; //4
+      uint16_t rxFreq;
+      //one more free byte
+      bool isSbus() {
+        return (mode & 1);
+      }
+      bool isPWM() {
+        return mode < 2;
+      }
+    } afhds3));
 #endif
   } NAME(mod) FUNC(select_mod_type);
 

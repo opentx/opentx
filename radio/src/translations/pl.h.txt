@@ -531,6 +531,9 @@
 #define TR_CONTRAST            "Kontrast"
 #define TR_ALARMS_LABEL        "Alarmy"
 #define TR_BATTERY_RANGE       TR("PokażPasBat.", "Pokaż pasek bateri")
+#define TR_BATTERYCHARGING     "Ładowanie..."
+#define TR_BATTERYFULL         "Bateria naładowana"
+#define TR_BATTERYNONE         "Brak!"
 #define TR_BATTERYWARNING      "Bateria rozładowana"
 #define TR_INACTIVITYALARM     "Alarm bezczynności"
 #define TR_MEMORYWARNING       "Pełna pamięć"

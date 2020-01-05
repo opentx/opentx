@@ -507,6 +507,9 @@
 #define TR_CONTRAST                    "Kontrast LCD"
 #define TR_ALARMS_LABEL                "Alarmy"
 #define TR_BATTERY_RANGE               TR("Ukazatel bat.", "Ukazatel baterie")
+#define TR_BATTERYCHARGING             "Charging..."
+#define TR_BATTERYFULL                 "Battery full"
+#define TR_BATTERYNONE                 "None!"
 #define TR_BATTERYWARNING              "Vybitá bat."
 #define TR_INACTIVITYALARM             TR("Nečinnost", "Nečinnost rádia")
 #define TR_MEMORYWARNING               "Plná pamět'"
