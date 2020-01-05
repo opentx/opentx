@@ -60,31 +60,6 @@ void checkTrainerSettings()
       init_trainer_capture();
   }
 }
-#elif defined(PCBNV14)
-void checkTrainerSettings()
-{
-  uint8_t requiredTrainerMode = g_model.trainerData.mode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        stop_trainer_capture();
-        break;
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-    }
-
-    currentTrainerMode = requiredTrainerMode;
-    switch (requiredTrainerMode) {
-      case TRAINER_MODE_SLAVE:
-        init_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        init_trainer_capture();
-        break;
-    }
-  }
-}
 #else
 void checkTrainerSettings()
 {
