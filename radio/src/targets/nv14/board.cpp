@@ -191,7 +191,7 @@ void boardInit()
   TouchInit();
   uint32_t press_start = 0;
   uint32_t press_end = 0;
-  if(UNEXPECTED_SHUTDOWN() || true) pwrOn();
+  if(UNEXPECTED_SHUTDOWN()) pwrOn();
   
   while (boardState == BOARD_POWER_OFF)
   {
