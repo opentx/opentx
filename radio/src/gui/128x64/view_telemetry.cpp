@@ -216,58 +216,46 @@ enum NavigationDirection {
 #define incrTelemetryScreen() direction = down
 
 #if defined(NAVIGATION_XLITE)
-#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_LEFT)
-#define EVT_KEY_NEXT_VIEW              EVT_KEY_LONG(KEY_RIGHT)
+  #define EVT_KEY_PREVIOUS_VIEW(evt)         (evt == EVT_KEY_LONG(KEY_LEFT) && IS_SHIFT_PRESSED())
+  #define EVT_KEY_NEXT_VIEW(evt)             (evt == EVT_KEY_LONG(KEY_RIGHT) && IS_SHIFT_PRESSED())
 #elif defined(NAVIGATION_X7)
-#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
-#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
+  #define EVT_KEY_PREVIOUS_VIEW(evt)         (evt == EVT_KEY_LONG(KEY_PAGE))
+  #define EVT_KEY_NEXT_VIEW(evt)             (evt == EVT_KEY_BREAK(KEY_PAGE))
+#elif defined(NAVIGATION_9X)
+  #define EVT_KEY_PREVIOUS_VIEW(evt)         (evt == EVT_KEY_LONG(KEY_UP))
+  #define EVT_KEY_NEXT_VIEW(evt)             (evt == EVT_KEY_LONG(KEY_DOWN))
 #else
-#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_FIRST(KEY_UP)
-#define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_DOWN)
+  #define EVT_KEY_PREVIOUS_VIEW(evt)         (evt == EVT_KEY_FIRST(KEY_UP))
+  #define EVT_KEY_NEXT_VIEW(evt)             (evt == EVT_KEY_FIRST(KEY_DOWN))
 #endif
 
 void menuViewTelemetryFrsky(event_t event)
 {
   enum NavigationDirection direction = none;
 
-  switch (event) {
-    case EVT_KEY_FIRST(KEY_EXIT):
+  if (event == EVT_KEY_FIRST(KEY_EXIT) && TELEMETRY_SCREEN_TYPE(s_frsky_view) != TELEMETRY_SCREEN_TYPE_SCRIPT) {
+    killEvents(event);
+    chainMenu(menuMainView);
+  }
 #if defined(LUA)
-    case EVT_KEY_LONG(KEY_EXIT):
+  else if (event == EVT_KEY_LONG(KEY_EXIT)) {
+    killEvents(event);
+    chainMenu(menuMainView);
+  }
 #endif
-      killEvents(event);
-      chainMenu(menuMainView);
-      break;
-
-    case EVT_KEY_PREVIOUS_VIEW:
-#if defined(PCBXLITE)
-      if (IS_SHIFT_PRESSED()) {
-        decrTelemetryScreen();
-      }
-#else
-      if (IS_KEY_LONG(EVT_KEY_PREVIOUS_VIEW)) {
-        killEvents(event);
-      }
-      decrTelemetryScreen();
-#endif
-      break;
-
-    case EVT_KEY_NEXT_VIEW:
-#if defined(PCBXLITE)
-      if (IS_SHIFT_PRESSED()) {
-        incrTelemetryScreen();
-      }
-#else
-      incrTelemetryScreen();
-#endif
-      break;
-
-    case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
-      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      POPUP_MENU_START(onMainViewMenu);
-      break;
+  else if (EVT_KEY_PREVIOUS_VIEW(event)) {
+    killEvents(event);
+    decrTelemetryScreen();
+  }
+  else if (EVT_KEY_NEXT_VIEW(event)) {
+    killEvents(event);
+    incrTelemetryScreen();
+  }
+  else if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    killEvents(event);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    POPUP_MENU_START(onMainViewMenu);
   }
 
   for (int i=0; i<=TELEMETRY_SCREEN_TYPE_MAX; i++) {
