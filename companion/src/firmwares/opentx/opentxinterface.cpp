@@ -335,9 +335,6 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_TARANIS_X9LITE(board)) {
     variant |= TARANIS_X9LITE_VARIANT;
   }
-  else if (IS_TARANIS_X9LITE(board)) {
-    variant |= TARANIS_X9LITE_VARIANT;
-  }
   else if (IS_TARANIS_X7_ACCESS(board)) {
     variant |= TARANIS_X7_VARIANT;
   }
