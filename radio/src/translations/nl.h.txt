@@ -740,8 +740,8 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHAKELAAR"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
+#define TR_TEST_WARNING        TR("TESTING", "TEST BUILD")
+#define TR_TEST_NOTSAFE        "Use for tests only"
 #define TR_WRONG_SDCARDVERSION TR("Verwachte ver: ","Verwachte versie: ")
 #define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
 #define TR_WARN_MULTI_LOWPOWER         "Low power mode"
