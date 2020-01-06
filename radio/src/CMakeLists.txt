@@ -53,6 +53,7 @@ option(MODULE_PROTOCOL_LBT "Add support for EU/LBT modules" ON)
 option(MODULE_PROTOCOL_FLEX "Add support for non certified FLEX modules" OFF)
 option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
+option(TBS_RELEASE "Used to build TBS released firmware" OFF)
 option(ALLOW_TRAINER_MULTI "Allow multi trainer" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -337,6 +338,10 @@ endif()
 
 if(JUMPER_RELEASE)
   add_definitions(-DJUMPER_RELEASE)
+endif()
+
+if(TBS_RELEASE)
+  add_definitions(-DTBS_RELEASE)
 endif()
 
 if(FRSKY_RELEASE)
