@@ -705,10 +705,8 @@ const char STR_MODELS_PATH[] = MODELS_PATH;
 const char STR_MODELS_EXT[] = MODELS_EXT;
 #endif
 
-#if defined(TEST_BUILD_WARNING)
 const char STR_TEST_WARNING[] = TR_TEST_WARNING;
 const char STR_TEST_NOTSAFE[] = TR_TEST_NOTSAFE;
-#endif
 
 #if LCD_W >= 212
 const char * const STR_PHASES_HEADERS[] = TR_PHASES_HEADERS;
