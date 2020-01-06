@@ -22,7 +22,7 @@ boards = {
         "PCB": "X9LITES",
     },
     "X9D": {
-        "PCB": "X9D+",
+        "PCB": "X9D",
     },
     "X9D+": {
         "PCB": "X9D+",
@@ -40,7 +40,7 @@ boards = {
     "X7ACCESS": {
         "PCB": "X7",
         "PCBREV": "ACCESS",
-    }
+    },
     "X10": {
         "PCB": "X10",
     },
@@ -54,6 +54,7 @@ boards = {
     "T16": {
         "PCB": "X10",
         "PCBREV": "T16",
+        "INTERNAL_MODULE_MULTI": "YES"
     },
     "T12": {
         "PCB": "X7",
@@ -67,7 +68,7 @@ translations = [
 
 
 def timestamp():
-    return datetime.datetime.now().strftime("%y%m%d")
+    return datetime.datetime.now().strftime("%Y%m%d")
 
 
 def build(board, translation, srcdir):
@@ -80,12 +81,12 @@ def build(board, translation, srcdir):
     command = "cmake %s -DTRANSLATIONS=%s -DTBS_RELEASE=YES -DTEST_BUILD_WARNING=YES %s" % (cmake_options, translation, srcdir)
     print(command)
     os.system(command)
-    os.system("make firmware -j6")
+    os.system("make firmware -j16")
     os.chdir(cwd)
     index = 0
     while 1:
         suffix = "" if index == 0 else "_%d" % index
-        filename = "output/firmware_%s_%s_%s%s.bin" % (board.lower(), translation.lower(), timestamp(), suffix)
+        filename = "output/tbs_firm_%s_%s_%s%s.bin" % (board.lower(), translation.lower(), timestamp(), suffix)
         if not os.path.exists(filename):
             shutil.copy("%s/firmware.bin" % path, filename)
             break
@@ -101,7 +102,7 @@ def dir_path(string):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Build FrSky firmware")
+    parser = argparse.ArgumentParser(description="Build TBS firmware")
     parser.add_argument("-b", "--boards", action="append", help="Destination boards", required=True)
     parser.add_argument("-t", "--translations", action="append", help="Translations", required=True)
     parser.add_argument("srcdir", type=dir_path)
