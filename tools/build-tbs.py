@@ -40,7 +40,7 @@ boards = {
     "X7ACCESS": {
         "PCB": "X7",
         "PCBREV": "ACCESS",
-    }
+    },
     "X10": {
         "PCB": "X10",
     },
@@ -54,6 +54,7 @@ boards = {
     "T16": {
         "PCB": "X10",
         "PCBREV": "T16",
+        "INTERNAL_MODULE_MULTI": "YES"
     },
     "T12": {
         "PCB": "X7",
