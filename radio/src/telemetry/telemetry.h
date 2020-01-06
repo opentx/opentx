@@ -114,6 +114,7 @@ extern uint8_t telemetryProtocol;
   #endif
 #else
   #define IS_D16_MULTI(module)           false
+  #define IS_HOTT_MULTI(module)          false
   #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT)
 #endif
 
