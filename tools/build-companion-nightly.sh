@@ -94,7 +94,7 @@ cmake ${COMMON_OPTIONS} -DPCB=X10 ${SRCDIR}
 make -j${JOBS} libsimulator
 rm CMakeCache.txt
 
-cmake ${COMMON_OPTIONS} -DPCB=X10 -DPCBREV=T16 ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X10 -DPCBREV=T16 -DINTERNAL_MODULE_MULTI=YES ${SRCDIR}
 make -j${JOBS} libsimulator
 rm CMakeCache.txt
 
