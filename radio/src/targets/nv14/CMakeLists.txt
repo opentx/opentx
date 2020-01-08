@@ -34,7 +34,8 @@ set_property(CACHE PCB_RF_BAUD PROPERTY STRINGS ${RF_BAUD_RATE})
 
 set(FLAVOUR nv14)
 add_definitions(-DPCBNV14 -DPCBFLYSKY -DINTERNAL_MODULE_BAUDRATE=${PCB_RF_BAUD})
-#add_definitions(-DSOFTWARE_VOLUME)
+add_definitions(-DBATTERY_CHARGE)  # -DSOFTWARE_VOLUME
+
 set(TARGET_SRC
   ${TARGET_SRC}
   audio_spi_driver.cpp
