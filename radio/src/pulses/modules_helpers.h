@@ -150,12 +150,12 @@ inline bool isModuleCrossfire(uint8_t idx)
 #if defined(PCBFLYSKY)
 inline bool isModuleFlysky(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_FLYSKY;
+  return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS2;
 }
 #else
 inline bool isModuleFlysky(uint8_t idx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_FLYSKY;
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_AFHDS2;
 }
 #endif
 
@@ -639,5 +639,80 @@ inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
   }
 }
 #endif
+
+
+typedef void (*asyncOperationCallback_t) (bool);
+typedef void (*processSensor_t) (const uint8_t *, uint8_t);
+typedef int32_t (*getChannelValue_t)(uint8_t);
+
+int32_t GetChannelValue(uint8_t channel);
+
+class AbstractModule {
+public:
+  //we can not use enums for protocol and module index because the are defined in pulses
+  AbstractModule(AbstractModule** moduleCollection, uint8_t index, uint8_t protocol, uint16_t period = 20) {
+    moduleCollection[protocol] = this;
+    this->index = index;
+    this->protocol = protocol;
+    this->period = period;
+    this->moduleData = &g_model.moduleData[index];
+    this->getChannelValue = GetChannelValue;
+    this->failsafeChannels = g_model.failsafeChannels;
+  }
+  virtual void setupFrame() = 0;
+  //used to init module structure eg. on model switch - not aware of hw init
+  virtual void init(bool resetFrameCount = true) = 0; //consider renaming to init
+  //starts binding - result will be passed via callback
+  virtual void beginBind(asyncOperationCallback_t callback) = 0;
+  //starts range test - result will be passed via callback
+  virtual void beginRangeTest(asyncOperationCallback_t callback) = 0;
+  //Cancel any outgoing operation like binding/range check
+  virtual void cancelOperations() {}
+  //action triggered before module is disabled - cleanup actions - maybe disconnecting
+  virtual void stop() {}
+  //setting module data to default values - on protocol switch - to avoid using invalid values
+  virtual void setModuleSettingsToDefault() {
+    //copied from existing implementation
+    moduleData->channelsStart = 0;
+    moduleData->channelsCount = defaultModuleChannels_M8(index);
+    moduleData->rfProtocol = 0;
+    if (isModulePPM(index)) setDefaultPpmFrameLength(index);
+  }
+  //Method used if module code is parsing telemetry/commands responses
+  virtual void onDataReceived(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize) {}
+  //provides module state in human readable form
+  virtual const char* getState() = 0;
+  //moule period used for timers
+  uint16_t getPeriodMS() { return period;}
+protected:
+  //if module has memory and configuration this method is responsible for setting model data from module
+  virtual void setModelSettingsFromModule() {};
+  //for internal use
+  uint8_t protocol;
+  uint8_t index;
+  uint16_t period;
+  ModuleData* moduleData;
+  int16_t* failsafeChannels;
+  int16_t* channelOutputs;
+  asyncOperationCallback_t operationCallback;
+  getChannelValue_t getChannelValue;
+};
+
+class AbstractSerialModule: public AbstractModule {
+public:
+  AbstractSerialModule(AbstractModule** moduleCollection, uint8_t index, uint8_t protocol, uint16_t period = 20,
+      uint32_t baudrate = 115200, uint16_t parity = 0, uint16_t stopBits = 0, uint16_t wordLength = 0)
+  : AbstractModule(moduleCollection, index, protocol, period) {
+    this->baudrate = baudrate;
+    this->parity = parity;
+    this->stopBits = stopBits;
+    this->wordLength = wordLength;
+  }
+
+  uint32_t baudrate;
+  uint16_t parity;
+  uint16_t stopBits;
+  uint16_t wordLength;
+};
 
 #endif // _MODULES_HELPERS_H_

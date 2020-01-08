@@ -1156,7 +1156,7 @@ void menuModelSetup(event_t event)
                 }
               }
             }
-            moduleState[moduleIdx].mode = newFlag;
+            moduleState[moduleIdx].setMode(newFlag);
 #if defined(MULTIMODULE)
             if (newFlag == MODULE_MODE_BIND)
               setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);

@@ -60,7 +60,7 @@ void menuRadioPowerMeter(event_t event)
     reusableBuffer.powerMeter.freq = 2400000000;
     reusableBuffer.powerMeter.attn = 4;
     reusableBuffer.powerMeter.dirty = true;
-    moduleState[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
+    moduleState[g_moduleIdx].setMode(MODULE_MODE_POWER_METER);
   }
 
   // The warning

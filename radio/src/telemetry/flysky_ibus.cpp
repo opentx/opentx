@@ -140,7 +140,7 @@ const FlySkySensor flySkySensors[] = {
 
 int32_t getALT(uint32_t value);
 
-static void processFlySkySensor(const uint8_t * packet, uint8_t type)
+void processFlySkySensor(const uint8_t * packet, uint8_t type)
 {
   uint8_t buffer[8];
   uint16_t id = packet[0];

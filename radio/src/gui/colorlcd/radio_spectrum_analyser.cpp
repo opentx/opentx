@@ -255,7 +255,7 @@ void RadioSpectrumAnalyser::init()
 
 void RadioSpectrumAnalyser::start()
 {
-  moduleState[moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+  moduleState[moduleIdx].setMode(MODULE_MODE_SPECTRUM_ANALYSER);
 }
 
 void RadioSpectrumAnalyser::stop()
@@ -268,7 +268,7 @@ void RadioSpectrumAnalyser::stop()
     if (reusableBuffer.spectrumAnalyser.moduleOFF)
       setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
     else
-      moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+      moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
   }
   /* wait 1s to resume normal operation before leaving */
   //  watchdogSuspend(1000);

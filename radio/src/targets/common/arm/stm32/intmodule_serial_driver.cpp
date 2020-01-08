@@ -93,7 +93,7 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
   }
 }
 
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(INTERNAL_MODULE_MULTI) || defined(INTMODULE_TIMER)
 void intmoduleTimerStart(uint32_t periodMs)
 {
   // Timer

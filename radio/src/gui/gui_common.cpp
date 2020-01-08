@@ -573,7 +573,7 @@ bool isInternalModuleAvailable(int moduleType)
     return true;
 
 #if defined(PCBNV14)
-  if (moduleType == MODULE_TYPE_FLYSKY)
+  if (moduleType == MODULE_TYPE_AFHDS2)
     return true;
 #endif
 
@@ -612,7 +612,7 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
-  if (moduleType == MODULE_TYPE_FLYSKY)
+  if (moduleType == MODULE_TYPE_AFHDS2)
     return false; // doesn't exist for now
 
   if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)

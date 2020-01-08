@@ -43,7 +43,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleState[moduleIdx].mode = MODULE_MODE_BIND;
+  moduleState[moduleIdx].setMode(MODULE_MODE_BIND);
 }
 
 void startBindMenu(uint8_t moduleIdx)

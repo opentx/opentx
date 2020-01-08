@@ -212,14 +212,14 @@ class RegisterDialog: public Dialog {
       start();
 
       setCloseHandler([=]() {
-          moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+          moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
       });
     }
 
     void start()
     {
       memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
-      moduleState[moduleIdx].mode = MODULE_MODE_REGISTER;
+      moduleState[moduleIdx].setMode(MODULE_MODE_REGISTER);
     }
 
     void checkEvents() override
@@ -325,7 +325,7 @@ class BindRxChoiceMenu: public Menu {
       }
 
       setCancelHandler([=]() {
-          moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+          moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
       });
     }
 
@@ -375,7 +375,7 @@ class ReceiverButton: public TextButton {
             });
             menu->addLine(STR_SHARE, [=]() {
                 reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
-                moduleState[moduleIdx].mode = MODULE_MODE_SHARE;
+                moduleState[moduleIdx].setMode(MODULE_MODE_SHARE);
                 return 0;
             });
             menu->addLine(STR_DELETE, [=]() {
@@ -383,7 +383,7 @@ class ReceiverButton: public TextButton {
                 reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
                 reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = 0x01;
                 new ConfirmDialog(parent, STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
-                    moduleState[moduleIdx].mode = MODULE_MODE_RESET;
+                    moduleState[moduleIdx].setMode(MODULE_MODE_RESET);
                     removePXX2Receiver(moduleIdx, receiverIdx);
                 });
                 return 0;
@@ -393,7 +393,7 @@ class ReceiverButton: public TextButton {
                 reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
                 reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = 0xFF;
                 new ConfirmDialog(parent, STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
-                    moduleState[moduleIdx].mode = MODULE_MODE_RESET;
+                    moduleState[moduleIdx].setMode(MODULE_MODE_RESET);
                     removePXX2Receiver(moduleIdx, receiverIdx);
                 });
                 return 0;
@@ -512,7 +512,7 @@ class ModuleWindow : public FormGroup {
                                 [=](int32_t newValue) {
                                   g_model.moduleData[moduleIdx].type = newValue;
                                   SET_DIRTY();
-                                  // TODO resetModuleSettings(moduleIdx);
+                                  resetModuleSettings(moduleIdx);
                                   update();
                                   moduleChoice->setFocus();
                                 });
@@ -702,12 +702,12 @@ class ModuleWindow : public FormGroup {
             rangeButton->check(false);
           }
           if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+            moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
             return 0;
           }
           else {
             setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
-            moduleState[moduleIdx].mode = MODULE_MODE_BIND;
+            moduleState[moduleIdx].setMode(MODULE_MODE_BIND);
             return 1;
           }
         });
@@ -728,14 +728,14 @@ class ModuleWindow : public FormGroup {
         rangeButton->setPressHandler([=]() -> uint8_t {
           if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
             bindButton->check(false);
-            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+            moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
           }
           if (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK) {
-            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+            moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
             return 0;
           }
           else {
-            moduleState[moduleIdx].mode = MODULE_MODE_RANGECHECK;
+            moduleState[moduleIdx].setMode(MODULE_MODE_RANGECHECK);
             return 1;
           }
         });
@@ -776,11 +776,11 @@ class ModuleWindow : public FormGroup {
         rangeButton = new TextButton(this, grid.getFieldSlot(2, 1), STR_MODULE_RANGE);
         rangeButton->setPressHandler([=]() -> uint8_t {
             if (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK) {
-              moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+              moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
               return 0;
             }
             else {
-              moduleState[moduleIdx].mode = MODULE_MODE_RANGECHECK;
+              moduleState[moduleIdx].setMode(MODULE_MODE_RANGECHECK);
               return 1;
             }
         });
@@ -849,7 +849,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleState[moduleIdx].mode  = MODULE_MODE_BIND;
+  moduleState[moduleIdx].setMode(MODULE_MODE_BIND);
 }
 
 void ModelSetupPage::build(FormWindow * window)

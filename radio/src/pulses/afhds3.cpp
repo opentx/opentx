@@ -284,11 +284,11 @@ void afhds3::trace(const char* message) {
   (*pos) = 0;
   TRACE("%s size = %d data %s", message, data->ptr - data->pulses, buffer);
 }
-void afhds3::setupPulses() {
+void afhds3::setupFrame() {
   //TRACE("%d state %d repeatCount %d", (int)operationState, this->data->state, repeatCount);
   if(operationState == State::AWAITING_RESPONSE) {
     if(repeatCount++ < 5) return; //re-send
-    else reset(false);
+    else init(false);
   }
   data->ptr = data->pulses;
   repeatCount = 0;
@@ -313,7 +313,7 @@ void afhds3::setupPulses() {
 
   switch(data->state) {
     case ModuleState::STATE_READY:
-        reset();
+        init();
         break;
     case ModuleState::STATE_HW_ERROR:
     case ModuleState::STATE_BINDING:
@@ -397,32 +397,32 @@ void afhds3::sendChannelsData() {
   putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, channels, sizeof(channels));
 }
 
-void afhds3::bind(bindCallback_t callback) {
+void afhds3::beginBind(::asyncOperationCallback_t callback) {
   operationCallback = callback;
   TRACE("AFHDS3 [BIND]");
-  setModelData();
+  setModelSettingsFromModule();
   addToQueue(COMMAND::MODULE_SET_CONFIG, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, cfg.buffer, sizeof(cfg.buffer));
   uint8_t cmd = MODULE_MODE_E::BIND;
   addToQueue(COMMAND::MODULE_MODE, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, &cmd, 1);
 }
 
-void afhds3::range(bindCallback_t callback) {
+void afhds3::beginRangeTest(::asyncOperationCallback_t callback) {
   TRACE("AFHDS3 [RANGE CHECK] NOT IMPLEMENTED");
 }
 
-void afhds3::cancel() {
+void afhds3::cancelOperations() {
   if(operationCallback!=nullptr) operationCallback(false);
-  reset(false);
+  init(false);
 }
 void afhds3::stop() {
   TRACE("AFHDS3 STOP");
   uint8_t cmd = MODULE_MODE_E::STANDBY;
   putFrame(COMMAND::MODULE_MODE, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, &cmd, 1);
-  reset(true);
+  init(true);
 }
 
 
-void afhds3::setToDefault() {
+void afhds3::setModuleSettingsToDefault() {
   moduleData->afhds3.bindPower = BIND_POWER::MIN_0dbm;
   moduleData->afhds3.runPower = RUN_POWER::PLUS_15bBm;
   moduleData->afhds3.emi = EMI_STANDARD::FCC;
@@ -448,7 +448,7 @@ int16_t afhds3::convert(int channelValue) {
   //-1024  ---- 1024
   return limit<int16_t>(FAILSAFE_MIN, channelValue*10, FAILSAFE_MAX);
 }
-void afhds3::setModelData() {
+void afhds3::setModelSettingsFromModule() {
   cfg.config.bindPower = moduleData->afhds3.bindPower;
   cfg.config.runPower = moduleData->afhds3.runPower;
   cfg.config.emiStandard = moduleData->afhds3.emi;
@@ -482,7 +482,7 @@ void afhds3::onModelSwitch() {
   //setModelData();
 }
 
-void afhds3::reset(bool resetFrameCount) {
+void afhds3::init(bool resetFrameCount) {
   TRACE("AFHDS3 RESET");
   clearQueue();
   repeatCount = 0;

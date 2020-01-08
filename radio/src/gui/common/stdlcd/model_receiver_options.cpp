@@ -36,7 +36,7 @@ void onRxOptionsUpdateConfirm(const char * result)
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
     reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_WRITING;
     reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
-    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleState[g_moduleIdx].setMode(MODULE_MODE_RECEIVER_SETTINGS);
   }
   else {
     popMenu();
@@ -84,7 +84,7 @@ void menuModelReceiverOptions(event_t event)
 
   if (menuEvent) {
     killEvents(KEY_EXIT);
-    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[g_moduleIdx].setMode(MODULE_MODE_NORMAL);
     if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION(STR_UPDATE_RX_OPTIONS, onRxOptionsUpdateConfirm);

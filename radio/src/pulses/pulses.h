@@ -28,6 +28,8 @@
 #include "pxx2.h"
 #include "multi.h"
 #include "flysky.h"
+#include "afhds2.h"
+#include "afhds3.h"
 #include "modules_helpers.h"
 #include "ff.h"
 
@@ -36,10 +38,16 @@
   extern uint8_t dsm2BindTimer;
 #endif
 
-#if defined(PCBFLYSKY)
-  #define IS_FLYSKY_PROTOCOL(protocol)       (protocol==PROTO_FLYSKY)
+#if defined(AFHDS2)
+  #define IS_AFHDS2_PROTOCOL(protocol)       (protocol==PROTOCOL_CHANNELS_AFHDS2)
 #else
-  #define IS_FLYSKY_PROTOCOL(protocol)       (0)
+  #define IS_AFHDS2_PROTOCOL(protocol)       (0)
+#endif
+
+#if defined(AFHDS3)
+  #define IS_AFHDS3_PROTOCOL(protocol)       (protocol==PROTOCOL_CHANNELS_AFHDS3)
+#else
+  #define IS_AFHDS3_PROTOCOL(protocol)       (0)
 #endif
 
 #if defined(DSM2)
@@ -170,7 +178,26 @@ PACK(struct ModuleState {
     OtaUpdateInformation * otaUpdateInformation;
   };
   ModuleCallback callback;
-
+  void setMode(uint8_t targetMode) {
+    uint8_t oldMode = mode;
+    mode = targetMode;
+    if(oldMode != mode) {
+      AbstractModule* module = nullptr;
+      //get module
+      if(!module) return;
+      switch(targetMode) {
+      case MODULE_MODE_BIND:
+        module->beginBind(nullptr);
+        break;
+      case MODULE_MODE_RANGECHECK:
+        module->beginRangeTest(nullptr);
+        break;
+      case MODULE_MODE_NORMAL:
+        module->cancelOperations();
+        break;
+      }
+    }
+  }
   void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
 
   void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
@@ -258,6 +285,7 @@ typedef Dsm2TimerPulsesData Dsm2PulsesData;
 #define SBUS_PERIOD                  (SBUS_PERIOD_HALF_US / 2000) /*ms*/
 #define MULTIMODULE_BAUDRATE         100000
 #define MULTIMODULE_PERIOD           7 /*ms*/
+#define AFHDS2_PERIOD                7 /*ms*/
 
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
@@ -274,7 +302,7 @@ union InternalModulePulsesData {
 #endif
 #endif
 #if defined(AFHDS2)
-  FlySkySerialPulsesData flysky;
+  AfhdsPulsesData afhds2;
 #endif
 #if defined(PXX2)
   Pxx2Pulses pxx2;
@@ -309,7 +337,7 @@ union ExternalModulePulsesData {
   Dsm2PulsesData dsm2;
 #endif
 #if defined(AFHDS3)
-  FlySkySerialPulsesData flysky;
+  AfhdsPulsesData afhds3;
 #endif
 
   PpmPulsesData<pulse_duration_t> ppm;
@@ -386,7 +414,9 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_SBUS,
   PROTOCOL_CHANNELS_PXX2_LOWSPEED,
   PROTOCOL_CHANNELS_PXX2_HIGHSPEED,
-  PROTOCOL_CHANNELS_FLYSKY
+  PROTOCOL_CHANNELS_AFHDS2,
+  PROTOCOL_CHANNELS_AFHDS3,
+  PROTOCOL_CHANNELS_COUNT
 };
 
 inline void stopPulses()

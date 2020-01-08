@@ -23,16 +23,12 @@
 #define PULSES_AFHDS3_H_
 
 #include "afhds2.h"
-#include "../datastructs.h"
+#include "modules_helpers.h"
 #include <cstring>
 #include <queue>
 
-#define AFHDS3_BAUDRATE 1500000
 namespace afhds3 {
 
-typedef void (*bindCallback_t) (bool);
-typedef void (*processSensor_t) (const uint8_t *, uint8_t);
-typedef int32_t (*getChannelValue_t)(uint8_t);
 enum DeviceAddress {
   TRANSMITTER = 0x01, MODULE = 0x03,
 };
@@ -152,7 +148,7 @@ enum SERIAL_MODE {
   IBUS = 0x00, SBUS_MODE = 0x02
 };
 
-struct __attribute__ ((packed)) Config_s {
+PACK(struct Config_s {
   uint8_t bindPower;
   uint8_t runPower;
   uint8_t emiStandard;
@@ -163,7 +159,7 @@ struct __attribute__ ((packed)) Config_s {
   uint8_t channelCount;
   uint16_t failSafeTimout;
   int16_t failSafeMode[MAX_CHANNELS];
-};
+});
 
 union Config_u {
   Config_s config;
@@ -174,36 +170,36 @@ enum CHANNELS_DATA_MODE {
   CHANNELS = 0x01, FAIL_SAFE = 0x02,
 };
 
-struct __attribute__ ((packed)) ChannelsData {
+PACK(struct ChannelsData {
   uint8_t mode;
   uint8_t channelsNumber;
   int16_t data[MAX_CHANNELS];
-};
+});
 
 union ChannelsData_u {
   ChannelsData data;
   uint8_t buffer[sizeof(ChannelsData)];
 };
 
-struct __attribute__ ((packed)) TelemetryData {
+PACK(struct TelemetryData {
   uint8_t sensorType;
   uint8_t length;
   uint8_t type;
   uint8_t semsorID;
   uint8_t data[8];
-};
+});
 
 enum MODULE_POWER_SOURCE {
   INTERNAL = 0x01, EXTERNAL = 0x02,
 };
 
-struct __attribute__ ((packed)) ModuleVersion {
+PACK(struct ModuleVersion {
   uint32_t productNumber;
   uint32_t hardwereVersion;
   uint32_t bootloaderVersion;
   uint32_t firmwareVersion;
   uint32_t rfVersion;
-};
+});
 
 
 union AfhdsFrameData {
@@ -214,7 +210,7 @@ union AfhdsFrameData {
   ModuleVersion Version;
 };
 
-struct __attribute__ ((packed)) AfhdsFrame {
+PACK(struct AfhdsFrame {
   uint8_t startByte;
   uint8_t address;
   uint8_t frameNumber;
@@ -225,7 +221,7 @@ struct __attribute__ ((packed)) AfhdsFrame {
   AfhdsFrameData* GetData() {
     return reinterpret_cast<AfhdsFrameData*>(&value);
   }
-};
+});
 
 #define FRM302_STATUS 0x56
 
@@ -259,38 +255,33 @@ class request {
   uint8_t* payload;
   uint8_t payloadSize;
 };
-
-class afhds3 {
+#define AFHDS3_BAUDRATE 1500000
+#define AFHDS3_COMMAND_TIMEOUT 5
+class afhds3 : public ::AbstractSerialModule {
 public:
-  afhds3(FlySkySerialPulsesData* data, ModuleData* moduleData, int16_t* failsafeChannels, getChannelValue_t getChannelValue, processSensor_t processSensor) {
+  afhds3(::AbstractModule** moduleCollection, uint8_t index, uint8_t protocol,
+      ::AfhdsPulsesData* data, ::processSensor_t processSensor) :
+     AbstractSerialModule(moduleCollection, index, protocol, AFHDS3_COMMAND_TIMEOUT, AFHDS3_BAUDRATE) {
     this->data = data;
-    this->moduleData = moduleData;
-    this->getChannelValue = getChannelValue;
     this->processSensor = processSensor;
-	this->failsafeChannels = failsafeChannels;
-    reset();
+    init();
   }
 
   virtual ~afhds3() {
     clearQueue();
   }
 
-  const uint32_t baudrate = AFHDS3_BAUDRATE;
-  const uint16_t parity = ((uint16_t)0x0000); //USART_Parity_No
-  const uint16_t stopBits = ((uint16_t)0x0000); //USART_StopBits_1
-  const uint16_t wordLength = ((uint16_t)0x0000); //USART_WordLength_8b
-  const uint16_t commandTimout = 5; //ms
-
-  void setupPulses();
-  void onDataReceived(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
-  void reset(bool resetFrameCount = true);
-  void bind(bindCallback_t callback);
-  void range(bindCallback_t callback);
-  void cancel();
-  const char* getState();
+  void setupFrame();
+  void init(bool resetFrameCount = true);
+  void beginBind(::asyncOperationCallback_t callback);
+  void beginRangeTest(::asyncOperationCallback_t callback);
+  void cancelOperations();
   void stop();
-  void setToDefault();
-  void setModelData();
+  void setModuleSettingsToDefault();
+  void onDataReceived(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
+  const char* getState();
+protected:
+  void setModelSettingsFromModule();
 private:
   const uint8_t FrameAddress = DeviceAddress::TRANSMITTER | (DeviceAddress::MODULE << 4);
   const uint16_t commandRepeatCount = 5;
@@ -311,13 +302,8 @@ private:
   void clearQueue();
 
   //external data
-  FlySkySerialPulsesData* data;
-  ModuleData* moduleData;
-  int16_t* failsafeChannels;
-  int16_t* channelOutputs;
-  bindCallback_t operationCallback;
-  getChannelValue_t getChannelValue;
-  processSensor_t processSensor;
+  ::AfhdsPulsesData* data;
+  ::processSensor_t processSensor;
   //missing ppm center!
 
   //local config

@@ -38,7 +38,7 @@ void onPXX2R9MBindModeMenu(const char * result)
     // the user pressed [Exit]
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
-    moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
     reusableBuffer.moduleSetup.bindInformation.step = 0;
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
     return;
@@ -92,7 +92,7 @@ void onPXX2BindMenu(const char * result)
     // the user pressed [Exit]
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
-    moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
     s_editMode = 0;
   }
@@ -103,7 +103,7 @@ void onResetReceiverConfirm(const char * result)
   if (result == STR_OK) {
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
-    moduleState[moduleIdx].mode = MODULE_MODE_RESET;
+    moduleState[moduleIdx].setMode(MODULE_MODE_RESET);
     removePXX2Receiver(moduleIdx, receiverIdx);
   }
 }
@@ -138,7 +138,7 @@ void onPXX2ReceiverMenu(const char * result)
   }
   else if (result == STR_SHARE) {
     reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
-    moduleState[moduleIdx].mode = MODULE_MODE_SHARE;
+    moduleState[moduleIdx].setMode(MODULE_MODE_SHARE);
     s_editMode = 1;
   }
   else if (result == STR_DELETE || result == STR_RESET) {
@@ -237,7 +237,7 @@ void startRegisterDialog(uint8_t module)
 {
   memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
   reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = ITEM_REGISTER_BUTTONS;
-  moduleState[module].mode = MODULE_MODE_REGISTER;
+  moduleState[module].setMode(MODULE_MODE_REGISTER);
   s_editMode = 0;
   killAllEvents();
   POPUP_INPUT("", runPopupRegister);
@@ -286,7 +286,7 @@ void modelSetupModulePxx2ReceiverLine(uint8_t moduleIdx, uint8_t receiverIdx, co
   }
   else if (attr && (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL || s_editMode == 0)) {
     if (moduleState[moduleIdx].mode) {
-      moduleState[moduleIdx].mode = 0;
+      moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
       removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
       killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
       event = 0;

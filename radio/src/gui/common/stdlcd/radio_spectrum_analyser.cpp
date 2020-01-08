@@ -84,7 +84,7 @@ void menuRadioSpectrumAnalyser(event_t event)
     reusableBuffer.spectrumAnalyser.track = reusableBuffer.spectrumAnalyser.freq;
     reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
     reusableBuffer.spectrumAnalyser.dirty = true;
-    moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+    moduleState[g_moduleIdx].setMode(MODULE_MODE_SPECTRUM_ANALYSER);
   }
 
   for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX; i++) {

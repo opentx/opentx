@@ -114,7 +114,7 @@ void menuModelModuleOptions(event_t event)
 
   if (menuEvent) {
     killEvents(KEY_EXIT);
-    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[g_moduleIdx].setMode(MODULE_MODE_NORMAL);
     if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION(STR_UPDATE_TX_OPTIONS, onTxOptionsUpdateConfirm);
