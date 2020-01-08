@@ -3,6 +3,7 @@ set_property(CACHE TIMERS PROPERTY STRINGS 2 3)
 option(CLI "Command Line Interface" OFF)
 option(DEBUG "Debug mode" OFF)
 option(LOG_TELEMETRY "Telemetry Logs on SD card" OFF)
+option(LOG_BLUETOOTH "Bluetooth Logs on SD card" OFF)
 option(TRACE_SD_CARD "Traces SD enabled" OFF)
 option(TRACE_FATFS "Traces FatFS enabled" OFF)
 option(TRACE_AUDIO "Traces audio enabled" OFF)
@@ -30,6 +31,10 @@ endif()
 
 if(LOG_TELEMETRY)
   add_definitions(-DLOG_TELEMETRY)
+endif()
+
+if(LOG_BLUETOOTH)
+  add_definitions(-DLOG_BLUETOOTH)
 endif()
 
 if(TRACE_SD_CARD)

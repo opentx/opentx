@@ -214,6 +214,13 @@ void sdInit(void)
       f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
     }
 #endif
+
+#if defined(LOG_BLUETOOTH)
+    f_open(&g_bluetoothFile, LOGS_PATH "/bluetooth.log", FA_OPEN_ALWAYS | FA_WRITE);
+    if (f_size(&g_bluetoothFile) > 0) {
+      f_lseek(&g_bluetoothFile, f_size(&g_bluetoothFile)); // append
+    }
+#endif
   }
   else {
     TRACE_SIMPGMSPACE("f_mount() failed");
@@ -226,6 +233,9 @@ void sdDone()
     audioQueue.stopSD();
 #if defined(LOG_TELEMETRY)
     f_close(&g_telemetryFile);
+#endif
+#if defined(LOG_BLUETOOTH)
+    f_close(&g_bluetoothFile);
 #endif
     f_mount(NULL, "", 0); // unmount SD
   }

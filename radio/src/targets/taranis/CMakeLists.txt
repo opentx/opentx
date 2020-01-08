@@ -162,6 +162,14 @@ elseif(PCB STREQUAL X7)
     set(BLUETOOTH YES)
     add_definitions(-DBLUETOOTH_PROBE)
     set(ROTARY_ENCODER YES)
+    if(DEFINED PCBREV_HARDCODED)
+      # This *can* be used to prevent messing with PA14 (SWCLK), so stlink can be used
+      # without interruptions.
+      if(NOT ${PCBREV_HARDCODED} MATCHES "^[0-1]$")
+        message(FATAL_ERROR "PCBREV_HARDCODED must be 0 or 1, not '${PCBREV_HARDCODED}'")
+      endif()
+      add_definitions(-DPCBREV_HARDCODED=${PCBREV_HARDCODED})
+    endif()
   endif()
 elseif(PCB STREQUAL X9LITE)
   option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
@@ -201,7 +209,7 @@ elseif(PCB STREQUAL X9LITES)
   set(FLAVOUR x9lites)
   add_definitions(-DBOARD_NAME="x9lites")
   add_definitions(-DPCBX9LITES -DPCBX9LITE -DPCBX9 -DSOFTWARE_VOLUME -DHARDWARE_POWER_MANAGEMENT_UNIT)
-  add_definitions(-DEEPROM_VARIANT=0x0800)
+  add_definitions(-DEEPROM_VARIANT=0x0801)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(PXX2 ON)
   set(GUI_DIR 128x64)
@@ -381,7 +389,7 @@ set(FIRMWARE_TARGET_SRC
   ${LCD_DRIVER}
   board.cpp
   i2c_driver.cpp
-  pwr_driver.cpp
+  ../common/arm/stm32/pwr_driver.cpp
   ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/loadboot.cpp
   )

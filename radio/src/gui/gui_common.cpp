@@ -739,6 +739,13 @@ bool isTrainerModeAvailable(int mode)
     return false;
 #endif
 
+#if defined(PCBX9E)
+  if (g_eeGeneral.bluetoothMode && mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
+    // bluetooth uses the same USART than SBUS
+    return false;
+  }
+#endif
+
 #if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
@@ -934,7 +941,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
-  {0xfe,                            0, false, true,   NO_SUBTYPE,            nullptr}
+  {0xfe,                            0, false, false,   NO_SUBTYPE,            nullptr}
 };
 
 #undef NO_SUBTYPE

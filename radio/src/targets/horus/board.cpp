@@ -41,10 +41,6 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
-#if defined(SEMIHOSTING)
-extern "C" void initialise_monitor_handles();
-#endif
-
 #if defined(PCBX10) && !defined(RADIO_T16)
 void sportUpdateInit()
 {
@@ -70,10 +66,6 @@ void sportUpdatePowerOff()
 
 void boardInit()
 {
-#if defined(SEMIHOSTING)
-  initialise_monitor_handles();
-#endif
-
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |

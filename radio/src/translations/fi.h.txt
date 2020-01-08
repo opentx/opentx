@@ -674,7 +674,7 @@
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Binding"
 #define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
-#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module update recommended")
+#define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"
@@ -766,8 +766,8 @@
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH","CONTROL")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
+#define TR_TEST_WARNING        TR("TESTING", "TEST BUILD")
+#define TR_TEST_NOTSAFE        "Use for tests only"
 #define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
 #define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
 #define TR_WARN_MULTI_LOWPOWER         "Low power mode"

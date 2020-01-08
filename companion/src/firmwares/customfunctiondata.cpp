@@ -55,6 +55,8 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
     return tr("Trainer THR");
   else if (func == FuncTrainerAIL)
     return tr("Trainer AIL");
+  else if (func == FuncTrainerChannels)
+    return tr("Trainer Channels");
   else if (func == FuncInstantTrim)
     return tr("Instant Trim");
   else if (func == FuncPlaySound)
