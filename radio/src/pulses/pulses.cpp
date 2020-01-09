@@ -52,7 +52,11 @@ void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCa
   strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2");
 #endif
 }
-
+void moduleFlagBackNormal(uint8_t moduleIndex) {
+  if (moduleState[moduleIndex].mode != MODULE_MODE_NORMAL) {
+     moduleState[moduleIndex].setMode(MODULE_MODE_NORMAL);
+   }
+}
 void resetModuleSettings(uint8_t moduleIndex) {
   AbstractModule* module = modules[moduleIndex][moduleState[moduleIndex].protocol];
   if(module)
@@ -63,12 +67,7 @@ void resetModuleSettings(uint8_t moduleIndex) {
     g_model.moduleData[moduleIndex].rfProtocol = 0;
     if (isModulePPM(moduleIndex)) setDefaultPpmFrameLength(moduleIndex);
   }
-  //implementation of moduleFlagBackNormal(module);
-  if (moduleState[moduleIndex].mode != MODULE_NORMAL_MODE) {
-    moduleFlag[moduleIndex] = MODULE_MODE_NORMAL;
-    //if(isModuleFlysky(moduleIndex)) resetPulsesFlySky(moduleIndex);
-  }
-
+  moduleState[moduleIndex].setMode(MODULE_MODE_NORMAL);
 }
 
 uint8_t getModuleType(uint8_t module)

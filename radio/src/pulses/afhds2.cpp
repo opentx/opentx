@@ -25,13 +25,13 @@ afhds2::~afhds2() {
 }
 
 void afhds2::setupFrame() {
-  setupPulsesAFHDS2();
+  setupPulsesAFHDS2(this->index);
 }
 void afhds2::init(bool resetFrameCount) {
-  resetPulsesAFHDS2();
+  resetPulsesAFHDS2(this->index);
 }
 void afhds2::beginBind(::asyncOperationCallback_t callback) {
-  bindReceiverAFHDS2();
+  bindReceiverAFHDS2(this->index);
 }
 void afhds2::beginRangeTest(::asyncOperationCallback_t callback) {
 

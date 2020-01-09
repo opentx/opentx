@@ -194,6 +194,7 @@ PACK(struct ModuleState {
         break;
       case MODULE_MODE_NORMAL:
         module->cancelOperations();
+        module->init();
         break;
       }
     }

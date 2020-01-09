@@ -632,7 +632,7 @@ class ModuleWindow : public FormGroup {
         new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.lowPowerMode));
       }
 #endif
-#if defined (PCBNV14)
+#if defined (AFHDS2)
       else if (isModuleFlysky(moduleIdx)) {
         grid.nextLine();
         rfChoice = new Choice(this, grid.getFieldSlot(), STR_FLYSKY_PROTOCOLS, 0, 3,
@@ -640,8 +640,8 @@ class ModuleWindow : public FormGroup {
                    [=](int32_t newValue) -> void {
                      g_model.moduleData[moduleIdx].flysky.mode = newValue;
                      SET_DIRTY();
-                     //TODO moduleFlagBackNormal(moduleIdx);
-                     //TODO onFlySkyReceiverSetPulse(INTERNAL_MODULE, newValue);
+                     moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
+                     setFlyskyState(moduleIdx, STATE_SET_RX_PWM_PPM);
                    });
 
 
