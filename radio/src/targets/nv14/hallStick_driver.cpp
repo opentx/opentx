@@ -523,7 +523,7 @@ void hallStick_GetTxDataFromUSB( void )
 
                 if ( 0x0D == HallProtocolTx.hallID.hall_Id.packetID && HallProtocolTx.data[0] == 1 )
                 {
-                    getVersionInfoAFHDS2(1);
+                    getVersionInfoAFHDS2(INTERNAL_MODULE, 1);
                     break;
                 }
 

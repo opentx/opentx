@@ -380,7 +380,7 @@ void onFlySkyUsbDownloadStart(uint8_t fw_state)
   rf_info.fw_state = fw_state;
 }
 
-void onFlySkyGetVersionInfoStart(uint8_t port, uint8_t isRfTransfer)
+void getVersionInfoAFHDS2(uint8_t port, uint8_t isRfTransfer)
 {
   lastState = intmodulePulsesData.afhds2.state;
   if ( isRfTransfer != 0 )
