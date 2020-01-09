@@ -84,7 +84,7 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, Lcd
 {
 #if defined(GRAPHICS)
   drawCheckBox(x, y, value, attr);
-  return editChoice(x, y, label, NULL, value, 0, 1, attr, event);
+  return editChoice(x, y, label, nullptr, value, 0, 1, attr, event);
 #else
   return editChoice(x, y, label, STR_OFFON, value, 0, 1, attr, event);
 #endif

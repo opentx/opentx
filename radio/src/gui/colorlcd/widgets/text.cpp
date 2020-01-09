@@ -40,7 +40,7 @@ const ZoneOption TextWidget::options[] = {
   { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
   { "Size", ZoneOption::TextSize, OPTION_VALUE_UNSIGNED(0) },
   { "Shadow", ZoneOption::Bool, OPTION_VALUE_BOOL(false)  },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 void TextWidget::refresh()

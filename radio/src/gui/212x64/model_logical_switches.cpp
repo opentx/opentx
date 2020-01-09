@@ -140,7 +140,7 @@ void menuModelLogicalSwitches(event_t event)
       }
       else {
         INCDEC_SET_FLAG(EE_MODEL);
-        INCDEC_ENABLE_CHECK(NULL);
+        INCDEC_ENABLE_CHECK(nullptr);
       }
     }
     else if (cstate == LS_FAMILY_COMP) {
@@ -156,7 +156,7 @@ void menuModelLogicalSwitches(event_t event)
       v1_min = v2_min = -128;
       v1_max = v2_max = 122;
       INCDEC_SET_FLAG(EE_MODEL);
-      INCDEC_ENABLE_CHECK(NULL);
+      INCDEC_ENABLE_CHECK(nullptr);
     }
     else {
       v1_val = cs->v1;
@@ -167,7 +167,7 @@ void menuModelLogicalSwitches(event_t event)
       }
       else {
         INCDEC_SET_FLAG(EE_MODEL);
-        INCDEC_ENABLE_CHECK(NULL);
+        INCDEC_ENABLE_CHECK(nullptr);
       }
       LcdFlags lf = attr2 | LEFT;
       getMixSrcRange(v1_val, v2_min, v2_max, &lf);

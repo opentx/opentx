@@ -95,7 +95,7 @@ void setCurrentCategory(unsigned int index)
   if (currentCategory->size() > 0)
     setCurrentModel(0);
   else
-    currentModel = NULL;
+    currentModel = nullptr;
 }
 
 #if defined(LUA)
@@ -511,7 +511,7 @@ bool menuModelSelect(event_t event)
   // Footer
   lcd->drawBitmap(5, LCD_H-FH-20, modelselSdFreeBitmap);
   uint32_t size = sdGetSize() / 100;
-  lcdDrawNumber(22, LCD_H-FH-21, size, PREC1|FONT(XS), 0, NULL, "GB");
+  lcdDrawNumber(22, LCD_H-FH-21, size, PREC1|FONT(XS), 0, nullptr, "GB");
   lcd->drawBitmap(70, LCD_H-FH-20, modelselModelQtyBitmap);
   lcdDrawNumber(92, LCD_H-FH-21, modelslist.getModelsCount(),FONT(XS));
 

@@ -92,7 +92,7 @@ void onTelemetryScriptFileSelectionMenu(const char * result)
   int screenIndex = DISPLAY_CURRENT_SCREEN(menuVerticalPosition - HEADER_LINE);
 
   if (result == STR_UPDATE_LIST) {
-    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.screens[screenIndex].script.file), NULL)) {
+    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.screens[screenIndex].script.file), nullptr)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
     }
   }

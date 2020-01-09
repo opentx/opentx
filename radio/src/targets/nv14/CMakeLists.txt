@@ -12,6 +12,7 @@ set(STORAGE SDCARD)
 set(STORAGE_FORMAT BIN)
 set(HAPTIC YES)
 set(GUI_DIR colorlcd)
+set(BITMAPS_DIR 480x272)
 # set(NAVIGATION_TYPE touch)
 set(TARGET_DIR nv14)
 

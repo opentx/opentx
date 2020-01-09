@@ -38,7 +38,7 @@ const ZoneOption GaugeWidget::options[] = {
   { "Min", ZoneOption::Integer, OPTION_VALUE_SIGNED(-RESX), OPTION_VALUE_SIGNED(-RESX), OPTION_VALUE_SIGNED(RESX) },
   { "Max", ZoneOption::Integer, OPTION_VALUE_SIGNED(RESX), OPTION_VALUE_SIGNED(-RESX), OPTION_VALUE_SIGNED(RESX) },
   { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 void GaugeWidget::refresh()
@@ -64,7 +64,7 @@ void GaugeWidget::refresh()
   // Gauge
   lcdSetColor(color);
   lcdDrawSolidFilledRect(zone.x, zone.y + 16, zone.w, 16, FOCUS_COLOR);
-  lcdDrawNumber(zone.x+zone.w/2, zone.y + 17, percent, FONT(XS) | CUSTOM_COLOR | CENTERED, 0, NULL, "%");
+  lcdDrawNumber(zone.x+zone.w/2, zone.y + 17, percent, FONT(XS) | CUSTOM_COLOR | CENTERED, 0, nullptr, "%");
   lcd->invertRect(zone.x + w, zone.y + 16, zone.w - w, 16, CUSTOM_COLOR);
 }
 

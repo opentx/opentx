@@ -89,7 +89,7 @@ class WidgetsContainer: public WidgetsContainerInterface
           widgets[index] = factory->create(getZone(index), &persistentData->zones[index].widgetData);
         }
         else {
-          widgets[index] = NULL;
+          widgets[index] = nullptr;
         }
       }
     }
