@@ -517,7 +517,7 @@ void hallStick_GetTxDataFromUSB( void )
 
                 if ( 0xAE == HallProtocolTx.hallID.ID && HallProtocolTx.length == 0 )
                 {
-                    setFlyskyState(INTERNAL_MODULE, FLYSKY_MODULE_STATE_UPDATE_RF_FIRMWARE);
+                    setFlyskyState(INTERNAL_MODULE, STATE_UPDATE_RF_FIRMWARE);
                     break;
                 }
 
