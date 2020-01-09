@@ -1,6 +1,3 @@
-set(FONT "STD" CACHE STRING "Choose font : STD or SQT5")
-set_property(CACHE FONT PROPERTY STRINGS SQT5)
-
 add_definitions(-DGRAPHICS)
 
 set(GUI_SRC
@@ -50,4 +47,3 @@ if(PXX2 OR MULTIMODULE)
     ../common/stdlcd/radio_spectrum_analyser.cpp
     )
 endif()
-
