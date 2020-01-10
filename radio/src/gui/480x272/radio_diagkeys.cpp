@@ -61,7 +61,7 @@ bool menuRadioDiagKeys(event_t event)
     displayKeyState(70, y, i);
   }
 
-  for (uint8_t i = 0; i <= NUM_SWITCHES; i++) {
+  for (uint8_t i = 0; i < NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + FH * i;
       getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);

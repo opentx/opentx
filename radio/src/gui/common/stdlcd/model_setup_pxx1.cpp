@@ -22,25 +22,35 @@
 void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
+  uint8_t receiverTelemetryOff, receiverHigherChannels;
 
   if (result == STR_BINDING_1_8_TELEM_ON) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
+    receiverTelemetryOff = false;
+    receiverHigherChannels = false;
   }
   else if (result == STR_BINDING_1_8_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = true;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = false;
+    receiverTelemetryOff = true;
+    receiverHigherChannels = false;
   }
   else if (result == STR_BINDING_9_16_TELEM_ON) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = false;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = true;
+    receiverTelemetryOff = false;
+    receiverHigherChannels = true;
   }
   else if (result == STR_BINDING_9_16_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = true;
-    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = true;
+    receiverTelemetryOff = true;
+    receiverHigherChannels = true;
   }
   else {
     return;
+  }
+
+  if (isModuleMultimodule(moduleIdx)) {
+    g_model.moduleData[moduleIdx].multi.receiverTelemetryOff = receiverTelemetryOff;
+    g_model.moduleData[moduleIdx].multi.receiverHigherChannels = receiverHigherChannels;
+  }
+  else {
+    g_model.moduleData[moduleIdx].pxx.receiverTelemetryOff = receiverTelemetryOff;
+    g_model.moduleData[moduleIdx].pxx.receiverHigherChannels = receiverHigherChannels;
   }
 
   moduleState[moduleIdx].mode = MODULE_MODE_BIND;

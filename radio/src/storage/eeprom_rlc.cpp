@@ -776,6 +776,15 @@ bool eeLoadGeneral(bool allowFixes)
   }
 #endif
 
+#if defined(PCBX9LITES)
+  if (g_eeGeneral.variant == 0x0800) {
+    TRACE("Pre release EEPROM detected, variant %d instead of %d for X9LiteS radio. Loading anyway", g_eeGeneral.variant, EEPROM_VARIANT);
+    g_eeGeneral.variant = EEPROM_VARIANT;
+    storageDirty(EE_GENERAL);
+    return true;
+  }
+#endif
+
 #if defined(RADIO_T12)
   if (g_eeGeneral.variant != (EEPROM_VARIANT & 0xFFFE)) {
     TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);

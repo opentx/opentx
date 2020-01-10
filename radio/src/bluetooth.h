@@ -46,8 +46,17 @@ enum BluetoothStates {
 
 #define LEN_BLUETOOTH_ADDR              16
 #define MAX_BLUETOOTH_DISTANT_ADDR      6
-#define BLUETOOTH_PACKET_SIZE          14
-#define BLUETOOTH_LINE_LENGTH          32
+#define BLUETOOTH_PACKET_SIZE           14
+#define BLUETOOTH_LINE_LENGTH           32
+
+#if defined(LOG_BLUETOOTH)
+  #define BLUETOOTH_TRACE(...)  \
+    f_printf(&g_bluetoothFile, __VA_ARGS__); \
+    TRACE_NOCRLF(__VA_ARGS__);
+#else
+  #define BLUETOOTH_TRACE(...)  \
+    TRACE_NOCRLF(__VA_ARGS__);
+#endif
 
 class Bluetooth
 {

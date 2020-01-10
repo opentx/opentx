@@ -29,6 +29,7 @@ Michael Byrne
 <a href="https://www.frsky-rc.com">FrSky (monthly)</a>
 <a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
 <a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
+<a href="https://www.radiomasterrc.com">RadioMaster (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
@@ -1667,3 +1668,20 @@ James Snodgrass
 Peter Schneider
 Norman Schenck
 Boris Hemmer
+Gilles Arbona
+Patrice Germain
+Mart Rogers
+Stefan Möst
+John Beech
+John Rodgers
+Stanton Sweet
+Peter Suphan
+FGS
+Outward Ideas
+Sylvie Le Madec
+James Houck (monthly)
+Frank Steinmetz
+Gary Garland
+Stefano Boggia
+Jean-Jacques Pointel
+Ferenc Kunkli

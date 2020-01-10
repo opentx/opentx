@@ -75,7 +75,7 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
   ../../../../../targets/${TARGET_DIR}/diskio.cpp
   ../../../../../targets/${TARGET_DIR}/board.cpp
-  ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
+  ../pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
   ../usbd_storage_msd.cpp
@@ -134,6 +134,7 @@ endif()
 remove_definitions(-DDISK_CACHE)
 remove_definitions(-DLUA)
 remove_definitions(-DCLI)
+remove_definitions(-DSEMIHOSTING)
 remove_definitions(-DUSB_SERIAL)
 remove_definitions(-DWATCHDOG)
 

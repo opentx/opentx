@@ -1078,8 +1078,14 @@ void MainWindow::updateMenus()
   compareAct->setEnabled(activeChild);
   writeEepromAct->setEnabled(activeChild);
   readEepromAct->setEnabled(true);
-  writeBUToRadioAct->setEnabled(true);
-  readBUToFileAct->setEnabled(true);
+  if (IS_HORUS(getCurrentBoard())) {
+    writeBUToRadioAct->setEnabled(false);
+    readBUToFileAct->setEnabled(false);
+  }
+  else {
+    writeBUToRadioAct->setEnabled(true);
+    readBUToFileAct->setEnabled(true);
+  }
   editSplashAct->setDisabled(IS_HORUS(getCurrentBoard()));
 
   foreach (QAction * act, fileWindowActions) {
@@ -1288,8 +1294,9 @@ void MainWindow::createActions()
   writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
   burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
-  writeBUToRadioAct =  addAct("write_eeprom_file.png", SLOT(writeBackup()));
-  readBUToFileAct =    addAct("read_eeprom_file.png",  SLOT(readBackup()));
+
+  writeBUToRadioAct = addAct("write_eeprom_file.png", SLOT(writeBackup()));
+  readBUToFileAct = addAct("read_eeprom_file.png", SLOT(readBackup()));
 
   createProfileAct =   addAct("new.png",   SLOT(createProfile()));
   copyProfileAct   =   addAct("copy.png",  SLOT(copyProfile()));

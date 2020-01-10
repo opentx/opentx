@@ -282,7 +282,7 @@ void processFlySkyTelemetryData(uint8_t data, uint8_t * rxBuffer, uint8_t &rxBuf
       debugPrintf("[%02X %02X %02X%02X] ", rxBuffer[i*4+2], rxBuffer[i*4 + 3],
                   rxBuffer[i*4 + 4], rxBuffer[i*4 + 5]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     if (data == 0xAA) processFlySkyPacket(rxBuffer + 1);
     else if (data == 0xAC) processFlySkyPacketAC(rxBuffer + 1);

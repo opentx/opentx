@@ -548,7 +548,7 @@ void MultiModuleStatus::getStatusString(char * statusText) const
     return;
   }
 
-  if (major == 1 && minor < 3 && SLOW_BLINK_ON_PHASE) {
+  if (major <= 1 && minor <= 3 && revision <= 0 && patch <= 47 && SLOW_BLINK_ON_PHASE) {
     strcpy(statusText, STR_MODULE_UPGRADE);
   }
   else {
@@ -621,7 +621,7 @@ static void processMultiTelemetryByte(const uint8_t data, uint8_t module)
       debugPrintf("[%02X%02X %02X%02X] ", rxBuffer[i*4+2], rxBuffer[i*4 + 3],
                   rxBuffer[i*4 + 4], rxBuffer[i*4 + 5]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     // Packet is complete, process it
     processMultiTelemetryPaket(rxBuffer, module);

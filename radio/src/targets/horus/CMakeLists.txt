@@ -15,7 +15,6 @@ set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RTC_BACKUP_RAM YES)
-set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
 set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 
@@ -207,7 +206,7 @@ set(FIRMWARE_TARGET_SRC
   ${LCD_DRIVER}
   board.cpp
   backlight_driver.cpp
-  pwr_driver.cpp
+  ../common/arm/stm32/pwr_driver.cpp
   sdram_driver.c
   startup_stm32f42_43xxx.s
   ../common/arm/stm32/sdio_sd.c

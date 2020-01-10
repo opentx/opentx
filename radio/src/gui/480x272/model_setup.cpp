@@ -397,7 +397,7 @@ void checkModelIdUnique(uint8_t moduleIdx)
 
   // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
   size_t warn_buf_len = sizeof(reusableBuffer.moduleSetup.msg) - WARNING_LINE_LEN - 2;
-  if (!modelslist.isModelIdUnique(moduleIdx,warn_buf,warn_buf_len)) {
+  if (!modelslist.isModelIdUnique(moduleIdx, warn_buf, warn_buf_len)) {
     if (warn_buf[0] != 0) {
       POPUP_WARNING(STR_MODELIDUSED);
       SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.moduleSetup.msg), 0);
@@ -1613,23 +1613,24 @@ bool menuModelSetup(event_t event)
         if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
+          MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
           const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
-          if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
+          if (status.isValid()) {
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
+            if (attr && status.optionDisp == 2) {
+              lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
+            }
+          }
+          else {
             const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
             if (pdef->optionsstr) {
               lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, pdef->optionsstr);
-              if (attr && pdef->optionsstr == STR_MULTI_RFTUNE)  {
+              if (attr && pdef->optionsstr == STR_MULTI_RFTUNE) {
                 lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
               }
             }
           }
-          else {
-            MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
-            if (attr && status.optionDisp == 2)  {
-              lcdDrawNumber(LCD_W - 10, y, TELEMETRY_RSSI(), RIGHT, 0, "RSSI(", ")");
-            }
-          }
+
           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
             optionValue = 50 + 5 * optionValue;
 
@@ -1753,7 +1754,7 @@ bool menuModelSetup(event_t event)
 
   // some field just finished being edited
   if (old_editMode > 0 && s_editMode == 0) {
-    ModelCell* mod_cell = modelslist.getCurrentModel();
+    ModelCell * mod_cell = modelslist.getCurrentModel();
     if (mod_cell) {
       switch(menuVerticalPosition) {
         case ITEM_MODEL_SETUP_NAME:
