@@ -33,7 +33,7 @@ enum ModuleType {
   MODULE_TYPE_R9M_PXX2,
   MODULE_TYPE_R9M_LITE_PXX1,
   MODULE_TYPE_R9M_LITE_PXX2,
-  MODULE_TYPE_R9M_LITE_PRO_PXX1,    // Doesn't exist
+  MODULE_TYPE_R9M_LITE_PRO_PXX1,    // Doesn't exist - remove it if so - we have no space for more module types without conversion!
   MODULE_TYPE_R9M_LITE_PRO_PXX2,
   MODULE_TYPE_SBUS,
   MODULE_TYPE_XJT_LITE_PXX2,

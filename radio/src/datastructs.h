@@ -423,15 +423,13 @@ PACK(struct TrainerModuleData {
 #define MM_RF_CUSTOM_SELECTED 0xff
 #define MULTI_MAX_PROTOCOLS 127 //  rfProtocol:4 +  rfProtocolExtra:3
 PACK(struct ModuleData {
-  uint8_t type:4 ENUM(ModuleType);
-  // TODO some refactoring is needed, rfProtocol is only used by DSM2 and MULTI, it could be merged with subType
-  int8_t  rfProtocol:4;
+  uint8_t type:5 ENUM(ModuleType); //before 4
+  uint8_t failsafeMode:3;  // only 3 bits used for better alignment
+  int8_t  subType:4; //before named rfProtocol size same
+  uint8_t spare:3;
+  uint8_t invertedSerial:1;  // telemetry serial inverted from standard
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode:4;  // only 3 bits used
-  uint8_t subType:3;
-  uint8_t invertedSerial:1; // telemetry serial inverted from standard
-
   union {
     uint8_t raw[PXX2_MAX_RECEIVERS_PER_MODULE * PXX2_LEN_RX_NAME + 1];
     NOBACKUP(struct {
@@ -498,11 +496,11 @@ PACK(struct ModuleData {
 
   // Helper functions to set both of the rfProto protocol at the same time
   NOBACKUP(inline uint8_t getMultiProtocol() {
-    return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
+    return ((uint8_t) (subType & 0x0f)) + (multi.rfProtocolExtra << 4);
   })
 
   NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
-    rfProtocol = (uint8_t) (proto & 0x0f);
+    subType = (uint8_t) (proto & 0x0f);
     multi.rfProtocolExtra = (proto & 0x70) >> 4;
   })
 });

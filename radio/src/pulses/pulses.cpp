@@ -64,7 +64,7 @@ void resetModuleSettings(uint8_t moduleIndex) {
   else {
     g_model.moduleData[moduleIndex].channelsStart = 0;
     g_model.moduleData[moduleIndex].channelsCount = defaultModuleChannels_M8(moduleIndex);
-    g_model.moduleData[moduleIndex].rfProtocol = 0;
+    g_model.moduleData[moduleIndex].subType = 0;
     if (isModulePPM(moduleIndex)) setDefaultPpmFrameLength(moduleIndex);
   }
   moduleState[moduleIndex].setMode(MODULE_MODE_NORMAL);
@@ -142,7 +142,7 @@ uint8_t getRequiredProtocol(uint8_t module)
 
 #if defined(DSM2)
     case MODULE_TYPE_DSM2:
-      protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[module].rfProtocol, PROTOCOL_CHANNELS_DSM2_DSMX);
+      protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[module].subType, PROTOCOL_CHANNELS_DSM2_DSMX);
       // The module is set to OFF during one second before BIND start
       {
         static tmr10ms_t bindStartTime = 0;

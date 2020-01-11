@@ -197,6 +197,7 @@ enum TrainerMode {
   TRAINER_MODE_MASTER_BLUETOOTH,
   TRAINER_MODE_SLAVE_BLUETOOTH,
   TRAINER_MODE_MULTI,
+  TRAINER_MODE_OFF //if there is no trainer detect pin - we need to provide possibility to disable trainer function
 };
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
@@ -208,7 +209,7 @@ enum TrainerMode {
 
 #if defined(RADIO_T16)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
-#elif defined(BLUETOOTH)
+#elif defined(BLUETOOTH) || defined(PCBNV14)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
 #elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE

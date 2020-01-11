@@ -147,17 +147,15 @@ inline bool isModuleCrossfire(uint8_t idx)
 }
 #endif
 
-#if defined(PCBFLYSKY)
 inline bool isModuleFlysky(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS2;
 }
-#else
-inline bool isModuleFlysky(uint8_t idx)
+inline bool isModuleAFHDS3(uint8_t idx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_AFHDS2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;
 }
-#endif
+
 
 #if defined(PCBSKY9X)
 inline bool isExtraModule(uint8_t idx)
@@ -463,7 +461,7 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 
 inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
 {
-  return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
+  return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx)  || isModuleFlysky(moduleIdx) || isModuleAFHDS3(moduleIdx);
 }
 
 inline uint8_t getMaxRxNum(uint8_t idx)
@@ -675,7 +673,7 @@ public:
     //copied from existing implementation
     moduleData->channelsStart = 0;
     moduleData->channelsCount = defaultModuleChannels_M8(index);
-    moduleData->rfProtocol = 0;
+    moduleData->subType = 0;
     if (isModulePPM(index)) setDefaultPpmFrameLength(index);
   }
   //Method used if module code is parsing telemetry/commands responses

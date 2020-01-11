@@ -569,13 +569,13 @@ static const struct YamlNode union_anonymous_4_elmts[] = {
 };
 static const struct YamlNode struct_ModuleData[] = {
   YAML_IDX,
-  YAML_ENUM("type", 4, enum_ModuleType),
-  YAML_SIGNED( "rfProtocol", 4 ),
+  YAML_ENUM("type", 5, enum_ModuleType),
+  YAML_UNSIGNED( "failsafeMode", 4 ),
+  YAML_SIGNED( "subType", 4 ),
+  YAML_SIGNED( "spare", 3 ),
+  YAML_UNSIGNED( "invertedSerial", 1 ),
   YAML_UNSIGNED( "channelsStart", 8 ),
   YAML_SIGNED( "channelsCount", 8 ),
-  YAML_UNSIGNED( "failsafeMode", 4 ),
-  YAML_UNSIGNED( "subType", 3 ),
-  YAML_UNSIGNED( "invertedSerial", 1 ),
   YAML_UNION("mod", 200, union_anonymous_4_elmts, select_mod_type),
   YAML_END
 };

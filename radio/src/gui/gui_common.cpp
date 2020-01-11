@@ -678,6 +678,11 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
+#if !defined(AFHDS3)
+  if (moduleType == MODULE_TYPE_AFHDS3)
+    return false;
+#endif
+
   return true;
 }
 

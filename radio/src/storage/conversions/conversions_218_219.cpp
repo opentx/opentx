@@ -241,14 +241,23 @@ void convertModelData_218_to_219(ModelData &model)
   newModel.potsWarnMode = oldModel.potsWarnMode;
 
   for (int i=0; i<NUM_MODULES; i++) {
-    memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], 4);
+    newModel.moduleData[i].type = oldModel.moduleData[i].type;
+    newModel.moduleData[i].subType = oldModel.moduleData[i].subType;
+    newModel.moduleData[i].failsafeMode = oldModel.moduleData[i].failsafeMode;
+    newModel.moduleData[i].spare = 0;
+    newModel.moduleData[i].invertedSerial = oldModel.moduleData[i].invertedSerial;
+    newModel.moduleData[i].channelsStart = oldModel.moduleData[i].channelsStart;
+    newModel.moduleData[i].channelsCount = oldModel.moduleData[i].channelsCount;
+
     memcpy(((uint8_t *)&newModel.moduleData[i]) + 4, ((uint8_t *)&oldModel.moduleData[i]) + 64 + 4, 2);
     if (newModel.moduleData[i].type >= MODULE_TYPE_ISRM_PXX2)
       newModel.moduleData[i].type += 1;
     if (newModel.moduleData[i].type >= MODULE_TYPE_R9M_PXX2)
       newModel.moduleData[i].type += 4;
-    if (newModel.moduleData[i].type == MODULE_TYPE_XJT_PXX1) {
-      newModel.moduleData[i].subType = newModel.moduleData[i].rfProtocol;
+    if (newModel.moduleData[i].type == MODULE_TYPE_XJT_PXX1
+        || newModel.moduleData[i].type == MODULE_TYPE_DSM2
+        || newModel.moduleData[i].type == MODULE_TYPE_MULTIMODULE) {
+      newModel.moduleData[i].subType = oldModel.moduleData[i].rfProtocol;
 #if defined(RADIO_X9DP2019)
       if (i == INTERNAL_MODULE) {
         newModel.moduleData[i].type = MODULE_TYPE_ISRM_PXX2;
