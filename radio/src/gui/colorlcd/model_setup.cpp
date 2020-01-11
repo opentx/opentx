@@ -600,7 +600,7 @@ class ModuleWindow : public FormGroup {
       new StaticText(this, grid.getLabelSlot(true), STR_MODE);
       {
         moduleChoice = new Choice(this, grid.getFieldSlot(2, 0), STR_INTERNAL_MODULE_PROTOCOLS,
-            MODULE_TYPE_NONE, MODULE_TYPE_COUNT - 1,
+            MODULE_TYPE_NONE, MODULE_TYPE_MAX,
             GET_DEFAULT(g_model.moduleData[moduleIdx].type),
             [=](int32_t newValue) {
               g_model.moduleData[moduleIdx].type = newValue;
@@ -645,29 +645,20 @@ class ModuleWindow : public FormGroup {
                                   rfChoice->setFocus();
                               });
       }
-#if defined(AFHDS2)
+#if defined(AFHDS2) || defined(AFHDS3)
       else if (isModuleFlysky(moduleIdx)) {
+        uint8_t* modePtr = isModuleAFHDS2(moduleIdx) ? &g_model.moduleData[moduleIdx].flysky.mode : &g_model.moduleData[moduleIdx].afhds3.mode;
         new Choice(this, grid.getFieldSlot(2, 1), STR_FLYSKY_PROTOCOLS, 0, 3,
-                   GET_DEFAULT(g_model.moduleData[moduleIdx].flysky.mode),
+                   GET_DEFAULT(*modePtr),
                    [=](int32_t newValue) -> void {
-                     g_model.moduleData[moduleIdx].flysky.mode = newValue;
+                     *modePtr = newValue;
                      SET_DIRTY();
                      moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
                      setFlyskyState(moduleIdx, STATE_SET_RX_PWM_PPM);
                    });
       }
 #endif
-#if defined(AFHDS3)
-      else if (isModuleAFHDS3(moduleIdx)) {
-        new Choice(this, grid.getFieldSlot(2, 1), STR_FLYSKY_PROTOCOLS, 0, 3,
-                   GET_DEFAULT(g_model.moduleData[moduleIdx].afhds3.mode),
-                   [=](int32_t newValue) -> void {
-                     g_model.moduleData[moduleIdx].afhds3.mode = newValue;
-                     SET_DIRTY();
-                     moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
-                   });
-      }
-#endif
+
 #if defined(AFHDS3)
       if(isModuleAFHDS3(moduleIdx)){
         grid.nextLine();
@@ -795,16 +786,17 @@ class ModuleWindow : public FormGroup {
       }
 
       // Module parameters
-#if defined (AFHDS2)
+#if defined(AFHDS2) || defined(AFHDS3)
       //change access to rx_freq
       if (isModuleFlysky(moduleIdx)) {
+        //byte access caused by alignment of data in stuct
+        uint8_t* rxFreqPtr = isModuleAFHDS2(moduleIdx) ? g_model.moduleData[moduleIdx].flysky.rx_freq : g_model.moduleData[moduleIdx].afhds3.rx_freq;
         new StaticText(this, grid.getLabelSlot(true), STR_RXFREQUENCY);
         new NumberEdit(this, grid.getFieldSlot(), 50, 400,
-                       GET_DEFAULT(g_model.moduleData[moduleIdx].flysky.rx_freq[0] +
-                                   g_model.moduleData[moduleIdx].flysky.rx_freq[1] * 256),
+                       GET_DEFAULT((uint16_t)rxFreqPtr[0] | (((uint16_t)rxFreqPtr[1]) << 8)),
                        [=](int32_t newValue) -> void {
-                         g_model.moduleData[moduleIdx].flysky.rx_freq[0] = newValue & 0xFF;
-                         g_model.moduleData[moduleIdx].flysky.rx_freq[1] = newValue >> 8;
+                         rxFreqPtr[0] = uint8_t(((uint16_t)newValue) & 0xFF);
+                         rxFreqPtr[1] = uint8_t(((uint16_t)newValue >> 8) & 0xFF);
                          SET_DIRTY();
                          moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
                          setFlyskyState(moduleIdx, STATE_SET_RX_FREQUENCY);
@@ -895,13 +887,7 @@ class ModuleWindow : public FormGroup {
         });
         grid.nextLine();
       }
-#if defined(AFHDS3)
-      if (isModuleAFHDS3(moduleIdx)) {
-             new StaticText(this, grid.getLabelSlot(true), STR_RXFREQUENCY);
-             new NumberEdit(this, grid.getFieldSlot(), 50, 400, GET_SET_DEFAULT(g_model.moduleData[moduleIdx].afhds3.rxFreq));
-             grid.nextLine();
-      }
-#endif
+
       // Failsafe
       if (isModuleFailsafeAvailable(moduleIdx)) {
         new StaticText(this, grid.getLabelSlot(true), STR_FAILSAFE);
@@ -915,7 +901,7 @@ class ModuleWindow : public FormGroup {
                                       moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
                                     });
         failSafeChoice->setAvailableHandler([=](int8_t newValue) {
-          if(isModuleFlysky(moduleIdx) || isModuleAFHDS3(moduleIdx)){
+          if(isModuleFlysky(moduleIdx)){
             failSafeChoice->setAvailableHandler([=](int8_t newValue) {
                 return newValue != FAILSAFE_RECEIVER;
             });
@@ -980,8 +966,8 @@ class ModuleWindow : public FormGroup {
           grid.nextLine();
         }
       }
-#if defined (DEBUG)
-      if (isModuleFlysky(moduleIdx)) {
+#if defined (AFHDS2)
+      else if (isModuleAFHDS2(moduleIdx)) {
         new StaticText(this, grid.getLabelSlot(true), STR_RF_POWER);
         new NumberEdit(this, grid.getFieldSlot(), 0, 170,
                              GET_DEFAULT(tx_working_power),
@@ -992,7 +978,7 @@ class ModuleWindow : public FormGroup {
       }
 #endif
 #if defined (AFHDS3)
-      if (isModuleAFHDS3(moduleIdx)) {
+      else if (isModuleAFHDS3(moduleIdx)) {
         new StaticText(this, grid.getLabelSlot(true), STR_RF_POWER);
         new Choice(this, grid.getFieldSlot(), "\007 15 dBm 20 dBm 27 dBm 30 dBm 33 dBm", 0,
             afhds3::RUN_POWER::PLUS_33dBm, GET_SET_DEFAULT(g_model.moduleData[moduleIdx].afhds3.runPower));

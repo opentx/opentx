@@ -345,9 +345,9 @@ bool afhds3::syncSettings() {
     putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, data, sizeof(data));
     return true;
   }
-  if(moduleData->afhds3.rxFreq != cfg.config.pwmFreq) {
-    cfg.config.pwmFreq = moduleData->afhds3.rxFreq;
-    uint8_t data[] = {0x70, 0x17, 0x02, (uint8_t)(moduleData->afhds3.rxFreq & 0xFF), (uint8_t)(moduleData->afhds3.rxFreq >> 8)};
+  if(moduleData->afhds3.rxFreq() != cfg.config.pwmFreq) {
+    cfg.config.pwmFreq = moduleData->afhds3.rxFreq();
+    uint8_t data[] = {0x70, 0x17, 0x02, moduleData->afhds3.rx_freq[0], moduleData->afhds3.rx_freq[0]};
     TRACE("AFHDS3 SET RX FREQ");
     putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, data, sizeof(data));
     return true;
@@ -427,7 +427,8 @@ void afhds3::setModuleSettingsToDefault() {
   moduleData->afhds3.runPower = RUN_POWER::PLUS_15bBm;
   moduleData->afhds3.emi = EMI_STANDARD::FCC;
   moduleData->afhds3.telemetry = TELEMETRY::TELEMETRY_ENABLED;
-  moduleData->afhds3.rxFreq = 50;
+  moduleData->afhds3.rx_freq[0] = 50;
+  moduleData->afhds3.rx_freq[1] = 0;
   moduleData->afhds3.failsafeTimeout = 1000;
   moduleData->channelsCount = 14 - 8;
   moduleData->failsafeMode = FAILSAFE_HOLD;
@@ -453,7 +454,7 @@ void afhds3::setModelSettingsFromModule() {
   cfg.config.runPower = moduleData->afhds3.runPower;
   cfg.config.emiStandard = moduleData->afhds3.emi;
   cfg.config.telemetry = moduleData->afhds3.telemetry;
-  cfg.config.pwmFreq = moduleData->afhds3.rxFreq;
+  cfg.config.pwmFreq = moduleData->afhds3.rxFreq();
   cfg.config.serialMode = moduleData->afhds3.isSbus() ? SERIAL_MODE::SBUS_MODE : SERIAL_MODE::IBUS;
   cfg.config.pulseMode = moduleData->afhds3.isPWM() ? PULSE_MODE::PWM: PULSE_MODE::PPM_MODE;
   cfg.config.channelCount = 8 + moduleData->channelsCount;

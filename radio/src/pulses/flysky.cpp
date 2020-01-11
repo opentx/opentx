@@ -750,10 +750,10 @@ void resetPulsesAFHDS2(uint8_t port)
   intmodulePulsesData.afhds2.timeout = 0;
   intmodulePulsesData.afhds2.esc_state = 0;
   moduleState[port].setMode(MODULE_MODE_NORMAL);
-  uint16_t rx_freq = g_model.moduleData[port].flysky.rx_freq[0];
-  rx_freq += (g_model.moduleData[port].flysky.rx_freq[1] * 256);
+  uint16_t rx_freq = g_model.moduleData[port].flysky.rxFreq();
   if (50 > rx_freq || 400 < rx_freq) {
     g_model.moduleData[port].flysky.rx_freq[0] = 50;
+    g_model.moduleData[port].flysky.rx_freq[1] = 0;
   }
 }
 
@@ -801,7 +801,7 @@ void setupPulsesAFHDS2(uint8_t port)
           putFlySkyFrameByte(port, CMD_RF_GET_CONFIG);
           putFlySkyFrameByte(port, GET_FLYSKY_PWM_PPM);  // 00:PWM, 01:PPM
           putFlySkyFrameByte(port, GET_FLYSKY_IBUS_SBUS);// 00:I-BUS, 01:S-BUS
-          putFlySkyFrameByte(port, gRomData.rx_freq[0] < 50 ? 50 : gRomData.rx_freq[0]); // receiver servo freq bit[7:0]
+          putFlySkyFrameByte(port, gRomData.rx_freq[0]); // receiver servo freq bit[7:0]
           putFlySkyFrameByte(port, gRomData.rx_freq[1]); // receiver servo freq bit[15:8]
           setFlyskyState(port, STATE_INIT);
         }

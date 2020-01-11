@@ -149,8 +149,13 @@ inline bool isModuleCrossfire(uint8_t idx)
 
 inline bool isModuleFlysky(uint8_t idx)
 {
+  return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS2 || g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;
+}
+inline bool isModuleAFHDS2(uint8_t idx)
+{
   return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS2;
 }
+
 inline bool isModuleAFHDS3(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;

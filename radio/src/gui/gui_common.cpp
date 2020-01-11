@@ -552,6 +552,8 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
     case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_LITE_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
+    case MODULE_TYPE_AFHDS3:
+    case MODULE_TYPE_AFHDS2:
       return false;
 
     case MODULE_TYPE_XJT_PXX1:
@@ -615,6 +617,13 @@ bool isExternalModuleAvailable(int moduleType)
   if (moduleType == MODULE_TYPE_AFHDS2)
     return false; // doesn't exist for now
 
+#if !defined(AFHDS3)
+  if (moduleType == MODULE_TYPE_AFHDS3) {
+    return false;
+  }
+
+#endif
+
   if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
     return false;
 
@@ -675,11 +684,6 @@ bool isExternalModuleAvailable(int moduleType)
 
 #if !defined(PPM)
   if (moduleType == MODULE_TYPE_PPM)
-    return false;
-#endif
-
-#if !defined(AFHDS3)
-  if (moduleType == MODULE_TYPE_AFHDS3)
     return false;
 #endif
 
