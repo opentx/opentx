@@ -589,6 +589,7 @@
   #define HAPTIC_TIMER_COMPARE_VALUE    HAPTIC_GPIO_TIMER->CCR2
 #endif
 
+// Internal Module
 #if !defined(RADIO_T16)
   #define EXTERNAL_ANTENNA
 #endif
