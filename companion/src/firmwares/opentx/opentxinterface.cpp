@@ -1172,7 +1172,6 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
 
 void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true)
 {
-  static const Firmware::Option opt_eu("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   static const Firmware::Option opt_fl("flexr9m", Firmware::tr("Enable non certified firmwares"));
   if (flex)
     firmware->addOptionsGroup({opt_eu, opt_fl});
@@ -1230,6 +1229,7 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", Firmware::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
+  firmware->addOption("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
@@ -1242,6 +1242,7 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", Firmware::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", Firmware::tr("Haptic module installed"));
+  firmware->addOption("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
@@ -1250,6 +1251,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x9e", Firmware::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", Firmware::tr("Confirmation before radio shutdown"));
   firmware->addOption("horussticks", Firmware::tr("Horus gimbals installed (Hall sensors)"));
+  firmware->addOption("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
@@ -1266,6 +1268,7 @@ void registerOpenTxFirmwares()
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
+  firmware->addOption("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
@@ -1287,6 +1290,7 @@ void registerOpenTxFirmwares()
 
   /* FrSky X10 board */
   firmware = new OpenTxFirmware("opentx-x10", Firmware::tr("FrSky Horus X10 / X10S"), BOARD_X10);
+  firmware->addOption("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
   registerOpenTxFirmware(firmware);
@@ -1298,6 +1302,7 @@ void registerOpenTxFirmwares()
 
   /* FrSky X12 (Horus) board */
   firmware = new OpenTxFirmware("opentx-x12s", Firmware::tr("FrSky Horus X12S"), BOARD_HORUS_X12S);
+  firmware->addOption("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));;
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
   firmware->addOption("pcbdev", Firmware::tr("Use ONLY with first DEV pcb version"));
