@@ -143,17 +143,17 @@ TASK_FUNCTION(mixerTask)
     else {
 #if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
       if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
-        runMask |= 1 << INTERNAL_MODULE;
+        runMask |= (1 << INTERNAL_MODULE);
       }
 #endif
 
-      if (now == nextMixerTime[0]) {
-        runMask |= 1 << 0;
+      if (now >= nextMixerTime[0]) {
+        runMask |= (1 << 0);
       }
 
 #if NUM_MODULES >= 2
-      if (now == nextMixerTime[1]) {
-        runMask |= 1 << 1;
+      if (now >= nextMixerTime[1]) {
+        runMask |= (1 << 1);
       }
 #endif
     }

@@ -282,6 +282,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 #endif
 
     default:
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, 50/*ms*/);
       break;
   }
 }
@@ -338,7 +339,9 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX1) && defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
-#if !defined(INTMODULE_HEARTBEAT)
+#if defined(INTMODULE_HEARTBEAT)
+      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD + 1 /* backup */);
+#else
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
 #endif
       return true;
@@ -351,11 +354,13 @@ bool setupPulsesInternalModule(uint8_t protocol)
       if (moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER) {
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);
       }
-#if !defined(INTMODULE_HEARTBEAT)
       else {
+#if defined(INTMODULE_HEARTBEAT)
+        scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD + 1 /* backup */);
+#else
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD);
-      }
 #endif
+      }
       return result;
     }
 #endif
@@ -375,6 +380,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #endif
 
     default:
+      scheduleNextMixerCalculation(INTERNAL_MODULE, 50/*ms*/);
       return true;
   }
 }
@@ -389,6 +395,7 @@ bool setupPulsesInternalModule()
     intmoduleStop();
     moduleState[INTERNAL_MODULE].protocol = protocol;
     enablePulsesInternalModule(protocol);
+    scheduleNextMixerCalculation(INTERNAL_MODULE, 0);
     return false;
   }
   else {
@@ -407,6 +414,7 @@ bool setupPulsesExternalModule()
     extmoduleStop();
     moduleState[EXTERNAL_MODULE].protocol = protocol;
     enablePulsesExternalModule(protocol);
+    scheduleNextMixerCalculation(EXTERNAL_MODULE, 0);
     return false;
   }
   else {
