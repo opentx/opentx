@@ -142,7 +142,7 @@ TASK_FUNCTION(mixerTask)
     }
     else {
 #if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
-      if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
+      if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp == now) {
         runMask |= (1 << INTERNAL_MODULE);
       }
 #endif
@@ -203,7 +203,7 @@ TASK_FUNCTION(mixerTask)
   }
 }
 
-void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
+void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms)
 {
   // Schedule next mixer calculation time,
 
