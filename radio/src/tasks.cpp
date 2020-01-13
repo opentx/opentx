@@ -100,22 +100,20 @@ bool isModuleSynchronous(uint8_t module)
   return false;
 }
 
-void sendSynchronousPulses()
+void sendSynchronousPulses(uint8_t runMask)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (isModuleSynchronous(INTERNAL_MODULE)) {
+  if ((runMask & (1 << INTERNAL_MODULE)) && isModuleSynchronous(INTERNAL_MODULE)) {
     if (setupPulsesInternalModule())
       intmoduleSendNextFrame();
   }
 #endif
 
-  if (isModuleSynchronous(EXTERNAL_MODULE)) {
+  if ((runMask & (1 << EXTERNAL_MODULE)) && isModuleSynchronous(EXTERNAL_MODULE)) {
     if (setupPulsesExternalModule())
       extmoduleSendNextFrame();
   }
 }
-
-//#define DEBUG_MIXER_SCHEDULER
 
 uint32_t nextMixerTime[NUM_MODULES];
 
@@ -161,6 +159,23 @@ TASK_FUNCTION(mixerTask)
     }
 #endif
 
+    uint32_t now = RTOS_GET_MS();
+    uint8_t runMask = 0;
+
+    if (now >= nextMixerTime[0]) {
+      runMask |= (1 << 0);
+    }
+
+#if NUM_MODULES >= 2
+    if (now >= nextMixerTime[1]) {
+      runMask |= (1 << 1);
+    }
+#endif
+
+    if (!runMask) {
+      continue;  // go back to sleep
+    }
+
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
@@ -195,17 +210,29 @@ TASK_FUNCTION(mixerTask)
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
 
-      // TODO:
-      // - check the cause of timeouts when switching
-      //    between protocols with multi-proto RF
-      if (timeout)
-        serialPrint("mix sched timeout!");
-
-      sendSynchronousPulses();
+      sendSynchronousPulses(runMask);
     }
   }
 }
 
+void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms)
+{
+  // Schedule next mixer calculation time,
+
+  if (isModuleSynchronous(module)) {
+    nextMixerTime[module] += period_ms / RTOS_MS_PER_TICK;
+    if (nextMixerTime[module] < RTOS_GET_TIME()) {
+      // we are late ... let's add some small delay
+      nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
+    }
+  }
+  else {
+    // for now assume mixer calculation takes 2 ms.
+    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
+  }
+
+  DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
+}
 
 #define MENU_TASK_PERIOD_TICKS         (50 / RTOS_MS_PER_TICK)    // 50ms
 

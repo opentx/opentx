@@ -229,33 +229,32 @@ void enablePulsesExternalModule(uint8_t protocol)
   }
 }
 
-void setupPulsesExternalModule(uint8_t protocol)
+bool setupPulsesExternalModule(uint8_t protocol)
 {
   switch (protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       extmodulePulsesData.pxx.setupFrame(EXTERNAL_MODULE);
-      break;
+      return true;
 #endif
 
 #if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
-      break;
+      return true;
 #endif
 
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
       extmodulePulsesData.pxx2.setupFrame(EXTERNAL_MODULE);
-      break;
+      return true;
 #endif
 
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       setupPulsesSbus();
-      mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(DSM2)
@@ -263,7 +262,7 @@ void setupPulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
       setupPulsesDSM2();
-      break;
+      return true;
 #endif
 
 #if defined(CROSSFIRE)
@@ -272,35 +271,36 @@ void setupPulsesExternalModule(uint8_t protocol)
       ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
       if (status.isValid())
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
+      else
+        scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
       setupPulsesCrossfire();
-      break;
+      return true;
     }
 #endif
 
 #if defined(MULTIMODULE)
-    case PROTOCOL_CHANNELS_MULTIMODULE:
-    {
-      ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
+    case PROTOCOL_CHANNELS_MULTIMODULE: {
+      ModuleSyncStatus &status = getModuleSyncStatus(EXTERNAL_MODULE);
       if (status.isValid())
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
       else
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
 
       setupPulsesMultiExternalModule();
-      break;
+      return true;
     }
 #endif
 
 #if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMExternalModule();
-      break;
+      return true;
 #endif
 
     default:
       // external module stopped, set period to 0
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, 0);
-      break;
+      return false;
   }
 }
 
@@ -377,6 +377,11 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX1) && defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
+#if defined(INTMODULE_HEARTBEAT)
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD + 1 /* backup */);
+#else
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
+#endif
       return true;
 #endif
 
@@ -388,12 +393,12 @@ bool setupPulsesInternalModule(uint8_t protocol)
         mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);
       }
       else {
-#if !defined(INTMODULE_HEARTBEAT)
-        mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
+#if defined(INTMODULE_HEARTBEAT)
+        mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD + 1 /* backup */);
 #else
-        mixerSchedulerSetPeriod(INTERNAL_MODULE, 0);
+        mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
 #endif
-      }      
+      }
       return result;
     }
 #endif
@@ -413,7 +418,8 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #endif
 
     default:
-      return true;
+      scheduleNextMixerCalculation(INTERNAL_MODULE, 50/*ms*/);
+      return false;
   }
 }
 
@@ -448,8 +454,7 @@ bool setupPulsesExternalModule()
     return false;
   }
   else {
-    setupPulsesExternalModule(protocol);
-    return true;
+    return setupPulsesExternalModule(protocol);
   }
 }
 

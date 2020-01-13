@@ -21,9 +21,9 @@
 #include "opentx.h"
 #include "mixer_scheduler.h"
 
+#if defined(INTMODULE_HEARTBEAT_GPIO)
 volatile HeartbeatCapture heartbeatCapture;
 
-#if defined(INTMODULE_HEARTBEAT_GPIO)
 void init_intmodule_heartbeat()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -70,11 +70,13 @@ void check_intmodule_heartbeat()
 {
   if (EXTI_GetITStatus(INTMODULE_HEARTBEAT_EXTI_LINE) != RESET) {
 #if defined(INTMODULE_USART)
-    heartbeatCapture.timestamp = RTOS_GET_MS();
+    nextMixerTime[INTERNAL_MODULE] = RTOS_GET_MS();
 #else
     heartbeatCapture.timestamp = getTmr2MHz();
 #endif
+#if defined(DEBUG_LATENCY)
     heartbeatCapture.count++;
+#endif
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
 
     mixerSchedulerISRTrigger();
