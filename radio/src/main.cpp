@@ -169,7 +169,8 @@ void checkEeprom()
 {
 #if defined(RTC_BACKUP_RAM) && !defined(SIMU)
   if (TIME_TO_BACKUP_RAM()) {
-    rambackupWrite();
+    if (!globalData.unexpectedShutdown)
+      rambackupWrite();
     rambackupDirtyMsk = 0;
   }
 #endif
