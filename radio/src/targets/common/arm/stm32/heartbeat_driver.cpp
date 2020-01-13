@@ -20,9 +20,9 @@
 
 #include "opentx.h"
 
+#if defined(INTMODULE_HEARTBEAT_GPIO)
 volatile HeartbeatCapture heartbeatCapture;
 
-#if defined(INTMODULE_HEARTBEAT_GPIO)
 void init_intmodule_heartbeat()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
