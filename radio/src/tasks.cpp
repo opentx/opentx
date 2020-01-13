@@ -141,12 +141,6 @@ TASK_FUNCTION(mixerTask)
       runMask = 0xFF;
     }
     else {
-#if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
-      if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp == now) {
-        runMask |= (1 << INTERNAL_MODULE);
-      }
-#endif
-
       if (now >= nextMixerTime[0]) {
         runMask |= (1 << 0);
       }
