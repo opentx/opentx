@@ -85,16 +85,16 @@ bool isModuleSynchronous(uint8_t moduleIdx)
   return false;
 }
 
-void sendSynchronousPulses()
+void sendSynchronousPulses(uint8_t runMask)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (isModuleSynchronous(INTERNAL_MODULE)) {
+  if ((runMask & (1 << INTERNAL_MODULE)) && isModuleSynchronous(INTERNAL_MODULE)) {
     if (setupPulsesInternalModule())
       intmoduleSendNextFrame();
   }
 #endif
 
-  if (isModuleSynchronous(EXTERNAL_MODULE)) {
+  if ((runMask & (1 << EXTERNAL_MODULE)) && isModuleSynchronous(EXTERNAL_MODULE)) {
     if (setupPulsesExternalModule())
       extmoduleSendNextFrame();
   }
@@ -134,30 +134,31 @@ TASK_FUNCTION(mixerTask)
 #endif
 
     uint32_t now = RTOS_GET_MS();
-    bool run = false;
+    uint8_t runMask = 0;
 
     if (now - lastRunTime >= 10) {
       // run at least every 10ms
-      run = true;
+      runMask = 0xFF;
     }
-
+    else {
 #if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
-    if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
-      run = true;
-    }
+      if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
+        runMask |= 1 << INTERNAL_MODULE;
+      }
 #endif
 
-    if (now == nextMixerTime[0]) {
-      run = true;
-    }
+      if (now == nextMixerTime[0]) {
+        runMask |= 1 << 0;
+      }
 
 #if NUM_MODULES >= 2
-    if (now == nextMixerTime[1]) {
-      run = true;
-    }
+      if (now == nextMixerTime[1]) {
+        runMask |= 1 << 1;
+      }
 #endif
+    }
 
-    if (!run) {
+    if (!runMask) {
       continue;  // go back to sleep
     }
 
@@ -197,7 +198,7 @@ TASK_FUNCTION(mixerTask)
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
 
-      sendSynchronousPulses();
+      sendSynchronousPulses(runMask);
     }
   }
 }
