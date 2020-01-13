@@ -73,9 +73,9 @@ bool isForcePowerOffRequested()
   return false;
 }
 
-bool isModuleSynchronous(uint8_t module)
+bool isModuleSynchronous(uint8_t moduleIdx)
 {
-  uint8_t protocol = moduleState[module].protocol;
+  uint8_t protocol = moduleState[moduleIdx].protocol;
   if (protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || protocol == PROTOCOL_CHANNELS_PXX2_LOWSPEED || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
     return true;
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)

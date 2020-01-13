@@ -69,17 +69,17 @@ void Pxx1Pulses<PxxTransport>::addExtraFlags(uint8_t module)
 }
 
 template <class PxxTransport>
-void Pxx1Pulses<PxxTransport>::addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels)
+void Pxx1Pulses<PxxTransport>::addChannels(uint8_t moduleIdx, uint8_t sendFailsafe, uint8_t sendUpperChannels)
 {
   uint16_t pulseValue = 0;
   uint16_t pulseValueLow = 0;
 
-  for (int8_t i=0; i<8; i++) {
+  for (uint8_t i = 0; i < 8; i++) {
     if (sendFailsafe) {
-      if (g_model.moduleData[port].failsafeMode == FAILSAFE_HOLD) {
+      if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_HOLD) {
         pulseValue = (i < sendUpperChannels ? 4095 : 2047);
       }
-      else if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES) {
+      else if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_NOPULSES) {
         pulseValue = (i < sendUpperChannels ? 2048 : 0);
       }
       else {
@@ -92,7 +92,7 @@ void Pxx1Pulses<PxxTransport>::addChannels(uint8_t port, uint8_t sendFailsafe, u
             pulseValue = 2048;
           }
           else {
-            failsafeValue += 2*PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - 2*PPM_CENTER;
+            failsafeValue += 2*PPM_CH_CENTER(8+g_model.moduleData[moduleIdx].channelsStart+i) - 2*PPM_CENTER;
             pulseValue = limit(2049, (failsafeValue * 512 / 682) + 3072, 4094);
           }
         }
@@ -105,7 +105,7 @@ void Pxx1Pulses<PxxTransport>::addChannels(uint8_t port, uint8_t sendFailsafe, u
             pulseValue = 0;
           }
           else {
-            failsafeValue += 2*PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - 2*PPM_CENTER;
+            failsafeValue += 2*PPM_CH_CENTER(g_model.moduleData[moduleIdx].channelsStart+i) - 2*PPM_CENTER;
             pulseValue = limit(1, (failsafeValue * 512 / 682) + 1024, 2046);
           }
         }
@@ -113,12 +113,12 @@ void Pxx1Pulses<PxxTransport>::addChannels(uint8_t port, uint8_t sendFailsafe, u
     }
     else {
       if (i < sendUpperChannels) {
-        int channel = 8 + g_model.moduleData[port].channelsStart + i;
+        int channel = 8 + g_model.moduleData[moduleIdx].channelsStart + i;
         int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
         pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
       }
-      else if (i < sentModuleChannels(port)) {
-        int channel = g_model.moduleData[port].channelsStart + i;
+      else if (i < sentModulePXXChannels(moduleIdx)) {
+        int channel = g_model.moduleData[moduleIdx].channelsStart + i;
         int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
         pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
       }
@@ -186,7 +186,7 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
       moduleState[module].counter = 1000;
     }
     add8ChannelsFrame(module, 0, sendFailsafe);
-    if (sentModuleChannels(module) > 8) {
+    if (sentModulePXXChannels(module) > 8) {
       add8ChannelsFrame(module, 8, sendFailsafe);
     }
     return;
