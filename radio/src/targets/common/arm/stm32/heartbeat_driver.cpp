@@ -73,7 +73,9 @@ void check_intmodule_heartbeat()
 #else
     heartbeatCapture.timestamp = getTmr2MHz();
 #endif
+#if defined(DEBUG_LATENCY)
     heartbeatCapture.count++;
+#endif
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
   }
 }
