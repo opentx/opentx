@@ -1174,9 +1174,7 @@ void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true)
 {
   static const Firmware::Option opt_fl("flexr9m", Firmware::tr("Enable non certified firmwares"));
   if (flex)
-    firmware->addOptionsGroup({opt_eu, opt_fl});
-  else
-    firmware->addOption(opt_eu);
+    firmware->addOptionsGroup({opt_fl});
 }
 
 void addOpenTxFontOptions(OpenTxFirmware * firmware)
