@@ -104,7 +104,6 @@ uint32_t nextMixerTime[NUM_MODULES];
 
 TASK_FUNCTION(mixerTask)
 {
-  static uint32_t lastRunTime;
   s_pulses_paused = true;
 
   while (true) {
@@ -136,27 +135,19 @@ TASK_FUNCTION(mixerTask)
     uint32_t now = RTOS_GET_MS();
     uint8_t runMask = 0;
 
-    if (now - lastRunTime >= 10) {
-      // run at least every 10ms
-      runMask = 0xFF;
+    if (now >= nextMixerTime[0]) {
+      runMask |= (1 << 0);
     }
-    else {
-      if (now >= nextMixerTime[0]) {
-        runMask |= (1 << 0);
-      }
 
 #if NUM_MODULES >= 2
-      if (now >= nextMixerTime[1]) {
-        runMask |= (1 << 1);
-      }
-#endif
+    if (now >= nextMixerTime[1]) {
+      runMask |= (1 << 1);
     }
+#endif
 
     if (!runMask) {
       continue;  // go back to sleep
     }
-
-    lastRunTime = now;
 
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
