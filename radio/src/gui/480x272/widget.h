@@ -22,7 +22,9 @@
 #define _WIDGET_H_
 
 #include <list>
+#include <string.h>
 #include "zone.h"
+#include "debug.h"
 
 #define MAX_WIDGET_OPTIONS             5
 
