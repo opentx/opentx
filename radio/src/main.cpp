@@ -201,7 +201,8 @@ void checkEeprom()
 {
 #if defined(RTC_BACKUP_RAM) && !defined(SIMU)
   if (TIME_TO_BACKUP_RAM()) {
-    rambackupWrite();
+    if (!globalData.unexpectedShutdown)
+      rambackupWrite();
     rambackupDirtyMsk = 0;
   }
 #endif
@@ -522,10 +523,10 @@ void perMain()
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
-  if (mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)) {
+  if (mainRequestFlags & (1u << REQUEST_FLIGHT_RESET)) {
     TRACE("Executing requested Flight Reset");
     flightReset();
-    mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
+    mainRequestFlags &= ~(1u << REQUEST_FLIGHT_RESET);
   }
 
   checkBacklight();

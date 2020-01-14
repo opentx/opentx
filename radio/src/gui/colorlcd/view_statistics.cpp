@@ -27,7 +27,7 @@
 
 bool menuStatsGraph(event_t event)
 {
-  switch(event) {
+  switch (event) {
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);

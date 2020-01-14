@@ -114,11 +114,13 @@ GeneralSettings::GeneralSettings()
     speakerVolume = 12;
   }
 
-  if (IS_HORUS(board)) {
-    strcpy(bluetoothName, "Horus");
+  if (IS_JUMPER_T16(board))
+    strcpy(bluetoothName, "t16");
+  else if (IS_HORUS(board)) {
+    strcpy(bluetoothName, "horus");
   }
   else if (IS_TARANIS_X9E(board) || IS_TARANIS_SMALL(board)) {
-    strcpy(bluetoothName, "Taranis");
+    strcpy(bluetoothName, "taranis");
   }
 
   templateSetup = g.profile[g.sessionId()].channelOrder();

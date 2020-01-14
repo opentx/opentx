@@ -1536,7 +1536,7 @@ void MdiChild::writeEeprom()  // write to Tx
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
       qDebug() << "MdiChild::writeEeprom(): Horus radio not found";
-      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find Horus radio SD card!"));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find radio SD card!"));
       return;
     }
     if (saveFile(radioPath, false)) {

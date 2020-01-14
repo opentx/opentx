@@ -319,7 +319,7 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
       QMessageBox::critical(progress, CPN_STR_TTL_ERROR,
-                            QCoreApplication::translate("RadioInterface", "Unable to find Horus radio SD card!"));
+                            QCoreApplication::translate("RadioInterface", "Unable to find radio SD card!"));
       return false;
     }
     RadioData radioData;
