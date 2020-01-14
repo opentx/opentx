@@ -21,9 +21,9 @@
 #ifndef _FRSKY_H_
 #define _FRSKY_H_
 
-#include "definitions.h"
+#include "../../definitions.h"
 #include "telemetry_holders.h"
-#include "io/frsky_pxx2.h"
+#include "../../io/frsky_pxx2.h"
 
 // Receive buffer state machine state enum
 enum FrSkyDataState {
