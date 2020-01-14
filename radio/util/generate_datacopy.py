@@ -98,7 +98,7 @@ def header():
 
 def print_translation_unit_diags(diags, prefix=''):
     for diag in diags:
-        print(prefix + str(diag))
+        print(prefix + str(diag), file=sys.stderr)
         print_translation_unit_diags(diag.children, '  ' + prefix)
 
 
