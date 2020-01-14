@@ -1581,7 +1581,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="49"/>
         <source>Trainer</source>
-        <translation>Écolage</translation>
+        <translation>Écolage Manches</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="51"/>
@@ -1606,7 +1606,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="59"/>
         <source>Trainer Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Écolage Channels</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="61"/>
@@ -2977,7 +2977,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1273"/>
         <source>FrSky Taranis X7 / X7S Access</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
@@ -7407,7 +7407,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1539"/>
         <source>Unable to find radio SD card!</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de trouver la carte SD de la radio!</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1563"/>
@@ -9919,7 +9919,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../radiointerface.cpp" line="322"/>
         <source>Unable to find radio SD card!</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de trouver la carte SD de la radio!</translation>
     </message>
 </context>
 <context>
