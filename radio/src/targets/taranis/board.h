@@ -22,8 +22,8 @@
 #define _BOARD_H_
 
 #include <inttypes.h>
-#include "../definitions.h"
-#include "../opentx_constants.h"
+#include "definitions.h"
+#include "opentx_constants.h"
 #include "board_common.h"
 #include "hal.h"
 
