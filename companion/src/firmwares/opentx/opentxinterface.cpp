@@ -1368,20 +1368,20 @@ void registerOpenTxFirmwares()
 
 void unregisterOpenTxFirmwares()
 {
-    foreach (Firmware * f, Firmware::getRegisteredFirmwares()) {
-      delete f;
-    }
+  foreach (Firmware * f, Firmware::getRegisteredFirmwares()) {
+    delete f;
+  }
   unregisterEEpromInterfaces();
 }
 
 template <class T, class M>
 OpenTxEepromInterface * loadFromByteArray(T & dest, const QByteArray & data)
 {
-    foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
-      if (eepromInterface->loadFromByteArray<T, M>(dest, data)) {
-        return eepromInterface;
-      }
+  foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
+    if (eepromInterface->loadFromByteArray<T, M>(dest, data)) {
+      return eepromInterface;
     }
+  }
   return NULL;
 }
 
@@ -1389,11 +1389,11 @@ template <class T, class M>
 bool saveToByteArray(const T & dest, QByteArray & data)
 {
   Board::Type board = getCurrentBoard();
-    foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
-      if (eepromInterface->getBoard() == board) {
-        return eepromInterface->saveToByteArray<T, M>(dest, data);
-      }
+  foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
+    if (eepromInterface->getBoard() == board) {
+      return eepromInterface->saveToByteArray<T, M>(dest, data);
     }
+  }
   return false;
 }
 
