@@ -1375,6 +1375,7 @@
   #define PCBREV_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
   #define PCBREV_GPIO                   GPIOA
   #define PCBREV_GPIO_PIN               GPIO_Pin_14  // PA.14
+  #define PCBREV_GPIO_PULL_DOWN
   #define PCBREV_VALUE()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
 #else
   #define PCBREV_RCC_AHB1Periph         0
