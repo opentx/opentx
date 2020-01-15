@@ -45,14 +45,14 @@ void init5msTimer()
 
 void stop5msTimer()
 {
-  INTERRUPT_xMS_TIMER->CR1 = 0 ;        // stop timer
-  NVIC_DisableIRQ(INTERRUPT_xMS_IRQn) ;
+  INTERRUPT_xMS_TIMER->CR1 = 0; // stop timer
+  NVIC_DisableIRQ(INTERRUPT_xMS_IRQn);
 }
 
 // TODO use the same than board_sky9x.cpp
 void interrupt5ms()
 {
-  static uint8_t pre_scale;       // Used to get 10 Hz counter
+  static uint8_t pre_scale; // Used to get 10 Hz counter
 
   ++pre_scale;
 

@@ -131,7 +131,7 @@ BitmapBuffer * lcd = &_lcd;
 
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
 #endif
@@ -145,7 +145,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, ui
 
 void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);
@@ -159,7 +159,7 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
 
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);
