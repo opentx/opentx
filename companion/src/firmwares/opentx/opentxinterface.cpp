@@ -1170,13 +1170,13 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOption("nooverridech", Firmware::tr("No OverrideCH functions available"));
 }
 
-void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true, bool d8 = true)
+void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true, bool eu = true)
 {
   static const Firmware::Option opt_eu("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   static const Firmware::Option opt_fl("flexr9m", Firmware::tr("Enable non certified firmwares"));
-  if (flex && d8)
+  if (flex && eu)
     firmware->addOptionsGroup({opt_eu, opt_fl});
-  else if (d8)
+  else if (eu)
     firmware->addOption(opt_eu);
   else if (flex)
     firmware->addOption(opt_fl);
