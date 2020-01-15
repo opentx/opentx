@@ -1178,7 +1178,7 @@ void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true, bool d8 = t
     firmware->addOptionsGroup({opt_eu, opt_fl});
   else if (d8)
     firmware->addOption(opt_eu);
-  else
+  else if (flex)
     firmware->addOption(opt_fl);
 }
 
