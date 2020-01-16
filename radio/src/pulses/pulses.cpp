@@ -272,7 +272,7 @@ bool setupPulsesExternalModule(uint8_t protocol)
       if (status.isValid())
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
       else
-        scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
       setupPulsesCrossfire();
       return true;
     }
