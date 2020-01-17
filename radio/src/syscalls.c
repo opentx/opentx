@@ -73,7 +73,7 @@ extern int _close(int file)
 
 extern int _fstat(int file, struct stat * st)
 {
-  st->st_mode = S_IFCHR ;
+  st->st_mode = S_IFCHR;
   return 0;
 }
 
@@ -97,6 +97,12 @@ extern int _write(int file, char *ptr, int len)
   return 0;
 }
 
+extern int _getpid()
+{
+  return -1;
+}
+#endif
+
 extern void _exit(int status)
 {
   TRACE("_exit(%d)", status);
@@ -105,12 +111,5 @@ extern void _exit(int status)
 
 extern void _kill(int pid, int sig)
 {
-  return ;
+  return;
 }
-
-extern int _getpid()
-{
-    return -1 ;
-}
-#endif
-

@@ -149,7 +149,7 @@ void simuSetKey(uint8_t key, bool state)
   keysStates[key] = state;
 }
 
-bool trimsStates[NUM_TRIMS * 2] = { false };
+bool trimsStates[NUM_TRIMS_KEYS] = { false };
 void simuSetTrim(uint8_t trim, bool state)
 {
   // TRACE("simuSetTrim(%d, %d)", trim, state);
@@ -486,17 +486,17 @@ void pwrOff()
 void readKeysAndTrims()
 {
   uint8_t index = 0;
-  uint32_t keys_input = readKeys();
-  for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
-    keys[index++].input(keys_input & i);
+  auto keysInput = readKeys();
+  for (auto mask = (1 << 0); mask < (1 << TRM_BASE); mask <<= 1) {
+    keys[index++].input(keysInput & mask);
   }
 
-  uint32_t trims_input = readTrims();
-  for (uint8_t i = 1; i != uint8_t(1 << 8); i <<= 1) {
-    keys[index++].input(trims_input & i);
+  auto trimsInput = readTrims();
+  for (auto mask = (1 << 0); mask < (1 << NUM_TRIMS_KEYS); mask <<= 1) {
+    keys[index++].input(trimsInput & mask);
   }
 
-  if (keys_input || trims_input) {
+  if (keysInput || trimsInput) {
     backlightOn();
   }
 }
@@ -515,7 +515,7 @@ uint32_t readKeys()
 {
   uint32_t result = 0;
 
-  for (int i=0; i<NUM_KEYS; i++) {
+  for (int i = 0; i < NUM_KEYS; i++) {
     if (keysStates[i]) {
       // TRACE("key pressed %d", i);
       result |= 1 << i;
@@ -529,7 +529,7 @@ uint32_t readTrims()
 {
   uint32_t result = 0;
 
-  for (int i=0; i<NUM_TRIMS*2; i++) {
+  for (int i=0; i<NUM_TRIMS_KEYS; i++) {
     if (trimsStates[i]) {
       // TRACE("trim pressed %d", i);
       result |= 1 << i;

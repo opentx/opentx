@@ -45,9 +45,6 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   if (IS_TARANIS_X9D(board))
     return 9;
 
-  if (IS_TARANIS_X9LITE(board))
-    return 7;
-
   if (IS_JUMPER_T12(board))
     return 8;
 
@@ -1395,6 +1392,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
       addConversion(FuncTrainerELE, val);
       addConversion(FuncTrainerTHR, val);
       addConversion(FuncTrainerAIL, val);
+      addConversion(FuncTrainerChannels, val);
       val++;
 
       addConversion(FuncInstantTrim, val++);
@@ -1515,7 +1513,7 @@ class ArmCustomFunctionField: public TransformedField {
           *((uint16_t *)_param) = fn.param;
           *((uint8_t *)(_param+3)) = fn.func - FuncOverrideCH1;
         }
-        else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+        else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerChannels) {
           *((uint8_t *)(_param+3)) = fn.func - FuncTrainer;
         }
         else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
@@ -1582,7 +1580,7 @@ class ArmCustomFunctionField: public TransformedField {
         fn.func = AssignFunc(fn.func + index);
         fn.param = (int)value;
       }
-      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerChannels) {
         fn.func = AssignFunc(fn.func + index);
         fn.param = value;
       }

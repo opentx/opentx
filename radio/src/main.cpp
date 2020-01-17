@@ -169,7 +169,8 @@ void checkEeprom()
 {
 #if defined(RTC_BACKUP_RAM) && !defined(SIMU)
   if (TIME_TO_BACKUP_RAM()) {
-    rambackupWrite();
+    if (!globalData.unexpectedShutdown)
+      rambackupWrite();
     rambackupDirtyMsk = 0;
   }
 #endif
@@ -381,21 +382,6 @@ void handleGui(event_t event) {
   }
   else if (luaTask(event, RUN_TELEM_FG_SCRIPT, true)) {
     // the telemetry screen is active
-    // prevent events from keys MENU, UP, DOWN, ENT(short) and EXIT(short) from reaching the normal menus,
-    // so Lua telemetry script can fully use them
-    if (event) {
-      uint8_t key = EVT_KEY_MASK(event);
-#if defined(PCBXLITE)
-      // SHIFT + LEFT/RIGHT LONG used to change telemetry screen on XLITE
-      if ((!IS_KEY_LONG(event) && key == KEY_RIGHT && IS_SHIFT_PRESSED()) || (!IS_KEY_LONG(event) && key == KEY_LEFT  && IS_SHIFT_PRESSED()) || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {
-#else
-      // no need to filter out MENU and ENT(short), because they are not used by menuViewTelemetryFrsky()
-      if (key == KEY_PLUS || key == KEY_MINUS || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {
-#endif
-        // TRACE("Telemetry script event 0x%02x killed", event);
-        event = 0;
-      }
-    }
     menuHandlers[menuLevel](event);
   }
   else
@@ -469,9 +455,9 @@ void guiMain(event_t evt)
 
   lcdRefresh();
 
-  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
+  if (mainRequestFlags & (1u << REQUEST_SCREENSHOT)) {
     writeScreenshot();
-    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
+    mainRequestFlags &= ~(1u << REQUEST_SCREENSHOT);
   }
 }
 #endif
@@ -501,10 +487,10 @@ void perMain()
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
-  if (mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)) {
+  if (mainRequestFlags & (1u << REQUEST_FLIGHT_RESET)) {
     TRACE("Executing requested Flight Reset");
     flightReset();
-    mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
+    mainRequestFlags &= ~(1u << REQUEST_FLIGHT_RESET);
   }
 
   checkBacklight();

@@ -22,8 +22,8 @@
 #define _BOARD_H_
 
 #include <inttypes.h>
-#include "../definitions.h"
-#include "../opentx_constants.h"
+#include "definitions.h"
+#include "opentx_constants.h"
 #include "board_common.h"
 #include "hal.h"
 
@@ -60,6 +60,13 @@ void boardOff();
 // Timers driver
 void init2MhzTimer();
 void init5msTimer();
+
+// PCBREV driver
+enum {
+  // X7
+  PCBREV_X7_STD = 0,
+  PCBREV_X7_40 = 1,
+};
 
 // SD driver
 #define BLOCK_SIZE                      512 /* Block Size in Bytes */
@@ -529,28 +536,27 @@ enum Analogs {
 #define NUM_MOUSE_ANALOGS               0
 #define STORAGE_NUM_MOUSE_ANALOGS       0
 
+#if defined(PCBXLITE)
+  #define NUM_TRIMS_KEYS                4
+#else
+  #define NUM_TRIMS_KEYS                (NUM_TRIMS * 2)
+#endif
+
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
   void sticksPwmInit();
   void sticksPwmRead(uint16_t * values);
   extern volatile uint32_t pwm_interrupt_count; // TODO => reusable buffer (boot section)
-  #define NUM_TRIMS_KEYS                4
 #else
-  #define NUM_TRIMS_KEYS                8
   #define STICKS_PWM_ENABLED()          false
 #endif
 
-#if NUM_PWMSTICKS > 0
 PACK(typedef struct {
+  uint8_t pcbrev:2;
   uint8_t sticksPwmDisabled:1;
   uint8_t pxx2Enabled:1;
 }) HardwareOptions;
-#else
-PACK(typedef struct {
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-#endif
 
 extern HardwareOptions hardwareOptions;
 
@@ -701,7 +707,7 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 #if defined(PCBX7ACCESS)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
-  #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
+  #define IS_PCBREV_40()                (hardwareOptions.pcbrev == PCBREV_X7_40)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
 #elif defined(SPORT_UPDATE_PWR_GPIO)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true

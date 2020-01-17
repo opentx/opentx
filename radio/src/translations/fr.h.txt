@@ -666,7 +666,7 @@
 #define TR_MODULE_WAITFORBIND          "Binder d'abord"
 #define TR_MODULE_BINDING              "Bind..."
 #define TR_MODULE_UPGRADE_ALERT              "Mise à jour requise"
-#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module update recommended")
+#define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
 #define TR_REBIND                      "Rebind requis"
 #define TR_REG_OK                      "Enregistr. ok"
 #define TR_BIND_OK                     "Bind ok"
@@ -755,8 +755,8 @@
 #define TR_ALARMSWARN                  "SON"
 #define TR_SWITCHWARN                  TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN                "FAILSAFE"
-#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Version de test uniq."
+#define TR_TEST_WARNING                 TR("TESTING", "TEST BUILD")
+#define TR_TEST_NOTSAFE                 "Version de test uniq."
 #define TR_WRONG_SDCARDVERSION         "Version requise: "
 #define TR_WARN_RTC_BATTERY_LOW        "Batterie RTC faible"
 #define TR_WARN_MULTI_LOWPOWER         "Mode basse puis."

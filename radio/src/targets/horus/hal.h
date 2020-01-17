@@ -120,24 +120,24 @@
   // Gimbal switch left
   #define STORAGE_SWITCH_I
   #define HARDWARE_SWITCH_I
-  #define SWITCHES_GPIO_REG_I        GPIOH->IDR
-  #define SWITCHES_GPIO_PIN_I        GPIO_Pin_14 // PH.14
+  #define SWITCHES_GPIO_REG_I           GPIOH->IDR
+  #define SWITCHES_GPIO_PIN_I           GPIO_Pin_14 // PH.14
   // Gimbal switch right
   #define STORAGE_SWITCH_J
   #define HARDWARE_SWITCH_J
-  #define SWITCHES_GPIO_REG_J        GPIOH->IDR
-  #define SWITCHES_GPIO_PIN_J        GPIO_Pin_15 // PH.15
+  #define SWITCHES_GPIO_REG_J           GPIOH->IDR
+  #define SWITCHES_GPIO_PIN_J           GPIO_Pin_15 // PH.15
 #elif defined(PCBX12S)
   // Gimbal switch left
   #define STORAGE_SWITCH_I
   #define HARDWARE_SWITCH_I
-  #define SWITCHES_GPIO_REG_I        GPIOB->IDR
-  #define SWITCHES_GPIO_PIN_I        GPIO_Pin_1 // PB.01
+  #define SWITCHES_GPIO_REG_I           GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_I           GPIO_Pin_1 // PB.01
   // Gimbal switch right
   #define STORAGE_SWITCH_J
   #define HARDWARE_SWITCH_J
-  #define SWITCHES_GPIO_REG_J        GPIOB->IDR
-  #define SWITCHES_GPIO_PIN_J        GPIO_Pin_0 // PB.00
+  #define SWITCHES_GPIO_REG_J           GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_J           GPIO_Pin_0 // PB.00
 #endif
 
 // Trims
@@ -184,15 +184,15 @@
   #define TRIMS_GPIO_REG_RHR            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_7  // PD.07
   #if defined(RADIO_T16)
-    #define TRIMS_GPIO_REG_LSU            GPIOD->IDR
-    #define TRIMS_GPIO_PIN_LSU            GPIO_Pin_13 // PD.13
-    #define TRIMS_GPIO_REG_LSD            GPIOJ->IDR
-    #define TRIMS_GPIO_PIN_LSD            GPIO_Pin_8  // PJ.08
+    #define TRIMS_GPIO_REG_LSU          GPIOD->IDR
+    #define TRIMS_GPIO_PIN_LSU          GPIO_Pin_13 // PD.13
+    #define TRIMS_GPIO_REG_LSD          GPIOJ->IDR
+    #define TRIMS_GPIO_PIN_LSD          GPIO_Pin_8  // PJ.08
   #else
-    #define TRIMS_GPIO_REG_LSU            GPIOJ->IDR
-    #define TRIMS_GPIO_PIN_LSU            GPIO_Pin_8  // PJ.08
-    #define TRIMS_GPIO_REG_LSD            GPIOD->IDR
-    #define TRIMS_GPIO_PIN_LSD            GPIO_Pin_13 // PD.13
+    #define TRIMS_GPIO_REG_LSU          GPIOJ->IDR
+    #define TRIMS_GPIO_PIN_LSU          GPIO_Pin_8  // PJ.08
+    #define TRIMS_GPIO_REG_LSD          GPIOD->IDR
+    #define TRIMS_GPIO_PIN_LSD          GPIO_Pin_13 // PD.13
   #endif
   #define TRIMS_GPIO_REG_RSU            GPIOB->IDR
   #define TRIMS_GPIO_PIN_RSU            GPIO_Pin_14 // PB.14
@@ -288,11 +288,11 @@
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
-#if defined(RADIO_T16)
-  #define ADC_VREF_PREC2                300
-#else
-  #define ADC_VREF_PREC2                250
-#endif
+  #if defined(RADIO_T16)
+    #define ADC_VREF_PREC2              300
+  #else
+    #define ADC_VREF_PREC2              250
+  #endif
 #endif
 
 // Power
@@ -316,15 +316,15 @@
 
 // PCBREV
 #if defined(PCBX10)
-#define PCBREV_RCC_AHB1Periph           RCC_AHB1Periph_GPIOH
-#define PCBREV_GPIO_PIN                 (GPIO_Pin_7 | GPIO_Pin_8)
-#define PCBREV_GPIO                     GPIOH
-#define PCBREV_VALUE()                  (GPIO_ReadInputDataBit(PCBREV_GPIO, GPIO_Pin_7) + (GPIO_ReadInputDataBit(PCBREV_GPIO, GPIO_Pin_8) << 1))
+  #define PCBREV_RCC_AHB1Periph         RCC_AHB1Periph_GPIOH
+  #define PCBREV_GPIO_PIN               (GPIO_Pin_7 | GPIO_Pin_8)
+  #define PCBREV_GPIO                   GPIOH
+  #define PCBREV_VALUE()                (GPIO_ReadInputDataBit(PCBREV_GPIO, GPIO_Pin_7) + (GPIO_ReadInputDataBit(PCBREV_GPIO, GPIO_Pin_8) << 1))
 #else
-#define PCBREV_RCC_AHB1Periph           RCC_AHB1Periph_GPIOI
-#define PCBREV_GPIO                     GPIOI
-#define PCBREV_GPIO_PIN                 GPIO_Pin_11  // PI.11
-#define PCBREV_VALUE()                  GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
+  #define PCBREV_RCC_AHB1Periph         RCC_AHB1Periph_GPIOI
+  #define PCBREV_GPIO                   GPIOI
+  #define PCBREV_GPIO_PIN               GPIO_Pin_11  // PI.11
+  #define PCBREV_VALUE()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
 #endif
 
 // Led
@@ -344,22 +344,22 @@
 
 // Serial Port (DEBUG)
 #if defined(PCBX12S)
-#define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
-#define AUX_SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
-#define AUX_SERIAL_GPIO                     GPIOB
-#define AUX_SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
-#define AUX_SERIAL_GPIO_PIN_RX              GPIO_Pin_11 // PB.11
-#define AUX_SERIAL_GPIO_PinSource_TX        GPIO_PinSource10
-#define AUX_SERIAL_GPIO_PinSource_RX        GPIO_PinSource11
-#define AUX_SERIAL_GPIO_AF                  GPIO_AF_USART3
-#define AUX_SERIAL_USART                    USART3
-#define AUX_SERIAL_USART_IRQHandler         USART3_IRQHandler
-#define AUX_SERIAL_USART_IRQn               USART3_IRQn
-#define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
-#define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
+  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
+  #define AUX_SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
+  #define AUX_SERIAL_GPIO                     GPIOB
+  #define AUX_SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
+  #define AUX_SERIAL_GPIO_PIN_RX              GPIO_Pin_11 // PB.11
+  #define AUX_SERIAL_GPIO_PinSource_TX        GPIO_PinSource10
+  #define AUX_SERIAL_GPIO_PinSource_RX        GPIO_PinSource11
+  #define AUX_SERIAL_GPIO_AF                  GPIO_AF_USART3
+  #define AUX_SERIAL_USART                    USART3
+  #define AUX_SERIAL_USART_IRQHandler         USART3_IRQHandler
+  #define AUX_SERIAL_USART_IRQn               USART3_IRQn
+  #define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
+  #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
 #else
-#define AUX_SERIAL_RCC_AHB1Periph           0
-#define AUX_SERIAL_RCC_APB1Periph           0
+  #define AUX_SERIAL_RCC_AHB1Periph           0
+  #define AUX_SERIAL_RCC_APB1Periph           0
 #endif
 
 // Telemetry
@@ -385,8 +385,8 @@
 #define TELEMETRY_TIMER_IRQn            TIM1_TRG_COM_TIM11_IRQn
 #define TELEMETRY_TIMER_IRQHandler      TIM1_TRG_COM_TIM11_IRQHandler
 #if defined(PCBX12S)
-#define TELEMETRY_DMA_Stream_RX         DMA1_Stream5
-#define TELEMETRY_DMA_Channel_RX        DMA_Channel_4
+  #define TELEMETRY_DMA_Stream_RX       DMA1_Stream5
+  #define TELEMETRY_DMA_Channel_RX      DMA_Channel_4
 #endif
 #define TELEMETRY_DMA_Stream_TX         DMA1_Stream6
 #define TELEMETRY_DMA_Channel_TX        DMA_Channel_4
@@ -590,7 +590,7 @@
 #endif
 
 #if !defined(RADIO_T16)
-#define EXTERNAL_ANTENNA
+  #define EXTERNAL_ANTENNA
 #endif
 #define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
 #define INTMODULE_PWR_GPIO              GPIOA
@@ -616,6 +616,7 @@
   #define INTMODULE_BOOTCMD_GPIO        GPIOI
   #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_9  // PI.09
 #endif
+#define INIT_INTMODULE_BOOTCMD_PIN() GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
 #if defined(PCBX10) || PCBREV >= 13
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
@@ -635,6 +636,7 @@
 // External Module
 #define EXTMODULE_PWR_GPIO                 GPIOB
 #define EXTMODULE_PWR_GPIO_PIN             GPIO_Pin_3  // PB.03
+#define EXTERNAL_MODULE_PWR_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #if defined(PCBX10) && defined(PCBREV_EXPRESS)
   #define EXTMODULE_RCC_AHB1Periph         (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define EXTMODULE_RCC_APB1Periph         (RCC_APB1Periph_TIM2 | RCC_APB1Periph_USART3)
@@ -715,9 +717,9 @@
 #define INTMODULE_HEARTBEAT_EXTI_IRQn           EXTI15_10_IRQn
 #define INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER
 #if defined(PXX2)
-#define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Falling
+  #define INTMODULE_HEARTBEAT_TRIGGER           EXTI_Trigger_Falling
 #else
-#define INTMODULE_HEARTBEAT_TRIGGER             EXTI_Trigger_Rising
+  #define INTMODULE_HEARTBEAT_TRIGGER           EXTI_Trigger_Rising
 #endif
 
 // Trainer Port

@@ -166,16 +166,16 @@ inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
   if (!isModuleMultimodule(moduleIdx))
     return HIDDEN_ROW;
 
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+  if (status.isValid()) {
+    return status.supportsDisableMapping() == true ? 0 : HIDDEN_ROW;
+  }
+
   uint8_t protocol = g_model.moduleData[moduleIdx].getMultiProtocol();
   if (protocol < MODULE_SUBTYPE_MULTI_LAST) {
     const mm_protocol_definition * pdef = getMultiProtocolDefinition(protocol);
     if (pdef->disable_ch_mapping)
       return 0;
-  }
-
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  if (status.supportsDisableMapping() && status.isValid()) {
-    return 0;
   }
 
   return HIDDEN_ROW;
@@ -239,12 +239,15 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
     return false;
 
   uint8_t protocol = g_model.moduleData[moduleIdx].getMultiProtocol();
-  if (protocol < MODULE_SUBTYPE_MULTI_LAST) {
-    return getMultiProtocolDefinition(protocol)->optionsstr != nullptr;
-  }
-
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  return status.optionDisp;
+
+  if (status.isValid())
+    return status.optionDisp;
+
+  if (protocol < MODULE_SUBTYPE_MULTI_LAST)
+    return getMultiProtocolDefinition(protocol)->optionsstr != nullptr;
+
+  return false;
 }
 
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)      MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
