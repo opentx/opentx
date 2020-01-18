@@ -50,11 +50,11 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 enum MenuRadioIndexes
 {
-  MENU_RADIO_SETUP,
-  CASE_SDCARD(MENU_RADIO_SD_MANAGER)
 #if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   MENU_RADIO_TOOLS,
 #endif
+  MENU_RADIO_SETUP,
+  CASE_SDCARD(MENU_RADIO_SD_MANAGER)
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -76,11 +76,11 @@ void menuRadioPowerMeter(event_t event);
 void menuRadioCalibration(event_t event);
 
 static const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT]  = {
-  menuRadioSetup,
-  CASE_SDCARD(menuRadioSdManager)
 #if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   menuRadioTools,
 #endif
+  menuRadioSetup,
+  CASE_SDCARD(menuRadioSdManager)
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,
