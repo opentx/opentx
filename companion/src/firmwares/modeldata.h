@@ -221,8 +221,18 @@ class ModelData {
     bool isGVarLinked(int phaseIdx, int gvarIdx);
     int getGVarFieldValue(int phaseIdx, int gvarIdx);
     float getGVarFieldValuePrec(int phaseIdx, int gvarIdx);
+    int getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx);
+    void setGVarFlightModeValue(const int phaseIdx, const int gvarIdx, const int useFmIdx);
 
     ModelData removeGlobalVars();
+
+    int linkedFlightModeIndexToValue(const int phaseIdx, const int useFmIdx, const int maxOwnValue);
+    int linkedFlightModeValueToIndex(const int phaseIdx, const int val, const int maxOwnValue);
+    int linkedFlightModeZero(const int maxOwnValue);
+
+    bool isEncoderLinked(const int phaseIdx, const int reIdx);
+    int getEncoderFlightModeIndex(const int phaseIdx, const int reIdx);
+    void setEncoderFlightModeValue(const int phaseIdx, const int reIdx, const int useFmIdx);
 
     void clearMixes();
     void clearInputs();
@@ -231,8 +241,74 @@ class ModelData {
 
     bool isAvailable(const RawSwitch & swtch) const;
 
+    enum ReferenceUpdateAction {
+      REF_UPD_ACT_CLEAR,
+      REF_UPD_ACT_SHIFT,
+      REF_UPD_ACT_SWAP,
+    };
+
+    enum ReferenceUpdateType {
+      REF_UPD_TYPE_CHANNEL,
+      REF_UPD_TYPE_CURVE,
+      REF_UPD_TYPE_FLIGHT_MODE,
+      REF_UPD_TYPE_GLOBAL_VARIABLE,
+      REF_UPD_TYPE_INPUT,
+      REF_UPD_TYPE_LOGICAL_SWITCH,
+      REF_UPD_TYPE_SCRIPT,
+      REF_UPD_TYPE_SENSOR,
+      REF_UPD_TYPE_TIMER,
+    };
+
+    int updateAllReferences(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2 = 0, const int shift = 0);
+
   protected:
     void removeGlobalVar(int & var);
+
+  private:
+    struct UpdateReferenceInfo
+    {
+      ReferenceUpdateType type;
+      ReferenceUpdateAction action;
+      int index1;
+      int index2;
+      int shift;
+      int updcnt;
+      int maxindex;
+      RawSourceType srcType;
+      RawSwitchType swtchType;
+    };
+    UpdateReferenceInfo updRefInfo;
+
+    template <class R, typename T>
+    void updateTypeIndexRef(R & curref, const T type, const int idxAdj = 0, const bool defClear = true, const int defType = 0, const int defIndex = 0);
+    template <class R, typename T>
+    void updateTypeValueRef(R & curref, const T type, const int idxAdj = 0, const bool defClear = true, const int defType = 0, const int defValue = 0);
+    void updateAdjustRef(int & adj);
+    void updateAssignFunc(CustomFunctionData * cfd);
+    void updateCurveRef(CurveReference & crv);
+    void updateDestCh(MixData * md);
+    void updateLimitCurveRef(CurveReference & crv);
+    void updateFlightModeFlags(unsigned int & flags);
+    void updateFlightModeTrimRef(int & trimRef, int & trimMode, int & trim);
+    void updateFlightModeGVRERef(int & gvre, const int phaseIdx, const int maxOwnValue);
+    void updateTelemetryRef(unsigned int & idx);
+    inline void updateSourceRef(RawSource & src) { updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType); }
+    inline void updateSwitchRef(RawSwitch & swtch) { updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1); }
+    inline void updateTimerMode(RawSwitch & swtch) { updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1, false, (int)SWITCH_TYPE_TIMER_MODE, 0); }
+    inline void updateSourceIntRef(int & value)
+    {
+      RawSource src = RawSource(value);
+      updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType);
+      if (value != src.toValue())
+        value = src.toValue();
+    }
+    inline void updateSwitchIntRef(int & value)
+    {
+      RawSwitch swtch = RawSwitch(value);
+      updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1);
+      if (value != swtch.toValue())
+        value = swtch.toValue();
+    }
 };
 
 #endif // MODELDATA_H

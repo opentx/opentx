@@ -35,6 +35,10 @@ void ExpoData::convert(RadioDataConversionState & cstate)
   swtch.convert(cstate);
 }
 
+bool ExpoData::isEmpty() const
+{
+  return (chn == 0 && mode == INPUT_MODE_NONE);
+}
 
 /*
  * MixData
@@ -48,6 +52,10 @@ void MixData::convert(RadioDataConversionState & cstate)
   swtch.convert(cstate);
 }
 
+bool MixData::isEmpty() const
+{
+  return (destCh == 0);
+}
 
 /*
  * LimitData
@@ -87,9 +95,8 @@ void LimitData::clear()
 
 bool LimitData::isEmpty() const
 {
-  return (min == -1000 && max == 1000 && !revert && !offset && !ppmCenter && !symetrical && name[0] == '\0');
+  return (min == -1000 && max == 1000 && !revert && !offset && !ppmCenter && !symetrical && name[0] == '\0' && !curve.isSet());
 }
-
 
 /*
  * CurveData
@@ -131,10 +138,10 @@ void FlightModeData::clear(const int phase)
   memset(reinterpret_cast<void *>(this), 0, sizeof(FlightModeData));
   if (phase != 0) {
     for (int idx=0; idx<CPN_MAX_GVARS; idx++) {
-      gvars[idx] = 1025;
+      gvars[idx] = GVAR_MAX_VALUE + 1;
     }
     for (int idx=0; idx<CPN_MAX_ENCODERS; idx++) {
-      rotaryEncoders[idx] = 1025;
+      rotaryEncoders[idx] = ENCODER_MAX_VALUE + 1;
     }
   }
 }

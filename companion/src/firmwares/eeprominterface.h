@@ -100,6 +100,8 @@ enum Capability {
   GvarsName,
   NoTelemetryProtocol,
   TelemetryCustomScreens,
+  TelemetryCustomScreensBars,
+  TelemetryCustomScreensLines,
   TelemetryCustomScreensFieldsPerLine,
   TelemetryMaxMultiplier,
   HasVario,
@@ -149,7 +151,8 @@ enum Capability {
   DangerousFunctions,
   HasModelCategories,
   HasSwitchableJack,
-  PwrButtonPress
+  PwrButtonPress,
+  Sensors
 };
 
 class EEPROMInterface

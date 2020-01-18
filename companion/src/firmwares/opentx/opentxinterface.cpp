@@ -616,6 +616,10 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return 0;
       else
         return IS_ARM(board) ? 4 : 2;
+    case TelemetryCustomScreensBars:
+      return (getCapability(TelemetryCustomScreens) ? 4 : 0);
+    case TelemetryCustomScreensLines:
+      return (getCapability(TelemetryCustomScreens) ? 4 : 0);
     case TelemetryCustomScreensFieldsPerLine:
       return HAS_LARGE_LCD(board) ? 3 : 2;
     case NoTelemetryProtocol:
@@ -754,6 +758,11 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_TARANIS_XLITES(board);
     case PwrButtonPress:
       return IS_HORUS_OR_TARANIS(board) && (board!=Board::BOARD_TARANIS_X9D) && (board!=Board::BOARD_TARANIS_X9DP);
+    case Sensors:
+      if (IS_HORUS(board) || IS_TARANIS_X9(board))
+        return 60;
+      else
+        return 40;
     default:
       return 0;
   }

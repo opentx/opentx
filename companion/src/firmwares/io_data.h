@@ -55,6 +55,7 @@ class ExpoData {
     char name[10+1];
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(ExpoData)); }
     void convert(RadioDataConversionState & cstate);
+    bool isEmpty() const;
 };
 
 enum MltpxValue {
@@ -90,6 +91,7 @@ class MixData {
     char   name[MIXDATA_NAME_LEN+1];
 
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(MixData)); }
+    bool isEmpty() const;
 };
 
 class LimitData {
@@ -142,6 +144,10 @@ class CurveData {
     char name[6+1];
 };
 
+#define FLIGHTMODE_NAME_LEN  10
+#define ENCODER_MAX_VALUE    1024
+#define ENCODER_MIN_VALUE    -ENCODER_MAX_VALUE
+
 class FlightModeData {
   Q_DECLARE_TR_FUNCTIONS(FlightModeData)
 
@@ -151,7 +157,7 @@ class FlightModeData {
     int trimRef[CPN_MAX_TRIMS];
     int trim[CPN_MAX_TRIMS];
     RawSwitch swtch;
-    char name[10+1];
+    char name[FLIGHTMODE_NAME_LEN+1];
     unsigned int fadeIn;
     unsigned int fadeOut;
     int rotaryEncoders[CPN_MAX_ENCODERS];

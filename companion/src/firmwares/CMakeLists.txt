@@ -1,5 +1,6 @@
 
 set(firmwares_SRCS
+  adjustmentreference.cpp
   boards.cpp
   curvereference.cpp
   customfunctiondata.cpp
