@@ -90,8 +90,6 @@ if(DISK_CACHE)
   add_definitions(-DDISK_CACHE)
 endif()
 
-set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
-
 set(SRC
   ${SRC}
   io/frsky_firmware_update.cpp

@@ -40,7 +40,7 @@ void intmoduleStop()
 
   GPIO_ResetBits(INTMODULE_GPIO, INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN);
 
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(INTMODULE_TIMER)
   // stop pulses timer
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
@@ -93,7 +93,7 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
   }
 }
 
-#if defined(INTERNAL_MODULE_MULTI) || defined(INTMODULE_TIMER)
+#if defined(INTMODULE_TIMER)
 void intmoduleTimerStart(uint32_t periodMs)
 {
   // Timer
@@ -188,7 +188,7 @@ void intmoduleSendNextFrame()
   }
 }
 
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(INTMODULE_TIMER)
 extern "C" void INTMODULE_TIMER_IRQHandler()
 {
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag

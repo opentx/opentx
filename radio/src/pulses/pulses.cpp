@@ -58,7 +58,7 @@ void moduleFlagBackNormal(uint8_t moduleIndex) {
    }
 }
 void resetModuleSettings(uint8_t moduleIndex) {
-  AbstractModule* module = modules[moduleIndex][moduleState[moduleIndex].protocol];
+  AbstractModule* module = modules[moduleIndex][moduleState[INTERNAL_MODULE].protocol];
   if(module)
     module->setModuleSettingsToDefault();
   else {
@@ -449,8 +449,10 @@ bool setupPulsesInternalModule(uint8_t protocol)
 
 #if defined(AFHDS2)
     case PROTOCOL_CHANNELS_AFHDS2:
-      module->setupFrame();
-      scheduleNextMixerCalculation(INTERNAL_MODULE, module->getPeriodMS());
+      if(module) {
+        module->setupFrame();
+        scheduleNextMixerCalculation(INTERNAL_MODULE, module->getPeriodMS());
+      }
       return true;
 #endif
 

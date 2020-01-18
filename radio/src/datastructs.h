@@ -465,33 +465,33 @@ PACK(struct ModuleData {
       uint8_t receivers; // 5 bits spare
       char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
     } pxx2);
-#if defined(AFHDS2)
+
     NOBACKUP(struct {
       uint8_t rx_id[4];
       uint8_t mode;
       uint8_t rx_freq[2];
+      uint16_t rxFreq(){
+        return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
+      }
     } flysky);
-#endif
-#if defined(AFHDS3)
     NOBACKUP(PACK(struct {
       uint8_t bindPower:3;
       uint8_t runPower:3;
       uint8_t emi:1;
-      uint8_t spare:1;
       uint8_t telemetry:1;
-      uint8_t mode:4;
-      uint8_t spare2:3;
-      uint16_t failsafeTimeout; //4
-      uint16_t rxFreq;
-      //one more free byte
+      uint8_t mode; //to allow access
+      uint16_t failsafeTimeout;
+      uint8_t rx_freq[2];
       bool isSbus() {
         return (mode & 1);
       }
       bool isPWM() {
         return mode < 2;
       }
+      uint16_t rxFreq(){
+        return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
+      }
     } afhds3));
-#endif
   } NAME(mod) FUNC(select_mod_type);
 
   // Helper functions to set both of the rfProto protocol at the same time
