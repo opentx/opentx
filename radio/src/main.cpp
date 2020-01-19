@@ -522,7 +522,7 @@ void perMain()
 
   checkSpeakerVolume();
 
-  if (!usbPlugged()) {
+  if (!usbPlugged() || getSelectedUsbMode() != USB_MASS_STORAGE_MODE) {
     checkEeprom();
     logsWrite();
   }
