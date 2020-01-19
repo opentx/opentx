@@ -30,16 +30,12 @@ TrainerPulsesData trainerPulsesData __DMA;
 AbstractModule* modules[NUM_MODULES][PROTOCOL_CHANNELS_COUNT];
 
 #if defined(AFHDS2)
-afhds2 afhds2internal = afhds2(modules[INTERNAL_MODULE], INTERNAL_MODULE, PROTOCOL_CHANNELS_AFHDS2, &intmodulePulsesData.afhds2);
+afhds2 afhds2int = afhds2(modules[INTERNAL_MODULE], INTERNAL_MODULE, PROTOCOL_CHANNELS_AFHDS2, &intmodulePulsesData.afhds2);
 #endif
 #if defined(AFHDS3)
 #include "../telemetry/telemetry.h"
-afhds3::afhds3 afhds3external = afhds3::afhds3(modules[EXTERNAL_MODULE], EXTERNAL_MODULE, PROTOCOL_CHANNELS_AFHDS3, &extmodulePulsesData.afhds3, processFlySkySensor);
+afhds3::afhds3 afhds3ext = afhds3::afhds3(modules[EXTERNAL_MODULE], EXTERNAL_MODULE, PROTOCOL_CHANNELS_AFHDS3, &extmodulePulsesData.afhds3, processFlySkySensor);
 #endif
-
-int32_t GetChannelValue(uint8_t channel) {
-  return channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
-}
 
 void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCallback)
 {
@@ -52,13 +48,31 @@ void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCa
   strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2");
 #endif
 }
-void moduleFlagBackNormal(uint8_t moduleIndex) {
-  if (moduleState[moduleIndex].mode != MODULE_MODE_NORMAL) {
-     moduleState[moduleIndex].setMode(MODULE_MODE_NORMAL);
-   }
+
+void ModuleState::setMode(uint8_t targetMode, asyncOperationCallback_t callback) {
+  uint8_t oldMode = mode;
+  mode = targetMode;
+  if (oldMode != mode) {
+    uint8_t moduleIndex = &moduleState[EXTERNAL_MODULE] == this ? EXTERNAL_MODULE : INTERNAL_MODULE;
+    AbstractModule* module = modules[moduleIndex][protocol];
+    if (!module) return;
+    switch (targetMode) {
+    case MODULE_MODE_BIND:
+      module->beginBind(callback);
+      break;
+    case MODULE_MODE_RANGECHECK:
+      module->beginRangeTest(callback);
+      break;
+    case MODULE_MODE_NORMAL:
+      module->cancelOperations();
+      module->init();
+      break;
+    }
+  }
 }
+
 void resetModuleSettings(uint8_t moduleIndex) {
-  AbstractModule* module = modules[moduleIndex][moduleState[INTERNAL_MODULE].protocol];
+  AbstractModule* module = modules[moduleIndex][moduleState[moduleIndex].protocol];
   if(module)
     module->setModuleSettingsToDefault();
   else {
@@ -200,8 +214,7 @@ uint8_t getRequiredProtocol(uint8_t module)
 void enablePulsesExternalModule(uint8_t protocol)
 {
   // start new protocol hardware here
-  AbstractModule* module = modules[EXTERNAL_MODULE][protocol];
-  AbstractSerialModule* serialModule = dynamic_cast<AbstractSerialModule*>(module);
+  auto module = modules[EXTERNAL_MODULE][protocol];
   switch (protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
@@ -256,26 +269,18 @@ void enablePulsesExternalModule(uint8_t protocol)
       extmodulePpmStart();
       break;
 #endif
-
-#if defined(AFHDS3)
-    case PROTOCOL_CHANNELS_AFHDS3:
-      if(serialModule) {
-        serialModule->init();
-        //parameters are missing - why not use same method as for internal module
-        extmoduleSerialStart(serialModule->baudrate, (serialModule->getPeriodMS()) * 2000, false);
-      }
-
-      break;
-#endif
-
     default:
+      if(module) {
+        module->init();
+        module->start();
+      }
       break;
   }
 }
 
 void setupPulsesExternalModule(uint8_t protocol)
 {
-  AbstractModule* module = modules[EXTERNAL_MODULE][protocol];
+  auto module = modules[EXTERNAL_MODULE][protocol];
   switch (protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
@@ -335,13 +340,11 @@ void setupPulsesExternalModule(uint8_t protocol)
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
       break;
 #endif
-#if defined(AFHDS3)
-    case PROTOCOL_CHANNELS_AFHDS3:
-      module->setupFrame();
-      scheduleNextMixerCalculation(EXTERNAL_MODULE, module->getPeriodMS());
-      break;
-#endif
     default:
+      if(module) {
+        module->setupFrame();
+        scheduleNextMixerCalculation(EXTERNAL_MODULE, module->getPeriodMS());
+      }
       break;
   }
 }
@@ -350,9 +353,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 static void enablePulsesInternalModule(uint8_t protocol)
 {
   // start new protocol hardware here
-  AbstractModule* module = modules[INTERNAL_MODULE][protocol];
-  AbstractSerialModule* serialModule = dynamic_cast<AbstractSerialModule*>(module);
-
+  auto module = modules[INTERNAL_MODULE][protocol];
   switch (protocol) {
 #if defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
@@ -382,24 +383,18 @@ static void enablePulsesInternalModule(uint8_t protocol)
       intmoduleTimerStart(MULTIMODULE_PERIOD);
       break;
 #endif
-
-#if defined(AFHDS2)
-    case PROTOCOL_CHANNELS_AFHDS2:
-      if(serialModule) {
-        intmoduleSerialStart(serialModule->baudrate, true, serialModule->parity, serialModule->stopBits, serialModule->wordLength);
-        intmoduleTimerStart(serialModule->getPeriodMS());
-      }
-      break;
-#endif
-
     default:
+      if(module) {
+        module->init();
+        module->start();
+      }
       break;
   }
 }
 
 bool setupPulsesInternalModule(uint8_t protocol)
 {
-  AbstractModule* module = modules[INTERNAL_MODULE][protocol];
+  auto module = modules[INTERNAL_MODULE][protocol];
   switch (protocol) {
 #if defined(HARDWARE_INTERNAL_MODULE) && defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
@@ -446,17 +441,11 @@ bool setupPulsesInternalModule(uint8_t protocol)
       scheduleNextMixerCalculation(INTERNAL_MODULE, MULTIMODULE_PERIOD);
       return true;
 #endif
-
-#if defined(AFHDS2)
-    case PROTOCOL_CHANNELS_AFHDS2:
+    default:
       if(module) {
         module->setupFrame();
         scheduleNextMixerCalculation(INTERNAL_MODULE, module->getPeriodMS());
       }
-      return true;
-#endif
-
-    default:
       return true;
   }
 }
@@ -464,10 +453,11 @@ bool setupPulsesInternalModule(uint8_t protocol)
 bool setupPulsesInternalModule()
 {
   uint8_t protocol = getRequiredProtocol(INTERNAL_MODULE);
-
+  auto module = modules[INTERNAL_MODULE][protocol];
   heartbeat |= (HEART_TIMER_PULSES << INTERNAL_MODULE);
 
   if (moduleState[INTERNAL_MODULE].protocol != protocol) {
+    if(module) module->stop();
     intmoduleStop();
     moduleState[INTERNAL_MODULE].protocol = protocol;
     enablePulsesInternalModule(protocol);
@@ -482,12 +472,12 @@ bool setupPulsesInternalModule()
 bool setupPulsesExternalModule()
 {
   uint8_t protocol = getRequiredProtocol(EXTERNAL_MODULE);
-
+  auto module = modules[EXTERNAL_MODULE][protocol];
   heartbeat |= (HEART_TIMER_PULSES << EXTERNAL_MODULE);
 
   if (moduleState[EXTERNAL_MODULE].protocol != protocol) {
+    if(module) module->stop();
     extmoduleStop();
-
     moduleState[EXTERNAL_MODULE].protocol = protocol;
     enablePulsesExternalModule(protocol);
     return false;
@@ -510,4 +500,8 @@ void setCustomFailsafe(uint8_t moduleIndex)
       }
     }
   }
+}
+
+int32_t channelValue(uint8_t channel) {
+  return channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
 }

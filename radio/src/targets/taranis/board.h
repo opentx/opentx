@@ -101,11 +101,8 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()            GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#if defined(INTMODULE_USART)
-  #define INTERNAL_MODULE_OFF()         intmoduleStop()
-#else
-  #define INTERNAL_MODULE_OFF()         GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#endif
+#define INTERNAL_MODULE_OFF()           GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+
 
 #define EXTERNAL_MODULE_ON()            EXTERNAL_MODULE_PWR_ON()
 

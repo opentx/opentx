@@ -648,19 +648,26 @@ typedef void (*asyncOperationCallback_t) (bool);
 typedef void (*processSensor_t) (const uint8_t *, uint8_t);
 typedef int32_t (*getChannelValue_t)(uint8_t);
 
-int32_t GetChannelValue(uint8_t channel);
+extern int32_t channelValue(uint8_t channel);
+extern void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+extern void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
+
+#if defined(INTMODULE_TIMER)
+void intmoduleTimerStart(uint32_t periodMs);
+#endif
 
 class AbstractModule {
 public:
   //we can not use enums for protocol and module index because the are defined in pulses
-  AbstractModule(AbstractModule** moduleCollection, uint8_t index, uint8_t protocol, uint16_t period = 20) {
+  AbstractModule(AbstractModule** moduleCollection, uint8_t index, uint8_t protocol, uint16_t period = 20, bool inverted = false) {
     moduleCollection[protocol] = this;
     this->index = index;
     this->protocol = protocol;
     this->period = period;
     this->moduleData = &g_model.moduleData[index];
-    this->getChannelValue = GetChannelValue;
+    this->getChannelValue = channelValue;
     this->failsafeChannels = g_model.failsafeChannels;
+    this->inverted = inverted;
   }
   virtual void setupFrame() = 0;
   //used to init module structure eg. on model switch - not aware of hw init
@@ -673,6 +680,8 @@ public:
   virtual void cancelOperations() {}
   //action triggered before module is disabled - cleanup actions - maybe disconnecting
   virtual void stop() {}
+  //action triggered after module is inited - calls method to start hardware in desired mode
+  virtual void start() {}
   //setting module data to default values - on protocol switch - to avoid using invalid values
   virtual void setModuleSettingsToDefault() {
     //copied from existing implementation
@@ -699,6 +708,7 @@ protected:
   int16_t* channelOutputs;
   asyncOperationCallback_t operationCallback;
   getChannelValue_t getChannelValue;
+  bool inverted;
 };
 
 class AbstractSerialModule: public AbstractModule {
@@ -711,7 +721,19 @@ public:
     this->stopBits = stopBits;
     this->wordLength = wordLength;
   }
-
+  void start() override
+  {
+    if(index == INTERNAL_MODULE) {
+      intmoduleSerialStart(baudrate, true, parity, stopBits, wordLength);
+#if defined(INTMODULE_TIMER)
+      intmoduleTimerStart(getPeriodMS());
+#endif
+    }
+    else if(index == EXTERNAL_MODULE) {
+      //parameters are missing - why not use same method as for internal module
+      extmoduleSerialStart(baudrate, getPeriodMS() * 2000, inverted);
+    }
+  }
   uint32_t baudrate;
   uint16_t parity;
   uint16_t stopBits;

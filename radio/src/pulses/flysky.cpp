@@ -50,11 +50,8 @@ enum FlySkyModuleCommandID {
 };
 #define IS_VALID_COMMAND_ID(id)         ((id) < CMD_LAST)
 
-#ifndef custom_log
-#define custom_log
-#endif
 enum DEBUG_RF_FRAME_PRINT_E {
-  FRAME_PRINT_OFF,// 0:OFF, 1:RF frame only, 2:TX frame only, 3:Both RF and TX frame
+  FRAME_PRINT_OFF,
   RF_FRAME_ONLY,
   TX_FRAME_ONLY,
   BOTH_FRAME_PRINT
@@ -65,7 +62,7 @@ enum DEBUG_RF_FRAME_PRINT_E {
 #define VALID_CH_DATA(v)                ((v) > 900 && (v) < 2100)
 #define FAILSAVE_SEND_COUNTER_MAX       (400)
 
-#define gRomData                        g_model.moduleData[INTERNAL_MODULE].flysky
+#define modelData                        g_model.moduleData[INTERNAL_MODULE].flysky
 #define SET_DIRTY()                     storageDirty(EE_MODEL)
 
 enum FlySkyBindState_E {
@@ -98,8 +95,8 @@ enum FlySkyPulseModeValue_E {
   PWM_IBUS, PWM_SBUS,
   PPM_IBUS, PPM_SBUS
 };
-#define GET_FLYSKY_PWM_PPM    (gRomData.mode < 2 ? FLYSKY_PWM: FLYSKY_PPM)
-#define GET_FLYSKY_IBUS_SBUS  (gRomData.mode & 1 ? FLYSKY_SBUS: FLYSKY_IBUS)
+#define GET_FLYSKY_PWM_PPM    (modelData.mode < 2 ? FLYSKY_PWM: FLYSKY_PPM)
+#define GET_FLYSKY_IBUS_SBUS  (modelData.mode & 1 ? FLYSKY_SBUS: FLYSKY_IBUS)
 
 typedef struct RX_FLYSKY_IBUS_S {
   uint8_t id[2];
@@ -153,6 +150,15 @@ static rx_info_t rx_info = {
   .fw_info          = {0}
 };
 
+void traceBuffer(const char* message, const uint8_t* data, uint32_t len) {
+  char buffer[256];
+  char *pos = buffer;
+  for (uint32_t i = 0; i < len; i++) {
+    pos += std::snprintf(pos, buffer + sizeof(buffer) - pos, "%02X ", data[i]);
+  }
+  (*pos) = 0;
+  TRACE("%s size = %d data %s", message, len, buffer);
+}
 
 void getFlySkyReceiverFirmwareRevision(uint8_t port, uint32_t * revision)
 {
@@ -310,23 +316,13 @@ void setFlySkyChannelData(int channel, int16_t servoValue)
   }
 
   if ((DEBUG_RF_FRAME_PRINT & TX_FRAME_ONLY) && (set_loop_cnt++ % 1000 == 0)) {
-    TRACE_NOCRLF("HALL(%0d): ", FLYSKY_HALL_BAUDRATE);
-    for (int idx = 0; idx < NUM_OF_NV14_CHANNELS; idx++) {
-      TRACE_NOCRLF("CH%0d:%0d ", idx + 1, rx_info.servo_value[idx]);
-    }
-    TRACE(" ");
+    traceBuffer("HALL CHANNEL DATA", (uint8_t*)rx_info.servo_value, NUM_OF_NV14_CHANNELS*2);
   }
 }
 
 bool isFlySkyUsbDownload(void)
 {
   return rf_info.fw_state != 0;
-}
-void bindReceiverAFHDS2(uint8_t port)
-{
-  resetPulsesAFHDS2(INTERNAL_MODULE);
-  moduleState[INTERNAL_MODULE].setMode(MODULE_MODE_BIND);
-  //intmodulePulsesData.afhds2.state = FLYSKY_MODULE_STATE_INIT;
 }
 
 void usbSetFrameTransmit(uint8_t packetID, uint8_t *dataBuf, uint32_t nBytes)
@@ -353,15 +349,17 @@ void usbSetFrameTransmit(uint8_t packetID, uint8_t *dataBuf, uint32_t nBytes)
 
     rfProtocolRx.length = nBytes;
 
-    TRACE_NOCRLF("\r\nToUSB: 55 %02X %02X ", rfProtocolRx.hallID.ID, nBytes);
+    TRACE("To USB: 55 %02X %02X ", rfProtocolRx.hallID.ID, nBytes);
+
     for ( uint32_t idx = 0; idx < nBytes; idx++ )
     {
         rfProtocolRx.data[idx] = dataBuf[idx];
-        TRACE_NOCRLF("%02X ", rfProtocolRx.data[idx]);
     }
+
+    traceBuffer("", dataBuf, nBytes);
 #if !defined(SIMU)
     uint16_t checkSum = calc_crc16(pt, rfProtocolRx.length+3);
-    TRACE(" CRC:%04X;", checkSum);
+    TRACE("CRC: %04X;", checkSum);
 
     pt[rfProtocolRx.length + 3] = checkSum & 0xFF;
     pt[rfProtocolRx.length + 4] = checkSum >> 8;
@@ -372,7 +370,10 @@ void usbSetFrameTransmit(uint8_t packetID, uint8_t *dataBuf, uint32_t nBytes)
 
 
 void setFlyskyState(uint8_t port, uint8_t state) {
-  intmodulePulsesData.afhds2.state = state;
+  if(intmodulePulsesData.afhds2.state != state) {
+    TRACE("AFHDS 2 set state %d", state);
+    intmodulePulsesData.afhds2.state = state;
+  }
 }
 
 void onFlySkyUsbDownloadStart(uint8_t fw_state)
@@ -522,18 +523,14 @@ bool checkFlySkyFrameCrc(const uint8_t * ptr, uint8_t size)
 
   if (DEBUG_RF_FRAME_PRINT & RF_FRAME_ONLY) {
     if (ptr[2] != 0x06 || (set_loop_cnt++ % 50 == 0)) {
-      TRACE_NOCRLF("RF(%0d): C0", AFHDS2_BAUDRATE);
-      for (int idx = 0; idx <= size; idx++) {
-        TRACE_NOCRLF(" %02X", ptr[idx]);
-      }
-      TRACE(" C0;");
-
-      if ((crc ^ 0xff) != ptr[size]) {
-        TRACE("ErrorCRC %02X especting %02X", crc ^ 0xFF, ptr[size]);
-      }
+      //TRACE("RF(%0d): C0", AFHDS2_BAUDRATE);
+      traceBuffer("RF: C0", ptr, size);
+      //TRACE(" C0;");
     }
   }
-
+  if ((crc ^ 0xff) != ptr[size]) {
+    TRACE("ErrorCRC %02X especting %02X", crc ^ 0xFF, ptr[size]);
+  }
   return (crc ^ 0xff) == ptr[size];
 }
 
@@ -542,9 +539,9 @@ void parseResponse(uint8_t port)
 {
   const uint8_t * ptr = intmodulePulsesData.afhds2.telemetry;
   uint8_t dataLen = intmodulePulsesData.afhds2.telemetry_index;
+
   if (*ptr++ != END || dataLen < 2 )
     return;
-
   uint8_t frame_number = *ptr++;
   uint8_t frame_type = *ptr++;
   uint8_t command_id = *ptr++;
@@ -563,7 +560,6 @@ void parseResponse(uint8_t port)
   else if ( frame_type == FRAME_TYPE_REQUEST_ACK) {
      intmodulePulsesData.afhds2.frame_index = frame_number;
   }
-
   switch (command_id) {
     default:
       if (moduleState[port].mode == MODULE_MODE_NORMAL && intmodulePulsesData.afhds2.state >= STATE_IDLE) {
@@ -579,7 +575,10 @@ void parseResponse(uint8_t port)
       }
       else {
         //Try one more time;
-        resetPulsesAFHDS2(port);
+        uint8_t mode = MODULE_MODE_NORMAL;
+        if (moduleState[port].mode == MODULE_MODE_BIND) mode = MODULE_MODE_BIND;
+        if (moduleState[port].mode == MODULE_MODE_RANGECHECK) mode = MODULE_MODE_RANGECHECK;
+        resetPulsesAFHDS2(port, mode);
         setFlyskyState(port, STATE_INIT);
       }
       break; }
@@ -591,14 +590,10 @@ void parseResponse(uint8_t port)
       }
       if (moduleState[port].mode == MODULE_MODE_BIND) moduleState[port].setMode(MODULE_MODE_NORMAL);
       g_model.header.modelId[port] = ptr[2];
-      gRomData.rx_id[0] = first_para;
-      gRomData.rx_id[1] = *ptr++;
-      gRomData.rx_id[2] = *ptr++;
-      gRomData.rx_id[3] = *ptr++;
-      if (DEBUG_RF_FRAME_PRINT & RF_FRAME_ONLY)
-        TRACE("New Rx ID: %02X %02X %02X %02X", gRomData.rx_id[0], gRomData.rx_id[1], gRomData.rx_id[2], gRomData.rx_id[3]);
+      *((uint32_t*)modelData.rx_id) = *((uint32_t*)(ptr - 1));
+      TRACE("New Rx ID: %02X %02X %02X %02X", modelData.rx_id[0], modelData.rx_id[1], modelData.rx_id[2], modelData.rx_id[3]);
       SET_DIRTY();
-      resetPulsesAFHDS2(port);
+      resetPulsesAFHDS2(port, MODULE_MODE_NORMAL);
       setFlyskyState(port, STATE_INIT);
       break;
     }
@@ -610,7 +605,7 @@ void parseResponse(uint8_t port)
 
     case CMD_RX_SENSOR_DATA: {
       flySkyNv14ProcessTelemetryPacket(ptr, first_para);
-      if (moduleState[port].mode == MODULE_MODE_NORMAL && intmodulePulsesData.afhds2.state >= STATE_IDLE) {
+      if (moduleState[port].mode == MODULE_MODE_NORMAL && intmodulePulsesData.afhds2.state == STATE_IDLE) {
         setFlyskyState(port, STATE_DEFAULT_AFHDS2);
       }
       break;
@@ -628,7 +623,7 @@ void parseResponse(uint8_t port)
       return;
     }
     case CMD_TEST_RANGE: {
-      if(moduleState[port].mode != MODULE_MODE_RANGECHECK) resetPulsesAFHDS2(port);
+      if(moduleState[port].mode != MODULE_MODE_RANGECHECK) resetPulsesAFHDS2(port, MODULE_MODE_NORMAL);
       else setFlyskyState(port, STATE_RANGE_TEST_RUNNING);
       break;
     }
@@ -697,10 +692,7 @@ void checkResponse(uint8_t port)
             pt[rfProtocolRx.length + 4] = rfProtocolRx.checkSum >> 8;
 
             if((DEBUG_RF_FRAME_PRINT & RF_FRAME_ONLY)) {
-#if !defined(SIMU)
-                TRACE("RF: %02X %02X %02X ...%04X; CRC:%04X", pt[0], pt[1], pt[2],
-                      rfProtocolRx.checkSum, calc_crc16(pt, rfProtocolRx.length+3));
-#endif
+                TRACE("RF: %02X %02X %02X ...%04X; CRC:%04X", pt[0], pt[1], pt[2], rfProtocolRx.checkSum, calc_crc16(pt, rfProtocolRx.length+3));
             }
 
             if ( 0x01 == rfProtocolRx.length &&
@@ -713,7 +705,6 @@ void checkResponse(uint8_t port)
             usbDownloadTransmit(pt, rfProtocolRx.length + 5);
 #endif
         }
-        //continue;
     }
 
     if (byte == END && intmodulePulsesData.afhds2.telemetry_index > 0) {
@@ -743,13 +734,13 @@ void checkResponse(uint8_t port)
 }
 #endif
 
-void resetPulsesAFHDS2(uint8_t port)
+void resetPulsesAFHDS2(uint8_t port, uint8_t targetMode)
 {
   intmodulePulsesData.afhds2.frame_index = 1;
   setFlyskyState(port, STATE_SET_TX_POWER);
   intmodulePulsesData.afhds2.timeout = 0;
   intmodulePulsesData.afhds2.esc_state = 0;
-  moduleState[port].setMode(MODULE_MODE_NORMAL);
+  moduleState[port].setMode(targetMode);
   uint16_t rx_freq = g_model.moduleData[port].flysky.rxFreq();
   if (50 > rx_freq || 400 < rx_freq) {
     g_model.moduleData[port].flysky.rx_freq[0] = 50;
@@ -792,7 +783,8 @@ void setupPulsesAFHDS2(uint8_t port)
         {
           putFlySkyFrameByte(port, FRAME_TYPE_REQUEST_ACK);
           putFlySkyFrameByte(port, CMD_SET_RECEIVER_ID);
-          putFlySkyFrameBytes(port, gRomData.rx_id, 4);
+          traceBuffer("RX ID: ", modelData.rx_id, 4);
+          putFlySkyFrameBytes(port, modelData.rx_id, 4);
         }
         break;
         case STATE_GET_RECEIVER_CONFIG:
@@ -801,8 +793,8 @@ void setupPulsesAFHDS2(uint8_t port)
           putFlySkyFrameByte(port, CMD_RF_GET_CONFIG);
           putFlySkyFrameByte(port, GET_FLYSKY_PWM_PPM);  // 00:PWM, 01:PPM
           putFlySkyFrameByte(port, GET_FLYSKY_IBUS_SBUS);// 00:I-BUS, 01:S-BUS
-          putFlySkyFrameByte(port, gRomData.rx_freq[0]); // receiver servo freq bit[7:0]
-          putFlySkyFrameByte(port, gRomData.rx_freq[1]); // receiver servo freq bit[15:8]
+          putFlySkyFrameByte(port, modelData.rx_freq[0]); // receiver servo freq bit[7:0]
+          putFlySkyFrameByte(port, modelData.rx_freq[1]); // receiver servo freq bit[15:8]
           setFlyskyState(port, STATE_INIT);
         }
         break;
@@ -847,8 +839,8 @@ void setupPulsesAFHDS2(uint8_t port)
         {
           putFlySkyFrameByte(port, FRAME_TYPE_REQUEST_ACK);
           putFlySkyFrameByte(port, CMD_SET_RX_SERVO_FREQ);
-          putFlySkyFrameByte(port, gRomData.rx_freq[0]); // receiver servo freq bit[7:0]
-          putFlySkyFrameByte(port, gRomData.rx_freq[1]); // receiver servo freq bit[15:8]
+          putFlySkyFrameByte(port, modelData.rx_freq[0]); // receiver servo freq bit[7:0]
+          putFlySkyFrameByte(port, modelData.rx_freq[1]); // receiver servo freq bit[15:8]
         }
         break;
         case STATE_UPDATE_RF_PROTOCOL:
@@ -917,11 +909,8 @@ void setupPulsesAFHDS2(uint8_t port)
     uint8_t * data = intmodulePulsesData.afhds2.pulses;
     if (data[3] != CMD_SEND_CHANNEL_DATA || (set_loop_cnt++ % 100 == 0)) {
       uint8_t size = intmodulePulsesData.afhds2.ptr - data;
-      TRACE_NOCRLF("TX(State%0d)%0dB:", intmodulePulsesData.afhds2.state, size);
-      for (int idx = 0; idx < size; idx++) {
-        TRACE_NOCRLF(" %02X", data[idx]);
-      }
-      TRACE(";");
+      TRACE("TX (State %0d):", intmodulePulsesData.afhds2.state);
+      traceBuffer("", data, size);
     }
   }
 }

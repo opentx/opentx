@@ -178,29 +178,8 @@ PACK(struct ModuleState {
     OtaUpdateInformation * otaUpdateInformation;
   };
   ModuleCallback callback;
-  void setMode(uint8_t targetMode) {
-    uint8_t oldMode = mode;
-    mode = targetMode;
-    if(oldMode != mode) {
-      AbstractModule* module = nullptr;
-      //get module
-      if(!module) return;
-      switch(targetMode) {
-      case MODULE_MODE_BIND:
-        module->beginBind(nullptr);
-        break;
-      case MODULE_MODE_RANGECHECK:
-        module->beginRangeTest(nullptr);
-        break;
-      case MODULE_MODE_NORMAL:
-        module->cancelOperations();
-        module->init();
-        break;
-      }
-    }
-  }
+  void setMode(uint8_t targetMode, asyncOperationCallback_t callback = nullptr);
   void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr);
-
   void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
   {
     moduleInformation = destination;

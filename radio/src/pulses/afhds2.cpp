@@ -28,19 +28,23 @@ void afhds2::setupFrame() {
   setupPulsesAFHDS2(this->index);
 }
 void afhds2::init(bool resetFrameCount) {
-  resetPulsesAFHDS2(this->index);
+  resetPulsesAFHDS2(this->index, MODULE_MODE_NORMAL);
 }
 void afhds2::beginBind(::asyncOperationCallback_t callback) {
-  bindReceiverAFHDS2(this->index);
+  resetPulsesAFHDS2(this->index, MODULE_MODE_BIND);
 }
 void afhds2::beginRangeTest(::asyncOperationCallback_t callback) {
-
+  resetPulsesAFHDS2(this->index, MODULE_MODE_RANGECHECK);
 }
 void afhds2::cancelOperations() {}
+
 void afhds2::stop() {
 }
 void afhds2::setModuleSettingsToDefault() {
-
+  AbstractSerialModule::setModelSettingsFromModule();
+  moduleData->flysky.rx_freq[0] = 50;
+  moduleData->flysky.rx_freq[1] = 0;
+  *((uint32_t*)moduleData->flysky.rx_id) = 0;
 }
 void afhds2::onDataReceived(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize) {
 //Response magic to be implemented

@@ -24,8 +24,7 @@ ModuleFifo intmoduleFifo;
 
 void intmoduleStop()
 {
-  GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
-
+  INTERNAL_MODULE_OFF();
   INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
 
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -183,6 +182,11 @@ void intmoduleSendNextFrame()
 #if defined(INTERNAL_MODULE_MULTI)
     case PROTOCOL_CHANNELS_MULTIMODULE:
       intmoduleSendBuffer(intmodulePulsesData.multi.getData(), intmodulePulsesData.multi.getSize());
+      break;
+#endif
+#if defined(AFHDS2)
+    case PROTOCOL_CHANNELS_AFHDS2:
+      intmoduleSendBuffer(intmodulePulsesData.afhds2.getData(), intmodulePulsesData.afhds2.getSize());
       break;
 #endif
   }

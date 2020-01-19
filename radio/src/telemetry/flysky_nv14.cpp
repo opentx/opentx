@@ -181,12 +181,11 @@ void flySkyNv14ProcessTelemetryPacket(const uint8_t * ptr, uint8_t sensorID )
   uint8_t instnace = *ptr++;
   if(sensorID == FLYSKY_SENSOR_RX_VOLTAGE) sensorID = FLYSKY_FIXED_RX_VOLTAGE;
   for (const FlyskyNv14Sensor sensor : Nv14Sensor) {
-  if (sensor.id == sensorID) {
-  int32_t value = GetSensorValueFlySkyNv14(&sensor, ptr);
-  setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_NV14, sensor.id, sensor.subId, instnace, value, sensor.unit, sensor.precision);
-}
+    if (sensor.id == sensorID) {
+      int32_t value = GetSensorValueFlySkyNv14(&sensor, ptr);
+      setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_NV14, sensor.id, sensor.subId, instnace, value, sensor.unit, sensor.precision);
     }
-
-    telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  }
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
 }
 
