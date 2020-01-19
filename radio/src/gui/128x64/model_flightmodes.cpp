@@ -116,7 +116,7 @@ void menuModelFlightModeOne(event_t event)
 #if defined(NAVIGATION_9X)
           if (s_editMode > 0 && attr && menuHorizontalPosition == t) {
 #else
-            if (s_editMode >= 0 && attr && menuHorizontalPosition == t) {
+          if (s_editMode >= 0 && attr && menuHorizontalPosition == t) {
 #endif
             trim_t & v = fm->trim[t];
             v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);
