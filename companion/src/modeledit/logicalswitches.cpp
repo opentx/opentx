@@ -530,7 +530,8 @@ void LogicalSwitchesPanel::cmPaste()
     QByteArray lsData = mimeData->data(MIMETYPE_LS);
     LogicalSwitchData *ls = &model->logicalSw[selectedSwitch];
     memcpy(ls, lsData.constData(), sizeof(LogicalSwitchData));
-    update();
+    updateDataModels();
+    updateLine(selectedSwitch);
     emit modified();
   }
 }
@@ -541,11 +542,11 @@ void LogicalSwitchesPanel::cmDelete()
   for (int i=selectedSwitch; i<maxidx; i++) {
     if (!model->logicalSw[i].isEmpty() || !model->logicalSw[i+1].isEmpty()) {
       memcpy(&model->logicalSw[i], &model->logicalSw[i+1], sizeof(LogicalSwitchData));
-      updateLine(i);
     }
   }
   model->logicalSw[maxidx].clear();
-  updateLine(maxidx);
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedSwitch, 0, -1);
+  update();
   emit modified();
 }
 
@@ -608,16 +609,18 @@ void LogicalSwitchesPanel::cmMoveDown()
 void LogicalSwitchesPanel::cmClear()
 {
   model->logicalSw[selectedSwitch].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedSwitch);
+  update();
   emit modified();
-  updateLine(selectedSwitch);
 }
 
 void LogicalSwitchesPanel::cmClearAll()
 {
   for (int i=0; i<lsCapability; i++) {
     model->logicalSw[i].clear();
-    updateLine(i);
+    model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, i);
   }
+  update();
   emit modified();
 }
 
@@ -626,10 +629,12 @@ void LogicalSwitchesPanel::cmInsert()
   for (int i=(lsCapability - 1); i>selectedSwitch; i--) {
     if (!model->logicalSw[i].isEmpty() || !model->logicalSw[i-1].isEmpty()) {
       memcpy(&model->logicalSw[i], &model->logicalSw[i-1], sizeof(LogicalSwitchData));
-      updateLine(i);
     }
   }
-  cmClear();
+  model->logicalSw[selectedSwitch].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedSwitch, 0, 1);
+  update();
+  emit modified();
 }
 
 void LogicalSwitchesPanel::swapLSData(int idx1, int idx2)
@@ -640,8 +645,8 @@ void LogicalSwitchesPanel::swapLSData(int idx1, int idx2)
     LogicalSwitchData *lsw2 = &model->logicalSw[idx2];
     memcpy(lsw2, lsw1, sizeof(LogicalSwitchData));
     memcpy(lsw1, &lstmp, sizeof(LogicalSwitchData));
-    updateLine(idx1);
-    updateLine(idx2);
+    model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
+    update();
     emit modified();
   }
 }
