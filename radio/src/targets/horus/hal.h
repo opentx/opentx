@@ -303,7 +303,11 @@
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 // S.Port update connector
-#define SPORT_MAX_BAUDRATE              250000 // < 400000
+#if defined(RADIO_T16)
+  #define SPORT_MAX_BAUDRATE              400000
+#else
+  #define SPORT_MAX_BAUDRATE              250000 // < 400000
+#endif
 #if defined(PCBX10) && !defined(RADIO_T16)
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
   #define SPORT_UPDATE_PWR_GPIO         GPIOH
