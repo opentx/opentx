@@ -53,8 +53,8 @@ enum MenuRadioIndexes
 #if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   MENU_RADIO_TOOLS,
 #endif
-  MENU_RADIO_SETUP,
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
+  MENU_RADIO_SETUP,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -79,8 +79,8 @@ static const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT]  = {
 #if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   menuRadioTools,
 #endif
-  menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
+  menuRadioSetup,
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,
