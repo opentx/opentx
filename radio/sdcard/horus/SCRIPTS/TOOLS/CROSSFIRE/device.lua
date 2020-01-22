@@ -246,14 +246,14 @@ local function fieldFloatLoad(field, data, offset)
   field.unit, offset = fieldGetString(data, offset+21)
 end
 
-local function round(num, decimals)
+local function formatFloat(num, decimals)
   local mult = 10^(decimals or 0)
   local val = num / mult
   return string.format("%." .. decimals .. "f", val)
 end
 
 local function fieldFloatDisplay(field, y, attr)
-  lcd.drawText(140, y, round(field.value, field.prec) .. field.unit, attr)
+  lcd.drawText(140, y, formatFloat(field.value, field.prec) .. field.unit, attr)
 end
 
 local function fieldFloatSave(field)
