@@ -38,6 +38,21 @@
   #define KEYS_GPIO_PIN_DOWN            GPIO_Pin_6  // PI.06
   #define KEYS_GPIO_REG_RIGHT           GPIOC->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_4  // PC.04
+#elif defined(RADIO_TX16S)
+  #define KEYS_GPIO_REG_ENTER           GPIOI->IDR
+  #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PI.08
+  #define KEYS_GPIO_REG_PGUP            GPIOH->IDR
+  #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_2  // PH.02
+  #define KEYS_GPIO_REG_PGDN            GPIOI->IDR
+  #define KEYS_GPIO_PIN_PGDN            GPIO_Pin_11 // PI.11
+  #define KEYS_GPIO_REG_UP              GPIOI->IDR
+  #define KEYS_GPIO_PIN_UP              GPIO_Pin_6  // PI.06
+  #define KEYS_GPIO_REG_DOWN            GPIOI->IDR
+  #define KEYS_GPIO_PIN_DOWN            GPIO_Pin_4  // PI.04
+  #define KEYS_GPIO_REG_LEFT            GPIOI->IDR
+  #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_7  // PI.07
+  #define KEYS_GPIO_REG_RIGHT           GPIOI->IDR
+  #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_5  // PI.05
 #elif defined(PCBX10)
   #define KEYS_GPIO_REG_ENTER           GPIOI->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PI.08
@@ -183,7 +198,7 @@
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_12 // PJ.12
   #define TRIMS_GPIO_REG_RHR            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_7  // PD.07
-  #if defined(RADIO_T16)
+  #if defined(RADIO_T16_FAMILLY)
     #define TRIMS_GPIO_REG_LSU          GPIOD->IDR
     #define TRIMS_GPIO_PIN_LSU          GPIO_Pin_13 // PD.13
     #define TRIMS_GPIO_REG_LSD          GPIOJ->IDR
@@ -215,7 +230,11 @@
   #define KEYS_GPIOD_PINS               (GPIO_Pin_11 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_13)
   #define KEYS_GPIOE_PINS               (GPIO_Pin_3)
   #define KEYS_GPIOG_PINS               (SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_LVD)
+#if defined(RADIO_TX16S)
+  #define KEYS_GPIOH_PINS               (GPIO_Pin_2  |  GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
+#else
   #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
+#endif
   #define KEYS_GPIOI_PINS               (GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_15)
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | GPIO_Pin_8)
 #endif
@@ -288,7 +307,7 @@
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
-  #if defined(RADIO_T16)
+  #if defined(RADIO_T16_FAMILLY)
     #define ADC_VREF_PREC2              300
   #else
     #define ADC_VREF_PREC2              250
@@ -303,12 +322,12 @@
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 // S.Port update connector
-#if defined(RADIO_T16)
+#if defined(RADIO_T16_FAMILLY)
   #define SPORT_MAX_BAUDRATE              400000
 #else
   #define SPORT_MAX_BAUDRATE              250000 // < 400000
 #endif
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if defined(PCBX10) && !defined(RADIO_T16_FAMILLY)
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
   #define SPORT_UPDATE_PWR_GPIO         GPIOH
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_13  // PH.13
@@ -550,7 +569,7 @@
   #define AUDIO_DMA                     DMA1
 #endif
 
-#if defined(RADIO_T16)
+#if defined(RADIO_T16_FAMILLY)
   #define AUDIO_UNMUTE_DELAY            120  // ms
   #define AUDIO_MUTE_DELAY              500  // ms
 #endif
@@ -593,7 +612,7 @@
   #define HAPTIC_TIMER_COMPARE_VALUE    HAPTIC_GPIO_TIMER->CCR2
 #endif
 
-#if !defined(RADIO_T16)
+#if !defined(RADIO_T16_FAMILLY)
   #define EXTERNAL_ANTENNA
 #endif
 #define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)

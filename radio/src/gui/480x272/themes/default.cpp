@@ -174,7 +174,7 @@ class DefaultTheme: public Theme
       calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
 
       delete calibHorus;
-#if defined(RADIO_T16)
+#if defined(RADIO_T16_FAMILLY)
       calibHorus = BitmapBuffer::load(getThemePath("t16.bmp"));
 #elif defined(PCBX10)
       if(STICKS_PWM_ENABLED()) {

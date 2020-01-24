@@ -22,7 +22,7 @@
 
 #if defined(SIMU)
   // not needed
-#elif defined(RADIO_T16)
+#elif defined(RADIO_T16_FAMILLY)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,1,  -1,1,  -1,1};
 #elif defined(PCBX10)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,   1,1,    1, -1};
