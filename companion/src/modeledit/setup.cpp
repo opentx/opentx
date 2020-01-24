@@ -209,7 +209,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
       ui->trainerMode->setItemData(TRAINER_MODE_SLAVE_BLUETOOTH, 0, Qt::UserRole - 1);
     }
 
-    if (!IS_T16_FAMILLY(board)) {
+    if (!IS_T16_FAMILLY(firmware->getBoard())) {
       ui->trainerMode->setItemData(TRAINER_MODE_MULTI, 0, Qt::UserRole - 1);
     }
 
