@@ -575,6 +575,10 @@
 #endif
 
 // I2C Bus
+#if defined(RADIO_TX16S)
+#define I2C_RCC_AHB1Periph              0
+#define I2C_RCC_APB1Periph              0
+#else
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
 #define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
@@ -585,6 +589,7 @@
 #define I2C_SCL_GPIO_PinSource          GPIO_PinSource8
 #define I2C_SDA_GPIO_PinSource          GPIO_PinSource9
 #define I2C_SPEED                       400000
+#endif
 
 // Haptic
 #define HAPTIC_PWM

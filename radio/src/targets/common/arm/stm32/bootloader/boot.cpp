@@ -210,6 +210,15 @@ int main()
   pwrInit();
   keysInit();
 
+  // USB charger handling
+#if defined(RADIO_TX16S)
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    while (!pwrPressed()) {
+      __ASM volatile ("nop");
+    }
+  }
+#endif
+
   // wait a bit for the inputs to stabilize...
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     for (uint32_t i = 0; i < 150000; i++) {
