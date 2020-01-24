@@ -209,7 +209,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
       ui->trainerMode->setItemData(TRAINER_MODE_SLAVE_BLUETOOTH, 0, Qt::UserRole - 1);
     }
 
-    if (!IS_JUMPER_T16(firmware->getBoard())) {
+    if (!IS_T16_FAMILLY(board)) {
       ui->trainerMode->setItemData(TRAINER_MODE_MULTI, 0, Qt::UserRole - 1);
     }
 

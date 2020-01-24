@@ -70,6 +70,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Jumper T12";
     case BOARD_JUMPER_T16:
       return "OpenTX for Jumper T16";
+    case BOARD_TX16S:
+      return "OpenTX for Radiomaster TX16S";
     case BOARD_TARANIS_X9D:
       return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_X9DP:
@@ -782,9 +784,9 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !IS_ACCESS_RADIO(board, id) && board != BOARD_JUMPER_T16;
+            return !IS_ACCESS_RADIO(board, id) && !IS_T16_FAMILLY(board);
           case PULSES_PXX_XJT_D8:
-            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && board != BOARD_JUMPER_T16;
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_T16_FAMILLY(board);
           case PULSES_PPM:
             return id.contains("internalppm");
           case PULSES_ACCESS_ISRM:
@@ -1316,6 +1318,13 @@ void registerOpenTxFirmwares()
 
   /* Jumper T16 board */
   firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+ / T16 Pro"), BOARD_JUMPER_T16);
+  addOpenTxFrskyOptions(firmware);
+  firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
+  firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
+  registerOpenTxFirmware(firmware);
+
+  /* Radiomaster TX16S board */
+  firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S"), BOARD_TX16S);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
