@@ -64,6 +64,7 @@ if (PCB STREQUAL X10)
     if (NOT BLUETOOTH)
       set(AUX_SERIAL ON)
     endif()
+    set(USB_CHARGER YES)
   else()
     set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
@@ -205,6 +206,11 @@ set(TARGET_SRC
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/rotary_encoder_driver.cpp
   )
+
+if(USB_CHARGER)
+  set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
+  add_definitions(-DUSB_CHARGER)
+endif()
 
 if(BLUETOOTH)
   add_definitions(-DBLUETOOTH)
