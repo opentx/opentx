@@ -49,7 +49,7 @@ void onScreenSetupMenu(const char * result);
 void onZoneOptionFileSelectionMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {
-    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, LEN_ZONE_OPTION_STRING, NULL)) {
+    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, LEN_ZONE_OPTION_STRING, nullptr)) {
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
     }
   }
@@ -163,7 +163,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
 
 int getOptionsCount(const ZoneOption * options)
 {
-  if (options == NULL) {
+  if (options == nullptr) {
     return 0;
   }
   else {
@@ -228,8 +228,8 @@ bool menuWidgetSettings(event_t event)
 
 bool menuWidgetChoice(event_t event)
 {
-  static Widget * previousWidget = NULL;
-  static Widget * currentWidget = NULL;
+  static Widget * previousWidget = nullptr;
+  static Widget * currentWidget = nullptr;
   static std::list<const WidgetFactory *>::const_iterator iterator;
   static Widget::PersistentData tempData;
 
@@ -237,7 +237,7 @@ bool menuWidgetChoice(event_t event)
     case EVT_ENTRY:
     {
       previousWidget = currentContainer->getWidget(currentZone);
-      currentContainer->setWidget(currentZone, NULL);
+      currentContainer->setWidget(currentZone, nullptr);
       iterator = getRegisteredWidgets().cbegin();
       if (previousWidget) {
         const WidgetFactory * factory = previousWidget->getFactory();
@@ -327,7 +327,7 @@ void onZoneMenu(const char * result)
     pushMenu(menuWidgetSettings);
   }
   else if (result == STR_REMOVE_WIDGET) {
-    currentContainer->createWidget(currentZone, NULL);
+    currentContainer->createWidget(currentZone, nullptr);
     storageDirty(EE_MODEL);
   }
 }
@@ -403,7 +403,7 @@ T * editThemeChoice(coord_t x, coord_t y, std::list<T *> & elList, T * current, 
   typename std::list<T *>::const_iterator elItr = elList.cbegin();
 
   if (!elCount)
-    return NULL;
+    return nullptr;
 
   for (; elItr != elList.cend(); ++elItr, ++currentIndex) {
     if ((*elItr) == current)
@@ -461,10 +461,10 @@ T * editThemeChoice(coord_t x, coord_t y, std::list<T *> & elList, T * current, 
       if (elItr != elList.cend())
         return (*elItr);
       else
-        return NULL;
+        return nullptr;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 enum menuScreensThemeItems {
@@ -550,7 +550,7 @@ enum MenuScreenSetupItems {
 
 bool menuScreenSetup(int index, event_t event)
 {
-  if (customScreens[index] == NULL) {
+  if (customScreens[index] == nullptr) {
     return menuScreenAdd(event);
   }
 
@@ -625,7 +625,7 @@ bool menuScreenSetup(int index, event_t event)
               memmove(&customScreens[index], &customScreens[index + 1], sizeof(Layout *) * (MAX_CUSTOM_SCREENS - index - 1));
             }
             memset(&g_model.screenData[MAX_CUSTOM_SCREENS-1], 0, sizeof(CustomScreenData));
-            customScreens[MAX_CUSTOM_SCREENS-1] = NULL;
+            customScreens[MAX_CUSTOM_SCREENS-1] = nullptr;
             loadCustomScreens();
             killEvents(KEY_ENTER);
             chainMenu(menuTabScreensSetup[index > 0 ? index : 1]);

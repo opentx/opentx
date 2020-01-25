@@ -1465,8 +1465,19 @@ void menuModelSetup(event_t event)
         if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
           int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
+          MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
           const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
-          if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
+
+          if (status.isValid()) {
+            MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+            lcdDrawText(INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
+            if (attr && status.optionDisp == 2) {
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
+              lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+              lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+            }
+          }
+          else {
             const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
             if (pdef->optionsstr) {
               lcdDrawText(INDENT_WIDTH, y, pdef->optionsstr);
@@ -1477,15 +1488,7 @@ void menuModelSetup(event_t event)
               }
             }
           }
-          else {
-            MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-            lcdDrawText(INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
-            if (attr && status.optionDisp == 2) {
-              lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
-              lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
-              lcdDrawText(lcdLastRightPos, y, ")", LEFT);
-            }
-          }
+
 
           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
             optionValue = 50 + 5 * optionValue;

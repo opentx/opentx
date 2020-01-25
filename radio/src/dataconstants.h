@@ -207,7 +207,7 @@ enum TrainerMode {
   };
 #endif
 
-#if defined(RADIO_T16)
+#if defined(RADIO_T16) || defined(ALLOW_TRAINER_MULTI)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
 #elif defined(BLUETOOTH) || defined(PCBNV14)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
@@ -584,7 +584,7 @@ enum SwitchSources {
   #define SWSRC_TRAINER SWSRC_LAST_SWITCH,
 #endif
 
-#define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
+#define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2 * NUM_TRIMS - 1)
 
 enum MixSources {
   MIXSRC_NONE,

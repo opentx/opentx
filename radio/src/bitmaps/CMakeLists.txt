@@ -1,1 +1,1 @@
-add_subdirectory(${GUI_DIR})
+add_subdirectory(${BITMAPS_DIR})

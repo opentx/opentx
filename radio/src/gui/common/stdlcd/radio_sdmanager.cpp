@@ -541,7 +541,7 @@ void menuRadioSdManager(event_t _event)
         }
         if (s_editMode == EDIT_MODIFY_STRING && attr) {
           uint8_t extlen, efflen;
-          const char * ext = getFileExtension(reusableBuffer.sdManager.originalName, 0, 0, NULL, &extlen);
+          const char * ext = getFileExtension(reusableBuffer.sdManager.originalName, 0, 0, nullptr, &extlen);
           editName(lcdNextPos, y, reusableBuffer.sdManager.lines[i], SD_SCREEN_FILE_LENGTH - extlen, _event, attr, 0);
           efflen = effectiveLen(reusableBuffer.sdManager.lines[i], SD_SCREEN_FILE_LENGTH - extlen);
           if (s_editMode == 0) {

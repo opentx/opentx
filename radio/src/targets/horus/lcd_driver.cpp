@@ -201,7 +201,7 @@ void LCD_Init_LTDC()
   /* Configure total height */
   LTDC_InitStruct.LTDC_TotalHeigh = LCD_H + VBP + VFP;
 
-// init ltdc
+  // init ltdc
   LTDC_Init(&LTDC_InitStruct);
 
 #if 0
@@ -357,7 +357,7 @@ void lcdInit()
 
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
-#if defined(PCBX10)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
 #endif
@@ -386,7 +386,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, ui
 
 void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);
@@ -426,7 +426,7 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
 
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);

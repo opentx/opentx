@@ -771,8 +771,8 @@
 #define TR_ALARMSWARN          "ALLARMI"
 #define TR_SWITCHWARN          "CONTROLLI"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Versione non sicura"
+#define TR_TEST_WARNING        TR("PER TEST", "BUILD PER TEST")
+#define TR_TEST_NOTSAFE        "Usare solo per test"
 #define TR_WRONG_SDCARDVERSION TR("Richiede ver: ", "Richiede versione: ")
 #define TR_WARN_RTC_BATTERY_LOW        "Batteria RTC scarica"
 #define TR_WARN_MULTI_LOWPOWER         "Modalità bassa pot."

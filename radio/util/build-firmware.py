@@ -30,7 +30,7 @@ def build_target(target, path, cmake_options):
         suffix = os.environ["OPENTX_VERSION_SUFFIX"]
         cmd.append('-DVERSION_SUFFIX="%s"' % suffix)
         if suffix.startswith("N"):
-            cmd.append('-DNIGHTLY_BUILD_WARNING=YES')
+            cmd.append('-DTEST_BUILD_WARNING=YES')
     cmd.append(srcdir)
 
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -94,6 +94,11 @@ def main():
         maxsize = 65536 * 8
     elif options[optcount] == "x7":
         cmake_options["PCB"] = "X7"
+        firmware_options = options_taranis_x9dp
+        maxsize = 65536 * 8
+    elif options[optcount] == "x7access":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "ACCESS"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
     elif board_name == "xlite":

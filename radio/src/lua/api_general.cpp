@@ -440,13 +440,15 @@ When called without parameters, it will only return the status of the output buf
 
 @retval boolean  data queued in output buffer or not.
 
-@status current Introduced in 2.2.0
+@retval nil      incorrect telemetry protocol.
+
+@status current Introduced in 2.2.0, retval nil added in 2.3.4
 */
 
 static int luaSportTelemetryPush(lua_State * L)
 {
   if (!IS_FRSKY_SPORT_PROTOCOL()) {
-    lua_pushboolean(L, false);
+    lua_pushnil(L);
     return 1;
   }
 
@@ -637,12 +639,14 @@ When called without parameters, it will only return the status of the output buf
 
 @retval boolean  data queued in output buffer or not.
 
-@status current Introduced in 2.2.0
+@retval nil      incorrect telemetry protocol.
+
+@status current Introduced in 2.2.0, retval nil added in 2.3.4
 */
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
   if (telemetryProtocol != PROTOCOL_TELEMETRY_CROSSFIRE) {
-    lua_pushboolean(L, false);
+    lua_pushnil(L);
     return 1;
   }
 

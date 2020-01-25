@@ -390,17 +390,21 @@
 #define EXTMODULE_TX_GPIO               GPIOC
 #define EXTMODULE_TX_GPIO_PIN           GPIO_Pin_6 // PC.06
 #define EXTMODULE_TX_GPIO_PinSource     GPIO_PinSource6
-#define EXTMODULE_TX_GPIO_AF            GPIO_AF_TIM8
-#define EXTMODULE_TX_GPIO_AF_USART      GPIO_AF_USART6
+
 #define EXTMODULE_RX_GPIO               GPIOC
 #define EXTMODULE_RX_GPIO_PIN           GPIO_Pin_7 // PC.07
 #define EXTMODULE_RX_GPIO_PinSource     GPIO_PinSource7
 #define EXTMODULE_RX_GPIO_AF_USART      GPIO_AF_USART6
+
 #define EXTMODULE_TIMER                 TIM8
-#define EXTMODULE_TIMER_IRQn            TIM8_CC_IRQn
+#define EXTMODULE_TIMER_CC_IRQn         TIM8_CC_IRQn
 #define EXTMODULE_TIMER_IRQHandler      TIM8_CC_IRQHandler
 #define EXTMODULE_TIMER_FREQ            (PERI2_FREQUENCY * TIMER_MULT_APB2)
+#define EXTMODULE_TIMER_TX_GPIO_AF      GPIO_AF_TIM8
 //USART
+#define EXTMODULE_USART_GPIO               GPIOC
+#define EXTMODULE_USART_GPIO_AF            GPIO_AF_USART6
+
 #define EXTMODULE_USART_TX_DMA_CHANNEL     DMA_Channel_5
 #define EXTMODULE_USART_TX_DMA_STREAM      DMA2_Stream7
 #define EXTMODULE_USART_TX_DMA_IRQn        DMA2_Stream7_IRQn
@@ -416,13 +420,17 @@
 #define EXTMODULE_USART_IRQHandler         USART6_IRQHandler
 #define EXTMODULE_USART_IRQn               USART6_IRQn
 
+#define EXTMODULE_TIMER_DMA_SIZE           (DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0)
 //TIMER
-#define EXTMODULE_DMA_CHANNEL           DMA_Channel_7
-#define EXTMODULE_DMA_STREAM            DMA2_Stream1
-#define EXTMODULE_DMA_IRQn              DMA2_Stream1_IRQn
-#define EXTMODULE_DMA_IRQHandler        DMA2_Stream1_IRQHandler
-#define EXTMODULE_DMA_FLAG_TC           DMA_IT_TCIF1
+#define EXTMODULE_TIMER_DMA_CHANNEL        DMA_Channel_7
+#define EXTMODULE_TIMER_DMA_STREAM         DMA2_Stream1
+#define EXTMODULE_TIMER_DMA_STREAM_IRQn    DMA2_Stream1_IRQn
+#define EXTMODULE_TIMER_DMA_IRQHandler     DMA2_Stream1_IRQHandler
+#define EXTMODULE_TIMER_DMA_FLAG_TC        DMA_IT_TCIF1
+
 #define EXTMODULE_USART                 USART6
+
+
 
 #define EXTMODULE_TX_INVERT_GPIO       GPIOE
 #define EXTMODULE_TX_INVERT_GPIO_PIN   GPIO_Pin_3  // PE.03

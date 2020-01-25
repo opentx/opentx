@@ -27,7 +27,7 @@
 
 bool menuStatsGraph(event_t event)
 {
-  switch(event) {
+  switch (event) {
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
@@ -119,15 +119,15 @@ bool menuStatsDebug(event_t event)
   coord_t y = MENU_CONTENT_TOP;
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Free Mem");
-  lcdDrawNumber(MENU_STATS_COLUMN1, y, availableMemory(), LEFT, 0, NULL, "b");
+  lcdDrawNumber(MENU_STATS_COLUMN1, y, availableMemory(), LEFT, 0, nullptr, "b");
   y += FH;
 
 #if defined(LUA)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "Lua scripts");
   lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Duration]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, nullptr, "ms");
   lcdDrawText(lcdNextPos+20, y+1, "[Interval]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, nullptr, "ms");
   y += FH;
 
   // lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
@@ -141,7 +141,7 @@ bool menuStatsDebug(event_t event)
 #endif
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_STATS_COLUMN1, y, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
+  lcdDrawNumber(MENU_STATS_COLUMN1, y, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, nullptr, "ms");
   y += FH;
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FREE_STACK);
@@ -155,7 +155,7 @@ bool menuStatsDebug(event_t event)
 
 #if defined(DISK_CACHE) && defined(DEBUG)
   lcdDrawText(MENUS_MARGIN_LEFT, y, "SD cache hits");
-  lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");
+  lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, nullptr, "%");
   y += FH;
 #endif
 
@@ -195,7 +195,7 @@ bool menuStatsAnalogs(event_t event)
   for (uint8_t i=0; i<NUM_ANALOGS; i++) {
     coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
     coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
-    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, NULL, ":");
+    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, nullptr, ":");
     lcdDrawHexNumber(x+40, y, anaIn(i));
 #if defined(JITTER_MEASURE)
     lcdDrawNumber(x+100, y, rawJitter[i].get());

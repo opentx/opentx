@@ -25,7 +25,7 @@ uint8_t   storageDirtyMsk;
 tmr10ms_t storageDirtyTime10ms;
 
 #if defined(RTC_BACKUP_RAM)
-uint8_t   rambackupDirtyMsk;
+uint8_t   rambackupDirtyMsk = EE_GENERAL | EE_MODEL;
 tmr10ms_t rambackupDirtyTime10ms;
 #endif
 

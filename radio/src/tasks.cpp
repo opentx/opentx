@@ -73,9 +73,9 @@ bool isForcePowerOffRequested()
   return false;
 }
 
-bool isModuleSynchronous(uint8_t module)
+bool isModuleSynchronous(uint8_t moduleIdx)
 {
-  uint8_t protocol = moduleState[module].protocol;
+  uint8_t protocol = moduleState[moduleIdx].protocol;
   if (protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || protocol == PROTOCOL_CHANNELS_PXX2_LOWSPEED || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
     return true;
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
@@ -85,16 +85,16 @@ bool isModuleSynchronous(uint8_t module)
   return false;
 }
 
-void sendSynchronousPulses()
+void sendSynchronousPulses(uint8_t runMask)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (isModuleSynchronous(INTERNAL_MODULE)) {
+  if ((runMask & (1 << INTERNAL_MODULE)) && isModuleSynchronous(INTERNAL_MODULE)) {
     if (setupPulsesInternalModule())
       intmoduleSendNextFrame();
   }
 #endif
 
-  if (isModuleSynchronous(EXTERNAL_MODULE)) {
+  if ((runMask & (1 << EXTERNAL_MODULE)) && isModuleSynchronous(EXTERNAL_MODULE)) {
     if (setupPulsesExternalModule())
       extmoduleSendNextFrame();
   }
@@ -104,7 +104,6 @@ uint32_t nextMixerTime[NUM_MODULES];
 
 TASK_FUNCTION(mixerTask)
 {
-  static uint32_t lastRunTime;
   s_pulses_paused = true;
 
   while (true) {
@@ -134,34 +133,21 @@ TASK_FUNCTION(mixerTask)
 #endif
 
     uint32_t now = RTOS_GET_MS();
-    bool run = false;
+    uint8_t runMask = 0;
 
-    if (now - lastRunTime >= 10) {
-      // run at least every 10ms
-      run = true;
-    }
-
-#if defined(INTMODULE_USART) && defined(INTMODULE_HEARTBEAT)
-    if ((moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2_HIGHSPEED || moduleState[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) && heartbeatCapture.valid && heartbeatCapture.timestamp > lastRunTime) {
-      run = true;
-    }
-#endif
-
-    if (now == nextMixerTime[0]) {
-      run = true;
+    if (now >= nextMixerTime[0]) {
+      runMask |= (1 << 0);
     }
 
 #if NUM_MODULES >= 2
-    if (now == nextMixerTime[1]) {
-      run = true;
+    if (now >= nextMixerTime[1]) {
+      runMask |= (1 << 1);
     }
 #endif
 
-    if (!run) {
+    if (!runMask) {
       continue;  // go back to sleep
     }
-
-    lastRunTime = now;
 
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
@@ -197,12 +183,12 @@ TASK_FUNCTION(mixerTask)
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
 
-      sendSynchronousPulses();
+      sendSynchronousPulses(runMask);
     }
   }
 }
 
-void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
+void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms)
 {
   // Schedule next mixer calculation time,
 

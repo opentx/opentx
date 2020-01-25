@@ -40,14 +40,14 @@ void dumpBody(const void *data, unsigned int size)
     dumpPrintf("%.2X ", ((uint8_t *)data)[i]);
     dumpPosition++;
     if ((dumpPosition & (32-1)) == 0) {
-      dumpPrintf("\r\n");
+      dumpPrintf(CRLF);
     }
   }
 }
 
 void dumpEnd()
 {
-  dumpPrintf("\r\n");
+  dumpPrintf(CRLF);
 }
 
 #if defined(DEBUG) || defined(CLI)

@@ -99,7 +99,7 @@ void setCurrentCategory(unsigned int index)
   /*if (currentCategory->size() > 0)
     setCurrentModel(0);
   else
-    currentModel = NULL;*/
+    currentModel = nullptr;*/
 }
 #endif
 

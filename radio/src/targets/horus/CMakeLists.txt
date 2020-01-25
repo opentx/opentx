@@ -12,6 +12,7 @@ set(STORAGE SDCARD)
 set(STORAGE_FORMAT BIN)
 set(HAPTIC YES)
 set(GUI_DIR colorlcd)
+set(BITMAPS_DIR 480x272)
 set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
@@ -175,7 +176,7 @@ set(FIRMWARE_TARGET_SRC
   ${LCD_DRIVER}
   board.cpp
   backlight_driver.cpp
-  pwr_driver.cpp
+  ../common/arm/stm32/pwr_driver.cpp
   sdram_driver.c
   startup_stm32f42_43xxx.s
   ../common/arm/stm32/heartbeat_driver.cpp
@@ -203,11 +204,46 @@ set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
   )
 
+MACRO(GET_GCC_INCLUDE_PATH gcc_include_path)
+  if (WIN32)
+    execute_process(COMMAND arm-none-eabi-gcc -v -x c -E NUL ERROR_VARIABLE _gcc_output OUTPUT_QUIET)
+  else()
+    execute_process(COMMAND arm-none-eabi-gcc -v -x c -E - INPUT_FILE /dev/null ERROR_VARIABLE _gcc_output OUTPUT_QUIET)
+  endif()
+
+  # Build an array of string from the GCC output
+  string(REPLACE "\n" ";" _gcc_output "${_gcc_output}")
+
+  set(_capture_include FALSE)
+  set(_include_path "")
+
+  # Go through the lines and capture between '"#include <...> search starts here:"' and 'End of search list.'
+  foreach(_line ${_gcc_output})
+    if(${_line} STREQUAL "End of search list.")
+      set(_capture_include FALSE)
+    endif()
+
+    if(_capture_include)
+      # Remove the leading and trailing empty characters
+      string(REPLACE "\r" "" _line ${_line})
+      string(SUBSTRING "${_line}" 1 -1 _line)
+      set(_include_path "${_include_path}" "-I${_line}")
+    endif()
+
+    if(${_line} STREQUAL "#include <...> search starts here:")
+      set(_capture_include TRUE)
+    endif()
+  endforeach()
+  set(${gcc_include_path} ${_include_path})
+ENDMACRO()
+
 if(PYTHONINTERP_FOUND)
+  GET_GCC_INCLUDE_PATH(arm_gcc_include_path)
+
   add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DSTM32F4 -DSTM32F429_439xx -DCOLORLCD -DBACKUP -DSIMU -I. -Itargets/horus -Itargets/common/arm/stm32 -I${THIRDPARTY_DIR} -I${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include ${arm_gcc_include_path} > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
     )
   add_custom_target(datacopy

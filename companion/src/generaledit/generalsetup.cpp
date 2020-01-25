@@ -750,11 +750,11 @@ void GeneralSetupPanel::on_blAlarm_ChkB_stateChanged()
   emit modified();
 }
 
-void GeneralSetupPanel::on_ownerID_editingFinished()
+void GeneralSetupPanel::on_registrationId_editingFinished()
 {
   //copy ownerID back to generalSettings.registrationId
   QByteArray array = ui->registrationId->text().toLocal8Bit();
-  strncpy(generalSettings.registrationId, "pafleraf", 9);
+  strncpy(generalSettings.registrationId, array, 8);
   generalSettings.registrationId[8] = '\0';
   emit modified();
 }

@@ -447,36 +447,27 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
 
 uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
 {
-  // assume 63 is the highest Model ID
-  // and use 64 bits
-  uint8_t usedModelIds[8];
+  uint8_t usedModelIds[(MAX_RXNUM + 7) / 8];
   memset(usedModelIds, 0, sizeof(usedModelIds));
 
-  for (uint8_t mod_i = 0; mod_i < MAX_MODELS; mod_i++) {
-
-    if (mod_i == index)
+  for (uint8_t modelIndex = 0; modelIndex < MAX_MODELS; modelIndex++) {
+    if (modelIndex == index)
       continue;
 
-    uint8_t id = modelHeaders[mod_i].modelId[module];
+    uint8_t id = modelHeaders[modelIndex].modelId[module];
     if (id == 0)
       continue;
 
-    uint8_t mask = 1;
-    for (uint8_t i = 1; i < (id & 7); i++)
-      mask <<= 1;
-
-    usedModelIds[id >> 3] |= mask;
+    uint8_t mask = 1u << (id & 7u);
+    usedModelIds[id >> 3u] |= mask;
   }
 
-  uint8_t new_id = 1;
-  uint8_t tst_mask = 1;
-  for (;new_id < getMaxRxNum(module); new_id++) {
-    if (!(usedModelIds[new_id >> 3] & tst_mask)) {
+  for (uint8_t id = 1; id <= getMaxRxNum(module); id++) {
+    uint8_t mask = 1u << (id & 7u);
+    if (!(usedModelIds[id >> 3u] & mask)) {
       // found free ID
-      return new_id;
+      return id;
     }
-    if ((tst_mask <<= 1) == 0)
-      tst_mask = 1;
   }
 
   // failed finding something...
@@ -492,7 +483,7 @@ void modelDefault(uint8_t id)
 
   memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
 
-#if defined(LUA) && defined(PCBTARANIS) //Horus uses menuModelWizard() for wizard
+#if defined(LUA) && defined(PCBTARANIS) // Horus uses menuModelWizard() for wizard
   if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
     f_chdir(WIZARD_PATH);
     luaExec(WIZARD_NAME);
@@ -502,23 +493,20 @@ void modelDefault(uint8_t id)
 #if defined(FRSKY_RELEASE)
   g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
+  #if defined(EEPROM)
+    g_model.header.modelId[INTERNAL_MODULE] = findNextUnusedModelId(id, INTERNAL_MODULE);
+    modelHeaders[id].modelId[INTERNAL_MODULE] = g_model.header.modelId[INTERNAL_MODULE];
+  #endif
 #endif
 
 #if defined(PCBXLITE)
   g_model.trainerData.mode = TRAINER_MODE_MASTER_BLUETOOTH;
 #endif
 
-#if defined(EEPROM)
-  for (int i=0; i<NUM_MODULES; i++) {
-    modelHeaders[id].modelId[i] = g_model.header.modelId[i] = id+1;
-  }
-  checkModelIdUnique(id, 0);
-#endif
-
 #if defined(FLIGHT_MODES) && defined(GVARS)
-  for (int p=1; p<MAX_FLIGHT_MODES; p++) {
-    for (int i=0; i<MAX_GVARS; i++) {
-      g_model.flightModeData[p].gvars[i] = GVAR_MAX+1;
+  for (int fmIdx = 1; fmIdx < MAX_FLIGHT_MODES; fmIdx++) {
+    for (int gvarIdx = 0; gvarIdx < MAX_GVARS; gvarIdx++) {
+      g_model.flightModeData[fmIdx].gvars[gvarIdx] = GVAR_MAX + 1;
     }
   }
 #endif
@@ -896,7 +884,7 @@ void checkFailsafe()
 void checkRSSIAlarmsDisabled()
 {
   if (g_model.rssiAlarms.disabled) {
-#if !defined(INTERNAL_MODULE)
+#if !defined(HARDWARE_INTERNAL_MODULE)
     if (!isModuleMultimoduleDSM2(EXTERNAL_MODULE))
 #else
     if (!isModuleMultimoduleDSM2(INTERNAL_MODULE) && !isModuleMultimoduleDSM2(EXTERNAL_MODULE))
@@ -1601,8 +1589,8 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
   }
 #endif
 
-#if defined(NIGHTLY_BUILD_WARNING)
-  ALERT(STR_NIGHTLY_WARNING, TR_NIGHTLY_NOTSAFE, AU_ERROR);
+#if defined(TEST_BUILD_WARNING)
+  ALERT(STR_TEST_WARNING, TR_TEST_NOTSAFE, AU_ERROR);
 #endif
 
 #if defined(GUI)
@@ -2049,12 +2037,20 @@ void opentxInit()
   WDG_ENABLE(WDG_DURATION);
 }
 
+#if defined(SEMIHOSTING)
+extern "C" void initialise_monitor_handles();
+#endif
+
 #if defined(SIMU)
 void simuMain()
 #else
 int main()
 #endif
 {
+#if defined(SEMIHOSTING)
+  initialise_monitor_handles();
+#endif
+
 #if defined(STM32)
   TRACE("reusableBuffer: modelSel=%d, moduleSetup=%d, calib=%d, sdManager=%d, hardwareAndSettings=%d, spectrumAnalyser=%d, usb=%d",
         sizeof(reusableBuffer.modelsel),

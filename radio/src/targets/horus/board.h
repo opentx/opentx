@@ -21,24 +21,24 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include "../definitions.h"
-#include "../opentx_constants.h"
+#include "definitions.h"
+#include "opentx_constants.h"
 #include "board_common.h"
 #include "hal.h"
 
 PACK(typedef struct {
-  uint8_t pcbrev : 2;
-  uint8_t sticksPwmDisabled : 1;
-  uint8_t pxx2Enabled : 1;
+  uint8_t pcbrev:2;
+  uint8_t sticksPwmDisabled:1;
+  uint8_t pxx2Enabled:1;
 }) HardwareOptions;
 
 extern HardwareOptions hardwareOptions;
 
 #if !defined(LUA_EXPORT_GENERATION)
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
+#include "stm32f4xx_sdio.h"
+#include "stm32f4xx_dma2d.h"
+#include "stm32f4xx_ltdc.h"
+#include "stm32f4xx_fmc.h"
 #endif
 
 #define FLASHSIZE                      0x200000

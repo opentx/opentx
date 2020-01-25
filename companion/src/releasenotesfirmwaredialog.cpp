@@ -50,4 +50,3 @@ void ReleaseNotesFirmwareDialog::replyFinished(QNetworkReply * reply)
   ui->textEditor->setOpenExternalLinks(true);
   reply->deleteLater();
 }
-

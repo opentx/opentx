@@ -45,7 +45,7 @@ void menuRadioDiagKeys(event_t event)
     displayKeyState(5 * FW + 2, y, i);
   }
 
-  for (uint8_t i = 0, cnt = 0; i <= NUM_SWITCHES; i++) {
+  for (uint8_t i = 0, cnt = 0; i < NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
       div_t qr = div(cnt++, 6);
       coord_t x = 4 * FH * qr.quot;

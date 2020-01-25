@@ -742,7 +742,7 @@ void menuModelExpoMix(uint8_t expo, event_t event)
   uint8_t i = 0;
 
   for (uint8_t ch=1; ch<=(expo ? MAX_INPUTS : MAX_OUTPUT_CHANNELS); ch++) {
-    void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
+    void *pointer = nullptr; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
     coord_t y = MENU_HEADER_HEIGHT-FH+1+(cur-menuVerticalOffset)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (menuVerticalOffset < cur && cur-menuVerticalOffset < LCD_LINES) {

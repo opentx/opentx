@@ -498,17 +498,19 @@ extern uint8_t flightModeTransitionLast;
 
 #if defined(SIMU)
   inline int availableMemory() { return 1000; }
-#elif !defined(SIMU)
+#else
   extern unsigned char *heap;
   extern int _end;
   extern int _heap_end;
   #define availableMemory() ((unsigned int)((unsigned char *)&_heap_end - heap))
 #endif
 
+extern uint32_t nextMixerTime[NUM_MODULES];
+
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
 void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
-void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms);
+void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms);
 
 void checkTrims();
 void perMain();
@@ -1371,7 +1373,7 @@ extern uint8_t latencyToggleSwitch;
 
 inline bool isAsteriskDisplayed()
 {
-#if defined(ASTERISK) || !defined(WATCHDOG) || defined(LOG_TELEMETRY) || defined(DEBUG_LATENCY)
+#if defined(ASTERISK) || !defined(WATCHDOG) || defined(LOG_TELEMETRY) || defined(LOG_BLUETOOTH) || defined(DEBUG_LATENCY)
   return true;
 #endif
 
