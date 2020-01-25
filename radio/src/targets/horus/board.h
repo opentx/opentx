@@ -490,6 +490,10 @@ void pwrResetHandler();
 bool pwrPressed();
 uint32_t pwrPressedDuration();
 
+// USB Charger
+void usbChargerInit();
+bool usbChargerLed();
+
 // Led driver
 void ledInit();
 void ledOff();
