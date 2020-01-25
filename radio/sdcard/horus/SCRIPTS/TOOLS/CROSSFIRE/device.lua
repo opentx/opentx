@@ -419,7 +419,7 @@ end
 
 -- Main
 local function runDevicePage(event)
-  if event == EVT_EXIT_BREAK then             -- exit script
+  if event == EVT_VIRTUAL_EXIT then             -- exit script
     if edit == true then
       edit = false
       local field = getField(lineIndex)
@@ -451,9 +451,9 @@ local function runDevicePage(event)
       end
     end
   elseif edit then
-    if event == EVT_VIRTUAL_INC then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       incrField(1)
-    elseif event == EVT_VIRTUAL_DEC then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       incrField(-1)
     end
   else
