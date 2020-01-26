@@ -465,9 +465,9 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif event == EVT_VIRTUAL_NEXT and page < #pages-1 then
+  elseif event == EVT_VIRTUAL_NEXT_PAGE and page < #pages-1 then
     selectPage(1)
-  elseif event == EVT_VIRTUAL_PREV and page > 1 then
+  elseif event == EVT_VIRTUAL_PREV_PAGE and page > 1 then
     killEvents(event);
     selectPage(-1)
   end
