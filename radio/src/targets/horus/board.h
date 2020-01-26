@@ -598,6 +598,17 @@ void sportUpdatePowerOff();
 #define SPORT_UPDATE_POWER_OFF()
 #endif
 
+// Second serial port driver
+#if defined(AUX_SERIAL_GPIO)
+#define DEBUG_BAUDRATE                  115200
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit();
+void auxSerialStop();
+#endif
+
 // Haptic driver
 void hapticInit();
 void hapticDone();
