@@ -1691,3 +1691,5 @@ Thomas Floyd
 Matthew LePard
 Peter Schneider
 Michel Garbarino
+Achim Stolze
+Fernando Rimoldi
