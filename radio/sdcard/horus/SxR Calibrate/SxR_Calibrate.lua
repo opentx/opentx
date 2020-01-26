@@ -240,7 +240,7 @@ local function runFieldsPage(event)
   if event == EVT_VIRTUAL_EXIT then -- exit script
     return 2
   elseif event == EVT_VIRTUAL_ENTER then -- toggle editing/selecting current field
-    if fields[current][5] ~= nil then
+    if fields[current][4] ~= nil then
       edit = not edit
       if edit == false then
         updateField(fields[current])
