@@ -83,9 +83,9 @@ end
 local function onTelemetryResetEvent(wgt)
   wgt.telemResetCount = wgt.telemResetCount + 1
 
-  cellDataLive = {0,0,0,0,0,0}
-  cellDataHistoryLowest = {5,5,5,5,5,5}
-  cellDataHistoryCellLowest = 5
+  wgt.cellDataLive = {0,0,0,0,0,0}
+  wgt.cellDataHistoryLowest = {5,5,5,5,5,5}
+  wgt.cellDataHistoryCellLowest = 5
 end
 
 
