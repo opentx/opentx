@@ -28,7 +28,7 @@ local function fieldIncDec(event, value, max)
   if event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
     value = (value + max)
     dirty = true
-  elseif eevent == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
+  elseif event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
     value = (value + max + 2)
     dirty = true
   end
