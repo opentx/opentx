@@ -36,6 +36,8 @@ local function create(zone, options)
     counter = 0,
     shadowed = 0,
 
+    telemResetCount = 0,
+    telemResetLowestMinRSSI = 101,
     no_telem_blink = 0,
     isDataAvailable = 0,
     cellDataLive = {0,0,0,0,0,0},
@@ -76,13 +78,46 @@ local function update(wgt, options)
 
 end
 
--- A quick and dirty check for empty table
-local function isEmpty(self)
-  for _, _ in pairs(self) do
-    return false
-  end
-  return true
+
+-- clear old telemetry data upon reset event
+local function onTelemetryResetEvent(wgt)
+  wgt.telemResetCount = wgt.telemResetCount + 1
+
+  cellDataLive = {0,0,0,0,0,0}
+  cellDataHistoryLowest = {5,5,5,5,5,5}
+  cellDataHistoryCellLowest = 5
 end
+
+
+-- workaround to detect telemetry-reset event, until a proper implementation on the lua interface will be created
+-- this workaround assume that:
+--   RSSI- is always going down
+--   RSSI- is reset on the C++ side when a telemetry-reset is pressed by user
+--   widget is calling this func on each refresh/background
+-- on event detection, the function onTelemetryResetEvent() will be trigger
+--
+local function detectResetEvent(wgt)
+
+  local currMinRSSI = getValue('RSSI-')
+  if (currMinRSSI == nil) then return
+  end
+  if (currMinRSSI == wgt.telemResetLowestMinRSSI) then return end
+
+  if (currMinRSSI < wgt.telemResetLowestMinRSSI) then
+    -- rssi just got lower, record it
+    wgt.telemResetLowestMinRSSI = currMinRSSI
+    return
+  end
+
+
+  -- reset telemetry detected
+  wgt.telemResetLowestMinRSSI = 101
+
+  -- notify event
+  onTelemetryResetEvent(wgt)
+
+end
+
 
 --- This function return the percentage remaining in a single Lipo cel
 local function getCellPercent(cellValue)
@@ -413,6 +448,8 @@ end
 local function background(wgt)
   if (wgt == nil) then return end
 
+  detectResetEvent(wgt)
+
   calculateBatteryData(wgt)
 
 end
@@ -430,6 +467,7 @@ local function refresh(wgt)
     wgt.shadowed = 0
   end
 
+  detectResetEvent(wgt)
 
   calculateBatteryData(wgt)
 
@@ -446,6 +484,7 @@ local function refresh(wgt)
   elseif wgt.zone.w  > 150 and wgt.zone.h >  28 then refreshZoneSmall(wgt)
   elseif wgt.zone.w  >  65 and wgt.zone.h >  35 then refreshZoneTiny(wgt)
   end
+  lcd.drawText(wgt.zone.x, wgt.zone.y, string.format("r:%d", wgt.telemResetCount), SMLSIZE + CUSTOM_COLOR + RIGHT) -- ?????????????????????????
 
 end
 
