@@ -327,10 +327,10 @@
 #else
   #define SPORT_MAX_BAUDRATE              250000 // < 400000
 #endif
-#if defined(PCBX10) && !defined(RADIO_T16_FAMILLY)
-  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
-  #define SPORT_UPDATE_PWR_GPIO         GPIOH
-  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_13  // PH.13
+#if defined(PCBX10) && !defined(RADIO_T16)
+  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOA
+  #define SPORT_UPDATE_PWR_GPIO         GPIOA
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15  // PA.15
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #else
   #define SPORT_UPDATE_RCC_AHB1Periph   0
@@ -418,6 +418,7 @@
 #define TELEMETRY_DMA_TX_FLAG_TC        DMA_IT_TCIF6
 #define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
 #define TELEMETRY_USART_IRQn            USART2_IRQn
+#endif
 
 // USB
 #define USB_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOA
