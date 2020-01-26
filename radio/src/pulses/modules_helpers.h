@@ -345,6 +345,11 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return maxModuleChannels_M8(idx);
 }
 
+inline uint8_t sentModulePXXChannels(uint8_t idx)
+{
+  return 8 + g_model.moduleData[idx].channelsCount;
+}
+
 inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
@@ -354,7 +359,7 @@ inline int8_t sentModuleChannels(uint8_t idx)
   else if (isModuleSBUS(idx))
     return 16;
   else
-    return 8 + g_model.moduleData[idx].channelsCount;
+    return sentModulePXXChannels(idx);
 }
 
 inline bool isDefaultModelRegistrationID()

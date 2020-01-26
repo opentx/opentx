@@ -21,8 +21,8 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include "../definitions.h"
-#include "../opentx_constants.h"
+#include "definitions.h"
+#include "opentx_constants.h"
 #include "board_common.h"
 #include "hal.h"
 

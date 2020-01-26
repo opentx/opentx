@@ -113,6 +113,12 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 #define EXTERNAL_ANTENNA_ROW
 #endif
 
+#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+  #define MAX_BAUDRATE_ROW          0
+#else
+  #define MAX_BAUDRATE_ROW          HIDDEN_ROW
+#endif
+
 bool menuRadioHardware(event_t event)
 {
   MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, {
@@ -134,7 +140,7 @@ bool menuRadioHardware(event_t event)
     READONLY_ROW, /* RTC */
     0, /* RTC check */
 
-    0, /* max baudrate */
+    MAX_BAUDRATE_ROW, /* max baudrate */
 
     BLUETOOTH_ROWS
 

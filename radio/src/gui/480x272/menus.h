@@ -192,7 +192,7 @@ extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 enum EnumTabRadio {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
-#if defined(LUA) || defined(PXX2)
+#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   MENU_RADIO_TOOLS,
 #endif
   MENU_RADIO_SPECIAL_FUNCTIONS,

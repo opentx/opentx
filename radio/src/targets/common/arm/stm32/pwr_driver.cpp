@@ -54,9 +54,11 @@ void pwrInit()
 #if defined(PCBREV_HARDCODED)
   hardwareOptions.pcbrev = PCBREV_HARDCODED;
 #elif defined(PCBREV_GPIO_PIN)
-  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
+  #if defined(PCBREV_GPIO_PULL_DOWN)
+    GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  #endif
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
   hardwareOptions.pcbrev = PCBREV_VALUE();
 #endif
