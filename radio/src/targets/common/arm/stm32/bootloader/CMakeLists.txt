@@ -116,14 +116,6 @@ if(PCB STREQUAL X10 OR PCB STREQUAL X12S)
     ../../../../../syscalls.c
     )
 
-if(USB_CHARGER)
-  set(BOOTLOADER_SRC
-    ${BOOTLOADER_SRC}
-    ../../../../../targets/${TARGET_DIR}/usb_charger_driver.cpp
-    ../../../../../targets/${TARGET_DIR}/led_driver.cpp
-    )
-  endif()
-
   if(DEBUG)
     set(BOOTLOADER_SRC
       ${BOOTLOADER_SRC}

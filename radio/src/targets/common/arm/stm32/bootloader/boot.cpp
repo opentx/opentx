@@ -211,16 +211,10 @@ int main()
   keysInit();
 
   // USB charger handling
-#if defined(USB_CHARGER)
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE() && !pwrPressed()) {
-    ledInit();
-    usbChargerInit();
-    ledOff();
+#if defined(RADIO_TX16S)
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     while (!pwrPressed()) {
-      if(usbChargerLed())
-        GPIO_SetBits(LED_GPIO, LED_GREEN_GPIO_PIN);
-      else
-        ledOff();
+      __ASM volatile ("nop");
     }
   }
 #endif
