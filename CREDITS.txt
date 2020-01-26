@@ -1693,3 +1693,4 @@ Peter Schneider
 Michel Garbarino
 Achim Stolze
 Fernando Rimoldi
+Bernard Delpy
