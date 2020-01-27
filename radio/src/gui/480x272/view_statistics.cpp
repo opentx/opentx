@@ -127,7 +127,7 @@ bool menuStatsDebug(event_t event)
   lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Duration]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
   lcdDrawText(lcdNextPos+20, y+1, "[Interval]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
   y += FH;
 
   // lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
