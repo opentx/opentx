@@ -382,7 +382,7 @@
   #define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
 #elif defined(RADIO_TX16S) && !defined(BLUETOOTH)
-  #define AUX_SERIAL_RCC_AHB1Periph           0
+  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
   #define AUX_SERIAL_RCC_APB1Periph           0
   #define AUX_SERIAL_RCC_APB2Periph           RCC_APB2Periph_USART6
   #define AUX_SERIAL_USART                    USART6
