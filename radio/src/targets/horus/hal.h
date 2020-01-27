@@ -369,6 +369,7 @@
 #if defined(PCBX12S)
   #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define AUX_SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
+  #define AUX_SERIAL_RCC_APB2Periph           0
   #define AUX_SERIAL_GPIO                     GPIOB
   #define AUX_SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
   #define AUX_SERIAL_GPIO_PIN_RX              GPIO_Pin_11 // PB.11
@@ -380,9 +381,25 @@
   #define AUX_SERIAL_USART_IRQn               USART3_IRQn
   #define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
+#elif defined(RADIO_TX16S) && !defined(BLUETOOTH)
+  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
+  #define AUX_SERIAL_RCC_APB1Periph           0
+  #define AUX_SERIAL_RCC_APB2Periph           RCC_APB2Periph_USART6
+  #define AUX_SERIAL_USART                    USART6
+  #define AUX_SERIAL_GPIO_AF                  GPIO_AF_USART6
+  #define AUX_SERIAL_USART_IRQn               USART6_IRQn
+  #define AUX_SERIAL_GPIO                     GPIOG
+  #define AUX_SERIAL_GPIO_PIN_TX              GPIO_Pin_14 // PG.14
+  #define AUX_SERIAL_GPIO_PIN_RX              GPIO_Pin_9  // PG.09
+  #define AUX_SERIAL_GPIO_PinSource_TX        GPIO_PinSource14
+  #define AUX_SERIAL_GPIO_PinSource_RX        GPIO_PinSource9
+  #define AUX_SERIAL_USART_IRQHandler         USART6_IRQHandler
+  #define AUX_SERIAL_DMA_Stream_RX            DMA2_Stream6
+  #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_5
 #else
   #define AUX_SERIAL_RCC_AHB1Periph           0
   #define AUX_SERIAL_RCC_APB1Periph           0
+  #define AUX_SERIAL_RCC_APB2Periph           0
 #endif
 
 // Telemetry
@@ -784,6 +801,7 @@
 
 // Bluetooth
 #define STORAGE_BLUETOOTH
+#if defined(BLUETOOTH)
 #define BT_RCC_APB2Periph               RCC_APB2Periph_USART6
 #define BT_USART                        USART6
 #define BT_GPIO_AF                      GPIO_AF_USART6
@@ -794,6 +812,9 @@
 #define BT_TX_GPIO_PinSource            GPIO_PinSource14
 #define BT_RX_GPIO_PinSource            GPIO_PinSource9
 #define BT_USART_IRQHandler             USART6_IRQHandler
+#else
+#define BT_RCC_APB2Periph               0
+#endif
 #if defined(PCBX12S)
   #if PCBREV >= 13
     #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOG)

@@ -207,11 +207,17 @@ if(BLUETOOTH)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC ${TARGET_SRC} ../common/arm/stm32/bluetooth_driver.cpp)
   set(SRC ${SRC} bluetooth.cpp)
+else()
+  if (PCB STREQUAL X10 AND PCBREV STREQUAL TX16S)
+    add_definitions(-DAUX_SERIAL)
+    set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+  endif()
 endif()
 
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
+  ${AUX_SERIAL_DRIVER}
   board.cpp
   backlight_driver.cpp
   ../common/arm/stm32/pwr_driver.cpp

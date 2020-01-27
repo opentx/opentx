@@ -121,7 +121,7 @@ void auxSerialPutc(char c)
 #if !defined(SIMU)
   int n = 0;
   while (auxSerialTxFifo.isFull()) {
-    delay_ms(1);
+    RTOS_WAIT_MS(1);
     if (++n > 100) return;
   }
   auxSerialTxFifo.push(c);
