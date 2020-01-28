@@ -41,6 +41,13 @@ void auxSerialSetup(unsigned int baudrate, bool dma)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(AUX_SERIAL_GPIO, &GPIO_InitStructure);
 
+#if defined(AUX_SERIAL_PWR_GPIO)
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Pin = AUX_SERIAL_PWR_GPIO_PIN;
+  GPIO_Init(AUX_SERIAL_PWR_GPIO, &GPIO_InitStructure);
+#endif
+
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
