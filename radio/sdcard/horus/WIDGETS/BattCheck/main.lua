@@ -121,7 +121,7 @@ local function calculateBatteryData(wgt)
   if #wgt.cellDataHistoryLowest ~= #newCellData then
     wgt.cellDataHistoryLowest = {}
     for k, v in pairs(newCellData) do
-        wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
+      wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
     end
   end
 
