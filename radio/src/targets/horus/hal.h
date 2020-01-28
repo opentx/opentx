@@ -328,7 +328,7 @@
   #define SPORT_MAX_BAUDRATE              250000 // < 400000
 #endif
 
-#if defined(RADIO_TX16S
+#if defined(RADIO_TX16S)
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOA
   #define SPORT_UPDATE_PWR_GPIO         GPIOA
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15  // PA.15
