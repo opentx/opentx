@@ -198,7 +198,7 @@
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_12 // PJ.12
   #define TRIMS_GPIO_REG_RHR            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_7  // PD.07
-  #if defined(RADIO_T16_FAMILLY)
+  #if defined(RADIO_FAMILLY_T16)
     #define TRIMS_GPIO_REG_LSU          GPIOD->IDR
     #define TRIMS_GPIO_PIN_LSU          GPIO_Pin_13 // PD.13
     #define TRIMS_GPIO_REG_LSD          GPIOJ->IDR
@@ -307,7 +307,7 @@
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
-  #if defined(RADIO_T16_FAMILLY)
+  #if defined(RADIO_FAMILLY_T16)
     #define ADC_VREF_PREC2              300
   #else
     #define ADC_VREF_PREC2              250
@@ -322,7 +322,7 @@
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 // S.Port update connector
-#if defined(RADIO_T16_FAMILLY)
+#if defined(RADIO_FAMILLY_T16)
   #define SPORT_MAX_BAUDRATE              400000
 #else
   #define SPORT_MAX_BAUDRATE              250000 // < 400000
@@ -382,7 +382,7 @@
   #define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
 #elif defined(RADIO_TX16S) && !defined(BLUETOOTH)
-  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
+  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
   #define AUX_SERIAL_RCC_APB1Periph           0
   #define AUX_SERIAL_RCC_APB2Periph           RCC_APB2Periph_USART6
   #define AUX_SERIAL_USART                    USART6
@@ -396,6 +396,9 @@
   #define AUX_SERIAL_USART_IRQHandler         USART6_IRQHandler
   #define AUX_SERIAL_DMA_Stream_RX            DMA2_Stream6
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_5
+  #define AUX_SERIAL_PWR_GPIO                 GPIOB
+  #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_0  // PB.00
+  #define TRAINER_BATTERY_COMPARTMENT
 #else
   #define AUX_SERIAL_RCC_AHB1Periph           0
   #define AUX_SERIAL_RCC_APB1Periph           0
@@ -586,7 +589,7 @@
   #define AUDIO_DMA                     DMA1
 #endif
 
-#if defined(RADIO_T16_FAMILLY)
+#if defined(RADIO_FAMILLY_T16)
   #define AUDIO_UNMUTE_DELAY            120  // ms
   #define AUDIO_MUTE_DELAY              500  // ms
 #endif
@@ -634,7 +637,7 @@
   #define HAPTIC_TIMER_COMPARE_VALUE    HAPTIC_GPIO_TIMER->CCR2
 #endif
 
-#if !defined(RADIO_T16_FAMILLY)
+#if !defined(RADIO_FAMILLY_T16)
   #define EXTERNAL_ANTENNA
 #endif
 #define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)

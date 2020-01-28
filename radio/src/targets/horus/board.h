@@ -59,7 +59,7 @@ extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()                   (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
-#if defined(PCBX10) && !defined(RADIO_T16_FAMILLY)
+#if defined(PCBX10) && !defined(RADIO_FAMILLY_T16)
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
@@ -527,7 +527,7 @@ void backlightEnable(uint8_t dutyCycle = 0);
 #define BACKLIGHT_LEVEL_MAX   100
 #if defined(PCBX12S)
 #define BACKLIGHT_LEVEL_MIN   5
-#elif defined(RADIO_T16_FAMILLY)
+#elif defined(RADIO_FAMILLY_T16)
 #define BACKLIGHT_LEVEL_MIN   1
 #else
 #define BACKLIGHT_LEVEL_MIN   46
@@ -543,7 +543,7 @@ void usbJoystickUpdate();
   #define USB_NAME                     "FrSky Horus"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
-#elif defined(RADIO_T16_FAMILLY)
+#elif defined(RADIO_FAMILLY_T16)
   #define USB_NAME                     "Jumper T16"
   #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'T', '1', '6', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */  
@@ -607,6 +607,15 @@ void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
 void auxSerialSbusInit();
 void auxSerialStop();
+void auxSerialPowerOn();
+void auxSerialPowerOff();
+#if defined(AUX_SERIAL_PWR_GPIO)
+#define AUX_SERIAL_POWER_ON()            auxSerialPowerOn()
+#define AUX_SERIAL__POWER_OFF()          auxSerialPowerOff()
+#else
+#define AUX_SERIAL_POWER_ON()
+#define AUX_SERIAL__POWER_OFF()
+#endif
 #endif
 
 // Haptic driver

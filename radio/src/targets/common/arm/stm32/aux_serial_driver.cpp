@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "targets/horus/board.h"
 
 #if defined(AUX_SERIAL)
 uint8_t auxSerialMode = 0;
@@ -121,7 +122,7 @@ void auxSerialPutc(char c)
 #if !defined(SIMU)
   int n = 0;
   while (auxSerialTxFifo.isFull()) {
-    RTOS_WAIT_MS(1);
+    delay_ms(1);
     if (++n > 100) return;
   }
   auxSerialTxFifo.push(c);
@@ -133,6 +134,7 @@ void auxSerialSbusInit()
 {
   auxSerialSetup(SBUS_BAUDRATE, true);
   AUX_SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
+  AUX_SERIAL_POWER_ON();
 }
 
 void auxSerialStop()

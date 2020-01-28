@@ -41,6 +41,18 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
+#if defined(AUX_SERIAL_PWR_GPIO)
+void auxSerialPowerOn()
+{
+  GPIO_SetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
+
+void auxSerialPowerOff()
+{
+  GPIO_ResetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
+#endif
+
 #if defined(PCBX10) && !defined(RADIO_T16)
 void sportUpdateInit()
 {

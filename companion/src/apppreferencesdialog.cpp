@@ -541,7 +541,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 
   // TODO: Remove once splash replacement supported on Horus
   // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
-  if (IS_HORUS(baseFw->getBoard())) {
+  if (IS_FAMILLY_HORUS_T16(baseFw->getBoard())) {
     ui->widget_splashImage->hide();
     ui->SplashFileName->setText("");
   }

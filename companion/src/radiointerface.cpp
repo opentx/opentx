@@ -314,7 +314,7 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     return false;
   }
 
-  if (IS_HORUS(board)) {
+  if (IS_FAMILLY_HORUS_T16(board)) {
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
