@@ -158,7 +158,8 @@
 
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOI
-#define PWR_GPIO                        GPIOI
+#define PWR_SWITCH_GPIO                 GPIOI
+#define PWR_ON_GPIO                     GPIOI
 #define PWR_SWITCH_GPIO_REG             PWR_GPIO->IDR
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_11 // PI.11
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_14 // PI.14
