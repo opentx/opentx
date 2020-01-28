@@ -198,7 +198,7 @@
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_12 // PJ.12
   #define TRIMS_GPIO_REG_RHR            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_7  // PD.07
-  #if defined(RADIO_FAMILLY_T16)
+  #if defined(RADIO_FAMILY_T16)
     #define TRIMS_GPIO_REG_LSU          GPIOD->IDR
     #define TRIMS_GPIO_PIN_LSU          GPIO_Pin_13 // PD.13
     #define TRIMS_GPIO_REG_LSD          GPIOJ->IDR
@@ -307,7 +307,7 @@
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
-  #if defined(RADIO_FAMILLY_T16)
+  #if defined(RADIO_FAMILY_T16)
     #define ADC_VREF_PREC2              300
   #else
     #define ADC_VREF_PREC2              250
@@ -322,16 +322,21 @@
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 // S.Port update connector
-#if defined(RADIO_FAMILLY_T16)
+#if defined(RADIO_FAMILY_T16)
   #define SPORT_MAX_BAUDRATE              400000
 #else
   #define SPORT_MAX_BAUDRATE              250000 // < 400000
 #endif
-#if defined(PCBX10) && !defined(RADIO_T16)
+
+#if defined(RADIO_TX16S
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOA
   #define SPORT_UPDATE_PWR_GPIO         GPIOA
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15  // PA.15
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
+#elif defined(PCBX10) && !defined(RADIO_T16)
+  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
+  #define SPORT_UPDATE_PWR_GPIO         GPIOH
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_13  // PH.13
 #else
   #define SPORT_UPDATE_RCC_AHB1Periph   0
   #define HAS_SPORT_UPDATE_CONNECTOR()  false
@@ -589,7 +594,7 @@
   #define AUDIO_DMA                     DMA1
 #endif
 
-#if defined(RADIO_FAMILLY_T16)
+#if defined(RADIO_FAMILY_T16)
   #define AUDIO_UNMUTE_DELAY            120  // ms
   #define AUDIO_MUTE_DELAY              500  // ms
 #endif
@@ -637,7 +642,7 @@
   #define HAPTIC_TIMER_COMPARE_VALUE    HAPTIC_GPIO_TIMER->CCR2
 #endif
 
-#if !defined(RADIO_FAMILLY_T16)
+#if !defined(RADIO_FAMILY_T16)
   #define EXTERNAL_ANTENNA
 #endif
 #define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)

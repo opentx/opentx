@@ -273,7 +273,7 @@ bool SimulatorWidget::setRadioData(RadioData * radioData)
 
   saveTempRadioData = (flags & SIMULATOR_FLAGS_STANDALONE);
 
-  if (IS_FAMILLY_HORUS_T16(m_board))
+  if (IS_FAMILY_HORUS_T16(m_board))
     ret = useTempDataPath(true);
 
   if (ret) {

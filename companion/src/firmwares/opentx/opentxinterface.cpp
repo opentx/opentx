@@ -177,7 +177,7 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 {
   uint32_t fourcc = *((uint32_t*)&data.data()[0]);
   if (Boards::getFourCC(board) != fourcc) {
-    if (IS_FAMILLY_HORUS_T16(board) && fourcc == 0x3178396F) {
+    if (IS_FAMILY_HORUS_T16(board) && fourcc == 0x3178396F) {
       qDebug() << QString().sprintf("%s: Deprecated fourcc used %x vs %x", getName(), fourcc, Boards::getFourCC(board));
     }
     else {
@@ -443,7 +443,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
 {
   switch (capability) {
     case Models:
-      if (IS_FAMILLY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_T16(board))
         return 0;
       else if (IS_ARM(board))
         return 60;
@@ -459,7 +459,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      return (board == BOARD_TARANIS_X9D || IS_TARANIS_PLUS(board) || board == BOARD_TARANIS_X9DP_2019 || IS_FAMILLY_HORUS_T16(board));
+      return (board == BOARD_TARANIS_X9D || IS_TARANIS_PLUS(board) || board == BOARD_TARANIS_X9DP_2019 || IS_FAMILY_HORUS_T16(board));
     case HasBeeper:
       return (!IS_ARM(board));
     case HasPxxCountry:
@@ -497,7 +497,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else
         return 0;
     case ModelName:
-      return (IS_FAMILLY_HORUS_T16(board) ? 15 : (HAS_LARGE_LCD(board) ? 12 : 10));
+      return (IS_FAMILY_HORUS_T16(board) ? 15 : (HAS_LARGE_LCD(board) ? 12 : 10));
     case FlightModesName:
       return (IS_HORUS_OR_TARANIS(board) ? 10 : 6);
     case GvarsName:
@@ -564,7 +564,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_SMALL(board) || IS_TARANIS_X9E(board) || IS_FAMILLY_HORUS_T16(board) || IS_JUMPER_T12(board) || id.contains("haptic"));
+      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_SMALL(board) || IS_TARANIS_X9E(board) || IS_FAMILY_HORUS_T16(board) || IS_JUMPER_T12(board) || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_HORUS_OR_TARANIS(board) && board!=Board::BOARD_TARANIS_XLITE)
         return 1;
@@ -612,7 +612,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
-      if (IS_FAMILLY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_T16(board))
         return 0;
       else
         return IS_ARM(board) ? 4 : 2;
@@ -665,7 +665,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case HasSDLogs:
       return ((IS_2560(board) || IS_ARM(board)) ? true : false);
     case LcdWidth:
-      if (IS_FAMILLY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_T16(board))
         return 480;
       else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
         return 128;
@@ -674,12 +674,12 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else
         return 128;
     case LcdHeight:
-      if (IS_FAMILLY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_T16(board))
         return 272;
       else
         return 64;
     case LcdDepth:
-      if (IS_FAMILLY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_T16(board))
         return 16;
       else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
         return 1;
@@ -749,7 +749,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case DangerousFunctions:
       return id.contains("danger") ? 1 : 0;
     case HasModelCategories:
-      return IS_FAMILLY_HORUS_T16(board);
+      return IS_FAMILY_HORUS_T16(board);
     case HasSwitchableJack:
       return IS_TARANIS_XLITES(board);
     case PwrButtonPress:
@@ -784,9 +784,9 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILLY_T16(board);
+            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board);
           case PULSES_PXX_XJT_D8:
-            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILLY_T16(board);
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board);
           case PULSES_PPM:
             return id.contains("internalppm");
           case PULSES_ACCESS_ISRM:
@@ -816,7 +816,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_CROSSFIRE:
             return true;
           case PULSES_ACCESS_R9M:
-            return IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_FAMILLY_HORUS_T16(board) && id.contains("internalaccess"));
+            return IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_FAMILY_HORUS_T16(board) && id.contains("internalaccess"));
           case PULSES_PXX_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
@@ -1326,7 +1326,6 @@ void registerOpenTxFirmwares()
   /* Radiomaster TX16S board */
   firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S"), BOARD_RADIOMASTER_TX16S);
   addOpenTxFrskyOptions(firmware);
-  firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
   registerOpenTxFirmware(firmware);
 

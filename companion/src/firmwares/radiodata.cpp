@@ -116,7 +116,7 @@ void RadioData::convert(RadioDataConversionState & cstate)
     }
   }
 
-  if (IS_FAMILLY_HORUS_T16(cstate.toType)) {
+  if (IS_FAMILY_HORUS_T16(cstate.toType)) {
     fixModelFilenames();
   }
 

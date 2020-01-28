@@ -288,7 +288,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_HORUS_X10(board) || IS_FAMILLY_T16(board))
+      else if (IS_HORUS_X10(board) || IS_FAMILY_T16(board))
         return 5;
       else if (IS_HORUS_X12S(board))
         return 3;
@@ -304,13 +304,13 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case Sliders:
       if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_TARANIS_X9D(board) || IS_HORUS_X10(board) || IS_FAMILLY_T16(board))
+      else if (IS_TARANIS_X9D(board) || IS_HORUS_X10(board) || IS_FAMILY_T16(board))
         return 2;
       else
         return 0;
 
     case MouseAnalogs:
-      if (IS_FAMILLY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_T16(board))
         return 2;
       else
         return 0;
@@ -347,7 +347,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 9;
       else if (IS_TARANIS(board))
         return 8;
-      else if (IS_FAMILLY_HORUS_T16(board))
+      else if (IS_FAMILY_HORUS_T16(board))
         return 10;
       else
         return 7;
@@ -367,7 +367,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 9;
 
     case NumTrims:
-      if (IS_FAMILLY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_T16(board))
         return 6;
       else
         return 4;
@@ -471,7 +471,7 @@ QString Boards::getAnalogInputName(Board::Type board, int index)
     if (index < DIM(pots))
       return pots[index];
   }
-  else if (IS_HORUS_X10(board) || IS_FAMILLY_T16(board)) {
+  else if (IS_HORUS_X10(board) || IS_FAMILY_T16(board)) {
     const QString pots[] = {
       "S1",
       "6P",
