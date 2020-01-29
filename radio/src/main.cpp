@@ -382,6 +382,17 @@ void handleGui(event_t event) {
   }
   else if (luaTask(event, RUN_TELEM_FG_SCRIPT, true)) {
     // the telemetry screen is active
+
+#if !defined(PCBXLITE)	
+    // Prevent +/- and EXIT(short) from reaching the normal menus	so Lua can use them	
+    if (event) {
+      uint8_t key = EVT_KEY_MASK(event);	
+      if (key == KEY_PLUS || key == KEY_MINUS || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {	
+        event = 0;	
+      }	
+    }
+#endif	
+
     menuHandlers[menuLevel](event);
   }
   else
