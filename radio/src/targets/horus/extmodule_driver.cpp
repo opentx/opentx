@@ -23,7 +23,6 @@
 void extmoduleStop()
 {
   EXTERNAL_MODULE_OFF();
-  
   NVIC_DisableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
   NVIC_DisableIRQ(EXTMODULE_TIMER_CC_IRQn);
 
@@ -143,7 +142,7 @@ void extmodulePxx1PulsesStart()
 }
 #endif
 
-void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength)
 {
   EXTERNAL_MODULE_ON();
 

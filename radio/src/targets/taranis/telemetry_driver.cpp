@@ -92,7 +92,7 @@ static uint8_t rxByte;
 // - only 57600 supported for now
 // - handle other bitrates as well?
 //
-void telemetryPortInvertedInit(uint32_t baudrate)
+void telemetryPortInvertedInit(uint32_t baudrate, uint8_t mode)
 {
   if (baudrate == 0) {
 

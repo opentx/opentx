@@ -23,7 +23,7 @@
 Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryNoDMAFifo;
 uint32_t telemetryErrors = 0;
 
-#if defined(PCBX12S)
+#if defined(TELEMETRY_DMA_Stream_RX)
 DMAFifo<TELEMETRY_FIFO_SIZE> telemetryDMAFifo __DMA (TELEMETRY_DMA_Stream_RX);
 uint8_t telemetryFifoMode;
 #endif
@@ -36,7 +36,7 @@ static void telemetryInitDirPin()
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Pin   = TELEMETRY_DIR_GPIO_PIN;
   GPIO_Init(TELEMETRY_DIR_GPIO, &GPIO_InitStructure);
-  GPIO_ResetBits(TELEMETRY_DIR_GPIO, TELEMETRY_DIR_GPIO_PIN);
+  TELEMETRY_DIR_INPUT();
 }
 
 void telemetryPortInit(uint32_t baudrate, uint8_t mode)
@@ -68,6 +68,21 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 
   telemetryInitDirPin();
 
+  #if defined(TELEMETRY_TX_REV_GPIO_PIN)
+  GPIO_InitStructure.GPIO_Pin = TELEMETRY_TX_REV_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(TELEMETRY_REV_GPIO, &GPIO_InitStructure);
+  mode & TELEMETRY_SERIAL_INVERTED ? TELEMETRY_TX_POL_INV() : TELEMETRY_TX_POL_NORM();
+  #endif
+  #if defined(TELEMETRY_RX_REV_GPIO_PIN)
+  GPIO_InitStructure.GPIO_Pin = TELEMETRY_RX_REV_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(TELEMETRY_REV_GPIO, &GPIO_InitStructure);
+  mode & TELEMETRY_SERIAL_INVERTED ? TELEMETRY_RX_POL_INV() : TELEMETRY_RX_POL_NORM();
+  #endif
+  
   USART_InitStructure.USART_BaudRate = baudrate;
   if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
@@ -83,7 +98,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
 
-#if defined(PCBX12S)
+#if defined(TELEMETRY_DMA_Stream_RX)
   telemetryFifoMode = mode;
   
   DMA_Cmd(TELEMETRY_DMA_Stream_RX, DISABLE);
@@ -132,12 +147,16 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
 #endif
 }
-
+#if defined(TELEMETRY_RX_REV_GPIO_PIN)
+void telemetryPortInvertedInit(uint32_t baudrate, uint8_t mode) {
+  telemetryPortInit(baudrate, mode | TELEMETRY_SERIAL_INVERTED);
+}
+#else
 // soft serial vars
 static uint8_t rxBitCount;
 static uint8_t rxByte;
 
-void telemetryPortInvertedInit(uint32_t baudrate)
+void telemetryPortInvertedInit(uint32_t baudrate, uint8_t mode)
 {
   if (baudrate == 0) {
     NVIC_DisableIRQ(TELEMETRY_EXTI_IRQn);
@@ -221,10 +240,11 @@ void telemetryPortInvertedRxBit()
     EXTI->IMR |= EXTI_IMR_MR6;
   }
 }
+#endif
 
 void telemetryPortSetDirectionOutput()
 {
-  TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
+  TELEMETRY_DIR_OUTPUT();
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
 }
 
@@ -236,7 +256,7 @@ void sportWaitTransmissionComplete()
 void telemetryPortSetDirectionInput()
 {
   sportWaitTransmissionComplete();
-  TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
+  TELEMETRY_DIR_INPUT();
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
 
@@ -354,7 +374,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
     status = TELEMETRY_USART->SR;
   }
 }
-
+#if defined(TELEMETRY_EXTI_LINE)
 extern "C" void TELEMETRY_EXTI_IRQHandler(void)
 {
   if (EXTI_GetITStatus(TELEMETRY_EXTI_LINE) != RESET) {
@@ -371,17 +391,24 @@ extern "C" void TELEMETRY_EXTI_IRQHandler(void)
     EXTI_ClearITPendingBit(TELEMETRY_EXTI_LINE);
   }
 }
-
+#endif
+#if defined(TELEMETRY_TIMER)
 extern "C" void TELEMETRY_TIMER_IRQHandler()
 {
   TELEMETRY_TIMER->SR &= ~TIM_SR_UIF;
   telemetryPortInvertedRxBit();
 }
+#endif
 
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 bool telemetryGetByte(uint8_t * byte)
 {
-#if defined(PCBX12S)
+#if defined(AFHDS3)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_AFHDS3) {
+    return extModuleGetByte(byte);
+  }
+#endif
+#if defined(PCBX12S) || defined(PCBNV14)
   if (telemetryFifoMode & TELEMETRY_SERIAL_WITHOUT_DMA)
     return telemetryNoDMAFifo.pop(*byte);
   else

@@ -176,7 +176,7 @@ void intmoduleSendByte(uint8_t byte);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
@@ -580,7 +580,7 @@ void telemetryClearFifo();
 extern uint32_t telemetryErrors;
 
 // soft-serial
-void telemetryPortInvertedInit(uint32_t baudrate);
+void telemetryPortInvertedInit(uint32_t baudrate, uint8_t mode);
 
 // Sport update driver
 #if defined(PCBX10) && !defined(RADIO_T16)

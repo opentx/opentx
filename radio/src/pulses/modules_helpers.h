@@ -657,7 +657,7 @@ typedef void (*processSensor_t) (const uint8_t *, uint8_t);
 typedef int32_t (*getChannelValue_t)(uint8_t);
 
 extern int32_t channelValue(uint8_t channel);
-extern void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+extern void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 extern void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 
 #if defined(INTMODULE_TIMER)
@@ -738,8 +738,7 @@ public:
 #endif
     }
     else if(index == EXTERNAL_MODULE) {
-      //parameters are missing - why not use same method as for internal module
-      extmoduleSerialStart(baudrate, getPeriodMS() * 2000, inverted);
+      extmoduleSerialStart(baudrate, getPeriodMS() * 2000, inverted, parity, stopBits, wordLength);
     }
   }
   uint32_t baudrate;

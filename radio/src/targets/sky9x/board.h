@@ -230,7 +230,7 @@ uint32_t readTrims();
 #define KEYS_PRESSED()                 readKeys()
 
 // Pulses driver
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 void extmoduleSendNextFrame();
 void module_output_active();
 inline void EXTERNAL_MODULE_ON()

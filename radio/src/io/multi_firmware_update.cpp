@@ -117,7 +117,7 @@ class MultiExternalUpdateDriver: public MultiFirmwareUpdateDriver
 #endif
 
       if (inverted)
-        telemetryPortInvertedInit(57600);
+        telemetryPortInvertedInit(57600, TELEMETRY_SERIAL_DEFAULT);
       else
         telemetryPortInit(57600, TELEMETRY_SERIAL_DEFAULT);
     }
@@ -140,7 +140,7 @@ class MultiExternalUpdateDriver: public MultiFirmwareUpdateDriver
     void deinit(bool inverted) const override
     {
       if (inverted)
-        telemetryPortInvertedInit(0);
+        telemetryPortInvertedInit(0, 0);
       else
         telemetryPortInit(0, 0);
 

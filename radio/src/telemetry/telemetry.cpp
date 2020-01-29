@@ -31,6 +31,10 @@ TelemetryData telemetryData;
 
 uint8_t telemetryProtocol = 255;
 
+#if defined(AFHDS3)
+extern afhds3::afhds3 afhds3ext;
+#endif
+
 #if defined(PCBSKY9X) && defined(REVX)
 uint8_t serialInversion = 0;
 #endif
@@ -57,6 +61,13 @@ void processTelemetryData(uint8_t data)
     processMultiTelemetryData(data, EXTERNAL_MODULE);
     return;
   }
+#endif
+#if defined(AFHDS3)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_AFHDS3) {
+    afhds3ext.onDataReceived(data, telemetryRxBuffer, telemetryRxBufferCount, TELEMETRY_RX_PACKET_SIZE);
+    return;
+  }
+
 #endif
 
   processFrskyTelemetryData(data);
@@ -262,7 +273,11 @@ void telemetryInit(uint8_t protocol)
   if (protocol == PROTOCOL_TELEMETRY_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }
-
+#if defined(AFHDS3)
+  else if(protocol == PROTOCOL_TELEMETRY_AFHDS3){
+    telemetryPortInit(AFHDS3_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
+  }
+#endif
 #if defined(MULTIMODULE)
   else if (protocol == PROTOCOL_TELEMETRY_MULTIMODULE || protocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS) {
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use

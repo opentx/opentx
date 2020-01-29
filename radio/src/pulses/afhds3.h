@@ -80,6 +80,7 @@ enum MODULE_READY_E {
 };
 
 enum ModuleState {
+  STATE_NOT_READY = 0x00, //virtual
   STATE_HW_ERROR = 0x01,
   STATE_BINDING = 0x02,
   STATE_SYNC_RUNNING = 0x03,
@@ -90,8 +91,7 @@ enum ModuleState {
   STATE_UPDATING_RX = 0x08,
   STATE_UPDATING_RX_FAILED = 0x09,
   STATE_RF_TESTING = 0x0a,
-  STATE_NOT_READY = 0x0b, //virtual
-  STATE_READY = 0x0c,     //virtual
+  STATE_READY = 0x0b,     //virtual
   STATE_HW_TEST = 0xff,
 };
 
@@ -101,6 +101,7 @@ enum MODULE_MODE_E {
   BIND = 0x02,  //after bind module will enter run mode
   RUN = 0x03,
   RX_UPDATE = 0x04, //after successful update module will enter standby mode, otherwise hw error will be raised
+  MODULE_MODE_UNKNOWN = 0xFF
 };
 
 enum CMD_RESULT {
@@ -201,6 +202,11 @@ PACK(struct ModuleVersion {
   uint32_t rfVersion;
 });
 
+PACK(struct CommandResult_s {
+  uint16_t command;
+  uint8_t result;
+  uint8_t respLen;
+});
 
 union AfhdsFrameData {
   uint8_t value;
@@ -208,6 +214,7 @@ union AfhdsFrameData {
   ChannelsData Channels;
   TelemetryData Telemetry;
   ModuleVersion Version;
+  CommandResult_s CommandResult;
 };
 
 PACK(struct AfhdsFrame {
@@ -243,6 +250,7 @@ class request {
     }
     else payload = nullptr;
     payloadSize = length;
+    frameNumber = -1;
   }
   ~request() {
     if(payload != nullptr) {
@@ -254,6 +262,7 @@ class request {
   enum FRAME_TYPE frameType;
   uint8_t* payload;
   uint8_t payloadSize;
+  int frameNumber;
 };
 #define AFHDS3_BAUDRATE 1500000
 #define AFHDS3_COMMAND_TIMEOUT 5
@@ -290,6 +299,7 @@ private:
   void putHeader(COMMAND command, FRAME_TYPE frameType);
   void putFooter();
   void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
+  void addAckToQueue(COMMAND command, uint8_t frameNumber);
   void addToQueue(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
   void parseData(uint8_t* rxBuffer, uint8_t rxBufferCount);
   void setState(uint8_t state);
@@ -309,6 +319,7 @@ private:
   //local config
   Config_u cfg;
   ModuleVersion version;
+  uint8_t requestedModuleMode;
   enum MODULE_POWER_SOURCE powerSource;
   //buffer where the channels are
   State operationState;

@@ -232,7 +232,7 @@ void enablePulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2000, false);
+      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2000, false, USART_Parity_Even, USART_StopBits_2, USART_WordLength_9b);
       break;
 #endif
 
@@ -254,13 +254,13 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true);
+      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true, USART_Parity_Even, USART_StopBits_2, USART_WordLength_9b);
       break;
 #endif
 
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
-      extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
+      extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false, USART_Parity_Even, USART_StopBits_2, USART_WordLength_9b);
       break;
 #endif
 

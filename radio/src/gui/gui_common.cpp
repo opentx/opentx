@@ -731,7 +731,11 @@ bool isTelemetryProtocolAvailable(int protocol)
     return false;
   }
 #endif
-
+#if !defined(AFHDS3)
+  if (protocol == PROTOCOL_TELEMETRY_AFHDS3) {
+    return false;
+  }
+#endif
 #if defined(PCBHORUS)
   if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     return false;

@@ -82,7 +82,7 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 
-void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength)
 {
   EXTERNAL_MODULE_ON();
 

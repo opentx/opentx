@@ -153,7 +153,7 @@ void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 void intmoduleTimerStart(uint32_t periodMs);
 
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 void extmoduleSendNextFrame();
 void extmoduleSendInvertedByte(uint8_t byte);
 
@@ -496,14 +496,15 @@ int32_t getVolume();
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 void telemetryPortSetDirectionOutput();
 void telemetryPortSetDirectionInput();
-void sportSendBuffer(uint8_t * buffer, uint32_t count);
-uint8_t telemetryGetByte(uint8_t * byte);
+void sportSendBuffer(const uint8_t * buffer, uint32_t count);
+bool telemetryGetByte(uint8_t * byte);
+bool extModuleGetByte(uint8_t * byte);
 void telemetryClearFifo();
 void sportSendByte(uint8_t byte);
 extern uint32_t telemetryErrors;
 
 // soft-serial
-void telemetryPortInvertedInit(uint32_t baudrate);
+void telemetryPortInvertedInit(uint32_t baudrate, uint8_t mode);
 
 // Sport update driver
 #define SPORT_UPDATE_POWER_ON()
