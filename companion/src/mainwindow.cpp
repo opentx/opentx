@@ -930,7 +930,7 @@ void MainWindow::readEeprom()
 {
   Board::Type board = getCurrentBoard();
   QString tempFile;
-  if (IS_FAMILY_HORUS_T16(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     tempFile = generateProcessUniqueTempFileName("temp.otx");
   else if (IS_ARM(board))
     tempFile = generateProcessUniqueTempFileName("temp.bin");
@@ -975,7 +975,7 @@ bool MainWindow::readEepromFromRadio(const QString & filename)
 
 void MainWindow::writeBackup()
 {
-  if (IS_FAMILY_HORUS_T16(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -992,7 +992,7 @@ void MainWindow::writeFlash(QString fileToFlash)
 
 void MainWindow::readBackup()
 {
-  if (IS_FAMILY_HORUS_T16(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -1078,7 +1078,7 @@ void MainWindow::updateMenus()
   compareAct->setEnabled(activeChild);
   writeEepromAct->setEnabled(activeChild);
   readEepromAct->setEnabled(true);
-  if (IS_FAMILY_HORUS_T16(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     writeBUToRadioAct->setEnabled(false);
     readBUToFileAct->setEnabled(false);
   }
@@ -1086,7 +1086,7 @@ void MainWindow::updateMenus()
     writeBUToRadioAct->setEnabled(true);
     readBUToFileAct->setEnabled(true);
   }
-  editSplashAct->setDisabled(IS_FAMILY_HORUS_T16(getCurrentBoard()));
+  editSplashAct->setDisabled(IS_FAMILY_HORUS_OR_T16(getCurrentBoard()));
 
   foreach (QAction * act, fileWindowActions) {
     if (!act)

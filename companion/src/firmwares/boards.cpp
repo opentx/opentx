@@ -310,7 +310,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 0;
 
     case MouseAnalogs:
-      if (IS_FAMILY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 2;
       else
         return 0;
@@ -347,7 +347,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 9;
       else if (IS_TARANIS(board))
         return 8;
-      else if (IS_FAMILY_HORUS_T16(board))
+      else if (IS_FAMILY_HORUS_OR_T16(board))
         return 10;
       else
         return 7;
@@ -367,7 +367,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 9;
 
     case NumTrims:
-      if (IS_FAMILY_HORUS_T16(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 6;
       else
         return 4;

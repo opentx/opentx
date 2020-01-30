@@ -1001,7 +1001,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     QDir qd(path);
     if (qd.exists()) {
       QStringList filters;
-      if(IS_FAMILY_HORUS_T16(board)) {
+      if(IS_FAMILY_HORUS_OR_T16(board)) {
         filters << "*.bmp" << "*.jpg" << "*.png";
         foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
           QFileInfo fi(file);
@@ -1032,17 +1032,17 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
         ui->image->setCurrentIndex(ui->image->count()-1);
         QString fileName = path;
         fileName.append(model.bitmap);
-        if (!IS_FAMILY_HORUS_T16(board))
+        if (!IS_FAMILY_HORUS_OR_T16(board))
           fileName.append(".bmp");
         QImage image(fileName);
-        if (image.isNull() && !IS_FAMILY_HORUS_T16(board)) {
+        if (image.isNull() && !IS_FAMILY_HORUS_OR_T16(board)) {
           fileName = path;
           fileName.append(model.bitmap);
           fileName.append(".BMP");
           image.load(fileName);
         }
         if (!image.isNull()) {
-          if (IS_FAMILY_HORUS_T16(board)) {
+          if (IS_FAMILY_HORUS_OR_T16(board)) {
             ui->imagePreview->setFixedSize(QSize(192, 114));
             ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(192, 114)));
           }
@@ -1281,17 +1281,17 @@ void SetupPanel::on_image_currentIndexChanged(int index)
     if (qd.exists()) {
       QString fileName=path;
       fileName.append(model->bitmap);
-      if (!IS_FAMILY_HORUS_T16(board))
+      if (!IS_FAMILY_HORUS_OR_T16(board))
         fileName.append(".bmp");
       QImage image(fileName);
-      if (image.isNull() && !IS_FAMILY_HORUS_T16(board)) {
+      if (image.isNull() && !IS_FAMILY_HORUS_OR_T16(board)) {
         fileName=path;
         fileName.append(model->bitmap);
         fileName.append(".BMP");
         image.load(fileName);
       }
       if (!image.isNull()) {
-        if (IS_FAMILY_HORUS_T16(board)) {
+        if (IS_FAMILY_HORUS_OR_T16(board)) {
           ui->imagePreview->setFixedSize(QSize(192, 114));
           ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(192, 114)));
         }
