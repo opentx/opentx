@@ -456,6 +456,10 @@ static int luaSportTelemetryPush(lua_State * L)
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
     return 1;
   }
+  else if (lua_gettop(L) > sizeof(SportTelemetryPacket) ) {
+    lua_pushboolean(L, false);
+    return 1;
+  }
 
   uint16_t dataId = luaL_checkunsigned(L, 3);
 
@@ -652,6 +656,10 @@ static int luaCrossfireTelemetryPush(lua_State * L)
 
   if (lua_gettop(L) == 0) {
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+  }
+  else if (lua_gettop(L) > TELEMETRY_OUTPUT_BUFFER_SIZE ) {
+    lua_pushboolean(L, false);
+    return 1;
   }
   else if (outputTelemetryBuffer.isAvailable()) {
     uint8_t command = luaL_checkunsigned(L, 1);
