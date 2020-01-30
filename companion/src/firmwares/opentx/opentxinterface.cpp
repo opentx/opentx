@@ -1172,8 +1172,8 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
 
 enum RfOptions {
   NONE = 0,
-  EU,
-  FLEX
+  EU = 1 << 0,
+  FLEX = 1 << 1
 };
 
 void addOpenTxRfOptions(OpenTxFirmware * firmware, uint8_t options)
