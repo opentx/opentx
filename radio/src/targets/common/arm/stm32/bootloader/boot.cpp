@@ -205,10 +205,25 @@ int main()
                          AUX_SERIAL_RCC_APB1Periph |
                          SD_RCC_APB1Periph, ENABLE);
 
-  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG, ENABLE);
+  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG | AUX_SERIAL_RCC_APB2Periph, ENABLE);
 
   pwrInit();
   keysInit();
+
+  // USB charger handling
+#if defined(USB_CHARGER)
+  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE() && !pwrPressed()) {
+    ledInit();
+    usbChargerInit();
+    ledOff();
+    while (!pwrPressed()) {
+      if(usbChargerLed())
+        GPIO_SetBits(LED_GPIO, LED_GREEN_GPIO_PIN);
+      else
+        ledOff();
+    }
+  }
+#endif
 
   // wait a bit for the inputs to stabilize...
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {

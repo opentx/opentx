@@ -51,8 +51,20 @@ if (PCB STREQUAL X10)
     set(FLAVOUR t16)
     set(LUA_EXPORT lua_export_t16)
     add_definitions(-DRADIO_T16)
+    add_definitions(-DRADIO_FAMILY_T16)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" OFF)
     option(BLUETOOTH "Support for bluetooth module" OFF)
+  elseif (PCBREV STREQUAL TX16S)
+    set(FLAVOUR tx16s)
+    set(LUA_EXPORT lua_export_t16)
+    add_definitions(-DRADIO_TX16S)
+    add_definitions(-DRADIO_FAMILY_T16)
+    option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
+    option(BLUETOOTH "Support for bluetooth module" OFF)
+    if (NOT BLUETOOTH)
+      set(AUX_SERIAL ON)
+    endif()
+    set(USB_CHARGER YES)
   else()
     set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
@@ -195,15 +207,26 @@ set(TARGET_SRC
   ../common/arm/stm32/rotary_encoder_driver.cpp
   )
 
+if(USB_CHARGER)
+  set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
+  add_definitions(-DUSB_CHARGER)
+endif()
+
 if(BLUETOOTH)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC ${TARGET_SRC} ../common/arm/stm32/bluetooth_driver.cpp)
   set(SRC ${SRC} bluetooth.cpp)
 endif()
 
+if (AUX_SERIAL)
+  add_definitions(-DAUX_SERIAL)
+  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+endif()
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
+  ${AUX_SERIAL_DRIVER}
   board.cpp
   backlight_driver.cpp
   ../common/arm/stm32/pwr_driver.cpp

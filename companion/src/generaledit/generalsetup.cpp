@@ -191,7 +191,7 @@ ui(new Ui::GeneralSetup)
     ui->label_BLBright->hide();
   }
 
-  if (!IS_HORUS(firmware->getBoard())) {
+  if (!IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
     ui->OFFBright_SB->hide();
     ui->OFFBright_SB->setDisabled(true);
     ui->label_OFFBright->hide();
@@ -241,7 +241,7 @@ ui(new Ui::GeneralSetup)
     ui->rssiPowerOffWarnChkB->hide();
   }
 
-  if (IS_HORUS(firmware->getBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
     ui->splashScreenChkB->hide();
     ui->splashScreenDuration->hide();
     ui->splashScreenLabel->hide();
