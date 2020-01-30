@@ -219,8 +219,8 @@ if(BLUETOOTH)
 endif()
 
 if (AUX_SERIAL)
-    add_definitions(-DAUX_SERIAL)
-    set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+  add_definitions(-DAUX_SERIAL)
+  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 endif()
 
 set(FIRMWARE_TARGET_SRC

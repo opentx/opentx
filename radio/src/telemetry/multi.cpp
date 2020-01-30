@@ -318,7 +318,7 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
-    for(uint8_t c=0; c < len; c++)
+    for (uint8_t c=0; c < len; c++)
       auxSerialPutc(packet[c]);
   }
 #endif
