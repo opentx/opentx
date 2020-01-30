@@ -321,6 +321,15 @@
 #define PWR_SWITCH_GPIO                 GPIOJ
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
+// USB Charger
+#if defined(USB_CHARGER)
+#define USB_CHARGER_RCC_AHB1Periph      RCC_AHB1Periph_GPIOG
+#define USB_CHARGER_GPIO                GPIOG
+#define USB_CHARGER_GPIO_PIN            GPIO_Pin_11  // PG.11
+#else
+#define USB_CHARGER_RCC_AHB1Periph      0
+#endif
+
 // S.Port update connector
 #if defined(RADIO_FAMILY_T16)
   #define SPORT_MAX_BAUDRATE              400000
