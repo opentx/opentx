@@ -64,6 +64,10 @@ const uint8_t LBM_TOPMENU_TXBATT[] = {
 #include "mask_txbat.lbm"
 };
 
+const uint8_t LBM_TOPMENU_TXBATT_CHARGING[] = {
+#include "mask_txbat_charging.lbm"
+};
+
 const uint8_t LBM_TOPMENU_ANTENNA[] = {
 #include "mask_antenna.lbm"
 };
