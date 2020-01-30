@@ -1170,14 +1170,22 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOption("nooverridech", Firmware::tr("No OverrideCH functions available"));
 }
 
-void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true)
+enum RfOptions {
+  NONE = 0,
+  EU,
+  FLEX
+};
+
+void addOpenTxRfOptions(OpenTxFirmware * firmware, uint8_t options)
 {
   static const Firmware::Option opt_eu("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   static const Firmware::Option opt_fl("flexr9m", Firmware::tr("Enable non certified firmwares"));
-  if (flex)
+  if (options == EU + FLEX)
     firmware->addOptionsGroup({opt_eu, opt_fl});
-  else
+  else if (options == EU)
     firmware->addOption(opt_eu);
+  else if (options == FLEX)
+    firmware->addOption(opt_fl);
 }
 
 void addOpenTxFontOptions(OpenTxFirmware * firmware)
@@ -1191,7 +1199,6 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
-  addOpenTxRfOptions(firmware);
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
@@ -1220,7 +1227,7 @@ void addOpenTxArm9xOptions(OpenTxFirmware * firmware, bool dblkeys = true)
   if (dblkeys)
     firmware->addOption("dblkeys", Firmware::tr("Enable resetting values by pressing up and down at the same time"));
   addOpenTxFontOptions(firmware);
-  addOpenTxRfOptions(firmware, true);
+  addOpenTxRfOptions(firmware, FLEX);
 }
 
 void registerOpenTxFirmwares()
@@ -1233,11 +1240,13 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky Taranis X9D+ 2019 board */
   firmware = new OpenTxFirmware("opentx-x9d+2019", Firmware::tr("FrSky Taranis X9D+ 2019"), BOARD_TARANIS_X9DP_2019);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", Firmware::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
@@ -1245,6 +1254,7 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", Firmware::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
@@ -1253,48 +1263,57 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X9-LiteS board */
   firmware = new OpenTxFirmware("opentx-x9lites", Firmware::tr("FrSky Taranis X9-Lite S"), BOARD_TARANIS_X9LITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X7 Access board */
   firmware = new OpenTxFirmware("opentx-x7access", Firmware::tr("FrSky Taranis X7 / X7S Access"), BOARD_TARANIS_X7_ACCESS);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X-Lite S/PRO board */
   firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", Firmware::tr("FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
   // firmware->addOption("stdr9m", Firmware::tr("Use JR-sized R9M module"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X10 board */
   firmware = new OpenTxFirmware("opentx-x10", Firmware::tr("FrSky Horus X10 / X10S"), BOARD_X10);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X10 Express board */
   firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 Express / X10S Express"), BOARD_X10_EXPRESS);
   addOpenTxFrskyOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X12 (Horus) board */
   firmware = new OpenTxFirmware("opentx-x12s", Firmware::tr("FrSky Horus X12S"), BOARD_HORUS_X12S);
@@ -1302,6 +1321,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
   firmware->addOption("pcbdev", Firmware::tr("Use ONLY with first DEV pcb version"));
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* Jumper T12 board */
   firmware = new OpenTxFirmware("opentx-t12", QCoreApplication::translate("Firmware", "Jumper T12 / T12 Pro"), BOARD_JUMPER_T12);
@@ -1313,6 +1333,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* Jumper T16 board */
   firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+ / T16 Pro"), BOARD_JUMPER_T16);
@@ -1320,6 +1341,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
