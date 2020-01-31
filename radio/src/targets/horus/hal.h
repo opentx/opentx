@@ -182,10 +182,17 @@
   #define TRIMS_GPIO_REG_LSU            GPIOB->IDR
   #define TRIMS_GPIO_PIN_LSU            GPIO_Pin_13 // PB.13
 #elif defined(PCBX10)
-  #define TRIMS_GPIO_REG_LHL            GPIOB->IDR
-  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_8  // PB.08
-  #define TRIMS_GPIO_REG_LHR            GPIOB->IDR
-  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_9  // PB.09
+  #if defined(RADIO_TX16S)
+    #define TRIMS_GPIO_REG_LHL            GPIOA->IDR
+    #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_8  // PA.06
+    #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
+    #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_9  // PC.04
+  #else
+    #define TRIMS_GPIO_REG_LHL            GPIOB->IDR
+    #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_8  // PB.08
+    #define TRIMS_GPIO_REG_LHR            GPIOB->IDR
+    #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_9  // PB.09
+  #endif
   #define TRIMS_GPIO_REG_LVD            GPIOG->IDR
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_12 // PG.12
   #define TRIMS_GPIO_REG_LVU            GPIOJ->IDR
@@ -226,14 +233,21 @@
   #define KEYS_GPIOI_PINS               (KEYS_GPIO_PIN_PGDN | KEYS_GPIO_PIN_LEFT | KEYS_GPIO_PIN_DOWN | SWITCHES_GPIO_PIN_A_L | GPIO_Pin_4)
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RSD)
 #elif defined(PCBX10)
-  #define KEYS_GPIOB_PINS               (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13 | GPIO_Pin_8 | GPIO_Pin_9)
-#if defined(RADIO_TX16S)
-  #define KEYS_GPIOC_PINS               (GPIO_Pin_13)
-#endif
+  #if defined(RADIO_TX16S)
+    #define KEYS_GPIOB_PINS               (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13)
+  #else
+    #define KEYS_GPIOB_PINS               (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13 | GPIO_Pin_8 | GPIO_Pin_9)
+  #endif
   #define KEYS_GPIOD_PINS               (GPIO_Pin_11 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_13)
   #define KEYS_GPIOE_PINS               (GPIO_Pin_3)
   #define KEYS_GPIOG_PINS               (SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_LVD)
+#if defined(RADIO_TX16S)
+  #define KEYS_GPIOA_PINS               (GPIO_Pin_6)
+  #define KEYS_GPIOC_PINS               (GPIO_Pin_4)
+  #define KEYS_GPIOH_PINS               (GPIO_Pin_2  |  GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
+#else
   #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
+#endif
   #define KEYS_GPIOI_PINS               (GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_15)
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | GPIO_Pin_8)
 #endif
@@ -434,7 +448,7 @@
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
-#define TELEMETRY_RCC_APB2Periph        RCC_APB2Periph_TIM11
+#define TELEMETRY_RCC_APB2Periph        RCC_APB2Periph_TIM10
 #define TELEMETRY_DIR_GPIO              GPIOD
 #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
 #define TELEMETRY_GPIO                  GPIOD
