@@ -26,7 +26,7 @@ const uint8_t LBM_LAYOUT_2x1[] = {
 
 const ZoneOption OPTIONS_LAYOUT_2x1[] = {
   { "Top bar", ZoneOption::Bool },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 class Layout2x1: public Layout

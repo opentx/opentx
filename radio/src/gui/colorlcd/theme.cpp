@@ -23,9 +23,9 @@
 //#include "modal_window.h"
 
 extern ThemeBase * defaultTheme;
-const BitmapBuffer * ThemeBase::asterisk = NULL;
-const BitmapBuffer * ThemeBase::question = NULL;
-const BitmapBuffer * ThemeBase::busy = NULL;
+const BitmapBuffer * ThemeBase::asterisk = nullptr;
+const BitmapBuffer * ThemeBase::question = nullptr;
+const BitmapBuffer * ThemeBase::busy = nullptr;
 
 const uint8_t LBM_FOLDER[] = {
 #include "mask_folder.lbm"

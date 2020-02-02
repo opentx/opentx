@@ -27,51 +27,49 @@ pixel_t displayBuf[DISPLAY_BUFFER_SIZE];
 uint8_t getMappedChar(uint8_t c)
 {
   uint8_t result;
-  if (c == 0)
-    result = 0;
+
 #if defined(TRANSLATIONS_FR)
-  else if (c >= 0x80 && c <= 0x84) {
+  if (c >= 0x80 && c <= 0x84) {
     result = 115 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_DE)
-  else if (c >= 0x80 && c <= 0x86) {
+  if (c >= 0x80 && c <= 0x86) {
     result = 120 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_CZ)
-  else if (c >= 0x80 && c <= 0x80+29) {
+  if (c >= 0x80 && c <= 0x80+29) {
     result = 127 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_ES)
-  else if (c >= 0x80 && c <= 0x81) {
+  if (c >= 0x80 && c <= 0x81) {
     result = 157 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_FI)
-  else if (c >= 0x80 && c <= 0x85) {
+  if (c >= 0x80 && c <= 0x85) {
     result = 159 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_IT)
-  else if (c >= 0x80 && c <= 0x81) {
+  if (c >= 0x80 && c <= 0x81) {
     result = 165 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_PL)
-  else if (c >= 0x80 && c <= 0x80+17) {
+  if (c >= 0x80 && c <= 0x80+17) {
     result = 167 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_PT)
-  else if (c >= 0x80 && c <= 0x80+21) {
+  if (c >= 0x80 && c <= 0x80+21) {
     result = 185 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_SE)
-  else if (c >= 0x80 && c <= 0x85) {
+  if (c >= 0x80 && c <= 0x85) {
     result = 207 + c - 0x80;
   }
 #endif
-  else if (c == 0x21) // !
-    result = 0;
-  else if (c < 0xC0)
-    result = c - 0x20 - 2;
+
+  if (c < 0xC0)
+    result = c - 0x20;
   else
-    result = c - 0xC0 + 96 - 2;
+    result = c - 0xC0 + 96;
 
 //  TRACE("getMappedChar '%c' (%x) = %d", c, c, result);
 
@@ -99,13 +97,10 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   const uint16_t * specs = fontspecsTable[FONT_INDEX(flags)];
 
   int result = 0;
-  for (int i=0; len == 0 || i < len; ++i) {
+  for (int i = 0; len == 0 || i < len; ++i) {
     unsigned int c = uint8_t(*s);
     if (!c) {
       break;
-    }
-    else if (c == 0x20) {
-      result += 4;
     }
     else if (c >= 0xFE) {
       s++;
@@ -136,7 +131,7 @@ BitmapBuffer * lcd = &_lcd;
 
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
 #endif
@@ -150,7 +145,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, ui
 
 void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);
@@ -164,7 +159,7 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
 
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);

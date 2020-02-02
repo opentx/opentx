@@ -198,7 +198,7 @@ void ViewMain::onEvent(event_t event)
 
 void ViewMain::openMenu()
 {
-  Menu * menu = new Menu();
+  Menu * menu = new Menu(this);
   menu->addLine(STR_MODEL_SELECT, [=]() {
       new ModelSelectMenu();
   });
@@ -211,7 +211,7 @@ void ViewMain::openMenu()
       // new ChannelsMonitorMenu();
   });
   menu->addLine(STR_RESET_SUBMENU, [=]() {
-      Menu * menu = new Menu();
+      Menu * menu = new Menu(this);
       menu->addLine(STR_RESET_FLIGHT, [=]() {
           flightReset();
       });

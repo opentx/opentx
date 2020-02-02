@@ -156,45 +156,45 @@ enum
 
 const HitecSensor hitecSensors[] = {
   //frame 00
-  {HITEC_ID_RX_VOLTAGE,   ZSTR_BATT,       UNIT_VOLTS,             2},  // RX_Batt Voltage
+  {HITEC_ID_RX_VOLTAGE,   STR_SENSOR_BATT,       UNIT_VOLTS,             2},  // RX_Batt Voltage
   //frame 11
   //frame 12
-  {HITEC_ID_GPS_LAT_LONG, ZSTR_GPS,        UNIT_GPS,               0},  // GPS position
+  {HITEC_ID_GPS_LAT_LONG, STR_SENSOR_GPS,        UNIT_GPS,               0},  // GPS position
   //frame 13
-  {HITEC_ID_TEMP2,        ZSTR_TEMP2,      UNIT_CELSIUS,           0},  // Temperature sensor 2
+  {HITEC_ID_TEMP2,        STR_SENSOR_TEMP2,      UNIT_CELSIUS,           0},  // Temperature sensor 2
   //frame 14
-  {HITEC_ID_GPS_SPEED,    ZSTR_GSPD,       UNIT_KMH,               0},  // GPS speed
-  {HITEC_ID_GPS_ALTITUDE, ZSTR_GPSALT,     UNIT_METERS,            0},  // GPS altitude sea level
-  {HITEC_ID_TEMP1,        ZSTR_TEMP1,      UNIT_CELSIUS,           0},  // Temperature sensor 1
+  {HITEC_ID_GPS_SPEED,    STR_SENSOR_GSPD,       UNIT_KMH,               0},  // GPS speed
+  {HITEC_ID_GPS_ALTITUDE, STR_SENSOR_GPSALT,     UNIT_METERS,            0},  // GPS altitude sea level
+  {HITEC_ID_TEMP1,        STR_SENSOR_TEMP1,      UNIT_CELSIUS,           0},  // Temperature sensor 1
   //frame 15
-  {HITEC_ID_FUEL,         ZSTR_FUEL,       UNIT_PERCENT,           0},  // Fuel
-  {HITEC_ID_RPM1,         ZSTR_RPM,        UNIT_RPMS,              0},  // RPM1
-  {HITEC_ID_RPM2,   ZSTR_RPM2,             UNIT_RPMS,              0},  // RPM2
+  {HITEC_ID_FUEL,         STR_SENSOR_FUEL,       UNIT_PERCENT,           0},  // Fuel
+  {HITEC_ID_RPM1,         STR_SENSOR_RPM,        UNIT_RPMS,              0},  // RPM1
+  {HITEC_ID_RPM2,   STR_SENSOR_RPM2,             UNIT_RPMS,              0},  // RPM2
   //frame 16
-  {HITEC_ID_GPS_DATETIME, ZSTR_GPS,        UNIT_DATETIME,          0},  // GPS date time
+  {HITEC_ID_GPS_DATETIME, STR_SENSOR_GPS,        UNIT_DATETIME,          0},  // GPS date time
   //frame 17
-  {HITEC_ID_GPS_HEADING,  ZSTR_HDG,        UNIT_DEGREE,            0},  // GPS Heading
-  {HITEC_ID_GPS_COUNT,    ZSTR_SATELLITES, UNIT_RAW,               0},  // GPS count
-  {HITEC_ID_TEMP3,  ZSTR_TEMP3,            UNIT_CELSIUS,           0},  // Temperature sensor 3
-  {HITEC_ID_TEMP4,  ZSTR_TEMP4,            UNIT_CELSIUS,           0},  // Temperature sensor 4
+  {HITEC_ID_GPS_HEADING,  STR_SENSOR_HDG,        UNIT_DEGREE,            0},  // GPS Heading
+  {HITEC_ID_GPS_COUNT,    STR_SENSOR_SATELLITES, UNIT_RAW,               0},  // GPS count
+  {HITEC_ID_TEMP3,  STR_SENSOR_TEMP3,            UNIT_CELSIUS,           0},  // Temperature sensor 3
+  {HITEC_ID_TEMP4,  STR_SENSOR_TEMP4,            UNIT_CELSIUS,           0},  // Temperature sensor 4
   //frame 18
-  {HITEC_ID_VOLTAGE,      ZSTR_A1,         UNIT_VOLTS,             1},  // Voltage sensor
-  {HITEC_ID_AMP,          ZSTR_CURR,       UNIT_AMPS,              0},  // Amp sensor
-  {HITEC_ID_C50,    ZSTR_C50,              UNIT_AMPS,              1},  // Amp sensor C50
-  {HITEC_ID_C200,   ZSTR_C200,             UNIT_AMPS,              0},  // Amp sensor C200
+  {HITEC_ID_VOLTAGE,      STR_SENSOR_A1,         UNIT_VOLTS,             1},  // Voltage sensor
+  {HITEC_ID_AMP,          STR_SENSOR_CURR,       UNIT_AMPS,              0},  // Amp sensor
+  {HITEC_ID_C50,    STR_SENSOR_C50,              UNIT_AMPS,              1},  // Amp sensor C50
+  {HITEC_ID_C200,   STR_SENSOR_C200,             UNIT_AMPS,              0},  // Amp sensor C200
   //frame 19
-  {HITEC_ID_AMP_S1, ZSTR_CURR_SERVO1,      UNIT_AMPS,              1},  // Amp sensor
-  {HITEC_ID_AMP_S2, ZSTR_CURR_SERVO2,      UNIT_AMPS,              1},  // Amp sensor
-  {HITEC_ID_AMP_S3, ZSTR_CURR_SERVO3,      UNIT_AMPS,              1},  // Amp sensor
-  {HITEC_ID_AMP_S4, ZSTR_CURR_SERVO4,      UNIT_AMPS,              1},  // Amp sensor
+  {HITEC_ID_AMP_S1, STR_SENSOR_CURR_SERVO1,      UNIT_AMPS,              1},  // Amp sensor
+  {HITEC_ID_AMP_S2, STR_SENSOR_CURR_SERVO2,      UNIT_AMPS,              1},  // Amp sensor
+  {HITEC_ID_AMP_S3, STR_SENSOR_CURR_SERVO3,      UNIT_AMPS,              1},  // Amp sensor
+  {HITEC_ID_AMP_S4, STR_SENSOR_CURR_SERVO4,      UNIT_AMPS,              1},  // Amp sensor
   //frame 1A
-  {HITEC_ID_AIR_SPEED,    ZSTR_ASPD,       UNIT_KMH,               0},  // Air speed
+  {HITEC_ID_AIR_SPEED,    STR_SENSOR_ASPD,       UNIT_KMH,               0},  // Air speed
   //frame 1B
-  {HITEC_ID_VARIO,        ZSTR_VSPD,       UNIT_METERS_PER_SECOND, 1},  // Vario
-  {HITEC_ID_ALT,          ZSTR_ALT,        UNIT_METERS,            1},  // Altitude
+  {HITEC_ID_VARIO,        STR_SENSOR_VSPD,       UNIT_METERS_PER_SECOND, 1},  // Vario
+  {HITEC_ID_ALT,          STR_SENSOR_ALT,        UNIT_METERS,            1},  // Altitude
 
-  {HITEC_ID_TX_RSSI,      ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors
-  {HITEC_ID_TX_LQI,       ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors// Pseudo sensor for TLQI
+  {HITEC_ID_TX_RSSI,      STR_SENSOR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors
+  {HITEC_ID_TX_LQI,       STR_SENSOR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors// Pseudo sensor for TLQI
   {0x00,                  NULL,            UNIT_RAW,               0},  // sentinel
 };
 
@@ -401,7 +401,7 @@ void processHitecTelemetryData(uint8_t data, uint8_t * rxBuffer, uint8_t &rxBuff
     for (int i=0; i<5; i++) {
       debugPrintf("%02X ", rxBuffer[4+i]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     processHitecPacket(rxBuffer + 1);
     rxBufferCount = 0;

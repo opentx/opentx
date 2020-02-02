@@ -33,7 +33,7 @@ const ZoneOption OPTIONS_LAYOUT_2x4[] = {
   { "  Color", ZoneOption::Color },
   { "Panel2 background", ZoneOption::Bool },
   { "  Color", ZoneOption::Color },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 class Layout2x4: public Layout

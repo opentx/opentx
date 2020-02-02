@@ -5,7 +5,7 @@
 
 import os
 
-standard_chars = "!#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz~|≥"
+standard_chars = """ !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz~|≥"""
 
 extra_chars = "".join([chr(0x10000+i) for i in range(21)])
 

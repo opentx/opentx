@@ -77,7 +77,7 @@ class SensorButton : public Button {
         dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, HIGHLIGHT_COLOR);
       }
 
-      dc->drawNumber(2, 1, number, LEFT, 0, NULL, ":");
+      dc->drawNumber(2, 1, number, LEFT, 0, nullptr, ":");
 
       dc->drawSizedText(SENSOR_COL1, line1, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN);
 
@@ -440,7 +440,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
       Button * button = new SensorButton(window, grid.getFieldSlot(), idx, ++count);
       button->setPressHandler([=]() -> uint8_t {
         button->bringToTop();
-        Menu * menu = new Menu();
+        Menu * menu = new Menu(window);
         menu->addLine(STR_EDIT, [=]() {
           editSensor(window, idx);
         });

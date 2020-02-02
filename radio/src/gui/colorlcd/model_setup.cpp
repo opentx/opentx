@@ -25,6 +25,28 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
+class MultimoduleStatus: public StaticText
+{
+  public:
+    MultimoduleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
+      StaticText(parent, rect),
+      moduleIdx(moduleIdx)
+    {
+    }
+
+    void checkEvents() override
+    {
+      getMultiModuleStatus(moduleIdx).getStatusString(reusableBuffer.moduleSetup.msg);
+      if (text != reusableBuffer.moduleSetup.msg) {
+        setText(reusableBuffer.moduleSetup.msg);
+        invalidate();
+      }
+    }
+
+  protected:
+    uint8_t moduleIdx;
+};
+
 class ChannelFailsafeBargraph: public Window {
   public:
     ChannelFailsafeBargraph(Window * parent, const rect_t & rect, uint8_t moduleIdx, uint8_t channel):
@@ -148,8 +170,8 @@ class FailSafePage : public Page {
 
 class RegisterDialog: public Dialog {
   public:
-    explicit RegisterDialog(uint8_t moduleIdx):
-      Dialog(STR_REGISTER, {50, 73, LCD_W - 100, 0}),
+    RegisterDialog(Window * parent, uint8_t moduleIdx):
+      Dialog(parent, STR_REGISTER, {50, 73, LCD_W - 100, 0}),
       moduleIdx(moduleIdx)
     {
       FormGroup * form = &content->form;
@@ -237,8 +259,8 @@ class RegisterDialog: public Dialog {
 
 class BindWaitDialog: public Dialog {
   public:
-    BindWaitDialog(uint8_t moduleIdx, uint8_t receiverIdx):
-      Dialog(STR_BIND, {50, 73, LCD_W - 100, LCD_H - 146}),
+    BindWaitDialog(Window * parent, uint8_t moduleIdx, uint8_t receiverIdx):
+      Dialog(parent, STR_BIND, {50, 73, LCD_W - 100, LCD_H - 146}),
       moduleIdx(moduleIdx),
       receiverIdx(receiverIdx)
     {
@@ -266,8 +288,8 @@ class BindWaitDialog: public Dialog {
 
 class BindRxChoiceMenu: public Menu {
   public:
-    BindRxChoiceMenu(uint8_t moduleIdx, uint8_t receiverIdx):
-      Menu(),
+    BindRxChoiceMenu(Window * parent, uint8_t moduleIdx, uint8_t receiverIdx):
+      Menu(parent),
       moduleIdx(moduleIdx),
       receiverIdx(receiverIdx)
     {
@@ -293,10 +315,10 @@ class BindRxChoiceMenu: public Menu {
               memcpy(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], receiverName, PXX2_LEN_RX_NAME);
               storageDirty(EE_MODEL);
               reusableBuffer.moduleSetup.bindInformation.step = BIND_OK;
-              new MessageDialog(STR_BIND, STR_BIND_OK);
+              new MessageDialog(parent, STR_BIND, STR_BIND_OK);
 #else
               reusableBuffer.moduleSetup.bindInformation.step = BIND_START;
-              new BindWaitDialog(moduleIdx, receiverIdx);
+              new BindWaitDialog(parent, moduleIdx, receiverIdx);
 #endif
             }
         });
@@ -324,7 +346,7 @@ void BindWaitDialog::checkEvents()
 
   if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT && reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
     deleteLater();
-    new BindRxChoiceMenu(moduleIdx, receiverIdx);
+    new BindRxChoiceMenu(this, moduleIdx, receiverIdx);
     return;
   }
 
@@ -339,7 +361,7 @@ class ReceiverButton: public TextButton {
             startBind();
           }
           else {
-            auto menu = new Menu();
+            auto menu = new Menu(parent);
             menu->addLine(STR_BIND, [=]() {
                 startBind();
                 return 0;
@@ -360,7 +382,7 @@ class ReceiverButton: public TextButton {
                 memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
                 reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
                 reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = 0x01;
-                new ConfirmDialog(STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
+                new ConfirmDialog(parent, STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
                     moduleState[moduleIdx].mode = MODULE_MODE_RESET;
                     removePXX2Receiver(moduleIdx, receiverIdx);
                 });
@@ -370,7 +392,7 @@ class ReceiverButton: public TextButton {
                 memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
                 reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
                 reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = 0xFF;
-                new ConfirmDialog(STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
+                new ConfirmDialog(parent, STR_RECEIVER, STR_RECEIVER_DELETE, [=]() {
                     moduleState[moduleIdx].mode = MODULE_MODE_RESET;
                     removePXX2Receiver(moduleIdx, receiverIdx);
                 });
@@ -403,7 +425,7 @@ class ReceiverButton: public TextButton {
         moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
       }
 
-      new BindWaitDialog(moduleIdx, receiverIdx);
+      new BindWaitDialog(parent, moduleIdx, receiverIdx);
     }
 
     void checkEvents() override
@@ -569,10 +591,7 @@ class ModuleWindow : public FormGroup {
 
         // Multimodule status
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        char statusText[64] = {};
-        #warning "multimodule adaptations needed"
-        // multiModuleStatus.getStatusString(statusText);
-        new StaticText(this, grid.getFieldSlot(), statusText);
+        new MultimoduleStatus(this, grid.getFieldSlot(), moduleIdx);
 
         // Multimodule sync
         /*if (multiSyncStatus.isValid()) {
@@ -645,7 +664,7 @@ class ModuleWindow : public FormGroup {
         new StaticText(this, grid.getLabelSlot(true), STR_PPMFRAME);
 
         // PPM frame length
-        auto edit = new NumberEdit(this, grid.getFieldSlot(2, 0), 125, 35 * 5 + 225,
+        auto edit = new NumberEdit(this, grid.getFieldSlot(3, 0), 125, 35 * 5 + 225,
                                    GET_DEFAULT(g_model.moduleData[moduleIdx].ppm.frameLength * 5 + 225),
                                    SET_VALUE(g_model.moduleData[moduleIdx].ppm.frameLength, (newValue - 225) / 5),
                                    PREC1);
@@ -653,11 +672,14 @@ class ModuleWindow : public FormGroup {
         edit->setSuffix(STR_MS);
 
         // PPM frame delay
-        edit = new NumberEdit(this, grid.getFieldSlot(2, 1), 100, 800,
+        edit = new NumberEdit(this, grid.getFieldSlot(3, 1), 100, 800,
                               GET_DEFAULT(g_model.moduleData[moduleIdx].ppm.delay * 50 + 300),
                               SET_VALUE(g_model.moduleData[moduleIdx].ppm.delay, (newValue - 300) / 50));
         edit->setStep(50);
         edit->setSuffix("us");
+
+        // PPM Polarity
+        new Choice(this, grid.getFieldSlot(3, 2), STR_PPM_POL, 0, 1, GET_SET_DEFAULT(g_model.moduleData[moduleIdx].ppm.pulsePol ));
         grid.nextLine();
       }
 
@@ -680,27 +702,31 @@ class ModuleWindow : public FormGroup {
             rangeButton->check(false);
           }
           if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-            bindButton->setText(STR_MODULE_BIND);
             moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
             return 0;
           }
           else {
-            bindButton->setText(STR_MODULE_BIND);
+            setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
             moduleState[moduleIdx].mode = MODULE_MODE_BIND;
             return 1;
           }
         });
         bindButton->setCheckHandler([=]() {
           if (moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
-            bindButton->setText(STR_MODULE_BIND);
             bindButton->check(false);
           }
+#if defined(MULTIMODULE)
+          if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
+            setMultiBindStatus(moduleIdx, MULTI_BIND_NONE);
+            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+            bindButton->check(false);
+          }
+#endif
         });
 
         rangeButton = new TextButton(this, grid.getFieldSlot(2+thirdColumn, 1+thirdColumn), STR_MODULE_RANGE);
         rangeButton->setPressHandler([=]() -> uint8_t {
           if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-            bindButton->setText(STR_MODULE_BIND);
             bindButton->check(false);
             moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
           }
@@ -743,7 +769,7 @@ class ModuleWindow : public FormGroup {
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE);
         registerButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_REGISTER);
         registerButton->setPressHandler([=]() -> uint8_t {
-            new RegisterDialog(moduleIdx);
+            new RegisterDialog(this, moduleIdx);
             return 0;
         });
 

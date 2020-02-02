@@ -516,6 +516,6 @@ int main()
   return 0;
 }
 
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBNV14)
 void *__dso_handle = nullptr;
 #endif

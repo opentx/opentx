@@ -69,6 +69,9 @@ class FrskyTheme: public ThemeBase
       lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
       lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(167, 167, 167);
       lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(222, 222, 222);
+#if defined(BATTERY_CHARGE)
+      lcdColorTable[BATTERY_CHARGE_COLOR_INDEX] = GREEN;
+#endif
     }
 
     void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_COLOR) const
@@ -340,7 +343,7 @@ class FrskyTheme: public ThemeBase
       dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, DEFAULT_BGCOLOR); // the white separation line
       dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
       if (title) {
-        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 1, title, MENU_COLOR);
+        dc->drawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 3, title, MENU_COLOR);
       }
 
       drawMenuDatetime(dc);

@@ -554,15 +554,15 @@ void ModelsList::moveModel(ModelCell * model, ModelsCategory * previous_category
 
 bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_buf_len)
 {
-  ModelCell* mod_cell = modelslist.getCurrentModel();
-  if (!mod_cell || !mod_cell->valid_rfData) {
+  ModelCell* modelCell = modelslist.getCurrentModel();
+  if (!modelCell || !modelCell->valid_rfData) {
     // in doubt, pretend it's unique
     return true;
   }
 
-  uint8_t modelId = mod_cell->modelId[moduleIdx];
-  uint8_t type = mod_cell->moduleData[moduleIdx].type;
-  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
+  uint8_t modelId = modelCell->modelId[moduleIdx];
+  uint8_t type = modelCell->moduleData[moduleIdx].type;
+  uint8_t rfProtocol = modelCell->moduleData[moduleIdx].rfProtocol;
 
   uint8_t additionalOnes = 0;
   char* curr = warn_buf;
@@ -570,10 +570,10 @@ bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_
 
   bool hit_found = false;
   const std::list<ModelsCategory*>& cats = modelslist.getCategories();
-  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
-  for (;cat_it != cats.end(); cat_it++) {
-    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
-      if (mod_cell == *it)
+  std::list<ModelsCategory*>::const_iterator catIt = cats.begin();
+  for (;catIt != cats.end(); catIt++) {
+    for (ModelsCategory::const_iterator it = (*catIt)->begin(); it != (*catIt)->end(); it++) {
+      if (modelCell == *it)
         continue;
 
       if (!(*it)->valid_rfData)
@@ -619,24 +619,21 @@ bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_
 
 uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
 {
-  ModelCell* mod_cell = modelslist.getCurrentModel();
-  if (!mod_cell || !mod_cell->valid_rfData) {
+  ModelCell * modelCell = modelslist.getCurrentModel();
+  if (!modelCell || !modelCell->valid_rfData) {
     return 0;
   }
 
-  uint8_t type = mod_cell->moduleData[moduleIdx].type;
-  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
+  uint8_t type = modelCell->moduleData[moduleIdx].type;
+  uint8_t rfProtocol = modelCell->moduleData[moduleIdx].rfProtocol;
 
-  // assume 63 is the highest Model ID
-  // and use 64 bits
-  uint8_t usedModelIds[8];
+  uint8_t usedModelIds[(MAX_RXNUM + 7) / 8];
   memset(usedModelIds, 0, sizeof(usedModelIds));
   
-  const std::list<ModelsCategory*>& cats = modelslist.getCategories();
-  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
-  for (;cat_it != cats.end(); cat_it++) {
-    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
-      if (mod_cell == *it)
+  const std::list<ModelsCategory *> & cats = modelslist.getCategories();
+  for (auto catIt = cats.begin(); catIt != cats.end(); catIt++) {
+    for (auto it = (*catIt)->begin(); it != (*catIt)->end(); it++) {
+      if (modelCell == *it)
         continue;
 
       if (!(*it)->valid_rfData)
@@ -648,25 +645,18 @@ uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
           (rfProtocol == (*it)->moduleData[moduleIdx].rfProtocol)) {
 
         uint8_t id = (*it)->modelId[moduleIdx];
-
-        uint8_t mask = 1;
-        for (uint8_t i = 1; i < (id & 7); i++)
-          mask <<= 1;
-
-        usedModelIds[id >> 3] |= mask;
+        uint8_t mask = 1 << (id & 7u);
+        usedModelIds[id >> 3u] |= mask;
       }
     }
   }
 
-  uint8_t new_id = 1;
-  uint8_t tst_mask = 1;
-  for (;new_id < getMaxRxNum(moduleIdx); new_id++) {
-    if (!(usedModelIds[new_id >> 3] & tst_mask)) {
+  for (uint8_t id = 1; id <= getMaxRxNum(moduleIdx); id++) {
+    uint8_t mask = 1u << (id & 7u);
+    if (!(usedModelIds[id >> 3u] & mask)) {
       // found free ID
-      return new_id;
+      return id;
     }
-    if ((tst_mask <<= 1) == 0)
-      tst_mask = 1;
   }
 
   // failed finding something...

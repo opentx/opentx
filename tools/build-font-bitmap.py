@@ -82,37 +82,42 @@ class FontBitmap:
         draw = ImageDraw.Draw(char_image)
         draw.text((-offset, 0), c, fill=self.foreground, font=font)
         left, _, right, _ = self.get_real_size(char_image)
+        if right + offset + 1 < width:
+            # print("char %c: space reduced" % c)
+            width = right + offset + 1
         if image:
-            image.paste(char_image.crop((left, 0, right + 1, image.height)), (x, 0))
-        return right - left + 1
+            image.paste(char_image.crop((-offset, 0, width, image.height)), (x, 0))
+        return width
 
     def generate(self, filename, generate_coords_file=True):
         coords = []
-        image = Image.new("RGB", (len(self.chars) * self.font_size, self.font_size + 10), self.background)
-        draw = ImageDraw.Draw(image)
+        image = Image.new("RGB", (len(self.chars) * self.font_size + 200, self.font_size + 20), self.background)
 
         width = 0
         for c in self.chars:
-            coords.append(width)
-
-            if c in extra_chars:
-                if self.extra_bitmap and c == extra_chars[0]:
-                    if self.font_size == 16:
-                        offset = 1
-                    else:
-                        offset = self.font_size % 2
-                    image.paste(self.extra_bitmap.copy(), (width, offset))
-            elif c == " ":
-                pass
+            if c == " ":
+                w = 4
             elif c in special_chars["cn"]:
-                width += self.draw_char(image, width, c, self.cjk_font)
+                w = self.draw_char(image, width, c, self.cjk_font)
+            elif c not in extra_chars:
+                w = self.draw_char(image, width, c, self.font)
             else:
-                width += self.draw_char(image, width, c, self.font)
+                continue
+            coords.append(width)
+            width += w
+
         coords.append(width)
 
         _, top, _, bottom = self.get_real_size(image)
-        image = image.crop((0, top, width, bottom))
-        coords.insert(0, bottom - top)
+
+        if self.extra_bitmap:
+            image.paste(self.extra_bitmap.copy(), (width, top))
+            for coord in [14, 14, 12, 12, 13, 13, 13, 13, 13] + [15] * 12:
+                width += coord
+                coords.append(width)
+
+        image = image.crop((0, top, width, bottom + 1))
+        coords.insert(0, bottom - top + 1)
 
         image.save(filename + ".png")
         if generate_coords_file:

@@ -57,7 +57,6 @@
 #define USBD_VID                            0x0483
 
 #define USBD_LANGID_STRING                  0x409
-#define USBD_MANUFACTURER_STRING            "FrSky"
 #define USBD_SERIALNUMBER_FS_STRING         "00000000001B"
 
 
@@ -216,8 +215,10 @@ uint8_t *  USBD_USR_ProductStrDescriptor( uint8_t speed , uint16_t *length)
 * @param  length : pointer to data length variable
 * @retval pointer to descriptor buffer
 */
+static const char USBD_MANUFACTURER_STRING[] = { USB_MANUFACTURER };
 uint8_t *  USBD_USR_ManufacturerStrDescriptor( uint8_t speed , uint16_t *length)
 {
+
   USBD_GetString ((uint8_t*)USBD_MANUFACTURER_STRING, USBD_StrDesc, length);
   return USBD_StrDesc;
 }

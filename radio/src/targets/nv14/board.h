@@ -27,10 +27,10 @@
 #include "hal.h"
 
 #if !defined(LUA_EXPORT_GENERATION)
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_ltdc.h"
-#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
+#include "stm32f4xx_sdio.h"
+#include "stm32f4xx_dma2d.h"
+#include "stm32f4xx_ltdc.h"
+#include "stm32f4xx_fmc.h"
 #endif
 
 #include "touch_driver.h"
@@ -54,8 +54,8 @@
 
 extern uint16_t sessionTimer;
 
-#define SLAVE_MODE()                    (g_model.trainerMode == TRAINER_MODE_SLAVE)
-#define TRAINER_CONNECTED()             (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
+#define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
+#define TRAINER_CONNECTED()             (true)
 
 PACK(typedef struct {
   uint8_t pxx2Enabled:1;
@@ -95,7 +95,7 @@ uint32_t sdGetSpeed();
 #define SD_IS_HC()                     (sdIsHC())
 #define SD_GET_SPEED()                 (sdGetSpeed())
 #define SD_GET_FREE_BLOCKNR()          (sdGetFreeSectors())
-#define SD_CARD_PRESENT()              (true)
+#define SD_CARD_PRESENT()              (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
 void sdInit();
 void sdMount();
 void sdDone();
@@ -133,8 +133,8 @@ void SDRAM_Init();
 // Pulses driver
 #define INTERNAL_MODULE_OFF()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #define INTERNAL_MODULE_ON()            GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define EXTERNAL_MODULE_ON()            GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-#define EXTERNAL_MODULE_OFF()           GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+void EXTERNAL_MODULE_ON();
+void EXTERNAL_MODULE_OFF();
 #define BLUETOOTH_MODULE_ON()           GPIO_ResetBits(BLUETOOTH_ON_GPIO, BLUETOOTH_ON_GPIO_PIN)
 #define BLUETOOTH_MODULE_OFF()          GPIO_SetBits(BLUETOOTH_ON_GPIO, BLUETOOTH_ON_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
@@ -162,6 +162,17 @@ void stop_trainer_capture();
 // Keys driver
 enum EnumKeys
 {
+  KEY_ENTER,
+  KEY_EXIT,
+  KEY_PGUP,
+  KEY_PGDN,
+  KEY_UP,
+  KEY_DOWN,
+  KEY_RIGHT,
+  KEY_LEFT,
+  KEY_TELEM,
+  KEY_MENU,
+  KEY_RADIO,
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
@@ -173,14 +184,32 @@ enum EnumKeys
   TRM_RH_UP,
   TRM_LS_DWN,
   TRM_LS_UP,
-  TRM_RS_DWN,
-  TRM_RS_UP,
-  TRM_LAST = TRM_RS_UP,
+  TRM_LEFT_CLICK,
+  TRM_RIGHT_CLICK,
+  TRM_LAST = TRM_RIGHT_CLICK,
   NUM_KEYS
 };
 
 #define IS_SHIFT_KEY(index)             (false)
-#define IS_SHIFT_PRESSED()              (false)&é&é&é""
+#define IS_SHIFT_PRESSED()              (false)
+enum VirtualKeys {
+  VKEY_MIN,
+  VKEY_MAX,
+  VKEY_INC,
+  VKEY_DEC,
+  VKEY_INC_LARGE,
+  VKEY_DEC_LARGE,
+  VKEY_DEFAULT,
+};
+
+enum LUATouchEvent {
+  TOUCH_DOWN = 1,
+  TOUCH_UP,
+  TOUCH_SLIDE_UP,
+  TOUCH_SLIDE_DOWN,
+  TOUCH_SLIDE_LEFT,
+  TOUCH_SLIDE_RIGHT,
+};
 
 enum EnumSwitches
 {
@@ -228,6 +257,13 @@ enum EnumSwitchesPositions
 };
 
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
+enum EnumPowerupState
+{
+  BOARD_POWER_OFF = 0xCAFEDEAD,
+  BOARD_POWER_ON = 0xDEADBEEF,
+  BOARD_STARTED = 0xBAADF00D,
+  BOARD_REBOOT = 0xC00010FF,
+};
 
 void monitorInit();
 void keysInit();
@@ -236,6 +272,7 @@ uint32_t switchState(uint8_t index);
 uint32_t readKeys();
 uint32_t readTrims();
 #define NUM_TRIMS                       NUM_STICKS
+#define NUM_TRIMS_KEYS                  (NUM_TRIMS * 2)
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(in)     (false)
@@ -244,14 +281,15 @@ uint32_t readTrims();
 #define DBLKEYS_PRESSED_LFT_DWN(in)     (false)
 
 // WDT driver
-#define WDTO_500MS                      500
 extern uint32_t powerupReason;
+extern uint32_t boardState;
 
 #define SHUTDOWN_REQUEST                0xDEADBEEF
 #define NO_SHUTDOWN_REQUEST             ~SHUTDOWN_REQUEST
 #define DIRTY_SHUTDOWN                  0xCAFEDEAD
 #define NORMAL_POWER_OFF                ~DIRTY_SHUTDOWN
 
+#define WDG_DURATION                              500 /*ms*/
 void watchdogInit(unsigned int duration);
 #if defined(SIMU)
   #define WAS_RESET_BY_WATCHDOG()               (false)
@@ -335,10 +373,11 @@ void adcInit();
 void adcRead();
 uint16_t getAnalogValue(uint8_t index);
 uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
+uint16_t getBattery2Voltage();   // returns current battery voltage in 10mV steps
 
-#define BATTERY_WARN                  37 // 3.7V
+#define BATTERY_WARN                  36 // 3.6V
 #define BATTERY_MIN                   35 // 3.5V
-#define BATTERY_MAX                   43 // 4.3V
+#define BATTERY_MAX                   42 // 4.2V
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -346,20 +385,22 @@ extern "C" {
 
 // Power driver
 #define SOFT_PWR_CTRL
+#define POWER_ON_DELAY               100 // 3s
 void pwrInit();
+void extModuleInit();
 uint32_t pwrCheck();
-#if defined(PCBFLYSKY)
 uint32_t lowPowerCheck();
-#endif
+
 void pwrOn();
+void pwrSoftReboot();
 void pwrOff();
 void pwrResetHandler();
 bool pwrPressed();
-uint32_t pwrPressedDuration();
+uint32_t pwrPressedDuration();;
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()         (false)
 #else
-  #define UNEXPECTED_SHUTDOWN()         ((powerupReason == DIRTY_SHUTDOWN) || WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
+  #define UNEXPECTED_SHUTDOWN()        (powerupReason == DIRTY_SHUTDOWN)
 #endif
 
 // LCD driver
@@ -376,7 +417,8 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format);
 void lcdSetContrast();
-#define lcdOff()                        backlightEnable(0) /* just disable the backlight */
+void lcdOff();
+void lcdOn();
 #define lcdSetRefVolt(...)
 #define lcdRefreshWait(...)
 void lcdStoreBackupBuffer();
@@ -384,10 +426,12 @@ int lcdRestoreBackupBuffer();
 
 // Backlight driver
 void backlightInit();
-#if defined(SIMU)
+#if defined(SIMU) || !defined(__cplusplus)
 #define backlightEnable(...)
+#define isBacklightEnabled() (true)
 #else
-void backlightEnable(uint8_t dutyCycle);
+void backlightEnable(uint8_t dutyCycle = 0);
+bool isBacklightEnabled();
 #endif
 
 #define BACKLIGHT_LEVEL_MAX             100
@@ -395,12 +439,11 @@ void backlightEnable(uint8_t dutyCycle);
 
 #define BACKLIGHT_ENABLE()              backlightEnable(globalData.unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : BACKLIGHT_LEVEL_MAX-g_eeGeneral.backlightBright)
 #define BACKLIGHT_DISABLE()             backlightEnable(globalData.unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : ((g_eeGeneral.blOffBright == BACKLIGHT_LEVEL_MIN) && (g_eeGeneral.backlightMode != e_backlight_mode_off)) ? 0 : g_eeGeneral.blOffBright)
-#define isBacklightEnabled()            true
+
 
 #if !defined(SIMU)
 void usbJoystickUpdate();
 #endif
-#define USBD_MANUFACTURER_STRING        "FlySky"
 #define USB_NAME                        "FlySky NV14"
 #define USB_MANUFACTURER                'F', 'l', 'y', 'S', 'k', 'y', ' ', ' '  /* 8 bytes */
 #define USB_PRODUCT                     'N', 'V', '1', '4', ' ', ' ', ' ', ' '  /* 8 Bytes */
@@ -412,12 +455,15 @@ void usbJoystickUpdate();
 // Audio driver
 void audioInit();
 void audioConsumeCurrentBuffer();
-void Audio_Sine_Test();
 void audioSpiWriteBuffer(const uint8_t * buffer, uint32_t size);
 void audioSpiSetSpeed(uint8_t speed);
 uint8_t audioHardReset();
 uint8_t audioSoftReset();
 void audioSendRiffHeader();
+void audioOn();
+void audioOff();
+bool isAudioReady();
+bool audioChipReset();
 
 #define SPI_SPEED_2                    0
 #define SPI_SPEED_4                    1
@@ -488,6 +534,5 @@ extern AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
 uint8_t touchPressed(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
-
 
 #endif // _BOARD_H_

@@ -46,12 +46,14 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(DEBUG_WINDOWS "Turn on windows traces" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
-option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
+option(TEST_BUILD_WARNING "Warn this is a test build" OFF)
 option(MODULE_PROTOCOL_FCC "Add support for FCC modules" ON)
 option(MODULE_PROTOCOL_LBT "Add support for EU/LBT modules" ON)
 option(MODULE_PROTOCOL_FLEX "Add support for non certified FLEX modules" OFF)
 option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
+option(TBS_RELEASE "Used to build TBS released firmware" OFF)
+option(ALLOW_TRAINER_MULTI "Allow multi trainer" OFF)
 option(BOOTLOADER "Include Bootloader" ON)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -134,7 +136,7 @@ add_definitions(-DFLAVOUR="${FLAVOUR}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${BITMAPS_DIR})
 
 include(gui/CMakeLists.txt)
 
@@ -166,8 +168,6 @@ elseif(${STORAGE} STREQUAL EEPROM)
 endif()
 
 include(storage/conversions/CMakeLists.txt)
-
-add_subdirectory(lua)
 
 if(RTC_BACKUP_RAM)
   add_definitions(-DRTC_BACKUP_RAM)
@@ -338,8 +338,8 @@ if(EEPROM_VARIANT_NEEDED)
   add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})
 endif()
 
-if(NIGHTLY_BUILD_WARNING)
-  add_definitions(-DNIGHTLY_BUILD_WARNING)
+if(TEST_BUILD_WARNING)
+  add_definitions(-DTEST_BUILD_WARNING)
 endif()
 
 if(MODULE_PROTOCOL_FCC)
@@ -362,9 +362,17 @@ if(JUMPER_RELEASE)
   add_definitions(-DJUMPER_RELEASE)
 endif()
 
+if(TBS_RELEASE)
+  add_definitions(-DTBS_RELEASE)
+endif()
+
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
   set(POPUP_LEVEL 3)
+endif()
+
+if(ALLOW_TRAINER_MULTI)
+  add_definitions(-DALLOW_TRAINER_MULTI)
 endif()
 
 add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})
@@ -578,3 +586,8 @@ if(NOT MSVC)
   PrintTargetReport("firmware")
 
 endif(NOT MSVC)
+
+# Include the lua subdirectory after CMAKE_C_COMPILER has been
+# set. Otherwise, the custom commands it includes will use the
+# default CMAKE_C_COMPILER instead of the one we set manually
+add_subdirectory(lua)

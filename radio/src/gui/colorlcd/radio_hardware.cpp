@@ -20,6 +20,8 @@
 
 #include "radio_hardware.h"
 #include "radio_calibration.h"
+#include "radio_diagkeys.h"
+#include "radio_diaganas.h"
 #include "opentx.h"
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
@@ -30,7 +32,7 @@
 #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #endif
 
-class SwitchDynamicLabel : public StaticText {
+class SwitchDynamicLabel: public StaticText {
   public:
     SwitchDynamicLabel(Window * parent, const rect_t & rect, uint8_t index):
       StaticText(parent, rect),
@@ -143,30 +145,58 @@ void RadioHardwarePage::build(FormWindow * window)
   grid.setLabelWidth(130);
 #endif
 
+  // Bat calibration
+  new StaticText(window, grid.getLabelSlot(), STR_BATT_CALIB);
+  auto batCal = new NumberEdit(window, grid.getFieldSlot(), -127, 127, GET_SET_DEFAULT(g_eeGeneral.txVoltageCalibration));
+  batCal->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
+      dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
+  });
+  batCal->setWindowFlags(REFRESH_ALWAYS);
+  grid.nextLine();
+
+  // RTC Batt display
+  new StaticText(window, grid.getLabelSlot(), STR_RTC_BATT);
+  new DynamicNumber<uint16_t>(window, grid.getFieldSlot(), [] {
+      return getRTCBatteryVoltage();
+  }, PREC2, nullptr, "V");
+  grid.nextLine();
+
+  // RTC Batt check enable
+  new StaticText(window, grid.getLabelSlot(), STR_RTC_CHECK);
+  new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_eeGeneral.disableRtcWarning ));
+  grid.nextLine();
+
+#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+  // Max baud for external modules
+  new StaticText(window, grid.getLabelSlot(), STR_MAXBAUDRATE);
+  new Choice(window, grid.getFieldSlot(1,0), STR_CRSF_BAUDRATE, 0, 1, GET_SET_DEFAULT(g_eeGeneral.telemetryBaudrate));
+  grid.nextLine();
+#endif
+
   // ADC filter
   new StaticText(window, grid.getLabelSlot(), STR_JITTER_FILTER);
   new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_eeGeneral.jitterFilter));
   grid.nextLine();
 
-  // Bat calibration
-  new StaticText(window, grid.getLabelSlot(), STR_BATT_CALIB);
-  auto batCal = new NumberEdit(window, grid.getFieldSlot(), -127, 127, GET_SET_DEFAULT(g_eeGeneral.txVoltageCalibration));
-  batCal->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-    dc->drawNumber(2, 0, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
+  // Debugs
+  new StaticText(window, grid.getLabelSlot(), STR_DEBUG, 0, FONT(BOLD));
+  auto debugAnas = new TextButton(window, grid.getFieldSlot(2, 0), STR_ANALOGS_BTN);
+  debugAnas->setPressHandler([=]() -> uint8_t {
+      auto debugAnalogsPage = new RadioAnalogsDiagsPage();
+      debugAnalogsPage->setCloseHandler([=]() {
+          calib->setFocus();
+      });
+      return 0;
   });
-  batCal->setWindowFlags(REFRESH_ALWAYS);
-  grid.nextLine();
 
-  // Factory reset
-  new TextButton(window, grid.getFieldSlot(), STR_FACTORYRESET,
-                 [=]() -> int8_t {
-                     new FullScreenDialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS_ENTER_EXIT, "", [=]() {
-                         storageEraseAll(false);
-                         NVIC_SystemReset();
-                         return 0;
-                     });
-                     return 0;
-                 });
+  auto debugKeys = new TextButton(window, grid.getFieldSlot(2, 1), STR_KEYS_BTN);
+  debugKeys->setPressHandler([=]() -> uint8_t {
+    auto debugKeysPage = new RadioKeyDiagsPage();
+    debugKeysPage->setCloseHandler([=]() {
+        calib->setFocus();
+    });
+    return 0;
+  });
   grid.nextLine();
 
   window->setInnerHeight(grid.getWindowHeight());

@@ -37,9 +37,12 @@ bool isBootloader(const char * filename)
 void bootloaderFlash(const char * filename)
 {
   FIL file;
-  f_open(&file, filename, FA_READ);
   uint8_t buffer[1024];
   UINT count;
+
+  pausePulses();
+
+  f_open(&file, filename, FA_READ);
 
   static uint8_t unlocked = 0;
   if (!unlocked) {
@@ -71,6 +74,7 @@ void bootloaderFlash(const char * filename)
   }
 
   watchdogSuspend(0);
+  WDG_RESET();
 
   if (unlocked) {
     lockFlash();
@@ -78,4 +82,6 @@ void bootloaderFlash(const char * filename)
   }
 
   f_close(&file);
+
+  resumePulses();
 }

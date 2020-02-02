@@ -27,6 +27,7 @@
 #include "pxx1.h"
 #include "pxx2.h"
 #include "multi.h"
+#include "flysky.h"
 #include "modules_helpers.h"
 #include "ff.h"
 
@@ -213,6 +214,16 @@ PACK(struct ModuleState {
 
 extern ModuleState moduleState[NUM_MODULES];
 
+inline bool isModuleBeeping(uint8_t moduleIndex)
+{
+#if defined(MULTIMODULE)
+  if (getMultiBindStatus(moduleIndex) != MULTI_BIND_NONE)
+    return true;
+#endif
+
+  return moduleState[moduleIndex].mode >= MODULE_MODE_BEEP_FIRST;
+}
+
 template<class T> struct PpmPulsesData {
   T pulses[20];
   T * ptr;
@@ -262,7 +273,9 @@ union InternalModulePulsesData {
   PwmPxx1Pulses pxx;
 #endif
 #endif
-
+#if defined(AFHDS2)
+  FlySkySerialPulsesData flysky;
+#endif
 #if defined(PXX2)
   Pxx2Pulses pxx2;
 #endif
@@ -294,6 +307,9 @@ union ExternalModulePulsesData {
 
 #if defined(DSM2) || defined(MULTIMODULE) || defined(SBUS)
   Dsm2PulsesData dsm2;
+#endif
+#if defined(AFHDS3)
+  FlySkySerialPulsesData flysky;
 #endif
 
   PpmPulsesData<pulse_duration_t> ppm;

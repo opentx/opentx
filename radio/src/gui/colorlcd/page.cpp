@@ -96,10 +96,8 @@ void Page::onEvent(event_t event)
 #if defined(HARDWARE_TOUCH)
 bool Page::onTouchEnd(coord_t x, coord_t y)
 {
-  if (Window::onTouchEnd(x, y))
-    return true;
-
   Keyboard::hide();
+  Window::onTouchEnd(x, y);
   return true;
 }
 #endif

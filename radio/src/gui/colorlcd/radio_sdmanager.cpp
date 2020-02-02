@@ -159,7 +159,7 @@ void RadioSdManagerPage::build(FormWindow * window)
 
     for (auto name: files) {
       auto button = new TextButton(window, grid.getLabelSlot(), name, [=]() -> uint8_t {
-          auto menu = new Menu();
+          auto menu = new Menu(window);
           const char *ext = getFileExtension(name.data());
           if (ext) {
             if (!strcasecmp(ext, SOUNDS_EXT)) {
@@ -244,11 +244,11 @@ bool menuRadioSdManagerInfo(event_t event)
   lcdDrawText(100, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
 
   lcdDrawText(MENUS_MARGIN_LEFT, 3*FH, STR_SD_SIZE);
-  lcdDrawNumber(100, 3*FH, sdGetSize(), LEFT, 0, NULL, "M");
+  lcdDrawNumber(100, 3*FH, sdGetSize(), LEFT, 0, nullptr, "M");
 
   lcdDrawText(MENUS_MARGIN_LEFT, 4*FH, STR_SD_SECTORS);
 #if defined(SD_GET_FREE_BLOCKNR)
-  lcdDrawNumber(100, 4*FH, SD_GET_FREE_BLOCKNR()/1000, LEFT, 0, NULL, "/");
+  lcdDrawNumber(100, 4*FH, SD_GET_FREE_BLOCKNR()/1000, LEFT, 0, nullptr, "/");
   lcdDrawNumber(150, 4*FH, sdGetNoSectors()/1000, LEFT);
 #else
   lcdDrawNumber(100, 4*FH, sdGetNoSectors()/1000, LEFT, 0, NULL, "k");

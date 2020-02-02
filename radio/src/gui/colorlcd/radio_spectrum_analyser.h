@@ -26,14 +26,16 @@
 class RadioSpectrumAnalyser: public Page
 {
   public:
-    RadioSpectrumAnalyser(uint8_t moduleIdx);
+    explicit RadioSpectrumAnalyser(uint8_t moduleIdx);
 
   protected:
+    uint8_t moduleIdx;
+
+    void buildHeader(Window * window);
     void buildBody(FormWindow * window);
+    void init();
     void start();
     void stop();
-
-    uint8_t moduleIdx;
 };
 
 #endif // _RADIO_SPECTRUM_ANALYSER_H

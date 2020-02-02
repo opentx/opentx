@@ -612,6 +612,9 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
+  if (moduleType == MODULE_TYPE_FLYSKY)
+    return false; // doesn't exist for now
+
   if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
     return false;
 
@@ -637,6 +640,7 @@ bool isExternalModuleAvailable(int moduleType)
 
   if (moduleType == MODULE_TYPE_ISRM_PXX2)
     return false; // doesn't exist for now
+
 
 #if !defined(PXX2) || !defined(EXTMODULE_USART)
   if (moduleType == MODULE_TYPE_XJT_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PXX2 || moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX2) {
@@ -733,6 +737,13 @@ bool isTrainerModeAvailable(int mode)
 #if defined(PCBTARANIS)
   if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
+#endif
+
+#if defined(PCBX9E)
+  if (g_eeGeneral.bluetoothMode && mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
+    // bluetooth uses the same USART than SBUS
+    return false;
+  }
 #endif
 
 #if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
@@ -930,7 +941,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
-  {0xfe,                            0, false, true,   NO_SUBTYPE,            nullptr}
+  {0xfe,                            0, false, false,   NO_SUBTYPE,            nullptr}
 };
 
 #undef NO_SUBTYPE

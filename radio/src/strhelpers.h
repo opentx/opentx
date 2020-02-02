@@ -23,9 +23,9 @@
 
 #include "opentx_types.h"
 
-char * strAppend(char * dest, const char * source, int len=0);
-char * strAppendUnsigned(char * dest, uint32_t value, uint8_t digits=0, uint8_t radix=10);
-char * strAppendSigned(char * dest, int32_t value, uint8_t digits=0, uint8_t radix=10);
+char * strAppend(char * dest, const char * source, int len = 0);
+char * strAppendUnsigned(char * dest, uint32_t value, uint8_t digits = 0, uint8_t radix = 10);
+char * strAppendSigned(char * dest, int32_t value, uint8_t digits = 0, uint8_t radix = 10);
 char * strSetCursor(char * dest, int position);
 char * strAppendDate(char * str, bool time=false);
 char * strAppendFilename(char * dest, const char * filename, const int size);

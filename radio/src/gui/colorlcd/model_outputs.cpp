@@ -125,7 +125,7 @@ class OutputLineButton : public Button {
       dc->drawNumber(68, FIELD_PADDING_TOP, output->max + 1000, PREC1);
       dc->drawNumber(132, FIELD_PADDING_TOP, output->offset, PREC1);
       dc->drawNumber(226, FIELD_PADDING_TOP, PPM_CENTER + output->ppmCenter, RIGHT);
-      dc->drawText(228, FIELD_PADDING_TOP - 3, output->symetrical ? "=" : "\306");
+      dc->drawText(228, FIELD_PADDING_TOP, output->symetrical ? "=" : "\306");
 
       // second line
       if (output->revert) {
@@ -176,7 +176,7 @@ void ModelOutputsPage::build(FormWindow * window, int8_t focusChannel)
     // Channel settings
     Button * button = new OutputLineButton(window, grid.getFieldSlot(), output);
     button->setPressHandler([=]() -> uint8_t {
-      Menu * menu = new Menu();
+      Menu * menu = new Menu(window);
       menu->addLine(STR_EDIT, [=]() {
         editOutput(window, ch);
       });

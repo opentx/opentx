@@ -66,6 +66,7 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_TARANIS_XLITES:
       return 0x3B78746F;
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
       return 0x3678746F;
     case BOARD_TARANIS_X9E:
       return 0x3578746F;
@@ -116,6 +117,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -154,6 +156,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -326,8 +329,10 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
-      else if (IS_TARANIS_X9LITE(board))
+      else if (board == Board::BOARD_TARANIS_X9LITE)
         return 5;
+      else if (board == Board::BOARD_TARANIS_X9LITES)
+        return 7;
       else if (IS_TARANIS_X7(board))
         return 8;
       else if (IS_JUMPER_T12(board))
@@ -452,8 +457,8 @@ QString Boards::getAnalogInputName(Board::Type board, int index)
       "S1",
       "6P",
       "S2",
-      "S3",
-      "S4",
+      "L1",
+      "L2",
       "LS",
       "RS",
       "JSx",
@@ -497,6 +502,8 @@ QString Boards::getBoardName(Board::Type board)
       return "MEGA2560";
     case BOARD_TARANIS_X7:
       return "Taranis X7/X7S";
+    case BOARD_TARANIS_X7_ACCESS:
+      return "Taranis X7/X7S Access";
     case BOARD_JUMPER_T12:
       return "Jumper T12";
     case BOARD_TARANIS_XLITE:

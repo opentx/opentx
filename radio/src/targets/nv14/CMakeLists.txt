@@ -1,17 +1,18 @@
-option(DISK_CACHE "Enable SD card disk cache" YES)
-option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
+option(DISK_CACHE "Enable SD card disk cache" ON)
+option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
 option(FLYSKY_HALL_STICKS "sticks for FlySky hall sticks" ON)
 option(FLYSKY_HALL_STICKS_REVERSE "Reverse sticks for FlySky hall sticks" OFF)
-set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 
+set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
-set(SDCARD YES)
 set(SDCARD YES)
 set(STORAGE SDCARD)
 set(STORAGE_FORMAT BIN)
 set(HAPTIC YES)
 set(GUI_DIR colorlcd)
+set(BITMAPS_DIR 480x272)
 # set(NAVIGATION_TYPE touch)
 set(TARGET_DIR nv14)
 
@@ -24,7 +25,7 @@ endif()
 set(RAMBACKUP YES)
 set(PPM_LIMITS_SYMETRICAL YES)
 # for size report script
-set(CPU_TYPE_FULL STM32F429BIT6)
+set(CPU_TYPE_FULL STM32F429xI)
 set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
 option(USB_SERIAL "Enable USB serial (CDC)" ON)
 
@@ -34,10 +35,10 @@ set_property(CACHE PCB_RF_BAUD PROPERTY STRINGS ${RF_BAUD_RATE})
 
 set(FLAVOUR nv14)
 add_definitions(-DPCBNV14 -DPCBFLYSKY -DINTERNAL_MODULE_BAUDRATE=${PCB_RF_BAUD})
-#add_definitions(-DSOFTWARE_VOLUME)
+add_definitions(-DBATTERY_CHARGE)  # -DSOFTWARE_VOLUME
+
 set(TARGET_SRC
   ${TARGET_SRC}
-  #../common/arm/stm32/audio_dac_driver.cpp
   audio_spi_driver.cpp
   adc_driver.cpp
   )
@@ -64,10 +65,21 @@ add_definitions(-DSTM32F429_439xx -DSDRAM -DCOLORLCD -DLIBOPENUI -DHARDWARE_TOUC
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
 add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+add_definitions(-DCROSSFIRE_NATIVE)
+add_definitions(-DFLYSKY_HALL_STICKS_REVERSE)
+add_definitions(-DHALL_STICKS)
+#add_definitions(-DFLYSKY_AUTO_POWER_DOWN)
+
+if(STICKS_DEAD_ZONE)
+  add_definitions(-DSTICK_DEAD_ZONE)
+endif()
 
 if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
 endif()
+
+set(AFHDS2 ON)
+set(AFHDS3 ON)
 
 include_directories(${RADIO_SRC_DIR}/fonts/colorlcd gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
@@ -110,14 +122,15 @@ set(FIRMWARE_TARGET_SRC
 
 if(BOOTLOADER)
   set(FIRMWARE_TARGET_SRC
-  ${FIRMWARE_TARGET_SRC}
-  ../common/arm/loadboot.cpp
-  )
+    ${FIRMWARE_TARGET_SRC}
+    ../common/arm/loadboot.cpp
+    )
 endif()
 
-set(PULSES_SRC
-  ${PULSES_SRC}
-  #flysky.cpp
+set(SRC
+  ${SRC}
+  io/frsky_firmware_update.cpp
+  io/multi_firmware_update.cpp
   )
 
 set(STM32LIB_SRC
@@ -126,6 +139,8 @@ set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_ltdc.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
+  STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
+  STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c
   )
 
 if(PYTHONINTERP_FOUND)

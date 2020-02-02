@@ -274,12 +274,12 @@ void ModelCurvesPage::build(FormWindow * window, int8_t focusIndex)
       // Curve drawing
       Button * button = new CurveButton(window, grid.getFieldSlot(), index);
       button->setPressHandler([=]() -> uint8_t {
-          Menu * menu = new Menu();
+          Menu * menu = new Menu(window);
           menu->addLine(STR_EDIT, [=]() {
               editCurve(window, index);
           });
           menu->addLine(STR_CURVE_PRESET, [=]() {
-              Menu * menu = new Menu();
+              Menu * menu = new Menu(window);
               for (int angle = -45; angle <= 45; angle += 15) {
                 char label[16];
                 strAppend(strAppendSigned(label, angle), "@");

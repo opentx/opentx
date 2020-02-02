@@ -80,6 +80,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
+    case BOARD_TARANIS_X7_ACCESS:
+      return "OpenTX for FrSky Taranis X7 Access";
     case BOARD_TARANIS_X9LITES:
       return "OpenTX for FrSky Taranis X9-Lite S";
     case BOARD_TARANIS_X9LITE:
@@ -327,8 +329,14 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_TARANIS_X9E(board)) {
     variant |= TARANIS_X9E_VARIANT;
   }
+  else if (IS_TARANIS_X9LITES(board)) {
+    variant |= TARANIS_X9LITES_VARIANT;
+  }
   else if (IS_TARANIS_X9LITE(board)) {
     variant |= TARANIS_X9LITE_VARIANT;
+  }
+  else if (IS_TARANIS_X7_ACCESS(board)) {
+    variant |= TARANIS_X7_VARIANT;
   }
   else if (IS_TARANIS_X7(board)) {
     variant |= TARANIS_X7_VARIANT;
@@ -713,6 +721,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return SIMU_M128_VARIANTS;
       else if (IS_TARANIS_X9E(board))
         return TARANIS_X9E_VARIANT;
+      else if (IS_TARANIS_X9LITES(board))
+        return TARANIS_X9LITES_VARIANT;
       else if (IS_TARANIS_X9LITE(board))
         return TARANIS_X9LITE_VARIANT;
       else if (IS_TARANIS_X7(board))
@@ -986,6 +996,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
       variantError = true;
     }
   }
+  else if (IS_TARANIS_X9LITES(board)) {
+    if (variant != TARANIS_X9LITES_VARIANT) {
+      variantError = true;
+    }
+  }
   else if (IS_TARANIS_X9LITE(board)) {
     if (variant != TARANIS_X9LITE_VARIANT) {
       variantError = true;
@@ -1251,6 +1266,11 @@ void registerOpenTxFirmwares()
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
+  addOpenTxTaranisOptions(firmware);
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky X7 Access board */
+  firmware = new OpenTxFirmware("opentx-x7access", Firmware::tr("FrSky Taranis X7 / X7S Access"), BOARD_TARANIS_X7_ACCESS);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 

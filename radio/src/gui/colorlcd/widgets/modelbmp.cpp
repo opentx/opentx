@@ -25,7 +25,7 @@ class ModelBitmapWidget: public Widget
   public:
     ModelBitmapWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
       Widget(factory, zone, persistentData),
-      buffer(NULL),
+      buffer(nullptr),
       deps_hash(0)
     {
     }
@@ -83,5 +83,5 @@ class ModelBitmapWidget: public Widget
     uint32_t deps_hash;
 };
 
-BaseWidgetFactory<ModelBitmapWidget> modelBitmapWidget("ModelBmp", NULL);
+BaseWidgetFactory<ModelBitmapWidget> modelBitmapWidget("ModelBmp", nullptr);
 const WidgetFactory * defaultWidget = &modelBitmapWidget;

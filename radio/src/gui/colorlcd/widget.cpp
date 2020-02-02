@@ -40,7 +40,7 @@ const WidgetFactory * getWidgetFactory(const char * name)
       return (*it);
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData)
@@ -49,5 +49,5 @@ Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData
   if (factory) {
     return factory->create(zone, persistentData, false);
   }
-  return NULL;
+  return nullptr;
 }

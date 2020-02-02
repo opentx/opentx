@@ -55,7 +55,7 @@ constexpr uint32_t FH =                            PAGE_LINE_HEIGHT;
 constexpr uint32_t NUM_BODY_LINES =                MENU_BODY_HEIGHT / PAGE_LINE_HEIGHT;
 
 constexpr uint32_t FIELD_PADDING_LEFT =            3;
-constexpr uint32_t FIELD_PADDING_TOP =             3;
+constexpr uint32_t FIELD_PADDING_TOP =             4;
 
 constexpr uint32_t CURVE_SIDE_WIDTH =              100;
 constexpr uint32_t CURVE_CENTER_X =                LCD_W - CURVE_SIDE_WIDTH - 7;
@@ -70,7 +70,6 @@ constexpr uint32_t DATETIME_MIDDLE =               (LCD_W + DATETIME_SEPARATOR_X
 
 constexpr uint32_t MENUS_TOOLBAR_BUTTON_WIDTH =    50;
 constexpr uint32_t MENUS_TOOLBAR_BUTTON_PADDING =  11;
-constexpr rect_t MENUS_TOOLBAR_RECT =              { 35, 95, 50, 370 };
 
 constexpr uint32_t ALERT_FRAME_TOP =               70;
 constexpr uint32_t ALERT_FRAME_HEIGHT =            (LCD_H - 2 * ALERT_FRAME_TOP);
@@ -125,6 +124,8 @@ enum LcdColorIndex
   BARGRAPH2_COLOR_INDEX,
   BARGRAPH_BGCOLOR_INDEX,
   SCROLLBOX_COLOR_INDEX,
+  BATTERY_CHARGE_COLOR_INDEX,
+
   LCD_COLOR_COUNT,
 
   TABLE_HEADER_BGCOLOR_INDEX,
@@ -155,7 +156,10 @@ constexpr coord_t MENUS_WIDTH = 200;
 constexpr coord_t MENUS_OFFSET_TOP = 20;
 constexpr coord_t POPUP_HEADER_HEIGHT = 40;
 constexpr coord_t MENUS_MIN_HEIGHT = 2 * MENUS_LINE_HEIGHT - 1;
-constexpr coord_t MENUS_MAX_HEIGHT = 7 * MENUS_LINE_HEIGHT - 1;
+constexpr coord_t MENUS_MAX_HEIGHT = 8 * MENUS_LINE_HEIGHT - 1;
+
+constexpr rect_t MENUS_TOOLBAR_RECT =              { 35, (LCD_H - MENUS_MAX_HEIGHT) / 2, 50, MENUS_MAX_HEIGHT };
+
 constexpr coord_t MODEL_SELECT_FOOTER_HEIGHT = 24;
 constexpr coord_t SCROLLBAR_WIDTH = 3;
 constexpr coord_t TABLE_LINE_HEIGHT = 50;

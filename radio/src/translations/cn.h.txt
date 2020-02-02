@@ -363,6 +363,7 @@
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Master/CPPM Module"
 #define TR_VTRAINER_MASTER_BATTERY     "Master/Serial\0    "
 #define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
+#define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE                  "\011"
 #define TR_VFAILSAFE                   "Not set\0 ""Hold\0    ""Custom\0  ""No pulses""Receiver\0"
@@ -486,7 +487,7 @@
 #define TR_DELAYUP                     "Delay up"
 #define TR_SLOWDOWN                    "Slow  dn"
 #define TR_SLOWUP                      "Slow  up"
-#define TR_MIXER                       "MIXER"
+#define TR_MIXES                       "MIXES"
 #define TR_CV                          "CV"
 #if defined(PCBNV14)
 #define TR_GV                          "GV"
@@ -513,6 +514,9 @@
 #define TR_CONTRAST                    "对比度"
 #define TR_ALARMS_LABEL                "警告"
 #define TR_BATTERY_RANGE               TR("Batt. range", "电压测量范围")
+#define TR_BATTERYCHARGING             "Charging..."
+#define TR_BATTERYFULL                 "Battery full"
+#define TR_BATTERYNONE                 "None!"
 #define TR_BATTERYWARNING              "低电压报警值"
 #define TR_INACTIVITYALARM             "长时间无操作"
 #define TR_MEMORYWARNING               "内存不足"
@@ -643,6 +647,8 @@
 #define TR_MULTI_FIXEDID               TR("FixedID", "Fixed ID")
 #define TR_MULTI_OPTION                TR("Option", "Option value")
 #define TR_MULTI_AUTOBIND              TR(INDENT "Autobind",INDENT "Bind on channel")
+#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Disable Ch. map")
+#define TR_DISABLE_TELEM               TR("No Telem", "Disable Telemetry")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
@@ -653,6 +659,8 @@
 #define TR_MODULE_NO_TELEMETRY         TR3("No telemetry", "No MULTI_TELEMETRY", "No MULTI_TELEMETRY detected")
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              TR("Bind...","Binding")
+#define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
+#define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"
@@ -664,6 +672,8 @@
 #define TR_MODULE_STATUS               TR(INDENT "Status", INDENT "Module Status")
 #define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
 #define TR_MULTI_SERVOFREQ             TR("Servo rate", "Servo update rate")
+#define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
+#define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
 #define TR_SYNCMENU                    "[Sync]"
 #define TR_LIMIT                       INDENT "Limit"
 #define TR_MINRSSI                     "Min Rssi"
@@ -730,6 +740,9 @@
 #define TR_SPECTRUM_ANALYSER_EXT       "Spectrum (EXT)"
 #define TR_SPECTRUM_ANALYSER_INT       "Spectrum (INT)"
 #define TR_SDCARD_FULL                 "SD card full"
+#define TR_NEEDS_FILE                  "NEEDS FILE"
+#define TR_EXT_MULTI_SPEC              "opentx-inv"
+#define TR_INT_MULTI_SPEC              "stm-opentx-noinv"
 #define TR_INCOMPATIBLE                "Incompatible"
 #define TR_WARNING                     "警告"
 #define TR_EEPROMWARN                  "EEPROM"
@@ -739,10 +752,11 @@
 #define TR_ALARMSWARN                  "ALARMS"
 #define TR_SWITCHWARN                  TR("SWITCH", "CONTROL")
 #define TR_FAILSAFEWARN                "FAILSAFE"
-#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
+#define TR_TEST_WARNING                TR("NIGHTLY", "NIGHTLY BUILD")
+#define TR_TEST_NOTSAFE                "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION         TR("Expected ver: ","Expected version: ")
 #define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
+#define TR_WARN_MULTI_LOWPOWER         "Low power mode"
 #define TR_BATTERY                     "BATTERY"
 #define TR_WRONG_PCBREV                "Wrong PCB detected"
 #define TR_EMERGENCY_MODE              "EMERGENCY MODE"
@@ -814,7 +828,7 @@
 #define TR_GLOBAL_VARS                 "Global variables"
 #define TR_GVARS                       "GVARS"
 #define TR_GLOBAL_VAR                  "Global variable"
-#define TR_MENUGLOBALVARS              "GLOBAL VARIABLES"
+#define TR_MENU_GLOBAL_VARS              "GLOBAL VARIABLES"
 #define TR_OWN                         "Own"
 #define TR_DATE                        "日期"
 #define TR_YEAR                        "年"
@@ -832,7 +846,9 @@
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash pwr mngt unit"
 #define TR_CURRENT_VERSION             TR("Curr Vers: ", "Current version: ")
 #define TR_FLASH_INTERNAL_MODULE       TR("Flash int. module", "Flash internal module")
+#define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. module", "Flash external module")
+#define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("FW update error", "Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
 #define TR_WRITING                     "Writing..."
@@ -920,6 +936,7 @@
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer"
+#define TR_CHANS                       "Chans"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"
 #if defined(COLORLCD)
   #define TR_MODELIDUSED               "ID used in:"
@@ -1168,90 +1185,5 @@
 #define TR_MENU_OTHER                  "Other"
 #define TR_MENU_INVERT                 "Invert"
 #define TR_JITTER_FILTER               "ADC filter"
-
-#define ZSTR_RSSI                      "RSSI"
-#define ZSTR_R9PW                      "R9PW"
-#define ZSTR_RAS                       "SWR"
-#define ZSTR_A1                        "A1"
-#define ZSTR_A2                        "A2"
-#define ZSTR_A3                        "A3"
-#define ZSTR_A4                        "A4"
-#define ZSTR_BATT                      "RxBt"
-#define ZSTR_ALT                       "Alt"
-#define ZSTR_TEMP1                     "Tmp1"
-#define ZSTR_TEMP2                     "Tmp2"
-#define ZSTR_RPM                       "RPM"
-#define ZSTR_FUEL                      "Fuel"
-#define ZSTR_VSPD                      "VSpd"
-#define ZSTR_ACCX                      "AccX"
-#define ZSTR_ACCY                      "AccY"
-#define ZSTR_ACCZ                      "AccZ"
-#define ZSTR_GYROX                     "GYRX"
-#define ZSTR_GYROY                     "GYRY"
-#define ZSTR_GYROZ                     "GYRZ"
-#define ZSTR_CURR                      "Curr"
-#define ZSTR_CAPACITY                  "Capa"
-#define ZSTR_VFAS                      "VFAS"
-#define ZSTR_ASPD                      "ASpd"
-#define ZSTR_GSPD                      "GSpd"
-#define ZSTR_HDG                       "Hdg"
-#define ZSTR_SATELLITES                "Sats"
-#define ZSTR_CELLS                     "Cels"
-#define ZSTR_GPSALT                    "GAlt"
-#define ZSTR_GPSDATETIME               "Date"
-#define ZSTR_GPS                       "GPS"
-#define ZSTR_BATT1_VOLTAGE             "RB1V"
-#define ZSTR_BATT2_VOLTAGE             "RB2V"
-#define ZSTR_BATT1_CURRENT             "RB1A"
-#define ZSTR_BATT2_CURRENT             "RB2A"
-#define ZSTR_BATT1_CONSUMPTION         "RB1C"
-#define ZSTR_BATT2_CONSUMPTION         "RB2C"
-#define ZSTR_BATT1_TEMP                "RB1T"
-#define ZSTR_BATT2_TEMP                "RB2T"
-#define ZSTR_RB_STATE                  "RBS"
-#define ZSTR_CHANS_STATE               "RBCS"
-#define ZSTR_RX_RSSI1                  "1RSS"
-#define ZSTR_RX_RSSI2                  "2RSS"
-#define ZSTR_RX_QUALITY                "RQly"
-#define ZSTR_RX_SNR                    "RSNR"
-#define ZSTR_RX_NOISE                  "RNse"
-#define ZSTR_ANTENNA                   "ANT"
-#define ZSTR_RF_MODE                   "RFMD"
-#define ZSTR_TX_POWER                  "TPWR"
-#define ZSTR_TX_RSSI                   "TRSS"
-#define ZSTR_TX_QUALITY                "TQly"
-#define ZSTR_TX_SNR                    "TSNR"
-#define ZSTR_TX_NOISE                  "TNse"
-#define ZSTR_PITCH                     "Ptch"
-#define ZSTR_ROLL                      "Roll"
-#define ZSTR_YAW                       "Yaw"
-#define ZSTR_FLIGHT_MODE               "FM"
-#define ZSTR_THROTTLE                  "Thr"
-#define ZSTR_QOS_A                     "FdeA"
-#define ZSTR_QOS_B                     "FdeB"
-#define ZSTR_QOS_L                     "FdeL"
-#define ZSTR_QOS_R                     "FdeR"
-#define ZSTR_QOS_F                     "FLss"
-#define ZSTR_QOS_H                     "Hold"
-#define ZSTR_BIND                      "BIND"
-#define ZSTR_LAP_NUMBER                "Lap "
-#define ZSTR_GATE_NUMBER               "Gate"
-#define ZSTR_LAP_TIME                  "LapT"
-#define ZSTR_GATE_TIME                 "GteT"
-#define ZSTR_ESC_VOLTAGE               "EscV"
-#define ZSTR_ESC_CURRENT               "EscA"
-#define ZSTR_ESC_RPM                   "EscR"
-#define ZSTR_ESC_CONSUMPTION           "EscC"
-#define ZSTR_ESC_TEMP                  "EscT"
-#define ZSTR_SD1_CHANNEL               "Chan"
-#define ZSTR_GASSUIT_TEMP1             "GTp1"
-#define ZSTR_GASSUIT_TEMP2             "GTp2"
-#define ZSTR_GASSUIT_RPM               "GRPM"
-#define ZSTR_GASSUIT_FLOW              "GFlo"
-#define ZSTR_GASSUIT_CONS              "GFue"
-#define ZSTR_GASSUIT_RES_VOL           "GRVl"
-#define ZSTR_GASSUIT_RES_PERC          "GRPc"
-#define ZSTR_GASSUIT_MAX_FLOW          "GMFl"
-#define ZSTR_GASSUIT_AVG_FLOW          "GAFl"
-#define ZSTR_SBEC_VOLTAGE              "BecV"
-#define ZSTR_SBEC_CURRENT              "BecA"
+#define TR_RTC_CHECK                   TR("Check RTC", "Check RTC voltage")
+#define TR_AUTH_FAILURE                "Auth-failure"

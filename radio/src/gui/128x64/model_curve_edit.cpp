@@ -34,7 +34,7 @@ void runPopupCurvePreset(event_t event)
       // no break
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      warningText = NULL;
+      warningText = nullptr;
       warningType = WARNING_TYPE_ASTERISK;
       break;
 

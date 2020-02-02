@@ -187,10 +187,8 @@ void TabsGroup::paint(BitmapBuffer * dc)
 #if defined(HARDWARE_TOUCH)
 bool TabsGroup::onTouchEnd(coord_t x, coord_t y)
 {
-  if (Window::onTouchEnd(x, y))
-    return true;
-
   Keyboard::hide();
+  Window::onTouchEnd(x, y);
   return true;
 }
 #endif

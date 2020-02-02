@@ -24,7 +24,7 @@
 
 class MessageDialog: public Dialog {
   public:
-    MessageDialog(const char * title, const char * message);
+    MessageDialog(Window * parent, const char * title, const char * message);
 
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;

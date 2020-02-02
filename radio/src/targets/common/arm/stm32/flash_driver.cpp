@@ -167,11 +167,11 @@ uint32_t isFirmwareStart(const uint8_t * buffer)
     return 0;
   }
   // First ISR pointer in FLASH
-  if ((block[1] & 0xFFF00000) != 0x08000000) {
+  if ((block[1] & 0xFFC00000) != 0x08000000) {//for nv14 firmware may start up to 0x81F ....
     return 0;
   }
   // Second ISR pointer in FLASH
-  if ((block[2] & 0xFFF00000) != 0x08000000) {
+  if ((block[2] & 0xFFC00000) != 0x08000000) {
     return 0;
   }
 #else

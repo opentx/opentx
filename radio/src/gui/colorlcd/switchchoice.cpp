@@ -87,8 +87,9 @@ void SwitchChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
 
 void SwitchChoice::openMenu()
 {
-  auto menu = new Menu();
+  auto menu = new Menu(this);
   fillMenu(menu);
+
   menu->setToolbar(new SwitchChoiceMenuToolbar(this, menu));
   menu->setCloseHandler([=]() {
       editMode = false;

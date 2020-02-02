@@ -35,7 +35,7 @@ class TimerWidget: public Widget
 
 const ZoneOption TimerWidget::options[] = {
   { "Timer source", ZoneOption::Timer, OPTION_VALUE_UNSIGNED(0) },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 void TimerWidget::refresh()

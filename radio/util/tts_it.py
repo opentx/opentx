@@ -2,18 +2,18 @@
 
 # Italian language sounds configuration
 
-from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename
 
 
 systemSounds = []
 sounds = []
 
 for i in range(101):
-    systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
-systemSounds.append(("mila", filename(PROMPT_SYSTEM_BASE + 101)))
-systemSounds.append(("mille", filename(PROMPT_SYSTEM_BASE + 102)))
+    systemSounds.append((str(i), filename(i)))
+systemSounds.append(("mila", filename(101)))
+systemSounds.append(("mille", filename(102)))
 for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 103 + i)))
+    systemSounds.append((s, filename(103 + i)))
 for i, (s, f) in enumerate([("volt", "volt0"),
                             ("ampere", "amp0"),
                             ("milliampere", "mamp0"),
@@ -42,48 +42,48 @@ for i, (s, f) in enumerate([("volt", "volt0"),
                             ("minuto", "minute0"), ("minuti", "minute1"),
                             ("secondo", "second0"), ("secondi", "second1"),
                             ]):
-    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 116 + i)))
-for s, f, a in [("radio inattiva controllare", "inactiv", 486),
-                ("batteria della radio scarica", "lowbatt", 485),
-                ("controllo motore non in posizione, verificare", "thralert", 481),
-                ("interruttori non in posizione, verificare", "swalert", 482),
-                ("eeprom corrotta", "eebad", NO_ALTERNATE),
-                ("formattazione eeprom in corso", "eeformat", NO_ALTERNATE),
-                ("errore", "error", NO_ALTERNATE),
-                ("trim centrato", "midtrim", 495),
-                ("potenziometro centrato", "midpot", 496),
-                ("massimo trim raggiunto", "maxtrim", NO_ALTERNATE),
-                ("minimo trim raggiunto", "mintrim", NO_ALTERNATE),
-                ("venti secondi", "timer20", 500),
-                ("trenta secondi", "timer30", 501),
-                ("assorbimento elevato", "highmah", NO_ALTERNATE),
-                ("temperatura elevata", "hightemp", NO_ALTERNATE),
-                ("A1 in allarme", "a1_org", NO_ALTERNATE),
-                ("A1 critico", "a1_red", NO_ALTERNATE),
-                ("A2 in allarme", "a2_org", NO_ALTERNATE),
-                ("A2 critico", "a2_red", NO_ALTERNATE),
-                ("A3 in allarme", "a3_org", NO_ALTERNATE),
-                ("A3 critico", "a3_red", NO_ALTERNATE),
-                ("A4 in allarme", "a4_org", NO_ALTERNATE),
-                ("A4 critico", "a4_red", NO_ALTERNATE),
-                ("Segnale radio basso", "rssi_org", NO_ALTERNATE),
-                ("Segnale radio critico", "rssi_red", NO_ALTERNATE),
-                ("Problema all'antenna della radio", "swr_red", NO_ALTERNATE),
-                ("Telemetria assente", "telemko", NO_ALTERNATE),
-                ("Telemetria disponibile", "telemok", NO_ALTERNATE),
-                ("Segnale trainer perso", "trainko", NO_ALTERNATE),
-                ("Segnale trainer disponibile", "trainok", NO_ALTERNATE),
-                ("Sensore perso", "sensorko", NO_ALTERNATE),
-                ("sovraccarico servo", "servoko", NO_ALTERNATE),
-                ("sovraccarico di alimentazione", "rxko", NO_ALTERNATE),
-                ("ricevente ancora connessa", "modelpwr", NO_ALTERNATE),
-                ]:
-    systemSounds.append((s, filename(f, a)))
+    systemSounds.append((s, filename(f)))
+for s, f in [("radio inattiva controllare", "inactiv"),
+             ("batteria della radio scarica", "lowbatt"),
+             ("controllo motore non in posizione, verificare", "thralert"),
+             ("interruttori non in posizione, verificare", "swalert"),
+             ("eeprom corrotta", "eebad"),
+             ("formattazione eeprom in corso", "eeformat"),
+             ("errore", "error"),
+             ("trim centrato", "midtrim"),
+             ("potenziometro centrato", "midpot"),
+             ("massimo trim raggiunto", "maxtrim"),
+             ("minimo trim raggiunto", "mintrim"),
+             ("venti secondi", "timer20"),
+             ("trenta secondi", "timer30"),
+             ("assorbimento elevato", "highmah"),
+             ("temperatura elevata", "hightemp"),
+             ("A1 in allarme", "a1_org"),
+             ("A1 critico", "a1_red"),
+             ("A2 in allarme", "a2_org"),
+             ("A2 critico", "a2_red"),
+             ("A3 in allarme", "a3_org"),
+             ("A3 critico", "a3_red"),
+             ("A4 in allarme", "a4_org"),
+             ("A4 critico", "a4_red"),
+             ("Segnale radio basso", "rssi_org"),
+             ("Segnale radio critico", "rssi_red"),
+             ("Problema all'antenna della radio", "swr_red"),
+             ("Telemetria assente", "telemko"),
+             ("Telemetria disponibile", "telemok"),
+             ("Segnale trainer perso", "trainko"),
+             ("Segnale trainer disponibile", "trainok"),
+             ("Sensore perso", "sensorko"),
+             ("sovraccarico servo", "servoko"),
+             ("sovraccarico di alimentazione", "rxko"),
+             ("ricevente ancora connessa", "modelpwr"),
+             ]:
+    systemSounds.append((s, filename(f)))
 for i, s in enumerate(["timer", "", "tensione", "tensione", "trasmissione", "ricezione", "altitudine", "motore",
                        "carburante", "temperatura", "temperatura", "velocità", "distanza", "altitudine", "cella lipo",
                        "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accelerazione Y", "accelerazione Z",
                        "direzione", "variometro", "minimo", "massimo"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 155 + i)))
+    systemSounds.append((s, filename(155 + i)))
 for i, (s, f) in enumerate([("carrello chiuso", "gearup"),
                             ("carrello aperto", "geardn"),
                             ("flap rientrati", "flapup"),
@@ -130,4 +130,4 @@ for i, (s, f) in enumerate([("carrello chiuso", "gearup"),
                             ("fase di volo termica sinistra", "fm-thl"),
                             ("fase di volo termica destra", "fm-thr"),
                             ]):
-    sounds.append((s, filename(f, PROMPT_CUSTOM_BASE + i)))
+    sounds.append((s, filename(f)))

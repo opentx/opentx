@@ -73,7 +73,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
     lcd->clear(DEFAULT_BGCOLOR);
     
     if (st == ST_START) {
-        bootloaderDrawTitle(88, "OpenTX Bootloader");
+        bootloaderDrawTitle(88, BOOTLOADER_TITLE);
         
         lcd->drawBitmapPattern(90, 72, LBM_FLASH, DEFAULT_COLOR);
         lcd->drawText(124,  75, "Write Firmware");

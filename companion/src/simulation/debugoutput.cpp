@@ -164,20 +164,19 @@ void DebugOutput::restoreState()
 
 void DebugOutput::processBytesReceived()
 {
-  static char buf[512];
+  static QByteArray text;
+  if (text.capacity() < 512)
+    text.reserve(512);
   const QTextCursor savedCursor(ui->console->textCursor());
   const int sbValue = ui->console->verticalScrollBar()->value();
   const bool sbAtBottom = (sbValue == ui->console->verticalScrollBar()->maximum());
-  qint64 len;
-  QString text;
 
   while (m_dataBufferDevice && m_dataBufferDevice->bytesAvailable() > 0) {
-    len = m_dataBufferDevice->read(buf, sizeof(buf));
-    if (len <= 0)
+    text = m_dataBufferDevice->read(qint64(text.capacity()));
+    if (text.isEmpty())
       break;
-    text = QString::fromLocal8Bit(buf, len);
     ui->console->moveCursor(QTextCursor::End);
-    ui->console->textCursor().insertText(text);
+    ui->console->textCursor().insertText(QString(text));
     if (sbAtBottom) {
       ui->console->moveCursor(QTextCursor::End);
       ui->console->verticalScrollBar()->setValue(ui->console->verticalScrollBar()->maximum());

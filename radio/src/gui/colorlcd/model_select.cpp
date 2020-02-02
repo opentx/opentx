@@ -99,7 +99,7 @@ void setCurrentCategory(unsigned int index)
   /*if (currentCategory->size() > 0)
     setCurrentModel(0);
   else
-    currentModel = NULL;*/
+    currentModel = nullptr;*/
 }
 #endif
 
@@ -263,7 +263,7 @@ class ModelCategoryPageBody: public FormWindow {
 
         button->setPressHandler([=]() -> uint8_t {
             if (button->hasFocus()) {
-              Menu * menu = new Menu();
+              Menu * menu = new Menu(parent);
               if (model != modelslist.getCurrentModel()) {
                 menu->addLine(STR_SELECT_MODEL, [=]() {
                     // we store the latest changes if any
@@ -302,7 +302,7 @@ class ModelCategoryPageBody: public FormWindow {
               // menu->addLine(STR_MOVE_MODEL);
               if (model != modelslist.getCurrentModel()) {
                 menu->addLine(STR_DELETE_MODEL, [=]() {
-                  new ConfirmDialog(STR_DELETE_MODEL, std::string(model->modelName, sizeof(model->modelName)).c_str(), [=] {
+                  new ConfirmDialog(parent, STR_DELETE_MODEL, std::string(model->modelName, sizeof(model->modelName)).c_str(), [=] {
                       modelslist.removeModel(category, model);
                       update(index > 0 ? index - 1 : 0);
                   });

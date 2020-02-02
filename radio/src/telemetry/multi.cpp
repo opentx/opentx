@@ -63,7 +63,7 @@ enum MultiBufferState : uint8_t
 
 static MultiModuleStatus multiModuleStatus[NUM_MODULES] = {MultiModuleStatus(), MultiModuleStatus()};
 static MultiModuleSyncStatus multiSyncStatus[NUM_MODULES] = {MultiModuleSyncStatus(), MultiModuleSyncStatus()};
-static uint8_t multiBindStatus[NUM_MODULES] = {MULTI_NORMAL_OPERATION, MULTI_NORMAL_OPERATION};
+static uint8_t multiBindStatus[NUM_MODULES] = {MULTI_BIND_NONE, MULTI_BIND_NONE};
 
 static MultiBufferState multiTelemetryBufferState[NUM_MODULES];
 static uint16_t multiTelemetryLastRxTS[NUM_MODULES];
@@ -111,7 +111,7 @@ uint8_t intTelemetryRxBufferCount;
 
 static MultiModuleStatus multiModuleStatus;
 static MultiModuleSyncStatus multiSyncStatus;
-static uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
+static uint8_t multiBindStatus = MULTI_BIND_NONE;
 
 static MultiBufferState multiTelemetryBufferState;
 static uint16_t multiTelemetryLastRxTS;
@@ -126,8 +126,12 @@ MultiModuleSyncStatus& getMultiSyncStatus(uint8_t)
   return multiSyncStatus;
 }
 
-uint8_t getMultiBindStatus(uint8_t)
+uint8_t getMultiBindStatus(uint8_t moduleIdx)
 {
+#if !defined(INTERNAL_MODULE_MULTI)
+  if (moduleIdx == INTERNAL_MODULE)
+    return MULTI_BIND_NONE;
+#endif
   return multiBindStatus;
 }
 
@@ -171,10 +175,10 @@ static MultiBufferState guessProtocol(uint8_t module)
     return FrskyTelemetryFallback;
 }
 
-static void processMultiScannerPacket(const uint8_t *data)
+static void processMultiScannerPacket(const uint8_t *data, const uint8_t moduleIdx)
 {
   uint8_t cur_channel = data[0];
-  if (moduleState[g_moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+  if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
     for (uint8_t channel = 0; channel <5; channel++) {
       uint8_t power = max<int>(0,(data[channel+1] - 34) >> 1); // remove everything below -120dB
 
@@ -400,7 +404,7 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 #endif
     case SpectrumScannerPacket:
       if (len == 6)
-        processMultiScannerPacket(data);
+        processMultiScannerPacket(data, module);
       else
         TRACE("[MP] Received spectrum scanner len %d != 6", len);
       break;
@@ -548,7 +552,7 @@ void MultiModuleStatus::getStatusString(char * statusText) const
     return;
   }
 
-  if (major == 1 && minor < 3 && SLOW_BLINK_ON_PHASE) {
+  if (major <= 1 && minor <= 3 && revision <= 0 && patch <= 47 && SLOW_BLINK_ON_PHASE) {
     strcpy(statusText, STR_MODULE_UPGRADE);
   }
   else {
@@ -621,7 +625,7 @@ static void processMultiTelemetryByte(const uint8_t data, uint8_t module)
       debugPrintf("[%02X%02X %02X%02X] ", rxBuffer[i*4+2], rxBuffer[i*4 + 3],
                   rxBuffer[i*4 + 4], rxBuffer[i*4 + 5]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     // Packet is complete, process it
     processMultiTelemetryPaket(rxBuffer, module);

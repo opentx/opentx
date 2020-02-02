@@ -1,0 +1,70 @@
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "opentx.h"
+#include "radio_diaganas.h"
+
+constexpr coord_t ANA_OFFSET = 150;
+
+class RadioAnalogsDiagsWindow: public Window {
+  public:
+    RadioAnalogsDiagsWindow(Window * parent, const rect_t & rect):
+      Window(parent, rect)
+    {
+    }
+
+    void checkEvents() override
+    {
+      // will always force a full monitor window refresh
+      invalidate();
+    }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      for (uint8_t i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
+        coord_t y = 1 + (i / 2) * FH;
+        uint8_t x = i & 1 ? LCD_W / 2 + 10 : 10;
+        dc->drawNumber(x, y, i + 1, LEADING0 | LEFT, 2);
+        dc->drawText(x + 2 * 15 - 2, y, ":");
+        drawHexNumber(dc, x + 3 * 15 - 1, y, anaIn(i));
+        dc->drawNumber(x + ANA_OFFSET, y, (int16_t) calibratedAnalogs[CONVERT_MODE(i)] * 25 / 256, RIGHT);
+      }
+    };
+
+  protected:
+};
+
+void RadioAnalogsDiagsPage::buildHeader(Window * window)
+{
+  new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + 10, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENU_RADIO_ANALOGS, 0, MENU_COLOR);
+}
+
+void RadioAnalogsDiagsPage::buildBody(Window * window)
+{
+  new RadioAnalogsDiagsWindow(window, {10, 10, window->width() - 10, window->height() - 10});
+}
+
+RadioAnalogsDiagsPage::RadioAnalogsDiagsPage():
+  Page(ICON_MODEL_SETUP)
+{
+  buildHeader(&header);
+  buildBody(&body);
+  setFocus();
+}

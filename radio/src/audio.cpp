@@ -524,7 +524,7 @@ void audioTask(void * pdata)
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
-#if defined(PCBX12S) || defined(PCBNV14)
+#if defined(PCBX12S)
   // The audio amp needs ~2s to start
   RTOS_WAIT_MS(1000); // 1s
 #endif
@@ -534,6 +534,13 @@ void audioTask(void * pdata)
   }
 
   while (1) {
+    #if defined(PCBNV14)
+    if(!isAudioReady()) {
+      audioChipReset();
+      RTOS_WAIT_MS(100);
+      continue;
+    }
+    #endif
     DEBUG_TIMER_SAMPLE(debugTimerAudioIterval);
     DEBUG_TIMER_START(debugTimerAudioDuration);
     audioQueue.wakeup();

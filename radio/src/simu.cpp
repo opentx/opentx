@@ -252,12 +252,12 @@ long OpenTxSim::onKeypress(FXObject *, FXSelector, void * v)
   return 0;
 }
 
-long OpenTxSim::onMouseDown(FXObject*,FXSelector,void*v)
+long OpenTxSim::onMouseDown(FXObject *, FXSelector, void * v)
 {
   FXEvent * evt = (FXEvent *)v;
   UNUSED(evt);
 
-  // TRACE("onMouseDown %d %d", evt->win_x, evt->win_y);
+  TRACE_WINDOWS("[Mouse Press] %d %d", evt->win_x, evt->win_y);
 
 #if defined(HARDWARE_TOUCH)
   touchState.event = TE_DOWN;
@@ -273,7 +273,7 @@ long OpenTxSim::onMouseUp(FXObject*,FXSelector,void*v)
   FXEvent * evt = (FXEvent *)v;
   UNUSED(evt);
 
-  // TRACE("onMouseUp %d %d", evt->win_x, evt->win_y);
+  TRACE_WINDOWS("[Mouse Release] %d %d", evt->win_x, evt->win_y);
 
 #if defined(HARDWARE_TOUCH)
   if (touchState.event == TE_DOWN) {
@@ -294,13 +294,17 @@ long OpenTxSim::onMouseMove(FXObject*,FXSelector,void*v)
   FXEvent * evt = (FXEvent *)v;
   UNUSED(evt);
 
+  if (evt->state & LEFTBUTTONMASK) {
+    TRACE_WINDOWS("[Mouse Move] %d %d", evt->win_x, evt->win_y);
+
 #if defined(HARDWARE_TOUCH)
-  if (evt->state & LEFTBUTTONMASK && (touchState.event == TE_SLIDE || abs(evt->win_x - touchState.x) > 5 || abs(evt->win_y - touchState.y) > 5)) {
-    touchState.event = TE_SLIDE;
-    touchState.x = evt->win_x;
-    touchState.y = evt->win_y;
-  }
+    if (touchState.event == TE_SLIDE || abs(evt->win_x - touchState.x) > 5 || abs(evt->win_y - touchState.y) > 5) {
+      touchState.event = TE_SLIDE;
+      touchState.x = evt->win_x;
+      touchState.y = evt->win_y;
+    }
 #endif
+  }
 
   return 0;
 }
@@ -360,7 +364,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
   static FXuint trimKeys[] = { KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12 };
 #endif
 
-  for (unsigned i=0; i<2*NUM_TRIMS; i++) {
+  for (unsigned i=0; i<NUM_TRIMS_KEYS; i++) {
     simuSetTrim(i, getApp()->getKeyState(trimKeys[i]));
   }
 

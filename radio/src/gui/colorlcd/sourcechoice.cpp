@@ -103,7 +103,7 @@ void SourceChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
 
 void SourceChoice::openMenu()
 {
-  auto menu = new Menu();
+  auto menu = new Menu(this);
   fillMenu(menu);
   menu->setToolbar(new SourceChoiceMenuToolbar(this, menu));
   menu->setCloseHandler([=]() {

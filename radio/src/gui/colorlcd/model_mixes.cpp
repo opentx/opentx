@@ -338,7 +338,7 @@ void ModelMixesPage::build(FormWindow * window, int8_t focusMixIndex)
           button->setFocus();
         button->setPressHandler([=]() -> uint8_t {
           button->bringToTop();
-          Menu * menu = new Menu();
+          Menu * menu = new Menu(window);
           menu->addLine(STR_EDIT, [=]() {
             editMix(window, ch, mixIndex);
           });
@@ -402,7 +402,7 @@ void ModelMixesPage::build(FormWindow * window, int8_t focusMixIndex)
         button->setFocus();
       button->setPressHandler([=]() -> uint8_t {
         button->bringToTop();
-        Menu * menu = new Menu();
+        Menu * menu = new Menu(window);
         menu->addLine(STR_EDIT, [=]() {
           insertMix(mixIndex, ch);
           editMix(window, ch, mixIndex);

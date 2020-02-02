@@ -43,9 +43,32 @@ void backlightInit()
   BACKLIGHT_TIMER->BDTR |= TIM_BDTR_MOE;
 }
 
+uint8_t lastDutyCycle = 0;
+
 void backlightEnable(uint8_t dutyCycle)
 {
-  // TODO SET provided cycle - for now ensure backlight will be on
-  //BACKLIGHT_TIMER->CCR1 = dutyCycle;
-  BACKLIGHT_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX;
+  BACKLIGHT_TIMER->CCR1 = dutyCycle;
+  if(!dutyCycle) {
+    //experimental to turn off LCD when no backlight
+    if(lcdOffFunction) lcdOffFunction();
+  }
+  else if(!lastDutyCycle) {
+    if(lcdOnFunction) lcdOnFunction();
+    else lcdInit();
+  }
+  lastDutyCycle = dutyCycle;
+}
+
+void lcdOff() {
+  backlightEnable(0);
+}
+
+void lcdOn(){
+  if(lcdOnFunction) lcdOnFunction();
+  else lcdInit();
+  backlightEnable(BACKLIGHT_LEVEL_MAX);
+}
+
+bool isBacklightEnabled() {
+  return lastDutyCycle != 0;
 }

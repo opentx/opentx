@@ -103,7 +103,7 @@ bool isFilePatternAvailable(const char * path, const char * file, const char * p
 
   fplen = strlen(path);
   if (fplen > LEN_FILE_PATH_MAX) {
-    TRACE_ERROR("isFilePatternAvailable(%s) = error: file path too long.\n", path, file);
+    TRACE_ERROR("isFilePatternAvailable(%s) = error: path too long.\n", path);
     return false;
   }
 

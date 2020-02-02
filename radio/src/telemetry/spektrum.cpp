@@ -76,118 +76,118 @@ struct SpektrumSensor {
 
 const SpektrumSensor spektrumSensors[] = {
   // High voltage internal sensor
-  {0x01,             0,  int16,     ZSTR_A1,                UNIT_VOLTS,                  1},
+  {0x01,             0,  int16,     STR_SENSOR_A1,                UNIT_VOLTS,                  1},
 
   // Temperature internal sensor
-  {0x02,             0,  int16,     ZSTR_TEMP1,             UNIT_CELSIUS,                1},
+  {0x02,             0,  int16,     STR_SENSOR_TEMP1,             UNIT_CELSIUS,                1},
 
   // High current internal sensor (0x03), 300A/2048 resolution
-  {I2C_HIGH_CURRENT, 0,  int16,     ZSTR_CURR,              UNIT_AMPS,                   1},
+  {I2C_HIGH_CURRENT, 0,  int16,     STR_SENSOR_CURR,              UNIT_AMPS,                   1},
 
   //Powerbox (also mentioned as 0x7D but that is also transmitter frame data)
-  {0x0a,             0,  uint16,    ZSTR_BATT1_VOLTAGE,     UNIT_VOLTS,                  2},
-  {0x0a,             2,  uint16,    ZSTR_BATT2_VOLTAGE,     UNIT_VOLTS,                  2},
-  {0x0a,             4,  uint16,    ZSTR_BATT1_CONSUMPTION, UNIT_MAH,                    0},
-  {0x0a,             6,  uint16,    ZSTR_BATT2_CONSUMPTION, UNIT_MAH,                    0},
+  {0x0a,             0,  uint16,    STR_SENSOR_BATT1_VOLTAGE,     UNIT_VOLTS,                  2},
+  {0x0a,             2,  uint16,    STR_SENSOR_BATT2_VOLTAGE,     UNIT_VOLTS,                  2},
+  {0x0a,             4,  uint16,    STR_SENSOR_BATT1_CONSUMPTION, UNIT_MAH,                    0},
+  {0x0a,             6,  uint16,    STR_SENSOR_BATT2_CONSUMPTION, UNIT_MAH,                    0},
 
 
   // Lap Timer
-  {0x0b,             0, uint8,      ZSTR_LAP_NUMBER,        UNIT_RAW,                    0},
-  {0x0b,             0, uint8,      ZSTR_GATE_NUMBER,       UNIT_RAW,                    0},
-  {0x0b,             0, uint32,     ZSTR_LAP_TIME,          UNIT_SECONDS,                3},
-  {0x0b,             0, uint32,     ZSTR_GATE_TIME,         UNIT_SECONDS,                3},
+  {0x0b,             0, uint8,      STR_SENSOR_LAP_NUMBER,        UNIT_RAW,                    0},
+  {0x0b,             0, uint8,      STR_SENSOR_GATE_NUMBER,       UNIT_RAW,                    0},
+  {0x0b,             0, uint32,     STR_SENSOR_LAP_TIME,          UNIT_SECONDS,                3},
+  {0x0b,             0, uint32,     STR_SENSOR_GATE_TIME,         UNIT_SECONDS,                3},
 
   // Text Generator
-  {I2C_TEXTGEN,      0, uint32,     ZSTR_FLIGHT_MODE,       UNIT_TEXT,                   0},
+  {I2C_TEXTGEN,      0, uint32,     STR_SENSOR_FLIGHT_MODE,       UNIT_TEXT,                   0},
 
   // AirSpeed, also has max (+2, int16)
-  {0x11,             0,  int16,     ZSTR_ASPD,              UNIT_KMH,                    0},
+  {0x11,             0,  int16,     STR_SENSOR_ASPD,              UNIT_KMH,                    0},
 
   // Altitude, also has max (+2, int16)
-  {0x12,             0,  int16,     ZSTR_ALT,               UNIT_METERS,                 1},
+  {0x12,             0,  int16,     STR_SENSOR_ALT,               UNIT_METERS,                 1},
 
 
   // {0x38, strain}
 
   // G-Force (+min, max)
-  {0x14,             0,  int16,     ZSTR_ACCX,              UNIT_G,                      2},
-  {0x14,             2,  int16,     ZSTR_ACCY,              UNIT_G,                      2},
-  {0x14,             4,  int16,     ZSTR_ACCZ,              UNIT_G,                      2},
+  {0x14,             0,  int16,     STR_SENSOR_ACCX,              UNIT_G,                      2},
+  {0x14,             2,  int16,     STR_SENSOR_ACCY,              UNIT_G,                      2},
+  {0x14,             4,  int16,     STR_SENSOR_ACCZ,              UNIT_G,                      2},
 
 
   // 0x15,  JETCAT/TURBINE, BCD Encoded values
   // TODO: Add decoding of status information
-  // {0x15,             0,  uint8,     ZSTR_STATUS,            UNIT_BITFIELD,               0},
-  {0x15,             1,  uint8bcd,  ZSTR_THROTTLE,          UNIT_PERCENT,                0},
-  {0x15,             2,  uint16bcd, ZSTR_A1,                UNIT_VOLTS,                  2},
-  {0x15,             4,  uint16bcd, ZSTR_A2,                UNIT_VOLTS,                  2},
-  {0x15,             6,  uint32bcd, ZSTR_RPM,               UNIT_RPMS,                   0},
-  {0x15,             10, uint16bcd, ZSTR_TEMP1,             UNIT_CELSIUS,                0},
-  // {0x15,             0,  uint8,     ZSTR_STATUS,            UNIT_BITFIELD,               0},
+  // {0x15,             0,  uint8,     STR_SENSOR_STATUS,            UNIT_BITFIELD,               0},
+  {0x15,             1,  uint8bcd,  STR_SENSOR_THROTTLE,          UNIT_PERCENT,                0},
+  {0x15,             2,  uint16bcd, STR_SENSOR_A1,                UNIT_VOLTS,                  2},
+  {0x15,             4,  uint16bcd, STR_SENSOR_A2,                UNIT_VOLTS,                  2},
+  {0x15,             6,  uint32bcd, STR_SENSOR_RPM,               UNIT_RPMS,                   0},
+  {0x15,             10, uint16bcd, STR_SENSOR_TEMP1,             UNIT_CELSIUS,                0},
+  // {0x15,             0,  uint8,     STR_SENSOR_STATUS,            UNIT_BITFIELD,               0},
 
   // 0x16-0x17 GPS
   // GPS is bcd encoded and also uses flags. Hard to get right without an actual GPS Sensor
   // Time/date is also BCD encoded but so this FrSky's, so treat it as uint32
-  {I2C_GPS2,         0,  uint16bcd, ZSTR_GSPD,              UNIT_KTS,                    1},
-  {I2C_GPS2,         2,  uint32,    ZSTR_GPSDATETIME,       UNIT_DATETIME,               0},
+  {I2C_GPS2,         0,  uint16bcd, STR_SENSOR_GSPD,              UNIT_KTS,                    1},
+  {I2C_GPS2,         2,  uint32,    STR_SENSOR_GPSDATETIME,       UNIT_DATETIME,               0},
 
 
-  //{0x17, 2, uint32, ZSTR_GPSDATETIME, UNIT_DATETIME}, utc in bcd HH:MM:SS.S
-  {0x17,             6,  uint8bcd,  ZSTR_SATELLITES,        UNIT_RAW,                    0},
-  //{0x17, 7, uint8bcd, ZSTR_GPSALT, UNIT_METERS}, altitude high bits
+  //{0x17, 2, uint32, STR_SENSOR_GPSDATETIME, UNIT_DATETIME}, utc in bcd HH:MM:SS.S
+  {0x17,             6,  uint8bcd,  STR_SENSOR_SATELLITES,        UNIT_RAW,                    0},
+  //{0x17, 7, uint8bcd, STR_SENSOR_GPSALT, UNIT_METERS}, altitude high bits
 
   // 0x19 Jetcat flow rate
-  // {0x19,             0,  uint16bcd, ZSTR_FUEL_CONSUMPTION,  UNIT_MILLILITERS_PER_MINUTE, 1}, missing ml/min
-  {0x19,             2,  uint32bcd, ZSTR_FUEL,              UNIT_MILLILITERS,            1},
+  // {0x19,             0,  uint16bcd, STR_SENSOR_FUEL_CONSUMPTION,  UNIT_MILLILITERS_PER_MINUTE, 1}, missing ml/min
+  {0x19,             2,  uint32bcd, STR_SENSOR_FUEL,              UNIT_MILLILITERS,            1},
 
   // 0x1a Gyro
-  {0x1a,             0,  int16,     ZSTR_GYROX,             UNIT_DEGREE,                 1},
-  {0x1a,             2,  int16,     ZSTR_GYROY,             UNIT_DEGREE,                 1},
-  {0x1a,             4,  int16,     ZSTR_GYROZ,             UNIT_DEGREE,                 1},
+  {0x1a,             0,  int16,     STR_SENSOR_GYROX,             UNIT_DEGREE,                 1},
+  {0x1a,             2,  int16,     STR_SENSOR_GYROY,             UNIT_DEGREE,                 1},
+  {0x1a,             4,  int16,     STR_SENSOR_GYROZ,             UNIT_DEGREE,                 1},
 
   // 0x1b Attitude & Mag Compass
   // mag Units are tbd so probably no sensor in existance, ignore them for now
-  {0x1b,             0,  int16,     ZSTR_ROLL,              UNIT_DEGREE,                 1},
-  {0x1b,             2,  int16,     ZSTR_PITCH,             UNIT_DEGREE,                 1},
-  {0x1b,             4,  int16,     ZSTR_YAW,               UNIT_DEGREE,                 1},
+  {0x1b,             0,  int16,     STR_SENSOR_ROLL,              UNIT_DEGREE,                 1},
+  {0x1b,             2,  int16,     STR_SENSOR_PITCH,             UNIT_DEGREE,                 1},
+  {0x1b,             4,  int16,     STR_SENSOR_YAW,               UNIT_DEGREE,                 1},
 
   // {0x20, esc}, does not exist in the wild?
 
   // Dual Cell monitor (0x34)
-  {0x34,             0,  int16,     ZSTR_BATT1_CURRENT,     UNIT_AMPS,                   1},
-  {0x34,             2,  int16,     ZSTR_BATT1_CONSUMPTION, UNIT_MAH,                    1},
-  {0x34,             4,  uint16,    ZSTR_BATT1_TEMP,        UNIT_CELSIUS,                1},
-  {0x34,             6,  int16,     ZSTR_BATT2_CURRENT,     UNIT_AMPS,                   1},
-  {0x34,             8,  int16,     ZSTR_BATT2_CONSUMPTION, UNIT_MAH,                    1},
-  {0x34,             10, uint16,    ZSTR_BATT2_TEMP,        UNIT_CELSIUS,                1},
+  {0x34,             0,  int16,     STR_SENSOR_BATT1_CURRENT,     UNIT_AMPS,                   1},
+  {0x34,             2,  int16,     STR_SENSOR_BATT1_CONSUMPTION, UNIT_MAH,                    1},
+  {0x34,             4,  uint16,    STR_SENSOR_BATT1_TEMP,        UNIT_CELSIUS,                1},
+  {0x34,             6,  int16,     STR_SENSOR_BATT2_CURRENT,     UNIT_AMPS,                   1},
+  {0x34,             8,  int16,     STR_SENSOR_BATT2_CONSUMPTION, UNIT_MAH,                    1},
+  {0x34,             10, uint16,    STR_SENSOR_BATT2_TEMP,        UNIT_CELSIUS,                1},
 
   // Tank pressure + custom input bits (ignore for now)
-  //{0x38,             0,  uint16,    ZSTR_STATUS_BITS,       UNIT_BITFIELD,               0},
-  //{0x38,             0,  uint16,    ZSTR_PRESSSURE,         UNIT_PSI,                    1},
+  //{0x38,             0,  uint16,    STR_SENSOR_STATUS_BITS,       UNIT_BITFIELD,               0},
+  //{0x38,             0,  uint16,    STR_SENSOR_PRESSSURE,         UNIT_PSI,                    1},
 
   // Cells (0x3a)
-  {I2C_CELLS,        0,  uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
-  {I2C_CELLS,        2,  uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
-  {I2C_CELLS,        4,  uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
-  {I2C_CELLS,        6,  uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
-  {I2C_CELLS,        8,  uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
-  {I2C_CELLS,        10, uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
-  {I2C_CELLS,        12, uint16,    ZSTR_TEMP2,             UNIT_CELSIUS,                2},
+  {I2C_CELLS,        0,  uint16,    STR_SENSOR_CELLS,             UNIT_VOLTS,                  2},
+  {I2C_CELLS,        2,  uint16,    STR_SENSOR_CELLS,             UNIT_VOLTS,                  2},
+  {I2C_CELLS,        4,  uint16,    STR_SENSOR_CELLS,             UNIT_VOLTS,                  2},
+  {I2C_CELLS,        6,  uint16,    STR_SENSOR_CELLS,             UNIT_VOLTS,                  2},
+  {I2C_CELLS,        8,  uint16,    STR_SENSOR_CELLS,             UNIT_VOLTS,                  2},
+  {I2C_CELLS,        10, uint16,    STR_SENSOR_CELLS,             UNIT_VOLTS,                  2},
+  {I2C_CELLS,        12, uint16,    STR_SENSOR_TEMP2,             UNIT_CELSIUS,                2},
 
   // Vario-S
-  {0x40,             0,  int16,     ZSTR_ALT,               UNIT_METERS,                 1},
-  {0x40,             2,  int16,     ZSTR_VSPD,              UNIT_METERS_PER_SECOND,      1},
+  {0x40,             0,  int16,     STR_SENSOR_ALT,               UNIT_METERS,                 1},
+  {0x40,             2,  int16,     STR_SENSOR_VSPD,              UNIT_METERS_PER_SECOND,      1},
 
   // 0x50-0x56 custom 3rd party sensors
-  //{0x50, 0, int16, ZSTR_}
+  //{0x50, 0, int16, STR_SENSOR_}
 
   // 0x7d are transmitter channels frame data [7], probably only available on the Spektrum
   // telemetry bus on the model itself
 
   // RPM/Volts/Temperature
-  {0x7e,             0,  uint16,    ZSTR_RPM,               UNIT_RPMS,                   0},
-  {0x7e,             2,  uint16,    ZSTR_A3,                UNIT_VOLTS,                  2},
-  {0x7e,             4,  int16,     ZSTR_TEMP2,             UNIT_FAHRENHEIT,             0},
+  {0x7e,             0,  uint16,    STR_SENSOR_RPM,               UNIT_RPMS,                   0},
+  {0x7e,             2,  uint16,    STR_SENSOR_A3,                UNIT_VOLTS,                  2},
+  {0x7e,             4,  int16,     STR_SENSOR_TEMP2,             UNIT_FAHRENHEIT,             0},
 
   // 0x7f, QoS DATA, also called Flight Log,, with A, B, L, R, F, H?
   // A - Antenna Fades on Receiver A
@@ -195,16 +195,16 @@ const SpektrumSensor spektrumSensors[] = {
   // L - Antenna Fades on left Receiver
   // R - Antenna Fades on right Receiver
   // F - Frame losses
-  {I2C_QOS,          0,  uint16,    ZSTR_QOS_A,             UNIT_RAW,                    0},
-  {I2C_QOS,          2,  uint16,    ZSTR_QOS_B,             UNIT_RAW,                    0},
-  {I2C_QOS,          4,  uint16,    ZSTR_QOS_L,             UNIT_RAW,                    0},
-  {I2C_QOS,          6,  uint16,    ZSTR_QOS_R,             UNIT_RAW,                    0},
-  {I2C_QOS,          8,  uint16,    ZSTR_QOS_F,             UNIT_RAW,                    0},
-  {I2C_QOS,          10, uint16,    ZSTR_QOS_H,             UNIT_RAW,                    0},
-  {I2C_QOS,          12, uint16,    ZSTR_A2,                UNIT_VOLTS,                  2},
+  {I2C_QOS,          0,  uint16,    STR_SENSOR_QOS_A,             UNIT_RAW,                    0},
+  {I2C_QOS,          2,  uint16,    STR_SENSOR_QOS_B,             UNIT_RAW,                    0},
+  {I2C_QOS,          4,  uint16,    STR_SENSOR_QOS_L,             UNIT_RAW,                    0},
+  {I2C_QOS,          6,  uint16,    STR_SENSOR_QOS_R,             UNIT_RAW,                    0},
+  {I2C_QOS,          8,  uint16,    STR_SENSOR_QOS_F,             UNIT_RAW,                    0},
+  {I2C_QOS,          10, uint16,    STR_SENSOR_QOS_H,             UNIT_RAW,                    0},
+  {I2C_QOS,          12, uint16,    STR_SENSOR_A2,                UNIT_VOLTS,                  2},
 
-  {I2C_PSEUDO_TX,    0,  uint8,     ZSTR_TX_RSSI,           UNIT_RAW,                    0},
-  {I2C_PSEUDO_TX,    4,  uint32,    ZSTR_BIND,              UNIT_RAW,                    0},
+  {I2C_PSEUDO_TX,    0,  uint8,     STR_SENSOR_TX_RSSI,           UNIT_RAW,                    0},
+  {I2C_PSEUDO_TX,    4,  uint32,    STR_SENSOR_BIND,              UNIT_RAW,                    0},
   {0,                0,  int16,     NULL,                   UNIT_RAW,                    0} //sentinel
 };
 
@@ -434,7 +434,7 @@ void processSpektrumTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffe
       debugPrintf("%02X%02X %02X%02X  ", rxBuffer[i], rxBuffer[i + 1],
                   rxBuffer[i + 2], rxBuffer[i + 3]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     processSpektrumPacket(rxBuffer);
     rxBufferCount = 0;
