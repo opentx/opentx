@@ -213,32 +213,29 @@ void menuViewTelemetryFrsky(event_t event)
 {
   enum NavigationDirection direction = none;
 
-  switch (event) {
-    case EVT_KEY_FIRST(KEY_EXIT):
-    case EVT_KEY_LONG(KEY_EXIT):
-      killEvents(event);
-      chainMenu(menuMainView);
-      break;
-
-    case EVT_KEY_LONG(KEY_PAGE):
-      killEvents(event);
-      // no break;
-
-    case EVT_KEY_FIRST(KEY_UP):
-      decrTelemetryScreen();
-      break;
-
-    case EVT_KEY_BREAK(KEY_PAGE):
-    case EVT_KEY_FIRST(KEY_DOWN):
-      incrTelemetryScreen();
-      break;
-
-    case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
-      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      POPUP_MENU_START(onMainViewMenu);
-      break;
+  if (event == EVT_KEY_FIRST(KEY_EXIT) && TELEMETRY_SCREEN_TYPE(s_frsky_view) != TELEMETRY_SCREEN_TYPE_SCRIPT) {
+    killEvents(event);
+    chainMenu(menuMainView);
+  }
+#if defined(LUA)
+  else if (event == EVT_KEY_LONG(KEY_EXIT)) {
+    killEvents(event);
+    chainMenu(menuMainView);
+  }
+#endif
+  else if (event == EVT_KEY_LONG(KEY_PAGE)) {
+    killEvents(event);
+    decrTelemetryScreen();
+  }
+  else if (event == EVT_KEY_BREAK(KEY_PAGE)) {
+    killEvents(event);
+    incrTelemetryScreen();
+  }
+  else if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    killEvents(event);
+    POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    POPUP_MENU_START(onMainViewMenu);
   }
 
   for (int i=0; i<=TELEMETRY_SCREEN_TYPE_MAX; i++) {
