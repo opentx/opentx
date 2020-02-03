@@ -456,7 +456,7 @@ static int luaSportTelemetryPush(lua_State * L)
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
     return 1;
   }
-  else if (lua_gettop(L) > sizeof(SportTelemetryPacket) ) {
+  else if (lua_gettop(L) > int(sizeof(SportTelemetryPacket))) {
     lua_pushboolean(L, false);
     return 1;
   }
