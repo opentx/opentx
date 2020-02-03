@@ -53,7 +53,7 @@ void auxSerialPowerOff()
 }
 #endif
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -179,7 +179,7 @@ void boardInit()
 
   ledInit();
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if HAS_SPORT_UPDATE_CONNECTOR()
   sportUpdateInit();
 #endif
 

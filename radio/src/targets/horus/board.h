@@ -596,7 +596,7 @@ extern uint32_t telemetryErrors;
 void telemetryPortInvertedInit(uint32_t baudrate);
 
 // Sport update driver
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
