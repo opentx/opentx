@@ -197,6 +197,7 @@ static int luaModelGetTimer(lua_State *L)
     lua_pushtableinteger(L, "countdownBeep", timer.countdownBeep);
     lua_pushtableboolean(L, "minuteBeep", timer.minuteBeep);
     lua_pushtableinteger(L, "persistent", timer.persistent);
+    lua_pushtablezstring(L, "name", timer.name);
   }
   else {
     lua_pushnil(L);
@@ -245,6 +246,10 @@ static int luaModelSetTimer(lua_State *L)
       }
       else if (!strcmp(key, "persistent")) {
         timer.persistent = luaL_checkinteger(L, -1);
+      }
+      if (!strcmp(key, "name")) {
+        const char * name = luaL_checkstring(L, -1);
+        str2zchar(timer.name, name, sizeof(timer.name));
       }
     }
     storageDirty(EE_MODEL);
