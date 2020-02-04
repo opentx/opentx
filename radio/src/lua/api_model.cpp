@@ -182,8 +182,9 @@ Get model timer parameters
  * `countdownBeep` (number) countdown beep (0­ = silent, 1 =­ beeps, 2­ = voice)
  * `minuteBeep` (boolean) minute beep
  * `persistent` (number) persistent timer
+ * 'name' (string) timer name
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, name added in 2.3.6
 */
 static int luaModelGetTimer(lua_State *L)
 {
@@ -217,7 +218,7 @@ Set model timer parameters
 @notice If a parameter is missing from the value, then
 that parameter remains unchanged.
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, name added in 2.3.6
 */
 static int luaModelSetTimer(lua_State *L)
 {
