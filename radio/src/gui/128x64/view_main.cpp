@@ -397,7 +397,7 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_TELEMETRY:
-      chainMenu(menuViewTelemetryFrsky);
+      chainMenu(menuViewTelemetry);
       killEvents(event);
       break;
 
