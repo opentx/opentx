@@ -113,7 +113,8 @@ void boardInit()
                          INTMODULE_RCC_APB2Periph |
                          EXTMODULE_RCC_APB2Periph |
                          TRAINER_MODULE_RCC_APB2Periph |
-                         BT_RCC_APB2Periph,
+                         BT_RCC_APB2Periph |
+                         TELEMETRY_RCC_APB2Periph,
                          ENABLE);
 
 #if defined(BLUETOOTH) && !defined(PCBX9E)
