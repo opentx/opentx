@@ -182,8 +182,9 @@ Get model timer parameters
  * `countdownBeep` (number) countdown beep (0­ = silent, 1 =­ beeps, 2­ = voice)
  * `minuteBeep` (boolean) minute beep
  * `persistent` (number) persistent timer
+ * `name` (string) timer name
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, name added in 2.3.6
 */
 static int luaModelGetTimer(lua_State *L)
 {
@@ -197,6 +198,7 @@ static int luaModelGetTimer(lua_State *L)
     lua_pushtableinteger(L, "countdownBeep", timer.countdownBeep);
     lua_pushtableboolean(L, "minuteBeep", timer.minuteBeep);
     lua_pushtableinteger(L, "persistent", timer.persistent);
+    lua_pushtablezstring(L, "name", timer.name);
   }
   else {
     lua_pushnil(L);
@@ -216,7 +218,7 @@ Set model timer parameters
 @notice If a parameter is missing from the value, then
 that parameter remains unchanged.
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, name added in 2.3.6
 */
 static int luaModelSetTimer(lua_State *L)
 {
@@ -245,6 +247,10 @@ static int luaModelSetTimer(lua_State *L)
       }
       else if (!strcmp(key, "persistent")) {
         timer.persistent = luaL_checkinteger(L, -1);
+      }
+      if (!strcmp(key, "name")) {
+        const char * name = luaL_checkstring(L, -1);
+        str2zchar(timer.name, name, sizeof(timer.name));
       }
     }
     storageDirty(EE_MODEL);
