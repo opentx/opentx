@@ -45,12 +45,6 @@ enum NavigationDirection {
   #define EVT_KEY_NEXT_VIEW(evt)             (evt == EVT_KEY_FIRST(KEY_DOWN))
 #endif
 
-#if LCD_W == 128
-  #define VIEW_TELEM_NO_TELEM                2 * FW
-#else
-  #define VIEW_TELEM_NO_TELEM                8 * FW
-#endif
-
 void menuViewTelemetry(event_t event)
 {
   enum NavigationDirection direction = NAVIGATION_DIRECTION_NONE;
@@ -98,7 +92,7 @@ void menuViewTelemetry(event_t event)
   }
 
   drawTelemetryTopBar();
-  lcdDrawText(VIEW_TELEM_NO_TELEM, 3*FH, "No Telemetry Screens");
+  lcdDrawText(LCD_W / 2, 3 * FH, "No Telemetry Screens", CENTERED);
   displayRssiLine();
 }
 
