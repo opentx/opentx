@@ -470,7 +470,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_LONG(KEY_PAGE):
-      chainMenu(menuViewTelemetryFrsky);
+      chainMenu(menuViewTelemetry);
       killEvents(event);
       break;
 

@@ -302,7 +302,7 @@ void showAlertBox(const char * title, const char * text, const char * action , u
 #define LOAD_MODEL_BITMAP()
 
 #define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
-#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetryFrsky
+#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetry
 #define IS_OTHER_VIEW_DISPLAYED()      false
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);

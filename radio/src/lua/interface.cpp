@@ -952,7 +952,7 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
     TelemetryScriptData & script = g_model.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
-    if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuViewTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
+    if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuViewTelemetry && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
       lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.run);
       lua_pushunsigned(lsScripts, evt);
       inputsCount = 1;
