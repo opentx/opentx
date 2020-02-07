@@ -24,12 +24,12 @@ extern bool displayTelemetryScreen();
 extern void displayRssiLine();
 
 enum NavigationDirection {
-  none,
-  up,
-  down
+  NAVIGATION_DIRECTION_NONE,
+  NAVIGATION_DIRECTION_UP,
+  NAVIGATION_DIRECTION_DOWN
 };
-#define decrTelemetryScreen() direction = up
-#define incrTelemetryScreen() direction = down
+#define decrTelemetryScreen() direction = NAVIGATION_DIRECTION_UP
+#define incrTelemetryScreen() direction = NAVIGATION_DIRECTION_DOWN
 
 #if defined(NAVIGATION_XLITE)
   #define EVT_KEY_PREVIOUS_VIEW(evt)         (evt == EVT_KEY_LONG(KEY_LEFT) && IS_SHIFT_PRESSED())
@@ -53,14 +53,14 @@ enum NavigationDirection {
 
 void menuViewTelemetry(event_t event)
 {
-  enum NavigationDirection direction = none;
+  enum NavigationDirection direction = NAVIGATION_DIRECTION_NONE;
 
   if (event == EVT_KEY_FIRST(KEY_EXIT) && TELEMETRY_SCREEN_TYPE(s_frsky_view) != TELEMETRY_SCREEN_TYPE_SCRIPT) {
     killEvents(event);
     chainMenu(menuMainView);
   }
 #if defined(LUA)
-    else if (event == EVT_KEY_LONG(KEY_EXIT)) {
+  else if (event == EVT_KEY_LONG(KEY_EXIT)) {
     killEvents(event);
     chainMenu(menuMainView);
   }
@@ -81,16 +81,16 @@ void menuViewTelemetry(event_t event)
   }
 
   for (int i=0; i<=TELEMETRY_SCREEN_TYPE_MAX; i++) {
-    if (direction == up) {
+    if (direction == NAVIGATION_DIRECTION_UP) {
       if (s_frsky_view-- == 0)
         s_frsky_view = TELEMETRY_VIEW_MAX;
     }
-    else if (direction == down) {
+    else if (direction == NAVIGATION_DIRECTION_DOWN) {
       if (s_frsky_view++ == TELEMETRY_VIEW_MAX)
         s_frsky_view = 0;
     }
     else {
-      direction = down;
+      direction = NAVIGATION_DIRECTION_DOWN;
     }
     if (displayTelemetryScreen()) {
       return;
