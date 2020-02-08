@@ -267,20 +267,21 @@ void audioResetDecodeTime(void)
   audioSpiWriteCmd(SPI_DECODE_TIME, 0x0000);
   audioSpiWriteCmd(SPI_DECODE_TIME, 0x0000);
 }
-
 uint8_t audioHardReset(void)
 {
+  uint8_t retry=0;
+  RST_LOW();
+  delay_ms(20);
   XDCS_HIGH();
   CS_HIGH();
-  RST_LOW();
-  delay_ms(100); // 100ms
   RST_HIGH();
-
-  if (!audioWaitDreq(100)) {
-    return 0;
-  }
+  while(READ_DREQ() == 0 && retry < 200)
+  {
+    retry++;
+    delay_us(50);
+  };
   delay_ms(20); // 20ms
-  return 1;
+  return retry < 200;
 }
 
 uint8_t audioSoftReset(void)
@@ -288,6 +289,7 @@ uint8_t audioSoftReset(void)
   audioSpiSetSpeed(SPI_SPEED_64);
   if (!audioWaitDreq(100))
   {
+    TRACE("audioSoftReset !audioWaitDreq");
     return 0;
   }
 
