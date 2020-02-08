@@ -237,26 +237,14 @@ void sportSendBuffer(const uint8_t * buffer, uint32_t count)
   NVIC_SetPriority(TELEMETRY_DMA_TX_Stream_IRQ, 7);
 }
 
-uint32_t telemetryDMAFlags[] = {
-  TELEMETRY_DMA_TX_FLAG_TC, TELEMETRY_DMA_TX_FLAG_TE, 
-  TELEMETRY_DMA_TX_FLAG_DME, TELEMETRY_DMA_TX_FLAG_FE
-};
-
 extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_TELEM_DMA);
-  for(uint32_t i=0; i<sizeof(telemetryDMAFlags)/sizeof(telemetryDMAFlags[0]); i++) {
-    uint32_t flag = telemetryDMAFlags[i];
-
-    if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, flag)) {
-       TRACE("TELEMETRY_DMA_TX_IRQHandler %x", flag);
-       DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, flag);
-       if(flag == TELEMETRY_DMA_TX_FLAG_TC) {
-         TELEMETRY_USART->CR1 |= USART_CR1_TCIE;
-         if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
-           outputTelemetryBuffer.reset();
-         }
-       }
+  if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
+    DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
+    TELEMETRY_USART->CR1 |= USART_CR1_TCIE;
+    if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+      outputTelemetryBuffer.reset();
     }
   }
 }
