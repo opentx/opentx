@@ -3,6 +3,8 @@ option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
 option(FLYSKY_HALL_STICKS "sticks for FlySky hall sticks" ON)
 option(FLYSKY_HALL_STICKS_REVERSE "Reverse sticks for FlySky hall sticks" OFF)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
+option(PXX1 "PXX1 protocol support" ON)
+option(PXX2 "PXX2 protocol support" OFF)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
@@ -101,7 +103,8 @@ set(GVAR_SCREEN model_gvars.cpp)
 
 set(TARGET_SRC
   ${TARGET_SRC}
-  extmodule_driver.cpp
+  extmodule_helper.cpp
+  ../common/arm/stm32/extmodule_driver.cpp
   trainer_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
   )

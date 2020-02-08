@@ -525,7 +525,6 @@ void afhds3::onModelSwitch() {
 }
 
 void afhds3::init(bool resetFrameCount) {
-  TRACE("AFHDS3 RESET");
   clearQueue();
   repeatCount = 0;
   idleCount = 0;

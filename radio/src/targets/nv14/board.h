@@ -153,6 +153,7 @@ void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 void intmoduleTimerStart(uint32_t periodMs);
 
+void extmoduleSoftSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
 void extmoduleSendNextFrame();
 void extmoduleSendInvertedByte(uint8_t byte);
@@ -492,13 +493,13 @@ int32_t getVolume();
 #define VOLUME_LEVEL_DEF               12
 
 // Telemetry driver
-#define TELEMETRY_FIFO_SIZE             512
+#define TELEMETRY_FIFO_SIZE            512
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 void telemetryPortSetDirectionOutput();
 void telemetryPortSetDirectionInput();
 void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 bool telemetryGetByte(uint8_t * byte);
-bool extModuleGetByte(uint8_t * byte);
+bool extmoduleGetByte(uint8_t * byte);
 void telemetryClearFifo();
 void sportSendByte(uint8_t byte);
 extern uint32_t telemetryErrors;

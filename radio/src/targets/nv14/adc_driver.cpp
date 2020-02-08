@@ -243,10 +243,10 @@ void adcSingleRead()
 #else
   for (unsigned int i = 0; i < 10000; i++) {
 #if defined(PCBNV14)
-    if (ADC_MAIN_TRANSFER_COMPLETE() && ADC_SUB_TRANSFER_COMPLETE())
-    {
-      break;
-    }
+    //if (ADC_MAIN_TRANSFER_COMPLETE() && ADC_SUB_TRANSFER_COMPLETE())
+    //{
+      //break;
+    //}
 #else
     if (ADC_MAIN_TRANSFER_COMPLETE())
     {

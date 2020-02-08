@@ -158,7 +158,7 @@ set(GVAR_SCREEN model_gvars.cpp)
 set(TARGET_SRC
   ${TARGET_SRC}
   led_driver.cpp
-  extmodule_driver.cpp
+  ../common/arm/stm32/extmodule_driver.cpp
   trainer_driver.cpp
   ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp

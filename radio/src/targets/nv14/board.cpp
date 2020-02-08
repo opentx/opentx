@@ -158,20 +158,6 @@ void delay_self(int count)
                                EXTMODULE_RCC_APB2Periph \
                               )
 
-//because of use in Boot-loader
-
-void EXTERNAL_MODULE_ON()
-{
-  GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
-  GPIO_ResetBits(EXTMODULE_PWR_FIX_GPIO, EXTMODULE_PWR_FIX_GPIO_PIN);
-}
-
-void EXTERNAL_MODULE_OFF()
-{
-  GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
-  GPIO_SetBits(EXTMODULE_PWR_FIX_GPIO, EXTMODULE_PWR_FIX_GPIO_PIN);
-}
-
 void boardInit()
 {
 #if defined(SEMIHOSTING)
@@ -186,9 +172,6 @@ void boardInit()
 
   __enable_irq();
 #endif
-
-  __enable_irq();
-
   TRACE("\nNV14 board started :)");
   delay_ms(10);
   TRACE("RCC->CSR = %08x", RCC->CSR);

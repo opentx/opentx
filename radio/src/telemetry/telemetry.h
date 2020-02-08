@@ -54,10 +54,11 @@ extern uint8_t telemetryState;
 
 constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
 
-#define TELEMETRY_SERIAL_DEFAULT       0
-#define TELEMETRY_SERIAL_8E2           1
-#define TELEMETRY_SERIAL_WITHOUT_DMA   2
-#define TELEMETRY_SERIAL_INVERTED      4
+#define TELEMETRY_SERIAL_DEFAULT       (1 << 0)
+#define TELEMETRY_SERIAL_8E2           (1 << 1)
+#define TELEMETRY_SERIAL_WITHOUT_DMA   (1 << 2)
+#define TELEMETRY_SERIAL_INVERTED      (1 << 3)
+#define TELEMETRY_SERIAL_DISABLED       (1 << 4)
 
 #if defined(CROSSFIRE) || defined(MULTIMODULE) || defined(AFHDS3)
 #define TELEMETRY_RX_PACKET_SIZE       128
@@ -139,7 +140,13 @@ inline bool isSportLineUsedByInternalModule()
   return false;
 }
 #endif
-
+inline bool isExternalModulePxx2(){
+#if defined(PXX2) && defined(EXTMODULE_USART)
+  return (g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_HIGHSPEED ||
+      g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_LOWSPEED);
+#endif
+  return false;
+}
 inline uint8_t modelTelemetryProtocol()
 {
   bool sportUsed = isSportLineUsedByInternalModule();

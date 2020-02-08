@@ -104,20 +104,18 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(INTERNAL_MODULE_PXX2) || defined(EXTMODULE_USART)
-  uint8_t frame[PXX2_FRAME_MAXLENGTH];
+uint8_t frame[PXX2_FRAME_MAXLENGTH];
 
-  #if defined(INTERNAL_MODULE_PXX2)
+#if defined(INTERNAL_MODULE_PXX2)
   while (intmoduleFifo.getFrame(frame)) {
     processPXX2Frame(INTERNAL_MODULE, frame);
   }
-  #endif
+#endif
 
-  #if defined(EXTMODULE_USART)
-  while (extmoduleFifo.getFrame(frame)) {
+#if defined(EXTMODULE_USART)
+  while (isExternalModulePxx2() && extmoduleFifo.getFrame(frame)) {
     processPXX2Frame(EXTERNAL_MODULE, frame);
   }
-  #endif
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
@@ -131,12 +129,20 @@ void telemetryWakeup()
 #endif
 
 #if defined(STM32)
-  if (telemetryGetByte(&data)) {
-    LOG_TELEMETRY_WRITE_START();
-    do {
-      processTelemetryData(data);
-      LOG_TELEMETRY_WRITE_BYTE(data);
-    } while (telemetryGetByte(&data));
+  uint32_t count = 0;
+#if defined(EXTMODULE_USART)
+  while(extmoduleGetByte(&data)) {
+    if(count++ == 0) LOG_TELEMETRY_WRITE_START();
+    processTelemetryData(data);
+    LOG_TELEMETRY_WRITE_BYTE(data);
+  }
+  count = 0;
+#endif
+  while(telemetryGetByte(&data))
+  {
+    if(count++ == 0) LOG_TELEMETRY_WRITE_START();
+    processTelemetryData(data);
+    LOG_TELEMETRY_WRITE_BYTE(data);
   }
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
@@ -275,7 +281,7 @@ void telemetryInit(uint8_t protocol)
   }
 #if defined(AFHDS3)
   else if(protocol == PROTOCOL_TELEMETRY_AFHDS3){
-    telemetryPortInit(AFHDS3_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
+    telemetryPortInit(0, TELEMETRY_SERIAL_DISABLED);
   }
 #endif
 #if defined(MULTIMODULE)
