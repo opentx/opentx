@@ -240,13 +240,11 @@ enum MenuRadioIndexes
 
 bool menuStatsGraph(event_t event);
 bool menuStatsDebug(event_t event);
-bool menuStatsAnalogs(event_t event);
 bool menuStatsTraces(event_t event);
 
 static const MenuHandlerFunc menuTabStats[]  = {
   menuStatsGraph,
   menuStatsDebug,
-  menuStatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   menuStatsTraces,
 #endif
