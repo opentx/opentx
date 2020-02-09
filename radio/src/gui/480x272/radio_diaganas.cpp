@@ -40,7 +40,7 @@ bool menuRadioDiagAnalogs(event_t event)
     lcdDrawNumber(x + ANA_OFFSET + 30 - 1, y, avgJitter[i].get(), RIGHT);
     lcdDrawNumber(x + ANA_OFFSET + 70 - 1, y, (int16_t) calibratedAnalogs[CONVERT_MODE(i)] * 25 / 256, RIGHT);
 #else
-    if (i < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
+    if (i < NUM_STICKS + NUM_POTS + NUM_SLIDERS)
       lcdDrawNumber(x + ANA_OFFSET - 1, y, (int16_t) calibratedAnalogs[CONVERT_MODE(i)] * 25 / 256, RIGHT);
 #if NUM_MOUSE_ANALOGS > 0
     else if (i >= MOUSE1)
