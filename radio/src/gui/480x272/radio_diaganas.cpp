@@ -58,7 +58,7 @@ bool menuRadioDiagAnalogs(event_t event)
   }
 
 #if (NUM_PWMSTICKS > 0) && !defined(SIMU)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+8*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 8 * FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
 #endif
 
   return true;
