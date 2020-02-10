@@ -3035,7 +3035,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1349"/>
         <source>Radiomaster TX16S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1355"/>
@@ -6042,7 +6042,7 @@ Les colonnes contenant l&apos;altitude &quot;GAlt&quot; et la vitesse &quot;GSpd
     <message>
         <location filename="../logsdialog.cpp" line="764"/>
         <source>time span</source>
-        <translation type="unfinished"></translation>
+        <translation>largeur temps</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="772"/>
