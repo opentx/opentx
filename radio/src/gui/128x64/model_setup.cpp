@@ -905,7 +905,7 @@ void menuModelSetup(event_t event)
         if (isModuleXJT(moduleIdx))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_XJT_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleDSM2(moduleIdx))
-          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_DSM_PROTOCOLS, g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==1 ? attr : 0);
+          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_DSM_PROTOCOLS, g_model.moduleData[moduleIdx].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleR9MNonAccess(moduleIdx))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_R9M_REGION, g_model.moduleData[moduleIdx].subType, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(MULTIMODULE)
@@ -947,7 +947,7 @@ void menuModelSetup(event_t event)
 
               case 1:
                 if (isModuleDSM2(moduleIdx)) {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
                 }
                 else if (isModuleR9MNonAccess(moduleIdx)) {
                   g_model.moduleData[moduleIdx].subType = checkIncDec(event,

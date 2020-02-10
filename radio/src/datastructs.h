@@ -425,9 +425,9 @@ PACK(struct TrainerModuleData {
 PACK(struct ModuleData {
   uint8_t type:5 ENUM(ModuleType); //before 4
   uint8_t failsafeMode:3;  // only 3 bits used for better alignment
-  int8_t  subType:4; //before named rfProtocol size same
-  uint8_t spare:3;
-  uint8_t invertedSerial:1;  // telemetry serial inverted from standard
+  int8_t  rfProtocol:4; //some refactoring is needed, rfProtocol is only used by DSM2 and MULTI, it could be merged with subType : qba667 can not be because sub type is used for additional selection
+  uint8_t subType:3; //tbd use with rfProtocol as rfProtocol
+  uint8_t invertedSerial:1;  // telemetry serial inverted from standard rfProtocolExtra shall be used as subtype
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   union {
@@ -499,11 +499,11 @@ PACK(struct ModuleData {
 
   // Helper functions to set both of the rfProto protocol at the same time
   NOBACKUP(inline uint8_t getMultiProtocol() {
-    return ((uint8_t) (subType & 0x0f)) + (multi.rfProtocolExtra << 4);
+    return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
   })
 
   NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
-    subType = (uint8_t) (proto & 0x0f);
+    rfProtocol = (uint8_t) (proto & 0x0f);
     multi.rfProtocolExtra = (proto & 0x70) >> 4;
   })
 });

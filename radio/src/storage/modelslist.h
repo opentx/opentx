@@ -38,7 +38,7 @@
 struct SimpleModuleData
 {
   uint8_t type;
-  uint8_t subType;
+  uint8_t rfProtocol;
 };
 
 class ModelCell
