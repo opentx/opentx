@@ -742,7 +742,7 @@ PACK(struct TrainerData {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
-#if defined(COLORLCD)
+#if defined(COLORLCD) && !defined(BACKUP)
   #include "theme.h"
   #define THEME_NAME_LEN 8
   #define THEME_DATA \

@@ -29,10 +29,10 @@
 #else
 
 #if __clang__
-// clang is very picky about the use of "register"
-// Tell clang to ignore the warnings for the following files
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-register"
+  // clang is very picky about the use of "register"
+  // Tell clang to ignore the warnings for the following files
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wdeprecated-register"
 #endif
 
 #if defined(STM32F4)
