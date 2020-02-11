@@ -364,6 +364,7 @@ void extmodulePxx1SerialStart();
 void extmodulePpmStart();
 void intmoduleStop();
 void extmoduleStop();
+void getModuleStatusString(uint8_t moduleIdx, char * statusText);
 
 inline void startPulses()
 {

@@ -25,10 +25,10 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
-class MultimoduleStatus: public StaticText
+class ModuleStatus: public StaticText
 {
   public:
-    MultimoduleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
+    ModuleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
       StaticText(parent, rect),
       moduleIdx(moduleIdx)
     {
@@ -36,8 +36,8 @@ class MultimoduleStatus: public StaticText
 
     void checkEvents() override
     {
-      getMultiModuleStatus(moduleIdx).getStatusString(reusableBuffer.moduleSetup.msg);
-      if (text != reusableBuffer.moduleSetup.msg) {
+      getModuleStatusString(moduleIdx, reusableBuffer.moduleSetup.msg);
+      if (strcmp(text.c_str(), reusableBuffer.moduleSetup.msg) != 0) {
         setText(reusableBuffer.moduleSetup.msg);
         invalidate();
       }
@@ -663,13 +663,7 @@ class ModuleWindow : public FormGroup {
       if(isModuleAFHDS3(moduleIdx)){
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        StaticText* status = new StaticText(this, grid.getFieldSlot());
-        status->setCheckHandler([=]() {
-          //TBD expose afhds3uart
-          //if(!status->isTextEqual(afhds3uart.getState())) {
-          //  status->setText(std::string(afhds3uart.getState()));
-          //}
-        });
+        new ModuleStatus(this, grid.getFieldSlot(), moduleIdx);
       }
 #endif
 #if defined(MULTIMODULE)
@@ -711,7 +705,7 @@ class ModuleWindow : public FormGroup {
 
         // Multimodule status
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        new MultimoduleStatus(this, grid.getFieldSlot(), moduleIdx);
+        new ModuleStatus(this, grid.getFieldSlot(), moduleIdx);
 
         // Multimodule sync
         /*if (multiSyncStatus.isValid()) {

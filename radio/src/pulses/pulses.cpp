@@ -84,6 +84,20 @@ void resetModuleSettings(uint8_t moduleIndex) {
   moduleState[moduleIndex].setMode(MODULE_MODE_NORMAL);
 }
 
+void getModuleStatusString(uint8_t moduleIdx, char * statusText) {
+  *statusText = 0;
+
+  if(isModuleMultimodule(moduleIdx)) {
+    getMultiModuleStatus(moduleIdx).getStatusString(statusText);
+  }
+  else {
+    AbstractModule* module = modules[moduleIdx][moduleState[moduleIdx].protocol];
+      if(module) {
+        strcpy(statusText, module->getState());
+      }
+  }
+}
+
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;
