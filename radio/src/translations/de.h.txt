@@ -1205,6 +1205,7 @@
 #define ZSTR_CURR                      "Curr"
 #define ZSTR_CAPACITY                  "Capa"
 #define ZSTR_VFAS                      "VFAS"
+#define ZSTR_BATT_PERCENT              "Bat%"
 #define ZSTR_ASPD                      "ASpd"
 #define ZSTR_GSPD                      "GSpd"
 #define ZSTR_HDG                       "Hdg"
