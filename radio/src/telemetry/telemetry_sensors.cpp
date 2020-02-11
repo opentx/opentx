@@ -534,6 +534,11 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
         hottSetDefault(index, id, subId, instance);
         break;
 #endif
+#if defined(AFHDS2)
+      case PROTOCOL_TELEMETRY_FLYSKY_NV14:
+        flySkyNv14SetDefault(index,id, subId, instance);
+        break;
+#endif
 #if defined(LUA)
      case PROTOCOL_TELEMETRY_LUA:
         // Sensor will be initialized by calling function

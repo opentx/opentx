@@ -473,8 +473,9 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
     }
   }
 
+  bool twoColumn = LCD_W > LCD_H;
   // Autodiscover button
-  auto discover = new TextButton(window, grid.getFieldSlot(2, 0), STR_DISCOVER_SENSORS);
+  auto discover = new TextButton(window, twoColumn ? grid.getFieldSlot(2, 0) : grid.getFieldSlot(1), STR_DISCOVER_SENSORS);
   discover->setPressHandler([=]() {
     allowNewSensors = !allowNewSensors;
     if (allowNewSensors) {
@@ -486,9 +487,10 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
       return 0;
     }
   });
+  if(!twoColumn) grid.nextLine();
 
   // New sensor button
-  new TextButton(window, grid.getFieldSlot(2, 1), STR_TELEMETRY_NEWSENSOR,
+  new TextButton(window, twoColumn ? grid.getFieldSlot(2, 1) : grid.getFieldSlot(1), STR_TELEMETRY_NEWSENSOR,
                  [=]() -> uint8_t {
                    int idx = availableTelemetryIndex();
                    if (idx >= 0)
