@@ -6042,7 +6042,7 @@ Les colonnes contenant l&apos;altitude &quot;GAlt&quot; et la vitesse &quot;GSpd
     <message>
         <location filename="../logsdialog.cpp" line="764"/>
         <source>time span</source>
-        <translation>largeur temps</translation>
+        <translation>plage de temps</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="772"/>
