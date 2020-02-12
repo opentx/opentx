@@ -151,7 +151,6 @@ const uint8_t STATS_ICONS[] = {
   ICON_STATS,
   ICON_STATS_THROTTLE_GRAPH,
   ICON_STATS_DEBUG,
-  ICON_STATS_ANALOGS,
 #if defined(DEBUG_TRACE_BUFFER)
   ICON_STATS_TIMERS
 #endif
@@ -240,13 +239,11 @@ enum MenuRadioIndexes
 
 bool menuStatsGraph(event_t event);
 bool menuStatsDebug(event_t event);
-bool menuStatsAnalogs(event_t event);
 bool menuStatsTraces(event_t event);
 
 static const MenuHandlerFunc menuTabStats[]  = {
   menuStatsGraph,
   menuStatsDebug,
-  menuStatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   menuStatsTraces,
 #endif
