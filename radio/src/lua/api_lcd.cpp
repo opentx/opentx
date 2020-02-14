@@ -82,7 +82,8 @@ static int luaLcdDrawPoint(lua_State *L)
   if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
-  lcdDrawPoint(x, y);
+  LcdFlags att = luaL_optunsigned(L, 3, 0);
+  lcdDrawPoint(x, y, att);
   return 0;
 }
 
