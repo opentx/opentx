@@ -406,6 +406,7 @@ void drawGPSSensorValue(BitmapBuffer * dc, coord_t x, coord_t y, TelemetryItem &
   drawGPSPosition(dc, x, y, telemetryItem.gps.longitude, telemetryItem.gps.latitude, flags);
 }
 
+
 void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sensor, int32_t value, LcdFlags flags)
 {
   if (sensor >= MAX_TELEMETRY_SENSORS) {
@@ -488,7 +489,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
   }
   else if (source >= MIXSRC_FIRST_TIMER || source == MIXSRC_TX_TIME) {
     if (value < 0) flags |= BLINK|INVERS;
-    // TODO drawTimer(dc, x, y, value, flags);
+    drawTimer(dc, x, y, value, flags);
   }
   else if (source == MIXSRC_TX_VOLTAGE) {
     dc->drawNumber(x, y, value, flags|PREC1);
@@ -541,4 +542,10 @@ void drawHexNumber(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t val, LcdFla
     c += (c >= 10 ? 'A' - 10 : '0');
     x = dc->drawSizedText(x, y, &c, 1, flags);
   }
+}
+
+void drawTimer(BitmapBuffer * dc, coord_t x, coord_t y, int32_t value, LcdFlags flags) {
+  char str[LEN_TIMER_STRING];
+  getTimerString(str, value, (flags & TIMEHOUR) != 0);
+  dc->drawText(x, y, str, flags);
 }

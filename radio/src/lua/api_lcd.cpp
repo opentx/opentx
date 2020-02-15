@@ -82,7 +82,7 @@ static int luaLcdDrawPoint(lua_State *L)
   if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
-  lcdDrawPoint(x, y);
+  lcdDrawPoint(x,y);
   return 0;
 }
 
@@ -410,10 +410,10 @@ static int luaOpenBitmap(lua_State * L)
     *b = 0;
   }
   else {
-    *b = BitmapBuffer::load(filename);
+    *b = BitmapBuffer::loadBitmap(filename);
     if (*b == NULL && G(L)->gcrunning) {
       luaC_fullgc(L, 1);  /* try to free some memory... */
-      *b = BitmapBuffer::load(filename);  /* try again */
+      *b = BitmapBuffer::loadBitmap(filename);  /* try again */
     }
   }
 
@@ -586,7 +586,7 @@ static int luaLcdDrawRectangle(lua_State *L)
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
   unsigned int flags = luaL_optunsigned(L, 5, 0);
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   unsigned int t = luaL_optunsigned(L, 6, 1);
   lcdDrawRect(x, y, w, h, t, 0xff, flags);
 #else
@@ -652,7 +652,7 @@ static int luaLcdDrawGauge(lua_State *L)
   int num = luaL_checkinteger(L, 5);
   int den = luaL_checkinteger(L, 6);
   unsigned int flags = luaL_optunsigned(L, 7, 0);
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   lcdDrawRect(x, y, w, h, 1, 0xff, flags);
 #else
   lcdDrawRect(x, y, w, h, 0xff, flags);

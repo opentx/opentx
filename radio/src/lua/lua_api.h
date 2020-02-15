@@ -177,7 +177,6 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   #define RADIO_TOOL_NAME_MAXLEN  16
 #endif
 
-bool readToolName(char * toolName, const char * filename);
 bool isRadioScriptTool(const char * filename);
 
 struct LuaMemTracer {

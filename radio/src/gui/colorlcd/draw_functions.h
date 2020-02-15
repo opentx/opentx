@@ -70,11 +70,69 @@ void drawGPSPosition(BitmapBuffer * dc, coord_t x, coord_t y, int32_t longitude,
 void drawDate(BitmapBuffer * dc, coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags = 0);
 void drawValueWithUnit(BitmapBuffer * dc, coord_t x, coord_t y, int val, uint8_t unit, LcdFlags flags = 0);
 void drawHexNumber(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t val, LcdFlags flags = 0);
+void drawTimer(BitmapBuffer * dc, coord_t x, coord_t y, int32_t value, LcdFlags flags = 0);
 inline void drawChn(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t idx, LcdFlags flags)
 {
   drawSource(dc, x, y, MIXSRC_CH1 + idx - 1, flags);
 }
-
+//LUA compatibility
+inline void lcdDrawPoint(coord_t x, coord_t y, LcdFlags flags=0)
+{
+  lcd->drawPixel(x, y, lcdColorTable[COLOR_IDX(flags)]);
+}
+inline void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags flags=0)
+{
+  if (x1 == x2) {
+    lcd->drawVerticalLine(x1, y1<y2 ? y1 : y2,  y1<y2 ? (y2-y1)+1 : (y1-y2)+1, pat, flags);
+  }
+  else if (y1 == y2) {
+    lcd->drawHorizontalLine(x1<x2 ? x1 : x2, y1, x1<x2 ? (x2-x1)+1 : (x1-x2)+1, pat, flags);
+  }
+}
+inline void lcdDrawSolidVerticalLine(coord_t x, coord_t y, coord_t h, LcdFlags flags=0)
+{
+  lcd->drawVerticalLine(x, y, h, flags);
+}
+inline void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags flags=0)
+{
+  lcd->drawSolidHorizontalLine(x, y, w, flags);
+}
+inline void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags=0)
+{
+  lcd->drawText(x, y, s, flags);
+}
+inline void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags flags=0)
+{
+  drawTimer(lcd, x, y, tme, flags);
+}
+inline void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags flags=0)
+{
+  lcd->drawNumber(x, y, val, flags);
+}
+inline void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0)
+{
+  drawSwitch(lcd, x, y, swtch, flags);
+}
+inline void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags flags=0)
+{
+  drawSource(lcd, x, y, idx, flags);
+}
+inline void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, uint8_t pat=SOLID, LcdFlags flags=0)
+{
+  lcd->drawRect(x, y, w, h, thickness, pat, flags);
+}
+inline void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags flags=0)
+{
+  lcd->drawFilledRect(x, y, w, h, pat, flags);
+}
+inline void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags=0)
+{
+  lcd->drawFilledRect(x, y, w, h, SOLID, flags);
+}
+inline void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, LcdFlags flags)
+{
+  drawSensorCustomValue(lcd, x, y, sensor, value, flags);
+}
 // Screen templates
 void drawSplash();
 void drawSleepBitmap();

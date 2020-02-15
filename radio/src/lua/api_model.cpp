@@ -387,7 +387,11 @@ static int luaModelInsertInput(lua_State *L)
   if (chn<MAX_INPUTS && getExposCount()<MAX_EXPOS && idx<=count) {
     idx = first + idx;
     s_currCh = chn + 1;
+#if defined(COLORLCD)
+    insertExpo(idx, chn + 1);
+#else
     insertExpo(idx);
+#endif
     ExpoData * expo = expoAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {

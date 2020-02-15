@@ -132,6 +132,7 @@ enum LcdColorIndex
   TABLE_BGCOLOR_INDEX,
 };
 
+//used by macro FONT() - very indirect
 enum FontIndex
 {
   FONT_STD_INDEX,

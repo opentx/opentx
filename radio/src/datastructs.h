@@ -583,7 +583,7 @@ PACK(struct CustomScreenData {
   #define TOPBAR_DATA
 #endif
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(PCBHORUS) || defined(PCBTARANIS) || defined(PCBNV14)
   #define SCRIPT_DATA \
     NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
 #else
@@ -965,10 +965,11 @@ static inline void check_struct()
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
-#elif defined(PCBHORUS)
+#elif defined(PCBHORUS) || defined(NV14)
   CHKSIZE(RadioData, 901);
   CHKSIZE(ModelData, 11020);
 #endif
+
 
 #undef CHKSIZE
 }

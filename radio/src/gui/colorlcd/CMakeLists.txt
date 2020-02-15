@@ -22,7 +22,7 @@ set(GUI_SRC
   fab_button.cpp
   #  topbar.cpp
   layout.cpp
-  #  widget.cpp
+  widget.cpp
   ${THEMES_SRC}
   ${LAYOUTS_SRC}
   #  ${WIDGETS_SRC}
@@ -79,7 +79,7 @@ if(PXX2 OR MULTIMODULE)
 endif()
 
 if(LUA STREQUAL YES)
-  # TODO set(SRC ${SRC} lua/widgets.cpp)
+  set(SRC ${SRC} lua/widgets.cpp)
   # TODO set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
 endif()
 

@@ -157,17 +157,16 @@ ZoneOption * createOptionsArray(int reference, uint8_t maxOptions)
   return options;
 }
 
-class LuaTheme: public Theme
+class LuaTheme: public ThemeBase
 {
   friend void luaLoadThemeCallback();
 
   public:
     LuaTheme(const char * name, ZoneOption * options):
-      Theme(name, options),
+      ThemeBase(name, options),
       loadFunction(0),
       drawBackgroundFunction(0),
-      drawTopbarBackgroundFunction(0),
-      drawAlertBoxFunction(0)
+      drawMessageBoxFunction(0)
     {
     }
 
@@ -182,23 +181,37 @@ class LuaTheme: public Theme
       exec(drawBackgroundFunction);
     }
 
-    void drawTopbarBackground(uint8_t icon) const override
+    void drawMessageBox(const char * title, const char * text, const char * action, LcdFlags flags) const override
+    {
+      exec(drawMessageBoxFunction);
+    }
+
+    const BitmapBuffer * getIconMask(uint8_t index) const override
+    {
+      return nullptr;
+      //return iconMask[index];
+    }
+
+    const BitmapBuffer * getIcon(uint8_t index, IconState state) const override
+    {
+      return nullptr;
+      //return state == STATE_DEFAULT ? menuIconNormal[index] : menuIconSelected[index];
+    }
+
+    void drawMenuBackground(BitmapBuffer * dc, uint8_t icon, const char * title) const override
     {
       exec(drawTopbarBackgroundFunction);
     }
-
-#if 0
-    virtual void drawAlertBox(const char * title, const char * text, const char * action) const
+    void drawMenuHeader(BitmapBuffer * dc, std::vector<PageTab *> & tabs, uint8_t currentIndex) const override
     {
-      exec(drawAlertBoxFunction);
+
     }
-#endif
 
   protected:
     int loadFunction;
     int drawBackgroundFunction;
     int drawTopbarBackgroundFunction;
-    int drawAlertBoxFunction;
+    int drawMessageBoxFunction;
 };
 
 void luaLoadThemeCallback()
@@ -379,7 +392,7 @@ void LuaWidget::refresh()
 
   if (errorMessage) {
     lcdSetColor(RED);
-    lcdDrawText(zone.x, zone.y, "Disabled", SMLSIZE|CUSTOM_COLOR);
+    //lcdDrawText(zone.x, zone.y, "Disabled", FONT(XS)|CUSTOM_COLOR);
     return;
   }
 

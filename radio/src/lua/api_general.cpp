@@ -50,6 +50,8 @@
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
   #include "lua/lua_exports_x9d.inc"
+#elif defined(PCBNV14)
+  #include "lua/lua_exports_nv14.inc"
 #endif
 
 #if defined(SIMU)
@@ -1634,6 +1636,16 @@ const luaL_Reg opentxLib[] = {
   { "serialWrite", luaSerialWrite },
   { nullptr, nullptr }  /* sentinel */
 };
+
+
+//COLOR LCD LUA COMPATYBILITY
+#if defined(COLORLCD) && !defined(BOLD)
+#define BOLD                            FONT(BOLD)
+#define SMLSIZE                         FONT(XS)
+#define MIDSIZE                         FONT(L)
+#define DBLSIZE                         FONT(XL)
+#define XXLSIZE                         FONT(XXL)
+#endif
 
 const luaR_value_entry opentxConstants[] = {
   { "FULLSCALE", RESX },

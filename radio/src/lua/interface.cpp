@@ -913,7 +913,7 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
   luaSetInstructionsLimit(lsScripts, PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
   int inputsCount = 0;
 #if defined(SIMU) || defined(DEBUG)
-  const char *filename;
+  const char *filename = nullptr;
 #endif
   ScriptInputsOutputs * sio = nullptr;
 #if SCRIPT_MIX_FIRST > 0
@@ -1120,48 +1120,4 @@ void luaInit()
       luaDisable();
     }
   }
-}
-
-bool readToolName(char * toolName, const char * filename)
-{
-  FIL file;
-  char buffer[1024];
-  UINT count;
-
-  if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return "Error opening file";
-  }
-
-  FRESULT res = f_read(&file, &buffer, sizeof(buffer), &count);
-  f_close(&file);
-
-  if (res != FR_OK)
-    return false;
-
-  const char * tns = "TNS|";
-  auto * start = std::search(buffer, buffer + sizeof(buffer), tns, tns + 4);
-  if (start >= buffer + sizeof(buffer))
-    return false;
-
-  start += 4;
-
-  const char * tne = "|TNE";
-  auto * end = std::search(buffer, buffer + sizeof(buffer), tne, tne + 4);
-  if (end >= buffer + sizeof(buffer) || end <= start)
-    return false;
-
-  uint8_t len = end - start;
-  if (len > RADIO_TOOL_NAME_MAXLEN)
-    return false;
-
-  strncpy(toolName, start, len);
-  memclear(toolName + len, RADIO_TOOL_NAME_MAXLEN + 1 - len);
-
-  return true;
-}
-
-bool isRadioScriptTool(const char * filename)
-{
-  const char * ext = getFileExtension(filename);
-  return ext && !strcasecmp(ext, SCRIPT_EXT);
 }
