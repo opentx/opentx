@@ -287,7 +287,7 @@ inline bool isRasValueValid()
 {
   return telemetryData.xjtVersion != 0x0000 && telemetryData.xjtVersion != 0x00FF;
 }
-#elif defined(PCBX7) || defined(PCBXLITE)
+#elif defined(PCBHORUS)
 inline bool isRasValueValid()
 {
   return true;
