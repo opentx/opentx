@@ -17,158 +17,249 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
+#include "model_custom_scripts.h"
 #include "opentx.h"
+#include "libopenui.h"
 
-void onModelCustomScriptMenu(const char *result)
-{
-  ScriptData &sd = g_model.scriptsData[s_currIdx];
+#define SET_DIRTY()     storageDirty(EE_MODEL)
 
-  if (result == STR_UPDATE_LIST) {
-    if (!sdListFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), nullptr)) {
-      POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
+class CostomScriptsEditWindow: public Page {
+  public:
+    CostomScriptsEditWindow(uint8_t cs):
+      Page(ICON_MODEL_LUA_SCRIPTS),
+      cs(cs)
+    {
+      buildBody(&body);
+      buildHeader(&header);
     }
-  }
-  else {
-    // The user choosed a lua file in the list
-    copySelection(sd.file, result, sizeof(sd.file));
-    memset(sd.inputs, 0, sizeof(sd.inputs));
-    storageDirty(EE_MODEL);
-    LUA_LOAD_MODEL_SCRIPT(s_currIdx);
-  }
-}
 
-enum menuModelCustomScriptItems {
-  ITEM_MODEL_CUSTOMSCRIPT_FILE,
-  ITEM_MODEL_CUSTOMSCRIPT_NAME,
-  ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL,
-};
+    void checkEvents() override
+    {
+      invalidate();
 
-#define SCRIPT_ONE_2ND_COLUMN_POS  (120)
-#define SCRIPT_ONE_3RD_COLUMN_POS  (240)
-
-bool menuModelCustomScriptOne(event_t event)
-{
-  ScriptData &sd = g_model.scriptsData[s_currIdx];
-
-  // drawStringWithIndex(lcdLastRightPos+FW, 0, "LUA", s_currIdx+1, 0);
-
-  SUBMENU(STR_MENUCUSTOMSCRIPTS, ICON_MODEL_LUA_SCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
-
-  int8_t sub = menuVerticalPosition;
-
-  for (int k=0; k<NUM_BODY_LINES; k++) {
-    coord_t y = MENU_CONTENT_TOP + k*FH;
-    int i = k + menuVerticalOffset;
-    LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-
-    if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
-      lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SCRIPT);
-      if (ZEXIST(sd.file))
-        lcdDrawSizedText(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
-      else
-        lcdDrawTextAtIndex(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);
-      if (attr) s_editMode = 0;
-      if (attr && event==EVT_KEY_FIRST(KEY_ENTER) && !READ_ONLY()) {
-        killEvents(KEY_ENTER);
-        if (sdListFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
-          POPUP_MENU_START(onModelCustomScriptMenu);
-        }
-        else {
-          POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
+      if (refreshDelay) {
+        if (--refreshDelay == 0) {
+              body.clear();
+              buildBody(&body);
         }
       }
     }
-    else if (i == ITEM_MODEL_CUSTOMSCRIPT_NAME) {
-      lcdDrawText(MENUS_MARGIN_LEFT, y, TR_NAME);
-      editName(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.name, sizeof(sd.name), event, attr);
+
+  protected:
+    uint8_t cs;
+    bool active = false;
+    uint32_t  refreshDelay = 0;
+    StaticText * headerLuaName = nullptr;
+
+
+    void buildHeader(PageHeader * window) {
+      char str[20];
+      new StaticText(window, { 70, 4, LCD_W - 100, 20 }, STR_MENUCUSTOMSCRIPTS, MENU_COLOR_INDEX);
+      strAppendUnsigned(strAppend(str, "LUA"), cs + 1);
+      headerLuaName = new StaticText(window, { 70, 28, LCD_W - 100, 20 }, str, MENU_COLOR_INDEX);
     }
-    else if (i == ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL) {
-      lcdDrawText(MENUS_MARGIN_LEFT, y, STR_INPUTS);
+
+    void buildBody(FormWindow * window) {
+
+      ScriptData *sd = &(g_model.scriptsData[cs]);
+
+      FormGridLayout grid;
+      grid.spacer(10);
+
+
+      new StaticText(window, grid.getLabelSlot(), STR_SCRIPT);
+      new FileChoice(window, grid.getFieldSlot(),
+                     SCRIPTS_MIXES_PATH,
+                     SCRIPTS_EXT,
+                     sizeof(sd->file),
+                     [=]() {
+                       return std::string(sd->file, ZLEN(sd->file));
+                     },
+                     [=](std::string newValue) {
+                       memset(sd->file, 0, sizeof(sd->file));
+                       strncpy(sd->file, newValue.c_str(), sizeof(sd->file));
+                       SET_DIRTY();
+                       if (ZEXIST(sd->file)) {
+                          memset(sd->inputs, 0, sizeof(sd->inputs));
+                          storageDirty(EE_MODEL);
+                          LUA_LOAD_MODEL_SCRIPT(cs);
+                          refreshDelay = 4;
+                       }
+                     });
+      grid.nextLine();
+
+      new StaticText(window, grid.getLabelSlot(), TR_NAME);
+      new TextEdit(window, grid.getFieldSlot(), sd->name, sizeof(sd->name));
+      grid.nextLine();
+
+      new StaticText(window, grid.getLabelSlot(), STR_INPUTS);
+      grid.nextLine();
+
+      for (int i = 0; i < scriptInputsOutputs[cs].inputsCount; i++) {
+          new StaticText(window, grid.getLabelSlot(), scriptInputsOutputs[cs].inputs[i].name);
+          if (scriptInputsOutputs[cs].inputs[i].type == INPUT_TYPE_VALUE) {
+              new NumberEdit(window, grid.getFieldSlot(), scriptInputsOutputs[cs].inputs[i].min-scriptInputsOutputs[cs].inputs[i].def,
+                                    scriptInputsOutputs[cs].inputs[i].max-scriptInputsOutputs[cs].inputs[i].def,
+                                   [=]() -> int32_t {
+                                     return g_model.scriptsData[cs].inputs[i].value + scriptInputsOutputs[cs].inputs[i].def;
+                                   },
+                                   [=](int32_t newValue) {
+                                     g_model.scriptsData[cs].inputs[i].value = newValue;
+                                   });
+          }
+          else {
+            new SourceChoice(window, grid.getFieldSlot(), 0, MIXSRC_LAST_TELEM, GET_SET_DEFAULT(g_model.scriptsData[cs].inputs[i].source));
+          }
+          grid.nextLine();
+      }
+
+      new StaticText(window, grid.getLineSlot(), "---------------------------------------------------");
+      grid.nextLine();
+
+      if (scriptInputsOutputs[cs].outputsCount > 0) {
+          for (int i=0; i<scriptInputsOutputs[cs].outputsCount; i++) {
+             char s[16];
+             getSourceString(s, MIXSRC_FIRST_LUA + (cs * MAX_SCRIPT_OUTPUTS) + i);
+             new StaticText(window, grid.getLabelSlot(), s);
+             new NumberEdit(window, grid.getFieldSlot(), -127, 127, GET_VALUE(calcRESXto1000(scriptInputsOutputs[cs].outputs[i].value)),NULL, PREC1);
+          }
+      }
+
     }
-    else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount) {
-      int inputIdx = i-ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL-1;
-      lcdDrawSizedText(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].inputs[inputIdx].name, 10, 0);
-      if (scriptInputsOutputs[s_currIdx].inputs[inputIdx].type == INPUT_TYPE_VALUE) {
-        lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx].value+ \
-                                                    scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr|LEFT);
-        if (attr) {
-          CHECK_INCDEC_MODELVAR(event, g_model.scriptsData[s_currIdx].inputs[inputIdx].value, \
-                                scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, \
-                                scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
+};
+
+static constexpr coord_t line1 = 2;
+static constexpr coord_t line2 = 22;
+static constexpr coord_t line3 = 42;
+static constexpr coord_t col1 = 20;
+static constexpr coord_t col2 = (LCD_W - 100) / 3 + col1;
+static constexpr coord_t col3 = ((LCD_W - 100) / 3) * 2 + col1;
+
+class CustomScriptsButton : public Button {
+  public:
+    CustomScriptsButton(FormWindow * parent, const rect_t & rect, int csIndex, std::function<uint8_t(void)> onPress):
+      Button(parent, rect, onPress),
+      csIndex(csIndex)
+    {
+    }
+
+    bool isActive()
+    {
+      return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH + csIndex);
+    }
+
+    void checkEvents() override
+    {
+        invalidate();
+    }
+
+    virtual void paint(BitmapBuffer * dc) override
+    {
+
+      LogicalSwitchData * cs = lswAddress(csIndex);
+      uint8_t lsFamily = lswFamily(cs->func);
+      ScriptData &sd = g_model.scriptsData[csIndex];
+
+      if (strlen(sd.file)) {
+         dc->drawSizedText(col1, line1, sd.file, sizeof(sd.file), 0);
+         dc->drawSizedText(col2, line1, sd.name, sizeof(sd.name), 0);
+
+        switch (scriptInternalData[csIndex].state) {
+          case SCRIPT_SYNTAX_ERROR:
+            dc->drawText(col3, line1, "(error)");
+            break;
+          case SCRIPT_KILLED:
+            dc->drawText(col3, line1, "(killed)");
+            break;
+          default:
+            dc->drawNumber(col3, line1, luaGetCpuUsed(csIndex), LEFT|TEXT_STATUSBAR_COLOR, 0, NULL, "%");
+            break;
         }
       }
       else {
-        drawSource(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx].source, attr);
-        if (attr) {
-          CHECK_INCDEC_MODELSOURCE(event, g_model.scriptsData[s_currIdx].inputs[inputIdx].source, 0, MIXSRC_LAST_TELEM);
-        }
+          dc->drawTextAtIndex(col1, line1, STR_VCSWFUNC, 0, 0);
       }
+
     }
-  }
 
-  if (scriptInputsOutputs[s_currIdx].outputsCount > 0) {
-    lcdDrawSolidVerticalLine(SCRIPT_ONE_3RD_COLUMN_POS-4, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+5, DEFAULT_COLOR);
-    // lcdDrawText(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
+  protected:
+    uint8_t csIndex;
+};
 
-    for (int i=0; i<scriptInputsOutputs[s_currIdx].outputsCount; i++) {
-      drawSource(SCRIPT_ONE_3RD_COLUMN_POS+INDENT_WIDTH, MENU_CONTENT_TOP+i*FH, MIXSRC_FIRST_LUA+(s_currIdx*MAX_SCRIPT_OUTPUTS)+i, 0);
-      lcdDrawNumber(SCRIPT_ONE_3RD_COLUMN_POS+130, MENU_CONTENT_TOP+i*FH, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1);
-    }
-  }
+ModelCustomScriptsPage::ModelCustomScriptsPage():
+  PageTab(STR_MENUCUSTOMSCRIPTS, ICON_MODEL_LUA_SCRIPTS)
+{
+}
 
-  return true;
+void ModelCustomScriptsPage::rebuild(FormWindow * window, int8_t focusIndex)
+{
+  coord_t scrollPosition = window->getScrollPositionY();
+  window->clear();
+  build(window, focusIndex);
+  window->setScrollPositionY(scrollPosition);
+}
+
+void ModelCustomScriptsPage::editCustomScript(FormWindow * window, uint8_t lsIndex)
+{
+  CostomScriptsEditWindow * lsWindow = new CostomScriptsEditWindow(lsIndex);
+  lsWindow->setCloseHandler([=]() {
+    rebuild(window, lsIndex);
+  });
 }
 
 #define SCRIPTS_COLUMN_FILE  70
 #define SCRIPTS_COLUMN_NAME  160
 #define SCRIPTS_COLUMN_STATE 300
 
-bool menuModelCustomScripts(event_t event)
+void ModelCustomScriptsPage::build(FormWindow * window, int8_t focusIndex)
 {
-  // lcdDrawNumber(19*FW, 0, luaGetMemUsed(lsScripts), 0);
-  // lcdDrawText(19*FW+1, 0, STR_BYTES);
 
-  MENU(STR_MENUCUSTOMSCRIPTS, MODEL_ICONS, menuTabModel, MENU_MODEL_CUSTOM_SCRIPTS, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
+    FormGridLayout grid;
+    grid.spacer(8);
+    grid.setLabelWidth(70);
 
-  int8_t  sub = menuVerticalPosition;
+    for (uint8_t i=0; i<MAX_SCRIPTS; i++) {
+      char str[20];
+      strAppendUnsigned(strAppend(str, "LUA"), i+1);
+      new TextButton(window, grid.getLabelSlot(), str);
 
-  if (event == EVT_KEY_FIRST(KEY_ENTER) && sub >= 0) {
-    s_currIdx = sub;
-    pushMenu(menuModelCustomScriptOne);
-  }
+      Button * button = new CustomScriptsButton(window, grid.getFieldSlot(), i,
+                                                [=]() -> uint8_t {
+                                                  Menu * menu = new Menu(window );
+                                                  ScriptData *sd = &g_model.scriptsData[i];
+                                                  menu->addLine(STR_EDIT, [=]() {
+                                                    editCustomScript(window, i);
+                                                  });
 
-  for (int i=0, scriptIndex=0; i<MAX_SCRIPTS; i++) {
-    coord_t y = MENU_CONTENT_TOP + i*FH;
-
-    ScriptData &sd = g_model.scriptsData[i];
-
-    // LUAx header
-    drawStringWithIndex(MENUS_MARGIN_LEFT, y, "LUA", i+1, sub==i ? INVERS : 0);
-
-    // LUA script
-    if (ZEXIST(sd.file)) {
-      lcdDrawSizedText(SCRIPTS_COLUMN_FILE, y, sd.file, sizeof(sd.file), 0);
-      switch (scriptInternalData[scriptIndex].state) {
-        case SCRIPT_SYNTAX_ERROR:
-          lcdDrawText(SCRIPTS_COLUMN_STATE, y, "(error)");
-          break;
-        case SCRIPT_KILLED:
-          lcdDrawText(SCRIPTS_COLUMN_STATE, y, "(killed)");
-          break;
-        default:
-          lcdDrawNumber(SCRIPTS_COLUMN_STATE, y, luaGetCpuUsed(scriptIndex), LEFT|DEFAULT_COLOR, 0, nullptr, "%");
-          break;
+                                                  if (strlen(sd->file))
+                                                    menu->addLine(STR_COPY, [=]() {
+                                                      clipboard.type = CLIPBOARD_TYPE_CUSTOM_SCRIPT;
+                                                      clipboard.data.csd = *sd;
+                                                    });
+                                                  if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SCRIPT)
+                                                    menu->addLine(STR_PASTE, [=]() {
+                                                      *sd = clipboard.data.csd;
+                                                      storageDirty(EE_MODEL);
+                                                      LUA_LOAD_MODEL_SCRIPT(i);
+                                                      rebuild(window, i);
+                                                    });
+                                                  menu->addLine(STR_CLEAR, [=]() {
+                                                      memset(sd, 0, sizeof(ScriptData));
+                                                      storageDirty(EE_MODEL);
+                                                      LUA_LOAD_MODEL_SCRIPTS();
+                                                      rebuild(window, i);
+                                                  });
+                                                  return 0;
+                                                });
+      if (focusIndex == i) {
+        button->setFocus();
       }
-      scriptIndex++;
-    }
-    else {
-      lcdDrawTextAtIndex(SCRIPTS_COLUMN_FILE, y, STR_VCSWFUNC, 0, 0);
+
+      grid.spacer(button->height() + 15);
     }
 
-    // Script name
-    lcdDrawSizedText(SCRIPTS_COLUMN_NAME, y, sd.name, sizeof(sd.name), ZCHAR);
-  }
+    grid.nextLine();
 
-  return true;
+    window->setInnerHeight(grid.getWindowHeight());
+
 }

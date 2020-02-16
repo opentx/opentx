@@ -80,7 +80,7 @@ endif()
 
 if(LUA STREQUAL YES)
   set(SRC ${SRC} lua/widgets.cpp)
-  # TODO set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
+  set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
 endif()
 
 set(SRC
