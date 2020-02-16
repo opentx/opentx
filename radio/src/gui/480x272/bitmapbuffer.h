@@ -41,6 +41,14 @@ typedef int coord_t;
 typedef uint32_t LcdFlags;
 typedef uint16_t display_t;
 
+int getTextWidth(const char * s, int len=0, LcdFlags flags=0);
+
+#if LCD_W >= 480
+#define LCD_COLS                     80
+#else
+#define LCD_COLS                     30
+#endif
+
 enum BitmapFormats
 {
   BMP_RGB565,
@@ -274,6 +282,16 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     uint8_t drawCharWithoutCache(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags);
 
     uint8_t drawCharWithCache(coord_t x, coord_t y, const BitmapBuffer * font, const uint16_t * spec, int index, LcdFlags flags);
+
+    void drawMaxLenText(coord_t x, coord_t y, const char * s, LcdFlags flags, coord_t maxLen)
+    {
+      for (int col = LCD_COLS; 0 < col; col--) {
+        if (getTextWidth(s, col, flags) < maxLen) {
+          drawSizedText(x, y, s, col, flags);
+          return;
+        }
+      }
+    }
 
     void drawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
     {
