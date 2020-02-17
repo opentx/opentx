@@ -982,6 +982,7 @@
 #define TR_PTS                 "pkty"
 #define TR_SMOOTH              "Gładka"
 #define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Skopiuj Drążki Do Offsetu")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max to all outputs")
 #define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Skopiuj Trymery Do subtrymerów")
 #define TR_INCDEC              "Zwiększ/Zmnie"
 #define TR_GLOBALVAR           "Zm.Global."

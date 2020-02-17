@@ -1725,6 +1725,23 @@ void copyTrimsToOffset(uint8_t ch)
   storageDirty(EE_MODEL);
 }
 
+void copyMinMaxToOutputs(uint8_t ch)
+{
+  LimitData *ld = limitAddress(ch);
+  int32_t min = ld->min;
+  int32_t max = ld->max;
+
+  pauseMixerCalculations();
+
+  for (uint8_t chan = 0; chan < MAX_OUTPUT_CHANNELS; chan++) {
+    ld = limitAddress(chan);
+    ld->min = min;
+    ld->max = max;
+  }
+
+  resumeMixerCalculations();
+  storageDirty(EE_MODEL);
+}
 
 #if defined(STARTUP_ANIMATION)
 
