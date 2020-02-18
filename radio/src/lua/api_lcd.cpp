@@ -71,6 +71,8 @@ Draw a single pixel at (x,y) position
 
 @param y (positive number) y position
 
+@param flags (unsigned number) drawing flags
+
 @notice Taranis has an LCD display width of 212 pixels and height of 64 pixels.
 Position (0,0) is at top left. Y axis is negative, top line is 0,
 bottom line is 63. Drawing on an existing black pixel produces white pixel (TODO check this!)
