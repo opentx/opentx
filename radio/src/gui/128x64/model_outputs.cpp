@@ -215,6 +215,9 @@ void onLimitsMenu(const char *result)
   else if (result == STR_EDIT) {
     pushMenu(menuModelLimitsOne);
   }
+  else if (result == STR_COPY_MIN_MAX_TO_OUTPUTS) {
+    copyMinMaxToOutputs(s_currIdx);
+  }
 }
 
 void menuModelLimits(event_t event)
@@ -240,6 +243,7 @@ void menuModelLimits(event_t event)
       POPUP_MENU_ADD_ITEM(STR_RESET);
       POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
       POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
+      POPUP_MENU_ADD_ITEM(STR_COPY_MIN_MAX_TO_OUTPUTS);
       POPUP_MENU_START(onLimitsMenu);
     }
 

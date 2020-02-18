@@ -967,6 +967,7 @@
 #define TR_PTS                         "pts"
 #define TR_SMOOTH                      "Smooth"
 #define TR_COPY_STICKS_TO_OFS          TR("Cpy stick->subtrim", "Copy sticks to subtrim")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max/center to all outputs")
 #define TR_COPY_TRIMS_TO_OFS           TR("Cpy trim->subtrim", "Copy trims to subtrim")
 #define TR_INCDEC                      "Inc/Decrement"
 #define TR_GLOBALVAR                   "Global var"

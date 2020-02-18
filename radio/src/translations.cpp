@@ -536,6 +536,7 @@ const char STR_PT[] = TR_PT;
 const char STR_PTS[] = TR_PTS;
 const char STR_SMOOTH[] = TR_SMOOTH;
 const char STR_COPY_STICKS_TO_OFS[] = TR_COPY_STICKS_TO_OFS;
+const char STR_COPY_MIN_MAX_TO_OUTPUTS[]  = TR_COPY_MIN_MAX_TO_OUTPUTS;
 const char STR_COPY_TRIMS_TO_OFS[] = TR_COPY_TRIMS_TO_OFS;
 const char STR_INCDEC[] = TR_INCDEC;
 const char STR_GLOBALVAR[] = TR_GLOBALVAR;

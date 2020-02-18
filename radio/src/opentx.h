@@ -867,6 +867,7 @@ void instantTrim();
 void evalTrims();
 void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
+void copyMinMaxToOutputs(uint8_t ch);
 void moveTrimsToOffsets();
 
 typedef uint16_t ACTIVE_PHASES_TYPE;
