@@ -164,6 +164,7 @@ enum MainViews {
 };
 #else
 enum MainViews {
+  VIEW_MIXER_VALUES,
   VIEW_OUTPUTS_VALUES,
   VIEW_OUTPUTS_BARS,
   VIEW_INPUTS,

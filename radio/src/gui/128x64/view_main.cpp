@@ -436,6 +436,11 @@ void menuMainView(event_t event)
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
     lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 
+    if (view_base == VIEW_MIXER_VALUES)
+      lcdDrawText(3 * FW / 2, 32,"Mixer");
+    else if (view_base == VIEW_OUTPUTS_VALUES)
+      lcdDrawText(3 * FW / 2, 32,"Output");
+
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
       uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
@@ -443,6 +448,19 @@ void menuMainView(event_t event)
       int16_t val = channelOutputs[chan];
 
       switch (view_base) {
+        case VIEW_MIXER_VALUES:
+          val = ex_chans[chan];
+          x0 = (i%4*9+3)*FW/2;
+          y0 = i/4*FH+40;
+#if defined(PPM_UNIT_US)
+          lcdDrawNumber(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, RIGHT);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), RIGHT|PREC1);
+#else
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, RIGHT); // G: Don't like the decimal part*
+#endif
+          break;
+
         case VIEW_OUTPUTS_VALUES:
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
