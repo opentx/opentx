@@ -327,6 +327,9 @@ void Channels::chnPaste()
 
 void Channels::chnDelete()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   int maxidx = chnCapability - 1;
   for (int i=selectedChannel; i<maxidx; i++) {
     if (!model->limitData[i].isEmpty() || !model->limitData[i+1].isEmpty()) {
@@ -337,6 +340,7 @@ void Channels::chnDelete()
     }
   }
   model->limitData[maxidx].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedChannel, 0, -1);
   updateLine(maxidx);
   emit modified();
 }
@@ -398,15 +402,23 @@ void Channels::chnMoveDown()
 
 void Channels::chnClear()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   model->limitData[selectedChannel].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, selectedChannel);
   updateLine(selectedChannel);
   emit modified();
 }
 
 void Channels::chnClearAll()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Channels. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   for (int i=0; i<chnCapability; i++) {
     model->limitData[i].clear();
+    model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, i);
     updateLine(i);
   }
   emit modified();
@@ -417,10 +429,12 @@ void Channels::chnInsert()
   for (int i=(chnCapability - 1); i>selectedChannel; i--) {
     if (!model->limitData[i].isEmpty() || !model->limitData[i-1].isEmpty()) {
       memcpy(&model->limitData[i], &model->limitData[i-1], sizeof(LimitData));
-      updateLine(i);
     }
   }
-  chnClear();
+  model->limitData[selectedChannel].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedChannel, 0, 1);
+  update();
+  emit modified();
 }
 
 void Channels::swapChnData(int idx1, int idx2)
@@ -431,6 +445,7 @@ void Channels::swapChnData(int idx1, int idx2)
     LimitData *chn2 = &model->limitData[idx2];
     memcpy(chn2, chn1, sizeof(LimitData));
     memcpy(chn1, &chntmp, sizeof(LimitData));
+    model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
     updateLine(idx1);
     updateLine(idx2);
     emit modified();
