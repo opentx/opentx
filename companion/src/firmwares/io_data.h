@@ -162,9 +162,15 @@ class FlightModeData {
     unsigned int fadeOut;
     int rotaryEncoders[CPN_MAX_ENCODERS];
     int gvars[CPN_MAX_GVARS];
-    void clear(const int phase);
-    QString nameToString(int index) const;
+    void clear(const int phaseIdx);
+    QString nameToString(int phaseIdx) const;
     void convert(RadioDataConversionState & cstate);
+    bool isEmpty(int phaseIdx) const;
+    bool isGVEmpty(int phaseIdx, int gvIdx) const;
+    bool isREEmpty(int phaseIdx, int reIdx) const;
+    int linkedFlightModeZero(int phaseIdx, int maxOwnValue) const;
+    int linkedGVarFlightModeZero(int phaseIdx) const;
+    int linkedEncoderFlightModeZero(int phaseIdx) const;
 };
 
 class SwashRingData {
