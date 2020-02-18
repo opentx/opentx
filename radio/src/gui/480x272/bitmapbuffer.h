@@ -283,10 +283,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     uint8_t drawCharWithCache(coord_t x, coord_t y, const BitmapBuffer * font, const uint16_t * spec, int index, LcdFlags flags);
 
-    void drawMaxLenText(coord_t x, coord_t y, const char * s, LcdFlags flags, coord_t maxLen)
+    void drawTextMaxWidth(coord_t x, coord_t y, const char * s, LcdFlags flags, coord_t maxWidth)
     {
-      for (int col = LCD_COLS; 0 < col; col--) {
-        if (getTextWidth(s, col, flags) < maxLen) {
+      for (int col = LCD_COLS; col > 0; col--) {
+        if (getTextWidth(s, col, flags) <= maxWidth) {
           drawSizedText(x, y, s, col, flags);
           return;
         }

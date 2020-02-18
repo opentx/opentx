@@ -56,7 +56,7 @@ bool menuTextView(event_t event)
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
-    lcd->drawMaxLenText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, reusableBuffer.viewText.lines[i], 0, LCD_W - 2 * MENUS_MARGIN_LEFT);
+    lcd->drawTextMaxWidth(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i * FH, reusableBuffer.viewText.lines[i], 0, LCD_W - 2 * MENUS_MARGIN_LEFT);
   }
 
 #if 0
