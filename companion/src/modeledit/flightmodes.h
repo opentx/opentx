@@ -26,6 +26,10 @@
 
 class RawSwitchFilterItemModel;
 
+constexpr char MIMETYPE_FLIGHTMODE[] = "application/x-companion-flightmode";
+constexpr char MIMETYPE_GVAR_PARAMS[]  = "application/x-companion-gvar-params";
+constexpr char MIMETYPE_GVAR_VALUE[] = "application/x-companion-gvar-value";
+
 namespace Ui {
   class FlightMode;
 }
@@ -42,6 +46,7 @@ class FlightModePanel : public ModelPanel
 
   signals:
     void nameModified();
+    void datachanged();
 
   private slots:
     void phaseName_editingFinished();
@@ -61,18 +66,36 @@ class FlightModePanel : public ModelPanel
     void phaseGVMax_editingFinished();
     void phaseREValue_editingFinished();
     void phaseREUse_currentIndexChanged(int index);
-    void name_customContextMenuRequested(const QPoint & pos);
-    void fmClear();
-    void gvLabel_customContextMenuRequested(const QPoint & pos);
-    void gvClear();
+    void onCustomContextMenuRequested(QPoint pos);
+    void cmClear();
+    void cmClearAll();
+    void cmCopy();
+    void cmCut();
+    void cmDelete();
+    void cmInsert();
+    void cmPaste();
+    void cmMoveDown();
+    void cmMoveUp();
+    void gvOnCustomContextMenuRequested(QPoint pos);
+    void gvCmClear();
+    void gvCmClearAll();
+    void gvCmCopy();
+    void gvCmCut();
+    void gvCmDelete();
+    void gvCmInsert();
+    void gvCmPaste();
+    void gvCmMoveDown();
+    void gvCmMoveUp();
 
   private:
     Ui::FlightMode *ui;
     int phaseIdx;
     FlightModeData & phase;
+    int fmCount;
     int reCount;
     int gvCount;
     int gvIdx;
+    int trimCount;
     QVector<QLabel *> trimsLabel;
     QLineEdit * gvNames[CPN_MAX_GVARS];
     QDoubleSpinBox * gvValues[CPN_MAX_GVARS];
@@ -88,12 +111,27 @@ class FlightModePanel : public ModelPanel
     QVector<QSpinBox *> trimsValue;
     QVector<QSlider *> trimsSlider;
     RawSwitchFilterItemModel * rawSwitchItemModel;
+    Board::Type board;
 
     void trimUpdate(unsigned int trim);
     void updateGVar(int index);
+    void updateRotaryEncoder(int index);
     void setGVSB(QDoubleSpinBox * spinBox, int min, int max, int val);
     void populateGvarUnitCB(QComboBox * cb);
     void populateGvarPrecCB(QComboBox * cb);
+    bool hasClipboardData(QByteArray * data = nullptr) const;
+    bool insertAllowed() const;
+    bool moveDownAllowed() const;
+    bool moveUpAllowed() const;
+    void swapData(int idx1, int idx2);
+    bool gvHasClipboardData() const;
+    bool gvHasDefnClipboardData(QByteArray * data = nullptr) const;
+    bool gvHasValueClipboardData(QByteArray * data = nullptr) const;
+    bool gvDeleteAllowed() const;
+    bool gvInsertAllowed() const;
+    bool gvMoveDownAllowed() const;
+    bool gvMoveUpAllowed() const;
+    void gvSwapData(int idx1, int idx2);
 };
 
 class FlightModesPanel : public ModelPanel

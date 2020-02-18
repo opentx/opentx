@@ -276,10 +276,11 @@ bool ModelData::isGVarLinked(int phaseIdx, int gvarIdx)
 
 int ModelData::getGVarFieldValue(int phaseIdx, int gvarIdx)
 {
-  int idx = flightModeData[phaseIdx].gvars[gvarIdx];
+  int nextphase = phaseIdx;
+  int idx = flightModeData[nextphase].gvars[gvarIdx];
   for (int i = 0; idx > GVAR_MAX_VALUE && i < CPN_MAX_FLIGHT_MODES; i++) {
-    phaseIdx = linkedFlightModeValueToIndex(phaseIdx, idx, GVAR_MAX_VALUE);
-    idx = flightModeData[phaseIdx].gvars[gvarIdx];
+    nextphase = linkedFlightModeValueToIndex(nextphase, idx, GVAR_MAX_VALUE);
+    idx = flightModeData[nextphase].gvars[gvarIdx];
   }
   return idx;
 }
@@ -491,18 +492,8 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
 
   for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     FlightModeData *fmd = &flightModeData[i];
-    if (fmd->swtch.isSet()) {
-      for (int j = 0; j < CPN_MAX_TRIMS; j++) {
-        if (fmd->trimMode[j] > -1)
-          updateFlightModeTrimRef(fmd->trimRef[j], fmd->trimMode[j], fmd->trim[j]);
-      }
+    if (!fmd->isEmpty(i)) {
       updateSwitchRef(fmd->swtch);
-      for (int j = 0; j < CPN_MAX_GVARS; j++) {
-        updateFlightModeGVRERef(fmd->gvars[j], i, GVAR_MAX_VALUE);
-      }
-      for (int j = 0; j < CPN_MAX_ENCODERS; j++) {
-        updateFlightModeGVRERef(fmd->rotaryEncoders[j], i, ENCODER_MAX_VALUE);
-      }
     }
   }
   s1.report("Flight Modes");
@@ -986,160 +977,6 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
   }
 }
 
-void ModelData::updateFlightModeTrimRef(int & trimRef, int & trimMode, int & trim)
-{
-  if (updRefInfo.type != REF_UPD_TYPE_FLIGHT_MODE)
-    return;
-
-  const int invalidateRef = -1;
-  int newRef = trimRef;
-
-  switch (updRefInfo.action)
-  {
-    case REF_UPD_ACT_CLEAR:
-      if (newRef != updRefInfo.index1)
-        return;
-      newRef = invalidateRef;
-      break;
-    case REF_UPD_ACT_SHIFT:
-      if (newRef < updRefInfo.index1)
-        return;
-
-      newRef += updRefInfo.shift;
-
-      if (newRef < updRefInfo.index1 || newRef > updRefInfo.maxindex)
-        newRef = invalidateRef;
-      break;
-    case REF_UPD_ACT_SWAP:
-      if (newRef == updRefInfo.index1)
-        newRef = updRefInfo.index2;
-      else if (newRef == updRefInfo.index2)
-        newRef = updRefInfo.index1;
-      break;
-    default:
-      qDebug() << "Error - unhandled action:" << updRefInfo.action;
-      return;
-  }
-
-  if (newRef == invalidateRef) {
-    trimRef = 0;
-    trimMode = 0;
-    trim = 0;
-    qDebug() << "Trim cleared";
-    updRefInfo.updcnt++;
-  }
-  else if (trimRef != newRef) {
-    qDebug() << "Updated reference:" << trimRef << " -> " << newRef;
-    trimRef = newRef;
-    updRefInfo.updcnt++;
-  }
-}
-
-void ModelData::updateFlightModeGVRERef(int & curRef, const int phaseIdx, const int maxOwnValue)
-{
-  if (updRefInfo.type != REF_UPD_TYPE_FLIGHT_MODE)
-    return;
-
-  int fmIdx = linkedFlightModeValueToIndex(phaseIdx, curRef, maxOwnValue);
-  if (fmIdx < 0)
-    return;
-
-  int newRef = curRef;
-
-  switch (updRefInfo.action)
-  {
-    case REF_UPD_ACT_CLEAR:
-      if (fmIdx != updRefInfo.index1)
-        return;
-      newRef = linkedFlightModeZero(maxOwnValue);
-      break;
-    case REF_UPD_ACT_SHIFT:
-      if (fmIdx < updRefInfo.index1)
-        return;
-
-      fmIdx += updRefInfo.shift;
-
-      if (fmIdx < updRefInfo.index1 || fmIdx > updRefInfo.maxindex)
-        newRef = linkedFlightModeZero(maxOwnValue);
-      else
-        newRef = linkedFlightModeIndexToValue(phaseIdx, fmIdx, maxOwnValue);
-      break;
-    case REF_UPD_ACT_SWAP:
-      if (fmIdx == updRefInfo.index1) {
-        if (updRefInfo.index2 == phaseIdx)
-          newRef = linkedFlightModeIndexToValue(phaseIdx, updRefInfo.index2, maxOwnValue);
-      }
-      else if (fmIdx == updRefInfo.index2) {
-        if (updRefInfo.index1 == phaseIdx)
-          newRef = linkedFlightModeIndexToValue(phaseIdx, updRefInfo.index1, maxOwnValue);
-      }
-      break;
-    default:
-      qDebug() << "Error - unhandled action:" << updRefInfo.action;
-      return;
-  }
-
-  if (curRef != newRef) {
-    qDebug() << "Updated reference:" << curRef << " -> " << newRef;
-    curRef = newRef;
-    updRefInfo.updcnt++;
-  }
-}
-
-int ModelData::linkedFlightModeIndexToValue(const int phaseIdx, const int useFmIdx, const int maxOwnValue)
-{
-  int val;
-
-  if (phaseIdx == useFmIdx || phaseIdx < 0 || phaseIdx > (CPN_MAX_FLIGHT_MODES - 1) || useFmIdx < 0 || useFmIdx > (CPN_MAX_FLIGHT_MODES - 1))
-    val = linkedFlightModeZero(maxOwnValue);
-  else
-    val = maxOwnValue + useFmIdx + (useFmIdx >= phaseIdx ? 0 : 1);
-
-  return val;
-}
-
-int ModelData::linkedFlightModeValueToIndex(const int phaseIdx, const int val, const int maxOwnValue)
-{
-  int idx = val - maxOwnValue - 1;
-  if (idx == phaseIdx)
-    idx += 1;
-  return idx;
-}
-
-int ModelData::getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx)
-{
-  if (!isGVarLinked(phaseIdx, gvarIdx))
-    return -1;
-  return (linkedFlightModeValueToIndex(phaseIdx, flightModeData[phaseIdx].gvars[gvarIdx], GVAR_MAX_VALUE));
-}
-
-void ModelData::setGVarFlightModeValue(const int phaseIdx, const int gvarIdx, const int useFmIdx)
-{
-  flightModeData[phaseIdx].gvars[gvarIdx] = linkedFlightModeIndexToValue(phaseIdx, useFmIdx, GVAR_MAX_VALUE);
-}
-
-bool ModelData::isEncoderLinked(const int phaseIdx, const int reIdx)
-{
-  return flightModeData[phaseIdx].rotaryEncoders[reIdx] > ENCODER_MAX_VALUE;
-}
-
-int ModelData::getEncoderFlightModeIndex(const int phaseIdx, const int reIdx)
-{
-  if (!isEncoderLinked(phaseIdx, reIdx))
-    return -1;
-  return (linkedFlightModeValueToIndex(phaseIdx, flightModeData[phaseIdx].rotaryEncoders[reIdx], ENCODER_MAX_VALUE));
-}
-
-void ModelData::setEncoderFlightModeValue(const int phaseIdx, const int reIdx, const int useFmIdx)
-{
-  flightModeData[phaseIdx].rotaryEncoders[reIdx] = linkedFlightModeIndexToValue(phaseIdx, useFmIdx, ENCODER_MAX_VALUE);
-}
-
-int ModelData::linkedFlightModeZero(const int maxOwnValue)
-{
-  return maxOwnValue + 1;
-}
-
 void ModelData::updateTelemetryRef(unsigned int & curRef)
 {
   if (updRefInfo.type != REF_UPD_TYPE_SENSOR)
@@ -1179,4 +1016,64 @@ void ModelData::updateTelemetryRef(unsigned int & curRef)
     curRef = newRef;
     updRefInfo.updcnt++;
   }
+}
+
+int ModelData::linkedFlightModeIndexToValue(const int phaseIdx, const int useFmIdx, const int maxOwnValue)
+{
+  int val;
+
+  if (phaseIdx == useFmIdx || phaseIdx < 0 || phaseIdx > (CPN_MAX_FLIGHT_MODES - 1) || useFmIdx < 0 || useFmIdx > (CPN_MAX_FLIGHT_MODES - 1))
+    val = flightModeData[phaseIdx].linkedFlightModeZero(phaseIdx, maxOwnValue);
+  else
+    val = maxOwnValue + useFmIdx + (useFmIdx >= phaseIdx ? 0 : 1);
+
+  return val;
+}
+
+int ModelData::linkedFlightModeValueToIndex(const int phaseIdx, const int val, const int maxOwnValue)
+{
+  int idx = val - maxOwnValue - 1;
+  if (idx >= phaseIdx)
+    idx += 1;
+  return idx;
+}
+
+int ModelData::getEncoderFieldValue(int phaseIdx, int reIdx)
+{
+  int nextphase = phaseIdx;
+  int idx = flightModeData[nextphase].rotaryEncoders[reIdx];
+  for (int i = 0; idx > ENCODER_MAX_VALUE && i < CPN_MAX_FLIGHT_MODES; i++) {
+    nextphase = linkedFlightModeValueToIndex(nextphase, idx, ENCODER_MAX_VALUE);
+    idx = flightModeData[nextphase].rotaryEncoders[reIdx];
+  }
+  return idx;
+}
+
+int ModelData::getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx)
+{
+  if (!isGVarLinked(phaseIdx, gvarIdx))
+    return -1;
+  return (linkedFlightModeValueToIndex(phaseIdx, flightModeData[phaseIdx].gvars[gvarIdx], GVAR_MAX_VALUE));
+}
+
+void ModelData::setGVarFlightModeIndexToValue(const int phaseIdx, const int gvarIdx, const int useFmIdx)
+{
+  flightModeData[phaseIdx].gvars[gvarIdx] = linkedFlightModeIndexToValue(phaseIdx, useFmIdx, GVAR_MAX_VALUE);
+}
+
+bool ModelData::isEncoderLinked(const int phaseIdx, const int reIdx)
+{
+  return flightModeData[phaseIdx].rotaryEncoders[reIdx] > ENCODER_MAX_VALUE;
+}
+
+int ModelData::getEncoderFlightModeIndex(const int phaseIdx, const int reIdx)
+{
+  if (!isEncoderLinked(phaseIdx, reIdx))
+    return -1;
+  return (linkedFlightModeValueToIndex(phaseIdx, flightModeData[phaseIdx].rotaryEncoders[reIdx], ENCODER_MAX_VALUE));
+}
+
+void ModelData::setEncoderFlightModeIndexToValue(const int phaseIdx, const int reIdx, const int useFmIdx)
+{
+  flightModeData[phaseIdx].rotaryEncoders[reIdx] = linkedFlightModeIndexToValue(phaseIdx, useFmIdx, ENCODER_MAX_VALUE);
 }

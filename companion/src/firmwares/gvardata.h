@@ -43,7 +43,7 @@ class GVarData {
       GVAR_PREC_MUL1
     };
 
-    char name[GVAR_NAME_LEN+1];
+    char name[GVAR_NAME_LEN + 1];
     int min;
     int max;
     bool popup;
@@ -62,6 +62,7 @@ class GVarData {
     int getMax() const;
     float getMinPrec() const;
     float getMaxPrec() const;
+    bool isEmpty() const;
 };
 
 

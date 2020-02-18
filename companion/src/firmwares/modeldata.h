@@ -222,17 +222,17 @@ class ModelData {
     int getGVarFieldValue(int phaseIdx, int gvarIdx);
     float getGVarFieldValuePrec(int phaseIdx, int gvarIdx);
     int getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx);
-    void setGVarFlightModeValue(const int phaseIdx, const int gvarIdx, const int useFmIdx);
+    void setGVarFlightModeIndexToValue(const int phaseIdx, const int gvarIdx, const int useFmIdx);
 
     ModelData removeGlobalVars();
 
     int linkedFlightModeIndexToValue(const int phaseIdx, const int useFmIdx, const int maxOwnValue);
     int linkedFlightModeValueToIndex(const int phaseIdx, const int val, const int maxOwnValue);
-    int linkedFlightModeZero(const int maxOwnValue);
 
     bool isEncoderLinked(const int phaseIdx, const int reIdx);
+    int getEncoderFieldValue(int phaseIdx, int reIdx);
     int getEncoderFlightModeIndex(const int phaseIdx, const int reIdx);
-    void setEncoderFlightModeValue(const int phaseIdx, const int reIdx, const int useFmIdx);
+    void setEncoderFlightModeIndexToValue(const int phaseIdx, const int reIdx, const int useFmIdx);
 
     void clearMixes();
     void clearInputs();
@@ -289,8 +289,6 @@ class ModelData {
     void updateDestCh(MixData * md);
     void updateLimitCurveRef(CurveReference & crv);
     void updateFlightModeFlags(unsigned int & flags);
-    void updateFlightModeTrimRef(int & trimRef, int & trimMode, int & trim);
-    void updateFlightModeGVRERef(int & gvre, const int phaseIdx, const int maxOwnValue);
     void updateTelemetryRef(unsigned int & idx);
     inline void updateSourceRef(RawSource & src) { updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType); }
     inline void updateSwitchRef(RawSwitch & swtch) { updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1); }
