@@ -24,12 +24,6 @@
 #include "bitmapbuffer.h"
 #include "opentx_types.h"
 
-#if LCD_W >= 480
-  #define LCD_COLS                     40
-#else
-  #define LCD_COLS                     30
-#endif
-
 #define CENTER
 
 /* lcd common flags */
@@ -254,7 +248,6 @@ inline int getBitmapHeight(const uint8_t * bmp)
 
 uint8_t getMappedChar(uint8_t c);
 uint8_t getFontHeight(LcdFlags flags);
-int getTextWidth(const char * s, int len=0, LcdFlags flags=0);
 
 inline void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0)
 {
