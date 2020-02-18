@@ -968,7 +968,7 @@
 #define TR_PTS                         "Pts"
 #define TR_SMOOTH                      "Runden"
 #define TR_COPY_STICKS_TO_OFS          TR("Copy Stk ->Subtrim", "Kopie Stick to Servo-Mitte")
-#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max to all outputs")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max/center to all outputs")
 #define TR_COPY_TRIMS_TO_OFS           TR("Copy Trim->Subtrim", "Kopie Trimm to Servo-Mitte")  // "Trim to Subtrim"
 #define TR_INCDEC                      "Inc/Decrement"
 #define TR_GLOBALVAR                   "Global Var"

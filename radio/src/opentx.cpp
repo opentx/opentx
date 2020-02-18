@@ -1728,8 +1728,9 @@ void copyTrimsToOffset(uint8_t ch)
 void copyMinMaxToOutputs(uint8_t ch)
 {
   LimitData *ld = limitAddress(ch);
-  int32_t min = ld->min;
-  int32_t max = ld->max;
+  int16_t min = ld->min;
+  int16_t max = ld->max;
+  int16_t center = ld->ppmCenter;
 
   pauseMixerCalculations();
 
@@ -1737,6 +1738,7 @@ void copyMinMaxToOutputs(uint8_t ch)
     ld = limitAddress(chan);
     ld->min = min;
     ld->max = max;
+    ld->ppmCenter = center;
   }
 
   resumeMixerCalculations();
