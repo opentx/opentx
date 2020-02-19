@@ -55,6 +55,7 @@ option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(TBS_RELEASE "Used to build TBS released firmware" OFF)
 option(ALLOW_TRAINER_MULTI "Allow multi trainer" OFF)
+option(XLITEALT "Enable alternative Xlite button layout" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -342,6 +343,10 @@ endif()
 
 if(TBS_RELEASE)
   add_definitions(-DTBS_RELEASE)
+endif()
+
+if(XLITEALT)
+  add_definitions(-DXLITE_ALT)
 endif()
 
 if(FRSKY_RELEASE)

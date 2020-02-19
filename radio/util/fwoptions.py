@@ -124,6 +124,7 @@ options_taranis_xlite = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
+    "xlitealt": ("XLITEALT", "YES", None),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
 }
 

@@ -32,20 +32,37 @@
   #define KEYS_GPIO_REG_ENTER           GPIOF->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_0  // PF.00
 #elif defined(PCBXLITE)
-  #define KEYS_GPIO_REG_SHIFT           GPIOE->IDR
-  #define KEYS_GPIO_PIN_SHIFT           GPIO_Pin_8  // PE.08
-  #define KEYS_GPIO_REG_EXIT            GPIOE->IDR
-  #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_7  // PE.07
-  #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
-  #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_11 // PE.11
-  #define KEYS_GPIO_REG_UP              GPIOE->IDR
-  #define KEYS_GPIO_PIN_UP              GPIO_Pin_10 // PE.10
-  #define KEYS_GPIO_REG_DOWN            GPIOE->IDR
-  #define KEYS_GPIO_PIN_DOWN            GPIO_Pin_14 // PE.14
-  #define KEYS_GPIO_REG_LEFT            GPIOE->IDR
-  #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_12 // PE.12
-  #define KEYS_GPIO_REG_RIGHT           GPIOE->IDR
-  #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_13 // PE.13
+  #if defined(XLITEALT)
+    #define KEYS_GPIO_REG_SHIFT           GPIOE->IDR
+    #define KEYS_GPIO_PIN_SHIFT           GPIO_Pin_11 // PE.11
+    #define KEYS_GPIO_REG_EXIT            GPIOE->IDR
+    #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_7  // PE.07
+    #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
+    #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PE.08
+    #define KEYS_GPIO_REG_UP              GPIOB->IDR
+    #define KEYS_GPIO_PIN_UP              GPIO_Pin_0  // PB.00
+    #define KEYS_GPIO_REG_DOWN            GPIOB->IDR
+    #define KEYS_GPIO_PIN_DOWN            GPIO_Pin_1  // PB.01
+    #define KEYS_GPIO_REG_LEFT            GPIOC->IDR
+    #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_4  // PC.04
+    #define KEYS_GPIO_REG_RIGHT           GPIOC->IDR
+    #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_5  // PC.05
+  #else
+    #define KEYS_GPIO_REG_SHIFT           GPIOE->IDR
+    #define KEYS_GPIO_PIN_SHIFT           GPIO_Pin_8  // PE.08
+    #define KEYS_GPIO_REG_EXIT            GPIOE->IDR
+    #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_7  // PE.07
+    #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
+    #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_11 // PE.11
+    #define KEYS_GPIO_REG_UP              GPIOE->IDR
+    #define KEYS_GPIO_PIN_UP              GPIO_Pin_10 // PE.10
+    #define KEYS_GPIO_REG_DOWN            GPIOE->IDR
+    #define KEYS_GPIO_PIN_DOWN            GPIO_Pin_14 // PE.14
+    #define KEYS_GPIO_REG_LEFT            GPIOE->IDR
+    #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_12 // PE.12
+    #define KEYS_GPIO_REG_RIGHT           GPIOE->IDR
+    #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_13 // PE.13
+  #endif
 #elif defined(RADIO_T12)
   #define KEYS_GPIO_REG_EXIT            GPIOD->IDR
   #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_2  // PD.02
@@ -185,14 +202,25 @@
   #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_13 // PC.13
 #elif defined(PCBXLITE)
-  #define TRIMS_GPIO_REG_LHL            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PC.04
-  #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_5  // PC.05
-  #define TRIMS_GPIO_REG_LVU            GPIOB->IDR
-  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_0  // PB.00
-  #define TRIMS_GPIO_REG_LVD            GPIOB->IDR
-  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_1  // PB.01
+  #if defined(XLITEALT)
+    #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
+    #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_12 // PE.12
+    #define TRIMS_GPIO_REG_LHR            GPIOE->IDR
+    #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_13 // PE.13
+    #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
+    #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_10 // PE.10
+    #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
+    #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_14 // PE.14
+  #else
+    #define TRIMS_GPIO_REG_LHL            GPIOC->IDR
+    #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4 // PC.04
+    #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
+    #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_5 // PC.05
+    #define TRIMS_GPIO_REG_LVU            GPIOB->IDR
+    #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_0 // PB.00
+    #define TRIMS_GPIO_REG_LVD            GPIOB->IDR
+    #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_1 // PB.01
+  #endif
 #elif defined(RADIO_X7ACCESS)
   #define TRIMS_GPIO_REG_LHR            GPIOD->IDR
   #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_15 // PD.15
