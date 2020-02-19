@@ -23,7 +23,7 @@
 constexpr coord_t CHANNEL_NAME_OFFSET = 1;
 constexpr coord_t CHANNEL_VALUE_OFFSET = CHANNEL_NAME_OFFSET + 42;
 constexpr coord_t CHANNEL_GAUGE_OFFSET = CHANNEL_VALUE_OFFSET;
-constexpr coord_t CHANNEL_BAR_WIDTH = 54;
+constexpr coord_t CHANNEL_BAR_WIDTH = 70;
 constexpr coord_t CHANNEL_PROPERTIES_OFFSET = CHANNEL_GAUGE_OFFSET + CHANNEL_BAR_WIDTH + 2;
 
 void menuChannelsView(event_t event)
@@ -43,12 +43,12 @@ void menuChannelsView(event_t event)
 
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_ROTARY_RIGHT:
-      g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ALTERNATE_VIEW) % (4*ALTERNATE_VIEW);
+      g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) + ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
       break;
 
     case EVT_KEY_FIRST(KEY_LEFT):
     case EVT_ROTARY_LEFT:
-      g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) - ALTERNATE_VIEW) % (4*ALTERNATE_VIEW);
+      g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) - ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
@@ -76,7 +76,7 @@ void menuChannelsView(event_t event)
   int16_t limits = 512 * 2;
 
   // Channels
-  for (uint8_t line=0; line < 8; line++) {
+  for (uint8_t line = 0; line < 8; line++) {
     LimitData * ld = limitAddress(ch);
     const uint8_t y = 9 + line * 7;
     const int32_t val = reusableBuffer.viewChannels.mixersView ? ex_chans[ch] : channelOutputs[ch];
@@ -89,26 +89,26 @@ void menuChannelsView(event_t event)
       lcdDrawSizedText(CHANNEL_NAME_OFFSET, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
     }
     else {
-      putsChn(CHANNEL_NAME_OFFSET, y, ch+1, SMLSIZE);
+      putsChn(CHANNEL_NAME_OFFSET, y, ch + 1, SMLSIZE);
     }
 
     // Value
 #if defined(PPM_UNIT_US)
     lcdDrawNumber(CHANNEL_VALUE_OFFSET, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE|RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-    lcdDrawNumber(CHANNEL_VALUE_OFFSET, y+1, calcRESXto1000(val), PREC1|TINSIZE|RIGHT);
+    lcdDrawNumber(CHANNEL_VALUE_OFFSET, y + 1, calcRESXto1000(val), PREC1 | TINSIZE | RIGHT);
 #else
     lcdDrawNumber(CHANNEL_VALUE_OFFSET, y+1, calcRESXto1000(val)/10, TINSIZE|RIGHT);
 #endif
 
     // Gauge
-    drawGauge(CHANNEL_GAUGE_OFFSET, y, CHANNEL_BAR_WIDTH + (reusableBuffer.viewChannels.mixersView ? 25 : 0), 6, val, limits);
+    drawGauge(CHANNEL_GAUGE_OFFSET, y, CHANNEL_BAR_WIDTH, 6, val, limits);
 
     if (!reusableBuffer.viewChannels.mixersView) {
       // Properties
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
       if (safetyCh[ch] != OVERRIDE_CHANNEL_UNDEFINED)
-        lcdDrawText(CHANNEL_PROPERTIES_OFFSET, y, "OVERIDE", TINSIZE);
+        lcdDrawText(CHANNEL_PROPERTIES_OFFSET, y, "OVR", TINSIZE);
       else
 #endif
       if (ld && ld->revert) {

@@ -344,7 +344,7 @@ void menuMainView(event_t event)
 
     case EVT_KEY_NEXT_PAGE:
     case EVT_KEY_PREVIOUS_PAGE:
-      if (view_base <= VIEW_INPUTS) {
+      if (view_base < VIEW_COUNT) {
         if (view_base == VIEW_INPUTS)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
         else
@@ -423,10 +423,14 @@ void menuMainView(event_t event)
       break;
   }
 
-  {
+  if (view_base == VIEW_CHAN_MONITOR) {
+    g_model.view = 0;
+    chainMenu(menuMainViewChannelsMonitor);
+  }
+  else {
     // Flight Mode Name
     uint8_t mode = mixerCurrentFlightMode;
-    lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|PHASE_FLAGS);
+    lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR | PHASE_FLAGS);
 
     // Model Name
     putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
@@ -435,147 +439,129 @@ void menuMainView(event_t event)
     displayVoltageOrAlarm();
 
     // Timer 1
-    drawTimerWithMode(125, 2*FH, 0, RIGHT | DBLSIZE);
+    drawTimerWithMode(125, 2 * FH, 0, RIGHT | DBLSIZE);
 
     // Trims sliders
     displayTrims(mode);
 
     // RSSI gauge / external antenna
     drawExternalAntennaAndRSSI();
-  }
 
-  if (view_base < VIEW_INPUTS) {
-    // scroll bar
-    lcdDrawHorizontalLine(38, 34, 54, DOTTED);
-    lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
+    if (view_base == VIEW_INPUTS) {
+      if (view == VIEW_INPUTS) {
+        // Sticks + Pots
+        doMainScreenGraphics();
 
-    for (uint8_t i=0; i<8; i++) {
-      uint8_t x0,y0;
-      uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
-
-      int16_t val = channelOutputs[chan];
-
-      switch (view_base) {
-        case VIEW_CHAN_MONITOR:
-          g_model.view = 0;
-          chainMenu(menuMainViewChannelsMonitor);
-          break;
-      }
-    }
-  }
-  else if (view_base == VIEW_INPUTS) {
-    if (view == VIEW_INPUTS) {
-      // Sticks + Pots
-      doMainScreenGraphics();
-
-      // Switches
+        // Switches
 #if defined(PCBX9LITES)
-      static const uint8_t x[NUM_SWITCHES-2] = {2*FW-2, 2*FW-2, 17*FW+1, 2*FW-2, 17*FW+1};
-      static const uint8_t y[NUM_SWITCHES-2] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
-      for (int i=0; i<NUM_SWITCHES - 2; ++i) {
-        if (SWITCH_EXISTS(i)) {
-          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
-          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0, false);
-        }
-      }
-      drawSmallSwitch(29, 5*FH+1, 4, SW_SF);
-      drawSmallSwitch(16*FW+1, 5*FH+1, 4, SW_SG);
-#elif defined(PCBX9LITE)
-      static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
-      static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
-      for (int i=0; i<NUM_SWITCHES; ++i) {
-        if (SWITCH_EXISTS(i)) {
-          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
-          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0, false);
-        }
-      }
-#elif defined(PCBXLITES)
-      static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
-      static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 4*FH+1, 6*FH+1, 6*FH+1, 5*FH+1, 5*FH+1};
-      for (int i=0; i<NUM_SWITCHES; ++i) {
-        if (SWITCH_EXISTS(i)) {
-          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
-          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-          drawSwitch(x[i], y[i], sw, 0, false);
-        }
-      }
-#elif defined(PCBTARANIS)
-      uint8_t switches = min(NUM_SWITCHES, 6);
-      for (int i=0; i<switches; ++i) {
-        if (SWITCH_EXISTS(i)) {
-          uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
-          if (i >= switches/2) {
-            x = 16*FW+1;
-            y -= (switches/2)*FH;
+        static const uint8_t x[NUM_SWITCHES-2] = {2*FW-2, 2*FW-2, 17*FW+1, 2*FW-2, 17*FW+1};
+        static const uint8_t y[NUM_SWITCHES-2] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
+        for (int i=0; i<NUM_SWITCHES - 2; ++i) {
+          if (SWITCH_EXISTS(i)) {
+            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+            drawSwitch(x[i], y[i], sw, 0, false);
           }
-          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
-          getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-          drawSwitch(x, y, sw, 0, false);
         }
-      }
+        drawSmallSwitch(29, 5*FH+1, 4, SW_SF);
+        drawSmallSwitch(16*FW+1, 5*FH+1, 4, SW_SG);
+#elif defined(PCBX9LITE)
+        static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
+        static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
+        for (int i=0; i<NUM_SWITCHES; ++i) {
+          if (SWITCH_EXISTS(i)) {
+            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+            drawSwitch(x[i], y[i], sw, 0, false);
+          }
+        }
+#elif defined(PCBXLITES)
+        static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
+        static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 4*FH+1, 6*FH+1, 6*FH+1, 5*FH+1, 5*FH+1};
+        for (int i=0; i<NUM_SWITCHES; ++i) {
+          if (SWITCH_EXISTS(i)) {
+            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+            drawSwitch(x[i], y[i], sw, 0, false);
+          }
+        }
+#elif defined(PCBTARANIS)
+        uint8_t switches = min(NUM_SWITCHES, 6);
+        for (int i = 0; i < switches; ++i) {
+          if (SWITCH_EXISTS(i)) {
+            uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 1;
+            if (i >= switches / 2) {
+              x = 16 * FW + 1;
+              y -= (switches / 2) * FH;
+            }
+            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+            drawSwitch(x, y, sw, 0, false);
+          }
+        }
 #else
-      // The ID0 3-POS switch is merged with the TRN switch
-      for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
-        int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
-        uint8_t x = 2*FW-2, y = i*FH+1;
-        if (i >= SWSRC_AIL) {
-          x = 17*FW-1;
-          y -= 3*FH;
+        // The ID0 3-POS switch is merged with the TRN switch
+        for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
+          int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
+          uint8_t x = 2*FW-2, y = i*FH+1;
+          if (i >= SWSRC_AIL) {
+            x = 17*FW-1;
+            y -= 3*FH;
+          }
+          drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0, false);
         }
-        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0, false);
-      }
 #endif
+      }
+      else {
+        // Logical Switches
+        uint8_t index = 0;
+        uint8_t y = LCD_H - 20;
+        for (uint8_t line = 0; line < 2; line++) {
+          for (uint8_t column = 0; column < MAX_LOGICAL_SWITCHES / 2; column++) {
+            int8_t len = getSwitch(SWSRC_SW1 + index) ? 10 : 1;
+            uint8_t x = (16 + 3 * column);
+            lcdDrawSolidVerticalLine(x - 1, y - len, len);
+            lcdDrawSolidVerticalLine(x, y - len, len);
+            index++;
+          }
+          y += 12;
+        }
+      }
     }
     else {
-      // Logical Switches
-      uint8_t index = 0;
-      uint8_t y = LCD_H-20;
-      for (uint8_t line=0; line<2; line++) {
-        for (uint8_t column=0; column<MAX_LOGICAL_SWITCHES/2; column++) {
-          int8_t len = getSwitch(SWSRC_SW1+index) ? 10 : 1;
-          uint8_t x = (16 + 3*column);
-          lcdDrawSolidVerticalLine(x-1, y-len, len);
-          lcdDrawSolidVerticalLine(x,   y-len, len);
-          index++;
-        }
-        y += 12;
-      }
+      // Timer2
+      drawTimerWithMode(87, 5 * FH, 1, RIGHT | DBLSIZE);
     }
-  }
-  else {
-    // Timer2
-    drawTimerWithMode(87, 5*FH, 1, RIGHT | DBLSIZE);
-  }
 
-  // And ! in case of unexpected shutdown
-  if (isAsteriskDisplayed()) {
-    lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
-  }
+    // And ! in case of unexpected shutdown
+    if (isAsteriskDisplayed()) {
+      lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
+    }
 
 #if defined(GVARS)
-  if (gvarDisplayTimer > 0) {
-    gvarDisplayTimer--;
-    warningText = STR_GLOBAL_VAR;
-    drawMessageBox(warningText);
-    lcdDrawSizedText(16, 5*FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
-    lcdDrawText(16+6*FW, 5*FH, "[", BOLD);
-    drawGVarValue(lcdLastRightPos, 5*FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
-    if (g_model.gvars[gvarLastChanged].unit) {
-      lcdDrawText(lcdLastRightPos, 5*FH, "%", BOLD);
+    if (gvarDisplayTimer > 0) {
+      gvarDisplayTimer--;
+      warningText = STR_GLOBAL_VAR;
+      drawMessageBox(warningText);
+      lcdDrawSizedText(16, 5 * FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
+      lcdDrawText(16 + 6 * FW, 5 * FH, "[", BOLD);
+      drawGVarValue(lcdLastRightPos, 5 * FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)),
+                    LEFT | BOLD);
+      if (g_model.gvars[gvarLastChanged].unit) {
+        lcdDrawText(lcdLastRightPos, 5 * FH, "%", BOLD);
+      }
+      lcdDrawText(lcdLastRightPos, 5 * FH, "]", BOLD);
+      warningText = nullptr;
     }
-    lcdDrawText(lcdLastRightPos, 5*FH, "]", BOLD);
-    warningText = nullptr;
-  }
 #endif
 
 #if defined(DSM2)
-  if (moduleState[0].mode == MODULE_MODE_BIND) {
-    // Issue 98
-    lcdDrawText(15*FW, 0, "BIND", 0);
-  }
+    if (moduleState[0].mode == MODULE_MODE_BIND) {
+      // Issue 98
+      lcdDrawText(15 * FW, 0, "BIND", 0);
+    }
 #endif
+  }
 }
 
 #undef EVT_KEY_CONTEXT_MENU
