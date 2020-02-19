@@ -137,10 +137,10 @@ void FlightModeData::clear(const int phaseIdx)
 {
   memset(reinterpret_cast<void *>(this), 0, sizeof(FlightModeData));
   for (int i = 0; i < CPN_MAX_GVARS; i++) {
-    gvars[i] = linkedFlightModeZero(phaseIdx, GVAR_MAX_VALUE);
+    gvars[i] = linkedGVarFlightModeZero(phaseIdx);
   }
   for (int i = 0; i < CPN_MAX_ENCODERS; i++) {
-    rotaryEncoders[i] = linkedFlightModeZero(phaseIdx, ENCODER_MAX_VALUE);
+    rotaryEncoders[i] = linkedEncoderFlightModeZero(phaseIdx);
   }
 }
 
@@ -177,14 +177,14 @@ bool FlightModeData::isEmpty(int phaseIdx) const
 
 bool FlightModeData::isGVEmpty(int phaseIdx, int gvIdx) const
 {
-  if ((phaseIdx == 0 && gvars[gvIdx] == 0) || (phaseIdx != 0 && gvars[gvIdx] == linkedFlightModeZero(phaseIdx, GVAR_MAX_VALUE)))
+  if ((phaseIdx == 0 && gvars[gvIdx] == 0) || (phaseIdx != 0 && gvars[gvIdx] == linkedGVarFlightModeZero(phaseIdx)))
     return true;
   return false;
 }
 
 bool FlightModeData::isREEmpty(int phaseIdx, int reIdx) const
 {
-  if ((phaseIdx == 0 && rotaryEncoders[reIdx] == 0) || (phaseIdx != 0 && rotaryEncoders[reIdx] == linkedFlightModeZero(phaseIdx, ENCODER_MAX_VALUE)))
+  if ((phaseIdx == 0 && rotaryEncoders[reIdx] == 0) || (phaseIdx != 0 && rotaryEncoders[reIdx] == linkedEncoderFlightModeZero(phaseIdx)))
     return true;
   return false;
 }
