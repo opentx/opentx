@@ -686,7 +686,7 @@ bool FlightModePanel::hasClipboardData(QByteArray * data) const
 
 bool FlightModePanel::insertAllowed() const
 {
-  return model->flightModeData[fmCount - 1].isEmpty(fmCount - 1);
+  return ((phaseIdx < fmCount - 1) && (model->flightModeData[fmCount - 1].isEmpty(fmCount - 1)));
 }
 
 bool FlightModePanel::moveDownAllowed() const

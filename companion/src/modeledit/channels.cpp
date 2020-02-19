@@ -131,7 +131,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
-    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(chn_customContextMenuRequested(QPoint)));
+    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomContextMenuRequested(QPoint)));
     tableLayout->addWidget(i, col++, label);
 
     // Channel name
@@ -312,26 +312,23 @@ void Channels::updateLine(int i)
   lock = false;
 }
 
-void Channels::chnPaste()
+void Channels::cmPaste()
 {
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-  if (mimeData->hasFormat(MIMETYPE_CHN)) {
-    QByteArray chnData = mimeData->data(MIMETYPE_CHN);
-    LimitData *chn = &model->limitData[selectedChannel];
-    memcpy(chn, chnData.constData(), sizeof(LimitData));
-    updateLine(selectedChannel);
+  QByteArray data;
+  if (hasClipboardData(&data)) {
+    memcpy(&model->limitData[selectedIndex], data.constData(), sizeof(LimitData));
+    updateLine(selectedIndex);
     emit modified();
   }
 }
 
-void Channels::chnDelete()
+void Channels::cmDelete()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
   int maxidx = chnCapability - 1;
-  for (int i=selectedChannel; i<maxidx; i++) {
+  for (int i=selectedIndex; i<maxidx; i++) {
     if (!model->limitData[i].isEmpty() || !model->limitData[i+1].isEmpty()) {
       LimitData *chn1 = &model->limitData[i];
       LimitData *chn2 = &model->limitData[i+1];
@@ -340,78 +337,97 @@ void Channels::chnDelete()
     }
   }
   model->limitData[maxidx].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedChannel, 0, -1);
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
   updateLine(maxidx);
   emit modified();
 }
 
-void Channels::chnCopy()
+void Channels::cmCopy()
 {
-  QByteArray chnData;
-  chnData.append((char*)&model->limitData[selectedChannel],sizeof(LimitData));
+  QByteArray data;
+  data.append((char*)&model->limitData[selectedIndex],sizeof(LimitData));
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData(MIMETYPE_CHN, chnData);
+  mimeData->setData(MIMETYPE_CHANNEL, data);
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
-void Channels::chnCut()
+void Channels::cmCut()
 {
-  chnCopy();
-  chnClear();
+  cmCopy();
+  cmClear();
 }
 
-void Channels::chn_customContextMenuRequested(QPoint pos)
+void Channels::onCustomContextMenuRequested(QPoint pos)
 {
   QLabel *label = (QLabel *)sender();
-  selectedChannel = label->property("index").toInt();
-
+  selectedIndex = label->property("index").toInt();
   QPoint globalPos = label->mapToGlobal(pos);
 
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-  bool hasData = mimeData->hasFormat(MIMETYPE_CHN);
-  bool moveUpAllowed = (selectedChannel > 0);
-  bool moveDownAllowed = (selectedChannel < (chnCapability - 1));
-  bool insertAllowed = (selectedChannel < (chnCapability - 1)) && (model->limitData[chnCapability - 1].isEmpty());
-
   QMenu contextMenu;
-  contextMenu.addAction(CompanionIcon("copy.png"), tr("Copy"),this,SLOT(chnCopy()));
-  contextMenu.addAction(CompanionIcon("cut.png"), tr("Cut"),this,SLOT(chnCut()));
-  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(chnPaste()))->setEnabled(hasData);
-  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear"),this,SLOT(chnClear()));
+  contextMenu.addAction(CompanionIcon("copy.png"), tr("Copy"),this,SLOT(cmCopy()));
+  contextMenu.addAction(CompanionIcon("cut.png"), tr("Cut"),this,SLOT(cmCut()));
+  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(cmPaste()))->setEnabled(hasClipboardData());
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear"),this,SLOT(cmClear()));
   contextMenu.addSeparator();
-  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(chnInsert()))->setEnabled(insertAllowed);
-  contextMenu.addAction(CompanionIcon("arrow-left.png"), tr("Delete"),this,SLOT(chnDelete()));
-  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(chnMoveUp()))->setEnabled(moveUpAllowed);
-  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(chnMoveDown()))->setEnabled(moveDownAllowed);
+  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(cmInsert()))->setEnabled(insertAllowed());
+  contextMenu.addAction(CompanionIcon("arrow-left.png"), tr("Delete"),this,SLOT(cmDelete()));
+  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(cmMoveUp()))->setEnabled(moveUpAllowed());
+  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(cmMoveDown()))->setEnabled(moveDownAllowed());
   contextMenu.addSeparator();
-  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(chnClearAll()));
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(cmClearAll()));
 
   contextMenu.exec(globalPos);
 }
 
-void Channels::chnMoveUp()
+bool Channels::hasClipboardData(QByteArray * data) const
 {
-  swapData(selectedChannel, selectedChannel - 1);
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  if (mimeData->hasFormat(MIMETYPE_CHANNEL)) {
+    if (data)
+      data->append(mimeData->data(MIMETYPE_CHANNEL));
+    return true;
+  }
+  return false;
 }
 
-void Channels::chnMoveDown()
+bool Channels::insertAllowed() const
 {
-  swapData(selectedChannel, selectedChannel + 1);
+  return ((selectedIndex < chnCapability - 1) && (model->limitData[chnCapability - 1].isEmpty()));
 }
 
-void Channels::chnClear()
+bool Channels::moveDownAllowed() const
+{
+  return selectedIndex < chnCapability - 1;
+}
+
+bool Channels::moveUpAllowed() const
+{
+  return selectedIndex > 0;
+}
+
+void Channels::cmMoveUp()
+{
+  swapData(selectedIndex, selectedIndex - 1);
+}
+
+void Channels::cmMoveDown()
+{
+  swapData(selectedIndex, selectedIndex + 1);
+}
+
+void Channels::cmClear()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  model->limitData[selectedChannel].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, selectedChannel);
-  updateLine(selectedChannel);
+  model->limitData[selectedIndex].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
+  updateLine(selectedIndex);
   emit modified();
 }
 
-void Channels::chnClearAll()
+void Channels::cmClearAll()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Channels. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
@@ -424,15 +440,15 @@ void Channels::chnClearAll()
   emit modified();
 }
 
-void Channels::chnInsert()
+void Channels::cmInsert()
 {
-  for (int i=(chnCapability - 1); i>selectedChannel; i--) {
+  for (int i=(chnCapability - 1); i>selectedIndex; i--) {
     if (!model->limitData[i].isEmpty() || !model->limitData[i-1].isEmpty()) {
       memcpy(&model->limitData[i], &model->limitData[i-1], sizeof(LimitData));
     }
   }
-  model->limitData[selectedChannel].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedChannel, 0, 1);
+  model->limitData[selectedIndex].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
   emit modified();
 }

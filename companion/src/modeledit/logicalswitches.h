@@ -28,7 +28,7 @@ class RawSwitchFilterItemModel;
 class RawSourceFilterItemModel;
 class TimerEdit;
 
-constexpr char MIMETYPE_LS[] = "application/x-companion-ls";
+constexpr char MIMETYPE_LOGICAL_SWITCH[] = "application/x-companion-logical-switch";
 
 class LogicalSwitchesPanel : public ModelPanel
 {
@@ -75,13 +75,17 @@ class LogicalSwitchesPanel : public ModelPanel
     QComboBox * cbSource2[CPN_MAX_LOGICAL_SWITCHES];
     RawSwitchFilterItemModel * rawSwitchItemModel;
     RawSourceFilterItemModel * rawSourceItemModel;
-    int selectedSwitch;
+    int selectedIndex;
     void populateFunctionCB(QComboBox *b);
     void populateAndSwitchCB(QComboBox *b);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);
     int lsCapability;
     int lsCapabilityExt;
     void swapData(int idx1, int idx2);
+    bool hasClipboardData(QByteArray * data = nullptr) const;
+    bool insertAllowed() const;
+    bool moveDownAllowed() const;
+    bool moveUpAllowed() const;
 };
 
 #endif // _LOGICALSWITCHES_H_

@@ -26,7 +26,7 @@
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  selectedSwitch(0)
+  selectedIndex(0)
 {
   Stopwatch s1("LogicalSwitchesPanel");
 
@@ -524,14 +524,11 @@ void LogicalSwitchesPanel::update()
 
 void LogicalSwitchesPanel::cmPaste()
 {
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-  if (mimeData->hasFormat(MIMETYPE_LS)) {
-    QByteArray lsData = mimeData->data(MIMETYPE_LS);
-    LogicalSwitchData *ls = &model->logicalSw[selectedSwitch];
-    memcpy(ls, lsData.constData(), sizeof(LogicalSwitchData));
+  QByteArray data;
+  if (hasClipboardData(&data)) {
+    memcpy(&model->logicalSw[selectedIndex], data.constData(), sizeof(LogicalSwitchData));
     updateDataModels();
-    updateLine(selectedSwitch);
+    updateLine(selectedIndex);
     emit modified();
   }
 }
@@ -539,23 +536,23 @@ void LogicalSwitchesPanel::cmPaste()
 void LogicalSwitchesPanel::cmDelete()
 {
   int maxidx = lsCapability - 1;
-  for (int i=selectedSwitch; i<maxidx; i++) {
+  for (int i=selectedIndex; i<maxidx; i++) {
     if (!model->logicalSw[i].isEmpty() || !model->logicalSw[i+1].isEmpty()) {
       memcpy(&model->logicalSw[i], &model->logicalSw[i+1], sizeof(LogicalSwitchData));
     }
   }
   model->logicalSw[maxidx].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedSwitch, 0, -1);
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
   update();
   emit modified();
 }
 
 void LogicalSwitchesPanel::cmCopy()
 {
-  QByteArray lsData;
-  lsData.append((char*)&model->logicalSw[selectedSwitch], sizeof(LogicalSwitchData));
+  QByteArray data;
+  data.append((char*)&model->logicalSw[selectedIndex], sizeof(LogicalSwitchData));
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData(MIMETYPE_LS, lsData);
+  mimeData->setData(MIMETYPE_LOGICAL_SWITCH, data);
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
@@ -569,47 +566,66 @@ void LogicalSwitchesPanel::cmCut()
 void LogicalSwitchesPanel::onCustomContextMenuRequested(QPoint pos)
 {
   QLabel *label = (QLabel *)sender();
-  selectedSwitch = label->property("index").toInt();
-
+  selectedIndex = label->property("index").toInt();
   QPoint globalPos = label->mapToGlobal(pos);
-
-  const QClipboard * clipboard = QApplication::clipboard();
-  const QMimeData * mimeData = clipboard->mimeData();
-  bool hasData = mimeData->hasFormat(MIMETYPE_LS);
-  bool moveUpAllowed = (selectedSwitch > 0);
-  bool moveDownAllowed = (selectedSwitch < (lsCapability - 1));
-  bool insertAllowed = model->logicalSw[lsCapability - 1].isEmpty();
 
   QMenu contextMenu;
   contextMenu.addAction(CompanionIcon("copy.png"), tr("Copy"),this,SLOT(cmCopy()));
   contextMenu.addAction(CompanionIcon("cut.png"), tr("Cut"),this,SLOT(cmCut()));
-  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(cmPaste()))->setEnabled(hasData);
+  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(cmPaste()))->setEnabled(hasClipboardData());
   contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear"),this,SLOT(cmClear()));
   contextMenu.addSeparator();
-  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(cmInsert()))->setEnabled(insertAllowed);
+  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(cmInsert()))->setEnabled(insertAllowed());
   contextMenu.addAction(CompanionIcon("arrow-left.png"), tr("Delete"),this,SLOT(cmDelete()));
-  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(cmMoveUp()))->setEnabled(moveUpAllowed);
-  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(cmMoveDown()))->setEnabled(moveDownAllowed);
+  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(cmMoveUp()))->setEnabled(moveUpAllowed());
+  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(cmMoveDown()))->setEnabled(moveDownAllowed());
   contextMenu.addSeparator();
   contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(cmClearAll()));
 
   contextMenu.exec(globalPos);
 }
 
+bool LogicalSwitchesPanel::hasClipboardData(QByteArray * data) const
+{
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  if (mimeData->hasFormat(MIMETYPE_LOGICAL_SWITCH)) {
+    if (data)
+      data->append(mimeData->data(MIMETYPE_LOGICAL_SWITCH));
+    return true;
+  }
+  return false;
+}
+
+bool LogicalSwitchesPanel::insertAllowed() const
+{
+  return ((selectedIndex < lsCapability - 1) && (model->logicalSw[lsCapability - 1].isEmpty()));
+}
+
+bool LogicalSwitchesPanel::moveDownAllowed() const
+{
+  return selectedIndex < lsCapability - 1;
+}
+
+bool LogicalSwitchesPanel::moveUpAllowed() const
+{
+  return selectedIndex > 0;
+}
+
 void LogicalSwitchesPanel::cmMoveUp()
 {
-  swapData(selectedSwitch, selectedSwitch - 1);
+  swapData(selectedIndex, selectedIndex - 1);
 }
 
 void LogicalSwitchesPanel::cmMoveDown()
 {
-  swapData(selectedSwitch, selectedSwitch + 1);
+  swapData(selectedIndex, selectedIndex + 1);
 }
 
 void LogicalSwitchesPanel::cmClear()
 {
-  model->logicalSw[selectedSwitch].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedSwitch);
+  model->logicalSw[selectedIndex].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   update();
   emit modified();
 }
@@ -626,13 +642,13 @@ void LogicalSwitchesPanel::cmClearAll()
 
 void LogicalSwitchesPanel::cmInsert()
 {
-  for (int i=(lsCapability - 1); i>selectedSwitch; i--) {
+  for (int i=(lsCapability - 1); i>selectedIndex; i--) {
     if (!model->logicalSw[i].isEmpty() || !model->logicalSw[i-1].isEmpty()) {
       memcpy(&model->logicalSw[i], &model->logicalSw[i-1], sizeof(LogicalSwitchData));
     }
   }
-  model->logicalSw[selectedSwitch].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedSwitch, 0, 1);
+  model->logicalSw[selectedIndex].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
   emit modified();
 }
