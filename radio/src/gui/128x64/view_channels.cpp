@@ -26,6 +26,23 @@ constexpr coord_t CHANNEL_GAUGE_OFFSET = CHANNEL_VALUE_OFFSET;
 constexpr coord_t CHANNEL_BAR_WIDTH = 70;
 constexpr coord_t CHANNEL_PROPERTIES_OFFSET = CHANNEL_GAUGE_OFFSET + CHANNEL_BAR_WIDTH + 2;
 
+#if defined(NAVIGATION_X7)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_PAGE)
+#define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
+#define EVT_KEY_PREVIOUS_PAGE          EVT_ROTARY_LEFT
+#elif defined(NAVIGATION_XLITE)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_UP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_DOWN)
+#define EVT_KEY_NEXT_PAGE              EVT_KEY_BREAK(KEY_RIGHT)
+#define EVT_KEY_PREVIOUS_PAGE          EVT_KEY_BREAK(KEY_LEFT)
+#else
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_UP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_DOWN)
+#define EVT_KEY_NEXT_PAGE              EVT_KEY_BREAK(KEY_RIGHT)
+#define EVT_KEY_PREVIOUS_PAGE          EVT_KEY_BREAK(KEY_LEFT)
+#endif
+
 void menuChannelsView(event_t event)
 {
   bool newLongNames = false;
@@ -37,28 +54,26 @@ void menuChannelsView(event_t event)
       memclear(&reusableBuffer.viewChannels, sizeof(reusableBuffer.viewChannels));
       break;
 
-    case EVT_KEY_BREAK(KEY_EXIT):
-      popMenu();
+    case EVT_KEY_FIRST(KEY_EXIT):
+    case EVT_KEY_NEXT_VIEW:
+    case EVT_KEY_PREVIOUS_VIEW:
+      g_eeGeneral.view = VIEW_INPUTS;
+      chainMenu(menuMainView);
+#if defined(NAVIGATION_X7)
+      killEvents(KEY_PAGE);
+#endif
       break;
 
-    case EVT_KEY_FIRST(KEY_RIGHT):
-    case EVT_ROTARY_RIGHT:
+    case EVT_KEY_NEXT_PAGE:
       g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) + ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
       break;
 
-    case EVT_KEY_FIRST(KEY_LEFT):
-    case EVT_ROTARY_LEFT:
+    case EVT_KEY_PREVIOUS_PAGE:
       g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) - ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
       reusableBuffer.viewChannels.mixersView = !reusableBuffer.viewChannels.mixersView;
-      break;
-
-    case EVT_KEY_FIRST(KEY_PAGE):
-      g_eeGeneral.view = VIEW_INPUTS;
-      killEvents(KEY_PAGE);
-      chainMenu(menuMainView);
       break;
   }
 

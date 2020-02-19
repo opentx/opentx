@@ -311,7 +311,7 @@ void drawSmallSwitch(coord_t x, coord_t y, int width, unsigned int index)
 void menuMainViewChannelsMonitor(event_t event)
 {
   switch(event) {
-    case EVT_KEY_BREAK(KEY_PAGE):
+    case EVT_KEY_NEXT_VIEW:
     case EVT_KEY_BREAK(KEY_EXIT):
       chainMenu(menuMainView);
       event = 0;
