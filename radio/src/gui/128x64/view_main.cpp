@@ -308,6 +308,19 @@ void drawSmallSwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
+void menuMainViewChannelsMonitor(event_t event)
+{
+  switch(event) {
+    case EVT_KEY_BREAK(KEY_PAGE):
+    case EVT_KEY_BREAK(KEY_EXIT):
+      chainMenu(menuMainView);
+      event = 0;
+      break;
+  }
+
+  return menuChannelsView(event);
+}
+
 void menuMainView(event_t event)
 {
   uint8_t view = g_eeGeneral.view;
@@ -443,36 +456,9 @@ void menuMainView(event_t event)
       int16_t val = channelOutputs[chan];
 
       switch (view_base) {
-        case VIEW_OUTPUTS_VALUES:
-          x0 = (i%4*9+3)*FW/2;
-          y0 = i/4*FH+40;
-#if defined(PPM_UNIT_US)
-          lcdDrawNumber(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, RIGHT);
-#elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), RIGHT|PREC1);
-#else
-          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, RIGHT); // G: Don't like the decimal part*
-#endif
-          break;
-
-        case VIEW_OUTPUTS_BARS:
-#define WBAR2 (50/2)
-          x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
-          y0 = 38+(i%4)*5;
-
-          const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
-          int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
-
-          if (len>WBAR2)
-            len = WBAR2; // prevent bars from going over the end - comment for debugging
-          lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
-          lcdDrawSolidVerticalLine(x0, y0-2,5 );
-          if (val > 0)
-            x0 += 1;
-          else
-            x0 -= len;
-          lcdDrawSolidHorizontalLine(x0, y0+1, len);
-          lcdDrawSolidHorizontalLine(x0, y0-1, len);
+        case VIEW_CHAN_MONITOR:
+          g_model.view = 0;
+          chainMenu(menuMainViewChannelsMonitor);
           break;
       }
     }

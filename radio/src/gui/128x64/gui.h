@@ -235,6 +235,8 @@ void pushMenuTextView(const char *filename);
 void pushModelNotes();
 void readModelNotes();
 
+void menuChannelsView(event_t event);
+
 #define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)
 
@@ -294,6 +296,7 @@ void drawProgressScreen(const char * title, const char * message, int num, int d
 void drawSleepBitmap();
 
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
 
 void drawAlertBox(const char * title, const char * text, const char * action);
 void showAlertBox(const char * title, const char * text, const char * action , uint8_t sound);
