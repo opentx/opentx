@@ -392,12 +392,12 @@ void Channels::chn_customContextMenuRequested(QPoint pos)
 
 void Channels::chnMoveUp()
 {
-  swapChnData(selectedChannel, selectedChannel - 1);
+  swapData(selectedChannel, selectedChannel - 1);
 }
 
 void Channels::chnMoveDown()
 {
-  swapChnData(selectedChannel, selectedChannel + 1);
+  swapData(selectedChannel, selectedChannel + 1);
 }
 
 void Channels::chnClear()
@@ -437,7 +437,7 @@ void Channels::chnInsert()
   emit modified();
 }
 
-void Channels::swapChnData(int idx1, int idx2)
+void Channels::swapData(int idx1, int idx2)
 {
   if ((idx1 != idx2) && (!model->limitData[idx1].isEmpty() || !model->limitData[idx2].isEmpty())) {
     LimitData chntmp = model->limitData[idx2];

@@ -80,7 +80,7 @@ class Channels : public ModelPanel
     void chn_customContextMenuRequested(QPoint pos);
 
   private:
-    void swapChnData(int idx1, int idx2);
+    void swapData(int idx1, int idx2);
     QLineEdit *name[CPN_MAX_CHNOUT];
     LimitsGroup *chnOffset[CPN_MAX_CHNOUT];
     LimitsGroup *chnMin[CPN_MAX_CHNOUT];

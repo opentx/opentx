@@ -61,7 +61,6 @@ class LogicalSwitchesPanel : public ModelPanel
     void cmInsert();
     void cmClear();
     void cmClearAll();
-    void swapLSData(int idx1, int idx2);
 
   private:
     QComboBox * cbFunction[CPN_MAX_LOGICAL_SWITCHES];
@@ -82,7 +81,7 @@ class LogicalSwitchesPanel : public ModelPanel
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);
     int lsCapability;
     int lsCapabilityExt;
-
+    void swapData(int idx1, int idx2);
 };
 
 #endif // _LOGICALSWITCHES_H_

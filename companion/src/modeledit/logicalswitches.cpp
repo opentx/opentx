@@ -598,12 +598,12 @@ void LogicalSwitchesPanel::onCustomContextMenuRequested(QPoint pos)
 
 void LogicalSwitchesPanel::cmMoveUp()
 {
-  swapLSData(selectedSwitch, selectedSwitch - 1);
+  swapData(selectedSwitch, selectedSwitch - 1);
 }
 
 void LogicalSwitchesPanel::cmMoveDown()
 {
-  swapLSData(selectedSwitch, selectedSwitch + 1);
+  swapData(selectedSwitch, selectedSwitch + 1);
 }
 
 void LogicalSwitchesPanel::cmClear()
@@ -637,7 +637,7 @@ void LogicalSwitchesPanel::cmInsert()
   emit modified();
 }
 
-void LogicalSwitchesPanel::swapLSData(int idx1, int idx2)
+void LogicalSwitchesPanel::swapData(int idx1, int idx2)
 {
   if ((idx1 != idx2) && (!model->logicalSw[idx1].isEmpty() || !model->logicalSw[idx2].isEmpty())) {
     LogicalSwitchData lstmp = model->logicalSw[idx2];
