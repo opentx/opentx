@@ -308,19 +308,6 @@ void drawSmallSwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
-void menuMainViewChannelsMonitor(event_t event)
-{
-  switch(event) {
-    case EVT_KEY_NEXT_VIEW:
-    case EVT_KEY_BREAK(KEY_EXIT):
-      chainMenu(menuMainView);
-      event = 0;
-      break;
-  }
-
-  return menuChannelsView(event);
-}
-
 void menuMainView(event_t event)
 {
   uint8_t view = g_eeGeneral.view;
@@ -341,18 +328,6 @@ void menuMainView(event_t event)
       }
     break;
     */
-
-    case EVT_KEY_NEXT_PAGE:
-    case EVT_KEY_PREVIOUS_PAGE:
-      if (view_base < VIEW_COUNT) {
-        if (view_base == VIEW_INPUTS)
-          g_eeGeneral.view ^= ALTERNATE_VIEW;
-        else
-          g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
-        storageDirty(EE_GENERAL);
-        AUDIO_KEY_PRESS();
-      }
-      break;
 
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
@@ -424,8 +399,7 @@ void menuMainView(event_t event)
   }
 
   if (view_base == VIEW_CHAN_MONITOR) {
-    g_model.view = 0;
-    chainMenu(menuMainViewChannelsMonitor);
+    chainMenu(menuChannelsView);
   }
   else {
     // Flight Mode Name

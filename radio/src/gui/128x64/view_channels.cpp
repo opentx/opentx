@@ -28,7 +28,7 @@ constexpr coord_t CHANNEL_PROPERTIES_OFFSET = CHANNEL_GAUGE_OFFSET + CHANNEL_BAR
 
 #if defined(NAVIGATION_X7)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
-#define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_PAGE)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
 #define EVT_KEY_PREVIOUS_PAGE          EVT_ROTARY_LEFT
 #elif defined(NAVIGATION_XLITE)
@@ -54,14 +54,15 @@ void menuChannelsView(event_t event)
       memclear(&reusableBuffer.viewChannels, sizeof(reusableBuffer.viewChannels));
       break;
 
+    case EVT_KEY_PREVIOUS_VIEW:
+      g_eeGeneral.view = VIEW_TIMER2;
+      chainMenu(menuMainView);
+      break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
     case EVT_KEY_NEXT_VIEW:
-    case EVT_KEY_PREVIOUS_VIEW:
       g_eeGeneral.view = VIEW_INPUTS;
       chainMenu(menuMainView);
-#if defined(NAVIGATION_X7)
-      killEvents(KEY_PAGE);
-#endif
       break;
 
     case EVT_KEY_NEXT_PAGE:
