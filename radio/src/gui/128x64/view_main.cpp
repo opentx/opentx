@@ -328,6 +328,11 @@ void menuMainView(event_t event)
       }
     break;
     */
+    case EVT_KEY_NEXT_PAGE:
+    case EVT_KEY_PREVIOUS_PAGE:
+      if (view_base == VIEW_INPUTS)
+        g_eeGeneral.view ^= ALTERNATE_VIEW;
+      break;
 
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);

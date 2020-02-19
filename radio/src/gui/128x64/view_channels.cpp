@@ -110,11 +110,11 @@ void menuChannelsView(event_t event)
 
     // Value
 #if defined(PPM_UNIT_US)
-    lcdDrawNumber(CHANNEL_VALUE_OFFSET, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE|RIGHT);
+    lcdDrawNumber(CHANNEL_VALUE_OFFSET, y + 1, PPM_CH_CENTER(ch) + val / 2, TINSIZE | RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
     lcdDrawNumber(CHANNEL_VALUE_OFFSET, y + 1, calcRESXto1000(val), PREC1 | TINSIZE | RIGHT);
 #else
-    lcdDrawNumber(CHANNEL_VALUE_OFFSET, y+1, calcRESXto1000(val)/10, TINSIZE|RIGHT);
+    lcdDrawNumber(CHANNEL_VALUE_OFFSET, y + 1, calcRESXto1000(val) / 10, TINSIZE | RIGHT);
 #endif
 
     // Gauge
