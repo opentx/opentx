@@ -98,14 +98,14 @@ Draw a straight line on LCD
 
 @param x2,y2 (positive numbers) end coordinate
 
-@param pattern TODO
+@param pattern SOLID or DOTTED
 
-@param flags TODO
+@param flags lcdflags
 
 @notice If the start or the end of the line is outside the LCD dimensions, then the
 whole line will not be drawn (starting from OpenTX 2.1.5)
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, flags introduced in 2.3.6
 */
 static int luaLcdDrawLine(lua_State *L)
 {
