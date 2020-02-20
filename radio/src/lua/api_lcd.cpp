@@ -71,6 +71,8 @@ Draw a single pixel at (x,y) position
 
 @param y (positive number) y position
 
+@param flags (unsigned number) drawing flags
+
 @notice Taranis has an LCD display width of 212 pixels and height of 64 pixels.
 Position (0,0) is at top left. Y axis is negative, top line is 0,
 bottom line is 63. Drawing on an existing black pixel produces white pixel (TODO check this!)
@@ -82,7 +84,8 @@ static int luaLcdDrawPoint(lua_State *L)
   if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
-  lcdDrawPoint(x, y);
+  LcdFlags att = luaL_optunsigned(L, 3, 0);
+  lcdDrawPoint(x, y, att);
   return 0;
 }
 
