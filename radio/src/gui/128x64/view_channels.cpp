@@ -56,13 +56,14 @@ void menuChannelsView(event_t event)
 
     case EVT_KEY_PREVIOUS_VIEW:
       g_eeGeneral.view = VIEW_TIMER2;
-      chainMenu(menuMainView);
+      popMenu();
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
     case EVT_KEY_NEXT_VIEW:
       g_eeGeneral.view = VIEW_INPUTS;
-      chainMenu(menuMainView);
+      killEvents(KEY_EXIT);
+      popMenu();
       break;
 
     case EVT_KEY_NEXT_PAGE:

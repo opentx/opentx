@@ -405,7 +405,7 @@ void menuMainView(event_t event)
   }
 
   if (view_base == VIEW_CHAN_MONITOR) {
-    chainMenu(menuChannelsView);
+    pushMenu(menuChannelsView);
   }
   else {
     // Flight Mode Name
