@@ -686,7 +686,7 @@ bool Curves::hasClipboardData(QByteArray * data) const
 
 bool Curves::insertAllowed() const
 {
-  return model->curves[maxCurves - 1].isEmpty();
+  return ((selectedIndex < maxCurves - 1) && (model->curves[maxCurves - 1].isEmpty()));
 }
 
 bool Curves::moveDownAllowed() const
