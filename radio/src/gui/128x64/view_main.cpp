@@ -332,6 +332,8 @@ void menuMainView(event_t event)
     case EVT_KEY_PREVIOUS_PAGE:
       if (view_base == VIEW_INPUTS)
         g_eeGeneral.view ^= ALTERNATE_VIEW;
+      else
+        g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
       break;
 
     case EVT_KEY_CONTEXT_MENU:
@@ -404,30 +406,65 @@ void menuMainView(event_t event)
       break;
   }
 
-  if (view_base == VIEW_CHAN_MONITOR) {
-    pushMenu(menuChannelsView);
-  }
-  else {
-    // Flight Mode Name
-    uint8_t mode = mixerCurrentFlightMode;
-    lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR | PHASE_FLAGS);
+  switch (view_base) {
+    case VIEW_CHAN_MONITOR:
+      pushMenu(menuChannelsView);
+      break;
 
-    // Model Name
-    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+    case VIEW_OUTPUTS_VALUES:
+      // scroll bar
+      lcdDrawHorizontalLine(38, 34, 54, DOTTED);
+      lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
+      for (uint8_t i=0; i<8; i++) {
+        uint8_t x0, y0;
+        uint8_t chan = 8 * (g_eeGeneral.view / ALTERNATE_VIEW) + i;
 
-    // Main Voltage (or alarm if any)
-    displayVoltageOrAlarm();
+        int16_t val = channelOutputs[chan];
+        x0 = (i % 4 * 9 + 3) * FW / 2;
+        y0 = i / 4 * FH + 40;
+#if defined(PPM_UNIT_US)
+        lcdDrawNumber(x0 + 4 * FW, y0, PPM_CH_CENTER(chan) + val / 2, RIGHT);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+        lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), RIGHT|PREC1);
+#else
+        lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, RIGHT); // G: Don't like the decimal part*
+#endif
+      }
+      break;
 
-    // Timer 1
-    drawTimerWithMode(125, 2 * FH, 0, RIGHT | DBLSIZE);
+    case VIEW_OUTPUTS_BARS:
+      // scroll bar
+      lcdDrawHorizontalLine(38, 34, 54, DOTTED);
+      lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 
-    // Trims sliders
-    displayTrims(mode);
+      for (uint8_t i=0; i<8; i++) {
+        uint8_t x0,y0;
+        uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
+        int16_t val = channelOutputs[chan];
+#define WBAR2 (50/2)
+        x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
+        y0 = 38+(i%4)*5;
 
-    // RSSI gauge / external antenna
-    drawExternalAntennaAndRSSI();
+        const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
+        int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
 
-    if (view_base == VIEW_INPUTS) {
+        if (len>WBAR2)
+          len = WBAR2; // prevent bars from going over the end - comment for debugging
+        lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
+        lcdDrawSolidVerticalLine(x0, y0-2,5 );
+        if (val > 0)
+          x0 += 1;
+        else
+          x0 -= len;
+        lcdDrawSolidHorizontalLine(x0, y0+1, len);
+        lcdDrawSolidHorizontalLine(x0, y0-1, len);
+      }
+
+    case VIEW_TIMER2:
+      drawTimerWithMode(87, 5 * FH, 1, RIGHT | DBLSIZE);
+      break;
+
+    case VIEW_INPUTS:
       if (view == VIEW_INPUTS) {
         // Sticks + Pots
         doMainScreenGraphics();
@@ -507,41 +544,56 @@ void menuMainView(event_t event)
           y += 12;
         }
       }
-    }
-    else {
-      // Timer2
-      drawTimerWithMode(87, 5 * FH, 1, RIGHT | DBLSIZE);
-    }
+      break;
+  }
 
-    // And ! in case of unexpected shutdown
-    if (isAsteriskDisplayed()) {
-      lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
-    }
+  // Flight Mode Name
+  uint8_t mode = mixerCurrentFlightMode;
+  lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR | PHASE_FLAGS);
+
+  // Model Name
+  putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+
+  // Main Voltage (or alarm if any)
+  displayVoltageOrAlarm();
+
+  // Timer 1
+  drawTimerWithMode(125, 2 * FH, 0, RIGHT | DBLSIZE);
+
+  // Trims sliders
+  displayTrims(mode);
+
+  // RSSI gauge / external antenna
+  drawExternalAntennaAndRSSI();
+
+  // And ! in case of unexpected shutdown
+  if (isAsteriskDisplayed()) {
+    lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
+  }
 
 #if defined(GVARS)
-    if (gvarDisplayTimer > 0) {
-      gvarDisplayTimer--;
-      warningText = STR_GLOBAL_VAR;
-      drawMessageBox(warningText);
-      lcdDrawSizedText(16, 5 * FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
-      lcdDrawText(16 + 6 * FW, 5 * FH, "[", BOLD);
-      drawGVarValue(lcdLastRightPos, 5 * FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)),
-                    LEFT | BOLD);
-      if (g_model.gvars[gvarLastChanged].unit) {
-        lcdDrawText(lcdLastRightPos, 5 * FH, "%", BOLD);
-      }
-      lcdDrawText(lcdLastRightPos, 5 * FH, "]", BOLD);
-      warningText = nullptr;
+  if (gvarDisplayTimer > 0) {
+    gvarDisplayTimer--;
+    warningText = STR_GLOBAL_VAR;
+    drawMessageBox(warningText);
+    lcdDrawSizedText(16, 5 * FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
+    lcdDrawText(16 + 6 * FW, 5 * FH, "[", BOLD);
+    drawGVarValue(lcdLastRightPos, 5 * FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)),
+                  LEFT | BOLD);
+    if (g_model.gvars[gvarLastChanged].unit) {
+      lcdDrawText(lcdLastRightPos, 5 * FH, "%", BOLD);
     }
+    lcdDrawText(lcdLastRightPos, 5 * FH, "]", BOLD);
+    warningText = nullptr;
+  }
 #endif
 
 #if defined(DSM2)
-    if (moduleState[0].mode == MODULE_MODE_BIND) {
-      // Issue 98
-      lcdDrawText(15 * FW, 0, "BIND", 0);
-    }
-#endif
+  if (moduleState[0].mode == MODULE_MODE_BIND) {
+    // Issue 98
+    lcdDrawText(15 * FW, 0, "BIND", 0);
   }
+#endif
 }
 
 #undef EVT_KEY_CONTEXT_MENU
