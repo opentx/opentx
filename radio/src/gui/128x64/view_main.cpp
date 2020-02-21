@@ -369,7 +369,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_GENERAL_MENU:
-      pushMenu(menuRadioSetup);
+      pushMenu(menuRadioTools);
       killEvents(event);
       break;
 #endif
@@ -397,7 +397,7 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_TELEMETRY:
-      chainMenu(menuViewTelemetryFrsky);
+      chainMenu(menuViewTelemetry);
       killEvents(event);
       break;
 

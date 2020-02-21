@@ -16,11 +16,16 @@
 ---- #                                                                       #
 ---- #########################################################################
 
+-- Horus Widget to display the levels of lipo battery with per cell indication
+-- 3djc & Offer Shmuely
+-- Date: 2020
+-- ver: 0.4
+
 local _options = {
-  { "Sensor",     SOURCE, 0     },
+  { "Sensor",     SOURCE, 0     },  -- default to 'Cels'
   { "Color",      COLOR,  WHITE },
   { "Shadow",     BOOL,   0     },
-  { "LowestCell", BOOL,   1     }
+  { "LowestCell", BOOL,   1     }   -- 0=main voltage display shows all-cell-voltage, 1=main voltage display shows lowest-cell
 }
 
 -- This function is run once at the creation of the widget
@@ -29,12 +34,12 @@ local function create(zone, options)
     zone = zone,
     options = options,
     counter = 0,
-
     shadowed = 0,
+
     no_telem_blink = 0,
     isDataAvailable = 0,
     cellDataLive = {0,0,0,0,0,0},
-    cellDataHistoryLowest = {0,0,0,0,0,0},
+    cellDataHistoryLowest = {5,5,5,5,5,5},
     cellDataHistoryCellLowest = 5,
     cellMax = 0,
     cellMin = 0,
@@ -112,51 +117,47 @@ local function calculateBatteryData(wgt)
     return
   end
 
-
   -- this is necessary for simu where cell-count can change
   if #wgt.cellDataHistoryLowest ~= #newCellData then
     wgt.cellDataHistoryLowest = {}
     for k, v in pairs(newCellData) do
-      wgt.cellDataHistoryLowest[k] = v
-    end
-  end
-  -- stores the lowest cell values in historical table
-  for k, v in pairs(newCellData) do
-    if v < wgt.cellDataHistoryLowest[k] then
-      wgt.cellDataHistoryLowest[k] = v
+      wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
     end
   end
 
-  --- calc highest of all cels
   local cellMax = 0
+  local cellMin = 5
+  local cellSum = 0
   for k, v in pairs(newCellData) do
+    -- stores the lowest cell values in historical table
+    if v > 1 and v < wgt.cellDataHistoryLowest[k] then -- min 1v to consider a valid reading
+      wgt.cellDataHistoryLowest[k] = v
+
+      --- calc history lowest of all cells
+      if v < wgt.cellDataHistoryCellLowest then
+        wgt.cellDataHistoryCellLowest = v
+      end
+
+    end
+
+    -- calc highest of all cells
     if v > cellMax then
       cellMax = v
     end
-  end
-  wgt.cellMax = cellMax
 
-  --- calc lowest of all cels
-  local cellMin = 5
-  for k, v in pairs(newCellData) do
-    if v < cellMin and v > 1 then -- >1 to ignore invalid values
+    --- calc lowest of all cells
+    if v < cellMin and v > 1 then -- min 1v to consider a valid reading
       cellMin = v
     end
-  end
-  wgt.cellMin = cellMin
-
-  --- calc history lowest of all cells
-  if cellMin < wgt.cellDataHistoryCellLowest and cellMin > 1 then -- >1 to ignore invalid values
-    wgt.cellDataHistoryCellLowest = cellMin
-  end
-
-  wgt.cellCount = #newCellData
-
-  --- sum of all cells
-  local cellSum = 0
-  for k, v in pairs(newCellData) do
+    --- sum of all cells
     cellSum = cellSum + v
+
+
   end
+
+  wgt.cellMin = cellMin
+  wgt.cellMax = cellMax
+  wgt.cellCount = #newCellData
   wgt.cellSum = cellSum
 
   --- average of all cells
@@ -328,7 +329,7 @@ local function refreshZoneLarge(wgt)
 
   lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y, wgt.cellPercent .. "%", RIGHT + DBLSIZE + CUSTOM_COLOR + wgt.shadowed)
   lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + 30, string.format("%2.1fV", wgt.mainValue), RIGHT + DBLSIZE + CUSTOM_COLOR + wgt.shadowed)
-  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + 70, string.format("%2.1fV %2.1fS", wgt.secondaryValue, wgt.cellCount), RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.shadowed)
+  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + 70, string.format("%2.1fV %dS", wgt.secondaryValue, wgt.cellCount), RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.shadowed)
   -- fill batt
   lcd.setColor(CUSTOM_COLOR, getPercentColor(wgt.cellPercent))
   lcd.drawFilledRectangle(wgt.zone.x + myBatt.x, wgt.zone.y + myBatt.y + myBatt.h + myBatt.cath_h - math.floor(wgt.cellPercent / 100 * myBatt.h), myBatt.w, math.floor(wgt.cellPercent / 100 * myBatt.h), CUSTOM_COLOR)
@@ -372,7 +373,7 @@ local function refreshZoneXLarge(wgt)
   lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + myBatt.y, wgt.cellPercent .. "%", RIGHT + DBLSIZE + CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
 
   lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + myBatt.y + 30, string.format("%2.1fV", wgt.mainValue), RIGHT + DBLSIZE + CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
-  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + myBatt.y + 105, string.format("%2.1fV %2.1fS", wgt.secondaryValue, wgt.cellCount), RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
+  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y + myBatt.y + 105, string.format("%2.1fV %dS", wgt.secondaryValue, wgt.cellCount), RIGHT + SMLSIZE + CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
 
   -- draw cells
   local pos = { { x = 111, y = 38 }, { x = 164, y = 38 }, { x = 217, y = 38 }, { x = 111, y = 57 }, { x = 164, y = 57 }, { x = 217, y = 57 } }

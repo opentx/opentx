@@ -55,7 +55,7 @@ void pushMenu(MenuHandlerFunc newMenu)
   killEvents(KEY_ENTER);
 
   if (menuLevel == 0) {
-    if (newMenu == menuRadioSetup)
+    if (newMenu == menuRadioTools)
       menuVerticalPositions[0] = 1;
     if (newMenu == menuModelSetup)
       menuVerticalPositions[0] = 0;

@@ -962,6 +962,7 @@
 #define TR_PTS                         " b."
 #define TR_SMOOTH                      "Hladká"
 #define TR_COPY_STICKS_TO_OFS          TR("Páky do subtrimu", "Kopie pák do subtrimu")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max/center to all outputs")
 #define TR_COPY_TRIMS_TO_OFS           TR("Trimy do subtrimu", "Kopíe trimů do subtrimu")
 #define TR_INCDEC                      "Zvěšit/Zmenšit"
 #define TR_GLOBALVAR                   "Glob. proměnná"
@@ -1199,6 +1200,7 @@
 #define ZSTR_CURR                      "Curr"
 #define ZSTR_CAPACITY                  "Capa"
 #define ZSTR_VFAS                      "VFAS"
+#define ZSTR_BATT_PERCENT              "Bat%"
 #define ZSTR_ASPD                      "ASpd"
 #define ZSTR_GSPD                      "GSpd"
 #define ZSTR_HDG                       "Hdg"

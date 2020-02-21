@@ -222,7 +222,7 @@ TEST(Conversions, ConversionX7From22)
 }
 #endif
 
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(RADIO_FAMILY_T16)
 TEST(Conversions, ConversionX10From22)
 {
   simuFatfsSetPaths(TESTS_BUILD_PATH "/model_22_x10/", TESTS_BUILD_PATH "/model_22_x10/");

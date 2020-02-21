@@ -145,7 +145,7 @@ TreeModel::TreeModel(RadioData * radioData, QObject * parent):
   if (!hasCategories)
     labels << tr("Index");
   labels << tr("Name");
-  if (!(IS_HORUS(board) || IS_SKY9X(board))) {
+  if (!(IS_FAMILY_HORUS_OR_T16(board) || IS_SKY9X(board))) {
     labels << tr("Size");
   }
   labels << tr("RX #");
@@ -651,7 +651,7 @@ void TreeModel::refresh()
   EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
   Board::Type board = eepromInterface->getBoard();
   TreeItem * defaultCategoryItem = NULL;
-  bool hasEepromSizeData = (IS_HORUS(board) ? false : true);
+  bool hasEepromSizeData = (IS_FAMILY_HORUS_OR_T16(board) ? false : true);
 
   if (hasEepromSizeData) {
     availableEEpromSize = Boards::getEEpromSize(board) - 64; // let's consider fat

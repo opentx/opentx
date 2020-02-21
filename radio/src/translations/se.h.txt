@@ -982,6 +982,7 @@
 #define TR_PTS                 "pkt"
 #define TR_SMOOTH              "Mjuk"
 #define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Spara spakar som subtrim")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max/center to all outputs")
 #define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Spara trimmar som subtrim")
 #define TR_INCDEC              "Inkr/Dekrement"
 #define TR_GLOBALVAR           "Globala Var"
@@ -1220,6 +1221,7 @@
 #define ZSTR_CURR              "Curr"
 #define ZSTR_CAPACITY          "Capa"
 #define ZSTR_VFAS              "VFAS"
+#define ZSTR_BATT_PERCENT      "Bat%"
 #define ZSTR_ASPD              "ASpd"
 #define ZSTR_GSPD              "GSpd"
 #define ZSTR_HDG               "Hdg"

@@ -191,6 +191,8 @@ enum TrainerMode {
 #if defined(PCBTARANIS)
   TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
   TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+#endif
+#if defined(PCBTARANIS) || defined(AUX_SERIAL)
   TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
 #endif
   TRAINER_MODE_MASTER_BLUETOOTH,
@@ -205,7 +207,7 @@ enum TrainerMode {
   };
 #endif
 
-#if defined(RADIO_T16) || defined(ALLOW_TRAINER_MULTI)
+#if defined(RADIO_FAMILY_T16) || defined(ALLOW_TRAINER_MULTI)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
 #elif defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH

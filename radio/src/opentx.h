@@ -546,7 +546,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
-#elif defined(RADIO_T16)
+#elif defined(RADIO_FAMILY_T16)
   #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
@@ -867,6 +867,7 @@ void instantTrim();
 void evalTrims();
 void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
+void copyMinMaxToOutputs(uint8_t ch);
 void moveTrimsToOffsets();
 
 typedef uint16_t ACTIVE_PHASES_TYPE;
@@ -1366,9 +1367,7 @@ extern uint16_t s_anaFilt[NUM_ANALOGS];
 #if defined(JITTER_MEASURE)
 extern JitterMeter<uint16_t> rawJitter[NUM_ANALOGS];
 extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
-#if defined(PCBHORUS)
-  #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuStatsAnalogs)
-#elif defined(PCBTARANIS)
+#if defined(PCBHORUS) || defined(PCBTARANIS)
   #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuRadioDiagAnalogs)
 #elif defined(CLI)
   #define JITTER_MEASURE_ACTIVE()   (1)

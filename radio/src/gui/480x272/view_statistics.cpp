@@ -127,7 +127,7 @@ bool menuStatsDebug(event_t event)
   lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Duration]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
   lcdDrawText(lcdNextPos+20, y+1, "[Interval]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
   y += FH;
 
   // lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
@@ -187,45 +187,6 @@ bool menuStatsDebug(event_t event)
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
 }
-
-bool menuStatsAnalogs(event_t event)
-{
-  SIMPLE_MENU("Analogs", STATS_ICONS, menuTabStats, e_StatsAnalogs, 1);
-
-  for (uint8_t i=0; i<NUM_ANALOGS; i++) {
-    coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
-    coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
-    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, NULL, ":");
-    lcdDrawHexNumber(x+40, y, anaIn(i));
-#if defined(JITTER_MEASURE)
-    lcdDrawNumber(x+100, y, rawJitter[i].get());
-    lcdDrawNumber(x+140, y, avgJitter[i].get());
-    lcdDrawNumber(x+180, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*250/256, PREC1);
-#else
-    if (i < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256);
-#if NUM_MOUSE_ANALOGS > 0
-    else if (i >= MOUSE1)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CALIBRATED_MOUSE1+i-MOUSE1]*25/256);
-#endif
-#endif
-  }
-
-  // RAS
-  if ((isModuleXJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (isModulePXX1(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+7*FH, "RAS");
-    lcdDrawNumber(MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.swrInternal.value());
-    lcdDrawText(MENUS_MARGIN_LEFT + LCD_W/2, MENU_CONTENT_TOP+7*FH, "XJTVER");
-    lcdDrawNumber(LCD_W/2 + MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.xjtVersion);
-  }
-
-#if (NUM_PWMSTICKS > 0) && !defined(SIMU)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+8*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
-#endif
-
-  return true;
-}
-
 
 #if defined(DEBUG_TRACE_BUFFER)
 #define STATS_TRACES_INDEX_POS         MENUS_MARGIN_LEFT

@@ -337,9 +337,11 @@ bool menuRadioSdManager(event_t _event)
           }
 #endif
 
+#if defined(LUA)
           if (isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
+#endif
 
           if (isExtensionMatching(ext, TEXT_EXT) || isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);

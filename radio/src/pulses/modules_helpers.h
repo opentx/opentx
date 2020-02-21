@@ -421,6 +421,11 @@ inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
   return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
 }
 
+inline bool isModuleRangeAvailable(uint8_t moduleIdx)
+{
+  return isModuleXJTD16(moduleIdx) || isModuleXJTLR12(moduleIdx);
+}
+
 constexpr uint8_t MAX_RXNUM = 63;
 
 inline uint8_t getMaxRxNum(uint8_t idx)

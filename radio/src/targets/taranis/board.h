@@ -786,6 +786,8 @@ void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
 void auxSerialSbusInit();
 void auxSerialStop();
+#define AUX_SERIAL_POWER_ON()
+#define AUX_SERIAL__POWER_OFF()
 #endif
 
 // BT driver

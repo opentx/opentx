@@ -28,7 +28,7 @@
 
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
-#elif defined(RADIO_T16)
+#elif defined(RADIO_FAMILY_T16)
   #include "lua/lua_exports_t16.inc"
 #elif defined(PCBX10)
   #include "lua/lua_exports_x10.inc"
@@ -456,6 +456,10 @@ static int luaSportTelemetryPush(lua_State * L)
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
     return 1;
   }
+  else if (lua_gettop(L) > int(sizeof(SportTelemetryPacket))) {
+    lua_pushboolean(L, false);
+    return 1;
+  }
 
   uint16_t dataId = luaL_checkunsigned(L, 3);
 
@@ -652,6 +656,10 @@ static int luaCrossfireTelemetryPush(lua_State * L)
 
   if (lua_gettop(L) == 0) {
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+  }
+  else if (lua_gettop(L) > TELEMETRY_OUTPUT_BUFFER_SIZE ) {
+    lua_pushboolean(L, false);
+    return 1;
   }
   else if (outputTelemetryBuffer.isAvailable()) {
     uint8_t command = luaL_checkunsigned(L, 1);

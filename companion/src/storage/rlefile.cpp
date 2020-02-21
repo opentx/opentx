@@ -239,7 +239,7 @@ void RleFile::EeFsSetDat(unsigned int blk, unsigned int ofs, const uint8_t *buf,
 
 unsigned int RleFile::EeFsGetFree()
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
 
   unsigned int ret = 0;
@@ -261,7 +261,7 @@ unsigned int RleFile::EeFsGetFree()
  */
 void RleFile::EeFsFree(unsigned int blk)
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return;
 
   unsigned int i = blk;
@@ -281,7 +281,7 @@ void RleFile::EeFsFree(unsigned int blk)
  */
 unsigned int RleFile::EeFsAlloc()
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
   unsigned int ret = (IS_ARM(board) ? eeFsArm->freeList : eeFs->freeList);
   if (ret) {
@@ -296,7 +296,7 @@ unsigned int RleFile::EeFsAlloc()
 
 unsigned int RleFile::size(unsigned int id)
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
   else
     return IS_ARM(board) ? eeFsArm->files[id].size : eeFs->files[id].size;
@@ -304,7 +304,7 @@ unsigned int RleFile::size(unsigned int id)
 
 unsigned int RleFile::openRd(unsigned int i_fileId)
 {
-  if (IS_HORUS(board)) {
+  if (IS_FAMILY_HORUS_OR_T16(board)) {
     return 1;
   }
   else if (IS_SKY9X(board)) {
@@ -341,7 +341,7 @@ unsigned int RleFile::openRd(unsigned int i_fileId)
 
 unsigned int RleFile::read(uint8_t *buf, unsigned int i_len)
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
 
   unsigned int len = IS_ARM(board) ? eeFsArm->files[m_fileId].size : eeFs->files[m_fileId].size;
@@ -364,7 +364,7 @@ unsigned int RleFile::read(uint8_t *buf, unsigned int i_len)
 // G: Read runlength (RLE) compressed bytes into buf.
 unsigned int RleFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
 
   memset(buf, 0, i_len);
@@ -550,7 +550,7 @@ void RleFile::closeTrunc()
 
 unsigned int RleFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
 
   create(i_fileId, typ);
@@ -599,7 +599,7 @@ unsigned int RleFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const u
  */
 unsigned int RleFile::writeRlc2(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
 {
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
 
   if (IS_SKY9X(board)) {

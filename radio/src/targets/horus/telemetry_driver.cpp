@@ -156,7 +156,6 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   rxBitCount = 0;
 
   // configure bit sample timer
-  RCC->APB2ENR |= RCC_APB2ENR_TIM11EN;
   TELEMETRY_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1; // 0.5uS
   TELEMETRY_TIMER->CCER = 0;
   TELEMETRY_TIMER->CCMR1 = 0;

@@ -983,6 +983,7 @@
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smussa"
 #define TR_COPY_STICKS_TO_OFS  TR(INDENT "Cp. stick->subtrim", INDENT "Copia Sticks su Subtrim")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max/center to all outputs")
 #define TR_COPY_TRIMS_TO_OFS   TR(INDENT "Cp. trim->subtrim", INDENT "Copia Trims su Subtrim")
 #define TR_INCDEC              "Inc/Decrementa"
 #define TR_GLOBALVAR           "Var Globale"
@@ -1221,6 +1222,7 @@
 #define ZSTR_CURR              "Curr"
 #define ZSTR_CAPACITY          "Capa"
 #define ZSTR_VFAS              "VFAS"
+#define ZSTR_BATT_PERCENT      "Bat%"
 #define ZSTR_ASPD              "ASpd"
 #define ZSTR_GSPD              "GSpd"
 #define ZSTR_HDG               "Hdg"
