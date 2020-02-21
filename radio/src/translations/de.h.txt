@@ -961,15 +961,15 @@
 #define TR_PRESET                      "Preset"
 #define TR_MIRROR                      "Spiegeln"
 #define TR_CLEAR                       "Löschen"
-#define TR_RESET                       TR("Servowert reset","Servowerte rücksetzen")
+#define TR_RESET                       TR("Servowert reset","Servowerte zurücksetzen")
 #define TR_RESET_SUBMENU               TR("Reset Werte   ==>", "Reset=>Timer Flug Telem")
 #define TR_COUNT                       "Punkte"
 #define TR_PT                          "Pt"
 #define TR_PTS                         "Pts"
 #define TR_SMOOTH                      "Runden"
-#define TR_COPY_STICKS_TO_OFS          TR("Copy Stk ->Subtrim", "Kopie Stick to Servo-Mitte")
-#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max/center to all outputs")
-#define TR_COPY_TRIMS_TO_OFS           TR("Copy Trim->Subtrim", "Kopie Trimm to Servo-Mitte")  // "Trim to Subtrim"
+#define TR_COPY_STICKS_TO_OFS          TR("Copy Stk ->Subtrim",  "Kopiere Knüppelposition auf Subtrim")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Kopiere Limits & Mitte auf alle Kanäle")
+#define TR_COPY_TRIMS_TO_OFS           TR("Copy Trim->Subtrim",  "Kopiere Trimmposition auf Subtrim")  // "Trim to Subtrim"
 #define TR_INCDEC                      "Inc/Decrement"
 #define TR_GLOBALVAR                   "Global Var"
 #define TR_MIXSOURCE                   "Mixer Quelle"
