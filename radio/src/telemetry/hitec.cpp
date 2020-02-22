@@ -150,8 +150,8 @@ enum
   HITEC_ID_AIR_SPEED = 0x1A02,    // Air speed
   HITEC_ID_VARIO = 0x1B00,    // Vario
   HITEC_ID_ALT = 0x1B02,    // Vario
-  TX_RSSI_ID = 0xFF00,    // Pseudo id outside 1 byte range of Hitec sensors
-  TX_LQI_ID = 0xFF01,    // Pseudo id outside 1 byte range of Hitec sensors
+  HITEC_ID_TX_RSSI = 0xFF00,    // Pseudo id outside 1 byte range of Hitec sensors
+  HITEC_ID_TX_LQI = 0xFF01,    // Pseudo id outside 1 byte range of Hitec sensors
 };
 
 const HitecSensor hitecSensors[] = {
@@ -193,8 +193,8 @@ const HitecSensor hitecSensors[] = {
   {HITEC_ID_VARIO,        ZSTR_VSPD,       UNIT_METERS_PER_SECOND, 1},  // Vario
   {HITEC_ID_ALT,          ZSTR_ALT,        UNIT_METERS,            1},  // Altitude
 
-  {TX_RSSI_ID,            ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors
-  {TX_LQI_ID,             ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors// Pseudo sensor for TLQI
+  {HITEC_ID_TX_RSSI,      ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors
+  {HITEC_ID_TX_LQI,       ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors// Pseudo sensor for TLQI
   {0x00,                  NULL,            UNIT_RAW,               0},  // sentinel
 };
 
@@ -212,12 +212,12 @@ void processHitecPacket(const uint8_t * packet)
   static uint16_t rssi = 0, lqi = 0;
   // Set TX RSSI Value, reverse MULTIs scaling
   rssi = ((packet[0] * 10) + (rssi * 90)) / 100; // quick filtering
-  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, TX_RSSI_ID, 0, 0, rssi >> 1, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_TX_RSSI, 0, 0, rssi >> 1, UNIT_RAW, 0);
   telemetryData.rssi.set(rssi >> 1);
   if (packet[0] > 0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
   // Set TX LQI  Value, reverse MULTIs scaling
   lqi = ((packet[1] * 10) + (lqi * 90)) / 100; // quick filtering
-  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, TX_LQI_ID, 0, 0, lqi, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_HITEC, HITEC_ID_TX_LQI, 0, 0, lqi, UNIT_RAW, 0);
 
   const HitecSensor * sensor;
   int32_t value, deg, min, sec, alt, amp;
@@ -401,7 +401,7 @@ void processHitecTelemetryData(uint8_t data, uint8_t * rxBuffer, uint8_t &rxBuff
     for (int i=0; i<5; i++) {
       debugPrintf("%02X ", rxBuffer[4+i]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     processHitecPacket(rxBuffer + 1);
     rxBufferCount = 0;

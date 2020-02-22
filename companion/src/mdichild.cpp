@@ -534,7 +534,7 @@ void MdiChild::initModelsList()
   connect(modelsListModel, &QAbstractItemModel::dataChanged, this, &MdiChild::onDataChanged);
 
   ui->modelsList->setModel(modelsListModel);
-  if (IS_HORUS(board)) {
+  if (IS_FAMILY_HORUS_OR_T16(board)) {
     ui->modelsList->setIndentation(20);
     // ui->modelsList->resetIndentation(); // introduced in next Qt versions ...
   }
@@ -1531,12 +1531,12 @@ int MdiChild::askQuestion(const QString & msg, QMessageBox::StandardButtons butt
 void MdiChild::writeEeprom()  // write to Tx
 {
   Board::Type board = getCurrentBoard();
-  if (IS_HORUS(board)) {
+  if (IS_FAMILY_HORUS_OR_T16(board)) {
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
       qDebug() << "MdiChild::writeEeprom(): Horus radio not found";
-      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find Horus radio SD card!"));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find radio SD card!"));
       return;
     }
     if (saveFile(radioPath, false)) {

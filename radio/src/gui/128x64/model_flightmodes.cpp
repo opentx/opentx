@@ -113,7 +113,11 @@ void menuModelFlightModeOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_TRIMS);
         for (uint8_t t = 0; t < NUM_STICKS; t++) {
           drawTrimMode(MIXES_2ND_COLUMN + (t*2*FW), y, s_currIdx, t, menuHorizontalPosition == t ? attr : 0);
+#if defined(NAVIGATION_9X)
+          if (s_editMode > 0 && attr && menuHorizontalPosition == t) {
+#else
           if (s_editMode >= 0 && attr && menuHorizontalPosition == t) {
+#endif
             trim_t & v = fm->trim[t];
             v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);
           }

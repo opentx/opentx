@@ -304,8 +304,8 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0 "
 
 #if defined(PCBHORUS)
-  #define LEN_VKEYS            "\006"
-  #define TR_VKEYS             "Menu\0 ""Exit\0 ""Enter\0""Upp\0  ""Ned\0  ""Höger\0""Vänst"
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "PGUP\0""PGDN\0""ENTER""MDL\0 ""RTN\0 ""TELE\0""SYS\0 "
 #elif defined(RADIO_T12)
   #define LEN_VKEYS            "\005"
   #define TR_VKEYS             "Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
@@ -663,7 +663,8 @@
 #define TR_MODULE_NO_TELEMETRY         TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Binding"
-#define TR_MODULE_UPGRADE              TR("Upg. needed", "Module upgrade required")
+#define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
+#define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"
@@ -751,8 +752,8 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
+#define TR_TEST_WARNING        TR("TESTING", "TEST BUILD")
+#define TR_TEST_NOTSAFE        "Use for tests only"
 #define TR_SDCARDVERSIONWARN   "SD Card Check"
 #define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
 #define TR_WARN_RTC_BATTERY_LOW        "RTC Battery low"
@@ -983,6 +984,7 @@
 #define TR_PTS                 "pkt"
 #define TR_SMOOTH              "Mjuk"
 #define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Spara spakar som subtrim")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Cpy min/max to all",  "Copy min/max/center to all outputs")
 #define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Spara trimmar som subtrim")
 #define TR_INCDEC              "Inkr/Dekrement"
 #define TR_GLOBALVAR           "Globala Var"
@@ -1221,6 +1223,7 @@
 #define ZSTR_CURR              "Curr"
 #define ZSTR_CAPACITY          "Capa"
 #define ZSTR_VFAS              "VFAS"
+#define ZSTR_BATT_PERCENT      "Bat%"
 #define ZSTR_ASPD              "ASpd"
 #define ZSTR_GSPD              "GSpd"
 #define ZSTR_HDG               "Hdg"

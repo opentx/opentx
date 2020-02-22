@@ -42,34 +42,36 @@ void onUSBConnectMenu(const char *result)
 void handleUsbConnection()
 {
 #if defined(STM32) && !defined(SIMU)
-  if (!usbStarted() && usbPlugged() && !(getSelectedUsbMode() == USB_UNSELECTED_MODE)) {
-    usbStart();
-    if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
-      opentxClose(false);
-      usbPluggedIn();
-    }
-  }
-  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
-      POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
-      POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
+  if (!usbStarted() && usbPlugged()) {
+    if (getSelectedUsbMode() == USB_UNSELECTED_MODE) {
+      if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
+        POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
+        POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
 #if defined(DEBUG)
-      POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
+        POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
 #endif
-      POPUP_MENU_START(onUSBConnectMenu);
+        POPUP_MENU_START(onUSBConnectMenu);
+      }
+      else {
+        setSelectedUsbMode(g_eeGeneral.USBMode);
+      }
     }
-    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE) {
-      setSelectedUsbMode(g_eeGeneral.USBMode);
+    else {
+      if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
+        opentxClose(false);
+        usbPluggedIn();
+      }
+      usbStart();
     }
   }
+
   if (usbStarted() && !usbPlugged()) {
     usbStop();
     if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
       opentxResume();
+      putEvent(EVT_ENTRY);
     }
-#if !defined(BOOT)
     setSelectedUsbMode(USB_UNSELECTED_MODE);
-#endif
   }
 #endif // defined(STM32) && !defined(SIMU)
 }
@@ -157,19 +159,18 @@ void checkSpeakerVolume()
 #if defined(EEPROM)
 void checkEeprom()
 {
-  if (!usbPlugged()) {
-    if (eepromIsWriting())
-      eepromWriteProcess();
-    else if (TIME_TO_WRITE())
-      storageCheck(false);
-  }
+  if (eepromIsWriting())
+    eepromWriteProcess();
+  else if (TIME_TO_WRITE())
+    storageCheck(false);
 }
 #else
 void checkEeprom()
 {
 #if defined(RTC_BACKUP_RAM) && !defined(SIMU)
   if (TIME_TO_BACKUP_RAM()) {
-    rambackupWrite();
+    if (!globalData.unexpectedShutdown)
+      rambackupWrite();
     rambackupDirtyMsk = 0;
   }
 #endif
@@ -381,21 +382,6 @@ void handleGui(event_t event) {
   }
   else if (luaTask(event, RUN_TELEM_FG_SCRIPT, true)) {
     // the telemetry screen is active
-    // prevent events from keys MENU, UP, DOWN, ENT(short) and EXIT(short) from reaching the normal menus,
-    // so Lua telemetry script can fully use them
-    if (event) {
-      uint8_t key = EVT_KEY_MASK(event);
-#if defined(PCBXLITE)
-      // SHIFT + LEFT/RIGHT LONG used to change telemetry screen on XLITE
-      if ((!IS_KEY_LONG(event) && key == KEY_RIGHT && IS_SHIFT_PRESSED()) || (!IS_KEY_LONG(event) && key == KEY_LEFT  && IS_SHIFT_PRESSED()) || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {
-#else
-      // no need to filter out MENU and ENT(short), because they are not used by menuViewTelemetryFrsky()
-      if (key == KEY_PLUS || key == KEY_MINUS || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {
-#endif
-        // TRACE("Telemetry script event 0x%02x killed", event);
-        event = 0;
-      }
-    }
     menuHandlers[menuLevel](event);
   }
   else
@@ -469,9 +455,9 @@ void guiMain(event_t evt)
 
   lcdRefresh();
 
-  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
+  if (mainRequestFlags & (1u << REQUEST_SCREENSHOT)) {
     writeScreenshot();
-    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
+    mainRequestFlags &= ~(1u << REQUEST_SCREENSHOT);
   }
 }
 #endif
@@ -483,24 +469,31 @@ void perMain()
 #if defined(PCBSKY9X)
   calcConsumption();
 #endif
+
   checkSpeakerVolume();
-  checkEeprom();
-  logsWrite();
+
+  if (!usbPlugged()) {
+    checkEeprom();
+    logsWrite();
+  }
+
   handleUsbConnection();
+
 #if defined(PCBXLITES)
   handleJackConnection();
 #endif
+
   checkTrainerSettings();
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
-  if (mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)) {
+  if (mainRequestFlags & (1u << REQUEST_FLIGHT_RESET)) {
     TRACE("Executing requested Flight Reset");
     flightReset();
-    mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
+    mainRequestFlags &= ~(1u << REQUEST_FLIGHT_RESET);
   }
 
-  doLoopCommonActions();
+  checkBacklight();
 
   event_t evt = getEvent(false);
 
@@ -512,14 +505,14 @@ void perMain()
 #endif
 
 #if defined(STM32)
-  if (SD_CARD_PRESENT() && !sdMounted()) {
+  if (!usbPlugged() && SD_CARD_PRESENT() && !sdMounted()) {
     sdMount();
   }
 #endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
+  if (!usbPlugged() && !SD_CARD_PRESENT() && !globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }

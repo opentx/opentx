@@ -219,21 +219,21 @@ void enablePulsesExternalModule(uint8_t protocol)
   }
 }
 
-void setupPulsesExternalModule(uint8_t protocol)
+bool setupPulsesExternalModule(uint8_t protocol)
 {
   switch (protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       extmodulePulsesData.pxx.setupFrame(EXTERNAL_MODULE);
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PXX_PULSES_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
       scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX1_SERIAL_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(PXX2)
@@ -241,14 +241,14 @@ void setupPulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
       extmodulePulsesData.pxx2.setupFrame(EXTERNAL_MODULE);
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PXX2_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       setupPulsesSbus();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, SBUS_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(DSM2)
@@ -257,32 +257,33 @@ void setupPulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_DSMX:
       setupPulsesDSM2();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, DSM2_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       setupPulsesCrossfire();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
       setupPulsesMultiExternalModule();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
-      break;
+      return true;
 #endif
 
 #if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMExternalModule();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
-      break;
+      return true;
 #endif
 
     default:
-      break;
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, 50/*ms*/);
+      return false;
   }
 }
 
@@ -338,7 +339,9 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX1) && defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
-#if !defined(INTMODULE_HEARTBEAT)
+#if defined(INTMODULE_HEARTBEAT)
+      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD + 1 /* backup */);
+#else
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
 #endif
       return true;
@@ -351,11 +354,13 @@ bool setupPulsesInternalModule(uint8_t protocol)
       if (moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER) {
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);
       }
-#if !defined(INTMODULE_HEARTBEAT)
       else {
+#if defined(INTMODULE_HEARTBEAT)
+        scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD + 1 /* backup */);
+#else
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD);
-      }
 #endif
+      }
       return result;
     }
 #endif
@@ -375,7 +380,8 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #endif
 
     default:
-      return true;
+      scheduleNextMixerCalculation(INTERNAL_MODULE, 10 /*ms*/);  // used for USB sim for example
+      return false;
   }
 }
 
@@ -410,8 +416,7 @@ bool setupPulsesExternalModule()
     return false;
   }
   else {
-    setupPulsesExternalModule(protocol);
-    return true;
+    return setupPulsesExternalModule(protocol);
   }
 }
 

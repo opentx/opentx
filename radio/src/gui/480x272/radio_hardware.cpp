@@ -72,11 +72,17 @@ enum MenuRadioHardwareItems {
 #endif
 
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
+  ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
 
 #define HW_SETTINGS_COLUMN             150
 
+#if defined(AUX_SERIAL)
+  #define AUX_SERIAL_ROW                0,
+#else
+  #define AUX_SERIAL_ROW
+#endif
 
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
@@ -107,6 +113,12 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 #define EXTERNAL_ANTENNA_ROW
 #endif
 
+#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+  #define MAX_BAUDRATE_ROW          0
+#else
+  #define MAX_BAUDRATE_ROW          HIDDEN_ROW
+#endif
+
 bool menuRadioHardware(event_t event)
 {
   MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, {
@@ -128,14 +140,15 @@ bool menuRadioHardware(event_t event)
     READONLY_ROW, /* RTC */
     0, /* RTC check */
 
-    0, /* max baudrate */
+    MAX_BAUDRATE_ROW, /* max baudrate */
 
     BLUETOOTH_ROWS
 
     EXTERNAL_ANTENNA_ROW
 
-    0, /* aux serial mode */
+    AUX_SERIAL_ROW /* aux serial mode */
     0, /* ADC filter */
+    1, /* Debug */
   });
 
   if (menuEvent) {
@@ -334,6 +347,9 @@ bool menuRadioHardware(event_t event)
 #if defined(AUX_SERIAL)
       case ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUX_SERIAL_MODE);
+#if defined(RADIO_TX16S)
+        lcdDrawText(lcdNextPos, y, " (TTL)");
+#endif
         g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
@@ -348,6 +364,18 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_DEBUG:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DEBUG);
+        lcdDrawText(HW_SETTINGS_COLUMN + 50, y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
+        lcdDrawText(lcdNextPos + 10, y, STR_KEYS_BTN, menuHorizontalPosition == 1 ? attr : 0);
+        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+          if (menuHorizontalPosition == 0)
+            pushMenu(menuRadioDiagAnalogs);
+          else
+            pushMenu(menuRadioDiagKeys);
+        }
+        break;
     }
   }
 

@@ -32,6 +32,43 @@
 #define CROSSFIRE_CHANNELS_COUNT        16
 
 #if defined(MULTIMODULE)
+// When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
+// Keep the order of the fields that the so that the size stays small
+struct mm_options_strings {
+  static const char* options[];
+};
+
+struct mm_protocol_definition {
+  uint8_t protocol;
+  uint8_t maxSubtype;
+  bool failsafe;
+  bool disable_ch_mapping;
+  const char *subTypeString;
+  const char *optionsstr;
+};
+
+const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
+
+inline uint8_t getMaxMultiSubtype(uint8_t moduleIdx)
+{
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
+    return 5;
+  }
+
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
+    if (status.isValid())
+      return (status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1);
+    else
+      return 7;
+  }
+  else {
+    return max((uint8_t )(status.protocolSubNbr == 0 ? 0 : status.protocolSubNbr - 1), pdef->maxSubtype);
+  }
+}
+
 inline bool isModuleMultimodule(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_MULTIMODULE;
@@ -90,7 +127,7 @@ inline bool isModuleISRMD16(uint8_t idx)
 
 inline bool isModuleD16(uint8_t idx)
 {
-  return isModuleXJTD16(idx) || isModuleISRMD16(idx);
+  return isModuleXJTD16(idx) || isModuleISRMD16(idx) || IS_D16_MULTI(idx);
 }
 
 inline bool isModuleISRMAccess(uint8_t idx)
@@ -308,6 +345,11 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return maxModuleChannels_M8(idx);
 }
 
+inline uint8_t sentModulePXXChannels(uint8_t idx)
+{
+  return 8 + g_model.moduleData[idx].channelsCount;
+}
+
 inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
@@ -317,7 +359,7 @@ inline int8_t sentModuleChannels(uint8_t idx)
   else if (isModuleSBUS(idx))
     return 16;
   else
-    return 8 + g_model.moduleData[idx].channelsCount;
+    return sentModulePXXChannels(idx);
 }
 
 inline bool isDefaultModelRegistrationID()
@@ -357,8 +399,14 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(moduleIdx)){
-    MultiModuleStatus& status = getMultiModuleStatus(moduleIdx);
-    return status.isValid() && status.supportsFailsafe();
+    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+    if (status.isValid()) {
+      return status.supportsFailsafe();
+    }
+    else {
+      const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+      return pdef->failsafe;
+    }
   }
 #endif
 
@@ -373,14 +421,20 @@ inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
   return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
 }
 
+inline bool isModuleRangeAvailable(uint8_t moduleIdx)
+{
+  return isModuleXJTD16(moduleIdx) || isModuleXJTLR12(moduleIdx);
+}
+
+constexpr uint8_t MAX_RXNUM = 63;
+
 inline uint8_t getMaxRxNum(uint8_t idx)
 {
   if (isModuleDSM2(idx))
     return 20;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(idx))
-  {
+  if (isModuleMultimodule(idx)) {
     switch (g_model.moduleData[idx].getMultiProtocol()) {
       case MODULE_SUBTYPE_MULTI_OLRS:
         return 4;
@@ -391,7 +445,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
   }
 #endif
 
-  return 63;
+  return MAX_RXNUM;
 }
 
 inline const char * getModuleDelay(uint8_t idx)
@@ -426,7 +480,7 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)
   if (moduleIndex == INTERNAL_MODULE)
-    return isModuleISRM(moduleIndex) || isSportLineUsedByInternalModule();
+    return true;
 
   if (isSportLineUsedByInternalModule())
     return false;
@@ -496,5 +550,57 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
 }
 
 extern bool isExternalAntennaEnabled();
+
+#if defined(MULTIMODULE)
+inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
+{
+  if (!isModuleMultimodule(moduleIdx))
+    return;
+
+  // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
+  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
+    g_model.moduleData[moduleIdx].multi.autoBindMode = 1;
+  }
+  else {
+    g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
+  }
+  g_model.moduleData[moduleIdx].multi.optionValue = 0;
+  g_model.moduleData[moduleIdx].multi.disableTelemetry = 0;
+  g_model.moduleData[moduleIdx].multi.disableMapping = 0;
+  g_model.moduleData[moduleIdx].multi.lowPowerMode = 0;
+  g_model.moduleData[moduleIdx].failsafeMode = FAILSAFE_NOT_SET;
+  g_model.header.modelId[moduleIdx] = 0;
+}
+
+inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
+{
+  switch (multi_proto) {
+    case MODULE_SUBTYPE_MULTI_DSM2:
+      min = 0;
+      max = 1;
+      break;
+    case MODULE_SUBTYPE_MULTI_BAYANG:
+      min = 0;
+      max = 3;
+      break;
+    case MODULE_SUBTYPE_MULTI_OLRS:
+      min = -1;
+      max = 7;
+      break;
+    case MODULE_SUBTYPE_MULTI_FS_AFHDS2A:
+      min = 0;
+      max = 70;
+      break;
+    case MODULE_SUBTYPE_MULTI_XN297DP:
+      min = -1;
+      max = 84;
+      break;
+    default:
+      min = -128;
+      max = 127;
+      break;
+  }
+}
+#endif
 
 #endif // _MODULES_HELPERS_H_

@@ -24,7 +24,7 @@
 Fifo<uint8_t, BT_TX_FIFO_SIZE> btTxFifo;
 Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(BLUETOOTH_PROBE)
 volatile uint8_t btChipPresent = 0;
 #endif
 
@@ -107,6 +107,12 @@ void bluetoothInit(uint32_t baudrate, bool enable)
 void bluetoothDisable()
 {
   GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth (recent modules will go to bootloader mode)
+  USART_ITConfig(BT_USART, USART_IT_RXNE, DISABLE);
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = BT_RX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(BT_USART_GPIO, &GPIO_InitStructure);
+  USART_DeInit(BT_USART);
 }
 
 extern "C" void BT_USART_IRQHandler(void)
@@ -117,7 +123,7 @@ extern "C" void BT_USART_IRQHandler(void)
     uint8_t byte = USART_ReceiveData(BT_USART);
     btRxFifo.push(byte);
     TRACE("BT %02X", byte);
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(BLUETOOTH_PROBE)
     if (!btChipPresent) {
       // This is to differentiate X7 and X7S and X-Lite with/without BT
       btChipPresent = 1;

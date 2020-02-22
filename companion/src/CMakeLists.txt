@@ -123,7 +123,7 @@ configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_B
 ### Generate .qm files and assemble resource (qrc) file.
 
 # available Companion translations (src/translations/*.ts)
-set(LANGUAGES cs de en es fi fr it pl sv zh_CN ja)
+set(LANGUAGES cs de en es fi fr it pl ru sv zh_CN ja)
 foreach(language ${LANGUAGES})
   list(APPEND companion_TS translations/companion_${language}.ts)
 endforeach(language)
@@ -341,7 +341,9 @@ endif()
 
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
-if(PCB STREQUAL X7 AND PCBREV STREQUAL T12)
+if(PCB STREQUAL X7 AND PCBREV STREQUAL ACCESS)
+  set(FLAVOUR x7access)
+elseif(PCB STREQUAL X7 AND PCBREV STREQUAL T12)
   set(FLAVOUR t12)
 elseif(PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019)
   set(FLAVOUR x9d+2019)
@@ -349,6 +351,8 @@ elseif(PCB STREQUAL X10 AND PCBREV STREQUAL EXPRESS)
   set(FLAVOUR x10express)
 elseif(PCB STREQUAL X10 AND PCBREV STREQUAL T16)
   set(FLAVOUR t16)
+elseif(PCB STREQUAL X10 AND PCBREV STREQUAL TX16S)
+  set(FLAVOUR tx16s)
 else()
   string(TOLOWER ${PCB} FLAVOUR)
 endif()

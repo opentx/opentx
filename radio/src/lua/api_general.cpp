@@ -28,12 +28,14 @@
 
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
-#elif defined(RADIO_T16)
+#elif defined(RADIO_FAMILY_T16)
   #include "lua/lua_exports_t16.inc"
 #elif defined(PCBX10)
   #include "lua/lua_exports_x10.inc"
 #elif defined(PCBX9E)
   #include "lua/lua_exports_x9e.inc"
+#elif defined(RADIO_X7ACCESS)
+  #include "lua/lua_exports_x7access.inc"
 #elif defined(RADIO_X7)
   #include "lua/lua_exports_x7.inc"
 #elif defined(RADIO_T12)
@@ -438,18 +440,24 @@ When called without parameters, it will only return the status of the output buf
 
 @retval boolean  data queued in output buffer or not.
 
-@status current Introduced in 2.2.0
+@retval nil      incorrect telemetry protocol.
+
+@status current Introduced in 2.2.0, retval nil added in 2.3.4
 */
 
 static int luaSportTelemetryPush(lua_State * L)
 {
   if (!IS_FRSKY_SPORT_PROTOCOL()) {
-    lua_pushboolean(L, false);
+    lua_pushnil(L);
     return 1;
   }
 
   if (lua_gettop(L) == 0) {
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+    return 1;
+  }
+  else if (lua_gettop(L) > int(sizeof(SportTelemetryPacket))) {
+    lua_pushboolean(L, false);
     return 1;
   }
 
@@ -635,17 +643,23 @@ When called without parameters, it will only return the status of the output buf
 
 @retval boolean  data queued in output buffer or not.
 
-@status current Introduced in 2.2.0
+@retval nil      incorrect telemetry protocol.
+
+@status current Introduced in 2.2.0, retval nil added in 2.3.4
 */
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
   if (telemetryProtocol != PROTOCOL_TELEMETRY_CROSSFIRE) {
-    lua_pushboolean(L, false);
+    lua_pushnil(L);
     return 1;
   }
 
   if (lua_gettop(L) == 0) {
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+  }
+  else if (lua_gettop(L) > TELEMETRY_OUTPUT_BUFFER_SIZE ) {
+    lua_pushboolean(L, false);
+    return 1;
   }
   else if (outputTelemetryBuffer.isAvailable()) {
     uint8_t command = luaL_checkunsigned(L, 1);

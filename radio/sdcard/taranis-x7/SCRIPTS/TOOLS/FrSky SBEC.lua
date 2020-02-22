@@ -273,11 +273,6 @@ local function run(event)
   if event == nil then
     error("Cannot run as a model script!")
     return 2
-  elseif event == EVT_PAGE_BREAK or event == EVT_PAGEDN_FIRST or event == EVT_SHIFT_BREAK then
-    --selectPage(1)
-  elseif event == EVT_PAGE_LONG  or event == EVT_PAGEUP_FIRST or event == EVT_SHIFT_LONG then
-    --killEvents(event);
-    --selectPage(-1)
   end
   local result = pages[page](event)
 

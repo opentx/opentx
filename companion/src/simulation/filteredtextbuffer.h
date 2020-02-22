@@ -39,23 +39,28 @@ class FIFOBufferDevice : public QBuffer
   public:
     explicit FIFOBufferDevice(QObject * parent = Q_NULLPTR);
 
-    qint64 getDataBufferMaxSize() const;
-    void setDataBufferMaxSize(qint64 size);
+    //! @returns FIFO buffer limit in bytes.
+    inline int getDataBufferMaxSize() const { return buffer().capacity(); }
+    //! @param size in bytes.
+    void setDataBufferMaxSize(int size);
 
+    virtual inline qint64 bytesAvailable() const override { return size() || QIODevice::bytesAvailable(); }
+    virtual inline bool canReadLine()      const override { return nextLineLen() > 0; }
     // reimplemented from QIODevice for efficiency
     qint64 readLine(char * data, qint64 maxSize);
     QByteArray readLine(qint64 maxSize = 0);
 
   signals:
-    void bufferOverflow(qint64 len);  // len is overflow size, <= 0 means overflow has cleared
+    //! @param len is overflow size, <= 0 means overflow has cleared
+    void bufferOverflow(qint64 len);
 
   protected:
-    qint64 trimData(qint64 len);
-    virtual qint64 writeData(const char * data, qint64 len);
-    virtual qint64 readData(char * data, qint64 len);
+    int trimData(int len);
+    int nextLineLen() const;
+    virtual qint64 writeData(const char * data, qint64 len) override;
+    virtual qint64 readData(char * data, qint64 len) override;
 
-    QReadWriteLock m_dataRWLock;
-    qint64 m_dataBufferMaxSize;     // [bytes] output buffer limit (FIFO).
+    mutable QReadWriteLock m_dataRWLock;
     bool m_hasOverflow;
 };
 
@@ -77,14 +82,14 @@ class FilteredTextBuffer : public FIFOBufferDevice
     explicit FilteredTextBuffer(QObject * parent = Q_NULLPTR);
     ~FilteredTextBuffer();
 
-    qint64 getInputBufferMaxSize() const;
-    quint32 getInputBufferTimeout() const;
+    inline int getInputBufferMaxSize() const { return m_inBuffer->getDataBufferMaxSize(); }
+    inline int getInputBufferTimeout() const { return m_bufferFlushTimer->interval(); }
 
   public slots:
-    // input buffer will be flushed if grows > size bytes.
-    void setInputBufferMaxSize(qint64 size);
-    // how often to flush the input buffer when less than whole lines are present.
-    void setInputBufferTimeout(quint32 ms);
+    //! @param size in bytes. Input buffer will be flushed if grows over this size.
+    void setInputBufferMaxSize(int size);
+    //! @param ms how often to flush the input buffer when less than whole lines are present.
+    void setInputBufferTimeout(int ms);
     void setLineFilterExpr(const QRegularExpression & expr);
     void setLineFilterEnabled(bool enable);
     void setLineFilterExclusive(bool exclusive);
@@ -97,7 +102,7 @@ class FilteredTextBuffer : public FIFOBufferDevice
 
   protected:
     qint64 writeDataSuper(const char * data, qint64 len = -1);
-    virtual qint64 writeData(const char * data, qint64 len);
+    virtual qint64 writeData(const char * data, qint64 len) override;
     void flushInputBuffer();
     void closeInputBuffer();
     bool openInputBuffer();
@@ -108,8 +113,6 @@ class FilteredTextBuffer : public FIFOBufferDevice
     FIFOBufferDevice * m_inBuffer;
     QTimer * m_bufferFlushTimer;
     QRegularExpression m_lineFilter;
-    qint64 m_inBuffMaxSize;          // [bytes]
-    quint32 m_inBuffFlushTimeout;    // [ms]
     bool m_lineFilterEnable;
     bool m_lineFilterExclusive;
 };

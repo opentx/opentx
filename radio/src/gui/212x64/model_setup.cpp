@@ -353,7 +353,7 @@ void menuModelSetup(event_t event)
     LABEL(InternalModule),
       INTERNAL_MODULE_TYPE_ROWS,
       MODULE_CHANNELS_ROWS(INTERNAL_MODULE),
-      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleFailsafeAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1)),
+      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleRangeAvailable(INTERNAL_MODULE)? (uint8_t)2 : (uint8_t)1)), // RxNum, Range check and Register buttons
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum for ACCESS
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), // Failsafe
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), // Range check and Register buttons
@@ -855,14 +855,7 @@ void menuModelSetup(event_t event)
                   if (checkIncDec_Ret) {
                     g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
                     g_model.moduleData[EXTERNAL_MODULE].subType = 0;
-                    // Sensible default for DSM2 (same as for ppm): 7ch@22ms + Autodetect settings enabled
-                    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 1;
-                    }
-                    else {
-                      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = 0;
-                    }
-                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
+                    resetMultiProtocolsOptions(EXTERNAL_MODULE);
                   }
                 }
 #endif
@@ -884,18 +877,10 @@ void menuModelSetup(event_t event)
 
 #if defined(MULTIMODULE)
               case 2:
-                if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto) {
-                  g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(), 0, MULTI_MAX_PROTOCOLS, EE_MODEL));
-                  break;
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
+                if (checkIncDec_Ret) {
+                  resetMultiProtocolsOptions(EXTERNAL_MODULE);
                 }
-                else {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
-                }
-                break;
-
-              case 3:
-                // Custom protocol, third column is subtype
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
                 break;
 #endif
             }
@@ -1228,11 +1213,20 @@ void menuModelSetup(event_t event)
        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 #if defined(MULTIMODULE)
 
-       if (isModuleMultimodule(moduleIdx)) {
+       if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
          int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
+         MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-         if (multi_proto < MODULE_SUBTYPE_MULTI_LAST) {
+         if (status.isValid()) {
+           lcdDrawText(INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
+           if (attr && status.optionDisp == 2) {
+             lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);
+             lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+             lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+           }
+         }
+         else {
            const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
            if (pdef->optionsstr)
              lcdDrawText(INDENT_WIDTH, y, pdef->optionsstr);
@@ -1242,29 +1236,15 @@ void menuModelSetup(event_t event)
              lcdDrawText(lcdLastRightPos, y, ")", LEFT);
            }
          }
-         else {
-           MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-           lcdDrawText(INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
-           if (attr && status.optionDisp == 2) {
-             lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);
-             lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
-             lcdDrawText(lcdLastRightPos, y, ")", LEFT);
-           }
-         }
+
          if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
            optionValue = 50 + 5 * optionValue;
 
          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
          if (attr) {
-           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
-             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 70);
-           }
-           else if (multi_proto == MODULE_SUBTYPE_MULTI_OLRS) {
-             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -1, 7);
-           }
-           else {
-             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-           }
+           int8_t min, max;
+           getMultiOptionValues(multi_proto, min, max);
+           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, min, max);
          }
        }
 #endif
@@ -1430,15 +1410,15 @@ void menuModelSetup(event_t event)
 
   if (old_editMode > 0 && s_editMode == 0) {
     switch(menuVerticalPosition) {
-    case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND:
-      if (menuHorizontalPosition == 0)
-        checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
-      break;
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND:
+        if (menuHorizontalPosition == 0)
+          checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
+        break;
 
-    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
-      if (menuHorizontalPosition == 0)
-        checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
-      break;
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
+        if (menuHorizontalPosition == 0)
+          checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
+        break;
     }
   }
 }

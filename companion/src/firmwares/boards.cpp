@@ -66,6 +66,7 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_TARANIS_XLITES:
       return 0x3B78746F;
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
       return 0x3678746F;
     case BOARD_TARANIS_X9E:
       return 0x3578746F;
@@ -91,6 +92,8 @@ uint32_t Boards::getFourCC(Type board)
       return 0x3D78746F;
     case BOARD_JUMPER_T16:
       return 0x3F78746F;
+    case BOARD_RADIOMASTER_TX16S:
+      return 0x3878746F;
     case BOARD_UNKNOWN:
       break;
   }
@@ -116,6 +119,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -130,6 +134,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_X10:
     case BOARD_X10_EXPRESS:
     case BOARD_JUMPER_T16:
+    case BOARD_RADIOMASTER_TX16S:
       return 0;
   }
 
@@ -154,6 +159,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X7_ACCESS:
     case BOARD_TARANIS_X9LITE:
     case BOARD_TARANIS_X9LITES:
     case BOARD_TARANIS_X9D:
@@ -166,6 +172,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_X10:
     case BOARD_X10_EXPRESS:
     case BOARD_JUMPER_T16:
+    case BOARD_RADIOMASTER_TX16S:
       return FSIZE_HORUS;
     case BOARD_UNKNOWN:
       return FSIZE_MAX;
@@ -281,7 +288,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_HORUS_X10(board) || IS_JUMPER_T16(board))
+      else if (IS_HORUS_X10(board) || IS_FAMILY_T16(board))
         return 5;
       else if (IS_HORUS_X12S(board))
         return 3;
@@ -297,13 +304,13 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case Sliders:
       if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_TARANIS_X9D(board) || IS_HORUS_X10(board) || IS_JUMPER_T16(board))
+      else if (IS_TARANIS_X9D(board) || IS_HORUS_X10(board) || IS_FAMILY_T16(board))
         return 2;
       else
         return 0;
 
     case MouseAnalogs:
-      if (IS_HORUS(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 2;
       else
         return 0;
@@ -326,8 +333,10 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
-      else if (IS_TARANIS_X9LITE(board))
+      else if (board == Board::BOARD_TARANIS_X9LITE)
         return 5;
+      else if (board == Board::BOARD_TARANIS_X9LITES)
+        return 7;
       else if (IS_TARANIS_X7(board))
         return 8;
       else if (IS_JUMPER_T12(board))
@@ -338,7 +347,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 9;
       else if (IS_TARANIS(board))
         return 8;
-      else if (IS_HORUS(board))
+      else if (IS_FAMILY_HORUS_OR_T16(board))
         return 10;
       else
         return 7;
@@ -358,7 +367,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 9;
 
     case NumTrims:
-      if (IS_HORUS(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 6;
       else
         return 4;
@@ -452,8 +461,8 @@ QString Boards::getAnalogInputName(Board::Type board, int index)
       "S1",
       "6P",
       "S2",
-      "S3",
-      "S4",
+      "L1",
+      "L2",
       "LS",
       "RS",
       "JSx",
@@ -462,7 +471,7 @@ QString Boards::getAnalogInputName(Board::Type board, int index)
     if (index < DIM(pots))
       return pots[index];
   }
-  else if (IS_HORUS_X10(board) || IS_JUMPER_T16(board)) {
+  else if (IS_HORUS_X10(board) || IS_FAMILY_T16(board)) {
     const QString pots[] = {
       "S1",
       "6P",
@@ -497,6 +506,8 @@ QString Boards::getBoardName(Board::Type board)
       return "MEGA2560";
     case BOARD_TARANIS_X7:
       return "Taranis X7/X7S";
+    case BOARD_TARANIS_X7_ACCESS:
+      return "Taranis X7/X7S Access";
     case BOARD_JUMPER_T12:
       return "Jumper T12";
     case BOARD_TARANIS_XLITE:
@@ -529,6 +540,8 @@ QString Boards::getBoardName(Board::Type board)
       return "Horus X10/X10S Express";
     case BOARD_JUMPER_T16:
       return "Jumper T16";
+    case BOARD_RADIOMASTER_TX16S:
+      return "Radiomaster TX16S";
     default:
       return tr("Unknown");
   }

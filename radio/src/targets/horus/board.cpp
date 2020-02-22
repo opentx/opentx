@@ -41,11 +41,19 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
-#if defined(SEMIHOSTING)
-extern "C" void initialise_monitor_handles();
+#if defined(AUX_SERIAL_PWR_GPIO)
+void auxSerialPowerOn()
+{
+  GPIO_SetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
+
+void auxSerialPowerOff()
+{
+  GPIO_ResetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
 #endif
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -70,10 +78,6 @@ void sportUpdatePowerOff()
 
 void boardInit()
 {
-#if defined(SEMIHOSTING)
-  initialise_monitor_handles();
-#endif
-
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |
@@ -118,6 +122,7 @@ void boardInit()
                          EXTMODULE_RCC_APB2Periph |
                          TELEMETRY_RCC_APB2Periph |
                          BT_RCC_APB2Periph |
+                         AUX_SERIAL_RCC_APB2Periph |
                          BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
 
@@ -126,6 +131,10 @@ void boardInit()
   delaysInit();
 
   __enable_irq();
+
+#if defined(DEBUG) && defined(AUX_SERIAL)
+  auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+#endif
 
   TRACE("\nHorus board started :)");
   TRACE("RCC->CSR = %08x", RCC->CSR);
@@ -170,7 +179,7 @@ void boardInit()
 
   ledInit();
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if HAS_SPORT_UPDATE_CONNECTOR()
   sportUpdateInit();
 #endif
 

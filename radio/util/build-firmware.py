@@ -30,7 +30,7 @@ def build_target(target, path, cmake_options):
         suffix = os.environ["OPENTX_VERSION_SUFFIX"]
         cmd.append('-DVERSION_SUFFIX="%s"' % suffix)
         if suffix.startswith("N"):
-            cmd.append('-DNIGHTLY_BUILD_WARNING=YES')
+            cmd.append('-DTEST_BUILD_WARNING=YES')
     cmd.append(srcdir)
 
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -96,6 +96,11 @@ def main():
         cmake_options["PCB"] = "X7"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
+    elif options[optcount] == "x7access":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "ACCESS"
+        firmware_options = options_taranis_x9dp
+        maxsize = 65536 * 8
     elif board_name == "xlite":
         cmake_options["PCB"] = "XLITE"
         firmware_options = options_taranis_xlite
@@ -137,11 +142,16 @@ def main():
     elif board_name == "t12":
         cmake_options["PCB"] = "X7"
         cmake_options["PCBREV"] = "T12"
-        firmware_options = options_taranis_x9dp
+        firmware_options = options_jumper_t12
         maxsize = 65536 * 8
     elif board_name == "t16":
         cmake_options["PCB"] = "X10"
         cmake_options["PCBREV"] = "T16"
+        firmware_options = options_jumper_t16
+        maxsize = 2 * 1024 * 1024
+    elif board_name == "tx16s":
+        cmake_options["PCB"] = "X10"
+        cmake_options["PCBREV"] = "TX16S"
         firmware_options = options_jumper_t16
         maxsize = 2 * 1024 * 1024
     else:

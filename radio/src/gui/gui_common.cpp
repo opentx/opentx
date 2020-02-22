@@ -724,6 +724,13 @@ bool isTrainerModeAvailable(int mode)
     return false;
 #endif
 
+#if defined(PCBX9E)
+  if (g_eeGeneral.bluetoothMode && mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
+    // bluetooth uses the same USART than SBUS
+    return false;
+  }
+#endif
+
 #if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
@@ -856,6 +863,8 @@ const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
 const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
+const char STR_SUBTYPE_FX816[] =      "\003""P38";
+const char STR_SUBTYPE_ESKY150[] =    "\003""4CH""7CH";
 
 const char* mm_options_strings::options[] = {
   nullptr,
@@ -902,7 +911,6 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false, false,  STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false, false,  STR_SUBTYPE_TRAXXAS,   nullptr},
   {MODULE_SUBTYPE_MULTI_E01X,       2, false, false,  STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
-  {MODULE_SUBTYPE_MULTI_V911S,      0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false, false,  STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_KF606,      0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false, false,  STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
@@ -912,10 +920,13 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ESky,       0, false, true,   NO_SUBTYPE,            nullptr},
   {MODULE_SUBTYPE_MULTI_J6PRO,      0, false, true,   NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_ESKY150,    1, false, false,  STR_SUBTYPE_ESKY150,   nullptr},
+  {MODULE_SUBTYPE_MULTI_FX816,      0, false, false,  STR_SUBTYPE_FX816,     nullptr},
+  {MODULE_SUBTYPE_MULTI_HOTT,       0, true,  false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
-  {0xfe,                            0, false, true,   NO_SUBTYPE,            nullptr}
+  {0xfe,                            0, false, false,   NO_SUBTYPE,            nullptr}
 };
 
 #undef NO_SUBTYPE

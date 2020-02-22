@@ -151,7 +151,6 @@ const uint8_t STATS_ICONS[] = {
   ICON_STATS,
   ICON_STATS_THROTTLE_GRAPH,
   ICON_STATS_DEBUG,
-  ICON_STATS_ANALOGS,
 #if defined(DEBUG_TRACE_BUFFER)
   ICON_STATS_TIMERS
 #endif
@@ -184,15 +183,17 @@ bool menuModelSensor(event_t event);
 bool menuModelExpoOne(event_t event);
 bool menuModelModuleOptions(event_t event);
 bool menuModelReceiverOptions(event_t event);
+bool menuRadioDiagKeys(event_t event);
+bool menuRadioDiagAnalogs(event_t event);
 
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 
 enum EnumTabRadio {
-  MENU_RADIO_SETUP,
-  MENU_RADIO_SD_MANAGER,
-#if defined(LUA) || defined(PXX2)
+#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   MENU_RADIO_TOOLS,
 #endif
+  MENU_RADIO_SD_MANAGER,
+  MENU_RADIO_SETUP,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -202,11 +203,11 @@ enum EnumTabRadio {
 
 const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
   ICON_RADIO,
-  ICON_RADIO_SETUP,
-  ICON_RADIO_SD_MANAGER,
 #if defined(LUA) || defined(PXX2)
   ICON_RADIO_TOOLS,
 #endif
+  ICON_RADIO_SD_MANAGER,
+  ICON_RADIO_SETUP,
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
   ICON_RADIO_HARDWARE,
@@ -238,13 +239,11 @@ enum MenuRadioIndexes
 
 bool menuStatsGraph(event_t event);
 bool menuStatsDebug(event_t event);
-bool menuStatsAnalogs(event_t event);
 bool menuStatsTraces(event_t event);
 
 static const MenuHandlerFunc menuTabStats[]  = {
   menuStatsGraph,
   menuStatsDebug,
-  menuStatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   menuStatsTraces,
 #endif

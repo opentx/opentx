@@ -75,7 +75,7 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
   ../../../../../targets/${TARGET_DIR}/diskio.cpp
   ../../../../../targets/${TARGET_DIR}/board.cpp
-  ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
+  ../pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
   ../usbd_storage_msd.cpp
@@ -116,11 +116,20 @@ if(PCB STREQUAL X10 OR PCB STREQUAL X12S)
     ../../../../../syscalls.c
     )
 
+if(USB_CHARGER)
+  set(BOOTLOADER_SRC
+    ${BOOTLOADER_SRC}
+    ../../../../../targets/${TARGET_DIR}/usb_charger_driver.cpp
+    ../../../../../targets/${TARGET_DIR}/led_driver.cpp
+    )
+  endif()
+
   if(DEBUG)
     set(BOOTLOADER_SRC
       ${BOOTLOADER_SRC}
       ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
       ../../../../../serial.cpp
+      ../../../../../targets/common/arm/stm32/aux_serial_driver.cpp
       )
   endif()
 else()
@@ -134,6 +143,7 @@ endif()
 remove_definitions(-DDISK_CACHE)
 remove_definitions(-DLUA)
 remove_definitions(-DCLI)
+remove_definitions(-DSEMIHOSTING)
 remove_definitions(-DUSB_SERIAL)
 remove_definitions(-DWATCHDOG)
 

@@ -88,10 +88,10 @@ enum
   AFHDS2A_ID_END = 0xFF,
 
   // AC type telemetry with multiple values in one packet
-    AFHDS2A_ID_GPS_FULL = 0xFD,
+  AFHDS2A_ID_GPS_FULL = 0xFD,
   AFHDS2A_ID_VOLT_FULL = 0xF0,
   AFHDS2A_ID_ACC_FULL = 0xEF,
-  TX_RSSI_ID = 0x200,     // Pseudo id outside 1 byte range of FlySky sensors
+  AFHDS2A_ID_TX_RSSI = 0x200,     // Pseudo id outside 1 byte range of FlySky sensors
 };
 
 const FlySkySensor flySkySensors[] = {
@@ -133,7 +133,7 @@ const FlySkySensor flySkySensors[] = {
   {AFHDS2A_ID_RX_NOISE,        ZSTR_RX_NOISE,    UNIT_DB,                0},  // RX Noise
   {AFHDS2A_ID_RX_RSSI,         ZSTR_RSSI,        UNIT_DB,                0},  // RX RSSI (0xfc)
   {AFHDS2A_ID_RX_ERR_RATE,     ZSTR_RX_QUALITY,  UNIT_RAW,               0},  // RX error rate
-  {TX_RSSI_ID,                 ZSTR_TX_RSSI,     UNIT_RAW,               0},  // Pseudo sensor for TRSSI
+  {AFHDS2A_ID_TX_RSSI,         ZSTR_TX_RSSI,     UNIT_RAW,               0},  // Pseudo sensor for TRSSI
 
   {0x00,                       NULL,             UNIT_RAW,               0},  // sentinel
 };
@@ -227,7 +227,7 @@ static void processFlySkySensor(const uint8_t * packet, uint8_t type)
 void processFlySkyPacket(const uint8_t * packet)
 {
   // Set TX RSSI Value, reverse MULTIs scaling
-  setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, TX_RSSI_ID, 0, 0, packet[0], UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, AFHDS2A_ID_TX_RSSI, 0, 0, packet[0], UNIT_RAW, 0);
 
   const uint8_t * buffer = packet + 1;
   int sesnor = 0;
@@ -241,7 +241,7 @@ void processFlySkyPacket(const uint8_t * packet)
 void processFlySkyPacketAC(const uint8_t * packet)
 {
   // Set TX RSSI Value, reverse MULTIs scaling
-  setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, TX_RSSI_ID, 0, 0, packet[0], UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, AFHDS2A_ID_TX_RSSI, 0, 0, packet[0], UNIT_RAW, 0);
   const uint8_t * buffer = packet + 1;
   while (buffer - packet < 26) //28 + 1(multi TX rssi) - 3(ac header)
   {
@@ -282,7 +282,7 @@ void processFlySkyTelemetryData(uint8_t data, uint8_t * rxBuffer, uint8_t &rxBuf
       debugPrintf("[%02X %02X %02X%02X] ", rxBuffer[i*4+2], rxBuffer[i*4 + 3],
                   rxBuffer[i*4 + 4], rxBuffer[i*4 + 5]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     if (data == 0xAA) processFlySkyPacket(rxBuffer + 1);
     else if (data == 0xAC) processFlySkyPacketAC(rxBuffer + 1);

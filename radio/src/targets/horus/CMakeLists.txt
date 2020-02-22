@@ -15,7 +15,6 @@ set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RTC_BACKUP_RAM YES)
-set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
 set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 
@@ -52,8 +51,20 @@ if (PCB STREQUAL X10)
     set(FLAVOUR t16)
     set(LUA_EXPORT lua_export_t16)
     add_definitions(-DRADIO_T16)
+    add_definitions(-DRADIO_FAMILY_T16)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" OFF)
     option(BLUETOOTH "Support for bluetooth module" OFF)
+  elseif (PCBREV STREQUAL TX16S)
+    set(FLAVOUR tx16s)
+    set(LUA_EXPORT lua_export_t16)
+    add_definitions(-DRADIO_TX16S)
+    add_definitions(-DRADIO_FAMILY_T16)
+    option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
+    option(BLUETOOTH "Support for bluetooth module" OFF)
+    if (NOT BLUETOOTH)
+      set(AUX_SERIAL ON)
+    endif()
+    set(USB_CHARGER YES)
   else()
     set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
@@ -139,6 +150,8 @@ set(GUI_SRC
   bitmaps.cpp
   radio_sdmanager.cpp
   radio_hardware.cpp
+  radio_diagkeys.cpp
+  radio_diaganas.cpp
   model_inputs.cpp
   model_mixes.cpp
   model_curves.cpp
@@ -194,18 +207,29 @@ set(TARGET_SRC
   ../common/arm/stm32/rotary_encoder_driver.cpp
   )
 
+if(USB_CHARGER)
+  set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
+  add_definitions(-DUSB_CHARGER)
+endif()
+
 if(BLUETOOTH)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC ${TARGET_SRC} ../common/arm/stm32/bluetooth_driver.cpp)
   set(SRC ${SRC} bluetooth.cpp)
 endif()
 
+if (AUX_SERIAL)
+  add_definitions(-DAUX_SERIAL)
+  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+endif()
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
+  ${AUX_SERIAL_DRIVER}
   board.cpp
   backlight_driver.cpp
-  pwr_driver.cpp
+  ../common/arm/stm32/pwr_driver.cpp
   sdram_driver.c
   startup_stm32f42_43xxx.s
   ../common/arm/stm32/sdio_sd.c
@@ -226,11 +250,46 @@ set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
   )
 
+MACRO(GET_GCC_INCLUDE_PATH gcc_include_path)
+  if (WIN32)
+    execute_process(COMMAND arm-none-eabi-gcc -v -x c -E NUL ERROR_VARIABLE _gcc_output OUTPUT_QUIET)
+  else()
+    execute_process(COMMAND arm-none-eabi-gcc -v -x c -E - INPUT_FILE /dev/null ERROR_VARIABLE _gcc_output OUTPUT_QUIET)
+  endif()
+
+  # Build an array of string from the GCC output
+  string(REPLACE "\n" ";" _gcc_output "${_gcc_output}")
+
+  set(_capture_include FALSE)
+  set(_include_path "")
+
+  # Go through the lines and capture between '"#include <...> search starts here:"' and 'End of search list.'
+  foreach(_line ${_gcc_output})
+    if(${_line} STREQUAL "End of search list.")
+      set(_capture_include FALSE)
+    endif()
+
+    if(_capture_include)
+      # Remove the leading and trailing empty characters
+      string(REPLACE "\r" "" _line ${_line})
+      string(SUBSTRING "${_line}" 1 -1 _line)
+      set(_include_path "${_include_path}" "-I${_line}")
+    endif()
+
+    if(${_line} STREQUAL "#include <...> search starts here:")
+      set(_capture_include TRUE)
+    endif()
+  endforeach()
+  set(${gcc_include_path} ${_include_path})
+ENDMACRO()
+
 if(PYTHONINTERP_FOUND)
+  GET_GCC_INCLUDE_PATH(arm_gcc_include_path)
+
   add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -Itargets/horus > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DSTM32F4 -DSTM32F429_439xx -DCOLORLCD -DBACKUP -DSIMU -I. -Itargets/horus -Itargets/common/arm/stm32 -I${THIRDPARTY_DIR} -I${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include ${arm_gcc_include_path} > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
     )
   add_custom_target(datacopy

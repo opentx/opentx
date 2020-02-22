@@ -930,7 +930,7 @@ void MainWindow::readEeprom()
 {
   Board::Type board = getCurrentBoard();
   QString tempFile;
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     tempFile = generateProcessUniqueTempFileName("temp.otx");
   else if (IS_ARM(board))
     tempFile = generateProcessUniqueTempFileName("temp.bin");
@@ -975,7 +975,7 @@ bool MainWindow::readEepromFromRadio(const QString & filename)
 
 void MainWindow::writeBackup()
 {
-  if (IS_HORUS(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -992,7 +992,7 @@ void MainWindow::writeFlash(QString fileToFlash)
 
 void MainWindow::readBackup()
 {
-  if (IS_HORUS(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -1078,9 +1078,15 @@ void MainWindow::updateMenus()
   compareAct->setEnabled(activeChild);
   writeEepromAct->setEnabled(activeChild);
   readEepromAct->setEnabled(true);
-  writeBUToRadioAct->setEnabled(true);
-  readBUToFileAct->setEnabled(true);
-  editSplashAct->setDisabled(IS_HORUS(getCurrentBoard()));
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
+    writeBUToRadioAct->setEnabled(false);
+    readBUToFileAct->setEnabled(false);
+  }
+  else {
+    writeBUToRadioAct->setEnabled(true);
+    readBUToFileAct->setEnabled(true);
+  }
+  editSplashAct->setDisabled(IS_FAMILY_HORUS_OR_T16(getCurrentBoard()));
 
   foreach (QAction * act, fileWindowActions) {
     if (!act)
@@ -1288,8 +1294,9 @@ void MainWindow::createActions()
   writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
   burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
-  writeBUToRadioAct =  addAct("write_eeprom_file.png", SLOT(writeBackup()));
-  readBUToFileAct =    addAct("read_eeprom_file.png",  SLOT(readBackup()));
+
+  writeBUToRadioAct = addAct("write_eeprom_file.png", SLOT(writeBackup()));
+  readBUToFileAct = addAct("read_eeprom_file.png", SLOT(readBackup()));
 
   createProfileAct =   addAct("new.png",   SLOT(createProfile()));
   copyProfileAct   =   addAct("copy.png",  SLOT(copyProfile()));
