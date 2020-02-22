@@ -412,53 +412,47 @@ void menuMainView(event_t event)
       break;
 
     case VIEW_OUTPUTS_VALUES:
+    case VIEW_OUTPUTS_BARS:
       // scroll bar
       lcdDrawHorizontalLine(38, 34, 54, DOTTED);
       lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
       for (uint8_t i=0; i<8; i++) {
         uint8_t x0, y0;
         uint8_t chan = 8 * (g_eeGeneral.view / ALTERNATE_VIEW) + i;
-
         int16_t val = channelOutputs[chan];
-        x0 = (i % 4 * 9 + 3) * FW / 2;
-        y0 = i / 4 * FH + 40;
+
+        if (view_base == VIEW_OUTPUTS_VALUES) {
+          x0 = (i % 4 * 9 + 3) * FW / 2;
+          y0 = i / 4 * FH + 40;
 #if defined(PPM_UNIT_US)
-        lcdDrawNumber(x0 + 4 * FW, y0, PPM_CH_CENTER(chan) + val / 2, RIGHT);
+          lcdDrawNumber(x0 + 4 * FW, y0, PPM_CH_CENTER(chan) + val / 2, RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-        lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), RIGHT|PREC1);
+          lcdDrawNumber(x0 + 4 * FW, y0, calcRESXto1000(val), RIGHT | PREC1);
 #else
-        lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, RIGHT); // G: Don't like the decimal part*
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, RIGHT); // G: Don't like the decimal part*
 #endif
+        }
+        else {
+          constexpr coord_t WBAR2 =  (50/2);
+          x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
+          y0 = 38+(i%4)*5;
+
+          const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
+          int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
+
+          if (len>WBAR2)
+            len = WBAR2; // prevent bars from going over the end - comment for debugging
+          lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
+          lcdDrawSolidVerticalLine(x0, y0-2,5 );
+          if (val > 0)
+            x0 += 1;
+          else
+            x0 -= len;
+          lcdDrawSolidHorizontalLine(x0, y0+1, len);
+          lcdDrawSolidHorizontalLine(x0, y0-1, len);
+        }
       }
       break;
-
-    case VIEW_OUTPUTS_BARS:
-      // scroll bar
-      lcdDrawHorizontalLine(38, 34, 54, DOTTED);
-      lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
-
-      for (uint8_t i=0; i<8; i++) {
-        uint8_t x0,y0;
-        uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
-        int16_t val = channelOutputs[chan];
-#define WBAR2 (50/2)
-        x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
-        y0 = 38+(i%4)*5;
-
-        const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
-        int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
-
-        if (len>WBAR2)
-          len = WBAR2; // prevent bars from going over the end - comment for debugging
-        lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
-        lcdDrawSolidVerticalLine(x0, y0-2,5 );
-        if (val > 0)
-          x0 += 1;
-        else
-          x0 -= len;
-        lcdDrawSolidHorizontalLine(x0, y0+1, len);
-        lcdDrawSolidHorizontalLine(x0, y0-1, len);
-      }
 
     case VIEW_TIMER2:
       drawTimerWithMode(87, 5 * FH, 1, RIGHT | DBLSIZE);
