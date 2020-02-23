@@ -156,7 +156,7 @@ local function calculateBatteryData(wgt)
   if #wgt.cellDataHistoryLowest ~= #newCellData then
     wgt.cellDataHistoryLowest = {}
     for k, v in pairs(newCellData) do
-        wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
+      wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
     end
   end
 
@@ -328,13 +328,14 @@ local function refreshZoneMedium(wgt)
   for i = 1, wgt.cellCount, 1 do
     local cellY = wgt.zone.y + (i-1)* (cellH -1)
 
-    -- fill current value
+    -- fill current cell
     lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataLive[i], wgt.cellMax, wgt.cellMax - 0.2))
     --lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, 58, cellH, CUSTOM_COLOR)
     local percentCurrent = getCellPercent(wgt.cellDataLive[i])
     local percentMin = getCellPercent(wgt.cellDataHistoryLowest[i])
 
     lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, cellW * percentCurrent / 100, cellH, CUSTOM_COLOR)
+
     -- fill min
     lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataHistoryLowest[i], wgt.cellMax, wgt.cellMax - 0.2))
     lcd.drawFilledRectangle(wgt.zone.x + cellX + ((percentCurrent - percentMin) / 100)    , cellY, cellW - (cellW * (percentCurrent - percentMin) / 100), cellH, CUSTOM_COLOR)
