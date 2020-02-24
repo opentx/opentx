@@ -219,6 +219,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       label->setText(tr("GVAR%1").arg(i + 1));
       label->setProperty("index", i);
       label->setContextMenuPolicy(Qt::CustomContextMenu);
+      label->setToolTip(tr("Popup menu available"));
       connect(label, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(gvOnCustomContextMenuRequested(const QPoint &)));
       gvLayout->addWidget(label, i + 1, col++, 1, 1);
       // GVar name
