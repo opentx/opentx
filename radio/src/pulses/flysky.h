@@ -23,28 +23,6 @@
 
 #include "definitions.h"
 
-PACK(struct AfhdsPulsesData {
-  uint8_t  pulses[64];
-  uint8_t  * ptr;
-  uint8_t  frame_index;
-  uint8_t  crc;
-  uint8_t  state;
-  uint8_t  timeout;
-  uint8_t  esc_state;
-  uint8_t  telemetry[64];
-  uint8_t  telemetry_index;
-  const uint8_t * getData()
-  {
-  	return pulses;
-  }
-  uint8_t getSize()
-  {
-	  return ptr - pulses;
-  }
-
-});
-
-
 /*
 #define END                             0xC0
 #define ESC                             0xDB

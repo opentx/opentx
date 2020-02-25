@@ -31,6 +31,30 @@
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
+#if defined(AFHDS2) || defined(AFHDS3)
+
+PACK(struct AfhdsPulsesData {
+  uint8_t  pulses[64];
+  uint8_t  * ptr;
+  uint8_t  frame_index;
+  uint8_t  crc;
+  uint8_t  state;
+  uint8_t  timeout;
+  uint8_t  esc_state;
+  uint8_t  telemetry[64];
+  uint8_t  telemetry_index;
+  const uint8_t* getData()
+  {
+    return pulses;
+  }
+  uint8_t getSize()
+  {
+    return ptr - pulses;
+  }
+});
+
+#endif
+
 #if defined(MULTIMODULE)
 // When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
 // Keep the order of the fields that the so that the size stays small

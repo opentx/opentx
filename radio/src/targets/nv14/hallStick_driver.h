@@ -39,7 +39,7 @@
 
 ***************************************************************************************************/
 
-#include "flysky.h"
+#include "pulses/flysky.h"
 
 #define FLYSKY_HALL_BAUDRATE            ( 921600 )
 #define FLYSKY_HALL_CHANNEL_COUNT       ( 4 )
