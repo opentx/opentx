@@ -21,7 +21,9 @@
 #ifndef _PULSES_FLYSKY_H_
 #define _PULSES_FLYSKY_H_
 
-struct AfhdsPulsesData {
+#include "definitions.h"
+
+PACK(struct AfhdsPulsesData {
   uint8_t  pulses[64];
   uint8_t  * ptr;
   uint8_t  frame_index;
@@ -40,7 +42,7 @@ struct AfhdsPulsesData {
 	  return ptr - pulses;
   }
 
-} __attribute__((__packed__));
+});
 
 
 /*
@@ -49,7 +51,55 @@ struct AfhdsPulsesData {
 #define ESC_END                         0xDC
 #define ESC_ESC                         0xDD
 */
+#define HALL_PROTOLO_HEAD                 0x55
+#define HALL_RESP_TYPE_CALIB              0x0e
+#define HALL_RESP_TYPE_VALUES             0x0c
 
+#define HALLSTICK_BUFF_SIZE             ( 512 )
+
+enum
+{
+    GET_START = 0,
+    GET_ID,
+    GET_LENGTH,
+    GET_DATA,
+    GET_STATE,
+    GET_CHECKSUM,
+    CHECKSUM,
+};
+
+typedef struct
+{
+  unsigned char senderID:2;
+  unsigned char receiverID:2;
+  unsigned char packetID:4;
+} STRUCT_HALLID;
+
+typedef union
+{
+  STRUCT_HALLID hall_Id;
+  unsigned char ID;
+} STRUCT_ID;
+
+typedef struct
+{
+  unsigned char head;
+  STRUCT_ID hallID;
+  unsigned char length;
+  unsigned char data[HALLSTICK_BUFF_SIZE];
+  unsigned char reserved[15];
+  unsigned short checkSum;
+  unsigned char stickState;
+  unsigned char startIndex;
+  unsigned char endIndex;
+  unsigned char index;
+  unsigned char dataIndex;
+  unsigned char deindex;
+  unsigned char completeFlg;
+  unsigned char status;
+  unsigned char recevied;
+  unsigned char msg_OK;
+} STRUCT_HALL;
 
 enum FlySkyModuleState_E {
   STATE_SET_TX_POWER = 0,
@@ -72,6 +122,7 @@ enum FlySkyModuleState_E {
   STATE_DEFAULT_AFHDS2 = 17,
 };
 extern uint8_t tx_working_power;
+
 void resetPulsesAFHDS2(uint8_t port, uint8_t targetMode);
 void setupPulsesAFHDS2(uint8_t port);
 void bindReceiverAFHDS2(uint8_t port);
@@ -80,4 +131,7 @@ void getVersionInfoAFHDS2(uint8_t port, uint8_t isRfTransfer);
 //used to update config or force rx update mode
 void setFlyskyState(uint8_t port, uint8_t state);
 void usbDownloadTransmit(uint8_t *buffer, uint32_t size);
+
+unsigned short calc_crc16(void *pBuffer,unsigned char BufferSize);
+void parseCharacter(STRUCT_HALL *hallBuffer, unsigned char ch);
 #endif

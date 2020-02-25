@@ -453,7 +453,8 @@ void afhds3::beginRangeTest(::asyncOperationCallback_t callback) {
 
 void afhds3::cancelOperations() {
   if(operationCallback!=nullptr) operationCallback(false);
-  init(false);
+
+  else init(false);
 }
 void afhds3::stop() {
   TRACE("AFHDS3 STOP");
@@ -493,8 +494,8 @@ int16_t afhds3::convert(int channelValue) {
 void afhds3::setModelSettingsFromModule() {
   cfg.config.bindPower = moduleData->afhds3.bindPower;
   cfg.config.runPower = moduleData->afhds3.runPower;
-  cfg.config.emiStandard = moduleData->afhds3.emi;
-  cfg.config.telemetry = 1; //moduleData->afhds3.telemetry; always use bidirectional mode
+  cfg.config.emiStandard =
+  cfg.config.telemetry = moduleData->afhds3.telemetry; //always use bidirectional mode
   cfg.config.pwmFreq = moduleData->afhds3.rxFreq();
   cfg.config.serialMode = moduleData->afhds3.isSbus() ? SERIAL_MODE::SBUS_MODE : SERIAL_MODE::IBUS;
   cfg.config.pulseMode = moduleData->afhds3.isPWM() ? PULSE_MODE::PWM: PULSE_MODE::PPM_MODE;

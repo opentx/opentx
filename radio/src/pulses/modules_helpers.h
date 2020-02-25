@@ -658,9 +658,12 @@ typedef int32_t (*getChannelValue_t)(uint8_t);
 
 extern int32_t channelValue(uint8_t channel);
 extern void extmoduleSoftSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+#if defined(EXTMODULE_USART)
 extern void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
+#endif
+#if defined(INTMODULE_USART)
 extern void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
-
+#endif
 #if defined(INTMODULE_TIMER)
 void intmoduleTimerStart(uint32_t periodMs);
 #endif
@@ -733,13 +736,17 @@ public:
   void start() override
   {
     if(index == INTERNAL_MODULE) {
+#if defined(INTMODULE_USART)
       intmoduleSerialStart(baudrate, true, parity, stopBits, wordLength);
+#endif
 #if defined(INTMODULE_TIMER)
       intmoduleTimerStart(getPeriodMS());
 #endif
     }
     else if(index == EXTERNAL_MODULE) {
+#if defined(EXTMODULE_USART)
       extmoduleSerialStart(baudrate, getPeriodMS() * 2000, inverted, parity, stopBits, wordLength);
+#endif
     }
   }
   uint32_t baudrate;

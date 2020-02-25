@@ -49,7 +49,9 @@ enum FlySkySensorType_E {
   FLYSKY_SENSOR_PRESURRE,
   FLYSKY_SENSOR_GPS
 };
-
+#ifndef AFHDS2_BAUDRATE
+#define AFHDS2_BAUDRATE 921600
+#endif
 #define AFHDS_COMMAND_TIMEOUT 5
 class afhds2 : public AbstractSerialModule {
 public:

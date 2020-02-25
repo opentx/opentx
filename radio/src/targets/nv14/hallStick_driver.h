@@ -38,7 +38,9 @@
 /***************************************************************************************************
 
 ***************************************************************************************************/
-#define HALLSTICK_BUFF_SIZE             ( 512 )
+
+#include "flysky.h"
+
 #define FLYSKY_HALL_BAUDRATE            ( 921600 )
 #define FLYSKY_HALL_CHANNEL_COUNT       ( 4 )
 
@@ -83,57 +85,12 @@ typedef  struct
   UNION_DATA    payload;
 } STRUCT_HALLDATA;
 
-typedef  struct
-{
-  unsigned char senderID:2;
-  unsigned char receiverID:2;
-  unsigned char packetID:4;
-} STRUCT_HALLID;
-
-typedef  union
-{
-    STRUCT_HALLID hall_Id;
-    unsigned char ID;
-} STRUCT_ID;
-
-
 typedef  union
 {
     STRUCT_HALLDATA halldat;
     unsigned char buffer[30];
 } UNION_HALLDATA;
 
-
-typedef  struct
-{
-    unsigned char head;
-    STRUCT_ID hallID;
-    unsigned char length;
-    unsigned char data[HALLSTICK_BUFF_SIZE];
-    unsigned char reserved[15];
-    unsigned short checkSum;
-    unsigned char stickState;
-    unsigned char startIndex;
-    unsigned char endIndex;
-    unsigned char index;
-    unsigned char dataIndex;
-    unsigned char deindex;
-    unsigned char completeFlg;
-    unsigned char status;
-    unsigned char recevied;
-    unsigned char msg_OK;
-} STRUCT_HALL;
-
-enum
-{
-    GET_START = 0,
-    GET_ID,
-    GET_LENGTH,
-    GET_DATA,
-    GET_STATE,
-    GET_CHECKSUM,
-    CHECKSUM,
-};
 
 enum HALLSTICK_SEND_STATE_E {
     HALLSTICK_SEND_STATE_IDLE,
@@ -150,9 +107,6 @@ enum TRANSFER_DIR_E {
     TRANSFER_DIR_RFMODULE,
 };
 
-#define HALL_PROTOLO_HEAD                 0x55
-#define HALL_RESP_TYPE_CALIB              0x0e
-#define HALL_RESP_TYPE_VALUES             0x0c
 
 #define HALL_SERIAL_USART                 UART4
 #define HALL_SERIAL_GPIO                  GPIOA
@@ -196,8 +150,6 @@ extern void hall_stick_init(uint32_t baudrate);
 extern void hall_stick_loop( void );
 extern uint16_t get_hall_adc_value(uint8_t ch);
 extern void hallSerialPutc(char c);
-unsigned short  calc_crc16(void *pBuffer,unsigned char BufferSize);
-void Parse_Character(STRUCT_HALL *hallBuffer, unsigned char ch);
 extern bool isFlySkyUsbDownload(void);
 extern void onFlySkyUsbDownloadStart(uint8_t fw_state);
 #endif

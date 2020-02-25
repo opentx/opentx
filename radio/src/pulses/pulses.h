@@ -27,9 +27,13 @@
 #include "pxx1.h"
 #include "pxx2.h"
 #include "multi.h"
+#if defined(AFHDS2)
 #include "flysky.h"
 #include "afhds2.h"
+#endif
+#if defined(AFHDS3)
 #include "afhds3.h"
+#endif
 #include "modules_helpers.h"
 #include "ff.h"
 
