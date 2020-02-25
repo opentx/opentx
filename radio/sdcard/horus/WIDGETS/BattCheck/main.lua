@@ -485,7 +485,6 @@ local function refresh(wgt)
   elseif wgt.zone.w  > 150 and wgt.zone.h >  28 then refreshZoneSmall(wgt)
   elseif wgt.zone.w  >  65 and wgt.zone.h >  35 then refreshZoneTiny(wgt)
   end
-  lcd.drawText(wgt.zone.x, wgt.zone.y, string.format("r:%d", wgt.telemResetCount), SMLSIZE + CUSTOM_COLOR + RIGHT) -- ?????????????????????????
 
 end
 
