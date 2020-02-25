@@ -32,14 +32,14 @@ enum TouchEvent
 
 struct TouchState
 {
-   unsigned char event;
-   short x;
-   short y;
-   short startX;
-   short startY;
-   short lastX;
-   short lastY;
-   uint32_t time;
+  unsigned char event;
+  short x;
+  short y;
+  short startX;
+  short startY;
+  short deltaX;
+  short deltaY;
+  uint32_t time;
 };
 
 constexpr uint8_t SLIDE_RANGE = 6;

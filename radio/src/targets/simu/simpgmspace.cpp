@@ -812,3 +812,12 @@ void check_intmodule_heartbeat()
 {
 }
 #endif
+
+bool touchPanelEventOccured()
+{
+  return false;
+}
+
+void touchPanelRead()
+{
+}

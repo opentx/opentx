@@ -518,8 +518,10 @@ void handleTouch()
         }
         else {
           touchState.event = TE_DOWN;
-          touchState.startX = touchState.lastX = touchState.x;
-          touchState.startY = touchState.lastY = touchState.y;
+          touchState.startX = touchState.x;
+          touchState.startY = touchState.y;
+          touchState.deltaX = 0;
+          touchState.deltaY = 0;
         }
       }
       else if (TOUCH_SLIDE == TouchState) {

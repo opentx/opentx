@@ -261,8 +261,8 @@ long OpenTxSim::onMouseDown(FXObject *, FXSelector, void * v)
 
 #if defined(HARDWARE_TOUCH)
   touchState.event = TE_DOWN;
-  touchState.startX = touchState.lastX = touchState.x = evt->win_x;
-  touchState.startY = touchState.lastY = touchState.y = evt->win_y;
+  touchState.startX = touchState.x = evt->win_x;
+  touchState.startY = touchState.y = evt->win_y;
 #endif
 
   return 0;
@@ -278,8 +278,8 @@ long OpenTxSim::onMouseUp(FXObject*,FXSelector,void*v)
 #if defined(HARDWARE_TOUCH)
   if (touchState.event == TE_DOWN) {
     touchState.event = TE_UP;
-    touchState.x = evt->win_x;
-    touchState.y = evt->win_y;
+    touchState.x = touchState.startX;
+    touchState.y = touchState.startY;
   }
   else {
     touchState.event = TE_NONE;
@@ -298,7 +298,9 @@ long OpenTxSim::onMouseMove(FXObject*,FXSelector,void*v)
     TRACE_WINDOWS("[Mouse Move] %d %d", evt->win_x, evt->win_y);
 
 #if defined(HARDWARE_TOUCH)
-    if (touchState.event == TE_SLIDE || abs(evt->win_x - touchState.x) > 5 || abs(evt->win_y - touchState.y) > 5) {
+    touchState.deltaX += evt->win_x - touchState.x;
+    touchState.deltaY += evt->win_y - touchState.y;
+    if (touchState.event == TE_SLIDE || abs(touchState.deltaX) >= SLIDE_RANGE || abs(touchState.deltaY) >= SLIDE_RANGE) {
       touchState.event = TE_SLIDE;
       touchState.x = evt->win_x;
       touchState.y = evt->win_y;
