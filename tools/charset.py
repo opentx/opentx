@@ -13,7 +13,7 @@ extra_chars = "".join([chr(0x10000+i) for i in range(21)])
 def chinese_chars():
     charset = set()
     tools_path = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(tools_path, "../radio/src/translations/cn.h.txt")) as f:
+    with open(os.path.join(tools_path, "../radio/src/translations/cn.h.txt"), encoding='utf-8') as f:
         data = f.read()
         for c in data:
             if 0x4E00 <= ord(c) <= 0x9FFF:
