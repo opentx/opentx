@@ -835,6 +835,24 @@
 #define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
 
+// Touch
+#if defined(TOUCHPANEL)
+#define I2C_TOUCH_RCC_AHB1Periph        RCC_AHB1Periph_GPIOB
+#define I2C_TOUCH_RCC_APB1Periph        RCC_APB1Periph_I2C1
+#define I2C_TOUCH                       I2C1
+#define I2C_TOUCH_GPIO                  GPIOB
+#define I2C_TOUCH_SCL_GPIO_PIN          GPIO_Pin_8   // PB.08
+#define I2C_TOUCH_SDA_GPIO_PIN          GPIO_Pin_7   // PB.07
+
+#define I2C_TOUCH_RESET_GPIO            GPIOF
+#define I2C_TOUCH_RESET_GPIO_PIN        GPIO_Pin_10  // PF.10
+#define I2C_TOUCH_INT_GPIO              GPIOH
+#define I2C_TOUCH_INT_GPIO_PIN          GPIO_Pin_3   // PH.03
+#else
+#define I2C_TOUCH_RCC_AHB1Periph        0
+#define I2C_TOUCH_RCC_APB1Periph        0
+#endif
+
 // Bluetooth
 #define STORAGE_BLUETOOTH
 #if defined(BLUETOOTH)
