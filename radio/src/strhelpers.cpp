@@ -55,6 +55,9 @@ int8_t char2zchar(char c)
 #if LEN_SPECIAL_CHARS > 0
   if ((int8_t)c < 0 && c+128 <= LEN_SPECIAL_CHARS) return 41 + (c+128);
 #endif
+#if defined(TRANSLATIONS_DE)
+  if (c >  'z') return 'a' - c - 10;
+#endif
   if (c >= 'a') return 'a' - c - 1;
   if (c >= 'A') return c - 'A' + 1;
   if (c >= '0') return c - '0' + 27;
