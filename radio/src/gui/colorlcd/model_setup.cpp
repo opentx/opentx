@@ -654,7 +654,9 @@ class ModuleWindow : public FormGroup {
                      *modePtr = newValue;
                      SET_DIRTY();
                      moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
+#if defined(AFHDS2)
                      setFlyskyState(moduleIdx, STATE_SET_RX_PWM_PPM);
+#endif
                    });
       }
 #endif
@@ -793,7 +795,9 @@ class ModuleWindow : public FormGroup {
                          rxFreqPtr[1] = uint8_t(((uint16_t)newValue >> 8) & 0xFF);
                          SET_DIRTY();
                          moduleState[moduleIdx].setMode(MODULE_MODE_NORMAL);
+#if defined(AFHDS2)
                          setFlyskyState(moduleIdx, STATE_SET_RX_FREQUENCY);
+#endif
                        });
         grid.nextLine();
       }
