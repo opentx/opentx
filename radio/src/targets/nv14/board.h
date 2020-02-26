@@ -31,10 +31,10 @@
 #include "stm32f4xx_dma2d.h"
 #include "stm32f4xx_ltdc.h"
 #include "stm32f4xx_fmc.h"
+#include "hallStick_driver.h"
 #endif
 
 #include "touch_driver.h"
-#include "hallStick_driver.h"
 #include "lcd_driver.h"
 #include "battery_driver.h"
 
