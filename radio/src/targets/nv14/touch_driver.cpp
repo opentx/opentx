@@ -483,6 +483,12 @@ void TouchInit(void)
   */
 }
 
+//NV14 used IRQ based touch handling
+bool touchPanelEventOccured() {
+  return false;
+}
+void touchPanelRead() {}
+
 
 void handleTouch()
 {
