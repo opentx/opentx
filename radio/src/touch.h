@@ -39,7 +39,6 @@ struct TouchState
   short startY;
   short deltaX;
   short deltaY;
-  uint32_t time;
 };
 
 constexpr uint8_t SLIDE_RANGE = 6;

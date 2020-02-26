@@ -201,10 +201,11 @@ void boardInit()
     }
     else {
       uint32_t press_end_touch = press_end;
-      if(touchState.event == TE_UP)
+
+      if(touchPanelEventOccured())
       {
-        touchState.event = TE_NONE;
-        press_end_touch = touchState.time;
+        touchPanelRead();
+        press_end_touch = get_tmr10ms();
       }
       press_start = 0;
       handle_battery_charge(press_end_touch);
