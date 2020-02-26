@@ -539,5 +539,7 @@ extern AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
 uint8_t touchPressed(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
-
+//NOT used by NV14 - required by libopenui
+bool touchPanelEventOccured();
+void touchPanelRead();
 #endif // _BOARD_H_
