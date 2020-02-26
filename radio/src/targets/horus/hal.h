@@ -41,8 +41,8 @@
 #elif defined(RADIO_TX16S)
   #define KEYS_GPIO_REG_ENTER           GPIOI->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PI.08
-  #define KEYS_GPIO_REG_PGUP            GPIOH->IDR
-  #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_2  // PH.02
+  #define KEYS_GPIO_REG_PGUP            GPIOC->IDR
+  #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_13 // PC.13
   #define KEYS_GPIO_REG_PGDN            GPIOI->IDR
   #define KEYS_GPIO_PIN_PGDN            GPIO_Pin_11 // PI.11
   #define KEYS_GPIO_REG_UP              GPIOI->IDR
@@ -118,13 +118,8 @@
 #define SWITCHES_GPIO_PIN_E_L           GPIO_Pin_3  // PE.03
 #define STORAGE_SWITCH_F
 #define HARDWARE_SWITCH_F
-#if defined(RADIO_TX16S)
-#define SWITCHES_GPIO_REG_F             GPIOC->IDR
-#define SWITCHES_GPIO_PIN_F             GPIO_Pin_13  // PC.13
-#else
 #define SWITCHES_GPIO_REG_F             GPIOH->IDR
 #define SWITCHES_GPIO_PIN_F             GPIO_Pin_3  // PH.03
-#endif
 #define STORAGE_SWITCH_G
 #define HARDWARE_SWITCH_G
 #define SWITCHES_GPIO_REG_G_H           GPIOG->IDR
@@ -237,7 +232,6 @@
   #define KEYS_GPIOG_PINS               (SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_LVD)
 #if defined(RADIO_TX16S)
   #define KEYS_GPIOC_PINS               (GPIO_Pin_13)
-  #define KEYS_GPIOH_PINS               (GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
 #else
   #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
 #endif
@@ -847,7 +841,7 @@
 #define I2C_TOUCH_RESET_GPIO            GPIOF
 #define I2C_TOUCH_RESET_GPIO_PIN        GPIO_Pin_10  // PF.10
 #define I2C_TOUCH_INT_GPIO              GPIOH
-#define I2C_TOUCH_INT_GPIO_PIN          GPIO_Pin_3   // PH.03
+#define I2C_TOUCH_INT_GPIO_PIN          GPIO_Pin_2   // PH.02
 #else
 #define I2C_TOUCH_RCC_AHB1Periph        0
 #define I2C_TOUCH_RCC_APB1Periph        0
