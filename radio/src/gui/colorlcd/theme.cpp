@@ -202,6 +202,11 @@ void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, con
   }
 }
 
+void ThemeBase::drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const
+{
+	
+}
+
 ThemeBase * getTheme(const char * name)
 {
   std::list<ThemeBase *>::const_iterator it = getRegisteredThemes().cbegin();

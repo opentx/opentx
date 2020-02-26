@@ -85,7 +85,7 @@ class ThemeBase: public Theme
     virtual void drawMenuHeader(BitmapBuffer * dc, std::vector<PageTab *> & tabs, uint8_t currentIndex) const = 0;
 
     virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const override;
-    // virtual void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const = 0;
+    virtual void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const override;
 
     void drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t y, bool focus) const override;
 
