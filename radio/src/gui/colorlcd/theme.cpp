@@ -204,7 +204,11 @@ void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, con
 
 void ThemeBase::drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const
 {
-	
+  dc->drawSolidRect(x, y, w, h, 1, DEFAULT_COLOR);
+  if (value > 0) {
+    int width = (w * value) / 100;
+    dc->drawSolidFilledRect(x + 2, y + 2, width - 4, h - 4, CHECKBOX_COLOR);
+  }
 }
 
 ThemeBase * getTheme(const char * name)
