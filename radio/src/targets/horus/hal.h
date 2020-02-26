@@ -829,7 +829,7 @@
 #define TIMER_2MHz_TIMER                TIM7
 
 // Touch
-#if defined(TOUCHPANEL)
+#if defined(HARDWARE_TOUCH)
 #define I2C_TOUCH_RCC_AHB1Periph        RCC_AHB1Periph_GPIOB
 #define I2C_TOUCH_RCC_APB1Periph        RCC_APB1Periph_I2C1
 #define I2C_TOUCH                       I2C1
