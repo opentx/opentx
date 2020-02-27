@@ -24,6 +24,8 @@
 #include "helpers.h"
 #include "customdebug.h"
 
+constexpr u_int8_t UI_MAX_TRIM_SLIDERS = 4;
+
 FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchFilterItemModel * switchModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::FlightMode),
@@ -124,7 +126,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     trimsValue[i]->setProperty("index", i);
     connect(trimsValue[i], SIGNAL(valueChanged(int)), this, SLOT(phaseTrim_valueChanged()));
 
-    if (i < Board::STICK_AXIS_COUNT) {
+    if (i < UI_MAX_TRIM_SLIDERS) {
       trimsSlider[i]->setProperty("index", i);
       connect(trimsSlider[i], SIGNAL(valueChanged(int)), this, SLOT(phaseTrimSlider_valueChanged()));
     }
@@ -307,7 +309,8 @@ void FlightModePanel::update()
     if (trimsMax == 0 || !model->extendedTrims) {
       trimsMax = firmware->getCapability(TrimsRange);
     }
-    trimsSlider[i]->setRange(-trimsMax, +trimsMax);
+    if (i < UI_MAX_TRIM_SLIDERS)
+      trimsSlider[i]->setRange(-trimsMax, +trimsMax);
     trimsValue[i]->setRange(-trimsMax, +trimsMax);
     int chn = CONVERT_MODE(i+1)-1;
     if (chn == 2/*TODO constant*/ && model->throttleReversed)
@@ -421,12 +424,14 @@ void FlightModePanel::trimUpdate(unsigned int trim)
   lock = true;
   int chn = CONVERT_MODE(trim+1)-1;
   int value = model->getTrimValue(phaseIdx, chn);
-  trimsSlider[trim]->setValue(value);
+  if (trim < UI_MAX_TRIM_SLIDERS)
+    trimsSlider[trim]->setValue(value);
   trimsValue[trim]->setValue(value);
   if (phase.trimMode[chn] < 0) {
     trimsUse[trim]->setCurrentIndex(0);
     trimsValue[trim]->setEnabled(false);
-    trimsSlider[trim]->setEnabled(false);
+    if (trim < UI_MAX_TRIM_SLIDERS)
+      trimsSlider[trim]->setEnabled(false);
   }
   else {
     Board::Type board = firmware->getBoard();
@@ -436,11 +441,13 @@ void FlightModePanel::trimUpdate(unsigned int trim)
       trimsUse[trim]->setCurrentIndex(phase.trimRef[chn]);
     if (phaseIdx == 0 || phase.trimRef[chn] == phaseIdx || (IS_HORUS_OR_TARANIS(board) && phase.trimMode[chn] != 0)) {
       trimsValue[trim]->setEnabled(true);
-      trimsSlider[trim]->setEnabled(true);
+      if (trim < UI_MAX_TRIM_SLIDERS)
+        trimsSlider[trim]->setEnabled(true);
     }
     else {
       trimsValue[trim]->setEnabled(false);
-      trimsSlider[trim]->setEnabled(false);
+      if (trim < UI_MAX_TRIM_SLIDERS)
+        trimsSlider[trim]->setEnabled(false);
     }
   }
   lock = false;
@@ -629,7 +636,8 @@ void FlightModePanel::phaseTrim_valueChanged()
     int value = spinBox->value();
     model->setTrimValue(phaseIdx, chn, value);
     lock = true;
-    trimsSlider[trim]->setValue(value);
+    if (trim < UI_MAX_TRIM_SLIDERS)
+      trimsSlider[trim]->setValue(value);
     lock = false;
     emit modified();
   }
