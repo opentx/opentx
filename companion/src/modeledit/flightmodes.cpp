@@ -124,7 +124,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     trimsValue[i]->setProperty("index", i);
     connect(trimsValue[i], SIGNAL(valueChanged(int)), this, SLOT(phaseTrim_valueChanged()));
 
-    if (i < 4) {
+    if (i < Board::STICK_AXIS_COUNT) {
       trimsSlider[i]->setProperty("index", i);
       connect(trimsSlider[i], SIGNAL(valueChanged(int)), this, SLOT(phaseTrimSlider_valueChanged()));
     }
