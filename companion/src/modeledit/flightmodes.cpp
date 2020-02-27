@@ -24,7 +24,7 @@
 #include "helpers.h"
 #include "customdebug.h"
 
-constexpr u_int8_t UI_MAX_TRIM_SLIDERS = 4;
+#define UI_MAX_TRIM_SLIDERS 4
 
 FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchFilterItemModel * switchModel):
   ModelPanel(parent, model, generalSettings, firmware),
