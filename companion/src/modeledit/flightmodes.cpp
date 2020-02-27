@@ -304,7 +304,7 @@ void FlightModePanel::update()
   ui->fadeIn->setValue(float(phase.fadeIn)/scale);
   ui->fadeOut->setValue(float(phase.fadeOut)/scale);
 
-  for (int i=0; i<4; i++) {
+  for (int i = 0; i < getBoardCapability(firmware->getBoard(), Board::NumTrims); i++) {
     int trimsMax = firmware->getCapability(ExtendedTrimsRange);
     if (trimsMax == 0 || !model->extendedTrims) {
       trimsMax = firmware->getCapability(TrimsRange);
