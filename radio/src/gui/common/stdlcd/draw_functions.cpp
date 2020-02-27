@@ -407,6 +407,30 @@ void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, 
           }
         }
       }
+      else if (telemetrySensor.id >= RB3040_OUTPUT_FIRST_ID && telemetrySensor.id <= RB3040_OUTPUT_LAST_ID) {
+        if (telemetrySensor.subId == 0) {
+          if(value == 0) {
+            lcdDrawText(x, y, "OK", flags);     
+          }
+          else {
+            for (uint8_t i=0; i<9; i++) {
+              if (value & (1 << i)) {
+                if (i < 8) {
+                  char s[] = "CH__ KO";
+                  strAppendUnsigned(&s[2], i+17, 2);
+                  lcdDrawText(x, flags & DBLSIZE ? y+1 : y, s, flags & ~DBLSIZE);
+                  break;
+                }
+                else {
+                  char s[] = "S.P Ovl";
+                  lcdDrawText(x, flags & DBLSIZE ? y+1 : y, s, flags & ~DBLSIZE);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
   else if (telemetrySensor.unit == UNIT_TEXT) {
