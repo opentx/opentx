@@ -184,6 +184,9 @@ enum {
 
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_RAS,
+#if defined(PCBX7) || defined(PCBX9LITE) || defined(PCBXLITE) || defined(PCBXLITES)
+  ITEM_RADIO_HARDWARE_SMARTPORT_POWER,
+#endif
   ITEM_RADIO_HARDWARE_DEBUG,
 #if defined(EEPROM_RLC)
   ITEM_RADIO_BACKUP_EEPROM,
@@ -631,6 +634,15 @@ void menuRadioHardware(event_t event)
         else
           lcdDrawText(lcdNextPos, y, "---");
         break;
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || defined(PCBXLITES)
+       case ITEM_RADIO_HARDWARE_SMARTPORT_POWER:
+        g_eeGeneral.smartportUpdatePower = 1 - editCheckBox(1 - g_eeGeneral.smartportUpdatePower, HW_SETTINGS_COLUMN2, y, "SP power", attr, event);
+        if (g_eeGeneral.smartportUpdatePower == 0)
+          sportUpdatePowerOn(); 
+        else
+          sportUpdatePowerOff();
+        break;
+#endif
 
       case ITEM_RADIO_HARDWARE_DEBUG:
         lcdDrawTextAlignedLeft(y, STR_DEBUG);

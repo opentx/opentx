@@ -1966,6 +1966,13 @@ void opentxInit()
   btInit();
 #endif
 
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || defined(PCBXLITES)
+  if (g_eeGeneral.smartportUpdatePower == 0)
+    sportUpdatePowerOn(); 
+  else
+    sportUpdatePowerOff();
+#endif
+
 #if defined(COLORLCD)
   loadTheme();
   loadFontCache();

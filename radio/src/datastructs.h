@@ -792,6 +792,7 @@ PACK(struct RadioData {
   NOBACKUP(int8_t   varioPitch);
   NOBACKUP(int8_t   varioRange);
   NOBACKUP(int8_t   varioRepeat);
+  NOBACKUP(uint8_t  smartportUpdatePower:1);
   CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
 
   EXTRA_GENERAL_FIELDS
@@ -917,13 +918,13 @@ static inline void check_struct()
   CHKSIZE(TrainerData, 16);
 
 #if defined(PCBXLITES)
-  CHKSIZE(RadioData, 860);
+  CHKSIZE(RadioData, 861);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBXLITE)
-  CHKSIZE(RadioData, 858);
+  CHKSIZE(RadioData, 859);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
-  CHKSIZE(RadioData, 864);
+  CHKSIZE(RadioData, 865);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
