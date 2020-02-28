@@ -80,20 +80,28 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   }
 
   // The trims
-  QString labels[CPN_MAX_STICKS];
+  QString labels[CPN_MAX_TRIMS];
   for(int i=0; i < CPN_MAX_STICKS; i++) {
     labels[i] = firmware->getAnalogInputName(i);
   }
+  labels[4] = "T5";
+  labels[5] = "T6";
 
-
-  trimsLabel << ui->trim1Label << ui->trim2Label << ui->trim3Label << ui->trim4Label;
-  trimsUse << ui->trim1Use << ui->trim2Use << ui->trim3Use << ui->trim4Use;
-  trimsValue << ui->trim1Value << ui->trim2Value << ui->trim3Value << ui->trim4Value;
-  trimsSlider << ui->trim1Slider << ui->trim2Slider << ui->trim3Slider << ui->trim4Slider;
+  trimsLabel << ui->trim1Label << ui->trim2Label << ui->trim3Label << ui->trim4Label << ui->trim5Label << ui->trim6Label;
+  trimsUse << ui->trim1Use << ui->trim2Use << ui->trim3Use << ui->trim4Use << ui->trim5Use << ui->trim6Use;
+  trimsValue << ui->trim1Value << ui->trim2Value << ui->trim3Value << ui->trim4Value << ui->trim5Value << ui->trim6Value;
+  trimsSlider << ui->trim1Slider << ui->trim2Slider << ui->trim3Slider << ui->trim4Slider << ui->trim5Slider << ui->trim6Slider;
 
   Board::Type board = firmware->getBoard();
 
-  for (int i=0; i<4; i++) {
+  for (int i = getBoardCapability(board,Board::NumTrims); i < CPN_MAX_TRIMS; i++) {
+    trimsLabel[i]->hide();
+    trimsUse[i]->hide();
+    trimsValue[i]->hide();
+    trimsSlider[i]->hide();
+  }
+
+  for (int i = 0; i < getBoardCapability(board,Board::NumTrims); i++) {
     trimsLabel[i]->setText(labels[CONVERT_MODE(i+1)-1]);
 
     QComboBox * cb = trimsUse[i];
@@ -293,7 +301,7 @@ void FlightModePanel::update()
   ui->fadeIn->setValue(float(phase.fadeIn)/scale);
   ui->fadeOut->setValue(float(phase.fadeOut)/scale);
 
-  for (int i=0; i<4; i++) {
+  for (int i = 0; i < getBoardCapability(firmware->getBoard(), Board::NumTrims); i++) {
     int trimsMax = firmware->getCapability(ExtendedTrimsRange);
     if (trimsMax == 0 || !model->extendedTrims) {
       trimsMax = firmware->getCapability(TrimsRange);
