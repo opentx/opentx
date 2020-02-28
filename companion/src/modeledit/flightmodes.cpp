@@ -98,7 +98,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     trimsLabel[i]->hide();
     trimsUse[i]->hide();
     trimsValue[i]->hide();
-	trimsSlider[i]->hide();
+    trimsSlider[i]->hide();
   }
 
   for (int i = 0; i < getBoardCapability(board,Board::NumTrims); i++) {
