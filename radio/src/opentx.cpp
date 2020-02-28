@@ -1968,7 +1968,7 @@ void opentxInit()
 
 #if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || defined(PCBXLITES)
   if (g_eeGeneral.smartportUpdatePower == 0)
-    sportUpdatePowerOn(); 
+    sportUpdatePowerOn();
   else
     sportUpdatePowerOff();
 #endif

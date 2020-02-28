@@ -638,7 +638,7 @@ void menuRadioHardware(event_t event)
        case ITEM_RADIO_HARDWARE_SMARTPORT_POWER:
         g_eeGeneral.smartportUpdatePower = 1 - editCheckBox(1 - g_eeGeneral.smartportUpdatePower, HW_SETTINGS_COLUMN2, y, "SP power", attr, event);
         if (g_eeGeneral.smartportUpdatePower == 0)
-          sportUpdatePowerOn(); 
+          sportUpdatePowerOn();
         else
           sportUpdatePowerOff();
         break;

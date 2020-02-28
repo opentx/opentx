@@ -942,4 +942,4 @@ static inline void check_struct()
 
 #undef CHKSIZE
 }
-#endif /* BACKUP */
+#endif /* BACKUP */ 
