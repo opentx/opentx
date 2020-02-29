@@ -783,7 +783,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1);
   NOBACKUP(uint8_t  USBMode:2);
   NOBACKUP(uint8_t  jackMode:2);
-  NOBACKUP(uint8_t  spare3:1);
+  NOBACKUP(uint8_t  smartportUpdatePower:1);
   NOBACKUP(char     ttsLanguage[2]);
   NOBACKUP(int8_t   beepVolume:4);
   NOBACKUP(int8_t   wavVolume:4);
@@ -792,7 +792,6 @@ PACK(struct RadioData {
   NOBACKUP(int8_t   varioPitch);
   NOBACKUP(int8_t   varioRange);
   NOBACKUP(int8_t   varioRepeat);
-  NOBACKUP(uint8_t  smartportUpdatePower:1);
   CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
 
   EXTRA_GENERAL_FIELDS
@@ -918,25 +917,25 @@ static inline void check_struct()
   CHKSIZE(TrainerData, 16);
 
 #if defined(PCBXLITES)
-  CHKSIZE(RadioData, 861);
+  CHKSIZE(RadioData, 860);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBXLITE)
-  CHKSIZE(RadioData, 859);
+  CHKSIZE(RadioData, 858);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
-  CHKSIZE(RadioData, 865);
+  CHKSIZE(RadioData, 864);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
   CHKSIZE(ModelData, 6614);
 #elif defined(PCBX9D) || defined(PCBX9DP)
-  CHKSIZE(RadioData, 899);
+  CHKSIZE(RadioData, 898);
   CHKSIZE(ModelData, 6604);
 #elif defined(PCBSKY9X)
-  CHKSIZE(RadioData, 736);
+  CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 882);
+  CHKSIZE(RadioData, 881);
   CHKSIZE(ModelData, 9736);
 #endif
 
