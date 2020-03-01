@@ -35,19 +35,21 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
 #endif
 {
 #if defined(HARDWARE_TOUCH)
-  new FabButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
+  if(confirmHandler) {
+    new FabButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
     [=]() -> uint8_t {
       deleteLater();
       if (confirmHandler)confirmHandler();
        return 0;
-  });
+    });
+  }
   if(cancelHandler) {
     new FabButton(this, 50, ALERT_BUTTON_TOP, ICON_BACK,
-      [=]() -> uint8_t {
+    [=]() -> uint8_t {
         deleteLater();
         if (cancelHandler) cancelHandler();
         return 0;
-      });
+    });
   }
 
 #endif
@@ -57,28 +59,44 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
 
 void FullScreenDialog::paint(BitmapBuffer * dc)
 {
-  static_cast<ThemeBase *>(theme)->drawBackground(dc);
+  ThemeBase* tb = static_cast<ThemeBase *>(theme);
+
+  tb->drawBackground(dc);
 
   dc->drawFilledRect(0, ALERT_FRAME_TOP, LCD_W, ALERT_FRAME_HEIGHT, SOLID, FOCUS_COLOR | OPACITY(8));
 
-  if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
-    dc->drawBitmap(ALERT_BITMAP_LEFT, ALERT_BITMAP_TOP, static_cast<ThemeBase *>(theme)->asterisk);
-  else if (type == WARNING_TYPE_INFO)
-    dc->drawBitmap(ALERT_BITMAP_LEFT, ALERT_BITMAP_TOP, static_cast<ThemeBase *>(theme)->busy);
-  else // confirmation
-    dc->drawBitmap(ALERT_BITMAP_LEFT, ALERT_BITMAP_TOP, static_cast<ThemeBase *>(theme)->question);
 
+  const BitmapBuffer* bitmap = nullptr;
+  switch(type) {
+  case WARNING_TYPE_ALERT:
+  case WARNING_TYPE_ASTERISK:
+    bitmap = tb->asterisk;
+    break;
+  case WARNING_TYPE_INFO:
+    bitmap = tb->busy;
+    break;
+  default:
+    bitmap = tb->question;
+    break;
+  }
+  coord_t left = ALERT_BITMAP_LEFT;
+
+  if(bitmap) {
+    TRACE("PAINT BITMAP");
+    dc->drawBitmap(ALERT_BITMAP_LEFT, ALERT_BITMAP_TOP, bitmap);
+    left += MENUS_OFFSET_TOP + bitmap->width();
+  }
   if (type == WARNING_TYPE_ALERT) {
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, STR_WARNING, ALARM_COLOR|FONT(XL));
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, title, ALARM_COLOR|FONT(XL));
+    dc->drawText(left, ALERT_TITLE_TOP, STR_WARNING, ALARM_COLOR|FONT(XL));
+    dc->drawText(left, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, title, ALARM_COLOR|FONT(XL));
 #else
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|FONT(XL));
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, STR_WARNING, ALARM_COLOR|FONT(XL));
+    dc->drawText(left, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|FONT(XL));
+    dc->drawText(left, ALERT_TITLE_TOP + ALERT_TITLE_LINE_HEIGHT, STR_WARNING, ALARM_COLOR|FONT(XL));
 #endif
   }
   else if (!title.empty()) {
-    dc->drawText(ALERT_TITLE_LEFT, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|FONT(XL));
+    dc->drawText(left, ALERT_TITLE_TOP, title.c_str(), ALARM_COLOR|FONT(XL));
   }
 
   if (!message.empty()) {
