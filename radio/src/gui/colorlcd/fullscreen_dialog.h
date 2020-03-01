@@ -33,7 +33,7 @@ enum DialogType {
 
 class FullScreenDialog : public FormGroup {
   public:
-    FullScreenDialog(uint8_t type, std::string title, std::string message = "", std::string action = "", std::function<void(void)> confirmHandler = nullptr);
+    FullScreenDialog(uint8_t type, std::string title, std::string message = "", std::string action = "", std::function<void(void)> confirmHandler = nullptr, std::function<void(void)> cancelHandler = nullptr);
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() override
@@ -77,6 +77,7 @@ class FullScreenDialog : public FormGroup {
     bool running = false;
     std::function<bool(void)> closeCondition;
     std::function<void(void)> confirmHandler;
+    std::function<void(void)> cancelHandler;
 #if !defined(HARDWARE_TOUCH)
     Window * previousFocus = nullptr;
 #endif

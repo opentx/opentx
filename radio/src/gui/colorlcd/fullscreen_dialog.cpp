@@ -22,24 +22,34 @@
 #include "mainwindow.h"
 #include "opentx.h"
 
-FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string message, std::string action, std::function<void(void)> confirmHandler):
+FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string message, std::string action, std::function<void(void)> confirmHandler, std::function<void(void)> cancelHandler):
   FormGroup(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   type(type),
   title(std::move(title)),
   message(std::move(message)),
   action(std::move(action)),
-  confirmHandler(confirmHandler)
+  confirmHandler(confirmHandler),
+  cancelHandler(cancelHandler)
 #if !defined(HARDWARE_TOUCH)
   , previousFocus(focusWindow)
 #endif
 {
 #if defined(HARDWARE_TOUCH)
   new FabButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
-                    [=]() -> uint8_t {
-                      if (confirmHandler)
-                        confirmHandler();
-                      return 0;
-                    });
+    [=]() -> uint8_t {
+      deleteLater();
+      if (confirmHandler)confirmHandler();
+       return 0;
+  });
+  if(cancelHandler) {
+    new FabButton(this, 50, ALERT_BUTTON_TOP, ICON_BACK,
+      [=]() -> uint8_t {
+        deleteLater();
+        if (cancelHandler) cancelHandler();
+        return 0;
+      });
+  }
+
 #endif
   bringToTop();
   setFocus();
@@ -92,6 +102,8 @@ void FullScreenDialog::onEvent(event_t event)
   }
   else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
     deleteLater();
+    if (cancelHandler)
+      cancelHandler();
   }
 }
 #endif
@@ -100,7 +112,7 @@ void FullScreenDialog::onEvent(event_t event)
 bool FullScreenDialog::onTouchEnd(coord_t x, coord_t y)
 {
   Window::onTouchEnd(x, y);
-  deleteLater();
+  //deleteLater();
   return true;
 }
 #endif
