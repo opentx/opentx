@@ -377,9 +377,10 @@ bool menuRadioHardware(event_t event)
 
 #if HAS_SPORT_UPDATE_CONNECTOR()
       case ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER:
-        g_eeGeneral.sportUpdatePower = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SPORT_UPDATE_POWER_MODE, STR_SPORT_UPDATE_POWER_MODES, g_eeGeneral.sportUpdatePower, 0, 1, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPORT_UPDATE_POWER_MODE);
+        g_eeGeneral.sportUpdatePower = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SPORT_UPDATE_POWER_MODES, g_eeGeneral.sportUpdatePower, 0, 1, attr, event);
         if (attr && checkIncDec_Ret) {
-          sportUpdatePowerInit();
+          SPORT_UPDATE_POWER_INIT();
         }
         break;
 #endif
