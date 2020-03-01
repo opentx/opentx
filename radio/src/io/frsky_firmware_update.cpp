@@ -476,7 +476,7 @@ const char * FrskyDeviceFirmwareUpdate::endTransfer()
   return nullptr;
 }
 
-const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHandler progressHandler)
+void FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHandler progressHandler, DoneHandler doneHandler)
 {
   pausePulses();
 
@@ -502,11 +502,10 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
   BACKLIGHT_ENABLE();
 
   if (result) {
-    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
-    SET_WARNING_INFO(result, strlen(result), 0);
+    doneHandler(false, STR_FIRMWARE_UPDATE_ERROR, result);
   }
   else {
-    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+    doneHandler(true, STR_FIRMWARE_UPDATE_SUCCESS, nullptr);
   }
 
 #if defined(HARDWARE_INTERNAL_MODULE)
@@ -534,8 +533,6 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
 
   state = SPORT_IDLE;
   resumePulses();
-
-  return result;
 }
 
 #define CHIP_FIRMWARE_UPDATE_TIMEOUT  20000 /* 20s */

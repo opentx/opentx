@@ -22,6 +22,7 @@
 #define OPENTX_MULTI_FIRMWARE_H
 
 #include "ff.h"
+#include "dataconstants.h"
 
 /* Signature format is multi-[board type]-[bootloader support][check for bootloader][multi telemetry type][telemetry inversion][debug]-[firmware version]
    Where:
@@ -101,6 +102,19 @@ class MultiFirmwareInformation {
     const char * readV2Signature(const char * buffer);
 };
 
-bool multiFlashFirmware(uint8_t module, const char * filename);
+void multiFlashFirmware(uint8_t module, const char * filename, ProgressHandler progressHandler, DoneHandler doneHandler);
+
+class MultiModuleFirmwareUpdate
+{
+public:
+  MultiModuleFirmwareUpdate(ModuleIndex module):
+      module(module) {
+  }
+  void flashFirmware(const char * filename, ProgressHandler progressHandler, DoneHandler doneHandler) {
+    multiFlashFirmware((uint8_t)module, filename, progressHandler, doneHandler);
+  }
+protected:
+  ModuleIndex module;
+};
 
 #endif //OPENTX_MULTI_FIRMWARE_H

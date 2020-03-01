@@ -24,5 +24,5 @@
 #include <functional>
 
 typedef std::function<void(const char *, const char *, int, int)> ProgressHandler;
-
+typedef std::function<void(bool, const char *, const char *)> DoneHandler;
 #endif // _POPUPS_H_

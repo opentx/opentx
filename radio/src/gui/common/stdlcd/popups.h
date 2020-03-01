@@ -60,6 +60,7 @@ void showAlertBox(const char * title, const char * text, const char * action , u
 // Full screen with 2 lines and a progress bar
 void drawProgressScreen(const char * title, const char * message, int num, int den);
 typedef void (* ProgressHandler)(const char *, const char *, int, int);
+typedef void (* FinishedHandler)(bool, const char *, const char *);
 
 enum
 {

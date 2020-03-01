@@ -34,19 +34,15 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
   , previousFocus(focusWindow)
 #endif
 {
+  running = true;
 #if defined(HARDWARE_TOUCH)
   if(confirmHandler) {
-    new FabButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
-    [=]() -> uint8_t {
-      deleteLater();
-      if (confirmHandler)confirmHandler();
-       return 0;
-    });
+    addNextButton(confirmHandler);
   }
   if(cancelHandler) {
     new FabButton(this, 50, ALERT_BUTTON_TOP, ICON_BACK,
     [=]() -> uint8_t {
-        deleteLater();
+        running = false;
         if (cancelHandler) cancelHandler();
         return 0;
     });
@@ -57,6 +53,18 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
   setFocus();
 }
 
+#if defined(HARDWARE_TOUCH)
+void FullScreenDialog::addNextButton(std::function<void(void)> handler) {
+  this->confirmHandler = handler;
+  new FabButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
+  [=]() -> uint8_t {
+    running = false;
+    if (confirmHandler) confirmHandler();
+     return 0;
+  });
+}
+#endif
+
 void FullScreenDialog::paint(BitmapBuffer * dc)
 {
   ThemeBase* tb = static_cast<ThemeBase *>(theme);
@@ -64,7 +72,6 @@ void FullScreenDialog::paint(BitmapBuffer * dc)
   tb->drawBackground(dc);
 
   dc->drawFilledRect(0, ALERT_FRAME_TOP, LCD_W, ALERT_FRAME_HEIGHT, SOLID, FOCUS_COLOR | OPACITY(8));
-
 
   const BitmapBuffer* bitmap = nullptr;
   switch(type) {
@@ -82,7 +89,6 @@ void FullScreenDialog::paint(BitmapBuffer * dc)
   coord_t left = ALERT_BITMAP_LEFT;
 
   if(bitmap) {
-    TRACE("PAINT BITMAP");
     dc->drawBitmap(ALERT_BITMAP_LEFT, ALERT_BITMAP_TOP, bitmap);
     left += MENUS_OFFSET_TOP + bitmap->width();
   }
@@ -114,12 +120,12 @@ void FullScreenDialog::onEvent(event_t event)
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-    deleteLater();
+    running = false;
     if (confirmHandler)
       confirmHandler();
   }
   else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-    deleteLater();
+    running = false;
     if (cancelHandler)
       cancelHandler();
   }
@@ -130,16 +136,19 @@ void FullScreenDialog::onEvent(event_t event)
 bool FullScreenDialog::onTouchEnd(coord_t x, coord_t y)
 {
   Window::onTouchEnd(x, y);
-  //deleteLater();
   return true;
 }
 #endif
 
 void FullScreenDialog::checkEvents()
 {
+  if(!running) {
+    deleteLater();
+    return;
+  }
   Window::checkEvents();
   if (closeCondition && closeCondition()) {
-    deleteLater();
+    running = false;
   }
 }
 
@@ -150,13 +159,10 @@ void FullScreenDialog::deleteLater()
     previousFocus->setFocus();
   }
 #endif
-
-  if (running) {
-    running = false;
-  }
-  else {
-    Window::deleteLater();
-  }
+  // Dialog is being removed in message loop
+  // Lets wait for new iteration;
+  if (running) running = false;
+  else Window::deleteLater();
 }
 
 void FullScreenDialog::runForever()

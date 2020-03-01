@@ -22,6 +22,12 @@
 struct Zone
 {
   uint16_t x, y, w, h;
+  uint16_t bottom() {
+    return y + h;
+  }
+  uint16_t right() {
+    return x + w;
+    }
 };
 
 union ZoneOptionValue

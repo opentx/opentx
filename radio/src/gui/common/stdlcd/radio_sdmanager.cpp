@@ -134,6 +134,15 @@ void onUpdateStateChanged()
 }
 #endif
 
+void onFlashDone(bool success, const char* header, const char* message) {
+  if(success) {
+    POPUP_INFORMATION(header);
+  }
+  else{
+    POPUP_WARNING(header);
+    SET_WARNING_INFO(message, strlen(message), 0);
+  }
+}
 void onSdManagerMenu(const char * result)
 {
   TCHAR lfn[FF_MAX_LFN+1];
@@ -214,23 +223,23 @@ void onSdManagerMenu(const char * result)
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
     FrskyDeviceFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashFirmware(lfn, drawProgressScreen);
+    device.flashFirmware(lfn, drawProgressScreen, onFlashDone);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
     FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
-    device.flashFirmware(lfn, drawProgressScreen);
+    device.flashFirmware(lfn, drawProgressScreen, onFlashDone);
   }
 #if defined(MULTIMODULE)
 #if defined(INTERNAL_MODULE_MULTI)
   else if (result == STR_FLASH_INTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    multiFlashFirmware(INTERNAL_MODULE, lfn);
+    multiFlashFirmware(INTERNAL_MODULE, lfn, drawProgressScreen);
   }
 #endif
   else if (result == STR_FLASH_EXTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    multiFlashFirmware(EXTERNAL_MODULE, lfn);
+    multiFlashFirmware(EXTERNAL_MODULE, lfn, drawProgressScreen);
   }
 #endif
 #if defined(BLUETOOTH)

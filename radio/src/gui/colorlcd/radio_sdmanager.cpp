@@ -22,6 +22,7 @@
 #include "opentx.h"
 #include "libopenui.h"
 #include "io/frsky_firmware_update.h"
+#include "io/multi_firmware_update.h"
 
 RadioSdManagerPage::RadioSdManagerPage() :
   PageTab(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, ICON_RADIO_SD_MANAGER)
@@ -85,29 +86,37 @@ class FilePreview : public Window
     BitmapBuffer *bitmap = nullptr;
 };
 
+template <class T>
 class FlashModuleDialog: public FullScreenDialog
 {
   public:
     FlashModuleDialog(ModuleIndex module):
       FullScreenDialog(WARNING_TYPE_INFO, "Flash device"),
-      device(module),
-      progress(this, {100, 100, 100, 15})
+      device(module)
     {
+      progress = new Progress(this, {ALERT_BITMAP_LEFT, ALERT_BUTTON_TOP, LCD_W - ALERT_BITMAP_LEFT*2, ALERT_TITLE_LINE_HEIGHT});
     }
 
-    void flash(const char * filename)
+    virtual void flash(const char * filename)
     {
-      device.flashFirmware(filename, [=](const char * title, const char * message, int count, int total) -> void {
-          setMessage(message);
-          progress.setValue(total > 0 ? count * 100 / total : 0);
-          mainWindow.run(false);
-      });
-      deleteLater();
+      device.flashFirmware(filename,
+      [=](const char * title, const char * message, int count, int total) -> void {
+        setMessage(message);
+        progress->setValue(total > 0 ? count * 100 / total : 0);
+        mainWindow.run(false);
+      },
+      [=](bool success, const char * message, const char * messageLine2) -> void {
+        clear();
+        progress = nullptr;
+        type = success ? WARNING_TYPE_INFO : WARNING_TYPE_ALERT;
+        if(message != nullptr) setMessage(message);
+        addNextButton(confirmHandler);
+     });
     }
 
   protected:
-    FrskyDeviceFirmwareUpdate device;
-    Progress progress;
+    T device;
+    Progress* progress;
 };
 
 void RadioSdManagerPage::build(FormWindow * window)
@@ -176,19 +185,35 @@ void RadioSdManagerPage::build(FormWindow * window)
                   // TODO
               });
             }
+#if defined(MULTIMODULE)
+#if defined(INTERNAL_MODULE_MULTI)
+            else if(!strcasecmp(ext, MULTI_FIRMWARE_EXT)) {
+              menu->addLine(STR_FLASH_INTERNAL_MULTI, [=]() {
+                auto dialog = new FlashModuleDialog<MultiModuleFirmwareUpdate>(INTERNAL_MODULE);
+                dialog->flash(getFullPath(name));
+              });
+            }
+#endif
+            else if(!strcasecmp(ext, MULTI_FIRMWARE_EXT)) {
+              menu->addLine(STR_FLASH_EXTERNAL_MULTI, [=]() {
+                auto dialog = new FlashModuleDialog<MultiModuleFirmwareUpdate>(EXTERNAL_MODULE);
+                dialog->flash(getFullPath(name));
+              });
+            }
+#endif
             else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
               if (HAS_SPORT_UPDATE_CONNECTOR()) {
                 menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
-                    auto dialog = new FlashModuleDialog(SPORT_MODULE);
+                    auto dialog = new FlashModuleDialog<FrskyDeviceFirmwareUpdate>(SPORT_MODULE);
                     dialog->flash(getFullPath(name));
                 });
               }
               menu->addLine(STR_FLASH_INTERNAL_MODULE, [=]() {
-                  auto dialog = new FlashModuleDialog(INTERNAL_MODULE);
+                  auto dialog = new FlashModuleDialog<FrskyDeviceFirmwareUpdate>(INTERNAL_MODULE);
                   dialog->flash(getFullPath(name));
               });
               menu->addLine(STR_FLASH_EXTERNAL_MODULE, [=]() {
-                  auto dialog = new FlashModuleDialog(EXTERNAL_MODULE);
+                  auto dialog = new FlashModuleDialog<FrskyDeviceFirmwareUpdate>(EXTERNAL_MODULE);
                   dialog->flash(getFullPath(name));
               });
             }

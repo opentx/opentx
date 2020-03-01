@@ -47,7 +47,11 @@ class FullScreenDialog : public FormGroup {
       message = std::move(text);
       invalidate();
     }
-
+    void setTitle(std::string text)
+    {
+      title = std::move(text);
+      invalidate();
+    }
     void paint(BitmapBuffer * dc) override;
 
 #if defined(HARDWARE_KEYS)
@@ -56,6 +60,7 @@ class FullScreenDialog : public FormGroup {
 
 #if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override;
+    void addNextButton(std::function<void(void)> handler);
 #endif
 
     void deleteLater();

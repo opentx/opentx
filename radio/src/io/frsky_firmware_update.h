@@ -74,7 +74,7 @@ class FrskyDeviceFirmwareUpdate {
       module(module) {
     }
 
-    const char * flashFirmware(const char * filename, ProgressHandler progressHandler);
+    void flashFirmware(const char * filename, ProgressHandler progressHandler, DoneHandler doneHandler);
 
   protected:
     uint8_t state = SPORT_IDLE;
