@@ -759,7 +759,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, bool 
 
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
-  
+
   if (wait) {
     /* wait 2s off */
     watchdogSuspend(1000 /*10s*/);
