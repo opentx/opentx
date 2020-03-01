@@ -1966,7 +1966,7 @@ void opentxInit()
   btInit();
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(SPORT_UPDATE_PWR_GPIO)
    SPORT_UPDATE_POWER_INIT();
 #endif
 
