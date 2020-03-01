@@ -720,12 +720,16 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 void sportUpdateInit();
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
+void sportUpdatePowerInit();
 #define SPORT_UPDATE_POWER_ON()         sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()        sportUpdatePowerOff()
+#define IS_SPORT_UPDATE_POWER_ON()      (GPIO_ReadInputDataBit(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN) == Bit_SET)
 #else
 #define sportUpdateInit()
 #define SPORT_UPDATE_POWER_ON()
 #define SPORT_UPDATE_POWER_OFF()
+#define sportUpdatePowerInit()
+#define IS_SPORT_UPDATE_POWER_ON()      (false)
 #endif
 
 // Audio driver

@@ -74,6 +74,14 @@ void sportUpdatePowerOff()
 {
   GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
 }
+
+void sportUpdatePowerInit()
+{
+  if (g_eeGeneral.sportUpdatePower == 1)
+    sportUpdatePowerOn();
+  else
+    sportUpdatePowerOff();
+}
 #endif
 
 void boardInit()

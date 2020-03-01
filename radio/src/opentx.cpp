@@ -1966,11 +1966,8 @@ void opentxInit()
   btInit();
 #endif
 
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || defined(PCBXLITES)
-  if (g_eeGeneral.smartportUpdatePower == 0)
-    sportUpdatePowerOn();
-  else
-    sportUpdatePowerOff();
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+  sportUpdatePowerInit();
 #endif
 
 #if defined(COLORLCD)

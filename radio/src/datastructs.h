@@ -783,7 +783,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1);
   NOBACKUP(uint8_t  USBMode:2);
   NOBACKUP(uint8_t  jackMode:2);
-  NOBACKUP(uint8_t  smartportUpdatePower:1);
+  NOBACKUP(uint8_t  sportUpdatePower:1);
   NOBACKUP(char     ttsLanguage[2]);
   NOBACKUP(int8_t   beepVolume:4);
   NOBACKUP(int8_t   wavVolume:4);
