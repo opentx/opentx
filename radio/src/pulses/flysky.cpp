@@ -997,7 +997,7 @@ void parseCharacter(STRUCT_HALL *hallBuffer, unsigned char ch)
         }
         case CHECKSUM:
         {
-            if(hallBuffer->checkSum == calc_crc16( (U8*)&hallBuffer->head, hallBuffer->length + 3 ) )
+            if(hallBuffer->checkSum == calc_crc16(&hallBuffer->head, hallBuffer->length + 3))
             {
                 hallBuffer->msg_OK = 1;
                 goto Label_restart;
