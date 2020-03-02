@@ -46,6 +46,7 @@ void onRxOptionsUpdateConfirm(const char * result)
 enum {
   ITEM_RECEIVER_SETTINGS_PWM_RATE,
   ITEM_RECEIVER_SETTINGS_TELEMETRY,
+  ITEM_RECEIVER_SETTINGS_TELEMETRY_25MW,
   ITEM_RECEIVER_SETTINGS_SPORT_FPORT,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2,
@@ -76,6 +77,7 @@ bool menuModelReceiverOptions(event_t event)
   SUBMENU(STR_RECEIVER_OPTIONS, ICON_MODEL_SETUP, ITEM_RECEIVER_SETTINGS_PINMAP_FIRST + outputsCount, {
     0, // PWM rate
     isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 /*25mW*/ ? READONLY_ROW : (uint8_t)0, // Telemetry
+    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_TELEMETRY_25MW, 0),
     IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
@@ -151,6 +153,14 @@ bool menuModelReceiverOptions(event_t event)
         case ITEM_RECEIVER_SETTINGS_TELEMETRY:
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TELEMETRY_DISABLED);
           reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
+          }
+          break;
+
+        case ITEM_RECEIVER_SETTINGS_TELEMETRY_25MW:
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "25mw Tele");
+          reusableBuffer.hardwareAndSettings.receiverSettings.telemetry25mw = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetry25mw, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
           }

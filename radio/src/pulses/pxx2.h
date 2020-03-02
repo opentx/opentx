@@ -53,6 +53,7 @@
 #define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
 #define PXX2_RX_SETTINGS_FLAG1_FPORT               (1 << 3)
+#define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_25MW      (1 << 2)
 
 #define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
 #define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)
@@ -81,7 +82,7 @@ enum PXX2ModuleModelID {
   PXX2_MODULE_ISRM_S_X10E,
   PXX2_MODULE_XJT_LITE,
   PXX2_MODULE_ISRM_S_X10S,
-  PXX2_MODULE_ISRM_S_X9LITE,
+  PXX2_MODULE_ISRM_X9LITES,
 };
 
 static const char * const PXX2ModulesNames[] = {
@@ -98,7 +99,7 @@ static const char * const PXX2ModulesNames[] = {
   "ISRM-S-X10E",
   "XJT Lite",
   "ISRM-S-X10S",
-  "ISRM-S-X9Lite"
+  "ISRM-X9LiteS"
 };
 
 inline const char * getPXX2ModuleName(uint8_t modelId)
@@ -140,7 +141,7 @@ static const uint8_t PXX2ModuleOptions[] = {
   0b00000101, // ISRM-S-X10E
   0b00000001, // XJT_LITE
   0b00000101, // ISRM-S-X10S
-  0b00000101, // ISRM-S-X9LITE
+  0b00000100, // ISRM-X9LITES
 };
 
 inline uint8_t getPXX2ModuleOptions(uint8_t modelId)
@@ -189,6 +190,7 @@ static const char * const PXX2ReceiversNames[] = {
   "R9-MINI-OTA", // this one has OTA (different bootloader)
   "R9-MM-OTA", // this one has OTA (different bootloader)
   "R9-SLIM+-OTA", // this one has OTA (different bootloader)
+  "Archer-X", //this one has OTA (internal module)
 };
 
 inline const char * getPXX2ReceiverName(uint8_t modelId)
@@ -239,6 +241,7 @@ static const uint8_t PXX2ReceiverOptions[] = {
   0b11111111, // R9-MINI+OTA
   0b11111111, // R9-MM+OTA
   0b11111111, // R9-SLIM+OTA
+  0b11111111, // ARCHER-X
 };
 
 inline uint8_t getPXX2ReceiverOptions(uint8_t modelId)
@@ -256,6 +259,7 @@ inline bool isPXX2ReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 
 enum ReceiverCapabilities {
   RECEIVER_CAPABILITY_FPORT,
+  RECEIVER_CAPABILITY_TELEMETRY_25MW,
   RECEIVER_CAPABILITY_COUNT
 };
 
