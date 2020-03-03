@@ -124,6 +124,7 @@ class ReceiverSettings {
     uint8_t telemetry25mw;
     uint8_t pwmRate;
     uint8_t fport;
+    uint8_t enablePwmCh5Ch6;
     uint8_t outputsCount;
     uint8_t outputsMapping[24];
 };

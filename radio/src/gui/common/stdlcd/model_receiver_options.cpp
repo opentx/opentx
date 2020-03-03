@@ -48,6 +48,7 @@ enum {
   ITEM_RECEIVER_SETTINGS_TELEMETRY,
   ITEM_RECEIVER_SETTINGS_TELEMETRY_25MW,
   ITEM_RECEIVER_SETTINGS_SPORT_FPORT,
+  ITEM_RECEIVER_SETTINGS_ENABLE_PWM_CH5_CH6,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2,
   ITEM_RECEIVER_SETTINGS_PINMAP_FIRST
@@ -79,6 +80,7 @@ void menuModelReceiverOptions(event_t event)
     isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 /*25mW*/ ? READONLY_ROW : (uint8_t)0, // Telemetry
     IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_TELEMETRY_25MW, 0),
     IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
+    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6, 0),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     0 // channels ...
@@ -163,6 +165,13 @@ void menuModelReceiverOptions(event_t event)
 
         case ITEM_RECEIVER_SETTINGS_SPORT_FPORT:
           reusableBuffer.hardwareAndSettings.receiverSettings.fport = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.fport, RECEIVER_OPTIONS_2ND_COLUMN, y, "F.Port", attr, event);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
+          }
+          break;
+
+        case ITEM_RECEIVER_SETTINGS_ENABLE_PWM_CH5_CH6:
+          reusableBuffer.hardwareAndSettings.receiverSettings.enablePwmCh5Ch6 = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.enablePwmCh5Ch6, RECEIVER_OPTIONS_2ND_COLUMN, y, "En PWM CH5&6", attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
           }

@@ -88,6 +88,9 @@ void processReceiverSettingsFrame(uint8_t module, const uint8_t * frame)
 
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_25MW)
     destination->telemetry25mw = 1;
+    
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_ENABLE_PWM_CH5_CH6)
+    destination->enablePwmCh5Ch6 = 1;
 
   uint8_t outputsCount = min<uint8_t>(16, frame[0] - 4);
   destination->outputsCount = outputsCount;

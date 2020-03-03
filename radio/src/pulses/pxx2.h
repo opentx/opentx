@@ -54,6 +54,7 @@
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
 #define PXX2_RX_SETTINGS_FLAG1_FPORT               (1 << 3)
 #define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_25MW      (1 << 2)
+#define PXX2_RX_SETTINGS_FLAG1_ENABLE_PWM_CH5_CH6  (1 << 1)
 
 #define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
 #define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)
@@ -191,6 +192,8 @@ static const char * const PXX2ReceiversNames[] = {
   "R9-MM-OTA", // this one has OTA (different bootloader)
   "R9-SLIM+-OTA", // this one has OTA (different bootloader)
   "Archer-X", //this one has OTA (internal module)
+  "R9MX", //this one has OTA
+  "R9SX", //this one has OTA
 };
 
 inline const char * getPXX2ReceiverName(uint8_t modelId)
@@ -242,6 +245,8 @@ static const uint8_t PXX2ReceiverOptions[] = {
   0b11111111, // R9-MM+OTA
   0b11111111, // R9-SLIM+OTA
   0b11111111, // ARCHER-X
+  0b11111111, // R9MX
+  0b11111111, // R9SX
 };
 
 inline uint8_t getPXX2ReceiverOptions(uint8_t modelId)
@@ -260,6 +265,7 @@ inline bool isPXX2ReceiverOptionAvailable(uint8_t modelId, uint8_t option)
 enum ReceiverCapabilities {
   RECEIVER_CAPABILITY_FPORT,
   RECEIVER_CAPABILITY_TELEMETRY_25MW,
+  RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6,
   RECEIVER_CAPABILITY_COUNT
 };
 
