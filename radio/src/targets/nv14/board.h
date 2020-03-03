@@ -533,6 +533,8 @@ typedef Fifo<uint8_t, 32> AuxSerialRxFifo;
 extern AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
-uint8_t touchPressed(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+// Touch panel driver
+bool touchPanelEventOccured();
+void touchPanelRead();
 
 #endif // _BOARD_H_

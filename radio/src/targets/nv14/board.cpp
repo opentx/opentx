@@ -108,7 +108,6 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 extern "C" void initialise_monitor_handles();
 #endif
 
-
 void delay_self(int count)
 {
    for (int i = 50000; i > 0; i--)
@@ -171,13 +170,13 @@ void boardInit()
   RCC_APB1PeriphClockCmd(RCC_APB1PeriphMinimum | RCC_APB1PeriphOther, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2PeriphMinimum | RCC_APB2PeriphOther, ENABLE);
 
+  // enable interrupts
   __enable_irq();
 #endif
+
 #if defined(DEBUG)
    auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
 #endif
-
-  __enable_irq();
 
   TRACE("\nNV14 board started :)");
   delay_ms(10);
@@ -189,29 +188,29 @@ void boardInit()
   init2MhzTimer();
   init1msTimer();
   TouchInit();
+
   uint32_t press_start = 0;
   uint32_t press_end = 0;
-  if(UNEXPECTED_SHUTDOWN()) pwrOn();
+
+  if (UNEXPECTED_SHUTDOWN()) {
+    pwrOn();
+  }
   
-  while (boardState == BOARD_POWER_OFF)
-  {
+  while (boardState == BOARD_POWER_OFF) {
     uint32_t now = get_tmr10ms();
-    if (pwrPressed())
-    {
+    if (pwrPressed()) {
       press_end = now;
       if (press_start == 0) press_start = now;
-      if ((now - press_start) > POWER_ON_DELAY)
-      {
+      if ((now - press_start) > POWER_ON_DELAY) {
           pwrOn();
           break;
       }
     }
     else {
       uint32_t press_end_touch = press_end;
-      if(touchState.event == TE_UP)
-      {
-        touchState.event = TE_NONE;
-        press_end_touch = touchState.time;
+      if (touchPanelEventOccured()) {
+        touchPanelRead();
+        press_end_touch = get_tmr10ms();
       }
       press_start = 0;
       handle_battery_charge(press_end_touch);
@@ -256,8 +255,7 @@ void boardOff()
   haptic.event(AU_ERROR);
   delay_ms(50);
 #endif
-  while(1)
-  {
+  while(1) {
     NVIC_SystemReset();
   }
 #endif

@@ -21,21 +21,7 @@
 #include "opentx.h"
 #include "touch_driver.h"
 
-enum ENUM_TOUCH_STATE
-{
-  TOUCH_NONE,
-  TOUCH_SLIDE,
-  TOUCH_CLICK
-};
-
-int x;
-int y;
-uint32_t TouchEvent;
-unsigned short Tx;
-unsigned short Ty;
-static unsigned char TouchState = TOUCH_NONE;
-static unsigned short Txold;
-static unsigned short Tyold;
+static bool touchEventOccured;
 
 #define FT6x06_MAX_INSTANCE  1
 
@@ -436,12 +422,6 @@ static void ft6x06_TS_GetXY(uint16_t DeviceAddr, uint16_t * X, uint16_t * Y, uin
   }
 }
 
-
-static void ft6x06_TS_GetGestureID(uint16_t DeviceAddr, uint32_t * pGestureId)
-{
-  *pGestureId = TS_IO_Read(DeviceAddr, FT6206_GEST_ID_REG);
-}
-
 void TouchReset()
 {
   GPIO_ResetBits(I2C_TOUCH_RESET_GPIO, I2C_TOUCH_RESET_GPIO_PIN);
@@ -455,115 +435,96 @@ void TouchInit(void)
   I2C_Init();
   TouchReset();
   touch_ft6236_debug_info();
-
   /* INT generation for new touch available */
   /* Note TS_INT is active low */
   uint8_t regValue = 0;
   regValue = (FT6206_G_MODE_INTERRUPT_TRIGGER & (FT6206_G_MODE_INTERRUPT_MASK >> FT6206_G_MODE_INTERRUPT_SHIFT)) << FT6206_G_MODE_INTERRUPT_SHIFT;
-
   /* Set interrupt TOUCH_FT6236_I2C_ADDRESS mode in FT6206_GMODE_REG */
   TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, FT6206_GMODE_REG, regValue);
-  //enter standard mode
-  //TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0,0);
-
   /*trigger reset */
   TouchReset();
-
-  //Try to enable gesture
-  /*
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, FT6206_GMODE_REG, regValue);
-
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD1, 0xff);
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD2, 0xff);
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD5, 0xff);
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD6, 0xff);
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD7, 0xff);
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD8, 0xff);
-  TS_IO_Write(TOUCH_FT6236_I2C_ADDRESS, 0xD0, 1);
-  */
 }
-
 
 void handleTouch()
 {
-  ft6x06_TS_GetXY(TOUCH_FT6236_I2C_ADDRESS, &Tx, &Ty, &TouchEvent);
-  uint32_t gesture;
-  ft6x06_TS_GetGestureID(TOUCH_FT6236_I2C_ADDRESS, &gesture);
+  unsigned short touchX;
+  unsigned short touchY;
+  uint32_t tEvent = 0;
+  ft6x06_TS_GetXY(TOUCH_FT6236_I2C_ADDRESS, &touchX, &touchY, &tEvent);
+  //uint32_t gesture;
+  //ft6x06_TS_GetGestureID(TOUCH_FT6236_I2C_ADDRESS, &gesture);
 #if defined( LCD_DIRECTION ) && (LCD_DIRECTION == LCD_VERTICAL)
-  Tx = LCD_WIDTH - Tx;
-  Ty = LCD_HEIGHT - Ty;
+  touchX = LCD_WIDTH - touchX;
+  touchY = LCD_HEIGHT - touchY;
 #else
-  x = ( LCD_WIDTH - 1 ) - Ty;
-  Ty = Tx;
-  Tx = x;
+  unsigned short tmp = (LCD_WIDTH - 1) - touchY;
+  touchY = touchX;
+  touchX = tmp;
 #endif
-  if (TouchEvent == FT6206_TOUCH_EVT_FLAG_CONTACT) {
-    touchState.x = Tx;
-    touchState.y = Ty;
+  if (tEvent == FT6206_TOUCH_EVT_FLAG_CONTACT) {
+    int dx = touchX - touchState.x;
+    int dy = touchY - touchState.y;
 
-    if (TOUCH_NONE == TouchState) {
-      touchState.event = TE_NONE;
-      TouchState = TOUCH_CLICK;
+    touchState.x = touchX;
+    touchState.y = touchY;
+
+    if (touchState.event == TE_NONE || touchState.event == TE_UP)
+    {
+      touchState.startX = touchState.x;
+      touchState.startY = touchState.y;
+      touchState.event = TE_DOWN;
       if (g_eeGeneral.backlightMode & e_backlight_mode_keys)
         backlightOn(); // TODO is that the best place ?
     }
-    else {
-      if (TOUCH_CLICK == TouchState) {
-        x = Tx - Txold;
-        y = Ty - Tyold;
-
-        if ((x >= SLIDE_RANGE) || (x <= -SLIDE_RANGE) || (y >= SLIDE_RANGE) || (y <= -SLIDE_RANGE)) {
-          TouchState = TOUCH_SLIDE;
-          touchState.event = TE_SLIDE;
-        }
-        else {
-          touchState.event = TE_DOWN;
-          touchState.startX = touchState.lastX = touchState.x;
-          touchState.startY = touchState.lastY = touchState.y;
-        }
-      }
-      else if (TOUCH_SLIDE == TouchState) {
+    else if (touchState.event == TE_DOWN)
+    {
+      if ((dx >= SLIDE_RANGE) || (dx <= -SLIDE_RANGE) || (dy >= SLIDE_RANGE)|| (dy <= -SLIDE_RANGE)) {
         touchState.event = TE_SLIDE;
+        touchState.deltaX = (short)dx;
+        touchState.deltaY = (short)dy;
       }
       else {
-        TouchState = TOUCH_NONE;
+        touchState.event = TE_DOWN;
+        touchState.deltaX = 0;
+        touchState.deltaY = 0;
       }
     }
-    Txold = Tx;
-    Tyold = Ty;
+    else if (touchState.event == TE_SLIDE)
+    {
+      touchState.event = TE_SLIDE; //no change
+      touchState.deltaX = (short)dx;
+      touchState.deltaY = (short)dy;
+    }
+
   }
 }
 
 extern "C" void EXTI9_5_IRQHandler(void)
 {
-
   if (EXTI_GetITStatus(EXTI_Line9) != RESET) {
+    EXTI_ClearITPendingBit(EXTI_Line9);
+    touchEventOccured = true;
+  }
+}
 
-    if (ft6x06_TS_DetectTouch(TOUCH_FT6236_I2C_ADDRESS)) {
-      handleTouch();
-      /*
-      TRACE("X %d Y %d", x, y);
-      uint32_t gesture;
-      ft6x06_TS_GetGestureID(TOUCH_FT6236_I2C_ADDRESS, &gesture);
-      if(gesture != TOUCH_FT6236_GESTURE_NONE) TRACE("gesture %d", gesture);
-      TS_IO_Read(TOUCH_FT6236_I2C_ADDRESS, 0xD3);
-      if(gesture != TOUCH_FT6236_GESTURE_NONE) TRACE("gesture d3 %d", gesture);
-      */
+bool touchPanelEventOccured()
+{
+  return touchEventOccured;
+}
+
+void touchPanelRead() {
+  if(!touchEventOccured) return;
+  touchEventOccured = false;
+  if (ft6x06_TS_DetectTouch(TOUCH_FT6236_I2C_ADDRESS)) {
+    handleTouch();
+  } else {
+    if (touchState.event == TE_DOWN) {
+      touchState.event = TE_UP;
     }
     else {
-      if (TOUCH_CLICK == TouchState) {
-        touchState.x = Txold;
-        touchState.y = Tyold;
-        touchState.event = TE_UP;
-        touchState.time = get_tmr10ms();
-      }
-      else if (get_tmr10ms() > touchState.time + 50) {
-        touchState.x = LCD_WIDTH;
-        touchState.y = LCD_HEIGHT;
-        touchState.event = TE_NONE;
-      }
-      TouchState = TOUCH_NONE;
+      touchState.x = LCD_WIDTH;
+      touchState.y = LCD_HEIGHT;
+      touchState.event = TE_NONE;
     }
-    EXTI_ClearITPendingBit(EXTI_Line9);
   }
 }
