@@ -33,35 +33,9 @@
 
 #define CENTER
 
-/* lcd common flags */
-#define BLINK                          0x01
-
-/* drawText flags */
-#define INVERS                         0x02
-#define LEFT                           0x00 /* align left */
-#define CENTERED                       0x04 /* align center */
-#define RIGHT                          0x08 /* align right */
-#define SHADOWED                       0x80 /* black copy at +1 +1 */
-
-/* drawNumber flags */
-#define LEADING0                       0x10
-#define PREC1                          0x20
-#define PREC2                          0x30
-#define MODE(flags)                    ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
-
-/* rect, square flags */
-#define ROUND                          0x04
-
-/* telemetry flags */
-#define NO_UNIT                        0x40
-
-#define TIMEHOUR                       0x2000
-#define EXPANDED                       0x2000
-#define VERTICAL                       0x4000
-
 #include "colors.h"
 
-#define DISPLAY_PIXELS_COUNT           (LCD_W*LCD_H)
+#define DISPLAY_PIXELS_COUNT           (LCD_W * LCD_H)
 #define DISPLAY_BUFFER_SIZE            (DISPLAY_PIXELS_COUNT)
 
 #if defined(SIMU)
