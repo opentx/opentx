@@ -34,4 +34,6 @@ void setSampleRate( uint32_t frequency ) ;
 
 void setScaledVolume(uint8_t volume);
 
+#define audioWaitReady()
+
 #endif // _AUDIO_DRIVER_H_

@@ -464,6 +464,13 @@ void audioOn();
 void audioOff();
 bool isAudioReady();
 bool audioChipReset();
+inline void audioWaitReady()
+{
+  while (!isAudioReady()) {
+    audioChipReset();
+    RTOS_WAIT_MS(1000);
+  }
+}
 
 #define SPI_SPEED_2                    0
 #define SPI_SPEED_4                    1

@@ -518,29 +518,19 @@ AudioQueue::AudioQueue()
 #if !defined(SIMU)
 void audioTask(void * pdata)
 {
+  audioWaitReady();
+
   while (!audioQueue.started()) {
     RTOS_WAIT_TICKS(1);
   }
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
-#if defined(PCBX12S)
-  // The audio amp needs ~2s to start
-  RTOS_WAIT_MS(1000); // 1s
-#endif
-
   if (!globalData.unexpectedShutdown) {
     AUDIO_HELLO();
   }
 
-  while (1) {
-    #if defined(PCBNV14)
-    if(!isAudioReady()) {
-      audioChipReset();
-      RTOS_WAIT_MS(100);
-      continue;
-    }
-    #endif
+  while (true) {
     DEBUG_TIMER_SAMPLE(debugTimerAudioIterval);
     DEBUG_TIMER_START(debugTimerAudioDuration);
     audioQueue.wakeup();
