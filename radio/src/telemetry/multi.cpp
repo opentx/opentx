@@ -128,7 +128,7 @@ MultiModuleSyncStatus& getMultiSyncStatus(uint8_t)
 
 uint8_t getMultiBindStatus(uint8_t moduleIdx)
 {
-#if !defined(INTERNAL_MODULE_MULTI)
+#if defined(INTERNAL_MODULE) && !defined(INTERNAL_MODULE_MULTI)
   if (moduleIdx == INTERNAL_MODULE)
     return MULTI_BIND_NONE;
 #endif
