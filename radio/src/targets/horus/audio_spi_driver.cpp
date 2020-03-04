@@ -134,6 +134,12 @@ void audioSpiInit(void)
   SPI_I2S_ClearFlag(AUDIO_SPI, SPI_I2S_FLAG_TXE);
 }
 
+void audioWaitReady()
+{
+  // The audio amp needs ~2s to start
+  RTOS_WAIT_MS(2000); // 2s
+}
+
 void audioSpiSetSpeed(uint8_t speed)
 {
   AUDIO_SPI->CR1 &= 0xFFC7; // Fsck=Fcpu/256

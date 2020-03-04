@@ -378,26 +378,37 @@ void audioAmpInit()
 bool hardResetDone = false;
 bool softResetDone = false;
 
-bool isAudioReady() {
+bool isAudioReady()
+{
   return hardResetDone && softResetDone;
 }
 
-bool audioChipReset(){
+void audioWaitReady()
+{
+  while (!isAudioReady()) {
+    audioChipReset();
+    RTOS_WAIT_MS(1000);
+  }
+}
+
+bool audioChipReset()
+{
   audioSpiSetSpeed(SPI_SPEED_64);
-  if(!hardResetDone) {
+  if (!hardResetDone) {
     hardResetDone = audioHardReset() > 0;
     softResetDone = false;
   }
-  if(!softResetDone) {
+  if (!softResetDone) {
     softResetDone = audioSoftReset() > 0;
   }
   audioSpiSetSpeed(SPI_SPEED_8);
-  if(hardResetDone && softResetDone) {
+  if (hardResetDone && softResetDone) {
     audioSendRiffHeader();
     audioOn();
   }
   return hardResetDone && softResetDone;
 }
+
 void audioInit()
 {
   audioAmpInit();
@@ -422,9 +433,10 @@ void audioSetCurrentBuffer(const AudioBuffer * buffer)
 
 void audioConsumeCurrentBuffer()
 {
-  if(!hardResetDone || !softResetDone) {
+  if (!hardResetDone || !softResetDone) {
      return;
   }
+
   if (newVolume >= 0) {
     uint8_t value = newVolume;
     audioSpiWriteCmd(SPI_VOL, (value << 8) + value);
