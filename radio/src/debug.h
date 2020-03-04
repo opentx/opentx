@@ -21,6 +21,7 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
+#include <float.h>
 #include "definitions.h"
 #include "rtc.h"
 #include "dump.h"
