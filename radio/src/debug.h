@@ -33,6 +33,8 @@
 #include "serial.h"
 #endif
 
+extern volatile uint32_t g_tmr10ms;
+
 uint8_t auxSerialTracesEnabled();
 
 #if defined(SIMU)
@@ -50,8 +52,11 @@ uint8_t auxSerialTracesEnabled();
   #define debugPrintf(...)
 #endif
 
+#define TRACE_TIME_FORMAT     "%0.2f "
+#define TRACE_TIME_VALUE      float(g_tmr10ms) / 100
+
 #define TRACE_NOCRLF(...)     debugPrintf(__VA_ARGS__)
-#define TRACE(f_, ...)        debugPrintf((f_ CRLF), ##__VA_ARGS__)
+#define TRACE(f_, ...)        debugPrintf((TRACE_TIME_FORMAT f_ CRLF), TRACE_TIME_VALUE, ##__VA_ARGS__)
 #define DUMP(data, size)      dump(data, size)
 #define TRACE_DEBUG(...)      debugPrintf("-D- " __VA_ARGS__)
 #define TRACE_DEBUG_WP(...)   debugPrintf(__VA_ARGS__)
@@ -62,9 +67,11 @@ uint8_t auxSerialTracesEnabled();
 #define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
 
 #if defined(DEBUG_WINDOWS)
-#define TRACE_WINDOWS(f_, ...)    debugPrintf((f_ "\r\n"), ##__VA_ARGS__)
+#define TRACE_WINDOWS(f_, ...) TRACE(f_, ##__VA_ARGS__)
+#define TRACE_WINDOWS_INDENT(f_, ...) debugPrintf((TRACE_TIME_FORMAT "%s" f_ CRLF), TRACE_TIME_VALUE, getIndentString().c_str(), ##__VA_ARGS__)
 #else
 #define TRACE_WINDOWS(...)
+#define TRACE_WINDOWS_INDENT(...)
 #endif
 
 #if defined(TRACE_LUA_INTERNALS_ENABLED)
