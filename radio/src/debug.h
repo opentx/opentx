@@ -54,7 +54,7 @@ uint8_t auxSerialTracesEnabled();
 #endif
 
 #define TRACE_TIME_FORMAT     "%0.2f "
-#define TRACE_TIME_VALUE      float(g_tmr10ms) / 100
+#define TRACE_TIME_VALUE      ((float)g_tmr10ms / 100)
 
 #define TRACE_NOCRLF(...)     debugPrintf(__VA_ARGS__)
 #define TRACE(f_, ...)        debugPrintf((TRACE_TIME_FORMAT f_ CRLF), TRACE_TIME_VALUE, ##__VA_ARGS__)

@@ -58,11 +58,11 @@ class SpectrumFooterWindow: public FormGroup
         char label[10];
 
         // Frequency
-        sprintf(label,"T: %dMHz", reusableBuffer.spectrumAnalyser.freq / 1000000);
+        sprintf(label,"T: %dMHz", int(reusableBuffer.spectrumAnalyser.freq / 1000000));
         new StaticText(this, grid.getFieldSlot(3, 0), label);
 
         // Span
-        sprintf(label,"S: %dMHz", reusableBuffer.spectrumAnalyser.span / 1000000);
+        sprintf(label,"S: %dMHz", int(reusableBuffer.spectrumAnalyser.span / 1000000));
         new StaticText(this, grid.getFieldSlot(3, 1), label);
       }
       else {
