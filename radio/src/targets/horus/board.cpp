@@ -41,7 +41,19 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if defined(AUX_SERIAL_PWR_GPIO)
+void auxSerialPowerOn()
+{
+  GPIO_SetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
+
+void auxSerialPowerOff()
+{
+  GPIO_ResetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
+#endif
+
+#if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -83,6 +95,7 @@ void boardInit()
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
+                         I2C_TOUCH_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph |
                          SPORT_UPDATE_RCC_AHB1Periph,
                          ENABLE);
@@ -98,6 +111,7 @@ void boardInit()
                          AUDIO_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
+                         I2C_TOUCH_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);
@@ -110,6 +124,7 @@ void boardInit()
                          EXTMODULE_RCC_APB2Periph |
                          TELEMETRY_RCC_APB2Periph |
                          BT_RCC_APB2Periph |
+                         AUX_SERIAL_RCC_APB2Periph |
                          BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
 
@@ -118,6 +133,10 @@ void boardInit()
   delaysInit();
 
   __enable_irq();
+
+#if defined(DEBUG) && defined(AUX_SERIAL)
+  auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+#endif
 
   TRACE("\nHorus board started :)");
   TRACE("RCC->CSR = %08x", RCC->CSR);
@@ -162,7 +181,7 @@ void boardInit()
 
   ledInit();
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if HAS_SPORT_UPDATE_CONNECTOR()
   sportUpdateInit();
 #endif
 

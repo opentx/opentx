@@ -754,7 +754,7 @@
   #define ADC_EXT_SET_DMA_FLAGS()       ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_EXT_TRANSFER_COMPLETE()   (ADC_DMA->LISR & DMA_LISR_TCIF0)
   #define ADC_EXT_SAMPTIME              3    // sample time = 56 cycles
-  #define ADC_VREF_PREC2                200
+  #define ADC_VREF_PREC2                300
 #elif defined(PCBX9DP)
   #define HARDWARE_POT1
   #define HARDWARE_POT2
@@ -1309,10 +1309,12 @@
 #if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019)
   #define AUX_SERIAL_RCC_AHB1Periph         0
   #define AUX_SERIAL_RCC_APB1Periph         0
+  #define AUX_SERIAL_RCC_APB2Periph         0
 #else
   #define TRAINER_BATTERY_COMPARTMENT
   #define AUX_SERIAL_RCC_AHB1Periph         (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define AUX_SERIAL_RCC_APB1Periph         RCC_APB1Periph_USART3
+  #define AUX_SERIAL_RCC_APB2Periph         0
   #define AUX_SERIAL_GPIO                   GPIOB
   #define AUX_SERIAL_GPIO_PIN_TX            GPIO_Pin_10 // PB.10
   #define AUX_SERIAL_GPIO_PIN_RX            GPIO_Pin_11 // PB.11
@@ -1329,6 +1331,7 @@
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
+#define TELEMETRY_RCC_APB2Periph        RCC_APB2Periph_TIM11
 #define TELEMETRY_DIR_GPIO              GPIOD
 #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
 #if defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
@@ -1375,6 +1378,7 @@
   #define PCBREV_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
   #define PCBREV_GPIO                   GPIOA
   #define PCBREV_GPIO_PIN               GPIO_Pin_14  // PA.14
+  #define PCBREV_GPIO_PULL_DOWN
   #define PCBREV_VALUE()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
 #else
   #define PCBREV_RCC_AHB1Periph         0

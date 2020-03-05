@@ -83,7 +83,7 @@ void menuModelLogicalSwitchOne(event_t event)
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
             if (new_cstate == LS_FAMILY_TIMER) {
-              cs->v1 = cs->v2 = 0;
+              cs->v1 = cs->v2 = -119;
             }
             else if (new_cstate == LS_FAMILY_EDGE) {
               cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;

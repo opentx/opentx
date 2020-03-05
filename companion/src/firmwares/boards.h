@@ -54,9 +54,10 @@ namespace Board {
     BOARD_TARANIS_X9LITES,
     BOARD_JUMPER_T12,
     BOARD_JUMPER_T16,
+    BOARD_RADIOMASTER_TX16S,
   };
 
-  constexpr int BOARD_TYPE_MAX = BOARD_JUMPER_T16 ;
+  constexpr int BOARD_TYPE_MAX = BOARD_RADIOMASTER_TX16S ;
 
   enum PotType
   {
@@ -230,6 +231,16 @@ inline bool IS_JUMPER_T16(Board::Type board)
   return board == Board::BOARD_JUMPER_T16;
 }
 
+inline bool IS_RADIOMASTER_TX16S(Board::Type board)
+{
+  return board == Board::BOARD_RADIOMASTER_TX16S;
+}
+
+inline bool IS_FAMILY_T16(Board::Type board)
+{
+  return board == Board::BOARD_JUMPER_T16 || board == Board::BOARD_RADIOMASTER_TX16S;
+}
+
 inline bool IS_TARANIS_XLITE(Board::Type board)
 {
   return board == Board::BOARD_TARANIS_XLITE || board == Board::BOARD_TARANIS_XLITES;
@@ -300,19 +311,24 @@ inline bool IS_HORUS_X12S(Board::Type board)
   return board == Board::BOARD_HORUS_X12S;
 }
 
-inline bool IS_HORUS(Board::Type board)
+inline bool IS_FAMILY_HORUS(Board::Type board)
 {
-  return IS_HORUS_X12S(board) || IS_HORUS_X10(board) || IS_JUMPER_T16(board);
+  return IS_HORUS_X12S(board) || IS_HORUS_X10(board);
+}
+
+inline bool IS_FAMILY_HORUS_OR_T16(Board::Type board)
+{
+  return IS_FAMILY_HORUS(board) || IS_FAMILY_T16(board);
 }
 
 inline bool IS_HORUS_OR_TARANIS(Board::Type board)
 {
-  return IS_HORUS(board) || IS_TARANIS(board);
+  return IS_FAMILY_HORUS_OR_T16(board) || IS_TARANIS(board);
 }
 
 inline bool IS_STM32(Board::Type board)
 {
-  return IS_TARANIS(board) || IS_HORUS(board);
+  return IS_TARANIS(board) || IS_FAMILY_HORUS_OR_T16(board);
 }
 
 inline bool IS_ARM(Board::Type board)
@@ -322,7 +338,7 @@ inline bool IS_ARM(Board::Type board)
 
 inline bool HAS_LARGE_LCD(Board::Type board)
 {
-  return IS_HORUS(board) || IS_TARANIS_X9(board);
+  return IS_FAMILY_HORUS_OR_T16(board) || IS_TARANIS_X9(board);
 }
 
 inline bool HAS_EXTERNAL_ANTENNA(Board::Type board)
@@ -333,7 +349,7 @@ inline bool HAS_EXTERNAL_ANTENNA(Board::Type board)
 inline bool IS_ACCESS_RADIO(Board::Type board, QString &id)
 {
   return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == Board::BOARD_TARANIS_X9DP_2019 || board == Board::BOARD_X10_EXPRESS || IS_TARANIS_X7_ACCESS(board) ||
-          (IS_HORUS(board) && id.contains("internalaccess")));
+          (IS_FAMILY_HORUS_OR_T16(board) && id.contains("internalaccess")));
 }
 
 #endif // _BOARDS_H_

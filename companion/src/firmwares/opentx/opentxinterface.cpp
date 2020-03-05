@@ -70,6 +70,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Jumper T12";
     case BOARD_JUMPER_T16:
       return "OpenTX for Jumper T16";
+    case BOARD_RADIOMASTER_TX16S:
+      return "OpenTX for Radiomaster TX16S";
     case BOARD_TARANIS_X9D:
       return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_X9DP:
@@ -175,7 +177,7 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 {
   uint32_t fourcc = *((uint32_t*)&data.data()[0]);
   if (Boards::getFourCC(board) != fourcc) {
-    if (IS_HORUS(board) && fourcc == 0x3178396F) {
+    if (IS_FAMILY_HORUS_OR_T16(board) && fourcc == 0x3178396F) {
       qDebug() << QString().sprintf("%s: Deprecated fourcc used %x vs %x", getName(), fourcc, Boards::getFourCC(board));
     }
     else {
@@ -441,7 +443,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
 {
   switch (capability) {
     case Models:
-      if (IS_HORUS(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 0;
       else if (IS_ARM(board))
         return 60;
@@ -457,7 +459,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      return (board == BOARD_TARANIS_X9D || IS_TARANIS_PLUS(board) || board == BOARD_TARANIS_X9DP_2019 || IS_HORUS(board));
+      return (board == BOARD_TARANIS_X9D || IS_TARANIS_PLUS(board) || board == BOARD_TARANIS_X9DP_2019 || IS_FAMILY_HORUS_OR_T16(board));
     case HasBeeper:
       return (!IS_ARM(board));
     case HasPxxCountry:
@@ -495,7 +497,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else
         return 0;
     case ModelName:
-      return (IS_HORUS(board) ? 15 : (HAS_LARGE_LCD(board) ? 12 : 10));
+      return (IS_FAMILY_HORUS_OR_T16(board) ? 15 : (HAS_LARGE_LCD(board) ? 12 : 10));
     case FlightModesName:
       return (IS_HORUS_OR_TARANIS(board) ? 10 : 6);
     case GvarsName:
@@ -562,7 +564,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_SMALL(board) || IS_TARANIS_X9E(board) || IS_HORUS(board) || IS_JUMPER_T12(board) || id.contains("haptic"));
+      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_SMALL(board) || IS_TARANIS_X9E(board) || IS_FAMILY_HORUS_OR_T16(board) || IS_JUMPER_T12(board) || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_HORUS_OR_TARANIS(board) && board!=Board::BOARD_TARANIS_XLITE)
         return 1;
@@ -610,7 +612,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
-      if (IS_HORUS(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 0;
       else
         return IS_ARM(board) ? 4 : 2;
@@ -663,7 +665,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case HasSDLogs:
       return ((IS_2560(board) || IS_ARM(board)) ? true : false);
     case LcdWidth:
-      if (IS_HORUS(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 480;
       else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
         return 128;
@@ -672,12 +674,12 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else
         return 128;
     case LcdHeight:
-      if (IS_HORUS(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 272;
       else
         return 64;
     case LcdDepth:
-      if (IS_HORUS(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 16;
       else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
         return 1;
@@ -747,7 +749,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case DangerousFunctions:
       return id.contains("danger") ? 1 : 0;
     case HasModelCategories:
-      return IS_HORUS(board);
+      return IS_FAMILY_HORUS_OR_T16(board);
     case HasSwitchableJack:
       return IS_TARANIS_XLITES(board);
     case PwrButtonPress:
@@ -782,9 +784,9 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !IS_ACCESS_RADIO(board, id) && board != BOARD_JUMPER_T16;
+            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board);
           case PULSES_PXX_XJT_D8:
-            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && board != BOARD_JUMPER_T16;
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board);
           case PULSES_PPM:
             return id.contains("internalppm");
           case PULSES_ACCESS_ISRM:
@@ -814,7 +816,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_CROSSFIRE:
             return true;
           case PULSES_ACCESS_R9M:
-            return IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_HORUS(board) && id.contains("internalaccess"));
+            return IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_FAMILY_HORUS_OR_T16(board) && id.contains("internalaccess"));
           case PULSES_PXX_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
@@ -1170,14 +1172,22 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOption("nooverridech", Firmware::tr("No OverrideCH functions available"));
 }
 
-void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true)
+enum RfOptions {
+  NONE = 0,
+  EU = 1 << 0,
+  FLEX = 1 << 1
+};
+
+void addOpenTxRfOptions(OpenTxFirmware * firmware, uint8_t options)
 {
   static const Firmware::Option opt_eu("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   static const Firmware::Option opt_fl("flexr9m", Firmware::tr("Enable non certified firmwares"));
-  if (flex)
+  if (options == EU + FLEX)
     firmware->addOptionsGroup({opt_eu, opt_fl});
-  else
+  else if (options == EU)
     firmware->addOption(opt_eu);
+  else if (options == FLEX)
+    firmware->addOption(opt_fl);
 }
 
 void addOpenTxFontOptions(OpenTxFirmware * firmware)
@@ -1191,7 +1201,6 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
-  addOpenTxRfOptions(firmware);
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
@@ -1220,7 +1229,7 @@ void addOpenTxArm9xOptions(OpenTxFirmware * firmware, bool dblkeys = true)
   if (dblkeys)
     firmware->addOption("dblkeys", Firmware::tr("Enable resetting values by pressing up and down at the same time"));
   addOpenTxFontOptions(firmware);
-  addOpenTxRfOptions(firmware, true);
+  addOpenTxRfOptions(firmware, FLEX);
 }
 
 void registerOpenTxFirmwares()
@@ -1233,11 +1242,13 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky Taranis X9D+ 2019 board */
   firmware = new OpenTxFirmware("opentx-x9d+2019", Firmware::tr("FrSky Taranis X9D+ 2019"), BOARD_TARANIS_X9DP_2019);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", Firmware::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
@@ -1245,6 +1256,7 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", Firmware::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
@@ -1253,48 +1265,57 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X9-LiteS board */
   firmware = new OpenTxFirmware("opentx-x9lites", Firmware::tr("FrSky Taranis X9-Lite S"), BOARD_TARANIS_X9LITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X7 Access board */
   firmware = new OpenTxFirmware("opentx-x7access", Firmware::tr("FrSky Taranis X7 / X7S Access"), BOARD_TARANIS_X7_ACCESS);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X-Lite S/PRO board */
   firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", Firmware::tr("FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
   // firmware->addOption("stdr9m", Firmware::tr("Use JR-sized R9M module"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X10 board */
   firmware = new OpenTxFirmware("opentx-x10", Firmware::tr("FrSky Horus X10 / X10S"), BOARD_X10);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X10 Express board */
   firmware = new OpenTxFirmware("opentx-x10express", Firmware::tr("FrSky Horus X10 Express / X10S Express"), BOARD_X10_EXPRESS);
   addOpenTxFrskyOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X12 (Horus) board */
   firmware = new OpenTxFirmware("opentx-x12s", Firmware::tr("FrSky Horus X12S"), BOARD_HORUS_X12S);
@@ -1302,6 +1323,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
   firmware->addOption("pcbdev", Firmware::tr("Use ONLY with first DEV pcb version"));
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* Jumper T12 board */
   firmware = new OpenTxFirmware("opentx-t12", QCoreApplication::translate("Firmware", "Jumper T12 / T12 Pro"), BOARD_JUMPER_T12);
@@ -1313,11 +1335,19 @@ void registerOpenTxFirmwares()
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* Jumper T16 board */
   firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+ / T16 Pro"), BOARD_JUMPER_T16);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
+  firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
+  registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
+
+  /* Radiomaster TX16S board */
+  firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S"), BOARD_RADIOMASTER_TX16S);
+  addOpenTxFrskyOptions(firmware);
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
   registerOpenTxFirmware(firmware);
 

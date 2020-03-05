@@ -657,15 +657,15 @@
 #define TR_MODULE_NO_TELEMETRY         TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Binding"
-#define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
-#define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
+#define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Modul\nUpdate nötig")
+#define TR_MODULE_UPGRADE              TR("Upg. advised", "Modulupdate empfohlen")
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"
-#define TR_BINDING_CH1_8_TELEM_ON      "Ch1-8 Telem ON"
-#define TR_BINDING_CH1_8_TELEM_OFF     "Ch1-8 Telem OFF"
-#define TR_BINDING_CH9_16_TELEM_ON     "Ch9-16 Telem ON"
-#define TR_BINDING_CH9_16_TELEM_OFF     "Ch9-16 Telem OFF"
+#define TR_BINDING_CH1_8_TELEM_ON      "Ch1-8 Telem AN"
+#define TR_BINDING_CH1_8_TELEM_OFF     "Ch1-8 Telem AUS"
+#define TR_BINDING_CH9_16_TELEM_ON     "Ch9-16 Telem AN"
+#define TR_BINDING_CH9_16_TELEM_OFF     "Ch9-16 Telem AUS"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
 #define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
@@ -689,18 +689,18 @@
 #define TR_VOLTAGE                      TR(INDENT "Spg", INDENT "Spannungsquelle")  //9XR-Pro
 #define TR_CURRENT                      TR(INDENT "Strom", INDENT "Stromquelle")
 #define TR_SELECT_MODEL                 "Modell auswählen"
-#define TR_CREATE_CATEGORY              "Modelltyp erzeugen"
+#define TR_CREATE_CATEGORY              "Modelltyp erstellen"
 #define TR_RENAME_CATEGORY              "Modelltyp umbenennen"
 #define TR_DELETE_CATEGORY              "Modelltyp löschen"
-#define TR_CREATE_MODEL                 "Neues Modell"
+#define TR_CREATE_MODEL                 TR("Neues Modell" , "Neues Modell erstellen")
 #define TR_DUPLICATE_MODEL              "Kopiere Modell"
 #define TR_COPY_MODEL                   "Kopiere Modell"
 #define TR_MOVE_MODEL                   "Verschiebe Modell"
 #define TR_BACKUP_MODEL                 "Modell auf SD-Karte"  //9XR-Pro
-#define TR_DELETE_MODEL                 "Modell löschen" // TODO merged into DELETEMODEL?
+#define TR_DELETE_MODEL                 "Lösche Modell" // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL                TR("Modell wiederher.", "Modell wiederherstellen")
-#define TR_DELETE_ERROR                 "Fehler beim Löschen"
-#define TR_CAT_NOT_EMPTY                "Kategorie nicht leer"
+#define TR_DELETE_ERROR                 "Fehler beim\nLöschen"
+#define TR_CAT_NOT_EMPTY                "Modelltyp nicht leer"
 #define TR_SDCARD_ERROR                 "SD-Kartenfehler"
 #define TR_SDCARD                      "SD Card"
 #define TR_NO_FILES_ON_SD              "No files on SD!"
@@ -834,19 +834,19 @@
 #define TR_MIXERS_MONITOR              "==>Mischer Monitor"
 #define TR_PATH_TOO_LONG               "Pfad zu Lang"
 #define TR_VIEW_TEXT                   "View Text"
-#define TR_FLASH_BOOTLOADER            TR("Flash bootloader","Flash bootloader selbst")      //
+#define TR_FLASH_BOOTLOADER            TR("Flash bootloader","Flash bootloader")      //
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash ext. Gerät","Flash externes Gerät")
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
-#define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetooth module")
+#define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetoothmodul")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Flash pwr mngt unit", "Flash power management unit")
 #define TR_CURRENT_VERSION             TR("Current vers. ", "Current version: ")
 #define TR_FLASH_INTERNAL_MODULE       TR("Flash int. XJT","Flash internes XJT-Modul")
-#define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
-#define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. mod","Flash extern module")
-#define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
-#define TR_FIRMWARE_UPDATE_ERROR       TR("FW update Error","Firmware update error")
-#define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING                     "Writing..."
+#define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash int. Multimodul")
+#define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. mod","Flash ext. Modul")
+#define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash ext. Multimodul")
+#define TR_FIRMWARE_UPDATE_ERROR       TR("FW update Error","Firmware Updatefehler")
+#define TR_FIRMWARE_UPDATE_SUCCESS     TR3("Flash successful","Flash successful","Update erfolgreich")
+#define TR_WRITING                     "Schreibe..."
 #define TR_CONFIRM_FORMAT              "Formatieren bestätigen?"
 #define TR_INTERNALRF                  "Internes HF-Modul"
 #define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
@@ -977,14 +977,15 @@
 #define TR_PRESET                      "Preset"
 #define TR_MIRROR                      "Spiegeln"
 #define TR_CLEAR                       "Löschen"
-#define TR_RESET                       TR("Servowert reset","Servowerte rücksetzen")
+#define TR_RESET                       TR("Servowert reset","Servowerte zurücksetzen")
 #define TR_RESET_SUBMENU               TR("Reset Werte   ==>", "Reset=>Timer Flug Telem")
 #define TR_COUNT                       "Punkte"
 #define TR_PT                          "Pt"
 #define TR_PTS                         "Pts"
 #define TR_SMOOTH                      "Runden"
-#define TR_COPY_STICKS_TO_OFS          TR("Copy Stk ->Subtrim", "Kopie Stick to Servo-Mitte")
-#define TR_COPY_TRIMS_TO_OFS           TR("Copy Trim->Subtrim", "Kopie Trimm to Servo-Mitte")  // "Trim to Subtrim"
+#define TR_COPY_STICKS_TO_OFS          TR3("Copy Stk ->Subtrim", "Kopiere Stick zu Subtrim", "Kopiere Knüppelposition auf Subtrim")
+#define TR_COPY_MIN_MAX_TO_OUTPUTS     TR3("Cpy min/max to all", "Kopiere min/max zu allen" , "Kopiere Limits & Mitte auf alle Kanäle")
+#define TR_COPY_TRIMS_TO_OFS           TR3("Copy Trim->Subtrim",  "Kopiere Trimm zu Subtrim" , "Kopiere Trimmposition auf Subtrim")  // "Trim to Subtrim"
 #define TR_INCDEC                      "Inc/Decrement"
 #define TR_GLOBALVAR                   "Global Var"
 #define TR_MIXSOURCE                   "Mixer Quelle"
@@ -1183,3 +1184,105 @@
 #define TR_AUTH_FAILURE                "Auth-failure"
 
 // ----------------------------------------------------------------
+#define ZSTR_RSSI                      "RSSI"
+#define ZSTR_R9PW                      "R9PW"
+#define ZSTR_RAS                       "SWR"
+#define ZSTR_A1                        "A1"
+#define ZSTR_A2                        "A2"
+#define ZSTR_A3                        "A3"
+#define ZSTR_A4                        "A4"
+#define ZSTR_BATT                      "RxBt"
+#define ZSTR_ALT                       "Alt"
+#define ZSTR_TEMP1                     "Tmp1"
+#define ZSTR_TEMP2                     "Tmp2"
+#define ZSTR_TEMP3                     "Tmp3"
+#define ZSTR_TEMP4                     "Tmp4"
+#define ZSTR_RPM2                      "RPM2"
+#define ZSTR_PRES                      "Pres"
+#define ZSTR_ODO1                      "Odo1"
+#define ZSTR_ODO2                      "Odo2"
+#define ZSTR_TXV                       "TX_V"
+#define ZSTR_CURR_SERVO1               "CSv1"
+#define ZSTR_CURR_SERVO2               "CSv2"
+#define ZSTR_CURR_SERVO3               "CSv3"
+#define ZSTR_CURR_SERVO4               "CSv4"
+#define ZSTR_DIST                      "Dist"
+#define ZSTR_ARM                       "Arm"
+#define ZSTR_C50                       "C50"
+#define ZSTR_C200                      "C200"
+#define ZSTR_RPM                       "RPM"
+#define ZSTR_FUEL                      "Fuel"
+#define ZSTR_VSPD                      "VSpd"
+#define ZSTR_ACCX                      "AccX"
+#define ZSTR_ACCY                      "AccY"
+#define ZSTR_ACCZ                      "AccZ"
+#define ZSTR_GYROX                     "GYRX"
+#define ZSTR_GYROY                     "GYRY"
+#define ZSTR_GYROZ                     "GYRZ"
+#define ZSTR_CURR                      "Curr"
+#define ZSTR_CAPACITY                  "Capa"
+#define ZSTR_VFAS                      "VFAS"
+#define ZSTR_BATT_PERCENT              "Bat%"
+#define ZSTR_ASPD                      "ASpd"
+#define ZSTR_GSPD                      "GSpd"
+#define ZSTR_HDG                       "Hdg"
+#define ZSTR_SATELLITES                "Sats"
+#define ZSTR_CELLS                     "Cels"
+#define ZSTR_GPSALT                    "GAlt"
+#define ZSTR_GPSDATETIME               "Date"
+#define ZSTR_GPS                       "GPS"
+#define ZSTR_BATT1_VOLTAGE             "RB1V"
+#define ZSTR_BATT2_VOLTAGE             "RB2V"
+#define ZSTR_BATT1_CURRENT             "RB1A"
+#define ZSTR_BATT2_CURRENT             "RB2A"
+#define ZSTR_BATT1_CONSUMPTION         "RB1C"
+#define ZSTR_BATT2_CONSUMPTION         "RB2C"
+#define ZSTR_BATT1_TEMP                "RB1T"
+#define ZSTR_BATT2_TEMP                "RB2T"
+#define ZSTR_RB_STATE                  "RBS"
+#define ZSTR_CHANS_STATE               "RBCS"
+#define ZSTR_RX_RSSI1                  "1RSS"
+#define ZSTR_RX_RSSI2                  "2RSS"
+#define ZSTR_RX_QUALITY                "RQly"
+#define ZSTR_RX_SNR                    "RSNR"
+#define ZSTR_RX_NOISE                  "RNse"
+#define ZSTR_ANTENNA                   "ANT"
+#define ZSTR_RF_MODE                   "RFMD"
+#define ZSTR_TX_POWER                  "TPWR"
+#define ZSTR_TX_RSSI                   "TRSS"
+#define ZSTR_TX_QUALITY                "TQly"
+#define ZSTR_TX_SNR                    "TSNR"
+#define ZSTR_TX_NOISE                  "TNse"
+#define ZSTR_PITCH                     "Ptch"
+#define ZSTR_ROLL                      "Roll"
+#define ZSTR_YAW                       "Yaw"
+#define ZSTR_FLIGHT_MODE               "FM"
+#define ZSTR_THROTTLE                  "Thr"
+#define ZSTR_QOS_A                     "FdeA"
+#define ZSTR_QOS_B                     "FdeB"
+#define ZSTR_QOS_L                     "FdeL"
+#define ZSTR_QOS_R                     "FdeR"
+#define ZSTR_QOS_F                     "FLss"
+#define ZSTR_QOS_H                     "Hold"
+#define ZSTR_BIND                      "BIND"
+#define ZSTR_LAP_NUMBER                "Lap "
+#define ZSTR_GATE_NUMBER               "Gate"
+#define ZSTR_LAP_TIME                  "LapT"
+#define ZSTR_GATE_TIME                 "GteT"
+#define ZSTR_ESC_VOLTAGE               "EscV"
+#define ZSTR_ESC_CURRENT               "EscA"
+#define ZSTR_ESC_RPM                   "EscR"
+#define ZSTR_ESC_CONSUMPTION           "EscC"
+#define ZSTR_ESC_TEMP                  "EscT"
+#define ZSTR_SD1_CHANNEL               "Chan"
+#define ZSTR_GASSUIT_TEMP1             "GTp1"
+#define ZSTR_GASSUIT_TEMP2             "GTp2"
+#define ZSTR_GASSUIT_RPM               "GRPM"
+#define ZSTR_GASSUIT_FLOW              "GFlo"
+#define ZSTR_GASSUIT_CONS              "GFue"
+#define ZSTR_GASSUIT_RES_VOL           "GRVl"
+#define ZSTR_GASSUIT_RES_PERC          "GRPc"
+#define ZSTR_GASSUIT_MAX_FLOW          "GMFl"
+#define ZSTR_GASSUIT_AVG_FLOW          "GAFl"
+#define ZSTR_SBEC_VOLTAGE              "BecV"
+#define ZSTR_SBEC_CURRENT              "BecA"

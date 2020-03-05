@@ -91,9 +91,9 @@ end
 
 -- Main
 local function runFieldsPage(event)
-  if event == EVT_EXIT_BREAK then -- exit script
+  if event == EVT_VIRTUAL_EXIT then -- exit script
     return 2
-  elseif event == EVT_ENTER_BREAK or event == EVT_ROT_BREAK then -- toggle editing/selecting current field
+  elseif event == EVT_VIRTUAL_ENTER then -- toggle editing/selecting current field
     if fields[current][5] ~= nil then
       edit = not edit
       if edit == false then
@@ -101,15 +101,15 @@ local function runFieldsPage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       addField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT then
+    if event == EVT_VIRTUAL_NEXT then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT then
+    elseif event == EVT_VIRTUAL_PREV then
       selectField(-1)
     end
   end
@@ -465,9 +465,9 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif (event == EVT_PAGE_BREAK or event == EVT_PAGEDN_FIRST) and page < #pages-1 then
+  elseif event == EVT_VIRTUAL_NEXT_PAGE and page < #pages-1 then
     selectPage(1)
-  elseif (event == EVT_PAGE_LONG or event == EVT_PAGEUP_FIRST) and page > 1 then
+  elseif event == EVT_VIRTUAL_PREV_PAGE and page > 1 then
     killEvents(event);
     selectPage(-1)
   end

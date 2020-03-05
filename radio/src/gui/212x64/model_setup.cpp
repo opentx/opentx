@@ -353,7 +353,7 @@ void menuModelSetup(event_t event)
     LABEL(InternalModule),
       INTERNAL_MODULE_TYPE_ROWS,
       MODULE_CHANNELS_ROWS(INTERNAL_MODULE),
-      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleFailsafeAvailable(INTERNAL_MODULE) ? (uint8_t)2 : (uint8_t)1)),
+      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleRangeAvailable(INTERNAL_MODULE)? (uint8_t)2 : (uint8_t)1)), // RxNum, Range check and Register buttons
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum for ACCESS
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), // Failsafe
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), // Range check and Register buttons

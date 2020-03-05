@@ -58,7 +58,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="4" rowspan="2">
+     <item row="0" column="6" rowspan="2">
       <spacer name="spacer_5">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -85,24 +85,18 @@
    </item>
    <item>
     <layout class="QGridLayout" name="trimsLayout">
-     <item row="2" column="1">
-      <widget class="QSlider" name="trim1Slider">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="0" column="4">
+      <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="tickPosition">
-        <enum>QSlider::TicksBothSides</enum>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
        </property>
-       <property name="tickInterval">
-        <number>25</number>
-       </property>
-      </widget>
+      </spacer>
      </item>
      <item row="0" column="0">
       <widget class="QSlider" name="trim2Slider">
@@ -136,25 +130,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
-      <widget class="QSlider" name="trim4Slider">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="tickPosition">
-        <enum>QSlider::TicksBothSides</enum>
-       </property>
-       <property name="tickInterval">
-        <number>25</number>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QFrame" name="frame">
        <property name="frameShape">
@@ -166,16 +141,6 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QGridLayout" name="leftTrims_3" columnstretch="0,1">
-          <item row="1" column="0">
-           <widget class="QLabel" name="trim1Label">
-            <property name="text">
-             <string notr="true">trim1</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_5c_3">
             <item>
@@ -284,9 +249,57 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="trim1Label">
+            <property name="text">
+             <string notr="true">trim1</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QSlider" name="trim4Slider">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBothSides</enum>
+       </property>
+       <property name="tickInterval">
+        <number>25</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSlider" name="trim1Slider">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBothSides</enum>
+       </property>
+       <property name="tickInterval">
+        <number>25</number>
+       </property>
       </widget>
      </item>
      <item row="0" column="2">
@@ -299,7 +312,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <layout class="QGridLayout" name="righTrims_2" columnstretch="0,1">
+         <layout class="QGridLayout" name="rightTrims_2" columnstretch="0,1">
           <item row="1" column="0">
            <widget class="QLabel" name="trim4Label">
             <property name="text">
@@ -309,65 +322,6 @@
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="trim3Label">
-            <property name="text">
-             <string notr="true">trim3</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <layout class="QVBoxLayout" name="verticalLayout_7b_2">
-            <item>
-             <spacer name="verticalSpacer_7b_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QComboBox" name="trim3Use"/>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="trim3Value">
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="accelerated">
-               <bool>true</bool>
-              </property>
-              <property name="minimum">
-               <number>-896</number>
-              </property>
-              <property name="maximum">
-               <number>896</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_8d_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
           </item>
           <item row="1" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_8d_2">
@@ -418,23 +372,201 @@
             </item>
            </layout>
           </item>
+          <item row="0" column="1">
+           <layout class="QVBoxLayout" name="verticalLayout_7b_2">
+            <item>
+             <spacer name="verticalSpacer_7b_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QComboBox" name="trim3Use"/>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="trim3Value">
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="accelerated">
+               <bool>true</bool>
+              </property>
+              <property name="minimum">
+               <number>-896</number>
+              </property>
+              <property name="maximum">
+               <number>896</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_8d_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="trim3Label">
+            <property name="text">
+             <string notr="true">trim3</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
       </widget>
      </item>
-     <item row="0" column="4">
-      <spacer name="horizontalSpacer">
+     <item row="3" column="2">
+      <layout class="QGridLayout" name="t6Layout" columnstretch="0,1">
+       <item row="2" column="0">
+        <widget class="QLabel" name="trim6Label">
+         <property name="text">
+          <string>trim6</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QComboBox" name="trim6Use"/>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="trim6Value">
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+           <property name="minimum">
+            <number>-896</number>
+           </property>
+           <property name="maximum">
+            <number>896</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="2">
+      <widget class="QSlider" name="trim6Slider">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBothSides</enum>
        </property>
-      </spacer>
+       <property name="tickInterval">
+        <number>25</number>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QSlider" name="trim5Slider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBothSides</enum>
+       </property>
+       <property name="tickInterval">
+        <number>25</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QGridLayout" name="t5Layout" columnstretch="0,1">
+       <item row="1" column="0">
+        <widget class="QLabel" name="trim5Label">
+         <property name="text">
+          <string>trim5</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QComboBox" name="trim5Use"/>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="trim5Value">
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+           <property name="minimum">
+            <number>-896</number>
+           </property>
+           <property name="maximum">
+            <number>896</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

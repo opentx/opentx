@@ -172,7 +172,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->txCurrentCalibrationLabel->hide();
   }
 
-  if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_HORUS(board)) {
+  if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_FAMILY_HORUS_OR_T16(board)) {
     ui->bluetoothMode->addItem(tr("OFF"), 0);
     if (IS_TARANIS_X9E(board)) {
       ui->bluetoothMode->addItem(tr("Enabled"), 1);
@@ -189,7 +189,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->bluetoothWidget->hide();
   }
 
-  if ((IS_HORUS(board) && board != Board::BOARD_X10_EXPRESS) || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board))) {
+  if ((IS_FAMILY_HORUS_OR_T16(board) && board != Board::BOARD_X10_EXPRESS) || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board))) {
     ui->antennaMode->addItem(tr("Internal"), -2);
     ui->antennaMode->addItem(tr("Ask"), -1);
     ui->antennaMode->addItem(tr("Per model"), 0);

@@ -528,7 +528,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
 
   pausePulses();
 
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   INTERNAL_MODULE_OFF();
 #endif
@@ -546,7 +546,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
 
   /* wait 2s off */
   watchdogSuspend(500 /*5s*/);
-  RTOS_WAIT_MS(2000);
+  RTOS_WAIT_MS(3000);
 
   const char * result = driver->flashFirmware(&file, getBasename(filename));
   f_close(&file);
@@ -575,7 +575,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   // reset telemetry protocol
   telemetryInit(255);
   
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
     setupPulsesInternalModule();
