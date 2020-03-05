@@ -370,6 +370,7 @@
 #define TR_VTMRMODES           "Av\0""På\0""GAs""GA%""GAt"
 
 #define LEN_VTRAINERMODES              "\022"
+#define TR_VTRAINER_MASTER_OFF         "Off\0              "
 #define TR_VTRAINER_MASTER_JACK        "Lärare/Uttag\0     "
 #define TR_VTRAINER_SLAVE_JACK         "Elev./Uttag\0      "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Lärare/SBUS-Modul\0"

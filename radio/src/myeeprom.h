@@ -33,7 +33,7 @@
 #define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
 #define GET_TRAINER_PPM_DELAY()                  (g_model.trainerData.delay * 50 + 300)
 
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBNV14)
   #define IS_TRAINER_EXTERNAL_MODULE()    false
   #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
 #elif defined(PCBTARANIS)

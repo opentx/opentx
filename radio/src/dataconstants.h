@@ -187,6 +187,9 @@ enum ModuleIndex {
   SPORT_MODULE,
 };
 enum TrainerMode {
+#if defined(PCBNV14)
+  TRAINER_MODE_OFF, //if there is no trainer detect pin - we need to provide possibility to disable trainer function
+#endif
   TRAINER_MODE_MASTER_TRAINER_JACK,
   TRAINER_MODE_SLAVE,
 #if defined(PCBTARANIS)
@@ -210,7 +213,7 @@ enum TrainerMode {
 
 #if defined(RADIO_FAMILY_T16) || defined(ALLOW_TRAINER_MULTI)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
-#elif defined(BLUETOOTH)
+#elif defined(BLUETOOTH) || defined(PCBNV14)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
 #elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE

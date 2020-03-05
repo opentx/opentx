@@ -371,6 +371,7 @@
 #define TR_VTMRMODES                   "OFF""ON\0""GZs""GZ%""GZt"
 
 #define LEN_VTRAINERMODES              "\022"
+#define TR_VTRAINER_MASTER_OFF         "Off\0              "
 #define TR_VTRAINER_MASTER_JACK        "Maître/Jack\0      "
 #define TR_VTRAINER_SLAVE_JACK         "Elève/Jack\0       "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Maître/SBUS Module"
