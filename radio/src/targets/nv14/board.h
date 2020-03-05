@@ -521,6 +521,13 @@ void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
 void auxSerialSbusInit();
 void auxSerialStop();
+#if defined(AUX_SERIAL_PWR_GPIO)
+#define AUX_SERIAL_POWER_ON()            auxSerialPowerOn()
+#define AUX_SERIAL__POWER_OFF()          auxSerialPowerOff()
+#else
+#define AUX_SERIAL_POWER_ON()
+#define AUX_SERIAL__POWER_OFF()
+#endif
 #define USART_FLAG_ERRORS               (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 extern uint8_t currentTrainerMode;
