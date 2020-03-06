@@ -449,6 +449,88 @@ class ReceiverButton: public TextButton {
     uint8_t receiverIdx;
 };
 
+class TrainerModuleWindow  : public FormGroup {
+  public:
+    TrainerModuleWindow(FormWindow * parent, const rect_t & rect) :
+      FormGroup(parent, rect, FORWARD_SCROLL | FORM_FORWARD_FOCUS)
+    {
+      update();
+    }
+
+    void update()
+    {
+      FormGridLayout grid;
+      clear();
+
+      new StaticText(this, grid.getLabelSlot(true), STR_MODE);
+      moduleChoice = new Choice(this, grid.getFieldSlot(), STR_VTRAINERMODES, 0, TRAINER_MODE_MAX, GET_DEFAULT(g_model.trainerData.mode), [=](int32_t newValue) {
+          g_model.trainerData.mode = newValue;
+          update();
+          SET_DIRTY();
+          moduleChoice->setFocus();
+      });
+      moduleChoice->setAvailableHandler(isTrainerModeAvailable);
+      grid.nextLine();
+
+      if (g_model.trainerData.mode > TRAINER_MODE_OFF) {
+        new StaticText(this, grid.getLabelSlot(true), STR_CHANNELRANGE);
+        channelStart = new NumberEdit(this, grid.getFieldSlot(2, 0), 1,
+                                      MAX_OUTPUT_CHANNELS - 8 + g_model.trainerData.channelsCount + 1,
+                                      GET_DEFAULT(1 + g_model.trainerData.channelsStart));
+        channelEnd = new NumberEdit(this, grid.getFieldSlot(2, 1),
+                                    g_model.trainerData.channelsStart + 1,
+                                    min<int8_t>(MAX_TRAINER_CHANNELS, g_model.trainerData.channelsStart + MAX_TRAINER_CHANNELS_M8),
+                                    GET_DEFAULT(g_model.trainerData.channelsStart + 8 + g_model.trainerData.channelsCount));
+        channelStart->setPrefix(STR_CH);
+        channelEnd->setPrefix(STR_CH);
+        channelStart->setSetValueHandler([=](int32_t newValue) {
+            g_model.trainerData.channelsStart = newValue - 1;
+            SET_DIRTY();
+            channelEnd->setMin(g_model.trainerData.channelsStart + 1);
+            channelEnd->setMax(min<int8_t>(MAX_TRAINER_CHANNELS, g_model.trainerData.channelsStart + MAX_TRAINER_CHANNELS_M8));
+            channelEnd->invalidate();
+        });
+        channelEnd->setSetValueHandler([=](int32_t newValue) {
+            g_model.trainerData.channelsCount = newValue - g_model.trainerData.channelsStart - 8;
+            SET_DIRTY();
+            channelStart->setMax(MAX_TRAINER_CHANNELS - 8 + g_model.trainerData.channelsCount + 1);
+        });
+        grid.nextLine();
+      }
+
+      if (g_model.trainerData.mode == TRAINER_MODE_SLAVE) {
+        // PPM frame
+        new StaticText(this, grid.getLabelSlot(true), STR_PPMFRAME);
+
+        // PPM frame length
+        auto edit = new NumberEdit(this, grid.getFieldSlot(3, 0), 125, 35 * 5 + 225,
+                                   GET_DEFAULT(g_model.trainerData.frameLength * 5 + 225),
+                                   SET_VALUE(g_model.trainerData.frameLength, (newValue - 225) / 5),
+                                   PREC1);
+        edit->setStep(5);
+        edit->setSuffix(STR_MS);
+
+        // PPM frame delay
+        edit = new NumberEdit(this, grid.getFieldSlot(3, 1), 100, 800,
+                              GET_DEFAULT(g_model.trainerData.delay * 50 + 300),
+                              SET_VALUE(g_model.trainerData.delay, (newValue - 300) / 50));
+        edit->setStep(50);
+        edit->setSuffix("us");
+
+        // PPM Polarity
+        new Choice(this, grid.getFieldSlot(3, 2), STR_PPM_POL, 0, 1, GET_SET_DEFAULT(g_model.trainerData.pulsePol ));
+        grid.nextLine();
+      }
+      getParent()->moveWindowsTop(top(), adjustHeight());
+      getParent()->invalidate(); // TODO should be automatically done
+    }
+
+  protected:
+    Choice * moduleChoice = nullptr;
+    NumberEdit * channelStart = nullptr;
+    NumberEdit * channelEnd = nullptr;
+};
+
 class ModuleWindow : public FormGroup {
   public:
     ModuleWindow(FormWindow * parent, const rect_t &rect, uint8_t moduleIdx) :
@@ -1067,7 +1149,12 @@ void ModelSetupPage::build(FormWindow * window)
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, EXTERNAL_MODULE));
   }
 
-  grid.nextLine();
+  // Trainer
+  {
+    new Subtitle(window, grid.getLineSlot(), STR_TRAINER);
+    grid.nextLine();
+    grid.addWindow(new TrainerModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}));
+  }
 
   window->setInnerHeight(grid.getWindowHeight());
 }

@@ -354,6 +354,7 @@
 #define TR_VTMRMODES          			 "AUS""EIN""GSs""GS%""GSt"
 
 #define LEN_VTRAINERMODES              "\022"
+#define TR_VTRAINER_MASTER_OFF         "Off\0              "
 #define TR_VTRAINER_MASTER_JACK        "Lehrer/Buchse\0    "
 #define TR_VTRAINER_SLAVE_JACK         "Schüler/Buchse\0   "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Lehrer/SBUS Modul\0"

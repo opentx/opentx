@@ -33,15 +33,12 @@
 #define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
 #define GET_TRAINER_PPM_DELAY()                  (g_model.trainerData.delay * 50 + 300)
 
-#if defined(PCBHORUS)
-  #define IS_TRAINER_EXTERNAL_MODULE()    false
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
-#elif defined(PCBTARANIS)
-  #define IS_TRAINER_EXTERNAL_MODULE()      (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerData.mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-  #define HAS_WIRELESS_TRAINER_HARDWARE()   (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
+#if defined(HARDWARE_TRAINER_EXTERNAL_MODULE)
+  #define IS_TRAINER_EXTERNAL_MODULE()           (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerData.mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
 #else
-  #define IS_TRAINER_EXTERNAL_MODULE()    false
+  #define IS_TRAINER_EXTERNAL_MODULE()           false
 #endif
+#define IS_TRAINER_AUX_SERIAL()                  (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
 
 #define IS_PLAY_FUNC(func)             ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
 

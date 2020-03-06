@@ -87,7 +87,7 @@ void checkTrainerSettings()
         break;
 #endif
 
-#if defined(TRAINER_BATTERY_COMPARTMENT)
+#if defined(HARDWARE_TRAINER_AUX_SERIAL)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         auxSerialStop();
         break;
@@ -113,7 +113,7 @@ void checkTrainerSettings()
         break;
 #endif
 
-#if defined(TRAINER_BATTERY_COMPARTMENT)
+#if defined(HARDWARE_TRAINER_AUX_SERIAL)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
           auxSerialSbusInit();

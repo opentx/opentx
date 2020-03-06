@@ -53,7 +53,7 @@ option(MODULE_PROTOCOL_FLEX "Add support for non certified FLEX modules" OFF)
 option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(TBS_RELEASE "Used to build TBS released firmware" OFF)
-option(ALLOW_TRAINER_MULTI "Allow multi trainer" OFF)
+option(HARDWARE_TRAINER_MULTI "Allow multi trainer" OFF)
 option(BOOTLOADER "Include Bootloader" ON)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -371,8 +371,8 @@ if(FRSKY_RELEASE)
   set(POPUP_LEVEL 3)
 endif()
 
-if(ALLOW_TRAINER_MULTI)
-  add_definitions(-DALLOW_TRAINER_MULTI)
+if(HARDWARE_TRAINER_MULTI)
+  add_definitions(-DHARDWARE_TRAINER_MULTI)
 endif()
 
 add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})
