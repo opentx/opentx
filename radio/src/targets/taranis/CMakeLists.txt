@@ -332,7 +332,7 @@ if(BLUETOOTH)
     )
   if(NOT PCB STREQUAL X9E)
     # Bluetooth on X9E is compatible with almost nothing
-    add_definitions(-DHARDWARE_BLUETOOTH_TRAINER)
+    add_definitions(-DHARDWARE_TRAINER_BLUETOOTH)
   endif()
 endif()
 

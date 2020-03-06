@@ -747,12 +747,12 @@ bool isTrainerModeAvailable(int mode)
       return !g_eeGeneral.bluetoothMode;
 #endif
 
-#if defined(TRAINER_BATTERY_COMPARTMENT)
+#if defined(HARDWARE_TRAINER_AUX_SERIAL)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
       return g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER;
 #endif
 
-#if defined(HARDWARE_BLUETOOTH_TRAINER)
+#if defined(HARDWARE_TRAINER_BLUETOOTH)
     case TRAINER_MODE_MASTER_BLUETOOTH:
     case TRAINER_MODE_SLAVE_BLUETOOTH:
       return g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER;
@@ -761,6 +761,11 @@ bool isTrainerModeAvailable(int mode)
 #if defined(HARDWARE_TRAINER_JACK)
     case TRAINER_MODE_MASTER_TRAINER_JACK:
     case TRAINER_MODE_SLAVE:
+      return true;
+#endif
+
+#if defined(HARDWARE_TRAINER_MULTI)
+    case TRAINER_MODE_MULTI:
       return true;
 #endif
 

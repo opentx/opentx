@@ -212,7 +212,7 @@ enum TrainerMode {
   };
 #endif
 
-#if defined(ALLOW_TRAINER_MULTI)
+#if defined(HARDWARE_TRAINER_MULTI)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
 #elif defined(BLUETOOTH) || defined(PCBNV14) // TODO remove when BT is coded in NV14
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH

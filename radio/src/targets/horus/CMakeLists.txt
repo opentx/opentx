@@ -188,7 +188,7 @@ if(BLUETOOTH)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC ${TARGET_SRC} ../common/arm/stm32/bluetooth_driver.cpp)
   set(SRC ${SRC} bluetooth.cpp)
-  add_definitions(-DHARDWARE_BLUETOOTH_TRAINER)
+  add_definitions(-DHARDWARE_TRAINER_BLUETOOTH)
 endif()
 
 if (AUX_SERIAL)
