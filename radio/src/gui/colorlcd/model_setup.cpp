@@ -472,7 +472,7 @@ class TrainerModuleWindow  : public FormGroup {
       moduleChoice->setAvailableHandler(isTrainerModeAvailable);
       grid.nextLine();
 
-      if (g_model.trainerData.mode != TRAINER_MODE_OFF) {
+      if (g_model.trainerData.mode >= TRAINER_MODE_ON_FIRST) {
         new StaticText(this, grid.getLabelSlot(true), STR_CHANNELRANGE);
         channelStart = new NumberEdit(this, grid.getFieldSlot(2, 0), 1,
                                       MAX_OUTPUT_CHANNELS - 8 + g_model.trainerData.channelsCount + 1,

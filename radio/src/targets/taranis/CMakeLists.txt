@@ -281,6 +281,10 @@ elseif(PCB STREQUAL XLITES)
   set(INTERNAL_MODULE_SERIAL YES)
 endif()
 
+if(NOT PCB STREQUAL PCBXLITE)
+  add_definitions(-DHARDWARE_TRAINER_JACK)
+endif()
+
 if(GYRO)
   add_definitions(-DGYRO)
   set(TARGET_SRC
@@ -326,6 +330,10 @@ if(BLUETOOTH)
     ${SRC}
     bluetooth.cpp
     )
+  if(NOT PCB STREQUAL X9E)
+    # Bluetooth on X9E is compatible with almost nothing
+    add_definitions(-DHARDWARE_BLUETOOTH_TRAINER)
+  endif()
 endif()
 
 if(AUTOUPDATE)

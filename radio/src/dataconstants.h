@@ -190,7 +190,8 @@ enum TrainerMode {
 #if !defined(TRAINER_DETECT_GPIO)
   TRAINER_MODE_OFF, // if there is no trainer detect pin - we need to provide possibility to disable trainer function
 #endif
-  TRAINER_MODE_MASTER_TRAINER_JACK,
+  TRAINER_MODE_ON_FIRST,
+  TRAINER_MODE_MASTER_TRAINER_JACK = TRAINER_MODE_ON_FIRST,
   TRAINER_MODE_SLAVE,
 #if defined(PCBTARANIS)
   TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,

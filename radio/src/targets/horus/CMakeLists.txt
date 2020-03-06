@@ -45,6 +45,7 @@ if (PCB STREQUAL X10)
   set(PCBREV "STD" CACHE STRING "PCB Revision")
   add_definitions(-DPCBX10)
   add_definitions(-DSOFTWARE_VOLUME)
+  add_definitions(-DHARDWARE_TRAINER_JACK)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
@@ -91,7 +92,6 @@ elseif (PCB STREQUAL X12S)
   option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
   set(FLAVOUR x12s)
   set(BLUETOOTH ON)
-  set(PCBREV "13" CACHE STRING "PCB Revision")
   if(${PCBREV} GREATER 10)
     option(INTERNAL_GPS "Internal GPS installed" YES)
   else()
@@ -102,6 +102,8 @@ elseif (PCB STREQUAL X12S)
   endif()
   set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
   add_definitions(-DPCBX12S)
+  set(PCBREV "13" CACHE STRING "PCB Revision")
+  add_definitions(-DHARDWARE_TRAINER_JACK)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
@@ -186,6 +188,7 @@ if(BLUETOOTH)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC ${TARGET_SRC} ../common/arm/stm32/bluetooth_driver.cpp)
   set(SRC ${SRC} bluetooth.cpp)
+  add_definitions(-DHARDWARE_BLUETOOTH_TRAINER)
 endif()
 
 if (AUX_SERIAL)

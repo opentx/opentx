@@ -734,38 +734,39 @@ bool isTelemetryProtocolAvailable(int protocol)
 
 bool isTrainerModeAvailable(int mode)
 {
+  switch(mode) {
 #if defined(HARDWARE_TRAINER_EXTERNAL_MODULE)
-  if (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE) {
-    return !IS_EXTERNAL_MODULE_ENABLED();
-  }
+    case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+    case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+      return !IS_EXTERNAL_MODULE_ENABLED();
 #endif
 
 #if defined(PCBX9E)
-  if (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
-    // bluetooth uses the same USART than SBUS
-    return !g_eeGeneral.bluetoothMode;
-  }
+    case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+      // bluetooth uses the same USART than SBUS
+      return !g_eeGeneral.bluetoothMode;
 #endif
 
 #if defined(TRAINER_BATTERY_COMPARTMENT)
-  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT) {
-    return g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER;
-  }
+    case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+      return g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER;
 #endif
 
-#if defined(HARDWARE_TRAINER_BLUETOOTH)
-  if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH) {
-    return g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER;
-  }
+#if defined(HARDWARE_BLUETOOTH_TRAINER)
+    case TRAINER_MODE_MASTER_BLUETOOTH:
+    case TRAINER_MODE_SLAVE_BLUETOOTH:
+      return g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER;
 #endif
 
 #if defined(HARDWARE_TRAINER_JACK)
-  if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE) {
-    return true;
-  }
+    case TRAINER_MODE_MASTER_TRAINER_JACK:
+    case TRAINER_MODE_SLAVE:
+      return true;
 #endif
 
-  return false;
+    default:
+      return false;
+  }
 }
 
 bool modelHasNotes()

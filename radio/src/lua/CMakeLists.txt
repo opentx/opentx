@@ -10,7 +10,7 @@ endmacro(add_lua_export_target)
 
 set(LUA_INCLUDES
   -DCPUARM -DLUA -DLUA_INPUTS -DLUA_EXPORT_GENERATION -DSIMU
-  -I${RADIO_SRC_DIRECTORY}
+  -I${RADIO_SRC_DIR}
   -I${RADIO_SRC_DIR}/targets/${TARGET_DIR}
   -I${RADIO_SRC_DIR}/thirdparty
   -I${RADIO_SRC_DIR}/targets/common/arm/stm32
