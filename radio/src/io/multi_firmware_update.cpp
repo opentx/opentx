@@ -117,7 +117,7 @@ class MultiExternalUpdateDriver: public MultiFirmwareUpdateDriver
 #endif
 
       if (inverted)
-        telemetryPortInvertedInit(57600, TELEMETRY_SERIAL_DEFAULT);
+        telemetryPortInvertedInit(57600, TELEMETRY_SERIAL_INVERTED);
       else
         telemetryPortInit(57600, TELEMETRY_SERIAL_DEFAULT);
     }
