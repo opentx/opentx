@@ -45,7 +45,6 @@ if (PCB STREQUAL X10)
   set(PCBREV "STD" CACHE STRING "PCB Revision")
   add_definitions(-DPCBX10)
   add_definitions(-DSOFTWARE_VOLUME)
-  add_definitions(-DHARDWARE_TRAINER_JACK)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
@@ -92,6 +91,7 @@ elseif (PCB STREQUAL X12S)
   option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" OFF)
   set(FLAVOUR x12s)
   set(BLUETOOTH ON)
+  set(PCBREV "13" CACHE STRING "PCB Revision")
   if(${PCBREV} GREATER 10)
     option(INTERNAL_GPS "Internal GPS installed" YES)
   else()
@@ -102,8 +102,6 @@ elseif (PCB STREQUAL X12S)
   endif()
   set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
   add_definitions(-DPCBX12S)
-  set(PCBREV "13" CACHE STRING "PCB Revision")
-  add_definitions(-DHARDWARE_TRAINER_JACK)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
@@ -131,6 +129,7 @@ add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DHARDWARE_KEYS)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
 add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+add_definitions(-DHARDWARE_TRAINER_JACK)
 
 if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
