@@ -188,7 +188,7 @@ enum ModuleIndex {
 };
 enum TrainerMode {
 #if !defined(TRAINER_DETECT_GPIO)
-  TRAINER_MODE_OFF, //if there is no trainer detect pin - we need to provide possibility to disable trainer function
+  TRAINER_MODE_OFF, // if there is no trainer detect pin - we need to provide possibility to disable trainer function
 #endif
   TRAINER_MODE_MASTER_TRAINER_JACK,
   TRAINER_MODE_SLAVE,
@@ -211,14 +211,14 @@ enum TrainerMode {
   };
 #endif
 
-#if defined(RADIO_FAMILY_T16) || defined(ALLOW_TRAINER_MULTI)
+#if defined(ALLOW_TRAINER_MULTI)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
-#elif defined(BLUETOOTH) || defined(PCBNV14) //TODO remove when BT is coded in NV14
+#elif defined(BLUETOOTH) || defined(PCBNV14) // TODO remove when BT is coded in NV14
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
 #elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #else
-  #define TRAINER_MODE_MAX()             HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
+  #define TRAINER_MODE_MAX()             IS_TRAINER_AUX_SERIAL() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)

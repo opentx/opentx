@@ -1233,6 +1233,7 @@
 #endif
 
 // Trainer Port
+#define HARDWARE_TRAINER_EXTERNAL_MODULE
 #if defined(PCBXLITES) || defined(PCBX9LITE)
   // on these 2 radios the trainer port already uses DMA1_Stream6, we won't use the DMA
   #define TRAINER_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD

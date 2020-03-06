@@ -451,12 +451,14 @@ class ReceiverButton: public TextButton {
 
 class TrainerModuleWindow  : public FormGroup {
   public:
-    TrainerModuleWindow(FormWindow * parent, const rect_t &rect) :
+    TrainerModuleWindow(FormWindow * parent, const rect_t & rect) :
       FormGroup(parent, rect, FORWARD_SCROLL | FORM_FORWARD_FOCUS)
     {
       update();
     }
-    void update() {
+
+    void update()
+    {
       FormGridLayout grid;
       clear();
 
@@ -467,11 +469,10 @@ class TrainerModuleWindow  : public FormGroup {
           SET_DIRTY();
           moduleChoice->setFocus();
       });
-
       moduleChoice->setAvailableHandler(isTrainerModeAvailable);
       grid.nextLine();
 
-      if(g_model.trainerData.mode != TRAINER_MODE_OFF) {
+      if (g_model.trainerData.mode != TRAINER_MODE_OFF) {
         new StaticText(this, grid.getLabelSlot(true), STR_CHANNELRANGE);
         channelStart = new NumberEdit(this, grid.getFieldSlot(2, 0), 1,
                                       MAX_OUTPUT_CHANNELS - 8 + g_model.trainerData.channelsCount + 1,
@@ -497,7 +498,7 @@ class TrainerModuleWindow  : public FormGroup {
         grid.nextLine();
       }
 
-      if(g_model.trainerData.mode == TRAINER_MODE_SLAVE) {
+      if (g_model.trainerData.mode == TRAINER_MODE_SLAVE) {
         // PPM frame
         new StaticText(this, grid.getLabelSlot(true), STR_PPMFRAME);
 
@@ -1154,6 +1155,7 @@ void ModelSetupPage::build(FormWindow * window)
     grid.nextLine();
     grid.addWindow(new TrainerModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}));
   }
+
   window->setInnerHeight(grid.getWindowHeight());
 }
 
