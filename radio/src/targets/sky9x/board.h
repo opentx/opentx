@@ -215,6 +215,9 @@ void calcConsumption();
 #define TRAINER_CONNECTED()            (PIOA->PIO_PDSR & PIO_PA8)
 void init_trainer_capture();
 void stop_trainer_capture();
+#define TRAINER_DETECT_GPIO             PIOA
+#define TRAINER_DETECT_GPIO_PIN         PIO_PA8
+#define TRAINER_CONNECTED()            (TRAINER_DETECT_GPIO->PIO_PDSR & TRAINER_DETECT_GPIO_PIN)
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256

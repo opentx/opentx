@@ -16,6 +16,7 @@ set(GUI_DIR colorlcd)
 set(BITMAPS_DIR 480x272)
 # set(NAVIGATION_TYPE touch)
 set(TARGET_DIR nv14)
+add_definitions(-DHARDWARE_TRAINER_JACK)
 
 if(BOOTLOADER)
   set(LINKER_SCRIPT targets/nv14/stm32f4_flash_bootloader.ld)

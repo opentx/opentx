@@ -405,8 +405,7 @@ PACK(struct TelemetrySensor {
  */
 
 PACK(struct TrainerModuleData {
-  uint8_t mode:4;
-  uint8_t spare1:4 SKIP;
+  uint8_t mode:8;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   int8_t frameLength;

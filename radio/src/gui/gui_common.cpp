@@ -769,6 +769,11 @@ bool isTrainerModeAvailable(int mode)
       return true;
 #endif
 
+#if !defined(TRAINER_DETECT_GPIO)
+    case TRAINER_MODE_OFF:
+      return true;
+#endif
+
     default:
       return false;
   }
