@@ -27,6 +27,7 @@
 #include "pxx1.h"
 #include "pxx2.h"
 #include "multi.h"
+#include "afhds3.h"
 #include "modules_helpers.h"
 #include "ff.h"
 
@@ -56,7 +57,11 @@
   #define IS_MULTIMODULE_PROTOCOL(protocol)  (0)
 #endif
 
-#define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_SBUS)
+#if defined(AFHDS3)
+#define IS_AFHDS3_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_AFHDS3)
+#else
+#define IS_AFHDS3_PROTOCOL(protocol)         (0)
+#endif
 
 extern uint8_t s_pulses_paused;
 
@@ -290,6 +295,10 @@ union ExternalModulePulsesData {
   Dsm2PulsesData dsm2;
 #endif
 
+#if defined(AFHDS3)
+  afhds3::PulsesData afhds3;
+#endif
+
   PpmPulsesData<pulse_duration_t> ppm;
 
   CrossfirePulsesData crossfire;
@@ -334,6 +343,7 @@ void extmodulePxx1SerialStart();
 void extmodulePpmStart();
 void intmoduleStop();
 void extmoduleStop();
+void getModuleStatusString(uint8_t moduleIdx, char * statusText);
 
 inline void startPulses()
 {
@@ -364,6 +374,7 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_SBUS,
   PROTOCOL_CHANNELS_PXX2_LOWSPEED,
   PROTOCOL_CHANNELS_PXX2_HIGHSPEED,
+  PROTOCOL_CHANNELS_AFHDS3
 };
 
 inline void stopPulses()

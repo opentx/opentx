@@ -303,6 +303,12 @@ void extmoduleSendNextFrame()
       break;
 #endif
 
+#if defined(AFHDS3)
+    case PROTOCOL_CHANNELS_AFHDS3:
+      extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
+      break;
+#endif
+
     default:
       EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
       break;

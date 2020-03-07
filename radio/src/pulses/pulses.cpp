@@ -40,6 +40,21 @@ void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCa
 #endif
 }
 
+void getModuleStatusString(uint8_t moduleIdx, char * statusText) {
+  *statusText = 0;
+#if defined(MULTIMODULE)
+  if(isModuleMultimodule(moduleIdx)) {
+    getMultiModuleStatus(moduleIdx).getStatusString(statusText);
+  }
+#endif
+#if defined(AFHDS3)
+  if(moduleIdx == EXTERNAL_MODULE && isModuleAFHDS3(moduleIdx)) {
+    extmodulePulsesData.afhds3.getStatusString(statusText);
+  }
+#endif
+
+}
+
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;
@@ -136,6 +151,12 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 #endif
 
+#if defined(AFHDS3)
+    case MODULE_TYPE_AFHDS3:
+      protocol = PROTOCOL_CHANNELS_AFHDS3;
+      break;
+#endif
+
     default:
       protocol = PROTOCOL_CHANNELS_NONE;
       break;
@@ -214,6 +235,16 @@ void enablePulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
+#if defined(AFHDS3)
+    case PROTOCOL_CHANNELS_AFHDS3:
+      extmodulePulsesData.afhds3.init();
+      //if EXTMODULE_USART would be defined and we could disable inversion
+      //it would be possible to use HW UART
+      extmoduleSerialStart(AFHDS3_BAUDRATE, AFHDS3_COMMAND_TIMEOUT * 2000, false);
+      break;
+#endif
+
+
     default:
       break;
   }
@@ -278,6 +309,14 @@ bool setupPulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMExternalModule();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
+      return true;
+#endif
+
+#if defined(AFHDS3)
+    case PROTOCOL_CHANNELS_AFHDS3:
+      //as requested "
+      extmodulePulsesData.afhds3.setupFrame();
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, AFHDS3_COMMAND_TIMEOUT);
       return true;
 #endif
 

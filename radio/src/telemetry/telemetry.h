@@ -25,10 +25,12 @@
 #include "crossfire.h"
 #if defined(MULTIMODULE)
   #include "spektrum.h"
-  #include "flysky_ibus.h"
   #include "hitec.h"
   #include "hott.h"
   #include "multi.h"
+#endif
+#if defined(MULTIMODULE) || defined(AFHDS3)
+  #include "flysky_ibus.h"
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
@@ -51,7 +53,7 @@ constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
 #define TELEMETRY_SERIAL_8E2           1
 #define TELEMETRY_SERIAL_WITHOUT_DMA   2
 
-#if defined(CROSSFIRE) || defined(MULTIMODULE)
+#if defined(CROSSFIRE) || defined(MULTIMODULE) || defined(AFHDS3)
 #define TELEMETRY_RX_PACKET_SIZE       128
 // multi module Spektrum telemetry is 18 bytes, FlySky is 37 bytes
 #else
@@ -132,6 +134,14 @@ inline bool isSportLineUsedByInternalModule()
 }
 #endif
 
+inline bool isExternalModulePxx2(){
+#if defined(PXX2) && defined(EXTMODULE_USART)
+  return (g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_HIGHSPEED ||
+      g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_LOWSPEED);
+#endif
+  return false;
+}
+
 inline uint8_t modelTelemetryProtocol()
 {
   bool sportUsed = isSportLineUsedByInternalModule();
@@ -155,6 +165,11 @@ inline uint8_t modelTelemetryProtocol()
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #endif
+#endif
+#if defined(AFHDS3)
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_AFHDS3) {
+    return PROTOCOL_TELEMETRY_AFHDS3;
+  }
 #endif
   // default choice
   return PROTOCOL_TELEMETRY_FRSKY_SPORT;

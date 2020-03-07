@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "multi.h"
+#include "pulses/afhds3.h"
 
 uint8_t telemetryStreaming = 0;
 uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
@@ -55,6 +56,14 @@ void processTelemetryData(uint8_t data)
   }
   if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
     processMultiTelemetryData(data, EXTERNAL_MODULE);
+    return;
+  }
+#endif
+
+#if defined(AFHDS3)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_AFHDS3) {
+    //inconvenient way of calling method we should have handlers by protocol, or trigger it on module object
+    afhds3::processTelemetryData(EXTERNAL_MODULE, data, telemetryRxBuffer, telemetryRxBufferCount);
     return;
   }
 #endif
@@ -103,7 +112,7 @@ void telemetryWakeup()
   #endif
 
   #if defined(EXTMODULE_USART)
-  while (extmoduleFifo.getFrame(frame)) {
+  while (isExternalModulePxx2() && extmoduleFifo.getFrame(frame)) {
     processPXX2Frame(EXTERNAL_MODULE, frame);
   }
   #endif
@@ -291,6 +300,12 @@ void telemetryInit(uint8_t protocol)
   else if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     telemetryPortInit(0, TELEMETRY_SERIAL_DEFAULT);
     auxSerialTelemetryInit(PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY);
+  }
+#endif
+
+#if defined(AFHDS3)
+  else if(protocol == PROTOCOL_TELEMETRY_AFHDS3){
+    telemetryPortInit(AFHDS3_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }
 #endif
 

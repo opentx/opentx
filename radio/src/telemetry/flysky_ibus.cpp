@@ -140,7 +140,7 @@ const FlySkySensor flySkySensors[] = {
 
 int32_t getALT(uint32_t value);
 
-static void processFlySkySensor(const uint8_t * packet, uint8_t type)
+void processFlySkySensor(const uint8_t * packet, uint8_t type)
 {
   uint8_t buffer[8];
   uint16_t id = packet[0];
@@ -216,7 +216,7 @@ static void processFlySkySensor(const uint8_t * packet, uint8_t type)
   for (const FlySkySensor * sensor = flySkySensors; sensor->id; sensor++) {
     if (sensor->id != id) continue;
     if (sensor->unit == UNIT_CELSIUS) value -= 400; // Temperature sensors have 40 degree offset
-    else if (sensor->unit == UNIT_VOLTS) value = (uint16_t) value; // Voltage types are unsigned 16bit integers
+    else if (sensor->unit == UNIT_VOLTS) value = (int16_t) value; // Voltage types are unsigned 16bit integers
     setTelemetryValue(PROTOCOL_TELEMETRY_FLYSKY_IBUS, id, 0, instance, value, sensor->unit, sensor->precision);
     return;
   }
