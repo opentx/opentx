@@ -56,8 +56,10 @@ bool menuRadioSpectrumAnalyser(event_t event)
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H / 2, STR_STOPPING);
     lcdRefresh();
-    if (isModulePXX2(g_moduleIdx))
+    if (isModulePXX2(g_moduleIdx)) {
       moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+      globalData.authenticationCount = 0;
+    }
     else if (isModuleMultimodule(g_moduleIdx)) {
       if (reusableBuffer.spectrumAnalyser.moduleOFF)
         setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
@@ -112,6 +114,9 @@ bool menuRadioSpectrumAnalyser(event_t event)
     reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
     reusableBuffer.spectrumAnalyser.dirty = true;
     moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+    if (isModuleISRM(INTERNAL_MODULE)) {
+      globalData.authenticationCount = 0;
+    }
   }
 
   for (uint8_t i = 0; i < SPECTRUM_FIELDS_MAX; i++) {

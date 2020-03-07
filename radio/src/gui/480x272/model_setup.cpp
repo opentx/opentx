@@ -1018,6 +1018,9 @@ bool menuModelSetup(event_t event)
             uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
             if (checkIncDec_Ret) {
               setModuleType(INTERNAL_MODULE, moduleType);
+              if (isModuleISRM(INTERNAL_MODULE)) {
+                globalData.authenticationCount = 0;
+              }
             }
           }
           else if (isModuleXJT(INTERNAL_MODULE)) {
