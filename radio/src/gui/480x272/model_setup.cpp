@@ -1020,9 +1020,7 @@ bool menuModelSetup(event_t event)
               setModuleType(INTERNAL_MODULE, moduleType);
 #if defined(ACCESS_LIB)
               // the module will reset on mode switch, we need to reset the authentication counter
-              if (isModuleISRM(INTERNAL_MODULE)) {
-                globalData.authenticationCount = 0;
-              }
+              globalData.authenticationCount = 0;
 #endif
             }
           }

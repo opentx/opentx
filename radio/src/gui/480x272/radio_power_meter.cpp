@@ -52,9 +52,7 @@ bool menuRadioPowerMeter(event_t event)
     moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
 #if defined(ACCESS_LIB)
     // the module will reset on mode switch, we need to reset the authentication counter
-    if (isModuleISRM(INTERNAL_MODULE)) {
-      globalData.authenticationCount = 0;
-    }
+    globalData.authenticationCount = 0;
 #endif
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(500 /*5s*/);
