@@ -51,7 +51,8 @@ bool menuRadioPowerMeter(event_t event)
     lcdRefresh();
     moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
 #if defined(ACCESS_LIB)
-    if (isModuleISRM(INTERNAL_MODULE)) { // the module will reset on mode switch, we need to reset the authentication counter
+    // the module will reset on mode switch, we need to reset the authentication counter
+    if (isModuleISRM(INTERNAL_MODULE)) {
       globalData.authenticationCount = 0;
     }
 #endif
@@ -67,11 +68,6 @@ bool menuRadioPowerMeter(event_t event)
     reusableBuffer.powerMeter.attn = 4;
     reusableBuffer.powerMeter.dirty = true;
     moduleState[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
-#if defined(ACCESS_LIB)
-    if (isModuleISRM(INTERNAL_MODULE)) { // the module will reset on mode switch, we need to reset the authentication counter
-      globalData.authenticationCount = 0;
-    }
-#endif
   }
 
   // The warning
