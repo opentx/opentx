@@ -48,14 +48,15 @@ enum {
   ITEM_RECEIVER_SETTINGS_TELEMETRY,
   ITEM_RECEIVER_SETTINGS_TELEMETRY_25MW,
   ITEM_RECEIVER_SETTINGS_SPORT_FPORT,
-  ITEM_RECEIVER_SETTINGS_ENABLE_PWM_CH5_CH6,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2,
   ITEM_RECEIVER_SETTINGS_PINMAP_FIRST
 };
 
-
 #define IF_RECEIVER_CAPABILITY(capability, count) uint8_t((reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilities & (1 << capability)) ? count : HIDDEN_ROW)
+
+#define CH_ENABLE_SPORT   4
+#define CH_ENABLE_SBUS    5
 
 void menuModelReceiverOptions(event_t event)
 {
@@ -80,7 +81,6 @@ void menuModelReceiverOptions(event_t event)
     isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 /*25mW*/ ? READONLY_ROW : (uint8_t)0, // Telemetry
     IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_TELEMETRY_25MW, 0),
     IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
-    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6, 0),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     0 // channels ...
@@ -170,13 +170,6 @@ void menuModelReceiverOptions(event_t event)
           }
           break;
 
-        case ITEM_RECEIVER_SETTINGS_ENABLE_PWM_CH5_CH6:
-          reusableBuffer.hardwareAndSettings.receiverSettings.enablePwmCh5Ch6 = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.enablePwmCh5Ch6, RECEIVER_OPTIONS_2ND_COLUMN, y, "En PWM CH5&6", attr, event);
-          if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
-          }
-          break;
-
         case ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1:
           lcdDrawText(LCD_W/2, y+1, STR_MORE_OPTIONS_AVAILABLE, SMLSIZE|CENTERED);
           break;
@@ -192,27 +185,46 @@ void menuModelReceiverOptions(event_t event)
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
             uint8_t & mapping = reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
             uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + mapping;
-            int32_t channelValue = channelOutputs[channel];
             lcdDrawText(0, y, STR_PIN);
             lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
-            putsChn(7 * FW, y, channel + 1, attr);
+
+            uint8_t i_max = sentModuleChannels(g_moduleIdx) - 1;
+
+            if(IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6, 1)) {
+              if((CH_ENABLE_SPORT == pin) || (CH_ENABLE_SBUS == pin))
+                i_max += 1;
+
+              if((CH_ENABLE_SPORT == pin) && (i_max == channel)) {
+                lcdDrawText(7 * FW, y,  "S.PORT", attr);
+              }
+              else if((CH_ENABLE_SBUS == pin) && (i_max == channel)) {
+                lcdDrawText(7 * FW, y,  "SBUS", attr);
+              }
+              else
+                putsChn(7 * FW, y, channel + 1, attr);
+            }
+            else
+              putsChn(7 * FW, y, channel + 1, attr);
 
             // Channel
             if (attr) {
-              mapping = checkIncDec(event, mapping, 0, sentModuleChannels(g_moduleIdx) - 1);
+              mapping = checkIncDec(event, mapping, 0, i_max);
               if (checkIncDec_Ret) {
                 reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
               }
             }
 
             // Bargraph
-#if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-            lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 2, wbar + 1, 4);
-#endif
-            const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-            const coord_t xChannel = (channelValue > 0) ? RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 : RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 + 1 - lenChannel;
-            lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
-            lcdDrawHorizontalLine(xChannel, y + 4, lenChannel, SOLID, 0);
+            if(channel < sentModuleChannels(g_moduleIdx)) {
+              int32_t channelValue = channelOutputs[channel];
+  #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
+              lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 2, wbar + 1, 4);
+  #endif
+              const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
+              const coord_t xChannel = (channelValue > 0) ? RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 : RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 + 1 - lenChannel;
+              lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+              lcdDrawHorizontalLine(xChannel, y + 4, lenChannel, SOLID, 0);
+            }
           }
           break;
         }
