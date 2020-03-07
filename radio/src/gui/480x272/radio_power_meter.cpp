@@ -50,9 +50,11 @@ bool menuRadioPowerMeter(event_t event)
     lcdDrawCenteredText(LCD_H/2, STR_STOPPING);
     lcdRefresh();
     moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
-    if (isModuleISRM(INTERNAL_MODULE)) {
+#if defined(ACCESS_LIB)
+    if (isModuleISRM(INTERNAL_MODULE)) { // the module will reset on mode switch, we need to reset the authentication counter
       globalData.authenticationCount = 0;
     }
+#endif
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(500 /*5s*/);
     RTOS_WAIT_MS(1000);
@@ -65,9 +67,11 @@ bool menuRadioPowerMeter(event_t event)
     reusableBuffer.powerMeter.attn = 4;
     reusableBuffer.powerMeter.dirty = true;
     moduleState[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
-    if (isModuleISRM(INTERNAL_MODULE)) {
+#if defined(ACCESS_LIB)
+    if (isModuleISRM(INTERNAL_MODULE)) { // the module will reset on mode switch, we need to reset the authentication counter
       globalData.authenticationCount = 0;
     }
+#endif
   }
 
   // The warning

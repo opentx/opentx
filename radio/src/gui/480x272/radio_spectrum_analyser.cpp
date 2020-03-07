@@ -58,7 +58,9 @@ bool menuRadioSpectrumAnalyser(event_t event)
     lcdRefresh();
     if (isModulePXX2(g_moduleIdx)) {
       moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
-      globalData.authenticationCount = 0;
+#if defined(ACCESS_LIB)
+      globalData.authenticationCount = 0; // the module will reset on mode switch, we need to reset the authentication counter
+#endif
     }
     else if (isModuleMultimodule(g_moduleIdx)) {
       if (reusableBuffer.spectrumAnalyser.moduleOFF)
@@ -114,9 +116,11 @@ bool menuRadioSpectrumAnalyser(event_t event)
     reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
     reusableBuffer.spectrumAnalyser.dirty = true;
     moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
-    if (isModuleISRM(INTERNAL_MODULE)) {
+#if defined(ACCESS_LIB)
+    if (isModuleISRM(INTERNAL_MODULE)) { // the module will reset on mode switch, we need to reset the authentication counter
       globalData.authenticationCount = 0;
     }
+#endif
   }
 
   for (uint8_t i = 0; i < SPECTRUM_FIELDS_MAX; i++) {
