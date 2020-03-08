@@ -59,6 +59,9 @@ static const char * options[] = {
 #if defined(INTERNAL_MODULE_MULTI)
   "internalmulti",
 #endif
+#if defined(INTERNAL_MODULE_PXX2)
+  "internalaccess",
+#endif
 #if defined(MULTIMODULE)
   "multimodule",
 #endif
