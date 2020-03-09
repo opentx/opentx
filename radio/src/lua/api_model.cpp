@@ -1265,7 +1265,7 @@ static int luaModelSetOutput(lua_State *L)
 }
 
 /*luadoc
-@function model.getGlobalVariable(index [, flight_mode])
+@function model.getGlobalVariable(index, flight_mode)
 
 Return current global variable value
 
