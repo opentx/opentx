@@ -1077,3 +1077,31 @@ void ModelData::setEncoderFlightModeIndexToValue(const int phaseIdx, const int r
 {
   flightModeData[phaseIdx].rotaryEncoders[reIdx] = linkedFlightModeIndexToValue(phaseIdx, useFmIdx, ENCODER_MAX_VALUE);
 }
+
+bool ModelData::isExpoParent(const int index)
+{
+  const ExpoData &ed = expoData[index];
+  const QVector<const ExpoData *> chexpos = expos(ed.chn);
+  return chexpos.constFirst() == &ed;
+}
+
+bool ModelData::isExpoChild(const int index)
+{
+  const ExpoData &ed = expoData[index];
+  const QVector<const ExpoData *> chexpos = expos(ed.chn);
+  return chexpos.constFirst() != &ed;
+}
+
+bool ModelData::hasExpoChildren(const int index)
+{
+  const ExpoData &ed = expoData[index];
+  const QVector<const ExpoData *> chexpos = expos(ed.chn);
+  return chexpos.constFirst() == &ed && chexpos.constLast() != &ed;
+}
+
+bool ModelData::hasExpoSiblings(const int index)
+{
+  const ExpoData &ed = expoData[index];
+  const QVector<const ExpoData *> chexpos = expos(ed.chn);
+  return !isExpoParent(index) && chexpos.size() > 2;
+}
