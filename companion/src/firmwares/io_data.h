@@ -37,6 +37,8 @@ enum InputMode {
   INPUT_MODE_BOTH
 };
 
+#define EXPODATA_NAME_LEN  10
+
 class ExpoData {
   Q_DECLARE_TR_FUNCTIONS(ExpoData)
 
@@ -52,7 +54,7 @@ class ExpoData {
     int offset;
     CurveReference curve;
     int carryTrim;
-    char name[10+1];
+    char name[EXPODATA_NAME_LEN+1];
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(ExpoData)); }
     void convert(RadioDataConversionState & cstate);
     bool isEmpty() const;
@@ -94,6 +96,8 @@ class MixData {
     bool isEmpty() const;
 };
 
+#define LIMITDATA_NAME_LEN  6
+
 class LimitData {
   Q_DECLARE_TR_FUNCTIONS(LimitData)
 
@@ -105,7 +109,7 @@ class LimitData {
     int   offset;
     int   ppmCenter;
     bool  symetrical;
-    char  name[6+1];
+    char  name[LIMITDATA_NAME_LEN+1];
     CurveReference curve;
     QString minToString() const;
     QString maxToString() const;
@@ -121,6 +125,8 @@ class CurvePoint {
     int8_t x;
     int8_t y;
 };
+
+#define CURVEDATA_NAME_LEN  6
 
 class CurveData {
   Q_DECLARE_TR_FUNCTIONS(CurveData)
@@ -141,7 +147,7 @@ class CurveData {
     bool smooth;
     int  count;
     CurvePoint points[CPN_MAX_POINTS];
-    char name[6+1];
+    char name[CURVEDATA_NAME_LEN+1];
 };
 
 #define FLIGHTMODE_NAME_LEN  10

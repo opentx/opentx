@@ -128,6 +128,8 @@ enum TrainerMode {
   TRAINER_MODE_MULTI
 };
 
+#define INPUT_NAME_LEN 4
+
 class ModelData {
   Q_DECLARE_TR_FUNCTIONS(ModelData)
 
@@ -170,7 +172,7 @@ class ModelData {
     MixData   mixData[CPN_MAX_MIXERS];
     LimitData limitData[CPN_MAX_CHNOUT];
 
-    char      inputNames[CPN_MAX_INPUTS][4+1];
+    char      inputNames[CPN_MAX_INPUTS][INPUT_NAME_LEN+1];
     ExpoData  expoData[CPN_MAX_EXPOS];
 
     CurveData curves[CPN_MAX_CURVES];
@@ -260,6 +262,10 @@ class ModelData {
     };
 
     int updateAllReferences(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2 = 0, const int shift = 0);
+    bool isExpoParent(const int index);
+    bool isExpoChild(const int index);
+    bool hasExpoChildren(const int index);
+    bool hasExpoSiblings(const int index);
 
   protected:
     void removeGlobalVar(int & var);
