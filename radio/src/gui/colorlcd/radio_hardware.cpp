@@ -82,7 +82,7 @@ RadioHardwarePage::RadioHardwarePage():
 }
 
 #if defined(BLUETOOTH)
-class BluetoothConfigWindow  : public FormGroup
+class BluetoothConfigWindow : public FormGroup
 {
   public:
     BluetoothConfigWindow(FormWindow * parent, const rect_t &rect) :
@@ -125,7 +125,7 @@ class BluetoothConfigWindow  : public FormGroup
 
         // Remote MAC
         new StaticText(this, grid.getLabelSlot(true), STR_BLUETOOTH_DIST_ADDR);
-        new StaticText(this, grid.getFieldSlot(), bluetooth.localAddr[0] == '\0' ? "---" : bluetooth.distantAddr);
+        new StaticText(this, grid.getFieldSlot(), bluetooth.distantAddr[0] == '\0' ? "---" : bluetooth.distantAddr);
         grid.nextLine();
 
         // BT radio name
