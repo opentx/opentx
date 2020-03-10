@@ -408,7 +408,7 @@ void menuMainView(event_t event)
 
   switch (view_base) {
     case VIEW_CHAN_MONITOR:
-      pushMenu(menuChannelsView);
+      menuChannelsViewCommon(event);
       break;
 
     case VIEW_OUTPUTS_VALUES:
@@ -541,28 +541,30 @@ void menuMainView(event_t event)
       break;
   }
 
-  // Flight Mode Name
-  uint8_t mode = mixerCurrentFlightMode;
-  lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR | PHASE_FLAGS);
+  if (view_base != VIEW_CHAN_MONITOR) {
+    // Flight Mode Name
+    uint8_t mode = mixerCurrentFlightMode;
+    lcdDrawSizedText(PHASE_X, PHASE_Y, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR | PHASE_FLAGS);
 
-  // Model Name
-  putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+    // Model Name
+    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
 
-  // Main Voltage (or alarm if any)
-  displayVoltageOrAlarm();
+    // Main Voltage (or alarm if any)
+    displayVoltageOrAlarm();
 
-  // Timer 1
-  drawTimerWithMode(125, 2 * FH, 0, RIGHT | DBLSIZE);
+    // Timer 1
+    drawTimerWithMode(125, 2 * FH, 0, RIGHT | DBLSIZE);
 
-  // Trims sliders
-  displayTrims(mode);
+    // Trims sliders
+    displayTrims(mode);
 
-  // RSSI gauge / external antenna
-  drawExternalAntennaAndRSSI();
+    // RSSI gauge / external antenna
+    drawExternalAntennaAndRSSI();
 
-  // And ! in case of unexpected shutdown
-  if (isAsteriskDisplayed()) {
-    lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
+    // And ! in case of unexpected shutdown
+    if (isAsteriskDisplayed()) {
+      lcdDrawChar(REBOOT_X, 0 * FH, '!', INVERS);
+    }
   }
 
 #if defined(GVARS)

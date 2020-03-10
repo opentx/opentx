@@ -236,6 +236,7 @@ void pushModelNotes();
 void readModelNotes();
 
 void menuChannelsView(event_t event);
+void menuChannelsViewCommon(event_t event);
 
 #define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)

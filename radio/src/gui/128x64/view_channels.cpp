@@ -43,7 +43,7 @@ constexpr coord_t CHANNEL_PROPERTIES_OFFSET = CHANNEL_GAUGE_OFFSET + CHANNEL_BAR
 #define EVT_KEY_PREVIOUS_PAGE          EVT_KEY_BREAK(KEY_LEFT)
 #endif
 
-void menuChannelsView(event_t event)
+void menuChannelsViewCommon(event_t event)
 {
   bool newLongNames = false;
 
@@ -54,26 +54,6 @@ void menuChannelsView(event_t event)
       memclear(&reusableBuffer.viewChannels, sizeof(reusableBuffer.viewChannels));
       break;
 
-    case EVT_KEY_PREVIOUS_VIEW:
-      g_eeGeneral.view = VIEW_TIMER2;
-      popMenu();
-      break;
-
-    case EVT_KEY_FIRST(KEY_EXIT):
-    case EVT_KEY_NEXT_VIEW:
-      g_eeGeneral.view = VIEW_INPUTS;
-      killEvents(KEY_EXIT);
-      popMenu();
-      break;
-
-    case EVT_KEY_NEXT_PAGE:
-      g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) + ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
-      break;
-
-    case EVT_KEY_PREVIOUS_PAGE:
-      g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) - ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
-      break;
-
     case EVT_KEY_FIRST(KEY_ENTER):
       reusableBuffer.viewChannels.mixersView = !reusableBuffer.viewChannels.mixersView;
       break;
@@ -81,13 +61,8 @@ void menuChannelsView(event_t event)
 
   ch = 8 * (g_eeGeneral.view / ALTERNATE_VIEW);
 
-  if (reusableBuffer.viewChannels.mixersView) {
-    lcdDrawTextAlignedCenter(0, TR_MIXERS_MONITOR);
-  }
-  else {
-    lcdDrawTextAlignedCenter(0, TR_CHANNELS_MONITOR);
-  }
-
+  // Screen title
+  lcdDrawText(LCD_W / 2, 0, reusableBuffer.viewChannels.mixersView ? STR_MIXERS_MONITOR : STR_CHANNELS_MONITOR, CENTERED);
   lcdInvertLine(0);
 
   int16_t limits = 512 * 2;
@@ -137,4 +112,27 @@ void menuChannelsView(event_t event)
   }
 
   reusableBuffer.viewChannels.longNames = newLongNames;
+}
+
+void menuChannelsView(event_t event)
+{
+  switch (event) {
+    case EVT_KEY_BREAK(KEY_EXIT):
+      popMenu();
+      break;
+
+    case EVT_KEY_NEXT_PAGE:
+      g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) + ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
+      break;
+
+    case EVT_KEY_PREVIOUS_PAGE:
+      g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) - ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
+      break;
+
+    case EVT_KEY_FIRST(KEY_ENTER):
+      reusableBuffer.viewChannels.mixersView = !reusableBuffer.viewChannels.mixersView;
+      break;
+  }
+
+  menuChannelsViewCommon(event);
 }
