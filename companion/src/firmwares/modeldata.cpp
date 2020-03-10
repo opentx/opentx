@@ -456,7 +456,6 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       break;
     case REF_UPD_TYPE_INPUT:
       updRefInfo.srcType = SOURCE_TYPE_VIRTUAL_INPUT;
-      updRefInfo.swtchType = SWITCH_TYPE_VIRTUAL;
       updRefInfo.maxindex = fw->getCapability(VirtualInputs);
       break;
     case REF_UPD_TYPE_LOGICAL_SWITCH:
