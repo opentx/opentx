@@ -599,11 +599,16 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 #if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
+void sportUpdatePowerInit();
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
+#define SPORT_UPDATE_POWER_INIT()      sportUpdatePowerInit()
+#define IS_SPORT_UPDATE_POWER_ON()     (GPIO_ReadInputDataBit(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN) == Bit_SET)
 #else
 #define SPORT_UPDATE_POWER_ON()
 #define SPORT_UPDATE_POWER_OFF()
+#define SPORT_UPDATE_POWER_INIT()
+#define IS_SPORT_UPDATE_POWER_ON()     (false)
 #endif
 
 // Second serial port driver
