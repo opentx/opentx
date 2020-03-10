@@ -135,7 +135,6 @@ class BluetoothConfigWindow : public FormGroup
       }
 
       getParent()->moveWindowsTop(top(), adjustHeight());
-      getParent()->invalidate(); // TODO should be automatically done
     }
 
   protected:

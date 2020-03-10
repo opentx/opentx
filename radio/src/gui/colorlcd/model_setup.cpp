@@ -522,7 +522,6 @@ class TrainerModuleWindow  : public FormGroup {
         grid.nextLine();
       }
       getParent()->moveWindowsTop(top(), adjustHeight());
-      getParent()->invalidate(); // TODO should be automatically done
     }
 
   protected:
@@ -896,7 +895,6 @@ class ModuleWindow : public FormGroup {
       }
 
       getParent()->moveWindowsTop(top(), adjustHeight());
-      getParent()->invalidate(); // TODO should be automatically done
     }
 };
 
