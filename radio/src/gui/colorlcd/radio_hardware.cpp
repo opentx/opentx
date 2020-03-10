@@ -81,6 +81,68 @@ RadioHardwarePage::RadioHardwarePage():
 {
 }
 
+#if defined(BLUETOOTH)
+class BluetoothConfigWindow : public FormGroup
+{
+  public:
+    BluetoothConfigWindow(FormWindow * parent, const rect_t &rect) :
+      FormGroup(parent, rect, FORWARD_SCROLL | FORM_FORWARD_FOCUS)
+    {
+      update();
+    }
+
+    void update()
+    {
+      FormGridLayout grid;
+#if LCD_W > LCD_H
+      grid.setLabelWidth(180);
+#else
+      grid.setLabelWidth(130);
+#endif
+      clear();
+
+      new StaticText(this, grid.getLabelSlot(true), STR_MODE);
+      btMode = new Choice(this, grid.getFieldSlot(), STR_BLUETOOTH_MODES, BLUETOOTH_OFF, BLUETOOTH_TRAINER, GET_DEFAULT(g_eeGeneral.bluetoothMode), [=](int32_t newValue) {
+          g_eeGeneral.bluetoothMode = newValue;
+          update();
+          SET_DIRTY();
+          btMode->setFocus();
+      });
+      grid.nextLine();
+
+      if (g_eeGeneral.bluetoothMode != BLUETOOTH_OFF) {
+        // Pin code (displayed for information only, not editable)
+        if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY) {
+          new StaticText(this, grid.getLabelSlot(true), STR_BLUETOOTH_PIN_CODE);
+          new StaticText(this, grid.getFieldSlot(), "000000");
+          grid.nextLine();
+        }
+
+        // Local MAC
+        new StaticText(this, grid.getLabelSlot(true), STR_BLUETOOTH_LOCAL_ADDR);
+        new StaticText(this, grid.getFieldSlot(), bluetooth.localAddr[0] == '\0' ? "---" : bluetooth.localAddr);
+        grid.nextLine();
+
+        // Remote MAC
+        new StaticText(this, grid.getLabelSlot(true), STR_BLUETOOTH_DIST_ADDR);
+        new StaticText(this, grid.getFieldSlot(), bluetooth.distantAddr[0] == '\0' ? "---" : bluetooth.distantAddr);
+        grid.nextLine();
+
+        // BT radio name
+        new StaticText(this, grid.getLabelSlot(true), STR_NAME);
+        new TextEdit(this, grid.getFieldSlot(), g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME);
+        grid.nextLine();
+      }
+
+      getParent()->moveWindowsTop(top(), adjustHeight());
+      getParent()->invalidate(); // TODO should be automatically done
+    }
+
+  protected:
+    Choice * btMode = nullptr;
+};
+#endif
+
 void RadioHardwarePage::build(FormWindow * window)
 {
   FormGridLayout grid;
@@ -171,6 +233,15 @@ void RadioHardwarePage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_MAXBAUDRATE);
   new Choice(window, grid.getFieldSlot(1,0), STR_CRSF_BAUDRATE, 0, 1, GET_SET_DEFAULT(g_eeGeneral.telemetryBaudrate));
   grid.nextLine();
+#endif
+
+#if defined(BLUETOOTH)
+  // Bluetooth mode
+  {
+    new Subtitle(window, grid.getLineSlot(), STR_BLUETOOTH);
+    grid.nextLine();
+    grid.addWindow(new BluetoothConfigWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}));
+  }
 #endif
 
   // ADC filter
