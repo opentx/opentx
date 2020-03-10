@@ -1967,7 +1967,7 @@ void opentxInit()
 #endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
-   SPORT_UPDATE_POWER_INIT();
+  SPORT_UPDATE_POWER_INIT();
 #endif
 
 #if defined(COLORLCD)

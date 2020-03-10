@@ -72,7 +72,7 @@ enum MenuRadioHardwareItems {
 #endif
 
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER,
 #endif
   ITEM_RADIO_HARDWARE_DEBUG,
@@ -122,7 +122,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define MAX_BAUDRATE_ROW          HIDDEN_ROW
 #endif
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   #define SPORT_POWER_ROWS 0,
 #else
   #define SPORT_POWER_ROWS
@@ -375,7 +375,7 @@ bool menuRadioHardware(event_t event)
         break;
       }
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
       case ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPORT_UPDATE_POWER_MODE);
         g_eeGeneral.sportUpdatePower = editChoice(HW_SETTINGS_COLUMN + 50, y, STR_SPORT_UPDATE_POWER_MODES, g_eeGeneral.sportUpdatePower, 0, 1, attr, event);
