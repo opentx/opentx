@@ -161,6 +161,18 @@ void menuModelCurveOne(event_t event)
         POPUP_MENU_START(onCurveOneMenu);
       }
       break;
+
+#if defined(NAVIGATION_X7)
+    case EVT_KEY_LONG(KEY_MENU):
+      pushMenu(menuChannelsView);
+      killEvents(event);
+      break;
+#elif defined(NAVIGATION_XLITE)
+    case EVT_KEY_LONG(KEY_SHIFT):
+      pushMenu(menuChannelsView);
+      killEvents(event);
+      break;
+#endif
   }
 
   drawCurve(0);
