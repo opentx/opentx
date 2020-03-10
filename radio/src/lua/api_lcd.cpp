@@ -67,7 +67,7 @@ static int luaLcdClear(lua_State *L)
 
 Switches backlight on
 
-@status current Introduced in 2.2.6
+@status current Introduced in 2.3.6
 */
 static int luaLcdBacklightOn(lua_State *L)
 {
