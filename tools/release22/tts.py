@@ -41,7 +41,7 @@ def generate(str, filename):
         output = u"output.mp3"
         tts = gTTS(text=str, lang=voice[:2])
         tts.save(output)
-        command = "sox --norm %s -r 32000 %s tempo 1.2" % (output, filename)
+        command = "sox %s -r 32000 %s tempo 1.2 norm" % (output, filename)
         os.system(command.encode('utf-8'))
         command = "rm -f output.mp3"
         os.system(command.encode('utf-8'))
