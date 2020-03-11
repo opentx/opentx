@@ -471,7 +471,7 @@ PACK(struct ModuleData {
       uint8_t runPower:3;
       uint8_t emi:1;
       uint8_t telemetry:1;
-      uint8_t mode; //to allow access
+      uint8_t mode;
       uint16_t failsafeTimeout;
       uint8_t rx_freq[2];
       bool isSbus() {
@@ -482,6 +482,10 @@ PACK(struct ModuleData {
       }
       uint16_t rxFreq(){
         return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
+      }
+      void setRxFreq(uint16_t value) {
+        rx_freq[0] = value & 0xFF;
+        rx_freq[1] = value >> 8;
       }
     } afhds3));
   };

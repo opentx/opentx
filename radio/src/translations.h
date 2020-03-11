@@ -164,6 +164,14 @@ extern const char STR_DSM_PROTOCOLS[];
 extern const char STR_MULTI_PROTOCOLS[];
 #endif
 
+#if defined(AFHDS3)
+extern const char STR_AFHDS3_PROTOCOLS[];
+extern const char STR_AFHDS3_POWERS[];
+extern const char STR_AFHDS3_BIND_POWERS[];
+extern const char STR_AFHDS3_RX_FREQ[];
+extern const char STR_AFHDS3_BIND_POWER[];
+#endif
+
 extern const char STR_CURVE_TYPES[];
 extern const char STR_VSENSORTYPES[];
 extern const char STR_VFORMULAS[];
