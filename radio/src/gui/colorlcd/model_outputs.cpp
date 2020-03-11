@@ -59,7 +59,7 @@ class OutputEditWindow : public Page {
 
       // Offset
       new StaticText(window, grid.getLabelSlot(), TR_LIMITS_HEADERS_SUBTRIM);
-      new NumberEdit(window, grid.getFieldSlot(), -1000, +1000, GET_SET_DEFAULT(output->offset), PREC1);
+      new NumberEdit(window, grid.getFieldSlot(), -1000, +1000, GET_SET_DEFAULT(output->offset), 0, PREC1);
       grid.nextLine();
 
       // Min
@@ -67,7 +67,7 @@ class OutputEditWindow : public Page {
       new NumberEdit(window, grid.getFieldSlot(), -limit, 0,
                      GET_VALUE(output->min - 1000),
                      SET_VALUE(output->min, newValue + 1000),
-                     PREC1);
+                     0, PREC1);
       grid.nextLine();
 
       // Max
@@ -75,7 +75,7 @@ class OutputEditWindow : public Page {
       new NumberEdit(window, grid.getFieldSlot(), 0, +limit,
                      GET_VALUE(output->max + 1000),
                      SET_VALUE(output->max, newValue - 1000),
-                     PREC1);
+                     0, PREC1);
       grid.nextLine();
 
       // Direction

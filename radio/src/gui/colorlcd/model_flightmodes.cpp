@@ -130,11 +130,11 @@ void ModelFlightModesPage::build(FormWindow * window)
     new NumberEdit(group, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
                           GET_DEFAULT(g_model.flightModeData[i].fadeIn),
                           SET_VALUE(g_model.flightModeData[i].fadeIn, newValue),
-                          PREC1);
+                          0, PREC1);
     new NumberEdit(group, grid.getFieldSlot(2, 1), 0, DELAY_MAX,
                           GET_DEFAULT(g_model.flightModeData[i].fadeOut),
                           SET_VALUE(g_model.flightModeData[i].fadeOut, newValue),
-                          PREC1);
+                          0, PREC1);
     grid.nextLine();
 
     grid.spacer();

@@ -160,7 +160,7 @@ class MixEditWindow : public Page {
       edit = new NumberEdit(window, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
                             GET_DEFAULT(mix->delayUp),
                             SET_VALUE(mix->delayUp, newValue),
-                            PREC1);
+                            0, PREC1);
       edit->setSuffix("s");
       grid.nextLine();
 
@@ -169,7 +169,7 @@ class MixEditWindow : public Page {
       edit = new NumberEdit(window, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
                             GET_DEFAULT(mix->delayDown),
                             SET_VALUE(mix->delayDown, newValue),
-                            PREC1);
+                            0, PREC1);
       edit->setSuffix("s");
       grid.nextLine();
 
@@ -178,7 +178,7 @@ class MixEditWindow : public Page {
       edit = new NumberEdit(window, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
                             GET_DEFAULT(mix->speedUp),
                             SET_VALUE(mix->speedUp, newValue),
-                            PREC1);
+                            0, PREC1);
       edit->setSuffix("s");
       grid.nextLine();
 
@@ -187,7 +187,7 @@ class MixEditWindow : public Page {
       edit = new NumberEdit(window, grid.getFieldSlot(2, 0), 0, DELAY_MAX,
                             GET_DEFAULT(mix->speedDown),
                             SET_VALUE(mix->speedDown, newValue),
-                            PREC1);
+                            0, PREC1);
       edit->setSuffix("s");
       grid.nextLine();
 

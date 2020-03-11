@@ -23,8 +23,8 @@
 #include "keyboard_number.h"
 #include "strhelpers.h"
 
-TimeEdit::TimeEdit(Window * parent, const rect_t & rect, int32_t vmin, int32_t vmax, std::function<int32_t()> getValue, std::function<void(int32_t)> setValue, LcdFlags flags):
-  BaseNumberEdit(parent, rect, vmin, vmax, getValue, setValue, flags)
+TimeEdit::TimeEdit(Window * parent, const rect_t & rect, int32_t vmin, int32_t vmax, std::function<int32_t()> getValue, std::function<void(int32_t)> setValue):
+  BaseNumberEdit(parent, rect, vmin, vmax, getValue, setValue)
 {
 }
 
@@ -40,7 +40,7 @@ void TimeEdit::paint(BitmapBuffer * dc)
   else
     textColor = DEFAULT_COLOR;
 
-  dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, getTimerString(getValue(), (flags & TIMEHOUR) != 0), textColor);
+  dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, getTimerString(getValue(), (textFlags & TIMEHOUR) != 0), textColor);
 }
 
 #if defined(HARDWARE_KEYS)

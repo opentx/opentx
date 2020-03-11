@@ -119,7 +119,7 @@ class FailSafeBody : public FormGroup {
         new NumberEdit(this, grid.getFieldSlot(3, 0), -lim, lim,
                        GET_DEFAULT(calcRESXto1000(g_model.failsafeChannels[ch])),
                        SET_VALUE(g_model.failsafeChannels[ch], newValue),
-                       PREC1);
+                       0, PREC1);
 
         // Channel bargraph
         new ChannelFailsafeBargraph(this, {150, grid.getWindowHeight(), 150, PAGE_LINE_HEIGHT}, moduleIdx, ch);
@@ -506,7 +506,7 @@ class TrainerModuleWindow  : public FormGroup {
         auto edit = new NumberEdit(this, grid.getFieldSlot(3, 0), 125, 35 * 5 + 225,
                                    GET_DEFAULT(g_model.trainerData.frameLength * 5 + 225),
                                    SET_VALUE(g_model.trainerData.frameLength, (newValue - 225) / 5),
-                                   PREC1);
+                                   0, PREC1);
         edit->setStep(5);
         edit->setSuffix(STR_MS);
 
@@ -748,7 +748,7 @@ class ModuleWindow : public FormGroup {
         auto edit = new NumberEdit(this, grid.getFieldSlot(3, 0), 125, 35 * 5 + 225,
                                    GET_DEFAULT(g_model.moduleData[moduleIdx].ppm.frameLength * 5 + 225),
                                    SET_VALUE(g_model.moduleData[moduleIdx].ppm.frameLength, (newValue - 225) / 5),
-                                   PREC1);
+                                   0, PREC1);
         edit->setStep(5);
         edit->setSuffix(STR_MS);
 

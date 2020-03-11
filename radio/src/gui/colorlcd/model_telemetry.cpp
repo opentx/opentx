@@ -257,7 +257,7 @@ class SensorEditWindow : public Page {
         else {
           new StaticText(sensorParametersWindow, grid.getLabelSlot(), STR_OFFSET);
           new NumberEdit(sensorParametersWindow, grid.getFieldSlot(), -30000, 30000, GET_SET_DEFAULT(sensor->custom.offset),
-                         (sensor->prec > 0) ? (sensor->prec == 2 ? PREC2 : PREC1) : 0);
+                         0, (sensor->prec > 0) ? (sensor->prec == 2 ? PREC2 : PREC1) : 0);
         }
         grid.nextLine();
       }
@@ -541,8 +541,8 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
   new NumberEdit(window, grid.getFieldSlot(2, 1), -7, 7, GET_SET_WITH_OFFSET(g_model.varioData.max, 10));
   grid.nextLine();
   new StaticText(window, grid.getLabelSlot(true), STR_CENTER);
-  new NumberEdit(window, grid.getFieldSlot(3, 0), -7, 7, GET_SET_WITH_OFFSET(g_model.varioData.min, -5), PREC1);
-  new NumberEdit(window, grid.getFieldSlot(3, 1), -7, 7, GET_SET_WITH_OFFSET(g_model.varioData.max, 5), PREC1);
+  new NumberEdit(window, grid.getFieldSlot(3, 0), -7, 7, GET_SET_WITH_OFFSET(g_model.varioData.min, -5), 0, PREC1);
+  new NumberEdit(window, grid.getFieldSlot(3, 1), -7, 7, GET_SET_WITH_OFFSET(g_model.varioData.max, 5), 0, PREC1);
   new Choice(window, grid.getFieldSlot(3, 2), STR_VVARIOCENTER, 0, 1, GET_SET_DEFAULT(g_model.varioData.centerSilent));
   grid.nextLine();
 

@@ -174,7 +174,7 @@ class LogicalSwitchEditPage: public Page {
 
       // Duration
       new StaticText(logicalSwitchOneWindow, grid.getLabelSlot(), STR_DURATION);
-      auto edit = new NumberEdit(logicalSwitchOneWindow, grid.getFieldSlot(), 0, MAX_LS_DURATION, GET_SET_DEFAULT(cs->duration), PREC1);
+      auto edit = new NumberEdit(logicalSwitchOneWindow, grid.getFieldSlot(), 0, MAX_LS_DURATION, GET_SET_DEFAULT(cs->duration), 0, PREC1);
       edit->setZeroText("---");
       grid.nextLine();
 
@@ -184,7 +184,7 @@ class LogicalSwitchEditPage: public Page {
         new StaticText(logicalSwitchOneWindow, grid.getFieldSlot(), STR_NA);
       }
       else {
-        auto edit = new NumberEdit(logicalSwitchOneWindow, grid.getFieldSlot(), 0, MAX_LS_DELAY, GET_SET_DEFAULT(cs->delay), PREC1);
+        auto edit = new NumberEdit(logicalSwitchOneWindow, grid.getFieldSlot(), 0, MAX_LS_DELAY, GET_SET_DEFAULT(cs->delay), 0, PREC1);
         edit->setZeroText("---");
       }
       grid.nextLine();
