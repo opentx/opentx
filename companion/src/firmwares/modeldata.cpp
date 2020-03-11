@@ -38,6 +38,10 @@ void TimerData::convert(RadioDataConversionState & cstate)
   mode.convert(cstate);
 }
 
+bool TimerData::isEmpty()
+{
+  return (mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0) && name[0] == '\0' && minuteBeep == 0 && countdownBeep == COUNTDOWN_SILENT && val == 0 && persistent == 0 /*&& pvalue == 0*/);
+}
 
 /*
  * ModelData

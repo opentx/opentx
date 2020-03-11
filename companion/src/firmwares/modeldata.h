@@ -76,6 +76,7 @@ class TimerData {
     int          pvalue;
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
     void convert(RadioDataConversionState & cstate);
+    bool isEmpty();
 };
 
 #define CPN_MAX_SCRIPTS       9
