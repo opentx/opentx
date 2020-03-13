@@ -22,6 +22,7 @@
 #include "opentx.h"
 #include "libopenui.h"
 #include "io/frsky_firmware_update.h"
+#include "io/multi_firmware_update.h"
 
 RadioSdManagerPage::RadioSdManagerPage() :
   PageTab(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, ICON_RADIO_SD_MANAGER)
@@ -168,6 +169,21 @@ void RadioSdManagerPage::build(FormWindow * window)
                   audioQueue.playFile(getFullPath(name), 0, ID_PLAY_FROM_SD_MANAGER);
               });
             }
+#if defined(MULTIMODULE) && !defined(DISABLE_MULTI_UPDATE)
+            if (!READ_ONLY() && !strcasecmp(ext, MULTI_FIRMWARE_EXT)) {
+              MultiFirmwareInformation information;
+              if (information.readMultiFirmwareInformation(name.data()) == nullptr) {
+#if defined(INTERNAL_MODULE_MULTI)
+                menu->addLine(STR_FLASH_INTERNAL_MULTI, [=]() {
+                    // TODO
+                });
+#endif
+                menu->addLine(STR_FLASH_EXTERNAL_MULTI, [=]() {
+                    // TODO
+                });
+              }
+            }
+#endif
             else if (isExtensionMatching(ext, BITMAPS_EXT)) {
               // TODO
             }
@@ -175,6 +191,13 @@ void RadioSdManagerPage::build(FormWindow * window)
               menu->addLine(STR_VIEW_TEXT, [=]() {
                   // TODO
               });
+            }
+            if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
+              if (isBootloader(name.data())) {
+                menu->addLine(STR_FLASH_BOOTLOADER, [=]() {
+                    // TODO
+                });
+              }
             }
             else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
               if (HAS_SPORT_UPDATE_CONNECTOR()) {
