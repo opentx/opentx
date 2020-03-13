@@ -71,6 +71,7 @@ set(GUI_SRC
   radio_diaganas.cpp
   view_telemetry.cpp
   view_about.cpp
+  view_channels.cpp
   )
 
 if(GVARS)

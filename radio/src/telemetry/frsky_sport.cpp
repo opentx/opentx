@@ -177,7 +177,13 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
   if (primId == DATA_FRAME) {
     uint8_t originMask;
     if (origin == TELEMETRY_ENDPOINT_SPORT) {
+#if defined(SIMU) && defined(INTERNAL_MODULE_PXX2)
+      // When running simu on ACCESS radio, we set the origin as internal module
+      origin = 0;
+      originMask = 0x01;
+#else
       originMask = 0x04;
+#endif
     }
     else {
       uint8_t moduleIndex = (origin >> 2);
