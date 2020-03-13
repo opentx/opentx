@@ -478,8 +478,12 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       break;
     case REF_UPD_TYPE_TIMER:
       updRefInfo.srcType = SOURCE_TYPE_SPECIAL;
-      updRefInfo.swtchType = SWITCH_TYPE_TIMER_MODE;
+      //updRefInfo.swtchType = SWITCH_TYPE_TIMER_MODE;
       updRefInfo.maxindex = fw->getCapability(Timers);
+      //  source index offset
+      updRefInfo.index1 = updRefInfo.index1 + 2;
+      updRefInfo.index2 = updRefInfo.index2 + 2;
+      updRefInfo.maxindex = updRefInfo.maxindex + 2;
       break;
     default:
       qDebug() << "Error - unhandled reference type:" << updRefInfo.type;
@@ -488,10 +492,10 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
 
   updRefInfo.maxindex--;  //  getCapabilities and constants are 1 based
 
-  //qDebug() << "updRefInfo - type:" << updRefInfo.type << " action:" << updRefInfo.action << " index1:" << updRefInfo.index1 << " index2:" << updRefInfo.index2 << " shift:" << updRefInfo.shift;
-  //qDebug() << "maxindex:" << updRefInfo.maxindex << "updRefInfo - srcType:" << updRefInfo.srcType << " swtchType:" << updRefInfo.swtchType;
+  qDebug() << "updRefInfo - type:" << updRefInfo.type << " action:" << updRefInfo.action << " index1:" << updRefInfo.index1 << " index2:" << updRefInfo.index2 << " shift:" << updRefInfo.shift;
+  qDebug() << "maxindex:" << updRefInfo.maxindex << "updRefInfo - srcType:" << updRefInfo.srcType << " swtchType:" << updRefInfo.swtchType;
 
-  //s1.report("Initialise");
+  s1.report("Initialise");
 
   for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     FlightModeData *fmd = &flightModeData[i];
@@ -499,13 +503,13 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       updateSwitchRef(fmd->swtch);
     }
   }
-  //s1.report("Flight Modes");
+  s1.report("Flight Modes");
 
   for (int i = 0; i < CPN_MAX_TIMERS; i++) {
     TimerData *td = &timers[i];
     updateTimerMode(td->mode);
   }
-  //s1.report("Timers");
+  s1.report("Timers");
 
   for (int i = 0; i < CPN_MAX_EXPOS; i++) {
     ExpoData *ed = &expoData[i];
@@ -518,7 +522,7 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       updateFlightModeFlags(ed->flightModes);
     }
   }
-  //s1.report("Inputs");
+  s1.report("Inputs");
 
   for (int i = 0; i < CPN_MAX_MIXERS; i++) {
     MixData *md = &mixData[i];
@@ -534,7 +538,7 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       }
     }
   }
-  //s1.report("Mixes");
+  s1.report("Mixes");
 
   for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
     LimitData *ld = &limitData[i];
@@ -545,7 +549,7 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       updateLimitCurveRef(ld->curve);
     }
   }
-  //s1.report("Outputs");
+  s1.report("Outputs");
 
   for (int i = 0; i < CPN_MAX_LOGICAL_SWITCHES; i++) {
     LogicalSwitchData *lsd = &logicalSw[i];
@@ -573,7 +577,7 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       updateSwitchIntRef(lsd->andsw);
     }
   }
-  //s1.report("Logical Switches");
+  s1.report("Logical Switches");
 
   for (int i = 0; i < CPN_MAX_SPECIAL_FUNCTIONS; i++) {
     CustomFunctionData *cfd = &customFn[i];
@@ -586,13 +590,13 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       }
     }
   }
-  //s1.report("Special Functions");
+  s1.report("Special Functions");
 
   if (fw->getCapability(Heli)) {
     updateSourceRef(swashRingData.aileronSource);
     updateSourceRef(swashRingData.collectiveSource);
     updateSourceRef(swashRingData.elevatorSource);
-    //s1.report("Heli");
+    s1.report("Heli");
   }
 
   if (fw->getCapability(Telemetry)) {
@@ -624,7 +628,7 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
           break;
       }
     }
-    //s1.report("Telemetry");
+    s1.report("Telemetry");
   }
 
   //  TODO maybe less risk to leave it up to the user??
@@ -663,7 +667,7 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
 template <class R, typename T>
 void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, const bool defClear, const int defType, const int defIndex)
 {
-  //qDebug() << "Raw value: " << curRef.toValue() << " String:" << curRef.toString() << " Type: " << curRef.type << " Index:" << curRef.index << " idxAdj:" << idxAdj << " defClear:" << defClear << " defType:" << defType << " defIndex:" << defIndex;
+  qDebug() << "Raw value: " << curRef.toValue() << " String:" << curRef.toString() << " Type: " << curRef.type << " Index:" << curRef.index << " idxAdj:" << idxAdj << " defClear:" << defClear << " defType:" << defType << " defIndex:" << defIndex;
   if (!curRef.isSet() || curRef.type != type)
     return;
 
@@ -711,7 +715,7 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
 
   if (curRef.type != newRef.type || abs(curRef.index) != newRef.index) {
     newRef.index = curRef.index < 0 ? -newRef.index : newRef.index;
-    //qDebug() << "Updated reference: " << curRef.toString() << " -> " << newRef.toString();
+    qDebug() << "Updated reference: " << curRef.toString() << " -> " << newRef.toString();
     curRef = newRef;
     updRefInfo.updcnt++;
   }
@@ -822,7 +826,7 @@ void ModelData::updateAssignFunc(CustomFunctionData * cfd)
     case REF_UPD_TYPE_TIMER:
       if (cfd->func < FuncSetTimer1 || cfd->func > FuncSetTimer3) //  TODO refactor to FuncSetTimerLast
         return;
-      idxAdj = FuncSetTimer1;
+      idxAdj = FuncSetTimer1 - 2;   //  reverse previous offset
       break;
     default:
       return;
