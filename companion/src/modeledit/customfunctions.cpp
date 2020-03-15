@@ -620,6 +620,9 @@ void CustomFunctionsPanel::cmPaste()
 
 void CustomFunctionsPanel::cmDelete()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   int maxidx = fswCapability - 1;
   for (int i=selectedIndex; i<maxidx; i++) {
     if (!functions[i].isEmpty() || !functions[i+1].isEmpty()) {
@@ -763,6 +766,9 @@ void CustomFunctionsPanel::cmMoveDown()
 
 void CustomFunctionsPanel::cmClear()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   functions[selectedIndex].clear();
   resetCBsAndRefresh(selectedIndex);
   emit modified();
