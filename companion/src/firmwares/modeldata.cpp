@@ -514,11 +514,17 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
     ExpoData *ed = &expoData[i];
     if (!ed->isEmpty()) {
       updateSourceRef(ed->srcRaw);
-      updateSwitchRef(ed->swtch);
-      updateCurveRef(ed->curve);
-      updateAdjustRef(ed->weight);
-      updateAdjustRef(ed->offset);
-      updateFlightModeFlags(ed->flightModes);
+      if (ed->srcRaw.isSet()) {
+        updateSwitchRef(ed->swtch);
+        updateCurveRef(ed->curve);
+        updateAdjustRef(ed->weight);
+        updateAdjustRef(ed->offset);
+        updateFlightModeFlags(ed->flightModes);
+      }
+      else {
+        removeInput(i);
+        i--;
+      }
     }
   }
   s1.report("Inputs");
@@ -529,11 +535,17 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       updateDestCh(md);
       if (!md->isEmpty()) {
         updateSourceRef(md->srcRaw);
-        updateSwitchRef(md->swtch);
-        updateCurveRef(md->curve);
-        updateAdjustRef(md->weight);
-        updateAdjustRef(md->sOffset);
-        updateFlightModeFlags(md->flightModes);
+        if (md->srcRaw.isSet()) {
+          updateSwitchRef(md->swtch);
+          updateCurveRef(md->curve);
+          updateAdjustRef(md->weight);
+          updateAdjustRef(md->sOffset);
+          updateFlightModeFlags(md->flightModes);
+        }
+        else {
+          removeMix(i);
+          i--;
+        }
       }
     }
   }
@@ -1122,4 +1134,10 @@ bool ModelData::hasExpoSiblings(const int index)
   const ExpoData &ed = expoData[index];
   const QVector<const ExpoData *> chexpos = expos(ed.chn);
   return !isExpoParent(index) && chexpos.size() > 2;
+}
+
+void ModelData::removeMix(const int idx)
+{
+  memmove(&mixData[idx], &mixData[idx + 1], (CPN_MAX_MIXERS - (idx + 1)) * sizeof(MixData));
+  mixData[CPN_MAX_MIXERS - 1].clear();
 }

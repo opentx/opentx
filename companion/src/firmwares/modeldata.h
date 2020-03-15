@@ -267,6 +267,7 @@ class ModelData {
     bool isExpoChild(const int index);
     bool hasExpoChildren(const int index);
     bool hasExpoSiblings(const int index);
+    void removeMix(const int idx);
 
   protected:
     void removeGlobalVar(int & var);
