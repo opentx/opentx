@@ -584,8 +584,11 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       updateAssignFunc(cfd);
       if (!cfd->isEmpty()) {
         updateSwitchRef(cfd->swtch);
-        if (cfd->func == FuncVolume || cfd->func == FuncPlayValue || (cfd->func >= FuncAdjustGV1 && cfd->func <= FuncAdjustGVLast && (cfd->adjustMode == FUNC_ADJUST_GVAR_GVAR || cfd->adjustMode == FUNC_ADJUST_GVAR_SOURCE)))
+        if (cfd->func == FuncVolume || cfd->func == FuncPlayValue || (cfd->func >= FuncAdjustGV1 && cfd->func <= FuncAdjustGVLast && (cfd->adjustMode == FUNC_ADJUST_GVAR_GVAR || cfd->adjustMode == FUNC_ADJUST_GVAR_SOURCE))) {
           updateSourceIntRef(cfd->param);
+          if (cfd->param == 0)
+            cfd->clear();
+        }
       }
     }
   }
