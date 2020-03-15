@@ -557,23 +557,32 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       switch(family) {
         case LS_FAMILY_VOFS:
           updateSourceIntRef(lsd->val1);
+          if (lsd->val1 == 0)
+            lsd->clear();
           break;
         case LS_FAMILY_STICKY:
         case LS_FAMILY_VBOOL:
           updateSwitchIntRef(lsd->val1);
           updateSwitchIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0)
+            lsd->clear();
           break;
         case LS_FAMILY_EDGE:
           updateSwitchIntRef(lsd->val1);
+          if (lsd->val1 == 0)
+            lsd->clear();
           break;
         case LS_FAMILY_VCOMP:
           updateSourceIntRef(lsd->val1);
           updateSourceIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0)
+            lsd->clear();
           break;
         default:
           break;
       }
-      updateSwitchIntRef(lsd->andsw);
+      if (!lsd->isEmpty())
+        updateSwitchIntRef(lsd->andsw);
     }
   }
   s1.report("Logical Switches");
