@@ -478,12 +478,11 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
       break;
     case REF_UPD_TYPE_TIMER:
       updRefInfo.srcType = SOURCE_TYPE_SPECIAL;
-      //updRefInfo.swtchType = SWITCH_TYPE_TIMER_MODE;
       updRefInfo.maxindex = fw->getCapability(Timers);
-      //  source index offset
-      updRefInfo.index1 = updRefInfo.index1 + 2;
-      updRefInfo.index2 = updRefInfo.index2 + 2;
-      updRefInfo.maxindex = updRefInfo.maxindex + 2;
+      //  rawsource index offset
+      updRefInfo.index1 += 2;
+      updRefInfo.index2 += 2;
+      updRefInfo.maxindex += 2;
       break;
     default:
       qDebug() << "Error - unhandled reference type:" << updRefInfo.type;
