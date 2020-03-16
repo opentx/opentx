@@ -152,9 +152,6 @@ class DateTimeWindow : public FormGroup {
       seconds->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
         dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, flags | LEADING0, 2);
       });
-
-      grid.nextLine();
-      getParent()->moveWindowsTop(top(), adjustHeight());
     }
 };
 

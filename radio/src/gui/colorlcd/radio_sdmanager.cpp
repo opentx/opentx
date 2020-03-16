@@ -89,7 +89,7 @@ class FilePreview : public Window
 class FlashModuleDialog: public FullScreenDialog
 {
   public:
-    FlashModuleDialog(ModuleIndex module):
+    explicit FlashModuleDialog(ModuleIndex module):
       FullScreenDialog(WARNING_TYPE_INFO, "Flash device"),
       device(module),
       progress(this, {100, 100, 100, 15})

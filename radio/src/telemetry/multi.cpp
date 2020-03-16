@@ -517,7 +517,7 @@ void MultiModuleSyncStatus::getRefreshString(char * statusText)
   tmp = strAppendUnsigned(tmp, inputLag, 5);
   tmp = strAppend(tmp, "us R ");
   tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000), 5);
-  tmp = strAppend(tmp, "us");
+  tmp = strAppend(tmp, STR_US);
 #else
   tmp = strAppend(tmp, "Sync at ");
   tmp = strAppendUnsigned(tmp, (uint32_t) (adjustedRefreshRate / 1000000));

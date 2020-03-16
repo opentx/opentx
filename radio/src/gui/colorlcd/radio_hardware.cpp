@@ -134,7 +134,7 @@ class BluetoothConfigWindow : public FormGroup
         grid.nextLine();
       }
 
-      getParent()->moveWindowsTop(top(), adjustHeight());
+      getParent()->moveWindowsTop(top() + 1, adjustHeight());
     }
 
   protected:

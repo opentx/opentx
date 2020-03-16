@@ -515,13 +515,13 @@ class TrainerModuleWindow  : public FormGroup {
                               GET_DEFAULT(g_model.trainerData.delay * 50 + 300),
                               SET_VALUE(g_model.trainerData.delay, (newValue - 300) / 50));
         edit->setStep(50);
-        edit->setSuffix("us");
+        edit->setSuffix(STR_US);
 
         // PPM Polarity
         new Choice(this, grid.getFieldSlot(3, 2), STR_PPM_POL, 0, 1, GET_SET_DEFAULT(g_model.trainerData.pulsePol ));
         grid.nextLine();
       }
-      getParent()->moveWindowsTop(top(), adjustHeight());
+      getParent()->moveWindowsTop(top() + 1, adjustHeight());
     }
 
   protected:
@@ -757,7 +757,7 @@ class ModuleWindow : public FormGroup {
                               GET_DEFAULT(g_model.moduleData[moduleIdx].ppm.delay * 50 + 300),
                               SET_VALUE(g_model.moduleData[moduleIdx].ppm.delay, (newValue - 300) / 50));
         edit->setStep(50);
-        edit->setSuffix("us");
+        edit->setSuffix(STR_US);
 
         // PPM Polarity
         new Choice(this, grid.getFieldSlot(3, 2), STR_PPM_POL, 0, 1, GET_SET_DEFAULT(g_model.moduleData[moduleIdx].ppm.pulsePol ));
@@ -894,7 +894,7 @@ class ModuleWindow : public FormGroup {
         }
       }
 
-      getParent()->moveWindowsTop(top(), adjustHeight());
+      getParent()->moveWindowsTop(top() + 1, adjustHeight());
     }
 };
 
