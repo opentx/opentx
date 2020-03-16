@@ -62,8 +62,7 @@ void processTelemetryData(uint8_t data)
 
 #if defined(AFHDS3)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_AFHDS3) {
-    //inconvenient way of calling method we should have handlers by protocol, or trigger it on module object
-    afhds3::processTelemetryData(EXTERNAL_MODULE, data, telemetryRxBuffer, telemetryRxBufferCount);
+    afhds3::processTelemetryData(EXTERNAL_MODULE, data, telemetryRxBuffer, telemetryRxBufferCount, TELEMETRY_RX_PACKET_SIZE);
     return;
   }
 #endif

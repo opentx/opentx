@@ -471,15 +471,8 @@ PACK(struct ModuleData {
       uint8_t runPower:3;
       uint8_t emi:1;
       uint8_t telemetry:1;
-      uint8_t mode;
       uint16_t failsafeTimeout;
       uint8_t rx_freq[2];
-      bool isSbus() {
-        return (mode & 1);
-      }
-      bool isPWM() {
-        return mode < 2;
-      }
       uint16_t rxFreq(){
         return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
       }

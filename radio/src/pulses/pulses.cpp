@@ -237,9 +237,8 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 #if defined(AFHDS3)
     case PROTOCOL_CHANNELS_AFHDS3:
-      extmodulePulsesData.afhds3.init();
-      //if EXTMODULE_USART would be defined and we could disable inversion
-      //it would be possible to use HW UART
+      extmodulePulsesData.afhds3.init(EXTERNAL_MODULE);
+      //If EXTMODULE_USART would be defined and we could disable inversion it would be possible to use HW UART
       extmoduleSerialStart(AFHDS3_BAUDRATE, AFHDS3_COMMAND_TIMEOUT * 2000, false);
       break;
 #endif
@@ -314,7 +313,6 @@ bool setupPulsesExternalModule(uint8_t protocol)
 
 #if defined(AFHDS3)
     case PROTOCOL_CHANNELS_AFHDS3:
-      //as requested "
       extmodulePulsesData.afhds3.setupFrame();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, AFHDS3_COMMAND_TIMEOUT);
       return true;
@@ -472,3 +470,8 @@ void setCustomFailsafe(uint8_t moduleIndex)
     }
   }
 }
+
+int32_t getChannelValue(uint8_t channel) {
+  return channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+}
+

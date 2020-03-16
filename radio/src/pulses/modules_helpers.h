@@ -302,7 +302,8 @@ inline bool isModuleAFHDS3(uint8_t idx)
 }
 
 
-// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus, afhds3)
+// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
+//qba667 count is not matching!
 static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8, 10}; // relative to 8!
 static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
@@ -327,6 +328,9 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
     else {
       return 8; // always 16 channels in FCC / FLEX
     }
+  }
+  else if(isModuleAFHDS3(moduleIdx)){
+    return 7;
   }
   else {
     return maxChannelsModules[g_model.moduleData[moduleIdx].type];
@@ -548,6 +552,27 @@ inline void setDefaultPpmFrameLength(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].ppm.frameLength = 4 * max<int>(0, g_model.moduleData[moduleIdx].channelsCount);
 }
 
+
+inline void resetAfhds3Options(uint8_t moduleIdx){
+#if defined(AFHDS3)
+  g_model.moduleData[moduleIdx].afhds3.bindPower = 0;
+  g_model.moduleData[moduleIdx].afhds3.runPower = 0;
+  g_model.moduleData[moduleIdx].afhds3.emi = 0;
+  g_model.moduleData[moduleIdx].afhds3.telemetry = 1;
+  g_model.moduleData[moduleIdx].afhds3.rx_freq[0] = 50;
+  g_model.moduleData[moduleIdx].afhds3.rx_freq[1] = 0;
+  g_model.moduleData[moduleIdx].afhds3.failsafeTimeout = 1000;
+  g_model.moduleData[moduleIdx].channelsCount = 14 - 8;
+  g_model.moduleData[moduleIdx].failsafeMode = 1;
+  //" PWM+i"" PWM+s"" PPM+i"" PPM+s"
+  g_model.moduleData[moduleIdx].subType = 0;
+  for (uint8_t channel = 0; channel < MAX_OUTPUT_CHANNELS; channel++) {
+    g_model.failsafeChannels[channel] = 0;
+  }
+#endif
+}
+
+
 inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
 {
   ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -558,6 +583,8 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
     moduleData.sbus.refreshRate = -31;
   else if (moduleData.type == MODULE_TYPE_PPM)
     setDefaultPpmFrameLength(moduleIdx);
+  else if (moduleData.type == MODULE_TYPE_AFHDS3)
+    resetAfhds3Options(moduleIdx);
 }
 
 extern bool isExternalAntennaEnabled();
