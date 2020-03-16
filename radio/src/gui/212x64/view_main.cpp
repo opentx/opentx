@@ -455,11 +455,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_LONG(KEY_MENU):
-#if defined(RADIO_TOOLS)
-      pushMenu(menuRadioTools);
-#else
-      pushMenu(menuRadioSdManager);
-#endif
+      pushMenu(menuTabGeneral[0]);
       killEvents(event);
       break;
 #endif
