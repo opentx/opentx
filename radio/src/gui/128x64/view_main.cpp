@@ -364,7 +364,11 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_GENERAL_MENU:
+#if defined(RADIO_TOOLS)
       pushMenu(menuRadioTools);
+#else
+      pushMenu(menuRadioSdManager);
+#endif
       killEvents(event);
       break;
 #endif
