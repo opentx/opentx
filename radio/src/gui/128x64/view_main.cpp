@@ -364,7 +364,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_GENERAL_MENU:
-      pushMenu(menuRadioTools);
+      pushMenu(menuTabGeneral[0]);
       killEvents(event);
       break;
 #endif

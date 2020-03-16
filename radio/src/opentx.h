@@ -219,6 +219,10 @@
   #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #endif
 
+#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
+  #define RADIO_TOOLS
+#endif
+
 // RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
 #define RESX_SHIFT 10
 #define RESX       1024
