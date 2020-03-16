@@ -203,7 +203,7 @@ enum EnumTabRadio {
 
 const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
   ICON_RADIO,
-#if defined(LUA) || defined(PXX2)
+#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
   ICON_RADIO_TOOLS,
 #endif
   ICON_RADIO_SD_MANAGER,
