@@ -120,7 +120,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
 
   s1.report("header");
 
-  for (int i=0; i<chnCapability; i++) {
+  for (int i = 0; i < chnCapability; i++) {
     int col = 0;
 
     // Channel label
@@ -204,7 +204,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
 Channels::~Channels()
 {
   // compiler warning if delete[]
-  for (int i=0; i<CPN_MAX_CHNOUT;i++) {
+  for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
     delete name[i];
     delete chnOffset[i];
     delete chnMin[i];
@@ -240,7 +240,7 @@ void Channels::refreshExtendedLimits()
 {
   int channelMax = model->getChannelsMax();
 
-  for (int i=0 ; i<CPN_MAX_CHNOUT; i++) {
+  for (int i = 0 ; i < CPN_MAX_CHNOUT; i++) {
     chnOffset[i]->updateMinMax(10 * channelMax);
     chnMin[i]->updateMinMax(10 * channelMax);
     chnMax[i]->updateMinMax(10 * channelMax);
@@ -280,7 +280,7 @@ void Channels::ppmcenterEdited()
 
 void Channels::update()
 {
-  for (int i=0; i<chnCapability; i++) {
+  for (int i = 0; i < chnCapability; i++) {
     updateLine(i);
   }
 }
@@ -298,7 +298,7 @@ void Channels::updateLine(int i)
   if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     int numcurves = firmware->getCapability(NumCurves);
     curveCB[i]->clear();
-    for (int j=-numcurves; j<=numcurves; j++) {
+    for (int j = -numcurves; j <= numcurves; j++) {
       curveCB[i]->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(model, false), j);
     }
     curveCB[i]->setCurrentIndex(model->limitData[i].curve.value + numcurves);
@@ -327,25 +327,21 @@ void Channels::cmDelete()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  int maxidx = chnCapability - 1;
-  for (int i=selectedIndex; i<maxidx; i++) {
-    if (!model->limitData[i].isEmpty() || !model->limitData[i+1].isEmpty()) {
-      LimitData *chn1 = &model->limitData[i];
-      LimitData *chn2 = &model->limitData[i+1];
-      memcpy(chn1, chn2, sizeof(LimitData));
-      updateLine(i);
-    }
-  }
-  model->limitData[maxidx].clear();
+  memmove(&model->limitData[selectedIndex], &model->limitData[selectedIndex + 1], (CPN_MAX_CHNOUT - (selectedIndex + 1)) * sizeof(LimitData));
+  model->limitData[chnCapability - 1].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
-  updateLine(maxidx);
+
+  for (int i = selectedIndex; i < chnCapability; i++) {
+    updateLine(i);
+  }
+
   emit modified();
 }
 
 void Channels::cmCopy()
 {
   QByteArray data;
-  data.append((char*)&model->limitData[selectedIndex],sizeof(LimitData));
+  data.append((char*)&model->limitData[selectedIndex], sizeof(LimitData));
   QMimeData *mimeData = new QMimeData;
   mimeData->setData(MIMETYPE_CHANNEL, data);
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
@@ -432,7 +428,7 @@ void Channels::cmClearAll()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Channels. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  for (int i=0; i<chnCapability; i++) {
+  for (int i = 0; i < chnCapability; i++) {
     model->limitData[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, i);
     updateLine(i);
@@ -442,11 +438,7 @@ void Channels::cmClearAll()
 
 void Channels::cmInsert()
 {
-  for (int i=(chnCapability - 1); i>selectedIndex; i--) {
-    if (!model->limitData[i].isEmpty() || !model->limitData[i-1].isEmpty()) {
-      memcpy(&model->limitData[i], &model->limitData[i-1], sizeof(LimitData));
-    }
-  }
+  memmove(&model->limitData[selectedIndex + 1], &model->limitData[selectedIndex], (CPN_MAX_CHNOUT - (selectedIndex + 1)) * sizeof(LimitData));
   model->limitData[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
