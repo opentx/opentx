@@ -49,14 +49,17 @@ class Joystick : public QObject
     QMap<int, int> deadzones;
     QMap<int, int> sensitivities;
 
-    Joystick(QObject *parent = 0,
-             int joystickEventTimeout = SDL_JOYSTICK_DEFAULT_EVENT_TIMEOUT,
-             bool doAutoRepeat = true,
-             int autoRepeatDelay = SDL_JOYSTICK_DEFAULT_AUTOREPEAT_DELAY);
-    ~Joystick();
+    explicit Joystick(QObject * parent = nullptr,
+                      int joystickEventTimeout = SDL_JOYSTICK_DEFAULT_EVENT_TIMEOUT,
+                      bool doAutoRepeat = true,
+                      int autoRepeatDelay = SDL_JOYSTICK_DEFAULT_AUTOREPEAT_DELAY);
+    ~Joystick() override;
     bool open(int);
     void close();
-    bool isOpen() { return joystick != NULL; }
+    bool isOpen()
+    {
+      return joystick != nullptr;
+    }
     int getAxisValue(int);
 
   private:
