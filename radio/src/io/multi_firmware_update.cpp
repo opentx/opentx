@@ -393,24 +393,24 @@ const char * MultiFirmwareInformation::readV1Signature(const char * buffer)
   else
     return "Wrong format";
 
-  if(buffer[MULTI_SIGN_BOOTLOADER_SUPPORT_OFFSET] == 'b')
+  if (buffer[MULTI_SIGN_BOOTLOADER_SUPPORT_OFFSET] == 'b')
     optibootSupport = true;
   else
     optibootSupport = false;
 
-  if(buffer[MULTI_SIGN_BOOTLOADER_CHECK_OFFSET] == 'c')
+  if (buffer[MULTI_SIGN_BOOTLOADER_CHECK_OFFSET] == 'c')
     bootloaderCheck = true;
   else
     bootloaderCheck = false;
 
-  if(buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 't')
+  if (buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 't')
     telemetryType = FIRMWARE_MULTI_TELEM_MULTI_STATUS;
   else if (buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 's')
     telemetryType = FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY;
   else
     telemetryType = FIRMWARE_MULTI_TELEM_NONE;
 
-  if(buffer[MULTI_SIGN_TELEM_INVERSION_OFFSET] == 'i')
+  if (buffer[MULTI_SIGN_TELEM_INVERSION_OFFSET] == 'i')
     telemetryInversion = true;
   else
     telemetryInversion = false;
