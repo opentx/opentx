@@ -123,7 +123,7 @@ class FlashMultiModuleDialog: public FullScreenDialog
 
     void flash(const char * filename)
     {
-      device.flashFirmware(filename, [=](const char * title, const char * message, int count, int total) -> void {
+      device.multiFlashFirmware(filename, [=](const char * title, const char * message, int count, int total) -> void {
           setMessage(message);
           progress.setValue(total > 0 ? count * 100 / total : 0);
           mainWindow.run(false);
@@ -204,7 +204,8 @@ void RadioSdManagerPage::build(FormWindow * window)
                 });
 #endif
                 menu->addLine(STR_FLASH_EXTERNAL_MULTI, [=]() {
-                    // TODO
+                    auto dialog = new FlashMultiModuleDialog(EXTERNAL_MODULE);
+                    dialog->flash(getFullPath(name));
                 });
               }
             }

@@ -522,7 +522,7 @@ bool MultiDeviceFirmwareUpdate::multiFlashFirmware(const char * filename, Progre
 
   const MultiFirmwareUpdateDriver* driver = &multiExternalUpdateDriver;
 #if defined(INTERNAL_MODULE_MULTI)
-  if (moduleIdx == INTERNAL_MODULE)
+  if (module == INTERNAL_MODULE)
     driver = &multiInternalUpdateDriver;
 #endif
 

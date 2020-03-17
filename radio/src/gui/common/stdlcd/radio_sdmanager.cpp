@@ -230,7 +230,7 @@ void onSdManagerMenu(const char * result)
 #endif
   else if (result == STR_FLASH_EXTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    MultiDeviceFirmwareUpdate device(SPORT_MODULE);
+    MultiDeviceFirmwareUpdate device(EXTERNAL_MODULE);
     device.multiFlashFirmware(lfn, drawProgressScreen);
   }
 #endif
