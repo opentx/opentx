@@ -298,7 +298,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
     if (SIMU_SLEEP_OR_EXIT_MS(30))
       break;
   }
-  return 0;
+  return nullptr;
 #endif
 
   const char* result = nullptr;
@@ -367,11 +367,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
   }
 
   if (f_eof(file)) {
-#if defined(COLORLCD)
-#warning "TODO drawProgressScreen"
-#else
-    drawProgressScreen(label, STR_WRITING, file->fptr, file->obj.objsize);
-#endif
+    progressHandler(label, STR_WRITING, file->fptr, file->obj.objsize);
   }
 
   leaveProgMode(inverted);
