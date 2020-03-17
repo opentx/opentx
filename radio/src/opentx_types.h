@@ -21,7 +21,7 @@
 #ifndef _OPENTX_TYPES_H_
 #define _OPENTX_TYPES_H_
 
-#include "libopenui/src/libopenui_types.h"
+#include "thirdparty/libopenui/src/libopenui_types.h"
 
 typedef uint32_t tmr10ms_t;
 typedef int32_t rotenc_t;
