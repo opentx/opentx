@@ -121,6 +121,11 @@ class FlashMultiModuleDialog: public FullScreenDialog
     {
     }
 
+    ~FlashMultiModuleDialog() override
+    {
+      progress.detach();
+    }
+
     void flash(const char * filename)
     {
       device.multiFlashFirmware(filename, [=](const char * title, const char * message, int count, int total) -> void {
