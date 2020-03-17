@@ -86,10 +86,10 @@ class FilePreview : public Window
     BitmapBuffer *bitmap = nullptr;
 };
 
-class FlashModuleDialog: public FullScreenDialog
+class FlashFrSkyModuleDialog: public FullScreenDialog
 {
   public:
-    explicit FlashModuleDialog(ModuleIndex module):
+    explicit FlashFrSkyModuleDialog(ModuleIndex module):
       FullScreenDialog(WARNING_TYPE_INFO, "Flash device"),
       device(module),
       progress(this, {100, 100, 100, 15})
@@ -108,6 +108,31 @@ class FlashModuleDialog: public FullScreenDialog
 
   protected:
     FrskyDeviceFirmwareUpdate device;
+    Progress progress;
+};
+
+class FlashMultiModuleDialog: public FullScreenDialog
+{
+  public:
+    explicit FlashMultiModuleDialog(ModuleIndex module):
+      FullScreenDialog(WARNING_TYPE_INFO, "Flash Multi"),
+      device(module),
+      progress(this, {100, 100, 100, 15})
+    {
+    }
+
+    void flash(const char * filename)
+    {
+      device.flashFirmware(filename, [=](const char * title, const char * message, int count, int total) -> void {
+          setMessage(message);
+          progress.setValue(total > 0 ? count * 100 / total : 0);
+          mainWindow.run(false);
+      });
+      deleteLater();
+    }
+
+  protected:
+    MultiDeviceFirmwareUpdate device;
     Progress progress;
 };
 
@@ -202,16 +227,16 @@ void RadioSdManagerPage::build(FormWindow * window)
             else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
               if (HAS_SPORT_UPDATE_CONNECTOR()) {
                 menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
-                    auto dialog = new FlashModuleDialog(SPORT_MODULE);
+                    auto dialog = new FlashFrSkyModuleDialog(SPORT_MODULE);
                     dialog->flash(getFullPath(name));
                 });
               }
               menu->addLine(STR_FLASH_INTERNAL_MODULE, [=]() {
-                  auto dialog = new FlashModuleDialog(INTERNAL_MODULE);
+                  auto dialog = new FlashFrSkyModuleDialog(INTERNAL_MODULE);
                   dialog->flash(getFullPath(name));
               });
               menu->addLine(STR_FLASH_EXTERNAL_MODULE, [=]() {
-                  auto dialog = new FlashModuleDialog(EXTERNAL_MODULE);
+                  auto dialog = new FlashFrSkyModuleDialog(EXTERNAL_MODULE);
                   dialog->flash(getFullPath(name));
               });
             }

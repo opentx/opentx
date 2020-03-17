@@ -486,7 +486,7 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(FIL * file)
   return readV1Signature(buffer);
 }
 
-bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
+bool MultiDeviceFirmwareUpdate::multiFlashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
 
@@ -503,7 +503,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   }
   f_lseek(&file, 0);
 
-  if (moduleIdx == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     if (!firmwareFile.isMultiExternalFirmware()) {
       f_close(&file);
       POPUP_WARNING(STR_NEEDS_FILE);

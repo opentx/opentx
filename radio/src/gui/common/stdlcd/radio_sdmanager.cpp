@@ -230,7 +230,8 @@ void onSdManagerMenu(const char * result)
 #endif
   else if (result == STR_FLASH_EXTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    multiFlashFirmware(EXTERNAL_MODULE, lfn);
+    MultiDeviceFirmwareUpdate device(SPORT_MODULE);
+    device.multiFlashFirmware(lfn, drawProgressScreen);
   }
 #endif
 #if defined(BLUETOOTH)
