@@ -117,7 +117,7 @@ class FlashMultiModuleDialog: public FullScreenDialog
     explicit FlashMultiModuleDialog(ModuleIndex module):
       FullScreenDialog(WARNING_TYPE_INFO, "Flash Multi"),
       device(module),
-      progress(this, {100, 100, 100, 15})
+      progress(this, {LCD_W / 2 - 50, LCD_H / 2, 100, 15})
     {
     }
 
@@ -200,7 +200,8 @@ void RadioSdManagerPage::build(FormWindow * window)
               if (information.readMultiFirmwareInformation(name.data()) == nullptr) {
 #if defined(INTERNAL_MODULE_MULTI)
                 menu->addLine(STR_FLASH_INTERNAL_MULTI, [=]() {
-                    // TODO
+                    auto dialog = new FlashMultiModuleDialog(INTERNAL_MODULE);
+                    dialog->flash(getFullPath(name));
                 });
 #endif
                 menu->addLine(STR_FLASH_EXTERNAL_MULTI, [=]() {

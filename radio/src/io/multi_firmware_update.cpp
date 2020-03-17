@@ -30,7 +30,7 @@ class MultiFirmwareUpdateDriver
 {
   public:
     MultiFirmwareUpdateDriver() {}
-    const char* flashFirmware(FIL* file, const char* label) const;
+    const char* flashFirmware(FIL* file, const char* label, ProgressHandler progressHandler) const;
 
   protected:
     virtual void moduleOn() const = 0;
@@ -289,8 +289,18 @@ void MultiFirmwareUpdateDriver::leaveProgMode(bool inverted) const
   deinit(inverted);
 }
 
-const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* label) const
+const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* label, ProgressHandler progressHandler) const
 {
+
+#if defined(SIMU)
+  for (uint16_t i = 0; i < 100; i++) {
+    progressHandler(label, STR_WRITING, i, 100);
+    if (SIMU_SLEEP_OR_EXIT_MS(30))
+      break;
+  }
+  return 0;
+#endif
+
   const char* result = nullptr;
   moduleOn();
 
@@ -329,12 +339,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
   }
 
   while (!f_eof(file)) {
-
-#if defined(COLORLCD)
-#warning "TODO drawProgressScreen"
-#else
-    drawProgressScreen(label, STR_WRITING, file->fptr, file->obj.objsize);
-#endif
+    progressHandler(label, STR_WRITING, file->fptr, file->obj.objsize);
 
     UINT count=0;
     memclear(buffer, pageSize);
@@ -539,17 +544,13 @@ bool MultiDeviceFirmwareUpdate::multiFlashFirmware(const char * filename, Progre
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 
-#if defined(COLORLCD)
-#warning "TODO drawProgressScreen"
-#else
-  drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
-#endif
+  progressHandler(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   /* wait 2s off */
   watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(3000);
 
-  const char * result = driver->flashFirmware(&file, getBasename(filename));
+  const char * result = driver->flashFirmware(&file, getBasename(filename), progressHandler);
   f_close(&file);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
