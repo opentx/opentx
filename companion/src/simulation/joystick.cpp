@@ -114,7 +114,7 @@ void Joystick::processEvents()
       buttonRepeatTimers[i].restart();
     }
     else if (autoRepeat && changed != 0) {
-      if ( buttonRepeatTimers[i].elapsed() >= autoRepeatDelay ) {
+      if (buttonRepeatTimers[i].elapsed() >= autoRepeatDelay) {
         emit buttonValueChanged(i, (bool) changed);
         buttons[i] = changed;
       }
