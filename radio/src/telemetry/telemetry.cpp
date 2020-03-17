@@ -179,9 +179,7 @@ void telemetryWakeup()
 #if defined(PCBFRSKY)
     if (isBadAntennaDetected()) {
       AUDIO_RAS_RED();
-      POPUP_WARNING(STR_WARNING);
-      const char * w = STR_ANTENNAPROBLEM;
-      SET_WARNING_INFO(w, strlen(w), 0);
+      POPUP_WARNING(STR_WARNING, STR_ANTENNAPROBLEM);
       SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
     }
 #endif

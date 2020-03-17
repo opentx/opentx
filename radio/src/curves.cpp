@@ -53,9 +53,7 @@ void loadCurves()
 
   }
   if (showWarning) {
-    POPUP_WARNING("Invalid curve data repaired");
-    const char * w = "check your curves, logic switches";
-    SET_WARNING_INFO(w, strlen(w), 0);
+    POPUP_WARNING("Invalid curve data repaired", "check your curves, logic switches");
   }
 }
 

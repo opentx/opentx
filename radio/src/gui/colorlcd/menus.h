@@ -322,10 +322,7 @@ extern void (* popupFunc)(event_t event);
 extern uint8_t warningInfoFlags;
 
 #define DISPLAY_WARNING(evt)                (*popupFunc)(evt)
-#define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)
-#define SET_WARNING_INFO(info, len, flags)    (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
-
 #define POPUP_MENU_MAX_LINES           12
 #define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)

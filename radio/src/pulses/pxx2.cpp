@@ -546,8 +546,7 @@ void Pxx2OtaUpdate::flashFirmware(const char * filename, ProgressHandler progres
   BACKLIGHT_ENABLE();
 
   if (result) {
-    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
-    SET_WARNING_INFO(result, strlen(result), 0);
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR, result);
   }
   else {
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);

@@ -56,9 +56,25 @@
 #include "coloredit.h"
 #include "draw_functions.h"
 
-inline void POPUP_INFORMATION(const char * str)
+inline MessageDialog * POPUP_INFORMATION(const char * str)
 {
-  new MessageDialog(&mainWindow, "Message", str);
+  return new MessageDialog(&mainWindow, "Message", str);
+}
+
+inline MessageDialog * createPopupWarning(const char * message)
+{
+  return new MessageDialog(&mainWindow, "Warning", message);
+}
+
+inline void POPUP_WARNING(const char * message, const char * info = nullptr)
+{
+  auto popupWarning = createPopupWarning(message);
+  if (info) {
+    popupWarning->setInfoText(std::string(info));
+  }
+  while (popupWarning->getParent()) {
+    mainWindow.run(false);
+  }
 }
 
 #endif // _LIBOPENUI_H_

@@ -507,16 +507,14 @@ bool MultiDeviceFirmwareUpdate::multiFlashFirmware(const char * filename, Progre
   if (module == EXTERNAL_MODULE) {
     if (!firmwareFile.isMultiExternalFirmware()) {
       f_close(&file);
-      POPUP_WARNING(STR_NEEDS_FILE);
-      SET_WARNING_INFO(STR_EXT_MULTI_SPEC, strlen(STR_EXT_MULTI_SPEC), 0);
+      POPUP_WARNING(STR_NEEDS_FILE, STR_EXT_MULTI_SPEC);
       return false;
     }
   }
   else {
     if (!firmwareFile.isMultiInternalFirmware()) {
       f_close(&file);
-      POPUP_WARNING(STR_NEEDS_FILE);
-      SET_WARNING_INFO(STR_INT_MULTI_SPEC, strlen(STR_INT_MULTI_SPEC), 0);
+      POPUP_WARNING(STR_NEEDS_FILE, STR_INT_MULTI_SPEC);
       return false;
     }
   }
@@ -553,8 +551,7 @@ bool MultiDeviceFirmwareUpdate::multiFlashFirmware(const char * filename, Progre
   BACKLIGHT_ENABLE();
 
   if (result) {
-    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
-    SET_WARNING_INFO(result, strlen(result), 0);
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR, result);
   }
   else {
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
