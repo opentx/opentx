@@ -64,7 +64,6 @@ class ModulePanel : public ModelPanel
     ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
     virtual ~ModulePanel();
     virtual void update();
-    bool moduleHasFailsafes();
 
   public slots:
     void onExtendedLimitsToggled();

@@ -496,6 +496,19 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
 
   s1.report("Initialise");
 
+  for (int i = fw->getCapability(NumFirstUsableModule); i < fw->getCapability(NumModules); i++) {
+    ModuleData *md = &moduleData[i];
+    if (md->protocol != PULSES_OFF && md->failsafeMode == FAILSAFE_CUSTOM && md->hasFailsafes(fw))
+      updateModuleFailsafes(md);
+  }
+  s1.report("Modules");
+
+  for (int i = 0; i < CPN_MAX_TIMERS; i++) {
+    TimerData *td = &timers[i];
+    updateTimerMode(td->mode);
+  }
+  s1.report("Timers");
+
   for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     FlightModeData *fmd = &flightModeData[i];
     if (!fmd->isEmpty(i)) {
@@ -503,12 +516,6 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
     }
   }
   s1.report("Flight Modes");
-
-  for (int i = 0; i < CPN_MAX_TIMERS; i++) {
-    TimerData *td = &timers[i];
-    updateTimerMode(td->mode);
-  }
-  s1.report("Timers");
 
   for (int i = 0; i < CPN_MAX_EXPOS; i++) {
     ExpoData *ed = &expoData[i];
@@ -1044,6 +1051,55 @@ void ModelData::updateTelemetryRef(unsigned int & curRef)
   if (curRef != static_cast<unsigned int>(newRef)) {
     //qDebug() << "Updated reference:" << curRef << " -> " << newRef;
     curRef = newRef;
+    updRefInfo.updcnt++;
+  }
+}
+
+void ModelData::updateModuleFailsafes(ModuleData * md)
+{
+  if (updRefInfo.type != REF_UPD_TYPE_CHANNEL)
+    return;
+
+  bool updated = false;
+  const int idxAdj = 0;
+  const int chStart = md->channelsStart;
+  const int chEnd = chStart + md->channelsCount;
+
+  switch (updRefInfo.action)
+  {
+    case REF_UPD_ACT_CLEAR:
+      return;
+    case REF_UPD_ACT_SHIFT:
+      if (chStart < (updRefInfo.index1 + idxAdj))
+        return;
+
+      break;
+    case REF_UPD_ACT_SWAP:
+      int tmp;
+      int idx1;
+      int idx2;
+      idx1 = (updRefInfo.index1 + idxAdj) - chStart;
+      idx2 = (updRefInfo.index2 + idxAdj) - chStart;
+      qDebug() << "chStart:" << chStart << "chEnd:" << chEnd << "idx1:" << idx1 << "idx2:" << idx2;
+      if (idx1 >= 0 && idx1 < chEnd) {
+        tmp = md->failsafeChannels[idx1];
+        if (idx2 >= 0 && idx2 < chEnd)
+          md->failsafeChannels[idx1] = md->failsafeChannels[idx2];
+        else
+          md->failsafeChannels[idx1] = 0;
+      }
+      else
+        tmp = 0;
+      if (idx2 >= 0 && idx2 < chEnd)
+        md->failsafeChannels[idx2] = tmp;
+      break;
+    default:
+      qDebug() << "Error - unhandled action:" << updRefInfo.action;
+      return;
+  }
+
+  if (updated) {
+    qDebug() << "Updated module failsafes";
     updRefInfo.updcnt++;
   }
 }

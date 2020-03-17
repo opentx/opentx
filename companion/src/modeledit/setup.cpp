@@ -285,27 +285,12 @@ ModulePanel::~ModulePanel()
   delete ui;
 }
 
-bool ModulePanel::moduleHasFailsafes()
-{
-  return firmware->getCapability(HasFailsafe) && (
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_ISRM ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCST_ISRM_D16 ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_ACCESS_R9M_LITE_PRO ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_XJT_LITE_X16 ||
-    (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_MULTIMODULE
-    );
-}
-
 void ModulePanel::setupFailsafes()
 {
   ChannelFailsafeWidgetsGroup grp;
   const int start = module.channelsStart;
   const int end = start + module.channelsCount;
-  const bool hasFailsafe = moduleHasFailsafes();
+  const bool hasFailsafe = module.hasFailsafes(firmware);
 
   lock = true;
 
@@ -522,7 +507,7 @@ void ModulePanel::update()
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
-  if (moduleHasFailsafes()) {
+  if (module.hasFailsafes(firmware)) {
     mask |= MASK_FAILSAFES;
   }
 

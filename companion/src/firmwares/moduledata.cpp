@@ -181,3 +181,18 @@ QStringList ModuleData::powerValueStrings(int subType, Firmware * fw)
     strIdx += 2;
   return strings[strIdx];
 }
+
+bool ModuleData::hasFailsafes(Firmware * fw) const
+{
+  return fw->getCapability(HasFailsafe) && (
+    protocol == PULSES_ACCESS_ISRM ||
+    protocol == PULSES_ACCST_ISRM_D16 ||
+    protocol == PULSES_PXX_XJT_X16 ||
+    protocol == PULSES_PXX_R9M ||
+    protocol == PULSES_ACCESS_R9M ||
+    protocol == PULSES_ACCESS_R9M_LITE ||
+    protocol == PULSES_ACCESS_R9M_LITE_PRO ||
+    protocol == PULSES_XJT_LITE_X16 ||
+    protocol == PULSES_MULTIMODULE
+    );
+}

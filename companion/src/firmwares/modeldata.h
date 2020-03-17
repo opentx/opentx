@@ -298,6 +298,7 @@ class ModelData {
     void updateLimitCurveRef(CurveReference & crv);
     void updateFlightModeFlags(unsigned int & flags);
     void updateTelemetryRef(unsigned int & idx);
+    void updateModuleFailsafes(ModuleData * md);
     inline void updateSourceRef(RawSource & src) { updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType); }
     inline void updateSwitchRef(RawSwitch & swtch) { updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1); }
     inline void updateTimerMode(RawSwitch & swtch) { updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1, false, (int)SWITCH_TYPE_TIMER_MODE, 0); }
