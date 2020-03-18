@@ -21,10 +21,20 @@
 #define _MESSAGE_DIALOG_H_
 
 #include "dialog.h"
+#include "static.h"
 
 class MessageDialog: public Dialog {
   public:
-    MessageDialog(Window * parent, const char * title, const char * message);
+    MessageDialog(Window * parent, const char * title, const char * message, const char * info = "");
+
+    void setInfoText(std::string text)
+    {
+      infoWidget->setText(std::move(text));
+    }
+
+  protected:
+    StaticText * messageWidget;
+    StaticText * infoWidget;
 
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;

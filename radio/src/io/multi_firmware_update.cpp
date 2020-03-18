@@ -30,7 +30,7 @@ class MultiFirmwareUpdateDriver
 {
   public:
     MultiFirmwareUpdateDriver() {}
-    const char* flashFirmware(FIL* file, const char* label) const;
+    const char * flashFirmware(FIL * file, const char * label, ProgressHandler progressHandler) const;
 
   protected:
     virtual void moduleOn() const = 0;
@@ -289,9 +289,18 @@ void MultiFirmwareUpdateDriver::leaveProgMode(bool inverted) const
   deinit(inverted);
 }
 
-const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* label) const
+const char * MultiFirmwareUpdateDriver::flashFirmware(FIL * file, const char * label, ProgressHandler progressHandler) const
 {
-  const char* result = nullptr;
+#if defined(SIMU)
+  for (uint16_t i = 0; i < 100; i++) {
+    progressHandler(label, STR_WRITING, i, 100);
+    if (SIMU_SLEEP_OR_EXIT_MS(30))
+      break;
+  }
+  return nullptr;
+#endif
+
+  const char * result = nullptr;
   moduleOn();
 
   bool inverted = true; //false; // true
@@ -329,12 +338,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
   }
 
   while (!f_eof(file)) {
-
-#if defined(COLORLCD)
-#warning "TODO drawProgressScreen"
-#else
-    drawProgressScreen(label, STR_WRITING, file->fptr, file->obj.objsize);
-#endif
+    progressHandler(label, STR_WRITING, file->fptr, file->obj.objsize);
 
     UINT count=0;
     memclear(buffer, pageSize);
@@ -362,11 +366,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
   }
 
   if (f_eof(file)) {
-#if defined(COLORLCD)
-#warning "TODO drawProgressScreen"
-#else
-    drawProgressScreen(label, STR_WRITING, file->fptr, file->obj.objsize);
-#endif
+    progressHandler(label, STR_WRITING, file->fptr, file->obj.objsize);
   }
 
   leaveProgMode(inverted);
@@ -392,24 +392,24 @@ const char * MultiFirmwareInformation::readV1Signature(const char * buffer)
   else
     return "Wrong format";
 
-  if(buffer[MULTI_SIGN_BOOTLOADER_SUPPORT_OFFSET] == 'b')
+  if (buffer[MULTI_SIGN_BOOTLOADER_SUPPORT_OFFSET] == 'b')
     optibootSupport = true;
   else
     optibootSupport = false;
 
-  if(buffer[MULTI_SIGN_BOOTLOADER_CHECK_OFFSET] == 'c')
+  if (buffer[MULTI_SIGN_BOOTLOADER_CHECK_OFFSET] == 'c')
     bootloaderCheck = true;
   else
     bootloaderCheck = false;
 
-  if(buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 't')
+  if (buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 't')
     telemetryType = FIRMWARE_MULTI_TELEM_MULTI_STATUS;
   else if (buffer[MULTI_SIGN_TELEM_TYPE_OFFSET] == 's')
     telemetryType = FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY;
   else
     telemetryType = FIRMWARE_MULTI_TELEM_NONE;
 
-  if(buffer[MULTI_SIGN_TELEM_INVERSION_OFFSET] == 'i')
+  if (buffer[MULTI_SIGN_TELEM_INVERSION_OFFSET] == 'i')
     telemetryInversion = true;
   else
     telemetryInversion = false;
@@ -486,7 +486,7 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(FIL * file)
   return readV1Signature(buffer);
 }
 
-bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
+bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
 
@@ -503,26 +503,24 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   }
   f_lseek(&file, 0);
 
-  if (moduleIdx == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     if (!firmwareFile.isMultiExternalFirmware()) {
       f_close(&file);
-      POPUP_WARNING(STR_NEEDS_FILE);
-      SET_WARNING_INFO(STR_EXT_MULTI_SPEC, strlen(STR_EXT_MULTI_SPEC), 0);
+      POPUP_WARNING(STR_NEEDS_FILE, STR_EXT_MULTI_SPEC);
       return false;
     }
   }
   else {
     if (!firmwareFile.isMultiInternalFirmware()) {
       f_close(&file);
-      POPUP_WARNING(STR_NEEDS_FILE);
-      SET_WARNING_INFO(STR_INT_MULTI_SPEC, strlen(STR_INT_MULTI_SPEC), 0);
+      POPUP_WARNING(STR_NEEDS_FILE, STR_INT_MULTI_SPEC);
       return false;
     }
   }
 
   const MultiFirmwareUpdateDriver* driver = &multiExternalUpdateDriver;
 #if defined(INTERNAL_MODULE_MULTI)
-  if (moduleIdx == INTERNAL_MODULE)
+  if (module == INTERNAL_MODULE)
     driver = &multiInternalUpdateDriver;
 #endif
 
@@ -539,29 +537,17 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 
-#if defined(COLORLCD)
-#warning "TODO drawProgressScreen"
-#else
-  drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
-#endif
+  progressHandler(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   /* wait 2s off */
   watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(3000);
 
-  const char * result = driver->flashFirmware(&file, getBasename(filename));
+  const char * result = driver->flashFirmware(&file, getBasename(filename), progressHandler);
   f_close(&file);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();
-
-  if (result) {
-    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
-    SET_WARNING_INFO(result, strlen(result), 0);
-  }
-  else {
-    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
-  }
 
 #if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();
@@ -572,6 +558,13 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   /* wait 2s off */
   watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(2000);
+
+  if (result) {
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR, result);
+  }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
 
   // reset telemetry protocol
   telemetryInit(255);

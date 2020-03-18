@@ -18,20 +18,23 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_FRSKY_SPORT_H_
-#define _IO_FRSKY_SPORT_H_
+#ifndef _BOOTLOADER_FLASH_H_
+#define _BOOTLOADER_FLASH_H_
 
-#include "dataconstants.h"
+bool isBootloader(const char * filename);
 
-PACK(union SportTelemetryPacket
+class BootloaderDeviceFirmwareUpdate
 {
-  struct {
-    uint8_t physicalId;
-    uint8_t primId;
-    uint16_t dataId;
-    uint32_t value;
-  };
-  uint8_t raw[8];
-});
+  public:
+    explicit BootloaderDeviceFirmwareUpdate(ModuleIndex module):
+      module(module)
+    {
+    }
 
-#endif // _IO_FRSKY_SPORT_H_
+    void flashFirmware(const char * filename, ProgressHandler progressHandler);
+
+  protected:
+    ModuleIndex module;
+};
+
+#endif // _BOOTLOADER_FLASH_H_

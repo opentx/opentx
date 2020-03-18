@@ -21,6 +21,7 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 #include "io/multi_firmware_update.h"
+#include "io/bootloader_flash.h"
 #include "libopenui/src/libopenui_file.h"
 
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
@@ -203,7 +204,8 @@ void onSdManagerMenu(const char * result)
 #if defined(PCBTARANIS)
   else if (result == STR_FLASH_BOOTLOADER) {
     getSelectionFullPath(lfn);
-    bootloaderFlash(lfn);
+    BootloaderDeviceFirmwareUpdate device(BOOTLOADER_MODULE);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
@@ -225,12 +227,14 @@ void onSdManagerMenu(const char * result)
 #if defined(INTERNAL_MODULE_MULTI)
   else if (result == STR_FLASH_INTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    multiFlashFirmware(INTERNAL_MODULE, lfn);
+    MultiDeviceFirmwareUpdate device(INTERNAL_MODULE);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
 #endif
   else if (result == STR_FLASH_EXTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    multiFlashFirmware(EXTERNAL_MODULE, lfn);
+    MultiDeviceFirmwareUpdate device(EXTERNAL_MODULE);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
 #endif
 #if defined(BLUETOOTH)

@@ -101,6 +101,17 @@ class MultiFirmwareInformation {
     const char * readV2Signature(const char * buffer);
 };
 
-bool multiFlashFirmware(uint8_t module, const char * filename);
+class MultiDeviceFirmwareUpdate {
+  public:
+    explicit MultiDeviceFirmwareUpdate(ModuleIndex module):
+      module(module)
+    {
+    }
+
+    bool flashFirmware(const char * filename, ProgressHandler progressHandler);
+
+  protected:
+    ModuleIndex module;
+};
 
 #endif //OPENTX_MULTI_FIRMWARE_H

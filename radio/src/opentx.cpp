@@ -439,9 +439,8 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
     strAppend(name, ")");
   }
 
-  if (reusableBuffer.moduleSetup.msg[0] != '\0') {
-    POPUP_WARNING(STR_MODELIDUSED);
-    SET_WARNING_INFO(reusableBuffer.moduleSetup.msg, sizeof(reusableBuffer.moduleSetup.msg), 0);
+  if (reusableBuffer.moduleSetup.msg[0]) {
+    POPUP_WARNING(STR_MODELIDUSED, reusableBuffer.moduleSetup.msg);
   }
 }
 
