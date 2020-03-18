@@ -18,14 +18,15 @@
  * GNU General Public License for more details.
  */
 
-#ifndef OPENTX_BOOTLOADER_FLASH_H
-#define OPENTX_BOOTLOADER_FLASH_H
+#ifndef _BOOTLOADER_FLASH_H_
+#define _BOOTLOADER_FLASH_H_
 
 bool isBootloader(const char * filename);
 
-class BootloaderDeviceFirmwareUpdate {
+class BootloaderDeviceFirmwareUpdate
+{
   public:
-    BootloaderDeviceFirmwareUpdate(ModuleIndex module):
+    explicit BootloaderDeviceFirmwareUpdate(ModuleIndex module):
       module(module) {
     }
 
@@ -35,4 +36,4 @@ class BootloaderDeviceFirmwareUpdate {
     ModuleIndex module;
 };
 
-#endif //OPENTX_BOOTLOADER_FLASH_H
+#endif // _BOOTLOADER_FLASH_H_
