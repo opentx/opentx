@@ -487,7 +487,7 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(FIL * file)
   return readV1Signature(buffer);
 }
 
-bool MultiDeviceFirmwareUpdate::multiFlashFirmware(const char * filename, ProgressHandler progressHandler)
+bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
 
@@ -552,9 +552,6 @@ bool MultiDeviceFirmwareUpdate::multiFlashFirmware(const char * filename, Progre
 
   if (result) {
     POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR, result);
-  }
-  else {
-    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
 #if defined(HARDWARE_INTERNAL_MODULE)

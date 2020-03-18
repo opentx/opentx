@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "bootloader_flash.h"
 
 bool isBootloader(const char * filename)
 {
@@ -34,7 +35,7 @@ bool isBootloader(const char * filename)
   return isBootloaderStart(buffer);
 }
 
-void bootloaderFlash(const char * filename)
+void BootloaderDeviceFirmwareUpdate::flashFirmware(const char *filename, ProgressHandler progressHandler)
 {
   FIL file;
   uint8_t buffer[1024];
@@ -63,9 +64,9 @@ void bootloaderFlash(const char * filename)
     for (int j = 0; j < 1024; j += FLASH_PAGESIZE) {
       flashWrite(CONVERT_UINT_PTR(FIRMWARE_ADDRESS + i + j), CONVERT_UINT_PTR(buffer + j));
     }
-#if !defined(COLORLCD)
-    drawProgressScreen("Bootloader", STR_WRITING, i, BOOTLOADER_SIZE);
-#endif
+
+    progressHandler("Bootloader", STR_WRITING, i, BOOTLOADER_SIZE);
+
 #if defined(SIMU)
     // add an artificial delay and check for simu quit
     if (SIMU_SLEEP_OR_EXIT_MS(30))

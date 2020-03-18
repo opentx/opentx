@@ -107,7 +107,7 @@ class MultiDeviceFirmwareUpdate {
       module(module) {
     }
 
-    bool multiFlashFirmware(const char * filename, ProgressHandler progressHandler);
+    bool flashFirmware(const char * filename, ProgressHandler progressHandler);
 
   protected:
     ModuleIndex module;
