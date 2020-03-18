@@ -553,6 +553,9 @@ bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHan
   if (result) {
     POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR, result);
   }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
 
 #if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();

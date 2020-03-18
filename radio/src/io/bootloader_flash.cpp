@@ -74,6 +74,8 @@ void BootloaderDeviceFirmwareUpdate::flashFirmware(const char *filename, Progres
 #endif
   }
 
+  POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+
   watchdogSuspend(0);
   WDG_RESET();
 
