@@ -483,6 +483,8 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 // Sport update driver
 #define SPORT_UPDATE_POWER_ON()
 #define SPORT_UPDATE_POWER_OFF()
+#define SPORT_UPDATE_POWER_INIT()
+#define IS_SPORT_UPDATE_POWER_ON()     (false)
 
 // Haptic driver
 void hapticInit();
