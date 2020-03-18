@@ -56,9 +56,9 @@
 #include "coloredit.h"
 #include "draw_functions.h"
 
-inline MessageDialog * POPUP_INFORMATION(const char * str)
+inline MessageDialog * createPopupInformation(const char * message)
 {
-  return new MessageDialog(&mainWindow, "Message", str);
+  return new MessageDialog(&mainWindow, "Message", message);
 }
 
 inline MessageDialog * createPopupWarning(const char * message)
@@ -66,13 +66,21 @@ inline MessageDialog * createPopupWarning(const char * message)
   return new MessageDialog(&mainWindow, "Warning", message);
 }
 
+inline void POPUP_INFORMATION(const char * message)
+{
+  auto popup = createPopupInformation(message);
+  while (popup->getParent()) {
+    mainWindow.run(false);
+  }
+}
+
 inline void POPUP_WARNING(const char * message, const char * info = nullptr)
 {
-  auto popupWarning = createPopupWarning(message);
+  auto popup = createPopupWarning(message);
   if (info) {
-    popupWarning->setInfoText(std::string(info));
+    popup->setInfoText(std::string(info));
   }
-  while (popupWarning->getParent()) {
+  while (popup->getParent()) {
     mainWindow.run(false);
   }
 }
