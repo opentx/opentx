@@ -27,7 +27,8 @@ class BootloaderDeviceFirmwareUpdate
 {
   public:
     explicit BootloaderDeviceFirmwareUpdate(ModuleIndex module):
-      module(module) {
+      module(module)
+    {
     }
 
     void flashFirmware(const char * filename, ProgressHandler progressHandler);

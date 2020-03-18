@@ -103,8 +103,9 @@ class MultiFirmwareInformation {
 
 class MultiDeviceFirmwareUpdate {
   public:
-    MultiDeviceFirmwareUpdate(ModuleIndex module):
-      module(module) {
+    explicit MultiDeviceFirmwareUpdate(ModuleIndex module):
+      module(module)
+    {
     }
 
     bool flashFirmware(const char * filename, ProgressHandler progressHandler);

@@ -30,7 +30,7 @@ class MultiFirmwareUpdateDriver
 {
   public:
     MultiFirmwareUpdateDriver() {}
-    const char* flashFirmware(FIL* file, const char* label, ProgressHandler progressHandler) const;
+    const char * flashFirmware(FIL * file, const char * label, ProgressHandler progressHandler) const;
 
   protected:
     virtual void moduleOn() const = 0;
@@ -289,9 +289,8 @@ void MultiFirmwareUpdateDriver::leaveProgMode(bool inverted) const
   deinit(inverted);
 }
 
-const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* label, ProgressHandler progressHandler) const
+const char * MultiFirmwareUpdateDriver::flashFirmware(FIL * file, const char * label, ProgressHandler progressHandler) const
 {
-
 #if defined(SIMU)
   for (uint16_t i = 0; i < 100; i++) {
     progressHandler(label, STR_WRITING, i, 100);
@@ -301,7 +300,7 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL* file, const char* lab
   return nullptr;
 #endif
 
-  const char* result = nullptr;
+  const char * result = nullptr;
   moduleOn();
 
   bool inverted = true; //false; // true
