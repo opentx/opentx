@@ -550,13 +550,6 @@ bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHan
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();
 
-  if (result) {
-    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR, result);
-  }
-  else {
-    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
-  }
-
 #if defined(HARDWARE_INTERNAL_MODULE)
   INTERNAL_MODULE_OFF();
 #endif
@@ -566,6 +559,13 @@ bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHan
   /* wait 2s off */
   watchdogSuspend(500 /*5s*/);
   RTOS_WAIT_MS(2000);
+
+  if (result) {
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR, result);
+  }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
 
   // reset telemetry protocol
   telemetryInit(255);
