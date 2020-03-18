@@ -227,7 +227,8 @@ void onSdManagerMenu(const char * result)
 #if defined(INTERNAL_MODULE_MULTI)
   else if (result == STR_FLASH_INTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    flashFirmware(INTERNAL_MODULE, lfn);
+    MultiDeviceFirmwareUpdate device(INTERNAL_MODULE);
+    device.flashFirmware(lfn, drawProgressScreen);
   }
 #endif
   else if (result == STR_FLASH_EXTERNAL_MULTI) {
