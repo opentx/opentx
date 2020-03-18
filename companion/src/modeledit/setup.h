@@ -72,7 +72,6 @@ class ModulePanel : public ModelPanel
     void channelsRangeChanged();
 
   private slots:
-    int getMaxChannelCount();
     void setupFailsafes();
     void on_trainerMode_currentIndexChanged(int index);
     void onProtocolChanged(int index);

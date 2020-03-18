@@ -379,48 +379,6 @@ void ModulePanel::setupFailsafes()
   lock = false;
 }
 
-int ModulePanel::getMaxChannelCount()
-{
-  const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
-  switch (protocol) {
-    case PULSES_ACCESS_ISRM:
-      return 24;
-    case PULSES_PXX_R9M:
-    case PULSES_ACCESS_R9M:
-    case PULSES_ACCESS_R9M_LITE:
-    case PULSES_ACCESS_R9M_LITE_PRO:
-    case PULSES_ACCST_ISRM_D16:
-    case PULSES_XJT_LITE_X16:
-    case PULSES_PXX_XJT_X16:
-    case PULSES_CROSSFIRE:
-    case PULSES_SBUS:
-    case PULSES_PPM:
-      return 16;
-    case PULSES_XJT_LITE_LR12:
-    case PULSES_PXX_XJT_LR12:
-      return 12;
-    case PULSES_PXX_DJT:
-    case PULSES_XJT_LITE_D8:
-    case PULSES_PXX_XJT_D8:
-      return 8;
-    case PULSES_LP45:
-    case PULSES_DSM2:
-    case PULSES_DSMX:
-      return 6;
-    case PULSES_MULTIMODULE:
-      if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
-        return 12;
-      else
-        return 16;
-      break;
-    case PULSES_OFF:
-      break;
-    default:
-      break;
-  }
-  return 8;
-}
-
 void ModulePanel::update()
 {
   const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
@@ -524,7 +482,7 @@ void ModulePanel::update()
   ui->label_channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setEnabled(mask & MASK_CHANNELS_COUNT);
-  ui->channelsCount->setMaximum(getMaxChannelCount());
+  ui->channelsCount->setMaximum(module.getMaxChannelCount());
   ui->channelsCount->setValue(module.channelsCount);
   ui->channelsCount->setSingleStep(firmware->getCapability(HasPPMStart) ? 1 : 2);
 
@@ -692,7 +650,7 @@ void ModulePanel::onProtocolChanged(int index)
 {
   if (!lock && module.protocol != ui->protocol->itemData(index).toUInt()) {
     module.protocol = ui->protocol->itemData(index).toInt();
-    module.channelsCount = getMaxChannelCount();
+    module.channelsCount = module.getMaxChannelCount();
     update();
     emit modified();
   }
@@ -787,7 +745,7 @@ void ModulePanel::onMultiProtocolChanged(int index)
     if (rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
       maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
-    module.channelsCount = getMaxChannelCount();
+    module.channelsCount = module.getMaxChannelCount();
     update();
     emit modified();
     lock = false;

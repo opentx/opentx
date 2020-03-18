@@ -198,6 +198,7 @@ class ModuleData {
     static QString protocolToString(unsigned protocol);
     static QStringList powerValueStrings(int subType, Firmware * fw);
     bool hasFailsafes(Firmware * fw) const;
+    int getMaxChannelCount();
 };
 
 #endif // MODULEDATA_H
