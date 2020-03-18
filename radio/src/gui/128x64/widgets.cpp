@@ -65,6 +65,17 @@ void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uin
   lcdDrawVerticalLine(x, y + yofs, yhgt, SOLID, FORCE);
 }
 
+void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max)
+{
+  lcdDrawRect(x, y, w+1, h);
+  lcdDrawFilledRect(x+1, y+1, w-1, 4, SOLID, ERASE);
+  coord_t len = limit((uint8_t)1, uint8_t((abs(val) * w/2 + max/2) / max), uint8_t(w/2));
+  coord_t x0 = (val>0) ? x+w/2 : x+1+w/2-len;
+  for (coord_t i=h-2; i>0; i--) {
+    lcdDrawSolidHorizontalLine(x0, y+i, len);
+  }
+}
+
 void title(const char * s)
 {
   lcdDrawText(0, 0, s, INVERS);

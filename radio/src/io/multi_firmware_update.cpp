@@ -536,6 +536,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
 
+  uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 
 #if defined(COLORLCD)
@@ -585,6 +586,10 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   if (extPwr) {
     EXTERNAL_MODULE_ON();
     setupPulsesExternalModule();
+  }
+
+  if (spuPwr) {
+    SPORT_UPDATE_POWER_ON();
   }
 
   resumePulses();

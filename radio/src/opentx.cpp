@@ -2025,6 +2025,10 @@ void opentxInit()
   btInit();
 #endif
 
+#if defined(SPORT_UPDATE_PWR_GPIO)
+  SPORT_UPDATE_POWER_INIT();
+#endif
+
 #if defined(COLORLCD)
   loadTheme();
 #endif

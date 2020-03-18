@@ -466,6 +466,10 @@ void sportUpdatePowerOff()
 {
 }
 
+void sportUpdatePowerInit()
+{
+}
+
 void boardInit()
 {
 }

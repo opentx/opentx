@@ -326,7 +326,7 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
       if (sensor->id == id) {
-        return sensor->instance;
+        return sensor->frskyInstance.physID + 1;
       }
     }
   }

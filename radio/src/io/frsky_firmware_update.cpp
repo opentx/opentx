@@ -488,6 +488,7 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
 
+  uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 
   progressHandler(getBasename(filename), STR_DEVICE_RESET, 0, 0);
@@ -530,6 +531,10 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
   if (extPwr) {
     EXTERNAL_MODULE_ON();
     setupPulsesExternalModule();
+  }
+
+  if (spuPwr) {
+    SPORT_UPDATE_POWER_ON();
   }
 
   state = SPORT_IDLE;
@@ -753,6 +758,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, Progr
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
 
+  uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 
   if (wait) {
@@ -790,6 +796,10 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, Progr
   if (extPwr) {
     EXTERNAL_MODULE_ON();
     setupPulsesExternalModule();
+  }
+
+  if (spuPwr) {
+    SPORT_UPDATE_POWER_ON();
   }
 
   resumePulses();

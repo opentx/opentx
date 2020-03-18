@@ -59,14 +59,6 @@ bool menuTextView(event_t event)
     lcd->drawTextMaxWidth(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i * FH, reusableBuffer.viewText.lines[i], 0, LCD_W - 2 * MENUS_MARGIN_LEFT);
   }
 
-#if 0
-  char * title = s_text_file;
-#if defined(SIMU)
-  if (!strncmp(title, "./", 2)) title += 2;
-#endif
-  lcdDrawTextAlignedCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
-#endif
-
   drawVerticalScrollbar(LCD_W-5, 50, 195, menuVerticalOffset, lines_count, NUM_BODY_LINES);
 
   return true;

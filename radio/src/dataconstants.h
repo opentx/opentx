@@ -169,6 +169,7 @@ enum MainViews {
   VIEW_OUTPUTS_BARS,
   VIEW_INPUTS,
   VIEW_TIMER2,
+  VIEW_CHAN_MONITOR,
   VIEW_COUNT
 };
 #endif
