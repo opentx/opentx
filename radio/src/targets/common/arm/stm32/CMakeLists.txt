@@ -32,7 +32,7 @@ set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/rtc_driver.cpp
   ${AUX_SERIAL_DRIVER}
-  ../common/arm/stm32/delays.cpp
+  ../common/arm/stm32/delays_driver.cpp
   ../common/arm/stm32/usb_bsp.c
   ../common/arm/stm32/usbd_desc.c
   ../common/arm/stm32/usbd_usr.cpp

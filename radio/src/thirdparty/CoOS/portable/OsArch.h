@@ -42,10 +42,11 @@
 #ifndef  _CPU_H
 #define  _CPU_H
 
+#include "board.h"
 
 #define NVIC_ST_CTRL    (*((volatile U32 *)0xE000E010))
 #define NVIC_ST_RELOAD  (*((volatile U32 *)0xE000E014))
-#define RELOAD_VAL      ((U32)(( (U32)CFG_CPU_FREQ) / (U32)CFG_SYSTICK_FREQ) -1)
+#define RELOAD_VAL      ((U32)(( (U32)CPU_FREQ) / (U32)CFG_SYSTICK_FREQ) -1)
 
 /*!< Initial System tick.	*/
 #define InitSysTick()   NVIC_ST_RELOAD =  RELOAD_VAL; \

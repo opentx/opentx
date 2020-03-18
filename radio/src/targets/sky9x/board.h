@@ -28,6 +28,8 @@
 #include "audio_driver.h"
 #include "../opentx_constants.h"
 
+#define CPU_FREQ                       36000000
+
 extern uint16_t ResetReason;
 
 #define BOOTLOADER_SIZE                0x8000

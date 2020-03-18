@@ -22,6 +22,7 @@
 #define _RTOS_H_
 
 #include "definitions.h"
+#include "board.h"
 
 #ifdef __cplusplus
 extern "C++" {
@@ -155,7 +156,7 @@ template<int SIZE>
   }
 #endif
 
-  #define RTOS_MS_PER_TICK              ((CFG_CPU_FREQ / CFG_SYSTICK_FREQ) / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
+  #define RTOS_MS_PER_TICK              ((CPU_FREQ / CFG_SYSTICK_FREQ) / (CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
 
   typedef OS_TID RTOS_TASK_HANDLE;
   typedef OS_MutexID RTOS_MUTEX_HANDLE;

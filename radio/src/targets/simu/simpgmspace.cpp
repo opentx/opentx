@@ -52,6 +52,25 @@ USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 SysTick_Type systick;
 ADC_Common_TypeDef adc;
 RTC_TypeDef rtc;
+void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
+void SPI_Init(SPI_TypeDef* SPIx, SPI_InitTypeDef* SPI_InitStruct) { }
+void SPI_CalculateCRC(SPI_TypeDef* SPIx, FunctionalState NewState) { }
+void SPI_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
+FlagStatus SPI_I2S_GetFlagStatus(SPI_TypeDef* SPIx, uint16_t SPI_I2S_FLAG) { return RESET; }
+uint16_t SPI_I2S_ReceiveData(SPI_TypeDef* SPIx) { return 0; }
+void SPI_I2S_SendData(SPI_TypeDef* SPIx, uint16_t Data) { }
+void DMA_DeInit(DMA_Stream_TypeDef* DMAy_Streamx) { }
+void DMA_Init(DMA_Stream_TypeDef* DMAy_Streamx, DMA_InitTypeDef* DMA_InitStruct) { }
+void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewState) { }
+void DMA_StructInit(DMA_InitTypeDef* DMA_InitStruct) { }
+void DMA_Cmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState) { }
+void lcdCopy(void * dest, void * src);
+FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG) { return RESET; }
+ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { return RESET; }
+void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { }
+void SPI_I2S_DMACmd(SPI_TypeDef* SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState NewState) { }
+void UART3_Configure(uint32_t baudrate, uint32_t masterClock) { }
+void NVIC_Init(NVIC_InitTypeDef * NVIC_InitStruct) { }
 #else
 Pio Pioa, Piob, Pioc;
 Pmc pmc;
@@ -175,7 +194,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
   switchesStates[swtch] = state;
 }
 
-void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
+void simuStart(bool tests, const char * sdPath, const char * settingsPath)
 {
   if (simu_running)
     return;
@@ -224,7 +243,7 @@ void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
 #endif
 }
 
-void StopSimu()
+void simuStop()
 {
   if (!simu_running)
     return;
@@ -379,12 +398,12 @@ void * audioThread(void *)
   return nullptr;
 }
 
-void StartAudioThread(int volumeGain)
+void startAudioThread(int volumeGain)
 {
   simuAudio.leftoverLen = 0;
   simuAudio.threadRunning = true;
   simuAudio.volumeGain = volumeGain;
-  TRACE_SIMPGMSPACE("StartAudioThread(%d)", volumeGain);
+  TRACE_SIMPGMSPACE("startAudioThread(%d)", volumeGain);
   setScaledVolume(VOLUME_LEVEL_DEF);
 
   pthread_attr_t attr;
@@ -398,7 +417,7 @@ void StartAudioThread(int volumeGain)
 #endif
 }
 
-void StopAudioThread()
+void stopAudioThread()
 {
   simuAudio.threadRunning = false;
   pthread_join(simuAudio.threadPid, nullptr);

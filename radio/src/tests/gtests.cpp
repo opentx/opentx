@@ -159,7 +159,7 @@ int main(int argc, char **argv)
 {
   QCoreApplication app(argc, argv);
   simuInit();
-  StartEepromThread(nullptr);
+  startEepromThread(nullptr);
 #if defined(EEPROM_SIZE)
   eeprom = (uint8_t *)malloc(EEPROM_SIZE);
 #endif

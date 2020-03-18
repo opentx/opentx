@@ -21,6 +21,8 @@
 #ifndef _HAL_H_
 #define _HAL_H_
 
+#define CPU_FREQ                168000000
+
 /* Timers Allocation:
  * TIM1 = Haptic
  * TIM4 = Trainer

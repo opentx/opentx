@@ -78,7 +78,7 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
   ../usbd_storage_msd.cpp
-  ../delays.cpp
+  ../delays_driver.cpp
   ../usbd_desc.c
   ../usb_bsp.c
   ../usb_driver.cpp

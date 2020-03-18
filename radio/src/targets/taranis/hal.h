@@ -21,6 +21,12 @@
 #ifndef _HAL_H_
 #define _HAL_H_
 
+#if defined(STM32F4)
+  #define CPU_FREQ            168000000
+#else
+  #define CPU_FREQ            120000000
+#endif
+
 // Keys
 #if defined(PCBX9E)
   #define KEYS_GPIO_REG_MENU            GPIOD->IDR

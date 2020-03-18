@@ -23,8 +23,8 @@
 
 #include "../definitions.h"
 #include "../opentx_constants.h"
-#include "board_common.h"
 #include "hal.h"
+#include "board_common.h"
 
 #if !defined(LUA_EXPORT_GENERATION)
 #include "stm32f4xx_sdio.h"
@@ -71,18 +71,6 @@ void boardOff();
 void init2MhzTimer();
 void init5msTimer();
 
-// Delays driver
-#ifdef __cplusplus
-extern "C" {
-#endif
-void delaysInit();
-void delay_01us(uint16_t nb);
-void delay_us(uint16_t nb);
-void delay_ms(uint32_t ms);
-#ifdef __cplusplus
-}
-#endif
-
 // CPU Unique ID
 #define LEN_CPU_UID                     (3*8+2)
 void getCPUUniqueID(char * s);
@@ -108,15 +96,6 @@ uint32_t sdMounted();
 #define sdMount()
 #define sdDone()
 #define SD_CARD_PRESENT()               true
-#endif
-
-#if defined(DISK_CACHE)
-#include "diskio.h"
-DRESULT __disk_read(BYTE drv, BYTE * buff, DWORD sector, UINT count);
-DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
-#else
-#define __disk_read                     disk_read
-#define __disk_write                    disk_write
 #endif
 
 // Flash Write driver
@@ -373,7 +352,6 @@ void adcInit();
 void adcRead();
 uint16_t getAnalogValue(uint8_t index);
 uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
-uint16_t getBattery2Voltage();   // returns current battery voltage in 10mV steps
 
 #define BATTERY_WARN                  36 // 3.6V
 #define BATTERY_MIN                   35 // 3.5V

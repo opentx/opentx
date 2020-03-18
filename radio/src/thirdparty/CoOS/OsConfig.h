@@ -72,17 +72,6 @@ Idle task stack size(word).
 #endif
 
 /*!< 
-System frequency (Hz).	                 	         
-*/    
-#if defined(STM32F4)
-#define CFG_CPU_FREQ            (168000000)
-#elif defined(STM32)
-#define CFG_CPU_FREQ            (120000000)
-#else
-#define CFG_CPU_FREQ            (36000000)  // TODO check if really correct for sky9x?
-#endif
-
-/*!< 
 systick frequency (Hz).	                         
 */
 #if defined(STM32)

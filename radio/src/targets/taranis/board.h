@@ -24,8 +24,8 @@
 #include <inttypes.h>
 #include "definitions.h"
 #include "opentx_constants.h"
-#include "board_common.h"
 #include "hal.h"
+#include "board_common.h"
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 // Rotary Encoder driver

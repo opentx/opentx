@@ -123,15 +123,6 @@ uint32_t sdMounted();
 #define SD_CARD_PRESENT()              true
 #endif
 
-#if defined(DISK_CACHE)
-#include "FatFs/diskio.h"
-DRESULT __disk_read(BYTE drv, BYTE * buff, DWORD sector, UINT count);
-DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
-#else
-#define __disk_read                    disk_read
-#define __disk_write                   disk_write
-#endif
-
 // Flash Write driver
 #define FLASH_PAGESIZE                 256
 void unlockFlash();
@@ -658,13 +649,13 @@ void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
 void bluetoothDisable();
 
-#if defined(__cplusplus)
-#include "fifo.h"
-#include "dmafifo.h"
-extern DMAFifo<512> telemetryFifo;
-typedef DMAFifo<32> AuxSerialRxFifo;
-extern AuxSerialRxFifo auxSerialRxFifo;
-extern volatile uint32_t externalModulePort;
-#endif
+//#if defined(__cplusplus)
+//#include "fifo.h"
+//#include "dmafifo.h"
+//extern DMAFifo<512> telemetryFifo;
+//typedef DMAFifo<32> AuxSerialRxFifo;
+//extern AuxSerialRxFifo auxSerialRxFifo;
+//extern volatile uint32_t externalModulePort;
+//#endif
 
 #endif // _BOARD_H_

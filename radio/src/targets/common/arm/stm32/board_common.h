@@ -69,6 +69,7 @@
   #include "stm32f2xx_flash.h"
   #include "stm32f2xx_dbgmcu.h"
   #include "misc.h"
+  #include "dwt.h"    // the old ST library that we use does not define DWT register for STM32F2xx
 #endif
 
 #if __clang__
@@ -127,13 +128,28 @@ static inline bool isVBatBridgeEnabled()
 }
 
 // Delays driver
+#define SYSTEM_TICKS_1MS  ((CPU_FREQ + 500) / 1000)
+#define SYSTEM_TICKS_1US  ((CPU_FREQ + 500000)  / 1000000)
+#define SYSTEM_TICKS_01US ((CPU_FREQ + 5000000) / 10000000)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-void delaysInit(void);
-void delay_01us(uint16_t nb);
-void delay_us(uint16_t nb);
-void delay_ms(uint32_t ms);
+
+inline uint32_t ticksNow()
+{
+#if defined(SIMU)
+  return 0;
+#else
+  return DWT->CYCCNT;
+#endif
+}
+
+void delaysInit();
+void delay_01us(uint32_t count);
+void delay_us(uint32_t count);
+void delay_ms(uint32_t count);
+
 #ifdef __cplusplus
 }
 #endif

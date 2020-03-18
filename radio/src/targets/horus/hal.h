@@ -21,6 +21,8 @@
 #ifndef _HAL_H_
 #define _HAL_H_
 
+#define CPU_FREQ                        168000000
+
 // Keys
 #define KEYS_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ)
 #if defined(PCBX12S)

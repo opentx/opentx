@@ -148,11 +148,11 @@ OpenTxSim::~OpenTxSim()
 {
   TRACE("OpenTxSim::~OpenTxSim()");
 
-  StopSimu();
-  StopAudioThread();
+  simuStop();
+  stopAudioThread();
 
 #if defined(EEPROM)
-  StopEepromThread();
+  stopEepromThread();
 #endif
 
   delete bmp;
@@ -581,10 +581,10 @@ int main(int argc, char ** argv)
   simuInit();
 
 #if defined(EEPROM)
-  StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
+  startEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
 #endif
-  StartAudioThread();
-  StartSimu(false, argc >= 3 ? argv[2] : 0, argc >= 4 ? argv[3] : 0);
+  startAudioThread();
+  simuStart(false, argc >= 3 ? argv[2] : 0, argc >= 4 ? argv[3] : 0);
 
   return application.run();
 }

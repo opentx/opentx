@@ -22,11 +22,11 @@
 #ifndef FF_DEFINED
 #define FF_DEFINED	86604	/* Revision ID */
 
+#include "ffconf.h"		/* FatFs configuration options */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "ffconf.h"		/* FatFs configuration options */
 
 #if FF_DEFINED != FFCONF_DEF
 #error Wrong configuration file (ffconf.h).
