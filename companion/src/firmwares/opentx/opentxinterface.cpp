@@ -1346,7 +1346,7 @@ void registerOpenTxFirmwares()
   addOpenTxRfOptions(firmware, FLEX);
 
   /* Radiomaster TX16S board */
-  firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S"), BOARD_RADIOMASTER_TX16S);
+  firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16s / TX16s Hall / TX16s Masterfire"), BOARD_RADIOMASTER_TX16S);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
   registerOpenTxFirmware(firmware);
