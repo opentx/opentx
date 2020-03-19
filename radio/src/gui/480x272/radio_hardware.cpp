@@ -72,6 +72,9 @@ enum MenuRadioHardwareItems {
 #endif
 
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
+#if defined(SPORT_UPDATE_PWR_GPIO)
+  ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER,
+#endif
   ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
@@ -119,6 +122,12 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define MAX_BAUDRATE_ROW          HIDDEN_ROW
 #endif
 
+#if defined(SPORT_UPDATE_PWR_GPIO)
+  #define SPORT_POWER_ROWS 0,
+#else
+  #define SPORT_POWER_ROWS
+#endif
+
 bool menuRadioHardware(event_t event)
 {
   MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, {
@@ -148,6 +157,7 @@ bool menuRadioHardware(event_t event)
 
     AUX_SERIAL_ROW /* aux serial mode */
     0, /* ADC filter */
+    SPORT_POWER_ROWS
     1, /* Debug */
   });
 
@@ -364,6 +374,16 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
+
+#if defined(SPORT_UPDATE_PWR_GPIO)
+      case ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPORT_UPDATE_POWER_MODE);
+        g_eeGeneral.sportUpdatePower = editChoice(HW_SETTINGS_COLUMN + 50, y, STR_SPORT_UPDATE_POWER_MODES, g_eeGeneral.sportUpdatePower, 0, 1, attr, event);
+        if (attr && checkIncDec_Ret) {
+          SPORT_UPDATE_POWER_INIT();
+        }
+        break;
+#endif
 
       case ITEM_RADIO_HARDWARE_DEBUG:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DEBUG);

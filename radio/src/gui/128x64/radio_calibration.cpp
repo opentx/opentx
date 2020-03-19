@@ -179,7 +179,7 @@ void menuFirstCalib(event_t event)
     chainMenu(menuMainView);
   }
   else {
-    lcdDrawTextAlignedCenter(0*FH, TR_MENUCALIBRATION);
+    lcdDrawText(LCD_W / 2, 0, STR_MENUCALIBRATION, CENTERED);
     lcdInvertLine(0);
     menuCommonCalib(event);
   }

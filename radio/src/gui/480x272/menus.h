@@ -189,7 +189,7 @@ bool menuRadioDiagAnalogs(event_t event);
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 
 enum EnumTabRadio {
-#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
+#if defined(RADIO_TOOLS)
   MENU_RADIO_TOOLS,
 #endif
   MENU_RADIO_SD_MANAGER,
@@ -203,7 +203,7 @@ enum EnumTabRadio {
 
 const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
   ICON_RADIO,
-#if defined(LUA) || defined(PXX2)
+#if defined(RADIO_TOOLS)
   ICON_RADIO_TOOLS,
 #endif
   ICON_RADIO_SD_MANAGER,

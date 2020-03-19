@@ -151,7 +151,7 @@ inline uint8_t modelTelemetryProtocol()
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #if defined(INTERNAL_MODULE_MULTI)
-  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #endif
