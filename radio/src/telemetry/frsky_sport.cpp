@@ -41,7 +41,7 @@ const FrSkySportSensor sportSensors[] = {
   { A3_FIRST_ID, A3_LAST_ID, 0, ZSTR_A3, UNIT_VOLTS, 2 },
   { A4_FIRST_ID, A4_LAST_ID, 0, ZSTR_A4, UNIT_VOLTS, 2 },
   { BATT_ID, BATT_ID, 0, ZSTR_BATT, UNIT_VOLTS, 1 },
-  { R9_PWR_ID, R9_PWR_ID, 0, ZSTR_R9PW, UNIT_MILLIWATTS, 0 },
+  { R9_PWR_ID, R9_PWR_ID, 0, ZSTR_R9PW, UNIT_DB, 0 },
   { T1_FIRST_ID, T1_LAST_ID, 0, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
   { T2_FIRST_ID, T2_LAST_ID, 0, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
   { RPM_FIRST_ID, RPM_LAST_ID, 0, ZSTR_RPM, UNIT_RPMS, 0 },
@@ -205,8 +205,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 #endif
     }
     else if (dataId == R9_PWR_ID) {
-      uint32_t r9pwr[] = {100, 200, 500, 1000};
-      data = r9pwr[SPORT_DATA_U8(packet) & 0x03];
+      data = SPORT_DATA_U8(packet);
     }
     else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
