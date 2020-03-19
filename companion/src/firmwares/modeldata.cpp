@@ -1072,14 +1072,14 @@ void ModelData::updateModuleFailsafes(ModuleData * md)
         return;
 
       if (updRefInfo.shift > 0) {
-        for (int i = (updRefInfo.index1 + idxAdj); i < (CPN_MAX_CHNOUT - 1); i++) {
-          md->failsafeChannels[i] = md->failsafeChannels[i + 1];
+        for (int i = (CPN_MAX_CHNOUT - 1); i >(updRefInfo.index1 + idxAdj); i--) {
+          md->failsafeChannels[i] = md->failsafeChannels[i - 1];
         }
         md->failsafeChannels[updRefInfo.index1 + idxAdj] = 0;
       }
       else {
-        for (int i = (CPN_MAX_CHNOUT - 1); i > (updRefInfo.index1 + 1); i--) {
-          md->failsafeChannels[i] = md->failsafeChannels[i - 1];
+        for (int i = (updRefInfo.index1 + idxAdj + 1); i < (CPN_MAX_CHNOUT - 1); i++) {
+          md->failsafeChannels[i - 1] = md->failsafeChannels[i];
         }
         md->failsafeChannels[CPN_MAX_CHNOUT - 1] = 0;
       }
