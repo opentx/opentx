@@ -41,7 +41,7 @@ def build_target(target, path, cmake_options):
         return COMPILATION_ERROR
 
     # Launch make
-    cmd = ["make", "-j2", target]
+    cmd = ["make", "-j3", target]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode == 0:
