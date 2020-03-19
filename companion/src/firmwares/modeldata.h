@@ -262,6 +262,19 @@ class ModelData {
       REF_UPD_TYPE_TIMER,
     };
 
+    struct UpdateReferenceParams
+    {
+      ReferenceUpdateType type;
+      ReferenceUpdateAction action;
+      int index1;
+      int index2;
+      int shift;
+
+      UpdateReferenceParams() {}
+      UpdateReferenceParams(ReferenceUpdateType t, ReferenceUpdateAction a, int i1, int i2 = 0, int s = 0) :
+        type(t), action(a), index1(i1), index2(i2), shift(s) {}
+    };
+
     int updateAllReferences(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2 = 0, const int shift = 0);
     bool isExpoParent(const int index);
     bool isExpoChild(const int index);
@@ -273,6 +286,8 @@ class ModelData {
     void removeGlobalVar(int & var);
 
   private:
+    QVector<UpdateReferenceParams> *updRefList = nullptr;
+
     struct UpdateReferenceInfo
     {
       ReferenceUpdateType type;
@@ -287,6 +302,8 @@ class ModelData {
     };
     UpdateReferenceInfo updRefInfo;
 
+    int updateReference();
+    void appendUpdateReferenceParams(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2 = 0, const int shift = 0);
     template <class R, typename T>
     void updateTypeIndexRef(R & curref, const T type, const int idxAdj = 0, const bool defClear = true, const int defType = 0, const int defIndex = 0);
     template <class R, typename T>

@@ -417,29 +417,70 @@ void ModelData::convert(RadioDataConversionState & cstate)
   }
 }
 
+void ModelData::appendUpdateReferenceParams(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2, const int shift)
+{
+  if (updRefList)
+    updRefList->append(UpdateReferenceParams(type, action, index1, index2, shift));
+}
+
 int ModelData::updateAllReferences(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2, const int shift)
 {
-  if (action < REF_UPD_ACT_CLEAR || action > REF_UPD_ACT_SWAP || type < REF_UPD_TYPE_CHANNEL || type > REF_UPD_TYPE_TIMER) {
-    qDebug() << "Error - invalid parameters" << " > type:" << type << " action:" << action << " index1:" << index1 << " index2:" << index2 << " shift:" << shift;
-    return 0;
-  }
-
   Stopwatch s1("ModelData::updateAllReferences");
   s1.report("Start");
 
-  Firmware *fw = getCurrentFirmware();
+  int loopcnt = 0;
+  int updcnt = 0;
+  QVector<UpdateReferenceParams> updRefParams;   //  declaring this varable in ModelData class crashes program on opening model file
+  updRefList = &updRefParams;                    //  so declare pointer variable and pass it the address of the local array
 
-  memset(&updRefInfo, 0, sizeof(updRefInfo));
-  updRefInfo.type = type;
-  updRefInfo.action = action;
-  updRefInfo.index1 = abs(index1);
-  updRefInfo.index2 = abs(index2);
-  updRefInfo.shift = shift;
+  if (updRefList) {
+    appendUpdateReferenceParams(type, action, index1, index2, shift);
 
-  if ((action == REF_UPD_ACT_SWAP && updRefInfo.index1 == updRefInfo.index2) || (action == REF_UPD_ACT_SHIFT && shift == 0)) {
-    qDebug() << "Warning - nothing to do" << " > type:" << type << " action:" << action << " index1:" << index1 << " index2:" << index2 << " shift:" << shift;
+    while (!updRefList->isEmpty())
+      {
+        if (++loopcnt > 100) {
+          qDebug() << "Warning: Update terminated as iterations exceeded 100 passes";
+          break;
+        }
+        qDebug() << "Iteration:" << loopcnt;
+        updcnt += updateReference();
+        updRefList->removeFirst();
+      }
+  }
+  else
+    qDebug() << "Error: unable to reference local array!";
+
+  qDebug() << updcnt << " references updated";
+  s1.report("Finish");
+
+  return updcnt;
+}
+
+int ModelData::updateReference()
+{
+  UpdateReferenceParams p = updRefList->first();
+
+  if (p.action < REF_UPD_ACT_CLEAR || p.action > REF_UPD_ACT_SWAP || p.type < REF_UPD_TYPE_CHANNEL || p.type > REF_UPD_TYPE_TIMER) {
+    qDebug() << "Error - invalid parameters" << " > type:" << p.type << " action:" << p.action << " index1:" << p.index1 << " index2:" << p.index2 << " shift:" << p.shift;
     return 0;
   }
+
+  memset(&updRefInfo, 0, sizeof(updRefInfo));
+  updRefInfo.type = p.type;
+  updRefInfo.action = p.action;
+  updRefInfo.index1 = abs(p.index1);
+  updRefInfo.index2 = abs(p.index2);
+  updRefInfo.shift = p.shift;
+
+  if ((updRefInfo.action == REF_UPD_ACT_SWAP && updRefInfo.index1 == updRefInfo.index2) || (updRefInfo.action == REF_UPD_ACT_SHIFT && updRefInfo.shift == 0)) {
+    qDebug() << "Warning - nothing to do" << " > type:" << updRefInfo.type << " action:" << updRefInfo.action << " index1:" << updRefInfo.index1 << " index2:" << updRefInfo.index2 << " shift:" << updRefInfo.shift;
+    return 0;
+  }
+
+  Stopwatch s1("ModelData::updateReference");
+  s1.report("Start");
+
+  Firmware *fw = getCurrentFirmware();
 
   switch (updRefInfo.type)
   {
