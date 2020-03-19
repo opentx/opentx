@@ -36,6 +36,8 @@
 #define DISPLAY_VERSION "FrSky"
 #elif defined(JUMPER_RELEASE)
 #define DISPLAY_VERSION "JumperRC"
+#elif defined(RADIOMASTER_RELEASE)
+#define DISPLAY_VERSION "Radiomaster"
 #elif defined(TBS_RELEASE)
 #define DISPLAY_VERSION "TBS"
 #else
