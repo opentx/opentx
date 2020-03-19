@@ -5,7 +5,6 @@ import os
 import sys
 import subprocess
 import shutil
-import filelock
 
 from fwoptions import *
 
@@ -42,7 +41,7 @@ def build_target(target, path, cmake_options):
         return COMPILATION_ERROR
 
     # Launch make
-    cmd = ["make", "-j2", target]
+    cmd = ["make", "-j3", target]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode == 0:
@@ -56,7 +55,7 @@ def build_target(target, path, cmake_options):
 
 def main():
     if len(sys.argv) != 3:
-        exit(INVALID_FIRMWARE)
+        return INVALID_FIRMWARE
 
     target = sys.argv[1]
     directory, filename = os.path.split(sys.argv[2])
@@ -64,7 +63,7 @@ def main():
     options = root.split("-")
 
     if len(options) < 2 or options[0] != "opentx":
-        exit(INVALID_FIRMWARE)
+        return INVALID_FIRMWARE
 
     optcount = 1
     cmake_options = {}
@@ -155,7 +154,7 @@ def main():
         firmware_options = options_jumper_t16
         maxsize = 2 * 1024 * 1024
     else:
-        exit(INVALID_BOARD)
+        return INVALID_BOARD
 
     if target == "firmware":
         binary = "firmware.bin"
@@ -166,7 +165,7 @@ def main():
         ext = ".so"
         filename = "libopentx"
     else:
-        exit(INVALID_BOARD)
+        return INVALID_BOARD
 
     filename += "-" + board_name
     optcount += 1
@@ -198,7 +197,7 @@ def main():
         if key == options[-1]:
             language = key
     if not language:
-        exit(INVALID_LANGUAGE)
+        return INVALID_LANGUAGE
     cmake_options["TRANSLATIONS"] = language.upper()
 
     filename += "-" + language + ext
@@ -207,24 +206,16 @@ def main():
 
     if os.path.isfile(errpath):
         print(filename)
-        exit(COMPILATION_ERROR)
+        return COMPILATION_ERROR
 
     if os.path.isfile(path):
         print(filename)
-        exit(0)
+        return 0
 
-    lockpath = path + ".lock"
-    lock = filelock.FileLock(lockpath)
-    try:
-        with lock.acquire(timeout=60 * 60):
-            if not os.path.isfile(path):
-                result = build_target(target, path, cmake_options)
-                if result != 0:
-                    print(filename)
-                    return result
-    except filelock.Timeout:
+    result = build_target(target, path, cmake_options)
+    if result != 0:
         print(filename)
-        exit(COMPILATION_ERROR)
+        return result
 
     if target == "firmware":
         # Check binary size
@@ -236,8 +227,8 @@ def main():
     shutil.move(binary, path)
 
     print(filename)
-    exit(0)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())
