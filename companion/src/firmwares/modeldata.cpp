@@ -1061,24 +1061,23 @@ void ModelData::updateModuleFailsafes(ModuleData * md)
     return;
 
   bool updated = false;
-  const int idxAdj = 0;
 
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
-      return;
+      break;
     case REF_UPD_ACT_SHIFT:
-      if (updRefInfo.shift == 0 || (updRefInfo.index1 + idxAdj) < 0 || (updRefInfo.index1 + idxAdj) >= CPN_MAX_CHNOUT)
+      if (updRefInfo.shift == 0 || updRefInfo.index1 < 0 || updRefInfo.index1 > CPN_MAX_CHNOUT - 1)
         return;
 
       if (updRefInfo.shift > 0) {
-        for (int i = (CPN_MAX_CHNOUT - 1); i >(updRefInfo.index1 + idxAdj); i--) {
+        for (int i = (CPN_MAX_CHNOUT - 1); i > updRefInfo.index1; i--) {
           md->failsafeChannels[i] = md->failsafeChannels[i - 1];
         }
-        md->failsafeChannels[updRefInfo.index1 + idxAdj] = 0;
+        md->failsafeChannels[updRefInfo.index1] = 0;
       }
       else {
-        for (int i = (updRefInfo.index1 + idxAdj + 1); i < (CPN_MAX_CHNOUT - 1); i++) {
+        for (int i = (updRefInfo.index1 + 1); i < (CPN_MAX_CHNOUT - 1); i++) {
           md->failsafeChannels[i - 1] = md->failsafeChannels[i];
         }
         md->failsafeChannels[CPN_MAX_CHNOUT - 1] = 0;
@@ -1087,19 +1086,19 @@ void ModelData::updateModuleFailsafes(ModuleData * md)
       break;
     case REF_UPD_ACT_SWAP:
       int tmp;
-      if ((updRefInfo.index1 + idxAdj) >= 0 && (updRefInfo.index1 + idxAdj) < CPN_MAX_CHNOUT) {
+      if (updRefInfo.index1 >= 0 && updRefInfo.index1 < CPN_MAX_CHNOUT) {
         updated = true;
-        tmp = md->failsafeChannels[updRefInfo.index1 + idxAdj];
-        if ((updRefInfo.index2 + idxAdj) >= 0 && (updRefInfo.index2 + idxAdj) < CPN_MAX_CHNOUT)
-          md->failsafeChannels[updRefInfo.index1 + idxAdj] = md->failsafeChannels[updRefInfo.index2 + idxAdj];
+        tmp = md->failsafeChannels[updRefInfo.index1];
+        if (updRefInfo.index2 >= 0 && updRefInfo.index2 < CPN_MAX_CHNOUT)
+          md->failsafeChannels[updRefInfo.index1] = md->failsafeChannels[updRefInfo.index2];
         else
-          md->failsafeChannels[updRefInfo.index1 + idxAdj] = 0;
+          md->failsafeChannels[updRefInfo.index1] = 0;
       }
       else
         tmp = 0;
-      if ((updRefInfo.index2 + idxAdj) >= 0 && (updRefInfo.index2 + idxAdj) < CPN_MAX_CHNOUT)
+      if (updRefInfo.index2 >= 0 && updRefInfo.index2 < CPN_MAX_CHNOUT)
         updated = true;
-        md->failsafeChannels[updRefInfo.index2 + idxAdj] = tmp;
+        md->failsafeChannels[updRefInfo.index2] = tmp;
       break;
     default:
       qDebug() << "Error - unhandled action:" << updRefInfo.action;
