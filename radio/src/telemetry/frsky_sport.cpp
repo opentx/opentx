@@ -318,20 +318,20 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 #endif
         }
         else if (dataId >= RB3040_CH1_2_FIRST_ID && dataId <= RB3040_CH1_2_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, (data & 0xffff) / 100);
-          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) / 100);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) & 0xffff);
         }
         else if (dataId >= RB3040_CH3_4_FIRST_ID && dataId <= RB3040_CH3_4_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, (data & 0xffff) / 100);
-          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) / 100);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) & 0xffff);
         }
         else if (dataId >= RB3040_CH5_6_FIRST_ID && dataId <= RB3040_CH5_6_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, (data & 0xffff) / 100);
-          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) / 100);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) & 0xffff);
         }
         else if (dataId >= RB3040_CH7_8_FIRST_ID && dataId <= RB3040_CH7_8_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, (data & 0xffff) / 100);
-          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) / 100);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) & 0xffff);
         }
         else {
           sportProcessTelemetryPacket(dataId, 0, instance, data);
