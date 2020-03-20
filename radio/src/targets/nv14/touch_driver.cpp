@@ -451,8 +451,8 @@ void handleTouch()
   unsigned short touchY;
   uint32_t tEvent = 0;
   ft6x06_TS_GetXY(TOUCH_FT6236_I2C_ADDRESS, &touchX, &touchY, &tEvent);
-  //uint32_t gesture;
-  //ft6x06_TS_GetGestureID(TOUCH_FT6236_I2C_ADDRESS, &gesture);
+  // uint32_t gesture;
+  // ft6x06_TS_GetGestureID(TOUCH_FT6236_I2C_ADDRESS, &gesture);
 #if defined( LCD_DIRECTION ) && (LCD_DIRECTION == LCD_VERTICAL)
   touchX = LCD_WIDTH - touchX;
   touchY = LCD_HEIGHT - touchY;
@@ -468,20 +468,18 @@ void handleTouch()
     touchState.x = touchX;
     touchState.y = touchY;
 
-    if (touchState.event == TE_NONE || touchState.event == TE_UP)
-    {
+    if (touchState.event == TE_NONE || touchState.event == TE_UP) {
       touchState.startX = touchState.x;
       touchState.startY = touchState.y;
       touchState.event = TE_DOWN;
       if (g_eeGeneral.backlightMode & e_backlight_mode_keys)
         backlightOn(); // TODO is that the best place ?
     }
-    else if (touchState.event == TE_DOWN)
-    {
-      if ((dx >= SLIDE_RANGE) || (dx <= -SLIDE_RANGE) || (dy >= SLIDE_RANGE)|| (dy <= -SLIDE_RANGE)) {
+    else if (touchState.event == TE_DOWN) {
+      if (dx >= SLIDE_RANGE || dx <= -SLIDE_RANGE || dy >= SLIDE_RANGE || dy <= -SLIDE_RANGE) {
         touchState.event = TE_SLIDE;
-        touchState.deltaX = (short)dx;
-        touchState.deltaY = (short)dy;
+        touchState.deltaX = (short) dx;
+        touchState.deltaY = (short) dy;
       }
       else {
         touchState.event = TE_DOWN;
@@ -489,11 +487,10 @@ void handleTouch()
         touchState.deltaY = 0;
       }
     }
-    else if (touchState.event == TE_SLIDE)
-    {
+    else if (touchState.event == TE_SLIDE) {
       touchState.event = TE_SLIDE; //no change
-      touchState.deltaX = (short)dx;
-      touchState.deltaY = (short)dy;
+      touchState.deltaX = (short) dx;
+      touchState.deltaY = (short) dy;
     }
 
   }
@@ -512,19 +509,24 @@ bool touchPanelEventOccured()
   return touchEventOccured;
 }
 
-void touchPanelRead() {
-  if(!touchEventOccured) return;
+void touchPanelRead()
+{
+  if (!touchEventOccured)
+    return;
+
   touchEventOccured = false;
+
   if (ft6x06_TS_DetectTouch(TOUCH_FT6236_I2C_ADDRESS)) {
     handleTouch();
-  } else {
+  }
+  else {
     if (touchState.event == TE_DOWN) {
       touchState.event = TE_UP;
     }
     else {
       touchState.x = LCD_WIDTH;
       touchState.y = LCD_HEIGHT;
-      touchState.event = TE_NONE;
+      touchState.event = TE_SLIDE_END;
     }
   }
 }

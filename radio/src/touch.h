@@ -27,7 +27,7 @@ enum TouchEvent
     TE_DOWN,
     TE_UP,
     TE_SLIDE,
-    TE_END
+    TE_SLIDE_END
 };
 
 struct TouchState
@@ -39,6 +39,8 @@ struct TouchState
   short startY;
   short deltaX;
   short deltaY;
+  short lastDeltaX;
+  short lastDeltaY;
 };
 
 constexpr uint8_t SLIDE_RANGE = 6;

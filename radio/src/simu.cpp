@@ -282,7 +282,7 @@ long OpenTxSim::onMouseUp(FXObject*,FXSelector,void*v)
     touchState.y = touchState.startY;
   }
   else {
-    touchState.event = TE_NONE;
+    touchState.event = TE_SLIDE_END;
   }
 #endif
 
