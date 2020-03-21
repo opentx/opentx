@@ -315,23 +315,31 @@ void extmoduleSendNextFrame()
       extmoduleSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
       break;
 #endif
-      /*
+
 #if defined(AFHDS3)
     case PROTOCOL_CHANNELS_AFHDS3:
 #if defined(EXTMODULE_USART)
       extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
 #else
+      // reverse polarity
+#if defined(PCBX10) || PCBREV >= 13
+      EXTMODULE_TIMER->CCER = TIM_CCER_CC3E;
+#else
+      EXTMODULE_TIMER->CCER = TIM_CCER_CC1E;
+#endif
+      TRACE("AFHDS CCR2 %d count %d", *(extmodulePulsesData.afhds3.ptr - 1), extmodulePulsesData.afhds3.ptr - extmodulePulsesData.afhds3.pulses);
+      //EXTMODULE_TIMER->CCR2 = *(extmodulePulsesData.afhds3.ptr - 1) - 4000; // 2mS in advance
       EXTMODULE_TIMER->CCR2 = *(extmodulePulsesData.afhds3.ptr - 1) - 4000; // 2mS in advance
       EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | EXTMODULE_TIMER_DMA_SIZE | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
       EXTMODULE_TIMER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
-      EXTMODULE_TIMER_DMA_STREAM->M0AR = CONVERT_PTR_UINT(extmodulePulsesData.afhds3.pulses);
-      EXTMODULE_TIMER_DMA_STREAM->NDTR = extmodulePulsesData.afhds3.ptr - extmodulePulsesData.afhds3.pulses;
+      EXTMODULE_TIMER_DMA_STREAM->M0AR = CONVERT_PTR_UINT(extmodulePulsesData.afhds3.getData());
+      EXTMODULE_TIMER_DMA_STREAM->NDTR = extmodulePulsesData.afhds3.getSize();
       EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
 #endif
       break;
 #endif
-*/
+
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_SBUS:
 #if defined(PCBX10) || PCBREV >= 13
