@@ -316,9 +316,9 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   if (menuTab && !menuCalibrationState) {
     int cc = curr;
     switch (event) {
-#if defined(PCBX12S)
+#if defined(KEYS_GPIO_REG_PGUP)
       case EVT_KEY_FIRST(KEY_PGDN):
-#elif defined(PCBX10)
+#else
       case EVT_KEY_BREAK(KEY_PGDN):
 #endif
         if (s_editMode>0)
@@ -328,8 +328,9 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
           cc = 0;
         break;
 
+#if defined(KEYS_GPIO_REG_PGUP)
       case EVT_KEY_FIRST(KEY_PGUP):
-#if defined(PCBX10)
+#else
       case EVT_KEY_LONG(KEY_PGDN):
 #endif
         if (s_editMode>0)
