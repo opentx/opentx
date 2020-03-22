@@ -321,12 +321,16 @@ void extmoduleSendNextFrame()
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
       extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
 #else
+      if(EXTMODULE_TIMER->DIER & TIM_DIER_CC2IE) {
+        TRACE("ALREADY RUNNING!!!");
+        return;
+      }
 #if defined(PCBX10) || PCBREV >= 13
-      EXTMODULE_TIMER->CCER = TIM_CCER_CC3E;
+      EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3P;
 #else
-      EXTMODULE_TIMER->CCER = TIM_CCER_CC1E;
+      EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P;
 #endif
-      EXTMODULE_TIMER->CCR2 = extmodulePulsesData.afhds3.total;
+      EXTMODULE_TIMER->CCR2 = extmodulePulsesData.afhds3.total - 4000;
       EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | EXTMODULE_TIMER_DMA_SIZE | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
       EXTMODULE_TIMER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
@@ -404,11 +408,11 @@ void extmoduleSendInvertedByte(uint8_t byte)
   }
 }
 
+
 extern "C" void EXTMODULE_TIMER_DMA_IRQHandler()
 {
   if (!DMA_GetITStatus(EXTMODULE_TIMER_DMA_STREAM, EXTMODULE_TIMER_DMA_FLAG_TC))
     return;
-
   DMA_ClearITPendingBit(EXTMODULE_TIMER_DMA_STREAM, EXTMODULE_TIMER_DMA_FLAG_TC);
 
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag

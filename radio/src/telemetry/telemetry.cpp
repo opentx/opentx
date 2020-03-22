@@ -128,22 +128,13 @@ void telemetryWakeup()
 #endif
 
 #if defined(STM32)
-  char buffer[256];
-  char *pos = buffer;
-  (*pos) = 0;
   if (telemetryGetByte(&data)) {
     LOG_TELEMETRY_WRITE_START();
     do {
-      pos += std::sprintf(pos, "%02X ", data);
       processTelemetryData(data);
       LOG_TELEMETRY_WRITE_BYTE(data);
     } while (telemetryGetByte(&data));
-    (*pos) = 0;
   }
-  if(pos!=buffer) {
-    TRACE("%s", buffer);
-  }
-
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     while (telemetrySecondPortReceive(data)) {

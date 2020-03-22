@@ -283,7 +283,7 @@ void extmoduleSendNextFrame()
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
       extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
 #else
-      EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE;
+      EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY;
 
       EXTMODULE_TIMER->CCR2 = extmodulePulsesData.afhds3.total - 4000;
       EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
