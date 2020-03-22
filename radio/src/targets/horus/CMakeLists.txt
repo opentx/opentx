@@ -61,10 +61,11 @@ if (PCB STREQUAL X10)
     add_definitions(-DRADIO_FAMILY_T16)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
     option(BLUETOOTH "Support for bluetooth module" OFF)
+    set(HARDWARE_TOUCH YES)
+    set(USB_CHARGER YES)
     if (NOT BLUETOOTH)
       set(AUX_SERIAL ON)
     endif()
-    set(USB_CHARGER YES)
   else()
     set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
@@ -206,6 +207,11 @@ set(TARGET_SRC
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/rotary_encoder_driver.cpp
   )
+
+if(HARDWARE_TOUCH)
+  set(TARGET_SRC ${TARGET_SRC} ft5x06.cpp)
+  add_definitions(-DHARDWARE_TOUCH)
+endif()
 
 if(USB_CHARGER)
   set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
