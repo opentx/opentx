@@ -136,6 +136,9 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 // soft serial vars
 static uint8_t rxBitCount;
 static uint8_t rxByte;
+// single bit length expresses in half us
+static uint16_t bitLength;
+static uint16_t probeTimeFromStartBit;
 
 void telemetryPortInvertedInit(uint32_t baudrate)
 {
@@ -154,6 +157,20 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   }
 
   rxBitCount = 0;
+
+  switch(baudrate) {
+    case 115200:
+      bitLength = 17;
+      probeTimeFromStartBit = 25;
+      break;
+    case 57600:
+      bitLength = 35; //34 was used before - I prefer to use use 35 because of lower error
+      probeTimeFromStartBit = 52; //round down - 48 used in original implementation
+      break;
+    default:
+      bitLength = 2000000/baudrate; //because of 0,5 us  tick
+      probeTimeFromStartBit = 3000000/baudrate;
+  }
 
   // configure bit sample timer
   TELEMETRY_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1; // 0.5uS
@@ -196,7 +213,7 @@ void telemetryPortInvertedRxBit()
 {
   if (rxBitCount < 8) {
     if (rxBitCount == 0) {
-      TELEMETRY_TIMER->ARR = 34;
+      TELEMETRY_TIMER->ARR = bitLength;
       rxByte = 0;
     }
     else {
@@ -360,7 +377,7 @@ extern "C" void TELEMETRY_EXTI_IRQHandler(void)
 
     if (rxBitCount == 0) {
 
-      TELEMETRY_TIMER->ARR = 48; // 1,5 cycle from start at 57600bps
+      TELEMETRY_TIMER->ARR = probeTimeFromStartBit; // 1,5 cycle from start at 57600bps
       TELEMETRY_TIMER->CR1 |= TIM_CR1_CEN;
     
       // disable start bit interrupt

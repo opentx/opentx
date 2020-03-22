@@ -39,34 +39,31 @@ typedef void (*asyncOperationCallback_t) (bool);
 
 #define AFHDS_MAX_PULSES 64
 #define AFHDS_MAX_PULSES_TRANSITIONS AFHDS_MAX_PULSES * 9
+#define AFHDS3_SLOW
 
+#if defined(EXTMODULE_USART) && false
+  #define AFHDS3_BAUDRATE        1500000
+  #define AFHDS3_COMMAND_TIMEOUT 5
+#elif !defined(AFHDS3_SLOW)
 // 1s = 1 000 000 us
 // 1000000/115200 = 8,68 us
 // actual timer is ticking in 0,5 us  = 8,68*2 = 17,36 because it must be integer take 17
 // difference 1000000 / x = 8.5 -->  x = 117 647 = difference = 1.2 %
 // allowed half a bit difference on the last bit -- should be fine
+  #define AFHDS3_BAUDRATE        115200
+//Because timer is ticking with 0.5us
+  #define BITLEN_AFHDS           (17)
 
-#define BITLEN_AFHDS                 (17)
-
-//8 data bits 1 bit stop
-
-#define STOP_BIT_SAMPLE              (9*BIT_LENGTH)
-
-
-#if defined(EXTMODULE_USART) && false
-  #define AFHDS3_BAUDRATE 1500000
   #define AFHDS3_COMMAND_TIMEOUT 5
 #else
-  #define AFHDS3_BAUDRATE 115200
-  #define AFHDS3_COMMAND_TIMEOUT 20
+// 1000000/57600 = 17,36 us
+  #define AFHDS3_BAUDRATE        57600
+// 64* 86 = 11 110
+  #define AFHDS3_COMMAND_TIMEOUT 12
+  #define BITLEN_AFHDS           (35)
 #endif
-#define AFHDS3_EXT_UART
-/*
-(++) Word Length (5 bit up 9 bit)
-(++) Stop Bit (1 or 2 stop bit)
-(++) Parity: If the parity is enabled, then the MSB bit of the data to be transmitted is changed by the parity bit
 
-*/
+#define AFHDS3_FRAME_HALF_US AFHDS3_COMMAND_TIMEOUT * 2000
 
 namespace afhds3 {
 
@@ -77,7 +74,7 @@ struct Data {
 #else
   pulse_duration_t pulses[AFHDS_MAX_PULSES_TRANSITIONS];
   pulse_duration_t * ptr;
-  uint16_t rest;
+  uint16_t total;
   uint8_t index;
 #endif
 
@@ -90,7 +87,8 @@ struct Data {
   void reset()
   {
 #if !(defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO))
-    rest = AFHDS3_COMMAND_TIMEOUT * 2000;
+    //rest = AFHDS3_COMMAND_TIMEOUT * 2000;
+    total = 0;
     index = 0;
 #endif
     ptr = pulses;
@@ -114,11 +112,13 @@ struct Data {
    // *ptr++ = v - 1;
     *ptr++ = v;
     index+=1;
-    rest -=v;
+    total +=v;
   }
-  void sendByte(uint8_t b) // max 10 changes 0 10 10 10 10 1
+  void sendByte(uint8_t b)
   {
     //use 8n1
+    // parity: If the parity is enabled, then the MSB bit of the data to be transmitted is changed by the parity bit
+
     bool level = 0;
     uint8_t length = BITLEN_AFHDS; //start bit
     for (uint8_t i = 0; i <= 8; i++) { //8 data bits + Stop=1
@@ -137,10 +137,12 @@ struct Data {
   }
   void flush()
   {
+    pulse_duration_t pd = AFHDS3_FRAME_HALF_US > total ? AFHDS3_FRAME_HALF_US - total : BITLEN_AFHDS * 8;
     if (index & 1)
-      *ptr++ = rest;
+      *ptr++ = pd;
     else
-      *(ptr - 1) = rest;
+      *(ptr - 1) = pd;
+    total += pd;
   }
 
   const pulse_duration_t* getData()

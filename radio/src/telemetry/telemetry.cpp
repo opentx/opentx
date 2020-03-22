@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include "multi.h"
 #include "pulses/afhds3.h"
-
+#include <cstdio>
 uint8_t telemetryStreaming = 0;
 uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t telemetryRxBufferCount = 0;
@@ -128,13 +128,22 @@ void telemetryWakeup()
 #endif
 
 #if defined(STM32)
+  char buffer[256];
+  char *pos = buffer;
+  (*pos) = 0;
   if (telemetryGetByte(&data)) {
     LOG_TELEMETRY_WRITE_START();
     do {
+      pos += std::sprintf(pos, "%02X ", data);
       processTelemetryData(data);
       LOG_TELEMETRY_WRITE_BYTE(data);
     } while (telemetryGetByte(&data));
+    (*pos) = 0;
   }
+  if(pos!=buffer) {
+    TRACE("%s", buffer);
+  }
+
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     while (telemetrySecondPortReceive(data)) {
@@ -304,7 +313,8 @@ void telemetryInit(uint8_t protocol)
 
 #if defined(AFHDS3)
   else if(protocol == PROTOCOL_TELEMETRY_AFHDS3){
-    telemetryPortInit(AFHDS3_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
+    telemetryPortInvertedInit(AFHDS3_BAUDRATE);
+    telemetryPortSetDirectionInput();
   }
 #endif
 
