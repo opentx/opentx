@@ -97,8 +97,8 @@ void PulsesData::processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& 
   rxBuffer[rxBufferCount++] = byte;
 }
 
-void PulsesData::setupFrame(){
-  //TRACE("%d state %d repeatCount %d", (int)operationState, this->state, repeatCount);
+void PulsesData::setupFrame()
+{
   if(operationState == State::AWAITING_RESPONSE) {
     if(repeatCount++ < MAX_RETRIES_AFHDS3) return; //re-send
     else init(module_index, false);
@@ -166,6 +166,7 @@ void PulsesData::setupFrame(){
 }
 
 void PulsesData::init(uint8_t moduleIndex, bool resetFrameCount) {
+  reset();
   module_index = moduleIndex;
   AFHDS3PulsesData[module_index] = this;
   //clear local vars because it is member of union
@@ -173,14 +174,11 @@ void PulsesData::init(uint8_t moduleIndex, bool resetFrameCount) {
   moduleData = &g_model.moduleData[module_index];
   this->repeatCount = 0;
   this->idleCount = 0;
+  this->operationState = State::UNKNOWN;
   this->state = ModuleState::STATE_NOT_READY;
   this->frame_index = 1;
   this->timeout = 0;
   this->esc_state = 0;
-}
-
-void PulsesData::putByte(uint8_t byte) {
-  this->putBytes(&byte, 1);
 }
 
 void PulsesData::putBytes(uint8_t* data, int length) {
@@ -201,36 +199,39 @@ void PulsesData::putBytes(uint8_t* data, int length) {
   }
 }
 
-void PulsesData::putHeader(COMMAND command, FRAME_TYPE frame) {
+
+void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint8_t dataLength){
+  /////////
+  //header
+  /////////
   operationState = State::SENDING_COMMAND;
   reset();
   this->crc = 0;
-  sendByte(END);
-  uint8_t buffer[] = { FrameAddress, this->frame_index, frame, command};
+  sendByte(START);
+  uint8_t buffer[] = { FrameAddress, this->frame_index, frame, command };
   putBytes(buffer, 4);
-}
-
-void PulsesData::putFooter() {
-  putByte(this->crc ^ 0xff);
+  /////////
+  //payload
+  /////////
+  if(dataLength > 0) putBytes(data, dataLength);
+  /////////
+  //footer
+  /////////
+  uint8_t crcValue = this->crc ^ 0xff;
+  putBytes(&crcValue, 1);
   sendByte(END);
   this->frame_index++;
 
-  switch((FRAME_TYPE)this->pulses[3])
-  {
-    case FRAME_TYPE::REQUEST_GET_DATA:
-    case FRAME_TYPE::REQUEST_SET_EXPECT_ACK:
-    case FRAME_TYPE::REQUEST_SET_EXPECT_DATA:
-      operationState = State::AWAITING_RESPONSE;
-      break;
-    default:
-      operationState = State::IDLE;
+  switch (frame) {
+  case FRAME_TYPE::REQUEST_GET_DATA:
+  case FRAME_TYPE::REQUEST_SET_EXPECT_ACK:
+  case FRAME_TYPE::REQUEST_SET_EXPECT_DATA:
+    operationState = State::AWAITING_RESPONSE;
+    break;
+  default:
+    operationState = State::IDLE;
   }
-}
 
-void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint8_t dataLength){
-  putHeader(command, frame);
-  if(dataLength > 0) putBytes(data, dataLength);
-  putFooter();
   flush();
 }
 
@@ -494,8 +495,7 @@ void PulsesData::beginRangeTest(::asyncOperationCallback_t callback) {
 
 void PulsesData::cancelOperations() {
   if(operationCallback!=nullptr) operationCallback(false);
-
-  else init(module_index, false);
+  init(module_index, false);
 }
 
 void PulsesData::stop() {

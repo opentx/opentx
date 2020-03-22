@@ -41,7 +41,7 @@ typedef void (*asyncOperationCallback_t) (bool);
 #define AFHDS_MAX_PULSES_TRANSITIONS AFHDS_MAX_PULSES * 9
 #define AFHDS3_SLOW
 
-#if defined(EXTMODULE_USART) && false
+#if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
   #define AFHDS3_BAUDRATE        1500000
   #define AFHDS3_COMMAND_TIMEOUT 5
 #elif !defined(AFHDS3_SLOW)
@@ -87,7 +87,6 @@ struct Data {
   void reset()
   {
 #if !(defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO))
-    //rest = AFHDS3_COMMAND_TIMEOUT * 2000;
     total = 0;
     index = 0;
 #endif
@@ -105,11 +104,6 @@ struct Data {
 #else
   void _send_level(uint8_t v)
   {
-    //attempt to fix some timing issues
-    //if (index & 1) v += 2;
-    //else v -= 2;
-
-   // *ptr++ = v - 1;
     *ptr++ = v;
     index+=1;
     total +=v;
@@ -118,7 +112,6 @@ struct Data {
   {
     //use 8n1
     // parity: If the parity is enabled, then the MSB bit of the data to be transmitted is changed by the parity bit
-
     bool level = 0;
     uint8_t length = BITLEN_AFHDS; //start bit
     for (uint8_t i = 0; i <= 8; i++) { //8 data bits + Stop=1
@@ -445,11 +438,8 @@ public:
 protected:
   void setModelSettingsFromModule();
 private:
-  void putByte(uint8_t byte);
-  void putBytes(uint8_t* data, int length);
-  void putHeader(COMMAND command, FRAME_TYPE frameType);
-  void putFooter();
-  void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
+  inline void putBytes(uint8_t* data, int length);
+  inline void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
   void addAckToQueue(COMMAND command, uint8_t frameNumber);
   void addToQueue(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
   void parseData(uint8_t* rxBuffer, uint8_t rxBufferCount);

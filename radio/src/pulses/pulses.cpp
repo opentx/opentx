@@ -238,7 +238,6 @@ void enablePulsesExternalModule(uint8_t protocol)
 #if defined(AFHDS3)
     case PROTOCOL_CHANNELS_AFHDS3:
       extmodulePulsesData.afhds3.init(EXTERNAL_MODULE);
-      //If EXTMODULE_USART would be defined and we could disable inversion it would be possible to use HW UART
       extmoduleSerialStart(AFHDS3_BAUDRATE, AFHDS3_COMMAND_TIMEOUT * 2000, false);
       break;
 #endif

@@ -318,10 +318,9 @@ void extmoduleSendNextFrame()
 
 #if defined(AFHDS3)
     case PROTOCOL_CHANNELS_AFHDS3:
-#if defined(EXTMODULE_USART)
+#if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
       extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
 #else
-      // reverse polarity
 #if defined(PCBX10) || PCBREV >= 13
       EXTMODULE_TIMER->CCER = TIM_CCER_CC3E;
 #else
