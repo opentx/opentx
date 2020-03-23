@@ -417,10 +417,17 @@ void ModelData::convert(RadioDataConversionState & cstate)
   }
 }
 
+#define MAX_REF_UPDATES 100
+
 void ModelData::appendUpdateReferenceParams(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2, const int shift)
 {
-  if (updRefList)
-    updRefList->append(UpdateReferenceParams(type, action, index1, index2, shift));
+  if (updRefList) {
+    qDebug() << "Append parameters - type:" << type << " action:" << action << " index1:" << index1 << " index2:" << index2 << " shift:" << shift;
+    if (updRefList->size() <= MAX_REF_UPDATES)
+      updRefList->append(UpdateReferenceParams(type, action, index1, index2, shift));
+    else
+      qDebug() << "Warning: Update ignored as the list of updates exceeds " << MAX_REF_UPDATES;
+  }
 }
 
 int ModelData::updateAllReferences(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2, const int shift)
@@ -430,27 +437,26 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
 
   int loopcnt = 0;
   int updcnt = 0;
-  QVector<UpdateReferenceParams> updRefParams;   //  declaring this varable in ModelData class crashes program on opening model file
-  updRefList = &updRefParams;                    //  so declare pointer variable and pass it the address of the local array
+  updRefList = nullptr;
+  QVector<UpdateReferenceParams> updRefParams;   //  declaring this variable in ModelData class crashes program on opening model file
+  updRefList = &updRefParams;                    //  so declare pointer variable in ModelData class and pass it the address of the local array
 
   if (updRefList) {
     appendUpdateReferenceParams(type, action, index1, index2, shift);
 
     while (!updRefList->isEmpty())
       {
-        if (++loopcnt > 100) {
-          qDebug() << "Warning: Update terminated as iterations exceeded 100 passes";
+        if (++loopcnt > MAX_REF_UPDATES) {
+          qDebug() << "Warning: Update iterations terminated early as the list exceeded " << MAX_REF_UPDATES;
           break;
         }
-        qDebug() << "Iteration:" << loopcnt;
+        qDebug() << "Start of iteration:" << loopcnt;
         updcnt += updateReference();
         updRefList->removeFirst();
       }
   }
-  else
-    qDebug() << "Error: unable to reference local array!";
 
-  qDebug() << updcnt << " references updated";
+  qDebug() << "Iterations:" << loopcnt << " References updated:" << updcnt;
   s1.report("Finish");
 
   return updcnt;
@@ -520,7 +526,7 @@ int ModelData::updateReference()
     case REF_UPD_TYPE_TIMER:
       updRefInfo.srcType = SOURCE_TYPE_SPECIAL;
       updRefInfo.maxindex = fw->getCapability(Timers);
-      //  rawsource index offset
+      //  rawsource index offset    TODO refactor timers so be own category
       updRefInfo.index1 += 2;
       updRefInfo.index2 += 2;
       updRefInfo.maxindex += 2;
@@ -546,14 +552,20 @@ int ModelData::updateReference()
 
   for (int i = 0; i < CPN_MAX_TIMERS; i++) {
     TimerData *td = &timers[i];
-    updateTimerMode(td->mode);
+    if (!td->isModeOff()) {
+      updateTimerMode(td->mode);
+      if (td->isModeOff())
+        appendUpdateReferenceParams(REF_UPD_TYPE_TIMER, REF_UPD_ACT_CLEAR, i);
+    }
   }
   s1.report("Timers");
 
-  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
+  for (int i = 1; i < CPN_MAX_FLIGHT_MODES; i++) {  //  skip FM0 as switch not used
     FlightModeData *fmd = &flightModeData[i];
-    if (!fmd->isEmpty(i)) {
+    if (fmd->swtch.isSet()) {
       updateSwitchRef(fmd->swtch);
+      if(!fmd->swtch.isSet())
+        appendUpdateReferenceParams(REF_UPD_TYPE_FLIGHT_MODE, REF_UPD_ACT_CLEAR, i);
     }
   }
   s1.report("Flight Modes");
@@ -570,8 +582,11 @@ int ModelData::updateReference()
         updateFlightModeFlags(ed->flightModes);
       }
       else {
+        unsigned int chnsave = ed->chn;
         removeInput(i);
         i--;
+        if (!hasExpos(chnsave))
+          appendUpdateReferenceParams(REF_UPD_TYPE_INPUT, REF_UPD_ACT_CLEAR, chnsave);
       }
     }
   }
@@ -613,36 +628,42 @@ int ModelData::updateReference()
   for (int i = 0; i < CPN_MAX_LOGICAL_SWITCHES; i++) {
     LogicalSwitchData *lsd = &logicalSw[i];
     if (!lsd->isEmpty()) {
+      bool clearlsd = false;
       CSFunctionFamily family = lsd->getFunctionFamily();
       switch(family) {
         case LS_FAMILY_VOFS:
           updateSourceIntRef(lsd->val1);
           if (lsd->val1 == 0)
-            lsd->clear();
+            clearlsd = true;
           break;
         case LS_FAMILY_STICKY:
         case LS_FAMILY_VBOOL:
           updateSwitchIntRef(lsd->val1);
           updateSwitchIntRef(lsd->val2);
           if (lsd->val1 == 0 && lsd->val2 == 0)
-            lsd->clear();
+            clearlsd = true;
           break;
         case LS_FAMILY_EDGE:
           updateSwitchIntRef(lsd->val1);
           if (lsd->val1 == 0)
-            lsd->clear();
+            clearlsd = true;
           break;
         case LS_FAMILY_VCOMP:
           updateSourceIntRef(lsd->val1);
           updateSourceIntRef(lsd->val2);
           if (lsd->val1 == 0 && lsd->val2 == 0)
-            lsd->clear();
+            clearlsd = true;
           break;
         default:
           break;
       }
-      if (!lsd->isEmpty())
+      if (clearlsd) {
+        lsd->clear();
+        appendUpdateReferenceParams(REF_UPD_TYPE_LOGICAL_SWITCH, REF_UPD_ACT_CLEAR, i);
+      }
+      else {
         updateSwitchIntRef(lsd->andsw);
+      }
     }
   }
   s1.report("Logical Switches");
@@ -729,7 +750,7 @@ int ModelData::updateReference()
 
   //  TODO Horus CustomScreenData and TopBarData will need checking for updates but Companion does not current handle ie just data blobs refer modeldata.h
 
-  qDebug() << updRefInfo.updcnt << " references updated";
+  qDebug() << "References updated this iteration:" << updRefInfo.updcnt;
   s1.report("Finish");
 
   return updRefInfo.updcnt;
@@ -738,7 +759,7 @@ int ModelData::updateReference()
 template <class R, typename T>
 void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, const bool defClear, const int defType, const int defIndex)
 {
-  qDebug() << "Raw value: " << curRef.toValue() << " String:" << curRef.toString() << " Type: " << curRef.type << " Index:" << curRef.index << " idxAdj:" << idxAdj << " defClear:" << defClear << " defType:" << defType << " defIndex:" << defIndex;
+  //qDebug() << "Raw value: " << curRef.toValue() << " String:" << curRef.toString() << " Type: " << curRef.type << " Index:" << curRef.index << " idxAdj:" << idxAdj << " defClear:" << defClear << " defType:" << defType << " defIndex:" << defIndex;
   if (!curRef.isSet() || curRef.type != type)
     return;
 
@@ -897,7 +918,7 @@ void ModelData::updateAssignFunc(CustomFunctionData * cfd)
     case REF_UPD_TYPE_TIMER:
       if (cfd->func < FuncSetTimer1 || cfd->func > FuncSetTimer3) //  TODO refactor to FuncSetTimerLast
         return;
-      idxAdj = FuncSetTimer1 - 2;   //  reverse previous offset
+      idxAdj = FuncSetTimer1 - 2;   //  reverse earlier offset requiured for rawsource
       break;
     default:
       return;
