@@ -69,7 +69,7 @@
 #endif
 
 #define LEN_SWTYPES            "\006"
-#define TR_SWTYPES             "Nada\0 ""Toggle""2POS\0 ""3POS\0"
+#define TR_SWTYPES             "Nada\0 ""Palanc""2POS\0 ""3POS\0"
 
 #define LEN_POTTYPES           TR("\013", "\017")
 #define TR_POTTYPES            TR("Nada\0      ""Pot con fij""Multipos\0  ""Pot\0       ", "Nada\0          ""Pot con fijador""Switch multipos""Pot\0           ")
@@ -452,7 +452,7 @@
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
-#define TR_PROTO               TR(INDENT"Proto",INDENT"Protocol")
+#define TR_PROTO               TR(INDENT"Proto",INDENT"Protocolo")
 #define TR_PPMFRAME            "Trama PPM"
 #define TR_REFRESHRATE         TR(INDENT "Refresco", INDENT "Velocidad refresco")
 #define STR_WARN_BATTVOLTAGE   TR(INDENT "Salida es VBAT: ", INDENT "Aviso: señal salida es VBAT: ")
@@ -528,7 +528,7 @@
 #define TR_MODEL_STILL_POWERED "Modelo aun encendido"
 #define TR_MODEL_SHUTDOWN              "Apagar ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Enter para confirmar"
-#define TR_THROTTLE_LABEL      "Throttle"
+#define TR_THROTTLE_LABEL      "Potencia"
 #define TR_THROTTLEREVERSE     TR("Invert_Acel", INDENT "Invertir Acel.")
 #define TR_MINUTEBEEP          TR("Minuto", "Cada Minuto")
 #define TR_BEEPCOUNTDOWN       INDENT"Cta. atras"
@@ -674,8 +674,8 @@
 #define TR_BINDING_CH9_16_TELEM_ON     "Ch9-16 Telem ON"
 #define TR_BINDING_CH9_16_TELEM_OFF    "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalido", "Protocolo invalido")
-#define TR_MODULE_STATUS               TR(INDENT "EStado", INDENT "Estado moodulo")
-#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Proto Sync Status")
+#define TR_MODULE_STATUS               TR(INDENT "EStado", INDENT "Estado modulo")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Estado proto sync")
 #define TR_MULTI_SERVOFREQ             TR("V ref serv", "Vel. refr. servo")
 #define TR_MULTI_MAX_THROW             TR("Max. Throw", "Activar max. throw")
 #define TR_MULTI_RFCHAN                TR("Canal RF", "Selecciona canal RF")
@@ -947,7 +947,7 @@
 #define TR_UNIT                "Unidad"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Añadir nuevo sensor..."
 #define TR_CHANNELRANGE        INDENT "Canales"
-#define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
+#define TR_ANTENNACONFIRM1     "ANTENA EXT."
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
 #define TR_ANTENNA_MODES       "Interna\0           ""Preguntar\0         ""Por modelo\0        ""Interno + Externo\0   "
