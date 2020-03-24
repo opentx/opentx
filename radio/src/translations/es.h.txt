@@ -842,6 +842,8 @@
 #define TR_FLASH_BOOTLOADER            "Flash bootloader"
 #define TR_FLASH_EXTERNAL_DEVICE       "Flash disp. externo"
 #define TR_FLASH_RECEIVER_OTA          "Flash RX OTA"
+#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX by ext. OTA"
+#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash modulo BT", "Flash modulo bluetooth")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash unid. pwr mngt"
 #define TR_CURRENT_VERSION             TR("Vers. actual", "Version actual: ")
@@ -1187,6 +1189,7 @@
 #define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltaje")
 #define TR_AUTH_FAILURE        "Fallo auth."
 
+#define ZSTR_FLR               "FLR"
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"

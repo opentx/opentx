@@ -94,12 +94,12 @@ void onSdFormatConfirm(const char * result)
 void onUpdateConfirmation(const char * result)
 {
   if (result == STR_OK) {
-    OtaUpdateInformation * destination = moduleState[EXTERNAL_MODULE].otaUpdateInformation;
-    Pxx2OtaUpdate otaUpdate(EXTERNAL_MODULE, destination->candidateReceiversNames[destination->selectedReceiverIndex]);
+    OtaUpdateInformation * destination = moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].otaUpdateInformation;
+    Pxx2OtaUpdate otaUpdate(reusableBuffer.sdManager.otaUpdateInformation.module, destination->candidateReceiversNames[destination->selectedReceiverIndex]);
     otaUpdate.flashFirmware(destination->filename);
   }
   else {
-    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
   }
 }
 
@@ -121,13 +121,13 @@ void onUpdateStateChanged()
       else {
         POPUP_WARNING(STR_OTA_UPDATE_ERROR);
         SET_WARNING_INFO(STR_UNSUPPORTED_RX, sizeof(TR_UNSUPPORTED_RX) - 1, 0);
-        moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+        moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
       }
     }
     else {
       POPUP_WARNING(STR_OTA_UPDATE_ERROR);
       SET_WARNING_INFO(STR_UNKNOWN_RX, sizeof(TR_UNKNOWN_RX) - 1, 0);
-      moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+      moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
     }
   }
 }
@@ -246,10 +246,11 @@ void onSdManagerMenu(const char * result)
   }
 #endif
 #if defined(PXX2)
-  else if (result == STR_FLASH_RECEIVER_OTA) {
+  else if (result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL || result == STR_FLASH_RECEIVER_OTA_BY_EXTERNAL) {
     memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
     getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
-    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
+    reusableBuffer.sdManager.otaUpdateInformation.module = result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL ? INTERNAL_MODULE : EXTERNAL_MODULE;
+    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
   }
 #endif
 #endif
@@ -274,7 +275,7 @@ void onUpdateReceiverSelection(const char * result)
   }
   else {
     // the user pressed [Exit]
-    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
   }
 }
 #endif
@@ -285,8 +286,8 @@ void menuRadioSdManager(event_t _event)
   int lastPos = menuVerticalPosition;
 #endif
 
-  if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND && EVT_KEY_MASK(_event) == KEY_EXIT) {
-    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+  if (moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode == MODULE_MODE_BIND && EVT_KEY_MASK(_event) == KEY_EXIT) {
+    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
     CLEAR_POPUP();
     killEvents(KEY_EXIT);
     _event = 0;
@@ -417,8 +418,12 @@ void menuRadioSdManager(event_t _event)
                   POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
               }
 #if defined(PXX2)
-              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER)
-                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA);
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER) {
+                if (isReceiverOTAEnabledFromModule(INTERNAL_MODULE, information.productId))
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTERNAL);
+                if (isReceiverOTAEnabledFromModule(EXTERNAL_MODULE, information.productId))
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTERNAL);
+              }
 #endif
 #if defined(BLUETOOTH)
               if (information.productFamily == FIRMWARE_FAMILY_BLUETOOTH_CHIP)
@@ -564,10 +569,10 @@ void menuRadioSdManager(event_t _event)
     }
 
 #if defined(PXX2)
-    if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
+    if (moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode == MODULE_MODE_BIND) {
       if (reusableBuffer.sdManager.otaUpdateInformation.step == BIND_INIT) {
         if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount > 0) {
-          if(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount != popupMenuItemsCount) {
+          if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount != popupMenuItemsCount) {
             CLEAR_POPUP();
             popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount,PXX2_MAX_RECEIVERS_PER_MODULE);
             for (auto rx = 0; rx < popupMenuItemsCount; rx++) {

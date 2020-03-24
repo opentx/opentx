@@ -223,6 +223,10 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
       if (reusableBuffer.hardwareAndSettings.receiverSettings.fport)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_FPORT;
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.telemetry25mw)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_25MW;
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.enablePwmCh5Ch6)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_ENABLE_PWM_CH5_CH6;
       Pxx2Transport::addByte(flag1);
       uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
       for (int i = 0; i < outputsCount; i++) {
@@ -355,6 +359,8 @@ void Pxx2Pulses::sendOtaUpdate(uint8_t module, const char * rxName, uint32_t add
 
   if (module == EXTERNAL_MODULE)
     extmoduleSendNextFrame();
+  else if (module == INTERNAL_MODULE)
+    intmoduleSendNextFrame();
 }
 
 void Pxx2Pulses::setupAuthenticationFrame(uint8_t module, uint8_t mode, const uint8_t * outputMessage)
@@ -464,7 +470,12 @@ const char * Pxx2OtaUpdate::nextStep(uint8_t step, const char * rxName, uint32_t
   destination->address = address;
 
   for (uint8_t retry = 0;; retry++) {
-    extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
+    if (module == EXTERNAL_MODULE) {
+      extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
+    }
+    else if (module == INTERNAL_MODULE) {
+      intmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
+    }
     if (waitStep(step + 1, 20)) {
       return nullptr;
     }
