@@ -623,17 +623,12 @@ void CustomFunctionsPanel::cmDelete()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  int maxidx = fswCapability - 1;
-  for (int i=selectedIndex; i<maxidx; i++) {
-    if (!functions[i].isEmpty() || !functions[i+1].isEmpty()) {
-      CustomFunctionData *fsw1 = &functions[i];
-      CustomFunctionData *fsw2 = &functions[i+1];
-      memcpy(fsw1, fsw2, sizeof(CustomFunctionData));
-      resetCBsAndRefresh(i);
-    }
+  memmove(&functions[selectedIndex], &functions[selectedIndex + 1], (CPN_MAX_SPECIAL_FUNCTIONS - (selectedIndex + 1)) * sizeof(CustomFunctionData));
+  functions[fswCapability - 1].clear();
+
+  for (int i = selectedIndex; i < (fswCapability - 1); i++) {
+    resetCBsAndRefresh(i);
   }
-  functions[maxidx].clear();
-  resetCBsAndRefresh(maxidx);
   emit modified();
 }
 
@@ -788,13 +783,12 @@ void CustomFunctionsPanel::cmClearAll()
 
 void CustomFunctionsPanel::cmInsert()
 {
-  for (int i=(fswCapability - 1); i>selectedIndex; i--) {
-    if (!functions[i].isEmpty() || !functions[i-1].isEmpty()) {
-      memcpy(&functions[i], &functions[i-1], sizeof(CustomFunctionData));
-      resetCBsAndRefresh(i);
-    }
+  memmove(&functions[selectedIndex + 1], &functions[selectedIndex], (CPN_MAX_SPECIAL_FUNCTIONS - (selectedIndex + 1)) * sizeof(CustomFunctionData));
+  functions[selectedIndex].clear();
+
+  for (int i = selectedIndex; i < (fswCapability - 1); i++) {
+    resetCBsAndRefresh(i);
   }
-  cmClear();
 }
 
 void CustomFunctionsPanel::swapData(int idx1, int idx2)
