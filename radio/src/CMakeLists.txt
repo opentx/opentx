@@ -340,6 +340,10 @@ if(JUMPER_RELEASE)
   add_definitions(-DJUMPER_RELEASE)
 endif()
 
+if(RADIOMASTER_RELEASE)
+  add_definitions(-DRADIOMASTER_RELEASE)
+endif()
+
 if(TBS_RELEASE)
   add_definitions(-DTBS_RELEASE)
 endif()

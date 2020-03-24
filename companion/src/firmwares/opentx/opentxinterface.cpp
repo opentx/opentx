@@ -1345,11 +1345,12 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
 
-  /* Radiomaster TX16S board */
-  firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S"), BOARD_RADIOMASTER_TX16S);
+  // TX16S is unavailable until finalized
+  /* Radiomaster TX16S board
+  firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16s / TX16s Hall / TX16s Masterfire"), BOARD_RADIOMASTER_TX16S);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
-  registerOpenTxFirmware(firmware);
+  registerOpenTxFirmware(firmware);*/
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);

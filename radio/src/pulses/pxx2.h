@@ -187,7 +187,7 @@ static const char * const PXX2ReceiversNames[] = {
   "R9-SLIM+",
   "R9-MINI",
   "R9-MM",
-  "R9-STAB",
+  "R9-STAB", // R9-STAB has OTA
   "R9-MINI-OTA", // this one has OTA (different bootloader)
   "R9-MM-OTA", // this one has OTA (different bootloader)
   "R9-SLIM+-OTA", // this one has OTA (different bootloader)
@@ -240,7 +240,7 @@ static const uint8_t PXX2ReceiverOptions[] = {
   0b11111110, // R9-SLIM+
   0b11111110, // R9-MINI
   0b11111110, // R9-MM
-  0b11111110, // R9-STAB
+  0b11111111, // R9-STAB+OTA
   0b11111111, // R9-MINI+OTA
   0b11111111, // R9-MM+OTA
   0b11111111, // R9-SLIM+OTA
