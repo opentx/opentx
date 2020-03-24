@@ -219,7 +219,7 @@ void menuModelReceiverOptions(event_t event)
             }
 
             // Bargraph
-            if(channel <= channelMax) {
+            if (channel <= channelMax) {
               int32_t channelValue = channelOutputs[channel];
   #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
               lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 2, wbar + 1, 4);
