@@ -47,6 +47,7 @@ enum FrskyFirmwareReceiverProductId {
   FIRMWARE_ID_RECEIVER_ARCHER = 0xC0, // TODO use the right constant
   FIRMWARE_ID_RECEIVER_R9MX = 0xF0, // TODO use the right constant
   // TODO fill the table
+
 };
 
 inline bool isReceiverOTAEnabledFromModule(uint8_t moduleIdx, uint8_t productId)
@@ -58,7 +59,14 @@ inline bool isReceiverOTAEnabledFromModule(uint8_t moduleIdx, uint8_t productId)
     case FIRMWARE_ID_RECEIVER_R9MX:
       return isModuleR9M(moduleIdx);
 
-    // TODO add all OTA receivers here
+    // TODO add all those OTA receivers here
+
+/*
+   "R9-MINI-OTA", // this one has OTA (different bootloader)
+   "R9-MM-OTA", // this one has OTA (different bootloader)
+   "R9-SLIM+-OTA", // this one has OTA (different bootloader)
+   "R9SX", // this one has OTA
+ */
 
     default:
       return false;
