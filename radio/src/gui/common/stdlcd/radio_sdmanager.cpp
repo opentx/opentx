@@ -246,16 +246,10 @@ void onSdManagerMenu(const char * result)
   }
 #endif
 #if defined(PXX2)
-  else if (result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL) {
+  else if (result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL || result == STR_FLASH_RECEIVER_OTA_BY_EXTERNAL) {
     memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
     getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
-    reusableBuffer.sdManager.otaUpdateInformation.module = INTERNAL_MODULE;
-    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
-  }
-  else if (result == STR_FLASH_RECEIVER_OTA_BY_EXTERNAL) {
-    memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
-    getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
-    reusableBuffer.sdManager.otaUpdateInformation.module = EXTERNAL_MODULE;
+    reusableBuffer.sdManager.otaUpdateInformation.module = result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL ? INTERNAL_MODULE : EXTERNAL_MODULE;
     moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
   }
 #endif
@@ -424,10 +418,11 @@ void menuRadioSdManager(event_t _event)
                   POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
               }
 #if defined(PXX2)
-              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER)
-              {
-                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTERNAL);
-                POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTERNAL);
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER) {
+                if (isReceiverOTAEnabledFromModule(INTERNAL_MODULE, information.productId))
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTERNAL);
+                if (isReceiverOTAEnabledFromModule(EXTERNAL_MODULE, information.productId))
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTERNAL);
               }
 #endif
 #if defined(BLUETOOTH)

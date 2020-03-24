@@ -313,12 +313,12 @@ const char * FrskyDeviceFirmwareUpdate::doFlashFirmware(const char * filename)
   }
   else {
 #if defined(PCBHORUS)
-    information.productId = FIRMWARE_ID_XJT;
+    information.productId = FIRMWARE_ID_MODULE_XJT;
 #endif
   }
 
 #if defined(PCBHORUS)
-  if (module == INTERNAL_MODULE && information.productId == FIRMWARE_ID_XJT) {
+  if (module == INTERNAL_MODULE && information.productId == FIRMWARE_ID_MODULE_XJT) {
     INTERNAL_MODULE_ON();
     RTOS_WAIT_MS(1);
     intmoduleSerialStart(38400, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);

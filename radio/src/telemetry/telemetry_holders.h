@@ -22,6 +22,7 @@
 #define _TELEMETRY_HOLDERS_H_
 
 #include <inttypes.h>
+#include <string.h>
 #include "../timers.h"
 
 #define TELEMETRY_AVERAGE_COUNT   3     // we actually average one more reading!

@@ -470,10 +470,10 @@ const char * Pxx2OtaUpdate::nextStep(uint8_t step, const char * rxName, uint32_t
   destination->address = address;
 
   for (uint8_t retry = 0;; retry++) {
-    if(module == EXTERNAL_MODULE) {
+    if (module == EXTERNAL_MODULE) {
       extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
     }
-    else if(module == INTERNAL_MODULE) {
+    else if (module == INTERNAL_MODULE) {
       intmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
     }
     if (waitStep(step + 1, 20)) {

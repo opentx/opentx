@@ -24,6 +24,7 @@
 #include "dataconstants.h"
 #include "definitions.h"
 #include "frsky_pxx2.h"
+#include "pulses/modules_helpers.h"
 #include "ff.h"
 
 enum FrskyFirmwareProductFamily {
@@ -35,11 +36,34 @@ enum FrskyFirmwareProductFamily {
   FIRMWARE_FAMILY_POWER_MANAGEMENT_UNIT,
 };
 
-enum FrskyFirmwareProductId {
-  FIRMWARE_ID_NONE,
-  FIRMWARE_ID_XJT = 0x01,
-  FIRMWARE_ID_ISRM = 0x02,
+enum FrskyFirmwareModuleProductId {
+  FIRMWARE_ID_MODULE_NONE,
+  FIRMWARE_ID_MODULE_XJT = 0x01,
+  FIRMWARE_ID_MODULE_ISRM = 0x02,
 };
+
+enum FrskyFirmwareReceiverProductId {
+  FIRMWARE_ID_RECEIVER_NONE,
+  FIRMWARE_ID_RECEIVER_ARCHER = 0xC0, // TODO use the right constant
+  FIRMWARE_ID_RECEIVER_R9MX = 0xF0, // TODO use the right constant
+  // TODO fill the table
+};
+
+inline bool isReceiverOTAEnabledFromModule(uint8_t moduleIdx, uint8_t productId)
+{
+  switch (productId) {
+    case FIRMWARE_ID_RECEIVER_ARCHER:
+      return isModuleISRM(moduleIdx);
+
+    case FIRMWARE_ID_RECEIVER_R9MX:
+      return isModuleR9M(moduleIdx);
+
+    // TODO add all OTA receivers here
+
+    default:
+      return false;
+  }
+}
 
 PACK(struct FrSkyFirmwareInformation {
   uint32_t fourcc;
@@ -69,7 +93,7 @@ class FrskyDeviceFirmwareUpdate {
     };
 
   public:
-    FrskyDeviceFirmwareUpdate(ModuleIndex module):
+    explicit FrskyDeviceFirmwareUpdate(ModuleIndex module):
       module(module) {
     }
 

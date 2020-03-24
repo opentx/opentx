@@ -23,6 +23,9 @@
 
 #include "frsky.h"
 #include "crossfire.h"
+#include "myeeprom.h"
+#include "io/frsky_sport.h"
+
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"

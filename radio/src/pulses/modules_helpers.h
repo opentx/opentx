@@ -25,6 +25,8 @@
 #include "definitions.h"
 #include "opentx_helpers.h"
 #include "telemetry/telemetry.h"
+#include "storage/storage.h"
+
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
 #endif
