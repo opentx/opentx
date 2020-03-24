@@ -49,6 +49,7 @@
 #define I2C_TEXTGEN 0x0c
 #define I2C_GPS  0x17
 #define I2C_GPS2 0x17
+#define I2C_ESC  0x20
 #define I2C_CELLS 0x3a
 #define I2C_QOS 0x7f
 
@@ -151,7 +152,16 @@ const SpektrumSensor spektrumSensors[] = {
   {0x1b,             2,  int16,     ZSTR_PITCH,             UNIT_DEGREE,                 1},
   {0x1b,             4,  int16,     ZSTR_YAW,               UNIT_DEGREE,                 1},
 
-  // {0x20, esc}, does not exist in the wild?
+  // {0x20, esc},  Smart ESC telemetry ?
+  {I2C_ESC,          0,  uint16,    ZSTR_ESC_RPM,           UNIT_RPMS,                   0},
+  {I2C_ESC,          2,  uint16,    ZSTR_ESC_VIN,           UNIT_VOLTS,                  2},
+  {I2C_ESC,          4,  uint16,    ZSTR_ESC_TFET,          UNIT_CELSIUS,                1},
+  {I2C_ESC,          6,  uint16,    ZSTR_ESC_CUR,           UNIT_MAH,                    1},
+  {I2C_ESC,          8,  uint16,    ZSTR_ESC_TBEC,          UNIT_CELSIUS,                1},
+  {I2C_ESC,          10, uint8,     ZSTR_ESC_BCUR,          UNIT_AMPS,                   1},
+  {I2C_ESC,          11, uint8,     ZSTR_ESC_VBEC,          UNIT_VOLTS,                  2},
+  {I2C_ESC,          12, uint8,     ZSTR_ESC_THR,           UNIT_PERCENT,                1},
+  {I2C_ESC,          13, uint8,     ZSTR_ESC_POUT,          UNIT_PERCENT,                1},
 
   // Dual Cell monitor (0x34)
   {0x34,             0,  int16,     ZSTR_BATT1_CURRENT,     UNIT_AMPS,                   1},
@@ -302,6 +312,31 @@ void processSpektrumPacket(const uint8_t *packet)
 
       if (!isSpektrumValidValue(value, sensor->dataType))
         continue;
+
+      // RPM, 10RPM (0-655340 RPM)
+      if (i2cAddress == I2C_ESC && sensor->unit == UNIT_RPMS) {
+        value = value / 10;
+      }
+
+      // Current, 10mA (0-655.34A)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 6) {
+        value = value / 10;
+      }
+
+      // BEC Current, 100mA (0-25.4A)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 10) {
+        value = value / 10;
+      }
+
+      // Throttle 0.5% (0-127%)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 12) {
+        value = value / 2;
+      }
+
+      // Power 0.5% (0-127%)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 13) {
+        value = value / 2;
+      }
 
       if (i2cAddress == I2C_CELLS && sensor->unit == UNIT_VOLTS) {
         // Map to FrSky style cell values
