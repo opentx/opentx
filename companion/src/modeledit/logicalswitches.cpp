@@ -535,13 +535,12 @@ void LogicalSwitchesPanel::cmPaste()
 
 void LogicalSwitchesPanel::cmDelete()
 {
-  int maxidx = lsCapability - 1;
-  for (int i=selectedIndex; i<maxidx; i++) {
-    if (!model->logicalSw[i].isEmpty() || !model->logicalSw[i+1].isEmpty()) {
-      memcpy(&model->logicalSw[i], &model->logicalSw[i+1], sizeof(LogicalSwitchData));
-    }
-  }
-  model->logicalSw[maxidx].clear();
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Logical Switch. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
+  memmove(&model->logicalSw[selectedIndex], &model->logicalSw[selectedIndex + 1], (CPN_MAX_LOGICAL_SWITCHES - (selectedIndex + 1)) * sizeof(LogicalSwitchData));
+  model->logicalSw[lsCapability - 1].clear();
+
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
   update();
   emit modified();
@@ -632,6 +631,9 @@ void LogicalSwitchesPanel::cmClear()
 
 void LogicalSwitchesPanel::cmClearAll()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Logical Switches. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   for (int i=0; i<lsCapability; i++) {
     model->logicalSw[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, i);
@@ -642,11 +644,7 @@ void LogicalSwitchesPanel::cmClearAll()
 
 void LogicalSwitchesPanel::cmInsert()
 {
-  for (int i=(lsCapability - 1); i>selectedIndex; i--) {
-    if (!model->logicalSw[i].isEmpty() || !model->logicalSw[i-1].isEmpty()) {
-      memcpy(&model->logicalSw[i], &model->logicalSw[i-1], sizeof(LogicalSwitchData));
-    }
-  }
+  memmove(&model->logicalSw[selectedIndex + 1], &model->logicalSw[selectedIndex], (CPN_MAX_LOGICAL_SWITCHES - (selectedIndex + 1)) * sizeof(LogicalSwitchData));
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
