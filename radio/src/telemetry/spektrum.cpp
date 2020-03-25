@@ -200,29 +200,29 @@ const SpektrumSensor spektrumSensors[] = {
   {0x40,             2,  int16,     ZSTR_VSPD,              UNIT_METERS_PER_SECOND,      1},
 
   // Smartbat
-  {I2C_SMART_BAT_REALTIME,        1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_REALTIME,        1,  int8,    ZSTR_SMART_BAT_BTMP,      UNIT_CELSIUS,             0},
   {I2C_SMART_BAT_REALTIME,        2,  uint32le,  ZSTR_SMART_BAT_BCUR,    UNIT_MAH,                 0},
   {I2C_SMART_BAT_REALTIME,        6,  uint16le,  ZSTR_SMART_BAT_BCAP,    UNIT_MAH,                 0},
   {I2C_SMART_BAT_REALTIME,        8,  uint16le,  ZSTR_SMART_BAT_MIN_CEL, UNIT_VOLTS,               2},
   {I2C_SMART_BAT_REALTIME,        10,  uint16le, ZSTR_SMART_BAT_MAX_CEL, UNIT_VOLTS,               2},
 
-  {I2C_SMART_BAT_CELLS_1_6,       1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_1_6,       1,  int8,    ZSTR_SMART_BAT_BTMP,      UNIT_CELSIUS,             0},
   {I2C_SMART_BAT_CELLS_1_6,       2,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_1_6,       4,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_1_6,       6,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_1_6,       8,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_1_6,       10,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       10,  uint16le,  ZSTR_CELLS,            UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_1_6,       12, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
 
-  {I2C_SMART_BAT_CELLS_7_12,      1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_7_12,      1,  int8,    ZSTR_SMART_BAT_BTMP,      UNIT_CELSIUS,             0},
   {I2C_SMART_BAT_CELLS_7_12,      2,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_7_12,      4,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_7_12,      6,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_7_12,      8,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_7_12,      10,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      10,  uint16le,  ZSTR_CELLS,            UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_7_12,      12, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
 
-  {I2C_SMART_BAT_CELLS_13_18,     1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_13_18,     1,  int8,    ZSTR_SMART_BAT_BTMP,      UNIT_CELSIUS,             0},
   {I2C_SMART_BAT_CELLS_13_18,     2,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_13_18,     4,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_13_18,     6,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
@@ -231,6 +231,8 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_SMART_BAT_CELLS_13_18,     12, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
 
   {I2C_SMART_BAT_ID,              4,  uint16le,  ZSTR_SMART_BAT_CYCLES,  UNIT_RAW,                 0},
+
+  {I2C_SMART_BAT_LIMITS,          2,  uint16le,  ZSTR_SMART_BAT_CAPACITY,UNIT_MAH,                 0},
 
   // 0x50-0x56 custom 3rd party sensors
   //{0x50, 0, int16, ZSTR_}
@@ -369,7 +371,12 @@ void processSpektrumPacket(const uint8_t *packet)
 
       // mV to VOLT PREC2 for Smart Batteries
       if ((i2cAddress >= I2C_SMART_BAT_REALTIME  && i2cAddress <= I2C_SMART_BAT_LIMITS) && sensor->unit == UNIT_VOLTS) {
-        value = value / 10;
+        if (value == -1) {
+          continue;  // discard unavailable sensors
+        }
+        else {
+          value = value / 10;
+        }
       }
 
       // RPM, 10RPM (0-655340 RPM)
