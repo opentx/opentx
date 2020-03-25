@@ -104,7 +104,7 @@ bool LimitData::isEmpty() const
 
 CurveData::CurveData()
 {
-  clear(5);
+  clear();
 }
 
 void CurveData::clear(int count)

@@ -139,7 +139,7 @@ class CurveData {
     };
 
     CurveData();
-    void clear(int count);
+    void clear(int count = 5);
     bool isEmpty() const;
     QString nameToString(const int idx) const;
 

@@ -704,7 +704,7 @@ void Curves::cmClear()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Curve. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  model->curves[selectedIndex].clear(5);
+  model->curves[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   update();
   emit modified();
@@ -716,7 +716,7 @@ void Curves::cmClearAll()
     return;
 
   for (int i = 0; i < maxCurves; i++) {
-    model->curves[i].clear(5);
+    model->curves[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_CLEAR, i);
   }
   update();
@@ -744,7 +744,7 @@ void Curves::cmDelete()
     return;
 
   memmove(&model->curves[selectedIndex], &model->curves[selectedIndex + 1], (CPN_MAX_CURVES - (selectedIndex + 1)) * sizeof(CurveData));
-  model->curves[maxCurves - 1].clear(5);
+  model->curves[maxCurves - 1].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
   update();
   emit modified();
@@ -753,7 +753,7 @@ void Curves::cmDelete()
 void Curves::cmInsert()
 {
   memmove(&model->curves[selectedIndex + 1], &model->curves[selectedIndex], (CPN_MAX_CURVES - (selectedIndex + 1)) * sizeof(CurveData));
-  model->curves[selectedIndex].clear(5);
+  model->curves[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
   emit modified();

@@ -187,7 +187,7 @@ void ModelData::clear()
   for (int i = 0; i < CPN_MAX_SPECIAL_FUNCTIONS; i++)
     customFn[i].clear();
   for (int i = 0; i < CPN_MAX_CURVES; i++)
-    curves[i].clear(5);
+    curves[i].clear();
   for (int i = 0; i < CPN_MAX_TIMERS; i++)
     timers[i].clear();
   swashRingData.clear();
