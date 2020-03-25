@@ -4,7 +4,7 @@
 set -e
 set -x
 
-JOBS=2
+JOBS=3
 
 while [ $# -gt 0 ]
 do

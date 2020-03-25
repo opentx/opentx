@@ -148,7 +148,7 @@ void ModelCell::setModelId(uint8_t moduleIdx, uint8_t id)
 
 //     getTimerString(timer, 0);
 //     for (uint8_t i = 0; i < MAX_TIMERS; i++) {
-//       if (partialmodel.timers[i].mode > 0 && partialmodel.timers[i].persistent) {
+//       if (partialmodel.timers[i].mode != 0 && partialmodel.timers[i].persistent) {
 //         getTimerString(timer, partialmodel.timers[i].value);
 //         break;
 //       }
@@ -416,7 +416,7 @@ bool ModelsList::load()
 #else
     // YAML reader
     TRACE("YAML modelslist reader");
-      
+
     YamlParser yp; //TODO: move to re-usable buffer
     yp.init(get_modelslist_parser_calls(), get_modelslist_iter());
 
@@ -426,7 +426,7 @@ bool ModelsList::load()
       // reached EOF?
       if (bytes_read == 0)
         break;
-      
+
       if (yp.parse(line, bytes_read) != YamlParser::CONTINUE_PARSING)
         break;
     }

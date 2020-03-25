@@ -21,6 +21,7 @@
 #ifndef _OPENTX_HELPERS_H_
 #define _OPENTX_HELPERS_H_
 
+#include <string.h>
 #include "thirdparty/libopenui/src/libopenui_helpers.h"
 
 template<class T>
@@ -35,6 +36,17 @@ inline void SWAP(T & a, T & b)
   T tmp = b;
   b = a;
   a = tmp;
+}
+
+inline void memclear(void * p, size_t size)
+{
+memset(p, 0, size);
+}
+
+inline bool is_memclear(void * p, size_t size)
+{
+uint8_t * buf = (uint8_t *)p;
+return buf[0] == 0 && memcmp(buf, buf + 1, size - 1) == 0;
 }
 
 #endif
