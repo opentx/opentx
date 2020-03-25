@@ -57,8 +57,8 @@
 #define I2C_SMART_BAT_CELLS_1_6   0x43
 #define I2C_SMART_BAT_CELLS_7_12  0x44
 #define I2C_SMART_BAT_CELLS_13_18 0x45
-#define I2C_SMART_BAT_ID          0x46
-#define I2C_SMART_BAT_LIMITS      0x47
+#define I2C_SMART_BAT_ID          0x4A
+#define I2C_SMART_BAT_LIMITS      0x4B
 
 #define I2C_QOS 0x7f
 
@@ -72,6 +72,8 @@ enum SpektrumDataType : uint8_t {
   uint8bcd,
   uint16bcd,
   uint32bcd,
+  uint16le,
+  uint32le,
   custom
 };
 
@@ -199,36 +201,36 @@ const SpektrumSensor spektrumSensors[] = {
 
   // Smartbat
   {I2C_SMART_BAT_REALTIME,        1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
-  {I2C_SMART_BAT_REALTIME,        2,  uint32,  ZSTR_SMART_BAT_BCUR,    UNIT_MAH,                 0},
-  {I2C_SMART_BAT_REALTIME,        6,  uint16,  ZSTR_SMART_BAT_BCAP,    UNIT_MAH,                 0},
-  {I2C_SMART_BAT_REALTIME,        8,  uint16,  ZSTR_SMART_BAT_MIN_CEL, UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_REALTIME,        10,  uint16, ZSTR_SMART_BAT_MAX_CEL, UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_REALTIME,        2,  uint32le,  ZSTR_SMART_BAT_BCUR,    UNIT_MAH,                 0},
+  {I2C_SMART_BAT_REALTIME,        6,  uint16le,  ZSTR_SMART_BAT_BCAP,    UNIT_MAH,                 0},
+  {I2C_SMART_BAT_REALTIME,        8,  uint16le,  ZSTR_SMART_BAT_MIN_CEL, UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_REALTIME,        10,  uint16le, ZSTR_SMART_BAT_MAX_CEL, UNIT_VOLTS,               2},
 
-  {I2C_SMART_BAT_CELLS_1_6,       0,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
-  {I2C_SMART_BAT_CELLS_1_6,       1,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_1_6,       3,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_1_6,       5,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_1_6,       7,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_1_6,       9,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_1_6,       11, uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_1_6,       2,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       4,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       6,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       8,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       10,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       12, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
 
-  {I2C_SMART_BAT_CELLS_7_12,      0,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
-  {I2C_SMART_BAT_CELLS_7_12,      1,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_7_12,      3,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_7_12,      5,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_7_12,      7,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_7_12,      9,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_7_12,      11, uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_7_12,      2,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      4,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      6,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      8,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      10,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      12, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
 
-  {I2C_SMART_BAT_CELLS_13_18,     0,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
-  {I2C_SMART_BAT_CELLS_13_18,     1,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_13_18,     3,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_13_18,     5,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_13_18,     7,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_13_18,     9,  uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
-  {I2C_SMART_BAT_CELLS_13_18,     11, uint16,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     1,  int8,    ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_13_18,     2,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     4,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     6,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     8,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     10, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     12, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
 
-  {I2C_SMART_BAT_ID,              4,  uint16,  ZSTR_SMART_BAT_CYCLES,  UNIT_RAW,                 0},
+  {I2C_SMART_BAT_ID,              4,  uint16le,  ZSTR_SMART_BAT_CYCLES,  UNIT_RAW,                 0},
 
   // 0x50-0x56 custom 3rd party sensors
   //{0x50, 0, int16, ZSTR_}
@@ -300,6 +302,10 @@ static int32_t spektrumGetValue(const uint8_t *packet, int startByte, SpektrumDa
       return bcdToInt8(*(uint8_t *)data);
     case uint32bcd:
       return bcdToInt32(*(uint32_t *)data);
+    case uint16le:
+      return (int16_t) ((uint16_t) (data[0] + (data[1] << 8)));
+    case uint32le:
+      return ((uint32_t) (data[0] + (data[1] << 8) + (data[2] << 16) + (data[4] << 24)));
     default:
       return -1;
   }
@@ -328,8 +334,9 @@ void processSpektrumPacket(const uint8_t *packet)
   uint8_t i2cAddress = (packet[2] & 0x7f);
 
   //SmartBat Hack
-  if (i2cAddress == 0x42)
-    i2cAddress = i2cAddress + (packet[4] >> 8); // use type to create virtual I2CAddresses
+  if (i2cAddress == 0x42) {
+    i2cAddress = i2cAddress + (packet[4] >> 4); // use type to create virtual I2CAddresses
+  }
 
   uint8_t instance = packet[3];
 
@@ -514,7 +521,7 @@ void processSpektrumTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffe
 
   if (rxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
     // Debug print content of Telemetry to console
-#if 0
+#if 1
     debugPrintf("[SPK] Packet 0x%02X rssi 0x%02X: ic2 0x%02x, %02x: ",
                 rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3]);
     for (int i=4; i<SPEKTRUM_TELEMETRY_LENGTH; i+=4) {
