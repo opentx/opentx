@@ -680,12 +680,14 @@ void SimulatorWidget::setupJoysticks()
 void SimulatorWidget::restoreRadioWidgetsState()
 {
   // All RadioWidgets
-  RadioWidget::RadioWidgetState state;
-  QList<QByteArray> states = g.profile[radioProfileId].simulatorOptions().controlsState;
-  foreach (QByteArray ba, states) {
-    QDataStream stream(ba);
-    stream >> state;
-    emit widgetStateChange(state);
+  if (g.simuSW()) {
+    RadioWidget::RadioWidgetState state;
+    QList<QByteArray> states = g.profile[radioProfileId].simulatorOptions().controlsState;
+    foreach (QByteArray ba, states) {
+      QDataStream stream(ba);
+      stream >> state;
+      emit widgetStateChange(state);
+    }
   }
 
   // Set throttle stick down and locked, side depends on mode
@@ -700,8 +702,10 @@ void SimulatorWidget::saveRadioWidgetsState(QList<QByteArray> & state)
 {
   if (m_radioWidgets.size()) {
     state.clear();
-    foreach (RadioWidget * rw, m_radioWidgets)
-      state.append(rw->getStateData());
+    if (g.simuSW()) {
+      foreach (RadioWidget * rw, m_radioWidgets)
+        state.append(rw->getStateData());
+    }
   }
 }
 
