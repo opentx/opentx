@@ -24,6 +24,7 @@
 /*
  * Documentation of the Spektrum protocol is available under
  * https://www.spektrumrc.com/ProdInfo/Files/SPM_Telemetry_Developers_Specs.pdf
+ * https://github.com/SpektrumRC/SpektrumDocumentation/blob/master/Telemetry/spektrumTelemetrySensors.h
  *
  * Multi module adds two byte header of 0xAA [RSSI of telemetry packet] [16 byte message]
  */
@@ -163,7 +164,7 @@ const SpektrumSensor spektrumSensors[] = {
   {0x1b,             2,  int16,     ZSTR_PITCH,             UNIT_DEGREE,                 1},
   {0x1b,             4,  int16,     ZSTR_YAW,               UNIT_DEGREE,                 1},
 
-  // {0x20, esc},  Smart ESC telemetry ?
+  // {0x20, esc},  Smart ESC telemetry
   {I2C_ESC,          0,  uint16,    ZSTR_ESC_RPM,           UNIT_RPMS,                   0},
   {I2C_ESC,          2,  uint16,    ZSTR_ESC_VIN,           UNIT_VOLTS,                  2},
   {I2C_ESC,          4,  uint16,    ZSTR_ESC_TFET,          UNIT_CELSIUS,                1},
@@ -205,6 +206,7 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_SMART_BAT_REALTIME,        6,  uint16le,  ZSTR_SMART_BAT_BCAP,    UNIT_MAH,                 0},
   {I2C_SMART_BAT_REALTIME,        8,  uint16le,  ZSTR_SMART_BAT_MIN_CEL, UNIT_VOLTS,               2},
   {I2C_SMART_BAT_REALTIME,        10,  uint16le, ZSTR_SMART_BAT_MAX_CEL, UNIT_VOLTS,               2},
+  //{I2C_SMART_BAT_REALTIME,          12,  uint16le,  "RFU[2]", UNIT_RAW,                 0},
 
   {I2C_SMART_BAT_CELLS_1_6,       1,  int8,    ZSTR_SMART_BAT_BTMP,      UNIT_CELSIUS,             0},
   {I2C_SMART_BAT_CELLS_1_6,       2,  uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
@@ -230,9 +232,20 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_SMART_BAT_CELLS_13_18,     10, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_13_18,     12, uint16le,  ZSTR_CELLS,             UNIT_VOLTS,               2},
 
+  //{I2C_SMART_BAT_ID,              1,  uint8,  "chemistery",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_ID,              2,  uint8,  "number of cells",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_ID,              3,  uint8,  "manufacturer code",  UNIT_RAW, 0},
   {I2C_SMART_BAT_ID,              4,  uint16le,  ZSTR_SMART_BAT_CYCLES,  UNIT_RAW,                 0},
+  //{I2C_SMART_BAT_ID,              6,  uint8,  "uniqueID[8]",  UNIT_RAW, 0},
 
+  //{I2C_SMART_BAT_LIMITS,          1,  uint8,  "rfu",  UNIT_RAW, 0},
   {I2C_SMART_BAT_LIMITS,          2,  uint16le,  ZSTR_SMART_BAT_CAPACITY,UNIT_MAH,                 0},
+  //{I2C_SMART_BAT_LIMITS,          4,  uint16le,  "dischargeCurrentRating",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_LIMITS,          6,  uint16le,  "overDischarge_mV",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_LIMITS,          8,  uint16le,  "zeroCapacity_mV",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_LIMITS,          10,  uint16le,  "fullyCharged_mV",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_LIMITS,          12,  uint8,  "minWorkingTemp",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_LIMITS,          13,  uint8,  "maxWorkingTemp",  UNIT_RAW, 0},
 
   // 0x50-0x56 custom 3rd party sensors
   //{0x50, 0, int16, ZSTR_}
@@ -528,7 +541,7 @@ void processSpektrumTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffe
 
   if (rxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
     // Debug print content of Telemetry to console
-#if 1
+#if 0
     debugPrintf("[SPK] Packet 0x%02X rssi 0x%02X: ic2 0x%02x, %02x: ",
                 rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3]);
     for (int i=4; i<SPEKTRUM_TELEMETRY_LENGTH; i+=4) {
