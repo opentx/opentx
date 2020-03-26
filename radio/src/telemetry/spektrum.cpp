@@ -320,7 +320,7 @@ static int32_t spektrumGetValue(const uint8_t *packet, int startByte, SpektrumDa
     case uint16le:
       return (int16_t) ((uint16_t) (data[0] + (data[1] << 8)));
     case uint32le:
-      return ((uint32_t) (data[0] + (data[1] << 8) + (data[2] << 16) + (data[4] << 24)));
+      return ((uint32_t) (data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24)));
     default:
       return -1;
   }
