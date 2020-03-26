@@ -72,8 +72,8 @@ enum FrskyFirmwareReceiverProductId {
   FIRMWARE_ID_RECEIVER_R9_MM_OTA = 0x1A, // this one has OTA (different bootloader)
   FIRMWARE_ID_RECEIVER_R9_SLIMP_OTA = 0x1B, // this one has OTA (different bootloader)
   FIRMWARE_ID_RECEIVER_ARCHER_X = 0x1C, // this one has OTA (internal module)
-  FIRMWARE_ID_RECEIVER_R9MX = 0x1E, // this one has OTA
-  FIRMWARE_ID_RECEIVER_R9SX = 0x1D, // this one has OTA
+  FIRMWARE_ID_RECEIVER_R9MX = 0x1D, // this one has OTA
+  FIRMWARE_ID_RECEIVER_R9SX = 0x1E, // this one has OTA
 };
 
 inline bool isReceiverOTAEnabledFromModule(uint8_t moduleIdx, uint8_t productId)
