@@ -63,13 +63,13 @@ static int luaLcdClear(lua_State *L)
 }
 
 /*luadoc
-@function lcd.backlightOn()
+@function lcd.resetBacklightTimeout()
 
-Switches backlight on
+Reset the backlight timeout
 
 @status current Introduced in 2.3.6
 */
-static int luaLcdBacklightOn(lua_State *L)
+static int luaLcdResetBacklightTimeout(lua_State * L)
 {
   if (!luaLcdAllowed) return 0;
   backlightOn();
@@ -875,7 +875,7 @@ static int luaRGB(lua_State *L)
 const luaL_Reg lcdLib[] = {
   { "refresh", luaLcdRefresh },
   { "clear", luaLcdClear },
-  { "backlightOn", luaLcdBacklightOn },
+  { "resetBacklightTimeout", luaLcdResetBacklightTimeout },
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },
