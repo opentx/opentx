@@ -54,12 +54,13 @@
 #define I2C_CELLS 0x3a
 
 // SMART_BAT is using fake I2C adresses compared to official Spektrum address because of subtype used only for this I2C address
-#define I2C_SMART_BAT_REALTIME    0x42
-#define I2C_SMART_BAT_CELLS_1_6   0x43
-#define I2C_SMART_BAT_CELLS_7_12  0x44
-#define I2C_SMART_BAT_CELLS_13_18 0x45
-#define I2C_SMART_BAT_ID          0x4A
-#define I2C_SMART_BAT_LIMITS      0x4B
+#define I2C_SMART_BAT_BASE_ADDRESS    0x42
+#define I2C_SMART_BAT_REALTIME        0x42
+#define I2C_SMART_BAT_CELLS_1_6       0x43
+#define I2C_SMART_BAT_CELLS_7_12      0x44
+#define I2C_SMART_BAT_CELLS_13_18     0x45
+#define I2C_SMART_BAT_ID              0x4A
+#define I2C_SMART_BAT_LIMITS          0x4B
 
 #define I2C_QOS 0x7f
 
@@ -206,7 +207,7 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_SMART_BAT_REALTIME,        6,  uint16le,  ZSTR_SMART_BAT_BCAP,    UNIT_MAH,                 0},
   {I2C_SMART_BAT_REALTIME,        8,  uint16le,  ZSTR_SMART_BAT_MIN_CEL, UNIT_VOLTS,               2},
   {I2C_SMART_BAT_REALTIME,        10,  uint16le, ZSTR_SMART_BAT_MAX_CEL, UNIT_VOLTS,               2},
-  //{I2C_SMART_BAT_REALTIME,          12,  uint16le,  "RFU[2]", UNIT_RAW,                 0},
+  //{I2C_SMART_BAT_REALTIME,          12,  uint16le,  "RFU[2]", UNIT_RAW,                 0},   // disabled to save sensors slots
 
   {I2C_SMART_BAT_CELLS_1_6,       1,  int8,      ZSTR_SMART_BAT_BTMP,   UNIT_CELSIUS,             0},
   {I2C_SMART_BAT_CELLS_1_6,       2,  uint16le,  ZSTR_CL01,             UNIT_VOLTS,               2},
@@ -232,20 +233,20 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_SMART_BAT_CELLS_13_18,     10, uint16le,  ZSTR_CL17,             UNIT_VOLTS,               2},
   {I2C_SMART_BAT_CELLS_13_18,     12, uint16le,  ZSTR_CL18,             UNIT_VOLTS,               2},
 
-  //{I2C_SMART_BAT_ID,              1,  uint8,  "chemistery",  UNIT_RAW, 0},
-  //{I2C_SMART_BAT_ID,              2,  uint8,  "number of cells",  UNIT_RAW, 0},
-  //{I2C_SMART_BAT_ID,              3,  uint8,  "manufacturer code",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_ID,              1,  uint8,  "chemistery",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_ID,              2,  uint8,  "number of cells",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_ID,              3,  uint8,  "manufacturer code",  UNIT_RAW, 0},   // disabled to save sensors slots
   {I2C_SMART_BAT_ID,              4,  uint16le,  ZSTR_SMART_BAT_CYCLES,  UNIT_RAW,                 0},
-  //{I2C_SMART_BAT_ID,              6,  uint8,  "uniqueID[8]",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_ID,              6,  uint8,  "uniqueID[8]",  UNIT_RAW, 0},   // disabled to save sensors slots
 
-  //{I2C_SMART_BAT_LIMITS,          1,  uint8,  "rfu",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_LIMITS,          1,  uint8,  "rfu",  UNIT_RAW, 0},   // disabled to save sensors slots
   {I2C_SMART_BAT_LIMITS,          2,  uint16le,  ZSTR_SMART_BAT_CAPACITY,UNIT_MAH,                 0},
-  //{I2C_SMART_BAT_LIMITS,          4,  uint16le,  "dischargeCurrentRating",  UNIT_RAW, 0},
-  //{I2C_SMART_BAT_LIMITS,          6,  uint16le,  "overDischarge_mV",  UNIT_RAW, 0},
-  //{I2C_SMART_BAT_LIMITS,          8,  uint16le,  "zeroCapacity_mV",  UNIT_RAW, 0},
-  //{I2C_SMART_BAT_LIMITS,          10,  uint16le,  "fullyCharged_mV",  UNIT_RAW, 0},
-  //{I2C_SMART_BAT_LIMITS,          12,  uint8,  "minWorkingTemp",  UNIT_RAW, 0},
-  //{I2C_SMART_BAT_LIMITS,          13,  uint8,  "maxWorkingTemp",  UNIT_RAW, 0},
+  //{I2C_SMART_BAT_LIMITS,          4,  uint16le,  "dischargeCurrentRating",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          6,  uint16le,  "overDischarge_mV",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          8,  uint16le,  "zeroCapacity_mV",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          10,  uint16le,  "fullyCharged_mV",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          12,  uint8,  "minWorkingTemp",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          13,  uint8,  "maxWorkingTemp",  UNIT_RAW, 0},   // disabled to save sensors slots
 
   // 0x50-0x56 custom 3rd party sensors
   //{0x50, 0, int16, ZSTR_}
@@ -349,7 +350,7 @@ void processSpektrumPacket(const uint8_t *packet)
   uint8_t i2cAddress = (packet[2] & 0x7f);
 
   //SmartBat Hack
-  if (i2cAddress == 0x42) {
+  if (i2cAddress == I2C_SMART_BAT_BASE_ADDRESS) {
     i2cAddress = i2cAddress + (packet[4] >> 4); // use type to create virtual I2CAddresses
   }
 
