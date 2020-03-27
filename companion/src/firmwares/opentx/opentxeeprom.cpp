@@ -693,11 +693,13 @@ class FlightModeField: public TransformedField {
       internalField.Append(new UnsignedField<8>(this, phase.fadeIn));
       internalField.Append(new UnsignedField<8>(this, phase.fadeOut));
 
-      for (int i=0; i<rotencCount; i++) {
-        internalField.Append(new SignedField<16>(this, phase.rotaryEncoders[i]));
+      if (version < 219) {
+        for (int i = 0; i < rotencCount; i++) {
+          internalField.Append(new SignedField<16>(this, phase.rotaryEncoders[i]));
+        }
       }
 
-      for (int i=0; i<MAX_GVARS(board, version); i++) {
+      for (int i = 0; i < MAX_GVARS(board, version); i++) {
         internalField.Append(new SignedField<16>(this, phase.gvars[i]));
       }
     }
