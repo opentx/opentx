@@ -63,6 +63,20 @@ static int luaLcdClear(lua_State *L)
 }
 
 /*luadoc
+@function lcd.backlightOn()
+
+Switches backlight on
+
+@status current Introduced in 2.3.6
+*/
+static int luaLcdBacklightOn(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  backlightOn();
+  return 0;
+}
+
+/*luadoc
 @function lcd.drawPoint(x, y)
 
 Draw a single pixel at (x,y) position
@@ -861,6 +875,7 @@ static int luaRGB(lua_State *L)
 const luaL_Reg lcdLib[] = {
   { "refresh", luaLcdRefresh },
   { "clear", luaLcdClear },
+  { "backlightOn", luaLcdBacklightOn },
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },
