@@ -352,6 +352,13 @@ void AppPreferencesDialog::on_ge_pathButton_clicked()
   }
 }
 
+void AppPreferencesDialog::on_btnClearPos_clicked()
+{
+  SimulatorOptions opts = g.profile[g.sessionId()].simulatorOptions();
+  opts.controlsState.clear();
+  g.profile[g.sessionId()].simulatorOptions(opts);
+}
+
 #if defined(JOYSTICKS)
 void AppPreferencesDialog::on_joystickChkB_clicked() {
   if (ui->joystickChkB->isChecked()) {
