@@ -293,10 +293,10 @@ inline bool isRasValueValid()
 {
   return true;
 }
-#elif defined(PCBX9DP) || defined(PCBX9E)
+#elif defined(PCBTARANIS)
 inline bool isRasValueValid()
 {
-  return telemetryData.xjtVersion != 0x0000 && telemetryData.xjtVersion != 0x00FF;
+  return telemetryData.xjtVersion != 0x00FF;
 }
 #elif defined(PCBHORUS)
 inline bool isRasValueValid()
