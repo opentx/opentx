@@ -202,7 +202,7 @@ const SpektrumSensor spektrumSensors[] = {
   {0x40,             2,  int16,     ZSTR_VSPD,              UNIT_METERS_PER_SECOND,      1},
 
   // Smartbat
-  //{I2C_SMART_BAT_REALTIME,        1,  int8,      ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},
+  //{I2C_SMART_BAT_REALTIME,        1,  int8,      ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},  // disabled because sensor is a dupliacte of cells sensors ones
   {I2C_SMART_BAT_REALTIME,        2,  uint32le,  ZSTR_SMART_BAT_BCUR,    UNIT_MAH,                 0},
   {I2C_SMART_BAT_REALTIME,        6,  uint16le,  ZSTR_SMART_BAT_BCAP,    UNIT_MAH,                 0},
   {I2C_SMART_BAT_REALTIME,        8,  uint16le,  ZSTR_SMART_BAT_MIN_CEL, UNIT_VOLTS,               2},
