@@ -45,7 +45,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="profileTab">
       <attribute name="title">
@@ -61,14 +61,23 @@
           </sizepolicy>
          </property>
          <layout class="QGridLayout" name="optionsLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <property name="horizontalSpacing">
            <number>5</number>
           </property>
           <property name="verticalSpacing">
            <number>4</number>
-          </property>
-          <property name="margin">
-           <number>0</number>
           </property>
          </layout>
         </widget>
@@ -76,7 +85,16 @@
        <item row="7" column="0" colspan="4">
         <widget class="QWidget" name="widget_splashImage" native="true">
          <layout class="QGridLayout" name="gridLayout_5">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <property name="spacing">
@@ -728,6 +746,19 @@ Mode 4:
            </item>
           </layout>
          </item>
+         <item row="6" column="0" rowspan="2">
+          <widget class="QLabel" name="label_16">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Startup Settings</string>
+           </property>
+          </widget>
+         </item>
          <item row="3" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0,1">
            <property name="spacing">
@@ -764,8 +795,8 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="6" column="0" rowspan="2">
-          <widget class="QLabel" name="label_16">
+         <item row="13" column="0">
+          <widget class="QLabel" name="label_17">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -773,7 +804,7 @@ Mode 4:
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Startup Settings</string>
+            <string>Automatic Backup Folder</string>
            </property>
           </widget>
          </item>
@@ -797,29 +828,6 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
-          <widget class="QCheckBox" name="showSplash">
-           <property name="text">
-            <string>Show splash screen when Companion starts</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="13" column="0">
-          <widget class="QLabel" name="label_17">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Automatic Backup Folder</string>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_5">
            <property name="sizePolicy">
@@ -832,6 +840,43 @@ Mode 4:
             <string>Remember</string>
            </property>
           </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QCheckBox" name="showSplash">
+           <property name="text">
+            <string>Show splash screen when Companion starts</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="18" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLineEdit" name="libraryPath">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="libraryPathButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Select Folder</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item row="13" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -864,32 +909,18 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="18" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="QLineEdit" name="libraryPath">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="readOnly">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="libraryPathButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Select Folder</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+         <item row="24" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Debug Output Logging</string>
+           </property>
+          </widget>
          </item>
          <item row="10" column="1">
           <widget class="QCheckBox" name="opt_removeBlankSlots">
@@ -901,7 +932,7 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="24" column="0">
+         <item row="25" column="0">
           <widget class="QLabel" name="lbl_appLogsDir">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -914,16 +945,23 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="23" column="0">
-          <widget class="QLabel" name="label_12">
+         <item row="19" column="0" rowspan="2" colspan="2">
+          <widget class="Line" name="line_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="1">
+          <widget class="QCheckBox" name="backupEnable">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Debug Output Logging</string>
+            <string>Enable automatic backup before writing firmware</string>
            </property>
           </widget>
          </item>
@@ -961,26 +999,6 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="14" column="1">
-          <widget class="QCheckBox" name="backupEnable">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Enable automatic backup before writing firmware</string>
-           </property>
-          </widget>
-         </item>
-         <item row="19" column="0" rowspan="2" colspan="2">
-          <widget class="Line" name="line_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
          <item row="17" column="1">
           <widget class="QComboBox" name="splashincludeCB">
            <property name="sizePolicy">
@@ -1008,6 +1026,27 @@ Mode 4:
            </property>
           </widget>
          </item>
+         <item row="25" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLineEdit" name="appLogsDir">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_appLogsDir">
+             <property name="text">
+              <string>Select Folder</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item row="21" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
@@ -1032,44 +1071,10 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="24" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLineEdit" name="appLogsDir">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="readOnly">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btn_appLogsDir">
-             <property name="text">
-              <string>Select Folder</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="22" column="0" colspan="2">
+         <item row="23" column="0" colspan="2">
           <widget class="Line" name="line_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="18" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>User Splash Screens</string>
            </property>
           </widget>
          </item>
@@ -1099,29 +1104,18 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="23" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QCheckBox" name="opt_appDebugLog">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all debugging messages generated by the desktop Companion/Simulator applications. An OpenTX developer may request this to help diagnose an issue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Application (Companion/Simulator)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="opt_fwTraceLog">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all messages generated by the radio firmware when running in Simulator. This is the same information one would also see in the Simulator &lt;span style=&quot; font-style:italic;&quot;&gt;Debug Output&lt;/span&gt; window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>Radio Firmware (in Simulator)</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+         <item row="18" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>User Splash Screens</string>
+           </property>
+          </widget>
          </item>
          <item row="8" column="0">
           <widget class="QLabel" name="label_18">
@@ -1154,6 +1148,33 @@ Mode 4:
             </property>
            </item>
           </widget>
+         </item>
+         <item row="24" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QCheckBox" name="opt_appDebugLog">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all debugging messages generated by the desktop Companion/Simulator applications. An OpenTX developer may request this to help diagnose an issue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Application (Companion/Simulator)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="opt_fwTraceLog">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all messages generated by the radio firmware when running in Simulator. This is the same information one would also see in the Simulator &lt;span style=&quot; font-style:italic;&quot;&gt;Debug Output&lt;/span&gt; window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Radio Firmware (in Simulator)</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="22" column="0">
+          <widget class="QDateEdit" name="dateEdit"/>
          </item>
         </layout>
        </item>
@@ -1357,7 +1378,7 @@ Mode 4:
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Remember simulator switch values</string>
+          <string>Save switch/pot positions on simulator exit</string>
          </property>
         </widget>
        </item>
