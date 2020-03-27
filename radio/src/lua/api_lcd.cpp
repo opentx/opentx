@@ -72,7 +72,7 @@ Reset the backlight timeout
 static int luaLcdResetBacklightTimeout(lua_State * L)
 {
   if (!luaLcdAllowed) return 0;
-  backlightOn();
+  resetBacklightTimeout();
   return 0;
 }
 

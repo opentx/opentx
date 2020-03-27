@@ -130,7 +130,7 @@ void readKeysAndTrims()
   if ((keys_input || trims_input) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
 #endif
     // on keypress turn the light on
-    backlightOn();
+    resetBacklightTimeout();
   }
 }
 

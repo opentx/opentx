@@ -635,7 +635,7 @@ static inline void GET_ADC_IF_MIXER_NOT_RUNNING()
 
 #include "sbus.h"
 
-void backlightOn();
+void resetBacklightTimeout();
 void checkBacklight();
 
 #define BITMASK(bit) (1<<(bit))
