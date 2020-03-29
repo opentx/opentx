@@ -702,7 +702,7 @@ bool FlightModePanel::moveUpAllowed() const
 
 void FlightModePanel::cmClear()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear current Flight Mode properties. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
   phase.clear(phaseIdx);
@@ -783,35 +783,50 @@ void FlightModePanel::cmDelete()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  int maxidx = fmCount - 1;
+  const int maxidx = fmCount - 1;
+
+  memmove(&model->flightModeData[phaseIdx], &model->flightModeData[phaseIdx + 1], (CPN_MAX_FLIGHT_MODES - (phaseIdx + 1)) * sizeof(FlightModeData));
+  model->flightModeData[maxidx].clear(maxidx);
 
   for (int j = 0; j < maxidx; j++) {
     FlightModeData *fm = &model->flightModeData[j];
-    if (j >= phaseIdx)
-      memcpy(fm, &model->flightModeData[j + 1], sizeof(FlightModeData));
+
+    if (phaseIdx == 0 && j == 0)
+      fm->swtch = RawSwitch(0);
 
     for (int i = 0; i < trimCount; i++) {
-      if (fm->trimRef[i] > phaseIdx && fm->trimMode[i] > -1)
+      if (phaseIdx == 0 && j == 0) {
+        fm->trimMode[i] = 0;
+        fm->trimRef[i] = 0;
+      }
+      else if (fm->trimRef[i] > phaseIdx && fm->trimMode[i] > -1) {
         fm->trimRef[i]--;
+      }
       else if (fm->trimRef[i] == phaseIdx) {
         fm->trimMode[i] = 0;
         fm->trimRef[i] = 0;
         fm->trim[i] = 0;
       }
     }
+
     for (int i = 0; i < gvCount; i++) {
       if (model->isGVarLinked(j, i)) {
         int idx = model->getGVarFlightModeIndex(j, i);
-        if (idx > phaseIdx)
+        if (phaseIdx == 0 && j == 0)
+          model->setGVarFlightModeIndexToValue(j, i, j);
+        else if (idx > phaseIdx)
           model->setGVarFlightModeIndexToValue(j, i, idx - 1);
         else if (idx == phaseIdx)
           model->setGVarFlightModeIndexToValue(j, i, 0);
       }
     }
+
     for (int i = 0; i < reCount; i++) {
       if (model->isEncoderLinked(j, i)) {
         int idx = model->getEncoderFlightModeIndex(j, i);
-        if (idx > phaseIdx)
+        if (phaseIdx == 0 && j == 0)
+          model->setEncoderFlightModeIndexToValue(j, i, j);
+        else if (idx > phaseIdx)
           model->setEncoderFlightModeIndexToValue(j, i, idx - 1);
         else if (idx == phaseIdx)
           model->setEncoderFlightModeIndexToValue(j, i, 0);
@@ -819,7 +834,6 @@ void FlightModePanel::cmDelete()
     }
   }
 
-  model->flightModeData[maxidx].clear(maxidx);
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SHIFT, phaseIdx, 0, -1);
 
   emit datachanged();
@@ -829,12 +843,13 @@ void FlightModePanel::cmDelete()
 
 void FlightModePanel::cmInsert()
 {
-  int maxidx = fmCount - 1;
+  const int maxidx = fmCount - 1;
+
+  memmove(&model->flightModeData[phaseIdx + 1], &model->flightModeData[phaseIdx], (CPN_MAX_FLIGHT_MODES - (phaseIdx + 1)) * sizeof(FlightModeData));
+  model->flightModeData[phaseIdx].clear(phaseIdx);
 
   for (int j = maxidx; j > 0; j--) {
     FlightModeData *fm = &model->flightModeData[j];
-    if (j > phaseIdx)
-      memcpy(fm, &model->flightModeData[j - 1], sizeof(FlightModeData));
 
     for (int i = 0; i < trimCount; i++) {
       if (phaseIdx == 0 and j == 1)
@@ -849,6 +864,7 @@ void FlightModePanel::cmInsert()
         }
       }
     }
+
     for (int i = 0; i < gvCount; i++) {
       if (model->isGVarLinked(j, i)) {
         int idx = model->getGVarFlightModeIndex(j, i);
@@ -858,6 +874,7 @@ void FlightModePanel::cmInsert()
           model->setGVarFlightModeIndexToValue(j, i, idx + 1);
       }
     }
+
     for (int i = 0; i < reCount; i++) {
       if (model->isEncoderLinked(j, i)) {
         int idx = model->getEncoderFlightModeIndex(j, i);
@@ -869,7 +886,6 @@ void FlightModePanel::cmInsert()
     }
   }
 
-  model->flightModeData[phaseIdx].clear(phaseIdx);
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SHIFT, phaseIdx, 0, 1);
 
   emit datachanged();
@@ -891,7 +907,37 @@ void FlightModePanel::cmPaste()
 {
   QByteArray data;
   if (hasClipboardData(&data)) {
-    memcpy(&model->flightModeData[phaseIdx], data.constData(), sizeof(FlightModeData));
+    FlightModeData *fm = &model->flightModeData[phaseIdx];
+    memcpy(fm, data.constData(), sizeof(FlightModeData));
+
+    if (phaseIdx == 0)
+      fm->swtch = RawSwitch(0);
+
+    for (int i = 0; i < trimCount; i++) {
+      if (phaseIdx == 0) {
+        fm->trimMode[i] = 0;
+        fm->trimRef[i] = 0;
+      }
+    }
+
+    //  TODO fix up linked GVs but need to know source FM index to make adjustments
+    for (int i = 0; i < gvCount; i++) {
+      if (model->isGVarLinked(phaseIdx, i)) {
+        int linkedidx = model->getGVarFlightModeIndex(phaseIdx, i);
+        if (phaseIdx == 0 || linkedidx == phaseIdx)
+          model->setGVarFlightModeIndexToValue(phaseIdx, i, phaseIdx);
+      }
+    }
+
+    //  TODO fix up linked REs but need to know source FM index to make adjustments
+    for (int i = 0; i < reCount; i++) {
+      if (model->isEncoderLinked(phaseIdx, i)) {
+        int linkedidx = model->getEncoderFlightModeIndex(phaseIdx, i);
+        if (phaseIdx == 0 || linkedidx == phaseIdx)
+          model->setEncoderFlightModeIndexToValue(phaseIdx, i, phaseIdx);
+      }
+    }
+
     update();
     emit modified();
     emit nameModified();
@@ -900,18 +946,91 @@ void FlightModePanel::cmPaste()
 
 void FlightModePanel::swapData(int idx1, int idx2)
 {
-  if (idx1 != idx2) {
-    FlightModeData fmdtmp = model->flightModeData[idx2];
-    FlightModeData *fmd1 = &model->flightModeData[idx1];
-    FlightModeData *fmd2 = &model->flightModeData[idx2];
-    memcpy(fmd2, fmd1, sizeof(FlightModeData));
-    memcpy(fmd1, &fmdtmp, sizeof(FlightModeData));
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
+  if (idx1 == idx2)
+    return;
 
-    emit datachanged();
-    emit modified();
-    emit nameModified();
+  const int shift = idx2 - idx1;
+
+  FlightModeData fmdtmp = model->flightModeData[idx2];
+  FlightModeData *fmd1 = &model->flightModeData[idx1];
+  FlightModeData *fmd2 = &model->flightModeData[idx2];
+  memcpy(fmd2, fmd1, sizeof(FlightModeData));
+  memcpy(fmd1, &fmdtmp, sizeof(FlightModeData));
+
+  if (idx1 == 0)
+    fmd1->swtch = RawSwitch(0);
+  else if (idx2 == 0)
+    fmd2->swtch = RawSwitch(0);
+
+  for (int i = 0; i < trimCount; i++) {
+    if (fmd1->trimRef[i] == idx1)
+      fmd1->trimRef[i] = idx2;
+    else if (fmd1->trimRef[i] == idx2)
+      fmd1->trimRef[i] = idx1;
+
+    if (fmd2->trimRef[i] == idx1)
+      fmd2->trimRef[i] = idx2;
+    else if (fmd2->trimRef[i] == idx2)
+      fmd2->trimRef[i] = idx1;
+
+    if (idx1 == 0) {
+      fmd1->trimMode[i] = 0;
+      fmd1->trimRef[i] = 0;
+    }
+    else if (idx2 == 0) {
+      fmd2->trimMode[i] = 0;
+      fmd2->trimRef[i] = 0;
+    }
   }
+
+  for (int i = 0; i < gvCount; i++) {
+    if (model->isGVarLinked(idx1, i)) {
+      int linkedidx = model->getGVarFlightModeIndex(idx1, i);
+      if (linkedidx == idx1)
+        model->setGVarFlightModeIndexToValue(idx1, i, idx2 - shift);
+      else if (linkedidx == idx2)
+        model->setGVarFlightModeIndexToValue(idx1, i, idx1 + shift);
+      else
+        model->setGVarFlightModeIndexToValue(idx1, i, linkedidx);
+    }
+
+    if (model->isGVarLinked(idx2, i)) {
+      int linkedidx = model->getGVarFlightModeIndex(idx2, i);
+      if (linkedidx == idx1)
+        model->setGVarFlightModeIndexToValue(idx2, i, idx2 - shift);
+      else if (linkedidx == idx2)
+        model->setGVarFlightModeIndexToValue(idx2, i, idx1 + shift);
+      else
+        model->setGVarFlightModeIndexToValue(idx2, i, linkedidx);
+    }
+  }
+
+  for (int i = 0; i < reCount; i++) {
+    if (model->isEncoderLinked(idx1, i)) {
+      int linkedidx = model->getEncoderFlightModeIndex(idx1, i);
+      if (linkedidx == idx1)
+        model->setEncoderFlightModeIndexToValue(idx1, i, idx2 - shift);
+      else if (linkedidx == idx2)
+        model->setEncoderFlightModeIndexToValue(idx1, i, idx1 + shift);
+      else
+        model->setEncoderFlightModeIndexToValue(idx1, i, linkedidx);
+    }
+
+    if (model->isEncoderLinked(idx2, i)) {
+      int linkedidx = model->getEncoderFlightModeIndex(idx2, i);
+      if (linkedidx == idx1)
+        model->setEncoderFlightModeIndexToValue(idx2, i, idx2 - shift);
+      else if (linkedidx == idx2)
+        model->setEncoderFlightModeIndexToValue(idx2, i, idx1 + shift);
+      else
+        model->setEncoderFlightModeIndexToValue(idx2, i, linkedidx);
+    }
+  }
+
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
+  emit datachanged();
+  emit modified();
+  emit nameModified();
 }
 
 void FlightModePanel::gvOnCustomContextMenuRequested(QPoint pos)
