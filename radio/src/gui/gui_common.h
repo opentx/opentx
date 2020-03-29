@@ -220,7 +220,6 @@ inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
     if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST)
       return true;
     else {
-      TRACE("Multi : %d", g_model.moduleData[moduleIdx].getMultiProtocol());
       return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->maxSubtype > 0;
     }
   }
@@ -253,7 +252,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 }
 
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)      MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
-#define MULTIMODULE_TYPE_ROW(moduleIdx)         isModuleMultimodule(moduleIdx) ? (uint8_t) 1 + MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
+#define MULTIMODULE_TYPE_ROW(moduleIdx)         isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
 #define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_TYPE_ROWS(moduleIdx)        isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW,

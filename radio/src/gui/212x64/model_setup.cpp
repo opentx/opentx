@@ -249,11 +249,6 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 {
   if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
     return 1;
-#if defined(MULTIMODULE)
-  else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-    return 0;
-  }
-#endif
   else
     return 0;
 }
