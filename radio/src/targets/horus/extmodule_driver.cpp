@@ -270,6 +270,7 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmoduleSendNextFrame()
 {
+
   switch (moduleState[EXTERNAL_MODULE].protocol) {
     case PROTOCOL_CHANNELS_PPM:
 #if defined(PCBX10) || PCBREV >= 13
@@ -321,10 +322,6 @@ void extmoduleSendNextFrame()
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
       extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
 #else
-      if(EXTMODULE_TIMER->DIER & TIM_DIER_CC2IE) {
-        TRACE("ALREADY RUNNING!!!");
-        return;
-      }
 #if defined(PCBX10) || PCBREV >= 13
       EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3P;
 #else
@@ -336,7 +333,14 @@ void extmoduleSendNextFrame()
       EXTMODULE_TIMER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
       EXTMODULE_TIMER_DMA_STREAM->M0AR = CONVERT_PTR_UINT(extmodulePulsesData.afhds3.getData());
       EXTMODULE_TIMER_DMA_STREAM->NDTR = extmodulePulsesData.afhds3.getSize();
-      EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+      if(EXTMODULE_TIMER_DMA_STREAM->NDTR > 0) {
+        EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+      }
+      else {
+        EXTMODULE_TIMER->CCR2 = 12 * 2000;
+        EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+        EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+      }
 #endif
       break;
 #endif

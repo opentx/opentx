@@ -101,14 +101,13 @@ void PulsesData::setupFrame()
 {
   if(operationState == State::AWAITING_RESPONSE) {
     if(repeatCount++ < MAX_RETRIES_AFHDS3) return; //re-send
-    else init(module_index, false);
+    else clearFrameData();
   }
   else if(operationState == State::UNKNOWN){
     this->state = ModuleState::STATE_NOT_READY;
   }
-  reset();
   repeatCount = 0;
-  if (operationState == State::UNKNOWN || this->state == ModuleState::STATE_NOT_READY) {
+  if (this->state == ModuleState::STATE_NOT_READY) {
     putFrame(COMMAND::MODULE_READY, FRAME_TYPE::REQUEST_GET_DATA);
     return;
   }
@@ -140,7 +139,7 @@ void PulsesData::setupFrame()
 
   switch(this->state) {
     case ModuleState::STATE_READY:
-        init(module_index);
+        clearFrameData();
         break;
     case ModuleState::STATE_HW_ERROR:
     case ModuleState::STATE_BINDING:
@@ -166,16 +165,21 @@ void PulsesData::setupFrame()
 }
 
 void PulsesData::init(uint8_t moduleIndex, bool resetFrameCount) {
-  reset();
   module_index = moduleIndex;
   AFHDS3PulsesData[module_index] = this;
   //clear local vars because it is member of union
-  clearQueue();
   moduleData = &g_model.moduleData[module_index];
-  this->repeatCount = 0;
-  this->idleCount = 0;
-  this->operationState = State::UNKNOWN;
-  this->state = ModuleState::STATE_NOT_READY;
+  operationState = State::UNKNOWN;
+  state = ModuleState::STATE_NOT_READY;
+  clearFrameData();
+}
+
+void PulsesData::clearFrameData() {
+  TRACE("AFHDS3 clearFrameData");
+  reset();
+  clearQueue();
+  repeatCount = 0;
+  idleCount = 0;
   this->frame_index = 1;
   this->timeout = 0;
   this->esc_state = 0;
@@ -495,7 +499,8 @@ void PulsesData::beginRangeTest(::asyncOperationCallback_t callback) {
 
 void PulsesData::cancelOperations() {
   if(operationCallback!=nullptr) operationCallback(false);
-  init(module_index, false);
+  this->state = ModuleState::STATE_NOT_READY;
+  clearFrameData();
 }
 
 void PulsesData::stop() {

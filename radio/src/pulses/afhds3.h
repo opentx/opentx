@@ -38,7 +38,7 @@
 typedef void (*asyncOperationCallback_t) (bool);
 
 #define AFHDS_MAX_PULSES 64
-#define AFHDS_MAX_PULSES_TRANSITIONS AFHDS_MAX_PULSES * 9
+#define AFHDS_MAX_PULSES_TRANSITIONS AFHDS_MAX_PULSES * 10
 #define AFHDS3_SLOW
 
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
@@ -54,12 +54,12 @@ typedef void (*asyncOperationCallback_t) (bool);
 //Because timer is ticking with 0.5us
   #define BITLEN_AFHDS           (17)
 
-  #define AFHDS3_COMMAND_TIMEOUT 5
+  #define AFHDS3_COMMAND_TIMEOUT 10
 #else
 // 1000000/57600 = 17,36 us
   #define AFHDS3_BAUDRATE        57600
 // 64* 86 = 11 110
-  #define AFHDS3_COMMAND_TIMEOUT 12
+  #define AFHDS3_COMMAND_TIMEOUT 20
   #define BITLEN_AFHDS           (35)
 #endif
 
@@ -451,6 +451,7 @@ private:
   void onModelSwitch();
   void sendChannelsData();
   void clearQueue();
+  void clearFrameData();
   void trace(const char* message);
 
   void processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);

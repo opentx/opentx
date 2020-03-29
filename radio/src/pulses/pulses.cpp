@@ -28,6 +28,7 @@ InternalModulePulsesData intmodulePulsesData __DMA;
 ExternalModulePulsesData extmodulePulsesData __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
+//use only for PXX
 void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCallback)
 {
   bindInformation = destination;
