@@ -151,8 +151,8 @@ class CurveData {
 };
 
 #define FLIGHTMODE_NAME_LEN  10
-#define ENCODER_MAX_VALUE    1024
-#define ENCODER_MIN_VALUE    -ENCODER_MAX_VALUE
+#define RENC_MAX_VALUE       1024
+#define RENC_MIN_VALUE       -RENC_MAX_VALUE
 
 class FlightModeData {
   Q_DECLARE_TR_FUNCTIONS(FlightModeData)
@@ -172,11 +172,11 @@ class FlightModeData {
     QString nameToString(int phaseIdx) const;
     void convert(RadioDataConversionState & cstate);
     bool isEmpty(int phaseIdx) const;
-    bool isGVEmpty(int phaseIdx, int gvIdx) const;
-    bool isREEmpty(int phaseIdx, int reIdx) const;
+    bool isGVarEmpty(int phaseIdx, int gvIdx) const;
+    bool isREncEmpty(int phaseIdx, int reIdx) const;
     int linkedFlightModeZero(int phaseIdx, int maxOwnValue) const;
     int linkedGVarFlightModeZero(int phaseIdx) const;
-    int linkedEncoderFlightModeZero(int phaseIdx) const;
+    int linkedREncFlightModeZero(int phaseIdx) const;
 };
 
 class SwashRingData {

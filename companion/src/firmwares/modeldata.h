@@ -223,20 +223,22 @@ class ModelData {
     void setTrimValue(int phaseIdx, int trimIdx, int value);
 
     bool isGVarLinked(int phaseIdx, int gvarIdx);
-    int getGVarFieldValue(int phaseIdx, int gvarIdx);
-    float getGVarFieldValuePrec(int phaseIdx, int gvarIdx);
+    bool isGVarLinkedCircular(int phaseIdx, int gvarIdx);
+    int getGVarValue(int phaseIdx, int gvarIdx);
+    float getGVarValuePrec(int phaseIdx, int gvarIdx);
     int getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx);
     void setGVarFlightModeIndexToValue(const int phaseIdx, const int gvarIdx, const int useFmIdx);
+
+    bool isREncLinked(int phaseIdx, int reIdx);
+    bool isREncLinkedCircular(int phaseIdx, int reIdx);
+    int getREncValue(int phaseIdx, int reIdx);
+    int getREncFlightModeIndex(const int phaseIdx, const int reIdx);
+    void setREncFlightModeIndexToValue(const int phaseIdx, const int reIdx, const int useFmIdx);
 
     ModelData removeGlobalVars();
 
     int linkedFlightModeIndexToValue(const int phaseIdx, const int useFmIdx, const int maxOwnValue);
     int linkedFlightModeValueToIndex(const int phaseIdx, const int val, const int maxOwnValue);
-
-    bool isEncoderLinked(const int phaseIdx, const int reIdx);
-    int getEncoderFieldValue(int phaseIdx, int reIdx);
-    int getEncoderFlightModeIndex(const int phaseIdx, const int reIdx);
-    void setEncoderFlightModeIndexToValue(const int phaseIdx, const int reIdx, const int useFmIdx);
 
     void clearMixes();
     void clearInputs();
