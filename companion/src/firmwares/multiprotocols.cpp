@@ -126,7 +126,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_ESKY150,    1, false,      STR_SUBTYPE_ESKY150,   nullptr},
   {MODULE_SUBTYPE_MULTI_FX816,      0, false,      STR_SUBTYPE_FX816,     nullptr},
   {MODULE_SUBTYPE_MULTI_HOTT,       0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_FRSKYX2,      3, true,      STR_SUBTYPE_FRSKYX2,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FRSKYX2,    3, true,       STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
