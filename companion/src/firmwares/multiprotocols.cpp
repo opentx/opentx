@@ -40,6 +40,7 @@ static const QStringList STR_SUBTYPE_CUSTOM    ({
 static const QStringList STR_SUBTYPE_FLYSKY    {"Standard", "V9x9", "V6x6", "V912", "CX20"};
 static const QStringList STR_SUBTYPE_HUBSAN    {"H107", "H301", "H501"};
 static const QStringList STR_SUBTYPE_FRSKY     {"D16", "D8", "D16 8ch", "V8", "D16 EU-LBT", "D16 EU-LBT 8ch"};
+static const QStringList STR_SUBTYPE_FRSKYX2   {"D16", "D16 8ch", "D16 EU-LBT", "D16 EU-LBT 8ch"};
 static const QStringList STR_SUBTYPE_HISKY     {"Standard", "HK310"};
 static const QStringList STR_SUBTYPE_V2X2      {"Standard", "JXD506"};
 static const QStringList STR_SUBTYPE_DSM       {"DSM2 22ms", "DSM2 11ms", "DSMX 22ms", "DSMX 11ms"};
@@ -125,6 +126,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_ESKY150,    1, false,      STR_SUBTYPE_ESKY150,   nullptr},
   {MODULE_SUBTYPE_MULTI_FX816,      0, false,      STR_SUBTYPE_FX816,     nullptr},
   {MODULE_SUBTYPE_MULTI_HOTT,       0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FRSKYX2,      3, true,      STR_SUBTYPE_FRSKYX2,     STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
