@@ -98,6 +98,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE,
 #if defined (MULTIMODULE)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
 #endif
@@ -248,11 +249,6 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 {
   if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
     return 1;
-#if defined(MULTIMODULE)
-  else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-    return 1 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
-  }
-#endif
   else
     return 0;
 }
@@ -362,6 +358,7 @@ void menuModelSetup(event_t event)
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_TYPE_ROW(),
+      MULTIMODULE_TYPE_ROW(EXTERNAL_MODULE)
       MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
       MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),
@@ -813,15 +810,6 @@ void menuModelSetup(event_t event)
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleR9MNonAccess(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
-#if defined(MULTIMODULE)
-        else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-          uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-          // Do not use MODEL_SETUP_3RD_COLUMN here since some the protocol string are so long that we cannot afford the 2 spaces (+6) here
-          lcdDrawMultiProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
-          if (MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
-            lcdDrawMultiSubProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-        }
-#endif
         if (attr && menuHorizontalPosition == 0) {
           if (s_editMode > 0) {
             g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
@@ -905,6 +893,40 @@ void menuModelSetup(event_t event)
 #endif
         }
         break;
+
+#if defined(MULTIMODULE)
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL:
+      {
+        lcdDrawTextAlignedLeft(y, TR_TYPE);
+        uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
+        lcdDrawMultiProtocolString(MODEL_SETUP_2ND_COLUMN, y, EXTERNAL_MODULE, multi_rfProto, menuHorizontalPosition == 0 ? attr : 0);
+        if (MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
+          lcdDrawMultiSubProtocolString(MODEL_SETUP_3RD_COLUMN + 15, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType,
+                                        menuHorizontalPosition == 1 ? attr : 0);
+        if (attr) {
+          switch (menuHorizontalPosition) {
+            case 0: {
+              int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
+              CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+              if (checkIncDec_Ret) {
+                g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
+                g_model.moduleData[EXTERNAL_MODULE].subType = 0;
+                resetMultiProtocolsOptions(EXTERNAL_MODULE);
+              }
+            }
+              break;
+
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
+              if (checkIncDec_Ret) {
+                resetMultiProtocolsOptions(EXTERNAL_MODULE);
+              }
+              break;
+          }
+        }
+      }
+      break;
+#endif
 
       case ITEM_MODEL_SETUP_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
