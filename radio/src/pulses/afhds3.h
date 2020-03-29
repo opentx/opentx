@@ -39,7 +39,7 @@ typedef void (*asyncOperationCallback_t) (bool);
 
 #define AFHDS_MAX_PULSES 64
 #define AFHDS_MAX_PULSES_TRANSITIONS AFHDS_MAX_PULSES * 10
-#define AFHDS3_SLOW
+//#define AFHDS3_SLOW
 
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
   #define AFHDS3_BAUDRATE        1500000
@@ -219,7 +219,7 @@ enum ModuleState {
   STATE_UPDATING_RX = 0x08,
   STATE_UPDATING_RX_FAILED = 0x09,
   STATE_RF_TESTING = 0x0a,
-  STATE_READY = 0x0b,     //virtual
+  STATE_READY = 0x0b,      //virtual
   STATE_HW_TEST = 0xff,
 };
 
@@ -421,22 +421,9 @@ public:
    * Starts or queues binding action
    * @param callback callback pointer
    */
-  void beginBind(::asyncOperationCallback_t callback);
-  /**
-   * Starts or queues range test action
-   * @param callback callback pointer
-   */
-  void beginRangeTest(::asyncOperationCallback_t callback);
-  /**
-   * Cancel all pending async operations
-   */
-  void cancelOperations();
-
   void stop();
-  void setModuleSettingsToDefault();
-
 protected:
-  void setModelSettingsFromModule();
+  void setConfigFromModel();
 private:
   inline void putBytes(uint8_t* data, int length);
   inline void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
@@ -452,7 +439,7 @@ private:
   void sendChannelsData();
   void clearQueue();
   void clearFrameData();
-  void trace(const char* message);
+  void trace(const char* message, uint8_t * payload = nullptr, uint8_t payloadSize = 0);
 
   void processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
   friend void processTelemetryData(uint8_t module, uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
@@ -487,10 +474,6 @@ private:
    * Pointer to module config - it is making operations easier and faster
    */
   ModuleData* moduleData;
-  /**
-   * Callback pointer for async operation set on bind or range test
-   */
-  ::asyncOperationCallback_t operationCallback;
   /**
    * Actual module configuration - must be requested from module
    */

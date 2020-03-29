@@ -29,6 +29,7 @@
 #define MAX_RETRIES_AFHDS3 5
 extern int32_t getChannelValue(uint8_t channel);
 extern void processFlySkySensor(const uint8_t * packet, uint8_t type);
+
 namespace afhds3 {
 
 static const char* const moduleStateText[] = {
@@ -100,8 +101,14 @@ void PulsesData::processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& 
 void PulsesData::setupFrame()
 {
   if(operationState == State::AWAITING_RESPONSE) {
-    if(repeatCount++ < MAX_RETRIES_AFHDS3) return; //re-send
-    else clearFrameData();
+    if(repeatCount++ < MAX_RETRIES_AFHDS3) {
+      TRACE("AWAITING_RESPONSE - RETRY %d", getSize());
+      return; //re-send
+    }
+    else {
+      TRACE("AWAITING_RESPONSE - RESET");
+      clearFrameData();
+    }
   }
   else if(operationState == State::UNKNOWN){
     this->state = ModuleState::STATE_NOT_READY;
@@ -117,6 +124,7 @@ void PulsesData::setupFrame()
     clearQueue();
   }
 
+
   //check waiting commands
   if(!commandQueue.empty()) {
     request* r = commandQueue.front();
@@ -126,13 +134,44 @@ void PulsesData::setupFrame()
       this->frame_index = r->frameNumber;
     }
     putFrame(r->command, r->frameType, r->payload, r->payloadSize);
-    trace("AFHDS3 [CMD QUEUE] data");
+    trace("AFHDS3 [CMD QUEUE] data", r->payload, r->payloadSize);
     if(r->frameNumber >= 0) {
       this->frame_index = frameIndexBackup;
     }
     delete r;
     return;
   }
+
+  if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_BIND) {
+    if(state != STATE_BINDING)
+    {
+      TRACE("AFHDS3 [BIND]");
+      setConfigFromModel();
+      addToQueue(COMMAND::MODULE_SET_CONFIG, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, cfg.buffer, sizeof(cfg.buffer));
+      requestedModuleMode = MODULE_MODE_E::BIND;
+      addToQueue(COMMAND::MODULE_MODE, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, &requestedModuleMode, 1);
+      return;
+    }
+  }
+  else if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_RANGECHECK) {
+    if(cfg.config.runPower != RUN_POWER::RUN_POWER_FIRST) {
+      TRACE("AFHDS3 [RANGE CHECK]");
+      cfg.config.runPower = RUN_POWER::RUN_POWER_FIRST;
+      uint8_t data[] = { 0x13, 0x20, 0x02, cfg.config.runPower, 0 };
+      TRACE("AFHDS3 SET TX POWER %d", moduleData->afhds3.runPower);
+      putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, data, sizeof(data));
+      return;
+    }
+  }
+  else if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_NORMAL){ //exit bind
+    if(state == STATE_BINDING || requestedModuleMode== MODULE_MODE_E::BIND) {
+      TRACE("AFHDS3 [EXIT BIND]");
+      requestedModuleMode = MODULE_MODE_E::RUN;
+      putFrame(COMMAND::MODULE_MODE, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, &requestedModuleMode, 1);
+      return;
+    }
+  }
+
 
   //config should be loaded already
   if(syncSettings()) return;
@@ -279,10 +318,7 @@ void PulsesData::setState(uint8_t state) {
   uint8_t oldState = this->state;
   this->state = state;
   if(oldState == ModuleState::STATE_BINDING) {
-    if(operationCallback != nullptr) {
-      operationCallback(false);
-      operationCallback = nullptr;
-    }
+    setModuleMode(module_index, ::ModuleSettingsMode::MODULE_MODE_NORMAL);
   }
 }
 
@@ -407,14 +443,20 @@ void PulsesData::parseData(uint8_t* rxBuffer, uint8_t rxBufferCount) {
 }
 
 
-void PulsesData::trace(const char* message) {
+void PulsesData::trace(const char* message, uint8_t * payload, uint8_t payloadSize) {
   char buffer[256];
   char *pos = buffer;
-  for (int i = 0; i < getSize(); i++) {
-    pos += snprintf(pos, buffer + sizeof(buffer) - pos, "%02X ", this->pulses[i]);
+  if(payload == nullptr) {
+    payload = (uint8_t *) pulses;
+    payloadSize = getSize();
+  }
+
+
+  for (int i = 0; i < payloadSize; i++) {
+    pos += snprintf(pos, buffer + sizeof(buffer) - pos, "%02X ", payload[i]);
   }
   (*pos) = 0;
-  TRACE("%s size = %d data %s", message, getSize(), buffer);
+  TRACE("%s size = %d data %s", message, payloadSize, buffer);
 }
 
 inline bool isSbus(uint8_t mode) {
@@ -425,7 +467,7 @@ inline bool isPWM(uint8_t mode) {
 }
 
 bool PulsesData::syncSettings() {
-  if (moduleData->afhds3.runPower != cfg.config.runPower) {
+  if (getModuleMode(module_index) != ::ModuleSettingsMode::MODULE_MODE_BIND && moduleData->afhds3.runPower != cfg.config.runPower) {
     cfg.config.runPower = moduleData->afhds3.runPower;
     uint8_t data[] = { 0x13, 0x20, 0x02, moduleData->afhds3.runPower, 0 };
     TRACE("AFHDS3 SET TX POWER %d", moduleData->afhds3.runPower);
@@ -484,25 +526,6 @@ void PulsesData::sendChannelsData() {
   putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, channels, sizeof(channels));
 }
 
-void PulsesData::beginBind(::asyncOperationCallback_t callback) {
-  operationCallback = callback;
-  TRACE("AFHDS3 [BIND]");
-  setModelSettingsFromModule();
-  addToQueue(COMMAND::MODULE_SET_CONFIG, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, cfg.buffer, sizeof(cfg.buffer));
-  requestedModuleMode = MODULE_MODE_E::BIND;
-  addToQueue(COMMAND::MODULE_MODE, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, &requestedModuleMode, 1);
-}
-
-void PulsesData::beginRangeTest(::asyncOperationCallback_t callback) {
-  TRACE("AFHDS3 [RANGE CHECK] NOT IMPLEMENTED");
-}
-
-void PulsesData::cancelOperations() {
-  if(operationCallback!=nullptr) operationCallback(false);
-  this->state = ModuleState::STATE_NOT_READY;
-  clearFrameData();
-}
-
 void PulsesData::stop() {
   TRACE("AFHDS3 STOP");
   //requestedModuleMode = MODULE_MODE_E::STANDBY;
@@ -510,32 +533,12 @@ void PulsesData::stop() {
   //init(module_index, true);
 }
 
-void PulsesData::setModuleSettingsToDefault() {
-  moduleData->afhds3.bindPower = BIND_POWER::MIN_0dbm;
-  moduleData->afhds3.runPower = RUN_POWER::PLUS_15bBm;
-  moduleData->afhds3.emi = EMI_STANDARD::FCC;
-  moduleData->afhds3.telemetry = TELEMETRY::TELEMETRY_ENABLED;
-  moduleData->afhds3.rx_freq[0] = 50;
-  moduleData->afhds3.rx_freq[1] = 0;
-  moduleData->afhds3.failsafeTimeout = 1000;
-  moduleData->channelsCount = 14 - 8;
-  moduleData->failsafeMode = FAILSAFE_HOLD;
-  //" PWM+i"" PWM+s"" PPM+i"" PPM+s"
-  moduleData->subType = 0;
-  for (uint8_t channel = 0; channel < MAX_OUTPUT_CHANNELS; channel++) {
-    g_model.failsafeChannels[channel] = 0;
-  }
-}
-
-void PulsesData::setModelSettingsFromModule() {
+void PulsesData::setConfigFromModel() {
   cfg.config.bindPower = moduleData->afhds3.bindPower;
   cfg.config.runPower = moduleData->afhds3.runPower;
   cfg.config.emiStandard = EMI_STANDARD::FCC;
   cfg.config.telemetry = moduleData->afhds3.telemetry; //always use bidirectional mode
   cfg.config.pwmFreq = moduleData->afhds3.rxFreq();
-
-
-
   cfg.config.serialMode = isSbus(moduleData->subType) ? SERIAL_MODE::SBUS_MODE : SERIAL_MODE::IBUS;
   cfg.config.pulseMode = isPWM(moduleData->subType) ? PULSE_MODE::PWM: PULSE_MODE::PPM_MODE;
   cfg.config.channelCount = 8 + moduleData->channelsCount;

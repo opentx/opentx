@@ -56,6 +56,15 @@ void getModuleStatusString(uint8_t moduleIdx, char * statusText) {
 
 }
 
+ModuleSettingsMode getModuleMode(int moduleIndex)
+{
+  return (ModuleSettingsMode)moduleState[moduleIndex].mode;
+}
+void setModuleMode(int moduleIndex, ModuleSettingsMode mode)
+{
+  moduleState[moduleIndex].mode = mode;
+}
+
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;
