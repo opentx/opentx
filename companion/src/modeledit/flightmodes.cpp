@@ -316,6 +316,8 @@ void FlightModePanel::update()
   for (int i = 0; i < reCount; i++) {
     updateRotaryEncoder(i);
   }
+
+  emit nameModified();
 }
 
 void FlightModePanel::updateGVar(int index)
@@ -737,9 +739,8 @@ void FlightModePanel::cmClear()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_CLEAR, phaseIdx);
 
-  update();
+  emit datachanged();
   emit modified();
-  emit nameModified();
 }
 
 void FlightModePanel::cmClearAll()
@@ -766,7 +767,6 @@ void FlightModePanel::cmClearAll()
 
   emit datachanged();
   emit modified();
-  emit nameModified();
 }
 
 void FlightModePanel::cmCopy()
@@ -844,7 +844,6 @@ void FlightModePanel::cmDelete()
 
   emit datachanged();
   emit modified();
-  emit nameModified();
 }
 
 void FlightModePanel::cmInsert()
@@ -896,7 +895,6 @@ void FlightModePanel::cmInsert()
 
   emit datachanged();
   emit modified();
-  emit nameModified();
 }
 
 void FlightModePanel::cmMoveDown()
@@ -944,9 +942,8 @@ void FlightModePanel::cmPaste()
       }
     }
 
-    update();
+    emit datachanged();
     emit modified();
-    emit nameModified();
   }
 }
 
@@ -1036,7 +1033,6 @@ void FlightModePanel::swapData(int idx1, int idx2)
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
   emit datachanged();
   emit modified();
-  emit nameModified();
 }
 
 void FlightModePanel::gvOnCustomContextMenuRequested(QPoint pos)
