@@ -472,7 +472,7 @@ void ModelData::convert(RadioDataConversionState & cstate)
 void ModelData::appendUpdateReferenceParams(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2, const int shift)
 {
   if (updRefList) {
-    qDebug() << "Append parameters - type:" << type << " action:" << action << " index1:" << index1 << " index2:" << index2 << " shift:" << shift;
+    //qDebug() << "Append parameters - type:" << type << " action:" << action << " index1:" << index1 << " index2:" << index2 << " shift:" << shift;
     if (updRefList->size() <= MAX_REF_UPDATES)
       updRefList->append(UpdateReferenceParams(type, action, index1, index2, shift));
     else
@@ -482,8 +482,8 @@ void ModelData::appendUpdateReferenceParams(const ReferenceUpdateType type, cons
 
 int ModelData::updateAllReferences(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2, const int shift)
 {
-  Stopwatch s1("ModelData::updateAllReferences");
-  s1.report("Start");
+  //Stopwatch s1("ModelData::updateAllReferences");
+  //s1.report("Start");
 
   int loopcnt = 0;
   int updcnt = 0;
@@ -500,14 +500,14 @@ int ModelData::updateAllReferences(const ReferenceUpdateType type, const Referen
           qDebug() << "Warning: Update iterations terminated early as the list exceeded " << MAX_REF_UPDATES;
           break;
         }
-        qDebug() << "Start of iteration:" << loopcnt;
+        //qDebug() << "Start of iteration:" << loopcnt;
         updcnt += updateReference();
         updRefList->removeFirst();
       }
   }
 
   qDebug() << "Iterations:" << loopcnt << " References updated:" << updcnt;
-  s1.report("Finish");
+  //s1.report("Finish");
 
   return updcnt;
 }
@@ -533,8 +533,8 @@ int ModelData::updateReference()
     return 0;
   }
 
-  Stopwatch s1("ModelData::updateReference");
-  s1.report("Start");
+  //Stopwatch s1("ModelData::updateReference");
+  //s1.report("Start");
 
   Firmware *fw = getCurrentFirmware();
 
@@ -588,17 +588,17 @@ int ModelData::updateReference()
 
   updRefInfo.maxindex--;  //  getCapabilities and constants are 1 based
 
-  qDebug() << "updRefInfo - type:" << updRefInfo.type << " action:" << updRefInfo.action << " index1:" << updRefInfo.index1 << " index2:" << updRefInfo.index2 << " shift:" << updRefInfo.shift;
-  qDebug() << "maxindex:" << updRefInfo.maxindex << "updRefInfo - srcType:" << updRefInfo.srcType << " swtchType:" << updRefInfo.swtchType;
+  //qDebug() << "updRefInfo - type:" << updRefInfo.type << " action:" << updRefInfo.action << " index1:" << updRefInfo.index1 << " index2:" << updRefInfo.index2 << " shift:" << updRefInfo.shift;
+  //qDebug() << "maxindex:" << updRefInfo.maxindex << "updRefInfo - srcType:" << updRefInfo.srcType << " swtchType:" << updRefInfo.swtchType;
 
-  s1.report("Initialise");
+  //s1.report("Initialise");
 
   for (int i = fw->getCapability(NumFirstUsableModule); i < fw->getCapability(NumModules); i++) {
     ModuleData *md = &moduleData[i];
     if (md->protocol != PULSES_OFF && md->failsafeMode == FAILSAFE_CUSTOM && md->hasFailsafes(fw))
       updateModuleFailsafes(md);
   }
-  s1.report("Modules");
+  //s1.report("Modules");
 
   for (int i = 0; i < CPN_MAX_TIMERS; i++) {
     TimerData *td = &timers[i];
@@ -608,7 +608,7 @@ int ModelData::updateReference()
         appendUpdateReferenceParams(REF_UPD_TYPE_TIMER, REF_UPD_ACT_CLEAR, i);
     }
   }
-  s1.report("Timers");
+  //s1.report("Timers");
 
   for (int i = 1; i < CPN_MAX_FLIGHT_MODES; i++) {  //  skip FM0 as switch not used
     FlightModeData *fmd = &flightModeData[i];
@@ -618,7 +618,7 @@ int ModelData::updateReference()
         appendUpdateReferenceParams(REF_UPD_TYPE_FLIGHT_MODE, REF_UPD_ACT_CLEAR, i);
     }
   }
-  s1.report("Flight Modes");
+  //s1.report("Flight Modes");
 
   for (int i = 0; i < CPN_MAX_EXPOS; i++) {
     ExpoData *ed = &expoData[i];
@@ -640,7 +640,7 @@ int ModelData::updateReference()
       }
     }
   }
-  s1.report("Inputs");
+  //s1.report("Inputs");
 
   for (int i = 0; i < CPN_MAX_MIXERS; i++) {
     MixData *md = &mixData[i];
@@ -662,7 +662,7 @@ int ModelData::updateReference()
       }
     }
   }
-  s1.report("Mixes");
+  //s1.report("Mixes");
 
   for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
     LimitData *ld = &limitData[i];
@@ -673,7 +673,7 @@ int ModelData::updateReference()
       updateLimitCurveRef(ld->curve);
     }
   }
-  s1.report("Outputs");
+  //s1.report("Outputs");
 
   for (int i = 0; i < CPN_MAX_LOGICAL_SWITCHES; i++) {
     LogicalSwitchData *lsd = &logicalSw[i];
@@ -716,7 +716,7 @@ int ModelData::updateReference()
       }
     }
   }
-  s1.report("Logical Switches");
+  //s1.report("Logical Switches");
 
   for (int i = 0; i < CPN_MAX_SPECIAL_FUNCTIONS; i++) {
     CustomFunctionData *cfd = &customFn[i];
@@ -732,13 +732,13 @@ int ModelData::updateReference()
       }
     }
   }
-  s1.report("Special Functions");
+  //s1.report("Special Functions");
 
   if (fw->getCapability(Heli)) {
     updateSourceRef(swashRingData.aileronSource);
     updateSourceRef(swashRingData.collectiveSource);
     updateSourceRef(swashRingData.elevatorSource);
-    s1.report("Heli");
+    //s1.report("Heli");
   }
 
   if (fw->getCapability(Telemetry)) {
@@ -770,7 +770,7 @@ int ModelData::updateReference()
           break;
       }
     }
-    s1.report("Telemetry");
+    //s1.report("Telemetry");
   }
 
   //  TODO maybe less risk to leave it up to the user??
@@ -801,7 +801,7 @@ int ModelData::updateReference()
   //  TODO Horus CustomScreenData and TopBarData will need checking for updates but Companion does not current handle ie just data blobs refer modeldata.h
 
   qDebug() << "References updated this iteration:" << updRefInfo.updcnt;
-  s1.report("Finish");
+  //s1.report("Finish");
 
   return updRefInfo.updcnt;
 }
@@ -857,7 +857,7 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
 
   if (curRef.type != newRef.type || abs(curRef.index) != newRef.index) {
     newRef.index = curRef.index < 0 ? -newRef.index : newRef.index;
-    qDebug() << "Updated reference: " << curRef.toString() << " -> " << newRef.toString();
+    //qDebug() << "Updated reference: " << curRef.toString() << " -> " << newRef.toString();
     curRef = newRef;
     updRefInfo.updcnt++;
   }
@@ -1218,7 +1218,7 @@ void ModelData::updateModuleFailsafes(ModuleData * md)
   }
 
   if (updated) {
-    qDebug() << "Updated module failsafes";
+    //qDebug() << "Updated module failsafes";
     updRefInfo.updcnt++;
   }
 }
