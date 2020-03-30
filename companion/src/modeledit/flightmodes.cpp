@@ -455,6 +455,7 @@ void FlightModePanel::phaseGVValue_editingFinished()
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
     int gvar = spinBox->property("index").toInt();
     phase.gvars[gvar] = spinBox->value() * model->gvarData[gvar].multiplierSet();
+    emit datachanged();
     emit modified();
   }
 }
@@ -466,6 +467,7 @@ void FlightModePanel::GVName_editingFinished()
     int gvar = lineedit->property("index").toInt();
     memset(&model->gvarData[gvar].name, 0, sizeof(model->gvarData[gvar].name));
     strcpy(model->gvarData[gvar].name, lineedit->text().toLatin1());
+    emit datachanged();
     emit modified();
   }
 }
@@ -482,9 +484,9 @@ void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
     else {
       phase.gvars[gvar] = GVAR_MAX_VALUE + index;
     }
-    updateGVar(gvar);
     if (model->isGVarLinkedCircular(phaseIdx, gvar))
       QMessageBox::warning(this, "Companion", tr("Warning: Global variable links back to itself. Flight Mode 0 value used."));
+    emit datachanged();
     emit modified();
     lock = false;
   }
@@ -496,7 +498,7 @@ void FlightModePanel::phaseGVUnit_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int gvar = comboBox->property("index").toInt();
     model->gvarData[gvar].unit = index;
-    updateGVar(gvar);
+    emit datachanged();
     emit modified();
   }
 }
@@ -507,7 +509,7 @@ void FlightModePanel::phaseGVPrec_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int gvar = comboBox->property("index").toInt();
     model->gvarData[gvar].prec = index;
-    updateGVar(gvar);
+    emit datachanged();
     emit modified();
   }
 }
@@ -530,7 +532,7 @@ void FlightModePanel::phaseGVMin_editingFinished()
         }
       }
     }
-    updateGVar(gvar);
+    emit datachanged();
     emit modified();
   }
 }
@@ -553,7 +555,7 @@ void FlightModePanel::phaseGVMax_editingFinished()
         }
       }
     }
-    updateGVar(gvar);
+    emit datachanged();
     emit modified();
   }
 }
