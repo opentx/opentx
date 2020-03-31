@@ -1563,6 +1563,12 @@ bool menuModelSetup(event_t event)
                       }
                     }
                   }
+                  if (isModuleAFHDS3(moduleIdx) && moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
+                    //trigger bind once
+                    if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+                      newFlag = MODULE_MODE_BIND;
+                    }
+                  }
                   else {
                     newFlag = MODULE_MODE_BIND;
                   }

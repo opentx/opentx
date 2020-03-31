@@ -101,13 +101,10 @@ void PulsesData::processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& 
 void PulsesData::setupFrame()
 {
   if(operationState == State::AWAITING_RESPONSE) {
-    if(repeatCount++ < MAX_RETRIES_AFHDS3) {
-      TRACE("AWAITING_RESPONSE - RETRY %d", getSize());
-      return; //re-send
-    }
+    if(repeatCount++ < MAX_RETRIES_AFHDS3) return; //re-send
     else {
-      TRACE("AWAITING_RESPONSE - RESET");
       clearFrameData();
+      clearQueue();
     }
   }
   else if(operationState == State::UNKNOWN){
@@ -147,11 +144,13 @@ void PulsesData::setupFrame()
     {
       TRACE("AFHDS3 [BIND]");
       setConfigFromModel();
-      addToQueue(COMMAND::MODULE_SET_CONFIG, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, cfg.buffer, sizeof(cfg.buffer));
+      putFrame(COMMAND::MODULE_SET_CONFIG, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, cfg.buffer, sizeof(cfg.buffer));
       requestedModuleMode = MODULE_MODE_E::BIND;
       addToQueue(COMMAND::MODULE_MODE, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, &requestedModuleMode, 1);
-      return;
     }
+    else
+      putFrame(COMMAND::MODULE_STATE, FRAME_TYPE::REQUEST_GET_DATA);
+    return;
   }
   else if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_RANGECHECK) {
     if(cfg.config.runPower != RUN_POWER::RUN_POWER_FIRST) {
@@ -164,7 +163,7 @@ void PulsesData::setupFrame()
     }
   }
   else if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_NORMAL){ //exit bind
-    if(state == STATE_BINDING || requestedModuleMode== MODULE_MODE_E::BIND) {
+    if(state == STATE_BINDING) {
       TRACE("AFHDS3 [EXIT BIND]");
       requestedModuleMode = MODULE_MODE_E::RUN;
       putFrame(COMMAND::MODULE_MODE, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, &requestedModuleMode, 1);
@@ -181,7 +180,6 @@ void PulsesData::setupFrame()
         clearFrameData();
         break;
     case ModuleState::STATE_HW_ERROR:
-    case ModuleState::STATE_BINDING:
     case ModuleState::STATE_UPDATING_RX:
     case ModuleState::STATE_UPDATING_WAIT:
     case ModuleState::STATE_UPDATING_MOD:
