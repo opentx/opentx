@@ -627,9 +627,9 @@ void menuRadioHardware(event_t event)
 #if defined(HARDWARE_INTERNAL_RAS)
         lcdDrawTextAlignedLeft(y, "RAS");
         if (telemetryData.swrInternal.isFresh())
-        lcdDrawNumber(HW_SETTINGS_COLUMN2, y, telemetryData.swrInternal.value());
+          lcdDrawNumber(HW_SETTINGS_COLUMN2, y, telemetryData.swrInternal.value());
         else
-        lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
+          lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
         lcdDrawText(lcdNextPos, y, "/");
 #else
         lcdDrawTextAlignedLeft(y, "Ext. RAS");
