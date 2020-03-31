@@ -281,13 +281,14 @@ void onUpdateReceiverSelection(const char * result)
 
 bool menuRadioSdManager(event_t _event)
 {
-// TODO FREEZE SD MANAGER
-//  if (moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode == MODULE_MODE_BIND && EVT_KEY_MASK(_event) == KEY_EXIT) {
-//    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
-//    CLEAR_POPUP();
-//    killEvents(KEY_EXIT);
-//    _event = 0;
-//  }
+#if defined(PXX2)
+  if (EVT_KEY_MASK(_event) == KEY_EXIT && moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode == MODULE_MODE_BIND) {
+    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
+    CLEAR_POPUP();
+    killEvents(KEY_EXIT);
+    _event = 0;
+  }
+#endif
 
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SD_MANAGER, reusableBuffer.sdManager.count);
@@ -300,7 +301,7 @@ bool menuRadioSdManager(event_t _event)
       // no break;
 
     case EVT_ENTRY_UP:
-      memset(&reusableBuffer.sdManager, 0, sizeof(reusableBuffer.sdManager));
+      memclear(&reusableBuffer.sdManager, sizeof(reusableBuffer.sdManager));
       menuVerticalPosition = 0;
       REFRESH_FILES();
       break;
@@ -375,7 +376,7 @@ bool menuRadioSdManager(event_t _event)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
               if (HAS_SPORT_UPDATE_CONNECTOR() && (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR))
                 POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
-#if 0 // TODO FREEZE SD MANAGER defined(PXX2)
+#if defined(PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_RECEIVER) {
                 if (isReceiverOTAEnabledFromModule(INTERNAL_MODULE, information.productId))
                   POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTERNAL);
@@ -556,7 +557,7 @@ bool menuRadioSdManager(event_t _event)
     }
   }
 
-#if 0 // FREEZE SD MANAGER defined(PXX2)
+#if defined(PXX2)
   if (moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode == MODULE_MODE_BIND) {
     if (reusableBuffer.sdManager.otaUpdateInformation.step == BIND_INIT) {
       if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount > 0) {
