@@ -86,7 +86,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japon\0 ""Europa\0")
 
-#define LEN_USBMODES           TR("\006", "\008")
+#define LEN_USBMODES           TR("\006", "\010")
 #define TR_USBMODES            TR("Pregun""Joyst\0""SDCard""Serie\0", "Pregunta""Joystick""SDCard\0 ""Serie\0  ")
 
 #define LEN_JACKMODES                  "\007"
@@ -106,7 +106,7 @@
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "SilencBeeps\0Voz\0  Haptic"
 
-#define LEN_VVARIOCENTER       "\008"
+#define LEN_VVARIOCENTER       "\010"
 #define TR_VVARIOCENTER        "Tono\0   ""Silencio"
 
 #define LEN_CURVE_TYPES        "\006"
