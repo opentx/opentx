@@ -640,6 +640,7 @@ void menuRadioHardware(event_t event)
         else
           lcdDrawText(lcdNextPos, y, "---");
         break;
+
 #if defined(SPORT_UPDATE_PWR_GPIO)
       case ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER:
         g_eeGeneral.sportUpdatePower = editChoice(HW_SETTINGS_COLUMN2, y, STR_SPORT_UPDATE_POWER_MODE, STR_SPORT_UPDATE_POWER_MODES, g_eeGeneral.sportUpdatePower, 0, 1, attr, event);
