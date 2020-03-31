@@ -156,7 +156,7 @@ class InputEditWindow: public Page {
 
         case CURVE_REF_CUSTOM:
         {
-          auto choice = new Choice(curveParamField, rect, nullptr, -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
+          auto choice = new Choice(curveParamField, rect, -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
           choice->setTextHandler([](int value) {
               return getCurveString(value);
           });

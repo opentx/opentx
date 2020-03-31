@@ -932,6 +932,8 @@ void onBindMenu(const char * result)
   moduleState[moduleIdx].mode  = MODULE_MODE_BIND;
 }
 
+const char * STR_TIMER_MODES[] = {"OFF", "ON", "Start", "Throttle", "Throttle %", "Throttle Start"};
+
 void ModelSetupPage::build(FormWindow * window)
 {
   FormGridLayout grid;
@@ -983,7 +985,7 @@ void ModelSetupPage::build(FormWindow * window)
     // Timer mode
     new StaticText(window, grid.getLabelSlot(true), STR_MODE);
     grid.nextLine();
-    new Choice(group, timerGrid.getSlot(2, 0), "\011""OFF\0     ""ON\0      ""Start\0   ""Thr\0     ""Thr%\0    ""Thr Start", 0, TMRMODE_MAX, GET_SET_DEFAULT(timer->mode));
+    new Choice(group, timerGrid.getSlot(2, 0), STR_TIMER_MODES, 0, TMRMODE_MAX, GET_SET_DEFAULT(timer->mode));
     new SwitchChoice(group, timerGrid.getSlot(2, 1), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(timer->swtch));
     timerGrid.nextLine();
 

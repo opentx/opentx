@@ -91,7 +91,7 @@ class SpecialFunctionEditPage : public Page {
         case FUNC_RESET:
           if (CFN_PARAM(cfn) < FUNC_RESET_PARAM_FIRST_TELEM) {
             new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_RESET);
-            auto choice = new Choice(specialFunctionOneWindow, grid.getFieldSlot(), nullptr, 0,
+            auto choice = new Choice(specialFunctionOneWindow, grid.getFieldSlot(), 0,
                                      FUNC_RESET_PARAM_FIRST_TELEM + lastUsedTelemetryIndex(),
                                      GET_SET_DEFAULT(CFN_PARAM(cfn)));
             choice->setAvailableHandler(isSourceAvailableInResetSpecialFunction);
@@ -139,7 +139,7 @@ class SpecialFunctionEditPage : public Page {
 
         case FUNC_SET_TIMER: {
           new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_TIMER);
-          auto timerchoice = new Choice(specialFunctionOneWindow, grid.getFieldSlot(), nullptr, 0, TIMERS - 1, GET_SET_DEFAULT(CFN_TIMER_INDEX(cfn)));
+          auto timerchoice = new Choice(specialFunctionOneWindow, grid.getFieldSlot(), 0, TIMERS - 1, GET_SET_DEFAULT(CFN_TIMER_INDEX(cfn)));
           timerchoice->setTextHandler([](int32_t value) {
             return std::string(STR_TIMER) + std::to_string(value + 1);
           });

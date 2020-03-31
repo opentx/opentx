@@ -84,7 +84,7 @@ class GVarNumberEdit: public FormGroup
       // The main field
       int32_t value = getValue();
       if (GV_IS_GV_VALUE(value, vmin, vmax)) {
-        auto result = new Choice(this, {0, 0, width() - GVAR_BUTTON_WIDTH, height()}, nullptr, -MAX_GVARS, MAX_GVARS - 1,
+        auto result = new Choice(this, {0, 0, width() - GVAR_BUTTON_WIDTH, height()}, -MAX_GVARS, MAX_GVARS - 1,
                                  [=]() {
                                      uint16_t gvar1 = GV_GET_GV1_VALUE(vmin, vmax);
                                      return GV_INDEX_CALC_DELTA(getValue(), gvar1);

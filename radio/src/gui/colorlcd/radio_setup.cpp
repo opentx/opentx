@@ -410,7 +410,7 @@ void RadioSetupPage::build(FormWindow * window)
 
   // Audio language
   new StaticText(window, grid.getLabelSlot(), STR_VOICE_LANGUAGE);
-  auto choice = new Choice(window, grid.getFieldSlot(), nullptr, 0, DIM(languagePacks) - 2, GET_VALUE(currentLanguagePackIdx),
+  auto choice = new Choice(window, grid.getFieldSlot(), 0, DIM(languagePacks) - 2, GET_VALUE(currentLanguagePackIdx),
                            [](uint8_t newValue) {
                              currentLanguagePackIdx = newValue;
                              currentLanguagePack = languagePacks[currentLanguagePackIdx];
@@ -455,7 +455,7 @@ void RadioSetupPage::build(FormWindow * window)
 
   // RX channel order
   new StaticText(window, grid.getLabelSlot(), STR_RXCHANNELORD); // RAET->AETR
-  choice = new Choice(window, grid.getFieldSlot(), nullptr, 0, 4*3*2 - 1, GET_SET_DEFAULT(g_eeGeneral.templateSetup));
+  choice = new Choice(window, grid.getFieldSlot(), 0, 4*3*2 - 1, GET_SET_DEFAULT(g_eeGeneral.templateSetup));
   choice->setTextHandler([](uint8_t value) {
     char s[5];
     for (uint8_t i=0; i<4; i++) {
@@ -468,7 +468,7 @@ void RadioSetupPage::build(FormWindow * window)
 
   // Stick mode
   new StaticText(window, grid.getLabelSlot(), STR_MODE);
-  choice = new Choice(window, grid.getFieldSlot(), nullptr, 0, 3, GET_DEFAULT(g_eeGeneral.stickMode),
+  choice = new Choice(window, grid.getFieldSlot(), 0, 3, GET_DEFAULT(g_eeGeneral.stickMode),
                       [=](uint8_t newValue) {
                         pausePulses();
                         g_eeGeneral.stickMode = newValue;
