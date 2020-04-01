@@ -339,9 +339,9 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
     att &= ~FONTSIZE_MASK;
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
+    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
+    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEADING0|LEFT);
     y += FH;
     lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos, y, ':', att);
@@ -352,9 +352,9 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
   else {
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.year-2000, att|LEFT);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.year-2000, att|LEADING0|LEFT);
     lcdDrawNumber(lcdNextPos+11, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
