@@ -465,22 +465,24 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   int idx = 0;
   int mode = MODE(flags);
   bool neg = false;
-  if (val < 0) {
-    val = -val;
+  int64_t value = val;
+  
+  if (value < 0) {
+    value = -value;
     neg = true;
   }
   do {
-    *--s = '0' + (val % 10);
+    *--s = '0' + (value % 10);
     ++idx;
-    val /= 10;
+    value /= 10;
     if (mode!=0 && idx==mode) {
       mode = 0;
       *--s = '.';
-      if (val==0) {
+      if (value==0) {
         *--s = '0';
       }
     }
-  } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
+  } while (value!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
   if (neg) {
     *--s = '-';
   }
