@@ -624,16 +624,16 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_RAS:
-#if defined(PCBX9LITE) && !defined(PCBX9LITES)
-        lcdDrawTextAlignedLeft(y, "Ext. RAS");
-        lcdNextPos = HW_SETTINGS_COLUMN2;
-#else
+#if defined(HARDWARE_INTERNAL_RAS)
         lcdDrawTextAlignedLeft(y, "RAS");
         if (telemetryData.swrInternal.isFresh())
           lcdDrawNumber(HW_SETTINGS_COLUMN2, y, telemetryData.swrInternal.value());
         else
           lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
         lcdDrawText(lcdNextPos, y, "/");
+#else
+        lcdDrawTextAlignedLeft(y, "Ext. RAS");
+        lcdNextPos = HW_SETTINGS_COLUMN2;
 #endif
         if (telemetryData.swrExternal.isFresh())
           lcdDrawNumber(lcdNextPos, y, telemetryData.swrExternal.value());

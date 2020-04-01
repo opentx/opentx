@@ -146,6 +146,10 @@ void SDRAM_Init();
 // Pulses driver
 #define INTERNAL_MODULE_ON()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
+  #define HARDWARE_INTERNAL_RAS
+#endif
+
 #if defined(INTMODULE_USART)
   #define INTERNAL_MODULE_OFF()        intmoduleStop()
 #else
