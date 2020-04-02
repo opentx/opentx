@@ -815,11 +815,11 @@
 #define TR_BLUETOOTH_LOCAL_ADDR "Dir. local"
 #define TR_BLUETOOTH_PIN_CODE   "Codigo PIN"
 #define TR_BAUDRATE             "Velocidad BT"
-#define LEN_BLUETOOTH_MODES     "\011"
+#define LEN_BLUETOOTH_MODES     "\012"
 #if defined(PCBX9E)
-#define TR_BLUETOOTH_MODES      "---\0     ""Activo\0 "
+#define TR_BLUETOOTH_MODES      "---\0      ""Activo\0   "
 #else
-#define TR_BLUETOOTH_MODES      "---\0     ""Telemetria""Entrenador"
+#define TR_BLUETOOTH_MODES      "---\0      ""Telemetria""Entrenador"
 #endif
 #define TR_SD_INFO_TITLE       "SD INFO"
 #define TR_SD_TYPE             "Tipo:"
