@@ -23,9 +23,15 @@
 
 bool menuRadioDiagTouch(event_t event)
 {
+  static bool touchAvailable = false;
+
   SIMPLE_SUBMENU(STR_MENU_RADIO_TOUCH, ICON_MODEL_SETUP, 1);
 
-  if (touchInit()) {
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
+    touchAvailable = touchInit();
+  }
+
+  if (touchAvailable) {
     lcdDrawText(LCD_W / 2, LCD_H / 2, STR_TOUCH_EXIT, CENTERED);
   }
   else {
