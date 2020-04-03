@@ -276,6 +276,9 @@ inline bool secondLineStatus(uint8_t moduleIdx) {
 #if defined(MULTIMODULE)
   return isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid();
 #endif
+#if defined(AFHDS3)
+  return isModuleAFHDS3(moduleIdx);
+#endif
   return false;
 }
 

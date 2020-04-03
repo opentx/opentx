@@ -111,7 +111,7 @@ enum MenuModelSetupItems {
 #if defined(AFHDS3)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_RX_FREQ,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_TELEMETRY,
-  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_BIND_POWER,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_ACTUAL_POWER,
 #endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE,
@@ -1762,12 +1762,9 @@ bool menuModelSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_DISABLE_TELEM);
         g_model.moduleData[moduleIdx].afhds3.telemetry = !editCheckBox(!g_model.moduleData[moduleIdx].afhds3.telemetry, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_BIND_POWER:
-        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_AFHDS3_BIND_POWER);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_BIND_POWERS, g_model.moduleData[moduleIdx].afhds3.bindPower, LEFT | attr);
-        if (attr) {
-          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].afhds3.bindPower, afhds3::BIND_POWER::BIND_POWER_FIRST, afhds3::BIND_POWER::BIND_POWER_LAST);
-        }
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_ACTUAL_POWER:
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_AFHDS3_ACTUAL_POWER);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_POWERS, g_model.moduleData[moduleIdx].afhds3.bindPower, LEFT);
         break;
 #endif
 
@@ -1793,7 +1790,7 @@ bool menuModelSetup(event_t event)
       lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_SYNC);
 
       char statusText[64];
-      getMultiSyncStatus(moduleIdx).getRefreshString(statusText);
+      getModuleSyncStatusString(moduleIdx, statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }

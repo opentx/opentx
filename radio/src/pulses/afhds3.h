@@ -29,13 +29,6 @@
 #include "opentx_helpers.h"
 #include "pulses_common.h"
 #include <cstring>
-#include <queue>
-
-/**
- * Function type for async module operations like bind/range check
- */
-
-typedef void (*asyncOperationCallback_t) (bool);
 
 #define AFHDS_MAX_PULSES 64
 #define AFHDS_MAX_PULSES_TRANSITIONS AFHDS_MAX_PULSES * 10
@@ -237,7 +230,6 @@ enum CMD_RESULT {
   SUCCESS = 0x02,
 };
 
-
 #define MIN_FREQ 50
 #define MAX_FREQ 400
 #define MAX_CHANNELS 18
@@ -418,8 +410,13 @@ public:
    */
   void getStatusString(char * statusText) const;
   /**
-   * Starts or queues binding action
-   * @param callback callback pointer
+   * Gets actual power source and voltage
+   */
+  void getPowerStatus(char* buffer) const;
+
+  RUN_POWER actualRunPower();
+  /**
+   * Sends stop command to prevent any further module operations
    */
   void stop();
 protected:
@@ -432,7 +429,7 @@ private:
   void parseData(uint8_t* rxBuffer, uint8_t rxBufferCount);
   void setState(uint8_t state);
   bool syncSettings();
-
+  void requestInfoAndRun(bool send = false);
   uint8_t setFailSafe(int16_t* target);
   inline int16_t convert(int channelValue);
   void onModelSwitch();
@@ -442,7 +439,15 @@ private:
   void trace(const char* message, uint8_t * payload = nullptr, uint8_t payloadSize = 0);
 
   void processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
+
+  //friendship declaration - use for passing telemetry
   friend void processTelemetryData(uint8_t module, uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
+
+  /**
+   * Returns max power that currently can be set - use it to validate before synchronization of settings
+   */
+  RUN_POWER getMaxRunPower();
+
 
   /**
    * Index of the module
@@ -462,9 +467,14 @@ private:
    */
   uint16_t repeatCount;
   /**
-   * IDLE count used for counting for how many cycles only channel data was send to module
+   * Command count used for counting actual number of commands sent in run mode
    */
-  uint32_t idleCount;
+  uint32_t cmdCount;
+  /**
+   * Command index used to send one of special commands periodically
+   * Special commands are part of array periodicRequestCommands
+   */
+  uint32_t commandIndex;
   /**
    * Actual power source of the module - should be requested time to time
    * Currently requested once

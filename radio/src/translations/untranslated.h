@@ -130,9 +130,6 @@
 #define LEN_AFHDS3_PROTOCOLS           "\x00a"
 #define TR_AFHDS3_PROTOCOLS            " PWM/IBUS "" PWM/SBUS "" PPM/IBUS "" PPM/SBUS "
 
-#define LEN_AFHDS3_POWERS              "\007"
-#define TR_AFHDS3_POWERS               "15 dBm ""20 dBm ""27 dBm ""30 dBm ""33 dBm"
-
-#define LEN_AFHDS3_BIND_POWERS         "\007"
-#define TR_AFHDS3_BIND_POWERS          "-16 dBm"" -5 dBm""  0 dBm""  5 dBm"" 16 dBm"
+#define LEN_AFHDS3_POWERS              "\006"
+#define TR_AFHDS3_POWERS               "25 mW ""100 mW""500 mW""1 W   ""2 W   "
 

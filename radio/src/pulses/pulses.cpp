@@ -45,6 +45,7 @@ void getModuleStatusString(uint8_t moduleIdx, char * statusText) {
   *statusText = 0;
 #if defined(MULTIMODULE)
   if(isModuleMultimodule(moduleIdx)) {
+    //change it
     getMultiModuleStatus(moduleIdx).getStatusString(statusText);
   }
 #endif
@@ -53,8 +54,21 @@ void getModuleStatusString(uint8_t moduleIdx, char * statusText) {
     extmodulePulsesData.afhds3.getStatusString(statusText);
   }
 #endif
-
 }
+void getModuleSyncStatusString (uint8_t moduleIdx, char * statusText) {
+  *statusText = 0;
+#if defined(MULTIMODULE)
+  if(isModuleMultimodule(moduleIdx)) {
+    getMultiSyncStatus(moduleIdx).getRefreshString(statusText);
+  }
+#endif
+#if defined(AFHDS3)
+  if(moduleIdx == EXTERNAL_MODULE && isModuleAFHDS3(moduleIdx)) {
+    extmodulePulsesData.afhds3.getStatusString(statusText);
+  }
+#endif
+}
+
 
 ModuleSettingsMode getModuleMode(int moduleIndex)
 {

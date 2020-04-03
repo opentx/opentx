@@ -325,6 +325,7 @@ void extmodulePpmStart();
 void intmoduleStop();
 void extmoduleStop();
 void getModuleStatusString(uint8_t moduleIdx, char * statusText);
+void getModuleSyncStatusString(uint8_t moduleIdx, char * statusText);
 
 inline void startPulses()
 {
