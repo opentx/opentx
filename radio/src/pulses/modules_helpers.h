@@ -25,6 +25,8 @@
 #include "definitions.h"
 #include "opentx_helpers.h"
 #include "telemetry/telemetry.h"
+#include "storage/storage.h"
+
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
 #endif
@@ -419,11 +421,6 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
 {
   return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
-}
-
-inline bool isModuleRangeAvailable(uint8_t moduleIdx)
-{
-  return isModuleXJTD16(moduleIdx) || isModuleXJTLR12(moduleIdx);
 }
 
 constexpr uint8_t MAX_RXNUM = 63;

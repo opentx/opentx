@@ -117,8 +117,8 @@ void drawTimerWithMode(coord_t x, coord_t y, uint8_t index, LcdFlags att);
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags=0);
 
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode, uint8_t len);
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode=0);
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode, uint8_t len);
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);

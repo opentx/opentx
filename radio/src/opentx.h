@@ -255,17 +255,6 @@
 
 #include "myeeprom.h"
 
-inline void memclear(void * p, size_t size)
-{
-  memset(p, 0, size);
-}
-
-inline bool is_memclear(void * p, size_t size)
-{
-  uint8_t * buf = (uint8_t *)p;
-  return buf[0] == 0 && memcmp(buf, buf + 1, size - 1) == 0;
-}
-
 void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBHORUS)
@@ -646,7 +635,7 @@ static inline void GET_ADC_IF_MIXER_NOT_RUNNING()
 
 #include "sbus.h"
 
-void backlightOn();
+void resetBacklightTimeout();
 void checkBacklight();
 
 #define BITMASK(bit) (1<<(bit))

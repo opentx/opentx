@@ -104,7 +104,7 @@ void rotaryEncoderCheck()
 #endif
 #if !defined(BOOT)
     if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
-      backlightOn();
+      resetBacklightTimeout();
     }
     inactivity.counter = 0;
 #endif

@@ -117,6 +117,7 @@ Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
 
   ;Registry information for add/remove programs
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayName" "OpenTX Companion @VERSION_FAMILY@"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayVersion" "@VERSION@"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "Publisher" "OpenTX"

@@ -98,6 +98,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE,
 #if defined (MULTIMODULE)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
 #endif
@@ -130,8 +131,6 @@ enum MenuModelSetupItems {
 
 #define MODEL_SETUP_2ND_COLUMN        (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH-1)
 #define MODEL_SETUP_3RD_COLUMN        (MODEL_SETUP_2ND_COLUMN+6*FW)
-#define MODEL_SETUP_BIND_OFS          3*FW-2
-#define MODEL_SETUP_RANGE_OFS         7*FW
 #define MODEL_SETUP_SET_FAILSAFE_OFS  10*FW-2
 
 void copySelection(char * dst, const char * src, uint8_t size)
@@ -250,11 +249,6 @@ inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 {
   if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
     return 1;
-#if defined(MULTIMODULE)
-  else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-    return 1 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
-  }
-#endif
   else
     return 0;
 }
@@ -353,7 +347,7 @@ void menuModelSetup(event_t event)
     LABEL(InternalModule),
       INTERNAL_MODULE_TYPE_ROWS,
       MODULE_CHANNELS_ROWS(INTERNAL_MODULE),
-      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleRangeAvailable(INTERNAL_MODULE)? (uint8_t)2 : (uint8_t)1)), // RxNum, Range check and Register buttons
+      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleBindRangeAvailable(INTERNAL_MODULE)? (uint8_t)2 : (uint8_t)1)), // RxNum, Range check and Register buttons
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum for ACCESS
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), // Failsafe
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), // Range check and Register buttons
@@ -364,6 +358,7 @@ void menuModelSetup(event_t event)
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_TYPE_ROW(),
+      MULTIMODULE_TYPE_ROW(EXTERNAL_MODULE)
       MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
       MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),
@@ -815,15 +810,6 @@ void menuModelSetup(event_t event)
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleR9MNonAccess(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
-#if defined(MULTIMODULE)
-        else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-          uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-          // Do not use MODEL_SETUP_3RD_COLUMN here since some the protocol string are so long that we cannot afford the 2 spaces (+6) here
-          lcdDrawMultiProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
-          if (MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
-            lcdDrawMultiSubProtocolString(lcdNextPos + 3, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-        }
-#endif
         if (attr && menuHorizontalPosition == 0) {
           if (s_editMode > 0) {
             g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
@@ -907,6 +893,40 @@ void menuModelSetup(event_t event)
 #endif
         }
         break;
+
+#if defined(MULTIMODULE)
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL:
+      {
+        lcdDrawTextAlignedLeft(y, TR_TYPE);
+        uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
+        lcdDrawMultiProtocolString(MODEL_SETUP_2ND_COLUMN, y, EXTERNAL_MODULE, multi_rfProto, menuHorizontalPosition == 0 ? attr : 0);
+        if (MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
+          lcdDrawMultiSubProtocolString(MODEL_SETUP_3RD_COLUMN + 15, y, EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].subType,
+                                        menuHorizontalPosition == 1 ? attr : 0);
+        if (attr) {
+          switch (menuHorizontalPosition) {
+            case 0: {
+              int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
+              CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+              if (checkIncDec_Ret) {
+                g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
+                g_model.moduleData[EXTERNAL_MODULE].subType = 0;
+                resetMultiProtocolsOptions(EXTERNAL_MODULE);
+              }
+            }
+              break;
+
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, getMaxMultiSubtype(EXTERNAL_MODULE));
+              if (checkIncDec_Ret) {
+                resetMultiProtocolsOptions(EXTERNAL_MODULE);
+              }
+              break;
+          }
+        }
+      }
+      break;
+#endif
 
       case ITEM_MODEL_SETUP_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
@@ -1093,9 +1113,8 @@ void menuModelSetup(event_t event)
         }
         else {
           horzpos_t l_posHorz = menuHorizontalPosition;
-          coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
+          coord_t bindButtonPos = MODEL_SETUP_2ND_COLUMN;
           if (!isModuleRxNumAvailable(moduleIdx)) {
-            xOffsetBind = 0;
             lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
           }
@@ -1103,8 +1122,8 @@ void menuModelSetup(event_t event)
             lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-            if (xOffsetBind)
-              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            bindButtonPos = lcdNextPos + FW;
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
@@ -1121,8 +1140,8 @@ void menuModelSetup(event_t event)
                 }
               }
             }
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
+            lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {

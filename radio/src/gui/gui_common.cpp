@@ -832,6 +832,7 @@ uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
 const char STR_SUBTYPE_FLYSKY[] =     "\004""Std\0""V9x9""V6x6""V912""CX20";
 const char STR_SUBTYPE_HUBSAN[] =     "\004""H107""H301""H501";
 const char STR_SUBTYPE_FRSKY[] =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch";
+const char STR_SUBTYPE_FRSKYX2[] =    "\007""D16\0   ""D16 8ch""LBT(EU)""LBT 8ch";
 const char STR_SUBTYPE_HISKY[] =      "\005""Std\0 ""HK310";
 const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506";
 const char STR_SUBTYPE_DSM[] =        "\006""2 22ms""2 11ms""X 22ms""X 11ms";
@@ -923,6 +924,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_ESKY150,    1, false, false,  STR_SUBTYPE_ESKY150,   nullptr},
   {MODULE_SUBTYPE_MULTI_FX816,      0, false, false,  STR_SUBTYPE_FX816,     nullptr},
   {MODULE_SUBTYPE_MULTI_HOTT,       0, true,  false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FRSKYX2,    3, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)

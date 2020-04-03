@@ -699,9 +699,11 @@ void SimulatorWidget::restoreRadioWidgetsState()
 void SimulatorWidget::saveRadioWidgetsState(QList<QByteArray> & state)
 {
   if (m_radioWidgets.size()) {
-    state.clear();
-    foreach (RadioWidget * rw, m_radioWidgets)
-      state.append(rw->getStateData());
+    if (g.simuSW()) {
+      state.clear();
+      foreach (RadioWidget * rw, m_radioWidgets)
+        state.append(rw->getStateData());
+    }
   }
 }
 

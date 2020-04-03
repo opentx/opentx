@@ -24,7 +24,7 @@
 #include "lcd.h"
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix, const char * suffix);
-void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att);
+void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
 int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags attr, event_t event, IsValueAvailable isValueAvailable=nullptr);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event);
