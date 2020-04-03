@@ -607,6 +607,7 @@
 #define TR_MENUVERSION         "VERSION"
 #define TR_MENU_RADIO_SWITCHES            TR("BRYTARE","TEST AV BRYTARE")
 #define TR_MENU_RADIO_ANALOGS             "ANALOGA VÄRDEN"
+#define TR_MENU_RADIO_TOUCH            "TOUCHSCREEN TEST"
 #define TR_MENUCALIBRATION     "KALIBRERING"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "[Spara Trimvärden]"
@@ -934,6 +935,8 @@
 #define TR_KEYS_BTN                BUTTON(TR("SW","Switches"))
 #define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
+#define TR_TOUCH_NOTFOUND              "Touch hardware not found"
+#define TR_TOUCH_EXIT                  "Touch screen to exit"
 #define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"

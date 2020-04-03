@@ -609,6 +609,7 @@
 #define TR_MENUVERSION         "VERSIONE"
 #define TR_MENU_RADIO_SWITCHES            "DIAG"
 #define TR_MENU_RADIO_ANALOGS             "ANAS"
+#define TR_MENU_RADIO_TOUCH            "TOUCHSCREEN TEST"
 #define TR_MENUCALIBRATION     "CALIBRAZIONE"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trims => Subtrims"
@@ -935,6 +936,8 @@
 #define TR_KEYS_BTN                BUTTON(TR("SW","Interruttori"))
 #define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analogico","Analogici"))
+#define TR_TOUCH_NOTFOUND              "Touch hardware not found"
+#define TR_TOUCH_EXIT                  "Touch screen to exit"
 #define TR_CALIBRATION                    TR("Calibraz.", "Calibrazione")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer", "Maestro/Allievo")

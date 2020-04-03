@@ -610,6 +610,7 @@
 #define TR_MENUVERSION                 "VERSION"
 #define TR_MENU_RADIO_SWITCHES         TR("INTERS", "TEST INTERRUPTEURS")
 #define TR_MENU_RADIO_ANALOGS          TR("ANAS", "ENTREES ANALOGIQUES")
+#define TR_MENU_RADIO_TOUCH            "TOUCHSCREEN TEST"
 #define TR_MENUCALIBRATION             "CALIBRATION"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS             "Trims => Subtrims"
@@ -935,6 +936,8 @@
 #define TR_KEYS_BTN                    BUTTON(TR("Btns","Inters"))
 #define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
+#define TR_TOUCH_NOTFOUND              "Touch hardware not found"
+#define TR_TOUCH_EXIT                  "Touch screen to exit"
 #define TR_CALIBRATION                 "Calibration"
 #define TR_SET                         BUTTON("Déf")
 #define TR_TRAINER                     "Ecolage"

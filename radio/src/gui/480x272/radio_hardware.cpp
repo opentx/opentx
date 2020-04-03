@@ -418,13 +418,20 @@ bool menuRadioHardware(event_t event)
         lcdDrawText(HW_SETTINGS_COLUMN2, y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
         lcdDrawText(lcdNextPos + 10, y, STR_KEYS_BTN, menuHorizontalPosition == 1 ? attr : 0);
 #if defined(HARDWARE_TOUCH)
-        lcdDrawText(lcdNextPos + 10, y, STR_KEYS_BTN, menuHorizontalPosition == 2 ? attr : 0);
+        lcdDrawText(lcdNextPos + 10, y, STR_TOUCH_BTN, menuHorizontalPosition == 2 ? attr : 0);
 #endif
         if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
-          if (menuHorizontalPosition == 0)
-            pushMenu(menuRadioDiagAnalogs);
-          else
-            pushMenu(menuRadioDiagKeys);
+          switch (menuHorizontalPosition) {
+            case 0:
+              pushMenu(menuRadioDiagAnalogs);
+              break;
+            case 1:
+              pushMenu(menuRadioDiagKeys);
+              break;
+            case 2:
+              pushMenu(menuRadioDiagTouch);
+              break;
+          }
         }
         break;
     }

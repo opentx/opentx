@@ -608,6 +608,7 @@
 #define TR_MENUVERSION         "WERSJA"
 #define TR_MENU_RADIO_SWITCHES            TR("PRZEŁ","TEST PRZEŁ")
 #define TR_MENU_RADIO_ANALOGS             TR("WE-ANA","WEJŚCIA ANALOG.")
+#define TR_MENU_RADIO_TOUCH            "TOUCHSCREEN TEST"
 #define TR_MENUCALIBRATION     "KALIBRACJA"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trymery => Subtrimy"
@@ -934,6 +935,8 @@
 #define TR_KEYS_BTN                BUTTON(TR("SW","Switches"))
 #define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
+#define TR_TOUCH_NOTFOUND              "Touch hardware not found"
+#define TR_TOUCH_EXIT                  "Touch screen to exit"
 #define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Port Trenera"

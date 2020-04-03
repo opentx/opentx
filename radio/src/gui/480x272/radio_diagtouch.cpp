@@ -18,9 +18,19 @@
  * GNU General Public License for more details.
  */
 
+#include "opentx.h"
 #include "ft5x06.h"
 
-bool touchInit(void)
+bool menuRadioDiagTouch(event_t event)
 {
+  SIMPLE_SUBMENU(STR_MENU_RADIO_TOUCH, ICON_MODEL_SETUP, 1);
+
+  if (touchInit()) {
+    lcdDrawText(LCD_W / 2, LCD_H / 2, STR_TOUCH_EXIT, CENTERED);
+  }
+  else {
+    lcdDrawText(LCD_W / 2, LCD_H / 2, STR_TOUCH_NOTFOUND, CENTERED);
+  }
+
   return true;
 }
