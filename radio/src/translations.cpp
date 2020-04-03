@@ -315,6 +315,7 @@ const char STR_MONITOR_SCREENS[] = TR_MONITOR_SCREENS;
 const char STR_RESET_BTN[] = TR_RESET_BTN;
 const char STR_DEBUG[] = TR_DEBUG;
 const char STR_KEYS_BTN[] = TR_KEYS_BTN;
+const char STR_TOUCH_BTN[]  = TR_TOUCH_BTN;
 const char STR_ANALOGS_BTN[] = TR_ANALOGS_BTN;
 const char STR_CALIBRATION[] = TR_CALIBRATION;
 const char STR_NO_TOOLS[] = TR_NO_TOOLS;

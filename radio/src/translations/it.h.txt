@@ -933,6 +933,7 @@
 #define TR_RESET_BTN           "[Reset]"
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                BUTTON(TR("SW","Interruttori"))
+#define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analogico","Analogici"))
 #define TR_CALIBRATION                    TR("Calibraz.", "Calibrazione")
 #define TR_SET                 "[Set]"

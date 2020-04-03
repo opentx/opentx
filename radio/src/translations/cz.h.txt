@@ -912,6 +912,7 @@
 #define TR_RESET_BTN                   BUTTON("Reset")
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                    BUTTON(TR("SW","Přepínače"))
+#define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogy"))
 #define TR_CALIBRATION                 "Kalibrace"
 #define TR_SET                         BUTTON("Nast")

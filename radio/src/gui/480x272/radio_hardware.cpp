@@ -131,6 +131,12 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define SPORT_POWER_ROWS
 #endif
 
+#if defined(HARDWARE_TOUCH)
+  #define DEBUG_ROW     2
+#else
+  #define DEBUG_ROW     1
+#endif
+
 bool menuRadioHardware(event_t event)
 {
   MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, {
@@ -162,7 +168,7 @@ bool menuRadioHardware(event_t event)
     0, /* ADC filter */
     READONLY_ROW /* RAS */,
     SPORT_POWER_ROWS
-    1, /* Debug */
+    DEBUG_ROW, /* Debug */
   });
 
   if (menuEvent) {
@@ -411,6 +417,9 @@ bool menuRadioHardware(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DEBUG);
         lcdDrawText(HW_SETTINGS_COLUMN2, y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
         lcdDrawText(lcdNextPos + 10, y, STR_KEYS_BTN, menuHorizontalPosition == 1 ? attr : 0);
+#if defined(HARDWARE_TOUCH)
+        lcdDrawText(lcdNextPos + 10, y, STR_KEYS_BTN, menuHorizontalPosition == 2 ? attr : 0);
+#endif
         if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
           if (menuHorizontalPosition == 0)
             pushMenu(menuRadioDiagAnalogs);

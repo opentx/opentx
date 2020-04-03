@@ -493,6 +493,7 @@ extern const char STR_MONITOR_SCREENS[];
 extern const char STR_RESET_BTN[];
 extern const char STR_DEBUG[];
 extern const char STR_KEYS_BTN[];
+extern const char STR_TOUCH_BTN[];
 extern const char STR_ANALOGS_BTN[];
 extern const char STR_CALIBRATION[];
 extern const char STR_NO_TOOLS[];

@@ -913,6 +913,7 @@
 #define TR_RESET_BTN                   BUTTON("Reset")
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                    BUTTON(TR("Keys", "Switches"))
+#define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
 #define TR_CALIBRATION                 "Calibration"
 #define TR_SET                         BUTTON("Set")
