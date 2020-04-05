@@ -45,26 +45,17 @@ class AutoPrecisionComboBox: public QComboBox
       init();
     }
 
-    explicit AutoPrecisionComboBox(QWidget * parent = nullptr, GenericPanel * panel = nullptr):
-      QComboBox(parent)
-    {
-      setPanel(panel);
-      init();
-    }
-
     explicit AutoPrecisionComboBox(unsigned int & field, unsigned int minDecimals = 0, unsigned int maxDecimals = 1, bool padding = false, QString suffix = "", QWidget * parent = nullptr, GenericPanel * panel = nullptr):
       QComboBox(parent)
     {
-      setField(field, minDecimals, maxDecimals, padding, suffix);
-      setPanel(panel);
+      setField(field, minDecimals, maxDecimals, padding, suffix, panel);
       init();
     }
 
     explicit AutoPrecisionComboBox(int & field, unsigned int minDecimals = 0, unsigned int maxDecimals = 1, bool padding = false, QString suffix = "", QWidget * parent = nullptr, GenericPanel * panel = nullptr):
       QComboBox(parent)
     {
-      setField(field, minDecimals, maxDecimals, padding, suffix);
-      setPanel(panel);
+      setField(field, minDecimals, maxDecimals, padding, suffix, panel);
       init();
     }
 
@@ -74,16 +65,18 @@ class AutoPrecisionComboBox: public QComboBox
     inline QString suffix()      const { return m_suffix; }
 
   public slots:
-    void setField(int & field, unsigned int minDecimals = 0, unsigned int maxDecimals = 1, bool padding = false, QString suffix = "")
+    void setField(int & field, unsigned int minDecimals = 0, unsigned int maxDecimals = 1, bool padding = false, QString suffix = "", GenericPanel * panel = nullptr)
     {
       m_field = reinterpret_cast<unsigned int *>(&field);
       initField(minDecimals, maxDecimals, padding, suffix);
+      setPanel(panel);
     }
 
-    void setField(unsigned int & field, unsigned int minDecimals = 0, unsigned int maxDecimals = 1, bool padding = false, QString suffix = "")
+    void setField(unsigned int & field, unsigned int minDecimals = 0, unsigned int maxDecimals = 1, bool padding = false, QString suffix = "", GenericPanel * panel = nullptr)
     {
       m_field = &field;
       initField(minDecimals, maxDecimals, padding, suffix);
+      setPanel(panel);
     }
 
     void setMinDecimals(unsigned int minDecimals)
