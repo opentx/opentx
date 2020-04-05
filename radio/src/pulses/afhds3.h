@@ -471,11 +471,6 @@ private:
    */
   uint32_t cmdCount;
   /**
-   * Command index used to send one of special commands periodically
-   * Special commands are part of array periodicRequestCommands
-   */
-  uint32_t commandIndex;
-  /**
    * Actual power source of the module - should be requested time to time
    * Currently requested once
    */

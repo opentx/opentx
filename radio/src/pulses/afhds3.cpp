@@ -213,9 +213,9 @@ void PulsesData::setupFrame()
 
   if (every128 && !every512)
   {
-    uint32_t max = sizeof(periodicRequestCommands);
-    if (commandIndex == max) commandIndex = 0;
-    putFrame(periodicRequestCommands[commandIndex++],FRAME_TYPE::REQUEST_GET_DATA);
+    uint32_t commandIndex = ((cmdCount & 0x1FF)>> 7);
+    putFrame(periodicRequestCommands[commandIndex], FRAME_TYPE::REQUEST_GET_DATA);
+    TRACE("AFHDS3 [periodic request index %d] %02X", commandIndex, (uint8_t)periodicRequestCommands[commandIndex]);
   }
   else if (syncActive || syncDone)
   {
@@ -242,6 +242,10 @@ void PulsesData::setupFrame()
     {
       sendChannelsData();
     }
+  }
+  else {
+    //default frame - request state
+    putFrame(MODULE_STATE, FRAME_TYPE::REQUEST_GET_DATA);
   }
 }
 
