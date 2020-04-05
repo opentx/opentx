@@ -20,7 +20,12 @@
 
 #include "ft5x06.h"
 
+void toucDehInit(void)
+{
+
+}
+
 bool touchInit(void)
 {
-  return true;
+  return false;
 }

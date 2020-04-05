@@ -30,6 +30,10 @@ bool menuRadioDiagTouch(event_t event)
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
     touchAvailable = touchInit();
   }
+  else if (menuEvent) {
+    touchDeInit();
+    return false;
+  }
 
   if (touchAvailable) {
     lcdDrawText(LCD_W / 2, LCD_H / 2, STR_TOUCH_EXIT, CENTERED);

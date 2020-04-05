@@ -22,5 +22,6 @@
 #define _FT5X06_H_
 
 bool touchInit(void);
+void touchDeInit(void);
 
 #endif // _FT5X06_H_
