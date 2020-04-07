@@ -637,7 +637,7 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   ui->source2->setField(sensor.sources[1], this);
   ui->source3->setField(sensor.sources[2], this);
   ui->source4->setField(sensor.sources[3], this);
-  ui->prec->setField(sensor.prec, 0, 2, this);
+  ui->prec->setField(sensor.prec, 0, 2, false, "", this);
   update();
 }
 
