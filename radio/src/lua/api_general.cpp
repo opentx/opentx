@@ -67,7 +67,7 @@
   { "EVT_"#xxx"_REPT", EVT_KEY_REPT(yyy) }
 
 #if defined(LUA) && !defined(CLI)
-Fifo<uint8_t, 256> luaRxFifo;
+Fifo<uint8_t, LUA_FIFO_SIZE> luaRxFifo;
 #endif
 
 /*luadoc
@@ -1599,19 +1599,36 @@ static int luaSerialWrite(lua_State * L)
 
 /*luadoc
 @function serialRead???
-@param Maximal number of bytes to read
-// TODO or if 0 read to newline if present? Need peek to check that first...
+@param num (optional) maximum number of bytes to read. If left out, will read up to and including newline character or end of buffer.
 
-@retval number of bytes read
-@retval string
+@retval str string. Empty if no new characters were available.
 
-Writes a string to the serial port. The string is allowed to contain any character, including 0.
+Reads characters from the serial port.
 
 @status current Introduced in TODO
 */
 static int luaSerialRead(lua_State * L)
 {
-  return 0;
+  int num = luaL_optunsigned(L, 1, 0);
+
+#if defined(LUA) && !defined(CLI)
+  if (num > LUA_FIFO_SIZE) num = LUA_FIFO_SIZE;
+  uint8_t str[LUA_FIFO_SIZE + 1];
+  uint8_t *p = str;
+  while (luaRxFifo.pop(*p++)) {
+    if (num == 0) {
+      if (*(p - 1) == '\n' || *(p - 1) == '\r') break;
+    } else {
+      if (p - str >= num) break;
+    }
+  }
+  *p = '\0';
+  lua_pushstring(L, (const char *)str);
+#else
+  lua_pushstring(L, "");
+#endif
+
+  return 1;
 }
 
 const luaL_Reg opentxLib[] = {
