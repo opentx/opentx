@@ -634,11 +634,26 @@
   #define AUDIO_MUTE_DELAY              500  // ms
 #endif
 
+// Touch
+#if defined(HARDWARE_TOUCH)
+#define TOUCH_INT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOH
+#define TOUCH_INT_GPIO                  GPIOH
+#define TOUCH_INT_GPIO_PIN              GPIO_Pin_2
+
+#define TOUCH_RST_RCC_AHB1Periph        RCC_AHB1Periph_GPIOF
+#define TOUCH_RST_GPIO                  GPIOF
+#define TOUCH_RST_GPIO_PIN              GPIO_Pin_10
+
+#define TOUCH_INT_EXTI_LINE1            EXTI_Line2
+#define TOUCH_INT_EXTI_IRQn1            EXTI2_IRQn
+#define TOUCH_INT_EXTI_IRQHandler1      EXTI2_IRQHandler
+#define TOUCH_INT_EXTI_PortSource       EXTI_PortSourceGPIOH
+#define TOUCH_INT_EXTI_PinSource1       EXTI_PinSource2
+
+#define TOUCH_INT_STAUS()               (GPIO_ReadInputDataBit(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN))
+#endif
+
 // I2C Bus
-#if defined(RADIO_TX16S)
-#define I2C_RCC_AHB1Periph              0
-#define I2C_RCC_APB1Periph              0
-#else
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
 #define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
@@ -649,7 +664,6 @@
 #define I2C_SCL_GPIO_PinSource          GPIO_PinSource8
 #define I2C_SDA_GPIO_PinSource          GPIO_PinSource9
 #define I2C_SPEED                       400000
-#endif
 
 // Haptic
 #define HAPTIC_PWM
@@ -841,24 +855,6 @@
 // 2MHz Timer
 #define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
-
-// Touch
-#if defined(HARDWARE_TOUCH)
-#define I2C_TOUCH_RCC_AHB1Periph        RCC_AHB1Periph_GPIOB
-#define I2C_TOUCH_RCC_APB1Periph        RCC_APB1Periph_I2C1
-#define I2C_TOUCH                       I2C1
-#define I2C_TOUCH_GPIO                  GPIOB
-#define I2C_TOUCH_SCL_GPIO_PIN          GPIO_Pin_8   // PB.08
-#define I2C_TOUCH_SDA_GPIO_PIN          GPIO_Pin_7   // PB.07
-
-#define I2C_TOUCH_RESET_GPIO            GPIOF
-#define I2C_TOUCH_RESET_GPIO_PIN        GPIO_Pin_10  // PF.10
-#define I2C_TOUCH_INT_GPIO              GPIOH
-#define I2C_TOUCH_INT_GPIO_PIN          GPIO_Pin_2   // PH.02
-#else
-#define I2C_TOUCH_RCC_AHB1Periph        0
-#define I2C_TOUCH_RCC_APB1Periph        0
-#endif
 
 // Bluetooth
 #define STORAGE_BLUETOOTH

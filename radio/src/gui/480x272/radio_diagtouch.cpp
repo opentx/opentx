@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "ft5x06.h"
+#include "tp_gt911.h"
 
 bool menuRadioDiagTouch(event_t event)
 {
@@ -28,10 +28,11 @@ bool menuRadioDiagTouch(event_t event)
   SIMPLE_SUBMENU(STR_MENU_RADIO_TOUCH, ICON_MODEL_SETUP, 1);
 
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
-    touchAvailable = touchInit();
+    touchAvailable = touchPanelInit();
+    touchEventFlag = 0;
   }
   else if (menuEvent) {
-    touchDeInit();
+    //touchDeInit();
     return false;
   }
 
@@ -42,5 +43,9 @@ bool menuRadioDiagTouch(event_t event)
     lcdDrawText(LCD_W / 2, LCD_H / 2, STR_TOUCH_NOTFOUND, CENTERED);
   }
 
+  if (touchEventFlag) {
+    touchPanelDeInit();
+    popMenu();
+  }
   return true;
 }
