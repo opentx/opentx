@@ -192,6 +192,23 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
     }
   }
 #endif
+#if defined(LUA) && !defined(CLI)
+  if (getSelectedUsbMode() != USB_SERIAL_MODE) {
+      // Receive
+      uint32_t status = AUX_SERIAL_USART->SR;
+      while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+        uint8_t data = AUX_SERIAL_USART->DR;
+        if (!(status & USART_FLAG_ERRORS)) {
+          switch (auxSerialMode) {
+            case UART_MODE_DEBUG:
+              luaRxFifo.push(data);
+              break;
+          }
+        }
+        status = AUX_SERIAL_USART->SR;
+      }
+    }
+#endif
 }
 #endif
 #endif // AUX_SERIAL

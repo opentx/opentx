@@ -66,6 +66,10 @@
   { "EVT_"#xxx"_LONG", EVT_KEY_LONG(yyy) }, \
   { "EVT_"#xxx"_REPT", EVT_KEY_REPT(yyy) }
 
+#if defined(LUA) && !defined(CLI)
+Fifo<uint8_t, 256> luaRxFifo;
+#endif
+
 /*luadoc
 @function getVersion()
 

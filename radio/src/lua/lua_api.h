@@ -41,6 +41,10 @@ extern "C" {
   #endif
 #endif
 
+#if !defined(CLI)
+extern Fifo<uint8_t, 256> luaRxFifo;
+#endif
+
 extern lua_State * lsScripts;
 extern lua_State * lsWidgets;
 extern bool luaLcdAllowed;
