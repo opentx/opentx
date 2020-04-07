@@ -428,9 +428,11 @@ bool menuRadioHardware(event_t event)
             case 1:
               pushMenu(menuRadioDiagKeys);
               break;
+#if defined(HARDWARE_TOUCH)
             case 2:
               pushMenu(menuRadioDiagTouch);
               break;
+#endif
           }
         }
         break;

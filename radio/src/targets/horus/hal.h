@@ -636,21 +636,24 @@
 
 // Touch
 #if defined(HARDWARE_TOUCH)
-#define TOUCH_INT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOH
-#define TOUCH_INT_GPIO                  GPIOH
-#define TOUCH_INT_GPIO_PIN              GPIO_Pin_2
+  #define TOUCH_INT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOH
+  #define TOUCH_INT_GPIO                  GPIOH
+  #define TOUCH_INT_GPIO_PIN              GPIO_Pin_2    // PH.02
 
-#define TOUCH_RST_RCC_AHB1Periph        RCC_AHB1Periph_GPIOF
-#define TOUCH_RST_GPIO                  GPIOF
-#define TOUCH_RST_GPIO_PIN              GPIO_Pin_10
+  #define TOUCH_RST_RCC_AHB1Periph        RCC_AHB1Periph_GPIOF
+  #define TOUCH_RST_GPIO                  GPIOF
+  #define TOUCH_RST_GPIO_PIN              GPIO_Pin_10   // PF.10
 
-#define TOUCH_INT_EXTI_LINE1            EXTI_Line2
-#define TOUCH_INT_EXTI_IRQn1            EXTI2_IRQn
-#define TOUCH_INT_EXTI_IRQHandler1      EXTI2_IRQHandler
-#define TOUCH_INT_EXTI_PortSource       EXTI_PortSourceGPIOH
-#define TOUCH_INT_EXTI_PinSource1       EXTI_PinSource2
+  #define TOUCH_INT_EXTI_LINE1            EXTI_Line2
+  #define TOUCH_INT_EXTI_IRQn1            EXTI2_IRQn
+  #define TOUCH_INT_EXTI_IRQHandler1      EXTI2_IRQHandler
+  #define TOUCH_INT_EXTI_PortSource       EXTI_PortSourceGPIOH
+  #define TOUCH_INT_EXTI_PinSource1       EXTI_PinSource2
 
-#define TOUCH_INT_STAUS()               (GPIO_ReadInputDataBit(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN))
+  #define TOUCH_INT_STATUS()              (GPIO_ReadInputDataBit(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN))
+#else
+  #define TOUCH_INT_RCC_AHB1Periph        0
+  #define TOUCH_RST_RCC_AHB1Periph        0
 #endif
 
 // I2C Bus

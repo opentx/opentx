@@ -38,20 +38,20 @@ void GT911_INT_Change(void)
 
 uint8_t GT911_Send_Cfg(uint8_t mode)
 {
-  u8 buf[2];
-  u8 i = 0;
+  uint8_t buf[2];
+  uint8_t i = 0;
   buf[0] = 0;
   buf[1] = mode;    //
   for (i = 0; i < sizeof(GT911_Cfg); i++)
     buf[0] += GT911_Cfg[i];//check sum
 
   buf[0] = (~buf[0]) + 1;
-  GT911_WR_Reg(GT_CFGS_REG, (u8 *) GT911_Cfg, sizeof(GT911_Cfg));//
+  GT911_WR_Reg(GT_CFGS_REG, (uint8_t *) GT911_Cfg, sizeof(GT911_Cfg));//
   GT911_WR_Reg(GT_CHECK_REG, buf, 2);//write checksum
   return 0;
 }
 
-static void IIC_Config(void)
+static void I2C_Config(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   //I2C_InitTypeDef     I2C_InitStructure;
@@ -136,6 +136,182 @@ static void TOUCH_AF_GPIOConfig(void)
   GPIO_ResetBits(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN);
 }
 
+void SDA_IN(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  //RCC_APB1PeriphClockCmd(RCC_APB1Periph_GPIOB, ENABLE);
+  //RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph, ENABLE);
+
+  GPIO_InitStructure.GPIO_Pin = I2C_SDA_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
+}
+
+void SDA_OUT(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  //RCC_APB1PeriphClockCmd(RCC_APB1Periph_GPIOB, ENABLE);
+  //RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph, ENABLE);
+
+  GPIO_InitStructure.GPIO_Pin = I2C_SDA_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
+}
+
+void I2C_Start(void)
+{
+  SDA_OUT();
+  I2C_SDA_H();
+  I2C_SCL_H();
+  delay_us(2);
+  I2C_SDA_L();//START:when CLK is high,DATA change form high to low
+  delay_us(2);
+  I2C_SCL_L();//
+  delay_us(2);
+}
+
+void I2C_Stop(void)
+{
+  SDA_OUT();
+  I2C_SCL_L();
+  I2C_SDA_L();//STOP:when CLK is high DATA change form low to high
+  delay_us(2);
+  I2C_SCL_H();
+  I2C_SDA_H();//
+  delay_us(2);
+}
+
+uint8_t I2C_Wait_Ack(void)
+{
+  uint8_t ucErrTime = 0;
+  SDA_IN();      //
+  I2C_SDA_H();
+  delay_us(2);
+  //I2C_SCL_L();delay_us(6);
+  I2C_SCL_H();//delay_us(6);
+  while (READ_SDA) {
+    ucErrTime++;
+    if (ucErrTime > 166) {
+      I2C_Stop();
+      return 1;
+    }
+    delay_us(1);
+  }
+  I2C_SDA_L();
+  I2C_SCL_L();//
+  return 0;
+}
+
+void I2C_Ack(void)
+{
+  I2C_SCL_L();
+  SDA_OUT();
+  I2C_SDA_L();
+  delay_us(2);
+  I2C_SCL_H();
+  delay_us(2);
+  I2C_SCL_L();
+}
+
+void I2C_NAck(void)
+{
+  I2C_SCL_L();
+  SDA_OUT();
+  I2C_SDA_H();
+  delay_us(2);
+  I2C_SCL_H();
+  delay_us(2);
+  I2C_SCL_L();
+}
+
+void I2C_Send_Byte(uint8_t txd)
+{
+  uint8_t t;
+
+  SDA_OUT();
+  I2C_SCL_L();//
+  for (t = 0; t < 8; t++) {
+    if ((txd & 0x80) >> 7)
+      I2C_SDA_H();
+    else
+      I2C_SDA_L();
+    txd <<= 1;
+    delay_us(1);
+    I2C_SCL_H();
+    delay_us(2);
+    I2C_SCL_L();
+    delay_us(1);
+  }
+}
+
+uint8_t I2C_Read_Byte(unsigned char ack)
+{
+  unsigned char i, receive = 0;
+
+  SDA_IN();
+  for (i = 0; i < 8; i++) {
+    I2C_SCL_L();
+    delay_us(2);
+    I2C_SCL_H();
+    receive <<= 1;
+    if (READ_SDA)receive++;
+    delay_us(1);
+  }
+  if (!ack)
+    I2C_NAck();
+  else
+    I2C_Ack();
+  return receive;
+}
+
+uint8_t GT911_WR_Reg(uint16_t reg, uint8_t * buf, uint8_t len)
+{
+  {
+    uint8_t i;
+    uint8_t ret = 0;
+
+    I2C_Start();
+    I2C_Send_Byte(GT_CMD_WR);         //send cmd
+    I2C_Wait_Ack();
+    I2C_Send_Byte(reg >> 8);      //send hi
+    I2C_Wait_Ack();
+    I2C_Send_Byte(reg & 0XFF);    //send low
+    I2C_Wait_Ack();
+    for (i = 0; i < len; i++) {
+      I2C_Send_Byte(buf[i]);
+      ret = I2C_Wait_Ack();
+      if (ret)break;
+    }
+    I2C_Stop();
+
+    return ret;
+  }
+}
+
+void GT911_RD_Reg(u16 reg, uint8_t * buf, uint8_t len)
+{
+  uint8_t i;
+
+  //I2C_GenerateSTART(I2C1, ENABLE);
+  I2C_Start();
+  I2C_Send_Byte(GT_CMD_WR);       //send addr
+  I2C_Wait_Ack();
+  I2C_Send_Byte(reg >> 8);    //send hi
+  I2C_Wait_Ack();
+  I2C_Send_Byte(reg & 0XFF);  //send low
+  I2C_Wait_Ack();
+  I2C_Start();
+  I2C_Send_Byte(GT_CMD_RD);       //send rd
+  I2C_Wait_Ack();
+
+  for (i = 0; i < len; i++) {
+    buf[i] = I2C_Read_Byte(i == (len - 1) ? 0 : 1); //send data
+  }
+  I2C_Stop();
+}
+
 void touchPanelDeInit(void)
 {
   TOUCH_AF_ExtiStop();
@@ -148,21 +324,21 @@ bool touchPanelInit(void)
   TRACE("Touchpanel init start ...");
 
   TOUCH_AF_GPIOConfig(); //SET RST=OUT INT=OUT INT=LOW
-  IIC_Config();
+  I2C_Config();
 
   TPRST_LOW();
   TPINT_HIGH();
-  delay_us(200);   //DELAY 200US
+  delay_us(200);
 
   TPRST_HIGH();
-  delay_ms(6);   //DELAY 6MS
+  delay_ms(6);
 
   TPINT_LOW();
-  delay_ms(55);   //DELAY 55MS
+  delay_ms(55);
 
   GT911_INT_Change();  //Set INT INPUT INT=LOW
 
-  delay_ms(50);   //DELAY 55MS
+  delay_ms(50);
 
   GT911_RD_Reg(GT_PID_REG, tmp, 4);
 

@@ -103,9 +103,11 @@ void boardInit()
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
-                         I2C_TOUCH_RCC_AHB1Periph |
+                         I2C_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph |
-                         SPORT_UPDATE_RCC_AHB1Periph,
+                         SPORT_UPDATE_RCC_AHB1Periph |
+                         TOUCH_INT_RCC_AHB1Periph |
+                         TOUCH_RST_RCC_AHB1Periph,
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph |
@@ -119,7 +121,7 @@ void boardInit()
                          AUDIO_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
-                         I2C_TOUCH_RCC_APB1Periph |
+                         I2C_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);

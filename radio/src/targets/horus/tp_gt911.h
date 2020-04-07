@@ -115,11 +115,11 @@ typedef struct{
 #define TPINT_HIGH()  do { TOUCH_INT_GPIO->BSRRL = TOUCH_INT_GPIO_PIN; } while(0)
 
 
-#define IIC_SCL_L()   do { I2C_GPIO->BSRRH = I2C_SCL_GPIO_PIN; } while(0)
-#define IIC_SCL_H()   do { I2C_GPIO->BSRRL = I2C_SCL_GPIO_PIN; } while(0)
+#define I2C_SCL_L()   do { I2C_GPIO->BSRRH = I2C_SCL_GPIO_PIN; } while(0)
+#define I2C_SCL_H()   do { I2C_GPIO->BSRRL = I2C_SCL_GPIO_PIN; } while(0)
 
-#define IIC_SDA_L()   do { I2C_GPIO->BSRRH = I2C_SDA_GPIO_PIN; } while(0)
-#define IIC_SDA_H()   do { I2C_GPIO->BSRRL = I2C_SDA_GPIO_PIN; } while(0)
+#define I2C_SDA_L()   do { I2C_GPIO->BSRRH = I2C_SDA_GPIO_PIN; } while(0)
+#define I2C_SDA_H()   do { I2C_GPIO->BSRRL = I2C_SDA_GPIO_PIN; } while(0)
 
 #define READ_SDA GPIO_ReadInputDataBit(I2C_GPIO, I2C_SDA_GPIO_PIN)
 
