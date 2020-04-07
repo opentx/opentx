@@ -858,7 +858,7 @@ void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
 void TelemetrySensorPanel::on_prec_valueChanged()
 {
   if (!lock) {
-    emit dataModified();
+    update();
   }
 }
 
