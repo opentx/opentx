@@ -1597,6 +1597,23 @@ static int luaSerialWrite(lua_State * L)
   return 0;
 }
 
+/*luadoc
+@function serialRead???
+@param Maximal number of bytes to read
+// TODO or if 0 read to newline if present? Need peek to check that first...
+
+@retval number of bytes read
+@retval string
+
+Writes a string to the serial port. The string is allowed to contain any character, including 0.
+
+@status current Introduced in TODO
+*/
+static int luaSerialRead(lua_State * L)
+{
+  return 0;
+}
+
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
@@ -1644,6 +1661,7 @@ const luaL_Reg opentxLib[] = {
   { "multiBuffer", luaMultiBuffer },
 #endif
   { "serialWrite", luaSerialWrite },
+  { "serialRead", luaSerialRead },
   { nullptr, nullptr }  /* sentinel */
 };
 
