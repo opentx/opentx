@@ -22,7 +22,8 @@
 
 ModuleFifo intmoduleFifo;
 #if !defined(INTMODULE_DMA_STREAM)
-  Fifo<uint8_t, 64> intmoduleTxFifo;
+uint8_t * intmoduleTxBufferData;
+uint8_t intmoduleTxBufferRemaining;
 #endif
 
 void intmoduleStop()
@@ -130,9 +131,10 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
 #if !defined(INTMODULE_DMA_STREAM)
   // Send
   if (USART_GetITStatus(INTMODULE_USART, USART_IT_TXE) != RESET) {
-    uint8_t txchar;
-    if (intmoduleTxFifo.pop(txchar)) {
-      USART_SendData(INTMODULE_USART, txchar);
+    if (intmoduleTxBufferRemaining) {
+      USART_SendData(INTMODULE_USART, intmoduleTxBufferData[0]);
+      intmoduleTxBufferData++;
+      intmoduleTxBufferRemaining--;
     }
     else {
       USART_ITConfig(INTMODULE_USART, USART_IT_TXE, DISABLE);
@@ -187,10 +189,8 @@ void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
   DMA_Cmd(INTMODULE_DMA_STREAM, ENABLE);
   USART_DMACmd(INTMODULE_USART, USART_DMAReq_Tx, ENABLE);
 #else
-  for (uint8_t i = 0; i < size; i++) {
-    while (intmoduleTxFifo.isFull());
-    intmoduleTxFifo.push(data[i]);
-  }
+  intmoduleTxBufferData = (uint8_t *)data;
+  intmoduleTxBufferRemaining = size;
   USART_ITConfig(INTMODULE_USART, USART_IT_TXE, ENABLE);
 #endif
 }
