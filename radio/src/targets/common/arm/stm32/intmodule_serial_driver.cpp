@@ -61,9 +61,12 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
 {
   INTERNAL_MODULE_ON();
 
-#if defined(INTMODULE_DMA_STREAM)
   NVIC_InitTypeDef NVIC_InitStructure;
+#if defined(INTMODULE_DMA_STREAM)
   NVIC_InitStructure.NVIC_IRQChannel = INTMODULE_DMA_STREAM_IRQ;
+#else
+  NVIC_InitStructure.NVIC_IRQChannel = INTMODULE_USART_IRQn;
+#endif
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -97,38 +100,6 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
     NVIC_SetPriority(INTMODULE_USART_IRQn, 6);
     NVIC_EnableIRQ(INTMODULE_USART_IRQn);
   }
-#else
-  // RX and TX pins
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_PinAFConfig(GPIOA, INTMODULE_GPIO_PinSource_TX, INTMODULE_GPIO_AF);
-  GPIO_PinAFConfig(GPIOA, INTMODULE_GPIO_PinSource_RX, INTMODULE_GPIO_AF);
-  GPIO_InitStructure.GPIO_Pin = (INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(INTMODULE_GPIO, &GPIO_InitStructure);
-
-  // UART config
-  USART_DeInit(INTMODULE_USART);
-  USART_InitTypeDef USART_InitStructure;
-  USART_InitStructure.USART_BaudRate = baudrate;
-  USART_InitStructure.USART_Parity = parity;
-  USART_InitStructure.USART_StopBits = stopBits;
-  USART_InitStructure.USART_WordLength = wordLength;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(INTMODULE_USART, &USART_InitStructure);
-  USART_Cmd(INTMODULE_USART, ENABLE);
-  USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
-
-  NVIC_InitTypeDef NVIC_InitStructure;
-  NVIC_InitStructure.NVIC_IRQChannel = INTMODULE_USART_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 6;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-#endif
 }
 
 #if defined(INTERNAL_MODULE_MULTI)
