@@ -21,6 +21,9 @@
 #include "opentx.h"
 
 ModuleFifo intmoduleFifo;
+#if !defined(INTMODULE_DMA_STREAM)
+  Fifo<uint8_t, 64> intmoduleTxFifo;
+#endif
 
 void intmoduleStop()
 {
@@ -65,7 +68,6 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-#endif
 
   GPIO_PinAFConfig(INTMODULE_GPIO, INTMODULE_GPIO_PinSource_TX, INTMODULE_GPIO_AF);
   GPIO_PinAFConfig(INTMODULE_GPIO, INTMODULE_GPIO_PinSource_RX, INTMODULE_GPIO_AF);
@@ -95,6 +97,38 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
     NVIC_SetPriority(INTMODULE_USART_IRQn, 6);
     NVIC_EnableIRQ(INTMODULE_USART_IRQn);
   }
+#else
+  // RX and TX pins
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_PinAFConfig(GPIOA, INTMODULE_GPIO_PinSource_TX, INTMODULE_GPIO_AF);
+  GPIO_PinAFConfig(GPIOA, INTMODULE_GPIO_PinSource_RX, INTMODULE_GPIO_AF);
+  GPIO_InitStructure.GPIO_Pin = (INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(INTMODULE_GPIO, &GPIO_InitStructure);
+
+  // UART config
+  USART_DeInit(INTMODULE_USART);
+  USART_InitTypeDef USART_InitStructure;
+  USART_InitStructure.USART_BaudRate = baudrate;
+  USART_InitStructure.USART_Parity = parity;
+  USART_InitStructure.USART_StopBits = stopBits;
+  USART_InitStructure.USART_WordLength = wordLength;
+  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_Init(INTMODULE_USART, &USART_InitStructure);
+  USART_Cmd(INTMODULE_USART, ENABLE);
+  USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
+
+  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitStructure.NVIC_IRQChannel = INTMODULE_USART_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 6;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+#endif
 }
 
 #if defined(INTERNAL_MODULE_MULTI)
@@ -122,20 +156,21 @@ void intmoduleTimerStart(uint32_t periodMs)
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void INTMODULE_USART_IRQHandler(void)
 {
-  uint32_t status = INTMODULE_USART->SR;
-
 #if !defined(INTMODULE_DMA_STREAM)
   // Send
   if (USART_GetITStatus(INTMODULE_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;
-    if (intmoduleFifo.pop(txchar)) {
+    if (intmoduleTxFifo.pop(txchar)) {
       USART_SendData(INTMODULE_USART, txchar);
     }
-    USART_ITConfig(INTMODULE_USART, USART_IT_TXE, DISABLE);
-    return;
+    else {
+      USART_ITConfig(INTMODULE_USART, USART_IT_TXE, DISABLE);
+    }
   }
 #endif
 
+  // Receive
+  uint32_t status = INTMODULE_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = INTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
@@ -182,7 +217,8 @@ void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
   USART_DMACmd(INTMODULE_USART, USART_DMAReq_Tx, ENABLE);
 #else
   for (uint8_t i = 0; i < size; i++) {
-    intmoduleFifo.push(data[i]);
+    while (intmoduleTxFifo.isFull());
+    intmoduleTxFifo.push(data[i]);
   }
   USART_ITConfig(INTMODULE_USART, USART_IT_TXE, ENABLE);
 #endif
