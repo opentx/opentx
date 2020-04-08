@@ -1613,7 +1613,7 @@ static int luaSerialRead(lua_State * L)
 
 #if defined(LUA) && !defined(CLI)
   if (num > LUA_FIFO_SIZE) num = LUA_FIFO_SIZE;
-  uint8_t str[LUA_FIFO_SIZE + 1];
+  uint8_t str[LUA_FIFO_SIZE];
   uint8_t *p = str;
   while (luaRxFifo.pop(*p++)) {
     if (num == 0) {
@@ -1622,10 +1622,9 @@ static int luaSerialRead(lua_State * L)
       if (p - str >= num) break;
     }
   }
-  *p = '\0';
-  lua_pushstring(L, (const char *)str);
+  lua_pushlstring(L, (const char*)str, p - str);
 #else
-  lua_pushstring(L, "");
+  lua_pushlstring(L, "", 0);
 #endif
 
   return 1;
