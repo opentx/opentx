@@ -1078,11 +1078,6 @@
   #define INTMODULE_GPIO_AF               GPIO_AF_USART3
   #define INTMODULE_USART_IRQn            USART3_IRQn
   #define INTMODULE_USART_IRQHandler      USART3_IRQHandler
-  #define INTMODULE_DMA_STREAM            DMA1_Stream3
-  #define INTMODULE_DMA_STREAM_IRQ        DMA1_Stream3_IRQn
-  #define INTMODULE_DMA_STREAM_IRQHandler DMA1_Stream3_IRQHandler
-  #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF3
-  #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
   #define INTMODULE_RCC_APB1Periph        RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph        RCC_APB1Periph_USART3
   #define INTMODULE_TIMER                 TIM2
