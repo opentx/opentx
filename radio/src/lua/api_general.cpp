@@ -1206,11 +1206,14 @@ static int luaPopupWarning(lua_State * L)
 }
 
 /*luadoc
-@function popupConfirmation(title, event)
+@function popupConfirmation(title, event) deprecated, please replace by
+@function popupConfirmation(title, message, event)
 
 Raises a pop-up on screen that asks for confirmation
 
-@param title (string) text to display
+@param title (string) title to display
+
+@param message (string) text to display
 
 @param event (number) the event variable that is passed in from the
 Run function (key pressed)
@@ -1219,13 +1222,24 @@ Run function (key pressed)
 
 @notice Use only from stand-alone and telemetry scripts.
 
-@status current Introduced in 2.2.0
+@status current Introduced in 2.2.0, changed to (title, message, event) in 2.3.8
 */
 static int luaPopupConfirmation(lua_State * L)
 {
-  event_t event = luaL_checkinteger(L, 2);
-  warningText = luaL_checkstring(L, 1);
   warningType = WARNING_TYPE_CONFIRM;
+  event_t event;
+
+  if (lua_isnone(L, 3)) {
+    // only two args: deprecated mode
+    warningText = luaL_checkstring(L, 1);
+    event = luaL_checkinteger(L, 2);
+  }
+  else {
+    warningText = luaL_checkstring(L, 1);
+    warningInfoText = luaL_checkstring(L, 2);
+    event = luaL_optinteger(L, 3, 0);
+  }
+
   runPopupWarning(event);
   if (!warningText) {
     lua_pushstring(L, warningResult ? "OK" : "CANCEL");
