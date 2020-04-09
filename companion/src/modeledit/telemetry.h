@@ -24,6 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+constexpr char MIMETYPE_TELE_SENSOR[] = "application/x-companion-tele-sensor";
+
 class AutoComboBox;
 class RawSourceFilterItemModel;
 class TimerEdit;
@@ -103,19 +105,27 @@ class TelemetrySensorPanel: public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, int sensorIndex, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~TelemetrySensorPanel();
     void update();
 
   signals:
     void dataModified();
+    void clearAllSensors();
 
   protected slots:
     void on_name_editingFinished();
     void on_type_currentIndexChanged(int index);
     void on_formula_currentIndexChanged(int index);
     void on_unit_currentIndexChanged(int index);
-    void on_prec_valueChanged(double value);
+    void on_prec_valueChanged();
+    void on_customContextMenuRequested(QPoint pos);
+    bool hasClipboardData(QByteArray * data = nullptr) const;
+    void cmCopy();
+    void cmCut();
+    void cmPaste();
+    void cmClear();
+    void cmClearAll();
 
   protected:
     void updateSourcesComboBox(AutoComboBox * cb, bool negative);
@@ -123,7 +133,9 @@ class TelemetrySensorPanel: public ModelPanel
   private:
     Ui::TelemetrySensor * ui;
     SensorData & sensor;
-    bool lock;
+    bool lock = false;
+    int sensorIndex = 0;
+    int selectedIndex = 0;
 };
 
 class TelemetryPanel : public ModelPanel
@@ -154,6 +166,7 @@ class TelemetryPanel : public ModelPanel
     void on_fasOffset_DSB_editingFinished();
     void on_mahCount_SB_editingFinished();
     void on_mahCount_ChkB_toggled(bool checked);
+    void on_clearAllSensors();
 
   private:
     Ui::Telemetry *ui;
