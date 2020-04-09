@@ -1229,7 +1229,8 @@ static int luaPopupConfirmation(lua_State * L)
   warningType = WARNING_TYPE_CONFIRM;
   event_t event;
 
-  if (lua_isnone(L, 3)) {   // only tow args: deprecated mode
+  if (lua_isnone(L, 3)) {
+    // only two args: deprecated mode
     warningText = luaL_checkstring(L, 1);
     event = luaL_checkinteger(L, 2);
   }
