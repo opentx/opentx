@@ -1875,8 +1875,6 @@ const luaR_value_entry opentxConstants[] = {
   { "PLAY_BACKGROUND", PLAY_BACKGROUND },
   { "TIMEHOUR", TIMEHOUR },
 
-#if defined(PCBHORUS)
-  // Adding the unit consts for the set Telemetry function adds about 1k of flash usage
   {"UNIT_RAW", UNIT_RAW },
   {"UNIT_VOLTS", UNIT_VOLTS },
   {"UNIT_AMPS", UNIT_AMPS },
@@ -1910,6 +1908,6 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_GPS", UNIT_GPS},
   {"UNIT_BITFIELD", UNIT_BITFIELD},
   {"UNIT_TEXT", UNIT_TEXT},
-#endif
+
   { nullptr, 0 }  /* sentinel */
 };
