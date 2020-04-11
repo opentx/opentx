@@ -46,14 +46,18 @@ void onRxOptionsUpdateConfirm(const char * result)
 enum {
   ITEM_RECEIVER_SETTINGS_PWM_RATE,
   ITEM_RECEIVER_SETTINGS_TELEMETRY,
+  ITEM_RECEIVER_SETTINGS_TELEMETRY_25MW,
   ITEM_RECEIVER_SETTINGS_SPORT_FPORT,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2,
   ITEM_RECEIVER_SETTINGS_PINMAP_FIRST
 };
 
+#define IS_RECEIVER_CAPABILITY_ENABLED(capability)    (reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilities & (1 << capability))
+#define IF_RECEIVER_CAPABILITY(capability, count)     uint8_t(IS_RECEIVER_CAPABILITY_ENABLED(capability) ? count : HIDDEN_ROW)
 
-#define IF_RECEIVER_CAPABILITY(capability, count) uint8_t((reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilities & (1 << capability)) ? count : HIDDEN_ROW)
+#define CH_ENABLE_SPORT   4
+#define CH_ENABLE_SBUS    5
 
 bool menuModelReceiverOptions(event_t event)
 {
@@ -76,6 +80,7 @@ bool menuModelReceiverOptions(event_t event)
   SUBMENU(STR_RECEIVER_OPTIONS, ICON_MODEL_SETUP, ITEM_RECEIVER_SETTINGS_PINMAP_FIRST + outputsCount, {
     0, // PWM rate
     isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 /*25mW*/ ? READONLY_ROW : (uint8_t)0, // Telemetry
+    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_TELEMETRY_25MW, 0),
     IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
@@ -156,6 +161,14 @@ bool menuModelReceiverOptions(event_t event)
           }
           break;
 
+        case ITEM_RECEIVER_SETTINGS_TELEMETRY_25MW:
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "25mw Tele");
+          reusableBuffer.hardwareAndSettings.receiverSettings.telemetry25mw = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetry25mw, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
+          }
+          break;
+
         case ITEM_RECEIVER_SETTINGS_SPORT_FPORT:
           lcdDrawText(MENUS_MARGIN_LEFT, y, "F.Port");
           reusableBuffer.hardwareAndSettings.receiverSettings.fport = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.fport, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
@@ -182,21 +195,43 @@ bool menuModelReceiverOptions(event_t event)
             int32_t channelValue = channelOutputs[channel];
             lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PIN);
             lcdDrawNumber(lcdNextPos + 1, y, pin + 1);
-            putsChn(100, y, channel + 1, attr);
+
+            uint8_t channelMax = sentModuleChannels(g_moduleIdx) - 1;
+            uint8_t selectionMax = channelMax;
+
+            if (IS_RECEIVER_CAPABILITY_ENABLED(RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6)) {
+              if (CH_ENABLE_SPORT == pin || CH_ENABLE_SBUS == pin) {
+                selectionMax += 1;
+              }
+              if (CH_ENABLE_SPORT == pin && selectionMax == channel) {
+                lcdDrawText(100, y,  "S.PORT", attr);
+              }
+              else if (CH_ENABLE_SBUS == pin && selectionMax == channel) {
+                lcdDrawText(100, y,  "SBUS", attr);
+              }
+              else {
+                putsChn(100, y, channel + 1, attr);
+              }
+            }
+            else {
+              putsChn(100, y, channel + 1, attr);
+            }
 
             // Channel
             if (attr) {
-              mapping = checkIncDec(event, mapping, 0, sentModuleChannels(g_moduleIdx) - 1);
+              mapping = checkIncDec(event, mapping, 0, selectionMax);
               if (checkIncDec_Ret) {
                 reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
               }
             }
 
             // Bargraph
-            lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 4, wbar + 1, 10);
-            const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-            const coord_t xChannel = (channelValue > 0) ? RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 : RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 + 1 - lenChannel;
-            lcdDrawSolidFilledRect(xChannel, y + 5, lenChannel, 8, TEXT_INVERTED_BGCOLOR);
+            if (channel <= channelMax) {
+              lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 4, wbar + 1, 10);
+              auto lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
+              auto xChannel = (channelValue > 0) ? RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 : RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 + 1 - lenChannel;
+              lcdDrawSolidFilledRect(xChannel, y + 5, lenChannel, 8, TEXT_INVERTED_BGCOLOR);
+            }
           }
           break;
         }

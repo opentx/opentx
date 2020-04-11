@@ -99,8 +99,9 @@ void Joystick::processEvents()
           axes[i] = moved;
         }
       }
-      else
+      else {
         axisRepeatTimers[i].restart();
+      }
     }
     else {
       emit axisValueChanged(i, 0);
@@ -108,17 +109,20 @@ void Joystick::processEvents()
   }
   for (i = 0; i < numButtons; i++) {
     Uint8 changed = SDL_JoystickGetButton(joystick, i);
-    if ( (changed != buttons[i]) ) {
+    if ((changed != buttons[i])) {
       emit buttonValueChanged(i, (bool) changed);
       buttons[i] = changed;
       buttonRepeatTimers[i].restart();
-    } else if (autoRepeat && changed != 0) {
+    }
+    else if (autoRepeat && changed != 0) {
       if ( buttonRepeatTimers[i].elapsed() >= autoRepeatDelay ) {
         emit buttonValueChanged(i, (bool) changed);
         buttons[i] = changed;
       }
-    } else
+    }
+    else {
       buttonRepeatTimers[i].restart();
+    }
   }
   for (i = 0; i < numHats; i++) {
     Uint8 changed = SDL_JoystickGetHat(joystick, i);
@@ -126,19 +130,22 @@ void Joystick::processEvents()
       emit hatValueChanged(i, changed);
       hats[i] = changed;
       hatRepeatTimers[i].restart();
-    } else if (autoRepeat && changed != 0) {
-      if ( hatRepeatTimers[i].elapsed() >= autoRepeatDelay ) {
+    }
+    else if (autoRepeat && changed != 0) {
+      if (hatRepeatTimers[i].elapsed() >= autoRepeatDelay) {
         emit hatValueChanged(i, changed);
         hats[i] = changed;
       }
-    } else
+    }
+    else {
       hatRepeatTimers[i].restart();
+    }
   }
 
   for (i = 0; i < numTrackballs; i++) {
     int dx, dy;
     SDL_JoystickGetBall(joystick, i, &dx, &dy);
-    if ( dx != 0 || dy != 0 )
+    if (dx != 0 || dy != 0)
       emit trackballValueChanged(i, dx, dy);
   }
 }

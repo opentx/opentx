@@ -121,8 +121,10 @@ class ReceiverSettings {
     uint8_t receiverId;
     uint8_t dirty;
     uint8_t telemetryDisabled;
+    uint8_t telemetry25mw;
     uint8_t pwmRate;
     uint8_t fport;
+    uint8_t enablePwmCh5Ch6;
     uint8_t outputsCount;
     uint8_t outputsMapping[24];
 };
@@ -144,6 +146,7 @@ class OtaUpdateInformation: public BindInformation {
   public:
     char filename[_MAX_LFN + 1];
     uint32_t address;
+    uint32_t module;
 };
 
 typedef void (* ModuleCallback)();

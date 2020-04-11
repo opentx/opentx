@@ -460,7 +460,7 @@ void evalInputs(uint8_t mode)
     if (mode == e_perout_mode_normal) {
       if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
         anaCenter |= mask;
-        if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && !menuCalibrationState) {
+        if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && s_mixer_first_run_done && !menuCalibrationState) {
           if (!IS_POT(i) || IS_POT_SLIDER_AVAILABLE(i)) {
             AUDIO_POT_MIDDLE(i);
           }

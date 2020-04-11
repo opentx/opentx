@@ -501,7 +501,7 @@ void readKeysAndTrims()
   }
 
   if (keysInput || trimsInput) {
-    backlightOn();
+    resetBacklightTimeout();
   }
 }
 

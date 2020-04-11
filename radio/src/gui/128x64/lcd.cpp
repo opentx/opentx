@@ -452,12 +452,12 @@ void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
   lcdDrawNumber(x, y, val);
 }
 
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags flags)
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags)
 {
   lcdDrawNumber(x, y, val, flags, 0);
 }
 
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags flags, uint8_t len)
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len)
 {
   char str[16+1];
   char *s = str+16;
