@@ -283,8 +283,8 @@
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
 
-#define LEN_VTELEMSCREENTYPE   "\004"
-#define TR_VTELEMSCREENTYPE    "Nums""Bars"
+#define LEN_VTELEMSCREENTYPE   "\006"
+#define TR_VTELEMSCREENTYPE    "None\0 ""Nums\0 ""Bars\0 ""Script"
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
@@ -497,7 +497,7 @@
 #define TR_DELAYUP             "Atraso subir"
 #define TR_SLOWDOWN            "Bajar lento "
 #define TR_SLOWUP              "Subir lento"
-#define TR_MIXES               "MEZCLAS"
+#define TR_MIXES               "MIXES"
 #define TR_CV                  "CV"
 #define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\004canal"
@@ -642,12 +642,12 @@
 #define TR_MONITOR_CHANNELS3   "MONITOR CANALES 17/24"
 #define TR_MONITOR_CHANNELS4   "MONITOR CANALES 25/32"
 #define TR_MONITOR_OUTPUT_DESC "SALIDAS"
-#define TR_MONITOR_MIXER_DESC          "MEZCLAS"
+#define TR_MONITOR_MIXER_DESC          "Mixers"
 #define TR_RECEIVER_NUM                TR("RxNum", "Receptor No.")
 #define TR_RECEIVER                    "Receptor"
 #define TR_MULTI_RFTUNE                TR("Sint.freq.", "RF Freq. sint.fina")
 #define TR_MULTI_TELEMETRY             "Telemetria"
-#define TR_MULTI_VIDFREQ               TR("Freq. Vid.", "Frecuancia Video")
+#define TR_MULTI_VIDFREQ               TR("Freq. Vid.", "Frecuencia Video")
 #define TR_RFPOWER                     "RF Power"
 #define TR_MULTI_FIXEDID               TR("ID Fijo", "ID Fijo")
 #define TR_MULTI_OPTION                TR("Opcion", "Valor opcion")
