@@ -1018,10 +1018,6 @@ bool menuModelSetup(event_t event)
             uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
             if (checkIncDec_Ret) {
               setModuleType(INTERNAL_MODULE, moduleType);
-#if defined(ACCESS_LIB)
-              // the module will reset on mode switch, we need to reset the authentication counter
-              globalData.authenticationCount = 0;
-#endif
             }
           }
           else if (isModuleXJT(INTERNAL_MODULE)) {
@@ -1034,6 +1030,7 @@ bool menuModelSetup(event_t event)
           }
           else if (isModulePXX2(INTERNAL_MODULE)) {
             g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, EE_MODEL);
+            resetAccessAuthenticationCount();
           }
         }
         break;

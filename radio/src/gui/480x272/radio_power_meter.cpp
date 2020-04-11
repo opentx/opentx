@@ -50,10 +50,7 @@ bool menuRadioPowerMeter(event_t event)
     lcdDrawCenteredText(LCD_H/2, STR_STOPPING);
     lcdRefresh();
     moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
-#if defined(ACCESS_LIB)
-    // the module will reset on mode switch, we need to reset the authentication counter
-    globalData.authenticationCount = 0;
-#endif
+    resetAccessAuthenticationCount();
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(500 /*5s*/);
     RTOS_WAIT_MS(1000);
