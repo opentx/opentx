@@ -21,14 +21,12 @@
 #ifndef _OPENTX_H_
 #define _OPENTX_H_
 
-#include <inttypes.h>
-#include <string.h>
-#include <stddef.h>
 #include <stdlib.h>
-#include <math.h>
 #include "definitions.h"
 #include "opentx_types.h"
 #include "debounce.h"
+#include "globals.h"
+#include "opentx_helpers.h"
 
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"
@@ -502,7 +500,6 @@ void logicalSwitchesReset();
 
 void evalLogicalSwitches(bool isCurrentFlightmode=true);
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
-#define LS_RECURSIVE_EVALUATION_RESET()
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   void getSwitchesPosition(bool startup);
@@ -547,33 +544,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #include "gvars.h"
 
-extern uint16_t sessionTimer;
-extern uint16_t s_timeCumThr;
-extern uint16_t s_timeCum16ThrP;
-
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-#define OVERRIDE_CHANNEL_UNDEFINED -4096
-extern safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
-#endif
-
-extern uint8_t trimsCheckTimer;
-extern uint8_t trimsDisplayTimer;
-extern uint8_t trimsDisplayMask;
-
 void flightReset(uint8_t check=true);
-
-PACK(struct GlobalData {
-  uint8_t unexpectedShutdown:1;
-  uint8_t externalAntennaEnabled:1;
-  uint8_t authenticationCount:2;
-  uint8_t upgradeModulePopup:1;
-  uint8_t internalModuleVersionChecked:1;
-  uint8_t spare:2;
-});
-
-extern GlobalData globalData;
-
-extern uint16_t maxMixerDuration;
 
 #define DURATION_MS_PREC2(x) ((x)/20)
 
@@ -723,13 +694,8 @@ extern const char vers_stamp[];
 const char * getOtherVersion(char * buffer);
 
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
-extern uint8_t            g_beepCnt;
 
 #include "trainer.h"
-
-extern int32_t            chans[MAX_OUTPUT_CHANNELS];
-extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMITS) of the last perMain
-extern int16_t            channelOutputs[MAX_OUTPUT_CHANNELS];
 
 int expo(int x, int k);
 
@@ -829,14 +795,7 @@ int16_t applyLimits(uint8_t channel, int32_t value);
 void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
 
-extern int16_t calibratedAnalogs[NUM_CALIBRATED_ANALOGS];
-
 #define FLASH_DURATION 20 /*200ms*/
-
-extern uint8_t beepAgain;
-extern uint16_t lightOffCounter;
-extern uint8_t flashCounter;
-extern uint8_t mixWarning;
 
 FlightModeData * flightModeAddress(uint8_t idx);
 ExpoData * expoAddress(uint8_t idx);
@@ -844,38 +803,13 @@ MixData * mixAddress(uint8_t idx);
 LimitData * limitAddress(uint8_t idx);
 LogicalSwitchData * lswAddress(uint8_t idx);
 
-// static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
-// It's also easier to initialize them here.
-extern int8_t  virtualInputsTrims[MAX_INPUTS];
-
-extern int16_t anas [MAX_INPUTS];
-extern int16_t trims[NUM_TRIMS];
-extern BeepANACenter bpanaCenter;
-
-extern uint8_t s_mixer_first_run_done;
-
 void applyDefaultTemplate();
-
 void instantTrim();
 void evalTrims();
 void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
 void copyMinMaxToOutputs(uint8_t ch);
 void moveTrimsToOffsets();
-
-typedef uint16_t ACTIVE_PHASES_TYPE;
-#define DELAY_POS_MARGIN   3
-typedef int16_t delayval_t;
-PACK(struct SwOn {
-  uint16_t delay:14; // max = 2550
-  uint8_t  activeMix:1;
-  uint8_t  activeExpo:1;
-  int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  int16_t  prev;
-});
-
-extern SwOn   swOn[MAX_MIXERS];
-extern int32_t act[MAX_MIXERS];
 
 #if defined(BOLD_FONT)
   inline bool isExpoActive(uint8_t expo)
@@ -1049,15 +983,6 @@ enum AUDIO_SOUNDS {
 void setMFP();
 void clearMFP();
 #endif
-
-extern uint8_t requiredSpeakerVolume;
-
-enum MainRequest {
-  REQUEST_SCREENSHOT,
-  REQUEST_FLIGHT_RESET,
-};
-
-extern uint8_t mainRequestFlags;
 
 void checkBattery();
 void opentxClose(uint8_t shutdown=true);
