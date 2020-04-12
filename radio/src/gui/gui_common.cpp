@@ -803,7 +803,7 @@ uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
 
   if (type == MODULE_SUBTYPE_MULTI_FRSKY) {
     int subtype = g_model.moduleData[moduleIdx].subType;
-    if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
+    if (subtype == MM_RF_FRSKY_SUBTYPE_D8||subtype == MM_RF_FRSKY_SUBTYPE_D8_CLONED) {
       //D8
       type = 3;
     }
@@ -831,7 +831,7 @@ uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
 
 const char STR_SUBTYPE_FLYSKY[] =     "\004""Std\0""V9x9""V6x6""V912""CX20";
 const char STR_SUBTYPE_HUBSAN[] =     "\004""H107""H301""H501";
-const char STR_SUBTYPE_FRSKY[] =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch";
+const char STR_SUBTYPE_FRSKY[] =      "\008""D16\0    ""D8\0     ""D16 8ch\0""V8\0     ""LBT(EU)\0""LBT 8ch\0""D8Clone\0""D16Clone";
 const char STR_SUBTYPE_FRSKYX2[] =    "\007""D16\0   ""D16 8ch""LBT(EU)""LBT 8ch";
 const char STR_SUBTYPE_HISKY[] =      "\005""Std\0 ""HK310";
 const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506";
@@ -883,7 +883,7 @@ const mm_protocol_definition multi_protocols[] = {
 // Protocol as defined in pulses\modules_constants.h, number of sub_protocols - 1, Failsafe supported, Disable channel mapping supported, Subtype string, Option type
   {MODULE_SUBTYPE_MULTI_FLYSKY,     4, false, true,   STR_SUBTYPE_FLYSKY,    nullptr},
   {MODULE_SUBTYPE_MULTI_HUBSAN,     2, false, false,  STR_SUBTYPE_HUBSAN,    STR_MULTI_VIDFREQ},
-  {MODULE_SUBTYPE_MULTI_FRSKY,      5, false, false,  STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FRSKY,      7, false, false,  STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HISKY,      1, false, true,   STR_SUBTYPE_HISKY,     nullptr},
   {MODULE_SUBTYPE_MULTI_V2X2,       1, false, false,  STR_SUBTYPE_V2X2,      nullptr},
   {MODULE_SUBTYPE_MULTI_DSM2,       3, false, true,   STR_SUBTYPE_DSM,       STR_MULTI_MAX_THROW},
