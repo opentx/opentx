@@ -375,7 +375,7 @@
 #define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "No\0      ""Guardar\0 ""Adaptar\0 ""Sin pulso""Receptor\0"
+#define TR_VFAILSAFE           "No\0      ""Hold\0    ""Custom\0 ""No pulsos""Receptor\0"
 
 
 #define LEN_VSENSORTYPES        "\012"
@@ -864,7 +864,7 @@
 #define TR_NO_MODULE_INFORMATION       "Sin informacion modulo"
 #define TR_EXTERNALRF                  "RF externa"
 #define TR_FAILSAFE                    INDENT"Failsafe"
-#define TR_FAILSAFESET                 "FAILSAFE"
+#define TR_FAILSAFESET                 "AJUSTES FAILSAFE"
 #define TR_REG_ID                      "Reg. ID"
 #define TR_OWNER_ID                    "Pers. ID"
 #define TR_PINMAPSET                   "PINMAP"
