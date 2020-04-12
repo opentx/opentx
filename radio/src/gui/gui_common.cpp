@@ -831,7 +831,7 @@ uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
 
 const char STR_SUBTYPE_FLYSKY[] =     "\004""Std\0""V9x9""V6x6""V912""CX20";
 const char STR_SUBTYPE_HUBSAN[] =     "\004""H107""H301""H501";
-const char STR_SUBTYPE_FRSKY[] =      "\010""D16\0    ""D8\0     ""D16 8ch\0""V8\0     ""LBT(EU)\0""LBT 8ch\0""D8Clone\0""D16Clone";
+const char STR_SUBTYPE_FRSKY[] =      "\011""D16\0     ""D8\0      ""D16 8ch\0 ""V8\0      ""LBT(EU)\0 ""LBT 8ch\0 ""D8Cloned\0""D16Cloned";
 const char STR_SUBTYPE_FRSKYX2[] =    "\007""D16\0   ""D16 8ch""LBT(EU)""LBT 8ch";
 const char STR_SUBTYPE_HISKY[] =      "\005""Std\0 ""HK310";
 const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506";
