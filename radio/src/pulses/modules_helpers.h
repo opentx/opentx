@@ -25,6 +25,9 @@
 #include "definitions.h"
 #include "opentx_helpers.h"
 #include "telemetry/telemetry.h"
+#include "storage/storage.h"
+#include "globals.h"
+
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
 #endif
@@ -421,11 +424,6 @@ inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
   return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
 }
 
-inline bool isModuleRangeAvailable(uint8_t moduleIdx)
-{
-  return isModuleXJTD16(moduleIdx) || isModuleXJTLR12(moduleIdx);
-}
-
 constexpr uint8_t MAX_RXNUM = 63;
 
 inline uint8_t getMaxRxNum(uint8_t idx)
@@ -537,6 +535,14 @@ inline void setDefaultPpmFrameLength(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].ppm.frameLength = 4 * max<int>(0, g_model.moduleData[moduleIdx].channelsCount);
 }
 
+inline void resetAccessAuthenticationCount()
+{
+#if defined(ACCESS_LIB)
+  // the module will reset on mode switch, we need to reset the authentication counter
+  globalData.authenticationCount = 0;
+#endif
+}
+
 inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
 {
   ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -547,6 +553,8 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
     moduleData.sbus.refreshRate = -31;
   else if (moduleData.type == MODULE_TYPE_PPM)
     setDefaultPpmFrameLength(moduleIdx);
+  else
+    resetAccessAuthenticationCount();
 }
 
 extern bool isExternalAntennaEnabled();

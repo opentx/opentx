@@ -1030,6 +1030,7 @@ bool menuModelSetup(event_t event)
           }
           else if (isModulePXX2(INTERNAL_MODULE)) {
             g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, EE_MODEL);
+            resetAccessAuthenticationCount();
           }
         }
         break;

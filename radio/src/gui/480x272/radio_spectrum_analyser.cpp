@@ -56,8 +56,10 @@ bool menuRadioSpectrumAnalyser(event_t event)
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H / 2, STR_STOPPING);
     lcdRefresh();
-    if (isModulePXX2(g_moduleIdx))
+    if (isModulePXX2(g_moduleIdx)) {
       moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+      resetAccessAuthenticationCount();
+    }
     else if (isModuleMultimodule(g_moduleIdx)) {
       if (reusableBuffer.spectrumAnalyser.moduleOFF)
         setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);

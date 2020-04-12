@@ -626,6 +626,8 @@ extern const char STR_VIEW_TEXT[];
 extern const char STR_FLASH_BOOTLOADER[];
 extern const char STR_FLASH_EXTERNAL_DEVICE[];
 extern const char STR_FLASH_RECEIVER_OTA[];
+extern const char STR_FLASH_RECEIVER_OTA_BY_EXTERNAL[];
+extern const char STR_FLASH_RECEIVER_OTA_BY_INTERNAL[];
 extern const char STR_FLASH_BLUETOOTH_MODULE[];
 extern const char STR_FLASH_POWER_MANAGEMENT_UNIT[];
 extern const char STR_CURRENT_VERSION[];
@@ -863,6 +865,8 @@ extern const char STR_MENU_OTHER[];
 extern const char STR_MENU_INVERT[];
 extern const char STR_JITTER_FILTER[];
 extern const char STR_RTC_CHECK[];
+extern const char STR_SPORT_UPDATE_POWER_MODE[];
+extern const char STR_SPORT_UPDATE_POWER_MODES[];
 
 #if MENUS_LOCK == 1
   extern const char STR_UNLOCKED[];

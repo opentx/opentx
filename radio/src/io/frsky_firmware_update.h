@@ -24,6 +24,7 @@
 #include "dataconstants.h"
 #include "definitions.h"
 #include "frsky_pxx2.h"
+#include "pulses/modules_helpers.h"
 #include "ff.h"
 
 enum FrskyFirmwareProductFamily {
@@ -35,11 +36,64 @@ enum FrskyFirmwareProductFamily {
   FIRMWARE_FAMILY_POWER_MANAGEMENT_UNIT,
 };
 
-enum FrskyFirmwareProductId {
-  FIRMWARE_ID_NONE,
-  FIRMWARE_ID_XJT = 0x01,
-  FIRMWARE_ID_ISRM = 0x02,
+enum FrskyFirmwareModuleProductId {
+  FIRMWARE_ID_MODULE_NONE,
+  FIRMWARE_ID_MODULE_XJT = 0x01,
+  FIRMWARE_ID_MODULE_ISRM = 0x02,
 };
+
+enum FrskyFirmwareReceiverProductId {
+  FIRMWARE_ID_RECEIVER_NONE,
+  FIRMWARE_ID_RECEIVER_X8R = 0x01,
+  FIRMWARE_ID_RECEIVER_RX8R = 0x02,
+  FIRMWARE_ID_RECEIVER_RX8R_PRO = 0x03,
+  FIRMWARE_ID_RECEIVER_RX6R = 0x04,
+  FIRMWARE_ID_RECEIVER_RX4R = 0x05,
+  FIRMWARE_ID_RECEIVER_G_RX8 = 0x06,
+  FIRMWARE_ID_RECEIVER_G_RX6 = 0x07,
+  FIRMWARE_ID_RECEIVER_X6R = 0x08,
+  FIRMWARE_ID_RECEIVER_X4R = 0x09,
+  FIRMWARE_ID_RECEIVER_X4R_SB = 0x0A,
+  FIRMWARE_ID_RECEIVER_XSR = 0x0B,
+  FIRMWARE_ID_RECEIVER_XSR_M = 0x0C,
+  FIRMWARE_ID_RECEIVER_RXSR = 0x0D,
+  FIRMWARE_ID_RECEIVER_S6R = 0x0E,
+  FIRMWARE_ID_RECEIVER_S8R = 0x0F,
+  FIRMWARE_ID_RECEIVER_XM = 0x10,
+  FIRMWARE_ID_RECEIVER_XMP = 0x11,
+  FIRMWARE_ID_RECEIVER_XMR = 0x12,
+  FIRMWARE_ID_RECEIVER_R9 = 0x13,
+  FIRMWARE_ID_RECEIVER_R9_SLIM = 0x14,
+  FIRMWARE_ID_RECEIVER_R9_SLIMP = 0x15,
+  FIRMWARE_ID_RECEIVER_R9_MINI = 0x16,
+  FIRMWARE_ID_RECEIVER_R9_MM = 0x17,
+  FIRMWARE_ID_RECEIVER_R9_STAB = 0x18, // R9_STAB has OTA
+  FIRMWARE_ID_RECEIVER_R9_MINI_OTA = 0x19, // this one has OTA (different bootloader)
+  FIRMWARE_ID_RECEIVER_R9_MM_OTA = 0x1A, // this one has OTA (different bootloader)
+  FIRMWARE_ID_RECEIVER_R9_SLIMP_OTA = 0x1B, // this one has OTA (different bootloader)
+  FIRMWARE_ID_RECEIVER_ARCHER_X = 0x1C, // this one has OTA (internal module)
+  FIRMWARE_ID_RECEIVER_R9MX = 0x1D, // this one has OTA
+  FIRMWARE_ID_RECEIVER_R9SX = 0x1E, // this one has OTA
+};
+
+inline bool isReceiverOTAEnabledFromModule(uint8_t moduleIdx, uint8_t productId)
+{
+  switch (productId) {
+    case FIRMWARE_ID_RECEIVER_ARCHER_X:
+      return isModuleISRM(moduleIdx);
+
+    case FIRMWARE_ID_RECEIVER_R9_STAB:
+    case FIRMWARE_ID_RECEIVER_R9_MINI_OTA:
+    case FIRMWARE_ID_RECEIVER_R9_MM_OTA:
+    case FIRMWARE_ID_RECEIVER_R9_SLIMP_OTA:
+    case FIRMWARE_ID_RECEIVER_R9MX:
+    case FIRMWARE_ID_RECEIVER_R9SX:
+      return isModuleR9M(moduleIdx);
+
+    default:
+      return false;
+  }
+}
 
 PACK(struct FrSkyFirmwareInformation {
   uint32_t fourcc;
@@ -69,7 +123,7 @@ class FrskyDeviceFirmwareUpdate {
     };
 
   public:
-    FrskyDeviceFirmwareUpdate(ModuleIndex module):
+    explicit FrskyDeviceFirmwareUpdate(ModuleIndex module):
       module(module) {
     }
 

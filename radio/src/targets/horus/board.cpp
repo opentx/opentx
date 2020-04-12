@@ -74,6 +74,14 @@ void sportUpdatePowerOff()
 {
   GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
 }
+
+void sportUpdatePowerInit()
+{
+  if (g_eeGeneral.sportUpdatePower == 1)
+    sportUpdatePowerOn();
+  else
+    sportUpdatePowerOff();
+}
 #endif
 
 void boardInit()
@@ -95,6 +103,7 @@ void boardInit()
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
+                         I2C_TOUCH_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph |
                          SPORT_UPDATE_RCC_AHB1Periph,
                          ENABLE);
@@ -110,6 +119,7 @@ void boardInit()
                          AUDIO_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
+                         I2C_TOUCH_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);

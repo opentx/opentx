@@ -46,7 +46,7 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
   lcdRefresh();
   lcdSetContrast();
   waitKeysReleased();
-  backlightOn();
+  resetBacklightTimeout();
   checkBacklight();
 }
 

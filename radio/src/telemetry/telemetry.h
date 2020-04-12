@@ -23,6 +23,9 @@
 
 #include "frsky.h"
 #include "crossfire.h"
+#include "myeeprom.h"
+#include "io/frsky_sport.h"
+
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"
@@ -105,7 +108,8 @@ void frskyDSetDefault(int index, uint16_t id);
 extern uint8_t telemetryProtocol;
 
 #if defined (MULTIMODULE)
-  #define IS_D16_MULTI(module)           ((g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) && (g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH))
+  #define IS_D16_MULTI(module)           (((g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) && (g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH)) \
+                                         || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKYX2))
   #define IS_HOTT_MULTI(module)          (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT)
   #if defined(HARDWARE_INTERNAL_MODULE)
     #define IS_FRSKY_SPORT_PROTOCOL()    (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (IS_D16_MULTI(INTERNAL_MODULE)||IS_D16_MULTI(EXTERNAL_MODULE))))
@@ -151,7 +155,7 @@ inline uint8_t modelTelemetryProtocol()
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #if defined(INTERNAL_MODULE_MULTI)
-  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #endif

@@ -150,6 +150,16 @@ enum FrSkyDataState {
 #define ESC_RPM_CONS_LAST_ID      0x0B6f
 #define ESC_TEMPERATURE_FIRST_ID  0x0B70
 #define ESC_TEMPERATURE_LAST_ID   0x0B7f
+#define RB3040_OUTPUT_FIRST_ID    0x0B80
+#define RB3040_OUTPUT_LAST_ID     0x0B8F
+#define RB3040_CH1_2_FIRST_ID     0x0B90
+#define RB3040_CH1_2_LAST_ID      0x0B9F
+#define RB3040_CH3_4_FIRST_ID     0x0BA0
+#define RB3040_CH3_4_LAST_ID      0x0BAF
+#define RB3040_CH5_6_FIRST_ID     0x0BB0
+#define RB3040_CH5_6_LAST_ID      0x0BBF
+#define RB3040_CH7_8_FIRST_ID     0x0BC0
+#define RB3040_CH7_8_LAST_ID      0x0BCF
 #define X8R_FIRST_ID              0x0c20
 #define X8R_LAST_ID               0x0c2F
 #define S6R_FIRST_ID              0x0c30
@@ -177,6 +187,7 @@ enum FrSkyDataState {
 #define DIY_STREAM_FIRST_ID       0x5000
 #define DIY_STREAM_LAST_ID        0x50FF
 #define FACT_TEST_ID              0xF000
+#define FRAME_LOSS_RATE_ID        0xF010
 #define RSSI_ID                   0xF101
 #define ADC1_ID                   0xF102
 #define ADC2_ID                   0xF103
@@ -282,10 +293,10 @@ inline bool isRasValueValid()
 {
   return true;
 }
-#elif defined(PCBX9DP) || defined(PCBX9E)
+#elif defined(PCBTARANIS)
 inline bool isRasValueValid()
 {
-  return telemetryData.xjtVersion != 0x0000 && telemetryData.xjtVersion != 0x00FF;
+  return telemetryData.xjtVersion != 0x00FF;
 }
 #elif defined(PCBHORUS)
 inline bool isRasValueValid()

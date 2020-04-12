@@ -61,11 +61,7 @@ void menuChannelsView(event_t event)
   else if (g_model.extendedLimits)
     limits *= LIMIT_EXT_PERCENT / 100;
 
-  if (reusableBuffer.viewChannels.mixersView)
-    lcdDrawTextAlignedCenter(0, TR_MIXERS_MONITOR);
-  else
-    lcdDrawTextAlignedCenter(0, TR_CHANNELS_MONITOR);
-
+  lcdDrawText(LCD_W / 2, 0, reusableBuffer.viewChannels.mixersView ? STR_MIXERS_MONITOR : STR_CHANNELS_MONITOR, CENTERED);
   lcdInvertLine(0);
 
   // Column separator

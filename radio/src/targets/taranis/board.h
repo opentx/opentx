@@ -114,12 +114,16 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
   #define INTERNAL_MODULE_OFF()         GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #endif
 
+#if !defined(PCBX9LITE) || defined(PCBX9LITES)
+  #define HARDWARE_INTERNAL_RAS
+#endif
+
 #define EXTERNAL_MODULE_ON()            EXTERNAL_MODULE_PWR_ON()
 
 #if defined(EXTMODULE_USART)
-#define EXTERNAL_MODULE_OFF()         extmoduleStop()
+  #define EXTERNAL_MODULE_OFF()         extmoduleStop()
 #else
-#define EXTERNAL_MODULE_OFF()         EXTERNAL_MODULE_PWR_OFF()
+  #define EXTERNAL_MODULE_OFF()         EXTERNAL_MODULE_PWR_OFF()
 #endif
 
 #if defined(RADIO_T12)
@@ -720,12 +724,17 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 void sportUpdateInit();
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
+void sportUpdatePowerInit();
 #define SPORT_UPDATE_POWER_ON()         sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()        sportUpdatePowerOff()
+#define SPORT_UPDATE_POWER_INIT()       sportUpdatePowerInit()
+#define IS_SPORT_UPDATE_POWER_ON()      (GPIO_ReadInputDataBit(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN) == Bit_SET)
 #else
 #define sportUpdateInit()
 #define SPORT_UPDATE_POWER_ON()
 #define SPORT_UPDATE_POWER_OFF()
+#define SPORT_UPDATE_POWER_INIT()
+#define IS_SPORT_UPDATE_POWER_ON()      (false)
 #endif
 
 // Audio driver

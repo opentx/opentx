@@ -66,6 +66,7 @@ class AppPreferencesDialog : public QDialog
     void on_SplashSelect_clicked();
     void on_clearImageButton_clicked();
     void on_btn_appLogsDir_clicked();
+    void on_btnClearPos_clicked();
 
 #if defined(JOYSTICKS)
     void on_joystickChkB_clicked();

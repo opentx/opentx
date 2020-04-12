@@ -41,8 +41,8 @@
 #elif defined(RADIO_TX16S)
   #define KEYS_GPIO_REG_ENTER           GPIOI->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PI.08
-  #define KEYS_GPIO_REG_PGUP            GPIOH->IDR
-  #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_2  // PH.02
+  #define KEYS_GPIO_REG_PGUP            GPIOC->IDR
+  #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_13 // PC.13
   #define KEYS_GPIO_REG_PGDN            GPIOI->IDR
   #define KEYS_GPIO_PIN_PGDN            GPIO_Pin_11 // PI.11
   #define KEYS_GPIO_REG_UP              GPIOI->IDR
@@ -227,14 +227,13 @@
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RSD)
 #elif defined(PCBX10)
   #define KEYS_GPIOB_PINS               (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13 | GPIO_Pin_8 | GPIO_Pin_9)
+#if defined(RADIO_TX16S)
+  #define KEYS_GPIOC_PINS               (GPIO_Pin_13)
+#endif
   #define KEYS_GPIOD_PINS               (GPIO_Pin_11 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_13)
   #define KEYS_GPIOE_PINS               (GPIO_Pin_3)
   #define KEYS_GPIOG_PINS               (SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_LVD)
-#if defined(RADIO_TX16S)
-  #define KEYS_GPIOH_PINS               (GPIO_Pin_2  |  GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
-#else
   #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
-#endif
   #define KEYS_GPIOI_PINS               (GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_15)
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | GPIO_Pin_8)
 #endif
@@ -828,6 +827,24 @@
 // 2MHz Timer
 #define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
+
+// Touch
+#if defined(HARDWARE_TOUCH)
+#define I2C_TOUCH_RCC_AHB1Periph        RCC_AHB1Periph_GPIOB
+#define I2C_TOUCH_RCC_APB1Periph        RCC_APB1Periph_I2C1
+#define I2C_TOUCH                       I2C1
+#define I2C_TOUCH_GPIO                  GPIOB
+#define I2C_TOUCH_SCL_GPIO_PIN          GPIO_Pin_8   // PB.08
+#define I2C_TOUCH_SDA_GPIO_PIN          GPIO_Pin_7   // PB.07
+
+#define I2C_TOUCH_RESET_GPIO            GPIOF
+#define I2C_TOUCH_RESET_GPIO_PIN        GPIO_Pin_10  // PF.10
+#define I2C_TOUCH_INT_GPIO              GPIOH
+#define I2C_TOUCH_INT_GPIO_PIN          GPIO_Pin_2   // PH.02
+#else
+#define I2C_TOUCH_RCC_AHB1Periph        0
+#define I2C_TOUCH_RCC_APB1Periph        0
+#endif
 
 // Bluetooth
 #define STORAGE_BLUETOOTH
