@@ -655,7 +655,7 @@
 #define TR_DISABLE_CH_MAP              TR("No ch map", "Desactivar mapa cnl")
 #define TR_DISABLE_TELEM               TR("No Telem", "Desactivar Telemetria")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodetect", INDENT "Autodetectar formato")
-#define TR_MULTI_LOWPOWER              TR(INDENT "Baja potencia", INDENT "Modo de baja potencia")
+#define TR_MULTI_LOWPOWER              TR(INDENT "Baja poten.", INDENT "Modo de baja potencia")
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
 #define TR_MODULE_TELEM_ON             TR("ON", "Activado")
 #define TR_DISABLE_INTERNAL            TR("Desac.RF int", "Desactivar modulo interno RF")
@@ -863,8 +863,8 @@
 #define TR_MORE_OPTIONS_AVAILABLE      "Mas opciones disp."
 #define TR_NO_MODULE_INFORMATION       "Sin informacion modulo"
 #define TR_EXTERNALRF                  "RF externa"
-#define TR_FAILSAFE                    INDENT"Modo sgdad."
-#define TR_FAILSAFESET                 "AJUSTES SGDAD."
+#define TR_FAILSAFE                    INDENT"Failsafe"
+#define TR_FAILSAFESET                 "FAILSAFE"
 #define TR_REG_ID                      "Reg. ID"
 #define TR_OWNER_ID                    "Pers. ID"
 #define TR_PINMAPSET                   "PINMAP"
