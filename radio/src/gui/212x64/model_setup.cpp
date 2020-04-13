@@ -254,11 +254,16 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 
 inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 {
-  if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleAFHDS3(EXTERNAL_MODULE))
+  if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
     return 1;
 #if defined(MULTIMODULE)
   else if (isModuleMultimodule(EXTERNAL_MODULE)) {
     return 1 + MULTIMODULE_RFPROTO_COLUMNS(EXTERNAL_MODULE);
+  }
+#endif
+#if defined(AFHDS3)
+  else if (isModuleAFHDS3(EXTERNAL_MODULE)) {
+    return 1;
   }
 #endif
   else
