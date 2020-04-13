@@ -375,7 +375,7 @@
 #define TR_VTRAINER_MULTI              "Master/Multi"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "No\0      ""Hold\0    ""Custom\0 ""No pulsos""Receptor\0"
+#define TR_VFAILSAFE           "No\0      ""Hold\0    ""Custom\0  ""No pulsos""Receptor\0"
 
 
 #define LEN_VSENSORTYPES        "\012"
@@ -752,7 +752,7 @@
 #define TR_EEPROM_CONVERTING   "Convirtiendo EEPROM"
 #define TR_THROTTLEWARN        TR("ACELERAD.", "ACELERADOR")
 #define TR_ALARMSWARN          "ALARMAS"
-#define TR_SWITCHWARN          "INTERPTOR"
+#define TR_SWITCHWARN          TR("INTERRUP.", "INTERRUPTOR")
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_TEST_WARNING         TR("TESTING", "TEST BUILD")
 #define TR_TEST_NOTSAFE         "Usar solo para test"
