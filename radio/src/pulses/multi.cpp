@@ -295,15 +295,18 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
       //D8
       type = 3;
       subtype = 0;
-    } else if (subtype == MM_RF_FRSKY_SUBTYPE_D8_CLONED) {
+    } 
+    else if (subtype == MM_RF_FRSKY_SUBTYPE_D8_CLONED) {
       //D8
       type = 3;
       subtype = 1;
-    } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
+    } 
+    else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
       //V8
       type = 25;
       subtype = 0;
-    } else {
+    } 
+    else {
       type = 15;
       if (subtype == MM_RF_FRSKY_SUBTYPE_D16_8CH) // D16 8ch
         subtype = 1;
