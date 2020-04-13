@@ -803,7 +803,7 @@ uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
 
   if (type == MODULE_SUBTYPE_MULTI_FRSKY) {
     int subtype = g_model.moduleData[moduleIdx].subType;
-    if (subtype == MM_RF_FRSKY_SUBTYPE_D8||subtype == MM_RF_FRSKY_SUBTYPE_D8_CLONED) {
+    if (subtype == MM_RF_FRSKY_SUBTYPE_D8|| subtype == MM_RF_FRSKY_SUBTYPE_D8_CLONED) {
       //D8
       type = 3;
     }
