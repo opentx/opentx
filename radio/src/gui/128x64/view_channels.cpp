@@ -128,10 +128,6 @@ void menuChannelsView(event_t event)
     case EVT_KEY_PREVIOUS_PAGE:
       g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) - ALTERNATE_VIEW) % (4 * ALTERNATE_VIEW);
       break;
-
-    case EVT_KEY_FIRST(KEY_ENTER):
-      reusableBuffer.viewChannels.mixersView = !reusableBuffer.viewChannels.mixersView;
-      break;
   }
 
   menuChannelsViewCommon(event);
