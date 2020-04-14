@@ -1615,7 +1615,8 @@ static int luaSerialRead(lua_State * L)
   if (num > LUA_FIFO_SIZE) num = LUA_FIFO_SIZE;
   uint8_t str[LUA_FIFO_SIZE];
   uint8_t *p = str;
-  while (luaRxFifo.pop(*p++)) {
+  while (luaRxFifo.pop(*p)) {
+    p++;  // increment only when pop was successful
     if (num == 0) {
       if (*(p - 1) == '\n' || *(p - 1) == '\r') break;
     } else {
