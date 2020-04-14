@@ -10,6 +10,3 @@ cmake-build-*/
 /*.vscode
 radio/src/tests/googletest*
 radio/src/tests/gtest*.tar.gz
-
-
-lua-serialread-notes
