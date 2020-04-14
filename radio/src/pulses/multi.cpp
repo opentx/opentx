@@ -316,7 +316,8 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
         subtype = 2;
       else if (subtype == MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH)
         subtype = 3;
-      else subtype = 4;
+      else
+        subtype = 4;
     }
   }
 
