@@ -1598,12 +1598,15 @@ static int luaSerialWrite(lua_State * L)
 }
 
 /*luadoc
-@function serialRead???
-@param num (optional) maximum number of bytes to read. If left out, will read up to and including newline character or end of buffer.
+@function serialRead([num])
+@param num (optional): maximum number of bytes to read.
+                       If non-zero, serialRead will read up to num characters from the buffer.
+                       If 0 or left out, serialRead will read up to and including the first newline character or the end of the buffer.
+                       Note that the returned string may not end in a newline if this character is not present in the buffer.
 
 @retval str string. Empty if no new characters were available.
 
-Reads characters from the serial port.
+Reads characters from the serial port. The string is allowed to contain any character, including 0.
 
 @status current Introduced in TODO
 */
