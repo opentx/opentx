@@ -326,7 +326,9 @@ void intmoduleStop();
 void extmoduleStop();
 void getModuleStatusString(uint8_t moduleIdx, char * statusText);
 void getModuleSyncStatusString(uint8_t moduleIdx, char * statusText);
-
+#if defined(AFHDS3)
+uint8_t actualAfhdsRunPower(int moduleIndex);
+#endif
 inline void startPulses()
 {
   s_pulses_paused = false;

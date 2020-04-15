@@ -68,7 +68,15 @@ void getModuleSyncStatusString (uint8_t moduleIdx, char * statusText) {
   }
 #endif
 }
-
+#if defined(AFHDS3)
+uint8_t actualAfhdsRunPower(int moduleIndex)
+{
+  if(moduleIndex == EXTERNAL_MODULE && isModuleAFHDS3(moduleIndex)) {
+    return (uint8_t)extmodulePulsesData.afhds3.actualRunPower();
+  }
+  return 0;
+}
+#endif
 
 ModuleSettingsMode getModuleMode(int moduleIndex)
 {
