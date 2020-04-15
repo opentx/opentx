@@ -1122,8 +1122,13 @@ void menuModelSetup(event_t event)
             lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
-            bindButtonPos = lcdNextPos + FW;
+            if (!IS_RX_MULTI(moduleIdx)) {
+              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz == 0 ? attr : 0) | LEADING0 | LEFT, 2);
+              bindButtonPos = lcdNextPos + FW;
+            }
+            else {
+              bindButtonPos = MODEL_SETUP_2ND_COLUMN;
+            }
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
@@ -1141,7 +1146,8 @@ void menuModelSetup(event_t event)
               }
             }
             lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            if (!IS_RX_MULTI(moduleIdx))
+              lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
