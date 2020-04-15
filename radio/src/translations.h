@@ -867,6 +867,7 @@ extern const char STR_JITTER_FILTER[];
 extern const char STR_RTC_CHECK[];
 extern const char STR_SPORT_UPDATE_POWER_MODE[];
 extern const char STR_SPORT_UPDATE_POWER_MODES[];
+extern const char STR_NO_TELEMETRY_SCREENS[];
 
 #if MENUS_LOCK == 1
   extern const char STR_UNLOCKED[];
