@@ -1683,7 +1683,7 @@ bool menuModelSetup(event_t event)
         }
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(moduleIdx)) {
-          lcdDrawText(MENUS_MARGIN_LEFT, y, IS_RX_MULTI(moduleIdx) ? STR_MULTI_LNADISABLE : STR_MULTI_LOWPOWER);
+          lcdDrawText(MENUS_MARGIN_LEFT, y, IS_RX_MULTI(moduleIdx) ? STR_MULTI_LNA_DISABLE : STR_MULTI_LOWPOWER);
           g_model.moduleData[moduleIdx].multi.lowPowerMode = editCheckBox(g_model.moduleData[moduleIdx].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         }
 #endif
