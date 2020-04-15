@@ -26,6 +26,7 @@
 #include "opentx_helpers.h"
 #include "telemetry/telemetry.h"
 #include "storage/storage.h"
+#include "globals.h"
 
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
@@ -57,7 +58,7 @@ inline uint8_t getMaxMultiSubtype(uint8_t moduleIdx)
   const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
 
   if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
-    return 5;
+    return 7;
   }
 
   if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
@@ -534,6 +535,14 @@ inline void setDefaultPpmFrameLength(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].ppm.frameLength = 4 * max<int>(0, g_model.moduleData[moduleIdx].channelsCount);
 }
 
+inline void resetAccessAuthenticationCount()
+{
+#if defined(ACCESS_LIB)
+  // the module will reset on mode switch, we need to reset the authentication counter
+  globalData.authenticationCount = 0;
+#endif
+}
+
 inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
 {
   ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -544,6 +553,8 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
     moduleData.sbus.refreshRate = -31;
   else if (moduleData.type == MODULE_TYPE_PPM)
     setDefaultPpmFrameLength(moduleIdx);
+  else
+    resetAccessAuthenticationCount();
 }
 
 extern bool isExternalAntennaEnabled();

@@ -22,8 +22,6 @@
 #define _BUZZER_H_
 
 #if defined(BUZZER)
-extern uint8_t g_beepCnt;
-extern uint8_t beepAgain;
 extern uint8_t beepAgainOrig;
 extern uint8_t beepOn;
 extern bool warble;

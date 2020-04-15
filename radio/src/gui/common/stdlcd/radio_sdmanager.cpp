@@ -576,7 +576,7 @@ void menuRadioSdManager(event_t _event)
         if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount > 0) {
           if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount != popupMenuItemsCount) {
             CLEAR_POPUP();
-            popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount,PXX2_MAX_RECEIVERS_PER_MODULE);
+            popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
             for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
               popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
             }
