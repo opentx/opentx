@@ -656,6 +656,7 @@
 #define TR_DISABLE_TELEM               TR("No Telem", "Desactivar Telemetria")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodetect", INDENT "Autodetectar formato")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Baja potencia", INDENT "Modo de baja potencia")
+#define TR_MULTI_LNADISABLE            INDENT "LNA disable"
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
 #define TR_MODULE_TELEM_ON             TR("ON", "Activado")
 #define TR_DISABLE_INTERNAL            TR("Desac.RF int", "Desactivar modulo interno RF")

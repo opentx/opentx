@@ -384,6 +384,9 @@ inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
   if (isModuleISRM(moduleIdx))
     return true;
 
+  if(IS_RX_MULTI(moduleIdx))
+    return false;
+
   if (isModuleMultimodule(moduleIdx))
     return true;
 

@@ -1306,7 +1306,7 @@ void menuModelSetup(event_t event)
       }
 #if defined (MULTIMODULE)
       else if (isModuleMultimodule(moduleIdx)) {
-        g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
+        g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, IS_RX_MULTI(moduleIdx) ? STR_MULTI_LNADISABLE : STR_MULTI_LOWPOWER, attr, event);
       }
 #endif
       break;
