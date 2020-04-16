@@ -1119,21 +1119,13 @@ bool menuModelSetup(event_t event)
                     int8_t direction = checkIncDec(event, 0, -1, 1);
                     if (direction == -1) {
                       if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKY)
-                        multiRfProto = MODULE_SUBTYPE_MULTI_FQ777;
-                      else if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKYX2)
-                        multiRfProto = MODULE_SUBTYPE_MULTI_FRSKY;
-                      else if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKY_R9)
-                        multiRfProto = MODULE_SUBTYPE_MULTI_FRSKYX2;
+                        multiRfProto = MODULE_SUBTYPE_MULTI_FRSKYX_RX;
                       else
                         multiRfProto = convertMultiToOtx(status.protocolPrev);
                     }
                     if (direction == 1) {
                       if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKY)
                         multiRfProto = MODULE_SUBTYPE_MULTI_FRSKYX2;
-                      else if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKYX2)
-                        multiRfProto = MODULE_SUBTYPE_MULTI_FRSKY_R9;
-                      else if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKY_R9)
-                        multiRfProto = MODULE_SUBTYPE_MULTI_FX816;
                       else
                         multiRfProto = convertMultiToOtx(status.protocolNext);
                     }
