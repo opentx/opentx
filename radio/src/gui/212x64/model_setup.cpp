@@ -907,7 +907,7 @@ void menuModelSetup(event_t event)
           switch (menuHorizontalPosition) {
             case 0: {
               int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-              MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+              MultiModuleStatus &status = getMultiModuleStatus(EXTERNAL_MODULE);
               if (status.isValid()) {
                 int8_t direction = checkIncDec(event, 0, -1, 1);
                 if (direction == -1)
