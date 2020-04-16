@@ -84,7 +84,9 @@ local function onTelemetryResetEvent(wgt)
   wgt.telemResetCount = wgt.telemResetCount + 1
 
   wgt.cellDataLive = {0,0,0,0,0,0}
+  wgt.cellDataLivePercent = {0,0,0,0,0,0}
   wgt.cellDataHistoryLowest = {5,5,5,5,5,5}
+  wgt.cellDataHistoryLowestPercent = {5,5,5,5,5,5}
   wgt.cellDataHistoryCellLowest = 5
 end
 
@@ -154,7 +156,7 @@ local function calculateBatteryData(wgt)
 
   -- this is necessary for simu where cell-count can change
   if #wgt.cellDataHistoryLowest ~= #newCellData then
-    wgt.cellDataHistoryLowest = {}
+    wgt.cellDataHistoryLowest = {5,5,5,5,5,5}
     for k, v in pairs(newCellData) do
       wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
     end
@@ -243,6 +245,7 @@ end
 local function getRangeColor(value, green_value, red_value)
   local range = math.abs(green_value - red_value)
   if range==0 then return lcd.RGB(0, 0xdf, 0) end
+  if value==nil then return lcd.RGB(0, 0xdf, 0) end
 
   if green_value > red_value then
     if value > green_value then return lcd.RGB(0, 0xdf, 0) end
@@ -458,6 +461,7 @@ end
 local function refresh(wgt)
 
   if (wgt         == nil) then return end
+  if type(wgt) ~= "table" then return end
   if (wgt.options == nil) then return end
   if (wgt.zone    == nil) then return end
   if (wgt.options.LowestCell == nil) then return end
