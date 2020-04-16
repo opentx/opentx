@@ -122,6 +122,8 @@ void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, 
 void drawSourceCustomValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags flags=0);
 void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags flags=0);
 
+int convertMultiToOtx(int type);
+
 void drawCurve(coord_t offset=0);
 
 #if defined(COLORLCD)

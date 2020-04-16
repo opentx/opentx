@@ -789,7 +789,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 #if defined(MULTIMODULE)
 
 // This maps OpenTX multi type with Pascal's Multi type
-uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
+uint8_t multiConvertOtxToMulti(uint8_t moduleIdx, uint8_t type)
 {
 
   // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
@@ -816,6 +816,27 @@ uint8_t convertMultiProtocol(uint8_t moduleIdx, uint8_t type)
     }
   }
   return type;
+}
+
+// This maps multi type to OpenTX number, type ONLY (no subtype)
+int convertMultiToOtx(int type)
+{
+  if  (type == 3) //FrSkyD
+    return MODULE_SUBTYPE_MULTI_FRSKY;
+
+  if  (type == 15) //FrSkyX
+    return MODULE_SUBTYPE_MULTI_FRSKY;
+
+  if  (type == 25) //FrSkyV
+    return MODULE_SUBTYPE_MULTI_FRSKY;
+
+  if (type > 15)
+    type = type - 1;
+
+  if (type > 25)
+    type = type - 1;
+
+  return type - 1; //Multi list starts at 1
 }
 
 // Third row is number of subtypes -1 (max valid subtype)
