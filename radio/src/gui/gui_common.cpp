@@ -830,10 +830,10 @@ int convertMultiToOtx(int type)
   if  (type == 25) //FrSkyV
     return MODULE_SUBTYPE_MULTI_FRSKY;
 
-  if (type > 15)
+  if (type > 25)
     type = type - 1;
 
-  if (type > 25)
+  if (type > 15)
     type = type - 1;
 
   return type - 1; //Multi list starts at 1
