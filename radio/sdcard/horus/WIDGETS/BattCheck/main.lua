@@ -19,7 +19,8 @@
 -- Horus Widget to display the levels of lipo battery with per cell indication
 -- 3djc & Offer Shmuely
 -- Date: 2020
--- ver: 0.4
+-- ver: 0.5
+local version = "v0.5"
 
 local _options = {
   { "Sensor",     SOURCE, 0     },  -- default to 'Cels'
@@ -27,6 +28,39 @@ local _options = {
   { "Shadow",     BOOL,   0     },
   { "LowestCell", BOOL,   1     }   -- 0=main voltage display shows all-cell-voltage, 1=main voltage display shows lowest-cell
 }
+
+
+
+--------------------------------------------------------------
+local function log(s)
+  --return;
+  print("app: " .. s)
+end
+--------------------------------------------------------------
+--periodic1 = {startTime = -1, durationMili = -1},
+local function periodicInit(t, durationMili)
+  t.startTime = getTime();
+  t.durationMili = durationMili;
+end
+local function periodicReset(t)
+  t.startTime = getTime();
+end
+local function periodicHasPassed(t)
+  local elapsed = getTime() - t.startTime;
+  local elapsedMili = elapsed * 10;
+  if (elapsedMili < t.durationMili) then
+    return false;
+  end
+  return true;
+end
+local function periodicGetElapsedTime(t)
+  local elapsed = getTime() - t.startTime;
+  --log(string.format("elapsed: %d",elapsed));
+  local elapsedMili = elapsed * 10;
+  --log(string.format("elapsedMili: %d",elapsedMili));
+  return elapsedMili;
+end
+--------------------------------------------------------------
 
 -- This function is run once at the creation of the widget
 local function create(zone, options)
@@ -50,7 +84,10 @@ local function create(zone, options)
     cellCount = 0,
     cellSum = 0,
     mainValue = 0,
-    secondaryValue = 0
+    secondaryValue = 0,
+    periodic1 = {startTime = getTime(), durationMili = 500},
+    periodicProfiler = {startTime = getTime(), durationMili = 5000},
+    profTimes = {},
   }
 
   -- use default if user did not set, So widget is operational on "select widget"
@@ -199,7 +236,6 @@ local function calculateBatteryData(wgt)
 
   --- average of all cells
   wgt.cellAvg = wgt.cellSum / wgt.cellCount
-  wgt.cellPercent = getCellPercent(wgt.cellMin)
 
   wgt.cellDataLive = newCellData
 
@@ -224,6 +260,20 @@ local function calculateBatteryData(wgt)
 
   wgt.isDataAvailable = true
 
+  -- calculate intensive CPU data
+  if (periodicHasPassed(wgt.periodic1) or wgt.cellPercent==0) then
+    local t5 = getUsage();
+
+    wgt.cellPercent = getCellPercent(wgt, wgt.cellMin)
+    for i = 1, wgt.cellCount, 1 do
+      wgt.cellDataLivePercent[i] = getCellPercent(wgt, wgt.cellDataLive[i])
+      wgt.cellDataHistoryLowestPercent[i] = getCellPercent(wgt, wgt.cellDataHistoryLowest[i])
+    end
+
+
+    periodicReset(wgt.periodic1)
+    cpuProfilerAdd(wgt, 'calc-batt-perc', t5);
+  end
 
 end
 
