@@ -1000,7 +1000,17 @@ void menuModelSetup(event_t event)
         lcdDrawMultiProtocolString(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, multi_rfProto, attr);
         if (attr) {
           int multiRfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
-          CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+          MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+          if (status.isValid()) {
+            int8_t direction = checkIncDec(event, 0, -1, 1);
+            if (direction == -1)
+              multiRfProto = convertMultiToOtx(status.protocolPrev);
+            if (direction == 1)
+              multiRfProto = convertMultiToOtx(status.protocolNext);
+          }
+          else {
+            CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+          }
           if (checkIncDec_Ret) {
             g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
             g_model.moduleData[moduleIdx].subType = 0;
