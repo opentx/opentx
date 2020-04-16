@@ -984,7 +984,7 @@
 #define TR_COUNT               "Puntos"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
-#define TR_SMOOTH              "Suaviz"
+#define TR_SMOOTH              TR("Suaviz", "Suavizado")
 #define TR_COPY_STICKS_TO_OFS  TR("Copia stick->subtr", "Copia Sticks a Offset")
 #define TR_COPY_MIN_MAX_TO_OUTPUTS     TR("Copia min/max a sal",  "Copia min/max/ctr a salidas")
 #define TR_COPY_TRIMS_TO_OFS   TR("Copia trim->subtr", "Copia trims a subtrim")
