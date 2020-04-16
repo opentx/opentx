@@ -887,6 +887,7 @@ const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
 const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
 const char STR_SUBTYPE_FX816[] =      "\003""P38";
 const char STR_SUBTYPE_ESKY150[] =    "\003""4CH""7CH";
+const char STR_SUBTYPE_FRSKYL[] =     "\010""LR12\0   ""LR12 6ch";
 
 const char* mm_options_strings::options[] = {
   nullptr,
@@ -946,6 +947,8 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FX816,      0, false, false,  STR_SUBTYPE_FX816,     nullptr},
   {MODULE_SUBTYPE_MULTI_HOTT,       0, true,  false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    4, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_PROPEL,    0, false,  false,  NO_SUBTYPE,   nullptr},
+  {MODULE_SUBTYPE_MULTI_FRSKYL,    1, false,  false,  STR_SUBTYPE_FRSKYL,   STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
