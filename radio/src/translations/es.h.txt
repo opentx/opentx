@@ -1007,7 +1007,7 @@
 #define TR_SPORT_UPDATE_POWER_MODE     "SP Power"
 #define LEN_SPORT_UPDATE_POWER_MODES   "\004"
 #define TR_SPORT_UPDATE_POWER_MODES    "AUTO""ON\0 "
-#define TR_NO_TELEMETRY_SCREENS TR("No hay pant. telemetria", "No hay pantallas de telemetria")
+#define TR_NO_TELEMETRY_SCREENS        TR("No hay pant. telemetria", "No hay pantallas de telemetria")
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Nombre"
@@ -1050,6 +1050,25 @@
 
 // Horus footer descriptions
 #define TR_LSW_DESCRIPTIONS    { "Tipo de comparacion o funcion", "Primera variable", "Segunda variable o constante", "Segunda variable o constante", "Condicion adicional para activar linea", "Duracion minima de switch logico", "Duracion minima TRUE para activar switch logico" }
+
+// Horus layouts and widgets
+#define TR_FIRST_CHANNEL              "Primer canal"
+#define TR_FILL_BACKGROUND            "Rellenar fondo"
+#define TR_BG_COLOR                   "Color BG"
+#define TR_SLIDERS_TRIMS              "Sliders+Trims"
+#define TR_SLIDERS                    "Sliders"
+#define TR_FLIGHT_MODE                "Modo de vuelo"
+#define TR_INVALID_FILE               "Fichero no valido"
+#define TR_TIMER_SOURCE               "Entrada timer"
+#define LEN_TEXT_SIZE                 "\013"
+#define TR_TEXT_SIZE                  "Normal\0    ""Muy pequeño""Pequeño\0   ""Medio\0     ""Doble\0     "
+#define TR_SIZE                       "Tamaño"
+#define TR_SHADOW                     "Sombra"
+#define TR_TEXT                       "Texto"
+#define TR_COLOR                      "Color"
+#define TR_MAIN_VIEW_X                "Vista principal X"
+#define TR_PANEL1_BACKGROUND          "Fondo panel1"
+#define TR_PANEL2_BACKGROUND          "Fondo panel2"
 
 // Taranis About screen
 #define TR_ABOUTUS             "Nosotros"

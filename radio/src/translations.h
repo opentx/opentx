@@ -869,6 +869,24 @@ extern const char STR_SPORT_UPDATE_POWER_MODE[];
 extern const char STR_SPORT_UPDATE_POWER_MODES[];
 extern const char STR_NO_TELEMETRY_SCREENS[];
 
+// Horus
+extern const char STR_FIRST_CHANNEL[];
+extern const char STR_FILL_BACKGROUND[];
+extern const char STR_BG_COLOR[];
+extern const char STR_SLIDERS_TRIMS[];
+extern const char STR_SLIDERS[];
+extern const char STR_FLIGHT_MODE[];
+extern const char STR_INVALID_FILE[];
+extern const char STR_TIMER_SOURCE[];
+extern const char STR_TEXT_SIZE[];
+extern const char STR_SIZE[];
+extern const char STR_SHADOW[];
+extern const char STR_TEXT[];
+extern const char STR_COLOR[];
+extern const char STR_MAIN_VIEW_X[];
+extern const char STR_PANEL1_BACKGROUND[];
+extern const char STR_PANEL2_BACKGROUND[];
+
 #if MENUS_LOCK == 1
   extern const char STR_UNLOCKED[];
   extern const char STR_MODS_FORBIDDEN[];
