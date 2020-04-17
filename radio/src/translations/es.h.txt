@@ -1161,7 +1161,7 @@
 #define TR_SETUP_WIDGETS       "Config. widgets"
 #define TR_USER_INTERFACE      "Interfaz"
 #define TR_THEME               "Tema"
-#define TR_SETUP               "Configiracion"
+#define TR_SETUP               "Configuracion"
 #define TR_MAINVIEWX           "Vista pral. X"
 #define TR_LAYOUT              "Diseño"
 #define TR_ADDMAINVIEW         "Añadir vista pral."
