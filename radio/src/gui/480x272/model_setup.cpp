@@ -1129,7 +1129,6 @@ bool menuModelSetup(event_t event)
                       else
                         multiRfProto = convertMultiToOtx(status.protocolNext);
                     }
-                    direction=0;
                   }
                   else {
                     CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
