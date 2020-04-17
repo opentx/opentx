@@ -419,17 +419,17 @@
 #define TR_MODELNAME           TR("Nom. modelo", "Nombre modelo")
 #define TR_PHASENAME           "Nombre fase "
 #define TR_MIXNAME             TR("Nom. mezcla", "Nombre mezcla")
-#define TR_INPUTNAME           TR("Entrada","Nom. entrada")
-#define TR_EXPONAME            TR("Nom.","Nombre expo")
+#define TR_INPUTNAME           TR("Entrada", "Nom. entrada")
+#define TR_EXPONAME            TR("Nom.", "Nombre expo")
 #define TR_BITMAP              "Imagen modelo"
-#define TR_TIMER               TR("Timer","Timer ")
-#define TR_ELIMITS             TR("E.Limite","Ampliar limites")
-#define TR_ETRIMS              TR("E.Trims","Ampliar trims")
+#define TR_TIMER               TR("Timer", "Timer ")
+#define TR_ELIMITS             TR("E.Limite", "Ampliar limites")
+#define TR_ETRIMS              TR("E.Trims", "Ampliar trims")
 #define TR_TRIMINC             "Paso trim"
 #define TR_DISPLAY_TRIMS       "Ver trims"
 #define TR_TTRACE              TR("Fuente-A", INDENT "Fuente acelerador")
 #define TR_TTRIM               TR("Trim-A", INDENT "Trim acelerador")
-#define TR_BEEPCTR             TR("Beep ctr","Beep centro")
+#define TR_BEEPCTR             TR("Beep ctr", "Beep centro")
 #define TR_USE_GLOBAL_FUNCS    TR("Funcs. glob.", "Usar func. globales")
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
@@ -452,16 +452,16 @@
 #define TR_AILERON             TR("Col. lateral", "Fuente col. lateral")
 #define TR_ELEVATOR            TR("Col. long. ", "Fuente col. longitudinal")
 #define TR_SWASHRING           "Ciclico"
-#define TR_ELEDIRECTION        TR("ELE Direccion","Largo cyc. direccion")
-#define TR_AILDIRECTION        TR("AIL Direccion","Lateral cyc. direccion")
-#define TR_COLDIRECTION        TR("PIT Direccion","Coll. pitch direccion")
+#define TR_ELEDIRECTION        TR("ELE Direccion", "Largo cyc. direccion")
+#define TR_AILDIRECTION        TR("AIL Direccion", "Lateral cyc. direccion")
+#define TR_COLDIRECTION        TR("PIT Direccion", "Coll. pitch direccion")
 #define TR_MODE                "Modo"
 #define TR_SUBTYPE             INDENT "Subtipo"
 #define TR_NOFREEEXPO          "No expo libre!"
 #define TR_NOFREEMIXER         "No mezcla lib!"
 #define TR_SOURCE              "Fuente"
 #define TR_WEIGHT              "Cantidad"
-#define TR_EXPO                TR("Expo","Exponencial")
+#define TR_EXPO                TR("Expo", "Exponencial")
 #define TR_SIDE                "Zona"
 #define TR_DIFFERENTIAL        "Diferenc"
 #define TR_OFFSET              "Offset"
@@ -469,7 +469,7 @@
 #define TR_DREX                "DRex"
 #define DREX_CHBOX_OFFSET      30
 #define TR_CURVE               "Curva"
-#define TR_FLMODE              TR("Modo","Modos")
+#define TR_FLMODE              TR("Modo", "Modos")
 #define TR_MIXWARNING          "Aviso"
 #define TR_OFF                 "OFF"
 #define TR_ANTENNA             "Antena"
@@ -501,7 +501,7 @@
 #define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST            "Contraste"
 #define TR_ALARMS_LABEL        "Alarmas"
-#define TR_BATTERY_RANGE       TR("Rango bateria","Rango medidor bateria")
+#define TR_BATTERY_RANGE       TR("Rango bateria", "Rango medidor bateria")
 #define TR_BATTERYWARNING      INDENT"Bateria baja"
 #define TR_INACTIVITYALARM     INDENT"Inactividad"
 #define TR_MEMORYWARNING       INDENT"Memoria baja"
@@ -738,7 +738,7 @@
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_TEST_WARNING         TR("TESTING", "TEST BUILD")
 #define TR_TEST_NOTSAFE         "Usar solo para test"
-#define TR_WRONG_SDCARDVERSION  TR("Ver esperada: ","Version esperada: ")
+#define TR_WRONG_SDCARDVERSION  TR("Ver esperada: ", "Version esperada: ")
 #define TR_WARN_RTC_BATTERY_LOW "Bateria RTC baja"
 #define TR_WARN_MULTI_LOWPOWER  "Modo baja potencia"
 #define TR_BATTERY              "BATERIA"
@@ -833,13 +833,13 @@
 #define TR_FLASH_INTERNAL_MULTI        TR("Flash Multi int", "Flash Multi interno")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash modulo ext", "Flash modulo externo")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Multi ext", "Flash Multi externo")
-#define TR_FIRMWARE_UPDATE_ERROR       TR("Error act FW","Error actualiz. firmware")
+#define TR_FIRMWARE_UPDATE_ERROR       TR("Error act FW", "Error actualiz. firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash ok"
 #define TR_WRITING                     "Escribiendo..."
 #define TR_CONFIRM_FORMAT              "Confirmar formato?"
 #define TR_INTERNALRF                  "RF interna"
-#define TR_INTERNAL_MODULE             TR("Modulo int","Modulo interno")
-#define TR_EXTERNAL_MODULE             TR("Modulo ext","Modulo externo")
+#define TR_INTERNAL_MODULE             TR("Modulo int", "Modulo interno")
+#define TR_EXTERNAL_MODULE             TR("Modulo ext", "Modulo externo")
 #define TR_OPENTX_UPGRADE_REQUIRED     "Actualiz. OpenTX requerida"
 #define TR_TELEMETRY_DISABLED          "Telem. inactiva"
 #define TR_MORE_OPTIONS_AVAILABLE      "Mas opciones disp."
@@ -914,8 +914,8 @@
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Borrar"))
 #define TR_RESET_BTN           "[Reset]"
 #define TR_DEBUG                       "Debug"
-#define TR_KEYS_BTN                BUTTON(TR("SW","Switches"))
-#define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
+#define TR_KEYS_BTN                BUTTON(TR("SW", "Switches"))
+#define TR_ANALOGS_BTN                 BUTTON(TR("Analog", "Analogs"))
 #define TR_CALIBRATION                   "Calibracion"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Entrenador"
@@ -949,7 +949,7 @@
 #define TR_MODULE_PROTOCOL_WARN_LINE2             "firmware certificado"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma critica"
-#define TR_RSSIALARM_WARN      TR("RSSI","TELEMETRY RSSI")
+#define TR_RSSIALARM_WARN      TR("RSSI", "TELEMETRY RSSI")
 #define TR_NO_RSSIALARM        TR(INDENT "Alarmas desact.", INDENT "Alarmas telemetria desact.")
 #define TR_DISABLE_ALARM       TR(INDENT "Desact. alarmas", INDENT "Desact. alarmas telem.")
 #define TR_ENABLE_POPUP        "Activa Popup"
