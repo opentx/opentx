@@ -71,7 +71,7 @@ class MultiFirmwareInformation {
 
     bool isMultiInternalFirmware() const
     {
-      return (boardType == FIRMWARE_MULTI_STM && telemetryInversion == false && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
+      return (boardType == FIRMWARE_MULTI_STM && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     bool isMultiExternalFirmware() const
