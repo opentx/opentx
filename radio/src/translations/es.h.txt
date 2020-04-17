@@ -19,7 +19,7 @@
  *
  */
 
-// ES translations author: Jose Moreno <josemoreno259@gmail.com>, Daniel GeA <daniel.gea.1000@gmail.com>
+// ES translations authors: Jose Moreno <josemoreno259@gmail.com>, Daniel GeA <daniel.gea.1000@gmail.com>
 
 /*
  * !!!!! DO NOT EDIT es.h - EDIT es.h.txt INSTEAD !!!!!!!
