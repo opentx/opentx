@@ -49,7 +49,7 @@ uint8_t getMappedChar(uint8_t c)
     result = 127 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_ES)
-  else if (c >= 0x80 && c <= 0x81) {
+  else if (c >= 0x80 && c <= 0x80+12) {
     result = 157 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_FI) || defined(TRANSLATIONS_SE)
