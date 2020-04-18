@@ -150,6 +150,16 @@ class MultiExternalUpdateDriver: public MultiFirmwareUpdateDriver
 
 static const MultiExternalUpdateDriver multiExternalUpdateDriver;
 
+uint8_t MultiConvertChannelOrder(uint8_t multiOrder)
+{
+  const uint8_t multiToOtx[] = {21/*AETR*/, 20/*AERT*/, 18/*ARET*/, 19/*ARTE*/, 22/*ATRE*/, 23/*ATER*/,
+                                11/*EATR*/, 10/*EART*/, 7/*ERAT*/, 6/*ERTA*/, 8/*ETRA*/, 9/*ETAR*/,
+                                15/*TEAR*/, 14/*TERA*/, 12/*TREA*/, 13/*TRAE*/, 16/*TARE*/, 17/*TAER*/,
+                                0/*RETA*/, 1/*REAT*/, 4/*RAET*/, 5/*RATE*/, 3/*RTAE*/, 2/*RTEA*/};
+
+  return(multiToOtx[multiOrder]);
+}
+
 bool MultiFirmwareUpdateDriver::getRxByte(uint8_t& byte) const
 {
   uint16_t time;
@@ -433,6 +443,7 @@ const char * MultiFirmwareInformation::readV2Signature(const char * buffer)
     return "Invalid signature";
 
   boardType = options & 0x3;
+  multiChannelOrder = (options & 0x7C) >> 2;
   optibootSupport = options & 0x80 ? true : false;
   telemetryInversion = options & 0x200 ? true : false;
   bootloaderCheck = options & 0x100 ? true : false;
@@ -494,6 +505,17 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
     return false;
   }
   f_lseek(&file, 0);
+
+  if (!firmwareFile.isMultiChannelOrderMatching()) {
+    f_close(&file);
+    char static tmp [] = "Needs XXXX";
+    for (uint8_t i = 0; i < 4; i++) {
+      tmp[i + 6] = STR_RETA123[channelOrder(i+1)];
+    }
+    POPUP_WARNING(STR_WRONG_CHAN_ORDER);
+    SET_WARNING_INFO(tmp, strlen(tmp), 0);
+    return false;
+  }
 
   if (moduleIdx == EXTERNAL_MODULE) {
     if (!firmwareFile.isMultiExternalFirmware()) {

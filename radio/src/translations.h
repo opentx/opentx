@@ -542,6 +542,7 @@ extern const char STR_WAITING_FOR_TX[];
 #endif
 
 extern const char STR_NEEDS_FILE[];
+extern const char STR_WRONG_CHAN_ORDER[];
 extern const char STR_EXT_MULTI_SPEC[];
 extern const char STR_INT_MULTI_SPEC[];
 extern const char STR_CAT_NOT_EMPTY[];

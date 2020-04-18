@@ -35,6 +35,8 @@
    For example: REM multi-stm-bcsid-01020176
 */
 
+uint8_t MultiConvertChannelOrder(uint8_t);
+
 class MultiFirmwareInformation {
   public:
     enum MultiFirmwareBoardType {
@@ -79,6 +81,11 @@ class MultiFirmwareInformation {
       return (telemetryInversion == true && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
+    bool isMultiChannelOrderMatching() const
+    {
+      return MultiConvertChannelOrder(multiChannelOrder) == g_eeGeneral.templateSetup;
+    }
+
     const char * readMultiFirmwareInformation(const char * filename);
     const char * readMultiFirmwareInformation(FIL * file);
 
@@ -89,6 +96,7 @@ class MultiFirmwareInformation {
     uint8_t boardType:2;
     uint8_t telemetryType:2;
     bool spare:1;
+    uint8_t multiChannelOrder;
 
 /*  For future use
     uint8_t firmwareVersionMajor;
