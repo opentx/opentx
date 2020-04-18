@@ -10,7 +10,7 @@ chars_en = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
 chars_fr = u"""éèàîç"""
 chars_de = u"""ÄäÖöÜüß"""
 chars_cz = u"""ěščřžýáíéňóůúďťĚŠČŘŽÝÁÍÉŇÓÚŮĎŤ"""
-chars_es = u"""Ññ"""
+chars_es = u"""ÑñÁáÉéÍíÓóÚú"""
 chars_fi = u"""åäöÅÄÖ"""
 chars_it = u"""àù"""
 chars_pl = u"""ąćęłńóśżźĄĆĘŁŃÓŚŻŹ"""
