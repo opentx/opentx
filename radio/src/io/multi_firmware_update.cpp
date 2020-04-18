@@ -508,12 +508,13 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
 
   if (!firmwareFile.isMultiChannelOrderMatching()) {
     f_close(&file);
-    char static tmp [] = "Needs XXXX";
+    char *tmp = strAppend(reusableBuffer.sdManager.msg, TR_NEED);
     for (uint8_t i = 0; i < 4; i++) {
-      tmp[i + 6] = STR_RETA123[channelOrder(i+1)];
+      *tmp++ = STR_RETA123[channelOrder(i+1)];
     }
+    *tmp = '\0';
     POPUP_WARNING(STR_WRONG_CHAN_ORDER);
-    SET_WARNING_INFO(tmp, strlen(tmp), 0);
+    SET_WARNING_INFO(reusableBuffer.sdManager.msg, strlen(reusableBuffer.sdManager.msg), 0);
     return false;
   }
 
