@@ -588,7 +588,7 @@
 #define TR_PRESSANYKEYTOSKIP   "Pulsar tecla para omitir"
 #define TR_THROTTLENOTIDLE     "Aceler. Activado"
 #define TR_ALARMSDISABLED      "Alarmas Desact."
-#define TR_PRESSANYKEY         TR("\010ÑñÁáÉéÍíÓóÚú", "ÑñÁáÉéÍíÓóÚú")
+#define TR_PRESSANYKEY         TR("\010Pulsa una Tecla", "Pulsa una Tecla")
 #define TR_BADEEPROMDATA       "Error datos EEprom"
 #define TR_BAD_RADIO_DATA      "Error datos radio"
 #define TR_EEPROMFORMATTING    "Formateo EEPROM"
