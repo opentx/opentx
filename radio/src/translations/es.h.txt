@@ -100,7 +100,7 @@
 #define LEN_VTRIMINC           TR("\006", "\013")
 #define TR_VTRIMINC            TR("Expo  ""ExFino""Fino  ""Medio ""Grueso", "Exponencial""Extra Fino ""Fino       ""Medio      ""Grueso     ")
 
-#define LEN_VDISPLAYTRIMS      "\006"
+#define LEN_VDISPLAYTRIMS      "\007"
 #define TR_VDISPLAYTRIMS       "No\0   ""Cambiar""Si\0 "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"

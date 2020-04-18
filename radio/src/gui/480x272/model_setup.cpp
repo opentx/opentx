@@ -788,7 +788,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_SETUP_DISPLAY_TRIMS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DISPLAY_TRIMS);
-        g_model.displayTrims = editChoice(MODEL_SETUP_2ND_COLUMN, y, "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
+        g_model.displayTrims = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VDISPLAYTRIMS, g_model.displayTrims, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_SETUP_TRIM_INC:
