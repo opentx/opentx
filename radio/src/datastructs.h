@@ -26,6 +26,7 @@
 #include "dataconstants.h"
 #include "definitions.h"
 #include "bitfield.h"
+#include "globals.h"
 
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
@@ -498,8 +499,6 @@ PACK(struct ModuleData {
  * Model structure
  */
 
-typedef uint16_t BeepANACenter;
-
 #if LEN_BITMAP_NAME > 0
 #define MODEL_HEADER_BITMAP_FIELD      NOBACKUP(char bitmap[LEN_BITMAP_NAME]);
 #else
@@ -798,7 +797,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1);
   NOBACKUP(uint8_t  USBMode:2);
   NOBACKUP(uint8_t  jackMode:2);
-  NOBACKUP(uint8_t  spare3:1);
+  NOBACKUP(uint8_t  sportUpdatePower:1);
   NOBACKUP(char     ttsLanguage[2]);
   NOBACKUP(int8_t   beepVolume:4);
   NOBACKUP(int8_t   wavVolume:4);
@@ -956,4 +955,4 @@ static inline void check_struct()
 
 #undef CHKSIZE
 }
-#endif /* BACKUP */
+#endif /* BACKUP */ 

@@ -687,7 +687,7 @@ void checkBacklight()
     if (inputsMoved()) {
       inactivity.counter = 0;
       if (g_eeGeneral.backlightMode & e_backlight_mode_sticks) {
-        backlightOn();
+        resetBacklightTimeout();
       }
     }
 
@@ -700,7 +700,7 @@ void checkBacklight()
   }
 }
 
-void backlightOn()
+void resetBacklightTimeout()
 {
   lightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
 }
@@ -727,7 +727,7 @@ void doSplash()
 #endif
 
   if (SPLASH_NEEDED()) {
-    backlightOn();
+    resetBacklightTimeout();
     drawSplash();
 
 #if defined(PCBSKY9X)
@@ -1966,6 +1966,10 @@ void opentxInit()
   btInit();
 #endif
 
+#if defined(SPORT_UPDATE_PWR_GPIO)
+  SPORT_UPDATE_POWER_INIT();
+#endif
+
 #if defined(COLORLCD)
   loadTheme();
   loadFontCache();
@@ -1973,7 +1977,7 @@ void opentxInit()
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
     // on Tx start turn the light on
-    backlightOn();
+    resetBacklightTimeout();
   }
 
   if (!globalData.unexpectedShutdown) {
@@ -1991,7 +1995,7 @@ void opentxInit()
   lcdSetContrast();
 #endif
 
-  backlightOn();
+  resetBacklightTimeout();
 
   startPulses();
 

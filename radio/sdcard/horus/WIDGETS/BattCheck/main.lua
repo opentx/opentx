@@ -36,6 +36,8 @@ local function create(zone, options)
     counter = 0,
     shadowed = 0,
 
+    telemResetCount = 0,
+    telemResetLowestMinRSSI = 101,
     no_telem_blink = 0,
     isDataAvailable = 0,
     cellDataLive = {0,0,0,0,0,0},
@@ -76,13 +78,46 @@ local function update(wgt, options)
 
 end
 
--- A quick and dirty check for empty table
-local function isEmpty(self)
-  for _, _ in pairs(self) do
-    return false
-  end
-  return true
+
+-- clear old telemetry data upon reset event
+local function onTelemetryResetEvent(wgt)
+  wgt.telemResetCount = wgt.telemResetCount + 1
+
+  wgt.cellDataLive = {0,0,0,0,0,0}
+  wgt.cellDataHistoryLowest = {5,5,5,5,5,5}
+  wgt.cellDataHistoryCellLowest = 5
 end
+
+
+-- workaround to detect telemetry-reset event, until a proper implementation on the lua interface will be created
+-- this workaround assume that:
+--   RSSI- is always going down
+--   RSSI- is reset on the C++ side when a telemetry-reset is pressed by user
+--   widget is calling this func on each refresh/background
+-- on event detection, the function onTelemetryResetEvent() will be trigger
+--
+local function detectResetEvent(wgt)
+
+  local currMinRSSI = getValue('RSSI-')
+  if (currMinRSSI == nil) then return
+  end
+  if (currMinRSSI == wgt.telemResetLowestMinRSSI) then return end
+
+  if (currMinRSSI < wgt.telemResetLowestMinRSSI) then
+    -- rssi just got lower, record it
+    wgt.telemResetLowestMinRSSI = currMinRSSI
+    return
+  end
+
+
+  -- reset telemetry detected
+  wgt.telemResetLowestMinRSSI = 101
+
+  -- notify event
+  onTelemetryResetEvent(wgt)
+
+end
+
 
 --- This function return the percentage remaining in a single Lipo cel
 local function getCellPercent(cellValue)
@@ -293,13 +328,14 @@ local function refreshZoneMedium(wgt)
   for i = 1, wgt.cellCount, 1 do
     local cellY = wgt.zone.y + (i-1)* (cellH -1)
 
-    -- fill current value
+    -- fill current cell
     lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataLive[i], wgt.cellMax, wgt.cellMax - 0.2))
     --lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, 58, cellH, CUSTOM_COLOR)
     local percentCurrent = getCellPercent(wgt.cellDataLive[i])
     local percentMin = getCellPercent(wgt.cellDataHistoryLowest[i])
 
     lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, cellW * percentCurrent / 100, cellH, CUSTOM_COLOR)
+
     -- fill min
     lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataHistoryLowest[i], wgt.cellMax, wgt.cellMax - 0.2))
     lcd.drawFilledRectangle(wgt.zone.x + cellX + ((percentCurrent - percentMin) / 100)    , cellY, cellW - (cellW * (percentCurrent - percentMin) / 100), cellH, CUSTOM_COLOR)
@@ -413,6 +449,8 @@ end
 local function background(wgt)
   if (wgt == nil) then return end
 
+  detectResetEvent(wgt)
+
   calculateBatteryData(wgt)
 
 end
@@ -430,6 +468,7 @@ local function refresh(wgt)
     wgt.shadowed = 0
   end
 
+  detectResetEvent(wgt)
 
   calculateBatteryData(wgt)
 

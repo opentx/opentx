@@ -437,6 +437,10 @@ void sportUpdatePowerOff()
 {
 }
 
+void sportUpdatePowerInit()
+{
+}
+
 void boardInit()
 {
 }
@@ -497,7 +501,7 @@ void readKeysAndTrims()
   }
 
   if (keysInput || trimsInput) {
-    backlightOn();
+    resetBacklightTimeout();
   }
 }
 

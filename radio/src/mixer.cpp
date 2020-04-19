@@ -460,7 +460,7 @@ void evalInputs(uint8_t mode)
     if (mode == e_perout_mode_normal) {
       if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
         anaCenter |= mask;
-        if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && !menuCalibrationState) {
+        if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && s_mixer_first_run_done && !menuCalibrationState) {
           if (!IS_POT(i) || IS_POT_SLIDER_AVAILABLE(i)) {
             AUDIO_POT_MIDDLE(i);
           }
@@ -901,9 +901,7 @@ void evalMixes(uint8_t tick10ms)
 
   static uint16_t fp_act[MAX_FLIGHT_MODES] = {0};
   static uint16_t delta = 0;
-  static ACTIVE_PHASES_TYPE flightModesFade = 0;
-
-  LS_RECURSIVE_EVALUATION_RESET();
+  static uint16_t flightModesFade = 0;
 
   uint8_t fm = getFlightMode();
 
@@ -915,7 +913,7 @@ void evalMixes(uint8_t tick10ms)
     }
     else {
       uint8_t fadeTime = max(g_model.flightModeData[lastFlightMode].fadeOut, g_model.flightModeData[fm].fadeIn);
-      ACTIVE_PHASES_TYPE transitionMask = ((ACTIVE_PHASES_TYPE)1 << lastFlightMode) + ((ACTIVE_PHASES_TYPE)1 << fm);
+      uint16_t transitionMask = (0x01u << lastFlightMode) + (0x01u << fm);
       if (fadeTime) {
         flightModesFade |= transitionMask;
         delta = (MAX_ACT / 10) / fadeTime;
@@ -945,15 +943,13 @@ void evalMixes(uint8_t tick10ms)
   if (flightModesFade) {
     memclear(sum_chans512, sizeof(sum_chans512));
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-      LS_RECURSIVE_EVALUATION_RESET();
-      if (flightModesFade & ((ACTIVE_PHASES_TYPE)1 << p)) {
+      if (flightModesFade & (0x01 << p)) {
         mixerCurrentFlightMode = p;
         evalFlightModeMixes(p==fm ? e_perout_mode_normal : e_perout_mode_inactive_flight_mode, p==fm ? tick10ms : 0);
         for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
-      LS_RECURSIVE_EVALUATION_RESET();
     }
     assert(weight);
     mixerCurrentFlightMode = fm;
@@ -994,7 +990,7 @@ void evalMixes(uint8_t tick10ms)
   if (tick10ms && flightModesFade) {
     uint16_t tick_delta = delta * tick10ms;
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-      ACTIVE_PHASES_TYPE flightModeMask = ((ACTIVE_PHASES_TYPE)1 << p);
+      uint16_t flightModeMask = (0x01 << p);
       if (flightModesFade & flightModeMask) {
         if (p == fm) {
           if (MAX_ACT - fp_act[p] > tick_delta)

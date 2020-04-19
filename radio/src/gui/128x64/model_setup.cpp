@@ -85,6 +85,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE,
 #if defined(MULTIMODULE)
+  ITEM_MODEL_SETUP_INTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_SUBTYPE,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS,
@@ -113,6 +114,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE,
 #if defined(MULTIMODULE) || defined(AFHDS3)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SUBTYPE,
 #endif
 #if defined(MULTIMODULE) || defined(AFHDS3)
@@ -317,6 +319,7 @@ void onBluetoothConnectMenu(const char * result)
   #define INTERNAL_MODULE_ROWS \
     LABEL(InternalModule), \
     MODULE_TYPE_ROWS(INTERNAL_MODULE),         /* ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE*/ \
+    MULTIMODULE_TYPE_ROWS(INTERNAL_MODULE)     /* ITEM_MODEL_SETUP_INTERNAL_MODULE_PROTOCOL */ \
     MULTIMODULE_SUBTYPE_ROWS(INTERNAL_MODULE)      /* ITEM_MODEL_SETUP_INTERNAL_MODULE_SUBTYPE*/ \
     MULTIMODULE_STATUS_ROWS(INTERNAL_MODULE)   /* ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS, ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS */ \
     MODULE_CHANNELS_ROWS(INTERNAL_MODULE),     /* ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS*/ \
@@ -372,7 +375,8 @@ void menuModelSetup(event_t event)
 
     LABEL(ExternalModule),
       MODULE_TYPE_ROWS(EXTERNAL_MODULE),
-      MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
+      MULTIMODULE_TYPE_ROWS(EXTERNAL_MODULE)         // PROTOCOL
+      MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)      // SUBTYPE
       MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
       MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),      // line reused for PPM: PPM settings
@@ -915,12 +919,6 @@ void menuModelSetup(event_t event)
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_DSM_PROTOCOLS, g_model.moduleData[moduleIdx].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleR9MNonAccess(moduleIdx))
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_R9M_REGION, g_model.moduleData[moduleIdx].subType, (menuHorizontalPosition==1 ? attr : 0));
-#if defined(MULTIMODULE)
-        else if (isModuleMultimodule(moduleIdx)) {
-          int multi_rfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
-          lcdDrawMultiProtocolString(lcdNextPos + 3, y, moduleIdx, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
-        }
-#endif
         if (attr && menuHorizontalPosition == 0  && moduleIdx == EXTERNAL_MODULE) {
           if (s_editMode > 0) {
             g_model.moduleData[moduleIdx].type = MODULE_TYPE_NONE;
@@ -969,18 +967,6 @@ void menuModelSetup(event_t event)
                     g_model.moduleData[moduleIdx].channelsCount = defaultModuleChannels_M8(moduleIdx);
                   }
                 }
-
-#if defined(MULTIMODULE)
-                else if (isModuleMultimodule(moduleIdx)) {
-                  int multiRfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
-                  CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
-                  if (checkIncDec_Ret) {
-                    g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
-                    g_model.moduleData[moduleIdx].subType = 0;
-                    resetMultiProtocolsOptions(moduleIdx);
-                  }
-                }
-#endif
                 else {
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, 0, MODULE_SUBTYPE_PXX1_LAST);
                 }
@@ -1013,6 +999,28 @@ void menuModelSetup(event_t event)
 #endif
         }
         break;
+
+#if defined(MULTIMODULE)
+#if defined(HARDWARE_INTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_PROTOCOL:
+#endif
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL:
+      {
+        lcdDrawTextAlignedLeft(y, TR_TYPE);
+        int multi_rfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
+        lcdDrawMultiProtocolString(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, multi_rfProto, attr);
+        if (attr) {
+          int multiRfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
+          CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+          if (checkIncDec_Ret) {
+            g_model.moduleData[moduleIdx].setMultiProtocol(multiRfProto);
+            g_model.moduleData[moduleIdx].subType = 0;
+            resetMultiProtocolsOptions(moduleIdx);
+          }
+        }
+      }
+      break;
+#endif
 
 #if defined(MULTIMODULE) || defined(AFHDS3)
 #if defined(HARDWARE_INTERNAL_MODULE)

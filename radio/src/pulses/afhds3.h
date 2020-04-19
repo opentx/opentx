@@ -25,6 +25,7 @@
 #include "bitfield.h"
 #include "definitions.h"
 #include "dataconstants.h"
+#include "opentx_types.h"
 #include "myeeprom.h"
 #include "opentx_helpers.h"
 #include "pulses_common.h"
