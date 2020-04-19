@@ -531,7 +531,7 @@ RUN_POWER PulsesData::actualRunPower()
     actualRfPower = getMaxRunPower();
   return (RUN_POWER)actualRfPower;
 }
-RUN_POWER afhds3::getRunPower() {
+RUN_POWER PulsesData::getRunPower() {
   RUN_POWER targetPower = (RUN_POWER)moduleData->afhds3.runPower;
   if(getMaxRunPower() < targetPower)
     targetPower = getMaxRunPower();
