@@ -883,7 +883,7 @@
 #define TR_MENU_SPECTRUM_ANALYSER      "ANALIZADOR DE ESPECTRO"
 #define TR_MENU_POWER_METER            "MEDIDOR POTENCIA"
 #define TR_SENSOR                      "SENSOR"
-#define TR_COUNTRYCODE                 "Codigo Pais"
+#define TR_COUNTRYCODE                 "Código país"
 #define TR_USBMODE                     "Modo USB"
 #define TR_JACKMODE                    "Modo Jack"
 #define TR_VOICELANG                   "Idioma voces"
