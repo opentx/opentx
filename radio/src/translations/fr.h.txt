@@ -949,6 +949,12 @@
 #define TR_UNIT                        "Unité"
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE                TR(INDENT "Canaux", INDENT "Plage de canaux")
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY "Unicast/Telemetry"
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         "Power source"
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\021"

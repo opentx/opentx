@@ -934,6 +934,12 @@
 #define TR_UNIT                			"Einheit"
 #define TR_TELEMETRY_NEWSENSOR          INDENT "Sensor hinzufügen ..."
 #define TR_CHANNELRANGE        			TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY "Unicast/Telemetry"
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         "Power source"
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1     "Ant. umschalten"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
