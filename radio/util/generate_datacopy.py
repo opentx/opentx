@@ -46,7 +46,9 @@ def build_struct(cursor, anonymousUnion=False):
                 else:
                     # per default we copy only the first member of a union and warn if there are more
                     # members (declare the other members NOBACKUP)
-                    if not copied_union_member:
+                    if copied_union_member:
+                        print("Warning more than one union member (%s) in anynomous union inside struct %s, consider NOBACKUP statements" % (uc.spelling, cursor.spelling), file=sys.stderr)
+                    else:
                         copy_decl(uc, uc.spelling)
                         copied_union_member = True
 
@@ -101,7 +103,7 @@ def header():
 
 def print_translation_unit_diags(diags, prefix=''):
     for diag in diags:
-        print(prefix + str(diag))
+        print(prefix + str(diag), file=sys.stderr)
         print_translation_unit_diags(diag.children, '  ' + prefix)
 
 
