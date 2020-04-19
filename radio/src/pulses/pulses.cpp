@@ -64,7 +64,7 @@ void getModuleSyncStatusString (uint8_t moduleIdx, char * statusText) {
 #endif
 #if defined(AFHDS3)
   if(moduleIdx == EXTERNAL_MODULE && isModuleAFHDS3(moduleIdx)) {
-    extmodulePulsesData.afhds3.getStatusString(statusText);
+    extmodulePulsesData.afhds3.getPowerStatus(statusText);
   }
 #endif
 }
