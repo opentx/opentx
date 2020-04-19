@@ -97,10 +97,15 @@ enum MenuModelSetupItems {
 
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE,
-#if defined (MULTIMODULE) || defined(AFHDS3)
+#if defined (MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
+#endif
+#if defined(AFHDS3)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_POWER_STATUS,
 #endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND,
@@ -252,13 +257,8 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 
 inline uint8_t EXTERNAL_MODULE_TYPE_ROW()
 {
-  if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE))
+  if (isModuleXJT(EXTERNAL_MODULE) || isModuleR9MNonAccess(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleAFHDS3(EXTERNAL_MODULE))
     return 1;
-#if defined(AFHDS3)
-  else if (isModuleAFHDS3(EXTERNAL_MODULE)) {
-    return 1;
-  }
-#endif
   else
     return 0;
 }
@@ -823,7 +823,7 @@ void menuModelSetup(event_t event)
           lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(AFHDS3)
         else if (isModuleAFHDS3(EXTERNAL_MODULE)) {
-          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(lcdNextPos + 3, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         }
 #endif
         if (attr && menuHorizontalPosition == 0) {
@@ -850,17 +850,6 @@ void menuModelSetup(event_t event)
                 if (isModuleDSM2(EXTERNAL_MODULE)) {
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
                 }
-#if defined(MULTIMODULE)
-                else if (isModuleMultimodule(EXTERNAL_MODULE)) {
-                  int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-                  CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
-                  if (checkIncDec_Ret) {
-                    g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
-                    g_model.moduleData[EXTERNAL_MODULE].subType = 0;
-                    resetMultiProtocolsOptions(EXTERNAL_MODULE);
-                  }
-                }
-#endif
                 else if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
                   g_model.moduleData[EXTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType,
                                                                             MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST, EE_MODEL,
@@ -868,7 +857,7 @@ void menuModelSetup(event_t event)
                 }
 #if defined(AFHDS3)
                 else if (isModuleAFHDS3(EXTERNAL_MODULE)) {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
                 }
 #endif
                 else {
@@ -916,9 +905,10 @@ void menuModelSetup(event_t event)
         break;
 
 #if defined(MULTIMODULE)
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL_SUB_PROTOCOL:
       {
         lcdDrawTextAlignedLeft(y, TR_TYPE);
+
         uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
         lcdDrawMultiProtocolString(MODEL_SETUP_2ND_COLUMN, y, EXTERNAL_MODULE, multi_rfProto, menuHorizontalPosition == 0 ? attr : 0);
         if (MULTIMODULE_HAS_SUBTYPE(EXTERNAL_MODULE))
@@ -948,7 +938,13 @@ void menuModelSetup(event_t event)
       }
       break;
 #endif
-
+#if defined(AFHDS3)
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE:
+        lcdDrawTextAlignedLeft(y, STR_MODE);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y,
+            g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry ? STR_AFHDS3_ONE_TO_ONE_TELEMETRY : TR_AFHDS3_ONE_TO_MANY);
+        break;
+#endif
       case ITEM_MODEL_SETUP_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
         break;
@@ -1374,17 +1370,19 @@ void menuModelSetup(event_t event)
           g_model.moduleData[EXTERNAL_MODULE].afhds3.setRxFreq(rxFreq);
         }
         break;
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_TELEMETRY:
-        g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry = !editCheckBox(!g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT TR_DISABLE_TELEM, attr, event);
-        break;
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_ACTUAL_POWER:
         lcdDrawText(INDENT_WIDTH, y, STR_AFHDS3_ACTUAL_POWER);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_POWERS, actualAfhdsRunPower(EXTERNAL_MODULE), LEFT);
         break;
 #endif
 
-#if defined (MULTIMODULE) || defined(AFHDS3)
+#if defined (MULTIMODULE) || defined (AFHDS3)
+#if defined (MULTIMODULE)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS:
+#endif
+if defined (AFHDS3)
+    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS:
+#endif
     {
       lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
       char statusText[64];
@@ -1392,7 +1390,9 @@ void menuModelSetup(event_t event)
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
+#endif
 
+#if defined (MULTIMODULE)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS:
     {
       lcdDrawTextAlignedLeft(y, STR_MODULE_SYNC);
@@ -1402,6 +1402,17 @@ void menuModelSetup(event_t event)
       break;
     }
 #endif
+#if defined (AFHDS3)
+    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_POWER_STATUS:
+    {
+      lcdDrawTextAlignedLeft(y, STR_AFHDS3_POWER_SOURCE);
+      char statusText[64];
+      getModuleSyncStatusString(EXTERNAL_MODULE, statusText);
+      lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
+      break;
+    }
+#endif
+
 
 #if defined(PXX2)
       case ITEM_MODEL_SETUP_REGISTRATION_ID:

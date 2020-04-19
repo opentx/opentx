@@ -165,10 +165,13 @@ extern const char STR_MULTI_PROTOCOLS[];
 #endif
 
 #if defined(AFHDS3)
+extern const char STR_AFHDS3_ONE_TO_ONE_TELEMETRY[];
+extern const char STR_AFHDS3_ONE_TO_MANY[];
 extern const char STR_AFHDS3_PROTOCOLS[];
 extern const char STR_AFHDS3_POWERS[];
 extern const char STR_AFHDS3_RX_FREQ[];
 extern const char STR_AFHDS3_ACTUAL_POWER[];
+extern const char STR_AFHDS3_POWER_SOURCE[];
 #endif
 
 extern const char STR_CURVE_TYPES[];
