@@ -531,11 +531,15 @@ RUN_POWER PulsesData::actualRunPower()
     actualRfPower = getMaxRunPower();
   return (RUN_POWER)actualRfPower;
 }
+RUN_POWER afhds3::getRunPower() {
+  RUN_POWER targetPower = (RUN_POWER)moduleData->afhds3.runPower;
+  if(getMaxRunPower() < targetPower)
+    targetPower = getMaxRunPower();
+  return targetPower;
+}
 
 bool PulsesData::syncSettings() {
-  auto targetPower = moduleData->afhds3.runPower;
-  if(getMaxRunPower() < targetPower)
-      targetPower = getMaxRunPower();
+  RUN_POWER targetPower = getRunPower();
 
   /*not sure if we need to prevent them in bind mode*/
   if (getModuleMode(module_index) != ::ModuleSettingsMode::MODULE_MODE_BIND && targetPower != cfg.config.runPower) {
@@ -610,7 +614,7 @@ void PulsesData::stop() {
 
 void PulsesData::setConfigFromModel() {
   cfg.config.bindPower = moduleData->afhds3.bindPower;
-  cfg.config.runPower = moduleData->afhds3.runPower;
+  cfg.config.runPower = getRunPower();
   cfg.config.emiStandard = EMI_STANDARD::FCC;
   cfg.config.telemetry = moduleData->afhds3.telemetry; //always use bidirectional mode
   cfg.config.pwmFreq = moduleData->afhds3.rxFreq();

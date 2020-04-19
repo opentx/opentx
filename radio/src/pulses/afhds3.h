@@ -448,7 +448,7 @@ private:
    * Returns max power that currently can be set - use it to validate before synchronization of settings
    */
   RUN_POWER getMaxRunPower();
-
+  RUN_POWER getRunPower();
 
   /**
    * Index of the module
