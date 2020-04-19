@@ -118,7 +118,6 @@ enum MenuModelSetupItems {
 #endif
 #if defined(AFHDS3)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_RX_FREQ,
-  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_TELEMETRY,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_ACTUAL_POWER,
 #endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER,
@@ -314,6 +313,10 @@ void onBluetoothConnectMenu(const char * result)
 #if defined(PXX2)
 #include "common/stdlcd/model_setup_pxx2.cpp"
 #endif
+#if defined(AFHDS3)
+#include "common/stdlcd/model_setup_afhds3.cpp"
+#endif
+
 
 void menuModelSetup(event_t event)
 {
@@ -370,6 +373,7 @@ void menuModelSetup(event_t event)
       EXTERNAL_MODULE_TYPE_ROW(),
       MULTIMODULE_TYPE_ROW(EXTERNAL_MODULE)
       MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
+      AFHDS3_MODE_ROWS(EXTERNAL_MODULE)
       MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // RxNum for ACCESS
@@ -850,6 +854,17 @@ void menuModelSetup(event_t event)
                 if (isModuleDSM2(EXTERNAL_MODULE)) {
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
                 }
+#if defined(MULTIMODULE)
+                else if (isModuleMultimodule(EXTERNAL_MODULE)) {
+                  int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
+                  CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+                  if (checkIncDec_Ret) {
+                    g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
+                    g_model.moduleData[EXTERNAL_MODULE].subType = 0;
+                    resetMultiProtocolsOptions(EXTERNAL_MODULE);
+                  }
+                }
+#endif
                 else if (isModuleR9MNonAccess(EXTERNAL_MODULE)) {
                   g_model.moduleData[EXTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType,
                                                                             MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST, EE_MODEL,
@@ -905,7 +920,7 @@ void menuModelSetup(event_t event)
         break;
 
 #if defined(MULTIMODULE)
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL_SUB_PROTOCOL:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL:
       {
         lcdDrawTextAlignedLeft(y, TR_TYPE);
 
@@ -937,13 +952,6 @@ void menuModelSetup(event_t event)
         }
       }
       break;
-#endif
-#if defined(AFHDS3)
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE:
-        lcdDrawTextAlignedLeft(y, STR_MODE);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y,
-            g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry ? STR_AFHDS3_ONE_TO_ONE_TELEMETRY : TR_AFHDS3_ONE_TO_MANY);
-        break;
 #endif
       case ITEM_MODEL_SETUP_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
@@ -1139,7 +1147,7 @@ void menuModelSetup(event_t event)
             lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             bindButtonPos = lcdNextPos + FW;
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
@@ -1169,8 +1177,14 @@ void menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx)) {
+                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+#if defined(AFHDS3)
+                      if(isModuleAFHDS3(moduleIdx)){
+                        startBindMenuAfhds3(moduleIdx);
+                        continue;
+                      }
+#endif
                       startBindMenu(moduleIdx);
                       continue;
                     }
@@ -1181,12 +1195,6 @@ void menuModelSetup(event_t event)
                       if (!popupMenuItemsCount) {
                         s_editMode = 0;  // this is when popup is exited before a choice is made
                       }
-                    }
-                  }
-                  else if (isModuleAFHDS3(moduleIdx) && moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
-                    //trigger bind once
-                    if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-                      newFlag = MODULE_MODE_BIND;
                     }
                   }
                   else {
@@ -1376,36 +1384,42 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined (MULTIMODULE) || defined (AFHDS3)
 #if defined (MULTIMODULE)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS:
-#endif
-if defined (AFHDS3)
-    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS:
-#endif
     {
-      lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
+      lcdDrawText(INDENT_WIDTH, y, STR_MODULE_STATUS);
       char statusText[64];
       getModuleStatusString(EXTERNAL_MODULE, statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
-#endif
-
-#if defined (MULTIMODULE)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS:
     {
-      lcdDrawTextAlignedLeft(y, STR_MODULE_SYNC);
+      lcdDrawText(INDENT_WIDTH, y, STR_MODULE_SYNC);
       char statusText[64];
       getModuleSyncStatusString(EXTERNAL_MODULE, statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
 #endif
+
 #if defined (AFHDS3)
+    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE:
+      lcdDrawTextAlignedLeft(y, STR_TYPE);
+      lcdDrawText(MODEL_SETUP_2ND_COLUMN, y,
+          g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry ? STR_AFHDS3_ONE_TO_ONE_TELEMETRY : TR_AFHDS3_ONE_TO_MANY);
+      break;
+    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS:
+    {
+      lcdDrawTextAlignedLeft(y, TR_MODULE_STATUS);
+      char statusText[64];
+      getModuleStatusString(EXTERNAL_MODULE, statusText);
+      lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
+      break;
+    }
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_POWER_STATUS:
     {
-      lcdDrawTextAlignedLeft(y, STR_AFHDS3_POWER_SOURCE);
+      lcdDrawText(INDENT_WIDTH, y, STR_AFHDS3_POWER_SOURCE);
       char statusText[64];
       getModuleSyncStatusString(EXTERNAL_MODULE, statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
