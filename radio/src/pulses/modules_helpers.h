@@ -559,6 +559,8 @@ inline void resetAccessAuthenticationCount()
 }
 
 inline void resetAfhds3Options(uint8_t moduleIdx){
+  g_model.moduleData[moduleIdx].rfProtocol = moduleType;
+  g_model.moduleData[moduleIdx].subType = moduleType;
 #if defined(AFHDS3)
   g_model.moduleData[moduleIdx].afhds3.bindPower = 0;
   g_model.moduleData[moduleIdx].afhds3.runPower = 0;
