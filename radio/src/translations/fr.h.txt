@@ -165,6 +165,9 @@
 #define LEN_VCSWFUNC                   "\005"
 #define TR_VCSWFUNC                    "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""ET\0  ""OU\0  ""OUX\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
 
+#define LEN_TEXT_SIZE                  "\010"
+#define TR_TEXT_SIZE                   "Standard""Tiny\0   ""Small\0  ""Mid\0    ""Double\0 "
+
 #define LEN_VFSWFUNC                   "\015"
 
 #if defined(VARIO)
@@ -1067,8 +1070,6 @@
 #define TR_FLIGHT_MODE                 "Flight mode"
 #define TR_INVALID_FILE                "Invalid File"
 #define TR_TIMER_SOURCE                "Timer source"
-#define LEN_TEXT_SIZE                  "\010"
-#define TR_TEXT_SIZE                   "Standard""Tiny\0   ""Small\0  ""Mid\0    ""Double\0 "
 #define TR_SIZE                        "Size"
 #define TR_SHADOW                      "Shadow"
 #define TR_TEXT                        "Text"

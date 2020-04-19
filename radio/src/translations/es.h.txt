@@ -393,6 +393,9 @@
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
+#define LEN_TEXT_SIZE          "\013"
+#define TR_TEXT_SIZE           "Normal\0    ""Muy pequeño""Pequeño\0   ""Medio\0     ""Doble\0     "
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT                       "   "
@@ -1060,8 +1063,6 @@
 #define TR_FLIGHT_MODE                "Modo de vuelo"
 #define TR_INVALID_FILE               "Fichero no valido"
 #define TR_TIMER_SOURCE               "Entrada timer"
-#define LEN_TEXT_SIZE                 "\013"
-#define TR_TEXT_SIZE                  "Normal\0    ""Muy pequeño""Pequeño\0   ""Medio\0     ""Doble\0     "
 #define TR_SIZE                       "Tamaño"
 #define TR_SHADOW                     "Sombra"
 #define TR_TEXT                       "Texto"
