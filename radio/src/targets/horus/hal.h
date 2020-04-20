@@ -184,9 +184,9 @@
 #elif defined(PCBX10)
   #if defined(RADIO_TX16S)
     #define TRIMS_GPIO_REG_LHL            GPIOA->IDR
-    #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_8  // PA.06
+    #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_6  // PA.06
     #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
-    #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_9  // PC.04
+    #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_4  // PC.04
   #else
     #define TRIMS_GPIO_REG_LHL            GPIOB->IDR
     #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_8  // PB.08
@@ -234,9 +234,9 @@
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RSD)
 #elif defined(PCBX10)
   #if defined(RADIO_TX16S)
-    #define KEYS_GPIOB_PINS               (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13)
+    #define KEYS_GPIOB_PINS             (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13)
   #else
-    #define KEYS_GPIOB_PINS               (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13 | GPIO_Pin_8 | GPIO_Pin_9)
+    #define KEYS_GPIOB_PINS             (GPIO_Pin_12 | GPIO_Pin_15 | GPIO_Pin_14 | GPIO_Pin_13 | GPIO_Pin_8 | GPIO_Pin_9)
   #endif
   #define KEYS_GPIOD_PINS               (GPIO_Pin_11 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_13)
   #define KEYS_GPIOE_PINS               (GPIO_Pin_3)
