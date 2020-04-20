@@ -52,7 +52,7 @@ class Page: public Window {
     ~Page() override;
 
 #if defined(DEBUG_WINDOWS)
-    std::string getName() override
+    std::string getName() const override
     {
       return "Page";
     }

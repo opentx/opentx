@@ -79,7 +79,7 @@ class TabsCarousel: public Window {
     TabsCarousel(Window * parent, TabsGroup * menu);
 
 #if defined(DEBUG_WINDOWS)
-    std::string getName() override
+    std::string getName() const override
     {
       return "TabsCarousel";
     }
@@ -118,7 +118,7 @@ class TabsGroupHeader: public FormGroup {
     ~TabsGroupHeader() override;
 
 #if defined(DEBUG_WINDOWS)
-    std::string getName() override
+    std::string getName() const override
     {
       return "TabsGroupHeader";
     }
@@ -149,7 +149,7 @@ class TabsGroup: public Window {
     ~TabsGroup() override;
 
 #if defined(DEBUG_WINDOWS)
-    std::string getName() override
+    std::string getName() const override
     {
       return "TabsGroup";
     }

@@ -27,7 +27,7 @@ class FabButton: public Button {
     FabButton(FormGroup * parent, coord_t x, coord_t y, uint8_t icon, std::function<uint8_t(void)> pressHandler, WindowFlags windowFlags = 0);
 
 #if defined(DEBUG_WINDOWS)
-    std::string getName() override
+    std::string getName() const override
     {
       return "FabButton(" + std::to_string(icon) + ")";
     }

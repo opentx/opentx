@@ -44,14 +44,14 @@ void Curve::drawBackground(BitmapBuffer * dc)
   // dc->drawSolidRect(0, 0, width(), height(), 1, DEFAULT_COLOR);
 }
 
-coord_t Curve::getPointX(int x)
+coord_t Curve::getPointX(int x) const
 {
   return limit<coord_t>(0,
                         width() / 2 + divRoundClosest(x * width() / 2, RESX),
                         width() - 1);
 }
 
-coord_t Curve::getPointY(int y)
+coord_t Curve::getPointY(int y) const
 {
   return limit<coord_t>(0,
                         height() / 2 - divRoundClosest(y * height() / 2, RESX),

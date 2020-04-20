@@ -258,7 +258,7 @@ class SpecialFunctionButton : public Button {
     }
 
 #if defined(DEBUG_WINDOWS)
-    std::string getName() override
+    std::string getName() const override
     {
       return "SpecialFunctionButton";
     }

@@ -32,7 +32,7 @@ class CurveKeyboard : public Keyboard {
     ~CurveKeyboard() override;
 
 #if defined(DEBUG_WINDOWS)
-    std::string getName() override
+    std::string getName() const override
     {
       return "CurveKeyboard";
     }
