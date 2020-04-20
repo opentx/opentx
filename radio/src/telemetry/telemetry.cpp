@@ -302,7 +302,7 @@ void telemetryInit(uint8_t protocol)
   }
 #endif
 
-#if defined(AFHDS3)
+#if defined(AFHDS3) && !defined(DISABLE_MULTI_UPDATE)
   else if(protocol == PROTOCOL_TELEMETRY_AFHDS3){
     telemetryPortInvertedInit(AFHDS3_BAUDRATE);
     telemetryPortSetDirectionInput();
