@@ -69,7 +69,7 @@ std::queue<request*> commandQueue;
 const uint8_t FrameAddress = DeviceAddress::TRANSMITTER | (DeviceAddress::MODULE << 4);
 
 //Static collection of afhds3 object instances by module
-PulsesData* AFHDS3PulsesData[EXTERNAL_MODULE + 1] = { nullptr, nullptr };
+PulsesData* AFHDS3PulsesData[EXTERNAL_MODULE + 1] = { nullptr };
 
 //friends function that can access telemetry parsing method
 void processTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount,  uint8_t maxSize) {
