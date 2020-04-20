@@ -339,6 +339,7 @@
 #define USB_CHARGER_RCC_AHB1Periph      RCC_AHB1Periph_GPIOG
 #define USB_CHARGER_GPIO                GPIOG
 #define USB_CHARGER_GPIO_PIN            GPIO_Pin_11  // PG.11
+#define USB_USBDet_GPIO_PIN             GPIO_Pin_13  // PG.13
 #else
 #define USB_CHARGER_RCC_AHB1Periph      0
 #endif
