@@ -304,10 +304,18 @@ inline bool isModuleAFHDS3(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;
 }
 
-inline bool isExternalModulePxx2(){
-#if defined(PXX2) && defined(EXTMODULE_USART)
-  return (g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_HIGHSPEED ||
-      g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_LOWSPEED);
+inline bool isModulePxx2(uint8_t idx){
+  if(idx != EXTERNAL_MODULE) return false;
+#if defined(PXX2)
+  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+     if(g_model.moduleData[idx].type == MODULE_TYPE_XJT_LITE_PXX2 ||
+        g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2)
+       return true;
+  #endif
+  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+    if(g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2)
+      return true;
+  #endif
 #endif
   return false;
 }

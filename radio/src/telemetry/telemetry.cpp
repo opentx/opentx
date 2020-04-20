@@ -111,7 +111,7 @@ void telemetryWakeup()
   #endif
 
   #if defined(EXTMODULE_USART)
-  while (isExternalModulePxx2() && extmoduleFifo.getFrame(frame)) {
+  while (isModulePxx2(EXTERNAL_MODULE) && extmoduleFifo.getFrame(frame)) {
     processPXX2Frame(EXTERNAL_MODULE, frame);
   }
   #endif
