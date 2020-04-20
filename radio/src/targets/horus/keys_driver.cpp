@@ -184,10 +184,8 @@ uint32_t switchState(uint8_t index)
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
-#if !defined(RADIO_TX16S)
     ADD_2POS_CASE(I);
     ADD_2POS_CASE(J);
-#endif
 #endif
     default:
       break;

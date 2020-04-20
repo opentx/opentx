@@ -131,10 +131,7 @@
 #define SWITCHES_GPIO_REG_H             GPIOG->IDR
 #define SWITCHES_GPIO_PIN_H             GPIO_Pin_7  // PG.07
 
-#if defined(RADIO_TX16S)
-  #define STORAGE_SWITCH_I
-  #define STORAGE_SWITCH_J
-#elif defined(PCBX10)
+#if defined(PCBX10)
   // Gimbal switch left
   #define STORAGE_SWITCH_I
   #define HARDWARE_SWITCH_I
@@ -247,7 +244,7 @@
 #if defined(RADIO_TX16S)
   #define KEYS_GPIOA_PINS               (GPIO_Pin_6)
   #define KEYS_GPIOC_PINS               (GPIO_Pin_4 | GPIO_Pin_13)
-  #define KEYS_GPIOH_PINS               (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12)
+  #define KEYS_GPIOH_PINS               (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
 #else
   #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
 #endif
