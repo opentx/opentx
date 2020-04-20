@@ -267,7 +267,7 @@ enum TELEMETRY {
 };
 
 enum PULSE_MODE {
-  PWM = 0x00, PPM_MODE = 0x01,
+  PWM_MODE = 0x00, PPM_MODE = 0x01,
 };
 
 enum SERIAL_MODE {

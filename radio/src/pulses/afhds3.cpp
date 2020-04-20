@@ -560,7 +560,7 @@ bool PulsesData::syncSettings() {
     putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, data, sizeof(data));
     return true;
   }
-  PULSE_MODE modelPulseMode = isPWM(moduleData->rfProtocol) ? PULSE_MODE::PWM: PULSE_MODE::PPM_MODE;
+  PULSE_MODE modelPulseMode = isPWM(moduleData->rfProtocol) ? PULSE_MODE::PWM_MODE: PULSE_MODE::PPM_MODE;
   if(modelPulseMode != cfg.config.pulseMode) {
     cfg.config.pulseMode = modelPulseMode;
     TRACE("AFHDS3 PWM/PPM %d", modelPulseMode);
@@ -619,7 +619,7 @@ void PulsesData::setConfigFromModel() {
   cfg.config.telemetry = moduleData->afhds3.telemetry; //always use bidirectional mode
   cfg.config.pwmFreq = moduleData->afhds3.rxFreq();
   cfg.config.serialMode = isSbus(moduleData->rfProtocol) ? SERIAL_MODE::SBUS_MODE : SERIAL_MODE::IBUS;
-  cfg.config.pulseMode = isPWM(moduleData->rfProtocol) ? PULSE_MODE::PWM: PULSE_MODE::PPM_MODE;
+  cfg.config.pulseMode = isPWM(moduleData->rfProtocol) ? PULSE_MODE::PWM_MODE: PULSE_MODE::PPM_MODE;
   cfg.config.channelCount = 8 + moduleData->channelsCount;
   cfg.config.failSafeTimout = moduleData->afhds3.failsafeTimeout;
   setFailSafe(cfg.config.failSafeMode);
