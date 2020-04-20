@@ -204,16 +204,39 @@ void keysInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 
+#if defined(KEYS_GPIOA_PINS)
+  INIT_KEYS_PINS(GPIOA);
+#endif
+
+#if defined(KEYS_GPIOB_PINS)
   INIT_KEYS_PINS(GPIOB);
+#endif
 
 #if defined(KEYS_GPIOC_PINS)
   INIT_KEYS_PINS(GPIOC);
 #endif
 
+#if defined(KEYS_GPIOD_PINS)
   INIT_KEYS_PINS(GPIOD);
+#endif
+
+#if defined(KEYS_GPIOE_PINS)
   INIT_KEYS_PINS(GPIOE);
+#endif
+
+#if defined(KEYS_GPIOG_PINS)
   INIT_KEYS_PINS(GPIOG);
+#endif
+
+#if defined(KEYS_GPIOH_PINS)
   INIT_KEYS_PINS(GPIOH);
+#endif
+
+#if defined(KEYS_GPIOI_PINS)
   INIT_KEYS_PINS(GPIOI);
+#endif
+
+#if defined(KEYS_GPIOJ_PINS)
   INIT_KEYS_PINS(GPIOJ);
+#endif
 }
