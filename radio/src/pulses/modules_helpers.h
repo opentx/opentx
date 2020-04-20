@@ -304,6 +304,13 @@ inline bool isModuleAFHDS3(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;
 }
 
+inline bool isExternalModulePxx2(){
+#if defined(PXX2) && defined(EXTMODULE_USART)
+  return (g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_HIGHSPEED ||
+      g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_LOWSPEED);
+#endif
+  return false;
+}
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
 //qba667 count is not matching!

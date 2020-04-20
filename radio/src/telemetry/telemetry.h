@@ -138,14 +138,6 @@ inline bool isSportLineUsedByInternalModule()
 }
 #endif
 
-inline bool isExternalModulePxx2(){
-#if defined(PXX2) && defined(EXTMODULE_USART)
-  return (g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_HIGHSPEED ||
-      g_model.moduleData[EXTERNAL_MODULE].type == PROTOCOL_CHANNELS_PXX2_LOWSPEED);
-#endif
-  return false;
-}
-
 inline uint8_t modelTelemetryProtocol()
 {
   bool sportUsed = isSportLineUsedByInternalModule();
