@@ -165,6 +165,8 @@ constexpr coord_t SCROLLBAR_WIDTH = 3;
 constexpr coord_t TABLE_LINE_HEIGHT = 50;
 constexpr coord_t TABLE_HEADER_HEIGHT = 48;
 
+constexpr coord_t ROLLER_LINE_HEIGHT = 40;
+
 constexpr LcdFlags MENU_HEADER_FONT = FONT(BOLD);
 constexpr LcdFlags MENU_FONT = FONT(STD);
 constexpr LcdFlags TABLE_HEADER_FONT = FONT(STD);
