@@ -23,7 +23,7 @@
 void usbChargerInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = USB_CHARGER_RCC_AHB1Periph;
+  GPIO_InitStructure.GPIO_Pin = USB_CHARGER_GPIO_PIN | USB_USBDet_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
