@@ -91,7 +91,7 @@ void drawTopBar()
   /* Tx battery */
   uint8_t bars = GET_TXBATT_BARS(5);
 #if defined(USB_CHARGER)
-  if(usbChargerLed() && BLINK_ON_PHASE)
+  if (usbChargerLed() && BLINK_ON_PHASE)
     lcdDrawBitmapPattern(LCD_W-130, 24, LBM_TOPMENU_TXBATT_CHARGING, MENU_TITLE_COLOR);
   else {
 #endif

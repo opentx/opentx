@@ -191,6 +191,10 @@ void boardInit()
 
   ledInit();
 
+#if defined(USB_CHARGER)
+  usbChargerInit();
+#endif
+
 #if HAS_SPORT_UPDATE_CONNECTOR()
   sportUpdateInit();
 #endif
