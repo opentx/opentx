@@ -62,14 +62,14 @@ static const COMMAND periodicRequestCommands[] = {
 
 
 //Command to be send, with the synchronous implementation probably can be removed - dynamic memory allocation!!!
-//Because instance of the class is union member we can not use is as memeber
+//Because instance of the class is union member we can not use is as member
 std::queue<request*> commandQueue;
 
 //Address used in transmitted frames - it constrains of target address and source address
 const uint8_t FrameAddress = DeviceAddress::TRANSMITTER | (DeviceAddress::MODULE << 4);
 
 //Static collection of afhds3 object instances by module
-PulsesData* AFHDS3PulsesData[EXTERNAL_MODULE + 1] = { nullptr };
+PulsesData* AFHDS3PulsesData[EXTERNAL_MODULE + 1] = { nullptr, nullptr };
 
 //friends function that can access telemetry parsing method
 void processTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount,  uint8_t maxSize) {
@@ -383,7 +383,7 @@ void PulsesData::parseData(uint8_t* rxBuffer, uint8_t rxBufferCount) {
     return;
   }
   AfhdsFrame* responseFrame = reinterpret_cast<AfhdsFrame*>(rxBuffer);
-  AfhdsFrame* requestFrame = reinterpret_cast<AfhdsFrame*>(this->pulses);
+  //AfhdsFrame* requestFrame = reinterpret_cast<AfhdsFrame*>(this->pulses);
   uint8_t oldState = this->state;
   if(containsData((enum FRAME_TYPE)responseFrame->frameType)) {
     switch(responseFrame->command)
