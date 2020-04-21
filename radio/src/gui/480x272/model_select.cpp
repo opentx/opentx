@@ -279,7 +279,7 @@ void onModelSelectMenu(const char * result)
       setCurrentModel(currentCategory->size() - 1);
     }
     else {
-      POPUP_WARNING("Invalid File");
+      POPUP_WARNING(STR_INVALID_FILE);
     }
   }
   else if (result == STR_MOVE_MODEL) {

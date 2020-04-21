@@ -133,7 +133,7 @@ bool menuModelCurveOne(event_t event)
 
   // Curve type
   LcdFlags attr = (menuVerticalPosition==ITEM_CURVE_TYPE ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Type");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, STR_TYPE);
   lcdDrawTextAtIndex(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
