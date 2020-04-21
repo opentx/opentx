@@ -130,7 +130,7 @@ uint16_t rboxState;
 void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW)
 {
   const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
-  uint8_t precision = 0;
+  uint8_t precision = 255;
   if (sensor) {
     if (unit == UNIT_RAW)
       unit = sensor->unit;
