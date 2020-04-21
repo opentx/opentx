@@ -166,6 +166,9 @@
 #define LEN_VCSWFUNC           "\005"
 #define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
 
+#define LEN_TEXT_SIZE          "\010"
+#define TR_TEXT_SIZE           "Standard""Tiny\0   ""Small\0  ""Mid\0    ""Double\0 "
+
 #define LEN_VFSWFUNC           "\015"
 
 #if defined(VARIO)
@@ -656,6 +659,7 @@
 #define TR_DISABLE_TELEM               TR("No Telem", "Telem. disabil.")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Trova autom.", INDENT "Autoril. il formato")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Bassa pot.", INDENT "Modo bassa potenza")
+#define TR_MULTI_LNA_DISABLE            INDENT "LNA disable"
 #define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "Link S.Port")
 #define TR_MODULE_TELEM_ON             TR("ON", "Abilitato")
 #define TR_DISABLE_INTERNAL         TR("Disatt. RF int.", "Disattiva RF interna")
@@ -859,7 +863,7 @@
 #define TR_INTERNAL_MODULE             TR("Modulo int.", "Modulo interno")
 #define TR_EXTERNAL_MODULE             TR("Modulo est.", "Modulo esterno")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX richiede aggiornamento"
-#define TR_TELEMETRY_DISABLED          "Telem. disabilitata"
+#define TR_TELEMETRY_DISABLED          TR("Telem. off", "Telem. disabilitata")
 #define TR_MORE_OPTIONS_AVAILABLE      "Altre opzioni assenti"
 #define TR_NO_MODULE_INFORMATION       "Nessuna info del modulo"
 #define TR_EXTERNALRF          "Modulo esterno"
@@ -1006,7 +1010,7 @@
 #define TR_SPORT_UPDATE_POWER_MODE     "SP Power"
 #define LEN_SPORT_UPDATE_POWER_MODES   "\004"
 #define TR_SPORT_UPDATE_POWER_MODES    "AUTO""ON\0 "
-
+#define TR_NO_TELEMETRY_SCREENS        "No Telemetry Screens"
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Nome"
@@ -1049,6 +1053,23 @@
 
 // Horus footer descriptions
 #define TR_LSW_DESCRIPTIONS    { "Tipo o funzione di confronto", "Prima variabile", "Seconda variabile o costante", "Seconda variabile o costante", "Condizione aggiuntiva da abilitare linea", "Durata minima ON dell'interruttore logico", "Durata minima TRUE affinché l'interruttore si accenda" }
+
+// Horus layouts and widgets
+#define TR_FIRST_CHANNEL               "First channel"
+#define TR_FILL_BACKGROUND             "Fill background?"
+#define TR_BG_COLOR                    "BG Color"
+#define TR_SLIDERS_TRIMS               "Sliders+Trims"
+#define TR_SLIDERS                     "Sliders"
+#define TR_FLIGHT_MODE                 "Flight mode"
+#define TR_INVALID_FILE                "Invalid File"
+#define TR_TIMER_SOURCE                "Timer source"
+#define TR_SIZE                        "Size"
+#define TR_SHADOW                      "Shadow"
+#define TR_TEXT                        "Text"
+#define TR_COLOR                       "Color"
+#define TR_MAIN_VIEW_X                 "Main view X"
+#define TR_PANEL1_BACKGROUND           "Panel1 background"
+#define TR_PANEL2_BACKGROUND           "Panel2 background"
 
 // About screen
 #define TR_ABOUTUS             TR(" INFO ", "INFO SU")

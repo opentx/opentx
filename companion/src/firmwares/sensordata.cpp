@@ -82,6 +82,8 @@ QString SensorData::unitString() const
       return tr("seconds");
     case UNIT_CELLS:
       return tr("V");
+    case UNIT_MILLILITERS_PER_MINUTE:
+      return tr("ml/minute");
     default:
       return "";
   }

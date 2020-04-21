@@ -47,6 +47,7 @@
 
 #define FH                             20
 #define NUM_BODY_LINES                 (MENU_BODY_HEIGHT / FH)
+#define TEXT_VIEWER_LINES              ((MENU_FOOTER_TOP-MENU_HEADER_HEIGHT) / FH)
 
 #define INVERT_HORZ_MARGIN             2
 #define INVERT_VERT_MARGIN             1

@@ -607,6 +607,8 @@ bool menuModelMixAll(event_t event)
         if (!s_copyMode) {
           attr = INVERS;
         }
+        if (g_model.limitData[ch-1].name[0] != '\0')
+          lcdDrawSizedText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
       }
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
         putsChn(MENUS_MARGIN_LEFT, y, ch, attr); // show CHx

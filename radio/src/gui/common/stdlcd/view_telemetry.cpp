@@ -92,7 +92,7 @@ void menuViewTelemetry(event_t event)
   }
 
   drawTelemetryTopBar();
-  lcdDrawText(LCD_W / 2, 3 * FH, "No Telemetry Screens", CENTERED);
+  lcdDrawText(LCD_W / 2, 3 * FH, STR_NO_TELEMETRY_SCREENS, CENTERED);
   displayRssiLine();
 }
 

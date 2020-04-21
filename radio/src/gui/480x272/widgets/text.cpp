@@ -36,10 +36,10 @@ class TextWidget: public Widget
 };
 
 const ZoneOption TextWidget::options[] = {
-  { "Text", ZoneOption::String, OPTION_VALUE_STRING(TEXT_WIDGET_DEFAULT_LABEL) },
-  { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
-  { "Size", ZoneOption::TextSize, OPTION_VALUE_UNSIGNED(0) },
-  { "Shadow", ZoneOption::Bool, OPTION_VALUE_BOOL(false)  },
+  { STR_TEXT, ZoneOption::String, OPTION_VALUE_STRING(TEXT_WIDGET_DEFAULT_LABEL) },
+  { STR_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
+  { STR_SIZE, ZoneOption::TextSize, OPTION_VALUE_UNSIGNED(0) },
+  { STR_SHADOW, ZoneOption::Bool, OPTION_VALUE_BOOL(false)  },
   { NULL, ZoneOption::Bool }
 };
 
