@@ -82,6 +82,10 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
 {
   int32_t newVal = val;
 
+  if(prec == 255) {
+    prec = sensor.prec;
+  }
+
   if (unit == UNIT_CELLS) {
     uint32_t data = uint32_t(newVal);
     uint8_t cellsCount = (data >> 24);

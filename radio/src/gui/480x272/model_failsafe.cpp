@@ -60,7 +60,7 @@ bool menuModelFailsafe(event_t event)
   }
 
   SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", ICON_STATS_ANALOGS, sentModuleChannels(g_moduleIdx)+1, OPTION_MENU_NO_SCROLLBAR);
-  drawStringWithIndex(50, 3+FH, "Module", g_moduleIdx+1, MENU_TITLE_COLOR);
+  drawStringWithIndex(50, 3+FH, STR_MODULE, g_moduleIdx+1, MENU_TITLE_COLOR);
 
   for (uint8_t col=0; col < cols; col++) {
     for (uint8_t line=0; line < 8; line++) {

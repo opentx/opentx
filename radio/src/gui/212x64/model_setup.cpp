@@ -933,7 +933,25 @@ void menuModelSetup(event_t event)
           switch (menuHorizontalPosition) {
             case 0: {
               int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-              CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+              MultiModuleStatus &status = getMultiModuleStatus(EXTERNAL_MODULE);
+              if (status.isValid()) {
+                int8_t direction = checkIncDec(event, 0, -1, 1);
+                if (direction == -1) {
+                  if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKY)
+                    multiRfProto = MODULE_SUBTYPE_MULTI_FRSKYX_RX;
+                  else
+                    multiRfProto = convertMultiToOtx(status.protocolPrev);
+                }
+                if (direction == 1) {
+                  if (multiRfProto == MODULE_SUBTYPE_MULTI_FRSKY)
+                    multiRfProto = MODULE_SUBTYPE_MULTI_FRSKYX2;
+                  else
+                    multiRfProto = convertMultiToOtx(status.protocolNext);
+                }
+              }
+              else {
+                CHECK_INCDEC_MODELVAR_CHECK(event, multiRfProto, MODULE_SUBTYPE_MULTI_FIRST, MULTI_MAX_PROTOCOLS, isMultiProtocolSelectable);
+              }
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
                 g_model.moduleData[EXTERNAL_MODULE].subType = 0;
@@ -1147,8 +1165,13 @@ void menuModelSetup(event_t event)
             lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
-            bindButtonPos = lcdNextPos + FW;
+            if (!IS_RX_MULTI(moduleIdx)) {
+              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz == 0 ? attr : 0) | LEADING0 | LEFT, 2);
+              bindButtonPos = lcdNextPos + FW;
+            }
+            else {
+              bindButtonPos = MODEL_SETUP_2ND_COLUMN;
+            }
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
@@ -1166,7 +1189,8 @@ void menuModelSetup(event_t event)
               }
             }
             lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            if (!IS_RX_MULTI(moduleIdx))
+              lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
@@ -1337,7 +1361,7 @@ void menuModelSetup(event_t event)
       }
 #if defined (MULTIMODULE)
       else if (isModuleMultimodule(moduleIdx)) {
-        g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
+        g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, IS_RX_MULTI(moduleIdx) ? STR_MULTI_LNA_DISABLE : STR_MULTI_LOWPOWER, attr, event);
       }
 #endif
 #if defined(AFHDS3)

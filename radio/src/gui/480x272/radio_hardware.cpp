@@ -187,7 +187,7 @@ bool menuRadioHardware(event_t event)
     LcdFlags attr = (sub == k ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch (k) {
       case ITEM_RADIO_HARDWARE_CALIBRATION:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, "Calibration", attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CALIBRATION, attr);
         if (attr && s_editMode>0) {
           pushMenu(menuRadioCalibration);
         }
