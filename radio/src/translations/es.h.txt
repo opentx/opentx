@@ -84,7 +84,7 @@
 #define TR_VPERSISTENT         "OFF\0        ""Vuelo\0      ""Reset manual"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
-#define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japon\0 ""Europa\0")
+#define TR_COUNTRYCODES        TR("US""JP""EU", "América""Japón\0 ""Europa\0")
 
 #define LEN_USBMODES           "\010"
 #define TR_USBMODES            "Pregunta""Joystick""SDCard\0 ""Serie\0  "
@@ -199,7 +199,7 @@
   #define TR_PLAY_VALUE        "[OirValor]"
 #endif
 
-#define TR_SF_BG_MUSIC        "BgMusica\0 ""BgMusica||"
+#define TR_SF_BG_MUSIC        "BgMúsica\0 ""BgMúsica||"
 
 #if defined(SDCARD)
   #define TR_SDCLOGS           "SD Logs\0  "
@@ -266,7 +266,7 @@
 #define STR_A                  (STR_VTELEMUNIT+4)
 
 #define LEN_VTELEMSCREENTYPE   "\007"
-#define TR_VTELEMSCREENTYPE    "Nada\0  ""Numeros""Barras\0""Script\0"
+#define TR_VTELEMSCREENTYPE    "Nada\0  ""Números""Barras\0""Script\0"
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
@@ -573,7 +573,7 @@
 #define TR_PRESSANYKEYTOSKIP   "Pulsar tecla para omitir"
 #define TR_THROTTLENOTIDLE     "Aceler. Activado"
 #define TR_ALARMSDISABLED      "Alarmas Desact."
-#define TR_PRESSANYKEY         TR("\010Pulsa una tecla", "Pulsa una tecla")
+#define TR_PRESSANYKEY         TR("\010ÑñÁáÉéÍíÓóÚú", "ÑñÁáÉéÍíÓóÚú")
 #define TR_BADEEPROMDATA       "Error datos EEPROM"
 #define TR_BAD_RADIO_DATA      "Error datos radio"
 #define TR_EEPROMFORMATTING    "Formateo EEPROM"
@@ -945,14 +945,14 @@
 #endif
 #define TR_USE_INTERNAL_ANTENNA        TR("Usa antena int.", "Usa antena interna")
 #define TR_USE_EXTERNAL_ANTENNA        TR("Use antena ext.", "Usa antena externa")
-#define TR_ANTENNACONFIRM2     TR("Revisa antena", "Revisa que la antena este instalada!")
+#define TR_ANTENNACONFIRM2     TR("Revisa antena", "Revisa que la antena esté instalada!")
 
 #define TR_MODULE_PROTOCOL_FLEX_WARN_LINE1        "No requerido"
 #define TR_MODULE_PROTOCOL_FCC_WARN_LINE1         "Requiere FCC"
 #define TR_MODULE_PROTOCOL_EU_WARN_LINE1          "Requiere EU"
 #define TR_MODULE_PROTOCOL_WARN_LINE2             "firmware certificado"
 #define TR_LOWALARM            INDENT "Alarma baja"
-#define TR_CRITICALALARM       INDENT "Alarma critica"
+#define TR_CRITICALALARM       INDENT "Alarma crítica"
 #define TR_RSSIALARM_WARN      TR("RSSI", "TELEMETRY RSSI")
 #define TR_NO_RSSIALARM        TR(INDENT "Alarmas desact.", INDENT "Alarmas telemetría desact.")
 #define TR_DISABLE_ALARM       TR(INDENT "Desact. alarmas", INDENT "Desact. alarmas telem.")
@@ -1035,7 +1035,7 @@
 #define TR_GVAR_HEADERS_FM8           "Valor en FM8"
 
 // Horus footer descriptions
-#define TR_LSW_DESCRIPTIONS    { "Tipo de comparación o función", "Primera variable", "Segunda variable o constante", "Segunda variable o constante", "Condición adicional para activar línea", "Duración minima de switch lógico", "Duración minima TRUE para activar switch lógico" }
+#define TR_LSW_DESCRIPTIONS    { "Tipo de comparación o función", "Primera variable", "Segunda variable o constante", "Segunda variable o constante", "Condición adicional para activar línea", "Duración mínima de switch lógico", "Duración mínima TRUE para activar switch lógico" }
 
 // Horus layouts and widgets
 #define TR_FIRST_CHANNEL              "Primer canal"
@@ -1135,7 +1135,7 @@
 #define TR_ID                  "ID"
 #define TR_PRECISION           "Precisión"
 #define TR_RATIO               "Ratio"
-#define TR_FORMULA             "Formula"
+#define TR_FORMULA             "Fórmula"
 #define TR_CELLINDEX           "Cell index"
 #define TR_LOGS                "Logs"
 #define TR_OPTIONS             "Opciones"
