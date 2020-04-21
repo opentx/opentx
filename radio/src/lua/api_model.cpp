@@ -138,21 +138,21 @@ static int luaModelGetModule(lua_State *L)
     lua_pushtableinteger(L, "channelsCount", module.channelsCount + 8);
     lua_pushtableinteger(L, "Type", module.type);
 #if defined(MULTIMODULE)
-    if (module.type==MODULE_TYPE_MULTIMODULE) {
+    if (module.type == MODULE_TYPE_MULTIMODULE) {
       int protocol = g_model.moduleData[idx].getMultiProtocol() + 1;
       int subprotocol = g_model.moduleData[idx].subType;
       convertOtxProtocolToMulti(&protocol, &subprotocol); // Special treatment for the FrSky entry...
       lua_pushtableinteger(L, "protocol", protocol);
       lua_pushtableinteger(L, "protocolSub", subprotocol);
-      if (getMultiModuleStatus(idx).isValid())
-      {
-          if(getMultiModuleStatus(idx).ch_order==0xFF)
-            lua_pushtableinteger(L, "channelsOrder", -1);
-          else
-            lua_pushtableinteger(L, "channelsOrder", getMultiModuleStatus(idx).ch_order);
+      if (getMultiModuleStatus(idx).isValid()) {
+        if (getMultiModuleStatus(idx).ch_order == 0xFF)
+          lua_pushtableinteger(L, "channelsOrder", -1);
+        else
+          lua_pushtableinteger(L, "channelsOrder", getMultiModuleStatus(idx).ch_order);
       }
-      else
+      else {
         lua_pushtableinteger(L, "channelsOrder", -1);
+      }
     }
 #endif
   }

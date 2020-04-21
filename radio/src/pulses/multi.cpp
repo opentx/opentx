@@ -276,7 +276,8 @@ void convertOtxProtocolToMulti(int *protocol, int *subprotocol)
       else
         *subprotocol = 4; // D16_CLONED
     }
-  } else {
+  }
+  else {
     // 15  for Multimodule is FrskyX or D16 which we map as a protocol of 3 (FrSky)
     // all protos > frskyx are therefore also off by one
     if (*protocol >= 15)
