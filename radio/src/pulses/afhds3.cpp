@@ -57,7 +57,8 @@ static const char* const powerSourceText[] = {
 static const COMMAND periodicRequestCommands[] = {
     COMMAND::MODULE_STATE,
     COMMAND::MODULE_POWER_STATUS,
-    COMMAND::MODULE_GET_CONFIG
+    COMMAND::MODULE_GET_CONFIG,
+    COMMAND::VIRTUAL_FAILSAFE
 };
 
 
@@ -116,6 +117,13 @@ void PulsesData::processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& 
     rxBufferCount = 0;
   }
   rxBuffer[rxBufferCount++] = byte;
+}
+
+bool PulsesData::isConnectedUnicast() {
+  return cfg.config.telemetry == TELEMETRY::TELEMETRY_ENABLED && this->state == ModuleState::STATE_SYNC_DONE;
+}
+bool PulsesData::isConnectedMulticast() {
+  return cfg.config.telemetry == TELEMETRY::TELEMETRY_DISABLED && this->state == ModuleState::STATE_SYNC_RUNNING;
 }
 
 void PulsesData::setupFrame()
@@ -204,44 +212,48 @@ void PulsesData::setupFrame()
     }
   }
 
+  bool isConnected = isConnectedUnicast() || isConnectedMulticast();
 
-  cmdCount++;
-  bool every128 = (cmdCount & 0x7F) == 0x7F;
-  bool every512 = (cmdCount & 0x1FF) == 0x1FF;
-  bool syncDone = this->state == ModuleState::STATE_SYNC_DONE;
-  bool syncActive = this->state == ModuleState::STATE_SYNC_RUNNING;
+  if (cmdCount++ == 150)
+  {
+    cmdCount = 0;
+    uint32_t max = sizeof(periodicRequestCommands);
+    if(cmdCount == max) cmdCount = 0;
+    COMMAND cmd = periodicRequestCommands[cmdCount];
 
-  if (every128 && !every512)
-  {
-    uint32_t commandIndex = ((cmdCount & 0x1FF)>> 7);
-    putFrame(periodicRequestCommands[commandIndex], FRAME_TYPE::REQUEST_GET_DATA);
-    TRACE("AFHDS3 [periodic request index %d] %02X", commandIndex, (uint8_t)periodicRequestCommands[commandIndex]);
-  }
-  else if (syncActive || syncDone)
-  {
-    if (every512) {
-      if (syncActive)
-      {
-        //one-way state is not synchronized
-        TRACE("AFHDS ONE WAY FAILSAFE");
-        uint16_t failSafe[MAX_CHANNELS + 1] = { 0 };
-        uint8_t channels = setFailSafe((int16_t*) (&failSafe[1]));
-        failSafe[0] = (int16_t) ((channels << 8) | CHANNELS_DATA_MODE::FAIL_SAFE);
-        putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, (uint8_t*) failSafe, channels * 2 + 2);
+    if(cmd == COMMAND::VIRTUAL_FAILSAFE)
+    {
+      if(isConnected) {
+        if (isConnectedMulticast()) {
+          TRACE("AFHDS ONE WAY FAILSAFE");
+          uint16_t failSafe[MAX_CHANNELS + 1] = { 0 };
+          uint8_t channels = setFailSafe((int16_t*) (&failSafe[1]));
+          failSafe[0] = (int16_t) ((channels << 8) | CHANNELS_DATA_MODE::FAIL_SAFE);
+          putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, (uint8_t*) failSafe, channels * 2 + 2);
+        }
+        else {
+          TRACE("AFHDS TWO WAYS FAILSAFE");
+          uint8_t failSafe[3 + MAX_CHANNELS * 2] = { 0x11, 0x60 };
+          uint8_t channels = setFailSafe((int16_t*) (failSafe + 3));
+          failSafe[2] = channels * 2;
+          putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, failSafe, 3 + channels * 2);
+        }
       }
-      else
-      {
-        TRACE("AFHDS TWO WAYS FAILSAFE");
-        uint8_t failSafe[3 + MAX_CHANNELS * 2] = { 0x11, 0x60 };
-        uint8_t channels = setFailSafe((int16_t*) (failSafe + 3));
-        failSafe[2] = channels * 2;
-        putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, failSafe, 3 + channels * 2);
+      else {
+        putFrame(COMMAND::MODULE_STATE, FRAME_TYPE::REQUEST_GET_DATA);
       }
     }
     else
     {
-      sendChannelsData();
+      putFrame(cmd, FRAME_TYPE::REQUEST_GET_DATA);
     }
+    //ensure commands will not be resend
+    operationState = cmd == COMMAND::MODULE_STATE ? State::AWAITING_RESPONSE : State::IDLE;
+    cmdCount++;
+  }
+  else if (isConnected)
+  {
+      sendChannelsData();
   }
   else {
     //default frame - request state
@@ -478,10 +490,12 @@ void PulsesData::parseData(uint8_t* rxBuffer, uint8_t rxBufferCount) {
   }
   else if (responseFrame->frameType == FRAME_TYPE::REQUEST_SET_EXPECT_ACK) {
     //we need to respond now - it may break messaging context
-    //if(!commandQueue.empty()) { //check if such request is not queued
-      //request* r = commandQueue.front();
-      //if(r->command == (enum COMMAND)responseFrame->command && r->frameType == FRAME_TYPE::RESPONSE_ACK) return;
-    //}
+    if(!commandQueue.empty()) { //check if such request is not queued
+      request* r = commandQueue.front();
+      if(r->command == (enum COMMAND)responseFrame->command &&
+          r->frameType == FRAME_TYPE::RESPONSE_ACK &&
+          r->frameNumber == responseFrame->frameNumber) return;
+    }
     TRACE("SEND ACK cmd %02X type %02X", responseFrame->command, responseFrame->frameType);
     addAckToQueue((enum COMMAND)responseFrame->command, responseFrame->frameNumber);
     //not tested danger function

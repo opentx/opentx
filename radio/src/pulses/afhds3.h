@@ -177,6 +177,7 @@ enum COMMAND {
   COMMAND_RESULT = 0x0D,
   MODULE_POWER_STATUS = 0x0F,
   MODULE_VERSION = 0x1F,
+  VIRTUAL_FAILSAFE = 0x99 // virtual command used to trigger failsafe
 };
 
 enum COMMAND_DIRECTION {
@@ -449,6 +450,8 @@ private:
    */
   RUN_POWER getMaxRunPower();
   RUN_POWER getRunPower();
+  bool isConnectedUnicast();
+  bool isConnectedMulticast();
 
   /**
    * Index of the module
