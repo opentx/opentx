@@ -412,7 +412,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
 
 constexpr uint32_t TEXT_FILE_MAXSIZE = 2048;
 
-void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS + 1], int & lines_count)
+void sdReadTextFile(const char * filename, char lines[TEXT_VIEWER_LINES][LCD_COLS + 1], int & lines_count)
 {
   FIL file;
   int result;
@@ -423,17 +423,17 @@ void sdReadTextFile(const char * filename, char lines[NUM_BODY_LINES][LCD_COLS +
   char escape_chars[4] = {0};
   int current_line = 0;
 
-  memclear(lines, NUM_BODY_LINES * (LCD_COLS + 1));
+  memclear(lines, TEXT_VIEWER_LINES * (LCD_COLS + 1));
 
   result = f_open(&file, filename, FA_OPEN_EXISTING | FA_READ);
   if (result == FR_OK) {
-    for (unsigned i = 0; i < TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz) == FR_OK && sz == 1 && (lines_count == 0 || current_line - menuVerticalOffset < NUM_BODY_LINES); i++) {
+    for (unsigned i = 0; i < TEXT_FILE_MAXSIZE && f_read(&file, &c, 1, &sz) == FR_OK && sz == 1 && (lines_count == 0 || current_line - menuVerticalOffset < TEXT_VIEWER_LINES); i++) {
       if (c == '\n') {
         ++current_line;
         line_length = 0;
         escape = 0;
       }
-      else if (c!='\r' && current_line>=menuVerticalOffset && current_line-menuVerticalOffset<NUM_BODY_LINES && line_length<LCD_COLS) {
+      else if (c!='\r' && current_line>=menuVerticalOffset && current_line-menuVerticalOffset<TEXT_VIEWER_LINES && line_length<LCD_COLS) {
         if (c == '\\' && escape == 0) {
           escape = 1;
           continue;
