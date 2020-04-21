@@ -384,7 +384,7 @@ void PulsesData::parseData(uint8_t* rxBuffer, uint8_t rxBufferCount) {
   }
   AfhdsFrame* responseFrame = reinterpret_cast<AfhdsFrame*>(rxBuffer);
   //AfhdsFrame* requestFrame = reinterpret_cast<AfhdsFrame*>(this->pulses);
-  uint8_t oldState = this->state;
+  //uint8_t oldState = this->state;
   if(containsData((enum FRAME_TYPE)responseFrame->frameType)) {
     switch(responseFrame->command)
     {
