@@ -244,7 +244,7 @@ void sendChannels(uint8_t moduleIdx)
   }
 }
 
-void FrSky2Multi(int *protocol, int *subprotocol)
+void convertOtxProtocolToMulti(int *protocol, int *subprotocol)
 {
   // Special treatment for the FrSky entry...
   if (*protocol == MODULE_SUBTYPE_MULTI_FRSKY +1) {
@@ -324,7 +324,7 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
   }
 
   // Special treatment for the FrSky entry...
-  FrSky2Multi(&type, &subtype);
+  convertOtxProtocolToMulti(&type, &subtype);
 
   // Set the highest bit of option byte in AFHDS2A protocol to instruct MULTI to passthrough telemetry bytes instead
   // of sending Frsky D telemetry

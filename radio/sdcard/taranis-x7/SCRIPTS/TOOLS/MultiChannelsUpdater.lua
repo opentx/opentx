@@ -1,3 +1,5 @@
+local toolName = "TNS|Multi chan namer|TNE"
+
 ---- #########################################################################
 ---- #                                                                       #
 ---- # Copyright (C) OpenTX                                                  #
@@ -15,7 +17,7 @@
 ---- #                                                                       #
 ---- #########################################################################
 
-
+local done = 0
 local Protocols = {
   {1,  0, "Flysky", "Flysky", { "CH5", "CH6", "CH7", "CH8" }, 0 },
   {1,  1, "Flysky", "V9x9",   { "Flip", "Light", "Pict", "Video" }, 1 },
@@ -204,9 +206,9 @@ local function Multi_Draw_LCD()
   local line = 0
   local module_conf = {}
   local module_pos = "Internal"
-  
+
   lcd.clear()
-  drawScreenTitle("Multi name channels updater")
+  drawScreenTitle("Multi channels namer")
   module_conf = model.getModule(0)
   if module_conf["Type"] ~= 6 then
     module_pos = "External"
@@ -232,8 +234,8 @@ local function Multi_Draw_LCD()
     y_pos = 32
     y_inc = 20
   else
-    x_pos = 17
-    y_pos = 2
+    x_pos = 0
+    y_pos = 9
     y_inc = 8
     lcd_opt = SMLSIZE
   end
@@ -283,8 +285,8 @@ local function Multi_Draw_LCD()
       bind_ch = v[6]
     end
   end
-  
-  lcd.drawText(x_pos, y_pos+y_inc*line,module_pos .. " Multi module detected.",lcd_opt)
+
+  lcd.drawText(x_pos, y_pos+y_inc*line,module_pos .. " Multi detected.",lcd_opt)
   line = line + 1
   if (ch_order == -1) then
     lcd.drawText(x_pos, y_pos+y_inc*line,"Channels order can't be read from Multi...",lcd_opt)
@@ -292,10 +294,15 @@ local function Multi_Draw_LCD()
   end
   if protocol_name == nil or sub_protocol_name == nil then
     lcd.drawText(x_pos, y_pos+y_inc*line,"Unknown protocol/sub_protocol...",lcd_opt)
-  else
+  else if LCD_W > 128 then
     lcd.drawText(x_pos, y_pos+y_inc*line,"Protocol: " .. protocol_name .. " / SubProtocol: " .. sub_protocol_name,lcd_opt)
     line = line + 1
-
+  else
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Protocol: " .. protocol_name, lcd_opt)
+    line = line + 1
+    lcd.drawText(x_pos, y_pos+y_inc*line,"SubProtocol: " .. sub_protocol_name, lcd_opt)
+    line = line + 1
+  end
     text1=""
     text2=""
     for i,v in ipairs(channel_names) do
@@ -313,13 +320,15 @@ local function Multi_Draw_LCD()
         end
       end
     end
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Channels: " .. text1,lcd_opt)
-    line = line + 1
-    if text2 ~= "" then
-      lcd.drawText(x_pos*9, y_pos+y_inc*line,text2,lcd_opt)
+    if LCD_W > 128 then
+      lcd.drawText(x_pos, y_pos+y_inc*line,"Channels: " .. text1,lcd_opt)
       line = line + 1
+      if text2 ~= "" then
+        lcd.drawText(x_pos*9, y_pos+y_inc*line,text2,lcd_opt)
+        line = line + 1
+      end
     end
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Setting channel names to Outputs.",lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Setting channel names.",lcd_opt)
     line = line + 1
     local output, nbr
     for i,v in ipairs(channel_names) do
@@ -340,6 +349,7 @@ local function Multi_Draw_LCD()
     end
     lcd.drawText(x_pos, y_pos+y_inc*line,"Done!",lcd_opt)
     line = line + 1
+    done = 1
   end
 end
 
@@ -353,7 +363,13 @@ local function Multi_Run(event)
     error("Cannot be run as a model script!")
     return 2
   else
-    Multi_Draw_LCD()
+    if done == 0 then
+      Multi_Draw_LCD()
+    else
+      if event == EVT_VIRTUAL_ENTER or event == EVT_VIRTUAL_EXIT then
+        return 2
+      end
+    end
     return 0
   end
 end

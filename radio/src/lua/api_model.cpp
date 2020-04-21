@@ -141,7 +141,7 @@ static int luaModelGetModule(lua_State *L)
     if (module.type==MODULE_TYPE_MULTIMODULE) {
       int protocol = g_model.moduleData[idx].getMultiProtocol() + 1;
       int subprotocol = g_model.moduleData[idx].subType;
-      FrSky2Multi(&protocol, &subprotocol); // Special treatment for the FrSky entry...
+      convertOtxProtocolToMulti(&protocol, &subprotocol); // Special treatment for the FrSky entry...
       lua_pushtableinteger(L, "protocol", protocol);
       lua_pushtableinteger(L, "protocolSub", subprotocol);
       if (getMultiModuleStatus(idx).isValid())
