@@ -40,7 +40,7 @@
 #define drawFieldLabel(x, y, str)      lcdDrawTextAlignedLeft(y, str)
 
 #define NUM_BODY_LINES                 (LCD_LINES-1)
-#define TEXT_VIEWVER_LINES             NUM_BODY_LINES
+#define TEXT_VIEWER_LINES             NUM_BODY_LINES
 #define MENU_HEADER_HEIGHT             FH
 
 #define CURVE_SIDE_WIDTH               (LCD_H/2)
