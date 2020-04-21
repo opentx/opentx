@@ -539,6 +539,11 @@
        <string>US fl.Oz.</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>ml/min</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
