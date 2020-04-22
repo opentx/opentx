@@ -43,7 +43,7 @@ extern "C" {
 
 #if !defined(CLI)
 #define LUA_FIFO_SIZE 256
-extern Fifo<uint8_t, LUA_FIFO_SIZE> luaRxFifo;
+extern Fifo<uint8_t, LUA_FIFO_SIZE> * luaRxFifo;
 #endif
 
 extern lua_State * lsScripts;

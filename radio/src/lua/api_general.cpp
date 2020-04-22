@@ -67,7 +67,7 @@
   { "EVT_"#xxx"_REPT", EVT_KEY_REPT(yyy) }
 
 #if defined(LUA) && !defined(CLI)
-Fifo<uint8_t, LUA_FIFO_SIZE> luaRxFifo;
+Fifo<uint8_t, LUA_FIFO_SIZE> * luaRxFifo = nullptr;
 #endif
 
 /*luadoc
@@ -1615,9 +1615,16 @@ static int luaSerialRead(lua_State * L)
   int num = luaL_optunsigned(L, 1, 0);
 
 #if defined(LUA) && !defined(CLI)
+  if (!luaRxFifo) {
+    luaRxFifo = new Fifo<uint8_t, LUA_FIFO_SIZE>();
+    if (!luaRxFifo) {
+      lua_pushlstring(L, "", 0);
+      return 1;
+    }
+  }
   uint8_t str[LUA_FIFO_SIZE];
   uint8_t *p = str;
-  while (luaRxFifo.pop(*p)) {
+  while (luaRxFifo->pop(*p)) {
     p++;  // increment only when pop was successful
     if (num == 0 && (*(p - 1) == '\n' || *(p - 1) == '\r')) {
       break;  // found newline

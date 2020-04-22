@@ -224,8 +224,10 @@ static uint16_t VCP_DataRx (uint8_t* Buf, uint32_t Len)
 #endif
 #if defined(LUA) && !defined(CLI)
   // copy data to the LUA FIFO
-  for (uint32_t i = 0; i < Len; i++) {
-    luaRxFifo.push(Buf[i]);
+  if (luaRxFifo) {
+    for (uint32_t i = 0; i < Len; i++) {
+      luaRxFifo->push(Buf[i]);
+    }
   }
 #endif
 
