@@ -121,7 +121,7 @@ Get RF module parameters
  * `Type` (number) module type
  * if the module type is Multi additional information are available
  * `protocol` (number) protocol number
- * `protocolSub` (number) sub-protocol number
+ * `subProtocol` (number) sub-protocol number
  * `channelsOrder` (number) first 4 channels expected order
 
 @status current Introduced in TODO
@@ -143,7 +143,7 @@ static int luaModelGetModule(lua_State *L)
       int subprotocol = g_model.moduleData[idx].subType;
       convertOtxProtocolToMulti(&protocol, &subprotocol); // Special treatment for the FrSky entry...
       lua_pushtableinteger(L, "protocol", protocol);
-      lua_pushtableinteger(L, "protocolSub", subprotocol);
+      lua_pushtableinteger(L, "subProtocol", subprotocol);
       if (getMultiModuleStatus(idx).isValid()) {
         if (getMultiModuleStatus(idx).ch_order == 0xFF)
           lua_pushtableinteger(L, "channelsOrder", -1);

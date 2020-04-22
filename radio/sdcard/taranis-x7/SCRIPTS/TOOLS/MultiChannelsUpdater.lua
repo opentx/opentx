@@ -225,7 +225,7 @@ local function Multi_Draw_LCD()
   end
 
   local protocol = module_conf["protocol"]
-  local sub_protocol = module_conf["protocolSub"]
+  local sub_protocol = module_conf["subProtocol"]
 
   --Display settings
   local lcd_opt
