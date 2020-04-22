@@ -1615,15 +1615,15 @@ static int luaSerialRead(lua_State * L)
   int num = luaL_optunsigned(L, 1, 0);
 
 #if defined(LUA) && !defined(CLI)
-  if (num > LUA_FIFO_SIZE) num = LUA_FIFO_SIZE;
   uint8_t str[LUA_FIFO_SIZE];
   uint8_t *p = str;
   while (luaRxFifo.pop(*p)) {
     p++;  // increment only when pop was successful
-    if (num == 0) {
-      if (*(p - 1) == '\n' || *(p - 1) == '\r') break;
-    } else {
-      if (p - str >= num) break;
+    if (num == 0 && (*(p - 1) == '\n' || *(p - 1) == '\r')) {
+      break;  // found newline
+    }
+    if (p - str >= num || p - str >= LUA_FIFO_SIZE) {
+      break;  // num reached or buffer full
     }
   }
   lua_pushlstring(L, (const char*)str, p - str);
