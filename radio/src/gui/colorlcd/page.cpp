@@ -70,7 +70,7 @@ Page::~Page()
 void Page::deleteLater()
 {
   if (previousFocus) {
-    previousFocus->setFocus();
+    previousFocus->setFocus(SET_FOCUS_DEFAULT);
   }
 
   Window::deleteLater();

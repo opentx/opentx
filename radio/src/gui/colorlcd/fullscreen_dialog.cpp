@@ -42,7 +42,7 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
                     });
 #endif
   bringToTop();
-  setFocus();
+  setFocus(SET_FOCUS_DEFAULT);
 }
 
 void FullScreenDialog::paint(BitmapBuffer * dc)
@@ -117,7 +117,7 @@ void FullScreenDialog::deleteLater()
 {
 #if !defined(HARDWARE_TOUCH)
   if (previousFocus) {
-    previousFocus->setFocus();
+    previousFocus->setFocus(SET_FOCUS_DEFAULT);
   }
 #endif
 

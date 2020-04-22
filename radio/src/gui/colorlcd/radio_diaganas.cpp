@@ -66,5 +66,5 @@ RadioAnalogsDiagsPage::RadioAnalogsDiagsPage():
 {
   buildHeader(&header);
   buildBody(&body);
-  setFocus();
+  setFocus(SET_FOCUS_DEFAULT);
 }

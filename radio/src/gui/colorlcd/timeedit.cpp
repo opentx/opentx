@@ -24,7 +24,7 @@
 #include "strhelpers.h"
 
 TimeEdit::TimeEdit(Window * parent, const rect_t & rect, int32_t vmin, int32_t vmax, std::function<int32_t()> getValue, std::function<void(int32_t)> setValue):
-  BaseNumberEdit(parent, rect, vmin, vmax, getValue, setValue)
+  BaseNumberEdit(parent, rect, vmin, vmax, std::move(getValue), std::move(setValue))
 {
 }
 
@@ -78,7 +78,7 @@ void TimeEdit::onEvent(event_t event)
 bool TimeEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
-    setFocus();
+    setFocus(SET_FOCUS_DEFAULT);
   }
 
 //  NumberKeyboard * keyboard = NumberKeyboard::instance();

@@ -335,7 +335,7 @@ void ModelMixesPage::build(FormWindow * window, int8_t focusMixIndex)
       while (mixIndex < MAX_MIXERS && mix->srcRaw > 0 && mix->destCh == ch) {
         Button * button = new MixLineButton(window, grid.getFieldSlot(), mixIndex);
         if (focusMixIndex == mixIndex)
-          button->setFocus();
+          button->setFocus(SET_FOCUS_DEFAULT);
         button->setPressHandler([=]() -> uint8_t {
           button->bringToTop();
           Menu * menu = new Menu(window);
@@ -399,7 +399,7 @@ void ModelMixesPage::build(FormWindow * window, int8_t focusMixIndex)
     else {
       auto button = new TextButton(window, grid.getLabelSlot(), getSourceString(MIXSRC_CH1 + ch));
       if (focusMixIndex == mixIndex)
-        button->setFocus();
+        button->setFocus(SET_FOCUS_DEFAULT);
       button->setPressHandler([=]() -> uint8_t {
         button->bringToTop();
         Menu * menu = new Menu(window);

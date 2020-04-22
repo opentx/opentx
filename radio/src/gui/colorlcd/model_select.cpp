@@ -310,13 +310,13 @@ class ModelCategoryPageBody: public FormWindow {
               }
             }
             else {
-              button->setFocus();
+              button->setFocus(SET_FOCUS_DEFAULT);
             }
             return 1;
         });
 
         if (selected == index) {
-          button->setFocus();
+          button->setFocus(SET_FOCUS_DEFAULT);
           footer->setCurrentModel(model);
         }
 

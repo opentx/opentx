@@ -52,7 +52,7 @@ class SpectrumFooterWindow: public FormGroup
                                     SET_VALUE(reusableBuffer.spectrumAnalyser.track, newValue * 1000000));
       tracker->setSuffix("MHz");
       tracker->setPrefix("T: ");
-      tracker->setFocus();
+      tracker->setFocus(SET_FOCUS_DEFAULT);
 
       if (isModuleMultimodule(moduleIdx)) {
         char label[10];

@@ -108,7 +108,7 @@ void SourceChoice::openMenu()
   menu->setToolbar(new SourceChoiceMenuToolbar(this, menu));
   menu->setCloseHandler([=]() {
       editMode = false;
-      setFocus();
+      setFocus(SET_FOCUS_DEFAULT);
   });
 }
 
@@ -132,7 +132,7 @@ void SourceChoice::onEvent(event_t event)
 bool SourceChoice::onTouchEnd(coord_t, coord_t)
 {
   openMenu();
-  setFocus();
+  setFocus(SET_FOCUS_DEFAULT);
   setEditMode(true);
   return true;
 }

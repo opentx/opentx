@@ -61,7 +61,7 @@ class GVarNumberEdit: public FormGroup
       if (event == EVT_KEY_LONG(KEY_ENTER)) {
         killEvents(event);
         switchGVarMode();
-        field->setFocus();
+        field->setFocus(SET_FOCUS_DEFAULT);
       }
       else {
         FormGroup::onEvent(event);

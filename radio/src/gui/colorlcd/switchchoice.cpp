@@ -93,7 +93,7 @@ void SwitchChoice::openMenu()
   menu->setToolbar(new SwitchChoiceMenuToolbar(this, menu));
   menu->setCloseHandler([=]() {
       editMode = false;
-      setFocus();
+      setFocus(SET_FOCUS_DEFAULT);
   });
 }
 
@@ -117,7 +117,7 @@ void SwitchChoice::onEvent(event_t event)
 bool SwitchChoice::onTouchEnd(coord_t, coord_t)
 {
   openMenu();
-  setFocus();
+  setFocus(SET_FOCUS_DEFAULT);
   setEditMode(true);
   return true;
 }

@@ -59,7 +59,7 @@ void CurveEdit::update()
 bool CurveEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
-    setFocus();
+    setFocus(SET_FOCUS_DEFAULT);
   }
 
   CurveKeyboard::show(this, isCustomCurve());

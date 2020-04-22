@@ -140,7 +140,7 @@ void TabsGroup::setVisibleTab(PageTab * tab)
     currentTab = tab;
     tab->build(&body);
     if (!focusWindow)
-      setFocus();
+      setFocus(SET_FOCUS_DEFAULT);
     header.setTitle(tab->title.c_str());
     invalidate();
   }
@@ -170,7 +170,7 @@ void TabsGroup::onEvent(event_t event)
   }
   else if (event == EVT_KEY_LONG(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
     killEvents(event);
-    ViewMain::instance->setFocus();
+    ViewMain::instance->setFocus(SET_FOCUS_DEFAULT);
     deleteLater();
   }
   else if (parent) {

@@ -467,7 +467,7 @@ void ModelTelemetryPage::build(FormWindow * window, int8_t focusSensorIndex)
         return 0;
       });
       if (focusSensorIndex == idx) {
-        button->setFocus();
+        button->setFocus(SET_FOCUS_DEFAULT);
       }
       grid.nextLine();
     }

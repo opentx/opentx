@@ -201,7 +201,7 @@ class RegisterDialog: public Dialog {
                                        this->deleteLater();
                                        return 0;
                                    });
-      exitButton->setFocus();
+      exitButton->setFocus(SET_FOCUS_DEFAULT);
       grid.nextLine();
       grid.spacer(PAGE_PADDING);
 
@@ -239,7 +239,7 @@ class RegisterDialog: public Dialog {
         FormField::link(uid, rxName);
         FormField::link(rxName, okButton);
         FormField::link(okButton, exitButton);
-        okButton->setFocus();
+        okButton->setFocus(SET_FOCUS_DEFAULT);
       }
       else if (reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_OK) {
         deleteLater();
@@ -467,7 +467,7 @@ class TrainerModuleWindow  : public FormGroup {
           g_model.trainerData.mode = newValue;
           update();
           SET_DIRTY();
-          moduleChoice->setFocus();
+          moduleChoice->setFocus(SET_FOCUS_DEFAULT);
       });
       moduleChoice->setAvailableHandler(isTrainerModeAvailable);
       grid.nextLine();
@@ -595,7 +595,7 @@ class ModuleWindow : public FormGroup {
                                   SET_DIRTY();
                                   // TODO resetModuleSettings(moduleIdx);
                                   update();
-                                  moduleChoice->setFocus();
+                                  moduleChoice->setFocus(SET_FOCUS_DEFAULT);
                                 });
       moduleChoice->setAvailableHandler([=](int8_t moduleType) {
           return moduleIdx == INTERNAL_MODULE ? isInternalModuleAvailable(moduleType) : isExternalModuleAvailable(moduleType);
@@ -620,7 +620,7 @@ class ModuleWindow : public FormGroup {
                                   g_model.moduleData[moduleIdx].subType = newValue;
                                   SET_DIRTY();
                                   update();
-                                  rfChoice->setFocus();
+                                  rfChoice->setFocus(SET_FOCUS_DEFAULT);
                               });
       }
       else if (isModulePXX2(moduleIdx)) {
@@ -630,7 +630,7 @@ class ModuleWindow : public FormGroup {
                                   g_model.moduleData[moduleIdx].subType = newValue;
                                   SET_DIRTY();
                                   update();
-                                  rfChoice->setFocus();
+                                  rfChoice->setFocus(SET_FOCUS_DEFAULT);
                               });
       }
 #if defined(MULTIMODULE)
@@ -647,7 +647,7 @@ class ModuleWindow : public FormGroup {
                                 resetMultiProtocolsOptions(moduleIdx);
                                 SET_DIRTY();
                                 update();
-                                rfChoice->setFocus();
+                                rfChoice->setFocus(SET_FOCUS_DEFAULT);
                               });
 
         if (g_model.moduleData[moduleIdx].multi.customProto) {
@@ -833,7 +833,7 @@ class ModuleWindow : public FormGroup {
                                       g_model.moduleData[moduleIdx].failsafeMode = newValue;
                                       SET_DIRTY();
                                       update();
-                                      failSafeChoice->setFocus();
+                                      failSafeChoice->setFocus(SET_FOCUS_DEFAULT);
                                     });
         if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_CUSTOM) {
           new TextButton(this, grid.getFieldSlot(2, 1), STR_SET,

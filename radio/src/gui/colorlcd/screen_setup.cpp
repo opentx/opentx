@@ -100,7 +100,7 @@ class LayoutChoice: public FormField {
 
       menu->setCloseHandler([=]() {
           editMode = false;
-          setFocus();
+          setFocus(SET_FOCUS_DEFAULT);
       });
     }
 

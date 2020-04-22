@@ -104,7 +104,7 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
 {
   buildHeader(&header);
   buildBody(&body);
-  setFocus();
+  setFocus(SET_FOCUS_DEFAULT);
 }
 
 void RadioCalibrationPage::buildHeader(Window * window)

@@ -480,7 +480,7 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
       });
 
       if (focusIndex == i) {
-        button->setFocus();
+        button->setFocus(SET_FOCUS_DEFAULT);
       }
 
       grid.spacer(button->height() + 5);

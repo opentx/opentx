@@ -106,7 +106,7 @@ class BluetoothConfigWindow : public FormGroup
           g_eeGeneral.bluetoothMode = newValue;
           update();
           SET_DIRTY();
-          btMode->setFocus();
+          btMode->setFocus(SET_FOCUS_DEFAULT);
       });
       grid.nextLine();
 
@@ -158,7 +158,7 @@ void RadioHardwarePage::build(FormWindow * window)
   calib->setPressHandler([=]() -> uint8_t {
       auto calibrationPage = new RadioCalibrationPage();
       calibrationPage->setCloseHandler([=]() {
-          calib->setFocus();
+          calib->setFocus(SET_FOCUS_DEFAULT);
       });
       return 0;
   });
@@ -254,7 +254,7 @@ void RadioHardwarePage::build(FormWindow * window)
   debugAnas->setPressHandler([=]() -> uint8_t {
       auto debugAnalogsPage = new RadioAnalogsDiagsPage();
       debugAnalogsPage->setCloseHandler([=]() {
-          calib->setFocus();
+          calib->setFocus(SET_FOCUS_DEFAULT);
       });
       return 0;
   });
@@ -263,7 +263,7 @@ void RadioHardwarePage::build(FormWindow * window)
   debugKeys->setPressHandler([=]() -> uint8_t {
     auto debugKeysPage = new RadioKeyDiagsPage();
     debugKeysPage->setCloseHandler([=]() {
-        calib->setFocus();
+        calib->setFocus(SET_FOCUS_DEFAULT);
     });
     return 0;
   });
