@@ -34,6 +34,8 @@ local function HoTT_Release()
   multiBuffer( 0, 0 )
 end
 
+HoTT_Sensor = 5;
+
 local function HoTT_Draw_LCD()
   local i
   local value
@@ -41,12 +43,14 @@ local function HoTT_Draw_LCD()
   local result
   local offset=0
   
+  local sensor_name = { "Vario", "GPS", "Cust", "ESC","GAM" , "EAM" }
+
   lcd.clear()
 
   if LCD_W == 480 then
     --Draw title
     lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
-    lcd.drawText(1, 5, "Graupner HoTT RX configuration", MENU_TITLE_COLOR)
+    lcd.drawText(1, 5, "Graupner HoTT: config RX+" .. sensor_name[HoTT_Sensor+1] .. " - Menu cycle Sensors", MENU_TITLE_COLOR)
     --Draw RX Menu
     if multiBuffer( 4 ) == 0xFF then
       lcd.drawText(10,50,"No HoTT telemetry...", BLINK)
@@ -56,9 +60,9 @@ local function HoTT_Draw_LCD()
           value=multiBuffer( line*21+6+i )
           if value > 0x80 then
             value = value - 0x80
-            lcd.drawText(10+i*16,32+16*line,string.char(value).."   ",INVERS)
+            lcd.drawText(10+i*16,32+20*line,string.char(value).."   ",INVERS)
           else
-            lcd.drawText(10+i*16,32+16*line,string.char(value))
+            lcd.drawText(10+i*16,32+20*line,string.char(value))
           end
         end
       end
@@ -98,7 +102,7 @@ local function HoTT_Init()
   --Request init of the RX buffer
   multiBuffer( 4, 0xFF )
   --Request RX to send the config menu
-  multiBuffer( 5, 0xDF )
+  multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x0F )
 end
 
 -- Main
@@ -112,17 +116,20 @@ local function HoTT_Run(event)
   else
     if event == EVT_VIRTUAL_PREV_PAGE then
       killEvents(event);
-      multiBuffer( 5, 0xD7 )
-    elseif event == EVT_VIRTUAL_NEXT_PAGE then
-      multiBuffer( 5, 0xDE )
+      multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x07 )
     elseif event == EVT_VIRTUAL_ENTER then
-      multiBuffer( 5, 0xD9 )
-    elseif event == EVT_VIRTUAL_NEXT then
-      multiBuffer( 5, 0xDD )
+      multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x09 )
     elseif event == EVT_VIRTUAL_PREV then
-      multiBuffer( 5, 0xDB )
+      multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x0B )
+    elseif event == EVT_VIRTUAL_NEXT then
+      multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x0D )
+    elseif event == EVT_VIRTUAL_NEXT_PAGE then
+      multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x0E )
+    elseif event == EVT_VIRTUAL_MENU then
+      HoTT_Sensor=(HoTT_Sensor+1)%6
+      multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x0F )
     else
-      multiBuffer( 5, 0xDF )
+      multiBuffer( 5, 0x90+(HoTT_Sensor*16) + 0x0F )
     end
     HoTT_Draw_LCD()
     return 0

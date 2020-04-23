@@ -16,26 +16,27 @@
 #include "opentx.h"
 
 /* Telemetry 
-packet[0] = TX RSSI value
-packet[1] = TX LQI value
-packet[2] = frame number
-packet[3-12] telemetry data
+packet[0]    = TX RSSI value
+packet[1]    = TX LQI value
+packet[2]    = Telemetry type
+packet[3]    = Telemetry page
+packet[4-13] = Telemetry data
 
-The frame number takes the following values: 0x00, 0x01, 0x02, 0x03 and 0x04. The frames can be present or not, they also do not have to follow each others.
-Here is a description of the telemetry data for each frame number:
-- frame 0x00
-[3] = [12] = ??
-[4] = RX_Voltage*10 in V
-[5] = Temperature-20 in °C
-[6] = RX_RSSI
-[7] = RX_LQI ??
-[8] = RX_STR ??
-[9,10] = [10]*256+[9]=max lost packet time in ms, max value seems 2s=0x7D0
-[11] = 0x00 ??
-- frame 0x01					Unknown
-- frame 0x02					Unknown
-- frame 0x03					Unknown
-- frame 0x04					Unknown
+Telemetry type: 0x00 RX, 0x09 Vario, 0x0A GPS, 0x0B not seen, 0x0C ESC, 0x0D GAM, 0x0E EAM, 0x80 Text config mode
+Telemetry page: 0x00..0x04 for all telemetry except Text config mode which is 0x00..0x12. The pages can be present or not, they also do not have to follow each others.
+
+Here is a description of the RX telemetry:
+ [2] = 0x00 -> Telemetry type RX
+ [3] = 0x00 -> Telemetry page 0
+ [4] = ?? looks to be a copy of [7]
+ [5] = RX_Voltage*10 in V
+ [6] = Temperature-20 in °C
+ [7] = RX_RSSI CC2500 formated (a<128:a/2-71dBm, a>=128:(a-256)/2-71dBm)
+ [8] = RX_LQI in %
+ [9] = RX_MIN_Voltage*10 in V
+ [10,11] = [11]*256+[10]=max lost packet time in ms, max value seems 2s=0x7D0
+ [12] = 0x00 ??
+ [13] = ?? looks to be a copy of [7]
 */
 
 struct HottSensor
@@ -49,16 +50,23 @@ struct HottSensor
 // telemetry frames
 enum
 {
-  HOTT_FRAME_00 = 0x00,
-  HOTT_FRAME_01 = 0x01,
-  HOTT_FRAME_02 = 0x02,
-  HOTT_FRAME_03 = 0x03,
-  HOTT_FRAME_04 = 0x04,
+  HOTT_PAGE_00 = 0x00,
+  HOTT_PAGE_01 = 0x01,
+  HOTT_PAGE_02 = 0x02,
+  HOTT_PAGE_03 = 0x03,
+  HOTT_PAGE_04 = 0x04,
 };
 
-#define HOTT_TELEM_NORMAL 0x00
-#define HOTT_TELEM_BIND 0x40
-#define HOTT_TELEM_MENU 0x80
+enum
+{
+  HOTT_TELEM_RX    = 0x00,
+  HOTT_TELEM_VARIO = 0x09,
+  HOTT_TELEM_GPS   = 0x0A,
+  HOTT_TELEM_ESC   = 0x0C,
+  HOTT_TELEM_GAM   = 0x0D,
+  HOTT_TELEM_EAM   = 0x0E,
+  HOTT_TELEM_TEXT  = 0x80,
+};
 
 // telemetry sensors ID
 enum
@@ -72,14 +80,11 @@ enum
 };
 
 const HottSensor hottSensors[] = {
-  //frame 00
+  //HOTT_TELEM_RX
   {HOTT_ID_RX_VOLTAGE,   ZSTR_BATT,       UNIT_VOLTS,             1},  // RX_Batt Voltage
   {HOTT_ID_TEMP1,        ZSTR_TEMP1,      UNIT_CELSIUS,           0},  // RX Temperature sensor
-  //frame 01
-  //frame 02
-  //frame 03
-  //frame 04
-  {HOTT_TX_RSSI_ID,      ZSTR_TX_RSSI,    UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
+
+  {HOTT_TX_RSSI_ID,      ZSTR_TX_RSSI,    UNIT_DB,                0},  // Pseudo id outside 1 byte range of Hott sensors
   {HOTT_TX_LQI_ID,       ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
   {HOTT_RX_RSSI_ID,      ZSTR_RSSI,       UNIT_DB,                0},  // RX RSSI
   {HOTT_RX_LQI_ID,       ZSTR_RX_QUALITY, UNIT_RAW,               0},  // RX LQI
@@ -98,7 +103,10 @@ const HottSensor * getHottSensor(uint16_t id)
 void processHottPacket(const uint8_t * packet)
 {
   // Set TX RSSI Value
-  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_RSSI_ID, 0, 0, packet[0]>>1, UNIT_RAW, 0);
+  int16_t dBm=packet[0];
+  if(dBm>=128) dBm=256-dBm;
+  dBm=dBm/2-71;
+  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_RSSI_ID, 0, 0, dBm, UNIT_RAW, 0);
   // Set TX LQI  Value
   setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_LQI_ID, 0, 0, packet[1], UNIT_RAW, 0);
 
@@ -110,7 +118,7 @@ void processHottPacket(const uint8_t * packet)
   //   Page X [5..13] = 9 ascii chars to be displayed, char is highlighted when ascii|0x80
   //   Screen display is 21 characters large which means that once the first 21 chars are filled go to the begining of the next line
   //   Menu commands are sent through TX packets:
-  //     packet[28]= 0xXF=>no key press, 0xXD=>down, 0xXB=>up, 0xX9=>enter, 0xXE=>right, 0xX7=>left with X=0 or D
+  //     packet[28]= 0xXF=>no key press, 0xXD=>down, 0xXB=>up, 0xX9=>enter, 0xXE=>right, 0xX7=>left with X=0, 9=Vario, A=GPS, B=Unknown, C=ESC, D=GAM, or E=EAM
   //     packet[29]= 0xX1/0xX9 with X=0 or X counting 0,1,1,2,2,..,9,9
   if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0) {
     // HoTT Lua script is running
@@ -119,7 +127,7 @@ void processHottPacket(const uint8_t * packet)
       memset(&Multi_Buffer[6], ' ', HOTT_MENU_NBR_PAGE * 9); // Clear text buffer
     }
     
-    if (packet[3] < HOTT_MENU_NBR_PAGE && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF) {
+    if (packet[2]==HOTT_TELEM_TEXT && packet[3] < HOTT_MENU_NBR_PAGE && (Multi_Buffer[5]&0xF0) >= 0x90 && (Multi_Buffer[5]&0x0F) >= 0x07) {
       Multi_Buffer[4] = packet[4];                             // Store current menu being received
       memcpy(&Multi_Buffer[6 + packet[3] * 9], &packet[5], 9); // Store the received page in the buffer
     }
@@ -130,10 +138,11 @@ void processHottPacket(const uint8_t * packet)
   const HottSensor * sensor;
   int32_t value;
 
-  if (packet[2] == HOTT_TELEM_NORMAL) {
-    switch (packet[3]) {
-      case HOTT_FRAME_00:
-        // RX_VOLT
+  switch (packet[2]) { // Telemetry type
+    case HOTT_TELEM_RX:
+      if(packet[3]==0)
+      { // Telemetry page: only page 0 is for RX
+          // RX_VOLT
         value = packet[5];
         sensor = getHottSensor(HOTT_ID_RX_VOLTAGE);
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_VOLTAGE, 0, 0, value, sensor->unit, sensor->precision);
@@ -142,20 +151,77 @@ void processHottPacket(const uint8_t * packet)
         sensor = getHottSensor(HOTT_ID_TEMP1);
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
         // RX_RSSI
-        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_RSSI_ID, 0, 0, packet[7], UNIT_DB, 0);
+        dBm=packet[7];
+        if(dBm>=128) dBm=256-dBm;
+        dBm=dBm/2-71;
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_RSSI_ID, 0, 0, dBm, UNIT_DB, 0);
         // RX_LQI
         telemetryData.rssi.set(packet[8]);
         if (packet[8] > 0)
           telemetryStreaming = TELEMETRY_TIMEOUT10ms;
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
-        break;
-
-      default:
-        // unknown
-        value = (packet[7] << 24) | (packet[6] << 16) | (packet[5] << 8) | packet[4];
-        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, 0xFE00 | packet[3], 0, 0, value, UNIT_RAW, 0);
-        break;
-    }
+      }
+      break;
+    case HOTT_TELEM_VARIO:
+      switch (packet[3]) { // Telemetry page 1,2,3,4
+        case HOTT_PAGE_01:
+          break;
+        case HOTT_PAGE_02:
+          break;
+        case HOTT_PAGE_03:
+          break;
+        case HOTT_PAGE_04:
+          break;
+      }
+      break;
+    case HOTT_TELEM_GPS:
+      switch (packet[3]) { // Telemetry page 1,2,3,4
+        case HOTT_PAGE_01:
+          break;
+        case HOTT_PAGE_02:
+          break;
+        case HOTT_PAGE_03:
+          break;
+        case HOTT_PAGE_04:
+          break;
+      }
+      break;
+    case HOTT_TELEM_ESC:
+      switch (packet[3]) { // Telemetry page 1,2,3,4
+        case HOTT_PAGE_01:
+          break;
+        case HOTT_PAGE_02:
+          break;
+        case HOTT_PAGE_03:
+          break;
+        case HOTT_PAGE_04:
+          break;
+      }
+      break;
+    case HOTT_TELEM_GAM:
+      switch (packet[3]) { // Telemetry page 1,2,3,4
+        case HOTT_PAGE_01:
+          break;
+        case HOTT_PAGE_02:
+          break;
+        case HOTT_PAGE_03:
+          break;
+        case HOTT_PAGE_04:
+          break;
+      }
+      break;
+    case HOTT_TELEM_EAM:
+      switch (packet[3]) { // Telemetry page 1,2,3,4
+        case HOTT_PAGE_01:
+          break;
+        case HOTT_PAGE_02:
+          break;
+        case HOTT_PAGE_03:
+          break;
+        case HOTT_PAGE_04:
+          break;
+      }
+      break;
   }
 }
 
