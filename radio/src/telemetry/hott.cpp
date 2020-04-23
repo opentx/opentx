@@ -127,8 +127,8 @@ void processHottPacket(const uint8_t * packet)
       memset(&Multi_Buffer[6], ' ', HOTT_MENU_NBR_PAGE * 9); // Clear text buffer
     }
     
-    if (packet[2]==HOTT_TELEM_TEXT && packet[3] < HOTT_MENU_NBR_PAGE && (Multi_Buffer[5]&0xF0) >= 0x90 && (Multi_Buffer[5]&0x0F) >= 0x07) {
-      Multi_Buffer[4] = packet[4];                             // Store current menu being received
+    if (packet[2]==HOTT_TELEM_TEXT && packet[3] < HOTT_MENU_NBR_PAGE && (Multi_Buffer[5]&0x80) && (Multi_Buffer[5]&0x0F) >= 0x07) {
+      Multi_Buffer[4] = packet[4];                             // Store detected sensors
       memcpy(&Multi_Buffer[6 + packet[3] * 9], &packet[5], 9); // Store the received page in the buffer
     }
     return;
@@ -166,8 +166,13 @@ void processHottPacket(const uint8_t * packet)
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L240
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
+          // packet[6 ] uint8_t altitude_L;          //#06 Altitude low uint8_t. In meters. A value of 500 means 0m
+          // packet[7 ] uint8_t altitude_H;          //#07 Altitude high uint8_t
+          // packet[12] uint8_t climbrate_L;         //#12 Climb rate in m/s. Steps of 0.01m/s. Value of 30000 = 0.00 m/s
+          // packet[13] uint8_t climbrate_H;         //#13 Climb rate in m/s
           break;
         case HOTT_PAGE_02:
+          // packet[12] uint8_t compass_direction;   //#42 Compass heading in 2� steps. 1 = 2�
           break;
         case HOTT_PAGE_03:
           break;
@@ -179,12 +184,48 @@ void processHottPacket(const uint8_t * packet)
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L378
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
-          break;
+            // packet[7 ] uint8_t flight_direction; //#07 flight direction in 2 degreees/step (1 = 2degrees);
+            // packet[8 ] uint8_t gps_speed_L;   //08 km/h
+            // packet[9 ] uint8_t gps_speed_H;   //#09
+            // packet[10] uint8_t pos_NS;        //#10 north = 0, south = 1
+            // packet[11] uint8_t pos_NS_dm_L;   //#11 degree minutes ie N48�39�988
+            // packet[12] uint8_t pos_NS_dm_H;   //#12
+            // packet[13] uint8_t pos_NS_sec_L;  //#13 position seconds
+            break;
         case HOTT_PAGE_02:
+            // packet[4 ] uint8_t pos_NS_sec_H;  //#14
+            // packet[5 ] uint8_t pos_EW;        //#15 east = 0, west = 1
+            // packet[6 ] uint8_t pos_EW_dm_L;   //#16 degree minutes ie. E9�25�9360
+            // packet[7 ] uint8_t pos_EW_dm_H;   //#17
+            // packet[8 ] uint8_t pos_EW_sec_L;  //#18 position seconds
+            // packet[9 ] uint8_t pos_EW_sec_H;  //#19
+            // packet[10] uint8_t home_distance_L;  //#20 meters
+            // packet[11] uint8_t home_distance_H;  //#21
+            // packet[12] uint8_t altitude_L;    //#22 meters. Value of 500 = 0m
+            // packet[13] uint8_t altitude_H;    //#23
           break;
         case HOTT_PAGE_03:
+            // packet[4 ] uint8_t climbrate_L;   //#24 m/s 0.01m/s resolution. Value of 30000 = 0.00 m/s
+            // packet[5 ] uint8_t climbrate_H;    //#25
+            // packet[6 ] uint8_t climbrate3s;   //#26 climbrate in m/3s resolution, value of 120 = 0 m/3s
+            // packet[7 ] uint8_t gps_satelites;//#27 sat count
+            // packet[8 ] uint8_t gps_fix_char; //#28 GPS fix character. display, 'D' = DGPS, '2' = 2D, '3' = 3D, '-' = no fix. Where appears this char???
+            // packet[9 ] uint8_t home_direction;//#29 direction from starting point to Model position (2 degree steps)
+            // packet[10] uint8_t angle_roll;    //#30 angle roll in 2 degree steps
+            // packet[11] uint8_t angle_nick;    //#31 angle in 2degree steps
+            // packet[12] uint8_t angle_compass; //#32 angle in 2degree steps. 1 = 2�, 255 = - 2� (1 uint8_t) North = 0�
+            // packet[13] uint8_t gps_time_h;    //#33 UTC time hours
           break;
         case HOTT_PAGE_04:
+            // packet[4 ] uint8_t gps_time_m;    //#34 UTC time minutes
+            // packet[5 ] uint8_t gps_time_s;    //#35 UTC time seconds
+            // packet[6 ] uint8_t gps_time_sss;  //#36 UTC time milliseconds
+            // packet[7 ] uint8_t msl_altitude_L;//#37 mean sea level altitude
+            // packet[8 ] uint8_t msl_altitude_H;//#38
+            // packet[9 ] uint8_t vibration;     //#39 vibrations level in %
+            // packet[10] uint8_t free_char1;    //#40 appears right to home distance
+            // packet[11] uint8_t free_char2;    //#41 appears right to home direction
+            // packet[12] uint8_t free_char3;    //#42 GPS ASCII D=DGPS 2=2D 3=3D -=No Fix
           break;
       }
       break;
@@ -192,32 +233,25 @@ void processHottPacket(const uint8_t * packet)
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L454
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
-          // packet[4 ] uint8_t sensor_id;      //#04 constant value 0xc0
-          // packet[5 ] uint8_t alarm_invers1;  //#05 TODO: more info
-          // packet[6 ] uint8_t alarm_invers2;  //#06 TODO: more info
           // packet[7 ] uint8_t input_v_L;      //#07 Input voltage low byte
           // packet[8 ] uint8_t input_v_H;      //#08
-          // packet[9 ] uint8_t input_v_min_L;  //#09 Input min. voltage low byte
-          // packet[10] uint8_t input_v_min_H;  //#10
           // packet[11] uint8_t batt_cap_L;     //#11 battery capacity in 10mAh steps
           // packet[12] uint8_t batt_cap_H;     //#12
           // packet[13] uint8_t esc_temp;       //#13 ESC temperature
           break;
         case HOTT_PAGE_02:
-          // packet[4 ] uint8_t esc_max_temp;   //#14 ESC max. temperature
           // packet[5 ] uint8_t current_L;      //#15 Current in 0.1 steps
           // packet[6 ] uint8_t current_H;      //#16
-          // packet[7 ] uint8_t current_max_L;  //#17 Current max. in 0.1 steps
-          // packet[8 ] uint8_t current_max_H;  //#18
           // packet[9 ] uint8_t rpm_L;          //#19 RPM in 10U/min steps
           // packet[10] uint8_t rpm_H;          //#20
-          // packet[11] uint8_t rpm_max_L;      //#21 RPM max
-          // packet[12] uint8_t rpm_max_H;      //#22
-          // packet[13] uint8_t throttle;       //#23 throttle in %
           break;
         case HOTT_PAGE_03:
+          // packet[8 ] uint8_t bec_v;          //#28 BEC voltage
+          // packet[10] uint8_t bec_current;    //#30 BEC current
           break;
         case HOTT_PAGE_04:
+          // packet[4 ] uint8_t bec_temp;       //#34 BEC temperature
+          // packet[6 ] uint8_t motor_temp;     //#36 Motor or external sensor temperature
           break;
       }
       break;
@@ -225,12 +259,48 @@ void processHottPacket(const uint8_t * packet)
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L151
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
+          // packet[7 ] uint8_t cell1;               //#07 cell 1 voltage lower value. 0.02V steps, 124=2.48V
+          // packet[8 ] uint8_t cell2;               //#08
+          // packet[9 ] uint8_t cell3;               //#09
+          // packet[10] uint8_t cell4;               //#10
+          // packet[11] uint8_t cell5;               //#11
+          // packet[12] uint8_t cell6;               //#12
+          // packet[13] uint8_t batt1_L;             //#13 battery 1 voltage LSB value. 0.1V steps. 50 = 5.5V
           break;
         case HOTT_PAGE_02:
+          // packet[4 ] uint8_t batt1_H;             //#14
+          // packet[5 ] uint8_t batt2_L;             //#15 battery 2 voltage LSB value. 0.1V steps. 50 = 5.5V
+          // packet[6 ] uint8_t batt2_H;             //#16
+          // packet[7 ] uint8_t temperature1;        //#17 temperature 1. offset of 20. a value of 20 = 0�C
+          // packet[8 ] uint8_t temperature2;        //#18 temperature 2. offset of 20. a value of 20 = 0�C
+          // packet[9 ] uint8_t fuel_procent;        //#19 Fuel capacity in %. Values 0--100, graphical display ranges: 0-25% 50% 75% 100%
+          // packet[10] uint8_t fuel_ml_L;           //#20 Fuel in ml scale. Full = 65535!
+          // packet[11] uint8_t fuel_ml_H;           //#21
+          // packet[12] uint8_t rpm_L;               //#22 RPM in 10 RPM steps. 300 = 3000rpm
+          // packet[13] uint8_t rpm_H;               //#23
           break;
         case HOTT_PAGE_03:
+          // packet[4 ] uint8_t altitude_L;          //#24 altitude in meters. offset of 500, 500 = 0m
+          // packet[5 ] uint8_t altitude_H;          //#25
+          // packet[6 ] uint8_t climbrate_L;         //#26 climb rate in 0.01m/s. Value of 30000 = 0.00 m/s
+          // packet[7 ] uint8_t climbrate_H;         //#27
+          // packet[8 ] uint8_t climbrate3s;         //#28 climb rate in m/3sec. Value of 120 = 0m/3sec
+          // packet[9 ] uint8_t current_L;           //#29 current in 0.1A steps
+          // packet[10] uint8_t current_H;           //#30
+          // packet[11] uint8_t main_voltage_L;      //#31 Main power voltage using 0.1V steps
+          // packet[12] uint8_t main_voltage_H;      //#32
+          // packet[13] uint8_t batt_cap_L;          //#33 used battery capacity in 10mAh steps
           break;
         case HOTT_PAGE_04:
+          // packet[4 ] uint8_t batt_cap_H;          //#34
+          // packet[5 ] uint8_t speed_L;             //#35 (air?) speed in km/h(?) we are using ground speed here per default
+          // packet[6 ] uint8_t speed_H;             //#36
+          // packet[7 ] uint8_t min_cell_volt;       //#37 minimum cell voltage in 2mV steps. 124 = 2,48V
+          // packet[8 ] uint8_t min_cell_volt_num;   //#38 number of the cell with the lowest voltage
+          // packet[9 ] uint8_t rpm2_L;              //#39 RPM in 10 RPM steps. 300 = 3000rpm
+          // packet[10] uint8_t rpm2_H;              //#40
+          // packet[11] uint8_t general_error_number;//#41 Voice error == 12. TODO: more docu
+          // packet[12] uint8_t pressure;            //#42 Pressure up to 16bar. 0,1bar scale. 20 = 2bar
           break;
       }
       break;
@@ -238,12 +308,49 @@ void processHottPacket(const uint8_t * packet)
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L288
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
+          // packet[7 ] uint8_t cell1_L;             //#07 cell 1 voltage lower value. 0.02V steps, 124=2.48V
+          // packet[8 ] uint8_t cell2_L;             //#08
+          // packet[9 ] uint8_t cell3_L;             //#09
+          // packet[10] uint8_t cell4_L;             //#10
+          // packet[11] uint8_t cell5_L;             //#11
+          // packet[12] uint8_t cell6_L;             //#12
+          // packet[13] uint8_t cell7_L;             //#13
           break;
         case HOTT_PAGE_02:
+          // packet[4 ] uint8_t cell1_H;             //#14 cell 1 voltage high value. 0.02V steps, 124=2.48V
+          // packet[5 ] uint8_t cell2_H;             //#15
+          // packet[6 ] uint8_t cell3_H;             //#16
+          // packet[7 ] uint8_t cell4_H;             //#17
+          // packet[8 ] uint8_t cell5_H;             //#18
+          // packet[9 ] uint8_t cell6_H;             //#19
+          // packet[10] uint8_t cell7_H;             //#20
+          // packet[11] uint8_t batt1_voltage_L;     //#21 battery 1 voltage lower value in 100mv steps, 50=5V. optionally cell8_L value 0.02V steps
+          // packet[12] uint8_t batt1_voltage_H;     //#22
+          // packet[13] uint8_t batt2_voltage_L;     //#23 battery 2 voltage lower value in 100mv steps, 50=5V. optionally cell8_H value. 0.02V steps
           break;
         case HOTT_PAGE_03:
+          // packet[4 ] uint8_t batt2_voltage_H;     //#24
+          // packet[5 ] uint8_t temp1;               //#25 Temperature sensor 1. 20=0�, 46=26� - offset of 20.
+          // packet[6 ] uint8_t temp2;               //#26 temperature sensor 2
+          // packet[7 ] uint8_t altitude_L;          //#27 Attitude lower value. unit: meters. Value of 500 = 0m
+          // packet[8 ] uint8_t altitude_H;          //#28
+          // packet[9 ] uint8_t current_L;           //#29 Current in 0.1 steps
+          // packet[10] uint8_t current_H;           //#30
+          // packet[11] uint8_t main_voltage_L;      //#31 Main power voltage (drive) in 0.1V steps
+          // packet[12] uint8_t main_voltage_H;      //#32
+          // packet[13] uint8_t batt_cap_L;          //#33 used battery capacity in 10mAh steps
           break;
         case HOTT_PAGE_04:
+          // packet[4 ] uint8_t batt_cap_H;          //#34
+          // packet[5 ] uint8_t climbrate_L;         //#35 climb rate in 0.01m/s. Value of 30000 = 0.00 m/s
+          // packet[6 ] uint8_t climbrate_H;         //#36
+          // packet[7 ] uint8_t climbrate3s;         //#37 climbrate in m/3sec. Value of 120 = 0m/3sec
+          // packet[8 ] uint8_t rpm_L;               //#38 RPM. Steps: 10 U/min
+          // packet[9 ] uint8_t rpm_H;               //#39
+          // packet[10] uint8_t electric_min;        //#40 Electric minutes. Time does start, when motor current is > 3 A
+          // packet[11] uint8_t electric_sec;        //#41
+          // packet[12] uint8_t speed_L;             //#42 (air?) speed in km/h. Steps 1km/h
+          // packet[13] uint8_t speed_H;             //#43
           break;
       }
       break;
