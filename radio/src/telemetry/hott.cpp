@@ -163,6 +163,7 @@ void processHottPacket(const uint8_t * packet)
       }
       break;
     case HOTT_TELEM_VARIO:
+      // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L240
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
           break;
@@ -175,6 +176,7 @@ void processHottPacket(const uint8_t * packet)
       }
       break;
     case HOTT_TELEM_GPS:
+      // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L378
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
           break;
@@ -187,10 +189,31 @@ void processHottPacket(const uint8_t * packet)
       }
       break;
     case HOTT_TELEM_ESC:
+      // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L454
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
+          // packet[4 ] uint8_t sensor_id;      //#04 constant value 0xc0
+          // packet[5 ] uint8_t alarm_invers1;  //#05 TODO: more info
+          // packet[6 ] uint8_t alarm_invers2;  //#06 TODO: more info
+          // packet[7 ] uint8_t input_v_L;      //#07 Input voltage low byte
+          // packet[8 ] uint8_t input_v_H;      //#08
+          // packet[9 ] uint8_t input_v_min_L;  //#09 Input min. voltage low byte
+          // packet[10] uint8_t input_v_min_H;  //#10
+          // packet[11] uint8_t batt_cap_L;     //#11 battery capacity in 10mAh steps
+          // packet[12] uint8_t batt_cap_H;     //#12
+          // packet[13] uint8_t esc_temp;       //#13 ESC temperature
           break;
         case HOTT_PAGE_02:
+          // packet[4 ] uint8_t esc_max_temp;   //#14 ESC max. temperature
+          // packet[5 ] uint8_t current_L;      //#15 Current in 0.1 steps
+          // packet[6 ] uint8_t current_H;      //#16
+          // packet[7 ] uint8_t current_max_L;  //#17 Current max. in 0.1 steps
+          // packet[8 ] uint8_t current_max_H;  //#18
+          // packet[9 ] uint8_t rpm_L;          //#19 RPM in 10U/min steps
+          // packet[10] uint8_t rpm_H;          //#20
+          // packet[11] uint8_t rpm_max_L;      //#21 RPM max
+          // packet[12] uint8_t rpm_max_H;      //#22
+          // packet[13] uint8_t throttle;       //#23 throttle in %
           break;
         case HOTT_PAGE_03:
           break;
@@ -199,6 +222,7 @@ void processHottPacket(const uint8_t * packet)
       }
       break;
     case HOTT_TELEM_GAM:
+      // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L151
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
           break;
@@ -211,6 +235,7 @@ void processHottPacket(const uint8_t * packet)
       }
       break;
     case HOTT_TELEM_EAM:
+      // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L288
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
           break;
