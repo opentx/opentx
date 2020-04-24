@@ -560,6 +560,8 @@ inline void CLEAR_POPUP()
   warningInfoText = nullptr;
   popupMenuHandler = nullptr;
   popupMenuItemsCount = 0;
+  // TODO ? popupFunc = nullptr;
+  putEvent(EVT_REFRESH);
 }
 
 inline void POPUP_WAIT(const char * s)

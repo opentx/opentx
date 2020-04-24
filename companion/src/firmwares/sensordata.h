@@ -90,6 +90,7 @@ class SensorData {
       UNIT_RADIANS,
       UNIT_MILLILITERS,
       UNIT_FLOZ,
+      UNIT_MILLILITERS_PER_MINUTE,
       UNIT_HOURS,
       UNIT_MINUTES,
       UNIT_SECONDS,

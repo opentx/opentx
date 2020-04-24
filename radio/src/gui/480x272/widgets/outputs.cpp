@@ -86,9 +86,9 @@ class OutputsWidget: public Widget
 };
 
 const ZoneOption OutputsWidget::options[] = {
-  { "First channel", ZoneOption::Integer, OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(32) },
-  { "Fill Background?", ZoneOption::Bool, OPTION_VALUE_BOOL(false) },
-  { "BG Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREY) },
+  { STR_FIRST_CHANNEL, ZoneOption::Integer, OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(32) },
+  { STR_FILL_BACKGROUND, ZoneOption::Bool, OPTION_VALUE_BOOL(false) },
+  { STR_BG_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREY) },
   { NULL, ZoneOption::Bool }
 };
 

@@ -97,6 +97,7 @@ void onUpdateConfirmation(const char * result)
     OtaUpdateInformation * destination = moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].otaUpdateInformation;
     Pxx2OtaUpdate otaUpdate(reusableBuffer.sdManager.otaUpdateInformation.module, destination->candidateReceiversNames[destination->selectedReceiverIndex]);
     otaUpdate.flashFirmware(destination->filename);
+    putEvent(EVT_REFRESH);
   }
   else {
     moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
@@ -563,7 +564,7 @@ bool menuRadioSdManager(event_t _event)
       if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount > 0) {
         if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount != popupMenuItemsCount) {
           CLEAR_POPUP();
-          popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount,PXX2_MAX_RECEIVERS_PER_MODULE);
+          popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
           for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
             popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
           }

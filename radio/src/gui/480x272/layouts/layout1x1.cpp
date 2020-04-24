@@ -25,8 +25,8 @@ const uint8_t LBM_LAYOUT_1x1[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_1x1[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Sliders+Trims", ZoneOption::Bool },
+  { STR_TOP_BAR, ZoneOption::Bool },
+  { STR_SLIDERS_TRIMS, ZoneOption::Bool },
   { NULL, ZoneOption::Bool }
 };
 
