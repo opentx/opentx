@@ -331,25 +331,27 @@ local function Multi_Draw_LCD()
     lcd.drawText(x_pos, y_pos+y_inc*line,"Setting channel names.", lcd_opt)
     line = line + 1
     local output, nbr
-    for i,v in ipairs(channel_names) do
-      output = model.getOutput(i-1)
-      output["name"] = v
-      model.setOutput(i-1,output)
-      nbr = i
-    end
-    for i = nbr, 15 do
-      output = model.getOutput(i)
-      output["name"] = "n-a"
-      model.setOutput(i,output)
-    end
-    if bind_ch == 1 then
-      output = model.getOutput(15)
-      output["name"] = "BindCH"
-      model.setOutput(15,output)
+    if done == 0 then
+      for i,v in ipairs(channel_names) do
+        output = model.getOutput(i-1)
+        output["name"] = v
+        model.setOutput(i-1,output)
+        nbr = i
+      end
+      for i = nbr, 15 do
+        output = model.getOutput(i)
+        output["name"] = "n-a"
+        model.setOutput(i,output)
+      end
+      if bind_ch == 1 then
+        output = model.getOutput(15)
+        output["name"] = "BindCH"
+        model.setOutput(15,output)
+      end
+      done = 1
     end
     lcd.drawText(x_pos, y_pos+y_inc*line,"Done!", lcd_opt)
     line = line + 1
-    done = 1
   end
 end
 
@@ -363,15 +365,12 @@ local function Multi_Run(event)
     error("Cannot be run as a model script!")
     return 2
   else
-    if done == 0 then
-      Multi_Draw_LCD()
-    else
-      if event == EVT_VIRTUAL_ENTER or event == EVT_VIRTUAL_EXIT then
-        return 2
-      end
+    Multi_Draw_LCD()
+    if event == EVT_VIRTUAL_ENTER or event == EVT_VIRTUAL_EXIT then
+      return 2
     end
-    return 0
   end
+  return 0
 end
 
 return { init=Multi_Init, run=Multi_Run }

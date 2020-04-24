@@ -286,16 +286,16 @@ local function Multi_Draw_LCD()
     end
   end
 
-  lcd.drawText(x_pos, y_pos+y_inc*line,module_pos .. " Multi detected.",lcd_opt)
+  lcd.drawText(x_pos, y_pos+y_inc*line,module_pos .. " Multi detected.", lcd_opt)
   line = line + 1
   if (ch_order == -1) then
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Channels order can't be read from Multi...",lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Channels order can't be read from Multi...", lcd_opt)
     line = line + 1
   end
   if protocol_name == nil or sub_protocol_name == nil then
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Unknown protocol/sub_protocol...",lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Unknown protocol/sub_protocol...", lcd_opt)
   else if LCD_W > 128 then
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Protocol: " .. protocol_name .. " / SubProtocol: " .. sub_protocol_name,lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Protocol: " .. protocol_name .. " / SubProtocol: " .. sub_protocol_name, lcd_opt)
     line = line + 1
   else
     lcd.drawText(x_pos, y_pos+y_inc*line,"Protocol: " .. protocol_name, lcd_opt)
@@ -321,35 +321,37 @@ local function Multi_Draw_LCD()
       end
     end
     if LCD_W > 128 then
-      lcd.drawText(x_pos, y_pos+y_inc*line,"Channels: " .. text1,lcd_opt)
+      lcd.drawText(x_pos, y_pos+y_inc*line,"Channels: " .. text1, lcd_opt)
       line = line + 1
       if text2 ~= "" then
-        lcd.drawText(x_pos*9, y_pos+y_inc*line,text2,lcd_opt)
+        lcd.drawText(x_pos*9, y_pos+y_inc*line,text2, lcd_opt)
         line = line + 1
       end
     end
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Setting channel names.",lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Setting channel names.", lcd_opt)
     line = line + 1
     local output, nbr
-    for i,v in ipairs(channel_names) do
-      output = model.getOutput(i-1)
-      output["name"] = v
-      model.setOutput(i-1,output)
-      nbr = i
+    if done == 0 then
+      for i,v in ipairs(channel_names) do
+        output = model.getOutput(i-1)
+        output["name"] = v
+        model.setOutput(i-1,output)
+        nbr = i
+      end
+      for i = nbr, 15 do
+        output = model.getOutput(i)
+        output["name"] = "n-a"
+        model.setOutput(i,output)
+      end
+      if bind_ch == 1 then
+        output = model.getOutput(15)
+        output["name"] = "BindCH"
+        model.setOutput(15,output)
+      end
+      done = 1
     end
-    for i = nbr, 15 do
-      output = model.getOutput(i)
-      output["name"] = "n-a"
-      model.setOutput(i,output)
-    end
-    if bind_ch == 1 then
-      output = model.getOutput(15)
-      output["name"] = "BindCH"
-      model.setOutput(15,output)
-    end
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Done!",lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Done!", lcd_opt)
     line = line + 1
-    done = 1
   end
 end
 
@@ -363,15 +365,12 @@ local function Multi_Run(event)
     error("Cannot be run as a model script!")
     return 2
   else
-    if done == 0 then
-      Multi_Draw_LCD()
-    else
-      if event == EVT_VIRTUAL_ENTER or event == EVT_VIRTUAL_EXIT then
-        return 2
-      end
+    Multi_Draw_LCD()
+    if event == EVT_VIRTUAL_ENTER or event == EVT_VIRTUAL_EXIT then
+      return 2
     end
-    return 0
   end
+  return 0
 end
 
 return { init=Multi_Init, run=Multi_Run }
