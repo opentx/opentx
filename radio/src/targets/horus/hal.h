@@ -635,6 +635,11 @@
   #define AUDIO_MUTE_DELAY              500  // ms
 #endif
 
+#if defined(RADIO_TX16S)
+// Only slight noise with 868MHz > 1W, if complaints later remove and set AUDIO_UNMUTE_DELAY to 150
+  #undef AUDIO_MUTE_GPIO_PIN            
+#endif
+
 // Touch
 #if defined(HARDWARE_TOUCH)
   #define TOUCH_INT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOH
