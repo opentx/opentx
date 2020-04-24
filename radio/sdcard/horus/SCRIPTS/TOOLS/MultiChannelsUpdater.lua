@@ -293,7 +293,7 @@ local function Multi_Draw_LCD()
     line = line + 1
   end
   if protocol_name == nil or sub_protocol_name == nil then
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Unknown protocol/sub_protocol...", lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Unknown protocol "..tostring(protocol).."/"..tostring(sub_protocol).." ...", lcd_opt)
   else if LCD_W > 128 then
     lcd.drawText(x_pos, y_pos+y_inc*line,"Protocol: " .. protocol_name .. " / SubProtocol: " .. sub_protocol_name, lcd_opt)
     line = line + 1
