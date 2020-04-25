@@ -322,7 +322,11 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
+#if defined(RADIO_TX16S)
+  strcpy(g_eeGeneral.themeName, "Darkblue");
+#else
   strcpy(g_eeGeneral.themeName, theme->getName());
+#endif
   theme->init();
 #endif
 
