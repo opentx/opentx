@@ -35,6 +35,10 @@ bool menuRadioDiagAnalogs(event_t event)
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
     touchPanelInit();
   }
+  else if (menuEvent) {
+    touchPanelDeInit();
+    return false;
+  }
 #endif
 
   for (uint8_t i = 0; i < NUM_ANALOGS; i++) {
@@ -62,7 +66,7 @@ bool menuRadioDiagAnalogs(event_t event)
 #endif
 
 #if defined(HARDWARE_TOUCH)
-  if (touchGT911Flag) {
+  if (HAS_TOUCH_PANEL()) {
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, "Touch panel:");
   }
 
