@@ -126,7 +126,7 @@ local function create(zone, options)
     cellSum = 0,
     mainValue = 0,
     secondaryValue = 0,
-    periodic1 = {startTime = getTime(), durationMili = 500},
+    periodic1 = {startTime = getTime(), durationMili = 1000},
     periodicProfiler = {startTime = getTime(), durationMili = 5000},
     profTimes = {},
   }
@@ -338,7 +338,9 @@ local function calculateBatteryData(wgt)
   if (periodicHasPassed(wgt.periodic1) or wgt.cellPercent==0) then
     local t5 = getUsage();
 
-    wgt.cellPercent = getCellPercent(wgt, wgt.cellMin)
+    -- wgt.cellPercent = getCellPercent(wgt, wgt.cellMin) -- use batt percentage by lowest cell voltage
+    wgt.cellPercent = getCellPercent(wgt, wgt.cellAvg) -- use batt percentage by average cell voltage
+
     for i = 1, wgt.cellCount, 1 do
       wgt.cellDataLivePercent[i] = getCellPercent(wgt, wgt.cellDataLive[i])
       wgt.cellDataHistoryLowestPercent[i] = getCellPercent(wgt, wgt.cellDataHistoryLowest[i])
