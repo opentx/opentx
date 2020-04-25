@@ -747,6 +747,11 @@ bool isTrainerModeAvailable(int mode)
     return false;
 #endif
 
+#if !defined(BLUETOOTH)
+  if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    return false;
+#endif
+
 #if defined(PCBXLITE) && !defined(PCBXLITES)
   if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
     return false;
