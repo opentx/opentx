@@ -133,7 +133,7 @@ local Protocols = {
   {17, 4, "MT99XX", "FY805", { "Flip", "n-a", "n-a", "n-a", "HLess" }, 1 },
   {44, 0, "NCC1701", "Std", { "Warp" }, 1 },
   {51, 0, "Potensic", "A20", { "TakLan", "Emerg", "Mode", "HLess" }, 1 },
-  {56, 0, "Propel", "74-Z", { "LEDs", "RollCW", "RolCCW", "Fire", "Weapon", "Calib", "AltHol", "TakeOf", "Land", "Train" }, 1 },
+  {66, 0, "Propel", "74-Z", { "LEDs", "RollCW", "RolCCW", "Fire", "Weapon", "Calib", "AltHol", "TakeOf", "Land", "Train" }, 1 },
   {29, 0, "Q2x2", "Q222", { "Flip", "LED", "Mod2", "Mod1", "HLess", "RTH", "XCal", "YCal" }, 1 },
   {29, 1, "Q2x2", "Q242", { "Flip", "LED", "Pict", "Video", "HLess", "RTH", "XCal", "YCal" }, 1 },
   {29, 2, "Q2x2", "Q282", { "Flip", "LED", "Pict", "Video", "HLess", "RTH", "XCal", "YCal" }, 1 },
@@ -166,6 +166,7 @@ local Protocols = {
   {65,1, "FrSkyR9", "R9_868", { "CH5", "CH6", "CH7", "CH8", "CH9", "CH10", "CH11", "CH12", "CH13", "CH14", "CH15", "CH16" }, 0 },
   {65,2, "FrSkyR9", "R9_915_8CH", { "CH5", "CH6", "CH7", "CH8" }, 0 },
   {65,3, "FrSkyR9", "R9_968_8CH", { "CH5", "CH6", "CH7", "CH8" }, 0 },
+  {56, 0, "Flysky2A RX", "RX", { "CH5", "CH6", "CH7", "CH8", "CH9", "CH10", "CH11", "CH12", "CH13", "CH14" }, 0 },
 
 -- Need first 4 channels changed...
   {19, 0, "Shenqi", "Cycle", { }, 1 },
@@ -293,7 +294,7 @@ local function Multi_Draw_LCD()
     line = line + 1
   end
   if protocol_name == nil or sub_protocol_name == nil then
-    lcd.drawText(x_pos, y_pos+y_inc*line,"Unknown protocol/sub_protocol...", lcd_opt)
+    lcd.drawText(x_pos, y_pos+y_inc*line,"Unknown protocol "..tostring(protocol).."/"..tostring(sub_protocol).." ...", lcd_opt)
   else if LCD_W > 128 then
     lcd.drawText(x_pos, y_pos+y_inc*line,"Protocol: " .. protocol_name .. " / SubProtocol: " .. sub_protocol_name, lcd_opt)
     line = line + 1
