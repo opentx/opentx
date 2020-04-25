@@ -340,18 +340,20 @@ bool touchPanelInit(void)
 
   delay_ms(50);
 
+  TRACE("Reading Touch registry");
   GT911_RD_Reg(GT_PID_REG, tmp, 4);
 
-  if (strcmp((char *) tmp, "911") == 0)//ID==9147
+  if (strcmp((char *) tmp, "911") == 0) //ID==9147
   {
+    TRACE("GT911 chip detected");
     tmp[0] = 0X02;
-    GT911_WR_Reg(GT_CTRL_REG, tmp, 1);//
-    GT911_RD_Reg(GT_CFGS_REG, tmp, 1);//
+    GT911_WR_Reg(GT_CTRL_REG, tmp, 1);
+    GT911_RD_Reg(GT_CFGS_REG, tmp, 1);
 
     if (tmp[0] < 0X69)//ver
     {
-      //printf("Default Ver:%x\r\n",temp[0]);
-      GT911_Send_Cfg(1);  //
+      TRACE("Default Ver:%x\r\n",temp[0]);
+      GT911_Send_Cfg(1);
     }
 
     delay_ms(10);
@@ -363,7 +365,7 @@ bool touchPanelInit(void)
 
     return true;
   }
-
+  TRACE("GT911 chip NOT FOUND");
   return false;
 }
 
