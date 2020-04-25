@@ -51,6 +51,7 @@ bool menuRadioDiagTouch(event_t event)
       touchPanelDeInit();
       popMenu();
     }
+    GT911_WR_Reg(GT911_CLEARBUF_REG, &tmp, 1);
   }
   return true;
 }
