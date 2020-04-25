@@ -62,17 +62,15 @@ bool menuRadioDiagAnalogs(event_t event)
 #endif
 
 #if defined(HARDWARE_TOUCH)
-  if (touchGT911Flag) {
+  if (!touchGT911Flag) {
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, "Touch panel:");
   }
 
   if (touchPanelEvent) {
-    uint8_t tmp,mode = 0;
-    gt911ReadRegister(GT911_READ_XY_REG,&mode,1);	//read status
+    touchPanelRead();
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, ", ");
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
-    gt911WriteRegister(GT911_CLEARBUF_REG, &tmp, 1);
   }
 #endif
 

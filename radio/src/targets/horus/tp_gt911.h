@@ -36,7 +36,7 @@ extern uint8_t touchPanelEvent;
 
 uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len);
 void gt911ReadRegister(uint16_t reg, uint8_t * buf, uint8_t len);
-
+void touchPanelRead();
 
 //GT911 param table
 const uint8_t GT911_Cfg[]=   //
