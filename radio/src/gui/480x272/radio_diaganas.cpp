@@ -69,7 +69,7 @@ bool menuRadioDiagAnalogs(event_t event)
   if (touchPanelEvent) {
     touchPanelRead();
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, ", ");
+    lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ", ");
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
   }
 #endif
