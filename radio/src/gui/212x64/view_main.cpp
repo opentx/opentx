@@ -96,10 +96,10 @@ void displayTrims(uint8_t phase)
     int32_t trim = getTrimValue(phase, i);
     int32_t val = trim;
     bool exttrim = false;
-    
+
     if(getRawTrimValue(phase, i).mode == TRIM_MODE_NONE)
       continue;
-    
+
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
     }
@@ -165,19 +165,21 @@ void displayTrims(uint8_t phase)
 
 void drawSliders()
 {
-  for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+  for (uint8_t i = NUM_STICKS; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
 #if defined(PCBX9E)
-    if (i < SLIDER1) continue;  // TODO change and display more values
+    if (i < SLIDER1)
+      continue;  // TODO change and display more values
     coord_t x = ((i==SLIDER1 || i==SLIDER3) ? 3 : LCD_W-5);
     int8_t y = (i<SLIDER3 ? LCD_H/2+1 : 1);
 #else
-    if (i == POT3) continue;
+    if (i == POT3)
+      continue;
     coord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
     int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
 #endif
     lcdDrawSolidVerticalLine(x, y, LCD_H/2-2);
     lcdDrawSolidVerticalLine(x+1, y, LCD_H/2-2);
-    y += LCD_H/2-4;
+    y += LCD_H / 2 - 4;
     y -= ((calibratedAnalogs[i]+RESX)*(LCD_H/2-4)/(RESX*2));  // calculate once per loop
     lcdDrawSolidVerticalLine(x-1, y, 2);
     lcdDrawSolidVerticalLine(x+2, y, 2);
@@ -234,8 +236,8 @@ void displayTopBar()
     }
 
     /* Altitude */
-    if (g_model.altitudeSource) {
-      uint8_t item = g_model.altitudeSource-1;
+    if (g_model.altitudeSource && !IS_FAI_ENABLED()) {
+      uint8_t item = g_model.altitudeSource - 1;
       if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & altitudeItem = telemetryItems[item];
         if (altitudeItem.isAvailable()) {
@@ -249,15 +251,10 @@ void displayTopBar()
 
   /* Notifs icons */
   coord_t x = BAR_NOTIFS_X;
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
-  LCD_NOTIF_ICON(x, ICON_REBOOT);
-  x -= 12;
-#else
-  if (unexpectedShutdown) {
+  if (isAsteriskDisplayed()) {
     LCD_NOTIF_ICON(x, ICON_REBOOT);
     x -= 12;
   }
-#endif
 
   if (usbPlugged()) {
     LCD_NOTIF_ICON(x, ICON_USB);
@@ -299,7 +296,7 @@ void displayTopBar()
   lcdDrawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
 
   /* The inside of the Batt gauge */
-  displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(), IS_TXBATT_WARNING());
+  displayTopBarGauge(batt_icon_x+FW, GET_TXBATT_BARS(10), IS_TXBATT_WARNING());
 
   /* The inside of the RSSI gauge */
   if (TELEMETRY_RSSI() > 0) {
@@ -347,7 +344,7 @@ void menuMainViewChannelsMonitor(event_t event)
   return menuChannelsView(event);
 }
 
-void onMainViewMenu(const char *result)
+void onMainViewMenu(const char * result)
 {
   if (result == STR_RESET_TIMER1) {
     timerReset(0);
@@ -369,6 +366,7 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_START(onMainViewMenu);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -414,16 +412,6 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
-bool isMenuAvailable(int index)
-{
-  if (index == 4) {
-    return modelHasNotes();
-  }
-  else {
-    return true;
-  }
-}
-
 int getSwitchCount()
 {
   int count = 0;
@@ -440,7 +428,6 @@ void menuMainView(event_t event)
   static bool secondPage = false;
 
   switch(event) {
-
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
@@ -468,7 +455,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_LONG(KEY_MENU):
-      pushMenu(menuRadioSetup);
+      pushMenu(menuTabGeneral[0]);
       killEvents(event);
       break;
 #endif
@@ -483,7 +470,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_LONG(KEY_PAGE):
-      chainMenu(menuViewTelemetryFrsky);
+      chainMenu(menuViewTelemetry);
       killEvents(event);
       break;
 
@@ -545,7 +532,7 @@ void menuMainView(event_t event)
       if (SWITCH_EXISTS(i)) {
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        drawSwitch((g_model.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
+        drawSwitch((g_model.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0, false);
         index++;
       }
     }

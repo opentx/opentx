@@ -20,10 +20,20 @@
 
 #include "opentx.h"
 
-uint32_t rotencPosition;
+uint8_t rotencPosition;
 
 void rotaryEncoderInit()
 {
+  rotencPosition = ROTARY_ENCODER_POSITION();
+
+  ROTARY_ENCODER_TIMER->ARR = 99; // 100uS
+  ROTARY_ENCODER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1; // 1uS
+  ROTARY_ENCODER_TIMER->CCER = 0;
+  ROTARY_ENCODER_TIMER->CCMR1 = 0;
+  ROTARY_ENCODER_TIMER->EGR = 0;
+  ROTARY_ENCODER_TIMER->CR1 = 0;
+  ROTARY_ENCODER_TIMER->DIER |= TIM_DIER_UIE;
+
   SYSCFG_EXTILineConfig(ROTARY_ENCODER_EXTI_PortSource, ROTARY_ENCODER_EXTI_PinSource1);
 
 #if defined(ROTARY_ENCODER_EXTI_LINE2)
@@ -55,40 +65,77 @@ void rotaryEncoderInit()
   NVIC_Init(&NVIC_InitStructure);
 #endif
 
-  rotencPosition = ROTARY_ENCODER_POSITION();
+  NVIC_EnableIRQ(ROTARY_ENCODER_TIMER_IRQn);
+  NVIC_SetPriority(ROTARY_ENCODER_TIMER_IRQn, 7);
 }
 
 void rotaryEncoderCheck()
 {
-  uint32_t newpos = ROTARY_ENCODER_POSITION();
-  if (newpos != rotencPosition && !keyState(KEY_ENTER)) {
-    if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
+#if defined(RADIO_FAMILY_T16)
+  static uint8_t  state = 0;
+  uint8_t pins = ROTARY_ENCODER_POSITION();
+
+  if (pins != (state & 0x03) && !(readKeys() & (1 << KEY_ENTER))) {
+    if ((pins & 0x01) ^ ((pins & 0x02) >> 1)) {
+      if ((state & 0x03) == 3)
+        ++rotencValue;
+      else
+        --rotencValue;
+    }
+    else
+    {
+      if ((state & 0x03) == 3)
+         --rotencValue;
+      else if ((state & 0x03) == 0)
+         ++rotencValue;
+    }
+    state &= ~0x03 ;
+    state |= pins ;
+#else
+  uint8_t newPosition = ROTARY_ENCODER_POSITION();
+  if (newPosition != rotencPosition && !(readKeys() & (1 << KEY_ENTER))) {
+    if ((rotencPosition & 0x01) ^ ((newPosition & 0x02) >> 1)) {
       --rotencValue;
     }
     else {
       ++rotencValue;
     }
-    rotencPosition = newpos;
+    rotencPosition = newPosition;
+#endif
 #if !defined(BOOT)
     if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
-      backlightOn();
+      resetBacklightTimeout();
     }
+    inactivity.counter = 0;
 #endif
   }
+}
+
+void rotaryEncoderStartDelay()
+{
+  ROTARY_ENCODER_TIMER->CR1 = TIM_CR1_CEN | TIM_CR1_URS;
 }
 
 extern "C" void ROTARY_ENCODER_EXTI_IRQHandler1(void)
 {
   if (EXTI_GetITStatus(ROTARY_ENCODER_EXTI_LINE1) != RESET) {
-    rotaryEncoderCheck();
+    rotaryEncoderStartDelay();
     EXTI_ClearITPendingBit(ROTARY_ENCODER_EXTI_LINE1);
   }
 
 #if !defined(ROTARY_ENCODER_EXTI_IRQn2)
   if (EXTI_GetITStatus(ROTARY_ENCODER_EXTI_LINE2) != RESET) {
-    rotaryEncoderCheck();
+    rotaryEncoderStartDelay();
     EXTI_ClearITPendingBit(ROTARY_ENCODER_EXTI_LINE2);
   }
+#endif
+
+#if !defined(BOOT) && defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+  check_intmodule_heartbeat();
+#endif
+
+#if !defined(BOOT) && defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER)
+  check_telemetry_exti();
 #endif
 }
 
@@ -96,8 +143,15 @@ extern "C" void ROTARY_ENCODER_EXTI_IRQHandler1(void)
 extern "C" void ROTARY_ENCODER_EXTI_IRQHandler2(void)
 {
   if (EXTI_GetITStatus(ROTARY_ENCODER_EXTI_LINE2) != RESET) {
-    rotaryEncoderCheck();
+    rotaryEncoderStartDelay();
     EXTI_ClearITPendingBit(ROTARY_ENCODER_EXTI_LINE2);
   }
 }
 #endif
+
+extern "C" void ROTARY_ENCODER_TIMER_IRQHandler(void)
+{
+  ROTARY_ENCODER_TIMER->SR &= ~TIM_SR_UIF;
+  ROTARY_ENCODER_TIMER->CR1 = 0;
+  rotaryEncoderCheck();
+}

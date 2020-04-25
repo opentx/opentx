@@ -19,7 +19,6 @@
  */
 
 #include "customfunctiondata.h"
-
 #include "eeprominterface.h"
 #include "radiodata.h"
 #include "radiodataconversionstate.h"
@@ -56,6 +55,8 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
     return tr("Trainer THR");
   else if (func == FuncTrainerAIL)
     return tr("Trainer AIL");
+  else if (func == FuncTrainerChannels)
+    return tr("Trainer Channels");
   else if (func == FuncInstantTrim)
     return tr("Instant Trim");
   else if (func == FuncPlaySound)
@@ -132,11 +133,11 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
     b->setCurrentIndex(value);
   }
   if (model && IS_ARM(board)) {
-    for (int i=0; i<CPN_MAX_SENSORS; ++i) {
+    for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
       if (model->sensorData[i].isAvailable()) {
         RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
         b->addItem(item.toString(model), val+i);
-        if ((int)value == val+i) {
+        if (value == val+i) {
           b->setCurrentIndex(b->count()-1);
         }
       }
@@ -207,8 +208,17 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
       case FUNC_ADJUST_GVAR_GVAR:
         return RawSource(param).toString();
       case FUNC_ADJUST_GVAR_INCDEC:
-        if (param==0) return tr("Decr:") + " -1";
-        else          return tr("Incr:") + " +1";
+        float val;
+        QString unit;
+        if (IS_ARM(getCurrentBoard())) {
+          val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
+          unit = model->gvarData[func - FuncAdjustGV1].unitToString();
+        }
+        else {
+          val = param;
+          unit = "";
+        }
+        return QString("Increment: %1%2").arg(val).arg(unit);
     }
   }
   return "";

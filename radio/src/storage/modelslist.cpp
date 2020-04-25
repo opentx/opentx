@@ -72,24 +72,33 @@ const BitmapBuffer * ModelCell::getBuffer()
 
 void ModelCell::loadBitmap()
 {
+  uint8_t version;
+
   PACK(struct {
     ModelHeader header;
     TimerData timers[MAX_TIMERS];
   }) partialmodel;
   const char * error = NULL;
 
-  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-  if (buffer == NULL) {
-    return;
-  }
-
   if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
   }
   else {
-    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel));
+    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
+    // LEN_BITMAP_NAME has now 4 bytes more
+    if (version <= 218) {
+      memmove(partialmodel.timers, &(partialmodel.header.bitmap[10]), sizeof(TimerData)*MAX_TIMERS);
+      memclear(&(partialmodel.header.bitmap[10]), 4);
+    }
   }
 
+  if ((modelName[0] == 0) && ! error)
+    setModelName(partialmodel.header.name); // resets buffer!!!
+
+  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
+  if (buffer == NULL) {
+    return;
+  }
   buffer->clear(TEXT_BGCOLOR);
 
   if (error) {
@@ -97,14 +106,11 @@ void ModelCell::loadBitmap()
     buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
   }
   else {
-    if (modelName[0] == 0)
-      setModelName(partialmodel.header.name);
-
     char timer[LEN_TIMER_STRING];
     buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
     getTimerString(timer, 0);
     for (uint8_t i = 0; i < MAX_TIMERS; i++) {
-      if (partialmodel.timers[i].mode > 0 && partialmodel.timers[i].persistent) {
+      if (partialmodel.timers[i].mode != 0 && partialmodel.timers[i].persistent) {
         getTimerString(timer, partialmodel.timers[i].value);
         break;
       }
@@ -152,7 +158,7 @@ void ModelCell::setRfModuleData(uint8_t moduleIdx, ModuleData* modData)
   }
   else {
     // do we care here about MM_RF_CUSTOM_SELECTED? probably not...
-    moduleData[moduleIdx].rfProtocol = modData->getMultiProtocol(false);
+    moduleData[moduleIdx].rfProtocol = modData->getMultiProtocol();
   }
 }
 
@@ -164,13 +170,13 @@ bool ModelCell::fetchRfData()
   getModelPath(buf, modelFilename);
 
   FIL      file;
-  uint16_t file_size;
+  uint16_t size;
+  uint8_t  version;
 
-  const char* err = openFile(buf,&file,&file_size);
-  if (err) return false;
+  const char * err = openFile(buf, &file, &size, &version);
+  if (err || version != EEPROM_VER) return false;
 
   FSIZE_t start_offset = f_tell(&file);
-
 
   UINT read;
   if ((f_read(&file, buf, LEN_MODEL_NAME, &read) != FR_OK) || (read != LEN_MODEL_NAME))
@@ -436,15 +442,15 @@ void ModelsList::moveModel(ModelCell * model, ModelsCategory * previous_category
 
 bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_buf_len)
 {
-  ModelCell* mod_cell = modelslist.getCurrentModel();
-  if (!mod_cell || !mod_cell->valid_rfData) {
+  ModelCell* modelCell = modelslist.getCurrentModel();
+  if (!modelCell || !modelCell->valid_rfData) {
     // in doubt, pretend it's unique
     return true;
   }
 
-  uint8_t modelId = mod_cell->modelId[moduleIdx];
-  uint8_t type = mod_cell->moduleData[moduleIdx].type;
-  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
+  uint8_t modelId = modelCell->modelId[moduleIdx];
+  uint8_t type = modelCell->moduleData[moduleIdx].type;
+  uint8_t rfProtocol = modelCell->moduleData[moduleIdx].rfProtocol;
 
   uint8_t additionalOnes = 0;
   char* curr = warn_buf;
@@ -452,10 +458,10 @@ bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_
 
   bool hit_found = false;
   const std::list<ModelsCategory*>& cats = modelslist.getCategories();
-  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
-  for (;cat_it != cats.end(); cat_it++) {
-    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
-      if (mod_cell == *it)
+  std::list<ModelsCategory*>::const_iterator catIt = cats.begin();
+  for (;catIt != cats.end(); catIt++) {
+    for (ModelsCategory::const_iterator it = (*catIt)->begin(); it != (*catIt)->end(); it++) {
+      if (modelCell == *it)
         continue;
 
       if (!(*it)->valid_rfData)
@@ -501,24 +507,21 @@ bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_
 
 uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
 {
-  ModelCell* mod_cell = modelslist.getCurrentModel();
-  if (!mod_cell || !mod_cell->valid_rfData) {
+  ModelCell * modelCell = modelslist.getCurrentModel();
+  if (!modelCell || !modelCell->valid_rfData) {
     return 0;
   }
 
-  uint8_t type = mod_cell->moduleData[moduleIdx].type;
-  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
+  uint8_t type = modelCell->moduleData[moduleIdx].type;
+  uint8_t rfProtocol = modelCell->moduleData[moduleIdx].rfProtocol;
 
-  // assume 63 is the highest Model ID
-  // and use 64 bits
-  uint8_t usedModelIds[8];
+  uint8_t usedModelIds[(MAX_RXNUM + 7) / 8];
   memset(usedModelIds, 0, sizeof(usedModelIds));
   
-  const std::list<ModelsCategory*>& cats = modelslist.getCategories();
-  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
-  for (;cat_it != cats.end(); cat_it++) {
-    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
-      if (mod_cell == *it)
+  const std::list<ModelsCategory *> & cats = modelslist.getCategories();
+  for (auto catIt = cats.begin(); catIt != cats.end(); catIt++) {
+    for (auto it = (*catIt)->begin(); it != (*catIt)->end(); it++) {
+      if (modelCell == *it)
         continue;
 
       if (!(*it)->valid_rfData)
@@ -530,25 +533,18 @@ uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
           (rfProtocol == (*it)->moduleData[moduleIdx].rfProtocol)) {
 
         uint8_t id = (*it)->modelId[moduleIdx];
-
-        uint8_t mask = 1;
-        for (uint8_t i = 1; i < (id & 7); i++)
-          mask <<= 1;
-
-        usedModelIds[id >> 3] |= mask;
+        uint8_t mask = 1 << (id & 7u);
+        usedModelIds[id >> 3u] |= mask;
       }
     }
   }
 
-  uint8_t new_id = 1;
-  uint8_t tst_mask = 1;
-  for (;new_id < MAX_RX_NUM(moduleIdx); new_id++) {
-    if (!(usedModelIds[new_id >> 3] & tst_mask)) {
+  for (uint8_t id = 1; id <= getMaxRxNum(moduleIdx); id++) {
+    uint8_t mask = 1u << (id & 7u);
+    if (!(usedModelIds[id >> 3u] & mask)) {
       // found free ID
-      return new_id;
+      return id;
     }
-    if ((tst_mask <<= 1) == 0)
-      tst_mask = 1;
   }
 
   // failed finding something...

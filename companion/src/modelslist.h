@@ -53,6 +53,8 @@ class TreeItem
     void setModelIndex(int value) { modelIndex = value; }
     int getCategoryIndex() const { return categoryIndex; }
     void setCategoryIndex(int value) { categoryIndex = value; }
+    void setHighlightRX(int value) { highlightRX = value; }
+    bool isHighlightRX() const { return highlightRX; }
 
     quint16 getFlags() const { return flags; }
     void setFlags(const quint16 & value) { flags = value; }
@@ -68,6 +70,7 @@ class TreeItem
     int categoryIndex;
     int modelIndex;
     quint16 flags;
+    bool highlightRX;
 };
 
 
@@ -146,11 +149,13 @@ class TreeModel : public QAbstractItemModel
 
   private:
     TreeItem * getItem(const QModelIndex & index) const;
+    bool isModelIdUnique(unsigned modelId, unsigned module, unsigned protocol);
 
     TreeItem * rootItem;
     RadioData * radioData;
     int availableEEpromSize;
     MimeHeaderData mimeHeaderData;
+    bool hasCategories;
 };
 
 #endif // _MODELSLIST_H_

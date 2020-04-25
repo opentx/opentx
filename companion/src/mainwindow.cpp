@@ -184,7 +184,7 @@ MainWindow::~MainWindow()
 {
   if (windowsListActions) {
     delete windowsListActions;
-    windowsListActions = NULL;
+    windowsListActions = nullptr;
   }
 }
 
@@ -293,7 +293,7 @@ void MainWindow::checkForUpdates()
   request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
   QNetworkReply * repl = networkManager->get(request);
   if (downloadDialog_forWait)
-    connect(downloadDialog_forWait, &downloadDialog::rejected, repl, &QNetworkReply::abort);
+    connect(downloadDialog_forWait, &DownloadDialog::rejected, repl, &QNetworkReply::abort);
 }
 
 void MainWindow::onUpdatesError(const QString &err)
@@ -305,7 +305,7 @@ void MainWindow::onUpdatesError(const QString &err)
 void MainWindow::openUpdatesWaitDialog()
 {
   if (!downloadDialog_forWait) {
-    downloadDialog_forWait = new downloadDialog(NULL, tr("Checking for updates"));
+    downloadDialog_forWait = new DownloadDialog(nullptr, tr("Checking for updates"));
     downloadDialog_forWait->show();
   }
 }
@@ -315,7 +315,7 @@ void MainWindow::closeUpdatesWaitDialog()
   if (downloadDialog_forWait) {
     downloadDialog_forWait->close();
     delete downloadDialog_forWait;
-    downloadDialog_forWait = NULL;
+    downloadDialog_forWait = nullptr;
   }
 }
 
@@ -323,13 +323,13 @@ QString MainWindow::seekCodeString(const QByteArray & qba, const QString & label
 {
   int posLabel = qba.indexOf(label);
   if (posLabel < 0)
-    return QString::null;
+    return QString();
   int start = qba.indexOf("\"", posLabel + label.length());
   if (start < 0)
-    return QString::null;
+    return QString();
   int end = qba.indexOf("\"", start + 1);
   if (end < 0)
-    return QString::null;
+    return QString();
   return qba.mid(start + 1, end - start - 1);
 }
 
@@ -340,6 +340,15 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
   closeUpdatesWaitDialog();
 
   QString version = seekCodeString(qba, "VERSION");
+  const QString errorString = seekCodeString(qba, "ERROR");
+
+  if (errorString == "NO_RC")
+    return onUpdatesError(tr("No Companion release candidates are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_NIGHTLY")
+    return onUpdatesError(tr("No nightly Companion builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_RELEASE")
+    return onUpdatesError(tr("No Companion release builds are currently being served for this version, please switch release channel"));
+
   if (version.isNull())
     return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
@@ -359,7 +368,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
       if (!fileName.isEmpty()) {
         g.updatesDir(QFileInfo(fileName).dir().absolutePath());
-        downloadDialog * dd = new downloadDialog(this, getCompanionUpdateBaseUrl() % QString(COMPANION_INSTALLER).arg(version), fileName);
+        DownloadDialog * dd = new DownloadDialog(this, getCompanionUpdateBaseUrl() % QString(COMPANION_INSTALLER).arg(version), fileName);
         installer_fileName = fileName;
         connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
         dd->exec();
@@ -456,7 +465,45 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
   const QString versionString = seekCodeString(qba, "VERSION");
   const QString dateString = seekCodeString(qba, "DATE");
+  const QString errorString = seekCodeString(qba, "ERROR");
+  const QString blockedRadios = seekCodeString(qba, "BLOCK");
   long version;
+  
+  if (errorString == "NO_RC")
+    return onUpdatesError(tr("No firmware release candidates are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_NIGHTLY")
+    return onUpdatesError(tr("No firmware nightly builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "NO_RELEASE")
+    return onUpdatesError(tr("No firmware release builds are currently being served for this version, please switch release channel"));
+  else if (errorString == "MOVE_TO_RC") {
+    QMessageBox msgbox;
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Release candidate builds are now available for this version, would you like to switch to using them?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgbox.setDefaultButton(QMessageBox::Yes);
+      
+    if(msgbox.exec() == QMessageBox::Yes) {
+      g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RC_TESTING));
+      return onUpdatesError(tr("Channel changed to RC, please restart the download process"));
+    }
+  }
+  else if (errorString == "MOVE_TO_RELEASE") {
+    QMessageBox msgbox;
+    msgbox.setIcon(QMessageBox::Question);
+    msgbox.setText(tr("Official release builds are now available for this version, would you like to switch to using them?"));
+    msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgbox.setDefaultButton(QMessageBox::Yes);
+      
+    if(msgbox.exec() == QMessageBox::Yes) {
+      g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RELEASE_STABLE));
+      return onUpdatesError(tr("Channel changed to Release, please restart the download process"));
+    }
+  }
+
+  QString variant = Firmware::getCurrentVariant()->getId();
+  QStringList splitId = variant.split("-");
+  if (blockedRadios.contains(splitId.value(1)))
+    return onUpdatesError(tr("This radio (%1) is not currently available in this firmware release channel").arg(getCurrentFirmware()->getName()));
 
   if (versionString.isNull() || dateString.isNull() || (version = version2index(versionString)) <= 0)
     return onUpdatesError(tr("Firmware update check failed, new version information not found or invalid."));
@@ -479,13 +526,13 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
     if (currentVersion == 0) {
       QString rn = getCurrentFirmware()->getReleaseNotesUrl();
-      QAbstractButton *rnButton = NULL;
+      QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(fullVersionString));
-      QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-      msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+      QAbstractButton *YesButton = msgBox.addButton(tr("Yes"), QMessageBox::YesRole);
+      msgBox.addButton(tr("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
-        rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        rnButton = msgBox.addButton(tr("Release Notes"), QMessageBox::ActionRole);
       }
       msgBox.setIcon(QMessageBox::Question);
       msgBox.resize(0, 0);
@@ -508,13 +555,13 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     }
     else if (version > currentVersion) {
       QString rn = getCurrentFirmware()->getReleaseNotesUrl();
-      QAbstractButton *rnButton = NULL;
+      QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(currentVersionString).arg(fullVersionString));
-      QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-      msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+      QAbstractButton *YesButton = msgBox.addButton(tr("Yes"), QMessageBox::YesRole);
+      msgBox.addButton(tr("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
-        rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        rnButton = msgBox.addButton(tr("Release Notes"), QMessageBox::ActionRole);
       }
       msgBox.setIcon(QMessageBox::Question);
       msgBox.resize(0,0);
@@ -574,7 +621,7 @@ void MainWindow::startFirmwareDownload()
   if (!filename.isEmpty()) {
     g.profile[g.id()].fwName(filename);
     g.flashDir(QFileInfo(filename).dir().absolutePath());
-    downloadDialog * dd = new downloadDialog(this, url, filename);
+    DownloadDialog * dd = new DownloadDialog(this, url, filename);
     connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
     dd->exec();
   }
@@ -883,7 +930,7 @@ void MainWindow::readEeprom()
 {
   Board::Type board = getCurrentBoard();
   QString tempFile;
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     tempFile = generateProcessUniqueTempFileName("temp.otx");
   else if (IS_ARM(board))
     tempFile = generateProcessUniqueTempFileName("temp.bin");
@@ -928,7 +975,7 @@ bool MainWindow::readEepromFromRadio(const QString & filename)
 
 void MainWindow::writeBackup()
 {
-  if (IS_HORUS(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -945,7 +992,7 @@ void MainWindow::writeFlash(QString fileToFlash)
 
 void MainWindow::readBackup()
 {
-  if (IS_HORUS(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -1031,9 +1078,15 @@ void MainWindow::updateMenus()
   compareAct->setEnabled(activeChild);
   writeEepromAct->setEnabled(activeChild);
   readEepromAct->setEnabled(true);
-  writeBUToRadioAct->setEnabled(true);
-  readBUToFileAct->setEnabled(true);
-  editSplashAct->setDisabled(IS_HORUS(getCurrentBoard()));
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
+    writeBUToRadioAct->setEnabled(false);
+    readBUToFileAct->setEnabled(false);
+  }
+  else {
+    writeBUToRadioAct->setEnabled(true);
+    readBUToFileAct->setEnabled(true);
+  }
+  editSplashAct->setDisabled(IS_FAMILY_HORUS_OR_T16(getCurrentBoard()));
 
   foreach (QAction * act, fileWindowActions) {
     if (!act)
@@ -1241,8 +1294,9 @@ void MainWindow::createActions()
   writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
   burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
-  writeBUToRadioAct =  addAct("write_eeprom_file.png", SLOT(writeBackup()));
-  readBUToFileAct =    addAct("read_eeprom_file.png",  SLOT(readBackup()));
+
+  writeBUToRadioAct = addAct("write_eeprom_file.png", SLOT(writeBackup()));
+  readBUToFileAct = addAct("read_eeprom_file.png", SLOT(readBackup()));
 
   createProfileAct =   addAct("new.png",   SLOT(createProfile()));
   copyProfileAct   =   addAct("copy.png",  SLOT(copyProfile()));
@@ -1576,7 +1630,7 @@ void MainWindow::updateWindowActionTitle(const QMdiSubWindow * win, QAction * ac
 
 void MainWindow::onSubwindowTitleChanged()
 {
-  QMdiSubWindow * win = NULL;
+  QMdiSubWindow * win = nullptr;
   if ((win = qobject_cast<QMdiSubWindow *>(sender()->parent())))
     updateWindowActionTitle(win);
 }
@@ -1591,7 +1645,7 @@ void MainWindow::onChangeWindowAction(QAction * act)
   if (!act->isChecked())
     return;
 
-  QMdiSubWindow * win = NULL;
+  QMdiSubWindow * win = nullptr;
   if (act->property("window_ptr").canConvert<QMdiSubWindow *>())
     win = act->property("window_ptr").value<QMdiSubWindow *>();
   if (win)

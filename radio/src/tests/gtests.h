@@ -35,6 +35,11 @@ extern uint16_t anaInValues[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
 
 void doMixerCalculations();
 
+extern const char * zchar2string(const char * zstring, int size);
+extern const char * nchar2string(const char * string, int size);
+#define EXPECT_ZSTREQ(c_string, z_string)   EXPECT_STREQ(c_string, zchar2string(z_string, sizeof(z_string)))
+#define EXPECT_STRNEQ(c_string, n_string)   EXPECT_STREQ(c_string, nchar2string(n_string, sizeof(n_string)))
+
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 #define RADIO_RESET() \
   g_eeGeneral.switchConfig = 0x00007bff
@@ -77,15 +82,11 @@ inline void MIXER_RESET()
 
 inline void TELEMETRY_RESET()
 {
-#if defined(TELEMETRY_FRSKY)
-  memclear(&telemetryData, sizeof(telemetryData));
-  TELEMETRY_RSSI() = 100;
-#endif
-#if defined(TELEMETRY_FRSKY)
+  telemetryData.clear();
+  telemetryData.rssi.set(100);
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     telemetryItems[i].clear();
   }
-#endif
   memclear(g_model.telemetrySensors, sizeof(g_model.telemetrySensors));
 }
 

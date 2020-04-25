@@ -226,8 +226,8 @@ void showAlertBox(const char * title, const char * text, const char * action , u
   AUDIO_ERROR_MESSAGE(sound);
   lcdRefresh();
   lcdSetContrast();
-  clearKeyEvents();
-  backlightOn();
+  waitKeysReleased();
+  resetBacklightTimeout();
   checkBacklight();
 }
 

@@ -70,11 +70,11 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   GenericPanel(parent, model, generalSettings, firmware),
   functions(model ? model->customFn : generalSettings.customFn),
   mediaPlayerCurrent(-1),
-  mediaPlayer(NULL)
+  mediaPlayer(nullptr)
 {
   Stopwatch s1("CustomFunctionsPanel - populate");
   lock = true;
-  int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
+  fswCapability = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
   rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext, this);
   rawSrcAllItemModel = new RawSourceFilterItemModel(&generalSettings, model, this);
@@ -83,8 +83,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
-    for (int i=0; i<num_fsw; i++) {
-      if (functions[i].func==FuncPlayPrompt || functions[i].func==FuncBackgroundMusic) {
+    for (int i=0; i<fswCapability; i++) {
+      if (functions[i].func == FuncPlayPrompt || functions[i].func == FuncBackgroundMusic) {
         QString temp = functions[i].paramarm;
         if (!temp.isEmpty()) {
           tracksSet.insert(temp);
@@ -97,8 +97,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
   if (IS_STM32(firmware->getBoard())) {
     scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS/FUNCTIONS", QStringList() << "*.lua", firmware->getCapability(VoicesMaxLength));
-    for (int i=0; i<num_fsw; i++) {
-      if (functions[i].func==FuncPlayScript) {
+    for (int i=0; i<fswCapability; i++) {
+      if (functions[i].func == FuncPlayScript) {
         QString temp = functions[i].paramarm;
         if (!temp.isEmpty()) {
           scriptsSet.insert(temp);
@@ -113,12 +113,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
   QStringList headerLabels;
   headerLabels << "#" << tr("Switch") << tr("Action") << tr("Parameters") << tr("Enable");
-  TableLayout * tableLayout = new TableLayout(this, num_fsw, headerLabels);
+  TableLayout * tableLayout = new TableLayout(this, fswCapability, headerLabels);
 
-  for (int i=0; i<num_fsw; i++) {
+  for (int i=0; i<fswCapability; i++) {
     // The label
     QLabel * label = new QLabel(this);
     label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
     label->setProperty("index", i);
     if (model)
@@ -243,7 +244,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   tableLayout->resizeColumnsToContents();
   s1.report("resizeColumnsToContents");
   tableLayout->setColumnWidth(3, 300);
-  tableLayout->pushRowsUp(num_fsw+1);
+  tableLayout->pushRowsUp(fswCapability+1);
   s1.report("end");
 }
 
@@ -383,13 +384,12 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       cfn.swtch = RawSwitch(fswtchSwtch[i]->currentData().toInt());
       cfn.func = func;
       cfn.enabled = fswtchEnable[i]->isChecked();
-      cfn.adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
 
     if (!cfn.isEmpty()) {
       widgetsMask |= CUSTOM_FUNCTION_SHOW_FUNC;
 
-      if (func>=FuncOverrideCH1 && func<=FuncOverrideCH32) {
+      if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32) {
         if (model) {
           int channelsMax = model->getChannelsMax(true);
           fswtchParam[i]->setDecimals(0);
@@ -403,7 +403,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM | CUSTOM_FUNCTION_ENABLE;
         }
       }
-      else if (func==FuncLogs) {
+      else if (func == FuncLogs) {
         fswtchParam[i]->setDecimals(1);
         fswtchParam[i]->setMinimum(0);
         fswtchParam[i]->setMaximum(25.5);
@@ -413,20 +413,29 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         fswtchParam[i]->setValue(cfn.param/10.0);
         widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
       }
-      else if (func>=FuncAdjustGV1 && func<=FuncAdjustGVLast) {
+      else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast) {
         int gvidx = func - FuncAdjustGV1;
         if (modified)
           cfn.adjustMode = fswtchGVmode[i]->currentIndex();
+        fswtchGVmode[i]->setCurrentIndex(cfn.adjustMode);
         widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
-        if (cfn.adjustMode==FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
+        if (cfn.adjustMode == FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode == FUNC_ADJUST_GVAR_INCDEC) {
           if (modified)
             cfn.param = fswtchParam[i]->value() * model->gvarData[gvidx].multiplierSet();
           if (IS_ARM(getCurrentBoard())) {
             fswtchParam[i]->setDecimals(model->gvarData[gvidx].prec);
             fswtchParam[i]->setSingleStep(model->gvarData[gvidx].multiplierGet());
             fswtchParam[i]->setSuffix(model->gvarData[gvidx].unitToString());
-            fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
-            fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            if (cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
+              double rng = abs(model->gvarData[gvidx].getMax() - model->gvarData[gvidx].getMin());
+              rng *= model->gvarData[gvidx].multiplierGet();
+              fswtchParam[i]->setMinimum(-rng);
+              fswtchParam[i]->setMaximum(rng);
+            }
+            else {
+              fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
+              fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
+            }
             fswtchParam[i]->setValue(cfn.param * model->gvarData[gvidx].multiplierGet());
           }
           else {
@@ -445,13 +454,13 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
         }
       }
-      else if (func==FuncReset) {
+      else if (func == FuncReset) {
         if (modified)
           cfn.param = fswtchParamT[i]->currentData().toInt();
         populateFuncParamCB(fswtchParamT[i], func, cfn.param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
       }
-      else if (func>=FuncSetTimer1 && func<=FuncSetTimer3) {
+      else if (func >= FuncSetTimer1 && func <= FuncSetTimer3) {
         if (modified)
           cfn.param = fswtchParamTime[i]->timeInSeconds();
         RawSourceRange range = RawSource(SOURCE_TYPE_SPECIAL, func - FuncSetTimer1 + 2).getRange(model, generalSettings);
@@ -459,39 +468,39 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         fswtchParamTime[i]->setTime(cfn.param);
         widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM | CUSTOM_FUNCTION_ENABLE;
       }
-      else if (func>=FuncSetFailsafeInternalModule && func<=FuncBindExternalModule) {
+      else if (func >= FuncSetFailsafeInternalModule && func <= FuncBindExternalModule) {
         widgetsMask |= CUSTOM_FUNCTION_ENABLE;
       }
-      else if (func==FuncVolume) {
+      else if (func == FuncVolume) {
         if (modified)
           cfn.param = fswtchParamT[i]->currentData().toInt();
         populateFuncParamCB(fswtchParamT[i], func, cfn.param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
       }
-      else if (func==FuncPlaySound || func==FuncPlayHaptic || func==FuncPlayValue || func==FuncPlayPrompt || func==FuncPlayBoth || func==FuncBackgroundMusic) {
+      else if (func == FuncPlaySound || func == FuncPlayHaptic || func == FuncPlayValue || func == FuncPlayPrompt || func == FuncPlayBoth || func == FuncBackgroundMusic) {
         if (func != FuncBackgroundMusic) {
           widgetsMask |= CUSTOM_FUNCTION_REPEAT;
           fswtchRepeat[i]->update();
         }
-        if (func==FuncPlayValue) {
+        if (func == FuncPlayValue) {
           if (modified)
             cfn.param = fswtchParamT[i]->currentData().toInt();
           populateFuncParamCB(fswtchParamT[i], func, cfn.param);
           widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_REPEAT;
         }
-        else if (func==FuncPlayPrompt || func==FuncPlayBoth) {
+        else if (func == FuncPlayPrompt || func == FuncPlayBoth) {
           if (firmware->getCapability(VoicesAsNumbers)) {
             fswtchParam[i]->setDecimals(0);
             fswtchParam[i]->setSingleStep(1);
             fswtchParam[i]->setMinimum(0);
-            if (func==FuncPlayPrompt) {
+            if (func == FuncPlayPrompt) {
               widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM | CUSTOM_FUNCTION_REPEAT | CUSTOM_FUNCTION_GV_TOOGLE;
             }
             else {
               widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM | CUSTOM_FUNCTION_REPEAT;
               fswtchParamGV[i]->setChecked(false);
             }
-            fswtchParam[i]->setMaximum(func==FuncPlayBoth ? 254 : 255);
+            fswtchParam[i]->setMaximum(func == FuncPlayBoth ? 254 : 255);
             if (modified) {
               if (fswtchParamGV[i]->isChecked()) {
                 fswtchParam[i]->setMinimum(1);
@@ -524,7 +533,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             }
           }
         }
-        else if (func==FuncBackgroundMusic) {
+        else if (func == FuncBackgroundMusic) {
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
             Helpers::getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, firmware->getCapability(VoicesMaxLength));
@@ -534,27 +543,27 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             widgetsMask |= CUSTOM_FUNCTION_PLAY;
           }
         }
-        else if (func==FuncPlaySound) {
+        else if (func == FuncPlaySound) {
           if (modified)
             cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
           populateFuncParamCB(fswtchParamT[i], func, cfn.param);
           widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
         }
-        else if (func==FuncPlayHaptic) {
+        else if (func == FuncPlayHaptic) {
           if (modified)
             cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
           populateFuncParamCB(fswtchParamT[i], func, cfn.param);
           widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
         }
       }
-      else if (func==FuncPlayScript) {
+      else if (func == FuncPlayScript) {
         widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
         if (modified) {
           Helpers::getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, 8);
         }
         Helpers::populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
       }
-      else if (func==FuncBacklight && IS_TARANIS_PLUS(getCurrentBoard())) {
+      else if (func == FuncBacklight && IS_TARANIS_PLUS(getCurrentBoard())) {
         if (modified)
           cfn.param = (uint8_t)fswtchBLcolor[i]->value();
         fswtchBLcolor[i]->setValue(cfn.param);
@@ -570,7 +579,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           widgetsMask |= CUSTOM_FUNCTION_ENABLE;
         }
       }
-
     }
 
     fswtchFunc[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_SHOW_FUNC);
@@ -594,8 +602,7 @@ void CustomFunctionsPanel::update()
 {
   updateDataModels();
   lock = true;
-  int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
-  for (int i=0; i<num_fsw; i++) {
+  for (int i=0; i<fswCapability; i++) {
     refreshCustomFunction(i);
   }
   lock = false;
@@ -605,30 +612,28 @@ void CustomFunctionsPanel::fswPaste()
 {
   const QClipboard *clipboard = QApplication::clipboard();
   const QMimeData *mimeData = clipboard->mimeData();
-  if (mimeData->hasFormat("application/x-companion-fsw")) {
-    QByteArray fswData = mimeData->data("application/x-companion-fsw");
+  if (mimeData->hasFormat(MIMETYPE_FSW)) {
+    QByteArray fswData = mimeData->data(MIMETYPE_FSW);
     CustomFunctionData *fsw = &functions[selectedFunction];
     memcpy(fsw, fswData.constData(), sizeof(CustomFunctionData));
-    lock = true;
-    fswtchSwtch[selectedFunction]->setCurrentIndex(fswtchSwtch[selectedFunction]->findData(functions[selectedFunction].swtch.toValue()));
-    fswtchFunc[selectedFunction]->setCurrentIndex(fswtchFunc[selectedFunction]->findData(functions[selectedFunction].func));
-    populateGVmodeCB(fswtchGVmode[selectedFunction], functions[selectedFunction].adjustMode);
-    populateFuncParamCB(fswtchParamT[selectedFunction], functions[selectedFunction].func, functions[selectedFunction].param, functions[selectedFunction].adjustMode);
-    refreshCustomFunction(selectedFunction);
-    lock = false;
+    resetCBsAndRefresh(selectedFunction);
     emit modified();
   }
 }
 
 void CustomFunctionsPanel::fswDelete()
 {
-  functions[selectedFunction].clear();
-  // TODO update switch and func
-  lock = true;
-  fswtchSwtch[selectedFunction]->setCurrentIndex(fswtchSwtch[selectedFunction]->findData(functions[selectedFunction].swtch.toValue()));
-  fswtchFunc[selectedFunction]->setCurrentIndex(fswtchFunc[selectedFunction]->findData(functions[selectedFunction].func));
-  refreshCustomFunction(selectedFunction);
-  lock = false;
+  int maxidx = fswCapability - 1;
+  for (int i=selectedFunction; i<maxidx; i++) {
+    if (!functions[i].isEmpty() || !functions[i+1].isEmpty()) {
+      CustomFunctionData *fsw1 = &functions[i];
+      CustomFunctionData *fsw2 = &functions[i+1];
+      memcpy(fsw1, fsw2, sizeof(CustomFunctionData));
+      resetCBsAndRefresh(i);
+    }
+  }
+  functions[maxidx].clear();
+  resetCBsAndRefresh(maxidx);
   emit modified();
 }
 
@@ -637,34 +642,44 @@ void CustomFunctionsPanel::fswCopy()
   QByteArray fswData;
   fswData.append((char*)&functions[selectedFunction], sizeof(CustomFunctionData));
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData("application/x-companion-fsw", fswData);
+  mimeData->setData(MIMETYPE_FSW, fswData);
   QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
 void CustomFunctionsPanel::fswCut()
 {
   fswCopy();
-  fswDelete();
+  fswClear();
 }
 
 void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
 {
-    QLabel *label = (QLabel *)sender();
-    selectedFunction = label->property("index").toInt();
+  QLabel *label = (QLabel *)sender();
+  selectedFunction = label->property("index").toInt();
 
-    QPoint globalPos = label->mapToGlobal(pos);
+  QPoint globalPos = label->mapToGlobal(pos);
 
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion-fsw");
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  bool hasData = mimeData->hasFormat(MIMETYPE_FSW);
+  bool moveUpAllowed = (selectedFunction > 0);
+  bool moveDownAllowed = (selectedFunction < (fswCapability - 1));
+  bool insertAllowed = (selectedFunction < (fswCapability - 1)) && (functions[fswCapability - 1].isEmpty());
 
-    QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(fswCopy()));
-    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(fswCut()));
-    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(fswPaste()))->setEnabled(hasData);
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(fswDelete()));
+  QMenu contextMenu;
+  contextMenu.addAction(CompanionIcon("copy.png"), tr("Copy"),this,SLOT(fswCopy()));
+  contextMenu.addAction(CompanionIcon("cut.png"), tr("Cut"),this,SLOT(fswCut()));
+  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(fswPaste()))->setEnabled(hasData);
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear"),this,SLOT(fswClear()));
+  contextMenu.addSeparator();
+  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(fswInsert()))->setEnabled(insertAllowed);
+  contextMenu.addAction(CompanionIcon("arrow-left.png"), tr("Delete"),this,SLOT(fswDelete()));
+  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(fswMoveUp()))->setEnabled(moveUpAllowed);
+  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(fswMoveDown()))->setEnabled(moveDownAllowed);
+  contextMenu.addSeparator();
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(fswClearAll()));
 
-    contextMenu.exec(globalPos);
+  contextMenu.exec(globalPos);
 }
 
 void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
@@ -679,7 +694,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
         ((i==FuncSetTimer1 || i==FuncSetTimer2) && !IS_ARM(firmware->getBoard())) ||
         ((i==FuncSetTimer3) && firmware->getCapability(Timers) < 3) ||
-        ((i==FuncScreenshot) && !IS_TARANIS(firmware->getBoard())) ||
+        ((i==FuncScreenshot) && !IS_HORUS_OR_TARANIS(firmware->getBoard())) ||
         ((i>=FuncRangeCheckInternalModule && i<=FuncBindExternalModule) && (!model || !firmware->getCapability(DangerousFunctions))) ||
         ((i>=FuncAdjustGV1 && i<=FuncAdjustGVLast) && (!model || !firmware->getCapability(Gvars)))
         ) {
@@ -745,4 +760,66 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
   else {
     b->hide();
   }
+}
+
+void CustomFunctionsPanel::fswMoveUp()
+{
+  swapFuncData(selectedFunction, selectedFunction - 1);
+}
+
+void CustomFunctionsPanel::fswMoveDown()
+{
+  swapFuncData(selectedFunction, selectedFunction + 1);
+}
+
+void CustomFunctionsPanel::fswClear()
+{
+  functions[selectedFunction].clear();
+  resetCBsAndRefresh(selectedFunction);
+  emit modified();
+}
+
+void CustomFunctionsPanel::fswClearAll()
+{
+  for (int i=0; i<fswCapability; i++) {
+    functions[i].clear();
+    resetCBsAndRefresh(i);
+  }
+  emit modified();
+}
+
+void CustomFunctionsPanel::fswInsert()
+{
+  for (int i=(fswCapability - 1); i>selectedFunction; i--) {
+    if (!functions[i].isEmpty() || !functions[i-1].isEmpty()) {
+      memcpy(&functions[i], &functions[i-1], sizeof(CustomFunctionData));
+      resetCBsAndRefresh(i);
+    }
+  }
+  fswClear();
+}
+
+void CustomFunctionsPanel::swapFuncData(int idx1, int idx2)
+{
+  if ((idx1 != idx2) && (!functions[idx1].isEmpty() || !functions[idx2].isEmpty())) {
+    CustomFunctionData fswtmp = functions[idx2];
+    CustomFunctionData *fsw1 = &functions[idx1];
+    CustomFunctionData *fsw2 = &functions[idx2];
+    memcpy(fsw2, fsw1, sizeof(CustomFunctionData));
+    memcpy(fsw1, &fswtmp, sizeof(CustomFunctionData));
+    resetCBsAndRefresh(idx1);
+    resetCBsAndRefresh(idx2);
+    emit modified();
+  }
+}
+
+void CustomFunctionsPanel::resetCBsAndRefresh(int idx)
+{
+  lock = true;
+  fswtchSwtch[idx]->setCurrentIndex(fswtchSwtch[idx]->findData(functions[idx].swtch.toValue()));
+  fswtchFunc[idx]->setCurrentIndex(fswtchFunc[idx]->findData(functions[idx].func));
+  fswtchGVmode[idx]->setCurrentIndex(functions[idx].adjustMode);
+  populateFuncParamCB(fswtchParamT[idx], functions[idx].func, functions[idx].param, functions[idx].adjustMode);
+  refreshCustomFunction(idx);
+  lock = false;
 }

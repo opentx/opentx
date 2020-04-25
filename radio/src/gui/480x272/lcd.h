@@ -24,17 +24,7 @@
 #include "bitmapbuffer.h"
 #include "opentx_types.h"
 
-#if LCD_W >= 480
-  #define LCD_COLS                     40
-#else
-  #define LCD_COLS                     30
-#endif
-
 #define CENTER
-
-#define lcdint_t                       int32_t
-
-#define BSS                            0x00
 
 /* lcd common flags */
 #define BLINK                          0x01
@@ -119,8 +109,9 @@ extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags=0);
-
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
+void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags=0);
+void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags);
 
 inline void lcdClear()
 {
@@ -146,24 +137,19 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
 
 #if !defined(BOOT)
-
-#define putstime_t int32_t
-
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
-void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags=0);
+void drawTimer(coord_t x, coord_t y, int32_t tme, LcdFlags att=0);
 
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
-void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
+void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0, bool autoBold = true);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
-void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att=0);
+void drawTimerMode(coord_t x, coord_t y, swsrc_t mode, LcdFlags att=0);
 void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
 #define putsChn(x, y, idx, att) drawSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
-
 #endif // !BOOT
 
 #define SOLID   0xff
@@ -262,7 +248,6 @@ inline int getBitmapHeight(const uint8_t * bmp)
 
 uint8_t getMappedChar(uint8_t c);
 uint8_t getFontHeight(LcdFlags flags);
-int getTextWidth(const char * s, int len=0, LcdFlags flags=0);
 
 inline void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0)
 {

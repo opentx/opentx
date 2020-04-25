@@ -22,19 +22,20 @@
 #include "ff.h"
 
 FIL g_oLogFile __DMA;
-const char * g_logError = NULL;
+const char * g_logError = nullptr;
 uint8_t logDelay;
 
 void writeHeader();
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define GET_2POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
+  int getSwitchState(uint8_t swtch) {
+    int value = getValue(MIXSRC_FIRST_SWITCH + swtch);
+    return (value == 0) ? 0 : (value < 0) ? -1 : +1;
+  }
 #else
   #define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
+  #define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
 #endif
-
-#define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
-
 
 void logsInit()
 {
@@ -45,7 +46,7 @@ const char * logsOpen()
 {
   // Determine and set log file filename
   FRESULT result;
-  char filename[34]; // /LOGS/modelnamexxx-2013-01-01.log
+  char filename[sizeof(LOGS_PATH) + LEN_MODEL_NAME + 16]; // /LOGS/modelnamexxxxxx_2013-01-01.log
 
   if (!sdMounted())
     return STR_NO_SDCARD;
@@ -60,13 +61,13 @@ const char * logsOpen()
     return error;
   }
 
-  filename[sizeof(LOGS_PATH)-1] = '/';
+  filename[sizeof(LOGS_PATH) - 1] = '/';
   memcpy(&filename[sizeof(LOGS_PATH)], g_model.header.name, sizeof(g_model.header.name));
-  filename[sizeof(LOGS_PATH)+sizeof(g_model.header.name)] = '\0';
+  filename[sizeof(LOGS_PATH) + LEN_MODEL_NAME] = '\0';
 
-  uint8_t i = sizeof(LOGS_PATH)+sizeof(g_model.header.name)-1;
+  uint8_t i = sizeof(LOGS_PATH) + LEN_MODEL_NAME - 1;
   uint8_t len = 0;
-  while (i>sizeof(LOGS_PATH)-1) {
+  while (i > sizeof(LOGS_PATH) - 1) {
     if (!len && filename[i])
       len = i+1;
     if (len) {
@@ -108,7 +109,7 @@ const char * logsOpen()
     writeHeader();
   }
 
-  return NULL;
+  return nullptr;
 }
 
 tmr10ms_t lastLogTime = 0;
@@ -133,7 +134,6 @@ void writeHeader()
   f_puts("Time,", &g_oLogFile);
 #endif
 
-#if defined(TELEMETRY_FRSKY)
 
   char label[TELEM_LABEL_LEN+7];
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
@@ -154,7 +154,6 @@ void writeHeader()
       }
     }
   }
-#endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   for (uint8_t i=1; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+1; i++) {
@@ -166,18 +165,18 @@ void writeHeader()
     }
     f_putc(',', &g_oLogFile);
   }
-#if defined(PCBX7)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
-#elif defined(PCBXLITE)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD"
-#elif defined(PCBXLITES)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF"
-#elif defined(PCBX3)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SE,SF"
-#else
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
-#endif
-  f_puts(STR_SWITCHES_LOG_HEADER ",LSW,", &g_oLogFile);
+
+  for (uint8_t i=0; i<NUM_SWITCHES; i++) {
+    if (SWITCH_EXISTS(i)) {
+      char s[LEN_SWITCH_NAME + 2];
+      char * temp;
+      temp = getSwitchName(s, SWSRC_FIRST_SWITCH + i * 3);
+      *temp++ = ',';
+      *temp = '\0';
+      f_puts(s, &g_oLogFile);
+    }
+  }
+  f_puts("LSW,", &g_oLogFile);
 #else
   f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN,", &g_oLogFile);
 #endif
@@ -196,7 +195,11 @@ uint32_t getLogicalSwitchesStates(uint8_t first)
 
 void logsWrite()
 {
-  static const char * error_displayed = NULL;
+  static const char * error_displayed = nullptr;
+
+  if (!sdMounted()) {
+    return;
+  }
 
   if (isFunctionActive(FUNCTION_LOGS) && logDelay > 0) {
     tmr10ms_t tmr10ms = get_tmr10ms();
@@ -205,7 +208,7 @@ void logsWrite()
 
       if (!g_oLogFile.obj.fs) {
         const char * result = logsOpen();
-        if (result != NULL) {
+        if (result) {
           if (result != error_displayed) {
             error_displayed = result;
             POPUP_WARNING(result);
@@ -227,8 +230,6 @@ void logsWrite()
 #else
       f_printf(&g_oLogFile, "%d,", tmr10ms);
 #endif
-
-#if defined(TELEMETRY_FRSKY)
 
       for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
         if (isTelemetryFieldAvailable(i)) {
@@ -267,52 +268,18 @@ void logsWrite()
           }
         }
       }
-#endif
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
         f_printf(&g_oLogFile, "%d,", calibratedAnalogs[i]);
       }
 
-// TODO: use hardware config to populate
-#if defined(PCBX3)
-f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_2POS_STATE(SE),
-          GET_2POS_STATE(SF),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
-#elif defined(PCBXLITE)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_3POS_STATE(SD),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
-#elif defined(PCBX7)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_3POS_STATE(SD),
-          GET_2POS_STATE(SF),
-          GET_2POS_STATE(SH),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          GET_3POS_STATE(SC),
-          GET_3POS_STATE(SD),
-          GET_3POS_STATE(SE),
-          GET_2POS_STATE(SF),
-          GET_3POS_STATE(SG),
-          GET_2POS_STATE(SH),
-          getLogicalSwitchesStates(32),
-          getLogicalSwitchesStates(0));
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+      for (uint8_t i=0; i<NUM_SWITCHES; i++) {
+        if (SWITCH_EXISTS(i)) {
+          f_printf(&g_oLogFile, "%d,", getSwitchState(i));
+        }
+      }
+      f_printf(&g_oLogFile, "0x%08X%08X,", getLogicalSwitchesStates(32), getLogicalSwitchesStates(0));
 #else
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,",
           GET_2POS_STATE(THR),
@@ -335,7 +302,7 @@ f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
     }
   }
   else {
-    error_displayed = NULL;
+    error_displayed = nullptr;
     if (g_oLogFile.obj.fs) {
       logsClose();
     }

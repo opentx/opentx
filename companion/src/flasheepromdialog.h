@@ -49,14 +49,13 @@ protected:
   void updateUI();
   bool isValidEEprom(const QString &filename);
   int getEEpromVersion(const QString &filename);
-  bool patchCalibration();
-  bool patchHardwareSettings();
+  bool patchCalibration(RadioData * radioData);
+  bool patchHardwareSettings(RadioData * radioData);
   virtual void showEvent(QShowEvent *);
 
 private:
   Ui::FlashEEpromDialog *ui;
   QString eepromFilename;
-  RadioData *radioData;
 };
 
 #endif // _FLASHEEPROMDIALOG_H_

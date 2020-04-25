@@ -26,6 +26,8 @@ build:
 	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) $(STM32_OPTIONS) -DPCB=X9D+  ../ ; make libsimulator
 	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) $(STM32_OPTIONS) -DPCB=X9E   ../ ; make libsimulator
 	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) $(STM32_OPTIONS) -DPCB=X12S ../ ; make libsimulator
+	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) $(STM32_OPTIONS) -DPCB=JUMPERT12  ../ ; make libsimulator
+	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) $(STM32_OPTIONS) -DPCB=JUMPERT16  ../ ; make libsimulator
 
 	make -C $(BUILDDIR) companion22 simulator22
 

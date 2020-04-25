@@ -21,9 +21,35 @@
 #include "opentx.h"
 #include "conversions.h"
 
-void convertModelData(int id, int version)
+void convertRadioData(int version)
 {
-  eeLoadModelData(id);
+  TRACE("convertRadioData(%d)", version);
+
+#if EEPROM_CONVERSIONS < 217
+  if (version == 216) {
+    version = 217;
+    convertRadioData_216_to_217(g_eeGeneral);
+  }
+#endif
+
+#if EEPROM_CONVERSIONS < 218
+  if (version == 217) {
+    version = 218;
+    convertRadioData_217_to_218(g_eeGeneral);
+  }
+#endif
+
+#if EEPROM_CONVERSIONS < 219
+  if (version == 218) {
+    version = 219;
+    convertRadioData_218_to_219(g_eeGeneral);
+  }
+#endif
+}
+
+void convertModelData(int version)
+{
+  TRACE("convertModelData(%d)", version);
 
 #if EEPROM_CONVERSIONS < 217
   if (version == 216) {
@@ -45,7 +71,13 @@ void convertModelData(int id, int version)
     convertModelData_218_to_219(g_model);
   }
 #endif
+}
 
+#if defined(EEPROM)
+void eeConvertModel(int id, int version)
+{
+  eeLoadModelData(id);
+  convertModelData(version);
   uint8_t currModel = g_eeGeneral.currModel;
   g_eeGeneral.currModel = id;
   storageDirty(EE_MODEL);
@@ -106,8 +138,7 @@ bool eeConvert()
 #if EEPROM_CONVERSIONS < 219
   if (version == 218) {
     version = 219;
-    g_eeGeneral.version = 219;
-    // no conversion needed for now
+    convertRadioData_218_to_219(g_eeGeneral);
   }
 #endif
 
@@ -131,9 +162,10 @@ bool eeConvert()
 #endif
     lcdRefresh();
     if (eeModelExists(id)) {
-      convertModelData(id, conversionVersionStart);
+      eeConvertModel(id, conversionVersionStart);
     }
   }
 
   return true;
 }
+#endif

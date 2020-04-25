@@ -110,16 +110,18 @@ void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, u
 
 void drawProgressScreen(const char * title, const char * message, int num, int den)
 {
-  lcdClear();
-  lcdSetColor(WHITE);
-  if (message) {
-    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, message, CUSTOM_COLOR);
+  lcd->clear(TEXT_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  if (title) {
+    lcdDrawText(LCD_W / 2, (MENU_HEADER_HEIGHT - FH) / 2, title, MENU_TITLE_COLOR | CENTERED);
   }
-  lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H-22, LCD_W-2*MENUS_MARGIN_LEFT, 15, 1, SOLID, CUSTOM_COLOR);
-  lcdSetColor(RED);
+  if (message) {
+    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H - 42, message, TEXT_COLOR);
+  }
+  lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H - 22, LCD_W - 2 * MENUS_MARGIN_LEFT, 15, 1, SOLID, BARGRAPH_BGCOLOR);
   if (num > 0 && den > 0) {
-    int width = ((LCD_W-2*MENUS_MARGIN_LEFT-4) * num) / den;
-    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT+2, LCD_H-20, width, 11, CUSTOM_COLOR);
+    int width = ((LCD_W - 2 * MENUS_MARGIN_LEFT - 4) * num) / den;
+    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 2, LCD_H - 20, width, 11, BARGRAPH1_COLOR);
   }
   lcdRefresh();
 }
@@ -177,7 +179,7 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
   lcdDrawSolidFilledRect(0, bodyTop, LCD_W, bodyBottom-bodyTop, TEXT_BGCOLOR);
 
   // Scrollbar
-  if (!(options & OPTION_MENU_NO_SCROLLBAR) && linesCount>linesDisplayed) {
+  if (!(options & OPTION_MENU_NO_SCROLLBAR) && linesCount > linesDisplayed) {
     drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, bodyTop+3, bodyBottom-bodyTop-6, menuVerticalOffset, linesCount, linesDisplayed);
   }
 }
@@ -391,20 +393,23 @@ void drawSleepBitmap()
 }
 
 #define SHUTDOWN_CIRCLE_DIAMETER       150
-void drawShutdownAnimation(uint32_t index, const char * message)
+void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char * message)
 {
-  static uint32_t last_index = 0xffffffff;
+  if (totalDuration == 0)
+    return;
+  
+  static uint32_t lastDuration = 0xffffffff;
   static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));
 
   if (shutdown) {
-    if (index < last_index) {
+    if (duration < lastDuration) {
       theme->drawBackground();
       lcd->drawBitmap((LCD_W-shutdown->getWidth())/2, (LCD_H-shutdown->getHeight())/2, shutdown);
       lcdStoreBackupBuffer();
     }
     else {
       lcdRestoreBackupBuffer();
-      int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
+      int quarter = duration / (totalDuration / 5);
       if (quarter >= 1) lcdDrawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 2) lcdDrawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 3) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
@@ -413,7 +418,7 @@ void drawShutdownAnimation(uint32_t index, const char * message)
   }
   else {
     lcd->clear();
-    int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
+    int quarter = duration / (totalDuration / 5);
     for (int i=1; i<=4; i++) {
       if (quarter >= i) {
         lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, TEXT_BGCOLOR);
@@ -422,5 +427,23 @@ void drawShutdownAnimation(uint32_t index, const char * message)
   }
 
   lcdRefresh();
-  last_index = index;
+  lastDuration = duration;
+}
+
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags)
+{
+  if (isModulePXX2(moduleIdx)) {
+    if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] != '\0')
+      lcdDrawSizedText(x, y, g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], effectiveLen(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME), flags);
+    else
+      lcdDrawText(x, y, "---", flags);
+  }
+#if defined(HARDWARE_INTERNAL_MODULE)
+  else if (moduleIdx == INTERNAL_MODULE) {
+    lcdDrawText(x, y, "Internal", flags);
+  }
+#endif
+  else {
+    lcdDrawText(x, y, "External", flags);
+  }
 }

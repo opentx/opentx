@@ -21,6 +21,9 @@
 #ifndef OPENTX_MULTI_H
 #define OPENTX_MULTI_H
 
+#define MULTI_BUFFER_SIZE 177
+extern uint8_t * Multi_Buffer;
+
 /*
   Multiprotocol telemetry definition
 
@@ -80,34 +83,37 @@ Type 0x06 Flysky AFHDS2 telemetry data
    data[0] = RSSI value
    data[1-28] telemetry data
 
+Type 0x0B Spectrum Scanner telemetry data
+   length: 6
+   data[0] = start channel (2400 + x*0.333 Mhz)
+   data[1-5] power levels
+
 */
 
+void processMultiTelemetryData(uint8_t data, uint8_t module);
 
-
-void processMultiTelemetryData(uint8_t data);
+#define MULTI_SCANNER_MAX_CHANNEL 249
 
 // This should be put into the Module definition if other modules gain this functionality
 struct MultiModuleSyncStatus {
-  uint32_t adjustedRefreshRate;    // in ps
+  uint32_t adjustedRefreshRate = 9000 * 1000;    // in ps
   tmr10ms_t lastUpdate;
   uint16_t refreshRate;
   uint16_t inputLag;
   uint8_t interval;
   uint8_t target;
 
-  inline bool isValid() {return (get_tmr10ms()  - lastUpdate < 100);}
-  void getRefreshString(char* refreshText);
-  uint16_t getAdjustedRefreshRate();
-  void calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag);
-
-  MultiModuleSyncStatus() {
-    // Initialise to a valid value
-    adjustedRefreshRate=9000 * 1000;
+  inline bool isValid() const
+  {
+    return (get_tmr10ms()  - lastUpdate < 100);
   }
-
+  
+  void getRefreshString(char * refreshText);
+  const uint16_t getAdjustedRefreshRate();
+  void calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag);
 };
 
-extern MultiModuleSyncStatus multiSyncStatus;
+MultiModuleSyncStatus& getMultiSyncStatus(uint8_t module);
 
 
 struct MultiModuleStatus {
@@ -116,28 +122,41 @@ struct MultiModuleStatus {
   uint8_t minor;
   uint8_t revision;
   uint8_t patch;
+  uint8_t ch_order;
 
   uint8_t flags;
+  uint8_t requiresFailsafeCheck;
   tmr10ms_t lastUpdate;
 
-  void getStatusString(char* statusText);
+  uint8_t protocolPrev = 0;
+  uint8_t protocolNext = 0;
+  char protocolName[8] = {0};
+  uint8_t protocolSubNbr = 0;
+  char protocolSubName[9] = {0};
+  uint8_t optionDisp = 0;
 
-  inline bool isValid() { return (bool)(get_tmr10ms() - lastUpdate < 200); }
-  inline bool supportsFailsafe() { return (bool) (flags & 0x20); }
-  inline bool isWaitingforBind() { return (bool) (flags & 0x10); }
-  inline bool isBinding() { return (bool) (flags & 0x08); }
-  inline bool protocolValid() { return (bool) (flags & 0x04); }
-  inline bool serialMode() { return (bool) (flags & 0x02); }
-  inline bool inputDetected() { return (bool) (flags & 0x01); }
+  void getStatusString(char * statusText) const;
+
+  inline bool isValid() const { return (bool)(get_tmr10ms() - lastUpdate < 200); }
+  inline bool isBufferFull() const { return (bool) (flags & 0x80); }
+  inline bool supportsDisableMapping() const { return (bool) (flags & 0x40); }
+  inline bool supportsFailsafe() const { return (bool) (flags & 0x20); }
+  inline bool isWaitingforBind() const { return (bool) (flags & 0x10); }
+  inline bool isBinding() const { return (bool) (flags & 0x08); }
+  inline bool protocolValid() const { return (bool) (flags & 0x04); }
+  inline bool serialMode() const { return (bool) (flags & 0x02); }
+  inline bool inputDetected() const { return (bool) (flags & 0x01); }
 };
 
-extern MultiModuleStatus multiModuleStatus;
+MultiModuleStatus& getMultiModuleStatus(uint8_t module);
+
 enum MultiBindStatus : uint8_t {
   MULTI_NORMAL_OPERATION,
   MULTI_BIND_INITIATED,
   MULTI_BIND_FINISHED,
 };
 
-extern uint8_t multiBindStatus;
+uint8_t getMultiBindStatus(uint8_t module);
+void setMultiBindStatus(uint8_t module, uint8_t bindStatus);
 
 #endif //OPENTX_MULTI_H

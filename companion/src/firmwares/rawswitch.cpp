@@ -115,6 +115,9 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
       case SWITCH_TYPE_ONE:
         return tr("One");
 
+      case SWITCH_TYPE_ACT:
+        return tr("Act");
+
       case SWITCH_TYPE_FLIGHT_MODE:
         if (modelData)
           return modelData->flightModeData[index-1].nameToString(index - 1);
@@ -194,7 +197,21 @@ RawSwitch RawSwitch::convert(RadioDataConversionState & cstate)
     }
 
     // No SE and SG on X7 board
-    if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+    if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
+      if (srcIdx == 4 || srcIdx == 5) {
+        delta = 3;  // SE to SD & SF to SF
+        if (srcIdx == 4)
+          evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (srcIdx == 6) {
+        delta = 9;  // SG to SD
+        evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (srcIdx == 7) {
+        delta = 6;  // SH to SH
+      }
+    }
+    else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
       if (srcIdx == 4 || srcIdx == 5) {
         delta = 3;  // SE to SD & SF to SF
         if (srcIdx == 4)
@@ -209,7 +226,15 @@ RawSwitch RawSwitch::convert(RadioDataConversionState & cstate)
       }
     }
     // Compensate for SE and SG on X9/Horus board if converting from X7
-    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+      if (srcIdx == 4) {
+        delta = -3;  // SF to SF
+      }
+      else if (srcIdx == 5) {
+        delta = -6;  // SH to SH
+      }
+    }
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
       if (srcIdx == 4) {
         delta = -3;  // SF to SF
       }

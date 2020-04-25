@@ -47,7 +47,7 @@ class SimulatedUIWidget : public QWidget
 
   protected:
 
-    explicit SimulatedUIWidget(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidget(SimulatorInterface * simulator, QWidget * parent = nullptr);
 
   public:
 
@@ -97,19 +97,23 @@ class SimulatedUIWidget : public QWidget
     unsigned int m_backLight;
     int m_beepShow;
     int m_beepVal;
-
 };
 
 
 // Each subclass is responsible for its own Ui
 namespace Ui {
   class SimulatedUIWidget9X;
+  class SimulatedUIWidgetX9LITE;
   class SimulatedUIWidgetX7;
   class SimulatedUIWidgetX9;
   class SimulatedUIWidgetXLITE;
   class SimulatedUIWidgetX9E;
+  class SimulatedUIWidgetX9D2019;
   class SimulatedUIWidgetX10;
   class SimulatedUIWidgetX12;
+  class SimulatedUIWidgetJumperT12;
+  class SimulatedUIWidgetJumperT16;
+  class SimulatedUIWidgetTX16S;
 }
 
 class SimulatedUIWidget9X: public SimulatedUIWidget
@@ -117,7 +121,7 @@ class SimulatedUIWidget9X: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidget9X(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidget9X(SimulatorInterface * simulator, QWidget * parent = nullptr);
     virtual ~SimulatedUIWidget9X();
 
   protected:
@@ -128,12 +132,24 @@ class SimulatedUIWidget9X: public SimulatedUIWidget
 
 };
 
+class SimulatedUIWidgetX9LITE: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetX9LITE(SimulatorInterface * simulator, QWidget * parent = nullptr);
+    virtual ~SimulatedUIWidgetX9LITE();
+
+  private:
+    Ui::SimulatedUIWidgetX9LITE * ui;
+};
+
 class SimulatedUIWidgetX7: public SimulatedUIWidget
 {
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX7(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX7(SimulatorInterface * simulator, QWidget * parent = nullptr);
     virtual ~SimulatedUIWidgetX7();
 
   private:
@@ -145,7 +161,7 @@ class SimulatedUIWidgetX9: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX9(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX9(SimulatorInterface * simulator, QWidget * parent = nullptr);
     virtual ~SimulatedUIWidgetX9();
 
   private:
@@ -157,7 +173,7 @@ class SimulatedUIWidgetXLITE: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetXLITE(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetXLITE(SimulatorInterface * simulator, QWidget * parent = nullptr);
     virtual ~SimulatedUIWidgetXLITE();
 
   private:
@@ -169,11 +185,23 @@ class SimulatedUIWidgetX9E: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX9E(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX9E(SimulatorInterface * simulator, QWidget * parent = nullptr);
     virtual ~SimulatedUIWidgetX9E();
 
   private:
     Ui::SimulatedUIWidgetX9E * ui;
+};
+
+class SimulatedUIWidgetX9D2019: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetX9D2019(SimulatorInterface * simulator, QWidget * parent = nullptr);
+    virtual ~SimulatedUIWidgetX9D2019();
+
+  private:
+    Ui::SimulatedUIWidgetX9D2019 * ui;
 };
 
 class SimulatedUIWidgetX10: public SimulatedUIWidget
@@ -181,7 +209,7 @@ class SimulatedUIWidgetX10: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX10(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX10(SimulatorInterface * simulator, QWidget * parent = nullptr);
     virtual ~SimulatedUIWidgetX10();
 
   private:
@@ -193,11 +221,48 @@ class SimulatedUIWidgetX12: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX12(SimulatorInterface * simulator, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX12(SimulatorInterface * simulator, QWidget * parent = nullptr);
     virtual ~SimulatedUIWidgetX12();
 
   private:
     Ui::SimulatedUIWidgetX12 * ui;
 };
+
+class SimulatedUIWidgetJumperT12: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetJumperT12(SimulatorInterface * simulator, QWidget * parent = NULL);
+    virtual ~SimulatedUIWidgetJumperT12();
+
+  private:
+    Ui::SimulatedUIWidgetJumperT12 * ui;
+};
+
+class SimulatedUIWidgetJumperT16: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetJumperT16(SimulatorInterface * simulator, QWidget * parent = nullptr);
+    virtual ~SimulatedUIWidgetJumperT16();
+
+  private:
+    Ui::SimulatedUIWidgetJumperT16 * ui;
+};
+
+class SimulatedUIWidgetTX16S: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetTX16S(SimulatorInterface * simulator, QWidget * parent = nullptr);
+    virtual ~SimulatedUIWidgetTX16S();
+
+  private:
+    Ui::SimulatedUIWidgetTX16S * ui;
+};
+
 
 #endif // SIMULATEDUIWIDGET_H

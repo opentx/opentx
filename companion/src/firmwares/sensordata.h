@@ -23,7 +23,9 @@
 
 #include <QtCore>
 
-#define CPN_MAX_SENSORS       32
+constexpr int CPN_MAX_SENSORS = 60;
+
+class ModelData;
 
 class SensorData {
   Q_DECLARE_TR_FUNCTIONS(SensorData)
@@ -88,6 +90,7 @@ class SensorData {
       UNIT_RADIANS,
       UNIT_MILLILITERS,
       UNIT_FLOZ,
+      UNIT_MILLILITERS_PER_MINUTE,
       UNIT_HOURS,
       UNIT_MINUTES,
       UNIT_SECONDS,
@@ -111,6 +114,8 @@ class SensorData {
     unsigned int id;
     unsigned int subid;
     unsigned int instance;
+    unsigned int rxIdx;
+    unsigned int moduleIdx;
     unsigned int persistentValue;
     unsigned int formula;
     char label[4+1];
@@ -144,6 +149,7 @@ class SensorData {
     void updateUnit();
     QString unitString() const;
     QString nameToString(int index) const;
+    QString getOrigin(const ModelData* model) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
 };
 

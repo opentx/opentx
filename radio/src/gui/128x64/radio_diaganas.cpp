@@ -35,7 +35,7 @@ void menuRadioDiagAnalogs(event_t event)
 
   coord_t y = MENU_HEADER_HEIGHT + 1;
 
-  lcdDrawTextAlignedLeft(y, STICKS_PWM_ENABLED() ? "PWM Sticks/Pots/Sliders" : "Sticks/Pots/Sliders");
+  lcdDrawTextAlignedLeft(y, STICKS_PWM_ENABLED() ? STR_PWM_STICKS_POTS_SLIDERS : STR_STICKS_POTS_SLIDERS);
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
     uint8_t x;
@@ -54,7 +54,7 @@ void menuRadioDiagAnalogs(event_t event)
 
 #if defined(GYRO)
   y += FH;
-  lcdDrawTextAlignedLeft(y, "Gyro");
+  lcdDrawTextAlignedLeft(y, STR_GYRO);
   y += FH;
   uint8_t x = INDENT_WIDTH;
   lcdDrawText(x, y, "X:");

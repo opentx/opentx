@@ -23,74 +23,13 @@
 enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_PROTOCOL_TYPE,
   ITEM_TELEMETRY_RSSI_LABEL,
+  ITEM_TELEMETRY_RSSI_SOURCE,
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
   ITEM_TELEMETRY_DISABLE_ALARMS,
   ITEM_TELEMETRY_SENSORS_LABEL,
-  ITEM_TELEMETRY_SENSOR1,
-  ITEM_TELEMETRY_SENSOR2,
-  ITEM_TELEMETRY_SENSOR3,
-  ITEM_TELEMETRY_SENSOR4,
-  ITEM_TELEMETRY_SENSOR5,
-  ITEM_TELEMETRY_SENSOR6,
-  ITEM_TELEMETRY_SENSOR7,
-  ITEM_TELEMETRY_SENSOR8,
-  ITEM_TELEMETRY_SENSOR9,
-  ITEM_TELEMETRY_SENSOR10,
-  ITEM_TELEMETRY_SENSOR11,
-  ITEM_TELEMETRY_SENSOR12,
-  ITEM_TELEMETRY_SENSOR13,
-  ITEM_TELEMETRY_SENSOR14,
-  ITEM_TELEMETRY_SENSOR15,
-  ITEM_TELEMETRY_SENSOR16,
-  ITEM_TELEMETRY_SENSOR17,
-  ITEM_TELEMETRY_SENSOR18,
-  ITEM_TELEMETRY_SENSOR19,
-  ITEM_TELEMETRY_SENSOR20,
-  ITEM_TELEMETRY_SENSOR21,
-  ITEM_TELEMETRY_SENSOR22,
-  ITEM_TELEMETRY_SENSOR23,
-  ITEM_TELEMETRY_SENSOR24,
-  ITEM_TELEMETRY_SENSOR25,
-  ITEM_TELEMETRY_SENSOR26,
-  ITEM_TELEMETRY_SENSOR27,
-  ITEM_TELEMETRY_SENSOR28,
-  ITEM_TELEMETRY_SENSOR29,
-  ITEM_TELEMETRY_SENSOR30,
-  ITEM_TELEMETRY_SENSOR31,
-  ITEM_TELEMETRY_SENSOR32,
-  ITEM_TELEMETRY_SENSOR33,
-  ITEM_TELEMETRY_SENSOR34,
-  ITEM_TELEMETRY_SENSOR35,
-  ITEM_TELEMETRY_SENSOR36,
-  ITEM_TELEMETRY_SENSOR37,
-  ITEM_TELEMETRY_SENSOR38,
-  ITEM_TELEMETRY_SENSOR39,
-  ITEM_TELEMETRY_SENSOR40,
-  ITEM_TELEMETRY_SENSOR41,
-  ITEM_TELEMETRY_SENSOR42,
-  ITEM_TELEMETRY_SENSOR43,
-  ITEM_TELEMETRY_SENSOR44,
-  ITEM_TELEMETRY_SENSOR45,
-  ITEM_TELEMETRY_SENSOR46,
-  ITEM_TELEMETRY_SENSOR47,
-  ITEM_TELEMETRY_SENSOR48,
-  ITEM_TELEMETRY_SENSOR49,
-  ITEM_TELEMETRY_SENSOR50,
-  ITEM_TELEMETRY_SENSOR51,
-  ITEM_TELEMETRY_SENSOR52,
-  ITEM_TELEMETRY_SENSOR53,
-  ITEM_TELEMETRY_SENSOR54,
-  ITEM_TELEMETRY_SENSOR55,
-  ITEM_TELEMETRY_SENSOR56,
-  ITEM_TELEMETRY_SENSOR57,
-  ITEM_TELEMETRY_SENSOR58,
-  ITEM_TELEMETRY_SENSOR59,
-  ITEM_TELEMETRY_SENSOR60,
-  ITEM_TELEMETRY_SENSOR61,
-  ITEM_TELEMETRY_SENSOR62,
-  ITEM_TELEMETRY_SENSOR63,
-  ITEM_TELEMETRY_SENSOR64,
+  ITEM_TELEMETRY_SENSOR_FIRST,
+  ITEM_TELEMETRY_SENSOR_LAST = ITEM_TELEMETRY_SENSOR_FIRST + MAX_TELEMETRY_SENSORS - 1,
   ITEM_TELEMETRY_DISCOVER_SENSORS,
   ITEM_TELEMETRY_NEW_SENSOR,
   ITEM_TELEMETRY_DELETE_ALL_SENSORS,
@@ -109,20 +48,20 @@ enum MenuModelTelemetryFrskyItems {
 #define TELEM_COL4                    350
 #define TELEM_COL5                    425
 
+#define RSSI_ROWS                     LABEL(RSSI), 0, 0, 0, 0,
 #define SENSOR_ROWS(x)                (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSORS_ROWS                  LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30),  \
-                                      SENSOR_ROWS(31), SENSOR_ROWS(32), SENSOR_ROWS(33), SENSOR_ROWS(34), SENSOR_ROWS(35), SENSOR_ROWS(36), SENSOR_ROWS(37), SENSOR_ROWS(38), SENSOR_ROWS(39), SENSOR_ROWS(40),SENSOR_ROWS(41), SENSOR_ROWS(42), SENSOR_ROWS(43), SENSOR_ROWS(44), SENSOR_ROWS(45), SENSOR_ROWS(46), SENSOR_ROWS(47), SENSOR_ROWS(48), SENSOR_ROWS(49), SENSOR_ROWS(50),SENSOR_ROWS(51), SENSOR_ROWS(52), SENSOR_ROWS(53), SENSOR_ROWS(54), SENSOR_ROWS(55), SENSOR_ROWS(56), SENSOR_ROWS(57), SENSOR_ROWS(58), SENSOR_ROWS(59),SENSOR_ROWS(60),SENSOR_ROWS(61), SENSOR_ROWS(62), SENSOR_ROWS(63), 0, 0, 0, 0,
+                                      SENSOR_ROWS(31), SENSOR_ROWS(32), SENSOR_ROWS(33), SENSOR_ROWS(34), SENSOR_ROWS(35), SENSOR_ROWS(36), SENSOR_ROWS(37), SENSOR_ROWS(38), SENSOR_ROWS(39), SENSOR_ROWS(40),SENSOR_ROWS(41), SENSOR_ROWS(42), SENSOR_ROWS(43), SENSOR_ROWS(44), SENSOR_ROWS(45), SENSOR_ROWS(46), SENSOR_ROWS(47), SENSOR_ROWS(48), SENSOR_ROWS(49), SENSOR_ROWS(50),SENSOR_ROWS(51), SENSOR_ROWS(52), SENSOR_ROWS(53), SENSOR_ROWS(54), SENSOR_ROWS(55), SENSOR_ROWS(56), SENSOR_ROWS(57), SENSOR_ROWS(58), SENSOR_ROWS(59), 0, 0, 0, 0,
 #if defined(VARIO)
   #define VARIO_ROWS                  LABEL(Vario), 0, 1, 2,
 #else
   #define VARIO_ROWS
 #endif
-#define RSSI_ROWS                     LABEL(RSSI), 0, 0, 0,
-#define TELEMETRY_TYPE_ROWS           (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
+#define TELEMETRY_TYPE_ROWS           (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
 
 void onSensorMenu(const char * result)
 {
-  uint8_t index = menuVerticalPosition - ITEM_TELEMETRY_SENSOR1;
+  uint8_t index = menuVerticalPosition - ITEM_TELEMETRY_SENSOR_FIRST;
 
   if (index < MAX_TELEMETRY_SENSORS) {
     if (result == STR_EDIT) {
@@ -155,16 +94,18 @@ void onSensorMenu(const char * result)
   }
 }
 
-bool menuModelTelemetryFrsky(event_t event)
+void onDeleteAllSensorsConfirm(const char * result)
 {
-  if (warningResult) {
-    warningResult = 0;
+  if (result == STR_OK) {
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       delTelemetryIndex(i);
     }
   }
+}
 
-  MENU(STR_MENUTELEMETRY, MODEL_ICONS, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
+bool menuModelTelemetry(event_t event)
+{
+  MENU(STR_MENUTELEMETRY, MODEL_ICONS, menuTabModel, MENU_MODEL_TELEMETRY, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
@@ -177,8 +118,8 @@ bool menuModelTelemetryFrsky(event_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
 
-    if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_TELEMETRY_SENSORS) {
-      int index = k-ITEM_TELEMETRY_SENSOR1;
+    if (k >= ITEM_TELEMETRY_SENSOR_FIRST && k <= ITEM_TELEMETRY_SENSOR_LAST) {
+      int index = k - ITEM_TELEMETRY_SENSOR_FIRST;
       lcdDrawNumber(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, 0, NULL, ":");
       lcdDrawSizedText(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       TelemetryItem & telemetryItem = telemetryItems[index];
@@ -237,7 +178,7 @@ bool menuModelTelemetryFrsky(event_t event)
         break;
 
       case ITEM_TELEMETRY_DISCOVER_SENSORS:
-        lcdDrawText(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, allowNewSensors ? NO_INDENT(STR_STOP_DISCOVER_SENSORS) : NO_INDENT(STR_DISCOVER_SENSORS), attr);
+        lcdDrawText(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           allowNewSensors = !allowNewSensors;
@@ -254,18 +195,19 @@ bool menuModelTelemetryFrsky(event_t event)
             pushMenu(menuModelSensor);
           }
           else {
+            allowNewSensors = 0;
             POPUP_WARNING(STR_TELEMETRYFULL);
           }
         }
         break;
 
       case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
-        lcdDrawText(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, NO_INDENT(STR_DELETE_ALL_SENSORS), attr);
+        lcdDrawText(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, STR_DELETE_ALL_SENSORS, attr);
         if (attr)
           s_editMode = 0;
-        if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
           killEvents(KEY_ENTER);
-          POPUP_CONFIRMATION(STR_CONFIRMDELETE);
+          POPUP_CONFIRMATION(STR_CONFIRMDELETE, onDeleteAllSensorsConfirm);
         }
         break;
 
@@ -276,14 +218,31 @@ bool menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_RSSI_LABEL:
 #if defined(MULTIMODULE)
-        if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF &&
+        if (!IS_INTERNAL_MODULE_ON() &&
           g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE  &&
-          g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "RSNR");
+          (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT ))
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "RQly");
         else
 #endif
         lcdDrawText(MENUS_MARGIN_LEFT, y, "RSSI");
         break;
+
+      case ITEM_TELEMETRY_RSSI_SOURCE: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_SOURCE);
+        if (g_model.rssiSource) {
+          drawSource(TELEM_COL2, y, MIXSRC_FIRST_TELEM + 3 * (g_model.rssiSource - 1), attr);
+          TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource - 1];
+          lcdDrawText(lcdNextPos, y, " ", attr);
+          drawReceiverName(lcdNextPos, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, attr);
+        }
+        else {
+          lcdDrawText(TELEM_COL2, y, STR_DEFAULT, attr);
+        }
+        if (attr) {
+          g_model.rssiSource = checkIncDec(event, g_model.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
+        }
+        break;
+      }
 
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {
@@ -309,7 +268,7 @@ bool menuModelTelemetryFrsky(event_t event)
         break;
 
       case ITEM_TELEMETRY_VARIO_SOURCE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOURCE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT TR_SOURCE);
         drawSource(TELEM_COL2, y, g_model.varioData.source ? MIXSRC_FIRST_TELEM+3*(g_model.varioData.source-1) : 0, attr);
         if (attr) {
           g_model.varioData.source = checkIncDec(event, g_model.varioData.source, 0, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);

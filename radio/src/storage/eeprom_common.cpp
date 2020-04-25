@@ -27,7 +27,6 @@
 void eeLoadModel(uint8_t index)
 {
   if (index < MAX_MODELS) {
-
     preModelLoad();
 
     uint16_t size = eeLoadModelData(index);
@@ -86,21 +85,34 @@ void eeLoadModelHeaders()
   }
 }
 
-void storageReadRadioSettings()
+void storageClearRadioSettings()
 {
-  if (!eepromOpen() || !eeLoadGeneral()) {
+  memclear(&g_eeGeneral, sizeof(RadioData));
+}
+
+bool storageReadRadioSettings(bool allowFixes)
+{
+  if (!eepromOpen() || !eeLoadGeneral(allowFixes)) {
+    if (!allowFixes) {
+      storageClearRadioSettings();
+      return false;
+    }
     storageEraseAll(true);
   }
   else {
     eeLoadModelHeaders();
   }
 
-  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
+  for (uint8_t i=0; languagePacks[i]; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
       currentLanguagePack = languagePacks[i];
     }
   }
+
+  postRadioSettingsLoad();
+
+  return true;
 }
 
 void storageReadCurrentModel()
@@ -125,7 +137,7 @@ void storageEraseAll(bool warn)
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
   }
 
-  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
+  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, nullptr, AU_NONE);
 
   storageFormat();
   storageDirty(EE_GENERAL|EE_MODEL);

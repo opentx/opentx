@@ -306,8 +306,8 @@ bool ModelSelectionPage::validatePage()
   QString newName(nameLineEdit->text());
   newName = (newName.normalized(QString::NormalizationForm_D));
   newName = newName.replace(QRegExp("[^ A-Za-z0-9_.-,\\s]"), "");
-  strncpy( wizDlg->mix.name, newName.toLatin1(), WIZ_MODEL_NAME_LENGTH);
-  wizDlg->mix.name[WIZ_MODEL_NAME_LENGTH] = 0;
+  memset(wizDlg->mix.name, 0, sizeof(wizDlg->mix.name));
+  strncpy( wizDlg->mix.name, newName.toLatin1(), sizeof(wizDlg->mix.name)-1);
 
   if (multirotorRB->isChecked())
     wizDlg->mix.vehicle = MULTICOPTER;
@@ -1053,7 +1053,7 @@ QString WizardPrinter::printChannel( Input input1, int weight1, Input input2, in
 
 QString WizardPrinter::print()
 {
-  QString str = tr("Model Name: ") + mix->name + "\n";
+  QString str = tr("Model Name: ") + QString::fromUtf8(mix->name) + "\n";
   str += tr("Model Type: ") + vehicleName(mix->vehicle) + "\n";
 
   str += tr("Options: ") + "[";
@@ -1075,6 +1075,3 @@ QString WizardPrinter::print()
   }
   return str;
 }
-
-
-

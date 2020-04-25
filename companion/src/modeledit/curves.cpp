@@ -153,6 +153,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i+1));
     edit->setContextMenuPolicy(Qt::CustomContextMenu);
+    edit->setToolTip(tr("Popup menu available"));
     connect(edit, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
     connect(edit, SIGNAL(clicked()), this, SLOT(editCurve()));
     if (i<limit) {
@@ -680,7 +681,7 @@ void Curves::onNodeDelete()
 void Curves::onSceneNewPoint(int x, int y)
 {
   if ((model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) && (model->curves[currentCurve].count < CPN_MAX_POINTS)) {
-    int newidx;
+    int newidx = 0;
     int numpoints = model->curves[currentCurve].count;
     if (x < model->curves[currentCurve].points[0].x) {
       newidx = 0;

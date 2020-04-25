@@ -160,11 +160,11 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     if (option->state & QStyle::State_Sunken) {
         gradient.setCenter(ballHeight, ballHeight);
         gradient.setFocalPoint(ballHeight, ballHeight);
-        gradient.setColorAt(1, nodecolor.light(180));
-        gradient.setColorAt(0, nodecolor.light(120));
+        gradient.setColorAt(1, nodecolor.lighter(180));
+        gradient.setColorAt(0, nodecolor.lighter(120));
     } else {
         gradient.setColorAt(0, nodecolor);
-        gradient.setColorAt(1, nodecolor.dark(120));
+        gradient.setColorAt(1, nodecolor.darker(120));
     }
     painter->setBrush(gradient);
     painter->setPen(QPen(Qt::black, 0));

@@ -14,8 +14,6 @@
 ---- # GNU General Public License for more details.                          #
 ---- #                                                                       #
 ---- #########################################################################
--- Navigation variables
-local dirty = true
 
 -- Model types
 local modelType = 0
@@ -25,12 +23,10 @@ local MODELTYPE_QUAD = 2
 
 -- Common functions
 local function fieldIncDec(event, value, max)
-  if event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
+  if event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
     value = (value + max)
-    dirty = true
-  elseif event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
+  elseif event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
     value = (value + max + 2)
-    dirty = true
   end
   value = (value % (max+1))
   return value
@@ -38,7 +34,7 @@ end
 
 -- Model Type Menu
 local function modelTypeSurround(index)
-  if(index<=1) then
+  if index <= 1 then
     lcd.drawFilledRectangle(59*(index%2)+12, 13, 43, 23)
   else
     lcd.drawFilledRectangle(59*(index%2)+12, 34, 40, 20)
@@ -56,11 +52,8 @@ local function drawModelChoiceMenu()
 end
 
 local function modelTypeMenu(event)
-  if dirty == true then
-    drawModelChoiceMenu()
-    dirty = false
-  end
-  if event == EVT_ENTER_BREAK then
+  drawModelChoiceMenu()
+  if event == EVT_VIRTUAL_ENTER then
     if modelType == MODELTYPE_PLANE then
       return "plane.lua"
     elseif modelType == MODELTYPE_DELTA then
@@ -68,7 +61,6 @@ local function modelTypeMenu(event)
     elseif modelType == MODELTYPE_QUAD then
       return "multi.lua"
     end
-    dirty = true
   else
     modelType = fieldIncDec(event, modelType, 2)
   end
@@ -81,7 +73,7 @@ local function run(event)
     error("Cannot be run as a model script!")
   end
 
-  if event == EVT_EXIT_BREAK then
+  if event == EVT_VIRTUAL_EXIT then
     return 2
   end
 

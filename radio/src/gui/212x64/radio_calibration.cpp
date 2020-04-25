@@ -25,14 +25,6 @@
 #define BAR_SPACING   12
 #define BAR_HEIGHT    22
 
-enum CalibrationState {
-  CALIB_START = 0,
-  CALIB_SET_MIDPOINT,
-  CALIB_MOVE_STICKS,
-  CALIB_STORE,
-  CALIB_FINISHED
-};
-
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
@@ -195,7 +187,8 @@ void menuCommonCalib(event_t event)
 
 void menuRadioCalibration(event_t event)
 {
-  check_submenu_simple(STR_MENUCALIBRATION, event, 0);
+  check_submenu_simple(event, 0);
+  title(STR_MENUCALIBRATION);
   menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {
     menuCalibrationState = CALIB_START;
@@ -209,7 +202,7 @@ void menuFirstCalib(event_t event)
     chainMenu(menuMainView);
   }
   else {
-    lcdDrawTextAlignedCenter(0*FH, MENUCALIBRATION);
+    lcdDrawText(LCD_W / 2, 0, STR_MENUCALIBRATION, CENTERED);
     lcdInvertLine(0);
     menuCommonCalib(event);
   }

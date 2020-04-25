@@ -62,10 +62,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_PLUS_BREAK or event == EVT_ROT_LEFT then
+    if event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       value = (value + max)
       dirty = true
-    elseif event == EVT_MINUS_BREAK or event == EVT_ROT_RIGHT then
+    elseif event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       value = (value + max + 2)
       dirty = true
     end
@@ -76,12 +76,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT or event == EVT_ROT_RIGHT then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT or event == EVT_ROT_LEFT then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -92,11 +92,11 @@ local function valueIncDec(event, value, min, max)
 end
 
 local function navigate(event, fieldMax, prevPage, nextPage)
-  if event == EVT_ENTER_BREAK then
+  if event == EVT_VIRTUAL_ENTER then
     edit = not edit
     dirty = true
   elseif edit then
-    if event == EVT_EXIT_BREAK then
+    if event == EVT_VIRTUAL_EXIT then
       edit = false
       dirty = true
     elseif not dirty then
@@ -130,7 +130,7 @@ local function getFieldFlags(position)
 end
 
 local function channelIncDec(event, value)
-  if not edit and event==EVT_MENU_BREAK then
+  if not edit and event == EVT_VIRTUAL_MENU then
     servoPage = value
     dirty = true
   else
@@ -425,7 +425,7 @@ local function servoMenu(event)
       limits.revert = fieldIncDec(event, limits.revert, 1)
     end
     model.setOutput(servoPage, limits)
-  elseif event == EVT_EXIT_BREAK then
+  elseif event == EVT_VIRTUAL_EXIT then
     servoPage = nil
     dirty = true
   end
@@ -509,8 +509,8 @@ local function applySettings()
   if aileronsMode == 1 then
     addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "Ail")
   elseif aileronsMode == 2 then
-    addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL")
-    addMix(ailCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR", -100)
+    addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL", -100)
+    addMix(ailCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR")
   end
   if flapsMode == 1 then
     addMix(flapsCH1, MIXSRC_SA, "Flaps")
@@ -526,9 +526,9 @@ local function applySettings()
   end
   if tailMode == 3 then
     addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleL", 50)
-    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", 50, 1)
+    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", -50, 1)
     addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleR", 50)
-    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", -50, 1)
+    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", 50, 1)
   else
     if tailMode > 0 then
       addMix(rudCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
@@ -550,9 +550,9 @@ local function confirmationMenu(event)
 
   navigate(event, fieldsMax, TAIL_PAGE, page)
 
-  if event == EVT_EXIT_BREAK then
+  if event == EVT_VIRTUAL_EXIT then
     return 2
-  elseif event == EVT_ENTER_LONG then
+  elseif event == EVT_VIRTUAL_ENTER_LONG then
     killEvents(event)
     applySettings()
     return 2

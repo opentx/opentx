@@ -84,7 +84,7 @@ bool checkScreenshot(const QString & test)
   QPainter p(&buffer);
   doPaint(p);
   QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
-  QImage reference(TESTS_PATH "/tests/" + filename);
+  QImage reference(TESTS_PATH "/" + filename);
 
   if (buffer == reference) {
     return true;
@@ -96,31 +96,13 @@ bool checkScreenshot(const QString & test)
   }
 }
 
-#if defined(COLORLCD)
-// TODO
-#else
-#if defined(PCBTARANIS) && LCD_W >= 212
+#if !defined(COLORLCD)
 TEST(outdezNAtt, test_unsigned)
 {
   lcdClear();
   lcdDrawNumber(0, 0, 65530, LEFT);
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
-#elif LCD_W <= 128
-TEST(outdezNAtt, test_unsigned)
-{
-  lcdClear();
-  lcdDrawNumber(0, 0, 65530, LEFT|UNSIGN);
-  EXPECT_TRUE(checkScreenshot("arm_unsigned")) << "Unsigned numbers will be bad displayed";
-}
-#else
-TEST(outdezNAtt, test_unsigned)
-{
-  lcdClear();
-  lcdDrawNumber(0, 0, 65530, LEFT|UNSIGN);
-  EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
-}
-#endif
 
 TEST(outdezNAtt, testBigNumbers)
 {
@@ -254,6 +236,19 @@ TEST(Lcd, Midsize)
   EXPECT_TRUE(checkScreenshot("midsize"));
 }
 
+TEST(Lcd, MidsizeNextPosPrec1)
+{
+  lcdClear();
+
+  lcdDrawText(10, 1, "80", MIDSIZE);
+  lcdDrawText(lcdNextPos, 1, "V", MIDSIZE);
+
+  lcdDrawNumber(10, 15, 80, MIDSIZE | PREC1);
+  lcdDrawText(lcdNextPos, 15, "V", MIDSIZE);
+
+  EXPECT_TRUE(checkScreenshot("MidsizeNextPosPrec1"));
+}
+
 TEST(Lcd, Dblsize)
 {
   lcdClear();
@@ -275,7 +270,7 @@ TEST(Lcd, Dblsize)
 TEST(Lcd, DrawSwitch)
 {
   lcdClear();
-  drawSwitch(0,  10, SWSRC_SA0, 0);
+  drawSwitch(0,  10, SWSRC_SA0, 0, false);
   drawSwitch(30, 10, SWSRC_SA0, SMLSIZE);
   // drawSwitch(60, 10, SWSRC_SA0, MIDSIZE); missing arrows in this font
   drawSwitch(90, 10, SWSRC_SA0, DBLSIZE);
@@ -288,7 +283,7 @@ TEST(Lcd, BMPWrapping)
 {
   lcdClear();
   uint8_t bitmap[2+40*40/2];
-  lcdLoadBitmap(bitmap, TESTS_PATH "/tests/plane.bmp", 40, 40);
+  lcdLoadBitmap(bitmap, TESTS_PATH "/plane.bmp", 40, 40);
   lcdDrawBitmap(200, 0, bitmap);
   lcdDrawBitmap(200, 60, bitmap);
   lcdDrawBitmap(240, 60, bitmap);     // x too big
@@ -357,31 +352,31 @@ TEST(Lcd, lcdDrawBitmapLoadAndDisplay)
   // Test proper BMP files, they should display correctly
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(7, 32));
-    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/tests/4b_7x32.bmp", 7, 32) != NULL);
+    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/4b_7x32.bmp", 7, 32) != NULL);
     bitmap.leakCheck();
     lcdDrawBitmap(10, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(6, 32));
-    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/tests/1b_6x32.bmp", 6, 32) != NULL);
+    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/1b_6x32.bmp", 6, 32) != NULL);
     bitmap.leakCheck();
     lcdDrawBitmap(20, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(31, 31));
-    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/tests/4b_31x31.bmp", 31, 31) != NULL);
+    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/4b_31x31.bmp", 31, 31) != NULL);
     bitmap.leakCheck();
     lcdDrawBitmap(30, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(39, 32));
-    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/tests/1b_39x32.bmp", 39, 32) != NULL);
+    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/1b_39x32.bmp", 39, 32) != NULL);
     bitmap.leakCheck();
     lcdDrawBitmap(70, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(20, 20));
-    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/tests/4b_20x20.bmp", 20, 20) != NULL);
+    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/4b_20x20.bmp", 20, 20) != NULL);
     bitmap.leakCheck();
     lcdDrawBitmap(120, 2, bitmap.buffer());
   }
@@ -395,7 +390,7 @@ TEST(Lcd, lcdDrawBitmapLoadAndDisplay)
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(10, 10));
-    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/tests/1b_39x32.bmp", 10, 10) == NULL) << "to small buffer";
+    EXPECT_TRUE(lcdLoadBitmap(bitmap.buffer(), TESTS_PATH "/1b_39x32.bmp", 10, 10) == NULL) << "to small buffer";
     bitmap.leakCheck();
   }
 }

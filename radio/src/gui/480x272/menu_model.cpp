@@ -36,14 +36,14 @@ const MenuHandlerFunc menuTabModel[] = {
 #if defined(LUA_MODEL_SCRIPTS)
   menuModelCustomScripts,
 #endif
-  CASE_FRSKY(menuModelTelemetryFrsky)
+  menuModelTelemetry
 };
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags attr);
 
 uint8_t editDelay(coord_t x, coord_t y, event_t event, uint8_t attr, uint8_t delay)
 {
-  lcdDrawNumber(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
+  lcdDrawNumber(x+MIXES_2ND_COLUMN, y, delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
 }

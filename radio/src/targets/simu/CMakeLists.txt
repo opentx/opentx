@@ -15,7 +15,6 @@ set(SIMU_SRC
   simueeprom.cpp
   simufatfs.cpp
   simudisk.cpp
-
   )
 
 if(SIMU_DISKIO)
@@ -41,7 +40,7 @@ if(Qt5Widgets_FOUND)
   qt5_wrap_cpp(SIMULATOR_SRC ${COMPANION_SRC_DIRECTORY}/simulation/simulatorinterface.h opentxsimulator.h)
   list(APPEND SIMULATOR_SRC ${SIMU_SRC} opentxsimulator.cpp)
   add_library(${SIMULATOR_TARGET} SHARED ${SIMULATOR_SRC})
-  add_dependencies(${SIMULATOR_TARGET} ${FIRMWARE_DEPENDENCIES})
+  add_dependencies(${SIMULATOR_TARGET} ${RADIO_DEPENDENCIES})
   target_compile_definitions(${SIMULATOR_TARGET} PUBLIC ${APP_COMMON_DEFINES})  # set in top-level CMakeLists
   target_link_libraries(${SIMULATOR_TARGET} ${SDL_LIBRARY} Qt5::Core)
   add_custom_target(libsimulator DEPENDS ${SIMULATOR_TARGET})
@@ -98,7 +97,7 @@ if(FOX_FOUND)
     set(SIMU_SRC ${SIMU_SRC} ${FATFS_DIR}/FatFs/ff.c ${FATFS_DIR}/option/ccsbcs.c)
   endif()
   add_executable(simu WIN32 ${SIMU_SRC} ${RADIO_SRC_DIRECTORY}/simu.cpp)
-  add_dependencies(simu ${FIRMWARE_DEPENDENCIES})
+  add_dependencies(simu ${RADIO_DEPENDENCIES})
   target_include_directories(simu PUBLIC ${FOX_INCLUDE_DIR} )
   target_link_libraries(simu ${FOX_LIBRARY} pthread ${SDL_LIBRARY})
   target_compile_definitions(simu PUBLIC -DSIMU)

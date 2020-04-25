@@ -361,7 +361,7 @@ TCHAR * f_gets (TCHAR* buff, int len, FIL* fil)
 {
   if (fil && fil->obj.fs) {
     buff = fgets(buff, len, (FILE*)fil->obj.fs);
-    if (buff != NULL) {
+    if (buff != nullptr) {
       fil->fptr = *buff;
     }
     // TRACE_SIMPGMSPACE("fgets(%p) %u, %s", fil->obj.fs, len, buff);
@@ -396,7 +396,7 @@ FRESULT f_close (FIL * fil)
   TRACE_SIMPGMSPACE("f_close(%p) (FIL:%p)", fil->obj.fs, fil);
   if (fil->obj.fs) {
     fclose((FILE*)fil->obj.fs);
-    fil->obj.fs = NULL;
+    fil->obj.fs = nullptr;
   }
   return FR_OK;
 }
@@ -516,7 +516,7 @@ FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
 
 FRESULT f_utime(const TCHAR* path, const FILINFO* fno)
 {
-  if (fno == NULL)
+  if (fno == nullptr)
     return FR_INVALID_PARAMETER;
 
   std::string simpath = convertToSimuPath(path);

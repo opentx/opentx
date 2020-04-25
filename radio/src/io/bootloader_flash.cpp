@@ -27,7 +27,7 @@ bool isBootloader(const char * filename)
   uint8_t buffer[1024];
   UINT count;
 
-  if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
+  if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK || count != sizeof(buffer)) {
     return false;
   }
 
@@ -37,9 +37,12 @@ bool isBootloader(const char * filename)
 void bootloaderFlash(const char * filename)
 {
   FIL file;
-  f_open(&file, filename, FA_READ);
   uint8_t buffer[1024];
   UINT count;
+
+  pausePulses();
+
+  f_open(&file, filename, FA_READ);
 
   static uint8_t unlocked = 0;
   if (!unlocked) {
@@ -47,18 +50,18 @@ void bootloaderFlash(const char * filename)
     unlockFlash();
   }
 
-  for (int i=0; i<BOOTLOADER_SIZE; i+=1024) {
-    watchdogSuspend(100/*1s*/);
-    if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
+  for (int i = 0; i < BOOTLOADER_SIZE; i += 1024) {
+    watchdogSuspend(1000/*10s*/);
+    if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK || count != sizeof(buffer)) {
       POPUP_WARNING(STR_SDCARD_ERROR);
       break;
     }
-    if (i==0 && !isBootloaderStart(buffer)) {
+    if (i == 0 && !isBootloaderStart(buffer)) {
       POPUP_WARNING(STR_INCOMPATIBLE);
       break;
     }
-    for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
-      flashWrite(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
+    for (int j = 0; j < 1024; j += FLASH_PAGESIZE) {
+      flashWrite(CONVERT_UINT_PTR(FIRMWARE_ADDRESS + i + j), CONVERT_UINT_PTR(buffer + j));
     }
     drawProgressScreen("Bootloader", STR_WRITING, i, BOOTLOADER_SIZE);
 #if defined(SIMU)
@@ -68,10 +71,15 @@ void bootloaderFlash(const char * filename)
 #endif
   }
 
+  watchdogSuspend(0);
+  WDG_RESET();
+
   if (unlocked) {
     lockFlash();
     unlocked = 0;
   }
 
   f_close(&file);
+
+  resumePulses();
 }

@@ -37,9 +37,10 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("apppreferences.png"));
+  ui->tabWidget->setCurrentIndex(0);
 
   initSettings();
-  connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(onBaseFirmwareChanged()));
+  connect(ui->boardCB, SIGNAL(currentIndexChanged(int)), this, SLOT(onBaseFirmwareChanged()));
   connect(ui->opt_appDebugLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
   connect(ui->opt_fwTraceLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
 
@@ -188,7 +189,7 @@ void AppPreferencesDialog::initSettings()
   ui->backLightColor->setCurrentIndex(g.backLight());
   ui->volumeGain->setValue(profile.volumeGain() / 10.0);
 
-  if (IS_TARANIS(getCurrentBoard())) {
+  if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
     ui->backLightColor->setEnabled(false);
   }
 
@@ -282,9 +283,9 @@ void AppPreferencesDialog::initSettings()
 
   QString currType = QStringList(profile.fwType().split('-').mid(0, 2)).join('-');
   foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
-    ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
+    ui->boardCB->addItem(firmware->getName(), firmware->getId());
     if (currType == firmware->getId()) {
-      ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
+      ui->boardCB->setCurrentIndex(ui->boardCB->count() - 1);
     }
   }
 
@@ -349,6 +350,13 @@ void AppPreferencesDialog::on_ge_pathButton_clicked()
   if (!fileName.isEmpty()) {
     ui->ge_lineedit->setText(fileName);
   }
+}
+
+void AppPreferencesDialog::on_btnClearPos_clicked()
+{
+  SimulatorOptions opts = g.profile[g.sessionId()].simulatorOptions();
+  opts.controlsState.clear();
+  g.profile[g.sessionId()].simulatorOptions(opts);
 }
 
 #if defined(JOYSTICKS)
@@ -442,12 +450,12 @@ void AppPreferencesDialog::onBaseFirmwareChanged()
 
 Firmware *AppPreferencesDialog::getBaseFirmware() const
 {
-  return Firmware::getFirmwareForId(ui->downloadVerCB->currentData().toString());
+  return Firmware::getFirmwareForId(ui->boardCB->currentData().toString());
 }
 
 Firmware * AppPreferencesDialog::getFirmwareVariant() const
 {
-  QString id = ui->downloadVerCB->currentData().toString();
+  QString id = ui->boardCB->currentData().toString();
 
   foreach(QCheckBox *cb, optionsCheckBoxes.values()) {
     if (cb->isChecked())
@@ -540,7 +548,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 
   // TODO: Remove once splash replacement supported on Horus
   // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
-  if (IS_HORUS(baseFw->getBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(baseFw->getBoard())) {
     ui->widget_splashImage->hide();
     ui->SplashFileName->setText("");
   }

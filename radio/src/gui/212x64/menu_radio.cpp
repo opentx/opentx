@@ -20,12 +20,12 @@
 
 #include "opentx.h"
 
-const MenuHandlerFunc menuTabGeneral[] = {
-  menuRadioSetup,
-  menuRadioSdManager,
-#if defined(PXX2)
+const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT] = {
+#if defined(RADIO_TOOLS)
   menuRadioTools,
 #endif
+  menuRadioSdManager,
+  menuRadioSetup,
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,

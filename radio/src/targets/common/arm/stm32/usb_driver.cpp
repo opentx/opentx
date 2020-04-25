@@ -49,23 +49,8 @@ void setSelectedUsbMode(int mode)
 
 int usbPlugged()
 {
-  // debounce
-  static uint8_t debounced_state = 0;
-  static uint8_t last_state = 0;
-
-  if (GPIO_ReadInputDataBit(USB_GPIO, USB_GPIO_PIN_VBUS)) {
-    if (last_state) {
-      debounced_state = 1;
-    }
-    last_state = 1;
-  }
-  else {
-    if (!last_state) {
-      debounced_state = 0;
-    }
-    last_state = 0;
-  }
-  return debounced_state;
+  static PinDebounce debounce;
+  return debounce.debounce(USB_GPIO, USB_GPIO_PIN_VBUS);
 }
 
 USB_OTG_CORE_HANDLE USB_OTG_dev;

@@ -18,8 +18,11 @@
  * GNU General Public License for more details.
  */
 
+void convertRadioData(int version);
+void convertModelData(int version);
+
 bool eeConvert();
-void convertModelData(int id, int version);
+void eeConvertModel(int id, int version);
 
 // Conversions 216 to 217
 void convertModelData_216_to_217(ModelData &model);

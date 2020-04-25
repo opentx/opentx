@@ -2,12 +2,14 @@
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10)
+if(CPU_TYPE_FULL STREQUAL STM32F429xI)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../f4/system_stm32f4xx.c
     ../../../../../targets/${TARGET_DIR}/startup_stm32f42_43xxx.s
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
@@ -19,12 +21,14 @@ if(PCB STREQUAL X12S OR PCB STREQUAL X10)
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/misc.c
     )
-elseif(PCB STREQUAL X9E)
+elseif(CPU_TYPE_FULL STREQUAL STM32F407xE)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../f4/system_stm32f4xx.c
     ../../../../../targets/${TARGET_DIR}/startup_stm32f40_41xxx.s
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_syscfg.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
@@ -70,7 +74,8 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/backlight_driver.cpp
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
   ../../../../../targets/${TARGET_DIR}/diskio.cpp
-  ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
+  ../../../../../targets/${TARGET_DIR}/board.cpp
+  ../pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
   ../usbd_storage_msd.cpp
@@ -84,52 +89,69 @@ set(BOOTLOADER_SRC
   bin_files.cpp
   )
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X3)
+if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL X9E OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019) OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE OR PCB STREQUAL X9LITES)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../targets/common/arm/stm32/rotary_encoder_driver.cpp
     )
 endif()
 
-if(NOT (PCB STREQUAL X10 OR PCB STREQUAL X12S))
+if(PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
-    ../../../../../targets/${TARGET_DIR}/i2c_driver.cpp
+    ../../../../../targets/common/arm/stm32/bluetooth_driver.cpp
     )
+endif()
 
-  remove_definitions(-DDEBUG)
-
-else()
+if(PCB STREQUAL X10 OR PCB STREQUAL X12S)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../targets/${TARGET_DIR}/sdram_driver.c
     ../../../../../targets/common/arm/stm32/sdio_sd.c
+    ../../../../../targets/common/arm/stm32/rtc_driver.cpp
     ../../../../../targets/${TARGET_DIR}/haptic_driver.cpp
     ../../../../../gui/${GUI_DIR}/bitmapbuffer.cpp
     ../../../../../gui/${GUI_DIR}/rle.cpp
+
     ../../../../../syscalls.c
     )
+
+if(USB_CHARGER)
+  set(BOOTLOADER_SRC
+    ${BOOTLOADER_SRC}
+    ../../../../../targets/${TARGET_DIR}/usb_charger_driver.cpp
+    ../../../../../targets/${TARGET_DIR}/led_driver.cpp
+    )
+  endif()
 
   if(DEBUG)
     set(BOOTLOADER_SRC
       ${BOOTLOADER_SRC}
       ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
       ../../../../../serial.cpp
-      ../serial2_driver.cpp
+      ../../../../../targets/common/arm/stm32/aux_serial_driver.cpp
       )
   endif()
+else()
+  set(BOOTLOADER_SRC
+    ${BOOTLOADER_SRC}
+    ../../../../../targets/${TARGET_DIR}/i2c_driver.cpp
+    )
+  remove_definitions(-DDEBUG)
 endif()
 
 remove_definitions(-DDISK_CACHE)
 remove_definitions(-DLUA)
 remove_definitions(-DCLI)
+remove_definitions(-DSEMIHOSTING)
 remove_definitions(-DUSB_SERIAL)
+remove_definitions(-DWATCHDOG)
+
 add_definitions(-DBOOT)
 
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 # use smaller nano libc
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs")
-
 
 add_executable(bootloader ${BOOTLOADER_SRC})
 add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)

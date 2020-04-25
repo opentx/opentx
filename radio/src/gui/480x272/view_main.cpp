@@ -36,7 +36,10 @@ void drawMainPots()
 {
   // The 3 pots
   drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedAnalogs[CALIBRATED_POT1], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
-  drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
+  if (IS_POT_MULTIPOS(POT2))
+    drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
+  else
+    drawHorizontalSlider(LCD_W/2-40, POTS_LINE_Y, 80, calibratedAnalogs[CALIBRATED_POT2], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
   drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedAnalogs[CALIBRATED_POT3], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
 
   // The 2 rear sliders
@@ -111,6 +114,7 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+    POPUP_MENU_START(onMainViewMenu);
   }
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -218,6 +222,14 @@ bool menuMainView(event_t event)
         customScreens[i]->background();
     }
   }
+
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(INTERNAL_MODULE_PXX2) && defined(ACCESS_LIB)
+  if (globalData.authenticationCount > 0 && !globalData.upgradeModulePopup && !globalData.internalModuleVersionChecked) {
+    globalData.internalModuleVersionChecked = 1;
+    memclear(&reusableBuffer.viewMain.internalModule, sizeof(reusableBuffer.viewMain.internalModule));
+    moduleState[INTERNAL_MODULE].readModuleInformation(&reusableBuffer.viewMain.internalModule, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+  }
+#endif
 
   return true;
 }

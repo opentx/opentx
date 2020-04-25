@@ -25,14 +25,14 @@ const uint8_t LBM_LAYOUT_2x4[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_2x4[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Flight mode", ZoneOption::Bool },
-  { "Sliders", ZoneOption::Bool },
-  { "Trims", ZoneOption::Bool },
-  { "Panel1 background", ZoneOption::Bool },
-  { "  Color", ZoneOption::Color },
-  { "Panel2 background", ZoneOption::Bool },
-  { "  Color", ZoneOption::Color },
+  { STR_TOP_BAR, ZoneOption::Bool },
+  { STR_FLIGHT_MODE, ZoneOption::Bool },
+  { STR_SLIDERS, ZoneOption::Bool },
+  { STR_TRIMS, ZoneOption::Bool },
+  { STR_PANEL1_BACKGROUND, ZoneOption::Bool },
+  { INDENT TR_COLOR, ZoneOption::Color },
+  { STR_PANEL2_BACKGROUND, ZoneOption::Bool },
+  { INDENT TR_COLOR, ZoneOption::Color },
   { NULL, ZoneOption::Bool }
 };
 

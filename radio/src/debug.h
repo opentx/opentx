@@ -24,6 +24,9 @@
 #include <inttypes.h>
 #include "rtc.h"
 #include "dump.h"
+
+#define CRLF "\r\n"
+
 #if defined(CLI)
 #include "cli.h"
 #else
@@ -34,7 +37,7 @@
 extern "C" {
 #endif
 
-uint8_t serial2TracesEnabled();
+uint8_t auxSerialTracesEnabled();
 
 #if defined(SIMU)
   typedef void (*traceCallbackFunc)(const char * text);
@@ -45,7 +48,7 @@ uint8_t serial2TracesEnabled();
   #define debugPrintf(...) printf(__VA_ARGS__)
 #elif defined(DEBUG) && defined(CLI)
   #define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
-#elif defined(DEBUG) && defined(SERIAL2)
+#elif defined(DEBUG)
   #define debugPrintf(...) do { serialPrintf(__VA_ARGS__); } while(0)
 #else
   #define debugPrintf(...)
@@ -56,7 +59,7 @@ uint8_t serial2TracesEnabled();
 #endif
 
 #define TRACE_NOCRLF(...)     debugPrintf(__VA_ARGS__)
-#define TRACE(f_, ...)        debugPrintf((f_ "\r\n"), ##__VA_ARGS__)
+#define TRACE(f_, ...)        debugPrintf((f_ CRLF), ##__VA_ARGS__)
 #define DUMP(data, size)      dump(data, size)
 #define TRACE_DEBUG(...)      debugPrintf("-D- " __VA_ARGS__)
 #define TRACE_DEBUG_WP(...)   debugPrintf(__VA_ARGS__)
@@ -67,7 +70,7 @@ uint8_t serial2TracesEnabled();
 #define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
 
 #if defined(TRACE_LUA_INTERNALS_ENABLED)
-  #define TRACE_LUA_INTERNALS(f_, ...)     debugPrintf(("[LUA INT] " f_ "\r\n"), ##__VA_ARGS__)
+  #define TRACE_LUA_INTERNALS(f_, ...)     debugPrintf(("[LUA INT] " f_ CRLF), ##__VA_ARGS__)
 
   #define TRACE_LUA_INTERNALS_WITH_LINEINFO(L, f_, ...)   do { \
                                                             lua_Debug ar; \
@@ -75,7 +78,7 @@ uint8_t serial2TracesEnabled();
                                                               lua_getinfo(L, ">Sl", &ar); \
                                                               debugPrintf("%s:%d: ", ar.short_src, ar.currentline); \
                                                             } \
-                                                            debugPrintf(("[LUA INT] " f_ "\r\n"), ##__VA_ARGS__); \
+                                                            debugPrintf(("[LUA INT] " f_ CRLF), ##__VA_ARGS__); \
                                                           } while(0)
 #else
   #define TRACE_LUA_INTERNALS(...)
@@ -157,27 +160,27 @@ void dumpTraceBuffer();
 
 #else  // #if defined(DEBUG_TRACE_BUFFER)
 
-#define TRACE_EVENT(condition, event, data)  
-#define TRACEI_EVENT(condition, event, data)  
+#define TRACE_EVENT(condition, event, data)
+#define TRACEI_EVENT(condition, event, data)
 
 #endif // #if defined(DEBUG_TRACE_BUFFER)
 
 #if defined(TRACE_SD_CARD)
   #define TRACE_SD_CARD_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
 #else
-  #define TRACE_SD_CARD_EVENT(condition, event, data)  
+  #define TRACE_SD_CARD_EVENT(condition, event, data)
 #endif
 #if defined(TRACE_FATFS)
   #define TRACE_FATFS_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
 #else
-  #define TRACE_FATFS_EVENT(condition, event, data)  
+  #define TRACE_FATFS_EVENT(condition, event, data)
 #endif
 #if defined(TRACE_AUDIO)
   #define TRACE_AUDIO_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
   #define TRACEI_AUDIO_EVENT(condition, event, data) TRACEI_EVENT(condition, event, data)
 #else
-  #define TRACE_AUDIO_EVENT(condition, event, data)  
-  #define TRACEI_AUDIO_EVENT(condition, event, data)  
+  #define TRACE_AUDIO_EVENT(condition, event, data)
+  #define TRACEI_AUDIO_EVENT(condition, event, data)
 #endif
 
 

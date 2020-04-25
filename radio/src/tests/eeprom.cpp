@@ -35,7 +35,6 @@ PACK(struct RamBackupUncompressed {
 extern Backup::RamBackupUncompressed ramBackupUncompressed;
 TEST(Storage, BackupAndRestore)
 {
-
   rambackupWrite();
   Backup::RamBackupUncompressed ramBackupRestored;
   if (uncompress((uint8_t *)&ramBackupRestored, sizeof(ramBackupRestored), ramBackup->data, ramBackup->size) != sizeof(ramBackupUncompressed))
@@ -55,10 +54,10 @@ TEST(Eeprom, 100_random_writes)
 
   storageFormat();
 
-  for(int i=0; i<100; i++) {
-    int size = rand()%800;
-    for(int j=0; j<size; j++) {
-      buf[j] = rand() < (RAND_MAX/10000*i) ? 0 : (j&0xff);
+  for (int i = 0; i < 100; i++) {
+    int size = rand() % 800;
+    for (int j = 0; j < size; j++) {
+      buf[j] = rand() < (RAND_MAX / 10000 * i) ? 0 : (j & 0xff);
     }
     f.writeRlc(5, 5, buf, size, 100);
     // printf("size=%4d red=%4d\n\n\n", size, f.size());
@@ -77,7 +76,8 @@ TEST(Eeprom, test2)
 
   storageFormat();
 
-  for(int i=0; i<1000; i++) buf[i]='6'+i%4;
+  for (int i = 0; i < 1000; i++)
+    buf[i] = '6' + i % 4;
 
   f.writeRlc(6, 6, buf, 300, 100);
 
@@ -86,7 +86,9 @@ TEST(Eeprom, test2)
   for(int i=0; i<500; i++){
     uint8_t b;
     uint16_t n=f.readRlc(&b,1);
-    if(n) EXPECT_EQ(b, ('6'+sz%4));
+    if (n) {
+      EXPECT_EQ(b, ('6' + sz % 4));
+    }
     sz+=n;
   }
   EXPECT_EQ(sz, 300);
@@ -100,7 +102,8 @@ TEST(Eeprom, storageCheckImmediately)
 
   storageFormat();
 
-  for(int i=0; i<1000; i++) buf[i]='6'+i%4;
+  for (int i = 0; i < 1000; i++)
+    buf[i]='6'+i%4;
 
   theFile.writeRlc(6, 6, buf, 300, false);
 
@@ -108,11 +111,13 @@ TEST(Eeprom, storageCheckImmediately)
 
   theFile.openRd(6);
   uint16_t sz=0;
-  for(int i=0; i<500; i++){
+  for (int i = 0; i < 500; i++) {
     uint8_t b;
-    uint16_t n=theFile.readRlc(&b,1);
-    if(n) EXPECT_EQ(b, ('6'+sz%4));
-    sz+=n;
+    uint16_t n = theFile.readRlc(&b, 1);
+    if (n) {
+      EXPECT_EQ(b, ('6' + sz % 4));
+    }
+    sz += n;
   }
   EXPECT_EQ(sz, 300);
 }
@@ -125,19 +130,22 @@ TEST(Eeprom, copy)
 
   storageFormat();
 
-  for(int i=0; i<1000; i++) buf[i]='6'+i%4;
+  for (int i = 0; i < 1000; i++)
+    buf[i] = '6' + i % 4;
 
   theFile.writeRlc(5, 6, buf, 300, true);
 
   theFile.copy(6, 5);
 
   theFile.openRd(6);
-  uint16_t sz=0;
-  for(int i=0; i<500; i++){
+  uint16_t sz = 0;
+  for (int i = 0; i < 500; i++) {
     uint8_t b;
-    uint16_t n=theFile.readRlc(&b,1);
-    if(n) EXPECT_EQ(b, ('6'+sz%4));
-    sz+=n;
+    uint16_t n = theFile.readRlc(&b, 1);
+    if (n) {
+      EXPECT_EQ(b, ('6' + sz % 4));
+    }
+    sz += n;
   }
   EXPECT_EQ(sz, 300);
 }
@@ -150,7 +158,8 @@ TEST(Eeprom, rm)
 
   storageFormat();
 
-  for(int i=0; i<1000; i++) buf[i]='6'+i%4;
+  for (int i = 0; i < 1000; i++)
+    buf[i] = '6' + i % 4;
 
   theFile.writeRlc(5, 6, buf, 300, true);
 
@@ -164,9 +173,11 @@ TEST(Eeprom, rm)
   uint16_t sz=0;
   for(int i=0; i<500; i++){
     uint8_t b;
-    uint16_t n=theFile.readRlc(&b,1);
-    if(n) EXPECT_EQ(b, ('6'+sz%4));
-    sz+=n;
+    uint16_t n = theFile.readRlc(&b, 1);
+    if (n) {
+      EXPECT_EQ(b, ('6' + sz % 4));
+    }
+    sz += n;
   }
   EXPECT_EQ(sz, 0);
 }

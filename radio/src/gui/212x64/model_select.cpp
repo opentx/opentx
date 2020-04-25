@@ -45,9 +45,10 @@ void onModelSelectMenu(const char * result)
     POPUP_WARNING(eeBackupModel(sub));
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
+    if (sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, nullptr))
+      POPUP_MENU_START(onModelSelectMenu);
+    else
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-    }
   }
   else if (result == STR_DELETE_MODEL) {
     char * nametmp =  reusableBuffer.modelsel.mainname;
@@ -83,7 +84,7 @@ void menuModelSelect(event_t event)
 
   int8_t oldSub = menuVerticalPosition;
 
-  check_submenu_simple(NULL, _event_, MAX_MODELS);
+  check_submenu_simple(_event_, MAX_MODELS);
 
   if (s_editMode > 0) s_editMode = 0;
 
@@ -236,7 +237,7 @@ void menuModelSelect(event_t event)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
-  TITLE(STR_MENUMODELSEL);
+  title(STR_MENUMODELSEL);
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;

@@ -127,7 +127,7 @@ local function run(event)
     raise("Cannot be run as a model script!")
   end
   
-  if event == EVT_EXIT_BREAK then
+  if event == EVT_VIRTUAL_EXIT then
     return 2
   end
   

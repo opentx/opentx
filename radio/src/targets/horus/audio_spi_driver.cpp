@@ -374,11 +374,11 @@ void audioInit()
   audioHardReset();
   audioSoftReset();
   audioSpiSetSpeed(SPI_SPEED_8);
-  delay_01us(10000); // 1ms
+  delay_ms(1); // 1ms
   audioSendRiffHeader();
 }
 
-uint8_t * currentBuffer = NULL;
+uint8_t * currentBuffer = nullptr;
 uint32_t currentSize = 0;
 int16_t newVolume = -1;
 
@@ -389,7 +389,7 @@ void audioSetCurrentBuffer(const AudioBuffer * buffer)
     currentSize = buffer->size * 2;
   }
   else {
-    currentBuffer = NULL;
+    currentBuffer = nullptr;
     currentSize = 0;
   }
 }
@@ -413,7 +413,7 @@ void audioConsumeCurrentBuffer()
     currentSize -= written;
     if (currentSize == 0) {
       audioQueue.buffersFifo.freeNextFilledBuffer();
-      currentBuffer = NULL;
+      currentBuffer = nullptr;
       currentSize = 0;
     }
   }

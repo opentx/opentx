@@ -18,18 +18,11 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef OPENTX_DATASTRUCTS_218_H
 #define OPENTX_DATASTRUCTS_218_H
 
 #define MAX_TIMERS_218                     3
 #define MAX_GVARS_218                      9
-
-#if defined(BUZZER)
-#define BUZZER_FIELD_218 int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
-#else
-#define BUZZER_FIELD_218 int8_t spareRadio:2;
-#endif
 
 #if defined(PCBHORUS)
   #define NUM_SWITCHES_218                  8
@@ -131,6 +124,21 @@
   #define MAX_TELEMETRY_SENSORS_218        32
 #endif
 
+#if defined(COLORLCD)
+typedef uint32_t swarnstate218_t;
+#elif defined(PCBX9E)
+typedef uint64_t swconfig218_t;
+typedef uint64_t swarnstate218_t;
+typedef uint32_t swarnenable218_t;
+#elif defined(PCBTARANIS)
+typedef uint16_t swconfig218_t;
+typedef uint16_t swarnstate218_t;
+typedef uint8_t swarnenable218_t;
+#else
+typedef uint8_t swarnstate218_t;
+typedef uint8_t swarnenable218_t;
+#endif
+
 PACK(typedef struct {
   uint8_t type:4;
   int8_t  rfProtocol:4;
@@ -158,8 +166,8 @@ PACK(typedef struct {
     struct {
       uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
       uint8_t spare1:2;
-      uint8_t receiver_telem_off:1;     // false = receiver telem enabled
-      uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
+      uint8_t receiverTelemetryOff:1;     // false = receiver telem enabled
+      uint8_t receiverHigherChannels:1;  // false = pwm out 1-8, true 9-16
       uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
       uint8_t fast:1;
       uint8_t spare2;
@@ -192,7 +200,7 @@ PACK(typedef struct {
 #endif
 
 PACK(typedef struct {
-  trim_t trim[NUM_STICKS];
+  trim_t trim[NUM_TRIMS];
   char name[LEN_FLIGHT_MODE_NAME_218];
   int16_t swtch:9;       // swtch of phase[0] is not used
   int16_t spare:7;
@@ -289,7 +297,7 @@ PACK(typedef struct {
   uint8_t active;
 }) CustomFunctionData_v218;
 
-PACK(typedef struct {
+PACK(struct GVarData_v218 {
   char    name[LEN_GVAR_NAME_218];
   uint32_t min:12;
   uint32_t max:12;
@@ -297,7 +305,7 @@ PACK(typedef struct {
   uint32_t prec:1;
   uint32_t unit:2;
   uint32_t spare:4;
-}) GVarData_v218;
+});
 
 #if defined(COLORLCD)
 PACK(struct FrSkyTelemetryData_v217 {
@@ -330,16 +338,12 @@ PACK(struct FrSkyTelemetryData_v217 {
 });
 #endif
 
-#if defined(PCBX12S)
-  #define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
-#elif defined(PCBX10)
-  #define MODELDATA_EXTRA_218  uint8_t spare:3;;uint8_t trainerMode:3;;uint8_t potsWarnMode:2;; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];;char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;uint8_t potsWarnSpares[NUM_DUMMY_ANAS];;
+#if defined(PCBHORUS)
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[3 + 4];
 #elif defined(PCBTARANIS)
-  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS];
 #elif defined(PCBSKY9X)
-  #define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
-#else
-  #define MODELDATA_EXTRA_218
+  #define MODELDATA_EXTRA_218   uint8_t spare:6;                        uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];                                          char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS]; uint8_t rxBattAlarms[2];
 #endif
 
 PACK(struct TelemetrySensor_218 {
@@ -391,14 +395,41 @@ PACK(struct TelemetrySensor_218 {
   };
 });
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  PACK(struct CustomScreenData_v218 {
+    char layoutName[10];
+    Layout::PersistentData layoutData;
+  });
+  #define VIEW_DATA \
+    CustomScreenData screenData[MAX_CUSTOM_SCREENS]; \
+    Topbar::PersistentData topbarData; \
+    uint8_t view;
+#elif defined(PCBTARANIS)
   #define VIEW_DATA   uint8_t view;
 #else
   #define VIEW_DATA
 #endif
 
-PACK(typedef struct {
-  ModelHeader header;
+#if LEN_BITMAP_NAME > 0
+#define MODEL_HEADER_BITMAP_FIELD_218      char bitmap[10];
+#else
+#define MODEL_HEADER_BITMAP_FIELD_218
+#endif
+
+PACK(struct ModelHeader_v218 {
+  char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
+  uint8_t   modelId[NUM_MODULES];
+  MODEL_HEADER_BITMAP_FIELD_218
+});
+
+#if defined(COLORLCD)
+#define SWITCH_WARNING_DATA_218
+#else
+#define SWITCH_WARNING_DATA_218 swarnenable218_t switchWarningEnable;
+#endif
+
+PACK(struct ModelData_v218 {
+  ModelHeader_v218 header;
   TimerData_v218 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
@@ -426,8 +457,9 @@ PACK(typedef struct {
 
   uint8_t thrTraceSrc;
 
-  swarnstate_t  switchWarningState;
-  swarnenable_t switchWarningEnable;
+  swarnstate218_t  switchWarningState;
+
+  SWITCH_WARNING_DATA_218
 
   GVarData_v218 gvars[MAX_GVARS_218];
 
@@ -442,76 +474,40 @@ PACK(typedef struct {
 
   // TODO conversion for custom screens?
   VIEW_DATA
-}) ModelData_v218;
-
-#if defined(PCBHORUS)
-static_assert(sizeof(ModelData_v218) == 9380, "ModelData size changed");
-#elif defined(PCBX9E)
-static_assert(sizeof(ModelData_v218) == 6520, "ModelData size changed");
-#elif defined(PCBX9D)
-static_assert(sizeof(ModelData_v218) == 6507, "ModelData size changed");
-#elif defined(PCBXLITE) || defined(PCBX7)
-static_assert(sizeof(ModelData_v218) == 6025, "ModelData size changed");
-#elif defined(PCBSKY9X)
-static_assert(sizeof(ModelData_v218) == 5188, "ModelData size changed");
-#endif
-
-#define EXTRA_GENERAL_FIELDS_GENERAL_218 \
-    uint8_t  backlightBright; \
-    uint32_t globalTimer; \
-    uint8_t  bluetoothBaudrate:4; \
-    uint8_t  bluetoothMode:4; \
-    uint8_t  countryCode; \
-    uint8_t  imperial:1; \
-    uint8_t  jitterFilter:1; /* 0 - active */\
-    uint8_t  disableRssiPoweroffAlarm:1; \
-    uint8_t  USBMode:2; \
-    uint8_t  spareExtraArm:3; \
-    char     ttsLanguage[2]; \
-    int8_t   beepVolume:4; \
-    int8_t   wavVolume:4; \
-    int8_t   varioVolume:4; \
-    int8_t   backgroundVolume:4; \
-    int8_t   varioPitch; \
-    int8_t   varioRange; \
-    int8_t   varioRepeat; \
-    CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS_218];
+});
 
 #if defined(PCBHORUS)
 #define EXTRA_GENERAL_FIELDS_218 \
-    EXTRA_GENERAL_FIELDS_GENERAL_218 \
-    uint8_t  serial2Mode:4; \
+    uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME_218]; \
+    char anaNames[NUM_STICKS+3+4][LEN_ANA_NAME_218]; \
     char currModelFilename[LEN_MODEL_FILENAME_218+1]; \
     uint8_t spare:1; \
     uint8_t blOffBright:7; \
     char bluetoothName[LEN_BLUETOOTH_NAME_218];
 #elif defined(PCBTARANIS)
-#if defined(BLUETOOTH)
-#define BLUETOOTH_FIELDS_218 \
+  #if defined(STORAGE_BLUETOOTH) && !defined(PCBX9D) && !defined(PCBX9DP)
+    #define BLUETOOTH_FIELDS_218 \
       uint8_t spare; \
       char bluetoothName[LEN_BLUETOOTH_NAME_218];
-#else
-#define BLUETOOTH_FIELDS
-#endif
-#define EXTRA_GENERAL_FIELDS_218 \
-    EXTRA_GENERAL_FIELDS_GENERAL_218 \
-    uint8_t  serial2Mode:4; \
+  #else
+    #define BLUETOOTH_FIELDS_218
+  #endif
+  #define EXTRA_GENERAL_FIELDS_218 \
+    uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
-    swarnstate_t switchUnlockStates; \
-    swconfig_t switchConfig; \
+    swarnstate218_t switchUnlockStates; \
+    swconfig218_t switchConfig; \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218]; \
-    BLUETOOTH_FIELDS
+    char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME_218]; \
+    BLUETOOTH_FIELDS_218
 #elif defined(PCBSKY9X)
-#define EXTRA_GENERAL_FIELDS_218 \
-    EXTRA_GENERAL_FIELDS_GENERAL_218 \
+  #define EXTRA_GENERAL_FIELDS_218 \
     int8_t   txCurrentCalibration; \
     int8_t   temperatureWarn; \
     uint8_t  mAhWarn; \
@@ -521,23 +517,31 @@ static_assert(sizeof(ModelData_v218) == 5188, "ModelData size changed");
     uint8_t  sticksGain; \
     uint8_t  rotarySteps; \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218];
+    char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME_218];
+  #else
+    #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
+#endif
+
+#if defined(COLORLCD)
+  #include "gui/480x272/theme.h"
+  #define THEME_NAME_LEN 8
+  #define THEME_DATA \
+    char themeName[THEME_NAME_LEN]; \
+    Theme::PersistentData themeData;
 #else
-  #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
+  #define THEME_DATA
 #endif
 
 #if defined(PCBHORUS)
-#define SPLASH_MODE_218 uint8_t splashSpares:3
-#elif defined(FSPLASH)
-#define SPLASH_MODE_218 uint8_t splashMode:3
+  #define NUM_CALIBRATION_INPUTS  13
 #else
-#define SPLASH_MODE_218 int8_t splashMode:3
+  #define NUM_CALIBRATION_INPUTS  (NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS)
 #endif
 
-PACK(typedef struct {
+PACK(struct RadioData_v218 {
   uint8_t version;
   uint16_t variant;
-  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+  CalibData calib[NUM_CALIBRATION_INPUTS];
   uint16_t chkSum;
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
@@ -546,7 +550,7 @@ PACK(typedef struct {
   int8_t backlightMode;
   TrainerData_v218 trainer;
   uint8_t view;            // index of view in main screen
-  BUZZER_FIELD_218
+  int8_t buzzerMode:2;
   uint8_t fai:1;
   int8_t beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t alarmsFlash:1;
@@ -556,8 +560,10 @@ PACK(typedef struct {
   int8_t timezone:5;
   uint8_t adjustRTC:1;
   uint8_t inactivityTimer;
-  SPLASH_MODE_218; /* 3bits */
-  int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t telemetryBaudrate:3;
+  int8_t splashMode:3;
+  int8_t hapticMode:2;
+  int8_t switchesDelay;
   uint8_t lightAutoOff;
   uint8_t templateSetup;   // RETA order for receiver channels
   int8_t PPM_Multiplier;
@@ -573,9 +579,47 @@ PACK(typedef struct {
   int8_t vBatMin;
   int8_t vBatMax;
 
+  uint8_t  backlightBright;
+  uint32_t globalTimer;
+  uint8_t  bluetoothBaudrate:4;
+  uint8_t  bluetoothMode:4;
+  uint8_t  countryCode;
+  uint8_t  imperial:1;
+  uint8_t  jitterFilter:1; /* 0 - active */
+  uint8_t  disableRssiPoweroffAlarm:1;
+  uint8_t  USBMode:2;
+  uint8_t  spareExtraArm:3;
+  char     ttsLanguage[2];
+  int8_t   beepVolume:4;
+  int8_t   wavVolume:4;
+  int8_t   varioVolume:4;
+  int8_t   backgroundVolume:4;
+  int8_t   varioPitch;
+  int8_t   varioRange;
+  int8_t   varioRepeat;
+  CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS_218];
+
   EXTRA_GENERAL_FIELDS_218
 
   THEME_DATA
-}) RadioData_v218;
+});
+
+#include "chksize.h"
+
+#define CHKSIZE(x, y) check_size<struct x, y>()
+
+static inline void check_struct_218()
+{
+#if defined(PCBHORUS)
+  CHKSIZE(ModelData_v218, 9380);
+#elif defined(PCBX9E)
+  CHKSIZE(ModelData_v218, 6520);
+#elif defined(PCBX9D)
+  CHKSIZE(RadioData_v218, 872);
+#endif
+}
+
+
+#undef CHKSIZE
 
 #endif //OPENTX_DATASTRUCTS_218_H

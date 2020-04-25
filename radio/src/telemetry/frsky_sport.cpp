@@ -30,7 +30,12 @@ struct FrSkySportSensor {
 };
 
 const FrSkySportSensor sportSensors[] = {
+  { FRAME_LOSS_RATE_ID, FRAME_LOSS_RATE_ID, 0, ZSTR_FLR, UNIT_PERCENT, 0 },
   { RSSI_ID, RSSI_ID, 0, ZSTR_RSSI, UNIT_DB, 0 },
+#if defined(MULTIMODULE)
+  { TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
+  { TX_LQI_ID , TX_LQI_ID,  0, ZSTR_TX_QUALITY, UNIT_RAW, 0 },
+#endif
   { ADC1_ID, ADC1_ID, 0, ZSTR_A1, UNIT_VOLTS, 1 },
   { ADC2_ID, ADC2_ID, 0, ZSTR_A2, UNIT_VOLTS, 1 },
   { A3_FIRST_ID, A3_LAST_ID, 0, ZSTR_A3, UNIT_VOLTS, 2 },
@@ -80,19 +85,26 @@ const FrSkySportSensor sportSensors[] = {
   { GASSUIT_AVG_FLOW_FIRST_ID, GASSUIT_AVG_FLOW_LAST_ID, 0, ZSTR_GASSUIT_AVG_FLOW, UNIT_MILLILITERS_PER_MINUTE, 0 },
   { SBEC_POWER_FIRST_ID, SBEC_POWER_LAST_ID, 0, ZSTR_SBEC_VOLTAGE, UNIT_VOLTS, 2 },
   { SBEC_POWER_FIRST_ID, SBEC_POWER_LAST_ID, 1, ZSTR_SBEC_CURRENT, UNIT_AMPS, 2 },
+  { RB3040_OUTPUT_FIRST_ID, RB3040_OUTPUT_LAST_ID, 0, ZSTR_RB3040_EXTRA_STATE, UNIT_BITFIELD, 0 },
+  { RB3040_CH1_2_FIRST_ID, RB3040_CH1_2_LAST_ID, 0, ZSTR_RB3040_CHANNEL1, UNIT_AMPS, 2 },
+  { RB3040_CH1_2_FIRST_ID, RB3040_CH1_2_LAST_ID, 1, ZSTR_RB3040_CHANNEL2, UNIT_AMPS, 2 },
+  { RB3040_CH3_4_FIRST_ID, RB3040_CH3_4_LAST_ID, 0, ZSTR_RB3040_CHANNEL3, UNIT_AMPS, 2 },
+  { RB3040_CH3_4_FIRST_ID, RB3040_CH3_4_LAST_ID, 1, ZSTR_RB3040_CHANNEL4, UNIT_AMPS, 2 },
+  { RB3040_CH5_6_FIRST_ID, RB3040_CH5_6_LAST_ID, 0, ZSTR_RB3040_CHANNEL5, UNIT_AMPS, 2 },
+  { RB3040_CH5_6_FIRST_ID, RB3040_CH5_6_LAST_ID, 1, ZSTR_RB3040_CHANNEL6, UNIT_AMPS, 2 },
+  { RB3040_CH7_8_FIRST_ID, RB3040_CH7_8_LAST_ID, 0, ZSTR_RB3040_CHANNEL7, UNIT_AMPS, 2 },
+  { RB3040_CH7_8_FIRST_ID, RB3040_CH7_8_LAST_ID, 1, ZSTR_RB3040_CHANNEL8, UNIT_AMPS, 2 },
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
 const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
 {
-  const FrSkySportSensor * result = NULL;
   for (const FrSkySportSensor * sensor = sportSensors; sensor->firstId; sensor++) {
     if (id >= sensor->firstId && id <= sensor->lastId && subId == sensor->subId) {
-      result = sensor;
-      break;
+      return sensor;
     }
   }
-  return result;
+  return nullptr;
 }
 
 bool checkSportPacket(const uint8_t * packet)
@@ -118,7 +130,7 @@ uint16_t rboxState;
 void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW)
 {
   const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
-  uint8_t precision = 0;
+  uint8_t precision = 255;
   if (sensor) {
     if (unit == UNIT_RAW)
       unit = sensor->unit;
@@ -128,14 +140,14 @@ void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, u
     uint8_t cellsCount = (data & 0xF0) >> 4;
     uint8_t cellIndex = (data & 0x0F);
     uint32_t mask = (cellsCount << 24) + (cellIndex << 16);
-    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
+    setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
     if (cellIndex+1 < cellsCount) {
       mask += (1 << 16);
-      setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
+      setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
     }
   }
   else {
-    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, data, unit, precision);
+    setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, data, unit, precision);
   }
 }
 
@@ -164,19 +176,51 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 #endif
 
   if (primId == DATA_FRAME) {
+    uint8_t originMask;
+    uint8_t moduleIndex;
+    if (origin == TELEMETRY_ENDPOINT_SPORT) {
+#if defined(SIMU) && defined(INTERNAL_MODULE_PXX2)
+      // When running simu on ACCESS radio, we set the origin as internal module
+      moduleIndex = 0;
+      origin = 0;
+      originMask = 0x01;
+#else
+      moduleIndex = isSportLineUsedByInternalModule() ? 0 : 1;
+      originMask = 0x04;
+#endif
+    }
+    else {
+      moduleIndex = (origin >> 2);
+      originMask = 0x01 << moduleIndex;
+    }
     uint8_t instance = physicalId + (origin << 5);
     if (dataId == RSSI_ID) {
-      telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
+      if (data > 0) {
+        telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
+        telemetryData.telemetryValid |= originMask;
+      }
+      else {
+        telemetryData.telemetryValid &= ~originMask;
+        // one module may send RSSI(0) while the other is still streaming
+        // in this case we don't want to update telemetryData.rssi
+        return;
+      }
       if (g_model.rssiSource) {
         TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource - 1];
-        if (sensor->isSameInstance(TELEM_PROTO_FRSKY_SPORT, instance)) {
+        if (sensor->isSameInstance(PROTOCOL_TELEMETRY_FRSKY_SPORT, instance)) {
           telemetryData.rssi.set(data);
         }
       }
       else {
         telemetryData.rssi.set(data);
       }
+#if defined(MULTIMODULE)
+      if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
+        sportProcessTelemetryPacket(TX_RSSI_ID, 0, instance, packet[5] >> 1, UNIT_DB);
+        sportProcessTelemetryPacket(TX_LQI_ID, 0, instance, packet[7], UNIT_RAW);
+      }
+#endif
     }
     else if (dataId == R9_PWR_ID) {
       uint32_t r9pwr[] = {100, 200, 500, 1000};
@@ -185,16 +229,17 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
       if (!isRasValueValid()) {
-        telemetryData.setSwr(origin >> 2, 0);
+        telemetryData.setSwr(moduleIndex, 0);
       }
     }
     else if (dataId == RAS_ID) {
       if (isRasValueValid()) {
-        telemetryData.setSwr(origin >> 2, SPORT_DATA_U8(packet));
+        telemetryData.setSwr(moduleIndex, SPORT_DATA_U8(packet));
       }
     }
 
-    if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
+    // here we discard the frame if it comes from an origin which has RSSI = 0 (RxBt and RSSI are sent in a loop by the module in some situations)
+    if (TELEMETRY_STREAMING() && (telemetryData.telemetryValid & originMask)/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
       if ((dataId >> 8) == 0) {
         // The old FrSky IDs
         processHubPacket(dataId, HUB_DATA_U16(packet));
@@ -203,6 +248,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
         if (dataId == ADC1_ID || dataId == ADC2_ID || dataId == BATT_ID || dataId == RAS_ID) {
           data = SPORT_DATA_U8(packet);
         }
+
         if (dataId >= GPS_LONG_LATI_FIRST_ID && dataId <= GPS_LONG_LATI_LAST_ID) {
           int32_t value = (data & 0x3fffffff);
           if (data & (1 << 30))
@@ -274,6 +320,10 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
             }
           }
 #endif
+        }
+        else if (dataId >= RB3040_CH1_2_FIRST_ID && dataId <= RB3040_CH7_8_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16u) & 0xffff);
         }
         else {
           sportProcessTelemetryPacket(dataId, 0, instance, data);

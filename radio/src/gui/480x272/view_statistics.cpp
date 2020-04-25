@@ -27,7 +27,7 @@
 
 bool menuStatsGraph(event_t event)
 {
-  switch(event) {
+  switch (event) {
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
@@ -95,8 +95,11 @@ bool menuStatsGraph(event_t event)
 
 bool menuStatsDebug(event_t event)
 {
-  switch(event)
-  {
+  switch(event) {
+    case EVT_ENTRY:
+    case EVT_ENTRY_UP:
+      break;
+
     case EVT_KEY_FIRST(KEY_ENTER):
       maxMixerDuration  = 0;
 #if defined(LUA)
@@ -106,92 +109,84 @@ bool menuStatsDebug(event_t event)
       break;
   }
 
-  SIMPLE_MENU("Debug", STATS_ICONS, menuTabStats, e_StatsDebug, 1);
+  if (!check_simple(event, e_StatsDebug, menuTabStats, DIM(menuTabStats), 1)) {
+    disableVBatBridge();
+    return false;
+  }
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Free Mem");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, availableMemory(), LEFT, 0, NULL, "b");
+  drawMenuTemplate("Debug", 0, STATS_ICONS, OPTION_MENU_TITLE_BAR);
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
+  coord_t y = MENU_CONTENT_TOP;
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, STR_FREESTACKMINB);
-  lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH+1, "[Menus]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, menusStack.available(), LEFT);
-  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+2*FH+1, "[Mix]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, mixerStack.available(), LEFT);
-  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+2*FH+1, "[Audio]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, audioStack.available(), LEFT);
-
-  int line = 3;
-
-#if defined(DISK_CACHE)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "SD cache hits");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");
-  ++line;
-#endif
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Free Mem");
+  lcdDrawNumber(MENU_STATS_COLUMN1, y, availableMemory(), LEFT, 0, NULL, "b");
+  y += FH;
 
 #if defined(LUA)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua duration");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
-  ++line;
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Lua scripts");
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Duration]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  lcdDrawText(lcdNextPos+20, y+1, "[Interval]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
+  y += FH;
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua interval");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
-  ++line;
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
-  lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH+1, "[S]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+line*FH, luaGetMemUsed(lsScripts), LEFT);
-  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+line*FH+1, "[W]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+line*FH, luaGetMemUsed(lsWidgets), LEFT);
-  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+line*FH+1, "[B]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+line*FH, luaExtraMemoryUsage, LEFT);
-  ++line;
+  // lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[S]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, luaGetMemUsed(lsScripts), LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[W]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, luaGetMemUsed(lsWidgets), LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[B]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, luaExtraMemoryUsage, LEFT);
+  y += FH;
 #endif
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Tlm RX Errs");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, telemetryErrors, LEFT);
+  lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TMIXMAXMS);
+  lcdDrawNumber(MENU_STATS_COLUMN1, y, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
+  y += FH;
+
+  lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FREE_STACK);
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Menus]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, menusStack.available(), LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Mix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, mixerStack.available(), LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Audio]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, audioStack.available(), LEFT);
+  y += FH;
+
+#if defined(DISK_CACHE) && defined(DEBUG)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "SD cache hits");
+  lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");
+  y += FH;
+#endif
+
+#if defined(DEBUG_LATENCY)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Heartbeat");
+  if (heartbeatCapture.valid)
+    lcdDrawNumber(MENU_STATS_COLUMN1, y, heartbeatCapture.count, LEFT);
+  else
+    lcdDrawText(MENU_STATS_COLUMN1, y, "---");
+  y += FH;
+#endif
+
+#if defined(DEBUG)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Telem RX Errs");
+  lcdDrawNumber(MENU_STATS_COLUMN1, y, telemetryErrors, LEFT);
+  y += FH;
+#endif
+
+#if defined(INTERNAL_GPS)
+  lcdDrawText(MENUS_MARGIN_LEFT, y, "Internal GPS");
+  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Fix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawText(lcdNextPos+2, y, (gpsData.fix ? "Yes" : "No"), LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Sats]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, gpsData.numSat, LEFT);
+  lcdDrawText(lcdNextPos+20, y+1, "[Hdop]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, y, gpsData.hdop, PREC2|LEFT);
+#endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
 }
-
-bool menuStatsAnalogs(event_t event)
-{
-  SIMPLE_MENU("Analogs", STATS_ICONS, menuTabStats, e_StatsAnalogs, 1);
-
-  for (uint8_t i=0; i<NUM_ANALOGS; i++) {
-    coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
-    coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
-    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, NULL, ":");
-    lcdDrawHexNumber(x+40, y, anaIn(i));
-#if defined(JITTER_MEASURE)
-    lcdDrawNumber(x+100, y, rawJitter[i].get());
-    lcdDrawNumber(x+140, y, avgJitter[i].get());
-    lcdDrawNumber(x+180, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*250/256, PREC1);
-#else
-    if (i < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256);
-    else if (i >= MOUSE1)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CALIBRATED_MOUSE1+i-MOUSE1]*25/256);
-#endif
-  }
-
-  // RAS
-  if ((isModuleXJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (isModulePXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+7*FH, "RAS");
-    lcdDrawNumber(MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.swrInternal.value);
-    lcdDrawText(MENUS_MARGIN_LEFT + LCD_W/2, MENU_CONTENT_TOP+7*FH, "XJTVER");
-    lcdDrawNumber(LCD_W/2 + MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.xjtVersion);
-  }
-
-#if (NUM_PWMSTICKS > 0) && !defined(SIMU)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+8*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
-#endif
-
-  return true;
-}
-
 
 #if defined(DEBUG_TRACE_BUFFER)
 #define STATS_TRACES_INDEX_POS         MENUS_MARGIN_LEFT
@@ -229,7 +224,7 @@ bool menuStatsTraces(event_t event)
     const struct TraceElement * te = getTraceElement(k);
     if (te) {
       // time
-      putstime_t tme = te->time % SECS_PER_DAY;
+      int32_t tme = te->time % SECS_PER_DAY;
       drawTimer(STATS_TRACES_TIME_POS, y, tme, TIMEHOUR|LEFT);
       // event
       lcdDrawNumber(STATS_TRACES_EVENT_POS, y, te->event, LEADING0|LEFT, 3);

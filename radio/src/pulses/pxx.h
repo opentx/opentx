@@ -27,31 +27,22 @@
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
 
-#define PXX2_ON_SPORT_BAUDRATE             230400
+#define PXX2_LOWSPEED_BAUDRATE             230400
+#define PXX2_HIGHSPEED_BAUDRATE            450000
 #define PXX2_PERIOD                        4 // 4ms
 #define PXX2_TOOLS_PERIOD                  1 // 1ms
 #define PXX2_FRAME_MAXLENGTH               64
 
 #define PXX_PULSES_PERIOD                  9/*ms*/
-#define EXTMODULE_PXX_SERIAL_PERIOD        4/*ms*/
-#define EXTMODULE_PXX_SERIAL_BAUDRATE      420000
+#define EXTMODULE_PXX1_SERIAL_PERIOD       4/*ms*/
+#define EXTMODULE_PXX1_SERIAL_BAUDRATE     420000
 
 #if defined(PXX_FREQUENCY_HIGH)
-  #define INTMODULE_PXX_BAUDRATE           450000
-  #define INTMODULE_PXX_PERIOD             4/*ms*/
+  #define INTMODULE_PXX1_SERIAL_BAUDRATE   450000
+  #define INTMODULE_PXX1_SERIAL_PERIOD     4/*ms*/
 #else
-  #define INTMODULE_PXX_BAUDRATE           115200
-  #define INTMODULE_PXX_PERIOD             9/*ms*/
-#endif
-
-#if defined(PXX_FREQUENCY_HIGH) && (!defined(INTMODULE_USART) || !defined(EXTMODULE_USART))
-/* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
-/* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
-/* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
-/* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enough */
-/* sbus is 1 byte header, 22 channel bytes (11bit * 16ch) + 1 byte flags */
-
-#error "Pulses array needs to be increased (PXX_FREQUENCY=HIGH)"
+  #define INTMODULE_PXX1_SERIAL_BAUDRATE   115200
+  #define INTMODULE_PXX1_SERIAL_PERIOD     9/*ms*/
 #endif
 
 // Used by the Sky9x family boards

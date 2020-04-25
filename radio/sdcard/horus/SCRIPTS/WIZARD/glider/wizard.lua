@@ -91,9 +91,9 @@ end
 
 -- Main
 local function runFieldsPage(event)
-  if event == EVT_EXIT_BREAK then -- exit script
+  if event == EVT_VIRTUAL_EXIT then -- exit script
     return 2
-  elseif event == EVT_ENTER_BREAK or event == EVT_ROT_BREAK then -- toggle editing/selecting current field
+  elseif event == EVT_VIRTUAL_ENTER then -- toggle editing/selecting current field
     if fields[current][5] ~= nil then
       edit = not edit
       if edit == false then
@@ -101,15 +101,15 @@ local function runFieldsPage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       addField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT then
+    if event == EVT_VIRTUAL_NEXT then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT then
+    elseif event == EVT_VIRTUAL_PREV then
       selectField(-1)
     end
   end
@@ -258,7 +258,7 @@ local function runFlapsConfig(event)
 end
 
 local TailFields = {
-  {50, 50, COMBO, 1, 1, { "1 channel for Elevator, no Rudder", "One chan for Elevator, one for Rudder", "Two chans for Elevator, one for Rudder", "V Tail"} },
+  {50, 50, COMBO, 1, 1, { "1 channel for Elevator, no Rudder", "One channel for Elevator, one for Rudder", "Two channels for Elevator, one for Rudder", "V Tail"} },
   {50, 127, COMBO, 1, 1, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } }, --ele
   {50, 167, COMBO, 1, 3, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } }, --rud
   {50, 207, COMBO, 0, 5, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } }, --ele2
@@ -302,8 +302,8 @@ local function runTailConfig(event)
   if fields[1][5] == 2 then
     lcd.drawBitmap(ImgTail, 252, 100)
     lcd.drawBitmap(ImgTailRud, 340, 100)
-    drawMark(415, 150, "A")
-    drawMark(380, 120, "C")
+    drawMark(415, 150, "C")
+    drawMark(380, 120, "A")
     drawMark(390, 185, "B")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     drawMark(152, 124, "A")
@@ -332,7 +332,7 @@ end
 local lineIndex
 local function drawNextLine(text, text2)
   lcd.drawText(40, lineIndex, text, TEXT_COLOR)
-  lcd.drawText(250, lineIndex, text2 + 1, TEXT_COLOR)
+  lcd.drawText(242, lineIndex, ": CH" .. text2 + 1, TEXT_COLOR)
   lineIndex = lineIndex + 20
 end
 
@@ -354,38 +354,35 @@ local function runConfigSummary(event)
   lineIndex = 40
   -- motors
   if(MotorFields[1][5] == 1) then
-    drawNextLine("Motor chan :", MotorFields[2][5])
-  elseif (MotorFields[1][5] == 2) then
-    drawNextLine("Motor 1 chan :", MotorFields[2][5])
-    drawNextLine("Motor 2 chan :", MotorFields[3][5])
+    drawNextLine("Motor channel", MotorFields[2][5])
   end
   -- ail
   if(AilFields[1][5] == 1) then
-    drawNextLine("Aileron chan :",AilFields[2][5])
+    drawNextLine("Aileron channel",AilFields[2][5])
   elseif (AilFields[1][5] == 2) then
-    drawNextLine("Aileron 1 chan :",AilFields[2][5])
-    drawNextLine("Aileron 2 chan :",AilFields[3][5])
+    drawNextLine("Aileron Right channel",AilFields[2][5])
+    drawNextLine("Aileron Left channel",AilFields[3][5])
   end
   -- flaps
   if(FlapsFields[1][5] == 1) then
-    drawNextLine("Flaps chan :",FlapsFields[2][5])
+    drawNextLine("Flaps channel",FlapsFields[2][5])
   elseif (FlapsFields[1][5] == 2) then
-    drawNextLine("Flaps 1 chan :",FlapsFields[2][5])
-    drawNextLine("Flaps 2 chan :",FlapsFields[3][5])
+    drawNextLine("Flaps Right channel",FlapsFields[2][5])
+    drawNextLine("Flaps Left channel",FlapsFields[3][5])
   end
   -- tail
   if(TailFields[1][5] == 0) then
-    drawNextLine("Elevator chan :",TailFields[2][5])
+    drawNextLine("Elevator channel",TailFields[2][5])
   elseif (TailFields[1][5] == 1) then
-    drawNextLine("Elevator chan :",TailFields[2][5])
-    drawNextLine("Rudder chan :",TailFields[3][5])
+    drawNextLine("Elevator channel",TailFields[2][5])
+    drawNextLine("Rudder channel",TailFields[3][5])
   elseif (TailFields[1][5] == 2) then
-    drawNextLine("Elevator 1 chan :",TailFields[2][5])
-    drawNextLine("Rudder chan :",TailFields[3][5])
-    drawNextLine("Elevator 2 chan :",TailFields[4][5])
+    drawNextLine("Elevator Right channel",TailFields[2][5])
+    drawNextLine("Rudder channel",TailFields[3][5])
+    drawNextLine("Elevator Left channel",TailFields[4][5])
   elseif (TailFields[1][5] == 3) then
-    drawNextLine("V-Tail elevator :", TailFields[2][5])
-    drawNextLine("V-Tail rudder :", TailFields[3][5])
+    drawNextLine("V-Tail Right", TailFields[2][5])
+    drawNextLine("V-Tail Left", TailFields[3][5])
   end
   local result = runFieldsPage(event)
   if(fields[1][5] == 1 and edit == false) then
@@ -414,23 +411,20 @@ local function createModel(event)
   -- motor
   if(MotorFields[1][5] == 1) then
     addMix(MotorFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Motor")
-  elseif (MotorFields[1][5] == 2) then
-    addMix(MotorFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Motor1")
-    addMix(MotorFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Motor2")
   end
   -- Ailerons
   if(AilFields[1][5] == 1) then
     addMix(AilFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Ail")
   elseif (AilFields[1][5] == 2) then
-    addMix(AilFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL")
-    addMix(AilFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR", -100)
+    addMix(AilFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR")
+    addMix(AilFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL", -100)
   end
   -- Flaps
   if(FlapsFields[1][5] == 1) then
     addMix(FlapsFields[2][5], MIXSRC_SA, "Flaps")
   elseif (FlapsFields[1][5] == 2) then
-    addMix(FlapsFields[2][5], MIXSRC_SA, "FlapsL")
-    addMix(FlapsFields[3][5], MIXSRC_SA, "FlapsR")
+    addMix(FlapsFields[2][5], MIXSRC_SA, "FlapsR")
+    addMix(FlapsFields[3][5], MIXSRC_SA, "FlapsL")
   end
   -- Tail
   if(TailFields[1][5] == 0) then
@@ -439,14 +433,14 @@ local function createModel(event)
     addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev")
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
   elseif (TailFields[1][5] == 2) then
-    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevL")
+    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevR")
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
-    addMix(TailFields[4][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevR")
+    addMix(TailFields[4][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevL")
   elseif (TailFields[1][5] == 3) then
-    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleL", 50)
-    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", 50, 1)
-    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleR", 50)
-    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", -50, 1)
+    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleR", 50)
+    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", 50, 1)
+    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleL", 50)
+    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", -50, 1)
   end
   lcd.drawText(70, 90, "Model successfully created !", TEXT_COLOR)
   lcd.drawText(100, 130, "Press RTN to exit", TEXT_COLOR)
@@ -471,9 +465,9 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif (event == EVT_PAGE_BREAK or event == EVT_PAGEDN_FIRST) and page < #pages-1 then
+  elseif event == EVT_VIRTUAL_NEXT_PAGE and page < #pages-1 then
     selectPage(1)
-  elseif (event == EVT_PAGE_LONG or event == EVT_PAGEUP_FIRST) and page > 1 then
+  elseif event == EVT_VIRTUAL_PREV_PAGE and page > 1 then
     killEvents(event);
     selectPage(-1)
   end

@@ -54,7 +54,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 
 void menuModelLogicalSwitchOne(event_t event)
 {
-  TITLE(STR_MENULOGICALSWITCH);
+  title(STR_MENULOGICALSWITCH);
 
   LogicalSwitchData * cs = lswAddress(s_currIdx);
 
@@ -83,7 +83,7 @@ void menuModelLogicalSwitchOne(event_t event)
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
             if (new_cstate == LS_FAMILY_TIMER) {
-              cs->v1 = cs->v2 = 0;
+              cs->v1 = cs->v2 = -119;
             }
             else if (new_cstate == LS_FAMILY_EDGE) {
               cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
@@ -154,7 +154,6 @@ void menuModelLogicalSwitchOne(event_t event)
           INCDEC_ENABLE_CHECK(isSourceAvailable);
         }
         else {
-#if defined(TELEMETRY_FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
             drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
@@ -171,7 +170,6 @@ void menuModelLogicalSwitchOne(event_t event)
             }
           }
           else
-#endif // TELEMETRY_FRSKY
           {
             LcdFlags lf = attr | LEFT;
             getMixSrcRange(v1_val, v2_min, v2_max, &lf);

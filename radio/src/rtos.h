@@ -28,7 +28,6 @@ extern "C++" {
 #endif
 
 #if defined(SIMU)
-
   #include <pthread.h>
   #include <semaphore.h>
 
@@ -99,12 +98,12 @@ extern "C++" {
       {
       }
 
-      uint16_t size()
+      uint32_t size()
       {
         return SIZE;
       }
 
-      uint16_t available()
+      uint32_t available()
       {
         return SIZE / 2;
       }
@@ -113,15 +112,25 @@ extern "C++" {
 
   #define TASK_FUNCTION(task)           void * task(void * pdata)
 
-  template<int SIZE>
-  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char *, FakeTaskStack<SIZE> &, unsigned, unsigned)
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name)
   {
     pthread_create(&taskId, nullptr, task, nullptr);
+#ifdef __linux__
+    pthread_setname_np(taskId, name);
+#endif
+  }
+
+template<int SIZE>
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name, FakeTaskStack<SIZE> &, unsigned size = 0, unsigned priority = 0)
+  {
+    UNUSED(size);
+    UNUSED(priority);
+    RTOS_CREATE_TASK(taskId, task, name);
   }
 
   #define TASK_RETURN()                 return nullptr
 
-  constexpr uint16_t stackAvailable()
+  constexpr uint32_t stackAvailable()
   {
     return 500;
   }
@@ -137,9 +146,7 @@ extern "C++" {
   {
     return (uint32_t)(simuTimerMicros() / 1000);
   }
-
 #elif defined(RTOS_COOS)
-
 #ifdef __cplusplus
   extern "C" {
 #endif
@@ -199,24 +206,24 @@ extern "C++" {
   }
 #endif  // __cplusplus
 
-  static inline uint16_t getStackAvailable(void * address, uint16_t size)
+  static inline uint32_t getStackAvailable(void * address, uint32_t size)
   {
     uint32_t * array = (uint32_t *)address;
-    uint16_t i = 0;
+    uint32_t i = 0;
     while (i < size && array[i] == 0x55555555) {
       i++;
     }
-    return i*4;
+    return i;
   }
 
   extern int _estack;
   extern int _main_stack_start;
-  static inline uint16_t stackSize()
+  static inline uint32_t stackSize()
   {
     return ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;
   }
 
-  static inline uint16_t stackAvailable()
+  static inline uint32_t stackAvailable()
   {
     return getStackAvailable(&_main_stack_start, stackSize());
   }
@@ -240,12 +247,12 @@ extern "C++" {
         }
       }
 
-      uint16_t size()
+      uint32_t size()
       {
         return SIZE * 4;
       }
 
-      uint16_t available()
+      uint32_t available()
       {
         return getStackAvailable(stack, SIZE);
       }

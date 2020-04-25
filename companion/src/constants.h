@@ -23,7 +23,6 @@
 
 #include <QCoreApplication>
 
-#define CPN_MAX_MODELS                 60
 #define CPN_MAX_TIMERS                 3
 #define CPN_MAX_FLIGHT_MODES           9
 #define CPN_MAX_MIXERS                 64
@@ -39,21 +38,19 @@
 #define CPN_MAX_MODULES                2
 #define CPN_MAX_STICKS                 Board::STICK_AXIS_COUNT
 #define CPN_MAX_TRIMS                  Board::TRIM_AXIS_COUNT
-#define CPN_MAX_TRIM_SW                Board::TRIM_SW_COUNT
-#define CPN_MAX_KNOBS                  4
+#define CPN_MAX_KNOBS                  8
 #define CPN_MAX_SLIDERS                4
 #define CPN_MAX_POTS                   (CPN_MAX_KNOBS + CPN_MAX_SLIDERS)
 #define CPN_MAX_CYC                    3
 #define CPN_MAX_SWITCHES               32
-#define CPN_MAX_KEYS                   32
 #define CPN_MAX_MOUSE_ANALOGS          2
-#define CPN_MAX_ANALOGS                (CPN_MAX_STICKS + CPN_MAX_POTS + CPN_MAX_MOUSE_ANALOGS)
+#define CPN_MAX_GYRO_ANALOGS           2
+#define CPN_MAX_ANALOGS                (CPN_MAX_STICKS + CPN_MAX_POTS + CPN_MAX_MOUSE_ANALOGS + CPN_MAX_GYRO_ANALOGS)
 
 #define CPN_STR_APP_NAME               QCoreApplication::translate("Companion", "OpenTX Companion")
 #define CPN_STR_TTL_INFO               QCoreApplication::translate("Companion", "Information")        // shared Title Case words, eg. for a window title or section heading
 #define CPN_STR_TTL_WARNING            QCoreApplication::translate("Companion", "Warning")
 #define CPN_STR_TTL_ERROR              QCoreApplication::translate("Companion", "Error")
-#define CPN_STR_TTL_CONFIRM            QCoreApplication::translate("Companion", "Please Confirm")
 
 #define CPN_STR_FILES                  QCoreApplication::translate("Companion", "files")
 #define CPN_STR_RAD_MOD_SETTINGS       QCoreApplication::translate("Companion", "Radio and Models settings")

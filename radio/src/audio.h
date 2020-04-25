@@ -512,6 +512,9 @@ class AudioQueue {
     bool isEmpty() const { return fragmentsFifo.empty(); };
     void wakeup();
     bool started() const { return _started; };
+#if defined(AUDIO_UNMUTE_DELAY)
+    tmr10ms_t lastAudioPlayTime = 0;
+#endif
 
     AudioBufferFifo buffersFifo;
 
@@ -587,8 +590,6 @@ void audioTimerCountdown(uint8_t timer, int value);
 #define AUDIO_TELEMETRY_BACK()   audioEvent(AU_TELEMETRY_BACK)
 #define AUDIO_TRAINER_LOST()     audioEvent(AU_TRAINER_LOST)
 #define AUDIO_TRAINER_BACK()     audioEvent(AU_TRAINER_BACK)
-
-#define AUDIO_HEARTBEAT()
 
 enum AutomaticPromptsCategories {
   SYSTEM_AUDIO_CATEGORY,

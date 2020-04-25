@@ -24,9 +24,11 @@
 #include "gui_common.h"
 #include "lcd.h"
 #include "menus.h"
-#include "widgets.h"
+#include "draw_functions.h"
 #include "bitmaps.h"
 #include "theme.h"
+
+#define HEADER_LINE                    0
 
 #define MENU_TOOLTIPS
 #define MENU_HEADER_HEIGHT             45
@@ -45,6 +47,7 @@
 
 #define FH                             20
 #define NUM_BODY_LINES                 (MENU_BODY_HEIGHT / FH)
+#define TEXT_VIEWER_LINES              ((MENU_FOOTER_TOP-MENU_HEADER_HEIGHT) / FH)
 
 #define INVERT_HORZ_MARGIN             2
 #define INVERT_VERT_MARGIN             1

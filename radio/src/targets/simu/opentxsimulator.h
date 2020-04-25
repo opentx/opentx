@@ -51,7 +51,7 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
   public slots:
 
     virtual void init();
-    virtual void start(const char * filename = NULL, bool tests = true);
+    virtual void start(const char * filename = nullptr, bool tests = true);
     virtual void stop();
     virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "");
     virtual void setVolumeGain(const int value);

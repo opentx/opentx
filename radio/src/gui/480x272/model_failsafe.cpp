@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
+#include "opentx.h"
 
 extern uint8_t g_moduleIdx;
 
@@ -40,13 +40,13 @@ bool menuModelFailsafe(event_t event)
         s_editMode = 0;
       }
       else {
-        int16_t & failsafe = g_model.failsafeChannels[menuVerticalPosition];
-        if (failsafe < FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_HOLD;
-        else if (failsafe == FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_NOPULSE;
+        int16_t * failsafe = &g_model.failsafeChannels[menuVerticalPosition];
+        if (*failsafe < FAILSAFE_CHANNEL_HOLD)
+          *failsafe = FAILSAFE_CHANNEL_HOLD;
+        else if (*failsafe == FAILSAFE_CHANNEL_HOLD)
+          *failsafe = FAILSAFE_CHANNEL_NOPULSE;
         else
-          failsafe = 0;
+          *failsafe = 0;
       }
     }
     else {
@@ -60,7 +60,7 @@ bool menuModelFailsafe(event_t event)
   }
 
   SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", ICON_STATS_ANALOGS, sentModuleChannels(g_moduleIdx)+1, OPTION_MENU_NO_SCROLLBAR);
-  drawStringWithIndex(50, 3+FH, "Module", g_moduleIdx+1, MENU_TITLE_COLOR);
+  drawStringWithIndex(50, 3+FH, STR_MODULE, g_moduleIdx+1, MENU_TITLE_COLOR);
 
   for (uint8_t col=0; col < cols; col++) {
     for (uint8_t line=0; line < 8; line++) {
@@ -96,11 +96,11 @@ bool menuModelFailsafe(event_t event)
       x += (LCD_W/2)-4-MENUS_MARGIN_LEFT-SLIDER_W;
 
       if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-        lcdDrawText(x, y+2, "HOLD", flags|SMLSIZE);
+        lcdDrawText(x, y+2, STR_HOLD, flags|SMLSIZE);
         failsafeValue = 0;
       }
       else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-        lcdDrawText(x, y+2, "NONE", flags|SMLSIZE);
+        lcdDrawText(x, y+2, STR_NONE, flags|SMLSIZE);
         failsafeValue = 0;
       }
       else {

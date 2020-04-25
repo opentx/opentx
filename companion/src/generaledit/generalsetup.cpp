@@ -191,7 +191,7 @@ ui(new Ui::GeneralSetup)
     ui->label_BLBright->hide();
   }
 
-  if (!IS_HORUS(firmware->getBoard())) {
+  if (!IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
     ui->OFFBright_SB->hide();
     ui->OFFBright_SB->setDisabled(true);
     ui->label_OFFBright->hide();
@@ -241,7 +241,7 @@ ui(new Ui::GeneralSetup)
     ui->rssiPowerOffWarnChkB->hide();
   }
 
-  if (IS_HORUS(firmware->getBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
     ui->splashScreenChkB->hide();
     ui->splashScreenDuration->hide();
     ui->splashScreenLabel->hide();
@@ -255,6 +255,17 @@ ui(new Ui::GeneralSetup)
     ui->splashScreenChkB->setChecked(!generalSettings.splashMode);
   }
 
+  if (!firmware->getCapability(PwrButtonPress)) {
+    ui->pwrOnDelayLabel->hide();
+    ui->pwrOnDelay->hide();
+    ui->pwrOffDelayLabel->hide();
+    ui->pwrOffDelay->hide();
+  }
+  else if (!IS_TARANIS(firmware->getBoard())) {
+    ui->pwrOnDelayLabel->hide();
+    ui->pwrOnDelay->hide();
+  }
+  
   setValues();
 
   lock = false;
@@ -441,6 +452,12 @@ void GeneralSetupPanel::setValues()
     ui->vBatMinDSB->setValue((double)(generalSettings.vBatMin + 90) / 10);
     ui->vBatMaxDSB->setValue((double)(generalSettings.vBatMax + 120) / 10);
   }
+
+  ui->pwrOnDelay->setValue(2 - generalSettings.pwrOnSpeed);
+  ui->pwrOffDelay->setValue(2 - generalSettings.pwrOffSpeed);
+
+    // TODO: only if ACCESS available??
+  ui->registrationId->setText(generalSettings.registrationId);
 }
 
 void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
@@ -493,6 +510,17 @@ void GeneralSetupPanel::on_splashScreenDuration_currentIndexChanged(int index)
   emit modified();
 }
 
+void GeneralSetupPanel::on_pwrOnDelay_valueChanged()
+{
+  generalSettings.pwrOnSpeed = 2 - ui->pwrOnDelay->value();
+  emit modified();
+}
+
+void GeneralSetupPanel::on_pwrOffDelay_valueChanged()
+{
+  generalSettings.pwrOffSpeed = 2 - ui->pwrOffDelay->value();
+  emit modified();
+}
 
 void GeneralSetupPanel::on_beepVolume_SL_valueChanged()
 {
@@ -719,6 +747,15 @@ void GeneralSetupPanel::unlockSwitchEdited()
 void GeneralSetupPanel::on_blAlarm_ChkB_stateChanged()
 {
   generalSettings.flashBeep = ui->blAlarm_ChkB->isChecked();
+  emit modified();
+}
+
+void GeneralSetupPanel::on_registrationId_editingFinished()
+{
+  //copy ownerID back to generalSettings.registrationId
+  QByteArray array = ui->registrationId->text().toLocal8Bit();
+  strncpy(generalSettings.registrationId, array, 8);
+  generalSettings.registrationId[8] = '\0';
   emit modified();
 }
 

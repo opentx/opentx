@@ -30,11 +30,63 @@ void ModuleData::convert(RadioDataConversionState & cstate)
   }
 }
 
+bool ModuleData::isPxx2Module() const
+{
+  switch(protocol){
+    case PULSES_ACCESS_ISRM:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_XJT_LITE_X16:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool ModuleData::isPxx1Module() const
+{
+  switch(protocol){
+    case PULSES_PXX_XJT_X16:
+    case PULSES_PXX_R9M:
+    case PULSES_PXX_R9M_LITE:
+    case PULSES_PXX_R9M_LITE_PRO:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool ModuleData::supportRxNum() const
+{
+  switch (protocol) {
+    case PULSES_PXX_XJT_X16:
+    case PULSES_PXX_R9M:
+    case PULSES_PXX_R9M_LITE:
+    case PULSES_PXX_R9M_LITE_PRO:
+    case PULSES_MULTIMODULE:
+    case PULSES_ACCESS_ISRM:
+    case PULSES_ACCST_ISRM_D16:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_XJT_LITE_X16:
+    case PULSES_XJT_LITE_LR12:
+    case PULSES_PXX_XJT_LR12:
+    case PULSES_LP45:
+    case PULSES_DSM2:
+    case PULSES_DSMX:
+      return true;
+    default:
+      return false;
+  }
+}
+
 QString ModuleData::rfProtocolToString() const
 {
   switch (protocol) {
     case PULSES_MULTIMODULE:
-      return Multiprotocols::protocolToString((int)multi.rfProtocol, multi.customProto);
+      return Multiprotocols::protocolToString((int)multi.rfProtocol);
 
     default:
       return CPN_STR_UNKNOWN_ITEM;
@@ -55,7 +107,7 @@ QString ModuleData::subTypeToString(int type) const
 
   switch (protocol) {
     case PULSES_MULTIMODULE:
-      return Multiprotocols::subTypeToString(multi.customProto ? MM_RF_CUSTOM_SELECTED : (int)multi.rfProtocol, (unsigned)type);
+      return Multiprotocols::subTypeToString((int)multi.rfProtocol, (unsigned)type);
 
     case PULSES_PXX_R9M:
       return CHECK_IN_ARRAY(strings, type);
@@ -68,10 +120,6 @@ QString ModuleData::subTypeToString(int type) const
 QString ModuleData::powerValueToString(Firmware * fw) const
 {
   const QStringList & strRef = powerValueStrings(subType, fw);
-  // EU module with telemetry can only be < 100/200mW.
-  if (pxx.sport_out && subType == MODULE_SUBTYPE_R9M_EU && pxx.power > 1)
-    return CPN_STR_UNKNOWN_ITEM;
-
   return strRef.value(pxx.power, CPN_STR_UNKNOWN_ITEM);
 }
 
@@ -101,10 +149,17 @@ QString ModuleData::protocolToString(unsigned protocol)
     "LP45", "DSM2", "DSMX",
     "PPM16", "PPMsim",
     "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
-    "Crossfire",
+    "TBS Crossfire",
     "DIY Multiprotocol Module",
-    "FrSky R9M Module",
-    "SBUS output at VBat"
+    "FrSky R9M",
+    "FrSky R9M Lite",
+    "FrSky R9M Lite Pro",
+    "SBUS output at VBat",
+    "FrSky ACCESS ISRM", "FrSky ACCST ISRM D16",
+    "FrSky ACCESS R9M 2019",
+    "FrSky ACCESS R9M Lite",
+    "FrSky ACCESS R9M Lite Pro",
+    "FrSky XJT lite (D16)", "FrSky XJT lite (D8)", "FrSky XJT lite (LR12)"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);

@@ -65,7 +65,7 @@ void setupPulsesPPMTrainer()
   setupPulsesPPM<trainer_pulse_duration_t>(&trainerPulsesData.ppm, g_model.trainerData.channelsStart, g_model.trainerData.channelsCount, g_model.trainerData.frameLength);
 }
 
-#if defined(PCBTARANIS) && defined(TARANIS_INTERNAL_PPM)
+#if defined(PCBTARANIS) && defined(INTERNAL_MODULE_PPM)
 void setupPulsesPPMInternalModule()
 {
   setupPulsesPPM(&intmodulePulsesData.ppm, g_model.moduleData[INTERNAL_MODULE].channelsStart, g_model.moduleData[INTERNAL_MODULE].channelsCount, g_model.moduleData[INTERNAL_MODULE].ppm.frameLength);

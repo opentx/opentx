@@ -43,7 +43,7 @@ void dacTimerInit()
   AUDIO_TIMER->CR1 = TIM_CR1_CEN ;
 }
 
-// Configure DAC0 (or DAC1 for REVA)
+// Configure DAC0
 // Not sure why PB14 has not be allocated to the DAC, although it is an EXTRA function
 // So maybe it is automatically done
 void dacInit()
@@ -88,28 +88,61 @@ void dacInit()
   NVIC_SetPriority(AUDIO_DMA_Stream_IRQn, 7);
 }
 
+#if defined(AUDIO_MUTE_GPIO_PIN)
+void audioMute()
+{
+#if defined(AUDIO_UNMUTE_DELAY)
+  tmr10ms_t now = get_tmr10ms();
+  if (!audioQueue.lastAudioPlayTime) {
+    // we start the mute delay now
+    audioQueue.lastAudioPlayTime = now;
+  }
+  else if (now - audioQueue.lastAudioPlayTime > AUDIO_MUTE_DELAY / 10) {
+    // delay expired, we may mute
+    GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+  }
+#else
+  // mute
+  GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+#endif
+}
+
+void audioUnmute()
+{
+#if defined(AUDIO_UNMUTE_DELAY)
+  // if muted
+  if (GPIO_ReadOutputDataBit(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN)) {
+    // ..un-mute
+    GPIO_ResetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+    RTOS_WAIT_MS(AUDIO_UNMUTE_DELAY);
+  }
+  // reset the mute delay
+  audioQueue.lastAudioPlayTime = 0;
+#else
+  GPIO_ResetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+#endif
+}
+#endif
+
 void audioConsumeCurrentBuffer()
 {
-  if (nextBuffer == 0) {
-
+  if (!nextBuffer) {
     nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
 #if defined(AUDIO_MUTE_GPIO_PIN)
-      // un-mute
-      GPIO_ResetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+      audioUnmute();
 #endif
-      AUDIO_DMA_Stream->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
-      AUDIO_DMA->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
+      AUDIO_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA channel
+      AUDIO_DMA->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5; // Write ones to clear bits
       AUDIO_DMA_Stream->M0AR = CONVERT_PTR_UINT(nextBuffer->data);
       AUDIO_DMA_Stream->NDTR = nextBuffer->size;
-      AUDIO_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE ;               // Enable DMA channel and interrupt
-      DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
-      DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
+      AUDIO_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA channel and interrupt
+      DAC->SR = DAC_SR_DMAUDR1; // Write 1 to clear flag
+      DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1; // Enable DAC
     }
 #if defined(AUDIO_MUTE_GPIO_PIN)
     else {
-      // mute
-      GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
+      audioMute();
     }
 #endif
   }

@@ -83,7 +83,9 @@ class DarkblueTheme: public Theme
       loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
       loadMenuIcon(ICON_RADIO_SETUP, "mask_radio_setup.png");
-      loadMenuIcon(ICON_RADIO_SD_BROWSER, "mask_radio_sd_browser.png");
+      loadMenuIcon(ICON_RADIO_SD_MANAGER, "mask_radio_sd_browser.png");
+      loadMenuIcon(ICON_RADIO_TOOLS, "mask_radio_tools.png");
+      loadMenuIcon(ICON_RADIO_SPECTRUM_ANALYSER, "/mask_radio_spectrum_analyser.png");
       loadMenuIcon(ICON_RADIO_GLOBAL_FUNCTIONS, "mask_radio_global_functions.png");
       loadMenuIcon(ICON_RADIO_TRAINER, "mask_radio_trainer.png");
       loadMenuIcon(ICON_RADIO_HARDWARE, "mask_radio_hardware.png");
@@ -135,11 +137,17 @@ class DarkblueTheme: public Theme
       calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
 
       delete calibHorus;
-#if defined(PCBX10)
-      if (STICKS_PWM_ENABLED())
+#if defined(RADIO_T16)
+      calibHorus = BitmapBuffer::load(getThemePath("t16.bmp"));
+#elif defined(RADIO_TX16S)
+      calibHorus = BitmapBuffer::load(getThemePath("tx16s.bmp"));
+#elif defined(PCBX10)
+      if(STICKS_PWM_ENABLED()) {
         calibHorus = BitmapBuffer::load(getThemePath("X10S.bmp"));
-      else
+      }
+      else {
         calibHorus = BitmapBuffer::load(getThemePath("X10.bmp"));
+      }
 #else
       calibHorus = BitmapBuffer::load(getThemePath("horus.bmp"));
 #endif
@@ -222,6 +230,7 @@ class DarkblueTheme: public Theme
 
     virtual void load() const
     {
+      Theme::load();
       loadColors();
       loadMenusIcons();
       loadThemeBitmaps();

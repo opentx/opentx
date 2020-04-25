@@ -45,6 +45,7 @@ enum RawSwitchType {
   SWITCH_TYPE_TIMER_MODE,
   SWITCH_TYPE_TELEMETRY,
   SWITCH_TYPE_SENSOR,
+  SWITCH_TYPE_ACT,
   MAX_SWITCH_TYPE
 };
 
@@ -91,11 +92,11 @@ class RawSwitch {
     QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL, const ModelData * const modelData = NULL) const;
     bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
 
-    bool operator== ( const RawSwitch& other) {
+    bool operator== ( const RawSwitch& other) const {
       return (this->type == other.type) && (this->index == other.index);
     }
 
-    bool operator!= ( const RawSwitch& other) {
+    bool operator!= ( const RawSwitch& other) const {
       return (this->type != other.type) || (this->index != other.index);
     }
 

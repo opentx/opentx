@@ -65,7 +65,7 @@ void insertMix(uint8_t idx)
   mix->destCh = s_currCh-1;
   mix->srcRaw = s_currCh;
   if (!isSourceAvailable(mix->srcRaw)) {
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
     while (!isSourceAvailable(mix->srcRaw)) {
       mix->srcRaw += 1;
     }
@@ -231,7 +231,7 @@ void displayMixInfos(coord_t y, MixData * md)
 void displayMixLine(coord_t y, MixData * md, bool active)
 {
   if(active && md->name[0]) {
-    lcdDrawSizedText(FW*sizeof(TR_MIXER)+FW/2, 0, md->name, sizeof(md->name), ZCHAR);
+    lcdDrawSizedText(FW*sizeof(TR_MIXES)+FW/2, 0, md->name, sizeof(md->name), ZCHAR);
     if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
       displayMixInfos(y, md);
     else
@@ -385,8 +385,8 @@ void menuModelMixAll(event_t event)
       break;
   }
 
-  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW+FW/2, 0, getMixesCount(), RIGHT);
-  lcdDrawText(FW*sizeof(TR_MIXER)+FW+FW/2, 0, STR_MAX(MAX_MIXERS));
+  lcdDrawNumber(FW*sizeof(TR_MIXES)+FW/2, 0, getMixesCount(), 0);
+  lcdDrawText(lcdNextPos, 0, STR_MAX(MAX_MIXERS));
 
   // Value
   uint8_t index = mixAddress(s_currIdx)->destCh;
@@ -397,7 +397,7 @@ void menuModelMixAll(event_t event)
 #endif
   }
 
-  SIMPLE_MENU(STR_MIXER, menuTabModel, MENU_MODEL_MIXES, HEADER_LINE + s_maxLines);
+  SIMPLE_MENU(STR_MIXES, menuTabModel, MENU_MODEL_MIXES, HEADER_LINE + s_maxLines);
 
 #if LCD_W >= 212
   // Gauge

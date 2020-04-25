@@ -534,8 +534,7 @@ void MdiChild::initModelsList()
   connect(modelsListModel, &QAbstractItemModel::dataChanged, this, &MdiChild::onDataChanged);
 
   ui->modelsList->setModel(modelsListModel);
-  ui->modelsList->header()->setVisible(!firmware->getCapability(Capability::HasModelCategories));
-  if (IS_HORUS(board)) {
+  if (IS_FAMILY_HORUS_OR_T16(board)) {
     ui->modelsList->setIndentation(20);
     // ui->modelsList->resetIndentation(); // introduced in next Qt versions ...
   }
@@ -543,6 +542,14 @@ void MdiChild::initModelsList()
     ui->modelsList->setIndentation(0);
   }
   refresh();
+
+  if (firmware->getCapability(Capability::HasModelCategories)) {
+    ui->modelsList->header()->resizeSection(0, ui->modelsList->header()->sectionSize(0) * 2);   // pad out categories and model names
+  }
+  else {
+    ui->modelsList->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);           // minimise Index
+    ui->modelsList->header()->resizeSection(1, ui->modelsList->header()->sectionSize(1) * 1.5); // pad out model names
+  }
 }
 
 void MdiChild::refresh()
@@ -693,6 +700,10 @@ void MdiChild::updateTitle()
   int availableEEpromSize = modelsListModel->getAvailableEEpromSize();
   if (availableEEpromSize >= 0) {
     title += QString(" - %1 ").arg(availableEEpromSize) + tr("free bytes");
+  }
+  QFileInfo fi(curFile);
+  if (!isUntitled && !fi.isWritable()) {
+    title += QString(" (%1)").arg(tr("read only"));
   }
   setWindowTitle(title);
 }
@@ -1327,7 +1338,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
   QString warning = storage.warning();
   if (!warning.isEmpty()) {
-    // TODO EEPROMInterface::showEepromWarnings(this, CPN_STR_TTL_WARNING, warning);
+    QMessageBox::warning(this, CPN_STR_TTL_WARNING, warning);
   }
 
   if (resetCurrentFile) {
@@ -1348,7 +1359,8 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
 bool MdiChild::save()
 {
-  if (isUntitled) {
+  QFileInfo fi(curFile);
+  if (isUntitled || !fi.isWritable()) {
     return saveAs(true);
   }
   else {
@@ -1450,6 +1462,12 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
 {
   QMessageBox::StandardButtons btns;
   QMessageBox::StandardButton dfltBtn;
+
+  if (from == Board::BOARD_X10 && to == Board::BOARD_JUMPER_T16) {
+    if (displayT16ImportWarning() == false)
+      return false;
+  }
+
   QString q = tr("<p><b>Currently selected radio type (%1) is not compatible with file %3 (from %2), models and settings need to be converted.</b></p>").arg(Boards::getBoardName(to)).arg(Boards::getBoardName(from)).arg(userFriendlyCurrentFile());
   if (newFile) {
     q.append(tr("Do you wish to continue with the conversion?"));
@@ -1513,12 +1531,12 @@ int MdiChild::askQuestion(const QString & msg, QMessageBox::StandardButtons butt
 void MdiChild::writeEeprom()  // write to Tx
 {
   Board::Type board = getCurrentBoard();
-  if (IS_HORUS(board)) {
+  if (IS_FAMILY_HORUS_OR_T16(board)) {
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
       qDebug() << "MdiChild::writeEeprom(): Horus radio not found";
-      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find Horus radio SD card!"));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find radio SD card!"));
       return;
     }
     if (saveFile(radioPath, false)) {

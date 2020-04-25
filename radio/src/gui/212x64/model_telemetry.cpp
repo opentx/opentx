@@ -23,6 +23,7 @@
 enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_PROTOCOL_TYPE,
   ITEM_TELEMETRY_RSSI_LABEL,
+  ITEM_TELEMETRY_RSSI_SOURCE,
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
   ITEM_TELEMETRY_DISABLE_ALARMS,
@@ -45,6 +46,7 @@ enum MenuModelTelemetryFrskyItems {
 #define TELEM_COL2                    (16*FW)
 #define TELEM_COL3                    (30*FW+2)
 
+#define RSSI_ROWS                     LABEL(RSSI), 0, 0, 0, 0,
 #define SENSOR_ROWS(x)                (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSORS_ROWS                  LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), SENSOR_ROWS(32), SENSOR_ROWS(33), SENSOR_ROWS(34), SENSOR_ROWS(35), SENSOR_ROWS(36), SENSOR_ROWS(37), SENSOR_ROWS(38), SENSOR_ROWS(39), SENSOR_ROWS(40), SENSOR_ROWS(41), SENSOR_ROWS(42), SENSOR_ROWS(43), SENSOR_ROWS(44), SENSOR_ROWS(45), SENSOR_ROWS(46), SENSOR_ROWS(47), SENSOR_ROWS(48), SENSOR_ROWS(49), SENSOR_ROWS(50), SENSOR_ROWS(51), SENSOR_ROWS(52), SENSOR_ROWS(53), SENSOR_ROWS(54), SENSOR_ROWS(55), SENSOR_ROWS(56), SENSOR_ROWS(57), SENSOR_ROWS(58), SENSOR_ROWS(59), 0, 0, 0, 0,
 #if defined(VARIO)
@@ -52,12 +54,11 @@ enum MenuModelTelemetryFrskyItems {
 #else
   #define VARIO_ROWS
 #endif
-#define RSSI_ROWS                     LABEL(RSSI), 0, 0, 0,
 #define TELEMETRY_TYPE_ROWS           (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
 
 void onSensorMenu(const char * result)
 {
-  uint8_t index = menuVerticalPosition - ITEM_TELEMETRY_SENSOR_FIRST;
+  uint8_t index = menuVerticalPosition - HEADER_LINE - ITEM_TELEMETRY_SENSOR_FIRST;
 
   if (index < MAX_TELEMETRY_SENSORS) {
     if (result == STR_EDIT) {
@@ -69,11 +70,10 @@ void onSensorMenu(const char * result)
       if (index<MAX_TELEMETRY_SENSORS && isTelemetryFieldAvailable(index))
         menuVerticalPosition += 1;
       else
-        menuVerticalPosition = ITEM_TELEMETRY_NEW_SENSOR;
+        menuVerticalPosition = HEADER_LINE + ITEM_TELEMETRY_NEW_SENSOR;
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
-
       if (newIndex >= 0) {
         TelemetrySensor & sourceSensor = g_model.telemetrySensors[index];
         TelemetrySensor & newSensor = g_model.telemetrySensors[newIndex];
@@ -90,27 +90,35 @@ void onSensorMenu(const char * result)
   }
 }
 
-void menuModelTelemetryFrsky(event_t event)
+void onDeleteAllSensorsConfirm(const char * result)
 {
-  if (warningResult) {
-    warningResult = 0;
+  if (result == STR_OK) {
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       delTelemetryIndex(i);
     }
   }
+}
 
-  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
+void menuModelTelemetry(event_t event)
+{
+  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
+
+  uint8_t sub = menuVerticalPosition - HEADER_LINE;
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    int k = i + menuVerticalOffset;
+    uint8_t k = i + menuVerticalOffset;
     for (int j=0; j<=k; j++) {
-      if (mstate_tab[j] == HIDDEN_ROW)
-        k++;
+      if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW) {
+        if (++k >= (int)DIM(mstate_tab)) {
+          return;
+        }
+      }
     }
 
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
-    LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
+    LcdFlags attr = (sub == k ? blink : 0);
+
 
     if (k >= ITEM_TELEMETRY_SENSOR_FIRST && k <= ITEM_TELEMETRY_SENSOR_LAST) {
       int index = k - ITEM_TELEMETRY_SENSOR_FIRST;
@@ -124,9 +132,11 @@ void menuModelTelemetryFrsky(event_t event)
       if (telemetryItem.isAvailable()) {
         bool isOld = telemetryItem.isOld();
         lcdNextPos = TELEM_COL2;
-        if (isOld) lcdDrawChar(lcdNextPos, y, '[');
+        if (isOld)
+          lcdDrawChar(lcdNextPos, y, '[');
         drawSensorCustomValue(lcdNextPos, y, index, getValue(MIXSRC_FIRST_TELEM+3*index), LEFT);
-        if (isOld) lcdDrawChar(lcdLastRightPos, y, ']');
+        if (isOld)
+          lcdDrawChar(lcdLastRightPos, y, ']');
       }
       else {
         lcdDrawText(TELEM_COL2, y, "---", 0); // TODO shortcut
@@ -164,7 +174,9 @@ void menuModelTelemetryFrsky(event_t event)
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
         lcdDrawTextAlignedLeft(y, STR_TELEMETRY_TYPE);
         lcdDrawTextAtIndex(TELEM_COL2, y, STR_TELEMETRY_PROTOCOLS, g_model.telemetryProtocol, attr);
-        g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
+        if (attr) {
+          g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
+        }
         break;
 
       case ITEM_TELEMETRY_SENSORS_LABEL:
@@ -176,7 +188,7 @@ void menuModelTelemetryFrsky(event_t event)
         break;
 
       case ITEM_TELEMETRY_DISCOVER_SENSORS:
-        lcdDrawText(0, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
+        lcdDrawText(INDENT_WIDTH, y, allowNewSensors ? STR_STOP_DISCOVER_SENSORS : STR_DISCOVER_SENSORS, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           allowNewSensors = !allowNewSensors;
@@ -193,18 +205,20 @@ void menuModelTelemetryFrsky(event_t event)
             pushMenu(menuModelSensor);
           }
           else {
+            allowNewSensors = 0;
             POPUP_WARNING(STR_TELEMETRYFULL);
           }
         }
         break;
 
       case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
-        lcdDrawText(0, y, STR_DELETE_ALL_SENSORS, attr);
-        if (attr)
+        lcdDrawText(INDENT_WIDTH, y, STR_DELETE_ALL_SENSORS, attr);
+        if (attr) {
           s_editMode = 0;
-        if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
-          killEvents(KEY_ENTER);
-          POPUP_CONFIRMATION(STR_CONFIRMDELETE, nullptr);
+          if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+            killEvents(KEY_ENTER);
+            POPUP_CONFIRMATION(STR_CONFIRMDELETE, onDeleteAllSensorsConfirm);
+          }
         }
         break;
 
@@ -214,17 +228,35 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_RSSI_LABEL:
 #if defined(MULTIMODULE)
-        if (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_XJT &&
-          g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE  &&
-          g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
-          lcdDrawTextAlignedLeft(y, "RSNR");
+        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT))
+          lcdDrawTextAlignedLeft(y, "RQly");
         else
-#endif
+          lcdDrawTextAlignedLeft(y, "RSSI");
+#else
         lcdDrawTextAlignedLeft(y, "RSSI");
+#endif
         break;
 
+      case ITEM_TELEMETRY_RSSI_SOURCE: {
+        lcdDrawTextAlignedLeft(y, INDENT TR_SOURCE);
+        if (g_model.rssiSource) {
+          drawSource(TELEM_COL2, y, MIXSRC_FIRST_TELEM + 3 * (g_model.rssiSource - 1), attr);
+          TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource - 1];
+          lcdDrawText(lcdNextPos, y, " ", attr);
+          drawReceiverName(lcdNextPos, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, attr);
+        }
+        else {
+          lcdDrawText(TELEM_COL2, y, STR_DEFAULT, attr);
+        }
+        if (attr) {
+          g_model.rssiSource = checkIncDec(event, g_model.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
+        }
+        break;
+      }
+
       case ITEM_TELEMETRY_RSSI_ALARM1:
-      case ITEM_TELEMETRY_RSSI_ALARM2: {
+      case ITEM_TELEMETRY_RSSI_ALARM2:
+      {
         bool warning = (k==ITEM_TELEMETRY_RSSI_ALARM1);
         lcdDrawTextAlignedLeft(y, (warning ? STR_LOWALARM : STR_CRITICALALARM));
         lcdDrawNumber(TELEM_COL2, y, warning? g_model.rssiAlarms.getWarningRssi() : g_model.rssiAlarms.getCriticalRssi(), LEFT|attr, 3);
@@ -236,6 +268,7 @@ void menuModelTelemetryFrsky(event_t event)
         }
         break;
       }
+
       case ITEM_TELEMETRY_DISABLE_ALARMS:
         g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, TELEM_COL3, y, STR_DISABLE_ALARM, attr, event);
         break;
@@ -246,7 +279,7 @@ void menuModelTelemetryFrsky(event_t event)
         break;
 
       case ITEM_TELEMETRY_VARIO_SOURCE:
-        lcdDrawTextAlignedLeft(y, STR_SOURCE);
+        lcdDrawTextAlignedLeft(y, INDENT TR_SOURCE);
         drawSource(TELEM_COL2, y, g_model.varioData.source ? MIXSRC_FIRST_TELEM+3*(g_model.varioData.source-1) : 0, attr);
         if (attr) {
           g_model.varioData.source = checkIncDec(event, g_model.varioData.source, 0, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);

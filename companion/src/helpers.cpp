@@ -36,6 +36,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QDir>
 
 using namespace Helpers;
 
@@ -434,6 +435,23 @@ static bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
   return s1.toLower() < s2.toLower();
 }
 
+bool displayT16ImportWarning()
+{
+  QMessageBox msgBox;
+  msgBox.setWindowTitle(QObject::tr("WARNING"));
+  msgBox.setText(QObject::tr("<p>Importing JumperTX data into OpenTX 2.3 is <b>not supported and dangerous.</b></p> \
+                      <p>It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but <b>You should only continue here if the file you opened comes from a real FrSky X10.</b></p> \
+                      <p>Do you really want to continue?</p>"));
+  msgBox.setIcon(QMessageBox::Warning);
+  msgBox.addButton(QMessageBox::No);
+  msgBox.addButton(QMessageBox::Yes);
+  msgBox.setDefaultButton(QMessageBox::No);
+
+  if (msgBox.exec() == QMessageBox::No)
+    return false;
+  return true;
+}
+
 void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)
 {
   b->clear();
@@ -442,7 +460,7 @@ void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, con
   bool added = false;
   // Convert set into list and sort it alphabetically case insensitive
   QStringList list = QStringList::fromSet(set);
-  qSort(list.begin(), list.end(), caseInsensitiveLessThan);
+  std::sort(list.begin(), list.end(), caseInsensitiveLessThan);
   foreach (QString entry, list) {
     b->addItem(entry);
     if (entry == current) {
@@ -808,4 +826,51 @@ void TableLayout::pushRowsUp(int row)
   // Push rows upward
   // addDoubleSpring(gridLayout, 5, num_fsw+1);
 
+}
+
+QString Helpers::getChecklistsPath()
+{
+  return QDir::toNativeSeparators(g.profile[g.id()].sdPath() + "/MODELS/");   // TODO : add sub folder to constants
+}
+
+QString Helpers::getChecklistFilename(const ModelData * model)
+{
+  QString name = model->name;
+  name.replace(" ", "_");
+  name.append(".txt");          // TODO : add to constants
+  return name;
+}
+
+QString Helpers::getChecklistFilePath(const ModelData * model)
+{
+  return getChecklistsPath() + getChecklistFilename(model);
+}
+
+QString Helpers::removeAccents(const QString & str)
+{
+  // UTF-8 ASCII Table
+  static const QHash<QString, QVariant> map = {
+    {"a", QRegularExpression("[áâãàä]")},
+    {"A", QRegularExpression("[ÁÂÃÀÄ]")},
+    {"e", QRegularExpression("[éèêě]")},
+    {"E", QRegularExpression("[ÉÈÊĚ]")},
+    {"o", QRegularExpression("[óôõö]")},
+    {"O", QRegularExpression("[ÓÔÕÖ]")},
+    {"u", QRegularExpression("[úü]")},
+    {"U", QRegularExpression("[ÚÜ]")},
+    {"i", "í"}, {"I", "Í"},
+    {"c", "ç"}, {"C", "Ç"},
+    {"y", "ý"}, {"Y", "Ý"},
+    {"s", "š"}, {"S", "Š"},
+    {"r", "ř"}, {"R", "Ř"}
+  };
+
+  QString result(str);
+  for (QHash<QString, QVariant>::const_iterator it = map.cbegin(), en = map.cend(); it != en; ++it) {
+    if (it.value().canConvert<QRegularExpression>())
+      result.replace(it.value().toRegularExpression(), it.key());
+    else
+      result.replace(it.value().toString(), it.key());
+  }
+  return result;
 }

@@ -18,7 +18,6 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
 #include "opentx.h"
 
 extern uint8_t g_moduleIdx;
@@ -51,7 +50,7 @@ void menuRadioPowerMeter(event_t event)
     lcdRefresh();
     moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
     /* wait 1s to resume normal operation before leaving */
-    watchdogSuspend(1000);
+    watchdogSuspend(500 /*5s*/);
     RTOS_WAIT_MS(1000);
     return;
   }
@@ -60,6 +59,7 @@ void menuRadioPowerMeter(event_t event)
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400000000;
     reusableBuffer.powerMeter.attn = 4;
+    reusableBuffer.powerMeter.dirty = true;
     moduleState[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
@@ -81,6 +81,7 @@ void menuRadioPowerMeter(event_t event)
           if (checkIncDec_Ret) {
             reusableBuffer.powerMeter.power = 0;
             reusableBuffer.powerMeter.peak = 0;
+            reusableBuffer.powerMeter.dirty = true;
           }
         }
         break;

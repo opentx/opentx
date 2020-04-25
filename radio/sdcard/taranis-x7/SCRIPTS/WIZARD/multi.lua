@@ -58,10 +58,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_ROT_RIGHT then
+    if event == EVT_VIRTUAL_INC then
       value = (value + max)
       dirty = true
-    elseif event == EVT_ROT_LEFT then
+    elseif event == EVT_VIRTUAL_DEC then
       value = (value + max + 2)
       dirty = true
     end
@@ -72,12 +72,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_FIRST then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_FIRST then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -88,11 +88,11 @@ local function valueIncDec(event, value, min, max)
 end
 
 local function navigate(event, fieldMax, prevPage, nextPage)
-  if event == EVT_ENTER_BREAK then
+  if event == EVT_VIRTUAL_ENTER then
     edit = not edit
     dirty = true
   elseif edit then
-    if event == EVT_EXIT_BREAK then
+    if event == EVT_VIRTUAL_EXIT then
       edit = false
       dirty = true
     elseif not dirty then
@@ -126,7 +126,7 @@ local function getFieldFlags(position)
 end
 
 local function channelIncDec(event, value)
-  if not edit and event==EVT_MENU_BREAK then
+  if not edit and event==EVT_VIRTUAL_MENU then
     servoPage = value
     dirty = true
   else
@@ -137,12 +137,12 @@ end
 
 local function switchValueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_FIRST then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_FIRST then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -153,7 +153,7 @@ local function switchValueIncDec(event, value, min, max)
 end
 
 local function switchIncDec(event, value)
-  if not edit and event==EVT_MENU_BREAK then
+  if not edit and event== EVT_VIRTUAL_MENU then
     servoPage = value
     dirty = true
   else
@@ -326,6 +326,7 @@ end
 -- Confirmation Menu
 local function drawNextLine(x, y, label, channel)
   lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+46, y, ":", 0);
   lcd.drawSource(x+50, y, MIXSRC_CH1+channel, 0)
   y = y + 8
   if y > 50 then
@@ -337,6 +338,7 @@ end
 
 local function drawNextSWLine(x, y, label, switch)
   lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+38, y, ":", 0);
   lcd.drawText(x+42, y, switches[switch], 0)
   y = y + 8
   if y > 50 then
@@ -352,15 +354,15 @@ local function drawConfirmationMenu()
   lcd.clear()
   lcd.drawText(0, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
-  x, y = drawNextLine(x, y, "Throttle:", thrCH1)
-  x, y = drawNextLine(x, y, "Roll:", rollCH1)
-  x, y = drawNextLine(x, y, "Pitch:", pitchCH1)
-  x, y = drawNextLine(x, y, "Yaw:", yawCH1)
+  x, y = drawNextLine(x, y, "Throttle", thrCH1)
+  x, y = drawNextLine(x, y, "Roll", rollCH1)
+  x, y = drawNextLine(x, y, "Pitch", pitchCH1)
+  x, y = drawNextLine(x, y, "Yaw", yawCH1)
   local x = 72
   local y = 12
-  x, y = drawNextSWLine(x, y, "Arm:", armSW1)
-  x, y = drawNextSWLine(x, y, "Mode:", modeSW1)
-  x, y = drawNextSWLine(x, y, "Beeper:", beeperSW1)
+  x, y = drawNextSWLine(x, y, "Arm", armSW1)
+  x, y = drawNextSWLine(x, y, "Mode", modeSW1)
+  x, y = drawNextSWLine(x, y, "Beeper", beeperSW1)
   lcd.drawText(0, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
   fieldsMax = 0
@@ -397,9 +399,9 @@ local function confirmationMenu(event)
 
   navigate(event, fieldsMax, BEEPER_PAGE, page)
 
-  if event == EVT_EXIT_BREAK then
+  if event == EVT_VIRTUAL_EXIT then
     return 2
-  elseif event == EVT_ENTER_LONG then
+  elseif event == EVT_VIRTUAL_ENTER_LONG then
     killEvents(event)
     applySettings()
     return 2

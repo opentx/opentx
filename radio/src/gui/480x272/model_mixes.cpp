@@ -84,7 +84,7 @@ void insertMix(uint8_t idx)
   mix->destCh = s_currCh-1;
   mix->srcRaw = s_currCh;
   if (!isSourceAvailable(mix->srcRaw)) {
-    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
+    mix->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channelOrder(s_currCh));
     while (!isSourceAvailable(mix->srcRaw)) {
       mix->srcRaw += 1;
     }
@@ -176,7 +176,7 @@ bool menuModelMixOne(event_t event)
 {
   MixData * md2 = mixAddress(s_currIdx) ;
 
-  SUBMENU_WITH_OPTIONS(STR_MIXER, ICON_MODEL_MIXER, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
+  SUBMENU_WITH_OPTIONS(STR_MIXES, ICON_MODEL_MIXER, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
   putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
   displayMixStatus(md2->destCh);
 
@@ -203,7 +203,7 @@ bool menuModelMixOne(event_t event)
         editName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr);
         break;
       case MIX_FIELD_SOURCE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOURCE);
         drawSource(MIXES_2ND_COLUMN, y, md2->srcRaw, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
@@ -213,7 +213,7 @@ bool menuModelMixOne(event_t event)
         break;
       case MIX_FIELD_OFFSET:
       {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_OFFSET));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_OFFSET);
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
@@ -413,7 +413,7 @@ bool menuModelMixAll(event_t event)
   uint8_t chn = mixAddress(s_currIdx)->destCh + 1;
 
   int linesCount = getMixesLinesCount();
-  SIMPLE_MENU(STR_MIXER, MODEL_ICONS, menuTabModel, MENU_MODEL_MIXES, linesCount);
+  SIMPLE_MENU(STR_MIXES, MODEL_ICONS, menuTabModel, MENU_MODEL_MIXES, linesCount);
 
   switch (event) {
     case EVT_ENTRY:
@@ -607,6 +607,8 @@ bool menuModelMixAll(event_t event)
         if (!s_copyMode) {
           attr = INVERS;
         }
+        if (g_model.limitData[ch-1].name[0] != '\0')
+          lcdDrawSizedText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
       }
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
         putsChn(MENUS_MARGIN_LEFT, y, ch, attr); // show CHx

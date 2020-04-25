@@ -20,12 +20,12 @@
 
 #include "opentx.h"
 
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 extern "C" {
 #endif
 #include "usb_dcd_int.h"
 #include "usb_bsp.h"
-#if defined(__cplusplus) && !defined(SIMU)
+#if defined(__cplusplus)
 }
 #endif
 
@@ -36,70 +36,24 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0x5555;      // Unlock registers
   IWDG->PR = 3;           // Divide by 32 => 1kHz clock
   IWDG->KR = 0x5555;      // Unlock registers
-  IWDG->RLR = duration;       // 1.5 seconds nominal
+  IWDG->RLR = duration;
   IWDG->KR = 0xAAAA;      // reload
   IWDG->KR = 0xCCCC;      // start
 }
 
-// Start TIMER7 at 2000000Hz
-void init2MhzTimer()
+#if defined(AUX_SERIAL_PWR_GPIO)
+void auxSerialPowerOn()
 {
-  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5 uS, 2 MHz
-  TIMER_2MHz_TIMER->ARR = 65535;
-  TIMER_2MHz_TIMER->CR2 = 0;
-  TIMER_2MHz_TIMER->CR1 = TIM_CR1_CEN;
+  GPIO_SetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
 }
 
-// Starts TIMER at 1000Hz
-void init1msTimer()
+void auxSerialPowerOff()
 {
-  INTERRUPT_xMS_TIMER->ARR = 999; // 1mS in uS
-  INTERRUPT_xMS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;  // 1uS
-  INTERRUPT_xMS_TIMER->CCER = 0;
-  INTERRUPT_xMS_TIMER->CCMR1 = 0;
-  INTERRUPT_xMS_TIMER->EGR = 0;
-  INTERRUPT_xMS_TIMER->CR1 = 5;
-  INTERRUPT_xMS_TIMER->DIER |= 1;
-  NVIC_EnableIRQ(INTERRUPT_xMS_IRQn);
-  NVIC_SetPriority(INTERRUPT_xMS_IRQn, 7);
+  GPIO_ResetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
 }
-
-// TODO use the same than board_sky9x.cpp
-void interrupt1ms()
-{
-  static uint8_t pre_scale;       // Used to get 10 Hz counter
-
-  ++pre_scale;
-
-#if defined(HAPTIC)
-  if (pre_scale == 5 || pre_scale == 10) {
-    DEBUG_TIMER_START(debugTimerHaptic);
-    HAPTIC_HEARTBEAT();
-    DEBUG_TIMER_STOP(debugTimerHaptic);
-  }
 #endif
 
-  if (pre_scale == 10) {
-    pre_scale = 0;
-    DEBUG_TIMER_START(debugTimerPer10ms);
-    DEBUG_TIMER_SAMPLE(debugTimerPer10msPeriod);
-    per10ms();
-    DEBUG_TIMER_STOP(debugTimerPer10ms);
-  }
-}
-
-extern "C" void INTERRUPT_xMS_IRQHandler()
-{
-  INTERRUPT_xMS_TIMER->SR &= ~TIM_SR_UIF;
-  interrupt1ms();
-  DEBUG_INTERRUPT(INT_1MS);
-}
-
-#if defined(SEMIHOSTING)
-extern "C" void initialise_monitor_handles();
-#endif
-
-#if defined(PCBX10)
+#if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -120,15 +74,18 @@ void sportUpdatePowerOff()
 {
   GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
 }
+
+void sportUpdatePowerInit()
+{
+  if (g_eeGeneral.sportUpdatePower == 1)
+    sportUpdatePowerOn();
+  else
+    sportUpdatePowerOff();
+}
 #endif
 
 void boardInit()
 {
-#if defined(SEMIHOSTING)
-  initialise_monitor_handles();
-#endif
-
-#if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |
@@ -138,7 +95,7 @@ void boardInit()
                          AUDIO_RCC_AHB1Periph |
                          KEYS_RCC_AHB1Periph |
                          ADC_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
@@ -146,20 +103,23 @@ void boardInit()
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
+                         I2C_TOUCH_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph |
                          SPORT_UPDATE_RCC_AHB1Periph,
                          ENABLE);
 
-  RCC_APB1PeriphClockCmd(INTERRUPT_xMS_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph |
+                         INTERRUPT_xMS_RCC_APB1Periph |
                          ADC_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
-                         SERIAL_RCC_APB1Periph |
+                         AUX_SERIAL_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
                          TRAINER_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
+                         I2C_TOUCH_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);
@@ -170,18 +130,21 @@ void boardInit()
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
                          EXTMODULE_RCC_APB2Periph |
+                         TELEMETRY_RCC_APB2Periph |
                          BT_RCC_APB2Periph |
+                         AUX_SERIAL_RCC_APB2Periph |
                          BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
 
   pwrInit();
+  pwrOn();
   delaysInit();
 
-#if defined(DEBUG)
-  serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
-#endif
-
   __enable_irq();
+
+#if defined(DEBUG) && defined(AUX_SERIAL)
+  auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+#endif
 
   TRACE("\nHorus board started :)");
   TRACE("RCC->CSR = %08x", RCC->CSR);
@@ -208,7 +171,7 @@ void boardInit()
   backlightInit();
 
   init2MhzTimer();
-  init1msTimer();
+  init5msTimer();
   usbInit();
   hapticInit();
 
@@ -224,63 +187,52 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM4_STOP|DBGMCU_TIM5_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM7_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM9_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM11_STOP|DBGMCU_TIM12_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if defined(PCBX10)
   ledInit();
+
+#if HAS_SPORT_UPDATE_CONNECTOR()
   sportUpdateInit();
 #endif
 
   ledBlue();
 
-  vbattRTC = getRTCBattVoltage();
+#if defined(RTCLOCK) && !defined(COPROCESSOR)
+  rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
 }
 
 void boardOff()
 {
-  BACKLIGHT_DISABLE();
+  backlightEnable(0);
 
   while (pwrPressed()) {
-    wdt_reset();
+    WDG_RESET();
   }
 
   SysTick->CTRL = 0; // turn off systick
+
+#if defined(PCBX12S)
+  // Shutdown the Audio amp
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
+  GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
+#endif
+
+  // Shutdown the Haptic
+  hapticDone();
+
+#if defined(RTC_BACKUP_RAM)
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, DISABLE);
+  PWR_BackupRegulatorCmd(DISABLE);
+#endif
+
+  RTC->BKP0R = SHUTDOWN_REQUEST;
+
   pwrOff();
-}
-
-uint8_t currentTrainerMode = 0xff;
-
-void checkTrainerSettings()
-{
-  uint8_t requiredTrainerMode = g_model.trainerData.mode;
-  if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        stop_trainer_capture();
-        break;
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        serial2Stop();
-    }
-
-    currentTrainerMode = requiredTrainerMode;
-    switch (requiredTrainerMode) {
-      case TRAINER_MODE_SLAVE:
-        init_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
-          serial2SbusInit();
-          break;
-        }
-        // no break
-      default:
-        // master is default
-        init_trainer_capture();
-        break;
-    }
-  }
 }
 
 uint16_t getBatteryVoltage()

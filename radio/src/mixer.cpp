@@ -21,8 +21,8 @@
 #include "opentx.h"
 #include "timers.h"
 
-int8_t  virtualInputsTrims[NUM_INPUTS];
-int16_t anas [NUM_INPUTS] = {0};
+int8_t  virtualInputsTrims[MAX_INPUTS];
+int16_t anas [MAX_INPUTS] = {0};
 int16_t trims[NUM_TRIMS] = {0};
 int32_t chans[MAX_OUTPUT_CHANNELS] = {0};
 BeepANACenter bpanaCenter = 0;
@@ -157,6 +157,8 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
       continue;
     if (ed->flightModes & (1<<mixerCurrentFlightMode))
       continue;
+    if (ed->srcRaw >= MIXSRC_FIRST_TRAINER && ed->srcRaw <= MIXSRC_LAST_TRAINER && !IS_TRAINER_INPUT_VALID())
+      continue;
     if (getSwitch(ed->swtch)) {
       int32_t v;
       if (ed->srcRaw == ovwrIdx) {
@@ -222,6 +224,17 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
 // rescaled from -262144 to 262144
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
+    // safety channel available for channel check
+    return calc100toRESX(safetyCh[channel]);
+  }
+#endif
+
+  if (isFunctionActive(FUNCTION_TRAINER_CHANNELS) && IS_TRAINER_INPUT_VALID()) {
+    return ppmInput[channel] * 2;
+  }
+
   LimitData * lim = limitAddress(channel);
 
   if (lim->curve) {
@@ -275,17 +288,12 @@ int16_t applyLimits(uint8_t channel, int32_t value)
     ofs += tmp;  // ofs can to added directly because already recalculated,
   }
 
-  if (ofs > lim_p) ofs = lim_p;
-  if (ofs < lim_n) ofs = lim_n;
-
-  if (lim->revert) ofs = -ofs; // finally do the reverse.
-
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) {
-    // safety channel available for channel check
-    ofs = calc100toRESX(safetyCh[channel]);
-  }
-#endif
+  if (ofs > lim_p)
+    ofs = lim_p;
+  if (ofs < lim_n)
+    ofs = lim_n;
+  if (lim->revert)
+    ofs = -ofs; // finally do the reverse.
 
   return ofs;
 }
@@ -311,7 +319,7 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
-  else if (i <= MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
+  else if (i <= MIXSRC_LAST_POT + NUM_MOUSE_ANALOGS) {
     return calibratedAnalogs[i - MIXSRC_Rud];
   }
 
@@ -341,8 +349,8 @@ getvalue_t getValue(mixsrc_t i)
   }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  else if ((i >= MIXSRC_FIRST_SWITCH) && (i <= MIXSRC_LAST_SWITCH)) {
-    mixsrc_t sw = i-MIXSRC_FIRST_SWITCH;
+  else if (i >= MIXSRC_FIRST_SWITCH && i <= MIXSRC_LAST_SWITCH) {
+    mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
     if (SWITCH_EXISTS(sw)) {
       return (switchState(3*sw) ? -1024 : (IS_CONFIG_3POS(sw) && switchState(3*sw+1) ? 0 : 1024));
     }
@@ -361,22 +369,22 @@ getvalue_t getValue(mixsrc_t i)
 #endif
 
   else if (i <= MIXSRC_LAST_LOGICAL_SWITCH) {
-    return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
+    return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH + i - MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
   }
   else if (i <= MIXSRC_LAST_TRAINER) {
-    int16_t x = ppmInput[i-MIXSRC_FIRST_TRAINER];
-    if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) {
-      x -= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER];
+    int16_t x = ppmInput[i - MIXSRC_FIRST_TRAINER];
+    if (i < MIXSRC_FIRST_TRAINER + NUM_CAL_PPM) {
+      x -= g_eeGeneral.trainer.calib[i - MIXSRC_FIRST_TRAINER];
     }
-    return x*2;
+    return x * 2;
   }
   else if (i <= MIXSRC_LAST_CH) {
-    return ex_chans[i-MIXSRC_CH1];
+    return ex_chans[i - MIXSRC_CH1];
   }
 
   else if (i <= MIXSRC_LAST_GVAR) {
 #if defined(GVARS)
-    return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
+    return GVAR_VALUE(i - MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
 #else
     return 0;
 #endif
@@ -394,11 +402,11 @@ getvalue_t getValue(mixsrc_t i)
 #endif
   }
   else if (i <= MIXSRC_LAST_TIMER) {
-    return timersStates[i-MIXSRC_FIRST_TIMER].val;
+    return timersStates[i - MIXSRC_FIRST_TIMER].val;
   }
 
   else if (i <= MIXSRC_LAST_TELEM) {
-    if(IS_FAI_FORBIDDEN(i)) {
+    if (IS_FAI_FORBIDDEN(i)) {
       return 0;
     }
     i -= MIXSRC_FIRST_TELEM;
@@ -420,7 +428,7 @@ void evalInputs(uint8_t mode)
 {
   BeepANACenter anaCenter = 0;
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+  for (uint8_t i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i) : i);
     int16_t v = anaIn(i);
@@ -452,7 +460,7 @@ void evalInputs(uint8_t mode)
     if (mode == e_perout_mode_normal) {
       if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
         anaCenter |= mask;
-        if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && !menuCalibrationState) {
+        if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && s_mixer_first_run_done && !menuCalibrationState) {
           if (!IS_POT(i) || IS_POT_SLIDER_AVAILABLE(i)) {
             AUDIO_POT_MIDDLE(i);
           }
@@ -465,12 +473,12 @@ void evalInputs(uint8_t mode)
         v = 0;
       }
 
-      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && IS_TRAINER_INPUT_VALID()) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER_STICK1+ch) && IS_TRAINER_INPUT_VALID()) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
           uint8_t chStud = td->srcChn;
-          int32_t vStud  = (ppmInput[chStud]- g_eeGeneral.trainer.calib[chStud]);
+          int32_t vStud  = (ppmInput[chStud] - g_eeGeneral.trainer.calib[chStud]);
           vStud *= td->studWeight;
           vStud /= 50;
           switch (td->mode) {
@@ -546,8 +554,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 {
   evalInputs(mode);
 
-  if (tick10ms) evalLogicalSwitches(mode==e_perout_mode_normal);
-
+  if (tick10ms)
+    evalLogicalSwitches(mode==e_perout_mode_normal);
 
 #if defined(HELI)
   int heliEleValue = getValue(g_model.swashR.elevatorSource);
@@ -613,7 +621,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
   }
 #endif
 
-  memclear(chans, sizeof(chans));        // All outputs to 0
+  memclear(chans, sizeof(chans)); // all outputs to 0
 
   //========== MIXER LOOP ===============
   uint8_t lv_mixWarning = 0;
@@ -623,27 +631,27 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
   bitfield_channels_t dirtyChannels = (bitfield_channels_t)-1; // all dirty when mixer starts
 
   do {
-
     bitfield_channels_t passDirtyChannels = 0;
 
     for (uint8_t i=0; i<MAX_MIXERS; i++) {
-
 #if defined(BOLD_FONT)
-      if (mode==e_perout_mode_normal && pass==0) swOn[i].activeMix = 0;
+      if (mode == e_perout_mode_normal && pass == 0)
+        swOn[i].activeMix = 0;
 #endif
 
-      MixData *md = mixAddress(i);
+      MixData * md = mixAddress(i);
 
-      if (md->srcRaw == 0) break;
+      if (md->srcRaw == 0)
+        break;
 
       mixsrc_t stickIndex = md->srcRaw - MIXSRC_Rud;
 
-      if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
+      if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh)))
+        continue;
 
       // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
-      if (i == 0 || md->destCh != (md-1)->destCh) {
+      if (i == 0 || md->destCh != (md-1)->destCh)
         chans[md->destCh] = 0;
-      }
 
       //========== FLIGHT MODE && SWITCH =====
       bool mixCondition = (md->flightModes != 0 || md->swtch);
@@ -668,44 +676,43 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== VALUE ===============
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_flight_mode) {
-        if (!mixEnabled) {
-          continue;
-        }
-        else {
+        if (mixEnabled)
           v = getValue(md->srcRaw);
-        }
+        else
+          continue;
       }
       else {
         mixsrc_t srcRaw = MIXSRC_Rud + stickIndex;
         v = getValue(srcRaw);
         srcRaw -= MIXSRC_CH1;
-        if (srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
+        if (srcRaw <= MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
           if (dirtyChannels & ((bitfield_channels_t)1 << srcRaw) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
             passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
           if (srcRaw < md->destCh || pass > 0)
             v = chans[srcRaw] >> 8;
         }
         if (!mixCondition) {
-          mixEnabled = v >> DELAY_POS_SHIFT;
+          mixEnabled = v;
         }
       }
 
-      bool apply_offset_and_curve = true;
+      bool applyOffsetAndCurve = true;
 
       //========== DELAYS ===============
       delayval_t _swOn = swOn[i].now;
       delayval_t _swPrev = swOn[i].prev;
       bool swTog = (mixEnabled > _swOn+DELAY_POS_MARGIN || mixEnabled < _swOn-DELAY_POS_MARGIN);
-      if (mode==e_perout_mode_normal && swTog) {
-        if (!swOn[i].delay) _swPrev = _swOn;
-        swOn[i].delay = (mixEnabled > _swOn ? md->delayUp : md->delayDown) * (100/DELAY_STEP);
+      if (mode == e_perout_mode_normal && swTog) {
+        if (!swOn[i].delay)
+          _swPrev = _swOn;
+        swOn[i].delay = (mixEnabled > _swOn ? md->delayUp : md->delayDown) * 10;
         swOn[i].now = mixEnabled;
         swOn[i].prev = _swPrev;
       }
-      if (mode==e_perout_mode_normal && swOn[i].delay > 0) {
+      if (mode == e_perout_mode_normal && swOn[i].delay > 0) {
         swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms);
         if (!mixCondition)
-          v = _swPrev << DELAY_POS_SHIFT;
+          v = _swPrev;
         else if (mixEnabled)
           continue;
       }
@@ -717,7 +724,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
             if (mixCondition) {
               v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
-              apply_offset_and_curve = false;
+              applyOffsetAndCurve = false;
             }
           }
           else if (mixCondition) {
@@ -733,7 +740,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
-      if (apply_offset_and_curve) {
+      if (applyOffsetAndCurve) {
 
         //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
@@ -756,7 +763,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         int16_t diff = v - (tact>>DEL_MULT_SHIFT);
         if (diff) {
           // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
-          // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
+          // the unit of the stored value is the value from md->speedUp or md->speedDown * 0.1s; e.g. value 4 means 0.4 seconds
           // because we get a tick each 10msec, we need 100 ticks for one second
           // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
           if (tick10ms || !s_mixer_first_run_done) {
@@ -768,14 +775,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
             if (diff > 0) {
               if (s_mixer_first_run_done && md->speedUp > 0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
-                int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
+                int32_t newValue = tact+rate/((int16_t)10*md->speedUp);
                 if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
             else {  // if is <0 because ==0 is not possible
               if (s_mixer_first_run_done && md->speedDown > 0) {
                 // see explanation in speedUp
-                int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
+                int32_t newValue = tact-rate/((int16_t)10*md->speedDown);
                 if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
@@ -787,7 +794,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       //========== CURVES ===============
-      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
+      if (applyOffsetAndCurve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
         v = applyCurve(v, md->curve);
       }
 
@@ -796,7 +803,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       dv = div_and_round(dv, 10);
 
       //========== OFFSET / AFTER ===============
-      if (apply_offset_and_curve) {
+      if (applyOffsetAndCurve) {
         int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
         if (offset) dv += div_and_round(calc100toRESX_16Bits(offset), 10) << 8;
       }
@@ -894,9 +901,7 @@ void evalMixes(uint8_t tick10ms)
 
   static uint16_t fp_act[MAX_FLIGHT_MODES] = {0};
   static uint16_t delta = 0;
-  static ACTIVE_PHASES_TYPE flightModesFade = 0;
-
-  LS_RECURSIVE_EVALUATION_RESET();
+  static uint16_t flightModesFade = 0;
 
   uint8_t fm = getFlightMode();
 
@@ -908,10 +913,10 @@ void evalMixes(uint8_t tick10ms)
     }
     else {
       uint8_t fadeTime = max(g_model.flightModeData[lastFlightMode].fadeOut, g_model.flightModeData[fm].fadeIn);
-      ACTIVE_PHASES_TYPE transitionMask = ((ACTIVE_PHASES_TYPE)1 << lastFlightMode) + ((ACTIVE_PHASES_TYPE)1 << fm);
+      uint16_t transitionMask = (0x01u << lastFlightMode) + (0x01u << fm);
       if (fadeTime) {
         flightModesFade |= transitionMask;
-        delta = (MAX_ACT / (100/SLOW_STEP)) / fadeTime;
+        delta = (MAX_ACT / 10) / fadeTime;
       }
       else {
         flightModesFade &= ~transitionMask;
@@ -938,15 +943,13 @@ void evalMixes(uint8_t tick10ms)
   if (flightModesFade) {
     memclear(sum_chans512, sizeof(sum_chans512));
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-      LS_RECURSIVE_EVALUATION_RESET();
-      if (flightModesFade & ((ACTIVE_PHASES_TYPE)1 << p)) {
+      if (flightModesFade & (0x01 << p)) {
         mixerCurrentFlightMode = p;
         evalFlightModeMixes(p==fm ? e_perout_mode_normal : e_perout_mode_inactive_flight_mode, p==fm ? tick10ms : 0);
         for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
-      LS_RECURSIVE_EVALUATION_RESET();
     }
     assert(weight);
     mixerCurrentFlightMode = fm;
@@ -987,7 +990,7 @@ void evalMixes(uint8_t tick10ms)
   if (tick10ms && flightModesFade) {
     uint16_t tick_delta = delta * tick10ms;
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-      ACTIVE_PHASES_TYPE flightModeMask = ((ACTIVE_PHASES_TYPE)1 << p);
+      uint16_t flightModeMask = (0x01 << p);
       if (flightModesFade & flightModeMask) {
         if (p == fm) {
           if (MAX_ACT - fp_act[p] > tick_delta)

@@ -38,6 +38,8 @@ INIT_STOPS(stops100, 3, -100, 0, 100)
 INIT_STOPS(stops1000, 3, -1000, 0, 1000)
 INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1), SWSRC_LAST)
 
+extern int checkIncDecSelection;
+
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
@@ -240,8 +242,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
 
   }
 
-  switch (event)
-  {
+  switch (event) {
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
       l_posVert = 0;
@@ -269,7 +270,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
     case EVT_KEY_FIRST(KEY_ENTER):
       if (!menuTab || l_posVert>0) {
         if (READ_ONLY_UNLOCKED()) {
-          s_editMode = (s_editMode<=0);
+          s_editMode = (s_editMode <= 0);
         }
       }
       break;
@@ -285,6 +286,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       }
       // no break
 #endif
+
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = 0; // TODO needed? we call ENTRY_UP after which does the same
       popMenu();
@@ -465,22 +467,3 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
   }
 }
 
-void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, vertpos_t maxrow)
-{
-  check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
-}
-
-void check_submenu_simple(event_t event, uint8_t maxrow)
-{
-  check_simple(event, 0, 0, 0, maxrow);
-}
-
-void repeatLastCursorMove(event_t event)
-{
-  if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
-    putEvent(event);
-  }
-  else {
-    menuHorizontalPosition = 0;
-  }
-}

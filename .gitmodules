@@ -1,3 +1,6 @@
 [submodule "radio/src/thirdparty/GCS_MAVLink/include_v1.0"]
 	path = radio/src/thirdparty/GCS_MAVLink/include_v1.0
 	url = https://github.com/mavlink/c_library_v1.git
+[submodule "radio/src/thirdparty/libACCESS"]
+	path = radio/src/thirdparty/libACCESS
+	url = https://github.com/FrSkyRC/libACCESS.git

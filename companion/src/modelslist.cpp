@@ -25,7 +25,8 @@ TreeItem::TreeItem(const QVector<QVariant> & itemData):
   parentItem(NULL),
   categoryIndex(-1),
   modelIndex(-1),
-  flags(0)
+  flags(0),
+  highlightRX(false)
 {
 }
 
@@ -139,13 +140,15 @@ TreeModel::TreeModel(RadioData * radioData, QObject * parent):
   availableEEpromSize(-1)
 {
   Board::Type board = getCurrentBoard();
+  hasCategories = getCurrentFirmware()->getCapability(Capability::HasModelCategories);
   QVector<QVariant> labels;
-  if (!getCurrentFirmware()->getCapability(Capability::HasModelCategories))
+  if (!hasCategories)
     labels << tr("Index");
   labels << tr("Name");
-  if (!(IS_HORUS(board) || IS_SKY9X(board))) {
+  if (!(IS_FAMILY_HORUS_OR_T16(board) || IS_SKY9X(board))) {
     labels << tr("Size");
   }
+  labels << tr("RX #");
   rootItem = new TreeItem(labels);
   // uniqueId and version for drag/drop operations (see encodeHeaderData())
   mimeHeaderData.instanceId = QUuid::createUuid();
@@ -185,6 +188,14 @@ QVariant TreeModel::data(const QModelIndex & index, int role) const
 
   if (role == Qt::ForegroundRole && (item->getFlags() & TreeItem::MarkedForCut)) {
     return QPalette().brush(QPalette::Disabled, QPalette::Text);
+  }
+
+  if (role == Qt::ForegroundRole && item->isModel()) {
+    if (index.column() == (item->columnCount() - 1) && item->isHighlightRX()) {
+      QBrush brush;
+      brush.setColor(Qt::red);
+      return brush;
+    }
   }
 
   return QVariant();
@@ -640,8 +651,7 @@ void TreeModel::refresh()
   EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
   Board::Type board = eepromInterface->getBoard();
   TreeItem * defaultCategoryItem = NULL;
-  bool hasCategories = getCurrentFirmware()->getCapability(Capability::HasModelCategories);
-  bool hasEepromSizeData = (rootItem->columnCount() > 2);
+  bool hasEepromSizeData = (IS_FAMILY_HORUS_OR_T16(board) ? false : true);
 
   if (hasEepromSizeData) {
     availableEEpromSize = Boards::getEEpromSize(board) - 64; // let's consider fat
@@ -710,10 +720,49 @@ void TreeModel::refresh()
           availableEEpromSize -= size;
         }
       }
+      int protocol;
+      QString rxs;
+      unsigned moduleIdx = 0;
+      for (auto const& moduleData: model.moduleData) {
+        protocol = moduleData.protocol;
+        // These are the only RXs that allow nominating RX # but changing RX or copying models can leave residual configuration which can cause issues
+        // if (protocol == PULSES_PXX_XJT_X16 || protocol == PULSES_PXX_XJT_LR12 || protocol == PULSES_PXX_R9M || protocol == PULSES_DSMX || protocol == PULSES_MULTIMODULE) {
+        if (moduleData.supportRxNum() && moduleData.modelId > 0) {
+          if (!rxs.isEmpty()) {
+            rxs.append(", ");
+          }
+          unsigned mdlidx = moduleData.modelId;
+          rxs.append(QString("%1").arg(uint(mdlidx), 2, 10, QChar('0')));
+          if (!isModelIdUnique(mdlidx, moduleIdx, protocol)) {
+            current->setHighlightRX(true);
+          }
+        }
+        moduleIdx++;
+      }
+      current->setData(currentColumn++, rxs);
     }
   }
 
   if (hasEepromSizeData) {
     availableEEpromSize = (availableEEpromSize / 16) * 15;
   }
+}
+
+bool TreeModel::isModelIdUnique(unsigned modelIdx, unsigned module, unsigned protocol)
+{
+  int cnt = 0;
+  if (protocol== PULSES_PXX_XJT_D8)
+    return true;
+  
+  for (auto const& model: radioData->models) {
+    if (!model.isEmpty()) {
+      const ModuleData& moduleData = model.moduleData[module];
+      if (moduleData.protocol == protocol && moduleData.modelId == modelIdx) {
+        if (++cnt > 1) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
 }

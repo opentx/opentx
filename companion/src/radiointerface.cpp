@@ -55,7 +55,7 @@ QStringList getAvrdudeArgs(const QString & cmd, const QString & filename)
   args << "-c" << programmer << "-p";
   if (IS_2560(board))
     args << "m2560";
-  else if (board == Board::BOARD_M128)
+  else if (board == Board::BOARD_9X_M128)
     args << "m128";
   else
     args << mcu;
@@ -314,12 +314,12 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     return false;
   }
 
-  if (IS_HORUS(board)) {
+  if (IS_FAMILY_HORUS_OR_T16(board)) {
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
       QMessageBox::critical(progress, CPN_STR_TTL_ERROR,
-                            QCoreApplication::translate("RadioInterface", "Unable to find Horus radio SD card!"));
+                            QCoreApplication::translate("RadioInterface", "Unable to find radio SD card!"));
       return false;
     }
     RadioData radioData;
@@ -332,6 +332,11 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     if (!outputStorage.write(radioData)) {
       QMessageBox::critical(progress, CPN_STR_TTL_ERROR, outputStorage.error());
       return false;
+    }
+
+    if (getCurrentBoard() == Board::BOARD_JUMPER_T16 && inputStorage.getBoard() == Board::BOARD_X10) {
+      if (displayT16ImportWarning() == false)
+        return false;
     }
   }
   else {

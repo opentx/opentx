@@ -1,26 +1,32 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-
 import sys
 import clang.cindex
 import time
 import os
 
-if sys.platform == "darwin":
-    if os.path.exists('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib'):
-        clang.cindex.Config.set_library_file('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib')
-    elif os.path.exists('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'):
-        clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
-    elif os.path.exists('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'):
-        clang.cindex.Config.set_library_file('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
-
-if sys.platform == "linux2":
-    if os.path.exists('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1'):
-        clang.cindex.Config.set_library_file('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1')
 
 structs = []
 extrastructs = []
+
+
+def find_libclang():
+    if sys.platform == "darwin":
+        for path in ("/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib",
+                     "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib",
+                     "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib"):
+            if os.path.exists(path):
+                return path
+    elif sys.platform.startswith("linux"):
+        for version in ("7", "6.0", "3.8"):
+            path = "/usr/lib/x86_64-linux-gnu/libclang-%s.so.1" % version
+            if os.path.exists(path):
+                return path
+        for path in ("/usr/local/lib/libclang.so",
+                     "/usr/lib/libclang.so"):
+            if os.path.exists(path):
+                return path
+
 
 def build_struct(cursor, anonymousUnion=False):
     if not anonymousUnion:
@@ -30,9 +36,9 @@ def build_struct(cursor, anonymousUnion=False):
     for c in cursor.get_children():
         if c.kind == clang.cindex.CursorKind.UNION_DECL:
             if c.spelling:
-                raise "Cannot handle non anonymous unions"
+                raise Exception("Cannot handle non anonymous unions")
 
-            copiedUnionMember = False
+            copied_union_member = False
             for uc in c.get_children():
                 if not uc.spelling or uc.kind == clang.cindex.CursorKind.PACKED_ATTR:
                     # Ignore
@@ -40,17 +46,18 @@ def build_struct(cursor, anonymousUnion=False):
                 else:
                     # per default we copy only the first member of a union and warn if there are more
                     # members (declare the other members NOBACKUP)
-                    if copiedUnionMember:
-                        print ("Warning more than one union member (%s) in anynomous union inside struct %s, consider NOBACKUP statements" % (uc.spelling, cursor.spelling), file=sys.stderr)
+                    if copied_union_member:
+                        print("Warning more than one union member (%s) in anynomous union inside struct %s, consider NOBACKUP statements" % (uc.spelling, cursor.spelling), file=sys.stderr)
                     else:
                         copy_decl(uc, uc.spelling)
-                        copiedUnionMember = True
+                        copied_union_member = True
 
         elif c.kind == clang.cindex.CursorKind.FIELD_DECL:
             copy_decl(c, c.spelling)
 
     if not anonymousUnion:
         print("}\n")
+
 
 def build(cursor):
     result = []
@@ -61,13 +68,13 @@ def build(cursor):
     for c, spelling in extrastructs:
         print("template <class A, class B>\nvoid copy%s(A * dest, B * src)\n{" % spelling)
         build_struct(c, True)
-        print ("}\n")
+        print("}\n")
 
     return result
 
 
 def copy_decl(c, spelling):
-    childs = [ch for ch in c.get_children()]
+    children = [ch for ch in c.get_children()]
     if c.type.get_array_size() > 0:
         if c.type.get_array_element_type().spelling in structs:
             print("  for (int i=0; i<%d; i++) {" % c.type.get_array_size())
@@ -75,16 +82,15 @@ def copy_decl(c, spelling):
             print("  }")
         else:
             print("  memcpy(dest->%s, src->%s, sizeof(dest->%s));" % (spelling, spelling, spelling))
-    elif len(childs)==1 and childs[0].kind == clang.cindex.CursorKind.STRUCT_DECL and not childs[0].spelling:
+    elif len(children) == 1 and children[0].kind == clang.cindex.CursorKind.STRUCT_DECL and not children[0].spelling:
         # inline declared structs
         if c.semantic_parent.spelling:
-            spellingFunc = c.semantic_parent.spelling + "_" + spelling
+            spelling_func = c.semantic_parent.spelling + "_" + spelling
         else:
-            spellingFunc = c.semantic_parent.semantic_parent.spelling + "_" + spelling
+            spelling_func = c.semantic_parent.semantic_parent.spelling + "_" + spelling
 
-        extrastructs.append((childs[0], spellingFunc))
-        print("  copy%s(&dest->%s, &src->%s);" % (spellingFunc, spelling, spelling))
-
+        extrastructs.append((children[0], spelling_func))
+        print("  copy%s(&dest->%s, &src->%s);" % (spelling_func, spelling, spelling))
     elif c.type.get_declaration().spelling in structs:
         print("  copy%s(&dest->%s, &src->%s);" % (c.type.get_declaration().spelling, spelling, spelling))
     else:
@@ -92,9 +98,31 @@ def copy_decl(c, spelling):
 
 
 def header():
-    print("//This file was auto-generated by %s script on %s. Do not edit this file!\n\n\n" % (os.path.basename(sys.argv[0]), time.asctime()))
+    print("// This file was auto-generated by %s script on %s. Do not edit this file!\n\n\n" % (os.path.basename(sys.argv[0]), time.asctime()))
 
-index = clang.cindex.Index.create()
-translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11'] + sys.argv[2:])
-header()
-build(translation_unit.cursor)
+
+def print_translation_unit_diags(diags, prefix=''):
+    for diag in diags:
+        print(prefix + str(diag), file=sys.stderr)
+        print_translation_unit_diags(diag.children, '  ' + prefix)
+
+
+def main():
+    libclang = find_libclang()
+    if libclang:
+        # print(libclang, file=sys.stderr)
+        clang.cindex.Config.set_library_file(libclang)
+
+    index = clang.cindex.Index.create()
+    translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11'] + sys.argv[2:])
+
+    if translation_unit.diagnostics:
+        print_translation_unit_diags(translation_unit.diagnostics)
+        sys.exit(-1)
+
+    header()
+    build(translation_unit.cursor)
+
+
+if __name__ == "__main__":
+    main()

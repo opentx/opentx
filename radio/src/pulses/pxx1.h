@@ -22,6 +22,19 @@
 #define _PULSES_PXX1_H_
 
 #include "pxx.h"
+#include "crc.h"
+
+struct HeartbeatCapture {
+#if !defined(INTMODULE_USART)
+  uint32_t timestamp;
+#endif
+#if defined(DEBUG_LATENCY)
+  uint32_t count;
+#endif
+  uint8_t valid;
+};
+
+extern volatile HeartbeatCapture heartbeatCapture;
 
 class Pxx1CrcMixin {
   protected:
@@ -32,7 +45,7 @@ class Pxx1CrcMixin {
 
     void addToCrc(uint8_t byte)
     {
-      crc = (crc << 8) ^ (CRCTable[((crc >> 8) ^ byte) & 0xFF]);
+      crc = (crc << 8) ^ (crc16tab_1189[((crc >> 8) ^ byte) & 0xFF]);
     }
 
     uint16_t crc;
@@ -154,10 +167,10 @@ class Pxx1Pulses: public PxxTransport
       PxxTransport::addByteWithoutCrc(Pxx1CrcMixin::crc);
     }
 
-    uint8_t addFlag1(uint8_t port);
+    void addFlag1(uint8_t port, uint8_t sendFailsafe);
     void addExtraFlags(uint8_t port);
     void addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels);
-    void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
+    void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels, uint8_t sendFailsafe);
 };
 
 typedef Pxx1Pulses<UartPxx1Transport> UartPxx1Pulses;

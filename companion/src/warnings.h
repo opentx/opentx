@@ -28,7 +28,7 @@
 #include <QMessageBox>
 
 #define CPN_STR_MSG_WELCOME   QCoreApplication::translate("Companion", \
-  "<p><b>Welcome to OpenTX v%1.</b></p>" \
+  "<p><b>Welcome to OpenTX %1.</b></p>" \
   "<p>As the first step, please configure the initial Radio Profile by selecting your Radio Type, Menu Language, and Build Options.</p>" \
   "<p>You may also want to take this time to review the other available options in the displayed Settings dialog.</p>" \
   "<p>After saving your settings, we recommend you download the latest firmware for your radio by using the <i>File -&gt; Download</i> menu option.</p>" \
@@ -36,7 +36,7 @@
   "- The OpenTX Team.")
 
 #define CPN_STR_MSG_UPGRADED  QCoreApplication::translate("Companion", \
-  "<p><b>Thank you for upgrading to OpenTX v%1.</b></p>" \
+  "<p><b>Thank you for upgrading to OpenTX %1.</b></p>" \
   "<p>This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully" \
   "  to learn about the changes, and thoroughly check each of your models for proper function.</p>" \
   "<p>Please visit <a href='http://www.open-tx.org'>open-tx.org</a> for release notes and other documentation.</p>" \
@@ -48,6 +48,7 @@
 class AppMessages
 {
   Q_DECLARE_TR_FUNCTIONS("AppMessages")
+
   public:
     // These are used for saving "[don't] show this message again" user preferences.
     enum MessageCodes {

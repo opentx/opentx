@@ -55,8 +55,10 @@ void pushMenu(MenuHandlerFunc newMenu)
   killEvents(KEY_ENTER);
 
   if (menuLevel == 0) {
-    if (newMenu == menuRadioSetup)
+#if defined(RADIO_TOOLS)
+    if (newMenu == menuRadioTools)
       menuVerticalPositions[0] = 1;
+#endif
     if (newMenu == menuModelSetup)
       menuVerticalPositions[0] = 0;
   }
@@ -78,15 +80,15 @@ void readModelNotes()
 {
   LED_ERROR_BEGIN();
 
-  strcpy(s_text_file, MODELS_PATH "/");
-  char *buf = strcat_currentmodelname(&s_text_file[sizeof(MODELS_PATH)]);
+  strcpy(reusableBuffer.viewText.filename, MODELS_PATH "/");
+  char *buf = strcat_currentmodelname(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)]);
   strcpy(buf, TEXT_EXT);
-  if (!isFileAvailable(s_text_file)) {
-    char *buf = strAppendFilename(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+  if (!isFileAvailable(reusableBuffer.viewText.filename)) {
+    char *buf = strAppendFilename(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
     strcpy(buf, TEXT_EXT);
   }
 
-  clearKeyEvents();
+  waitKeysReleased();
   event_t event = EVT_ENTRY;
   while (event != EVT_KEY_FIRST(KEY_EXIT)) {
     lcdRefreshWait();
@@ -94,7 +96,7 @@ void readModelNotes()
     menuTextView(event);
     event = getEvent();
     lcdRefresh();
-    wdt_reset();
+    WDG_RESET();
   }
 
   LED_ERROR_END();
@@ -103,11 +105,11 @@ void readModelNotes()
 bool menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {
-    strcpy(s_text_file, MODELS_PATH "/");
-    char *buf = strcat_currentmodelname(&s_text_file[sizeof(MODELS_PATH)]);
+    strcpy(reusableBuffer.viewText.filename, MODELS_PATH "/");
+    char *buf = strcat_currentmodelname(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)]);
     strcpy(buf, TEXT_EXT);
-    if (!isFileAvailable(s_text_file)) {
-      char *buf = strAppendFilename(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+    if (!isFileAvailable(reusableBuffer.viewText.filename)) {
+      char * buf = strAppendFilename(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
       strcpy(buf, TEXT_EXT);
     }
   }

@@ -52,6 +52,8 @@ extern const QColor colors[CPN_MAX_CURVES];
 
 #define TRIM_MODE_NONE  0x1F  // 0b11111
 
+bool displayT16ImportWarning();
+
 class CompanionIcon: public QIcon {
   public:
     CompanionIcon(const QString &baseimage);
@@ -66,6 +68,14 @@ class GVarGroup: public QObject {
     GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
 
     void setWeight(int val);
+
+    void setMinimum(int min) {
+      mini = min;
+    }
+
+    void setMaximum(int max) {
+      maxi = max;
+    }
 
   signals:
     void valueChanged();
@@ -127,6 +137,11 @@ namespace Helpers
   void getFileComboBoxValue(QComboBox * b, char * dest, int length);
 
   void exportAppSettings(QWidget * dlgParent = nullptr);
+
+  QString getChecklistsPath();
+  QString getChecklistFilename(const ModelData * model);
+  QString getChecklistFilePath(const ModelData * model);
+  QString removeAccents(const QString & str);
 
 }  // namespace Helpers
 

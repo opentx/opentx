@@ -72,7 +72,7 @@
     <file>images/simulator/X10/left_rtn.png</file>
     <file>images/simulator/X10/left_sys.png</file>
     <file>images/simulator/X10/left_tele.png</file>
-    <file>images/simulator/X10/right_ent.png</file>    
+    <file>images/simulator/X10/right_ent.png</file>
     <file>images/simulator/9X/9xdb.png</file>
     <file>images/simulator/9X/9xdl.png</file>
     <file>images/simulator/9X/9xdr.png</file>
@@ -106,18 +106,18 @@
     <file>images/simulator/9X/9xcursmin.png</file>
     <file>images/simulator/9X/9xcursdown.png</file>
     <file>images/simulator/9X/9xcursphoto.png</file>
-    <file>images/simulator/Taranis/x9b0.png</file>
-    <file>images/simulator/Taranis/x9l0.png</file>
-    <file>images/simulator/Taranis/x9l1.png</file>
-    <file>images/simulator/Taranis/x9l2.png</file>
-    <file>images/simulator/Taranis/x9l3.png</file>
-    <file>images/simulator/Taranis/x9l4.png</file>
-    <file>images/simulator/Taranis/x9r0.png</file>
-    <file>images/simulator/Taranis/x9r1.png</file>
-    <file>images/simulator/Taranis/x9r2.png</file>
-    <file>images/simulator/Taranis/x9r3.png</file>
-    <file>images/simulator/Taranis/x9s0.png</file>
-    <file>images/simulator/Taranis/x9t0.png</file>
+    <file>images/simulator/X9D/x9b0.png</file>
+    <file>images/simulator/X9D/x9l0.png</file>
+    <file>images/simulator/X9D/x9l1.png</file>
+    <file>images/simulator/X9D/x9l2.png</file>
+    <file>images/simulator/X9D/x9l3.png</file>
+    <file>images/simulator/X9D/x9l4.png</file>
+    <file>images/simulator/X9D/x9r0.png</file>
+    <file>images/simulator/X9D/x9r1.png</file>
+    <file>images/simulator/X9D/x9r2.png</file>
+    <file>images/simulator/X9D/x9r3.png</file>
+    <file>images/simulator/X9D/x9s0.png</file>
+    <file>images/simulator/X9D/x9t0.png</file>
     <file>images/simulator/X7/bottom.png</file>
     <file>images/simulator/X7/left.png</file>
     <file>images/simulator/X7/left_exit.png</file>
@@ -136,6 +136,24 @@
     <file>images/simulator/X9E/right.png</file>
     <file>images/simulator/X9E/right_enter.png</file>
     <file>images/simulator/X9E/top.png</file>
+    <file>images/simulator/X9D2019/bottom.png</file>
+    <file>images/simulator/X9D2019/bottom_scrnshot.png</file>
+    <file>images/simulator/X9D2019/left.png</file>
+    <file>images/simulator/X9D2019/left_exit.png</file>
+    <file>images/simulator/X9D2019/left_menu.png</file>
+    <file>images/simulator/X9D2019/left_page.png</file>
+    <file>images/simulator/X9D2019/right.png</file>
+    <file>images/simulator/X9D2019/right_enter.png</file>
+    <file>images/simulator/X9D2019/top.png</file>
+    <file>images/simulator/X9LITE/bottom.png</file>
+    <file>images/simulator/X9LITE/left.png</file>
+    <file>images/simulator/X9LITE/left_exit.png</file>
+    <file>images/simulator/X9LITE/left_menu.png</file>
+    <file>images/simulator/X9LITE/left_page.png</file>
+    <file>images/simulator/X9LITE/left_scrnshot.png</file>
+    <file>images/simulator/X9LITE/right.png</file>
+    <file>images/simulator/X9LITE/right_ent.png</file>
+    <file>images/simulator/X9LITE/top.png</file>
     <file>images/simulator/XLITE/bottom.png</file>
     <file>images/simulator/XLITE/left.png</file>
     <file>images/simulator/XLITE/left_scrnshot.png</file>
@@ -148,15 +166,50 @@
     <file>images/simulator/XLITE/right_left.png</file>
     <file>images/simulator/XLITE/right_up.png</file>
     <file>images/simulator/XLITE/right_down.png</file>
+    <file>images/simulator/JumperT12/right_up.png</file>
+    <file>images/simulator/JumperT12/right_down.png</file>
+    <file>images/simulator/JumperT12/right_right.png</file>
+    <file>images/simulator/JumperT12/right_left.png</file>
+    <file>images/simulator/JumperT12/left_ent.png</file>
+    <file>images/simulator/JumperT12/left_exit.png</file>
+    <file>images/simulator/JumperT12/JumperT12.png</file>
+    <file>images/simulator/JumperT12/JumperT12-208.png</file>
+    <file>images/simulator/JumperT12/JumperT12-left.png</file>
+    <file>images/simulator/JumperT12/JumperT12-right.png</file>
+    <file>images/simulator/JumperT12/JumperT12-x.png</file>
+    <file>images/simulator/JumperT12/JumperT12-center.png</file>
+    <file>images/simulator/JumperT12/JumperT12-top.png</file>
+    <file>images/simulator/JumperT16/left.png</file>
+    <file>images/simulator/JumperT16/right.png</file>
+    <file>images/simulator/JumperT16/top.png</file>
+    <file>images/simulator/JumperT16/bottom.png</file>
+    <file>images/simulator/JumperT16/left_mdl.png</file>
+    <file>images/simulator/JumperT16/left_page.png</file>
+    <file>images/simulator/JumperT16/left_scrnsht.png</file>
+    <file>images/simulator/JumperT16/left_sys.png</file>
+    <file>images/simulator/JumperT16/left_tele.png</file>
+    <file>images/simulator/JumperT16/right_ent.png</file>
+    <file>images/simulator/JumperT16/right_rtn.png</file>
+    <file>images/simulator/TX16S/left.png</file>
+    <file>images/simulator/TX16S/right.png</file>
+    <file>images/simulator/TX16S/top.png</file>
+    <file>images/simulator/TX16S/bottom.png</file>
+    <file>images/simulator/TX16S/left_page.png</file>
+    <file>images/simulator/TX16S/left_page2.png</file>
+    <file>images/simulator/TX16S/left_rtn.png</file>
+    <file>images/simulator/TX16S/left_sys.png</file>
+    <file>images/simulator/TX16S/left_tele.png</file>
+    <file>images/simulator/TX16S/right_ent.png</file>
+    <file>images/simulator/TX16S/right_mdl.png</file>
     <file>images/wizard/ailerons.png</file>
     <file>images/wizard/airbrakes.png</file>
-    <file>images/wizard/elevons.png</file> 
+    <file>images/wizard/elevons.png</file>
     <file>images/wizard/conclusion.png</file>
     <file>images/wizard/cyclic.png</file>
     <file>images/wizard/fblheli.png</file>
     <file>images/wizard/flaps.png</file>
     <file>images/wizard/flybar.png</file>
-    <file>images/wizard/gyro.png</file>   
+    <file>images/wizard/gyro.png</file>
     <file>images/wizard/helictrl.png</file>
     <file>images/wizard/models.png</file>
     <file>images/wizard/multirotor.png</file>
@@ -1127,6 +1180,6 @@
     <file>themes/yerico/48/contributors.png</file>
     <file>themes/yerico/48/stop.png</file>
     <file>themes/yerico/48/write_eeprom.png</file>
-    <file>themes/yerico/48/sdsync.png</file>    
+    <file>themes/yerico/48/sdsync.png</file>
   </qresource>
 </RCC>
