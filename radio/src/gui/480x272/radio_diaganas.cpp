@@ -62,7 +62,7 @@ bool menuRadioDiagAnalogs(event_t event)
 #endif
 
 #if defined(HARDWARE_TOUCH)
-  if (!touchGT911Flag) {
+  if (touchGT911Flag) {
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, "Touch panel:");
   }
 
