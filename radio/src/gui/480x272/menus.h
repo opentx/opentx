@@ -185,7 +185,6 @@ bool menuModelModuleOptions(event_t event);
 bool menuModelReceiverOptions(event_t event);
 bool menuRadioDiagKeys(event_t event);
 bool menuRadioDiagAnalogs(event_t event);
-bool menuRadioDiagTouch(event_t event);
 
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 

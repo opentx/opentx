@@ -19,6 +19,9 @@
  */
 
 #include "opentx.h"
+#if defined(RADIO_TX16S)
+#include "tp_gt911.h"
+#endif
 
 constexpr coord_t LEFT_NAME_COLUMN = MENUS_MARGIN_LEFT;
 constexpr coord_t RIGHT_NAME_COLUMN = LCD_W / 2;
@@ -27,6 +30,12 @@ constexpr coord_t ANA_OFFSET = 150;
 bool menuRadioDiagAnalogs(event_t event)
 {
   SIMPLE_SUBMENU(STR_MENU_RADIO_ANALOGS, ICON_MODEL_SETUP, 0);
+
+#if defined(HARDWARE_TOUCH)
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
+    touchPanelInit();
+  }
+#endif
 
   for (uint8_t i = 0; i < NUM_ANALOGS; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i / 2) * FH;
@@ -48,8 +57,23 @@ bool menuRadioDiagAnalogs(event_t event)
 #endif
   }
 
-#if (NUM_PWMSTICKS > 0) && !defined(SIMU)
+#if (NUM_PWMSTICKS > 0) || defined(SIMU)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 8 * FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
+#endif
+
+#if defined(HARDWARE_TOUCH)
+  if (touchGT911Flag) {
+    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, "Touch panel:");
+  }
+
+  if (touchPanelEvent) {
+    uint8_t tmp,mode = 0;
+    gt911ReadRegister(GT911_READ_XY_REG,&mode,1);	//read status
+    lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
+    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, ", ");
+    lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
+    gt911WriteRegister(GT911_CLEARBUF_REG, &tmp, 1);
+  }
 #endif
 
   return true;

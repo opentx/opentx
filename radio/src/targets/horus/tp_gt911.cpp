@@ -21,8 +21,9 @@
 #include "tp_gt911.h"
 
 uint8_t touchGT911Flag = 0;
-uint8_t TOUCH_SCAN_MODE = 0;
-uint8_t touchEventFlag = 0;
+uint8_t touchPanelEvent = 0;
+struct TouchData touchData;
+struct TouchState touchState;
 
 void GT911_INT_Change(void)
 {
@@ -46,8 +47,8 @@ uint8_t GT911_Send_Cfg(uint8_t mode)
     buf[0] += GT911_Cfg[i];//check sum
 
   buf[0] = (~buf[0]) + 1;
-  GT911_WR_Reg(GT_CFGS_REG, (uint8_t *) GT911_Cfg, sizeof(GT911_Cfg));//
-  GT911_WR_Reg(GT_CHECK_REG, buf, 2);//write checksum
+  gt911WriteRegister(GT_CFGS_REG, (uint8_t *) GT911_Cfg, sizeof(GT911_Cfg));//
+  gt911WriteRegister(GT_CHECK_REG, buf, 2);//write checksum
   return 0;
 }
 
@@ -266,7 +267,7 @@ uint8_t I2C_Read_Byte(unsigned char ack)
   return receive;
 }
 
-uint8_t GT911_WR_Reg(uint16_t reg, uint8_t * buf, uint8_t len)
+uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len)
 {
   {
     uint8_t i;
@@ -290,7 +291,7 @@ uint8_t GT911_WR_Reg(uint16_t reg, uint8_t * buf, uint8_t len)
   }
 }
 
-void GT911_RD_Reg(u16 reg, uint8_t * buf, uint8_t len)
+void gt911ReadRegister(u16 reg, uint8_t * buf, uint8_t len)
 {
   uint8_t i;
 
@@ -341,14 +342,14 @@ bool touchPanelInit(void)
   delay_ms(50);
 
   TRACE("Reading Touch registry");
-  GT911_RD_Reg(GT_PID_REG, tmp, 4);
+  gt911ReadRegister(GT_PID_REG, tmp, 4);
 
   if (strcmp((char *) tmp, "911") == 0) //ID==9147
   {
     TRACE("GT911 chip detected");
     tmp[0] = 0X02;
-    GT911_WR_Reg(GT_CTRL_REG, tmp, 1);
-    GT911_RD_Reg(GT_CFGS_REG, tmp, 1);
+    gt911WriteRegister(GT_CTRL_REG, tmp, 1);
+    gt911ReadRegister(GT_CFGS_REG, tmp, 1);
 
     if (tmp[0] < 0X69)//ver
     {
@@ -358,7 +359,7 @@ bool touchPanelInit(void)
 
     delay_ms(10);
     tmp[0] = 0X00;
-    GT911_WR_Reg(GT_CTRL_REG, tmp, 1);//end reset
+    gt911WriteRegister(GT_CTRL_REG, tmp, 1);//end reset
     touchGT911Flag = true;
 
     TOUCH_AF_ExtiConfig();
@@ -369,11 +370,57 @@ bool touchPanelInit(void)
   return false;
 }
 
+void touchPanelRead()
+{
+  uint8_t state = 0;
+  gt911ReadRegister(GT911_READ_XY_REG, &state, 1);
+
+  touchPanelEvent = false;
+
+  if ((state & 0x80u) == 0x00) {
+    // not ready
+    return;
+  }
+
+  uint8_t pointsCount = (state & 0x0Fu);
+
+  if (pointsCount > 0 && pointsCount < GT911_MAX_TOUCH_POINTS) {
+    gt911ReadRegister(GT911_READ_XY_REG + 1, touchData.data, pointsCount * sizeof(TouchPoint));
+    if (touchData.pointsCount == 0) {
+      touchState.event = TE_DOWN;
+      touchState.startX = touchState.x = touchData.points[0].x;
+      touchState.startY = touchState.y = touchData.points[0].y;
+    }
+    else {
+      touchState.deltaX = touchData.points[0].x - touchState.x;
+      touchState.deltaY = touchData.points[0].y - touchState.y;
+      if (touchState.event == TE_SLIDE || abs(touchState.deltaX) >= SLIDE_RANGE || abs(touchState.deltaY) >= SLIDE_RANGE) {
+        touchState.event = TE_SLIDE;
+        touchState.x = touchData.points[0].x;
+        touchState.y = touchData.points[0].y;
+      }
+    }
+    touchData.pointsCount = pointsCount;
+  }
+  else {
+    if (touchData.pointsCount > 0) {
+      touchData.pointsCount = 0;
+      if (touchState.event == TE_SLIDE)
+        touchState.event = TE_SLIDE_END;
+      else
+        touchState.event = TE_UP;
+    }
+  }
+
+  uint8_t zero = 0;
+  gt911WriteRegister(GT911_READ_XY_REG, &zero, 1);
+}
+
 extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
 {
   if (EXTI_GetITStatus(TOUCH_INT_EXTI_LINE1) != RESET) {
     TRACE("TI");
-    touchEventFlag = 1;
+    touchPanelEvent = 1;
     EXTI_ClearITPendingBit(TOUCH_INT_EXTI_LINE1);
   }
 }

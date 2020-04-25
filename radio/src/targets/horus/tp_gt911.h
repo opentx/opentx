@@ -22,6 +22,7 @@
 #define _FT5X06_H_
 
 #include "opentx.h"
+#include "touch.h"
 
 #define HAS_TOUCH_PANEL()     touchGT911Flag == true
 #define TOUCH_INT_STATUS()    (GPIO_ReadInputDataBit(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN))
@@ -31,10 +32,10 @@ void touchPanelDeInit();
 
 extern uint8_t touchGT911Flag;
 extern uint8_t TOUCH_SCAN_MODE;
-extern uint8_t touchEventFlag;
+extern uint8_t touchPanelEvent;
 
-uint8_t GT911_WR_Reg(uint16_t reg, uint8_t * buf, uint8_t len);
-void GT911_RD_Reg(uint16_t reg, uint8_t * buf, uint8_t len);
+uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len);
+void gt911ReadRegister(uint16_t reg, uint8_t * buf, uint8_t len);
 
 
 //GT911 param table
@@ -97,16 +98,28 @@ const uint8_t GT911_Cfg[]=   //
 #define GT911_CONFIG_CHECKSUM_REG 	0x80FF
 #define GT911_FIRMWARE_VERSION_REG	0x8144
 
+#define GT911_MAX_TOUCH_POINTS      5
 
-typedef struct{
+PACK(typedef struct
+{
+  uint8_t track;
   uint16_t x;
   uint16_t y;
-}POINT;
+  uint16_t size;
+  uint8_t reserved;
+}) TouchPoint;
 
-typedef struct{
-  uint16_t cnt;
-  POINT points[5];
-}GT911_POINT_DATA;
+PACK(struct TouchData
+{
+  uint8_t pointsCount;
+  union
+  {
+    TouchPoint points[GT911_MAX_TOUCH_POINTS];
+    uint8_t data[GT911_MAX_TOUCH_POINTS * sizeof(TouchPoint)];
+  };
+});
+
+extern struct TouchData touchData;
 
 #define TPRST_LOW()   do { TOUCH_RST_GPIO->BSRRH = TOUCH_RST_GPIO_PIN; } while(0)
 #define TPRST_HIGH()  do { TOUCH_RST_GPIO->BSRRL = TOUCH_RST_GPIO_PIN; } while(0)

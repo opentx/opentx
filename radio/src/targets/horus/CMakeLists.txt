@@ -212,7 +212,6 @@ if(HARDWARE_TOUCH)
   set(TARGET_SRC ${TARGET_SRC}
     tp_gt911.cpp
     )
-  set(GUI_SRC ${GUI_SRC} radio_diagtouch.cpp)
   add_definitions(-DHARDWARE_TOUCH)
 endif()
 
