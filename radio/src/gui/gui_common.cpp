@@ -739,16 +739,11 @@ bool isTrainerModeAvailable(int mode)
     return g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER;
 #endif
 
-#if defined(PCBX9E)
+#if !defined(BLUETOOTH) || defined(PCBX9E)
   if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
     return false;
-#elif defined(BLUETOOTH)
+#else
   if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
-    return false;
-#endif
-
-#if !defined(BLUETOOTH)
-  if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
     return false;
 #endif
 
