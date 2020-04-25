@@ -44,8 +44,13 @@ bool menuRadioDiagTouch(event_t event)
   }
 
   if (touchEventFlag) {
-    touchPanelDeInit();
-    popMenu();
+    uint8_t tmp,mode = 0;
+    GT911_RD_Reg(GT911_READ_XY_REG,&mode,1);	//read status
+    tmp=mode&0x0f;
+    if((mode&0x80) && (tmp>0)) {
+      touchPanelDeInit();
+      popMenu();
+    }
   }
   return true;
 }
