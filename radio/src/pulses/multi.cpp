@@ -244,6 +244,50 @@ void sendChannels(uint8_t moduleIdx)
   }
 }
 
+void convertOtxProtocolToMulti(int *protocol, int *subprotocol)
+{
+  // Special treatment for the FrSky entry...
+  if (*protocol == MODULE_SUBTYPE_MULTI_FRSKY +1) {
+    if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D8) {
+      //D8
+      *protocol = 3;
+      *subprotocol = 0;
+    } 
+    else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D8_CLONED) {
+      //D8
+      *protocol = 3;
+      *subprotocol = 1;
+    } 
+    else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_V8) {
+      //V8
+      *protocol = 25;
+      *subprotocol = 0;
+    } 
+    else {
+      *protocol = 15;
+      if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16_8CH)
+        *subprotocol = 1;
+      else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16)
+        *subprotocol = 0; // D16
+      else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16_LBT)
+        *subprotocol = 2;
+      else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH)
+        *subprotocol = 3;
+      else
+        *subprotocol = 4; // D16_CLONED
+    }
+  }
+  else {
+    // 15  for Multimodule is FrskyX or D16 which we map as a protocol of 3 (FrSky)
+    // all protos > frskyx are therefore also off by one
+    if (*protocol >= 15)
+      *protocol = *protocol + 1;
+    // 25 is again a FrSky *protocol (FrskyV) so shift again
+    if (*protocol >= 25)
+      *protocol = *protocol + 1;
+  }
+}
+
 void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 {// byte 1+2, protocol information
 
@@ -268,8 +312,7 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-
+  if (type == MODULE_SUBTYPE_MULTI_DSM2 +1 ) {
     // Autobinding should always be done in DSMX 11ms
     if (g_model.moduleData[moduleIdx].multi.autoBindMode && moduleState[moduleIdx].mode == MODULE_MODE_BIND)
       subtype = MM_RF_DSM2_SUBTYPE_AUTO;
@@ -279,38 +322,10 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
       optionValue = 0x80 | sentModuleChannels(moduleIdx); // Max throw
     else
       optionValue = sentModuleChannels(moduleIdx);
-}
-
-  // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
-  // all protos > frskyx are therefore also off by one
-  if (type >= 15)
-    type = type + 1;
-
-  // 25 is again a FrSky protocol (FrskyV) so shift again
-  if (type >= 25)
-    type = type + 1;
-
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
-    if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
-      //D8
-      type = 3;
-      subtype = 0;
-    } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
-      //V8
-      type = 25;
-      subtype = 0;
-    } else {
-      type = 15;
-      if (subtype == MM_RF_FRSKY_SUBTYPE_D16_8CH) // D16 8ch
-        subtype = 1;
-      else if (subtype == MM_RF_FRSKY_SUBTYPE_D16)
-        subtype = 0;  // D16
-      else if (subtype == MM_RF_FRSKY_SUBTYPE_D16_LBT)
-        subtype = 2;
-      else
-        subtype = 3; // MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH
-    }
   }
+
+  // Special treatment for the FrSky entry...
+  convertOtxProtocolToMulti(&type, &subtype);
 
   // Set the highest bit of option byte in AFHDS2A protocol to instruct MULTI to passthrough telemetry bytes instead
   // of sending Frsky D telemetry

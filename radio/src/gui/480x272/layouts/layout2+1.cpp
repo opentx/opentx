@@ -25,10 +25,10 @@ const uint8_t LBM_LAYOUT_2P1[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_2P1[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Flight mode", ZoneOption::Bool },
-  { "Sliders", ZoneOption::Bool },
-  { "Trims", ZoneOption::Bool },
+  { STR_TOP_BAR, ZoneOption::Bool },
+  { STR_FLIGHT_MODE, ZoneOption::Bool },
+  { STR_SLIDERS, ZoneOption::Bool },
+  { STR_TRIMS, ZoneOption::Bool },
   { NULL, ZoneOption::Bool }
 };
 
