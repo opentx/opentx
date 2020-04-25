@@ -352,7 +352,7 @@ bool touchPanelInit(void)
 
     if (tmp[0] < 0X69)//ver
     {
-      TRACE("Default Ver:%x\r\n",temp[0]);
+      TRACE("Default Ver:%x\r\n",tmp[0]);
       GT911_Send_Cfg(1);
     }
 
@@ -372,7 +372,7 @@ bool touchPanelInit(void)
 extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
 {
   if (EXTI_GetITStatus(TOUCH_INT_EXTI_LINE1) != RESET) {
-    TRACE("TOUCH INTERUPT");
+    TRACE("TI");
     touchEventFlag = 1;
     EXTI_ClearITPendingBit(TOUCH_INT_EXTI_LINE1);
   }
