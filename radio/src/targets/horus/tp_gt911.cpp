@@ -352,7 +352,7 @@ bool touchPanelInit(void)
     gt911ReadRegister(GT_CFGS_REG, tmp, 1);
 
     TRACE("Chip config Ver:%x\r\n",tmp[0]);
-    if (tmp[0] < 0X69)//ver
+    if (tmp[0] < GT911_CFG_NUMER)  //Config ver
     {
       TRACE("Sending new config %d", GT911_CFG_NUMER);
       GT911_Send_Cfg(1);
