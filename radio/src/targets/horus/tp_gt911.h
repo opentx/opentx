@@ -38,13 +38,16 @@ uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len);
 void gt911ReadRegister(uint16_t reg, uint8_t * buf, uint8_t len);
 void touchPanelRead();
 
+#define GT911_MAX_TP      5
+#define GT911_CFG_NUMER   0x69
+
 //GT911 param table
 const uint8_t GT911_Cfg[]=   //
   {
-    0x69,	        // ver 0x68
-    0xE0,0x01,          // 0x8049 X output map : x 480
+    GT911_CFG_NUMER,    // 0x8047 Config version
+    0xE0,0x01,          // 0x8048 X output map : x 480
     0x10,0x01,	        // 0x804A Y ouptut max : y 272
-    0x05,		// 0x804C Touch number : GT911_MAX_TOUCH_POINTS
+    GT911_MAX_TP,	// 0x804C Touch number : GT911_MAX_TP
     0x38,		// 0x804D Module switch 1 : bit4= xy change Int mode
     0x00,               // 0x804E Module switch 2
     0x02,		// 0x804F Shake_Count
@@ -94,9 +97,22 @@ const uint8_t GT911_Cfg[]=   //
     0xC5,               // 0x807D Hopping flag
     0x02,               // 0x807E Hopping flag
     0x07,               // 0x807F Noise threshold
-    0x00,0x00,0x04,
-    0xA5,0x1F,0x00,0x94,0x25,0x00,0x88,0x2B,0x00,0x7D,
-    0x33,0x00,0x74,0x3C,0x00,0x74,0x00,0x00,0x00,0x00,
+    0x00,               // 0x8080 Nois min threshold old
+    0x00,               // 0x8081 Reserved
+    0x04,               // 0x8082 Hopping sensor group
+    0xA5,               // 0x8083 Hopping Seg1 normalize
+    0x1F,               // 0x8084 Hopping Seg1 factor
+    0x00,               // 0x8085 Main clock adjust
+    0x94,               // 0x8086 Hopping Seg2 normalize
+    0x25,               // 0x8087 Hopping Seg2 factor
+    0x00,               // 0x8088 Reserved
+    0x88,               // 0x8089 Hopping Seg3 normalize
+    0x2B,               // 0x808A Hopping Seg3 factor
+    0x00,               // 0x808B Reserved
+    0x7D,               // 0x808C Hopping Seg4 normalize
+    0x33,               // 0x808D Hopping Seg4 factor
+    0x00,               // 0x808E Reserved
+    0x74,0x3C,0x00,0x74,0x00,0x00,0x00,0x00,
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
     0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -139,8 +155,6 @@ const uint8_t GT911_Cfg[]=   //
 #define GT911_CONFIG_CHECKSUM_REG 	0x80FF
 #define GT911_FIRMWARE_VERSION_REG	0x8144
 
-#define GT911_MAX_TOUCH_POINTS      5
-
 PACK(typedef struct
 {
   uint8_t track;
@@ -155,8 +169,8 @@ PACK(struct TouchData
   uint8_t pointsCount;
   union
   {
-    TouchPoint points[GT911_MAX_TOUCH_POINTS];
-    uint8_t data[GT911_MAX_TOUCH_POINTS * sizeof(TouchPoint)];
+    TouchPoint points[GT911_MAX_TP];
+    uint8_t data[GT911_MAX_TP * sizeof(TouchPoint)];
   };
 });
 

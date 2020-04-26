@@ -351,9 +351,10 @@ bool touchPanelInit(void)
     gt911WriteRegister(GT_CTRL_REG, tmp, 1);
     gt911ReadRegister(GT_CFGS_REG, tmp, 1);
 
+    TRACE("Chip config Ver:%x\r\n",tmp[0]);
     if (tmp[0] < 0X69)//ver
     {
-      TRACE("Default Ver:%x\r\n",tmp[0]);
+      TRACE("Sending new config %d", GT911_CFG_NUMER);
       GT911_Send_Cfg(1);
     }
 
@@ -384,7 +385,7 @@ void touchPanelRead()
 
   uint8_t pointsCount = (state & 0x0Fu);
 
-  if (pointsCount > 0 && pointsCount < GT911_MAX_TOUCH_POINTS) {
+  if (pointsCount > 0 && pointsCount < GT911_MAX_TP) {
     gt911ReadRegister(GT911_READ_XY_REG + 1, touchData.data, pointsCount * sizeof(TouchPoint));
     if (touchData.pointsCount == 0) {
       touchState.event = TE_DOWN;
