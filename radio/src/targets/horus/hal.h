@@ -320,7 +320,9 @@
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
-  #if defined(RADIO_FAMILY_T16)
+  #if defined(RADIO_TX16S)
+    #define ADC_VREF_PREC2              330
+  #elif defined(RADIO_T16)
     #define ADC_VREF_PREC2              300
   #else
     #define ADC_VREF_PREC2              250
