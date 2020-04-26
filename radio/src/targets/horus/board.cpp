@@ -241,8 +241,14 @@ void boardOff()
   pwrOff();
 }
 
+#if defined (RADIO_TX16S)
+  #define BATTERY_DIVIDER 1495
+#else
+  #define BATTERY_DIVIDER 1629
+#endif 
+
 uint16_t getBatteryVoltage()
 {
   int32_t instant_vbat = anaIn(TX_VOLTAGE);  // using filtered ADC value on purpose
-  return (uint16_t)((instant_vbat * (1000 + g_eeGeneral.txVoltageCalibration)) / 1629);
+  return (uint16_t)((instant_vbat * (1000 + g_eeGeneral.txVoltageCalibration)) / BATTERY_DIVIDER);
 }
