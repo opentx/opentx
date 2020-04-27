@@ -8180,7 +8180,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="827"/>
         <source>Extended Limits</source>
-        <translation>Limites étendus</translation>
+        <translation>Limites étendues</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="829"/>
@@ -11024,7 +11024,7 @@ E</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="498"/>
         <source>Extended Limits</source>
-        <translation>Limites étendus</translation>
+        <translation>Limites étendues</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="488"/>
