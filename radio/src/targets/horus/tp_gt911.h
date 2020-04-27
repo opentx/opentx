@@ -25,13 +25,11 @@
 #include "touch.h"
 
 #define HAS_TOUCH_PANEL()     touchGT911Flag == true
-#define TOUCH_INT_STATUS()    (GPIO_ReadInputDataBit(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN))
 
 bool touchPanelInit();
 void touchPanelDeInit();
 
 extern uint8_t touchGT911Flag;
-extern uint8_t TOUCH_SCAN_MODE;
 extern uint8_t touchPanelEvent;
 
 uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len);

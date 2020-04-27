@@ -55,15 +55,8 @@ uint8_t GT911_Send_Cfg(uint8_t mode)
 static void I2C_Config(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  //I2C_InitTypeDef     I2C_InitStructure;
-
-  /* GPIO Peripheral clock enable */
   RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph, ENABLE);
-  //RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
-
-  //PB6: I2C1_SCL  PB7: I2C1_SDA
   GPIO_InitStructure.GPIO_Pin = I2C_SCL_GPIO_PIN | I2C_SDA_GPIO_PIN;
-  //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
@@ -140,9 +133,6 @@ static void TOUCH_AF_GPIOConfig(void)
 void SDA_IN(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  //RCC_APB1PeriphClockCmd(RCC_APB1Periph_GPIOB, ENABLE);
-  //RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph, ENABLE);
-
   GPIO_InitStructure.GPIO_Pin = I2C_SDA_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -152,9 +142,6 @@ void SDA_IN(void)
 void SDA_OUT(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  //RCC_APB1PeriphClockCmd(RCC_APB1Periph_GPIOB, ENABLE);
-  //RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph, ENABLE);
-
   GPIO_InitStructure.GPIO_Pin = I2C_SDA_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -295,7 +282,6 @@ void gt911ReadRegister(u16 reg, uint8_t * buf, uint8_t len)
 {
   uint8_t i;
 
-  //I2C_GenerateSTART(I2C1, ENABLE);
   I2C_Start();
   I2C_Send_Byte(GT_CMD_WR);       //send addr
   I2C_Wait_Ack();
