@@ -382,17 +382,17 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="1416"/>
         <source>Simulator controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Commandes du simulateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1429"/>
         <source>Save switch/pot positions on simulator exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer les positions des inters/pots à la sortie du simulateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1436"/>
         <source>Clear saved positions</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les positions enregistrées</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="419"/>
@@ -3611,12 +3611,12 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/flightmode.ui" line="444"/>
         <source>trim6</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="523"/>
         <source>trim5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -4738,7 +4738,7 @@ Réinitialisation en agissant sur n&apos;importe lequel des manches / touches de
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1127"/>
         <source>nnnnnnNN</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1263"/>
@@ -8180,7 +8180,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="827"/>
         <source>Extended Limits</source>
-        <translation>Débattements étendus</translation>
+        <translation>Limites étendus</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="829"/>
@@ -10871,7 +10871,7 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="86"/>
         <source>ml/minute</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="94"/>
@@ -11024,7 +11024,7 @@ E</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="498"/>
         <source>Extended Limits</source>
-        <translation>Débattements étendus</translation>
+        <translation>Limites étendus</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="488"/>
@@ -12665,7 +12665,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="38"/>
         <source>TELE##</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="71"/>
@@ -12892,7 +12892,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="544"/>
         <source>ml/min</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="558"/>
@@ -12950,12 +12950,12 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="606"/>
         <source>TELE%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="614"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="630"/>
@@ -12980,37 +12980,37 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="872"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="873"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="874"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="875"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="877"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="921"/>
         <source>Clear Telemetry Sensor. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer le capteur de télémétrie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="931"/>
         <source>Clear all Telemetry Sensors. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacez tous les capteurs de télémétrie. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
