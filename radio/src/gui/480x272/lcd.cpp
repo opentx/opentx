@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <limits.h>
 #include "opentx.h"
 #include "strhelpers.h"
 
@@ -166,6 +167,11 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   int mode = MODE(flags);
   bool neg = false;
   if (val < 0) {
+    if (val == INT_MIN) {
+      flags &= ~(LEADING0 | PREC1 | PREC2);
+      lcdDrawText(x, y, "-Infinity", flags);
+      return;
+    }
     val = -val;
     neg = true;
   }

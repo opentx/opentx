@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <limits.h>
 #include "opentx.h"
 
 display_t displayBuf[DISPLAY_BUFFER_SIZE] __DMA;
@@ -466,6 +467,11 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   int mode = MODE(flags);
   bool neg = false;
   if (val < 0) {
+    if (val == INT_MIN) {
+      flags &= ~(LEADING0 | PREC1 | PREC2);
+      lcdDrawText(x, y, "-Infinity", flags);
+      return;
+    }
     val = -val;
     neg = true;
   }
