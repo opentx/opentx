@@ -175,7 +175,7 @@ void PulsesData::setupFrame()
   if(syncSettings()) return;
 
   //if module is ready but not started
-  if(this->state == ModuleState::STATE_READY) {
+  if(this->state == ModuleState::STATE_READY || this->state == ModuleState::STATE_STANDBY) {
     cmdCount = 0;
     repeatCount = 0;
     requestInfoAndRun(true);
@@ -378,6 +378,9 @@ void PulsesData::setState(uint8_t state) {
   if(oldState == ModuleState::STATE_BINDING) {
     setModuleMode(module_index, ::ModuleSettingsMode::MODULE_MODE_NORMAL);
   }
+  if(state == ModuleState::STATE_NOT_READY) {
+    operationState = State::UNKNOWN;
+  }
 }
 
 void PulsesData::requestInfoAndRun(bool send) {
@@ -406,6 +409,7 @@ void PulsesData::parseData(uint8_t* rxBuffer, uint8_t rxBufferCount) {
           setState(ModuleState::STATE_READY);
           requestInfoAndRun();
         }
+        else setState(ModuleState::STATE_NOT_READY);
         break;
       case COMMAND::MODULE_GET_CONFIG:
           std::memcpy((void*)cfg.buffer, &responseFrame->value, sizeof(cfg.buffer));
