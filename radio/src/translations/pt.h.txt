@@ -943,7 +943,7 @@
 #define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Channel Range"
 #define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
-#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tele.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
 #define TR_AFHDS3_ONE_TO_MANY          "Multicast"
 #define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
 #define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")

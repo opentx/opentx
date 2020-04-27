@@ -380,10 +380,10 @@ void menuModelSetup(event_t event)
       MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
       IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),      // line reused for PPM: PPM settings
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                    // RxNum
+      AFHDS3_MODULE_ROWS(EXTERNAL_MODULE)
       MODULE_POWER_ROW(EXTERNAL_MODULE),
       IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
       MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
-      AFHDS3_MODULE_ROWS(EXTERNAL_MODULE)
       FAILSAFE_ROWS(EXTERNAL_MODULE),
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),                          // Range check and Register buttons
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                          // Module options
@@ -1063,14 +1063,14 @@ void menuModelSetup(event_t event)
 
 #if defined(AFHDS3)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS_PROTOCOL:
-        lcdDrawText(INDENT_WIDTH, y, TR_TYPE);
+        lcdDrawTextAlignedLeft(y, TR_PROTO);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, attr);
         if(attr && s_editMode > 0 && menuHorizontalPosition == 0) {
           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].rfProtocol, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
         }
         break;
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE:
-        lcdDrawText(INDENT_WIDTH, y, STR_MODE);
+        lcdDrawText(INDENT_WIDTH, y, TR_TELEMETRY_TYPE);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y,
             g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry ? STR_AFHDS3_ONE_TO_ONE_TELEMETRY : TR_AFHDS3_ONE_TO_MANY);
         break;
@@ -1718,7 +1718,7 @@ void menuModelSetup(event_t event)
 
 #if defined(AFHDS3)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS: {
-        lcdDrawText(INDENT_WIDTH, y, STR_MODULE_STATUS);
+        lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
 
         char statusText[64];
         getModuleStatusString(moduleIdx, statusText);
