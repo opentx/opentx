@@ -131,5 +131,5 @@
 #define TR_AFHDS3_PROTOCOLS            "PWM/IBUS""PWM/SBUS""PPM/IBUS""PPM/SBUS"
 
 #define LEN_AFHDS3_POWERS              "\006"
-#define TR_AFHDS3_POWERS               "25 mW ""100 mW""500 mW""1 W   ""2 W   "
+#define TR_AFHDS3_POWERS               "25 mW\0""100 mW""500 mW""1 W\0  ""2 W\0  "
 
