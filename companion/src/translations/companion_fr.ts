@@ -103,32 +103,32 @@
         <translation>Profil de radio</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="535"/>
+        <location filename="../apppreferencesdialog.ui" line="553"/>
         <source>Default Channel Order</source>
         <translation>Ordre des voies par défaut</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="359"/>
+        <location filename="../apppreferencesdialog.ui" line="377"/>
         <source>Build Options</source>
         <translation>Options de compilation</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="652"/>
+        <location filename="../apppreferencesdialog.ui" line="670"/>
         <source>Menu Language</source>
         <translation>Langue des menus</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="468"/>
+        <location filename="../apppreferencesdialog.ui" line="486"/>
         <source>Default Stick Mode</source>
         <translation>Mode par défaut</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="117"/>
+        <location filename="../apppreferencesdialog.ui" line="135"/>
         <source>Select Image</source>
         <translation>Sélectionner une image</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="481"/>
+        <location filename="../apppreferencesdialog.ui" line="499"/>
         <source>Mode selection:
 
 Mode 1:
@@ -169,451 +169,461 @@ Manche Droit:  Profondeur, Direction
 </translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="506"/>
+        <location filename="../apppreferencesdialog.ui" line="524"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mode 1 (DIR PROF GAZ AIL)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="511"/>
+        <location filename="../apppreferencesdialog.ui" line="529"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mode 2 (DIR GAZ PROF AIL)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="516"/>
+        <location filename="../apppreferencesdialog.ui" line="534"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation>Mode 3 (AIL PROF GAZ DIR)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="521"/>
+        <location filename="../apppreferencesdialog.ui" line="539"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mode 4 (AIL GAZ PROF DIR)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="100"/>
+        <location filename="../apppreferencesdialog.ui" line="118"/>
         <source>Splash Screen</source>
         <translation>Ecran d&apos;accueil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="417"/>
-        <location filename="../apppreferencesdialog.ui" line="600"/>
+        <location filename="../apppreferencesdialog.ui" line="435"/>
+        <location filename="../apppreferencesdialog.ui" line="618"/>
         <source>The profile specific folder,  if set, will override general Backup folder</source>
         <translation>Dossier de sauvegarde spécifique au profil courant, si défini remplace le paramètre de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="420"/>
+        <location filename="../apppreferencesdialog.ui" line="438"/>
         <source>Backup folder</source>
         <translation>Dossier de sauvegarde</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="574"/>
+        <location filename="../apppreferencesdialog.ui" line="592"/>
         <source>If set it will override the application general setting</source>
         <translation>Si défini, remplace le paramètre de l&apos;application pour ce profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="551"/>
+        <location filename="../apppreferencesdialog.ui" line="569"/>
         <source>if set, will override general backup enable</source>
         <translation>Si défini, remplace le paramètre de l&apos;application pour ce profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="216"/>
+        <location filename="../apppreferencesdialog.ui" line="234"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="223"/>
+        <location filename="../apppreferencesdialog.ui" line="241"/>
         <source>R E T A</source>
         <translation>D P G A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="228"/>
+        <location filename="../apppreferencesdialog.ui" line="246"/>
         <source>R E A T</source>
         <translation>D P A G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="233"/>
+        <location filename="../apppreferencesdialog.ui" line="251"/>
         <source>R T E A</source>
         <translation>D G P A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="238"/>
+        <location filename="../apppreferencesdialog.ui" line="256"/>
         <source>R T A E</source>
         <translation>D G A P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="243"/>
+        <location filename="../apppreferencesdialog.ui" line="261"/>
         <source>R A E T</source>
         <translation>D A P G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="248"/>
+        <location filename="../apppreferencesdialog.ui" line="266"/>
         <source>R A T E</source>
         <translation>D A G P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="253"/>
+        <location filename="../apppreferencesdialog.ui" line="271"/>
         <source>E R T A</source>
         <translation>P D G A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="258"/>
+        <location filename="../apppreferencesdialog.ui" line="276"/>
         <source>E R A T</source>
         <translation>P D A G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="263"/>
+        <location filename="../apppreferencesdialog.ui" line="281"/>
         <source>E T R A</source>
         <translation>P G D A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="268"/>
+        <location filename="../apppreferencesdialog.ui" line="286"/>
         <source>E T A R</source>
         <translation>P G A D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="273"/>
+        <location filename="../apppreferencesdialog.ui" line="291"/>
         <source>E A R T</source>
         <translation>P A D G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="278"/>
+        <location filename="../apppreferencesdialog.ui" line="296"/>
         <source>E A T R</source>
         <translation>P A G D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="283"/>
+        <location filename="../apppreferencesdialog.ui" line="301"/>
         <source>T R E A</source>
         <translation>G D P A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="288"/>
+        <location filename="../apppreferencesdialog.ui" line="306"/>
         <source>T R A E</source>
         <translation>G D A P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="293"/>
+        <location filename="../apppreferencesdialog.ui" line="311"/>
         <source>T E R A</source>
         <translation>G P D A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="298"/>
+        <location filename="../apppreferencesdialog.ui" line="316"/>
         <source>T E A R</source>
         <translation>G P A D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="303"/>
+        <location filename="../apppreferencesdialog.ui" line="321"/>
         <source>T A R E</source>
         <translation>G A D P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="308"/>
+        <location filename="../apppreferencesdialog.ui" line="326"/>
         <source>T A E R</source>
         <translation>G A P D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="313"/>
+        <location filename="../apppreferencesdialog.ui" line="331"/>
         <source>A R E T</source>
         <translation>A D P G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="318"/>
+        <location filename="../apppreferencesdialog.ui" line="336"/>
         <source>A R T E</source>
         <translation>A D G P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="323"/>
+        <location filename="../apppreferencesdialog.ui" line="341"/>
         <source>A E R T</source>
         <translation>A P D G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="328"/>
+        <location filename="../apppreferencesdialog.ui" line="346"/>
         <source>A E T R</source>
         <translation>A P G D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="333"/>
+        <location filename="../apppreferencesdialog.ui" line="351"/>
         <source>A T R E</source>
         <translation>A G D P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="338"/>
+        <location filename="../apppreferencesdialog.ui" line="356"/>
         <source>A T E R</source>
         <translation>A G P D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="382"/>
-        <location filename="../apppreferencesdialog.ui" line="603"/>
-        <location filename="../apppreferencesdialog.ui" line="854"/>
-        <location filename="../apppreferencesdialog.ui" line="888"/>
-        <location filename="../apppreferencesdialog.ui" line="1050"/>
-        <location filename="../apppreferencesdialog.ui" line="1293"/>
+        <location filename="../apppreferencesdialog.ui" line="400"/>
+        <location filename="../apppreferencesdialog.ui" line="621"/>
+        <location filename="../apppreferencesdialog.ui" line="875"/>
+        <location filename="../apppreferencesdialog.ui" line="899"/>
+        <location filename="../apppreferencesdialog.ui" line="1044"/>
+        <location filename="../apppreferencesdialog.ui" line="1303"/>
         <source>Select Folder</source>
         <translation>Sélectionner dossier</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1029"/>
+        <location filename="../apppreferencesdialog.ui" line="1068"/>
         <source>Select Executable</source>
         <translation>Sélectionner exécutable</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1129"/>
+        <location filename="../apppreferencesdialog.ui" line="1090"/>
         <source>Release channel</source>
         <translation>Canal de version</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1143"/>
+        <location filename="../apppreferencesdialog.ui" line="1161"/>
         <source>Releases (stable)</source>
         <translation>Officiel (stable)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1148"/>
+        <location filename="../apppreferencesdialog.ui" line="1166"/>
         <source>Release candidates (testing)</source>
         <translation>Candidate (test)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1153"/>
+        <location filename="../apppreferencesdialog.ui" line="1171"/>
         <source>Nightly builds (unstable)</source>
         <translation>Nighlty (instable)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1373"/>
+        <location filename="../apppreferencesdialog.ui" line="1371"/>
         <source>Simulator Volume Gain</source>
         <translation>Gain de volume du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="401"/>
+        <location filename="../apppreferencesdialog.ui" line="1416"/>
+        <source>Simulator controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="1429"/>
+        <source>Save switch/pot positions on simulator exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="1436"/>
+        <source>Clear saved positions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="419"/>
         <source>Profile Name</source>
         <translation>Nom du profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="161"/>
+        <location filename="../apppreferencesdialog.ui" line="179"/>
         <source>Clear Image</source>
         <translation>Effacer l&apos;image</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="375"/>
+        <location filename="../apppreferencesdialog.ui" line="393"/>
         <source>Append version number to FW file name</source>
         <translation>Ajouter le numéro de version au nom du fichier téléchargé</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="190"/>
+        <location filename="../apppreferencesdialog.ui" line="208"/>
         <source>Offer to write FW to Tx after download</source>
         <translation>Proposer de transférer le firmware à la radio après téléchargement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="636"/>
+        <location filename="../apppreferencesdialog.ui" line="654"/>
         <source>Radio Type</source>
         <translation>Type de radio</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="455"/>
+        <location filename="../apppreferencesdialog.ui" line="473"/>
         <source>Other Settings</source>
         <translation>Autres paramètres</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="616"/>
+        <location filename="../apppreferencesdialog.ui" line="634"/>
         <source>General Settings</source>
         <translation>Paramètres généraux</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="590"/>
+        <location filename="../apppreferencesdialog.ui" line="608"/>
         <source>SD Structure path</source>
         <translation>Chemin de la structure de la carte SD</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="699"/>
+        <location filename="../apppreferencesdialog.ui" line="717"/>
         <source>Application Settings</source>
         <translation>Paramètres de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="803"/>
+        <location filename="../apppreferencesdialog.ui" line="827"/>
         <source>Show splash screen when Companion starts</source>
         <translation>Afficher l&apos;écran d&apos;accueil au lancement de Companion</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="722"/>
+        <location filename="../apppreferencesdialog.ui" line="740"/>
         <source>Automatic check for Companion updates</source>
         <translation>Vérifier la présence de mises à jour de Companion automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="554"/>
-        <location filename="../apppreferencesdialog.ui" line="973"/>
+        <location filename="../apppreferencesdialog.ui" line="572"/>
+        <location filename="../apppreferencesdialog.ui" line="934"/>
         <source>Enable automatic backup before writing firmware</source>
         <translation>Sauvegarder les paramètres et modèles automatiquement lors des transferts</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="712"/>
+        <location filename="../apppreferencesdialog.ui" line="730"/>
         <source>Automatic check for OpenTX firmware updates</source>
         <translation>Vérifier la présence de mises à jour de firmware automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1085"/>
+        <location filename="../apppreferencesdialog.ui" line="1103"/>
         <source>Splash Screen Library</source>
         <translation>Bibliothèque d&apos;écrans d&apos;accueil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="789"/>
+        <location filename="../apppreferencesdialog.ui" line="820"/>
         <source>Google Earth Executable</source>
         <translation>Exécutable Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="994"/>
+        <location filename="../apppreferencesdialog.ui" line="978"/>
         <source>Only show user splash images</source>
         <translation>Ne montrer que les images de l&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="999"/>
+        <location filename="../apppreferencesdialog.ui" line="983"/>
         <source>Show user and companion splash images</source>
         <translation>Montrer les images de Companion et de l&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1072"/>
+        <location filename="../apppreferencesdialog.ui" line="1083"/>
         <source>User Splash Screens</source>
         <translation>Ecrans d&apos;accueil personnalisés</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="819"/>
+        <location filename="../apppreferencesdialog.ui" line="807"/>
         <source>Automatic Backup Folder</source>
         <translation>Dossier de sauvegardes automatiques</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1177"/>
+        <location filename="../apppreferencesdialog.ui" line="1195"/>
         <source>Simulator Settings</source>
         <translation>Paramètres du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1322"/>
+        <location filename="../apppreferencesdialog.ui" line="1384"/>
         <source>Simulator BackLight</source>
         <translation>Rétroéclairage du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1286"/>
+        <location filename="../apppreferencesdialog.ui" line="1332"/>
         <source>Enable</source>
         <translation>Actif</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1098"/>
+        <location filename="../apppreferencesdialog.ui" line="1116"/>
         <source>Action on New Model</source>
         <translation>Action par défaut &quot;Ajout Modèle&quot;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="935"/>
+        <location filename="../apppreferencesdialog.ui" line="1000"/>
         <source>Use model wizard</source>
         <translation>Assistant</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="945"/>
+        <location filename="../apppreferencesdialog.ui" line="1010"/>
         <source>Open model editor</source>
         <translation>Éditer modèle</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="955"/>
+        <location filename="../apppreferencesdialog.ui" line="1020"/>
         <source>Just create the model</source>
         <translation>Créer modèle</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="897"/>
+        <location filename="../apppreferencesdialog.ui" line="941"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option  maintains the behaviour from older OpenTx versions where empty model slots are preserved when a model is deleted or moved. &lt;/p&gt;&lt;p&gt;When this option is de-selected, the other models may be re-arranged to fill the gap left by the removed  model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;&lt;u&gt;/!\&lt;/u&gt; Uniquement pour les radios sans catégories &lt;u&gt;/!\&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Cette option maintient le comportement des anciennes versions d’OpenTx où les emplacements des modèles vides sont conservés lorsqu&apos;un modèle est supprimé ou déplacé.&lt;/p&gt;&lt;p&gt;Lorsque cette option est désélectionnée, les autres modèles peuvent être réarrangés pour combler l&apos;écart laissé par le modèle supprimé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="761"/>
+        <location filename="../apppreferencesdialog.ui" line="792"/>
         <source>most recently used files</source>
         <translation>fichiers récemment utilisés</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="776"/>
+        <location filename="../apppreferencesdialog.ui" line="758"/>
         <source>Startup Settings</source>
         <translation>Paramètres de démarrage</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="832"/>
+        <location filename="../apppreferencesdialog.ui" line="850"/>
         <source>Remember</source>
         <translation>Mémoriser</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="913"/>
+        <location filename="../apppreferencesdialog.ui" line="957"/>
         <source>Output Logs Folder</source>
         <translation>Dossier des logs sauvegardés</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="900"/>
+        <location filename="../apppreferencesdialog.ui" line="944"/>
         <source>Remove empty model slots when deleting models (only applies for radios w/out categories)</source>
         <translation>Supprimer les emplacements vides lors de la suppression de modèles</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="926"/>
+        <location filename="../apppreferencesdialog.ui" line="921"/>
         <source>Debug Output Logging</source>
         <translation>Log les messages de debug</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1107"/>
+        <location filename="../apppreferencesdialog.ui" line="1132"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all debugging messages generated by the desktop Companion/Simulator applications. An OpenTX developer may request this to help diagnose an issue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Garder un log de tous les messages de débogage générés par les applications Companion/Simulateur. Un développeur OpenTX peut demander ce log afin d&apos;aider à diagnostiquer un problème.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1110"/>
+        <location filename="../apppreferencesdialog.ui" line="1135"/>
         <source>Application (Companion/Simulator)</source>
         <translation>Application (Companion/Simulateur)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1117"/>
+        <location filename="../apppreferencesdialog.ui" line="1142"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keep a log of all messages generated by the radio firmware when running in Simulator. This is the same information one would also see in the Simulator &lt;span style=&quot; font-style:italic;&quot;&gt;Debug Output&lt;/span&gt; window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Conserver un log de tous les messages générés par le firmware radio lors de l&apos;exécution du Simulateur. C&apos;est la même information visible depuis le Simulateur dans la &lt;span style=&quot; font-style:italic;&quot;&gt;Fenêtre de débogage&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1120"/>
+        <location filename="../apppreferencesdialog.ui" line="1145"/>
         <source>Radio Firmware (in Simulator)</source>
         <translation>Firmware radio (Simulateur)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1213"/>
+        <location filename="../apppreferencesdialog.ui" line="1268"/>
         <source>Blue</source>
         <translation>Bleu</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1218"/>
+        <location filename="../apppreferencesdialog.ui" line="1273"/>
         <source>Green</source>
         <translation>Vert</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1223"/>
+        <location filename="../apppreferencesdialog.ui" line="1278"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1228"/>
+        <location filename="../apppreferencesdialog.ui" line="1283"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1233"/>
+        <location filename="../apppreferencesdialog.ui" line="1288"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1247"/>
+        <location filename="../apppreferencesdialog.ui" line="1254"/>
         <source>Screenshot capture folder</source>
         <translation>Dossier des captures d&apos;écran</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1309"/>
+        <location filename="../apppreferencesdialog.ui" line="1358"/>
         <source>Joystick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1199"/>
+        <location filename="../apppreferencesdialog.ui" line="1296"/>
         <source>Calibrate</source>
         <translation>Calibrer</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1273"/>
+        <location filename="../apppreferencesdialog.ui" line="1319"/>
         <source>Only capture to clipboard</source>
         <translation>Capturer dans le presse-papiers uniquement</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="1360"/>
-        <source>Remember simulator switch values</source>
-        <translation>Mémoriser les positions des inters du simulateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="110"/>
@@ -637,7 +647,7 @@ Manche Droit:  Profondeur, Direction
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="228"/>
-        <location filename="../apppreferencesdialog.cpp" line="359"/>
+        <location filename="../apppreferencesdialog.cpp" line="366"/>
         <source>No joysticks found</source>
         <translation>Aucun Joystick trouvé</translation>
     </message>
@@ -678,17 +688,17 @@ Manche Droit:  Profondeur, Direction
         <translation>Sélectionner l&apos;emplacement de l&apos;exécutable Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="392"/>
+        <location filename="../apppreferencesdialog.cpp" line="399"/>
         <source>Select the folder replicating your SD structure</source>
         <translation>Sélectionner un dossier contenant une copie des dossiers de la carte SD</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="423"/>
+        <location filename="../apppreferencesdialog.cpp" line="430"/>
         <source>Open Image to load</source>
         <translation>Ouvrir l&apos;image à charger</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="423"/>
+        <location filename="../apppreferencesdialog.cpp" line="430"/>
         <source>Images (%1)</source>
         <translation>Images (%1)</translation>
     </message>
@@ -2109,23 +2119,23 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
         <translation>La source %1 n&apos;est pas supportée sur cette plateforme !</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1161"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1163"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1168"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1170"/>
         <source>OpenTx only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1482"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1486"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1484"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1488"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX ne supporte pas cette fonction sur cette carte</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2197"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2199"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX ne supporte pas ce protocole radio</translation>
     </message>
@@ -2888,19 +2898,19 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>Supprimer le menu HELICO et les mixages cycliques</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1202"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1333"/>
         <source>Disable Global variables</source>
         <translation>Supprimer le support des variables globales</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1203"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1333"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1334"/>
         <source>Enable Lua custom scripts screen</source>
         <translation>Activer l&apos;écran des scripts Lua personnalisés</translation>
     </message>
@@ -2916,6 +2926,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1241"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1255"/>
         <source>Disable RAS (SWR)</source>
         <translation>Désactiver le RAS (SWR). Utile uniquement pour les X9D+ avec un RAS/SWR non fonctionnel</translation>
     </message>
@@ -2940,85 +2951,80 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1255"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1256"/>
         <source>Haptic module installed</source>
         <translation>Module vibreur installé</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1262"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
         <source>FrSky Taranis X9E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1263"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
         <source>Confirmation before radio shutdown</source>
         <translation>Confirmation avant l&apos;arrêt de la radio</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1264"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1265"/>
         <source>Horus gimbals installed (Hall sensors)</source>
         <translation>Manches Horus à effet HALL installés</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1271"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1272"/>
         <source>FrSky Taranis X9-Lite</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1277"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
         <source>FrSky Taranis X9-Lite S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1283"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1284"/>
         <source>FrSky Taranis X7 / X7S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1289"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1290"/>
         <source>FrSky Taranis X7 / X7S Access</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1295"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1296"/>
         <source>FrSky Taranis X-Lite S/PRO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1301"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
         <source>FrSky Taranis X-Lite</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1308"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1309"/>
         <source>FrSky Horus X10 / X10S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1310"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1323"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1311"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
         <source>Support for ACCESS internal module replacement</source>
         <translation>Prise en charge du module de remplacement interne ACCESS</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1315"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1316"/>
         <source>FrSky Horus X10 Express / X10S Express</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1322"/>
         <source>FrSky Horus X12S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1325"/>
         <source>Use ONLY with first DEV pcb version</source>
         <translation>Exclusivement pour les Horus DEV</translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1334"/>
-        <source>Enable non certified R9M firmwares</source>
-        <translation>Activer les firmwares R9M non certifiés</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1335"/>
@@ -3028,17 +3034,11 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1344"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1351"/>
         <source>Support for bluetooth module</source>
         <translation>Prise en charge du module Bluetooth</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1349"/>
-        <source>Radiomaster TX16S</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1355"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1356"/>
         <source>Turnigy 9XR-PRO</source>
         <translation></translation>
     </message>
@@ -3083,17 +3083,17 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <translation>Ne pas mettre les lignes actives en gras</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1373"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1374"/>
         <source>Turnigy 9XR with m128 chip</source>
         <translation>Turnigy 9XR avec une puce m128</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1372"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1373"/>
         <source>Turnigy 9XR</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1374"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1375"/>
         <source>9X with stock board</source>
         <translation>9X avec carte mère d&apos;origine</translation>
     </message>
@@ -3103,17 +3103,17 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <translation>Permet la remise à zéro des valeurs en pressant haut-bas en même temps, valeur min avec gauche/bas, valeur max avec haut/droite, inversion avec gauche/droite</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1375"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1376"/>
         <source>9X with stock board and m128 chip</source>
         <translation>Carte 9x avec un chip m128</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1360"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1361"/>
         <source>9X with AR9X board</source>
         <translation>9X avec carte AR9X</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1329"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1330"/>
         <source>Jumper T12 / T12 Pro</source>
         <translation></translation>
     </message>
@@ -3123,17 +3123,17 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1367"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1368"/>
         <source>9X with Sky9x board</source>
         <translation>9X avec carte Sky9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1376"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1377"/>
         <source>9X with Gruvin9x board</source>
         <translation>9X avec carte Gruvin9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1377"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1378"/>
         <source>DIY MEGA2560 radio</source>
         <translation>Radio DIY à base de MEGA2560</translation>
     </message>
@@ -3608,6 +3608,16 @@ Vous utilisez actuellement:
         <source>Switch</source>
         <translation>Interrupteur</translation>
     </message>
+    <message>
+        <location filename="../modeledit/flightmode.ui" line="444"/>
+        <source>trim6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/flightmode.ui" line="523"/>
+        <source>trim5</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FlightModeData</name>
@@ -3620,52 +3630,52 @@ Vous utilisez actuellement:
 <context>
     <name>FlightModePanel</name>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="130"/>
+        <location filename="../modeledit/flightmodes.cpp" line="138"/>
         <source>Rotary Encoder %1</source>
         <translation>Sélecteur Rotatif %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="165"/>
+        <location filename="../modeledit/flightmodes.cpp" line="173"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="171"/>
+        <location filename="../modeledit/flightmodes.cpp" line="179"/>
         <source>Value source</source>
         <translation>Source valeur</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="176"/>
+        <location filename="../modeledit/flightmodes.cpp" line="184"/>
         <source>Value</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="181"/>
+        <location filename="../modeledit/flightmodes.cpp" line="189"/>
         <source>Unit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="185"/>
+        <location filename="../modeledit/flightmodes.cpp" line="193"/>
         <source>Prec</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="189"/>
+        <location filename="../modeledit/flightmodes.cpp" line="197"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="193"/>
+        <location filename="../modeledit/flightmodes.cpp" line="201"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="205"/>
+        <location filename="../modeledit/flightmodes.cpp" line="213"/>
         <source>GVAR%1</source>
         <translation>VG%1</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="197"/>
+        <location filename="../modeledit/flightmodes.cpp" line="205"/>
         <source>Popup enabled</source>
         <translation>Indication activée</translation>
     </message>
@@ -3675,49 +3685,49 @@ Vous utilisez actuellement:
         <translation>Menu contextuel disponible</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="102"/>
+        <location filename="../modeledit/flightmodes.cpp" line="110"/>
         <source>Trim disabled</source>
         <translation>Trim désactivé</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="106"/>
+        <location filename="../modeledit/flightmodes.cpp" line="114"/>
         <source>Own Trim</source>
         <translation>Valeur indépendante</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="109"/>
+        <location filename="../modeledit/flightmodes.cpp" line="117"/>
         <source>Use Trim from Flight mode %1</source>
         <translation>Utiliser le trim de la phase de vol %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="111"/>
+        <location filename="../modeledit/flightmodes.cpp" line="119"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
         <translation>Utiliser le trim de la phase de vol %1 + une valeur indépendante additionnée</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="369"/>
+        <location filename="../modeledit/flightmodes.cpp" line="377"/>
         <source>0._</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="370"/>
+        <location filename="../modeledit/flightmodes.cpp" line="378"/>
         <source>0.0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="649"/>
-        <location filename="../modeledit/flightmodes.cpp" line="692"/>
+        <location filename="../modeledit/flightmodes.cpp" line="657"/>
+        <location filename="../modeledit/flightmodes.cpp" line="700"/>
         <source>&amp;Clear</source>
         <translation>&amp;Effacer</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="649"/>
-        <location filename="../modeledit/flightmodes.cpp" line="692"/>
+        <location filename="../modeledit/flightmodes.cpp" line="657"/>
+        <location filename="../modeledit/flightmodes.cpp" line="700"/>
         <source>Clear</source>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="655"/>
+        <location filename="../modeledit/flightmodes.cpp" line="663"/>
         <source>Clear all current Flight Mode properties?</source>
         <translation>Effacer tout les modes de vols ?</translation>
     </message>
@@ -3725,17 +3735,17 @@ Vous utilisez actuellement:
 <context>
     <name>FlightModesPanel</name>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="746"/>
+        <location filename="../modeledit/flightmodes.cpp" line="754"/>
         <source>Flight Mode %1</source>
         <translation>Phase de vol %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="749"/>
+        <location filename="../modeledit/flightmodes.cpp" line="757"/>
         <source> (%1)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="752"/>
+        <location filename="../modeledit/flightmodes.cpp" line="760"/>
         <source> (default)</source>
         <translation> (par défaut)</translation>
     </message>
@@ -4409,11 +4419,6 @@ Mode 4:
         <translation>Enregistrement ID du propriétaire</translation>
     </message>
     <message>
-        <location filename="../generaledit/generalsetup.ui" line="1127"/>
-        <source>aaaaaaAA</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../generaledit/generalsetup.ui" line="1359"/>
         <source>R E T A</source>
         <translation>D P G A</translation>
@@ -4729,6 +4734,11 @@ Plage de valeurs: 5v...10v</translation>
         <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
         <translation>Si différent de 0, émission d&apos;un bip sonore régulier si aucune action n&apos;a été effectuée sur l&apos;émetteur depuis le temps spécifié (en minutes).
 Réinitialisation en agissant sur n&apos;importe lequel des manches / touches de navigation.</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/generalsetup.ui" line="1127"/>
+        <source>nnnnnnNN</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1263"/>
@@ -8977,12 +8987,12 @@ Mixage actif par défaut si non-renseigné.</translation>
 <context>
     <name>ModuleData</name>
     <message>
-        <location filename="../firmwares/moduledata.h" line="193"/>
+        <location filename="../firmwares/moduledata.h" line="200"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.h" line="193"/>
+        <location filename="../firmwares/moduledata.h" line="200"/>
         <source>Negative</source>
         <translation>Négative</translation>
     </message>
@@ -9605,7 +9615,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>DÉFAUT</translation>
     </message>
     <message>
-        <location filename="../firmwares/multiprotocols.cpp" line="174"/>
+        <location filename="../firmwares/multiprotocols.cpp" line="177"/>
         <source>Custom - proto %1)</source>
         <translation>Personnaliser - proto %1)</translation>
     </message>
@@ -10859,7 +10869,12 @@ E</translation>
         <translation>secondes</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="92"/>
+        <location filename="../firmwares/sensordata.cpp" line="86"/>
+        <source>ml/minute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="94"/>
         <source>TELE</source>
         <translation></translation>
     </message>
@@ -11830,12 +11845,12 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
         <translation>Impossible d&apos;accéder au Joystick, Joystick désactivé</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="756"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="758"/>
         <source>Radio firmware error: %1</source>
         <translation>Erreur firmware radio: %1</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="761"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="763"/>
         <source> - Flight Mode %1 (#%2)</source>
         <translation> - Phase de Vol %1 (#%2)</translation>
     </message>
@@ -12538,104 +12553,104 @@ Trop d&apos;erreurs, abandon.</translation>
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="935"/>
+        <location filename="../modeledit/telemetry.cpp" line="1036"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="936"/>
+        <location filename="../modeledit/telemetry.cpp" line="1037"/>
         <source>FrSky D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="939"/>
+        <location filename="../modeledit/telemetry.cpp" line="1040"/>
         <source>FrSky D (cable)</source>
         <translation>FrSky D (câble)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="886"/>
+        <location filename="../modeledit/telemetry.cpp" line="987"/>
         <source>Telemetry screen %1</source>
         <translation>Ecran de télémesure %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="962"/>
+        <location filename="../modeledit/telemetry.cpp" line="1063"/>
         <source>Source</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="969"/>
+        <location filename="../modeledit/telemetry.cpp" line="1070"/>
         <source>Low Alarm</source>
         <translation>Alarme basse</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="970"/>
+        <location filename="../modeledit/telemetry.cpp" line="1071"/>
         <source>Critical Alarm</source>
         <translation>Alarme critique</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1012"/>
+        <location filename="../modeledit/telemetry.cpp" line="1113"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1015"/>
+        <location filename="../modeledit/telemetry.cpp" line="1116"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (non supporté)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1059"/>
+        <location filename="../modeledit/telemetry.cpp" line="1160"/>
         <source>Alti</source>
         <translation>Alt</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1060"/>
+        <location filename="../modeledit/telemetry.cpp" line="1161"/>
         <source>Alti+</source>
         <translation>Alt+</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1061"/>
+        <location filename="../modeledit/telemetry.cpp" line="1162"/>
         <source>VSpeed</source>
         <translation>Vitesse verticale</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1062"/>
-        <location filename="../modeledit/telemetry.cpp" line="1070"/>
-        <location filename="../modeledit/telemetry.cpp" line="1085"/>
+        <location filename="../modeledit/telemetry.cpp" line="1163"/>
+        <location filename="../modeledit/telemetry.cpp" line="1171"/>
+        <location filename="../modeledit/telemetry.cpp" line="1186"/>
         <source>A1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1063"/>
-        <location filename="../modeledit/telemetry.cpp" line="1071"/>
-        <location filename="../modeledit/telemetry.cpp" line="1086"/>
+        <location filename="../modeledit/telemetry.cpp" line="1164"/>
+        <location filename="../modeledit/telemetry.cpp" line="1172"/>
+        <location filename="../modeledit/telemetry.cpp" line="1187"/>
         <source>A2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1073"/>
-        <location filename="../modeledit/telemetry.cpp" line="1088"/>
+        <location filename="../modeledit/telemetry.cpp" line="1174"/>
+        <location filename="../modeledit/telemetry.cpp" line="1189"/>
         <source>A3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1074"/>
-        <location filename="../modeledit/telemetry.cpp" line="1089"/>
+        <location filename="../modeledit/telemetry.cpp" line="1175"/>
+        <location filename="../modeledit/telemetry.cpp" line="1190"/>
         <source>A4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1076"/>
-        <location filename="../modeledit/telemetry.cpp" line="1091"/>
+        <location filename="../modeledit/telemetry.cpp" line="1177"/>
+        <location filename="../modeledit/telemetry.cpp" line="1192"/>
         <source>FAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1077"/>
+        <location filename="../modeledit/telemetry.cpp" line="1178"/>
         <source>Cells</source>
         <translation>Velm</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1084"/>
+        <location filename="../modeledit/telemetry.cpp" line="1185"/>
         <source>---</source>
         <translation></translation>
     </message>
@@ -12648,274 +12663,284 @@ Trop d&apos;erreurs, abandon.</translation>
         <translation>Formulaire</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="52"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="38"/>
+        <source>TELE##</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="71"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="57"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="76"/>
         <source>Calculated</source>
         <translation>Calculé</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="71"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="90"/>
         <source>Id</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="100"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="119"/>
         <source>Instance</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="126"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="145"/>
         <source>Rx</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="168"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="187"/>
         <source>Add</source>
         <translation>Addition</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="173"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="192"/>
         <source>Average</source>
         <translation>Moyenne</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="178"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="197"/>
         <source>Min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="183"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="202"/>
         <source>Max</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="188"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="207"/>
         <source>Multiply</source>
         <translation>Multiplication</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="193"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="212"/>
         <source>Totalize</source>
         <translation>Totalisation</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="198"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="217"/>
         <source>Cell</source>
         <translation>Element LiPo</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="203"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="222"/>
         <source>Consumption</source>
         <translation>Consommation</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="208"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="227"/>
         <source>Dist</source>
         <translation>Distance</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="222"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="241"/>
         <source>Cells Sensor :</source>
         <translation>Capteur d&apos;éléments:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="236"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="274"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="302"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="330"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="345"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="360"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="375"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="390"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="255"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="293"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="321"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="349"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="364"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="379"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="409"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="260"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="279"/>
         <source>GPS Sensor :</source>
         <translation>Capteur GPS:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="288"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="307"/>
         <source>Alt. Sensor :</source>
         <translation>Capteur d&apos;altitude:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="316"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="335"/>
         <source>Sensor :</source>
         <translation>Capteur:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="410"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="429"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="415"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="434"/>
         <source>A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="420"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="439"/>
         <source>mA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="425"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="444"/>
         <source>kt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="430"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
         <source>m/s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="435"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="454"/>
         <source>ft/s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="440"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>km/h</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="445"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="464"/>
         <source>mph</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="450"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="469"/>
         <source>m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="455"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="474"/>
         <source>ft</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="460"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="479"/>
         <source>°C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="465"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="484"/>
         <source>°F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="470"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="489"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="475"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="494"/>
         <source>mAh</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="480"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="499"/>
         <source>W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="485"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="504"/>
         <source>mW</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="490"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="509"/>
         <source>dBm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="500"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="519"/>
         <source>g</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="505"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="524"/>
         <source>°</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="510"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="529"/>
         <source>Rad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="534"/>
         <source>mL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="520"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="539"/>
         <source>US fl.Oz.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="405"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>Raw (-)</source>
         <translation>Chiffres bruts (-)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="495"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="514"/>
         <source>RPM</source>
         <translation>Tours/minute</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="534"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="544"/>
+        <source>ml/min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry_sensor.ui" line="558"/>
         <source>Precision</source>
         <translation>Précision</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="566"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="574"/>
         <source>Ratio</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="573"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="581"/>
         <source>Blades</source>
         <translation>Pales</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="608"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="616"/>
         <source>Offset</source>
         <translation>Décalage</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="615"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="623"/>
         <source>Multiplier</source>
         <translation>Multiplicateur</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="647"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="655"/>
         <source>Auto Offset</source>
         <translation>Offset auto</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="657"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="665"/>
         <source>Filter</source>
         <translation>Filtre</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="667"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="675"/>
         <source>Persistent</source>
         <translation>Persistant</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="677"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="685"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="687"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="695"/>
         <source>Logs</source>
         <translation></translation>
     </message>
@@ -12923,24 +12948,69 @@ Trop d&apos;erreurs, abandon.</translation>
 <context>
     <name>TelemetrySensorPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="615"/>
+        <location filename="../modeledit/telemetry.cpp" line="606"/>
+        <source>TELE%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="614"/>
+        <source>Popup menu available</source>
+        <translation type="unfinished">Menu contextuel disponible</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="630"/>
         <source>Lowest</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="617"/>
+        <location filename="../modeledit/telemetry.cpp" line="632"/>
         <source>Cell %1</source>
         <translation>Elém. %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="618"/>
+        <location filename="../modeledit/telemetry.cpp" line="633"/>
         <source>Highest</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="619"/>
+        <location filename="../modeledit/telemetry.cpp" line="634"/>
         <source>Delta</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="872"/>
+        <source>Copy</source>
+        <translation type="unfinished">Copier</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="873"/>
+        <source>Cut</source>
+        <translation type="unfinished">Couper</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="874"/>
+        <source>Paste</source>
+        <translation type="unfinished">Coller</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="875"/>
+        <source>Clear</source>
+        <translation type="unfinished">Effacer</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="877"/>
+        <source>Clear All</source>
+        <translation type="unfinished">Effacer Tout</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="921"/>
+        <source>Clear Telemetry Sensor. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.cpp" line="931"/>
+        <source>Clear all Telemetry Sensors. Are you sure?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14301,122 +14371,6 @@ Cliquer sur Annuler pour interrompre la calibration sans sauvegarder.</translati
         <location filename="../simulation/joystickdialog.cpp" line="258"/>
         <source>Calibration not complete, save anyway?</source>
         <translation>Calibration incomplète, sauvegarder tout de même ?</translation>
-    </message>
-</context>
-<context>
-    <name>preferencesDialog</name>
-    <message>
-        <location filename="../imgpreferences.ui" line="349"/>
-        <location filename="../imgpreferences.ui" line="356"/>
-        <source>...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="120"/>
-        <source>Enable</source>
-        <translation>Actif</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="94"/>
-        <source>Remember simulator switches</source>
-        <translation>Mémoriser les positions des inters du simulateur</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="136"/>
-        <source>Calibrate</source>
-        <translation>Calibrer</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="189"/>
-        <location filename="../imgpreferences.ui" line="235"/>
-        <source>Open Folder</source>
-        <translation>Ouvrir le dossier</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="311"/>
-        <source>Custom TX splash screen</source>
-        <translation>Personnaliser l&apos;écran d&apos;accueil</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="74"/>
-        <source>Simulator capture folder</source>
-        <translation>Dossier des captures d&apos;écran</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="129"/>
-        <source>Use clipboard only</source>
-        <translation>Utiliser le presse-papiers</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="64"/>
-        <source>Simu BackLight</source>
-        <translation>Rétroéclairage simu</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="146"/>
-        <source>Blue</source>
-        <oldsource>Blu</oldsource>
-        <translation>Bleu</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="151"/>
-        <source>Green</source>
-        <translation>Vert</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="156"/>
-        <source>Red</source>
-        <translation>Rouge</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="161"/>
-        <source>Orange</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="166"/>
-        <source>Yellow</source>
-        <translation>Jaune</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="216"/>
-        <source>Personal splash library</source>
-        <translation>Librairie d&apos;écran d&apos;accueil personnalisé</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="287"/>
-        <source>Splash library behaviour</source>
-        <translation>Utilisation de la librairie d&apos;écran d&apos;accueil</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="253"/>
-        <source>Include companion splashes</source>
-        <translation>Inclure les écrans d&apos;accueil de Companion</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="258"/>
-        <source>Only user defined splashes</source>
-        <translation>Seulement les écrans d&apos;accueil personnalisé</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="87"/>
-        <source>Joystick</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="336"/>
-        <source>Open Image</source>
-        <translation>Charger une image</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="366"/>
-        <source>Invert Pixels</source>
-        <translation>Inverser les couleurs</translation>
-    </message>
-    <message>
-        <location filename="../imgpreferences.ui" line="26"/>
-        <source>Preferences</source>
-        <translation>Préférences</translation>
     </message>
 </context>
 </TS>
