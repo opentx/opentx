@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <math.h>
 #include "opentx.h"
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix, const char * suffix)
