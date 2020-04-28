@@ -49,24 +49,24 @@ uint8_t getMappedChar(uint8_t c)
     result = 127 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_ES)
-  else if (c >= 0x80 && c <= 0x81) {
+  else if (c >= 0x80 && c <= 0x80+12) {
     result = 157 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_FI) || defined(TRANSLATIONS_SE)
   else if (c >= 0x80 && c <= 0x85) {
-    result = 159 + c - 0x80;
+    result = 169 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_IT)
   else if (c >= 0x80 && c <= 0x81) {
-    result = 165 + c - 0x80;
+    result = 175 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_PL)
   else if (c >= 0x80 && c <= 0x80+17) {
-    result = 167 + c - 0x80;
+    result = 177 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_PT)
   else if (c >= 0x80 && c <= 0x80+21) {
-    result = 185 + c - 0x80;
+    result = 195 + c - 0x80;
   }
 #endif
   else if (c < 0xC0)
