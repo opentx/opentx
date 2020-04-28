@@ -248,14 +248,14 @@ const uint8_t GT911_Cfg[] =
 #define GT_TP5_REG 		0X8170
 
 #define GT911_READ_XY_REG               0x814E
-#define GT911_CLEARBUF_REG 		0x814E
-#define GT911_CONFIG_REG 		0x8047
-#define GT911_COMMAND_REG 		0x8040
-#define GT911_PRODUCT_ID_REG 		0x8140
-#define GT911_VENDOR_ID_REG 		0x814A
-#define GT911_CONFIG_VERSION_REG 	0x8047
-#define GT911_CONFIG_CHECKSUM_REG 	0x80FF
-#define GT911_FIRMWARE_VERSION_REG	0x8144
+#define GT911_CLEARBUF_REG              0x814E
+#define GT911_CONFIG_REG                0x8047
+#define GT911_COMMAND_REG               0x8040
+#define GT911_PRODUCT_ID_REG            0x8140
+#define GT911_VENDOR_ID_REG             0x814A
+#define GT911_CONFIG_VERSION_REG        0x8047
+#define GT911_CONFIG_CHECKSUM_REG       0x80FF
+#define GT911_FIRMWARE_VERSION_REG      0x8144
 
 PACK(typedef struct
 {

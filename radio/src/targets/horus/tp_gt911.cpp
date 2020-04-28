@@ -42,7 +42,7 @@ uint8_t GT911_Send_Cfg(uint8_t mode)
   uint8_t buf[2];
   uint8_t i = 0;
   buf[0] = 0;
-  buf[1] = mode;    //
+  buf[1] = mode;
   for (i = 0; i < sizeof(GT911_Cfg); i++)
     buf[0] += GT911_Cfg[i];//check sum
 
@@ -174,11 +174,10 @@ void I2C_Stop(void)
 uint8_t I2C_Wait_Ack(void)
 {
   uint8_t ucErrTime = 0;
-  SDA_IN();      //
+  SDA_IN();
   I2C_SDA_H();
   delay_us(2);
-  //I2C_SCL_L();delay_us(6);
-  I2C_SCL_H();//delay_us(6);
+  I2C_SCL_H();
   while (READ_SDA) {
     ucErrTime++;
     if (ucErrTime > 166) {
@@ -188,7 +187,7 @@ uint8_t I2C_Wait_Ack(void)
     delay_us(1);
   }
   I2C_SDA_L();
-  I2C_SCL_L();//
+  I2C_SCL_L();
   return 0;
 }
 
@@ -219,7 +218,7 @@ void I2C_Send_Byte(uint8_t txd)
   uint8_t t;
 
   SDA_OUT();
-  I2C_SCL_L();//
+  I2C_SCL_L();
   for (t = 0; t < 8; t++) {
     if ((txd & 0x80) >> 7)
       I2C_SDA_H();
@@ -346,7 +345,7 @@ bool touchPanelInit(void)
 
     delay_ms(10);
     tmp[0] = 0X00;
-    gt911WriteRegister(GT_CTRL_REG, tmp, 1);//end reset
+    gt911WriteRegister(GT_CTRL_REG, tmp, 1);  //end reset
     touchGT911Flag = true;
 
     TOUCH_AF_ExtiConfig();

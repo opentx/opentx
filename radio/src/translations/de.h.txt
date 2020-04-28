@@ -594,7 +594,6 @@
 #define TR_MENUVERSION                 "VERSION"
 #define TR_MENU_RADIO_SWITCHES         TR("Schalter-Test", "Schalter-Test")
 #define TR_MENU_RADIO_ANALOGS          "Geber-Test"
-#define TR_MENU_RADIO_TOUCH            "TOUCHSCREEN TEST"
 #define TR_MENUCALIBRATION             TR("KALIB. ANALOG", "KALIBRIERUNG-Analog")
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS             "Trims => Subtrims"
@@ -919,7 +918,6 @@
 #define TR_RESET_BTN           		   BUTTON("Reset")
 #define TR_DEBUG                       "Testen"
 #define TR_KEYS_BTN                	   BUTTON(TR("SW","Switches"))
-#define TR_TOUCH_BTN                   BUTTON("Touch")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
 #define TR_TOUCH_NOTFOUND              "Touch hardware not found"
 #define TR_TOUCH_EXIT                  "Touch screen to exit"
@@ -1000,6 +998,7 @@
 #define LEN_SPORT_UPDATE_POWER_MODES    "\004"
 #define TR_SPORT_UPDATE_POWER_MODES     "AUTO""ON\0 "
 #define TR_NO_TELEMETRY_SCREENS         "No Telemetry Screens"
+#define TR_TOUCH_PANEL                 "Touch panel:"
 
 // Horus and Taranis specific column headers
 #define TR_PHASES_HEADERS_NAME         "Name "

@@ -68,7 +68,7 @@ bool menuRadioDiagAnalogs(event_t event)
 
 #if defined(HARDWARE_TOUCH)
   if (HAS_TOUCH_PANEL()) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, "Touch panel:");
+    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, STR_TOUCH_PANEL);
   }
 
   if (touchPanelEvent) {

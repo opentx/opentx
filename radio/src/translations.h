@@ -169,6 +169,7 @@ extern const char STR_VSENSORTYPES[];
 extern const char STR_VFORMULAS[];
 extern const char STR_VPREC[];
 extern const char STR_VCELLINDEX[];
+extern const char STR_TOUCH_PANEL[];
 
 #if defined(BLUETOOTH)
 extern const char STR_BLUETOOTH[];
@@ -356,7 +357,6 @@ extern const char STR_MENUSPECIALFUNCS[];
 extern const char STR_MENUVERSION[];
 extern const char STR_MENU_RADIO_SWITCHES[];
 extern const char STR_MENU_RADIO_ANALOGS[];
-extern const char STR_MENU_RADIO_TOUCH[];
 extern const char STR_MENUCALIBRATION[];
 extern const char STR_MENUMODELSEL[];
 extern const char STR_MENUSETUP[];
@@ -496,7 +496,6 @@ extern const char STR_MONITOR_SCREENS[];
 extern const char STR_RESET_BTN[];
 extern const char STR_DEBUG[];
 extern const char STR_KEYS_BTN[];
-extern const char STR_TOUCH_BTN[];
 extern const char STR_ANALOGS_BTN[];
 extern const char STR_TOUCH_NOTFOUND[];
 extern const char STR_TOUCH_EXIT[];
