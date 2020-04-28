@@ -45,8 +45,10 @@ class CommonInputOrMixButton : public Button {
       Button(parent, rect),
       index(index)
     {
-      setFocusHandler([=]() {
+      setFocusHandler([=](bool active) {
+        if (active) {
           bringToTop();
+        }
       });
     }
 

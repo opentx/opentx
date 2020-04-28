@@ -257,8 +257,10 @@ class ModelCategoryPageBody: public FormWindow {
       for (auto & model: * category) {
         auto button = new ModelButton(this, {x, y, MODEL_SELECT_CELL_WIDTH, MODEL_SELECT_CELL_HEIGHT}, model, nullptr);
 
-        button->setFocusHandler([=] {
+        button->setFocusHandler([=](bool active) {
+          if (active) {
             footer->setCurrentModel(model);
+          }
         });
 
         button->setPressHandler([=]() -> uint8_t {

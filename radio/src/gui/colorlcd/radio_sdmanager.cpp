@@ -257,8 +257,10 @@ void RadioSdManagerPage::build(FormWindow * window)
           }
           return 0;
       }, 0);
-      button->setFocusHandler([=]() {
+      button->setFocusHandler([=](bool active) {
+        if (active) {
           preview->setFile(getFullPath(name));
+        }
       });
       grid.nextLine();
     }
