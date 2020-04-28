@@ -116,7 +116,9 @@ local function create(zone, options)
     no_telem_blink = 0,
     isDataAvailable = 0,
     cellDataLive = {0,0,0,0,0,0},
+    cellDataLivePercent = {0,0,0,0,0,0},
     cellDataHistoryLowest = {5,5,5,5,5,5},
+    cellDataHistoryLowestPercent = {5,5,5,5,5,5},
     cellDataHistoryCellLowest = 5,
     cellMax = 0,
     cellMin = 0,
@@ -263,14 +265,6 @@ local function calculateBatteryData(wgt)
   if type(newCellData) ~= "table" then
     wgt.isDataAvailable = false
     return
-  end
-
-  -- this is necessary for simu where cell-count can change
-  if #wgt.cellDataHistoryLowest ~= #newCellData then
-    wgt.cellDataHistoryLowest = {5,5,5,5,5,5}
-    for k, v in pairs(newCellData) do
-      wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
-    end
   end
 
   local cellMax = 0
