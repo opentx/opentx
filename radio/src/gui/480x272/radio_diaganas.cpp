@@ -76,8 +76,8 @@ bool menuRadioDiagAnalogs(event_t event)
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
     lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ", ");
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
-    lcdDrawLine(touchState.x - 10, touchState.y - 7, touchState.x + 10, touchState.y + 7, SOLID);
-    lcdDrawLine(touchState.x - 10, touchState.y + 7, touchState.x + 10, touchState.y - 7, SOLID);
+    lcdDrawLine(touchState.x - 10, touchState.y - 8, touchState.x + 10, touchState.y + 8, SOLID);
+    lcdDrawLine(touchState.x - 10, touchState.y + 8, touchState.x + 10, touchState.y - 8, SOLID);
   }
 #endif
 
