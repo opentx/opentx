@@ -158,15 +158,8 @@ void PulsesData::setupFrame()
   if(!commandQueue.empty()) {
     request* r = commandQueue.front();
     commandQueue.pop();
-    uint8_t frameIndexBackup = this->frame_index;
-    if(r->frameNumber >= 0) {
-      this->frame_index = r->frameNumber;
-    }
-    putFrame(r->command, r->frameType, r->payload, r->payloadSize);
-    trace("AFHDS3 [CMD QUEUE] data", r->payload, r->payloadSize);
-    if(r->frameNumber >= 0) {
-      this->frame_index = frameIndexBackup;
-    }
+    TRACE("AFHDS3 [CMD QUEUE] cmd: %d frameType %d, frame Number %d size %d", r->command, r->frameType, r->frameNumber, r->payloadSize);
+    putFrame(r->command, r->frameType, r->payload, r->payloadSize, r->useFrameNumber ? &r->frameNumber : &frame_index);
     delete r;
     return;
   }
@@ -182,7 +175,9 @@ void PulsesData::setupFrame()
     return;
   }
 
-  if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_BIND) {
+  ::ModuleSettingsMode moduleMode = getModuleMode(module_index);
+
+  if(moduleMode == ::ModuleSettingsMode::MODULE_MODE_BIND) {
     if(state != STATE_BINDING)
     {
       TRACE("AFHDS3 [BIND]");
@@ -193,7 +188,7 @@ void PulsesData::setupFrame()
       return;
     }
   }
-  else if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_RANGECHECK) {
+  else if(moduleMode == ::ModuleSettingsMode::MODULE_MODE_RANGECHECK) {
     if(cfg.config.runPower != RUN_POWER::RUN_POWER_FIRST) {
       TRACE("AFHDS3 [RANGE CHECK]");
       cfg.config.runPower = RUN_POWER::RUN_POWER_FIRST;
@@ -203,7 +198,7 @@ void PulsesData::setupFrame()
       return;
     }
   }
-  else if(getModuleMode(module_index) == ::ModuleSettingsMode::MODULE_MODE_NORMAL){ //exit bind
+  else if(moduleMode == ::ModuleSettingsMode::MODULE_MODE_NORMAL){ //exit bind
     if(state == STATE_BINDING) {
       TRACE("AFHDS3 [EXIT BIND]");
       requestedModuleMode = MODULE_MODE_E::RUN;
@@ -214,29 +209,26 @@ void PulsesData::setupFrame()
 
   bool isConnected = isConnectedUnicast() || isConnectedMulticast();
 
-  if (cmdCount++ == 150)
+  if (cmdCount++ >= 150)
   {
     cmdCount = 0;
-    uint32_t max = sizeof(periodicRequestCommands);
-    if(cmdCount == max) cmdCount = 0;
-    COMMAND cmd = periodicRequestCommands[cmdCount];
+    if(cmdIndex >= sizeof(periodicRequestCommands)) cmdIndex = 0;
+    COMMAND cmd = periodicRequestCommands[cmdIndex++];
 
     if(cmd == COMMAND::VIRTUAL_FAILSAFE)
     {
       if(isConnected) {
         if (isConnectedMulticast()) {
           TRACE("AFHDS ONE WAY FAILSAFE");
-          uint16_t failSafe[MAX_CHANNELS + 1] = { 0 };
-          uint8_t channels = setFailSafe((int16_t*) (&failSafe[1]));
-          failSafe[0] = (int16_t) ((channels << 8) | CHANNELS_DATA_MODE::FAIL_SAFE);
-          putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, (uint8_t*) failSafe, channels * 2 + 2);
+          uint16_t failSafe[MAX_CHANNELS + 1] = { ((MAX_CHANNELS << 8) | CHANNELS_DATA_MODE::FAIL_SAFE), 0 };
+          setFailSafe((int16_t*) (&failSafe[1]));
+          putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, (uint8_t*) failSafe, MAX_CHANNELS * 2 + 2);
         }
         else {
           TRACE("AFHDS TWO WAYS FAILSAFE");
-          uint8_t failSafe[3 + MAX_CHANNELS * 2] = { 0x11, 0x60 };
-          uint8_t channels = setFailSafe((int16_t*) (failSafe + 3));
-          failSafe[2] = channels * 2;
-          putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, failSafe, 3 + channels * 2);
+          uint8_t failSafe[3 + MAX_CHANNELS * 2] = { 0x11, 0x60, MAX_CHANNELS * 2 };
+          setFailSafe((int16_t*) (failSafe + 3));
+          putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, failSafe, 3 + MAX_CHANNELS * 2);
         }
       }
       else {
@@ -247,9 +239,6 @@ void PulsesData::setupFrame()
     {
       putFrame(cmd, FRAME_TYPE::REQUEST_GET_DATA);
     }
-    //ensure commands will not be resend
-    operationState = cmd == COMMAND::MODULE_STATE ? State::AWAITING_RESPONSE : State::IDLE;
-    cmdCount++;
   }
   else if (isConnected)
   {
@@ -277,6 +266,7 @@ void PulsesData::clearFrameData() {
   clearQueue();
   repeatCount = 0;
   cmdCount = 0;
+  cmdIndex = 0;
   this->frame_index = 1;
   this->timeout = 0;
   this->esc_state = 0;
@@ -301,7 +291,7 @@ void PulsesData::putBytes(uint8_t* data, int length) {
 }
 
 
-void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint8_t dataLength){
+void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint8_t dataLength, uint8_t* frameIndex){
   /////////
   //header
   /////////
@@ -309,7 +299,11 @@ void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint
   reset();
   this->crc = 0;
   sendByte(START);
-  uint8_t buffer[] = { FrameAddress, this->frame_index, frame, command };
+  if(frameIndex == nullptr) {
+    frameIndex = &this->frame_index;
+  }
+
+  uint8_t buffer[] = { FrameAddress, *frameIndex, frame, command };
   putBytes(buffer, 4);
   /////////
   //payload
@@ -321,7 +315,7 @@ void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint
   uint8_t crcValue = this->crc ^ 0xff;
   putBytes(&crcValue, 1);
   sendByte(END);
-  this->frame_index++;
+  *frameIndex = *frameIndex + 1;
 
   switch (frame) {
   case FRAME_TYPE::REQUEST_GET_DATA:
@@ -337,14 +331,17 @@ void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint
 }
 
 void PulsesData::addAckToQueue(COMMAND command, uint8_t frameNumber) {
+
   request* r = new request(command, FRAME_TYPE::RESPONSE_ACK, nullptr, 0);
-  r->frameNumber = frameNumber;
+  r->setFrameNumber(frameNumber);
   commandQueue.push(r);
+  TRACE("ADD ACK TO QUEUE cmd %d queue SIZE %d", command, commandQueue.size());
 }
 
 void PulsesData::addToQueue(COMMAND command, FRAME_TYPE frameType, uint8_t* data, uint8_t dataLength) {
   request* r = new request(command, frameType, data, dataLength);
   commandQueue.push(r);
+  TRACE("ADD TO QUEUE cmd %d frame %d length %d, queue SIZE %d", command, frameType, dataLength, commandQueue.size());
 }
 
 void PulsesData::clearQueue() {
@@ -516,12 +513,6 @@ void PulsesData::parseData(uint8_t* rxBuffer, uint8_t rxBufferCount) {
 void PulsesData::trace(const char* message, uint8_t * payload, uint8_t payloadSize) {
   char buffer[256];
   char *pos = buffer;
-  if(payload == nullptr) {
-    payload = (uint8_t *) pulses;
-    payloadSize = getSize();
-  }
-
-
   for (int i = 0; i < payloadSize; i++) {
     pos += snprintf(pos, buffer + sizeof(buffer) - pos, "%02X ", payload[i]);
   }
@@ -600,7 +591,7 @@ bool PulsesData::syncSettings() {
     moduleData->afhds3.failsafeTimeout = cfg.config.failSafeTimout;
     uint8_t data[] = {0x12,  0x60, 0x02, (uint8_t)(moduleData->afhds3.failsafeTimeout & 0xFF), (uint8_t)(moduleData->afhds3.failsafeTimeout >> 8) };
     putFrame(COMMAND::SEND_COMMAND, FRAME_TYPE::REQUEST_SET_EXPECT_DATA, data, sizeof(data));
-    TRACE("AFHDS3 TRACE FAILSAFE TMEOUT");
+    TRACE("AFHDS3 FAILSAFE TMEOUT, %d", moduleData->afhds3.failsafeTimeout);
     return true;
   }
 
@@ -611,16 +602,14 @@ void PulsesData::sendChannelsData() {
   uint8_t channels_start = moduleData->channelsStart;
   uint8_t channelsCount = 8 + moduleData->channelsCount;
   uint8_t channels_last = channels_start + channelsCount;
+  int16_t buffer[MAX_CHANNELS + 1] = { ((MAX_CHANNELS << 8) | CHANNELS_DATA_MODE::CHANNELS), 0 };
 
-  uint8_t channels[2*((8 + moduleData->channelsCount) + 1)];
-  channels[0] = 0x01;
-  channels[1] = channelsCount;
-
-  for(uint8_t channel = channels_start; channel < channels_last; channel++) {
+  for(uint8_t channel = channels_start, index = 1; channel < channels_last; channel++, index++) {
     int16_t channelValue = convert(::getChannelValue(channel));
-    *((int16_t*)(channels + (channel * 2) + 2)) = channelValue;
+    buffer[index] = channelValue;
   }
-  putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, channels, sizeof(channels));
+  putFrame(COMMAND::CHANNELS_FAILSAFE_DATA, FRAME_TYPE::REQUEST_SET_NO_RESP, (uint8_t*)buffer, sizeof(buffer));
+
 }
 
 void PulsesData::stop() {
@@ -638,7 +627,8 @@ void PulsesData::setConfigFromModel() {
   cfg.config.pwmFreq = moduleData->afhds3.rxFreq();
   cfg.config.serialMode = isSbus(moduleData->rfProtocol) ? SERIAL_MODE::SBUS_MODE : SERIAL_MODE::IBUS;
   cfg.config.pulseMode = isPWM(moduleData->rfProtocol) ? PULSE_MODE::PWM_MODE: PULSE_MODE::PPM_MODE;
-  cfg.config.channelCount = 8 + moduleData->channelsCount;
+  //use max channels - because channel count can not be changed after bind
+  cfg.config.channelCount = MAX_CHANNELS;
   cfg.config.failSafeTimout = moduleData->afhds3.failsafeTimeout;
   setFailSafe(cfg.config.failSafeMode);
 
@@ -659,15 +649,16 @@ inline int16_t PulsesData::convert(int channelValue) {
 uint8_t PulsesData::setFailSafe(int16_t* target) {
   int16_t pulseValue = 0;
   uint8_t channels_start = moduleData->channelsStart;
-  uint8_t channels_last = channels_start + 8 + moduleData->channelsCount;;
+  uint8_t channels_last = channels_start + 8 + moduleData->channelsCount;
 
   for (uint8_t channel = channels_start; channel < channels_last; channel++) {
      if (moduleData->failsafeMode == FAILSAFE_CUSTOM) pulseValue = convert(g_model.failsafeChannels[channel]);
      else if (moduleData->failsafeMode == FAILSAFE_HOLD) pulseValue = FAILSAFE_KEEP_LAST;
      else pulseValue = convert(::getChannelValue(channel));
      target[channel-channels_start] = pulseValue;
-   }
-  return (uint8_t)(channels_last - channels_start);
+  }
+  //return max channels because channel count can not be change after bind
+  return (uint8_t)(MAX_CHANNELS);
 }
 
 

@@ -376,19 +376,24 @@ class request {
     }
     else payload = nullptr;
     payloadSize = length;
-    frameNumber = -1;
+  }
+  void setFrameNumber(uint8_t number) {
+    useFrameNumber = true;
+    frameNumber = number;
   }
   ~request() {
     if(payload != nullptr) {
       delete[] payload;
       payload = nullptr;
     }
+    payloadSize = 0;
   }
   enum COMMAND command;
   enum FRAME_TYPE frameType;
   uint8_t* payload;
   uint8_t payloadSize;
-  int frameNumber;
+  uint8_t frameNumber;
+  bool useFrameNumber;
 };
 
 void processTelemetryData(uint8_t module, uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
@@ -425,7 +430,7 @@ protected:
   void setConfigFromModel();
 private:
   inline void putBytes(uint8_t* data, int length);
-  inline void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
+  inline void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0, uint8_t* frame_index = nullptr);
   void addAckToQueue(COMMAND command, uint8_t frameNumber);
   void addToQueue(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
   void parseData(uint8_t* rxBuffer, uint8_t rxBufferCount);
@@ -474,6 +479,10 @@ private:
    * Command count used for counting actual number of commands sent in run mode
    */
   uint32_t cmdCount;
+  /**
+   * Command index of command to be send when cmdCount reached necessary value
+   */
+  uint32_t cmdIndex;
   /**
    * Actual power source of the module - should be requested time to time
    * Currently requested once
