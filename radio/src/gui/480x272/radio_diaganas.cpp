@@ -21,6 +21,7 @@
 #include "opentx.h"
 #if defined(RADIO_TX16S)
 #include "tp_gt911.h"
+#include <math.h>
 #endif
 
 constexpr coord_t LEFT_NAME_COLUMN = MENUS_MARGIN_LEFT;
@@ -75,6 +76,10 @@ bool menuRadioDiagAnalogs(event_t event)
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
     lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ", ");
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
+    coord_t x = limit(10, (coord_t)touchState.x, 469); // TODO remove, prevent an emergency crash when drawing on y 280 line
+    coord_t y = limit(7, (coord_t)touchState.y, 264);  // TODO remove, prevent an emergency crash when drawing on y 280 line
+    lcdDrawLine(x - 10, y - 7, x + 10, y + 7, SOLID);
+    lcdDrawLine(x - 10, y + 7, x + 10, y - 7, SOLID);
   }
 #endif
 
