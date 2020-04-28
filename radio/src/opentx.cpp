@@ -295,7 +295,7 @@ void generalDefault()
 
 #if defined(FRSKY_RELEASE)
   g_eeGeneral.templateSetup = 17; /* TAER */
-#elif defined(RADIO_TX16S)  //TODO : is RADIO_FAMILLY_T16 better ?
+#elif defined(RADIO_FAMILY_T16)
   g_eeGeneral.templateSetup = 21; /* AETR to match bundled multi */
 #endif
 
