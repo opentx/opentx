@@ -314,11 +314,21 @@
 #endif
 
 // Power
+#if defined(RADIO_T18)
+#define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ | RCC_AHB1Periph_GPIOB
+#define PWR_ON_GPIO                     GPIOJ
+#define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
+#define PWR_SWITCH_GPIO                 GPIOJ
+#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
+//#define PWR_EXTRA_SWITCH_GPIO           GPIOB
+//#define PWR_EXTRA_SWITCH_GPIO_PIN       GPIO_Pin_0  // PB.00
+#else
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_ON_GPIO                     GPIOJ
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
 #define PWR_SWITCH_GPIO                 GPIOJ
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
+#endif
 
 // USB Charger
 #if defined(USB_CHARGER)
@@ -520,6 +530,14 @@
   #define BACKLIGHT_RCC_APB2Periph             RCC_APB2Periph_TIM8
   #define BACKLIGHT_GPIO_AF                    GPIO_AF_TIM8
   #define BACKLIGHT_TIMER_FREQ                 (PERI2_FREQUENCY * TIMER_MULT_APB2)
+#endif
+#if defined(RADIO_T18)
+  #define KEYS_BACKLIGHT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOC
+  #define KEYS_BACKLIGHT_GPIO                  GPIOC
+  #define KEYS_BACKLIGHT_GPIO_PIN              GPIO_Pin_4  // PC.04
+  #define KEYS_BACKLIGHT_GPIO_PinSource        GPIO_PinSource4
+#else
+  #define KEYS_BACKLIGHT_RCC_AHB1Periph        0
 #endif
 
 // SD
