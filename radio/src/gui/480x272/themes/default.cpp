@@ -353,4 +353,6 @@ BitmapBuffer * DefaultTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
 BitmapBuffer * DefaultTheme::currentMenuBackground = NULL;
 
 DefaultTheme defaultTheme;
-Theme * theme = &defaultTheme;
+#if defined(DEFAULT_THEME_DEFAULT)
+  Theme * theme = &defaultTheme;
+#endif
