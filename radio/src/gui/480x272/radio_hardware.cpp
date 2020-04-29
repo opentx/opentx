@@ -415,7 +415,7 @@ bool menuRadioHardware(event_t event)
           if (menuHorizontalPosition == 0)
             pushMenu(menuRadioDiagAnalogs);
           else
-            pushMenu(menuRadioDiagKeys);break;
+            pushMenu(menuRadioDiagKeys);
         }
         break;
     }

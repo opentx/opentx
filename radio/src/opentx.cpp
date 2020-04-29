@@ -293,11 +293,7 @@ void generalDefault()
   g_eeGeneral.stickMode = DEFAULT_MODE - 1;
 #endif
 
-#if defined(FRSKY_RELEASE)
-  g_eeGeneral.templateSetup = 17; /* TAER */
-#elif defined(RADIO_FAMILY_T16)
-  g_eeGeneral.templateSetup = 21; /* AETR to match bundled multi */
-#endif
+  g_eeGeneral.templateSetup = DEFAULT_TEMPLATE_SETUP;
 
   g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
@@ -324,11 +320,7 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
-#if defined(RADIO_TX16S)
-  strcpy(g_eeGeneral.themeName, "Darkblue");
-#else
   strcpy(g_eeGeneral.themeName, theme->getName());
-#endif
   theme->init();
 #endif
 
