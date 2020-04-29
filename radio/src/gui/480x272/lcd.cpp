@@ -422,7 +422,11 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
 {
   display_t * p = PIXEL_PTR(x, y);
   display_t color = lcdColorTable[COLOR_IDX(att)];
+#if defined(PCBX10)
+  if (p >= displayBuf && x < LCD_W) {  // x10 screen is reversed, so overflow are happening the other way around
+#else
   if (p < DISPLAY_END) {
+#endif
     *p = color;
   }
 }
