@@ -1723,3 +1723,4 @@ Thomas Håkansson
 Gordon Evans
 Benny Simonsen
 George Kennedy
+Stefano Boggia
