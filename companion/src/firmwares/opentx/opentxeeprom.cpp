@@ -2587,7 +2587,13 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   else
     internalField.Append(new SpareBitsField<2>(this));
   internalField.Append(new BoolField<1>(this, generalData.rtcCheckDisable));
-  internalField.Append(new SpareBitsField<2>(this));
+  if (IS_JUMPER_T18(board)) {
+    internalField.Append(new BoolField<1>(this, generalData.keysBacklight));
+    internalField.Append(new SpareBitsField<1>(this));
+  }
+  else {
+    internalField.Append(new SpareBitsField<2>(this));
+  }
 
   for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));
