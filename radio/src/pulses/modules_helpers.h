@@ -348,7 +348,7 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
     }
   }
   else if(isModuleAFHDS3(moduleIdx)){
-    return 7;
+    return 10;
   }
   else {
     return maxChannelsModules[g_model.moduleData[moduleIdx].type];
