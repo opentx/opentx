@@ -31,8 +31,9 @@
 #include "pulses_common.h"
 #include <cstring>
 
-#define AFHDS_MAX_PULSES 64
-#define AFHDS_MAX_PULSES_TRANSITIONS AFHDS_MAX_PULSES * 10
+#define AFHDS_MAX_PULSES 68
+//max number of transitions measured so far 254 + 10%
+#define AFHDS_MAX_PULSES_TRANSITIONS 280
 //#define AFHDS3_SLOW
 
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
@@ -58,16 +59,15 @@
 #endif
 
 #define AFHDS3_FRAME_HALF_US AFHDS3_COMMAND_TIMEOUT * 2000
-
+//use uint16_t instead of pulse_duration_t
 namespace afhds3 {
-
 struct Data {
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
   uint8_t  pulses[AFHDS_MAX_PULSES];
   uint8_t  * ptr;
 #else
-  pulse_duration_t pulses[AFHDS_MAX_PULSES_TRANSITIONS];
-  pulse_duration_t * ptr;
+  uint16_t pulses[AFHDS_MAX_PULSES_TRANSITIONS];
+  uint16_t * ptr;
   uint16_t total;
   uint8_t index;
 #endif
@@ -124,7 +124,7 @@ struct Data {
   }
   void flush()
   {
-    pulse_duration_t pd = AFHDS3_FRAME_HALF_US > total ? AFHDS3_FRAME_HALF_US - total : BITLEN_AFHDS * 8;
+    uint16_t pd = AFHDS3_FRAME_HALF_US > total ? AFHDS3_FRAME_HALF_US - total : BITLEN_AFHDS * 8;
     if (index & 1)
       *ptr++ = pd;
     else
@@ -132,7 +132,7 @@ struct Data {
     total += pd;
   }
 
-  const pulse_duration_t* getData()
+  const uint16_t* getData()
   {
     return pulses;
   }
