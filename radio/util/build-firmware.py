@@ -148,6 +148,11 @@ def main():
         cmake_options["PCBREV"] = "T16"
         firmware_options = options_jumper_t16
         maxsize = 2 * 1024 * 1024
+    elif board_name == "t18":
+        cmake_options["PCB"] = "X10"
+        cmake_options["PCBREV"] = "T18"
+        firmware_options = options_jumper_t16
+        maxsize = 2 * 1024 * 1024
     elif board_name == "tx16s":
         cmake_options["PCB"] = "X10"
         cmake_options["PCBREV"] = "TX16S"

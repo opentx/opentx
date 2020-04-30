@@ -51,9 +51,11 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
+#if defined(PWR_EXTRA_SWITCH_GPIO)
   // PWR Extra switch
   GPIO_InitStructure.GPIO_Pin = PWR_EXTRA_SWITCH_GPIO_PIN;
   GPIO_Init(PWR_EXTRA_SWITCH_GPIO, &GPIO_InitStructure);
+#endif
 
 #if defined(PCBREV_HARDCODED)
   hardwareOptions.pcbrev = PCBREV_HARDCODED;
