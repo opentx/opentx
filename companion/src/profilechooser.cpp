@@ -30,14 +30,15 @@ ProfileChooserDialog::ProfileChooserDialog(QWidget * parent):
   setWindowIcon(QIcon(":/icon.png"));
   QComboBox *prof = ui->cboProfiles;
   prof->clear();
-  for (int i = 0; i < MAX_PROFILES; i++) {
-    if (g.profile[i].existsOnDisk()) {
-      if (g.profile[i].name() != "") {
-        QString text = g.profile[i].name();
-        prof->addItem(text, i);
-      }
-    }
+
+  QMap<int, QString> active;
+  active = g.getActiveProfiles();
+  QMapIterator<int, QString> i(active);
+  while (i.hasNext()) {
+      i.next();
+      prof->addItem(i.value(), i.key());
   }
+
   prof->setSizeAdjustPolicy(QComboBox::AdjustToContents);
   prof->setCurrentIndex(prof->findData(g.id()));
   connect(prof, SIGNAL(currentIndexChanged(int)), this, SLOT(on_cboProfilesCurrentIndexChanged(int)));

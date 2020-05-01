@@ -129,14 +129,18 @@ MainWindow::MainWindow():
     QTimer::singleShot(updateDelay-500, this, SLOT(appPrefs()));  // must be shown before warnings dialog but after splash
   }
   else {
-    if (g.promptProfile())
-      QTimer::singleShot(SPLASH_TIME*1000, this, SLOT(chooseProfile()));
     if (!g.previousVersion().isEmpty())
       g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
-    if (checkProfileRadioExists(g.sessionId()))
-      QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
-    else
-      g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+    if (g.promptProfile()) {
+      QTimer::singleShot(updateDelay, this, SLOT(chooseProfile()));    // add an extra second to give mainwindow time to load
+      updateDelay += 5000;  //  give user time to select profile before warnings
+    }
+    else {
+      if (checkProfileRadioExists(g.sessionId()))
+        QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+      else
+        g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+    }
   }
   QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
 
@@ -1812,19 +1816,17 @@ void MainWindow::autoClose()
 
 void MainWindow::chooseProfile()
 {
-  int cnt = 0;
-
-  for (int i = 0; i < MAX_PROFILES; i++) {
-    if (g.profile[i].existsOnDisk()) {
-      if (g.profile[i].name() != "")
-        cnt++;
-    }
-  }
-
-  if (cnt > 1) {
+  QMap<int, QString> active;
+  active = g.getActiveProfiles();
+  if (active.size() > 1) {
     ProfileChooserDialog *pcd = new ProfileChooserDialog(this);
     connect(pcd, &ProfileChooserDialog::profileChanged, this, &MainWindow::loadProfileId);
     pcd->exec();
     delete pcd;
+    //  doi here as need to wait until dialog dismissed and current radio type is set
+    if (checkProfileRadioExists(g.sessionId()))
+      doAutoUpdates();
+    else
+      g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
   }
 }
