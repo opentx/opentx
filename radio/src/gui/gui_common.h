@@ -144,10 +144,10 @@ inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
   if (IS_RX_MULTI(moduleIdx))
     return 0;
 
-  if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx))
+  if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || isModuleAFHDS3(moduleIdx))
     return 1;
 
-  if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx) || isModuleAFHDS3(moduleIdx))
+  if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx))
     return 2;
   else
     return HIDDEN_ROW;
