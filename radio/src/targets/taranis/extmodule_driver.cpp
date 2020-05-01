@@ -280,6 +280,7 @@ void extmoduleSendNextFrame()
 #endif
 #if defined(AFHDS3)
     case PROTOCOL_CHANNELS_AFHDS3:
+    {
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
       extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
 #else
@@ -293,7 +294,8 @@ void extmoduleSendNextFrame()
       EXTMODULE_TIMER_DMA_STREAM->NDTR = dataSize;
       EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
 #endif
-      break;
+    }
+    break;
 #endif
 #if defined(SBUS) || defined(DSM2) || defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_SBUS:
