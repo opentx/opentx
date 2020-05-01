@@ -30,10 +30,11 @@
 #include "opentx_helpers.h"
 #include "pulses_common.h"
 #include <cstring>
+#include "fifo.h"
 
-#define AFHDS_MAX_PULSES 68
-//max number of transitions measured so far 254 + 10%
-#define AFHDS_MAX_PULSES_TRANSITIONS 280
+#define AFHDS_MAX_PULSES 72
+//max number of transitions measured so far 290 + 10%
+#define AFHDS_MAX_PULSES_TRANSITIONS 320
 //#define AFHDS3_SLOW
 
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
@@ -49,7 +50,7 @@
 //Because timer is ticking with 0.5us
   #define BITLEN_AFHDS           (17)
 
-  #define AFHDS3_COMMAND_TIMEOUT 10
+  #define AFHDS3_COMMAND_TIMEOUT 15
 #else
 // 1000000/57600 = 17,36 us
   #define AFHDS3_BAUDRATE        57600
@@ -61,15 +62,24 @@
 #define AFHDS3_FRAME_HALF_US AFHDS3_COMMAND_TIMEOUT * 2000
 //use uint16_t instead of pulse_duration_t
 namespace afhds3 {
+
+enum AfhdsSpecialChars {
+  END = 0xC0,             //Frame end
+  START = END,
+  ESC_END = 0xDC,         //Escaped frame end - in case END occurs in fame then ESC ESC_END must be used
+  ESC = 0xDB,             //Escaping character
+  ESC_ESC = 0xDD,         //Escaping character in case ESC occurs in fame then ESC ESC_ESC  must be used
+};
+
+
 struct Data {
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
   uint8_t  pulses[AFHDS_MAX_PULSES];
   uint8_t  * ptr;
 #else
+  uint32_t pulsesSize;
   uint16_t pulses[AFHDS_MAX_PULSES_TRANSITIONS];
-  uint16_t * ptr;
-  uint16_t total;
-  uint8_t index;
+  uint32_t total;
 #endif
 
   uint8_t  frame_index;
@@ -82,9 +92,8 @@ struct Data {
   {
 #if !(defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO))
     total = 0;
-    index = 0;
 #endif
-    ptr = pulses;
+    pulsesSize = 0;
   }
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
   void sendByte(uint8_t b) {
@@ -96,18 +105,26 @@ struct Data {
   }
   void flush() {}
 #else
-  void _send_level(uint8_t v)
+  inline void _send_level(uint16_t v)
   {
-    *ptr++ = v;
-    index+=1;
+    if(pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
+      TRACE("AFHDS3 TX BUFFER OVERFLOW");
+      return;
+    }
+    pulses[pulsesSize++] = v;
     total +=v;
   }
   void sendByte(uint8_t b)
   {
+    if(pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
+      TRACE("AFHDS3 TX BUFFER OVERFLOW");
+      return;
+    }
     //use 8n1
-    // parity: If the parity is enabled, then the MSB bit of the data to be transmitted is changed by the parity bit
+    //parity: If the parity is enabled, then the MSB bit of the data to be transmitted is changed by the parity bit
+    //start is always 0
     bool level = 0;
-    uint8_t length = BITLEN_AFHDS; //start bit
+    uint16_t length = BITLEN_AFHDS; //start bit
     for (uint8_t i = 0; i <= 8; i++) { //8 data bits + Stop=1
       bool next_level = b & 1;
       if (level == next_level) {
@@ -122,14 +139,16 @@ struct Data {
     _send_level(length); //last bit (stop)
 
   }
+  //add remaining time of frame
   void flush()
   {
-    uint16_t pd = AFHDS3_FRAME_HALF_US > total ? AFHDS3_FRAME_HALF_US - total : BITLEN_AFHDS * 8;
-    if (index & 1)
-      *ptr++ = pd;
-    else
-      *(ptr - 1) = pd;
-    total += pd;
+    uint16_t diff = AFHDS3_FRAME_HALF_US - total;
+    pulses[pulsesSize-1] += diff;
+    //ensure 2 ms break
+    if(pulses[pulsesSize-1] < 4000) {
+      pulses[pulsesSize-1] = 4050;
+    }
+    total += diff;
   }
 
   const uint16_t* getData()
@@ -137,18 +156,10 @@ struct Data {
     return pulses;
   }
 #endif
-  uint8_t getSize()
+  uint32_t getSize()
   {
-    return ptr - pulses;
+    return pulsesSize;
   }
-};
-
-enum AfhdsSpecialChars {
-  END = 0xC0,             //Frame end
-  START = END,
-  ESC_END = 0xDC,         //Escaped frame end - in case END occurs in fame then ESC ESC_END must be used
-  ESC = 0xDB,             //Escaping character
-  ESC_ESC = 0xDD,         //Escaping character in case ESC occurs in fame then ESC ESC_ESC  must be used
 };
 
 enum DeviceAddress {
@@ -177,7 +188,8 @@ enum COMMAND {
   COMMAND_RESULT = 0x0D,
   MODULE_POWER_STATUS = 0x0F,
   MODULE_VERSION = 0x1F,
-  VIRTUAL_FAILSAFE = 0x99 // virtual command used to trigger failsafe
+  VIRTUAL_FAILSAFE = 0x99, // virtual command used to trigger failsafe
+  UNDEFINED = 0xFF
 };
 
 enum COMMAND_DIRECTION {
@@ -365,41 +377,51 @@ enum State {
   IDLE
 };
 
-class request {
-  public:
-  request(COMMAND command, FRAME_TYPE frameType, const uint8_t* data = nullptr, uint8_t length = 0) {
-    this->command = command;
-    this->frameType = frameType;
-    if(data && length){
-      payload = new uint8_t[length];
-      std::memcpy(payload, data, length);
-    }
-    else payload = nullptr;
-    payloadSize = length;
-  }
-  void setFrameNumber(uint8_t number) {
-    useFrameNumber = true;
-    frameNumber = number;
-  }
-  ~request() {
-    if(payload != nullptr) {
-      delete[] payload;
-      payload = nullptr;
-    }
-    payloadSize = 0;
-  }
+//one byte frames for request queue
+
+struct Frame {
   enum COMMAND command;
   enum FRAME_TYPE frameType;
-  uint8_t* payload;
-  uint8_t payloadSize;
+  uint8_t payload;
   uint8_t frameNumber;
   bool useFrameNumber;
+  uint8_t payloadSize;
+
+};
+
+
+//simple fifo implementation because Pulses is used as member of union and can not be non trivial type
+struct CommandFifo {
+  Frame commandFifo[8];
+  volatile uint32_t setIndex;
+  volatile uint32_t getIndex;
+
+  void clearCommandFifo();
+  inline uint32_t nextIndex(uint32_t idx)
+  {
+    return (idx + 1) & (sizeof(commandFifo)/sizeof(commandFifo[0]) - 1);
+  }
+  inline uint32_t prevIndex(uint32_t idx)
+  {
+    if(0) return (sizeof(commandFifo)/sizeof(commandFifo[0]) - 1);
+    return (idx -1);
+  }
+  inline bool isEmpty() const
+  {
+    return (getIndex == setIndex);
+  }
+  inline void skip()
+  {
+    getIndex = nextIndex(getIndex);
+  }
+
+  void enqueueACK(COMMAND command, uint8_t frameNumber);
+  void enqueue(COMMAND command, FRAME_TYPE frameType, bool useData = false, uint8_t byteContent = 0);
 };
 
 void processTelemetryData(uint8_t module, uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
 
-
-class PulsesData : public Data {
+class PulsesData : public Data, CommandFifo {
 public:
   /**
    * Initialize class for operation
@@ -431,17 +453,13 @@ protected:
 private:
   inline void putBytes(uint8_t* data, int length);
   inline void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0, uint8_t* frame_index = nullptr);
-  void addAckToQueue(COMMAND command, uint8_t frameNumber);
-  void addToQueue(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
   void parseData(uint8_t* rxBuffer, uint8_t rxBufferCount);
   void setState(uint8_t state);
   bool syncSettings();
   void requestInfoAndRun(bool send = false);
   uint8_t setFailSafe(int16_t* target);
   inline int16_t convert(int channelValue);
-  void onModelSwitch();
   void sendChannelsData();
-  void clearQueue();
   void clearFrameData();
   void trace(const char* message, uint8_t * payload = nullptr, uint8_t payloadSize = 0);
 
