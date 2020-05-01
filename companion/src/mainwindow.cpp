@@ -49,6 +49,7 @@
 #include "translations.h"
 
 #include "dialogs/filesyncdialog.h"
+#include "profilechooser.h"
 
 #include <QtGui>
 #include <QFileInfo>
@@ -128,6 +129,8 @@ MainWindow::MainWindow():
     QTimer::singleShot(updateDelay-500, this, SLOT(appPrefs()));  // must be shown before warnings dialog but after splash
   }
   else {
+    if (g.promptProfile())
+      QTimer::singleShot(SPLASH_TIME*1000, this, SLOT(chooseProfile()));
     if (!g.previousVersion().isEmpty())
       g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
     if (checkProfileRadioExists(g.sessionId()))
@@ -468,7 +471,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
   const QString errorString = seekCodeString(qba, "ERROR");
   const QString blockedRadios = seekCodeString(qba, "BLOCK");
   long version;
-  
+
   if (errorString == "NO_RC")
     return onUpdatesError(tr("No firmware release candidates are currently being served for this version, please switch release channel"));
   else if (errorString == "NO_NIGHTLY")
@@ -481,7 +484,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     msgbox.setText(tr("Release candidate builds are now available for this version, would you like to switch to using them?"));
     msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgbox.setDefaultButton(QMessageBox::Yes);
-      
+
     if(msgbox.exec() == QMessageBox::Yes) {
       g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RC_TESTING));
       return onUpdatesError(tr("Channel changed to RC, please restart the download process"));
@@ -493,7 +496,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     msgbox.setText(tr("Official release builds are now available for this version, would you like to switch to using them?"));
     msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgbox.setDefaultButton(QMessageBox::Yes);
-      
+
     if(msgbox.exec() == QMessageBox::Yes) {
       g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RELEASE_STABLE));
       return onUpdatesError(tr("Channel changed to Release, please restart the download process"));
@@ -1805,4 +1808,23 @@ void MainWindow::dropEvent(QDropEvent *event)
 void MainWindow::autoClose()
 {
   this->close();
+}
+
+void MainWindow::chooseProfile()
+{
+  int cnt = 0;
+
+  for (int i = 0; i < MAX_PROFILES; i++) {
+    if (g.profile[i].existsOnDisk()) {
+      if (g.profile[i].name() != "")
+        cnt++;
+    }
+  }
+
+  if (cnt > 1) {
+    ProfileChooserDialog *pcd = new ProfileChooserDialog(this);
+    connect(pcd, &ProfileChooserDialog::profileChanged, this, &MainWindow::loadProfileId);
+    pcd->exec();
+    delete pcd;
+  }
 }
