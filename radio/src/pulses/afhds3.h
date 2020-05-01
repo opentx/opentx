@@ -108,7 +108,6 @@ struct Data {
   inline void _send_level(uint16_t v)
   {
     if(pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
-      TRACE("AFHDS3 TX BUFFER OVERFLOW");
       return;
     }
     pulses[pulsesSize++] = v;
@@ -117,7 +116,6 @@ struct Data {
   void sendByte(uint8_t b)
   {
     if(pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
-      TRACE("AFHDS3 TX BUFFER OVERFLOW");
       return;
     }
     //use 8n1
