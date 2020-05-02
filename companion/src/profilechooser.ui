@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Profile Chooser</string>
+   <string>Select Profile</string>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -40,7 +40,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Use profile</string>
+         <string>Profile</string>
         </property>
        </widget>
       </item>
