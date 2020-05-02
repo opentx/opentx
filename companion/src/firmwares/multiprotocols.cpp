@@ -173,7 +173,7 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "Bayang RX", "Pelikan", "Tiger", "WK", "XN297 Dump", "FrSky X 2.1", "FrSky R9"
   });
 
-    return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);
+  return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);
 }
 
 // static
