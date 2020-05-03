@@ -18,27 +18,33 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MULTI_PULSES_H_
-#define _MULTI_PULSES_H_
+#ifndef _TOUCH_H_
+#define _TOUCH_H_
 
-#include "pulses_common.h"
-
-void multiPatchCustom(uint8_t moduleIdx);
-void convertOtxProtocolToMulti(int *protocol, int *subprotocol);
-
-class UartMultiPulses: public DataBuffer<uint8_t, 64>
+enum TouchEvent
 {
-  public:
-    void initFrame()
-    {
-      initBuffer();
-    }
-
-    void sendByte(uint8_t b)
-    {
-      if (getSize() < 64)
-         *ptr++ = b;
-    }
+  TE_NONE,
+  TE_DOWN,
+  TE_UP,
+  TE_SLIDE,
+  TE_SLIDE_END
 };
 
-#endif
+struct TouchState
+{
+  unsigned char event;
+  short x;
+  short y;
+  short startX;
+  short startY;
+  short deltaX;
+  short deltaY;
+  short lastDeltaX;
+  short lastDeltaY;
+};
+
+constexpr uint8_t SLIDE_RANGE = 6;
+
+extern TouchState touchState;
+
+#endif // _TOUCH_H_

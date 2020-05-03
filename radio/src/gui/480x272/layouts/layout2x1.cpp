@@ -45,7 +45,7 @@ class Layout2x1: public Layout
 
     virtual unsigned int getZonesCount() const
     {
-      return 4;
+      return 2;
     }
 
     virtual Zone getZone(unsigned int index) const
