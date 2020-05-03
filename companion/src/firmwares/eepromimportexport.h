@@ -544,6 +544,7 @@ class TransformedField: public DataField {
     {
       beforeExport();
       field.ExportBits(output);
+      afterImport(); // always needed after beforeExport()
     }
 
     void ImportBits(const QBitArray & input) override
