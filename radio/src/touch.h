@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,21 +18,33 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
+#ifndef _TOUCH_H_
+#define _TOUCH_H_
 
-void usbChargerInit()
+enum TouchEvent
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = USB_CHARGER_GPIO_PIN | USB_USBDet_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(USB_CHARGER_GPIO, &GPIO_InitStructure);
-}
+  TE_NONE,
+  TE_DOWN,
+  TE_UP,
+  TE_SLIDE,
+  TE_SLIDE_END
+};
 
-bool usbChargerLed()
+struct TouchState
 {
-  return GPIO_ReadInputDataBit(USB_CHARGER_GPIO, USB_USBDet_GPIO_PIN) == 0 ? 0 : GPIO_ReadInputDataBit(USB_CHARGER_GPIO, USB_CHARGER_GPIO_PIN) == Bit_RESET;
-}
+  unsigned char event;
+  short x;
+  short y;
+  short startX;
+  short startY;
+  short deltaX;
+  short deltaY;
+  short lastDeltaX;
+  short lastDeltaY;
+};
 
+constexpr uint8_t SLIDE_RANGE = 6;
+
+extern TouchState touchState;
+
+#endif // _TOUCH_H_

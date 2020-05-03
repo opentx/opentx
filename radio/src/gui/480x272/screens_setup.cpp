@@ -346,7 +346,7 @@ bool menuWidgetsSetup(event_t event)
 
   currentScreen->refresh();
 
-  for (int i=currentContainer->getZonesCount()-1; i>=0; i--) {
+  for (int i = currentContainer->getZonesCount() - 1; i >= 0; i--) {
     Zone zone = currentContainer->getZone(i);
     LcdFlags color;
     int padding, thickness;

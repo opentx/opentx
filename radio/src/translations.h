@@ -169,6 +169,7 @@ extern const char STR_VSENSORTYPES[];
 extern const char STR_VFORMULAS[];
 extern const char STR_VPREC[];
 extern const char STR_VCELLINDEX[];
+extern const char STR_TOUCH_PANEL[];
 
 #if defined(BLUETOOTH)
 extern const char STR_BLUETOOTH[];
@@ -496,6 +497,8 @@ extern const char STR_RESET_BTN[];
 extern const char STR_DEBUG[];
 extern const char STR_KEYS_BTN[];
 extern const char STR_ANALOGS_BTN[];
+extern const char STR_TOUCH_NOTFOUND[];
+extern const char STR_TOUCH_EXIT[];
 extern const char STR_CALIBRATION[];
 extern const char STR_NO_TOOLS[];
 extern const char STR_NORMAL[];

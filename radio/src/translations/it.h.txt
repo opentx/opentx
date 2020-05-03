@@ -938,6 +938,8 @@
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                BUTTON(TR("SW","Interruttori"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analogico","Analogici"))
+#define TR_TOUCH_NOTFOUND              "Touch hardware not found"
+#define TR_TOUCH_EXIT                  "Touch screen to exit"
 #define TR_CALIBRATION                    TR("Calibraz.", "Calibrazione")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer", "Maestro/Allievo")
@@ -1011,6 +1013,7 @@
 #define LEN_SPORT_UPDATE_POWER_MODES   "\004"
 #define TR_SPORT_UPDATE_POWER_MODES    "AUTO""ON\0 "
 #define TR_NO_TELEMETRY_SCREENS        "No Telemetry Screens"
+#define TR_TOUCH_PANEL                 "Touch panel:"
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Nome"

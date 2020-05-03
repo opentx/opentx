@@ -134,7 +134,7 @@ def build(board, translation, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    command = "cmake %s -DTRANSLATIONS=%s -DFRSKY_RELEASE=YES %s" % (cmake_options, translation, srcdir)
+    command = "cmake %s -DTRANSLATIONS=%s -DFRSKY_RELEASE=YES -DDEFAULT_TEMPLATE_SETUP=17 %s" % (cmake_options, translation, srcdir)
     print(command)
     os.system(command)
     os.system("make firmware -j6")
