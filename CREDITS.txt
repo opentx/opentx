@@ -11,6 +11,7 @@ Arne Schwabe (schwabe)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
+[es] Daniel Gorbea (dgatf)
 
 [Other contributors]
 Rob Thomson
