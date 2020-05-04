@@ -1728,3 +1728,4 @@ Maksym Arshynkin
 Tomas Sodergren
 Jörg Lemnitz
 TMac FPV
+Josef Schaeffler
