@@ -916,14 +916,15 @@ void MainWindow::changelog()
 
 void MainWindow::customizeSplash()
 {
-  CustomizeSplashDialog * dialog = new CustomizeSplashDialog(this);
+  auto * dialog = new CustomizeSplashDialog(this);
   dialog->exec();
   dialog->deleteLater();
 }
 
 void MainWindow::writeEeprom()
 {
-  if (activeMdiChild()) activeMdiChild()->writeEeprom();
+  if (activeMdiChild())
+    activeMdiChild()->writeEeprom();
 }
 
 void MainWindow::readEeprom()
