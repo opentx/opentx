@@ -128,6 +128,7 @@ class MainWindow : public QMainWindow
     void exportSettings();
     void importSettings();
     void autoClose();
+    void chooseProfile();
 
     void openUpdatesWaitDialog();
     void closeUpdatesWaitDialog();

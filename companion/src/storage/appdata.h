@@ -575,6 +575,7 @@ class AppData: public CompStoreObj
     PROPERTY4(bool, snapToClpbrd,    "snapshot_to_clipboard",   false)
     PROPERTY4(bool, autoCheckApp,    "startup_check_companion", true)
     PROPERTY4(bool, autoCheckFw,     "startup_check_fw",        true)
+    PROPERTY4(bool, promptProfile,   "startup_prompt_profile",  false)
 
     PROPERTY(bool, enableBackup,               false)
     PROPERTY(bool, backupOnFlash,              true)
