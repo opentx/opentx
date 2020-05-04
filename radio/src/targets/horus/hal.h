@@ -320,8 +320,8 @@
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
 #define PWR_SWITCH_GPIO                 GPIOJ
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
-//#define PWR_EXTRA_SWITCH_GPIO           GPIOB
-//#define PWR_EXTRA_SWITCH_GPIO_PIN       GPIO_Pin_0  // PB.00
+#define PWR_EXTRA_SWITCH_GPIO           GPIOB
+#define PWR_EXTRA_SWITCH_GPIO_PIN       GPIO_Pin_0  // PB.00
 #else
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_ON_GPIO                     GPIOJ
