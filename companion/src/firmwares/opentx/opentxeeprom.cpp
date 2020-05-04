@@ -2057,7 +2057,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
       void beforeExport() override
       {
         rfProtExtra = (module.multi.rfProtocol & 0x70) >> 4;
-        module.multi.rfProtocol &= 0x0f;
       }
 
       void afterImport() override
