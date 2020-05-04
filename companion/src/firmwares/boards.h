@@ -286,11 +286,6 @@ inline bool IS_TARANIS_PLUS(Board::Type board)
   return board == Board::BOARD_TARANIS_X9DP || board == Board::BOARD_TARANIS_X9E;
 }
 
-inline bool IS_TARANIS_X9D_2019(Board::Type board)
-{
-  return board == Board::BOARD_TARANIS_X9DP_2019;
-}
-
 inline bool IS_TARANIS_X9E(Board::Type board)
 {
   return board == Board::BOARD_TARANIS_X9E;
