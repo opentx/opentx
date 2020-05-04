@@ -564,7 +564,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return !(board==Board::BOARD_TARANIS_X9D && !id.contains("haptic"));
+      return board != Board::BOARD_TARANIS_X9D || id.contains("haptic");
     case ModelTrainerEnable:
       if (IS_HORUS_OR_TARANIS(board) && board!=Board::BOARD_TARANIS_XLITE)
         return 1;
