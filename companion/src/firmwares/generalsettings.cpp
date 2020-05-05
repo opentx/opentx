@@ -123,6 +123,12 @@ GeneralSettings::GeneralSettings()
     strcpy(bluetoothName, "taranis");
   }
 
+  for (uint8_t i = 0; i < 4; i++) {
+    trainer.mix[i].mode = 2;  // replace (:=)
+    trainer.mix[i].src = i;
+    trainer.mix[i].weight = 100;
+  }
+
   templateSetup = g.profile[g.sessionId()].channelOrder();
   stickMode = g.profile[g.sessionId()].defaultMode();
 
