@@ -47,7 +47,7 @@ SimulatedUIWidgetJumperT18::SimulatedUIWidgetJumperT18(SimulatorInterface *simul
   addRadioWidget(ui->rightbuttons->addArea(QRect(20, 5, 100, 40), "JumperT18/right_rtn.png", act));
 
   act = new RadioUiAction(1, QList<int>() << Qt::Key_PageDown, SIMU_STR_HLP_KEY_PGDN, SIMU_STR_HLP_ACT_PGDN);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(60, 140, 80, 35), "JumperT18/left_page.png", act));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(60, 140, 80, 35), "JumperT18/left.png", act));
 
   m_scrollUpAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Minus, SIMU_STR_HLP_KEY_MIN % "|" % SIMU_STR_HLP_MOUSE_UP, SIMU_STR_HLP_ACT_ROT_LFT);
   m_scrollDnAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Equal, SIMU_STR_HLP_KEY_PLS % "|" % SIMU_STR_HLP_MOUSE_DN, SIMU_STR_HLP_ACT_ROT_RGT);
@@ -56,7 +56,7 @@ SimulatedUIWidgetJumperT18::SimulatedUIWidgetJumperT18(SimulatorInterface *simul
   m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
   addRadioWidget(ui->rightbuttons->addArea(QRect(25, 90, 70, 130), "JumperT18/right_ent.png", m_mouseMidClickAction));
 
-  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 252, 30, 30), "JumperT18/left_scrnsht.png", m_screenshotAction));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 245, 30, 30), "JumperT18/left_scrnsht.png", m_screenshotAction));
 
   m_backlightColors << QColor(47, 123, 227);
 
