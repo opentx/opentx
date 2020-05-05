@@ -513,6 +513,9 @@
   #define LCD_GPIO_NRST                 GPIOI
   #define LCD_GPIO_PIN_NRST             GPIO_Pin_10 // PI.10
 #endif
+#if defined(PCBX10) && !defined(RADIO_T18)
+  #define LCD_VERTICAL_INVERT
+#endif
 #define LTDC_IRQ_PRIO                   4
 #define DMA_SCREEN_IRQ_PRIO             6
 
