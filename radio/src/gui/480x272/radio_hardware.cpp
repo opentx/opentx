@@ -381,7 +381,7 @@ bool menuRadioHardware(event_t event)
 
 #if defined(AUX2_SERIAL)
       case ITEM_RADIO_HARDWARE_AUX2_SERIAL_MODE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUX_SERIAL_MODE);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUX2_SERIAL_MODE);
 #if defined(RADIO_TX16S)
         lcdDrawText(lcdNextPos, y, " (TTL)");
 #endif

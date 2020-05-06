@@ -322,6 +322,12 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
       auxSerialPutc(packet[c]);
   }
 #endif
+#if defined(AUX2_SERIAL)
+  if (g_eeGeneral.aux2SerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    for (uint8_t c=0; c < len; c++)
+      aux2SerialPutc(packet[c]);
+  }
+#endif
 
   // Switch type
   switch (type) {
