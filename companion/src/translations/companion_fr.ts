@@ -352,7 +352,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="849"/>
         <source>Show splash screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher l&apos;écran de démarrage</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="874"/>
@@ -583,7 +583,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="1179"/>
         <source>Prompt for radio profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le choix &quot;profil radio&quot; au démarrage</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1275"/>
@@ -3046,7 +3046,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1349"/>
         <source>Radiomaster TX16s / TX16s Hall / TX16s Masterfire</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1356"/>
@@ -9777,12 +9777,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../profilechooser.ui" line="20"/>
         <source>Select Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir Profil</translation>
     </message>
     <message>
         <location filename="../profilechooser.ui" line="43"/>
         <source>Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil</translation>
     </message>
 </context>
 <context>
