@@ -19,7 +19,8 @@
 -- Horus Widget to display the levels of lipo battery with per cell indication
 -- 3djc & Offer Shmuely
 -- Date: 2020
--- ver: 0.4
+-- ver: 0.5
+local version = "v0.5"
 
 local _options = {
   { "Sensor",     SOURCE, 0     },  -- default to 'Cels'
@@ -27,6 +28,80 @@ local _options = {
   { "Shadow",     BOOL,   0     },
   { "LowestCell", BOOL,   1     }   -- 0=main voltage display shows all-cell-voltage, 1=main voltage display shows lowest-cell
 }
+
+-- Data gathered from commercial lipo sensors
+local _lipoPercentListOld = { {3,0},{3.093,1},{3.196,2},{3.301,3},{3.401,4},{3.477,5},{3.544,6},{3.601,7},{3.637,8},{3.664,9},{3.679,10},{3.683,11},{3.689,12},{3.692,13},{3.705,14},{3.71,15},{3.713,16},{3.715,17},{3.72,18},{3.731,19},{3.735,20},{3.744,21},{3.753,22},{3.756,23},{3.758,24},{3.762,25},{3.767,26},{3.774,27},{3.78,28},{3.783,29},{3.786,30},{3.789,31},{3.794,32},{3.797,33},{3.8,34},{3.802,35},{3.805,36},{3.808,37},{3.811,38},{3.815,39},{3.818,40},{3.822,41},{3.825,42},{3.829,43},{3.833,44},{3.836,45},{3.84,46},{3.843,47},{3.847,48},{3.85,49},{3.854,50},{3.857,51},{3.86,52},{3.863,53},{3.866,54},{3.87,55},{3.874,56},{3.879,57},{3.888,58},{3.893,59},{3.897,60},{3.902,61},{3.906,62},{3.911,63},{3.918,64},{3.923,65},{3.928,66},{3.939,67},{3.943,68},{3.949,69},{3.955,70},{3.961,71},{3.968,72},{3.974,73},{3.981,74},{3.987,75},{3.994,76},{4.001,77},{4.007,78},{4.014,79},{4.021,80},{4.029,81},{4.036,82},{4.044,83},{4.052,84},{4.062,85},{4.074,86},{4.085,87},{4.095,88},{4.105,89},{4.111,90},{4.116,91},{4.12,92},{4.125,93},{4.129,94},{4.135,95},{4.145,96},{4.176,97},{4.179,98},{4.193,99},{4.2,100} }
+
+local _lipoPercentListSplit = {
+  { {3,0},{3.093,1},{3.196,2},{3.301,3},{3.401,4},{3.477,5},{3.544,6},  {3.601,7},{3.637,8},{3.664,9},{3.679,10},{3.683,11},{3.689,12},{3.692,13} },
+  { {3.705,14},{3.71,15},{3.713,16},{3.715,17},{3.72,18},{3.731,19},{3.735,20},{3.744,21},{3.753,22},{3.756,23},{3.758,24},{3.762,25},{3.767,26} },
+  { {3.774,27},{3.78,28},{3.783,29},{3.786,30},{3.789,31},{3.794,32},{3.797,33}, {3.8,34},{3.802,35},{3.805,36},{3.808,37},{3.811,38},{3.815,39} },
+  { {3.818,40},{3.822,41},{3.825,42},{3.829,43},{3.833,44},{3.836,45},{3.84,46}, {3.843,47},{3.847,48},{3.85,49},{3.854,50},{3.857,51},{3.86,52} },
+  { {3.863,53},{3.866,54},{3.87,55},{3.874,56},{3.879,57},{3.888,58},{3.893,59}, {3.897,60}, {3.902,61},{3.906,62},{3.911,63},{3.918,64} },
+  { {3.923,65}, {3.928,66},{3.939,67},{3.943,68},{3.949,69},{3.955,70},{3.961,71},{3.968,72},{3.974,73}, {3.981,74},{3.987,75},{3.994,76} },
+  { {4.001,77},{4.007,78},{4.014,79},{4.021,80},{4.029,81},{4.036,82},{4.044,83},{4.052,84},{4.062,85},{4.074,86},{4.085,87},{4.095,88} },
+  { {4.105,89},{4.111,90},{4.116,91},{4.12,92},{4.125,93},{4.129,94},{4.135,95},{4.145,96},{4.176,97},{4.179,98},{4.193,99},{4.2,100} },
+}
+
+
+
+--------------------------------------------------------------
+local function log(s)
+  return;
+  --print("app: " .. s)
+end
+--------------------------------------------------------------
+--periodic1 = {startTime = -1, durationMili = -1},
+local function periodicInit(t, durationMili)
+  t.startTime = getTime();
+  t.durationMili = durationMili;
+end
+local function periodicReset(t)
+  t.startTime = getTime();
+end
+local function periodicHasPassed(t)
+  local elapsed = getTime() - t.startTime;
+  local elapsedMili = elapsed * 10;
+  if (elapsedMili < t.durationMili) then
+    return false;
+  end
+  return true;
+end
+local function periodicGetElapsedTime(t)
+  local elapsed = getTime() - t.startTime;
+  --log(string.format("elapsed: %d",elapsed));
+  local elapsedMili = elapsed * 10;
+  --log(string.format("elapsedMili: %d",elapsedMili));
+  return elapsedMili;
+end
+--------------------------------------------------------------
+local function cpuProfilerAdd(wgt, name, u1)
+  --return;
+  local timeSpan = getUsage() - u1
+  local oldValues = wgt.profTimes[name];
+  if oldValues == nil then
+    oldValues = {0,0,0,0} -- count, total-time, last-time, max-time
+  end
+
+  local max = oldValues[4]
+  if (timeSpan > oldValues[4]) then
+    max = timeSpan
+  end
+
+  wgt.profTimes[name] = {oldValues[1]+1, oldValues[2] + timeSpan, timeSpan, max}; -- count, total-time, last-time, max-time
+end
+local function cpuProfilerShow(wgt)
+  --return;
+  if (periodicHasPassed(wgt.periodicProfiler)) then
+    local s = "profiler: \n"
+    for name, valArr in pairs(wgt.profTimes) do
+      s = s .. string.format("  /%-15s - avg:%02.1f, max:%2d%%, last:%2d%% (count:%5s, tot:%5s)\n", name, valArr[2]/valArr[1], valArr[4], valArr[3], valArr[1], valArr[2])
+    end
+    log(s);
+    periodicReset(wgt.periodicProfiler)
+  end
+end
+-----------------------------------------------------------------
 
 -- This function is run once at the creation of the widget
 local function create(zone, options)
@@ -50,7 +125,10 @@ local function create(zone, options)
     cellCount = 0,
     cellSum = 0,
     mainValue = 0,
-    secondaryValue = 0
+    secondaryValue = 0,
+    periodic1 = {startTime = getTime(), durationMili = 1000},
+    periodicProfiler = {startTime = getTime(), durationMili = 5000},
+    profTimes = {},
   }
 
   -- use default if user did not set, So widget is operational on "select widget"
@@ -120,26 +198,59 @@ end
 
 
 --- This function return the percentage remaining in a single Lipo cel
-local function getCellPercent(cellValue)
+--- deprecated, since running on long array found to be very intensive to hrous cpu
+local function getCellPercent2(wgt, cellValue)
+  local t4 = getUsage();
+
   if cellValue == nil then
     return 0
   end
 
   -- in case somehow voltage is higher, don't return nil
   if (cellValue > 4.2) then
+    --cpuProfilerAdd(wgt, 'cell-perc', t4);
     return 100
   end
 
-  -- Data gathered from commercial lipo sensors
-  local myArrayPercentList = { {3,0},{3.093,1},{3.196,2},{3.301,3},{3.401,4},{3.477,5},{3.544,6},{3.601,7},{3.637,8},{3.664,9},{3.679,10},{3.683,11},{3.689,12},{3.692,13},{3.705,14},{3.71,15},{3.713,16},{3.715,17},{3.72,18},{3.731,19},{3.735,20},{3.744,21},{3.753,22},{3.756,23},{3.758,24},{3.762,25},{3.767,26},{3.774,27},{3.78,28},{3.783,29},{3.786,30},{3.789,31},{3.794,32},{3.797,33},{3.8,34},{3.802,35},{3.805,36},{3.808,37},{3.811,38},{3.815,39},{3.818,40},{3.822,41},{3.825,42},{3.829,43},{3.833,44},{3.836,45},{3.84,46},{3.843,47},{3.847,48},{3.85,49},{3.854,50},{3.857,51},{3.86,52},{3.863,53},{3.866,54},{3.87,55},{3.874,56},{3.879,57},{3.888,58},{3.893,59},{3.897,60},{3.902,61},{3.906,62},{3.911,63},{3.918,64},{3.923,65},{3.928,66},{3.939,67},{3.943,68},{3.949,69},{3.955,70},{3.961,71},{3.968,72},{3.974,73},{3.981,74},{3.987,75},{3.994,76},{4.001,77},{4.007,78},{4.014,79},{4.021,80},{4.029,81},{4.036,82},{4.044,83},{4.052,84},{4.062,85},{4.074,86},{4.085,87},{4.095,88},{4.105,89},{4.111,90},{4.116,91},{4.12,92},{4.125,93},{4.129,94},{4.135,95},{4.145,96},{4.176,97},{4.179,98},{4.193,99},{4.2,100} }
-
-  for i, v in ipairs(myArrayPercentList) do
+  local result = 0;
+  for i, v in ipairs(_lipoPercentListOld) do
     if v[1] >= cellValue then
       result = v[2]
       break
     end
   end
+  --cpuProfilerAdd(wgt, 'cell-perc', t4);
   return result
+end
+
+--- This function return the percentage remaining in a single Lipo cel
+--- since running on long array found to be very intensive to hrous cpu, we are splitting the list to small lists
+local function getCellPercent(wgt, cellValue)
+  if cellValue == nil then return 0 end
+  local result = 0;
+  local t4 = getUsage();
+
+  for i1, v1 in ipairs(_lipoPercentListSplit) do
+
+    --log(string.format("sub-list#: %s, head:%f, length: %d, last: %.3f", i1,v1[1][1], #v1, v1[#v1][1]))
+
+    --is the cellVal < last-value-on-sub-list? (first-val:v1[1], last-val:v1[#v1])
+    if (cellValue <= v1[#v1][1]) then
+      -- cellVal is in this sub-list, find the exact value
+      --log("this is the list")
+      for i2, v2 in ipairs(v1) do
+        --log(string.format("cell#: %s, %.3f--> %d%%", i2,v2[1], v2[2]))
+        if v2[1] >= cellValue then
+          result = v2[2]
+          --log(string.format("result: %d%%", result))
+          --cpuProfilerAdd(wgt, 'cell-perc', t4);
+          return result
+        end
+      end
+    end
+  end
+  -- in case somehow voltage is too high (>4.2), don't return nil
+  return 100
 end
 
 --- This function returns a table with cels values
@@ -150,14 +261,6 @@ local function calculateBatteryData(wgt)
   if type(newCellData) ~= "table" then
     wgt.isDataAvailable = false
     return
-  end
-
-  -- this is necessary for simu where cell-count can change
-  if #wgt.cellDataHistoryLowest ~= #newCellData then
-    wgt.cellDataHistoryLowest = {}
-    for k, v in pairs(newCellData) do
-      wgt.cellDataHistoryLowest[k] = 5 -- invalid reading, set high value so the min() will update it soon
-    end
   end
 
   local cellMax = 0
@@ -197,7 +300,6 @@ local function calculateBatteryData(wgt)
 
   --- average of all cells
   wgt.cellAvg = wgt.cellSum / wgt.cellCount
-  wgt.cellPercent = getCellPercent(wgt.cellMin)
 
   wgt.cellDataLive = newCellData
 
@@ -222,6 +324,16 @@ local function calculateBatteryData(wgt)
 
   wgt.isDataAvailable = true
 
+  -- calculate intensive CPU data
+  if (periodicHasPassed(wgt.periodic1) or wgt.cellPercent==0) then
+    local t5 = getUsage();
+
+    --wgt.cellPercent = getCellPercent(wgt, wgt.cellMin) -- use batt percentage by lowest cell voltage
+    wgt.cellPercent = getCellPercent(wgt, wgt.cellAvg) -- use batt percentage by average cell voltage
+
+    periodicReset(wgt.periodic1)
+    --cpuProfilerAdd(wgt, 'calc-batt-perc', t5);
+  end
 
 end
 
@@ -243,6 +355,7 @@ end
 local function getRangeColor(value, green_value, red_value)
   local range = math.abs(green_value - red_value)
   if range==0 then return lcd.RGB(0, 0xdf, 0) end
+  if value==nil then return lcd.RGB(0, 0xdf, 0) end
 
   if green_value > red_value then
     if value > green_value then return lcd.RGB(0, 0xdf, 0) end
@@ -307,12 +420,12 @@ local function refreshZoneMedium(wgt)
   end
 
   -- draw values
-  lcd.drawText(wgt.zone.x, wgt.zone.y + 35, string.format("%2.1fV", wgt.mainValue), DBLSIZE + CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
+  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y, string.format("%2.1fV", wgt.mainValue), DBLSIZE + CUSTOM_COLOR + RIGHT + wgt.shadowed + wgt.no_telem_blink)
 
   -- more info if 1/4 is high enough (without trim & slider)
   if wgt.zone.h > 80 then
-    lcd.drawText(wgt.zone.x     , wgt.zone.y + 70, string.format("%2.2fV"   , wgt.secondaryValue), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
-    lcd.drawText(wgt.zone.x + 50, wgt.zone.y + 70, string.format("dV %2.2fV", wgt.cellMax - wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    --lcd.drawText(wgt.zone.x + 50     , wgt.zone.y + 70, string.format("%2.2fV"   , wgt.secondaryValue), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
+    lcd.drawText(wgt.zone.x     , wgt.zone.y + 70, string.format("dV %2.2fV", wgt.cellMax - wgt.cellMin), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
     lcd.drawText(wgt.zone.x     , wgt.zone.y + 84, string.format("Min %2.2fV", wgt.cellDataHistoryCellLowest), SMLSIZE + CUSTOM_COLOR + wgt.no_telem_blink)
   end
 
@@ -321,28 +434,21 @@ local function refreshZoneMedium(wgt)
   lcd.drawGauge(wgt.zone.x + myBatt.x, wgt.zone.y + myBatt.y, myBatt.w, myBatt.h, wgt.cellPercent, 100, CUSTOM_COLOR)
 
   -- draw cells
-  local cellH = wgt.zone.h / wgt.cellCount
-  if cellH > 20 then cellH =20 end
+  local cellH = 19
   local cellX = 118
-  local cellW = 58
+  local cellW = wgt.zone.w / 3
+
+  local pos = {{x=0, y=38}, {x=cellW, y=38}, {x=2*cellW, y=38}, {x=0, y=57}, {x=cellW, y=57}, {x=2*cellW, y=57}}
   for i = 1, wgt.cellCount, 1 do
     local cellY = wgt.zone.y + (i-1)* (cellH -1)
 
     -- fill current cell
-    lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataLive[i], wgt.cellMax, wgt.cellMax - 0.2))
     --lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, 58, cellH, CUSTOM_COLOR)
-    local percentCurrent = getCellPercent(wgt.cellDataLive[i])
-    local percentMin = getCellPercent(wgt.cellDataHistoryLowest[i])
-
-    lcd.drawFilledRectangle(wgt.zone.x + cellX     , cellY, cellW * percentCurrent / 100, cellH, CUSTOM_COLOR)
-
-    -- fill min
-    lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataHistoryLowest[i], wgt.cellMax, wgt.cellMax - 0.2))
-    lcd.drawFilledRectangle(wgt.zone.x + cellX + ((percentCurrent - percentMin) / 100)    , cellY, cellW - (cellW * (percentCurrent - percentMin) / 100), cellH, CUSTOM_COLOR)
-
+    lcd.setColor(CUSTOM_COLOR, getRangeColor(wgt.cellDataLive[i], wgt.cellMax, wgt.cellMax - 0.2))
+    lcd.drawFilledRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y, cellW - 1, 20, CUSTOM_COLOR)
     lcd.setColor(CUSTOM_COLOR, WHITE)
-    lcd.drawText           (wgt.zone.x + cellX + 10, cellY, string.format("%.2f", wgt.cellDataLive[i]), SMLSIZE + CUSTOM_COLOR + wgt.shadowed + wgt.no_telem_blink)
-    lcd.drawRectangle      (wgt.zone.x + cellX     , cellY, 59, cellH, CUSTOM_COLOR , 1)
+    lcd.drawText(wgt.zone.x + pos[i].x+10, wgt.zone.y + pos[i].y, string.format("%.2f",  wgt.cellDataLive[i]), CUSTOM_COLOR  + wgt.shadowed)
+    lcd.drawRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y, cellW, 20, CUSTOM_COLOR,1)
   end
 
   -- draws bat
@@ -448,16 +554,21 @@ end
 -- This function allow recording of lowest cells when widget is in background
 local function background(wgt)
   if (wgt == nil) then return end
+  local t1 = getUsage();
 
   detectResetEvent(wgt)
 
   calculateBatteryData(wgt)
 
+  --cpuProfilerAdd(wgt, 'background-loop', t1);
+  --cpuProfilerShow(wgt);
 end
 
 local function refresh(wgt)
 
+  local t1 = getUsage();
   if (wgt         == nil) then return end
+  if type(wgt) ~= "table" then return end
   if (wgt.options == nil) then return end
   if (wgt.zone    == nil) then return end
   if (wgt.options.LowestCell == nil) then return end
@@ -470,7 +581,9 @@ local function refresh(wgt)
 
   detectResetEvent(wgt)
 
+  local t3 = getUsage();
   calculateBatteryData(wgt)
+  --cpuProfilerAdd(wgt, 'main-loop-3', t3);
 
   if wgt.isDataAvailable then
     wgt.no_telem_blink = 0
@@ -478,14 +591,18 @@ local function refresh(wgt)
     wgt.no_telem_blink = INVERS + BLINK
   end
 
-
+  local t4 = getUsage();
   if     wgt.zone.w  > 380 and wgt.zone.h > 165 then refreshZoneXLarge(wgt)
   elseif wgt.zone.w  > 180 and wgt.zone.h > 145 then refreshZoneLarge(wgt)
   elseif wgt.zone.w  > 170 and wgt.zone.h >  65 then refreshZoneMedium(wgt)
   elseif wgt.zone.w  > 150 and wgt.zone.h >  28 then refreshZoneSmall(wgt)
   elseif wgt.zone.w  >  65 and wgt.zone.h >  35 then refreshZoneTiny(wgt)
   end
+  --cpuProfilerAdd(wgt, 'main-loop-4', t4);
 
+  --cpuProfilerAdd(wgt, 'main-loop', t1);
+  --cpuProfilerShow(wgt);
+  --lcd.drawText(wgt.zone.x+100, wgt.zone.y, string.format("%d%%", getUsage()), SMLSIZE + CUSTOM_COLOR) -- ???
 end
 
 return { name="BattCheck", options=_options, create=create, update=update, background=background, refresh=refresh }
