@@ -636,8 +636,7 @@ void auxSerialPowerOff();
 #endif
 
 // Aux2 serial port driver
-#if defined(AUX2_SERIAL_GPIO)
-#define AUX2_SERIAL
+#if defined(AUX2_SERIAL)
 extern uint8_t aux2SerialMode;
 void aux2SerialInit(unsigned int mode, unsigned int protocol);
 void aux2SerialPutc(char c);

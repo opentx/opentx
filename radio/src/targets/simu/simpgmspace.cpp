@@ -787,3 +787,23 @@ void auxSerialStop()
 {
 }
 #endif
+
+#if defined(AUX2_SERIAL)
+AuxSerialRxFifo aux2SerialRxFifo(nullptr);
+uint8_t aux2SerialMode;
+void aux2SerialInit(unsigned int mode, unsigned int protocol)
+{
+}
+
+void aux2SerialPutc(char c)
+{
+}
+
+void aux2SerialSbusInit()
+{
+}
+
+void aux2SerialStop()
+{
+}
+#endif
