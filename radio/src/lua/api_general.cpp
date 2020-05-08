@@ -1626,11 +1626,14 @@ static int luaSerialRead(lua_State * L)
   uint8_t *p = str;
   while (luaRxFifo->pop(*p)) {
     p++;  // increment only when pop was successful
-    if (num == 0 && (*(p - 1) == '\n' || *(p - 1) == '\r')) {
-      break;  // found newline
+    if (p - str >= LUA_FIFO_SIZE) {
+      break;  // Buffer full
     }
-    if (p - str >= num || p - str >= LUA_FIFO_SIZE) {
-      break;  // num reached or buffer full
+    if (num == 0 && (*(p - 1) == '\n' || *(p - 1) == '\r')) {
+      break;  // Found newline
+    }
+    if (num > 0 && p - str >= num) {
+      break;  // Requested number of characters reached
     }
   }
   lua_pushlstring(L, (const char*)str, p - str);
