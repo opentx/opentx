@@ -151,7 +151,7 @@ def main():
     elif board_name == "tx16s":
         cmake_options["PCB"] = "X10"
         cmake_options["PCBREV"] = "TX16S"
-        firmware_options = options_jumper_t16
+        firmware_options = options_radiomaster_tx16s
         maxsize = 2 * 1024 * 1024
     else:
         return INVALID_BOARD

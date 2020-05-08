@@ -72,7 +72,9 @@ for s, f in [("trim center", "midtrim"),
              ("receiver still connected", "modelpwr"),
              ]:
     systemSounds.append((s, filename(f)))
-for i, (s, f) in enumerate([("gear!, up!", "gearup"),
+for i, (s, f) in enumerate([("armed", "armed"),
+                            ("disarmed", "disarm"),
+                            ("gear!, up!", "gearup"),
                             ("gear!, down!", "geardn"),
                             ("flaps!, up!", "flapup"),
                             ("flaps!, down!", "flapdn"),

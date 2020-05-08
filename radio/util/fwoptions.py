@@ -223,3 +223,15 @@ options_jumper_t16 = {
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
 }
+
+options_radiomaster_tx16s = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "bluetooth": ("BLUETOOTH", "YES", "NO"),
+}

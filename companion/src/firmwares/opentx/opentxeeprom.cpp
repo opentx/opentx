@@ -1916,7 +1916,7 @@ class SensorField: public TransformedField {
       internalField.Append(new UnsignedField<32>(this, _param, "param"));
     }
 
-    virtual void beforeExport()
+    void beforeExport() override
     {
       if (sensor.type == SensorData::TELEM_TYPE_CUSTOM) {
         _id = sensor.id;
@@ -2039,7 +2039,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
         module(module),
         rfProtExtra(0)
       {
-        ModuleData::Multi& multi = module.multi;
+        ModuleData::Multi & multi = module.multi;
         internalField.Append(new UnsignedField<3>(this, rfProtExtra));
         internalField.Append(new BoolField<1>(this, multi.disableTelemetry));
         internalField.Append(new BoolField<1>(this, multi.disableMapping));
@@ -2056,22 +2056,17 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
       void beforeExport() override
       {
-        if (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
-          module.multi.rfProtocol += 3;
         rfProtExtra = (module.multi.rfProtocol & 0x70) >> 4;
-        module.multi.rfProtocol &= 0x0f;
       }
 
       void afterImport() override
       {
         module.multi.rfProtocol = (rfProtExtra << 4) + (module.rfProtocol & 0xf);
-        if (module.multi.rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
-          module.multi.rfProtocol -= 3;
       }
 
     private:
       StructField  internalField;
-      ModuleData&  module;
+      ModuleData & module;
       unsigned int rfProtExtra;
   };
 
@@ -2135,7 +2130,8 @@ class ModuleUnionField: public UnionField<unsigned int> {
         memset(receiverName, 0, sizeof(receiverName));
       }
 
-      bool select(const unsigned int& attr) const override {
+      bool select(const unsigned int& attr) const override
+      {
         return attr >= PULSES_ACCESS_ISRM && attr <= PULSES_ACCESS_R9M_LITE_PRO;
       }
 
@@ -2143,7 +2139,6 @@ class ModuleUnionField: public UnionField<unsigned int> {
       {
         for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++) {
           for (int pos=0; pos<PXX2_LEN_RX_NAME+1; pos++) {
-
             if (pos == PXX2_LEN_RX_NAME || module.access.receiverName[i][pos] == '\0') {
               memset(module.access.receiverName[i]+pos,'\0',PXX2_LEN_RX_NAME-pos);
               break;
@@ -2224,7 +2219,7 @@ class ModuleField: public TransformedField {
         module.subType = module.protocol - PULSES_PXX_XJT_X16;
       }
       else if (module.protocol == PULSES_MULTIMODULE) {
-        module.rfProtocol = module.multi.rfProtocol & 0xf;
+        module.rfProtocol = module.multi.rfProtocol & 0x0F;
       }
     }
 

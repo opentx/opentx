@@ -64,7 +64,7 @@ static void bootloaderDrawFooter()
 void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
 {
     // clear screen
-    lcdDrawSolidFilledRect(0, 0, LCD_W-1, LCD_H-1, TEXT_BGCOLOR);
+    lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
     
     if (st == ST_START) {
 

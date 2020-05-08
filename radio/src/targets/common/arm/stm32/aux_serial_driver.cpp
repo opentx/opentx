@@ -104,7 +104,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
         break;
       }
 #endif
-      auxSerialSetup(FRSKY_SPORT_BAUDRATE, false);
+      auxSerialSetup(FRSKY_TELEM_MIRROR_BAUDRATE, false);
       break;
 
 #if defined(DEBUG) || defined(CLI)

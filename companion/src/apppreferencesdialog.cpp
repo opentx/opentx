@@ -73,6 +73,7 @@ void AppPreferencesDialog::accept()
   g.OpenTxBranch(AppData::DownloadBranchType(ui->OpenTxBranch->currentIndex()));
   g.autoCheckFw(ui->autoCheckFirmware->isChecked());
   g.showSplash(ui->showSplash->isChecked());
+  g.promptProfile(ui->chkPromptProfile->isChecked());
   g.simuSW(ui->simuSW->isChecked());
   g.removeModelSlots(ui->opt_removeBlankSlots->isChecked());
   g.newModelAction(ui->opt_newMdl_useWizard->isChecked() ? AppData::MODEL_ACT_WIZARD : ui->opt_newMdl_useEditor->isChecked() ? AppData::MODEL_ACT_EDITOR : AppData::MODEL_ACT_NONE);
@@ -185,6 +186,7 @@ void AppPreferencesDialog::initSettings()
   ui->autoCheckCompanion->setChecked(g.autoCheckApp());
   ui->autoCheckFirmware->setChecked(g.autoCheckFw());
   ui->showSplash->setChecked(g.showSplash());
+  ui->chkPromptProfile->setChecked(g.promptProfile());
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());
   ui->volumeGain->setValue(profile.volumeGain() / 10.0);

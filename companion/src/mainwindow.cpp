@@ -49,6 +49,7 @@
 #include "translations.h"
 
 #include "dialogs/filesyncdialog.h"
+#include "profilechooser.h"
 
 #include <QtGui>
 #include <QFileInfo>
@@ -130,10 +131,16 @@ MainWindow::MainWindow():
   else {
     if (!g.previousVersion().isEmpty())
       g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
-    if (checkProfileRadioExists(g.sessionId()))
-      QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
-    else
-      g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+    if (g.promptProfile()) {
+      QTimer::singleShot(updateDelay, this, SLOT(chooseProfile()));    // add an extra second to give mainwindow time to load
+      updateDelay += 5000;  //  give user time to select profile before warnings
+    }
+    else {
+      if (checkProfileRadioExists(g.sessionId()))
+        QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+      else
+        g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+    }
   }
   QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
 
@@ -468,7 +475,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
   const QString errorString = seekCodeString(qba, "ERROR");
   const QString blockedRadios = seekCodeString(qba, "BLOCK");
   long version;
-  
+
   if (errorString == "NO_RC")
     return onUpdatesError(tr("No firmware release candidates are currently being served for this version, please switch release channel"));
   else if (errorString == "NO_NIGHTLY")
@@ -481,7 +488,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     msgbox.setText(tr("Release candidate builds are now available for this version, would you like to switch to using them?"));
     msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgbox.setDefaultButton(QMessageBox::Yes);
-      
+
     if(msgbox.exec() == QMessageBox::Yes) {
       g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RC_TESTING));
       return onUpdatesError(tr("Channel changed to RC, please restart the download process"));
@@ -493,7 +500,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     msgbox.setText(tr("Official release builds are now available for this version, would you like to switch to using them?"));
     msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgbox.setDefaultButton(QMessageBox::Yes);
-      
+
     if(msgbox.exec() == QMessageBox::Yes) {
       g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RELEASE_STABLE));
       return onUpdatesError(tr("Channel changed to Release, please restart the download process"));
@@ -916,14 +923,15 @@ void MainWindow::changelog()
 
 void MainWindow::customizeSplash()
 {
-  CustomizeSplashDialog * dialog = new CustomizeSplashDialog(this);
+  auto * dialog = new CustomizeSplashDialog(this);
   dialog->exec();
   dialog->deleteLater();
 }
 
 void MainWindow::writeEeprom()
 {
-  if (activeMdiChild()) activeMdiChild()->writeEeprom();
+  if (activeMdiChild())
+    activeMdiChild()->writeEeprom();
 }
 
 void MainWindow::readEeprom()
@@ -1805,4 +1813,21 @@ void MainWindow::dropEvent(QDropEvent *event)
 void MainWindow::autoClose()
 {
   this->close();
+}
+
+void MainWindow::chooseProfile()
+{
+  QMap<int, QString> active;
+  active = g.getActiveProfiles();
+  if (active.size() > 1) {
+    ProfileChooserDialog *pcd = new ProfileChooserDialog(this);
+    connect(pcd, &ProfileChooserDialog::profileChanged, this, &MainWindow::loadProfileId);
+    pcd->exec();
+    delete pcd;
+    //  doi here as need to wait until dialog dismissed and current radio type is set
+    if (checkProfileRadioExists(g.sessionId()))
+      doAutoUpdates();
+    else
+      g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+  }
 }

@@ -86,7 +86,24 @@ static int luaModelSetInfo(lua_State *L)
 
 Get RF module parameters
 
-`subType` values:
+`Type` values:
+  * 0 NONE
+  * 1 PPM
+  * 2 XJT_PXX1
+  * 3 ISRM_PXX2
+  * 4 DSM2
+  * 5 CROSSFIRE
+  * 6 MULTIMODULE
+  * 7 R9M_PXX1
+  * 8 R9M_PXX2
+  * 9 R9M_LITE_PXX1
+  * 10 R9M_LITE_PXX2
+  * 11 R9M_LITE_PRO_PXX1
+  * 12 R9M_LITE_PRO_PXX2
+  * 13 SBUS
+  * 14 XJT_LITE_PXX2
+
+`subType` values for XJT_PXX1:
  * -1 OFF
  * 0 D16
  * 1 D8
@@ -101,6 +118,11 @@ Get RF module parameters
  * `modelId` (number) receiver number
  * `firstChannel` (number) start channel (0 is CH1)
  * `channelsCount` (number) number of channels sent to module
+ * `Type` (number) module type
+ * if the module type is Multi additional information are available
+ * `protocol` (number) protocol number
+ * `subProtocol` (number) sub-protocol number
+ * `channelsOrder` (number) first 4 channels expected order
 
 @status current Introduced in TODO
 */
@@ -114,6 +136,25 @@ static int luaModelGetModule(lua_State *L)
     lua_pushtableinteger(L, "modelId", g_model.header.modelId[idx]);
     lua_pushtableinteger(L, "firstChannel", module.channelsStart);
     lua_pushtableinteger(L, "channelsCount", module.channelsCount + 8);
+    lua_pushtableinteger(L, "Type", module.type);
+#if defined(MULTIMODULE)
+    if (module.type == MODULE_TYPE_MULTIMODULE) {
+      int protocol = g_model.moduleData[idx].getMultiProtocol() + 1;
+      int subprotocol = g_model.moduleData[idx].subType;
+      convertOtxProtocolToMulti(&protocol, &subprotocol); // Special treatment for the FrSky entry...
+      lua_pushtableinteger(L, "protocol", protocol);
+      lua_pushtableinteger(L, "subProtocol", subprotocol);
+      if (getMultiModuleStatus(idx).isValid()) {
+        if (getMultiModuleStatus(idx).ch_order == 0xFF)
+          lua_pushtableinteger(L, "channelsOrder", -1);
+        else
+          lua_pushtableinteger(L, "channelsOrder", getMultiModuleStatus(idx).ch_order);
+      }
+      else {
+        lua_pushtableinteger(L, "channelsOrder", -1);
+      }
+    }
+#endif
   }
   else {
     lua_pushnil(L);

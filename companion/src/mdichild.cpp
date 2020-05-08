@@ -1490,18 +1490,18 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
   isUntitled = true;
 
   if (cstate.hasLogEntries(RadioDataConversionState::EVT_INF)) {
-    QDialog * msgBox = new QDialog(Q_NULLPTR, Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+    auto * msgBox = new QDialog(Q_NULLPTR, Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 
-    ExportableTableView * tv = new ExportableTableView(msgBox);
+    auto * tv = new ExportableTableView(msgBox);
     tv->setSortingEnabled(true);
     tv->verticalHeader()->hide();
     tv->setModel(cstate.getLogModel(RadioDataConversionState::EVT_INF, tv));
     tv->resizeColumnsToContents();
     tv->resizeRowsToContents();
 
-    QDialogButtonBox * btnBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
+    auto * btnBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
 
-    QVBoxLayout * lo = new QVBoxLayout(msgBox);
+    auto * lo = new QVBoxLayout(msgBox);
     lo->addWidget(new QLabel(tr("<b>The conversion generated some important messages, please review them below.</b>")));
     lo->addWidget(tv);
     lo->addWidget(btnBox);

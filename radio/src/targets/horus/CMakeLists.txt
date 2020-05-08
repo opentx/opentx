@@ -62,10 +62,12 @@ if (PCB STREQUAL X10)
     add_definitions(-DRADIO_FAMILY_T16)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
     option(BLUETOOTH "Support for bluetooth module" OFF)
+    set(HARDWARE_TOUCH YES)
+    set(USB_CHARGER YES)
+    set(DEFAULT_THEME "DARKBLUE")
     if (NOT BLUETOOTH)
       set(AUX_SERIAL ON)
     endif()
-    set(USB_CHARGER YES)
   else()
     set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
@@ -114,6 +116,12 @@ add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
 add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+
+if(DEFAULT_THEME)
+  add_definitions(-DDEFAULT_THEME_${DEFAULT_THEME})
+else()
+  add_definitions(-DDEFAULT_THEME_DEFAULT)
+endif()
 
 if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
@@ -207,6 +215,13 @@ set(TARGET_SRC
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/rotary_encoder_driver.cpp
   )
+
+if(HARDWARE_TOUCH)
+  set(TARGET_SRC ${TARGET_SRC}
+    tp_gt911.cpp
+    )
+  add_definitions(-DHARDWARE_TOUCH)
+endif()
 
 if(USB_CHARGER)
   set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)

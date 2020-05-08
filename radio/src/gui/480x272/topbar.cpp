@@ -91,15 +91,18 @@ void drawTopBar()
   /* Tx battery */
   uint8_t bars = GET_TXBATT_BARS(5);
 #if defined(USB_CHARGER)
-  if(usbChargerLed())
+  if (usbChargerLed() && BLINK_ON_PHASE) {
     lcdDrawBitmapPattern(LCD_W-130, 24, LBM_TOPMENU_TXBATT_CHARGING, MENU_TITLE_COLOR);
-  else
-#endif
-    lcdDrawBitmapPattern(LCD_W-130, 24, LBM_TOPMENU_TXBATT, MENU_TITLE_COLOR);
-  for (unsigned int i = 0; i < 5; i++) {
-    lcdDrawSolidFilledRect(LCD_W-122+4*i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_TITLE_COLOR);
   }
-
+  else {
+#endif
+    lcdDrawBitmapPattern(LCD_W - 130, 24, LBM_TOPMENU_TXBATT, MENU_TITLE_COLOR);
+    for (unsigned int i = 0; i < 5; i++) {
+      lcdDrawSolidFilledRect(LCD_W - 122 + 4 * i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_TITLE_COLOR);
+    }
+#if defined(USB_CHARGER)
+  }
+#endif
   topbar->refresh();
 
 #if 0

@@ -11,6 +11,7 @@ Arne Schwabe (schwabe)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
+[es] Daniel Gorbea (dgatf)
 
 [Other contributors]
 Rob Thomson
@@ -1718,3 +1719,14 @@ Tom Van Driel
 Karl Vetter
 Johannes Janssen
 François Blondé
+Precision Aero
+Thomas Håkansson
+Gordon Evans
+Benny Simonsen
+George Kennedy
+Stefano Boggia
+Maksym Arshynkin
+Tomas Sodergren
+Jörg Lemnitz
+TMac FPV
+Josef Schaeffler
