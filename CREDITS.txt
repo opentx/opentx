@@ -1730,3 +1730,6 @@ Tomas Sodergren
 Jörg Lemnitz
 TMac FPV
 Josef Schaeffler
+Mike Frizell
+MeCodeGoodSomeday
+  
