@@ -41,7 +41,7 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if defined(PCBX10) && !defined(RADIO_FAMILY_T16)
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -163,7 +163,7 @@ void boardInit()
 
   ledInit();
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if defined(PCBX10) && !defined(RADIO_FAMILY_T16)
   sportUpdateInit();
 #endif
 
