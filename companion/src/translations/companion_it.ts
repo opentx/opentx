@@ -6797,7 +6797,7 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1491"/>
         <source>Set Menu Language</source>
-        <translation>Inposta Menu Lingua</translation>
+        <translation>Menù Impostazione Lingua</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1230"/>
