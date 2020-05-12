@@ -216,6 +216,7 @@ extern uint8_t s_copyMode;
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
+extern uint8_t s_currIdxGvar;
 extern uint8_t s_curveChan;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
