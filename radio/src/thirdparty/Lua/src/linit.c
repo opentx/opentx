@@ -51,6 +51,9 @@ const luaR_table lua_rotable[] =
   {LUA_STRLIBNAME, strlib, NULL},
   {LUA_MATHLIBNAME, mathlib, mathlib_vals},
   {LUA_BITLIBNAME, bitlib, NULL},
+#if defined(PCBHORUS)
+  {LUA_TABLIBNAME, tab_funcs, NULL},
+#endif
   {NULL, NULL, NULL}
 };
 
