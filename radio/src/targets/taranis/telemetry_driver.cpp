@@ -40,7 +40,8 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
     USART_DeInit(TELEMETRY_USART);
     return;
   }
-
+  //deinit inverted mode
+  telemetryPortInvertedInit(0);
   NVIC_InitTypeDef NVIC_InitStructure;
   NVIC_InitStructure.NVIC_IRQChannel = TELEMETRY_DMA_TX_Stream_IRQ;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
