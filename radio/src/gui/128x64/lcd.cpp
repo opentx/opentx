@@ -469,7 +469,12 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   if (val < 0) {
     if (val == INT_MIN) {
       flags &= ~(LEADING0 | PREC1 | PREC2);
-      lcdDrawText(x, y, "-Infinity", flags);
+      lcdDrawText(x, y, "INT_MIN", flags);
+      return;
+    }
+    else if (val == INT_MAX) {
+      flags &= ~(LEADING0 | PREC1 | PREC2);
+      lcdDrawText(x, y, "INT_MAX", flags);
       return;
     }
     val = -val;
