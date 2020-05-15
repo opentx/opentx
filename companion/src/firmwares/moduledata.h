@@ -159,7 +159,7 @@ class ModuleData {
     unsigned int modelId;
     unsigned int protocol;   // type in datastructs.h
     int          rfProtocol; // rfProtocol in datastructs.h
-  
+
     unsigned int subType;
     bool         invertedSerial;
     unsigned int channelsStart;
@@ -207,6 +207,8 @@ class ModuleData {
     static QString indexToString(int index, Firmware * fw);
     static QString protocolToString(unsigned protocol);
     static QStringList powerValueStrings(int subType, Firmware * fw);
+    bool hasFailsafes(Firmware * fw) const;
+    int getMaxChannelCount();
 };
 
 #endif // MODULEDATA_H

@@ -90,3 +90,8 @@ float GVarData::getMaxPrec() const
 {
   return getMax() * multiplierGet();
 }
+
+bool GVarData::isEmpty() const
+{
+  return (name[0] == '\0' && min == 0 && max == 0 && (!popup) && prec == 0 && unit == 0);
+}

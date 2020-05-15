@@ -28,6 +28,8 @@ class RawSwitchFilterItemModel;
 class RawSourceFilterItemModel;
 class TimerEdit;
 
+constexpr char MIMETYPE_LOGICAL_SWITCH[] = "application/x-companion-logical-switch";
+
 class LogicalSwitchesPanel : public ModelPanel
 {
     Q_OBJECT
@@ -40,40 +42,50 @@ class LogicalSwitchesPanel : public ModelPanel
 
   private slots:
     void updateDataModels();
-    void functionChanged();
-    void v1Edited(int value);
-    void v2Edited(int value);
-    void andEdited(int value);
-    void durationEdited(double duration);
-    void delayEdited(double delay);
-    void offsetEdited();
-    bool offsetEditedAt(int index);
+    void onFunctionChanged();
+    void onV1Changed(int value);
+    void onV2Changed(int value);
+    void onAndSwitchChanged(int value);
+    void onDurationChanged(double duration);
+    void onDelayChanged(double delay);
+    void onOffsetChanged();
+    bool offsetChangedAt(int index);
     void updateLine(int index);
-    void csw_customContextMenuRequested(QPoint pos);
-    void cswDelete();
-    void cswCopy();
-    void cswPaste();
-    void cswCut();
+    void onCustomContextMenuRequested(QPoint pos);
+    void cmDelete();
+    void cmCopy();
+    void cmPaste();
+    void cmCut();
+    void cmMoveUp();
+    void cmMoveDown();
+    void cmInsert();
+    void cmClear();
+    void cmClearAll();
 
   private:
-    QComboBox * csw[CPN_MAX_LOGICAL_SWITCHES];
-    QDoubleSpinBox  * cswitchValue[CPN_MAX_LOGICAL_SWITCHES];
-    QDoubleSpinBox  * cswitchOffset[CPN_MAX_LOGICAL_SWITCHES];
-    QDoubleSpinBox  * cswitchOffset2[CPN_MAX_LOGICAL_SWITCHES];
-    TimerEdit * cswitchTOffset[CPN_MAX_LOGICAL_SWITCHES];
-    QComboBox * cswitchAnd[CPN_MAX_LOGICAL_SWITCHES];
-    QDoubleSpinBox  * cswitchDuration[CPN_MAX_LOGICAL_SWITCHES];
-    QDoubleSpinBox  * cswitchDelay[CPN_MAX_LOGICAL_SWITCHES];
-    QComboBox * cswitchSource1[CPN_MAX_LOGICAL_SWITCHES];
-    QComboBox * cswitchSource2[CPN_MAX_LOGICAL_SWITCHES];
+    QComboBox * cbFunction[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox * dsbValue[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox * dsbOffset[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox * dsbOffset2[CPN_MAX_LOGICAL_SWITCHES];
+    TimerEdit * teOffset[CPN_MAX_LOGICAL_SWITCHES];
+    QComboBox * cbAndSwitch[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox * dsbDuration[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox * dsbDelay[CPN_MAX_LOGICAL_SWITCHES];
+    QComboBox * cbSource1[CPN_MAX_LOGICAL_SWITCHES];
+    QComboBox * cbSource2[CPN_MAX_LOGICAL_SWITCHES];
     RawSwitchFilterItemModel * rawSwitchItemModel;
     RawSourceFilterItemModel * rawSourceItemModel;
-    int selectedSwitch;
-
-    void populateCSWCB(QComboBox *b);
+    int selectedIndex;
+    void populateFunctionCB(QComboBox *b);
     void populateAndSwitchCB(QComboBox *b);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);
-
+    int lsCapability;
+    int lsCapabilityExt;
+    void swapData(int idx1, int idx2);
+    bool hasClipboardData(QByteArray * data = nullptr) const;
+    bool insertAllowed() const;
+    bool moveDownAllowed() const;
+    bool moveUpAllowed() const;
 };
 
 #endif // _LOGICALSWITCHES_H_

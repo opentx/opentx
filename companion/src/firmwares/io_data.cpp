@@ -35,6 +35,10 @@ void ExpoData::convert(RadioDataConversionState & cstate)
   swtch.convert(cstate);
 }
 
+bool ExpoData::isEmpty() const
+{
+  return (chn == 0 && mode == INPUT_MODE_NONE);
+}
 
 /*
  * MixData
@@ -48,6 +52,10 @@ void MixData::convert(RadioDataConversionState & cstate)
   swtch.convert(cstate);
 }
 
+bool MixData::isEmpty() const
+{
+  return (destCh == 0);
+}
 
 /*
  * LimitData
@@ -87,9 +95,8 @@ void LimitData::clear()
 
 bool LimitData::isEmpty() const
 {
-  return (min == -1000 && max == 1000 && !revert && !offset && !ppmCenter && !symetrical && name[0] == '\0');
+  return (min == -1000 && max == 1000 && !revert && !offset && !ppmCenter && !symetrical && name[0] == '\0' && !curve.isSet());
 }
-
 
 /*
  * CurveData
@@ -97,7 +104,7 @@ bool LimitData::isEmpty() const
 
 CurveData::CurveData()
 {
-  clear(5);
+  clear();
 }
 
 void CurveData::clear(int count)
@@ -126,22 +133,20 @@ QString CurveData::nameToString(const int idx) const
  * FlightModeData
  */
 
-void FlightModeData::clear(const int phase)
+void FlightModeData::clear(const int phaseIdx)
 {
   memset(reinterpret_cast<void *>(this), 0, sizeof(FlightModeData));
-  if (phase != 0) {
-    for (int idx=0; idx<CPN_MAX_GVARS; idx++) {
-      gvars[idx] = 1025;
-    }
-    for (int idx=0; idx<CPN_MAX_ENCODERS; idx++) {
-      rotaryEncoders[idx] = 1025;
-    }
+  for (int i = 0; i < CPN_MAX_GVARS; i++) {
+    gvars[i] = linkedGVarFlightModeZero(phaseIdx);
+  }
+  for (int i = 0; i < CPN_MAX_ENCODERS; i++) {
+    rotaryEncoders[i] = linkedREncFlightModeZero(phaseIdx);
   }
 }
 
-QString FlightModeData::nameToString(int index) const
+QString FlightModeData::nameToString(int phaseIdx) const
 {
-  return RadioData::getElementName(tr("FM"), index, name);  // names are zero-based, FM0, FM1, etc
+  return RadioData::getElementName(tr("FM"), phaseIdx, name);  // names are zero-based, FM0, FM1, etc
 }
 
 void FlightModeData::convert(RadioDataConversionState & cstate)
@@ -149,4 +154,54 @@ void FlightModeData::convert(RadioDataConversionState & cstate)
   cstate.setComponent("FMD", 2);
   cstate.setSubComp(nameToString(cstate.subCompIdx));
   swtch.convert(cstate);
+}
+
+bool FlightModeData::isEmpty(int phaseIdx) const
+{
+  if (name[0] != '\0' || swtch.isSet() || fadeIn != 0 || fadeOut != 0)
+    return false;
+  for (int i = 0; i < CPN_MAX_TRIMS; i++) {
+    if (trim[i] != 0 || trimRef[i] != 0 || trimMode[i] != 0)
+      return false;
+  }
+  for (int i = 0; i < CPN_MAX_GVARS; i++) {
+    if (!isGVarEmpty(phaseIdx, i))
+      return false;
+  }
+  for (int i = 0; i < CPN_MAX_ENCODERS; i++) {
+    if (!isREncEmpty(phaseIdx, i))
+      return false;
+  }
+  return true;
+}
+
+bool FlightModeData::isGVarEmpty(int phaseIdx, int gvIdx) const
+{
+  if ((phaseIdx == 0 && gvars[gvIdx] == 0) || (phaseIdx != 0 && gvars[gvIdx] == linkedGVarFlightModeZero(phaseIdx)))
+    return true;
+  return false;
+}
+
+bool FlightModeData::isREncEmpty(int phaseIdx, int reIdx) const
+{
+  if ((phaseIdx == 0 && rotaryEncoders[reIdx] == 0) || (phaseIdx != 0 && rotaryEncoders[reIdx] == linkedREncFlightModeZero(phaseIdx)))
+    return true;
+  return false;
+}
+
+int FlightModeData::linkedFlightModeZero(int phaseIdx, int maxOwnValue) const
+{
+  if (phaseIdx == 0)
+    return 0;
+  return maxOwnValue + 1;
+}
+
+int FlightModeData::linkedGVarFlightModeZero(int phaseIdx) const
+{
+  return linkedFlightModeZero(phaseIdx, GVAR_MAX_VALUE);
+}
+
+int FlightModeData::linkedREncFlightModeZero(int phaseIdx) const
+{
+  return linkedFlightModeZero(phaseIdx, RENC_MAX_VALUE);
 }

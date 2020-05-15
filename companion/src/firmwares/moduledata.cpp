@@ -181,3 +181,59 @@ QStringList ModuleData::powerValueStrings(int subType, Firmware * fw)
     strIdx += 2;
   return strings[strIdx];
 }
+
+bool ModuleData::hasFailsafes(Firmware * fw) const
+{
+  return fw->getCapability(HasFailsafe) && (
+    protocol == PULSES_ACCESS_ISRM ||
+    protocol == PULSES_ACCST_ISRM_D16 ||
+    protocol == PULSES_PXX_XJT_X16 ||
+    protocol == PULSES_PXX_R9M ||
+    protocol == PULSES_ACCESS_R9M ||
+    protocol == PULSES_ACCESS_R9M_LITE ||
+    protocol == PULSES_ACCESS_R9M_LITE_PRO ||
+    protocol == PULSES_XJT_LITE_X16 ||
+    protocol == PULSES_MULTIMODULE
+    );
+}
+
+int ModuleData::getMaxChannelCount()
+{
+  switch (protocol) {
+    case PULSES_ACCESS_ISRM:
+      return 24;
+    case PULSES_PXX_R9M:
+    case PULSES_ACCESS_R9M:
+    case PULSES_ACCESS_R9M_LITE:
+    case PULSES_ACCESS_R9M_LITE_PRO:
+    case PULSES_ACCST_ISRM_D16:
+    case PULSES_XJT_LITE_X16:
+    case PULSES_PXX_XJT_X16:
+    case PULSES_CROSSFIRE:
+    case PULSES_SBUS:
+    case PULSES_PPM:
+      return 16;
+    case PULSES_XJT_LITE_LR12:
+    case PULSES_PXX_XJT_LR12:
+      return 12;
+    case PULSES_PXX_DJT:
+    case PULSES_XJT_LITE_D8:
+    case PULSES_PXX_XJT_D8:
+      return 8;
+    case PULSES_LP45:
+    case PULSES_DSM2:
+    case PULSES_DSMX:
+      return 6;
+    case PULSES_MULTIMODULE:
+      if (multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
+        return 12;
+      else
+        return 16;
+      break;
+    case PULSES_OFF:
+      break;
+    default:
+      break;
+  }
+  return 8;
+}
