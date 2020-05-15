@@ -66,6 +66,10 @@
   { "EVT_"#xxx"_LONG", EVT_KEY_LONG(yyy) }, \
   { "EVT_"#xxx"_REPT", EVT_KEY_REPT(yyy) }
 
+#if defined(LUA) && !defined(CLI)
+Fifo<uint8_t, LUA_FIFO_SIZE> * luaRxFifo = nullptr;
+#endif
+
 /*luadoc
 @function getVersion()
 
@@ -1615,6 +1619,53 @@ static int luaSerialWrite(lua_State * L)
   return 0;
 }
 
+/*luadoc
+@function serialRead([num])
+@param num (optional): maximum number of bytes to read.
+                       If non-zero, serialRead will read up to num characters from the buffer.
+                       If 0 or left out, serialRead will read up to and including the first newline character or the end of the buffer.
+                       Note that the returned string may not end in a newline if this character is not present in the buffer.
+
+@retval str string. Empty if no new characters were available.
+
+Reads characters from the serial port. The string is allowed to contain any character, including 0.
+
+@status current Introduced in TODO
+*/
+static int luaSerialRead(lua_State * L)
+{
+  int num = luaL_optunsigned(L, 1, 0);
+
+#if defined(LUA) && !defined(CLI)
+  if (!luaRxFifo) {
+    luaRxFifo = new Fifo<uint8_t, LUA_FIFO_SIZE>();
+    if (!luaRxFifo) {
+      lua_pushlstring(L, "", 0);
+      return 1;
+    }
+  }
+  uint8_t str[LUA_FIFO_SIZE];
+  uint8_t *p = str;
+  while (luaRxFifo->pop(*p)) {
+    p++;  // increment only when pop was successful
+    if (p - str >= LUA_FIFO_SIZE) {
+      break;  // Buffer full
+    }
+    if (num == 0 && (*(p - 1) == '\n' || *(p - 1) == '\r')) {
+      break;  // Found newline
+    }
+    if (num > 0 && p - str >= num) {
+      break;  // Requested number of characters reached
+    }
+  }
+  lua_pushlstring(L, (const char*)str, p - str);
+#else
+  lua_pushlstring(L, "", 0);
+#endif
+
+  return 1;
+}
+
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
@@ -1662,6 +1713,7 @@ const luaL_Reg opentxLib[] = {
   { "multiBuffer", luaMultiBuffer },
 #endif
   { "serialWrite", luaSerialWrite },
+  { "serialRead", luaSerialRead },
   { nullptr, nullptr }  /* sentinel */
 };
 
