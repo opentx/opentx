@@ -101,6 +101,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
 #if defined(CROSSFIRE)
       if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
         auxSerialSetup(CROSSFIRE_TELEM_MIRROR_BAUDRATE, false);
+        AUX_SERIAL_POWER_OFF();
         break;
       }
 #endif
@@ -110,17 +111,20 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
 #if defined(DEBUG) || defined(CLI)
     case UART_MODE_DEBUG:
       auxSerialSetup(DEBUG_BAUDRATE, false);
+      AUX_SERIAL_POWER_OFF();
       break;
 #endif
 
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
         auxSerialSetup(FRSKY_D_BAUDRATE, true);
+        AUX_SERIAL_POWER_OFF();
       }
       break;
 
     case UART_MODE_LUA:
       auxSerialSetup(DEBUG_BAUDRATE, false);
+      AUX_SERIAL_POWER_ON();
   }
 }
 
@@ -192,7 +196,7 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
     }
   }
 #endif
-#if defined(LUA) && !defined(CLI)
+#if defined(LUA) & !defined(CLI)
   if (luaRxFifo && auxSerialMode == UART_MODE_LUA) {
     // Receive
     uint32_t status = AUX_SERIAL_USART->SR;
@@ -204,6 +208,19 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
       status = AUX_SERIAL_USART->SR;
     }
   }
+#if defined(AUX2_SERIAL)
+  if (luaRxFifo && aux2SerialMode == UART_MODE_LUA) {
+    // Receive
+    uint32_t status = AUX2_SERIAL_USART->SR;
+    while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+      uint8_t data = AUX2_SERIAL_USART->DR;
+      if (!(status & USART_FLAG_ERRORS)) {
+        luaRxFifo->push(data);
+      }
+      status = AUX2_SERIAL_USART->SR;
+    }
+  }
+#endif
 #endif
 }
 #endif
@@ -288,26 +305,31 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
 #if defined(CROSSFIRE)
       if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
         aux2SerialSetup(CROSSFIRE_TELEM_MIRROR_BAUDRATE, false);
+        AUX2_SERIAL_POWER_OFF();
         break;
       }
 #endif
       aux2SerialSetup(FRSKY_TELEM_MIRROR_BAUDRATE, false);
+      AUX2_SERIAL_POWER_OFF();
       break;
 
 #if defined(DEBUG) || defined(CLI)
     case UART_MODE_DEBUG:
       aux2SerialSetup(DEBUG_BAUDRATE, false);
+      AUX2_SERIAL_POWER_OFF();
       break;
 #endif
 
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
         aux2SerialSetup(FRSKY_D_BAUDRATE, true);
+        AUX2_SERIAL_POWER_OFF();
       }
       break;
 
     case UART_MODE_LUA:
       aux2SerialSetup(DEBUG_BAUDRATE, false);
+      AUX2_SERIAL_POWER_ON();
   }
 }
 

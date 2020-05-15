@@ -52,6 +52,18 @@ void auxSerialPowerOff()
   GPIO_ResetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
 }
 #endif
+#if defined(AUX2_SERIAL_PWR_GPIO)
+void aux2SerialPowerOn()
+{
+  GPIO_SetBits(AUX2_SERIAL_PWR_GPIO, AUX2_SERIAL_PWR_GPIO_PIN);
+}
+
+void aux2SerialPowerOff()
+{
+  GPIO_ResetBits(AUX2_SERIAL_PWR_GPIO, AUX2_SERIAL_PWR_GPIO_PIN);
+}
+#endif
+
 
 #if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdateInit()

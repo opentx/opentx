@@ -1634,9 +1634,9 @@ Reads characters from the serial port. The string is allowed to contain any char
 */
 static int luaSerialRead(lua_State * L)
 {
+#if defined(LUA) && !defined(CLI)
   int num = luaL_optunsigned(L, 1, 0);
 
-#if defined(LUA) && !defined(CLI)
   if (!luaRxFifo) {
     luaRxFifo = new Fifo<uint8_t, LUA_FIFO_SIZE>();
     if (!luaRxFifo) {

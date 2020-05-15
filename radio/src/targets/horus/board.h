@@ -627,11 +627,11 @@ void auxSerialStop();
 void auxSerialPowerOn();
 void auxSerialPowerOff();
 #if defined(AUX_SERIAL_PWR_GPIO)
-#define AUX_SERIAL_POWER_ON()            auxSerialPowerOn()
-#define AUX_SERIAL__POWER_OFF()          auxSerialPowerOff()
+#define AUX_SERIAL_POWER_ON()             auxSerialPowerOn()
+#define AUX_SERIAL_POWER_OFF()            auxSerialPowerOff()
 #else
 #define AUX_SERIAL_POWER_ON()
-#define AUX_SERIAL__POWER_OFF()
+#define AUX_SERIAL_POWER_OFF()
 #endif
 #endif
 
@@ -647,10 +647,10 @@ void aux2SerialPowerOn();
 void aux2SerialPowerOff();
 #if defined(AUX2_SERIAL_PWR_GPIO)
 #define AUX2_SERIAL_POWER_ON()            aux2SerialPowerOn()
-#define AUX2_SERIAL__POWER_OFF()          aux2SerialPowerOff()
+#define AUX2_SERIAL_POWER_OFF()           aux2SerialPowerOff()
 #else
 #define AUX2_SERIAL_POWER_ON()
-#define AUX2_SERIAL__POWER_OFF()
+#define AUX2_SERIAL_POWER_OFF()
 #endif
 #endif
 
