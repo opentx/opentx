@@ -1354,19 +1354,13 @@ void registerOpenTxFirmwares()
   addOpenTxRfOptions(firmware, FLEX);
   registerOpenTxFirmware(firmware);
 
-  //Jumper T18 board
+  /* Jumper T18 board */
   firmware = new OpenTxFirmware("opentx-t18", Firmware::tr("Jumper T18"), BOARD_JUMPER_T18);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
 
-  //Jumper T18 board
-  firmware = new OpenTxFirmware("opentx-t18", Firmware::tr("Jumper T18"), BOARD_JUMPER_T18);
-  addOpenTxFrskyOptions(firmware);
-  firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
-  registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX);
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
