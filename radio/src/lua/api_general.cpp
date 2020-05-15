@@ -1630,7 +1630,7 @@ static int luaSerialWrite(lua_State * L)
 
 Reads characters from the serial port. The string is allowed to contain any character, including 0.
 
-@status current Introduced in TODO
+@status current Introduced in 2.3.8
 */
 static int luaSerialRead(lua_State * L)
 {
@@ -1649,13 +1649,18 @@ static int luaSerialRead(lua_State * L)
   while (luaRxFifo->pop(*p)) {
     p++;  // increment only when pop was successful
     if (p - str >= LUA_FIFO_SIZE) {
-      break;  // Buffer full
+      // buffer full
+      break;
     }
-    if (num == 0 && (*(p - 1) == '\n' || *(p - 1) == '\r')) {
-      break;  // Found newline
+    if (num == 0) {
+      if (*(p - 1) == '\n' || *(p - 1) == '\r') {
+        // found newline
+        break;
+      }
     }
-    if (num > 0 && p - str >= num) {
-      break;  // Requested number of characters reached
+    else if (p - str >= num) {
+      // requested number of characters reached
+      break;
     }
   }
   lua_pushlstring(L, (const char*)str, p - str);
