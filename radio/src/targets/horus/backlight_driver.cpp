@@ -82,7 +82,7 @@ void backlightEnable(uint8_t dutyCycle)
 #endif
 
 #if defined(KEYS_BACKLIGHT_GPIO) && !defined(BOOT)
-  if ((dutyCycle == 0) || (g_eeGeneral.keyBacklight == 0)) {
+  if (dutyCycle == 0 || g_eeGeneral.keyBacklight == 0) {
     GPIO_ResetBits(KEYS_BACKLIGHT_GPIO, KEYS_BACKLIGHT_GPIO_PIN);
   }
   else {
