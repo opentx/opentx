@@ -168,7 +168,6 @@ local function getCellPercent(wgt, cellValue)
     return 0
   end
   local result = 0;
-  local t4 = getUsage();
 
   for i1, v1 in ipairs(_lipoPercentListSplit) do
     --is the cellVal < last-value-on-sub-list? (first-val:v1[1], last-val:v1[#v1])
@@ -260,7 +259,6 @@ local function calculateBatteryData(wgt)
 
   -- calculate intensive CPU data
   if (periodicHasPassed(wgt.periodic1) or wgt.cellPercent == 0) then
-    local t5 = getUsage();
 
     --wgt.cellPercent = getCellPercent(wgt, wgt.cellMin) -- use batt percentage by lowest cell voltage
     wgt.cellPercent = getCellPercent(wgt, wgt.cellAvg) -- use batt percentage by average cell voltage
@@ -499,7 +497,6 @@ local function background(wgt)
   if (wgt == nil) then
     return
   end
-  local t1 = getUsage();
 
   detectResetEvent(wgt)
 
@@ -508,8 +505,6 @@ local function background(wgt)
 end
 
 local function refresh(wgt)
-
-  local t1 = getUsage();
   if (wgt == nil) then
     return
   end
@@ -534,7 +529,6 @@ local function refresh(wgt)
 
   detectResetEvent(wgt)
 
-  local t3 = getUsage();
   calculateBatteryData(wgt)
 
   if wgt.isDataAvailable then
@@ -543,7 +537,6 @@ local function refresh(wgt)
     wgt.no_telem_blink = INVERS + BLINK
   end
 
-  local t4 = getUsage();
   if wgt.zone.w > 380 and wgt.zone.h > 165 then
     refreshZoneXLarge(wgt)
   elseif wgt.zone.w > 180 and wgt.zone.h > 145 then
