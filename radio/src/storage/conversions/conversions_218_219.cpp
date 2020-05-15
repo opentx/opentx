@@ -400,7 +400,7 @@ void convertRadioData_218_to_219(RadioData & settings)
 #if defined(PCBHORUS)
   // 2 new pots from X10:
   //  - copy btw. 'chkSum' and 'auxSerialMode' (excl.)
-  memcpy(&settings.chkSum, &oldSettings.chkSum, offsetof(RadioData, auxSerialMode) - offsetof(RadioData, chkSum));
+  memcpy(&settings.chkSum, &oldSettings.chkSum, offsetof(RadioData, switchConfig) - sizeof(uint8_t) - offsetof(RadioData, chkSum));
   //  - move calibration data
   memcpy(&settings.calib[NUM_STICKS + 5], &oldSettings.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
   memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);

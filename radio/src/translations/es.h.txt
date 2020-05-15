@@ -985,6 +985,7 @@
 #define TR_CHECKLIST           TR(INDENT "Lista verif", INDENT "Lista verificación")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_AUX_SERIAL_MODE     "Puerto serie"
+#define TR_AUX2_SERIAL_MODE    "Puerto serie 2"
 #define TR_SCRIPT              "Script"
 #define TR_INPUTS              "Entradas"
 #define TR_OUTPUTS             "Salidas"

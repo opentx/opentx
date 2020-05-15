@@ -201,6 +201,11 @@ void processCrossfireTelemetryData(uint8_t data)
     auxSerialPutc(data);
   }
 #endif
+#if defined(AUX2_SERIAL)
+  if (g_eeGeneral.aux2SerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    aux2SerialPutc(data);
+  }
+#endif
 
   if (telemetryRxBufferCount == 0 && data != RADIO_ADDRESS) {
     TRACE("[XF] address 0x%02X error", data);
