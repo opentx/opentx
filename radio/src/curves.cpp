@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-uint8_t s_curveChan;
-
 int8_t * curveEnd[MAX_CURVES];
 void loadCurves()
 {
@@ -317,8 +315,8 @@ int applyCustomCurve(int x, uint8_t idx)
 point_t getPoint(uint8_t i)
 {
   point_t result = {0, 0};
-  CurveInfo & crv = g_model.curves[s_curveChan];
-  int8_t * points = curveAddress(s_curveChan);
+  CurveInfo & crv = g_model.curves[s_currIdxSubMenu];
+  int8_t * points = curveAddress(s_currIdxSubMenu);
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
   uint8_t count = 5+crv.points;
   if (i < count) {
@@ -333,5 +331,5 @@ point_t getPoint(uint8_t i)
 
 int applyCurrentCurve(int x)
 {
-  return applyCustomCurve(x, s_curveChan);
+  return applyCustomCurve(x, s_currIdxSubMenu);
 }
