@@ -76,6 +76,8 @@ class TimerData {
     int          pvalue;
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
     void convert(RadioDataConversionState & cstate);
+    bool isEmpty();
+    bool isModeOff() { return mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
 };
 
 #define CPN_MAX_SCRIPTS       9
@@ -128,6 +130,8 @@ enum TrainerMode {
   TRAINER_MODE_MULTI
 };
 
+#define INPUT_NAME_LEN 4
+
 class ModelData {
   Q_DECLARE_TR_FUNCTIONS(ModelData)
 
@@ -170,7 +174,7 @@ class ModelData {
     MixData   mixData[CPN_MAX_MIXERS];
     LimitData limitData[CPN_MAX_CHNOUT];
 
-    char      inputNames[CPN_MAX_INPUTS][4+1];
+    char      inputNames[CPN_MAX_INPUTS][INPUT_NAME_LEN+1];
     ExpoData  expoData[CPN_MAX_EXPOS];
 
     CurveData curves[CPN_MAX_CURVES];
@@ -219,10 +223,22 @@ class ModelData {
     void setTrimValue(int phaseIdx, int trimIdx, int value);
 
     bool isGVarLinked(int phaseIdx, int gvarIdx);
-    int getGVarFieldValue(int phaseIdx, int gvarIdx);
-    float getGVarFieldValuePrec(int phaseIdx, int gvarIdx);
+    bool isGVarLinkedCircular(int phaseIdx, int gvarIdx);
+    int getGVarValue(int phaseIdx, int gvarIdx);
+    float getGVarValuePrec(int phaseIdx, int gvarIdx);
+    int getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx);
+    void setGVarFlightModeIndexToValue(const int phaseIdx, const int gvarIdx, const int useFmIdx);
+
+    bool isREncLinked(int phaseIdx, int reIdx);
+    bool isREncLinkedCircular(int phaseIdx, int reIdx);
+    int getREncValue(int phaseIdx, int reIdx);
+    int getREncFlightModeIndex(const int phaseIdx, const int reIdx);
+    void setREncFlightModeIndexToValue(const int phaseIdx, const int reIdx, const int useFmIdx);
 
     ModelData removeGlobalVars();
+
+    int linkedFlightModeIndexToValue(const int phaseIdx, const int useFmIdx, const int maxOwnValue);
+    int linkedFlightModeValueToIndex(const int phaseIdx, const int val, const int maxOwnValue);
 
     void clearMixes();
     void clearInputs();
@@ -231,8 +247,95 @@ class ModelData {
 
     bool isAvailable(const RawSwitch & swtch) const;
 
+    enum ReferenceUpdateAction {
+      REF_UPD_ACT_CLEAR,
+      REF_UPD_ACT_SHIFT,
+      REF_UPD_ACT_SWAP,
+    };
+
+    enum ReferenceUpdateType {
+      REF_UPD_TYPE_CHANNEL,
+      REF_UPD_TYPE_CURVE,
+      REF_UPD_TYPE_FLIGHT_MODE,
+      REF_UPD_TYPE_GLOBAL_VARIABLE,
+      REF_UPD_TYPE_INPUT,
+      REF_UPD_TYPE_LOGICAL_SWITCH,
+      REF_UPD_TYPE_SCRIPT,
+      REF_UPD_TYPE_SENSOR,
+      REF_UPD_TYPE_TIMER,
+    };
+
+    struct UpdateReferenceParams
+    {
+      ReferenceUpdateType type;
+      ReferenceUpdateAction action;
+      int index1;
+      int index2;
+      int shift;
+
+      UpdateReferenceParams() {}
+      UpdateReferenceParams(ReferenceUpdateType t, ReferenceUpdateAction a, int i1, int i2 = 0, int s = 0) :
+        type(t), action(a), index1(i1), index2(i2), shift(s) {}
+    };
+
+    int updateAllReferences(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2 = 0, const int shift = 0);
+    bool isExpoParent(const int index);
+    bool isExpoChild(const int index);
+    bool hasExpoChildren(const int index);
+    bool hasExpoSiblings(const int index);
+    void removeMix(const int idx);
+
   protected:
     void removeGlobalVar(int & var);
+
+  private:
+    QVector<UpdateReferenceParams> *updRefList = nullptr;
+
+    struct UpdateReferenceInfo
+    {
+      ReferenceUpdateType type;
+      ReferenceUpdateAction action;
+      int index1;
+      int index2;
+      int shift;
+      int updcnt;
+      int maxindex;
+      RawSourceType srcType;
+      RawSwitchType swtchType;
+    };
+    UpdateReferenceInfo updRefInfo;
+
+    int updateReference();
+    void appendUpdateReferenceParams(const ReferenceUpdateType type, const ReferenceUpdateAction action, const int index1, const int index2 = 0, const int shift = 0);
+    template <class R, typename T>
+    void updateTypeIndexRef(R & curref, const T type, const int idxAdj = 0, const bool defClear = true, const int defType = 0, const int defIndex = 0);
+    template <class R, typename T>
+    void updateTypeValueRef(R & curref, const T type, const int idxAdj = 0, const bool defClear = true, const int defType = 0, const int defValue = 0);
+    void updateAdjustRef(int & adj);
+    void updateAssignFunc(CustomFunctionData * cfd);
+    void updateCurveRef(CurveReference & crv);
+    void updateDestCh(MixData * md);
+    void updateLimitCurveRef(CurveReference & crv);
+    void updateFlightModeFlags(unsigned int & flags);
+    void updateTelemetryRef(unsigned int & idx);
+    void updateModuleFailsafes(ModuleData * md);
+    inline void updateSourceRef(RawSource & src) { updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType); }
+    inline void updateSwitchRef(RawSwitch & swtch) { updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1); }
+    inline void updateTimerMode(RawSwitch & swtch) { updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1, false, (int)SWITCH_TYPE_TIMER_MODE, 0); }
+    inline void updateSourceIntRef(int & value)
+    {
+      RawSource src = RawSource(value);
+      updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType);
+      if (value != src.toValue())
+        value = src.toValue();
+    }
+    inline void updateSwitchIntRef(int & value)
+    {
+      RawSwitch swtch = RawSwitch(value);
+      updateTypeIndexRef<RawSwitch, RawSwitchType>(swtch, updRefInfo.swtchType, 1);
+      if (value != swtch.toValue())
+        value = swtch.toValue();
+    }
 };
 
 #endif // MODELDATA_H

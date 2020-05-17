@@ -50,6 +50,7 @@ class CurveReference {
     int value;
 
     QString toString(const ModelData * model = NULL, bool verbose = true) const;
+    bool isSet() const { return type != CURVE_REF_DIFF || value != 0; }
 };
 
 #endif // CURVEREFERENCE_H

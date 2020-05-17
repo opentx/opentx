@@ -681,7 +681,8 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t auxSerialMode); \
+    NOBACKUP(uint8_t auxSerialMode:4); \
+    NOBACKUP(uint8_t aux2SerialMode:4); \
     swconfig_t switchConfig; \
     uint16_t potsConfig; /* two bits per pot */ \
     uint8_t slidersConfig; /* 1 bit per slider */ \

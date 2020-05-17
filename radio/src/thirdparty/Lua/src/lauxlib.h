@@ -29,6 +29,7 @@ extern const luaL_Reg mathlib[];
 extern const luaL_Reg bitlib[];
 extern const luaL_Reg iolib[];
 extern const luaL_Reg strlib[];
+extern const luaL_Reg tab_funcs[];
 
 extern const luaL_Reg opentxLib[];
 extern const luaL_Reg lcdLib[];
