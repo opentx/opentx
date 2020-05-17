@@ -23,7 +23,6 @@
 #include "../debug.h"
 #include "../definitions.h"
 #include <cstdio>
-#include <queue>
 #define FAILSAFE_HOLD 1
 #define FAILSAFE_CUSTOM 2
 #define MAX_RETRIES_AFHDS3 5
@@ -180,7 +179,7 @@ void PulsesData::setupFrame()
     Frame f = commandFifo[getIndex];
     putFrame(f.command, f.frameType, &f.payload, f.payloadSize, f.useFrameNumber ? &f.frameNumber : &frame_index);
     getIndex = nextIndex(getIndex);
-    TRACE("AFHDS3 [CMD QUEUE] cmd: %d frameType %d, frame Number %d size %d", f.command, f.frameType, f.frameNumber, f.payloadSize);
+    TRACE("AFHDS3 [CMD QUEUE] cmd: %d frameType %d, useFrameNumber %d frame Number %d size %d", f.command, f.frameType,  f.useFrameNumber, f.frameNumber, f.payloadSize);
     return;
   }
 
