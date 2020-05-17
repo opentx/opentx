@@ -41,37 +41,46 @@ void ModuleState::startBind(BindInformation * destination, ModuleCallback bindCa
 #endif
 }
 
-void getModuleStatusString(uint8_t moduleIdx, char * statusText) {
+void getModuleStatusString(uint8_t moduleIdx, char * statusText)
+{
   *statusText = 0;
 #if defined(MULTIMODULE)
-  if(isModuleMultimodule(moduleIdx)) {
+  if(isModuleMultimodule(moduleIdx))
+  {
     //change it
     getMultiModuleStatus(moduleIdx).getStatusString(statusText);
   }
 #endif
 #if defined(AFHDS3)
-  if(moduleIdx == EXTERNAL_MODULE && isModuleAFHDS3(moduleIdx)) {
+  if(moduleIdx == EXTERNAL_MODULE && isModuleAFHDS3(moduleIdx))
+  {
     extmodulePulsesData.afhds3.getStatusString(statusText);
   }
 #endif
 }
-void getModuleSyncStatusString (uint8_t moduleIdx, char * statusText) {
+
+void getModuleSyncStatusString(uint8_t moduleIdx, char * statusText)
+{
   *statusText = 0;
 #if defined(MULTIMODULE)
-  if(isModuleMultimodule(moduleIdx)) {
+  if(isModuleMultimodule(moduleIdx))
+  {
     getMultiSyncStatus(moduleIdx).getRefreshString(statusText);
   }
 #endif
 #if defined(AFHDS3)
-  if(moduleIdx == EXTERNAL_MODULE && isModuleAFHDS3(moduleIdx)) {
+  if(moduleIdx == EXTERNAL_MODULE && isModuleAFHDS3(moduleIdx))
+  {
     extmodulePulsesData.afhds3.getPowerStatus(statusText);
   }
 #endif
 }
+
 #if defined(AFHDS3)
 uint8_t actualAfhdsRunPower(int moduleIndex)
 {
-  if(moduleIndex == EXTERNAL_MODULE && isModuleAFHDS3(moduleIndex)) {
+  if(moduleIndex == EXTERNAL_MODULE && isModuleAFHDS3(moduleIndex))
+  {
     return (uint8_t)extmodulePulsesData.afhds3.actualRunPower();
   }
   return 0;
