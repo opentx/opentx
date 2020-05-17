@@ -37,6 +37,8 @@ enum InputMode {
   INPUT_MODE_BOTH
 };
 
+#define EXPODATA_NAME_LEN  10
+
 class ExpoData {
   Q_DECLARE_TR_FUNCTIONS(ExpoData)
 
@@ -52,9 +54,10 @@ class ExpoData {
     int offset;
     CurveReference curve;
     int carryTrim;
-    char name[10+1];
+    char name[EXPODATA_NAME_LEN+1];
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(ExpoData)); }
     void convert(RadioDataConversionState & cstate);
+    bool isEmpty() const;
 };
 
 enum MltpxValue {
@@ -90,7 +93,10 @@ class MixData {
     char   name[MIXDATA_NAME_LEN+1];
 
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(MixData)); }
+    bool isEmpty() const;
 };
+
+#define LIMITDATA_NAME_LEN  6
 
 class LimitData {
   Q_DECLARE_TR_FUNCTIONS(LimitData)
@@ -103,7 +109,7 @@ class LimitData {
     int   offset;
     int   ppmCenter;
     bool  symetrical;
-    char  name[6+1];
+    char  name[LIMITDATA_NAME_LEN+1];
     CurveReference curve;
     QString minToString() const;
     QString maxToString() const;
@@ -120,6 +126,8 @@ class CurvePoint {
     int8_t y;
 };
 
+#define CURVEDATA_NAME_LEN  6
+
 class CurveData {
   Q_DECLARE_TR_FUNCTIONS(CurveData)
 
@@ -131,7 +139,7 @@ class CurveData {
     };
 
     CurveData();
-    void clear(int count);
+    void clear(int count = 5);
     bool isEmpty() const;
     QString nameToString(const int idx) const;
 
@@ -139,8 +147,12 @@ class CurveData {
     bool smooth;
     int  count;
     CurvePoint points[CPN_MAX_POINTS];
-    char name[6+1];
+    char name[CURVEDATA_NAME_LEN+1];
 };
+
+#define FLIGHTMODE_NAME_LEN  10
+#define RENC_MAX_VALUE       1024
+#define RENC_MIN_VALUE       -RENC_MAX_VALUE
 
 class FlightModeData {
   Q_DECLARE_TR_FUNCTIONS(FlightModeData)
@@ -151,14 +163,20 @@ class FlightModeData {
     int trimRef[CPN_MAX_TRIMS];
     int trim[CPN_MAX_TRIMS];
     RawSwitch swtch;
-    char name[10+1];
+    char name[FLIGHTMODE_NAME_LEN+1];
     unsigned int fadeIn;
     unsigned int fadeOut;
     int rotaryEncoders[CPN_MAX_ENCODERS];
     int gvars[CPN_MAX_GVARS];
-    void clear(const int phase);
-    QString nameToString(int index) const;
+    void clear(const int phaseIdx);
+    QString nameToString(int phaseIdx) const;
     void convert(RadioDataConversionState & cstate);
+    bool isEmpty(int phaseIdx) const;
+    bool isGVarEmpty(int phaseIdx, int gvIdx) const;
+    bool isREncEmpty(int phaseIdx, int reIdx) const;
+    int linkedFlightModeZero(int phaseIdx, int maxOwnValue) const;
+    int linkedGVarFlightModeZero(int phaseIdx) const;
+    int linkedREncFlightModeZero(int phaseIdx) const;
 };
 
 class SwashRingData {

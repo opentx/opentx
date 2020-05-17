@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 uint8_t auxSerialTracesEnabled();
+uint8_t aux2SerialTracesEnabled();
 
 #if defined(SIMU)
   typedef void (*traceCallbackFunc)(const char * text);

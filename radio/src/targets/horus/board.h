@@ -615,7 +615,7 @@ void sportUpdatePowerInit();
 #define IS_SPORT_UPDATE_POWER_ON()     (false)
 #endif
 
-// Second serial port driver
+// Aux serial port driver
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
 extern uint8_t auxSerialMode;
@@ -627,11 +627,30 @@ void auxSerialStop();
 void auxSerialPowerOn();
 void auxSerialPowerOff();
 #if defined(AUX_SERIAL_PWR_GPIO)
-#define AUX_SERIAL_POWER_ON()            auxSerialPowerOn()
-#define AUX_SERIAL__POWER_OFF()          auxSerialPowerOff()
+#define AUX_SERIAL_POWER_ON()             auxSerialPowerOn()
+#define AUX_SERIAL_POWER_OFF()            auxSerialPowerOff()
 #else
 #define AUX_SERIAL_POWER_ON()
-#define AUX_SERIAL__POWER_OFF()
+#define AUX_SERIAL_POWER_OFF()
+#endif
+#endif
+
+// Aux2 serial port driver
+#if defined(AUX2_SERIAL)
+extern uint8_t aux2SerialMode;
+void aux2SerialInit(unsigned int mode, unsigned int protocol);
+void aux2SerialPutc(char c);
+#define aux2SerialTelemetryInit(protocol) aux2SerialInit(UART_MODE_TELEMETRY, protocol)
+void aux2SerialSbusInit();
+void aux2SerialStop();
+void aux2SerialPowerOn();
+void aux2SerialPowerOff();
+#if defined(AUX2_SERIAL_PWR_GPIO)
+#define AUX2_SERIAL_POWER_ON()            aux2SerialPowerOn()
+#define AUX2_SERIAL_POWER_OFF()           aux2SerialPowerOff()
+#else
+#define AUX2_SERIAL_POWER_ON()
+#define AUX2_SERIAL_POWER_OFF()
 #endif
 #endif
 

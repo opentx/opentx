@@ -26,12 +26,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
-enum CopyAction {
-  CURVE_COPY,
-  CURVE_PASTE,
-  CURVE_RESET,
-  CURVE_RESETALL
-};
+constexpr char MIMETYPE_CURVE[] = "application/x-companion-curve";
 
 namespace Ui {
   class Curves;
@@ -71,7 +66,6 @@ class Curves : public ModelPanel
 
   private slots:
     void editCurve();
-    void ShowContextMenu(const QPoint& pos);
     void plotCurve(bool checked);
     void on_curveName_editingFinished();
     void on_curvePoints_currentIndexChanged(int index);
@@ -86,6 +80,16 @@ class Curves : public ModelPanel
     void onSceneNewPoint(int x, int y);
     void onPointSizeEdited();
     void onNodeDelete();
+    void onCustomContextMenuRequested(QPoint pos);
+    void cmClear();
+    void cmClearAll();
+    void cmCopy();
+    void cmCut();
+    void cmDelete();
+    void cmInsert();
+    void cmPaste();
+    void cmMoveDown();
+    void cmMoveUp();
 
   protected:
     virtual void resizeEvent(QResizeEvent *event);
@@ -105,6 +109,16 @@ class Curves : public ModelPanel
     bool allowCurveType(int points, CurveData::CurveType type);
     void setPointY(int i, int x, int y);
     CustomScene * scene;
+    int maxCurves;
+    int hasNames;
+    int hasEnhanced;
+    int maxPoints;
+    int selectedIndex;
+    bool hasClipboardData(QByteArray * data = nullptr) const;
+    bool insertAllowed() const;
+    bool moveDownAllowed() const;
+    bool moveUpAllowed() const;
+    void swapData(int idx1, int idx2);
 };
 
 #endif // _CURVES_H_

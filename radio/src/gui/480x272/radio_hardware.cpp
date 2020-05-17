@@ -70,7 +70,9 @@ enum MenuRadioHardwareItems {
 #if defined(AUX_SERIAL)
   ITEM_RADIO_HARDWARE_AUX_SERIAL_MODE,
 #endif
-
+#if defined(AUX2_SERIAL)
+  ITEM_RADIO_HARDWARE_AUX2_SERIAL_MODE,
+#endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_RAS,
 
@@ -88,6 +90,11 @@ enum MenuRadioHardwareItems {
   #define AUX_SERIAL_ROW                0,
 #else
   #define AUX_SERIAL_ROW
+#endif
+#if defined(AUX2_SERIAL)
+#define AUX2_SERIAL_ROW                0,
+#else
+#define AUX2_SERIAL_ROW
 #endif
 
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
@@ -159,6 +166,7 @@ bool menuRadioHardware(event_t event)
     EXTERNAL_ANTENNA_ROW
 
     AUX_SERIAL_ROW /* aux serial mode */
+    AUX2_SERIAL_ROW /* aux2 serial mode */
     0, /* ADC filter */
     READONLY_ROW /* RAS */,
     SPORT_POWER_ROWS
@@ -367,6 +375,19 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
+        }
+        break;
+#endif
+
+#if defined(AUX2_SERIAL)
+      case ITEM_RADIO_HARDWARE_AUX2_SERIAL_MODE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUX2_SERIAL_MODE);
+#if defined(RADIO_TX16S)
+        lcdDrawText(lcdNextPos, y, " (TTL)");
+#endif
+        g_eeGeneral.aux2SerialMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_AUX_SERIAL_MODES, g_eeGeneral.aux2SerialMode, 0, UART_MODE_MAX, attr, event);
+        if (attr && checkIncDec_Ret) {
+          aux2SerialInit(g_eeGeneral.aux2SerialMode, modelTelemetryProtocol());
         }
         break;
 #endif

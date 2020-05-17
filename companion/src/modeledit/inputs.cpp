@@ -47,18 +47,18 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   qbClear->setText(tr("Clear All Inputs"));
   qbClear->setIcon(CompanionIcon("clear.png"));
 
-  exposLayout->addWidget(ExposlistWidget,1,1,1,3);
-  exposLayout->addWidget(qbUp,2,1);
-  exposLayout->addWidget(qbClear,2,2);
-  exposLayout->addWidget(qbDown,2,3);
+  exposLayout->addWidget(ExposlistWidget, 1, 1, 1, 3);
+  exposLayout->addWidget(qbUp, 2, 1);
+  exposLayout->addWidget(qbClear, 2, 2);
+  exposLayout->addWidget(qbDown, 2, 3);
 
   connect(ExposlistWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(expolistWidget_customContextMenuRequested(QPoint)));
   connect(ExposlistWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(expolistWidget_doubleClicked(QModelIndex)));
-  connect(ExposlistWidget, SIGNAL(mimeDropped(int,const QMimeData*,Qt::DropAction)), this, SLOT(mimeExpoDropped(int, const QMimeData*, Qt::DropAction)));
+  connect(ExposlistWidget, SIGNAL(mimeDropped(int, const QMimeData*,Qt::DropAction)), this, SLOT(mimeExpoDropped(int, const QMimeData*, Qt::DropAction)));
 
-  connect(qbUp, SIGNAL(pressed()),SLOT(moveExpoUp()));
-  connect(qbDown, SIGNAL(pressed()),SLOT(moveExpoDown()));
-  connect(qbClear, SIGNAL(pressed()),SLOT(clearExpos()));
+  connect(qbUp, SIGNAL(pressed()), SLOT(moveExpoUp()));
+  connect(qbDown, SIGNAL(pressed()), SLOT(moveExpoDown()));
+  connect(qbClear, SIGNAL(pressed()), SLOT(clearExpos()));
 
   connect(ExposlistWidget, SIGNAL(keyWasPressed(QKeyEvent*)), this, SLOT(expolistWidget_KeyPress(QKeyEvent*)));
 }
@@ -71,9 +71,9 @@ void InputsPanel::update()
 {
   lock = true;
   ExposlistWidget->clear();
-  for (int i=0; i < inputsCount; ++i) {
+  for (int i = 0; i < inputsCount; ++i) {
     bool filled = false;
-    for (uint j=0; j < CPN_MAX_EXPOS; ++j) {
+    for (uint j = 0; j < CPN_MAX_EXPOS; ++j) {
       const ExpoData & ed = model->expoData[j];
       if ((int)ed.chn == i && ed.mode) {
         AddInputLine(j);
@@ -81,7 +81,7 @@ void InputsPanel::update()
       }
     }
     if (!filled) {
-      AddInputLine(-i-1);
+      AddInputLine(-i - 1);
     }
   }
   lock = false;
@@ -108,9 +108,8 @@ void InputsPanel::AddInputLine(int dest)
     const ExpoData &md = model->expoData[dest];
     qba.append((const char*)&md, sizeof(ExpoData));
     destId = md.chn + 1;
-    const QVector<const ExpoData *> expos = model->expos(md.chn);
-    newChan = (expos.constFirst() == &md);
-    hasSibs = (expos.constLast() != &md);
+    newChan = model->isExpoParent(dest);
+    hasSibs = (model->hasExpoChildren(dest) || model->hasExpoSiblings(dest));
   }
   QListWidgetItem *itm = new QListWidgetItem(getInputText(dest, newChan));
   itm->setData(Qt::UserRole, qba);
@@ -133,10 +132,10 @@ QString InputsPanel::getInputText(int dest, bool newChan)
 {
   QString str;
   if (dest < 0) {
-    str = modelPrinter.printInputName(-dest-1);
+    str = modelPrinter.printInputName(-dest - 1);
   }
   else {
-    const ExpoData & input = model->expoData[dest];
+    const ExpoData &input = model->expoData[dest];
     const int nameChars = (firmware->getCapability(VirtualInputs) ? 10 : 4);
     if (newChan)
       str = QString("%1").arg(modelPrinter.printInputName(input.chn), -nameChars, QChar(' '));
@@ -150,14 +149,14 @@ QString InputsPanel::getInputText(int dest, bool newChan)
 
 bool InputsPanel::gm_insertExpo(int idx)
 {
-  if (idx<0 || idx>=CPN_MAX_EXPOS || model->expoData[CPN_MAX_EXPOS-1].mode > 0) {
-    QMessageBox::information(this, CPN_STR_APP_NAME, tr("Not enough available inputs!"));
+  if (idx < 0 || idx >= CPN_MAX_EXPOS || model->expoData[CPN_MAX_EXPOS-1].mode > 0) {
+    QMessageBox::information(this, CPN_STR_APP_NAME, tr("Not enough available Inputs!"));
     return false;
   }
 
   int chn = model->expoData[idx].chn;
 
-  ExpoData * newExpo = model->insertInput(idx);
+  ExpoData *newExpo = model->insertInput(idx);
   newExpo->chn = chn;
   newExpo->weight = 100;
   newExpo->mode = INPUT_MODE_BOTH;
@@ -172,107 +171,107 @@ void InputsPanel::gm_deleteExpo(int index, bool clearName)
 
 void InputsPanel::gm_openExpo(int index)
 {
-    if(index<0 || index>=CPN_MAX_EXPOS) return;
+  if (index < 0 || index >= CPN_MAX_EXPOS)
+    return;
 
-    ExpoData mixd(model->expoData[index]);
+  ExpoData ed(model->expoData[index]);
 
-    QString inputName;
+  QString inputName;
+  if (firmware->getCapability(VirtualInputs))
+    inputName = model->inputNames[ed.chn];
+
+  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName);
+  if (g->exec())  {
+    model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
-      inputName = model->inputNames[mixd.chn];
-
-    ExpoDialog *g = new ExpoDialog(this, *model, &mixd, generalSettings, firmware, inputName);
-    if (g->exec())  {
-      model->expoData[index] = mixd;
-      if (firmware->getCapability(VirtualInputs))
-        strncpy(model->inputNames[mixd.chn], inputName.toLatin1().data(), 4);
-      emit modified();
-      update();
+      strncpy(model->inputNames[ed.chn], inputName.toLatin1().data(), INPUT_NAME_LEN);
+    emit modified();
+    update();
+  }
+  else {
+    if (expoInserted) {
+      gm_deleteExpo(index);
     }
-    else {
-      if (expoInserted) {
-        gm_deleteExpo(index);
-      }
-      expoInserted=false;
-      update();
-    }
+    expoInserted=false;
+    update();
+  }
 }
 
 int InputsPanel::getExpoIndex(unsigned int dch)
 {
-    unsigned int i = 0;
-    while (model->expoData[i].chn<=dch && model->expoData[i].mode && i<CPN_MAX_EXPOS) i++;
-    if(i==CPN_MAX_EXPOS) return -1;
-    return i;
+  unsigned int i = 0;
+  while (model->expoData[i].chn <= dch && model->expoData[i].mode && i < CPN_MAX_EXPOS)
+    i++;
+  if (i == CPN_MAX_EXPOS)
+    return -1;
+  return i;
 }
-
 
 QList<int> InputsPanel::createExpoListFromSelected()
 {
-    QList<int> list;
-    foreach(QListWidgetItem *item, ExposlistWidget->selectedItems()) {
-      int idx= item->data(Qt::UserRole).toByteArray().at(0);
-      if(idx>=0 && idx<CPN_MAX_EXPOS) list << idx;
-    }
-    return list;
+  QList<int> list;
+  foreach (QListWidgetItem *item, ExposlistWidget->selectedItems()) {
+    int idx = item->data(Qt::UserRole).toByteArray().at(0);
+    if (idx >= 0 && idx < CPN_MAX_EXPOS)
+      list << idx;
+  }
+  return list;
 }
-
 
 void InputsPanel::setSelectedByExpoList(QList<int> list)
 {
-    for(int i=0; i<ExposlistWidget->count(); i++) {
-      int t = ExposlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
-      if(list.contains(t))
-        ExposlistWidget->item(i)->setSelected(true);
-    }
+  for (int i = 0; i < ExposlistWidget->count(); i++) {
+    int t = ExposlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
+    if (list.contains(t))
+      ExposlistWidget->item(i)->setSelected(true);
+  }
 }
 
 void InputsPanel::exposDelete(bool ask)
 {
-    QList<int> list = createExpoListFromSelected();
-    if(list.isEmpty()) return;
+  QList<int> list = createExpoListFromSelected();
+  if (list.isEmpty())
+    return;
 
-    QMessageBox::StandardButton ret = QMessageBox::No;
+  QMessageBox::StandardButton ret = QMessageBox::No;
 
-    if(ask)
-      ret = QMessageBox::warning(this, "companion",
-               tr("Delete Selected Inputs?"),
-               QMessageBox::Yes | QMessageBox::No);
+  if (ask)
+    ret = QMessageBox::warning(this, CPN_STR_APP_NAME, tr("Delete selected Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No);
 
-
-    if ((ret == QMessageBox::Yes) || (!ask)) {
-        exposDeleteList(list, ask);
-        emit modified();
-        update();
-    }
+  if ((ret == QMessageBox::Yes) || (!ask)) {
+      exposDeleteList(list, ask);
+      emit modified();
+      update();
+  }
 }
 
 void InputsPanel::exposCut()
 {
-    exposCopy();
-    exposDelete(false);
+  exposCopy();
+  exposDelete(false);
 }
 
 void InputsPanel::exposCopy()
 {
-    QList<int> list = createExpoListFromSelected();
+  QList<int> list = createExpoListFromSelected();
 
-    QByteArray mxData;
-    foreach(int idx, list) {
-      mxData.append((char*)&model->expoData[idx], sizeof(ExpoData));
-    }
+  QByteArray exData;
+  foreach (int idx, list) {
+    exData.append((char*)&model->expoData[idx], sizeof(ExpoData));
+  }
 
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion-expo", mxData);
-    QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData(MIMETYPE_EXPO, exData);
+  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
 void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropAction action)
 {
   int idx = ExposlistWidget->item(index)->data(Qt::UserRole).toByteArray().at(0);
-  if (action==Qt::CopyAction) {
+  if (action == Qt::CopyAction) {
     pasteExpoMimeData(data, idx);
   }
-  else if (action==Qt::MoveAction) {
+  else if (action == Qt::MoveAction) {
     QList<int> list = createExpoListFromSelected();
     exposDeleteList(list, false);
     foreach (const int del, list) {
@@ -285,30 +284,31 @@ void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropActi
 
 void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
 {
-  if (mimeData->hasFormat("application/x-companion-expo")) {
-    int idx; // mixer index
+  if (mimeData->hasFormat(MIMETYPE_EXPO)) {
+    int idx; // expo index
     int dch;
 
     if (destIdx < 0) {
       dch = -destIdx - 1;
       idx = getExpoIndex(dch) - 1; //get expo index to insert
-    } else {
+    }
+    else {
       idx = destIdx;
       dch = model->expoData[idx].chn;
     }
 
-    QByteArray mxData = mimeData->data("application/x-companion-expo");
+    QByteArray exData = mimeData->data(MIMETYPE_EXPO);
 
     int i = 0;
-    while (i < mxData.size()) {
+    while (i < exData.size()) {
       idx++;
       if (!gm_insertExpo(idx))
         break;
-      ExpoData *md = &model->expoData[idx];
-      memcpy(md, mxData.mid(i, sizeof(ExpoData)).constData(), sizeof(ExpoData));
-      const int oldChan = md->chn;
-      md->chn = dch;
-      maybeCopyInputName(oldChan, md->chn);
+      ExpoData *ed = &model->expoData[idx];
+      memcpy(ed, exData.mid(i, sizeof(ExpoData)).constData(), sizeof(ExpoData));
+      const int oldChan = ed->chn;
+      ed->chn = dch;
+      maybeCopyInputName(oldChan, ed->chn);
       i += sizeof(ExpoData);
     }
 
@@ -334,83 +334,104 @@ void InputsPanel::exposDuplicate()
   exposPaste();
 }
 
-
 void InputsPanel::expoOpen(QListWidgetItem *item)
 {
-    if (!item)
-      item = ExposlistWidget->currentItem();
+  if (!item)
+    item = ExposlistWidget->currentItem();
 
-    int idx = item->data(Qt::UserRole).toByteArray().at(0);
-    if (idx<0) {
-      int ch = -idx-1;
-      idx = getExpoIndex(ch); // get expo index to insert
-      if (!gm_insertExpo(idx))
-        return;
-      model->expoData[idx].chn = ch;
-      expoInserted=true;
-    } else {
-        expoInserted=false;
-    }
-    gm_openExpo(idx);
+  int idx = item->data(Qt::UserRole).toByteArray().at(0);
+  if (idx < 0) {
+    int ch = -idx - 1;
+    idx = getExpoIndex(ch); // get expo index to insert
+    if (!gm_insertExpo(idx))
+      return;
+    model->expoData[idx].chn = ch;
+    expoInserted = true;
+  }
+  else {
+    expoInserted = false;
+  }
+  gm_openExpo(idx);
 }
 
 void InputsPanel::expoAdd()
 {
-    int index = ExposlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  int index = ExposlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
 
-    if(index<0) {  // if empty then return relevant index
-      expoOpen();
-    }  else {
-      index++;
-      if (!gm_insertExpo(index))
-        return;
-      model->expoData[index].chn = model->expoData[index-1].chn;
-      expoInserted=true;
-    }
-    gm_openExpo(index);
+  if (index < 0) {  // if empty then return relevant index
+    expoOpen();
+  }
+  else {
+    index++;
+    if (!gm_insertExpo(index))
+      return;
+    model->expoData[index].chn = model->expoData[index-1].chn;
+    expoInserted = true;
+  }
+  gm_openExpo(index);
 }
 
 void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
 {
-    QPoint globalPos = ExposlistWidget->mapToGlobal(pos);
+  QPoint globalPos = ExposlistWidget->mapToGlobal(pos);
 
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion-expo");
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  bool hasData = mimeData->hasFormat(MIMETYPE_EXPO);
 
-    QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(expoAdd()),tr("Ctrl+A"));
-    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(expoOpen()),tr("Enter"));
-    contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(exposDelete()),tr("Delete"));
-    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(exposCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(exposCut()),tr("Ctrl+X"));
-    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(exposPaste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"),this,SLOT(exposDuplicate()),tr("Ctrl+U"));
-    contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(moveExpoUp()),tr("Ctrl+Up"));
-    contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(moveExpoDown()),tr("Ctrl+Down"));
-    contextMenu.addSeparator();
-    contextMenu.addActions(ExposlistWidget->actions());
+  selectedIdx = getIndexFromSelected();
+  inputIdx = getInputIndexFromSelected();
 
-    contextMenu.exec(globalPos);
+  QMenu contextMenu;
+  QMenu *contextMenuLines = contextMenu.addMenu(tr("Lines"));
+  contextMenuLines->addAction(CompanionIcon("add.png"), tr("&Add"), this, SLOT(expoAdd()), tr("Ctrl+A"));
+  contextMenuLines->addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(expoOpen()), tr("Enter"));
+  contextMenuLines->addSeparator();
+  contextMenuLines->addAction(CompanionIcon("clear.png"), tr("&Delete"), this, SLOT(exposDelete()), tr("Delete"));
+  contextMenuLines->addAction(CompanionIcon("copy.png"), tr("&Copy"), this, SLOT(exposCopy()), tr("Ctrl+C"));
+  contextMenuLines->addAction(CompanionIcon("cut.png"), tr("&Cut"), this, SLOT(exposCut()), tr("Ctrl+X"));
+  contextMenuLines->addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(exposPaste()), tr("Ctrl+V"))->setEnabled(hasData);
+  contextMenuLines->addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"), this, SLOT(exposDuplicate()), tr("Ctrl+U"));
+  contextMenuLines->addSeparator();
+  contextMenuLines->addAction(CompanionIcon("moveup.png"), tr("Move Up"), this, SLOT(moveExpoUp()), tr("Ctrl+Up"));
+  contextMenuLines->addAction(CompanionIcon("movedown.png"), tr("Move Down"), this, SLOT(moveExpoDown()), tr("Ctrl+Down"));
+
+  QMenu *contextMenuInputs = contextMenu.addMenu(tr("Input"));
+  contextMenuInputs->addAction(CompanionIcon("arrow-right.png"), tr("Insert"), this, SLOT(cmInputInsert()))->setEnabled(cmInputInsertAllowed());
+  contextMenuInputs->addAction(CompanionIcon("arrow-left.png"), tr("Delete"), this, SLOT(cmInputDelete()));
+  contextMenuInputs->addAction(CompanionIcon("moveup.png"), tr("Move Up"), this, SLOT(cmInputMoveUp()))->setEnabled(cmInputMoveUpAllowed());
+  contextMenuInputs->addAction(CompanionIcon("movedown.png"), tr("Move Down"), this, SLOT(cmInputMoveDown()))->setEnabled(cmInputMoveDownAllowed());
+  contextMenuInputs->addSeparator();
+  contextMenuInputs->addAction(CompanionIcon("clear.png"), tr("Clear"), this, SLOT(cmInputClear()))->setEnabled(isExpoIndex(selectedIdx));
+
+  contextMenu.addSeparator();
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"), this, SLOT(clearExpos()));
+  contextMenu.addSeparator();
+  contextMenu.addActions(ExposlistWidget->actions());
+  contextMenu.exec(globalPos);
 }
-
 
 void InputsPanel::expolistWidget_KeyPress(QKeyEvent *event)
 {
-    if(event->matches(QKeySequence::SelectAll)) expoAdd();  //Ctrl A
-    if(event->matches(QKeySequence::Delete))    exposDelete();
-    if(event->matches(QKeySequence::Copy))      exposCopy();
-    if(event->matches(QKeySequence::Cut))       exposCut();
-    if(event->matches(QKeySequence::Paste))     exposPaste();
-    if(event->matches(QKeySequence::Underline)) exposDuplicate();
+  if (event->matches(QKeySequence::SelectAll))
+    expoAdd();  //Ctrl A
+  if (event->matches(QKeySequence::Delete))
+    exposDelete();
+  if (event->matches(QKeySequence::Copy))
+    exposCopy();
+  if (event->matches(QKeySequence::Cut))
+    exposCut();
+  if (event->matches(QKeySequence::Paste))
+    exposPaste();
+  if (event->matches(QKeySequence::Underline))
+    exposDuplicate();
 
-    if(event->key()==Qt::Key_Return || event->key()==Qt::Key_Enter) expoOpen();
-    if(event->matches(QKeySequence::MoveToNextLine))
-        ExposlistWidget->setCurrentRow(ExposlistWidget->currentRow()+1);
-    if(event->matches(QKeySequence::MoveToPreviousLine))
-        ExposlistWidget->setCurrentRow(ExposlistWidget->currentRow()-1);
+  if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+    expoOpen();
+  if (event->matches(QKeySequence::MoveToNextLine))
+    ExposlistWidget->setCurrentRow(ExposlistWidget->currentRow() + 1);
+  if (event->matches(QKeySequence::MoveToPreviousLine))
+    ExposlistWidget->setCurrentRow(ExposlistWidget->currentRow() - 1);
 }
 
 int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
@@ -418,7 +439,7 @@ int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
   if (idx >= CPN_MAX_EXPOS || idx < 0 || (dir && idx >= CPN_MAX_EXPOS - 1) || (!dir && !idx))
     return -1;
 
-  const int tdx = dir ? idx+1 : idx-1;
+  const int tdx = dir ? idx + 1 : idx-1;
   ExpoData temp;
   ExpoData &src = model->expoData[idx];
   ExpoData &tgt = model->expoData[tdx];
@@ -432,7 +453,7 @@ int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
 
   if (tgt.chn != src.chn || tgtempty) {
     const int oldChan = src.chn;
-    if (dir && src.chn < unsigned(inputsCount-1))
+    if (dir && src.chn < unsigned(inputsCount - 1))
       src.chn++;
     else if (!dir && src.chn > 0)
       src.chn--;
@@ -452,7 +473,7 @@ void InputsPanel::moveExpoList(bool down)
   QList<int> list = createExpoListFromSelected();
   QList<int> highlightList;
   bool mod = false;
-  foreach(int idx, list) {
+  foreach (int idx, list) {
     const int newIdx = gm_moveExpo(idx, down);
     if (newIdx > -1) {
       highlightList << newIdx;
@@ -483,19 +504,22 @@ void InputsPanel::expolistWidget_doubleClicked(QModelIndex index)
 
 void InputsPanel::exposDeleteList(QList<int> list, bool clearName)
 {
-    std::sort(list.begin(), list.end());
+  std::sort(list.begin(), list.end());
 
-    int iDec = 0;
-    foreach(int idx, list) {
-      gm_deleteExpo(idx-iDec, clearName);
-      iDec++;
-    }
+  int iDec = 0;
+  foreach (int idx, list) {
+    gm_deleteExpo(idx-iDec, clearName);
+    iDec++;
+  }
 }
 
 void InputsPanel::clearExpos()
 {
-  if (QMessageBox::question(this, tr("Clear Inputs?"), tr("Really clear all the inputs?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
     model->clearInputs();
+    for (int i = 0; i < inputsCount; i++) {
+      model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, i);
+    }
     emit modified();
     update();
   }
@@ -512,8 +536,172 @@ void InputsPanel::maybeCopyInputName(int srcChan, int destChan)
   if (srcEmpty) {
     // if destination input name is empty, copy it from source expo input
     if (!strlen(model->inputNames[destChan]))
-      strncpy(model->inputNames[destChan], model->inputNames[srcChan], 5);
+      strncpy(model->inputNames[destChan], model->inputNames[srcChan], INPUT_NAME_LEN);
     // clear the emptry source channel name
     model->inputNames[srcChan][0] = 0;
   }
+}
+
+bool InputsPanel::cmInputInsertAllowed() const
+{
+  return ((!model->hasExpos(inputsCount - 1)) && (inputIdx < inputsCount - 1));
+}
+
+bool InputsPanel::cmInputMoveDownAllowed() const
+{
+  return (inputIdx >= 0 && (inputIdx < inputsCount - 1));
+}
+
+bool InputsPanel::cmInputMoveUpAllowed() const
+{
+  return inputIdx > 0;
+}
+
+void InputsPanel::cmInputClear()
+{
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
+  for (int i = CPN_MAX_EXPOS - 1; i >= 0; i--) {
+    ExpoData *ed = &model->expoData[i];
+    if ((int)ed->chn == inputIdx)
+      model->removeInput(i);
+  }
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, inputIdx);
+  update();
+  emit modified();
+}
+
+void InputsPanel::cmInputDelete()
+{
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
+  for (int i = 0; i < CPN_MAX_EXPOS; i++) {
+    ExpoData *ed = &model->expoData[i];
+    if ((int)ed->chn == inputIdx)
+      model->removeInput(i);
+    else if ((int)ed->chn > inputIdx)
+      ed->chn--;
+  }
+
+  for (int i = inputIdx; i < inputsCount; i++) {
+    strncpy(model->inputNames[i], model->inputNames[i + 1], sizeof(model->inputNames[i]) - 1);
+  }
+  model->inputNames[inputsCount - 1][0] = 0;
+
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, -1);
+  update();
+  emit modified();
+}
+
+void InputsPanel::cmInputInsert()
+{
+  for (int i = 0; i < CPN_MAX_EXPOS; i++) {
+    ExpoData *ed = &model->expoData[i];
+    if ((int)ed->chn >= inputIdx)
+      ed->chn++;
+  }
+
+  for (int i = inputsCount - 1; i > inputIdx; i--) {
+    strncpy(model->inputNames[i], model->inputNames[i - 1], sizeof(model->inputNames[i]) - 1);
+  }
+  model->inputNames[inputIdx][0] = 0;
+
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, 1);
+  update();
+  emit modified();
+}
+
+void InputsPanel::cmInputMoveDown()
+{
+  cmInputSwapData(inputIdx, inputIdx + 1);
+}
+
+void InputsPanel::cmInputMoveUp()
+{
+  cmInputSwapData(inputIdx - 1, inputIdx);
+}
+
+void InputsPanel::cmInputSwapData(int idx1, int idx2)
+{
+  if (idx1 >= idx2 || (!model->hasExpos(idx1) && !model->hasExpos(idx2)))
+    return;
+  //  save expos
+  int expoidx = -1;
+  QVector<ExpoData> edtmp;
+  int i;
+  for (i = 0; i < CPN_MAX_EXPOS; i++) {
+    ExpoData *ed = &model->expoData[i];
+    if ((int)ed->chn == idx1) {
+      edtmp << model->expoData[i];
+      if (expoidx < 0)
+        expoidx = i;
+    }
+    else if ((int)ed->chn > idx1)
+      break;
+  }
+  //  move expos up
+  const int offset = i - expoidx;
+  int expocnt;
+  for (int j = i; j < CPN_MAX_EXPOS; j++) {
+    ExpoData *ed = &model->expoData[j];
+    if ((int)ed->chn == idx2) {
+      ExpoData *dest = &model->expoData[j - offset];
+      memcpy(dest, &model->expoData[j], sizeof(ExpoData));
+      dest->chn = idx1;
+      expocnt++;
+    }
+    else if ((int)ed->chn > idx2)
+      break;
+  }
+  //  copy back saved expos
+  int cnt = 0;
+  foreach (ExpoData ed, edtmp) {
+    ExpoData *dest = &model->expoData[expoidx + expocnt + cnt];
+    memcpy(dest, &ed, sizeof(ExpoData));
+    dest->chn = idx2;
+    cnt++;
+  }
+
+  //  swap names
+  QByteArray *tname = new QByteArray(model->inputNames[idx2]);
+  strncpy(model->inputNames[idx2], model->inputNames[idx1], sizeof(model->inputNames[idx2]) - 1);
+  strncpy(model->inputNames[idx1], tname->data(), sizeof(model->inputNames[idx1]) - 1);
+
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
+  update();
+  emit modified();
+}
+
+bool InputsPanel::isInputIndex(const int index)
+{
+  if (index < 0)
+    return true;
+  else
+    return false;
+}
+
+bool InputsPanel::isExpoIndex(const int index)
+{
+  return !isInputIndex(index);
+}
+
+int InputsPanel::getIndexFromSelected()
+{
+  return ExposlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+}
+
+int InputsPanel::getInputIndexFromSelected()
+{
+  const int selidx = getIndexFromSelected();
+  int idx;
+
+  if (isInputIndex(selidx))
+    idx = -selidx - 1;
+  else {
+    const ExpoData *ed = &model->expoData[selidx];
+    idx = ed->chn;
+  }
+  return idx;
 }

@@ -141,10 +141,7 @@ void runFatalErrorScreen(const char * message);
 
 inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
 {
-  if (IS_RX_MULTI(moduleIdx))
-    return 0;
-
-  if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || isModuleAFHDS3(moduleIdx))
+  if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || IS_RX_MULTI(moduleIdx) || isModuleAFHDS3(moduleIdx))
     return 1;
 
   if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx))

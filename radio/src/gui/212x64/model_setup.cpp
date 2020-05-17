@@ -956,6 +956,7 @@ void menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(multiRfProto);
                 g_model.moduleData[EXTERNAL_MODULE].subType = 0;
                 resetMultiProtocolsOptions(EXTERNAL_MODULE);
+                storageDirty(EE_MODEL);
               }
             }
               break;

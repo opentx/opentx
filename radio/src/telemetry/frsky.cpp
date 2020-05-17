@@ -32,6 +32,11 @@ void processFrskyTelemetryData(uint8_t data)
     auxSerialPutc(data);
   }
 #endif
+#if defined(AUX2_SERIAL)
+  if (g_eeGeneral.aux2SerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    aux2SerialPutc(data);
+  }
+#endif
 
   if (pushFrskyTelemetryData(data)) {
     if (IS_FRSKY_SPORT_PROTOCOL()) {
