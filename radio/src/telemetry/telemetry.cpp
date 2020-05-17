@@ -303,7 +303,7 @@ void telemetryInit(uint8_t protocol)
 #endif
 
 #if defined(AFHDS3) && !defined(SIMU)
-  else if(protocol == PROTOCOL_TELEMETRY_AFHDS3){
+  else if(protocol == PROTOCOL_TELEMETRY_AFHDS3) {
     telemetryPortInvertedInit(AFHDS3_BAUDRATE);
     telemetryPortSetDirectionInput();
   }
