@@ -53,16 +53,16 @@ namespace afhds3
   };
 
   static const char* const powerSourceText[] = {
-      "Unknown",
-      "Internal",
-      "External"
+    "Unknown",
+    "Internal",
+    "External"
   };
 
   static const COMMAND periodicRequestCommands[] = {
-      COMMAND::MODULE_STATE,
-      COMMAND::MODULE_POWER_STATUS,
-      COMMAND::MODULE_GET_CONFIG,
-      COMMAND::VIRTUAL_FAILSAFE
+    COMMAND::MODULE_STATE,
+    COMMAND::MODULE_POWER_STATUS,
+    COMMAND::MODULE_GET_CONFIG,
+    COMMAND::VIRTUAL_FAILSAFE
   };
 
   //Address used in transmitted frames - it constrains of target address and source address
