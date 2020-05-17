@@ -857,7 +857,7 @@ void FlightModePanel::cmInsert()
     FlightModeData *fm = &model->flightModeData[j];
 
     for (int i = 0; i < trimCount; i++) {
-      if (phaseIdx == 0 and j == 1)
+      if (phaseIdx == 0 && j == 1)
         fm->trimRef[i] = j;
       else if (fm->trimRef[i] >= phaseIdx) {
         if (fm->trimRef[i] < maxidx)
@@ -873,7 +873,7 @@ void FlightModePanel::cmInsert()
     for (int i = 0; i < gvCount; i++) {
       if (model->isGVarLinked(j, i)) {
         int idx = model->getGVarFlightModeIndex(j, i);
-        if (phaseIdx == 0 and j == 1)
+        if (phaseIdx == 0 && j == 1)
           model->setGVarFlightModeIndexToValue(j, i, j);
         else if (idx >= phaseIdx)
           model->setGVarFlightModeIndexToValue(j, i, idx + 1);
@@ -883,7 +883,7 @@ void FlightModePanel::cmInsert()
     for (int i = 0; i < reCount; i++) {
       if (model->isREncLinked(j, i)) {
         int idx = model->getREncFlightModeIndex(j, i);
-        if (phaseIdx == 0 and j == 1)
+        if (phaseIdx == 0 && j == 1)
           model->setREncFlightModeIndexToValue(j, i, j);
         else if (idx >= phaseIdx)
           model->setREncFlightModeIndexToValue(j, i, idx + 1);
