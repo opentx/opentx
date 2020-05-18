@@ -381,7 +381,7 @@ bool menuRadioSetup(event_t event)
         break;
 
       case ITEM_SETUP_BACKLIGHT_MODE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH , y, STR_MODE);
         g_eeGeneral.backlightMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
@@ -414,7 +414,7 @@ bool menuRadioSetup(event_t event)
 
 #if defined(KEYS_BACKLIGHT_GPIO)
       case ITEM_SETUP_KEYS_BACKLIGHT:
-        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH , y, "Keys backlight");
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH , y, STR_KEYS_BACKLIGHT);
         g_eeGeneral.keyBacklight = editCheckBox(g_eeGeneral.keyBacklight, RADIO_SETUP_2ND_COLUMN, y, attr, event ) ;
         break;
 #endif
