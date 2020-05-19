@@ -109,7 +109,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       break;
 
 #if defined(DEBUG) || defined(CLI)
-      case UART_MODE_DEBUG:
+    case UART_MODE_DEBUG:
       auxSerialSetup(DEBUG_BAUDRATE, false);
       AUX_SERIAL_POWER_OFF();
       break;
