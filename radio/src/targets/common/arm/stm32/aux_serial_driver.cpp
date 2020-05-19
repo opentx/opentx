@@ -109,7 +109,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       break;
 
 #if defined(DEBUG) || defined(CLI)
-    case UART_MODE_DEBUG:
+      case UART_MODE_DEBUG:
       auxSerialSetup(DEBUG_BAUDRATE, false);
       AUX_SERIAL_POWER_OFF();
       break;
@@ -196,31 +196,18 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
     }
   }
 #endif
+  // Receive
+  uint32_t status = AUX_SERIAL_USART->SR;
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    uint8_t data = AUX_SERIAL_USART->DR;
+    if (!(status & USART_FLAG_ERRORS)) {
 #if defined(LUA) & !defined(CLI)
-  if (luaRxFifo && auxSerialMode == UART_MODE_LUA) {
-    // Receive
-    uint32_t status = AUX_SERIAL_USART->SR;
-    while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-      uint8_t data = AUX_SERIAL_USART->DR;
-      if (!(status & USART_FLAG_ERRORS)) {
+      if (luaRxFifo && auxSerialMode == UART_MODE_LUA)
         luaRxFifo->push(data);
-      }
-      status = AUX_SERIAL_USART->SR;
-    }
-  }
-#if defined(AUX2_SERIAL)
-  if (luaRxFifo && aux2SerialMode == UART_MODE_LUA) {
-    // Receive
-    uint32_t status = AUX2_SERIAL_USART->SR;
-    while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-      uint8_t data = AUX2_SERIAL_USART->DR;
-      if (!(status & USART_FLAG_ERRORS)) {
-        luaRxFifo->push(data);
-      }
-      status = AUX2_SERIAL_USART->SR;
-    }
-  }
 #endif
+    }
+    status = AUX_SERIAL_USART->SR;
+  }
 #endif
 }
 #endif
@@ -401,6 +388,19 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
     }
   }
 #endif
+#if defined(AUX2_SERIAL)
+  // Receive
+  uint32_t status = AUX2_SERIAL_USART->SR;
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    uint8_t data = AUX2_SERIAL_USART->DR;
+    if (!(status & USART_FLAG_ERRORS)) {
+#if defined(LUA)
+      if (luaRxFifo && aux2SerialMode == UART_MODE_LUA)
+        luaRxFifo->push(data);
+#endif
+    }
+    status = AUX2_SERIAL_USART->SR;
+  }
 }
 #endif
 
