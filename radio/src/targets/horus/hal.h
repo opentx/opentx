@@ -322,7 +322,7 @@
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
   #if defined(RADIO_TX16S)
     #define ADC_VREF_PREC2              330
-  #elif defined(RADIO_T16)
+  #elif defined(RADIO_T16) || defined(RADIO_T18)
     #define ADC_VREF_PREC2              300
   #else
     #define ADC_VREF_PREC2              250
