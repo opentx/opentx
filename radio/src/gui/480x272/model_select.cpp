@@ -62,7 +62,7 @@ void drawModel(coord_t x, coord_t y, ModelCell * model, bool current, bool selec
   if (selected) {
     lcdDrawSolidRect(x, y, MODELCELL_WIDTH+2, MODELCELL_HEIGHT+2, 1, TITLE_BGCOLOR);
     drawShadow(x, y, MODELCELL_WIDTH+2, MODELCELL_HEIGHT+2);
-    if (selectMode == MODE_MOVE_MODEL) {
+    if (selectMode == MODE_MOVE_MODEL && modelselModelMoveBackground) {
       lcd->drawMask(x+MODELCELL_WIDTH+2-modelselModelMoveBackground->getWidth(), y, modelselModelMoveBackground, TITLE_BGCOLOR);
       lcd->drawMask(x+MODELCELL_WIDTH+2-modelselModelMoveBackground->getWidth()+12, y+5, modelselModelMoveIcon, TEXT_BGCOLOR);
     }

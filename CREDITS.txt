@@ -11,6 +11,7 @@ Arne Schwabe (schwabe)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
+[es] Daniel Gorbea (dgatf)
 
 [Other contributors]
 Rob Thomson
@@ -1728,3 +1729,8 @@ Maksym Arshynkin
 Tomas Sodergren
 Jörg Lemnitz
 TMac FPV
+Josef Schaeffler
+Mike Frizell
+MeCodeGoodSomeday
+Timothy Fry
+John Beech

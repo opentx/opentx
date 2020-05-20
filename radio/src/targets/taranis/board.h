@@ -785,7 +785,7 @@ void hapticOff();
   void hapticOn();
 #endif
 
-// Second serial port driver
+// Aux serial port driver
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
 #define AUX_SERIAL
@@ -796,7 +796,7 @@ void auxSerialPutc(char c);
 void auxSerialSbusInit();
 void auxSerialStop();
 #define AUX_SERIAL_POWER_ON()
-#define AUX_SERIAL__POWER_OFF()
+#define AUX_SERIAL_POWER_OFF()
 #endif
 
 // BT driver

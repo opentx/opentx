@@ -59,7 +59,7 @@ SimulatedUIWidgetTX16S::SimulatedUIWidgetTX16S(SimulatorInterface *simulator, QW
   m_scrollDnAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Equal, SIMU_STR_HLP_KEY_PLS % "|" % SIMU_STR_HLP_MOUSE_DN, SIMU_STR_HLP_ACT_ROT_RGT);
   connectScrollActions();
 
-  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 252, 30, 30), "TX16S/left_scrnsht.png", m_screenshotAction));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 245, 30, 30), "TX16S/left_scrnsht.png", m_screenshotAction));
 
   m_backlightColors << QColor(47, 123, 227);
 

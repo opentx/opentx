@@ -18,39 +18,30 @@
  * GNU General Public License for more details.
  */
 
-#ifndef CURVEREFERENCE_H
-#define CURVEREFERENCE_H
+#ifndef _PROFILECHOOSER_H_
+#define _PROFILECHOOSER_H_
 
-#include <QtCore>
+#include <QtWidgets>
 
-class ModelData;
+namespace Ui {
+  class ProfileChooserDialog;
+}
 
-class CurveReference {
-  Q_DECLARE_TR_FUNCTIONS(CurveReference)
+class ProfileChooserDialog : public QDialog
+{
+  Q_OBJECT
 
   public:
-    enum CurveRefType {
-      CURVE_REF_DIFF,
-      CURVE_REF_EXPO,
-      CURVE_REF_FUNC,
-      CURVE_REF_CUSTOM
-    };
+    ProfileChooserDialog(QWidget * parent = 0);
+    ~ProfileChooserDialog();
+signals:
+  void profileChanged(int newid);
 
-    CurveReference() { clear(); }
+  private slots:
+    void on_cboProfilesCurrentIndexChanged(int index);
 
-    CurveReference(CurveRefType type, int value):
-      type(type),
-      value(value)
-    {
-    }
-
-    void clear() { memset(this, 0, sizeof(CurveReference)); }
-
-    CurveRefType type;
-    int value;
-
-    QString toString(const ModelData * model = NULL, bool verbose = true) const;
-    bool isSet() const { return type != CURVE_REF_DIFF || value != 0; }
+  private:
+    Ui::ProfileChooserDialog *ui;
 };
 
-#endif // CURVEREFERENCE_H
+#endif // _PROFILECHOOSER_H_

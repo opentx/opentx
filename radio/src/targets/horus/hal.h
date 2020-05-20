@@ -392,8 +392,8 @@
 #endif
 
 // Serial Port (DEBUG)
-#if defined(PCBX12S)
-  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
+#if defined(PCBX12S) || defined(RADIO_TX16S)
+  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define AUX_SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
   #define AUX_SERIAL_RCC_APB2Periph           0
   #define AUX_SERIAL_GPIO                     GPIOB
@@ -407,45 +407,38 @@
   #define AUX_SERIAL_USART_IRQn               USART3_IRQn
   #define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
-#elif defined(RADIO_TX16S) && !defined(BLUETOOTH)
-  #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
-  #define AUX_SERIAL_RCC_APB1Periph           0
-  #define AUX_SERIAL_RCC_APB2Periph           RCC_APB2Periph_USART6
-  #define AUX_SERIAL_USART                    USART6
-  #define AUX_SERIAL_GPIO_AF                  GPIO_AF_USART6
-  #define AUX_SERIAL_USART_IRQn               USART6_IRQn
-  #define AUX_SERIAL_GPIO                     GPIOG
-  #define AUX_SERIAL_GPIO_PIN_TX              GPIO_Pin_14 // PG.14
-  #define AUX_SERIAL_GPIO_PIN_RX              GPIO_Pin_9  // PG.09
-  #define AUX_SERIAL_GPIO_PinSource_TX        GPIO_PinSource14
-  #define AUX_SERIAL_GPIO_PinSource_RX        GPIO_PinSource9
-  #define AUX_SERIAL_USART_IRQHandler         USART6_IRQHandler
-  #define AUX_SERIAL_DMA_Stream_RX            DMA2_Stream6
-  #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_5
-  #define AUX_SERIAL_PWR_GPIO                 GPIOB
-  #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_0  // PB.00
-  #define TRAINER_BATTERY_COMPARTMENT
-
-  #define AUX2_SERIAL_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
-  #define AUX2_SERIAL_PWR_GPIO                GPIOA
-  #define AUX2_SERIAL_PWR_GPIO_PIN            GPIO_Pin_15  // PA.15
-  #define AUX2_SERIAL_RCC_APB1Periph          RCC_APB1Periph_USART3
-  #define AUX2_SERIAL_RCC_APB2Periph          0
-  #define AUX2_SERIAL_GPIO                    GPIOB
-  #define AUX2_SERIAL_GPIO_PIN_TX             GPIO_Pin_10 // PB.10
-  #define AUX2_SERIAL_GPIO_PIN_RX             GPIO_Pin_11 // PB.11
-  #define AUX2_SERIAL_GPIO_PinSource_TX       GPIO_PinSource10
-  #define AUX2_SERIAL_GPIO_PinSource_RX       GPIO_PinSource11
-  #define AUX2_SERIAL_GPIO_AF                 GPIO_AF_USART3
-  #define AUX2_SERIAL_USART                   USART3
-  #define AUX2_SERIAL_USART_IRQHandler        USART3_IRQHandler
-  #define AUX2_SERIAL_USART_IRQn              USART3_IRQn
-  #define AUX2_SERIAL_DMA_Stream_RX           DMA1_Stream1
-  #define AUX2_SERIAL_DMA_Channel_RX          DMA_Channel_4
+  #define AUX_SERIAL_PWR_GPIO                 GPIOA
+  #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_15  // PB.00
+#if defined(RADIO_TX16S)
+  #define TRAINER_BATTERY_COMPARTMENT         // allows serial port TTL trainer
+#endif
 #else
   #define AUX_SERIAL_RCC_AHB1Periph           0
   #define AUX_SERIAL_RCC_APB1Periph           0
   #define AUX_SERIAL_RCC_APB2Periph           0
+#endif
+
+#if defined(RADIO_TX16S) && !defined(BLUETOOTH)
+  #define AUX2_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
+  #define AUX2_SERIAL_RCC_APB1Periph           0
+  #define AUX2_SERIAL_RCC_APB2Periph           RCC_APB2Periph_USART6
+  #define AUX2_SERIAL_USART                    USART6
+  #define AUX2_SERIAL_GPIO_AF                  GPIO_AF_USART6
+  #define AUX2_SERIAL_USART_IRQn               USART6_IRQn
+  #define AUX2_SERIAL_GPIO                     GPIOG
+  #define AUX2_SERIAL_GPIO_PIN_TX              GPIO_Pin_14 // PG.14
+  #define AUX2_SERIAL_GPIO_PIN_RX              GPIO_Pin_9  // PG.09
+  #define AUX2_SERIAL_GPIO_PinSource_TX        GPIO_PinSource14
+  #define AUX2_SERIAL_GPIO_PinSource_RX        GPIO_PinSource9
+  #define AUX2_SERIAL_USART_IRQHandler         USART6_IRQHandler
+  #define AUX2_SERIAL_DMA_Stream_RX            DMA2_Stream6
+  #define AUX2_SERIAL_DMA_Channel_RX           DMA_Channel_5
+  #define AUX2_SERIAL_PWR_GPIO                 GPIOB
+  #define AUX2_SERIAL_PWR_GPIO_PIN             GPIO_Pin_0  // PB.00
+#else
+  #define AUX2_SERIAL_RCC_AHB1Periph           0
+  #define AUX2_SERIAL_RCC_APB1Periph           0
+  #define AUX2_SERIAL_RCC_APB2Periph           0
 #endif
 
 // Telemetry
