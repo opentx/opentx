@@ -78,6 +78,8 @@ enum
   HOTT_ID_HDG        = 0x0008,  // Heading sensor
   HOTT_ID_GSPD       = 0x0008,  // Ground speed sensor
   HOTT_ID_GPS_LAT_LONG = 0x0009,  // GPS sensor
+  HOTT_ID_CELS_L     = 0x000A,  // Cels L sensor
+  HOTT_ID_CELS_H     = 0x000B,  // Cels H sensor
   HOTT_TX_RSSI_ID    = 0xFF00,  // Pseudo id outside 1 byte range of Hott sensors
   HOTT_TX_LQI_ID     = 0xFF01,  // Pseudo id outside 1 byte range of Hott sensors
   HOTT_RX_RSSI_ID    = 0xFF02,  // Pseudo id outside 1 byte range of Hott sensors
@@ -257,6 +259,7 @@ void processHottPacket(const uint8_t * packet)
           sensor = getHottSensor(HOTT_ID_ALT);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, 0, HOTT_TELEM_GPS, value, sensor->unit, sensor->precision);
           break;
+
         case HOTT_PAGE_03:
           // packet[4 ] uint8_t climbrate_L;   //#24 m/s 0.01m/s resolution. Value of 30000 = 0.00 m/s
           // packet[5 ] uint8_t climbrate_H;    //#25
@@ -366,8 +369,17 @@ void processHottPacket(const uint8_t * packet)
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
           // packet[7 ] uint8_t cell1_L;             //#07 cell 1 voltage lower value. 0.02V steps, 124=2.48V
+          value = packet[7] * 0.02;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, value, UNIT_CELLS, 0);
+
           // packet[8 ] uint8_t cell2_L;             //#08
+          value = packet[8] * 0.02;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, value | 1 << 16,UNIT_CELLS, 0);
+
           // packet[9 ] uint8_t cell3_L;             //#09
+          value = packet[9] * 0.02;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, value | 2 << 16,UNIT_CELLS, 0);
+
           // packet[10] uint8_t cell4_L;             //#10
           // packet[11] uint8_t cell5_L;             //#11
           // packet[12] uint8_t cell6_L;             //#12
@@ -375,8 +387,17 @@ void processHottPacket(const uint8_t * packet)
           break;
         case HOTT_PAGE_02:
           // packet[4 ] uint8_t cell1_H;             //#14 cell 1 voltage high value. 0.02V steps, 124=2.48V
+          value = packet[4] * 0.02;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, value, UNIT_CELLS, 0);
+
           // packet[5 ] uint8_t cell2_H;             //#15
+          value = packet[5] * 0.02;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, value | 1 << 16,UNIT_CELLS, 0);
+
           // packet[6 ] uint8_t cell3_H;             //#16
+          value = packet[6] * 0.02;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, value | 2 << 16,UNIT_CELLS, 0);
+
           // packet[7 ] uint8_t cell4_H;             //#17
           // packet[8 ] uint8_t cell5_H;             //#18
           // packet[9 ] uint8_t cell6_H;             //#19
