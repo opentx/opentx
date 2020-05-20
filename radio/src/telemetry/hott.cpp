@@ -173,13 +173,13 @@ void processHottPacket(const uint8_t * packet)
           // packet[7 ] uint8_t altitude_H;          //#07 Altitude high uint8_t
           value = packet[6] + (packet[7] << 8) - 500;
           sensor = getHottSensor(HOTT_ID_ALT);
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, HOTT_TELEM_VARIO, 0, value, sensor->unit, sensor->precision);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, 0, HOTT_TELEM_VARIO, value, sensor->unit, sensor->precision);
 
           // packet[12] uint8_t climbrate_L;         //#12 Climb rate in m/s. Steps of 0.01m/s. Value of 30000 = 0.00 m/s
           // packet[13] uint8_t climbrate_H;         //#13 Climb rate in m/s
           value = packet[12] + (packet[13] << 8) - 30000;
           sensor = getHottSensor(HOTT_ID_VARIO);
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, HOTT_TELEM_VARIO, 0, value, sensor->unit, sensor->precision);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, 0, HOTT_TELEM_VARIO, value, sensor->unit, sensor->precision);
           break;
         case HOTT_PAGE_02:
           // packet[12] uint8_t compass_direction;   //#42 Compass heading in 2� steps. 1 = 2�
@@ -215,11 +215,14 @@ void processHottPacket(const uint8_t * packet)
           // packet[13] uint8_t altitude_H;    //#23
           value = packet[12] + (packet[13] << 8) - 500;
           sensor = getHottSensor(HOTT_ID_ALT);
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, HOTT_TELEM_GPS, 0, value, sensor->unit, sensor->precision);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, 0, HOTT_TELEM_GPS, value, sensor->unit, sensor->precision);
           break;
         case HOTT_PAGE_03:
           // packet[4 ] uint8_t climbrate_L;   //#24 m/s 0.01m/s resolution. Value of 30000 = 0.00 m/s
           // packet[5 ] uint8_t climbrate_H;    //#25
+          value = packet[4] + (packet[5] << 8) - 30000;
+          sensor = getHottSensor(HOTT_ID_VARIO);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, 0, HOTT_TELEM_GPS, value, sensor->unit, sensor->precision);
           // packet[6 ] uint8_t climbrate3s;   //#26 climbrate in m/3s resolution, value of 120 = 0 m/3s
           // packet[7 ] uint8_t gps_satelites;//#27 sat count
           // packet[8 ] uint8_t gps_fix_char; //#28 GPS fix character. display, 'D' = DGPS, '2' = 2D, '3' = 3D, '-' = no fix. Where appears this char???
@@ -349,7 +352,7 @@ void processHottPacket(const uint8_t * packet)
           // packet[8 ] uint8_t altitude_H;          //#28
           value = packet[6] + (packet[7] << 8) - 500;
           sensor = getHottSensor(HOTT_ID_ALT);
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, HOTT_TELEM_EAM, 0, value, sensor->unit, sensor->precision);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
           // packet[9 ] uint8_t current_L;           //#29 Current in 0.1 steps
           // packet[10] uint8_t current_H;           //#30
           // packet[11] uint8_t main_voltage_L;      //#31 Main power voltage (drive) in 0.1V steps
@@ -362,7 +365,7 @@ void processHottPacket(const uint8_t * packet)
           // packet[6 ] uint8_t climbrate_H;         //#36
           value = packet[5] + (packet[6] << 8) - 30000;
           sensor = getHottSensor(HOTT_ID_VARIO);
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, HOTT_TELEM_EAM, 0, value, sensor->unit, sensor->precision);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
           // packet[7 ] uint8_t climbrate3s;         //#37 climbrate in m/3sec. Value of 120 = 0m/3sec
           // packet[8 ] uint8_t rpm_L;               //#38 RPM. Steps: 10 U/min
           // packet[9 ] uint8_t rpm_H;               //#39
