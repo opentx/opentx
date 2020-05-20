@@ -177,7 +177,7 @@ void processHottPacket(const uint8_t * packet)
 
           // packet[12] uint8_t climbrate_L;         //#12 Climb rate in m/s. Steps of 0.01m/s. Value of 30000 = 0.00 m/s
           // packet[13] uint8_t climbrate_H;         //#13 Climb rate in m/s
-          value = packet[12] + (packet[13] << 8);
+          value = packet[12] + (packet[13] << 8) - 30000;
           sensor = getHottSensor(HOTT_ID_VARIO);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, HOTT_TELEM_VARIO, 0, value, sensor->unit, sensor->precision);
           break;
@@ -213,6 +213,9 @@ void processHottPacket(const uint8_t * packet)
           // packet[11] uint8_t home_distance_H;  //#21
           // packet[12] uint8_t altitude_L;    //#22 meters. Value of 500 = 0m
           // packet[13] uint8_t altitude_H;    //#23
+          value = packet[12] + (packet[13] << 8) - 500;
+          sensor = getHottSensor(HOTT_ID_ALT);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, HOTT_TELEM_GPS, 0, value, sensor->unit, sensor->precision);
           break;
         case HOTT_PAGE_03:
           // packet[4 ] uint8_t climbrate_L;   //#24 m/s 0.01m/s resolution. Value of 30000 = 0.00 m/s
