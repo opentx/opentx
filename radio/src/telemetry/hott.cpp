@@ -350,7 +350,7 @@ void processHottPacket(const uint8_t * packet)
           // packet[6 ] uint8_t temp2;               //#26 temperature sensor 2
           // packet[7 ] uint8_t altitude_L;          //#27 Attitude lower value. unit: meters. Value of 500 = 0m
           // packet[8 ] uint8_t altitude_H;          //#28
-          value = packet[6] + (packet[7] << 8) - 500;
+          value = packet[7] + (packet[8] << 8) - 500;
           sensor = getHottSensor(HOTT_ID_ALT);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
           // packet[9 ] uint8_t current_L;           //#29 Current in 0.1 steps
