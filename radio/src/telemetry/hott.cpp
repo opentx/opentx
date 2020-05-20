@@ -75,6 +75,9 @@ enum
   HOTT_ID_TEMP1      = 0x0005,  // RX Temperature sensor
   HOTT_ID_VARIO      = 0x0006,  // Vario sensor
   HOTT_ID_ALT        = 0x0007,  // Alt sensor
+  HOTT_ID_HDG        = 0x0008,  // Heading sensor
+  HOTT_ID_GSPD       = 0x0008,  // Ground speed sensor
+  HOTT_ID_GPS_LAT_LONG = 0x0009,  // GPS sensor
   HOTT_TX_RSSI_ID    = 0xFF00,  // Pseudo id outside 1 byte range of Hott sensors
   HOTT_TX_LQI_ID     = 0xFF01,  // Pseudo id outside 1 byte range of Hott sensors
   HOTT_RX_RSSI_ID    = 0xFF02,  // Pseudo id outside 1 byte range of Hott sensors
@@ -86,7 +89,10 @@ const HottSensor hottSensors[] = {
   {HOTT_ID_RX_VOLTAGE,   ZSTR_BATT,       UNIT_VOLTS,             1},  // RX_Batt Voltage
   {HOTT_ID_TEMP1,        ZSTR_TEMP1,      UNIT_CELSIUS,           0},  // RX Temperature sensor
   {HOTT_ID_VARIO,        ZSTR_VSPD,       UNIT_METERS_PER_SECOND, 2},  // Vario sensor
-  {HOTT_ID_ALT,          ZSTR_ALT,        UNIT_METERS           , 0},  // Alt sensor
+  {HOTT_ID_ALT,          ZSTR_ALT,        UNIT_METERS,            0},  // Alt sensor
+  {HOTT_ID_HDG,          ZSTR_HDG,        UNIT_DEGREE,            0},  // Heading sensor
+  {HOTT_ID_GSPD,         ZSTR_GSPD,        UNIT_KMH,              0},  // Ground speed sensor
+  {HOTT_ID_GPS_LAT_LONG, ZSTR_GPS,        UNIT_GPS,               0},  // GPS position
   {HOTT_TX_RSSI_ID,      ZSTR_TX_RSSI,    UNIT_DB,                0},  // Pseudo id outside 1 byte range of Hott sensors
   {HOTT_TX_LQI_ID,       ZSTR_TX_QUALITY, UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
   {HOTT_RX_RSSI_ID,      ZSTR_RSSI,       UNIT_DB,                0},  // RX RSSI
@@ -140,6 +146,7 @@ void processHottPacket(const uint8_t * packet)
 
   const HottSensor * sensor;
   int32_t value;
+  int16_t deg, min, sec;
 
   switch (packet[2]) { // Telemetry type
     case HOTT_TELEM_RX:
@@ -183,6 +190,9 @@ void processHottPacket(const uint8_t * packet)
           break;
         case HOTT_PAGE_02:
           // packet[12] uint8_t compass_direction;   //#42 Compass heading in 2� steps. 1 = 2�
+          value = packet[12] * 2;
+          sensor = getHottSensor(HOTT_ID_HDG);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_HDG, 0, HOTT_TELEM_VARIO, value, sensor->unit, sensor->precision);
           break;
         case HOTT_PAGE_03:
           break;
@@ -195,22 +205,52 @@ void processHottPacket(const uint8_t * packet)
       switch (packet[3]) { // Telemetry page 1,2,3,4
         case HOTT_PAGE_01:
           // packet[7 ] uint8_t flight_direction; //#07 flight direction in 2 degreees/step (1 = 2degrees);
+          value = packet[7] * 2;
+          sensor = getHottSensor(HOTT_ID_HDG);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_HDG, 0, HOTT_TELEM_GPS, value, sensor->unit, sensor->precision);
+
           // packet[8 ] uint8_t gps_speed_L;   //08 km/h
           // packet[9 ] uint8_t gps_speed_H;   //#09
+          value = packet[8] + (packet[9] << 8);
+          sensor = getHottSensor(HOTT_ID_GSPD);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GSPD, 0, HOTT_TELEM_GPS, value, sensor->unit, sensor->precision);
+
           // packet[10] uint8_t pos_NS;        //#10 north = 0, south = 1
           // packet[11] uint8_t pos_NS_dm_L;   //#11 degree minutes ie N48�39�988
           // packet[12] uint8_t pos_NS_dm_H;   //#12
           // packet[13] uint8_t pos_NS_sec_L;  //#13 position seconds
+          min = (int16_t) (packet[11] + (packet[12] << 8));
+          if (packet[10]) {
+            min = -min;
+          }
+          deg = min / 100;
+          min = min - deg * 100;
+          sec = packet[13];
           break;
+
         case HOTT_PAGE_02:
           // packet[4 ] uint8_t pos_NS_sec_H;  //#14
+          sec = sec + (packet[4] << 8);
+          value = deg * 1000000 + (min * 150000 + sec * 25) / 9;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LATITUDE, 0);
+
           // packet[5 ] uint8_t pos_EW;        //#15 east = 0, west = 1
           // packet[6 ] uint8_t pos_EW_dm_L;   //#16 degree minutes ie. E9�25�9360
           // packet[7 ] uint8_t pos_EW_dm_H;   //#17
           // packet[8 ] uint8_t pos_EW_sec_L;  //#18 position seconds
           // packet[9 ] uint8_t pos_EW_sec_H;  //#19
+          min = (int16_t) (packet[6] + (packet[7] << 8));
+          if (packet[5]) {
+            min = -min;
+          }
+          deg = min / 100;
+          min = min - deg * 100;
+          sec = (int16_t) (packet[8] + (packet[9] << 8));
+          value = deg * 1000000 + (min * 150000 + sec * 25) / 9;
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LONGITUDE, 0);
           // packet[10] uint8_t home_distance_L;  //#20 meters
           // packet[11] uint8_t home_distance_H;  //#21
+
           // packet[12] uint8_t altitude_L;    //#22 meters. Value of 500 = 0m
           // packet[13] uint8_t altitude_H;    //#23
           value = packet[12] + (packet[13] << 8) - 500;
@@ -223,6 +263,7 @@ void processHottPacket(const uint8_t * packet)
           value = packet[4] + (packet[5] << 8) - 30000;
           sensor = getHottSensor(HOTT_ID_VARIO);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, 0, HOTT_TELEM_GPS, value, sensor->unit, sensor->precision);
+
           // packet[6 ] uint8_t climbrate3s;   //#26 climbrate in m/3s resolution, value of 120 = 0 m/3s
           // packet[7 ] uint8_t gps_satelites;//#27 sat count
           // packet[8 ] uint8_t gps_fix_char; //#28 GPS fix character. display, 'D' = DGPS, '2' = 2D, '3' = 3D, '-' = no fix. Where appears this char???
@@ -348,11 +389,13 @@ void processHottPacket(const uint8_t * packet)
           // packet[4 ] uint8_t batt2_voltage_H;     //#24
           // packet[5 ] uint8_t temp1;               //#25 Temperature sensor 1. 20=0�, 46=26� - offset of 20.
           // packet[6 ] uint8_t temp2;               //#26 temperature sensor 2
+
           // packet[7 ] uint8_t altitude_L;          //#27 Attitude lower value. unit: meters. Value of 500 = 0m
           // packet[8 ] uint8_t altitude_H;          //#28
           value = packet[7] + (packet[8] << 8) - 500;
           sensor = getHottSensor(HOTT_ID_ALT);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ALT, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
+
           // packet[9 ] uint8_t current_L;           //#29 Current in 0.1 steps
           // packet[10] uint8_t current_H;           //#30
           // packet[11] uint8_t main_voltage_L;      //#31 Main power voltage (drive) in 0.1V steps
@@ -361,11 +404,13 @@ void processHottPacket(const uint8_t * packet)
           break;
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t batt_cap_H;          //#34
+
           // packet[5 ] uint8_t climbrate_L;         //#35 climb rate in 0.01m/s. Value of 30000 = 0.00 m/s
           // packet[6 ] uint8_t climbrate_H;         //#36
           value = packet[5] + (packet[6] << 8) - 30000;
           sensor = getHottSensor(HOTT_ID_VARIO);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
+
           // packet[7 ] uint8_t climbrate3s;         //#37 climbrate in m/3sec. Value of 120 = 0m/3sec
           // packet[8 ] uint8_t rpm_L;               //#38 RPM. Steps: 10 U/min
           // packet[9 ] uint8_t rpm_H;               //#39
