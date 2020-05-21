@@ -242,13 +242,18 @@ void processHottPacket(const uint8_t * packet)
           // packet[8 ] uint8_t pos_EW_sec_L;  //#18 position seconds
           // packet[9 ] uint8_t pos_EW_sec_H;  //#19
           min = (int16_t) (packet[6] + (packet[7] << 8));
+          sec = (int16_t) (packet[8] + (packet[9] << 8));
           if (packet[5]) {
             min = -min;
+            deg = min / 100;
+            min = min - deg * 100;
+            value = deg * 1000000 - (min * 1666) + (sec * 28);
           }
-          deg = min / 100;
-          min = min - deg * 100;
-          sec = (int16_t) (packet[8] + (packet[9] << 8));
-          value = deg * 1000000 + (min * 150000 + sec * 25) / 9;
+          else {
+            deg = min / 100;
+            min = min - deg * 100;
+            value = deg * 1000000 + (min * 10) + (sec * 28);
+          }
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LONGITUDE, 0);
           // packet[10] uint8_t home_distance_L;  //#20 meters
           // packet[11] uint8_t home_distance_H;  //#21
@@ -370,15 +375,15 @@ void processHottPacket(const uint8_t * packet)
         case HOTT_PAGE_01:
           // packet[7 ] uint8_t cell1_L;             //#07 cell 1 voltage lower value. 0.02V steps, 124=2.48V
           value = packet[7] * 0.02;
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, value, UNIT_CELLS, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, 6 << 24 | 0 << 16 | value, UNIT_CELLS, 0);
 
           // packet[8 ] uint8_t cell2_L;             //#08
           value = packet[8] * 0.02;
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, value | 1 << 16,UNIT_CELLS, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, 6 << 24 | 1 << 16 | value,UNIT_CELLS, 0);
 
           // packet[9 ] uint8_t cell3_L;             //#09
           value = packet[9] * 0.02;
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, value | 2 << 16,UNIT_CELLS, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_L, 0, HOTT_TELEM_EAM, 6 << 24 | 2 << 16 | value,UNIT_CELLS, 0);
 
           // packet[10] uint8_t cell4_L;             //#10
           // packet[11] uint8_t cell5_L;             //#11
@@ -388,15 +393,15 @@ void processHottPacket(const uint8_t * packet)
         case HOTT_PAGE_02:
           // packet[4 ] uint8_t cell1_H;             //#14 cell 1 voltage high value. 0.02V steps, 124=2.48V
           value = packet[4] * 0.02;
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, value, UNIT_CELLS, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, 6 << 24 | 0 << 16 | value, UNIT_CELLS, 0);
 
           // packet[5 ] uint8_t cell2_H;             //#15
           value = packet[5] * 0.02;
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, value | 1 << 16,UNIT_CELLS, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, 6 << 24 | 1 << 16 | value,UNIT_CELLS, 0);
 
           // packet[6 ] uint8_t cell3_H;             //#16
           value = packet[6] * 0.02;
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, value | 2 << 16,UNIT_CELLS, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS_H, 0, HOTT_TELEM_EAM, 6 << 24 | 2 << 16 | value,UNIT_CELLS, 0);
 
           // packet[7 ] uint8_t cell4_H;             //#17
           // packet[8 ] uint8_t cell5_H;             //#18
