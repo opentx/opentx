@@ -1869,9 +1869,7 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #endif
 
-#if defined(KEYS_GPIO_REG_EXIT)
   { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
-#endif
 
 #if defined(KEYS_GPIO_REG_ENTER)
   KEY_EVENTS(ENTER, KEY_ENTER),
