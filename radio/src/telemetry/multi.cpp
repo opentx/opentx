@@ -561,7 +561,7 @@ void MultiModuleStatus::getStatusString(char * statusText) const
     return;
   }
 
-  if (major <= 1 && minor <= 3 && revision <= 0 && patch < 91 && SLOW_BLINK_ON_PHASE) {
+  if ((major < 1 || minor < 3 || revision < 1 || patch < 1) && SLOW_BLINK_ON_PHASE) {
     strcpy(statusText, STR_MODULE_UPGRADE);
   }
   else {
