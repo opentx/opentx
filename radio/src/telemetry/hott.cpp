@@ -148,7 +148,8 @@ void processHottPacket(const uint8_t * packet)
 
   const HottSensor * sensor;
   int32_t value;
-  int16_t deg, min, sec;
+  static int16_t deg, min, sec;
+  static bool negative;
 
   switch (packet[2]) { // Telemetry type
     case HOTT_TELEM_RX:
@@ -221,10 +222,13 @@ void processHottPacket(const uint8_t * packet)
           // packet[11] uint8_t pos_NS_dm_L;   //#11 degree minutes ie N48�39�988
           // packet[12] uint8_t pos_NS_dm_H;   //#12
           // packet[13] uint8_t pos_NS_sec_L;  //#13 position seconds
-          min = (int16_t) (packet[11] + (packet[12] << 8));
-          if (packet[10]) {
-            min = -min;
+          if (packet[10] == 1) {
+            negative = true;
           }
+          else {
+            negative = false;
+          }
+          min = (int16_t) (packet[11] + (packet[12] << 8));
           deg = min / 100;
           min = min - deg * 100;
           sec = packet[13];
@@ -233,7 +237,10 @@ void processHottPacket(const uint8_t * packet)
         case HOTT_PAGE_02:
           // packet[4 ] uint8_t pos_NS_sec_H;  //#14
           sec = sec + (packet[4] << 8);
-          value = deg * 1000000 + (min * 150000 + sec * 25) / 9;
+          value = deg * 1000000 + (min * 1000000 + sec * 100) / 60;
+          if (negative) {
+            value = -value;
+          }
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LATITUDE, 0);
 
           // packet[5 ] uint8_t pos_EW;        //#15 east = 0, west = 1
@@ -243,17 +250,12 @@ void processHottPacket(const uint8_t * packet)
           // packet[9 ] uint8_t pos_EW_sec_H;  //#19
           min = (int16_t) (packet[6] + (packet[7] << 8));
           sec = (int16_t) (packet[8] + (packet[9] << 8));
-          if (packet[5]) {
-            min = -min;
-            deg = min / 100;
-            min = min - deg * 100;
-            value = deg * 1000000 - (min * 1666) + (sec * 28);
+          deg = min / 100;
+          min = min - deg * 100;
+          if (packet[5] == 1) {
+            value = -value;
           }
-          else {
-            deg = min / 100;
-            min = min - deg * 100;
-            value = deg * 1000000 + (min * 10) + (sec * 28);
-          }
+          value = deg * 1000000 + (min * 1000000 + sec * 100) / 60;
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LONGITUDE, 0);
           // packet[10] uint8_t home_distance_L;  //#20 meters
           // packet[11] uint8_t home_distance_H;  //#21
