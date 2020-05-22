@@ -329,10 +329,10 @@ PACK(struct TelemetrySensor {
     NOBACKUP(uint16_t persistentValue);
   };
   union {
-    PACK(struct {
+    NOBACKUP(PACK(struct {
       uint8_t physID:5;
       uint8_t rxIndex:3; // 1 bit for module index, 2 bits for receiver index
-    }) frskyInstance;
+    }) frskyInstance);
     uint8_t instance;
     NOBACKUP(uint8_t formula);
   };
