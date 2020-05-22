@@ -148,6 +148,7 @@ void processHottPacket(const uint8_t * packet)
 
   const HottSensor * sensor;
   int32_t value;
+  static uint8_t prev_page=0;
   static int16_t min=0, sec=0;
   static bool negative=false;
   int16_t deg=0;
@@ -234,15 +235,17 @@ void processHottPacket(const uint8_t * packet)
           break;
 
         case HOTT_PAGE_02:
-          // packet[4 ] uint8_t pos_NS_sec_H;  //#14
-          deg = min / 100;
-          min = min - deg * 100;
-          sec = sec + (packet[4] << 8);
-          value = deg * 1000000 + (min * 1000000 + sec * 100) / 60;
-          if (negative) {
-            value = -value;
+          if (prev_page == (HOTT_TELEM_GPS<<4)|HOTT_PAGE_01) {
+            // packet[4 ] uint8_t pos_NS_sec_H;  //#14
+            deg = min / 100;
+            min = min - deg * 100;
+            sec = sec + (packet[4] << 8);
+            value = deg * 1000000 + (min * 1000000 + sec * 100) / 60;
+            if (negative) {
+              value = -value;
+            }
+            setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LATITUDE, 0);
           }
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LATITUDE, 0);
 
           // packet[5 ] uint8_t pos_EW;        //#15 east = 0, west = 1
           // packet[6 ] uint8_t pos_EW_dm_L;   //#16 degree minutes ie. E9�25�9360
@@ -451,6 +454,7 @@ void processHottPacket(const uint8_t * packet)
       }
       break;
   }
+  prev_page= (packet[2]<<4) | packet[3];    // concatenate telemetry type and page
 }
 
 void hottSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
