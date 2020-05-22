@@ -271,7 +271,7 @@ void menuModelExpoOne(event_t event)
             CHECK_INCDEC_MODELVAR_ZERO(event, ed->curveParam, CURVE_BASE+MAX_CURVES-1);
             if (ed->curveParam) ed->curveMode = MODE_CURVE;
             if (ed->curveParam>=CURVE_BASE && event==EVT_KEY_LONG(KEY_ENTER)) {
-              s_curveChan = ed->curveParam - CURVE_BASE;
+              s_currIdxSubMenu = ed->curveParam - CURVE_BASE;
               pushMenu(menuModelCurveOne);
             }
           }
@@ -442,7 +442,7 @@ void menuModelMixOne(event_t event)
           drawCurveName(COLUMN_X+MIXES_2ND_COLUMN, y, curveParam, attr);
           if (attr) {
             if (event==EVT_KEY_LONG(KEY_ENTER) && (curveParam<0 || curveParam>=CURVE_BASE)){
-              s_curveChan = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
+              s_currIdxSubMenu = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
               pushMenu(menuModelCurveOne);
             }
             else {
