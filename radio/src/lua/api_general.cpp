@@ -1728,7 +1728,7 @@ const luaR_value_entry opentxConstants[] = {
   { "DBLSIZE", DBLSIZE },
   { "MIDSIZE", MIDSIZE },
   { "SMLSIZE", SMLSIZE },
-#if defined(PCOLORLCD)
+#if defined(COLORLCD)
   { "TINSIZE", TINSIZE },
 #endif
   { "INVERS", INVERS },
