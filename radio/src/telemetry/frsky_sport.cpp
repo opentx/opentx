@@ -138,7 +138,7 @@ void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, u
   }
   if (unit == UNIT_CELLS) {
     uint8_t cellsCount = (data & 0xF0) >> 4;
-    uint8_t cellIndex = (data & MAX_CELLS);
+    uint8_t cellIndex = min((uint32_t)data & 0x0F,(uint32_t)MAX_CELLS);
     uint32_t mask = (cellsCount << 24) + (cellIndex << 16);
     setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
     if (cellIndex+1 < cellsCount) {
