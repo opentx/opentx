@@ -227,7 +227,7 @@ void processHubPacket(uint8_t id, int16_t value)
   else if (id == VOLTS_ID) {
     unit = UNIT_CELLS;
     uint32_t cellData = (uint32_t)data;
-    if ((cellData & 0x00F0) >= MAX_CELLS)
+    if (((cellData & 0x00F0) >> 4) >= MAX_CELLS)
       return;
     data = ((cellData & 0x00F0) << 12) + (((((cellData & 0xFF00) >> 8) + ((cellData & 0x000F) << 8))) / 5);
   }
