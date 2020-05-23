@@ -31,7 +31,8 @@
 -- !! Before exiting the script must write 0 at address 0 for normal operation !!
 --###############################################################################
 
-HoTT_Sensor = 0;
+HoTT_Sensor = 0
+Timer_128 = 100
 
 local function HoTT_Release()
   multiBuffer( 0, 0 )
@@ -91,14 +92,23 @@ local function HoTT_Draw_LCD()
     if multiBuffer( 4 ) == 0xFF then
       lcd.drawText(2,17,"No HoTT telemetry...",SMLSIZE)
     else
-      for line = 0, 7, 1 do
-        for i = 0, 21-1, 1 do
-          value=multiBuffer( line*21+6+i )
-          if value > 0x80 then
-            value = value - 0x80
-            lcd.drawText(2+i*6,1+8*line,string.char(value).." ",SMLSIZE+INVERS)
-          else
-            lcd.drawText(2+i*6,1+8*line,string.char(value),SMLSIZE)
+      if Timer_128 ~= 0 then
+        --Intro page
+        Timer_128 = Timer_128 - 1
+        lcd.drawScreenTitle("Graupner Hott",0,0)
+        lcd.drawText(2,17,"Configuration of RX" .. sensor_name[HoTT_Sensor+1] ,SMLSIZE)
+        lcd.drawText(2,37,"Press menu to cycle Sensors" ,SMLSIZE)
+      else
+        --Menu page
+        for line = 0, 7, 1 do
+          for i = 0, 21-1, 1 do
+            value=multiBuffer( line*21+6+i )
+            if value > 0x80 then
+              value = value - 0x80
+              lcd.drawText(2+i*6,1+8*line,string.char(value).." ",SMLSIZE+INVERS)
+            else
+              lcd.drawText(2+i*6,1+8*line,string.char(value),SMLSIZE)
+            end
           end
         end
       end
@@ -124,6 +134,7 @@ local function HoTT_Init()
   HoTT_Send( 0x0F )
   HoTT_Sensor = 0;
   HoTT_Detected_Sensors=0;
+  Timer_128 = 100
 end
 
 -- Main
@@ -136,7 +147,7 @@ local function HoTT_Run(event)
     return 2
   else
     if event == EVT_VIRTUAL_PREV_PAGE then
-      killEvents(event);
+      killEvents(event)
       HoTT_Send( 0x07 )
     elseif event == EVT_VIRTUAL_ENTER then
       HoTT_Send( 0x09 )
@@ -147,6 +158,7 @@ local function HoTT_Run(event)
     elseif event == EVT_VIRTUAL_NEXT_PAGE then
       HoTT_Send( 0x0E )
     elseif event == EVT_VIRTUAL_MENU then
+      Timer_128 = 100
       HoTT_Sensor_Inc()
     else
       HoTT_Send( 0x0F )
