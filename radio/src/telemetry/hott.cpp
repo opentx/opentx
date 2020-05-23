@@ -182,11 +182,16 @@ void processHottPacket(const uint8_t * packet)
   }
 #endif
 
+  struct HottGPSMinutes{
+    uint16_t value:14;
+    uint16_t isNegative:1;
+    uint16_t spare:1;
+  };
+
   const HottSensor * sensor;
   int32_t value;
   static uint8_t prev_page=0, prev_value=0;
-  static int16_t min=0;
-  bool negative=false;
+  static HottGPSMinutes min={};
   int16_t deg=0,sec=0;
 
   switch (packet[2]) { // Telemetry type
@@ -260,27 +265,20 @@ void processHottPacket(const uint8_t * packet)
           // packet[11] uint8_t pos_NS_dm_L;   //#11 degree minutes ie N48�39�988
           // packet[12] uint8_t pos_NS_dm_H;   //#12
           // packet[13] uint8_t pos_NS_sec_L;  //#13 position seconds
-          min = (int16_t) (packet[11] + (packet[12] << 8));
+          min.value = (int16_t) (packet[11] + (packet[12] << 8));
           if (packet[10] == 1) {
-              min = -min;
+              min.isNegative = true;
           }
           break;
 
         case HOTT_PAGE_02:
           if (prev_page == ((HOTT_TELEM_GPS<<4)|HOTT_PAGE_01)) {
             // packet[4 ] uint8_t pos_NS_sec_H;  //#14
-            if (min<0)
-            {
-                min = -min;
-                negative = true;
-            }
-            else
-                negative = false;
-            deg = min / 100;
-            min = min - deg * 100;
+            deg = min.value / 100;
+            min.value = min.value - deg * 100;
             sec = prev_value + (packet[4] << 8);
-            value = deg * 1000000 + (min * 1000000 + sec * 100) / 60;
-            if (negative) {
+            value = deg * 1000000 + (min.value * 1000000 + sec * 100) / 60;
+            if (min.isNegative) {
               value = -value;
             }
             setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_GPS_LAT_LONG, 0, HOTT_TELEM_GPS, value, UNIT_GPS_LATITUDE, 0);
@@ -291,11 +289,11 @@ void processHottPacket(const uint8_t * packet)
           // packet[7 ] uint8_t pos_EW_dm_H;   //#17
           // packet[8 ] uint8_t pos_EW_sec_L;  //#18 position seconds
           // packet[9 ] uint8_t pos_EW_sec_H;  //#19
-          min = (int16_t) (packet[6] + (packet[7] << 8));
+          min.value = (int16_t) (packet[6] + (packet[7] << 8));
           sec = (int16_t) (packet[8] + (packet[9] << 8));
-          deg = min / 100;
-          min = min - deg * 100;
-          value = deg * 1000000 + (min * 1000000 + sec * 100) / 60;
+          deg = min.value / 100;
+          min.value = min.value - deg * 100;
+          value = deg * 1000000 + (min.value * 1000000 + sec * 100) / 60;
           if (packet[5] == 1) {
             value = -value;
           }
