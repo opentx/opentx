@@ -75,6 +75,7 @@ static const QStringList STR_SUBTYPE_FLYZONE   {"FZ-410 TX"};
 static const QStringList STR_SUBTYPE_FRSKYX_RX {"D16 FCC", "D16 LBT"};
 static const QStringList STR_SUBTYPE_FX816     {"P38"};
 static const QStringList STR_SUBTYPE_ESKY150   {"4CH", "7CH"};
+static const QStringList STR_SUBTYPE_XK        {"X450", "X420"};
 
 static const QStringList NO_SUBTYPE            {STR_MULTI_DEFAULT};
 
@@ -127,6 +128,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_FX816,      0, false,      STR_SUBTYPE_FX816,     nullptr},
   {MODULE_SUBTYPE_MULTI_HOTT,       0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    3, true,       STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_XK,         1, false,      STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -167,10 +169,10 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
   static const QStringList strings({
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
     "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","Open LRS",
-    "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002", "Cabell", "ESky 150", "H8 3D", "Corona", "CFlie",
+    "FlySky AFHDS2A", "Q2x2", "WK2x01", "Q303", "GW008", "DM002", "Cabell", "ESky 150", "H8 3D", "Corona", "CFlie",
     "Hitec", "Wfly", "Bugs", "Bugs Mini", "Traxxas", "NCC-1701-A", "E01X", "WL Heli V911S", "GD00X", "Volantex V761",
     "KFPlan KF606", "Redpine", "Potensic", "ZXS", "FlyZone", "Scanner", "FrSky RX", "FlySky AFHDS2A RX", "HoTT", "Fx816",
-    "Bayang RX", "Pelikan", "Tiger", "WK", "XN297 Dump", "FrSky X 2.1", "FrSky R9"
+    "Bayang RX", "Pelikan", "Tiger", "XK", "XN297 Dump", "FrSky X 2.1", "FrSky R9"
   });
 
   return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);
