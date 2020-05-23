@@ -310,7 +310,7 @@ if(PYTHONINTERP_FOUND)
   add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DSTM32F4 -DSTM32F429_439xx -DCOLORLCD -DBACKUP -DSIMU -I. -Itargets/horus -Itargets/common/arm/stm32 -I${THIRDPARTY_DIR} -I${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DSTM32F4 -DSTM32F429_439xx -DCOLORLCD -DBACKUP -DSIMU -I. -Itargets/horus -Itargets/common/arm/stm32 -I${THIRDPARTY_DIR} -I${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include ${arm_gcc_include_path} > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
     )
   add_custom_target(datacopy
