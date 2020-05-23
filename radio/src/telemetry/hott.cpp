@@ -368,7 +368,7 @@ void processHottPacket(const uint8_t * packet)
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ESC_CUR, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           // packet[9 ] uint8_t rpm_L;          //#19 RPM in 10U/min steps
           // packet[10] uint8_t rpm_H;          //#20
-          value = packet[5] + (packet[6] << 8);
+          value = (packet[9] + (packet[10] << 8))*10;
           sensor = getHottSensor(HOTT_ID_RPM1);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RPM1, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           break;
@@ -384,10 +384,13 @@ void processHottPacket(const uint8_t * packet)
           break;
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t bec_temp;       //#34 BEC temperature
-          value = packet[13] - 20;
+          value = packet[4] - 20;
           sensor = getHottSensor(HOTT_ID_ESC_TBEC);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ESC_TBEC, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           // packet[6 ] uint8_t motor_temp;     //#36 Motor or external sensor temperature
+          value = packet[6] - 20;
+          sensor = getHottSensor(HOTT_ID_TEMP2);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP2, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           break;
       }
       break;
@@ -429,11 +432,11 @@ void processHottPacket(const uint8_t * packet)
           sensor = getHottSensor(HOTT_ID_VOLT3);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VOLT3, 0, HOTT_TELEM_GAM, value, sensor->unit, sensor->precision);
           // packet[7 ] uint8_t temperature1;        //#17 temperature 1. offset of 20. a value of 20 = 0�C
-          value = packet[5] - 20;
+          value = packet[7] - 20;
           sensor = getHottSensor(HOTT_ID_TEMP1);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, HOTT_TELEM_GAM, value, sensor->unit, sensor->precision);
           // packet[8 ] uint8_t temperature2;        //#18 temperature 2. offset of 20. a value of 20 = 0�C
-          value = packet[5] - 20;
+          value = packet[8] - 20;
           sensor = getHottSensor(HOTT_ID_TEMP2);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP2, 0, HOTT_TELEM_GAM, value, sensor->unit, sensor->precision);
           // packet[9 ] uint8_t fuel_procent;        //#19 Fuel capacity in %. Values 0--100, graphical display ranges: 0-25% 50% 75% 100%
