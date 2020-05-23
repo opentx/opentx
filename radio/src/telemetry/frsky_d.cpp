@@ -227,7 +227,9 @@ void processHubPacket(uint8_t id, int16_t value)
   else if (id == VOLTS_ID) {
     unit = UNIT_CELLS;
     uint32_t cellData = (uint32_t)data;
-    data = (min((uint32_t)cellData & 0x0F,(uint32_t)MAX_CELLS) << 12) + (((((cellData & 0xFF00) >> 8) + ((cellData & 0x000F) << 8))) / 5);
+    if ((cellData & 0x00F0) >= MAX_CELLS)
+      return;
+    data = ((cellData & 0x00F0) << 12) + (((((cellData & 0xFF00) >> 8) + ((cellData & 0x000F) << 8))) / 5);
   }
   else if (id == GPS_DAY_MONTH_ID) {
     id = GPS_HOUR_MIN_ID;
@@ -264,7 +266,7 @@ void processHubPacket(uint8_t id, int16_t value)
       data *= 10;
     }
   }
-  
+
   setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, id, 0, 0, data, unit, precision);
 }
 
