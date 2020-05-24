@@ -1458,6 +1458,7 @@ void doMixerCalculations()
     if ((s_cnt_100ms += tick10ms) >= 10) { // 0.1sec
       s_cnt_100ms -= 10;
       s_cnt_1s += 1;
+      inactivity.counter++;
 
       logicalSwitchesTimerTick();
       checkTrainerSignalWarning();
@@ -1465,8 +1466,8 @@ void doMixerCalculations()
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;
         sessionTimer += 1;
-        inactivity.counter++;
-        if ((((uint8_t)inactivity.counter) & 0x07) == 0x01 && g_eeGeneral.inactivityTimer && inactivity.counter > ((uint16_t)g_eeGeneral.inactivityTimer * 60))
+
+        if ((((uint8_t)inactivity.counter / 10) & 0x07) == 0x01 && g_eeGeneral.inactivityTimer && inactivity.counter > ((uint16_t)g_eeGeneral.inactivityTimer * 600))
           AUDIO_INACTIVITY();
 
 #if defined(AUDIO)
