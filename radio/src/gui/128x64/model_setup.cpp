@@ -374,8 +374,8 @@ void menuModelSetup(event_t event)
       MODULE_POWER_ROW(EXTERNAL_MODULE),
       IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
       MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
-      FAILSAFE_ROWS(EXTERNAL_MODULE),
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),                          // Range check and Register buttons
+      FAILSAFE_ROWS(EXTERNAL_MODULE),                              //ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE
+      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),                     // Range check and Register buttons
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                          // Module options
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 1
       IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 2
