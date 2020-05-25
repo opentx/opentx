@@ -418,7 +418,7 @@
   #define AUX_SERIAL_RCC_APB2Periph           0
 #endif
 
-#if defined(RADIO_TX16S) && !defined(BLUETOOTH)
+#if defined(AUX2_SERIAL)
   #define AUX2_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
   #define AUX2_SERIAL_RCC_APB1Periph           0
   #define AUX2_SERIAL_RCC_APB2Periph           RCC_APB2Periph_USART6
@@ -435,6 +435,24 @@
   #define AUX2_SERIAL_DMA_Channel_RX           DMA_Channel_5
   #define AUX2_SERIAL_PWR_GPIO                 GPIOB
   #define AUX2_SERIAL_PWR_GPIO_PIN             GPIO_Pin_0  // PB.00
+#elif defined(RADIO_TX16S) && defined(INTERNAL_GPS)
+  #define GPS_RCC_AHB1Periph                   (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
+  #define GPS_RCC_APB1Periph                   0
+  #define GPS_RCC_APB2Periph                   RCC_APB2Periph_USART6
+  #define GPS_USART                            USART6
+  #define GPS_GPIO_AF                          GPIO_AF_USART6
+  #define GPS_USART_IRQn                       USART6_IRQn
+  #define GPS_USART_IRQHandler                 USART6_IRQHandler
+  #define GPS_UART_GPIO                        GPIOG
+  #define GPS_TX_GPIO_PIN                      GPIO_Pin_14 // PG.14
+  #define GPS_RX_GPIO_PIN                      GPIO_Pin_9  // PG.09
+  #define GPS_TX_GPIO_PinSource                GPIO_PinSource14
+  #define GPS_RX_GPIO_PinSource                GPIO_PinSource9
+  #define GPS_PWR_GPIO                         GPIOB
+  #define GPS_PWR_GPIO_PIN                     GPIO_Pin_0  // PB.00
+  #define AUX2_SERIAL_RCC_AHB1Periph           0
+  #define AUX2_SERIAL_RCC_APB1Periph           0
+  #define AUX2_SERIAL_RCC_APB2Periph           0
 #else
   #define AUX2_SERIAL_RCC_AHB1Periph           0
   #define AUX2_SERIAL_RCC_APB1Periph           0
@@ -900,6 +918,7 @@
 #if defined(PCBX12S)
   #define GPS_RCC_AHB1Periph            RCC_AHB1Periph_GPIOA
   #define GPS_RCC_APB1Periph            RCC_APB1Periph_UART4
+  #define GPS_RCC_APB2Periph            0
   #define GPS_USART                     UART4
   #define GPS_GPIO_AF                   GPIO_AF_UART4
   #define GPS_USART_IRQn                UART4_IRQn
@@ -909,9 +928,10 @@
   #define GPS_RX_GPIO_PIN               GPIO_Pin_1 // PA.01
   #define GPS_TX_GPIO_PinSource         GPIO_PinSource0
   #define GPS_RX_GPIO_PinSource         GPIO_PinSource1
-#else
+#elif !defined(INTERNAL_GPS)
   #define GPS_RCC_AHB1Periph            0
   #define GPS_RCC_APB1Periph            0
+  #define GPS_RCC_APB2Periph            0
 #endif
 
 #endif // _HAL_H_

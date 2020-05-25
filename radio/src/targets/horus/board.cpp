@@ -150,6 +150,7 @@ void boardInit()
                          BT_RCC_APB2Periph |
                          AUX_SERIAL_RCC_APB2Periph |
                          AUX2_SERIAL_RCC_APB2Periph |
+                         GPS_RCC_APB2Periph |
                          BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
 
