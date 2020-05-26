@@ -208,7 +208,7 @@ enum TrainerMode {
   };
 #endif
 
-#if defined(RADIO_FAMILY_T16) || defined(ALLOW_TRAINER_MULTI)
+#if defined(RADIO_FAMILY_T16) || (defined(RADIO_T12) && defined(INTERNAL_MODULE_MULTI)) || defined(ALLOW_TRAINER_MULTI)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
 #elif defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH

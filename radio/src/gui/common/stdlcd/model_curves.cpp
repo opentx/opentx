@@ -60,7 +60,7 @@ void menuModelCurvesAll(event_t event)
 #endif
     case EVT_KEY_FIRST(KEY_ENTER):
       if (CURVE_SELECTED() && !READ_ONLY()) {
-        s_curveChan = sub;
+        s_currIdxSubMenu = sub;
         pushMenu(menuModelCurveOne);
       }
       break;
@@ -93,7 +93,7 @@ void menuModelCurvesAll(event_t event)
   }
 
   if (CURVE_SELECTED()) {
-    s_curveChan = sub;
+    s_currIdxSubMenu = sub;
 #if LCD_W >= 212
     drawCurve(23);
 #else
@@ -142,7 +142,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
       drawCurveName(x, y, curve.value, flags);
       if (active && menuHorizontalPosition==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
-          s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);
+          s_currIdxSubMenu = (curve.value<0 ? -curve.value-1 : curve.value-1);
           pushMenu(menuModelCurveOne);
         }
         else {

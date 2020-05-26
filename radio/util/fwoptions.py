@@ -233,5 +233,5 @@ options_radiomaster_tx16s = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
-    # "bluetooth": ("BLUETOOTH", "YES", "NO"),
+    "bluetooth": ("BLUETOOTH", "YES", "NO"),
 }
