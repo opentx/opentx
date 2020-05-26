@@ -2118,8 +2118,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
     public:
       Afhds3Field(DataField * parent, ModuleData& module):
         UnionField::TransformedMember(parent, internalField),
-        internalField(this, "AFHDS3"),
-        module(module)
+        internalField(this, "AFHDS3")
       {
         ModuleData::Afhds3& afhds3 = module.afhds3;
         internalField.Append(new UnsignedField<3>(this, minBindPower));
@@ -2134,9 +2133,13 @@ class ModuleUnionField: public UnionField<unsigned int> {
       bool select(const unsigned int& attr) const override {
         return attr == PULSES_AFHDS3;
       }
+
+      void beforeExport() override {}
+
+      void afterImport() override {}
+
     private:
       StructField internalField;
-      ModuleData& module;
 
       unsigned int minBindPower = 0;
       unsigned int emissionFCC = 0;
