@@ -262,6 +262,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 #define MODULE_POWER_ROW(moduleIdx)            (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) || isModuleR9MNonAccess(moduleIdx) || isModuleAFHDS3(moduleIdx)) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
 
 #else
+#define MULTIMODULE_TYPE_ROWS(moduleIdx)
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)
