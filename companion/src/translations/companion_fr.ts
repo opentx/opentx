@@ -905,7 +905,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../modeledit/channels.cpp" line="327"/>
         <source>Delete Channel. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Voie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="363"/>
@@ -955,12 +955,12 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../modeledit/channels.cpp" line="417"/>
         <source>Clear Channel. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la Voie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="428"/>
         <source>Clear all Channels. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les Voies. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -1558,7 +1558,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/curves.cpp" line="661"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="662"/>
@@ -1573,42 +1573,42 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/curves.cpp" line="665"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="666"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="667"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="668"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="670"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="704"/>
         <source>Clear Curve. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la Courbe. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="715"/>
         <source>Clear all Curves. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les Courbes. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="743"/>
         <source>Delete Curve. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Courbe. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="316"/>
@@ -1918,7 +1918,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="623"/>
         <source>Delete Special Function. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Fonction Spéciale. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="657"/>
@@ -1988,12 +1988,12 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="764"/>
         <source>Clear Special Function. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la Fonction Spéciale. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="774"/>
         <source>Clear all Special Functions. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer toutes les Fonctions Spéciales. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -3111,7 +3111,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1362"/>
         <source>Support internal GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du GPS interne</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1367"/>
@@ -3753,90 +3753,90 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="490"/>
         <source>Warning: Global variable links back to itself. Flight Mode 0 value used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Avertissement: la Variable Globale boucle sur elle-même. La Phase de Vol 0 est utilisée.</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="599"/>
         <source>Warning: Rotary encoder links back to itself. Flight Mode 0 value used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Avertissement: le Sélecteur Rotatif boucle sur lui-même. La Phase de Vol 0 est utilisée.</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="669"/>
         <location filename="../modeledit/flightmodes.cpp" line="1045"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="670"/>
         <location filename="../modeledit/flightmodes.cpp" line="1046"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="671"/>
         <location filename="../modeledit/flightmodes.cpp" line="1047"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="674"/>
         <location filename="../modeledit/flightmodes.cpp" line="1050"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="675"/>
         <location filename="../modeledit/flightmodes.cpp" line="1051"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="676"/>
         <location filename="../modeledit/flightmodes.cpp" line="1052"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="677"/>
         <location filename="../modeledit/flightmodes.cpp" line="1053"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="679"/>
         <location filename="../modeledit/flightmodes.cpp" line="1055"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="713"/>
         <source>Clear Flight Mode. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la Phase de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="748"/>
         <source>Clear all Flight Modes. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les Phases de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="789"/>
         <source>Delete Flight Mode. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Phase de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1130"/>
         <source>Clear selected Global Variable across all Flight Modes. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les Variables Globales selectionnées à travers toutes les Phases de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1148"/>
         <source>Clear all Global Variables for all Flight Modes. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les Variables Globales pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1159"/>
         <source>Clear all Global Variables for this Flight Mode. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les Variables Globales pour cette Phase de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="211"/>
@@ -5757,17 +5757,17 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/inputs.cpp" line="153"/>
         <source>Not enough available Inputs!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas assez d&apos;Entrées disponibles!</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="239"/>
         <source>Delete selected Inputs. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les Entrées selectionnés. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="386"/>
         <source>Lines</source>
-        <translation type="unfinished">Linéaire</translation>
+        <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="387"/>
@@ -5843,37 +5843,37 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/inputs.cpp" line="399"/>
         <source>Input</source>
-        <translation type="unfinished">Entrée</translation>
+        <translation>Entrée</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="400"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="405"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="408"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="518"/>
         <source>Clear all Inputs. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les Entrées. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="562"/>
         <source>Clear Input. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer l&apos;Entrée. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="577"/>
         <source>Delete Input. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer l&apos;Entrée. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -6075,57 +6075,57 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="538"/>
         <source>Delete Logical Switch. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer l&apos;Interrupteur Logique. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="572"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="573"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="574"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="575"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="577"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="578"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="579"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="580"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="582"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="634"/>
         <source>Clear all Logical Switches. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer tous les Interrupteurs Logiques. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -11288,7 +11288,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/setup.cpp" line="1037"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1053"/>
@@ -11313,62 +11313,62 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/setup.cpp" line="1505"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1506"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1507"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1508"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1510"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1511"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1512"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1513"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1515"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1549"/>
         <source>Clear Timer. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer le Chrono. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1560"/>
         <source>Clear all Timers. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer tous les Chronos. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1588"/>
         <source>Delete Timer. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le Chrono. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
