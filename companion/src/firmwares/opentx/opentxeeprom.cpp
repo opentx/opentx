@@ -128,7 +128,7 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
   return 16;
 }
 
-#define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
+#define MAX_ROTARY_ENCODERS(board)            0
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3
 #define MAX_MIXERS(board, version)            64
@@ -306,6 +306,10 @@ class SourcesConversionTable: public ConversionTable {
           offset += 2;
 
         addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
+      }
+
+      for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++) {
+        addConversion(RawSource(SOURCE_TYPE_ROTARY_ENCODER, 0), val++);
       }
 
       addConversion(RawSource(SOURCE_TYPE_MAX), val++);
