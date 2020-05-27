@@ -308,10 +308,6 @@ class SourcesConversionTable: public ConversionTable {
         addConversion(RawSource(SOURCE_TYPE_STICK, i + offset), val++);
       }
 
-      for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++) {
-        addConversion(RawSource(SOURCE_TYPE_ROTARY_ENCODER, 0), val++);
-      }
-
       addConversion(RawSource(SOURCE_TYPE_MAX), val++);
 
       for (int i=0; i<3; i++)
