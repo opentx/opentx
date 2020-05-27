@@ -33,8 +33,8 @@ void gpsInit(uint32_t baudrate)
   NVIC_InitTypeDef NVIC_InitStructure;
 
   // RX and TX pins
-  GPIO_PinAFConfig(GPIOA, GPS_TX_GPIO_PinSource, GPS_GPIO_AF);
-  GPIO_PinAFConfig(GPIOA, GPS_RX_GPIO_PinSource, GPS_GPIO_AF);
+  GPIO_PinAFConfig(GPS_UART_GPIO, GPS_TX_GPIO_PinSource, GPS_GPIO_AF);
+  GPIO_PinAFConfig(GPS_UART_GPIO, GPS_RX_GPIO_PinSource, GPS_GPIO_AF);
   GPIO_InitStructure.GPIO_Pin = (GPS_TX_GPIO_PIN | GPS_RX_GPIO_PIN);
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -58,6 +58,14 @@ void gpsInit(uint32_t baudrate)
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+
+#if defined(GPS_PWR_GPIO)
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Pin = GPS_PWR_GPIO_PIN;
+  GPIO_Init(GPS_PWR_GPIO, &GPIO_InitStructure);
+  GPIO_SetBits(GPS_PWR_GPIO, GPS_PWR_GPIO_PIN);
+#endif
 }
 
 #if defined(DEBUG)
