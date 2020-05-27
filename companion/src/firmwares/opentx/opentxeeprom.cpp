@@ -2257,18 +2257,12 @@ class ModuleField: public TransformedField {
       else if (module.protocol == PULSES_MULTIMODULE) {
         module.rfProtocol = module.multi.rfProtocol & 0x0F;
       }
-      else if (module.protocol == PULSES_AFHDS3) {
-        module.rfProtocol = module.subType;
-      }
     }
 
     void afterImport() override
     {
       if (module.protocol == PULSES_LP45) {
         module.protocol += module.rfProtocol;
-      }
-      else if(module.protocol == PULSES_AFHDS3) {
-        module.subType = module.rfProtocol;
       }
     }
 

@@ -1065,9 +1065,9 @@ void menuModelSetup(event_t event)
 #if defined(AFHDS3)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS_PROTOCOL:
         lcdDrawTextAlignedLeft(y, TR_PROTO);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
         if(attr && s_editMode > 0 && menuHorizontalPosition == 0) {
-          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].rfProtocol, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
+          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
         }
         break;
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE:

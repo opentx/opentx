@@ -1093,7 +1093,7 @@ bool menuModelSetup(event_t event)
 #endif
 #if defined(AFHDS3)
         else if (isModuleAFHDS3(moduleIdx)) {
-          lcdDrawTextAtIndex(lcdNextPos + 15, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[moduleIdx].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(lcdNextPos + 15, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[moduleIdx].subType, (menuHorizontalPosition==1 ? attr : 0));
         }
 #endif
         if (attr && menuHorizontalPosition == 0 && moduleIdx == EXTERNAL_MODULE) {
@@ -1166,7 +1166,7 @@ bool menuModelSetup(event_t event)
                 }
 #if defined(AFHDS3)
                 else if (isModuleAFHDS3(moduleIdx)) {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].rfProtocol, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
                 }
 #endif
                 else {
