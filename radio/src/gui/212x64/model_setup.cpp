@@ -872,7 +872,7 @@ void menuModelSetup(event_t event)
                 }
 #if defined(AFHDS3)
                 else if (isModuleAFHDS3(EXTERNAL_MODULE)) {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, AFHDS_SUBTYPE_FIRST, AFHDS_SUBTYPE_LAST);
                 }
 #endif
                 else {

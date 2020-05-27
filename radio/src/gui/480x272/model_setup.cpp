@@ -1166,7 +1166,7 @@ bool menuModelSetup(event_t event)
                 }
 #if defined(AFHDS3)
                 else if (isModuleAFHDS3(moduleIdx)) {
-                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, AFHDS_MODE_FIRST, AFHDS_MODE_LAST);
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, AFHDS_SUBTYPE_FIRST, AFHDS_SUBTYPE_LAST);
                 }
 #endif
                 else {
