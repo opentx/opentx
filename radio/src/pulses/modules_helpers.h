@@ -306,7 +306,8 @@ inline bool isModuleAFHDS3(uint8_t idx)
 
 inline bool isModulePxx2(uint8_t idx)
 {
-  if (idx != EXTERNAL_MODULE) return false;
+  if (idx != EXTERNAL_MODULE)
+    return false;
 #if defined(PXX2)
   #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
      if (g_model.moduleData[idx].type == MODULE_TYPE_XJT_LITE_PXX2 ||
@@ -348,7 +349,8 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
       return 8; // always 16 channels in FCC / FLEX
     }
   }
-  else if(isModuleAFHDS3(moduleIdx)){
+  else if(isModuleAFHDS3(moduleIdx))
+  {
     return 10;
   }
   else {
@@ -574,21 +576,23 @@ inline void resetAccessAuthenticationCount()
 #endif
 }
 
-inline void resetAfhds3Options(uint8_t moduleIdx){
-  g_model.moduleData[moduleIdx].rfProtocol = 0;
-  g_model.moduleData[moduleIdx].subType = 0;
+inline void resetAfhds3Options(uint8_t moduleIdx)
+{
+  auto & data = g_model.moduleData[moduleIdx];
+  data.rfProtocol = 0;
+  data.subType = 0;
 #if defined(AFHDS3)
-  g_model.moduleData[moduleIdx].afhds3.bindPower = 0;
-  g_model.moduleData[moduleIdx].afhds3.runPower = 0;
-  g_model.moduleData[moduleIdx].afhds3.emi = 0;
-  g_model.moduleData[moduleIdx].afhds3.telemetry = 1;
-  g_model.moduleData[moduleIdx].afhds3.rx_freq[0] = 50;
-  g_model.moduleData[moduleIdx].afhds3.rx_freq[1] = 0;
-  g_model.moduleData[moduleIdx].afhds3.failsafeTimeout = 1000;
-  g_model.moduleData[moduleIdx].channelsCount = 14 - 8;
-  g_model.moduleData[moduleIdx].failsafeMode = 1;
+  data.afhds3.bindPower = 0;
+  data.afhds3.runPower = 0;
+  data.afhds3.emi = 0;
+  data.afhds3.telemetry = 1;
+  data.afhds3.rx_freq[0] = 50;
+  data.afhds3.rx_freq[1] = 0;
+  data.afhds3.failsafeTimeout = 1000;
+  data.channelsCount = 14 - 8;
+  data.failsafeMode = 1;
   //" PWM+i"" PWM+s"" PPM+i"" PPM+s"
-  g_model.moduleData[moduleIdx].subType = 0;
+  data.subType = 0;
   for (uint8_t channel = 0; channel < MAX_OUTPUT_CHANNELS; channel++) {
     g_model.failsafeChannels[channel] = 0;
   }

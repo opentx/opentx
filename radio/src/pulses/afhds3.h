@@ -59,6 +59,10 @@
 #endif
 
 #define AFHDS3_FRAME_HALF_US AFHDS3_COMMAND_TIMEOUT * 2000
+
+//get channel value outside of afhds3 namespace
+int32_t getChannelValue(uint8_t channel);
+
 //use uint16_t instead of pulse_duration_t
 namespace afhds3
 {

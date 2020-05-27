@@ -22,11 +22,10 @@
 #include "../debug.h"
 #include "../definitions.h"
 #include <cstdio>
+
 #define FAILSAFE_HOLD 1
 #define FAILSAFE_CUSTOM 2
 #define MAX_RETRIES_AFHDS3 5
-
-extern int32_t getChannelValue(uint8_t channel);
 
 extern void processFlySkySensor(const uint8_t * packet, uint8_t type);
 
