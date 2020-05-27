@@ -155,6 +155,9 @@ bool menuModelCurveOne(event_t event)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, STR_COUNT);
   lcdDrawNumber(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP + FH, 5+crv.points, LEFT|attr, 0, NULL, STR_PTS);
   if (attr) {
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    rotencSpeed = ROTENC_LOWSPEED;
+#endif
     int count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
       int newPoints[MAX_POINTS_PER_CURVE];
