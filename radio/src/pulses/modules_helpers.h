@@ -349,8 +349,7 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
       return 8; // always 16 channels in FCC / FLEX
     }
   }
-  else if (isModuleAFHDS3(moduleIdx))
-  {
+  else if (isModuleAFHDS3(moduleIdx)) {
     return 10;
   }
   else {

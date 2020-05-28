@@ -683,7 +683,7 @@ void ModulePanel::on_r9mPower_currentIndexChanged(int index)
 {
   if (!lock) {
 
-    if(module.protocol == PULSES_AFHDS3 && module.afhds3.rfPower != (unsigned int)index) {
+    if (module.protocol == PULSES_AFHDS3 && module.afhds3.rfPower != (unsigned int)index) {
       module.afhds3.rfPower = index;
       emit modified();
     }

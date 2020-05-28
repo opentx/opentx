@@ -474,10 +474,13 @@ PACK(struct ModuleData {
       uint8_t telemetry:1;
       uint16_t failsafeTimeout;
       uint8_t rx_freq[2];
-      uint16_t rxFreq(){
+      uint16_t rxFreq()
+      {
         return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
       }
-      void setRxFreq(uint16_t value) {
+
+      void setRxFreq(uint16_t value)
+      {
         rx_freq[0] = value & 0xFF;
         rx_freq[1] = value >> 8;
       }

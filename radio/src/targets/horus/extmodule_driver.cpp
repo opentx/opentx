@@ -270,7 +270,6 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmoduleSendNextFrame()
 {
-
   switch (moduleState[EXTERNAL_MODULE].protocol) {
     case PROTOCOL_CHANNELS_PPM:
 #if defined(PCBX10) || PCBREV >= 13
@@ -373,7 +372,6 @@ void extmoduleSendNextFrame()
       EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
       break;
   }
-
 }
 
 void extmoduleSendInvertedByte(uint8_t byte)
@@ -408,11 +406,11 @@ void extmoduleSendInvertedByte(uint8_t byte)
   }
 }
 
-
 extern "C" void EXTMODULE_TIMER_DMA_IRQHandler()
 {
   if (!DMA_GetITStatus(EXTMODULE_TIMER_DMA_STREAM, EXTMODULE_TIMER_DMA_FLAG_TC))
     return;
+
   DMA_ClearITPendingBit(EXTMODULE_TIMER_DMA_STREAM, EXTMODULE_TIMER_DMA_FLAG_TC);
 
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
