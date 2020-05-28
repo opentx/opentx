@@ -1205,7 +1205,7 @@ void menuModelSetup(event_t event)
                   if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
 #if defined(AFHDS3)
-                      if(isModuleAFHDS3(moduleIdx)){
+                      if (isModuleAFHDS3(moduleIdx)) {
                         startBindMenuAfhds3(moduleIdx);
                         continue;
                       }

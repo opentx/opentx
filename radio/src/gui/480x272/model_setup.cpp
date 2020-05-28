@@ -1579,7 +1579,7 @@ bool menuModelSetup(event_t event)
                   if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
 #if defined(AFHDS3)
-                      if(isModuleAFHDS3(moduleIdx)){
+                      if (isModuleAFHDS3(moduleIdx)) {
                         startBindMenuAfhds3(moduleIdx);
                         continue;
                       }
@@ -1823,7 +1823,7 @@ bool menuModelSetup(event_t event)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS:
     {
 #if defined(AFHDS3)
-      if(isModuleAFHDS3(moduleIdx)) {
+      if (isModuleAFHDS3(moduleIdx)) {
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_AFHDS3_POWER_SOURCE);
       }
       else

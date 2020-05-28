@@ -113,8 +113,7 @@ namespace afhds3
 #else
       inline void _send_level(uint16_t v)
       {
-        if (pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS)
-        {
+        if (pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
           return;
         }
         pulses[pulsesSize++] = v;
@@ -122,8 +121,7 @@ namespace afhds3
       }
       void sendByte(uint8_t b)
       {
-        if (pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS)
-        {
+        if (pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
           return;
         }
         //use 8n1
@@ -134,12 +132,10 @@ namespace afhds3
         for (uint8_t i = 0; i <= 8; i++)
         { //8 data bits + Stop=1
           bool next_level = b & 1;
-          if (level == next_level)
-          {
+          if (level == next_level) {
             length += BITLEN_AFHDS;
           }
-          else
-          {
+          else {
             _send_level(length);
             length = BITLEN_AFHDS;
             level = next_level;
@@ -593,7 +589,6 @@ namespace afhds3
        * Actual module version - must be requested from module
        */
       ModuleVersion version;
-          };
-
-        }
+  };
+}
 #endif /* PULSES_AFHDS3_H_ */

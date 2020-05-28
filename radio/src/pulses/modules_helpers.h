@@ -349,7 +349,7 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
       return 8; // always 16 channels in FCC / FLEX
     }
   }
-  else if(isModuleAFHDS3(moduleIdx))
+  else if (isModuleAFHDS3(moduleIdx))
   {
     return 10;
   }
@@ -429,7 +429,7 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
     return g_model.moduleData[moduleIdx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(moduleIdx)){
+  if (isModuleMultimodule(moduleIdx)) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
     if (status.isValid()) {
       return status.supportsFailsafe();
