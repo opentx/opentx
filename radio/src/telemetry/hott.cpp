@@ -153,7 +153,9 @@ void processHottPacket(const uint8_t * packet)
 {
   // Set TX RSSI Value
   int16_t dBm = packet[0];
-  if (dBm >= 128) dBm = 256 - dBm;
+  if (dBm >= 128) {
+    dBm = 256 - dBm;
+  }
   dBm = dBm / 2 - 71;
   setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_RSSI_ID, 0, 0, dBm, UNIT_RAW, 0);
   // Set TX LQI  Value
@@ -222,6 +224,7 @@ void processHottPacket(const uint8_t * packet)
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
       }
       break;
+
     case HOTT_TELEM_VARIO:
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L240
       switch (packet[3]) { // Telemetry page 1,2,3,4
@@ -250,6 +253,7 @@ void processHottPacket(const uint8_t * packet)
           break;
       }
       break;
+
     case HOTT_TELEM_GPS:
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L378
       switch (packet[3]) { // Telemetry page 1,2,3,4
@@ -330,6 +334,7 @@ void processHottPacket(const uint8_t * packet)
           // packet[12] uint8_t angle_compass; //#32 angle in 2degree steps. 1 = 2�, 255 = - 2� (1 uint8_t) North = 0�
           // packet[13] uint8_t gps_time_h;    //#33 UTC time hours
           break;
+
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t gps_time_m;    //#34 UTC time minutes
           // packet[5 ] uint8_t gps_time_s;    //#35 UTC time seconds
@@ -343,6 +348,7 @@ void processHottPacket(const uint8_t * packet)
           break;
       }
       break;
+
     case HOTT_TELEM_ESC:
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L454
       switch (packet[3]) { // Telemetry page 1,2,3,4
@@ -362,6 +368,7 @@ void processHottPacket(const uint8_t * packet)
           sensor = getHottSensor(HOTT_ID_TEMP1);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           break;
+
         case HOTT_PAGE_02:
           // packet[5 ] uint8_t current_L;      //#15 Current in 0.1 steps
           // packet[6 ] uint8_t current_H;      //#16
@@ -374,6 +381,7 @@ void processHottPacket(const uint8_t * packet)
           sensor = getHottSensor(HOTT_ID_RPM1);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RPM1, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           break;
+
         case HOTT_PAGE_03:
           // packet[8 ] uint8_t bec_v;          //#28 BEC voltage
           value = packet[8];
@@ -384,6 +392,7 @@ void processHottPacket(const uint8_t * packet)
           sensor = getHottSensor(HOTT_ID_ESC_BCUR);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ESC_BCUR, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           break;
+
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t bec_temp;       //#34 BEC temperature
           value = packet[4] - 20;
@@ -396,6 +405,7 @@ void processHottPacket(const uint8_t * packet)
           break;
       }
       break;
+
     case HOTT_TELEM_GAM:
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L151
       switch (packet[3]) { // Telemetry page 1,2,3,4
@@ -421,6 +431,7 @@ void processHottPacket(const uint8_t * packet)
           if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 5 << 16 | value, sensor->unit, sensor->precision);
           // packet[13] uint8_t batt1_L;             //#13 battery 1 voltage LSB value. 0.1V steps. 50 = 5.5V
           break;
+
         case HOTT_PAGE_02:
           if (prev_page == ((HOTT_TELEM_GAM << 4) | HOTT_PAGE_01)) {
             // packet[4 ] uint8_t batt1_H;             //#14
@@ -453,6 +464,7 @@ void processHottPacket(const uint8_t * packet)
           sensor = getHottSensor(HOTT_ID_RPM1);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RPM1, 0, HOTT_TELEM_GAM, value, sensor->unit, sensor->precision);
           break;
+
         case HOTT_PAGE_03:
           // packet[4 ] uint8_t altitude_L;          //#24 altitude in meters. offset of 500, 500 = 0m
           // packet[5 ] uint8_t altitude_H;          //#25
@@ -477,6 +489,7 @@ void processHottPacket(const uint8_t * packet)
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VOLT1, 0, HOTT_TELEM_GAM, value, sensor->unit, sensor->precision);
           // packet[13] uint8_t batt_cap_L;          //#33 used battery capacity in 10mAh steps
           break;
+
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t batt_cap_H;          //#34
           if (prev_page == ((HOTT_TELEM_GAM << 4) | HOTT_PAGE_03)) {
@@ -501,6 +514,7 @@ void processHottPacket(const uint8_t * packet)
           break;
       }
       break;
+
     case HOTT_TELEM_EAM:
       // https://github.com/betaflight/betaflight/blob/1d8a0e9fd61cf01df7b34805e84365df72d9d68d/src/main/telemetry/hott.h#L288
       switch (packet[3]) { // Telemetry page 1,2,3,4
@@ -528,6 +542,7 @@ void processHottPacket(const uint8_t * packet)
           // value = packet[13] << 1;
           // if(value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 6 << 16 | value, sensor->unit, sensor->precision);
           break;
+
         case HOTT_PAGE_02:
           sensor = getHottSensor(HOTT_ID_CELS);
           // packet[4 ] uint8_t cell1_H;             //#14 cell 1 voltage high value. 0.02V steps, 124=2.48V
@@ -559,6 +574,7 @@ void processHottPacket(const uint8_t * packet)
 
           // packet[13] uint8_t batt2_voltage_L;     //#23 battery 2 voltage lower value in 100mv steps, 50=5V. optionally cell8_H value. 0.02V steps
           break;
+
         case HOTT_PAGE_03:
           if (prev_page == ((HOTT_TELEM_EAM << 4) | HOTT_PAGE_02)) {
             // packet[4 ] uint8_t batt2_voltage_H;     //#24
@@ -593,6 +609,7 @@ void processHottPacket(const uint8_t * packet)
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VOLT1, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
           // packet[13] uint8_t batt_cap_L;          //#33 used battery capacity in 10mAh steps
           break;
+
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t batt_cap_H;          //#34
           if (prev_page == ((HOTT_TELEM_EAM << 4) | HOTT_PAGE_03)) {
