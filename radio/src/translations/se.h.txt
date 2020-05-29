@@ -452,6 +452,7 @@
 #define TR_DISPLAY_TRIMS       "Display Trims"
 #define TR_TTRACE              TR("Följ Gas", INDENT "Följ Gas")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gastrim")
+#define TR_TTRIM_SW            TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
 #define TR_USE_GLOBAL_FUNCS    TR("Glob.Funkt", "Använd Global Funk.")
 #if defined(PCBSKY9X) && defined(REVX)

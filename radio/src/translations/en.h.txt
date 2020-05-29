@@ -432,7 +432,8 @@
 #define TR_TRIMINC                     "Trim Step"
 #define TR_DISPLAY_TRIMS               TR("Show Trims", "Display trims")
 #define TR_TTRACE                      TR("T-Source", INDENT "Source")
-#define TR_TTRIM                       TR("T-Trim", INDENT "Trim idle only")
+#define TR_TTRIM                       TR("T-Trim-Idle", INDENT "Trim idle only")
+#define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR                     TR("Ctr Beep", "Center Beep")
 #define TR_USE_GLOBAL_FUNCS            TR("Glob.Funcs", "Use global funcs")
 #if defined(PCBSKY9X) && defined(REVX)

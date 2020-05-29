@@ -66,6 +66,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_THROTTLE_REVERSED,
   ITEM_MODEL_SETUP_THROTTLE_TRACE,
   ITEM_MODEL_SETUP_THROTTLE_TRIM,
+  ITEM_MODEL_SETUP_THROTTLE_TRIM_SWITCH,
   ITEM_MODEL_SETUP_PREFLIGHT_LABEL,
   ITEM_MODEL_SETUP_CHECKLIST_DISPLAY,
   ITEM_MODEL_SETUP_THROTTLE_WARNING,
@@ -331,6 +332,7 @@ void menuModelSetup(event_t event)
       0, // Thrxottle reverse
       0, // Throttle trace source
       0, // Throttle trim
+      0, // Throttle trim switch
 
     LABEL(PreflightCheck),
       0, // Checklist
@@ -556,6 +558,15 @@ void menuModelSetup(event_t event)
         ON_OFF_MENU_ITEM(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, STR_TTRIM, attr, event);
         break;
 
+      case ITEM_MODEL_SETUP_THROTTLE_TRIM_SWITCH:
+      {
+        lcdDrawTextAlignedLeft(y, STR_TTRIM_SW);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTrimSw, NUM_TRIMS-1);
+        uint8_t idx = g_model.thrTrimSw + MIXSRC_FIRST_TRIM;
+        drawSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
+        break;
+      }
+      
       case ITEM_MODEL_SETUP_PREFLIGHT_LABEL:
         lcdDrawTextAlignedLeft(y, STR_PREFLIGHT);
         break;

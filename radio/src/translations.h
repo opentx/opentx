@@ -207,6 +207,7 @@ extern const char STR_TRIMINC[];
 extern const char STR_DISPLAY_TRIMS[];
 extern const char STR_TTRACE[];
 extern const char STR_TTRIM[];
+extern const char STR_TTRIM_SW[];
 extern const char STR_BEEPCTR[];
 extern const char STR_USE_GLOBAL_FUNCS[];
 

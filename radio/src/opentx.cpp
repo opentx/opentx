@@ -517,6 +517,9 @@ void modelDefault(uint8_t id)
     g_model.switchWarningState |= (1 << (3*i));
   }
 #endif
+
+  g_model.thrTrimSw = MIXSRC_Thr - MIXSRC_FIRST_STICK;
+
 }
 
 bool isInputRecursive(int index)

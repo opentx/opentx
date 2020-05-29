@@ -1228,6 +1228,14 @@ void SetupPanel::on_throttleSource_currentIndexChanged(int index)
   }
 }
 
+void SetupPanel::on_throttleTrimSwitch_currentIndexChanged(int index)
+{
+  if (!lock) {
+    model->thrTrimSwitch = ui->throttleTrimSwitch->currentData().toUInt();
+    emit modified();
+  }
+}
+
 void SetupPanel::on_name_editingFinished()
 {
   if (QString(model->name) != ui->name->text()) {
@@ -1300,11 +1308,27 @@ void SetupPanel::populateThrottleSourceCB()
   lock = false;
 }
 
+void SetupPanel::populateThrottleTrimSwitchCB()
+{
+  Board::Type board = firmware->getBoard();
+  lock = true;
+  ui->throttleTrimSwitch->clear();
+  int idx=0;
+  for (int i=0; i<getBoardCapability(board, Board::NumTrims); i++, idx++) {
+    ui->throttleTrimSwitch->addItem(RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings), idx);
+  }
+
+  int thrTrimSwitchIdx = ui->throttleTrimSwitch->findData(model->thrTrimSwitch);
+  ui->throttleTrimSwitch->setCurrentIndex(thrTrimSwitchIdx);
+  lock = false;
+}
+
 void SetupPanel::update()
 {
   ui->name->setText(model->name);
   ui->throttleReverse->setChecked(model->throttleReversed);
   populateThrottleSourceCB();
+  populateThrottleTrimSwitchCB();
   ui->throttleWarning->setChecked(!model->disableThrottleWarning);
   ui->trimIncrement->setCurrentIndex(model->trimInc+2);
   ui->throttleTrim->setChecked(model->thrTrim);

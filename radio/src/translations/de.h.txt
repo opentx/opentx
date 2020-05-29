@@ -434,6 +434,7 @@
 #define TR_DISPLAY_TRIMS               TR("Trimanzeige", "Trimwerte anzeigen")
 #define TR_TTRACE                      TR("Gasquelle", INDENT "Gas-Timerquelle")
 #define TR_TTRIM 	       	           TR("Gastrim", INDENT "Gas-Leerlauftrim")
+#define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR                     TR("MittePieps", "Mittelstell. -Pieps")
 #define TR_USE_GLOBAL_FUNCS            TR("Glob. Funkt.", "Globale Funkt verw.")
 #if defined(PCBSKY9X) && defined(REVX)

@@ -120,6 +120,7 @@ const char STR_TRIMINC[] = TR_TRIMINC;
 const char STR_DISPLAY_TRIMS[] = TR_DISPLAY_TRIMS;
 const char STR_TTRACE[] = TR_TTRACE;
 const char STR_TTRIM[] = TR_TTRIM;
+const char STR_TTRIM_SW[] = TR_TTRIM_SW;
 const char STR_BEEPCTR[] = TR_BEEPCTR;
 const char STR_USE_GLOBAL_FUNCS[] = TR_USE_GLOBAL_FUNCS;
 const char STR_PPMFRAME[] = TR_PPMFRAME;

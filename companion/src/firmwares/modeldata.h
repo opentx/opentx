@@ -184,6 +184,7 @@ class ModelData {
     unsigned int thrTraceSrc;
     uint64_t switchWarningStates;
     unsigned int switchWarningEnable;
+    unsigned int thrTrimSwitch;
     unsigned int potsWarningMode;
     bool potsWarnEnabled[CPN_MAX_POTS];
     int potsWarnPosition[CPN_MAX_POTS];
