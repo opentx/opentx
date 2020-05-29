@@ -20,14 +20,25 @@
 
 #include "opentx.h"
 
-#define HBP  42
-#define VBP  12
+#if defined(RADIO_T18)
+  #define HBP  43
+  #define VBP  12
 
-#define HSW  2
-#define VSW  10
+  #define HSW  2
+  #define VSW  4
 
-#define HFP  3
-#define VFP  2
+  #define HFP  8
+  #define VFP  8
+#else
+  #define HBP  42
+  #define VBP  12
+
+  #define HSW  2
+  #define VSW  10
+
+  #define HFP  3
+  #define VFP  2
+#endif
 
 #define LCD_FIRST_LAYER                0
 #define LCD_SECOND_LAYER               1
@@ -138,6 +149,7 @@ static void delay3(uint32_t nCount)
 static void lcd_reset(void)
 {
   NRST_HIGH();
+#if !defined(RADIO_T18)  // T18 seems to have eractic display issue if NRST is ever driven low
   delay3(1);
 
   NRST_LOW(); //  RESET();
@@ -145,6 +157,7 @@ static void lcd_reset(void)
 
   NRST_HIGH();
   delay3(30);
+#endif
 }
 
 void LCD_Init_LTDC(void)
