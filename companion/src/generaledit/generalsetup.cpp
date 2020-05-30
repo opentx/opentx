@@ -214,15 +214,6 @@ ui(new Ui::GeneralSetup)
     ui->hapticmodeCB->setDisabled(true);
   }
 
-  int reCount = firmware->getCapability(RotaryEncoders);
-  if (reCount == 0) {
-    ui->re_label->hide();
-    ui->re_CB->hide();
-  }
-  else {
-    populateRotEncCB(reCount);
-  }
-
   ui->contrastSB->setMinimum(firmware->getCapability(MinContrast));
   ui->contrastSB->setMaximum(firmware->getCapability(MaxContrast));
   ui->contrastSB->setValue(generalSettings.contrast);
@@ -415,18 +406,6 @@ void GeneralSetupPanel::updateVarioPitchRange()
   ui->varioPMax_SB->setMinimum(700+(generalSettings.varioPitch*10)+1000-800);
 }
 
-void GeneralSetupPanel::populateRotEncCB(int reCount)
-{
-  QString strings[] = { tr("No"), tr("RotEnc A"), tr("Rot Enc B"), tr("Rot Enc C"), tr("Rot Enc D"), tr("Rot Enc E")};
-  QComboBox * b = ui->re_CB;
-
-  b->clear();
-  for (int i=0; i<=reCount; i++) {
-    b->addItem(strings[i]);
-  }
-  b->setCurrentIndex(generalSettings.reNavigation);
-}
-
 void GeneralSetupPanel::setValues()
 {
   ui->beeperCB->setCurrentIndex(generalSettings.beeperMode+2);
@@ -604,12 +583,6 @@ void GeneralSetupPanel::on_vBatMinDSB_editingFinished()
 void GeneralSetupPanel::on_vBatMaxDSB_editingFinished()
 {
   generalSettings.vBatMax = ui->vBatMaxDSB->value() * 10 - 120;
-  emit modified();
-}
-
-void GeneralSetupPanel::on_re_CB_currentIndexChanged(int index)
-{
-  generalSettings.reNavigation = ui->re_CB->currentIndex();
   emit modified();
 }
 

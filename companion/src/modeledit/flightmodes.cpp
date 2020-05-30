@@ -40,7 +40,6 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   board = getCurrentBoard();
   fmCount = firmware->getCapability(FlightModes);
   gvCount = firmware->getCapability(Gvars);
-  reCount = firmware->getCapability(RotaryEncoders);
   trimCount = Boards::getCapability(board, Board::NumTrims);
 
   // Flight mode name
@@ -136,35 +135,6 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     if (chn == 2/*TODO constant*/ && model.throttleReversed)
       trimsSlider[i]->setInvertedAppearance(true);
     connect(trimsSlider[i], SIGNAL(valueChanged(int)), this, SLOT(phaseTrimSlider_valueChanged()));
-  }
-
-  // Rotary encoders
-  if (reCount > 0) {
-    QGridLayout *reLayout = new QGridLayout(ui->reGB);
-    for (int i = 0; i < reCount; i++) {
-      // RE label
-      QLabel *label = new QLabel(ui->reGB);
-      label->setText(tr("Rotary Encoder %1").arg(i + 1));
-      reLayout->addWidget(label, i, 0, 1, 1);
-      if (phaseIdx > 0) {
-        // RE link to another RE
-        reUse[i] = new QComboBox(ui->reGB);
-        reUse[i]->setProperty("index", i);
-        Helpers::populateGvarUseCB(reUse[i], phaseIdx);
-        connect(reUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseREUse_currentIndexChanged(int)));
-        reLayout->addWidget(reUse[i], i, 1, 1, 1);
-      }
-      // RE value
-      reValues[i] = new QSpinBox(ui->reGB);
-      reValues[i]->setProperty("index", i);
-      reValues[i]->setMinimum(RENC_MIN_VALUE);
-      reValues[i]->setMaximum(RENC_MAX_VALUE);
-      connect(reValues[i], SIGNAL(editingFinished()), this, SLOT(phaseREValue_editingFinished()));
-      reLayout->addWidget(reValues[i], i, 2, 1, 1);
-    }
-  }
-  else {
-    ui->reGB->hide();
   }
 
   // GVars

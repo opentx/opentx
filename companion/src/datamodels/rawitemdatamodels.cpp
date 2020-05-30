@@ -34,7 +34,6 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
     addItems(SOURCE_TYPE_LUA_OUTPUT,   RawSource::ScriptsGroup,  fw->getCapability(LuaOutputsPerScript), i * 16);
   addItems(SOURCE_TYPE_VIRTUAL_INPUT,  RawSource::InputsGroup,   fw->getCapability(VirtualInputs));
   addItems(SOURCE_TYPE_STICK,          RawSource::SourcesGroup,  board.getCapability(Board::MaxAnalogs));
-  addItems(SOURCE_TYPE_ROTARY_ENCODER, RawSource::SourcesGroup,  fw->getCapability(RotaryEncoders));
   addItems(SOURCE_TYPE_TRIM,           RawSource::TrimsGroup,    board.getCapability(Board::NumTrims));
   addItems(SOURCE_TYPE_MAX,            RawSource::SourcesGroup,  1);
   addItems(SOURCE_TYPE_SWITCH,         RawSource::SwitchesGroup, board.getCapability(Board::Switches));
@@ -90,7 +89,6 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_TELEMETRY,      -1);
   addItems(SWITCH_TYPE_FLIGHT_MODE,    -fw->getCapability(FlightModes));
   addItems(SWITCH_TYPE_VIRTUAL,        -fw->getCapability(LogicalSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, -fw->getCapability(RotaryEncoders));
   addItems(SWITCH_TYPE_TRIM,           -board.getCapability(Board::NumTrimSwitches));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   -(board.getCapability(Board::MultiposPots) * board.getCapability(Board::MultiposPotsPositions)));
   addItems(SWITCH_TYPE_SWITCH,         -board.getCapability(Board::SwitchPositions));
@@ -101,7 +99,6 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_SWITCH,         board.getCapability(Board::SwitchPositions));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   board.getCapability(Board::MultiposPots) * board.getCapability(Board::MultiposPotsPositions));
   addItems(SWITCH_TYPE_TRIM,           board.getCapability(Board::NumTrimSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, fw->getCapability(RotaryEncoders));
   addItems(SWITCH_TYPE_VIRTUAL,        fw->getCapability(LogicalSwitches));
   addItems(SWITCH_TYPE_FLIGHT_MODE,    fw->getCapability(FlightModes));
   addItems(SWITCH_TYPE_TELEMETRY,      1);

@@ -582,9 +582,6 @@
      <item row="0" column="0">
       <widget class="QGroupBox" name="gvGB"/>
      </item>
-     <item row="0" column="1">
-      <widget class="QGroupBox" name="reGB"/>
-     </item>
     </layout>
    </item>
   </layout>

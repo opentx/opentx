@@ -567,13 +567,6 @@
        </property>
       </widget>
      </item>
-     <item row="13" column="0">
-      <widget class="QLabel" name="re_label">
-       <property name="text">
-        <string>RotEnc Navigation</string>
-       </property>
-      </widget>
-     </item>
      <item row="9" column="1">
       <widget class="QCheckBox" name="blAlarm_ChkB">
        <property name="text">
@@ -1050,9 +1043,6 @@ p, li { white-space: pre-wrap; }
         <string>Country Code</string>
        </property>
       </widget>
-     </item>
-     <item row="13" column="1">
-      <widget class="QComboBox" name="re_CB"/>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_soundMode">

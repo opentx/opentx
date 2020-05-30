@@ -544,13 +544,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return 15/*4bits*/- 9/*sw positions*/;
     case LogicalSwitchesExt:
       return (IS_ARM(board) ? true : false);
-    case RotaryEncoders:
-      if (board == BOARD_GRUVIN9X)
-        return 2;
-      else if (IS_SKY9X(board))
-        return 1;
-      else
-        return 0;
     case Outputs:
       return (IS_ARM(board) ? 32 : 16);
     case NumCurvePoints:

@@ -45,7 +45,6 @@ class GeneralSetupPanel : public GeneralPanel
     void on_displayTypeCB_currentIndexChanged(int index);
     void on_BLBright_SB_editingFinished();
     void on_OFFBright_SB_editingFinished();
-    void on_re_CB_currentIndexChanged(int index);
     void on_countrycode_CB_currentIndexChanged(int index);
     void on_units_CB_currentIndexChanged(int index);
     void on_faimode_CB_stateChanged(int );
@@ -98,7 +97,6 @@ class GeneralSetupPanel : public GeneralPanel
     void setValues();
     void populateBacklightCB();
     void populateVoiceLangCB();
-    void populateRotEncCB(int reCount);
     void updateVarioPitchRange();
 };
 

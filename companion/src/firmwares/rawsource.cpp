@@ -343,8 +343,6 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     tr("ACC"), tr("GPS Time"),
   };
 
-  static const QString rotary[]  = { tr("REa"), tr("REb") };
-
   if (index<0) {
     return tr("???");
   }
@@ -381,9 +379,6 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
 
     case SOURCE_TYPE_TRIM:
       return (Boards::getCapability(board, Board::NumTrims) == 2 ? CHECK_IN_ARRAY(trims2, index) : CHECK_IN_ARRAY(trims, index));
-
-    case SOURCE_TYPE_ROTARY_ENCODER:
-      return CHECK_IN_ARRAY(rotary, index);
 
     case SOURCE_TYPE_MAX:
       return tr("MAX");

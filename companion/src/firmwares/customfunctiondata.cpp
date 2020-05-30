@@ -121,14 +121,6 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
   }
   b->addItem(tr("Flight"), val++);
   b->addItem(tr("Telemetry"), val++);
-  int reCount = firmware->getCapability(RotaryEncoders);
-  if (reCount == 1) {
-    b->addItem(tr("Rotary Encoder"), val++);
-  }
-  else if (reCount == 2) {
-    b->addItem(tr("REa"), val++);
-    b->addItem(tr("REb"), val++);
-  }
   if ((int)value < b->count()) {
     b->setCurrentIndex(value);
   }

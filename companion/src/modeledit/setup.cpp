@@ -1072,8 +1072,8 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   prevFocus = ui->trimsDisplay;
   int analogs = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders);
   int genAryIdx = 0;
-  for (int i=0; i < analogs + firmware->getCapability(RotaryEncoders); i++) {
-    RawSource src((i < analogs) ? SOURCE_TYPE_STICK : SOURCE_TYPE_ROTARY_ENCODER, (i < analogs) ? i : analogs - i);
+  for (int i=0; i < analogs; i++) {
+    RawSource src(SOURCE_TYPE_STICK, i);
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
     checkbox->setText(src.toString(&model, &generalSettings));

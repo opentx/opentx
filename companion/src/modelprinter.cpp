@@ -283,8 +283,8 @@ QString ModelPrinter::printCenterBeep()
   Board::Type board = firmware->getBoard();
   int analogs = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders);
 
-  for (int i=0; i < analogs + firmware->getCapability(RotaryEncoders); i++) {
-    RawSource src((i < analogs) ? SOURCE_TYPE_STICK : SOURCE_TYPE_ROTARY_ENCODER, (i < analogs) ? i : analogs - i);
+  for (int i=0; i < analogs; i++) {
+    RawSource src(SOURCE_TYPE_STICK, i);
     if (model.beepANACenter & (0x01 << i)) {
       strl << src.toString(&model, &generalSettings);
     }
