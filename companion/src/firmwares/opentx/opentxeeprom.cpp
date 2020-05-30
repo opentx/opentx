@@ -1983,6 +1983,12 @@ class SensorField: public TransformedField {
           sensor.unit++;
       }
 
+      if (version < 219) {
+        if (sensor.unit > SensorData::UNIT_FLOZ) {
+          sensor.unit += 11;
+        }
+      }
+
       qCDebug(eepromImport) << QString("imported %1").arg(internalField.getName());
     }
 
