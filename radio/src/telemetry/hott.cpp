@@ -149,15 +149,18 @@ const HottSensor * getHottSensor(uint16_t id)
   return nullptr;
 }
 
+int16_t processHoTTdBm(uint8_t value)
+{
+  if (value >= 128) {
+    value = 256 - value;
+  }
+  return value / 2 -71;
+}
+
 void processHottPacket(const uint8_t * packet)
 {
   // Set TX RSSI Value
-  int16_t dBm = packet[0];
-  if (dBm >= 128) {
-    dBm = 256 - dBm;
-  }
-  dBm = dBm / 2 - 71;
-  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_RSSI_ID, 0, 0, dBm, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_RSSI_ID, 0, 0, processHoTTdBm(packet[0]), UNIT_RAW, 0);
   // Set TX LQI  Value
   setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_TX_LQI_ID, 0, 0, packet[1], UNIT_RAW, 0);
 
@@ -211,12 +214,7 @@ void processHottPacket(const uint8_t * packet)
         sensor = getHottSensor(HOTT_ID_TEMP1);
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_TEMP1, 0, 0, value, sensor->unit, sensor->precision);
         // RX_RSSI
-        dBm = packet[7];
-        if (dBm >= 128) {
-          dBm = 256 - dBm;
-        }
-        dBm = dBm / 2 - 71;
-        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_RSSI_ID, 0, 0, dBm, UNIT_DB, 0);
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_RSSI_ID, 0, 0, processHoTTdBm(packet[7]), UNIT_DB, 0);
         // RX_LQI
         telemetryData.rssi.set(packet[8]);
         if (packet[8] > 0)
