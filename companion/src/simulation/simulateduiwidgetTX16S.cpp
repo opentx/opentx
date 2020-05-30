@@ -34,7 +34,7 @@ SimulatedUIWidgetTX16S::SimulatedUIWidgetTX16S(SimulatorInterface *simulator, QW
   // add actions in order of appearance on the help menu
 
   act = new RadioUiAction(3, QList<int>() << Qt::Key_Up, SIMU_STR_HLP_KEY_UP, SIMU_STR_HLP_ACT_MDL);
-  addRadioWidget(ui->rightbuttons->addArea(QRect(10, 0, 80, 35), "TX16S/right_mdl.png", act));
+  addRadioWidget(ui->rightbuttons->addArea(QRect(40, 0, 110, 35), "TX16S/right_mdl.png", act));
 
   m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
   addRadioWidget(ui->rightbuttons->addArea(QRect(45, 70, 100, 160), "TX16S/right_ent.png", m_mouseMidClickAction));
@@ -59,7 +59,7 @@ SimulatedUIWidgetTX16S::SimulatedUIWidgetTX16S(SimulatorInterface *simulator, QW
   m_scrollDnAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Equal, SIMU_STR_HLP_KEY_PLS % "|" % SIMU_STR_HLP_MOUSE_DN, SIMU_STR_HLP_ACT_ROT_RGT);
   connectScrollActions();
 
-  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 252, 30, 30), "TX16S/left_scrnsht.png", m_screenshotAction));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 245, 30, 30), "TX16S/left_scrnsht.png", m_screenshotAction));
 
   m_backlightColors << QColor(47, 123, 227);
 

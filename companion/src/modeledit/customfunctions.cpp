@@ -127,7 +127,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     else
       label->setText(tr("GF%1").arg(i+1));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
+    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomContextMenuRequested(QPoint)));
     tableLayout->addWidget(i, 0, label);
     // s1.report("label");
 
@@ -608,76 +608,63 @@ void CustomFunctionsPanel::update()
   lock = false;
 }
 
-void CustomFunctionsPanel::fswPaste()
+void CustomFunctionsPanel::cmPaste()
 {
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-  if (mimeData->hasFormat(MIMETYPE_FSW)) {
-    QByteArray fswData = mimeData->data(MIMETYPE_FSW);
-    CustomFunctionData *fsw = &functions[selectedFunction];
-    memcpy(fsw, fswData.constData(), sizeof(CustomFunctionData));
-    resetCBsAndRefresh(selectedFunction);
+  QByteArray data;
+  if (hasClipboardData(&data)) {
+    memcpy(&functions[selectedIndex], data.constData(), sizeof(CustomFunctionData));
+    resetCBsAndRefresh(selectedIndex);
     emit modified();
   }
 }
 
-void CustomFunctionsPanel::fswDelete()
+void CustomFunctionsPanel::cmDelete()
 {
-  int maxidx = fswCapability - 1;
-  for (int i=selectedFunction; i<maxidx; i++) {
-    if (!functions[i].isEmpty() || !functions[i+1].isEmpty()) {
-      CustomFunctionData *fsw1 = &functions[i];
-      CustomFunctionData *fsw2 = &functions[i+1];
-      memcpy(fsw1, fsw2, sizeof(CustomFunctionData));
-      resetCBsAndRefresh(i);
-    }
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
+  memmove(&functions[selectedIndex], &functions[selectedIndex + 1], (CPN_MAX_SPECIAL_FUNCTIONS - (selectedIndex + 1)) * sizeof(CustomFunctionData));
+  functions[fswCapability - 1].clear();
+
+  for (int i = selectedIndex; i < (fswCapability - 1); i++) {
+    resetCBsAndRefresh(i);
   }
-  functions[maxidx].clear();
-  resetCBsAndRefresh(maxidx);
   emit modified();
 }
 
-void CustomFunctionsPanel::fswCopy()
+void CustomFunctionsPanel::cmCopy()
 {
-  QByteArray fswData;
-  fswData.append((char*)&functions[selectedFunction], sizeof(CustomFunctionData));
+  QByteArray data;
+  data.append((char*)&functions[selectedIndex], sizeof(CustomFunctionData));
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData(MIMETYPE_FSW, fswData);
+  mimeData->setData(MIMETYPE_CUSTOM_FUNCTION, data);
   QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
-void CustomFunctionsPanel::fswCut()
+void CustomFunctionsPanel::cmCut()
 {
-  fswCopy();
-  fswClear();
+  cmCopy();
+  cmClear();
 }
 
-void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
+void CustomFunctionsPanel::onCustomContextMenuRequested(QPoint pos)
 {
   QLabel *label = (QLabel *)sender();
-  selectedFunction = label->property("index").toInt();
-
+  selectedIndex = label->property("index").toInt();
   QPoint globalPos = label->mapToGlobal(pos);
 
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-  bool hasData = mimeData->hasFormat(MIMETYPE_FSW);
-  bool moveUpAllowed = (selectedFunction > 0);
-  bool moveDownAllowed = (selectedFunction < (fswCapability - 1));
-  bool insertAllowed = (selectedFunction < (fswCapability - 1)) && (functions[fswCapability - 1].isEmpty());
-
   QMenu contextMenu;
-  contextMenu.addAction(CompanionIcon("copy.png"), tr("Copy"),this,SLOT(fswCopy()));
-  contextMenu.addAction(CompanionIcon("cut.png"), tr("Cut"),this,SLOT(fswCut()));
-  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(fswPaste()))->setEnabled(hasData);
-  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear"),this,SLOT(fswClear()));
+  contextMenu.addAction(CompanionIcon("copy.png"), tr("Copy"),this,SLOT(cmCopy()));
+  contextMenu.addAction(CompanionIcon("cut.png"), tr("Cut"),this,SLOT(cmCut()));
+  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(cmPaste()))->setEnabled(hasClipboardData());
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear"),this,SLOT(cmClear()));
   contextMenu.addSeparator();
-  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(fswInsert()))->setEnabled(insertAllowed);
-  contextMenu.addAction(CompanionIcon("arrow-left.png"), tr("Delete"),this,SLOT(fswDelete()));
-  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(fswMoveUp()))->setEnabled(moveUpAllowed);
-  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(fswMoveDown()))->setEnabled(moveDownAllowed);
+  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(cmInsert()))->setEnabled(insertAllowed());
+  contextMenu.addAction(CompanionIcon("arrow-left.png"), tr("Delete"),this,SLOT(cmDelete()));
+  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(cmMoveUp()))->setEnabled(moveUpAllowed());
+  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(cmMoveDown()))->setEnabled(moveDownAllowed());
   contextMenu.addSeparator();
-  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(fswClearAll()));
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(cmClearAll()));
 
   contextMenu.exec(globalPos);
 }
@@ -762,25 +749,31 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
   }
 }
 
-void CustomFunctionsPanel::fswMoveUp()
+void CustomFunctionsPanel::cmMoveUp()
 {
-  swapFuncData(selectedFunction, selectedFunction - 1);
+  swapData(selectedIndex, selectedIndex - 1);
 }
 
-void CustomFunctionsPanel::fswMoveDown()
+void CustomFunctionsPanel::cmMoveDown()
 {
-  swapFuncData(selectedFunction, selectedFunction + 1);
+  swapData(selectedIndex, selectedIndex + 1);
 }
 
-void CustomFunctionsPanel::fswClear()
+void CustomFunctionsPanel::cmClear()
 {
-  functions[selectedFunction].clear();
-  resetCBsAndRefresh(selectedFunction);
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
+  functions[selectedIndex].clear();
+  resetCBsAndRefresh(selectedIndex);
   emit modified();
 }
 
-void CustomFunctionsPanel::fswClearAll()
+void CustomFunctionsPanel::cmClearAll()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Special Functions. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   for (int i=0; i<fswCapability; i++) {
     functions[i].clear();
     resetCBsAndRefresh(i);
@@ -788,18 +781,17 @@ void CustomFunctionsPanel::fswClearAll()
   emit modified();
 }
 
-void CustomFunctionsPanel::fswInsert()
+void CustomFunctionsPanel::cmInsert()
 {
-  for (int i=(fswCapability - 1); i>selectedFunction; i--) {
-    if (!functions[i].isEmpty() || !functions[i-1].isEmpty()) {
-      memcpy(&functions[i], &functions[i-1], sizeof(CustomFunctionData));
-      resetCBsAndRefresh(i);
-    }
+  memmove(&functions[selectedIndex + 1], &functions[selectedIndex], (CPN_MAX_SPECIAL_FUNCTIONS - (selectedIndex + 1)) * sizeof(CustomFunctionData));
+  functions[selectedIndex].clear();
+
+  for (int i = selectedIndex; i < (fswCapability - 1); i++) {
+    resetCBsAndRefresh(i);
   }
-  fswClear();
 }
 
-void CustomFunctionsPanel::swapFuncData(int idx1, int idx2)
+void CustomFunctionsPanel::swapData(int idx1, int idx2)
 {
   if ((idx1 != idx2) && (!functions[idx1].isEmpty() || !functions[idx2].isEmpty())) {
     CustomFunctionData fswtmp = functions[idx2];
@@ -822,4 +814,31 @@ void CustomFunctionsPanel::resetCBsAndRefresh(int idx)
   populateFuncParamCB(fswtchParamT[idx], functions[idx].func, functions[idx].param, functions[idx].adjustMode);
   refreshCustomFunction(idx);
   lock = false;
+}
+
+bool CustomFunctionsPanel::hasClipboardData(QByteArray * data) const
+{
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  if (mimeData->hasFormat(MIMETYPE_CUSTOM_FUNCTION)) {
+    if (data)
+      data->append(mimeData->data(MIMETYPE_CUSTOM_FUNCTION));
+    return true;
+  }
+  return false;
+}
+
+bool CustomFunctionsPanel::insertAllowed() const
+{
+  return ((selectedIndex < fswCapability - 1) && (model->curves[fswCapability - 1].isEmpty()));
+}
+
+bool CustomFunctionsPanel::moveDownAllowed() const
+{
+  return selectedIndex < fswCapability - 1;
+}
+
+bool CustomFunctionsPanel::moveUpAllowed() const
+{
+  return selectedIndex > 0;
 }

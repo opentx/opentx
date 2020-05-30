@@ -26,6 +26,7 @@
 #include "dataconstants.h"
 #include "definitions.h"
 #include "opentx_types.h"
+#include "globals.h"
 
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
@@ -331,10 +332,10 @@ PACK(struct TelemetrySensor {
     NOBACKUP(uint16_t persistentValue);
   } NAME(id1) FUNC(select_id1);
   union {
-    PACK(struct {
+    NOBACKUP(PACK(struct {
       uint8_t physID:5;
       uint8_t rxIndex:3; // 1 bit for module index, 2 bits for receiver index
-    }) frskyInstance;
+    }) frskyInstance);
     uint8_t instance;
     NOBACKUP(uint8_t formula);
   } NAME(id2) FUNC(select_id2);
@@ -512,8 +513,6 @@ PACK(struct ModuleData {
 /*
  * Model structure
  */
-
-typedef uint16_t BeepANACenter;
 
 #if LEN_BITMAP_NAME > 0
 #define MODEL_HEADER_BITMAP_FIELD      NOBACKUP(char bitmap[LEN_BITMAP_NAME]);
@@ -697,7 +696,8 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS) || defined(PCBNV14)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t auxSerialMode); \
+    NOBACKUP(uint8_t auxSerialMode:4); \
+    NOBACKUP(uint8_t aux2SerialMode:4); \
     swconfig_t switchConfig ARRAY(2,struct_switchConfig,nullptr);       \
     uint16_t potsConfig ARRAY(2,struct_potConfig,nullptr); /* two bits per pot */ \
     uint8_t slidersConfig ARRAY(1,struct_sliderConfig,nullptr); /* 1 bit per slider */ \

@@ -62,7 +62,7 @@ void drawModel(coord_t x, coord_t y, ModelCell * model, bool current, bool selec
   if (selected) {
     lcdDrawSolidRect(x, y, MODELCELL_WIDTH+2, MODELCELL_HEIGHT+2, 1, TITLE_BGCOLOR);
     drawShadow(x, y, MODELCELL_WIDTH+2, MODELCELL_HEIGHT+2);
-    if (selectMode == MODE_MOVE_MODEL) {
+    if (selectMode == MODE_MOVE_MODEL && modelselModelMoveBackground) {
       lcd->drawMask(x+MODELCELL_WIDTH+2-modelselModelMoveBackground->width(), y, modelselModelMoveBackground, TITLE_BGCOLOR);
       lcd->drawMask(x+MODELCELL_WIDTH+2-modelselModelMoveBackground->width()+12, y+5, modelselModelMoveIcon, DEFAULT_BGCOLOR);
     }
@@ -279,7 +279,7 @@ void onModelSelectMenu(const char * result)
       setCurrentModel(currentCategory->size() - 1);
     }
     else {
-      POPUP_WARNING("Invalid File");
+      POPUP_WARNING(STR_INVALID_FILE);
     }
   }
   else if (result == STR_MOVE_MODEL) {

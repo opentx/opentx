@@ -44,22 +44,24 @@ class FontBitmap:
         return False
 
     @staticmethod
-    def is_column_needed(px, x, height):
+    def is_column_needed(px, x, height, debug=False):
         for y in range(height):
+            if debug:
+                print(x, y, px[x, y])
             if px[x, y] != (255, 255, 255):
                 return True
         return False
 
-    def get_real_size(self, image):
+    def get_real_size(self, image, debug=False):
         px = image.load()
         left = 0
         while left < image.width:
-            if self.is_column_needed(px, left, image.height):
+            if self.is_column_needed(px, left, image.height, debug):
                 break
             left += 1
         right = image.width - 1
         while right > left:
-            if self.is_column_needed(px, right, image.height):
+            if self.is_column_needed(px, right, image.height, debug):
                 break
             right -= 1
         top = 0
@@ -74,19 +76,15 @@ class FontBitmap:
             bottom -= 1
         return left, top, right, bottom
 
-    def draw_char(self, image, x, c, font):
+    def draw_char(self, image, x, c, font, offset_y=0):
         size = font.font.getsize(c)
         width = size[0][0]
-        offset = size[1][0]
-        char_image = Image.new("RGB", (width, image.height), self.background)
+        offset_x = size[1][0]
+        char_image = Image.new("RGB", (width + 10, image.height), self.background)
         draw = ImageDraw.Draw(char_image)
-        draw.text((-offset, 0), c, fill=self.foreground, font=font)
-        left, _, right, _ = self.get_real_size(char_image)
-        if right + offset + 1 < width:
-            # print("char %c: space reduced" % c)
-            width = right + offset + 1
+        draw.text((-offset_x, offset_y), c, fill=self.foreground, font=font)
         if image:
-            image.paste(char_image.crop((-offset, 0, width, image.height)), (x, 0))
+            image.paste(char_image.crop((0, 0, width, image.height)), (x, 0))
         return width
 
     def generate(self, filename, generate_coords_file=True):
@@ -98,11 +96,17 @@ class FontBitmap:
             if c == " ":
                 w = 4
             elif c in special_chars["cn"]:
-                w = self.draw_char(image, width, c, self.cjk_font)
-            elif c not in extra_chars:
-                w = self.draw_char(image, width, c, self.font)
-            else:
+                w = self.draw_char(image, width, c, self.cjk_font, -3)
+            elif c in extra_chars:
+                if self.extra_bitmap:
+                    image.paste(self.extra_bitmap.copy(), (width, 0))
+                    for coord in [14, 14, 12, 12, 13, 13, 13, 13, 13] + [15] * 12:
+                        width += coord
+                        coords.append(width)
+                    self.extra_bitmap = None
                 continue
+            else:
+                w = self.draw_char(image, width, c, self.font)
             coords.append(width)
             width += w
 
@@ -110,13 +114,9 @@ class FontBitmap:
 
         _, top, _, bottom = self.get_real_size(image)
 
-        if self.extra_bitmap:
-            image.paste(self.extra_bitmap.copy(), (width, top))
-            for coord in [14, 14, 12, 12, 13, 13, 13, 13, 13] + [15] * 12:
-                width += coord
-                coords.append(width)
-
-        image = image.crop((0, top, width, bottom + 1))
+        top = 1
+        # bottom = self.font_size
+        image = image.crop((0, top, width - 1, bottom))
         coords.insert(0, bottom - top + 1)
 
         image.save(filename + ".png")

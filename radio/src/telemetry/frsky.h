@@ -33,7 +33,12 @@ enum FrSkyDataState {
   STATE_DATA_XOR,
 };
 
-#define FRSKY_SPORT_BAUDRATE      57600
+#define FRSKY_SPORT_BAUDRATE          57600
+#if defined(RADIO_TX16S)
+#define FRSKY_TELEM_MIRROR_BAUDRATE   115200
+#else
+#define FRSKY_TELEM_MIRROR_BAUDRATE   FRSKY_SPORT_BAUDRATE
+#endif
 
 #define FRSKY_D_BAUDRATE          9600
 
@@ -293,10 +298,10 @@ inline bool isRasValueValid()
 {
   return true;
 }
-#elif defined(PCBX9DP) || defined(PCBX9E)
+#elif defined(PCBTARANIS)
 inline bool isRasValueValid()
 {
-  return telemetryData.xjtVersion != 0x0000 && telemetryData.xjtVersion != 0x00FF;
+  return telemetryData.xjtVersion != 0x00FF;
 }
 #elif defined(PCBHORUS)
 inline bool isRasValueValid()

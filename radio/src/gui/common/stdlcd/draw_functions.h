@@ -25,7 +25,7 @@
 void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags = 0);
 void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags = 0);
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags att=0);
-void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att=0);
+void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att=0);
 
 void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att = 0);
 void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);

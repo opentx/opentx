@@ -11,6 +11,7 @@ Arne Schwabe (schwabe)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
+[es] Daniel Gorbea (dgatf)
 
 [Other contributors]
 Rob Thomson
@@ -422,7 +423,6 @@ Pablo Gomez Martinez
 Alan Thoren
 Jack Clodfelter
 William Simon
-James Houck
 Peter Fithern
 Thomas Svedman
 TechFixPros
@@ -687,7 +687,6 @@ Shaun Currier
 Danilo Schiara
 John Hennig
 RK Custom Homes
-James Houck
 Piet Teekens
 Tommy Widenflycht
 Johan Petrus Theophilus
@@ -1707,3 +1706,30 @@ Fabrice Debonnet
 James Laver
 Kevin Bowens
 David Frech
+Udo Kastenholz
+Julio Margarido
+Uwe Muendelein
+James Jewitt
+Daniel Ferreira
+Michael Charlston
+Leopoldo Cicero
+Tom Van Driel
+Karl Vetter
+Johannes Janssen
+François Blondé
+Precision Aero
+Thomas Håkansson
+Gordon Evans
+Benny Simonsen
+George Kennedy
+Stefano Boggia
+Maksym Arshynkin
+Tomas Sodergren
+Jörg Lemnitz
+TMac FPV
+Josef Schaeffler
+Mike Frizell
+MeCodeGoodSomeday
+Timothy Fry
+John Beech
+Wojciech Winiarski

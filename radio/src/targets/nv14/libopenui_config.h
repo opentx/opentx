@@ -53,6 +53,7 @@ constexpr uint32_t PAGE_INDENT_WIDTH =             10;
 constexpr uint32_t PAGE_LABEL_WIDTH =              140;
 constexpr uint32_t FH =                            PAGE_LINE_HEIGHT;
 constexpr uint32_t NUM_BODY_LINES =                MENU_BODY_HEIGHT / PAGE_LINE_HEIGHT;
+constexpr uint32_t TEXT_VIEWER_LINES =             (MENU_FOOTER_TOP - MENU_HEADER_HEIGHT) / FH;
 
 constexpr uint32_t FIELD_PADDING_LEFT =            3;
 constexpr uint32_t FIELD_PADDING_TOP =             4;
@@ -172,6 +173,7 @@ constexpr LcdFlags MENU_FONT = FONT(STD);
 constexpr LcdFlags TABLE_HEADER_FONT = FONT(STD);
 constexpr LcdFlags TABLE_BODY_FONT = FONT(STD);
 
-constexpr int CJK_FIRST_LETTER_INDEX = 187;
+constexpr int CJK_FIRST_LETTER_INDEX = 168;
+constexpr coord_t CHAR_SPACING = 0;
 
 #endif // _LIBOPENUI_CONFIG_H_

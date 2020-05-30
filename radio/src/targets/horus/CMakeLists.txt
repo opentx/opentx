@@ -76,10 +76,15 @@ if (PCB STREQUAL X10)
     add_definitions(-DRADIO_FAMILY_T16)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
     option(BLUETOOTH "Support for bluetooth module" OFF)
-    if (NOT BLUETOOTH)
-      set(AUX_SERIAL ON)
-    endif()
+    option(INTERNAL_GPS "Support for internal ublox GPS" OFF)
+    set(HARDWARE_TOUCH YES)
     set(USB_CHARGER YES)
+    set(DEFAULT_THEME "DARKBLUE")
+    set(AUX_SERIAL ON)
+    if (NOT BLUETOOTH AND NOT INTERNAL_GPS)
+      set(AUX2_SERIAL ON)
+    endif()
+    set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
   else()
     set(FLAVOUR x10)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" ON)
@@ -106,7 +111,6 @@ elseif (PCB STREQUAL X12S)
     ${TARGET_SRC}
     audio_spi_driver.cpp
     x12s_adc_driver.cpp
-    gps_driver.cpp
     )
   set(BITMAPS_TARGET x12s_bitmaps)
   set(FONTS_TARGET x12s_fonts)
@@ -130,6 +134,12 @@ add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
 add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
 add_definitions(-DHARDWARE_TRAINER_JACK)
+
+if(DEFAULT_THEME)
+  add_definitions(-DDEFAULT_THEME_${DEFAULT_THEME})
+else()
+  add_definitions(-DDEFAULT_THEME_DEFAULT)
+endif()
 
 if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
@@ -162,6 +172,7 @@ endif()
 
 if(INTERNAL_GPS)
   set(SRC ${SRC} gps.cpp)
+  set(TARGET_SRC ${TARGET_SRC} gps_driver.cpp)
   add_definitions(-DINTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
@@ -178,6 +189,13 @@ set(TARGET_SRC
   ../common/arm/stm32/rotary_encoder_driver.cpp
   )
 
+if(HARDWARE_TOUCH)
+  set(TARGET_SRC ${TARGET_SRC}
+    tp_gt911.cpp
+    )
+  add_definitions(-DHARDWARE_TOUCH)
+endif()
+
 if(USB_CHARGER)
   set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
   add_definitions(-DUSB_CHARGER)
@@ -192,6 +210,11 @@ endif()
 
 if (AUX_SERIAL)
   add_definitions(-DAUX_SERIAL)
+  set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+endif()
+
+if (AUX2_SERIAL)
+  add_definitions(-DAUX2_SERIAL)
   set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 endif()
 

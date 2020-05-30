@@ -100,12 +100,12 @@ extern coord_t lcdNextPos;
 #define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)
 #define ASSERT_IN_DISPLAY(p)           assert((p) >= displayBuf && (p) < DISPLAY_END)
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c);
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
+void lcdDrawChar(coord_t x, coord_t y, char c);
+void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags mode);
 void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags = 0);
 void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags mode);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s,uint8_t idx, LcdFlags mode);
-void lcdDrawSizedText(coord_t x, coord_t y, const char * s,unsigned char len, LcdFlags mode);
+void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len, LcdFlags mode);
 void lcdDrawText(coord_t x, coord_t y, const char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const char * s);

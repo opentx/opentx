@@ -303,9 +303,7 @@ void generalDefault()
   g_eeGeneral.stickMode = DEFAULT_MODE - 1;
 #endif
 
-#if defined(FRSKY_RELEASE)
-  g_eeGeneral.templateSetup = 17; /* TAER */
-#endif
+  g_eeGeneral.templateSetup = DEFAULT_TEMPLATE_SETUP;
 
   g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
@@ -510,11 +508,7 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if !defined(EEPROM)
-  strcpy(g_model.header.name, "Model");
-  g_model.header.name[5] = '0' + id / 10;
-  g_model.header.name[6] = '0' + id % 10;
-#endif
+  strAppendUnsigned(strAppend(g_model.header.name, STR_MODEL), id + 1, 2);
 
 #if defined(COLORLCD)
   extern const LayoutFactory * defaultLayout;
@@ -696,7 +690,7 @@ void checkBacklight()
     if (inputsMoved()) {
       inactivity.counter = 0;
       if (g_eeGeneral.backlightMode & e_backlight_mode_sticks) {
-        backlightOn();
+        resetBacklightTimeout();
       }
     }
 
@@ -709,7 +703,7 @@ void checkBacklight()
   }
 }
 
-void backlightOn()
+void resetBacklightTimeout()
 {
   lightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
 }
@@ -736,7 +730,7 @@ void doSplash()
 #endif
 
   if (SPLASH_NEEDED()) {
-    backlightOn();
+    resetBacklightTimeout();
     drawSplash();
 
 #if defined(PCBSKY9X)
@@ -1999,6 +1993,10 @@ void opentxInit()
   auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
 #endif
 
+#if defined(AUX2_SERIAL)
+  aux2SerialInit(g_eeGeneral.aux2SerialMode, modelTelemetryProtocol());
+#endif
+
 #if MENUS_LOCK == 1
   getMovedSwitch();
   if (TRIMS_PRESSED() && g_eeGeneral.switchUnlockStates==switches_states) {
@@ -2034,7 +2032,7 @@ void opentxInit()
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
     // on Tx start turn the light on
-    backlightOn();
+    resetBacklightTimeout();
   }
 
   if (!globalData.unexpectedShutdown) {
@@ -2052,7 +2050,7 @@ void opentxInit()
   lcdSetContrast();
 #endif
 
-  backlightOn();
+  resetBacklightTimeout();
 
   startPulses();
 

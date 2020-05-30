@@ -46,13 +46,14 @@ constexpr uint32_t DEFAULT_SCROLLBAR_X =           LCD_W - 10;
 constexpr uint32_t DEFAULT_SCROLLBAR_Y =           MENU_CONTENT_TOP;
 constexpr uint32_t DEFAULT_SCROLLBAR_H =           MENU_FOOTER_TOP - DEFAULT_SCROLLBAR_Y - 6;
 
-constexpr coord_t PAGE_PADDING =                  6;
+constexpr coord_t PAGE_PADDING =                   6;
 constexpr uint32_t PAGE_LINE_HEIGHT =              20;
 constexpr uint32_t PAGE_LINE_SPACING =             2;
 constexpr uint32_t PAGE_INDENT_WIDTH =             10;
 constexpr uint32_t PAGE_LABEL_WIDTH =              240;
 constexpr uint32_t FH =                            PAGE_LINE_HEIGHT;
 constexpr uint32_t NUM_BODY_LINES =                MENU_BODY_HEIGHT / PAGE_LINE_HEIGHT;
+constexpr uint32_t TEXT_VIEWER_LINES =             (MENU_FOOTER_TOP - MENU_HEADER_HEIGHT) / FH;
 
 constexpr uint32_t FIELD_PADDING_LEFT =            3;
 constexpr uint32_t FIELD_PADDING_TOP =             2;
@@ -168,6 +169,7 @@ constexpr LcdFlags MENU_FONT = FONT(STD);
 constexpr LcdFlags TABLE_HEADER_FONT = FONT(STD);
 constexpr LcdFlags TABLE_BODY_FONT = FONT(STD);
 
-constexpr int CJK_FIRST_LETTER_INDEX = 187;
+constexpr int CJK_FIRST_LETTER_INDEX = 168;
+constexpr coord_t CHAR_SPACING = 0;
 
 #endif // _LIBOPENUI_CONFIG_H_

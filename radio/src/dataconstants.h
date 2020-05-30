@@ -208,6 +208,16 @@ enum TrainerMode {
   };
 #endif
 
+#if defined(RADIO_FAMILY_T16) || (defined(RADIO_T12) && defined(INTERNAL_MODULE_MULTI)) || defined(ALLOW_TRAINER_MULTI)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
+#elif defined(BLUETOOTH)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
+#elif defined(PCBX7) || defined(PCBXLITE)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
+#else
+  #define TRAINER_MODE_MAX()             HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
+#endif
+
 #if defined(HARDWARE_INTERNAL_MODULE)
   #define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE)
 #else

@@ -564,7 +564,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_SMALL(board) || IS_TARANIS_X9E(board) || IS_FAMILY_HORUS_OR_T16(board) || IS_JUMPER_T12(board) || id.contains("haptic"));
+      return board != Board::BOARD_TARANIS_X9D || id.contains("haptic");
     case ModelTrainerEnable:
       if (IS_HORUS_OR_TARANIS(board) && board!=Board::BOARD_TARANIS_XLITE)
         return 1;
@@ -616,6 +616,10 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return 0;
       else
         return IS_ARM(board) ? 4 : 2;
+    case TelemetryCustomScreensBars:
+      return (getCapability(TelemetryCustomScreens) ? 4 : 0);
+    case TelemetryCustomScreensLines:
+      return (getCapability(TelemetryCustomScreens) ? 4 : 0);
     case TelemetryCustomScreensFieldsPerLine:
       return HAS_LARGE_LCD(board) ? 3 : 2;
     case NoTelemetryProtocol:
@@ -754,6 +758,11 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_TARANIS_XLITES(board);
     case PwrButtonPress:
       return IS_HORUS_OR_TARANIS(board) && (board!=Board::BOARD_TARANIS_X9D) && (board!=Board::BOARD_TARANIS_X9DP);
+    case Sensors:
+      if (IS_FAMILY_HORUS_OR_T16(board) || IS_TARANIS_X9(board))
+        return 60;
+      else
+        return 40;
     default:
       return 0;
   }
@@ -793,7 +802,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
           case PULSES_MULTIMODULE:
-            return id.contains("internalmulti");
+            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board);
           default:
             return false;
         }
@@ -1252,6 +1261,7 @@ void registerOpenTxFirmwares()
 
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", Firmware::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
+  firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
   firmware->addOption("haptic", Firmware::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
   addPPMInternalModuleHack(firmware);
@@ -1331,7 +1341,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
-  firmware->addOption("flexr9m", Firmware::tr("Enable non certified R9M firmwares"));
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
@@ -1342,15 +1351,17 @@ void registerOpenTxFirmwares()
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
-  registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
+  registerOpenTxFirmware(firmware);
 
-  // TX16S is unavailable until finalized
-  /* Radiomaster TX16S board
+  /* Radiomaster TX16S board */
   firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16s / TX16s Hall / TX16s Masterfire"), BOARD_RADIOMASTER_TX16S);
   addOpenTxFrskyOptions(firmware);
-  firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
-  registerOpenTxFirmware(firmware);*/
+  addOpenTxRfOptions(firmware, FLEX);
+  static const Firmware::Option opt_bt("bluetooth", Firmware::tr("Support for bluetooth module"));
+  static const Firmware::Option opt_internal_gps("internalgps", Firmware::tr("Support internal GPS"));
+  firmware->addOptionsGroup({opt_bt, opt_internal_gps});
+  registerOpenTxFirmware(firmware);
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import sys
 import argparse
 from PIL import Image

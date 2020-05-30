@@ -172,10 +172,10 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
   if (reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
     Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
-      Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registerRxName[i]));
+      Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.registerRxName[i]);
     }
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
+      Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
     }
     Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.registerLoopIndex);
   }
@@ -291,7 +291,7 @@ void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
   else {
     Pxx2Transport::addByte(0x00); // DATA0
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
+      Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
     }
   }
 }

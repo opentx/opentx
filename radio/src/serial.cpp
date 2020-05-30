@@ -34,6 +34,10 @@ void serialPutc(char c) {
   if (auxSerialTracesEnabled())
     auxSerialPutc(c);
 #endif
+#if defined(AUX2_SERIAL)
+  if (aux2SerialTracesEnabled())
+    aux2SerialPutc(c);
+#endif
 }
 
 void serialPrintf(const char * format, ...)

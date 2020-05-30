@@ -1084,11 +1084,6 @@
   #define INTMODULE_GPIO_AF               GPIO_AF_USART3
   #define INTMODULE_USART_IRQn            USART3_IRQn
   #define INTMODULE_USART_IRQHandler      USART3_IRQHandler
-  #define INTMODULE_DMA_STREAM            DMA1_Stream3
-  #define INTMODULE_DMA_STREAM_IRQ        DMA1_Stream3_IRQn
-  #define INTMODULE_DMA_STREAM_IRQHandler DMA1_Stream3_IRQHandler
-  #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF3
-  #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
   #define INTMODULE_RCC_APB1Periph        RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph        RCC_APB1Periph_USART3
   #define INTMODULE_TIMER                 TIM2
@@ -1334,6 +1329,11 @@
   #define AUX_SERIAL_DMA_Stream_RX          DMA1_Stream1
   #define AUX_SERIAL_DMA_Channel_RX         DMA_Channel_4
 #endif
+
+// No aux2 on taranis
+#define AUX2_SERIAL_RCC_AHB1Periph           0
+#define AUX2_SERIAL_RCC_APB1Periph           0
+#define AUX2_SERIAL_RCC_APB2Periph           0
 
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)

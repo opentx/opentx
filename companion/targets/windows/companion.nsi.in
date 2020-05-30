@@ -6,6 +6,7 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
+  !include "nsDialogs.nsh"
   !include "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\FileAssociation.nsh"
 
 ;--------------------------------
@@ -32,6 +33,10 @@
 ;Variables
 
   Var StartMenuFolder
+  Var StartMenuLocationDialog
+  Var StartMenuLocationRadioCurrent
+  Var StartMenuLocationRadioAll
+  Var StartMenuLocationValue ; "current_user" or "all_users"
 
 ;--------------------------------
 ;Interface Settings
@@ -68,8 +73,10 @@
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
   !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\OpenTX\Companion @VERSION_FAMILY@"
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
+
+  ;Start Menu Folder for current user or all users?
+  Page custom StartMenuLocationCreator StartMenuLocationLeave
 
   !insertmacro MUI_PAGE_INSTFILES
 
@@ -117,6 +124,7 @@ Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
 
   ;Registry information for add/remove programs
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayName" "OpenTX Companion @VERSION_FAMILY@"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayVersion" "@VERSION@"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@" "Publisher" "OpenTX"
@@ -126,10 +134,14 @@ Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 
   ;Create shortcuts
+  ${If} $StartMenuLocationValue == "all_users"
+    SetShellVarContext all
+  ${Endif}
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Companion @VERSION_FAMILY@.lnk" "$INSTDIR\companion.exe"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Firmware Simulator @VERSION_FAMILY@.lnk" "$INSTDIR\simulator.exe"
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion @VERSION_FAMILY@.lnk" "$INSTDIR\Uninstall.exe"
+  SetShellVarContext current
 
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -141,6 +153,14 @@ SectionEnd
   ;Language strings
   LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for OpenTX"
   LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de r�glages et mod�les pour OpenTX"
+  LangString SML_SubTitle     ${LANG_ENGLISH} "Choose a location for the Start Menu shortcuts"
+  LangString SML_SubTitle     ${LANG_FRENCH}  "Choisissez un emplacement pour les raccourcis de l'application"
+  LangString SML_MainLabel    ${LANG_ENGLISH} "Create start menu shortcuts for:"
+  LangString SML_MainLabel    ${LANG_FRENCH}  "Emplacement pour les raccourcis de l'application:"
+  LangString SML_RadioCurrent ${LANG_ENGLISH} "Current user only"
+  LangString SML_RadioCurrent ${LANG_FRENCH}  "Utilisateur actuel"
+  LangString SML_RadioAll     ${LANG_ENGLISH} "All users"
+  LangString SML_RadioAll     ${LANG_FRENCH}  "Tous les utilisateurs"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -203,6 +223,13 @@ Section "un.OpenTX Companion @VERSION_FAMILY@"
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 
+  ; Always remove start menu folder for both locations: current user and all users
+  SetShellVarContext all
+  Delete "$SMPROGRAMS\$StartMenuFolder\Companion @VERSION_FAMILY@.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Firmware Simulator @VERSION_FAMILY@.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion @VERSION_FAMILY@.lnk"
+  RMDir "$SMPROGRAMS\$StartMenuFolder"
+  SetShellVarContext current
   Delete "$SMPROGRAMS\$StartMenuFolder\Companion @VERSION_FAMILY@.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Firmware Simulator @VERSION_FAMILY@.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion @VERSION_FAMILY@.lnk"
@@ -217,4 +244,59 @@ SectionEnd
 
 Function LaunchLink
   ExecShell "" "$INSTDIR\companion.exe"
+FunctionEnd
+
+
+; Custom page with radio buttons, if the start menu entries shall be created
+; for the current user or for all users.
+Function StartMenuLocationCreator
+  ; Set default value if not already set. Do this before we might "abort" this page.
+  ${If} $StartMenuLocationValue == ""
+    StrCpy $StartMenuLocationValue "current_user"
+  ${EndIf}
+
+  ; If the folder starts with >, the user has chosen not to create a shortcut (see NSIS/StartMenu.nsh)
+  StrCpy $R0 $StartMenuFolder 1
+  ${If} $R0 == ">"
+    Abort
+  ${EndIf}
+
+  !insertmacro MUI_HEADER_TEXT_PAGE $(MUI_TEXT_STARTMENU_TITLE) $(SML_SubTitle)
+
+  nsDialogs::Create 1018
+  Pop $StartMenuLocationDialog
+
+  ${If} $StartMenuLocationDialog == error
+    Abort
+  ${EndIf}
+
+  ${NSD_CreateLabel} 0u 0u 100% 12u $(SML_MainLabel)
+  Pop $R0
+
+  ${NSD_CreateRadioButton} 8u 20u 100% 12u $(SML_RadioCurrent) 
+  Pop $StartMenuLocationRadioCurrent
+  ${NSD_AddStyle} $StartMenuLocationRadioCurrent ${WS_GROUP}
+
+  ${NSD_CreateRadioButton} 8u 40u 100% 12u $(SML_RadioAll)
+  Pop $StartMenuLocationRadioAll
+
+  ${If} $StartMenuLocationValue == "all_users"
+    ${NSD_SetState} $StartMenuLocationRadioAll ${BST_CHECKED}
+  ${Else}  
+    ${NSD_SetState} $StartMenuLocationRadioCurrent ${BST_CHECKED}
+  ${EndIf}
+
+  ${NSD_OnBack} StartMenuLocationLeave
+
+  nsDialogs::Show
+FunctionEnd
+
+; Converts the radio button state back into a value for "StartMenuLocationValue"
+Function StartMenuLocationLeave
+  ${NSD_GetState} $StartMenuLocationRadioAll $R0
+  ${If} $R0 == ${BST_CHECKED}
+    StrCpy $StartMenuLocationValue "all_users"
+  ${Else}
+    StrCpy $StartMenuLocationValue "current_user"
+  ${Endif}
 FunctionEnd

@@ -119,7 +119,20 @@ enum MultiModuleRFProtocols {
   MODULE_SUBTYPE_MULTI_AFHDS2A_RX,
   MODULE_SUBTYPE_MULTI_HOTT,
   MODULE_SUBTYPE_MULTI_FX816,
-  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_FX816
+  MODULE_SUBTYPE_MULTI_BAYANG_RX,
+  MODULE_SUBTYPE_MULTI_PELIKAN,
+  MODULE_SUBTYPE_MULTI_TIGER,
+  MODULE_SUBTYPE_MULTI_XK,
+  MODULE_SUBTYPE_MULTI_XN297DUMP,
+  MODULE_SUBTYPE_MULTI_FRSKYX2,
+  MODULE_SUBTYPE_MULTI_FRSKY_R9,
+  MODULE_SUBTYPE_MULTI_PROPEL,
+  MODULE_SUBTYPE_MULTI_FRSKYL,
+  MODULE_SUBTYPE_MULTI_SKYARTEC,
+  MODULE_SUBTYPE_MULTI_ESKY150V2,
+  MODULE_SUBTYPE_MULTI_DSM_RX,
+  MODULE_SUBTYPE_MULTI_JJRC345,
+  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_JJRC345
 };
 
 enum TrainerProtocol {
@@ -149,7 +162,7 @@ class ModuleData {
     unsigned int modelId;
     unsigned int protocol;   // type in datastructs.h
     int          rfProtocol; // rfProtocol in datastructs.h
-  
+
     unsigned int subType;
     bool         invertedSerial;
     unsigned int channelsStart;
@@ -197,6 +210,8 @@ class ModuleData {
     static QString indexToString(int index, Firmware * fw);
     static QString protocolToString(unsigned protocol);
     static QStringList powerValueStrings(int subType, Firmware * fw);
+    bool hasFailsafes(Firmware * fw) const;
+    int getMaxChannelCount();
 };
 
 #endif // MODULEDATA_H

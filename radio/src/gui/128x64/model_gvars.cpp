@@ -64,10 +64,10 @@ enum GVarFields {
 
 void menuModelGVarOne(event_t event)
 {
-  GVarData * gvar = &g_model.gvars[s_currIdx];
+  GVarData * gvar = &g_model.gvars[s_currIdxSubMenu];
 
-  drawStringWithIndex(PSIZE(TR_GVARS)*FW+FW, 0, STR_GV, s_currIdx+1, 0);
-  drawGVarValue(32*FW, 0, s_currIdx, getGVarValue(s_currIdx, getFlightMode()));
+  drawStringWithIndex(PSIZE(TR_GVARS)*FW+FW, 0, STR_GV, s_currIdxSubMenu+1, 0);
+  drawGVarValue(32*FW, 0, s_currIdxSubMenu, getGVarValue(s_currIdxSubMenu, getFlightMode()));
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID);
 
   SIMPLE_SUBMENU(STR_GVARS, GVAR_FIELD_LAST);
@@ -92,13 +92,13 @@ void menuModelGVarOne(event_t event)
 
       case GVAR_FIELD_MIN:
         lcdDrawText(0, y, STR_MIN);
-        drawGVarValue(GVAR_2ND_COLUMN, y, s_currIdx, GVAR_MIN+gvar->min, LEFT|attr);
+        drawGVarValue(GVAR_2ND_COLUMN, y, s_currIdxSubMenu, GVAR_MIN+gvar->min, LEFT|attr);
         if (attr) gvar->min = checkIncDec(event, GVAR_MIN+gvar->min, GVAR_MIN, GVAR_MAX-gvar->max, EE_MODEL) - GVAR_MIN;
         break;
 
       case GVAR_FIELD_MAX:
         lcdDrawText(0, y, STR_MAX);
-        drawGVarValue(GVAR_2ND_COLUMN, y, s_currIdx, GVAR_MAX-gvar->max, LEFT|attr);
+        drawGVarValue(GVAR_2ND_COLUMN, y, s_currIdxSubMenu, GVAR_MAX-gvar->max, LEFT|attr);
         if (attr) gvar->max = GVAR_MAX - checkIncDec(event, GVAR_MAX-gvar->max, GVAR_MIN+gvar->min, GVAR_MAX, EE_MODEL);
         break;
 
@@ -108,7 +108,7 @@ void menuModelGVarOne(event_t event)
 
       default:
         drawStringWithIndex(0, y, STR_FM, k-GVAR_FIELD_FM0);
-        editGVarValue(GVAR_2ND_COLUMN, y, event, s_currIdx, k-GVAR_FIELD_FM0, LEFT|attr);
+        editGVarValue(GVAR_2ND_COLUMN, y, event, s_currIdxSubMenu, k-GVAR_FIELD_FM0, LEFT|attr);
         break;
     }
   }

@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 
-#define MODELSIZE_POS_X 170
 #define MODELSEL_W 133
 
 void onModelSelectMenu(const char * result)

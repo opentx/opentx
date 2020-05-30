@@ -25,7 +25,7 @@ const uint8_t LBM_LAYOUT_2x1[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_2x1[] = {
-  { "Top bar", ZoneOption::Bool },
+  { STR_TOP_BAR, ZoneOption::Bool },
   { nullptr, ZoneOption::Bool }
 };
 
@@ -45,7 +45,7 @@ class Layout2x1: public Layout
 
     unsigned int getZonesCount() const override
     {
-      return 4;
+      return 2;
     }
 
     Zone getZone(unsigned int index) const override

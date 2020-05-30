@@ -130,7 +130,7 @@ uint16_t rboxState;
 void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW)
 {
   const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
-  uint8_t precision = 0;
+  uint8_t precision = 255;
   if (sensor) {
     if (unit == UNIT_RAW)
       unit = sensor->unit;
@@ -177,17 +177,20 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 
   if (primId == DATA_FRAME) {
     uint8_t originMask;
+    uint8_t moduleIndex;
     if (origin == TELEMETRY_ENDPOINT_SPORT) {
 #if defined(SIMU) && defined(INTERNAL_MODULE_PXX2)
       // When running simu on ACCESS radio, we set the origin as internal module
+      moduleIndex = 0;
       origin = 0;
       originMask = 0x01;
 #else
+      moduleIndex = isSportLineUsedByInternalModule() ? 0 : 1;
       originMask = 0x04;
 #endif
     }
     else {
-      uint8_t moduleIndex = (origin >> 2);
+      moduleIndex = (origin >> 2);
       originMask = 0x01 << moduleIndex;
     }
     uint8_t instance = physicalId + (origin << 5);
@@ -226,12 +229,12 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
       if (!isRasValueValid()) {
-        telemetryData.setSwr(origin >> 2, 0);
+        telemetryData.setSwr(moduleIndex, 0);
       }
     }
     else if (dataId == RAS_ID) {
       if (isRasValueValid()) {
-        telemetryData.setSwr(origin >> 2, SPORT_DATA_U8(packet));
+        telemetryData.setSwr(moduleIndex, SPORT_DATA_U8(packet));
       }
     }
 

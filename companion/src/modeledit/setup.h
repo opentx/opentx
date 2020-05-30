@@ -24,6 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+constexpr char MIMETYPE_TIMER[] = "application/x-companion-timer";
+
 class RawSwitchFilterItemModel;
 
 namespace Ui {
@@ -62,7 +64,6 @@ class ModulePanel : public ModelPanel
     ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
     virtual ~ModulePanel();
     virtual void update();
-    bool moduleHasFailsafes();
 
   public slots:
     void onExtendedLimitsToggled();
@@ -71,7 +72,6 @@ class ModulePanel : public ModelPanel
     void channelsRangeChanged();
 
   private slots:
-    int getMaxChannelCount();
     void setupFailsafes();
     void on_trainerMode_currentIndexChanged(int index);
     void onProtocolChanged(int index);
@@ -129,6 +129,7 @@ class SetupPanel : public ModelPanel
   signals:
     void extendedLimitsToggled();
     void updated();
+    void timerUpdated();
 
   private slots:
     void on_name_editingFinished();
@@ -148,6 +149,16 @@ class SetupPanel : public ModelPanel
     void potWarningToggled(bool checked);
     void on_potWarningMode_currentIndexChanged(int index);
     void on_editText_clicked();
+    void onTimerCustomContextMenuRequested(QPoint pos);
+    void cmTimerClear();
+    void cmTimerClearAll();
+    void cmTimerCopy();
+    void cmTimerCut();
+    void cmTimerDelete();
+    void cmTimerInsert();
+    void cmTimerPaste();
+    void cmTimerMoveDown();
+    void cmTimerMoveUp();
 
   private:
     Ui::Setup *ui;
@@ -161,6 +172,13 @@ class SetupPanel : public ModelPanel
     void updatePotWarnings();
     void updateBeepCenter();
     void populateThrottleSourceCB();
+    int timersCount;
+    int selectedTimerIndex;
+    bool hasTimerClipboardData(QByteArray * data = nullptr) const;
+    bool insertTimerAllowed() const;
+    bool moveTimerDownAllowed() const;
+    bool moveTimerUpAllowed() const;
+    void swapTimerData(int idx1, int idx2);
 };
 
 #endif // _SETUP_H_

@@ -150,7 +150,7 @@ void menuModelMixOne(event_t event)
 
       case MIX_FIELD_CURVE:
         lcdDrawTextAlignedLeft(y, STR_CURVE);
-        editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, event, attr);
+        editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, s_editMode > 0 ? event : 0, attr);
         break;
 
 #if defined(FLIGHT_MODES)

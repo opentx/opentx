@@ -278,7 +278,7 @@ extern int8_t s_editMode;       // global editmode
 //#define NAVIGATION_LINE_BY_LINE        0x40
 //#define CURSOR_ON_LINE()               (menuHorizontalPosition<0)
 
-extern uint8_t s_curveChan;
+extern uint8_t s_currIdxSubMenu;
 
 extern const char * warningText;
 extern const char * warningInfoText;

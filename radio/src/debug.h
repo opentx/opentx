@@ -37,6 +37,7 @@
 extern volatile uint32_t g_tmr10ms;
 
 uint8_t auxSerialTracesEnabled();
+uint8_t aux2SerialTracesEnabled();
 
 #if defined(SIMU)
   typedef void (*traceCallbackFunc)(const char * text);

@@ -107,7 +107,7 @@ enum
   {
     warningText = message;
     warningInfoText = info;
-    warningInfoLength = strlen(info);
+    warningInfoLength = info ? strlen(info) : 0;
     warningInfoFlags = 0;
     warningType = WARNING_TYPE_ASTERISK;
     popupFunc = runPopupWarning;

@@ -66,6 +66,10 @@
   { "EVT_"#xxx"_LONG", EVT_KEY_LONG(yyy) }, \
   { "EVT_"#xxx"_REPT", EVT_KEY_REPT(yyy) }
 
+#if defined(LUA) && !defined(CLI)
+Fifo<uint8_t, LUA_FIFO_SIZE> * luaRxFifo = nullptr;
+#endif
+
 /*luadoc
 @function getVersion()
 
@@ -694,7 +698,8 @@ The list of valid sources is available:
 |----------------|-------|
 | 2.0 | [all](http://downloads-20.open-tx.org/firmware/lua_fields.txt) |
 | 2.1 | [X9D and X9D+](http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt), [X9E](http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt) |
-| 2.2 | [X9D and X9D+](http://downloads.open-tx.org/2.2/firmware/lua_fields_x9d.txt), [X9E](http://downloads.open-tx.org/2.2/firmware/lua_fields_x9e.txt), [Horus](http://downloads.open-tx.org/2.2/firmware/lua_fields_x12s.txt) |
+| 2.2 | [X9D and X9D+](http://downloads.open-tx.org/2.2/release/firmware/lua_fields_x9d.txt), [X9E](http://downloads.open-tx.org/2.2/release/firmware/lua_fields_x9e.txt), [Horus](http://downloads.open-tx.org/2.2/release/firmware/lua_fields_x12s.txt) |
+| 2.3 | [X9D and X9D+](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x9d.txt), [X9E](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x9e.txt), [X7](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x7.txt), [Horus](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x12s.txt) |
 
 @param name (string) name of the field
 
@@ -741,8 +746,8 @@ The list of fixed sources:
 |----------------|-------|
 | 2.0 | [all](http://downloads-20.open-tx.org/firmware/lua_fields.txt) |
 | 2.1 | [X9D and X9D+](http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt), [X9E](http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt) |
-| 2.2 | [X9D and X9D+](http://downloads.open-tx.org/2.2/firmware/lua_fields_x9d.txt), [X9E](http://downloads.open-tx.org/2.2/firmware/lua_fields_x9e.txt), [Horus](http://downloads.open-tx.org/2.2/firmware/lua_fields_x12s.txt) |
-
+| 2.2 | [X9D and X9D+](http://downloads.open-tx.org/2.2/release/firmware/lua_fields_x9d.txt), [X9E](http://downloads.open-tx.org/2.2/release/firmware/lua_fields_x9e.txt), [Horus](http://downloads.open-tx.org/2.2/release/firmware/lua_fields_x12s.txt) |
+| 2.3 | [X9D and X9D+](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x9d.txt), [X9E](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x9e.txt), [X7](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x7.txt), [Horus](http://downloads.open-tx.org/2.3/release/firmware/lua_fields_x12s.txt) |
 
 In OpenTX 2.1.x the telemetry sources no longer have a predefined name.
 To get a telemetry value simply use it's sensor name. For example:
@@ -1206,11 +1211,14 @@ static int luaPopupWarning(lua_State * L)
 }
 
 /*luadoc
-@function popupConfirmation(title, event)
+@function popupConfirmation(title, event) deprecated, please replace by
+@function popupConfirmation(title, message, event)
 
 Raises a pop-up on screen that asks for confirmation
 
-@param title (string) text to display
+@param title (string) title to display
+
+@param message (string) text to display
 
 @param event (number) the event variable that is passed in from the
 Run function (key pressed)
@@ -1219,13 +1227,24 @@ Run function (key pressed)
 
 @notice Use only from stand-alone and telemetry scripts.
 
-@status current Introduced in 2.2.0
+@status current Introduced in 2.2.0, changed to (title, message, event) in 2.3.8
 */
 static int luaPopupConfirmation(lua_State * L)
 {
-  event_t event = luaL_checkinteger(L, 2);
-  warningText = luaL_checkstring(L, 1);
   warningType = WARNING_TYPE_CONFIRM;
+  event_t event;
+
+  if (lua_isnone(L, 3)) {
+    // only two args: deprecated mode
+    warningText = luaL_checkstring(L, 1);
+    event = luaL_checkinteger(L, 2);
+  }
+  else {
+    warningText = luaL_checkstring(L, 1);
+    warningInfoText = luaL_checkstring(L, 2);
+    event = luaL_optinteger(L, 3, 0);
+  }
+
   runPopupWarning(event);
   if (!warningText) {
     lua_pushstring(L, warningResult ? "OK" : "CANCEL");
@@ -1586,11 +1605,70 @@ static int luaSerialWrite(lua_State * L)
     while(wr_len--) auxSerialPutc(*p++);
   }
   #endif
+#if defined(AUX2_SERIAL)
+  if (aux2SerialMode == UART_MODE_LUA) {
+    size_t wr_len = len;
+    const char* p = str;
+    while(wr_len--) aux2SerialPutc(*p++);
+  }
+#endif
 #else
   debugPrintf("luaSerialWrite: %.*s",len,str);
 #endif
 
   return 0;
+}
+
+/*luadoc
+@function serialRead([num])
+@param num (optional): maximum number of bytes to read.
+                       If non-zero, serialRead will read up to num characters from the buffer.
+                       If 0 or left out, serialRead will read up to and including the first newline character or the end of the buffer.
+                       Note that the returned string may not end in a newline if this character is not present in the buffer.
+
+@retval str string. Empty if no new characters were available.
+
+Reads characters from the serial port. The string is allowed to contain any character, including 0.
+
+@status current Introduced in 2.3.8
+*/
+static int luaSerialRead(lua_State * L)
+{
+#if defined(LUA) && !defined(CLI)
+  int num = luaL_optunsigned(L, 1, 0);
+
+  if (!luaRxFifo) {
+    luaRxFifo = new Fifo<uint8_t, LUA_FIFO_SIZE>();
+    if (!luaRxFifo) {
+      lua_pushlstring(L, "", 0);
+      return 1;
+    }
+  }
+  uint8_t str[LUA_FIFO_SIZE];
+  uint8_t *p = str;
+  while (luaRxFifo->pop(*p)) {
+    p++;  // increment only when pop was successful
+    if (p - str >= LUA_FIFO_SIZE) {
+      // buffer full
+      break;
+    }
+    if (num == 0) {
+      if (*(p - 1) == '\n' || *(p - 1) == '\r') {
+        // found newline
+        break;
+      }
+    }
+    else if (p - str >= num) {
+      // requested number of characters reached
+      break;
+    }
+  }
+  lua_pushlstring(L, (const char*)str, p - str);
+#else
+  lua_pushlstring(L, "", 0);
+#endif
+
+  return 1;
 }
 
 const luaL_Reg opentxLib[] = {
@@ -1640,6 +1718,7 @@ const luaL_Reg opentxLib[] = {
   { "multiBuffer", luaMultiBuffer },
 #endif
   { "serialWrite", luaSerialWrite },
+  { "serialRead", luaSerialRead },
   { nullptr, nullptr }  /* sentinel */
 };
 
@@ -1649,6 +1728,9 @@ const luaR_value_entry opentxConstants[] = {
   { "DBLSIZE", DBLSIZE },
   { "MIDSIZE", MIDSIZE },
   { "SMLSIZE", SMLSIZE },
+#if defined(COLORLCD)
+  { "TINSIZE", TINSIZE },
+#endif
   { "INVERS", INVERS },
   { "BOLD", BOLD },
   { "BLINK", BLINK },
@@ -1790,9 +1872,7 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #endif
 
-#if defined(KEYS_GPIO_REG_EXIT)
   { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
-#endif
 
 #if defined(KEYS_GPIO_REG_ENTER)
   KEY_EVENTS(ENTER, KEY_ENTER),
@@ -1875,8 +1955,6 @@ const luaR_value_entry opentxConstants[] = {
   { "PLAY_BACKGROUND", PLAY_BACKGROUND },
   { "TIMEHOUR", TIMEHOUR },
 
-#if defined(PCBHORUS)
-  // Adding the unit consts for the set Telemetry function adds about 1k of flash usage
   {"UNIT_RAW", UNIT_RAW },
   {"UNIT_VOLTS", UNIT_VOLTS },
   {"UNIT_AMPS", UNIT_AMPS },
@@ -1910,6 +1988,6 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_GPS", UNIT_GPS},
   {"UNIT_BITFIELD", UNIT_BITFIELD},
   {"UNIT_TEXT", UNIT_TEXT},
-#endif
+
   { nullptr, 0 }  /* sentinel */
 };

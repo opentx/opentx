@@ -84,20 +84,10 @@ int zchar2str(char * dest, const char * src, int size)
   return size+1;
 }
 
-bool cmpStrWithZchar(const char * charString, const char * zcharString, int size)
-{
-  for (int i=0; i<size; i++) {
-    if (charString[i] != zchar2char(zcharString[i])) {
-      return false;
-    }
-  }
-  return true;
-}
-
 unsigned int effectiveLen(const char * str, unsigned int size)
 {
   while (size > 0) {
-    if (str[size-1] != ' ')
+    if (str[size-1] != ' ' && str[size-1] != '\0')
       return size;
     size--;
   }
@@ -137,9 +127,7 @@ char * strcat_zchar(char * dest, const char * name, uint8_t size, const char * d
       if (!len && dest[i])
         len = i+1;
       if (len) {
-        if (dest[i])
-          dest[i] = zchar2char(dest[i]);
-        else
+        if (!dest[i])
           dest[i] = '_';
       }
       i--;
@@ -392,7 +380,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
   }
   else if (idx <= MIXSRC_LAST_INPUT) {
     idx -= MIXSRC_FIRST_INPUT;
-    *dest = '\314';
+    *dest = CHAR_INPUT;
     if (strlen(g_model.inputNames[idx])) {
       memset(dest + 1, 0, LEN_INPUT_NAME);
       strncpy(dest + 1, g_model.inputNames[idx], LEN_INPUT_NAME);
@@ -406,7 +394,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
 #if defined(LUA_MODEL_SCRIPTS)
     div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
     if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
-      *dest++ = '\322';
+      *dest++ = CHAR_LUA;
       // *dest++ = '1'+qr.quot;
       strcpy(dest, scriptInputsOutputs[qr.quot].outputs[qr.rem].name);
     }

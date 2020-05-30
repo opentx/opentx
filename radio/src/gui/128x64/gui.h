@@ -40,6 +40,7 @@
 #define drawFieldLabel(x, y, str)      lcdDrawTextAlignedLeft(y, str)
 
 #define NUM_BODY_LINES                 (LCD_LINES-1)
+#define TEXT_VIEWER_LINES              NUM_BODY_LINES
 #define MENU_HEADER_HEIGHT             FH
 
 #define CURVE_SIDE_WIDTH               (LCD_H/2)
@@ -213,7 +214,7 @@ extern uint8_t s_copyMode;
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
-extern uint8_t s_curveChan;
+extern uint8_t s_currIdxSubMenu;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
 extern int8_t s_currCh;

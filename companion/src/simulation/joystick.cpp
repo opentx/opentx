@@ -99,8 +99,9 @@ void Joystick::processEvents()
           axes[i] = moved;
         }
       }
-      else
+      else {
         axisRepeatTimers[i].restart();
+      }
     }
     else {
       emit axisValueChanged(i, 0);

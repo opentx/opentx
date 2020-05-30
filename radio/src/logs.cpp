@@ -71,9 +71,7 @@ const char * logsOpen()
     if (!len && filename[i])
       len = i+1;
     if (len) {
-      if (filename[i])
-        filename[i] = zchar2char(filename[i]);
-      else
+      if (!filename[i])
         filename[i] = '_';
     }
     i--;

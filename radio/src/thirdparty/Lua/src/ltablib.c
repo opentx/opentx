@@ -256,7 +256,7 @@ static int sort (lua_State *L) {
 /* }====================================================== */
 
 
-static const luaL_Reg tab_funcs[] = {
+const luaL_Reg tab_funcs[] = {
   {"concat", tconcat},
 #if defined(LUA_COMPAT_MAXN)
   {"maxn", maxn},

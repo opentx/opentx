@@ -28,50 +28,12 @@ uint8_t getMappedChar(uint8_t c)
 {
   uint8_t result;
 
-#if defined(TRANSLATIONS_FR)
-  if (c >= 0x80 && c <= 0x84) {
-    result = 115 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_DE)
-  if (c >= 0x80 && c <= 0x86) {
-    result = 120 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_CZ)
-  if (c >= 0x80 && c <= 0x80+29) {
-    result = 127 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_ES)
-  if (c >= 0x80 && c <= 0x81) {
-    result = 157 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_FI)
-  if (c >= 0x80 && c <= 0x85) {
-    result = 159 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_IT)
-  if (c >= 0x80 && c <= 0x81) {
-    result = 165 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_PL)
-  if (c >= 0x80 && c <= 0x80+17) {
-    result = 167 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_PT)
-  if (c >= 0x80 && c <= 0x80+21) {
-    result = 185 + c - 0x80;
-  }
-#elif defined(TRANSLATIONS_SE)
-  if (c >= 0x80 && c <= 0x85) {
-    result = 207 + c - 0x80;
-  }
-#endif
-
-  if (c < 0xC0)
+  if (c < 0x80)
     result = c - 0x20;
   else
-    result = c - 0xC0 + 96;
+    result = c - 0x80 + 32 + 26 + 6 + 26 + 5; // 96;
 
-//  TRACE("getMappedChar '%c' (%x) = %d", c, c, result);
+//  TRACE("getMappedChar '%c' (0x%x) = %d", c, c, result);
 
   return result;
 }

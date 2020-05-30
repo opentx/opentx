@@ -648,7 +648,7 @@ void checkSwitches()
     }
 
     LED_ERROR_BEGIN();
-    backlightOn();
+    resetBacklightTimeout();
 
     // first - display warning
 #if defined(PCBSKY9X)

@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <limits.h>
 #include "opentx.h"
 #include "gui/common/stdlcd/fonts.h"
 
@@ -213,7 +214,7 @@ uint8_t getCharWidth(char c, LcdFlags flags)
 }
 #endif
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
+void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags)
 {
   const unsigned char * q;
 
@@ -281,7 +282,7 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
   }
 }
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
+void lcdDrawChar(coord_t x, coord_t y, char c)
 {
   lcdDrawChar(x, y, c, 0);
 }
@@ -441,12 +442,12 @@ void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
   lcdDrawNumber(x, y, val);
 }
 
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags flags)
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags)
 {
   lcdDrawNumber(x, y, val, flags, 0);
 }
 
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags flags, uint8_t len)
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len)
 {
   char str[16+1];
   char *s = str+16;
@@ -454,7 +455,19 @@ void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags flags, uint8_t len)
   int idx = 0;
   int mode = MODE(flags);
   bool neg = false;
+
+  if (val == INT_MAX) {
+    flags &= ~(LEADING0 | PREC1 | PREC2);
+    lcdDrawText(x, y, "INT_MAX", flags);
+    return;
+  }
+
   if (val < 0) {
+    if (val == INT_MIN) {
+      flags &= ~(LEADING0 | PREC1 | PREC2);
+      lcdDrawText(x, y, "INT_MIN", flags);
+      return;
+    }
     val = -val;
     neg = true;
   }

@@ -250,6 +250,7 @@ set(companion_SRCS
   wizarddialog.cpp
   styleeditdialog.cpp
   dialogs/filesyncdialog.cpp         # TODO move to own lib with other dialogs
+  profilechooser.cpp
   )
 
 set(companion_MOC_HDRS
@@ -284,6 +285,7 @@ set(companion_MOC_HDRS
   styleeditdialog.h
   helpers_html.h
   dialogs/filesyncdialog.h
+  profilechooser.h
   )
 
 set(companion_UIS
@@ -305,6 +307,7 @@ set(companion_UIS
   flasheepromdialog.ui
   radionotfound.ui
   styleeditdialog.ui
+  profilechooser.ui
   )
 
 if(WIN32)

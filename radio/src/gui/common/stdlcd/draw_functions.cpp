@@ -84,7 +84,7 @@ void drawTrimMode(coord_t x, coord_t y, uint8_t flightMode, uint8_t idx, LcdFlag
   }
 }
 
-void drawValueWithUnit(coord_t x, coord_t y, int val, uint8_t unit, LcdFlags att)
+void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
@@ -121,6 +121,40 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
   return value;
 }
 
+char getNextChar(char c, uint8_t position)
+{
+  if (c == ' ')
+    return (position == 0 ? 'A' : 'a');
+
+  if (c == 'Z' || c == 'z')
+    return '0';
+
+  static const char * specialChars = "9_-., ";
+  for (uint8_t i = 0; specialChars[i] != 0; i++) {
+    if (c == specialChars[i])
+      return specialChars[i + 1];
+  }
+
+  return c + 1;
+}
+
+char getPreviousChar(char c, uint8_t position)
+{
+  if (c == 'A' || c == 'a')
+    return ' ';
+
+  if (c == '0')
+    return (position == 0 ? 'Z' : 'z');
+
+  static const char * specialChars = "9_-., ";
+  for (uint8_t i = 1; specialChars[i] != 0; i++) {
+    if (c == specialChars[i])
+      return specialChars[i - 1];
+  }
+
+  return c - 1;
+}
+
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr)
 {
   uint8_t mode = 0;
@@ -131,23 +165,24 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
       mode = FIXEDWIDTH;
   }
 
-  lcdDrawSizedText(x, y, name, size, attr | mode);
+  lcdDrawSizedText(x, y, name[0] == '\0' ? "---" : name, size, attr | mode);
   coord_t backupNextPos = lcdNextPos;
 
   if (active) {
     uint8_t cur = editNameCursorPos;
     if (s_editMode > 0) {
       int8_t c = name[cur];
-      int8_t v = c;
-
-      if (IS_NEXT_EVENT(event) || IS_PREVIOUS_EVENT(event)) {
-        if (attr == ZCHAR) {
-          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
-          if (c <= 0) v = -v;
-        }
-        else {
-          v = checkIncDec(event, abs(v), '0', 'z', 0);
-        }
+      if (c == '\0')
+        c = ' ';
+      char v;
+      if (IS_NEXT_EVENT(event)) {
+        v = getNextChar(c, cur);
+      }
+      else if (IS_PREVIOUS_EVENT(event)) {
+        v = getPreviousChar(c, cur);
+      }
+      else {
+        v = c;
       }
 
       switch (event) {
@@ -164,11 +199,13 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
 
 #if defined(NAVIGATION_XLITE) || defined(NAVIGATION_9X)
         case EVT_KEY_BREAK(KEY_LEFT):
-          if (cur>0) cur--;
+          if (cur > 0)
+            cur--;
           break;
 
         case EVT_KEY_BREAK(KEY_RIGHT):
-          if (cur<size-1) cur++;
+          if (cur < size - 1)
+            cur++;
           break;
 #endif
 
@@ -181,33 +218,21 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
         case EVT_KEY_LONG(KEY_ENTER):
 #endif
 
-          if (attr & ZCHAR) {
-#if defined(PCBTARANIS) && !defined(PCBXLITE)
-            if (v == 0) {
-              s_editMode = 0;
-              killEvents(event);
-            }
-#endif
-            if (v >= -26 && v <= 26) {
-              v = -v; // toggle case
-            }
-          }
-          else {
 #if !defined(NAVIGATION_XLITE)
-            if (v == ' ') {
-              s_editMode = 0;
-              killEvents(event);
-              break;
-            }
-            else
-#endif
-            if (v >= 'A' && v <= 'Z') {
-              v = 'a' + v - 'A'; // toggle case
-            }
-            else if (v >= 'a' && v <= 'z') {
-              v = 'A' + v - 'a'; // toggle case
-            }
+          if (v == ' ') {
+            s_editMode = 0;
+            killEvents(event);
+            break;
           }
+          else
+#endif
+          if (v >= 'A' && v <= 'Z') {
+            v = 'a' + v - 'A'; // toggle case
+          }
+          else if (v >= 'a' && v <= 'z') {
+            v = 'A' + v - 'a'; // toggle case
+          }
+
 #if defined(NAVIGATION_9X)
           if (event==EVT_KEY_LONG(KEY_LEFT))
             killEvents(KEY_LEFT);
@@ -220,12 +245,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
         storageDirty(isModelMenuDisplayed() ? EE_MODEL : EE_GENERAL);
       }
 
-      if (attr == ZCHAR) {
-        lcdDrawChar(x+editNameCursorPos*FW, y, zchar2char(v), ERASEBG|INVERS|FIXEDWIDTH);
-      }
-      else {
-        lcdDrawChar(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);
-      }
+      lcdDrawChar(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);
     }
     else {
       cur = 0;

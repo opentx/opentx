@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <limits.h>
 #include "opentx.h"
 #include "common/stdlcd/fonts.h"
 
@@ -87,11 +88,11 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   uint8_t lines = (height+7)/8;
   assert(lines <= 5);
 
-  for (int8_t i=0; i<(int8_t)(width+2); i++) {
-    if (x<LCD_W) {
+  for (int8_t i = 0; i < int8_t(width + 2); i++) {
+    if (x < LCD_W) {
       uint8_t b[5] = { 0 };
-      if (i==0) {
-        if (x==0 || !inv) {
+      if (i == 0) {
+        if (x == 0 || !inv) {
           lcdNextPos++;
           continue;
         }
@@ -100,11 +101,11 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
           x--;
         }
       }
-      else if (i<=width) {
+      else if (i <= width) {
         uint8_t skip = true;
         for (uint8_t j=0; j<lines; j++) {
           b[j] = *(pattern++); /*top byte*/
-          if (b[j] != 0xff) {
+          if (b[j] != 0xFF) {
             skip = false;
           }
         }
@@ -120,20 +121,24 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
         }
       }
 
-      for (int8_t j=-1; j<=(int8_t)(height); j++) {
+      for (int8_t j = -1; j <= int8_t(height); j++) {
         bool plot;
-        if (j < 0 || ((j == height) && !(FONTSIZE(flags) == SMLSIZE))) {
+        if (j < 0 || (j == height && FONTSIZE(flags) != SMLSIZE)) {
           plot = false;
-          if (height >= 12) continue;
-          if (j<0 && !inv) continue;
-          if (y+j < 0) continue;
+          if (height >= 12)
+            continue;
+          if (j < 0 && !inv)
+            continue;
+          if (y + j < 0)
+            continue;
         }
         else {
           uint8_t line = (j / 8);
           uint8_t pixel = (j % 8);
           plot = b[line] & (1 << pixel);
         }
-        if (inv) plot = !plot;
+        if (inv)
+          plot = !plot;
         if (!blink) {
           if (flags & VERTICAL)
             lcdDrawPoint(y+j, LCD_H-x, plot ? FORCE : ERASE);
@@ -154,10 +159,10 @@ void getCharPattern(PatternData * pattern, unsigned char c, LcdFlags flags)
   uint32_t fontsize = FONTSIZE(flags);
   unsigned char c_remapped = 0;
 
-  if (fontsize == DBLSIZE || (flags&BOLD)) {
+  if (fontsize == DBLSIZE || (flags & BOLD)) {
     // To save space only some DBLSIZE and BOLD chars are available
     // c has to be remapped. All non existing chars mapped to 0 (space)
-    if (c>=',' && c<=':')
+    if (c >= ',' && c <= ':')
       c_remapped = c - ',' + 1;
     else if (c>='A' && c<='Z')
       c_remapped = c - 'A' + 16;
@@ -221,7 +226,7 @@ uint8_t getCharWidth(char c, LcdFlags flags)
 }
 #endif
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
+void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags)
 {
   lcdNextPos = x-1;
 #if defined(BOOT)
@@ -234,7 +239,7 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 #endif
 }
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
+void lcdDrawChar(coord_t x, coord_t y, char c)
 {
   lcdDrawChar(x, y, c, 0);
 }
@@ -285,7 +290,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
       break;
     }
     else if (c >= 0x20) {
-      if ( ( c == 46) && ((FONTSIZE(flags) == TINSIZE))) { // '.' handling
+      if (c == 46 && FONTSIZE(flags) == TINSIZE) { // '.' handling
         if (((flags & BLINK) && BLINK_ON_PHASE) || ((!(flags & BLINK) && (flags & INVERS)))) {
           lcdDrawSolidVerticalLine(x, y-1, 5);
           lcdDrawPoint(x, y + 5);
@@ -293,7 +298,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
         else {
           lcdDrawPoint(x, y + 5 -1 , flags);
         }
-        x+=2;
+        x += 2;
       }
       else {
         lcdDrawChar(x, y, c, flags);
@@ -320,7 +325,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
       x += 1;
     }
     else {
-      x += (c*FW/2); // EXTENDED SPACE
+      x += (c * FW/2); // EXTENDED SPACE
     }
     s++;
   }
@@ -398,7 +403,19 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   int idx = 0;
   int mode = MODE(flags);
   bool neg = false;
+
+  if (val == INT_MAX) {
+    flags &= ~(LEADING0 | PREC1 | PREC2);
+    lcdDrawText(x, y, "INT_MAX", flags);
+    return;
+  }
+
   if (val < 0) {
+    if (val == INT_MIN) {
+      flags &= ~(LEADING0 | PREC1 | PREC2);
+      lcdDrawText(x, y, "INT_MIN", flags);
+      return;
+    }
     val = -val;
     neg = true;
   }

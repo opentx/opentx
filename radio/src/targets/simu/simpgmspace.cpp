@@ -530,7 +530,7 @@ void readKeysAndTrims()
   }
 
   if (keysInput || trimsInput) {
-    backlightOn();
+    resetBacklightTimeout();
   }
 }
 
@@ -609,6 +609,7 @@ int usbPlugged() { return false; }
 int getSelectedUsbMode() { return USB_JOYSTICK_MODE; }
 void setSelectedUsbMode(int mode) {}
 void delay_ms(uint32_t ms) { }
+void delay_us(uint16_t us) { }
 
 // GPIO fake functions
 void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
@@ -816,6 +817,26 @@ void auxSerialSbusInit()
 }
 
 void auxSerialStop()
+{
+}
+#endif
+
+#if defined(AUX2_SERIAL)
+AuxSerialRxFifo aux2SerialRxFifo(nullptr);
+uint8_t aux2SerialMode;
+void aux2SerialInit(unsigned int mode, unsigned int protocol)
+{
+}
+
+void aux2SerialPutc(char c)
+{
+}
+
+void aux2SerialSbusInit()
+{
+}
+
+void aux2SerialStop()
 {
 }
 #endif

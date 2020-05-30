@@ -489,7 +489,7 @@ end
 local function runPopupPage(event)
   local result
   if fieldPopup.status == 3 then
-    result = popupConfirmation(fieldPopup.info, event)
+    result = popupConfirmation("Confirmation", fieldPopup.info, event)
   else
     result = popupWarning(fieldPopup.info, event)
   end

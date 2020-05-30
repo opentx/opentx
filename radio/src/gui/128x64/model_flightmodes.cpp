@@ -87,7 +87,8 @@ void menuModelFlightModeOne(event_t event)
   int8_t editMode = s_editMode;
 
 #if defined(GVARS)
-  if (s_currIdx == 0 && sub>=ITEM_MODEL_FLIGHT_MODE_SWITCH) sub += VERTICAL_SHIFT;
+  if (s_currIdx == 0 && sub>=ITEM_MODEL_FLIGHT_MODE_SWITCH)
+    sub += VERTICAL_SHIFT;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
@@ -147,7 +148,7 @@ void menuModelFlightModeOne(event_t event)
         drawStringWithIndex(INDENT_WIDTH, y, STR_GV, idx+1, posHorz==0 ? attr : 0);
         lcdDrawSizedText(4*FW, y,g_model.gvars[idx].name, LEN_GVAR_NAME, ZCHAR);
         if (attr && editMode>0 && posHorz==0) {
-          s_currIdx = sub - ITEM_MODEL_FLIGHT_MODE_GV1;
+          s_currIdxSubMenu = sub - ITEM_MODEL_FLIGHT_MODE_GV1;
           editMode = 0;
           pushMenu(menuModelGVarOne);
         }

@@ -197,15 +197,15 @@ int main()
 
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
-                         AUX_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph | AUX2_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph, ENABLE);
 
   RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph | LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
                          INTERRUPT_xMS_RCC_APB1Periph | I2C_RCC_APB1Periph |
-                         AUX_SERIAL_RCC_APB1Periph |
+                         AUX_SERIAL_RCC_APB1Periph | AUX2_SERIAL_RCC_APB1Periph |
                          SD_RCC_APB1Periph, ENABLE);
 
-  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG | AUX_SERIAL_RCC_APB2Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph | RCC_APB2Periph_SYSCFG | AUX_SERIAL_RCC_APB2Periph  | AUX2_SERIAL_RCC_APB2Periph, ENABLE);
 
   pwrInit();
   keysInit();
@@ -248,6 +248,9 @@ int main()
 
 #if defined(DEBUG) && defined(AUX_SERIAL)
   auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+#endif
+#if defined(DEBUG) && defined(AUX2_SERIAL)
+  aux2SerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
   __enable_irq();

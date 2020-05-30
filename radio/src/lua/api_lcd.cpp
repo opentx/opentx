@@ -63,6 +63,20 @@ static int luaLcdClear(lua_State *L)
 }
 
 /*luadoc
+@function lcd.resetBacklightTimeout()
+
+Reset the backlight timeout
+
+@status current Introduced in 2.3.6
+*/
+static int luaLcdResetBacklightTimeout(lua_State * L)
+{
+  if (!luaLcdAllowed) return 0;
+  resetBacklightTimeout();
+  return 0;
+}
+
+/*luadoc
 @function lcd.drawPoint(x, y)
 
 Draw a single pixel at (x,y) position
@@ -861,6 +875,7 @@ static int luaRGB(lua_State *L)
 const luaL_Reg lcdLib[] = {
   { "refresh", luaLcdRefresh },
   { "clear", luaLcdClear },
+  { "resetBacklightTimeout", luaLcdResetBacklightTimeout },
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },

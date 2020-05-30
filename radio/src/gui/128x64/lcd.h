@@ -98,8 +98,8 @@ extern coord_t lcdNextPos;
   extern volatile uint32_t lcdInputs ;
 #endif
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c);
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags);
+void lcdDrawChar(coord_t x, coord_t y, char c);
+void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags);
 void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags = 0);
 void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags);
@@ -112,8 +112,8 @@ void drawTimerWithMode(coord_t x, coord_t y, uint8_t index, LcdFlags att);
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags=0);
 
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode, uint8_t len);
-void lcdDrawNumber(coord_t x, coord_t y, int val, LcdFlags mode=0);
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode, uint8_t len);
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void drawModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
