@@ -103,7 +103,7 @@ class Fifo
     volatile uint32_t widx;
     volatile uint32_t ridx;
 
-    inline uint32_t nextIndex(uint32_t idx)
+    static inline uint32_t nextIndex(uint32_t idx)
     {
       return (idx + 1) & (N - 1);
     }
