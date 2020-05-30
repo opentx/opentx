@@ -53,6 +53,9 @@ static const char * options[] = {
 #if defined(HORUS_STICKS)
   "horussticks",
 #endif
+#if defined(INTERNAL_GPS)
+  "internalgps",
+#endif
 #if defined(INTERNAL_MODULE_PPM)
   "internalppm",
 #endif

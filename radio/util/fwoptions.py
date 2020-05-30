@@ -234,4 +234,5 @@ options_radiomaster_tx16s = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
+    "internalgps": ("INTERNAL_GPS", "YES", "NO"),
 }

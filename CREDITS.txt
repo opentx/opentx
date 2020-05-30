@@ -423,7 +423,6 @@ Pablo Gomez Martinez
 Alan Thoren
 Jack Clodfelter
 William Simon
-James Houck
 Peter Fithern
 Thomas Svedman
 TechFixPros
@@ -688,7 +687,6 @@ Shaun Currier
 Danilo Schiara
 John Hennig
 RK Custom Homes
-James Houck
 Piet Teekens
 Tommy Widenflycht
 Johan Petrus Theophilus
@@ -1734,3 +1732,5 @@ Mike Frizell
 MeCodeGoodSomeday
 Timothy Fry
 John Beech
+Wojciech Winiarski
+Armin Kuepfer
