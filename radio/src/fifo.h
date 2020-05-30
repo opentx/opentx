@@ -71,7 +71,7 @@ class Fifo
       return (ridx == widx);
     }
 
-    bool isFull()
+    bool isFull() const
     {
       uint32_t next = nextIndex(widx);
       return (next == ridx);
@@ -82,7 +82,7 @@ class Fifo
       return (N + widx - ridx) & (N - 1);
     }
 
-    uint32_t hasSpace(uint32_t n) const
+    bool hasSpace(uint32_t n) const
     {
       return (N > (size() + n));
     }
