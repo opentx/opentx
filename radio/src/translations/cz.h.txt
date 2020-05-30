@@ -836,7 +836,7 @@
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Chyba zápisu FW", "Chyba zápisu firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Úspěšný zápis FW"
-#define TR_WRITING                     TR3("\14Zapisuji..", "\032Zapisuji..", "Zapisuji..")
+#define TR_WRITING                     "Zapisuji.."
 #define TR_CONFIRM_FORMAT              "Provést Formát?"
 #define TR_INTERNALRF                  "Interní RF modul"
 #define TR_INTERNAL_MODULE             "Interní modul"
