@@ -21,9 +21,9 @@
 #include "opentx.h"
 
 #if LCD_W >= 212
-  #define TRAINER_CALIB_COLUMN_WIDTH 12
+  #define TRAINER_CALIB_COLUMN_WIDTH (6 * FW)
 #else
-  #define TRAINER_CALIB_COLUMN_WIDTH 8
+  #define TRAINER_CALIB_COLUMN_WIDTH (4 * FW + 2)
 #endif
 
 void menuRadioTrainer(event_t event)
@@ -86,8 +86,8 @@ void menuRadioTrainer(event_t event)
   if (attr)
     s_editMode = 0;
   lcdDrawText(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
-  for (uint8_t i=0; i<4; i++) {
-    uint8_t x = (i*TRAINER_CALIB_COLUMN_WIDTH + 16) * FW/2;
+  for (uint8_t i = 0; i < 4; i++) {
+    uint8_t x = 8*FW + (i * TRAINER_CALIB_COLUMN_WIDTH);
     int32_t chVal = ppmInput[i] - g_eeGeneral.trainer.calib[i];
     chVal *= g_eeGeneral.trainer.mix[i].studWeight * 10;
     chVal /= 512;

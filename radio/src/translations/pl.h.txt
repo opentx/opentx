@@ -856,9 +856,9 @@
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING             "\032Zapis...  "
-#define TR_CONFIRM_FORMAT      "Zatwierdź Format?"
-#define TR_INTERNALRF          "Wewn.Moduł RF"
+#define TR_WRITING                     "Zapis...  "
+#define TR_CONFIRM_FORMAT              "Zatwierdź Format?"
+#define TR_INTERNALRF                  "Wewn.Moduł RF"
 #define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
 #define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"

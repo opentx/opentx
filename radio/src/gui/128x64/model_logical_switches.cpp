@@ -254,12 +254,13 @@ void menuModelLogicalSwitches(event_t event)
   uint8_t k = 0;
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 
-  if (event==EVT_KEY_FIRST(KEY_ENTER)) {
+  if (event == EVT_KEY_FIRST(KEY_ENTER)) {
     killEvents(event);
     LogicalSwitchData * cs = lswAddress(sub);
     if (cs->func)
       s_currIdx = sub;
-    POPUP_MENU_ADD_ITEM(STR_EDIT);
+    if (sub >= 0)
+      POPUP_MENU_ADD_ITEM(STR_EDIT);
     if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
       POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
