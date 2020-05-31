@@ -48,17 +48,18 @@ Bluetooth bluetooth;
 
 void Bluetooth::write(const uint8_t * data, uint8_t length)
 {
-  BLUETOOTH_TRACE("BT>");
-  for (int i=0; i<length; i++) {
-    BLUETOOTH_TRACE(" %02X", data[i]);
-    while (btTxFifo.isFull()) {
-      if (!bluetoothIsWriting())
-        bluetoothWriteWakeup();
-      RTOS_WAIT_MS(1);
+  if (btTxFifo.hasSpace(length)) {
+    BLUETOOTH_TRACE("BT>");
+    for (int i = 0; i < length; i++) {
+      BLUETOOTH_TRACE(" %02X", data[i]);
+      btTxFifo.push(data[i]);
     }
-    btTxFifo.push(data[i]);
+    BLUETOOTH_TRACE(CRLF);
   }
-  BLUETOOTH_TRACE(CRLF);
+  else {
+    BLUETOOTH_TRACE("[BT] TX fifo full!" CRLF);
+  }
+
   bluetoothWriteWakeup();
 }
 
