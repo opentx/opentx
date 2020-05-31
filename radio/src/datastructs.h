@@ -387,8 +387,9 @@ PACK(struct TelemetrySensor {
         return true;
 
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
-        if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
-          this->instance = instance; // update the instance in case we had telemetry switching
+        if (((this->instance ^ instance) & 0x1F) == 0) {
+          // update the origin of the sensor (module + rxId)
+          this->instance = instance;
           return true;
         }
       }
