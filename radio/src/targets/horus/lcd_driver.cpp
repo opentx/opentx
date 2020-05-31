@@ -41,7 +41,7 @@ uint32_t CurrentLayer = LCD_FIRST_LAYER;
 #define NRST_LOW()   do { LCD_GPIO_NRST->BSRRH = LCD_GPIO_PIN_NRST; } while(0)
 #define NRST_HIGH()  do { LCD_GPIO_NRST->BSRRL = LCD_GPIO_PIN_NRST; } while(0)
 
-static bool drawingInBuffert(coord_t x, coord_t y, coord_t w, coord_t h)
+static bool drawingInBuffer(coord_t x, coord_t y, coord_t w, coord_t h)
 {
   if (x < 0 || y < 0 || (x + w) > LCD_W || (y + h) > LCD_H)
     return false;
@@ -391,7 +391,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, ui
   y = desth - (y + h);
 #endif
 
-  if (dest == displayBuf && !drawingInBuffert(x, y, w, h))
+  if (dest == displayBuf && !drawingInBuffer(x, y, w, h))
     return;
 
   DMA2D_DeInit();
@@ -425,7 +425,7 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
   srcy = srch - (srcy + h);
 #endif
 
-  if (dest == displayBuf && !drawingInBuffert(x, y, w, h))
+  if (dest == displayBuf && !drawingInBuffer(x, y, w, h))
     return;
   
   DMA2D_DeInit();
@@ -468,7 +468,7 @@ void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_
   srcy = srch - (srcy + h);
 #endif
 
-  if (dest == displayBuf && !drawingInBuffert(x, y, w, h))
+  if (dest == displayBuf && !drawingInBuffer(x, y, w, h))
     return;
   
   DMA2D_DeInit();
