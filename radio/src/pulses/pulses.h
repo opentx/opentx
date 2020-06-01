@@ -320,6 +320,7 @@ void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
 void sendByteSbus(uint8_t b);
+void intmodulePpmStart();
 void intmodulePxx1PulsesStart();
 void intmodulePxx1SerialStart();
 void extmodulePxx1PulsesStart();
@@ -332,6 +333,8 @@ void getModuleSyncStatusString(uint8_t moduleIdx, char * statusText);
 #if defined(AFHDS3)
 uint8_t actualAfhdsRunPower(int moduleIndex);
 #endif
+void extramodulePpmStart();
+
 inline void startPulses()
 {
   s_pulses_paused = false;

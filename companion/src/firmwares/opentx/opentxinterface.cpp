@@ -1225,11 +1225,6 @@ void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
   addOpenTxFontOptions(firmware);
 }
 
-void addPPMInternalModuleHack(OpenTxFirmware * firmware)
-{
-  firmware->addOption("internalppm", Firmware::tr("Support for PPM internal module hack"));
-}
-
 void addOpenTxArm9xOptions(OpenTxFirmware * firmware, bool dblkeys = true)
 {
   addOpenTxCommonOptions(firmware);
@@ -1256,7 +1251,6 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x9d+", Firmware::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
   addOpenTxTaranisOptions(firmware);
-  addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, EU + FLEX + AFHDS3);
 
@@ -1271,7 +1265,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("noras", Firmware::tr("Disable RAS (SWR)"));
   firmware->addOption("haptic", Firmware::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
-  addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, EU + FLEX + AFHDS3);
 
@@ -1280,7 +1273,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("shutdownconfirm", Firmware::tr("Confirmation before radio shutdown"));
   firmware->addOption("horussticks", Firmware::tr("Horus gimbals installed (Hall sensors)"));
   addOpenTxTaranisOptions(firmware);
-  addPPMInternalModuleHack(firmware);
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, EU + FLEX + AFHDS3);
 
