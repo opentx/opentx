@@ -338,6 +338,7 @@ void extmodulePxx1SerialStart();
 void extmodulePpmStart();
 void intmoduleStop();
 void extmoduleStop();
+void extramodulePpmStart();
 
 inline void startPulses()
 {
