@@ -141,13 +141,21 @@ void runFatalErrorScreen(const char * message);
 
 inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
 {
-  if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || (isModuleMultimodule(moduleIdx) && IS_RX_MULTI(moduleIdx)))
+  if (isModuleMultimodule(moduleIdx)) {
+   if (IS_RX_MULTI(moduleIdx))
+     return 1;
+   else
+     return 2;
+  }
+  else if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx)) {
     return 1;
-
-  if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx))
+  }
+  else if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx)) {
     return 2;
-  else
+  }
+  else {
     return HIDDEN_ROW;
+  }
 }
 
 inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
