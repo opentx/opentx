@@ -1142,8 +1142,8 @@ void menuModelSetup(event_t event)
             l_posHorz += 1;
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-            if (attr && l_posHorz==0) {
-              if (s_editMode>0) {
+            if (attr && l_posHorz == 0) {
+              if (s_editMode > 0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
                 if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
@@ -1158,9 +1158,10 @@ void menuModelSetup(event_t event)
                 }
               }
             }
-            lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            if (isModuleRangeAvailable(moduleIdx))
-              lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz == 1 ? attr : 0);
+            if (isModuleRangeAvailable(moduleIdx)) {
+              lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz == 2 ? attr : 0);
+            }
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
@@ -1168,8 +1169,8 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
             }
 #endif
-            if (attr && l_posHorz>0) {
-              if (s_editMode>0) {
+            if (attr && l_posHorz > 0) {
+              if (s_editMode > 0) {
                 if (l_posHorz == 1) {
                   if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
@@ -1196,8 +1197,9 @@ void menuModelSetup(event_t event)
             }
             moduleState[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
-            if (newFlag == MODULE_MODE_BIND)
+            if (newFlag == MODULE_MODE_BIND) {
               setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
+            }
 #endif
           }
         }
