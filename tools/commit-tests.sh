@@ -5,7 +5,7 @@ set -e
 set -x
 
 # Allow variable core usage, default uses all cpu cores, to set 8 cores for example : commit-tests.sh -j8
-num_cpus=$(grep 'physical id' /proc/cpuinfo | sort -u | wc -l)
+num_cpus=$(nproc)
 : "${CORES:=$num_cpus}"
 # Default build treats warnings as errors, set -Wno-error to override, e.g.: commit-tests.sh -Wno-error
 : "${WERROR:=1}"
