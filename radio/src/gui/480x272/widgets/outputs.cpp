@@ -33,7 +33,7 @@ class OutputsWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    void refresh() override;
 
     uint8_t drawChannels(const uint16_t & x, const uint16_t & y, const uint16_t & w, const uint16_t & h, const uint8_t & firstChan, const bool & bg_shown, const uint16_t & bg_color)
     {

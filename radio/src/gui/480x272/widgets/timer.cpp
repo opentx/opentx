@@ -28,7 +28,7 @@ class TimerWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    void refresh() override;
 
     static const ZoneOption options[];
 };
