@@ -347,10 +347,10 @@ void menuModelSetup(event_t event)
     LABEL(InternalModule),
       INTERNAL_MODULE_TYPE_ROWS,
       MODULE_CHANNELS_ROWS(INTERNAL_MODULE),
-      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleBindRangeAvailable(INTERNAL_MODULE)? (uint8_t)2 : (uint8_t)1)), // RxNum, Range check and Register buttons
+      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, MODULE_BIND_ROWS(INTERNAL_MODULE)), // RxNum, [Bind] and [Range] buttons
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum for ACCESS
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), // Failsafe
-      IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), // Range check and Register buttons
+      IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), // [Range] and [Register] buttons
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),      // Module options
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // Receiver 1
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // Receiver 2
@@ -1131,23 +1131,17 @@ void menuModelSetup(event_t event)
           }
         }
         else {
+          lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER);
           horzpos_t l_posHorz = menuHorizontalPosition;
           coord_t bindButtonPos = MODEL_SETUP_2ND_COLUMN;
-          if (!isModuleRxNumAvailable(moduleIdx)) {
-            lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER);
-            if (attr) l_posHorz += 1;
+          if (isModuleRxNumAvailable(moduleIdx)) {
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz == 0 ? attr : 0) | LEADING0 | LEFT, 2);
+            bindButtonPos = lcdNextPos + FW;
           }
-          else {
-            lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
+          else if (attr) {
+            l_posHorz += 1;
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-            if (!IS_RX_MULTI(moduleIdx)) {
-              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz == 0 ? attr : 0) | LEADING0 | LEFT, 2);
-              bindButtonPos = lcdNextPos + FW;
-            }
-            else {
-              bindButtonPos = MODEL_SETUP_2ND_COLUMN;
-            }
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
@@ -1165,7 +1159,7 @@ void menuModelSetup(event_t event)
               }
             }
             lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            if (!IS_RX_MULTI(moduleIdx))
+            if (isModuleRangeAvailable(moduleIdx))
               lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
