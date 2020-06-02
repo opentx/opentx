@@ -30,7 +30,7 @@ struct FrSkySportSensor {
 };
 
 const FrSkySportSensor sportSensors[] = {
-  { FRAME_LOSS_RATE_ID, FRAME_LOSS_RATE_ID, 0, ZSTR_FLR, UNIT_PERCENT, 0 },
+  { VALID_FRAME_RATE_ID, VALID_FRAME_RATE_ID, 0, ZSTR_VFR, UNIT_PERCENT, 0 },
   { RSSI_ID, RSSI_ID, 0, ZSTR_RSSI, UNIT_DB, 0 },
 #if defined(MULTIMODULE)
   { TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
@@ -224,9 +224,19 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
       }
 #endif
     }
+    else if (dataId == VALID_FRAME_RATE_ID) {
+      data = 100 - SPORT_DATA_U8(packet);
+    }
     else if (dataId == R9_PWR_ID) {
-      uint32_t r9pwr[] = {100, 200, 500, 1000};
-      data = r9pwr[SPORT_DATA_U8(packet) & 0x03];
+      // receive 'dBm' and show by 'mw'
+      static const uint32_t r9pwrs[][2] = {{0, 1}, {5, 3}, {10, 10}, {13, 20}, {14, 25}, {20, 100}, {23, 200}, {27, 500}, {30, 1000}};
+      uint32_t dBm = SPORT_DATA_U8(packet);
+      for (auto & r9pwr : r9pwrs) {
+        if (dBm == r9pwr[0]) {
+          data = r9pwr[1];
+          break;
+        }
+      }
     }
     else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
