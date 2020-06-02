@@ -41,15 +41,12 @@ uint32_t CurrentLayer = LCD_FIRST_LAYER;
 #define NRST_LOW()   do { LCD_GPIO_NRST->BSRRH = LCD_GPIO_PIN_NRST; } while(0)
 #define NRST_HIGH()  do { LCD_GPIO_NRST->BSRRL = LCD_GPIO_PIN_NRST; } while(0)
 
-static inline bool coordsWithinScreen(coord_t x, coord_t y, coord_t w, coord_t h)
+inline bool coordsWithinScreen(coord_t x, coord_t y, coord_t w, coord_t h)
 {
-  if (x < 0 || y < 0 || (x + w) > LCD_W || (y + h) > LCD_H)
-    return false;
-  else
-    return true;
+  return x >= 0 && y >= 0 && x + w <= LCD_W && y + h <= LCD_H;
 }
 
-static void LCD_AF_GPIOConfig(void)
+static void LCD_AF_GPIOConfig()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
