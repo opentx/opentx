@@ -229,10 +229,9 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     }
     else if (dataId == R9_PWR_ID) {
       // receive 'dBm' and show by 'mw'
-      uint32_t r9pwrs[][2] = {{0, 1}, {5, 3}, {10, 10}, {13, 20}, {14, 25}, {20, 100}, {23, 200}, {27, 500}, {30, 1000}};
+      static const uint32_t r9pwrs[][2] = {{0, 1}, {5, 3}, {10, 10}, {13, 20}, {14, 25}, {20, 100}, {23, 200}, {27, 500}, {30, 1000}};
       uint32_t dBm = SPORT_DATA_U8(packet);
-      for (auto & r9pwr: r9pwrs)
-      {
+      for (auto & r9pwr : r9pwrs) {
         if (dBm == r9pwr[0])
           data = r9pwr[1];
       }
