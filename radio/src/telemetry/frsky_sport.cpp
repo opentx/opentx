@@ -30,7 +30,7 @@ struct FrSkySportSensor {
 };
 
 const FrSkySportSensor sportSensors[] = {
-  { FRAME_LOSS_RATE_ID, FRAME_LOSS_RATE_ID, 0, ZSTR_FLR, UNIT_PERCENT, 0 },
+  { VALID_FRAME_RATE_ID, VALID_FRAME_RATE_ID, 0, ZSTR_VFR, UNIT_PERCENT, 0 },
   { RSSI_ID, RSSI_ID, 0, ZSTR_RSSI, UNIT_DB, 0 },
 #if defined(MULTIMODULE)
   { TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
@@ -223,6 +223,9 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
         sportProcessTelemetryPacket(TX_LQI_ID, 0, instance, packet[7], UNIT_RAW);
       }
 #endif
+    }
+    else if (dataId == VALID_FRAME_RATE_ID) {
+      data = 100 - SPORT_DATA_U8(packet);
     }
     else if (dataId == R9_PWR_ID) {
       uint32_t r9pwr[] = {100, 200, 500, 1000};
