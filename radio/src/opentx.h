@@ -487,6 +487,7 @@ void doMixerCalculations();
 void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms);
 
 void checkTrims();
+extern uint8_t currentBacklightBright;
 void perMain();
 void per10ms();
 

@@ -691,8 +691,10 @@ void checkBacklight()
 
     bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) || isFunctionActive(FUNCTION_BACKLIGHT));
     if (flashCounter) backlightOn = !backlightOn;
-    if (backlightOn)
+    if (backlightOn) {
+      currentBacklightBright = requiredBacklightBright;
       BACKLIGHT_ENABLE();
+    }
     else
       BACKLIGHT_DISABLE();
   }
@@ -1951,6 +1953,7 @@ void opentxInit()
 #endif
 
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+  currentBacklightBright = requiredBacklightBright = g_eeGeneral.backlightBright;
 #if !defined(SOFTWARE_VOLUME)
   setScaledVolume(currentSpeakerVolume);
 #endif

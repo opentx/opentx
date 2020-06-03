@@ -355,9 +355,16 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
 #endif
 
           case FUNC_BACKLIGHT:
-            newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
-            break;
-
+            {
+              if (swtch != SWSRC_ON)
+                newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
+              if (CFN_PARAM(cfn)) {
+                getvalue_t raw = getValue(CFN_PARAM(cfn));
+                requiredBacklightBright = 100 - (1024 + raw) * 100 / 2048;
+              }
+              break;
+            }
+            
           case FUNC_SCREENSHOT:
             if (!(functionsContext.activeSwitches & switch_mask)) {
               mainRequestFlags |= (1 << REQUEST_SCREENSHOT);
