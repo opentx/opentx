@@ -563,11 +563,11 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         }
         Helpers::populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
       }
-      else if (func == FuncBacklight && IS_TARANIS_PLUS(getCurrentBoard())) {
+      else if (func == FuncBacklight) {
         if (modified)
-          cfn.param = (uint8_t)fswtchBLcolor[i]->value();
-        fswtchBLcolor[i]->setValue(cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_BL_COLOR;
+          cfn.param = fswtchParamT[i]->currentData().toInt();
+        populateFuncParamCB(fswtchParamT[i], func, cfn.param);
+        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
       else {
         if (modified)
@@ -724,7 +724,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
   else if (function==FuncReset) {
     CustomFunctionData::populateResetParams(model, b, value);
   }
-  else if (function==FuncVolume) {
+  else if (function==FuncVolume || function==FuncBacklight) {
     b->setModel(rawSrcInputsItemModel);
     b->setCurrentIndex(b->findData(value));
   }

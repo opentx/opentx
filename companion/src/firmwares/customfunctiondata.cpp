@@ -188,7 +188,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     else
       return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
-  else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
+  else if ((func==FuncVolume) || (func==FuncPlayValue) || (func==FuncBacklight)) {
     RawSource item(param);
     return item.toString(model);
   }
@@ -245,6 +245,7 @@ QString CustomFunctionData::enabledToString() const
       (func==FuncReset) ||
       (func>=FuncSetTimer1 && func<=FuncSetTimer2) ||
       (func==FuncVolume) ||
+      (func==FuncBacklight) ||
       (func <= FuncInstantTrim)) {
     if (!enabled) {
       return tr("DISABLED");
@@ -258,7 +259,7 @@ void CustomFunctionData::convert(RadioDataConversionState & cstate)
   cstate.setComponent(tr("CFN"), 8);
   cstate.setSubComp(nameToString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
   swtch.convert(cstate);
-  if (func == FuncVolume || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
+  if (func == FuncVolume || func==FuncBacklight || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
     param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();
   }
 }
