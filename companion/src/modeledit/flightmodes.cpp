@@ -283,10 +283,6 @@ void FlightModePanel::update()
     updateGVar(i);
   }
 
-  for (int i = 0; i < reCount; i++) {
-    updateRotaryEncoder(i);
-  }
-
   emit nameModified();
 }
 
@@ -324,20 +320,6 @@ void FlightModePanel::setGVSB(QDoubleSpinBox * sb, int min, int max, int val)
   sb->setMinimum(min * mul);
   sb->setMaximum(max * mul);
   sb->setValue(val * mul);
-}
-
-void FlightModePanel::updateRotaryEncoder(int index)
-{
-  lock = true;
-  if (phaseIdx > 0) {
-    if (model->isREncLinked(phaseIdx, index))
-      reUse[index]->setCurrentIndex(phase.rotaryEncoders[index] - RENC_MAX_VALUE);
-    else
-      reUse[index]->setCurrentIndex(0);
-  }
-  reValues[index]->setDisabled(model->isREncLinked(phaseIdx, index));
-  reValues[index]->setValue(model->getREncValue(phaseIdx, index));
-  lock = false;
 }
 
 // TODO: pull units from GVarData
@@ -542,36 +524,6 @@ void FlightModePanel::phaseGVPopupToggled(bool checked)
   }
 }
 
-void FlightModePanel::phaseREValue_editingFinished()
-{
-  if (!lock) {
-    QSpinBox *spinBox = qobject_cast<QSpinBox*>(sender());
-    int re = spinBox->property("index").toInt();
-    phase.rotaryEncoders[re] = spinBox->value();
-    emit modified();
-  }
-}
-
-void FlightModePanel::phaseREUse_currentIndexChanged(int index)
-{
-  if (!lock) {
-    lock = true;
-    QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
-    int re = comboBox->property("index").toInt();
-    if (index == 0) {
-      phase.rotaryEncoders[re] = 0;
-    }
-    else {
-      phase.rotaryEncoders[re] = RENC_MAX_VALUE + index;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ;
-    }
-    update();
-    if (model->isREncLinkedCircular(phaseIdx, re))
-      QMessageBox::warning(this, "Companion", tr("Warning: Rotary encoder links back to itself. Flight Mode 0 value used."));
-    emit modified();
-    lock = false;
-  }
-}
-
 void FlightModePanel::phaseTrimUse_currentIndexChanged(int index)
 {
   if (!lock) {
@@ -702,9 +654,6 @@ void FlightModePanel::cmClear()
     for (int i = 0; i < gvCount; i++) {
       phase.gvars[i] = phase.linkedGVarFlightModeZero(phaseIdx);
     }
-    for (int i = 0; i < reCount; i++) {
-      phase.rotaryEncoders[i] = phase.linkedREncFlightModeZero(phaseIdx);
-    }
   }
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_CLEAR, phaseIdx);
@@ -723,9 +672,6 @@ void FlightModePanel::cmClearAll()
     fm->clear(j);
     for (int i = 0; i < gvCount; i++) {
       fm->gvars[i] = fm->linkedGVarFlightModeZero(j);
-    }
-    for (int i = 0; i < reCount; i++) {
-      fm->rotaryEncoders[i] = fm->linkedREncFlightModeZero(j);
     }
     model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_CLEAR, j);
   }
@@ -796,18 +742,6 @@ void FlightModePanel::cmDelete()
           model->setGVarFlightModeIndexToValue(j, i, 0);
       }
     }
-
-    for (int i = 0; i < reCount; i++) {
-      if (model->isREncLinked(j, i)) {
-        int idx = model->getREncFlightModeIndex(j, i);
-        if (phaseIdx == 0 && j == 0)
-          model->setREncFlightModeIndexToValue(j, i, j);
-        else if (idx > phaseIdx)
-          model->setREncFlightModeIndexToValue(j, i, idx - 1);
-        else if (idx == phaseIdx)
-          model->setREncFlightModeIndexToValue(j, i, 0);
-      }
-    }
   }
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SHIFT, phaseIdx, 0, -1);
@@ -847,16 +781,6 @@ void FlightModePanel::cmInsert()
           model->setGVarFlightModeIndexToValue(j, i, j);
         else if (idx >= phaseIdx)
           model->setGVarFlightModeIndexToValue(j, i, idx + 1);
-      }
-    }
-
-    for (int i = 0; i < reCount; i++) {
-      if (model->isREncLinked(j, i)) {
-        int idx = model->getREncFlightModeIndex(j, i);
-        if (phaseIdx == 0 && j == 1)
-          model->setREncFlightModeIndexToValue(j, i, j);
-        else if (idx >= phaseIdx)
-          model->setREncFlightModeIndexToValue(j, i, idx + 1);
       }
     }
   }
@@ -900,15 +824,6 @@ void FlightModePanel::cmPaste()
         int linkedidx = model->getGVarFlightModeIndex(phaseIdx, i);
         if (phaseIdx == 0 || linkedidx == phaseIdx)
           model->setGVarFlightModeIndexToValue(phaseIdx, i, phaseIdx);
-      }
-    }
-
-    //  TODO fix up linked REs but need to know source FM index to make adjustments
-    for (int i = 0; i < reCount; i++) {
-      if (model->isREncLinked(phaseIdx, i)) {
-        int linkedidx = model->getREncFlightModeIndex(phaseIdx, i);
-        if (phaseIdx == 0 || linkedidx == phaseIdx)
-          model->setREncFlightModeIndexToValue(phaseIdx, i, phaseIdx);
       }
     }
 
@@ -975,28 +890,6 @@ void FlightModePanel::swapData(int idx1, int idx2)
         model->setGVarFlightModeIndexToValue(idx2, i, idx1 + shift);
       else
         model->setGVarFlightModeIndexToValue(idx2, i, linkedidx);
-    }
-  }
-
-  for (int i = 0; i < reCount; i++) {
-    if (model->isREncLinked(idx1, i)) {
-      int linkedidx = model->getREncFlightModeIndex(idx1, i);
-      if (linkedidx == idx1)
-        model->setREncFlightModeIndexToValue(idx1, i, idx2 - shift);
-      else if (linkedidx == idx2)
-        model->setREncFlightModeIndexToValue(idx1, i, idx1 + shift);
-      else
-        model->setREncFlightModeIndexToValue(idx1, i, linkedidx);
-    }
-
-    if (model->isREncLinked(idx2, i)) {
-      int linkedidx = model->getREncFlightModeIndex(idx2, i);
-      if (linkedidx == idx1)
-        model->setREncFlightModeIndexToValue(idx2, i, idx2 - shift);
-      else if (linkedidx == idx2)
-        model->setREncFlightModeIndexToValue(idx2, i, idx1 + shift);
-      else
-        model->setREncFlightModeIndexToValue(idx2, i, linkedidx);
     }
   }
 

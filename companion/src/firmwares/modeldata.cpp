@@ -306,39 +306,6 @@ int ModelData::getGVarValue(int phaseIdx, int gvarIdx)
   return flightModeData[0].gvars[gvarIdx];  // circular linked so return FM0 value
 }
 
-bool ModelData::isREncLinked(int phaseIdx, int reIdx)
-{
-  return flightModeData[phaseIdx].rotaryEncoders[reIdx] > RENC_MAX_VALUE;
-}
-
-bool ModelData::isREncLinkedCircular(int phaseIdx, int reIdx)
-{
-  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
-    int val = flightModeData[phaseIdx].rotaryEncoders[reIdx];
-    if (phaseIdx == 0 || val <= RENC_MAX_VALUE)
-      return false;
-    int nextPhase = val - (RENC_MAX_VALUE + 1);
-    if (nextPhase >= phaseIdx)
-      nextPhase += 1;
-    phaseIdx = nextPhase;
-  }
-  return true;
-}
-
-int ModelData::getREncValue(int phaseIdx, int reIdx)
-{
-  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
-    int val = flightModeData[phaseIdx].rotaryEncoders[reIdx];
-    if (phaseIdx == 0 || val <= RENC_MAX_VALUE)
-      return val;
-    int nextPhase = val - (RENC_MAX_VALUE + 1);
-    if (nextPhase >= phaseIdx)
-      nextPhase += 1;
-    phaseIdx = nextPhase;
-  }
-  return flightModeData[0].rotaryEncoders[reIdx];  // circular linked so return FM0 value
-}
-
 void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
 {
   for (uint8_t i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
@@ -1253,18 +1220,6 @@ int ModelData::getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx)
 void ModelData::setGVarFlightModeIndexToValue(const int phaseIdx, const int gvarIdx, const int useFmIdx)
 {
   flightModeData[phaseIdx].gvars[gvarIdx] = linkedFlightModeIndexToValue(phaseIdx, useFmIdx, GVAR_MAX_VALUE);
-}
-
-int ModelData::getREncFlightModeIndex(const int phaseIdx, const int reIdx)
-{
-  if (!isREncLinked(phaseIdx, reIdx))
-    return -1;
-  return (linkedFlightModeValueToIndex(phaseIdx, flightModeData[phaseIdx].rotaryEncoders[reIdx], RENC_MAX_VALUE));
-}
-
-void ModelData::setREncFlightModeIndexToValue(const int phaseIdx, const int reIdx, const int useFmIdx)
-{
-  flightModeData[phaseIdx].rotaryEncoders[reIdx] = linkedFlightModeIndexToValue(phaseIdx, useFmIdx, RENC_MAX_VALUE);
 }
 
 bool ModelData::isExpoParent(const int index)

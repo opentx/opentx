@@ -342,14 +342,6 @@
   #define TR_TRIMS_SWITCHES            TR("tDg""tDd""tPb""tPh""tGb""tGh""tAg""tAd", "\313Dg""\313Dd""\313Pb""\313Ph""\313Gb""\313Gh""\313Ag""\313Ad")
 #endif
 
-#if defined(PCBSKY9X)
-  #define TR_ROTARY_ENCODERS           "REa\0"
-  #define TR_ROTENC_SWITCHES           "REa"
-#else
-  #define TR_ROTARY_ENCODERS
-  #define TR_ROTENC_SWITCHES
-#endif
-
 #define TR_ON_ONE_SWITCHES             "ON\0""Un"
 
 #if defined(GYRO)

@@ -353,20 +353,6 @@ QString ModelPrinter::printGlobalVar(int flightModeIndex, int gvarIndex)
   }
 }
 
-QString ModelPrinter::printRotaryEncoder(int flightModeIndex, int reIndex)
-{
-  const FlightModeData & fm = model.flightModeData[flightModeIndex];
-
-  if (fm.rotaryEncoders[reIndex] <= 1024) {
-    return QString("%1").arg(fm.rotaryEncoders[reIndex]);
-  }
-  else {
-    int num = fm.rotaryEncoders[reIndex] - 1025;
-    if (num >= flightModeIndex) num++;
-    return tr("FM%1").arg(num);
-  }
-}
-
 QString ModelPrinter::printInputName(int idx)
 {
   RawSourceType srcType = (firmware->getCapability(VirtualInputs) ? SOURCE_TYPE_VIRTUAL_INPUT : SOURCE_TYPE_STICK);

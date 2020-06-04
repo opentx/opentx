@@ -65,7 +65,7 @@
   // only special switches here
   #define TR_VSWITCHES                 "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #elif defined(PCBSKY9X)
-  #define TR_VSWITCHES                 "---" "ID0""ID1""ID2" "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_ON_ONE_SWITCHES
+  #define TR_VSWITCHES                 "---" "ID0""ID1""ID2" "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #endif
 
 #if defined(PCBHORUS) && defined(AUX_SERIAL)

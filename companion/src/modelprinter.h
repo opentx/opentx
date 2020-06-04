@@ -67,7 +67,6 @@ class ModelPrinter: public QObject
     QString printHeliSwashType();
     QString printTrim(int flightModeIndex, int stickIndex);
     QString printGlobalVar(int flightModeIndex, int gvarIndex);
-    QString printRotaryEncoder(int flightModeIndex, int reIndex);
     QString printTimer(int idx);
     QString printTimer(const TimerData & timer);
     QString printInputName(int idx);

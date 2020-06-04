@@ -139,9 +139,6 @@ void FlightModeData::clear(const int phaseIdx)
   for (int i = 0; i < CPN_MAX_GVARS; i++) {
     gvars[i] = linkedGVarFlightModeZero(phaseIdx);
   }
-  for (int i = 0; i < CPN_MAX_ENCODERS; i++) {
-    rotaryEncoders[i] = linkedREncFlightModeZero(phaseIdx);
-  }
 }
 
 QString FlightModeData::nameToString(int phaseIdx) const
@@ -168,23 +165,12 @@ bool FlightModeData::isEmpty(int phaseIdx) const
     if (!isGVarEmpty(phaseIdx, i))
       return false;
   }
-  for (int i = 0; i < CPN_MAX_ENCODERS; i++) {
-    if (!isREncEmpty(phaseIdx, i))
-      return false;
-  }
   return true;
 }
 
 bool FlightModeData::isGVarEmpty(int phaseIdx, int gvIdx) const
 {
   if ((phaseIdx == 0 && gvars[gvIdx] == 0) || (phaseIdx != 0 && gvars[gvIdx] == linkedGVarFlightModeZero(phaseIdx)))
-    return true;
-  return false;
-}
-
-bool FlightModeData::isREncEmpty(int phaseIdx, int reIdx) const
-{
-  if ((phaseIdx == 0 && rotaryEncoders[reIdx] == 0) || (phaseIdx != 0 && rotaryEncoders[reIdx] == linkedREncFlightModeZero(phaseIdx)))
     return true;
   return false;
 }
@@ -199,9 +185,4 @@ int FlightModeData::linkedFlightModeZero(int phaseIdx, int maxOwnValue) const
 int FlightModeData::linkedGVarFlightModeZero(int phaseIdx) const
 {
   return linkedFlightModeZero(phaseIdx, GVAR_MAX_VALUE);
-}
-
-int FlightModeData::linkedREncFlightModeZero(int phaseIdx) const
-{
-  return linkedFlightModeZero(phaseIdx, RENC_MAX_VALUE);
 }

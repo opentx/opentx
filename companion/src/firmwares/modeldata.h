@@ -229,12 +229,6 @@ class ModelData {
     int getGVarFlightModeIndex(const int phaseIdx, const int gvarIdx);
     void setGVarFlightModeIndexToValue(const int phaseIdx, const int gvarIdx, const int useFmIdx);
 
-    bool isREncLinked(int phaseIdx, int reIdx);
-    bool isREncLinkedCircular(int phaseIdx, int reIdx);
-    int getREncValue(int phaseIdx, int reIdx);
-    int getREncFlightModeIndex(const int phaseIdx, const int reIdx);
-    void setREncFlightModeIndexToValue(const int phaseIdx, const int reIdx, const int useFmIdx);
-
     ModelData removeGlobalVars();
 
     int linkedFlightModeIndexToValue(const int phaseIdx, const int useFmIdx, const int maxOwnValue);

@@ -64,8 +64,6 @@ class FlightModePanel : public ModelPanel
     void phaseGVPrec_currentIndexChanged(int index);
     void phaseGVMin_editingFinished();
     void phaseGVMax_editingFinished();
-    void phaseREValue_editingFinished();
-    void phaseREUse_currentIndexChanged(int index);
     void onCustomContextMenuRequested(QPoint pos);
     void cmClear();
     void cmClearAll();
@@ -92,7 +90,6 @@ class FlightModePanel : public ModelPanel
     int phaseIdx;
     FlightModeData & phase;
     int fmCount;
-    int reCount;
     int gvCount;
     int gvIdx;
     int trimCount;
@@ -105,8 +102,6 @@ class FlightModePanel : public ModelPanel
     QComboBox * gvPrec[CPN_MAX_GVARS];
     QDoubleSpinBox * gvMin[CPN_MAX_GVARS];
     QDoubleSpinBox * gvMax[CPN_MAX_GVARS];
-    QSpinBox * reValues[CPN_MAX_ENCODERS];
-    QComboBox * reUse[CPN_MAX_ENCODERS];
     QVector<QComboBox *> trimsUse;
     QVector<QSpinBox *> trimsValue;
     QVector<QSlider *> trimsSlider;
@@ -115,7 +110,6 @@ class FlightModePanel : public ModelPanel
 
     void trimUpdate(unsigned int trim);
     void updateGVar(int index);
-    void updateRotaryEncoder(int index);
     void setGVSB(QDoubleSpinBox * spinBox, int min, int max, int val);
     void populateGvarUnitCB(QComboBox * cb);
     void populateGvarPrecCB(QComboBox * cb);

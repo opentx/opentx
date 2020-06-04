@@ -342,12 +342,6 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   }
 #endif
 
-#if defined(PCBSKY9X) && defined(REVX)
-  if (swtch == SWSRC_REa) {
-    return false;
-  }
-#endif
-
   if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
     if (context == GeneralCustomFunctionsContext) {
       return false;

@@ -173,10 +173,8 @@ class FlightModeData {
     void convert(RadioDataConversionState & cstate);
     bool isEmpty(int phaseIdx) const;
     bool isGVarEmpty(int phaseIdx, int gvIdx) const;
-    bool isREncEmpty(int phaseIdx, int reIdx) const;
     int linkedFlightModeZero(int phaseIdx, int maxOwnValue) const;
     int linkedGVarFlightModeZero(int phaseIdx) const;
-    int linkedREncFlightModeZero(int phaseIdx) const;
 };
 
 class SwashRingData {
