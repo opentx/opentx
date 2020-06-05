@@ -1315,7 +1315,9 @@ void SetupPanel::populateThrottleTrimSwitchCB()
   ui->throttleTrimSwitch->clear();
   int idx=0;
   for (int i=0; i<getBoardCapability(board, Board::NumTrims); i++, idx++) {
-    ui->throttleTrimSwitch->addItem(RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings), idx);
+    QString trim = RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings);
+    trim = (trim == "TrmR") ? "TrmT" : (trim == "TmrT") ? "TmrR" : trim;
+    ui->throttleTrimSwitch->addItem(trim, idx);
   }
 
   int thrTrimSwitchIdx = ui->throttleTrimSwitch->findData(model->thrTrimSwitch);

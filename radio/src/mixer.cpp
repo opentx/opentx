@@ -527,7 +527,14 @@ int getStickTrimValue(int stick, int stickValue)
     return 0;
 
   int trim = trims[stick];
-  if (stick == g_model.thrTrimSw) {
+  uint8_t thrTrimSw;
+  if (g_model.thrTrimSw == 0) //this is needed for compatibility with existing models
+      thrTrimSw = MIXSRC_TrimThr - MIXSRC_FIRST_TRIM;
+    else if (g_model.thrTrimSw == MIXSRC_TrimThr - MIXSRC_FIRST_TRIM)
+      thrTrimSw = 0;
+    else
+      thrTrimSw = g_model.thrTrimSw;
+  if (stick == thrTrimSw) {
     if (g_model.throttleReversed)
       trim = -trim;
     if (g_model.thrTrim) {
