@@ -147,7 +147,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 #if defined(PCBTARANIS)
 #if defined(PCBXLITE)
-  // ENT LONG on xlite brings up switch type menu, so this menu is activated with SHIT + ENT LONG
+  // ENT LONG on xlite brings up switch type menu, so this menu is activated with SHIFT + ENT LONG
   if (menuHorizontalPosition==0 && event==EVT_KEY_LONG(KEY_ENTER) && IS_SHIFT_PRESSED() && !READ_ONLY()) {
 #else
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
