@@ -865,6 +865,7 @@ extern const char STR_SCALE[];
 extern const char STR_VIEW_CHANNELS[];
 extern const char STR_POTWARNING[];
 extern const char STR_AUX_SERIAL_MODE[];
+extern const char STR_AUX2_SERIAL_MODE[];
 extern const char STR_THROTTLE_LABEL[];
 extern const char STR_SCRIPT[];
 extern const char STR_INPUTS[];

@@ -26,7 +26,7 @@
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  selectedSwitch(0)
+  selectedIndex(0)
 {
   Stopwatch s1("LogicalSwitchesPanel");
 
@@ -35,19 +35,22 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   const int srcGroups = firmware->getCapability(GvarsInCS) ? 0 : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
   rawSourceItemModel = new RawSourceFilterItemModel(&generalSettings, &model, srcGroups, this);
 
+  lsCapability = firmware->getCapability(LogicalSwitches);
+  lsCapabilityExt = firmware->getCapability(LogicalSwitchesExt);
+
   QStringList headerLabels;
   headerLabels << "#" << tr("Function") << tr("V1") << tr("V2") << tr("AND Switch");
-  if (firmware->getCapability(LogicalSwitchesExt)) {
+  if (lsCapabilityExt) {
     headerLabels << tr("Duration") << tr("Delay");
   }
-  TableLayout * tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
+  TableLayout * tableLayout = new TableLayout(this, lsCapability, headerLabels);
 
   s1.report("header");
 
   const int channelsMax = model.getChannelsMax(true);
 
   lock = true;
-  for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
+  for (int i=0; i<lsCapability; i++) {
     // The label
     QLabel * label = new QLabel(this);
     label->setProperty("index", i);
@@ -56,96 +59,96 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(csw_customContextMenuRequested(QPoint)));
+    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomContextMenuRequested(QPoint)));
     tableLayout->addWidget(i, 0, label);
 
     // The function
-    csw[i] = new QComboBox(this);
-    csw[i]->setProperty("index", i);
-    populateCSWCB(csw[i]);
-    connect(csw[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionChanged()));
-    tableLayout->addWidget(i, 1, csw[i]);
+    cbFunction[i] = new QComboBox(this);
+    cbFunction[i]->setProperty("index", i);
+    populateFunctionCB(cbFunction[i]);
+    connect(cbFunction[i], SIGNAL(currentIndexChanged(int)), this, SLOT(onFunctionChanged()));
+    tableLayout->addWidget(i, 1, cbFunction[i]);
 
     // V1
     QHBoxLayout *v1Layout = new QHBoxLayout();
-    cswitchSource1[i] = new QComboBox(this);
-    cswitchSource1[i]->setProperty("index",i);
-    connect(cswitchSource1[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v1Edited(int)));
-    v1Layout->addWidget(cswitchSource1[i]);
-    cswitchSource1[i]->setVisible(false);
-    cswitchValue[i] = new QDoubleSpinBox(this);
-    cswitchValue[i]->setMaximum(channelsMax);
-    cswitchValue[i]->setMinimum(-channelsMax);
-    cswitchValue[i]->setAccelerated(true);
-    cswitchValue[i]->setDecimals(0);
-    cswitchValue[i]->setProperty("index", i);
-    connect(cswitchValue[i], SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
-    v1Layout->addWidget(cswitchValue[i]);
-    cswitchValue[i]->setVisible(false);
+    cbSource1[i] = new QComboBox(this);
+    cbSource1[i]->setProperty("index",i);
+    connect(cbSource1[i], SIGNAL(currentIndexChanged(int)), this, SLOT(onV1Changed(int)));
+    v1Layout->addWidget(cbSource1[i]);
+    cbSource1[i]->setVisible(false);
+    dsbValue[i] = new QDoubleSpinBox(this);
+    dsbValue[i]->setMaximum(channelsMax);
+    dsbValue[i]->setMinimum(-channelsMax);
+    dsbValue[i]->setAccelerated(true);
+    dsbValue[i]->setDecimals(0);
+    dsbValue[i]->setProperty("index", i);
+    connect(dsbValue[i], SIGNAL(editingFinished()), this, SLOT(onOffsetChanged()));
+    v1Layout->addWidget(dsbValue[i]);
+    dsbValue[i]->setVisible(false);
     tableLayout->addLayout(i, 2, v1Layout);
 
     // V2
     QHBoxLayout *v2Layout = new QHBoxLayout();
-    cswitchSource2[i] = new QComboBox(this);
-    cswitchSource2[i]->setProperty("index", i);
-    connect(cswitchSource2[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v2Edited(int)));
-    v2Layout->addWidget(cswitchSource2[i]);
-    cswitchSource2[i]->setVisible(false);
-    cswitchOffset[i] = new QDoubleSpinBox(this);
-    cswitchOffset[i]->setProperty("index",i);
-    cswitchOffset[i]->setMaximum(channelsMax);
-    cswitchOffset[i]->setMinimum(-channelsMax);
-    cswitchOffset[i]->setAccelerated(true);
-    cswitchOffset[i]->setDecimals(0);
-    connect(cswitchOffset[i], SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
-    cswitchOffset[i]->setVisible(false);
-    v2Layout->addWidget(cswitchOffset[i]);
-    cswitchOffset2[i] = new QDoubleSpinBox(this);
-    cswitchOffset2[i]->setProperty("index",i);
-    cswitchOffset2[i]->setMaximum(channelsMax);
-    cswitchOffset2[i]->setMinimum(-channelsMax);
-    cswitchOffset2[i]->setAccelerated(true);
-    cswitchOffset2[i]->setDecimals(0);
-    cswitchOffset2[i]->setSpecialValueText(" " + tr("(instant)"));
-    connect(cswitchOffset2[i], SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
-    cswitchOffset2[i]->setVisible(false);
-    v2Layout->addWidget(cswitchOffset2[i]);
-    cswitchTOffset[i] = new TimerEdit(this);
-    cswitchTOffset[i]->setProperty("index",i);
-    connect(cswitchTOffset[i],SIGNAL(editingFinished()),this,SLOT(offsetEdited()));
-    v2Layout->addWidget(cswitchTOffset[i]);
-    cswitchTOffset[i]->setVisible(false);
+    cbSource2[i] = new QComboBox(this);
+    cbSource2[i]->setProperty("index", i);
+    connect(cbSource2[i], SIGNAL(currentIndexChanged(int)), this, SLOT(onV2Changed(int)));
+    v2Layout->addWidget(cbSource2[i]);
+    cbSource2[i]->setVisible(false);
+    dsbOffset[i] = new QDoubleSpinBox(this);
+    dsbOffset[i]->setProperty("index",i);
+    dsbOffset[i]->setMaximum(channelsMax);
+    dsbOffset[i]->setMinimum(-channelsMax);
+    dsbOffset[i]->setAccelerated(true);
+    dsbOffset[i]->setDecimals(0);
+    connect(dsbOffset[i], SIGNAL(editingFinished()), this, SLOT(onOffsetChanged()));
+    dsbOffset[i]->setVisible(false);
+    v2Layout->addWidget(dsbOffset[i]);
+    dsbOffset2[i] = new QDoubleSpinBox(this);
+    dsbOffset2[i]->setProperty("index",i);
+    dsbOffset2[i]->setMaximum(channelsMax);
+    dsbOffset2[i]->setMinimum(-channelsMax);
+    dsbOffset2[i]->setAccelerated(true);
+    dsbOffset2[i]->setDecimals(0);
+    dsbOffset2[i]->setSpecialValueText(" " + tr("(instant)"));
+    connect(dsbOffset2[i], SIGNAL(editingFinished()), this, SLOT(onOffsetChanged()));
+    dsbOffset2[i]->setVisible(false);
+    v2Layout->addWidget(dsbOffset2[i]);
+    teOffset[i] = new TimerEdit(this);
+    teOffset[i]->setProperty("index",i);
+    connect(teOffset[i],SIGNAL(editingFinished()),this,SLOT(onOffsetChanged()));
+    v2Layout->addWidget(teOffset[i]);
+    teOffset[i]->setVisible(false);
     tableLayout->addLayout(i, 3, v2Layout);
 
     // AND
-    cswitchAnd[i] = new QComboBox(this);
-    cswitchAnd[i]->setProperty("index", i);
-    populateAndSwitchCB(cswitchAnd[i]);
-    connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(andEdited(int)));
-    tableLayout->addWidget(i, 4, cswitchAnd[i]);
+    cbAndSwitch[i] = new QComboBox(this);
+    cbAndSwitch[i]->setProperty("index", i);
+    populateAndSwitchCB(cbAndSwitch[i]);
+    connect(cbAndSwitch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(onAndSwitchChanged(int)));
+    tableLayout->addWidget(i, 4, cbAndSwitch[i]);
 
-    if (firmware->getCapability(LogicalSwitchesExt)) {
+    if (lsCapabilityExt) {
       // Duration
-      cswitchDuration[i] = new QDoubleSpinBox(this);
-      cswitchDuration[i]->setProperty("index", i);
-      cswitchDuration[i]->setSingleStep(0.1);
-      cswitchDuration[i]->setMaximum(25);
-      cswitchDuration[i]->setMinimum(0);
-      cswitchDuration[i]->setAccelerated(true);
-      cswitchDuration[i]->setDecimals(1);
-      connect(cswitchDuration[i], SIGNAL(valueChanged(double)), this, SLOT(durationEdited(double)));
-      tableLayout->addWidget(i, 5, cswitchDuration[i]);
+      dsbDuration[i] = new QDoubleSpinBox(this);
+      dsbDuration[i]->setProperty("index", i);
+      dsbDuration[i]->setSingleStep(0.1);
+      dsbDuration[i]->setMaximum(25);
+      dsbDuration[i]->setMinimum(0);
+      dsbDuration[i]->setAccelerated(true);
+      dsbDuration[i]->setDecimals(1);
+      connect(dsbDuration[i], SIGNAL(valueChanged(double)), this, SLOT(onDurationChanged(double)));
+      tableLayout->addWidget(i, 5, dsbDuration[i]);
 
       // Delay
-      cswitchDelay[i] = new QDoubleSpinBox(this);
-      cswitchDelay[i]->setProperty("index", i);
-      cswitchDelay[i]->setSingleStep(0.1);
-      cswitchDelay[i]->setMaximum(25);
-      cswitchDelay[i]->setMinimum(0);
-      cswitchDelay[i]->setAccelerated(true);
-      cswitchDelay[i]->setDecimals(1);
-      connect(cswitchDelay[i], SIGNAL(valueChanged(double)), this, SLOT(delayEdited(double)));
-      tableLayout->addWidget(i, 6, cswitchDelay[i]);
+      dsbDelay[i] = new QDoubleSpinBox(this);
+      dsbDelay[i]->setProperty("index", i);
+      dsbDelay[i]->setSingleStep(0.1);
+      dsbDelay[i]->setMaximum(25);
+      dsbDelay[i]->setMinimum(0);
+      dsbDelay[i]->setAccelerated(true);
+      dsbDelay[i]->setDecimals(1);
+      connect(dsbDelay[i], SIGNAL(valueChanged(double)), this, SLOT(onDelayChanged(double)));
+      tableLayout->addWidget(i, 6, dsbDelay[i]);
     }
   }
 
@@ -155,7 +158,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   lock = false;
   update();
   tableLayout->resizeColumnsToContents();
-  tableLayout->pushRowsUp(firmware->getCapability(LogicalSwitches)+1);
+  tableLayout->pushRowsUp(lsCapability+1);
   s1.report("end");
 }
 
@@ -172,10 +175,10 @@ void LogicalSwitchesPanel::updateDataModels()
   lock = oldLock;
 }
 
-void LogicalSwitchesPanel::functionChanged()
+void LogicalSwitchesPanel::onFunctionChanged()
 {
   int i = sender()->property("index").toInt();
-  unsigned newFunc = csw[i]->currentData().toUInt();
+  unsigned newFunc = cbFunction[i]->currentData().toUInt();
 
   if (model->logicalSw[i].func == newFunc)
     return;
@@ -204,13 +207,13 @@ void LogicalSwitchesPanel::functionChanged()
   emit modified();
 }
 
-void LogicalSwitchesPanel::v1Edited(int value)
+void LogicalSwitchesPanel::onV1Changed(int value)
 {
   if (!lock) {
     int i = sender()->property("index").toInt();
-    model->logicalSw[i].val1 = cswitchSource1[i]->itemData(value).toInt();
+    model->logicalSw[i].val1 = cbSource1[i]->itemData(value).toInt();
     if (model->logicalSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
-      if (!offsetEditedAt(i))
+      if (!offsetChangedAt(i))
         updateLine(i);
     }
     else {
@@ -219,25 +222,25 @@ void LogicalSwitchesPanel::v1Edited(int value)
   }
 }
 
-void LogicalSwitchesPanel::v2Edited(int value)
+void LogicalSwitchesPanel::onV2Changed(int value)
 {
   if (!lock) {
     int i = sender()->property("index").toInt();
-    model->logicalSw[i].val2 = cswitchSource2[i]->itemData(value).toInt();
+    model->logicalSw[i].val2 = cbSource2[i]->itemData(value).toInt();
     emit modified();
   }
 }
 
-void LogicalSwitchesPanel::andEdited(int value)
+void LogicalSwitchesPanel::onAndSwitchChanged(int value)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-    model->logicalSw[index].andsw = cswitchAnd[index]->itemData(value).toInt();
+    model->logicalSw[index].andsw = cbAndSwitch[index]->itemData(value).toInt();
     emit modified();
   }
 }
 
-void LogicalSwitchesPanel::durationEdited(double duration)
+void LogicalSwitchesPanel::onDurationChanged(double duration)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
@@ -246,7 +249,7 @@ void LogicalSwitchesPanel::durationEdited(double duration)
   }
 }
 
-void LogicalSwitchesPanel::delayEdited(double delay)
+void LogicalSwitchesPanel::onDelayChanged(double delay)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
@@ -255,12 +258,12 @@ void LogicalSwitchesPanel::delayEdited(double delay)
   }
 }
 
-void LogicalSwitchesPanel::offsetEdited()
+void LogicalSwitchesPanel::onOffsetChanged()
 {
-  offsetEditedAt(sender()->property("index").toInt());
+  offsetChangedAt(sender()->property("index").toInt());
 }
 
-bool LogicalSwitchesPanel::offsetEditedAt(int index)
+bool LogicalSwitchesPanel::offsetChangedAt(int index)
 {
   if (lock)
     return false;
@@ -275,7 +278,7 @@ bool LogicalSwitchesPanel::offsetEditedAt(int index)
     {
       RawSource source = RawSource(model->logicalSw[index].val1);
       RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[index].getRangeFlags());
-      double currVal = source.isTimeBased() ? cswitchTOffset[index]->timeInSeconds() : cswitchOffset[index]->value();
+      double currVal = source.isTimeBased() ? teOffset[index]->timeInSeconds() : dsbOffset[index]->value();
       value = round((currVal - range.offset) / range.step);
       mod = (mod || value != model->logicalSw[index].val2);
       model->logicalSw[index].val2 = value;
@@ -283,22 +286,22 @@ bool LogicalSwitchesPanel::offsetEditedAt(int index)
     }
 
     case LS_FAMILY_TIMER:
-      value = TimToVal(cswitchValue[index]->value());
+      value = TimToVal(dsbValue[index]->value());
       mod = (mod || value != model->logicalSw[index].val1);
       model->logicalSw[index].val1 = value;
-      value = TimToVal(cswitchOffset[index]->value());
+      value = TimToVal(dsbOffset[index]->value());
       mod = (mod || value != model->logicalSw[index].val2);
       model->logicalSw[index].val2 = value;
       break;
 
     case LS_FAMILY_EDGE:
-      if (sender() == cswitchOffset[index]) {
-        value = TimToVal(cswitchOffset[index]->value());
+      if (sender() == dsbOffset[index]) {
+        value = TimToVal(dsbOffset[index]->value());
         mod = (mod || value != model->logicalSw[index].val2);
         model->logicalSw[index].val2 = value;
       }
       else {
-        value = TimToVal(cswitchOffset2[index]->value()) - model->logicalSw[index].val2;
+        value = TimToVal(dsbOffset2[index]->value()) - model->logicalSw[index].val2;
         mod = (mod || value != model->logicalSw[index].val3);
         model->logicalSw[index].val3 = value;
       }
@@ -347,8 +350,8 @@ void LogicalSwitchesPanel::updateLine(int i)
   lock = true;
   unsigned int mask;
 
-  csw[i]->setCurrentIndex(csw[i]->findData(model->logicalSw[i].func));
-  cswitchAnd[i]->setCurrentIndex(cswitchAnd[i]->findData(RawSwitch(model->logicalSw[i].andsw).toValue()));
+  cbFunction[i]->setCurrentIndex(cbFunction[i]->findData(model->logicalSw[i].func));
+  cbAndSwitch[i]->setCurrentIndex(cbAndSwitch[i]->findData(RawSwitch(model->logicalSw[i].andsw).toValue()));
 
   if (!model->logicalSw[i].func) {
     mask = 0;
@@ -364,27 +367,27 @@ void LogicalSwitchesPanel::updateLine(int i)
         RawSource source = RawSource(model->logicalSw[i].val1);
         RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[i].getRangeFlags());
         double value = range.step * model->logicalSw[i].val2 + range.offset;  /* TODO+source.getRawOffset(model)*/
-        cswitchSource1[i]->setModel(rawSourceItemModel);
-        cswitchSource1[i]->setCurrentIndex(cswitchSource1[i]->findData(source.toValue()));
+        cbSource1[i]->setModel(rawSourceItemModel);
+        cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(source.toValue()));
         if (source.isTimeBased()) {
           mask |= VALUE_TO_VISIBLE;
-          cswitchTOffset[i]->setTimeRange(range.min, range.max);
-          cswitchTOffset[i]->setSingleStep(range.step);
-          cswitchTOffset[i]->setPageStep(range.step * 60);
-          cswitchTOffset[i]->setShowSeconds(range.step != 60);
-          cswitchTOffset[i]->setTime((int)value);
+          teOffset[i]->setTimeRange(range.min, range.max);
+          teOffset[i]->setSingleStep(range.step);
+          teOffset[i]->setPageStep(range.step * 60);
+          teOffset[i]->setShowSeconds(range.step != 60);
+          teOffset[i]->setTime((int)value);
         }
         else {
           mask |= VALUE2_VISIBLE;
           if (range.unit.isEmpty())
-            cswitchOffset[i]->setSuffix("");
+            dsbOffset[i]->setSuffix("");
           else
-            cswitchOffset[i]->setSuffix(" " + range.unit);
-          cswitchOffset[i]->setDecimals(range.decimals);
-          cswitchOffset[i]->setMinimum(range.min);
-          cswitchOffset[i]->setMaximum(range.max);
-          cswitchOffset[i]->setSingleStep(range.step);
-          cswitchOffset[i]->setValue(value);
+            dsbOffset[i]->setSuffix(" " + range.unit);
+          dsbOffset[i]->setDecimals(range.decimals);
+          dsbOffset[i]->setMinimum(range.min);
+          dsbOffset[i]->setMaximum(range.max);
+          dsbOffset[i]->setSingleStep(range.step);
+          dsbOffset[i]->setValue(value);
         }
 
         break;
@@ -393,58 +396,58 @@ void LogicalSwitchesPanel::updateLine(int i)
       case LS_FAMILY_STICKY:  // no break
       case LS_FAMILY_VBOOL:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-        cswitchSource1[i]->setModel(rawSwitchItemModel);
-        cswitchSource1[i]->setCurrentIndex(cswitchSource1[i]->findData(model->logicalSw[i].val1));
-        cswitchSource2[i]->setModel(rawSwitchItemModel);
-        cswitchSource2[i]->setCurrentIndex(cswitchSource2[i]->findData(model->logicalSw[i].val2));
+        cbSource1[i]->setModel(rawSwitchItemModel);
+        cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
+        cbSource2[i]->setModel(rawSwitchItemModel);
+        cbSource2[i]->setCurrentIndex(cbSource2[i]->findData(model->logicalSw[i].val2));
         break;
 
       case LS_FAMILY_EDGE:
         mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
         mask &= ~DELAY_ENABLED;
-        cswitchSource1[i]->setModel(rawSwitchItemModel);
-        cswitchSource1[i]->setCurrentIndex(cswitchSource1[i]->findData(model->logicalSw[i].val1));
-        updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
-        updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
-        cswitchOffset2[i]->setSuffix((model->logicalSw[i].val3) ? "" : tr(" (infinite)"));
+        cbSource1[i]->setModel(rawSwitchItemModel);
+        cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
+        updateTimerParam(dsbOffset[i], model->logicalSw[i].val2, 0.0);
+        updateTimerParam(dsbOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(dsbOffset[i]->value())-1));
+        dsbOffset2[i]->setSuffix((model->logicalSw[i].val3) ? "" : tr(" (infinite)"));
         break;
 
       case LS_FAMILY_VCOMP:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-        cswitchSource1[i]->setModel(rawSourceItemModel);
-        cswitchSource1[i]->setCurrentIndex(cswitchSource1[i]->findData(model->logicalSw[i].val1));
-        cswitchSource2[i]->setModel(rawSourceItemModel);
-        cswitchSource2[i]->setCurrentIndex(cswitchSource2[i]->findData(model->logicalSw[i].val2));
+        cbSource1[i]->setModel(rawSourceItemModel);
+        cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
+        cbSource2[i]->setModel(rawSourceItemModel);
+        cbSource2[i]->setCurrentIndex(cbSource2[i]->findData(model->logicalSw[i].val2));
         break;
 
       case LS_FAMILY_TIMER:
         mask |= VALUE1_VISIBLE | VALUE2_VISIBLE;
-        updateTimerParam(cswitchValue[i], model->logicalSw[i].val1, 0.1);
-        updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.1);
+        updateTimerParam(dsbValue[i], model->logicalSw[i].val1, 0.1);
+        updateTimerParam(dsbOffset[i], model->logicalSw[i].val2, 0.1);
         break;
     }
   }
 
-  cswitchSource1[i]->setVisible(mask & SOURCE1_VISIBLE);
-  cswitchSource2[i]->setVisible(mask & SOURCE2_VISIBLE);
-  cswitchValue[i]->setVisible(mask & VALUE1_VISIBLE);
-  cswitchOffset[i]->setVisible(mask & VALUE2_VISIBLE);
-  cswitchOffset2[i]->setVisible(mask & VALUE3_VISIBLE);
-  cswitchTOffset[i]->setVisible(mask & VALUE_TO_VISIBLE);
-  cswitchAnd[i]->setVisible(mask & LINE_ENABLED);
-  if (firmware->getCapability(LogicalSwitchesExt)) {
-    cswitchDuration[i]->setVisible(mask & DURATION_ENABLED);
-    cswitchDelay[i]->setVisible(mask & DELAY_ENABLED);
+  cbSource1[i]->setVisible(mask & SOURCE1_VISIBLE);
+  cbSource2[i]->setVisible(mask & SOURCE2_VISIBLE);
+  dsbValue[i]->setVisible(mask & VALUE1_VISIBLE);
+  dsbOffset[i]->setVisible(mask & VALUE2_VISIBLE);
+  dsbOffset2[i]->setVisible(mask & VALUE3_VISIBLE);
+  teOffset[i]->setVisible(mask & VALUE_TO_VISIBLE);
+  cbAndSwitch[i]->setVisible(mask & LINE_ENABLED);
+  if (lsCapabilityExt) {
+    dsbDuration[i]->setVisible(mask & DURATION_ENABLED);
+    dsbDelay[i]->setVisible(mask & DELAY_ENABLED);
     if (mask & DURATION_ENABLED)
-      cswitchDuration[i]->setValue(model->logicalSw[i].duration/10.0);
+      dsbDuration[i]->setValue(model->logicalSw[i].duration/10.0);
     if (mask & DELAY_ENABLED)
-      cswitchDelay[i]->setValue(model->logicalSw[i].delay/10.0);
+      dsbDelay[i]->setValue(model->logicalSw[i].delay/10.0);
   }
 
   lock = false;
 }
 
-void LogicalSwitchesPanel::populateCSWCB(QComboBox *b)
+void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
 {
   int order[] = {
     LS_FN_OFF,
@@ -514,63 +517,150 @@ void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b)
 void LogicalSwitchesPanel::update()
 {
   updateDataModels();
-  for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
+  for (int i=0; i<lsCapability; i++) {
     updateLine(i);
   }
 }
 
-void LogicalSwitchesPanel::cswPaste()
+void LogicalSwitchesPanel::cmPaste()
 {
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-  if (mimeData->hasFormat("application/x-companion-csw")) {
-    QByteArray cswData = mimeData->data("application/x-companion-csw");
-    LogicalSwitchData *csw = &model->logicalSw[selectedSwitch];
-    memcpy(csw, cswData.constData(), sizeof(LogicalSwitchData));
-    update();
+  QByteArray data;
+  if (hasClipboardData(&data)) {
+    memcpy(&model->logicalSw[selectedIndex], data.constData(), sizeof(LogicalSwitchData));
+    updateDataModels();
+    updateLine(selectedIndex);
     emit modified();
   }
 }
 
-void LogicalSwitchesPanel::cswDelete()
+void LogicalSwitchesPanel::cmDelete()
 {
-  model->logicalSw[selectedSwitch].clear();
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Logical Switch. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
+  memmove(&model->logicalSw[selectedIndex], &model->logicalSw[selectedIndex + 1], (CPN_MAX_LOGICAL_SWITCHES - (selectedIndex + 1)) * sizeof(LogicalSwitchData));
+  model->logicalSw[lsCapability - 1].clear();
+
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
+  update();
   emit modified();
-  updateLine(selectedSwitch);
 }
 
-void LogicalSwitchesPanel::cswCopy()
+void LogicalSwitchesPanel::cmCopy()
 {
-  QByteArray cswData;
-  cswData.append((char*)&model->logicalSw[selectedSwitch],sizeof(LogicalSwitchData));
+  QByteArray data;
+  data.append((char*)&model->logicalSw[selectedIndex], sizeof(LogicalSwitchData));
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData("application/x-companion-csw", cswData);
+  mimeData->setData(MIMETYPE_LOGICAL_SWITCH, data);
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
-void LogicalSwitchesPanel::cswCut()
+void LogicalSwitchesPanel::cmCut()
 {
-  cswCopy();
-  cswDelete();
+  cmCopy();
+  cmClear();
 }
 
 // TODO make something generic here!
-void LogicalSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
+void LogicalSwitchesPanel::onCustomContextMenuRequested(QPoint pos)
 {
-    QLabel *label = (QLabel *)sender();
-    selectedSwitch = label->property("index").toInt();
+  QLabel *label = (QLabel *)sender();
+  selectedIndex = label->property("index").toInt();
+  QPoint globalPos = label->mapToGlobal(pos);
 
-    QPoint globalPos = label->mapToGlobal(pos);
+  QMenu contextMenu;
+  contextMenu.addAction(CompanionIcon("copy.png"), tr("Copy"),this,SLOT(cmCopy()));
+  contextMenu.addAction(CompanionIcon("cut.png"), tr("Cut"),this,SLOT(cmCut()));
+  contextMenu.addAction(CompanionIcon("paste.png"), tr("Paste"),this,SLOT(cmPaste()))->setEnabled(hasClipboardData());
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear"),this,SLOT(cmClear()));
+  contextMenu.addSeparator();
+  contextMenu.addAction(CompanionIcon("arrow-right.png"), tr("Insert"),this,SLOT(cmInsert()))->setEnabled(insertAllowed());
+  contextMenu.addAction(CompanionIcon("arrow-left.png"), tr("Delete"),this,SLOT(cmDelete()));
+  contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(cmMoveUp()))->setEnabled(moveUpAllowed());
+  contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(cmMoveDown()))->setEnabled(moveDownAllowed());
+  contextMenu.addSeparator();
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(cmClearAll()));
 
-    const QClipboard * clipboard = QApplication::clipboard();
-    const QMimeData * mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion-csw");
+  contextMenu.exec(globalPos);
+}
 
-    QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(cswCopy()));
-    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(cswCut()));
-    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(cswPaste()))->setEnabled(hasData);
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(cswDelete()));
+bool LogicalSwitchesPanel::hasClipboardData(QByteArray * data) const
+{
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  if (mimeData->hasFormat(MIMETYPE_LOGICAL_SWITCH)) {
+    if (data)
+      data->append(mimeData->data(MIMETYPE_LOGICAL_SWITCH));
+    return true;
+  }
+  return false;
+}
 
-    contextMenu.exec(globalPos);
+bool LogicalSwitchesPanel::insertAllowed() const
+{
+  return ((selectedIndex < lsCapability - 1) && (model->logicalSw[lsCapability - 1].isEmpty()));
+}
+
+bool LogicalSwitchesPanel::moveDownAllowed() const
+{
+  return selectedIndex < lsCapability - 1;
+}
+
+bool LogicalSwitchesPanel::moveUpAllowed() const
+{
+  return selectedIndex > 0;
+}
+
+void LogicalSwitchesPanel::cmMoveUp()
+{
+  swapData(selectedIndex, selectedIndex - 1);
+}
+
+void LogicalSwitchesPanel::cmMoveDown()
+{
+  swapData(selectedIndex, selectedIndex + 1);
+}
+
+void LogicalSwitchesPanel::cmClear()
+{
+  model->logicalSw[selectedIndex].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
+  update();
+  emit modified();
+}
+
+void LogicalSwitchesPanel::cmClearAll()
+{
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Logical Switches. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
+  for (int i=0; i<lsCapability; i++) {
+    model->logicalSw[i].clear();
+    model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, i);
+  }
+  update();
+  emit modified();
+}
+
+void LogicalSwitchesPanel::cmInsert()
+{
+  memmove(&model->logicalSw[selectedIndex + 1], &model->logicalSw[selectedIndex], (CPN_MAX_LOGICAL_SWITCHES - (selectedIndex + 1)) * sizeof(LogicalSwitchData));
+  model->logicalSw[selectedIndex].clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
+  update();
+  emit modified();
+}
+
+void LogicalSwitchesPanel::swapData(int idx1, int idx2)
+{
+  if ((idx1 != idx2) && (!model->logicalSw[idx1].isEmpty() || !model->logicalSw[idx2].isEmpty())) {
+    LogicalSwitchData lstmp = model->logicalSw[idx2];
+    LogicalSwitchData *lsw1 = &model->logicalSw[idx1];
+    LogicalSwitchData *lsw2 = &model->logicalSw[idx2];
+    memcpy(lsw2, lsw1, sizeof(LogicalSwitchData));
+    memcpy(lsw1, &lstmp, sizeof(LogicalSwitchData));
+    model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
+    update();
+    emit modified();
+  }
 }

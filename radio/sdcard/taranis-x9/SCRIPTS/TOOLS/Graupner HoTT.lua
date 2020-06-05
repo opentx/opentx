@@ -21,17 +21,39 @@
 -- To start operation:
 --   Write "HoTT" at address 0..3
 --   Write 0xFF at address 4 will request the buffer to be cleared
---   Write 0xDF at address 5
+--   Write 0x0F at address 5
 -- Read buffer from address 6 access the RX text for 168 bytes, 21 caracters
 --    by 8 lines
--- Write at address 5 sends an order to the RX: 0xDF=start, 0xD7=prev page,
---    0xDE=next page, 0xD9=enter, 0xDD=next or 0xDB=prev
+-- Write at address 5 sends an order to the RX: 0xXF=start, 0xX7=prev page,
+--    0xXE=next page, 0xX9=enter, 0xXD=next or 0xXB=prev with X being the sensor
+--    to request data from 8=RX only, 9=Vario, A=GPS, B=Cust, C=ESC, D=GAM, E=EAM
 -- Write at address 4 the value 0xFF will request the buffer to be cleared
 -- !! Before exiting the script must write 0 at address 0 for normal operation !!
 --###############################################################################
 
+HoTT_Sensor = 0
+Timer_128 = 100
+
 local function HoTT_Release()
   multiBuffer( 0, 0 )
+end
+
+local function HoTT_Send(button)
+  multiBuffer( 5, 0x80+(HoTT_Sensor*16) + button)
+end
+
+local function HoTT_Sensor_Inc()
+  local detected_sensors=multiBuffer( 4 )
+  local a
+  if detected_sensors ~= 0xFF then
+    repeat
+        HoTT_Sensor=(HoTT_Sensor+1)%7	-- Switch to next sensor
+        if HoTT_Sensor ~= 0 then
+          a = math.floor(detected_sensors/ (2^(HoTT_Sensor-1))) -- shift right
+        end
+    until HoTT_Sensor==0 or a % 2 == 1
+    HoTT_Send( 0x0F )
+  end
 end
 
 local function HoTT_Draw_LCD()
@@ -41,12 +63,14 @@ local function HoTT_Draw_LCD()
   local result
   local offset=0
   
+  local sensor_name = { "", "+Vario", "+GPS", "+Cust", "+ESC", "+GAM", "+EAM" }
+
   lcd.clear()
 
   if LCD_W == 480 then
     --Draw title
     lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
-    lcd.drawText(1, 5, "Graupner HoTT RX configuration", MENU_TITLE_COLOR)
+    lcd.drawText(1, 5, "Graupner HoTT: config RX" .. sensor_name[HoTT_Sensor+1] .. " - Menu cycle Sensors", MENU_TITLE_COLOR)
     --Draw RX Menu
     if multiBuffer( 4 ) == 0xFF then
       lcd.drawText(10,50,"No HoTT telemetry...", BLINK)
@@ -56,9 +80,9 @@ local function HoTT_Draw_LCD()
           value=multiBuffer( line*21+6+i )
           if value > 0x80 then
             value = value - 0x80
-            lcd.drawText(10+i*16,32+16*line,string.char(value).."   ",INVERS)
+            lcd.drawText(10+i*16,32+20*line,string.char(value).."   ",INVERS)
           else
-            lcd.drawText(10+i*16,32+16*line,string.char(value))
+            lcd.drawText(10+i*16,32+20*line,string.char(value))
           end
         end
       end
@@ -68,14 +92,23 @@ local function HoTT_Draw_LCD()
     if multiBuffer( 4 ) == 0xFF then
       lcd.drawText(2,17,"No HoTT telemetry...",SMLSIZE)
     else
-      for line = 0, 7, 1 do
-        for i = 0, 21-1, 1 do
-          value=multiBuffer( line*21+6+i )
-          if value > 0x80 then
-            value = value - 0x80
-            lcd.drawText(2+i*6,1+8*line,string.char(value).." ",SMLSIZE+INVERS)
-          else
-            lcd.drawText(2+i*6,1+8*line,string.char(value),SMLSIZE)
+      if Timer_128 ~= 0 then
+        --Intro page
+        Timer_128 = Timer_128 - 1
+        lcd.drawScreenTitle("Graupner Hott",0,0)
+        lcd.drawText(2,17,"Configuration of RX" .. sensor_name[HoTT_Sensor+1] ,SMLSIZE)
+        lcd.drawText(2,37,"Press menu to cycle Sensors" ,SMLSIZE)
+      else
+        --Menu page
+        for line = 0, 7, 1 do
+          for i = 0, 21-1, 1 do
+            value=multiBuffer( line*21+6+i )
+            if value > 0x80 then
+              value = value - 0x80
+              lcd.drawText(2+i*6,1+8*line,string.char(value).." ",SMLSIZE+INVERS)
+            else
+              lcd.drawText(2+i*6,1+8*line,string.char(value),SMLSIZE)
+            end
           end
         end
       end
@@ -98,7 +131,10 @@ local function HoTT_Init()
   --Request init of the RX buffer
   multiBuffer( 4, 0xFF )
   --Request RX to send the config menu
-  multiBuffer( 5, 0xDF )
+  HoTT_Send( 0x0F )
+  HoTT_Sensor = 0;
+  HoTT_Detected_Sensors=0;
+  Timer_128 = 100
 end
 
 -- Main
@@ -111,18 +147,21 @@ local function HoTT_Run(event)
     return 2
   else
     if event == EVT_VIRTUAL_PREV_PAGE then
-      killEvents(event);
-      multiBuffer( 5, 0xD7 )
-    elseif event == EVT_VIRTUAL_NEXT_PAGE then
-      multiBuffer( 5, 0xDE )
+      killEvents(event)
+      HoTT_Send( 0x07 )
     elseif event == EVT_VIRTUAL_ENTER then
-      multiBuffer( 5, 0xD9 )
-    elseif event == EVT_VIRTUAL_NEXT then
-      multiBuffer( 5, 0xDD )
+      HoTT_Send( 0x09 )
     elseif event == EVT_VIRTUAL_PREV then
-      multiBuffer( 5, 0xDB )
+      HoTT_Send( 0x0B )
+    elseif event == EVT_VIRTUAL_NEXT then
+      HoTT_Send( 0x0D )
+    elseif event == EVT_VIRTUAL_NEXT_PAGE then
+      HoTT_Send( 0x0E )
+    elseif event == EVT_VIRTUAL_MENU then
+      Timer_128 = 100
+      HoTT_Sensor_Inc()
     else
-      multiBuffer( 5, 0xDF )
+      HoTT_Send( 0x0F )
     end
     HoTT_Draw_LCD()
     return 0

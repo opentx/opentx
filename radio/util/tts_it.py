@@ -14,9 +14,9 @@ systemSounds.append(("mila", filename(101)))
 systemSounds.append(("mille", filename(102)))
 for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
     systemSounds.append((s, filename(103 + i)))
-for i, (s, f) in enumerate([("volt", "volt0"),
-                            ("ampere", "amp0"),
-                            ("milliampere", "mamp0"),
+for i, (s, f) in enumerate([("volt", "volt0"),("volt", "volt1"),
+                            ("ampere", "amp0"),("ampere", "amp1"),
+                            ("milliampere", "mamp0"),("milliampere", "mamp1"),
                             ("nodo", "knot0"), ("nodi", "knot1"),
                             ("metri al secondo", "mps0"), ("metri al secondo", "msp1"),
                             ("piedi al secondo", "fps0"), ("piedi al secondo", "fps1"),

@@ -837,7 +837,7 @@
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Chyba zápisu FW", "Chyba zápisu firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Úspěšný zápis FW"
-#define TR_WRITING                     TR3("\14Zapisuji..", "\032Zapisuji..", "Zapisuji..")
+#define TR_WRITING                     "Zapisuji.."
 #define TR_CONFIRM_FORMAT              "Provést Formát?"
 #define TR_INTERNALRF                  "Interní RF modul"
 #define TR_INTERNAL_MODULE             "Interní modul"
@@ -982,6 +982,7 @@
 #define TR_CHECKLIST                   TR(INDENT "Poznámky", INDENT "Zobrazit poznámky")
 #define TR_FAS_OFFSET                  TR(INDENT "FAS Ofs", INDENT "FAS Ofset")
 #define TR_AUX_SERIAL_MODE             "Seriový port"
+#define TR_AUX2_SERIAL_MODE            "Seriový port 2"
 #define TR_SCRIPT                      "Skript"
 #define TR_INPUTS                      "Vstupy"
 #define TR_OUTPUTS                     "Výstupy"
@@ -1193,7 +1194,7 @@
 #define TR_RTC_CHECK                   TR("Check RTC", "Check RTC voltage")
 #define TR_AUTH_FAILURE                "Auth-failure"
 
-#define ZSTR_FLR                       "FLR"
+#define ZSTR_VFR                       "VFR"
 #define ZSTR_RSSI                      "RSSI"
 #define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS                       "SWR"

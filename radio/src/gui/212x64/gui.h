@@ -229,7 +229,6 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
 
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
-extern uint8_t s_curveChan;
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 
 extern uint8_t editNameCursorPos;
@@ -247,6 +246,7 @@ extern uint8_t s_copyMode;
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
+extern uint8_t s_currIdxSubMenu;
 extern uint8_t s_maxLines;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;

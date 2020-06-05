@@ -329,10 +329,10 @@ PACK(struct TelemetrySensor {
     NOBACKUP(uint16_t persistentValue);
   };
   union {
-    PACK(struct {
+    NOBACKUP(PACK(struct {
       uint8_t physID:5;
       uint8_t rxIndex:3; // 1 bit for module index, 2 bits for receiver index
-    }) frskyInstance;
+    }) frskyInstance);
     uint8_t instance;
     NOBACKUP(uint8_t formula);
   };
@@ -666,7 +666,8 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t auxSerialMode); \
+    NOBACKUP(uint8_t auxSerialMode:4); \
+    NOBACKUP(uint8_t aux2SerialMode:4); \
     swconfig_t switchConfig; \
     uint16_t potsConfig; /* two bits per pot */ \
     uint8_t slidersConfig; /* 1 bit per slider */ \

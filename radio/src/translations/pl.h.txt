@@ -857,9 +857,9 @@
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING             "\032Zapis...  "
-#define TR_CONFIRM_FORMAT      "Zatwierdź Format?"
-#define TR_INTERNALRF          "Wewn.Moduł RF"
+#define TR_WRITING                     "Zapis...  "
+#define TR_CONFIRM_FORMAT              "Zatwierdź Format?"
+#define TR_INTERNALRF                  "Wewn.Moduł RF"
 #define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
 #define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
@@ -1001,7 +1001,8 @@
 #define TR_PREFLIGHT           "Lista Ostrzeżeń"
 #define TR_CHECKLIST           TR(INDENT "Czeklista",INDENT "Pokaż Listę Ostrzeżeń")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_AUX_SERIAL_MODE           "Port szreg."
+#define TR_AUX_SERIAL_MODE     "Port szreg."
+#define TR_AUX2_SERIAL_MODE    "Port szreg. 2"
 #define TR_SCRIPT              "Skrypt"
 #define TR_INPUTS              "Wejścia"
 #define TR_OUTPUTS             "Wyjścia"
@@ -1213,7 +1214,7 @@
 #define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
 #define TR_AUTH_FAILURE                "Auth-failure"
 
-#define ZSTR_FLR               "FLR"
+#define ZSTR_VFR               "VFR"
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"

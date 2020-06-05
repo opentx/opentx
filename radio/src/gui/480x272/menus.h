@@ -437,8 +437,6 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, event_t event, uin
 uint8_t editDelay(coord_t x, coord_t y, event_t event, uint8_t attr, uint8_t delay);
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 
-extern uint8_t s_curveChan;
-
 enum
 {
   WARNING_TYPE_WAIT,
@@ -461,6 +459,7 @@ extern uint8_t s_copyMode;
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
+extern uint8_t s_currIdxSubMenu;
 extern int8_t s_currCh;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;

@@ -201,7 +201,7 @@ bool menuModelLimits(event_t event)
         case ITEM_LIMITS_CURVE:
           drawCurveName(LIMITS_CURVE_POS, y, ld->curve, attr);
           if (attr && event==EVT_KEY_LONG(KEY_ENTER) && ld->curve>0) {
-            s_curveChan = (ld->curve<0 ? -ld->curve-1 : ld->curve-1);
+            s_currIdxSubMenu = (ld->curve<0 ? -ld->curve-1 : ld->curve-1);
             pushMenu(menuModelCurveOne);
           }
           if (active) {

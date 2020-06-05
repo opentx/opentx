@@ -33,7 +33,12 @@ enum FrSkyDataState {
   STATE_DATA_XOR,
 };
 
-#define FRSKY_SPORT_BAUDRATE      57600
+#define FRSKY_SPORT_BAUDRATE          57600
+#if defined(RADIO_TX16S)
+#define FRSKY_TELEM_MIRROR_BAUDRATE   115200
+#else
+#define FRSKY_TELEM_MIRROR_BAUDRATE   FRSKY_SPORT_BAUDRATE
+#endif
 
 #define FRSKY_D_BAUDRATE          9600
 
@@ -187,7 +192,7 @@ enum FrSkyDataState {
 #define DIY_STREAM_FIRST_ID       0x5000
 #define DIY_STREAM_LAST_ID        0x50FF
 #define FACT_TEST_ID              0xF000
-#define FRAME_LOSS_RATE_ID        0xF010
+#define VALID_FRAME_RATE_ID       0xF010
 #define RSSI_ID                   0xF101
 #define ADC1_ID                   0xF102
 #define ADC2_ID                   0xF103

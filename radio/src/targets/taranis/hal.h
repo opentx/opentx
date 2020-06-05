@@ -1323,6 +1323,11 @@
   #define AUX_SERIAL_DMA_Channel_RX         DMA_Channel_4
 #endif
 
+// No aux2 on taranis
+#define AUX2_SERIAL_RCC_AHB1Periph           0
+#define AUX2_SERIAL_RCC_APB1Periph           0
+#define AUX2_SERIAL_RCC_APB2Periph           0
+
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2

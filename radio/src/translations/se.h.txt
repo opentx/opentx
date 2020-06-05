@@ -857,9 +857,9 @@
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING             "\032Skriver..."
-#define TR_CONFIRM_FORMAT      "Formatera Minnet?"
-#define TR_INTERNALRF          "Intern Radio"
+#define TR_WRITING                     "Skriver..."
+#define TR_CONFIRM_FORMAT              "Formatera Minnet?"
+#define TR_INTERNALRF                  "Intern Radio"
 #define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
 #define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
@@ -1001,7 +1001,8 @@
 #define TR_PREFLIGHT           "Startkontroller"
 #define TR_CHECKLIST           TR(INDENT "Checklista", INDENT "Visa Checklista")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_AUX_SERIAL_MODE           "Serieporten"
+#define TR_AUX_SERIAL_MODE     "Serieporten"
+#define TR_AUX2_SERIAL_MODE    "Serieporten 2"
 #define TR_SCRIPT              "Programkod"
 #define TR_INPUTS              "Input"
 #define TR_OUTPUTS             "Outputs"
@@ -1213,7 +1214,7 @@
 #define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
 #define TR_AUTH_FAILURE                "Auth-failure"
 
-#define ZSTR_FLR               "FLR"
+#define ZSTR_VFR               "VFR"
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"
