@@ -73,7 +73,11 @@ void menuModelFlightModeOne(event_t event)
 #endif
   static const uint8_t mstate_tab_others[]  = {0, 0, 3, 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
-  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_FLIGHT_MODE_MAX - HEADER_LINE - (s_currIdx==0 ? (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_SWITCH-1) : 0));
+#if defined(SKY9X) || defined(REVX) || defined(AR9X)
+  check(event, 0, NULL, 0, (s_currIdx==0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_FLIGHT_MODE_MAX-HEADER_LINE-1-(s_currIdx==0 ? (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_SWITCH-1) : 0));
+#else
+  check(event, 0, NULL, 0, (s_currIdx==0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_FLIGHT_MODE_MAX-HEADER_LINE-(s_currIdx==0 ? (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_SWITCH-1) : 0));
+#endif
 
   title(STR_MENUFLIGHTMODE);
 
