@@ -352,10 +352,10 @@ void runPopupRegister(event_t event)
 
     // loop index (will be removed in future)
     lcdDrawText(REGISTER_COLUMN_1, REGISTER_TOP + 8 + FH, "UID");
-    lcdDrawNumber(REGISTER_COLUMN_2, REGISTER_TOP + 8 + FH, reusableBuffer.moduleSetup.pxx2.registerLoopIndex, menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX ? (s_editMode ? INVERS + BLINK : INVERS) : 0);
     if (menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX && s_editMode) {
       CHECK_INCDEC_MODELVAR_ZERO(event, reusableBuffer.moduleSetup.pxx2.registerLoopIndex, 2);
     }
+    lcdDrawNumber(REGISTER_COLUMN_2, REGISTER_TOP + 8 + FH, reusableBuffer.moduleSetup.pxx2.registerLoopIndex, menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX ? (s_editMode ? INVERS : INVERS) : 0);
 
     // RX name
     if (reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED) {
