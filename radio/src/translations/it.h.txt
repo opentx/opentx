@@ -650,6 +650,7 @@
 #define TR_RECEIVER_NUM        TR("RxNum", "Ricevente N.")
 #define TR_RECEIVER            "Ricevente"
 #define TR_MULTI_RFTUNE        TR("Tune RF", "Tune fine Freq. RF")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY     "Telemetria"
 #define TR_MULTI_VIDFREQ       TR("Freq. video", "Frequenza video")
 #define TR_RFPOWER             "Potenza RF"

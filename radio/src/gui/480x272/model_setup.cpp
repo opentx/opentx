@@ -1656,7 +1656,10 @@ bool menuModelSetup(event_t event)
           if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
             optionValue = 50 + 5 * optionValue;
 
-          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
+          if (multi_proto == MODULE_SUBTYPE_MULTI_FRSKY_R9)
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_POWER, optionValue, LEFT | attr);
+          else
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
           if (attr) {
             int8_t min, max;
             getMultiOptionValues(multi_proto, min, max);

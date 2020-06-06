@@ -26,6 +26,7 @@
 #define STR_MULTI_SUBTYPE                    QT_TRANSLATE_NOOP("Multiprotocols", "Subtype")
 #define STR_MULTI_VIDFREQ                    QT_TRANSLATE_NOOP("Multiprotocols", "Video TX frequency")
 #define STR_MULTI_RFTUNE                     QT_TRANSLATE_NOOP("Multiprotocols", "CC2500 frequency fine tune")
+#define STR_MULTI_RFPOWER                    QT_TRANSLATE_NOOP("Multiprotocols", "RF power")
 #define STR_MULTI_TELEMETRY                  QT_TRANSLATE_NOOP("Multiprotocols", "Telemetry")
 #define STR_MULTI_RFPOWER                    QT_TRANSLATE_NOOP("Multiprotocols", "Radio output power")
 #define STR_MULTI_SERVOFREQ                  QT_TRANSLATE_NOOP("Multiprotocols", "Servo output frequency")
@@ -139,7 +140,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_XK,         1, false,      STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_XN297DUMP,  3, false,      STR_SUBTYPE_XN297DUMP, nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    4, true,       STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_FRSKY_R9,   3, true,       STR_SUBTYPE_FRSKYR9,   nullptr},
+  {MODULE_SUBTYPE_MULTI_FRSKY_R9,   3, true,       STR_SUBTYPE_FRSKYR9,   STR_MULTI_RFPOWER},
   {MODULE_SUBTYPE_MULTI_PROPEL,     0, false,      STR_SUBTYPE_PROPEL,    nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYL,     1, false,      STR_SUBTYPE_FRSKYL,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_SKYARTEC,   0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},

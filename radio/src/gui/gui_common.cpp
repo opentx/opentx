@@ -907,7 +907,8 @@ const char* mm_options_strings::options[] = {
   STR_MULTI_TELEMETRY,
   STR_MULTI_SERVOFREQ,
   STR_MULTI_MAX_THROW,
-  STR_MULTI_RFCHAN
+  STR_MULTI_RFCHAN,
+  STR_MULTI_RFPOWER
 };
 
 const mm_protocol_definition multi_protocols[] = {
@@ -960,7 +961,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_XK,         1, false, false,  STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_XN297DUMP,  3, false, false,  STR_SUBTYPE_XN297DUMP, STR_MULTI_RFCHAN},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    4, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_FRSKY_R9,   3, true,  false,  STR_SUBTYPE_FRSKYR9,   nullptr},
+  {MODULE_SUBTYPE_MULTI_FRSKY_R9,   3, true,  false,  STR_SUBTYPE_FRSKYR9,   STR_MULTI_RFPOWER},
   {MODULE_SUBTYPE_MULTI_PROPEL,     0, false, false,  STR_SUBTYPE_PROPEL,    nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYL,     1, false, false,  STR_SUBTYPE_FRSKYL,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_SKYARTEC,   0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},

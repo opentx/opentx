@@ -631,6 +631,7 @@
   #define TR_RECEIVER_NUM                TR("Empf Nr.", "Empfänger Nummer")
   #define TR_RECEIVER                    "Empfänger"
 #define TR_MULTI_RFTUNE        			TR(INDENT "RF Freq.", INDENT "RF Freq. Feintuning")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ       			TR(INDENT "Vid. Freq.", INDENT "Video Frequenz")
 #define TR_RFPOWER              		"RF Power"
