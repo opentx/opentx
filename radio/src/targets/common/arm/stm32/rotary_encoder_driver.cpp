@@ -71,19 +71,7 @@ void rotaryEncoderInit()
 
 void rotaryEncoderCheck()
 {
-#if defined(RADIO_T18)
-  static rotenc_t rotenc = 0;
-  uint8_t newPosition = ROTARY_ENCODER_POSITION();
-  if (newPosition != rotencPosition && !(readKeys() & (1 << KEY_ENTER))) {
-    if ((rotencPosition & 0x01) ^ ((newPosition & 0x02) >> 1)) {
-      --rotenc;
-    }
-    else {
-      ++rotenc;
-    }
-    rotencValue = rotenc >> 1;
-    rotencPosition = newPosition;
-#elif defined(RADIO_FAMILY_T16)
+#if defined(RADIO_FAMILY_T16) && !defined(RADIO_T18)
   static uint8_t  state = 0;
   uint8_t pins = ROTARY_ENCODER_POSITION();
 
