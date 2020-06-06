@@ -1660,21 +1660,31 @@ void instantTrim()
   evalInputs(e_perout_mode_notrainer);
 
   for (uint8_t stick=0; stick<NUM_STICKS; stick++) {
-    if (stick!=THR_STICK) {
-      // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightMode(mixerCurrentFlightMode, stick);
-      int16_t delta = 0;
-      for (int e=0; e<MAX_EXPOS; e++) {
-        ExpoData * ed = expoAddress(e);
-        if (!EXPO_VALID(ed)) break; // end of list
-        if (ed->srcRaw-MIXSRC_Rud == stick) {
-          delta = anas[ed->chn] - anas_0[ed->chn];
+
+    if (stick!=THR_STICK) { // don't instant trim the throttle stick
+      bool addTrim = true;
+      for (uint8_t i=0; i<MAX_INPUTS; i++) {
+        ExpoData * expo = expoAddress(i);
+        if (expo->carryTrim < 0 && stick == expo->srcRaw - MIXSRC_FIRST_STICK) {
+          addTrim = false;
           break;
         }
       }
-      if (abs(delta) >= INSTANT_TRIM_MARGIN) {
-        int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[stick]) / 2, TRIM_EXTENDED_MAX);
-        setTrimValue(trim_phase, stick, trim);
+      if (addTrim) { // instant trim only if trims are default (trim ON)
+        uint8_t trim_phase = getTrimFlightMode(mixerCurrentFlightMode, stick);
+        int16_t delta = 0;
+        for (int e=0; e<MAX_EXPOS; e++) {
+          ExpoData * ed = expoAddress(e);
+          if (!EXPO_VALID(ed)) break; // end of list
+          if (ed->srcRaw-MIXSRC_Rud == stick) {
+            delta = anas[ed->chn] - anas_0[ed->chn];
+            break;
+          }
+        }
+        if (abs(delta) >= INSTANT_TRIM_MARGIN) {
+          int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[stick]) / 2, TRIM_EXTENDED_MAX);
+          setTrimValue(trim_phase, stick, trim);
+        }
       }
     }
   }
