@@ -39,6 +39,7 @@ enum ModelDeleteMode {
 uint8_t selectMode, deleteMode;
 
 ModelsCategory * currentCategory;
+ModelsCategory * lasttCategory = nullptr;
 int currentCategoryIndex;
 ModelCell * currentModel;
 
@@ -246,6 +247,7 @@ void onModelSelectMenu(const char * result)
     // we store the latest changes if any
     storageFlushCurrentModel();
     storageCheck(true);
+    lasttCategory = currentCategory;
     memcpy(g_eeGeneral.currModelFilename, currentModel->modelFilename, LEN_MODEL_FILENAME);
     modelslist.setCurrentModel(currentModel);
     loadModel(g_eeGeneral.currModelFilename, true);
@@ -316,7 +318,7 @@ void initModelsList()
   int index = 0;
   const std::list<ModelsCategory *>& cats = modelslist.getCategories();
   for (std::list<ModelsCategory *>::const_iterator it = cats.begin(); it != cats.end(); ++it, ++index) {
-    if (*it == modelslist.getCurrentCategory()) {
+    if (*it == (lasttCategory == nullptr ? modelslist.getCurrentCategory() : lasttCategory)) {
       setCurrentCategory(index);
       found = true;
       break;
