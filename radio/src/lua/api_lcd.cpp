@@ -872,6 +872,99 @@ static int luaRGB(lua_State *L)
 }
 #endif
 
+//OW
+static int luaLcdDrawCircleQuarter(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  coord_t x0 = luaL_checkunsigned(L, 1);
+  coord_t y0 = luaL_checkunsigned(L, 2);
+  int16_t r = luaL_checkunsigned(L, 3);
+  uint8_t corners = luaL_checkunsigned(L, 4);
+  LcdFlags flags = luaL_checkunsigned(L, 5);
+  lcdDrawCircleQuarter(x0, y0, r, corners, flags);
+  return 0;
+}
+
+static int luaLcdDrawCircle(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  coord_t x0 = luaL_checkunsigned(L, 1);
+  coord_t y0 = luaL_checkunsigned(L, 2);
+  int16_t r = luaL_checkunsigned(L, 3);
+  LcdFlags flags = luaL_checkunsigned(L, 4);
+  lcdDrawCircleX(x0, y0, r, flags);
+  return 0;
+}
+
+static int luaLcdDrawFilledCircleQuarter(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  coord_t x0 = luaL_checkunsigned(L, 1);
+  coord_t y0 = luaL_checkunsigned(L, 2);
+  int16_t r = luaL_checkunsigned(L, 3);
+  uint8_t corners = luaL_checkunsigned(L, 4);
+  LcdFlags flags = luaL_checkunsigned(L, 5);
+  lcdFillCircleQuarter(x0, y0, r, corners, flags);
+  return 0;
+}
+
+static int luaLcdDrawFilledCircle(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  coord_t x0 = luaL_checkunsigned(L, 1);
+  coord_t y0 = luaL_checkunsigned(L, 2);
+  int16_t r = luaL_checkunsigned(L, 3);
+  LcdFlags flags = luaL_checkunsigned(L, 4);
+  lcdFillCircle(x0, y0, r, flags);
+  return 0;
+}
+
+static int luaLcdDrawFilledTriangle(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  coord_t x0 = luaL_checkunsigned(L, 1);
+  coord_t y0 = luaL_checkunsigned(L, 2);
+  coord_t x1 = luaL_checkunsigned(L, 3);
+  coord_t y1 = luaL_checkunsigned(L, 4);
+  coord_t x2 = luaL_checkunsigned(L, 5);
+  coord_t y2 = luaL_checkunsigned(L, 6);
+  LcdFlags flags = luaL_checkunsigned(L, 7);
+  lcdFillTriangle(x0, y0, x1, y1, x2, y2, flags);
+  return 0;
+}
+
+static int luaLcdDrawLineWithClipping(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  coord_t x1 = luaL_checkunsigned(L, 1);
+  coord_t y1 = luaL_checkunsigned(L, 2);
+  coord_t x2 = luaL_checkunsigned(L, 3);
+  coord_t y2 = luaL_checkunsigned(L, 4);
+  coord_t xmin = luaL_checkunsigned(L, 5);
+  coord_t xmax = luaL_checkunsigned(L, 6);
+  coord_t ymin = luaL_checkunsigned(L, 7);
+  coord_t ymax = luaL_checkunsigned(L, 8);
+  uint8_t pat = luaL_checkunsigned(L, 9);
+  LcdFlags flags = luaL_checkunsigned(L, 10);
+  lcdDrawLineWithClipping(x1, y1, x2, y2, xmin, xmax, ymin, ymax, pat, flags);
+  return 0;
+}
+
+static int luaLcdDrawHudRectangle(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  float pitch = luaL_checknumber(L, 1);
+  float roll = luaL_checknumber(L, 2);
+  coord_t xmin = luaL_checkunsigned(L, 3);
+  coord_t xmax = luaL_checkunsigned(L, 4);
+  coord_t ymin = luaL_checkunsigned(L, 5);
+  coord_t ymax = luaL_checkunsigned(L, 6);
+  LcdFlags flags = luaL_checkunsigned(L, 7);
+  lcdDrawHudRectangle(pitch, roll, xmin, xmax, ymin, ymax, flags);
+  return 0;
+}
+//OWEND
+
 const luaL_Reg lcdLib[] = {
   { "refresh", luaLcdRefresh },
   { "clear", luaLcdClear },
@@ -899,5 +992,14 @@ const luaL_Reg lcdLib[] = {
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
 #endif
+//OW
+  { "drawCircleQuarter", luaLcdDrawCircleQuarter },
+  { "drawCircle", luaLcdDrawCircle },
+  { "drawFilledCircleQuarter", luaLcdDrawFilledCircleQuarter },
+  { "drawFilledCircle", luaLcdDrawFilledCircle },
+  { "drawFilledTriangle", luaLcdDrawFilledTriangle },
+  { "drawLineWithClipping", luaLcdDrawLineWithClipping },
+  { "drawHudRectangle", luaLcdDrawHudRectangle },
+//OWEND
   { NULL, NULL }  /* sentinel */
 };

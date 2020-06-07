@@ -246,6 +246,11 @@ if (AUX2_SERIAL)
   set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 endif()
 
+if (PCB STREQUAL X10 AND PCBREV STREQUAL T16)
+  set(TARGET_SRC ${TARGET_SRC} mavlink_telem_driver.cpp)
+  set(SRC ${SRC} mavlink_telem.cpp mavlink_telem_autopilot.cpp mavlink_telem_camera.cpp mavlink_telem_gimbal.cpp)
+endif()
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}

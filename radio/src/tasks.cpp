@@ -120,6 +120,12 @@ TASK_FUNCTION(mixerTask)
     bluetooth.wakeup();
 #endif
 
+//OW
+//#if defined(MAVLINK_TELEM)
+//  mavlinkTelem.wakeup();
+//#endif
+//OWEND
+
     RTOS_WAIT_TICKS(1);
 
 #if defined(SIMU)

@@ -212,6 +212,13 @@ void per10ms()
 
   outputTelemetryBuffer.per10ms();
 
+//OW
+#if defined(MAVLINK_TELEM)
+  mavlinkTelem.wakeup();
+  checkEventLockTmo();
+#endif
+//OWEND
+
   heartbeat |= HEART_TIMER_10MS;
 }
 

@@ -625,6 +625,16 @@ PACK(struct ModelData {
   CUSTOM_SCREENS_DATA
 
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
+//OW
+#if defined(PCBHORUS)
+  uint16_t mavlinkEnabled:1; // on/off
+  uint16_t mavlinkConfig:3; // allow space for 8 configs
+  uint16_t mavlinkMimicSensors:3; // currently just off/on, but allow e.g. FrSky, CF, FrSky passthrough.
+  uint16_t mavlinkRcOverride:1;
+  uint16_t mavlinkLogging:1; // not currently used
+  // needs to adapt CHKSIZE below //if not all are use compiled optiomizes to lowest size, which may raise error
+#endif
+//OWEND
 });
 
 /*
@@ -941,7 +951,10 @@ static inline void check_struct()
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 881);
-  CHKSIZE(ModelData, 9736);
+//OW
+//  CHKSIZE(ModelData, 9736);
+  CHKSIZE(ModelData, 9736+2);
+//OWEND
 #endif
 
 #undef CHKSIZE

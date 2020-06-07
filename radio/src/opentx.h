@@ -28,6 +28,186 @@
 #include "globals.h"
 #include "opentx_helpers.h"
 
+//OW
+#define MAVLINK_TELEM
+#define OWVERSIONSTR  "olliw-v11"
+//OWEND
+
+/*
+v11 2020-06-07:
+modified files in radio/src/
+
+    CMakeList.txt:  1x
+    datastructs.h:  2x
+    keys.cpp:       2x
+    keys.h:         1x
+    opentx.cpp:     1x
+    opentx.h:       2x
+    options.h:      1x
+    tasks.cpp:      1x
+    gui/480x272/lcd.cpp:            1x
+    gui/480x272/lcd.h:              1x
+    gui/480x272/model_setup.cpp:    4x
+    lua/api_general.cpp:    3x
+    lua/api_lcd.cpp:        2x
+    targets/horus/board.cpp:        4x
+    targets/horus/board.h:          1x
+    targets/horus/hal.h:            1x
+    targets/horus/CMakeList.txt:    1x
+    thirdparty/Lua/src/lauxlib.h:   1x
+    thirdparty/Lua/src/linit.c:     1x
+    thirdparty/Lua/src/lrotable.h:  1x
+
+added files in radio/src/
+    mavlink_telem.cpp
+    mavlink_telem.h
+    lua/api_mavlink.cpp
+    lua/api_mavsdk.cpp
+    targets/horus/mavlink_telem_driver.cpp
+    thirdparty/Mavlink/c_library_v2/
+
+
+TODO:
+- consistent use of MAVLINK_TELEM define
+- make it an -D option
+- mavlink api
+
+COMMENTS:
+perMain() in main.cpp, where GPS is:
+  it seems it is called at 20 Hz or 50 ms
+  is called from TASK_FUNCTION(menusTask) in tasks.cpp
+  indeed, MENU_TASK_PERIOD_TICKS is set to 50 ms
+  this is maybe a bit slow for MAVLink
+  56700 bps => 288 bytes per 50 ms
+=> TASK_FUNCTION(mixerTask), where also BLUETOOTH, telemetryWakeup() is
+  it is very fast
+  something like a 1ms task would be great ...
+=> per10ms() in opentx,cpp, where also telemetryInterrupt10ms(), outputTelemetryBuffer.per10ms() is
+  let's try this
+
+idea:
+support LEFT, RIGHT CENTER also for drawFilledRectangle, drawRectangle, or better LEFT,RIGHT,XCENTER,TOP,BOTTOM,YCENTER
+
+struct
+opentxLib -> lauxlib.h, limit.c
+opentxConstants -> limit.c, lrotable.h
+lcdLib -> lauxlib.h, limit.c
+modelLib -> lauxlib.h, limit.c
+
+api_general.cpp etc. -> CMakeList.txt
+
+sportTelemetryPop
+getValue
+
+PCBX10, RADIO_T16:
+	both are set for JumperT16
+    often used in a way that first RADIO_T16 is checked before PCBX10 is checked
+
+AUX_SERIAL:
+	according to targets/horus/hal.h it is set only #if defined(PCBX12S)
+  	=> I would expect a compile error if AUX_SERIAL is defined for other boards
+  	is on USART3 PB10/PB11, DMA1_Stream1,DMA_Channel1
+
+TELEMETRY_RCC_XXX horus/hal.h
+  	USART2
+	TIM10
+	DIR_GPIO_PIN	PD.04
+	TX_GPIO_PIN		PD.05
+	RX_GPIO_PIN     PD.06
+	EXTI_PinSource        EXTI_PinSource6
+	TIM11
+	DMA_Stream_TX         DMA1_Stream6
+	DMA_Channel_TX        DMA_Channel_4
+
+TIM4	ROTARY_ENCODER
+TIM5	ADC, PWM_TIMER
+TIM10	TELEMETRY_RCC
+TIM11	TELEMETRY_TIMER
+TIM8	BACKLIGHT_TIMER
+TIM6	AUDIO_TIMER
+TIM9	HAPTIC_GPIO_TIMER
+TIM2	INTMODULE_TIMER
+TIM1	EXTMODULE_TIMER
+TIM3	TRAINER_TIMER
+TIM14	INTERRUPT_xMS_TIMER
+TIM7	TIMER_2MHz_TIMER
+
+#if defined(PCBX12S)
+  #define AUX_SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
+  #define AUX_SERIAL_GPIO_PIN_RX              GPIO_Pin_11 // PB.11
+  #define AUX_SERIAL_GPIO_AF                  GPIO_AF_USART3
+  #define AUX_SERIAL_USART                    USART3
+
+#define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
+#define TELEMETRY_TX_GPIO_PIN           GPIO_Pin_5  // PD.05
+#define TELEMETRY_RX_GPIO_PIN           GPIO_Pin_6  // PD.06
+#define TELEMETRY_GPIO_AF               GPIO_AF_USART2
+#define TELEMETRY_USART                 USART2
+
+#define INTMODULE_PWR_GPIO_PIN          GPIO_Pin_8  // PA.08
+#define INTMODULE_TX_GPIO_PIN           GPIO_Pin_6  // PB.06
+#define INTMODULE_RX_GPIO_PIN           GPIO_Pin_7  // PB.07
+#define INTMODULE_USART                 USART1
+#define INTMODULE_GPIO_AF               GPIO_AF_USART1
+
+#define EXTMODULE_PWR_GPIO_PIN             GPIO_Pin_3  // PB.03
+#if defined(PCBX10) && defined(PCBREV_EXPRESS)
+  #define EXTMODULE_TX_GPIO_PIN            GPIO_Pin_10 // PB.10 (TIM2_CH3)
+  #define EXTMODULE_RX_GPIO_PIN            GPIO_Pin_11 // PB.11
+  #define EXTMODULE_USART_GPIO_AF          GPIO_AF_USART3
+  #define EXTMODULE_USART                  USART3
+
+#define BT_USART                        USART6
+#define BT_GPIO_AF                      GPIO_AF_USART6
+#define BT_TX_GPIO_PIN                  GPIO_Pin_14 // PG.14
+#define BT_RX_GPIO_PIN                  GPIO_Pin_9  // PG.09
+#if defined(PCBX12S)
+  #if PCBREV >= 13
+    #define BT_EN_GPIO_PIN              GPIO_Pin_10 // PI.10
+  #else
+    #define BT_EN_GPIO_PIN              GPIO_Pin_6 // PA.06
+  #define BT_BRTS_GPIO_PIN              GPIO_Pin_10 // PG.10
+  #define BT_BCTS_GPIO_PIN              GPIO_Pin_11 // PG.11
+#elif defined(PCBX10)
+  #define BT_EN_GPIO_PIN                GPIO_Pin_10 // PG.10
+
+#if defined(PCBX12S)
+  #define GPS_USART                     UART4
+  #define GPS_GPIO_AF                   GPIO_AF_UART4
+  #define GPS_TX_GPIO_PIN               GPIO_Pin_0 // PA.00
+  #define GPS_RX_GPIO_PIN               GPIO_Pin_1 // PA.01
+
+=> on T16:
+USART2 = TELEMETRY_USART
+USART1 = INTMODULE_USART
+USART6 = BT_USART
+
+T16 scheme indicates:
+USART3_TX  		90		PB.10
+USART3_RX  		91		PB.11
+INTMODULE_RX	196		PB.07	USART1_RX
+INTMODULE_TX	195		PB.06	USART1_TX
+BLUETOOTH_TX	183		PG.14	USART6_TX
+BLUETOOTH_RX	178		PG.09	USART6_RX
+S.PORT_RX		172		PD.06	USART2_RX
+S.PORT_TX		169		PD.05	USART2_TX
+TRAINER_OUT		139		PC.07	USART6_RX
+TRAINER_IN      138		PC.06	USART6_TX
+
+=> USART3 is free :)
+also USART6 on BT could be used  UART
+
+common:
+aux_serial_driver.cpp  #if defined(AUX_SERIAL) #endif
+bluetooth_driver.cpp
+intmodule_serial_driver.cpp
+horus:
+extmodule_driver.cpp
+gps_driver.cpp
+telemetry_driver.cpp
+*/
+
+
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"
 #endif
@@ -1011,6 +1191,12 @@ constexpr uint8_t SD_SCREEN_FILE_LENGTH = 64;
 #if defined(BLUETOOTH)
 #include "bluetooth.h"
 #endif
+
+//OW
+#if defined(MAVLINK_TELEM)
+#include "mavlink_telem.h"
+#endif
+//OWEND
 
 constexpr uint8_t TEXT_FILENAME_MAXLEN = 40;
 

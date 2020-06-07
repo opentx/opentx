@@ -123,8 +123,19 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_SETUP_TRAINER_CHANNELS,
   ITEM_MODEL_SETUP_TRAINER_PPM_PARAMS,
+//OW
+  ITEM_MODEL_SETUP_MAVLINK_LABEL,
+  ITEM_MODEL_SETUP_MAVLINK_ENABLE,
+  ITEM_MODEL_SETUP_MAVLINK_CONFIGURATION,
+  ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS,
+  ITEM_MODEL_SETUP_MAVLINK_RCOVERRIDE,
+//OWEND
   ITEM_MODEL_SETUP_MAX
 };
+
+//OW
+#define MAVLINK_ROWS    LABEL(Mavlink), 0, 0, 0, 0
+//OWEND
 
 #define MODEL_SETUP_2ND_COLUMN         200
 #define MODEL_SETUP_3RD_COLUMN         270
@@ -636,8 +647,11 @@ bool menuModelSetup(event_t event)
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 1
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 2
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 3
-
-         TRAINER_ROWS
+//OW
+//         TRAINER_ROWS
+         TRAINER_ROWS,
+         MAVLINK_ROWS
+//OWEND
        });
 
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
@@ -1317,6 +1331,33 @@ bool menuModelSetup(event_t event)
           }
         }
         break;
+
+//OW
+      case ITEM_MODEL_SETUP_MAVLINK_LABEL:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "MAVLink");
+        break;
+
+      case ITEM_MODEL_SETUP_MAVLINK_ENABLE: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Enable");
+        g_model.mavlinkEnabled = editCheckBox(g_model.mavlinkEnabled, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+      } break;
+
+      case ITEM_MODEL_SETUP_MAVLINK_CONFIGURATION: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Config");
+        g_model.mavlinkConfig = editChoice(MODEL_SETUP_2ND_COLUMN, y, "\006""57600\0""115200""38400\0""19200\0", g_model.mavlinkConfig, 0, 3, attr, event);
+      } break;
+
+      case ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Sensors");
+        g_model.mavlinkMimicSensors = editCheckBox(g_model.mavlinkMimicSensors, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        //g_model.mavlinkMimicSensors = editChoice(MODEL_SETUP_2ND_COLUMN, y, "\010""off\0\0\0\0\0\0\0""FrSky\0\0\0\0\0""CrossFire\0""FrSky pass", g_model.mavlinkMimicSensors, 0, 3, attr, event);
+      } break;
+
+      case ITEM_MODEL_SETUP_MAVLINK_RCOVERRIDE: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "RC Override");
+        g_model.mavlinkRcOverride = editCheckBox(g_model.mavlinkRcOverride, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+      } break;
+//OWEND
 
 #if defined(PXX2)
       case ITEM_MODEL_SETUP_REGISTRATION_ID:

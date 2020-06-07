@@ -41,10 +41,46 @@
 event_t s_evt;
 struct InactivityData inactivity = {0};
 Key keys[NUM_KEYS];
+//OW
+uint16_t s_evt_lockmask = 0;
+bool s_evt_locktmo = false;
+tmr10ms_t s_evt_lock_tlast = 0;
+#define EVENT_LOCKMASK_ALLOWED   ((1<<KEY_ENTER)|(1<<KEY_MODEL)|(1<<KEY_EXIT)|(1<<KEY_TELEM)|(1<<KEY_RADIO))
+
+bool eventIsLocked(event_t evt)
+{
+  //for testing s_evt_lockmask = (1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6);
+  uint16_t key = EVT_KEY_MASK(evt);
+  if (key >= TRM_BASE) return false;
+  if (s_evt_lockmask & (1<<key)) return true;
+  return false;
+}
+
+void lockKeys(uint16_t mask)
+{
+  s_evt_lockmask = (mask & EVENT_LOCKMASK_ALLOWED);
+  s_evt_lock_tlast = get_tmr10ms();
+}
+
+void unlockKeys(void)
+{
+  s_evt_lockmask = 0;
+}
+
+void checkEventLockTmo(void)
+{
+  if (!s_evt_lockmask) return;
+  tmr10ms_t now = get_tmr10ms();
+  if ((now - s_evt_lock_tlast) > 50) s_evt_lockmask = 0;  //500 ms
+}
+//OWEND
 
 event_t getEvent(bool trim)
 {
   event_t evt = s_evt;
+//OW
+  if (eventIsLocked(evt)) return 0;
+//OWEND
   int8_t k = EVT_KEY_MASK(s_evt) - TRM_BASE;
   bool trim_evt = (k>=0 && k<TRM_LAST-TRM_BASE+1);
 

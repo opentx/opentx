@@ -20,6 +20,10 @@ typedef struct
 extern const luaR_value_entry baselib_vals[];
 extern const luaR_value_entry mathlib_vals[];
 extern const luaR_value_entry opentxConstants[];
+//OW
+extern const luaR_value_entry mavlinkConstants[];
+extern const luaR_value_entry mavsdkConstants[];
+//OWEND
 
 // A mapping between table name and its entries
 typedef struct
