@@ -52,6 +52,28 @@ void drawFunction(FnFuncP fn, uint8_t offset)
   }
 }
 
+void drawCursor(FnFuncP fn, coord_t offset)
+{
+  int x512 = getValue(s_currSrcRaw);
+  if (s_currSrcRaw >= MIXSRC_FIRST_TELEM) {
+    if (s_currScale > 0) x512 = (x512 * 1024) / convertTelemValue(s_currSrcRaw - MIXSRC_FIRST_TELEM + 1, s_currScale);
+    drawSensorCustomValue(LCD_W-FW-offset, 6*FH, (s_currSrcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
+  }
+  else {
+    lcdDrawNumber(LCD_W-FW-offset, 6*FH, calcRESXto1000(x512), RIGHT | PREC1);
+  }
+  x512 = limit(-1024, x512, 1024);
+  int y512 = fn(x512);
+  y512 = limit(-1024, y512, 1024);
+  lcdDrawNumber(CURVE_CENTER_X-FWNUM-offset, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
+
+  x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
+  y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
+  
+  lcdDrawSolidVerticalLine(x512-offset, y512-3, 3*2+1);
+  lcdDrawSolidHorizontalLine(x512-3-offset, y512, 3*2+1);
+}
+
 enum ExposFields {
   EXPO_FIELD_INPUT_NAME,
   EXPO_FIELD_LINE_NAME,
@@ -110,6 +132,8 @@ void menuModelExpoOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
         drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
         if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailableInInputs);
+        s_currSrcRaw = ed->srcRaw;
+        s_currScale = ed->scale;
         break;
 
       case EXPO_FIELD_SCALE:
@@ -160,23 +184,5 @@ void menuModelExpoOne(event_t event)
   }
 
   drawFunction(expoFn);
-
-  int x512 = getValue(ed->srcRaw);
-  if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
-    drawSensorCustomValue(LCD_W-8, 6*FH, (ed->srcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
-    if (ed->scale > 0) x512 = (x512 * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
-  }
-  else {
-    lcdDrawNumber(LCD_W-8, 6*FH, calcRESXto1000(x512), RIGHT | PREC1);
-  }
-  x512 = limit(-1024, x512, 1024);
-  int y512 = expoFn(x512);
-  y512 = limit(-1024, y512, 1024);
-  lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
-
-  x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
-  y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
-
-  lcdDrawSolidVerticalLine(x512, y512-3, 3*2+1);
-  lcdDrawSolidHorizontalLine(x512-3, y512, 3*2+1);
+  drawCursor(expoFn, 0);
 }

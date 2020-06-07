@@ -112,6 +112,8 @@ void menuModelMixOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
         drawSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
+        s_currSrcRaw = md2->srcRaw;
+        s_currScale = 0;
         break;
 
       case MIX_FIELD_WEIGHT:

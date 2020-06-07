@@ -91,6 +91,7 @@ void drawCurveHorizontalScale();
 void drawCurveCoord(int x, int y, const char * text, bool active=false);
 void drawCurvePoint(int x, int y, LcdFlags color);
 void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att = 0);
+void drawCursor(FnFuncP fn);
 
 extern Layout * customScreens[MAX_CUSTOM_SCREENS];
 extern Topbar * topbar;

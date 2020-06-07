@@ -179,6 +179,8 @@ void menuModelCurveOne(event_t event)
   }
 
   drawCurve(0);
+  if (s_currSrcRaw != MIXSRC_NONE)
+    drawCursor(applyCurrentCurve, 0);
 
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
   for (uint8_t i=0; i<5+crv.points; i++) {

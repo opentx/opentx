@@ -61,6 +61,7 @@ void menuModelCurvesAll(event_t event)
     case EVT_KEY_FIRST(KEY_ENTER):
       if (CURVE_SELECTED() && !READ_ONLY()) {
         s_currIdxSubMenu = sub;
+        s_currSrcRaw = MIXSRC_NONE;
         pushMenu(menuModelCurveOne);
       }
       break;
