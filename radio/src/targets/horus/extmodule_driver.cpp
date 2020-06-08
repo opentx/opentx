@@ -376,7 +376,7 @@ void extmoduleSendInvertedByte(uint8_t byte)
     time += 35 ;
   }
   GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
-  __enable_irq() ;	// No need to wait for the stop bit to complete
+  __enable_irq();	// No need to wait for the stop bit to complete
   while ((uint16_t) (getTmr2MHz() - time) < 34) {
     // wait
   }
