@@ -1419,7 +1419,8 @@ void menuModelSetup(event_t event)
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_FAILSAFE:
 #endif
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE: {
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE:
+      {
         ModuleData &moduleData = g_model.moduleData[moduleIdx];
         lcdDrawTextAlignedLeft(y, STR_FAILSAFE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition == 0 ? attr : 0);
