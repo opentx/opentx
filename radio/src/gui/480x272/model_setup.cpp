@@ -1455,7 +1455,7 @@ bool menuModelSetup(event_t event)
               for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
                 popupMenuItems[rx] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[rx];
               }
-              // popupMenuTitle = STR_PXX2_SELECT_RX;
+              popupMenuTitle = STR_PXX2_SELECT_RX;
               POPUP_MENU_START(onPXX2BindMenu);
             }
           }

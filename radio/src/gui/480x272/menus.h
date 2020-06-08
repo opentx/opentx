@@ -502,6 +502,7 @@ inline void DISPLAY_WARNING(event_t event)
 #define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
 
+extern const char * popupMenuTitle;
 extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 extern uint16_t popupMenuItemsCount;
 extern uint16_t popupMenuOffset;

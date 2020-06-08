@@ -80,6 +80,7 @@ enum
   {
     warningText = nullptr;
     warningInfoText = nullptr;
+    popupMenuTitle = nullptr;
     popupMenuHandler = nullptr;
     popupMenuItemsCount = 0;
   }
