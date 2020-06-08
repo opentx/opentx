@@ -804,6 +804,10 @@ void ModulePanel::updateFailsafeSpinBox(unsigned channel, quint8 updtSb)
 
   if (failsafeGroupsMap.contains(channel)) {
     const ChannelFailsafeWidgetsGroup & grp = failsafeGroupsMap.value(channel);
+    bool disable = (value == FAILSAFE_CHANNEL_HOLD || value == FAILSAFE_CHANNEL_NOPULSE);
+    if (grp.combo) {
+      grp.combo->setCurrentIndex(grp.combo->findData(disable ? value : 0));
+    }
     if ((updtSb & FAILSAFE_DISPLAY_PERCENT) && grp.sbPercent) {
       grp.sbPercent->blockSignals(true);
       grp.sbPercent->setValue(pctVal);
@@ -868,6 +872,7 @@ void ModulePanel::onFailsafeComboIndexChanged(int index)
     if (ok) {
       model->limitData[channel].failsafe = cb->itemData(index).toInt();
       updateFailsafe(channel);
+      emit failsafeModified(channel);
       emit modified();
     }
     lock = false;
