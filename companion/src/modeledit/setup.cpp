@@ -792,15 +792,15 @@ void ModulePanel::on_lowPower_stateChanged(int state)
   module.multi.lowPowerMode = (state == Qt::Checked);
 }
 
-// updtSb (update spin box(es)): 0=none or bitmask of FailsafeValueDisplayTypes
-void ModulePanel::setChannelFailsafeValue(const int channel, const int value, quint8 updtSb)
+void ModulePanel::onFailsafeModified(unsigned channel)
 {
-  if (channel < 0 || channel >= CPN_MAX_CHNOUT)
-    return;
+  updateFailsafeSpinBox(channel, FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC);
+}
 
-  model->limitData[channel].failsafe = value;
+void ModulePanel::updateFailsafeSpinBox(unsigned channel, quint8 updtSb)
+{
+  int value = model->limitData[channel].failsafe;
   double pctVal = divRoundClosest(value * 1000, 1024) / 10.0;
-  // qDebug() << value << pctVal;
 
   if (failsafeGroupsMap.contains(channel)) {
     const ChannelFailsafeWidgetsGroup & grp = failsafeGroupsMap.value(channel);
@@ -815,8 +815,21 @@ void ModulePanel::setChannelFailsafeValue(const int channel, const int value, qu
       grp.sbUsec->blockSignals(false);
     }
   }
-  if (!lock)
+}
+
+// updtSb (update spin box(es)): 0=none or bitmask of FailsafeValueDisplayTypes
+void ModulePanel::setChannelFailsafeValue(const int channel, const int value, quint8 updtSb)
+{
+  if (channel < 0 || channel >= CPN_MAX_CHNOUT)
+    return;
+
+  model->limitData[channel].failsafe = value;
+  updateFailsafeSpinBox(channel, updtSb);
+
+  if (!lock) {
+    emit failsafeModified(channel);
     emit modified();
+  }
 }
 
 void ModulePanel::onFailsafeUsecChanged(int value)
@@ -886,7 +899,7 @@ void ModulePanel::onExtendedLimitsToggled()
   }
 }
 
-void ModulePanel::updateFailsafe(int channel)
+void ModulePanel::updateFailsafe(unsigned channel)
 {
   if (channel >= CPN_MAX_CHNOUT || !failsafeGroupsMap.contains(channel))
     return;
@@ -903,7 +916,7 @@ void ModulePanel::updateFailsafe(int channel)
     grp.sbUsec->setDisabled(valDisable);
 
   if (!valDisable)
-    setChannelFailsafeValue(channel, failsafeValue, (FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC));
+    setChannelFailsafeValue(channel, failsafeValue, FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC);
 }
 
 void ModulePanel::onClearAccessRxClicked()
@@ -1166,11 +1179,19 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->trimsDisplay->hide();
   }
 
-  for (int i=firmware->getCapability(NumFirstUsableModule); i<firmware->getCapability(NumModules); i++) {
+  for (int i = firmware->getCapability(NumFirstUsableModule); i < firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], &ModulePanel::modified, this, &SetupPanel::modified);
     connect(this, &SetupPanel::extendedLimitsToggled, modules[i], &ModulePanel::onExtendedLimitsToggled);
+  }
+
+  for (int i = firmware->getCapability(NumFirstUsableModule); i < firmware->getCapability(NumModules); i++) {
+    for (int j = firmware->getCapability(NumFirstUsableModule); j < firmware->getCapability(NumModules); j++) {
+      if (i != j) {
+        connect(modules[i], SIGNAL(failsafeModified(unsigned)), modules[j], SLOT(onFailsafeModified(unsigned)));
+      }
+    }
   }
 
   if (firmware->getCapability(ModelTrainerEnable)) {
