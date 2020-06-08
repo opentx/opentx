@@ -897,9 +897,8 @@ QString ModelPrinter::printFailsafe(int idx)
   ModuleData module = model.moduleData[idx];
   strl << printLabelValue(tr("Failsafe Mode"), printFailsafeMode(module.failsafeMode));
   if (module.failsafeMode == FAILSAFE_CUSTOM) {
-    for (int i=0; i<module.channelsCount; i++) {
-      //strl << QString("%1(%2)").arg(printChannelName(module.channelsStart + i).trimmed()).arg(printFailsafeValue(module.failsafeChannels[i]));
-      strl << printLabelValue(printChannelName(module.channelsStart + i).trimmed(), printFailsafeValue(module.failsafeChannels[i]));
+    for (int i = 0; i < module.channelsCount; i++) {
+      strl << printLabelValue(printChannelName(module.channelsStart + i).trimmed(), printFailsafeValue(model.limitData[i].failsafe));
     }
   }
   return strl.join(" ");

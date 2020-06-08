@@ -798,7 +798,7 @@ void ModulePanel::setChannelFailsafeValue(const int channel, const int value, qu
   if (channel < 0 || channel >= CPN_MAX_CHNOUT)
     return;
 
-  module.failsafeChannels[channel] = value;
+  model->limitData[channel].failsafe = value;
   double pctVal = divRoundClosest(value * 1000, 1024) / 10.0;
   // qDebug() << value << pctVal;
 
@@ -853,7 +853,7 @@ void ModulePanel::onFailsafeComboIndexChanged(int index)
     bool ok = false;
     int channel = sender()->property("index").toInt(&ok);
     if (ok) {
-      module.failsafeChannels[channel] = cb->itemData(index).toInt();
+      model->limitData[channel].failsafe = cb->itemData(index).toInt();
       updateFailsafe(channel);
       emit modified();
     }
@@ -891,7 +891,7 @@ void ModulePanel::updateFailsafe(int channel)
   if (channel >= CPN_MAX_CHNOUT || !failsafeGroupsMap.contains(channel))
     return;
 
-  const int failsafeValue = module.failsafeChannels[channel];
+  const int failsafeValue = model->limitData[channel].failsafe;
   const ChannelFailsafeWidgetsGroup & grp = failsafeGroupsMap.value(channel);
   const bool valDisable = (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE);
 
