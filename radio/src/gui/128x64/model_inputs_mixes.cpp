@@ -32,29 +32,6 @@ int expoFn(int x)
   return anas[ed->chn];
 }
 
-void drawFunction(FnFuncP fn, uint8_t offset)
-{
-  lcdDrawVerticalLine(CURVE_CENTER_X-offset, 0, LCD_H, 0xee);
-  lcdDrawHorizontalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH-offset, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2, 0xee);
-
-  coord_t prev_yv = (coord_t)-1;
-
-  for (int8_t xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv++) {
-    coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/CURVE_SIDE_WIDTH))) / 2 * (LCD_H-1) / RESX);
-    if (prev_yv != (coord_t)-1) {
-      if (abs((int8_t)yv-prev_yv) <= 1) {
-        lcdDrawPoint(CURVE_CENTER_X+xv-offset-1, prev_yv, FORCE);
-      }
-      else {
-        uint8_t tmp = (prev_yv < yv ? 0 : 1);
-        lcdDrawSolidVerticalLine(CURVE_CENTER_X+xv-offset-1, yv+tmp, prev_yv-yv);
-      }
-    }
-    prev_yv = yv;
-  }
-}
-
-
 uint8_t getExpoMixCount(uint8_t expo)
 {
   uint8_t count = 0;

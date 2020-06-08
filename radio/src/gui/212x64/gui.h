@@ -286,10 +286,6 @@ void menuChannelsView(event_t event);
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
 
-typedef int (*FnFuncP) (int x);
-void drawFunction(FnFuncP fn, uint8_t offset=0);
-void drawCursor(FnFuncP fn, uint8_t offset=0);
-
 void onSourceLongEnterPress(const char *result);
 
 uint8_t switchToMix(uint8_t source);

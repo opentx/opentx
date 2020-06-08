@@ -278,10 +278,6 @@ uint8_t getMixesCount();
 void insertMix(uint8_t idx);
 void deleteMix(uint8_t idx);
 
-typedef int (*FnFuncP) (int x);
-void drawFunction(FnFuncP fn, uint8_t offset=0);
-void drawCursor(FnFuncP fn, uint8_t offset=0);
-
 void onSourceLongEnterPress(const char *result);
 
 uint8_t switchToMix(uint8_t source);
