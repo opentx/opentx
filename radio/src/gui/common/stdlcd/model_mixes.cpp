@@ -26,7 +26,7 @@
 uint8_t getMixesCount()
 {
   uint8_t count = 0;
-  uint8_t ch ;
+  uint8_t ch;
 
   for (int i=MAX_MIXERS-1; i>=0; i--) {
     ch = mixAddress(i)->srcRaw;
