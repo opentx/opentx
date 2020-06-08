@@ -362,7 +362,7 @@ void extmoduleSendInvertedByte(uint8_t byte)
     // wait
   }
   time += 34;
-  for (i = 0 ; i < 8 ; i += 1) {
+  for (i = 0; i < 8; i++) {
     if (byte & 1) {
       GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
     }
