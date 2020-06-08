@@ -794,10 +794,10 @@ void ModulePanel::on_lowPower_stateChanged(int state)
 
 void ModulePanel::onFailsafeModified(unsigned channel)
 {
-  updateFailsafeSpinBox(channel, FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC);
+  updateFailsafeUI(channel, FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC);
 }
 
-void ModulePanel::updateFailsafeSpinBox(unsigned channel, quint8 updtSb)
+void ModulePanel::updateFailsafeUI(unsigned channel, quint8 updtSb)
 {
   int value = model->limitData[channel].failsafe;
   double pctVal = divRoundClosest(value * 1000, 1024) / 10.0;
@@ -828,7 +828,7 @@ void ModulePanel::setChannelFailsafeValue(const int channel, const int value, qu
     return;
 
   model->limitData[channel].failsafe = value;
-  updateFailsafeSpinBox(channel, updtSb);
+  updateFailsafeUI(channel, updtSb);
 
   if (!lock) {
     emit failsafeModified(channel);

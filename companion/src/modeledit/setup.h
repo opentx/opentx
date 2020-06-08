@@ -116,7 +116,7 @@ class ModulePanel : public ModelPanel
     Ui::Module *ui;
     QMap<int, ChannelFailsafeWidgetsGroup> failsafeGroupsMap;
     static quint8 failsafesValueDisplayType;  // FailsafeValueDisplayTypes
-    void updateFailsafeSpinBox(unsigned channel, quint8 updtSb);
+    void updateFailsafeUI(unsigned channel, quint8 updtSb);
 };
 
 class SetupPanel : public ModelPanel
