@@ -158,7 +158,11 @@ class ModuleData {
   Q_DECLARE_TR_FUNCTIONS(ModuleData)
 
   public:
-    ModuleData() { clear(); }
+    ModuleData()
+    {
+      clear();
+    }
+
     unsigned int modelId;
     unsigned int protocol;   // type in datastructs.h
     int          rfProtocol; // rfProtocol in datastructs.h
@@ -168,7 +172,6 @@ class ModuleData {
     unsigned int channelsStart;
     int          channelsCount; // 0=8 channels
     unsigned int failsafeMode;
-    int          failsafeChannels[CPN_MAX_CHNOUT];
 
     struct PPM {
       int delay;
