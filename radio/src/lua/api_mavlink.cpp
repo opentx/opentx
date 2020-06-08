@@ -38,12 +38,12 @@ static int luaMavlinkGetVersion(lua_State * L)
 
 static int luaMavlinkGetChannelStatus(lua_State * L)
 {
-	//mavlink_status_t* status = mavlink_get_channel_status(MAVLINK_COMM_0);
-	const mavlink_status_t* status = mavlinkTelem.getChannelStatus();
+    //mavlink_status_t* status = mavlink_get_channel_status(MAVLINK_COMM_0);
+    const mavlink_status_t* status = mavlinkTelem.getChannelStatus();
 
     lua_createtable(L, 0, 13);
     lua_pushtableinteger(L, "msg_received", status->msg_received);
- 	lua_pushtableinteger(L, "buffer_overrun", status->buffer_overrun);
+    lua_pushtableinteger(L, "buffer_overrun", status->buffer_overrun);
     lua_pushtableinteger(L, "parse_error", status->parse_error);
     lua_pushtableinteger(L, "parse_state", (uint8_t)status->parse_state);
     lua_pushtableinteger(L, "packet_idx", status->packet_idx);
@@ -62,7 +62,7 @@ static int luaMavlinkGetChannelStatus(lua_State * L)
 /*
 static int luaMavlinkMsgAvailable(lua_State * L)
 {
-	uint32_t size = mavlinkTelem.msgRxFifo.size();
+    uint32_t size = mavlinkTelem.msgRxFifo.size();
     lua_pushinteger(L, size);
     return 1;
 }
@@ -76,7 +76,7 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
 
     lua_createtable(L, 0, 9);
     lua_pushtableinteger(L, "len", msg.len);
- 	lua_pushtableinteger(L, "incompat_flags", msg.incompat_flags);
+    lua_pushtableinteger(L, "incompat_flags", msg.incompat_flags);
     lua_pushtableinteger(L, "compat_flags", msg.compat_flags);
     lua_pushtableinteger(L, "seq", msg.seq);
     lua_pushtableinteger(L, "sysid", msg.sysid);
@@ -85,17 +85,17 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
     //we also like to get the target
     const mavlink_msg_entry_t* msg_entry = mavlink_get_msg_entry(msg.msgid);
     if (msg_entry && (msg_entry->flags & MAV_MSG_ENTRY_FLAG_HAVE_TARGET_SYSTEM)) {
-    	uint8_t tsystem = (uint8_t)_MAV_PAYLOAD(&msg)[msg_entry->target_system_ofs];
-    	lua_pushtableinteger(L, "target_system", tsystem );
-	} else {
-		lua_pushtableinteger(L, "target_system", -1 );
-	}
+        uint8_t tsystem = (uint8_t)_MAV_PAYLOAD(&msg)[msg_entry->target_system_ofs];
+        lua_pushtableinteger(L, "target_system", tsystem );
+    } else {
+        lua_pushtableinteger(L, "target_system", -1 );
+    }
     if (msg_entry && (msg_entry->flags & MAV_MSG_ENTRY_FLAG_HAVE_TARGET_COMPONENT)) {
-    	uint8_t tcomponent = (uint8_t)_MAV_PAYLOAD(&msg)[msg_entry->target_component_ofs];
+        uint8_t tcomponent = (uint8_t)_MAV_PAYLOAD(&msg)[msg_entry->target_component_ofs];
         lua_pushtableinteger(L, "target_component", tcomponent );
     } else {
         lua_pushtableinteger(L, "target_component", -1 );
-	}
+    }
     return 1;
 }
 
@@ -103,27 +103,27 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
 static int luaMavlinkMsgPopAndDiscard(lua_State * L)
 {
     if (!mavlinkTelem.msgRxFifo.isEmpty()) {
-    	mavlinkTelem.msgRxFifo.skip();
- 	}
+        mavlinkTelem.msgRxFifo.skip();
+    }
     return 0;
 }
 
 
 static int luaMavlinkMsgClear(lua_State * L)
 {
-  	mavlinkTelem.msgRxFifo.clear();
+    mavlinkTelem.msgRxFifo.clear();
     return 0;
 }
 
 
 static int luaMavlinkMsgEnable(lua_State * L)
 {
-//	uint32_t flag = luaL_checkunsigned(L, 1);
-//	if (flag && !mavlinkTelem.msgFifo_enabled) {
-//		//we enable it from disabled state, so we better clear()
-//		mavlinkTelem.msgRxFifo.clear();
-//	}
-//	mavlinkTelem.msgFifo_enabled = (flag > 0);
+//  uint32_t flag = luaL_checkunsigned(L, 1);
+//  if (flag && !mavlinkTelem.msgFifo_enabled) {
+//      //we enable it from disabled state, so we better clear()
+//      mavlinkTelem.msgRxFifo.clear();
+//  }
+//  mavlinkTelem.msgFifo_enabled = (flag > 0);
     return 0;
 }
 */
@@ -152,7 +152,7 @@ const luaR_value_entry mavlinkConstants[] = {
 #if defined(MAVLINK_TELEM)
     MAVLINK_LIB_CONSTANTS
 #endif
-  { nullptr, 0 }  /* sentinel */
+    { nullptr, 0 }  /* sentinel */
 };
 
 #else
@@ -165,8 +165,8 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
     if (!mavlinkTelem.msgRxFifo.pop(msg)) { lua_pushnil(L); return 1; }
     if (msg.msgid != MAVLINK_MSG_ID_HEARTBEAT) { lua_pushnil(L); return 1; }
 
-	mavlink_heartbeat_t payload;
-	mavlink_msg_heartbeat_decode(&msg, &payload);
+    mavlink_heartbeat_t payload;
+    mavlink_msg_heartbeat_decode(&msg, &payload);
 
     lua_createtable(L, 0, 6);
     lua_pushtableinteger(L, "custom_mode", payload.custom_mode);
@@ -186,8 +186,8 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
     if (!mavlinkTelem.msgRxFifo.pop(msg)) { lua_pushnil(L); return 1; }
     if (msg.msgid != MAVLINK_MSG_ID_ATTITUDE) { lua_pushnil(L); return 1; }
 
-	mavlink_attitude_t payload;
-	mavlink_msg_attitude_decode(&msg, &payload);
+    mavlink_attitude_t payload;
+    mavlink_msg_attitude_decode(&msg, &payload);
 
     lua_createtable(L, 0, 7);
     lua_pushtableinteger(L, "time_boot_ms", payload.time_boot_ms);
@@ -202,8 +202,8 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
 
 
 #define MAVLINK_LIB_FUNCTIONS \
-	{ "msgHeartbeatPop", luaMavlinkMsgHeartbeatPop }, \
-	{ "msgAttitudePop", luaMavlinkMsgAttitudePop }, \
+    { "msgHeartbeatPop", luaMavlinkMsgHeartbeatPop }, \
+    { "msgAttitudePop", luaMavlinkMsgAttitudePop }, \
 */
 
 //------------------------------------------------------------
@@ -1360,7 +1360,7 @@ const luaR_value_entry mavlinkConstants[] = {
 #if defined(MAVLINK_TELEM)
     MAVLINK_LIB_CONSTANTS
 #endif
-  { nullptr, 0 }  /* sentinel */
+    { nullptr, 0 }  /* sentinel */
 };
 
 #endif

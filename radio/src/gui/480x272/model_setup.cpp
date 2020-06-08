@@ -647,9 +647,9 @@ bool menuModelSetup(event_t event)
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 1
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 2
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // Receiver 3
-//OW
-//         TRAINER_ROWS
+           
          TRAINER_ROWS,
+//OW
          MAVLINK_ROWS
 //OWEND
        });

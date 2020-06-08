@@ -571,7 +571,7 @@ void lcdDrawCircleQuarter(coord_t x0, coord_t y0, int16_t r, uint8_t corners, Lc
   int16_t y = r;
 
   if (corners >= 15) {
-	lcdDrawPoint(x0, y0 + r, att);
+    lcdDrawPoint(x0, y0 + r, att);
     lcdDrawPoint(x0, y0 - r, att);
     lcdDrawPoint(x0 + r, y0, att);
     lcdDrawPoint(x0 - r, y0, att);
@@ -707,13 +707,13 @@ uint8_t ComputeOutCode(float x, float y, float xmin, float xmax, float ymin, flo
 {
   uint8_t code = 0;
   if (x < xmin)
-	code |= 1;
+    code |= 1;
   else if (x > xmax)
-	code |= 2;
+    code |= 2;
   if (y < ymin)
-	code |= 8;
+    code |= 8;
   else if (y > ymax)
-	code |= 4;
+    code |= 4;
   return code;
 }
 
