@@ -570,6 +570,15 @@ inline void POPUP_WAIT(const char * s)
   popupFunc = runPopupWarning;
 }
 
+inline void DRAW_POPUP_WAIT(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_WAIT;
+  runPopupWarning(0);
+  warningText = nullptr;
+}
+
 inline void POPUP_INFORMATION(const char * s)
 {
   warningText = s;

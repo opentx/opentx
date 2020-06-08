@@ -568,12 +568,12 @@ bool menuRadioSdManager(event_t _event)
           for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
             popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
           }
-          //popupMenuTitle = STR_PXX2_SELECT_RX;
+          // popupMenuTitle = STR_PXX2_SELECT_RX;
           POPUP_MENU_START(onUpdateReceiverSelection);
         }
       }
       else {
-        POPUP_WAIT(STR_WAITING_FOR_RX);
+        DRAW_POPUP_WAIT(STR_WAITING_FOR_RX);
       }
     }
   }
