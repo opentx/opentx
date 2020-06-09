@@ -65,6 +65,8 @@ void displayGaugesTelemetryScreen(TelemetryScreenData & screen)
     if (source <= MIXSRC_LAST_CH) {
       barMin = calc100toRESX(barMin);
       barMax = calc100toRESX(barMax);
+    }
+    if (source) {
       int y = barHeight+6+i*(barHeight+6);
       drawSource(0, y+barHeight-5, source, 0);
       lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
