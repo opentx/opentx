@@ -727,21 +727,26 @@ void CohenSutherlandLineClipAndDraw(float x0, float y0, float x1, float y1, floa
     if (!(outcode0 | outcode1)) {
       accept = true;
       break;
-    } else if (outcode0 & outcode1) {
+    }
+    else if (outcode0 & outcode1) {
       break;
-    } else {
+    }
+    else {
       float x = 0.0f, y = 0.0f;
       uint8_t outcode = (outcode1 > outcode0) ? outcode1 : outcode0;
       if (outcode & 4) {
         x = x0 + (x1 - x0) * (ymax - y0) / (y1 - y0);
         y = ymax;
-      } else if (outcode & 8) {
+      }
+      else if (outcode & 8) {
         x = x0 + (x1 - x0) * (ymin - y0) / (y1 - y0);
         y = ymin;
-      } else if (outcode & 2) {
+      }
+      else if (outcode & 2) {
         y = y0 + (y1 - y0) * (xmax - x0) / (x1 - x0);
         x = xmax;
-      } else if (outcode & 1) {
+      }
+      else if (outcode & 1) {
         y = y0 + (y1 - y0) * (xmin - x0) / (x1 - x0);
         x = xmin;
       }
@@ -749,7 +754,8 @@ void CohenSutherlandLineClipAndDraw(float x0, float y0, float x1, float y1, floa
         x0 = x;
         y0 = y;
         outcode0 = ComputeOutCode(x0, y0, xmin, xmax, ymin, ymax);
-      } else {
+      }
+      else {
         x1 = x;
         y1 = y;
         outcode1 = ComputeOutCode(x1, y1, xmin, xmax, ymin, ymax);
@@ -781,9 +787,11 @@ void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, co
 	lcdDrawFilledRect(
       xmin, max(ymin, ymin + (coord_t)(ywidth/2 + (int32_t)dy)),
       xmax - xmin, min(ywidth, ywidth/2 - (int32_t)dy + (dy != 0.0f ? 1 : 0)), SOLID, att);
-  } else if (fabs(roll) >= 180.0f) {
+  }
+  else if (fabs(roll) >= 180.0f) {
     lcdDrawFilledRect(xmin, ymin, xmax - xmin, min(ywidth, ywidth/2 + (int32_t)fabsf(dy)), SOLID, att);
-  } else {
+  }
+  else {
     bool inverted = (fabsf(roll) > 90.0f);
     bool fillNeeded = false;
     int32_t ybot = (inverted) ? 0 : LCD_H;
@@ -794,20 +802,21 @@ void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, co
         int32_t xx = ox + ((float)yy - oy) / angle; // + 0.5f; rounding not needed
         if (xx >= xmin && xx <= xmax) {
         	lcd->drawSolidHorizontalLine(xx, yy, xmax - xx + 1, att);
-        } else
-        if (xx < xmin) {
+        }
+        else if (xx < xmin) {
           ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
           fillNeeded = true;
         }
       }
-    } else {
+    }
+    else {
       for (int32_t s = 0; s < ywidth; s++) {
         int32_t yy = ymin + s;
         int32_t xx = ox + ((float)yy - oy) / angle; // + 0.5f; rounding not needed
         if (xx >= xmin && xx <= xmax) {
         	lcd->drawSolidHorizontalLine(xmin, yy, xx - xmin, att);
-        } else
-        if (xx > xmax) {
+        }
+        else if (xx > xmax) {
           ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
           fillNeeded = true;
         }
