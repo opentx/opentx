@@ -652,8 +652,6 @@ void lcdFillTriangle(coord_t x0, coord_t y0, coord_t x1, coord_t y1, coord_t x2,
 {
   int32_t a, b;
 
-  #define SWAP(xx,yy) {int32_t t = xx; xx = yy; yy = t;}
-
   if (y0 > y1) { SWAP(y0, y1); SWAP(x0, x1); }
   if (y1 > y2) { SWAP(y2, y1); SWAP(x2, x1); }
   if (y0 > y1) { SWAP(y0, y1); SWAP(x0, x1); }
@@ -770,9 +768,7 @@ void lcdDrawLineWithClipping(coord_t x0, coord_t y0, coord_t x1, coord_t y1, coo
 
 void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, coord_t ymin, coord_t ymax, LcdFlags att)
 {
-  #define GRADTORAD 0.017453293f
-  #define MINAB(x,y) ((x)<(y) ? x : y)
-  #define MAXAB(x,y) ((x)>(y) ? x : y)
+  constexpr float GRADTORAD = 0.017453293f;
 
   float dx = sinf(GRADTORAD*roll) * pitch;
   float dy = cosf(GRADTORAD*roll) * pitch * 1.85f;
@@ -783,10 +779,10 @@ void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, co
 
   if (roll == 0.0f) { // prevent divide by zero
 	lcdDrawFilledRect(
-      xmin, MAXAB(ymin, ymin + ywidth/2 + (int32_t)dy),
-      xmax - xmin, MINAB(ywidth, ywidth/2 - (int32_t)dy + (dy != 0.0f ? 1 : 0)), SOLID, att);
+      xmin, max(ymin, ymin + (coord_t)(ywidth/2 + (int32_t)dy)),
+      xmax - xmin, min(ywidth, ywidth/2 - (int32_t)dy + (dy != 0.0f ? 1 : 0)), SOLID, att);
   } else if (fabs(roll) >= 180.0f) {
-    lcdDrawFilledRect(xmin, ymin, xmax - xmin, MINAB(ywidth, ywidth/2 + (int32_t)fabsf(dy)), SOLID, att);
+    lcdDrawFilledRect(xmin, ymin, xmax - xmin, min(ywidth, ywidth/2 + (int32_t)fabsf(dy)), SOLID, att);
   } else {
     bool inverted = (fabsf(roll) > 90.0f);
     bool fillNeeded = false;
@@ -800,7 +796,7 @@ void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, co
         	lcd->drawSolidHorizontalLine(xx, yy, xmax - xx + 1, att);
         } else
         if (xx < xmin) {
-          ybot = (inverted) ? MAXAB(yy, ybot) + 1 : MINAB(yy, ybot);
+          ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
           fillNeeded = true;
         }
       }
@@ -812,7 +808,7 @@ void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, co
         	lcd->drawSolidHorizontalLine(xmin, yy, xx - xmin, att);
         } else
         if (xx > xmax) {
-          ybot = (inverted) ? MAXAB(yy, ybot) + 1 : MINAB(yy, ybot);
+          ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
           fillNeeded = true;
         }
       }
