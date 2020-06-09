@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "lua_api.h"
-#include "thirdparty/Mavlink/c_library_v2/common/mavlink.h"
+#include "thirdparty/Mavlink/common/mavlink.h"
 
 
 #define FPI         3.141592654f
