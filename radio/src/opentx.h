@@ -64,7 +64,7 @@ added files in radio/src/
     lua/api_mavlink.cpp
     lua/api_mavsdk.cpp
     targets/horus/mavlink_telem_driver.cpp
-    thirdparty/Mavlink/c_library_v2/
+    thirdparty/Mavlink/
 
 
 TODO:

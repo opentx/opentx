@@ -25,10 +25,10 @@
 #define MAVLINK_COMM_NUM_BUFFERS 		1 // 4
 #define MAVLINK_MAX_SIGNING_STREAMS 	1 // 16
 
-#include "thirdparty/Mavlink/c_library_v2/mavlink_types.h"
-//#include "thirdparty/Mavlink/c_library_v2/common/mavlink.h"
+#include "thirdparty/Mavlink/mavlink_types.h"
+//#include "thirdparty/Mavlink/common/mavlink.h"
 // checking for lost frames by analyzing seq won't work if we use common and not ardupilotmega
-#include "thirdparty/Mavlink/c_library_v2/ardupilotmega/mavlink.h"
+#include "thirdparty/Mavlink/ardupilotmega/mavlink.h"
 
 
 #define MAVLINK_TELEM_MY_SYSID 			254 //MissionPlanner is 255, QGroundControl is 255
