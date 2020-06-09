@@ -565,7 +565,6 @@ QPixmap makePixMap(const QImage & image)
   return QPixmap::fromImage(result);
 }
 
-
 int version2index(const QString & version)
 {
   int result = 999;

@@ -46,7 +46,6 @@ class FirmwareInterface
     QString getFlavour() const;
     bool isHardwareCompatible(const FirmwareInterface &previousFirmware) const;
     inline QString getVersion() { return version; }
-    unsigned int getVersionId() { return versionId; }
     inline int getEEpromVersion() { return eepromVersion; }
     inline int getEEpromVariant() { return eepromVariant; }
     inline QString getEEpromId() { return eepromId; }
@@ -72,7 +71,6 @@ class FirmwareInterface
     QString time;
     QString flavour;
     QString version;
-    int versionId;
     QString eepromId;
     int eepromVersion;
     int eepromVariant;
