@@ -52,7 +52,6 @@ option(MODULE_PROTOCOL_FCC "Add support for FCC modules" ON)
 option(MODULE_PROTOCOL_LBT "Add support for EU/LBT modules" ON)
 option(MODULE_PROTOCOL_FLEX "Add support for non certified FLEX modules" OFF)
 option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
-option(OTX_RELEASE "Used to build OpenTX released firmware" OFF)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(TBS_RELEASE "Used to build TBS released firmware" OFF)
 option(ALLOW_TRAINER_MULTI "Allow multi trainer" OFF)
@@ -335,10 +334,6 @@ endif()
 
 if(MODULE_PROTOCOL_D8)
   add_definitions(-DMODULE_PROTOCOL_D8)
-endif()
-
-if(OTX_RELEASE)
-  add_definitions(-DOTX_RELEASE)
 endif()
 
 if(JUMPER_RELEASE)

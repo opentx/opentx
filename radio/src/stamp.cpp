@@ -40,8 +40,6 @@
 #define DISPLAY_VERSION "-radiomaster"
 #elif defined(TBS_RELEASE)
 #define DISPLAY_VERSION "-tbs"
-#elif defined(OTX_RELEASE)
-#define DISPLAY_VERSION "-otx"
 #else
 #define DISPLAY_VERSION
 #endif
