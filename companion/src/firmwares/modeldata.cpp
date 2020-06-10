@@ -207,36 +207,25 @@ bool ModelData::isEmpty() const
 
 void ModelData::setDefaultInputs(const GeneralSettings & settings)
 {
-  Board::Type board = getCurrentBoard();
-  if (IS_ARM(board)) {
-    for (int i = 0; i < CPN_MAX_STICKS; i++) {
-      ExpoData * expo = &expoData[i];
-      expo->chn = i;
-      expo->mode = INPUT_MODE_BOTH;
-      expo->srcRaw = settings.getDefaultSource(i);
-      expo->weight = 100;
-      strncpy(inputNames[i], Helpers::removeAccents(expo->srcRaw.toString(this)).toLatin1().constData(), sizeof(inputNames[i]) - 1);
-    }
+  for (int i = 0; i < CPN_MAX_STICKS; i++) {
+    ExpoData * expo = &expoData[i];
+    expo->chn = i;
+    expo->mode = INPUT_MODE_BOTH;
+    expo->srcRaw = settings.getDefaultSource(i);
+    expo->weight = 100;
+    strncpy(inputNames[i], Helpers::removeAccents(expo->srcRaw.toString(this)).toLatin1().constData(), sizeof(inputNames[i]) - 1);
   }
 }
 
 void ModelData::setDefaultMixes(const GeneralSettings & settings)
 {
-  Board::Type board = getCurrentBoard();
-  if (IS_ARM(board)) {
-    setDefaultInputs(settings);
-  }
+  setDefaultInputs(settings);
 
   for (int i = 0; i < CPN_MAX_STICKS; i++) {
     MixData * mix = &mixData[i];
     mix->destCh = i + 1;
     mix->weight = 100;
-    if (IS_ARM(board)) {
-      mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
-    }
-    else {
-      mix->srcRaw = RawSource(SOURCE_TYPE_STICK, i);
-    }
+    mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
   }
 }
 

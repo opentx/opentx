@@ -234,12 +234,7 @@ ui(new Ui::GeneralSetup)
   ui->memwarnChkB->setChecked(!generalSettings.disableMemoryWarning); // Default is zero=checked
   ui->alarmwarnChkB->setChecked(!generalSettings.disableAlarmWarning); // Default is zero=checked
 
-  if (IS_ARM(firmware->getBoard())) {
-    ui->rssiPowerOffWarnChkB->setChecked(!generalSettings.disableRssiPoweroffAlarm); // Default is zero=checked
-  }
-  else {
-    ui->rssiPowerOffWarnChkB->hide();
-  }
+  ui->rssiPowerOffWarnChkB->setChecked(!generalSettings.disableRssiPoweroffAlarm); // Default is zero=checked
 
   if (IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
     ui->splashScreenChkB->hide();
@@ -302,13 +297,7 @@ ui(new Ui::GeneralSetup)
     ui->backlightColor2_label->hide();
   }
 
-  if (IS_ARM(firmware->getBoard())) {
-    ui->switchesDelay->setValue(10*(generalSettings.switchesDelay+15));
-  }
-  else {
-    ui->switchesDelay->hide();
-    ui->switchesDelayLabel->hide();
-  }
+  ui->switchesDelay->setValue(10*(generalSettings.switchesDelay+15));
   ui->blAlarm_ChkB->setChecked(generalSettings.flashBeep);
 
   if (!firmware->getCapability(HasBatMeterRange)) {

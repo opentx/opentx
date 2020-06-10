@@ -75,10 +75,7 @@ void EEPROMInterface::showEepromErrors(QWidget *parent, const QString &title, co
 
   if (errors.test(UNSUPPORTED_NEWER_VERSION)) { errorsList << tr("- Eeprom is from a newer version of OpenTX"); }
   if (errors.test(NOT_OPENTX)) { errorsList << tr("- Eeprom is not from OpenTX"); }
-  if (errors.test(NOT_TH9X)) { errorsList << tr("- Eeprom is not from Th9X"); }
-  if (errors.test(NOT_GRUVIN9X)) { errorsList << tr("- Eeprom is not from Gruvin9X"); }
   if (errors.test(NOT_ERSKY9X)) { errorsList << tr("- Eeprom is not from ErSky9X"); }
-  if (errors.test(NOT_ER9X)) { errorsList << tr("- Eeprom is not from Er9X"); }
   if (errors.test(WRONG_SIZE)) { errorsList << tr("- Eeprom size is invalid"); }
   if (errors.test(WRONG_FILE_SYSTEM)) { errorsList << tr("- Eeprom file system is invalid"); }
   if (errors.test(UNKNOWN_BOARD)) { errorsList << tr("- Eeprom is from a unknown board"); }

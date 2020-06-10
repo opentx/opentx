@@ -377,8 +377,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   disableMouseScrolling();
 
   lock = true;
-  if (IS_ARM(firmware->getBoard()))
-    ui->screenType->addItem(tr("None"), TELEMETRY_SCREEN_NONE);
+  ui->screenType->addItem(tr("None"), TELEMETRY_SCREEN_NONE);
   ui->screenType->addItem(tr("Numbers"), TELEMETRY_SCREEN_NUMBERS);
   ui->screenType->addItem(tr("Bars"), TELEMETRY_SCREEN_BARS);
   if (IS_TARANIS(firmware->getBoard()))
@@ -439,14 +438,8 @@ void TelemetryCustomScreen::updateBar(int line)
 
   if (source.type != SOURCE_TYPE_NONE) {
     RawSourceRange range = source.getRange(model, generalSettings);
-    if (!IS_ARM(getCurrentBoard())) {
-      int max = round((range.max - range.min) / range.step);
-      if (int(255-screen.body.bars[line].barMax) > max) {
-        screen.body.bars[line].barMax = 255 - max;
-      }
-    }
     float minVal = range.getValue(screen.body.bars[line].barMin);
-    float maxVal = IS_ARM(getCurrentBoard()) ? screen.body.bars[line].barMax : 255 - screen.body.bars[line].barMax;
+    float maxVal = screen.body.bars[line].barMax;
     maxVal = range.getValue(maxVal);
 
     if (source.isTimeBased()) {
@@ -552,10 +545,7 @@ void TelemetryCustomScreen::barMinChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(getCurrentBoard()))
-      screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
-    else
-      screen.body.bars[line].barMin = round((value-minSB[line]->minimum()) / minSB[line]->singleStep());
+    screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
     // TODO set min (maxSB)
     emit modified();
   }
@@ -565,10 +555,7 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(getCurrentBoard()))
-      screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
-    else
-      screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());
+    screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
     // TODO set max (minSB)
     emit modified();
   }
@@ -583,10 +570,7 @@ void TelemetryCustomScreen::barTimeChanged()
     if (!te)
       return;
 
-    if (IS_ARM(getCurrentBoard()))
-      valRef = round(te->timeInSeconds() / te->singleStep());
-    else
-      valRef = round((te->timeInSeconds() - te->minimumTime()) / te->singleStep());
+    valRef = round(te->timeInSeconds() / te->singleStep());
 
     emit modified();
   }
@@ -946,29 +930,17 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     model.frsky.usrProto = 1;
   }
 
-  if (IS_ARM(firmware->getBoard())) {
-    ui->varioSource->setField(model.frsky.varioSource, this);
-    ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
-    ui->A1GB->hide();
-    ui->A2GB->hide();
-    for (unsigned  i= 0; i < CPN_MAX_SENSORS; ++i) {
-      TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], i, model, generalSettings, firmware);
-      ui->sensorsLayout->addWidget(panel);
-      sensorPanels[i] = panel;
-      connect(panel, SIGNAL(dataModified()), this, SLOT(update()));
-      connect(panel, SIGNAL(modified()), this, SLOT(onModified()));
-      connect(panel, SIGNAL(clearAllSensors()), this, SLOT(on_clearAllSensors()));
-    }
-  }
-  else {
-    ui->sensorsGB->hide();
-    ui->altimetryGB->hide();
-    analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
-    ui->A1Layout->addWidget(analogs[0]);
-    connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
-    analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
-    ui->A2Layout->addWidget(analogs[1]);
-    connect(analogs[1], SIGNAL(modified()), this, SLOT(onModified()));
+  ui->varioSource->setField(model.frsky.varioSource, this);
+  ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
+  ui->A1GB->hide();
+  ui->A2GB->hide();
+  for (unsigned  i= 0; i < CPN_MAX_SENSORS; ++i) {
+    TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], i, model, generalSettings, firmware);
+    ui->sensorsLayout->addWidget(panel);
+    sensorPanels[i] = panel;
+    connect(panel, SIGNAL(dataModified()), this, SLOT(update()));
+    connect(panel, SIGNAL(modified()), this, SLOT(onModified()));
+    connect(panel, SIGNAL(clearAllSensors()), this, SLOT(on_clearAllSensors()));
   }
 
   if (IS_TARANIS_X9(firmware->getBoard())) {
@@ -1017,10 +989,8 @@ void TelemetryPanel::update()
     populateTelemetrySourcesComboBox(ui->varioSource, model, false);
   }
 
-  if (IS_ARM(firmware->getBoard())) {
-    for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
-      sensorPanels[i]->update();
-    }
+  for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
+    sensorPanels[i]->update();
   }
 
   emit updated();
@@ -1032,52 +1002,29 @@ void TelemetryPanel::setup()
 
     lock = true;
 
-    if (IS_ARM(firmware->getBoard())) {
-      ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
-      ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
-      if (IS_9XRPRO(firmware->getBoard()) ||
-         (IS_TARANIS(firmware->getBoard()) && generalSettings.auxSerialMode == 2)) {
-        ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
-      }
-      ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
-      ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
-      ui->disableTelemetryAlarms->setField(model->rssiAlarms.disabled);
+    ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
+    ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
+    if (IS_9XRPRO(firmware->getBoard()) ||
+        (IS_TARANIS(firmware->getBoard()) && generalSettings.auxSerialMode == 2)) {
+      ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
     }
-    else {
-      ui->telemetryProtocolLabel->hide();
-      ui->telemetryProtocol->hide();
-      ui->ignoreSensorIds->hide();
-      ui->disableTelemetryAlarms->hide();
-    }
+    ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
+    ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
+    ui->disableTelemetryAlarms->setField(model->rssiAlarms.disabled);
 
     ui->rssiAlarmWarningSB->setValue(model->rssiAlarms.warning);
     ui->rssiAlarmCriticalSB->setValue(model->rssiAlarms.critical);
-    if (!IS_ARM(firmware->getBoard())) {
-      ui->rssiSourceLabel->hide();
-      ui->rssiSourceCB->hide();
-      ui->rssiAlarmWarningCB->setCurrentIndex(model->rssiAlarms.level[0]);
-      ui->rssiAlarmCriticalCB->setCurrentIndex(model->rssiAlarms.level[1]);
-    }
-    else {
-      ui->rssiSourceLabel->show();
-      ui->rssiSourceLabel->setText(tr("Source"));
-      ui->rssiSourceCB->setField(model->rssiSource, this);
-      ui->rssiSourceCB->show();
-      populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
 
-      ui->rssiAlarmWarningCB->hide();
-      ui->rssiAlarmCriticalCB->hide();
-      ui->rssiAlarmWarningLabel->setText(tr("Low Alarm"));
-      ui->rssiAlarmCriticalLabel->setText(tr("Critical Alarm"));
-    }
+    ui->rssiSourceLabel->show();
+    ui->rssiSourceLabel->setText(tr("Source"));
+    ui->rssiSourceCB->setField(model->rssiSource, this);
+    ui->rssiSourceCB->show();
+    populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
 
-    /*if (IS_ARM(firmware->getBoard())) {
-      for (int i=0; i<CPN_MAX_SENSORS; ++i) {
-        TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model->, model, generalSettings, firmware);
-        ui->sensorsLayout->addWidget(panel);
-        sensorPanels[i] = panel;
-      }
-    }*/
+    ui->rssiAlarmWarningCB->hide();
+    ui->rssiAlarmCriticalCB->hide();
+    ui->rssiAlarmWarningLabel->setText(tr("Low Alarm"));
+    ui->rssiAlarmCriticalLabel->setText(tr("Critical Alarm"));
 
     int varioCap = firmware->getCapability(HasVario);
     if (!varioCap) {
@@ -1117,38 +1064,6 @@ void TelemetryPanel::setup()
     }
 
     ui->variousGB->hide();
-    if (!IS_ARM(firmware->getBoard())) {
-      if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {
-        ui->fasOffset_label->hide();
-        ui->fasOffset_DSB->hide();
-      }
-      else {
-        ui->fasOffset_DSB->setValue(model->frsky.fasOffset/10.0);
-        ui->variousGB->show();
-      }
-
-      if (!(firmware->getCapability(HasMahPersistent))) {
-        ui->mahCount_label->hide();
-        ui->mahCount_SB->hide();
-        ui->mahCount_ChkB->hide();
-      }
-      else {
-        if (model->frsky.mAhPersistent) {
-          ui->mahCount_ChkB->setChecked(true);
-          ui->mahCount_SB->setValue(model->frsky.storedMah);
-        }
-        else {
-          ui->mahCount_SB->setDisabled(true);
-        }
-        ui->variousGB->show();
-      }
-
-      ui->frskyProtoCB->setCurrentIndex(model->frsky.usrProto);
-      ui->bladesCount->setValue(model->frsky.blades);
-      populateVarioSource();
-      populateVoltsSource();
-      populateCurrentSource();
-    }
 
     lock = false;
 }
@@ -1170,10 +1085,8 @@ void TelemetryPanel::populateVoltsSource()
   cb->setField(model->frsky.voltsSource, this);
   cb->addItem(tr("A1"), TELEMETRY_VOLTS_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_VOLTS_SOURCE_A2);
-  if (IS_ARM(firmware->getBoard())) {
-    cb->addItem(tr("A3"), TELEMETRY_VOLTS_SOURCE_A3);
-    cb->addItem(tr("A4"), TELEMETRY_VOLTS_SOURCE_A4);
-  }
+  cb->addItem(tr("A3"), TELEMETRY_VOLTS_SOURCE_A3);
+  cb->addItem(tr("A4"), TELEMETRY_VOLTS_SOURCE_A4);
   cb->addItem(tr("FAS"), TELEMETRY_VOLTS_SOURCE_FAS);
   cb->addItem(tr("Cells"), TELEMETRY_VOLTS_SOURCE_CELLS);
 }
@@ -1185,10 +1098,8 @@ void TelemetryPanel::populateCurrentSource()
   cb->addItem(tr("---"), TELEMETRY_CURRENT_SOURCE_NONE);
   cb->addItem(tr("A1"), TELEMETRY_CURRENT_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_CURRENT_SOURCE_A2);
-  if (IS_ARM(firmware->getBoard())) {
-    cb->addItem(tr("A3"), TELEMETRY_CURRENT_SOURCE_A3);
-    cb->addItem(tr("A4"), TELEMETRY_CURRENT_SOURCE_A4);
-  }
+  cb->addItem(tr("A3"), TELEMETRY_CURRENT_SOURCE_A3);
+  cb->addItem(tr("A4"), TELEMETRY_CURRENT_SOURCE_A4);
   cb->addItem(tr("FAS"), TELEMETRY_CURRENT_SOURCE_FAS);
 }
 
@@ -1221,18 +1132,6 @@ void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
       telemetryCustomScreens[i]->update();
     emit modified();
   }
-}
-
-void TelemetryPanel::on_rssiAlarmWarningCB_currentIndexChanged(int index)
-{
-  model->rssiAlarms.level[0] = index;
-  emit modified();
-}
-
-void TelemetryPanel::on_rssiAlarmCriticalCB_currentIndexChanged(int index)
-{
-  model->rssiAlarms.level[1] = index;
-  emit modified();
 }
 
 void TelemetryPanel::on_rssiAlarmWarningSB_editingFinished()

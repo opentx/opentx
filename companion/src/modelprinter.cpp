@@ -968,8 +968,7 @@ QString ModelPrinter::printSettingsTrim()
 {
   QStringList str;
   str << printLabelValue(tr("Step"), printTrimIncrementMode());
-  if (IS_ARM(firmware->getBoard()))
-    str << printLabelValue(tr("Display"), printTrimsDisplayMode());
+  str << printLabelValue(tr("Display"), printTrimsDisplayMode());
   str << printLabelValue(tr("Extended"), printBoolean(model.extendedTrims, BOOLEAN_YESNO));
   return str.join(" ");
 }

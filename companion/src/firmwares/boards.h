@@ -32,10 +32,6 @@ namespace Board {
   enum Type
   {
     BOARD_UNKNOWN = -1,
-    BOARD_9X_M64 = 0,
-    BOARD_9X_M128,
-    BOARD_MEGA2560,
-    BOARD_GRUVIN9X,
     BOARD_SKY9X,
     BOARD_9XRPRO,
     BOARD_AR9X,
@@ -190,26 +186,6 @@ class Boards
 
 // temporary aliases for transition period, use Boards class instead.
 #define getBoardCapability(b__, c__)   Boards::getCapability(b__, c__)
-
-inline bool IS_9X(Board::Type board)
-{
-  return board == Board::BOARD_9X_M64 || board == Board::BOARD_9X_M128;
-}
-
-inline bool IS_STOCK(Board::Type board)
-{
-  return board == Board::BOARD_9X_M64;
-}
-
-inline bool IS_M128(Board::Type board)
-{
-  return board == Board::BOARD_9X_M128;
-}
-
-inline bool IS_2560(Board::Type board)
-{
-  return board == Board::BOARD_GRUVIN9X || board == Board::BOARD_MEGA2560;
-}
 
 inline bool IS_SKY9X(Board::Type board)
 {
