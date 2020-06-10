@@ -28,7 +28,7 @@
 #define FDEGTORAD   (FPI/180.0f)
 #define FRADTODEG   (180.0f/FPI)
 
-#define INCU8(x)  if ((x) < UINT8_MAX) { (x)++; }
+#define INCU8(x)    if ((x) < UINT8_MAX) { (x)++; }
 
 
 
@@ -108,9 +108,9 @@ void MavlinkTelem::generateRcChannelsOverride(uint8_t sysid, uint8_t tsystem, ui
     mavlink_msg_rc_channels_override_pack(
             sysid, _my_compid, &_msg_out,
             tsystem, tcomponent,
-			chan_raw[0], chan_raw[1], chan_raw[2], chan_raw[3], chan_raw[4], chan_raw[5], chan_raw[6], chan_raw[7],
-			chan_raw[8], chan_raw[9], chan_raw[10], chan_raw[11], chan_raw[12], chan_raw[13], chan_raw[14], chan_raw[15],
-			chan_raw[16], chan_raw[17]
+            chan_raw[0], chan_raw[1], chan_raw[2], chan_raw[3], chan_raw[4], chan_raw[5], chan_raw[6], chan_raw[7],
+            chan_raw[8], chan_raw[9], chan_raw[10], chan_raw[11], chan_raw[12], chan_raw[13], chan_raw[14], chan_raw[15],
+            chan_raw[16], chan_raw[17]
             );
     _txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
 }
@@ -206,18 +206,18 @@ bool MavlinkTelem::doTaskAutopilot(void)
 
     if (!autopilot.compid) { _task[TASK_AUTOPILOT] = _task[TASK_AP] = 0; return false; }
 
-	// we give RC_CHANNELS_OVERRIDE highest priority
+    // we give RC_CHANNELS_OVERRIDE highest priority
     if (_task[TASK_AUTOPILOT] & TASK_SENDMSG_RC_CHANNELS_OVERRIDE) {
         RESETTASK(TASK_AUTOPILOT,TASK_SENDMSG_RC_CHANNELS_OVERRIDE);
         if (autopilottype == MAV_AUTOPILOT_ARDUPILOTMEGA) {
             // RC_CHHANELS_OVERRIDE requires the "correct" sysid, so try to work it out
             // somewhat dirty, but that's how ArduPilot works, it only allows one GCS, and its sys id needs to be set by hand
             // RC_CHHANELS_OVERRIDE is also considered as kind of a heartbeat, e.g. with respect to gcs failsafe
-        	if (param.SYSID_MYGCS >= 0)
-        		generateRcChannelsOverride(param.SYSID_MYGCS, _sysid, autopilot.compid, _tovr_chan_raw);
+            if (param.SYSID_MYGCS >= 0)
+                generateRcChannelsOverride(param.SYSID_MYGCS, _sysid, autopilot.compid, _tovr_chan_raw);
         } else {
-        	//TODO: check what other flight stacks expect
-        	generateRcChannelsOverride(_my_sysid, _sysid, autopilot.compid, _tovr_chan_raw);
+            //TODO: check what other flight stacks expect
+            generateRcChannelsOverride(_my_sysid, _sysid, autopilot.compid, _tovr_chan_raw);
         }
         return true; //do only one per loop
     }
@@ -392,24 +392,24 @@ bool MavlinkTelem::doTaskAutopilotLowPriority(void)
 
 void MavlinkTelem::handleMessageAutopilot(void)
 {
-	autopilot.is_receiving = MAVLINK_TELEM_RECEIVING_TIMEOUT; //we accept any msg from the autopilot to indicate it is alive
+    autopilot.is_receiving = MAVLINK_TELEM_RECEIVING_TIMEOUT; //we accept any msg from the autopilot to indicate it is alive
 
-	switch (_msg.msgid) {
+    switch (_msg.msgid) {
 
-	case MAVLINK_MSG_ID_HEARTBEAT: {
-		mavlink_heartbeat_t payload;
-		mavlink_msg_heartbeat_decode(&_msg, &payload);
-		flightmode = payload.custom_mode;
-		autopilot.system_status = payload.system_status;
-		autopilot.is_armed = (payload.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false;
-		autopilot.is_standby = (payload.system_status <= MAV_STATE_STANDBY) ? true : false;
+    case MAVLINK_MSG_ID_HEARTBEAT: {
+        mavlink_heartbeat_t payload;
+        mavlink_msg_heartbeat_decode(&_msg, &payload);
+        flightmode = payload.custom_mode;
+        autopilot.system_status = payload.system_status;
+        autopilot.is_armed = (payload.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false;
+        autopilot.is_standby = (payload.system_status <= MAV_STATE_STANDBY) ? true : false;
         autopilot.is_critical = (payload.system_status >= MAV_STATE_CRITICAL) ? true : false;
         INCU8(autopilot.updated);
-		//autopilot.is_receiving = MAVLINK_TELEM_RECEIVING_TIMEOUT;
-		}break;
+        //autopilot.is_receiving = MAVLINK_TELEM_RECEIVING_TIMEOUT;
+        }break;
 
     case MAVLINK_MSG_ID_ATTITUDE: {
-    	mavlink_attitude_t payload;
+        mavlink_attitude_t payload;
         mavlink_msg_attitude_decode(&_msg, &payload);
         att.roll_rad = payload.roll;
         att.pitch_rad = payload.pitch;
@@ -418,10 +418,10 @@ void MavlinkTelem::handleMessageAutopilot(void)
         //clear_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_EXTRA1);
         clear_request(TASK_AUTOPILOT, TASK_SENDCMD_REQUEST_ATTITUDE);
         autopilot.requests_waiting_mask &=~ AUTOPILOT_REQUESTWAITING_ATTITUDE;
-		}break;
+        }break;
 
     case MAVLINK_MSG_ID_GPS_RAW_INT: {
-    	mavlink_gps_raw_int_t payload;
+        mavlink_gps_raw_int_t payload;
         mavlink_msg_gps_raw_int_decode(&_msg, &payload);
         gps1.fix = payload.fix_type;
         gps1.sat = payload.satellites_visible;
@@ -444,7 +444,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
             // { GPS_COURS_FIRST_ID, GPS_COURS_LAST_ID, 0, ZSTR_HDG, UNIT_DEGREE, 2 },
             // { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS, 0 },
         }
-		}break;
+        }break;
 
     case MAVLINK_MSG_ID_GPS2_RAW: {
         mavlink_gps2_raw_t payload;
@@ -479,14 +479,14 @@ void MavlinkTelem::handleMessageAutopilot(void)
         }break;
 
     case MAVLINK_MSG_ID_VFR_HUD: {
-    	mavlink_vfr_hud_t payload;
+        mavlink_vfr_hud_t payload;
         mavlink_msg_vfr_hud_decode(&_msg, &payload);
-    	vfr.airspd_mps = payload.airspeed;
-    	vfr.groundspd_mps = payload.groundspeed;
-    	vfr.alt_m = payload.alt;
-    	vfr.climbrate_mps = payload.climb;
-    	vfr.heading_deg = payload.heading;
-    	vfr.thro_pct = payload.throttle;
+        vfr.airspd_mps = payload.airspeed;
+        vfr.groundspd_mps = payload.groundspeed;
+        vfr.alt_m = payload.alt;
+        vfr.climbrate_mps = payload.climb;
+        vfr.heading_deg = payload.heading;
+        vfr.thro_pct = payload.throttle;
         INCU8(vfr.updated);
         clear_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_EXTRA2);
         autopilot.requests_waiting_mask &=~ AUTOPILOT_REQUESTWAITING_VFR_HUD;
@@ -496,51 +496,51 @@ void MavlinkTelem::handleMessageAutopilot(void)
             setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, AIR_SPEED_FIRST_ID, 0, 15, (int32_t)(payload.airspeed * 100.0f), UNIT_METERS_PER_SECOND, 2);
             setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, GPS_COURS_FIRST_ID, 0, 16, (int32_t)payload.heading * 10, UNIT_DEGREE, 1);
         }
-		}break;
+        }break;
 
     /* let's use BATTERY_STATUS, is nearly the same thing
     case MAVLINK_MSG_ID_SYS_STATUS: {
-    	mavlink_sys_status_t payload;
-    	mavlink_msg_sys_status_decode(&_msg, &payload);
-    	// voltage_battery	uint16_t	mV
-    	// current_battery	int16_t	cA
-    	// battery_remaining	int8_t	%
-    	}break; */
+        mavlink_sys_status_t payload;
+        mavlink_msg_sys_status_decode(&_msg, &payload);
+        // voltage_battery  uint16_t    mV
+        // current_battery  int16_t cA
+        // battery_remaining    int8_t  %
+        }break; */
 
     case MAVLINK_MSG_ID_BATTERY_STATUS: {
-    	mavlink_battery_status_t payload;
-    	mavlink_msg_battery_status_decode(&_msg, &payload);
-    	int32_t voltage = 0;
-    	int8_t cellcount = 0;
-    	bool validcellcount = true;
-    	for (uint8_t i=0; i<10; i++) {
-    		if (payload.voltages[i] != UINT16_MAX) {
-    			voltage += payload.voltages[i]; //uint16_t mV, UINT16_MAX if not known
-    			if (payload.voltages[i] > 5000) validcellcount = false;
-    			cellcount++;
-    		}
-    	}
-    	if (!validcellcount) cellcount = -1;
+        mavlink_battery_status_t payload;
+        mavlink_msg_battery_status_decode(&_msg, &payload);
+        int32_t voltage = 0;
+        int8_t cellcount = 0;
+        bool validcellcount = true;
+        for (uint8_t i=0; i<10; i++) {
+            if (payload.voltages[i] != UINT16_MAX) {
+                voltage += payload.voltages[i]; //uint16_t mV, UINT16_MAX if not known
+                if (payload.voltages[i] > 5000) validcellcount = false;
+                cellcount++;
+            }
+        }
+        if (!validcellcount) cellcount = -1;
         if (payload.id == 0) {
-    		bat1.charge_consumed_mAh = payload.current_consumed; // mAh, -1 if not known
-    		bat1.energy_consumed_hJ = payload.energy_consumed; // 0.1 kJ, -1 if not known
-    		bat1.temperature_cC = payload.temperature; // centi-degrees C°, INT16_MAX if not known
-    		bat1.voltage_mV = voltage; // mV
-    		bat1.current_cA = payload.current_battery; // 10*mA, -1 if not known
-    		//bat1.function = payload.battery_function;
-    		//bat1.type = payload.type;
-    		bat1.remaining_pct = payload.battery_remaining; //(0%: 0, 100%: 100), -1 if not knwon
-    		bat1.cellcount = cellcount;
+            bat1.charge_consumed_mAh = payload.current_consumed; // mAh, -1 if not known
+            bat1.energy_consumed_hJ = payload.energy_consumed; // 0.1 kJ, -1 if not known
+            bat1.temperature_cC = payload.temperature; // centi-degrees C°, INT16_MAX if not known
+            bat1.voltage_mV = voltage; // mV
+            bat1.current_cA = payload.current_battery; // 10*mA, -1 if not known
+            //bat1.function = payload.battery_function;
+            //bat1.type = payload.type;
+            bat1.remaining_pct = payload.battery_remaining; //(0%: 0, 100%: 100), -1 if not knwon
+            bat1.cellcount = cellcount;
             INCU8(bat1.updated);
         }
         if (payload.id == 1) {
-    		bat2.charge_consumed_mAh = payload.current_consumed; // mAh, -1 if not known
-    		bat2.energy_consumed_hJ = payload.energy_consumed; // 0.1 kJ, -1 if not known
-    		bat2.temperature_cC = payload.temperature; // centi-degrees C°, INT16_MAX if not known
-    		bat2.voltage_mV = voltage; // mV
-    		bat2.current_cA = payload.current_battery; // 10*mA, -1 if not known
-    		bat2.remaining_pct = payload.battery_remaining; //(0%: 0, 100%: 100), -1 if not knwon
-    		bat2.cellcount = cellcount;
+            bat2.charge_consumed_mAh = payload.current_consumed; // mAh, -1 if not known
+            bat2.energy_consumed_hJ = payload.energy_consumed; // 0.1 kJ, -1 if not known
+            bat2.temperature_cC = payload.temperature; // centi-degrees C°, INT16_MAX if not known
+            bat2.voltage_mV = voltage; // mV
+            bat2.current_cA = payload.current_battery; // 10*mA, -1 if not known
+            bat2.remaining_pct = payload.battery_remaining; //(0%: 0, 100%: 100), -1 if not knwon
+            bat2.cellcount = cellcount;
             INCU8(bat2.updated);
         }
         if (payload.id < 8) bat_instancemask |= (1 << payload.id);
@@ -554,7 +554,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
             // { RBOX_BATT1_FIRST_ID, RBOX_BATT1_LAST_ID, 1, ZSTR_BATT1_CURRENT, UNIT_AMPS, 2 },
             // { RBOX_CNSP_FIRST_ID, RBOX_CNSP_LAST_ID, 0, ZSTR_BATT1_CONSUMPTION, UNIT_MAH, 0 },
         }
-    	}break;
+        }break;
 
     case MAVLINK_MSG_ID_STATUSTEXT: {
         mavlink_statustext_t payload;
@@ -623,16 +623,16 @@ void MavlinkTelem::_resetAutopilot(void)
     autopilot.is_initialized = false;
 
     autopilot.system_status = MAV_STATE_UNINIT;
-	autopilot.custom_mode = 0;
+    autopilot.custom_mode = 0;
     autopilot.is_armed = false;
     autopilot.is_standby = true;
     autopilot.is_critical = false;
     autopilot.prearm_ok = false;
     autopilot.updated = 0;
 
-	att.roll_rad = 0.0f;
-	att.pitch_rad = 0.0f;
-	att.yaw_rad = 0.0f;
+    att.roll_rad = 0.0f;
+    att.pitch_rad = 0.0f;
+    att.yaw_rad = 0.0f;
     att.updated = 0;
 
     gps1.fix = GPS_FIX_TYPE_NO_GPS;
@@ -669,30 +669,30 @@ void MavlinkTelem::_resetAutopilot(void)
     gposition.hdg_cdeg = UINT16_MAX;
     gposition.updated = 0;
 
-	vfr.airspd_mps = 0.0f;
-	vfr.groundspd_mps = 0.0f;
-	vfr.alt_m = 0.0f;
-	vfr.climbrate_mps = 0.0f;
-	vfr.heading_deg = 0;
-	vfr.thro_pct = 0;
+    vfr.airspd_mps = 0.0f;
+    vfr.groundspd_mps = 0.0f;
+    vfr.alt_m = 0.0f;
+    vfr.climbrate_mps = 0.0f;
+    vfr.heading_deg = 0;
+    vfr.thro_pct = 0;
     vfr.updated = 0;
 
-	bat1.charge_consumed_mAh = -1;
-	bat1.energy_consumed_hJ = -1;
-	bat1.temperature_cC = INT16_MAX;
-	bat1.voltage_mV = 0;
-	bat1.current_cA = -1;
-	bat1.remaining_pct = -1;
-	bat1.cellcount = -1;
+    bat1.charge_consumed_mAh = -1;
+    bat1.energy_consumed_hJ = -1;
+    bat1.temperature_cC = INT16_MAX;
+    bat1.voltage_mV = 0;
+    bat1.current_cA = -1;
+    bat1.remaining_pct = -1;
+    bat1.cellcount = -1;
     bat1.updated = 0;
 
-	bat2.charge_consumed_mAh = -1;
-	bat2.energy_consumed_hJ = -1;
-	bat2.temperature_cC = INT16_MAX;
-	bat2.voltage_mV = 0;
-	bat2.current_cA = -1;
-	bat2.remaining_pct = -1;
-	bat2.cellcount = -1;
+    bat2.charge_consumed_mAh = -1;
+    bat2.energy_consumed_hJ = -1;
+    bat2.temperature_cC = INT16_MAX;
+    bat2.voltage_mV = 0;
+    bat2.current_cA = -1;
+    bat2.remaining_pct = -1;
+    bat2.cellcount = -1;
     bat2.updated = 0;
 
     bat_instancemask = 0;
@@ -949,8 +949,8 @@ DATA_ID == 0x5003 then -- BATT
 DATA_ID == 0x5007 then -- PARAMS
  */
 /*
-	int32_t data = 12345 + _data;
-	_data++;
+    int32_t data = 12345 + _data;
+    _data++;
 #if defined(LUA)
     if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(sizeof(SportTelemetryPacket))) {
       SportTelemetryPacket luaPacket;

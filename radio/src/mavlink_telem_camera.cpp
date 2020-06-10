@@ -28,7 +28,7 @@
 #define FDEGTORAD   (FPI/180.0f)
 #define FRADTODEG   (180.0f/FPI)
 
-#define INCU8(x)  if ((x) < UINT8_MAX) { (x)++; }
+#define INCU8(x)    if ((x) < UINT8_MAX) { (x)++; }
 
 
 // -- Generate MAVLink messages --
@@ -170,83 +170,83 @@ void MavlinkTelem::handleMessageCamera(void)
 {
     camera.is_receiving = MAVLINK_TELEM_RECEIVING_TIMEOUT; //we accept any msg from the camera to indicate it is alive
 
-	switch (_msg.msgid) {
+    switch (_msg.msgid) {
 
-	case MAVLINK_MSG_ID_HEARTBEAT: {
-		mavlink_heartbeat_t payload;
-		mavlink_msg_heartbeat_decode(&_msg, &payload);
-		camera.system_status = payload.system_status;
-		camera.is_armed = (payload.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false;
+    case MAVLINK_MSG_ID_HEARTBEAT: {
+        mavlink_heartbeat_t payload;
+        mavlink_msg_heartbeat_decode(&_msg, &payload);
+        camera.system_status = payload.system_status;
+        camera.is_armed = (payload.base_mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false;
         camera.is_standby = (payload.system_status <= MAV_STATE_STANDBY) ? true : false;
         camera.is_critical = (payload.system_status >= MAV_STATE_CRITICAL) ? true : false;
         INCU8(camera.updated);
-		//camera.is_receiving = MAVLINK_TELEM_RECEIVING_TIMEOUT;
-		}break;
+        //camera.is_receiving = MAVLINK_TELEM_RECEIVING_TIMEOUT;
+        }break;
 
-	case MAVLINK_MSG_ID_CAMERA_INFORMATION: {
-		mavlink_camera_information_t payload;
-		mavlink_msg_camera_information_decode(&_msg, &payload);
-		memset(cameraInfo.vendor_name, 0, 32+1);
-		memcpy(cameraInfo.vendor_name, payload.vendor_name, 32);
-		memset(cameraInfo.model_name, 0, 32+1);
-		memcpy(cameraInfo.model_name, payload.model_name, 32);
-		cameraInfo.firmware_version = payload.firmware_version;
-		cameraInfo.flags = payload.flags;
-		cameraInfo.has_video = (cameraInfo.flags & CAMERA_CAP_FLAGS_CAPTURE_VIDEO);
-		cameraInfo.has_photo = (cameraInfo.flags & CAMERA_CAP_FLAGS_CAPTURE_IMAGE);
-		cameraInfo.has_modes = (cameraInfo.flags & CAMERA_CAP_FLAGS_HAS_MODES);
+    case MAVLINK_MSG_ID_CAMERA_INFORMATION: {
+        mavlink_camera_information_t payload;
+        mavlink_msg_camera_information_decode(&_msg, &payload);
+        memset(cameraInfo.vendor_name, 0, 32+1);
+        memcpy(cameraInfo.vendor_name, payload.vendor_name, 32);
+        memset(cameraInfo.model_name, 0, 32+1);
+        memcpy(cameraInfo.model_name, payload.model_name, 32);
+        cameraInfo.firmware_version = payload.firmware_version;
+        cameraInfo.flags = payload.flags;
+        cameraInfo.has_video = (cameraInfo.flags & CAMERA_CAP_FLAGS_CAPTURE_VIDEO);
+        cameraInfo.has_photo = (cameraInfo.flags & CAMERA_CAP_FLAGS_CAPTURE_IMAGE);
+        cameraInfo.has_modes = (cameraInfo.flags & CAMERA_CAP_FLAGS_HAS_MODES);
         clear_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_INFORMATION);
         camera.requests_waiting_mask &=~ CAMERA_REQUESTWAITING_CAMERA_INFORMATION;
-		}break;
+        }break;
 
-	case MAVLINK_MSG_ID_CAMERA_SETTINGS: {
-		mavlink_camera_settings_t payload;
-		mavlink_msg_camera_settings_decode(&_msg, &payload);
-		cameraStatus.mode = (payload.mode_id == CAMERA_MODE_IMAGE) ? CAMERA_MODE_IMAGE : CAMERA_MODE_VIDEO;
+    case MAVLINK_MSG_ID_CAMERA_SETTINGS: {
+        mavlink_camera_settings_t payload;
+        mavlink_msg_camera_settings_decode(&_msg, &payload);
+        cameraStatus.mode = (payload.mode_id == CAMERA_MODE_IMAGE) ? CAMERA_MODE_IMAGE : CAMERA_MODE_VIDEO;
         clear_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_SETTINGS);
         camera.requests_waiting_mask &=~ CAMERA_REQUESTWAITING_CAMERA_SETTINGS;
-		}break;
+        }break;
 
-	case MAVLINK_MSG_ID_CAMERA_CAPTURE_STATUS: {
-		mavlink_camera_capture_status_t payload;
-		mavlink_msg_camera_capture_status_decode(&_msg, &payload);
-		cameraStatus.recording_time_ms = payload.recording_time_ms;
-		cameraStatus.available_capacity_MiB = payload.available_capacity;
-		cameraStatus.video_on = (payload.video_status > 0);
-		cameraStatus.photo_on = (payload.image_status > 0); //0: idle, 1: capture in progress, 2: interval set but idle, 3: interval set and capture in progress
+    case MAVLINK_MSG_ID_CAMERA_CAPTURE_STATUS: {
+        mavlink_camera_capture_status_t payload;
+        mavlink_msg_camera_capture_status_decode(&_msg, &payload);
+        cameraStatus.recording_time_ms = payload.recording_time_ms;
+        cameraStatus.available_capacity_MiB = payload.available_capacity;
+        cameraStatus.video_on = (payload.video_status > 0);
+        cameraStatus.photo_on = (payload.image_status > 0); //0: idle, 1: capture in progress, 2: interval set but idle, 3: interval set and capture in progress
         clear_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_CAPTURE_STATUS);
         camera.requests_waiting_mask &=~ CAMERA_REQUESTWAITING_CAMERA_CAPTURE_STATUS;
-		}break;
+        }break;
 
-	case MAVLINK_MSG_ID_STORAGE_INFORMATION: {
-		mavlink_storage_information_t payload;
-		mavlink_msg_storage_information_decode(&_msg, &payload);
+    case MAVLINK_MSG_ID_STORAGE_INFORMATION: {
+        mavlink_storage_information_t payload;
+        mavlink_msg_storage_information_decode(&_msg, &payload);
         if (payload.status == STORAGE_STATUS_READY) {
-			cameraInfo.total_capacity_MiB = payload.total_capacity;
-			cameraStatus.available_capacity_MiB = payload.available_capacity;
-		} else {
-			cameraInfo.total_capacity_MiB = NAN;
-			cameraStatus.available_capacity_MiB = NAN;
-		}
+            cameraInfo.total_capacity_MiB = payload.total_capacity;
+            cameraStatus.available_capacity_MiB = payload.available_capacity;
+        } else {
+            cameraInfo.total_capacity_MiB = NAN;
+            cameraStatus.available_capacity_MiB = NAN;
+        }
         clear_request(TASK_CAMERA, TASK_SENDREQUEST_STORAGE_INFORMATION);
-		}break;
+        }break;
 
-	case MAVLINK_MSG_ID_BATTERY_STATUS: {
-		mavlink_battery_status_t payload;
-		mavlink_msg_battery_status_decode(&_msg, &payload);
-    	int32_t voltage = 0;
-    	bool has_voltage = false;
-    	for (uint8_t i=0; i<10; i++) {
-    		if (payload.voltages[i] != UINT16_MAX) {
-    			voltage += payload.voltages[i]; //uint16_t mV, UINT16_MAX if not known
-    			has_voltage = true;
-    		}
-    	}
-  		cameraStatus.battery_voltage_V = (has_voltage) ? 0.001f * (float)voltage : NAN;
-    	cameraStatus.battery_remaining_pct = payload.battery_remaining; // -1 if not known
-		}break;
+    case MAVLINK_MSG_ID_BATTERY_STATUS: {
+        mavlink_battery_status_t payload;
+        mavlink_msg_battery_status_decode(&_msg, &payload);
+        int32_t voltage = 0;
+        bool has_voltage = false;
+        for (uint8_t i=0; i<10; i++) {
+            if (payload.voltages[i] != UINT16_MAX) {
+                voltage += payload.voltages[i]; //uint16_t mV, UINT16_MAX if not known
+                has_voltage = true;
+            }
+        }
+        cameraStatus.battery_voltage_V = (has_voltage) ? 0.001f * (float)voltage : NAN;
+        cameraStatus.battery_remaining_pct = payload.battery_remaining; // -1 if not known
+        }break;
 
-	}
+    }
 }
 
 
@@ -255,10 +255,10 @@ void MavlinkTelem::handleMessageCamera(void)
 
 void MavlinkTelem::setCameraStartupRequests(void)
 {
-	set_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_INFORMATION, 10, 200+0); //10x every ca 2sec
-	set_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_SETTINGS, 10, 200+5);
-	set_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_CAPTURE_STATUS, 10, 200+10);
-	set_request(TASK_CAMERA, TASK_SENDREQUEST_STORAGE_INFORMATION, 10, 200+15);
+    set_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_INFORMATION, 10, 200+0); //10x every ca 2sec
+    set_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_SETTINGS, 10, 200+5);
+    set_request(TASK_CAMERA, TASK_SENDREQUEST_CAMERA_CAPTURE_STATUS, 10, 200+10);
+    set_request(TASK_CAMERA, TASK_SENDREQUEST_STORAGE_INFORMATION, 10, 200+15);
 }
 
 
@@ -277,28 +277,28 @@ void MavlinkTelem::_resetCamera(void)
     camera.is_initialized = false;
 
     camera.system_status = MAV_STATE_UNINIT;
-	camera.custom_mode = 0;
+    camera.custom_mode = 0;
     camera.is_armed = false;
     camera.is_standby = true;
     camera.is_critical = false;
     camera.prearm_ok = false;
     camera.updated = 0;
 
-	cameraInfo.vendor_name[0] = 0;
-	cameraInfo.model_name[0] = 0;
-	cameraInfo.flags = 0;
-	cameraInfo.has_video = false;
-	cameraInfo.has_photo = false;
-	cameraInfo.has_modes = false;
-	cameraInfo.total_capacity_MiB = NAN;
+    cameraInfo.vendor_name[0] = 0;
+    cameraInfo.model_name[0] = 0;
+    cameraInfo.flags = 0;
+    cameraInfo.has_video = false;
+    cameraInfo.has_photo = false;
+    cameraInfo.has_modes = false;
+    cameraInfo.total_capacity_MiB = NAN;
 
-	cameraStatus.mode = 0;
-	cameraStatus.video_on = false;
-	cameraStatus.photo_on = false;
-	cameraStatus.available_capacity_MiB = NAN;
-	cameraStatus.recording_time_ms = UINT32_MAX;
-	cameraStatus.battery_voltage_V = NAN;
-	cameraStatus.battery_remaining_pct = -1;
+    cameraStatus.mode = 0;
+    cameraStatus.video_on = false;
+    cameraStatus.photo_on = false;
+    cameraStatus.available_capacity_MiB = NAN;
+    cameraStatus.recording_time_ms = UINT32_MAX;
+    cameraStatus.battery_voltage_V = NAN;
+    cameraStatus.battery_remaining_pct = -1;
 }
 
 

@@ -128,19 +128,19 @@ void MavlinkTelem::do_requests(void)
 
 bool MavlinkTelem::isInVersionV2(void)
 {
-	return (_status.flags & MAVLINK_STATUS_FLAG_IN_MAVLINK1) ? false : true;
+    return (_status.flags & MAVLINK_STATUS_FLAG_IN_MAVLINK1) ? false : true;
 }
 
 
 void MavlinkTelem::setOutVersionV2(void)
 {
-	_status.flags &=~ MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
+    _status.flags &=~ MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
 }
 
 
 void MavlinkTelem::setOutVersionV1(void)
 {
-	_status.flags |= MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
+    _status.flags |= MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
 }
 
 
@@ -162,29 +162,30 @@ void MavlinkTelem::_generateCmdLong(
 
 void MavlinkTelem::generateHeartbeat(uint8_t base_mode, uint32_t custom_mode, uint8_t system_status)
 {
-	setOutVersionV2();
-	mavlink_msg_heartbeat_pack(
-		  _my_sysid, _my_compid, &_msg_out,
-          MAV_TYPE_GCS, MAV_AUTOPILOT_INVALID, base_mode, custom_mode, system_status
-		  );
-	_txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
+    setOutVersionV2();
+    mavlink_msg_heartbeat_pack(
+            _my_sysid, _my_compid, &_msg_out,
+            MAV_TYPE_GCS, MAV_AUTOPILOT_INVALID, base_mode, custom_mode, system_status
+            );
+    _txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
 }
 
 
 void MavlinkTelem::generateParamRequestList(uint8_t tsystem, uint8_t tcomponent)
 {
-	setOutVersionV2();
-	mavlink_msg_param_request_list_pack(
-			_my_sysid, _my_compid, &_msg_out,
-			tsystem, tcomponent
-			);
-	_txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
+    setOutVersionV2();
+    mavlink_msg_param_request_list_pack(
+            _my_sysid, _my_compid, &_msg_out,
+            tsystem, tcomponent
+            );
+    _txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
 }
 
 
 void MavlinkTelem::generateParamRequestRead(uint8_t tsystem, uint8_t tcomponent, const char* param_name)
 {
 char param_id[16];
+
     strncpy(param_id, param_name, 16);
     setOutVersionV2();
     mavlink_msg_param_request_read_pack(
@@ -210,7 +211,7 @@ void MavlinkTelem::generateRequestDataStream(
 //ArduPilot: ignores param7
 void MavlinkTelem::generateCmdSetMessageInterval(uint8_t tsystem, uint8_t tcomponent, uint8_t msgid, int32_t period_us, uint8_t startstop)
 {
-  _generateCmdLong(tsystem, tcomponent, MAV_CMD_SET_MESSAGE_INTERVAL, msgid, (startstop) ? period_us : -1.0f);
+    _generateCmdLong(tsystem, tcomponent, MAV_CMD_SET_MESSAGE_INTERVAL, msgid, (startstop) ? period_us : -1.0f);
 }
 
 
@@ -231,22 +232,22 @@ void MavlinkTelem::generateCmdSetMessageInterval(uint8_t tsystem, uint8_t tcompo
 
 void MavlinkTelem::handleMessage(void)
 {
-	if (_msg.sysid == 0) return; //this can't be anything meaningful
+    if (_msg.sysid == 0) return; //this can't be anything meaningful
 
-	// autodetect sys id, and handle autopilot connecting
+    // autodetect sys id, and handle autopilot connecting
     if (!isSystemIdValid() || (autopilot.compid == 0)) {
-    	if (_msg.msgid == MAVLINK_MSG_ID_HEARTBEAT) {
-    		mavlink_heartbeat_t payload;
-    		mavlink_msg_heartbeat_decode(&_msg, &payload);
-    		if ((_msg.compid == MAV_COMP_ID_AUTOPILOT1) || (payload.autopilot != MAV_AUTOPILOT_INVALID)) {
-    			_sysid = _msg.sysid;
-    			autopilottype = payload.autopilot;
-    			vehicletype = payload.type;
-    			_resetAutopilot();
+        if (_msg.msgid == MAVLINK_MSG_ID_HEARTBEAT) {
+            mavlink_heartbeat_t payload;
+            mavlink_msg_heartbeat_decode(&_msg, &payload);
+            if ((_msg.compid == MAV_COMP_ID_AUTOPILOT1) || (payload.autopilot != MAV_AUTOPILOT_INVALID)) {
+                _sysid = _msg.sysid;
+                autopilottype = payload.autopilot;
+                vehicletype = payload.type;
+                _resetAutopilot();
                 autopilot.compid = _msg.compid;
-    			autopilot.requests_triggered = 1; //we need to postpone and schedule them
-    		}
-    	}
+                autopilot.requests_triggered = 1; //we need to postpone and schedule them
+            }
+        }
         if (!isSystemIdValid()) return;
     }
 
@@ -254,38 +255,38 @@ void MavlinkTelem::handleMessage(void)
     // somewhat inefficient, lots of heartbeat decodes, we probably want a separate heartbeat handler
 
     if ((camera.compid == 0) && (_msg.msgid == MAVLINK_MSG_ID_HEARTBEAT)) {
-		mavlink_heartbeat_t payload;
-		mavlink_msg_heartbeat_decode(&_msg, &payload);
-    	if ( (payload.autopilot == MAV_AUTOPILOT_INVALID) &&
-    		 (  (payload.type == MAV_TYPE_CAMERA) ||
-    	        ((_msg.compid >= MAV_COMP_ID_CAMERA) && (_msg.compid <= MAV_COMP_ID_CAMERA6))  )  ) {
-    	    _resetCamera();
-    		camera.compid = _msg.compid;
-    		camera.requests_triggered = 1; //we schedule them
-    	}
+        mavlink_heartbeat_t payload;
+        mavlink_msg_heartbeat_decode(&_msg, &payload);
+        if ( (payload.autopilot == MAV_AUTOPILOT_INVALID) &&
+             ( (payload.type == MAV_TYPE_CAMERA) ||
+               ((_msg.compid >= MAV_COMP_ID_CAMERA) && (_msg.compid <= MAV_COMP_ID_CAMERA6)) ) ) {
+            _resetCamera();
+            camera.compid = _msg.compid;
+            camera.requests_triggered = 1; //we schedule them
+        }
     }
 
     if ((gimbal.compid == 0) && (_msg.msgid == MAVLINK_MSG_ID_HEARTBEAT)) {
-		mavlink_heartbeat_t payload;
-		mavlink_msg_heartbeat_decode(&_msg, &payload);
-    	if ( (payload.autopilot == MAV_AUTOPILOT_INVALID) &&
-    	     (	(payload.type == MAV_TYPE_GIMBAL) ||
-    	    	((_msg.compid == MAV_COMP_ID_GIMBAL) ||
-    	    	((_msg.compid >= MAV_COMP_ID_GIMBAL2) && (_msg.compid <= MAV_COMP_ID_GIMBAL6)))  )   ) {
+        mavlink_heartbeat_t payload;
+        mavlink_msg_heartbeat_decode(&_msg, &payload);
+        if ( (payload.autopilot == MAV_AUTOPILOT_INVALID) &&
+             ( (payload.type == MAV_TYPE_GIMBAL) ||
+               ((_msg.compid == MAV_COMP_ID_GIMBAL) ||
+               ((_msg.compid >= MAV_COMP_ID_GIMBAL2) && (_msg.compid <= MAV_COMP_ID_GIMBAL6))) ) ) {
             _resetGimbalAndGimbalClient();
-    		gimbal.compid = _msg.compid;
-    		gimbal.is_initialized = true; //no startup requests, so true
-    	}
+            gimbal.compid = _msg.compid;
+            gimbal.is_initialized = true; //no startup requests, so true
+        }
     }
 
     if ((gimbalmanager.compid == 0) && (gimbal.compid > 0) && (_msg.msgid == MAVLINK_MSG_ID_GIMBAL_MANAGER_STATUS)) {
-		mavlink_gimbal_manager_status_t payload;
-		mavlink_msg_gimbal_manager_status_decode(&_msg, &payload);
-		if (payload.gimbal_device_id == gimbal.compid) { //this is the gimbal's gimbal manager
+        mavlink_gimbal_manager_status_t payload;
+        mavlink_msg_gimbal_manager_status_decode(&_msg, &payload);
+        if (payload.gimbal_device_id == gimbal.compid) { //this is the gimbal's gimbal manager
             _resetGimbalClient();
-    		gimbalmanager.compid = _msg.compid;
-  			gimbalmanager.requests_triggered = 1; //we schedule them
-    	}
+            gimbalmanager.compid = _msg.compid;
+            gimbalmanager.requests_triggered = 1; //we schedule them
+        }
     }
 
     // reset receiving timeout, but ignore RADIO_STATUS
@@ -302,13 +303,13 @@ void MavlinkTelem::handleMessage(void)
     // RADIO_STATUS is somewhat tricky, this may need doing it better if there are more sources of it
     // SiK comes as vehicle 51, comp 68!
     // it must NOT be rated as _is_recieving!
-	if (_msg.msgid == MAVLINK_MSG_ID_RADIO_STATUS) {
-    	mavlink_radio_status_t payload;
-    	mavlink_msg_radio_status_decode(&_msg, &payload);
-    	radio.rssi = payload.rssi;
-    	radio.remrssi = payload.remrssi;
-    	radio.noise = payload.noise;
-    	radio.remnoise = payload.remnoise;
+    if (_msg.msgid == MAVLINK_MSG_ID_RADIO_STATUS) {
+        mavlink_radio_status_t payload;
+        mavlink_msg_radio_status_decode(&_msg, &payload);
+        radio.rssi = payload.rssi;
+        radio.remrssi = payload.remrssi;
+        radio.noise = payload.noise;
+        radio.remnoise = payload.remnoise;
         radio.is_receiving = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
         if (g_model.mavlinkMimicSensors) {
             int32_t r = (payload.rssi == UINT8_MAX) ? 0 : payload.rssi;
@@ -317,23 +318,23 @@ void MavlinkTelem::handleMessage(void)
             //{ TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
             //{ TX_LQI_ID , TX_LQI_ID,  0, ZSTR_TX_QUALITY, UNIT_RAW, 0 },
         }
-    	return;
-   	}
+        return;
+    }
 
-	if (_msg.sysid != _sysid) return; //this is not from our system
+    if (_msg.sysid != _sysid) return; //this is not from our system
 
     // handle messages coming from autopilot
     if (autopilot.compid && (_msg.compid == autopilot.compid)) {
-    	handleMessageAutopilot();
+        handleMessageAutopilot();
     }
     if (camera.compid && (_msg.compid == camera.compid)) {
-    	handleMessageCamera();
+        handleMessageCamera();
     }
     if (gimbal.compid && (_msg.compid == gimbal.compid)) {
-    	handleMessageGimbal();
+        handleMessageGimbal();
     }
     if (gimbalmanager.compid && (_msg.compid == gimbalmanager.compid)) {
-    	handleMessageGimbalClient();
+        handleMessageGimbalClient();
     }
 }
 
@@ -342,59 +343,59 @@ void MavlinkTelem::handleMessage(void)
 
 void MavlinkTelem::doTask(void)
 {
-	tmr10ms_t tnow = get_tmr10ms();
+    tmr10ms_t tnow = get_tmr10ms();
 
-	bool tick_1Hz = false;
+    bool tick_1Hz = false;
 
-	if ((tnow - _my_heartbeat_tlast) > 100) { //1 sec
-		_my_heartbeat_tlast = tnow;
-		SETTASK(TASK_ME, TASK_SENDMYHEARTBEAT);
+    if ((tnow - _my_heartbeat_tlast) > 100) { //1 sec
+        _my_heartbeat_tlast = tnow;
+        SETTASK(TASK_ME, TASK_SENDMYHEARTBEAT);
 
-		msg_rx_persec = _msg_rx_persec_cnt;
-		_msg_rx_persec_cnt = 0;
-		bytes_rx_persec = _bytes_rx_persec_cnt;
-		_bytes_rx_persec_cnt = 0;
+        msg_rx_persec = _msg_rx_persec_cnt;
+        _msg_rx_persec_cnt = 0;
+        bytes_rx_persec = _bytes_rx_persec_cnt;
+        _bytes_rx_persec_cnt = 0;
 
-		tick_1Hz = true;
-	}
-
-	if (!isSystemIdValid()) return;
-
-	// trigger startup requests
-	// gimbal has no startup requests
-
-	// we need to wait until at least one heartbeat was send out before requesting data streams
-	if (autopilot.compid && autopilot.requests_triggered) {
-		if (tick_1Hz) autopilot.requests_triggered++;
-		if (autopilot.requests_triggered > 3) { // wait for 3 heartbeats
-			autopilot.requests_triggered = 0;
-			setAutopilotStartupRequests();
-		}
-	}
-
-	// we wait until at least one heartbeat was send out, and autopilot requests have been done
-    if (camera.compid && camera.requests_triggered && !autopilot.requests_triggered) {
-		if (tick_1Hz) camera.requests_triggered++;
-		if (camera.requests_triggered > 1) { // wait for the next heartbeat
-			camera.requests_triggered = 0;
-			setCameraStartupRequests();
-    	}
+        tick_1Hz = true;
     }
 
-	// we wait until at least one heartbeat was send out, and autopilot requests have been done
+    if (!isSystemIdValid()) return;
+
+    // trigger startup requests
+    // gimbal has no startup requests
+
+    // we need to wait until at least one heartbeat was send out before requesting data streams
+    if (autopilot.compid && autopilot.requests_triggered) {
+        if (tick_1Hz) autopilot.requests_triggered++;
+        if (autopilot.requests_triggered > 3) { // wait for 3 heartbeats
+            autopilot.requests_triggered = 0;
+            setAutopilotStartupRequests();
+        }
+    }
+
+    // we wait until at least one heartbeat was send out, and autopilot requests have been done
+    if (camera.compid && camera.requests_triggered && !autopilot.requests_triggered) {
+        if (tick_1Hz) camera.requests_triggered++;
+        if (camera.requests_triggered > 1) { // wait for the next heartbeat
+            camera.requests_triggered = 0;
+            setCameraStartupRequests();
+        }
+    }
+
+    // we wait until at least one heartbeat was send out, and autopilot requests have been done
     if (gimbal.compid && gimbal.requests_triggered && !autopilot.requests_triggered) {
-		if (tick_1Hz) gimbal.requests_triggered++;
-		if (gimbal.requests_triggered > 1) { // wait for the next heartbeat
-			gimbal.requests_triggered = 0;
-			setGimbalStartupRequests();
-		}
+        if (tick_1Hz) gimbal.requests_triggered++;
+        if (gimbal.requests_triggered > 1) { // wait for the next heartbeat
+            gimbal.requests_triggered = 0;
+            setGimbalStartupRequests();
+        }
     }
     if (gimbalmanager.compid && gimbalmanager.requests_triggered && !autopilot.requests_triggered) {
-		if (tick_1Hz) gimbalmanager.requests_triggered++;
-		if (gimbalmanager.requests_triggered > 1) { // wait for the next heartbeat
-			gimbalmanager.requests_triggered = 0;
-			setGimbalClientStartupRequests();
-		}
+        if (tick_1Hz) gimbalmanager.requests_triggered++;
+        if (gimbalmanager.requests_triggered > 1) { // wait for the next heartbeat
+            gimbalmanager.requests_triggered = 0;
+            setGimbalClientStartupRequests();
+        }
     }
 
     if (!autopilot.is_initialized) { autopilot.is_initialized = (autopilot.requests_waiting_mask == 0); }
@@ -409,47 +410,47 @@ void MavlinkTelem::doTask(void)
     // ArduPilot has a DAMED BUG!!!
     // per MAVLink spec 0 and UNIT16_MAX should not be considered for channels >= 8, but it doesn't do it for 0
     // but we can hope that it handles 0 for the higher channels
-	if (g_model.mavlinkRcOverride && param.SYSID_MYGCS >= 0) {
-		if ((tnow - _rcoverride_tlast) >= 5) { //50 ms
-			_rcoverride_tlast = tnow;
-			for (uint8_t i = 0; i < 8; i++) {
-				/* would this be the right way to figure out which output is actually active ??
-		    	MixData * md;
-		    	if (i < MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh == i) {
-		    		int value = channelOutputs[i] + 2 * PPM_CH_CENTER(i) - 2 * PPM_CENTER;
-		    		_tovr_chan_raw[i] = value;
-		    	}else{
-		    		_tovr_chan_raw[i] = UINT16_MAX;
-		    	}*/
-				// the first four channels may not be ordered like with transmitter!!
-				int value = channelOutputs[i]/2 + PPM_CH_CENTER(i);
-				_tovr_chan_raw[i] = value;
-			}
-			for (uint8_t i = 8; i < 18; i++) { _tovr_chan_raw[i] = 0; }
-			SETTASK(TASK_AUTOPILOT, TASK_SENDMSG_RC_CHANNELS_OVERRIDE);
-		}
-	}
+    if (g_model.mavlinkRcOverride && param.SYSID_MYGCS >= 0) {
+        if ((tnow - _rcoverride_tlast) >= 5) { //50 ms
+            _rcoverride_tlast = tnow;
+            for (uint8_t i = 0; i < 8; i++) {
+                /* would this be the right way to figure out which output is actually active ??
+                MixData * md;
+                if (i < MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh == i) {
+                    int value = channelOutputs[i] + 2 * PPM_CH_CENTER(i) - 2 * PPM_CENTER;
+                    _tovr_chan_raw[i] = value;
+                }else{
+                    _tovr_chan_raw[i] = UINT16_MAX;
+                }*/
+                // the first four channels may not be ordered like with transmitter!!
+                int value = channelOutputs[i]/2 + PPM_CH_CENTER(i);
+                _tovr_chan_raw[i] = value;
+            }
+            for (uint8_t i = 8; i < 18; i++) { _tovr_chan_raw[i] = 0; }
+            SETTASK(TASK_AUTOPILOT, TASK_SENDMSG_RC_CHANNELS_OVERRIDE);
+        }
+    }
 
     // handle pending tasks
-	// do only one task per loop
-	if ((_txcount == 0) && TASK_IS_PENDING()) {
-		//TASK_ME
-		if (_task[TASK_ME] & TASK_SENDMYHEARTBEAT) {
-	        RESETTASK(TASK_ME,TASK_SENDMYHEARTBEAT);
-	        uint8_t base_mode = MAV_MODE_PREFLIGHT | MAV_MODE_FLAG_CUSTOM_MODE_ENABLED | MAV_MODE_FLAG_SAFETY_ARMED;
-	        uint8_t system_status = MAV_STATE_UNINIT | MAV_STATE_ACTIVE;
+    // do only one task per loop
+    if ((_txcount == 0) && TASK_IS_PENDING()) {
+        //TASK_ME
+        if (_task[TASK_ME] & TASK_SENDMYHEARTBEAT) {
+            RESETTASK(TASK_ME,TASK_SENDMYHEARTBEAT);
+            uint8_t base_mode = MAV_MODE_PREFLIGHT | MAV_MODE_FLAG_CUSTOM_MODE_ENABLED | MAV_MODE_FLAG_SAFETY_ARMED;
+            uint8_t system_status = MAV_STATE_UNINIT | MAV_STATE_ACTIVE;
             uint32_t custom_mode = 0;
             generateHeartbeat(base_mode, custom_mode, system_status);
-	        return; //do only one per loop
-	    }
+            return; //do only one per loop
+        }
 
-		//other TASKS
-		if (doTaskAutopilot()) return;
+        //other TASKS
+        if (doTaskAutopilot()) return;
         if (doTaskGimbalAndGimbalClient()) return;
         if (doTaskCamera()) return;
         if (doTaskAutopilotLowPriority()) return;
         if (doTaskCameraLowPriority()) return;
-	}
+    }
 }
 
 
@@ -459,7 +460,7 @@ void MavlinkTelem::doTask(void)
 void MavlinkTelem::wakeup()
 {
 #if defined(MAVLINK_TELEM)
-	// handle configuration change
+    // handle configuration change
     if ((_interface_enabled != g_model.mavlinkEnabled) || (_interface_config != g_model.mavlinkConfig)) { // a change occurred
         mavlinkTelemDeInit();
         _interface_enabled = g_model.mavlinkEnabled;
@@ -479,63 +480,63 @@ void MavlinkTelem::wakeup()
     if (!_interface_enabled) return;
 
     // look for incoming messages, also do statistics
-	uint32_t available = mavlinkTelemAvailable();
-	if (available > 128) available = 128; //limit how much we read at once, shouldn't ever trigger
-	for (uint32_t i = 0; i < available; i++) {
-		uint8_t c;
-		mavlinkTelemGetc(&c);
-		_bytes_rx_persec_cnt++;
-	    if (mavlink_parse_char(MAVLINK_COMM_0, c, &_msg, &_status)) {
-	    	// check for lost messages by analyzing seq
-	        if (_seq_rx_last >= 0) {
-	            uint16_t seq = _msg.seq;
-	        	if (seq < _seq_rx_last) seq += 256;
-	        	_seq_rx_last++;
-	            if (seq > _seq_rx_last) msg_rx_lost += (seq - _seq_rx_last);
-	        }
-	        _seq_rx_last = _msg.seq;
-        	handleMessage();
-			msg_rx_count++;
-			_msg_rx_persec_cnt++;
-			if (g_model.mavlinkMimicSensors) telemetryStreaming = 2*TELEMETRY_TIMEOUT10ms; // 2 seconds
-	    }
-	}
+    uint32_t available = mavlinkTelemAvailable();
+    if (available > 128) available = 128; //limit how much we read at once, shouldn't ever trigger
+    for (uint32_t i = 0; i < available; i++) {
+        uint8_t c;
+        mavlinkTelemGetc(&c);
+        _bytes_rx_persec_cnt++;
+        if (mavlink_parse_char(MAVLINK_COMM_0, c, &_msg, &_status)) {
+            // check for lost messages by analyzing seq
+            if (_seq_rx_last >= 0) {
+                uint16_t seq = _msg.seq;
+                if (seq < _seq_rx_last) seq += 256;
+                _seq_rx_last++;
+                if (seq > _seq_rx_last) msg_rx_lost += (seq - _seq_rx_last);
+            }
+            _seq_rx_last = _msg.seq;
+            handleMessage();
+            msg_rx_count++;
+            _msg_rx_persec_cnt++;
+            if (g_model.mavlinkMimicSensors) telemetryStreaming = 2*TELEMETRY_TIMEOUT10ms; // 2 seconds
+        }
+    }
 
-	// receiving timeouts
-	if (_is_receiving) {
-		_is_receiving--;
-		if (!_is_receiving) _reset(); //this also resets is_receiving of all other components
-	}
-	if (radio.is_receiving) {
-	    radio.is_receiving--;
-	    if (!radio.is_receiving) _resetRadio();
-	}
-	if (autopilot.is_receiving) {
-		autopilot.is_receiving--;
-		if (!autopilot.is_receiving) _resetAutopilot();
-	}
-	if (gimbal.is_receiving) {
-		gimbal.is_receiving--;
-		if (!gimbal.is_receiving) _resetGimbalAndGimbalClient();
-	}
-	if (gimbalmanager.is_receiving) {
-		gimbalmanager.is_receiving--;
-		if (!gimbalmanager.is_receiving) _resetGimbalClient();
-	}
-	if (camera.is_receiving) {
-		camera.is_receiving--;
-		if (!camera.is_receiving) _resetCamera();
-	}
+    // receiving timeouts
+    if (_is_receiving) {
+        _is_receiving--;
+        if (!_is_receiving) _reset(); //this also resets is_receiving of all other components
+    }
+    if (radio.is_receiving) {
+        radio.is_receiving--;
+        if (!radio.is_receiving) _resetRadio();
+    }
+    if (autopilot.is_receiving) {
+        autopilot.is_receiving--;
+        if (!autopilot.is_receiving) _resetAutopilot();
+    }
+    if (gimbal.is_receiving) {
+        gimbal.is_receiving--;
+        if (!gimbal.is_receiving) _resetGimbalAndGimbalClient();
+    }
+    if (gimbalmanager.is_receiving) {
+        gimbalmanager.is_receiving--;
+        if (!gimbalmanager.is_receiving) _resetGimbalClient();
+    }
+    if (camera.is_receiving) {
+        camera.is_receiving--;
+        if (!camera.is_receiving) _resetCamera();
+    }
 
     // do tasks
-	doTask();
+    doTask();
 
     // send out any pending messages
-	if (_txcount) {
-		if (mavlinkTelemPutBuf(_txbuf, _txcount)) {
+    if (_txcount) {
+        if (mavlinkTelemPutBuf(_txbuf, _txcount)) {
             _txcount = 0;
-		}
-	}
+        }
+    }
 #endif
 }
 
@@ -555,34 +556,34 @@ void MavlinkTelem::_resetRadio(void)
 
 void MavlinkTelem::_reset(void)
 {
-	mavlink_reset_channel_status(MAVLINK_COMM_0);
+    mavlink_reset_channel_status(MAVLINK_COMM_0);
 
     _my_sysid = MAVLINK_TELEM_MY_SYSID;
     _my_compid = MAVLINK_TELEM_MY_COMPID;
 
-	msg_rx_count = msg_rx_lost = 0;
-	msg_rx_persec = bytes_rx_persec = 0;
+    msg_rx_count = msg_rx_lost = 0;
+    msg_rx_persec = bytes_rx_persec = 0;
     _msg_rx_persec_cnt = _bytes_rx_persec_cnt = 0;
     _seq_rx_last = -1;
 
     _sysid = 0;
     autopilottype = MAV_AUTOPILOT_GENERIC; //TODO: shouldn't these be in _resetAutopilot() ??
-	vehicletype = MAV_TYPE_GENERIC;
-	flightmode = 0;
+    vehicletype = MAV_TYPE_GENERIC;
+    flightmode = 0;
 
-	for (uint16_t i = 0; i < TASKIDX_MAX; i++) _task[i] = 0;
+    for (uint16_t i = 0; i < TASKIDX_MAX; i++) _task[i] = 0;
     _taskFifo.clear();
     _taskFifo_tlast = 0;
     for (uint16_t i = 0; i < REQUESTLIST_MAX; i++) _requestList[i].task = 0;
 
     _resetRadio();
-	_resetAutopilot();
-	_resetGimbalAndGimbalClient();
-	_resetCamera();
+    _resetAutopilot();
+    _resetGimbalAndGimbalClient();
+    _resetCamera();
 
-	// MAVLINK
-	//msgRxFifo.clear();
-	//msgFifo_enabled = false;
+    // MAVLINK
+    //msgRxFifo.clear();
+    //msgFifo_enabled = false;
 }
 
 

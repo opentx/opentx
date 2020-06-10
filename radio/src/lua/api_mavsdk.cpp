@@ -17,10 +17,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-/* 
- *  (c) www.olliw.eu, OlliW, OlliW42   
+/*
+ *  (c) www.olliw.eu, OlliW, OlliW42
  */
-  
+
 #include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
@@ -34,10 +34,10 @@
 
 void u8toBCDstr(uint8_t n, char* s)
 {
-  if (n>= 100){ for( *s='0'; n>= 100; n-= 100 ){ (*s)++; } s++; }
-  if (n>= 10){ for( *s='0'; n>= 10; n-= 10 ){ (*s)++; } s++; }
-  *s= '0'+n; s++;
-  *s='\0';
+    if (n >= 100){ for( *s = '0'; n >= 100; n -= 100 ){ (*s)++; } s++; }
+    if (n >= 10){ for( *s = '0'; n >= 10; n -= 10 ){ (*s)++; } s++; }
+    *s = '0' + n; s++;
+    *s = '\0';
 }
 
 
@@ -59,89 +59,89 @@ static int luaMavsdkGimbalIsInitialized(lua_State *L)
 
 static int luaMavsdkGimbalGetInfo(lua_State *L)
 {
-	lua_newtable(L);
-	lua_pushtableinteger(L, "compid", mavlinkTelem.gimbal.compid);
+    lua_newtable(L);
+    lua_pushtableinteger(L, "compid", mavlinkTelem.gimbal.compid);
 
-	lua_pushtablestring(L, "vendor_name", mavlinkTelem.gimbaldeviceInfo.vendor_name);
-	lua_pushtablestring(L, "model_name", mavlinkTelem.gimbaldeviceInfo.model_name);
-	char s[32], ss[20]; s[0] = '\0';
-	if (mavlinkTelem.gimbaldeviceInfo.firmware_version) {
-		u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 0) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
-		u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 8) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
-		u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 16) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
-		u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 24) & 0xFF, ss); strcat(s, ss);
-	}
-	lua_pushtablestring(L, "firmware_version", s);
-	lua_pushtableinteger(L, "capability_flags", mavlinkTelem.gimbaldeviceInfo.cap_flags);
-	return 1;
+    lua_pushtablestring(L, "vendor_name", mavlinkTelem.gimbaldeviceInfo.vendor_name);
+    lua_pushtablestring(L, "model_name", mavlinkTelem.gimbaldeviceInfo.model_name);
+    char s[32], ss[20]; s[0] = '\0';
+    if (mavlinkTelem.gimbaldeviceInfo.firmware_version) {
+        u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 0) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+        u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 8) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+        u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 16) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+        u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 24) & 0xFF, ss); strcat(s, ss);
+    }
+    lua_pushtablestring(L, "firmware_version", s);
+    lua_pushtableinteger(L, "capability_flags", mavlinkTelem.gimbaldeviceInfo.cap_flags);
+    return 1;
 }
 
 static int luaMavsdkGimbalGetStatus(lua_State *L)
 {
-	lua_newtable(L);
-	lua_pushtablenumber(L, "system_status", mavlinkTelem.gimbal.system_status);
-	lua_pushtablenumber(L, "custom_mode", mavlinkTelem.gimbal.custom_mode);
-	lua_pushtableboolean(L, "is_armed", mavlinkTelem.gimbal.is_armed);
-	lua_pushtableboolean(L, "prearm_ok", mavlinkTelem.gimbal.prearm_ok);
-	return 1;
+    lua_newtable(L);
+    lua_pushtablenumber(L, "system_status", mavlinkTelem.gimbal.system_status);
+    lua_pushtablenumber(L, "custom_mode", mavlinkTelem.gimbal.custom_mode);
+    lua_pushtableboolean(L, "is_armed", mavlinkTelem.gimbal.is_armed);
+    lua_pushtableboolean(L, "prearm_ok", mavlinkTelem.gimbal.prearm_ok);
+    return 1;
 }
 
 static int luaMavsdkGimbalGetAttRollDeg(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gimbalAtt.roll_deg);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGimbalGetAttPitchDeg(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gimbalAtt.pitch_deg);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGimbalGetAttYawDeg(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gimbalAtt.yaw_deg_relative);
-	return 1;
+    return 1;
 }
 
 // gimbal protocol v0
 
 static int luaMavsdkGimbalSetNeutralMode(lua_State *L)
 {
-	mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_NEUTRAL);
-	return 0;
+    mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_NEUTRAL);
+    return 0;
 }
 
 static int luaMavsdkGimbalSetMavlinkTargetingMode(lua_State *L)
 {
-	mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_MAVLINK_TARGETING);
-	return 0;
+    mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_MAVLINK_TARGETING);
+    return 0;
 }
 
 static int luaMavsdkGimbalSetRcTargetingMode(lua_State *L)
 {
-	mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_RC_TARGETING);
-	return 0;
+    mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_RC_TARGETING);
+    return 0;
 }
 
 static int luaMavsdkGimbalSetGpsPointMode(lua_State *L)
 {
-	mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_GPS_POINT);
-	return 0;
+    mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_GPS_POINT);
+    return 0;
 }
 
 static int luaMavsdkGimbalSetSysIdTargetingMode(lua_State *L)
 {
-	mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_SYSID_TARGET);
-	return 0;
+    mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_SYSID_TARGET);
+    return 0;
 }
 
 static int luaMavsdkGimbalSetPitchYawDeg(lua_State *L)
 {
-	float pitch = luaL_checknumber(L, 1);
-	float yaw = luaL_checknumber(L, 2);
-	mavlinkTelem.setGimbalPitchYawDeg(pitch, yaw);
-	return 0;
+    float pitch = luaL_checknumber(L, 1);
+    float yaw = luaL_checknumber(L, 2);
+    mavlinkTelem.setGimbalPitchYawDeg(pitch, yaw);
+    return 0;
 }
 
 // -- GIMBAL CLIENT -- gimbal protocol v1
@@ -162,18 +162,18 @@ static int luaMavsdkGimbalClientIsInitialized(lua_State *L)
 
 static int luaMavsdkGimbalClientGetInfo(lua_State *L)
 {
-	lua_newtable(L);
-	lua_pushtableinteger(L, "gimbal_manager_id", mavlinkTelem.gimbalmanager.compid);
-	lua_pushtableinteger(L, "gimbal_device_id", mavlinkTelem.gimbal.compid);
-	lua_pushtableinteger(L, "capability_flags", mavlinkTelem.gimbalmanagerInfo.cap_flags);
-	return 1;
+    lua_newtable(L);
+    lua_pushtableinteger(L, "gimbal_manager_id", mavlinkTelem.gimbalmanager.compid);
+    lua_pushtableinteger(L, "gimbal_device_id", mavlinkTelem.gimbal.compid);
+    lua_pushtableinteger(L, "capability_flags", mavlinkTelem.gimbalmanagerInfo.cap_flags);
+    return 1;
 }
 
 static int luaMavsdkGimbalClientGetStatus(lua_State *L)
 {
-	lua_newtable(L);
-	lua_pushtableinteger(L, "flags", mavlinkTelem.gimbalmanagerStatus.flags);
-	return 1;
+    lua_newtable(L);
+    lua_pushtableinteger(L, "flags", mavlinkTelem.gimbalmanagerStatus.flags);
+    return 1;
 }
 
 static int luaMavsdkGimbalClientSetMode(lua_State *L)
@@ -185,28 +185,28 @@ static int luaMavsdkGimbalClientSetMode(lua_State *L)
 
 static int luaMavsdkGimbalClientSetPitchYawDeg(lua_State *L)
 {
-	float pitch = luaL_checknumber(L, 1);
-	float yaw = luaL_checknumber(L, 2);
-	mavlinkTelem.setGimbalManagerPitchYawDeg(pitch, yaw);
-	return 0;
+    float pitch = luaL_checknumber(L, 1);
+    float yaw = luaL_checknumber(L, 2);
+    mavlinkTelem.setGimbalManagerPitchYawDeg(pitch, yaw);
+    return 0;
 }
 
 // not for use, just for testing momentarily here
 static int luaMavsdkGimbalDeviceSetPitchYawDeg(lua_State *L)
 {
-	float pitch = luaL_checknumber(L, 1);
-	float yaw = luaL_checknumber(L, 2);
-	mavlinkTelem.setGimbalDevicePitchYawDeg(pitch, yaw);
-	return 0;
+    float pitch = luaL_checknumber(L, 1);
+    float yaw = luaL_checknumber(L, 2);
+    mavlinkTelem.setGimbalDevicePitchYawDeg(pitch, yaw);
+    return 0;
 }
 
 // not for use, just for testing momentarily here
 static int luaMavsdkGimbalClientCmdSetPitchYawDeg(lua_State *L)
 {
-	float pitch = luaL_checknumber(L, 1);
-	float yaw = luaL_checknumber(L, 2);
-	mavlinkTelem.setGimbalManagerCmdPitchYawDeg(pitch, yaw);
-	return 0;
+    float pitch = luaL_checknumber(L, 1);
+    float yaw = luaL_checknumber(L, 2);
+    mavlinkTelem.setGimbalManagerCmdPitchYawDeg(pitch, yaw);
+    return 0;
 }
 
 
@@ -228,83 +228,83 @@ static int luaMavsdkCameraIsInitialized(lua_State *L)
 
 static int luaMavsdkCameraGetInfo(lua_State *L)
 {
-	lua_newtable(L);
-	lua_pushtableinteger(L, "compid", mavlinkTelem.camera.compid);
-	lua_pushtableinteger(L, "flags", mavlinkTelem.cameraInfo.flags);
-	lua_pushtableboolean(L, "has_video", mavlinkTelem.cameraInfo.has_video);
-	lua_pushtableboolean(L, "has_photo", mavlinkTelem.cameraInfo.has_photo);
-	lua_pushtableboolean(L, "has_modes", mavlinkTelem.cameraInfo.has_modes);
-	if (!isnan(mavlinkTelem.cameraInfo.total_capacity_MiB)) {
-		lua_pushtablenumber(L, "total_capacity", mavlinkTelem.cameraInfo.total_capacity_MiB);
-	} else {
-		lua_pushtablenil(L, "total_capacity");
-	}
-	lua_pushtablestring(L, "vendor_name", mavlinkTelem.cameraInfo.vendor_name);
-	lua_pushtablestring(L, "model_name", mavlinkTelem.cameraInfo.model_name);
-	char s[32], ss[20]; s[0] = '\0';
-	if (mavlinkTelem.cameraInfo.firmware_version) {
-		u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 0) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
-		u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 8) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
-		u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 16) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
-		u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 24) & 0xFF, ss); strcat(s, ss);
-	}
-	lua_pushtablestring(L, "firmware_version", s);
-	return 1;
+    lua_newtable(L);
+    lua_pushtableinteger(L, "compid", mavlinkTelem.camera.compid);
+    lua_pushtableinteger(L, "flags", mavlinkTelem.cameraInfo.flags);
+    lua_pushtableboolean(L, "has_video", mavlinkTelem.cameraInfo.has_video);
+    lua_pushtableboolean(L, "has_photo", mavlinkTelem.cameraInfo.has_photo);
+    lua_pushtableboolean(L, "has_modes", mavlinkTelem.cameraInfo.has_modes);
+    if (!isnan(mavlinkTelem.cameraInfo.total_capacity_MiB)) {
+        lua_pushtablenumber(L, "total_capacity", mavlinkTelem.cameraInfo.total_capacity_MiB);
+    } else {
+        lua_pushtablenil(L, "total_capacity");
+    }
+    lua_pushtablestring(L, "vendor_name", mavlinkTelem.cameraInfo.vendor_name);
+    lua_pushtablestring(L, "model_name", mavlinkTelem.cameraInfo.model_name);
+    char s[32], ss[20]; s[0] = '\0';
+    if (mavlinkTelem.cameraInfo.firmware_version) {
+        u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 0) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+        u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 8) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+        u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 16) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+        u8toBCDstr((mavlinkTelem.cameraInfo.firmware_version >> 24) & 0xFF, ss); strcat(s, ss);
+    }
+    lua_pushtablestring(L, "firmware_version", s);
+    return 1;
 }
 
 static int luaMavsdkCameraGetStatus(lua_State *L)
 {
-	lua_newtable(L);
-	lua_pushtableinteger(L, "system_status", mavlinkTelem.camera.system_status);
-	lua_pushtableinteger(L, "mode", mavlinkTelem.cameraStatus.mode);
-	lua_pushtableboolean(L, "video_on", mavlinkTelem.cameraStatus.video_on);
-	lua_pushtableboolean(L, "photo_on", mavlinkTelem.cameraStatus.photo_on);
-	if (!isnan(mavlinkTelem.cameraStatus.available_capacity_MiB)) {
-		lua_pushtablenumber(L, "available_capacity", mavlinkTelem.cameraStatus.available_capacity_MiB);
-	} else {
-		lua_pushtablenil(L, "available_capacity");
-	}
-	if (!isnan(mavlinkTelem.cameraStatus.battery_voltage_V)) {
-		lua_pushtablenumber(L, "battery_voltage", mavlinkTelem.cameraStatus.battery_voltage_V);
-	} else {
-		lua_pushtablenil(L, "battery_voltage");
-	}
-	if (mavlinkTelem.cameraStatus.battery_remaining_pct >= 0) {
-		lua_pushtableinteger(L, "battery_remainingpct", mavlinkTelem.cameraStatus.battery_remaining_pct);
-	} else {
-		lua_pushtablenil(L, "battery_remainingpct");
-	}
-	return 1;
+    lua_newtable(L);
+    lua_pushtableinteger(L, "system_status", mavlinkTelem.camera.system_status);
+    lua_pushtableinteger(L, "mode", mavlinkTelem.cameraStatus.mode);
+    lua_pushtableboolean(L, "video_on", mavlinkTelem.cameraStatus.video_on);
+    lua_pushtableboolean(L, "photo_on", mavlinkTelem.cameraStatus.photo_on);
+    if (!isnan(mavlinkTelem.cameraStatus.available_capacity_MiB)) {
+        lua_pushtablenumber(L, "available_capacity", mavlinkTelem.cameraStatus.available_capacity_MiB);
+    } else {
+        lua_pushtablenil(L, "available_capacity");
+    }
+    if (!isnan(mavlinkTelem.cameraStatus.battery_voltage_V)) {
+        lua_pushtablenumber(L, "battery_voltage", mavlinkTelem.cameraStatus.battery_voltage_V);
+    } else {
+        lua_pushtablenil(L, "battery_voltage");
+    }
+    if (mavlinkTelem.cameraStatus.battery_remaining_pct >= 0) {
+        lua_pushtableinteger(L, "battery_remainingpct", mavlinkTelem.cameraStatus.battery_remaining_pct);
+    } else {
+        lua_pushtablenil(L, "battery_remainingpct");
+    }
+    return 1;
 }
 
 static int luaMavsdkCameraSetVideoMode(lua_State *L)
 {
-	mavlinkTelem.setCameraSetVideoMode();
-	return 0;
+    mavlinkTelem.setCameraSetVideoMode();
+    return 0;
 }
 
 static int luaMavsdkCameraSetPhotoMode(lua_State *L)
 {
-	mavlinkTelem.setCameraSetPhotoMode();
-	return 0;
+    mavlinkTelem.setCameraSetPhotoMode();
+    return 0;
 }
 
 static int luaMavsdkCameraStartVideo(lua_State *L)
 {
-	mavlinkTelem.setCameraStartVideo();
-	return 0;
+    mavlinkTelem.setCameraStartVideo();
+    return 0;
 }
 
 static int luaMavsdkCameraStopVideo(lua_State *L)
 {
-	mavlinkTelem.setCameraStopVideo();
-	return 0;
+    mavlinkTelem.setCameraStopVideo();
+    return 0;
 }
 
 static int luaMavsdkCameraTakePhoto(lua_State *L)
 {
-	mavlinkTelem.setCameraTakePhoto();
-	return 0;
+    mavlinkTelem.setCameraTakePhoto();
+    return 0;
 }
 
 
@@ -341,15 +341,15 @@ static int luaMavsdkGetAutopilotType(lua_State *L)
 static int luaMavsdkGetVehicleType(lua_State *L)
 {
     int nbr = mavlinkTelem.vehicletype;
-	lua_pushnumber(L, nbr);
-	return 1;
+    lua_pushnumber(L, nbr);
+    return 1;
 }
 
 static int luaMavsdkGetFlightMode(lua_State *L)
 {
     int nbr = mavlinkTelem.flightmode;
-	lua_pushnumber(L, nbr);
-	return 1;
+    lua_pushnumber(L, nbr);
+    return 1;
 }
 
 typedef enum MAVSDK_VEHICLECLASS {
@@ -366,49 +366,49 @@ static int luaMavsdkGetVehicleClass(lua_State *L)
 {
 int nbr;
 
-	switch (mavlinkTelem.vehicletype) {
-	case MAV_TYPE_FIXED_WING:
-	case MAV_TYPE_FLAPPING_WING:
-	case MAV_TYPE_VTOL_DUOROTOR:
-	case MAV_TYPE_VTOL_QUADROTOR:
-	case MAV_TYPE_VTOL_TILTROTOR:
-	case MAV_TYPE_VTOL_RESERVED2:
-	case MAV_TYPE_VTOL_RESERVED3:
-	case MAV_TYPE_VTOL_RESERVED4:
-	case MAV_TYPE_VTOL_RESERVED5:
-	case MAV_TYPE_PARAFOIL:
-		nbr = MAVSDK_VEHICLECLASS_PLANE;
-		break;
-	case MAV_TYPE_QUADROTOR:
-	case MAV_TYPE_COAXIAL:
-	case MAV_TYPE_HELICOPTER:
-	case MAV_TYPE_HEXAROTOR:
-	case MAV_TYPE_OCTOROTOR:
-	case MAV_TYPE_TRICOPTER:
-	case MAV_TYPE_DODECAROTOR:
-		nbr = MAVSDK_VEHICLECLASS_COPTER;
-		break;
-	case MAV_TYPE_GROUND_ROVER:
-		nbr = MAVSDK_VEHICLECLASS_ROVER;
-		break;
-	case MAV_TYPE_SURFACE_BOAT:
-		nbr = MAVSDK_VEHICLECLASS_BOAT;
-		break;
-	case MAV_TYPE_SUBMARINE:
-		nbr = MAVSDK_VEHICLECLASS_SUB;
-		break;
-	default:
-		nbr = MAVSDK_VEHICLECLASS_GENERIC;
-	}
-	lua_pushnumber(L, nbr);
-	return 1;
+    switch (mavlinkTelem.vehicletype) {
+    case MAV_TYPE_FIXED_WING:
+    case MAV_TYPE_FLAPPING_WING:
+    case MAV_TYPE_VTOL_DUOROTOR:
+    case MAV_TYPE_VTOL_QUADROTOR:
+    case MAV_TYPE_VTOL_TILTROTOR:
+    case MAV_TYPE_VTOL_RESERVED2:
+    case MAV_TYPE_VTOL_RESERVED3:
+    case MAV_TYPE_VTOL_RESERVED4:
+    case MAV_TYPE_VTOL_RESERVED5:
+    case MAV_TYPE_PARAFOIL:
+        nbr = MAVSDK_VEHICLECLASS_PLANE;
+        break;
+    case MAV_TYPE_QUADROTOR:
+    case MAV_TYPE_COAXIAL:
+    case MAV_TYPE_HELICOPTER:
+    case MAV_TYPE_HEXAROTOR:
+    case MAV_TYPE_OCTOROTOR:
+    case MAV_TYPE_TRICOPTER:
+    case MAV_TYPE_DODECAROTOR:
+        nbr = MAVSDK_VEHICLECLASS_COPTER;
+        break;
+    case MAV_TYPE_GROUND_ROVER:
+        nbr = MAVSDK_VEHICLECLASS_ROVER;
+        break;
+    case MAV_TYPE_SURFACE_BOAT:
+        nbr = MAVSDK_VEHICLECLASS_BOAT;
+        break;
+    case MAV_TYPE_SUBMARINE:
+        nbr = MAVSDK_VEHICLECLASS_SUB;
+        break;
+    default:
+        nbr = MAVSDK_VEHICLECLASS_GENERIC;
+    }
+    lua_pushnumber(L, nbr);
+    return 1;
 }
 
 static int luaMavsdkGetSystemStatus(lua_State *L)
 {
     int nbr = mavlinkTelem.autopilot.system_status;
-	lua_pushnumber(L, nbr);
-	return 1;
+    lua_pushnumber(L, nbr);
+    return 1;
 }
 
 static int luaMavsdkIsArmed(lua_State *L)
@@ -423,26 +423,26 @@ static int luaMavsdkIsArmed(lua_State *L)
 
 static int luaMavsdkGetRadioRssi(lua_State *L)
 {
-	lua_pushinteger(L, mavlinkTelem.radio.rssi);
-	return 1;
+    lua_pushinteger(L, mavlinkTelem.radio.rssi);
+    return 1;
 }
 
 static int luaMavsdkGetRadioRemoteRssi(lua_State *L)
 {
-	lua_pushinteger(L, mavlinkTelem.radio.remrssi);
-	return 1;
+    lua_pushinteger(L, mavlinkTelem.radio.remrssi);
+    return 1;
 }
 
 static int luaMavsdkGetRadioNoise(lua_State *L)
 {
-	lua_pushinteger(L, mavlinkTelem.radio.noise);
-	return 1;
+    lua_pushinteger(L, mavlinkTelem.radio.noise);
+    return 1;
 }
 
 static int luaMavsdkGetRadioRemoteNoise(lua_State *L)
 {
-	lua_pushinteger(L, mavlinkTelem.radio.remnoise);
-	return 1;
+    lua_pushinteger(L, mavlinkTelem.radio.remnoise);
+    return 1;
 }
 
 
@@ -451,19 +451,19 @@ static int luaMavsdkGetRadioRemoteNoise(lua_State *L)
 static int luaMavsdkGetAttRollDeg(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.att.roll_rad * FRADTODEG);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetAttPitchDeg(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.att.pitch_rad * FRADTODEG);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetAttYawDeg(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.att.yaw_rad * FRADTODEG);
-	return 1;
+    return 1;
 }
 
 
@@ -473,49 +473,49 @@ static int luaMavsdkGetGps1Status(lua_State *L)
 {
 /* what method is better ??
     lua_createtable(L, 0, 4);
-	lua_pushtablenumber(L, "fix", mavlinkTelem.gps_fix);
-	lua_pushtablenumber(L, "hdop", mavlinkTelem.gps_hdop * 0.01);
-	lua_pushtablenumber(L, "vdop", mavlinkTelem.gps_vdop * 0.01);
-	lua_pushtablenumber(L, "sat", mavlinkTelem.gps_sat);
+    lua_pushtablenumber(L, "fix", mavlinkTelem.gps_fix);
+    lua_pushtablenumber(L, "hdop", mavlinkTelem.gps_hdop * 0.01);
+    lua_pushtablenumber(L, "vdop", mavlinkTelem.gps_vdop * 0.01);
+    lua_pushtablenumber(L, "sat", mavlinkTelem.gps_sat);
 */
-	lua_newtable(L);
-	lua_pushtablenumber(L, "fix", mavlinkTelem.gps1.fix);
-	lua_pushtablenumber(L, "hdop", mavlinkTelem.gps1.hdop * 0.01f);
-	lua_pushtablenumber(L, "vdop", mavlinkTelem.gps1.vdop * 0.01f);
-	lua_pushtablenumber(L, "sat", mavlinkTelem.gps1.sat);
-	return 1;
+    lua_newtable(L);
+    lua_pushtablenumber(L, "fix", mavlinkTelem.gps1.fix);
+    lua_pushtablenumber(L, "hdop", mavlinkTelem.gps1.hdop * 0.01f);
+    lua_pushtablenumber(L, "vdop", mavlinkTelem.gps1.vdop * 0.01f);
+    lua_pushtablenumber(L, "sat", mavlinkTelem.gps1.sat);
+    return 1;
 }
 
 static int luaMavsdkGetGps1Fix(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gps1.fix);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetGps1HDop(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gps1.hdop * 0.01f);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetGps1VDop(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gps1.vdop * 0.01f);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetGps1Sat(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gps1.sat); // UINT8_MAX if not known, but we don't do a nil here
-	return 1;
+    return 1;
 }
 
 /*static int luaMavsdkGetGps1LatLonDeg(lua_State *L) // I believe Lua numbers are double, so should be OK
 {
-	lua_newtable(L);
+    lua_newtable(L);
     lua_pushtablenumber(L, "lat", mavlinkTelem.gps1.lat * 1.0E-7);
     lua_pushtablenumber(L, "lon", mavlinkTelem.gps1.lon * 1.0E-7);
-	return 1;
+    return 1;
 }*/
 
 static int luaMavsdkGetGps1LatLonInt(lua_State *L)
@@ -529,7 +529,7 @@ static int luaMavsdkGetGps1LatLonInt(lua_State *L)
 static int luaMavsdkGetGps1AltitudeMsl(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gps1.alt_mm * 0.001f);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetGps1Speed(lua_State *L)
@@ -539,7 +539,7 @@ static int luaMavsdkGetGps1Speed(lua_State *L)
     } else {
         lua_pushnil(L);
     }
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetGps1CourseOverGroundDeg(lua_State *L)
@@ -549,7 +549,7 @@ static int luaMavsdkGetGps1CourseOverGroundDeg(lua_State *L)
     } else {
         lua_pushnil(L);
     }
-	return 1;
+    return 1;
 }
 
 
@@ -680,7 +680,7 @@ static int luaMavsdkGetPositionAltitudeMsl(lua_State *L)
 static int luaMavsdkGetPositionAltitudeRelative(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.gposition.relative_alt_mm * 0.001f);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetPositionHeadingDeg(lua_State *L)
@@ -704,37 +704,37 @@ static int luaMavsdkGetPositionSpeedNed(lua_State *L)
 static int luaMavsdkGetVfrAirSpeed(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.vfr.airspd_mps);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetVfrGroundSpeed(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.vfr.groundspd_mps);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetVfrAltitudeMsl(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.vfr.alt_m);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetVfrClimbRate(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.vfr.climbrate_mps);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetVfrHeadingDeg(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.vfr.heading_deg);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetVfrThrottle(lua_State *L)
 {
-	lua_pushinteger(L, mavlinkTelem.vfr.thro_pct);
-	return 1;
+    lua_pushinteger(L, mavlinkTelem.vfr.thro_pct);
+    return 1;
 }
 
 
@@ -747,7 +747,7 @@ static int luaMavsdkGetBat1ChargeConsumed(lua_State *L)
     } else {
         lua_pushnil(L);
     }
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetBat1EnergyConsumed(lua_State *L)
@@ -757,7 +757,7 @@ static int luaMavsdkGetBat1EnergyConsumed(lua_State *L)
     } else {
         lua_pushnil(L);
     }
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetBat1Temperature(lua_State *L)
@@ -767,13 +767,13 @@ static int luaMavsdkGetBat1Temperature(lua_State *L)
     } else {
         lua_pushnil(L);
     }
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetBat1Voltage(lua_State *L)
 {
     lua_pushnumber(L, mavlinkTelem.bat1.voltage_mV * 0.001f);
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetBat1Current(lua_State *L)
@@ -783,7 +783,7 @@ static int luaMavsdkGetBat1Current(lua_State *L)
     } else {
         lua_pushnil(L);
     }
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetBat1Remaining(lua_State *L)
@@ -793,13 +793,13 @@ static int luaMavsdkGetBat1Remaining(lua_State *L)
     } else {
         lua_pushnil(L);
     }
-	return 1;
+    return 1;
 }
 
 static int luaMavsdkGetBat1CellCount(lua_State *L)
 {
     if (mavlinkTelem.bat1.cellcount < 0) { lua_pushnil(L); } else { lua_pushinteger(L, mavlinkTelem.bat1.cellcount); }
-	return 1;
+    return 1;
 }
 
 
@@ -882,10 +882,10 @@ static int luaMavsdkIsBat2Available(lua_State *L)
 
 static int luaMavsdkGetBatCount(lua_State *L)
 {
-	uint16_t cnt = 0, mask = mavlinkTelem.bat_instancemask;
-	for(uint8_t i = 0; i < 8; i++) { if (mask & 0x01) cnt++; mask >>= 1; }
+    uint16_t cnt = 0, mask = mavlinkTelem.bat_instancemask;
+    for(uint8_t i = 0; i < 8; i++) { if (mask & 0x01) cnt++; mask >>= 1; }
     lua_pushinteger(L, cnt);
-	return 1;
+    return 1;
 }
 
 
