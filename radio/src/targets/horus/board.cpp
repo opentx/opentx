@@ -120,7 +120,7 @@ void boardInit()
                          GPS_RCC_AHB1Periph |
                          SPORT_UPDATE_RCC_AHB1Periph |
 //OW
-						 MAVLINK_TELEM_RCC_AHB1Periph |
+                         MAVLINK_TELEM_RCC_AHB1Periph |
 //OWEND
                          TOUCH_INT_RCC_AHB1Periph |
                          TOUCH_RST_RCC_AHB1Periph,
@@ -141,7 +141,7 @@ void boardInit()
                          I2C_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
 //OW
-						 MAVLINK_TELEM_RCC_APB1Periph |
+                         MAVLINK_TELEM_RCC_APB1Periph |
 //OWEND
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);
@@ -158,7 +158,7 @@ void boardInit()
                          AUX2_SERIAL_RCC_APB2Periph |
                          GPS_RCC_APB2Periph |
 //OW
-						 MAVLINK_TELEM_RCC_APB2Periph |
+                         MAVLINK_TELEM_RCC_APB2Periph |
 //OWEND
                          BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
