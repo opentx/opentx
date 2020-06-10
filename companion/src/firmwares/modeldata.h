@@ -300,6 +300,7 @@ class ModelData {
       int shift;
       int updcnt;
       int maxindex;
+      int occurences;
       RawSourceType srcType;
       RawSwitchType swtchType;
     };
@@ -317,6 +318,7 @@ class ModelData {
     void updateDestCh(MixData * md);
     void updateLimitCurveRef(CurveReference & crv);
     void updateFlightModeFlags(unsigned int & flags);
+    void updateTelemetryRef(int & idx);
     void updateTelemetryRef(unsigned int & idx);
     void updateModuleFailsafes(ModuleData * md);
     inline void updateSourceRef(RawSource & src) { updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType); }
