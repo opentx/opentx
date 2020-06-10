@@ -550,10 +550,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case HasCvNames:
       return 1;
     case Telemetry:
-      if (id.contains("frsky") || id.contains("telemetrez"))
         return TM_HASTELEMETRY | TM_HASOFFSET | TM_HASWSHH;
-      else
-        return 0;
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
