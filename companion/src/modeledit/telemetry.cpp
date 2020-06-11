@@ -20,7 +20,6 @@
 
 #include "telemetry.h"
 #include "ui_telemetry.h"
-#include "ui_telemetry_analog.h"
 #include "ui_telemetry_customscreen.h"
 #include "ui_telemetry_sensor.h"
 #include "helpers.h"
