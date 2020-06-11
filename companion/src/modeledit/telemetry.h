@@ -31,44 +31,10 @@ class RawSourceFilterItemModel;
 class TimerEdit;
 
 namespace Ui {
-  class TelemetryAnalog;
   class TelemetryCustomScreen;
   class TelemetrySensor;
   class Telemetry;
 }
-
-class TelemetryAnalog: public ModelPanel
-{
-    Q_OBJECT
-
-    friend class TelemetryPanel;
-
-  public:
-    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
-    virtual ~TelemetryAnalog();
-
-  signals:
-    void modified();
-
-  private slots:
-    void on_UnitCB_currentIndexChanged(int index);
-    void on_RatioSB_editingFinished();
-    void on_RatioSB_valueChanged();
-    void on_CalibSB_editingFinished();
-    void on_alarm1LevelCB_currentIndexChanged(int index);
-    void on_alarm1GreaterCB_currentIndexChanged(int index);
-    void on_alarm1ValueSB_editingFinished();
-    void on_alarm2LevelCB_currentIndexChanged(int index);
-    void on_alarm2GreaterCB_currentIndexChanged(int index);
-    void on_alarm2ValueSB_editingFinished();
-
-  private:
-    Ui::TelemetryAnalog *ui;
-    FrSkyChannelData & analog;
-    bool lock;
-
-    void update();
-};
 
 class TelemetryCustomScreen: public ModelPanel
 {
@@ -168,7 +134,6 @@ class TelemetryPanel : public ModelPanel
 
   private:
     Ui::Telemetry *ui;
-    TelemetryAnalog * analogs[4];
     TelemetryCustomScreen * telemetryCustomScreens[4];
     TelemetrySensorPanel * sensorPanels[CPN_MAX_SENSORS];
 

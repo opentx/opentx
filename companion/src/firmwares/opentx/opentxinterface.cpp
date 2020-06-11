@@ -550,7 +550,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case HasCvNames:
       return 1;
     case Telemetry:
-        return TM_HASTELEMETRY | TM_HASOFFSET | TM_HASWSHH;
+      return 1;
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
