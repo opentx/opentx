@@ -239,6 +239,24 @@ void onDeleteModelConfirm(const char * result)
   }
 }
 
+bool isModelOff() {
+  if (TELEMETRY_STREAMING()) {
+    RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
+    while (TELEMETRY_STREAMING()) {
+      RTOS_WAIT_MS(20);
+      if (readKeys() == (1 << KEY_ENTER)) {
+        killEvents(KEY_ENTER);
+        return true;
+      }
+      else if (readKeys() == (1 << KEY_EXIT)) {
+        killEvents(KEY_EXIT);
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
@@ -520,23 +538,5 @@ bool menuModelSelect(event_t event)
   lcd->drawBitmap(70, LCD_H-FH-20, modelselModelQtyBitmap);
   lcdDrawNumber(92, LCD_H-FH-21, modelslist.getModelsCount(),SMLSIZE);
 
-  return true;
-}
-
-bool isModelOff() {
-  if (TELEMETRY_STREAMING()) {
-    RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
-    while (TELEMETRY_STREAMING()) {
-      RTOS_WAIT_MS(20);
-      if (readKeys() == (1 << KEY_ENTER)) {
-        killEvents(KEY_ENTER);
-        return true;
-      }
-      else if (readKeys() == (1 << KEY_EXIT)) {
-        killEvents(KEY_EXIT);
-        return false;
-      }
-    }
-  }
   return true;
 }
