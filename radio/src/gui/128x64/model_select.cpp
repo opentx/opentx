@@ -36,6 +36,20 @@ void onModelSelectMenu(const char * result)
   int8_t sub = menuVerticalPosition;
 
   if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
+    if (TELEMETRY_STREAMING()) {
+      RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
+      while (TELEMETRY_STREAMING()) {
+        RTOS_WAIT_MS(20);
+        if (readKeys() == (1 << KEY_ENTER)) {
+          killEvents(KEY_ENTER);
+          break;
+        }
+        else if (readKeys() == (1 << KEY_EXIT)) {
+          killEvents(KEY_EXIT);
+          return;
+        }
+      }
+    }
     selectModel(sub);
   }
   else if (result == STR_COPY_MODEL) {
