@@ -136,10 +136,8 @@ void FlashProcess::onKillTimerElapsed()
 
 void FlashProcess::analyseStandardOutput(const QString & text)
 {
-
-//  qDebug() << text;
-
   currStdoutLine.append(text);
+
   if (currStdoutLine.contains("size = ")) {
     int pos = currStdoutLine.lastIndexOf("size = ");
     QString temp = currStdoutLine.mid(pos+7);
@@ -147,17 +145,23 @@ void FlashProcess::analyseStandardOutput(const QString & text)
     int size = temp.left(pos).toInt();
     progress->setMaximum(size / 2048);
   }
+
   if (currStdoutLine.contains("\n")) {
     int nlPos = currStdoutLine.lastIndexOf("\n");
     currStdoutLine = currStdoutLine.mid(nlPos+1);
   }
+
   if (!currStdoutLine.isEmpty()) {
     if (currStdoutLine.at(0) == QChar('.')) {
       int pos = currStdoutLine.lastIndexOf(".");
       progress->setValue(pos);
     }
     else if (currStdoutLine.startsWith("Starting upload: [")) {
-      int pos = (currStdoutLine.lastIndexOf("#")-19)*100/256;
+      int pos = (currStdoutLine.lastIndexOf("#") - 19) * 100 / 256;
+      progress->setValue(pos);
+    }
+    else if (currStdoutLine.startsWith("[") && progress->getText().contains("bytes_per_hash=2048")) {
+      int pos = (currStdoutLine.lastIndexOf("#") - 1) * 2048 / (2 * 1024 * 1024); // TODO depends on bin size
       progress->setValue(pos);
     }
   }
