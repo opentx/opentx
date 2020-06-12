@@ -91,6 +91,11 @@ void adcInit()
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 #endif
 
+#if defined(ADC_GPIOD_PINS)
+  GPIO_InitStructure.GPIO_Pin = ADC_GPIOD_PINS;
+  GPIO_Init(GPIOD, &GPIO_InitStructure);
+#endif
+
 #if defined(ADC_GPIOF_PINS)
   GPIO_InitStructure.GPIO_Pin = ADC_GPIOF_PINS;
   GPIO_Init(GPIOF, &GPIO_InitStructure);
