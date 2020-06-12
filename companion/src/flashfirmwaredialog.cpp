@@ -112,7 +112,7 @@ void FlashFirmwareDialog::updateUI()
   }
 
   QImage image;
-  switch(imageSource) {
+  switch (imageSource) {
     case FIRMWARE:
       ui->useFirmwareSplash->setChecked(true);
       image = firmware.getSplash();

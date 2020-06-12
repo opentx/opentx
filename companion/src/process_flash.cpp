@@ -134,15 +134,18 @@ void FlashProcess::onKillTimerElapsed()
 #endif
 }
 
-void FlashProcess::analyseStandardOutput(const QString &text)
+void FlashProcess::analyseStandardOutput(const QString & text)
 {
+
+//  qDebug() << text;
+
   currStdoutLine.append(text);
   if (currStdoutLine.contains("size = ")) {
     int pos = currStdoutLine.lastIndexOf("size = ");
     QString temp = currStdoutLine.mid(pos+7);
     pos = temp.lastIndexOf("\n");
     int size = temp.left(pos).toInt();
-    progress->setMaximum(size/2048);
+    progress->setMaximum(size / 2048);
   }
   if (currStdoutLine.contains("\n")) {
     int nlPos = currStdoutLine.lastIndexOf("\n");
@@ -168,7 +171,15 @@ void FlashProcess::analyseStandardOutput(const QString &text)
     int end = text.indexOf("%");
     if (start > 0) {
       start += 9;
-      int value = text.mid(start, end-start).toInt();
+      int value = text.mid(start, end - start).toInt();
+      progress->setValue(value);
+    }
+  }
+
+  if (text.contains("Upload\t[")) {
+    int end = text.indexOf("%");
+    if (end > 0) {
+      int value = text.mid(end - 3, 3).toInt();
       progress->setValue(value);
     }
   }
