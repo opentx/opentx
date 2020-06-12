@@ -759,7 +759,7 @@
   #define HARDWARE_POT1
   #define HARDWARE_POT2
   #define HARDWARE_POT3
-  #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
