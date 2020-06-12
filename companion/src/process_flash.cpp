@@ -161,7 +161,7 @@ void FlashProcess::analyseStandardOutput(const QString & text)
       progress->setValue(pos);
     }
     else if (currStdoutLine.startsWith("[") && progress->getText().contains("bytes_per_hash=2048")) {
-      int pos = (currStdoutLine.lastIndexOf("#") - 1) * 2048 / (2 * 1024 * 1024); // TODO depends on bin size
+      int pos = (currStdoutLine.lastIndexOf("#") - 1) * 2048 * 100 / (2 * 1024 * 1024); // TODO depends on bin size
       progress->setValue(pos);
     }
   }
