@@ -580,6 +580,10 @@ int version2index(const QString & version)
     result = parts[1].toInt(); // nightly build up to 899
     mainVersion = parts[0];
   }
+  else if (version.contains("-")) {
+    parts = version.split("-");
+    mainVersion = parts[0];
+  }
   parts = mainVersion.split('.');
   if (parts.size() > 2)
     result += 1000 * parts[2].toInt();
