@@ -943,6 +943,7 @@ void TelemetrySensorPanel::cmClear()
     return;
 
   sensor.clear();
+  model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   emit dataModified();
   emit modified();
 }
@@ -1353,6 +1354,7 @@ void TelemetryPanel::on_clearAllSensors()
 {
   for (int i = 0; i < CPN_MAX_SENSORS; i++) {
     model->sensorData[i].clear();
+    model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_CLEAR, i);
   }
 
   update();

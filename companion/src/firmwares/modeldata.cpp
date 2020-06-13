@@ -781,6 +781,10 @@ int ModelData::updateReference()
     if (!sd->isEmpty() && sd->type == SensorData::TELEM_TYPE_CALCULATED) {
       if (sd->formula == SensorData::TELEM_FORMULA_CELL) {
         updateTelemetryRef(sd->source);
+        if (sd->source == 0) {
+          sd->clear();
+          appendUpdateReferenceParams(REF_UPD_TYPE_SENSOR, REF_UPD_ACT_CLEAR, i);
+        }
       }
       else if (sd->formula == SensorData::TELEM_FORMULA_DIST) {
         updateTelemetryRef(sd->gps);
@@ -788,6 +792,10 @@ int ModelData::updateReference()
       }
       else if (sd->formula == SensorData::TELEM_FORMULA_CONSUMPTION || sd->formula == SensorData::TELEM_FORMULA_TOTALIZE) {
         updateTelemetryRef(sd->amps);
+        if (sd->amps == 0) {
+          sd->clear();
+          appendUpdateReferenceParams(REF_UPD_TYPE_SENSOR, REF_UPD_ACT_CLEAR, i);
+        }
       }
       else {
         for (unsigned int i = 0; i < 4; i++) {
@@ -901,7 +909,7 @@ void ModelData::updateTypeValueRef(R & curRef, const T type, const int idxAdj, c
         newRef.clear();
       else {
         newRef.type = (T)defType;
-        newRef.value = defValue;
+        newRef.value = defValue + idxAdj;
       }
       break;
     case REF_UPD_ACT_SHIFT:
@@ -915,7 +923,7 @@ void ModelData::updateTypeValueRef(R & curRef, const T type, const int idxAdj, c
           newRef.clear();
         else {
           newRef.type = (T)defType;
-          newRef.value = defValue;
+          newRef.value = defValue + idxAdj;
         }
       }
       break;
