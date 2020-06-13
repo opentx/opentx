@@ -176,7 +176,7 @@ void FlashProcess::analyseStandardOutput(const QString & text)
     }
   }
 
-  if (text.contains("Upload\t[")) {
+  if (text.contains("Upload\t[") || text.contains("Download\t[")) {
     int end = text.indexOf("%");
     if (end > 0) {
       int value = text.mid(end - 3, 3).toInt();
