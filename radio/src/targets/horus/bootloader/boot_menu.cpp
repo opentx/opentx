@@ -84,7 +84,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
 
         bootloaderDrawFooter();
         lcdDrawText( 36, 242, "Current Firmware:");
-        lcdDrawText(200, 242, getOtherVersion(nullptr));
+        lcdDrawText(200, 242, getFirmwareVersion());
     }
     else if (st == ST_USB) {
 
