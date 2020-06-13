@@ -25,10 +25,9 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char *str)
   lcdInvertLine(0);
 
   if (st == ST_START) {
-    lcdDrawTextAlignedLeft(2*FH, "\010Write Firmware");
-    lcdDrawTextAlignedLeft(3*FH, "\010Restore EEPROM");
-    lcdDrawTextAlignedLeft(4*FH, "\010Exit");
-    lcdInvertLine(2 + opt);
+    lcdDrawText(3*FW, 2*FH, "Write Firmware", opt == 0 ? INVERS : 0);
+    lcdDrawText(3*FW, 3*FH, "Restore EEPROM", opt == 1 ? INVERS : 0);
+    lcdDrawText(3*FW, 4*FH, "Exit", opt == 2 ? INVERS : 0);
 
     lcdDrawText(LCD_W / 2, 5 * FH + FH / 2, STR_OR_PLUGIN_USB_CABLE, CENTERED);
 
