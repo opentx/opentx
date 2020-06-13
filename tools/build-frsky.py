@@ -87,6 +87,14 @@ boards = {
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
     },
+    "X9E": {
+        "PCB": "X9E",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
+    },
     "X7_FCC": {
         "PCB": "X7",
         "LUA": "NO_MODEL_SCRIPTS",
@@ -114,7 +122,32 @@ boards = {
         "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
-    }
+    },
+    "X10S": {
+        "PCB": "X10",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
+    },
+    "X10SExpress": {
+        "PCB": "X10",
+        "PCBREV": "EXPRESS",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
+    },
+    "X12S": {
+        "PCB": "X12S",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
+    },
 }
 
 translations = [

@@ -410,4 +410,7 @@ bool telemetrySecondPortReceive(uint8_t & data);
 
 extern const uint8_t BootCode[];
 
+// Pulses driver
+#define HARDWARE_EXTRA_MODULE
+
 #endif // _BOARD_SKY9X_H_

@@ -12,7 +12,7 @@ set(FONT_OFFSET 1)
 
 add_truetype_font_target(480x272 tinsize     ${FONT}      9  0)
 add_truetype_font_target(480x272 smlsize     ${FONT}      13 0)
-add_truetype_font_target(480x272 stdsize     ${FONT}      16 0)
+add_truetype_font_target(480x272 stdsize     ${FONT}      16 1)
 add_truetype_font_target(480x272 stdsizebold ${FONT_BOLD} 16 1)
 add_truetype_font_target(480x272 midsize     ${FONT}      24 0)
 add_truetype_font_target(480x272 dblsize     ${FONT_BOLD} 32 0)

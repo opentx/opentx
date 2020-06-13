@@ -523,7 +523,7 @@ bool menuRadioSdManager(event_t _event)
 
   reusableBuffer.sdManager.offset = menuVerticalOffset;
 
-  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     LcdFlags attr = (index == i ? INVERS : 0);
     if (reusableBuffer.sdManager.lines[i][0]) {
@@ -568,12 +568,12 @@ bool menuRadioSdManager(event_t _event)
           for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
             popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
           }
-          //popupMenuTitle = STR_PXX2_SELECT_RX;
+          popupMenuTitle = STR_PXX2_SELECT_RX;
           POPUP_MENU_START(onUpdateReceiverSelection);
         }
       }
       else {
-        POPUP_WAIT(STR_WAITING_FOR_RX);
+        DRAW_POPUP_WAIT(STR_WAITING_FOR_RX);
       }
     }
   }

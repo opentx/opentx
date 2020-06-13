@@ -64,8 +64,7 @@ template <unsigned int NUM_BITS> class BitField {
 #define INDEX_LOGICAL_SWITCH_AUDIO_FILE(index, event) (2*(index)+(event))
 #define INDEX_PHASE_AUDIO_FILE(index, event)          (2*(index)+(event))
 
-
-#define AUDIO_FILENAME_MAXLEN          (42) // max length (example: /SOUNDS/fr/123456789012/1234567890-off.wav)
+constexpr uint8_t AUDIO_FILENAME_MAXLEN = (sizeof("/SOUNDS/fr/") - 1) + LEN_MODEL_NAME + 1 + LEN_FLIGHT_MODE_NAME + (sizeof("-off.wav") - 1); // max length (example: /SOUNDS/fr/123456789012/1234567890-off.wav)
 #define AUDIO_QUEUE_LENGTH             (16) // must be a power of 2!
 
 #define AUDIO_SAMPLE_RATE              (32000)

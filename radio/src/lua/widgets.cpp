@@ -265,7 +265,7 @@ class LuaWidget: public Widget
 
     virtual void update();
 
-    virtual void refresh();
+    void refresh() override;
 
     virtual void background();
 

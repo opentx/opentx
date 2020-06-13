@@ -45,15 +45,12 @@ AdjustmentReference::AdjustmentReference(AdjustRefType type, int value)
 
 bool AdjustmentReference::isValid(const int value) const
 {
-  switch(type) {
+  switch (type) {
     case ADJUST_REF_VALUE:
-      if (abs(value) < ADJUST_REF_GVAR_BASE)
-        return true;
-      break;
+      return abs(value) < ADJUST_REF_GVAR_BASE;
+
     case ADJUST_REF_GVAR:
-      if (abs(value) > 0 && abs(value) <= CPN_MAX_GVARS);
-        return true;
-      break;
+      return abs(value) > 0 && abs(value) <= CPN_MAX_GVARS;
   }
   return false;
 }

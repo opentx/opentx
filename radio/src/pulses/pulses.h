@@ -330,6 +330,7 @@ void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
 void sendByteSbus(uint8_t b);
+void intmodulePpmStart();
 void intmodulePxx1PulsesStart();
 void intmodulePxx1SerialStart();
 void extmodulePxx1PulsesStart();
@@ -337,6 +338,7 @@ void extmodulePxx1SerialStart();
 void extmodulePpmStart();
 void intmoduleStop();
 void extmoduleStop();
+void extramodulePpmStart();
 
 inline void startPulses()
 {

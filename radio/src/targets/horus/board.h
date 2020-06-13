@@ -675,7 +675,7 @@ void gpsSendByte(uint8_t byte);
 
 // BT driver
 #define BT_TX_FIFO_SIZE    64
-#define BT_RX_FIFO_SIZE    128
+#define BT_RX_FIFO_SIZE    256
 #define BLUETOOTH_BOOTLOADER_BAUDRATE  230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200

@@ -947,7 +947,7 @@ void evalMixes(uint8_t tick10ms)
         mixerCurrentFlightMode = p;
         evalFlightModeMixes(p==fm ? e_perout_mode_normal : e_perout_mode_inactive_flight_mode, p==fm ? tick10ms : 0);
         for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++)
-          sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
+          sum_chans512[i] += (chans[i] >> (17 - __builtin_clz(abs(chans[i])))) * fp_act[p];
         weight += fp_act[p];
       }
     }
@@ -978,7 +978,7 @@ void evalMixes(uint8_t tick10ms)
     // at the end chans[i] = chans[i]/256 =>  -1024..1024
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
-    int32_t q = (flightModesFade ? (sum_chans512[i] / weight) << 4 : chans[i]);
+    int32_t q = (flightModesFade ? (sum_chans512[i] / weight) << (17 - __builtin_clz(abs(chans[i]))) : chans[i]);
 
     ex_chans[i] = q / 256;
 

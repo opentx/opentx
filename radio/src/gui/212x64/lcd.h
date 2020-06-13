@@ -169,10 +169,10 @@ void lcdClear();
 uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 
 #if defined(BOOT)
-  #define BLINK_ON_PHASE (0)
+  #define BLINK_ON_PHASE        (0)
 #else
-  #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
-  #define SLOW_BLINK_ON_PHASE          (g_blinkTmr10ms & (1<<7))
+  #define BLINK_ON_PHASE        (g_blinkTmr10ms & (1 << 6))
+  #define SLOW_BLINK_ON_PHASE   (g_blinkTmr10ms & (1 << 7))
 #endif
 
 inline display_t getPixel(unsigned int x, unsigned int y)

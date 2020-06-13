@@ -765,7 +765,7 @@ void doSplash()
       }
 #endif
 
-#if defined(FRSKY_RELEASE)
+#if defined(FRSKY_RELEASE) && !defined(COLORLCD)
       static uint8_t secondSplash = false;
       if (!secondSplash && get_tmr10ms() >= tgtime-200) {
         secondSplash = true;

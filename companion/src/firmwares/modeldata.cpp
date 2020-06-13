@@ -1174,8 +1174,7 @@ void ModelData::updateModuleFailsafes(ModuleData * md)
 
   bool updated = false;
 
-  switch (updRefInfo.action)
-  {
+  switch (updRefInfo.action) {
     case REF_UPD_ACT_CLEAR:
       break;
     case REF_UPD_ACT_SHIFT:
@@ -1183,16 +1182,16 @@ void ModelData::updateModuleFailsafes(ModuleData * md)
         return;
 
       if (updRefInfo.shift > 0) {
-        for (int i = (CPN_MAX_CHNOUT - 1); i > updRefInfo.index1; i--) {
-          md->failsafeChannels[i] = md->failsafeChannels[i - 1];
+        for (int i = CPN_MAX_CHNOUT - 1; i > updRefInfo.index1; i--) {
+          limitData[i].failsafe = limitData[i - 1].failsafe;
         }
-        md->failsafeChannels[updRefInfo.index1] = 0;
+        limitData[updRefInfo.index1].failsafe = 0;
       }
       else {
-        for (int i = (updRefInfo.index1 + 1); i < (CPN_MAX_CHNOUT - 1); i++) {
-          md->failsafeChannels[i - 1] = md->failsafeChannels[i];
+        for (int i = updRefInfo.index1 + 1; i < CPN_MAX_CHNOUT - 1; i++) {
+          limitData[i - 1].failsafe = limitData[i].failsafe;
         }
-        md->failsafeChannels[CPN_MAX_CHNOUT - 1] = 0;
+        limitData[CPN_MAX_CHNOUT - 1].failsafe = 0;
       }
       updated = true;
       break;
@@ -1200,17 +1199,18 @@ void ModelData::updateModuleFailsafes(ModuleData * md)
       int tmp;
       if (updRefInfo.index1 >= 0 && updRefInfo.index1 < CPN_MAX_CHNOUT) {
         updated = true;
-        tmp = md->failsafeChannels[updRefInfo.index1];
+        tmp = limitData[updRefInfo.index1].failsafe;
         if (updRefInfo.index2 >= 0 && updRefInfo.index2 < CPN_MAX_CHNOUT)
-          md->failsafeChannels[updRefInfo.index1] = md->failsafeChannels[updRefInfo.index2];
+          limitData[updRefInfo.index1].failsafe = limitData[updRefInfo.index2].failsafe;
         else
-          md->failsafeChannels[updRefInfo.index1] = 0;
+          limitData[updRefInfo.index1].failsafe = 0;
       }
       else
         tmp = 0;
-      if (updRefInfo.index2 >= 0 && updRefInfo.index2 < CPN_MAX_CHNOUT)
+      if (updRefInfo.index2 >= 0 && updRefInfo.index2 < CPN_MAX_CHNOUT) {
         updated = true;
-        md->failsafeChannels[updRefInfo.index2] = tmp;
+        limitData[updRefInfo.index2].failsafe = tmp;
+      }
       break;
     default:
       qDebug() << "Error - unhandled action:" << updRefInfo.action;

@@ -36,7 +36,6 @@
 FirmwareInterface::FirmwareInterface(const QString & filename):
   flash(FSIZE_MAX, 0),
   flashSize(0),
-  versionId(0),
   eepromVersion(0),
   eepromVariant(0),
   splashOffset(0),
@@ -80,7 +79,6 @@ FirmwareInterface::FirmwareInterface(const QString & filename):
       eepromVersion = eepromId.toInt();
     }
 
-    versionId = version2index(version);
     seekSplash();
     isValidFlag = !version.isEmpty();
   }

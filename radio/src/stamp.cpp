@@ -33,26 +33,26 @@
 #endif
 
 #if defined(FRSKY_RELEASE)
-#define DISPLAY_VERSION "FrSky"
+#define DISPLAY_VERSION "-frsky"
 #elif defined(JUMPER_RELEASE)
-#define DISPLAY_VERSION "JumperRC"
+#define DISPLAY_VERSION "-jumper"
 #elif defined(RADIOMASTER_RELEASE)
-#define DISPLAY_VERSION "Radiomaster"
+#define DISPLAY_VERSION "-radiomaster"
 #elif defined(TBS_RELEASE)
-#define DISPLAY_VERSION "TBS"
+#define DISPLAY_VERSION "-tbs"
 #else
-#define DISPLAY_VERSION VERSION
+#define DISPLAY_VERSION
 #endif
 
 #if defined(COLORLCD)
-  const char vers_stamp[]  =   "VERS" TAB ": " "opentx-" FLAVOUR "-" DISPLAY_VERSION " (" GIT_STR ")";
+  const char vers_stamp[]  =   "VERS" TAB ": " "opentx-" FLAVOUR "-" VERSION DISPLAY_VERSION " (" GIT_STR ")";
   const char date_stamp[]  =   "DATE" TAB ": " DATE;
   const char time_stamp[]  =   "TIME" TAB ": " TIME;
   const char eeprom_stamp[]  = "EEPR" TAB ": " EEPROM_STR;
 #elif defined(BOARD_NAME)
-  const char vers_stamp[]  = "FW" TAB ": opentx-" BOARD_NAME "\036VERS" TAB ": " DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
+  const char vers_stamp[]  = "FW" TAB ": opentx-" BOARD_NAME "\036VERS" TAB ": " VERSION DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #else
-  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": " DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
+  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": " VERSION DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #endif
 
 /**

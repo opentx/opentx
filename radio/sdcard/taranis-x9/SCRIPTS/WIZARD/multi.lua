@@ -164,8 +164,8 @@ end
 -- Init function
 local function init()
   thrCH1 = defaultChannel(2)
-  rollCH1 = defaultChannel(0)
-  yawCH1 = defaultChannel(3)
+  rollCH1 = defaultChannel(3)
+  yawCH1 = defaultChannel(0)
   pitchCH1 = defaultChannel(1)
   local ver, radio, maj, minor, rev = getVersion()
   -- if string.match(radio, "x7") then
