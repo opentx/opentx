@@ -292,7 +292,7 @@ void FlashProcess::errorWizard()
         DeviceStr = "Atmega 2561";
       }
     }
-    if (fwexist==false) {
+    if (!fwexist) {
       QMessageBox::warning(nullptr, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
     }
     else {
