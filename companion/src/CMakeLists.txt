@@ -482,6 +482,9 @@ if(WIN32)
     file(TO_NATIVE_PATH "${INSTALL_DESTINATION}" NSIS_DISTRO)  # all files in here will be included in installer
     set(NSI_FILE "${PROJECT_BINARY_DIR}/companion/companion.nsi")
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/companion.nsi.in" "${NSI_FILE}" @ONLY)
+    string(TIMESTAMP WIN_COMPILE_YEAR "%Y")
+    set(WIN_LICENSE_FILE "${PROJECT_BINARY_DIR}/companion/license.txt")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/license.txt.in" "${WIN_LICENSE_FILE}" @ONLY)
 
     add_custom_target(installer
       # The 'install' target prepares all the distro files, make sure it has been executed first.
