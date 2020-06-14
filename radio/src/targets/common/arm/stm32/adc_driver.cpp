@@ -39,7 +39,7 @@
                                             12 /*SLIDER1*/, 13 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
                                             9 /*TX_VOLTAGE*/, 10 /*TX_VBAT*/ };
 #elif defined(PCBX9DP)
-  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,-1,  1,1,  1,  1};
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,1,  1,1,  1,  1};
 #elif defined(PCBX9D)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1,  1};
 #elif defined(PCBX7)

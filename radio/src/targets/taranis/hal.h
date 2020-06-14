@@ -781,7 +781,7 @@
     #define ADC_GPIO_PIN_POT3           GPIO_Pin_11  // PD.11
     #define ADC_GPIOB_PINS              (ADC_GPIO_PIN_POT2)
     #define ADC_GPIOD_PINS              (ADC_GPIO_PIN_POT3)
-    #define ADC_CHANNEL_POT3            ADC_Channel_9
+    #define ADC_CHANNEL_POT3            ADC_Channel_4
     #define ADC_VREF_PREC2              300
   #endif
   #define ADC_GPIO_PIN_SLIDER1          GPIO_Pin_4  // PC.04
