@@ -557,8 +557,10 @@ void LogicalSwitchesPanel::cmCopy()
 
 void LogicalSwitchesPanel::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Logical Switch. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 // TODO make something generic here!
@@ -621,8 +623,13 @@ void LogicalSwitchesPanel::cmMoveDown()
   swapData(selectedIndex, selectedIndex + 1);
 }
 
-void LogicalSwitchesPanel::cmClear()
+void LogicalSwitchesPanel::cmClear(bool prompt)
 {
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Logical Switch. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
+
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   update();

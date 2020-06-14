@@ -67,7 +67,7 @@ class FlightModePanel : public ModelPanel
     void phaseREValue_editingFinished();
     void phaseREUse_currentIndexChanged(int index);
     void onCustomContextMenuRequested(QPoint pos);
-    void cmClear();
+    void cmClear(bool prompt = true);
     void cmClearAll();
     void cmCopy();
     void cmCut();
@@ -77,7 +77,7 @@ class FlightModePanel : public ModelPanel
     void cmMoveDown();
     void cmMoveUp();
     void gvOnCustomContextMenuRequested(QPoint pos);
-    void gvCmClear();
+    void gvCmClear(bool prompt = true);
     void gvCmClearAll();
     void gvCmCopy();
     void gvCmCut();

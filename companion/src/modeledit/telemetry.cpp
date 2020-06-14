@@ -923,8 +923,11 @@ void TelemetrySensorPanel::cmCopy()
 
 void TelemetrySensorPanel::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Telemetry Sensor. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 void TelemetrySensorPanel::cmPaste()
@@ -937,10 +940,12 @@ void TelemetrySensorPanel::cmPaste()
   }
 }
 
-void TelemetrySensorPanel::cmClear()
+void TelemetrySensorPanel::cmClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Telemetry Sensor. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Telemetry Sensor. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   sensor.clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);

@@ -129,7 +129,7 @@ class TelemetrySensorPanel: public ModelPanel
     void cmCopy();
     void cmCut();
     void cmPaste();
-    void cmClear();
+    void cmClear(bool prompt = true);
     void cmClearAll();
     void cmInsert();
     void cmDelete();

@@ -708,10 +708,12 @@ bool FlightModePanel::moveUpAllowed() const
   return phaseIdx > 0;
 }
 
-void FlightModePanel::cmClear()
+void FlightModePanel::cmClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   phase.clear(phaseIdx);
 
@@ -780,8 +782,10 @@ void FlightModePanel::cmCopy()
 
 void FlightModePanel::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 void FlightModePanel::cmDelete()
@@ -1124,11 +1128,13 @@ bool FlightModePanel::gvMoveUpAllowed() const
   return (phaseIdx == 0 && gvIdx > 0);
 }
 
-void FlightModePanel::gvCmClear()
+void FlightModePanel::gvCmClear(bool prompt)
 {
   if (phaseIdx == 0) {
-    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear selected Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-      return;
+    if (prompt) {
+      if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        return;
+    }
     model->gvarData[gvIdx].clear();
     for (int i = 0; i < fmCount; i++) {
       model->flightModeData[i].gvars[gvIdx] = model->flightModeData[i].linkedGVarFlightModeZero(i);
@@ -1136,6 +1142,10 @@ void FlightModePanel::gvCmClear()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_CLEAR, gvIdx);
   }
   else {
+    if (prompt) {
+      if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Global Variable. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        return;
+    }
     phase.gvars[gvIdx] = phase.linkedGVarFlightModeZero(phaseIdx);
   }
   emit datachanged();
@@ -1188,23 +1198,27 @@ void FlightModePanel::gvCmCopy()
 
 void FlightModePanel::gvCmCut()
 {
-  gvCmCopy();
-  if (phaseIdx > 0) {
-    gvCmClear();
+  if (phaseIdx == 0) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
   else {
-    model->gvarData[gvIdx].clear();
-    phase.gvars[gvIdx] = 0;
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_CLEAR, gvIdx);
-    emit datachanged();
-    emit modified();
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Global Variable. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
+
+  gvCmCopy();
+  gvCmClear(false);
 }
 
 void FlightModePanel::gvCmDelete()
 {
   if (phaseIdx > 0)
     return;
+
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Global Variable. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   int maxidx = gvCount - 1;
   for (int i = gvIdx; i < maxidx; i++) {
     memcpy(&model->gvarData[i], &model->gvarData[i + 1], sizeof(GVarData));
