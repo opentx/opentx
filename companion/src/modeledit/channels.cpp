@@ -351,6 +351,7 @@ void Channels::cmCut()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
+
   cmCopy();
   cmClear(false);
 }

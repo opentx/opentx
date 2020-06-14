@@ -1187,7 +1187,7 @@ void FlightModePanel::gvCmCopy()
   else {
     mimeData->removeFormat(MIMETYPE_GVAR_PARAMS);
   }
-  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);    //  TODO if phase zero store values for all flight modes and handle pasting
   int val = phase.gvars[gvIdx];
   if (model->isGVarLinked(phaseIdx, gvIdx))
     val = GVAR_MAX_VALUE + 1 + model->getGVarFlightModeIndex(phaseIdx, gvIdx);  //  store index in case paste is to another flight mode
