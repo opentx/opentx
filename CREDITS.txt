@@ -1742,3 +1742,8 @@ Stefano Bortolotti
 Gerald Zierer
 Alessio Noto
 Walter Fowler
+Robert Black
+Klaus Kernstock
+Michael Wittich
+AG-Software
+Dietmar Drees
