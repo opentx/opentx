@@ -114,7 +114,7 @@ void DownloadDialog::updateDataReadProgress(qint64 bytesRead, qint64 totalBytes)
 void DownloadDialog::fileError()
 {
   delete file;
-  file = NULL;
+  file = nullptr;
   reject();
 }
 

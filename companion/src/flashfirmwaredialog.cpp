@@ -21,7 +21,6 @@
 #include "flashfirmwaredialog.h"
 #include "ui_flashfirmwaredialog.h"
 #include "appdata.h"
-#include "process_flash.h"
 #include "helpers.h"
 #include "progressdialog.h"
 #include "radiointerface.h"
@@ -202,7 +201,7 @@ void FlashFirmwareDialog::on_useExternalSplash_clicked()
 void FlashFirmwareDialog::on_useLibrarySplash_clicked()
 {
   QString fileName;
-  SplashLibraryDialog *ld = new SplashLibraryDialog(this, &fileName);
+  auto ld = new SplashLibraryDialog(this, &fileName);
   ld->exec();
   if (!fileName.isEmpty()) {
     QImage image(fileName);
