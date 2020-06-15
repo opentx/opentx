@@ -905,7 +905,7 @@
 #define TR_POWERMETER_ATTN_NEEDED      "Necesita atenuador"
 #define TR_PXX2_SELECT_RX              "Selecciona RX..."
 #define TR_PXX2_DEFAULT                "<defecto>"
-#define TR_BT_SELECT_DEVICE            "Selecciona dispositivo..."
+#define TR_BT_SELECT_DEVICE            "Selecciona dispositivo"
 #define TR_DISCOVER             "Buscar"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Espera..."
