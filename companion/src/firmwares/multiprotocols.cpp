@@ -50,7 +50,7 @@ static const QStringList STR_SUBTYPE_SYMAX     {"Standard", "Syma X5C"};
 static const QStringList STR_SUBTYPE_SLT       {"V1 (6 Channel)", "V2 (8 Channel)", "Q100", "Q200", "MR100"};
 static const QStringList STR_SUBTYPE_CX10      {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041"};
 static const QStringList STR_SUBTYPE_CG023     {"Standard", "YD829"};
-static const QStringList STR_SUBTYPE_BAYANG    {"Standard", "H8S3D", "X16 AH", "IRDRONE", "DHD D4"};
+static const QStringList STR_SUBTYPE_BAYANG    {"Standard", "H8S3D", "X16 AH", "IRDRONE", "DHD D4", "QX100"};
 static const QStringList STR_SUBTYPE_ESky      {"Standard", "ET4"};
 static const QStringList STR_SUBTYPE_MT99      {"MT99", "H7", "YZ", "LS", "FY805"};
 static const QStringList STR_SUBTYPE_MJXQ      {"WLH08", "X600", "X800", "H26D", "E010", "H26WH", "Phoenix"};
@@ -76,7 +76,9 @@ static const QStringList STR_SUBTYPE_POTENSIC  {"A20 Firefly"};
 static const QStringList STR_SUBTYPE_ZSX       {"JJRC ZSX-280"};
 static const QStringList STR_SUBTYPE_FLYZONE   {"FZ-410 TX"};
 static const QStringList STR_SUBTYPE_FRSKYX_RX {"RX", "Clone TX"};
+static const QStringList STR_SUBTYPE_HOTT      {"Sync", "No_Sync"};
 static const QStringList STR_SUBTYPE_FX816     {"P38"};
+static const QStringList STR_SUBTYPE_PELIKAN   {"Pro", "Lite"};
 static const QStringList STR_SUBTYPE_XK        {"X450", "X420"};
 static const QStringList STR_SUBTYPE_XN297DUMP {"250K", "1M", "2M", "AUTO"};
 static const QStringList STR_SUBTYPE_FRSKYX2   {"D16", "D16 8ch", "D16 EU-LBT", "D16 EU-LBT 8ch", "D16 Cloned"};
@@ -104,7 +106,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_SLT,        4, false,      STR_SUBTYPE_SLT,       STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_CX10,       6, false,      STR_SUBTYPE_CX10,      nullptr},
   {MODULE_SUBTYPE_MULTI_CG023,      1, false,      STR_SUBTYPE_CG023,     nullptr},
-  {MODULE_SUBTYPE_MULTI_BAYANG,     4, false,      STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
+  {MODULE_SUBTYPE_MULTI_BAYANG,     5, false,      STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
   {MODULE_SUBTYPE_MULTI_ESky,       1, false,      STR_SUBTYPE_ESky,      nullptr},
   {MODULE_SUBTYPE_MULTI_MT99XX,     4, false,      STR_SUBTYPE_MT99,      nullptr},
   {MODULE_SUBTYPE_MULTI_MJXQ,       6, false,      STR_SUBTYPE_MJXQ,      STR_MULTI_RFTUNE},
@@ -134,8 +136,9 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      STR_SUBTYPE_ZSX,       nullptr},
   {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false,      STR_SUBTYPE_FLYZONE,   nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false,      STR_SUBTYPE_FRSKYX_RX, STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_HOTT,       0, true,       NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_HOTT,       1, true,       STR_SUBTYPE_HOTT,      STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FX816,      0, false,      STR_SUBTYPE_FX816,     nullptr},
+  {MODULE_SUBTYPE_MULTI_PELIKAN,    1, false,      STR_SUBTYPE_PELIKAN,   nullptr},
   {MODULE_SUBTYPE_MULTI_XK,         1, false,      STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_XN297DUMP,  3, false,      STR_SUBTYPE_XN297DUMP, nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    4, true,       STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
@@ -144,6 +147,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_FRSKYL,     1, false,      STR_SUBTYPE_FRSKYL,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_SKYARTEC,   0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ESKY150V2,  0, false,      STR_SUBTYPE_ESKY150V2, STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_Q90C,       0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -188,7 +192,7 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "Hitec", "Wfly", "Bugs", "Bugs Mini", "Traxxas", "NCC-1701-A", "E01X", "WL Heli V911S", "GD00X", "Volantex V761",
     "KFPlan KF606", "Redpine", "Potensic", "ZSX", "FlyZone", "Scanner", "FrSky RX", "FlySky AFHDS2A RX", "HoTT", "Fx816",
     "Bayang RX", "Pelikan", "Tiger", "XK", "XN297 Dump", "FrSky X 2.1", "FrSky R9", "Propel", "FrSky L", "Skyartec",
-    "ESky 150v2", "DSM RX", "JJRC345"
+    "ESky 150v2", "DSM RX", "JJRC345", "Q90C"
   });
 
   return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);
