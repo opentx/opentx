@@ -681,6 +681,7 @@
 #define TR_VOLTAGE                      TR(INDENT "Spg", INDENT "Spannungsquelle")  //9XR-Pro
 #define TR_CURRENT                      TR(INDENT "Strom", INDENT "Stromquelle")
 #define TR_SELECT_MODEL                 "Modell auswählen"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY              "Modelltyp erstellen"
 #define TR_RENAME_CATEGORY              "Modelltyp umbenennen"
 #define TR_DELETE_CATEGORY              "Modelltyp löschen"
@@ -901,7 +902,7 @@
 #define TR_BYTES                       "Bytes"
 #define TR_MODULE_BIND                 BUTTON(TR("Bnd","Bind"))   //9XR-Pro
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_SELECT_RX              "Select RX"
 #define TR_PXX2_DEFAULT                "<default>"
 #define TR_BT_SELECT_DEVICE            "Select device..."
 #define TR_DISCOVER             		"Discover"
