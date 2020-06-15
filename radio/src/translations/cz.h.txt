@@ -679,6 +679,7 @@
 #define TR_VOLTAGE                     INDENT"Napětí"
 #define TR_CURRENT                     INDENT"Proud"
 #define TR_SELECT_MODEL                "Vyber model"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY             "Nová kategorie"
 #define TR_RENAME_CATEGORY             "Přejmenovat kategorii"
 #define TR_DELETE_CATEGORY             "Odstranit kategorii"
@@ -901,7 +902,7 @@
 #define TR_POWERMETER_ATTN_NEEDED      "Útlumový člen nutný!"
 #define TR_PXX2_SELECT_RX              "Vyber RX..."
 #define TR_PXX2_DEFAULT                "<výchozí>"
-#define TR_BT_SELECT_DEVICE            "Vyberte zařízení..."
+#define TR_BT_SELECT_DEVICE            "Vyberte zařízení"
 #define TR_DISCOVER                    "Hledat"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Čekám..."

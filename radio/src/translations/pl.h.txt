@@ -699,6 +699,7 @@
 #define TR_VOLTAGE             TR (INDENT"Napięcie",INDENT"Źródło Napięcia")
 #define TR_CURRENT             TR (INDENT"Prąd",INDENT"Źródło Prądu")
 #define TR_SELECT_MODEL        "Wybór modelu"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY     "Create Category"
 #define TR_RENAME_CATEGORY     "Rename Category"
 #define TR_DELETE_CATEGORY     "Delete Category"
@@ -919,9 +920,9 @@
 #define TR_BYTES               "bajty"
 #define TR_MODULE_BIND         TR("[BND]","[Bind]")
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_SELECT_RX              "Select RX"
 #define TR_PXX2_DEFAULT                "<default>"
-#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BT_SELECT_DEVICE            "Select device"
 #define TR_DISCOVER             "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Waiting..."

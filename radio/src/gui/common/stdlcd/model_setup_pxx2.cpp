@@ -304,7 +304,7 @@ void modelSetupModulePxx2ReceiverLine(uint8_t moduleIdx, uint8_t receiverIdx, co
           for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
             popupMenuItems[rx] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[rx];
           }
-          popupMenuTitle = STR_PXX2_SELECT_RX;
+          POPUP_MENU_TITLE(STR_PXX2_SELECT_RX);
           POPUP_MENU_START(onPXX2BindMenu);
         }
       }
