@@ -86,7 +86,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS,
-  ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND,
+  ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_REGISTER_RANGE,
@@ -103,7 +103,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
 #endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_CHANNELS,
-  ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS,
 #if defined(MULTIMODULE)
@@ -347,10 +347,10 @@ void menuModelSetup(event_t event)
     LABEL(InternalModule),
       INTERNAL_MODULE_TYPE_ROWS,
       MODULE_CHANNELS_ROWS(INTERNAL_MODULE),
-      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(isModuleBindRangeAvailable(INTERNAL_MODULE)? (uint8_t)2 : (uint8_t)1)), // RxNum, Range check and Register buttons
+      IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, MODULE_BIND_ROWS(INTERNAL_MODULE)), // RxNum, [Bind] and [Range] buttons
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // RxNum for ACCESS
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), // Failsafe
-      IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), // Range check and Register buttons
+      IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 1), // [Range] and [Register] buttons
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),      // Module options
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // Receiver 1
       IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0), // Receiver 2
@@ -1086,8 +1086,8 @@ void menuModelSetup(event_t event)
         }
         break;
 
-      case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND:
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -1098,8 +1098,7 @@ void menuModelSetup(event_t event)
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+6*FW, y, (moduleData.ppm.delay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
           lcdDrawChar(lcdLastRightPos, y, 'u');
           lcdDrawChar(MODEL_SETUP_2ND_COLUMN+12*FW, y, moduleData.ppm.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
-
-          if (attr && s_editMode>0) {
+          if (attr && s_editMode > 0) {
             switch (menuHorizontalPosition) {
               case 0:
                 CHECK_INCDEC_MODELVAR(event, moduleData.ppm.frameLength, -20, 35);
@@ -1117,9 +1116,8 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, STR_REFRESHRATE);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
           lcdDrawText(lcdLastRightPos, y, STR_MS);
-          lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, moduleData.sbus.noninverted ? "not inverted" : "normal", (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
-
-          if (attr && s_editMode>0) {
+          lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, moduleData.sbus.noninverted ? STR_NOT_INVERTED : STR_NORMAL, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+          if (attr && s_editMode > 0) {
             switch (menuHorizontalPosition) {
               case 0:
                 CHECK_INCDEC_MODELVAR(event, moduleData.ppm.frameLength, -33, 35);
@@ -1131,25 +1129,19 @@ void menuModelSetup(event_t event)
           }
         }
         else {
+          lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER);
           horzpos_t l_posHorz = menuHorizontalPosition;
           coord_t bindButtonPos = MODEL_SETUP_2ND_COLUMN;
-          if (!isModuleRxNumAvailable(moduleIdx)) {
-            lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER);
-            if (attr) l_posHorz += 1;
+          if (isModuleRxNumAvailable(moduleIdx)) {
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz == 0 ? attr : 0) | LEADING0 | LEFT, 2);
+            bindButtonPos = lcdNextPos + FW;
           }
-          else {
-            lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
+          else if (attr) {
+            l_posHorz += 1;
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-            if (isModuleRxNumAvailable(moduleIdx)) {
-              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz == 0 ? attr : 0) | LEADING0 | LEFT, 2);
-              bindButtonPos = lcdNextPos + FW;
-            }
-            else {
-              bindButtonPos = MODEL_SETUP_2ND_COLUMN;
-            }
-            if (attr && l_posHorz==0) {
-              if (s_editMode>0) {
+            if (attr && l_posHorz == 0) {
+              if (s_editMode > 0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
                 if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
@@ -1164,9 +1156,10 @@ void menuModelSetup(event_t event)
                 }
               }
             }
-            lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            if (!IS_RX_MULTI(moduleIdx))
-              lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz == 1 ? attr : 0);
+            if (isModuleRangeAvailable(moduleIdx)) {
+              lcdDrawText(lcdNextPos + FW, y, STR_MODULE_RANGE, l_posHorz == 2 ? attr : 0);
+            }
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
@@ -1174,8 +1167,8 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
             }
 #endif
-            if (attr && l_posHorz>0) {
-              if (s_editMode>0) {
+            if (attr && l_posHorz > 0) {
+              if (s_editMode > 0) {
                 if (l_posHorz == 1) {
                   if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
@@ -1202,8 +1195,9 @@ void menuModelSetup(event_t event)
             }
             moduleState[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
-            if (newFlag == MODULE_MODE_BIND)
+            if (newFlag == MODULE_MODE_BIND) {
               setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
+            }
 #endif
           }
         }
@@ -1454,12 +1448,12 @@ void menuModelSetup(event_t event)
 
   if (old_editMode > 0 && s_editMode == 0) {
     switch(menuVerticalPosition) {
-      case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_BIND:
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
         if (menuHorizontalPosition == 0)
           checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
         break;
 
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
         if (menuHorizontalPosition == 0)
           checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
         break;
