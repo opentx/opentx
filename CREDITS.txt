@@ -1749,3 +1749,9 @@ AG-Software
 Dietmar Drees
 Winfried Goers
 Steve Schoonover
+N. Haasnoot (monthly)
+Wolfram Bahmann
+Florian Reck
+Gary Bancroft
+Karl-Heinz Behn
+Stuart Godsmark
