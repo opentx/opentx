@@ -133,10 +133,6 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_MAX
 };
 
-//OW
-#define MAVLINK_ROWS    LABEL(Mavlink), 0, 0, 0, 0
-//OWEND
-
 #define MODEL_SETUP_2ND_COLUMN         200
 #define MODEL_SETUP_3RD_COLUMN         270
 #define MODEL_SETUP_4TH_COLUMN         350
@@ -650,7 +646,7 @@ bool menuModelSetup(event_t event)
            
          TRAINER_ROWS,
 //OW
-         MAVLINK_ROWS
+		 LABEL(Mavlink), 0, 0, 0, 0
 //OWEND
        });
 
