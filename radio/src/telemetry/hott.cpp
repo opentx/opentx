@@ -611,7 +611,7 @@ void processHottPacket(const uint8_t * packet)
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t batt_cap_H;          //#34
           if (prev_page == ((HOTT_TELEM_EAM << 4) | HOTT_PAGE_03)) {
-            value = prev_value + (packet[4] << 8);
+            value = (prev_value + (packet[4] << 8)) * 10;
             sensor = getHottSensor(HOTT_ID_BCAPA);
             setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_BCAPA, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
           }
