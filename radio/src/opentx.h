@@ -29,7 +29,7 @@
 #include "opentx_helpers.h"
 
 //OW
-//#define OWVERSIONSTR  "olliw-v11"  "mavlink"
+#define OWVERSIONSTR  "olliw-v11"
 //OWEND
 
 /*

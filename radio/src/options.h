@@ -86,6 +86,12 @@ static const char * options[] = {
 #if defined(SHUTDOWN_CONFIRMATION)
   "shutdownconfirm",
 #endif
+//OW
+#if defined(TELEMETRY_MAVLINK)
+ "mavlink",
+#endif
+  OWVERSIONSTR, //FIXME: JUST FOR NOW, WILL AHVE TO BE REMOVED
+//OWEND
   nullptr //sentinel
 };
 
