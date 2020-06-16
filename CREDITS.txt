@@ -1758,3 +1758,5 @@ Stuart Godsmark
 Josko Povse
 David Reese
 Paul Pearson
+Stuart Olson
+Pierre Connan
