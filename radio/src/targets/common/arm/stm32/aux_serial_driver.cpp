@@ -21,6 +21,7 @@
 #include "opentx.h"
 #include "targets/horus/board.h"
 
+#if defined(AUX_SERIAL)
 uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> auxSerialTxFifo;
 
@@ -219,6 +220,7 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
     }
   }
 #endif
+
   // Receive
   uint32_t status = AUX_SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
@@ -231,9 +233,8 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
     }
     status = AUX_SERIAL_USART->SR;
   }
-#endif
 }
-#endif
+#endif // AUX_SERIAL
 
 #if defined(AUX2_SERIAL)
 uint8_t aux2SerialMode = 0;
@@ -378,7 +379,6 @@ uint8_t aux2SerialTracesEnabled()
 #endif
 }
 
-#if !defined(SIMU)
 extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_SER2);
@@ -411,7 +411,7 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
     }
   }
 #endif
-#if defined(AUX2_SERIAL)
+
   // Receive
   uint32_t status = AUX2_SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
@@ -425,7 +425,4 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
     status = AUX2_SERIAL_USART->SR;
   }
 }
-#endif
-
-#endif
-#endif // AUX_SERIAL
+#endif // AUX2_SERIAL
