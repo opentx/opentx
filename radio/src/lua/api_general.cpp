@@ -1678,7 +1678,8 @@ static int luaGetEvent(lua_State * L)
   // only allow locked keys & ROT events to get through
   if (eventIsLocked(evt) || (evt == EVT_ROTARY_LEFT) || (evt == EVT_ROTARY_RIGHT)) {
       s_evt = 0; // clear event
-  } else {
+  }
+  else {
       evt = 0; // do not pass on
   }
   lua_pushinteger(L, evt);
@@ -1700,9 +1701,9 @@ static int luaUnlockKeys(lua_State * L)
 
 static int luaIsInMenu(lua_State * L)
 {
-    bool inmenu = (menuLevel > 0);
-    lua_pushboolean(L, inmenu);
-    return 1;
+  bool inmenu = (menuLevel > 0);
+  lua_pushboolean(L, inmenu);
+  return 1;
 }
 //OWEND
 

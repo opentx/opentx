@@ -22,12 +22,10 @@
 
 #if defined(RADIO_T16) && defined(PCBX10) && defined(MAVLINK_TELEM)
 
-
 Fifo<uint8_t, MAVLINK_TELEM_TX_FIFO_SIZE> mavlinkTelemTxFifo;
 Fifo<uint8_t, MAVLINK_TELEM_RX_FIFO_SIZE> mavlinkTelemRxFifo;
 
 uint8_t mavlinkTelemUart = 0;
-
 
 void _mavlinkTelemUsartSetup(const char uart, uint32_t baudrate)
 {
@@ -64,7 +62,6 @@ void _mavlinkTelemUsartSetup(const char uart, uint32_t baudrate)
   }
 }
 
-
 void _mavlinkTelemUsartStop(void)
 {
   if (mavlinkTelemUart == 1) {
@@ -75,7 +72,6 @@ void _mavlinkTelemUsartStop(void)
   }
 }
 
-
 void mavlinkTelemInit(const char uart, uint32_t baudrate)
 {
   _mavlinkTelemUsartStop();
@@ -84,18 +80,15 @@ void mavlinkTelemInit(const char uart, uint32_t baudrate)
   _mavlinkTelemUsartSetup(uart, baudrate);
 }
 
-
 void mavlinkTelemDeInit(void)
 {
   _mavlinkTelemUsartStop();
 }
 
-
 uint32_t mavlinkTelemAvailable(void)
 {
   return mavlinkTelemRxFifo.size();
 }
-
 
 bool mavlinkTelemPutc(char c)
 {
@@ -107,10 +100,9 @@ bool mavlinkTelemPutc(char c)
   return true;
 }
 
-
 bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count)
 {
-  if (!buf || !mavlinkTelemTxFifo.hasSpace(count) ) {
+  if (!buf || !mavlinkTelemTxFifo.hasSpace(count)) {
     return false;
   }
   for (uint16_t i = 0; i < count; i++) {
@@ -121,12 +113,10 @@ bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count)
   return true;
 }
 
-
 uint8_t mavlinkTelemGetc(uint8_t *c)
 {
   return mavlinkTelemRxFifo.pop(*c);
 }
-
 
 void mavlinkTelemWriteWakeup(void)
 {
@@ -134,7 +124,6 @@ void mavlinkTelemWriteWakeup(void)
     USART_ITConfig(MAVLINK_TELEM_USART, USART_IT_TXE, ENABLE);
   }
 }
-
 
 extern "C" void MAVLINK_TELEM_USART_IRQHandler(void)
 {
@@ -148,11 +137,11 @@ extern "C" void MAVLINK_TELEM_USART_IRQHandler(void)
     uint8_t c;
     if (mavlinkTelemTxFifo.pop(c)) {
       USART_SendData(MAVLINK_TELEM_USART, c);
-    } else {
+    }
+    else {
       USART_ITConfig(MAVLINK_TELEM_USART, USART_IT_TXE, DISABLE);
     }
   }
 }
-
 
 #endif // MAVLINK_TELEM
