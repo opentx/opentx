@@ -608,7 +608,7 @@ PACK(struct ModelData {
 
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
 //OW
-#if defined(PCBHORUS)
+#if defined(TELEMETRY_MAVLINK)
   uint16_t mavlinkEnabled:1; // on/off
   uint16_t mavlinkConfig:3; // allow space for 8 configs
   uint16_t mavlinkMimicSensors:3; // currently just off/on, but allow e.g. FrSky, CF, FrSky passthrough.
@@ -935,7 +935,11 @@ static inline void check_struct()
   CHKSIZE(RadioData, 881);
 //OW
 //  CHKSIZE(ModelData, 9736);
+#if defined(TELEMETRY_MAVLINK)
   CHKSIZE(ModelData, 9736+2);
+#else
+  CHKSIZE(ModelData, 9736);
+#endif
 //OWEND
 #endif
 

@@ -29,8 +29,7 @@
 #include "opentx_helpers.h"
 
 //OW
-#define MAVLINK_TELEM
-#define OWVERSIONSTR  "olliw-v11"
+//#define OWVERSIONSTR  "olliw-v11"  "mavlink"
 //OWEND
 
 /*
@@ -1193,7 +1192,7 @@ constexpr uint8_t SD_SCREEN_FILE_LENGTH = 64;
 #endif
 
 //OW
-#if defined(MAVLINK_TELEM)
+#if defined(TELEMETRY_MAVLINK)
 #include "mavlink_telem.h"
 #endif
 //OWEND

@@ -936,7 +936,7 @@
 
 //OW
 //MAVLINK_TELEM
-#if defined(RADIO_T16) && defined(PCBX10)
+#if defined(TELEMETRY_MAVLINK)
   #define MAVLINK_TELEM_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
   #define MAVLINK_TELEM_RCC_APB1Periph              RCC_APB1Periph_USART3
   #define MAVLINK_TELEM_RCC_APB2Periph              0

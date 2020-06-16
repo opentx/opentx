@@ -130,7 +130,6 @@ static int luaMavlinkMsgEnable(lua_State * L)
 #include "api_mavlink_generated.h"
 
 const luaL_Reg mavlinkLib[] = {
-#if defined(MAVLINK_TELEM)
   { "getVersion", luaMavlinkGetVersion },
   { "getChannelStatus", luaMavlinkGetChannelStatus },
   { "available", luaMavlinkMsgAvailable },
@@ -140,14 +139,12 @@ const luaL_Reg mavlinkLib[] = {
   { "enable", luaMavlinkMsgEnable },
 
   MAVLINK_LIB_FUNCTIONS
-#endif
+
   { nullptr, nullptr }  /* sentinel */
 };
 
 const luaR_value_entry mavlinkConstants[] = {
-#if defined(MAVLINK_TELEM)
   MAVLINK_LIB_CONSTANTS
-#endif
   { nullptr, 0 }  /* sentinel */
 };
 
@@ -1347,7 +1344,6 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
   { "UNDER_WAY", 0 }, \
 
 const luaL_Reg mavlinkLib[] = {
-#if defined(MAVLINK_TELEM)
   { "getVersion", luaMavlinkGetVersion },
   { "getChannelStatus", luaMavlinkGetChannelStatus },
 //  { "available", luaMavlinkMsgAvailable },
@@ -1357,14 +1353,12 @@ const luaL_Reg mavlinkLib[] = {
 //  { "enable", luaMavlinkMsgEnable },
 
 //  MAVLINK_LIB_FUNCTIONS
-#endif
+
   { nullptr, nullptr }  /* sentinel */
 };
 
 const luaR_value_entry mavlinkConstants[] = {
-#if defined(MAVLINK_TELEM)
   MAVLINK_LIB_CONSTANTS
-#endif
   { nullptr, 0 }  /* sentinel */
 };
 

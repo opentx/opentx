@@ -35,8 +35,10 @@ extern const luaL_Reg opentxLib[];
 extern const luaL_Reg lcdLib[];
 extern const luaL_Reg modelLib[];
 //OW
+#if defined(TELEMETRY_MAVLINK)
 extern const luaL_Reg mavlinkLib[];
 extern const luaL_Reg mavsdkLib[];
+#endif
 //OWEND
 
 LUALIB_API void (luaL_checkversion_) (lua_State *L, lua_Number ver);

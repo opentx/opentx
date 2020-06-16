@@ -1069,7 +1069,6 @@ static int luaMavsdkGetStatusText(lua_State *L)
 
 // I believe the names can't be longer than 32 chars
 const luaL_Reg mavsdkLib[] = {
-#if defined(MAVLINK_TELEM)
   { "mavtelemIsEnabled", luaMavsdkMavTelemIsEnabled },
   { "isReceiving", luaMavsdkIsReceiving },
 
@@ -1205,12 +1204,11 @@ const luaL_Reg mavsdkLib[] = {
   { "apCopterFlyClick", luaMavsdkApCopterFlyClick },
   { "apCopterFlyHold", luaMavsdkApCopterFlyHold },
   { "apCopterFlyPause", luaMavsdkApCopterFlyPause },
-#endif
+
   { NULL, NULL }  /* sentinel */
 };
 
 const luaR_value_entry mavsdkConstants[] = {
-#if defined(MAVLINK_TELEM)
   { "VEHICLECLASS_GENERIC", MAVSDK_VEHICLECLASS_GENERIC },
   { "VEHICLECLASS_PLANE", MAVSDK_VEHICLECLASS_PLANE },
   { "VEHICLECLASS_COPTER", MAVSDK_VEHICLECLASS_COPTER },
@@ -1234,7 +1232,7 @@ const luaR_value_entry mavsdkConstants[] = {
   { "GIMBALCLIENTMODE_NUDGE", MavlinkTelem::GIMBALCLIENT_MODE_NUDGE },
   { "GIMBALCLIENTMODE_RC_NUDGE", MavlinkTelem::GIMBALCLIENT_MODE_RC_NUDGE },
   { "GIMBALCLIENTMODE_RC_OVERRIDE", MavlinkTelem::GIMBALCLIENT_MODE_RC_OVERRIDE },
-#endif
+
   { nullptr, 0 }  /* sentinel */
 };
 

@@ -213,7 +213,7 @@ void per10ms()
   outputTelemetryBuffer.per10ms();
 
 //OW
-#if defined(MAVLINK_TELEM)
+#if defined(TELEMETRY_MAVLINK)
   mavlinkTelem.wakeup();
   checkEventLockTmo();
 #endif

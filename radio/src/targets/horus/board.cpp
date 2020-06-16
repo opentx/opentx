@@ -214,7 +214,7 @@ void boardInit()
 #endif
 
 //OW
-#if defined(MAVLINK_TELEM)
+#if defined(TELEMETRY_MAVLINK)
 //  mavlinkTelemInit();
 #endif
 //OWEND

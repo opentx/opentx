@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(RADIO_T16) && defined(PCBX10) && defined(MAVLINK_TELEM)
-
 Fifo<uint8_t, MAVLINK_TELEM_TX_FIFO_SIZE> mavlinkTelemTxFifo;
 Fifo<uint8_t, MAVLINK_TELEM_RX_FIFO_SIZE> mavlinkTelemRxFifo;
 
@@ -143,5 +141,3 @@ extern "C" void MAVLINK_TELEM_USART_IRQHandler(void)
     }
   }
 }
-
-#endif // MAVLINK_TELEM

@@ -121,9 +121,9 @@ TASK_FUNCTION(mixerTask)
 #endif
 
 //OW
-//#if defined(MAVLINK_TELEM)
+#if defined(TELEMETRY_MAVLINK)
 //  mavlinkTelem.wakeup();
-//#endif
+#endif
 //OWEND
 
     RTOS_WAIT_TICKS(1);

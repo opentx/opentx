@@ -442,7 +442,6 @@ void MavlinkTelem::doTask(void)
 
 void MavlinkTelem::wakeup()
 {
-#if defined(MAVLINK_TELEM)
   // handle configuration change
   if ((_interface_enabled != g_model.mavlinkEnabled) || (_interface_config != g_model.mavlinkConfig)) { // a change occurred
     mavlinkTelemDeInit();
@@ -529,7 +528,6 @@ void MavlinkTelem::wakeup()
       _txcount = 0;
     }
   }
-#endif
 }
 
 // -- Resets --

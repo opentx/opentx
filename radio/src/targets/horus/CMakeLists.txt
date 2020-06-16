@@ -246,9 +246,13 @@ if (AUX2_SERIAL)
   set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 endif()
 
-if (PCB STREQUAL X10 AND PCBREV STREQUAL T16)
+if (TELEMETRY_MAVLINK)
+  add_definitions(-DTELEMETRY_MAVLINK)
   set(TARGET_SRC ${TARGET_SRC} mavlink_telem_driver.cpp)
   set(SRC ${SRC} mavlink_telem.cpp mavlink_telem_autopilot.cpp mavlink_telem_camera.cpp mavlink_telem_gimbal.cpp)
+  if(NOT LUA STREQUAL NO)
+    set(SRC ${SRC} lua/api_mavlink.cpp lua/api_mavsdk.cpp)
+  endif()
 endif()
 
 set(FIRMWARE_TARGET_SRC
