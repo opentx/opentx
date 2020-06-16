@@ -27,6 +27,7 @@ uint8_t     warningType;
 uint8_t     warningResult = 0;
 uint8_t     warningInfoFlags = ZCHAR;
 PopupFunc popupFunc = nullptr;
+const char * popupMenuTitle = nullptr;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     popupMenuSelectedItem = 0;
 uint16_t    popupMenuItemsCount = 0;
@@ -61,6 +62,10 @@ void drawPopupBackgroundAndBorder(coord_t x, coord_t y, coord_t w, coord_t h)
 {
   lcdDrawSolidFilledRect(x + 1, y + 1, w - 2, h - 2, TEXT_BGCOLOR);
   lcdDrawSolidRect(x, y, w, h, 1, ALARM_COLOR);
+  if (popupMenuTitle) {
+    lcdDrawSolidFilledRect(x, y - FH, w, FH, TEXT_INVERTED_BGCOLOR);
+    lcdDrawText(x + w / 2, y - FH, popupMenuTitle, BOLD | CENTERED | TEXT_INVERTED_COLOR);
+  }
 }
 
 void runPopupWarning(event_t event)
@@ -167,9 +172,9 @@ const char * runPopupMenu(event_t event)
       break;
   }
 
-  int y = (LCD_H - (display_count*(FH+1))) / 2;
+  int y = (LCD_H - (display_count*(FH + 1)) + (popupMenuTitle ? FH : 0) + FH) / 2;
 
-  drawPopupBackgroundAndBorder(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
+  drawPopupBackgroundAndBorder(MENU_X, y, MENU_W, display_count * (FH + 1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
     if (i == popupMenuSelectedItem) {

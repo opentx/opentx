@@ -643,7 +643,7 @@ void InputsPanel::cmInputSwapData(int idx1, int idx2)
   }
   //  move expos up
   const int offset = i - expoidx;
-  int expocnt;
+  int expocnt = 0;
   for (int j = i; j < CPN_MAX_EXPOS; j++) {
     ExpoData *ed = &model->expoData[j];
     if ((int)ed->chn == idx2) {

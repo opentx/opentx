@@ -95,11 +95,10 @@ void setCurrentCategory(unsigned int index)
   if (currentCategory->size() > 0)
     setCurrentModel(0);
   else
-    currentModel = NULL;
+    currentModel = nullptr;
 }
 
 #if defined(LUA)
-
 #define MAX_WIZARD_NAME_LEN            (sizeof(WIZARD_PATH)+20)
 #define WIZARD_SPACING                 40
 #define WIZARD_LEFT_SPACING            30
@@ -248,6 +247,7 @@ void onModelSelectMenu(const char * result)
     storageCheck(true);
     memcpy(g_eeGeneral.currModelFilename, currentModel->modelFilename, LEN_MODEL_FILENAME);
     modelslist.setCurrentModel(currentModel);
+    modelslist.setCurrentCategory(currentCategory);
     loadModel(g_eeGeneral.currModelFilename, true);
     storageDirty(EE_GENERAL);
     storageCheck(true);
@@ -264,6 +264,7 @@ void onModelSelectMenu(const char * result)
     selectMode = MODE_SELECT_MODEL;
     setCurrentModel(currentCategory->size() - 1);
     modelslist.setCurrentModel(currentModel);
+    modelslist.setCurrentCategory(currentCategory);
     modelslist.onNewModelCreated(currentModel, &g_model);
 #if defined(LUA)
     chainMenu(menuModelWizard);
@@ -274,7 +275,7 @@ void onModelSelectMenu(const char * result)
     memcpy(duplicatedFilename, currentModel->modelFilename, sizeof(duplicatedFilename));
     if (findNextFileIndex(duplicatedFilename, LEN_MODEL_FILENAME, MODELS_PATH)) {
       sdCopyFile(currentModel->modelFilename, MODELS_PATH, duplicatedFilename, MODELS_PATH);
-      ModelCell* dup_model = modelslist.addModel(currentCategory, duplicatedFilename);
+      ModelCell * dup_model = modelslist.addModel(currentCategory, duplicatedFilename);
       dup_model->fetchRfData();
       setCurrentModel(currentCategory->size() - 1);
     }
@@ -344,7 +345,7 @@ void initModelsList()
 bool menuModelSelect(event_t event)
 {
   const std::list<ModelsCategory*>& cats = modelslist.getCategories();
-  switch(event) {
+  switch (event) {
     case 0:
       // no need to refresh the screen
       return false;
@@ -387,7 +388,7 @@ bool menuModelSelect(event_t event)
         categoriesVerticalPosition -= 1;
         setCurrentCategory(categoriesVerticalPosition);
         modelslist.moveModel(model, previous_category, currentCategory);
-        setCurrentModel(currentCategory->size()-1);
+        setCurrentModel(currentCategory->size() - 1);
       }
       killEvents(event);
       break;

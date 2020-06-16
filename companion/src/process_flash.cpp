@@ -134,27 +134,30 @@ void FlashProcess::onKillTimerElapsed()
 #endif
 }
 
-void FlashProcess::analyseStandardOutput(const QString &text)
+void FlashProcess::analyseStandardOutput(const QString & text)
 {
   currStdoutLine.append(text);
+
   if (currStdoutLine.contains("size = ")) {
     int pos = currStdoutLine.lastIndexOf("size = ");
     QString temp = currStdoutLine.mid(pos+7);
     pos = temp.lastIndexOf("\n");
     int size = temp.left(pos).toInt();
-    progress->setMaximum(size/2048);
+    progress->setMaximum(size / 2048);
   }
+
   if (currStdoutLine.contains("\n")) {
     int nlPos = currStdoutLine.lastIndexOf("\n");
     currStdoutLine = currStdoutLine.mid(nlPos+1);
   }
+
   if (!currStdoutLine.isEmpty()) {
     if (currStdoutLine.at(0) == QChar('.')) {
       int pos = currStdoutLine.lastIndexOf(".");
       progress->setValue(pos);
     }
     else if (currStdoutLine.startsWith("Starting upload: [")) {
-      int pos = (currStdoutLine.lastIndexOf("#")-19)*100/256;
+      int pos = (currStdoutLine.lastIndexOf("#") - 19) * 100 / 256;
       progress->setValue(pos);
     }
   }
@@ -168,7 +171,15 @@ void FlashProcess::analyseStandardOutput(const QString &text)
     int end = text.indexOf("%");
     if (start > 0) {
       start += 9;
-      int value = text.mid(start, end-start).toInt();
+      int value = text.mid(start, end - start).toInt();
+      progress->setValue(value);
+    }
+  }
+
+  if (text.contains("Upload\t[") || text.contains("Download\t[")) {
+    int end = text.indexOf("%");
+    if (end > 0) {
+      int value = text.mid(end - 3, 3).toInt();
       progress->setValue(value);
     }
   }
@@ -277,7 +288,7 @@ void FlashProcess::errorWizard()
         DeviceStr = "Atmega 2561";
       }
     }
-    if (fwexist==false) {
+    if (!fwexist) {
       QMessageBox::warning(nullptr, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
     }
     else {
