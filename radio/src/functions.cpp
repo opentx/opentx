@@ -360,7 +360,11 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
                 newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
               if (CFN_PARAM(cfn)) {
                 getvalue_t raw = getValue(CFN_PARAM(cfn));
-                requiredBacklightBright = 100 - (1024 + raw) * 100 / 2048;
+#if defined(COLORLCD)
+                requiredBacklightBright = (1024 - raw) * (BACKLIGHT_LEVEL_MAX - BACKLIGHT_LEVEL_MIN) / 2048;
+#else
+                requiredBacklightBright = (1024 - raw) * 100 / 2048;
+#endif
               }
               break;
             }
