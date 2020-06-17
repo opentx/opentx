@@ -51,6 +51,12 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  // PWR Extra switch
+  GPIO_InitStructure.GPIO_Pin = PWR_EXTRA_SWITCH_GPIO_PIN;
+  GPIO_Init(PWR_EXTRA_SWITCH_GPIO, &GPIO_InitStructure);
+#endif
+
 #if defined(PCBREV_HARDCODED)
   hardwareOptions.pcbrev = PCBREV_HARDCODED;
 #elif defined(PCBREV_GPIO_PIN)
@@ -103,7 +109,11 @@ void pwrOff()
 
 bool pwrPressed()
 {
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  return (GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET || GPIO_ReadInputDataBit(PWR_EXTRA_SWITCH_GPIO, PWR_EXTRA_SWITCH_GPIO_PIN) == Bit_RESET);
+#else
   return GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
+#endif
 }
 
 void pwrResetHandler()

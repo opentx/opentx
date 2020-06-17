@@ -739,7 +739,12 @@ PACK(struct RadioData {
   uint8_t backlightMode:3;
   int8_t antennaMode:2;
   uint8_t disableRtcWarning:1;
+#if defined(KEYS_BACKLIGHT_GPIO)
+  uint8_t keyBacklight:1;
+  int8_t spare1:1;
+#else
   int8_t spare1:2;
+#endif
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */
