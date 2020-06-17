@@ -260,7 +260,7 @@ bool isModelOff() {
 void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
-    if (isModelOff()) {
+    if (isModelOff() && !g_eeGeneral.disableRssiPoweroffAlarm) {
       // we store the latest changes if any
       storageFlushCurrentModel();
       storageCheck(true);
@@ -279,7 +279,7 @@ void onModelSelectMenu(const char * result)
     deleteMode = MODE_DELETE_MODEL;
   }
   else if (result == STR_CREATE_MODEL) {
-    if (isModelOff()) {
+    if (isModelOff() && !g_eeGeneral.disableRssiPoweroffAlarm) {
       storageCheck(true);
       modelslist.addModel(currentCategory, createModel());
       selectMode = MODE_SELECT_MODEL;
