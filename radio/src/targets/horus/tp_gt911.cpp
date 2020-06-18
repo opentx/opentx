@@ -597,6 +597,10 @@ void touchPanelRead()
 extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
 {
   if (EXTI_GetITStatus(TOUCH_INT_EXTI_LINE1) != RESET) {
+    if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
+      // on touch turn the light on
+      resetBacklightTimeout();
+    }
     touchEventOccured = 1;
     EXTI_ClearITPendingBit(TOUCH_INT_EXTI_LINE1);
   }
