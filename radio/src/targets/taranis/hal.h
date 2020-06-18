@@ -259,8 +259,13 @@
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
   #define TRIMS_GPIO_REG_RHL            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_13 // PC.13
-  #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_1  // PC.01
+  #if defined(S3_HACK)
+    #define TRIMS_GPIO_REG_RHR          GPIOD->IDR
+    #define TRIMS_GPIO_PIN_RHR          GPIO_Pin_11  // PD.11
+  #else
+    #define TRIMS_GPIO_REG_RHR          GPIOC->IDR
+    #define TRIMS_GPIO_PIN_RHR          GPIO_Pin_1  // PC.01
+  #endif
 #else
   #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PE.04
@@ -640,7 +645,11 @@
   #define KEYS_GPIOA_PINS               (GPIO_Pin_5)
   #define KEYS_GPIOB_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5)
   #define KEYS_GPIOC_PINS               (GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_13)
-  #define KEYS_GPIOD_PINS               (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_14)
+  #if defined(S3_HACK)
+    #define KEYS_GPIOD_PINS             (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_14 | GPIO_Pin_11)
+  #else
+    #define KEYS_GPIOD_PINS             (GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_10 | GPIO_Pin_14)
+  #endif
   #define KEYS_GPIOE_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15)
 #elif defined(PCBX9DP)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
@@ -778,15 +787,24 @@
     #define ADC_CHANNEL_POT3            ADC_Channel_9
     #define ADC_VREF_PREC2              330
   #else
+    #if defined(S3_HACK)
+      #define ADC_GPIO_PIN_POT3         GPIO_Pin_1  // PC.01
+      #define ADC_CHANNEL_POT3          ADC_Channel_11
+    #else
+      #define ADC_CHANNEL_POT3          0
+    #endif
     #define ADC_GPIOB_PINS              (ADC_GPIO_PIN_POT2)
-    #define ADC_CHANNEL_POT3            0
     #define ADC_VREF_PREC2              300
   #endif
   #define ADC_GPIO_PIN_SLIDER1          GPIO_Pin_4  // PC.04
   #define ADC_GPIO_PIN_SLIDER2          GPIO_Pin_5  // PC.05
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
   #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1)
-  #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
+  #if defined(S3_HACK)
+    #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT | ADC_GPIO_PIN_POT3)
+  #else
+    #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
+  #endif
   #define ADC_CHANNEL_POT1              ADC_Channel_6
   #define ADC_CHANNEL_POT2              ADC_Channel_8
   #define ADC_CHANNEL_SLIDER1           ADC_Channel_14

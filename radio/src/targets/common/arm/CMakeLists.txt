@@ -2,6 +2,7 @@ set(TIMERS 3 CACHE STRING "Timers count (2 or 3)")
 set_property(CACHE TIMERS PROPERTY STRINGS 2 3)
 option(CLI "Command Line Interface" OFF)
 option(DEBUG "Debug mode" OFF)
+option(S3_HACK "Setup S3 Hack" OFF)
 option(LOG_TELEMETRY "Telemetry Logs on SD card" OFF)
 option(LOG_BLUETOOTH "Bluetooth Logs on SD card" OFF)
 option(TRACE_SD_CARD "Traces SD enabled" OFF)
@@ -100,6 +101,10 @@ endif()
 
 if(DEBUG)
   add_definitions(-DDEBUG)
+endif()
+
+if(S3_HACK)
+  add_definitions(-DS3_HACK)
 endif()
 
 if(HAPTIC)
