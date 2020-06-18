@@ -43,7 +43,12 @@ class SwitchDynamicLabel: public StaticText {
 
     std::string label()
     {
-      return TEXT_AT_INDEX(STR_VSRCRAW, (index + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1)) + std::string(&"\300-\301"[lastpos], 1);
+      static const char switchPositions[] = {
+        CHAR_UP,
+        '-',
+        CHAR_DOWN
+      };
+      return TEXT_AT_INDEX(STR_VSRCRAW, (index + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1)) + std::string(&switchPositions[lastpos], 1);
     }
 
     void update()

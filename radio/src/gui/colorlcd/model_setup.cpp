@@ -25,6 +25,18 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
+std::string switchWarninglabel(swsrc_t index)
+{
+  static const char switchPositions[] = {
+    ' ',
+    CHAR_UP,
+    '-',
+    CHAR_DOWN
+  };
+
+  return TEXT_AT_INDEX(STR_VSRCRAW, (index + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1)) + std::string(&switchPositions[g_model.switchWarningState >> (3*index) & 0x07], 1);
+}
+
 class MultimoduleStatus: public StaticText
 {
   public:
@@ -1074,14 +1086,13 @@ void ModelSetupPage::build(FormWindow * window)
     auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout switchesGrid(group);
     for (int i = 0, j = -1; i < NUM_SWITCHES; i++) {
-      char s[SWITCH_WARNING_STR_SIZE];
       if (SWITCH_EXISTS(i))
         j++;
       else
         break;
       if (j > 0 && (j % 3) == 0)
         switchesGrid.nextLine();
-      auto button = new TextButton(group, switchesGrid.getSlot(3, j % 3), getSwitchWarningString(s, i), nullptr,
+      auto button = new TextButton(group, switchesGrid.getSlot(3, j % 3), switchWarninglabel(i), nullptr,
                                    (bfGet(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
       button->setPressHandler([button, i] {
           swarnstate_t newstate = bfGet(g_model.switchWarningState, 3 * i, 3);
@@ -1091,7 +1102,7 @@ void ModelSetupPage::build(FormWindow * window)
             newstate = (newstate + 1) % 4;
           g_model.switchWarningState = bfSet(g_model.switchWarningState, newstate, 3 * i, 3);
           SET_DIRTY();
-          button->setText(getSwitchWarningString(i));
+          button->setText(switchWarninglabel(i));
           return newstate > 0;
       });
     }
