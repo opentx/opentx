@@ -147,26 +147,43 @@ void drawCurve(coord_t offset=0);
 
 inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
 {
-  if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || IS_RX_MULTI(moduleIdx))
+  if (isModuleMultimodule(moduleIdx)) {
+   if (IS_RX_MULTI(moduleIdx))
+     return 1;
+   else
+     return 2;
+  }
+  else if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx)) {
     return 1;
-
-  if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx))
+  }
+  else if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx)) {
     return 2;
-  else
+  }
+  else {
     return HIDDEN_ROW;
+  }
 }
 
 inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
 {
-  if (!IS_MODULE_ENABLED(moduleIdx)  || IS_RX_MULTI(moduleIdx))
+  if (!IS_MODULE_ENABLED(moduleIdx)) {
     return HIDDEN_ROW;
-
-  if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleSBUS(moduleIdx) || (isModuleMultimodule(moduleIdx) && g_model.moduleData[moduleIdx].getMultiProtocol() != MODULE_SUBTYPE_MULTI_DSM2))
+  }
+  else if (isModuleMultimodule(moduleIdx)) {
+    if (IS_RX_MULTI(moduleIdx))
+      return HIDDEN_ROW;
+    else if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2)
+      return 1;
+    else
+      return 0;
+  }
+  else if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleSBUS(moduleIdx)) {
     return 0;
-  else
+  }
+  else {
     return 1;
+  }
 }
-
 
 #if defined(MULTIMODULE)
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
@@ -270,7 +287,9 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 #else
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)
+#define MULTIMODULE_TYPE_ROW(moduleIdx)
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)
+#define MULTIMODULE_TYPE_ROWS(moduleIdx)
 #define MULTIMODULE_MODE_ROWS(moduleIdx)        (uint8_t)0
 #define MULTIMODULE_OPTIONS_ROW(moduleIdx)      HIDDEN_ROW
 #define MODULE_POWER_ROW(moduleIdx)            isModuleR9MNonAccess(moduleIdx) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW

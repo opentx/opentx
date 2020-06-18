@@ -117,10 +117,10 @@ FRESULT openBinFile(MemoryType mt, unsigned int index)
 
 void extractFirmwareVersion(VersionTag* tag)
 {
-    const char* vers = getOtherVersion((char*)Block_buffer);
+    const char * vers = getFirmwareVersion((const char *)Block_buffer);
     if (!vers || (vers[0] == 'n' && vers[1] == 'o')) { // "no version found"
-        memcpy(tag->flavour, "unknown", sizeof("unknown"));
-        tag->version = "unknown";
+      memcpy(tag->flavour, "unknown", sizeof("unknown"));
+      tag->version = "unknown";
     }
 
     // skip "opentx-"

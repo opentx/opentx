@@ -72,6 +72,7 @@ void openUsbMenu()
 #if defined(DEBUG)
   POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
 #endif
+  POPUP_MENU_TITLE(STR_SELECT_MODE);
   POPUP_MENU_START(onUSBConnectMenu);
 }
 #endif

@@ -26,7 +26,7 @@
 uint8_t getExposCount()
 {
   uint8_t count = 0;
-  uint8_t ch ;
+  uint8_t ch;
   
   for (int i=MAX_EXPOS-1 ; i>=0; i--) {
     ch = EXPO_VALID(expoAddress(i));

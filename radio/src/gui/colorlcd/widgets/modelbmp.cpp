@@ -63,7 +63,7 @@ class ModelBitmapWidget: public Widget
       }
     }
 
-    virtual void refresh()
+    void refresh() override
     {
       uint32_t new_hash = hash(g_model.header.bitmap, sizeof(g_model.header.bitmap));
       new_hash ^= hash(g_model.header.name, sizeof(g_model.header.name));

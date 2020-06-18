@@ -57,7 +57,7 @@ class TelemetryItem
       } consumption;
       struct {
         uint8_t   count;
-        CellValue values[6];
+        CellValue values[MAX_CELLS];
       } cells;
       struct {
         uint16_t year;          // full year (4 digits)

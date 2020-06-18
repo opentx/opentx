@@ -475,12 +475,12 @@ void ModelsList::save()
   f_close(&file);
 }
 
-void ModelsList::setCurrentCategorie(ModelsCategory* cat)
+void ModelsList::setCurrentCategory(ModelsCategory * cat)
 {
   currentCategory = cat;
 }
 
-void ModelsList::setCurrentModel(ModelCell* cell)
+void ModelsList::setCurrentModel(ModelCell * cell)
 {
   currentModel = cell;
   if (!currentModel->valid_rfData)

@@ -714,6 +714,7 @@
 #define TR_VOLTAGE             INDENT"Volt"
 #define TR_CURRENT             INDENT"Ampere"
 #define TR_SELECT_MODEL        "Välj Modell"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY     "Skapa Kategori"
 #define TR_RENAME_CATEGORY     "Byt Kat.namn"
 #define TR_DELETE_CATEGORY     "Ta Bort Kategori"
@@ -874,9 +875,9 @@
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING             "\032Skriver..."
-#define TR_CONFIRM_FORMAT      "Formatera Minnet?"
-#define TR_INTERNALRF          "Intern Radio"
+#define TR_WRITING                     "Skriver..."
+#define TR_CONFIRM_FORMAT              "Formatera Minnet?"
+#define TR_INTERNALRF                  "Intern Radio"
 #define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
 #define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
@@ -939,9 +940,9 @@
 #define TR_BYTES               "byte"
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_SELECT_RX              "Select RX"
 #define TR_PXX2_DEFAULT                "<default>"
-#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BT_SELECT_DEVICE            "Select device"
 #define TR_DISCOVER             "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Waiting..."
@@ -1236,7 +1237,7 @@
 #define TR_RTC_CHECK           TR("Check RTC", "Check RTC voltage")
 #define TR_AUTH_FAILURE                "Auth-failure"
 
-#define ZSTR_FLR               "FLR"
+#define ZSTR_VFR               "VFR"
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"

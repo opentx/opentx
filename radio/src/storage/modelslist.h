@@ -44,8 +44,8 @@ struct SimpleModuleData
 class ModelCell
 {
   public:
-    char modelFilename[LEN_MODEL_FILENAME+1];
-    char modelName[LEN_MODEL_NAME+1] = {};
+    char modelFilename[LEN_MODEL_FILENAME + 1];
+    char modelName[LEN_MODEL_NAME + 1] = {};
 
     bool             valid_rfData;
     uint8_t          modelId[NUM_MODULES];
@@ -55,11 +55,11 @@ class ModelCell
     explicit ModelCell(const char * name, uint8_t len);
     ~ModelCell();
 
-    void save(FIL* file);
+    void save(FIL * file);
 
-    void setModelName(char* name);
+    void setModelName(char * name);
     void setModelName(char* name, uint8_t len);
-    void setRfData(ModelData* model);
+    void setRfData(ModelData * model);
 
     void setModelId(uint8_t moduleIdx, uint8_t id);
     void setRfModuleData(uint8_t moduleIdx, ModuleData* modData);
@@ -72,7 +72,7 @@ class ModelCell
 class ModelsCategory: public std::list<ModelCell *>
 {
 public:
-  char name[LEN_MODEL_FILENAME+1];
+  char name[LEN_MODEL_FILENAME + 1];
 
   explicit ModelsCategory(const char * name);
   explicit ModelsCategory(const char * name, uint8_t len);
@@ -114,7 +114,7 @@ public:
     return categories;
   }
 
-  void setCurrentCategorie(ModelsCategory * cat);
+  void setCurrentCategory(ModelsCategory * cat);
 
   ModelsCategory * getCurrentCategory() const
   {
@@ -131,7 +131,7 @@ public:
   void incModelsCount() {
     modelsCount++;
   }
-  
+
   unsigned int getModelsCount() const
   {
     return modelsCount;
@@ -155,7 +155,6 @@ public:
 
 protected:
   FIL file;
-
 };
 
 extern ModelsList modelslist;

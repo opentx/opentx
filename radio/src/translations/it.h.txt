@@ -716,6 +716,7 @@
 #define TR_VOLTAGE             TR(INDENT "Voltagg.",INDENT "Voltaggio")
 #define TR_CURRENT             TR(INDENT "Corrente",INDENT "Corrente")
 #define TR_SELECT_MODEL        TR("Scegli mod.", "Scegli Modello")
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY     "Crea Categoria"
 #define TR_RENAME_CATEGORY     "Rinomina Categoria"
 #define TR_DELETE_CATEGORY     "Cancella Categoria"
@@ -1237,7 +1238,7 @@
 #define TR_RTC_CHECK           TR("Controllo RTC", "Controllo voltaggio RTC")
 #define TR_AUTH_FAILURE                "Auth-failure"
 
-#define ZSTR_FLR               "FLR"
+#define ZSTR_VFR               "VFR"
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"

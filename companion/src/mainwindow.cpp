@@ -360,7 +360,6 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
     return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
   int webVersion = version2index(version);
-
   int ownVersion = version2index(VERSION);
 
   if (ownVersion < webVersion) {

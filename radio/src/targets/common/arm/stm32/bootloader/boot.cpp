@@ -210,21 +210,6 @@ int main()
   pwrInit();
   keysInit();
 
-  // USB charger handling
-#if defined(USB_CHARGER)
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE() && !pwrPressed()) {
-    ledInit();
-    usbChargerInit();
-    ledOff();
-    while (!pwrPressed()) {
-      if(usbChargerLed())
-        GPIO_SetBits(LED_GPIO, LED_GREEN_GPIO_PIN);
-      else
-        ledOff();
-    }
-  }
-#endif
-
   // wait a bit for the inputs to stabilize...
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     for (uint32_t i = 0; i < 150000; i++) {

@@ -51,7 +51,12 @@ inline void LCD_NRST_HIGH()
   LCD_GPIO_NRST->BSRRL = LCD_GPIO_PIN_NRST;
 }
 
-static void LCD_AF_GPIOConfig(void)
+inline bool coordsWithinScreen(coord_t x, coord_t y, coord_t w, coord_t h)
+{
+  return x >= 0 && y >= 0 && x + w <= LCD_W && y + h <= LCD_H;
+}
+
+static void LCD_AF_GPIOConfig()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -362,6 +367,9 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, ui
   y = desth - (y + h);
 #endif
 
+  if (dest == displayBuf && !coordsWithinScreen(x, y, w, h))
+    return;
+
   DMA2D_DeInit();
 
   DMA2D_InitTypeDef DMA2D_InitStruct;
@@ -393,6 +401,9 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
   srcy = srch - (srcy + h);
 #endif
 
+  if (dest == displayBuf && !coordsWithinScreen(x, y, w, h))
+    return;
+  
   DMA2D_DeInit();
 
   DMA2D_InitTypeDef DMA2D_InitStruct;
@@ -433,6 +444,9 @@ void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_
   srcy = srch - (srcy + h);
 #endif
 
+  if (dest == displayBuf && !coordsWithinScreen(x, y, w, h))
+    return;
+  
   DMA2D_DeInit();
 
   DMA2D_InitTypeDef DMA2D_InitStruct;

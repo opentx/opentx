@@ -69,7 +69,7 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 
 void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 {
-  if(!TELEMETRY_STREAMING())
+  if (!TELEMETRY_STREAMING())
     return;
 
   const CrossfireSensor & sensor = crossfireSensors[index];
@@ -201,6 +201,7 @@ void processCrossfireTelemetryData(uint8_t data)
     auxSerialPutc(data);
   }
 #endif
+
 #if defined(AUX2_SERIAL)
   if (g_eeGeneral.aux2SerialMode == UART_MODE_TELEMETRY_MIRROR) {
     aux2SerialPutc(data);

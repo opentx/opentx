@@ -319,6 +319,13 @@ static void enablePulsesInternalModule(uint8_t protocol)
       intmoduleTimerStart(MULTIMODULE_PERIOD);
       break;
 #endif
+
+#if defined(INTERNAL_MODULE_PPM)
+    case PROTOCOL_CHANNELS_PPM:
+      intmodulePpmStart();
+      break;
+#endif
+
     default:
       break;
   }

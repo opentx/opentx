@@ -109,7 +109,8 @@ class LimitData {
     int   offset;
     int   ppmCenter;
     bool  symetrical;
-    char  name[LIMITDATA_NAME_LEN+1];
+    int   failsafe;
+    char  name[LIMITDATA_NAME_LEN + 1];
     CurveReference curve;
     QString minToString() const;
     QString maxToString() const;

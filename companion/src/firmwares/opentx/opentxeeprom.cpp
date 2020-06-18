@@ -128,7 +128,7 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
   return 16;
 }
 
-#define MAX_ROTARY_ENCODERS(board)            (IS_SKY9X(board) ? 1 : 0)
+#define MAX_ROTARY_ENCODERS(board)            0
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3
 #define MAX_MIXERS(board, version)            64
@@ -1880,7 +1880,7 @@ class CustomScreenField: public StructField {
 
 class SensorField: public TransformedField {
   public:
-  SensorField(DataField * parent, const ModelData& model, SensorData & sensor, Board::Type board, unsigned int version):
+    SensorField(DataField * parent, const ModelData & model, SensorData & sensor, Board::Type board, unsigned int version):
       TransformedField(parent, internalField),
       internalField(this, "Sensor"),
       sensor(sensor),
@@ -1948,16 +1948,9 @@ class SensorField: public TransformedField {
         else {
           sensor.id = _id;
           sensor.subid = _subid;
-          if (model.moduleData[0].isPxx1Module() || model.moduleData[1].isPxx1Module()) {
-            sensor.instance = (_instance & 0x1F) + (version <= 218 ? 0 : 1); // 5 bits instance
-            sensor.rxIdx = 0x03;    // 2 bits Rx idx
-            sensor.moduleIdx = 0x01; // 1 bit module idx
-          }
-          else {
-            sensor.instance = (_instance & 0x1F) + 1;
-            sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
-            sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
-          }
+          sensor.instance = (_instance & 0x1F) + (version <= 218 ? 0 : 1); // 5 bits instance
+          sensor.rxIdx = (_instance >> 5) & 0x03;    // 2 bits Rx idx
+          sensor.moduleIdx = (_instance >> 7) & 0x1; // 1 bit module idx
           sensor.ratio = _ratio;
           sensor.offset = _offset;
         }
@@ -1981,6 +1974,12 @@ class SensorField: public TransformedField {
           sensor.unit++;
         if (sensor.unit > SensorData::UNIT_DEGREE)
           sensor.unit++;
+      }
+
+      if (version < 219) {
+        if (sensor.unit > SensorData::UNIT_FLOZ) {
+          sensor.unit += 11;
+        }
       }
 
       qCDebug(eepromImport) << QString("imported %1").arg(internalField.getName());
@@ -2185,7 +2184,7 @@ class ModuleUnionField: public UnionField<unsigned int> {
 
 class ModuleField: public TransformedField {
   public:
-    ModuleField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
+    ModuleField(DataField * parent, ModuleData & module, ModelData & model, Board::Type board, unsigned int version):
       TransformedField(parent, internalField),
       internalField(this, "Module"),
       module(module),
@@ -2199,8 +2198,8 @@ class ModuleField: public TransformedField {
       internalField.Append(new UnsignedField<3>(this, module.subType));
       internalField.Append(new BoolField<1>(this, module.invertedSerial));
       if (version <= 218) {
-        for (int i=0; i<32; i++) {
-          internalField.Append(new SignedField<16>(this, module.failsafeChannels[i]));
+        for (int i = 0; i < 32; i++) {
+          internalField.Append(new SignedField<16>(this, model.limitData[i].failsafe));
         }
       }
 
@@ -2394,12 +2393,12 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   int modulesCount = (version <= 218 ? 3 : 2);
   for (int module = 0; module < modulesCount; module++) {
-    internalField.Append(new ModuleField(this, modelData.moduleData[module], board, version));
+    internalField.Append(new ModuleField(this, modelData.moduleData[module], modelData, board, version));
   }
 
   if (version >= 219) {
     for (int i = 0; i < 32; i++) {
-      internalField.Append(new SignedField<16>(this, modelData.moduleData[0].failsafeChannels[i]));
+      internalField.Append(new SignedField<16>(this, modelData.limitData[i].failsafe));
     }
   }
 
