@@ -167,14 +167,8 @@ void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int 
   else {
     dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
     dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, DEFAULT_BGCOLOR);
-    if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
-      dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
+    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
   }
-}
-
-bool noZero(int val)
-{
-  return val != 0;
 }
 
 void drawGVarValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)
@@ -487,7 +481,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
     drawSensorCustomValue(dc, y, source, value, flags);
   }
   else if (source >= MIXSRC_FIRST_TIMER || source == MIXSRC_TX_TIME) {
-    if (value < 0) flags |= BLINK|INVERS;
+    // TODO if (value < 0) flags |= BLINK|INVERS;
     // TODO drawTimer(dc, x, y, value, flags);
   }
   else if (source == MIXSRC_TX_VOLTAGE) {

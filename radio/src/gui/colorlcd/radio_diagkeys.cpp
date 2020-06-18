@@ -48,8 +48,8 @@ class RadioKeyDiagsWindow : public Window
       char status[2];
       status[0] = t + '0';
       status[1] = '\0';
-
-      dc->drawText(x, y, status, t ? INVERS : 0);
+      // TODO INVERS?
+      dc->drawText(x, y, status, 0);
     }
 
     void paint(BitmapBuffer * dc) override
@@ -70,7 +70,7 @@ class RadioKeyDiagsWindow : public Window
       dc->drawText(TRIM_PLUS_COLUMN, 1, "+");
 
 #if !defined(PCBNV14)
-      //KEYS
+      // KEYS
       for (uint8_t i = KEY_START; i <= 6; i++) {
         coord_t y = 1 + FH * (i - KEY_START);
         dc->drawTextAtIndex(KEY_COLUMN, y, STR_VKEYS, i, 0);
