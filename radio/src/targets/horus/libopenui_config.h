@@ -83,6 +83,7 @@ constexpr uint32_t ALERT_TITLE_LINE_HEIGHT =       30;
 constexpr uint32_t ALERT_MESSAGE_TOP =             ALERT_TITLE_TOP + 90;
 constexpr uint32_t ALERT_MESSAGE_LEFT =            ALERT_TITLE_LEFT;
 constexpr uint32_t ALERT_ACTION_TOP =              240;
+constexpr uint32_t ALERT_BUTTON_TOP =              300;
 
 constexpr uint32_t PAGE_TITLE_TOP =                2;
 constexpr uint32_t PAGE_TITLE_LEFT =               50;

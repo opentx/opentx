@@ -80,9 +80,9 @@ if (PCB STREQUAL X10)
     set(HARDWARE_TOUCH YES)
     set(USB_CHARGER YES)
     set(DEFAULT_THEME "DARKBLUE")
-    set(AUX_SERIAL ON)
+    set(AUX_SERIAL OFF) # todo ON
     if (NOT BLUETOOTH AND NOT INTERNAL_GPS)
-      set(AUX2_SERIAL ON)
+      set(AUX2_SERIAL OFF) # todo ON
     endif()
     set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
   else()
@@ -190,9 +190,7 @@ set(TARGET_SRC
   )
 
 if(HARDWARE_TOUCH)
-  set(TARGET_SRC ${TARGET_SRC}
-    tp_gt911.cpp
-    )
+  set(TOUCH_DRIVER tp_gt911.cpp)
   add_definitions(-DHARDWARE_TOUCH)
 endif()
 
@@ -222,6 +220,7 @@ set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
   ${AUX_SERIAL_DRIVER}
+  ${TOUCH_DRIVER}
   board.cpp
   backlight_driver.cpp
   ../common/arm/stm32/pwr_driver.cpp

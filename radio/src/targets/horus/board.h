@@ -26,6 +26,10 @@
 #include "board_common.h"
 #include "hal.h"
 
+#if defined(HARDWARE_TOUCH)
+#include "tp_gt911.h"
+#endif
+
 PACK(typedef struct {
   uint8_t pcbrev:2;
   uint8_t sticksPwmDisabled:1;
