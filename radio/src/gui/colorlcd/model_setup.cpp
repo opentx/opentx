@@ -650,24 +650,10 @@ class ModuleWindow : public FormGroup {
                                 rfChoice->setFocus(SET_FOCUS_DEFAULT);
                               });
 
-        if (g_model.moduleData[moduleIdx].multi.customProto) {
-          // Proto column 1
-          new NumberEdit(this, grid.getFieldSlot(3, 1), 0, 63,
-                         GET_DEFAULT(g_model.moduleData[moduleIdx].getMultiProtocol()),
-                         [=](int32_t newValue) {
-                           g_model.moduleData[moduleIdx].setMultiProtocol(newValue);
-                           SET_DIRTY();
-                         });
-
-          // Proto column 2
-          new NumberEdit(this, grid.getFieldSlot(3, 2), 0, 7, GET_SET_DEFAULT(g_model.moduleData[moduleIdx].subType));
-        }
-        else {
-          // Subtype (D16, DSMX,...)
-          const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-          if (pdef->maxSubtype > 0)
-            new Choice(this, grid.getFieldSlot(2, 1), pdef->subTypeString, 0, pdef->maxSubtype,GET_SET_DEFAULT(g_model.moduleData[moduleIdx].subType));
-        }
+        // Subtype (D16, DSMX,...)
+        const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+        if (pdef->maxSubtype > 0)
+          new Choice(this, grid.getFieldSlot(2, 1), pdef->subTypeString, 0, pdef->maxSubtype,GET_SET_DEFAULT(g_model.moduleData[moduleIdx].subType));
         grid.nextLine();
 
         // Multimodule status
@@ -684,7 +670,6 @@ class ModuleWindow : public FormGroup {
 
         // Multi optional feature row
         const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
-        const mm_protocol_definition *pdef = getMultiProtocolDefinition(multi_proto);
         if (pdef->optionsstr) {
           grid.nextLine();
           new StaticText(this, grid.getLabelSlot(true), pdef->optionsstr);
