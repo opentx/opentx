@@ -1073,11 +1073,15 @@ void ModelSetupPage::build(FormWindow * window)
     new StaticText(window, grid.getLabelSlot(true), STR_SWITCHWARNING);
     auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout switchesGrid(group);
-    for (int i = 0; i < NUM_SWITCHES; i++) {
+    for (int i = 0, j = -1; i < NUM_SWITCHES; i++) {
       char s[SWITCH_WARNING_STR_SIZE];
-      if (i > 0 && (i % 3) == 0)
+      if (SWITCH_EXISTS(i))
+        j++;
+      else
+        break;
+      if (j > 0 && (j % 3) == 0)
         switchesGrid.nextLine();
-      auto button = new TextButton(group, switchesGrid.getSlot(3, i % 3), getSwitchWarningString(s, i), nullptr,
+      auto button = new TextButton(group, switchesGrid.getSlot(3, j % 3), getSwitchWarningString(s, i), nullptr,
                                    (bfGet(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
       button->setPressHandler([button, i] {
           swarnstate_t newstate = bfGet(g_model.switchWarningState, 3 * i, 3);
