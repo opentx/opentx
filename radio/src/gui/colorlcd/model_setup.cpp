@@ -1085,26 +1085,25 @@ void ModelSetupPage::build(FormWindow * window)
     new StaticText(window, grid.getLabelSlot(true), STR_SWITCHWARNING);
     auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout switchesGrid(group);
-    for (int i = 0, j = -1; i < NUM_SWITCHES; i++) {
-      if (SWITCH_EXISTS(i))
+    for (int i = 0, j = 0; i < NUM_SWITCHES; i++) {
+      if (SWITCH_EXISTS(i)) {
+        if (j > 0 && (j % 3) == 0)
+          switchesGrid.nextLine();
+        auto button = new TextButton(group, switchesGrid.getSlot(3, j % 3), switchWarninglabel(i), nullptr,
+                                     (bfGet(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
+        button->setPressHandler([button, i] {
+            swarnstate_t newstate = bfGet(g_model.switchWarningState, 3 * i, 3);
+            if (newstate == 1 && SWITCH_CONFIG(i) != SWITCH_3POS)
+              newstate = 3;
+            else
+              newstate = (newstate + 1) % 4;
+            g_model.switchWarningState = bfSet(g_model.switchWarningState, newstate, 3 * i, 3);
+            SET_DIRTY();
+            button->setText(switchWarninglabel(i));
+            return newstate > 0;
+        });
         j++;
-      else
-        break;
-      if (j > 0 && (j % 3) == 0)
-        switchesGrid.nextLine();
-      auto button = new TextButton(group, switchesGrid.getSlot(3, j % 3), switchWarninglabel(i), nullptr,
-                                   (bfGet(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
-      button->setPressHandler([button, i] {
-          swarnstate_t newstate = bfGet(g_model.switchWarningState, 3 * i, 3);
-          if (newstate == 1 && SWITCH_CONFIG(i) != SWITCH_3POS)
-            newstate = 3;
-          else
-            newstate = (newstate + 1) % 4;
-          g_model.switchWarningState = bfSet(g_model.switchWarningState, newstate, 3 * i, 3);
-          SET_DIRTY();
-          button->setText(switchWarninglabel(i));
-          return newstate > 0;
-      });
+      }
     }
     grid.addWindow(group);
   }
@@ -1114,18 +1113,21 @@ void ModelSetupPage::build(FormWindow * window)
     new StaticText(window, grid.getLabelSlot(false), STR_BEEPCTR);
     auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout centerGrid(group);
-    for (int i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
+    for (int i = 0, j = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
       char s[2];
-      if (i > 0 && (i % 6) == 0)
-        centerGrid.nextLine();
+      if (i < NUM_STICKS ||  (IS_POT_SLIDER_AVAILABLE(i) && !IS_POT_MULTIPOS(i))) { // multipos cannot be centered
+        if (j > 0 && (j % 6) == 0)
+          centerGrid.nextLine();
 
-      new TextButton(group, centerGrid.getSlot(6, i % 6), getStringAtIndex(s, STR_RETA123, i),
-                     [=]() -> uint8_t {
-                         BFBIT_FLIP(g_model.beepANACenter, bfBit<BeepANACenter>(i));
-                         SET_DIRTY();
-                         return bfSingleBitGet<BeepANACenter>(g_model.beepANACenter, i);
-                     },
-                     bfSingleBitGet(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
+        new TextButton(group, centerGrid.getSlot(6, j % 6), getStringAtIndex(s, STR_RETA123, i),
+                       [=]() -> uint8_t {
+                           BFBIT_FLIP(g_model.beepANACenter, bfBit<BeepANACenter>(i));
+                           SET_DIRTY();
+                           return bfSingleBitGet<BeepANACenter>(g_model.beepANACenter, i);
+                       },
+                       bfSingleBitGet(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
+        j++;
+      }
     }
     grid.addWindow(group);
   }
