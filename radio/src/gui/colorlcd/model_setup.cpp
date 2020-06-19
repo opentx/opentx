@@ -475,16 +475,16 @@ class TrainerModuleWindow  : public FormGroup {
       clear();
 
       new StaticText(this, grid.getLabelSlot(true), STR_MODE);
-      moduleChoice = new Choice(this, grid.getFieldSlot(), STR_VTRAINERMODES, 0, TRAINER_MODE_MAX, GET_DEFAULT(g_model.trainerData.mode), [=](int32_t newValue) {
+      trainerChoice = new Choice(this, grid.getFieldSlot(), STR_VTRAINERMODES, 0, TRAINER_MODE_MAX(), GET_DEFAULT(g_model.trainerData.mode), [=](int32_t newValue) {
           g_model.trainerData.mode = newValue;
-          update();
           SET_DIRTY();
-          moduleChoice->setFocus(SET_FOCUS_DEFAULT);
+          update();
+          trainerChoice->setFocus(SET_FOCUS_DEFAULT);
       });
-      moduleChoice->setAvailableHandler(isTrainerModeAvailable);
+      trainerChoice->setAvailableHandler(isTrainerModeAvailable);
       grid.nextLine();
 
-      if (g_model.trainerData.mode > TRAINER_MODE_OFF) {
+      if (g_model.trainerData.mode >= TRAINER_MODE_MASTER_TRAINER_JACK) {
         new StaticText(this, grid.getLabelSlot(true), STR_CHANNELRANGE);
         channelStart = new NumberEdit(this, grid.getFieldSlot(2, 0), 1,
                                       MAX_OUTPUT_CHANNELS - 8 + g_model.trainerData.channelsCount + 1,
@@ -537,7 +537,7 @@ class TrainerModuleWindow  : public FormGroup {
     }
 
   protected:
-    Choice * moduleChoice = nullptr;
+    Choice * trainerChoice = nullptr;
     NumberEdit * channelStart = nullptr;
     NumberEdit * channelEnd = nullptr;
 };
