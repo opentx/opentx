@@ -1761,3 +1761,5 @@ Paul Pearson
 Stuart Olson
 Pierre Connan
 Henk Eeltink
+Robert Miller
+George Walker
