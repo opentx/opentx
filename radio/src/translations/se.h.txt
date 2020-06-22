@@ -955,6 +955,12 @@
 #define TR_UNIT                "Enhet"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Lägg till sensor..."
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"

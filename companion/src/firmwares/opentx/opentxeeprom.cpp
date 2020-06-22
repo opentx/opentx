@@ -2113,6 +2113,40 @@ class ModuleUnionField: public UnionField<unsigned int> {
       unsigned int version;
   };
 
+  class Afhds3Field: public UnionField::TransformedMember {
+    public:
+      Afhds3Field(DataField * parent, ModuleData& module):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "AFHDS3")
+      {
+        ModuleData::Afhds3& afhds3 = module.afhds3;
+        internalField.Append(new UnsignedField<3>(this, minBindPower));
+        internalField.Append(new UnsignedField<3>(this, afhds3.rfPower));
+        internalField.Append(new UnsignedField<1>(this, emissionFCC));
+        internalField.Append(new BoolField<1>(this, operationModeUnicast));
+        internalField.Append(new BoolField<1>(this, operationModeUnicast));
+        internalField.Append(new UnsignedField<16>(this, defaultFailSafeTimout));
+        internalField.Append(new UnsignedField<16>(this, afhds3.rxFreq));
+      }
+
+      bool select(const unsigned int& attr) const override {
+        return attr == PULSES_AFHDS3;
+      }
+
+      void beforeExport() override {}
+
+      void afterImport() override {}
+
+    private:
+      StructField internalField;
+
+      unsigned int minBindPower = 0;
+      unsigned int emissionFCC = 0;
+      unsigned int defaultFailSafeTimout = 1000;
+      bool operationModeUnicast = true;
+  };
+
+
   class AccessField: public UnionField::TransformedMember {
     public:
       AccessField(DataField * parent, ModuleData& module):
@@ -2173,8 +2207,10 @@ class ModuleUnionField: public UnionField<unsigned int> {
     ModuleUnionField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
       UnionField<unsigned int>(parent, module.protocol)
     {
-      if (version >= 219)
+      if (version >= 219) {
         Append(new AccessField(parent, module));
+        Append(new Afhds3Field(parent, module));
+      }
       Append(new PxxField(parent, module, version));
       Append(new MultiField(parent, module));
       Append(new PPMField(parent, module.ppm));

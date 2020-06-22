@@ -31,6 +31,27 @@
 
 typedef uint16_t trainer_pulse_duration_t;
 
+enum ModuleSettingsMode
+{
+  MODULE_MODE_NORMAL,
+  MODULE_MODE_SPECTRUM_ANALYSER,
+  MODULE_MODE_POWER_METER,
+  MODULE_MODE_GET_HARDWARE_INFO,
+  MODULE_MODE_MODULE_SETTINGS,
+  MODULE_MODE_RECEIVER_SETTINGS,
+  MODULE_MODE_BEEP_FIRST,
+  MODULE_MODE_REGISTER = MODULE_MODE_BEEP_FIRST,
+  MODULE_MODE_BIND,
+  MODULE_MODE_SHARE,
+  MODULE_MODE_RANGECHECK,
+  MODULE_MODE_RESET,
+  MODULE_MODE_AUTHENTICATION,
+  MODULE_MODE_OTA_UPDATE,
+};
+
+ModuleSettingsMode getModuleMode(int moduleIndex);
+void setModuleMode(int moduleIndex, ModuleSettingsMode mode);
+
 template <class T, int SIZE>
 class DataBuffer {
   public:
