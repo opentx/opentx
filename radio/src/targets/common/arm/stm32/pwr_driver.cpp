@@ -107,6 +107,15 @@ void pwrOff()
   GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 
+inline bool pwrForcePressed()
+{
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  return (GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET && GPIO_ReadInputDataBit(PWR_EXTRA_SWITCH_GPIO, PWR_EXTRA_SWITCH_GPIO_PIN) == Bit_RESET);
+#else
+  return false;
+#endif
+}
+
 bool pwrPressed()
 {
 #if defined(PWR_EXTRA_SWITCH_GPIO)

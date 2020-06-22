@@ -492,6 +492,7 @@ void pwrOn();
 void pwrOff();
 void pwrResetHandler();
 bool pwrPressed();
+bool pwrForcePressed();
 uint32_t pwrPressedDuration();
 
 // USB Charger

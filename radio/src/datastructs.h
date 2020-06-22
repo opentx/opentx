@@ -745,7 +745,7 @@ PACK(struct RadioData {
   int8_t antennaMode:2;
   uint8_t disableRtcWarning:1;
 #if defined(KEYS_BACKLIGHT_GPIO)
-  uint8_t keyBacklight:1;
+  uint8_t keysBacklight:1;
   int8_t spare1:1;
 #else
   int8_t spare1:2;
