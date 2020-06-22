@@ -228,9 +228,6 @@ uint32_t readTrims();
 #define NUM_TRIMS_KEYS                 (NUM_TRIMS * 2)
 #define TRIMS_PRESSED()                readTrims()
 #define KEYS_PRESSED()                 readKeys()
-inline bool pwrForcePressed() {
-  return false;
-}
 
 // Pulses driver
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
@@ -380,6 +377,10 @@ void pwrOn();
 uint32_t pwrCheck();
 bool pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
+inline bool pwrForcePressed()
+{
+  return false;
+}
 
 // EEPROM driver
 #define EEPROM_SIZE           (4*1024*1024/8)

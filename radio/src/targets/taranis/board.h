@@ -285,10 +285,6 @@ enum EnumKeys
   #define KEY_LEFT                      KEY_PLUS
 #endif
 
-inline bool pwrForcePressed() {
-  return false;
-}
-
 #if defined(KEYS_GPIO_PIN_SHIFT)
 #define IS_SHIFT_KEY(index)             (index == KEY_SHIFT)
 #if defined(SIMU)
@@ -652,6 +648,10 @@ bool pwrPressed();
 uint32_t pwrPressedDuration();
 #endif
 void pwrResetHandler();
+inline bool pwrForcePressed()
+{
+  return false;
+}
 
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()           false
