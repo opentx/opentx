@@ -41,13 +41,10 @@ class RadioDataConversionState;
 class RSSIAlarmData {
   public:
     RSSIAlarmData() { clear(); }
-    unsigned int level[2];  // AVR Only
     int warning;
     int critical;
     bool disabled;
     void clear() {
-      this->level[0] = 2;
-      this->level[1] = 3;
       this->warning = 45;
       this->critical = 42;
       this->disabled = false;

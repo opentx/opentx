@@ -542,6 +542,7 @@
 #define TR_BLDELAY             INDENT "Av efter"
 #define TR_BLONBRIGHTNESS      INDENT "På Ljusstyrka"
 #define TR_BLOFFBRIGHTNESS     INDENT "Av Ljusstyrka"
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_SPLASHSCREEN        "Startbild"
 #define TR_PWR_ON_DELAY                "Pwr On delay"
 #define TR_PWR_OFF_DELAY               "Pwr Off delay"
@@ -648,6 +649,7 @@
 #define TR_RECEIVER            "Receiver"
 #define TR_SYNCMENU            "Synk [MENU]"
 #define TR_MULTI_RFTUNE        TR("Freq tune", "RF Freq. fine tune")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR("Vid. freq.", "Video frequency")
 #define TR_RFPOWER             "RF Power"
@@ -698,6 +700,7 @@
 #define TR_VOLTAGE             INDENT"Volt"
 #define TR_CURRENT             INDENT"Ampere"
 #define TR_SELECT_MODEL        "Välj Modell"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY     "Skapa Kategori"
 #define TR_RENAME_CATEGORY     "Byt Kat.namn"
 #define TR_DELETE_CATEGORY     "Ta Bort Kategori"
@@ -919,9 +922,9 @@
 #define TR_BYTES               "byte"
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_SELECT_RX              "Select RX"
 #define TR_PXX2_DEFAULT                "<default>"
-#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BT_SELECT_DEVICE            "Select device"
 #define TR_DISCOVER             "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Waiting..."
@@ -954,6 +957,12 @@
 #define TR_UNIT                "Enhet"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Lägg till sensor..."
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1     "EXT. ANTENNA"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"

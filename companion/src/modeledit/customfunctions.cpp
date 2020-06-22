@@ -29,7 +29,7 @@ RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   QComboBox(parent),
   repeatParam(repeatParam)
 {
-  unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
+  unsigned int step = 1;
   int value = repeatParam/step;
 
   setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
@@ -58,7 +58,7 @@ void RepeatComboBox::onIndexChanged(int index)
 
 void RepeatComboBox::update()
 {
-  unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
+  unsigned int step = 1;
   int value = repeatParam/step;
   if (step == 1) {
     value++;
@@ -422,29 +422,20 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         if (cfn.adjustMode == FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode == FUNC_ADJUST_GVAR_INCDEC) {
           if (modified)
             cfn.param = fswtchParam[i]->value() * model->gvarData[gvidx].multiplierSet();
-          if (IS_ARM(getCurrentBoard())) {
-            fswtchParam[i]->setDecimals(model->gvarData[gvidx].prec);
-            fswtchParam[i]->setSingleStep(model->gvarData[gvidx].multiplierGet());
-            fswtchParam[i]->setSuffix(model->gvarData[gvidx].unitToString());
-            if (cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
-              double rng = abs(model->gvarData[gvidx].getMax() - model->gvarData[gvidx].getMin());
-              rng *= model->gvarData[gvidx].multiplierGet();
-              fswtchParam[i]->setMinimum(-rng);
-              fswtchParam[i]->setMaximum(rng);
-            }
-            else {
-              fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
-              fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
-            }
-            fswtchParam[i]->setValue(cfn.param * model->gvarData[gvidx].multiplierGet());
+          fswtchParam[i]->setDecimals(model->gvarData[gvidx].prec);
+          fswtchParam[i]->setSingleStep(model->gvarData[gvidx].multiplierGet());
+          fswtchParam[i]->setSuffix(model->gvarData[gvidx].unitToString());
+          if (cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
+            double rng = abs(model->gvarData[gvidx].getMax() - model->gvarData[gvidx].getMin());
+            rng *= model->gvarData[gvidx].multiplierGet();
+            fswtchParam[i]->setMinimum(-rng);
+            fswtchParam[i]->setMaximum(rng);
           }
           else {
-            fswtchParam[i]->setDecimals(0);
-            fswtchParam[i]->setSingleStep(1);
-            fswtchParam[i]->setMinimum(-125);
-            fswtchParam[i]->setMaximum(125);
-            fswtchParam[i]->setValue(cfn.param);
+            fswtchParam[i]->setMinimum(model->gvarData[gvidx].getMinPrec());
+            fswtchParam[i]->setMaximum(model->gvarData[gvidx].getMaxPrec());
           }
+          fswtchParam[i]->setValue(cfn.param * model->gvarData[gvidx].multiplierGet());
           widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
         }
         else {
@@ -681,7 +672,6 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
-        ((i==FuncSetTimer1 || i==FuncSetTimer2) && !IS_ARM(firmware->getBoard())) ||
         ((i==FuncSetTimer3) && firmware->getCapability(Timers) < 3) ||
         ((i==FuncScreenshot) && !IS_HORUS_OR_TARANIS(firmware->getBoard())) ||
         ((i>=FuncRangeCheckInternalModule && i<=FuncBindExternalModule) && (!model || !firmware->getCapability(DangerousFunctions))) ||

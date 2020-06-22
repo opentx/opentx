@@ -542,6 +542,7 @@
 #define TR_BLDELAY                     INDENT "Durée"
 #define TR_BLONBRIGHTNESS              INDENT "Luminosité ON"
 #define TR_BLOFFBRIGHTNESS             INDENT "Luminosité OFF"
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR                     INDENT "Couleur"
 #define TR_SPLASHSCREEN                "Logo d'accueil"
 #define TR_PWR_ON_DELAY                "Délai btn ON"
@@ -650,6 +651,7 @@
 #define TR_RECEIVER_NUM                TR("NumRx", "No. récepteur")
 #define TR_RECEIVER                    "Récept."
 #define TR_MULTI_RFTUNE                TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY             "Télémétrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
 #define TR_RFPOWER                     TR("Puiss. RF", "Puissance RF")
@@ -701,6 +703,7 @@
 #define TR_VOLTAGE                     TR(INDENT "Tension",INDENT "Source tension")
 #define TR_CURRENT                     TR(INDENT "Courant",INDENT "Source courant")
 #define TR_SELECT_MODEL                "Sélect. modèle"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY             "Créer une catégorie"
 #define TR_RENAME_CATEGORY             "Renommer la catégorie"
 #define TR_DELETE_CATEGORY             "Supprimer la catégorie"
@@ -922,7 +925,7 @@
 #define TR_POWERMETER_ATTN_NEEDED      "Atténuateur requis"
 #define TR_PXX2_SELECT_RX              "Sélect RX..."
 #define TR_PXX2_DEFAULT                "<défaut>"
-#define TR_BT_SELECT_DEVICE            "Sélect appareil..."
+#define TR_BT_SELECT_DEVICE            "Sélect appareil"
 #define TR_DISCOVER                    "Découvrir"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Attente..."
@@ -955,6 +958,12 @@
 #define TR_UNIT                        "Unité"
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE                TR(INDENT "Canaux", INDENT "Plage de canaux")
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\021"

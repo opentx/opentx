@@ -224,6 +224,11 @@ QString ModelPrinter::printModule(int idx)
           str << printLabelValue(tr("Sub Type"), module.subTypeToString());
           str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
         }
+        if (module.protocol == PULSES_AFHDS3) {
+          str << printLabelValue(tr("Output Type"), module.subTypeToString());
+          str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
+          str << printLabelValue(tr("RX Output Frequency"), QString("%1Hz").arg(module.afhds3.rxFreq));
+        }
       }
     }
     result = str.join(" ");
@@ -968,8 +973,7 @@ QString ModelPrinter::printSettingsTrim()
 {
   QStringList str;
   str << printLabelValue(tr("Step"), printTrimIncrementMode());
-  if (IS_ARM(firmware->getBoard()))
-    str << printLabelValue(tr("Display"), printTrimsDisplayMode());
+  str << printLabelValue(tr("Display"), printTrimsDisplayMode());
   str << printLabelValue(tr("Extended"), printBoolean(model.extendedTrims, BOOLEAN_YESNO));
   return str.join(" ");
 }

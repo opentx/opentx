@@ -721,13 +721,7 @@ class FlightModeField: public TransformedField {
             trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
           else
             trim = std::max(-500, std::min(500, phase.trim[i]));
-          if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215)) {
-            trimBase[i] = trim >> 2;
-            trimExt[i] = (trim & 0x03);
-          }
-          else {
-            trimBase[i] = trim;
-          }
+          trimBase[i] = trim;
         }
       }
     }
@@ -751,11 +745,7 @@ class FlightModeField: public TransformedField {
             phase.trim[i] = 0;
           }
           else {
-            int trim;
-            if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215))
-              trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
-            else
-              trim = trimBase[i];
+            int trim = trimBase[i];
             if (trim > 500) {
               phase.trimRef[i] = trim - 501;
               if (phase.trimRef[i] >= index)
@@ -2113,6 +2103,40 @@ class ModuleUnionField: public UnionField<unsigned int> {
       unsigned int version;
   };
 
+  class Afhds3Field: public UnionField::TransformedMember {
+    public:
+      Afhds3Field(DataField * parent, ModuleData& module):
+        UnionField::TransformedMember(parent, internalField),
+        internalField(this, "AFHDS3")
+      {
+        ModuleData::Afhds3& afhds3 = module.afhds3;
+        internalField.Append(new UnsignedField<3>(this, minBindPower));
+        internalField.Append(new UnsignedField<3>(this, afhds3.rfPower));
+        internalField.Append(new UnsignedField<1>(this, emissionFCC));
+        internalField.Append(new BoolField<1>(this, operationModeUnicast));
+        internalField.Append(new BoolField<1>(this, operationModeUnicast));
+        internalField.Append(new UnsignedField<16>(this, defaultFailSafeTimout));
+        internalField.Append(new UnsignedField<16>(this, afhds3.rxFreq));
+      }
+
+      bool select(const unsigned int& attr) const override {
+        return attr == PULSES_AFHDS3;
+      }
+
+      void beforeExport() override {}
+
+      void afterImport() override {}
+
+    private:
+      StructField internalField;
+
+      unsigned int minBindPower = 0;
+      unsigned int emissionFCC = 0;
+      unsigned int defaultFailSafeTimout = 1000;
+      bool operationModeUnicast = true;
+  };
+
+
   class AccessField: public UnionField::TransformedMember {
     public:
       AccessField(DataField * parent, ModuleData& module):
@@ -2173,8 +2197,10 @@ class ModuleUnionField: public UnionField<unsigned int> {
     ModuleUnionField(DataField * parent, ModuleData & module, Board::Type board, unsigned int version):
       UnionField<unsigned int>(parent, module.protocol)
     {
-      if (version >= 219)
+      if (version >= 219) {
         Append(new AccessField(parent, module));
+        Append(new Afhds3Field(parent, module));
+      }
       Append(new PxxField(parent, module, version));
       Append(new MultiField(parent, module));
       Append(new PPMField(parent, module.ppm));
@@ -2581,7 +2607,13 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   else
     internalField.Append(new SpareBitsField<2>(this));
   internalField.Append(new BoolField<1>(this, generalData.rtcCheckDisable));
-  internalField.Append(new SpareBitsField<2>(this));
+  if (IS_JUMPER_T18(board)) {
+    internalField.Append(new BoolField<1>(this, generalData.keysBacklight));
+    internalField.Append(new SpareBitsField<1>(this));
+  }
+  else {
+    internalField.Append(new SpareBitsField<2>(this));
+  }
 
   for (int i=0; i<4; i++) {
     internalField.Append(new SignedField<16>(this, generalData.trainer.calib[i]));

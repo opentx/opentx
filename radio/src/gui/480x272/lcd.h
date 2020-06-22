@@ -156,7 +156,7 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 #define DOTTED  0x55
 #define STASHED 0x33
 
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   #define PIXEL_PTR(x, y) &displayBuf[(LCD_H*LCD_W-1) - (y)*LCD_W - (x)]
 #else
   #define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]

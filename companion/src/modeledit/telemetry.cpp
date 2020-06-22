@@ -20,7 +20,6 @@
 
 #include "telemetry.h"
 #include "ui_telemetry.h"
-#include "ui_telemetry_analog.h"
 #include "ui_telemetry_customscreen.h"
 #include "ui_telemetry_sensor.h"
 #include "helpers.h"
@@ -28,294 +27,6 @@
 #include "rawitemfilteredmodel.h"
 
 #include <TimerEdit>
-
-TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
-  ModelPanel(parent, model, generalSettings, firmware),
-  ui(new Ui::TelemetryAnalog),
-  analog(analog),
-  lock(false)
-{
-  ui->setupUi(this);
-
-  float ratio = analog.getRatio();
-
-  if (analog.type == 0 || analog.type == 1 || analog.type == 2) {
-    ui->RatioSB->setDecimals(1);
-    ui->RatioSB->setMaximum(25.5 * firmware->getCapability(TelemetryMaxMultiplier));
-  }
-  else {
-    ui->RatioSB->setDecimals(0);
-    ui->RatioSB->setMaximum(255 * firmware->getCapability(TelemetryMaxMultiplier));
-  }
-  ui->RatioSB->setValue(ratio);
-
-  update();
-
-  ui->UnitCB->setCurrentIndex(analog.type);
-  ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
-  ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
-  ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
-  ui->alarm2GreaterCB->setCurrentIndex(analog.alarms[1].greater);
-
-  if (!(firmware->getCapability(Telemetry) & TM_HASOFFSET)) {
-    ui->CalibSB->hide();
-    ui->CalibLabel->hide();
-  }
-  else {
-    ui->label_Max->setText(tr("Range"));
-  }
-
-  disableMouseScrolling();
-}
-
-void TelemetryAnalog::update()
-{
-  float ratio = analog.getRatio();
-  float step = ratio / 255;
-  float mini = (ratio * analog.offset) / 255;
-  float maxi = mini + ratio;
-
-  ui->alarm1ValueSB->setDecimals(2);
-  ui->alarm1ValueSB->setSingleStep(step);
-  ui->alarm1ValueSB->setMinimum(mini);
-  ui->alarm1ValueSB->setMaximum(maxi);
-  ui->alarm1ValueSB->setValue(mini + step*analog.alarms[0].value);
-
-  ui->alarm2ValueSB->setDecimals(2);
-  ui->alarm2ValueSB->setSingleStep(step);
-  ui->alarm2ValueSB->setMinimum(mini);
-  ui->alarm2ValueSB->setMaximum(maxi);
-  ui->alarm2ValueSB->setValue(mini + step*analog.alarms[1].value);
-
-  ui->CalibSB->setDecimals(2);
-  ui->CalibSB->setMaximum(step * 127);
-  ui->CalibSB->setMinimum(-step * 128);
-  ui->CalibSB->setSingleStep(step);
-  ui->CalibSB->setValue(mini);
-}
-
-static int findmult(float value, float base)
-{
-  int vvalue = value * 10;
-  int vbase = base * 10;
-  vvalue--;
-
-  int mult = 0;
-  for (int i = 8; i >= 0; i--) {
-    if (vvalue / vbase >= (1 << i)) {
-      mult = i + 1;
-      break;
-    }
-  }
-
-  return mult;
-}
-
-void TelemetryAnalog::on_UnitCB_currentIndexChanged(int index)
-{
-    float ratio = analog.getRatio();
-    analog.type = index;
-    switch (index) {
-      case 0:
-      case 1:
-      case 2:
-        ui->RatioSB->setDecimals(1);
-        ui->RatioSB->setMaximum(25.5 * firmware->getCapability(TelemetryMaxMultiplier));
-        break;
-      default:
-        ui->RatioSB->setDecimals(0);
-        ui->RatioSB->setMaximum(255 * firmware->getCapability(TelemetryMaxMultiplier));
-        break;
-    }
-    ui->RatioSB->setValue(ratio);
-    update();
-    emit modified();
-}
-
-void TelemetryAnalog::on_RatioSB_valueChanged()
-{
-  if (!lock) {
-    if (analog.type == 0 || analog.type == 1 || analog.type == 2) {
-      analog.multiplier = findmult(ui->RatioSB->value(), 25.5);
-      float singlestep = (1 << analog.multiplier) / 10.0;
-      lock=true;
-      ui->RatioSB->setSingleStep(singlestep);
-      ui->RatioSB->setValue(round(ui->RatioSB->value() / singlestep) * singlestep);
-      lock=false;
-    }
-    else {
-      analog.multiplier = findmult(ui->RatioSB->value(), 255);
-      float singlestep = (1 << analog.multiplier);
-      lock = true;
-      ui->RatioSB->setSingleStep(singlestep);
-      ui->RatioSB->setValue(round(ui->RatioSB->value() / singlestep) * singlestep);
-      lock = false;
-    }
-    emit modified();
-  }
-}
-
-void TelemetryAnalog::on_RatioSB_editingFinished()
-{
-  if (!lock) {
-    float ratio, calib, alarm1value,alarm2value;
-
-    if (analog.type == 0 || analog.type == 1 || analog.type == 2) {
-      analog.multiplier = findmult(ui->RatioSB->value(), 25.5);
-      ui->CalibSB->setSingleStep((1 << analog.multiplier) / 10.0);
-      ui->alarm1ValueSB->setSingleStep((1 << analog.multiplier) / 10.0);
-      ui->alarm2ValueSB->setSingleStep((1 << analog.multiplier) / 10.0);
-      analog.ratio = ((int)(round(ui->RatioSB->value() * 10)) / (1 << analog.multiplier));
-    }
-    else {
-      analog.multiplier = findmult(ui->RatioSB->value(), 255);
-      ui->CalibSB->setSingleStep(1<<analog.multiplier);
-      ui->alarm1ValueSB->setSingleStep(1 << analog.multiplier);
-      ui->alarm2ValueSB->setSingleStep(1 << analog.multiplier);
-      analog.ratio = (ui->RatioSB->value() / (1 << analog.multiplier));
-    }
-    ui->CalibSB->setMaximum((ui->RatioSB->value() * 127) / 255);
-    ui->CalibSB->setMinimum((ui->RatioSB->value() * -128) / 255);
-    ui->alarm1ValueSB->setMaximum(ui->RatioSB->value());
-    ui->alarm2ValueSB->setMaximum(ui->RatioSB->value());
-    repaint();
-    ratio=analog.ratio * (1 << analog.multiplier);
-    calib=ui->CalibSB->value();
-    alarm1value=ui->alarm1ValueSB->value();
-    alarm2value=ui->alarm2ValueSB->value();
-    if (analog.type == 0) {
-      calib *= 10;
-      alarm1value *= 10;
-      alarm2value *= 10;
-    }
-    if (calib > 0) {
-      if (calib>((ratio * 127) / 255)) {
-        analog.offset = 127;
-      }
-      else {
-        analog.offset=round(calib * 255 / ratio);
-      }
-    }
-    if (calib < 0) {
-      if (calib < ((ratio * -128) / 255)) {
-        analog.offset =- 128;
-      }
-      else {
-        analog.offset = round(calib * 255 / ratio);
-      }
-    }
-    analog.alarms[0].value = round((alarm1value * 255 - analog.offset * (analog.ratio << analog.multiplier)) / (analog.ratio << analog.multiplier));
-    analog.alarms[1].value = round((alarm2value * 255 - analog.offset * (analog.ratio << analog.multiplier)) / (analog.ratio << analog.multiplier));
-    update();
-    emit modified();
-  }
-}
-
-void TelemetryAnalog::on_CalibSB_editingFinished()
-{
-    float ratio = analog.getRatio();
-    float calib,alarm1value,alarm2value;
-
-    if (ratio != 0) {
-      analog.offset = round((255 * ui->CalibSB->value() / ratio));
-      calib = ratio * analog.offset / 255.0;
-      alarm1value = ui->alarm1ValueSB->value();
-      alarm2value = ui->alarm2ValueSB->value();
-      if (alarm1value < calib) {
-        alarm1value = calib;
-      }
-      else if (alarm1value > (ratio + calib)) {
-        alarm1value = ratio + calib;
-      }
-      if (alarm2value < calib) {
-        alarm2value = calib;
-      }
-      else if (alarm2value > (ratio + calib)) {
-        alarm2value = ratio + calib;
-      }
-      analog.alarms[0].value = round(((alarm1value - calib) * 255) / ratio);
-      analog.alarms[1].value = round(((alarm2value - calib) * 255) / ratio);
-    }
-    else {
-      analog.offset = 0;
-      analog.alarms[0].value = 0;
-      analog.alarms[1].value = 0;
-    }
-    update();
-    emit modified();
-}
-
-void TelemetryAnalog::on_alarm1LevelCB_currentIndexChanged(int index)
-{
-  analog.alarms[0].level = index;
-  emit modified();
-}
-
-
-void TelemetryAnalog::on_alarm1GreaterCB_currentIndexChanged(int index)
-{
-  analog.alarms[0].greater = index;
-  emit modified();
-}
-
-void TelemetryAnalog::on_alarm1ValueSB_editingFinished()
-{
-    float ratio = analog.getRatio();
-    float calib, alarm1value;
-
-    calib = analog.offset;
-    alarm1value = ui->alarm1ValueSB->value();
-
-    if (alarm1value < ((calib * ratio) / 255)) {
-      analog.alarms[0].value = 0;
-    }
-    else if (alarm1value > (ratio + (calib * ratio) / 255)) {
-      analog.alarms[0].value = 255;
-    }
-    else {
-      analog.alarms[0].value = round((alarm1value - ((calib * ratio) / 255)) / ratio * 255);
-    }
-    update();
-    emit modified();
-}
-
-void TelemetryAnalog::on_alarm2LevelCB_currentIndexChanged(int index)
-{
-  analog.alarms[1].level = index;
-  emit modified();
-}
-
-void TelemetryAnalog::on_alarm2GreaterCB_currentIndexChanged(int index)
-{
-  analog.alarms[1].greater = index;
-  emit modified();
-}
-
-void TelemetryAnalog::on_alarm2ValueSB_editingFinished()
-{
-    float calib, alarm2value;
-    float ratio = analog.getRatio();
-    calib = analog.offset;
-    alarm2value = ui->alarm2ValueSB->value();
-    if (alarm2value < ((calib * ratio) / 255)) {
-      analog.alarms[1].value = 0;
-    }
-    else if (alarm2value > (ratio + (calib * ratio) / 255)) {
-      analog.alarms[1].value = 255;
-    }
-    else {
-      analog.alarms[1].value = round((alarm2value - ((calib * ratio) / 255)) / ratio * 255);
-    }
-    update();
-    emit modified();
-}
-
-TelemetryAnalog::~TelemetryAnalog()
-{
-  delete ui;
-}
-
-/******************************************************/
 
 TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware, RawSourceFilterItemModel * srcModel):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -377,8 +88,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   disableMouseScrolling();
 
   lock = true;
-  if (IS_ARM(firmware->getBoard()))
-    ui->screenType->addItem(tr("None"), TELEMETRY_SCREEN_NONE);
+  ui->screenType->addItem(tr("None"), TELEMETRY_SCREEN_NONE);
   ui->screenType->addItem(tr("Numbers"), TELEMETRY_SCREEN_NUMBERS);
   ui->screenType->addItem(tr("Bars"), TELEMETRY_SCREEN_BARS);
   if (IS_TARANIS(firmware->getBoard()))
@@ -439,14 +149,8 @@ void TelemetryCustomScreen::updateBar(int line)
 
   if (source.type != SOURCE_TYPE_NONE) {
     RawSourceRange range = source.getRange(model, generalSettings);
-    if (!IS_ARM(getCurrentBoard())) {
-      int max = round((range.max - range.min) / range.step);
-      if (int(255 - screen.body.bars[line].barMax) > max) {
-        screen.body.bars[line].barMax = 255 - max;
-      }
-    }
     float minVal = range.getValue(screen.body.bars[line].barMin);
-    float maxVal = IS_ARM(getCurrentBoard()) ? screen.body.bars[line].barMax : 255 - screen.body.bars[line].barMax;
+    float maxVal = screen.body.bars[line].barMax;
     maxVal = range.getValue(maxVal);
 
     if (source.isTimeBased()) {
@@ -552,10 +256,7 @@ void TelemetryCustomScreen::barMinChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(getCurrentBoard()))
-      screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
-    else
-      screen.body.bars[line].barMin = round((value-minSB[line]->minimum()) / minSB[line]->singleStep());
+    screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
     // TODO set min (maxSB)
     emit modified();
   }
@@ -565,10 +266,7 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(getCurrentBoard()))
-      screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
-    else
-      screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());
+    screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
     // TODO set max (minSB)
     emit modified();
   }
@@ -583,10 +281,7 @@ void TelemetryCustomScreen::barTimeChanged()
     if (!te)
       return;
 
-    if (IS_ARM(getCurrentBoard()))
-      valRef = round(te->timeInSeconds() / te->singleStep());
-    else
-      valRef = round((te->timeInSeconds() - te->minimumTime()) / te->singleStep());
+    valRef = round(te->timeInSeconds() / te->singleStep());
 
     emit modified();
   }
@@ -997,33 +692,21 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     model.frsky.usrProto = 1;
   }
 
-  if (IS_ARM(firmware->getBoard())) {
-    ui->varioSource->setField(model.frsky.varioSource, this);
-    ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
-    ui->A1GB->hide();
-    ui->A2GB->hide();
-    for (int i = 0; i < sensorCapability; ++i) {
-      TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], i, sensorCapability, model, generalSettings, firmware);
-      ui->sensorsLayout->addWidget(panel);
-      sensorPanels[i] = panel;
-      connect(panel, SIGNAL(dataModified()), this, SLOT(update()));
-      connect(panel, SIGNAL(modified()), this, SLOT(onModified()));
-      connect(panel, SIGNAL(clearAllSensors()), this, SLOT(on_clearAllSensors()));
-      connect(panel, SIGNAL(insertSensor(int)), this, SLOT(on_insertSensor(int)));
-      connect(panel, SIGNAL(deleteSensor(int)), this, SLOT(on_deleteSensor(int)));
-      connect(panel, SIGNAL(moveUpSensor(int)), this, SLOT(on_moveUpSensor(int)));
-      connect(panel, SIGNAL(moveDownSensor(int)), this, SLOT(on_moveDownSensor(int)));
-    }
-  }
-  else {
-    ui->sensorsGB->hide();
-    ui->altimetryGB->hide();
-    analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
-    ui->A1Layout->addWidget(analogs[0]);
-    connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
-    analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
-    ui->A2Layout->addWidget(analogs[1]);
-    connect(analogs[1], SIGNAL(modified()), this, SLOT(onModified()));
+  ui->varioSource->setField(model.frsky.varioSource, this);
+  ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
+  ui->A1GB->hide();
+  ui->A2GB->hide();
+  for (int i = 0; i < sensorCapability; ++i) {
+    TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], i, sensorCapability, model, generalSettings, firmware);
+    ui->sensorsLayout->addWidget(panel);
+    sensorPanels[i] = panel;
+    connect(panel, SIGNAL(dataModified()), this, SLOT(update()));
+    connect(panel, SIGNAL(modified()), this, SLOT(onModified()));
+    connect(panel, SIGNAL(clearAllSensors()), this, SLOT(on_clearAllSensors()));
+    connect(panel, SIGNAL(insertSensor(int)), this, SLOT(on_insertSensor(int)));
+    connect(panel, SIGNAL(deleteSensor(int)), this, SLOT(on_deleteSensor(int)));
+    connect(panel, SIGNAL(moveUpSensor(int)), this, SLOT(on_moveUpSensor(int)));
+    connect(panel, SIGNAL(moveDownSensor(int)), this, SLOT(on_moveDownSensor(int)));
   }
 
   if (IS_TARANIS_X9(firmware->getBoard())) {
@@ -1072,10 +755,8 @@ void TelemetryPanel::update()
     populateTelemetrySourcesComboBox(ui->varioSource, model, false);
   }
 
-  if (IS_ARM(firmware->getBoard())) {
-    for (int i = 0; i < sensorCapability; ++i) {
-      sensorPanels[i]->update();
-    }
+  for (int i = 0; i < sensorCapability; ++i) {
+    sensorPanels[i]->update();
   }
 
   emit updated();
@@ -1087,52 +768,29 @@ void TelemetryPanel::setup()
 
     lock = true;
 
-    if (IS_ARM(firmware->getBoard())) {
-      ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
-      ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
-      if (IS_9XRPRO(firmware->getBoard()) ||
-         (IS_TARANIS(firmware->getBoard()) && generalSettings.auxSerialMode == 2)) {
-        ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
-      }
-      ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
-      ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
-      ui->disableTelemetryAlarms->setField(model->rssiAlarms.disabled);
+    ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
+    ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
+    if (IS_9XRPRO(firmware->getBoard()) ||
+        (IS_TARANIS(firmware->getBoard()) && generalSettings.auxSerialMode == 2)) {
+      ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
     }
-    else {
-      ui->telemetryProtocolLabel->hide();
-      ui->telemetryProtocol->hide();
-      ui->ignoreSensorIds->hide();
-      ui->disableTelemetryAlarms->hide();
-    }
+    ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
+    ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
+    ui->disableTelemetryAlarms->setField(model->rssiAlarms.disabled);
 
     ui->rssiAlarmWarningSB->setValue(model->rssiAlarms.warning);
     ui->rssiAlarmCriticalSB->setValue(model->rssiAlarms.critical);
-    if (!IS_ARM(firmware->getBoard())) {
-      ui->rssiSourceLabel->hide();
-      ui->rssiSourceCB->hide();
-      ui->rssiAlarmWarningCB->setCurrentIndex(model->rssiAlarms.level[0]);
-      ui->rssiAlarmCriticalCB->setCurrentIndex(model->rssiAlarms.level[1]);
-    }
-    else {
-      ui->rssiSourceLabel->show();
-      ui->rssiSourceLabel->setText(tr("Source"));
-      ui->rssiSourceCB->setField(model->rssiSource, this);
-      ui->rssiSourceCB->show();
-      populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
 
-      ui->rssiAlarmWarningCB->hide();
-      ui->rssiAlarmCriticalCB->hide();
-      ui->rssiAlarmWarningLabel->setText(tr("Low Alarm"));
-      ui->rssiAlarmCriticalLabel->setText(tr("Critical Alarm"));
-    }
+    ui->rssiSourceLabel->show();
+    ui->rssiSourceLabel->setText(tr("Source"));
+    ui->rssiSourceCB->setField(model->rssiSource, this);
+    ui->rssiSourceCB->show();
+    populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
 
-    /*if (IS_ARM(firmware->getBoard())) {
-      for (int i = 0; i < CPN_MAX_SENSORS; ++i) {
-        TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model->, model, generalSettings, firmware);
-        ui->sensorsLayout->addWidget(panel);
-        sensorPanels[i] = panel;
-      }
-    }*/
+    ui->rssiAlarmWarningCB->hide();
+    ui->rssiAlarmCriticalCB->hide();
+    ui->rssiAlarmWarningLabel->setText(tr("Low Alarm"));
+    ui->rssiAlarmCriticalLabel->setText(tr("Critical Alarm"));
 
     int varioCap = firmware->getCapability(HasVario);
     if (!varioCap) {
@@ -1164,7 +822,7 @@ void TelemetryPanel::setup()
     ui->altimetryGB->setVisible(firmware->getCapability(HasVario)),
     ui->frskyProtoCB->setDisabled(firmware->getCapability(NoTelemetryProtocol));
 
-    if (firmware->getCapability(Telemetry) & TM_HASWSHH) {
+    if (firmware->getCapability(Telemetry)) {
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High"));
     }
     else {
@@ -1172,38 +830,6 @@ void TelemetryPanel::setup()
     }
 
     ui->variousGB->hide();
-    if (!IS_ARM(firmware->getBoard())) {
-      if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {
-        ui->fasOffset_label->hide();
-        ui->fasOffset_DSB->hide();
-      }
-      else {
-        ui->fasOffset_DSB->setValue(model->frsky.fasOffset / 10.0);
-        ui->variousGB->show();
-      }
-
-      if (!(firmware->getCapability(HasMahPersistent))) {
-        ui->mahCount_label->hide();
-        ui->mahCount_SB->hide();
-        ui->mahCount_ChkB->hide();
-      }
-      else {
-        if (model->frsky.mAhPersistent) {
-          ui->mahCount_ChkB->setChecked(true);
-          ui->mahCount_SB->setValue(model->frsky.storedMah);
-        }
-        else {
-          ui->mahCount_SB->setDisabled(true);
-        }
-        ui->variousGB->show();
-      }
-
-      ui->frskyProtoCB->setCurrentIndex(model->frsky.usrProto);
-      ui->bladesCount->setValue(model->frsky.blades);
-      populateVarioSource();
-      populateVoltsSource();
-      populateCurrentSource();
-    }
 
     lock = false;
 }
@@ -1225,10 +851,8 @@ void TelemetryPanel::populateVoltsSource()
   cb->setField(model->frsky.voltsSource, this);
   cb->addItem(tr("A1"), TELEMETRY_VOLTS_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_VOLTS_SOURCE_A2);
-  if (IS_ARM(firmware->getBoard())) {
-    cb->addItem(tr("A3"), TELEMETRY_VOLTS_SOURCE_A3);
-    cb->addItem(tr("A4"), TELEMETRY_VOLTS_SOURCE_A4);
-  }
+  cb->addItem(tr("A3"), TELEMETRY_VOLTS_SOURCE_A3);
+  cb->addItem(tr("A4"), TELEMETRY_VOLTS_SOURCE_A4);
   cb->addItem(tr("FAS"), TELEMETRY_VOLTS_SOURCE_FAS);
   cb->addItem(tr("Cells"), TELEMETRY_VOLTS_SOURCE_CELLS);
 }
@@ -1240,10 +864,8 @@ void TelemetryPanel::populateCurrentSource()
   cb->addItem(tr("---"), TELEMETRY_CURRENT_SOURCE_NONE);
   cb->addItem(tr("A1"), TELEMETRY_CURRENT_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_CURRENT_SOURCE_A2);
-  if (IS_ARM(firmware->getBoard())) {
-    cb->addItem(tr("A3"), TELEMETRY_CURRENT_SOURCE_A3);
-    cb->addItem(tr("A4"), TELEMETRY_CURRENT_SOURCE_A4);
-  }
+  cb->addItem(tr("A3"), TELEMETRY_CURRENT_SOURCE_A3);
+  cb->addItem(tr("A4"), TELEMETRY_CURRENT_SOURCE_A4);
   cb->addItem(tr("FAS"), TELEMETRY_CURRENT_SOURCE_FAS);
 }
 
@@ -1276,18 +898,6 @@ void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
       telemetryCustomScreens[i]->update();
     emit modified();
   }
-}
-
-void TelemetryPanel::on_rssiAlarmWarningCB_currentIndexChanged(int index)
-{
-  model->rssiAlarms.level[0] = index;
-  emit modified();
-}
-
-void TelemetryPanel::on_rssiAlarmCriticalCB_currentIndexChanged(int index)
-{
-  model->rssiAlarms.level[1] = index;
-  emit modified();
 }
 
 void TelemetryPanel::on_rssiAlarmWarningSB_editingFinished()

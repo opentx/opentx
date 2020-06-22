@@ -479,10 +479,6 @@ void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
     int func = order[i];
     if (func == LS_FN_NEQUAL || func == LS_FN_EGREATER || func == LS_FN_ELESS)
       continue;
-    if (!IS_ARM(firmware->getBoard())) {
-      if (func == LS_FN_VEQUAL || func == LS_FN_EDGE)
-        continue;
-    }
     b->addItem(LogicalSwitchData(func).funcToString(), func);
   }
   b->setMaxVisibleItems(10);
@@ -490,27 +486,7 @@ void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
 
 void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b)
 {
-  if (IS_ARM(firmware->getBoard())) {
-    b->setModel(rawSwitchItemModel);
-  }
-  else {
-    RawSwitch item;
-
-    b->clear();
-
-    item = RawSwitch(SWITCH_TYPE_NONE);
-    b->addItem(item.toString(), item.toValue());
-
-    for (int i=1; i <= Boards::getCapability(firmware->getBoard(), Board::SwitchPositions); i++) {
-      item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-      b->addItem(item.toString(), item.toValue());
-    }
-
-    for (int i=1; i<=6; i++) {
-      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
-      b->addItem(item.toString(), item.toValue());
-    }
-  }
+  b->setModel(rawSwitchItemModel);
   b->setVisible(true);
 }
 
