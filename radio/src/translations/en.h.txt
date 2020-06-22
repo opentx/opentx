@@ -663,6 +663,11 @@
 #define TR_MULTI_SERVOFREQ             TR("Servo rate", "Servo update rate")
 #define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
 #define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
 #define TR_SYNCMENU                    "[Sync]"
 #define TR_LIMIT                       INDENT "Limit"
 #define TR_MINRSSI                     "Min Rssi"
@@ -680,6 +685,7 @@
 #define TR_VOLTAGE                     TR(INDENT "Voltage", INDENT "Voltage source")
 #define TR_CURRENT                     TR(INDENT "Current", INDENT "Current source")
 #define TR_SELECT_MODEL                "Select model"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY             "Create category"
 #define TR_RENAME_CATEGORY             "Rename category"
 #define TR_DELETE_CATEGORY             "Delete category"
@@ -840,8 +846,8 @@
 #define TR_WRITING                     "Writing..."
 #define TR_CONFIRM_FORMAT              "Confirm Format?"
 #define TR_INTERNALRF                  "Internal RF"
-#define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
-#define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
+#define TR_INTERNAL_MODULE             TR("Int. module", "Internal module")
+#define TR_EXTERNAL_MODULE             TR("Ext. module", "External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
 #define TR_TELEMETRY_DISABLED          "Telem. disabled"
 #define TR_MORE_OPTIONS_AVAILABLE      "More options available"
@@ -900,9 +906,9 @@
 #define TR_BYTES                       "bytes"
 #define TR_MODULE_BIND                 BUTTON(TR("Bnd", "Bind"))
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_SELECT_RX              "Select RX"
 #define TR_PXX2_DEFAULT                "<default>"
-#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BT_SELECT_DEVICE            "Select device"
 #define TR_DISCOVER                    "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Waiting..."
@@ -939,6 +945,7 @@
 #define TR_UNIT                        "Unit"
 #define TR_TELEMETRY_NEWSENSOR         INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE                TR(INDENT "Ch. Range", INDENT "Channel Range")
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1             "EXT. ANTENNA"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"

@@ -700,6 +700,7 @@
 #define TR_VOLTAGE             TR(INDENT "Voltagg.",INDENT "Voltaggio")
 #define TR_CURRENT             TR(INDENT "Corrente",INDENT "Corrente")
 #define TR_SELECT_MODEL        TR("Scegli mod.", "Scegli Modello")
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY     "Crea Categoria"
 #define TR_RENAME_CATEGORY     "Rinomina Categoria"
 #define TR_DELETE_CATEGORY     "Cancella Categoria"
@@ -955,6 +956,12 @@
 #define TR_UNIT                "Unita"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Aggiungi nuovo sensore"
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1     "ANTENNA EST."
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"

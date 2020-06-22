@@ -99,14 +99,23 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
 #endif
+#if defined(AFHDS3)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_POWER_STATUS,
+#endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_CHANNELS,
-  ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_OPTIONS,
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AUTOBIND,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_TELEM,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_DISABLE_MAPPING,
+#endif
+#if defined(AFHDS3)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_RX_FREQ,
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_ACTUAL_POWER,
 #endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_POWER,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_FAILSAFE,
@@ -115,7 +124,6 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_1,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_2,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_3,
-
   ITEM_MODEL_SETUP_TRAINER_LABEL,
   ITEM_MODEL_SETUP_TRAINER_MODE,
 #if defined(BLUETOOTH)
@@ -129,8 +137,6 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_2ND_COLUMN         200
 #define MODEL_SETUP_3RD_COLUMN         270
 #define MODEL_SETUP_4TH_COLUMN         350
-#define MODEL_SETUP_BIND_OFS           40
-#define MODEL_SETUP_RANGE_OFS          80
 #define MODEL_SETUP_SET_FAILSAFE_OFS   100
 #define MODEL_SETUP_SLIDPOT_SPACING    45
 
@@ -157,6 +163,10 @@ void onBluetoothConnectMenu(const char * result)
 #endif
 
 #include "common/stdlcd/model_setup_pxx1.cpp"
+
+#if defined(AFHDS3)
+#include "common/stdlcd/model_setup_afhds3.cpp"
+#endif
 
 void onPXX2R9MBindModeMenu(const char * result)
 {
@@ -504,7 +514,7 @@ int getSwitchWarningsCount()
 
 inline uint8_t MODULE_TYPE_ROWS(int moduleIdx)
 {
-  if (isModuleXJT(moduleIdx) || isModuleR9MNonAccess(moduleIdx) || isModuleDSM2(moduleIdx) || isModulePXX2(moduleIdx))
+  if (isModuleXJT(moduleIdx) || isModuleR9MNonAccess(moduleIdx) || isModuleDSM2(moduleIdx) || isModulePXX2(moduleIdx) || isModuleAFHDS3(moduleIdx))
     return 1;
 #if defined(MULTIMODULE)
   else if (isModuleMultimodule(moduleIdx)) {
@@ -624,11 +634,13 @@ bool menuModelSetup(event_t event)
          LABEL(ExternalModule),
            MODULE_TYPE_ROWS(EXTERNAL_MODULE),
            MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
+           AFHDS3_MODE_ROWS(EXTERNAL_MODULE)
            MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
            IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),   // RxNum for ACCESS
            IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
            MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
+           AFHDS3_MODULE_ROWS(EXTERNAL_MODULE)
            MODULE_POWER_ROW(EXTERNAL_MODULE),
            FAILSAFE_ROWS(EXTERNAL_MODULE),
            IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),   // Range check and Register buttons
@@ -1077,6 +1089,11 @@ bool menuModelSetup(event_t event)
             lcdDrawMultiSubProtocolString(MODEL_SETUP_4TH_COLUMN, y, moduleIdx, g_model.moduleData[moduleIdx].subType, menuHorizontalPosition==2 ? attr : 0);
         }
 #endif
+#if defined(AFHDS3)
+        else if (isModuleAFHDS3(moduleIdx)) {
+          lcdDrawTextAtIndex(lcdNextPos + 15, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[moduleIdx].subType, (menuHorizontalPosition==1 ? attr : 0));
+        }
+#endif
         if (attr && menuHorizontalPosition == 0 && moduleIdx == EXTERNAL_MODULE) {
           if (s_editMode > 0) {
             g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_NONE;
@@ -1145,6 +1162,11 @@ bool menuModelSetup(event_t event)
                   g_model.moduleData[moduleIdx].subType = checkIncDec(event, g_model.moduleData[moduleIdx].subType, MODULE_SUBTYPE_R9M_FCC,
                                                                             MODULE_SUBTYPE_R9M_LAST, EE_MODEL, isR9MModeAvailable);
                 }
+#if defined(AFHDS3)
+                else if (isModuleAFHDS3(moduleIdx)) {
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, AFHDS_SUBTYPE_FIRST, AFHDS_SUBTYPE_LAST);
+                }
+#endif
                 else {
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, MODULE_SUBTYPE_PXX1_ACCST_D16, MODULE_SUBTYPE_PXX1_LAST);
                 }
@@ -1348,6 +1370,7 @@ bool menuModelSetup(event_t event)
         }
       }
       break;
+
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_REGISTER_RANGE:
 #endif
@@ -1355,7 +1378,7 @@ bool menuModelSetup(event_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MODULE);
         drawButton(MODEL_SETUP_2ND_COLUMN, y, STR_REGISTER, (menuHorizontalPosition == 0 ? attr : 0));
-        if (!IS_RX_MULTI(moduleIdx))
+        if (isModuleRangeAvailable(moduleIdx))
           drawButton(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_MODULE_RANGE, (menuHorizontalPosition == 1 ? attr : 0));
         if (attr) {
           if (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
@@ -1374,8 +1397,9 @@ bool menuModelSetup(event_t event)
             s_editMode = 0;
           }
         }
-      }
         break;
+      }
+
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_OPTIONS:
 #endif
@@ -1387,6 +1411,7 @@ bool menuModelSetup(event_t event)
           pushMenu(menuModelModuleOptions);
         }
         break;
+
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_1:
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_RECEIVER_2:
@@ -1455,7 +1480,7 @@ bool menuModelSetup(event_t event)
               for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
                 popupMenuItems[rx] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[rx];
               }
-              popupMenuTitle = STR_PXX2_SELECT_RX;
+              POPUP_MENU_TITLE(STR_PXX2_SELECT_RX);
               POPUP_MENU_START(onPXX2BindMenu);
             }
           }
@@ -1471,10 +1496,11 @@ bool menuModelSetup(event_t event)
         }
       }
       break;
+
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
 #endif
-      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
       {
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (isModulePPM(moduleIdx)) {
@@ -1500,7 +1526,6 @@ bool menuModelSetup(event_t event)
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_REFRESHRATE);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT, 0, NULL, STR_MS);
           lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, moduleData.sbus.noninverted ? "not inverted" : "normal", (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
-
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
               case 0:
@@ -1513,21 +1538,19 @@ bool menuModelSetup(event_t event)
           }
         }
         else {
+          lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER);
           int l_posHorz = menuHorizontalPosition;
-          coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
-          if (!isModuleRxNumAvailable(moduleIdx)) {
-            xOffsetBind = 0;
-            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER);
-            if (attr) l_posHorz += 1;
+          coord_t bindButtonPos = MODEL_SETUP_2ND_COLUMN;
+          if (isModuleRxNumAvailable(moduleIdx)) {
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);
+            bindButtonPos += 40;
           }
-          else {
-            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER_NUM);
+          else if (attr) {
+            l_posHorz += 1;
           }
           if (isModuleBindRangeAvailable(moduleIdx)) {
-            if (xOffsetBind)
-              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);
-            if (attr && l_posHorz==0) {
-              if (s_editMode>0) {
+            if (attr && l_posHorz == 0) {
+              if (s_editMode > 0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
                 if (event == EVT_KEY_LONG(KEY_ENTER)) {
                   killEvents(event);
@@ -1539,9 +1562,10 @@ bool menuModelSetup(event_t event)
                 }
               }
             }
-            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleState[moduleIdx].mode == MODULE_MODE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
-            if (!IS_RX_MULTI(moduleIdx))
-              drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
+            drawButton(bindButtonPos, y, STR_MODULE_BIND, (moduleState[moduleIdx].mode == MODULE_MODE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
+            if (isModuleRangeAvailable(moduleIdx)) {
+              drawButton(bindButtonPos + 80, y, STR_MODULE_RANGE, (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
+            }
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
@@ -1552,8 +1576,14 @@ bool menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx)) {
+                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+#if defined(AFHDS3)
+                      if (isModuleAFHDS3(moduleIdx)) {
+                        startBindMenuAfhds3(moduleIdx);
+                        continue;
+                      }
+#endif
                       startBindMenu(moduleIdx);
                       continue;
                     }
@@ -1708,6 +1738,14 @@ bool menuModelSetup(event_t event)
           g_model.moduleData[moduleIdx].multi.lowPowerMode = editCheckBox(g_model.moduleData[moduleIdx].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         }
 #endif
+#if defined(AFHDS3)
+        else if (isModuleAFHDS3(moduleIdx)) {
+          lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RFPOWER);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_POWERS, g_model.moduleData[moduleIdx].afhds3.runPower, LEFT | attr);
+          if (attr)
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].afhds3.runPower, afhds3::RUN_POWER::RUN_POWER_FIRST, afhds3::RUN_POWER::RUN_POWER_LAST);
+        }
+#endif
       }
       break;
 
@@ -1722,7 +1760,6 @@ bool menuModelSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_AUTOBIND);
       g_model.moduleData[moduleIdx].multi.autoBindMode = editCheckBox(g_model.moduleData[moduleIdx].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, attr, event);
       break;
-
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_TELEM:
 #endif
@@ -1730,7 +1767,6 @@ bool menuModelSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_DISABLE_TELEM);
         g_model.moduleData[moduleIdx].multi.disableTelemetry = editCheckBox(g_model.moduleData[moduleIdx].multi.disableTelemetry, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
-
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_MAPPING:
 #endif
@@ -1738,16 +1774,42 @@ bool menuModelSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_DISABLE_CH_MAP);
         g_model.moduleData[moduleIdx].multi.disableMapping = editCheckBox(g_model.moduleData[moduleIdx].multi.disableMapping, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
+#endif
 
+#if defined(AFHDS3)
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_MODE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TYPE);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y,
+            g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry ? STR_AFHDS3_ONE_TO_ONE_TELEMETRY : TR_AFHDS3_ONE_TO_MANY);
+        break;
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_RX_FREQ:
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_AFHDS3_RX_FREQ);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].afhds3.rxFreq(), attr | LEFT, 0, NULL, "Hz");
+        if (attr) {
+          uint16_t rxFreq = g_model.moduleData[moduleIdx].afhds3.rxFreq();
+          CHECK_INCDEC_MODELVAR(event, rxFreq, MIN_FREQ, MAX_FREQ);
+          g_model.moduleData[moduleIdx].afhds3.setRxFreq(rxFreq);
+        }
+        break;
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_ACTUAL_POWER:
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_AFHDS3_ACTUAL_POWER);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_POWERS, actualAfhdsRunPower(moduleIdx), LEFT);
+        break;
+#endif
+
+#if defined(MULTIMODULE) || defined(AFHDS3)
 #if defined(HARDWARE_INTERNAL_MODULE)
     case ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS:
+#endif
+#if defined(AFHDS3)
+    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS:
 #endif
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS:
     {
       lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_STATUS);
 
       char statusText[64];
-      getMultiModuleStatus(moduleIdx).getStatusString(statusText);
+      getModuleStatusString(moduleIdx, statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
@@ -1755,12 +1817,22 @@ bool menuModelSetup(event_t event)
 #if defined(HARDWARE_INTERNAL_MODULE)
     case ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS:
 #endif
+#if defined(AFHDS3)
+    case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_POWER_STATUS:
+#endif
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS:
     {
-      lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_SYNC);
-
+#if defined(AFHDS3)
+      if (isModuleAFHDS3(moduleIdx)) {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_AFHDS3_POWER_SOURCE);
+      }
+      else
+#endif
+      {
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_SYNC);
+      }
       char statusText[64];
-      getMultiSyncStatus(moduleIdx).getRefreshString(statusText);
+      getModuleSyncStatusString(moduleIdx, statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
       break;
     }
@@ -1791,7 +1863,7 @@ bool menuModelSetup(event_t event)
           checkModelIdUnique(INTERNAL_MODULE);
           break;
 #endif
-        case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_BIND:
+        case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
           if (menuHorizontalPosition != 0)
             break;
         case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:

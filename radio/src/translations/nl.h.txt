@@ -686,6 +686,7 @@
 #define TR_VOLTAGE             TR(INDENT "Spg", INDENT "Spanningsbron")  //9XR-Pro
 #define TR_CURRENT             TR(INDENT "Stroom", INDENT "Stroombron")
 #define TR_SELECT_MODEL        "Kies Model"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY     "Create Category"
 #define TR_RENAME_CATEGORY     "Rename Category"
 #define TR_DELETE_CATEGORY     "Delete Category"
@@ -906,9 +907,9 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_SELECT_RX              "Select RX"
 #define TR_PXX2_DEFAULT                "<default>"
-#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BT_SELECT_DEVICE            "Select device"
 #define TR_DISCOVER             "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Waiting..."
@@ -941,6 +942,12 @@
 #define TR_UNIT                "Eenheid"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor toevoegen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanalen", INDENT "Uitgangs Kanalen")  //wg 9XR-Pro
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
+#define TR_RXFREQUENCY                 TR(INDENT "RX Freq.", INDENT "RX Frequency")
 #define TR_ANTENNACONFIRM1     "Antennes wisselen?"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"

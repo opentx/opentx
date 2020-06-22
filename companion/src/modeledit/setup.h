@@ -97,6 +97,7 @@ class ModulePanel : public ModelPanel
     void onFailsafeUsecChanged(int value);
     void onFailsafePercentChanged(double value);
     void onFailsafesDisplayValueTypeChanged(int type);
+    void onRfFreqChanged(int freq);
     void updateFailsafe(unsigned channel);
     void on_optionValue_editingFinished();
     void onClearAccessRxClicked();

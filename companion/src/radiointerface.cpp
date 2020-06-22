@@ -148,7 +148,7 @@ bool readFirmware(const QString & filename, ProgressWidget * progress)
     result = copyProcess.run();
   }
 
-  if (result == false) {
+  if (!result) {
     qDebug() << "readFirmware: reading" << filename << "with" << getRadioInterfaceCmd() << getReadFirmwareArgs(filename);
     FlashProcess flashProcess(getRadioInterfaceCmd(), getReadFirmwareArgs(filename), progress);
     result = flashProcess.run();

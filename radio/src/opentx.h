@@ -691,7 +691,7 @@ extern const char vers_stamp[];
  * @param buffer If non-null find the firmware version in the buffer instead
  * @return The opentx version string starting with "opentx-" or "no version found" if the version string is not found
  */
-const char * getOtherVersion(char * buffer);
+const char * getFirmwareVersion(const char * buffer = nullptr);
 
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
 

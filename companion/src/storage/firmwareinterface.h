@@ -39,7 +39,7 @@
 class FirmwareInterface
 {
   public:
-    FirmwareInterface(const QString &filename);
+    FirmwareInterface(const QString & filename);
     inline QString getDate() { return date; }
     inline QString getTime() { return time; }
     int getSize() { return flashSize; }

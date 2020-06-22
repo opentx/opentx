@@ -64,7 +64,7 @@ FirmwareInterface::FirmwareInterface(const QString & filename):
       // old version format
       int index = version.lastIndexOf('-');
       flavour = version.mid(0, index);
-      version = version.mid(index+1);
+      version = version.mid(index + 1);
     }
     date = seekLabel(DATE_MARK);
     time = seekLabel(TIME_MARK);

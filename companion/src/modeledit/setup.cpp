@@ -189,6 +189,8 @@ void TimerPanel::on_name_editingFinished()
 #define MASK_SBUSPPM_FIELDS (1<<11)
 #define MASK_SUBTYPES       (1<<12)
 #define MASK_ACCESS         (1<<13)
+#define MASK_RX_FREQ        (1<<14)
+#define MASK_RF_POWER       (1<<15)
 
 quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
 
@@ -268,7 +270,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   connect(ui->multiProtocol, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onMultiProtocolChanged);
   connect(this, &ModulePanel::channelsRangeChanged, this, &ModulePanel::setupFailsafes);
   connect(ui->btnGrpValueType, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &ModulePanel::onFailsafesDisplayValueTypeChanged);
-
+  connect(ui->rxFreq, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ModulePanel::onRfFreqChanged);
   connect(ui->clearRx1, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
   connect(ui->clearRx2, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
   connect(ui->clearRx3, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
@@ -388,7 +390,7 @@ void ModulePanel::update()
     mask |= MASK_PROTOCOL;
     switch (protocol) {
       case PULSES_PXX_R9M:
-        mask |= MASK_R9M | MASK_SUBTYPES;
+        mask |= MASK_R9M | MASK_RF_POWER | MASK_SUBTYPES;
       case PULSES_ACCESS_R9M:
       case PULSES_ACCESS_R9M_LITE:
       case PULSES_ACCESS_R9M_LITE_PRO:
@@ -446,6 +448,11 @@ void ModulePanel::update()
           mask |= MASK_MULTIOPTION;
         if (pdef.hasFailsafe || (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_FRSKY && (module.subType == 0 || module.subType == 2 || module.subType > 3 )))
           mask |= MASK_FAILSAFES;
+        break;
+      case PULSES_AFHDS3:
+        module.channelsCount = 18;
+        mask |= MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT | MASK_FAILSAFES;
+        mask |= MASK_SUBTYPES | MASK_RX_FREQ | MASK_RF_POWER;
         break;
       case PULSES_OFF:
         break;
@@ -513,16 +520,16 @@ void ModulePanel::update()
   }
 
   // R9M options
-  ui->r9mPower->setVisible(mask & MASK_R9M);
-  ui->label_r9mPower->setVisible(mask & MASK_R9M);
+  ui->r9mPower->setVisible(mask & MASK_RF_POWER);
+  ui->label_r9mPower->setVisible(mask & MASK_RF_POWER);
   ui->warning_r9mPower->setVisible((mask & MASK_R9M) && module.subType == MODULE_SUBTYPE_R9M_EU);
   ui->warning_r9mFlex->setVisible((mask & MASK_R9M) && module.subType > MODULE_SUBTYPE_R9M_EU);
 
-  if (mask & MASK_R9M) {
+  if (mask & MASK_RF_POWER) {
     const QSignalBlocker blocker(ui->r9mPower);
     ui->r9mPower->clear();
-    ui->r9mPower->addItems(ModuleData::powerValueStrings(module.subType, firmware));
-    ui->r9mPower->setCurrentIndex(module.pxx.power);
+    ui->r9mPower->addItems(ModuleData::powerValueStrings(protocol, module.subType, firmware));
+    ui->r9mPower->setCurrentIndex(mask & MASK_R9M ? module.pxx.power : module.afhds3.rfPower);
   }
 
   // module subtype
@@ -539,6 +546,9 @@ void ModulePanel::update()
       if (firmware->getCapability(HasModuleR9MFlex))
         i = 2;
       break;
+    case PULSES_AFHDS3:
+        numEntries = 4;
+        break;
     default:
       break;
     }
@@ -603,6 +613,8 @@ void ModulePanel::update()
   // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
   ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
+  //hide reciever mode for afhds3
+  qobject_cast<QListView *>(ui->failsafeMode->view())->setRowHidden(FAILSAFE_RECEIVER, protocol == PULSES_AFHDS3);
 
   if ((mask & MASK_FAILSAFES) && module.failsafeMode == FAILSAFE_CUSTOM) {
     if (ui->failsafesGroupBox->isHidden()) {
@@ -632,6 +644,9 @@ void ModulePanel::update()
       }
     }
   }
+
+  ui->label_rxFreq->setVisible((mask & MASK_RX_FREQ));
+  ui->rxFreq->setVisible((mask & MASK_RX_FREQ));
 }
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
@@ -663,9 +678,14 @@ void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
 
 void ModulePanel::on_r9mPower_currentIndexChanged(int index)
 {
-  if (!lock && module.pxx.power != (unsigned int)index) {
-    module.pxx.power = index;
-    emit modified();
+  if (!lock) {
+
+    if (module.protocol == PULSES_AFHDS3 && module.afhds3.rfPower != (unsigned int)index) {
+      module.afhds3.rfPower = index;
+      emit modified();
+    }
+    else if(module.pxx.power != (unsigned int)index)
+      module.pxx.power = index;
   }
 }
 
@@ -763,9 +783,18 @@ void ModulePanel::onSubTypeChanged()
   if (!lock && module.subType != type) {
     lock=true;
     module.subType = type;
-    update();
+    if (module.protocol != PULSES_AFHDS3) {
+      update();
+    }
     emit modified();
     lock =  false;
+  }
+}
+
+void ModulePanel::onRfFreqChanged(int freq) {
+  if (module.afhds3.rxFreq != (unsigned int)freq) {
+    module.afhds3.rxFreq = (unsigned int)freq;
+    emit modified();
   }
 }
 

@@ -77,7 +77,8 @@ options_taranis_x9d = {
     "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_x9dp = {
@@ -93,7 +94,8 @@ options_taranis_x9dp = {
     "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_x9lite = {
@@ -110,7 +112,8 @@ options_taranis_x9lite = {
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_xlite = {
@@ -124,7 +127,8 @@ options_taranis_xlite = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_xlites = {
@@ -140,7 +144,8 @@ options_taranis_xlites = {
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_x9e = {
@@ -156,7 +161,8 @@ options_taranis_x9e = {
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "horussticks": ("STICKS", "HORUS", "STANDARD"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_horus_x12s = {
@@ -170,7 +176,8 @@ options_horus_x12s = {
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "pcbdev": ("PCBREV", "10", None),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
-    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)],
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_horus_x10 = {
@@ -183,7 +190,8 @@ options_horus_x10 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
-    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)],
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_horus_x10express = {
@@ -196,7 +204,8 @@ options_horus_x10express = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_jumper_t12 = {
@@ -209,6 +218,7 @@ options_jumper_t12 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_jumper_t16 = {
@@ -222,6 +232,7 @@ options_jumper_t16 = {
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_radiomaster_tx16s = {
@@ -235,4 +246,5 @@ options_radiomaster_tx16s = {
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
     "internalgps": ("INTERNAL_GPS", "YES", "NO"),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
