@@ -127,9 +127,11 @@ constexpr uint8_t MIXER_MAX_PERIOD = 30 /*ms*/;
 
 void execMixerFrequentActions()
 {
-  DEBUG_TIMER_START(debugTimerTelemetryWakeup);
-  telemetryWakeup();
-  DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
+  if (!s_pulses_paused) {
+    DEBUG_TIMER_START(debugTimerTelemetryWakeup);
+    telemetryWakeup();
+    DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
+  }
 
 #if defined(SBUS_TRAINER)
   // SBUS trainer
