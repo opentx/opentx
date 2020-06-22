@@ -360,7 +360,6 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
     return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
   int webVersion = version2index(version);
-
   int ownVersion = version2index(VERSION);
 
   if (ownVersion < webVersion) {
@@ -1066,7 +1065,7 @@ void MainWindow::about()
   aboutStr.append("<br/><br/>");
   aboutStr.append(QString("Version %1, %2").arg(VERSION).arg(__DATE__));
   aboutStr.append("<br/><br/>");
-  aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2019<br/>");
+  aboutStr.append(tr("Copyright OpenTX Team") + QString("<br/>&copy; 2011-%1<br/>").arg(QString(__DATE__).right(4)));
   QMessageBox msgBox(this);
   msgBox.setWindowIcon(CompanionIcon("information.png"));
   msgBox.setWindowTitle(tr("About Companion"));

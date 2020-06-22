@@ -464,6 +464,7 @@ extern const char STR_BEEP_VOLUME[];
 extern const char STR_WAV_VOLUME[];
 extern const char STR_BG_VOLUME[];
 extern const char STR_SELECT_MODEL[];
+extern const char STR_SELECT_MODE[];
 extern const char STR_CREATE_CATEGORY[];
 extern const char STR_RENAME_CATEGORY[];
 extern const char STR_DELETE_CATEGORY[];
