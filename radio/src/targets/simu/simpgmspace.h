@@ -23,11 +23,16 @@
 
 #ifndef __GNUC__
 #include <windows.h>
+#include <intrin.h>
 #define sleep(x) Sleep(x)
 #define strcasecmp  _stricmp
 #define strncasecmp _tcsnicmp
 #define chdir  _chdir
 #define getcwd _getcwd
+inline int __builtin_clz(unsigned x)
+{
+    return (int)__lzcnt(x);
+}
 #else
 #include <unistd.h>
 #define sleep(x) usleep(1000*x)

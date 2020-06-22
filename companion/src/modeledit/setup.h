@@ -61,15 +61,17 @@ class ModulePanel : public ModelPanel
   Q_OBJECT
 
   public:
-    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
+    ModulePanel(QWidget * parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
     virtual ~ModulePanel();
     virtual void update();
 
   public slots:
     void onExtendedLimitsToggled();
+    void onFailsafeModified(unsigned index);
 
   signals:
     void channelsRangeChanged();
+    void failsafeModified(unsigned index);
 
   private slots:
     void setupFailsafes();
@@ -96,7 +98,7 @@ class ModulePanel : public ModelPanel
     void onFailsafePercentChanged(double value);
     void onFailsafesDisplayValueTypeChanged(int type);
     void onRfFreqChanged(int freq);
-    void updateFailsafe(int channel);
+    void updateFailsafe(unsigned channel);
     void on_optionValue_editingFinished();
     void onClearAccessRxClicked();
 
@@ -115,6 +117,7 @@ class ModulePanel : public ModelPanel
     Ui::Module *ui;
     QMap<int, ChannelFailsafeWidgetsGroup> failsafeGroupsMap;
     static quint8 failsafesValueDisplayType;  // FailsafeValueDisplayTypes
+    void updateFailsafeUI(unsigned channel, quint8 updtSb);
 };
 
 class SetupPanel : public ModelPanel

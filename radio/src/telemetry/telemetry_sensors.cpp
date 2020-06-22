@@ -499,7 +499,7 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
 {
   bool sensorFound = false;
 
-  for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
+  for (int index = 0; index < MAX_TELEMETRY_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.isSameInstance(protocol, instance) || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
@@ -721,4 +721,24 @@ int32_t TelemetrySensor::getPrecDivisor() const
   if (prec == 2) return 100;
   if (prec == 1) return 10;
   return 1;
+}
+
+bool TelemetrySensor::isSameInstance(TelemetryProtocol protocol, uint8_t instance)
+{
+  if (this->instance == instance)
+    return true;
+
+  if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+#if defined(SIMU)
+    if (((this->instance ^ instance) & 0x1F) == 0)
+      return true;
+#else
+    if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
+              this->instance = instance; // update the instance in case we had telemetry switching
+              return true;
+            }
+#endif
+  }
+
+  return false;
 }

@@ -53,10 +53,10 @@ protected:
   void analyseStandardError(const QString &text);
   void errorWizard();
   void addReadFuses();
-  ProgressWidget *progress;
+  ProgressWidget * progress;
   const QString cmd;
   const QStringList args;
-  QProcess *process;
+  QProcess * process;
   bool hasErrors;
   QString currStdoutLine;
   QString currStderrLine;

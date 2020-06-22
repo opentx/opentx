@@ -253,7 +253,6 @@ void resetAvrdudeFuses(bool eepromProtect, ProgressWidget * progress)
   }
 }
 
-
 bool readFirmware(const QString & filename, ProgressWidget * progress)
 {
   bool result = false;
@@ -274,7 +273,7 @@ bool readFirmware(const QString & filename, ProgressWidget * progress)
     }
   }
 
-  if (result == false) {
+  if (!result) {
     qDebug() << "readFirmware: reading" << filename << "with" << getRadioInterfaceCmd() << getReadFirmwareArgs(filename);
     FlashProcess flashProcess(getRadioInterfaceCmd(), getReadFirmwareArgs(filename), progress);
     result = flashProcess.run();

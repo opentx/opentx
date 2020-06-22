@@ -133,7 +133,8 @@ enum MultiModuleRFProtocols {
   MODULE_SUBTYPE_MULTI_ESKY150V2,
   MODULE_SUBTYPE_MULTI_DSM_RX,
   MODULE_SUBTYPE_MULTI_JJRC345,
-  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_JJRC345
+  MODULE_SUBTYPE_MULTI_Q90C,
+  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_Q90C
 };
 
 enum TrainerProtocol {
@@ -159,7 +160,11 @@ class ModuleData {
   Q_DECLARE_TR_FUNCTIONS(ModuleData)
 
   public:
-    ModuleData() { clear(); }
+    ModuleData()
+    {
+      clear();
+    }
+
     unsigned int modelId;
     unsigned int protocol;   // type in datastructs.h
     int          rfProtocol; // rfProtocol in datastructs.h
@@ -169,7 +174,6 @@ class ModuleData {
     unsigned int channelsStart;
     int          channelsCount; // 0=8 channels
     unsigned int failsafeMode;
-    int          failsafeChannels[CPN_MAX_CHNOUT];
 
     struct PPM {
       int delay;
