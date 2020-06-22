@@ -87,7 +87,7 @@
 #endif
 
 #define LEN_EXTERNAL_MODULE_PROTOCOLS  "\014"
-#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULTI\0      ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""R9MLP\0      ""R9MLP ACCESS""SBUS\0       ""XJT Lite"
+#define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULTI\0      ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""R9MLP\0      ""R9MLP ACCESS""SBUS\0       ""XJT Lite\0   ""AFHDS3"
 
 #define LEN_INTERNAL_MODULE_PROTOCOLS  LEN_EXTERNAL_MODULE_PROTOCOLS
 #define TR_INTERNAL_MODULE_PROTOCOLS   TR_EXTERNAL_MODULE_PROTOCOLS
@@ -129,3 +129,9 @@
 
 #define LEN_MULTI_POWER                "\005"
 #define TR_MULTI_POWER                 "10mW\0""25mW\0""50mW\0""100mW""200mW""300mW""500mW""1W\0  ""2W\0  "
+
+#define LEN_AFHDS3_PROTOCOLS           "\x008"
+#define TR_AFHDS3_PROTOCOLS            "PWM/IBUS""PWM/SBUS""PPM/IBUS""PPM/SBUS"
+
+#define LEN_AFHDS3_POWERS              "\006"
+#define TR_AFHDS3_POWERS               "25 mW\0""100 mW""500 mW""1 W\0  ""2 W\0  "

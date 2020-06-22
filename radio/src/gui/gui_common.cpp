@@ -551,6 +551,7 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
     case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_LITE_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
+    case MODULE_TYPE_AFHDS3:
       return false;
 
     case MODULE_TYPE_XJT_PXX1:
@@ -663,6 +664,11 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
+#if !defined(AFHDS3)
+  if (moduleType == MODULE_TYPE_AFHDS3)
+    return false;
+#endif
+
   return true;
 }
 
@@ -704,6 +710,12 @@ bool isTelemetryProtocolAvailable(int protocol)
 
 #if !defined(MULTIMODULE)
   if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM || protocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS || protocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
+    return false;
+  }
+#endif
+
+#if !defined(AFHDS3)
+  if (protocol == PROTOCOL_TELEMETRY_AFHDS3) {
     return false;
   }
 #endif

@@ -161,6 +161,17 @@ extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 extern const char STR_MULTI_PROTOCOLS[];
 extern const char STR_MULTI_POWER[];
+
+#if defined(AFHDS3)
+extern const char STR_AFHDS3_ONE_TO_ONE_TELEMETRY[];
+extern const char STR_AFHDS3_ONE_TO_MANY[];
+extern const char STR_AFHDS3_PROTOCOLS[];
+extern const char STR_AFHDS3_POWERS[];
+extern const char STR_AFHDS3_RX_FREQ[];
+extern const char STR_AFHDS3_ACTUAL_POWER[];
+extern const char STR_AFHDS3_POWER_SOURCE[];
+#endif
+
 extern const char STR_CURVE_TYPES[];
 extern const char STR_VSENSORTYPES[];
 extern const char STR_VFORMULAS[];
@@ -763,6 +774,7 @@ extern const char STR_BINDING_1_8_TELEM_OFF[];
 extern const char STR_BINDING_9_16_TELEM_ON[];
 extern const char STR_BINDING_9_16_TELEM_OFF[];
 extern const char STR_CHANNELRANGE[];
+extern const char STR_RXFREQUENCY[];
 extern const char STR_ANTENNASELECTION[];
 extern const char STR_ANTENNACONFIRM1[];
 extern const char STR_ANTENNACONFIRM2[];
