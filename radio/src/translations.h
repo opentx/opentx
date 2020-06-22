@@ -159,10 +159,8 @@ extern const char STR_XJT_ACCST_RF_PROTOCOLS[];
 extern const char STR_ISRM_RF_PROTOCOLS[];
 extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
-
-#if defined(MULTIMODULE)
 extern const char STR_MULTI_PROTOCOLS[];
-#endif
+extern const char STR_MULTI_POWER[];
 
 #if defined(AFHDS3)
 extern const char STR_AFHDS3_ONE_TO_ONE_TELEMETRY[];
@@ -305,6 +303,7 @@ extern const char STR_BLDELAY[];
 #if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 extern const char STR_BLONBRIGHTNESS[];
 extern const char STR_BLOFFBRIGHTNESS[];
+extern const char STR_KEYS_BACKLIGHT[];
 #endif
 
 extern const char STR_SPLASHSCREEN[];
@@ -399,6 +398,7 @@ extern const char STR_MULTI_FIXEDID[];
 extern const char STR_MULTI_OPTION[];
 extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
+extern const char STR_MULTI_RFPOWER[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
 extern const char STR_DISABLE_CH_MAP[];

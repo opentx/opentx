@@ -543,6 +543,7 @@
 #define TR_BLDELAY             INDENT"Czas trwania"
 #define TR_BLONBRIGHTNESS      INDENT"Jasnośc wł."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jasność wył."
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Logo ekranu"
 #define TR_PWR_ON_DELAY                "Pwr On delay"
@@ -648,6 +649,7 @@
   #define TR_RECEIVER_NUM      TR("Nr RX", "Nr odbiornika")
   #define TR_RECEIVER          INDENT "Receiver"
 #define TR_MULTI_RFTUNE        TR("Freq tune", "RF Freq. fine tune")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ       TR("Vid. freq.", "Video frequency")
 #define TR_RFPOWER       "RF Power"

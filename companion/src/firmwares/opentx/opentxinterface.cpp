@@ -62,6 +62,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Jumper T12";
     case BOARD_JUMPER_T16:
       return "OpenTX for Jumper T16";
+    case BOARD_JUMPER_T18:
+      return "OpenTX for Jumper T18";
     case BOARD_RADIOMASTER_TX16S:
       return "OpenTX for Radiomaster TX16S";
     case BOARD_TARANIS_X9D:
@@ -738,7 +740,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
           case PULSES_MULTIMODULE:
-            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board);
+            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board) || IS_JUMPER_T18(board);
           default:
             return false;
         }
@@ -1275,6 +1277,13 @@ void registerOpenTxFirmwares()
   static const Firmware::Option opt_internal_gps("internalgps", Firmware::tr("Support internal GPS"));
   firmware->addOptionsGroup({opt_bt, opt_internal_gps});
   registerOpenTxFirmware(firmware);
+
+  /* Jumper T18 board */
+  firmware = new OpenTxFirmware("opentx-t18", Firmware::tr("Jumper T18"), BOARD_JUMPER_T18);
+  addOpenTxFrskyOptions(firmware);
+  firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
+  registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);

@@ -525,6 +525,7 @@
 #define TR_BLDELAY             INDENT "Duur"
 #define TR_BLONBRIGHTNESS      INDENT "Aan-Helderheid"
 #define TR_BLOFFBRIGHTNESS     INDENT "Uit-Helderheid"
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR             INDENT "Kleur"
 #define TR_SPLASHSCREEN        "Startscherm Aan"
 #define TR_PWR_ON_DELAY                "Pwr On delay"
@@ -635,6 +636,7 @@
 #define TR_RECEIVER_NUM        TR("RxNum", "Receiver Nr.")
 #define TR_RECEIVER            "Receiver"
 #define TR_MULTI_RFTUNE        TR("Freq tune", "RF Freq. fine tune")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR("Vid. freq.", "Video frequency")
 #define TR_RFPOWER       "RF Power"

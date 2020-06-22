@@ -1639,6 +1639,7 @@
   #define BACKLIGHT_GPIO_PinSource      GPIO_PinSource8
   #define BACKLIGHT_GPIO_AF             GPIO_AF_TIM10
 #endif
+#define KEYS_BACKLIGHT_RCC_AHB1Periph        0
 
 // LCD driver
 #if defined(PCBX9E)

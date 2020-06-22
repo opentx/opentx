@@ -666,6 +666,10 @@ inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
       min = -1;
       max = 84;
       break;
+    case MODULE_SUBTYPE_MULTI_FRSKY_R9:
+      min = 0;  // 10mW
+      max = 5;  // 300mW
+      break;
     default:
       min = -128;
       max = 127;

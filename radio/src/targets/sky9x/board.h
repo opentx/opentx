@@ -377,6 +377,7 @@ void pwrOn();
 uint32_t pwrCheck();
 bool pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
+#define pwrForcePressed()              (false)
 
 // EEPROM driver
 #define EEPROM_SIZE           (4*1024*1024/8)

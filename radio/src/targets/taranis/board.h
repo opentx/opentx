@@ -648,6 +648,7 @@ bool pwrPressed();
 uint32_t pwrPressedDuration();
 #endif
 void pwrResetHandler();
+#define pwrForcePressed()   false
 
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()           false

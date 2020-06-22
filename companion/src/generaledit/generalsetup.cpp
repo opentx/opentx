@@ -197,6 +197,12 @@ ui(new Ui::GeneralSetup)
     ui->label_OFFBright->hide();
   }
 
+  if (!IS_JUMPER_T18(firmware->getBoard())) {
+    ui->keysBl_ChkB->hide();
+    ui->keysBl_ChkB->setDisabled(true);
+    ui->label_KeysBl->hide();
+  }
+
   if (!firmware->getCapability(SoundMod)) {
     ui->soundModeCB->setDisabled(true);
     ui->label_soundMode->hide();

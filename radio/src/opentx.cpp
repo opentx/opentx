@@ -2073,6 +2073,10 @@ int main()
 
 inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 {
+  // Instant off when both power button are pressed
+  if (pwrForcePressed())
+    return 0;
+
   return (2 - g_eeGeneral.pwrOffSpeed) * 100;
 }
 
