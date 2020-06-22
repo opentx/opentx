@@ -36,7 +36,6 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   timer(timer),
   ui(new Ui::Timer)
 {
-  Board::Type board = firmware->getBoard();
 
   ui->setupUi(this);
 
@@ -65,10 +64,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->countdownBeep->setField(timer.countdownBeep, this);
   ui->countdownBeep->addItem(tr("Silent"), TimerData::COUNTDOWN_SILENT);
   ui->countdownBeep->addItem(tr("Beeps"), TimerData::COUNTDOWN_BEEPS);
-  if (IS_ARM(board) || IS_2560(board)) {
-    ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
-    ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
-  }
+  ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
+  ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
 
   ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
@@ -1205,13 +1202,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->potWarningMode->hide();
   }
 
-  if (IS_ARM(board)) {
-    ui->trimsDisplay->setField(model.trimsDisplay, this);
-  }
-  else {
-    ui->labelTrimsDisplay->hide();
-    ui->trimsDisplay->hide();
-  }
+  ui->trimsDisplay->setField(model.trimsDisplay, this);
 
   for (int i = firmware->getCapability(NumFirstUsableModule); i < firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);

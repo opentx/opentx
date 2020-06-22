@@ -721,13 +721,7 @@ class FlightModeField: public TransformedField {
             trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
           else
             trim = std::max(-500, std::min(500, phase.trim[i]));
-          if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215)) {
-            trimBase[i] = trim >> 2;
-            trimExt[i] = (trim & 0x03);
-          }
-          else {
-            trimBase[i] = trim;
-          }
+          trimBase[i] = trim;
         }
       }
     }
@@ -751,11 +745,7 @@ class FlightModeField: public TransformedField {
             phase.trim[i] = 0;
           }
           else {
-            int trim;
-            if (board == BOARD_9X_M64 || (board == BOARD_9X_M128 && version >= 215))
-              trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
-            else
-              trim = trimBase[i];
+            int trim = trimBase[i];
             if (trim > 500) {
               phase.trimRef[i] = trim - 501;
               if (phase.trimRef[i] >= index)

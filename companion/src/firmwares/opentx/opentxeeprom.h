@@ -37,9 +37,6 @@
 #define TARANIS_X9LITES_VARIANT        0x0801
 #define JUMPER_T12_VARIANT             0x4001
 
-#define SIMU_STOCK_VARIANTS            (GVARS_VARIANT|FRSKY_VARIANT)
-#define SIMU_M128_VARIANTS             (M128_VARIANT|SIMU_STOCK_VARIANTS)
-
 class OpenTxGeneralData: public TransformedField {
   public:
     OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant=0);

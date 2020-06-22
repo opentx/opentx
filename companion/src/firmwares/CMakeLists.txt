@@ -19,8 +19,6 @@ set(firmwares_SRCS
   sensordata.cpp
   telem_data.cpp
   afhds3.cpp
-  er9x/er9xeeprom.cpp
-  er9x/er9xinterface.cpp
   ersky9x/ersky9xeeprom.cpp
   ersky9x/ersky9xinterface.cpp
   opentx/opentxeeprom.cpp

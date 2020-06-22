@@ -159,10 +159,6 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_RESERVE = -1
 };
 
-#define TM_HASTELEMETRY     0x01
-#define TM_HASOFFSET        0x02
-#define TM_HASWSHH          0x04
-
 enum RawSourceType {
   SOURCE_TYPE_NONE,
   SOURCE_TYPE_VIRTUAL_INPUT,

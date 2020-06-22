@@ -65,7 +65,7 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   s1.report("LS");
   addTab(new CustomFunctionsPanel(this, &radioData.models[modelId], radioData.generalSettings, firmware), tr("Special Functions"));
   s1.report("CF");
-  if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY)
+  if (firmware->getCapability(Telemetry))
     addTab(new TelemetryPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Telemetry"));
 
   onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
