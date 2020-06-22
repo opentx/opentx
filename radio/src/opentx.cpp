@@ -2073,11 +2073,10 @@ int main()
 
 inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 {
-#if defined(PWR_EXTRA_SWITCH_GPIO)
   // Instant off when both power button are pressed
   if (pwrForcePressed())
     return 0;
-#endif
+
   return (2 - g_eeGeneral.pwrOffSpeed) * 100;
 }
 
