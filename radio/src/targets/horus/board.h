@@ -492,7 +492,13 @@ void pwrOn();
 void pwrOff();
 void pwrResetHandler();
 bool pwrPressed();
-bool pwrForcePressed();
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  bool pwrForcePressed();
+#else
+  inline bool pwrForcePressed() {
+    return false;
+  }
+#endif
 uint32_t pwrPressedDuration();
 
 // USB Charger

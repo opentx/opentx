@@ -228,6 +228,9 @@ uint32_t readTrims();
 #define NUM_TRIMS_KEYS                 (NUM_TRIMS * 2)
 #define TRIMS_PRESSED()                readTrims()
 #define KEYS_PRESSED()                 readKeys()
+inline bool pwrForcePressed() {
+  return false;
+}
 
 // Pulses driver
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
