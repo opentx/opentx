@@ -495,10 +495,7 @@ bool pwrPressed();
 #if defined(PWR_EXTRA_SWITCH_GPIO)
   bool pwrForcePressed();
 #else
-  inline bool pwrForcePressed()
-  {
-    return false;
-  }
+  #define pwrForcePressed() false
 #endif
 uint32_t pwrPressedDuration();
 
