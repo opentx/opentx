@@ -495,7 +495,8 @@ bool pwrPressed();
 #if defined(PWR_EXTRA_SWITCH_GPIO)
   bool pwrForcePressed();
 #else
-  inline bool pwrForcePressed() {
+  inline bool pwrForcePressed()
+  {
     return false;
   }
 #endif
