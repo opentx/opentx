@@ -341,7 +341,7 @@ void PulsesData::putFrame(COMMAND command, FRAME_TYPE frame, uint8_t* data, uint
   if (frameIndex == nullptr) {
     frameIndex = &this->frame_index;
   }
-  uint8_t buffer[] = { FrameAddress, *frameIndex, frame, command };
+  uint8_t buffer[] = {FrameAddress, *frameIndex, static_cast<uint8_t>(frame), static_cast<uint8_t>(command)};
   putBytes(buffer, 4);
 
   //payload
