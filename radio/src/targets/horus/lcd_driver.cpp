@@ -156,11 +156,13 @@ static void lcd_reset(void)
   NRST_HIGH();
   delay3(1);
 
+#if !defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
   NRST_LOW(); //  RESET();
   delay3(20);
 
   NRST_HIGH();
   delay3(30);
+#endif
 }
 
 void LCD_Init_LTDC(void)
@@ -326,11 +328,7 @@ void LCD_Init(void)
 {
   /* Reset the LCD --------------------------------------------------------*/
   LCD_NRSTConfig();
-#if defined(RADIO_T18)  // T18 seems to have eractic display issue if NRST is ever driven low
-  NRST_HIGH();
-#else
   lcd_reset();
-#endif
 
   /* Configure the LCD Control pins */
   LCD_AF_GPIOConfig();
