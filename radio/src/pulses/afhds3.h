@@ -43,7 +43,7 @@
 // 1s = 1 000 000 us
 // 1000000/115200 = 8,68 us
 // actual timer is ticking in 0,5 us  = 8,68*2 = 17,36 because it must be integer take 17
-// difference 1000000 / x = 8.5 -->  x = 117�647 = difference = 1.2 %
+// difference 1000000 / x = 8.5 -->  x = 117 647 = difference = 1.2 %
 // allowed half a bit difference on the last bit -- should be fine
 #define AFHDS3_BAUDRATE        115200
 //Because timer is ticking with 0.5us
