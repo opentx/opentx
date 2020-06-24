@@ -239,7 +239,7 @@ void onDeleteModelConfirm(const char * result)
   }
 }
 
-bool isModelOff() {
+bool confirmModelChange() {
   if (TELEMETRY_STREAMING()) {
     RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
     while (TELEMETRY_STREAMING()) {
@@ -260,18 +260,19 @@ bool isModelOff() {
 void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
-    if (isModelOff() && !g_eeGeneral.disableRssiPoweroffAlarm) {
-      // we store the latest changes if any
-      storageFlushCurrentModel();
-      storageCheck(true);
-      memcpy(g_eeGeneral.currModelFilename, currentModel->modelFilename, LEN_MODEL_FILENAME);
-      modelslist.setCurrentModel(currentModel);
-      modelslist.setCurrentCategory(currentCategory);
-      loadModel(g_eeGeneral.currModelFilename, true);
-      storageDirty(EE_GENERAL);
-      storageCheck(true);
-      chainMenu(menuMainView);
+    if (!g_eeGeneral.disableRssiPoweroffAlarm) {
+      if (!confirmModelChange()) return;
     }
+    // we store the latest changes if any
+    storageFlushCurrentModel();
+    storageCheck(true);
+    memcpy(g_eeGeneral.currModelFilename, currentModel->modelFilename, LEN_MODEL_FILENAME);
+    modelslist.setCurrentModel(currentModel);
+    modelslist.setCurrentCategory(currentCategory);
+    loadModel(g_eeGeneral.currModelFilename, true);
+    storageDirty(EE_GENERAL);
+    storageCheck(true);
+    chainMenu(menuMainView);
   }
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL, onDeleteModelConfirm);
@@ -279,18 +280,19 @@ void onModelSelectMenu(const char * result)
     deleteMode = MODE_DELETE_MODEL;
   }
   else if (result == STR_CREATE_MODEL) {
-    if (isModelOff() && !g_eeGeneral.disableRssiPoweroffAlarm) {
-      storageCheck(true);
-      modelslist.addModel(currentCategory, createModel());
-      selectMode = MODE_SELECT_MODEL;
-      setCurrentModel(currentCategory->size() - 1);
-      modelslist.setCurrentModel(currentModel);
-      modelslist.setCurrentCategory(currentCategory);
-      modelslist.onNewModelCreated(currentModel, &g_model);
-#if defined(LUA)
-      chainMenu(menuModelWizard);
-#endif
+    if (!g_eeGeneral.disableRssiPoweroffAlarm) {
+      if (!confirmModelChange()) return;
     }
+    storageCheck(true);
+    modelslist.addModel(currentCategory, createModel());
+    selectMode = MODE_SELECT_MODEL;
+    setCurrentModel(currentCategory->size() - 1);
+    modelslist.setCurrentModel(currentModel);
+    modelslist.setCurrentCategory(currentCategory);
+    modelslist.onNewModelCreated(currentModel, &g_model);
+#if defined(LUA)
+    chainMenu(menuModelWizard);
+#endif
   }
   else if (result == STR_DUPLICATE_MODEL) {
     char duplicatedFilename[LEN_MODEL_FILENAME+1];
