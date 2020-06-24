@@ -176,7 +176,7 @@ enum DeviceAddress
   MODULE = 0x03,
 };
 
-enum FRAME_TYPE:uint8_t
+enum FRAME_TYPE: uint8_t
 {
   REQUEST_GET_DATA = 0x01,  //Get data response: ACK + DATA
   REQUEST_SET_EXPECT_DATA = 0x02,  //Set data response: ACK + DATA
@@ -187,7 +187,7 @@ enum FRAME_TYPE:uint8_t
   NOT_USED = 0xff
 };
 
-enum COMMAND:uint8_t
+enum COMMAND: uint8_t
 {
   MODULE_READY = 0x01,
   MODULE_STATE = 0x02,
