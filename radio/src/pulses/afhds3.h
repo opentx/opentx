@@ -43,7 +43,7 @@
 // 1s = 1 000 000 us
 // 1000000/115200 = 8,68 us
 // actual timer is ticking in 0,5 us  = 8,68*2 = 17,36 because it must be integer take 17
-// difference 1000000 / x = 8.5 -->  x = 117 647 = difference = 1.2 %
+// difference 1000000 / x = 8.5 -->  x = 117ï¿½647 = difference = 1.2 %
 // allowed half a bit difference on the last bit -- should be fine
 #define AFHDS3_BAUDRATE        115200
 //Because timer is ticking with 0.5us
@@ -176,7 +176,7 @@ enum DeviceAddress
   MODULE = 0x03,
 };
 
-enum FRAME_TYPE
+enum FRAME_TYPE:uint8_t
 {
   REQUEST_GET_DATA = 0x01,  //Get data response: ACK + DATA
   REQUEST_SET_EXPECT_DATA = 0x02,  //Set data response: ACK + DATA
@@ -187,7 +187,7 @@ enum FRAME_TYPE
   NOT_USED = 0xff
 };
 
-enum COMMAND
+enum COMMAND:uint8_t
 {
   MODULE_READY = 0x01,
   MODULE_STATE = 0x02,
