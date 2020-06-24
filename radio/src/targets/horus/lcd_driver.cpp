@@ -153,10 +153,12 @@ static void delay3(uint32_t nCount)
 
 static void lcd_reset(void)
 {
+#if defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
+  NRST_HIGH();
+#else
   NRST_HIGH();
   delay3(1);
 
-#if !defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
   NRST_LOW(); //  RESET();
   delay3(20);
 
