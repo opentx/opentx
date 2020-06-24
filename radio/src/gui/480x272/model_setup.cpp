@@ -1801,13 +1801,15 @@ bool menuModelSetup(event_t event)
 #endif
 
 #if defined(MULTIMODULE) || defined(AFHDS3)
-#if defined(HARDWARE_INTERNAL_MODULE)
+#if defined(MULTIMODULE) && defined(HARDWARE_INTERNAL_MODULE)
     case ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS:
 #endif
 #if defined(AFHDS3)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_STATUS:
 #endif
+#if defined(MULTIMODULE)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS:
+#endif
     {
       lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_STATUS);
 
@@ -1817,13 +1819,15 @@ bool menuModelSetup(event_t event)
       break;
     }
 
-#if defined(HARDWARE_INTERNAL_MODULE)
+#if defined(MULTIMODULE) && defined(HARDWARE_INTERNAL_MODULE)
     case ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS:
 #endif
 #if defined(AFHDS3)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_POWER_STATUS:
 #endif
+#if defined(MULTIMODULE)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS:
+#endif
     {
 #if defined(AFHDS3)
       if (isModuleAFHDS3(moduleIdx)) {
