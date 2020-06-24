@@ -76,13 +76,21 @@ boards = {
         "SBUS": "NO",
         "DEFAULT_MODE": "2",
     },
-    "X9D+": {
+    "X9D+2019": {
         "PCB": "X9D+",
         "PCBREV": "2019",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",
         "AUTOUPDATE": "YES",
         "PXX1": "YES",
+        "MULTIMODULE": "NO",
+        "CROSSFIRE": "NO",
+        "DEFAULT_MODE": "2",
+    },
+    "X9D+": {
+        "PCB": "X9D+",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
         "MULTIMODULE": "NO",
         "CROSSFIRE": "NO",
         "DEFAULT_MODE": "2",
