@@ -732,13 +732,6 @@ PACK(struct TrainerData {
   #define BUZZER_FIELD int8_t spare4:2
 #endif
 
-#if defined(KEYS_BACKLIGHT_GPIO)
-  #define KEYS_BACKLIGHT    uint8_t keysBacklight:1;
-  #define SPARE1            int8_t spare1:1;
-#else
-  #define KEYS_BACKLIGHT
-  #define SPARE1            int8_t spare1:2;
-#endif
 
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
@@ -752,8 +745,8 @@ PACK(struct RadioData {
   uint8_t backlightMode:3;
   int8_t antennaMode:2;
   uint8_t disableRtcWarning:1;
-  KEYS_BACKLIGHT
-  SPARE1
+  uint8_t keysBacklight:1;
+  int8_t spare1:1;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */
