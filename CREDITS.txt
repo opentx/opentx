@@ -8,6 +8,7 @@ Romolo Manfredini (romoloman)
 Martin Hotař (mhotar)
 Maxim (Max) Paperno (mpaperno)
 Arne Schwabe (schwabe)
+Daniel Gorbea (dgatf)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
@@ -1773,3 +1774,4 @@ Alan Powell
 Martin Eriksson
 Wayne J Podaima
 Tom Wilkinson
+Fred Ceratt
