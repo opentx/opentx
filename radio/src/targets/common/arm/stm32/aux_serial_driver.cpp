@@ -101,11 +101,12 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
 #if defined(CROSSFIRE)
       if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
         auxSerialSetup(CROSSFIRE_TELEM_MIRROR_BAUDRATE, false);
-        AUX_SERIAL_POWER_OFF();
+        AUX_SERIAL_POWER_ON();
         break;
       }
 #endif
       auxSerialSetup(FRSKY_TELEM_MIRROR_BAUDRATE, false);
+      AUX_SERIAL_POWER_ON();
       break;
 
 #if defined(DEBUG) || defined(CLI)
@@ -118,7 +119,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
         auxSerialSetup(FRSKY_D_BAUDRATE, true);
-        AUX_SERIAL_POWER_OFF();
+        AUX_SERIAL_POWER_ON();
       }
       break;
 
@@ -292,12 +293,12 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
 #if defined(CROSSFIRE)
       if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
         aux2SerialSetup(CROSSFIRE_TELEM_MIRROR_BAUDRATE, false);
-        AUX2_SERIAL_POWER_OFF();
+        AUX2_SERIAL_POWER_ON();
         break;
       }
 #endif
       aux2SerialSetup(FRSKY_TELEM_MIRROR_BAUDRATE, false);
-      AUX2_SERIAL_POWER_OFF();
+      AUX2_SERIAL_POWER_ON();
       break;
 
 #if defined(DEBUG) || defined(CLI)
@@ -310,7 +311,7 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
         aux2SerialSetup(FRSKY_D_BAUDRATE, true);
-        AUX2_SERIAL_POWER_OFF();
+        AUX2_SERIAL_POWER_ON();
       }
       break;
 
