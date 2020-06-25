@@ -678,6 +678,7 @@ inline int calcRESXto100(int x)
 
 
 #if defined(COLORLCD)
+extern const char fw_stamp[];
 extern const char vers_stamp[];
 extern const char date_stamp[];
 extern const char time_stamp[];

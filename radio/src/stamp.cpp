@@ -45,6 +45,7 @@
 #endif
 
 #if defined(COLORLCD)
+  const char fw_stamp[]    =   "FW" TAB ": opentx-" FLAVOUR;
   const char vers_stamp[]  =   "VERS" TAB ": " VERSION DISPLAY_VERSION " (" GIT_STR ")";
   const char date_stamp[]  =   "DATE" TAB ": " DATE;
   const char time_stamp[]  =   "TIME" TAB ": " TIME;
