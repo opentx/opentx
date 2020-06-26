@@ -71,10 +71,10 @@ options_taranis_x9d = {
     "haptic": ("HAPTIC", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
+    "noras": ("RAS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "afhds3": ("AFHDS3", "YES", "NO")
@@ -90,7 +90,6 @@ options_taranis_x9dp = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "afhds3": ("AFHDS3", "YES", "NO")
@@ -101,11 +100,9 @@ options_taranis_x7 = {
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
-    "noras": ("RAS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
 }
@@ -115,15 +112,11 @@ options_taranis_x9lite = {
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
     "nogvars": ("GVARS", "NO", "YES"),
-    "autoupdate": ("AUTOUPDATE", "YES", None),
     "sqt5font": ("FONT", "SQT5", None),
-    "noras": ("RAS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "afhds3": ("AFHDS3", "YES", "NO")
 }
@@ -137,7 +130,6 @@ options_taranis_xlite = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "afhds3": ("AFHDS3", "YES", "NO")
@@ -148,14 +140,11 @@ options_taranis_xlites = {
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
     "nogvars": ("GVARS", "NO", "YES"),
-    "autoupdate": ("AUTOUPDATE", "YES", None),
     "sqt5font": ("FONT", "SQT5", None),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "afhds3": ("AFHDS3", "YES", "NO")
 }
