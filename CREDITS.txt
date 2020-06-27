@@ -1778,3 +1778,6 @@ Fred Ceratt
 Stefan Grunenberg
 Aram Parsamyan
 Wolfgang Rauser
+John Wall
+Martin Haggas
+Denis Kelly
