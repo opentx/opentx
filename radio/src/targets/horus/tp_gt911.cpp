@@ -277,7 +277,7 @@ static void TOUCH_AF_GPIOConfig(void)
   GPIO_ResetBits(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN);
 }
 
-void GT911_INT_Change(void)
+void TOPUCH_AF_INT_Change(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -289,7 +289,7 @@ void GT911_INT_Change(void)
   GPIO_Init(TOUCH_INT_GPIO, &GPIO_InitStructure);
 }
 
-void i2cInit()
+void I2C_Init()
 {
   I2C_DeInit(I2C);
 
@@ -315,7 +315,6 @@ void i2cInit()
   GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
 }
 
-#define I2C_TIMEOUT_MAX 1000
 bool I2C_WaitEvent(uint32_t event)
 {
   uint32_t timeout = I2C_TIMEOUT_MAX;
@@ -435,14 +434,14 @@ void touchPanelDeInit(void)
   TOUCH_AF_ExtiStop();
 }
 
-bool TouchInit(void)
+bool touchPanelInit(void)
 {
   uint8_t tmp[4] = {0};
 
   TRACE("Touchpanel init start ...");
 
   TOUCH_AF_GPIOConfig(); //SET RST=OUT INT=OUT INT=LOW
-  i2cInit();
+  I2C_Init();
 
   TPRST_LOW();
   TPINT_HIGH();
@@ -454,7 +453,7 @@ bool TouchInit(void)
   TPINT_LOW();
   delay_ms(55);
 
-  GT911_INT_Change();  //Set INT INPUT INT=LOW
+  TOPUCH_AF_INT_Change();  //Set INT INPUT INT=LOW
 
   delay_ms(50);
 

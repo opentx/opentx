@@ -209,7 +209,7 @@ void boardInit()
 #endif
 
 #if defined(HARDWARE_TOUCH)
-  TouchInit();
+  touchPanelInit();
 #endif
 
   ledInit();
