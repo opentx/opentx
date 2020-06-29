@@ -866,7 +866,7 @@ const char STR_SUBTYPE_FLYSKY[] =     "\004""Std\0""V9x9""V6x6""V912""CX20";
 const char STR_SUBTYPE_HUBSAN[] =     "\004""H107""H301""H501";
 const char STR_SUBTYPE_FRSKY[] =      "\011""D16\0     ""D8\0      ""D16 8ch\0 ""V8\0      ""LBT(EU)\0 ""LBT 8ch\0 ""D8Cloned\0""D16Cloned";
 const char STR_SUBTYPE_HISKY[] =      "\005""Std\0 ""HK310";
-const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506";
+const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506""MR101\0";
 const char STR_SUBTYPE_DSM[] =        "\006""2 22ms""2 11ms""X 22ms""X 11ms";
 const char STR_SUBTYPE_DEVO[] =       "\004""8ch\0""10ch""12ch""6ch\0""7ch\0";
 const char STR_SUBTYPE_YD717[] =      "\007""Std\0   ""SkyWlkr""Syma X4""XINXUN\0""NIHUI\0 ";
@@ -896,6 +896,7 @@ const char STR_SUBTYPE_TRAXXAS[] =    "\004""6519";
 const char STR_SUBTYPE_E01X[] =       "\005""E012\0""E015\0""E016H";
 const char STR_SUBTYPE_V911S[] =      "\004""Std\0""E119";
 const char STR_SUBTYPE_GD00X[] =      "\005""GD_V1""GD_V2";
+const char STR_SUBTYPE_V761[] =       "\003""3ch""4ch";
 const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
@@ -905,7 +906,7 @@ const char STR_SUBTYPE_HOTT[] =       "\007""Sync\0  ""No_Sync";
 const char STR_SUBTYPE_FX816[] =      "\003""P38";
 const char STR_SUBTYPE_PELIKAN[] =    "\004""Pro\0""Lite";
 const char STR_SUBTYPE_XK[] =         "\004""X450""X420";
-const char STR_SUBTYPE_XN297DUMP[] =  "\004""250K""1M\0 ""2M\0 ""AUTO";
+const char STR_SUBTYPE_XN297DUMP[] =  "\004""250K""1M\0 ""2M\0 ""AUTO""NRF\0";
 const char STR_SUBTYPE_FRSKYX2[] =    "\011""D16\0     ""D16 8ch\0 ""LBT(EU)\0 ""LBT 8ch\0 ""D16Cloned";
 const char STR_SUBTYPE_FRSKYR9[] =    "\007""915MHz\0""868MHz\0""915 8ch""868 8ch";
 const char STR_SUBTYPE_PROPEL[] =     "\004""74-Z";
@@ -931,7 +932,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_HUBSAN,     2, false, false,  STR_SUBTYPE_HUBSAN,    STR_MULTI_VIDFREQ},
   {MODULE_SUBTYPE_MULTI_FRSKY,      7, false, false,  STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HISKY,      1, false, true,   STR_SUBTYPE_HISKY,     nullptr},
-  {MODULE_SUBTYPE_MULTI_V2X2,       1, false, false,  STR_SUBTYPE_V2X2,      nullptr},
+  {MODULE_SUBTYPE_MULTI_V2X2,       2, false, false,  STR_SUBTYPE_V2X2,      nullptr},
   {MODULE_SUBTYPE_MULTI_DSM2,       3, false, true,   STR_SUBTYPE_DSM,       STR_MULTI_MAX_THROW},
   {MODULE_SUBTYPE_MULTI_DEVO,       4, false, true,   STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
   {MODULE_SUBTYPE_MULTI_YD717,      4, false, false,  STR_SUBTYPE_YD717,     nullptr},
@@ -964,6 +965,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_E01X,       2, false, false,  STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_V911S,      1, false, false,  STR_SUBTYPE_V911S,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false, false,  STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_V761,       1, false, false,  STR_SUBTYPE_V761,      nullptr},
   {MODULE_SUBTYPE_MULTI_KF606,      0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false, false,  STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false, false,  STR_SUBTYPE_POTENSIC,  nullptr},
@@ -974,7 +976,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FX816,      0, false, false,  STR_SUBTYPE_FX816,     nullptr},
   {MODULE_SUBTYPE_MULTI_PELIKAN,    1, false, false,  STR_SUBTYPE_PELIKAN,   nullptr},
   {MODULE_SUBTYPE_MULTI_XK,         1, false, false,  STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_XN297DUMP,  3, false, false,  STR_SUBTYPE_XN297DUMP, STR_MULTI_RFCHAN},
+  {MODULE_SUBTYPE_MULTI_XN297DUMP,  4, false, false,  STR_SUBTYPE_XN297DUMP, STR_MULTI_RFCHAN},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    4, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FRSKY_R9,   3, true,  false,  STR_SUBTYPE_FRSKYR9,   nullptr},
   {MODULE_SUBTYPE_MULTI_PROPEL,     0, false, false,  STR_SUBTYPE_PROPEL,    nullptr},
