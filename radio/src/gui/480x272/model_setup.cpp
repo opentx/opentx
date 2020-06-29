@@ -1783,9 +1783,11 @@ bool menuModelSetup(event_t event)
         uint8_t value = (g_model.moduleData[moduleIdx].multi.optionValue & 0x02) >> 1;
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MULTI_SERVOFREQ);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, value ? 11 : 22, attr, 0, "", "ms");
-        CHECK_INCDEC_MODELVAR(event, value, 0, 1);
-        if (attr && checkIncDec_Ret) {
-          g_model.moduleData[moduleIdx].multi.optionValue = (g_model.moduleData[moduleIdx].multi.optionValue & 0xFD) + (value << 1);
+        if (attr) {
+          CHECK_INCDEC_MODELVAR(event, value, 0, 1);
+          if (checkIncDec_Ret) {
+            g_model.moduleData[moduleIdx].multi.optionValue = (g_model.moduleData[moduleIdx].multi.optionValue & 0xFD) + (value << 1);
+          }
         }
       }
       else {
