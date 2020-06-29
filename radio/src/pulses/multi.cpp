@@ -318,7 +318,7 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
       optionValue = 0x80; // Max throw
     else
       optionValue = 0x00;
-    if (optionValue & 0x02)
+    if (g_model.moduleData[moduleIdx].multi.optionValue & 0x02)
       optionValue |= 0x40; // 11ms servo refresh
     optionValue |= sentModuleChannels(moduleIdx); //add number of channels
   }
