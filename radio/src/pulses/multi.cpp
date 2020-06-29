@@ -313,15 +313,14 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 
   // rfProtocol
   if (type == MODULE_SUBTYPE_MULTI_DSM2 +1 ) {
-    // Autobinding should always be done in DSMX 11ms
-    if (g_model.moduleData[moduleIdx].multi.autoBindMode && moduleState[moduleIdx].mode == MODULE_MODE_BIND)
-      subtype = MM_RF_DSM2_SUBTYPE_AUTO;
-
-    // Multi module in DSM mode wants the number of channels to be used as option value
-    if (optionValue)
-      optionValue = 0x80 | sentModuleChannels(moduleIdx); // Max throw
+    // Multi module in DSM mode wants the number of channels to be used as option value along with other flags
+    if (optionValue & 0x01)
+      optionValue = 0x80; // Max throw
     else
-      optionValue = sentModuleChannels(moduleIdx);
+      optionValue = 0x00;
+    if (optionValue & 0x02)
+      optionValue |= 0x40; // 11ms servo refresh
+    optionValue |= sentModuleChannels(moduleIdx); //add number of channels
   }
 
   // Special treatment for the FrSky entry...
@@ -335,7 +334,6 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
   // For custom protocol send unmodified type byte
   if (g_model.moduleData[moduleIdx].getMultiProtocol() == MM_RF_CUSTOM_SELECTED)
     type = g_model.moduleData[moduleIdx].getMultiProtocol();
-
 
   uint8_t headerByte = 0x55;
   // header, byte 0,  0x55 for proto 0-31, 0x54 for proto 32-63

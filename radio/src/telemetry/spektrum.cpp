@@ -468,17 +468,17 @@ void processSpektrumPacket(const uint8_t *packet)
 // "I"  here means the multi module
 
 /*
-0-3   4 bytes -> Cyrf ID of the TX xor 0xFF but you don't care as I've checked it already...
-4     1 byte -> RX version but you don't care...
+0-3   4 bytes -> Cyrf ID of the TX xor 0xFF but don't care...
+4     1 byte -> RX version but don't care...
 5     1 byte -> number of channels, example 0x06=6 channels
 6     1 byte -> max DSM type allowed:
-        0x01 => 22ms 1024 DSM2 1 packet => number of channels is <8 and no telemetry
-        0x02 => 22ms 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
-        0x12 => 11ms 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
-        0xa2 => 22ms 2048 DSMX 1 packet => number of channels is <8 and no telemetry
-        0xb2 => 11ms 2048 DSMX => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
+        0x01 => 1024 DSM2 1 packet => number of channels is <8 and no telemetry
+        0x02 => 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
+        0x12 => 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
+        0xa2 => 2048 DSMX 1 packet => number of channels is <8 and no telemetry
+        0xb2 => 2048 DSMX 2 packets => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
 7     0x00: not sure of the use of this byte since I've always seen it at 0...
-8-9   2 bytes CRC but you don't care as I've checked it already...
+8-9   2 bytes CRC but don't care...
 
  Examples:           DSM   #Chan  RXver
  Inductrix           0xa2   07     1
@@ -488,23 +488,31 @@ void processSpektrumPacket(const uint8_t *packet)
 void processDSMBindPacket(uint8_t module, const uint8_t *packet)
 {
   uint32_t debugval;
-  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2
-    && g_model.moduleData[module].multi.autoBindMode) {
-
-    int channels = packet[5];
+  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
     // Only sets channel etc when in DSM multi mode
+    int channels = packet[5];
+    if (channels > 12) {
+      channels = 12;
+    } else if (channels < 3) {
+      channels = 3;
+    }
     g_model.moduleData[module].channelsCount = channels - 8;
 
-    // bool use11ms = (packet[8] & 0x10) ;
-    if (packet[6] >= 0xb2)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
-    else if (packet[6] >= 0xa2)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
-    else if (packet[6] >= 0x12)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
-    else
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
-
+    switch(packet[6]) {
+      case 0xa2:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
+        break;
+      case 0x12:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
+        break;
+      case 0x01:
+      case 0x02:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
+        break;
+      default: // 0xb2 or unknown
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
+        break;
+    }
     storageDirty(EE_MODEL);
   }
 
