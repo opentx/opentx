@@ -23,15 +23,9 @@
 
 #define HAS_TOUCH_PANEL()     touchGT911Flag == true
 
-bool touchPanelInit();
-void touchPanelDeInit();
-
 extern uint8_t touchGT911Flag;
-extern uint8_t touchPanelEvent;
-extern bool TouchInit( void );
+extern bool TouchInit(void);
 
-uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len);
-bool gt911ReadRegister(uint16_t reg, uint8_t * buf, uint8_t len);
 void touchPanelRead();
 bool touchPanelEventOccured();
 

@@ -214,6 +214,81 @@ uint8_t touchGT911Flag = 0;
 uint8_t touchEventOccured = 0;
 struct TouchData touchData;
 
+static void TOUCH_AF_ExtiStop(void)
+{
+  SYSCFG_EXTILineConfig(TOUCH_INT_EXTI_PortSource, TOUCH_INT_EXTI_PinSource1);
+
+  EXTI_InitTypeDef EXTI_InitStructure;
+  EXTI_StructInit(&EXTI_InitStructure);
+  EXTI_InitStructure.EXTI_Line = TOUCH_INT_EXTI_LINE1;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+  EXTI_InitStructure.EXTI_LineCmd = DISABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+
+  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitStructure.NVIC_IRQChannel = TOUCH_INT_EXTI_IRQn1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+  NVIC_Init(&NVIC_InitStructure);
+}
+
+static void TOUCH_AF_ExtiConfig(void)
+{
+  SYSCFG_EXTILineConfig(TOUCH_INT_EXTI_PortSource, TOUCH_INT_EXTI_PinSource1);
+
+  EXTI_InitTypeDef EXTI_InitStructure;
+  EXTI_StructInit(&EXTI_InitStructure);
+  EXTI_InitStructure.EXTI_Line = TOUCH_INT_EXTI_LINE1;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitStructure.NVIC_IRQChannel = TOUCH_INT_EXTI_IRQn1;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+}
+
+static void TOUCH_AF_GPIOConfig(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = TOUCH_RST_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(TOUCH_RST_GPIO, &GPIO_InitStructure);
+
+  GPIO_ResetBits(TOUCH_RST_GPIO, TOUCH_RST_GPIO_PIN);
+
+  GPIO_InitStructure.GPIO_Pin = TOUCH_INT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(TOUCH_INT_GPIO, &GPIO_InitStructure);
+
+  GPIO_ResetBits(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN);
+}
+
+void GT911_INT_Change(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = TOUCH_INT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(TOUCH_INT_GPIO, &GPIO_InitStructure);
+}
+
 void i2cInit()
 {
   I2C_DeInit(I2C);
@@ -259,97 +334,7 @@ bool I2C_WaitEventCleared(uint32_t event)
   return true;
 }
 
-void GT911_INT_Change(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  GPIO_InitStructure.GPIO_Pin = TOUCH_INT_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(TOUCH_INT_GPIO, &GPIO_InitStructure);
-}
-
-uint8_t GT911_Send_Cfg(uint8_t mode)
-{
-  uint8_t buf[2];
-  uint8_t i = 0;
-  buf[0] = 0;
-  buf[1] = mode;
-  for (i = 0; i < sizeof(TOUCH_GT911_Cfg); i++)
-    buf[0] += TOUCH_GT911_Cfg[i];//check sum
-
-  buf[0] = (~buf[0]) + 1;
-  gt911WriteRegister(GT_CFGS_REG, (uint8_t *) TOUCH_GT911_Cfg, sizeof(TOUCH_GT911_Cfg));//
-  gt911WriteRegister(GT_CHECK_REG, buf, 2);//write checksum
-  return 0;
-}
-
-static void TOUCH_AF_ExtiStop(void)
-{
-  SYSCFG_EXTILineConfig(TOUCH_INT_EXTI_PortSource, TOUCH_INT_EXTI_PinSource1);
-
-  EXTI_InitTypeDef EXTI_InitStructure;
-  EXTI_StructInit(&EXTI_InitStructure);
-  EXTI_InitStructure.EXTI_Line = TOUCH_INT_EXTI_LINE1;
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-  EXTI_InitStructure.EXTI_LineCmd = DISABLE;
-  EXTI_Init(&EXTI_InitStructure);
-
-
-  NVIC_InitTypeDef NVIC_InitStructure;
-  NVIC_InitStructure.NVIC_IRQChannel = TOUCH_INT_EXTI_IRQn1;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
-  NVIC_Init(&NVIC_InitStructure);
-}
-
-static void TOUCH_AF_ExtiConfig(void)
-{
-  SYSCFG_EXTILineConfig(TOUCH_INT_EXTI_PortSource, TOUCH_INT_EXTI_PinSource1);
-
-  EXTI_InitTypeDef EXTI_InitStructure;
-  EXTI_StructInit(&EXTI_InitStructure);
-  EXTI_InitStructure.EXTI_Line = TOUCH_INT_EXTI_LINE1;
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-  EXTI_Init(&EXTI_InitStructure);
-  
-  NVIC_InitTypeDef NVIC_InitStructure;
-  NVIC_InitStructure.NVIC_IRQChannel = TOUCH_INT_EXTI_IRQn1;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-}
-
-static void TOUCH_AF_GPIOConfig(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = TOUCH_RST_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(TOUCH_RST_GPIO, &GPIO_InitStructure);
-
-  GPIO_ResetBits(TOUCH_RST_GPIO, TOUCH_RST_GPIO_PIN);
-
-  GPIO_InitStructure.GPIO_Pin = TOUCH_INT_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(TOUCH_INT_GPIO, &GPIO_InitStructure);
-
-  GPIO_ResetBits(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN);
-}
-
-uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len)
+uint8_t I2C_GT911_WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len)
 {
   if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
     return false;
@@ -384,7 +369,7 @@ uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len)
   return true;
 }
 
-bool gt911ReadRegister(u16 reg, uint8_t * buf, uint8_t len)
+bool I2C_GT911_ReadRegister(u16 reg, uint8_t * buf, uint8_t len)
 {
   if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
     return false;
@@ -430,6 +415,21 @@ bool gt911ReadRegister(u16 reg, uint8_t * buf, uint8_t len)
   return true;
 }
 
+uint8_t I2C_GT911_SendConfig(uint8_t mode)
+{
+  uint8_t buf[2];
+  uint8_t i = 0;
+  buf[0] = 0;
+  buf[1] = mode;
+  for (i = 0; i < sizeof(TOUCH_GT911_Cfg); i++)
+    buf[0] += TOUCH_GT911_Cfg[i];//check sum
+
+  buf[0] = (~buf[0]) + 1;
+  I2C_GT911_WriteRegister(GT_CFGS_REG, (uint8_t *) TOUCH_GT911_Cfg, sizeof(TOUCH_GT911_Cfg));//
+  I2C_GT911_WriteRegister(GT_CHECK_REG, buf, 2);//write checksum
+  return 0;
+}
+
 void touchPanelDeInit(void)
 {
   TOUCH_AF_ExtiStop();
@@ -459,25 +459,25 @@ bool TouchInit(void)
   delay_ms(50);
 
   TRACE("Reading Touch registry");
-  gt911ReadRegister(GT_PID_REG, tmp, 4);
+  I2C_GT911_ReadRegister(GT_PID_REG, tmp, 4);
 
   if (strcmp((char *) tmp, "911") == 0) //ID==9147
   {
     TRACE("GT911 chip detected");
     tmp[0] = 0X02;
-    gt911WriteRegister(GT_CTRL_REG, tmp, 1);
-    gt911ReadRegister(GT_CFGS_REG, tmp, 1);
+    I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);
+    I2C_GT911_ReadRegister(GT_CFGS_REG, tmp, 1);
 
     TRACE("Chip config Ver:%x\r\n",tmp[0]);
     if (tmp[0] < GT911_CFG_NUMER)  //Config ver
     {
       TRACE("Sending new config %d", GT911_CFG_NUMER);
-      GT911_Send_Cfg(1);
+      I2C_GT911_SendConfig(1);
     }
 
     delay_ms(10);
     tmp[0] = 0X00;
-    gt911WriteRegister(GT_CTRL_REG, tmp, 1);  //end reset
+    I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);  //end reset
     touchGT911Flag = true;
 
     TOUCH_AF_ExtiConfig();
@@ -496,7 +496,7 @@ void touchPanelRead()
     return;
 
   touchEventOccured = false;
-  gt911ReadRegister(GT911_READ_XY_REG, &state, 1);
+  I2C_GT911_ReadRegister(GT911_READ_XY_REG, &state, 1);
 
   if ((state & 0x80u) == 0x00) {
     // not ready
@@ -506,7 +506,7 @@ void touchPanelRead()
   uint8_t pointsCount = (state & 0x0Fu);
 
   if (pointsCount > 0 && pointsCount < GT911_MAX_TP) {
-    gt911ReadRegister(GT911_READ_XY_REG + 1, touchData.data, pointsCount * sizeof(TouchPoint));
+    I2C_GT911_ReadRegister(GT911_READ_XY_REG + 1, touchData.data, pointsCount * sizeof(TouchPoint));
     if (touchData.pointsCount == 0) {
       touchState.event = TE_DOWN;
       touchState.startX = touchState.x = touchData.points[0].x;
@@ -534,7 +534,7 @@ void touchPanelRead()
   }
 
   uint8_t zero = 0;
-  gt911WriteRegister(GT911_READ_XY_REG, &zero, 1);
+  I2C_GT911_WriteRegister(GT911_READ_XY_REG, &zero, 1);
 }
 
 extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
