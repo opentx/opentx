@@ -541,6 +541,7 @@ extern const char STR_SPECTRUM_ANALYSER_EXT[];
 extern const char STR_SPECTRUM_ANALYSER_INT[];
 extern const char STR_WAITING_FOR_RX[];
 extern const char STR_WAITING_FOR_TX[];
+extern const char STR_WARN_5VOLTS[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];

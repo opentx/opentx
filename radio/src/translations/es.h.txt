@@ -441,6 +441,7 @@
 #define TR_PPMFRAME            "Trama PPM"
 #define TR_REFRESHRATE         TR(INDENT "Refresco", INDENT "Velocidad refresco")
 #define STR_WARN_BATTVOLTAGE   TR(INDENT "Salida es VBAT: ", INDENT "Aviso: señal salida es VBAT: ")
+#define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
 #define TR_MS                  "ms"
 #define TR_FREQUENCY           INDENT "Frequencia"
 #define TR_SWITCH              TR("Interr.", "Interruptor")

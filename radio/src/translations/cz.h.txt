@@ -441,6 +441,7 @@
 #define TR_PPMFRAME                    INDENT "PPM modulace"
 #define TR_REFRESHRATE                 TR(INDENT "Obnovit", INDENT "Obn. frekv.")
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Výstup VBAT: ", INDENT "Varování: výstupní hodnota VBAT: ")
+#define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
 #define TR_MS                          "ms"
 #define TR_FREQUENCY                   INDENT "Frequence"
 #define TR_SWITCH                      "Spínač"

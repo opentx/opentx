@@ -463,6 +463,7 @@
   #define TR_PPMFRAME          INDENT "Frame PPM"
 #define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Uscita VBAT: ", INDENT "Att.: livel. uscita VBAT: ")
+#define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
 #define TR_MS                  "ms"
 #define TR_FREQUENCY                   INDENT "Frequenza"
 #define TR_SWITCH              "Inter."

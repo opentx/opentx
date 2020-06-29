@@ -1705,8 +1705,12 @@ bool menuModelSetup(event_t event)
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEM_ON);
         }
         else if (isModuleSBUS(moduleIdx)) {
+#if defined(RADIO_TX16S)  // TX16S has 5v output on CPPM pin
+          lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_WARN_5VOLTS);
+#else
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WARN_BATTVOLTAGE);
           drawValueWithUnit(MODEL_SETUP_4TH_COLUMN, y, getBatteryVoltage(), UNIT_VOLTS, attr|PREC2|LEFT);
+#endif
         }
         break;
       }
