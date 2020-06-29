@@ -1683,17 +1683,35 @@ bool menuModelSetup(event_t event)
             }
           }
 
-          if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A)
-            optionValue = 50 + 5 * optionValue;
+          int8_t min, max;
+          getMultiOptionValues(multi_proto, min, max);
 
-          if (multi_proto == MODULE_SUBTYPE_MULTI_FRSKY_R9)
+          if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, 50 + 5 * optionValue, LEFT | attr);
+          }
+          else if (multi_proto == MODULE_SUBTYPE_MULTI_FRSKY_R9) {
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_POWER, optionValue, LEFT | attr);
-          else
-            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
+          }
+          if (multi_proto == MODULE_SUBTYPE_MULTI_DSM2) {
+            optionValue = optionValue & 0x01;
+            editCheckBox(optionValue, MODEL_SETUP_2ND_COLUMN, y, LEFT | attr, event);
+          }
+          else {
+            if (min == 0 && max == 1)
+              editCheckBox(optionValue, MODEL_SETUP_2ND_COLUMN, y, LEFT | attr, event);
+            else
+              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
+          }
           if (attr) {
-            int8_t min, max;
-            getMultiOptionValues(multi_proto, min, max);
-            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, min, max);
+            CHECK_INCDEC_MODELVAR(event, optionValue, min, max);
+            if (checkIncDec_Ret) {
+              if (multi_proto == MODULE_SUBTYPE_MULTI_DSM2) {
+                g_model.moduleData[moduleIdx].multi.optionValue = (g_model.moduleData[moduleIdx].multi.optionValue & 0xFE) + optionValue;
+              }
+              else {
+                g_model.moduleData[moduleIdx].multi.optionValue = optionValue;
+              }
+            }
           }
         }
 #endif
@@ -1761,11 +1779,19 @@ bool menuModelSetup(event_t event)
     case ITEM_MODEL_SETUP_INTERNAL_MODULE_AUTOBIND:
 #endif
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AUTOBIND:
-      if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2)
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_DSM_AUTODTECT);
-      else
+      if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
+        uint8_t value = (g_model.moduleData[moduleIdx].multi.optionValue & 0x02) >> 1;
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MULTI_SERVOFREQ);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, value ? 11 : 22, attr, 0, "", "ms");
+        CHECK_INCDEC_MODELVAR(event, value, 0, 1);
+        if (attr && checkIncDec_Ret) {
+          g_model.moduleData[moduleIdx].multi.optionValue = (g_model.moduleData[moduleIdx].multi.optionValue & 0xFD) + (value << 1);
+        }
+      }
+      else {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_AUTOBIND);
-      g_model.moduleData[moduleIdx].multi.autoBindMode = editCheckBox(g_model.moduleData[moduleIdx].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.moduleData[moduleIdx].multi.autoBindMode = editCheckBox(g_model.moduleData[moduleIdx].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+      }
       break;
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_DISABLE_TELEM:
