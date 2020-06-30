@@ -14,9 +14,9 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install Qt
-          uses: jurplel/install-qt-action@v2
-          with:
-            version: '5.12.9'
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: '5.12.9'
       - name: Install the ARM compiler
         uses: fiam/arm-none-eabi-gcc@v1
         with:
