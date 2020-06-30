@@ -1,10 +1,9 @@
 name: C/C++ CI
 
-on: [push]
+on: [pull-request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +16,7 @@ jobs:
         uses: jurplel/install-qt-action@v2
         with:
           version: '5.12.9'
-      - name: Install the ARM compiler
+      - name: Install ARM toolchain
         uses: fiam/arm-none-eabi-gcc@v1
         with:
           release: '6-2017-q2'

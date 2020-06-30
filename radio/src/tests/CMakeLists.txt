@@ -1,5 +1,3 @@
-
-
 if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   add_library(gtests-radio-lib STATIC EXCLUDE_FROM_ALL ${GTEST_SRCDIR}/src/gtest-all.cc )
   target_include_directories(gtests-radio-lib PUBLIC ${GTEST_INCDIR} ${GTEST_INCDIR}/gtest ${GTEST_SRCDIR})
