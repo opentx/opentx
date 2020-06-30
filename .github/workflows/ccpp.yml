@@ -16,6 +16,7 @@ jobs:
       - uses: fiam/arm-none-eabi-gcc@v1
         with:
           release: '6-2017-q2'
+      - uses: "CyberZHG/github-action-gtest@master"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip Pillow
