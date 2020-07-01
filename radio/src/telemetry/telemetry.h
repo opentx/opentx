@@ -112,6 +112,7 @@ extern uint8_t telemetryProtocol;
 #if defined (MULTIMODULE)
   #define IS_D16_MULTI(module)           (((g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) && (g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH || g_model.moduleData[module].subType == MM_RF_FRSKY_SUBTYPE_D16_CLONED)) \
                                          || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKYX2))
+  #define IS_R9_MULTI(module)            (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY_R9)
   #define IS_HOTT_MULTI(module)          (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT)
   #define IS_RX_MULTI(module)            ((g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_AFHDS2A_RX) || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKYX_RX) \
                                          || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_BAYANG_RX) || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM_RX))
