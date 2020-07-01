@@ -1576,7 +1576,7 @@ bool menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
+                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx) || IS_R9_MULTI(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
 #if defined(AFHDS3)
                       if (isModuleAFHDS3(moduleIdx)) {

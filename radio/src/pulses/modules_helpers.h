@@ -183,7 +183,7 @@ inline bool isModuleTypeR9MNonAccess(uint8_t type)
 
 inline bool isModuleR9MNonAccess(uint8_t idx)
 {
-  return isModuleTypeR9MNonAccess(g_model.moduleData[idx].type) || IS_R9_MULTI(idx);
+  return isModuleTypeR9MNonAccess(g_model.moduleData[idx].type);
 }
 
 inline bool isModuleTypeR9MAccess(uint8_t type)
