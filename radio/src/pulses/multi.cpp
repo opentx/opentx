@@ -178,7 +178,7 @@ void setupPulsesMulti(uint8_t moduleIdx)
   if (getMultiModuleStatus(moduleIdx).isValid()) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
     if (status.minor >= 3 && !(status.flags & 0x80)) { //Version 1.3.x.x or more and Buffer not full
-      if (IS_D16_MULTI(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
+      if ((IS_D16_MULTI(moduleIdx) || IS_R9_MULTI(moduleIdx)) && moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
         sendD16BindOption(moduleIdx);//1 byte of additional data
       }
 #if defined(LUA)
