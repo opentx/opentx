@@ -197,6 +197,9 @@ void stop_trainer_ppm();
 void init_trainer_capture();
 void stop_trainer_capture();
 
+// SBUS
+int sbusGetByte(uint8_t * byte);
+
 // Keys driver
 enum EnumKeys
 {

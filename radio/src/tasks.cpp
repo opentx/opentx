@@ -107,7 +107,7 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   while (true) {
-#if defined(PCBTARANIS) && defined(SBUS)
+#if defined(SBUS)
     // SBUS trainer
     processSbusInput();
 #endif
