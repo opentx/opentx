@@ -127,6 +127,11 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       }
       break;
 
+    case UART_MODE_SBUS_TRAINER:
+      auxSerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      AUX_SERIAL_POWER_ON();
+      break;
+
     case UART_MODE_LUA:
       auxSerialSetup(DEBUG_BAUDRATE, false);
       AUX_SERIAL_POWER_ON();
@@ -148,9 +153,7 @@ void auxSerialPutc(char c)
 
 void auxSerialSbusInit()
 {
-  auxSerialSetup(SBUS_BAUDRATE, true);
-  AUX_SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
-  AUX_SERIAL_POWER_ON();
+  auxSerialInit(UART_MODE_SBUS_TRAINER, 0);
 }
 
 void auxSerialStop()
@@ -204,7 +207,7 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
   // Receive
   uint32_t status = AUX_SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-    uint8_t data = AUX2_SERIAL_USART->DR;
+    uint8_t data = AUX_SERIAL_USART->DR;
     UNUSED(data);
     if (!(status & USART_FLAG_ERRORS)) {
 #if defined(LUA) & !defined(CLI)
@@ -325,9 +328,8 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_SBUS_TRAINER:
-      aux2SerialSetup(SBUS_BAUDRATE, false, USART_WordLength_8b, USART_Parity_Even, USART_StopBits_2);
-      AUX2_SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE;
-      AUX2_SERIAL_POWER_OFF();
+      aux2SerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      AUX2_SERIAL_POWER_ON();
       break;
 
     case UART_MODE_LUA:
