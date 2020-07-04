@@ -42,7 +42,7 @@ static const QStringList STR_SUBTYPE_HUBSAN    {"H107", "H301", "H501"};
 static const QStringList STR_SUBTYPE_FRSKY     {"D16", "D8", "D16 8ch", "V8", "D16 EU-LBT", "D16 EU-LBT 8ch", "D8 Cloned", "D16 Cloned"};
 static const QStringList STR_SUBTYPE_HISKY     {"Standard", "HK310"};
 static const QStringList STR_SUBTYPE_V2X2      {"Standard", "JXD506", "MR101"};
-static const QStringList STR_SUBTYPE_DSM       {"DSM2 22ms", "DSM2 11ms", "DSMX 22ms", "DSMX 11ms"};
+static const QStringList STR_SUBTYPE_DSM       {"DSM2 1F", "DSM2 2F", "DSMX 1F", "DSMX 2F"};
 static const QStringList STR_SUBTYPE_DEVO      {"8 Channel", "10 Channel", "12 Channel", "6 Channel", "7 Channel"};
 static const QStringList STR_SUBTYPE_YD717     {"Standard", "Skywalker", "Syma X4", "XINXUN", "NIHUI"};
 static const QStringList STR_SUBTYPE_KN        {"WLtoys", "FeiLun"};
