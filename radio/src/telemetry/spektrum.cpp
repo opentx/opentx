@@ -493,7 +493,8 @@ void processDSMBindPacket(uint8_t module, const uint8_t *packet)
     int channels = packet[5];
     if (channels > 12) {
       channels = 12;
-    } else if (channels < 3) {
+    }
+    else if (channels < 3) {
       channels = 3;
     }
     g_model.moduleData[module].channelsCount = channels - 8;
