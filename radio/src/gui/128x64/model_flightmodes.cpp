@@ -68,7 +68,7 @@ void menuModelFlightModeOne(event_t event)
   static const uint8_t mstate_tab_fm1[]  = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1, 1};
   static const uint8_t mstate_tab_others[]  = {0, 0, 3, 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
-  check(event, 0, NULL, 0, (s_currIdx==0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_FLIGHT_MODE_MAX-HEADER_LINE-(s_currIdx==0 ? (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_SWITCH-1) : 0));
+  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others) - 1, ITEM_MODEL_FLIGHT_MODE_MAX-HEADER_LINE - (s_currIdx == 0 ? (ITEM_MODEL_FLIGHT_MODE_FADE_IN - ITEM_MODEL_FLIGHT_MODE_SWITCH - 1) : 0));
 
   title(STR_MENUFLIGHTMODE);
 
