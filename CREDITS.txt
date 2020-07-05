@@ -1800,3 +1800,5 @@ Yann Orselli
 Dieter Schaad
 Ernst Camenzind
 Ciobanu Rivelino Costel
+David Jolly
+Aram Parsamyan
