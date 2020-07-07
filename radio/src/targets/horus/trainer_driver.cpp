@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(SBUS)
+#if defined(SBUS_TRAINER)
 Fifo<uint8_t, 32> trainerSbusFifo;
 #endif
 

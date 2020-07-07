@@ -335,6 +335,7 @@ endif()
 
 add_definitions(-DPCBTARANIS)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
+add_definitions(-DSBUS_TRAINER)
 
 set(SRC
   ${SRC}
