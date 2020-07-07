@@ -488,8 +488,8 @@ void processSpektrumPacket(const uint8_t *packet)
 void processDSMBindPacket(uint8_t module, const uint8_t *packet)
 {
   uint32_t debugval;
-  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-    // Only sets channel etc when in DSM multi mode
+  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2 && g_model.moduleData[module].subType == MM_RF_DSM2_SUBTYPE_AUTO) {
+    // Only sets channel etc when in DSM/AUTO mode
     int channels = packet[5];
     if (channels > 12) {
       channels = 12;
