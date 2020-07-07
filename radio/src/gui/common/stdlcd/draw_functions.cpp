@@ -353,6 +353,11 @@ void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, 
     return;
   }
 
+  if (IS_FAI_FORBIDDEN(MIXSRC_FIRST_TELEM + 3 * sensor)) {
+    lcdDrawText(x, y, "FAI mode", flags);
+    return;
+  }
+
   TelemetryItem & telemetryItem = telemetryItems[sensor];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[sensor];
 
