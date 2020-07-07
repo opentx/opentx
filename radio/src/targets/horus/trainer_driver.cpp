@@ -160,7 +160,7 @@ extern "C" void TRAINER_TIMER_IRQHandler()
 int sbusGetByte(uint8_t * byte)
 {
   switch (currentTrainerMode) {
-#if defined(PCBTARANIS) || defined(AUX_SERIAL)
+#if defined(AUX_SERIAL)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
       return trainerSbusFifo.pop(*byte);
 #endif
