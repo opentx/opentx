@@ -214,47 +214,6 @@ uint8_t touchGT911Flag = 0;
 uint8_t touchEventOccured = 0;
 struct TouchData touchData;
 
-void GT911_INT_Change(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  GPIO_InitStructure.GPIO_Pin = TOUCH_INT_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(TOUCH_INT_GPIO, &GPIO_InitStructure);
-}
-
-uint8_t GT911_Send_Cfg(uint8_t mode)
-{
-  uint8_t buf[2];
-  uint8_t i = 0;
-  buf[0] = 0;
-  buf[1] = mode;
-  for (i = 0; i < sizeof(TOUCH_GT911_Cfg); i++)
-    buf[0] += TOUCH_GT911_Cfg[i];//check sum
-
-  buf[0] = (~buf[0]) + 1;
-  gt911WriteRegister(GT_CFGS_REG, (uint8_t *) TOUCH_GT911_Cfg, sizeof(TOUCH_GT911_Cfg));//
-  gt911WriteRegister(GT_CHECK_REG, buf, 2);//write checksum
-  return 0;
-}
-
-static void I2C_Config(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-  RCC_AHB1PeriphClockCmd(I2C_RCC_AHB1Periph, ENABLE);
-  GPIO_InitStructure.GPIO_Pin = I2C_SCL_GPIO_PIN | I2C_SDA_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
-
-  GPIO_SetBits(I2C_GPIO, I2C_SCL_GPIO_PIN | I2C_SDA_GPIO_PIN);
-}
-
 static void TOUCH_AF_ExtiStop(void)
 {
   SYSCFG_EXTILineConfig(TOUCH_INT_EXTI_PortSource, TOUCH_INT_EXTI_PinSource1);
@@ -288,7 +247,6 @@ static void TOUCH_AF_ExtiConfig(void)
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
-
   NVIC_InitTypeDef NVIC_InitStructure;
   NVIC_InitStructure.NVIC_IRQChannel = TOUCH_INT_EXTI_IRQn1;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 9;
@@ -319,172 +277,156 @@ static void TOUCH_AF_GPIOConfig(void)
   GPIO_ResetBits(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN);
 }
 
-void SDA_IN(void)
+void TOUCH_AF_INT_Change(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = I2C_SDA_GPIO_PIN;
+
+  GPIO_InitStructure.GPIO_Pin = TOUCH_INT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
+  GPIO_Init(TOUCH_INT_GPIO, &GPIO_InitStructure);
 }
 
-void SDA_OUT(void)
+void I2C_Init()
 {
+  I2C_DeInit(I2C);
+
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = I2C_SDA_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  I2C_InitTypeDef I2C_InitStructure;
+  I2C_InitStructure.I2C_ClockSpeed = I2C_SPEED;
+  I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+  I2C_InitStructure.I2C_OwnAddress1 = 0x00;
+  I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+  I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+  I2C_Init(I2C, &I2C_InitStructure);
+  I2C_Cmd(I2C, ENABLE);
+
+  GPIO_PinAFConfig(I2C_GPIO, I2C_SCL_GPIO_PinSource, I2C_GPIO_AF);
+  GPIO_PinAFConfig(I2C_GPIO, I2C_SDA_GPIO_PinSource, I2C_GPIO_AF);
+
+  GPIO_InitStructure.GPIO_Pin = I2C_SCL_GPIO_PIN | I2C_SDA_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(I2C_GPIO, &GPIO_InitStructure);
 }
 
-void I2C_Start(void)
+bool I2C_WaitEvent(uint32_t event)
 {
-  SDA_OUT();
-  I2C_SDA_H();
-  I2C_SCL_H();
-  delay_us(2);
-  I2C_SDA_L();//START:when CLK is high,DATA change form high to low
-  delay_us(2);
-  I2C_SCL_L();//
-  delay_us(2);
-}
-
-void I2C_Stop(void)
-{
-  SDA_OUT();
-  I2C_SCL_L();
-  I2C_SDA_L();//STOP:when CLK is high DATA change form low to high
-  delay_us(2);
-  I2C_SCL_H();
-  I2C_SDA_H();//
-  delay_us(2);
-}
-
-uint8_t I2C_Wait_Ack(void)
-{
-  uint8_t ucErrTime = 0;
-  SDA_IN();
-  I2C_SDA_H();
-  delay_us(2);
-  I2C_SCL_H();
-  while (READ_SDA) {
-    ucErrTime++;
-    if (ucErrTime > 166) {
-      I2C_Stop();
-      return 1;
-    }
-    delay_us(1);
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (!I2C_CheckEvent(I2C, event)) {
+    if ((timeout--) == 0) return false;
   }
-  I2C_SDA_L();
-  I2C_SCL_L();
+  return true;
+}
+
+bool I2C_WaitEventCleared(uint32_t event)
+{
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (I2C_CheckEvent(I2C, event)) {
+    if ((timeout--) == 0) return false;
+  }
+  return true;
+}
+
+uint8_t I2C_GT911_WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len)
+{
+  if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
+    return false;
+
+  I2C_GenerateSTART(I2C, ENABLE);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return false;
+
+  I2C_Send7bitAddress(I2C, GT_CMD_WR, I2C_Direction_Transmitter);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+    return false;
+
+  I2C_SendData(I2C, (uint8_t)((reg & 0xFF00) >> 8));
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+    return false;
+  I2C_SendData(I2C, (uint8_t)(reg & 0x00FF));
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+    return false;
+
+  /* While there is data to be written */
+  while (len--) {
+    I2C_SendData(I2C, *buf);
+    if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+      return false;
+    buf++;
+  }
+
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return false;
+
+  I2C_GenerateSTOP(I2C, ENABLE);
+  return true;
+}
+
+bool I2C_GT911_ReadRegister(u16 reg, uint8_t * buf, uint8_t len)
+{
+  if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
+    return false;
+
+  I2C_GenerateSTART(I2C, ENABLE);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return false;
+
+  I2C_Send7bitAddress(I2C, GT_CMD_WR, I2C_Direction_Transmitter);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+    return false;
+
+  I2C_SendData(I2C, (uint8_t)((reg & 0xFF00) >> 8));
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
+    return false;
+  I2C_SendData(I2C, (uint8_t)(reg & 0x00FF));
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return false;
+
+  I2C_GenerateSTART(I2C, ENABLE);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return false;
+
+  I2C_Send7bitAddress(I2C, GT_CMD_RD, I2C_Direction_Receiver);
+  if (!I2C_WaitEvent(I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED))
+    return false;
+
+  if (len > 1) {
+    I2C_AcknowledgeConfig(I2C, ENABLE);
+  }
+
+  while (len) {
+    if (len == 1) {
+      I2C_AcknowledgeConfig(I2C, DISABLE);
+    }
+    if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_RECEIVED))
+      return false;
+    *buf++ = I2C_ReceiveData(I2C);
+    len--;
+  }
+
+  I2C_GenerateSTOP(I2C, ENABLE);
+  return true;
+}
+
+uint8_t I2C_GT911_SendConfig(uint8_t mode)
+{
+  uint8_t buf[2];
+  uint8_t i = 0;
+  buf[0] = 0;
+  buf[1] = mode;
+  for (i = 0; i < sizeof(TOUCH_GT911_Cfg); i++)
+    buf[0] += TOUCH_GT911_Cfg[i];//check sum
+
+  buf[0] = (~buf[0]) + 1;
+  I2C_GT911_WriteRegister(GT_CFGS_REG, (uint8_t *) TOUCH_GT911_Cfg, sizeof(TOUCH_GT911_Cfg));//
+  I2C_GT911_WriteRegister(GT_CHECK_REG, buf, 2);//write checksum
   return 0;
-}
-
-void I2C_Ack(void)
-{
-  I2C_SCL_L();
-  SDA_OUT();
-  I2C_SDA_L();
-  delay_us(2);
-  I2C_SCL_H();
-  delay_us(2);
-  I2C_SCL_L();
-}
-
-void I2C_NAck(void)
-{
-  I2C_SCL_L();
-  SDA_OUT();
-  I2C_SDA_H();
-  delay_us(2);
-  I2C_SCL_H();
-  delay_us(2);
-  I2C_SCL_L();
-}
-
-void I2C_Send_Byte(uint8_t txd)
-{
-  uint8_t t;
-
-  SDA_OUT();
-  I2C_SCL_L();
-  for (t = 0; t < 8; t++) {
-    if ((txd & 0x80) >> 7)
-      I2C_SDA_H();
-    else
-      I2C_SDA_L();
-    txd <<= 1;
-    delay_us(1);
-    I2C_SCL_H();
-    delay_us(2);
-    I2C_SCL_L();
-    delay_us(1);
-  }
-}
-
-uint8_t I2C_Read_Byte(unsigned char ack)
-{
-  unsigned char i, receive = 0;
-
-  SDA_IN();
-  for (i = 0; i < 8; i++) {
-    I2C_SCL_L();
-    delay_us(2);
-    I2C_SCL_H();
-    receive <<= 1;
-    if (READ_SDA)receive++;
-    delay_us(1);
-  }
-  if (!ack)
-    I2C_NAck();
-  else
-    I2C_Ack();
-  return receive;
-}
-
-uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len)
-{
-  {
-    uint8_t i;
-    uint8_t ret = 0;
-
-    I2C_Start();
-    I2C_Send_Byte(GT_CMD_WR);         //send cmd
-    I2C_Wait_Ack();
-    I2C_Send_Byte(reg >> 8);      //send hi
-    I2C_Wait_Ack();
-    I2C_Send_Byte(reg & 0XFF);    //send low
-    I2C_Wait_Ack();
-    for (i = 0; i < len; i++) {
-      I2C_Send_Byte(buf[i]);
-      ret = I2C_Wait_Ack();
-      if (ret)break;
-    }
-    I2C_Stop();
-
-    return ret;
-  }
-}
-
-void gt911ReadRegister(u16 reg, uint8_t * buf, uint8_t len)
-{
-  uint8_t i;
-
-  I2C_Start();
-  I2C_Send_Byte(GT_CMD_WR);       //send addr
-  I2C_Wait_Ack();
-  I2C_Send_Byte(reg >> 8);    //send hi
-  I2C_Wait_Ack();
-  I2C_Send_Byte(reg & 0XFF);  //send low
-  I2C_Wait_Ack();
-  I2C_Start();
-  I2C_Send_Byte(GT_CMD_RD);       //send rd
-  I2C_Wait_Ack();
-
-  for (i = 0; i < len; i++) {
-    buf[i] = I2C_Read_Byte(i == (len - 1) ? 0 : 1); //send data
-  }
-  I2C_Stop();
 }
 
 void touchPanelDeInit(void)
@@ -492,14 +434,14 @@ void touchPanelDeInit(void)
   TOUCH_AF_ExtiStop();
 }
 
-bool TouchInit(void)
+bool touchPanelInit(void)
 {
   uint8_t tmp[4] = {0};
 
   TRACE("Touchpanel init start ...");
 
   TOUCH_AF_GPIOConfig(); //SET RST=OUT INT=OUT INT=LOW
-  I2C_Config();
+  I2C_Init();
 
   TPRST_LOW();
   TPINT_HIGH();
@@ -511,30 +453,30 @@ bool TouchInit(void)
   TPINT_LOW();
   delay_ms(55);
 
-  GT911_INT_Change();  //Set INT INPUT INT=LOW
+  TOUCH_AF_INT_Change();  //Set INT INPUT INT=LOW
 
   delay_ms(50);
 
   TRACE("Reading Touch registry");
-  gt911ReadRegister(GT_PID_REG, tmp, 4);
+  I2C_GT911_ReadRegister(GT_PID_REG, tmp, 4);
 
   if (strcmp((char *) tmp, "911") == 0) //ID==9147
   {
     TRACE("GT911 chip detected");
     tmp[0] = 0X02;
-    gt911WriteRegister(GT_CTRL_REG, tmp, 1);
-    gt911ReadRegister(GT_CFGS_REG, tmp, 1);
+    I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);
+    I2C_GT911_ReadRegister(GT_CFGS_REG, tmp, 1);
 
     TRACE("Chip config Ver:%x\r\n",tmp[0]);
     if (tmp[0] < GT911_CFG_NUMER)  //Config ver
     {
       TRACE("Sending new config %d", GT911_CFG_NUMER);
-      GT911_Send_Cfg(1);
+      I2C_GT911_SendConfig(1);
     }
 
     delay_ms(10);
     tmp[0] = 0X00;
-    gt911WriteRegister(GT_CTRL_REG, tmp, 1);  //end reset
+    I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);  //end reset
     touchGT911Flag = true;
 
     TOUCH_AF_ExtiConfig();
@@ -553,7 +495,7 @@ void touchPanelRead()
     return;
 
   touchEventOccured = false;
-  gt911ReadRegister(GT911_READ_XY_REG, &state, 1);
+  I2C_GT911_ReadRegister(GT911_READ_XY_REG, &state, 1);
 
   if ((state & 0x80u) == 0x00) {
     // not ready
@@ -563,7 +505,7 @@ void touchPanelRead()
   uint8_t pointsCount = (state & 0x0Fu);
 
   if (pointsCount > 0 && pointsCount < GT911_MAX_TP) {
-    gt911ReadRegister(GT911_READ_XY_REG + 1, touchData.data, pointsCount * sizeof(TouchPoint));
+    I2C_GT911_ReadRegister(GT911_READ_XY_REG + 1, touchData.data, pointsCount * sizeof(TouchPoint));
     if (touchData.pointsCount == 0) {
       touchState.event = TE_DOWN;
       touchState.startX = touchState.x = touchData.points[0].x;
@@ -591,7 +533,7 @@ void touchPanelRead()
   }
 
   uint8_t zero = 0;
-  gt911WriteRegister(GT911_READ_XY_REG, &zero, 1);
+  I2C_GT911_WriteRegister(GT911_READ_XY_REG, &zero, 1);
 }
 
 extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)

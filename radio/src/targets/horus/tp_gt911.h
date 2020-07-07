@@ -23,26 +23,19 @@
 
 #define HAS_TOUCH_PANEL()     touchGT911Flag == true
 
-bool touchPanelInit();
-void touchPanelDeInit();
-
 extern uint8_t touchGT911Flag;
-extern uint8_t touchPanelEvent;
-extern bool TouchInit( void );
+extern bool touchPanelInit(void);
 
-uint8_t gt911WriteRegister(uint16_t reg, uint8_t * buf, uint8_t len);
-void gt911ReadRegister(uint16_t reg, uint8_t * buf, uint8_t len);
 void touchPanelRead();
 bool touchPanelEventOccured();
 
-#define GT911_MAX_TP      5
-#define GT911_CFG_NUMER   0x6A
+#define GT911_MAX_TP            5
+#define GT911_CFG_NUMER         0x6A
 
 //I2C
 #define GT_CMD_WR 		0X28
 #define GT_CMD_RD 		0X29
-
-#define SLAVE_Write_Address 0X28
+#define I2C_TIMEOUT_MAX         1000
 
 //GT9147
 #define GT_CTRL_REG 	        0X8040
@@ -86,21 +79,10 @@ PACK(struct TouchData
   };
 });
 
-extern struct TouchData touchData;
-
 #define TPRST_LOW()   do { TOUCH_RST_GPIO->BSRRH = TOUCH_RST_GPIO_PIN; } while(0)
 #define TPRST_HIGH()  do { TOUCH_RST_GPIO->BSRRL = TOUCH_RST_GPIO_PIN; } while(0)
 
 #define TPINT_LOW()   do { TOUCH_INT_GPIO->BSRRH = TOUCH_INT_GPIO_PIN; } while(0)
 #define TPINT_HIGH()  do { TOUCH_INT_GPIO->BSRRL = TOUCH_INT_GPIO_PIN; } while(0)
-
-
-#define I2C_SCL_L()   do { I2C_GPIO->BSRRH = I2C_SCL_GPIO_PIN; } while(0)
-#define I2C_SCL_H()   do { I2C_GPIO->BSRRL = I2C_SCL_GPIO_PIN; } while(0)
-
-#define I2C_SDA_L()   do { I2C_GPIO->BSRRH = I2C_SDA_GPIO_PIN; } while(0)
-#define I2C_SDA_H()   do { I2C_GPIO->BSRRL = I2C_SDA_GPIO_PIN; } while(0)
-
-#define READ_SDA GPIO_ReadInputDataBit(I2C_GPIO, I2C_SDA_GPIO_PIN)
 
 #endif // _FT5X06_H_
