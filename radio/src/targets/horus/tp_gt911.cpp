@@ -277,7 +277,7 @@ static void TOUCH_AF_GPIOConfig(void)
   GPIO_ResetBits(TOUCH_INT_GPIO, TOUCH_INT_GPIO_PIN);
 }
 
-void TOPUCH_AF_INT_Change(void)
+void TOUCH_AF_INT_Change(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -453,7 +453,7 @@ bool touchPanelInit(void)
   TPINT_LOW();
   delay_ms(55);
 
-  TOPUCH_AF_INT_Change();  //Set INT INPUT INT=LOW
+  TOUCH_AF_INT_Change();  //Set INT INPUT INT=LOW
 
   delay_ms(50);
 
