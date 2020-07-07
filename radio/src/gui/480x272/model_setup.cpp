@@ -1576,7 +1576,7 @@ bool menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
+                  if (isModuleR9MNonAccess(moduleIdx) || isModuleD16(moduleIdx) || isModuleAFHDS3(moduleIdx) || IS_R9_MULTI(moduleIdx)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
 #if defined(AFHDS3)
                       if (isModuleAFHDS3(moduleIdx)) {
@@ -1780,7 +1780,7 @@ bool menuModelSetup(event_t event)
 #endif
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AUTOBIND:
       if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-        uint8_t value = (g_model.moduleData[moduleIdx].multi.optionValue & 0x02) >> 1;
+        int8_t value = (g_model.moduleData[moduleIdx].multi.optionValue & 0x02) >> 1;
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MULTI_SERVOFREQ);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, value ? 11 : 22, attr, 0, "", "ms");
         if (attr) {
