@@ -222,7 +222,7 @@ bool menuModelCurveOne(event_t event)
     }
 
     if (i>=pointsOfs && i<pointsOfs+5) {
-      lcdDrawNumber(posX, MENU_CONTENT_TOP + 5*FH-12, i+1, TEXT_DISABLE_COLOR|RIGHT);
+      //lcdDrawNumber(posX, MENU_CONTENT_TOP + 5*FH-12, i+1, TEXT_DISABLE_COLOR|RIGHT);
       lcdDrawNumber(posX, MENU_CONTENT_TOP + 6*FH-10,   x, RIGHT|(selectionMode==1 ? attr : 0));
       lcdDrawNumber(posX, MENU_CONTENT_TOP + 7*FH-6, points[i], RIGHT|(selectionMode==2 ? attr : 0));
       posX += 45;

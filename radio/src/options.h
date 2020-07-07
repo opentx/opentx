@@ -22,7 +22,7 @@
 #ifndef OPENTX_OPTIONS_H
 #define OPENTX_OPTIONS_H
 
-static const char * options[] = {
+static const char * const options[] = {
 #if defined(AUTOUPDATE)
   "autoupdate",
 #endif
