@@ -33,10 +33,10 @@ static const char * options[] = {
   "eu",
 #endif
 #if defined(FAI)
-  "faimode",
+  "FAImode",
 #endif
 #if defined(FAI_CHOICE)
-  "faichoice",
+  "FAIchoice",
 #endif
 #if defined(MODULE_PROTOCOL_FLEX)
   "flexr9m",
