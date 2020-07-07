@@ -385,6 +385,24 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   return true;
 }
 
+bool isAux1ModeAvailable(int mode)
+{
+#if defined(AUX2_SERIAL)
+  if (mode == UART_MODE_SBUS_TRAINER)
+    return g_eeGeneral.aux2SerialMode != UART_MODE_SBUS_TRAINER;
+#endif
+  return true;
+}
+
+bool isAux2ModeAvailable(int mode)
+{
+#if defined(AUX_SERIAL)
+  if (mode == UART_MODE_SBUS_TRAINER)
+    return g_eeGeneral.auxSerialMode != UART_MODE_SBUS_TRAINER;
+#endif
+  return true;
+}
+
 bool isSwitchAvailableInLogicalSwitches(int swtch)
 {
   return isSwitchAvailable(swtch, LogicalSwitchesContext);

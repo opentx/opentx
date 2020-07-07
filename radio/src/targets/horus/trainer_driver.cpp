@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 
+#if defined(SBUS)
+Fifo<uint8_t, 32> trainerSbusFifo;
+#endif
+
 void trainerSendNextFrame();
 
 void init_trainer_ppm()
@@ -150,5 +154,17 @@ extern "C" void TRAINER_TIMER_IRQHandler()
     TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear flag
     setupPulsesPPMTrainer();
     trainerSendNextFrame();
+  }
+}
+
+int sbusGetByte(uint8_t * byte)
+{
+  switch (currentTrainerMode) {
+#if defined(AUX_SERIAL)
+    case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+      return trainerSbusFifo.pop(*byte);
+#endif
+    default:
+      return false;
   }
 }
