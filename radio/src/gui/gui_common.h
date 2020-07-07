@@ -97,6 +97,8 @@ bool isRssiSensorAvailable(int sensor);
 
 bool modelHasNotes();
 
+bool confirmModelChange();
+
 #if defined(COLORLCD)
 bool isSwitch2POSWarningStateAvailable(int state);
 #endif

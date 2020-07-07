@@ -775,6 +775,25 @@ bool modelHasNotes()
   return false;
 }
 
+bool confirmModelChange()
+{
+  if (TELEMETRY_STREAMING()) {
+    RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
+    while (TELEMETRY_STREAMING()) {
+      RTOS_WAIT_MS(20);
+      if (readKeys() == (1 << KEY_ENTER)) {
+        killEvents(KEY_ENTER);
+        return true;
+      }
+      else if (readKeys() == (1 << KEY_EXIT)) {
+        killEvents(KEY_EXIT);
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 {
   int retval = 0;
