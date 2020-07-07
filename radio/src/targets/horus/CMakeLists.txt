@@ -66,7 +66,7 @@ if (PCB STREQUAL X10)
     set(HARDWARE_TOUCH YES)
     set(USB_CHARGER YES)
     set(DEFAULT_THEME "DARKBLUE")
-    set(SBUS ON)
+    set(SBUS_TRAINER ON)
     set(AUX_SERIAL ON)
     if (NOT BLUETOOTH AND NOT INTERNAL_GPS)
       set(AUX2_SERIAL ON)
@@ -255,8 +255,8 @@ if (AUX2_SERIAL)
   set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 endif()
 
-if (SBUS)
-  add_definitions(-DSBUS)
+if (SBUS_TRAINER)
+  add_definitions(-DSBUS_TRAINER)
   set(SRC
     ${SRC}
     sbus.cpp
