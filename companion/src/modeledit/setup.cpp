@@ -570,7 +570,7 @@ void ModulePanel::update()
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
   ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
   if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
-    ui->autoBind->setText(tr("Autodetect Format"));
+    ui->autoBind->setVisible(false);
   else
     ui->autoBind->setText(tr("Bind on channel"));
 
