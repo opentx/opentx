@@ -116,33 +116,6 @@ MainWindow::MainWindow():
   connect(windowsListActions, &QActionGroup::triggered, this, &MainWindow::onChangeWindowAction);
   connect(&g, &AppData::currentProfileChanged, this, &MainWindow::onCurrentProfileChanged);
 
-  // give time to the splash to disappear and main window to open before starting updates
-  int updateDelay = 1000;
-  bool showSplash = g.showSplash();
-  if (showSplash) {
-    updateDelay += (SPLASH_TIME*1000);
-  }
-
-  if (g.isFirstUse()) {
-    g.warningId(g.warningId() | AppMessages::MSG_WELCOME);
-    QTimer::singleShot(updateDelay-500, this, SLOT(appPrefs()));  // must be shown before warnings dialog but after splash
-  }
-  else {
-    if (!g.previousVersion().isEmpty())
-      g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
-    if (g.promptProfile()) {
-      QTimer::singleShot(updateDelay, this, SLOT(chooseProfile()));    // add an extra second to give mainwindow time to load
-      updateDelay += 5000;  //  give user time to select profile before warnings
-    }
-    else {
-      if (checkProfileRadioExists(g.sessionId()))
-        QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
-      else
-        g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
-    }
-  }
-  QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
-
   QStringList strl = QApplication::arguments();
   QString str;
   QString printfilename;
@@ -160,6 +133,34 @@ MainWindow::MainWindow():
   }
   if (strl.count() > 1)
     str = strl[1];
+
+  // give time to the splash to disappear and main window to open before starting updates
+  int updateDelay = 1000;
+  bool showSplash = g.showSplash();
+  if (showSplash) {
+    updateDelay += (SPLASH_TIME*1000);
+  }
+
+  if (g.isFirstUse()) {
+    g.warningId(g.warningId() | AppMessages::MSG_WELCOME);
+    QTimer::singleShot(updateDelay-500, this, SLOT(appPrefs()));  // must be shown before warnings dialog but after splash
+  }
+  else {
+    if (!g.previousVersion().isEmpty())
+      g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
+    if (g.promptProfile() && str.isEmpty() && printfilename.isEmpty()) {
+      QTimer::singleShot(updateDelay, this, SLOT(chooseProfile()));    // add an extra second to give mainwindow time to load
+      updateDelay += 5000;  //  give user time to select profile before warnings
+    }
+    else {
+      if (checkProfileRadioExists(g.sessionId()))
+        QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+      else
+        g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+    }
+  }
+  QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
+
   if (!str.isEmpty()) {
     int fileType = getStorageType(str);
 
