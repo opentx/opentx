@@ -1692,7 +1692,7 @@ bool menuModelSetup(event_t event)
           else if (multi_proto == MODULE_SUBTYPE_MULTI_FRSKY_R9) {
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_POWER, optionValue, LEFT | attr);
           }
-          if (multi_proto == MODULE_SUBTYPE_MULTI_DSM2) {
+          else if (multi_proto == MODULE_SUBTYPE_MULTI_DSM2) {
             optionValue = optionValue & 0x01;
             editCheckBox(optionValue, MODEL_SETUP_2ND_COLUMN, y, LEFT | attr, event);
           }
