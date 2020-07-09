@@ -1807,3 +1807,13 @@ Karsten Schwarz
 Robert Mckay
 Michael Oeschger
 Randy Ling
+Jonathan Wise
+David Gardner
+Christophe Judas
+Lachlan Peters
+Patrick C Kutschke
+Thomas Halenbeck
+Barry Wright
+Nicolas Ducher
+Giampiero Sintoni
+Sidney B Harden
