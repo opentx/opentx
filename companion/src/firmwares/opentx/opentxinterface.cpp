@@ -589,7 +589,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case NumModules:
       return 2;
     case NumFirstUsableModule:
-      return (IS_JUMPER_T12(board) ? 1 : 0);
+      return (IS_JUMPER_T12(board) && !id.contains("internalmulti") ? 1 : 0);
     case HasModuleR9MFlex:
       return id.contains("flexr9m");
     case HasModuleR9MMini:
@@ -731,9 +731,9 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board);
+            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board) && !IS_JUMPER_T12(board);
           case PULSES_PXX_XJT_D8:
-            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board);
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board) && !IS_JUMPER_T12(board);
           case PULSES_ACCESS_ISRM:
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
