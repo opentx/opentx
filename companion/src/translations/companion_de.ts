@@ -5660,17 +5660,17 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../firmwares/logicalswitchdata.cpp" line="102"/>
         <source>Timer</source>
-        <translation>Takt</translation>
+        <translation>Timer</translation>
     </message>
     <message>
         <location filename="../firmwares/logicalswitchdata.cpp" line="104"/>
         <source>Sticky</source>
-        <translation>SRFF</translation>
+        <translation>Sticky</translation>
     </message>
     <message>
         <location filename="../firmwares/logicalswitchdata.cpp" line="106"/>
         <source>Edge</source>
-        <translation>Puls</translation>
+        <translation>Edge</translation>
     </message>
     <message>
         <location filename="../firmwares/logicalswitchdata.cpp" line="108"/>
@@ -7997,17 +7997,17 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modelprinter.cpp" line="548"/>
         <source>Edge</source>
-        <translation>Puls</translation>
+        <translation>Edge</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="551"/>
         <source>Sticky</source>
-        <translation>SRFF</translation>
+        <translation>Sticky</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="554"/>
         <source>Timer</source>
-        <translation>Takt</translation>
+        <translation>Timer</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="581"/>
