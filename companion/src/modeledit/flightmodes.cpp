@@ -1059,7 +1059,7 @@ void FlightModePanel::gvOnCustomContextMenuRequested(QPoint pos)
 
 bool FlightModePanel::gvHasClipboardData() const
 {
-  if (gvHasDefnClipboardData() || gvHasValueClipboardData())
+  if ((phaseIdx == 0  && gvHasDefnClipboardData() && gvHasAllValuesClipboardData()) || (phaseIdx > 0 && gvHasValueClipboardData()))
     return true;
   return false;
 }
@@ -1086,6 +1086,20 @@ bool FlightModePanel::gvHasValueClipboardData(QByteArray * data) const
     if (data) {
       data->clear();
       data->append(mimeData->data(MIMETYPE_GVAR_VALUE));
+    }
+    return true;
+  }
+  return false;
+}
+
+bool FlightModePanel::gvHasAllValuesClipboardData(QByteArray * data) const
+{
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  if (phaseIdx == 0 && mimeData->hasFormat(MIMETYPE_GVAR_ALL_VALUES)) {
+    if (data) {
+      data->clear();
+      data->append(mimeData->data(MIMETYPE_GVAR_ALL_VALUES));
     }
     return true;
   }
@@ -1173,17 +1187,33 @@ void FlightModePanel::gvCmCopy()
   if (phaseIdx == 0) {
     data.append((char*)&model->gvarData[gvIdx], sizeof(GVarData));
     mimeData->setData(MIMETYPE_GVAR_PARAMS, data);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    data.clear();
+    for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
+      data.append((char*)&model->flightModeData[i].gvars[gvIdx], sizeof(phase.gvars[0]));
+    }
+    mimeData->setData(MIMETYPE_GVAR_ALL_VALUES, data);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    mimeData->removeFormat(MIMETYPE_GVAR_VALUE);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
   }
   else {
     mimeData->removeFormat(MIMETYPE_GVAR_PARAMS);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    mimeData->removeFormat(MIMETYPE_GVAR_ALL_VALUES);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    data.clear();
+    int val = phase.gvars[gvIdx];
+    if (model->isGVarLinked(phaseIdx, gvIdx))
+      val = GVAR_MAX_VALUE + 1 + model->getGVarFlightModeIndex(phaseIdx, gvIdx);  //  store index in case paste is to another flight mode
+    data.setNum(val);
+    mimeData->setData(MIMETYPE_GVAR_VALUE, data);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
   }
-  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
-  int val = phase.gvars[gvIdx];
-  if (model->isGVarLinked(phaseIdx, gvIdx))
-    val = GVAR_MAX_VALUE + 1 + model->getGVarFlightModeIndex(phaseIdx, gvIdx);  //  store index in case paste is to another flight mode
-  data.setNum(val);
-  mimeData->setData(MIMETYPE_GVAR_VALUE, data);
-  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
 void FlightModePanel::gvCmCut()
@@ -1254,11 +1284,20 @@ void FlightModePanel::gvCmMoveUp()
 void FlightModePanel::gvCmPaste()
 {
   QByteArray data;
-  if (phaseIdx == 0 && gvHasDefnClipboardData(&data)) {
-    GVarData *gvd = &model->gvarData[gvIdx];
-    memcpy(gvd, data.constData(), sizeof(GVarData));
+  if (phaseIdx == 0) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Paste to selected Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+    if (gvHasDefnClipboardData(&data)) {
+      memcpy(&model->gvarData[gvIdx], data.constData(), sizeof(GVarData));
+    }
+    if (gvHasAllValuesClipboardData(&data)) {
+      for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
+        int *gvar = &model->flightModeData[i].gvars[gvIdx];
+        memcpy(gvar, data.mid(i * sizeof(phase.gvars[0]), sizeof(phase.gvars[0])).constData(), sizeof(phase.gvars[0]));
+      }
+    }
   }
-  if (gvHasValueClipboardData(&data)) {
+  else if (gvHasValueClipboardData(&data)) {
     int val = data.toInt();
     if (val > GVAR_MAX_VALUE) {
       if (phaseIdx > 0)
