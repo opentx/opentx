@@ -29,6 +29,7 @@ class RawSwitchFilterItemModel;
 constexpr char MIMETYPE_FLIGHTMODE[] = "application/x-companion-flightmode";
 constexpr char MIMETYPE_GVAR_PARAMS[]  = "application/x-companion-gvar-params";
 constexpr char MIMETYPE_GVAR_VALUE[] = "application/x-companion-gvar-value";
+constexpr char MIMETYPE_GVAR_ALL_VALUES[] = "application/x-companion-gvar-all-values";
 
 namespace Ui {
   class FlightMode;
@@ -127,6 +128,7 @@ class FlightModePanel : public ModelPanel
     bool gvHasClipboardData() const;
     bool gvHasDefnClipboardData(QByteArray * data = nullptr) const;
     bool gvHasValueClipboardData(QByteArray * data = nullptr) const;
+    bool gvHasAllValuesClipboardData(QByteArray * data = nullptr) const;
     bool gvDeleteAllowed() const;
     bool gvInsertAllowed() const;
     bool gvMoveDownAllowed() const;
