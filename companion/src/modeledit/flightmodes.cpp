@@ -1190,7 +1190,7 @@ void FlightModePanel::gvCmCopy()
     QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 
     data.clear();
-    for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
+    for (int i = 0; i < fmCount; i++) {
       data.append((char*)&model->flightModeData[i].gvars[gvIdx], sizeof(phase.gvars[0]));
     }
     mimeData->setData(MIMETYPE_GVAR_ALL_VALUES, data);
@@ -1219,16 +1219,7 @@ void FlightModePanel::gvCmCopy()
 void FlightModePanel::gvCmCut()
 {
   gvCmCopy();
-  if (phaseIdx > 0) {
-    gvCmClear();
-  }
-  else {
-    model->gvarData[gvIdx].clear();
-    phase.gvars[gvIdx] = 0;
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_CLEAR, gvIdx);
-    emit datachanged();
-    emit modified();
-  }
+  gvCmClear();
 }
 
 void FlightModePanel::gvCmDelete()
@@ -1291,7 +1282,7 @@ void FlightModePanel::gvCmPaste()
       memcpy(&model->gvarData[gvIdx], data.constData(), sizeof(GVarData));
     }
     if (gvHasAllValuesClipboardData(&data)) {
-      for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
+      for (int i = 0; i < fmCount; i++) {
         int *gvar = &model->flightModeData[i].gvars[gvIdx];
         memcpy(gvar, data.mid(i * sizeof(phase.gvars[0]), sizeof(phase.gvars[0])).constData(), sizeof(phase.gvars[0]));
       }
