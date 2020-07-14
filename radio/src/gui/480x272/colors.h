@@ -28,6 +28,8 @@
 #define RGB(r, g, b)                   (uint16_t)((((r) & 0xF8) << 8) + (((g) & 0xFC) << 3) + (((b) & 0xF8) >> 3))
 #define ARGB(a, r, g, b)               (uint16_t)((((a) & 0xF0) << 8) + (((r) & 0xF0) << 4) + (((g) & 0xF0) << 0) + (((b) & 0xF0) >> 4))
 
+#define INVERT_RGB(x)                  (uint16_t)((0xF800 - (x & 0xF800)) + (0x07E0 - (x & 0x07E0)) + (0x1F - (x & 0x1F)))
+
 #define WHITE                          RGB(0xFF, 0xFF, 0xFF)
 #define BLACK                          RGB(0, 0, 0)
 #define YELLOW                         RGB(0xF0, 0xD0, 0x10)

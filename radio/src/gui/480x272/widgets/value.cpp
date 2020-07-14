@@ -113,8 +113,8 @@ void ValueWidget::refresh()
   }
 
   if(persistentData->options[2].boolValue) {
-    drawSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
-    drawSourceValue(xValue + 1, yValue + 1, field, attrValue|BLACK);
+    drawSource(xLabel + 1, yLabel + 1, field, attrLabel|INVERT_RGB(persistentData->options[1].unsignedValue));
+    drawSourceValue(xValue + 1, yValue + 1, field, attrValue|INVERT_RGB(persistentData->options[1].unsignedValue));
   }
   drawSource(xLabel, yLabel, field, attrLabel|CUSTOM_COLOR);
   drawSourceValue(xValue, yValue, field, attrValue|CUSTOM_COLOR);

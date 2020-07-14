@@ -48,7 +48,7 @@ void TextWidget::refresh()
   lcdSetColor(persistentData->options[1].unsignedValue);
   LcdFlags fontsize = FONTSIZE(persistentData->options[2].unsignedValue << 8);
   if(persistentData->options[3].boolValue) {
-    lcdDrawSizedText(zone.x+1, zone.y+1, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|BLACK);
+    lcdDrawSizedText(zone.x+1, zone.y+1, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|INVERT_RGB(persistentData->options[1].unsignedValue));
   }
   lcdDrawSizedText(zone.x, zone.y, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|CUSTOM_COLOR);
 }
