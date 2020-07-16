@@ -504,8 +504,8 @@ void processDSMBindPacket(uint8_t module, const uint8_t *packet)
         break;
       case 0x12:
         g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
-        if(channels==7) {
-            channels=12;    // change the number of channels if 7
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
         }
         break;
       case 0x01:
@@ -514,8 +514,8 @@ void processDSMBindPacket(uint8_t module, const uint8_t *packet)
         break;
       default: // 0xb2 or unknown
         g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
-        if(channels==7) {
-            channels=12;    // change the number of channels if 7
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
         }
         break;
     }
