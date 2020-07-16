@@ -497,7 +497,6 @@ void processDSMBindPacket(uint8_t module, const uint8_t *packet)
     else if (channels < 3) {
       channels = 3;
     }
-    g_model.moduleData[module].channelsCount = channels - 8;
 
     switch(packet[6]) {
       case 0xa2:
@@ -505,6 +504,9 @@ void processDSMBindPacket(uint8_t module, const uint8_t *packet)
         break;
       case 0x12:
         g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
+        }
         break;
       case 0x01:
       case 0x02:
@@ -512,8 +514,15 @@ void processDSMBindPacket(uint8_t module, const uint8_t *packet)
         break;
       default: // 0xb2 or unknown
         g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
+        }
         break;
     }
+
+    g_model.moduleData[module].channelsCount = channels - 8;
+    g_model.moduleData[module].multi.optionValue &= 0xFD;    // clear the 11ms servo refresh rate flag
+
     storageDirty(EE_MODEL);
   }
 
