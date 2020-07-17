@@ -562,6 +562,7 @@ inline void CLEAR_POPUP()
 {
   warningText = nullptr;
   warningInfoText = nullptr;
+  popupMenuTitle = nullptr;
   popupMenuHandler = nullptr;
   popupMenuItemsCount = 0;
   // TODO ? popupFunc = nullptr;
