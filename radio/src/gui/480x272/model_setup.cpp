@@ -535,7 +535,6 @@ inline uint8_t MODULE_TYPE_ROWS(int moduleIdx)
 
 #if defined(BLUETOOTH)
 #define TRAINER_CHANNELS_ROW                 (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)0 : HIDDEN_ROW))
-#define TRAINER_PPM_PARAMS_ROW               (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 #define IF_BT_TRAINER_ON(x)                  (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
 #define TRAINER_BLUETOOTH_M_ROW              ((bluetooth.distantAddr[0] == '\0' || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
 #define TRAINER_BLUETOOTH_S_ROW              (bluetooth.distantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
@@ -543,9 +542,9 @@ inline uint8_t MODULE_TYPE_ROWS(int moduleIdx)
 #define TRAINER_ROWS                         LABEL(Trainer), 0, IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), TRAINER_CHANNELS_ROW, TRAINER_PPM_PARAMS_ROW
 #else
 #define TRAINER_CHANNELS_ROW                 (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 :  HIDDEN_ROW)
-#define TRAINER_PPM_PARAMS_ROW               (HIDDEN_ROW)
 #define TRAINER_ROWS                         LABEL(Trainer), 0, TRAINER_CHANNELS_ROW, TRAINER_PPM_PARAMS_ROW
 #endif
+#define TRAINER_PPM_PARAMS_ROW               (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 
 #if defined(PXX2)
 #define REGISTRATION_ID_ROWS                 uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW),
