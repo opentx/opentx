@@ -31,16 +31,16 @@ class GreenTheme: public Theme
     void loadColors() const
     {
       lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
-      lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
-      lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
+      lcdColorTable[TEXT_BGCOLOR_INDEX] = LIGHTWHITE;
+      lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = DARKGREEN;
-      lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
+      lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = DARKGREEN;
-      lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = WHITE;
-      lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
-      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = WHITE;
-      lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
+      lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = LIGHTWHITE;
+      lcdColorTable[MENU_TITLE_COLOR_INDEX] = LIGHTWHITE;
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = LIGHTWHITE;
+      lcdColorTable[HEADER_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
       lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
       lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
@@ -50,15 +50,15 @@ class GreenTheme: public Theme
       lcdColorTable[TITLE_BGCOLOR_INDEX] = DARKGREEN;
       lcdColorTable[TRIM_BGCOLOR_INDEX] = LIGHTGREEN;
       lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = BLACK;
-      lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = WHITE;
+      lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = DARKGREEN;
       lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKGREEN; // Top bar color
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = LIGHTGREEN; // background OPENTX icon
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = GREEN; // icons color
-      lcdColorTable[OVERLAY_COLOR_INDEX] = WHITE;
-      lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
-      lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(167, 167, 167);
-      lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(97, 97, 102);
+      lcdColorTable[OVERLAY_COLOR_INDEX] = LIGHTWHITE;
+      lcdColorTable[BARGRAPH1_COLOR_INDEX] = ORANGE;
+      lcdColorTable[BARGRAPH2_COLOR_INDEX] = BRIGHTGREEN;
+      lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(220, 220, 220);
     }
 
     void loadMenuIcon(uint8_t index, const char * filename) const
