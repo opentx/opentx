@@ -20,12 +20,19 @@
 
 #include "opentx.h"
 
+const ZoneOption OPTIONS_THEME_DEFAULT[] = {
+  { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTWHITE) },
+  { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREEN) },
+  { NULL, ZoneOption::Bool }
+};
+
 class GreenTheme: public Theme
 {
   public:
     GreenTheme():
-      Theme("Green")
+      Theme("Green", OPTIONS_THEME_DEFAULT)
     {
+      loadColors();
     }
 
     void loadColors() const
@@ -244,7 +251,28 @@ class GreenTheme: public Theme
     virtual void load() const
     {
       Theme::load();
-      loadColors();
+      update();
+    }
+
+    virtual void update() const
+    {
+#define DARKER(x)     ((x * 70) / 100)
+
+      uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
+      uint32_t bgColor = globalData.unexpectedShutdown ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
+
+      lcdColorTable[TEXT_BGCOLOR_INDEX] = bgColor;
+      lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
+      lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
+      lcdColorTable[CURVE_COLOR_INDEX] = color;
+      lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
+      lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(color)>>1, GET_GREEN(color)>>1, GET_BLUE(color)>>1);
+      lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
+      lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = color;
+      lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
+      lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
+      lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
       loadMenusIcons();
       loadThemeBitmaps();
       loadFontCache();
