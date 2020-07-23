@@ -1835,3 +1835,5 @@ James Snodgrass
 Michal Mesaros
 James Lindner
 Laurence Gerrard
+Nico Wagner
+Christoph Rössner
