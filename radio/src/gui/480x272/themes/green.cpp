@@ -23,9 +23,9 @@
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTWHITE) },
   { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREEN) },
-  { "Text Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(BLACK) },
-  { "Main bar color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(ORANGE) },
-  { "Secondary bar color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(BRIGHTGREEN) },
+  { STR_TEXT_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(BLACK) },
+  { STR_BAR1_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(ORANGE) },
+  { STR_BAR2_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(BRIGHTGREEN) },
   { NULL, ZoneOption::Bool }
 };
 
