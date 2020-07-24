@@ -19,6 +19,9 @@
  */
 
 #include "opentx.h"
+#include "storage/modelslist.h"
+
+extern ModelsList modelslist;
 
 class DarkblueTheme: public Theme
 {
@@ -237,6 +240,7 @@ class DarkblueTheme: public Theme
       loadMenusIcons();
       loadThemeBitmaps();
       loadFontCache();
+      modelslist.clear();
     }
 
     void drawTopbarBackground(uint8_t icon) const

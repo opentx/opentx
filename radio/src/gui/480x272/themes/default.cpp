@@ -19,6 +19,9 @@
  */
 
 #include "opentx.h"
+#include "storage/modelslist.h"
+
+extern ModelsList modelslist;
 
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(WHITE) },
@@ -273,6 +276,7 @@ class DefaultTheme: public Theme
       if (!backgroundBitmap) {
         backgroundBitmap = BitmapBuffer::load(getThemePath("background.png"));
       }
+      modelslist.clear();
       update();
     }
 
