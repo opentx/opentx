@@ -21,8 +21,6 @@
 #include "opentx.h"
 #include "storage/modelslist.h"
 
-extern ModelsList modelslist;
-
 const ZoneOption OPTIONS_THEME_GREEN[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTWHITE) },
   { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREEN) },
@@ -262,7 +260,6 @@ class GreenTheme: public Theme
       if (!backgroundBitmap) {
         backgroundBitmap = BitmapBuffer::load(getThemePath("background.png"));
       }
-      modelslist.clear();
       update();
     }
 
