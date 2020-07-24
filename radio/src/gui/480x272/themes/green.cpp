@@ -256,6 +256,9 @@ class GreenTheme: public Theme
       loadColors();
       loadMenusIcons();
       loadThemeBitmaps();
+      if (!backgroundBitmap) {
+        backgroundBitmap = BitmapBuffer::load(getThemePath("background.png"));
+      }
       update();
     }
 
@@ -304,6 +307,16 @@ class GreenTheme: public Theme
       loadFontCache();
     }
 
+    virtual void drawBackground() const
+    {
+      if (backgroundBitmap) {
+        lcd->drawBitmap(0, 0, backgroundBitmap);
+      }
+      else {
+        lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
+        lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
+      }
+    }
     void drawTopbarBackground(uint8_t icon) const
     {
       if (topleftBitmap) {
@@ -330,12 +343,14 @@ class GreenTheme: public Theme
     }
 
   protected:
+    static const BitmapBuffer * backgroundBitmap;
     static BitmapBuffer * topleftBitmap;
     static BitmapBuffer * menuIconNormal[MENUS_ICONS_COUNT];
     static BitmapBuffer * menuIconSelected[MENUS_ICONS_COUNT];
     static BitmapBuffer * menuIconTitle[MENUS_ICONS_COUNT];
 };
 
+const BitmapBuffer * GreenTheme::backgroundBitmap = NULL;
 BitmapBuffer * GreenTheme::topleftBitmap = NULL;
 BitmapBuffer * GreenTheme::menuIconNormal[MENUS_ICONS_COUNT] = { NULL };
 BitmapBuffer * GreenTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
