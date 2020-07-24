@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-const ZoneOption OPTIONS_THEME_DEFAULT[] = {
+const ZoneOption OPTIONS_THEME_GREEN[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTWHITE) },
   { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREEN) },
   { STR_TEXT_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(BLACK) },
@@ -33,9 +33,8 @@ class GreenTheme: public Theme
 {
   public:
     GreenTheme():
-      Theme("Green", OPTIONS_THEME_DEFAULT)
+      Theme("Green", OPTIONS_THEME_GREEN)
     {
-      loadColors();
     }
 
     void loadColors() const
@@ -254,6 +253,9 @@ class GreenTheme: public Theme
     virtual void load() const
     {
       Theme::load();
+      loadColors();
+      loadMenusIcons();
+      loadThemeBitmaps();
       update();
     }
 
