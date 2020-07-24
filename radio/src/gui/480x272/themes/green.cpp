@@ -281,7 +281,7 @@ class GreenTheme: public Theme
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = bgColor;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = bgColor;
-      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = bgColor;
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(DARKER(GET_RED(bgColor)), DARKER(GET_GREEN(bgColor)), DARKER(GET_BLUE(bgColor)));
       lcdColorTable[HEADER_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
       lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
