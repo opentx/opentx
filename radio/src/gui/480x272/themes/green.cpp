@@ -23,6 +23,9 @@
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTWHITE) },
   { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREEN) },
+  { "Text Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(BLACK) },
+  { "Main bar color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(ORANGE) },
+  { "Secondary bar color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(BRIGHTGREEN) },
   { NULL, ZoneOption::Bool }
 };
 
@@ -260,19 +263,40 @@ class GreenTheme: public Theme
 
       uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
       uint32_t bgColor = globalData.unexpectedShutdown ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
+      uint32_t textcolor = g_eeGeneral.themeData.options[2].unsignedValue;
+      uint32_t barcolor = g_eeGeneral.themeData.options[3].unsignedValue;
+      uint32_t bar2color = g_eeGeneral.themeData.options[4].unsignedValue;
 
+      lcdColorTable[TEXT_COLOR_INDEX] = textcolor;
       lcdColorTable[TEXT_BGCOLOR_INDEX] = bgColor;
-      lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
+      lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = bgColor;
+      lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
+      lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = bgColor;
+      lcdColorTable[LINE_COLOR_INDEX] = GREY;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
-      lcdColorTable[CURVE_COLOR_INDEX] = color;
+      lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = bgColor;
+      lcdColorTable[MENU_TITLE_COLOR_INDEX] = bgColor;
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = bgColor;
+      lcdColorTable[HEADER_COLOR_INDEX] = LIGHTGREY;
+      lcdColorTable[ALARM_COLOR_INDEX] = RED;
+      lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
+      lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
+      lcdColorTable[CURVE_AXIS_COLOR_INDEX] = LIGHTGREY;
+      lcdColorTable[CURVE_COLOR_INDEX] = RED;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
-      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(color)>>1, GET_GREEN(color)>>1, GET_BLUE(color)>>1);
       lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
+      lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = textcolor;
+      lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = bgColor;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = color;
-      lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
-      lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
-      lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
+      lcdColorTable[HEADER_BGCOLOR_INDEX] = color; // Top bar color
+      lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color; // background OPENTX icon
+      lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color))); // icons color
+      lcdColorTable[OVERLAY_COLOR_INDEX] = bgColor;
+      lcdColorTable[BARGRAPH1_COLOR_INDEX] = barcolor;
+      lcdColorTable[BARGRAPH2_COLOR_INDEX] = bar2color;
+      lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(bgColor)), DARKER(GET_GREEN(bgColor)), DARKER(GET_BLUE(bgColor)));
+
       loadMenusIcons();
       loadThemeBitmaps();
       loadFontCache();
